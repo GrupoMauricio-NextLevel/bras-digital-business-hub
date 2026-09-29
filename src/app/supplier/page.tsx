@@ -15,7 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default async function SupplierHome() {
   const session = await requireRole("SUPPLIER_ADMIN");
   const supplierId = session.supplier!.id;
-  const [o, orders] = await Promise.all([getSupplierOverview(supplierId), listOrdersForActor(getDb(), session.actor, { limit: 6 })]);
+  const [o, orders] = await Promise.all([getSupplierOverview(supplierId), listOrdersForActor((await getDb()), session.actor, { limit: 6 })]);
 
   return (
     <>

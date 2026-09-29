@@ -11,7 +11,7 @@ import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 export default async function SupplierOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const session = await requireRole("SUPPLIER_ADMIN");
   const { status } = await searchParams;
-  const rows = await listOrdersForActor(getDb(), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
+  const rows = await listOrdersForActor((await getDb()), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
   return (
     <>
       <PageHeader title="Pedidos da rede" description="Todos os pedidos das lojas abastecidas pela Central. Valores de custo são o que a Central recebe." />

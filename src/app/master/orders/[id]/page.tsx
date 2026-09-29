@@ -7,7 +7,7 @@ import { OrderDetail } from "@/components/shared/order-detail";
 
 async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: string) {
   try {
-    return await getOrderForActor(getDb(), actor, id);
+    return await getOrderForActor((await getDb()), actor, id);
   } catch (e) {
     if (e instanceof DomainError) return null;
     throw e;

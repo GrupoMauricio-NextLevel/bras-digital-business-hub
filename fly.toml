@@ -5,7 +5,7 @@ primary_region = "gru"
 
 [env]
   PORT = "3000"
-  DATABASE_URL = "file:/app/data/nextlevel.db"
+  DATABASE_URL = "pglite:///app/data/pg"
   NEXT_PUBLIC_DEMO_MODE = "true"
 
 [[mounts]]

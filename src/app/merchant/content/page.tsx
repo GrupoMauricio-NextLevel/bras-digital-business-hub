@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 
 export default async function MerchantContentPage() {
   const session = await requireRole("STORE_OWNER");
-  const network = await getDb().query.networks.findFirst({ where: eq(networks.id, session.store!.networkId) });
+  const network = await (await getDb()).query.networks.findFirst({ where: eq(networks.id, session.store!.networkId) });
   const items = network ? await getSupplierContent(network.supplierId) : [];
   return (
     <>

@@ -8,7 +8,7 @@ Motor de e-commerce multi-tenant da NextLevel Marketing Ltda. O primeiro produto
 |---|---|---|
 | Framework | Next.js 16 (App Router), React 19, TypeScript estrito | Server components + server actions reduzem código de API no MVP |
 | UI | Tailwind CSS v4, Radix primitives, Lucide, sonner | Design system próprio (tokens em `globals.css`), sem template de admin |
-| Banco | SQLite via `@libsql/client` + Drizzle ORM | Entrega rápida local; mesmo dialeto SQLite do Cloudflare D1 / Turso, migração sem reescrever regras |
+| Banco | Postgres via Drizzle ORM: PGlite (embutido) em dev/testes, Neon/Netlify DB em produção | Zero instalação local; produção serverless na Netlify sem banco pago; troca de driver sem tocar nas regras |
 | Validação | Zod | Schemas compartilhados entre actions e domínio |
 | Testes | Vitest com banco em memória + seed real | Testa as regras que causam prejuízo |
 
@@ -25,7 +25,7 @@ src/app/{master,supplier,merchant}  painéis · src/app/store/[slug]  storefront
 src/components/ui  primitivos · components/app  AppShell, DataTable etc. · shared  peças reutilizadas por perfil
 ```
 
-Regra: componentes visuais não contêm lógica de negócio; actions não contêm regras, apenas delegam ao domínio. O `Database` é um tipo genérico (`BaseSQLiteDatabase`) aceito por conexões e transações, então o driver é trocável.
+Regra: componentes visuais não contêm lógica de negócio; actions não contêm regras, apenas delegam ao domínio. O `Database` é um tipo genérico (`PgDatabase`) aceito por conexões e transações; `createDatabase()` escolhe o driver pela `DATABASE_URL` (`postgres://` → node-postgres, `pglite://` → PGlite).
 
 ## Multi-tenancy
 
@@ -79,7 +79,7 @@ Sessão por cookie `nl_session` (id do usuário). `/login` lista os usuários de
 
 ## Caminho para produção
 
-1. Trocar `DATABASE_URL` por Turso/D1 (mesmo dialeto) ou migrar o schema Drizzle para Postgres.
+1. Produção já roda em Postgres (Netlify DB/Neon). Para D1/SQLite bastaria trocar `pg-core` por `sqlite-core` no schema; o domínio não muda.
 2. Autenticação real + convites por organização.
 3. Adapters de pagamento e frete (interfaces em `src/lib/adapters/` — a criar) mantendo o domínio intacto.
 4. Upload de imagens (hoje `products.images` guarda descritores `art:` renderizados por `ProductArt`).

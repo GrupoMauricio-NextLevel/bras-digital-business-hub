@@ -11,7 +11,7 @@ import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 export default async function MasterOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const { status } = await searchParams;
-  const rows = await listOrdersForActor(getDb(), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
+  const rows = await listOrdersForActor((await getDb()), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
   return (
     <>
       <PageHeader title="Pedidos" description="Visão global de todos os pedidos da plataforma." />

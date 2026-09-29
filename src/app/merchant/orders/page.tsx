@@ -14,7 +14,7 @@ import { buttonVariants } from "@/components/ui/button";
 export default async function MerchantOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const session = await requireRole("STORE_OWNER");
   const { status } = await searchParams;
-  const rows = await listOrdersForActor(getDb(), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
+  const rows = await listOrdersForActor((await getDb()), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
   return (
     <>
       <PageHeader title="Pedidos" description="Pedidos da loja virtual, WhatsApp, Instagram e vendas manuais — todos com o mesmo catálogo e estoque." actions={<Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link>} />

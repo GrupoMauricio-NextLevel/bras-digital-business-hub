@@ -14,7 +14,7 @@ async function storeCtx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
   const storeId = requireStoreId(session.actor);
-  return { storeId, session, db: getDb() };
+  return { storeId, session, db: (await getDb()) };
 }
 
 function revalidateStore(slug?: string) {

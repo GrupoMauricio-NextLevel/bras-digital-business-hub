@@ -22,7 +22,7 @@ function revalidateOrders() {
 export async function confirmCentralPaymentAction(orderId: string) {
   return runAction(async () => {
     const s = await actor();
-    const r = await confirmCentralPayment(getDb(), s.actor, orderId);
+    const r = await confirmCentralPayment((await getDb()), s.actor, orderId);
     revalidateOrders();
     return { status: r.status };
   });
@@ -31,7 +31,7 @@ export async function confirmCentralPaymentAction(orderId: string) {
 export async function confirmCustomerPaymentAction(orderId: string) {
   return runAction(async () => {
     const s = await actor();
-    const r = await confirmCustomerPayment(getDb(), s.actor, orderId);
+    const r = await confirmCustomerPayment((await getDb()), s.actor, orderId);
     revalidateOrders();
     return { status: r.status };
   });
@@ -40,7 +40,7 @@ export async function confirmCustomerPaymentAction(orderId: string) {
 export async function registerLabelAction(orderId: string, input: { code: string; carrier: string }) {
   return runAction(async () => {
     const s = await actor();
-    const r = await registerShippingLabel(getDb(), s.actor, orderId, input);
+    const r = await registerShippingLabel((await getDb()), s.actor, orderId, input);
     revalidateOrders();
     return { status: r.status };
   });
@@ -49,7 +49,7 @@ export async function registerLabelAction(orderId: string, input: { code: string
 export async function advanceOrderAction(orderId: string, next: OrderStatus) {
   return runAction(async () => {
     const s = await actor();
-    const r = await advanceOrder(getDb(), s.actor, orderId, next);
+    const r = await advanceOrder((await getDb()), s.actor, orderId, next);
     revalidateOrders();
     return { status: r.status };
   });
@@ -58,7 +58,7 @@ export async function advanceOrderAction(orderId: string, next: OrderStatus) {
 export async function cancelOrderAction(orderId: string) {
   return runAction(async () => {
     const s = await actor();
-    await cancelOrder(getDb(), s.actor, orderId);
+    await cancelOrder((await getDb()), s.actor, orderId);
     revalidateOrders();
     return undefined;
   });
@@ -69,7 +69,7 @@ export async function createManualOrderAction(input: Omit<CreateOrderInput, "sto
   return runAction(async () => {
     const s = await actor();
     if (!s.store) throw new ForbiddenError("Apenas lojistas podem criar pedidos manuais.");
-    const r = await createOrder(getDb(), { ...input, storeId: s.store.id });
+    const r = await createOrder((await getDb()), { ...input, storeId: s.store.id });
     revalidateOrders();
     return r;
   });

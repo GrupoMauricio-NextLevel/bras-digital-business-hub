@@ -1,13 +1,11 @@
 # Netlify: o runtime Next.js é detectado automaticamente (@netlify/plugin-nextjs).
-# O banco deve ser externo (Turso), pois não há disco persistente nas funções.
+# Banco: Netlify DB (Neon Postgres). Ative em "Extensions → Neon" ou rode `netlify db init`;
+# a variável NETLIFY_DATABASE_URL é injetada automaticamente e o app a usa como DATABASE_URL.
+# O build aplica migrações e o seed de demonstração (idempotente) antes de compilar.
 [build]
-  command = "npm run build"
+  command = "npm run db:bootstrap && npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
   NEXT_PUBLIC_DEMO_MODE = "true"
-
-# Defina no painel da Netlify (Site configuration → Environment variables):
-#   DATABASE_URL        = libsql://SEU-BANCO.turso.io
-#   DATABASE_AUTH_TOKEN = <token do Turso>

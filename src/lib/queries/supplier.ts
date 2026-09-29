@@ -4,7 +4,7 @@ import { activities, contentItems, inventory, inventoryMovements, networks, orde
 import { listSupplierCatalog } from "@/lib/domain/catalog";
 
 export async function getSupplierOverview(supplierId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const [sales] = await db.select({ n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED")));
   const statusRows = await db.select({ status: orders.status, n: count() }).from(orders).where(eq(orders.supplierId, supplierId)).groupBy(orders.status);
   const byStatus = Object.fromEntries(statusRows.map((r) => [r.status, r.n])) as Record<string, number>;
@@ -34,7 +34,7 @@ export async function getSupplierOverview(supplierId: string) {
 }
 
 export async function getSupplierProducts(supplierId: string, filter: { q?: string; category?: string } = {}) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await listSupplierCatalog(db, supplierId);
   const cats = await db.select().from(categories).where(eq(categories.supplierId, supplierId));
   const catById = new Map(cats.map((c) => [c.id, c.name]));
@@ -48,7 +48,7 @@ export async function getSupplierProducts(supplierId: string, filter: { q?: stri
 }
 
 export async function getSupplierProduct(supplierId: string, productId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const product = await db.query.products.findFirst({ where: and(eq(products.id, productId), eq(products.supplierId, supplierId)) });
   if (!product) return null;
   const variants = await db.select({ variant: productVariants, inv: inventory }).from(productVariants).leftJoin(inventory, eq(inventory.variantId, productVariants.id)).where(eq(productVariants.productId, productId)).orderBy(productVariants.position);
@@ -72,7 +72,7 @@ export async function getSupplierProduct(supplierId: string, productId: string) 
 }
 
 export async function getSupplierInventory(supplierId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db
     .select({ variant: productVariants, product: products, inv: inventory })
     .from(productVariants)
@@ -88,7 +88,7 @@ export async function getSupplierInventory(supplierId: string) {
 }
 
 export async function getSupplierStores(supplierId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db.select({ store: stores, networkName: networks.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId)).orderBy(stores.name);
   const stats = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"))).groupBy(orders.storeId);
   const listings = await db.select({ storeId: storeProducts.storeId, n: count() }).from(storeProducts).where(eq(storeProducts.active, true)).groupBy(storeProducts.storeId);
@@ -99,12 +99,12 @@ export async function getSupplierStores(supplierId: string) {
 }
 
 export async function getSupplierContent(supplierId: string) {
-  const db = getDb();
+  const db = (await getDb());
   return db.select().from(contentItems).where(eq(contentItems.supplierId, supplierId));
 }
 
 export async function getSupplierFinance(supplierId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db.select({ order: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"))).orderBy(desc(orders.createdAt));
   const received = rows.filter((r) => r.order.centralPaymentStatus === "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);
   const pending = rows.filter((r) => r.order.centralPaymentStatus !== "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);

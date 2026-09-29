@@ -13,7 +13,7 @@ export type StorefrontContext = {
 };
 
 export const getStorefront = cache(async (slug: string): Promise<StorefrontContext | null> => {
-  const db = getDb();
+  const db = (await getDb());
   const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
   if (!store) return null;
   const settings = await db.query.themeSettings.findFirst({ where: eq(themeSettings.storeId, store.id) });
@@ -25,7 +25,7 @@ export const getStorefront = cache(async (slug: string): Promise<StorefrontConte
 });
 
 export const getStorefrontCatalog = cache(async (storeId: string): Promise<StoreCatalogItem[]> => {
-  return listStoreCatalog(getDb(), storeId);
+  return listStoreCatalog((await getDb()), storeId);
 });
 
 /** Item serializável para client components. */

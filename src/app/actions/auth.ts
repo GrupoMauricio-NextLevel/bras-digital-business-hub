@@ -7,7 +7,7 @@ import { users } from "@/db/schema";
 import { SESSION_COOKIE, homeFor } from "@/lib/auth";
 
 export async function loginAs(email: string) {
-  const db = getDb();
+  const db = (await getDb());
   const user = await db.query.users.findFirst({ where: eq(users.email, email) });
   if (!user) redirect("/login?error=user");
   const jar = await cookies();
@@ -22,6 +22,6 @@ export async function logout() {
 }
 
 export async function listDemoUsers() {
-  const db = getDb();
+  const db = (await getDb());
   return db.select({ id: users.id, name: users.name, email: users.email, role: users.role }).from(users);
 }

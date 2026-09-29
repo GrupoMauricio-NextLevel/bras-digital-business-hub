@@ -145,10 +145,10 @@ vite.config.ts.timestamp-*
 # NextLevel Commerce Engine
 .next/
 out/
-data/*.db
-data/*.db-journal
-data/*.db-wal
-data/*.db-shm
+data/pg/
+data/pg/-journal
+data/pg/-wal
+data/pg/-shm
 .env*.local
 *.tsbuildinfo
 next-env.d.ts

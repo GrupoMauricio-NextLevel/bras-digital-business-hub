@@ -4,12 +4,14 @@ Plataforma de e-commerce multi-tenant da NextLevel Marketing Ltda. Fornecedor �
 
 Detalhes de arquitetura: [ARCHITECTURE.md](./ARCHITECTURE.md). Este motor também sustentará, no futuro, o **Brás Digital** (marketplace atacadista) sem um segundo core.
 
-## Como rodar
+## Como rodar local (sem instalar banco)
+
+O banco local é o **PGlite**, um Postgres embutido que grava em `./data/pg`. Nada a instalar além do Node 20+.
 
 ```bash
-cp .env.example .env.local        # já vem com SQLite local e demo mode
+cp .env.example .env.local        # já vem com PGlite e demo mode
 npm install
-npm run db:migrate                # cria data/nextlevel.db
+npm run db:migrate                # cria as tabelas em ./data/pg
 npm run db:seed                   # dados de demonstração
 npm run dev                       # http://localhost:3000
 ```
@@ -43,24 +45,18 @@ Storefronts públicas: `/store/mantos-shop` · `/store/arena-10` (`/store/fut-cl
 
 ## Publicar na internet (navegável)
 
-O app precisa de um servidor Node e um banco. Duas rotas prontas:
+**Netlify (recomendado, sem banco externo)**
+1. Em app.netlify.com: *Add new site → Import an existing project → GitHub* → repositório `GrupoMauricio/bras-digital-business-hub`, branch `claude/wonderful-cannon-5o38v5`. O `netlify.toml` já define build e Node.
+2. No site criado, abra *Extensions* e instale **Neon (Netlify DB)**, ou rode `netlify db init` no terminal. Isso cria um Postgres gratuito e injeta `NETLIFY_DATABASE_URL`, que o app usa automaticamente.
+3. Em *Site configuration → Environment variables*, confirme `NEXT_PUBLIC_DEMO_MODE=true` (o `netlify.toml` já define para o build).
+4. *Trigger deploy*. O build roda `npm run db:bootstrap` (migrações + seed de demonstração, idempotente) e compila o Next.js.
+5. Abra o domínio `.netlify.app`: a tela de login mostra os perfis de demonstração.
 
-**Opção A — Railway (mais simples, ~5 min, banco no próprio volume)**
-1. Crie um projeto em railway.app → *Deploy from GitHub repo* → escolha este repositório e a branch.
-2. O `Dockerfile` e o `railway.json` são detectados automaticamente.
-3. Em *Settings → Volumes*, adicione um volume montado em `/app/data`.
-4. Em *Settings → Networking*, gere o domínio público. No primeiro boot o app aplica migrações e o seed de demonstração.
+**Docker (Railway, Fly.io, Render, VPS)**
+A imagem usa PGlite em volume persistente (`/app/data`) e faz o bootstrap no boot. Configs prontas: `railway.json`, `fly.toml`, `render.yaml`. Para um Postgres externo, defina `DATABASE_URL=postgres://…`.
 
-A mesma imagem funciona em **Fly.io** (`fly launch` usa o `fly.toml`; crie o volume `nextlevel_data`) e **Render** (`render.yaml` com disco em `/app/data`).
-
-**Opção B — Netlify ou Vercel + Turso (sem servidor próprio)**
-Netlify e Vercel rodam o Next.js em funções serverless, sem disco persistente, então o banco fica no Turso (SQLite hospedado; nenhuma mudança de código).
-1. Crie um banco em turso.tech e copie a URL `libsql://…` e o token.
-2. Importe o repositório na Netlify (*Add new site → Import from Git*; o `netlify.toml` já está pronto) ou na Vercel, e defina `DATABASE_URL`, `DATABASE_AUTH_TOKEN` e `NEXT_PUBLIC_DEMO_MODE=true` nas variáveis de ambiente.
-3. Uma vez, localmente, rode `DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:bootstrap` para criar tabelas e seed no Turso.
-4. Deploy.
-
-`npm run db:bootstrap` é idempotente: aplica migrações e só roda o seed se o banco estiver vazio.
+**Vercel**
+Defina `DATABASE_URL` apontando para um Postgres (Neon, Supabase) e rode `npm run db:bootstrap` uma vez contra ele.
 
 ## Scripts
 

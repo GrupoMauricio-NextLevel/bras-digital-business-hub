@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  serverExternalPackages: ["@libsql/client"],
+  serverExternalPackages: ["pg", "@electric-sql/pglite"],
 };
 
 export default nextConfig;

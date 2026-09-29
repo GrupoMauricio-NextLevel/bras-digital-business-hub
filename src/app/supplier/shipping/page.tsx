@@ -20,7 +20,7 @@ const COLUMNS: { status: OrderStatus; title: string; hint: string }[] = [
 
 export default async function ShippingPage() {
   const session = await requireRole("SUPPLIER_ADMIN");
-  const all = await listOrdersForActor(getDb(), session.actor);
+  const all = await listOrdersForActor((await getDb()), session.actor);
   return (
     <>
       <PageHeader title="Expedição" description="Fila operacional da Central. Um pedido só entra aqui após pagamento à Central e etiqueta registrada pelo lojista." />

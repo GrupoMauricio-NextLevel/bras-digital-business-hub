@@ -19,7 +19,7 @@ export const getSession = cache(async (): Promise<Session | null> => {
   const jar = await cookies();
   const userId = jar.get(SESSION_COOKIE)?.value;
   if (!userId) return null;
-  const db = getDb();
+  const db = (await getDb());
   const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
   if (!user) return null;
   const store = user.storeId ? (await db.query.stores.findFirst({ where: eq(stores.id, user.storeId) })) ?? null : null;

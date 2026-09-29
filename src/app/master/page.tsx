@@ -15,7 +15,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
-  const [overview, stores, orders] = await Promise.all([getPlatformOverview(), listStoresWithPlan(), listOrdersForActor(getDb(), session.actor, { limit: 6 })]);
+  const [overview, stores, orders] = await Promise.all([getPlatformOverview(), listStoresWithPlan(), listOrdersForActor((await getDb()), session.actor, { limit: 6 })]);
 
   return (
     <>

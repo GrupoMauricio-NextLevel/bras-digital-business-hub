@@ -3,7 +3,7 @@ import { getDb } from "@/db/client";
 import { activities, invoices, networks, orders, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
 
 export async function getPlatformOverview() {
-  const db = getDb();
+  const db = (await getDb());
   const [supplierCount] = await db.select({ n: count() }).from(suppliers);
   const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).groupBy(stores.status);
   const [orderStats] = await db.select({ n: count(), gmv: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED"));
@@ -33,7 +33,7 @@ export async function getPlatformOverview() {
 }
 
 export async function listSuppliers() {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db.select().from(suppliers);
   const storeCounts = await db.select({ supplierId: networks.supplierId, n: count(stores.id) }).from(networks).leftJoin(stores, eq(stores.networkId, networks.id)).groupBy(networks.supplierId);
   const productCounts = await db.select({ supplierId: products.supplierId, n: count() }).from(products).groupBy(products.supplierId);
@@ -47,7 +47,7 @@ export async function listSuppliers() {
 }
 
 export async function listNetworks() {
-  const db = getDb();
+  const db = (await getDb());
   return db
     .select({ network: networks, supplierName: suppliers.name, storeCount: count(stores.id) })
     .from(networks)
@@ -57,7 +57,7 @@ export async function listNetworks() {
 }
 
 export async function listStoresWithPlan(filter: { q?: string; status?: string } = {}) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db
     .select({ store: stores, networkName: networks.name, supplierName: suppliers.name, planName: plans.name, subscriptionStatus: subscriptions.status, periodEnd: subscriptions.currentPeriodEnd })
     .from(stores)
@@ -75,24 +75,24 @@ export async function listStoresWithPlan(filter: { q?: string; status?: string }
 }
 
 export async function listAllProducts() {
-  const db = getDb();
+  const db = (await getDb());
   return db.select({ product: products, supplierName: suppliers.name }).from(products).innerJoin(suppliers, eq(suppliers.id, products.supplierId)).orderBy(products.name);
 }
 
 export async function listThemes() {
-  const db = getDb();
+  const db = (await getDb());
   return db.select().from(themes).orderBy(themes.priceCents);
 }
 
 export async function listServicesWithLeads() {
-  const db = getDb();
+  const db = (await getDb());
   const svc = await db.select().from(services);
   const leads = await db.select({ lead: serviceLeads, storeName: stores.name, serviceName: services.name }).from(serviceLeads).innerJoin(stores, eq(stores.id, serviceLeads.storeId)).innerJoin(services, eq(services.id, serviceLeads.serviceId)).orderBy(desc(serviceLeads.createdAt));
   return { services: svc, leads };
 }
 
 export async function listPlansWithSubs() {
-  const db = getDb();
+  const db = (await getDb());
   const p = await db.select().from(plans).orderBy(plans.priceCents);
   const subs = await db.select({ sub: subscriptions, storeName: stores.name, planName: plans.name, planPrice: plans.priceCents }).from(subscriptions).innerJoin(stores, eq(stores.id, subscriptions.storeId)).innerJoin(plans, eq(plans.id, subscriptions.planId));
   const inv = await db.select({ status: invoices.status, n: count(), total: sum(invoices.amountCents) }).from(invoices).groupBy(invoices.status);
@@ -100,7 +100,7 @@ export async function listPlansWithSubs() {
 }
 
 export async function listUsers() {
-  const db = getDb();
+  const db = (await getDb());
   return db.select().from(users);
 }
 

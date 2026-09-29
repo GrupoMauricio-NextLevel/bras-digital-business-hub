@@ -10,7 +10,7 @@ import { createOrder, type CreateOrderInput } from "@/lib/domain/orders";
 /** Checkout demonstrativo: pagamento do cliente é simulado como aprovado. */
 export async function placeStorefrontOrderAction(slug: string, input: Omit<CreateOrderInput, "storeId" | "channel" | "customerPaymentStatus">) {
   return runAction(async () => {
-    const db = getDb();
+    const db = (await getDb());
     const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
     if (!store) throw new NotFoundError("Loja não encontrada.");
     const r = await createOrder(db, { ...input, storeId: store.id, channel: "ONLINE_STORE", customerPaymentStatus: "PAID" });

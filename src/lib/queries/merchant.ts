@@ -20,7 +20,7 @@ export function computeOnboarding(store: Store): { steps: OnboardingStep[]; perc
 }
 
 export async function getMerchantOverview(store: Store) {
-  const db = getDb();
+  const db = (await getDb());
   const since = new Date();
   since.setDate(since.getDate() - 30);
   const all = await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt));
@@ -39,7 +39,7 @@ export async function getMerchantOverview(store: Store) {
 }
 
 export async function getSubscription(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const row = await db.select({ sub: subscriptions, plan: plans }).from(subscriptions).innerJoin(plans, eq(plans.id, subscriptions.planId)).where(eq(subscriptions.storeId, storeId)).limit(1);
   if (!row[0]) return null;
   const inv = await db.select().from(invoices).where(eq(invoices.subscriptionId, row[0].sub.id)).orderBy(desc(invoices.dueDate));
@@ -47,19 +47,19 @@ export async function getSubscription(storeId: string) {
 }
 
 export async function getMerchantProducts(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   return listStoreCatalog(db, storeId, { onlyActive: false });
 }
 
 export async function getMerchantCustomers(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db.select({ sc: storeCustomers, customer: customers }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(eq(storeCustomers.storeId, storeId)).orderBy(desc(storeCustomers.lastOrderAt));
   const consents = await db.select().from(marketingConsents);
   return rows.map((r) => ({ ...r, consents: consents.filter((c) => c.storeCustomerId === r.sc.id && !c.revokedAt) }));
 }
 
 export async function getStoreTheme(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const current = await db.select({ st: storeThemes, theme: themes }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, storeId)).limit(1);
   const all = await db.select().from(themes).orderBy(themes.priceCents);
   const settings = await db.query.themeSettings.findFirst({ where: eq(themeSettings.storeId, storeId) });
@@ -71,14 +71,14 @@ export function defaultThemeSettings(): ThemeSettingsData {
 }
 
 export async function getMerchantServices(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const svc = await db.select().from(services);
   const leads = await db.select().from(serviceLeads).where(eq(serviceLeads.storeId, storeId));
   return svc.map((s) => ({ ...s, lead: leads.find((l) => l.serviceId === s.id) ?? null }));
 }
 
 export async function getMerchantFinance(storeId: string) {
-  const db = getDb();
+  const db = (await getDb());
   const rows = await db.select().from(orders).where(and(eq(orders.storeId, storeId), ne(orders.status, "CANCELED"))).orderBy(desc(orders.createdAt));
   const received = rows.filter((o) => o.customerPaymentStatus === "PAID").reduce((s, o) => s + o.totalCents, 0);
   const owedToCentral = rows.filter((o) => o.centralPaymentStatus !== "PAID").reduce((s, o) => s + o.costTotalCents, 0);

@@ -1,12 +1,11 @@
 import { createDatabase, type Database } from "@/db/client";
 import { runMigrations } from "@/db/migrate";
 import { seedDatabase } from "@/db/seed";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import type { Actor } from "@/lib/domain/access";
 
 export async function freshDb() {
-  const { db } = createDatabase("file::memory:");
-  await runMigrations(db as unknown as LibSQLDatabase<Record<string, unknown>>);
+  const { db } = await createDatabase("pglite://memory");
+  await runMigrations(db);
   const seed = await seedDatabase(db);
   const actors = {
     master: { userId: seed.users[0]!.id, role: "NEXTLEVEL_MASTER", organizationId: seed.users[0]!.organizationId, supplierId: null, storeId: null } satisfies Actor,

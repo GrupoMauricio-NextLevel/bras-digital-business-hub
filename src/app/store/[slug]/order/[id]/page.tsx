@@ -12,7 +12,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   const { slug, id } = await params;
   const sf = await getStorefront(slug);
   if (!sf) notFound();
-  const db = getDb();
+  const db = (await getDb());
   // Isolamento: o pedido precisa pertencer a esta loja.
   const order = await db.query.orders.findFirst({ where: and(eq(orders.id, id), eq(orders.storeId, sf.store.id)) });
   if (!order) notFound();

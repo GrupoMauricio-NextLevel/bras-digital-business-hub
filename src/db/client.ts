@@ -1,28 +1,48 @@
-import { createClient, type Client, type ResultSet } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import * as schema from "./schema";
 
 /**
- * Tipo genérico compartilhado por conexão e transações. Permite trocar o
- * driver (D1 / Turso / better-sqlite3) sem alterar as regras de negócio.
+ * Tipo genérico compartilhado por conexão e transações. As regras de negócio
+ * em src/lib/domain dependem apenas deste tipo, não do driver.
  */
-export type Database = BaseSQLiteDatabase<"async", ResultSet, typeof schema>;
+export type Database = PgDatabase<PgQueryResultHKT, typeof schema>;
+
+export type DatabaseHandle = { db: Database; close: () => Promise<void> };
 
 /**
- * DATABASE_URL aceita `file:./data/nextlevel.db` (SQLite local / volume) ou
- * `libsql://...` (Turso) com DATABASE_AUTH_TOKEN.
+ * DATABASE_URL (ou NETLIFY_DATABASE_URL, injetada pelo Netlify DB):
+ *  - `postgres://…`  → Postgres real via node-postgres (Neon/Netlify DB, Supabase, RDS…)
+ *  - `pglite://./data/pg` ou ausente → PGlite embutido (arquivo local; `pglite://memory` em testes)
  */
-export function createDatabase(url = process.env.DATABASE_URL ?? "file:./data/nextlevel.db"): { db: Database; client: Client } {
-  const client = createClient({ url, authToken: process.env.DATABASE_AUTH_TOKEN || undefined });
-  return { db: drizzle(client, { schema }), client };
+export function resolveDatabaseUrl(): string {
+  return process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || "pglite://./data/pg";
 }
 
-const globalForDb = globalThis as unknown as { __nlDb?: Database };
+export async function createDatabase(url = resolveDatabaseUrl()): Promise<DatabaseHandle> {
+  if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
+    const { Pool } = await import("pg");
+    const { drizzle } = await import("drizzle-orm/node-postgres");
+    const pool = new Pool({ connectionString: url, max: 5, ssl: /localhost|127\.0\.0\.1/.test(url) ? undefined : { rejectUnauthorized: false } });
+    return { db: drizzle(pool, { schema }) as unknown as Database, close: () => pool.end() };
+  }
+  const { PGlite } = await import("@electric-sql/pglite");
+  const { drizzle } = await import("drizzle-orm/pglite");
+  const path = url.replace(/^pglite:\/\//, "");
+  const client = path === "memory" || path === "" ? new PGlite() : new PGlite(path);
+  return { db: drizzle(client, { schema }) as unknown as Database, close: () => client.close() };
+}
 
-export function getDb(): Database {
-  if (!globalForDb.__nlDb) globalForDb.__nlDb = createDatabase().db;
-  return globalForDb.__nlDb;
+const globalForDb = globalThis as unknown as { __nlDb?: Promise<DatabaseHandle> };
+
+/** Instância única por processo (reaproveitada entre requisições). */
+export async function getDb(): Promise<Database> {
+  if (!globalForDb.__nlDb) {
+    globalForDb.__nlDb = createDatabase().catch((e) => {
+      globalForDb.__nlDb = undefined;
+      throw e;
+    });
+  }
+  return (await globalForDb.__nlDb).db;
 }
 
 export { schema };

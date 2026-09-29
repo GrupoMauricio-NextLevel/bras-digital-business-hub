@@ -7,20 +7,20 @@
  *   USER pertence a uma organização; CUSTOMER é o consumidor final.
  *
  * Valores monetários são armazenados em centavos (integer).
- * Datas em ISO-8601 (text) para portabilidade SQLite → D1 → Postgres.
+ * Datas em timestamptz lidas como ISO string. Dialeto Postgres (Neon/Netlify DB em produção, PGlite localmente).
  */
-import { sqliteTable, text, integer, primaryKey, uniqueIndex, index } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
+import { pgTable, text, integer, boolean, jsonb, timestamp, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
 
-const now = () => sql`(strftime('%Y-%m-%dT%H:%M:%fZ','now'))`;
+/** Datas como ISO string (timestamptz no banco), para manter as regras de negócio agnósticas ao driver. */
+const ts = (name: string) => timestamp(name, { mode: "string", withTimezone: true });
 const id = () => text("id").primaryKey();
-const createdAt = () => text("created_at").notNull().default(now());
-const updatedAt = () => text("updated_at").notNull().default(now());
+const createdAt = () => ts("created_at").notNull().defaultNow();
+const updatedAt = () => ts("updated_at").notNull().defaultNow();
 
 // ---------------------------------------------------------------------------
 // Tenancy
 // ---------------------------------------------------------------------------
-export const organizations = sqliteTable("organizations", {
+export const organizations = pgTable("organizations", {
   id: id(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
@@ -29,7 +29,7 @@ export const organizations = sqliteTable("organizations", {
   createdAt: createdAt(),
 });
 
-export const suppliers = sqliteTable("suppliers", {
+export const suppliers = pgTable("suppliers", {
   id: id(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   name: text("name").notNull(),
@@ -44,7 +44,7 @@ export const suppliers = sqliteTable("suppliers", {
   createdAt: createdAt(),
 });
 
-export const networks = sqliteTable("networks", {
+export const networks = pgTable("networks", {
   id: id(),
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),
   name: text("name").notNull(),
@@ -52,7 +52,7 @@ export const networks = sqliteTable("networks", {
   createdAt: createdAt(),
 });
 
-export const stores = sqliteTable("stores", {
+export const stores = pgTable("stores", {
   id: id(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   networkId: text("network_id").notNull().references(() => networks.id),
@@ -72,12 +72,12 @@ export const stores = sqliteTable("stores", {
   shippingProvider: text("shipping_provider"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
-  publishedAt: text("published_at"),
+  publishedAt: ts("published_at"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("stores_network_idx").on(t.networkId)]);
 
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -91,14 +91,14 @@ export const users = sqliteTable("users", {
 // ---------------------------------------------------------------------------
 // Catálogo central
 // ---------------------------------------------------------------------------
-export const categories = sqliteTable("categories", {
+export const categories = pgTable("categories", {
   id: id(),
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),
   name: text("name").notNull(),
   slug: text("slug").notNull(),
 });
 
-export const products = sqliteTable("products", {
+export const products = pgTable("products", {
   id: id(),
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),
   networkId: text("network_id").references(() => networks.id),
@@ -108,7 +108,7 @@ export const products = sqliteTable("products", {
   description: text("description").notNull().default(""),
   sku: text("sku").notNull(),
   /** JSON string[] */
-  images: text("images", { mode: "json" }).$type<string[]>().notNull().default([]),
+  images: jsonb("images").$type<string[]>().notNull().default([]),
   costCents: integer("cost_cents").notNull(),
   suggestedPriceCents: integer("suggested_price_cents").notNull(),
   minimumPriceCents: integer("minimum_price_cents").notNull(),
@@ -117,13 +117,13 @@ export const products = sqliteTable("products", {
   visibility: text("visibility", { enum: ["PRIVATE_NETWORK", "SHARED_NETWORK", "PUBLIC_NETWORK"] }).notNull().default("PRIVATE_NETWORK"),
   /** Quem pode vender: toda a rede ou lojas selecionadas (product_store_access) */
   distribution: text("distribution", { enum: ["ALL_NETWORK", "SELECTED_STORES"] }).notNull().default("ALL_NETWORK"),
-  sellsUnit: integer("sells_unit", { mode: "boolean" }).notNull().default(true),
-  sellsPack: integer("sells_pack", { mode: "boolean" }).notNull().default(false),
+  sellsUnit: boolean("sells_unit").notNull().default(true),
+  sellsPack: boolean("sells_pack").notNull().default(false),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [uniqueIndex("products_supplier_slug").on(t.supplierId, t.slug), uniqueIndex("products_supplier_sku").on(t.supplierId, t.sku)]);
 
-export const productVariants = sqliteTable("product_variants", {
+export const productVariants = pgTable("product_variants", {
   id: id(),
   productId: text("product_id").notNull().references(() => products.id),
   size: text("size").notNull(),
@@ -132,7 +132,7 @@ export const productVariants = sqliteTable("product_variants", {
 }, (t) => [index("variants_product_idx").on(t.productId)]);
 
 /** Grade (pack) — ex.: "Grade 12 peças" com distribuição configurável por tamanho. */
-export const productPacks = sqliteTable("product_packs", {
+export const productPacks = pgTable("product_packs", {
   id: id(),
   productId: text("product_id").notNull().references(() => products.id),
   name: text("name").notNull(),
@@ -142,38 +142,38 @@ export const productPacks = sqliteTable("product_packs", {
   minimumPriceCents: integer("minimum_price_cents").notNull(),
 });
 
-export const productPackItems = sqliteTable("product_pack_items", {
+export const productPackItems = pgTable("product_pack_items", {
   packId: text("pack_id").notNull().references(() => productPacks.id),
   variantId: text("variant_id").notNull().references(() => productVariants.id),
   quantity: integer("quantity").notNull(),
 }, (t) => [primaryKey({ columns: [t.packId, t.variantId] })]);
 
-export const productStoreAccess = sqliteTable("product_store_access", {
+export const productStoreAccess = pgTable("product_store_access", {
   productId: text("product_id").notNull().references(() => products.id),
   storeId: text("store_id").notNull().references(() => stores.id),
 }, (t) => [primaryKey({ columns: [t.productId, t.storeId] })]);
 
 /** Preço/ativação do produto na loja (não duplica estoque). */
-export const storeProducts = sqliteTable("store_products", {
+export const storeProducts = pgTable("store_products", {
   storeId: text("store_id").notNull().references(() => stores.id),
   productId: text("product_id").notNull().references(() => products.id),
   priceCents: integer("price_cents").notNull(),
   packPriceCents: integer("pack_price_cents"),
-  active: integer("active", { mode: "boolean" }).notNull().default(true),
-  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
+  active: boolean("active").notNull().default(true),
+  featured: boolean("featured").notNull().default(false),
 }, (t) => [primaryKey({ columns: [t.storeId, t.productId] })]);
 
 // ---------------------------------------------------------------------------
 // Estoque central
 // ---------------------------------------------------------------------------
-export const inventory = sqliteTable("inventory", {
+export const inventory = pgTable("inventory", {
   variantId: text("variant_id").primaryKey().references(() => productVariants.id),
   onHand: integer("on_hand").notNull().default(0),
   reserved: integer("reserved").notNull().default(0),
   updatedAt: updatedAt(),
 });
 
-export const inventoryMovements = sqliteTable("inventory_movements", {
+export const inventoryMovements = pgTable("inventory_movements", {
   id: id(),
   variantId: text("variant_id").notNull().references(() => productVariants.id),
   type: text("type", { enum: ["IN", "RESERVE", "RELEASE", "SALE", "ADJUSTMENT"] }).notNull(),
@@ -187,7 +187,7 @@ export const inventoryMovements = sqliteTable("inventory_movements", {
 // ---------------------------------------------------------------------------
 // Clientes e consentimento (LGPD-ready)
 // ---------------------------------------------------------------------------
-export const customers = sqliteTable("customers", {
+export const customers = pgTable("customers", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull(),
@@ -195,23 +195,23 @@ export const customers = sqliteTable("customers", {
   createdAt: createdAt(),
 });
 
-export const storeCustomers = sqliteTable("store_customers", {
+export const storeCustomers = pgTable("store_customers", {
   id: id(),
   storeId: text("store_id").notNull().references(() => stores.id),
   customerId: text("customer_id").notNull().references(() => customers.id),
   ordersCount: integer("orders_count").notNull().default(0),
   totalSpentCents: integer("total_spent_cents").notNull().default(0),
-  lastOrderAt: text("last_order_at"),
+  lastOrderAt: ts("last_order_at"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("store_customers_unique").on(t.storeId, t.customerId)]);
 
-export const marketingConsents = sqliteTable("marketing_consents", {
+export const marketingConsents = pgTable("marketing_consents", {
   id: id(),
   storeCustomerId: text("store_customer_id").notNull().references(() => storeCustomers.id),
   purpose: text("purpose", { enum: ["EMAIL_MARKETING", "WHATSAPP_MARKETING", "SMS_MARKETING", "PLATFORM_ANALYTICS"] }).notNull(),
   source: text("source").notNull(),
-  grantedAt: text("granted_at").notNull().default(now()),
-  revokedAt: text("revoked_at"),
+  grantedAt: ts("granted_at").notNull().defaultNow(),
+  revokedAt: ts("revoked_at"),
 });
 
 // ---------------------------------------------------------------------------
@@ -220,7 +220,7 @@ export const marketingConsents = sqliteTable("marketing_consents", {
 export const ORDER_STATUSES = ["PENDING", "AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "READY_TO_PICK", "PICKING", "READY_TO_SHIP", "SHIPPED", "DELIVERED", "CANCELED"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
-export const orders = sqliteTable("orders", {
+export const orders = pgTable("orders", {
   id: id(),
   number: integer("number").notNull(),
   storeId: text("store_id").notNull().references(() => stores.id),
@@ -250,7 +250,7 @@ export const orders = sqliteTable("orders", {
   updatedAt: updatedAt(),
 }, (t) => [index("orders_store_idx").on(t.storeId), index("orders_supplier_idx").on(t.supplierId), uniqueIndex("orders_store_number").on(t.storeId, t.number)]);
 
-export const orderItems = sqliteTable("order_items", {
+export const orderItems = pgTable("order_items", {
   id: id(),
   orderId: text("order_id").notNull().references(() => orders.id),
   productId: text("product_id").notNull().references(() => products.id),
@@ -264,7 +264,7 @@ export const orderItems = sqliteTable("order_items", {
   lineTotalCents: integer("line_total_cents").notNull(),
 }, (t) => [index("order_items_order_idx").on(t.orderId)]);
 
-export const orderEvents = sqliteTable("order_events", {
+export const orderEvents = pgTable("order_events", {
   id: id(),
   orderId: text("order_id").notNull().references(() => orders.id),
   type: text("type").notNull(),
@@ -276,19 +276,19 @@ export const orderEvents = sqliteTable("order_events", {
 // ---------------------------------------------------------------------------
 // Template Engine / Theme Store
 // ---------------------------------------------------------------------------
-export const themes = sqliteTable("themes", {
+export const themes = pgTable("themes", {
   id: id(),
   key: text("key").notNull().unique(),
   name: text("name").notNull(),
   tier: text("tier", { enum: ["STARTER", "PRO", "ELITE"] }).notNull(),
   description: text("description").notNull(),
   priceCents: integer("price_cents").notNull().default(0),
-  features: text("features", { mode: "json" }).$type<string[]>().notNull().default([]),
+  features: jsonb("features").$type<string[]>().notNull().default([]),
   previewAccent: text("preview_accent").notNull(),
-  available: integer("available", { mode: "boolean" }).notNull().default(false),
+  available: boolean("available").notNull().default(false),
 });
 
-export const themeVersions = sqliteTable("theme_versions", {
+export const themeVersions = pgTable("theme_versions", {
   id: id(),
   themeId: text("theme_id").notNull().references(() => themes.id),
   version: text("version").notNull(),
@@ -296,11 +296,11 @@ export const themeVersions = sqliteTable("theme_versions", {
   createdAt: createdAt(),
 });
 
-export const storeThemes = sqliteTable("store_themes", {
+export const storeThemes = pgTable("store_themes", {
   storeId: text("store_id").primaryKey().references(() => stores.id),
   themeId: text("theme_id").notNull().references(() => themes.id),
   themeVersionId: text("theme_version_id").notNull().references(() => themeVersions.id),
-  activatedAt: text("activated_at").notNull().default(now()),
+  activatedAt: ts("activated_at").notNull().defaultNow(),
 });
 
 export type ThemeSettingsData = {
@@ -313,44 +313,44 @@ export type ThemeSettingsData = {
   footerText: string;
 };
 
-export const themeSettings = sqliteTable("theme_settings", {
+export const themeSettings = pgTable("theme_settings", {
   storeId: text("store_id").primaryKey().references(() => stores.id),
-  settings: text("settings", { mode: "json" }).$type<ThemeSettingsData>().notNull(),
+  settings: jsonb("settings").$type<ThemeSettingsData>().notNull(),
   updatedAt: updatedAt(),
 });
 
 // ---------------------------------------------------------------------------
 // Planos / Assinaturas
 // ---------------------------------------------------------------------------
-export const plans = sqliteTable("plans", {
+export const plans = pgTable("plans", {
   id: id(),
   name: text("name").notNull(),
   priceCents: integer("price_cents").notNull(),
-  features: text("features", { mode: "json" }).$type<string[]>().notNull().default([]),
+  features: jsonb("features").$type<string[]>().notNull().default([]),
 });
 
-export const subscriptions = sqliteTable("subscriptions", {
+export const subscriptions = pgTable("subscriptions", {
   id: id(),
   storeId: text("store_id").notNull().references(() => stores.id),
   planId: text("plan_id").notNull().references(() => plans.id),
   status: text("status", { enum: ["ACTIVE", "PAST_DUE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
-  currentPeriodEnd: text("current_period_end").notNull(),
+  currentPeriodEnd: ts("current_period_end").notNull(),
   createdAt: createdAt(),
 });
 
-export const invoices = sqliteTable("invoices", {
+export const invoices = pgTable("invoices", {
   id: id(),
   subscriptionId: text("subscription_id").notNull().references(() => subscriptions.id),
   amountCents: integer("amount_cents").notNull(),
-  dueDate: text("due_date").notNull(),
+  dueDate: ts("due_date").notNull(),
   status: text("status", { enum: ["OPEN", "PAID", "OVERDUE"] }).notNull().default("OPEN"),
-  paidAt: text("paid_at"),
+  paidAt: ts("paid_at"),
 });
 
 // ---------------------------------------------------------------------------
 // Marketplace NextLevel (serviços) e Conteúdo
 // ---------------------------------------------------------------------------
-export const services = sqliteTable("services", {
+export const services = pgTable("services", {
   id: id(),
   key: text("key").notNull().unique(),
   name: text("name").notNull(),
@@ -360,7 +360,7 @@ export const services = sqliteTable("services", {
   icon: text("icon").notNull(),
 });
 
-export const serviceLeads = sqliteTable("service_leads", {
+export const serviceLeads = pgTable("service_leads", {
   id: id(),
   storeId: text("store_id").notNull().references(() => stores.id),
   serviceId: text("service_id").notNull().references(() => services.id),
@@ -368,7 +368,7 @@ export const serviceLeads = sqliteTable("service_leads", {
   createdAt: createdAt(),
 });
 
-export const contentItems = sqliteTable("content_items", {
+export const contentItems = pgTable("content_items", {
   id: id(),
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),
   category: text("category", { enum: ["PRODUTOS", "STORIES", "BANNERS", "REELS", "CAMPANHAS"] }).notNull(),
@@ -381,7 +381,7 @@ export const contentItems = sqliteTable("content_items", {
 // ---------------------------------------------------------------------------
 // Atividades (feed)
 // ---------------------------------------------------------------------------
-export const activities = sqliteTable("activities", {
+export const activities = pgTable("activities", {
   id: id(),
   /** Escopo: PLATFORM | SUPPLIER | STORE */
   scope: text("scope", { enum: ["PLATFORM", "SUPPLIER", "STORE"] }).notNull(),
