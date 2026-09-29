@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, Factory, Store, ShieldCheck } from "lucide-react";
 import { getSession, homeFor } from "@/lib/auth";
@@ -49,7 +50,7 @@ export default async function LoginPage() {
           })}
         </div>
 
-        <p className="mt-10 text-xs text-subtle-foreground">Storefronts públicas: <a className="underline" href="/store/mantos-shop">/store/mantos-shop</a> · <a className="underline" href="/store/arena-10">/store/arena-10</a></p>
+        <p className="mt-10 text-xs text-subtle-foreground">Storefronts públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
       </div>
     </div>
   );

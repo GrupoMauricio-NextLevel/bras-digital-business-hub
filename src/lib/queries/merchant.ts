@@ -1,4 +1,4 @@
-import { and, count, desc, eq, ne, sum } from "drizzle-orm";
+import { and, count, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { activities, customers, invoices, marketingConsents, orders, plans, serviceLeads, services, storeCustomers, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
 import { listStoreCatalog } from "@/lib/domain/catalog";

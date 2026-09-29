@@ -6,7 +6,7 @@ import { requireRole } from "@/lib/require-session";
 import { getSupplierFinance } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SupplierFinancePage() {
   const session = await requireRole("SUPPLIER_ADMIN");

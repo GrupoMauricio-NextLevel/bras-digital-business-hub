@@ -22,9 +22,10 @@ type Line = { key: string; productId: string; variantId?: string; packId?: strin
 export function NewOrderForm({ items }: { items: CatalogItem[] }) {
   const router = useRouter();
   const [lines, setLines] = React.useState<Line[]>([]);
-  const [productId, setProductId] = React.useState(items[0]?.productId ?? "");
-  const [mode, setMode] = React.useState<"unit" | "pack">("unit");
-  const [choice, setChoice] = React.useState("");
+  const first = items[0];
+  const [productId, setProductId] = React.useState(first?.productId ?? "");
+  const [mode, setMode] = React.useState<"unit" | "pack">(first?.sellsUnit === false ? "pack" : "unit");
+  const [choice, setChoice] = React.useState(first ? (first.sellsUnit ? first.variants[0]?.id ?? "" : first.packs[0]?.id ?? "") : "");
   const [qty, setQty] = React.useState(1);
   const [customer, setCustomer] = React.useState({ name: "", email: "", phone: "", marketingOptIn: false });
   const [channel, setChannel] = React.useState<"WHATSAPP" | "INSTAGRAM" | "MANUAL" | "ONLINE_STORE">("WHATSAPP");
@@ -34,12 +35,14 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
   const [pending, start] = React.useTransition();
 
   const product = items.find((i) => i.productId === productId);
-  React.useEffect(() => {
-    if (!product) return;
-    const m = product.sellsUnit ? "unit" : "pack";
+  const selectProduct = (id: string) => {
+    const p = items.find((i) => i.productId === id);
+    setProductId(id);
+    if (!p) return;
+    const m = p.sellsUnit ? "unit" : "pack";
     setMode(m);
-    setChoice(m === "unit" ? product.variants[0]?.id ?? "" : product.packs[0]?.id ?? "");
-  }, [product]);
+    setChoice(m === "unit" ? p.variants[0]?.id ?? "" : p.packs[0]?.id ?? "");
+  };
 
   const add = () => {
     if (!product || !choice) return;
@@ -82,7 +85,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
           <CardHeader><CardTitle>Itens</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto_auto] sm:items-end">
-              <FormField label="Produto" htmlFor="product"><Select id="product" value={productId} onChange={(e) => setProductId(e.target.value)}>{items.map((i) => <option key={i.productId} value={i.productId}>{i.name}</option>)}</Select></FormField>
+              <FormField label="Produto" htmlFor="product"><Select id="product" value={productId} onChange={(e) => selectProduct(e.target.value)}>{items.map((i) => <option key={i.productId} value={i.productId}>{i.name}</option>)}</Select></FormField>
               {product?.sellsUnit && product?.sellsPack ? (
                 <FormField label="Tipo" htmlFor="mode"><Select id="mode" value={mode} onChange={(e) => { const m = e.target.value as "unit" | "pack"; setMode(m); setChoice(m === "unit" ? product.variants[0]?.id ?? "" : product.packs[0]?.id ?? ""); }}><option value="unit">Unidade</option><option value="pack">Grade</option></Select></FormField>
               ) : null}

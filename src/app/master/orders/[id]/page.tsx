@@ -5,14 +5,19 @@ import { getOrderForActor } from "@/lib/domain/orders";
 import { DomainError } from "@/lib/domain/errors";
 import { OrderDetail } from "@/components/shared/order-detail";
 
+async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: string) {
+  try {
+    return await getOrderForActor(getDb(), actor, id);
+  } catch (e) {
+    if (e instanceof DomainError) return null;
+    throw e;
+  }
+}
+
 export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const { id } = await params;
-  try {
-    const data = await getOrderForActor(getDb(), session.actor, id);
-    return <OrderDetail role={session.user.role} backHref="/master/orders" {...data} />;
-  } catch (e) {
-    if (e instanceof DomainError) notFound();
-    throw e;
-  }
+  const data = await loadOrder(session.actor, id);
+  if (!data) notFound();
+  return <OrderDetail role={session.user.role} backHref="/master/orders" {...data} />;
 }
