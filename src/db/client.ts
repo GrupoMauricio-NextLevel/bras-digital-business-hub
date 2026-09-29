@@ -9,8 +9,12 @@ import * as schema from "./schema";
  */
 export type Database = BaseSQLiteDatabase<"async", ResultSet, typeof schema>;
 
+/**
+ * DATABASE_URL aceita `file:./data/nextlevel.db` (SQLite local / volume) ou
+ * `libsql://...` (Turso) com DATABASE_AUTH_TOKEN.
+ */
 export function createDatabase(url = process.env.DATABASE_URL ?? "file:./data/nextlevel.db"): { db: Database; client: Client } {
-  const client = createClient({ url });
+  const client = createClient({ url, authToken: process.env.DATABASE_AUTH_TOKEN || undefined });
   return { db: drizzle(client, { schema }), client };
 }
 

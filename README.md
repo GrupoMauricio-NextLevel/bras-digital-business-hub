@@ -41,6 +41,26 @@ Storefronts públicas: `/store/mantos-shop` · `/store/arena-10` (`/store/fut-cl
 7. Alterne para **Fornecedor** → `/supplier/shipping`: iniciar separação → pronto para envio → enviado (baixa estoque).
 8. `/merchant/services` (Serviços NextLevel, "Tenho interesse") e `/merchant/templates` (Starter ativo, Pro/Elite demonstrativos).
 
+## Publicar na internet (navegável)
+
+O app precisa de um servidor Node e um banco. Duas rotas prontas:
+
+**Opção A — Railway (mais simples, ~5 min, banco no próprio volume)**
+1. Crie um projeto em railway.app → *Deploy from GitHub repo* → escolha este repositório e a branch.
+2. O `Dockerfile` e o `railway.json` são detectados automaticamente.
+3. Em *Settings → Volumes*, adicione um volume montado em `/app/data`.
+4. Em *Settings → Networking*, gere o domínio público. No primeiro boot o app aplica migrações e o seed de demonstração.
+
+A mesma imagem funciona em **Fly.io** (`fly launch` usa o `fly.toml`; crie o volume `nextlevel_data`) e **Render** (`render.yaml` com disco em `/app/data`).
+
+**Opção B — Vercel + Turso (sem servidor próprio)**
+1. Crie um banco em turso.tech e copie a URL `libsql://…` e o token.
+2. Importe o repositório na Vercel e defina `DATABASE_URL`, `DATABASE_AUTH_TOKEN` e `NEXT_PUBLIC_DEMO_MODE=true`.
+3. Uma vez, localmente, rode `DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:bootstrap` para criar tabelas e seed no Turso.
+4. Deploy.
+
+`npm run db:bootstrap` é idempotente: aplica migrações e só roda o seed se o banco estiver vazio.
+
 ## Scripts
 
 ```bash
@@ -48,4 +68,5 @@ npm run lint        # eslint
 npm run typecheck   # tsc --noEmit
 npm test            # vitest (isolamento, estoque, pedidos, permissões)
 npm run build       # build de produção
+npm run start:prod  # bootstrap do banco + next start (usado no Docker)
 ```

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3000}",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -13,7 +13,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "db:reset": "rm -f data/nextlevel.db && npm run db:migrate && npm run db:seed"
+    "db:reset": "rm -f data/nextlevel.db && npm run db:migrate && npm run db:seed",
+    "db:bootstrap": "tsx scripts/bootstrap.ts",
+    "start:prod": "npm run db:bootstrap && next start -p ${PORT:-3000}"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
@@ -31,7 +33,8 @@
     "react-dom": "^19.3.0",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "tsx": "^4.23.15"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -43,8 +46,10 @@
     "eslint-config-next": "^16.3.7",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

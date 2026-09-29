@@ -1,0 +1,32 @@
+# NextLevel Commerce Engine — imagem de produção (Railway, Fly.io, Render, VPS)
+FROM node:22-alpine AS base
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM base AS build
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_PUBLIC_DEMO_MODE=true
+RUN npm run build
+
+FROM base AS runner
+ENV NODE_ENV=production
+ENV NEXT_PUBLIC_DEMO_MODE=true
+ENV DATABASE_URL=file:/app/data/nextlevel.db
+COPY --from=build /app/package.json /app/package-lock.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/drizzle ./drizzle
+COPY --from=build /app/scripts ./scripts
+COPY --from=build /app/src ./src
+COPY --from=build /app/tsconfig.json /app/next.config.ts /app/drizzle.config.ts ./
+RUN mkdir -p /app/data
+VOLUME ["/app/data"]
+EXPOSE 3000
+# Aplica migrações + seed (se vazio) e sobe o servidor
+CMD ["npm", "run", "start:prod"]
