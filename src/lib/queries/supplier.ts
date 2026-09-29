@@ -1,6 +1,6 @@
 import { and, count, desc, eq, inArray, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { activities, contentItems, inventory, inventoryMovements, networks, orders, productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores, categories } from "@/db/schema";
+import { activities, contentItems, inventory, inventoryMovements, networks, orders, productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores, categories, users } from "@/db/schema";
 import { listSupplierCatalog } from "@/lib/domain/catalog";
 
 export async function getSupplierOverview(supplierId: string) {
@@ -92,9 +92,11 @@ export async function getSupplierStores(supplierId: string) {
   const rows = await db.select({ store: stores, networkName: networks.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId)).orderBy(stores.name);
   const stats = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"))).groupBy(orders.storeId);
   const listings = await db.select({ storeId: storeProducts.storeId, n: count() }).from(storeProducts).where(eq(storeProducts.active, true)).groupBy(storeProducts.storeId);
+  const owners = await db.select({ id: users.id, name: users.name, email: users.email, storeId: users.storeId, lastLoginAt: users.lastLoginAt }).from(users).where(eq(users.role, "STORE_OWNER"));
   return rows.map((r) => {
     const st = stats.find((s) => s.storeId === r.store.id);
-    return { ...r, orders: st?.n ?? 0, gmv: Number(st?.total ?? 0), cost: Number(st?.cost ?? 0), products: listings.find((l) => l.storeId === r.store.id)?.n ?? 0 };
+    const owner = owners.find((o) => o.storeId === r.store.id) ?? null;
+    return { ...r, owner, orders: st?.n ?? 0, gmv: Number(st?.total ?? 0), cost: Number(st?.cost ?? 0), products: listings.find((l) => l.storeId === r.store.id)?.n ?? 0 };
   });
 }
 

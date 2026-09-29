@@ -34,9 +34,12 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
         shipping: { address: f.address, city: f.city, state: f.state, zip: f.zip, costCents: shipping },
         items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
-        notes: `Pagamento (demo): ${payment === "pix" ? "Pix" : "Cartão"}`,
+        notes: payment === "pix" ? "Preferência de pagamento: Pix" : "Preferência de pagamento: Cartão",
       });
-      if (r.ok) { cart.clear(); router.push(`${base}/order/${r.data.orderId}`); } else toast.error(r.error);
+      if (!r.ok) { toast.error(r.error); return; }
+      cart.clear();
+      if (r.data.checkoutUrl) window.location.assign(r.data.checkoutUrl);
+      else router.push(`${base}/order/${r.data.orderId}`);
     });
   };
 
@@ -63,7 +66,7 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
             </div>
           </section>
           <section>
-            <h2 className="mb-3 text-base font-semibold">3. Pagamento <span className="text-xs font-normal text-neutral-500">(demonstração — nenhuma cobrança real)</span></h2>
+            <h2 className="mb-3 text-base font-semibold">3. Pagamento</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {([["pix", "Pix", "Aprovação imediata", QrCode], ["card", "Cartão de crédito", "Até 6x sem juros", CreditCard]] as const).map(([k, t, d, Icon]) => (
                 <button type="button" key={k} onClick={() => setPayment(k)} className={cn("flex items-center gap-3 rounded-lg border p-4 text-left", payment === k ? "border-neutral-900 ring-1 ring-neutral-900" : "border-neutral-300")}><Icon className="size-5 text-neutral-500" /><div><div className="text-sm font-medium">{t}</div><div className="text-xs text-neutral-500">{d}</div></div></button>
@@ -80,8 +83,8 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
             <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd className="tabular-nums">{shipping === 0 ? "Grátis" : formatBRL(shipping)}</dd></div>
             <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal + shipping)}</dd></div>
           </dl>
-          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready}><Lock className="size-4" /> {pending ? "Processando…" : "Confirmar pedido"}</SfButton>
-          <p className="mt-3 text-center text-[11px] text-neutral-500">Ambiente de demonstração. O pagamento será marcado como aprovado.</p>
+          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
+          <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento (Pix, cartão ou boleto).</p>
         </aside>
       </form>
     </div>

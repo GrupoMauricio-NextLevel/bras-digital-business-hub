@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { StatusBadge } from "@/components/app/status-badge";
-import { ProductArt } from "@/components/app/product-art";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { requireRole } from "@/lib/require-session";
@@ -9,6 +8,7 @@ import { getSupplierProduct } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 import { StockActions, DistributionForm, ProductForm } from "./product-forms";
+import { ImagesEditor } from "./images-editor";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -97,7 +97,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
 
         <div className="space-y-6">
           <Card>
-            <CardContent className="pt-5"><ProductArt images={product.images} size="md" className="mb-4" />
+            <CardContent className="pt-5"><div className="mb-4"><ImagesEditor productId={product.id} images={product.images} /></div>
               <ProductForm product={{ id: product.id, name: product.name, description: product.description, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack }} />
             </CardContent>
           </Card>

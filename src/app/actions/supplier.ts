@@ -95,3 +95,59 @@ export async function updateProductAction(input: z.input<typeof productSchema>) 
     return undefined;
   });
 }
+
+// ---------------------------------------------------------------------------
+// Cadastro e importação de produtos
+// ---------------------------------------------------------------------------
+import { createProduct, parseProductsCsv, type CreateProductInput } from "@/lib/domain/products";
+
+export async function createProductAction(input: CreateProductInput) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const r = await createProduct(await getDb(), supplierId, input);
+    revalidatePath("/supplier", "layout");
+    revalidatePath("/merchant", "layout");
+    return r;
+  });
+}
+
+export type ImportResult = { created: number; failed: { line: number; name: string; error: string }[] };
+
+/** Importa produtos de um CSV. Cada linha é independente: erros não impedem as demais. */
+export async function importProductsCsvAction(csv: string) {
+  return runAction(async (): Promise<ImportResult> => {
+    const { supplierId } = await supplierCtx();
+    const rows = parseProductsCsv(csv);
+    if (rows.length === 0) throw new ForbiddenError("CSV vazio ou sem linhas de produto.");
+    if (rows.length > 200) throw new ForbiddenError("Limite de 200 produtos por importação.");
+    const db = await getDb();
+    const result: ImportResult = { created: 0, failed: [] };
+    for (const row of rows) {
+      if (!row.input) { result.failed.push({ line: row.line, name: row.raw.nome ?? "", error: row.errors.join(", ") }); continue; }
+      try {
+        await createProduct(db, supplierId, row.input);
+        result.created++;
+      } catch (e) {
+        result.failed.push({ line: row.line, name: row.raw.nome ?? "", error: e instanceof Error ? e.message : "erro" });
+      }
+    }
+    revalidatePath("/supplier", "layout");
+    revalidatePath("/merchant", "layout");
+    return result;
+  });
+}
+
+const imagesSchema = z.object({ productId: z.string().min(1), images: z.array(z.string().min(1)).max(6) });
+
+export async function updateProductImagesAction(input: z.input<typeof imagesSchema>) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const data = imagesSchema.parse(input);
+    const db = await getDb();
+    const updated = await db.update(products).set({ images: data.images.length ? data.images : ["art:#111827,#ffffff,#9ca3af"], updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), eq(products.supplierId, supplierId))).returning({ id: products.id });
+    if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
+    revalidatePath("/supplier", "layout");
+    revalidatePath("/merchant", "layout");
+    return undefined;
+  });
+}

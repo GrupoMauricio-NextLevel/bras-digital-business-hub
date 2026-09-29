@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { Plus } from "lucide-react";
+import Link from "next/link";
+import { Plus, Upload } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
@@ -8,7 +9,7 @@ import { FilterBar, FilterChips, SearchInput } from "@/components/app/filter-bar
 import { requireRole } from "@/lib/require-session";
 import { getSupplierProducts } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ export default async function SupplierProducts({ searchParams }: { searchParams:
   const { items, categories } = await getSupplierProducts(session.supplier!.id, sp);
   return (
     <>
-      <PageHeader title="Produtos" description="Catálogo central. Cadastre uma vez e distribua para a rede." actions={<Button disabled title="Cadastro completo em breve"><Plus /> Novo produto</Button>} />
+      <PageHeader title="Produtos" description="Catálogo central. Cadastre uma vez e distribua para a rede." actions={<><Link href="/supplier/products/import" className={buttonVariants({ variant: "secondary" })}><Upload /> Importar CSV</Link><Link href="/supplier/products/new" className={buttonVariants()}><Plus /> Novo produto</Link></>} />
       <Suspense>
         <FilterBar>
           <SearchInput placeholder="Buscar por nome ou SKU…" />

@@ -18,9 +18,21 @@ npm run dev                       # http://localhost:3000
 
 `npm run db:reset` apaga o banco local e recria migrações + seed.
 
-## Acessos demo (sem senha)
+## Ambiente de teste com cliente real (sem demo)
 
-Abra `/login` e escolha um perfil, ou use o **Demo Role Switcher** no topo:
+1. Defina no ambiente: `DATABASE_URL` (Postgres), `SESSION_SECRET` (`openssl rand -hex 32`), `CRON_SECRET`, `MASTER_EMAIL`, `MASTER_PASSWORD` (mín. 10 caracteres), `NEXT_PUBLIC_DEMO_MODE=false` e, se a URL pública não for detectada, `APP_URL=https://…`.
+2. `npm run db:bootstrap` cria tabelas, dados de referência e o master. Não há dados fictícios.
+3. Entre em `/login` como master → **Fornecedores → Novo fornecedor**. Envie e-mail e senha temporária ao responsável.
+4. O fornecedor troca a senha, cadastra produtos em **Produtos → Novo produto** (com fotos) ou **Importar CSV**, e cria lojas em **Lojistas → Nova loja**.
+5. O lojista troca a senha, conecta o Mercado Pago em **Configurações → Pagamentos**, usa **Produtos → Ativar todos** e **Loja Virtual → Publicar loja**.
+6. Agende `GET /api/cron/expire-reservations` (header `Authorization: Bearer $CRON_SECRET`) a cada 5–10 minutos.
+7. Diagnóstico: `/api/health`.
+
+Mercado Pago: use credenciais de teste (`TEST-…`) para ensaiar e a conta de produção (`APP_USR-…`) para a venda real. A notificação de pagamento precisa de URL pública https (definida automaticamente por cobrança).
+
+## Acessos demo (apenas com `SEED_DEMO=true` e `NEXT_PUBLIC_DEMO_MODE=true`) (sem senha)
+
+Abra `/login` e escolha um perfil (senha `demo1234`), ou use o **Demo Role Switcher** no topo:
 
 | Perfil | Usuário | Painel |
 |---|---|---|

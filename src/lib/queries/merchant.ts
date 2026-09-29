@@ -10,7 +10,7 @@ export function computeOnboarding(store: Store): { steps: OnboardingStep[]; perc
     { key: "data", label: "Dados da loja", done: !!store.name && !!store.tagline && !!store.whatsapp, href: "/merchant/settings" },
     { key: "logo", label: "Adicionar logo", done: !!store.logoText || !!store.logoUrl, href: "/merchant/appearance" },
     { key: "colors", label: "Escolher cores", done: store.primaryColor !== "#0f172a" || store.accentColor !== "#16a34a", href: "/merchant/appearance" },
-    { key: "payments", label: "Configurar pagamentos", done: store.paymentStatus !== "NOT_CONFIGURED", href: "/merchant/settings#payments" },
+    { key: "payments", label: "Configurar pagamentos", done: store.paymentStatus === "CONNECTED", href: "/merchant/settings#payments" },
     { key: "shipping", label: "Configurar frete", done: store.shippingStatus !== "NOT_CONFIGURED", href: "/merchant/settings#shipping" },
     { key: "domain", label: "Conectar domínio", done: store.domainStatus === "CONNECTED", href: "/merchant/settings#domain" },
     { key: "publish", label: "Publicar loja", done: !!store.publishedAt, href: "/merchant/storefront" },

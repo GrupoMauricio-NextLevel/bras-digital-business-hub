@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, customers, orderEvents, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
@@ -47,7 +47,14 @@ type Reservation = { variantId: string; quantity: number };
  * variante (packs expandem para suas variantes). Falha antes de gravar se
  * qualquer item não tiver estoque disponível.
  */
-export async function createOrder(db: Database, rawInput: CreateOrderInput) {
+export type CreateOrderOptions = {
+  /** Definidos apenas pelo servidor (nunca vindos do cliente). */
+  paymentProvider?: "DEMO" | "MERCADO_PAGO" | "MANUAL";
+  /** Minutos até a reserva de estoque expirar se o cliente não pagar. */
+  reservationMinutes?: number;
+};
+
+export async function createOrder(db: Database, rawInput: CreateOrderInput, options: CreateOrderOptions = {}) {
   const input = createOrderSchema.parse(rawInput);
   const store = await db.query.stores.findFirst({ where: eq(stores.id, input.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
@@ -117,6 +124,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput) {
       shippingCity: input.shipping.city,
       shippingState: input.shipping.state,
       shippingZip: input.shipping.zip,
+      paymentProvider: options.paymentProvider ?? "MANUAL",
+      reservationExpiresAt: options.reservationMinutes && input.customerPaymentStatus !== "PAID" ? new Date(Date.now() + options.reservationMinutes * 60_000).toISOString() : null,
       subtotalCents: subtotal,
       shippingCents: input.shipping.costCents,
       totalCents: total,
@@ -305,4 +314,78 @@ function statusMessage(s: OrderStatus): string {
     CANCELED: "Pedido cancelado.",
   };
   return map[s];
+}
+
+
+// ---------------------------------------------------------------------------
+// Operações de sistema (webhooks, jobs) — sem ator humano
+// ---------------------------------------------------------------------------
+const SYSTEM_ACTOR = "SYSTEM";
+
+/**
+ * Marca o pagamento do cliente como confirmado (ex.: webhook do Mercado Pago).
+ * Idempotente: repetir a notificação não altera nada.
+ */
+export async function markCustomerPaidBySystem(db: Database, orderId: string, info: { provider: "MERCADO_PAGO" | "DEMO"; reference: string; amountCents?: number }) {
+  const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+  if (!order) throw new NotFoundError("Pedido não encontrado.");
+  if (info.amountCents !== undefined && info.amountCents < order.totalCents) {
+    throw new DomainError("AMOUNT_MISMATCH", `Valor pago (${info.amountCents}) menor que o total do pedido (${order.totalCents}).`);
+  }
+  if (order.customerPaymentStatus === "PAID") return { changed: false as const, status: order.status };
+
+  if (order.status === "CANCELED") {
+    // Pagamento aprovado depois da expiração/cancelamento: não reabre o pedido; sinaliza para tratamento manual (estorno ou reativação).
+    await db.insert(orderEvents).values({ id: newId("evt"), orderId, type: "PAID_AFTER_CANCEL", message: `Pagamento ${info.reference} aprovado após o cancelamento do pedido. Requer estorno ou nova venda.`, actorRole: SYSTEM_ACTOR });
+    await db.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "PAID_AFTER_CANCEL", message: `Atenção: pedido #${order.number} foi pago após cancelado (${info.reference})` });
+    return { changed: false as const, status: order.status };
+  }
+
+  return db.transaction(async (tx) => {
+    await tx.update(orders).set({ customerPaymentStatus: "PAID", paymentProvider: info.provider, paymentReference: info.reference, reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
+    const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: `Pagamento do cliente aprovado (${info.provider === "MERCADO_PAGO" ? "Mercado Pago" : "demonstração"} · ${info.reference}).`, actorRole: SYSTEM_ACTOR });
+    if (next !== order.status) {
+      await tx.update(orders).set({ status: next }).where(eq(orders.id, orderId));
+      await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: SYSTEM_ACTOR });
+    }
+    await tx.insert(activities).values([
+      { id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} pago pelo cliente` },
+      { id: newId("act"), scope: "SUPPLIER", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} de ${order.customerName} foi pago` },
+    ]);
+    return { changed: true as const, status: next };
+  });
+}
+
+/**
+ * Cancela pedidos não pagos cuja reserva expirou e devolve o estoque.
+ * Seguro para rodar em paralelo/repetido: só age em PENDING + cliente não pago.
+ */
+export async function expireStaleReservations(db: Database, now = new Date()): Promise<{ expired: number }> {
+  const stale = await db.select().from(orders).where(and(eq(orders.status, "PENDING"), eq(orders.customerPaymentStatus, "PENDING"), lt(orders.reservationExpiresAt, now.toISOString())));
+  let expired = 0;
+  for (const order of stale) {
+    await db.transaction(async (tx) => {
+      const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, order.id) });
+      if (!fresh || fresh.status !== "PENDING" || fresh.customerPaymentStatus !== "PENDING") return;
+      const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, order.id));
+      for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: order.id, note: "Reserva expirada" });
+      await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, order.id));
+      await tx.insert(orderEvents).values({ id: newId("evt"), orderId: order.id, type: "RESERVATION_EXPIRED", message: "Pagamento não realizado a tempo. Pedido cancelado e estoque liberado.", actorRole: SYSTEM_ACTOR });
+      expired++;
+    });
+  }
+  return { expired };
+}
+
+/** Cancela um pedido por decisão do sistema (ex.: falha ao criar a cobrança), liberando o estoque reservado. */
+export async function cancelOrderBySystem(db: Database, orderId: string, reason: string) {
+  const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+  if (!order || !CANCELABLE.includes(order.status)) return;
+  await db.transaction(async (tx) => {
+    const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+    for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, note: reason });
+    await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: `Pedido cancelado: ${reason}`, actorRole: SYSTEM_ACTOR });
+  });
 }

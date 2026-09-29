@@ -3,7 +3,8 @@ import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { listSuppliers } from "@/lib/queries/master";
 import { formatBRL } from "@/lib/money";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -11,7 +12,7 @@ export default async function SuppliersPage() {
   const rows = await listSuppliers();
   return (
     <>
-      <PageHeader title="Fornecedores" description="Centrais que abastecem a rede com catálogo e estoque." actions={<Button disabled title="Disponível em breve"><Plus /> Novo fornecedor</Button>} />
+      <PageHeader title="Fornecedores" description="Centrais que abastecem a rede com catálogo e estoque." actions={<Link href="/master/suppliers/new" className={buttonVariants()}><Plus /> Novo fornecedor</Link>} />
       <DataTable
         rows={rows}
         rowKey={(r) => r.id}

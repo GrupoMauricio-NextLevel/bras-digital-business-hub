@@ -12,7 +12,7 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
-    "db:seed": "tsx scripts/seed.ts",
+    "db:seed": "SEED_DEMO=true tsx scripts/bootstrap.ts",
     "db:reset": "rm -rf data/pg && npm run db:migrate && npm run db:seed",
     "db:bootstrap": "tsx scripts/bootstrap.ts",
     "start:prod": "npm run db:bootstrap && next start -p ${PORT:-3000}"

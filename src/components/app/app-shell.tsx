@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut, ExternalLink, ChevronDown, Repeat, LayoutDashboard, Factory, Network, Store, Package, ShoppingCart, LayoutTemplate, Sparkles, CreditCard, Settings, Boxes, Users, Truck, Wallet, Image, Home, Palette, Globe, type LucideIcon } from "lucide-react";
+import { Menu, LogOut, KeyRound, ExternalLink, ChevronDown, Repeat, LayoutDashboard, Factory, Network, Store, Package, ShoppingCart, LayoutTemplate, Sparkles, CreditCard, Settings, Boxes, Users, Truck, Wallet, Image, Home, Palette, Globe, type LucideIcon } from "lucide-react";
 import { cn, initials } from "@/lib/utils";
 import type { NavItem, NavIcon } from "@/lib/nav";
 
@@ -24,6 +24,7 @@ export type AppShellProps = {
   demoUsers?: DemoUser[];
   onSwitch?: (email: string) => Promise<void>;
   onLogout?: () => Promise<void>;
+  passwordHref?: string;
   children: React.ReactNode;
 };
 
@@ -47,7 +48,7 @@ function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => 
 
 const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", STORE_OWNER: "Lojista" };
 
-export function AppShell({ items, roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, children }: AppShellProps) {
+export function AppShell({ items, roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, children }: AppShellProps) {
   const [open, setOpen] = React.useState(false);
 
   const brand = (
@@ -129,6 +130,7 @@ export function AppShell({ items, roleLabel, tenantName, tenantSub, userName, st
               <DropdownMenuLabel>{userName}</DropdownMenuLabel>
               <div className="px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge></div>
               <DropdownMenuSeparator />
+              {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
               <DropdownMenuItem onSelect={() => onLogout?.()}>
                 <LogOut /> Sair
               </DropdownMenuItem>

@@ -69,6 +69,9 @@ export const stores = pgTable("stores", {
   customDomain: text("custom_domain"),
   paymentProvider: text("payment_provider"),
   paymentStatus: text("payment_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
+  /** Access token do Mercado Pago da loja, criptografado (AES-256-GCM). */
+  mpAccessTokenEnc: text("mp_access_token_enc"),
+  mpPublicKey: text("mp_public_key"),
   shippingProvider: text("shipping_provider"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
@@ -85,6 +88,10 @@ export const users = pgTable("users", {
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
+  /** Hash scrypt (salt:hash). Null = usuário ainda sem senha (apenas demo). */
+  passwordHash: text("password_hash"),
+  mustChangePassword: boolean("must_change_password").notNull().default(false),
+  lastLoginAt: ts("last_login_at"),
   createdAt: createdAt(),
 });
 
@@ -234,6 +241,12 @@ export const orders = pgTable("orders", {
   shippingLabelStatus: text("shipping_label_status", { enum: ["PENDING", "READY"] }).notNull().default("PENDING"),
   shippingLabelCode: text("shipping_label_code"),
   shippingCarrier: text("shipping_carrier"),
+  /** Pagamento do cliente: provedor e referência externa (id do pagamento no Mercado Pago). */
+  paymentProvider: text("payment_provider", { enum: ["DEMO", "MERCADO_PAGO", "MANUAL"] }).notNull().default("MANUAL"),
+  paymentReference: text("payment_reference"),
+  paymentCheckoutUrl: text("payment_checkout_url"),
+  /** Reserva de estoque expira se o cliente não pagar até aqui. */
+  reservationExpiresAt: ts("reservation_expires_at"),
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone"),

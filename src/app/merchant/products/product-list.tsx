@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Pencil } from "lucide-react";
+import { Pencil, CheckCheck } from "lucide-react";
 import { DataTable } from "@/components/app/data-table";
 import { ProductArt } from "@/components/app/product-art";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FormField } from "@/components/app/form-field";
 import { Input, Switch } from "@/components/ui/input";
 import { formatBRL, parseBRLToCents } from "@/lib/money";
-import { upsertStoreProductAction } from "@/app/actions/merchant";
+import { upsertStoreProductAction, activateAllProductsAction } from "@/app/actions/merchant";
 import { cn } from "@/lib/utils";
 
 export type MerchantProduct = { productId: string; name: string; sku: string; images: string[]; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; sellsPack: boolean; packSuggested: number | null; packMinimum: number | null; active: boolean; priceCents: number; packPriceCents: number | null; available: number; sizes: string };
@@ -33,8 +33,15 @@ export function MerchantProductList({ items }: { items: MerchantProduct[] }) {
     });
   const margin = (p: MerchantProduct) => p.priceCents - p.costCents;
 
+  const inactive = items.filter((i) => !i.active).length;
   return (
     <>
+      {inactive > 0 ? (
+        <div className="mb-4 flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-sm"><span className="font-medium">{inactive} produto(s) da Central ainda não estão na sua loja.</span> <span className="text-muted-foreground">Ative todos com o preço sugerido e ajuste depois.</span></div>
+          <Button loading={pending} onClick={() => start(async () => { const r = await activateAllProductsAction(); if (r.ok) { toast.success(`${r.data.activated} produto(s) ativados`); router.refresh(); } else toast.error(r.error); })}><CheckCheck /> Ativar todos</Button>
+        </div>
+      ) : null}
       <DataTable
         rows={items}
         rowKey={(r) => r.productId}

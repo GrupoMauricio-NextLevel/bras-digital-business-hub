@@ -1,14 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 import { cn } from "@/lib/utils";
 
 /**
- * Arte de produto determinística (camisa esportiva estilizada) gerada a partir
- * do descritor "art:<cor1>,<cor2>,<cor3>" salvo em products.images.
- * Substituível por imagens reais sem alterar o schema.
+ * Imagem de produto. Aceita URLs http(s) (upload real) ou o descritor
+ * "art:<cor1>,<cor2>,<cor3>" (arte determinística usada no seed).
  */
-export function ProductArt({ images, className, size = "md" }: { images: string[]; className?: string; size?: "sm" | "md" | "lg" }) {
+export function ProductArt({ images, className, size = "md", alt = "" }: { images: string[]; className?: string; size?: "sm" | "md" | "lg"; alt?: string }) {
+  const dims = { sm: "size-10", md: "aspect-square w-full", lg: "aspect-[4/5] w-full" }[size];
+  const url = images.find((i) => /^https?:\/\//.test(i) || i.startsWith("data:image"));
+  if (url) {
+    return (
+      <div className={cn("overflow-hidden rounded-md bg-surface-muted", dims, className)}>
+        <img src={url} alt={alt} className="h-full w-full object-cover" loading="lazy" />
+      </div>
+    );
+  }
   const descriptor = images.find((i) => i.startsWith("art:")) ?? "art:#111827,#ffffff,#9ca3af";
   const [c1 = "#111827", c2 = "#ffffff", c3 = "#9ca3af"] = descriptor.replace("art:", "").split(",");
-  const dims = { sm: "size-10", md: "aspect-square w-full", lg: "aspect-[4/5] w-full" }[size];
   return (
     <div className={cn("flex items-center justify-center overflow-hidden rounded-md bg-surface-muted", dims, className)}>
       <svg viewBox="0 0 120 120" className="h-[78%] w-[78%]" aria-hidden>

@@ -1,12 +1,15 @@
 /**
- * Boot de produção/build: aplica migrações e, se o banco estiver vazio, roda o seed.
- * Idempotente — pode rodar a cada deploy (Netlify build, Docker start).
+ * Boot de produção/build: aplica migrações e prepara o banco. Idempotente — roda a cada deploy.
+ *
+ * Variáveis:
+ *   SEED_DEMO=true                       dados de demonstração (só em banco vazio)
+ *   MASTER_EMAIL / MASTER_PASSWORD       cria o usuário master (mín. 10 caracteres) se não existir
+ *   MASTER_NAME                          (opcional)
  */
 import { mkdirSync } from "node:fs";
-import { sql } from "drizzle-orm";
 import { createDatabase, resolveDatabaseUrl } from "../src/db/client";
 import { runMigrations } from "../src/db/migrate";
-import { seedDatabase } from "../src/db/seed";
+import { bootstrapDatabase } from "../src/db/bootstrap-data";
 
 async function main() {
   const url = resolveDatabaseUrl();
@@ -14,13 +17,8 @@ async function main() {
   console.log(`→ banco: ${url.replace(/:\/\/[^@]+@/, "://***@")}`);
   const handle = await createDatabase(url);
   await runMigrations(handle.db);
-  const r = (await handle.db.execute(sql`select count(*)::int as n from organizations`)) as { rows: { n: number }[] };
-  if (Number(r.rows[0]?.n ?? 0) === 0) {
-    await seedDatabase(handle.db);
-    console.log("✔ seed de demonstração aplicado");
-  } else {
-    console.log("✔ banco já populado");
-  }
+  const log = await bootstrapDatabase(handle.db, { seedDemo: process.env.SEED_DEMO === "true", masterEmail: process.env.MASTER_EMAIL, masterPassword: process.env.MASTER_PASSWORD, masterName: process.env.MASTER_NAME });
+  for (const l of log) console.log(`✔ ${l}`);
   await handle.close();
 }
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -22,22 +22,32 @@ export async function listStoreCatalog(db: Database, storeId: string, opts: { on
   const network = await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, store.networkId) });
   if (!network) return [];
 
+  const accessible = and(
+    eq(products.supplierId, network.supplierId),
+    eq(products.status, "ACTIVE"),
+    or(
+      eq(products.distribution, "ALL_NETWORK"),
+      exists(db.select().from(productStoreAccess).where(and(eq(productStoreAccess.productId, products.id), eq(productStoreAccess.storeId, storeId)))),
+    ),
+  );
+
+  if (opts.onlyActive === false) {
+    // Painel do lojista: todos os produtos acessíveis, com listagem opcional (não ativado = preço sugerido, inativo).
+    const rows = await db
+      .select({ product: products, storeProduct: storeProducts })
+      .from(products)
+      .leftJoin(storeProducts, and(eq(storeProducts.productId, products.id), eq(storeProducts.storeId, storeId)))
+      .where(accessible)
+      .orderBy(products.name);
+    return hydrate(db, rows.map((r) => ({ product: r.product, storeProduct: r.storeProduct ?? { storeId, productId: r.product.id, priceCents: r.product.suggestedPriceCents, packPriceCents: null, active: false, featured: false } })));
+  }
+
   const rows = await db
     .select({ product: products, storeProduct: storeProducts })
     .from(storeProducts)
     .innerJoin(products, eq(products.id, storeProducts.productId))
-    .where(
-      and(
-        eq(storeProducts.storeId, storeId),
-        eq(products.supplierId, network.supplierId),
-        eq(products.status, "ACTIVE"),
-        opts.onlyActive === false ? undefined : eq(storeProducts.active, true),
-        or(
-          eq(products.distribution, "ALL_NETWORK"),
-          exists(db.select().from(productStoreAccess).where(and(eq(productStoreAccess.productId, products.id), eq(productStoreAccess.storeId, storeId)))),
-        ),
-      ),
-    );
+    .where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.active, true), accessible))
+    .orderBy(products.name);
 
   return hydrate(db, rows);
 }

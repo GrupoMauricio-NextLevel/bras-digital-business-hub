@@ -5,6 +5,9 @@ import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "@/lib/domain/inventory";
 import { createOrder, confirmCentralPayment, registerShippingLabel, advanceOrder, cancelOrder } from "@/lib/domain/orders";
 import type { Actor } from "@/lib/domain/access";
+import { hashPassword } from "@/lib/security/password";
+import { DEMO_PASSWORD } from "./seed-constants";
+import { seedReferenceData } from "./base-data";
 
 export const DEMO = {
   masterEmail: "master@nextlevel.demo",
@@ -68,12 +71,13 @@ export async function seedDatabase(db: Database) {
   await db.insert(s.stores).values(stores);
   const [mantos, arena, classics] = stores as [typeof stores[0], typeof stores[0], typeof stores[0]];
 
+  const passwordHash = hashPassword(DEMO_PASSWORD);
   const users = [
-    { id: newId("usr"), name: "Equipe NextLevel", email: DEMO.masterEmail, role: "NEXTLEVEL_MASTER" as const, organizationId: nlOrg.id },
-    { id: newId("usr"), name: "Ricardo Menezes", email: DEMO.supplierEmail, role: "SUPPLIER_ADMIN" as const, organizationId: supOrg.id, supplierId },
-    { id: newId("usr"), name: "Ana Paula Ribeiro", email: DEMO.mantosEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[0]!.id, storeId: mantos.id },
-    { id: newId("usr"), name: "Bruno Tavares", email: DEMO.arenaEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[1]!.id, storeId: arena.id },
-    { id: newId("usr"), name: "Carla Moura", email: DEMO.classicsEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[2]!.id, storeId: classics.id },
+    { id: newId("usr"), name: "Equipe NextLevel", email: DEMO.masterEmail, role: "NEXTLEVEL_MASTER" as const, organizationId: nlOrg.id, passwordHash },
+    { id: newId("usr"), name: "Ricardo Menezes", email: DEMO.supplierEmail, role: "SUPPLIER_ADMIN" as const, organizationId: supOrg.id, supplierId, passwordHash },
+    { id: newId("usr"), name: "Ana Paula Ribeiro", email: DEMO.mantosEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[0]!.id, storeId: mantos.id, passwordHash },
+    { id: newId("usr"), name: "Bruno Tavares", email: DEMO.arenaEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[1]!.id, storeId: arena.id, passwordHash },
+    { id: newId("usr"), name: "Carla Moura", email: DEMO.classicsEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[2]!.id, storeId: classics.id, passwordHash },
   ];
   await db.insert(s.users).values(users);
 
@@ -120,15 +124,8 @@ export async function seedDatabase(db: Database) {
   });
   await db.insert(s.storeProducts).values(storeProductRows);
 
-  // --- Temas ------------------------------------------------------------------
-  const themeRows = [
-    { id: newId("thm"), key: "starter", name: "Starter", tier: "STARTER" as const, description: "Tema gratuito e padrão. Limpo, rápido e pronto para vender.", priceCents: 0, features: ["Home com vitrine", "Catálogo e busca", "Página de produto", "Carrinho e checkout", "Cores e logo personalizáveis"], previewAccent: "#16a34a", available: true },
-    { id: newId("thm"), key: "pro", name: "Pro", tier: "PRO" as const, description: "Seções avançadas, banners em carrossel, depoimentos e vitrines por categoria.", priceCents: 29700, features: ["Tudo do Starter", "Banners em carrossel", "Vitrines por categoria", "Depoimentos", "Selos de confiança", "Contador de promoção"], previewAccent: "#2563eb", available: false },
-    { id: newId("thm"), key: "elite", name: "Elite", tier: "ELITE" as const, description: "Experiência premium com lookbook, vídeo na home e personalização total.", priceCents: 69700, features: ["Tudo do Pro", "Lookbook", "Vídeo na home", "Mega menu", "Tipografia premium", "Suporte prioritário"], previewAccent: "#7c3aed", available: false },
-  ];
-  await db.insert(s.themes).values(themeRows);
-  const versions = themeRows.map((t) => ({ id: newId("thv"), themeId: t.id, version: "1.0.0", status: "PUBLISHED" as const }));
-  await db.insert(s.themeVersions).values(versions);
+  // --- Temas, planos e serviços (dados de referência) ---------------------------
+  const { themeRows, versions, plans, services } = await seedReferenceData(db);
   const starter = themeRows[0]!;
   const starterVersion = versions[0]!;
   await db.insert(s.storeThemes).values(stores.map((st) => ({ storeId: st.id, themeId: starter.id, themeVersionId: starterVersion.id })));
@@ -138,13 +135,6 @@ export async function seedDatabase(db: Database) {
     { storeId: classics.id, settings: { heroTitle: "Clássicos que nunca saem de moda", heroSubtitle: "Camisas retrô e edições comemorativas.", heroCta: "Explorar", announcement: "", banners: [], showCategories: false, footerText: "Fut Classics" } },
   ]);
 
-  // --- Planos -----------------------------------------------------------------
-  const plans = [
-    { id: newId("pln"), name: "Start", priceCents: 9700, features: ["Loja virtual", "Tema Starter", "Até 100 produtos", "Suporte por e-mail"] },
-    { id: newId("pln"), name: "Growth", priceCents: 19700, features: ["Tudo do Start", "Produtos ilimitados", "Venda manual e WhatsApp", "Central de conteúdo"] },
-    { id: newId("pln"), name: "Scale", priceCents: 39700, features: ["Tudo do Growth", "Domínio próprio", "Atacado (grades)", "Suporte prioritário"] },
-  ];
-  await db.insert(s.plans).values(plans);
   const subs = [
     { id: newId("sub"), storeId: mantos.id, planId: plans[1]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-18) },
     { id: newId("sub"), storeId: arena.id, planId: plans[0]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-6) },
@@ -159,18 +149,6 @@ export async function seedDatabase(db: Database) {
     { id: newId("inv"), subscriptionId: subs[2]!.id, amountCents: 9700, dueDate: iso(22), status: "OVERDUE" },
   ]);
 
-  // --- Serviços NextLevel -----------------------------------------------------
-  const services = [
-    { key: "template-premium", name: "Template Premium", description: "Migre para o tema Pro ou Elite com configuração feita por nossa equipe.", category: "Loja", priceFromCents: 29700, icon: "LayoutTemplate" },
-    { key: "identidade-visual", name: "Identidade Visual", description: "Logo, paleta e tipografia profissionais para sua loja.", category: "Marca", priceFromCents: 89000, icon: "Palette" },
-    { key: "banners", name: "Banners", description: "Pacote mensal de banners para home, campanhas e datas sazonais.", category: "Criativos", priceFromCents: 29000, icon: "Image" },
-    { key: "conteudo-redes", name: "Conteúdo para Redes Sociais", description: "Calendário editorial e posts prontos para Instagram e WhatsApp.", category: "Criativos", priceFromCents: 49000, icon: "Share2" },
-    { key: "trafego-pago", name: "Tráfego Pago", description: "Gestão de campanhas no Meta e Google com relatórios semanais.", category: "Crescimento", priceFromCents: 120000, icon: "TrendingUp" },
-    { key: "automacao-whatsapp", name: "Automação WhatsApp", description: "Respostas automáticas, catálogo e recuperação de carrinho.", category: "Crescimento", priceFromCents: 39000, icon: "MessageCircle" },
-    { key: "configuracao-profissional", name: "Configuração Profissional", description: "Deixamos sua loja 100% pronta: pagamentos, frete, domínio e produtos.", category: "Loja", priceFromCents: 59000, icon: "Wrench" },
-    { key: "suporte-premium", name: "Suporte Premium", description: "Atendimento prioritário com especialista dedicado.", category: "Suporte", priceFromCents: 19000, icon: "LifeBuoy" },
-  ].map((sv) => ({ id: newId("svc"), ...sv }));
-  await db.insert(s.services).values(services);
   await db.insert(s.serviceLeads).values([
     { id: newId("lead"), storeId: arena.id, serviceId: services[4]!.id, status: "CONTACTED", createdAt: iso(3) },
     { id: newId("lead"), storeId: mantos.id, serviceId: services[2]!.id, status: "NEW", createdAt: iso(1) },

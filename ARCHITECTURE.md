@@ -84,3 +84,25 @@ Sessão por cookie `nl_session` (id do usuário). `/login` lista os usuários de
 3. Adapters de pagamento e frete (interfaces em `src/lib/adapters/` — a criar) mantendo o domínio intacto.
 4. Upload de imagens (hoje `products.images` guarda descritores `art:` renderizados por `ProductArt`).
 5. Jobs (expiração de reservas, inadimplência) como cron/queue.
+
+## Autenticação e provisionamento (v0.2)
+
+- Login por e-mail e senha (`scrypt`), sessão em cookie `httpOnly` assinado com HMAC (`SESSION_SECRET`, 7 dias). O login de um clique só existe com `NEXT_PUBLIC_DEMO_MODE=true`.
+- Convites sem e-mail: o master cria o fornecedor, o fornecedor cria a loja; a plataforma gera uma senha temporária exibida uma única vez e o usuário é obrigado a trocá-la no primeiro acesso (`mustChangePassword`, aplicado em `requireRole`). Redefinição de senha pelo tenant responsável.
+- Escopo por papel continua em `access.ts`; toda action revalida a sessão no servidor.
+
+## Cadastro de catálogo
+
+`createProduct` (domínio) cria produto, variantes, estoque inicial (movimento `IN`), grade configurável, categoria e distribuição numa transação. Importação CSV (`;` ou `,`, valores em reais) processa linha a linha e reporta erros por linha. Fotos: compressão no navegador (JPEG, 900px) e armazenamento como data URL em `products.images`; a interface aceita URLs http(s), então trocar por Cloudinary/S3 não exige mudar o schema.
+
+## Pagamento do cliente (Mercado Pago Checkout Pro)
+
+- Cada loja conecta o próprio Access Token (`TEST-…` ou `APP_USR-…`); o token é validado em `/users/me` e guardado com AES-256-GCM. O cliente paga direto ao lojista (sem split).
+- Checkout: cria pedido `PENDING` reservando estoque com validade de 30 min → cria preferência (`external_reference` = id do pedido, `notification_url` e `back_urls` https, expiração) → redireciona.
+- Confirmação: webhook `/api/webhooks/mercadopago?store=<slug>` **nunca confia no corpo**: consulta o pagamento na API com o token da loja, confere que o pedido pertence àquela loja e que o valor pago cobre o total, então `markCustomerPaidBySystem` (idempotente). A página de retorno faz polling por `external_reference` como rede de segurança.
+- Expiração: `expireStaleReservations` cancela pedidos não pagos vencidos e devolve o estoque; roda a cada carregamento de painel e por `GET /api/cron/expire-reservations` (Bearer `CRON_SECRET`). Pagamento aprovado após o cancelamento não reabre o pedido e gera alerta no histórico.
+- `MERCADOPAGO_API_URL` permite apontar para um servidor simulado (usado no teste ponta a ponta).
+
+## Produção
+
+`npm run db:bootstrap` (idempotente): migrações + dados de referência (temas, planos, serviços) + usuário master a partir de `MASTER_EMAIL`/`MASTER_PASSWORD`. Dados de demonstração só com `SEED_DEMO=true`. Variáveis: ver `.env.example`.

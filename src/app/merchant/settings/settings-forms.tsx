@@ -8,15 +8,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FormField } from "@/components/app/form-field";
 import { Input, Select } from "@/components/ui/input";
 import { StatusBadge } from "@/components/app/status-badge";
-import { configureIntegrationAction, updateStoreAction } from "@/app/actions/merchant";
+import { configureIntegrationAction, updateStoreAction, connectMercadoPagoAction, disconnectMercadoPagoAction } from "@/app/actions/merchant";
 
-type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; slug: string; paymentStatus: string; paymentProvider: string | null; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
+type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; slug: string; paymentStatus: string; paymentProvider: string | null; mpConnected: boolean; mpTest: boolean; webhookUrl: string; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
 
 export function SettingsForms({ store }: { store: StoreData }) {
   const router = useRouter();
   const [f, setF] = React.useState(store);
   const [pending, start] = React.useTransition();
-  const [pay, setPay] = React.useState("Mercado Pago");
+  const [mpToken, setMpToken] = React.useState("");
+  const [mpKey, setMpKey] = React.useState("");
   const [ship, setShip] = React.useState("Melhor Envio");
   const [domain, setDomain] = React.useState(store.customDomain ?? "");
   const integrate = (kind: "payments" | "shipping" | "domain", provider: string) => start(async () => { const r = await configureIntegrationAction({ kind, provider }); if (r.ok) { toast.success("Configuração salva (demonstração)"); router.refresh(); } else toast.error(r.error); });
@@ -37,10 +38,22 @@ export function SettingsForms({ store }: { store: StoreData }) {
       </Card>
 
       <Card id="payments">
-        <CardHeader><div className="flex items-center gap-2"><CreditCard className="size-4 text-muted-foreground" /><div><CardTitle>Pagamentos</CardTitle><CardDescription>Cliente paga direto para você.</CardDescription></div></div><StatusBadge value={store.paymentStatus} /></CardHeader>
+        <CardHeader><div className="flex items-center gap-2"><CreditCard className="size-4 text-muted-foreground" /><div><CardTitle>Pagamentos · Mercado Pago</CardTitle><CardDescription>O cliente paga direto na sua conta (Pix, cartão e boleto).</CardDescription></div></div><StatusBadge value={store.mpConnected ? "CONNECTED" : "NOT_CONFIGURED"} /></CardHeader>
         <CardContent className="space-y-3">
-          <FormField label="Provedor" htmlFor="pay"><Select id="pay" value={pay} onChange={(e) => setPay(e.target.value)}><option>Mercado Pago</option><option>Pagar.me</option><option>Stripe</option></Select></FormField>
-          <Button variant="secondary" className="w-full" loading={pending} onClick={() => integrate("payments", pay)}>{store.paymentStatus === "NOT_CONFIGURED" ? "Conectar (demonstração)" : `Reconfigurar (${store.paymentProvider})`}</Button>
+          {store.mpConnected ? (
+            <>
+              <p className="text-sm text-muted-foreground">Conta conectada. Os pedidos da loja abrem o Checkout Pro do Mercado Pago e são confirmados automaticamente.</p>
+              <p className="rounded-md bg-surface-muted px-3 py-2 text-xs text-muted-foreground">Notificações chegam em <span className="select-all font-mono">{store.webhookUrl}</span> (configurada automaticamente em cada cobrança).</p>
+              <Button variant="secondary" className="w-full" loading={pending} onClick={() => start(async () => { const r = await disconnectMercadoPagoAction(); if (r.ok) { toast.success("Mercado Pago desconectado"); router.refresh(); } else toast.error(r.error); })}>Desconectar</Button>
+            </>
+          ) : (
+            <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await connectMercadoPagoAction({ accessToken: mpToken, publicKey: mpKey }); if (r.ok) { toast.success(`Conectado: ${r.data.nickname}${r.data.isTest ? " (modo teste)" : ""}`); setMpToken(""); router.refresh(); } else toast.error(r.error); }); }}>
+              <FormField label="Access Token" htmlFor="mptoken" hint="Mercado Pago → Seu negócio → Configurações → Credenciais. Use TEST-… para testar e APP_USR-… em produção."><Input id="mptoken" type="password" autoComplete="off" value={mpToken} onChange={(e) => setMpToken(e.target.value)} placeholder="APP_USR-…" required /></FormField>
+              <FormField label="Public Key (opcional)" htmlFor="mpkey"><Input id="mpkey" value={mpKey} onChange={(e) => setMpKey(e.target.value)} placeholder="APP_USR-…" /></FormField>
+              <Button type="submit" className="w-full" loading={pending}>Validar e conectar</Button>
+              <p className="text-xs text-muted-foreground">O token é validado na hora e guardado criptografado. Nunca é exibido de volta.</p>
+            </form>
+          )}
         </CardContent>
       </Card>
       <Card id="shipping">

@@ -145,3 +145,55 @@ export async function publishStoreAction(publish: boolean) {
     return undefined;
   });
 }
+
+// ---------------------------------------------------------------------------
+// Mercado Pago
+// ---------------------------------------------------------------------------
+import { encryptSecret } from "@/lib/security/crypto";
+import { MercadoPagoError, verifyAccessToken } from "@/lib/payments/mercadopago";
+
+const mpSchema = z.object({ accessToken: z.string().min(20, "Cole o Access Token completo"), publicKey: z.string().optional() });
+
+/** Valida o token na API do Mercado Pago e o guarda criptografado. Aceita credenciais de teste (TEST-…) e de produção (APP_USR-…). */
+export async function connectMercadoPagoAction(input: z.input<typeof mpSchema>) {
+  return runAction(async () => {
+    const { storeId, db, session } = await storeCtx();
+    const data = mpSchema.parse(input);
+    const token = data.accessToken.trim();
+    if (!/^(TEST|APP_USR)-/.test(token)) throw new DomainError("MP_TOKEN", "O Access Token deve começar com APP_USR- (produção) ou TEST- (teste).");
+    let account;
+    try { account = await verifyAccessToken(token); } catch (e) { throw new DomainError("MP_TOKEN", e instanceof MercadoPagoError ? e.message : "Não foi possível validar o token."); }
+    await db.update(stores).set({ paymentProvider: "Mercado Pago", paymentStatus: "CONNECTED", mpAccessTokenEnc: encryptSecret(token), mpPublicKey: data.publicKey?.trim() || null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    revalidateStore(session.store?.slug);
+    return { nickname: account.nickname, isTest: account.isTest };
+  });
+}
+
+export async function disconnectMercadoPagoAction() {
+  return runAction(async () => {
+    const { storeId, db, session } = await storeCtx();
+    await db.update(stores).set({ paymentProvider: null, paymentStatus: "NOT_CONFIGURED", mpAccessTokenEnc: null, mpPublicKey: null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    revalidateStore(session.store?.slug);
+    return undefined;
+  });
+}
+
+/** Ativa na loja todos os produtos acessíveis ainda não ativados, com preço sugerido pelo fornecedor. */
+export async function activateAllProductsAction() {
+  return runAction(async () => {
+    const { storeId, db, session } = await storeCtx();
+    const { listStoreCatalog } = await import("@/lib/domain/catalog");
+    const items = await listStoreCatalog(db, storeId, { onlyActive: false });
+    let activated = 0;
+    for (const it of items) {
+      if (it.storeProduct.active) continue;
+      const values = { active: true, priceCents: it.storeProduct.priceCents || it.product.suggestedPriceCents, packPriceCents: it.storeProduct.packPriceCents ?? it.packs[0]?.suggestedPriceCents ?? null };
+      const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, it.product.id)) });
+      if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, it.product.id)));
+      else await db.insert(storeProducts).values({ storeId, productId: it.product.id, ...values });
+      activated++;
+    }
+    revalidateStore(session.store?.slug);
+    return { activated };
+  });
+}
