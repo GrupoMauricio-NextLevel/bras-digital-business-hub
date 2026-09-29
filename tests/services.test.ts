@@ -61,3 +61,17 @@ describe("pedido de serviço", () => {
     await expect(requestService(ctx.db, ctx.actors.mantos, { serviceId: (await svc("banners")).id, briefing: "oi" })).rejects.toThrow();
   });
 });
+
+describe("vitrine da Loja NextLevel", () => {
+  it("só o master edita preço, destaque e visibilidade", async () => {
+    const { updateService } = await import("@/lib/domain/services");
+    const s = await svc("banners");
+    await expect(updateService(ctx.db, ctx.actors.mantos, s.id, { priceFromCents: 1 })).rejects.toThrow(/NextLevel/);
+    await updateService(ctx.db, ctx.actors.master, s.id, { priceFromCents: 35000, featured: true, active: false });
+    const after = await svc("banners");
+    expect(after.priceFromCents).toBe(35000);
+    expect(after.featured).toBe(true);
+    expect(after.active).toBe(false);
+    await expect(requestService(ctx.db, ctx.actors.mantos, { serviceId: s.id, briefing: "Quero banners mesmo assim." })).rejects.toThrow(/não encontrado/);
+  });
+});

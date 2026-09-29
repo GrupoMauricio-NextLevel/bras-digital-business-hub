@@ -139,3 +139,20 @@ export async function advanceServiceOrder(db: Database, actor: Actor, id: string
 export async function storeOfferOf(db: Database, storeId: string) {
   return (await db.query.stores.findFirst({ where: eq(stores.id, storeId) }))?.offer;
 }
+
+const serviceEditSchema = z.object({
+  priceFromCents: z.number().int().nonnegative().max(100_000_00).optional(),
+  active: z.boolean().optional(),
+  featured: z.boolean().optional(),
+  description: z.string().trim().min(10).max(400).optional(),
+  deliveryDays: z.number().int().min(1).max(90).nullable().optional(),
+});
+
+/** Master edita a vitrine da Loja NextLevel: preço, destaque, ativação e prazo. */
+export async function updateService(db: Database, actor: Actor, serviceId: string, raw: z.input<typeof serviceEditSchema>) {
+  if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel edita o catálogo de serviços.");
+  const patch = serviceEditSchema.parse(raw);
+  const s = await db.query.services.findFirst({ where: eq(services.id, serviceId) });
+  if (!s) throw new NotFoundError("Serviço não encontrado.");
+  await db.update(services).set(patch).where(eq(services.id, serviceId));
+}
