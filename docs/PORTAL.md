@@ -10,39 +10,35 @@ Domínio: `superdrop.com.br`. Uma aplicação atende todos os endereços e decid
 | `loja.superdrop.com.br` | Loja de cada membro |
 | domínio do fornecedor white label | A mesma página de vendas dele, sem marca SuperDrop |
 
-## 1. Quem paga o quê e quem recebe o quê
+## 1. Empresas e foco dos próximos 15 dias
+- **NextLevel Marketing Ltda.**: a plataforma (assinaturas, taxas, serviços, Academy).
+- **Mega Tron Comércio Eletrônico Ltda.**: a empresa que compra dos fornecedores e vende aos membros NextLevel. Ambas são suas e a parte fiscal está resolvida.
+- **Foco agora: os dois fornecedores (MantosShop e Alpha Outfit).** A NextLevel/Mega Tron captando clientes e o assinante independente ficam para depois.
+- E-mail transacional: resolver em seguida (bloqueia convites, aviso de fim de teste e recuperação de senha).
+
+## 2. Quem paga o quê e quem recebe o quê
 
 | Situação | Quem paga | Quem recebe | Comissão do fornecedor |
 |---|---|---|---|
-| Membro que entra **pela página/cupom de um fornecedor** | Membro paga 100% à NextLevel | NextLevel | Sim, sobre **setup e mensalidade** desse membro (percentuais a definir) |
-| Membro que entra **por conta da NextLevel** (portal, sem cupom) | Membro paga 100% à NextLevel | NextLevel | Nenhuma |
-| Assinante independente (todos os fornecedores) | Paga 100% à NextLevel | NextLevel | Nenhuma sobre a assinatura. O fornecedor vende produtos à NextLevel, sem taxa da NextLevel |
-| Fornecedor SuperDrop | Mensalidade + taxa de volume (racional pendente) | NextLevel | não se aplica |
-| Fornecedor White Label | Setup + mensalidade + % sobre vendas da rede | NextLevel | Mantém a comissão dos membros dele |
+| Membro que entra com o **cupom** de um fornecedor | 100% à NextLevel | NextLevel | **Só os fundadores**, por acordo temporário: 25% do setup + 20% da mensalidade |
+| Fornecedor que não é fundador | Paga setup + mensalidade + taxa de transação | NextLevel | **Nenhuma** (o fornecedor ganha vendendo produtos) |
+| Membro que entra por conta da NextLevel | 100% à NextLevel | NextLevel | Nenhuma |
+| Assinante independente (todos os fornecedores) | Assinatura à NextLevel; produtos à Mega Tron | NextLevel / Mega Tron | Nenhuma. Sem taxas de plataforma para a própria empresa |
 
-Regras fechadas nesta versão:
-- Fornecedor só ganha de clientes **dele**, e só sobre setup e mensalidade (não sobre vendas de produtos nem sobre assinantes da NextLevel).
-- Cada fornecedor **define o preço de venda** aos seus membros (limites abaixo).
-- A NextLevel compra direto dos fornecedores para os membros NextLevel, **sem taxas para a própria NextLevel**.
-- Todo membro básico tem **7 dias de acesso demonstrativo** com o cupom entregue pelo fornecedor (ex.: `MANTOSSHOP7`, `ALPHA7`).
-- A **Loja NextLevel e a Academy** dentro do painel do membro precisam impressionar no período de teste, inclusive com módulos bloqueados (mostrando o que está em construção e para onde vamos).
+Recebimentos:
+- **Fornecedor** recebe as recargas dos membros na conta Mercado Pago **dele**.
+- **Membro com loja ativa** (subdomínio ou domínio próprio) conecta o **próprio** Mercado Pago para receber dos clientes.
+- Planos, preços e taxas: ver **`docs/PLANOS.md`**.
 
-## 2. Cupom, teste e atribuição
-- O cupom identifica o fornecedor: quem se cadastra com ele fica **atribuído** àquela rede (base da comissão).
-- Teste de 7 dias em **modo demonstração**: dados de exemplo, Pix e pedidos simulados, sem pedido real ao fornecedor. Academy e Loja NextLevel em prévia completa.
-- No dia 7 o membro paga a primeira fatura para continuar; os dados do teste ficam guardados por 30 dias.
-- Um teste por CPF/CNPJ, e-mail e telefone (antiabuso).
-- A atribuição é fixada no primeiro cadastro e não muda depois.
+## 3. Cupom, teste e atribuição
+- O cupom (`MANTOSSHOP7`, `ALPHA7`) identifica o fornecedor e fixa de quem é o membro.
+- **Teste de 7 dias sem cartão de crédito**, em modo demonstração: dados de exemplo, Pix e pedidos simulados, sem pedido real ao fornecedor. Academy e Loja NextLevel em prévia completa.
+- No dia 7 o membro escolhe um plano e paga (Pix à vista ou cartão em até 6x). Os dados do teste ficam guardados por 30 dias.
+- Um teste por CPF/CNPJ, e-mail e telefone (antiabuso). Atribuição fixada no primeiro cadastro.
 
-## 3. Comissão recorrente (proposta a validar)
-- 25% do setup (já existe) + **20% da mensalidade paga** dos membros dele, enquanto o membro estiver ativo.
-- Só sobre valor **efetivamente pago**; estorno ou chargeback anula a comissão; abatida no fechamento mensal do fornecedor (mecanismo já existente).
-- Checagem de margem: em uma Loja SuperDrop de R$ 97/mês, custo de servir ~R$ 13 e comissão de 20% (R$ 19), sobram ~R$ 65 (67%). Cabe folga até ~30%.
-
-## 4. Preço definido pelo fornecedor (proposta a validar)
-- **Piso:** preço de lista da NextLevel. **Teto suave:** 3x a lista (evita preço absurdo).
-- A comissão incide sobre o preço pago. Mudança de preço vale para novos membros; quem já assina mantém o valor (grandfathering).
-- Cupom com desconto: o custo do desconto sai da comissão do fornecedor, não da NextLevel.
+## 4. Comissão dos fundadores (temporária)
+- Parâmetros no contrato: percentual do setup, percentual da mensalidade e **data de término** (proposta: 12 meses). Depois disso, condições normais, sem comissão.
+- Só sobre valor efetivamente pago; estorno anula; abatida no fechamento mensal do fornecedor (mecanismo já existente).
 
 ## 5. Páginas necessárias
 **Portal:** Home, Como funciona, Planos e preços, Para fornecedores, White label, Fornecedores parceiros, Academy (prévia), FAQ, Contato; Termos de uso, Privacidade, Compartilhamento de dados, Cookies; Login, Cadastro (com cupom), Recuperar senha, Checkout de assinatura, Boas-vindas.
@@ -50,44 +46,30 @@ Regras fechadas nesta versão:
 **Membro:** trial com contagem regressiva, Loja NextLevel e Academy impressionantes, escolha de fornecedor (independente).
 **Master:** aprovação de fornecedores e páginas, contratos, cupons globais, conciliação de comissões.
 
-## 6. Pontos cegos
-
-### Bloqueiam o lançamento
-1. **E-mail transacional não existe.** Convite, fim de trial, recibo e cobrança dependem dele. Também **não há "esqueci a senha" por e-mail** (hoje só senha temporária). Precisa de provedor e SPF/DKIM no domínio.
-2. **NextLevel comprando e revendendo ao membro = operação comercial.** Isso cria obrigação fiscal (nota fiscal, ICMS/ISS), contrato de compra e venda com o fornecedor e responsabilidade perante o consumidor. Fiscal está fora do escopo do código, mas **o modelo exige contador e advogado antes de operar**.
-3. **Dinheiro em custódia.** Para membros NextLevel, a recarga precisa cair na conta da NextLevel e ser repassada aos fornecedores (hoje cai na conta do fornecedor). Exige regra de repasse (prazo, disputa) e, idealmente, split do Mercado Pago.
-4. **LGPD:** compartilhar clientes do fornecedor com a NextLevel exige base legal, aviso no cadastro e contrato entre as partes. Revisão jurídica.
-5. **Direito de arrependimento (7 dias, CDC)** em assinatura online: o teste de 7 dias e a primeira cobrança precisam respeitar isso.
-
-### Afetam a receita
-6. **Pix não cobra sozinho todo mês.** Mensalidade por Pix depende do membro pagar; a inadimplência sobe. Alternativa: cartão recorrente (Mercado Pago Assinaturas), que é outra integração. Sugestão: começar com fatura mensal por Pix com lembretes (já existe) e oferecer cartão depois.
-7. **Desintermediação:** membro e fornecedor combinam por fora para não pagar comissão. Precisa de cláusula de contrato e, para membros NextLevel, esconder a identidade do fornecedor.
-8. **Comissão em disputa:** o que acontece se o fornecedor sair ou for suspenso? De quem é o membro quando ele vira white label? Definir e escrever no contrato.
-9. **Conflito de canal:** o mesmo produto pode ser vendido pelo fornecedor na página dele e pela NextLevel a independentes por preços diferentes.
-10. **Uma parte do teste custa dinheiro** (infraestrutura e suporte). Quem paga o teste dos cupons? Proposta: a NextLevel, com limite por cupom.
-
-### Multi-fornecedor (assinante independente)
-11. Catálogo unificado com produtos duplicados entre fornecedores, carrinho dividido por fornecedor, vários fretes, **corte e prazo diferentes por fornecedor**, avaliação e suspensão de fornecedor que atrasa, e carteira por fornecedor ou da NextLevel.
-
-### Operação e produto
-12. Cancelamento, troca de plano (SuperDrop para White Label) e regra de proporcionalidade.
-13. Produção de conteúdo da Academy: o teste só impressiona com pelo menos um módulo completo e o restante com prévia honesta. Não prometer datas que não serão cumpridas.
-14. Marcas de clubes: camisas de time envolvem propriedade intelectual; termos com responsabilidade do fornecedor e política de remoção.
-15. Infra: o plano Free do Render hiberna e não serve para um portal público; usar o plano pago no mínimo. Backups e limites do banco gratuito.
-16. Antifraude e captcha no cadastro e no teste; medição do funil (visita, cadastro, teste, assinatura).
+## 6. Pontos cegos (atualizado)
+1. **Variação por cor não existe.** Hoje cada produto varia só por **tamanho**. Os produtos do Brás (roupas, calçados, acessórios) exigem **cor × tamanho**, grades por cor e fotos por cor. Precisa entrar antes de cadastrar catálogos reais. Também as páginas e textos do portal não devem falar só de "camisas".
+2. **Preço definido pelo fornecedor perdeu sentido.** Sem comissão (exceto fundadores), o fornecedor não ganha nada com preço maior e pode baixá-lo para atrair membros. Proposta: **a tabela da NextLevel é o preço**; o fornecedor oferece cupom e bônus, sem alterar o preço. Só os fundadores teriam preço próprio, dentro de piso e teto.
+3. **Tarifa de parcelamento do Mercado Pago:** confirmar que 14% cobre o 6x no prazo de recebimento escolhido. Sem isso, o parcelado dá prejuízo.
+4. **Empresas emissoras:** cada fatura precisa dizer qual empresa cobra (NextLevel Marketing ou Mega Tron), para o recibo e para a conciliação. Guardar isso desde já no dado da fatura.
+5. **Recarga de membros Mega Tron** cai na conta da Mega Tron (e não na do fornecedor), e depois há repasse aos fornecedores. Fica para a fase do assinante independente.
+6. **E-mail:** convite, fim do teste, recibo e recuperação de senha dependem dele.
+7. **Renovação após os 12 meses grátis** da Loja Própria: definir preço de renovação (R$ 2.364/ano ou R$ 279/mês), aviso antecipado (D-30, D-7) e o que acontece se não pagar.
+8. **Antiabuso do cupom:** limite de usos por cupom e por pessoa, prazo de validade, painel de uso para o fornecedor.
+9. **LGPD:** aviso e aceite do compartilhamento dos clientes do fornecedor com a NextLevel, com revisão jurídica dos termos.
+10. **Academy:** um módulo completo gravado esta semana já sustenta o teste. Precisa de hospedagem de vídeo (ex.: vídeo não listado) e de controle de acesso.
+11. **Infra:** o plano gratuito do Render hiberna; para o portal público e o teste de 7 dias, use o plano pago.
+12. **Aceite dos termos:** versionar o aceite (quem aceitou qual versão, quando).
 
 ## 7. Decisões pendentes
-1. Percentual da comissão sobre a mensalidade e por quanto tempo (proposta: 20%, enquanto ativo).
-2. Piso e teto do preço do fornecedor (proposta: lista e 3x a lista).
-3. Teste demonstrativo: sandbox com dados de exemplo (proposta) ou loja real limitada.
-4. Mensalidade por Pix agora, cartão depois (proposta).
-5. Modelo de compra da NextLevel: tabela de preço de compra por fornecedor, prazo de repasse e quem responde por devolução.
-6. Fiscal e jurídico: alinhar com contador e advogado antes de vender a independentes.
-7. Preço do assinante independente e do upgrade para white label.
-8. Conteúdo de MantosShop e Alpha Outfit: logo, cores, textos, valores, WhatsApp, depoimentos.
+1. R$ 2.400 da Loja Própria: **setup com 12 meses de plataforma incluídos** (interpretação adotada). Confirma?
+2. Setup de entrada dos fornecedores (proposta R$ 1.997 no SuperDrop e R$ 15.000 na Central White Label) e mensalidades da tabela em `PLANOS.md`.
+3. Prazo do acordo de fundadores (proposta: 12 meses).
+4. Preço definido pelo fornecedor: só fundadores ou ninguém (proposta: ninguém, preço da tabela).
+5. Benefícios incluídos no pacote de R$ 2.400 (Academy no primeiro ano, suporte prioritário por 3 meses).
+6. Conteúdo de MantosShop e Alpha Outfit: logo, cores, textos, WhatsApp, depoimentos, fotos.
 
-## 8. Fases sugeridas
-- **P1:** portal institucional, páginas dos dois fornecedores, cupom e teste de 7 dias, atribuição, e-mail transacional e recuperação de senha, assinatura por Pix.
-- **P2:** comissão recorrente e extrato do fornecedor, preço definido pelo fornecedor, editor da página, upgrade para white label com domínio.
-- **P3:** Academy e Loja NextLevel de impacto (com U5) e cartão recorrente.
-- **P4:** assinante independente com todos os fornecedores (depende das decisões 5 e 6).
+## 8. Fases (foco nos dois fornecedores)
+- **P1 (15 dias):** portal e páginas de MantosShop e Alpha Outfit, cupom e teste de 7 dias sem cartão, atribuição, planos com semestral e anual, checkout Pix e cartão em até 6x, Academy com o módulo completo, e-mail transacional.
+- **P2:** comissão dos fundadores com prazo e extrato, editor da página, upgrade para Central White Label com domínio.
+- **P3:** Loja NextLevel e Academy de impacto (com U5).
+- **P4:** assinante independente e Mega Tron (custódia, repasse, catálogo multi-fornecedor).

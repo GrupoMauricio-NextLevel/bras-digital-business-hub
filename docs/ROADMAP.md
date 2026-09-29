@@ -33,5 +33,6 @@ Restante das duas frentes, fundido em oito fases (U1 a U8). Cada fase termina co
 - Preços são propostas até validar no simulador com o dono.
 
 ## Adendo: portal e aquisição (P1 a P4)
-O racional do portal está em `docs/PORTAL.md`. Entra antes da U3 porque define atribuição, teste de 7 dias, comissão recorrente e e-mail transacional, dos quais U3, U5 e U6 dependem.
-P1 portal + páginas dos fornecedores + cupom/teste + e-mail; P2 comissão recorrente, preços do fornecedor, editor e upgrade white label; P3 Academy e Loja NextLevel de impacto (com U5); P4 assinante independente multi-fornecedor (depende de decisões fiscais e de custódia).
+Racional em `docs/PORTAL.md`; planos e preços em `docs/PLANOS.md`. Entra antes da U3.
+P1 (15 dias, foco em MantosShop e Alpha Outfit): portal, páginas dos fornecedores, cupom e teste de 7 dias sem cartão, planos semestral/anual, Pix e cartão em até 6x, Academy com um módulo completo, e-mail transacional. P2: comissão dos fundadores com prazo, editor, upgrade white label. P3: Loja NextLevel e Academy de impacto (com U5). P4: assinante independente e Mega Tron (custódia, repasse, multi-fornecedor).
+Pré-requisito descoberto: variação de produto por **cor e tamanho** (hoje só tamanho), necessária para os catálogos do Brás.
