@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app/app-shell";
 import { listDemoUsers, loginAs, logout } from "@/app/actions/auth";
 import { globalSearchAction } from "@/app/actions/search";
 import { isDemoMode, type Session } from "@/lib/auth";
+import { canUse } from "@/lib/features";
+import { storeUrl } from "@/lib/store-url";
 import { NAV, type Panel } from "@/lib/nav";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
@@ -24,7 +26,7 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   const tenantName = session.store?.name ?? session.supplier?.name ?? "NextLevel";
   const tenantSub = session.store ? "Loja parceira" : session.supplier ? "Fornecedor / Central" : "Plataforma";
   return (
-    <AppShell panel={panelFor(session)} items={nav.items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store ? `/store/${session.store.slug}` : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
+    <AppShell panel={panelFor(session)} items={nav.items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store && canUse(session.store.offer, "storefront") ? storeUrl(session.store.slug, session.store.offer, session.store.customDomain, session.store.domainStatus) : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
       {children}
     </AppShell>
   );

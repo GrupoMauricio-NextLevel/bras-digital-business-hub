@@ -297,6 +297,29 @@ export const orderEvents = pgTable("order_events", {
 });
 
 // ---------------------------------------------------------------------------
+// Etiquetas de envio (arquivo PDF do SuperFrete) e histórico de impressão
+// ---------------------------------------------------------------------------
+export const orderLabelFiles = pgTable("order_label_files", {
+  id: id(),
+  orderId: text("order_id").notNull().references(() => orders.id),
+  filename: text("filename").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  sha256: text("sha256").notNull(),
+  /** Conteúdo em base64 (armazenamento do MVP, atrás da interface LabelStorage). Nunca listado em consultas comuns. */
+  dataBase64: text("data_base64").notNull(),
+  uploadedBy: text("uploaded_by"),
+  createdAt: createdAt(),
+}, (t) => [index("order_label_files_order_idx").on(t.orderId), uniqueIndex("order_label_files_unique").on(t.orderId, t.sha256)]);
+
+export const labelPrints = pgTable("label_prints", {
+  id: id(),
+  orderId: text("order_id").notNull().references(() => orders.id),
+  kind: text("kind", { enum: ["LABEL", "PICKING_LIST"] }).notNull(),
+  printedBy: text("printed_by"),
+  createdAt: createdAt(),
+}, (t) => [index("label_prints_order_idx").on(t.orderId)]);
+
+// ---------------------------------------------------------------------------
 // Carteira do lojista (recarga Pix; custo dos pedidos é debitado do saldo)
 // ---------------------------------------------------------------------------
 export const WALLET_ENTRY_TYPES = ["RECHARGE", "ORDER_DEBIT", "ORDER_REFUND", "MANUAL_CREDIT", "MANUAL_DEBIT"] as const;
@@ -501,7 +524,43 @@ export const services = pgTable("services", {
   category: text("category").notNull(),
   priceFromCents: integer("price_from_cents"),
   icon: text("icon").notNull(),
+  /** Painéis para os quais o serviço é oferecido. */
+  audience: jsonb("audience").$type<("lite" | "pro" | "supplier")[]>().notNull().default(["lite", "pro"]),
+  /** SERVICE = serviço prestado pela equipe; UPGRADE = troca de oferta (libera recursos). */
+  kind: text("kind", { enum: ["SERVICE", "UPGRADE"] }).notNull().default("SERVICE"),
+  upgradeOffer: text("upgrade_offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }),
+  deliveryDays: integer("delivery_days"),
+  highlights: jsonb("highlights").$type<string[]>().notNull().default([]),
+  featured: boolean("featured").notNull().default(false),
+  active: boolean("active").notNull().default(true),
 });
+
+export const SERVICE_ORDER_STATUSES = ["REQUESTED", "IN_ANALYSIS", "QUOTED", "IN_PROGRESS", "DELIVERED", "CANCELED"] as const;
+export type ServiceOrderStatus = (typeof SERVICE_ORDER_STATUSES)[number];
+
+/** Pedido de serviço da Loja NextLevel (lojista ou fornecedor contratante). */
+export const serviceOrders = pgTable("service_orders", {
+  id: id(),
+  serviceId: text("service_id").notNull().references(() => services.id),
+  requesterType: text("requester_type", { enum: ["STORE", "SUPPLIER"] }).notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  requesterUserId: text("requester_user_id").notNull(),
+  status: text("status", { enum: SERVICE_ORDER_STATUSES }).notNull().default("REQUESTED"),
+  briefing: text("briefing").notNull(),
+  quotedCents: integer("quoted_cents"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("service_orders_store_idx").on(t.storeId), index("service_orders_supplier_idx").on(t.supplierId)]);
+
+export const serviceMessages = pgTable("service_messages", {
+  id: id(),
+  serviceOrderId: text("service_order_id").notNull().references(() => serviceOrders.id),
+  authorRole: text("author_role").notNull(),
+  authorUserId: text("author_user_id").notNull(),
+  body: text("body").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("service_messages_order_idx").on(t.serviceOrderId)]);
 
 export const serviceLeads = pgTable("service_leads", {
   id: id(),

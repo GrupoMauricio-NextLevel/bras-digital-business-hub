@@ -13,7 +13,7 @@ describe("bootstrap de produção", () => {
     expect(first.join(" ")).toMatch(/master criado/);
     expect((await db.select().from(themes)).length).toBe(3);
     expect((await db.select().from(plans)).length).toBe(3);
-    expect((await db.select().from(services)).length).toBe(8);
+    expect((await db.select().from(services)).length).toBe(13);
     const all = await db.select().from(users);
     expect(all).toHaveLength(1);
     expect(all[0]?.email).toBe("admin@nextlevel.com");

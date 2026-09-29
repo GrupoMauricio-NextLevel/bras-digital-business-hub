@@ -16,12 +16,13 @@ type Props = {
   items: OrderItem[];
   events: { id: string; type: string; message: string; actorRole: string | null; createdAt: string }[];
   store: { name: string; slug: string } | null | undefined;
+  labels?: { id: string; filename: string; sizeBytes: number }[];
 };
 
-export function OrderDetail({ role, backHref, order, items, events, store }: Props) {
+export function OrderDetail({ role, backHref, order, items, events, store, labels }: Props) {
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },
-    { label: "Pagamento à Central", done: order.centralPaymentStatus === "PAID" },
+    { label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" },
     { label: "Etiqueta de envio", done: order.shippingLabelStatus === "READY" },
     { label: "Separação", done: ["PICKING", "READY_TO_SHIP", "SHIPPED", "DELIVERED"].includes(order.status) },
     { label: "Enviado", done: ["SHIPPED", "DELIVERED"].includes(order.status) },
@@ -31,7 +32,7 @@ export function OrderDetail({ role, backHref, order, items, events, store }: Pro
 
   return (
     <>
-      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<OrderActions role={role} order={order} />} />
+      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<OrderActions role={role} order={order} labels={labels} />} />
 
       {order.status !== "CANCELED" ? (
         <div className="mb-6 rounded-lg border border-border bg-surface p-4 shadow-sm">
@@ -93,8 +94,13 @@ export function OrderDetail({ role, backHref, order, items, events, store }: Pro
             <CardHeader><CardTitle>Pagamentos e envio</CardTitle></CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center justify-between"><span className="text-muted-foreground">Cliente</span><StatusBadge value={order.customerPaymentStatus} /></div>
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">Central</span><StatusBadge value={order.centralPaymentStatus} /></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Saldo (custo)</span><StatusBadge value={order.centralPaymentStatus} /></div>
               <div className="flex items-center justify-between"><span className="text-muted-foreground">Etiqueta</span><StatusBadge value={order.shippingLabelStatus} /></div>
+              {labels && labels.length ? (
+                <ul className="space-y-1">
+                  {labels.map((l) => <li key={l.id} className="flex items-center justify-between gap-2 rounded-md bg-surface-muted px-3 py-2 text-xs"><a className="min-w-0 truncate font-medium text-accent underline-offset-2 hover:underline" href={`/api/labels/${order.id}/${l.id}`} target="_blank" rel="noreferrer">{l.filename}</a><span className="shrink-0 text-muted-foreground">{Math.max(1, Math.round(l.sizeBytes / 1024))} KB</span></li>)}
+                </ul>
+              ) : null}
               {order.shippingLabelCode ? <div className="rounded-md bg-surface-muted px-3 py-2 text-xs"><div className="font-medium">{order.shippingLabelCode}</div><div className="text-muted-foreground">{order.shippingCarrier}</div></div> : null}
             </CardContent>
           </Card>

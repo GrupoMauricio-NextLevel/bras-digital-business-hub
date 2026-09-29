@@ -1,3 +1,4 @@
+import { DomainError } from "@/lib/domain/errors";
 import type { OfferKey } from "@/lib/finance/price-book";
 
 /**
@@ -48,3 +49,11 @@ export const FEATURE_INFO: Record<FeatureKey, { label: string; pitch: string }> 
   team: { label: "Equipe da loja", pitch: "Convide outras pessoas para operar a loja." },
   reportsExport: { label: "Relatórios exportáveis", pitch: "Baixe vendas, clientes e financeiro em CSV." },
 };
+
+const OFFER_NAME: Record<OfferKey, string> = { DROP_MANUAL: "Drop manual", STORE_SUBDOMAIN: "Loja SuperDrop", STORE_OWN: "Loja própria" };
+
+/** Guarda de domínio: recurso bloqueado na oferta vira erro com caminho de upgrade (a tela também mostra o cadeado). */
+export function requireFeature(offer: OfferKey, feature: FeatureKey): void {
+  if (canUse(offer, feature)) return;
+  throw new DomainError("FEATURE_LOCKED", `${FEATURE_INFO[feature].label} está disponível na oferta ${OFFER_NAME[minOfferFor(feature)]}. Veja como liberar na Loja NextLevel.`);
+}

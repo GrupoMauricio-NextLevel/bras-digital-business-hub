@@ -1,7 +1,7 @@
 import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, customers, orderEvents, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
+import { activities, customers, orderEvents, orderLabelFiles, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { assertCanAccess, isSupplierSide, type Actor } from "./access";
@@ -192,7 +192,8 @@ export async function getOrderForActor(db: Database, actor: Actor, orderId: stri
   const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
   const events = await db.select().from(orderEvents).where(eq(orderEvents.orderId, orderId)).orderBy(desc(orderEvents.createdAt));
   const store = await db.query.stores.findFirst({ where: eq(stores.id, order.storeId) });
-  return { order, items, events, store };
+  const labels = await db.select({ id: orderLabelFiles.id, filename: orderLabelFiles.filename, sizeBytes: orderLabelFiles.sizeBytes, createdAt: orderLabelFiles.createdAt }).from(orderLabelFiles).where(eq(orderLabelFiles.orderId, orderId)).orderBy(orderLabelFiles.createdAt);
+  return { order, items, events, store, labels };
 }
 
 export async function listOrdersForActor(db: Database, actor: Actor, opts: { status?: OrderStatus; limit?: number } = {}) {

@@ -10,16 +10,16 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FormField } from "@/components/app/form-field";
-import { Input, Select } from "@/components/ui/input";
-import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction, registerLabelAction } from "@/app/actions/orders";
+import { Input } from "@/components/ui/input";
+import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction } from "@/app/actions/orders";
 import type { ActionResult } from "@/lib/action-result";
 
-export function OrderActions({ role, order }: { role: Role; order: Order }) {
+export function OrderActions({ role, order }: { role: Role; order: Order; labels?: { id: string; filename: string }[] }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   const [labelOpen, setLabelOpen] = React.useState(false);
-  const [code, setCode] = React.useState("");
-  const [carrier, setCarrier] = React.useState("Melhor Envio");
+  const [file, setFile] = React.useState<File | null>(null);
+  const [uploading, setUploading] = React.useState(false);
 
   const handle = (fn: () => Promise<ActionResult<unknown>>, success: string) =>
     start(async () => {
@@ -33,7 +33,7 @@ export function OrderActions({ role, order }: { role: Role; order: Order }) {
   if (order.status === "CANCELED" || order.status === "DELIVERED") return null;
 
   const isMerchant = role === "STORE_OWNER";
-  const isSupplier = role === "SUPPLIER_ADMIN";
+  const isSupplier = role === "SUPPLIER_ADMIN" || role === "SUPPLIER_DISPATCH";
   const next = NEXT_ACTION[order.status];
 
   return (
@@ -46,35 +46,32 @@ export function OrderActions({ role, order }: { role: Role; order: Order }) {
       {isMerchant && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
         <a href="/merchant/wallet" className="inline-flex h-9 items-center gap-2 rounded-md bg-warning-soft px-3 text-sm font-medium text-warning">Aguardando recarga · recarregar saldo</a>
       ) : null}
-      {isMerchant && order.shippingLabelStatus !== "READY" ? (
+      {isMerchant && order.status !== "SHIPPED" ? (
         <>
-          <Button variant={order.centralPaymentStatus === "PAID" ? "primary" : "secondary"} onClick={() => setLabelOpen(true)}>
-            <Tag /> Registrar etiqueta
+          <Button variant={order.shippingLabelStatus === "READY" ? "secondary" : order.centralPaymentStatus === "PAID" ? "primary" : "secondary"} onClick={() => setLabelOpen(true)}>
+            <Tag /> {order.shippingLabelStatus === "READY" ? "Anexar outra etiqueta" : "Anexar etiqueta (PDF)"}
           </Button>
           <Dialog open={labelOpen} onOpenChange={setLabelOpen}>
-            <DialogContent title="Registrar etiqueta de envio" description="Informe o código da etiqueta gerada no SuperFrete ou Melhor Envio. A Central usará esta etiqueta na expedição.">
+            <DialogContent title="Anexar etiqueta de envio" description="Envie o PDF gerado no SuperFrete (máx. 3 MB, até 5 arquivos por pedido). A Central imprime a etiqueta na expedição.">
               <form
                 className="space-y-4"
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  handle(() => registerLabelAction(order.id, { code, carrier }), "Etiqueta registrada");
-                  setLabelOpen(false);
+                  if (!file) return;
+                  setUploading(true);
+                  const fd = new FormData(); fd.append("file", file);
+                  const res = await fetch(`/api/labels/${order.id}`, { method: "POST", body: fd });
+                  const body = (await res.json().catch(() => ({ ok: false, error: "Falha ao enviar." }))) as { ok: boolean; error?: string };
+                  setUploading(false);
+                  if (body.ok) { toast.success("Etiqueta anexada"); setLabelOpen(false); setFile(null); router.refresh(); } else toast.error(body.error ?? "Falha ao enviar.");
                 }}
               >
-                <FormField label="Transportadora / plataforma" htmlFor="carrier">
-                  <Select id="carrier" value={carrier} onChange={(e) => setCarrier(e.target.value)}>
-                    <option>Melhor Envio</option>
-                    <option>SuperFrete</option>
-                    <option>Correios</option>
-                    <option>Jadlog</option>
-                  </Select>
-                </FormField>
-                <FormField label="Código da etiqueta" htmlFor="code" hint="Ex.: ME123456789BR">
-                  <Input id="code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="ME123456789BR" required minLength={4} autoFocus />
+                <FormField label="Arquivo da etiqueta (PDF)" htmlFor="labelfile" hint="Exemplo: etiqueta-superfrete.pdf">
+                  <Input id="labelfile" type="file" accept="application/pdf,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required />
                 </FormField>
                 <div className="flex justify-end gap-2">
                   <Button type="button" variant="secondary" onClick={() => setLabelOpen(false)}>Cancelar</Button>
-                  <Button type="submit" loading={pending}>Salvar etiqueta</Button>
+                  <Button type="submit" loading={uploading} disabled={!file}>Enviar etiqueta</Button>
                 </div>
               </form>
             </DialogContent>
@@ -86,7 +83,7 @@ export function OrderActions({ role, order }: { role: Role; order: Order }) {
           {next.label} <ArrowRight />
         </Button>
       ) : null}
-      {(isMerchant || isSupplier) && CANCELABLE.includes(order.status) ? (
+      {(isMerchant || role === "SUPPLIER_ADMIN") && CANCELABLE.includes(order.status) ? (
         <ConfirmDialog
           trigger={<Button variant="ghost" className="text-danger hover:bg-danger-soft"><Ban /> Cancelar</Button>}
           title="Cancelar pedido"

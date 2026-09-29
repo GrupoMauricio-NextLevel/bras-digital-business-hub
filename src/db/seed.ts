@@ -3,8 +3,10 @@ import { eq } from "drizzle-orm";
 import * as s from "./schema";
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "@/lib/domain/inventory";
-import { createOrder, registerShippingLabel, advanceOrder, cancelOrder } from "@/lib/domain/orders";
+import { createOrder, advanceOrder, cancelOrder } from "@/lib/domain/orders";
 import type { Actor } from "@/lib/domain/access";
+import { addLabelFile } from "@/lib/domain/labels";
+import { makeDemoLabelPdf } from "@/lib/labels-demo";
 import { getBalanceCents, manualCredit, manualDebit } from "@/lib/domain/wallet";
 import { hashPassword } from "@/lib/security/password";
 import { DEMO_PASSWORD } from "./seed-constants";
@@ -197,7 +199,7 @@ export async function seedDatabase(db: Database) {
     const r = await createOrder(db, input);
     for (const st of steps) {
       if (st === "central") { /* custo debitado automaticamente do saldo da carteira */ }
-      else if (st === "label") await registerShippingLabel(db, actor, r.orderId, { code: `ME${Math.floor(100000 + Math.random() * 899999)}BR`, carrier: "Melhor Envio" });
+      else if (st === "label") await addLabelFile(db, actor, r.orderId, { filename: `etiqueta-${r.number}.pdf`, bytes: await makeDemoLabelPdf(r.number, input.customer.name) });
       else if (st === "cancel") await cancelOrder(db, actor, r.orderId);
       else await advanceOrder(db, supplierActor, r.orderId, st);
     }

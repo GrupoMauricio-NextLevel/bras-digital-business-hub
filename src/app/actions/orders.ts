@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, registerShippingLabel, type CreateOrderInput } from "@/lib/domain/orders";
+import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, type CreateOrderInput } from "@/lib/domain/orders";
 import type { OrderStatus } from "@/db/schema";
 
 async function actor() {
@@ -28,14 +28,6 @@ export async function confirmCustomerPaymentAction(orderId: string) {
   });
 }
 
-export async function registerLabelAction(orderId: string, input: { code: string; carrier: string }) {
-  return runAction(async () => {
-    const s = await actor();
-    const r = await registerShippingLabel((await getDb()), s.actor, orderId, input);
-    revalidateOrders();
-    return { status: r.status };
-  });
-}
 
 export async function advanceOrderAction(orderId: string, next: OrderStatus) {
   return runAction(async () => {

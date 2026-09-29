@@ -9,6 +9,7 @@ import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { newId } from "@/lib/ids";
+import { requireFeature } from "@/lib/features";
 
 async function storeCtx() {
   const session = await getSession();
@@ -53,6 +54,7 @@ const appearanceSchema = z.object({
 export async function updateAppearanceAction(input: z.input<typeof appearanceSchema>) {
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
+    requireFeature(session.store!.offer, "appearanceBasic");
     const data = appearanceSchema.parse(input);
     await db.transaction(async (tx) => {
       await tx.update(stores).set({ logoText: data.logoText, primaryColor: data.primaryColor, accentColor: data.accentColor, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
@@ -95,6 +97,7 @@ export async function activateThemeAction(themeId: string) {
     const theme = await db.query.themes.findFirst({ where: eq(themes.id, themeId) });
     if (!theme) throw new NotFoundError("Tema não encontrado.");
     if (!theme.available) throw new DomainError("THEME_LOCKED", "Este tema ainda não está disponível para compra.");
+    requireFeature(session.store!.offer, theme.tier === "STARTER" ? "templatesStarter" : "templatesPremium");
     const version = await db.query.themeVersions.findFirst({ where: and(eq(themeVersions.themeId, themeId), eq(themeVersions.status, "PUBLISHED")) });
     if (!version) throw new NotFoundError("Versão publicada não encontrada.");
     const existing = await db.query.storeThemes.findFirst({ where: eq(storeThemes.storeId, storeId) });
@@ -127,6 +130,7 @@ export async function configureIntegrationAction(input: z.input<typeof integrati
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
     const data = integrationSchema.parse(input);
+    if (data.kind === "domain") requireFeature(session.store!.offer, "customDomain");
     const patch =
       data.kind === "payments" ? { paymentProvider: data.provider ?? "Mercado Pago", paymentStatus: "DEMO" as const }
       : data.kind === "shipping" ? { shippingProvider: data.provider ?? "Melhor Envio", shippingStatus: "DEMO" as const }
@@ -140,6 +144,7 @@ export async function configureIntegrationAction(input: z.input<typeof integrati
 export async function publishStoreAction(publish: boolean) {
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
+    if (publish) requireFeature(session.store!.offer, "storefront");
     if (publish && session.store?.status !== "ACTIVE") throw new DomainError("STORE_NOT_ACTIVE", "A loja só pode ser publicada depois da confirmação do pagamento do setup.");
     await db.update(stores).set({ publishedAt: publish ? new Date().toISOString() : null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
     revalidateStore(session.store?.slug);
