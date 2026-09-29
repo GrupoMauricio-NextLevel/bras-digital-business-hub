@@ -63,7 +63,7 @@ export async function getSupplierProduct(supplierId: string, productId: string) 
     product,
     category,
     variants: variants.map((v) => ({ ...v.variant, onHand: v.inv?.onHand ?? 0, reserved: v.inv?.reserved ?? 0, available: Math.max(0, (v.inv?.onHand ?? 0) - (v.inv?.reserved ?? 0)) })),
-    packs: packs.map((p) => ({ ...p, items: packItems.filter((i) => i.packId === p.id).map((i) => ({ ...i, size: variants.find((v) => v.variant.id === i.variantId)?.variant.size ?? "?" })) })),
+    packs: packs.map((p) => ({ ...p, items: packItems.filter((i) => i.packId === p.id).map((i) => { const v = variants.find((x) => x.variant.id === i.variantId); return { ...i, size: v?.variant.size ?? "?", position: v?.variant.position ?? 0 }; }).sort((a, b) => a.position - b.position) })),
     accessStoreIds: access.map((a) => a.storeId),
     networkStores,
     listings,

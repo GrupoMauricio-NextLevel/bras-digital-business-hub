@@ -16,7 +16,7 @@ export function OrdersTable({ rows, basePath, showStore = true, showCost = false
       rowHref={(r) => `${basePath}/${r.order.id}`}
       empty={<EmptyState icon={ShoppingCart} title="Nenhum pedido" description="Os pedidos aparecerão aqui assim que forem criados." />}
       columns={[
-        { key: "number", header: "Pedido", primary: true, cell: (r) => <span className="font-medium">#{r.order.number} <span className="ml-1 font-normal text-muted-foreground">{r.order.customerName}</span></span> },
+        { key: "number", header: "Pedido", primary: true, cell: (r) => <div><div className="font-medium">#{r.order.number}</div><div className="text-xs text-muted-foreground">{r.order.customerName}</div></div> },
         ...(showStore ? [{ key: "store", header: "Loja", cell: (r: OrderRow) => r.storeName }] : []),
         { key: "channel", header: "Canal", cell: (r) => <StatusBadge value={r.order.channel} /> },
         { key: "status", header: "Status", cell: (r) => <OrderStatusBadge status={r.order.status} /> },
