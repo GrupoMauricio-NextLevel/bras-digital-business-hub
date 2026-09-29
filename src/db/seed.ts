@@ -3,8 +3,9 @@ import { eq } from "drizzle-orm";
 import * as s from "./schema";
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "@/lib/domain/inventory";
-import { createOrder, confirmCentralPayment, registerShippingLabel, advanceOrder, cancelOrder } from "@/lib/domain/orders";
+import { createOrder, registerShippingLabel, advanceOrder, cancelOrder } from "@/lib/domain/orders";
 import type { Actor } from "@/lib/domain/access";
+import { getBalanceCents, manualCredit, manualDebit } from "@/lib/domain/wallet";
 import { hashPassword } from "@/lib/security/password";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { seedReferenceData } from "./base-data";
@@ -13,6 +14,7 @@ import { ensureContract, issueSubscriptionInvoices, periodOf } from "@/lib/domai
 export const DEMO = {
   masterEmail: "master@nextlevel.demo",
   supplierEmail: "central@centralsports.demo",
+  dispatchEmail: "expedicao@centralsports.demo",
   mantosEmail: "dono@mantosshop.demo",
   arenaEmail: "dono@arena10.demo",
   classicsEmail: "dono@futclassics.demo",
@@ -79,6 +81,7 @@ export async function seedDatabase(db: Database) {
     { id: newId("usr"), name: "Ana Paula Ribeiro", email: DEMO.mantosEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[0]!.id, storeId: mantos.id, passwordHash },
     { id: newId("usr"), name: "Bruno Tavares", email: DEMO.arenaEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[1]!.id, storeId: arena.id, passwordHash },
     { id: newId("usr"), name: "Carla Moura", email: DEMO.classicsEmail, role: "STORE_OWNER" as const, organizationId: storeOrgs[2]!.id, storeId: classics.id, passwordHash },
+    { id: newId("usr"), name: "Marcos Souza", email: DEMO.dispatchEmail, role: "SUPPLIER_DISPATCH" as const, organizationId: supOrg.id, supplierId, passwordHash },
   ];
   await db.insert(s.users).values(users);
 
@@ -193,7 +196,7 @@ export async function seedDatabase(db: Database) {
   const run = async (actor: Actor, input: Parameters<typeof createOrder>[1], steps: Step[], daysAgo: number) => {
     const r = await createOrder(db, input);
     for (const st of steps) {
-      if (st === "central") await confirmCentralPayment(db, actor, r.orderId);
+      if (st === "central") { /* custo debitado automaticamente do saldo da carteira */ }
       else if (st === "label") await registerShippingLabel(db, actor, r.orderId, { code: `ME${Math.floor(100000 + Math.random() * 899999)}BR`, carrier: "Melhor Envio" });
       else if (st === "cancel") await cancelOrder(db, actor, r.orderId);
       else await advanceOrder(db, supplierActor, r.orderId, st);
@@ -202,6 +205,9 @@ export async function seedDatabase(db: Database) {
     return r;
   };
 
+  // Carteiras: Mantos e Arena com saldo (custo debitado na criação do pedido pago); Fut Classics sem saldo.
+  await manualCredit(db, supplierActor, mantos.id, { amountCents: 3_000_000, note: "Saldo inicial de demonstração" });
+  await manualCredit(db, supplierActor, arena.id, { amountCents: 3_000_000, note: "Saldo inicial de demonstração" });
   const full: Step[] = ["central", "label", "PICKING", "READY_TO_SHIP", "SHIPPED", "DELIVERED"];
   // Mantos Shop
   await run(mantosActor, { storeId: mantos.id, customer: c(0), shipping: addr, items: [{ productId: productIds[0]!, variantId: v(0, "M"), quantity: 1 }, { productId: productIds[4]!, variantId: v(4, "G"), quantity: 1 }], customerPaymentStatus: "PAID" }, full, 14);
@@ -218,6 +224,11 @@ export async function seedDatabase(db: Database) {
   await run(arenaActor, { storeId: arena.id, customer: c(2), shipping: addr, items: [{ productId: productIds[5]!, variantId: v(5, "G"), quantity: 1 }], customerPaymentStatus: "PAID" }, ["central", "label"], 2);
   await run(arenaActor, { storeId: arena.id, customer: c(0), shipping: addr, items: [{ productId: productIds[1]!, variantId: v(1, "GG"), quantity: 1 }], customerPaymentStatus: "PAID" }, [], 1);
   await run(arenaActor, { storeId: arena.id, customer: c(3), channel: "WHATSAPP", shipping: addr, items: [{ productId: productIds[7]!, variantId: v(7, "P"), quantity: 1 }], customerPaymentStatus: "PAID" }, ["central"], 0);
+
+  // Arena fica com saldo baixo para demonstrar "Aguardando recarga" no último pedido.
+  const arenaBalance = await getBalanceCents(db, arena.id);
+  await manualDebit(db, supplierActor, arena.id, { amountCents: arenaBalance - 500, note: "Ajuste de demonstração" });
+  await run(arenaActor, { storeId: arena.id, customer: c(6), shipping: addr, items: [{ productId: productIds[2]!, variantId: v(2, "M"), quantity: 2 }], customerPaymentStatus: "PAID" }, [], 0);
 
   // --- Atividades da plataforma ----------------------------------------------
   await db.insert(s.activities).values([

@@ -13,9 +13,15 @@ http.createServer((req, res) => {
       payments.set(String(id), { id, status: "approved", external_reference: ref, transaction_amount: amount });
       return send(res, 200, { id });
     }
+    if (url.pathname === "/__approve_pix") { // aprova a recarga Pix cuja referência externa é ?ref=
+      const ref = url.searchParams.get("ref"); const pay = [...payments.values()].find((p) => p.external_reference === ref && p.pix);
+      if (!pay) return send(res, 404, { message: "sem pix" });
+      pay.status = "approved"; return send(res, 200, { id: pay.id });
+    }
     if (url.pathname === "/__state") return send(res, 200, { prefs: [...prefs.values()], payments: [...payments.values()] });
     if (!auth.startsWith("Bearer TEST-")) return send(res, 401, { message: "invalid_token" });
     if (url.pathname === "/users/me") return send(res, 200, { id: 42, nickname: "LOJA_TESTE", site_id: "MLB" });
+    if (url.pathname === "/v1/payments" && req.method === "POST") { const b = JSON.parse(raw); const id = nextPay++; payments.set(String(id), { id, status: "pending", external_reference: b.external_reference, transaction_amount: b.transaction_amount, pix: true }); return send(res, 201, { id, point_of_interaction: { transaction_data: { qr_code: "00020126PIXSIMULADO" + id, qr_code_base64: "" } } }); }
     if (url.pathname === "/checkout/preferences" && req.method === "POST") { const b = JSON.parse(raw); const id = "pref_" + (prefs.size + 1); prefs.set(id, { id, ...b }); return send(res, 201, { id, init_point: `http://localhost:4010/pay/${id}` }); }
     const m = url.pathname.match(/^\/v1\/payments\/(\d+)$/); if (m) { const p = payments.get(m[1]); return p ? send(res, 200, p) : send(res, 404, { message: "nf" }); }
     if (url.pathname === "/v1/payments/search") { const ref = url.searchParams.get("external_reference"); return send(res, 200, { results: [...payments.values()].filter((p) => p.external_reference === ref) }); }

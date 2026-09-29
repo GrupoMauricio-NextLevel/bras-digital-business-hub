@@ -166,12 +166,34 @@ if (!(await cp.content()).includes("Pagamento aprovado")) fail("página do clien
 await cp.screenshot({ path: S + "/e2e-confirm-mobile.png" });
 step("cliente vê 'Pagamento aprovado'");
 
-// 6. lojista e fornecedor seguem o fluxo
+// 6. sem saldo: pedido aguarda recarga; fornecedor conectou o Mercado Pago e o lojista recarrega por Pix
 await p.goto(B + "/merchant/orders/" + orderId, { waitUntil: "networkidle" });
-if (!(await p.content()).includes("Aguardando pagamento à Central")) fail("status esperado: aguardando pagamento à Central");
-await p.getByRole("button", { name: /Confirmar pagamento à Central/ }).click();
-await p.getByRole("button", { name: "Confirmar pagamento", exact: true }).click();
-await p.waitForTimeout(1500);
+if (!(await p.content()).includes("Aguardando recarga")) fail("status esperado: aguardando recarga");
+if (await p.getByRole("button", { name: /Confirmar pagamento à Central/ }).count()) fail("botão manual de pagamento à Central deveria ter sido removido");
+step("sem saldo o pedido fica 'Aguardando recarga' (sem botão manual)");
+await login("carlos@fornecedor.com", "Fornecedor-Novo-1");
+await p.goto(B + "/supplier/settings", { waitUntil: "networkidle" });
+await p.getByLabel("Access Token da sua conta Mercado Pago").fill("TEST-1234567890abcdefghij-supplier");
+await p.getByRole("button", { name: "Validar e conectar" }).click();
+await p.waitForSelector("text=Conta conectada", { timeout: 20000 });
+step("fornecedor conectou a própria conta Mercado Pago para recargas");
+await login(owner.email, "Lojista-Novo-123");
+await p.goto(B + "/merchant/wallet", { waitUntil: "networkidle" });
+await p.locator("#recharge-amount").fill("500");
+await p.getByRole("button", { name: /Gerar Pix/ }).click();
+await p.waitForSelector("[data-testid=pix-code]", { timeout: 20000 });
+const pixCode = await p.locator("[data-testid=pix-code]").innerText();
+if (!pixCode.startsWith("00020126PIXSIMULADO")) fail("código Pix inesperado: " + pixCode);
+const st = await (await fetch(MP + "/__state")).json();
+const rch = st.payments.find((x) => x.pix); if (!rch) fail("recarga não chegou ao Mercado Pago");
+await fetch(MP + "/__approve_pix?ref=" + rch.external_reference);
+const wr = await (await fetch(B + "/api/webhooks/mercadopago-wallet?recharge=" + rch.external_reference, { method: "POST" })).json();
+if (!wr.paid) fail("webhook da recarga não confirmou: " + JSON.stringify(wr));
+await fetch(B + "/api/webhooks/mercadopago-wallet?recharge=" + rch.external_reference, { method: "POST" }); // repetido: idempotente
+step("recarga Pix de R$ 500,00 confirmada pelo webhook (repetição ignorada)");
+await p.goto(B + "/merchant/orders/" + orderId, { waitUntil: "networkidle" });
+if (!(await p.content()).includes("Aguardando etiqueta")) fail("após a recarga o pedido deveria aguardar etiqueta: " + (await p.locator("main").innerText()).slice(0, 300));
+step("recarga debitou o custo automaticamente: pedido saiu de 'Aguardando recarga'");
 await p.getByRole("button", { name: /Registrar etiqueta/ }).click();
 await p.getByPlaceholder("ME123456789BR").fill("ME777666555BR");
 await p.getByRole("button", { name: "Salvar etiqueta" }).click();

@@ -2,7 +2,7 @@ import type { OrderStatus } from "@/db/schema";
 
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
   PENDING: "Pendente",
-  AWAITING_CENTRAL_PAYMENT: "Aguardando pagamento à Central",
+  AWAITING_CENTRAL_PAYMENT: "Aguardando recarga",
   AWAITING_LABEL: "Aguardando etiqueta",
   READY_TO_PICK: "Pronto para separação",
   PICKING: "Em separação",

@@ -4,7 +4,8 @@ import { freshDb, customer } from "./setup";
 import { financeInvoices, orders, storeAcquisitions, stores, supplierContracts, suppliers } from "@/db/schema";
 import { closeMonth, ensureContract, estimateClosing, financeOverview, getPriceBook, issueSubscriptionInvoices, issueSupplierOnboardingInvoices, markInvoicePaid, periodOf, refreshSupplierAccess, runDailyFinanceJobs, savePriceBook, supplierVolume, voidStoreSetup } from "@/lib/domain/finance";
 import { createStore, createSupplier } from "@/lib/domain/provisioning";
-import { advanceOrder, confirmCentralPayment, createOrder, registerShippingLabel } from "@/lib/domain/orders";
+import { manualCredit } from "@/lib/domain/wallet";
+import { advanceOrder, createOrder, registerShippingLabel } from "@/lib/domain/orders";
 import { DEFAULT_PRICE_BOOK } from "@/lib/finance/price-book";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -72,9 +73,10 @@ describe("base da taxa de volume", () => {
     expect(vol.baseCents).toBeGreaterThan(0);
   });
   it("não conta pedidos ainda sem pagamento à Central nem de outro mês", async () => {
-    const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "M"), quantity: 1 }], customerPaymentStatus: "PAID" });
+    const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.arena.id, customer, items: [{ productId: ctx.seed.productIds[4]!, variantId: v(4, "M"), quantity: 1 }], customerPaymentStatus: "PAID" });
+    expect(r.status).toBe("AWAITING_CENTRAL_PAYMENT");
     const before = await supplierVolume(ctx.db, ctx.seed.supplierId, period());
-    await confirmCentralPayment(ctx.db, ctx.actors.mantos, r.orderId);
+    await manualCredit(ctx.db, ctx.actors.supplier, ctx.seed.stores.arena.id, { amountCents: 2_000_000, note: "Teste de recarga" });
     const after = await supplierVolume(ctx.db, ctx.seed.supplierId, period());
     expect(after.baseCents).toBeGreaterThan(before.baseCents);
     expect((await supplierVolume(ctx.db, ctx.seed.supplierId, "2020-01")).baseCents).toBe(0);
@@ -175,7 +177,6 @@ describe("bloqueio por inadimplência", () => {
 
   it("12 dias: bloqueio parcial impede pedidos novos mas mantém a expedição de pedidos pagos", async () => {
     const o = await place();
-    await confirmCentralPayment(ctx.db, ctx.actors.mantos, o.orderId);
     await registerShippingLabel(ctx.db, ctx.actors.mantos, o.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
     await overdue(12);
     expect(await status()).toBe("PARTIAL_BLOCK");
@@ -186,7 +187,6 @@ describe("bloqueio por inadimplência", () => {
 
   it("16 dias: suspenso bloqueia também a expedição; pagar a fatura restabelece o acesso", async () => {
     const o = await place();
-    await confirmCentralPayment(ctx.db, ctx.actors.mantos, o.orderId);
     await registerShippingLabel(ctx.db, ctx.actors.mantos, o.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
     await overdue(16);
     expect(await status()).toBe("SUSPENDED");

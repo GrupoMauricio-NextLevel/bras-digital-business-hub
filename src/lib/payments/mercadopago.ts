@@ -82,3 +82,22 @@ export async function findApprovedPaymentId(token: string, externalReference: st
   const hit = r.results?.find((p) => p.status === "approved");
   return hit ? String(hit.id) : null;
 }
+
+export type PixPayment = { paymentId: string; qrCode: string; qrCodeBase64: string };
+
+/** Cria uma cobrança Pix (recarga de saldo) na conta Mercado Pago do fornecedor. */
+export async function createPixPayment(token: string, input: { amountCents: number; description: string; payerEmail: string; externalReference: string; notificationUrl?: string; expiresAt?: Date }, fetchImpl: FetchLike = fetch): Promise<PixPayment> {
+  const body: Record<string, unknown> = {
+    transaction_amount: input.amountCents / 100,
+    description: input.description.slice(0, 200),
+    payment_method_id: "pix",
+    payer: { email: input.payerEmail },
+    external_reference: input.externalReference,
+  };
+  if (input.notificationUrl) body.notification_url = input.notificationUrl;
+  if (input.expiresAt) body.date_of_expiration = input.expiresAt.toISOString();
+  const r = await call<{ id: number; point_of_interaction?: { transaction_data?: { qr_code?: string; qr_code_base64?: string } } }>(fetchImpl, token, "/v1/payments", { method: "POST", body: JSON.stringify(body), headers: { "X-Idempotency-Key": input.externalReference } });
+  const td = r.point_of_interaction?.transaction_data;
+  if (!td?.qr_code) throw new MercadoPagoError("Mercado Pago não devolveu o código Pix.");
+  return { paymentId: String(r.id), qrCode: td.qr_code, qrCodeBase64: td.qr_code_base64 ?? "" };
+}

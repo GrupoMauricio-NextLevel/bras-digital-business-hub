@@ -11,6 +11,7 @@ import { recentNotices } from "@/lib/queries/notifications";
 export function panelFor(session: Session): Panel {
   if (session.user.role === "NEXTLEVEL_MASTER") return "master";
   if (session.user.role === "SUPPLIER_ADMIN") return "supplier";
+  if (session.user.role === "SUPPLIER_DISPATCH") return "dispatch";
   return session.store?.offer === "STORE_OWN" ? "pro" : "lite";
 }
 

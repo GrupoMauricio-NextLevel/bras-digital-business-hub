@@ -23,7 +23,7 @@ export function isMaster(actor: Actor): boolean {
 /** Garante que o ator pode enxergar um registro pertencente a (storeId, supplierId). */
 export function assertCanAccess(actor: Actor, target: { storeId?: string | null; supplierId?: string | null }): void {
   if (isMaster(actor)) return;
-  if (actor.role === "SUPPLIER_ADMIN") {
+  if (actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH") {
     if (target.supplierId && actor.supplierId === target.supplierId) return;
     throw new ForbiddenError();
   }
@@ -37,6 +37,11 @@ export function assertCanAccess(actor: Actor, target: { storeId?: string | null;
 export function requireStoreId(actor: Actor): string {
   if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Ação disponível apenas para lojistas.");
   return actor.storeId;
+}
+
+/** Expedição enxerga só a operação (sem valores); o ADM enxerga tudo do fornecedor. */
+export function isSupplierSide(actor: Actor): boolean {
+  return actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH";
 }
 
 export function requireSupplierId(actor: Actor): string {

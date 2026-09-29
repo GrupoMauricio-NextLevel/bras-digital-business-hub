@@ -56,7 +56,7 @@ describe("Mercado Pago — confirmação de pagamento", () => {
     expect(first.outcome).toBe("PAID");
     const paid = await ctx.db.query.orders.findFirst({ where: eq(orders.id, o.orderId) });
     expect(paid?.customerPaymentStatus).toBe("PAID");
-    expect(paid?.status).toBe("AWAITING_CENTRAL_PAYMENT");
+    expect(paid?.status).toBe("AWAITING_LABEL"); // custo debitado do saldo da loja
     expect(paid?.paymentReference).toBe("111");
     expect(paid?.reservationExpiresAt).toBeNull();
     await syncMercadoPagoPayment(ctx.db, { storeSlug: o.store.slug, paymentId: "111" }, fetchImpl);
@@ -100,8 +100,7 @@ describe("Mercado Pago — confirmação de pagamento", () => {
   it("pago + Central + etiqueta segue a regra normal até READY_TO_PICK", async () => {
     const o = await pendingOrder();
     await markCustomerPaidBySystem(ctx.db, o.orderId, { provider: "MERCADO_PAGO", reference: "9", amountCents: o.totalCents });
-    const { confirmCentralPayment, registerShippingLabel } = await import("@/lib/domain/orders");
-    await confirmCentralPayment(ctx.db, ctx.actors.mantos, o.orderId);
+    const { registerShippingLabel } = await import("@/lib/domain/orders");
     const r = await registerShippingLabel(ctx.db, ctx.actors.mantos, o.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
     expect(r.status).toBe("READY_TO_PICK");
   });

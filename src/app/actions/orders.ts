@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { advanceOrder, cancelOrder, confirmCentralPayment, confirmCustomerPayment, createOrder, registerShippingLabel, type CreateOrderInput } from "@/lib/domain/orders";
+import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, registerShippingLabel, type CreateOrderInput } from "@/lib/domain/orders";
 import type { OrderStatus } from "@/db/schema";
 
 async function actor() {
@@ -17,15 +17,6 @@ function revalidateOrders() {
   revalidatePath("/merchant", "layout");
   revalidatePath("/supplier", "layout");
   revalidatePath("/master", "layout");
-}
-
-export async function confirmCentralPaymentAction(orderId: string) {
-  return runAction(async () => {
-    const s = await actor();
-    const r = await confirmCentralPayment((await getDb()), s.actor, orderId);
-    revalidateOrders();
-    return { status: r.status };
-  });
 }
 
 export async function confirmCustomerPaymentAction(orderId: string) {

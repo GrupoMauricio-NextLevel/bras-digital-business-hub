@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { freshDb } from "./setup";
-import { listOrdersForActor, confirmCentralPayment, cancelOrder } from "@/lib/domain/orders";
+import { listOrdersForActor, cancelOrder } from "@/lib/domain/orders";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { assertCanAccess, requireMaster, requireStoreId, requireSupplierId } from "@/lib/domain/access";
 
@@ -30,7 +30,6 @@ describe("isolamento multi-tenant", () => {
 
   it("lojista não altera pedido de outra loja", async () => {
     const arenaOrder = (await listOrdersForActor(ctx.db, ctx.actors.arena))[0]!.order;
-    await expect(confirmCentralPayment(ctx.db, ctx.actors.mantos, arenaOrder.id)).rejects.toThrow(/não permitido/);
     await expect(cancelOrder(ctx.db, ctx.actors.mantos, arenaOrder.id)).rejects.toThrow(/não permitido/);
   });
 

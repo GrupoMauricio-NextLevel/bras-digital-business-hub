@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { freshDb, customer } from "./setup";
-import { createOrder, confirmCentralPayment, registerShippingLabel, advanceOrder, cancelOrder, getOrderForActor } from "@/lib/domain/orders";
+import { createOrder, registerShippingLabel, advanceOrder, cancelOrder, getOrderForActor } from "@/lib/domain/orders";
 import { getLevel } from "@/lib/domain/inventory";
 import { resolveFulfillmentStatus, canTransition } from "@/lib/domain/order-status";
 
@@ -16,14 +16,12 @@ describe("pedido — golden path", () => {
     const variantId = v(11, "M");
     const before = await getLevel(ctx.db, variantId);
     const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer, items: [{ productId: ctx.seed.productIds[11]!, variantId, quantity: 2 }], customerPaymentStatus: "PAID" });
-    expect(r.status).toBe("AWAITING_CENTRAL_PAYMENT");
+    // Mantos tem saldo: o custo é debitado na criação e o pedido espera só a etiqueta.
+    expect(r.status).toBe("AWAITING_LABEL");
     expect((await getLevel(ctx.db, variantId)).reserved).toBe(before.reserved + 2);
 
     const afterLabel = await registerShippingLabel(ctx.db, ctx.actors.mantos, r.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
-    expect(afterLabel.status).toBe("AWAITING_CENTRAL_PAYMENT");
-
-    const afterCentral = await confirmCentralPayment(ctx.db, ctx.actors.mantos, r.orderId);
-    expect(afterCentral.status).toBe("READY_TO_PICK");
+    expect(afterLabel.status).toBe("READY_TO_PICK");
 
     await advanceOrder(ctx.db, ctx.actors.supplier, r.orderId, "PICKING");
     await advanceOrder(ctx.db, ctx.actors.supplier, r.orderId, "READY_TO_SHIP");
@@ -33,10 +31,9 @@ describe("pedido — golden path", () => {
     expect(after.reserved).toBe(before.reserved);
   });
 
-  it("pagamento Central sem etiqueta fica AWAITING_LABEL", async () => {
+  it("custo debitado do saldo sem etiqueta fica AWAITING_LABEL", async () => {
     const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "G"), quantity: 1 }], customerPaymentStatus: "PAID" });
-    const o = await confirmCentralPayment(ctx.db, ctx.actors.mantos, r.orderId);
-    expect(o.status).toBe("AWAITING_LABEL");
+    expect(r.status).toBe("AWAITING_LABEL");
   });
 
   it("pedido manual sem pagamento do cliente fica PENDING", async () => {

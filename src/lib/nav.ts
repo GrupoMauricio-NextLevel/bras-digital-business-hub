@@ -68,6 +68,16 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Importar produtos por CSV", href: "/supplier/products/import", icon: "Boxes" },
     ],
   },
+  SUPPLIER_DISPATCH: {
+    base: "/supplier/dispatch",
+    label: "Expedição",
+    items: [
+      { label: "Fila de expedição", href: "/supplier/dispatch", icon: "PackageCheck", exact: true },
+      { label: "Imprimir etiquetas", href: "/supplier/dispatch/print", icon: "Printer" },
+      { label: "Enviados", href: "/supplier/dispatch/shipped", icon: "Truck" },
+    ],
+    quick: [{ label: "Fila de expedição", href: "/supplier/dispatch", icon: "PackageCheck" }],
+  },
   STORE_OWNER: {
     base: "/merchant",
     label: "Lojista",
@@ -81,7 +91,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Aparência", href: "/merchant/appearance", icon: "Palette" },
       { label: "Templates", href: "/merchant/templates", icon: "LayoutTemplate" },
       { label: "Conteúdo", href: "/merchant/content", icon: "Image" },
-      { label: "Financeiro", href: "/merchant/finance", icon: "Wallet" },
+      { label: "Saldo e recargas", href: "/merchant/wallet", icon: "Wallet" },
+      { label: "Financeiro", href: "/merchant/finance", icon: "Landmark" },
       { label: "Configurações", href: "/merchant/settings", icon: "Settings" },
     ],
     quick: [

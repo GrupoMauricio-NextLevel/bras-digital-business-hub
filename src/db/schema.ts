@@ -9,6 +9,7 @@
  * Valores monetários são armazenados em centavos (integer).
  * Datas em timestamptz lidas como ISO string. Dialeto Postgres (Neon/Netlify DB em produção, PGlite localmente).
  */
+import { sql } from "drizzle-orm";
 import { pgTable, text, integer, boolean, jsonb, timestamp, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
 
 /** Datas como ISO string (timestamptz no banco), para manter as regras de negócio agnósticas ao driver. */
@@ -39,6 +40,9 @@ export const suppliers = pgTable("suppliers", {
   businessModel: text("business_model", { enum: ["SUPERDROP", "WHITE_LABEL"] }).notNull().default("SUPERDROP"),
   platformFeePercent: integer("platform_fee_percent").notNull().default(6),
   setupFeeCents: integer("setup_fee_cents").notNull().default(0),
+  /** Token do Mercado Pago do fornecedor usado nas recargas Pix dos lojistas (criptografado). */
+  walletMpTokenEnc: text("wallet_mp_token_enc"),
+  walletMpAccountId: text("wallet_mp_account_id"),
   city: text("city"),
   state: text("state"),
   createdAt: createdAt(),
@@ -86,7 +90,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "STORE_OWNER"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -242,6 +246,8 @@ export const orders = pgTable("orders", {
   centralPaymentStatus: text("central_payment_status", { enum: ["PENDING", "PAID"] }).notNull().default("PENDING"),
   /** Momento em que o pagamento à Central foi confirmado (base da taxa de volume). */
   centralPaidAt: ts("central_paid_at"),
+  /** Desde quando o pedido (já pago pelo cliente) espera saldo do lojista; expira em 72h. */
+  awaitingFundsSince: ts("awaiting_funds_since"),
   shippingLabelStatus: text("shipping_label_status", { enum: ["PENDING", "READY"] }).notNull().default("PENDING"),
   shippingLabelCode: text("shipping_label_code"),
   shippingCarrier: text("shipping_carrier"),
@@ -289,6 +295,52 @@ export const orderEvents = pgTable("order_events", {
   actorRole: text("actor_role"),
   createdAt: createdAt(),
 });
+
+// ---------------------------------------------------------------------------
+// Carteira do lojista (recarga Pix; custo dos pedidos é debitado do saldo)
+// ---------------------------------------------------------------------------
+export const WALLET_ENTRY_TYPES = ["RECHARGE", "ORDER_DEBIT", "ORDER_REFUND", "MANUAL_CREDIT", "MANUAL_DEBIT"] as const;
+export type WalletEntryType = (typeof WALLET_ENTRY_TYPES)[number];
+
+export const walletAccounts = pgTable("wallet_accounts", {
+  id: id(),
+  storeId: text("store_id").notNull().unique().references(() => stores.id),
+  /** Saldo em cache; a verdade é a soma de wallet_entries (conferida nos testes). */
+  balanceCents: integer("balance_cents").notNull().default(0),
+  createdAt: createdAt(),
+});
+
+export const walletRecharges = pgTable("wallet_recharges", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  amountCents: integer("amount_cents").notNull(),
+  status: text("status", { enum: ["PENDING", "PAID", "EXPIRED", "FAILED"] }).notNull().default("PENDING"),
+  mpPaymentId: text("mp_payment_id"),
+  pixCode: text("pix_code"),
+  pixQrBase64: text("pix_qr_base64"),
+  expiresAt: ts("expires_at"),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+}, (t) => [index("wallet_recharges_store_idx").on(t.storeId)]);
+
+export const walletEntries = pgTable("wallet_entries", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  type: text("type", { enum: WALLET_ENTRY_TYPES }).notNull(),
+  /** Com sinal: crédito positivo, débito negativo. */
+  amountCents: integer("amount_cents").notNull(),
+  balanceAfterCents: integer("balance_after_cents").notNull(),
+  orderId: text("order_id").references(() => orders.id),
+  rechargeId: text("recharge_id").references(() => walletRecharges.id),
+  note: text("note"),
+  actorUserId: text("actor_user_id"),
+  createdAt: createdAt(),
+}, (t) => [
+  index("wallet_entries_store_idx").on(t.storeId),
+  uniqueIndex("wallet_debit_once").on(t.orderId).where(sql`type = 'ORDER_DEBIT'`),
+  uniqueIndex("wallet_recharge_once").on(t.rechargeId).where(sql`type = 'RECHARGE'`),
+]);
 
 // ---------------------------------------------------------------------------
 // Template Engine / Theme Store

@@ -3,7 +3,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Ban, CheckCircle2, Tag, ArrowRight } from "lucide-react";
-import type { Order, OrderStatus } from "@/db/schema";
+import type { Order } from "@/db/schema";
 import type { Role } from "@/lib/domain/access";
 import { CANCELABLE, NEXT_ACTION, ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FormField } from "@/components/app/form-field";
 import { Input, Select } from "@/components/ui/input";
-import { advanceOrderAction, cancelOrderAction, confirmCentralPaymentAction, confirmCustomerPaymentAction, registerLabelAction } from "@/app/actions/orders";
+import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction, registerLabelAction } from "@/app/actions/orders";
 import type { ActionResult } from "@/lib/action-result";
 
 export function OrderActions({ role, order }: { role: Role; order: Order }) {
@@ -44,16 +44,7 @@ export function OrderActions({ role, order }: { role: Role; order: Order }) {
         </Button>
       ) : null}
       {isMerchant && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
-        <ConfirmDialog
-          trigger={<Button loading={pending}><CheckCircle2 /> Confirmar pagamento à Central</Button>}
-          title="Confirmar pagamento à Central"
-          description="Demonstração: simula o repasse do custo dos produtos à Central. Em produção este passo será integrado ao Mercado Pago."
-          confirmLabel="Confirmar pagamento"
-          onConfirm={async () => {
-            const r = await confirmCentralPaymentAction(order.id);
-            if (r.ok) { toast.success(`Pagamento confirmado · ${ORDER_STATUS_LABEL[r.data.status as OrderStatus]}`); router.refresh(); } else toast.error(r.error);
-          }}
-        />
+        <a href="/merchant/wallet" className="inline-flex h-9 items-center gap-2 rounded-md bg-warning-soft px-3 text-sm font-medium text-warning">Aguardando recarga · recarregar saldo</a>
       ) : null}
       {isMerchant && order.shippingLabelStatus !== "READY" ? (
         <>

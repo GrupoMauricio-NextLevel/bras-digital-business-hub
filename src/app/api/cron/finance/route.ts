@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/db/client";
 import { runDailyFinanceJobs } from "@/lib/domain/finance";
 import { expireStaleReservations } from "@/lib/domain/orders";
+import { expireUnfundedOrders } from "@/lib/domain/wallet";
 
 export const dynamic = "force-dynamic";
 
@@ -15,5 +16,6 @@ export async function GET(req: NextRequest) {
   const db = await getDb();
   const finance = await runDailyFinanceJobs(db);
   const reservations = await expireStaleReservations(db);
-  return NextResponse.json({ ok: true, finance, reservations });
+  const unfunded = await expireUnfundedOrders(db);
+  return NextResponse.json({ ok: true, finance, reservations, unfunded });
 }

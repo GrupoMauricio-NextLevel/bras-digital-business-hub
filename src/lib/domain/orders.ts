@@ -3,12 +3,13 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, customers, orderEvents, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { DomainError, NotFoundError } from "./errors";
-import { assertCanAccess, type Actor } from "./access";
+import { DomainError, ForbiddenError, NotFoundError } from "./errors";
+import { assertCanAccess, isSupplierSide, type Actor } from "./access";
 import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
 import { capabilitiesForSupplier } from "./finance";
+import { tryDebitOrder } from "./wallet";
 
 export const orderLineSchema = z.object({
   productId: z.string().min(1),
@@ -145,7 +146,12 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       { id: newId("act"), scope: "SUPPLIER", storeId: store.id, supplierId: network.supplierId, type: "ORDER_CREATED", message: `${store.name} recebeu o pedido #${nextNumber}` },
     ]);
 
-    return { orderId, number: nextNumber, status, totalCents: total };
+    let finalStatus = status;
+    if (input.customerPaymentStatus === "PAID") {
+      await tryDebitOrder(tx, orderId);
+      finalStatus = (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!.status;
+    }
+    return { orderId, number: nextNumber, status: finalStatus, totalCents: total };
   });
 }
 
@@ -191,7 +197,7 @@ export async function getOrderForActor(db: Database, actor: Actor, orderId: stri
 
 export async function listOrdersForActor(db: Database, actor: Actor, opts: { status?: OrderStatus; limit?: number } = {}) {
   const scope =
-    actor.role === "STORE_OWNER" ? eq(orders.storeId, actor.storeId ?? "__none__") : actor.role === "SUPPLIER_ADMIN" ? eq(orders.supplierId, actor.supplierId ?? "__none__") : undefined;
+    actor.role === "STORE_OWNER" ? eq(orders.storeId, actor.storeId ?? "__none__") : isSupplierSide(actor) ? eq(orders.supplierId, actor.supplierId ?? "__none__") : undefined;
   const where = and(scope, opts.status ? eq(orders.status, opts.status) : undefined);
   const rows = await db.select({ order: orders, storeName: stores.name, storeSlug: stores.slug }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(where).orderBy(desc(orders.createdAt)).limit(opts.limit ?? 100);
   return rows;
@@ -212,21 +218,6 @@ async function applyStatus(db: Database, order: typeof orders.$inferSelect, next
   await db.insert(orderEvents).values({ id: newId("evt"), orderId: order.id, type: `STATUS_${next}`, message, actorRole: actor.role });
 }
 
-/** Lojista confirma o pagamento do custo dos produtos à Central (demonstração). */
-export async function confirmCentralPayment(db: Database, actor: Actor, orderId: string) {
-  const order = await loadOwned(db, actor, orderId);
-  if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
-  if (order.centralPaymentStatus === "PAID") return order;
-  return db.transaction(async (tx) => {
-    await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: new Date().toISOString() }).where(eq(orders.id, orderId));
-    const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" });
-    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Pagamento à Central confirmado.", actorRole: actor.role });
-    if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
-    await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId: order.supplierId, storeId: order.storeId, type: "CENTRAL_PAID", message: `Pedido #${order.number} pago à Central` });
-    return { ...order, centralPaymentStatus: "PAID" as const, status: next };
-  });
-}
-
 /** Lojista confirma que o cliente pagou (vendas manuais). */
 export async function confirmCustomerPayment(db: Database, actor: Actor, orderId: string) {
   const order = await loadOwned(db, actor, orderId);
@@ -237,7 +228,9 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
-    return { ...order, customerPaymentStatus: "PAID" as const, status: next };
+    await tryDebitOrder(tx, orderId);
+    const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    return fresh!;
   });
 }
 
@@ -285,6 +278,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
 }
 
 export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
+  if (actor.role === "SUPPLIER_DISPATCH") throw new ForbiddenError("A expedição não cancela pedidos.");
   const order = await loadOwned(db, actor, orderId);
   if (!CANCELABLE.includes(order.status)) throw new DomainError("INVALID_TRANSITION", "Pedido não pode mais ser cancelado.");
   return db.transaction(async (tx) => {
@@ -311,7 +305,7 @@ async function expandReservations(db: Database, items: (typeof orderItems.$infer
 function statusMessage(s: OrderStatus): string {
   const map: Record<OrderStatus, string> = {
     PENDING: "Aguardando pagamento do cliente.",
-    AWAITING_CENTRAL_PAYMENT: "Aguardando pagamento do lojista à Central.",
+    AWAITING_CENTRAL_PAYMENT: "Aguardando recarga de saldo do lojista.",
     AWAITING_LABEL: "Aguardando etiqueta de envio.",
     READY_TO_PICK: "Pronto para separação na Central.",
     PICKING: "Separação iniciada.",
@@ -360,7 +354,9 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
       { id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} pago pelo cliente` },
       { id: newId("act"), scope: "SUPPLIER", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} de ${order.customerName} foi pago` },
     ]);
-    return { changed: true as const, status: next };
+    await tryDebitOrder(tx, orderId);
+    const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    return { changed: true as const, status: fresh!.status };
   });
 }
 
