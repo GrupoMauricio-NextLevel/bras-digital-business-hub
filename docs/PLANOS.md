@@ -5,7 +5,7 @@ Esta versão corrige a anterior. A NextLevel **não define preço de produto**: 
 ## 1. De onde vem a receita da NextLevel
 | Fonte | Quem paga | Observação |
 |---|---|---|
-| **Taxa de transação de 3%** | Quem vende, em toda transação, **qualquer que seja o preço** que ele pratique | Base de cálculo a confirmar (item 6) |
+| **Taxa por pedido (2% a 5%)** | Fornecedor e membro, cada um sobre a sua venda, **qualquer que seja o preço** que pratique | Percentual por tipo de plano (item 6) |
 | **Mensalidade da plataforma** | Membro e fornecedor | Mensal, semestral, anual |
 | **Setup** | Fornecedor (para entrar) e Loja Própria (white label) | Separado da mensalidade |
 | **Serviços da Loja NextLevel** | Fornecedor e membro | Descontos por ciclo (item 5) |
@@ -38,7 +38,7 @@ O mensal é pago em Pix (ou cartão em 1x, mês a mês, sem recorrência automá
 **O normal:**
 - **Setup: R$ 2.400** (uma vez). Parcelado no cartão: R$ 2.736 (6x de R$ 456).
 - **Mensalidade da plataforma** (tabela acima: R$ 279/mês, ou o valor do ciclo).
-- **Taxa de transação de 3%** sobre as vendas da loja.
+- **Taxa por pedido de 3%** sobre as vendas da loja (a loja básica paga 5%).
 
 **Benefício de lançamento (temporário, não é a regra):** 12 meses de mensalidade grátis para quem comprar o setup durante o lançamento. Setup e taxa de 3% continuam valendo. Deve ser tratado como promoção com data de término, não como parte do preço.
 
@@ -60,12 +60,41 @@ Quem paga a plataforma no ciclo longo ganha desconto nos **serviços** da Loja N
 
 **Academy:** fica à parte, como add-on, e **não** entra nos benefícios dos ciclos. Ofertas periódicas (lançamento, Black Friday, indicação) usam a Academy como isca.
 
-## 6. Taxa de transação de 3%: pontos a definir
-- **Base:** sobre o valor da venda paga de quem vende. Duas leituras possíveis, preciso da sua decisão:
-  - (A) só sobre a venda de cada lado: o membro paga 3% do valor que vende ao cliente final e o fornecedor paga 3% do valor que vende ao membro (custo debitado da recarga). É "taxa em cima de tudo".
-  - (B) uma única taxa por pedido, paga por um só lado.
-- **Como cobrar:** os dois lados recebem no Mercado Pago deles, então a NextLevel cobra a taxa no **fechamento mensal** (fatura por Pix). Alternativa mais automática: conectar o Mercado Pago por OAuth e cobrar a taxa no momento do pagamento (split). É uma integração maior; fica como evolução.
-- Fornecedor White Label hoje tem 1,5% no `price-book`; a regra geral agora é 3%. Manter 1,5% para eles ou unificar?
+## 6. Taxa por pedido: quem paga quanto
+**Regra:** em todo pedido, o **fornecedor** e o **membro** pagam, cada um, um percentual sobre a **sua própria venda**. O percentual cai para quem compra o sistema completo, o que torna o upgrade atraente.
+
+| Quem paga | Plano | Taxa |
+|---|---|---|
+| Fornecedor | **White Label** (marca própria) | **2%** |
+| Fornecedor | **SuperDrop** (subdomínio) | **5%** |
+| Membro | **Loja Própria** (domínio próprio) | **3%** |
+| Membro | **Loja básica** (subdomínio) | **5%** |
+| Membro | Drop manual (sem loja) | **a definir** (proposta: 5%) |
+
+**Base de cálculo (proposta):** valor dos produtos do pedido, **sem frete**.
+- Fornecedor: sobre o valor que cobra do membro (o custo debitado da recarga).
+- Membro: sobre o valor que o cliente final paga pelos produtos.
+
+**Exemplo (1 camiseta):** o cliente paga R$ 100 ao membro; o membro paga R$ 70 ao fornecedor.
+| Fornecedor | Membro | Taxa do fornecedor (sobre R$ 70) | Taxa do membro (sobre R$ 100) | Total NextLevel |
+|---|---|---|---|---|
+| SuperDrop 5% | Loja básica 5% | R$ 3,50 | R$ 5,00 | **R$ 8,50** |
+| SuperDrop 5% | Loja Própria 3% | R$ 3,50 | R$ 3,00 | **R$ 6,50** |
+| White Label 2% | Loja básica 5% | R$ 1,40 | R$ 5,00 | **R$ 6,40** |
+| White Label 2% | Loja Própria 3% | R$ 1,40 | R$ 3,00 | **R$ 4,40** |
+
+Sobra para cada um (antes de frete e mensalidade, com Pix de cerca de 1%): o membro fica com cerca de R$ 24 na loja básica e R$ 26 na Loja Própria; o fornecedor recebe cerca de R$ 65,81 no SuperDrop e R$ 67,91 no White Label.
+
+**Quando o upgrade compensa (ponto de equilíbrio):**
+- Membro, Loja SuperDrop (R$ 139/mês + 5%) para Loja Própria (R$ 279/mês + 3%): a diferença de R$ 140 na mensalidade se paga com **R$ 7.000 de vendas por mês** (R$ 5.250 no plano anual). Acima disso a Loja Própria custa menos no total.
+- Fornecedor, SuperDrop Growth (R$ 1.397 + 5%) para White Label (R$ 2.800 + 2%): compensa a partir de cerca de **R$ 46.800 por mês** vendidos aos membros (Start: R$ 70.100). O Scale (R$ 2.797) e o White Label (R$ 2.800) têm mensalidade quase igual: o White Label se diferencia por marca, domínio, página de vendas e taxa menor.
+- Isso alimenta as ofertas de upgrade da Loja NextLevel ("com o seu volume, a Loja Própria já sai mais barata").
+
+**Quando a taxa vale:** só sobre pedidos pagos e enviados para separação (custo debitado). Cancelamento ou estorno antes do envio devolve a taxa. Pedidos do período de teste não pagam taxa.
+
+**Como cobrar:** os dois lados recebem no Mercado Pago deles, então a NextLevel soma as taxas do mês e cobra no **fechamento mensal** (fatura por Pix, com o mesmo corte de acesso em caso de atraso). Evolução futura: conectar o Mercado Pago por OAuth e cobrar a taxa no momento do pagamento (split).
+
+**O que substitui:** a antiga "taxa de volume" de 3% sobre o custo, o piso mensal e o 1,5% do White Label deixam de existir, no lugar das taxas acima.
 
 ## 7. Cobrança e corte de acesso
 | Estado | Quando | O que acontece |
@@ -80,19 +109,20 @@ Quem paga a plataforma no ciclo longo ganha desconto nos **serviços** da Loja N
 - Depois de 2 mensalidades pagas, oferta de migrar para semestral ou anual abatendo o que já foi pago. Upgrade na hora com crédito proporcional; downgrade só no fim do ciclo.
 
 ## 8. Fornecedor
-O fornecedor **paga setup para entrar** e deixa **taxa de transação** para a plataforma rodar. Os dois fundadores (MantosShop e Alpha Outfit) têm acordo temporário com comissão sobre os membros que trouxerem (proposta: 25% do setup e 20% da mensalidade, com data de término no contrato); os demais fornecedores não têm comissão (a rever depois do teste).
+O fornecedor **paga setup para entrar** e deixa a **taxa por pedido** (5% no SuperDrop, 2% no White Label) para a plataforma rodar. Os dois fundadores (MantosShop e Alpha Outfit) têm acordo temporário com comissão sobre os membros que trouxerem (proposta: 25% do setup e 20% da mensalidade, com data de término no contrato); os demais fornecedores não têm comissão (a rever depois do teste).
 
-| | Setup (proposta) | Mensal | Semestral (total) | Anual (total) | Taxa |
+| | Setup (proposta) | Mensal | Semestral (total) | Anual (total) | Taxa por pedido |
 |---|---|---|---|---|---|
-| SuperDrop Start | R$ 1.997 | R$ 697 | R$ 3.555 | R$ 6.273 | 3% |
-| SuperDrop Growth | R$ 1.997 | R$ 1.397 | R$ 7.125 | R$ 12.573 | 3% |
-| SuperDrop Scale | R$ 1.997 | R$ 2.797 | R$ 14.265 | R$ 25.173 | 3% |
-| Central White Label | R$ 15.000 | R$ 2.800 | R$ 14.280 | R$ 25.200 | 3% (hoje 1,5%) |
+| SuperDrop Start | R$ 1.997 | R$ 697 | R$ 3.555 | R$ 6.273 | 5% |
+| SuperDrop Growth | R$ 1.997 | R$ 1.397 | R$ 7.125 | R$ 12.573 | 5% |
+| SuperDrop Scale | R$ 1.997 | R$ 2.797 | R$ 14.265 | R$ 25.173 | 5% |
+| Central White Label | R$ 15.000 | R$ 2.800 | R$ 14.280 | R$ 25.200 | 2% |
 
-Racional do setup de entrada: cobre importação do catálogo, configuração, página de vendas, treinamento da expedição e integração do Mercado Pago (cerca de 20 h de trabalho). Aviso: o "piso mensal de taxa" atual (R$ 300/R$ 500) somado à mensalidade parece cobrança dupla; proposta: eliminar o piso.
+Racional do setup de entrada: cobre importação do catálogo, configuração, página de vendas, treinamento da expedição e integração do Mercado Pago (cerca de 20 h de trabalho). O piso mensal de taxa deixa de existir.
 
 ## 9. Impacto no código (quando for implementar)
 - **Checkout das lojas e recargas: somente Pix.** Hoje o Checkout Pro do Mercado Pago aceita cartão; é preciso excluir os demais meios de pagamento na preferência.
-- `price-book`: ciclos semestral e anual, setup separado da mensalidade, taxa de 3%, promoção de lançamento com prazo, descontos de serviços por ciclo.
+- `price-book`: ciclos semestral e anual, setup separado da mensalidade, taxa por pedido por tipo de plano (2%, 3%, 5%), promoção de lançamento com prazo, descontos de serviços por ciclo.
+- Registro da taxa por pedido e por parte (fornecedor e membro), com fechamento mensal também para membros; estorno devolve a taxa.
 - Planos da NextLevel: pagamento por Pix ou cartão (1x cheio, 2 a 6x ×1,14).
 - Fatura com a empresa emissora (NextLevel Marketing ou Mega Tron).
