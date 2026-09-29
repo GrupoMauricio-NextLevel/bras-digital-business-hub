@@ -15,7 +15,8 @@
     "db:seed": "SEED_DEMO=true tsx scripts/bootstrap.ts",
     "db:reset": "rm -rf data/pg && npm run db:migrate && npm run db:seed",
     "db:bootstrap": "tsx scripts/bootstrap.ts",
-    "start:prod": "npm run db:bootstrap && next start -p ${PORT:-3000}"
+    "start:prod": "npm run db:bootstrap && next start -p ${PORT:-3000}",
+    "e2e": "bash e2e/run.sh"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",
@@ -46,6 +47,7 @@
     "drizzle-kit": "^0.31.11",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.7",
+    "playwright-core": "^1.63.0",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",

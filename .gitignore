@@ -153,3 +153,5 @@ data/pg/-shm
 *.tsbuildinfo
 next-env.d.ts
 *.zip
+
+.e2e/
