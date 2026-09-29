@@ -26,7 +26,7 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   const tenantName = session.store?.name ?? session.supplier?.name ?? "NextLevel";
   const tenantSub = session.store ? "Loja parceira" : session.supplier ? "Fornecedor / Central" : "Plataforma";
   return (
-    <AppShell panel={panelFor(session)} items={nav.items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store && canUse(session.store.offer, "storefront") ? storeUrl(session.store.slug, session.store.offer, session.store.customDomain, session.store.domainStatus) : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
+    <AppShell panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={nav.items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store && canUse(session.store.offer, "storefront") ? storeUrl(session.store.slug, session.store.offer, session.store.customDomain, session.store.domainStatus) : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
       {children}
     </AppShell>
   );

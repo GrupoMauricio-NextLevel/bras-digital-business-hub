@@ -3,7 +3,7 @@ import type { Role } from "@/lib/domain/access";
 export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
-  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock";
+  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock";
 
 export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro";
 
@@ -52,17 +52,20 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "Fornecedor",
     items: [
       NEXTLEVEL_ITEM("/supplier"),
-      { label: "Início", href: "/supplier", icon: "Home", exact: true },
+      { label: "Esteira", href: "/supplier", icon: "Truck", exact: true },
       { label: "Pedidos", href: "/supplier/orders", icon: "ShoppingCart" },
-      { label: "Expedição", href: "/supplier/shipping", icon: "Truck" },
+      { label: "Recargas", href: "/supplier/wallets", icon: "Wallet" },
+      { label: "Lojistas", href: "/supplier/stores", icon: "Store" },
       { label: "Produtos", href: "/supplier/products", icon: "Package" },
       { label: "Estoque", href: "/supplier/inventory", icon: "Boxes" },
-      { label: "Lojistas", href: "/supplier/stores", icon: "Store" },
-      { label: "Financeiro", href: "/supplier/finance", icon: "Wallet" },
+      { label: "Equipe", href: "/supplier/team", icon: "UsersRound" },
+      { label: "Corte e operação", href: "/supplier/operations", icon: "Clock" },
+      { label: "Financeiro", href: "/supplier/finance", icon: "Landmark" },
       { label: "Conteúdo", href: "/supplier/content", icon: "Image" },
       { label: "Configurações", href: "/supplier/settings", icon: "Settings" },
     ],
     quick: [
+      { label: "Abrir tela da expedição", href: "/supplier/dispatch", icon: "PackageCheck" },
       { label: "Novo produto", href: "/supplier/products/new", icon: "Package" },
       { label: "Nova loja", href: "/supplier/stores/new", icon: "Store" },
       { label: "Importar produtos por CSV", href: "/supplier/products/import", icon: "Boxes" },

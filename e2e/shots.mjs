@@ -18,8 +18,8 @@ const THEMES = (process.env.SHOT_THEMES ?? "light").split(",");
 /** button = trecho do nome no botão de login demo; pages = [nome, rota] */
 export const PROFILES = {
   master: { button: /Equipe NextLevel/, pages: [["home", "/master"], ["finance", "/master/finance"], ["services", "/master/services"]] },
-  supplier: { button: /Ricardo Menezes/, pages: [["home", "/supplier"], ["orders", "/supplier/orders"], ["finance", "/supplier/finance"], ["products", "/supplier/products"]] },
-  dispatch: { button: /Expedição/, pages: [["queue", "/supplier/dispatch"]] },
+  supplier: { button: /Ricardo Menezes/, pages: [["home", "/supplier"], ["wallets", "/supplier/wallets"], ["operations", "/supplier/operations"], ["team", "/supplier/team"], ["finance", "/supplier/finance"], ["orders", "/supplier/orders"]] },
+  dispatch: { button: /Marcos Souza/, pages: [["queue", "/supplier/dispatch"], ["waves", "/supplier/dispatch/print"]] },
   lite: { button: /Carla Moura|Bruno Tavares/, pages: [["home", "/merchant"], ["orders", "/merchant/orders"], ["products", "/merchant/products"]] },
   pro: { button: /Ana Paula/, pages: [["home", "/merchant"], ["orders", "/merchant/orders"], ["appearance", "/merchant/appearance"]] },
 };

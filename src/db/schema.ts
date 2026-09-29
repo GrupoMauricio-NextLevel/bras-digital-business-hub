@@ -297,6 +297,45 @@ export const orderEvents = pgTable("order_events", {
 });
 
 // ---------------------------------------------------------------------------
+// Operação do fornecedor: horário de corte, separação (claims) e ondas
+// ---------------------------------------------------------------------------
+export type Cutoffs = { mon: string | null; tue: string | null; wed: string | null; thu: string | null; fri: string | null; sat: string | null; sun: string | null };
+
+/** Configuração operacional: fuso, horário de corte por dia da semana ("HH:MM" ou null = sem expedição) e feriados (YYYY-MM-DD). */
+export const supplierOps = pgTable("supplier_ops", {
+  supplierId: text("supplier_id").primaryKey().references(() => suppliers.id),
+  timezone: text("timezone").notNull().default("America/Sao_Paulo"),
+  cutoffs: jsonb("cutoffs").$type<Cutoffs>().notNull(),
+  holidays: jsonb("holidays").$type<string[]>().notNull().default([]),
+  updatedAt: updatedAt(),
+});
+
+/** Quem está separando o pedido (uma linha por pedido; expira sozinha). */
+export const orderClaims = pgTable("order_claims", {
+  orderId: text("order_id").primaryKey().references(() => orders.id),
+  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  userId: text("user_id").notNull(),
+  userName: text("user_name").notNull(),
+  claimedAt: ts("claimed_at").notNull().defaultNow(),
+});
+
+/** Onda de separação: conjunto de pedidos impresso e separado junto. */
+export const pickWaves = pgTable("pick_waves", {
+  id: id(),
+  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  number: integer("number").notNull(),
+  /** Dia (YYYY-MM-DD, no fuso do fornecedor) a que a onda pertence. */
+  waveDate: text("wave_date").notNull(),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("pick_waves_number").on(t.supplierId, t.number)]);
+
+export const pickWaveOrders = pgTable("pick_wave_orders", {
+  orderId: text("order_id").primaryKey().references(() => orders.id),
+  waveId: text("wave_id").notNull().references(() => pickWaves.id),
+}, (t) => [index("pick_wave_orders_wave_idx").on(t.waveId)]);
+
+// ---------------------------------------------------------------------------
 // Etiquetas de envio (arquivo PDF do SuperFrete) e histórico de impressão
 // ---------------------------------------------------------------------------
 export const orderLabelFiles = pgTable("order_label_files", {

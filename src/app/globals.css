@@ -281,7 +281,9 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
   body { background: #fff !important; color: #000 !important; }
   .nl-no-print { display: none !important; }
   .nl-print-only { display: block !important; }
-  main { padding: 0 !important; }
+  main { padding: 0 !important; max-width: none !important; }
+  aside { display: none !important; }
+  [data-panel] > div { padding-left: 0 !important; }
 }
 .nl-print-only { display: none; }
 @page { margin: 10mm; }

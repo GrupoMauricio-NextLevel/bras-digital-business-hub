@@ -213,3 +213,18 @@ export async function expireUnfundedOrders(db: Database, now = new Date()): Prom
   }
   return { canceled: stale.length };
 }
+
+/** Visão do fornecedor sobre as carteiras dos lojistas da rede: saldo, pedidos aguardando e última recarga. */
+export async function walletOverviewForSupplier(db: Database, actor: Actor) {
+  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
+  const rows = await db.select({ store: stores }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, actor.supplierId));
+  const out = [];
+  for (const { store } of rows) {
+    const balance = await getBalanceCents(db, store.id);
+    const waiting = await db.select({ cost: orders.costTotalCents }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING")));
+    const last = await db.select().from(walletRecharges).where(and(eq(walletRecharges.storeId, store.id), eq(walletRecharges.status, "PAID"))).orderBy(desc(walletRecharges.paidAt)).limit(1);
+    out.push({ storeId: store.id, name: store.name, offer: store.offer, status: store.status, balanceCents: balance, awaitingOrders: waiting.length, awaitingCents: waiting.reduce((s, w) => s + w.cost, 0), lastRechargeAt: last[0]?.paidAt ?? null, lastRechargeCents: last[0]?.amountCents ?? null });
+  }
+  const paid30 = await db.select({ n: walletRecharges.amountCents, at: walletRecharges.paidAt }).from(walletRecharges).where(and(eq(walletRecharges.supplierId, actor.supplierId), eq(walletRecharges.status, "PAID")));
+  return { stores: out.sort((a, b) => b.awaitingCents - a.awaitingCents || a.balanceCents - b.balanceCents), receivedCents: paid30.reduce((s, r) => s + r.n, 0), rechargeCount: paid30.length };
+}
