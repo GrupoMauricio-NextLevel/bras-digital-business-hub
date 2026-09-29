@@ -8,6 +8,7 @@ import type { Actor } from "@/lib/domain/access";
 import { hashPassword } from "@/lib/security/password";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { seedReferenceData } from "./base-data";
+import { ensureContract, issueSubscriptionInvoices, periodOf } from "@/lib/domain/finance";
 
 export const DEMO = {
   masterEmail: "master@nextlevel.demo",
@@ -64,9 +65,9 @@ export async function seedDatabase(db: Database) {
   await db.insert(s.networks).values({ id: networkId, supplierId, name: "Rede Central Sports", slug: "rede-central-sports" });
 
   const stores = [
-    { id: newId("sto"), organizationId: storeOrgs[0]!.id, networkId, name: "Mantos Shop", slug: "mantos-shop", tagline: "Os mantos que a torcida ama", logoText: "MS", primaryColor: "#0f172a", accentColor: "#16a34a", whatsapp: "5511999990001", instagram: "mantosshop", paymentStatus: "DEMO" as const, shippingStatus: "NOT_CONFIGURED" as const, domainStatus: "NOT_CONFIGURED" as const, publishedAt: iso(20), createdAt: iso(45) },
-    { id: newId("sto"), organizationId: storeOrgs[1]!.id, networkId, name: "Arena 10", slug: "arena-10", tagline: "Camisa de craque, preço de torcedor", logoText: "A10", primaryColor: "#1d4ed8", accentColor: "#f59e0b", whatsapp: "5511999990002", instagram: "arena10oficial", paymentStatus: "DEMO" as const, shippingStatus: "DEMO" as const, domainStatus: "PENDING" as const, publishedAt: iso(12), createdAt: iso(30) },
-    { id: newId("sto"), organizationId: storeOrgs[2]!.id, networkId, name: "Fut Classics", slug: "fut-classics", tagline: "Clássicos que nunca saem de moda", logoText: "FC", primaryColor: "#7c2d12", accentColor: "#ca8a04", whatsapp: "5511999990003", status: "SUSPENDED" as const, paymentStatus: "NOT_CONFIGURED" as const, shippingStatus: "NOT_CONFIGURED" as const, domainStatus: "NOT_CONFIGURED" as const, publishedAt: null, createdAt: iso(60) },
+    { id: newId("sto"), organizationId: storeOrgs[0]!.id, networkId, offer: "STORE_OWN" as const, name: "Mantos Shop", slug: "mantos-shop", tagline: "Os mantos que a torcida ama", logoText: "MS", primaryColor: "#0f172a", accentColor: "#16a34a", whatsapp: "5511999990001", instagram: "mantosshop", paymentStatus: "DEMO" as const, shippingStatus: "NOT_CONFIGURED" as const, domainStatus: "NOT_CONFIGURED" as const, publishedAt: iso(20), createdAt: iso(45) },
+    { id: newId("sto"), organizationId: storeOrgs[1]!.id, networkId, offer: "STORE_SUBDOMAIN" as const, name: "Arena 10", slug: "arena-10", tagline: "Camisa de craque, preço de torcedor", logoText: "A10", primaryColor: "#1d4ed8", accentColor: "#f59e0b", whatsapp: "5511999990002", instagram: "arena10oficial", paymentStatus: "DEMO" as const, shippingStatus: "DEMO" as const, domainStatus: "PENDING" as const, publishedAt: iso(12), createdAt: iso(30) },
+    { id: newId("sto"), organizationId: storeOrgs[2]!.id, networkId, offer: "DROP_MANUAL" as const, name: "Fut Classics", slug: "fut-classics", tagline: "Clássicos que nunca saem de moda", logoText: "FC", primaryColor: "#7c2d12", accentColor: "#ca8a04", whatsapp: "5511999990003", status: "SUSPENDED" as const, paymentStatus: "NOT_CONFIGURED" as const, shippingStatus: "NOT_CONFIGURED" as const, domainStatus: "NOT_CONFIGURED" as const, publishedAt: null, createdAt: iso(60) },
   ];
   await db.insert(s.stores).values(stores);
   const [mantos, arena, classics] = stores as [typeof stores[0], typeof stores[0], typeof stores[0]];
@@ -136,8 +137,8 @@ export async function seedDatabase(db: Database) {
   ]);
 
   const subs = [
-    { id: newId("sub"), storeId: mantos.id, planId: plans[1]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-18) },
-    { id: newId("sub"), storeId: arena.id, planId: plans[0]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-6) },
+    { id: newId("sub"), storeId: mantos.id, planId: plans[2]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-18) },
+    { id: newId("sub"), storeId: arena.id, planId: plans[1]!.id, status: "ACTIVE" as const, currentPeriodEnd: iso(-6) },
     { id: newId("sub"), storeId: classics.id, planId: plans[0]!.id, status: "SUSPENDED" as const, currentPeriodEnd: iso(22) },
   ];
   await db.insert(s.subscriptions).values(subs);
@@ -146,7 +147,7 @@ export async function seedDatabase(db: Database) {
     { id: newId("inv"), subscriptionId: subs[0]!.id, amountCents: 19700, dueDate: iso(-18), status: "OPEN" },
     { id: newId("inv"), subscriptionId: subs[1]!.id, amountCents: 9700, dueDate: iso(24), status: "PAID", paidAt: iso(25) },
     { id: newId("inv"), subscriptionId: subs[1]!.id, amountCents: 9700, dueDate: iso(-6), status: "OPEN" },
-    { id: newId("inv"), subscriptionId: subs[2]!.id, amountCents: 9700, dueDate: iso(22), status: "OVERDUE" },
+    { id: newId("inv"), subscriptionId: subs[2]!.id, amountCents: 4900, dueDate: iso(22), status: "OVERDUE" },
   ]);
 
   await db.insert(s.serviceLeads).values([
@@ -226,6 +227,19 @@ export async function seedDatabase(db: Database) {
     { id: newId("act"), scope: "PLATFORM", type: "SERVICE_LEAD", message: "Mantos Shop demonstrou interesse em Banners", createdAt: iso(1) },
     { id: newId("act"), scope: "PLATFORM", type: "SUPPLIER_CREATED", message: "Fornecedor Central Sports ativado (SuperDrop · 6%)", createdAt: iso(45) },
   ]);
+
+  // --- Financeiro: contrato do fornecedor fundador (isento por 90 dias), mensalidade do mês e lojas adquiridas ---
+  await ensureContract(db, supplierId, { tier: "GROWTH", waiveMonthly: true, waiveSetup: true });
+  await issueSubscriptionInvoices(db, periodOf(new Date()));
+  const acq = [
+    { store: mantos, offer: "STORE_OWN" as const, setup: 200000, paidDaysAgo: 18 },
+    { store: arena, offer: "STORE_SUBDOMAIN" as const, setup: 20000, paidDaysAgo: 9 },
+  ];
+  for (const a of acq) {
+    const invId = newId("fin");
+    await db.insert(s.financeInvoices).values({ id: invId, dedupeKey: `STORESETUP:${a.store.id}`, payerType: "STORE", supplierId, storeId: a.store.id, kind: "STORE_SETUP", description: `Ativação da loja ${a.store.name}`, amountCents: a.setup + (a.offer === "STORE_OWN" ? 19700 : 9700), lines: [{ kind: "STORE_SETUP", description: "Setup", amountCents: a.setup }, { kind: "STORE_FIRST_MONTH", description: "Primeira mensalidade", amountCents: a.offer === "STORE_OWN" ? 19700 : 9700 }], status: "PAID", dueDate: iso(a.paidDaysAgo + 3), paidAt: iso(a.paidDaysAgo) });
+    await db.insert(s.storeAcquisitions).values({ id: newId("acq"), storeId: a.store.id, supplierId, offer: a.offer, setupCents: a.setup, commissionBps: 2500, commissionCents: Math.round(a.setup * 0.25), status: "GUARANTEE", invoiceId: invId, paidAt: iso(a.paidDaysAgo), eligibleAt: iso(a.paidDaysAgo - 7) });
+  }
 
   return { supplierId, networkId, stores: { mantos, arena, classics }, users, productIds, variantsByProduct, packByProduct };
 }

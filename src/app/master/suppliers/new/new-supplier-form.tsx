@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/app/form-field";
-import { Input, Select } from "@/components/ui/input";
+import { Input, Select, Switch } from "@/components/ui/input";
 import { CredentialsCard } from "@/components/shared/credentials-card";
 import { createSupplierAction } from "@/app/actions/provisioning";
 
 export function NewSupplierForm() {
-  const [f, setF] = React.useState({ name: "", city: "", state: "SP", businessModel: "SUPERDROP" as "SUPERDROP" | "WHITE_LABEL", adminName: "", adminEmail: "" });
+  const [f, setF] = React.useState({ name: "", city: "", state: "SP", businessModel: "SUPERDROP" as "SUPERDROP" | "WHITE_LABEL", tier: "GROWTH" as "START" | "GROWTH" | "SCALE", waiveFees: false, adminName: "", adminEmail: "" });
   const [done, setDone] = React.useState<{ email: string; temporaryPassword: string } | null>(null);
   const [pending, start] = React.useTransition();
   if (done) {
@@ -31,9 +31,13 @@ export function NewSupplierForm() {
             <FormField label="Cidade" htmlFor="city" className="col-span-2"><Input id="city" value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} /></FormField>
             <FormField label="UF" htmlFor="state"><Input id="state" maxLength={2} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value.toUpperCase() })} /></FormField>
           </div>
-          <FormField label="Modelo comercial" htmlFor="model" hint={f.businessModel === "SUPERDROP" ? "R$ 0 setup + 6% do faturamento" : "R$ 6.000 setup + 3% do faturamento"}>
+          <FormField label="Modelo comercial" htmlFor="model" hint={f.businessModel === "SUPERDROP" ? "Mensalidade por faixa + taxa de 3% sobre o custo pago à Central" : "Setup de R$ 15.000 + manutenção mensal + taxa de 1,5%"}>
             <Select id="model" value={f.businessModel} onChange={(e) => setF({ ...f, businessModel: e.target.value as typeof f.businessModel })}><option value="SUPERDROP">SuperDrop</option><option value="WHITE_LABEL">White Label</option></Select>
           </FormField>
+          {f.businessModel === "SUPERDROP" ? (
+            <FormField label="Faixa" htmlFor="tier" hint="Start até 100 SKUs, Growth até 500, Scale sem limite"><Select id="tier" value={f.tier} onChange={(e) => setF({ ...f, tier: e.target.value as typeof f.tier })}><option value="START">Start</option><option value="GROWTH">Growth</option><option value="SCALE">Scale</option></Select></FormField>
+          ) : null}
+          <Switch checked={f.waiveFees} onCheckedChange={(v) => setF({ ...f, waiveFees: v })} label="Parceiro fundador: isentar mensalidade e setup no prazo padrão" />
         </CardContent>
       </Card>
       <Card>

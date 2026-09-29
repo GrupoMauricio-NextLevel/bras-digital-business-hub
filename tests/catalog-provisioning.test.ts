@@ -85,8 +85,9 @@ describe("provisionamento de fornecedor e loja", () => {
     expect(u?.mustChangePassword).toBe(true);
     expect(verifyPassword(r.credentials.temporaryPassword, u?.passwordHash)).toBe(true);
     const sup = await ctx.db.query.suppliers.findFirst({ where: (s, { eq }) => eq(s.id, r.supplierId) });
-    expect(sup?.platformFeePercent).toBe(3);
-    expect(sup?.setupFeeCents).toBe(600000);
+    expect(sup?.setupFeeCents).toBe(1_500_000);
+    const contract = await ctx.db.query.supplierContracts.findFirst({ where: (c, { eq }) => eq(c.supplierId, r.supplierId) });
+    expect(contract).toMatchObject({ volumeFeeBps: 150, setupFeeCents: 1_500_000, minMonthlyFeeCents: 50_000 });
     await expect(createSupplier(ctx.db, { name: "Outro", adminName: "Maria 2", adminEmail: "maria@novo.com" })).rejects.toThrow(/e-mail/);
   });
 

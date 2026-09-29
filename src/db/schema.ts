@@ -34,7 +34,7 @@ export const suppliers = pgTable("suppliers", {
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  status: text("status", { enum: ["ACTIVE", "SUSPENDED"] }).notNull().default("ACTIVE"),
+  status: text("status", { enum: ["ACTIVE", "WARNING", "PARTIAL_BLOCK", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
   /** Modelo comercial SuperDrop (0 setup + 6%) ou White Label (R$6.000 + 3%) */
   businessModel: text("business_model", { enum: ["SUPERDROP", "WHITE_LABEL"] }).notNull().default("SUPERDROP"),
   platformFeePercent: integer("platform_fee_percent").notNull().default(6),
@@ -58,7 +58,9 @@ export const stores = pgTable("stores", {
   networkId: text("network_id").notNull().references(() => networks.id),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  status: text("status", { enum: ["ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
+  status: text("status", { enum: ["PENDING_PAYMENT", "ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
+  /** Oferta contratada pelo lojista junto à NextLevel. */
+  offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
   tagline: text("tagline"),
   logoUrl: text("logo_url"),
   logoText: text("logo_text"),
@@ -238,6 +240,8 @@ export const orders = pgTable("orders", {
   status: text("status", { enum: ORDER_STATUSES }).notNull().default("PENDING"),
   customerPaymentStatus: text("customer_payment_status", { enum: ["PENDING", "PAID", "REFUNDED"] }).notNull().default("PENDING"),
   centralPaymentStatus: text("central_payment_status", { enum: ["PENDING", "PAID"] }).notNull().default("PENDING"),
+  /** Momento em que o pagamento à Central foi confirmado (base da taxa de volume). */
+  centralPaidAt: ts("central_paid_at"),
   shippingLabelStatus: text("shipping_label_status", { enum: ["PENDING", "READY"] }).notNull().default("PENDING"),
   shippingLabelCode: text("shipping_label_code"),
   shippingCarrier: text("shipping_carrier"),
@@ -337,6 +341,8 @@ export const themeSettings = pgTable("theme_settings", {
 // ---------------------------------------------------------------------------
 export const plans = pgTable("plans", {
   id: id(),
+  /** Chave da oferta (DROP_MANUAL, STORE_SUBDOMAIN, STORE_OWN). */
+  key: text("key"),
   name: text("name").notNull(),
   priceCents: integer("price_cents").notNull(),
   features: jsonb("features").$type<string[]>().notNull().default([]),
@@ -358,6 +364,78 @@ export const invoices = pgTable("invoices", {
   dueDate: ts("due_date").notNull(),
   status: text("status", { enum: ["OPEN", "PAID", "OVERDUE"] }).notNull().default("OPEN"),
   paidAt: ts("paid_at"),
+});
+
+// ---------------------------------------------------------------------------
+// Financeiro da plataforma
+// ---------------------------------------------------------------------------
+/** Configurações globais editáveis (ex.: tabela de preços). Valor validado por zod na leitura. */
+export const platformSettings = pgTable("platform_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").$type<unknown>().notNull(),
+  updatedAt: updatedAt(),
+  updatedBy: text("updated_by"),
+});
+
+/** Contrato comercial de cada fornecedor com a NextLevel. Valores nascem da tabela de preços e podem ser negociados. */
+export const supplierContracts = pgTable("supplier_contracts", {
+  supplierId: text("supplier_id").primaryKey().references(() => suppliers.id),
+  tier: text("tier", { enum: ["START", "GROWTH", "SCALE"] }).notNull().default("GROWTH"),
+  monthlyFeeCents: integer("monthly_fee_cents").notNull(),
+  setupFeeCents: integer("setup_fee_cents").notNull().default(0),
+  /** Taxa sobre o custo dos pedidos com pagamento à Central confirmado, em pontos-base (300 = 3%). */
+  volumeFeeBps: integer("volume_fee_bps").notNull(),
+  minMonthlyFeeCents: integer("min_monthly_fee_cents").notNull().default(0),
+  perOrderFeeCents: integer("per_order_fee_cents").notNull().default(0),
+  /** Comissão do fornecedor sobre o setup de cada loja nova (2500 = 25%). */
+  storeSetupCommissionBps: integer("store_setup_commission_bps").notNull().default(2500),
+  monthlyWaivedUntil: ts("monthly_waived_until"),
+  setupWaivedUntil: ts("setup_waived_until"),
+  priceLockUntil: ts("price_lock_until"),
+  /** Saldo a favor (+) ou em débito (−) do fornecedor, compensado no próximo fechamento. */
+  creditBalanceCents: integer("credit_balance_cents").notNull().default(0),
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+export type InvoiceLine = { kind: string; description: string; amountCents: number };
+
+/** Cobranças da NextLevel a fornecedores e a lojas (setup, mensalidade do fornecedor, fechamento mensal de taxas). */
+export const financeInvoices = pgTable("finance_invoices", {
+  id: id(),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  payerType: text("payer_type", { enum: ["SUPPLIER", "STORE"] }).notNull(),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  storeId: text("store_id").references(() => stores.id),
+  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP"] }).notNull(),
+  /** Competência YYYY-MM (mensalidade e fechamento). */
+  period: text("period"),
+  description: text("description").notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  lines: jsonb("lines").$type<InvoiceLine[]>().notNull().default([]),
+  status: text("status", { enum: ["OPEN", "PAID", "OVERDUE", "WAIVED", "CANCELED"] }).notNull().default("OPEN"),
+  dueDate: ts("due_date").notNull(),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+}, (t) => [index("finance_invoices_supplier_idx").on(t.supplierId), index("finance_invoices_status_idx").on(t.status)]);
+
+/** Loja adquirida por um fornecedor: origem da comissão de canal sobre o setup. */
+export const storeAcquisitions = pgTable("store_acquisitions", {
+  id: id(),
+  storeId: text("store_id").notNull().unique().references(() => stores.id),
+  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull(),
+  setupCents: integer("setup_cents").notNull(),
+  commissionBps: integer("commission_bps").notNull(),
+  commissionCents: integer("commission_cents").notNull(),
+  /** PENDING_PAYMENT → GUARANTEE (pago, aguardando prazo de arrependimento) → CREDITED (abatida no fechamento). */
+  status: text("status", { enum: ["PENDING_PAYMENT", "GUARANTEE", "CREDITED", "CANCELED"] }).notNull().default("PENDING_PAYMENT"),
+  invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  paidAt: ts("paid_at"),
+  eligibleAt: ts("eligible_at"),
+  creditedInvoiceId: text("credited_invoice_id").references(() => financeInvoices.id),
+  createdAt: createdAt(),
 });
 
 // ---------------------------------------------------------------------------
@@ -415,3 +493,6 @@ export type OrderItem = typeof orderItems.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Theme = typeof themes.$inferSelect;
 export type Service = typeof services.$inferSelect;
+export type SupplierContract = typeof supplierContracts.$inferSelect;
+export type FinanceInvoice = typeof financeInvoices.$inferSelect;
+export type StoreAcquisition = typeof storeAcquisitions.$inferSelect;

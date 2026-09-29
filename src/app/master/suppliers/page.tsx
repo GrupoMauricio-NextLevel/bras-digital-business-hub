@@ -19,7 +19,7 @@ export default async function SuppliersPage() {
         columns={[
           { key: "name", header: "Fornecedor", primary: true, cell: (r) => <div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.city}/{r.state} · {r.slug}</div></div> },
           { key: "model", header: "Modelo", cell: (r) => <StatusBadge value={r.businessModel} /> },
-          { key: "fee", header: "Taxa", cell: (r) => <span className="tabular-nums">{r.platformFeePercent}% · setup {formatBRL(r.setupFeeCents)}</span> },
+          { key: "fee", header: "Contrato", cell: (r) => r.contract ? <span className="tabular-nums">{formatBRL(r.contract.monthlyFeeCents)}/mês · {r.contract.volumeFeeBps / 100}%</span> : <span className="text-muted-foreground">sem contrato</span> },
           { key: "stores", header: "Lojas", className: "text-right", cell: (r) => r.storeCount },
           { key: "products", header: "Produtos", className: "text-right", cell: (r) => r.productCount },
           { key: "gmv", header: "GMV", className: "text-right", cell: (r) => <span className="font-medium tabular-nums">{formatBRL(r.gmv)}</span> },
@@ -28,12 +28,12 @@ export default async function SuppliersPage() {
       />
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <Card>
-          <CardHeader><div><CardTitle>SuperDrop</CardTitle><CardDescription>Baixa barreira de entrada para fornecedores.</CardDescription></div><StatusBadge value="SUPERDROP" /></CardHeader>
-          <CardContent className="text-sm"><div className="text-2xl font-semibold">R$ 0 <span className="text-sm font-normal text-muted-foreground">setup</span></div><div className="text-muted-foreground">+ 6% do faturamento bruto</div></CardContent>
+          <CardHeader><div><CardTitle>SuperDrop</CardTitle><CardDescription>Fornecedor vende com a marca SuperDrop.</CardDescription></div><StatusBadge value="SUPERDROP" /></CardHeader>
+          <CardContent className="text-sm"><div className="text-2xl font-semibold">Mensalidade por faixa</div><div className="text-muted-foreground">+ taxa de 3% sobre o custo pago à Central, com mínimo mensal</div></CardContent>
         </Card>
         <Card>
-          <CardHeader><div><CardTitle>White Label</CardTitle><CardDescription>Ambiente com a marca do fornecedor.</CardDescription></div><StatusBadge value="WHITE_LABEL" /></CardHeader>
-          <CardContent className="text-sm"><div className="text-2xl font-semibold">R$ 6.000 <span className="text-sm font-normal text-muted-foreground">setup</span></div><div className="text-muted-foreground">+ 3% do faturamento bruto</div></CardContent>
+          <CardHeader><div><CardTitle>White Label</CardTitle><CardDescription>Ambiente com marca e domínio do fornecedor.</CardDescription></div><StatusBadge value="WHITE_LABEL" /></CardHeader>
+          <CardContent className="text-sm"><div className="text-2xl font-semibold">R$ 15.000 <span className="text-sm font-normal text-muted-foreground">setup</span></div><div className="text-muted-foreground">+ manutenção mensal e taxa de 1,5%. Valores completos em Financeiro.</div></CardContent>
         </Card>
       </div>
     </>

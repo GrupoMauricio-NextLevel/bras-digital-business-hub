@@ -97,3 +97,15 @@ body {
 .animate-slide-in-right { animation: nl-slide-in-right 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 @keyframes nl-slide-in-left { from { transform: translateX(-100%); } to { transform: none; } }
 .animate-slide-in-left { animation: nl-slide-in-left 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+/* Paleta categórica de gráficos (validada: ΔE adjacente ≥ 9 em CVD; legenda e tabela obrigatórias como relevo de contraste) */
+:root {
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --viz-grid: #e9eaec;
+  --viz-axis: #c9cbd0;
+}

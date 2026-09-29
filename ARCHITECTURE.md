@@ -106,3 +106,13 @@ Sessão por cookie `nl_session` (id do usuário). `/login` lista os usuários de
 ## Produção
 
 `npm run db:bootstrap` (idempotente): migrações + dados de referência (temas, planos, serviços) + usuário master a partir de `MASTER_EMAIL`/`MASTER_PASSWORD`. Dados de demonstração só com `SEED_DEMO=true`. Variáveis: ver `.env.example`.
+
+## Financeiro (v0.3)
+
+Detalhes e regras em [docs/FINANCEIRO.md](./docs/FINANCEIRO.md). Resumo técnico:
+
+- **Motor puro** em `src/lib/finance` (`engine.ts`, `price-book.ts`, `revenue-map.ts`): taxa de volume, comissão, fechamento, estados de acesso e simulador, sem banco nem React, cobertos por testes unitários.
+- **Persistência** em `src/lib/domain/finance.ts`: `platform_settings` (tabela de preços), `supplier_contracts`, `finance_invoices` (com linhas em jsonb e chave de idempotência) e `store_acquisitions` (comissão de canal). `orders.central_paid_at` é a data-base da taxa.
+- **Idempotência:** mensalidades e fechamentos usam `dedupe_key` única, então a rotina diária pode rodar repetidamente.
+- **Enforcement:** o estado do fornecedor em `suppliers.status` alimenta `ACCESS_CAPABILITIES`, aplicado no domínio e não só na interface.
+- **Lojas novas** nascem `PENDING_PAYMENT` e só são liberadas quando a fatura de ativação é confirmada.

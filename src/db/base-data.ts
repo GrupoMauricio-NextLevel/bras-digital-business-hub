@@ -16,9 +16,9 @@ export async function seedReferenceData(db: Database) {
   const versions = themeRows.map((t) => ({ id: newId("thv"), themeId: t.id, version: "1.0.0", status: "PUBLISHED" as const }));
   await db.insert(s.themeVersions).values(versions);
   const plans = [
-    { id: newId("pln"), name: "Start", priceCents: 9700, features: ["Loja virtual", "Tema Starter", "Até 100 produtos", "Suporte por e-mail"] },
-    { id: newId("pln"), name: "Growth", priceCents: 19700, features: ["Tudo do Start", "Produtos ilimitados", "Venda manual e WhatsApp", "Central de conteúdo"] },
-    { id: newId("pln"), name: "Scale", priceCents: 39700, features: ["Tudo do Growth", "Domínio próprio", "Atacado (grades)", "Suporte prioritário"] },
+    { id: newId("pln"), key: "DROP_MANUAL", name: "Drop manual", priceCents: 4900, features: ["Pedidos manuais (WhatsApp, Instagram)", "Estoque central", "Financeiro do lojista"] },
+    { id: newId("pln"), key: "STORE_SUBDOMAIN", name: "Loja SuperDrop", priceCents: 9700, features: ["Tudo do Drop manual", "Loja virtual em subdomínio SuperDrop", "Tema Starter", "Central de conteúdo"] },
+    { id: newId("pln"), key: "STORE_OWN", name: "Loja própria", priceCents: 19700, features: ["Tudo da Loja SuperDrop", "Marca e domínio próprios", "Sem selo SuperDrop", "Suporte prioritário"] },
   ];
   await db.insert(s.plans).values(plans);
   const services = [

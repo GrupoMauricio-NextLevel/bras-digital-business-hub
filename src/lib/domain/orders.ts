@@ -8,6 +8,7 @@ import { assertCanAccess, type Actor } from "./access";
 import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
+import { capabilitiesForSupplier } from "./finance";
 
 export const orderLineSchema = z.object({
   productId: z.string().min(1),
@@ -61,6 +62,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   if (store.status !== "ACTIVE") throw new DomainError("STORE_INACTIVE", "Loja não está ativa.");
   const network = await db.query.networks.findFirst({ where: eq(networks.id, store.networkId) });
   if (!network) throw new NotFoundError("Rede não encontrada.");
+  const access = await capabilitiesForSupplier(db, network.supplierId);
+  if (!access.caps.canCreateOrders) throw new DomainError("SUPPLIER_BLOCKED", "Esta loja não pode receber novos pedidos no momento. Entre em contato com a loja.");
 
   const catalog = await listStoreCatalog(db, store.id);
   const byProduct = new Map(catalog.map((c) => [c.product.id, c]));
@@ -215,7 +218,7 @@ export async function confirmCentralPayment(db: Database, actor: Actor, orderId:
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (order.centralPaymentStatus === "PAID") return order;
   return db.transaction(async (tx) => {
-    await tx.update(orders).set({ centralPaymentStatus: "PAID" }).where(eq(orders.id, orderId));
+    await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: new Date().toISOString() }).where(eq(orders.id, orderId));
     const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Pagamento à Central confirmado.", actorRole: actor.role });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
@@ -261,6 +264,10 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
 export async function advanceOrder(db: Database, actor: Actor, orderId: string, next: OrderStatus) {
   const order = await loadOwned(db, actor, orderId);
   if (!canTransition(order.status, next)) throw new DomainError("INVALID_TRANSITION", `Transição ${order.status} → ${next} não permitida.`);
+  if (next !== "CANCELED") {
+    const access = await capabilitiesForSupplier(db, order.supplierId);
+    if (!access.caps.canExpedite) throw new DomainError("SUPPLIER_BLOCKED", "Expedição indisponível por pendência financeira com a NextLevel.");
+  }
   if (next === "CANCELED") return cancelOrder(db, actor, orderId);
   if (next === "READY_TO_PICK" && (order.centralPaymentStatus !== "PAID" || order.shippingLabelStatus !== "READY")) {
     throw new DomainError("NOT_READY", "Pedido só fica pronto para separação com pagamento à Central e etiqueta.");

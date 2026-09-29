@@ -26,9 +26,14 @@ npm run dev                       # http://localhost:3000
 4. O fornecedor troca a senha, cadastra produtos em **Produtos → Novo produto** (com fotos) ou **Importar CSV**, e cria lojas em **Lojistas → Nova loja**.
 5. O lojista troca a senha, conecta o Mercado Pago em **Configurações → Pagamentos**, usa **Produtos → Ativar todos** e **Loja Virtual → Publicar loja**.
 6. Agende `GET /api/cron/expire-reservations` (header `Authorization: Bearer $CRON_SECRET`) a cada 5–10 minutos.
-7. Diagnóstico: `/api/health`.
+7. Agende também `GET /api/cron/finance` uma vez por dia (mesmo header). No dia 1 ele emite as mensalidades e fecha o mês anterior.
+8. Diagnóstico: `/api/health`.
 
 Mercado Pago: use credenciais de teste (`TEST-…`) para ensaiar e a conta de produção (`APP_USR-…`) para a venda real. A notificação de pagamento precisa de URL pública https (definida automaticamente por cobrança).
+
+## Módulo financeiro
+
+**Master → Financeiro** reúne o mapa completo das receitas, contratos por fornecedor, faturas e fechamento mensal, regras de acesso por inadimplência, tabela de preços editável e um simulador de ganhos. Regras e valores em [docs/FINANCEIRO.md](./docs/FINANCEIRO.md).
 
 ## Acessos demo (apenas com `SEED_DEMO=true` e `NEXT_PUBLIC_DEMO_MODE=true`) (sem senha)
 

@@ -1,5 +1,7 @@
 import { and, count, desc, eq, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
+import { financeOverview, periodOf } from "@/lib/domain/finance";
+import { supplierContracts } from "@/db/schema";
 import { activities, invoices, networks, orders, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
 
 export async function getPlatformOverview() {
@@ -7,17 +9,11 @@ export async function getPlatformOverview() {
   const [supplierCount] = await db.select({ n: count() }).from(suppliers);
   const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).groupBy(stores.status);
   const [orderStats] = await db.select({ n: count(), gmv: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED"));
-  const feeRows = await db
-    .select({ fee: suppliers.platformFeePercent, gmv: sum(orders.totalCents) })
-    .from(orders)
-    .innerJoin(suppliers, eq(suppliers.id, orders.supplierId))
-    .where(ne(orders.status, "CANCELED"))
-    .groupBy(suppliers.platformFeePercent);
-  const [subsRevenue] = await db.select({ total: sum(plans.priceCents) }).from(subscriptions).innerJoin(plans, eq(plans.id, subscriptions.planId)).where(eq(subscriptions.status, "ACTIVE"));
+  const fin = await financeOverview(db, periodOf(new Date()));
   const recent = await db.select().from(activities).orderBy(desc(activities.createdAt)).limit(10);
   const byStatus = Object.fromEntries(storeRows.map((r) => [r.status, r.n]));
   const gmv = Number(orderStats?.gmv ?? 0);
-  const feeRevenue = feeRows.reduce((s, r) => s + Math.round((Number(r.gmv ?? 0) * r.fee) / 100), 0);
+  const feeRevenue = fin.estimatedVolumeFees;
   return {
     suppliers: supplierCount?.n ?? 0,
     stores: storeRows.reduce((s, r) => s + r.n, 0),
@@ -25,9 +21,9 @@ export async function getPlatformOverview() {
     suspendedStores: byStatus.SUSPENDED ?? 0,
     orders: orderStats?.n ?? 0,
     gmv,
-    platformRevenue: feeRevenue + Number(subsRevenue?.total ?? 0),
+    platformRevenue: fin.mrr.total + feeRevenue,
     feeRevenue,
-    subscriptionRevenue: Number(subsRevenue?.total ?? 0),
+    subscriptionRevenue: fin.mrr.total,
     recent,
   };
 }
@@ -38,8 +34,10 @@ export async function listSuppliers() {
   const storeCounts = await db.select({ supplierId: networks.supplierId, n: count(stores.id) }).from(networks).leftJoin(stores, eq(stores.networkId, networks.id)).groupBy(networks.supplierId);
   const productCounts = await db.select({ supplierId: products.supplierId, n: count() }).from(products).groupBy(products.supplierId);
   const gmv = await db.select({ supplierId: orders.supplierId, total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.supplierId);
+  const contracts = await db.select().from(supplierContracts);
   return rows.map((s) => ({
     ...s,
+    contract: contracts.find((c) => c.supplierId === s.id) ?? null,
     storeCount: storeCounts.find((c) => c.supplierId === s.id)?.n ?? 0,
     productCount: productCounts.find((c) => c.supplierId === s.id)?.n ?? 0,
     gmv: Number(gmv.find((g) => g.supplierId === s.id)?.total ?? 0),

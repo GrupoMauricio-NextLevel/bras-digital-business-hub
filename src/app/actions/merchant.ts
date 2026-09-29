@@ -140,6 +140,7 @@ export async function configureIntegrationAction(input: z.input<typeof integrati
 export async function publishStoreAction(publish: boolean) {
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
+    if (publish && session.store?.status !== "ACTIVE") throw new DomainError("STORE_NOT_ACTIVE", "A loja só pode ser publicada depois da confirmação do pagamento do setup.");
     await db.update(stores).set({ publishedAt: publish ? new Date().toISOString() : null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
     revalidateStore(session.store?.slug);
     return undefined;

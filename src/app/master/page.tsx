@@ -27,7 +27,7 @@ export default async function MasterDashboard() {
         <MetricCard label="GMV" value={formatCompactBRL(overview.gmv)} icon={TrendingUp} tone="success" hint="Volume bruto transacionado" />
       </MetricGrid>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard label="Receita estimada NextLevel" value={formatBRL(overview.platformRevenue)} icon={Wallet} tone="info" hint={`${formatBRL(overview.feeRevenue)} taxa sobre GMV + ${formatBRL(overview.subscriptionRevenue)} mensalidades`} className="sm:col-span-2" />
+        <MetricCard label="Receita estimada NextLevel" value={formatBRL(overview.platformRevenue)} icon={Wallet} tone="info" hint={`${formatBRL(overview.subscriptionRevenue)} recorrente contratada + ${formatBRL(overview.feeRevenue)} de taxas do mês`} className="sm:col-span-2" />
         <MetricCard label="Lojas suspensas" value={overview.suspendedStores} icon={PauseCircle} tone={overview.suspendedStores ? "warning" : "neutral"} hint="Inadimplência ≥ 15 dias" />
         <MetricCard label="Ticket médio" value={overview.orders ? formatBRL(Math.round(overview.gmv / overview.orders)) : "—"} hint="GMV / pedidos" />
       </div>

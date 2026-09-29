@@ -5,6 +5,7 @@ import { activities, categories, productPackItems, productPacks, productStoreAcc
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "./inventory";
 import { DomainError } from "./errors";
+import { capabilitiesForSupplier } from "./finance";
 
 const money = z.coerce.number().int().nonnegative();
 
@@ -40,6 +41,7 @@ export async function ensureCategory(db: Database, supplierId: string, name: str
 /** Cadastra um produto completo: variantes, estoque inicial, grade e distribuição. */
 export async function createProduct(db: Database, supplierId: string, raw: CreateProductInput): Promise<{ productId: string }> {
   const input = createProductSchema.parse(raw);
+  if (!(await capabilitiesForSupplier(db, supplierId)).caps.canManageCatalog) throw new DomainError("SUPPLIER_BLOCKED", "Cadastro de produtos indisponível por pendência financeira com a NextLevel.");
   if (input.minimumPriceCents > input.suggestedPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser maior que o sugerido.");
   if (input.costCents > input.minimumPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser menor que o custo.");
   if (!input.sellsUnit && !input.sellsPack) throw new DomainError("SALE_TYPE", "Escolha venda unitária, grade ou ambas.");

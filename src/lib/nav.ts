@@ -16,6 +16,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[] }
       { label: "Lojas", href: "/master/stores", icon: "Store" },
       { label: "Catálogo", href: "/master/catalog", icon: "Package" },
       { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart" },
+      { label: "Financeiro", href: "/master/finance", icon: "Wallet" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate" },
       { label: "Serviços", href: "/master/services", icon: "Sparkles" },
       { label: "Planos", href: "/master/plans", icon: "CreditCard" },

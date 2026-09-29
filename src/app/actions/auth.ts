@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { users } from "@/db/schema";
+import { suppliers, users } from "@/db/schema";
 import { clearSessionCookie, getSession, homeFor, isDemoMode, setSessionCookie } from "@/lib/auth";
 import { hashPassword, verifyPassword } from "@/lib/security/password";
 import { runAction } from "@/lib/action-result";
@@ -17,6 +17,10 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     const db = await getDb();
     const user = await db.query.users.findFirst({ where: eq(users.email, data.email.toLowerCase()) });
     if (!user || !verifyPassword(data.password, user.passwordHash)) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");
+    if (user.supplierId) {
+      const sup = await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) });
+      if (sup?.status === "CLOSED") throw new DomainError("ACCOUNT_CLOSED", "Conta encerrada. Entre em contato com a NextLevel.");
+    }
     await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, user.id));
     await setSessionCookie(user.id);
     return { redirectTo: user.mustChangePassword ? "/account/password" : homeFor(user.role) };

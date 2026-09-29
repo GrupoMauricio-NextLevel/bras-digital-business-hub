@@ -8,6 +8,16 @@ export function OrderStatusBadge({ status }: { status: OrderStatus }) {
 
 const GENERIC: Record<string, { label: string; tone: "neutral" | "success" | "warning" | "danger" | "info" | "brand" | "outline" }> = {
   ACTIVE: { label: "Ativa", tone: "success" },
+  PENDING_PAYMENT: { label: "Aguardando pagamento", tone: "warning" },
+  WARNING: { label: "Aviso de atraso", tone: "warning" },
+  PARTIAL_BLOCK: { label: "Bloqueio parcial", tone: "danger" },
+  WAIVED: { label: "Isenta", tone: "brand" },
+  CANCELED: { label: "Cancelada", tone: "outline" },
+  GUARANTEE: { label: "Em garantia", tone: "info" },
+  CREDITED: { label: "Creditada", tone: "success" },
+  DROP_MANUAL: { label: "Drop manual", tone: "outline" },
+  STORE_SUBDOMAIN: { label: "Loja SuperDrop", tone: "info" },
+  STORE_OWN: { label: "Loja própria", tone: "brand" },
   SUSPENDED: { label: "Suspensa", tone: "warning" },
   CLOSED: { label: "Encerrada", tone: "danger" },
   DRAFT: { label: "Rascunho", tone: "neutral" },
