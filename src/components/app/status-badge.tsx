@@ -1,9 +1,14 @@
+import { CheckCircle2, AlertTriangle, XCircle, Info, Circle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { OrderStatus } from "@/db/schema";
 import { ORDER_STATUS_LABEL, ORDER_STATUS_TONE } from "@/lib/domain/order-status";
 
+const TONE_ICON = { success: CheckCircle2, warning: AlertTriangle, danger: XCircle, info: Info, neutral: Circle, brand: CheckCircle2, outline: Circle } as const;
+type Tone = keyof typeof TONE_ICON;
+function Ico({ tone }: { tone: Tone }) { const I = TONE_ICON[tone]; return <I />; }
+
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
-  return <Badge tone={ORDER_STATUS_TONE[status]} dot>{ORDER_STATUS_LABEL[status]}</Badge>;
+  return <Badge tone={ORDER_STATUS_TONE[status]} icon={<Ico tone={ORDER_STATUS_TONE[status] as Tone} />}>{ORDER_STATUS_LABEL[status]}</Badge>;
 }
 
 const GENERIC: Record<string, { label: string; tone: "neutral" | "success" | "warning" | "danger" | "info" | "brand" | "outline" }> = {
@@ -53,5 +58,5 @@ const GENERIC: Record<string, { label: string; tone: "neutral" | "success" | "wa
 
 export function StatusBadge({ value, dot }: { value: string; dot?: boolean }) {
   const g = GENERIC[value] ?? { label: value, tone: "neutral" as const };
-  return <Badge tone={g.tone} dot={dot}>{g.label}</Badge>;
+  return <Badge tone={g.tone} icon={dot === false ? undefined : <Ico tone={g.tone} />}>{g.label}</Badge>;
 }

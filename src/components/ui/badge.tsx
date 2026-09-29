@@ -19,12 +19,14 @@ const badgeVariants = cva("inline-flex items-center gap-1.5 rounded-full border 
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {
   dot?: boolean;
+  icon?: React.ReactNode;
 }
 
-export function Badge({ className, tone, dot, children, ...props }: BadgeProps) {
+export function Badge({ className, tone, dot, icon, children, ...props }: BadgeProps) {
   return (
     <span className={cn(badgeVariants({ tone }), className)} {...props}>
-      {dot ? <span className="size-1.5 rounded-full bg-current" /> : null}
+      {icon ? <span aria-hidden className="flex shrink-0 [&>svg]:size-3">{icon}</span> : null}
+      {dot && !icon ? <span className="size-1.5 rounded-full bg-current" /> : null}
       {children}
     </span>
   );

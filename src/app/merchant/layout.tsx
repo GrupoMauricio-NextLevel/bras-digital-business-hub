@@ -18,5 +18,5 @@ export default async function Layout({ children }: { children: React.ReactNode }
       </div>
     );
   }
-  return <RoleLayout session={session}>{banner}{children}</RoleLayout>;
+  return <RoleLayout session={session} banner={banner}>{children}</RoleLayout>;
 }
