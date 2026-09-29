@@ -57,7 +57,7 @@ export function DataTable<T>({ rows, columns, rowKey, empty, rowHref, className 
               {rest.map((c) => (
                 <React.Fragment key={c.key}>
                   <dt className="text-xs text-muted-foreground">{c.header}</dt>
-                  <dd className="text-right">{c.cell(row)}</dd>
+                  <dd className="flex justify-end text-right [&_span]:max-w-full [&_span]:truncate">{c.cell(row)}</dd>
                 </React.Fragment>
               ))}
             </dl>
