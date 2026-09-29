@@ -210,6 +210,30 @@ await login("carlos@fornecedor.com", "Fornecedor-Novo-1");
 await p.goto(B + "/supplier/orders/" + orderId, { waitUntil: "networkidle" });
 if (!(await p.content()).includes("Pronto para separação")) fail("fornecedor não vê o pedido pronto");
 step("fornecedor enxerga o pedido para separar");
+// 6b. NextLevel recebe no próprio Mercado Pago: master conecta, lojista compra add-on e paga por Pix
+await login("master@teste.com", "Master-Teste-2026");
+await p.goto(B + "/master/settings", { waitUntil: "networkidle" });
+await p.getByLabel("Access Token da conta NextLevel").fill("TEST-1234567890abcdefghij-nextlevel");
+await p.getByRole("button", { name: "Validar e conectar" }).click();
+await p.waitForSelector("text=Conta conectada", { timeout: 20000 });
+step("master conectou a conta Mercado Pago da NextLevel");
+await login(owner.email, "Lojista-Novo-123");
+await p.goto(B + "/merchant/finance", { waitUntil: "networkidle" });
+await p.locator("div", { has: p.getByRole("heading", { name: "Academy do lojista" }) }).getByRole("button", { name: /Contratar/ }).first().click();
+await p.waitForSelector("text=Pagar fatura", { timeout: 20000 });
+await p.getByRole("button", { name: "Pagar fatura" }).first().click();
+await p.waitForSelector("[data-testid=invoice-pix-code]", { timeout: 20000 });
+const st2 = await (await fetch(MP + "/__state")).json();
+const nlp = st2.payments.filter((x) => x.pix && String(x.external_reference).startsWith("nlp_")).pop();
+if (!nlp) fail("cobrança da fatura não chegou ao Mercado Pago da NextLevel");
+await fetch(MP + "/__approve_pix?ref=" + nlp.external_reference);
+const wn = await (await fetch(B + "/api/webhooks/mercadopago-nextlevel?payment=" + nlp.external_reference, { method: "POST" })).json();
+if (!wn.paid) fail("webhook da NextLevel não quitou a fatura: " + JSON.stringify(wn));
+await fetch(B + "/api/webhooks/mercadopago-nextlevel?payment=" + nlp.external_reference, { method: "POST" });
+await p.goto(B + "/merchant/finance", { waitUntil: "networkidle" });
+if (!(await p.locator("main").innerText()).includes("Ativo até")) fail("add-on deveria constar como ativo após o pagamento");
+step("add-on Academy pago por Pix: fatura quitada e direito liberado (webhook idempotente)");
+
 // 7. fechamento do mês
 await login("master@teste.com", "Master-Teste-2026");
 await p.goto(B + "/master/finance?tab=invoices", { waitUntil: "networkidle" });

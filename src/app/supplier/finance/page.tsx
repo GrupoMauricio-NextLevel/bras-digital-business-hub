@@ -14,8 +14,15 @@ import { isWaived } from "@/lib/finance/engine";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { TIER_LABEL } from "@/lib/finance/price-book";
+import { isDemoMode } from "@/lib/auth";
+import { addonViewsFor } from "@/lib/domain/nextlevel-billing";
+import { getPriceBook } from "@/lib/domain/finance";
+import { buildRationale } from "@/lib/finance/rationale";
+import { InvoicePay } from "@/components/finance/invoice-pay";
+import { AddonCards } from "@/components/finance/addon-cards";
+import { RationaleList } from "@/components/finance/rationale-list";
 
-const KIND: Record<string, string> = { SUPPLIER_SETUP: "Setup", SUPPLIER_SUBSCRIPTION: "Mensalidade", SUPPLIER_CLOSING: "Fechamento mensal" };
+const KIND: Record<string, string> = { SUPPLIER_SETUP: "Setup", SUPPLIER_SUBSCRIPTION: "Mensalidade", SUPPLIER_CLOSING: "Fechamento mensal", ADDON: "Add-on", SERVICE: "Serviço" };
 
 export default async function SupplierFinancePage() {
   const session = await requireRole("SUPPLIER_ADMIN");
@@ -28,6 +35,8 @@ export default async function SupplierFinancePage() {
     db.select().from(financeInvoices).where(and(eq(financeInvoices.supplierId, supplier.id), eq(financeInvoices.payerType, "SUPPLIER"))).orderBy(desc(financeInvoices.createdAt)),
     db.select({ acq: storeAcquisitions, storeName: stores.name }).from(storeAcquisitions).innerJoin(stores, eq(stores.id, storeAcquisitions.storeId)).where(eq(storeAcquisitions.supplierId, supplier.id)).orderBy(desc(storeAcquisitions.createdAt)),
   ]);
+  const [addons, book] = await Promise.all([addonViewsFor(db, session.actor), getPriceBook(db)]);
+  const demo = isDemoMode();
   const t = est.terms;
   const waived = isWaived(t.monthlyWaivedUntil, new Date());
   const open = invoices.filter((i) => i.status === "OPEN" || i.status === "OVERDUE");
@@ -73,7 +82,14 @@ export default async function SupplierFinancePage() {
         { key: "a", header: "Valor", className: "text-right", cell: (i) => <span className="font-medium tabular-nums">{formatBRL(i.amountCents)}</span> },
         { key: "due", header: "Vencimento", className: "text-right", cell: (i) => formatDate(i.dueDate) },
         { key: "s", header: "Status", cell: (i) => <StatusBadge value={i.status} dot /> },
+        { key: "pay", header: "", className: "text-right", cell: (i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0 ? <span className="relative z-10"><InvoicePay invoiceId={i.id} demo={demo} /></span> : null },
       ]} />
+
+      <h2 className="mb-3 mt-8 text-base font-semibold">Add-ons</h2>
+      <AddonCards addons={addons} demo={demo} />
+
+      <h2 className="mb-3 mt-8 text-base font-semibold">Por que cobramos</h2>
+      <RationaleList items={buildRationale(book).filter((r) => r.audience !== "STORE")} />
 
       <h2 className="mb-3 mt-8 text-base font-semibold">Comissões de canal</h2>
       <DataTable rows={acquisitions} rowKey={(a) => a.acq.id} columns={[

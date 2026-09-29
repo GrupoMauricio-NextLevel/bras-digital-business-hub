@@ -6,6 +6,8 @@ import { newId } from "@/lib/ids";
 import { ACCESS_CAPABILITIES, accessStateForOverdue, closeSupplierMonth, daysBetween, defaultContract, isWaived, storeSetupCommission, type AccessState, type Capabilities, type ContractTerms } from "@/lib/finance/engine";
 import { DEFAULT_PRICE_BOOK, OFFER_KEYS, priceBookSchema, TIER_KEYS, type OfferKey, type PriceBook, type SupplierModel, type TierKey } from "@/lib/finance/price-book";
 import { DomainError, NotFoundError } from "./errors";
+import { emitEvent } from "./events";
+import { fulfillPaidInvoice } from "./nextlevel-billing";
 
 const PRICE_BOOK_KEY = "price_book";
 
@@ -248,6 +250,8 @@ export async function markInvoicePaid(db: Database, invoiceId: string, now = new
       await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId: inv.supplierId, type: "INVOICE_PAID", message: `Pagamento confirmado: ${inv.description}` });
     }
   });
+  await fulfillPaidInvoice(db, inv, now);
+  await emitEvent(db, { type: "INVOICE_PAID", supplierId: inv.supplierId, storeId: inv.storeId, payload: { invoiceId, kind: inv.kind, amountCents: inv.amountCents }, dedupeKey: `INVOICE_PAID:${invoiceId}` });
   await refreshSupplierAccess(db, now);
   return (await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) }))!;
 }
@@ -353,6 +357,22 @@ const previousPeriod = (d: Date) => periodOf(new Date(Date.UTC(d.getUTCFullYear(
  * Rotina diária idempotente: atualiza atrasos e acessos todo dia; no dia 1 (UTC) emite as mensalidades
  * antecipadas do mês e fecha o mês anterior. Pode ser executada várias vezes sem duplicar cobranças.
  */
+/** Régua de cobrança: aviso in-app em D-3, D0, D+3 e D+7 do vencimento, uma vez por fatura e marco. */
+export async function runDunningNotices(db: Database, now = new Date()): Promise<{ notices: number }> {
+  const open = await db.select().from(financeInvoices).where(inArray(financeInvoices.status, ["OPEN", "OVERDUE"]));
+  let notices = 0;
+  for (const inv of open) {
+    if (inv.amountCents <= 0) continue;
+    const offset = daysBetween(new Date(inv.dueDate), now);
+    if (![-3, 0, 3, 7].includes(offset)) continue;
+    if (!(await emitEvent(db, { type: "DUNNING_NOTICE", supplierId: inv.supplierId, storeId: inv.storeId, payload: { invoiceId: inv.id, offset }, dedupeKey: `DUNNING:${inv.id}:${offset}` }))) continue;
+    const msg = offset < 0 ? `A fatura "${inv.description}" vence em ${-offset} dias.` : offset === 0 ? `A fatura "${inv.description}" vence hoje.` : `A fatura "${inv.description}" está ${offset} dias em atraso. Pague por Pix para evitar bloqueios.`;
+    await db.insert(activities).values({ id: newId("act"), scope: inv.payerType === "STORE" ? "STORE" : "SUPPLIER", supplierId: inv.supplierId, storeId: inv.storeId, type: "DUNNING", message: msg });
+    notices++;
+  }
+  return { notices };
+}
+
 export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   const result: { accessChanged: number; subscriptionsIssued: number; closed: number; period: string; closedPeriod: string | null } = { accessChanged: 0, subscriptionsIssued: 0, closed: 0, period: periodOf(now), closedPeriod: null };
   if (now.getUTCDate() === 1) {
@@ -361,5 +381,6 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
     result.subscriptionsIssued = (await issueSubscriptionInvoices(db, result.period, now)).issued;
   }
   result.accessChanged = (await refreshSupplierAccess(db, now)).changed.length;
+  await runDunningNotices(db, now);
   return result;
 }

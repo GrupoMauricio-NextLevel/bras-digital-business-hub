@@ -3,15 +3,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DataTable } from "@/components/app/data-table";
 import { listUsers } from "@/lib/queries/master";
 import { Badge } from "@/components/ui/badge";
+import { getDb } from "@/db/client";
+import { getNextLevelMp } from "@/lib/domain/nextlevel-billing";
+import { NextLevelMpCard } from "./nextlevel-mp-card";
 
-const ROLE: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", STORE_OWNER: "Lojista" };
+const ROLE: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 export default async function SettingsPage() {
   const users = await listUsers();
+  const mp = await getNextLevelMp(await getDb());
   return (
     <>
       <PageHeader title="Configurações" description="Parâmetros globais da plataforma." />
       <div className="grid gap-4 md:grid-cols-2">
+        <Card className="md:col-span-2">
+          <CardHeader><div><CardTitle>Recebimento da NextLevel (Mercado Pago)</CardTitle><CardDescription>Conta que recebe setups, mensalidades, taxas, serviços e add-ons por Pix.</CardDescription></div></CardHeader>
+          <CardContent><NextLevelMpCard connected={mp.connected} nickname={mp.nickname} isTest={mp.isTest} /></CardContent>
+        </Card>
         <Card>
           <CardHeader><div><CardTitle>Modelos comerciais</CardTitle><CardDescription>Configuráveis por fornecedor (businessModel, platformFeePercent, setupFee).</CardDescription></div></CardHeader>
           <CardContent className="space-y-2 text-sm">

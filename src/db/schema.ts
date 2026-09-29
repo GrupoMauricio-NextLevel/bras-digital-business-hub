@@ -483,7 +483,7 @@ export const financeInvoices = pgTable("finance_invoices", {
   payerType: text("payer_type", { enum: ["SUPPLIER", "STORE"] }).notNull(),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
-  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP"] }).notNull(),
+  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "ADDON", "SERVICE"] }).notNull(),
   /** Competência YYYY-MM (mensalidade e fechamento). */
   period: text("period"),
   description: text("description").notNull(),
@@ -494,6 +494,48 @@ export const financeInvoices = pgTable("finance_invoices", {
   paidAt: ts("paid_at"),
   createdAt: createdAt(),
 }, (t) => [index("finance_invoices_supplier_idx").on(t.supplierId), index("finance_invoices_status_idx").on(t.status)]);
+
+/** Direitos de acesso comprados ou concedidos (add-ons). Valem enquanto endsAt for nulo ou futuro. */
+export const entitlements = pgTable("entitlements", {
+  id: id(),
+  tenantType: text("tenant_type", { enum: ["STORE", "SUPPLIER"] }).notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  /** Chave do add-on (ADDON_KEYS) ou de um módulo de conteúdo. */
+  key: text("key").notNull(),
+  source: text("source", { enum: ["ADD_ON", "COURTESY", "PLAN"] }).notNull(),
+  startsAt: ts("starts_at").notNull().defaultNow(),
+  endsAt: ts("ends_at"),
+  invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  note: text("note"),
+  createdAt: createdAt(),
+}, (t) => [index("entitlements_store_idx").on(t.storeId), index("entitlements_supplier_idx").on(t.supplierId)]);
+
+/** Cobranças de faturas da NextLevel na conta Mercado Pago da NextLevel (Pix). */
+export const nextlevelPayments = pgTable("nextlevel_payments", {
+  id: id(),
+  invoiceId: text("invoice_id").notNull().references(() => financeInvoices.id),
+  mpPaymentId: text("mp_payment_id").unique(),
+  status: text("status", { enum: ["PENDING", "PAID", "EXPIRED", "FAILED"] }).notNull().default("PENDING"),
+  amountCents: integer("amount_cents").notNull(),
+  pixCode: text("pix_code"),
+  pixQrBase64: text("pix_qr_base64"),
+  expiresAt: ts("expires_at"),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+}, (t) => [index("nextlevel_payments_invoice_idx").on(t.invoiceId)]);
+
+/** Eventos de domínio: alimentam automações, fila do dia e saúde (dedupeKey torna a emissão idempotente). */
+export const domainEvents = pgTable("domain_events", {
+  id: id(),
+  type: text("type").notNull(),
+  supplierId: text("supplier_id"),
+  storeId: text("store_id"),
+  actorRole: text("actor_role"),
+  payload: jsonb("payload").$type<Record<string, unknown>>().notNull().default({}),
+  dedupeKey: text("dedupe_key").unique(),
+  createdAt: createdAt(),
+}, (t) => [index("domain_events_type_idx").on(t.type), index("domain_events_store_idx").on(t.storeId)]);
 
 /** Loja adquirida por um fornecedor: origem da comissão de canal sobre o setup. */
 export const storeAcquisitions = pgTable("store_acquisitions", {

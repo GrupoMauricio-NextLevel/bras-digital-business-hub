@@ -9,6 +9,7 @@ import { assertCanAccess, isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { cancelOrderBySystem } from "./orders";
 import { resolveFulfillmentStatus } from "./order-status";
+import { emitEvent } from "./events";
 
 /** Prazo para o lojista recarregar antes de o pedido pago pelo cliente ser cancelado. */
 export const AWAITING_FUNDS_HOURS = 72;
@@ -69,6 +70,7 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
       await tx.update(orders).set({ awaitingFundsSince: order.awaitingFundsSince ?? now, status: next, updatedAt: now }).where(eq(orders.id, orderId));
       if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "AWAITING_FUNDS", message: "Aguardando recarga: saldo insuficiente para o custo do pedido.", actorRole: "SYSTEM" });
       await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "AWAITING_FUNDS", message: `Pedido #${order.number} aguarda recarga de saldo` });
+      await emitEvent(tx, { type: "ORDER_AWAITING_FUNDS", supplierId: order.supplierId, storeId: order.storeId, payload: { orderId }, dedupeKey: `ORDER_AWAITING_FUNDS:${orderId}` });
     }
     return "AWAITING_FUNDS";
   }
@@ -77,6 +79,7 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
   await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: now, awaitingFundsSince: null, status: next, updatedAt: now }).where(eq(orders.id, orderId));
   await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Custo debitado do saldo.", actorRole: "SYSTEM" });
   if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: "Fila de expedição atualizada.", actorRole: "SYSTEM" });
+  await emitEvent(tx, { type: "ORDER_DEBITED", supplierId: order.supplierId, storeId: order.storeId, payload: { orderId, costCents: order.costTotalCents }, dedupeKey: `ORDER_DEBITED:${orderId}` });
   return "DEBITED";
 }
 
@@ -106,6 +109,7 @@ export async function creditRecharge(db: Database, rechargeId: string, info: { m
     await tx.update(walletRecharges).set({ status: "PAID", mpPaymentId: info.mpPaymentId, paidAt: new Date().toISOString() }).where(eq(walletRecharges.id, rechargeId));
     await post(tx, r.storeId, { type: "RECHARGE", amountCents: r.amountCents, rechargeId, note: "Recarga Pix" });
     const released = await settleAwaitingOrders(tx, r.storeId);
+    await emitEvent(tx, { type: "WALLET_RECHARGED", supplierId: r.supplierId, storeId: r.storeId, payload: { rechargeId, amountCents: r.amountCents, released }, dedupeKey: `WALLET_RECHARGED:${rechargeId}` });
     return { changed: true as const, released };
   });
 }

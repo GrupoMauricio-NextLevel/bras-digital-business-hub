@@ -12,6 +12,8 @@ import { Rules } from "./rules";
 import { FinanceTabs } from "./finance-tabs";
 import { estimateClosing } from "@/lib/domain/finance";
 import { suppliers } from "@/db/schema";
+import { RationaleList } from "@/components/finance/rationale-list";
+import { buildRationale, marginAlerts } from "@/lib/finance/rationale";
 
 export default async function FinancePage({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
   await requireRole("NEXTLEVEL_MASTER");
@@ -40,6 +42,12 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
             { value: "simulator", label: "Simulador", content: <Simulator book={book} /> },
             { value: "contracts", label: "Contratos", content: <Contracts contracts={contracts} /> },
             { value: "invoices", label: "Faturas e fechamento", content: <Invoices invoices={invoices} period={period} /> },
+            { value: "why", label: "Por que cobramos", content: (
+              <div className="space-y-4">
+                {marginAlerts(book).length ? <div role="alert" className="rounded-lg border border-warning/40 bg-warning-soft/50 p-3 text-sm"><b>Margem abaixo da meta ({book.services.targetMarginBps / 100}%):</b> {marginAlerts(book).map((a) => `${a.label} (${(a.marginBps / 100).toFixed(0)}%)`).join(", ")}</div> : <div className="rounded-lg border border-success/30 bg-success-soft/40 p-3 text-sm">Todos os perfis estão acima da meta de margem de {book.services.targetMarginBps / 100}%.</div>}
+                <RationaleList items={buildRationale(book)} showMargin />
+              </div>
+            ) },
             { value: "rules", label: "Regras e preços", content: <Rules book={book} /> },
           ]}
         />

@@ -10,6 +10,17 @@ export const TIER_KEYS = ["START", "GROWTH", "SCALE"] as const;
 export type TierKey = (typeof TIER_KEYS)[number];
 export type SupplierModel = "SUPERDROP" | "WHITE_LABEL";
 
+export const ADDON_KEYS = ["ACADEMY_STORE", "PREMIUM_SUPPORT", "ADVANCED_REPORTS", "EXTRA_DISPATCH_SEAT"] as const;
+export type AddonKey = (typeof ADDON_KEYS)[number];
+
+export type AddonDef = { name: string; description: string; audience: "STORE" | "SUPPLIER" | "BOTH"; monthlyCents: number; annualCents: number };
+const DEFAULT_ADDONS: Record<AddonKey, AddonDef> = {
+  ACADEMY_STORE: { name: "Academy do lojista", description: "Trilha completa do zero ao faturamento: catálogo, preço com margem, Pix, primeira venda, tráfego e recompra.", audience: "STORE", monthlyCents: 4_700, annualCents: 39_700 },
+  PREMIUM_SUPPORT: { name: "Suporte Premium", description: "Chat com prioridade e resposta em até 2h úteis com especialista dedicado.", audience: "BOTH", monthlyCents: 9_700, annualCents: 97_000 },
+  ADVANCED_REPORTS: { name: "Relatórios avançados", description: "Margem por produto, recompra e exportação para planilha.", audience: "STORE", monthlyCents: 2_900, annualCents: 29_000 },
+  EXTRA_DISPATCH_SEAT: { name: "Assento extra de expedição", description: "Mais um funcionário usando a esteira de separação.", audience: "SUPPLIER", monthlyCents: 1_900, annualCents: 19_000 },
+};
+
 const cents = z.number().int().nonnegative();
 const bps = z.number().int().min(0).max(10000);
 const days = z.number().int().min(0).max(365);
@@ -25,8 +36,11 @@ export const priceBookSchema = z.object({
   billing: z.object({ dueDay: z.number().int().min(1).max(28), waiverDays: days, priceLockMonths: z.number().int().min(0).max(60) }),
   dunning: z.object({ warningDays: days, partialBlockDays: days, suspendedDays: days, closedDays: days }),
   costs: z.object({ collectionFeeBps: bps, infraPerStoreCents: cents, supportPerSupplierCents: cents }),
+  /** Add-ons mensais/anuais liberados por entitlement. audience: quem pode comprar. */
+  addons: z.record(z.enum(ADDON_KEYS), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS)),
 });
 export type PriceBook = z.infer<typeof priceBookSchema>;
+
 
 export const DEFAULT_PRICE_BOOK: PriceBook = {
   supplierTiers: {
@@ -47,6 +61,7 @@ export const DEFAULT_PRICE_BOOK: PriceBook = {
   billing: { dueDay: 5, waiverDays: 90, priceLockMonths: 12 },
   dunning: { warningDays: 1, partialBlockDays: 10, suspendedDays: 15, closedDays: 30 },
   costs: { collectionFeeBps: 200, infraPerStoreCents: 800, supportPerSupplierCents: 50_000 },
+  addons: structuredClone(DEFAULT_ADDONS),
 };
 
 export const TIER_LABEL: Record<TierKey, string> = { START: "Start", GROWTH: "Growth", SCALE: "Scale" };
