@@ -19,11 +19,11 @@ describe("pedido — golden path", () => {
     expect(r.status).toBe("AWAITING_CENTRAL_PAYMENT");
     expect((await getLevel(ctx.db, variantId)).reserved).toBe(before.reserved + 2);
 
-    let o = await registerShippingLabel(ctx.db, ctx.actors.mantos, r.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
-    expect(o.status).toBe("AWAITING_CENTRAL_PAYMENT");
+    const afterLabel = await registerShippingLabel(ctx.db, ctx.actors.mantos, r.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
+    expect(afterLabel.status).toBe("AWAITING_CENTRAL_PAYMENT");
 
-    o = await confirmCentralPayment(ctx.db, ctx.actors.mantos, r.orderId);
-    expect(o.status).toBe("READY_TO_PICK");
+    const afterCentral = await confirmCentralPayment(ctx.db, ctx.actors.mantos, r.orderId);
+    expect(afterCentral.status).toBe("READY_TO_PICK");
 
     await advanceOrder(ctx.db, ctx.actors.supplier, r.orderId, "PICKING");
     await advanceOrder(ctx.db, ctx.actors.supplier, r.orderId, "READY_TO_SHIP");
