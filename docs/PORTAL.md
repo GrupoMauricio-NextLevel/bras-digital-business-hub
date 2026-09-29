@@ -28,7 +28,8 @@ Domínio: `superdrop.com.br`. Uma aplicação atende todos os endereços e decid
 Recebimentos:
 - **Fornecedor** recebe as recargas dos membros na conta Mercado Pago **dele**.
 - **Membro com loja ativa** (subdomínio ou domínio próprio) conecta o **próprio** Mercado Pago para receber dos clientes.
-- Planos, preços e taxas: ver **`docs/PLANOS.md`**.
+- **Lojas e recargas aceitam só Pix** (no Mercado Pago de cada um). Os **planos da NextLevel** aceitam Pix e cartão (até 6x com 14%).
+- Planos, preços e taxas: ver **`docs/PLANOS.md`** (a NextLevel não define preço de produto).
 
 ## 3. Cupom, teste e atribuição
 - O cupom (`MANTOSSHOP7`, `ALPHA7`) identifica o fornecedor e fixa de quem é o membro. **Um cupom por CPF/CNPJ**; prorrogação manual pelo Master ou pelo fornecedor, com motivo registrado.
@@ -48,7 +49,7 @@ Recebimentos:
 
 ## 6. Pontos cegos (atualizado)
 1. **Catálogo atual: camisetas com variação única de tamanho** (decisão do teste). Cor e outras categorias do Brás ficam para depois; o portal pode falar de camisetas por ora.
-2. **Preço:** vale a tabela da NextLevel (`docs/PLANOS.md`). Comissão só para os dois fundadores; para os demais fornecedores será revista depois do teste.
+2. **Preço de produto é de cada fornecedor e membro.** A NextLevel cobra mensalidade, setup, 3% de taxa de transação, serviços e Academy (`docs/PLANOS.md`). Comissão só para os dois fundadores.
 3. **Tarifa de parcelamento do Mercado Pago:** simulada e confirmada pelo dono (14% cobre o 6x).
 4. **Empresas emissoras:** cada fatura precisa dizer qual empresa cobra (NextLevel Marketing ou Mega Tron), para o recibo e para a conciliação. Guardar isso desde já no dado da fatura.
 5. **Recarga de membros Mega Tron** cai na conta da Mega Tron (e não na do fornecedor), e depois há repasse aos fornecedores. Fica para a fase do assinante independente.
@@ -61,6 +62,7 @@ Recebimentos:
 12. **Aceite dos termos:** versionar o aceite (quem aceitou qual versão, quando).
 
 ## 7. Decisões pendentes
+0. Percentuais de desconto (semestral e anual), desconto à vista no Pix e base da taxa de 3%: ver `docs/PLANOS.md`, itens 2, 3 e 6.
 1. R$ 2.400 da Loja Própria: **setup com 12 meses de plataforma incluídos** (interpretação adotada). Confirma?
 2. Setup de entrada dos fornecedores (proposta R$ 1.997 no SuperDrop e R$ 15.000 na Central White Label) e mensalidades da tabela em `PLANOS.md`.
 3. Prazo do acordo de fundadores (proposta: 12 meses).

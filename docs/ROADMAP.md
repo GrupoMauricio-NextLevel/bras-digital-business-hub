@@ -35,4 +35,4 @@ Restante das duas frentes, fundido em oito fases (U1 a U8). Cada fase termina co
 ## Adendo: portal e aquisição (P1 a P4)
 Racional em `docs/PORTAL.md`; planos e preços em `docs/PLANOS.md`. Entra antes da U3.
 P1 (15 dias, foco em MantosShop e Alpha Outfit): portal, páginas dos fornecedores, cupom e teste de 7 dias sem cartão, planos semestral/anual, Pix e cartão em até 6x, Academy com um módulo completo, e-mail transacional. P2: comissão dos fundadores com prazo, editor, upgrade white label. P3: Loja NextLevel e Academy de impacto (com U5). P4: assinante independente e Mega Tron (custódia, repasse, multi-fornecedor).
-Pré-requisito descoberto: variação de produto por **cor e tamanho** (hoje só tamanho), necessária para os catálogos do Brás.
+No teste o catálogo são camisetas com variação só por tamanho. Também no P1: checkout das lojas e recargas **somente Pix** (excluir cartão na preferência do Mercado Pago).
