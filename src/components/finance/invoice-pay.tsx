@@ -45,6 +45,7 @@ export function InvoicePay({ invoiceId, label = "Pagar por Pix", demo }: { invoi
         <DialogContent title="Pagamento por Pix" description={pix ? `Valor: ${formatBRL(pix.amountCents)}. A confirmação é automática.` : undefined}>
           {pix ? (paid ? <p className="text-sm font-medium text-success">Pagamento confirmado. Obrigado!</p> : (
             <div className="space-y-3">
+              {pix.demo ? <p role="note" className="rounded bg-warning-soft px-2 py-1 text-xs font-semibold text-warning">PIX SIMULADO · demonstração, nenhum dinheiro real é movimentado</p> : null}
               {pix.pixQrBase64 ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img alt="QR Code Pix" src={`data:image/png;base64,${pix.pixQrBase64}`} className="mx-auto size-44 rounded-md bg-white p-2" />

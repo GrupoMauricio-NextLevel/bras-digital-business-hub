@@ -41,7 +41,16 @@ const globalForDb = globalThis as unknown as { __nlDb?: Promise<DatabaseHandle> 
 /** Instância única por processo (reaproveitada entre requisições). */
 export async function getDb(): Promise<Database> {
   if (!globalForDb.__nlDb) {
-    globalForDb.__nlDb = createDatabase().catch((e) => {
+    globalForDb.__nlDb = createDatabase().then(async (h) => {
+      // Publicação de demonstração: com DEMO_AUTOSEED=true o banco (ex.: pglite://memory) nasce migrado e populado.
+      if (process.env.DEMO_AUTOSEED === "true" && !resolveDatabaseUrl().startsWith("postgres")) {
+        const { runMigrations } = await import("./migrate");
+        const { bootstrapDatabase } = await import("./bootstrap-data");
+        await runMigrations(h.db);
+        await bootstrapDatabase(h.db, { seedDemo: true });
+      }
+      return h;
+    }).catch((e) => {
       globalForDb.__nlDb = undefined;
       throw e;
     });

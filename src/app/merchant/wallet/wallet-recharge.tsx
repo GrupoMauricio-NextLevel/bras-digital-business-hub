@@ -55,6 +55,7 @@ export function WalletRecharge({ suggestedCents, demo }: { suggestedCents: numbe
                 <img alt="QR Code Pix" src={`data:image/png;base64,${pix.pixQrBase64}`} className="size-40 rounded-md bg-white p-2" />
               ) : null}
               <div className="min-w-0 flex-1 space-y-2">
+                {pix.demo ? <p role="note" className="inline-block rounded bg-warning-soft px-2 py-1 text-xs font-semibold text-warning">PIX SIMULADO · demonstração, nenhum dinheiro real é movimentado</p> : null}
                 <p className="text-sm">Pague <strong>{formatBRL(pix.amountCents)}</strong> por Pix. O saldo é creditado assim que o pagamento for confirmado.</p>
                 <code className="block break-all rounded bg-background p-2 text-xs" data-testid="pix-code">{pix.pixCode}</code>
                 <div className="flex flex-wrap gap-2">

@@ -1,86 +1,100 @@
-# NextLevel Commerce Engine · SuperDrop (MVP)
+# NextLevel Commerce Engine · SuperDrop (MVP até a U2)
 
-Plataforma de e-commerce multi-tenant da NextLevel Marketing Ltda. Fornecedor → catálogo central → rede de lojistas → loja white label → cliente final → pedido → Central → expedição.
+Plataforma de e-commerce multi-tenant da NextLevel Marketing Ltda. O fluxo completo:
+fornecedor → catálogo central → rede de lojistas → loja (subdomínio ou white label) → cliente final → pedido → saldo do lojista → expedição.
 
-Detalhes de arquitetura: [ARCHITECTURE.md](./ARCHITECTURE.md). Este motor também sustentará, no futuro, o **Brás Digital** (marketplace atacadista) sem um segundo core.
+> **Ambiente de demonstração:** Mercado Pago e Pix estão **SIMULADOS**. Nenhum dinheiro real é movimentado e nenhuma credencial real acompanha o código.
 
-## Como rodar local (sem instalar banco)
+## Visão geral do que já funciona
 
-O banco local é o **PGlite**, um Postgres embutido que grava em `./data/pg`. Nada a instalar além do Node 20+.
+**Base (F0 a F3)**
+- Cinco painéis com desenho próprio: **Master** (torre de controle com fila de atenção e saúde das lojas), **Fornecedor/gestor**, **Expedição** (tablet, sem valores), **Lojista Lite** e **Lojista Pro**.
+- Catálogo central, estoque por variação/grade, pedidos, vitrine pública `/store/[slug]`, temas, checkout com Mercado Pago (modo simulado sem credencial).
+- Financeiro da NextLevel: mapa de receitas, contratos, faturas, fechamento mensal, régua de inadimplência, simulador (`docs/FINANCEIRO.md`).
+- Carteira do lojista: o custo do pedido é debitado do saldo; sem saldo o pedido fica "Aguardando recarga" (expira em 72 h). Recarga por Pix.
+- Etiqueta como arquivo PDF (SuperFrete): validação de tipo/tamanho, download protegido, lote em PDF único.
+- Loja NextLevel: catálogo de serviços por público, pedidos de serviço e recomendação.
+
+**U1 – Receita e base**
+- Racional de cada preço e taxa ("Por que cobramos"), economia unitária e alerta de margem (Master → Financeiro).
+- Add-ons por entitlement (Academy do lojista, Suporte Premium, Relatórios, Assento extra de expedição).
+- Cobrança das faturas da NextLevel por Pix, com webhook idempotente e conciliação (**modo simulado** enquanto não houver credencial), régua de cobrança e eventos de domínio.
+
+**U2 – Operação do fornecedor**
+- Horário de corte por dia da semana, fuso e feriados; cronômetro na esteira.
+- **Esteira ao vivo** (SSE com fallback de polling), um funcionário por pedido, ondas de separação, PDF único de etiquetas e lista de separação por produto.
+- Painel de expedição (tablet), equipe com assentos, recargas dos lojistas, onboarding do fornecedor.
+
+## Stack
+Next.js 16 (App Router) · React 19 · TypeScript estrito · Tailwind CSS v4 · Radix UI · Drizzle ORM (Postgres) · PGlite (banco local embutido) · Zod · Vitest · Playwright (E2E) · pdf-lib.
+Este Next.js tem mudanças de API: leia `node_modules/next/dist/docs/` antes de alterar convenções (ver `AGENTS.md`).
+
+## Instalação
+Requisitos: Node 20+ (testado em 22) e npm.
 
 ```bash
-cp .env.example .env.local        # já vem com PGlite e demo mode
 npm install
-npm run db:migrate                # cria as tabelas em ./data/pg
-npm run db:seed                   # dados de demonstração
-npm run dev                       # http://localhost:3000
+cp .env.example .env.local          # preencha os valores (veja "Variáveis de ambiente")
 ```
 
-`npm run db:reset` apaga o banco local e recria migrações + seed.
+## Desenvolvimento
+```bash
+npm run db:reset                    # apaga ./data/pg, migra e popula a demonstração
+npm run dev                         # http://localhost:3000
+```
 
-## Ambiente de teste com cliente real (sem demo)
+## Build e produção
+```bash
+NEXT_PUBLIC_DEMO_MODE=true npm run build      # o modo demo é lido no build
+# Preview / produção (Node):
+DEMO_AUTOSEED=true DATABASE_URL=pglite://memory SESSION_SECRET=<segredo> CRON_SECRET=<segredo> NEXT_PUBLIC_DEMO_MODE=true npm run start
+```
+`npm run start` sobe na porta `${PORT:-3000}`. Para uma instalação real (sem demonstração) veja `DEPLOY_SITES.md`.
 
-1. Defina no ambiente: `DATABASE_URL` (Postgres), `SESSION_SECRET` (`openssl rand -hex 32`), `CRON_SECRET`, `MASTER_EMAIL`, `MASTER_PASSWORD` (mín. 10 caracteres), `NEXT_PUBLIC_DEMO_MODE=false` e, se a URL pública não for detectada, `APP_URL=https://…`.
-2. `npm run db:bootstrap` cria tabelas, dados de referência e o master. Não há dados fictícios.
-3. Entre em `/login` como master → **Fornecedores → Novo fornecedor**. Envie e-mail e senha temporária ao responsável.
-4. O fornecedor troca a senha, cadastra produtos em **Produtos → Novo produto** (com fotos) ou **Importar CSV**, e cria lojas em **Lojistas → Nova loja**.
-5. O lojista troca a senha, conecta o Mercado Pago em **Configurações → Pagamentos**, usa **Produtos → Ativar todos** e **Loja Virtual → Publicar loja**.
-6. Agende `GET /api/cron/expire-reservations` (header `Authorization: Bearer $CRON_SECRET`) a cada 5–10 minutos.
-7. Agende também `GET /api/cron/finance` uma vez por dia (mesmo header). No dia 1 ele emite as mensalidades e fecha o mês anterior.
-8. Diagnóstico: `/api/health`.
+## Usuários de demonstração
+Com `NEXT_PUBLIC_DEMO_MODE=true` e o seed aplicado, abra `/login` e escolha um perfil (senha de todos: `demo1234`) ou use o seletor no topo do painel.
 
-Mercado Pago: use credenciais de teste (`TEST-…`) para ensaiar e a conta de produção (`APP_USR-…`) para a venda real. A notificação de pagamento precisa de URL pública https (definida automaticamente por cobrança).
-
-## Módulo financeiro
-
-**Master → Financeiro** reúne o mapa completo das receitas, contratos por fornecedor, faturas e fechamento mensal, regras de acesso por inadimplência, tabela de preços editável e um simulador de ganhos. Regras e valores em [docs/FINANCEIRO.md](./docs/FINANCEIRO.md).
-
-## Acessos demo (apenas com `SEED_DEMO=true` e `NEXT_PUBLIC_DEMO_MODE=true`) (sem senha)
-
-Abra `/login` e escolha um perfil (senha `demo1234`), ou use o **Demo Role Switcher** no topo:
-
-| Perfil | Usuário | Painel |
+| Perfil | E-mail | Painel |
 |---|---|---|
 | NextLevel Master | master@nextlevel.demo | `/master` |
-| Fornecedor (Central Sports) | central@centralsports.demo | `/supplier` |
-| Lojista Mantos Shop | dono@mantosshop.demo | `/merchant` |
-| Lojista Arena 10 | dono@arena10.demo | `/merchant` |
-| Lojista Fut Classics (suspensa) | dono@futclassics.demo | `/merchant` |
+| Gestor do fornecedor (Central Sports) | central@centralsports.demo | `/supplier` |
+| Expedição da Central | expedicao@centralsports.demo | `/supplier/dispatch` |
+| Lojista Mantos Shop (Loja própria) | dono@mantosshop.demo | `/merchant` |
+| Lojista Arena 10 (Loja SuperDrop) | dono@arena10.demo | `/merchant` |
+| Lojista Fut Classics (suspenso) | dono@futclassics.demo | `/merchant` |
 
-Storefronts públicas: `/store/mantos-shop` · `/store/arena-10` (`/store/fut-classics` não publicada: só o dono vê em pré-visualização).
+Vitrines públicas: `/store/mantos-shop` e `/store/arena-10`.
 
-## Golden path da demonstração
+## Seed e reset dos dados
+| Comando | O que faz |
+|---|---|
+| `npm run db:migrate` | aplica as migrações em `./drizzle` |
+| `npm run db:seed` | popula a demonstração (só em banco vazio) |
+| `npm run db:reset` | apaga `./data/pg`, migra e popula |
+| `npm run db:bootstrap` | migra, cria dados de referência e o master (`MASTER_EMAIL/PASSWORD`); com `SEED_DEMO=true` também a demonstração |
+| `DEMO_AUTOSEED=true` | migra e popula sozinho na primeira requisição (útil com `pglite://memory`, que zera a cada reinício) |
 
-1. `/master` — fornecedores, redes, lojas, GMV.
-2. Alterne para **Fornecedor** — produtos, estoque central (físico/reservado/disponível), lojistas da rede.
-3. Alterne para **Lojista Mantos Shop** — dashboard, checklist de onboarding, aparência (nome, logo, cores), templates.
-4. Abra a loja (`/store/mantos-shop`), escolha um produto, tamanho (ou grade de 12), carrinho, checkout.
-5. Pedido aparece em `/merchant/orders` como *Aguardando pagamento à Central*.
-6. **Confirmar pagamento à Central** → *Aguardando etiqueta*. **Registrar etiqueta** → *Pronto para separação*.
-7. Alterne para **Fornecedor** → `/supplier/shipping`: iniciar separação → pronto para envio → enviado (baixa estoque).
-8. `/merchant/services` (Serviços NextLevel, "Tenho interesse") e `/merchant/templates` (Starter ativo, Pro/Elite demonstrativos).
+## Variáveis de ambiente
+Lista completa em `.env.example` (apenas nomes). As essenciais: `DATABASE_URL`, `SESSION_SECRET`, `CRON_SECRET`, `APP_URL`, `NEXT_PUBLIC_DEMO_MODE`, `DEMO_AUTOSEED`/`SEED_DEMO`, `MASTER_EMAIL`/`MASTER_PASSWORD`. As credenciais do Mercado Pago **não** são variáveis: cada tenant as cola no painel e elas ficam criptografadas no banco.
 
-## Publicar na internet (navegável)
-
-**Netlify (recomendado, sem banco externo)**
-1. Em app.netlify.com: *Add new site → Import an existing project → GitHub* → repositório `GrupoMauricio/bras-digital-business-hub`, branch `claude/wonderful-cannon-5o38v5`. O `netlify.toml` já define build e Node.
-2. No site criado, abra *Extensions* e instale **Neon (Netlify DB)**, ou rode `netlify db init` no terminal. Isso cria um Postgres gratuito e injeta `NETLIFY_DATABASE_URL`, que o app usa automaticamente.
-3. Em *Site configuration → Environment variables*, confirme `NEXT_PUBLIC_DEMO_MODE=true` (o `netlify.toml` já define para o build).
-4. *Trigger deploy*. O build roda `npm run db:bootstrap` (migrações + seed de demonstração, idempotente) e compila o Next.js.
-5. Abra o domínio `.netlify.app`: a tela de login mostra os perfis de demonstração.
-
-**Docker (Railway, Fly.io, Render, VPS)**
-A imagem usa PGlite em volume persistente (`/app/data`) e faz o bootstrap no boot. Configs prontas: `railway.json`, `fly.toml`, `render.yaml`. Para um Postgres externo, defina `DATABASE_URL=postgres://…`.
-
-**Vercel**
-Defina `DATABASE_URL` apontando para um Postgres (Neon, Supabase) e rode `npm run db:bootstrap` uma vez contra ele.
-
-## Scripts
-
+## Testes
 ```bash
-npm run lint        # eslint
-npm run typecheck   # tsc --noEmit
-npm test            # vitest (isolamento, estoque, pedidos, permissões)
-npm run build       # build de produção
-npm run start:prod  # bootstrap do banco + next start (usado no Docker)
+npm run lint && npm run typecheck && npm test   # 168 testes de domínio
+npm run e2e                                     # fluxo ponta a ponta com Mercado Pago simulado (Playwright)
 ```
+
+## Limitações conhecidas
+- **Mercado Pago/Pix simulados** enquanto não houver credenciais: sem conta conectada, a demonstração gera Pix fictício com botão "Simular pagamento". Em produção sem credencial o usuário vê apenas "ainda não habilitado".
+- **Não roda como site estático**: usa sessões, server actions e banco. Precisa de Node ou de um adaptador serverless.
+- **Cloudflare Workers ainda não é suportado** (banco PGlite/arquivo, `pg` por TCP e leitura de migrações do disco). Detalhes e caminho em `DEPLOY_SITES.md`.
+- Em `pglite://memory` os dados zeram a cada reinício e não são compartilhados entre instâncias.
+- Esteira ao vivo por SSE exige hospedagem que aceite conexão aberta; sem isso o polling assume sozinho.
+- Etiquetas PDF e fotos ficam no banco (base64). Migrar para R2/S3 é trabalho futuro.
+- Não há e-mail transacional nem academy/chat/automações ainda; fiscal está fora do escopo.
+- Crons (`/api/cron/expire-reservations`, `/api/cron/finance`) precisam ser agendados na hospedagem.
+
+## Próximos módulos
+Roteiro em `docs/ROADMAP.md`: **U3** Lojista Lite (fluxo em uma tela e Mercado Pago da loja) · **U4** Lojista Pro (análise, editor, templates, domínio) · **U5** Loja NextLevel e Academy com compra paga · **U6** pós-venda por chat · **U7** automações, fila do dia e saúde · **U8** endurecimento, seed dos cinco perfis, E2E por papel e docs finais.
+
+## Documentação
+`ARCHITECTURE.md` · `docs/NEGOCIO.md` (contexto de negócio) · `docs/FINANCEIRO.md` · `docs/ROADMAP.md` · `docs/design/DECISIONS.md` · `DEPLOY_SITES.md`.

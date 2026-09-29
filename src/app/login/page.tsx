@@ -41,6 +41,7 @@ export default async function LoginPage() {
           {demo ? (
             <div className="md:col-span-3">
               <h2 className="text-xl font-semibold tracking-tight">Perfis de demonstração</h2>
+              <p role="note" className="mt-1 inline-block rounded bg-warning-soft px-2 py-1 text-xs font-semibold text-warning">Ambiente de demonstração · Mercado Pago e Pix SIMULADOS, dados fictícios</p>
               <p className="mt-1 text-sm text-muted-foreground">Entre com um clique. Senha de todos os perfis demo: <code className="rounded bg-surface-muted px-1.5 py-0.5 text-xs">{DEMO_PASSWORD}</code></p>
               <div className="mt-5 grid gap-2">
                 {users.map((u) => {
