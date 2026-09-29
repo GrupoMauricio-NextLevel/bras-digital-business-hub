@@ -152,3 +152,4 @@ data/*.db-shm
 .env*.local
 *.tsbuildinfo
 next-env.d.ts
+*.zip
