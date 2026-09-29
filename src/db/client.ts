@@ -25,6 +25,10 @@ export async function createDatabase(url = resolveDatabaseUrl()): Promise<Databa
     const pool = new Pool({ connectionString: url, max: 5, ssl: /localhost|127\.0\.0\.1/.test(url) ? undefined : { rejectUnauthorized: false } });
     return { db: drizzle(pool, { schema }) as unknown as Database, close: () => pool.end() };
   }
+  const serverless = !!(process.env.NETLIFY || process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  if (serverless && process.env.NODE_ENV === "production") {
+    throw new Error("Nenhum banco Postgres configurado (DATABASE_URL ou NETLIFY_DATABASE_URL). Em ambiente serverless o PGlite local não está disponível.");
+  }
   const { PGlite } = await import("@electric-sql/pglite");
   const { drizzle } = await import("drizzle-orm/pglite");
   const path = url.replace(/^pglite:\/\//, "");
