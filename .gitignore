@@ -141,3 +141,14 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# NextLevel Commerce Engine
+.next/
+out/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
