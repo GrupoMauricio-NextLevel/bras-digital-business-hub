@@ -53,9 +53,10 @@ O app precisa de um servidor Node e um banco. Duas rotas prontas:
 
 A mesma imagem funciona em **Fly.io** (`fly launch` usa o `fly.toml`; crie o volume `nextlevel_data`) e **Render** (`render.yaml` com disco em `/app/data`).
 
-**Opção B — Vercel + Turso (sem servidor próprio)**
+**Opção B — Netlify ou Vercel + Turso (sem servidor próprio)**
+Netlify e Vercel rodam o Next.js em funções serverless, sem disco persistente, então o banco fica no Turso (SQLite hospedado; nenhuma mudança de código).
 1. Crie um banco em turso.tech e copie a URL `libsql://…` e o token.
-2. Importe o repositório na Vercel e defina `DATABASE_URL`, `DATABASE_AUTH_TOKEN` e `NEXT_PUBLIC_DEMO_MODE=true`.
+2. Importe o repositório na Netlify (*Add new site → Import from Git*; o `netlify.toml` já está pronto) ou na Vercel, e defina `DATABASE_URL`, `DATABASE_AUTH_TOKEN` e `NEXT_PUBLIC_DEMO_MODE=true` nas variáveis de ambiente.
 3. Uma vez, localmente, rode `DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:bootstrap` para criar tabelas e seed no Turso.
 4. Deploy.
 
