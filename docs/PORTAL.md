@@ -31,7 +31,7 @@ Recebimentos:
 - Planos, preços e taxas: ver **`docs/PLANOS.md`**.
 
 ## 3. Cupom, teste e atribuição
-- O cupom (`MANTOSSHOP7`, `ALPHA7`) identifica o fornecedor e fixa de quem é o membro.
+- O cupom (`MANTOSSHOP7`, `ALPHA7`) identifica o fornecedor e fixa de quem é o membro. **Um cupom por CPF/CNPJ**; prorrogação manual pelo Master ou pelo fornecedor, com motivo registrado.
 - **Teste de 7 dias sem cartão de crédito**, em modo demonstração: dados de exemplo, Pix e pedidos simulados, sem pedido real ao fornecedor. Academy e Loja NextLevel em prévia completa.
 - No dia 7 o membro escolhe um plano e paga (Pix à vista ou cartão em até 6x). Os dados do teste ficam guardados por 30 dias.
 - Um teste por CPF/CNPJ, e-mail e telefone (antiabuso). Atribuição fixada no primeiro cadastro.
@@ -47,9 +47,9 @@ Recebimentos:
 **Master:** aprovação de fornecedores e páginas, contratos, cupons globais, conciliação de comissões.
 
 ## 6. Pontos cegos (atualizado)
-1. **Variação por cor não existe.** Hoje cada produto varia só por **tamanho**. Os produtos do Brás (roupas, calçados, acessórios) exigem **cor × tamanho**, grades por cor e fotos por cor. Precisa entrar antes de cadastrar catálogos reais. Também as páginas e textos do portal não devem falar só de "camisas".
-2. **Preço definido pelo fornecedor perdeu sentido.** Sem comissão (exceto fundadores), o fornecedor não ganha nada com preço maior e pode baixá-lo para atrair membros. Proposta: **a tabela da NextLevel é o preço**; o fornecedor oferece cupom e bônus, sem alterar o preço. Só os fundadores teriam preço próprio, dentro de piso e teto.
-3. **Tarifa de parcelamento do Mercado Pago:** confirmar que 14% cobre o 6x no prazo de recebimento escolhido. Sem isso, o parcelado dá prejuízo.
+1. **Catálogo atual: camisetas com variação única de tamanho** (decisão do teste). Cor e outras categorias do Brás ficam para depois; o portal pode falar de camisetas por ora.
+2. **Preço:** vale a tabela da NextLevel (`docs/PLANOS.md`). Comissão só para os dois fundadores; para os demais fornecedores será revista depois do teste.
+3. **Tarifa de parcelamento do Mercado Pago:** simulada e confirmada pelo dono (14% cobre o 6x).
 4. **Empresas emissoras:** cada fatura precisa dizer qual empresa cobra (NextLevel Marketing ou Mega Tron), para o recibo e para a conciliação. Guardar isso desde já no dado da fatura.
 5. **Recarga de membros Mega Tron** cai na conta da Mega Tron (e não na do fornecedor), e depois há repasse aos fornecedores. Fica para a fase do assinante independente.
 6. **E-mail:** convite, fim do teste, recibo e recuperação de senha dependem dele.
