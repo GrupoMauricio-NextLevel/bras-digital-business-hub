@@ -31,3 +31,7 @@ Restante das duas frentes, fundido em oito fases (U1 a U8). Cada fase termina co
 - Mercado Pago da NextLevel exige credencial real para provar M2 ponta a ponta; até lá o E2E usa o MP simulado.
 - SSE em hospedagem serverless: manter polling como padrão e SSE onde houver suporte.
 - Preços são propostas até validar no simulador com o dono.
+
+## Adendo: portal e aquisição (P1 a P4)
+O racional do portal está em `docs/PORTAL.md`. Entra antes da U3 porque define atribuição, teste de 7 dias, comissão recorrente e e-mail transacional, dos quais U3, U5 e U6 dependem.
+P1 portal + páginas dos fornecedores + cupom/teste + e-mail; P2 comissão recorrente, preços do fornecedor, editor e upgrade white label; P3 Academy e Loja NextLevel de impacto (com U5); P4 assinante independente multi-fornecedor (depende de decisões fiscais e de custódia).
