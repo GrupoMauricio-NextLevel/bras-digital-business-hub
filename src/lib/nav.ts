@@ -3,9 +3,9 @@ import type { Role } from "@/lib/domain/access";
 export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
-  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox";
+  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox" | "Link2" | "Ticket" | "HandCoins";
 
-export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro";
+export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro" | "partner";
 
 /** Ícones referenciados por nome para que a config possa cruzar a fronteira server para client. */
 export type NavItem = {
@@ -39,6 +39,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede" },
       { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
+      { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro", href: "/master/finance", icon: "Wallet", group: "Negócio" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
@@ -110,6 +111,22 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     quick: [
       { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" },
       { label: "Ver loja NextLevel", href: "/merchant/services", icon: "Sparkles" },
+    ],
+  },
+  AFFILIATE: {
+    base: "/partner",
+    label: "Parceiro",
+    items: [
+      { label: "Início", href: "/partner", icon: "Home", exact: true, group: "Escritório" },
+      { label: "Links", href: "/partner/links", icon: "Link2", group: "Divulgação" },
+      { label: "Cupons de 7 dias", href: "/partner/coupons", icon: "Ticket", group: "Divulgação" },
+      { label: "Indicados", href: "/partner/referrals", icon: "Users", group: "Resultados" },
+      { label: "Financeiro", href: "/partner/finance", icon: "HandCoins", group: "Resultados" },
+      { label: "Meu perfil", href: "/partner/profile", icon: "Settings", group: "Conta" },
+    ],
+    quick: [
+      { label: "Novo link", href: "/partner/links", icon: "Link2" },
+      { label: "Novo cupom", href: "/partner/coupons", icon: "Ticket" },
     ],
   },
 };

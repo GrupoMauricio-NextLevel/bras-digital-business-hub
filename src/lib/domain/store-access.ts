@@ -1,7 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { coupons, financeInvoices, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
+import { coupons, financeInvoices, partners, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { hashPassword } from "@/lib/security/password";
 import { createStore } from "./provisioning";
@@ -11,6 +11,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
+import { attributeStore } from "./partners";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
@@ -59,6 +60,7 @@ export async function createCoupon(db: Database, actor: Actor, input: { code: st
 export async function findUsableCoupon(db: Database, rawCode: string) {
   const c = await db.query.coupons.findFirst({ where: eq(coupons.code, rawCode.trim().toUpperCase()) });
   if (!c || !c.active) throw new DomainError("COUPON_INVALID", "Cupom inválido.");
+  if (c.partnerId) { const p = await db.query.partners.findFirst({ where: eq(partners.id, c.partnerId) }); if (!p || p.status !== "ACTIVE") throw new DomainError("COUPON_PAUSED", "Este cupom está pausado."); }
   if (c.maxRedemptions !== null && c.redemptions >= c.maxRedemptions) throw new DomainError("COUPON_EXHAUSTED", "Este cupom atingiu o limite de usos.");
   return c;
 }
@@ -71,7 +73,7 @@ export async function startTrial(db: Database, input: { storeId: string; code: s
   const store = await db.query.stores.findFirst({ where: eq(stores.id, input.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
   if (store.trialEndsAt || store.paidUntil) throw new DomainError("TRIAL_ALREADY", "Esta loja já tem teste ou assinatura.");
-  if ((await supplierOfStore(db, store.id)) !== coupon.supplierId) throw new DomainError("COUPON_SUPPLIER", "Este cupom é de outro fornecedor.");
+  if (coupon.supplierId && (await supplierOfStore(db, store.id)) !== coupon.supplierId) throw new DomainError("COUPON_SUPPLIER", "Este cupom é de outro fornecedor.");
   const claimed = await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) });
   if (claimed) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
   const ends = new Date(now.getTime() + coupon.trialDays * DAY);
@@ -156,6 +158,8 @@ export const signupSchema = z.object({
   taxId: z.string().min(11, "Informe o CPF ou CNPJ"),
   code: z.string().optional(),
   supplierSlug: z.string().optional(),
+  /** Código do parceiro (link `/r/...`, cookie `nl-ref`). O cupom de parceiro tem prioridade sobre ele. */
+  ref: z.string().max(40).optional(),
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
 });
 
@@ -170,10 +174,16 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   const taxId = normalizeTaxId(input.taxId);
   const code = input.code?.trim();
   let supplierId: string;
+  const chooseSupplier = async () => {
+    const sup = input.supplierSlug ? await db.query.suppliers.findFirst({ where: eq(suppliers.slug, input.supplierSlug) }) : null;
+    if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
+    return sup.id;
+  };
   if (code) {
     const coupon = await findUsableCoupon(db, code);
     if (await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) })) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
-    supplierId = coupon.supplierId;
+    // Cupom de fornecedor define o fornecedor; cupom de parceiro deixa o cliente escolher.
+    supplierId = coupon.supplierId ?? (await chooseSupplier());
   } else {
     const sup = input.supplierSlug ? await db.query.suppliers.findFirst({ where: eq(suppliers.slug, input.supplierSlug) }) : null;
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
@@ -184,6 +194,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   if (!user) throw new NotFoundError("Usuário não encontrado.");
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));
   await db.update(stores).set({ status: "ACTIVE", taxId }).where(eq(stores.id, created.storeId));
+  await attributeStore(db, { storeId: created.storeId, taxId, email: input.email, couponCode: code, refCode: input.ref, now });
   if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });
   // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.
   else await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));

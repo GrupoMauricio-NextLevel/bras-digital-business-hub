@@ -51,6 +51,12 @@ async function loadOwnInvoice(db: Database, actor: Actor, invoiceId: string) {
   const inv = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) });
   if (!inv) throw new NotFoundError("Fatura não encontrada.");
   if (!isMaster(actor)) {
+    if (actor.role === "AFFILIATE") {
+      const { partners } = await import("@/db/schema");
+      const p = await db.query.partners.findFirst({ where: eq(partners.userId, actor.userId) });
+      if (!p || inv.payerType !== "PARTNER" || inv.partnerId !== p.id) throw new ForbiddenError();
+      return inv;
+    }
     const t = tenantOf(actor);
     const own = t && ((t.type === "STORE" && inv.storeId === t.storeId && inv.payerType === "STORE") || (t.type === "SUPPLIER" && inv.supplierId === t.supplierId && inv.payerType === "SUPPLIER" && actor.role === "SUPPLIER_ADMIN"));
     if (!own) throw new ForbiddenError();

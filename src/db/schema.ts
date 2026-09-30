@@ -26,7 +26,7 @@ export const organizations = pgTable("organizations", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
-  type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT"] }).notNull(),
+  type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
   createdAt: createdAt(),
 });
 
@@ -69,6 +69,11 @@ export const stores = pgTable("stores", {
   slug: text("slug").notNull().unique(),
   status: text("status", { enum: ["PENDING_PAYMENT", "ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
   /** MEMBER = loja de membro; SUPPLIER_OWN = loja do próprio fornecedor para vender direto ao público. */
+  /** Parceiro que indicou a loja (definido no cadastro e nunca mais alterado) e por qual caminho. */
+  partnerId: text("partner_id"),
+  attributedVia: text("attributed_via", { enum: ["LINK", "COUPON"] }),
+  attributedAt: ts("attributed_at"),
+  attributionFlag: text("attribution_flag", { enum: ["FRAUD_REVIEW"] }),
   kind: text("kind", { enum: ["MEMBER", "SUPPLIER_OWN"] }).notNull().default("MEMBER"),
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
@@ -108,7 +113,9 @@ export const stores = pgTable("stores", {
 export const coupons = pgTable("coupons", {
   id: id(),
   code: text("code").notNull().unique(),
-  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  /** Cupom de fornecedor ou de parceiro (um dos dois). Cupom de parceiro não fixa o fornecedor da loja. */
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  partnerId: text("partner_id"),
   trialDays: integer("trial_days").notNull().default(7),
   maxRedemptions: integer("max_redemptions"),
   redemptions: integer("redemptions").notNull().default(0),
@@ -128,7 +135,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -624,10 +631,11 @@ export type InvoiceLine = { kind: string; description: string; amountCents: numb
 export const financeInvoices = pgTable("finance_invoices", {
   id: id(),
   dedupeKey: text("dedupe_key").notNull().unique(),
-  payerType: text("payer_type", { enum: ["SUPPLIER", "STORE"] }).notNull(),
+  payerType: text("payer_type", { enum: ["SUPPLIER", "STORE", "PARTNER"] }).notNull(),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
-  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "STORE_PLAN", "ADDON", "SERVICE"] }).notNull(),
+  partnerId: text("partner_id"),
+  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "STORE_PLAN", "ADDON", "SERVICE", "PARTNER_FEE"] }).notNull(),
   /** Competência YYYY-MM (mensalidade e fechamento). */
   period: text("period"),
   description: text("description").notNull(),
@@ -758,6 +766,97 @@ export const serviceLeads = pgTable("service_leads", {
   status: text("status", { enum: ["NEW", "CONTACTED", "WON", "LOST"] }).notNull().default("NEW"),
   createdAt: createdAt(),
 });
+
+// ---------------------------------------------------------------------------
+// Programa de Parceiros (afiliados): vendem planos NextLevel e comissionam
+// ---------------------------------------------------------------------------
+export const PARTNER_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED"] as const;
+export type PartnerStatus = (typeof PARTNER_STATUSES)[number];
+
+export const partners = pgTable("partners", {
+  id: id(),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  /** Extensível: hoje só AFFILIATE. */
+  kind: text("kind", { enum: ["AFFILIATE"] }).notNull().default("AFFILIATE"),
+  code: text("code").notNull().unique(),
+  displayName: text("display_name").notNull(),
+  taxId: text("tax_id").notNull().unique(),
+  phone: text("phone").notNull(),
+  /** Chave Pix criptografada (a mesma proteção dos tokens); o saque é para o mesmo CPF/CNPJ. */
+  pixKeyEnc: text("pix_key_enc"),
+  status: text("status", { enum: PARTNER_STATUSES }).notNull().default("ACTIVE"),
+  /** Última competência (YYYY-MM) coberta pela taxa de manutenção do cadastro inativo. */
+  feePaidPeriod: text("fee_paid_period"),
+  termsVersion: text("terms_version").notNull(),
+  termsAcceptedAt: ts("terms_accepted_at").notNull(),
+  createdAt: createdAt(),
+});
+
+export const partnerLinks = pgTable("partner_links", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  slug: text("slug").notNull().unique(),
+  label: text("label").notNull(),
+  campaign: text("campaign"),
+  planKey: text("plan_key", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }),
+  clicks: integer("clicks").notNull().default(0),
+  createdAt: createdAt(),
+}, (t) => [index("partner_links_partner_idx").on(t.partnerId)]);
+
+export const partnerClicks = pgTable("partner_clicks", {
+  id: id(),
+  linkId: text("link_id").notNull().references(() => partnerLinks.id),
+  at: ts("at").notNull().defaultNow(),
+  /** Hashes com sal: nunca o IP ou o agente de usuário puros (LGPD). */
+  ipHash: text("ip_hash").notNull(),
+  uaHash: text("ua_hash").notNull(),
+});
+
+export const PARTNER_COMMISSION_KINDS = ["SETUP", "MAINTENANCE", "ADJUSTMENT", "CLAWBACK", "PAYOUT", "PAYOUT_REVERSAL", "FEE", "MANUAL"] as const;
+export type PartnerCommissionKind = (typeof PARTNER_COMMISSION_KINDS)[number];
+
+/** Livro-razão do parceiro: imutável; correções entram como lançamentos novos. Saldo disponível = soma dos lançamentos AVAILABLE. */
+export const partnerCommissions = pgTable("partner_commissions", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  storeId: text("store_id").references(() => stores.id),
+  invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  /** Lançamento que este corrige (ajuste do fechamento). */
+  refId: text("ref_id"),
+  payoutId: text("payout_id"),
+  kind: text("kind", { enum: PARTNER_COMMISSION_KINDS }).notNull(),
+  baseCents: integer("base_cents").notNull().default(0),
+  rateBps: integer("rate_bps").notNull().default(0),
+  amountCents: integer("amount_cents").notNull(),
+  period: text("period").notNull(),
+  status: text("status", { enum: ["PENDING", "AVAILABLE", "PAID", "VOID"] }).notNull().default("PENDING"),
+  availableAt: ts("available_at"),
+  note: text("note"),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  createdAt: createdAt(),
+}, (t) => [index("partner_commissions_partner_idx").on(t.partnerId), index("partner_commissions_period_idx").on(t.period)]);
+
+export const partnerMonthStatus = pgTable("partner_month_status", {
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  period: text("period").notNull(),
+  activations: integer("activations").notNull(),
+  tierBps: integer("tier_bps").notNull(),
+  metGoal: boolean("met_goal").notNull(),
+  closedAt: ts("closed_at").notNull().defaultNow(),
+}, (t) => [primaryKey({ columns: [t.partnerId, t.period] })]);
+
+export const partnerPayouts = pgTable("partner_payouts", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  amountCents: integer("amount_cents").notNull(),
+  pixKeySnapshot: text("pix_key_snapshot").notNull(),
+  status: text("status", { enum: ["REQUESTED", "APPROVED", "PAID", "REJECTED"] }).notNull().default("REQUESTED"),
+  requestedAt: ts("requested_at").notNull().defaultNow(),
+  decidedBy: text("decided_by"),
+  decidedAt: ts("decided_at"),
+  paidAt: ts("paid_at"),
+  receiptNote: text("receipt_note"),
+}, (t) => [index("partner_payouts_partner_idx").on(t.partnerId)]);
 
 // ---------------------------------------------------------------------------
 // Vendas digitais da NextLevel (LP/loja pública) e CRM de pedidos

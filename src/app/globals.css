@@ -205,6 +205,11 @@
   --accent: #0d803e; --accent-soft: #dcf5e6; --accent-foreground: #0b6b34; --ring: #0d803e;
   --radius: 16px; --radius-sm: 10px; --radius-lg: 20px;
 }
+[data-panel="partner"] {
+  --primary: #b45309; --primary-hover: #92400e; --primary-foreground: #ffffff;
+  --accent: #b45309; --accent-soft: #fdebd3; --accent-foreground: #92400e; --ring: #b45309;
+  --radius: 14px;
+}
 [data-panel="pro"] {
   --primary: #4338ca; --primary-hover: #3730a3; --primary-foreground: #ffffff;
   --accent: #4338ca; --accent-soft: #e6e4fb; --accent-foreground: #3730a3; --ring: #4338ca;
@@ -212,12 +217,14 @@
 /* Painéis no escuro: acento claro sobre fundo escuro. Vale pelo botão de tema e pela preferência do sistema. */
 :root[data-theme="dark"] [data-panel="supplier"] { --accent-soft: #0f2a30; --accent-foreground: #7fd6e6; --primary: #2ab3cf; --primary-hover: #55c8de; --primary-foreground: #06161a; }
 :root[data-theme="dark"] [data-panel="dispatch"] { --accent-soft: #14213f; --accent-foreground: #9db6ff; --border: #2f4238; --muted-foreground: #9cada4; --primary: #6f93ff; --primary-hover: #93adff; --primary-foreground: #060d24; }
+:root[data-theme="dark"] [data-panel="partner"] { --accent-soft: #33210c; --accent-foreground: #fbbf77; --primary: #f59e0b; --primary-hover: #fbbf24; --primary-foreground: #1c1003; }
 :root[data-theme="dark"] [data-panel="pro"] { --accent-soft: #1d1a44; --accent-foreground: #b4adff; --primary: #8b83ff; --primary-hover: #a8a2ff; --primary-foreground: #0d0b2b; }
 :root[data-theme="dark"] [data-panel="lite"] { --accent-soft: #10291b; --accent-foreground: #6ee7a1; --accent: #0d803e; --primary: #3ddc84; --primary-hover: #66e6a1; --primary-foreground: #04150b; }
 :root[data-theme="dark"] [data-panel="master"] { --accent-soft: #10291b; --accent-foreground: #6ee7a1; --primary: #e7efeb; --primary-hover: #ffffff; --primary-foreground: #09100c; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) [data-panel="supplier"] { --accent-soft: #0f2a30; --accent-foreground: #7fd6e6; --primary: #2ab3cf; --primary-hover: #55c8de; --primary-foreground: #06161a; }
   :root:not([data-theme="light"]) [data-panel="dispatch"] { --accent-soft: #14213f; --accent-foreground: #9db6ff; --border: #2f4238; --muted-foreground: #9cada4; --primary: #6f93ff; --primary-hover: #93adff; --primary-foreground: #060d24; }
+  :root:not([data-theme="light"]) [data-panel="partner"] { --accent-soft: #33210c; --accent-foreground: #fbbf77; --primary: #f59e0b; --primary-hover: #fbbf24; --primary-foreground: #1c1003; }
   :root:not([data-theme="light"]) [data-panel="pro"] { --accent-soft: #1d1a44; --accent-foreground: #b4adff; --primary: #8b83ff; --primary-hover: #a8a2ff; --primary-foreground: #0d0b2b; }
   :root:not([data-theme="light"]) [data-panel="lite"] { --accent-soft: #10291b; --accent-foreground: #6ee7a1; --accent: #0d803e; --primary: #3ddc84; --primary-hover: #66e6a1; --primary-foreground: #04150b; }
   :root:not([data-theme="light"]) [data-panel="master"] { --accent-soft: #10291b; --accent-foreground: #6ee7a1; --primary: #e7efeb; --primary-hover: #ffffff; --primary-foreground: #09100c; }

@@ -9,7 +9,7 @@ import { formatBRL } from "@/lib/money";
 
 type Offer = { key: "DROP_MANUAL" | "STORE_SUBDOMAIN" | "STORE_OWN"; name: string; monthlyCents: number; setupCents: number };
 
-export function SignupForm({ initialCode, initialOffer, initialSupplier, offers, suppliers }: { initialCode: string; initialOffer: Offer["key"]; initialSupplier: string; offers: Offer[]; suppliers: { slug: string; name: string }[] }) {
+export function SignupForm({ initialCode, initialRef, initialOffer, initialSupplier, offers, suppliers }: { initialCode: string; initialRef?: string; initialOffer: Offer["key"]; initialSupplier: string; offers: Offer[]; suppliers: { slug: string; name: string }[] }) {
   const [f, setF] = React.useState({ storeName: "", ownerName: "", email: "", password: "", taxId: "", code: initialCode, offer: initialOffer, supplierSlug: initialSupplier });
   const [pending, start] = React.useTransition();
   const [error, setError] = React.useState<string | null>(null);
@@ -18,7 +18,7 @@ export function SignupForm({ initialCode, initialOffer, initialSupplier, offers,
   const trial = f.code.trim().length > 0;
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setError(null);
-    start(async () => { const r = await signupAction({ ...f, code: f.code.trim() || undefined }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
+    start(async () => { const r = await signupAction({ ...f, code: f.code.trim() || undefined, ref: initialRef }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
   };
   return (
     <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5 shadow-sm" aria-label="Cadastro">
@@ -30,8 +30,8 @@ export function SignupForm({ initialCode, initialOffer, initialSupplier, offers,
           </label>
         ))}
       </fieldset>
-      {!initialSupplier && !trial ? (
-        <FormField label="Seu fornecedor" htmlFor="supplier"><Select id="supplier" required value={f.supplierSlug} onChange={(e) => set({ supplierSlug: e.target.value })}><option value="">Escolha…</option>{suppliers.map((s) => <option key={s.slug} value={s.slug}>{s.name}</option>)}</Select></FormField>
+      {!initialSupplier ? (
+        <FormField label="Seu fornecedor" htmlFor="supplier" hint={trial ? "Se o cupom for de um parceiro, escolha o fornecedor que vai abastecer a sua loja." : undefined}><Select id="supplier" required={!trial} value={f.supplierSlug} onChange={(e) => set({ supplierSlug: e.target.value })}><option value="">Escolha…</option>{suppliers.map((s) => <option key={s.slug} value={s.slug}>{s.name}</option>)}</Select></FormField>
       ) : null}
       <FormField label="Nome da loja" htmlFor="store"><Input id="store" required value={f.storeName} onChange={(e) => set({ storeName: e.target.value })} /></FormField>
       <FormField label="Seu nome" htmlFor="owner"><Input id="owner" required value={f.ownerName} onChange={(e) => set({ ownerName: e.target.value })} autoComplete="name" /></FormField>

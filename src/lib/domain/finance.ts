@@ -251,6 +251,8 @@ export async function markInvoicePaid(db: Database, invoiceId: string, now = new
     }
   });
   await fulfillPaidInvoice(db, inv, now);
+  const paid = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) });
+  if (paid) await (await import("./partners")).onInvoicePaid(db, paid, now);
   await emitEvent(db, { type: "INVOICE_PAID", supplierId: inv.supplierId, storeId: inv.storeId, payload: { invoiceId, kind: inv.kind, amountCents: inv.amountCents }, dedupeKey: `INVOICE_PAID:${invoiceId}` });
   await refreshSupplierAccess(db, now);
   return (await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) }))!;
@@ -271,6 +273,7 @@ export async function voidStoreSetup(db: Database, storeId: string): Promise<{ c
     if (acq.invoiceId) await tx.update(financeInvoices).set({ status: "CANCELED" }).where(eq(financeInvoices.id, acq.invoiceId));
     await tx.update(stores).set({ status: "SUSPENDED", updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
   });
+  if (acq.invoiceId) await (await import("./partners")).clawback(db, acq.invoiceId);
   return { clawbackCents };
 }
 
@@ -382,6 +385,7 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   }
   result.accessChanged = (await refreshSupplierAccess(db, now)).changed.length;
   await runDunningNotices(db, now);
+  await (await import("./partners")).runDailyPartnerJobs(db, now);
   return result;
 }
 

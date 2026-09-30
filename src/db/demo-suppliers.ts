@@ -71,3 +71,19 @@ export async function applyLaunchBranding(db: Database): Promise<string[]> {
   }
   return log;
 }
+
+/** Parceira de demonstração (afiliada) com link, cupom e saldo fictício para mostrar o escritório virtual. */
+export async function seedDemoPartner(db: Database): Promise<void> {
+  const email = "parceira@demo.superdrop.com.br";
+  if (await db.query.users.findFirst({ where: eq(s.users.email, email) })) return;
+  const { registerPartner } = await import("@/lib/domain/partners");
+  const { DEMO_PASSWORD } = await import("./seed-constants");
+  const r = await registerPartner(db, { name: "Camila Duarte (Parceira)", email, password: DEMO_PASSWORD, taxId: "52998224725", phone: "11999990000", pixKey: "52998224725", acceptTerms: true });
+  await db.insert(s.coupons).values({ id: newId("cpn"), code: "CAMILA7", supplierId: null, partnerId: r.partnerId, trialDays: 7 });
+  await db.insert(s.partnerLinks).values({ id: newId("plk"), partnerId: r.partnerId, slug: "camila-insta", label: "Instagram (bio)", campaign: "instagram", clicks: 0 });
+  const period = new Date().toISOString().slice(0, 7);
+  await db.insert(s.partnerCommissions).values([
+    { id: newId("pcm"), partnerId: r.partnerId, kind: "MANUAL", amountCents: 35_000, period, status: "AVAILABLE", availableAt: new Date().toISOString(), note: "Saldo de demonstração", dedupeKey: `DEMO:${r.partnerId}:1` },
+    { id: newId("pcm"), partnerId: r.partnerId, kind: "MANUAL", amountCents: 12_000, period, status: "PENDING", availableAt: new Date(Date.now() + 5 * 86_400_000).toISOString(), note: "Comissão em garantia (demonstração)", dedupeKey: `DEMO:${r.partnerId}:2` },
+  ]);
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, Factory, Store, ShieldCheck } from "lucide-react";
+import { ArrowRight, Factory, Store, ShieldCheck, Handshake } from "lucide-react";
 import { getSession, homeFor, isDemoMode } from "@/lib/auth";
 import { listDemoUsers, loginAs } from "@/app/actions/auth";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ const ROLE_META = {
   SUPPLIER_ADMIN: { label: "Fornecedor / Central", desc: "Catálogo, estoque e expedição", icon: Factory, tone: "info" as const },
   SUPPLIER_DISPATCH: { label: "Expedição", desc: "Fila de separação e etiquetas, sem valores", icon: Factory, tone: "info" as const },
   STORE_OWNER: { label: "Lojista", desc: "Loja white label e pedidos", icon: Store, tone: "brand" as const },
+  AFFILIATE: { label: "Parceiro", desc: "Links, cupons e comissões", icon: Handshake, tone: "brand" as const },
 };
 
 export default async function LoginPage() {
