@@ -1,5 +1,7 @@
 # Creator Hub + TikTok (NextLevel Commerce): prompt salvo para implementar com calma
 
+> **ATUALIZADO:** a premissa "Creator Hub como módulo interno do Commerce" foi **substituída** por `creator-commerce-plataforma.md` (Creator Commerce como produto independente). Este arquivo segue válido como detalhamento de TikTok, rastreio, atribuição, comissões e amostras, **dentro do domínio Creator Platform**. Leia o outro primeiro.
+>
 > **Status: SALVO, NÃO IMPLEMENTADO.** O dono pediu para guardar e implementar depois, com calma. Comece pela tarefa 28 (diagnóstico) e só então a FASE 1.
 >
 > **Notas do repositório (ler antes de codar, vieram da sessão de trabalho):**
