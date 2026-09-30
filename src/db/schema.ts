@@ -467,6 +467,38 @@ export const themeSettings = pgTable("theme_settings", {
 });
 
 // ---------------------------------------------------------------------------
+// Motor de temas: modelos de página em JSON (rascunho e publicado) e histórico
+// ---------------------------------------------------------------------------
+/** Modelo de uma página da loja. `draft` nulo significa "sem alterações pendentes". */
+export const themeTemplates = pgTable("theme_templates", {
+  storeId: text("store_id").notNull().references(() => stores.id),
+  page: text("page", { enum: ["home", "product", "collection", "cart"] }).notNull(),
+  draft: jsonb("draft").$type<import("@/lib/themes/types").Template | null>(),
+  published: jsonb("published").$type<import("@/lib/themes/types").Template | null>(),
+  updatedAt: updatedAt(),
+}, (t) => [primaryKey({ columns: [t.storeId, t.page] })]);
+
+/** Estilo do tema e grupos globais (cabeçalho e rodapé) da loja. */
+export const themeGlobals = pgTable("theme_globals", {
+  storeId: text("store_id").primaryKey().references(() => stores.id),
+  draft: jsonb("draft").$type<import("@/lib/themes/types").ThemeGlobals | null>(),
+  published: jsonb("published").$type<import("@/lib/themes/types").ThemeGlobals | null>(),
+  updatedAt: updatedAt(),
+});
+
+/** Histórico das publicações (as últimas 20 por página) para restaurar versões. */
+export const themeTemplateVersions = pgTable("theme_template_versions", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  /** Uma página ou "globals". */
+  page: text("page").notNull(),
+  snapshot: jsonb("snapshot").$type<unknown>().notNull(),
+  label: text("label").notNull(),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("theme_template_versions_idx").on(t.storeId, t.page)]);
+
+// ---------------------------------------------------------------------------
 // Planos / Assinaturas
 // ---------------------------------------------------------------------------
 export const plans = pgTable("plans", {
@@ -691,6 +723,8 @@ export const activities = pgTable("activities", {
   createdAt: createdAt(),
 }, (t) => [index("activities_scope_idx").on(t.scope, t.supplierId, t.storeId)]);
 
+export type ThemeTemplateRow = typeof themeTemplates.$inferSelect;
+export type ThemeTemplateVersion = typeof themeTemplateVersions.$inferSelect;
 export type Store = typeof stores.$inferSelect;
 export type Supplier = typeof suppliers.$inferSelect;
 export type Product = typeof products.$inferSelect;

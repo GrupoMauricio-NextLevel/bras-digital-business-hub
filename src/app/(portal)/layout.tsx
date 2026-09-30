@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
-import { FORCE_LIGHT_SCRIPT, ForceLight } from "@/components/portal/force-light";
+import { ForceLight } from "@/components/portal/force-light";
 
 const NAV = [
   { href: "/como-funciona", label: "Como funciona" },
@@ -13,7 +13,6 @@ const NAV = [
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-neutral-900">
-      <script dangerouslySetInnerHTML={{ __html: FORCE_LIGHT_SCRIPT }} />
       <ForceLight />
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Ir para o conteúdo</a>
       <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/90 backdrop-blur">

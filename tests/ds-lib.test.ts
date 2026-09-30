@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isValidLink } from "@/lib/ds/text";
 import { contrastLevel, contrastRatio, normalizeHex } from "@/lib/ds/color";
 import { renderMarkdownLite, slugify, truncate } from "@/lib/ds/text";
 import { applyIndexQuery, moveItem, queryIsEmpty, sameQuery, toggleSelection, type IndexSpec } from "@/lib/ds/index-list";
@@ -13,6 +14,7 @@ describe("cor", () => {
 });
 
 describe("texto", () => {
+  it("valida links", () => { expect(isValidLink("/catalog")).toBe(true); expect(isValidLink("https://a.com")).toBe(true); expect(isValidLink("//evil.com")).toBe(false); expect(isValidLink("javascript:alert(1)")).toBe(false); expect(isValidLink("")).toBe(true); expect(isValidLink("tel:+5511999990000")).toBe(true); });
   it("gera endereços sem acento", () => { expect(slugify("Camisa Tailandesa São Paulo 25/26!")).toBe("camisa-tailandesa-sao-paulo-25-26"); });
   it("trunca com reticências", () => { expect(truncate("abcdefghij", 5)).toBe("abcd…"); expect(truncate("abc", 5)).toBe("abc"); });
   it("formata markdown leve", () => {

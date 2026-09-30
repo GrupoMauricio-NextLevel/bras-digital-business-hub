@@ -10,4 +10,3 @@ export function ForceLight() {
   }, []);
   return null;
 }
-export const FORCE_LIGHT_SCRIPT = `document.documentElement.setAttribute("data-theme","light")`;

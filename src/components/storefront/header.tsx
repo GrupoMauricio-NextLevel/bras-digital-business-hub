@@ -6,14 +6,15 @@ import * as React from "react";
 import { useCart } from "./cart-context";
 import { cn } from "@/lib/utils";
 
-export function StoreHeader({ slug, name, logoText, whatsapp }: { slug: string; name: string; logoText: string | null; whatsapp: string | null }) {
+export function StoreHeader({ slug, name, logoText, whatsapp: whatsappNumber, sticky = true, showWhatsapp = true }: { slug: string; name: string; logoText: string | null; whatsapp: string | null; sticky?: boolean; showWhatsapp?: boolean }) {
+  const whatsapp = showWhatsapp ? whatsappNumber : null;
   const { count, ready } = useCart();
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const base = `/store/${slug}`;
   const links = [{ href: base, label: "Início" }, { href: `${base}/catalog`, label: "Catálogo" }];
   return (
-    <header className="sticky top-0 z-30 border-b border-black/5 bg-white/95 backdrop-blur">
+    <header className={cn("top-0 z-30 border-b border-black/5 bg-white/95 backdrop-blur", sticky && "sticky")}>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <button className="rounded-md p-2 sm:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
         <Link href={base} className="flex items-center gap-2.5">

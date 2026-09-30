@@ -1,9 +1,12 @@
-import { Logo } from "@/components/brand/logo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getDb } from "@/db/client";
 import { getStorefront } from "@/lib/queries/storefront";
+import { isPreviewMode } from "@/lib/themes/preview";
+import { resolveGlobals } from "@/lib/themes/store";
+import { fontStack } from "@/lib/ds/fonts";
+import { SectionList } from "@/components/storefront/sections";
 import { CartProvider } from "@/components/storefront/cart-context";
-import { StoreHeader } from "@/components/storefront/header";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
@@ -27,21 +30,20 @@ export default async function StoreLayout({ params, children }: { params: Promis
       </div>
     );
   }
-  const vars = { "--sf-primary": sf.store.primaryColor, "--sf-accent": sf.store.accentColor, "--sf-on-primary": readableOn(sf.store.primaryColor), "--sf-on-accent": readableOn(sf.store.accentColor) } as React.CSSProperties;
+  const preview = await isPreviewMode(sf.store.id);
+  const { globals } = await resolveGlobals(await getDb(), sf.store, { draft: preview });
+  const st = globals.style;
+  const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
+  const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products: [], planned: {}, hero: undefined, globals };
   return (
-    <div style={vars} className="flex min-h-screen flex-col bg-white text-neutral-900">
+    <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
-      {sf.settings.announcement ? <div className="px-4 py-2 text-center text-xs font-medium" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>{sf.settings.announcement}</div> : null}
+      {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada.</div> : null}
       <CartProvider storeSlug={slug}>
-        <StoreHeader slug={slug} name={sf.store.name} logoText={sf.store.logoText} whatsapp={sf.store.whatsapp} />
+        <SectionList template={globals.header} ctx={ctx} />
         <main className="flex-1">{children}</main>
       </CartProvider>
-      <footer className="border-t border-neutral-200 bg-neutral-50">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div>{sf.settings.footerText || sf.store.name}</div>
-          <div className="flex gap-4 text-xs">{sf.store.instagram ? <span>@{sf.store.instagram.replace("@", "")}</span> : null}<span>Pagamento seguro</span><span>Envio para todo o Brasil</span>{sf.store.offer !== "STORE_OWN" ? <span className="flex items-center gap-1.5 text-neutral-400">Tecnologia <Logo tone="on-light" className="h-4" /></span> : null}</div>
-        </div>
-      </footer>
+      <SectionList template={globals.footer} ctx={ctx} />
     </div>
   );
 }

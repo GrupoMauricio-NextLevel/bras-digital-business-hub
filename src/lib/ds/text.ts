@@ -34,6 +34,7 @@ export const truncate = (s: string, max: number) => (s.length <= max ? s : `${s.
 export function isValidLink(value: string): boolean {
   const v = value.trim();
   if (!v) return true;
+  if (v.startsWith("//")) return false;
   if (/^(\/|#)[^\s]*$/.test(v)) return true;
   if (/^(mailto:|tel:)[^\s]+$/i.test(v)) return true;
   try { const u = new URL(v); return u.protocol === "http:" || u.protocol === "https:"; } catch { return false; }

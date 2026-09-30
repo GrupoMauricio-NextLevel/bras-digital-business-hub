@@ -334,3 +334,8 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
   :root:not([data-theme="light"]) .nl-logo-light { display: none; }
   :root:not([data-theme="light"]) .nl-logo-dark { display: inline-block; }
 }
+
+/* ---- Loja: estilo global do tema (fontes, cantos e botões) ------------------ */
+.sf-root { font-family: var(--sf-font-body, var(--font-sans)); }
+.sf-root h1, .sf-root h2 { font-family: var(--sf-font-heading, var(--font-display)); }
+.sf-root[data-buttons="outline"] .sf-btn { background: transparent !important; color: var(--sf-primary) !important; border: 2px solid var(--sf-primary); }
