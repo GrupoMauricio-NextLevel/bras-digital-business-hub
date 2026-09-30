@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { getPlatformOverview } from "@/lib/queries/master";
+import { getBrandHub } from "@/lib/domain/commerce-hub";
 import { listOrdersForActor } from "@/lib/domain/orders";
 import { listServiceOrders } from "@/lib/domain/services";
 import { BAND_LABEL, buildAlerts, healthScore, loadTowerSnapshot, type HealthBand, type Severity } from "@/lib/domain/control-tower";
@@ -28,6 +29,7 @@ export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const [overview, orders, snap] = await Promise.all([getPlatformOverview(), listOrdersForActor(db, session.actor, { limit: 6 }), loadTowerSnapshot(db)]);
+  const commerce = await getBrandHub(db, session.actor);
   const serviceOrders = await listServiceOrders(db, session.actor);
   const svcWaiting = serviceOrders.filter((o) => ["REQUESTED", "IN_ANALYSIS"].includes(o.order.status)).length;
   const svcActive = serviceOrders.filter((o) => ["QUOTED", "IN_PROGRESS"].includes(o.order.status)).length;
@@ -41,6 +43,13 @@ export default async function MasterDashboard() {
   return (
     <>
       <PageHeader title="Torre de controle" description="O que precisa da sua atenção agora, a saúde da rede e a receita da NextLevel." />
+      <Link href="/master/commerce" data-commerce-strip className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-1 rounded-xl border border-border bg-surface p-4 text-sm shadow-sm transition-colors hover:bg-surface-hover">
+        <span className="flex items-center gap-2 font-semibold"><Store className="size-4" aria-hidden /> NextLevel Commerce</span>
+        <span>{commerce.kpis.stores} {commerce.kpis.stores === 1 ? "loja" : "lojas"} · {commerce.kpis.paying} com plano pago</span>
+        <span>{commerce.kpis.leadsNew} interessado(s) novo(s)</span>
+        <span className={commerce.ready ? "text-success" : "text-warning"}>{commerce.ready ? "Pronta para lançar" : `Faltam ${commerce.checks.filter((c) => c.severity === "blocker" && !c.ok).length} item(ns) para lançar`}</span>
+        <span className="ml-auto inline-flex items-center gap-1 font-semibold">Abrir <ArrowRight className="size-4" aria-hidden /></span>
+      </Link>
       <MetricGrid className="lg:grid-cols-5">
         <MetricCard label="Receita NextLevel (mês)" value={formatBRL(overview.platformRevenue)} icon={Wallet} tone="info" hint={`${formatBRL(overview.subscriptionRevenue)} recorrente + ${formatBRL(overview.feeRevenue)} taxas`} href="/master/finance" />
         <MetricCard label="GMV da rede" value={formatCompactBRL(overview.gmv)} icon={TrendingUp} tone="success" hint={`${overview.orders} pedidos`} />

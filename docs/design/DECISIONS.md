@@ -255,3 +255,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Enquanto `nextlevelgroup.com.br` (ou um subdomínio) não aponta para o serviço, `superdrop.com.br/lojas` liga a **prévia**: o `proxy.ts` grava o cookie `nl-brand=NEXTLEVEL_COMMERCE` (30 dias) e leva ao início; `getBrand()` passa a responder com a NextLevel Commerce **somente** quando o endereço é o da marca padrão (SuperDrop). `/lojas/sair` desliga. O endereço próprio de cada marca sempre manda.
 - É apresentação, não segurança: permissões e isolamento seguem por tenant. Lojas criadas durante a prévia nascem com a marca Commerce (a marca vem de `getBrand()` no cadastro). O cadastro continua fechado até `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true`.
 - Teste: `e2e/brands.mjs`.
+
+## D37. Área "NextLevel Commerce" no Master (hub da marca)
+- `/master/commerce` (`src/lib/domain/commerce-hub.ts`, só Master): lojas da marca (com "conta simples"), planos pagos/em teste/aguardando Pix, receita de planos do mês, vendas das lojas (30 dias), interessados e a **lista do que falta para lançar** (usuários de demonstração no banco, Mercado Pago da NextLevel, cadastro aberto, banco Postgres; recomendados: endereço da marca, e-mail, suporte). O dashboard do Master ganhou uma faixa que leva a ela e o menu ganhou o grupo "Plataformas".
+- **Proposta pendente de aprovação:** `docs/nextlevel-commerce/dominios-e-rotas.md` (v2): cada marca com seu endereço e painéis (`lojas.nextlevelgroup.com.br` e `superdrop.com.br`), conta presa à marca e gestão Master por escopo de marca (holding × gestor de marca). Só vira decisão (D38) depois do aceite.
+- Testes `tests/commerce-hub.test.ts`; e2e `e2e/master-commerce.mjs`.

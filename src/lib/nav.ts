@@ -32,6 +32,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
+      { label: "NextLevel Commerce", href: "/master/commerce", icon: "Globe", group: "Plataformas" },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede" },
       { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede" },
