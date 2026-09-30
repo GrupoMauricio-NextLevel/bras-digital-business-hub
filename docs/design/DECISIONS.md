@@ -155,6 +155,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D24. Programa de Parceiros Oficiais (decisões do dono e padrões propostos)
 - **Vertente 1, afiliados:** vendem a oportunidade de negócio (o sistema pronto) e ganham renda extra por indicação. Painel próprio (escritório virtual) com links rastreáveis, cupons de 7 dias e financeiro com saque.
 - **Cadastro gratuito, com meta de 1 ativação por mês.** Comissão sobre o setup: 1 a 4 ativações 15%, 5 a 9 ativações 20%, 10 ou mais 25% (a confirmar o limite de 10). Manutenção fixa de 5% sobre as mensalidades.
-- Padrões propostos (a confirmar): faixa por mês civil com ajuste no fechamento; manutenção enquanto o indicado pagar; parceiro sem ativação fica inativo mas continua recebendo o que já gerou; garantia antes do saque; atribuição por cupom ou último link em 30 dias; comissão de um nível só.
+- **Decidido:** 10 ou mais ativações = 25%. Parceiro sem ativação no mês fica inativo, **paga R$ 100 por mês** para continuar captando e **continua recebendo as mensalidades (manutenção)**. Saque só **depois do período de garantia**. Outras vertentes ficam para outro momento.
+- Padrões propostos (a confirmar): faixa por mês civil com ajuste no fechamento; manutenção enquanto o indicado pagar; atribuição por cupom ou último link em 30 dias; comissão de um nível só; o cliente do link do parceiro escolhe o fornecedor na lista.
 - Prompt completo em `docs/prompts/programa-parceiros.md` (fases PA0 a PA7).
 - Rodapé das páginas públicas passa a mostrar a logo NextLevel e "SuperDrop é um sistema de tecnologia desenvolvido pela NextLevel Marketing Ltda." (`NextLevelSignature`).

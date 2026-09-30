@@ -8,15 +8,15 @@ SuperDrop é um sistema de tecnologia desenvolvido pela **NextLevel Marketing Lt
 ## 1. O QUE É O PROGRAMA
 Vendemos uma **oportunidade de negócio**: um sistema pronto de loja online sem estoque, que a pessoa passa a divulgar como negócio próprio. O parceiro oficial indica pessoas para assinar os planos e ganha **renda extra** por comissão. Vertentes do programa (esta rodada implementa a primeira; as demais ficam preparadas no modelo):
 1. **Afiliados** (esta rodada): divulgam links e cupons de 7 dias e comissionam sobre setup e mensalidades dos planos dos membros que trouxerem.
-2. Outras vertentes (a definir com o dono; não implementar): p. ex. parceiros de implantação e agências. Deixe `partners.kind` como enum extensível (`AFFILIATE` por enquanto).
+2. Outras vertentes: **ficam para outro momento** (decisão do dono); não implementar. Deixe `partners.kind` como enum extensível (`AFFILIATE` por enquanto).
 
 ## 2. REGRAS DE NEGÓCIO (já decididas pelo dono)
-- **Cadastro gratuito**, mas o parceiro precisa **ativar 1 novo cliente por mês** para continuar gratuito.
+- **Cadastro gratuito**, mas o parceiro precisa **ativar 1 novo cliente por mês** para continuar gratuito. Se ficar sem ativação no mês, fica **inativo** e **paga R$ 100 por mês** para continuar ativo (captando). **Inativo continua recebendo as mensalidades (manutenção) dos clientes que já indicou.**
 - **Ativação** = uma loja indicada que **paga** o primeiro pagamento (setup + primeira mensalidade, ou a primeira mensalidade no Drop manual). Teste de 7 dias não conta até virar pagamento.
 - **Comissão sobre o setup, progressiva pelas ativações do mês:**
   - de 1 a 4 ativações: **15%**
   - de 5 a 9 ativações: **20%**
-  - **10 ou mais** ativações: **25%** (o dono escreveu "acima de 10"; trate 10 como faixa de 25% e registre isso em D24 para confirmação)
+  - **10 ou mais** ativações: **25%** (o dono disse "acima de 10 é 25%"; 10 entra na faixa de 25% para não deixar buraco entre 9 e 11; o limite fica em `partner_settings` e pode virar 11 sem código)
 - **Comissão de manutenção:** **5% fixo** sobre cada mensalidade paga pelo cliente indicado, todo mês.
 - Comissão só sobre o **valor efetivamente pago** (sem frete, sem taxa por pedido, sem serviços da Loja NextLevel, sem temas). Estorno ou cancelamento **devolve** a comissão.
 - O painel dos afiliados tem **links rastreáveis de venda**, **cupons de 7 dias**, **financeiro com comissões e solicitação de saque**.
@@ -27,11 +27,11 @@ Vendemos uma **oportunidade de negócio**: um sistema pronto de loja online sem 
 |---|---|---|
 | 1 | A faixa (15/20/25%) vale por mês civil ou acumulado? | **Por mês civil**, apurada no fechamento do mês sobre as ativações do mês; durante o mês a comissão provisória usa a faixa atual e o fechamento faz o ajuste (acerto positivo ou negativo) |
 | 2 | Duração dos 5% de manutenção | Enquanto a loja indicada estiver pagando e o parceiro estiver ativo |
-| 3 | O que acontece sem 1 ativação no mês | Parceiro fica **INATIVO**: links e cupons pausam e ele não capta novos clientes; **continua recebendo as comissões já geradas e a manutenção** e vê o financeiro. Reativa ao fazer 1 ativação (por link direto) ou pagando a taxa de manutenção do programa (valor a definir; deixar configurável e desligado) |
-| 4 | Garantia antes de liberar saque | Usar `channel.guaranteeDays` (comissão fica PENDENTE e vira DISPONÍVEL depois da garantia) |
+| 3 | O que acontece sem 1 ativação no mês | **DECIDIDO pelo dono:** parceiro fica **INATIVO**: links e cupons pausam; **continua recebendo a manutenção (5%)** e as comissões já geradas e vê o financeiro. Para voltar a captar paga **R$ 100 por mês** (`inactiveFeeCents: 10000`), por fatura Pix da NextLevel (`kind: PARTNER_FEE`, liberação automática ao pagar) ou, se preferir o parceiro, abatida do saldo disponível. Fazer 1 ativação também reativa sem taxa no mês seguinte |
+| 4 | Garantia antes de liberar saque | **DECIDIDO:** o saque só é liberado **depois do período de garantia** (`channel.guaranteeDays`): a comissão fica PENDENTE e vira DISPONÍVEL só ao fim da garantia |
 | 5 | Saque mínimo e frequência | R$ 100 e 1 pedido por semana (configuráveis); pagamento por Pix para chave do mesmo CPF/CNPJ do parceiro |
 | 6 | Atribuição | **Cupom do parceiro tem prioridade**; senão o **último link** clicado em até **30 dias** (cookie próprio `nl-ref`); a atribuição grava na loja no cadastro e **nunca muda** |
-| 7 | Fornecedor da loja indicada | O cadastro pelo link do parceiro sem fornecedor exibe a **lista de fornecedores** (como hoje). Se a loja vier de um cupom/página de fornecedor, o fornecedor é o daquela página e o parceiro **também** é creditado (atribuição de parceiro e de fornecedor coexistem) |
+| 7 | Fornecedor da loja indicada (explicado ao dono com exemplo) | Toda loja precisa de um fornecedor (Alpha Outfit, MantosShop…) que abastece o estoque. Se o cliente entra pelo **link do parceiro**, ele **escolhe o fornecedor na lista** ao se cadastrar e o parceiro ganha a comissão do mesmo jeito. Se entra pela página de um fornecedor, o fornecedor já vem escolhido. Parceiro e fornecedor são creditados de forma independente |
 | 8 | Comissão do fornecedor (fundadores) e do parceiro | Independentes: a do parceiro é paga pela NextLevel e **não reduz** a do fornecedor |
 | 9 | Autoindicação | Bloquear: mesmo CPF/CNPJ, e-mail ou dispositivo do parceiro não gera comissão (marca `FRAUD_REVIEW`) |
 | 10 | Um nível só | **Sem comissão sobre outros parceiros** (nada de indicação de afiliado que gera ganho em cascata): só vendas de planos a lojistas. Isso evita risco jurídico de pirâmide |
@@ -45,7 +45,7 @@ Vendemos uma **oportunidade de negócio**: um sistema pronto de loja online sem 
 - `partner_commissions` (livro-razão, imutável; correções por lançamentos novos): `id`, `partnerId`, `storeId`, `invoiceId`, `kind` (`SETUP`, `MAINTENANCE`, `ADJUSTMENT`, `CLAWBACK`), `baseCents`, `rateBps`, `amountCents`, `period` (YYYY-MM), `status` (`PENDING`, `AVAILABLE`, `PAID`, `VOID`), `availableAt`, `dedupeKey` único.
 - `partner_month_status`: `partnerId`, `period`, `activations`, `tierBps`, `closedAt`, `metGoal`.
 - `partner_payouts`: `id`, `partnerId`, `amountCents`, `pixKeySnapshot`, `status` (`REQUESTED`, `APPROVED`, `PAID`, `REJECTED`), `requestedAt`, `decidedBy`, `paidAt`, `receiptNote`.
-- `partner_settings` dentro de `platform_settings` (zod): faixas `[ {min:1,max:4,bps:1500}, {min:5,max:9,bps:2000}, {min:10,bps:2500} ]`, `maintenanceBps: 500`, `attributionDays: 30`, `guaranteeDays`, `minPayoutCents: 10000`, `payoutsPerWeek: 1`, `inactiveFeeCents: 0`. **Nada de percentual fixo no código.**
+- `partner_settings` dentro de `platform_settings` (zod): faixas `[ {min:1,max:4,bps:1500}, {min:5,max:9,bps:2000}, {min:10,bps:2500} ]`, `maintenanceBps: 500`, `attributionDays: 30`, `guaranteeDays`, `minPayoutCents: 10000`, `payoutsPerWeek: 1`, `inactiveFeeCents: 10000`, `topTierMin: 10`. **Nada de percentual fixo no código.**
 
 ## 5. DOMÍNIO (`src/lib/domain/partners.ts`, puro e testável)
 - `tierFor(activations, settings)` → `{ bps, next?: { needed, bps } }`.
