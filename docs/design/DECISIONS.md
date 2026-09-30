@@ -218,3 +218,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Acabamento (V8):** `e2e/polish-v8.mjs` varre 14 páginas públicas e 30 dos painéis em 360, 390, 768 e 1280 px: sem rolagem horizontal, sem erro de página e sem violações graves de acessibilidade (390 e 1280). Correções: tabelas roláveis focáveis, nome acessível nos interruptores, contraste do texto sobre cores da loja (`readableOn` por contraste WCAG) e gráficos com `role="img"`.
 - **V1 (sobras):** mapa de calor de pedidos por dia da semana e hora (Brasília) e clientes/vendas por estado na Análise do lojista. Ficaram de fora: personalização do dashboard e visões salvas.
 - Migrações 0019. Testes `tests/store-fees.test.ts`, `tests/email-reset.test.ts`, `tests/readable-on.test.ts`, `tests/analytics.test.ts`; e2e `e2e/polish-v8.mjs`, `e2e/password-reset.mjs`.
+
+## D32. Correção do deploy no Render
+- **Causa:** `/` e `/planos` liam a tabela de preços (PGlite) durante o `next build`, o que abortava a exportação estática e derrubava o deploy desde a página de planos por Pix (o site ficou preso no commit a873b8c).
+- **Correção:** as duas páginas passaram a ser dinâmicas (preços sempre atuais) e o Dockerfile fixa `DATABASE_URL=pglite://memory` na etapa de build. Regra: página que consulta o banco declara `dynamic = "force-dynamic"`.

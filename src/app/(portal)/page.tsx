@@ -13,6 +13,7 @@ import { SaleCalculator } from "@/components/portal/sale-calculator";
 import { ThemeShowcase } from "@/components/portal/theme-showcase";
 import { FAQ } from "./content";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: { absolute: "SuperDrop · Sua loja online sem estoque, pronta para vender" },
   description: "Monte sua loja online com produtos de fornecedores parceiros, sem estoque. Assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom.",

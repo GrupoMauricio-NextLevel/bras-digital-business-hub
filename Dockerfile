@@ -14,6 +14,8 @@ COPY . .
 # O modo demonstração é lido no BUILD. No Render, defina NEXT_PUBLIC_DEMO_MODE=true no serviço de demonstração.
 ARG NEXT_PUBLIC_DEMO_MODE=false
 ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
+# O build não deve tocar em banco algum (páginas com dados são dinâmicas); memória do PGlite isolada por segurança.
+ENV DATABASE_URL=pglite://memory
 RUN npm run build
 
 FROM base AS runner
