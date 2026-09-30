@@ -2,6 +2,25 @@
 
 Esta versão corrige a anterior. A NextLevel **não define preço de produto**: fornecedores e membros decidem o que vendem e por quanto. A NextLevel cobra **mensalidades, setup, taxa de transação, serviços e Academy**. Nada aqui foi implementado no código ainda. Itens marcados **(proposta)** ainda não foram decididos.
 
+## 0. Decisões confirmadas pelo dono (prevalecem sobre o restante deste arquivo)
+**Taxa por pedido**
+- Membro: **Loja Própria 3%**, **loja básica (subdomínio) 5%**, **Drop manual 5%**.
+- Fornecedor: **SuperDrop (subdomínio) 3%**, **White Label 1,5%**. (Substitui os 5% e 2% ditos antes.)
+- **Base sem frete**: o frete é pago pelo cliente final. Estorno **devolve a taxa**. **Pedidos de teste não pagam taxa.**
+- **Fornecedores: taxa zero nos primeiros 15 dias.**
+
+**Fornecedor: setup e mensalidade**
+- **SuperDrop (subdomínio):** setup **R$ 1.500**, mensalidade **R$ 300**, taxa 3%.
+- **White Label:** setup **R$ 15.000**, mensalidade **R$ 2.500**, taxa 1,5%.
+- Os degraus Start/Growth/Scale deixam de existir: é um plano SuperDrop único.
+
+**Formas de pagamento e descontos**
+- **Não há desconto por ciclo nos planos.** Semestral e anual são o mesmo valor mensal pago adiantado. **O desconto de 15% (semestral) e 25% (anual) vale só para os serviços da Loja NextLevel.**
+- **Pix = preço de lista.** O cartão soma um **acréscimo**; "desconto no Pix" é apenas não pagar esse acréscimo. Parcelado em 2 a 6x = lista ×1,14 (14% já simulado no Mercado Pago).
+- Lojas e recargas: só Pix. Academy à parte, com ofertas periódicas.
+
+**Pendente:** (1) acréscimo do cartão em 1x (proposta 5%, igual à tarifa); (2) valor da mensalidade dos membros (Drop, SuperDrop, Loja Própria), que sem desconto de ciclo pode ficar em R$ 49, R$ 97 e R$ 197 (tabela atual) ou nos valores propostos antes; (3) setup da Loja Própria (R$ 2.400) e o benefício de lançamento de 12 meses grátis; (4) prazo da comissão dos fundadores.
+
 ## 1. De onde vem a receita da NextLevel
 | Fonte | Quem paga | Observação |
 |---|---|---|

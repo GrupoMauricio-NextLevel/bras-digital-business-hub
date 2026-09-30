@@ -19,7 +19,9 @@ Painéis Master (torre de controle), Fornecedor (esteira ao vivo, corte, ondas),
 | 9 | Gravar o módulo 1 da Academy e o roteiro dos módulos bloqueados | O teste de 7 dias precisa impressionar |
 | 10 | Responder as decisões pendentes (abaixo) | Destravam as tarefas de taxa e planos |
 
-**Decisões pendentes:** (a) taxa por pedido do Drop manual (proposta 5%); (b) base sem frete; (c) estorno devolve a taxa; (d) taxa cobrada no fechamento mensal; (e) pedidos de teste sem taxa; (f) percentual do desconto à vista no Pix; (g) desconto de 15% (semestral) e 25% (anual) também nos planos; (h) R$ 2.400 da Loja Própria como setup com 12 meses de plataforma de lançamento; (i) setup e mensalidades dos fornecedores; (j) prazo da comissão dos fundadores; (k) benefícios do lançamento.
+**Decisões já respondidas (ver `docs/PLANOS.md`, item 0):** taxa do Drop manual 5%, estorno devolve a taxa, base sem frete, testes sem taxa, fornecedores sem taxa por 15 dias, sem desconto por ciclo nos planos (só nos serviços), Pix é o preço de lista, setups e mensalidades dos fornecedores.
+
+**Decisões ainda pendentes:** (a) taxa por pedido do Drop manual (proposta 5%); (b) base sem frete; (c) estorno devolve a taxa; (d) taxa cobrada no fechamento mensal; (e) pedidos de teste sem taxa; (f) percentual do desconto à vista no Pix; (g) desconto de 15% (semestral) e 25% (anual) também nos planos; (h) R$ 2.400 da Loja Própria como setup com 12 meses de plataforma de lançamento; (i) setup e mensalidades dos fornecedores; (j) prazo da comissão dos fundadores; (k) benefícios do lançamento.
 
 ## Bloco B: desenvolvimento
 
