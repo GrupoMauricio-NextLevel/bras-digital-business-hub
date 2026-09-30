@@ -20,13 +20,13 @@ export default function Planos() {
         {SUPPLIER_PLANS.map((p) => (
           <li key={p.key} className="rounded-2xl border border-neutral-200 p-6">
             <h3 className="text-xl font-bold">{p.name}</h3>
-            <p className="mt-3 text-4xl font-extrabold tabular-nums">{p.monthly}<span className="text-base font-medium text-neutral-500">/mês</span></p>
+            <p className="mt-3 text-4xl font-extrabold tabular-nums">{p.monthly}<span className="text-base font-medium text-neutral-600">/mês</span></p>
             <p className="text-sm text-neutral-600">+ setup de {p.setup} · + {p.fee} por pedido</p>
             <ul className="mt-4 space-y-2 text-sm">{p.items.map((i) => <li key={i} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#12a150]" aria-hidden />{i}</li>)}</ul>
           </li>
         ))}
       </ul>
-      <p className="mt-6 text-sm text-neutral-500">Semestral e anual têm o mesmo valor mensal, pagos adiantados. Descontos de 15% e 25% valem para os serviços da Loja NextLevel.</p>
+      <p className="mt-6 text-sm text-neutral-600">Semestral e anual têm o mesmo valor mensal, pagos adiantados. Descontos de 15% e 25% valem para os serviços da Loja NextLevel.</p>
       <Link href="/login" className="mt-8 inline-flex h-12 items-center rounded-lg bg-[#0f1c16] px-6 font-semibold text-white hover:bg-[#1c2e25]">Entrar</Link>
     </div>
   );
