@@ -2,7 +2,7 @@ import { and, count, desc, eq, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { financeOverview, periodOf } from "@/lib/domain/finance";
 import { supplierContracts } from "@/db/schema";
-import { activities, invoices, networks, orders, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
+import { activities, invoices, networks, orders, organizations, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
 
 export async function getPlatformOverview() {
   const db = (await getDb());
@@ -54,16 +54,17 @@ export async function listNetworks() {
     .groupBy(networks.id, suppliers.name);
 }
 
-export async function listStoresWithPlan(filter: { q?: string; status?: string; offer?: string } = {}) {
+export async function listStoresWithPlan(filter: { q?: string; status?: string; offer?: string; marca?: string } = {}) {
   const db = (await getDb());
   const rows = await db
-    .select({ store: stores, networkName: networks.name, supplierName: suppliers.name, planName: plans.name, subscriptionStatus: subscriptions.status, periodEnd: subscriptions.currentPeriodEnd })
+    .select({ store: stores, brand: organizations.brand, networkName: networks.name, supplierName: suppliers.name, planName: plans.name, subscriptionStatus: subscriptions.status, periodEnd: subscriptions.currentPeriodEnd })
     .from(stores)
+    .innerJoin(organizations, eq(organizations.id, stores.organizationId))
     .innerJoin(networks, eq(networks.id, stores.networkId))
     .innerJoin(suppliers, eq(suppliers.id, networks.supplierId))
     .leftJoin(subscriptions, eq(subscriptions.storeId, stores.id))
     .leftJoin(plans, eq(plans.id, subscriptions.planId))
-    .where(and(filter.status ? eq(stores.status, filter.status as "ACTIVE") : undefined, filter.offer ? eq(stores.offer, filter.offer as "DROP_MANUAL") : undefined))
+    .where(and(filter.status ? eq(stores.status, filter.status as "ACTIVE") : undefined, filter.offer ? eq(stores.offer, filter.offer as "DROP_MANUAL") : undefined, filter.marca ? eq(organizations.brand, filter.marca as "SUPERDROP") : undefined))
     .orderBy(stores.name);
   const orderCounts = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.storeId);
   const q = filter.q?.toLowerCase();

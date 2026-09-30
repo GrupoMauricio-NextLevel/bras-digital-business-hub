@@ -27,6 +27,8 @@ export const organizations = pgTable("organizations", {
   slug: text("slug").notNull().unique(),
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
   type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
+  /** Marca por onde o cliente entrou (NextLevel Commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL"] }).notNull().default("SUPERDROP"),
   createdAt: createdAt(),
 });
 
@@ -884,6 +886,25 @@ export const passwordResets = pgTable("password_resets", {
   usedAt: ts("used_at"),
   createdAt: createdAt(),
 });
+
+// ---------------------------------------------------------------------------
+// Interessados por marca (lista de espera e implantação assistida)
+// ---------------------------------------------------------------------------
+export const brandLeads = pgTable("brand_leads", {
+  id: id(),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL"] }).notNull(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  storeName: text("store_name"),
+  segment: text("segment"),
+  message: text("message"),
+  affiliateRef: text("affiliate_ref"),
+  status: text("status", { enum: ["NEW", "CONTACTED", "WON", "LOST"] }).notNull().default("NEW"),
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("brand_leads_brand_idx").on(t.brand, t.status)]);
 
 // ---------------------------------------------------------------------------
 // Vendas digitais da NextLevel (LP/loja pública) e CRM de pedidos

@@ -1,3 +1,4 @@
+import { BRAND_CODES, defaultBrandCode } from "@/lib/brand";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -19,6 +20,7 @@ export const createSupplierSchema = z.object({
   waiveFees: z.boolean().default(false),
   adminName: z.string().min(2, "Informe o nome do responsável"),
   adminEmail: z.string().email("E-mail inválido"),
+  brand: z.enum(BRAND_CODES).optional(),
 });
 
 export const createStoreSchema = z.object({
@@ -29,6 +31,8 @@ export const createStoreSchema = z.object({
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
   ownerName: z.string().min(2, "Informe o nome do lojista"),
   ownerEmail: z.string().email("E-mail inválido"),
+  /** Marca por onde a loja entrou; sem ela, herda a do fornecedor. */
+  brand: z.enum(BRAND_CODES).optional(),
 });
 
 export type Credentials = { email: string; temporaryPassword: string };
@@ -65,7 +69,7 @@ export async function createSupplier(db: Database, raw: z.input<typeof createSup
   await db.transaction(async (tx) => {
     const orgSlug = await uniqueSlug(tx, input.name, "organizations");
     const supSlug = await uniqueSlug(tx, input.name, "suppliers");
-    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: orgSlug, type: "SUPPLIER" });
+    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: orgSlug, type: "SUPPLIER", brand: input.brand ?? defaultBrandCode() });
     await tx.insert(suppliers).values({ id: supplierId, organizationId: orgId, name: input.name, slug: supSlug, businessModel: input.businessModel, city: input.city, state: input.state, ...fee });
     await tx.insert(networks).values({ id: newId("net"), supplierId, name: `Rede ${input.name}`, slug: `rede-${supSlug}` });
     await tx.insert(users).values({ id: newId("usr"), name: input.adminName, email, role: "SUPPLIER_ADMIN", organizationId: orgId, supplierId, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
@@ -84,6 +88,8 @@ export async function createStore(db: Database, supplierId: string, raw: z.input
   const email = input.ownerEmail.toLowerCase();
   await ensureEmailFree(db, email);
   const network = await db.query.networks.findFirst({ where: eq(networks.supplierId, supplierId) });
+  const supplierOrg = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) }).then((sp) => sp ? db.query.organizations.findFirst({ where: eq(organizations.id, sp.organizationId) }) : null);
+  const brand = input.brand ?? supplierOrg?.brand ?? defaultBrandCode();
   if (!network) throw new DomainError("NETWORK_NOT_FOUND", "Fornecedor sem rede configurada.");
   if (!(await capabilitiesForSupplier(db, supplierId)).caps.canCreateStores) throw new DomainError("SUPPLIER_BLOCKED", "Novas lojas estão bloqueadas por pendência financeira com a NextLevel.");
   const temporaryPassword = generateTemporaryPassword();
@@ -93,7 +99,7 @@ export async function createStore(db: Database, supplierId: string, raw: z.input
   await db.transaction(async (tx) => {
     slug = await uniqueSlug(tx, input.slug ?? input.name, "stores");
     const orgId = newId("org");
-    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: await uniqueSlug(tx, input.name, "organizations"), type: "MERCHANT" });
+    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: await uniqueSlug(tx, input.name, "organizations"), type: "MERCHANT", brand });
     await tx.insert(stores).values({ id: storeId, organizationId: orgId, networkId: network.id, name: input.name, slug, offer: input.offer, status: "PENDING_PAYMENT", tagline: input.tagline, whatsapp: input.whatsapp, logoText: input.name.split(" ").map((p) => p[0]).join("").slice(0, 3).toUpperCase() });
     await tx.insert(users).values({ id: newId("usr"), name: input.ownerName, email, role: "STORE_OWNER", organizationId: orgId, storeId, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
     const plan = (await tx.select().from(plans).where(eq(plans.key, input.offer)).limit(1))[0] ?? (await tx.select().from(plans).orderBy(plans.priceCents).limit(1))[0];

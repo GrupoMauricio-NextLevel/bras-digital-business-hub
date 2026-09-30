@@ -2,11 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MemberPlans } from "@/components/portal/member-plans";
 import { MEMBER_FEES } from "../content";
+import { brandHas } from "@/lib/brand";
+import { getBrand } from "@/lib/brand-server";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Planos", description: "Planos para quem vende: assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom." };
 
-export default function Planos() {
+export default async function Planos() {
+  const brand = await getBrand();
+  if (!brandHas(brand, "dropship")) return (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos</h1>
+      <p className="mt-3 text-lg text-neutral-600">Os planos da {brand.name} são combinados de acordo com o tamanho da sua operação: quantidade de produtos, temas e módulos. Na implantação acompanhada você recebe a proposta com valores claros, sem surpresa.</p>
+      <Link href="/quero-minha-loja" className="mt-8 inline-flex h-12 items-center rounded-lg px-6 font-semibold text-white" style={{ background: brand.primaryColor }}>Quero minha loja</Link>
+    </div>
+  );
   return (
     <div className="mx-auto max-w-6xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos</h1>

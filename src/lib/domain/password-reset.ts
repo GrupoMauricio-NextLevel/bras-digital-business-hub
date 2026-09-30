@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { passwordResets, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
-import { emails, sendEmail } from "@/lib/email";
+import { brandOfUser, emails, sendEmail } from "@/lib/email";
 import { DomainError } from "./errors";
 
 const hash = (t: string) => createHash("sha256").update(t).digest("hex");
@@ -23,7 +23,7 @@ export async function requestPasswordReset(db: Database, rawEmail: string, baseU
   await db.insert(passwordResets).values({ id: newId("prs"), userId: user.id, tokenHash: hash(token), expiresAt: new Date(now.getTime() + HOUR).toISOString() });
   const link = `${baseUrl}/redefinir-senha/${token}`;
   const m = emails.passwordReset(link);
-  await sendEmail(db, { kind: "PASSWORD_RESET", to: user.email, ...m });
+  await sendEmail(db, { kind: "PASSWORD_RESET", to: user.email, brand: await brandOfUser(db, user.id), ...m });
   return { link };
 }
 

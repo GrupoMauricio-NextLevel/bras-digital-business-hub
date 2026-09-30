@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BadgeCheck, CalendarCheck, CreditCard, GraduationCap, Headphones, Palette, QrCode, Rocket, ShieldCheck, Sparkles, Wrench, type LucideIcon } from "lucide-react";
 import { getDb } from "@/db/client";
+import { getBrand } from "@/lib/brand-server";
 import { listDigitalProducts } from "@/lib/domain/nl-sales";
 import { BuyButton } from "@/components/nextlevel-shop/buy-button";
 import { Reveal } from "@/components/portal/reveal";
@@ -28,6 +29,7 @@ const STEPS = [
 
 export default async function LojaNextLevel({ searchParams }: { searchParams: Promise<{ ref?: string }> }) {
   const { ref } = await searchParams;
+  const brand = await getBrand();
   const db = await getDb();
   const products = await listDigitalProducts(db);
   const featured = products.find((p) => p.featured) ?? products[0];
@@ -41,7 +43,7 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-16 md:pt-24">
           <span className="inline-flex rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-3 py-1 text-xs font-semibold text-[#86efac]">Loja NextLevel</span>
           <h1 className="nl-display mt-5 max-w-4xl">O time da NextLevel trabalhando para a sua loja vender mais.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#c3d3ca]">Assessoria, configuração, criativos e treinamento feitos por quem opera a plataforma SuperDrop. Você escolhe, paga em 1 clique e a equipe começa.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#c3d3ca]">Assessoria, configuração, criativos e treinamento feitos por quem opera a plataforma {brand.name}. Você escolhe, paga em 1 clique e a equipe começa.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#ofertas" className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>Ver as ofertas</a>
             {talk ? <a href={talk} target={c.whatsappUrl ? "_blank" : undefined} rel="noreferrer" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Falar com a equipe</a> : null}
@@ -113,8 +115,8 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
             ))}
           </ol>
           <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-[#0f1c16] p-6 text-white">
-            <div><p className="text-lg font-bold">Ainda não tem a sua loja?</p><p className="text-sm text-[#c3d3ca]">Crie a sua loja SuperDrop e teste 7 dias com o cupom do seu fornecedor.</p></div>
-            <Link href="/cadastro" className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>Criar minha loja</Link>
+            <div><p className="text-lg font-bold">Ainda não tem a sua loja?</p><p className="text-sm text-[#c3d3ca]">{brand.signupOpen ? `Crie a sua loja ${brand.name} e teste 7 dias com o cupom do seu fornecedor.` : "Deixe seus dados e a equipe ajuda você a abrir a sua loja."}</p></div>
+            <Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>{brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
           </div>
         </div>
       </section>

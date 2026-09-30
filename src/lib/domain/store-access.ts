@@ -2,6 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { coupons, financeInvoices, partners, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
+import { BRAND_CODES } from "@/lib/brand";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { hashPassword } from "@/lib/security/password";
 import { createStore } from "./provisioning";
@@ -160,6 +161,8 @@ export const signupSchema = z.object({
   supplierSlug: z.string().optional(),
   /** Código do parceiro (link `/r/...`, cookie `nl-ref`). O cupom de parceiro tem prioridade sobre ele. */
   ref: z.string().max(40).optional(),
+  /** Marca do endereço em que o cadastro foi feito. */
+  brand: z.enum(BRAND_CODES).optional(),
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
 });
 
@@ -189,7 +192,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
     supplierId = sup.id;
   }
-  const created = await createStore(db, supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email });
+  const created = await createStore(db, supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });
   const user = await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) });
   if (!user) throw new NotFoundError("Usuário não encontrado.");
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));

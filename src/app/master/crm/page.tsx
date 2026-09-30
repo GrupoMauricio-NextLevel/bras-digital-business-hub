@@ -10,17 +10,40 @@ import { CRM_STAGES, listDigitalProducts, listNlOrders, nlSalesSummary } from "@
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 import { DigitalProductRow } from "./crm-client";
+import { LeadActions } from "./leads-client";
+import { LinkTabs } from "@/components/app/link-tabs";
+import { listBrandLeads } from "@/lib/domain/brand-leads";
+import { brandByCode } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
-export default async function MasterCrmPage() {
+export default async function MasterCrmPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await requireRole("NEXTLEVEL_MASTER");
+  const tab = (await searchParams).tab === "interessados" ? "interessados" : "pedidos";
   const db = await getDb();
   const [orders, summary, products] = await Promise.all([listNlOrders(db, session.actor), nlSalesSummary(db, session.actor), listDigitalProducts(db, { all: true })]);
   const canceled = orders.filter((o) => o.status === "CANCELED");
+  const leads = tab === "interessados" ? await listBrandLeads(db, session.actor) : [];
+  const tabs = <LinkTabs label="CRM" active={tab} items={[{ key: "pedidos", label: "Pedidos da Loja NextLevel", href: "/master/crm" }, { key: "interessados", label: "Interessados por marca", href: "/master/crm?tab=interessados" }]} />;
+  if (tab === "interessados") return (
+    <>
+      <PageHeader title="CRM · Interessados" description="Pessoas que pediram para abrir uma loja em cada marca (lista de espera e implantação assistida)." />
+      {tabs}
+      {leads.length === 0 ? <EmptyState compact icon={Inbox} title="Nenhum interessado ainda" description="Quem preencher o formulário de “Quero minha loja” aparece aqui." /> : (
+        <ul className="space-y-3">{leads.map((l) => (
+          <li key={l.id} className="rounded-lg border border-border bg-surface p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2"><div><p className="font-medium">{l.name}{l.storeName ? <span className="text-muted-foreground"> · {l.storeName}</span> : null}</p><p className="text-xs text-muted-foreground">{brandByCode(l.brand).name} · {l.email} · {l.phone} · {formatDateTime(l.createdAt)}{l.segment ? ` · ${l.segment}` : ""}{l.affiliateRef ? ` · indicação ${l.affiliateRef}` : ""}</p></div><a href={`https://wa.me/${l.phone.startsWith("55") ? l.phone : `55${l.phone}`}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-accent-foreground hover:underline">Chamar no WhatsApp</a></div>
+            {l.message ? <p className="mt-2 rounded bg-surface-muted p-2 text-sm">{l.message}</p> : null}
+            <div className="mt-3"><LeadActions id={l.id} status={l.status} notes={l.notes} /></div>
+          </li>
+        ))}</ul>
+      )}
+    </>
+  );
   return (
     <>
       <PageHeader title="CRM · Loja NextLevel" description="Pedidos que chegam da Loja NextLevel pública: da cobrança à entrega, com anotações de cada contato." actions={<Link href="/loja-nextlevel" target="_blank" className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline">Ver a loja pública <ExternalLink className="size-3.5" aria-hidden /></Link>} />
+      {tabs}
       <MetricGrid className="mb-8">
         <MetricCard label="Para contatar" value={summary.toContact} icon={Inbox} tone={summary.toContact ? "warning" : "neutral"} hint="Pagos, ainda sem contato" />
         <MetricCard label="Em andamento" value={summary.active} tone="info" hint="Em contato ou execução" />

@@ -222,3 +222,13 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D32. Correção do deploy no Render
 - **Causa:** `/` e `/planos` liam a tabela de preços (PGlite) durante o `next build`, o que abortava a exportação estática e derrubava o deploy desde a página de planos por Pix (o site ficou preso no commit a873b8c).
 - **Correção:** as duas páginas passaram a ser dinâmicas (preços sempre atuais) e o Dockerfile fixa `DATABASE_URL=pglite://memory` na etapa de build. Regra: página que consulta o banco declara `dynamic = "force-dynamic"`.
+
+## D33. N0: portfólio de marcas sobre um só motor
+- **Uma implantação, várias marcas:** `src/lib/brand.ts` define NextLevel Commerce, SuperDrop e Brás Digital (nome, domínios, cores, módulos, texto legal, remetente de e-mail). `getBrand()` resolve a marca pelo endereço (`x-forwarded-host`); endereço desconhecido cai em `DEFAULT_BRAND` (padrão SuperDrop, a marca em produção). Domínios e endereços vêm de variáveis de ambiente.
+- **A marca é organização e apresentação, não segurança:** `organizations.brand` guarda por onde o cliente entrou (padrão SUPERDROP para o legado); o isolamento continua por tenant. O Master ganhou filtro de marca em Lojas e Escritório virtual.
+- **Portal por marca:** marcas sem dropshipping (NextLevel Commerce, Brás Digital) têm home própria, sem promessa que ainda não existe ("Em breve" marcado como tal); páginas de outra marca (fornecedor, parceiros, cadastro) redirecionam. Planos e dúvidas têm variante da marca.
+- **Cadastro fechado na NextLevel Commerce até a fase N1** (conta simples): a loja independente ainda depende do modelo de fornecedor. No lugar, "Quero minha loja" registra o interessado (`brand_leads`), com confirmação por e-mail e aba "Interessados por marca" no CRM do Master. Parceiros também ficam fechados nessa marca até haver planos e comissões próprios (`BRAND_PARTNERS_*`).
+- **E-mails por marca:** textos usam `{marca}`; layout, cores, rodapé legal e remetente vêm da marca da organização do destinatário; o nome do produto na frase legal das lojas vem da marca da loja.
+- **Contraste:** a cor de destaque da NextLevel Commerce é #2563eb (branco sobre ela passa AA).
+- **Teste local de domínio:** `x-forwarded-host` simula o domínio; `SERVER_ACTIONS_ALLOWED_ORIGINS` (só nos scripts de demonstração) permite as ações do servidor nessa simulação.
+- Migração 0021. Testes `tests/brand.test.ts`; e2e `e2e/brands.mjs`. Guia do dono: `docs/nextlevel-commerce/publicar-dominios.md`.

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { requireBrandFeature } from "@/lib/brand-server";
 import { FLOW, MEMBER_FEES } from "../content";
 
 export const metadata: Metadata = { title: "Como funciona", description: "Do pedido do cliente à entrega: o que cada papel faz na SuperDrop." };
 
-export default function ComoFunciona() {
+export default async function ComoFunciona() {
+  await requireBrandFeature("dropship");
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Como funciona</h1>

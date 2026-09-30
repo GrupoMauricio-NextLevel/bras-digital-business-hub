@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { financeInvoices, networks, serviceOrders, services, stores, suppliers } from "@/db/schema";
+import { financeInvoices, networks, organizations, serviceOrders, services, stores, suppliers } from "@/db/schema";
 import { isMaster, type Actor } from "./access";
 import { ForbiddenError } from "./errors";
 import { contractTerms, ensureContract, getPriceBook } from "./finance";
@@ -10,18 +10,20 @@ import { storeAccess, type StoreAccess } from "./store-access";
  * Escritório virtual da NextLevel: as receitas próprias separadas por origem —
  * assinaturas (lojas e fornecedores), ativações (setups pagos) e serviços. Vendas digitais têm o CRM.
  */
-export async function nextlevelOffice(db: Database, actor: Actor, now = new Date()) {
+export async function nextlevelOffice(db: Database, actor: Actor, now = new Date(), brand?: string) {
   if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel acessa o escritório virtual.");
   const [book, storeRows, supplierRows, netRows] = await Promise.all([getPriceBook(db), db.select().from(stores), db.select().from(suppliers), db.select().from(networks)]);
 
-  const storeSubs = storeRows.filter((s) => s.kind === "MEMBER").map((s) => {
+  const brandOf = new Map((await db.select({ id: organizations.id, brand: organizations.brand }).from(organizations)).map((o) => [o.id, o.brand] as const));
+  const inBrand = (orgId: string) => !brand || brandOf.get(orgId) === brand;
+  const storeSubs = storeRows.filter((s) => s.kind === "MEMBER" && inBrand(s.organizationId)).map((s) => {
     const acc: StoreAccess = storeAccess(s, now);
     const supplier = supplierRows.find((x) => x.id === netRows.find((n) => n.id === s.networkId)?.supplierId);
     const monthly = book.offers[s.offer]?.monthlyCents ?? 0;
     return { storeId: s.id, name: s.name, supplierName: supplier?.name ?? "—", offer: s.offer, state: acc.state, endsAt: acc.endsAt?.toISOString() ?? null, daysLeft: acc.daysLeft, monthlyCents: monthly };
   });
   const supplierSubs = [];
-  for (const s of supplierRows.filter((x) => x.status !== "CLOSED")) {
+  for (const s of supplierRows.filter((x) => x.status !== "CLOSED" && inBrand(x.organizationId))) {
     const t = contractTerms(await ensureContract(db, s.id), s.businessModel);
     supplierSubs.push({ supplierId: s.id, name: s.name, model: s.businessModel, status: s.status, monthlyCents: t.monthlyFeeCents });
   }

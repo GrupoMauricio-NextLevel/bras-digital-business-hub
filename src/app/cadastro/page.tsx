@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb } from "@/db/client";
+import { requireBrandFeature } from "@/lib/brand-server";
 import { Logo } from "@/components/brand/logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { listSignupSuppliers } from "@/lib/domain/store-access";
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Criar minha loja", description: "Esc
 export const dynamic = "force-dynamic";
 
 export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string }> }) {
+  await requireBrandFeature("signup");
   const sp = await searchParams;
   const db = await getDb();
   const [suppliers, book] = await Promise.all([listSignupSuppliers(db), getPriceBook(db)]);

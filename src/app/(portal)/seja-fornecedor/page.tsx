@@ -4,6 +4,7 @@ import { ArrowRight, BarChart3, Boxes, Check, Clock, Coins, Layers, Network, Pri
 import { PanelsShowcase } from "@/components/portal/panels-showcase";
 import { LiveConveyor } from "@/components/portal/live-conveyor";
 import { Reveal } from "@/components/portal/reveal";
+import { requireBrandFeature } from "@/lib/brand-server";
 import { supportContacts } from "@/lib/support";
 import { SUPPLIER_PLANS } from "../content";
 
@@ -36,7 +37,8 @@ const STEPS = [
   { t: "Convide os primeiros membros", d: "Cada fornecedor tem cupom de teste de 7 dias e link de cadastro próprio para captar a rede." },
 ];
 
-export default function SejaFornecedor() {
+export default async function SejaFornecedor() {
+  await requireBrandFeature("dropship");
   const c = supportContacts();
   const contact = c.whatsappUrl ? { href: c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero ser fornecedor SuperDrop.")}`), external: true } : c.email ? { href: `mailto:${c.email}?subject=${encodeURIComponent("Quero ser fornecedor SuperDrop")}`, external: false } : null;
   return (

@@ -11,6 +11,7 @@ import { adjustCommission, createLink, createPartnerCoupon, decidePayout, ensure
 import { rateLimit } from "@/lib/rate-limit";
 import { emails, sendEmail } from "@/lib/email";
 import { getBaseUrl } from "@/lib/base-url";
+import { getBrand } from "@/lib/brand-server";
 
 async function ctx() {
   const s = await getSession();
@@ -25,10 +26,11 @@ export async function registerPartnerAction(input: z.input<typeof partnerSignupS
     const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
     if (!rateLimit(`partner-signup:${ip}`, 8, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
     const db = await getDb();
-    const created = await registerPartner(db, input);
+    const brand = await getBrand();
+    const created = await registerPartner(db, { ...input, brand: brand.code });
     await setSessionCookie(created.userId);
     const m = emails.welcomePartner(input.name.split(" ")[0]!, `${await getBaseUrl()}/partner`);
-    await sendEmail(db, { kind: "WELCOME_PARTNER", to: input.email.toLowerCase(), ...m });
+    await sendEmail(db, { kind: "WELCOME_PARTNER", to: input.email.toLowerCase(), brand: brand.code, ...m });
     return { ok: true as const };
   });
   if (r.ok) redirect("/partner");

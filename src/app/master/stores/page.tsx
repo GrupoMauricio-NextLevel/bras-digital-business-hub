@@ -10,8 +10,9 @@ import { storeUrl } from "@/lib/store-url";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
+import { brandByCode } from "@/lib/brand";
 
-export default async function StoresPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; offer?: string }> }) {
+export default async function StoresPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; offer?: string; marca?: string }> }) {
   const sp = await searchParams;
   const [rows, snap] = await Promise.all([listStoresWithPlan(sp), getDb().then((db) => loadTowerSnapshot(db))]);
   const signal = new Map(snap.stores.map((x) => [x.id, x]));
@@ -22,6 +23,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
         <FilterBar>
           <SearchInput placeholder="Buscar loja…" />
           <FilterChips param="offer" allLabel="Todas as ofertas" options={[{ value: "DROP_MANUAL", label: "Drop manual" }, { value: "STORE_SUBDOMAIN", label: "Loja SuperDrop" }, { value: "STORE_OWN", label: "Loja própria" }]} />
+          <FilterChips param="marca" allLabel="Todas as marcas" options={[{ value: "NEXTLEVEL_COMMERCE", label: "NextLevel Commerce" }, { value: "SUPERDROP", label: "SuperDrop" }, { value: "BRAS_DIGITAL", label: "Brás Digital" }]} />
           <FilterChips param="status" allLabel="Todas" options={[{ value: "ACTIVE", label: "Ativas" }, { value: "SUSPENDED", label: "Suspensas" }, { value: "CLOSED", label: "Encerradas" }]} />
         </FilterBar>
       </Suspense>
@@ -31,6 +33,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
         columns={[
           { key: "name", header: "Loja", primary: true, cell: (r) => <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded text-[10px] font-bold text-white" style={{ background: r.store.primaryColor }}>{r.store.logoText}</span><div><div className="font-medium">{r.store.name}</div><div className="text-xs text-muted-foreground">{r.networkName}</div></div></div> },
           { key: "offer", header: "Oferta", cell: (r) => <StatusBadge value={r.store.offer} />, mobile: false },
+          { key: "brand", header: "Marca", cell: (r) => <span className="text-xs">{brandByCode(r.brand).name}</span>, mobile: false },
           { key: "health", header: "Saúde", cell: (r) => { const sg = signal.get(r.store.id); if (!sg) return null; const h = healthScore(sg); return <span title={h.reasons.join(" · ") || "Sem pendências"} className={h.band === "HEALTHY" ? "text-success" : h.band === "ATTENTION" ? "text-warning" : "text-danger"}>{BAND_LABEL[h.band]} · {h.score}</span>; } },
           { key: "balance", header: "Saldo", className: "text-right", mobile: false, cell: (r) => <span className="tabular-nums">{formatBRL(signal.get(r.store.id)?.balanceCents ?? 0)}</span> },
           { key: "status", header: "Status", cell: (r) => <StatusBadge value={r.store.status} dot /> },

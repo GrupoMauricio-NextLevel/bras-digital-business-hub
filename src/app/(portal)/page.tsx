@@ -3,6 +3,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, BarChart3, FileText, Globe, Palette, Store, Wallet } from "lucide-react";
 import { getSession, homeFor } from "@/lib/auth";
+import { brandHas } from "@/lib/brand";
+import { getBrand } from "@/lib/brand-server";
+import { CommerceHome } from "@/components/portal/commerce-home";
 import { Logo } from "@/components/brand/logo";
 import { HowItWorks } from "@/components/portal/how-it-works";
 import { JsonLd } from "@/components/portal/json-ld";
@@ -14,11 +17,10 @@ import { ThemeShowcase } from "@/components/portal/theme-showcase";
 import { FAQ } from "./content";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {
-  title: { absolute: "SuperDrop · Sua loja online sem estoque, pronta para vender" },
-  description: "Monte sua loja online com produtos de fornecedores parceiros, sem estoque. Assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom.",
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const brand = await getBrand();
+  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" } };
+}
 
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
 const sectionTitle = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl";
@@ -40,6 +42,9 @@ const BENEFITS = [
 export default async function Portal() {
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
+  const brand = await getBrand();
+  // Marcas sem dropshipping (NextLevel Commerce, Brás Digital) têm portal próprio.
+  if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);
   return (
     <>

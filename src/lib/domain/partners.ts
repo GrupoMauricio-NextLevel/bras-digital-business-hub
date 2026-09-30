@@ -7,12 +7,13 @@ import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import { decryptSecret, encryptSecret } from "@/lib/security/crypto";
 import { commissionOf, DEFAULT_PARTNER_SETTINGS, partnerSettingsSchema, tierFor, type PartnerSettings } from "@/lib/finance/partner-rules";
+import { BRAND_CODES, defaultBrandCode } from "@/lib/brand";
 import { isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { periodBounds, periodOf } from "./finance";
 import { normalizeTaxId, storeAccess } from "./store-access";
-import { appUrl, emails, sendEmail } from "@/lib/email";
+import { appUrl, brandOfUser, emails, sendEmail } from "@/lib/email";
 
 const SETTINGS_KEY = "partner_settings";
 const DAY = 86_400_000;
@@ -44,6 +45,7 @@ export const partnerSignupSchema = z.object({
   phone: z.string().transform((v) => v.replace(/\D/g, "")).refine((d) => d.length >= 10 && d.length <= 13, "WhatsApp inválido (com DDD)"),
   pixKey: z.string().trim().max(140).optional(),
   acceptTerms: z.literal(true, { error: "É preciso aceitar os termos do programa" }),
+  brand: z.enum(BRAND_CODES).optional(),
 });
 
 const codeFrom = (name: string) => name.normalize("NFD").replace(/[^\p{L}\p{N}]/gu, "").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
@@ -66,7 +68,7 @@ export async function registerPartner(db: Database, raw: z.input<typeof partnerS
   const orgId = newId("org"), userId = newId("usr"), partnerId = newId("prt");
   const code = await uniquePartnerCode(db, input.name);
   await db.transaction(async (tx) => {
-    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: `parceiro-${partnerId.slice(-8)}`, type: "PARTNER" });
+    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: `parceiro-${partnerId.slice(-8)}`, type: "PARTNER", brand: input.brand ?? defaultBrandCode() });
     await tx.insert(users).values({ id: userId, name: input.name, email: input.email, role: "AFFILIATE", organizationId: orgId, passwordHash: hashPassword(input.password), mustChangePassword: false });
     await tx.insert(partners).values({ id: partnerId, userId, code, displayName: input.name, taxId, phone: input.phone, pixKeyEnc: input.pixKey ? encryptSecret(input.pixKey) : null, status: "ACTIVE", termsVersion: settings.termsVersion, termsAcceptedAt: now.toISOString() });
     await tx.insert(partnerLinks).values({ id: newId("plk"), partnerId, slug: `${code.toLowerCase()}`, label: "Link principal" });
@@ -197,7 +199,7 @@ export async function recordActivation(db: Database, inv: typeof financeInvoices
   const created = await insertEntry(db, { partnerId: p.id, storeId: store.id, invoiceId: inv.id, kind: "SETUP", baseCents: setup, rateBps: bps, amountCents: commissionOf(setup, bps), period, status: "PENDING", availableAt, dedupeKey: `SETUP:${inv.id}` });
   if (first > 0) await insertEntry(db, { partnerId: p.id, storeId: store.id, invoiceId: inv.id, kind: "MAINTENANCE", baseCents: first, rateBps: s.maintenanceBps, amountCents: commissionOf(first, s.maintenanceBps), period, status: "PENDING", availableAt, dedupeKey: `MAINT:${inv.id}` });
   if (created && p.status === "INACTIVE") await db.update(partners).set({ status: "ACTIVE" }).where(eq(partners.id, p.id));
-  if (created) { const first = tierFor(already + 1, s).next; await sendEmail(db, { kind: "PARTNER_ACTIVATION", to: (await db.query.users.findFirst({ where: eq(users.id, p.userId) }))!.email, dedupeKey: `PARTNER_ACTIVATION:${inv.id}`, ...emails.partnerActivation(`${appUrl()}/partner/finance`, first ? `\n\nFaltam ${first.needed} ativação(ões) neste mês para a faixa de ${first.bps / 100}%.` : "\n\nVocê está na faixa máxima do mês.") }); }
+  if (created) { const first = tierFor(already + 1, s).next; await sendEmail(db, { kind: "PARTNER_ACTIVATION", to: (await db.query.users.findFirst({ where: eq(users.id, p.userId) }))!.email, brand: await brandOfUser(db, p.userId), dedupeKey: `PARTNER_ACTIVATION:${inv.id}`, ...emails.partnerActivation(`${appUrl()}/partner/finance`, first ? `\n\nFaltam ${first.needed} ativação(ões) neste mês para a faixa de ${first.bps / 100}%.` : "\n\nVocê está na faixa máxima do mês.") }); }
   if (created) await emitEvent(db, { type: "PARTNER_ACTIVATION", storeId: store.id, payload: { partnerId: p.id, period, bps }, dedupeKey: `PARTNER_ACTIVATION:${inv.id}` });
 }
 
@@ -386,7 +388,7 @@ export async function decidePayout(db: Database, actor: Actor, payoutId: string,
   }
   if (decision === "PAY") {
     const owner = await db.query.users.findFirst({ where: eq(users.id, (await db.query.partners.findFirst({ where: eq(partners.id, po.partnerId) }))!.userId) });
-    if (owner) await sendEmail(db, { kind: "PAYOUT_PAID", to: owner.email, ...emails.payoutPaid((po.amountCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })) });
+    if (owner) await sendEmail(db, { kind: "PAYOUT_PAID", to: owner.email, brand: await brandOfUser(db, owner.id), ...emails.payoutPaid((po.amountCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })) });
   }
   await emitEvent(db, { type: `PARTNER_PAYOUT_${decision}`, actorRole: actor.role, payload: { payoutId, partnerId: po.partnerId } });
 }

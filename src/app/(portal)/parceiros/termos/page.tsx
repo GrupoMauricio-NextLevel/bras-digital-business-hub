@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getDb } from "@/db/client";
+import { requireBrandFeature } from "@/lib/brand-server";
 import { getPartnerSettings } from "@/lib/domain/partners";
 import { formatBRL } from "@/lib/money";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Termos do Programa de Parceiros", robots: { index: false } };
 
 export default async function TermosParceiros() {
+  await requireBrandFeature("partners");
   const s = await getPartnerSettings(await getDb());
   const tiers = [...s.tiers].sort((a, b) => a.min - b.min).map((t) => `${t.bps / 100}% (${t.max ? `${t.min}${t.max !== t.min ? ` a ${t.max}` : ""}` : `${t.min} ou mais`} ativações no mês)`).join(", ");
   return (

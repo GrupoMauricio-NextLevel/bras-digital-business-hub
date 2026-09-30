@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { organizations } from "@/db/schema";
+import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
@@ -37,6 +40,9 @@ export default async function StoreLayout({ params, children }: { params: Promis
   }
   const preview = await isPreviewMode(sf.store.id);
   const db = await getDb();
+  // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel Commerce…).
+  const org = await db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) });
+  const productName = brandByCode(org?.brand).name;
   const trial = await tryingTheme(db, sf.store);
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const st = globals.style;
@@ -57,7 +63,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       <SectionList template={globals.footer} ctx={ctx} region="footer" />
       {/* Assinatura fixa da NextLevel em todas as lojas geradas pelo sistema (não é editável). */}
       <div className="border-t border-neutral-200 bg-neutral-50 py-4 text-neutral-500" data-nextlevel-footer>
-        <div className="mx-auto flex max-w-6xl justify-center px-4"><NextLevelSignature compact className="justify-center text-center" /></div>
+        <div className="mx-auto flex max-w-6xl justify-center px-4"><NextLevelSignature compact product={productName} className="justify-center text-center" /></div>
       </div>
     </div>
   );

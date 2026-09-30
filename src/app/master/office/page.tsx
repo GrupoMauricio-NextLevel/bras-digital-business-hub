@@ -13,6 +13,7 @@ import { requireRole } from "@/lib/require-session";
 import { nextlevelOffice } from "@/lib/domain/nextlevel-office";
 import { nlSalesSummary } from "@/lib/domain/nl-sales";
 import { formatBRL } from "@/lib/money";
+import { BRAND_CODES, brandByCode } from "@/lib/brand";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -20,12 +21,13 @@ const num = "text-right tabular-nums";
 const TABS = [{ key: "assinaturas", label: "Assinaturas" }, { key: "ativacoes", label: "Ativações" }, { key: "servicos", label: "Serviços" }, { key: "vendas", label: "Vendas digitais" }];
 const SVC_LABEL: Record<string, string> = { REQUESTED: "Novo", IN_ANALYSIS: "Em análise", QUOTED: "Orçado", IN_PROGRESS: "Em execução", DELIVERED: "Entregue", CANCELED: "Cancelado" };
 
-export default async function MasterOfficePage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+export default async function MasterOfficePage({ searchParams }: { searchParams: Promise<{ tab?: string; marca?: string }> }) {
   const session = await requireRole("NEXTLEVEL_MASTER");
-  const { tab: raw } = await searchParams;
+  const { tab: raw, marca: rawMarca } = await searchParams;
+  const marca = BRAND_CODES.includes(rawMarca as never) ? rawMarca : undefined;
   const tab = TABS.some((t) => t.key === raw) ? raw! : "assinaturas";
   const db = await getDb();
-  const [o, sales] = await Promise.all([nextlevelOffice(db, session.actor), nlSalesSummary(db, session.actor)]);
+  const [o, sales] = await Promise.all([nextlevelOffice(db, session.actor, new Date(), marca), nlSalesSummary(db, session.actor)]);
   const mrr = o.subscriptions.storeMrrCents + o.subscriptions.supplierMrrCents;
   return (
     <>
@@ -36,7 +38,8 @@ export default async function MasterOfficePage({ searchParams }: { searchParams:
         <MetricCard label="Serviços" value={formatBRL(o.services.deliveredCents)} icon={Sparkles} hint={`${o.services.open} aberto(s), ${formatBRL(o.services.pipelineCents)} em orçamento/execução`} />
         <MetricCard label="Vendas digitais (mês)" value={formatBRL(sales.revenueMonthCents)} icon={Coins} tone="success" hint={`${sales.toContact} para contatar`} />
       </MetricGrid>
-      <LinkTabs label="Origem da receita" active={tab} items={TABS.map((t) => ({ ...t, href: `/master/office?tab=${t.key}` }))} />
+      <LinkTabs label="Origem da receita" active={tab} items={TABS.map((t) => ({ ...t, href: `/master/office?tab=${t.key}${marca ? `&marca=${marca}` : ""}` }))} />
+      <div className="mb-4 flex flex-wrap gap-2 text-xs" role="group" aria-label="Filtrar por marca">{[["", "Todas as marcas"], ...BRAND_CODES.map((c) => [c, brandByCode(c).name])].map(([k, l]) => <Link key={k} href={`/master/office?tab=${tab}${k ? `&marca=${k}` : ""}`} aria-current={(marca ?? "") === k ? "true" : undefined} className={`rounded-full border px-3 py-1 font-medium ${(marca ?? "") === k ? "border-accent bg-accent-soft" : "border-border text-muted-foreground"}`}>{l}</Link>)}</div>
 
       {tab === "assinaturas" ? (
         <>

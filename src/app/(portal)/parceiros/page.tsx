@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BarChart3, BadgeCheck, Coins, Link2, Repeat, ShieldCheck, Ticket, Wallet } from "lucide-react";
 import { getDb } from "@/db/client";
+import { requireBrandFeature } from "@/lib/brand-server";
 import { getPriceBook } from "@/lib/domain/finance";
 import { getPartnerSettings } from "@/lib/domain/partners";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
@@ -10,8 +11,8 @@ import { formatBRL } from "@/lib/money";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: { absolute: "Programa de Parceiros SuperDrop · Tenha um negócio próprio vendendo tecnologia" },
-  description: "Indique lojas SuperDrop e receba comissão sobre o setup e sobre as mensalidades. Cadastro gratuito, links rastreáveis, cupons de 7 dias e painel financeiro com saque.",
+  title: { absolute: "Programa de Parceiros · Tenha um negócio próprio vendendo tecnologia" },
+  description: "Indique lojas e receba comissão sobre o setup e sobre as mensalidades. Cadastro gratuito, links rastreáveis, cupons de 7 dias e painel financeiro com saque.",
   alternates: { canonical: "/parceiros" },
 };
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
@@ -40,6 +41,7 @@ const FAQ = [
 ];
 
 export default async function Parceiros() {
+  const brand = await requireBrandFeature("partners");
   const db = await getDb();
   const [settings, book] = await Promise.all([getPartnerSettings(db), getPriceBook(db)]);
   const plans = OFFER_KEYS.map((k) => ({ key: k as string, name: book.offers[k].name, setupCents: book.offers[k].setupCents, monthlyCents: book.offers[k].monthlyCents })).filter((p) => p.setupCents > 0 || p.monthlyCents > 0);
@@ -53,7 +55,7 @@ export default async function Parceiros() {
         <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-16 md:pt-24">
           <span className="inline-flex rounded-full border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-3 py-1 text-xs font-semibold text-[#fcd34d]">Programa de Parceiros Oficiais</span>
           <h1 className="nl-display mt-5 max-w-4xl">Tenha um negócio próprio vendendo tecnologia que já funciona.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#e7d9c6]">O SuperDrop é um sistema pronto de loja online, sem estoque. Você indica, acompanha tudo no seu escritório virtual e recebe comissão sobre o setup e sobre as mensalidades de cada cliente.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#e7d9c6]">O {brand.name} é um sistema pronto de loja online. Você indica, acompanha tudo no seu escritório virtual e recebe comissão sobre o setup e sobre as mensalidades de cada cliente.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/parceiros/cadastro" className={`${btn} bg-[#f59e0b] text-[#1c1003] hover:bg-[#fbbf24] focus-visible:outline-white`}>Quero ser parceiro</Link>
             <Link href="/login" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Entrar no escritório</Link>
