@@ -1,0 +1,12 @@
+# Netlify: o runtime Next.js é detectado automaticamente (@netlify/plugin-nextjs).
+# Banco: Netlify DB (Neon Postgres). Ative em "Extensions → Neon" ou rode `netlify db init`;
+# a variável NETLIFY_DATABASE_URL é injetada automaticamente e o app a usa como DATABASE_URL.
+# O build aplica migrações e cria o master (MASTER_EMAIL/MASTER_PASSWORD) — idempotente.
+# Defina também SESSION_SECRET e CRON_SECRET nas variáveis de ambiente.
+[build]
+  command = "npm run db:bootstrap && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_PUBLIC_DEMO_MODE = "false"

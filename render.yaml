@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: nextlevel-superdrop
+    runtime: docker
+    plan: starter
+    region: ohio
+    healthCheckPath: /login
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: pglite:///app/data/pg
+      - key: NEXT_PUBLIC_DEMO_MODE
+        value: "false"
