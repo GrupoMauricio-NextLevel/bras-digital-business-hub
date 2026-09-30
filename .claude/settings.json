@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npx drizzle-kit generate:*)",
+      "Bash(npm run build)",
+      "Bash(npm run db:*)",
+      "Bash(npm run lint)",
+      "Bash(node e2e/*)",
+      "Bash(E2E_BASE=* node e2e/*)",
+      "Bash(bash scripts/restart-demo.sh:*)",
+      "Bash(curl -s * localhost:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/session-start.sh\"" }] }
+    ]
+  }
+}
