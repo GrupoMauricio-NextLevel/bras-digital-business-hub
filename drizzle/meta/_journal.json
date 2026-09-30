@@ -71,6 +71,13 @@
       "when": 1790735263132,
       "tag": "0009_theme_engine",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790739612747,
+      "tag": "0010_product_seo",
+      "breakpoints": true
     }
   ]
 }

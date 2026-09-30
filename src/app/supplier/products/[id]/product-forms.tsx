@@ -9,6 +9,9 @@ import { FormField } from "@/components/app/form-field";
 import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { adjustStockAction, receiveStockAction, setDistributionAction, updateProductAction } from "@/app/actions/supplier";
 import { parseBRLToCents } from "@/lib/money";
+import { SearchPreview } from "@/components/ds/fields";
+import { bulkProductStatusAction, duplicateProductAction } from "@/app/actions/supplier";
+import { Copy } from "lucide-react";
 
 export function StockActions({ variants }: { variants: { id: string; size: string }[] }) {
   const router = useRouter();
@@ -75,7 +78,7 @@ export function DistributionForm({ productId, distribution, stores, selected }: 
   );
 }
 
-type ProductFormData = { id: string; name: string; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; status: "ACTIVE" | "DRAFT" | "ARCHIVED"; sellsUnit: boolean; sellsPack: boolean };
+type ProductFormData = { id: string; name: string; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; status: "ACTIVE" | "DRAFT" | "ARCHIVED"; sellsUnit: boolean; sellsPack: boolean; slug: string; seoTitle: string; seoDescription: string };
 const toBRL = (c: number) => (c / 100).toFixed(2).replace(".", ",");
 
 export function ProductForm({ product }: { product: ProductFormData }) {
@@ -83,7 +86,7 @@ export function ProductForm({ product }: { product: ProductFormData }) {
   const [f, setF] = React.useState({ ...product, cost: toBRL(product.costCents), suggested: toBRL(product.suggestedPriceCents), minimum: toBRL(product.minimumPriceCents) });
   const [pending, start] = React.useTransition();
   return (
-    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateProductAction({ productId: f.id, name: f.name, description: f.description, costCents: parseBRLToCents(f.cost), suggestedPriceCents: parseBRLToCents(f.suggested), minimumPriceCents: parseBRLToCents(f.minimum), status: f.status, sellsUnit: f.sellsUnit, sellsPack: f.sellsPack }); if (r.ok) { toast.success("Produto salvo"); router.refresh(); } else toast.error(r.error); }); }}>
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateProductAction({ productId: f.id, name: f.name, description: f.description, costCents: parseBRLToCents(f.cost), suggestedPriceCents: parseBRLToCents(f.suggested), minimumPriceCents: parseBRLToCents(f.minimum), status: f.status, sellsUnit: f.sellsUnit, sellsPack: f.sellsPack, seoTitle: f.seoTitle, seoDescription: f.seoDescription }); if (r.ok) { toast.success("Produto salvo"); router.refresh(); } else toast.error(r.error); }); }}>
       <FormField label="Nome" htmlFor="name"><Input id="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></FormField>
       <FormField label="Descrição" htmlFor="desc"><Textarea id="desc" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} /></FormField>
       <div className="grid grid-cols-3 gap-2">
@@ -93,7 +96,24 @@ export function ProductForm({ product }: { product: ProductFormData }) {
       </div>
       <FormField label="Status" htmlFor="status"><Select id="status" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as ProductFormData["status"] })}><option value="ACTIVE">Ativo</option><option value="DRAFT">Rascunho</option><option value="ARCHIVED">Arquivado</option></Select></FormField>
       <div className="flex flex-wrap gap-4 py-1"><Switch checked={f.sellsUnit} onCheckedChange={(v) => setF({ ...f, sellsUnit: v })} label="Venda unitária" /><Switch checked={f.sellsPack} onCheckedChange={(v) => setF({ ...f, sellsPack: v })} label="Grade" /></div>
+      <fieldset className="space-y-2 rounded-md border border-border p-3"><legend className="px-1 text-xs font-medium text-muted-foreground">Aparência nos buscadores</legend>
+        <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`sualoja.superdrop.com.br › produto › ${f.slug}`} />
+        <FormField label="Título da página" htmlFor="seot"><Input id="seot" maxLength={120} value={f.seoTitle} onChange={(e) => setF({ ...f, seoTitle: e.target.value })} placeholder={f.name} /></FormField>
+        <FormField label="Descrição da página" htmlFor="seod"><Input id="seod" maxLength={320} value={f.seoDescription} onChange={(e) => setF({ ...f, seoDescription: e.target.value })} /></FormField>
+      </fieldset>
       <Button type="submit" className="w-full" loading={pending}><Save /> Salvar produto</Button>
     </form>
+  );
+}
+
+/** Duplicar (vira rascunho, sem estoque) e arquivar/reativar o produto. */
+export function ProductHeaderActions({ productId, status }: { productId: string; status: "ACTIVE" | "DRAFT" | "ARCHIVED" }) {
+  const router = useRouter();
+  const [pending, start] = React.useTransition();
+  return (
+    <>
+      <Button variant="secondary" loading={pending} onClick={() => start(async () => { const r = await duplicateProductAction(productId); if (r.ok) { toast.success("Cópia criada como rascunho"); router.push(`/supplier/products/${r.data.productId}`); } else toast.error(r.error); })}><Copy /> Duplicar</Button>
+      <Button variant="ghost" disabled={pending} onClick={() => start(async () => { const r = await bulkProductStatusAction([productId], status === "ARCHIVED" ? "ACTIVE" : "ARCHIVED"); if (r.ok) { toast.success(status === "ARCHIVED" ? "Produto reativado" : "Produto arquivado"); router.refresh(); } else toast.error(r.error); })}>{status === "ARCHIVED" ? "Reativar" : "Arquivar"}</Button>
+    </>
   );
 }

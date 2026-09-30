@@ -132,6 +132,9 @@ export const products = pgTable("products", {
   distribution: text("distribution", { enum: ["ALL_NETWORK", "SELECTED_STORES"] }).notNull().default("ALL_NETWORK"),
   sellsUnit: boolean("sells_unit").notNull().default(true),
   sellsPack: boolean("sells_pack").notNull().default(false),
+  /** SEO da página do produto nas lojas (vazio = usa o nome e a descrição). */
+  seoTitle: text("seo_title").notNull().default(""),
+  seoDescription: text("seo_description").notNull().default(""),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [uniqueIndex("products_supplier_slug").on(t.supplierId, t.slug), uniqueIndex("products_supplier_sku").on(t.supplierId, t.sku)]);

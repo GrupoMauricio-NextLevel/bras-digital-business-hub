@@ -80,6 +80,8 @@ const productSchema = z.object({
   status: z.enum(["ACTIVE", "DRAFT", "ARCHIVED"]),
   sellsUnit: z.boolean(),
   sellsPack: z.boolean(),
+  seoTitle: z.string().max(120).default(""),
+  seoDescription: z.string().max(320).default(""),
 });
 
 export async function updateProductAction(input: z.input<typeof productSchema>) {
@@ -99,7 +101,7 @@ export async function updateProductAction(input: z.input<typeof productSchema>) 
 // ---------------------------------------------------------------------------
 // Cadastro e importação de produtos
 // ---------------------------------------------------------------------------
-import { createProduct, parseProductsCsv, type CreateProductInput } from "@/lib/domain/products";
+import { createProduct, duplicateProduct, parseProductsCsv, setProductsStatus, type CreateProductInput } from "@/lib/domain/products";
 
 export async function createProductAction(input: CreateProductInput) {
   return runAction(async () => {
@@ -108,6 +110,26 @@ export async function createProductAction(input: CreateProductInput) {
     revalidatePath("/supplier", "layout");
     revalidatePath("/merchant", "layout");
     return r;
+  });
+}
+
+export async function duplicateProductAction(productId: string) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const r = await duplicateProduct(await getDb(), supplierId, productId);
+    revalidatePath("/supplier", "layout");
+    return r;
+  });
+}
+
+export async function bulkProductStatusAction(ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED") {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    if (ids.length > 200) throw new ForbiddenError("Limite de 200 produtos por vez.");
+    const n = await setProductsStatus(await getDb(), supplierId, ids, z.enum(["ACTIVE", "DRAFT", "ARCHIVED"]).parse(status));
+    revalidatePath("/supplier", "layout");
+    revalidatePath("/merchant", "layout");
+    return { updated: n };
   });
 }
 

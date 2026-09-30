@@ -37,6 +37,8 @@ export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
     slug: item.product.slug,
     name: item.product.name,
     description: item.product.description,
+    seoTitle: item.product.seoTitle,
+    seoDescription: item.product.seoDescription,
     images: item.product.images,
     categoryId: item.product.categoryId,
     categoryName: categoryName ?? "",

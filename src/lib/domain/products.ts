@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, categories, productPackItems, productPacks, productStoreAccess, productVariants, products } from "@/db/schema";
@@ -23,6 +23,8 @@ export const createProductSchema = z.object({
   storeIds: z.array(z.string()).default([]),
   sellsUnit: z.boolean().default(true),
   sellsPack: z.boolean().default(false),
+  seoTitle: z.string().max(120).default(""),
+  seoDescription: z.string().max(320).default(""),
   /** Tamanhos com estoque inicial e, se houver grade, quantidade por tamanho. */
   sizes: z.array(z.object({ size: z.string().min(1).max(6), initialStock: z.coerce.number().int().nonnegative().default(0), packQuantity: z.coerce.number().int().nonnegative().default(0) })).min(1, "Informe ao menos um tamanho"),
   pack: z.object({ name: z.string().min(2).default("Grade 12 peças"), costCents: money, suggestedPriceCents: money, minimumPriceCents: money }).optional(),
@@ -65,6 +67,7 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
       images: input.images.length ? input.images : [`art:#111827,#ffffff,#9ca3af`],
       costCents: input.costCents, suggestedPriceCents: input.suggestedPriceCents, minimumPriceCents: input.minimumPriceCents,
       status: input.status, distribution: input.distribution, sellsUnit: input.sellsUnit, sellsPack: input.sellsPack,
+      seoTitle: input.seoTitle, seoDescription: input.seoDescription,
     });
     const variantRows = sizes.map((s, position) => ({ id: newId("var"), productId, size: s.size, sku: `${input.sku}-${s.size}`, position }));
     await tx.insert(productVariants).values(variantRows);
@@ -84,6 +87,35 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
     await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "PRODUCT_CREATED", message: `Produto “${input.name.trim()}” cadastrado (${input.sku})` });
   });
   return { productId };
+}
+
+/** Duplica um produto como rascunho: mesmos dados, variantes e grade, sem estoque, com SKU "-COPIA". */
+export async function duplicateProduct(db: Database, supplierId: string, productId: string): Promise<{ productId: string }> {
+  const src = await db.query.products.findFirst({ where: and(eq(products.id, productId), eq(products.supplierId, supplierId)) });
+  if (!src) throw new DomainError("NOT_FOUND", "Produto não encontrado.");
+  const variants = await db.select().from(productVariants).where(eq(productVariants.productId, src.id)).orderBy(productVariants.position);
+  const packs = await db.select().from(productPacks).where(eq(productPacks.productId, src.id));
+  const category = src.categoryId ? await db.query.categories.findFirst({ where: eq(categories.id, src.categoryId) }) : null;
+  let sku = `${src.sku}-COPIA`; let n = 2;
+  while (await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, sku)) })) sku = `${src.sku}-COPIA${n++}`;
+  const packItems = packs.length ? await db.select().from(productPackItems).where(eq(productPackItems.packId, packs[0]!.id)) : [];
+  const created = await createProduct(db, supplierId, {
+    name: `${src.name} (cópia)`, sku, description: src.description, categoryName: category?.name ?? "Geral", images: src.images,
+    costCents: src.costCents, suggestedPriceCents: src.suggestedPriceCents, minimumPriceCents: src.minimumPriceCents,
+    status: "DRAFT", distribution: "ALL_NETWORK", storeIds: [], sellsUnit: src.sellsUnit, sellsPack: src.sellsPack, seoTitle: src.seoTitle, seoDescription: src.seoDescription,
+    sizes: variants.map((v) => ({ size: v.size, initialStock: 0, packQuantity: packItems.find((i) => i.variantId === v.id)?.quantity ?? 0 })),
+    pack: packs[0] ? { name: packs[0].name, costCents: packs[0].costCents, suggestedPriceCents: packs[0].suggestedPriceCents, minimumPriceCents: packs[0].minimumPriceCents } : undefined,
+  });
+  return created;
+}
+
+/** Muda o status de vários produtos do fornecedor de uma vez (edição em lote). */
+export async function setProductsStatus(db: Database, supplierId: string, ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED"): Promise<number> {
+  if (ids.length === 0) return 0;
+  const rows = await db.select({ id: products.id }).from(products).where(and(eq(products.supplierId, supplierId), inArray(products.id, ids)));
+  if (rows.length === 0) return 0;
+  await db.update(products).set({ status, updatedAt: new Date().toISOString() }).where(and(eq(products.supplierId, supplierId), inArray(products.id, rows.map((r) => r.id))));
+  return rows.length;
 }
 
 // ---------------------------------------------------------------------------
