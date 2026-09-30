@@ -31,5 +31,8 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Prompts para desenvolver aos poucos: `docs/prompts/` (comece por `README.md`); decisões: `docs/design/DECISIONS.md`; visão geral: `ARCHITECTURE.md`, `docs/MAPA.md`, `docs/PLANOS.md`
 - Skills do projeto (`.claude/skills/`, uso: `/publicar`, `/e2e-demo`, `/nova-migracao`, `/desenvolver-prompt`): `publicar`, `e2e-demo`, `nova-migracao`, `desenvolver-prompt`
 
+## Direção do produto (atual)
+O foco passou de SuperDrop para **NextLevel Commerce**, a plataforma de lojas virtuais (o SuperDrop é um módulo, em pausa). Leia `docs/prompts/nextlevel-commerce-plataforma.md` e `docs/nextlevel-commerce/aproveitamento-superdrop.md` antes de propor trabalho novo. Holding: `nextlevelgroup.com.br`; produto: `nextlevelcommerce.com.br` (a registrar).
+
 ## Configurações de produção que dependem do dono
 `DATABASE_URL` (Neon), `SESSION_SECRET`, `MASTER_EMAIL`/`MASTER_PASSWORD`, `NEXT_PUBLIC_SUPPORT_WHATSAPP`/`NEXT_PUBLIC_SUPPORT_EMAIL`, `RESEND_API_KEY`/`EMAIL_FROM`/`EMAIL_REPLY_TO`, `APP_URL`, conta Mercado Pago da NextLevel conectada no Master. Render Free dorme e não tem disco: dados reais exigem Neon e plano pago.
