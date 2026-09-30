@@ -8,6 +8,7 @@ import { findUsableCoupon, signupMember, type signupSchema } from "@/lib/domain/
 import { emails, sendEmail } from "@/lib/email";
 import { getBaseUrl } from "@/lib/base-url";
 import { getBrand } from "@/lib/brand-server";
+import { brandHas } from "@/lib/brand";
 import type { z } from "zod";
 
 /** Confere o cupom antes de enviar o formulário (mostra de quem é). */
@@ -21,7 +22,7 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     // Sem ?ref= na URL, vale o último link do parceiro guardado no cookie (30 dias).
     const ref = input.ref || (await cookies()).get("nl-ref")?.value;
     const brand = await getBrand();
-    const created = await signupMember(await getDb(), { ...input, ref, brand: brand.code });
+    const created = await signupMember(await getDb(), { ...input, ref, brand: brand.code, independent: !brandHas(brand, "dropship") });
     await setSessionCookie(created.userId);
     const db = await getDb();
     const m = emails.welcomeStore(input.storeName, `${await getBaseUrl()}/merchant`, created.trial);

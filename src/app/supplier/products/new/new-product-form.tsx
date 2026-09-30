@@ -31,7 +31,7 @@ type Draft = { f: Form; rows: Row[]; storeIds: string[]; savedAt: number };
 const readDraft = (): Draft | null => { try { const raw = localStorage.getItem(DRAFT_KEY); return raw ? (JSON.parse(raw) as Draft) : null; } catch { return null; } };
 const writeDraft = (d: Draft | null) => { try { if (d) localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); else localStorage.removeItem(DRAFT_KEY); } catch { /* armazenamento bloqueado */ } };
 
-export function NewProductForm({ stores, categories, minStock = 4 }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number }) {
+export function NewProductForm({ stores, categories, minStock = 4, base = "/supplier/products" }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number; base?: string }) {
   const router = useRouter();
   const [f, setF] = React.useState<Form>({ ...EMPTY, category: categories[0] ?? "" });
   const [rows, setRows] = React.useState<Row[]>(rowsFor("ADULT_MALE"));
@@ -72,7 +72,7 @@ export function NewProductForm({ stores, categories, minStock = 4 }: { stores: {
         sizes: rows.filter((r) => r.size.trim()).map((r) => ({ size: r.size, initialStock: Number(r.stock) || 0, packQuantity: f.sellsPack ? Number(r.pack) || 0 : 0 })),
         pack: f.sellsPack ? { name: `Grade ${packTotal} peças`, costCents: parseBRLToCents(f.packCost), suggestedPriceCents: parseBRLToCents(f.packSuggested), minimumPriceCents: parseBRLToCents(f.packMinimum) || parseBRLToCents(f.packSuggested) } : undefined,
       });
-      if (r.ok) { setSaved(true); writeDraft(null); toast.success(status === "DRAFT" ? "Rascunho salvo" : "Produto cadastrado"); router.push(`/supplier/products/${r.data.productId}`); } else toast.error(r.error);
+      if (r.ok) { setSaved(true); writeDraft(null); toast.success(status === "DRAFT" ? "Rascunho salvo" : "Produto cadastrado"); router.push(`${base}/${r.data.productId}`); } else toast.error(r.error);
     });
   };
 

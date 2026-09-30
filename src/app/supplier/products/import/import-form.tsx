@@ -16,7 +16,7 @@ const ACTION_LABEL = { CREATE: "Criar", UPDATE: "Atualizar", SKIP: "Ignorar", ER
 const ACTION_TONE = { CREATE: "success", UPDATE: "info", SKIP: "neutral", ERROR: "danger" } as const;
 
 /** Importação em três passos: escolher o arquivo, conferir o que vai acontecer e confirmar. */
-export function ImportForm({ template }: { template: string }) {
+export function ImportForm({ template, base = "/supplier/products" }: { template: string; base?: string }) {
   const [source, setSource] = React.useState<Source | null>(null);
   const [fileName, setFileName] = React.useState("");
   const [pasted, setPasted] = React.useState("");
@@ -60,7 +60,7 @@ export function ImportForm({ template }: { template: string }) {
           <CardContent className="space-y-3">
             <div className="flex flex-wrap gap-2">
               <Button type="button" onClick={() => fileRef.current?.click()} loading={pending && !preview}><Upload /> Escolher arquivo</Button>
-              <Link href="/supplier/products/import/modelo" prefetch={false} className={buttonVariants({ variant: "secondary" })}><FileSpreadsheet /> Modelo Excel (.xlsx)</Link>
+              <Link href={`${base}/import/modelo`} prefetch={false} className={buttonVariants({ variant: "secondary" })}><FileSpreadsheet /> Modelo Excel (.xlsx)</Link>
               <Button type="button" variant="ghost" onClick={download}><FileDown /> Modelo CSV</Button>
               <input ref={fileRef} type="file" accept=".xlsx,.csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.target.value = ""; }} />
             </div>
@@ -107,7 +107,7 @@ export function ImportForm({ template }: { template: string }) {
                   <ul className="space-y-1 text-sm">{result.failed.map((f) => <li key={f.line} className="rounded-md bg-danger-soft/50 px-3 py-1.5">Linha {f.line} {f.name ? `(${f.name})` : ""}: {f.error}</li>)}</ul>
                 </div>
               ) : null}
-              <Link href="/supplier/products" className={buttonVariants({ variant: "secondary" })}>Ver produtos</Link>
+              <Link href={base} className={buttonVariants({ variant: "secondary" })}>Ver produtos</Link>
             </CardContent>
           </Card>
         ) : null}

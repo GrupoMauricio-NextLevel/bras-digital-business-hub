@@ -132,7 +132,7 @@ async function issueSubscriptionInvoiceFor(db: Database, supplierId: string, con
 /** Emite as mensalidades antecipadas de todos os fornecedores ativos para a competência. Idempotente. */
 export async function issueSubscriptionInvoices(db: Database, period: string, now = new Date()): Promise<{ issued: number }> {
   const book = await getPriceBook(db);
-  const list = await db.select().from(suppliers).where(ne(suppliers.status, "CLOSED"));
+  const list = await db.select().from(suppliers).where(and(ne(suppliers.status, "CLOSED"), eq(suppliers.hidden, false)));
   let issued = 0;
   for (const s of list) {
     const contract = await ensureContract(db, s.id, { now });
@@ -178,7 +178,7 @@ async function eligibleAcquisitions(db: Database, supplierId: string, until: Dat
 export async function closeMonth(db: Database, period: string, now = new Date()): Promise<{ closed: number; skipped: number }> {
   const book = await getPriceBook(db);
   const { end } = periodBounds(period);
-  const list = await db.select().from(suppliers).where(ne(suppliers.status, "CLOSED"));
+  const list = await db.select().from(suppliers).where(and(ne(suppliers.status, "CLOSED"), eq(suppliers.hidden, false)));
   let closed = 0, skipped = 0;
   for (const s of list) {
     const key = `CLOSE:${s.id}:${period}`;
@@ -288,7 +288,7 @@ export async function voidStoreSetup(db: Database, storeId: string): Promise<{ c
 export async function refreshSupplierAccess(db: Database, now = new Date()): Promise<{ changed: { supplierId: string; from: string; to: AccessState }[] }> {
   const book = await getPriceBook(db);
   await db.update(financeInvoices).set({ status: "OVERDUE" }).where(and(eq(financeInvoices.status, "OPEN"), lt(financeInvoices.dueDate, now.toISOString())));
-  const list = await db.select().from(suppliers);
+  const list = await db.select().from(suppliers).where(eq(suppliers.hidden, false));
   const changed: { supplierId: string; from: string; to: AccessState }[] = [];
   for (const s of list) {
     const overdue = await db.select({ dueDate: financeInvoices.dueDate }).from(financeInvoices).where(and(eq(financeInvoices.supplierId, s.id), eq(financeInvoices.payerType, "SUPPLIER"), eq(financeInvoices.status, "OVERDUE")));
@@ -320,7 +320,7 @@ export async function supplierIdOfStore(db: Database, storeId: string): Promise<
 export async function financeOverview(db: Database, period: string, now = new Date()) {
   const book = await getPriceBook(db);
   const { start, end } = periodBounds(period);
-  const supplierRows = await db.select().from(suppliers);
+  const supplierRows = await db.select().from(suppliers).where(eq(suppliers.hidden, false));
   const perSupplier = [];
   let supplierMrr = 0, volumeFees = 0;
   for (const s of supplierRows) {

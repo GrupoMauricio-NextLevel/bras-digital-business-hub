@@ -6,7 +6,7 @@ import { getDb } from "@/db/client";
 import { activities, productStoreAccess, productVariants, products, suppliers } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
-import { requireSupplierId } from "@/lib/domain/access";
+import { catalogSupplierId } from "@/lib/domain/independent";
 import { ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { adjustStock, receiveStock } from "@/lib/domain/inventory";
 import { newId } from "@/lib/ids";
@@ -14,7 +14,8 @@ import { newId } from "@/lib/ids";
 async function supplierCtx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
-  return { supplierId: requireSupplierId(session.actor), session };
+  // Fornecedor, ou lojista de conta simples (Central oculta) mexendo no próprio catálogo.
+  return { supplierId: await catalogSupplierId(await getDb(), session.actor), session };
 }
 
 async function assertOwnsVariant(supplierId: string, variantId: string) {

@@ -18,7 +18,7 @@ export type SupplierControlRow = {
 /** Pedidos dos fornecedores (compra na Central) e a comissão da NextLevel por fornecedor na competência. */
 export async function supplierOrderControl(db: Database, actor: Actor, period: string) {
   need(actor);
-  const list = await db.select().from(suppliers).where(ne(suppliers.status, "CLOSED"));
+  const list = await db.select().from(suppliers).where(and(ne(suppliers.status, "CLOSED"), eq(suppliers.hidden, false)));
   const rows: SupplierControlRow[] = [];
   for (const s of list) {
     const est = await estimateClosing(db, s.id, period);

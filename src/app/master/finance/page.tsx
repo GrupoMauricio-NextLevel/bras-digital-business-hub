@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/app/page-header";
 import { requireRole } from "@/lib/require-session";
@@ -21,7 +22,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
   const period = p && /^\d{4}-(0[1-9]|1[0-2])$/.test(p) ? p : periodOf(new Date());
   const db = await getDb();
   const [book, overview] = await Promise.all([getPriceBook(db), financeOverview(db, period)]);
-  const supplierList = await db.select().from(suppliers);
+  const supplierList = await db.select().from(suppliers).where(eq(suppliers.hidden, false));
   const contracts: ContractView[] = [];
   for (const s of supplierList) {
     const est = await estimateClosing(db, s.id, period, false);

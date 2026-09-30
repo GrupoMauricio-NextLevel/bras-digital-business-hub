@@ -18,7 +18,12 @@ const MOVEMENT: Record<string, string> = { IN: "Entrada", RESERVE: "Reserva", RE
 export default async function SupplierProductPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole("SUPPLIER_ADMIN");
   const { id } = await params;
-  const data = await getSupplierProduct(session.supplier!.id, id);
+  return <ProductBody supplierId={session.supplier!.id} id={id} />;
+}
+
+/** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo/[id]`): sem rede, sem distribuição. */
+export async function ProductBody({ supplierId, id, base = "/supplier/products", independent = false }: { supplierId: string; id: string; base?: string; independent?: boolean }) {
+  const data = await getSupplierProduct(supplierId, id);
   if (!data) notFound();
   const { product, variants, packs, movements } = data;
   const onHand = variants.reduce((s, v) => s + v.onHand, 0);
@@ -26,11 +31,11 @@ export default async function SupplierProductPage({ params }: { params: Promise<
 
   return (
     <>
-      <PageHeader backHref="/supplier/products" title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"} · ${SIZE_GRIDS[product.sizeGrid].label}`} actions={<ProductHeaderActions productId={product.id} status={product.status} />} />
+      <PageHeader backHref={base} title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"} · ${SIZE_GRIDS[product.sizeGrid].label}`} actions={<ProductHeaderActions productId={product.id} status={product.status} base={base} />} />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader><div><CardTitle>Estoque central por tamanho</CardTitle><CardDescription>Disponível = físico − reservado. Pedidos reservam; a expedição baixa.</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.size }))} /></CardHeader>
+            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>Disponível = físico − reservado. Pedidos reservam; a expedição baixa.</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.size }))} /></CardHeader>
             <CardContent className="px-0 pb-0">
               <Table>
                 <THead><TR className="hover:bg-transparent"><TH>Tamanho</TH><TH>SKU</TH><TH className="text-right">Físico</TH><TH className="text-right">Reservado</TH><TH className="text-right">Disponível</TH></TR></THead>
@@ -48,7 +53,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
             <TabsList>
               <TabsTrigger value="packs">Grades</TabsTrigger>
               <TabsTrigger value="movements">Movimentações</TabsTrigger>
-              <TabsTrigger value="listings">Lojas que vendem</TabsTrigger>
+              {independent ? null : <TabsTrigger value="listings">Lojas que vendem</TabsTrigger>}
             </TabsList>
             <TabsContent value="packs">
               {packs.length === 0 ? (
@@ -79,7 +84,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
                 </Table>
               </Card>
             </TabsContent>
-            <TabsContent value="listings">
+            {independent ? null : <TabsContent value="listings">
               <Card>
                 <Table>
                   <THead><TR className="hover:bg-transparent"><TH>Loja</TH><TH className="text-right">Preço na loja</TH><TH className="text-right">Grade</TH><TH>Status</TH></TR></THead>
@@ -92,7 +97,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
                   </TBody>
                 </Table>
               </Card>
-            </TabsContent>
+            </TabsContent>}
           </Tabs>
         </div>
 
@@ -102,10 +107,10 @@ export default async function SupplierProductPage({ params }: { params: Promise<
               <ProductForm product={{ id: product.id, name: product.name, description: product.description, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack, slug: product.slug, seoTitle: product.seoTitle, seoDescription: product.seoDescription, weightG: product.weightG, lengthCm: product.lengthCm, widthCm: product.widthCm, heightCm: product.heightCm }} />
             </CardContent>
           </Card>
-          <Card>
+          {independent ? null : <Card>
             <CardHeader><div><CardTitle>Distribuição</CardTitle><CardDescription>Quais lojas podem vender este produto.</CardDescription></div></CardHeader>
             <CardContent><DistributionForm productId={product.id} distribution={product.distribution} stores={data.networkStores} selected={data.accessStoreIds} /></CardContent>
-          </Card>
+          </Card>}
         </div>
       </div>
     </>

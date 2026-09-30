@@ -45,6 +45,8 @@ export const suppliers = pgTable("suppliers", {
   /** Token do Mercado Pago do fornecedor usado nas recargas Pix dos lojistas (criptografado). */
   walletMpTokenEnc: text("wallet_mp_token_enc"),
   walletMpAccountId: text("wallet_mp_account_id"),
+  /** Central oculta de um lojista independente (conta simples): nunca aparece para o lojista nem nas listas de fornecedores. */
+  hidden: boolean("hidden").notNull().default(false),
   /** Plataforma de envio conectada (SuperFrete ou Melhor Envio): token criptografado e conta. */
   shippingProvider: text("shipping_provider"),
   shippingTokenEnc: text("shipping_token_enc"),

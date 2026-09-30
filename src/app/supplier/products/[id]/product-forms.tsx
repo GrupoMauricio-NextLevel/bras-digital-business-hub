@@ -113,12 +113,12 @@ export function ProductForm({ product }: { product: ProductFormData }) {
 }
 
 /** Duplicar (vira rascunho, sem estoque) e arquivar/reativar o produto. */
-export function ProductHeaderActions({ productId, status }: { productId: string; status: "ACTIVE" | "DRAFT" | "ARCHIVED" }) {
+export function ProductHeaderActions({ productId, status, base = "/supplier/products" }: { productId: string; status: "ACTIVE" | "DRAFT" | "ARCHIVED"; base?: string }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   return (
     <>
-      <Button variant="secondary" loading={pending} onClick={() => start(async () => { const r = await duplicateProductAction(productId); if (r.ok) { toast.success("Cópia criada como rascunho"); router.push(`/supplier/products/${r.data.productId}`); } else toast.error(r.error); })}><Copy /> Duplicar</Button>
+      <Button variant="secondary" loading={pending} onClick={() => start(async () => { const r = await duplicateProductAction(productId); if (r.ok) { toast.success("Cópia criada como rascunho"); router.push(`${base}/${r.data.productId}`); } else toast.error(r.error); })}><Copy /> Duplicar</Button>
       <Button variant="ghost" disabled={pending} onClick={() => start(async () => { const r = await bulkProductStatusAction([productId], status === "ARCHIVED" ? "ACTIVE" : "ARCHIVED"); if (r.ok) { toast.success(status === "ARCHIVED" ? "Produto reativado" : "Produto arquivado"); router.refresh(); } else toast.error(r.error); })}>{status === "ARCHIVED" ? "Reativar" : "Arquivar"}</Button>
     </>
   );

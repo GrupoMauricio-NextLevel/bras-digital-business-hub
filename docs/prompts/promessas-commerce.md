@@ -21,6 +21,7 @@
 ## 2. FASES
 
 ### P0 — Conta simples do lojista (N1): pré-requisito de tudo
+> **FEITO (D34, migração 0022):** Central oculta (`suppliers.hidden`), cadastro sem fornecedor em `/cadastro` na Commerce, `/merchant/catalogo` (meus produtos, importação), painel enxuto, testes `tests/independent.test.ts`, e2e `e2e/conta-simples.mjs`. Pendente deste bloco: pedido de teste ponta a ponta no e2e (coberto em teste de domínio) e ligar `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true` em produção.
 **Objetivo:** "Abrir minha loja" na NextLevel Commerce sem fornecedor, rede ou carteira.
 - **Modelo:** ao cadastrar, `openIndependentStore(db, input)` cria numa transação: organização `MERCHANT` (brand da requisição), **Central própria oculta** (`suppliers` com `businessModel` interno `OWN` ou flag `hidden`, rede própria), usuário `STORE_OWNER`, loja `kind = SUPPLIER_OWN`, contrato com taxa zero de Central, assinatura/plano da marca, tema Starter e configurações. Reaproveitar `createSupplier`/`createStore`/`own-store.ts` (contexto companheiro) em vez de reescrever; extrair o que for comum.
 - **Painel "Minha loja":** o lojista **não** vê Central, carteira, ondas nem custo. Menu enxuto (Início, Pedidos, Produtos, Estoque, Clientes, Loja virtual, Aparência, Financeiro, Configurações). Produtos e estoque próprios (`products.supplierId` da Central oculta); o bypass de custo de `tryDebitOrder` para `SUPPLIER_OWN` já existe; `min_activation_stock` não se aplica.

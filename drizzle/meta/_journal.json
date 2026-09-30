@@ -155,6 +155,13 @@
       "when": 1790783245576,
       "tag": "0021_brands",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1790788063473,
+      "tag": "0022_conta_simples",
+      "breakpoints": true
     }
   ]
 }

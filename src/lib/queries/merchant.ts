@@ -1,15 +1,17 @@
 import { and, count, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { activities, customers, invoices, marketingConsents, orders, plans, serviceLeads, services, storeCustomers, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
+import { activities, customers, invoices, marketingConsents, orders, plans, serviceLeads, services, storeCustomers, storeProducts, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
 import { listStoreCatalog } from "@/lib/domain/catalog";
+import { independentSupplierOfStore } from "@/lib/domain/independent";
 
 export type OnboardingStep = { key: string; label: string; done: boolean; href: string };
 
-export function computeOnboarding(store: Store): { steps: OnboardingStep[]; percent: number } {
+export function computeOnboarding(store: Store, opts: { independent?: boolean; activeProducts?: number } = {}): { steps: OnboardingStep[]; percent: number } {
   const steps: OnboardingStep[] = [
     { key: "data", label: "Dados da loja", done: !!store.name && !!store.tagline && !!store.whatsapp, href: "/merchant/settings" },
     { key: "logo", label: "Adicionar logo", done: !!store.logoText || !!store.logoUrl, href: "/merchant/appearance" },
     { key: "colors", label: "Escolher cores", done: store.primaryColor !== "#0f172a" || store.accentColor !== "#16a34a", href: "/merchant/appearance" },
+    ...(opts.independent ? [{ key: "products", label: "Publicar 5 produtos", done: (opts.activeProducts ?? 0) >= 5, href: "/merchant/catalogo" }] : []),
     { key: "payments", label: "Configurar pagamentos", done: store.paymentStatus === "CONNECTED", href: "/merchant/settings#payments" },
     { key: "shipping", label: "Configurar frete", done: store.shippingStatus !== "NOT_CONFIGURED", href: "/merchant/settings#shipping" },
     { key: "domain", label: "Conectar domínio", done: store.domainStatus === "CONNECTED", href: "/merchant/settings#domain" },
@@ -42,7 +44,9 @@ export async function getMerchantOverview(store: Store) {
   const [custCount] = await db.select({ n: count() }).from(storeCustomers).where(eq(storeCustomers.storeId, store.id));
   const recent = await db.select().from(activities).where(and(eq(activities.storeId, store.id), eq(activities.scope, "STORE"))).orderBy(desc(activities.createdAt)).limit(8);
   const sub = await getSubscription(store.id);
-  return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store), subscription: sub };
+  const independentId = await independentSupplierOfStore(db, store.id);
+  const activeProducts = independentId ? (await db.select({ n: count() }).from(storeProducts).where(and(eq(storeProducts.storeId, store.id), eq(storeProducts.active, true))))[0]?.n ?? 0 : 0;
+  return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store, { independent: !!independentId, activeProducts }), independent: !!independentId, subscription: sub };
 }
 
 export async function getSubscription(storeId: string) {

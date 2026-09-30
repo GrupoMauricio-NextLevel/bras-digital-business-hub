@@ -27,7 +27,7 @@ const DEFAULT_VIEWS: IndexView[] = [
 ];
 
 /** Lista de produtos do fornecedor: busca, filtros, visões salvas e edição em lote de status. */
-export function ProductsList({ rows, categories }: { rows: ProductRow[]; categories: string[] }) {
+export function ProductsList({ rows, categories, base = "/supplier/products" }: { rows: ProductRow[]; categories: string[]; base?: string }) {
   const router = useRouter();
   const run = (status: "ACTIVE" | "DRAFT" | "ARCHIVED", done: string) => async (ids: string[]) => {
     const r = await bulkProductStatusAction(ids, status);
@@ -45,7 +45,7 @@ export function ProductsList({ rows, categories }: { rows: ProductRow[]; categor
   return (
     <IndexList<ProductRow>
       storageKey="supplier-products" rows={rows} columns={columns} rowKey={(r) => r.id} spec={spec} defaultViews={DEFAULT_VIEWS}
-      rowHref={(r) => `/supplier/products/${r.id}`} noun={{ singular: "produto", plural: "produtos" }} searchPlaceholder="Buscar por nome, SKU ou categoria"
+      rowHref={(r) => `${base}/${r.id}`} noun={{ singular: "produto", plural: "produtos" }} searchPlaceholder="Buscar por nome, SKU ou categoria"
       filters={[
         { key: "status", label: "Status", options: [{ value: "ACTIVE", label: "Ativo" }, { value: "DRAFT", label: "Rascunho" }, { value: "ARCHIVED", label: "Arquivado" }] },
         { key: "category", label: "Categoria", options: categories.map((c) => ({ value: c, label: c })) },

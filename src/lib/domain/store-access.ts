@@ -13,6 +13,7 @@ import { emitEvent } from "./events";
 import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
+import { createHiddenCentral } from "./independent";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
@@ -164,11 +165,13 @@ export const signupSchema = z.object({
   /** Marca do endereço em que o cadastro foi feito. */
   brand: z.enum(BRAND_CODES).optional(),
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
+  /** Conta simples: a loja abre sem fornecedor (Central oculta). Vale nas marcas sem o módulo de dropshipping. */
+  independent: z.boolean().default(false),
 });
 
 /** Fornecedores que aceitam novos membros (página pública ativa). */
 export async function listSignupSuppliers(db: Database) {
-  const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status }).from(suppliers);
+  const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status }).from(suppliers).where(eq(suppliers.hidden, false));
   return rows.filter((r) => r.status === "ACTIVE" || r.status === "WARNING").map((r) => ({ slug: r.slug, name: r.name }));
 }
 
@@ -177,6 +180,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   const taxId = normalizeTaxId(input.taxId);
   const code = input.code?.trim();
   let supplierId: string;
+  const independent = input.independent;
   const chooseSupplier = async () => {
     const sup = input.supplierSlug ? await db.query.suppliers.findFirst({ where: eq(suppliers.slug, input.supplierSlug) }) : null;
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
@@ -185,14 +189,22 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   if (code) {
     const coupon = await findUsableCoupon(db, code);
     if (await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) })) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
+    if (independent && coupon.supplierId) throw new DomainError("COUPON_SUPPLIER", "Este cupom vale só para lojas de um fornecedor.");
     // Cupom de fornecedor define o fornecedor; cupom de parceiro deixa o cliente escolher.
-    supplierId = coupon.supplierId ?? (await chooseSupplier());
+    supplierId = independent ? "" : (coupon.supplierId ?? (await chooseSupplier()));
+  } else if (independent) {
+    supplierId = "";
   } else {
     const sup = input.supplierSlug ? await db.query.suppliers.findFirst({ where: eq(suppliers.slug, input.supplierSlug) }) : null;
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
     supplierId = sup.id;
   }
+  if (independent) {
+    if (await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) })) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
+    supplierId = (await createHiddenCentral(db, { name: input.storeName, brand: input.brand })).supplierId;
+  }
   const created = await createStore(db, supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });
+  if (independent) await db.update(stores).set({ kind: "SUPPLIER_OWN" }).where(eq(stores.id, created.storeId));
   const user = await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) });
   if (!user) throw new NotFoundError("Usuário não encontrado.");
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));

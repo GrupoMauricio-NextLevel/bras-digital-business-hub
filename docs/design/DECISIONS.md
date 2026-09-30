@@ -232,3 +232,12 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Contraste:** a cor de destaque da NextLevel Commerce é #2563eb (branco sobre ela passa AA).
 - **Teste local de domínio:** `x-forwarded-host` simula o domínio; `SERVER_ACTIONS_ALLOWED_ORIGINS` (só nos scripts de demonstração) permite as ações do servidor nessa simulação.
 - Migração 0021. Testes `tests/brand.test.ts`; e2e `e2e/brands.mjs`. Guia do dono: `docs/nextlevel-commerce/publicar-dominios.md`.
+
+## D34. P0: conta simples do lojista (NextLevel Commerce sem fornecedor)
+- **Central oculta:** cada lojista independente ganha por baixo um fornecedor `suppliers.hidden = true` (rede própria, contrato zerado: sem mensalidade, setup, taxa por volume nem comissão de canal), criado por `createHiddenCentral` (`src/lib/domain/independent.ts`). A loja nasce `kind = SUPPLIER_OWN`, então o custo do pedido é interno e não existe carteira. Não há usuário de gestor da Central: o lojista é só `STORE_OWNER`.
+- **Invisível:** Central oculta fica fora da lista de fornecedores do cadastro, do Master (lista, contagem, financeiro), do fechamento mensal e da cobrança de fornecedor. O lojista não acessa `/supplier` (papel `STORE_OWNER`).
+- **Cadastro:** `signupMember` ganha `independent`; a ação liga isso quando a marca não tem o módulo `dropship` (NextLevel Commerce). `/cadastro` na Commerce não pede fornecedor, esconde o plano "Drop manual" e mostra a logo da marca. A cobrança é só a do plano da loja (Pix); sem cupom a loja já nasce pedindo o pagamento. Cupom de fornecedor não vale na conta simples.
+- **Produtos:** as telas de produto do fornecedor viraram corpos reutilizáveis (`ProductsBody`, `NewProductBody`, `ProductBody`, `ImportBody`, parâmetro `base`); o lojista usa `/merchant/catalogo` ("Meus produtos", com estoque e importação por planilha) e `/merchant/products` ("Preços e publicação"). As ações passam por `catalogSupplierId` (fornecedor ou conta simples, nunca outro tenant).
+- **Painel:** menu sem saldo e recargas, sem aviso de "loja própria do fornecedor", rótulo "Minha loja"; checklist "no ar" ganha "Publicar 5 produtos".
+- **Dívida:** o modelo geral `seller` (fase P6) substitui a Central oculta. A venda real só começa ao ligar `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true` (depende do Mercado Pago da NextLevel conectado e do frete real, fase P1).
+- Migração 0022. Testes `tests/independent.test.ts`; e2e `e2e/conta-simples.mjs`.

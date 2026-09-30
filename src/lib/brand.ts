@@ -54,7 +54,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://nextlevelgroup.com.br",
       primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel", wordmark: "Commerce",
       modules: ["stores", "themes", "partners"], emailFromName: "NextLevel Commerce", legalLine: LEGAL("NextLevel Commerce"),
-      // Enquanto a "conta simples" (N1) não existe, a loja independente é aberta com ajuda da equipe (lista de espera).
+      // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
       signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true",
     },
     SUPERDROP: {

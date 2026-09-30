@@ -8,6 +8,7 @@ import { NAV, type Panel } from "@/lib/nav";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
+import { independentSupplierOfStore } from "@/lib/domain/independent";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -26,12 +27,15 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   await expireStaleReservations(await getDb());
   const nav = NAV[session.user.role];
   const store = session.store;
-  const navItems = store?.kind === "SUPPLIER_OWN" ? nav.items.filter((i) => i.href !== "/merchant/wallet") : nav.items;
+  const independent = !!store && store.kind === "SUPPLIER_OWN" && !!(await independentSupplierOfStore(await getDb(), store.id));
+  const ownItems = store?.kind === "SUPPLIER_OWN" ? nav.items.filter((i) => i.href !== "/merchant/wallet") : nav.items;
+  // Conta simples: "Meus produtos" cadastra o que vende; "Preços e publicação" escolhe o que aparece na loja.
+  const navItems = independent ? ownItems.flatMap((i) => i.href === "/merchant/products" ? [{ ...i, label: "Preços e publicação" }, { label: "Meus produtos", href: "/merchant/catalogo", icon: "Package" as const, group: i.group }] : [i]) : ownItems;
   const items = store ? navItems.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items;
   const demoUsers = isDemoMode() ? await listDemoUsers() : undefined;
   const notices = await recentNotices(session.actor);
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : "NextLevel");
-  const tenantSub = session.store ? (session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";
+  const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";
   return (
     <AppShell panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store && canUse(session.store.offer, "storefront") ? storeUrl(session.store.slug, session.store.offer, session.store.customDomain, session.store.domainStatus) : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
       {children}

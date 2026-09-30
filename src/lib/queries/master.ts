@@ -6,7 +6,7 @@ import { activities, invoices, networks, orders, organizations, plans, products,
 
 export async function getPlatformOverview() {
   const db = (await getDb());
-  const [supplierCount] = await db.select({ n: count() }).from(suppliers);
+  const [supplierCount] = await db.select({ n: count() }).from(suppliers).where(eq(suppliers.hidden, false));
   const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).groupBy(stores.status);
   const [orderStats] = await db.select({ n: count(), gmv: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED"));
   const fin = await financeOverview(db, periodOf(new Date()));
@@ -30,7 +30,7 @@ export async function getPlatformOverview() {
 
 export async function listSuppliers() {
   const db = (await getDb());
-  const rows = await db.select().from(suppliers);
+  const rows = await db.select().from(suppliers).where(eq(suppliers.hidden, false));
   const storeCounts = await db.select({ supplierId: networks.supplierId, n: count(stores.id) }).from(networks).leftJoin(stores, eq(stores.networkId, networks.id)).groupBy(networks.supplierId);
   const productCounts = await db.select({ supplierId: products.supplierId, n: count() }).from(products).groupBy(products.supplierId);
   const gmv = await db.select({ supplierId: orders.supplierId, total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.supplierId);

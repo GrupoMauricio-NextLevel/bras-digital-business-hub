@@ -88,7 +88,7 @@ export default async function MerchantHome() {
 
       <MetricGrid>
         <MetricCard label="Vendas (30 dias)" value={formatBRL(o.sales)} icon={TrendingUp} tone="success" delta={o.salesDelta} hint={`${o.last30Count} pedidos · vs. 30 dias antes`} />
-        <MetricCard label="Margem estimada" value={formatBRL(o.margin)} icon={Wallet} tone="info" delta={o.marginDelta} hint="Venda − custo Central" />
+        <MetricCard label="Margem estimada" value={formatBRL(o.margin)} icon={Wallet} tone="info" delta={o.marginDelta} hint={o.independent ? "Venda − custo dos produtos" : "Venda − custo Central"} />
         <MetricCard label="Pedidos (30 dias)" value={o.last30Count} icon={ShoppingCart} delta={o.countDelta} hint={`${o.ordersCount} no total`} href="/merchant/orders" />
         <MetricCard label="Clientes" value={o.customers} icon={Users} hint="Da sua loja" />
       </MetricGrid>
