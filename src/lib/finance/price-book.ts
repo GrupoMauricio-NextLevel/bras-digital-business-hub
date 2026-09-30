@@ -31,6 +31,8 @@ export const priceBookSchema = z.object({
   whiteLabel: z.object({ setupCents: cents, monthlyCents: cents, volumeFeeBps: bps, minMonthlyFeeCents: cents, perOrderFeeCents: cents }),
   offers: z.record(z.enum(OFFER_KEYS), z.object({ name: z.string(), description: z.string(), setupCents: cents, monthlyCents: cents })),
   channel: z.object({ setupCommissionBps: bps, guaranteeDays: days }),
+  /** Taxa por pedido do membro (bps sobre o valor dos produtos, sem frete), por oferta. Cobrada no fechamento mensal. */
+  orderFees: z.record(z.enum(OFFER_KEYS), bps).default(() => ({ DROP_MANUAL: 500, STORE_SUBDOMAIN: 500, STORE_OWN: 300 })),
   templates: z.record(z.enum(["PRO", "ELITE"]), z.object({ oneTimeCents: cents, monthlyCents: cents })),
   services: z.object({ targetMarginBps: bps }),
   billing: z.object({ dueDay: z.number().int().min(1).max(28), waiverDays: days, priceLockMonths: z.number().int().min(0).max(60), /** Desconto para pagar por Pix (em centésimos de %) sobre o preço de lista, que é o valor cheio no cartão em até 6x. */ pixDiscountBps: z.number().int().min(0).max(5000).default(1000) }),
@@ -56,6 +58,7 @@ export const DEFAULT_PRICE_BOOK: PriceBook = {
     STORE_OWN: { name: "Loja própria", description: "Loja White Label com marca e domínio próprios, sem selo SuperDrop.", setupCents: 200_000, monthlyCents: 19_700 },
   },
   channel: { setupCommissionBps: 2500, guaranteeDays: 7 },
+  orderFees: { DROP_MANUAL: 500, STORE_SUBDOMAIN: 500, STORE_OWN: 300 },
   templates: { PRO: { oneTimeCents: 29_700, monthlyCents: 3_900 }, ELITE: { oneTimeCents: 69_700, monthlyCents: 8_900 } },
   services: { targetMarginBps: 5000 },
   billing: { dueDay: 5, waiverDays: 90, priceLockMonths: 12, pixDiscountBps: 1000 },

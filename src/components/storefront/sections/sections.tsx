@@ -50,7 +50,7 @@ export function Hero({ settings, ctx }: SectionProps) {
           {wa ? <a href={`https://wa.me/${ctx.store.whatsapp}`} target="_blank" rel="noreferrer" className="inline-flex h-12 items-center rounded-lg border border-neutral-300 bg-white px-6 text-sm font-medium text-neutral-900 hover:bg-neutral-50">Falar no WhatsApp</a> : null}
         </div>
       </div>
-      {showProduct ? <div className={cn("relative hidden items-center justify-center p-8 lg:flex", wide && "lg:col-span-2")}><Link href={`${ctx.base}/product/${ctx.hero!.slug}`} className="w-full max-w-sm transition-transform hover:scale-[1.02]"><ProductArt images={ctx.hero!.images} size="lg" className="rounded-2xl bg-white shadow-xl" /></Link></div> : null}
+      {showProduct ? <div className={cn("relative hidden items-center justify-center p-8 lg:flex", wide && "lg:col-span-2")}><Link href={`${ctx.base}/product/${ctx.hero!.slug}`} aria-label={`Ver ${ctx.hero!.name}`} className="w-full max-w-sm transition-transform hover:scale-[1.02]"><ProductArt images={ctx.hero!.images} size="lg" className="rounded-2xl bg-white shadow-xl" /></Link></div> : null}
     </section>
   );
 }
@@ -95,7 +95,7 @@ export function PromoBanners({ blocks, ctx }: SectionProps) {
   return (
     <section className={cn("mt-12 grid gap-4", blocks.length > 1 && "sm:grid-cols-2")}>
       {blocks.map((b) => { const [bg, fg] = tone(b.settings.tone); return (
-        <Link key={b.id} href={resolveLink(ctx.base, str(b.settings.link))} className="flex min-h-[160px] flex-col justify-end rounded-[var(--sf-radius,16px)] p-6 transition-transform hover:-translate-y-0.5" style={{ background: bg, color: fg }}><div className="text-xl font-semibold">{str(b.settings.title)}</div><div className="text-sm opacity-80">{str(b.settings.subtitle)}</div></Link>
+        <Link key={b.id} href={resolveLink(ctx.base, str(b.settings.link))} className="flex min-h-[160px] flex-col justify-end rounded-[var(--sf-radius,16px)] p-6 transition-transform hover:-translate-y-0.5" style={{ background: bg, color: fg }}><div className="text-xl font-semibold">{str(b.settings.title)}</div><div className="text-sm">{str(b.settings.subtitle)}</div></Link>
       ); })}
     </section>
   );

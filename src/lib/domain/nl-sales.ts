@@ -10,6 +10,7 @@ import { isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { getPriceBook } from "./finance";
 import { nlToken } from "./nextlevel-billing";
+import { emails, sendEmail } from "@/lib/email";
 
 // ---------------------------------------------------------------------------
 // Vitrine pública (Loja NextLevel): produtos digitais e serviços de compra em 1 clique
@@ -115,7 +116,11 @@ export async function getNlOrderByToken(db: Database, token: string) {
 async function markPaid(db: Database, orderId: string, mpPaymentId: string | null) {
   const now = new Date().toISOString();
   const r = await db.update(nlOrders).set({ status: "PAID", paidAt: now, updatedAt: now, ...(mpPaymentId ? { mpPaymentId } : {}) }).where(and(eq(nlOrders.id, orderId), eq(nlOrders.status, "AWAITING_PAYMENT"))).returning({ id: nlOrders.id });
-  if (r.length) await db.insert(nlOrderNotes).values({ id: newId("nln"), orderId, kind: "SYSTEM", body: "Pagamento confirmado." });
+  if (r.length) {
+    await db.insert(nlOrderNotes).values({ id: newId("nln"), orderId, kind: "SYSTEM", body: "Pagamento confirmado." });
+    const o = await db.query.nlOrders.findFirst({ where: eq(nlOrders.id, orderId) });
+    if (o) await sendEmail(db, { kind: "NL_ORDER_PAID", to: o.buyerEmail, ...emails.nlOrderPaid(o.productName, o.number, `${process.env.APP_URL ?? "https://superdrop.com.br"}/loja-nextlevel/pedido/${o.token}`) });
+  }
   return r.length > 0;
 }
 

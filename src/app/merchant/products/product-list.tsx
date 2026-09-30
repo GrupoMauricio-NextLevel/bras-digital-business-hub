@@ -52,7 +52,7 @@ export function MerchantProductList({ items }: { items: MerchantProduct[] }) {
           { key: "margin", header: "Margem", className: "text-right", cell: (r) => <span className={cn("tabular-nums", margin(r) > 0 ? "text-success" : "text-danger")}>{formatBRL(margin(r))}</span> },
           { key: "pack", header: "Grade", className: "text-right", cell: (r) => r.sellsPack ? <span className="tabular-nums">{r.packPriceCents ? formatBRL(r.packPriceCents) : <Badge tone="outline">sem preço</Badge>}</span> : <span className="text-muted-foreground">—</span>, mobile: false },
           { key: "stock", header: "Estoque", className: "text-right", cell: (r) => <span className={cn("tabular-nums", r.available < 5 && "text-warning")}>{r.available}</span> },
-          { key: "active", header: "Vendendo", cell: (r) => <Switch checked={r.active} onCheckedChange={(v) => save(r, { active: v })} disabled={pending || (!r.active && !!r.shortSizes)} /> },
+          { key: "active", header: "Vendendo", cell: (r) => <Switch ariaLabel={`Vender ${r.name}`} checked={r.active} onCheckedChange={(v) => save(r, { active: v })} disabled={pending || (!r.active && !!r.shortSizes)} /> },
           { key: "edit", header: "", className: "text-right", cell: (r) => <Button variant="ghost" size="icon-sm" onClick={() => open(r)} aria-label="Editar preço"><Pencil /></Button> },
         ]}
       />

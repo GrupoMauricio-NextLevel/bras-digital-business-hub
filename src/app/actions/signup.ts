@@ -5,6 +5,8 @@ import { getDb } from "@/db/client";
 import { setSessionCookie } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { findUsableCoupon, signupMember, type signupSchema } from "@/lib/domain/store-access";
+import { emails, sendEmail } from "@/lib/email";
+import { getBaseUrl } from "@/lib/base-url";
 import type { z } from "zod";
 
 /** Confere o cupom antes de enviar o formulário (mostra de quem é). */
@@ -19,6 +21,9 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     const ref = input.ref || (await cookies()).get("nl-ref")?.value;
     const created = await signupMember(await getDb(), { ...input, ref });
     await setSessionCookie(created.userId);
+    const db = await getDb();
+    const m = emails.welcomeStore(input.storeName, `${await getBaseUrl()}/merchant`, created.trial);
+    await sendEmail(db, { kind: "WELCOME_STORE", to: input.email.toLowerCase(), ...m });
     return { ok: true as const };
   });
   if (r.ok) redirect("/merchant");

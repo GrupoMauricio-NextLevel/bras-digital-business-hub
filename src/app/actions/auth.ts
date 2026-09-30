@@ -1,4 +1,5 @@
 "use server";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -8,6 +9,9 @@ import { clearSessionCookie, getSession, homeFor, isDemoMode, setSessionCookie }
 import { hashPassword, verifyPassword } from "@/lib/security/password";
 import { runAction } from "@/lib/action-result";
 import { DomainError } from "@/lib/domain/errors";
+import { requestPasswordReset, resetPassword } from "@/lib/domain/password-reset";
+import { getBaseUrl } from "@/lib/base-url";
+import { rateLimit } from "@/lib/rate-limit";
 
 const loginSchema = z.object({ email: z.string().email("E-mail inválido"), password: z.string().min(1, "Informe a senha") });
 
@@ -62,4 +66,21 @@ export async function changePasswordAction(input: z.input<typeof passwordSchema>
     await db.update(users).set({ passwordHash: hashPassword(data.next), mustChangePassword: false }).where(eq(users.id, session.user.id));
     return { redirectTo: homeFor(session.user.role) };
   });
+}
+
+// ---------------------------------------------------------------------------
+// Recuperar senha (por e-mail; o link vale 1 hora e só uma vez)
+// ---------------------------------------------------------------------------
+export async function requestPasswordResetAction(email: string) {
+  return runAction(async () => {
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`reset:${ip}`, 6, 15 * 60_000) || !rateLimit(`reset-mail:${email.trim().toLowerCase()}`, 3, 15 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitos pedidos. Tente de novo em alguns minutos.");
+    const r = await requestPasswordReset(await getDb(), email, await getBaseUrl());
+    // Só a demonstração mostra o link na tela (não há provedor de e-mail); em produção a resposta é sempre igual.
+    return { demoLink: isDemoMode() ? r.link : null };
+  });
+}
+
+export async function resetPasswordAction(token: string, password: string) {
+  return runAction(async () => { await resetPassword(await getDb(), token, password); return undefined; });
 }

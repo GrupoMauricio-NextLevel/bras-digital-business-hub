@@ -28,3 +28,30 @@ describe("analytics da loja", () => {
     expect(a.salesCents).toBe(0); expect(a.marginPercent).toBe(0); expect(a.avgTicketCents).toBe(0); expect(a.repeatRate).toBe(0);
   });
 });
+
+describe("estado e mapa de calor", () => {
+  const base = { channel: "ONLINE_STORE", subtotalCents: 10_000, costTotalCents: 6_000, status: "PAID" };
+  it("agrupa vendas e clientes por UF e ignora pedidos sem estado", () => {
+    const now = new Date("2026-06-15T12:00:00Z");
+    const a = computeStoreAnalytics([
+      { ...base, id: "1", customerEmail: "a@x.com", createdAt: "2026-06-10T15:00:00Z", shippingState: "sp" },
+      { ...base, id: "2", customerEmail: "a@x.com", createdAt: "2026-06-11T15:00:00Z", shippingState: "SP" },
+      { ...base, id: "3", customerEmail: "b@x.com", createdAt: "2026-06-12T15:00:00Z", shippingState: "MG", subtotalCents: 5_000 },
+      { ...base, id: "4", customerEmail: "c@x.com", createdAt: "2026-06-12T15:00:00Z", shippingState: null },
+    ], [], now);
+    expect(a.byState).toEqual([{ state: "SP", orders: 2, salesCents: 20_000, customers: 1 }, { state: "MG", orders: 1, salesCents: 5_000, customers: 1 }]);
+  });
+  it("mapa de calor usa o horário de Brasília e acha o pico", () => {
+    const now = new Date("2026-06-15T12:00:00Z");
+    // 2026-06-10 é quarta; 15:00Z = 12h em Brasília
+    const a = computeStoreAnalytics([
+      { ...base, id: "1", customerEmail: "a@x.com", createdAt: "2026-06-10T15:00:00Z" },
+      { ...base, id: "2", customerEmail: "b@x.com", createdAt: "2026-06-10T15:30:00Z" },
+      { ...base, id: "3", customerEmail: "c@x.com", createdAt: "2026-06-11T02:00:00Z" },
+    ], [], now);
+    expect(a.heatmap.grid[3]![12]).toBe(2);
+    expect(a.heatmap.grid[3]![23]).toBe(1);
+    expect(a.heatmap.peak).toEqual({ weekday: 3, hour: 12, orders: 2 });
+    expect(a.heatmap.max).toBe(2);
+  });
+});

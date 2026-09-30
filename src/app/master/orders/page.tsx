@@ -52,14 +52,14 @@ export default async function MasterOrdersPage({ searchParams }: { searchParams:
           <MetricCard label="Pedidos pagos" value={ctl.totals.orders} hint={`Competência ${period}`} />
           <MetricCard label="Vendas das lojas" value={formatBRL(ctl.totals.sales)} tone="info" hint="Produtos, sem frete" />
           <MetricCard label="Margem dos lojistas" value={formatBRL(ctl.totals.margin)} tone="success" hint="Venda menos custo da Central" />
-          <MetricCard label="Comissão NextLevel" value={formatBRL(ctl.totals.fee)} tone="info" hint="Taxa de volume e por pedido atribuída às lojas" />
+          <MetricCard label="Comissão NextLevel" value={formatBRL(ctl.totals.fee)} tone="info" hint={`Taxa de volume atribuída às lojas · mais ${formatBRL(ctl.totals.memberFee)} de taxa por pedido dos membros`} />
         </MetricGrid>
         <SectionTitle title="Comissão por loja" description="A taxa do fornecedor à NextLevel repartida pelas lojas que geraram o volume. O complemento até a taxa mínima não entra aqui." />
         {ctl.rows.length === 0 ? <EmptyState compact icon={Factory} title="Sem pedidos pagos nesta competência" description="Escolha outro mês ou aguarde as primeiras vendas." /> : (
           <Card><Table>
-            <THead><TR><TH>Loja</TH><TH>Fornecedor</TH><TH>Oferta</TH><TH className={num}>Pedidos</TH><TH className={num}>Vendas</TH><TH className={num}>Custo</TH><TH className={num}>Margem</TH><TH className={num}>Comissão NextLevel</TH><TH className={num}>Comissão de setup (canal)</TH></TR></THead>
+            <THead><TR><TH>Loja</TH><TH>Fornecedor</TH><TH>Oferta</TH><TH className={num}>Pedidos</TH><TH className={num}>Vendas</TH><TH className={num}>Custo</TH><TH className={num}>Margem</TH><TH className={num}>Comissão NextLevel</TH><TH className={num}>Taxa por pedido (membro)</TH><TH className={num}>Comissão de setup (canal)</TH></TR></THead>
             <TBody>{ctl.rows.map((r) => (
-              <TR key={r.storeId}><TD className="font-medium">{r.name}</TD><TD>{r.supplierName}</TD><TD><StatusBadge value={r.offer} /></TD><TD className={num}>{r.orders}</TD><TD className={num}>{formatBRL(r.salesCents)}</TD><TD className={num}>{formatBRL(r.costCents)}</TD><TD className={num}>{formatBRL(r.marginCents)}</TD><TD className={`${num} font-semibold`}>{formatBRL(r.nextlevelFeeCents)}</TD><TD className={num}>{r.setupCommissionStatus ? <>{formatBRL(r.setupCommissionCents)} <StatusBadge value={r.setupCommissionStatus} /></> : "—"}</TD></TR>
+              <TR key={r.storeId}><TD className="font-medium">{r.name}</TD><TD>{r.supplierName}</TD><TD><StatusBadge value={r.offer} /></TD><TD className={num}>{r.orders}</TD><TD className={num}>{formatBRL(r.salesCents)}</TD><TD className={num}>{formatBRL(r.costCents)}</TD><TD className={num}>{formatBRL(r.marginCents)}</TD><TD className={`${num} font-semibold`}>{formatBRL(r.nextlevelFeeCents)}</TD><TD className={num}>{formatBRL(r.memberFeeCents)}</TD><TD className={num}>{r.setupCommissionStatus ? <>{formatBRL(r.setupCommissionCents)} <StatusBadge value={r.setupCommissionStatus} /></> : "—"}</TD></TR>
             ))}</TBody>
           </Table></Card>
         )}

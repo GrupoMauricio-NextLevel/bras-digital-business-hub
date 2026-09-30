@@ -635,7 +635,7 @@ export const financeInvoices = pgTable("finance_invoices", {
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
   partnerId: text("partner_id"),
-  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "STORE_PLAN", "ADDON", "SERVICE", "PARTNER_FEE"] }).notNull(),
+  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "STORE_PLAN", "ADDON", "SERVICE", "PARTNER_FEE", "STORE_ORDER_FEES"] }).notNull(),
   /** Competência YYYY-MM (mensalidade e fechamento). */
   period: text("period"),
   description: text("description").notNull(),
@@ -857,6 +857,31 @@ export const partnerPayouts = pgTable("partner_payouts", {
   paidAt: ts("paid_at"),
   receiptNote: text("receipt_note"),
 }, (t) => [index("partner_payouts_partner_idx").on(t.partnerId)]);
+
+// ---------------------------------------------------------------------------
+// E-mail transacional e recuperação de senha
+// ---------------------------------------------------------------------------
+/** Tudo o que o sistema envia por e-mail fica registrado (auditoria e reenvio). Sem provedor configurado, o status é LOGGED. */
+export const emailOutbox = pgTable("email_outbox", {
+  id: id(),
+  kind: text("kind").notNull(),
+  toEmail: text("to_email").notNull(),
+  subject: text("subject").notNull(),
+  body: text("body").notNull(),
+  status: text("status", { enum: ["LOGGED", "SENT", "FAILED"] }).notNull(),
+  error: text("error"),
+  createdAt: createdAt(),
+}, (t) => [index("email_outbox_created_idx").on(t.createdAt)]);
+
+export const passwordResets = pgTable("password_resets", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  /** Só o hash do token é guardado; o token vai apenas no link enviado por e-mail. */
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: ts("expires_at").notNull(),
+  usedAt: ts("used_at"),
+  createdAt: createdAt(),
+});
 
 // ---------------------------------------------------------------------------
 // Vendas digitais da NextLevel (LP/loja pública) e CRM de pedidos

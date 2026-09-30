@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LogIn } from "lucide-react";
@@ -29,6 +30,7 @@ export function LoginForm() {
       <FormField label="E-mail" htmlFor="email"><Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></FormField>
       <FormField label="Senha" htmlFor="password" error={error ?? undefined}><Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} /></FormField>
       <Button type="submit" className="w-full" loading={pending}><LogIn /> Entrar</Button>
+      <p className="text-center text-sm"><Link href="/esqueci-senha" className="font-medium text-accent-foreground underline">Esqueci a minha senha</Link></p>
     </form>
   );
 }

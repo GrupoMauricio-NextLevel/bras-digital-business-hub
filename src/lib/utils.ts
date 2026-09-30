@@ -30,11 +30,13 @@ export function initials(name: string): string {
   return name.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0]!.toUpperCase()).join("");
 }
 
-/** Contraste simples para textos sobre cores personalizadas. */
+/** Cor de texto (branco ou quase preto) com maior contraste WCAG sobre a cor de fundo informada. */
 export function readableOn(hex: string): "#ffffff" | "#111827" {
-  const c = hex.replace("#", "");
-  if (c.length !== 6) return "#ffffff";
-  const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
-  const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return l > 0.6 ? "#111827" : "#ffffff";
+  let c = hex.replace("#", "");
+  if (c.length === 3) c = c.split("").map((x) => x + x).join("");
+  if (!/^[0-9a-fA-F]{6}$/.test(c)) return "#ffffff";
+  const lin = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+  const L = 0.2126 * lin(parseInt(c.slice(0, 2), 16)) + 0.7152 * lin(parseInt(c.slice(2, 4), 16)) + 0.0722 * lin(parseInt(c.slice(4, 6), 16));
+  // contraste com branco = 1.05 / (L + 0.05); com #111827 (L ≈ 0.0096) = (L + 0.05) / 0.0596
+  return 1.05 / (L + 0.05) >= (L + 0.05) / 0.0596 ? "#ffffff" : "#111827";
 }

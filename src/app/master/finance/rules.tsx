@@ -87,6 +87,7 @@ export function Rules({ book }: { book: PriceBook }) {
             <div className="grid gap-3 sm:grid-cols-3">
               <PercentField id="ch-bps" label="Comissão do fornecedor sobre o setup" bps={b.channel.setupCommissionBps} onChange={(v) => setB({ ...b, channel: { ...b.channel, setupCommissionBps: v } })} />
               <IntField id="ch-days" label="Garantia da comissão" suffix="dias" value={b.channel.guaranteeDays} onChange={(v) => setB({ ...b, channel: { ...b.channel, guaranteeDays: v } })} />
+              {OFFER_KEYS.map((k) => <PercentField key={k} id={`of-${k}`} label={`Taxa por pedido · ${b.offers[k].name}`} hint="Sobre os produtos, sem frete" bps={b.orderFees[k]} onChange={(v) => setB({ ...b, orderFees: { ...b.orderFees, [k]: v } })} />)}
               <IntField id="bl-due" label="Dia de vencimento" hint="1 a 28" value={b.billing.dueDay} min={1} onChange={(v) => setB({ ...b, billing: { ...b.billing, dueDay: Math.min(28, v) } })} />
               <IntField id="bl-waiver" label="Isenção padrão de parceiro fundador" suffix="dias" value={b.billing.waiverDays} onChange={(v) => setB({ ...b, billing: { ...b.billing, waiverDays: v } })} />
               <IntField id="bl-lock" label="Preço de lista travado por" suffix="meses" value={b.billing.priceLockMonths} onChange={(v) => setB({ ...b, billing: { ...b.billing, priceLockMonths: v } })} />

@@ -82,7 +82,7 @@ export function StackedColumns({ columns, series, height = H, ariaLabel }: { col
                 </g>
               );
             })}
-            {columns.map((c, i) => <rect key={c.label} x={ML + slot * i} y={MT} width={slot} height={plotH + MB} fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0} aria-label={`${c.label}: ${fullBRL(totals[i] ?? 0)}`} />)}
+            {columns.map((c, i) => <rect key={c.label} x={ML + slot * i} y={MT} width={slot} height={plotH + MB} fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0} role="img" aria-label={`${c.label}: ${fullBRL(totals[i] ?? 0)}`} />)}
           </svg>
           {hover !== null && columns[hover] ? (
             <div className="pointer-events-none absolute top-2 z-10 w-56 rounded-lg border border-border bg-surface p-3 text-xs shadow-md" style={{ left: `${Math.min(Math.max(((ML + slot * hover + slot / 2) / W) * 100, 16), 84)}%`, transform: "translateX(-50%)" }}>
@@ -123,7 +123,7 @@ export function LineArea({ points, color, ariaLabel, height = 220, className }: 
         {points.map((p, i) => (i % step === 0 || i === points.length - 1) ? <text key={p.label} x={x(i)} y={height - 10} textAnchor="middle" fontSize={11} fill="var(--muted-foreground)">{p.label}</text> : null)}
         {last ? <><circle cx={x(points.length - 1)} cy={y(last.value)} r={6} fill="var(--surface)" /><circle cx={x(points.length - 1)} cy={y(last.value)} r={4} fill={color} /></> : null}
         {hover !== null ? <><line x1={x(hover)} x2={x(hover)} y1={MT} y2={MT + plotH} stroke="var(--viz-axis)" strokeWidth={1} /><circle cx={x(hover)} cy={y(points[hover]!.value)} r={6} fill="var(--surface)" /><circle cx={x(hover)} cy={y(points[hover]!.value)} r={4} fill={color} /></> : null}
-        {points.map((p, i) => <rect key={p.label} x={x(i) - plotW / points.length / 2} y={MT} width={plotW / points.length} height={plotH + MB} fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0} aria-label={`${p.label}: ${fullBRL(p.value)}`} />)}
+        {points.map((p, i) => <rect key={p.label} x={x(i) - plotW / points.length / 2} y={MT} width={plotW / points.length} height={plotH + MB} fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0} role="img" aria-label={`${p.label}: ${fullBRL(p.value)}`} />)}
       </svg>
       {hover !== null && points[hover] ? (
         <div className="pointer-events-none absolute top-1 z-10 rounded-lg border border-border bg-surface px-3 py-2 text-xs shadow-md" style={{ left: `${Math.min(Math.max((x(hover) / W) * 100, 12), 88)}%`, transform: "translateX(-50%)" }}>

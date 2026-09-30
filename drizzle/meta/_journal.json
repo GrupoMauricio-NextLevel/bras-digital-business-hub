@@ -134,6 +134,13 @@
       "when": 1790755628714,
       "tag": "0018_partners",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790757325834,
+      "tag": "0019_email_and_resets",
+      "breakpoints": true
     }
   ]
 }

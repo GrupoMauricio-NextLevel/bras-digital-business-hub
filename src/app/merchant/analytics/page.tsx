@@ -7,6 +7,7 @@ import { FeatureGate } from "@/components/app/feature-gate";
 import { EmptyState } from "@/components/app/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineArea } from "@/components/finance/charts";
+import { Heatmap } from "@/components/finance/heatmap";
 import { getDb } from "@/db/client";
 import { orderItems, orders } from "@/db/schema";
 import { requireRole } from "@/lib/require-session";
@@ -46,6 +47,18 @@ async function AnalyticsBody({ storeId, allowed }: { storeId: string; allowed: b
       <Card>
         <CardHeader><CardTitle>Vendas por dia</CardTitle></CardHeader>
         <CardContent><LineArea ariaLabel="Vendas por dia nos últimos 30 dias" color="var(--series-1)" points={a.days.map((d) => ({ label: d.label, value: d.salesCents }))} /></CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>Quando os clientes compram</CardTitle></CardHeader>
+        <CardContent><Heatmap grid={a.heatmap.grid} max={a.heatmap.max} peak={a.heatmap.peak} /></CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>Clientes e vendas por estado</CardTitle></CardHeader>
+        <CardContent>{a.byState.length === 0 ? <p className="text-sm text-muted-foreground">Ainda sem pedidos com endereço de entrega no período.</p> : (
+          <ul className="space-y-2" aria-label="Vendas por estado">{a.byState.slice(0, 10).map((s) => (
+            <li key={s.state} className="flex items-center gap-3 text-sm"><span className="w-8 font-semibold">{s.state}</span><span className="h-2.5 rounded bg-accent" style={{ width: `${Math.max(3, Math.round((s.salesCents / a.byState[0]!.salesCents) * 60))}%` }} aria-hidden /><span className="tabular-nums">{formatBRL(s.salesCents)}</span><span className="text-muted-foreground">{s.orders} pedido(s) · {s.customers} cliente(s)</span></li>
+          ))}</ul>
+        )}</CardContent>
       </Card>
       <div className="grid gap-6 lg:grid-cols-2">
         <section>

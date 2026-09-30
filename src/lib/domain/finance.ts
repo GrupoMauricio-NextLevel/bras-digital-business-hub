@@ -376,12 +376,47 @@ export async function runDunningNotices(db: Database, now = new Date()): Promise
   return { notices };
 }
 
+// ---------------------------------------------------------------------------
+// Taxa por pedido do membro (fechamento mensal)
+// ---------------------------------------------------------------------------
+/**
+ * Taxa do mês de uma loja: percentual da oferta sobre o valor dos produtos (sem frete) dos pedidos pagos pelo cliente.
+ * Estornos saem sozinhos (só conta pago e não estornado) e pedidos de teste (provedor DEMO) não pagam.
+ */
+export async function storeOrderFeeFor(db: Database, storeId: string, period: string, book?: PriceBook) {
+  const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
+  if (!store || store.kind === "SUPPLIER_OWN") return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
+  const b = book ?? (await getPriceBook(db));
+  const bps = b.orderFees[store.offer] ?? 0;
+  const { start, end } = periodBounds(period);
+  const [r] = await db.select({ base: sum(orders.subtotalCents), n: count() }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.customerPaymentStatus, "PAID"), ne(orders.status, "CANCELED"), ne(orders.paymentProvider, "DEMO"), gte(orders.createdAt, start.toISOString()), lt(orders.createdAt, end.toISOString())));
+  const baseCents = Number(r?.base ?? 0);
+  return { feeCents: Math.round((baseCents * bps) / 10_000), baseCents, orders: r?.n ?? 0, bps };
+}
+
+/** Emite a fatura de taxas do mês para cada loja com valor a cobrar. Idempotente por loja e competência. */
+export async function closeStoreFees(db: Database, period: string): Promise<{ issued: number }> {
+  const book = await getPriceBook(db);
+  const list = await db.select().from(stores).where(ne(stores.status, "CLOSED"));
+  let issued = 0;
+  for (const st of list) {
+    const f = await storeOrderFeeFor(db, st.id, period, book);
+    if (f.feeCents <= 0) continue;
+    const supplierId = await supplierIdOfStore(db, st.id);
+    const lines: InvoiceLine[] = [{ kind: "ORDER_FEE", description: `Taxa de ${f.bps / 100}% sobre ${fmt(f.baseCents)} em ${f.orders} pedido(s)`, amountCents: f.feeCents }];
+    const r = await insertInvoiceOnce(db, { dedupeKey: `STOREFEE:${st.id}:${period}`, payerType: "STORE", supplierId, storeId: st.id, kind: "STORE_ORDER_FEES", period, description: `Taxa por pedido ${period} · ${st.name}`, amountCents: f.feeCents, lines, status: "OPEN", dueDate: dueDateFor(period, 1, Math.min(book.billing.dueDay, 28)) });
+    if (r.created) { issued++; await db.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId: st.id, supplierId, type: "STORE_FEES_ISSUED", message: `Taxa por pedido ${period}: ${fmt(f.feeCents)}` }); }
+  }
+  return { issued };
+}
+
 export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   const result: { accessChanged: number; subscriptionsIssued: number; closed: number; period: string; closedPeriod: string | null } = { accessChanged: 0, subscriptionsIssued: 0, closed: 0, period: periodOf(now), closedPeriod: null };
   if (now.getUTCDate() === 1) {
     result.closedPeriod = previousPeriod(now);
     result.closed = (await closeMonth(db, result.closedPeriod, now)).closed;
     result.subscriptionsIssued = (await issueSubscriptionInvoices(db, result.period, now)).issued;
+    await closeStoreFees(db, result.closedPeriod);
   }
   result.accessChanged = (await refreshSupplierAccess(db, now)).changed.length;
   await runDunningNotices(db, now);

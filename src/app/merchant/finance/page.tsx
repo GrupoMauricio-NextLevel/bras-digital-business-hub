@@ -10,7 +10,7 @@ import { formatDate } from "@/lib/utils";
 import { isDemoMode } from "@/lib/auth";
 import { getDb } from "@/db/client";
 import { addonViewsFor, listInvoicesFor } from "@/lib/domain/nextlevel-billing";
-import { getPriceBook } from "@/lib/domain/finance";
+import { getPriceBook, periodOf, storeOrderFeeFor } from "@/lib/domain/finance";
 import { buildRationale } from "@/lib/finance/rationale";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
@@ -21,12 +21,14 @@ export default async function MerchantFinancePage() {
   const f = await getMerchantFinance(session.store!.id);
   const db = await getDb();
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
+  const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
   return (
     <>
       <PageHeader title="Financeiro" description="Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem." />
       <MetricGrid className="mb-6">
+        {feeNow.bps > 0 ? <MetricCard label="Taxa por pedido (mês)" value={formatBRL(feeNow.feeCents)} hint={`${feeNow.bps / 100}% sobre ${formatBRL(feeNow.baseCents)} em ${feeNow.orders} pedido(s), cobrada no fechamento`} /> : null}
         <MetricCard label="Recebido de clientes" value={formatBRL(f.received)} tone="success" />
         <MetricCard label="Aguardando recarga" value={formatBRL(f.owedToCentral)} tone={f.owedToCentral ? "warning" : "neutral"} hint="Custo de pedidos pagos sem saldo" />
         <MetricCard label="Custo debitado do saldo" value={formatBRL(f.paidToCentral)} />

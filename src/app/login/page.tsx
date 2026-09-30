@@ -60,7 +60,7 @@ export default async function LoginPage() {
                   );
                 })}
               </div>
-              <p className="mt-6 text-xs text-subtle-foreground">Storefronts públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
+              <p className="mt-6 text-xs text-muted-foreground">Storefronts públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
             </div>
           ) : null}
         </div>

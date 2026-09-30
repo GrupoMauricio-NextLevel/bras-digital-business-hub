@@ -12,6 +12,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { periodBounds, periodOf } from "./finance";
 import { normalizeTaxId, storeAccess } from "./store-access";
+import { emails, sendEmail } from "@/lib/email";
 
 const SETTINGS_KEY = "partner_settings";
 const DAY = 86_400_000;
@@ -381,6 +382,10 @@ export async function decidePayout(db: Database, actor: Actor, payoutId: string,
     if (!note?.trim()) throw new DomainError("REASON", "Informe o motivo da recusa.");
     await db.update(partnerPayouts).set({ status: "REJECTED", decidedBy: actor.userId, decidedAt: t, receiptNote: note.trim().slice(0, 300) }).where(eq(partnerPayouts.id, po.id));
     await insertEntry(db, { partnerId: po.partnerId, payoutId: po.id, kind: "PAYOUT_REVERSAL", amountCents: po.amountCents, period: periodOf(now), status: "AVAILABLE", availableAt: t, note: "Saque recusado: valor devolvido ao saldo", dedupeKey: `PAYOUTREV:${po.id}` });
+  }
+  if (decision === "PAY") {
+    const owner = await db.query.users.findFirst({ where: eq(users.id, (await db.query.partners.findFirst({ where: eq(partners.id, po.partnerId) }))!.userId) });
+    if (owner) await sendEmail(db, { kind: "PAYOUT_PAID", to: owner.email, ...emails.payoutPaid((po.amountCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })) });
   }
   await emitEvent(db, { type: `PARTNER_PAYOUT_${decision}`, actorRole: actor.role, payload: { payoutId, partnerId: po.partnerId } });
 }

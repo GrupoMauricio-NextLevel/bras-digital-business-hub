@@ -1,5 +1,5 @@
 /** Análise de vendas do lojista: funções puras sobre pedidos e itens já carregados. */
-export type AnalyticsOrder = { id: string; status: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string };
+export type AnalyticsOrder = { id: string; status: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string; shippingState?: string | null };
 export type AnalyticsItem = { orderId: string; productName: string; quantity: number; lineTotalCents: number; unitCostCents: number };
 
 export type StoreAnalytics = {
@@ -9,6 +9,10 @@ export type StoreAnalytics = {
   topProducts: { name: string; units: number; salesCents: number; marginCents: number }[];
   repeatCustomers: number; totalCustomers: number; repeatRate: number;
   previousSalesCents: number; changePercent: number | null;
+  /** Vendas e clientes por estado de entrega (UF), do maior para o menor. */
+  byState: { state: string; orders: number; salesCents: number; customers: number }[];
+  /** Pedidos por dia da semana (0 = domingo) e hora (0–23), no fuso de Brasília. */
+  heatmap: { grid: number[][]; max: number; peak: { weekday: number; hour: number; orders: number } | null };
 };
 
 const DAY = 86_400_000;
@@ -41,12 +45,21 @@ export function computeStoreAnalytics(orders: AnalyticsOrder[], items: Analytics
   for (const o of inWindow) { const k = o.customerEmail.trim().toLowerCase(); perCustomer.set(k, (perCustomer.get(k) ?? 0) + 1); }
   const repeatCustomers = [...perCustomer.values()].filter((n) => n > 1).length;
 
+  const states = new Map<string, { orders: number; salesCents: number; customers: Set<string> }>();
+  for (const o of inWindow) { const uf = (o.shippingState ?? "").trim().toUpperCase().slice(0, 2); if (!uf) continue; const c = states.get(uf) ?? { orders: 0, salesCents: 0, customers: new Set<string>() }; c.orders += 1; c.salesCents += o.subtotalCents; c.customers.add(o.customerEmail.trim().toLowerCase()); states.set(uf, c); }
+  const grid = Array.from({ length: 7 }, () => Array.from({ length: 24 }, () => 0));
+  for (const o of inWindow) { const br = new Date(new Date(o.createdAt).getTime() - 3 * 3_600_000); grid[br.getUTCDay()]![br.getUTCHours()]! += 1; }
+  let peak: StoreAnalytics["heatmap"]["peak"] = null; let max = 0;
+  grid.forEach((row, weekday) => row.forEach((n, hour) => { if (n > max) { max = n; peak = { weekday, hour, orders: n }; } }));
+
   return {
     days, salesCents, marginCents, marginPercent: salesCents ? Math.round((marginCents / salesCents) * 1000) / 10 : 0,
     orders: inWindow.length, avgTicketCents: inWindow.length ? Math.round(salesCents / inWindow.length) : 0,
     byChannel: [...channels].map(([channel, v]) => ({ channel, ...v })).sort((a, b) => b.salesCents - a.salesCents),
     topProducts: [...prods].map(([name, v]) => ({ name, ...v })).sort((a, b) => b.salesCents - a.salesCents).slice(0, 5),
     repeatCustomers, totalCustomers: perCustomer.size, repeatRate: perCustomer.size ? Math.round((repeatCustomers / perCustomer.size) * 100) : 0,
+    byState: [...states].map(([state, v]) => ({ state, orders: v.orders, salesCents: v.salesCents, customers: v.customers.size })).sort((a, b) => b.salesCents - a.salesCents),
+    heatmap: { grid, max, peak },
     previousSalesCents, changePercent: previousSalesCents ? Math.round(((salesCents - previousSalesCents) / previousSalesCents) * 100) : null,
   };
 }

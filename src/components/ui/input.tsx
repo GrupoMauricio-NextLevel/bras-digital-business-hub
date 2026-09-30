@@ -25,9 +25,9 @@ export function Label({ className, ...props }: React.LabelHTMLAttributes<HTMLLab
   return <label className={cn("text-sm font-medium text-foreground", className)} {...props} />;
 }
 
-export function Switch({ checked, onCheckedChange, label, disabled }: { checked: boolean; onCheckedChange: (v: boolean) => void; label?: string; disabled?: boolean }) {
+export function Switch({ checked, onCheckedChange, label, disabled, ariaLabel }: { checked: boolean; onCheckedChange: (v: boolean) => void; label?: string; disabled?: boolean; ariaLabel?: string }) {
   return (
-    <button type="button" role="switch" aria-checked={checked} disabled={disabled} onClick={() => onCheckedChange(!checked)} className="inline-flex items-center gap-2 disabled:opacity-50">
+    <button type="button" role="switch" aria-checked={checked} aria-label={label ? undefined : ariaLabel} disabled={disabled} onClick={() => onCheckedChange(!checked)} className="inline-flex items-center gap-2 disabled:opacity-50">
       <span className={cn("relative inline-flex h-5 w-9 items-center rounded-full transition-colors", checked ? "bg-brand" : "bg-border-strong")}>
         <span className={cn("inline-block size-4 rounded-full bg-white shadow transition-transform", checked ? "translate-x-4.5" : "translate-x-0.5")} />
       </span>
