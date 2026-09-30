@@ -1,0 +1,26 @@
+# Fila de prompts de desenvolvimento
+
+Cada arquivo é uma instrução executável por fases, escrita para ser colada numa sessão de trabalho. As ideias novas entram primeiro na seção **Ideias soltas**; quando amadurecem, viram um prompt próprio e saem da lista.
+
+## Prompts prontos
+| Prompt | Assunto | Estado |
+|---|---|---|
+| `programa-parceiros.md` | Programa de Parceiros (afiliados) | Feito (PA0 a PA7, D30) |
+| `demandas-2026-09-fase-longa.md` | Demandas da fase longa (fornecedor, loja do membro, temas, Master) | Feito (D22 a D32) |
+| `email-transacional.md` | Plataforma de e-mail em três camadas (SuperDrop, fornecedor, membro) | **A fazer** (base pronta: layout, fila simples, avisos) |
+| `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
+| `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
+
+## Ideias soltas (ainda sem prompt)
+- Compra de etiqueta pela API da plataforma de envio (SuperFrete/Melhor Envio), com débito na carteira do membro.
+- Materiais de divulgação para parceiros (banners e textos enviados pelo Master).
+- Personalização do dashboard e visões salvas nas listas.
+- Evolução dos temas esportivos (guia de tamanhos, barra de frete grátis, diferenciação Arena/Editorial/Signature).
+- Cobrança recorrente automática das mensalidades e comissão dos fornecedores fundadores.
+- Trocar o banco para Neon e a hospedagem para plano pago (checklist de produção).
+- Revisão jurídica e contábil (termos, privacidade, RPA/nota das comissões).
+
+## Como usar
+1. Escolha um prompt e peça: "desenvolva `docs/prompts/<arquivo>` da fase X".
+2. Cada fase fecha com lint, tipos, testes, build e e2e; as decisões vão para `docs/design/DECISIONS.md`.
+3. Novas dúvidas ou pedidos: acrescente em **Ideias soltas** (ou peça para criar o prompt).
