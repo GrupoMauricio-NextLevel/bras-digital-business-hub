@@ -1,4 +1,4 @@
-# NextLevel Commerce Engine · SuperDrop (MVP até a U2)
+# SuperDrop · NextLevel Commerce Engine (MVP até a U2)
 
 Plataforma de e-commerce multi-tenant da NextLevel Marketing Ltda. O fluxo completo:
 fornecedor → catálogo central → rede de lojistas → loja (subdomínio ou white label) → cliente final → pedido → saldo do lojista → expedição.

@@ -1,4 +1,5 @@
 "use client";
+import { Logo } from "@/components/brand/logo";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -92,7 +93,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
 
   const brand = (compact?: boolean) => (
     <div className={cn("flex items-center gap-2.5", compact ? "justify-center" : "px-3")}>
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-accent text-xs font-extrabold tracking-tight text-primary-foreground">NL</div>
+      <Logo variant="mark" tone={panel === "master" ? "on-dark" : "auto"} className="h-9 shrink-0" alt="SuperDrop" />
       {compact ? null : <div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight text-sidebar-active-foreground">{tenantName}</div><div className="truncate text-xs text-sidebar-muted">{tenantSub ?? roleLabel}</div></div>}
     </div>
   );
@@ -114,7 +115,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
             ) : null}
           </div>
           <div className="flex items-center justify-between border-t border-sidebar-border p-3">
-            {collapsed ? null : <span className="text-[11px] text-sidebar-muted">NextLevel Commerce Engine</span>}
+            {collapsed ? null : <Logo tone={panel === "master" ? "on-dark" : "auto"} className="h-5" />}
             <button onClick={toggleCollapsed} className="rounded-md p-1.5 text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground" aria-label={collapsed ? "Expandir menu" : "Recolher menu"}>{collapsed ? <PanelLeftOpen className="size-4" /> : <PanelLeftClose className="size-4" />}</button>
           </div>
         </aside>
@@ -130,7 +131,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
       <div className={cn(!minimal && "transition-[padding] duration-200", !minimal && (collapsed ? "lg:pl-[72px]" : "lg:pl-64"))}>
         <header className="nl-no-print sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-border bg-surface/90 px-3 backdrop-blur sm:gap-3 sm:px-6">
           {!minimal ? <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu /></Button> : (
-            <div className="flex items-center gap-2.5"><div className="flex size-9 items-center justify-center rounded-[var(--radius-sm)] bg-accent text-xs font-extrabold text-primary-foreground">NL</div><div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight">{tenantName}</div><div className="truncate text-xs text-muted-foreground">{roleLabel}</div></div></div>
+            <div className="flex items-center gap-2.5"><Logo variant="mark" className="h-9" /><div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight">{tenantName}</div><div className="truncate text-xs text-muted-foreground">{roleLabel}</div></div></div>
           )}
           {!minimal ? <div className="min-w-0 flex-1 truncate text-sm font-semibold lg:hidden">{tenantName}</div> : null}
           <div className="flex-1" />

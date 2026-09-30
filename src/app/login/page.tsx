@@ -4,6 +4,7 @@ import { ArrowRight, Factory, Store, ShieldCheck } from "lucide-react";
 import { getSession, homeFor, isDemoMode } from "@/lib/auth";
 import { listDemoUsers, loginAs } from "@/app/actions/auth";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/brand/logo";
 import { LoginForm } from "./login-form";
 import { DEMO_PASSWORD } from "@/db/seed-constants";
 
@@ -23,12 +24,10 @@ export default async function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-4 py-12">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">NL</div>
-          <div>
-            <h1 className="text-lg font-semibold leading-tight">NextLevel Commerce Engine</h1>
-            <p className="text-sm text-muted-foreground">SuperDrop</p>
-          </div>
+        <div className="mb-8">
+          <h1 className="sr-only">SuperDrop</h1>
+          <Logo className="h-12 sm:h-14" />
+          <p className="mt-2 text-sm text-muted-foreground">Plataforma NextLevel para quem vende e para quem fornece.</p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-5">

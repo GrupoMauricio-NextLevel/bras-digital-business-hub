@@ -7,8 +7,8 @@ const display = localFont({ src: "./fonts/jakarta-latin.woff2", variable: "--nl-
 const text = localFont({ src: "./fonts/inter-latin.woff2", variable: "--nl-font-text", display: "swap", weight: "400 700" });
 
 export const metadata: Metadata = {
-  title: { default: "NextLevel Commerce Engine", template: "%s · NextLevel" },
-  description: "SuperDrop — plataforma de e-commerce multi-tenant da NextLevel Marketing.",
+  title: { default: "SuperDrop", template: "%s · SuperDrop" },
+  description: "SuperDrop: venda sem estoque e fornecedor com operação de verdade. Plataforma da NextLevel Marketing.",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f4f6f5" }, { media: "(prefers-color-scheme: dark)", color: "#09100c" }] };

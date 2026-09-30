@@ -1,3 +1,4 @@
+import { Logo } from "@/components/brand/logo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStorefront } from "@/lib/queries/storefront";
@@ -38,7 +39,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       <footer className="border-t border-neutral-200 bg-neutral-50">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>{sf.settings.footerText || sf.store.name}</div>
-          <div className="flex gap-4 text-xs">{sf.store.instagram ? <span>@{sf.store.instagram.replace("@", "")}</span> : null}<span>Pagamento seguro</span><span>Envio para todo o Brasil</span><span className="text-neutral-400">Powered by NextLevel</span></div>
+          <div className="flex gap-4 text-xs">{sf.store.instagram ? <span>@{sf.store.instagram.replace("@", "")}</span> : null}<span>Pagamento seguro</span><span>Envio para todo o Brasil</span>{sf.store.offer !== "STORE_OWN" ? <span className="flex items-center gap-1.5 text-neutral-400">Tecnologia <Logo tone="on-light" className="h-4" /></span> : null}</div>
         </div>
       </footer>
     </div>

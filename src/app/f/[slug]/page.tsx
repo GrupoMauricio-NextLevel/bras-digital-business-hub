@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Check, Package, Printer, Store, Wallet } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getPublicSupplierPage } from "@/lib/domain/supplier-page";
+import { Logo } from "@/components/brand/logo";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import { readableOn } from "@/lib/utils";
@@ -115,7 +116,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
         </div>
       </section>
 
-      <footer className="border-t border-neutral-200 py-6 text-center text-xs text-neutral-500">© {new Date().getFullYear()} {p.name} · Tecnologia <span className="font-medium">SuperDrop</span></footer>
+      <footer className="border-t border-neutral-200 py-6 text-center text-xs text-neutral-500">© {new Date().getFullYear()} {p.name} · Tecnologia <Logo tone="on-light" className="ml-1 inline h-4 align-middle" /></footer>
     </div>
   );
 }

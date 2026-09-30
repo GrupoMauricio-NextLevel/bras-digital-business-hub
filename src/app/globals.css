@@ -291,3 +291,12 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
 
 /* Filhos de grid podem encolher: evita estouro horizontal em 768px */
 .grid > * { min-width: 0; }
+
+/* ---- Logo: versão clara no tema claro, escura no tema escuro ------------- */
+.nl-logo-dark { display: none; }
+:root[data-theme="dark"] .nl-logo-light { display: none; }
+:root[data-theme="dark"] .nl-logo-dark { display: inline-block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .nl-logo-light { display: none; }
+  :root:not([data-theme="light"]) .nl-logo-dark { display: inline-block; }
+}

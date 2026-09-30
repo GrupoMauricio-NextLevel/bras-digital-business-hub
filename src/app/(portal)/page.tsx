@@ -1,3 +1,4 @@
+import { Logo } from "@/components/brand/logo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -15,7 +16,8 @@ export default async function Portal() {
   return (
     <>
       <section className="bg-[#0f1c16] text-white">
-        <div className="mx-auto max-w-6xl px-4 py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:grid-cols-[1fr_auto] md:py-28">
+          <div>
           <span className="inline-flex rounded-full bg-[#22c55e] px-3 py-1 text-xs font-semibold text-[#062b14]">Teste grátis por 7 dias · sem cartão</span>
           <h1 className="mt-5 max-w-3xl font-[family-name:var(--nl-font-display)] text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">Venda sem estoque. Fornecedor com operação de verdade.</h1>
           <p className="mt-5 max-w-2xl text-lg text-[#c3d3ca]">Quem vende monta a loja e acompanha os pedidos. Quem fornece separa e envia numa esteira ao vivo, com horário de corte e etiqueta em PDF.</p>
@@ -23,6 +25,8 @@ export default async function Portal() {
             <Link href="/planos" className={`${btn} bg-[#22c55e] text-[#062b14] hover:bg-[#4ade80]`}>Ver planos <ArrowRight className="size-5" aria-hidden /></Link>
             <Link href="/como-funciona" className={`${btn} border border-white/30 hover:bg-white/10`}>Como funciona</Link>
           </div>
+          </div>
+          <Logo variant="mark" tone="on-dark" className="hidden h-64 drop-shadow-[0_0_40px_rgba(57,255,20,0.25)] lg:block" alt="" />
         </div>
       </section>
 
@@ -51,7 +55,7 @@ export default async function Portal() {
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="flex flex-col items-start gap-4 rounded-2xl bg-[#0f1c16] p-8 text-white md:flex-row md:items-center md:justify-between">
-          <div><h2 className="font-[family-name:var(--nl-font-display)] text-2xl font-extrabold">Quer ver funcionando?</h2><p className="mt-1 text-[#c3d3ca]">Comece o teste de 7 dias pelo fornecedor que te indicou.</p></div>
+          <div><Logo tone="on-dark" className="mb-3 h-8" /><h2 className="font-[family-name:var(--nl-font-display)] text-2xl font-extrabold">Quer ver funcionando?</h2><p className="mt-1 text-[#c3d3ca]">Comece o teste de 7 dias pelo fornecedor que te indicou.</p></div>
           <Link href="/login" className={`${btn} bg-[#22c55e] text-[#062b14] hover:bg-[#4ade80]`}>Entrar</Link>
         </div>
       </section>
