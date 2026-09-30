@@ -11,8 +11,11 @@ type BlockSpec = { type: string; settings?: Record<string, SettingValue> };
 /** Blocos do preset padrão de uma seção, com ajustes opcionais por posição. */
 const blocksOf = (type: string, over: Record<string, SettingValue>[] = []): BlockSpec[] => (sectionSchema(type)!.presets[0]!.blocks ?? []).map((b, i) => ({ type: b.type, settings: { ...(b.settings ?? {}), ...(over[i] ?? {}) } }));
 const untilDays = (now: Date, days: number) => { const d = new Date(now); d.setUTCDate(d.getUTCDate() + days); return `${d.toISOString().slice(0, 10)}T23:59`; };
-const globals = (style: ThemeStyle, header: Item[], footer: Item[]): ThemeGlobals => ({ v: 1, style, header: buildTemplate("header", undefined, header), footer: buildTemplate("footer", undefined, footer) });
-const pages = (home: Item[], product: Item[], collection: Item[], cart: Item[]): Record<PageKind, Template> => ({ home: buildTemplate("content", "home", home), product: buildTemplate("content", "product", product), collection: buildTemplate("content", "collection", collection), cart: buildTemplate("content", "cart", cart) });
+const globals = (style: ThemeStyle, header: Item[], footer: Item[]): ThemeGlobals => ({ v: 1, style, header: buildTemplate("header", undefined, header), footer: buildTemplate("footer", undefined, footer.some(([, sp]) => sp.type === "whatsapp-float") ? footer : [...footer, ["wa", { type: "whatsapp-float" }]]) });
+const seals = (): Item => ["seals", { type: "security-seals", blocks: blocksOf("security-seals") }];
+/** Todos os temas nascem com selos de segurança: na página inicial (no fim), no produto (logo abaixo da compra) e no carrinho. */
+const withSeals = (items: Item[], at: number | "end"): Item[] => (items.some(([, sp]) => sp.type === "security-seals") ? items : at === "end" ? [...items, seals()] : [...items.slice(0, at), seals(), ...items.slice(at)]);
+const pages = (home: Item[], product: Item[], collection: Item[], cart: Item[]): Record<PageKind, Template> => ({ home: buildTemplate("content", "home", withSeals(home, "end")), product: buildTemplate("content", "product", withSeals(product, 1)), collection: buildTemplate("content", "collection", collection), cart: buildTemplate("content", "cart", withSeals(cart, "end")) });
 const announcement = (c: PresetContext, fallback: string, tone: string): Item => ["announcement", { type: "announcement-bar", settings: { text: c.announcement.trim() || fallback, tone }, hidden: !c.announcement.trim() && !fallback }];
 
 // ---------------------------------------------------------------------------

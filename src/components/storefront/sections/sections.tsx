@@ -29,7 +29,7 @@ export function AnnouncementBar({ settings, ctx }: SectionProps) {
 
 /** O cabeçalho é um componente de cliente (carrinho e menu); as configurações chegam por propriedades. */
 export function HeaderSection({ settings, ctx }: SectionProps) {
-  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} />;
+  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} logoUrl={ctx.store.logoUrl} logoHeight={Number(settings.logoHeight) || 36} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} />;
 }
 
 export function Hero({ settings, ctx }: SectionProps) {
@@ -127,7 +127,7 @@ export function Footer({ settings, ctx }: SectionProps) {
   return (
     <footer className={cn("border-t", dark ? "border-white/10 bg-neutral-950 text-neutral-300" : "border-neutral-200 bg-neutral-50")}>
       <div className={cn("mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6", !dark && "text-neutral-500")}>
-        <div>{str(settings.text) || store.name}</div>
+        <div>{str(settings.text) || store.name}{settings.showLegal !== false && (store.legalName || store.cnpj || store.contactEmail || store.address) ? <div className="mt-1 text-xs opacity-80">{[store.legalName, store.cnpj ? `${store.cnpj.length === 11 ? "CPF" : "CNPJ"} ${store.cnpj}` : "", store.address, store.contactEmail].filter(Boolean).join(" · ")}</div> : null}</div>
         <div className="flex gap-4 text-xs">
           {settings.showInstagram !== false && store.instagram ? <span>@{store.instagram.replace("@", "")}</span> : null}
           {settings.showBadges !== false ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}

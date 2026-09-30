@@ -7,6 +7,8 @@ import { orderItems, orders } from "@/db/schema";
 import { getStorefront } from "@/lib/queries/storefront";
 import { formatBRL } from "@/lib/money";
 import { PaidBanner, PaymentWatcher } from "./payment-status";
+import { OrderJourney } from "@/components/storefront/order-journey";
+import { toTracked } from "@/lib/domain/tracking";
 
 export default async function OrderConfirmationPage({ params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
@@ -18,6 +20,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   if (!order) notFound();
   const items = await db.select().from(orderItems).where(eq(orderItems.orderId, order.id));
   const paid = order.customerPaymentStatus === "PAID";
+  const tracked = await toTracked(db, order);
   const base = `/store/${slug}`;
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
@@ -30,6 +33,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       {order.status !== "CANCELED" && !paid && order.paymentProvider === "MERCADO_PAGO" ? <PaymentWatcher slug={slug} orderId={order.id} checkoutUrl={order.paymentCheckoutUrl} expiresAt={order.reservationExpiresAt} /> : null}
       {order.status !== "CANCELED" && !paid && order.paymentProvider === "MANUAL" ? <div className="mt-6 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700">A loja entrará em contato para combinar o pagamento. Seus itens estão reservados.</div> : null}
       {paid ? <PaidBanner /> : null}
+      <section className="mt-8" aria-label="Acompanhamento do pedido"><h2 className="mb-3 text-base font-semibold">Acompanhe o seu pedido</h2><OrderJourney order={tracked} /><p className="mt-3 text-xs text-neutral-500">Guarde esta página ou use <Link href={`${base}/acompanhar`} className="underline">Acompanhar pedido</Link> com o número e o e-mail da compra.</p></section>
       <div className="mt-8 rounded-2xl border border-neutral-200 p-5">
         <ul className="divide-y divide-neutral-200 text-sm">{items.map((it) => <li key={it.id} className="flex justify-between gap-3 py-2.5"><span>{it.quantity}× {it.productName} <span className="text-neutral-400">({it.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(it.lineTotalCents)}</span></li>)}</ul>
         <dl className="mt-3 space-y-1.5 border-t border-neutral-200 pt-3 text-sm">

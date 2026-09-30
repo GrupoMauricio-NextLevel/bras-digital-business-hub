@@ -13,6 +13,7 @@ import { CartProvider } from "@/components/storefront/cart-context";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
+import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { isBlocked } from "@/lib/domain/store-access";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -54,6 +55,10 @@ export default async function StoreLayout({ params, children }: { params: Promis
         <main className="flex-1">{children}</main>
       </CartProvider>
       <SectionList template={globals.footer} ctx={ctx} region="footer" />
+      {/* Assinatura fixa da NextLevel em todas as lojas geradas pelo sistema (não é editável). */}
+      <div className="border-t border-neutral-200 bg-neutral-50 py-4 text-neutral-500" data-nextlevel-footer>
+        <div className="mx-auto flex max-w-6xl justify-center px-4"><NextLevelSignature compact className="justify-center text-center" /></div>
+      </div>
     </div>
   );
 }

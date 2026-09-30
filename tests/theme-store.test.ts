@@ -21,7 +21,7 @@ describe("motor de temas: leitura", () => {
     expect(g.source).toBe("default"); expect(g.globals.style.primary).toBe(s.primaryColor); expect(g.globals.header.order).toEqual(["announcement", "header"]);
   });
   it("a migração pode rodar de novo sem efeito", async () => { await runMigrations(ctx.db); await runMigrations(ctx.db); });
-  it("o carrinho padrão tem sua seção e a página sem seções cadastradas cai no padrão", async () => { expect((await resolveTemplate(ctx.db, await store(ctx.seed.stores.mantos.id), "cart")).template.order).toEqual(["cart"]); });
+  it("o carrinho padrão tem sua seção e a página sem seções cadastradas cai no padrão", async () => { expect((await resolveTemplate(ctx.db, await store(ctx.seed.stores.mantos.id), "cart")).template.order).toEqual(["cart", "seals"]); });
 });
 
 describe("rascunho, publicação e histórico (Loja própria)", () => {

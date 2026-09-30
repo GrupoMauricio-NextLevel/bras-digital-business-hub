@@ -175,3 +175,11 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Plataforma de envio** (SuperFrete ou Melhor Envio): o fornecedor conecta o token, validado na própria plataforma e guardado criptografado. A compra de etiquetas pela API ainda não está ligada (em demonstração há conexão simulada).
 - **Estoque é o coração:** todos os canais reservam e baixam no estoque central; "pendências que seguram estoque" na esteira listam pedidos pagos que esperam etiqueta ou saldo, com horas de espera e **cobrança do lojista** por aviso (uma a cada 6 horas), alerta após 12 horas.
 - Testes `tests/own-store.test.ts`, `tests/supplier-billing.test.ts`; e2e `e2e/own-store.mjs`, `e2e/supplier-billing.mjs`.
+
+## D27. M1: loja do membro mais confiável e jornada do cliente final
+- **Assinatura NextLevel** em todas as lojas (faixa fixa depois do rodapé do tema, não editável): logo NextLevel e "SuperDrop é um sistema de tecnologia desenvolvido pela NextLevel Marketing Ltda.".
+- **Credibilidade:** novos dados da loja (razão social, CNPJ/CPF, e-mail e endereço) em Configurações, exibidos no rodapé e em "Sobre a loja e contato"; seções novas **Selos de segurança** (site seguro, Pix, Mercado Pago só se a loja recebe por ele, envio rastreado, troca, atendimento, produto conferido), **Sobre a loja e contato** e **Botão flutuante do WhatsApp**. Todos os temas nascem com selos na inicial, no produto (logo abaixo da compra) e no carrinho.
+- **Jornada do cliente:** página pública **Acompanhar pedido** (`/store/[slug]/acompanhar`, número + e-mail da compra; resposta igual para "não existe" e "e-mail diferente"), linha do tempo de cinco etapas (recebido, pago, preparando, enviado com código de rastreio, entregue) na confirmação e na consulta, sem custo nem fornecedor. Link "Acompanhar pedido" no cabeçalho. Cartões mostram "Últimas unidades" com 5 ou menos.
+- **Logo e imagens:** envio de imagem (PNG, JPG ou WebP, até 1,5 MB, tipo conferido pelos bytes, 80 por loja) servida em `/assets/[id]` com cache longo; a logo aparece no cabeçalho (altura ajustável); todo campo de imagem do editor ganhou "Enviar".
+- **Editor com as quatro páginas** (inicial, produto, catálogo, carrinho), cada uma com prévia própria.
+- Migração 0015. Testes `tests/storefront-journey.test.ts`; e2e `e2e/storefront-journey.mjs`.

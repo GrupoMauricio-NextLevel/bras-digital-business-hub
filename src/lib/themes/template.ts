@@ -159,6 +159,7 @@ function build(region: SectionRegion, page: PageKind | undefined, items: [string
 }
 
 const trustPreset = () => sectionSchema("trust-bar")!.presets[0]!.blocks!;
+const sealsPreset = () => sectionSchema("security-seals")!.presets[0]!.blocks!;
 
 export function templateFromLegacy(s: ThemeSettingsData, themeKey = "starter"): Template {
   const items: [string, Ins][] = [
@@ -169,6 +170,7 @@ export function templateFromLegacy(s: ThemeSettingsData, themeKey = "starter"): 
   ];
   if (s.banners.length) items.push(["banners", { type: "promo-banners", blocks: s.banners.map((b) => ({ type: "banner", settings: { title: b.title, subtitle: b.subtitle, tone: b.tone, link: "/catalog" } })) }]);
   items.push(["grid", { type: "product-grid" }]);
+  items.push(["seals", { type: "security-seals", blocks: sealsPreset() }], ["about", { type: "store-about", hidden: true }]);
   return build("content", "home", items);
 }
 
@@ -177,7 +179,7 @@ export function legacyGlobals(store: { primaryColor: string; accentColor: string
     v: 1,
     style: normalizeStyle({ primary: store.primaryColor, accent: store.accentColor }),
     header: build("header", undefined, [["announcement", { type: "announcement-bar", settings: { text: s.announcement }, hidden: !s.announcement.trim() }], ["header", { type: "header" }]]),
-    footer: build("footer", undefined, [["footer", { type: "footer", settings: { text: s.footerText } }]]),
+    footer: build("footer", undefined, [["footer", { type: "footer", settings: { text: s.footerText } }], ["wa", { type: "whatsapp-float" }]]),
   };
 }
 
@@ -213,9 +215,9 @@ export function normalizeGlobals(raw: unknown): { globals: ThemeGlobals; issues:
 /** Modelo de cada página quando a loja ainda não tem um salvo (o mesmo visual que a loja sempre teve). */
 export function defaultTemplate(page: PageKind, settings: ThemeSettingsData, themeKey = "starter"): Template {
   if (page === "home") return templateFromLegacy(settings, themeKey);
-  if (page === "product") return build("content", "product", [["product", { type: "product-main" }], ["related", { type: "product-related" }]]);
+  if (page === "product") return build("content", "product", [["product", { type: "product-main" }], ["seals", { type: "security-seals", blocks: sealsPreset() }], ["related", { type: "product-related" }]]);
   if (page === "collection") return build("content", "collection", [["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]]);
-  return build("content", "cart", [["cart", { type: "cart-main" }]]);
+  return build("content", "cart", [["cart", { type: "cart-main" }], ["seals", { type: "security-seals", blocks: sealsPreset() }]]);
 }
 
 // ---------------------------------------------------------------------------

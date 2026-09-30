@@ -5,7 +5,6 @@ import { canUse } from "@/lib/features";
 import { requireRole } from "@/lib/require-session";
 import { getStorefront, getStorefrontCatalog } from "@/lib/queries/storefront";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
-import { emptyTemplate } from "@/lib/themes/template";
 import type { Doc } from "@/lib/themes/editor-state";
 import { formatBRL } from "@/lib/money";
 
@@ -18,14 +17,18 @@ export default async function ThemeEditorPage() {
   if (!canUse(store.offer, "storefront")) redirect("/merchant/services?pedir=upgrade-loja-superdrop");
   const db = await getDb();
   const sf = await getStorefront(store.slug);
-  const [homeDraft, homePub, gDraft, gPub, catalog] = await Promise.all([
-    resolveTemplate(db, store, "home", { draft: true }), resolveTemplate(db, store, "home"), resolveGlobals(db, store, { draft: true }), resolveGlobals(db, store), getStorefrontCatalog(store.id),
-  ]);
-  const pages = (home: typeof homeDraft.template): Doc["pages"] => ({ home, product: emptyTemplate(), collection: emptyTemplate(), cart: emptyTemplate() });
+  const catalog = await getStorefrontCatalog(store.id);
+  const gDraft = await resolveGlobals(db, store, { draft: true }); const gPub = await resolveGlobals(db, store);
+  const kinds = ["home", "product", "collection", "cart"] as const;
+  const drafts = await Promise.all(kinds.map((k) => resolveTemplate(db, store, k, { draft: true })));
+  const pubs = await Promise.all(kinds.map((k) => resolveTemplate(db, store, k)));
+  const pages = (list: typeof drafts): Doc["pages"] => ({ home: list[0]!.template, product: list[1]!.template, collection: list[2]!.template, cart: list[3]!.template });
+  const firstProduct = catalog[0]?.product.slug;
+  const previewPaths = { home: `/store/${store.slug}`, product: firstProduct ? `/store/${store.slug}/product/${firstProduct}` : `/store/${store.slug}/catalog`, collection: `/store/${store.slug}/catalog`, cart: `/store/${store.slug}/cart` };
   return (
     <ThemeEditor
-      storeName={store.name} slug={store.slug} offerName={OFFER_NAME[store.offer]}
-      initial={{ pages: pages(homeDraft.template), globals: gDraft.globals }} published={{ pages: pages(homePub.template), globals: gPub.globals }}
+      logoUrl={store.logoUrl} storeName={store.name} slug={store.slug} offerName={OFFER_NAME[store.offer]}
+      initial={{ pages: pages(drafts), globals: gDraft.globals }} published={{ pages: pages(pubs), globals: gPub.globals }} previewPaths={previewPaths}
       advanced={canUse(store.offer, "appearanceAdvanced")} premium={canUse(store.offer, "templatesPremium")} upgradeHref="/merchant/services?pedir=upgrade-loja-propria"
       picker={{ products: catalog.map((c) => ({ id: c.product.id, label: c.product.name, sublabel: formatBRL(c.storeProduct.priceCents) })), categories: (sf?.categories ?? []).map((c) => ({ id: c.id, label: c.name })) }}
     />

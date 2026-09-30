@@ -112,7 +112,7 @@ describe("operações do editor", () => {
 
 describe("conversão do tema atual", () => {
   const t = templateFromLegacy(legacy);
-  it("cria as seções na ordem da loja atual", () => { expect(t.order).toEqual(["hero", "trust", "categories", "showcase", "banners", "grid"]); });
+  it("cria as seções na ordem da loja atual", () => { expect(t.order).toEqual(["hero", "trust", "categories", "showcase", "banners", "grid", "seals", "about"]); });
   it("leva os textos da loja para o destaque e os banners para blocos", () => {
     expect(t.sections.hero!.settings).toMatchObject({ title: "Vista o manto", subtitle: "Camisas oficiais", ctaLabel: "Ver catálogo", layout: "split" });
     expect(t.sections.banners!.blockOrder).toHaveLength(2);
@@ -162,7 +162,7 @@ describe("links do tema", () => {
 describe("modelos padrão das outras páginas", () => {
   it("produto, catálogo e carrinho têm as seções da loja atual e já são válidos", () => {
     const order = (page: "product" | "collection" | "cart") => defaultTemplate(page, legacy).order;
-    expect(order("product")).toEqual(["product", "related"]); expect(order("collection")).toEqual(["header", "grid"]); expect(order("cart")).toEqual(["cart"]);
+    expect(order("product")).toEqual(["product", "seals", "related"]); expect(order("collection")).toEqual(["header", "grid"]); expect(order("cart")).toEqual(["cart", "seals"]);
     for (const page of ["product", "collection", "cart"] as const) { const t = defaultTemplate(page, legacy); expect(normalizeTemplate(t, "content", page).template).toEqual(t); expect(normalizeTemplate(t, "content", page).issues).toEqual([]); }
   });
   it("seções de página específica não entram em outra página", () => {

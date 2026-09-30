@@ -10,7 +10,7 @@ export function ProductCard({ product, slug, quickView = false }: { product: Pub
     <Link href={`/store/${slug}/product/${product.slug}`} className="group block">
       <div className="relative overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:-translate-y-0.5">
         <ProductArt images={product.images} size="lg" className="bg-neutral-100 transition-transform duration-500 group-hover:scale-[1.03]" />
-        {soldOut ? <span className="absolute left-3 top-3 rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-medium text-white">Esgotado</span> : product.sellsPack ? <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-neutral-900 shadow-sm">Grade 12</span> : null}
+        {soldOut ? <span className="absolute left-3 top-3 rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-medium text-white">Esgotado</span> : product.available <= 5 ? <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-neutral-950 shadow-sm">Últimas unidades</span> : product.sellsPack ? <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-neutral-900 shadow-sm">Grade 12</span> : null}
       </div>
       <div className="mt-3 space-y-0.5">
         <div className="text-xs text-neutral-500">{product.categoryName}</div>

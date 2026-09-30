@@ -9,7 +9,7 @@ export default async function MerchantSettingsPage() {
   return (
     <>
       <PageHeader title="Configurações" description="Dados da loja e integrações (modo demonstração: nada é conectado de verdade)." />
-      <SettingsForms store={{ name: s.name, tagline: s.tagline ?? "", whatsapp: s.whatsapp ?? "", instagram: s.instagram ?? "", slug: s.slug, paymentStatus: s.paymentStatus, paymentProvider: s.paymentProvider, mpConnected: !!s.mpAccessTokenEnc, mpTest: false, webhookUrl: `${await getBaseUrl()}/api/webhooks/mercadopago?store=${s.slug}`, shippingStatus: s.shippingStatus, shippingProvider: s.shippingProvider, domainStatus: s.domainStatus, customDomain: s.customDomain }} />
+      <SettingsForms store={{ name: s.name, tagline: s.tagline ?? "", whatsapp: s.whatsapp ?? "", instagram: s.instagram ?? "", legalName: s.legalName ?? "", cnpj: s.cnpj ?? "", contactEmail: s.contactEmail ?? "", address: s.address ?? "", slug: s.slug, paymentStatus: s.paymentStatus, paymentProvider: s.paymentProvider, mpConnected: !!s.mpAccessTokenEnc, mpTest: false, webhookUrl: `${await getBaseUrl()}/api/webhooks/mercadopago?store=${s.slug}`, shippingStatus: s.shippingStatus, shippingProvider: s.shippingProvider, domainStatus: s.domainStatus, customDomain: s.customDomain }} />
     </>
   );
 }

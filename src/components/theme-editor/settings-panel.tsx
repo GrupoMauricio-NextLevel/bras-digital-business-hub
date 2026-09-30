@@ -4,6 +4,7 @@ import { Lock } from "lucide-react";
 import { FormField } from "@/components/app/form-field";
 import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { ColorField, FontPicker, LinkPicker, RangeField, ResourcePicker, RichTextLite } from "@/components/ds/fields";
+import { ImageUploadButton } from "./image-upload";
 import { isValidDateTime, isValidImageRef, isValidVideoRef } from "@/lib/themes/settings";
 import type { SettingDef, SettingValue } from "@/lib/themes/types";
 
@@ -25,8 +26,8 @@ export function SettingField({ def, value, onChange, data, idPrefix, locked }: {
     case "select": return wrap(<Select id={id} value={String(v)} onChange={(e) => onChange(e.target.value)}>{def.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select>);
     case "checkbox": return <div className="py-1"><Switch checked={v === true} onCheckedChange={onChange} label={def.label} /></div>;
     case "url": return <LinkPicker id={id} label={def.label} value={String(v)} onChange={onChange} destinations={DESTINATIONS} />;
-    case "image": { const ok = isValidImageRef(String(v)); return <FormField label={def.label} htmlFor={id} error={ok ? undefined : "Use um endereço https:// ou um caminho da loja."} hint="Envio de imagem chega em breve. Por enquanto use o endereço da imagem.">
-      <Input id={id} value={String(v)} placeholder="https://…" aria-invalid={!ok} onChange={(e) => onChange(e.target.value)} />
+    case "image": { const ok = isValidImageRef(String(v)); return <FormField label={def.label} htmlFor={id} error={ok ? undefined : "Use um endereço https:// ou um caminho da loja."} hint="Envie uma imagem do seu computador ou cole o endereço (https://).">
+      <div className="flex gap-2"><Input id={id} value={String(v)} placeholder="https://…" aria-invalid={!ok} onChange={(e) => onChange(e.target.value)} /><ImageUploadButton onUploaded={onChange} label="Enviar" /></div>
       {ok && String(v) ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={String(v)} alt="" className="mt-2 h-20 rounded-md border border-border object-cover" />

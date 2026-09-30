@@ -79,6 +79,11 @@ export const stores = pgTable("stores", {
   accentColor: text("accent_color").notNull().default("#16a34a"),
   whatsapp: text("whatsapp"),
   instagram: text("instagram"),
+  /** Dados que dão credibilidade à loja (rodapé e "Sobre"). */
+  legalName: text("legal_name"),
+  cnpj: text("cnpj"),
+  contactEmail: text("contact_email"),
+  address: text("address"),
   customDomain: text("custom_domain"),
   paymentProvider: text("payment_provider"),
   paymentStatus: text("payment_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
@@ -790,3 +795,13 @@ export type Service = typeof services.$inferSelect;
 export type SupplierContract = typeof supplierContracts.$inferSelect;
 export type FinanceInvoice = typeof financeInvoices.$inferSelect;
 export type StoreAcquisition = typeof storeAcquisitions.$inferSelect;
+
+/** Imagens enviadas pelo lojista (logo, banners, fotos do tema). Servidas em /assets/[id] com cache longo. */
+export const storeAssets = pgTable("store_assets", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  mime: text("mime").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  dataBase64: text("data_base64").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("store_assets_store_idx").on(t.storeId)]);

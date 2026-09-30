@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, MessageCircle, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ChevronDown, MessageCircle, Menu, PackageSearch, Search, ShoppingBag, X } from "lucide-react";
 import * as React from "react";
 import { useCart } from "./cart-context";
 import { formatBRL } from "@/lib/money";
@@ -39,7 +39,7 @@ function SearchBox({ base, products, dark, className }: { base: string; products
   );
 }
 
-export function StoreHeader({ slug, name, logoText, whatsapp: whatsappNumber, sticky = true, showWhatsapp = true, tone = "light", menu, searchProducts, showSearch = false }: { slug: string; name: string; logoText: string | null; whatsapp: string | null; sticky?: boolean; showWhatsapp?: boolean; tone?: "light" | "dark"; menu?: MenuItem[]; searchProducts?: SearchProduct[]; showSearch?: boolean }) {
+export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, whatsapp: whatsappNumber, sticky = true, showWhatsapp = true, tone = "light", menu, searchProducts, showSearch = false }: { slug: string; name: string; logoUrl?: string | null; logoHeight?: number; logoText: string | null; whatsapp: string | null; sticky?: boolean; showWhatsapp?: boolean; tone?: "light" | "dark"; menu?: MenuItem[]; searchProducts?: SearchProduct[]; showSearch?: boolean }) {
   const whatsapp = showWhatsapp ? whatsappNumber : null;
   const { count, ready } = useCart();
   const pathname = usePathname();
@@ -54,8 +54,15 @@ export function StoreHeader({ slug, name, logoText, whatsapp: whatsappNumber, st
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <button className={cn("rounded-md p-2 sm:hidden", T.hover)} onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
         <Link href={base} className="flex items-center gap-2.5">
-          <span className="flex size-9 items-center justify-center rounded-md text-xs font-bold" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>{logoText ?? name.slice(0, 2).toUpperCase()}</span>
-          <span className="text-base font-semibold tracking-tight">{name}</span>
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- logo enviada pelo lojista
+            <img src={logoUrl} alt={name} style={{ height: logoHeight }} className="w-auto max-w-[180px] object-contain" />
+          ) : (
+            <>
+              <span className="flex size-9 items-center justify-center rounded-md text-xs font-bold" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>{logoText ?? name.slice(0, 2).toUpperCase()}</span>
+              <span className="text-base font-semibold tracking-tight">{name}</span>
+            </>
+          )}
         </Link>
         <nav className="ml-6 hidden items-center gap-5 text-sm sm:flex" aria-label="Principal">
           {links.map((l, i) => (
@@ -68,6 +75,7 @@ export function StoreHeader({ slug, name, logoText, whatsapp: whatsappNumber, st
         </nav>
         <div className="ml-auto flex items-center gap-2">
           {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-56 lg:block xl:w-72" /> : null}
+          <Link href={`${base}/acompanhar`} className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden /> Acompanhar pedido</Link>
           {whatsapp ? <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer" className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm sm:inline-flex", dark ? "text-neutral-300" : "text-neutral-600", T.hover)}><MessageCircle className="size-4" /> WhatsApp</a> : null}
           <Link href={`${base}/cart`} className={cn("relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
             <ShoppingBag className="size-5" />

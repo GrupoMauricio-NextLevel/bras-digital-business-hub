@@ -21,7 +21,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   },
   {
     type: "header", name: "Cabeçalho", description: "Logo, menu, WhatsApp e carrinho.", category: "Cabeçalho", region: "header", pages: ["home", "product", "collection", "cart"], singleton: true, slot: "site-header",
-    settings: [{ id: "sticky", type: "checkbox", label: "Fixar no topo ao rolar", default: true }, { id: "showWhatsapp", type: "checkbox", label: "Mostrar botão do WhatsApp", default: true }, { id: "tone", type: "select", label: "Cor do cabeçalho", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
+    settings: [{ id: "sticky", type: "checkbox", label: "Fixar no topo ao rolar", default: true }, { id: "logoHeight", type: "range", label: "Altura da logo (se enviou uma)", min: 24, max: 56, step: 4, unit: "px", default: 36 }, { id: "showWhatsapp", type: "checkbox", label: "Mostrar botão do WhatsApp", default: true }, { id: "tone", type: "select", label: "Cor do cabeçalho", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
     presets: [{ name: "Cabeçalho padrão" }],
   },
   {
@@ -182,13 +182,29 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   },
   {
     type: "header-plus", name: "Cabeçalho com menu grande", description: "Menu com submenus em painel largo e busca com sugestões.", category: "Cabeçalho", region: "header", pages: ["home", "product", "collection", "cart"], singleton: true, slot: "site-header", themes: ["signature"], maxBlocks: 8,
-    settings: [{ id: "sticky", type: "checkbox", label: "Fixar no topo ao rolar", default: true }, { id: "showWhatsapp", type: "checkbox", label: "Mostrar botão do WhatsApp", default: true }, { id: "showSearch", type: "checkbox", label: "Mostrar busca com sugestões", default: true }, { id: "tone", type: "select", label: "Cor do cabeçalho", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
+    settings: [{ id: "sticky", type: "checkbox", label: "Fixar no topo ao rolar", default: true }, { id: "logoHeight", type: "range", label: "Altura da logo (se enviou uma)", min: 24, max: 56, step: 4, unit: "px", default: 36 }, { id: "showWhatsapp", type: "checkbox", label: "Mostrar botão do WhatsApp", default: true }, { id: "showSearch", type: "checkbox", label: "Mostrar busca com sugestões", default: true }, { id: "tone", type: "select", label: "Cor do cabeçalho", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
     blocks: [{ type: "menu-item", name: "Item do menu", limit: 8, settings: [{ id: "label", type: "text", label: "Nome", default: "Novo item", maxLength: 40 }, { id: "link", type: "url", label: "Link", default: "/catalog" }, { id: "children", type: "textarea", label: "Submenu (uma linha por link: Nome | /endereço)", default: "", maxLength: 400 }] }],
     presets: [{ name: "Cabeçalho com menu grande", blocks: [{ type: "menu-item", settings: { label: "Camisas", link: "/catalog", children: "Todas as camisas | /catalog\nNovidades | /catalog?sort=newest" } }, { type: "menu-item", settings: { label: "Ofertas", link: "/catalog" } }, { type: "menu-item", settings: { label: "Contato", link: "#contato" } }] }],
   },
   {
+    type: "security-seals", name: "Selos de segurança", description: "Compra segura, Pix, envio rastreado e troca: o que dá confiança a quem compra.", category: "Confiança", region: "content", pages: ["home", "product", "cart"], maxBlocks: 6,
+    settings: [{ id: "heading", type: "text", label: "Título (opcional)", default: "Compre com segurança", maxLength: 60 }, { id: "style", type: "select", label: "Formato", options: [{ value: "row", label: "Linha" }, { value: "cards", label: "Cartões" }], default: "row" }],
+    blocks: [{ type: "seal", name: "Selo", limit: 6, settings: [{ id: "kind", type: "select", label: "Selo", options: [{ value: "ssl", label: "Site seguro (conexão criptografada)" }, { value: "pix", label: "Pagamento por Pix" }, { value: "gateway", label: "Pagamento processado pelo Mercado Pago" }, { value: "tracking", label: "Envio rastreado" }, { value: "exchange", label: "Troca e devolução" }, { value: "support", label: "Atendimento humano" }, { value: "original", label: "Produto conferido" }], default: "ssl" }, { id: "title", type: "text", label: "Título (opcional, troca o padrão)", default: "", maxLength: 40 }, { id: "text", type: "text", label: "Texto (opcional, troca o padrão)", default: "", maxLength: 90 }] }],
+    presets: [{ name: "Selos de segurança", blocks: [{ type: "seal", settings: { kind: "ssl" } }, { type: "seal", settings: { kind: "pix" } }, { type: "seal", settings: { kind: "tracking" } }, { type: "seal", settings: { kind: "exchange" } }] }],
+  },
+  {
+    type: "store-about", name: "Sobre a loja e contato", description: "Quem está por trás da loja: texto, razão social, CNPJ, e-mail, endereço e redes.", category: "Confiança", region: "content", pages: ["home"],
+    settings: [{ id: "heading", type: "text", label: "Título", default: "Quem somos", maxLength: 80 }, { id: "body", type: "richtext", label: "Texto", default: "Conte a história da sua loja e o que você promete a quem compra." }, { id: "showContact", type: "checkbox", label: "Mostrar contato e dados da empresa", default: true }],
+    presets: [{ name: "Sobre a loja e contato" }],
+  },
+  {
+    type: "whatsapp-float", name: "Botão flutuante do WhatsApp", description: "Botão fixo no canto da tela para o cliente chamar no WhatsApp.", category: "Confiança", region: "footer", pages: ["home", "product", "collection", "cart"], singleton: true,
+    settings: [{ id: "message", type: "text", label: "Mensagem inicial", default: "Olá! Vim pela loja e gostaria de ajuda.", maxLength: 140 }, { id: "position", type: "select", label: "Posição", options: [{ value: "right", label: "Direita" }, { value: "left", label: "Esquerda" }], default: "right" }],
+    presets: [{ name: "Botão flutuante do WhatsApp" }],
+  },
+  {
     type: "footer", name: "Rodapé", description: "Texto, redes e selos.", category: "Rodapé", region: "footer", pages: ["home", "product", "collection", "cart"], singleton: true,
-    settings: [{ id: "text", type: "text", label: "Texto do rodapé", default: "", maxLength: 160 }, { id: "showInstagram", type: "checkbox", label: "Mostrar Instagram", default: true }, { id: "showBadges", type: "checkbox", label: "Mostrar “Pagamento seguro” e “Envio para todo o Brasil”", default: true }, { id: "tone", type: "select", label: "Cor do rodapé", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
+    settings: [{ id: "text", type: "text", label: "Texto do rodapé", default: "", maxLength: 160 }, { id: "showLegal", type: "checkbox", label: "Mostrar CNPJ, e-mail e endereço", default: true }, { id: "showInstagram", type: "checkbox", label: "Mostrar Instagram", default: true }, { id: "showBadges", type: "checkbox", label: "Mostrar “Pagamento seguro” e “Envio para todo o Brasil”", default: true }, { id: "tone", type: "select", label: "Cor do rodapé", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" }],
     presets: [{ name: "Rodapé padrão" }],
   },
 ];

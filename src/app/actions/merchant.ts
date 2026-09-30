@@ -23,12 +23,20 @@ function revalidateStore(slug?: string) {
   if (slug) revalidatePath(`/store/${slug}`, "layout");
 }
 
-const storeSchema = z.object({ name: z.string().min(2, "Nome muito curto"), tagline: z.string().max(80).optional(), whatsapp: z.string().optional(), instagram: z.string().optional() });
+const storeSchema = z.object({
+  name: z.string().min(2, "Nome muito curto"), tagline: z.string().max(80).optional(), whatsapp: z.string().optional(), instagram: z.string().optional(),
+  legalName: z.string().max(120).optional(), cnpj: z.string().max(20).optional(), contactEmail: z.union([z.string().email("E-mail de contato inválido"), z.literal("")]).optional(), address: z.string().max(200).optional(),
+});
 
 export async function updateStoreAction(input: z.input<typeof storeSchema>) {
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
-    const data = storeSchema.parse(input);
+    const parsed = storeSchema.parse(input);
+    const { normalizeTaxId } = await import("@/lib/domain/store-access");
+    let cnpj: string | null | undefined = undefined;
+    if (parsed.cnpj !== undefined) { const d = parsed.cnpj.replace(/\D/g, ""); if (d === "") cnpj = null; else { try { cnpj = normalizeTaxId(d); } catch { throw new DomainError("CNPJ", "CNPJ ou CPF inválido."); } } }
+    const data = { ...parsed, cnpj, legalName: parsed.legalName?.trim() || null, contactEmail: parsed.contactEmail?.trim() || null, address: parsed.address?.trim() || null };
+    if (data.cnpj === undefined) delete (data as { cnpj?: unknown }).cnpj;
     await db.update(stores).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
     revalidateStore(session.store?.slug);
     return undefined;

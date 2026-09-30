@@ -10,7 +10,7 @@ import { Input, Select } from "@/components/ui/input";
 import { StatusBadge } from "@/components/app/status-badge";
 import { configureIntegrationAction, updateStoreAction, connectMercadoPagoAction, disconnectMercadoPagoAction } from "@/app/actions/merchant";
 
-type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; slug: string; paymentStatus: string; paymentProvider: string | null; mpConnected: boolean; mpTest: boolean; webhookUrl: string; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
+type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; legalName: string; cnpj: string; contactEmail: string; address: string; slug: string; paymentStatus: string; paymentProvider: string | null; mpConnected: boolean; mpTest: boolean; webhookUrl: string; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
 
 export function SettingsForms({ store }: { store: StoreData }) {
   const router = useRouter();
@@ -27,11 +27,17 @@ export function SettingsForms({ store }: { store: StoreData }) {
       <Card className="lg:col-span-2">
         <CardHeader><div><CardTitle>Dados da loja</CardTitle><CardDescription>Endereço público: /store/{store.slug}</CardDescription></div></CardHeader>
         <CardContent>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateStoreAction({ name: f.name, tagline: f.tagline, whatsapp: f.whatsapp, instagram: f.instagram }); if (r.ok) { toast.success("Dados salvos"); router.refresh(); } else toast.error(r.error); }); }}>
+          <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateStoreAction({ name: f.name, tagline: f.tagline, whatsapp: f.whatsapp, instagram: f.instagram, legalName: f.legalName, cnpj: f.cnpj, contactEmail: f.contactEmail, address: f.address }); if (r.ok) { toast.success("Dados salvos"); router.refresh(); } else toast.error(r.error); }); }}>
             <FormField label="Nome da loja" htmlFor="name"><Input id="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></FormField>
             <FormField label="Slogan" htmlFor="tagline"><Input id="tagline" value={f.tagline} onChange={(e) => setF({ ...f, tagline: e.target.value })} /></FormField>
             <FormField label="WhatsApp" htmlFor="wa" hint="Usado no botão de contato da loja"><Input id="wa" value={f.whatsapp} onChange={(e) => setF({ ...f, whatsapp: e.target.value })} placeholder="5511999990000" /></FormField>
             <FormField label="Instagram" htmlFor="ig"><Input id="ig" value={f.instagram} onChange={(e) => setF({ ...f, instagram: e.target.value })} placeholder="@sualoja" /></FormField>
+            <fieldset className="sm:col-span-2 grid gap-3 rounded-lg border border-border p-3 sm:grid-cols-2"><legend className="px-1 text-xs font-medium text-muted-foreground">Dados que dão credibilidade (aparecem no rodapé e em “Sobre”)</legend>
+              <FormField label="Razão social" htmlFor="legal"><Input id="legal" value={f.legalName} onChange={(e) => setF({ ...f, legalName: e.target.value })} /></FormField>
+              <FormField label="CNPJ ou CPF" htmlFor="cnpj"><Input id="cnpj" inputMode="numeric" value={f.cnpj} onChange={(e) => setF({ ...f, cnpj: e.target.value })} placeholder="00.000.000/0001-00" /></FormField>
+              <FormField label="E-mail de contato" htmlFor="cemail"><Input id="cemail" type="email" value={f.contactEmail} onChange={(e) => setF({ ...f, contactEmail: e.target.value })} /></FormField>
+              <FormField label="Endereço ou cidade" htmlFor="addr"><Input id="addr" value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} placeholder="São Paulo, SP" /></FormField>
+            </fieldset>
             <div className="sm:col-span-2 flex justify-end"><Button type="submit" loading={pending}><Save /> Salvar</Button></div>
           </form>
         </CardContent>

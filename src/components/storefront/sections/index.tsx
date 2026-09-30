@@ -2,6 +2,7 @@ import * as React from "react";
 import type { Template } from "@/lib/themes/types";
 import { AnnouncementBar, CartMain, CategoryChips, CollectionGrid, CollectionHeader, Footer, HeaderSection, Hero, ProductGrid, ProductMain, ProductRelated, ProductShowcase, PromoBanners, RichText, TrustBar } from "./sections";
 import { CategoryGrid, CountdownSection, CtaBanner, Faq, HeaderPlus, ImageHero, ImageWithText, Lookbook, ProductTabs, SlideshowSection, Testimonials, VideoHero } from "./premium";
+import { SecuritySeals, StoreAbout, WhatsappFloat } from "./trust";
 import { Reveal } from "@/components/portal/reveal";
 import type { SectionCtx, SectionProps } from "./types";
 
@@ -9,7 +10,7 @@ export type { SectionCtx } from "./types";
 
 /** Tipo de seção para o componente que a desenha. Os esquemas ficam em `lib/themes/sections`. */
 export const SECTION_COMPONENTS: Record<string, (props: SectionProps) => React.ReactNode> = {
-  "announcement-bar": AnnouncementBar, header: HeaderSection, hero: Hero, "trust-bar": TrustBar, "category-chips": CategoryChips,
+  "security-seals": SecuritySeals, "store-about": StoreAbout, "whatsapp-float": WhatsappFloat, "announcement-bar": AnnouncementBar, header: HeaderSection, hero: Hero, "trust-bar": TrustBar, "category-chips": CategoryChips,
   "product-showcase": ProductShowcase, "promo-banners": PromoBanners, "product-grid": ProductGrid, "rich-text": RichText, footer: Footer,
   "product-main": ProductMain, "product-related": ProductRelated, "collection-header": CollectionHeader, "collection-grid": CollectionGrid, "cart-main": CartMain,
   "image-hero": ImageHero, slideshow: SlideshowSection, "video-hero": VideoHero, "category-grid": CategoryGrid, "image-with-text": ImageWithText, testimonials: Testimonials, faq: Faq, lookbook: Lookbook, countdown: CountdownSection, "cta-banner": CtaBanner, "product-tabs": ProductTabs, "header-plus": HeaderPlus,

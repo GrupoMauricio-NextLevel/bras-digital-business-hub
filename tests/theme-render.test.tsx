@@ -30,7 +30,7 @@ describe("renderização das seções", () => {
   it("a página inicial da loja atual traz todas as seções na ordem, com os textos do lojista", () => {
     const html = render();
     const ids = [...html.matchAll(/data-section-id="([^"]+)"/g)].map((m) => m[1]);
-    expect(ids).toEqual(["hero", "trust", "categories", "showcase", "banners", "grid"]);
+    expect(ids).toEqual(["hero", "trust", "categories", "showcase", "banners", "grid", "seals"]);
     for (const text of ["Vista o manto", "Camisas oficiais", "Ver catálogo", "Envio para todo o Brasil", "Destaques", "Lançamento", "Todos os produtos", "Falar no WhatsApp"]) expect(html).toContain(text);
     expect(html).not.toContain("undefined"); expect(html).not.toContain("[object");
   });
