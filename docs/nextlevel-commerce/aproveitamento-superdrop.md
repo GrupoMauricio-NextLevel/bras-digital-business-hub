@@ -100,3 +100,6 @@ Ponto de atenção: `orders.supplierId`, `products.supplierId`, `inventory` e `o
 6. Influenciadores (sobre o motor de parceiros).
 7. Feed e live shop.
 8. Modelo geral de vendedor e SuperDrop como módulo conectável.
+
+## 9. Portfólio: como cada marca reaproveita o Core
+Ver a matriz módulo × marca e as 10 regras anti-duplicação em `docs/prompts/nextlevel-commerce-plataforma.md` (seção 4A). Resumo do que **já existe e todas as marcas usam sem cópia**: identidade e papéis, lojas e vitrine, motor de temas e loja de temas, catálogo e estoque, pedidos, Pix e cartão, faturas e planos, programa de parceiros, e-mail, CRM e escritório virtual, torre de controle e eventos de domínio. O que **falta para servir mais de uma marca** (fase N0): `brands`, resolução por domínio, `organizations.brand`, planos por marca e filtro de marca no Master.

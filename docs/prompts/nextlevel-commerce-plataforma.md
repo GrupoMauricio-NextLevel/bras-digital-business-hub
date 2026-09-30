@@ -60,6 +60,52 @@ Detalhe e dívida em `aproveitamento-superdrop.md` (seção 5). Decisão:
 - **Eventos de domínio** (`domain_events`) como cola entre módulos (pedido pago dispara comissão de influenciador, e-mail, análise, fila de expedição).
 - **Marca por tenant** (nome da loja, logo, cores, domínio) já existe; estender para e-mail e páginas legais.
 
+## 4A. PORTFÓLIO: UM MOTOR, VÁRIAS MARCAS (regra anti-duplicação)
+**Decisão:** NextLevel Commerce, SuperDrop, Brás Digital e as próximas frentes são **marcas e pacotes de módulos sobre o mesmo motor**, no mesmo repositório, na mesma implantação e no mesmo banco. Nada de repositório novo, painel novo ou "cópia adaptada" por marca.
+```
+NextLevel Group (Master: enxerga todas as marcas)
+ └─ NextLevel Core (serviços compartilhados, construídos UMA vez)
+     identidade e permissões · lojas e vitrine · temas e editor · catálogo e estoque · pedidos ·
+     pagamentos e frete (adaptadores) · faturas, planos e entitlements · parceiros/afiliados ·
+     e-mail · CRM e escritório virtual · torre de controle · arquivos e mídia · eventos de domínio
+ └─ Marcas = bundle de módulos + portal + planos + regras
+     ├─ NextLevel Commerce : lojas + temas + atacado + influenciadores + feed/live + parceiros
+     ├─ SuperDrop          : Commerce + módulo Dropshipping (rede, carteira, expedição da Central)
+     ├─ Brás Digital       : marketplace atacadista (vitrine única de vários vendedores)
+     └─ futuras verticais
+```
+### 4A.1 Como a marca entra no código (uma vez, na fase N0)
+- **`brands`** (configuração): `code` (`NEXTLEVEL_COMMERCE`, `SUPERDROP`, `BRAS_DIGITAL`), nome, logo, cores, domínios, textos de portal e e-mail, WhatsApp, rodapé legal, módulos ligados por padrão, catálogo de planos e regra de cadastro.
+- **Resolução por endereço:** `src/proxy.ts` já resolve subdomínio de loja; estender para **domínio → marca** (`getBrand()` em servidor). O mesmo deploy responde a `nextlevelcommerce.com.br`, `superdrop.com.br` e `brasdigital...`, cada um com portal, copy, e-mails e cobrança da sua marca.
+- **`organizations.brand`** (e `stores.brand`): por qual marca o cliente entrou. Consultas do Master ganham filtro por marca; o **painel do Group** soma todas.
+- **Planos por marca:** `getPriceBook` passa a aceitar a marca (mesmo esquema, valores próprios); `features.ts` ganha módulos (`wholesale`, `influencers`, `liveShop`, `dropship`, `marketplace`) ligados por plano e por marca.
+- **Identidade única:** um e-mail = uma conta; uma pessoa pode ter lojas em várias marcas (vínculos, não contas duplicadas). Login e recuperação de senha são do Core.
+- **Parceiros do Core:** o mesmo parceiro indica planos de qualquer marca; a tabela de comissão é por marca (`partner_settings` por marca), o painel é um só.
+### 4A.2 Regras para não duplicar (vale para toda sessão)
+1. **Antes de criar tabela, tela ou regra, procurar e estender.** Registrar em `DECISIONS.md` o que foi reutilizado e por quê; se não reutilizou, justificar.
+2. **Influenciador** é um `kind` de `partners` (não um sistema novo): links, cupons, livro-razão, saque e antifraude são os mesmos, com comissão sobre vendas da loja.
+3. **Cupom de desconto do consumidor** estende `coupons` (tipos: teste, desconto, influenciador), não cria tabela paralela.
+4. **Atacado** é lista de preços, grupo de cliente e regras de pedido sobre o **mesmo catálogo** (`products`, `product_packs`, `orders.saleType`); não existe "catálogo de atacado" separado.
+5. **Feed e live** são seções do motor de temas + mídia (`store_assets`) + eventos; o checkout é o mesmo.
+6. **Brás Digital (marketplace)** usa lojas e vendedores existentes e uma camada de agregação (vitrine única, comissão sobre GMV), não um segundo sistema de pedidos: o pedido continua sendo da loja, e o marketplace registra a origem e a comissão.
+7. **Pagamento, frete, e-mail e vídeo:** uma interface por assunto (`PaymentProvider`, `ShippingProvider`, `EmailProvider`, `VideoProvider`), várias implementações, zero código específico por marca.
+8. **Painel Master é um só:** visão do Group com filtro de marca; nada de painel administrativo por marca.
+9. **Portal e e-mails** leem `getBrand()`; proibido texto de marca fixo em componente.
+10. **Isolamento:** toda consulta continua por tenant; marca é filtro de negócio, **não** fronteira de segurança (a fronteira é o tenant).
+### 4A.3 Matriz módulo × marca (o que cada marca liga)
+| Módulo | Commerce | SuperDrop | Brás Digital |
+|---|---|---|---|
+| Loja virtual e temas | sim | sim | sim (lojas dos vendedores) |
+| Conta simples (`SUPPLIER_OWN` oculto, depois `seller`) | sim | opcional | sim |
+| Dropshipping (rede, carteira, expedição da Central) | opcional | **sim** | opcional |
+| Atacado B2B | sim (plano) | sim | **sim (núcleo)** |
+| Influenciadores | sim | opcional | opcional |
+| Feed e live | sim (plano) | opcional | sim |
+| Parceiros | sim | sim | sim |
+| Marketplace (vitrine única e comissão sobre GMV) | não | não | **sim** |
+### 4A.4 Hospedagem
+Uma implantação, vários domínios personalizados no mesmo serviço, um banco Postgres. Se uma marca crescer a ponto de exigir isolamento, o escopo por `brand` permite separar depois sem reescrever.
+
 ## 5. MÓDULOS (o que construir, com aceite)
 ### 5.1 Loja virtual (núcleo) — lançamento
 Reaproveita a vitrine, o checkout e os pedidos existentes. Construir:
@@ -127,7 +173,7 @@ Tudo já tem base em `getPriceBook`, `entitlements` e `features`.
 Onboarding assistido (você monta com o lojista), migração de outra plataforma, modelos por segmento, prova social com lojas do Brás, programa de parceiros e influenciadores como canal de aquisição, presença em comunidades e feiras, materiais e vídeos curtos, página de comparação honesta, garantia de teste de 7 dias.
 
 ## 8. FASES (cada uma fecha com lint, tipos, testes, build, e2e, capturas, decisão registrada e commit)
-- **N0 Fundação de marca e infraestrutura:** `brand.ts` configurável, portal novo com a marca NextLevel Commerce (SuperDrop como módulo), domínios, e-mails de marca, Neon e plano pago, variáveis de produção, redirecionamentos planejados.
+- **N0 Fundação de marca e infraestrutura:** `brands` + `getBrand()` por domínio, `organizations.brand`, filtro de marca no Master e painel do Group (seção 4A), `brand.ts` configurável, portal novo com a marca NextLevel Commerce (SuperDrop como módulo), domínios, e-mails de marca, Neon e plano pago, variáveis de produção, redirecionamentos planejados.
 - **N1 Conta simples e onboarding:** "Abrir minha loja" sobre `SUPPLIER_OWN` oculto, painel "Minha loja" enxuto, checklist de "no ar", produtos por planilha ou cadastro.
 - **N2 Frete e pagamentos:** cotação por CEP, etiqueta pela API, `PaymentProvider`, cupom de desconto, boleto opcional.
 - **N3 Tema Engine v2 e temas:** régua de desempenho e acessibilidade no CI, novas seções, 8 a 12 temas, editor melhorado, Theme Store para terceiros.
@@ -155,6 +201,7 @@ Lançamento comercial ao fim de **N4** (com N5 em paralelo); N7 a N9 chegam como
 | 10 | Nota fiscal | Fora do lançamento; integração com emissor na fase própria |
 | 11 | Hospedagem | Render pago com Neon, sempre ligado; reavaliar por custo depois de 100 lojas |
 | 12 | Idioma e moeda | pt-BR e BRL; estrutura pronta para outros |
+| 13 | Portfólio | Um motor, várias marcas (seção 4A): mesmo repositório, deploy e banco; marca por domínio e por `brand` nas organizações |
 
 ## 10. MÉTRICAS DE SUCESSO
 Ativação: % de lojas que publicam e recebem o 1º pedido em 7 dias. Tempo até a 1ª venda. Receita por loja (mensalidade + taxa). Retenção em 30 e 90 dias. Nota de desempenho dos temas. % de pedidos de atacado e de influenciador. Taxa de entrega de e-mail. Chamados por loja. Custo de suporte por loja.

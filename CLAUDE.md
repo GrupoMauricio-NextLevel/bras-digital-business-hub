@@ -34,5 +34,8 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 ## Direção do produto (atual)
 O foco passou de SuperDrop para **NextLevel Commerce**, a plataforma de lojas virtuais (o SuperDrop é um módulo, em pausa). Leia `docs/prompts/nextlevel-commerce-plataforma.md` e `docs/nextlevel-commerce/aproveitamento-superdrop.md` antes de propor trabalho novo. Holding: `nextlevelgroup.com.br`; produto: `nextlevelcommerce.com.br` (a registrar).
 
+## Regra anti-duplicação (portfólio NextLevel)
+NextLevel Commerce, SuperDrop, Brás Digital e as próximas frentes são **marcas e pacotes de módulos sobre o mesmo motor** (mesmo repositório, deploy e banco). Antes de criar tabela, tela ou regra: **procure e estenda** o que existe (influenciador = `kind` de `partners`; cupom do consumidor estende `coupons`; atacado = lista de preços sobre o mesmo catálogo; feed/live = seções de tema + mídia; marketplace = camada sobre lojas e pedidos existentes). Um painel Master só, com filtro de marca. Texto de marca vem de `getBrand()`, nunca fixo. Detalhes: `docs/prompts/nextlevel-commerce-plataforma.md` seção 4A.
+
 ## Configurações de produção que dependem do dono
 `DATABASE_URL` (Neon), `SESSION_SECRET`, `MASTER_EMAIL`/`MASTER_PASSWORD`, `NEXT_PUBLIC_SUPPORT_WHATSAPP`/`NEXT_PUBLIC_SUPPORT_EMAIL`, `RESEND_API_KEY`/`EMAIL_FROM`/`EMAIL_REPLY_TO`, `APP_URL`, conta Mercado Pago da NextLevel conectada no Master. Render Free dorme e não tem disco: dados reais exigem Neon e plano pago.
