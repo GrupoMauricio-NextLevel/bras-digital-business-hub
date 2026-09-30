@@ -310,6 +310,22 @@ export const supplierOps = pgTable("supplier_ops", {
   updatedAt: updatedAt(),
 });
 
+/** Página de vendas pública do fornecedor (/f/[slug]). Sem linha, a página usa textos padrão gerados a partir do nome. */
+export type SupplierPageFaq = { q: string; a: string };
+export const supplierPages = pgTable("supplier_pages", {
+  supplierId: text("supplier_id").primaryKey().references(() => suppliers.id),
+  headline: text("headline").notNull(),
+  subheadline: text("subheadline").notNull(),
+  logoText: text("logo_text"),
+  primaryColor: text("primary_color").notNull().default("#0f172a"),
+  accentColor: text("accent_color").notNull().default("#16a34a"),
+  whatsapp: text("whatsapp"),
+  benefits: jsonb("benefits").$type<string[]>().notNull().default([]),
+  faq: jsonb("faq").$type<SupplierPageFaq[]>().notNull().default([]),
+  published: boolean("published").notNull().default(true),
+  updatedAt: updatedAt(),
+});
+
 /** Quem está separando o pedido (uma linha por pedido; expira sozinha). */
 export const orderClaims = pgTable("order_claims", {
   orderId: text("order_id").primaryKey().references(() => orders.id),

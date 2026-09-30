@@ -11,12 +11,15 @@ RUN npm ci
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_PUBLIC_DEMO_MODE=false
+# O modo demonstração é lido no BUILD. No Render, defina NEXT_PUBLIC_DEMO_MODE=true no serviço de demonstração.
+ARG NEXT_PUBLIC_DEMO_MODE=false
+ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
 RUN npm run build
 
 FROM base AS runner
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_DEMO_MODE=false
+ARG NEXT_PUBLIC_DEMO_MODE=false
+ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
 ENV DATABASE_URL=pglite:///app/data/pg
 COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules

@@ -63,6 +63,8 @@ Com `NEXT_PUBLIC_DEMO_MODE=true` e o seed aplicado, abra `/login` e escolha um p
 | Lojista Arena 10 (Loja SuperDrop) | dono@arena10.demo | `/merchant` |
 | Lojista Fut Classics (suspenso) | dono@futclassics.demo | `/merchant` |
 
+Vitrine de demonstração (Mega Tron e MRS Sports): ver `docs/DEMO.md`. Acessos: `megatron@superdrop.demo` (fornecedor), `expedicao@megatron.demo` (expedição) e `loja@mrssports.demo` (membro), senha `demo1234`. Página de vendas pública: `/f/megatron`.
+
 Vitrines públicas: `/store/mantos-shop` e `/store/arena-10`.
 
 ## Seed e reset dos dados
@@ -79,7 +81,7 @@ Lista completa em `.env.example` (apenas nomes). As essenciais: `DATABASE_URL`, 
 
 ## Testes
 ```bash
-npm run lint && npm run typecheck && npm test   # 168 testes de domínio
+npm run lint && npm run typecheck && npm test   # 181 testes de domínio
 npm run e2e                                     # fluxo ponta a ponta com Mercado Pago simulado (Playwright)
 ```
 
@@ -97,4 +99,4 @@ npm run e2e                                     # fluxo ponta a ponta com Mercad
 Roteiro em `docs/ROADMAP.md`: **U3** Lojista Lite (fluxo em uma tela e Mercado Pago da loja) · **U4** Lojista Pro (análise, editor, templates, domínio) · **U5** Loja NextLevel e Academy com compra paga · **U6** pós-venda por chat · **U7** automações, fila do dia e saúde · **U8** endurecimento, seed dos cinco perfis, E2E por papel e docs finais.
 
 ## Documentação
-`ARCHITECTURE.md` · `docs/NEGOCIO.md` (contexto de negócio) · `docs/FINANCEIRO.md` · `docs/ROADMAP.md` · `docs/design/DECISIONS.md` · `DEPLOY_SITES.md`.
+`ARCHITECTURE.md` · `docs/DEMO.md` · `docs/PLANOS.md` · `docs/PORTAL.md` · `docs/NEGOCIO.md` (contexto de negócio) · `docs/FINANCEIRO.md` · `docs/ROADMAP.md` · `docs/design/DECISIONS.md` · `DEPLOY_SITES.md`.

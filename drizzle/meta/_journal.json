@@ -57,6 +57,13 @@
       "when": 1790712572180,
       "tag": "0007_u2_operations",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790727944313,
+      "tag": "0008_supplier_pages",
+      "breakpoints": true
     }
   ]
 }

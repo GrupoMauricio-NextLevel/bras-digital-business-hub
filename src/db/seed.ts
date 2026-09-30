@@ -20,6 +20,10 @@ export const DEMO = {
   mantosEmail: "dono@mantosshop.demo",
   arenaEmail: "dono@arena10.demo",
   classicsEmail: "dono@futclassics.demo",
+  // Vitrine de demonstração (Mega Tron e um membro da rede dela)
+  megatronEmail: "megatron@superdrop.demo",
+  megatronDispatchEmail: "expedicao@megatron.demo",
+  mrsEmail: "loja@mrssports.demo",
 };
 
 const SIZES = ["P", "M", "G", "GG"] as const;

@@ -3,6 +3,7 @@ import type { Database } from "./client";
 import { organizations, themes, users } from "./schema";
 import { seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
+import { seedShowcase } from "./showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 
@@ -18,7 +19,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   const orgCount = Number(((await db.execute(sql`select count(*)::int as n from organizations`)) as { rows: { n: number }[] }).rows[0]?.n ?? 0);
 
   if (opts.seedDemo) {
-    if (orgCount === 0) { await seedDatabase(db); log.push("seed de demonstração aplicado"); }
+    if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports)"); }
     else log.push("banco já populado (demo não reaplicado)");
     return log;
   }
