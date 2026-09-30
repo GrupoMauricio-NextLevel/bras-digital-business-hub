@@ -56,11 +56,11 @@ await as(/Ana Paula Ribeiro/, async (p, shot) => {
   if (!/Produtos campeões/.test(t) || !/Canais de venda/.test(t)) fail("análise Pro incompleta");
   await shot("pro-analise");
   await p.goto(B + "/merchant/appearance", { waitUntil: "networkidle" });
-  for (const w of [/Tablet/, /Celular/, /Computador/]) await p.getByRole("button", { name: w }).click();
-  const frame = p.locator("iframe");
-  await p.getByRole("button", { name: /Celular/ }).click();
-  const width = await frame.evaluate((el) => el.getBoundingClientRect().width);
-  if (Math.round(width) !== 390) fail("prévia em celular deveria ter 390px, veio " + width);
+  if (!p.url().includes("/theme-editor")) fail("Aparência deveria levar ao editor de tema: " + p.url());
+  for (const w of [/Tablet/, /Celular/, /Computador/]) await p.getByRole("radio", { name: w }).click();
+  await p.getByRole("radio", { name: /Celular/ }).click(); await p.waitForTimeout(500);
+  const width = await p.locator("iframe").evaluate((el) => Math.round(el.getBoundingClientRect().width));
+  if (width !== 390) fail("prévia em celular deveria ter 390px, veio " + width);
   await shot("pro-editor-390");
   // Loja NextLevel
   await p.goto(B + "/merchant/services", { waitUntil: "networkidle" });

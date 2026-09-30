@@ -18,7 +18,7 @@ export function panelFor(session: Session): Panel {
 }
 
 /** Itens do menu do lojista e o recurso que os libera; sem o recurso aparecem com cadeado. */
-const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/merchant/appearance": "appearanceBasic", "/merchant/templates": "templatesStarter" };
+const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/theme-editor": "appearanceBasic", "/merchant/templates": "templatesStarter" };
 
 export async function RoleLayout({ session, children, banner }: { session: Session; children: React.ReactNode; banner?: React.ReactNode }) {
   // Libera reservas de pedidos não pagos vencidos (rede de segurança além do cron).

@@ -6,6 +6,8 @@ import { isPreviewMode } from "@/lib/themes/preview";
 import { resolveGlobals } from "@/lib/themes/store";
 import { fontStack } from "@/lib/ds/fonts";
 import { SectionList } from "@/components/storefront/sections";
+import { PreviewBridge } from "@/components/storefront/preview-bridge";
+import { exitThemePreviewAction } from "@/app/actions/theme";
 import { CartProvider } from "@/components/storefront/cart-context";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
@@ -38,7 +40,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
   return (
     <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
-      {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada.</div> : null}
+      {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
+      {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} />
         <main className="flex-1">{children}</main>
