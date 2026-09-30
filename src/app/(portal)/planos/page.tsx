@@ -4,6 +4,7 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { MEMBER_FEES } from "../content";
 
 export const metadata: Metadata = { title: "Planos", description: "Planos para quem vende: assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom." };
+export const dynamic = "force-dynamic";
 
 export default function Planos() {
   return (
