@@ -175,20 +175,20 @@ describe("bloqueio por inadimplência", () => {
 
   it("5 dias de atraso: apenas aviso", async () => { await overdue(5); expect(await status()).toBe("WARNING"); await expect(place()).resolves.toBeTruthy(); });
 
-  it("12 dias: bloqueio parcial impede pedidos novos mas mantém a expedição de pedidos pagos", async () => {
+  it("16 dias: bloqueio parcial impede pedidos novos mas mantém a expedição de pedidos pagos", async () => {
     const o = await place();
     await registerShippingLabel(ctx.db, ctx.actors.mantos, o.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
-    await overdue(12);
+    await overdue(16);
     expect(await status()).toBe("PARTIAL_BLOCK");
     await expect(place()).rejects.toThrow(/novos pedidos/);
     await expect(advanceOrder(ctx.db, ctx.actors.supplier, o.orderId, "PICKING")).resolves.toBeTruthy();
     await expect(createStore(ctx.db, ctx.seed.supplierId, { name: "Bloqueada", ownerName: "Dono", ownerEmail: "b@l.com" })).rejects.toThrow(/bloqueadas/);
   });
 
-  it("16 dias: suspenso bloqueia também a expedição; pagar a fatura restabelece o acesso", async () => {
+  it("26 dias: suspenso bloqueia também a expedição; pagar a fatura restabelece o acesso", async () => {
     const o = await place();
     await registerShippingLabel(ctx.db, ctx.actors.mantos, o.orderId, { code: "ME123456BR", carrier: "Melhor Envio" });
-    await overdue(16);
+    await overdue(26);
     expect(await status()).toBe("SUSPENDED");
     await expect(advanceOrder(ctx.db, ctx.actors.supplier, o.orderId, "PICKING")).rejects.toThrow(/Expedição indisponível/);
     await markInvoicePaid(ctx.db, "fin_test");
@@ -196,7 +196,7 @@ describe("bloqueio por inadimplência", () => {
     await expect(advanceOrder(ctx.db, ctx.actors.supplier, o.orderId, "PICKING")).resolves.toBeTruthy();
   });
 
-  it("31 dias: encerrado", async () => { await overdue(31); expect(await status()).toBe("CLOSED"); });
+  it("91 dias: encerrado", async () => { await overdue(91); expect(await status()).toBe("CLOSED"); });
 });
 
 describe("visão geral do Master", () => {
@@ -229,7 +229,7 @@ describe("rotina diária", () => {
     expect(r.closed).toBe(0);
   });
   it("a fatura vencida gera bloqueio automático pela rotina", async () => {
-    await ctx.db.insert(financeInvoices).values({ id: "fin_cron", dedupeKey: "TEST:cron", payerType: "SUPPLIER", supplierId: ctx.seed.supplierId, kind: "SUPPLIER_CLOSING", period: "2026-01", description: "Teste", amountCents: 50_000, lines: [], status: "OPEN", dueDate: new Date(Date.now() - 12 * 86_400_000).toISOString() });
+    await ctx.db.insert(financeInvoices).values({ id: "fin_cron", dedupeKey: "TEST:cron", payerType: "SUPPLIER", supplierId: ctx.seed.supplierId, kind: "SUPPLIER_CLOSING", period: "2026-01", description: "Teste", amountCents: 50_000, lines: [], status: "OPEN", dueDate: new Date(Date.now() - 16 * 86_400_000).toISOString() });
     const r = await runDailyFinanceJobs(ctx.db);
     expect(r.accessChanged).toBe(1);
     expect((await ctx.db.query.suppliers.findFirst({ where: eq(suppliers.id, ctx.seed.supplierId) }))?.status).toBe("PARTIAL_BLOCK");

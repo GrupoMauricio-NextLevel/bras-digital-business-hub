@@ -70,3 +70,21 @@ export async function simulateTrialEndAction() {
     return undefined;
   });
 }
+
+/** Demonstração (fornecedor): cria uma fatura vencida há N dias para mostrar o aviso, o bloqueio e o pagamento que libera. */
+export async function simulateSupplierOverdueAction(days: number) {
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    const supplierId = session.actor.supplierId;
+    if (session.user.role !== "SUPPLIER_ADMIN" || !supplierId) throw new ForbiddenError("Somente o gestor do fornecedor.");
+    const { financeInvoices } = await import("@/db/schema");
+    const { refreshSupplierAccess } = await import("@/lib/domain/finance");
+    const { newId } = await import("@/lib/ids");
+    const d = Math.min(Math.max(Math.trunc(days), 1), 100);
+    const id = newId("fin");
+    await db.insert(financeInvoices).values({ id, dedupeKey: `DEMO:overdue:${id}`, payerType: "SUPPLIER", supplierId, kind: "SUPPLIER_CLOSING", period: "2026-01", description: `Fechamento de demonstração (${d} dias de atraso)`, amountCents: 50_000, lines: [], status: "OPEN", dueDate: new Date(Date.now() - d * 86_400_000).toISOString() });
+    await refreshSupplierAccess(db);
+    refresh();
+    return undefined;
+  });
+}

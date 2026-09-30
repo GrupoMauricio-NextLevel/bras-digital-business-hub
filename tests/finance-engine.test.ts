@@ -89,10 +89,11 @@ describe("acesso por inadimplência", () => {
   const r = book.dunning;
   it("estados por dias de atraso", () => {
     expect(accessStateForOverdue(0, r)).toBe("ACTIVE");
-    expect(accessStateForOverdue(1, r)).toBe("WARNING");
-    expect(accessStateForOverdue(10, r)).toBe("PARTIAL_BLOCK");
-    expect(accessStateForOverdue(15, r)).toBe("SUSPENDED");
-    expect(accessStateForOverdue(30, r)).toBe("CLOSED");
+    expect(accessStateForOverdue(2, r)).toBe("ACTIVE");
+    expect(accessStateForOverdue(3, r)).toBe("WARNING");
+    expect(accessStateForOverdue(15, r)).toBe("PARTIAL_BLOCK");
+    expect(accessStateForOverdue(25, r)).toBe("SUSPENDED");
+    expect(accessStateForOverdue(90, r)).toBe("CLOSED");
   });
   it("bloqueio parcial impede pedidos e lojas novas mas mantém a expedição", () => {
     expect(ACCESS_CAPABILITIES.PARTIAL_BLOCK).toMatchObject({ canCreateOrders: false, canCreateStores: false, canExpedite: true, canLogin: true });

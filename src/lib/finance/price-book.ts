@@ -59,7 +59,8 @@ export const DEFAULT_PRICE_BOOK: PriceBook = {
   templates: { PRO: { oneTimeCents: 29_700, monthlyCents: 3_900 }, ELITE: { oneTimeCents: 69_700, monthlyCents: 8_900 } },
   services: { targetMarginBps: 5000 },
   billing: { dueDay: 5, waiverDays: 90, priceLockMonths: 12 },
-  dunning: { warningDays: 1, partialBlockDays: 10, suspendedDays: 15, closedDays: 30 },
+  // Prazos flexíveis: aviso 3 dias após o vencimento, bloqueio parcial em 15, suspensão em 25 e encerramento em 90.
+  dunning: { warningDays: 3, partialBlockDays: 15, suspendedDays: 25, closedDays: 90 },
   costs: { collectionFeeBps: 200, infraPerStoreCents: 800, supportPerSupplierCents: 50_000 },
   addons: structuredClone(DEFAULT_ADDONS),
 };

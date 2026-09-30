@@ -384,3 +384,28 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   await runDunningNotices(db, now);
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// Situação de cobrança do fornecedor (faturas, avisos e bloqueio)
+// ---------------------------------------------------------------------------
+export type SupplierBilling = {
+  state: AccessState;
+  open: { id: string; description: string; amountCents: number; dueDate: string; overdueDays: number; daysToDue: number; status: string; kind: string }[];
+  overdueCount: number; openCents: number; overdueCents: number;
+  worstOverdueDays: number;
+  /** Próximo estágio de restrição e em quantos dias chega se nada for pago. */
+  next: { state: AccessState; inDays: number } | null;
+};
+
+export async function supplierBilling(db: Database, supplierId: string, now = new Date()): Promise<SupplierBilling> {
+  const book = await getPriceBook(db);
+  const s = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) });
+  const rows = await db.select().from(financeInvoices).where(and(eq(financeInvoices.supplierId, supplierId), eq(financeInvoices.payerType, "SUPPLIER"), inArray(financeInvoices.status, ["OPEN", "OVERDUE"])));
+  const open = rows.filter((i) => i.amountCents > 0).map((i) => ({ id: i.id, description: i.description, amountCents: i.amountCents, dueDate: i.dueDate, overdueDays: Math.max(0, daysBetween(new Date(i.dueDate), now)), daysToDue: Math.ceil((new Date(i.dueDate).getTime() - now.getTime()) / 86_400_000), status: i.status, kind: i.kind })).sort((a, b) => b.overdueDays - a.overdueDays || a.dueDate.localeCompare(b.dueDate));
+  const overdue = open.filter((i) => i.overdueDays > 0 || i.status === "OVERDUE");
+  const worst = overdue.reduce((m, i) => Math.max(m, i.overdueDays), 0);
+  const d = book.dunning;
+  const steps: [AccessState, number][] = [["WARNING", d.warningDays], ["PARTIAL_BLOCK", d.partialBlockDays], ["SUSPENDED", d.suspendedDays], ["CLOSED", d.closedDays]];
+  const nextStep = overdue.length ? steps.find(([, days]) => worst < days) : undefined;
+  return { state: (s?.status ?? "ACTIVE") as AccessState, open, overdueCount: overdue.length, openCents: open.reduce((t, i) => t + i.amountCents, 0), overdueCents: overdue.reduce((t, i) => t + i.amountCents, 0), worstOverdueDays: worst, next: nextStep ? { state: nextStep[0], inDays: nextStep[1] - worst } : null };
+}
