@@ -11,7 +11,8 @@ const THEMES = [
 ] as const;
 type Key = (typeof THEMES)[number]["key"];
 
-function Preview({ k }: { k: Key }) {
+/** Miniatura ilustrativa de cada tema (usada no portal e na vitrine de temas do lojista). */
+export function ThemeMock({ k }: { k: Key }) {
   const grid = (n: number, cls: string) => <div className={cn("grid gap-1.5", n === 3 ? "grid-cols-3" : "grid-cols-4")}>{Array.from({ length: n }).map((_, i) => <div key={i} className={cn("aspect-[4/5] rounded", cls)} />)}</div>;
   if (k === "starter") return <div className="bg-white p-3"><div className="mb-3 flex items-center justify-between text-[10px]"><b>Sua Loja</b><span className="text-neutral-600">Catálogo · Carrinho</span></div><div className="mb-3 rounded-lg bg-emerald-50 p-4"><p className="text-sm font-bold">Vista o manto do seu time</p><span className="mt-2 inline-block rounded bg-neutral-900 px-2 py-1 text-[9px] text-white">Ver catálogo</span></div>{grid(4, "bg-neutral-100")}</div>;
   if (k === "arena") return <div className="bg-neutral-950 p-3 text-white"><div className="mb-3 flex items-center justify-between text-[10px]"><b className="tracking-widest">ARENA</b><span className="text-neutral-400">CLUBES · NOVIDADES · OFERTAS</span></div><div className="mb-2 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-800 p-4"><p className="text-lg font-black uppercase leading-none">Vista a paixão</p><span className="mt-2 inline-block rounded bg-white px-2 py-1 text-[9px] font-bold text-neutral-900">COMPRAR</span></div><div className="mb-2 flex gap-1.5 text-[9px]">{["SÃO PAULO", "FLAMENGO", "PALMEIRAS", "SANTOS"].map((c) => <span key={c} className="rounded-full border border-neutral-600 px-2 py-0.5">{c}</span>)}</div>{grid(4, "bg-neutral-800")}</div>;
@@ -24,7 +25,7 @@ export function ThemeShowcase() {
   const t = THEMES.find((x) => x.key === k)!;
   return (
     <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_1fr]">
-      <div className="overflow-hidden rounded-xl border border-neutral-200 shadow-[0_24px_60px_rgba(15,28,22,0.14)]" aria-hidden><Preview k={k} /></div>
+      <div className="overflow-hidden rounded-xl border border-neutral-200 shadow-[0_24px_60px_rgba(15,28,22,0.14)]" aria-hidden><ThemeMock k={k} /></div>
       <div>
         <div role="radiogroup" aria-label="Escolha um tema para ver" className="mb-6 grid grid-cols-2 gap-2">
           {THEMES.map((x) => <button key={x.key} type="button" role="radio" aria-checked={k === x.key} onClick={() => setK(x.key)} className={cn("rounded-xl border p-3 text-left transition-all", k === x.key ? "border-neutral-900 bg-white shadow-md" : "border-neutral-200 bg-white/60 hover:bg-white")}><span className="block text-sm font-bold">{x.name}</span><span className="block text-sm tabular-nums text-neutral-600">{x.price}</span></button>)}

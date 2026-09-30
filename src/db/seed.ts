@@ -136,8 +136,8 @@ export async function seedDatabase(db: Database) {
 
   // --- Temas, planos e serviços (dados de referência) ---------------------------
   const { themeRows, versions, plans, services } = await seedReferenceData(db);
-  const starter = themeRows[0]!;
-  const starterVersion = versions[0]!;
+  const starter = themeRows.find((t) => t.key === "starter")!;
+  const starterVersion = versions.find((v) => v.themeId === starter.id)!;
   await db.insert(s.storeThemes).values(stores.map((st) => ({ storeId: st.id, themeId: starter.id, themeVersionId: starterVersion.id })));
   await db.insert(s.themeSettings).values([
     { storeId: mantos.id, settings: { heroTitle: "Vista o manto do seu time", heroSubtitle: "Camisas oficiais de torcedor com envio rápido para todo o Brasil.", heroCta: "Ver catálogo", announcement: "Frete grátis acima de R$ 299 · Parcele em até 6x", banners: [{ title: "Lançamentos 2025", subtitle: "Os mantos da nova temporada", tone: "primary" }, { title: "Grade de 12 peças", subtitle: "Para revenda e times amadores", tone: "accent" }], showCategories: true, footerText: "Mantos Shop · Loja parceira Central Sports" } },

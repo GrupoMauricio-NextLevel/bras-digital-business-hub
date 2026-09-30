@@ -427,7 +427,7 @@ export const themes = pgTable("themes", {
   id: id(),
   key: text("key").notNull().unique(),
   name: text("name").notNull(),
-  tier: text("tier", { enum: ["STARTER", "PRO", "ELITE"] }).notNull(),
+  tier: text("tier", { enum: ["STARTER", "PRO", "ELITE", "SIGNATURE"] }).notNull(),
   description: text("description").notNull(),
   priceCents: integer("price_cents").notNull().default(0),
   features: jsonb("features").$type<string[]>().notNull().default([]),

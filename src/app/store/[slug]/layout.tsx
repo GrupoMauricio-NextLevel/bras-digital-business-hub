@@ -4,10 +4,11 @@ import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
 import { resolveGlobals } from "@/lib/themes/store";
+import { tryingTheme } from "@/lib/themes/try";
 import { fontStack } from "@/lib/ds/fonts";
 import { SectionList } from "@/components/storefront/sections";
 import { PreviewBridge } from "@/components/storefront/preview-bridge";
-import { exitThemePreviewAction } from "@/app/actions/theme";
+import { exitThemePreviewAction, exitTryThemeAction } from "@/app/actions/theme";
 import { CartProvider } from "@/components/storefront/cart-context";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
@@ -33,7 +34,9 @@ export default async function StoreLayout({ params, children }: { params: Promis
     );
   }
   const preview = await isPreviewMode(sf.store.id);
-  const { globals } = await resolveGlobals(await getDb(), sf.store, { draft: preview });
+  const db = await getDb();
+  const trial = await tryingTheme(db, sf.store);
+  const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
@@ -43,6 +46,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
     <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
       {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
+      {trial ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900" data-try-banner>Testando o tema <b>{trial.name}</b> com os seus produtos. Nada foi instalado. <form action={exitTryThemeAction} className="inline"><button className="underline">Sair do teste</button></form></div> : null}
       {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />

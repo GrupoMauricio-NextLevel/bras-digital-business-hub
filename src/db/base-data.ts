@@ -1,20 +1,14 @@
 import type { Database } from "./client";
 import * as s from "./schema";
 import { newId } from "@/lib/ids";
+import { syncThemeCatalog } from "@/lib/themes/catalog";
 
 /**
  * Dados de referência da plataforma (temas, planos e serviços do marketplace).
  * Necessários em qualquer ambiente, inclusive produção. Chame uma única vez por banco (o bootstrap verifica antes).
  */
 export async function seedReferenceData(db: Database) {
-  const themeRows = [
-    { id: newId("thm"), key: "starter", name: "Starter", tier: "STARTER" as const, description: "Tema gratuito e padrão. Limpo, rápido e pronto para vender.", priceCents: 0, features: ["Home com vitrine", "Catálogo e busca", "Página de produto", "Carrinho e checkout", "Cores e logo personalizáveis"], previewAccent: "#16a34a", available: true },
-    { id: newId("thm"), key: "pro", name: "Pro", tier: "PRO" as const, description: "Seções avançadas, banners em carrossel, depoimentos e vitrines por categoria.", priceCents: 29700, features: ["Tudo do Starter", "Banners em carrossel", "Vitrines por categoria", "Depoimentos", "Selos de confiança", "Contador de promoção"], previewAccent: "#2563eb", available: false },
-    { id: newId("thm"), key: "elite", name: "Elite", tier: "ELITE" as const, description: "Experiência premium com lookbook, vídeo na home e personalização total.", priceCents: 69700, features: ["Tudo do Pro", "Lookbook", "Vídeo na home", "Mega menu", "Tipografia premium", "Suporte prioritário"], previewAccent: "#7c3aed", available: false },
-  ];
-  await db.insert(s.themes).values(themeRows);
-  const versions = themeRows.map((t) => ({ id: newId("thv"), themeId: t.id, version: "1.0.0", status: "PUBLISHED" as const }));
-  await db.insert(s.themeVersions).values(versions);
+  await syncThemeCatalog(db);
   const plans = [
     { id: newId("pln"), key: "DROP_MANUAL", name: "Drop manual", priceCents: 4900, features: ["Pedidos manuais (WhatsApp, Instagram)", "Estoque central", "Financeiro do lojista"] },
     { id: newId("pln"), key: "STORE_SUBDOMAIN", name: "Loja SuperDrop", priceCents: 9700, features: ["Tudo do Drop manual", "Loja virtual em subdomínio SuperDrop", "Tema Starter", "Central de conteúdo"] },
@@ -39,5 +33,7 @@ export async function seedReferenceData(db: Database) {
   ];
   const services = catalogServices.map(({ kind, ...sv }) => ({ id: newId("svc"), kind: kind ?? ("SERVICE" as const), ...sv }));
   await db.insert(s.services).values(services);
+  const themeRows = await db.select().from(s.themes);
+  const versions = await db.select().from(s.themeVersions);
   return { themeRows, versions, plans, services };
 }

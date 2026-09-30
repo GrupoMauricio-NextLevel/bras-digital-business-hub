@@ -3,8 +3,9 @@ import { SectionList } from "@/components/storefront/sections";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
+import { tryingTheme } from "@/lib/themes/try";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
-import { defaultTemplate, normalizeTemplate, planProducts } from "@/lib/themes/template";
+import { planProducts } from "@/lib/themes/template";
 import type { PageKind } from "@/lib/themes/types";
 
 /** Espaçamento externo de cada página (o mesmo que as páginas tinham antes dos modelos). */
@@ -14,15 +15,15 @@ const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:
  * Monta uma página da loja a partir do modelo (publicado, ou o rascunho na prévia do dono),
  * com os produtos já repartidos entre as seções.
  */
-export async function StorePage({ slug, page, productSlug, query, themeParam }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string }; themeParam?: string }) {
+export async function StorePage({ slug, page, productSlug, query }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string } }) {
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const db = await getDb();
   const preview = await isPreviewMode(sf.store.id);
-  // "?theme=" só mostra como ficaria outro tema; o tema ativo não muda.
-  const trying = themeParam && themeParam !== sf.themeKey ? themeParam : null;
-  const template = trying ? normalizeTemplate(defaultTemplate(page, sf.settings, trying), "content", page).template : (await resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey })).template;
-  const { globals } = await resolveGlobals(db, sf.store, { draft: preview });
+  // Teste de tema ("ver com seus produtos"): só o dono vê, nada é gravado.
+  const trial = await tryingTheme(db, sf.store);
+  const template = trial ? trial.preset.pages[page] : (await resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey })).template;
+  const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const catalog = await getStorefrontCatalog(sf.store.id);
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
@@ -45,7 +46,6 @@ export async function StorePage({ slug, page, productSlug, query, themeParam }: 
   const { lists, hero } = planProducts(template, products);
   return (
     <div className={WRAP[page]}>
-      {trying ? <div className="mt-4 rounded-md bg-neutral-100 px-3 py-2 text-center text-xs text-neutral-600">Pré-visualizando o tema <b className="capitalize">{trying}</b>. Seu tema ativo continua sendo <b className="capitalize">{sf.themeKey}</b>.</div> : null}
       <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query }} />
     </div>
   );

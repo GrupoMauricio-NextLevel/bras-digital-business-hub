@@ -10,6 +10,9 @@ import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
 import { ForbiddenError } from "@/lib/domain/errors";
 import { PREVIEW_COOKIE } from "@/lib/themes/preview";
+import { TRY_COOKIE } from "@/lib/themes/try";
+import { THEME_BY_KEY } from "@/lib/themes/catalog";
+import { buyTheme, installTheme } from "@/lib/themes/install";
 import { discardDraft, listVersions, publishGlobals, publishTemplate, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { PAGE_KINDS } from "@/lib/themes/types";
 
@@ -65,4 +68,21 @@ export async function listThemeVersionsAction(p: string) {
 }
 export async function restoreThemeVersionAction(versionId: string) {
   return runAction(async () => { const { session, storeId, db } = await ctx(); return restoreVersion(db, session.actor, storeId, z.string().min(1).parse(versionId)); });
+}
+
+/** Liga o teste de um tema (só cookie: nada é gravado). */
+export async function tryThemeAction(key: string) {
+  return runAction(async () => { await ctx(); if (!THEME_BY_KEY[key]) throw new ForbiddenError("Tema não encontrado."); (await cookies()).set(TRY_COOKIE, key, { path: "/", httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 2 }); return undefined; });
+}
+export async function exitTryThemeAction() {
+  (await cookies()).delete(TRY_COOKIE);
+}
+export async function buyThemeAction(key: string) {
+  return runAction(async () => { const { session, db } = await ctx(); const r = await buyTheme(db, session.actor, z.string().min(1).parse(key)); revalidatePath("/merchant", "layout"); return r; });
+}
+export async function installThemeAction(key: string) {
+  return runAction(async () => {
+    const { session, db } = await ctx(); const r = await installTheme(db, session.actor, z.string().min(1).parse(key));
+    (await cookies()).delete(TRY_COOKIE); refresh(session.store?.slug); revalidatePath("/merchant", "layout"); return r;
+  });
 }

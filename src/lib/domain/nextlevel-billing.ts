@@ -123,7 +123,7 @@ export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "
   return { invoiceId: id, amountCents: amount };
 }
 
-async function supplierOfStore(db: Database, storeId: string): Promise<string | null> {
+export async function supplierOfStore(db: Database, storeId: string): Promise<string | null> {
   const { networks } = await import("@/db/schema");
   const r = await db.select({ supplierId: networks.supplierId }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(stores.id, storeId)).limit(1);
   return r[0]?.supplierId ?? null;
@@ -137,8 +137,8 @@ export async function fulfillPaidInvoice(db: Database, inv: typeof financeInvoic
   if (!key) return;
   const tenant = inv.payerType === "STORE" && inv.storeId ? ({ type: "STORE", storeId: inv.storeId } as const) : inv.supplierId ? ({ type: "SUPPLIER", supplierId: inv.supplierId } as const) : null;
   if (!tenant) return;
-  await grantEntitlement(db, tenant, { key, source: "ADD_ON", months: cycle === "ANNUAL" ? 12 : 1, invoiceId: inv.id, now });
-  await emitEvent(db, { type: "ADDON_ACTIVATED", supplierId: inv.supplierId, storeId: inv.storeId, payload: { key, invoiceId: inv.id }, dedupeKey: `ADDON_ACTIVATED:${inv.id}` });
+  await grantEntitlement(db, tenant, { key, source: "ADD_ON", months: cycle === "LIFETIME" ? undefined : cycle === "ANNUAL" ? 12 : 1, invoiceId: inv.id, now });
+  await emitEvent(db, { type: key.startsWith("THEME_") ? "THEME_PURCHASED" : "ADDON_ACTIVATED", supplierId: inv.supplierId, storeId: inv.storeId, payload: { key, invoiceId: inv.id }, dedupeKey: `${key.startsWith("THEME_") ? "THEME_PURCHASED" : "ADDON_ACTIVATED"}:${inv.id}` });
 }
 
 

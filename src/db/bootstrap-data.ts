@@ -4,6 +4,7 @@ import { organizations, themes, users } from "./schema";
 import { seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
+import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 
@@ -26,6 +27,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
 
   const hasThemes = (await db.select({ id: themes.id }).from(themes).limit(1)).length > 0;
   if (!hasThemes) { await seedReferenceData(db); log.push("dados de referência criados (temas, planos, serviços)"); }
+  else for (const l of await syncThemeCatalog(db)) log.push(l);
 
   if (opts.masterEmail && opts.masterPassword) {
     const email = opts.masterEmail.toLowerCase();

@@ -84,7 +84,7 @@ export async function saveGlobalsDraft(db: Database, actor: Actor, storeId: stri
   return { globals, issues };
 }
 
-async function snapshot(db: Database, storeId: string, page: string, data: unknown, label: string, by: string) {
+export async function saveSnapshot(db: Database, storeId: string, page: string, data: unknown, label: string, by: string) {
   await db.insert(themeTemplateVersions).values({ id: newId("tpv"), storeId, page, snapshot: data, label, createdBy: by });
   const rows = await db.select({ id: themeTemplateVersions.id }).from(themeTemplateVersions).where(and(eq(themeTemplateVersions.storeId, storeId), eq(themeTemplateVersions.page, page))).orderBy(desc(themeTemplateVersions.createdAt), desc(themeTemplateVersions.id));
   for (const r of rows.slice(MAX_VERSIONS)) await db.delete(themeTemplateVersions).where(eq(themeTemplateVersions.id, r.id));
@@ -98,7 +98,7 @@ export async function publishTemplate(db: Database, actor: Actor, storeId: strin
   const template = normalizeTemplate(row.draft, "content", page).template;
   await db.transaction(async (tx) => {
     await tx.update(themeTemplates).set({ published: template, draft: null, updatedAt: new Date().toISOString() }).where(and(eq(themeTemplates.storeId, storeId), eq(themeTemplates.page, page)));
-    await snapshot(tx as unknown as Database, storeId, page, template, label, actor.userId);
+    await saveSnapshot(tx as unknown as Database, storeId, page, template, label, actor.userId);
   });
   return { published: true as const };
 }
@@ -112,7 +112,7 @@ export async function publishGlobals(db: Database, actor: Actor, storeId: string
     await tx.update(themeGlobals).set({ published: globals, draft: null, updatedAt: new Date().toISOString() }).where(eq(themeGlobals.storeId, storeId));
     // As cores da loja seguem o estilo publicado (logo, avisos e demais telas usam as mesmas).
     await tx.update(stores).set({ primaryColor: globals.style.primary, accentColor: globals.style.accent, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
-    await snapshot(tx as unknown as Database, storeId, "globals", globals, label, actor.userId);
+    await saveSnapshot(tx as unknown as Database, storeId, "globals", globals, label, actor.userId);
   });
   return { published: true as const };
 }

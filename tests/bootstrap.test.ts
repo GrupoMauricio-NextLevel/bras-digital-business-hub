@@ -11,7 +11,7 @@ describe("bootstrap de produção", () => {
     await runMigrations(db);
     const first = await bootstrapDatabase(db, { seedDemo: false, masterEmail: "Admin@NextLevel.com", masterPassword: "senha-bem-longa-123" });
     expect(first.join(" ")).toMatch(/master criado/);
-    expect((await db.select().from(themes)).length).toBe(3);
+    expect((await db.select().from(themes)).length).toBe(4);
     expect((await db.select().from(plans)).length).toBe(3);
     expect((await db.select().from(services)).length).toBe(13);
     const all = await db.select().from(users);
@@ -21,7 +21,7 @@ describe("bootstrap de produção", () => {
     expect(verifyPassword("senha-bem-longa-123", all[0]?.passwordHash)).toBe(true);
     await bootstrapDatabase(db, { seedDemo: false, masterEmail: "admin@nextlevel.com", masterPassword: "senha-bem-longa-123" });
     expect((await db.select().from(users))).toHaveLength(1);
-    expect((await db.select().from(themes)).length).toBe(3);
+    expect((await db.select().from(themes)).length).toBe(4);
   });
   it("rejeita senha de master curta", async () => {
     const { db } = await createDatabase("pglite://memory");

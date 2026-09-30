@@ -145,6 +145,9 @@ export const sameTemplate = (a: Template, b: Template) => templateSignature(a) =
 // Tema atual convertido em modelo (as lojas existentes continuam idênticas)
 // ---------------------------------------------------------------------------
 type Ins = { type: string; settings?: Record<string, SettingValue>; blocks?: { type: string; settings?: Record<string, SettingValue> }[]; hidden?: boolean };
+export type SectionSpec = Ins;
+/** Monta e valida um modelo a partir de uma lista de seções (usado pelos temas prontos e pela conversão do tema atual). */
+export function buildTemplate(region: SectionRegion, page: PageKind | undefined, items: [string, Ins][]): Template { return build(region, page, items); }
 function build(region: SectionRegion, page: PageKind | undefined, items: [string, Ins][]): Template {
   const sections: Record<string, unknown> = {}; const order: string[] = [];
   for (const [id, it] of items) {
