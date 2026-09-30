@@ -8,7 +8,8 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | `programa-parceiros.md` | Programa de Parceiros (afiliados) | Feito (PA0 a PA7, D30) |
 | `demandas-2026-09-fase-longa.md` | Demandas da fase longa (fornecedor, loja do membro, temas, Master) | Feito (D22 a D32) |
 | `email-transacional.md` | Plataforma de e-mail em três camadas (SuperDrop, fornecedor, membro) | **A fazer** (base pronta: layout, fila simples, avisos) |
-| `nextlevel-commerce-plataforma.md` | **Documento-mestre:** NextLevel Commerce, plataforma de lojas virtuais (marca, módulos, fases N0 a N10). Base: `docs/nextlevel-commerce/aproveitamento-superdrop.md` | **A fazer (foco atual)** |
+| `nextlevel-commerce-plataforma.md` | **Documento-mestre (N0 feita, D33):** NextLevel Commerce, plataforma de lojas virtuais (marca, módulos, fases N0 a N10). Base: `docs/nextlevel-commerce/aproveitamento-superdrop.md` | **Em andamento (N0 concluída)** |
+| `promessas-commerce.md` | **Promessas da NextLevel Commerce** (P0 a P6): conta simples, frete e pagamentos, atacado B2B, influenciadores, feed e live shop, Theme Engine v2 | **A fazer** (P0 é o pré-requisito do lançamento) |
 | `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
 | `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
 
