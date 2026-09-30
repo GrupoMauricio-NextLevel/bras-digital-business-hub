@@ -13,6 +13,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | `imagens-temas-gpt.md` | **Prompt para o GPT** gerar imagens fictícias (produtos, banners, lookbook) dos 10 temas, com lotes, formatos e manifesto | **Salvo** (você leva ao GPT quando quiser; depois me traga as imagens) |
 | `pesquisa-tiktok-shop-integracao.md` | **Pesquisa para o GPT** sobre integração máxima com o TikTok Shop (elegibilidade, API, afiliados, teste controlado). A resposta volta para cá e vira `tiktok-shop-integracao.md` | **Salvo** (aguardando a pesquisa) |
 | `promessas-commerce.md` | **Promessas da NextLevel Commerce** (P0 a P6): conta simples, frete e pagamentos, atacado B2B, influenciadores, feed e live shop, Theme Engine v2 | **P0 feito (D34)**; próximo: P1 (frete e pagamentos) e P5 (tema) |
+| `creator-hub-tiktok.md` | **Creator Hub + TikTok** (fundação de creators, campanhas, links rastreáveis, atribuição, comissões, amostras; OAuth, Pixel/Events API, TikTok One e Shop como fases opcionais). Estende `partners`/P3, não duplica | **Salvo** (implementar com calma; começa pelo diagnóstico) |
 | `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
 | `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
 
