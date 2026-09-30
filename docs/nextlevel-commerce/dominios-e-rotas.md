@@ -1,4 +1,27 @@
-# Racional de domínios, painéis e acessos (PROPOSTA v2, aguardando aprovação do dono)
+# Racional de domínios, painéis e acessos (PROPOSTA v3, aguardando aprovação do dono)
+
+> **v3 (mais recente): cada marca vira um sistema separado**, com domínio, banco, Master e visual próprios, **todos rodando o mesmo código**. As seções abaixo (v2) continuam valendo como mapa de páginas de cada marca; o que muda é que cada marca passa a ter a **sua própria implantação**.
+>
+> **Motivo (dono):** o visual e a operação de NextLevel, NextLevel Commerce e SuperDrop ficaram misturados num só painel, sem como ver cada um de forma organizada.
+>
+> **Desenho:**
+> | Sistema | Endereço | Implantação | Banco |
+> |---|---|---|---|
+> | **NextLevel** (holding) | `nextlevelgroup.com.br` (site que já existe) | fora deste código por enquanto | sem banco próprio |
+> | **NextLevel Commerce** | `lojas.nextlevelgroup.com.br` | serviço novo no Render, mesmo repositório e mesma branch | **projeto novo e limpo no Neon** |
+> | **SuperDrop** | `superdrop.com.br` (+ `office.` no lugar do `app.`) | serviço atual | banco atual do Neon |
+>
+> **Como separa sem duplicar código:** uma variável `DEPLOY_BRAND` por serviço trava a implantação numa marca (endereço, textos, logo, e-mails, menus do Master e dos painéis). Um `git push` atualiza os dois serviços. Nenhum repositório novo.
+>
+> **O que muda no Commerce:** o Master e os painéis mostram **só** o que a marca usa (sem Fornecedores, Redes, Central, carteira). Master próprio, sem os usuários de demonstração do SuperDrop.
+>
+> **Visão da holding:** fica para depois, como um painel consolidado que lê os dois sistemas (não existe enquanto os bancos forem separados).
+>
+> **Custo:** Neon grátis para o projeto novo (conferir o limite do plano); um serviço Render a mais (grátis com hibernação, ou Starter ~US$ 7/mês quando for lançar); domínio extra no Render pode custar US$ 0,25/mês.
+
+---
+
+## (v2) Mapa de páginas e regras por marca
 
 Esta versão **substitui a v1** (que tinha um "escritório" comum em `office.superdrop.com.br`). Por decisão do dono:
 - **Cada marca tem sua própria casa**: um endereço principal com as páginas públicas, as vitrines **e** os painéis daquela marca.
