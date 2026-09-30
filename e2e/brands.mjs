@@ -39,6 +39,18 @@ if (!(await p.getByText("Os planos da NextLevel Commerce").count())) fail("plano
 await p.goto(B + "/faq", { waitUntil: "networkidle" });
 if (!(await p.getByText("O que é a NextLevel Commerce?").count())) fail("faq sem a variante da marca");
 
+// Prévia por caminho: superdrop.com.br/lojas mostra a NextLevel Commerce; /lojas/sair volta ao SuperDrop
+const pv = await ctxFor(null); const pp = await pv.newPage();
+await pp.goto(B + "/lojas", { waitUntil: "networkidle" });
+if (new URL(pp.url()).pathname !== "/") fail("/lojas deveria levar ao início: " + pp.url());
+if (!/loja virtual/i.test(await pp.getByRole("heading", { level: 1 }).innerText())) fail("/lojas não mostrou a NextLevel Commerce");
+await pp.goto(B + "/planos", { waitUntil: "networkidle" });
+if (!(await pp.getByText("Os planos da NextLevel Commerce").count())) fail("prévia não vale nas outras páginas");
+await pp.goto(B + "/lojas/sair", { waitUntil: "networkidle" });
+if (!/sem estoque/i.test(await pp.getByRole("heading", { level: 1 }).innerText())) fail("/lojas/sair não voltou ao SuperDrop");
+await pv.close();
+ok("prévia por caminho: /lojas liga a NextLevel Commerce e /lojas/sair volta ao SuperDrop");
+
 // Lista de espera
 await p.goto(B + "/quero-minha-loja", { waitUntil: "networkidle" });
 const RUN = Date.now().toString().slice(-6);

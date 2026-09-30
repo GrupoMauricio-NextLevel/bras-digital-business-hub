@@ -250,3 +250,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Origem:** `suppliers.shipping_origin_zip` (na conta simples, a Central oculta). A conta simples conecta a transportadora na própria tela de Configurações, reaproveitando o cartão do fornecedor e `catalogSupplierId`.
 - **Pedido:** `orders.shipping_service` e `shipping_days` guardam o que o cliente escolheu.
 - Migração 0023. Testes `tests/shipping.test.ts`; e2e `e2e/frete.mjs`. **Falta no P1:** compra de etiqueta pela API com rastreio automático, `PaymentProvider` e cupom de desconto do consumidor.
+
+## D36. Prévia da NextLevel Commerce por caminho (`/lojas`)
+- Enquanto `nextlevelgroup.com.br` (ou um subdomínio) não aponta para o serviço, `superdrop.com.br/lojas` liga a **prévia**: o `proxy.ts` grava o cookie `nl-brand=NEXTLEVEL_COMMERCE` (30 dias) e leva ao início; `getBrand()` passa a responder com a NextLevel Commerce **somente** quando o endereço é o da marca padrão (SuperDrop). `/lojas/sair` desliga. O endereço próprio de cada marca sempre manda.
+- É apresentação, não segurança: permissões e isolamento seguem por tenant. Lojas criadas durante a prévia nascem com a marca Commerce (a marca vem de `getBrand()` no cadastro). O cadastro continua fechado até `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true`.
+- Teste: `e2e/brands.mjs`.
