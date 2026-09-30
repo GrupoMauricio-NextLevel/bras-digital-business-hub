@@ -159,3 +159,11 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Padrões propostos (a confirmar): faixa por mês civil com ajuste no fechamento; manutenção enquanto o indicado pagar; atribuição por cupom ou último link em 30 dias; comissão de um nível só; o cliente do link do parceiro escolhe o fornecedor na lista.
 - Prompt completo em `docs/prompts/programa-parceiros.md` (fases PA0 a PA7).
 - Rodapé das páginas públicas passa a mostrar a logo NextLevel e "SuperDrop é um sistema de tecnologia desenvolvido pela NextLevel Marketing Ltda." (`NextLevelSignature`).
+
+## D25. S1: grades de tamanho, estoque mínimo, importação por planilha e cadastro de produto
+- **Grades** (`size-grids.ts`): adulto masculino e adulto feminino (P, M, G, GG, XX1, 2XL) e conjunto infantil (18, 20, 22, 24, 26, 28), mais personalizada. O produto guarda `size_grid`. Os rótulos seguem o que o dono escreveu; se "XX1" for outro nome, é só trocar em `size-grids.ts`.
+- **Estoque mínimo por tamanho** (`supplier_ops.min_activation_stock`, padrão 4, configurável em Corte e operação): a loja só ativa o produto se todos os tamanhos tiverem o mínimo disponível; "Ativar todos" pula os que não têm. Aviso no painel do membro e no cadastro.
+- **Peso e medidas** do produto (padrão 300 g, 30 x 25 x 3 cm) para cotação de frete.
+- **Importação:** Excel (.xlsx, exceljs) e CSV, modelo .xlsx com listas suspensas e instruções, cabeçalhos com apelidos, estoque único, na ordem ou por nome de tamanho, grade, SEO, peso, status; **conferência antes de gravar** (criar, atualizar, ignorar, erros e avisos por linha), SKU repetido ignorar ou atualizar (atualizar não mexe em estoque), download dos erros, limite de 500 linhas.
+- **Cadastro individual:** botões de grade, mesmo estoque em todos os tamanhos, aviso de estoque mínimo, sugestão de preço por margem (40, 50, 60%), embalagem e frete.
+- Testes `tests/product-import.test.ts`, e2e `e2e/product-import.mjs`.

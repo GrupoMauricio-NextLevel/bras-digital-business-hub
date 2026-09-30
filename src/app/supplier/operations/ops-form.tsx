@@ -13,16 +13,17 @@ import { saveOpsAction } from "@/app/actions/dispatch";
 const ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const TZ = [["America/Sao_Paulo", "Brasília (UTC-3)"], ["America/Manaus", "Manaus (UTC-4)"], ["America/Fortaleza", "Fortaleza (UTC-3)"], ["America/Rio_Branco", "Rio Branco (UTC-5)"]];
 
-export function OpsForm({ initial, configured }: { initial: { timezone: string; cutoffs: Cutoffs; holidays: string[] }; configured: boolean }) {
+export function OpsForm({ initial, configured }: { initial: { timezone: string; cutoffs: Cutoffs; holidays: string[]; minActivationStock: number }; configured: boolean }) {
   const router = useRouter();
   const [cutoffs, setCutoffs] = React.useState<Cutoffs>(initial.cutoffs);
   const [tz, setTz] = React.useState(initial.timezone);
   const [holidays, setHolidays] = React.useState<string[]>(initial.holidays);
   const [newHoliday, setNewHoliday] = React.useState("");
+  const [minStock, setMinStock] = React.useState(String(initial.minActivationStock));
   const [busy, setBusy] = React.useState(false);
   void DAY_KEYS;
   return (
-    <form className="grid gap-6 lg:grid-cols-3" onSubmit={async (e) => { e.preventDefault(); setBusy(true); const r = await saveOpsAction({ timezone: tz, cutoffs, holidays }); setBusy(false); if (r.ok) { toast.success("Horários salvos"); router.refresh(); } else toast.error(r.error); }}>
+    <form className="grid gap-6 lg:grid-cols-3" onSubmit={async (e) => { e.preventDefault(); setBusy(true); const r = await saveOpsAction({ timezone: tz, cutoffs, holidays, minActivationStock: Number(minStock) || 0 }); setBusy(false); if (r.ok) { toast.success("Horários salvos"); router.refresh(); } else toast.error(r.error); }}>
       <Card className="lg:col-span-2">
         <CardHeader><CardTitle>Horário de corte por dia</CardTitle></CardHeader>
         <CardContent className="space-y-3">
@@ -38,6 +39,10 @@ export function OpsForm({ initial, configured }: { initial: { timezone: string; 
         </CardContent>
       </Card>
       <div className="space-y-6">
+        <Card>
+          <CardHeader><CardTitle>Estoque mínimo para as lojas</CardTitle></CardHeader>
+          <CardContent className="space-y-2"><FormField label="Peças por tamanho" htmlFor="minstock" hint="A loja só consegue ativar o produto se todos os tamanhos tiverem ao menos essa quantidade disponível. Padrão: 4."><Input id="minstock" type="number" min={0} max={100} value={minStock} onChange={(e) => setMinStock(e.target.value)} className="w-28" /></FormField></CardContent>
+        </Card>
         <Card>
           <CardHeader><CardTitle>Fuso horário</CardTitle></CardHeader>
           <CardContent><Select value={tz} onChange={(e) => setTz(e.target.value)} aria-label="Fuso horário">{TZ.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</Select></CardContent>

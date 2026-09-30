@@ -17,20 +17,20 @@ export const BASE_DISPATCH_SEATS = 2;
 // ---------------------------------------------------------------------------
 // Configuração de operação (corte, feriados, fuso)
 // ---------------------------------------------------------------------------
-export async function getOps(db: Database, supplierId: string): Promise<Ops & { configured: boolean }> {
+export async function getOps(db: Database, supplierId: string): Promise<Ops & { minActivationStock: number; configured: boolean }> {
   const row = await db.query.supplierOps.findFirst({ where: eq(supplierOps.supplierId, supplierId) });
-  if (!row) return { timezone: "America/Sao_Paulo", cutoffs: { ...DEFAULT_CUTOFFS }, holidays: [], configured: false };
-  return { timezone: row.timezone, cutoffs: row.cutoffs, holidays: row.holidays, configured: true };
+  if (!row) return { timezone: "America/Sao_Paulo", cutoffs: { ...DEFAULT_CUTOFFS }, holidays: [], minActivationStock: 4, configured: false };
+  return { timezone: row.timezone, cutoffs: row.cutoffs, holidays: row.holidays, minActivationStock: row.minActivationStock, configured: true };
 }
 
-const opsSchema = z.object({ timezone: z.string().min(3), cutoffs: z.object({ mon: z.string().nullable(), tue: z.string().nullable(), wed: z.string().nullable(), thu: z.string().nullable(), fri: z.string().nullable(), sat: z.string().nullable(), sun: z.string().nullable() }), holidays: z.array(z.string()).max(60) });
+const opsSchema = z.object({ minActivationStock: z.coerce.number().int().min(0).max(100).default(4), timezone: z.string().min(3), cutoffs: z.object({ mon: z.string().nullable(), tue: z.string().nullable(), wed: z.string().nullable(), thu: z.string().nullable(), fri: z.string().nullable(), sat: z.string().nullable(), sun: z.string().nullable() }), holidays: z.array(z.string()).max(60) });
 
 export async function saveOps(db: Database, actor: Actor, raw: z.input<typeof opsSchema>) {
   if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor do fornecedor configura o corte.");
   const input = opsSchema.parse(raw);
   const err = validateOps(input as Ops);
   if (err) throw new DomainError("OPS_INVALID", err);
-  const value = { timezone: input.timezone, cutoffs: input.cutoffs as Cutoffs, holidays: [...new Set(input.holidays)].sort() };
+  const value = { timezone: input.timezone, cutoffs: input.cutoffs as Cutoffs, holidays: [...new Set(input.holidays)].sort(), minActivationStock: input.minActivationStock };
   await db.insert(supplierOps).values({ supplierId: actor.supplierId, ...value }).onConflictDoUpdate({ target: supplierOps.supplierId, set: { ...value, updatedAt: new Date().toISOString() } });
   await emitEvent(db, { type: "CUTOFF_CONFIGURED", supplierId: actor.supplierId, actorRole: actor.role });
 }

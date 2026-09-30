@@ -2,6 +2,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { requireRole } from "@/lib/require-session";
 import { getSupplierStores } from "@/lib/queries/supplier";
 import { getSupplierProducts } from "@/lib/queries/supplier";
+import { getDb } from "@/db/client";
+import { getMinActivationStock } from "@/lib/domain/catalog";
 import { NewProductForm } from "./new-product-form";
 
 export default async function NewProductPage() {
@@ -10,7 +12,7 @@ export default async function NewProductPage() {
   return (
     <>
       <PageHeader backHref="/supplier/products" title="Novo produto" description="Cadastre uma vez: a rede inteira (ou lojas selecionadas) passa a poder vender, todas usando este estoque central." />
-      <NewProductForm stores={stores.map((s) => ({ id: s.store.id, name: s.store.name }))} categories={categories.map((c) => c.name)} />
+      <NewProductForm minStock={await getMinActivationStock(await getDb(), session.supplier!.id)} stores={stores.map((s) => ({ id: s.store.id, name: s.store.name }))} categories={categories.map((c) => c.name)} />
     </>
   );
 }

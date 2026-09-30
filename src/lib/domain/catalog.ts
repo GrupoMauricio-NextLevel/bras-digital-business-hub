@@ -1,3 +1,4 @@
+import { activationCheck, type ActivationCheck } from "./size-grids";
 import { and, eq, inArray, or, exists } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
@@ -91,4 +92,20 @@ async function hydrate(db: Database, rows: { product: typeof products.$inferSele
 export async function getStoreCatalogItem(db: Database, storeId: string, productSlug: string): Promise<StoreCatalogItem | null> {
   const all = await listStoreCatalog(db, storeId);
   return all.find((i) => i.product.slug === productSlug) ?? null;
+}
+
+/** Estoque mínimo por tamanho definido pelo fornecedor (padrão 4) para as lojas ativarem um produto. */
+export async function getMinActivationStock(db: Database, supplierId: string): Promise<number> {
+  const ops = await db.query.supplierOps.findFirst({ where: (o, { eq }) => eq(o.supplierId, supplierId) });
+  return ops?.minActivationStock ?? 4;
+}
+
+/** Confere se o produto tem, em todos os tamanhos, ao menos o mínimo de peças disponíveis. */
+export async function checkProductActivation(db: Database, productId: string): Promise<ActivationCheck> {
+  const product = await db.query.products.findFirst({ where: eq(products.id, productId) });
+  if (!product) return { ok: false, min: 0, short: [] };
+  const min = await getMinActivationStock(db, product.supplierId);
+  const variants = await db.select().from(productVariants).where(eq(productVariants.productId, productId));
+  const levels = await getLevels(db, variants.map((v) => v.id));
+  return activationCheck(variants.map((v) => ({ size: v.size, available: levels.get(v.id)?.available ?? 0 })), min);
 }

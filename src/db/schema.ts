@@ -159,6 +159,13 @@ export const products = pgTable("products", {
   sellsUnit: boolean("sells_unit").notNull().default(true),
   sellsPack: boolean("sells_pack").notNull().default(false),
   /** SEO da página do produto nas lojas (vazio = usa o nome e a descrição). */
+  /** Grade de tamanhos do produto: define os tamanhos padrão e a tabela exibida na loja. */
+  sizeGrid: text("size_grid", { enum: ["ADULT_MALE", "ADULT_FEMALE", "KIDS", "CUSTOM"] }).notNull().default("CUSTOM"),
+  /** Peso e dimensões da embalagem para cotação de frete. */
+  weightG: integer("weight_g").notNull().default(300),
+  lengthCm: integer("length_cm").notNull().default(30),
+  widthCm: integer("width_cm").notNull().default(25),
+  heightCm: integer("height_cm").notNull().default(3),
   seoTitle: text("seo_title").notNull().default(""),
   seoDescription: text("seo_description").notNull().default(""),
   createdAt: createdAt(),
@@ -336,6 +343,8 @@ export const supplierOps = pgTable("supplier_ops", {
   timezone: text("timezone").notNull().default("America/Sao_Paulo"),
   cutoffs: jsonb("cutoffs").$type<Cutoffs>().notNull(),
   holidays: jsonb("holidays").$type<string[]>().notNull().default([]),
+  /** Peças disponíveis por tamanho para as lojas poderem ativar o produto (ex.: 4). */
+  minActivationStock: integer("min_activation_stock").notNull().default(4),
   updatedAt: updatedAt(),
 });
 

@@ -82,6 +82,10 @@ const productSchema = z.object({
   sellsPack: z.boolean(),
   seoTitle: z.string().max(120).default(""),
   seoDescription: z.string().max(320).default(""),
+  weightG: z.coerce.number().int().min(1).max(30000).default(300),
+  lengthCm: z.coerce.number().int().min(1).max(200).default(30),
+  widthCm: z.coerce.number().int().min(1).max(200).default(25),
+  heightCm: z.coerce.number().int().min(1).max(200).default(3),
 });
 
 export async function updateProductAction(input: z.input<typeof productSchema>) {
@@ -101,7 +105,7 @@ export async function updateProductAction(input: z.input<typeof productSchema>) 
 // ---------------------------------------------------------------------------
 // Cadastro e importação de produtos
 // ---------------------------------------------------------------------------
-import { createProduct, duplicateProduct, parseProductsCsv, setProductsStatus, type CreateProductInput } from "@/lib/domain/products";
+import { createProduct, duplicateProduct, setProductsStatus, type CreateProductInput } from "@/lib/domain/products";
 
 export async function createProductAction(input: CreateProductInput) {
   return runAction(async () => {
@@ -133,26 +137,31 @@ export async function bulkProductStatusAction(ids: string[], status: "ACTIVE" | 
   });
 }
 
-export type ImportResult = { created: number; failed: { line: number; name: string; error: string }[] };
+export type ImportResult = { created: number; updated: number; skipped: number; failed: { line: number; name: string; error: string }[] };
 
-/** Importa produtos de um CSV. Cada linha é independente: erros não impedem as demais. */
-export async function importProductsCsvAction(csv: string) {
+const importSchema = z.object({ source: z.discriminatedUnion("kind", [z.object({ kind: z.literal("csv"), text: z.string().max(3_000_000) }), z.object({ kind: z.literal("xlsx"), base64: z.string().max(9_000_000) })]), mode: z.enum(["skip", "update"]).default("skip") });
+
+/** Confere a planilha sem gravar nada: mostra o que será criado, atualizado, ignorado e os erros linha a linha. */
+export async function previewProductsImportAction(input: z.input<typeof importSchema>) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const data = importSchema.parse(input);
+    const { readSpreadsheet, previewImport } = await import("@/lib/domain/product-import-server");
+    const matrix = await readSpreadsheet(data.source);
+    if (matrix.length < 2) throw new ForbiddenError("Planilha vazia ou sem linhas de produto.");
+    return previewImport(await getDb(), supplierId, matrix, data.mode);
+  });
+}
+
+/** Importa produtos de CSV ou XLSX. Cada linha é independente: erros não impedem as demais. */
+export async function importProductsCsvAction(input: z.input<typeof importSchema> | string) {
   return runAction(async (): Promise<ImportResult> => {
     const { supplierId } = await supplierCtx();
-    const rows = parseProductsCsv(csv);
-    if (rows.length === 0) throw new ForbiddenError("CSV vazio ou sem linhas de produto.");
-    if (rows.length > 200) throw new ForbiddenError("Limite de 200 produtos por importação.");
-    const db = await getDb();
-    const result: ImportResult = { created: 0, failed: [] };
-    for (const row of rows) {
-      if (!row.input) { result.failed.push({ line: row.line, name: row.raw.nome ?? "", error: row.errors.join(", ") }); continue; }
-      try {
-        await createProduct(db, supplierId, row.input);
-        result.created++;
-      } catch (e) {
-        result.failed.push({ line: row.line, name: row.raw.nome ?? "", error: e instanceof Error ? e.message : "erro" });
-      }
-    }
+    const data = importSchema.parse(typeof input === "string" ? { source: { kind: "csv", text: input } } : input);
+    const { readSpreadsheet, importRows } = await import("@/lib/domain/product-import-server");
+    const matrix = await readSpreadsheet(data.source);
+    if (matrix.length < 2) throw new ForbiddenError("Planilha vazia ou sem linhas de produto.");
+    const result = await importRows(await getDb(), supplierId, matrix, data.mode);
     revalidatePath("/supplier", "layout");
     revalidatePath("/merchant", "layout");
     return result;

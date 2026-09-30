@@ -10,7 +10,7 @@ export default async function OperationsPage() {
   return (
     <>
       <PageHeader title="Corte e operação" description="Defina até que horas os pedidos liberados saem no mesmo dia. Depois do corte, o pedido entra na expedição do próximo dia útil e o lojista vê isso na hora." />
-      <OpsForm initial={{ timezone: ops.timezone, cutoffs: ops.cutoffs, holidays: ops.holidays }} configured={ops.configured} />
+      <OpsForm initial={{ timezone: ops.timezone, cutoffs: ops.cutoffs, holidays: ops.holidays, minActivationStock: ops.minActivationStock }} configured={ops.configured} />
     </>
   );
 }

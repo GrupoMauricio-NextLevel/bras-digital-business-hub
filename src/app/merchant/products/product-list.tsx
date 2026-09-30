@@ -14,7 +14,7 @@ import { formatBRL, parseBRLToCents } from "@/lib/money";
 import { upsertStoreProductAction, activateAllProductsAction } from "@/app/actions/merchant";
 import { cn } from "@/lib/utils";
 
-export type MerchantProduct = { productId: string; name: string; sku: string; images: string[]; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; sellsPack: boolean; packSuggested: number | null; packMinimum: number | null; active: boolean; priceCents: number; packPriceCents: number | null; available: number; sizes: string };
+export type MerchantProduct = { shortSizes: { min: number; sizes: string[] } | null; productId: string; name: string; sku: string; images: string[]; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; sellsPack: boolean; packSuggested: number | null; packMinimum: number | null; active: boolean; priceCents: number; packPriceCents: number | null; available: number; sizes: string };
 const toBRL = (c: number) => (c / 100).toFixed(2).replace(".", ",");
 
 export function MerchantProductList({ items }: { items: MerchantProduct[] }) {
@@ -39,20 +39,20 @@ export function MerchantProductList({ items }: { items: MerchantProduct[] }) {
       {inactive > 0 ? (
         <div className="mb-4 flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm"><span className="font-medium">{inactive} produto(s) da Central ainda não estão na sua loja.</span> <span className="text-muted-foreground">Ative todos com o preço sugerido e ajuste depois.</span></div>
-          <Button loading={pending} onClick={() => start(async () => { const r = await activateAllProductsAction(); if (r.ok) { toast.success(`${r.data.activated} produto(s) ativados`); router.refresh(); } else toast.error(r.error); })}><CheckCheck /> Ativar todos</Button>
+          <Button loading={pending} onClick={() => start(async () => { const r = await activateAllProductsAction(); if (r.ok) { toast.success(`${r.data.activated} produto(s) ativados${r.data.skipped ? `. ${r.data.skipped} ficaram de fora por estoque abaixo do mínimo` : ""}`); router.refresh(); } else toast.error(r.error); })}><CheckCheck /> Ativar todos</Button>
         </div>
       ) : null}
       <DataTable
         rows={items}
         rowKey={(r) => r.productId}
         columns={[
-          { key: "name", header: "Produto", primary: true, cell: (r) => <div className="flex items-center gap-3"><ProductArt images={r.images} size="sm" /><div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.sku} · disp. {r.sizes}</div></div></div> },
+          { key: "name", header: "Produto", primary: true, cell: (r) => <div className="flex items-center gap-3"><ProductArt images={r.images} size="sm" /><div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.sku} · disp. {r.sizes}</div>{r.shortSizes ? <div className="mt-0.5 text-xs text-warning">Estoque abaixo de {r.shortSizes.min} em {r.shortSizes.sizes.join(", ")}: {r.active ? "reponha para manter a venda" : "ainda não dá para ativar"}</div> : null}</div></div> },
           { key: "cost", header: "Custo", className: "text-right", cell: (r) => <span className="tabular-nums text-muted-foreground">{formatBRL(r.costCents)}</span>, mobile: false },
           { key: "price", header: "Seu preço", className: "text-right", cell: (r) => <span className="font-medium tabular-nums">{formatBRL(r.priceCents)}</span> },
           { key: "margin", header: "Margem", className: "text-right", cell: (r) => <span className={cn("tabular-nums", margin(r) > 0 ? "text-success" : "text-danger")}>{formatBRL(margin(r))}</span> },
           { key: "pack", header: "Grade", className: "text-right", cell: (r) => r.sellsPack ? <span className="tabular-nums">{r.packPriceCents ? formatBRL(r.packPriceCents) : <Badge tone="outline">sem preço</Badge>}</span> : <span className="text-muted-foreground">—</span>, mobile: false },
           { key: "stock", header: "Estoque", className: "text-right", cell: (r) => <span className={cn("tabular-nums", r.available < 5 && "text-warning")}>{r.available}</span> },
-          { key: "active", header: "Vendendo", cell: (r) => <Switch checked={r.active} onCheckedChange={(v) => save(r, { active: v })} disabled={pending} /> },
+          { key: "active", header: "Vendendo", cell: (r) => <Switch checked={r.active} onCheckedChange={(v) => save(r, { active: v })} disabled={pending || (!r.active && !!r.shortSizes)} /> },
           { key: "edit", header: "", className: "text-right", cell: (r) => <Button variant="ghost" size="icon-sm" onClick={() => open(r)} aria-label="Editar preço"><Pencil /></Button> },
         ]}
       />

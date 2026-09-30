@@ -6,6 +6,7 @@ import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "./inventory";
 import { DomainError } from "./errors";
 import { capabilitiesForSupplier } from "./finance";
+import { SIZE_GRID_KEYS } from "./size-grids";
 
 const money = z.coerce.number().int().nonnegative();
 
@@ -25,6 +26,11 @@ export const createProductSchema = z.object({
   sellsPack: z.boolean().default(false),
   seoTitle: z.string().max(120).default(""),
   seoDescription: z.string().max(320).default(""),
+  sizeGrid: z.enum(SIZE_GRID_KEYS).default("CUSTOM"),
+  weightG: z.coerce.number().int().min(1).max(30000).default(300),
+  lengthCm: z.coerce.number().int().min(1).max(200).default(30),
+  widthCm: z.coerce.number().int().min(1).max(200).default(25),
+  heightCm: z.coerce.number().int().min(1).max(200).default(3),
   /** Tamanhos com estoque inicial e, se houver grade, quantidade por tamanho. */
   sizes: z.array(z.object({ size: z.string().min(1).max(6), initialStock: z.coerce.number().int().nonnegative().default(0), packQuantity: z.coerce.number().int().nonnegative().default(0) })).min(1, "Informe ao menos um tamanho"),
   pack: z.object({ name: z.string().min(2).default("Grade 12 peças"), costCents: money, suggestedPriceCents: money, minimumPriceCents: money }).optional(),
@@ -68,6 +74,7 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
       costCents: input.costCents, suggestedPriceCents: input.suggestedPriceCents, minimumPriceCents: input.minimumPriceCents,
       status: input.status, distribution: input.distribution, sellsUnit: input.sellsUnit, sellsPack: input.sellsPack,
       seoTitle: input.seoTitle, seoDescription: input.seoDescription,
+      sizeGrid: input.sizeGrid, weightG: input.weightG, lengthCm: input.lengthCm, widthCm: input.widthCm, heightCm: input.heightCm,
     });
     const variantRows = sizes.map((s, position) => ({ id: newId("var"), productId, size: s.size, sku: `${input.sku}-${s.size}`, position }));
     await tx.insert(productVariants).values(variantRows);
@@ -103,6 +110,7 @@ export async function duplicateProduct(db: Database, supplierId: string, product
     name: `${src.name} (cópia)`, sku, description: src.description, categoryName: category?.name ?? "Geral", images: src.images,
     costCents: src.costCents, suggestedPriceCents: src.suggestedPriceCents, minimumPriceCents: src.minimumPriceCents,
     status: "DRAFT", distribution: "ALL_NETWORK", storeIds: [], sellsUnit: src.sellsUnit, sellsPack: src.sellsPack, seoTitle: src.seoTitle, seoDescription: src.seoDescription,
+    sizeGrid: src.sizeGrid, weightG: src.weightG, lengthCm: src.lengthCm, widthCm: src.widthCm, heightCm: src.heightCm,
     sizes: variants.map((v) => ({ size: v.size, initialStock: 0, packQuantity: packItems.find((i) => i.variantId === v.id)?.quantity ?? 0 })),
     pack: packs[0] ? { name: packs[0].name, costCents: packs[0].costCents, suggestedPriceCents: packs[0].suggestedPriceCents, minimumPriceCents: packs[0].minimumPriceCents } : undefined,
   });
@@ -118,68 +126,5 @@ export async function setProductsStatus(db: Database, supplierId: string, ids: s
   return rows.length;
 }
 
-// ---------------------------------------------------------------------------
-// Importação CSV
-// ---------------------------------------------------------------------------
-export const CSV_COLUMNS = ["nome", "sku", "categoria", "custo", "preco_sugerido", "preco_minimo", "tamanhos", "estoque", "grade", "descricao", "imagens"] as const;
-
-export type CsvRow = { line: number; input: CreateProductInput | null; errors: string[]; raw: Record<string, string> };
-
-/**
- * CSV com cabeçalho. Separador `;` ou `,`. Valores em reais (149,90).
- * tamanhos: "P|M|G|GG" · estoque: "10|20|20|10" · grade: "2|4|4|2" (vazio = sem grade) · imagens: URLs separadas por |
- */
-export function parseProductsCsv(text: string): CsvRow[] {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
-  if (lines.length < 2) return [];
-  const sep = (lines[0]!.match(/;/g)?.length ?? 0) >= (lines[0]!.match(/,/g)?.length ?? 0) ? ";" : ",";
-  const header = splitCsvLine(lines[0]!, sep).map((h) => h.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "_"));
-  return lines.slice(1).map((line, idx) => {
-    const cells = splitCsvLine(line, sep);
-    const raw: Record<string, string> = {};
-    header.forEach((h, i) => { raw[h] = (cells[i] ?? "").trim(); });
-    const errors: string[] = [];
-    const sizes = (raw.tamanhos || "P|M|G|GG").split("|").map((s) => s.trim()).filter(Boolean);
-    const stock = (raw.estoque || "").split("|").map((s) => Number(s.trim() || 0));
-    const grade = (raw.grade || "").split("|").map((s) => Number(s.trim() || 0)).filter((n) => !Number.isNaN(n));
-    const hasPack = grade.some((n) => n > 0);
-    if (!raw.nome) errors.push("nome vazio");
-    if (!raw.sku) errors.push("sku vazio");
-    if (!raw.categoria) errors.push("categoria vazia");
-    const cost = brl(raw.custo), sug = brl(raw.preco_sugerido), min = brl(raw.preco_minimo);
-    if (cost <= 0) errors.push("custo inválido");
-    if (sug <= 0) errors.push("preço sugerido inválido");
-    const input: CreateProductInput = {
-      name: raw.nome ?? "", sku: raw.sku ?? "", description: raw.descricao ?? "", categoryName: raw.categoria ?? "",
-      images: (raw.imagens || "").split("|").map((s) => s.trim()).filter(Boolean),
-      costCents: cost, suggestedPriceCents: sug, minimumPriceCents: min || sug,
-      sellsUnit: true, sellsPack: hasPack, distribution: "ALL_NETWORK",
-      sizes: sizes.map((size, i) => ({ size, initialStock: stock[i] ?? 0, packQuantity: hasPack ? grade[i] ?? 0 : 0 })),
-      pack: hasPack ? { name: `Grade ${grade.reduce((a, b) => a + b, 0)} peças`, costCents: cost * grade.reduce((a, b) => a + b, 0), suggestedPriceCents: (min || sug) * grade.reduce((a, b) => a + b, 0), minimumPriceCents: cost * grade.reduce((a, b) => a + b, 0) } : undefined,
-    };
-    return { line: idx + 2, input: errors.length ? null : input, errors, raw };
-  });
-}
-
-function splitCsvLine(line: string, sep: string): string[] {
-  const out: string[] = [];
-  let cur = "", quoted = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i]!;
-    if (ch === '"') { if (quoted && line[i + 1] === '"') { cur += '"'; i++; } else quoted = !quoted; }
-    else if (ch === sep && !quoted) { out.push(cur); cur = ""; }
-    else cur += ch;
-  }
-  out.push(cur);
-  return out;
-}
-
-function brl(v: string | undefined): number {
-  if (!v) return 0;
-  const n = Number(v.replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
-  return Number.isFinite(n) ? Math.round(n * 100) : 0;
-}
-
-export const CSV_TEMPLATE = `nome;sku;categoria;custo;preco_sugerido;preco_minimo;tamanhos;estoque;grade;descricao;imagens
-Manto Exemplo 2025;EX-001;Times Brasileiros;59,00;149,90;119,90;P|M|G|GG;10|20|20|10;2|4|4|2;Camisa de torcedor dry-fit;https://exemplo.com/foto1.jpg|https://exemplo.com/foto2.jpg
-Camisa Treino Pro;EX-002;Treino;39,00;99,90;79,90;P|M|G|GG;15|25|25|15;;Camisa leve para treino;`;
+// A importação (CSV e XLSX) vive em ./product-import; estas exportações mantêm a API antiga.
+export { parseProductsCsv, CSV_TEMPLATE, CSV_COLUMNS, type CsvRow } from "./product-import";

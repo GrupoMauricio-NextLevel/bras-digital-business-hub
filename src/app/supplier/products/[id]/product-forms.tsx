@@ -78,15 +78,15 @@ export function DistributionForm({ productId, distribution, stores, selected }: 
   );
 }
 
-type ProductFormData = { id: string; name: string; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; status: "ACTIVE" | "DRAFT" | "ARCHIVED"; sellsUnit: boolean; sellsPack: boolean; slug: string; seoTitle: string; seoDescription: string };
+type ProductFormData = { id: string; name: string; description: string; costCents: number; suggestedPriceCents: number; minimumPriceCents: number; status: "ACTIVE" | "DRAFT" | "ARCHIVED"; sellsUnit: boolean; sellsPack: boolean; slug: string; seoTitle: string; seoDescription: string; weightG: number; lengthCm: number; widthCm: number; heightCm: number };
 const toBRL = (c: number) => (c / 100).toFixed(2).replace(".", ",");
 
 export function ProductForm({ product }: { product: ProductFormData }) {
   const router = useRouter();
-  const [f, setF] = React.useState({ ...product, cost: toBRL(product.costCents), suggested: toBRL(product.suggestedPriceCents), minimum: toBRL(product.minimumPriceCents) });
+  const [f, setF] = React.useState({ ...product, weight: String(product.weightG), len: String(product.lengthCm), wid: String(product.widthCm), hei: String(product.heightCm), cost: toBRL(product.costCents), suggested: toBRL(product.suggestedPriceCents), minimum: toBRL(product.minimumPriceCents) });
   const [pending, start] = React.useTransition();
   return (
-    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateProductAction({ productId: f.id, name: f.name, description: f.description, costCents: parseBRLToCents(f.cost), suggestedPriceCents: parseBRLToCents(f.suggested), minimumPriceCents: parseBRLToCents(f.minimum), status: f.status, sellsUnit: f.sellsUnit, sellsPack: f.sellsPack, seoTitle: f.seoTitle, seoDescription: f.seoDescription }); if (r.ok) { toast.success("Produto salvo"); router.refresh(); } else toast.error(r.error); }); }}>
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await updateProductAction({ productId: f.id, name: f.name, description: f.description, costCents: parseBRLToCents(f.cost), suggestedPriceCents: parseBRLToCents(f.suggested), minimumPriceCents: parseBRLToCents(f.minimum), status: f.status, sellsUnit: f.sellsUnit, sellsPack: f.sellsPack, seoTitle: f.seoTitle, seoDescription: f.seoDescription, weightG: Number(f.weight) || 300, lengthCm: Number(f.len) || 30, widthCm: Number(f.wid) || 25, heightCm: Number(f.hei) || 3 }); if (r.ok) { toast.success("Produto salvo"); router.refresh(); } else toast.error(r.error); }); }}>
       <FormField label="Nome" htmlFor="name"><Input id="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></FormField>
       <FormField label="Descrição" htmlFor="desc"><Textarea id="desc" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} /></FormField>
       <div className="grid grid-cols-3 gap-2">
@@ -96,6 +96,12 @@ export function ProductForm({ product }: { product: ProductFormData }) {
       </div>
       <FormField label="Status" htmlFor="status"><Select id="status" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as ProductFormData["status"] })}><option value="ACTIVE">Ativo</option><option value="DRAFT">Rascunho</option><option value="ARCHIVED">Arquivado</option></Select></FormField>
       <div className="flex flex-wrap gap-4 py-1"><Switch checked={f.sellsUnit} onCheckedChange={(v) => setF({ ...f, sellsUnit: v })} label="Venda unitária" /><Switch checked={f.sellsPack} onCheckedChange={(v) => setF({ ...f, sellsPack: v })} label="Grade" /></div>
+      <fieldset className="grid grid-cols-2 gap-2 rounded-md border border-border p-3"><legend className="px-1 text-xs font-medium text-muted-foreground">Embalagem e frete</legend>
+        <FormField label="Peso (g)" htmlFor="wg"><Input id="wg" type="number" min={1} value={f.weight} onChange={(e) => setF({ ...f, weight: e.target.value })} /></FormField>
+        <FormField label="Comprimento (cm)" htmlFor="lc"><Input id="lc" type="number" min={1} value={f.len} onChange={(e) => setF({ ...f, len: e.target.value })} /></FormField>
+        <FormField label="Largura (cm)" htmlFor="wc"><Input id="wc" type="number" min={1} value={f.wid} onChange={(e) => setF({ ...f, wid: e.target.value })} /></FormField>
+        <FormField label="Altura (cm)" htmlFor="hc"><Input id="hc" type="number" min={1} value={f.hei} onChange={(e) => setF({ ...f, hei: e.target.value })} /></FormField>
+      </fieldset>
       <fieldset className="space-y-2 rounded-md border border-border p-3"><legend className="px-1 text-xs font-medium text-muted-foreground">Aparência nos buscadores</legend>
         <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`sualoja.superdrop.com.br › produto › ${f.slug}`} />
         <FormField label="Título da página" htmlFor="seot"><Input id="seot" maxLength={120} value={f.seoTitle} onChange={(e) => setF({ ...f, seoTitle: e.target.value })} placeholder={f.name} /></FormField>

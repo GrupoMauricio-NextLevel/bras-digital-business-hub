@@ -59,14 +59,19 @@ describe("cadastro de produto", () => {
 describe("importação CSV", () => {
   it("interpreta o modelo oficial (reais, tamanhos, estoque, grade)", () => {
     const rows = parseProductsCsv(CSV_TEMPLATE);
-    expect(rows).toHaveLength(2);
+    expect(rows).toHaveLength(3);
     expect(rows.every((r) => r.errors.length === 0)).toBe(true);
     const first = rows[0]!.input!;
     expect(first.costCents).toBe(5900);
     expect(first.suggestedPriceCents).toBe(14990);
     expect(first.sellsPack).toBe(true);
-    expect(first.sizes.map((s) => [s.size, s.initialStock, s.packQuantity])).toEqual([["P", 10, 2], ["M", 20, 4], ["G", 20, 4], ["GG", 10, 2]]);
+    expect(first.sizeGrid).toBe("ADULT_MALE");
+    // público masculino preenche P, M, G, GG, XX1, 2XL; estoque único vale para todos os tamanhos
+    expect(first.sizes.map((s) => [s.size, s.initialStock, s.packQuantity])).toEqual([["P", 10, 2], ["M", 10, 4], ["G", 10, 4], ["GG", 10, 2], ["XX1", 10, 1], ["2XL", 10, 1]]);
     expect(rows[1]!.input!.sellsPack).toBe(false);
+    expect(rows[1]!.input!.sizes.map((s) => [s.size, s.initialStock])).toEqual([["P", 10], ["M", 20], ["G", 20], ["GG", 10], ["XX1", 5], ["2XL", 5]]);
+    expect(rows[2]!.input!.sizes.map((s) => s.size)).toEqual(["18", "20", "22", "24", "26", "28"]);
+    expect(rows[2]!.input!.status).toBe("DRAFT");
   });
   it("aponta a linha com erro e aceita vírgula como separador e aspas", () => {
     const rows = parseProductsCsv('nome,sku,categoria,custo,preco_sugerido\n"Manto, Especial",A1,Retrô,"59,00","149,90"\n,,,,');

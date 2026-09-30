@@ -7,6 +7,7 @@ import { requireRole } from "@/lib/require-session";
 import { getSupplierProduct } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
+import { SIZE_GRIDS } from "@/lib/domain/size-grids";
 import { StockActions, DistributionForm, ProductForm, ProductHeaderActions } from "./product-forms";
 import { ImagesEditor } from "./images-editor";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
@@ -25,7 +26,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
 
   return (
     <>
-      <PageHeader backHref="/supplier/products" title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"}`} actions={<ProductHeaderActions productId={product.id} status={product.status} />} />
+      <PageHeader backHref="/supplier/products" title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"} · ${SIZE_GRIDS[product.sizeGrid].label}`} actions={<ProductHeaderActions productId={product.id} status={product.status} />} />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
@@ -98,7 +99,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
         <div className="space-y-6">
           <Card>
             <CardContent className="pt-5"><div className="mb-4"><ImagesEditor productId={product.id} images={product.images} /></div>
-              <ProductForm product={{ id: product.id, name: product.name, description: product.description, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack, slug: product.slug, seoTitle: product.seoTitle, seoDescription: product.seoDescription }} />
+              <ProductForm product={{ id: product.id, name: product.name, description: product.description, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack, slug: product.slug, seoTitle: product.seoTitle, seoDescription: product.seoDescription, weightG: product.weightG, lengthCm: product.lengthCm, widthCm: product.widthCm, heightCm: product.heightCm }} />
             </CardContent>
           </Card>
           <Card>
