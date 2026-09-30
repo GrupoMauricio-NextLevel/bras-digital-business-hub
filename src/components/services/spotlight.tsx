@@ -11,8 +11,8 @@ export function ServiceSpotlight({ hub, base }: { hub: Hub; base: string }) {
   return (
     <section aria-label="Loja NextLevel" className="rounded-xl border border-accent/30 bg-accent-soft/40 p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="flex items-center gap-2 text-base font-semibold"><Sparkles className="size-4 text-accent" aria-hidden /> Recomendado para você</h2>
-        <Link href={`${base}/services`} className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">{hub.openCount ? `${hub.openCount} em andamento · ` : ""}Ver Loja NextLevel <ArrowRight className="size-4" aria-hidden /></Link>
+        <h2 className="flex items-center gap-2 text-base font-semibold"><Sparkles className="size-4 text-accent-foreground" aria-hidden /> Recomendado para você</h2>
+        <Link href={`${base}/services`} className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline">{hub.openCount ? `${hub.openCount} em andamento · ` : ""}Ver Loja NextLevel <ArrowRight className="size-4" aria-hidden /></Link>
       </div>
       <ul className="grid gap-3 md:grid-cols-3">
         {hub.recommended.map(({ service: s, reason }) => (

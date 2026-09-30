@@ -45,7 +45,7 @@ export default async function MasterServicesPage() {
                   <div className="flex items-center gap-2"><span className="text-xs text-muted-foreground">{formatDateTime(o.createdAt)}</span><StatusBadge value={o.status === "DELIVERED" ? "PAID" : o.status === "CANCELED" ? "CANCELED" : "PENDING"} dot={false} /><span className="text-xs font-medium">{STATUS_LABEL[o.status]}</span></div>
                 </div>
                 <p className="rounded-md bg-surface-muted p-3 text-sm">{o.briefing}</p>
-                <Link href={`/master/services/${o.id}`} className="text-sm font-medium text-accent hover:underline">Abrir conversa</Link>
+                <Link href={`/master/services/${o.id}`} className="text-sm font-medium text-accent-foreground hover:underline">Abrir conversa</Link>
                 {o.quotedCents ? <p className="text-sm">Orçamento: <strong className="tabular-nums">{formatBRL(o.quotedCents)}</strong></p> : null}
                 <ServiceOrderActions id={o.id} status={o.status} defaultQuote={o.quotedCents ?? catalog.find((c) => c.name === serviceName)?.priceFromCents ?? 0} />
               </CardContent></Card>

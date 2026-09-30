@@ -52,7 +52,7 @@ export default async function SupplierHome() {
           ["Aguardando recarga", n("AWAITING_CENTRAL_PAYMENT"), "text-warning"],
           ["Aguardando etiqueta", n("AWAITING_LABEL"), "text-warning"],
           ["Prontos para separar", n("READY_TO_PICK"), "text-info"],
-          ["Em separação", n("PICKING"), "text-accent"],
+          ["Em separação", n("PICKING"), "text-accent-foreground"],
           ["Conferidos", n("READY_TO_SHIP"), "text-success"],
           ["Atrasados (+24h)", late, late ? "text-danger" : "text-muted-foreground"],
         ].map(([label, value, tone]) => <div key={label as string} className="rounded-lg border border-border bg-surface px-3 py-2"><dt className="text-xs text-muted-foreground">{label}</dt><dd className={cn("font-display text-2xl font-semibold tabular-nums", tone as string)}>{value as number}</dd></div>)}

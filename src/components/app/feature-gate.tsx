@@ -10,13 +10,13 @@ const OFFER_LABEL: Record<OfferKey, string> = { DROP_MANUAL: "Drop manual", STOR
 export function UpgradeCard({ feature, className, ctaHref = "/merchant/services" }: { feature: FeatureKey; className?: string; ctaHref?: string }) {
   const info = FEATURE_INFO[feature];
   return (
-    <div className={cn("flex flex-col gap-3 rounded-lg border border-dashed border-accent/40 bg-accent-soft/50 p-4 sm:flex-row sm:items-center", className)}>
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent"><Lock className="size-5" aria-hidden /></span>
+    <div className={cn("flex flex-col gap-3 rounded-lg border border-dashed border-accent/40 bg-accent-soft p-4 sm:flex-row sm:items-center", className)}>
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-foreground"><Lock className="size-5" aria-hidden /></span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold">{info.label} <span className="font-normal text-muted-foreground">· disponível em {OFFER_LABEL[minOfferFor(feature)]}</span></p>
         <p className="text-sm text-muted-foreground">{info.pitch}</p>
       </div>
-      <Link href={ctaHref} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md bg-accent px-3 text-sm font-medium text-accent-foreground hover:opacity-90"><Sparkles className="size-4" aria-hidden />Ver como liberar</Link>
+      <Link href={ctaHref} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md bg-accent px-3 text-sm font-medium text-on-accent hover:opacity-90"><Sparkles className="size-4" aria-hidden />Ver como liberar</Link>
     </div>
   );
 }

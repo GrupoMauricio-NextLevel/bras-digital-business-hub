@@ -10,7 +10,7 @@ function Spark({ data }: { data: number[] }) {
   if (data.length < 2) return null;
   const w = 96, h = 28, min = Math.min(...data), max = Math.max(...data), span = max - min || 1;
   const pts = data.map((v, i) => `${((i / (data.length - 1)) * w).toFixed(1)},${(h - 3 - ((v - min) / span) * (h - 6)).toFixed(1)}`).join(" ");
-  return <svg viewBox={`0 0 ${w} ${h}`} className="h-7 w-24 shrink-0 text-accent" aria-hidden><polyline points={pts} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  return <svg viewBox={`0 0 ${w} ${h}`} className="h-7 w-24 shrink-0 text-accent-foreground" aria-hidden><polyline points={pts} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
 /** KPI tile. `delta` em % (positivo = subiu); `goodWhen` diz se subir é bom. */

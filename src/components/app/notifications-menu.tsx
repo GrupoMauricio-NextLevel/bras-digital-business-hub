@@ -19,7 +19,7 @@ export function NotificationsMenu({ notices }: { notices: NoticeView[] }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative" aria-label={unread ? `${unread} avisos novos` : "Avisos"}>
           <Bell />
-          {unread > 0 ? <span className="absolute right-1.5 top-1.5 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white" aria-hidden>{unread > 9 ? "9+" : unread}</span> : null}
+          {unread > 0 ? <span className="absolute right-1.5 top-1.5 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-danger-foreground" aria-hidden>{unread > 9 ? "9+" : unread}</span> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-80" align="end">

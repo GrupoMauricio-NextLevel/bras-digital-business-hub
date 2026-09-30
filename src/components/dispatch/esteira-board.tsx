@@ -42,7 +42,7 @@ function OrderCard({ o, variant, selected, onSelect, busy, onAdvance, onRelease,
         {o.labelCount > 0 ? <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-0.5"><Tag className="size-3" aria-hidden />{o.labelCount} etiq.{o.labelPrinted ? " · impressa" : ""}</span> : null}
         {o.wave ? <span className="rounded-full bg-info-soft px-2 py-0.5 font-medium text-info">Onda {o.wave.number}</span> : null}
         {o.bucket === "NEXT" ? <span className="rounded-full bg-warning-soft px-2 py-0.5 font-medium text-warning">Sai no próximo corte</span> : null}
-        {o.claim ? <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium", o.claim.mine ? "bg-accent-soft text-accent" : "bg-warning-soft text-warning")}><User className="size-3" aria-hidden />{o.claim.mine ? "Você" : o.claim.userName}</span> : null}
+        {o.claim ? <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium", o.claim.mine ? "bg-accent-soft text-accent-foreground" : "bg-warning-soft text-warning")}><User className="size-3" aria-hidden />{o.claim.mine ? "Você" : o.claim.userName}</span> : null}
       </div>
       <div className={cn("mt-3 flex flex-wrap gap-2", big && "[&_button]:min-h-14 [&_button]:flex-1 [&_button]:text-base")}>
         {o.status === "READY_TO_PICK" ? <Button size={big ? "lg" : "sm"} loading={busy} disabled={Boolean(claimedByOther)} onClick={() => onAdvance("PICKING")}><PackageCheck /> Iniciar separação</Button> : null}

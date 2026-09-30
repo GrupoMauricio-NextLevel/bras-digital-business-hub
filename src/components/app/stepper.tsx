@@ -13,7 +13,7 @@ export function Stepper({ steps, current, className }: { steps: Step[]; current:
         return (
           <li key={s.key} className="flex min-w-0 flex-1 flex-col gap-1" aria-current={active ? "step" : undefined}>
             <div className="flex items-center gap-2">
-              <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold", done ? "border-accent bg-accent text-accent-foreground" : active ? "border-accent text-accent" : "border-border text-muted-foreground")}>{done ? <Check className="size-3.5" aria-hidden /> : i + 1}</span>
+              <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold", done ? "border-accent bg-accent text-on-accent" : active ? "border-accent text-accent-foreground" : "border-border text-muted-foreground")}>{done ? <Check className="size-3.5" aria-hidden /> : i + 1}</span>
               {i < steps.length - 1 ? <span className={cn("h-0.5 flex-1 rounded", done ? "bg-accent" : "bg-border")} aria-hidden /> : null}
             </div>
             <span className={cn("truncate text-xs", active ? "font-semibold" : "text-muted-foreground")}>{s.label}</span>

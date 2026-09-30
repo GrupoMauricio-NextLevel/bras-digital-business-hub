@@ -53,7 +53,7 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
         const active = isActive(item);
         return (
           <Link key={item.href} href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
-            className={cn("group mb-2 flex items-center gap-3 rounded-[var(--radius)] border px-3 py-2.5 text-sm font-semibold transition-colors", active ? "border-accent bg-accent text-primary-foreground" : "border-accent/40 bg-accent-soft text-accent-foreground hover:border-accent", collapsed && "justify-center px-0")}>
+            className={cn("group mb-2 flex items-center gap-3 rounded-[var(--radius)] border px-3 py-2.5 text-sm font-semibold transition-colors", active ? "border-accent bg-accent text-on-accent" : "border-accent/40 bg-accent-soft text-accent-foreground hover:border-accent", collapsed && "justify-center px-0")}>
             <Icon className="size-4 shrink-0" />
             {collapsed ? null : <><span className="flex-1 truncate">{item.label}</span>{item.badge ? <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide", active ? "bg-white/20" : "bg-accent text-primary-foreground")}>{item.badge}</span> : null}</>}
           </Link>
@@ -66,7 +66,7 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
           <Link key={item.href} href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
             className={cn("relative flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium transition-colors", active ? "bg-sidebar-active text-sidebar-active-foreground shadow-sm" : "text-sidebar-foreground hover:bg-sidebar-hover", collapsed && "justify-center px-0")}>
             {active ? <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent" aria-hidden /> : null}
-            <Icon className={cn("size-4 shrink-0", active ? "text-accent" : "text-sidebar-muted")} />
+            <Icon className={cn("size-4 shrink-0", active ? "text-accent-foreground" : "text-sidebar-muted")} />
             {collapsed ? null : <span className="flex-1 truncate">{item.label}</span>}
             {!collapsed && item.locked ? <Lock className="size-3.5 text-sidebar-muted" aria-label="Recurso bloqueado no seu plano" /> : null}
           </Link>
@@ -186,10 +186,10 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
               const Icon = ICONS[item.icon];
               const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <li key={item.href}><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active ? "text-accent-foreground" : "text-muted-foreground")}><Icon className={cn("size-5", active && "text-accent")} /><span className="max-w-full truncate px-1">{item.label}</span></Link></li>
+                <li key={item.href}><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active ? "text-accent-foreground" : "text-muted-foreground")}><Icon className={cn("size-5", active && "text-accent-foreground")} /><span className="max-w-full truncate px-1">{item.label}</span></Link></li>
               );
             })}
-            <li><button onClick={() => setOpen(true)} className="flex min-h-14 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
+            <li><button onClick={() => setOpen(true)} className="flex min-h-14 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
           </ul>
         </nav>
       ) : null}

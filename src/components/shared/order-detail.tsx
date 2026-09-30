@@ -98,7 +98,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
               <div className="flex items-center justify-between"><span className="text-muted-foreground">Etiqueta</span><StatusBadge value={order.shippingLabelStatus} /></div>
               {labels && labels.length ? (
                 <ul className="space-y-1">
-                  {labels.map((l) => <li key={l.id} className="flex items-center justify-between gap-2 rounded-md bg-surface-muted px-3 py-2 text-xs"><a className="min-w-0 truncate font-medium text-accent underline-offset-2 hover:underline" href={`/api/labels/${order.id}/${l.id}`} target="_blank" rel="noreferrer">{l.filename}</a><span className="shrink-0 text-muted-foreground">{Math.max(1, Math.round(l.sizeBytes / 1024))} KB</span></li>)}
+                  {labels.map((l) => <li key={l.id} className="flex items-center justify-between gap-2 rounded-md bg-surface-muted px-3 py-2 text-xs"><a className="min-w-0 truncate font-medium text-accent-foreground underline-offset-2 hover:underline" href={`/api/labels/${order.id}/${l.id}`} target="_blank" rel="noreferrer">{l.filename}</a><span className="shrink-0 text-muted-foreground">{Math.max(1, Math.round(l.sizeBytes / 1024))} KB</span></li>)}
                 </ul>
               ) : null}
               {order.shippingLabelCode ? <div className="rounded-md bg-surface-muted px-3 py-2 text-xs"><div className="font-medium">{order.shippingLabelCode}</div><div className="text-muted-foreground">{order.shippingCarrier}</div></div> : null}

@@ -7,6 +7,7 @@ import { Stepper, Timeline } from "@/components/app/stepper";
 import { UpgradeCard } from "@/components/app/feature-gate";
 import { ServiceCard } from "@/components/app/service-card";
 import { Button } from "@/components/ui/button";
+import { Showcase } from "./showcase";
 
 export const metadata = { title: "Design system" };
 
@@ -16,7 +17,9 @@ export default function DesignPage() {
   if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_DEMO_MODE !== "true") notFound();
   return (
     <main className="mx-auto max-w-5xl space-y-10 p-6">
-      <h1 className="text-2xl font-semibold">Design system v2</h1>
+      <h1 className="text-2xl font-semibold">Design system v3</h1>
+      <Showcase />
+      <h2 className="text-lg font-semibold">Base (v2) nos 5 climas</h2>
       {PANELS.map((p) => (
         <section key={p} data-panel={p} className="space-y-4 rounded-xl border border-border bg-background p-5">
           <h2 className="text-lg font-semibold capitalize">Painel: {p}</h2>

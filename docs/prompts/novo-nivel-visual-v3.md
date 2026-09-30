@@ -85,6 +85,8 @@ Rota `/merchant/theme` (e substituir `appearance` e `templates` por ela, com red
 - **Aceite:** E2E adicionar seção, editar, reordenar, ocultar, publicar, restaurar versão; capturas do editor em 4 tamanhos; teclado completo; nenhuma perda de dados ao recarregar.
 
 ## 10. TEMAS DA LOJA (fase V5)
+- **Modelo comercial (decidido pelo dono):** o tema **Starter é grátis** (simples, mas bem acabado, não como o atual). Os temas **pagos são vendidos e instalados com 1 clique** na Loja NextLevel: **R$ 299**, **R$ 699** e **R$ 1.499**. Os pagos devem chegar o mais perto possível do nível dos temas da Shopify (seções e blocos, página inicial, produto, coleção, carrinho, menus grandes, vídeo, lookbook, busca com sugestões, compra rápida, barra fixa de compra no celular, animações discretas). Compra por fatura Pix da NextLevel (reaproveitar a cobrança existente), liberação automática e **instalação com 1 clique** (tema ativado já com conteúdo de exemplo do preset, sem apagar o que o lojista tem: fica como rascunho até publicar).
+- **Escada:** R$ 299 (esportivo, para camisas de time) < R$ 699 (editorial, foco em imagem e marca) < R$ 1.499 (vitrine completa com todos os recursos acima).
 - Reescrever o **Starter** com seções (aparência atual como ponto de partida, melhorada em tipografia e espaço).
 - Criar **"Arena"** (esportivo, para camisas de time: hero forte, vitrine por clube, selo de autenticidade, faixa de envio) e **"Editorial"** (limpo, foco em imagem e tipografia).
 - Páginas de **produto, coleção e carrinho** como templates. Checkout mantém o fluxo atual, com visual alinhado.

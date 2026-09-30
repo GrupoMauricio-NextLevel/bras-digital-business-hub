@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 function Art() {
   return (
-    <svg viewBox="0 0 120 80" className="mb-2 h-20 w-30 text-accent" aria-hidden fill="none">
+    <svg viewBox="0 0 120 80" className="mb-2 h-20 w-30 text-accent-foreground" aria-hidden fill="none">
       <rect x="14" y="20" width="92" height="50" rx="8" className="fill-surface-muted" />
       <rect x="24" y="30" width="34" height="6" rx="3" fill="currentColor" opacity=".35" />
       <rect x="24" y="42" width="60" height="5" rx="2.5" fill="currentColor" opacity=".18" />
@@ -19,7 +19,7 @@ export function EmptyState({ title, description, icon: Icon = Inbox, action, cla
   return (
     <div className={cn("flex flex-col items-center justify-center rounded-lg border border-dashed border-border-strong bg-surface px-6 text-center", compact ? "py-8" : "py-12", className)}>
       {compact ? null : <Art />}
-      <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent"><Icon className="size-5" /></div>
+      <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-foreground"><Icon className="size-5" /></div>
       <h3 className="text-sm font-semibold">{title}</h3>
       {description ? <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p> : null}
       {action ? <div className="mt-4">{action}</div> : null}
