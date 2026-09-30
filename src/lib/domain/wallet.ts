@@ -62,8 +62,17 @@ async function loadStore(db: Database, storeId: string) {
 export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" | "AWAITING_FUNDS" | "SKIPPED"> {
   const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
   if (!order || order.status === "CANCELED" || order.customerPaymentStatus !== "PAID" || order.centralPaymentStatus === "PAID") return "SKIPPED";
-  const acc = await lockAccount(tx, order.storeId);
   const now = new Date().toISOString();
+  // Loja própria do fornecedor: o custo é interno, não há saldo a debitar.
+  const own = await tx.query.stores.findFirst({ where: eq(stores.id, order.storeId) });
+  if (own?.kind === "SUPPLIER_OWN") {
+    const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" });
+    await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: now, awaitingFundsSince: null, status: next, updatedAt: now }).where(eq(orders.id, orderId));
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Loja própria do fornecedor: custo interno, sem débito de saldo.", actorRole: "SYSTEM" });
+    if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: "Fila de expedição atualizada.", actorRole: "SYSTEM" });
+    return "DEBITED";
+  }
+  const acc = await lockAccount(tx, order.storeId);
   if (acc.balance < order.costTotalCents) {
     if (!order.awaitingFundsSince || order.status !== "AWAITING_CENTRAL_PAYMENT") {
       const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PENDING" });

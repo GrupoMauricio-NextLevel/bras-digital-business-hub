@@ -25,11 +25,12 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   await expireStaleReservations(await getDb());
   const nav = NAV[session.user.role];
   const store = session.store;
-  const items = store ? nav.items.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items;
+  const navItems = store?.kind === "SUPPLIER_OWN" ? nav.items.filter((i) => i.href !== "/merchant/wallet") : nav.items;
+  const items = store ? navItems.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items;
   const demoUsers = isDemoMode() ? await listDemoUsers() : undefined;
   const notices = await recentNotices(session.actor);
   const tenantName = session.store?.name ?? session.supplier?.name ?? "NextLevel";
-  const tenantSub = session.store ? "Loja parceira" : session.supplier ? "Fornecedor / Central" : "Plataforma";
+  const tenantSub = session.store ? (session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : "Plataforma";
   return (
     <AppShell panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={session.store && canUse(session.store.offer, "storefront") ? storeUrl(session.store.slug, session.store.offer, session.store.customDomain, session.store.domainStatus) : undefined} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
       {children}

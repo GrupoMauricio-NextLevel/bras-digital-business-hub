@@ -43,6 +43,11 @@ export const suppliers = pgTable("suppliers", {
   /** Token do Mercado Pago do fornecedor usado nas recargas Pix dos lojistas (criptografado). */
   walletMpTokenEnc: text("wallet_mp_token_enc"),
   walletMpAccountId: text("wallet_mp_account_id"),
+  /** Plataforma de envio conectada (SuperFrete ou Melhor Envio): token criptografado e conta. */
+  shippingProvider: text("shipping_provider"),
+  shippingTokenEnc: text("shipping_token_enc"),
+  shippingAccount: text("shipping_account"),
+  shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   city: text("city"),
   state: text("state"),
   createdAt: createdAt(),
@@ -63,6 +68,8 @@ export const stores = pgTable("stores", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   status: text("status", { enum: ["PENDING_PAYMENT", "ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
+  /** MEMBER = loja de membro; SUPPLIER_OWN = loja do próprio fornecedor para vender direto ao público. */
+  kind: text("kind", { enum: ["MEMBER", "SUPPLIER_OWN"] }).notNull().default("MEMBER"),
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
   tagline: text("tagline"),

@@ -58,6 +58,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Pedidos", href: "/supplier/orders", icon: "ShoppingCart", group: "Operação" },
       { label: "Recargas", href: "/supplier/wallets", icon: "Wallet", group: "Financeiro" },
       { label: "Lojistas", href: "/supplier/stores", icon: "Store", group: "Rede" },
+      { label: "Minha loja", href: "/supplier/store", icon: "Globe", group: "Rede" },
       { label: "Produtos", href: "/supplier/products", icon: "Package", group: "Catálogo" },
       { label: "Estoque", href: "/supplier/inventory", icon: "Boxes", group: "Catálogo" },
       { label: "Equipe", href: "/supplier/team", icon: "UsersRound", group: "Rede" },

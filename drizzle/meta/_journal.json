@@ -99,6 +99,13 @@
       "when": 1790749561704,
       "tag": "0013_size_grids_min_stock",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1790751167335,
+      "tag": "0014_own_store_and_shipping",
+      "breakpoints": true
     }
   ]
 }

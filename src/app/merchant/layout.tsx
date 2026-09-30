@@ -11,6 +11,8 @@ import { ensurePlanInvoice, storeAccess } from "@/lib/domain/store-access";
 import { isDemoMode } from "@/lib/auth";
 import { logout } from "@/app/actions/auth";
 import { TrialDemoButton } from "./trial-demo-button";
+import { leaveOwnStoreAction } from "@/app/actions/own-store";
+import { Store as StoreIcon } from "lucide-react";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await requireRole("STORE_OWNER");
@@ -31,7 +33,15 @@ export default async function Layout({ children }: { children: React.ReactNode }
       </div>
     );
   }
-  if (session.store?.status === "PENDING_PAYMENT") {
+  if (session.store?.kind === "SUPPLIER_OWN") {
+    banner = (
+      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info-soft p-4 text-sm text-info" data-own-store-banner>
+        <StoreIcon className="size-4" aria-hidden />
+        <div className="min-w-0 flex-1"><span className="font-semibold">Painel da loja própria de {session.store.name}.</span> Aqui você configura a vitrine, o tema, os preços e acompanha os pedidos do público. O estoque é o mesmo da Central.</div>
+        <form action={leaveOwnStoreAction}><button className="font-semibold underline">Voltar ao painel do fornecedor</button></form>
+      </div>
+    );
+  } else if (session.store?.status === "PENDING_PAYMENT") {
     const inv = await (await getDb()).query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, session.store.id), eq(financeInvoices.kind, "STORE_SETUP")) });
     banner = (
       <div className="mb-6 flex items-start gap-3 rounded-lg border border-warning/40 bg-warning-soft/50 p-4 text-sm">

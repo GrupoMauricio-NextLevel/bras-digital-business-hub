@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gt, inArray, lt, max } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
+import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, activities, type Cutoffs, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { generateTemporaryPassword, hashPassword } from "@/lib/security/password";
 import { assertCanAccess, isSupplierSide, type Actor } from "./access";
@@ -283,3 +283,35 @@ export async function supplierOnboarding(db: Database, supplierId: string): Prom
 }
 
 
+
+// ---------------------------------------------------------------------------
+// Pendências que seguram estoque: pedidos pagos pelo cliente que esperam etiqueta ou saldo
+// ---------------------------------------------------------------------------
+export const HOLD_ALERT_HOURS = 12;
+export type StockHold = { orderId: string; number: number; storeId: string; storeName: string; reason: "LABEL" | "FUNDS"; hours: number; pieces: number; late: boolean };
+
+/** O estoque reservado por esses pedidos não pode ser vendido em outro canal. Etiqueta e saldo rápidos evitam venda de item zerado. */
+export async function stockHolds(db: Database, supplierId: string, now = new Date()): Promise<StockHold[]> {
+  const rows = await db.select({ o: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId))
+    .where(and(eq(orders.supplierId, supplierId), eq(orders.customerPaymentStatus, "PAID"), inArray(orders.status, ["AWAITING_LABEL", "AWAITING_CENTRAL_PAYMENT"])));
+  if (rows.length === 0) return [];
+  const items = await db.select({ orderId: orderItems.orderId, quantity: orderItems.quantity }).from(orderItems).where(inArray(orderItems.orderId, rows.map((r) => r.o.id)));
+  return rows.map((r) => {
+    const hours = Math.max(0, Math.floor((now.getTime() - new Date(r.o.updatedAt ?? r.o.createdAt).getTime()) / 3_600_000));
+    return { orderId: r.o.id, number: r.o.number, storeId: r.o.storeId, storeName: r.storeName, reason: r.o.status === "AWAITING_LABEL" ? "LABEL" as const : "FUNDS" as const, hours, pieces: items.filter((i) => i.orderId === r.o.id).reduce((s, i) => s + i.quantity, 0), late: hours >= HOLD_ALERT_HOURS };
+  }).sort((a, b) => b.hours - a.hours);
+}
+
+/** Fornecedor cobra o lojista: aviso no painel dele (uma cobrança por pedido a cada 6 horas). */
+export async function remindStoreAboutOrder(db: Database, actor: Actor, orderId: string, now = new Date()) {
+  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor do fornecedor cobra o lojista.");
+  const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+  if (!order || order.supplierId !== actor.supplierId) throw new NotFoundError("Pedido não encontrado.");
+  if (!["AWAITING_LABEL", "AWAITING_CENTRAL_PAYMENT"].includes(order.status)) throw new DomainError("NOT_PENDING", "Este pedido não está aguardando etiqueta ou saldo.");
+  const dedupeKey = `HOLD_REMINDER:${orderId}:${Math.floor(now.getTime() / (6 * 3_600_000))}`;
+  const sent = await emitEvent(db, { type: "HOLD_REMINDER", supplierId: actor.supplierId, storeId: order.storeId, actorRole: actor.role, payload: { orderId }, dedupeKey });
+  if (!sent) return { sent: false };
+  const what = order.status === "AWAITING_LABEL" ? "anexe a etiqueta" : "recarregue o saldo";
+  await db.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: actor.supplierId, storeId: order.storeId, type: "HOLD_REMINDER", message: `A Central pede: ${what} do pedido #${order.number} para ele sair hoje.` });
+  return { sent: true };
+}

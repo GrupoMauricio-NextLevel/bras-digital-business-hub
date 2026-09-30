@@ -8,7 +8,7 @@ import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { isSupplierSide } from "@/lib/domain/access";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
-import { createDispatchUser, createWave, dispatchAdvance, releaseClaim, removeDispatchUser, saveOps } from "@/lib/domain/operations";
+import { createDispatchUser, createWave, dispatchAdvance, releaseClaim, remindStoreAboutOrder, removeDispatchUser, saveOps } from "@/lib/domain/operations";
 import { recordPickingListPrint } from "@/lib/domain/labels";
 
 async function ctx() {
@@ -62,3 +62,13 @@ export async function removeDispatchUserAction(userId: string) {
 }
 
 
+
+export async function remindStoreAction(orderIds: string[]) {
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    let sent = 0;
+    for (const id of orderIds.slice(0, 100)) { if ((await remindStoreAboutOrder(db, session.actor, id)).sent) sent++; }
+    refresh();
+    return { sent };
+  });
+}

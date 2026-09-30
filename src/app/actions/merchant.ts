@@ -83,7 +83,7 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     }
     if (data.priceCents < product.minimumPriceCents) throw new DomainError("BELOW_MINIMUM", "Preço abaixo do mínimo definido pelo fornecedor.");
     const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)) });
-    if (data.active && !existing?.active) {
+    if (data.active && !existing?.active && session.store?.kind !== "SUPPLIER_OWN") {
       const { checkProductActivation } = await import("@/lib/domain/catalog");
       const chk = await checkProductActivation(db, product.id);
       if (!chk.ok) throw new DomainError("LOW_STOCK", `Estoque insuficiente para ativar: o fornecedor exige ao menos ${chk.min} peças por tamanho${chk.short.length ? ` (faltam: ${chk.short.map((s) => s.size).join(", ")})` : ""}.`);
@@ -203,7 +203,7 @@ export async function activateAllProductsAction() {
       if (it.storeProduct.active) continue;
       if (!minStock.has(it.product.supplierId)) minStock.set(it.product.supplierId, await getMinActivationStock(db, it.product.supplierId));
       const min = minStock.get(it.product.supplierId) ?? 4;
-      if (!activationCheck(it.variants.map((v) => ({ size: v.size, available: v.level.available })), min).ok) { skipped++; continue; }
+      if (session.store?.kind !== "SUPPLIER_OWN" && !activationCheck(it.variants.map((v) => ({ size: v.size, available: v.level.available })), min).ok) { skipped++; continue; }
       const values = { active: true, priceCents: it.storeProduct.priceCents || it.product.suggestedPriceCents, packPriceCents: it.storeProduct.packPriceCents ?? it.packs[0]?.suggestedPriceCents ?? null };
       const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, it.product.id)) });
       if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, it.product.id)));

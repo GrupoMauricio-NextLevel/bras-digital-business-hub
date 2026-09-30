@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, productVariants, products } from "@/db/schema";
+import { activities, productStoreAccess, productVariants, products, suppliers } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { requireSupplierId } from "@/lib/domain/access";
@@ -179,6 +179,44 @@ export async function updateProductImagesAction(input: z.input<typeof imagesSche
     if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
     revalidatePath("/supplier", "layout");
     revalidatePath("/merchant", "layout");
+    return undefined;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Plataforma de envio do fornecedor
+// ---------------------------------------------------------------------------
+import { SHIPPING_PROVIDER_KEYS, ShippingError, verifyShippingToken, type ShippingProviderKey } from "@/lib/shipping/providers";
+import { encryptSecret } from "@/lib/security/crypto";
+import { isDemoMode } from "@/lib/auth";
+
+const shippingSchema = z.object({ provider: z.enum(SHIPPING_PROVIDER_KEYS as [ShippingProviderKey, ...ShippingProviderKey[]]), token: z.string().min(20, "Cole o token completo").optional() });
+
+/** Conecta a plataforma de envio: valida o token na própria plataforma e guarda criptografado. Em demonstração, aceita conexão simulada. */
+export async function connectShippingAction(input: z.input<typeof shippingSchema>) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const data = shippingSchema.parse(input);
+    const db = await getDb();
+    if (!data.token) {
+      if (!isDemoMode()) throw new ForbiddenError("Cole o token da plataforma de envio.");
+      await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "DEMO", shippingAccount: "conta de demonstração", shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
+      revalidatePath("/supplier", "layout");
+      return { account: "conta de demonstração" };
+    }
+    let account: string;
+    try { account = (await verifyShippingToken(data.provider, data.token.trim())).account; } catch (e) { throw new ForbiddenError(e instanceof ShippingError ? e.message : "Não foi possível validar o token."); }
+    await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "CONNECTED", shippingAccount: account, shippingTokenEnc: encryptSecret(data.token.trim()) }).where(eq(suppliers.id, supplierId));
+    revalidatePath("/supplier", "layout");
+    return { account };
+  });
+}
+
+export async function disconnectShippingAction() {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    await (await getDb()).update(suppliers).set({ shippingProvider: null, shippingStatus: "NOT_CONFIGURED", shippingAccount: null, shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
+    revalidatePath("/supplier", "layout");
     return undefined;
   });
 }

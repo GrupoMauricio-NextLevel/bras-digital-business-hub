@@ -10,14 +10,15 @@ import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { ServiceSpotlight } from "@/components/services/spotlight";
 import { getServicesHub } from "@/lib/queries/services-hub";
-import { ESTEIRA_COLUMNS, loadEsteira, supplierOnboarding } from "@/lib/domain/operations";
+import { StockHolds } from "@/components/dispatch/stock-holds";
+import { ESTEIRA_COLUMNS, loadEsteira, stockHolds, supplierOnboarding } from "@/lib/domain/operations";
 import { cn } from "@/lib/utils";
 
 export default async function SupplierHome() {
   const session = await requireRole("SUPPLIER_ADMIN");
   const db = await getDb();
   const supplierId = session.supplier!.id;
-  const [e, onboarding] = await Promise.all([loadEsteira(db, session.actor), supplierOnboarding(db, supplierId)]);
+  const [e, onboarding, holds] = await Promise.all([loadEsteira(db, session.actor), supplierOnboarding(db, supplierId), stockHolds(db, supplierId)]);
   const hub = await getServicesHub(session);
   const n = (s: string) => e.orders.filter((o) => o.status === s).length;
   const late = e.orders.filter((o) => o.status !== "SHIPPED" && o.status !== "AWAITING_CENTRAL_PAYMENT" && o.ageMinutes > 24 * 60).length;
@@ -42,6 +43,8 @@ export default async function SupplierHome() {
           </ol>
         </CardContent></Card>
       ) : null}
+
+      <StockHolds holds={holds} />
 
       <div className="mb-5"><ServiceSpotlight hub={hub} base="/supplier" /></div>
 

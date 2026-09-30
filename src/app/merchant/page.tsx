@@ -31,7 +31,7 @@ export default async function MerchantHome() {
   ].filter((p) => p.n > 0);
 
   const hub = await getServicesHub(session);
-  const isLite = store.offer !== "STORE_OWN";
+  const isLite = store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(await getDb(), store.id) : 0;
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;

@@ -94,6 +94,7 @@ export async function connectSupplierWalletAction(input: z.input<typeof tokenSch
     let account;
     try { account = await verifyAccessToken(token); } catch (e) { throw new DomainError("MP_TOKEN", e instanceof MercadoPagoError ? e.message : "Não foi possível validar o token."); }
     await db.update(suppliers).set({ walletMpTokenEnc: encryptSecret(token), walletMpAccountId: String(account.id) }).where(eq(suppliers.id, supplierId));
+    await (await import("@/lib/domain/own-store")).syncOwnStoreMp(db, supplierId);
     refresh();
     return { nickname: account.nickname, isTest: account.isTest };
   });
@@ -104,6 +105,7 @@ export async function disconnectSupplierWalletAction() {
     const { session, db } = await ctx();
     const supplierId = requireSupplierId(session.actor);
     await db.update(suppliers).set({ walletMpTokenEnc: null, walletMpAccountId: null }).where(eq(suppliers.id, supplierId));
+    await (await import("@/lib/domain/own-store")).syncOwnStoreMp(db, supplierId);
     refresh();
     return undefined;
   });
