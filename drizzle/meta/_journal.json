@@ -120,6 +120,13 @@
       "when": 1790753053739,
       "tag": "0016_card_checkout",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790754251526,
+      "tag": "0017_digital_sales",
+      "breakpoints": true
     }
   ]
 }

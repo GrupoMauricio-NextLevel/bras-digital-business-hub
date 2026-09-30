@@ -37,3 +37,19 @@ export async function seedReferenceData(db: Database) {
   const versions = await db.select().from(s.themeVersions);
   return { themeRows, versions, plans, services };
 }
+
+/**
+ * Vitrine pública da Loja NextLevel (`/loja-nextlevel`). Conteúdo de partida, editável pelo Master
+ * (nome, preço cheio, destaque, visibilidade). Só cria se a tabela estiver vazia.
+ */
+export async function seedDigitalProducts(db: Database): Promise<boolean> {
+  if ((await db.select({ id: s.digitalProducts.id }).from(s.digitalProducts).limit(1)).length) return false;
+  const rows: Omit<typeof s.digitalProducts.$inferInsert, "id">[] = [
+    { slug: "assessoria-de-lancamento", name: "Assessoria de Lançamento", tagline: "Sua loja no ar e as primeiras vendas, com a NextLevel do seu lado.", description: "Acompanhamento de 30 dias para configurar a loja, publicar os produtos certos e divulgar para os primeiros clientes. Reuniões de alinhamento e checklist de lançamento.", category: "ASSESSORIA", priceCents: 149700, highlights: ["Configuração completa da loja e pagamentos", "Seleção de produtos para começar", "Plano de divulgação nos primeiros 30 dias", "Encontros de acompanhamento por vídeo"], deliverable: "Nossa equipe entra em contato pelo WhatsApp em até 1 dia útil para marcar a primeira reunião e coletar o briefing.", badge: "Mais escolhida", featured: true, sortOrder: 10 },
+    { slug: "configuracao-profissional", name: "Configuração Profissional", tagline: "Deixamos tudo pronto para você só vender.", description: "Pagamentos, frete, domínio, tema e produtos configurados pela equipe, do jeito certo, sem você travar nos detalhes técnicos.", category: "SERVICO", priceCents: 59700, highlights: ["Mercado Pago e frete conectados", "Domínio e tema configurados", "Produtos cadastrados com fotos e tamanhos"], deliverable: "Você recebe um formulário de briefing por e-mail e WhatsApp; a entrega leva alguns dias úteis depois do envio dos dados.", sortOrder: 20 },
+    { slug: "pacote-de-criativos", name: "Pacote de Criativos", tagline: "Artes e banners para divulgar sua loja com cara de marca grande.", description: "Conjunto de banners para a loja, artes para Stories e feed e capas de campanha, alinhados à identidade da sua loja.", category: "SERVICO", priceCents: 39700, highlights: ["Banners para a vitrine da loja", "Artes para Stories e feed", "Arquivos prontos para publicar"], deliverable: "Enviamos o briefing por WhatsApp; as artes são entregues em arquivos organizados por pasta.", sortOrder: 30 },
+    { slug: "trilha-vendas-esportivas", name: "Trilha de Vendas Esportivas", tagline: "Aprenda a vender camisas de time sem estoque, passo a passo.", description: "Aulas gravadas sobre escolha de produtos, precificação, divulgação e atendimento para lojas de artigos esportivos.", category: "CURSO", priceCents: 19700, highlights: ["Aulas curtas e práticas", "Modelos de mensagens e ofertas", "Acesso liberado após o pagamento"], deliverable: "O acesso às aulas é enviado por e-mail e WhatsApp logo após a confirmação do pagamento.", sortOrder: 40 },
+  ];
+  await db.insert(s.digitalProducts).values(rows.map((r) => ({ id: newId("dpr"), ...r })));
+  return true;
+}

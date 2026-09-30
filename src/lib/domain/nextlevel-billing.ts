@@ -37,7 +37,7 @@ export async function connectNextLevelMp(db: Database, actor: Actor, rawToken: s
   return { nickname: acc.nickname, isTest: acc.isTest };
 }
 
-async function nlToken(db: Database): Promise<string> {
+export async function nlToken(db: Database): Promise<string> {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, MP_KEY) });
   const token = decryptSecret((row?.value as MpSetting | undefined)?.tokenEnc);
   if (!token) throw new DomainError("NL_MP_NOT_CONFIGURED", "A NextLevel ainda não conectou a conta de recebimento. Fale com o suporte.");

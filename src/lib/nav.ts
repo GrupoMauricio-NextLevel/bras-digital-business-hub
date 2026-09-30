@@ -3,7 +3,7 @@ import type { Role } from "@/lib/domain/access";
 export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
-  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock";
+  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox";
 
 export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro";
 
@@ -38,6 +38,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
       { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede" },
       { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação" },
+      { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
+      { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro", href: "/master/finance", icon: "Wallet", group: "Negócio" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
       { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio" },

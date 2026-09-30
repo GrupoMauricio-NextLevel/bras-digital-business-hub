@@ -6,6 +6,7 @@ import { ForceLight } from "@/components/portal/force-light";
 const NAV = [
   { href: "/como-funciona", label: "Como funciona" },
   { href: "/planos", label: "Planos" },
+  { href: "/loja-nextlevel", label: "Loja NextLevel" },
   { href: "/faq", label: "Dúvidas" },
 ];
 

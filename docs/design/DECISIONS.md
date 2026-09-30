@@ -190,3 +190,11 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Instalação imediata:** ao confirmar o pagamento o tema é liberado e o diálogo "Instalar agora" abre sozinho; no retorno do Mercado Pago (`?pago=`) o estado é sincronizado pela referência externa.
 - Em demonstração o cartão é simulado, com aviso "CARTÃO SIMULADO".
 - Migração 0016 (`nextlevel_payments.method`, `checkout_url`). Testes `tests/pricing.test.ts`, `tests/theme-install.test.ts`; e2e `e2e/theme-store.mjs`.
+
+## D29. X1: Loja NextLevel pública, CRM, pedidos separados por comissão e escritório virtual
+- **Loja NextLevel pública** (`/loja-nextlevel`, metade LP e metade loja): produtos digitais e serviços (`digital_products`, editáveis pelo Master; a semente é conteúdo de partida). Compra em 1 clique sem login: nome, e-mail e WhatsApp; Pix com desconto ou cartão em até 6x (mesmo `quote` dos temas). O pedido tem link secreto de acompanhamento (`/loja-nextlevel/pedido/[token]`).
+- **Pagamento:** Pix e Checkout Pro na conta Mercado Pago da NextLevel; confirmação sempre conferida na API (referência e valor), pelo webhook `?order=` ou pelo polling da tela. Sem conta conectada, só a demonstração simula. Pedido igual do mesmo comprador reaproveita a cobrança válida.
+- **CRM** (`/master/crm`): funil Aguardando pagamento → Pago → Em contato → Em execução → Entregue (+ Cancelado), anotações, histórico e botão de WhatsApp. `nl_orders.affiliateRef` já guarda a indicação para o programa de parceiros.
+- **Pedidos separados** (`/master/orders`): aba "Pedidos das lojas" (margem do lojista e comissão NextLevel atribuída a cada loja) e aba "Pedidos dos fornecedores" (base paga à Central, taxa do contrato, abatimento de comissão de canal e fatura de fechamento), por competência.
+- **Escritório virtual** (`/master/office`): assinaturas, ativações, serviços e vendas digitais em abas separadas.
+- Migração 0017. Testes `tests/nl-sales.test.ts`, `tests/master-control.test.ts`; e2e `e2e/nextlevel-shop.mjs`.

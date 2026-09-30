@@ -57,7 +57,7 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
           <Link key={item.href} href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
             className={cn("group mb-2 flex items-center gap-3 rounded-[var(--radius)] border px-3 py-2.5 text-sm font-semibold transition-colors", active ? "border-accent bg-accent text-on-accent" : "border-accent/40 bg-accent-soft text-accent-foreground hover:border-accent", collapsed && "justify-center px-0")}>
             <Icon className="size-4 shrink-0" />
-            {collapsed ? null : <><span className="flex-1 truncate">{item.label}</span>{item.badge ? <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide", active ? "bg-white/20" : "bg-accent text-primary-foreground")}>{item.badge}</span> : null}</>}
+            {collapsed ? null : <><span className="flex-1 truncate">{item.label}</span>{item.badge ? <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide", active ? "bg-white/20" : "bg-accent-soft text-accent-foreground")}>{item.badge}</span> : null}</>}
           </Link>
         );
       })}

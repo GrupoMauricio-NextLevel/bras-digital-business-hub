@@ -759,6 +759,70 @@ export const serviceLeads = pgTable("service_leads", {
   createdAt: createdAt(),
 });
 
+// ---------------------------------------------------------------------------
+// Vendas digitais da NextLevel (LP/loja pública) e CRM de pedidos
+// ---------------------------------------------------------------------------
+export const DIGITAL_CATEGORIES = ["ASSESSORIA", "CURSO", "TEMA", "SERVICO", "PLANO"] as const;
+export type DigitalCategory = (typeof DIGITAL_CATEGORIES)[number];
+
+/** Produto digital ou serviço vendido em `/loja-nextlevel` com compra em 1 clique. `priceCents` é o valor cheio (cartão, até 6x). */
+export const digitalProducts = pgTable("digital_products", {
+  id: id(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  tagline: text("tagline").notNull(),
+  description: text("description").notNull(),
+  category: text("category", { enum: DIGITAL_CATEGORIES }).notNull(),
+  priceCents: integer("price_cents").notNull(),
+  highlights: jsonb("highlights").$type<string[]>().notNull().default([]),
+  /** O que o comprador recebe e como será entregue. */
+  deliverable: text("deliverable").notNull(),
+  badge: text("badge"),
+  featured: boolean("featured").notNull().default(false),
+  active: boolean("active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(100),
+  createdAt: createdAt(),
+});
+
+export const NL_ORDER_STATUSES = ["AWAITING_PAYMENT", "PAID", "CONTACTED", "IN_PROGRESS", "DELIVERED", "CANCELED"] as const;
+export type NlOrderStatus = (typeof NL_ORDER_STATUSES)[number];
+
+/** Pedido da Loja NextLevel pública: é também o cartão do CRM. `token` dá acesso ao acompanhamento sem login. */
+export const nlOrders = pgTable("nl_orders", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  token: text("token").notNull().unique(),
+  productId: text("product_id").notNull().references(() => digitalProducts.id),
+  productName: text("product_name").notNull(),
+  listCents: integer("list_cents").notNull(),
+  chargedCents: integer("charged_cents").notNull(),
+  method: text("method", { enum: ["PIX", "CARD"] }).notNull(),
+  status: text("status", { enum: NL_ORDER_STATUSES }).notNull().default("AWAITING_PAYMENT"),
+  buyerName: text("buyer_name").notNull(),
+  buyerEmail: text("buyer_email").notNull(),
+  buyerPhone: text("buyer_phone").notNull(),
+  buyerTaxId: text("buyer_tax_id"),
+  /** Código do parceiro que indicou a venda (programa de parceiros). */
+  affiliateRef: text("affiliate_ref"),
+  mpPaymentId: text("mp_payment_id"),
+  pixCode: text("pix_code"),
+  pixQrBase64: text("pix_qr_base64"),
+  checkoutUrl: text("checkout_url"),
+  expiresAt: ts("expires_at"),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("nl_orders_status_idx").on(t.status)]);
+
+export const nlOrderNotes = pgTable("nl_order_notes", {
+  id: id(),
+  orderId: text("order_id").notNull().references(() => nlOrders.id),
+  kind: text("kind", { enum: ["NOTE", "STATUS", "SYSTEM"] }).notNull().default("NOTE"),
+  authorUserId: text("author_user_id"),
+  body: text("body").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("nl_order_notes_order_idx").on(t.orderId)]);
+
 export const contentItems = pgTable("content_items", {
   id: id(),
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),

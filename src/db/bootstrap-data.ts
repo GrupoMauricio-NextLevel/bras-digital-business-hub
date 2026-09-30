@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import type { Database } from "./client";
 import { organizations, themes, users } from "./schema";
-import { seedReferenceData } from "./base-data";
+import { seedDigitalProducts, seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
 import { applyLaunchBranding, seedDemoSuppliers } from "./demo-suppliers";
@@ -23,6 +23,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   if (opts.seedDemo) {
     if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)"); }
     else log.push("banco já populado (demo não reaplicado)");
+    if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
     return log;
   }
 
@@ -30,6 +31,8 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   const hasThemes = (await db.select({ id: themes.id }).from(themes).limit(1)).length > 0;
   if (!hasThemes) { await seedReferenceData(db); log.push("dados de referência criados (temas, planos, serviços)"); }
   else for (const l of await syncThemeCatalog(db)) log.push(l);
+
+  if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
 
   if (opts.masterEmail && opts.masterPassword) {
     const email = opts.masterEmail.toLowerCase();

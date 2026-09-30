@@ -1,15 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/db/client";
 import { syncNextLevelPayment } from "@/lib/domain/nextlevel-billing";
+import { syncNlOrder } from "@/lib/domain/nl-sales";
 
 export const dynamic = "force-dynamic";
 
-/** Notificações das cobranças da NextLevel (?payment=<id>). O corpo não é confiável: a API do Mercado Pago é consultada. */
+/** Notificações das cobranças da NextLevel (?payment=<id> ou ?order=<id> da Loja NextLevel). O corpo não é confiável: a API do Mercado Pago é consultada. */
 export async function POST(req: NextRequest) {
-  const id = new URL(req.url).searchParams.get("payment");
-  if (!id) return NextResponse.json({ ok: true, ignored: true });
+  const q = new URL(req.url).searchParams;
+  const id = q.get("payment"); const orderId = q.get("order");
+  if (!id && !orderId) return NextResponse.json({ ok: true, ignored: true });
   try {
-    const r = await syncNextLevelPayment(await getDb(), id);
+    const db = await getDb();
+    const r = orderId ? await syncNlOrder(db, orderId) : await syncNextLevelPayment(db, id!);
     return NextResponse.json({ ok: true, paid: r.paid });
   } catch (e) {
     console.error("[nextlevel webhook]", e);
