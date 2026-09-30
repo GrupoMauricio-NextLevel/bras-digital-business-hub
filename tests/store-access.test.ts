@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { eq } from "drizzle-orm";
 import { freshDb } from "./setup";
 import { financeInvoices, stores } from "@/db/schema";
-import { createCoupon, ensurePlanInvoice, extendTrial, normalizeTaxId, startTrial, storeAccess } from "@/lib/domain/store-access";
-import { markInvoicePaid } from "@/lib/domain/finance";
+import { createCoupon, ensurePlanInvoice, extendTrial, normalizeTaxId, signupMember, startTrial, storeAccess } from "@/lib/domain/store-access";
+import { getPriceBook, markInvoicePaid } from "@/lib/domain/finance";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
@@ -66,5 +66,33 @@ describe("fatura do plano e liberação automática", () => {
     expect(storeAccess(paid, now).state).toBe("PAID");
     expect(new Date(paid.paidUntil!).getUTCMonth()).toBe(10);
     expect((await ctx.db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, a.invoiceId) }))?.status).toBe("PAID");
+  });
+});
+
+describe("cadastro público", () => {
+  const base = { storeName: "Loja Nova", ownerName: "Maria", email: "maria@nova.com", password: "senha-segura-1", taxId: CPF, offer: "STORE_SUBDOMAIN" as const };
+  it("sem cupom: cria a loja já pendente de pagamento, com setup e plano em uma única cobrança; pagar libera o plano", async () => {
+    const slug = (await ctx.db.query.suppliers.findFirst())!.slug;
+    const r = await signupMember(ctx.db, { ...base, supplierSlug: slug }, now);
+    expect(r.trial).toBe(false);
+    const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
+    expect(storeAccess(store, now).state).toBe("BLOCKED");
+    const inv = await ensurePlanInvoice(ctx.db, store, 1, now);
+    expect(inv.includesSetup).toBe(true);
+    const offer = (await getPriceBook(ctx.db)).offers.STORE_SUBDOMAIN;
+    expect(inv.amountCents).toBe(offer.monthlyCents + offer.setupCents); // ativação = setup + primeira mensalidade, uma só cobrança
+    await markInvoicePaid(ctx.db, inv.invoiceId, now);
+    const after = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
+    expect(storeAccess(after, now).state).toBe("PAID");
+    const open = await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId));
+    expect(open.filter((i) => i.status === "OPEN")).toHaveLength(0);
+  });
+  it("com cupom: inicia o teste; sem cupom nem fornecedor é recusado; CPF do teste não repete", async () => {
+    const { code } = await createCoupon(ctx.db, ctx.actors.supplier, { code: "CADASTRO7" });
+    const r = await signupMember(ctx.db, { ...base, code }, now);
+    expect(r.trial).toBe(true);
+    expect(storeAccess((await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!, now).state).toBe("TRIAL");
+    await expect(signupMember(ctx.db, { ...base, email: "outra@nova.com", code }, now)).rejects.toThrow(/já usou/);
+    await expect(signupMember(ctx.db, { ...base, email: "x@nova.com" }, now)).rejects.toThrow(/fornecedor/);
   });
 });

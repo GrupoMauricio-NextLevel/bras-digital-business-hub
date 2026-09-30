@@ -1,7 +1,7 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { coupons, financeInvoices, stores, trialClaims, users, type Store } from "@/db/schema";
+import { coupons, financeInvoices, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { hashPassword } from "@/lib/security/password";
 import { createStore } from "./provisioning";
@@ -105,38 +105,48 @@ export async function extendTrial(db: Database, actor: Actor, storeId: string, d
 export const PLAN_CYCLES = { 1: "mensal", 6: "semestral", 12: "anual" } as const;
 export type PlanMonths = keyof typeof PLAN_CYCLES;
 
-/** Fatura aberta do plano (idempotente por loja, ciclo e mês). Preço de lista × meses, Pix. */
+/**
+ * Fatura aberta para liberar a loja por Pix. Se a loja ainda deve a ativação (setup + primeira mensalidade),
+ * é essa a cobrança (uma só). Senão, gera a mensalidade: preço de lista × meses, idempotente por loja, ciclo e mês.
+ */
 export async function ensurePlanInvoice(db: Database, store: Store, months: PlanMonths = 1, now = new Date()) {
+  const setup = await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, store.id), eq(financeInvoices.kind, "STORE_SETUP"), eq(financeInvoices.status, "OPEN")) });
+  if (setup) return { invoiceId: setup.id, amountCents: setup.amountCents, description: setup.description, includesSetup: true };
   const book = await getPriceBook(db);
   const offer = book.offers[store.offer];
   const amount = offer.monthlyCents * months;
   const dedupeKey = `STORE_PLAN:${store.id}:${store.offer}:${months}:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
-  if (existing && existing.status === "OPEN") return { invoiceId: existing.id, amountCents: existing.amountCents, description: existing.description };
+  if (existing && existing.status === "OPEN") return { invoiceId: existing.id, amountCents: existing.amountCents, description: existing.description, includesSetup: false };
   const key = existing ? `${dedupeKey}:${now.getTime()}` : dedupeKey;
   const id = newId("fin");
   const description = `Plano ${offer.name} · ${PLAN_CYCLES[months]}`;
-  const due = new Date(now.getTime() + 3 * DAY);
-  await db.insert(financeInvoices).values({ id, dedupeKey: key, payerType: "STORE", supplierId: await supplierOfStore(db, store.id), storeId: store.id, kind: "STORE_PLAN", description, amountCents: amount, lines: [{ kind: "STORE_PLAN", description: `${offer.name} · ${months} ${months === 1 ? "mês" : "meses"}`, amountCents: amount }], status: "OPEN", dueDate: due.toISOString() });
-  return { invoiceId: id, amountCents: amount, description };
+  const lines: InvoiceLine[] = [{ kind: "STORE_PLAN", description: `${offer.name} · ${months} ${months === 1 ? "mês" : "meses"}`, amountCents: amount }];
+  await db.insert(financeInvoices).values({ id, dedupeKey: key, payerType: "STORE", supplierId: await supplierOfStore(db, store.id), storeId: store.id, kind: "STORE_PLAN", description, amountCents: amount, lines, status: "OPEN", dueDate: new Date(now.getTime() + 3 * DAY).toISOString() });
+  return { invoiceId: id, amountCents: amount, description, includesSetup: false };
 }
 
-/** Chamado quando a fatura do plano é paga: soma os meses a partir de hoje (ou do fim atual) e reativa a loja. */
-export async function fulfillPlanInvoice(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
-  if (inv.kind !== "STORE_PLAN" || !inv.storeId) return;
-  const months = Number(inv.dedupeKey.split(":")[3]) || 1;
-  const store = await db.query.stores.findFirst({ where: eq(stores.id, inv.storeId) });
+/** Soma meses de acesso pago (a partir de hoje ou do fim atual) e reativa a loja. */
+export async function grantPlanMonths(db: Database, storeId: string, months: number, invoice: { id: string; supplierId: string | null }, now = new Date()) {
+  const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
   if (!store) return;
   const base = store.paidUntil && new Date(store.paidUntil) > now ? new Date(store.paidUntil) : now;
   const until = new Date(base); until.setUTCMonth(until.getUTCMonth() + months);
-  await db.update(stores).set({ paidUntil: until.toISOString(), status: store.status === "PENDING_PAYMENT" ? store.status : "ACTIVE", updatedAt: now.toISOString() }).where(eq(stores.id, store.id));
-  await emitEvent(db, { type: "PLAN_PAID", supplierId: inv.supplierId, storeId: store.id, payload: { months, until: until.toISOString(), invoiceId: inv.id }, dedupeKey: `PLAN_PAID:${inv.id}` });
+  await db.update(stores).set({ paidUntil: until.toISOString(), status: store.status === "PENDING_PAYMENT" ? "ACTIVE" : store.status, updatedAt: now.toISOString() }).where(eq(stores.id, store.id));
+  await emitEvent(db, { type: "PLAN_PAID", supplierId: invoice.supplierId, storeId: store.id, payload: { months, until: until.toISOString(), invoiceId: invoice.id }, dedupeKey: `PLAN_PAID:${invoice.id}` });
+}
+
+/** Chamado quando a fatura é paga: mensalidade soma os meses contratados; ativação (setup) soma o primeiro mês. */
+export async function fulfillPlanInvoice(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
+  if (!inv.storeId) return;
+  if (inv.kind === "STORE_PLAN") await grantPlanMonths(db, inv.storeId, Number(inv.dedupeKey.split(":")[3]) || 1, inv, now);
+  else if (inv.kind === "STORE_SETUP") await grantPlanMonths(db, inv.storeId, 1, inv, now);
 }
 
 export const isBlocked = (store: Pick<Store, "trialEndsAt" | "paidUntil">, now = new Date()) => storeAccess(store, now).state === "BLOCKED";
 
 // ---------------------------------------------------------------------------
-// Cadastro público com cupom: cria a loja na rede do fornecedor do cupom e já inicia o teste
+// Cadastro público: com cupom inicia o teste de 7 dias; sem cupom vai direto ao pagamento do plano
 // ---------------------------------------------------------------------------
 export const signupSchema = z.object({
   storeName: z.string().min(2, "Informe o nome da loja"),
@@ -144,21 +154,38 @@ export const signupSchema = z.object({
   email: z.string().email("E-mail inválido"),
   password: z.string().min(8, "A senha precisa ter ao menos 8 caracteres"),
   taxId: z.string().min(11, "Informe o CPF ou CNPJ"),
-  code: z.string().min(3, "Informe o cupom"),
+  code: z.string().optional(),
+  supplierSlug: z.string().optional(),
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
 });
 
-export async function signupWithCoupon(db: Database, raw: z.input<typeof signupSchema>, now = new Date()) {
+/** Fornecedores que aceitam novos membros (página pública ativa). */
+export async function listSignupSuppliers(db: Database) {
+  const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status }).from(suppliers);
+  return rows.filter((r) => r.status === "ACTIVE" || r.status === "WARNING").map((r) => ({ slug: r.slug, name: r.name }));
+}
+
+export async function signupMember(db: Database, raw: z.input<typeof signupSchema>, now = new Date()) {
   const input = signupSchema.parse(raw);
   const taxId = normalizeTaxId(input.taxId);
-  const coupon = await findUsableCoupon(db, input.code);
-  if (await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) })) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
-  const created = await createStore(db, coupon.supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email });
+  const code = input.code?.trim();
+  let supplierId: string;
+  if (code) {
+    const coupon = await findUsableCoupon(db, code);
+    if (await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) })) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
+    supplierId = coupon.supplierId;
+  } else {
+    const sup = input.supplierSlug ? await db.query.suppliers.findFirst({ where: eq(suppliers.slug, input.supplierSlug) }) : null;
+    if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
+    supplierId = sup.id;
+  }
+  const created = await createStore(db, supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email });
   const user = await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) });
   if (!user) throw new NotFoundError("Usuário não encontrado.");
-  // Durante o teste tudo é liberado: a loja nasce ativa e o dono escolhe a própria senha.
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));
-  await db.update(stores).set({ status: "ACTIVE" }).where(eq(stores.id, created.storeId));
-  await startTrial(db, { storeId: created.storeId, code: coupon.code, taxId, now });
-  return { storeId: created.storeId, userId: user.id, slug: created.slug };
+  await db.update(stores).set({ status: "ACTIVE", taxId }).where(eq(stores.id, created.storeId));
+  if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });
+  // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.
+  else await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));
+  return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: !!code };
 }

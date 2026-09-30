@@ -1,12 +1,13 @@
 import { and, asc, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { products, supplierPages, suppliers, type SupplierPageFaq, type SupplierPageTestimonial } from "@/db/schema";
+import { coupons, products, supplierPages, suppliers, type SupplierPageFaq, type SupplierPageTestimonial } from "@/db/schema";
 import { getPriceBook } from "./finance";
 import { OFFER_KEYS, type OfferKey } from "@/lib/finance/price-book";
 
 export type PublicSupplierPage = {
   slug: string; name: string; headline: string; subheadline: string; logoText: string; primaryColor: string; accentColor: string; whatsapp: string | null;
   benefits: string[]; faq: SupplierPageFaq[];
+  couponCode: string | null;
   logoUrl: string | null; heroUrl: string | null; testimonials: SupplierPageTestimonial[]; demoContent: boolean;
   products: { id: string; name: string; images: string[]; suggestedPriceCents: number }[];
   plans: { key: OfferKey; name: string; description: string; monthlyCents: number; setupCents: number }[];
@@ -40,7 +41,9 @@ export async function getPublicSupplierPage(db: Database, slug: string): Promise
   const d = defaultContent(supplier.name);
   const list = await db.select().from(products).where(and(eq(products.supplierId, supplier.id), eq(products.status, "ACTIVE"), eq(products.distribution, "ALL_NETWORK"))).orderBy(asc(products.name)).limit(8);
   const book = await getPriceBook(db);
+  const coupon = (await db.select().from(coupons).where(and(eq(coupons.supplierId, supplier.id), eq(coupons.active, true))).orderBy(asc(coupons.createdAt)).limit(1))[0];
   return {
+    couponCode: coupon ? coupon.code : null,
     slug: supplier.slug, name: supplier.name,
     headline: row?.headline ?? d.headline, subheadline: row?.subheadline ?? d.subheadline,
     logoText: row?.logoText ?? initials(supplier.name), primaryColor: row?.primaryColor ?? "#0f172a", accentColor: row?.accentColor ?? "#16a34a", whatsapp: row?.whatsapp ?? null,

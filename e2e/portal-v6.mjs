@@ -22,7 +22,7 @@ async function axe(label) {
 }
 
 await p.goto(B + "/", { waitUntil: "networkidle" }); await settle();
-if (!(await p.getByRole("heading", { level: 1 }).innerText()).includes("Venda sem estoque")) fail("h1 inesperado");
+if (!(await p.getByRole("heading", { level: 1 }).innerText()).includes("loja online sem estoque")) fail("h1 inesperado");
 if ((await p.locator('script[type="application/ld+json"]').count()) < 1) fail("sem dados estruturados");
 ok("home carrega com h1 e dados estruturados");
 
@@ -38,10 +38,12 @@ await p.getByRole("tab", { name: /Custo pago por Pix/ }).press("ArrowDown");
 if ((await p.getByRole("tab", { name: /Etiqueta anexada/ }).getAttribute("aria-selected")) !== "true") fail("seta para baixo não avançou o passo");
 ok("como funciona: abas e teclado");
 
-// Painéis e temas
+// Painéis (agora na página de fornecedores) e temas (home)
+await p.goto(B + "/seja-fornecedor", { waitUntil: "networkidle" });
 await p.getByRole("tab", { name: "Expedição", exact: true }).click();
 if (!(await p.locator("#pn-panel").innerText()).includes("Próximo pedido")) fail("painel de expedição");
 if (/R\$\s?\d/.test(await p.locator("#pn-panel [data-panel]").innerText())) fail("tela da expedição mostra dinheiro");
+await p.goto(B + "/", { waitUntil: "networkidle" });
 await p.getByRole("radio", { name: /Signature/ }).click();
 if (!(await p.locator("main").innerText()).includes("Instalação com 1 clique") && !(await p.locator("main").innerText()).includes("instalação com 1 clique")) fail("tema pago sem o texto de 1 clique");
 ok("painéis e temas alternam");

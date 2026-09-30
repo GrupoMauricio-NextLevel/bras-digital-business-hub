@@ -9,7 +9,7 @@ const STEPS = [
   { key: "sale", title: "Venda na loja do membro", text: "O cliente compra na loja do membro. O pedido chega já com os dados de envio.", icon: ShoppingBag },
   { key: "pix", title: "Custo pago por Pix", text: "O membro recarrega o saldo por Pix. O custo de cada pedido sai do saldo, sem cartão.", icon: CreditCard },
   { key: "label", title: "Etiqueta anexada", text: "O membro gera a etiqueta na transportadora e anexa o PDF ao pedido. A expedição imprime em lote.", icon: FileText },
-  { key: "ship", title: "Separação e envio", text: "A esteira ao vivo respeita o horário de corte, organiza ondas de separação e marca o envio.", icon: Truck },
+  { key: "ship", title: "Separação e envio", text: "O fornecedor separa o pedido no horário de corte, envia com a etiqueta que você anexou e o status muda sozinho no seu painel.", icon: Truck },
 ] as const;
 
 function Mock({ step }: { step: (typeof STEPS)[number]["key"] }) {

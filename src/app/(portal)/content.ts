@@ -3,14 +3,14 @@ export const FLOW = [
   { title: "O fornecedor cadastra o catálogo", text: "Produtos, estoque e preço de custo ficam com quem produz e despacha." },
   { title: "O membro monta a loja", text: "Escolhe o que vender, define o próprio preço e recebe o pedido do cliente." },
   { title: "O custo sai do saldo", text: "Cada pedido debita o custo da carteira do membro, recarregada por Pix." },
-  { title: "O fornecedor separa e envia", text: "A esteira ao vivo respeita o horário de corte e organiza a expedição." },
+  { title: "O fornecedor separa e envia", text: "Ele separa o pedido no horário de corte e envia direto ao seu cliente." },
   { title: "Todos acompanham", text: "Pedido, etiqueta, pós-venda e financeiro em painéis feitos para cada papel." },
 ];
 
 export const AUDIENCES = [
   { key: "membro", title: "Para quem vende", text: "Loja no ar sem estoque e sem separar pedido. Você cuida da venda; o fornecedor cuida do resto.", bullets: ["Loja pronta, com subdomínio ou domínio próprio", "Carteira por Pix, sem cartão", "Pós-venda e etiquetas no mesmo lugar"], href: "/como-funciona" },
   { key: "fornecedor", title: "Para quem fornece", text: "Uma operação de expedição ao vivo, com corte, ondas de separação e etiqueta em PDF.", bullets: ["Esteira ao vivo e horário de corte", "Painel de expedição sem valores", "Sua página de vendas para captar membros"], href: "/fornecedores" },
-  { key: "whitelabel", title: "Marca própria", text: "A plataforma com a sua identidade, para operar a sua rede de membros.", bullets: ["Sua marca e seu domínio", "Taxa por pedido reduzida", "Implantação acompanhada pela NextLevel"], href: "/fornecedores#white-label" },
+  { key: "whitelabel", title: "Marca própria", text: "A plataforma com a sua identidade, para operar a sua rede de membros.", bullets: ["Sua marca e seu domínio", "Taxa por pedido reduzida", "Implantação acompanhada pela NextLevel"], href: "/seja-fornecedor#white-label" },
 ];
 
 export const SUPPLIER_PLANS = [

@@ -17,11 +17,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
   let banner: React.ReactNode = null;
   const access = session.store ? storeAccess(session.store) : null;
   if (session.store && access?.state === "BLOCKED") {
-    const db = await getDb();
-    // Setup em aberto vem primeiro; depois do pagamento aparece a fatura do plano.
-    const setup = await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, session.store.id), eq(financeInvoices.kind, "STORE_SETUP"), eq(financeInvoices.status, "OPEN")) });
-    const inv = setup ? { invoiceId: setup.id, amountCents: setup.amountCents, description: `Setup da loja · ${setup.description}` } : await ensurePlanInvoice(db, session.store, 1);
-    return <BlockedScreen storeName={session.store.name} reason={session.store.paidUntil ? "PLAN" : "TRIAL"} invoice={{ id: inv.invoiceId, amountCents: inv.amountCents, description: inv.description }} demo={isDemoMode()} logout={logout} />;
+    const inv = await ensurePlanInvoice(await getDb(), session.store, 1);
+    const reason = session.store.paidUntil ? "PLAN" : session.store.couponId ? "TRIAL" : "NEW";
+    return <BlockedScreen storeName={session.store.name} reason={reason} invoice={{ id: inv.invoiceId, amountCents: inv.amountCents, description: inv.description }} demo={isDemoMode()} logout={logout} />;
   }
   if (access?.state === "TRIAL") {
     banner = (

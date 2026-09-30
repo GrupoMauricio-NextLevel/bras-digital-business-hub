@@ -143,3 +143,11 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Checkout das lojas somente Pix:** preferência do Mercado Pago exclui cartão, débito, boleto, caixa eletrônico e saldo. Cartão em 1x (+6%) fica para a cobrança dos planos, quando houver cartão.
 - **Alpha Outfit e MantosShop:** logos, WhatsApp (Thiago e Alex) e cupons `ALPHA7` e `MANTOSSHOP7` aplicados. Em produção, `applyLaunchBranding` aplica a marca, o WhatsApp e o cupom assim que o Master cadastrar os dois fornecedores (slugs `alpha-outfit` e `mantosshop`).
 - **Ainda do P1:** taxa por pedido e fechamento mensal, e-mail transacional e recuperar senha, cobrança automática recorrente, comissão dos fundadores, Academy, termos com aceite versionado.
+
+## D23. Portal para quem vende, página própria para fornecedores e checkout de plano
+- **Home, Planos e Como funciona** falam só com **quem vende**: loja sem estoque, planos com preço da tabela e botões **Assinar por Pix**, **Criar minha loja** e **Área de membros** (login) no topo, no rodapé e nas páginas dos fornecedores.
+- **Fornecedores** têm página exclusiva `/seja-fornecedor` (oportunidade de negócio, painéis, operação, modelos SuperDrop e White Label, como se tornar fornecedor). `/fornecedores` redireciona. O contato usa o WhatsApp ou e-mail do suporte configurados.
+- **Checkout rápido:** planos (portal e `/f/[slug]`) levam a `/cadastro?plano=…&fornecedor=…`. Sem cupom, a loja nasce pendente de pagamento e o painel abre direto na tela de Pix com QR code; com cupom começa o teste de 7 dias. **Pagar libera o plano automaticamente** (`paidUntil`).
+- **Cobrança única na ativação:** a fatura de ativação já soma setup e primeira mensalidade; depois vêm mensalidades por Pix (preço de lista × meses).
+- **Fornecedor obrigatório** no cadastro sem cupom (vem da página do fornecedor ou é escolhido na lista).
+- e2e `e2e/checkout-flow.mjs`, `e2e/trial-block.mjs`; testes de cadastro em `tests/store-access.test.ts`.

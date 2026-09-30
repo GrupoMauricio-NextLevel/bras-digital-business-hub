@@ -31,7 +31,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
   const p = await getPublicSupplierPage(await getDb(), slug);
   if (!p) notFound();
   const wa = p.whatsapp ? `https://wa.me/${p.whatsapp}?text=${encodeURIComponent(`Olá! Quero conhecer a ${p.name} e testar por 7 dias.`)}` : null;
-  const cta = wa ?? "/login";
+  const signup = `/cadastro?fornecedor=${p.slug}${p.couponCode ? `&cupom=${p.couponCode}` : ""}`;
   const vars = { "--lp-primary": p.primaryColor, "--lp-accent": p.accentColor, "--lp-on-primary": readableOn(p.primaryColor), "--lp-on-accent": readableOn(p.accentColor) } as React.CSSProperties;
   const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition hover:opacity-90";
   return (
@@ -40,7 +40,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-3">{p.logoUrl ? <span className="flex items-center rounded-lg px-3 py-1.5" style={{ background: "var(--lp-primary)" }}><img src={p.logoUrl} alt={p.name} className="h-9 w-auto max-w-44 object-contain" /></span> : <><span className="flex size-10 items-center justify-center rounded-lg text-sm font-extrabold" style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>{p.logoText}</span><span className="text-lg font-bold">{p.name}</span></>}</div>
-          <nav className="flex items-center gap-4 text-sm font-medium"><a href="#planos" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Planos</a><a href="#faq" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Dúvidas</a><Link href="/login" className="rounded-lg border border-neutral-300 px-4 py-2 hover:bg-neutral-50">Entrar</Link></nav>
+          <nav className="flex items-center gap-4 text-sm font-medium"><a href="#planos" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Planos</a><a href="#faq" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Dúvidas</a><Link href="/login" className="hidden rounded-lg px-3 py-2 text-neutral-700 hover:bg-neutral-100 sm:inline">Área de membros</Link><Link href={signup} className="rounded-lg px-4 py-2 font-semibold" style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Criar conta</Link></nav>
         </div>
       </header>
 
@@ -51,7 +51,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">{p.headline}</h1>
             <p className="mt-4 max-w-xl text-lg opacity-90">{p.subheadline}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href={cta} target={wa ? "_blank" : undefined} rel="noreferrer" className={btn} style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Quero testar por 7 dias <ArrowRight className="size-5" aria-hidden /></a>
+              <Link href={signup} className={btn} style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>{p.couponCode ? "Quero testar por 7 dias" : "Criar minha loja"} <ArrowRight className="size-5" aria-hidden /></Link>
               <a href="#como-funciona" className={`${btn} border border-white/40`}>Como funciona</a>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
       <section id="planos" className="bg-neutral-50 py-14">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-2xl font-bold">Planos</h2>
-          <p className="mt-1 text-neutral-600">Comece pelo teste de 7 dias. Semestral e anual têm desconto.</p>
+          <p className="mt-1 text-neutral-600">Pague por Pix e o acesso é liberado na hora, ou teste 7 dias grátis com o cupom.</p>
           <ul className="mt-6 grid gap-4 md:grid-cols-3">
             {p.plans.map((pl) => (
               <li key={pl.key} className="flex flex-col rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
@@ -102,11 +102,12 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
                 <p className="mt-1 flex-1 text-sm text-neutral-600">{pl.description}</p>
                 <p className="mt-4 text-3xl font-extrabold tabular-nums">{formatBRL(pl.monthlyCents)}<span className="text-sm font-medium text-neutral-500">/mês</span></p>
                 {pl.setupCents > 0 ? <p className="text-sm text-neutral-500">+ setup de {formatBRL(pl.setupCents)}</p> : <p className="text-sm text-neutral-500">Sem setup</p>}
-                <a href={cta} target={wa ? "_blank" : undefined} rel="noreferrer" className={`${btn} mt-4 w-full`} style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>Testar por 7 dias</a>
+                <Link href={`/cadastro?plano=${pl.key}&fornecedor=${p.slug}`} className={`${btn} mt-4 w-full`} style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>Assinar por Pix</Link>
+                {p.couponCode ? <Link href={`/cadastro?plano=${pl.key}&fornecedor=${p.slug}&cupom=${p.couponCode}`} className="mt-2 text-center text-sm font-semibold underline">ou testar 7 dias grátis</Link> : null}
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-xs text-neutral-500">Valores de demonstração; confirme as condições com o time comercial.</p>
+          <p className="mt-4 text-xs text-neutral-500">Pagamento por Pix. A taxa por pedido depende do plano.</p>
         </div>
       </section>
 
@@ -127,7 +128,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
       <section style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-4 px-4 py-12 md:flex-row md:items-center md:justify-between">
           <h2 className="text-2xl font-bold">Pronto para vender sem estoque?</h2>
-          <a href={cta} target={wa ? "_blank" : undefined} rel="noreferrer" className={btn} style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Falar com a {p.name} <ArrowRight className="size-5" aria-hidden /></a>
+          <Link href={signup} className={btn} style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Criar minha loja <ArrowRight className="size-5" aria-hidden /></Link>
         </div>
       </section>
 

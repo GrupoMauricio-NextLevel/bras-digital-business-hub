@@ -131,7 +131,7 @@ export async function supplierOfStore(db: Database, storeId: string): Promise<st
 
 /** Chamado por `markInvoicePaid`: fatura de add-on paga concede o direito pelo período contratado. */
 export async function fulfillPaidInvoice(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
-  if (inv.kind === "STORE_PLAN") { const { fulfillPlanInvoice } = await import("./store-access"); await fulfillPlanInvoice(db, inv, now); return; }
+  if (inv.kind === "STORE_PLAN" || inv.kind === "STORE_SETUP") { const { fulfillPlanInvoice } = await import("./store-access"); await fulfillPlanInvoice(db, inv, now); return; }
   if (inv.kind !== "ADDON") return;
   const key = inv.dedupeKey.split(":")[2];
   const cycle = inv.dedupeKey.split(":")[3];
