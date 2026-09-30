@@ -77,7 +77,7 @@ export async function saveGlobalsDraft(db: Database, actor: Actor, storeId: stri
   const store = await loadStore(db, storeId); assertEditor(actor, store);
   const { globals, issues } = normalizeGlobals(raw);
   const cur = (await resolveGlobals(db, store, { draft: true })).globals;
-  const styleAdvanced = cur.style.headingFont !== globals.style.headingFont || cur.style.bodyFont !== globals.style.bodyFont || cur.style.radius !== globals.style.radius || cur.style.buttons !== globals.style.buttons;
+  const styleAdvanced = cur.style.headingFont !== globals.style.headingFont || cur.style.bodyFont !== globals.style.bodyFont || cur.style.radius !== globals.style.radius || cur.style.buttons !== globals.style.buttons || cur.style.quickView !== globals.style.quickView || cur.style.animations !== globals.style.animations;
   if (styleAdvanced || structureOf(globals.header) !== structureOf(cur.header) || structureOf(globals.footer) !== structureOf(cur.footer)) requireFeature(store.offer, "appearanceAdvanced");
   assertPremium(store, globals.header); assertPremium(store, globals.footer);
   await db.insert(themeGlobals).values({ storeId, draft: globals }).onConflictDoUpdate({ target: themeGlobals.storeId, set: { draft: globals, updatedAt: new Date().toISOString() } });

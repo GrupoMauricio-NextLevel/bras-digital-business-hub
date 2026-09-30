@@ -3,7 +3,7 @@ export const PAGE_KINDS = ["home", "product", "collection", "cart"] as const;
 export type PageKind = (typeof PAGE_KINDS)[number];
 export const PAGE_LABEL: Record<PageKind, string> = { home: "Página inicial", product: "Página de produto", collection: "Coleção", cart: "Carrinho" };
 
-export const SETTING_TYPES = ["text", "textarea", "richtext", "image", "color", "range", "number", "select", "checkbox", "url", "product", "collection", "font"] as const;
+export const SETTING_TYPES = ["text", "textarea", "richtext", "image", "video", "datetime", "color", "range", "number", "select", "checkbox", "url", "product", "collection", "font"] as const;
 export type SettingType = (typeof SETTING_TYPES)[number];
 export type SettingValue = string | number | boolean;
 
@@ -33,8 +33,12 @@ export type SectionSchema = {
   pages: PageKind[];
   /** Só pode existir uma por modelo (ex.: cabeçalho). */
   singleton?: boolean;
+  /** Seções de um mesmo espaço se excluem (ex.: cabeçalho simples e cabeçalho com menu grande). */
+  slot?: string;
   /** Recurso pago ou avançado: o editor mostra cadeado nas ofertas que não liberam. */
   premium?: boolean;
+  /** Temas que incluem esta seção. Sem a lista, a seção é livre; com ela, só quem tem um desses temas pode usá-la. */
+  themes?: string[];
   settings: SettingDef[];
   blocks?: BlockDef[];
   maxBlocks?: number;
@@ -46,7 +50,7 @@ export type SectionInstance = { type: string; settings: Record<string, SettingVa
 /** Modelo de uma página (ou de um grupo global): seções por id e a ordem de exibição. */
 export type Template = { v: 1; sections: Record<string, SectionInstance>; order: string[] };
 
-export type ThemeStyle = { primary: string; accent: string; headingFont: string; bodyFont: string; radius: number; buttons: "solid" | "outline" };
+export type ThemeStyle = { primary: string; accent: string; headingFont: string; bodyFont: string; radius: number; buttons: "solid" | "outline"; /** Botão "Compra rápida" nos cartões de produto. */ quickView: boolean; /** Seções aparecem com movimento discreto ao rolar. */ animations: boolean };
 /** Estilo do tema e os grupos globais (cabeçalho e rodapé) compartilhados por todas as páginas. */
 export type ThemeGlobals = { v: 1; style: ThemeStyle; header: Template; footer: Template };
 

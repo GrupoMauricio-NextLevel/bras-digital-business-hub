@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { ThemeSettingsData } from "@/db/schema";
 import { normalizeSettings, normalizeValue } from "@/lib/themes/settings";
 import { SECTION_SCHEMAS, sectionSchema } from "@/lib/themes/sections";
+import { isValidDateTime, isValidVideoRef, youtubeIdOf } from "@/lib/themes/settings";
 import { addBlock, addSection, defaultTemplate, duplicateSection, legacyGlobals, moveBlock, moveSection, normalizeGlobals, normalizeStyle, normalizeTemplate, planProducts, removeBlock, removeSection, resolveLink, sameTemplate, setBlockSetting, setSectionHidden, setSetting, templateFromLegacy, TemplateOpError } from "@/lib/themes/template";
 import type { Template } from "@/lib/themes/types";
 
@@ -173,5 +174,37 @@ describe("modelos padrão das outras páginas", () => {
     const main = defaultTemplate("product", legacy).sections.product!.settings;
     expect(main).toMatchObject({ gallery: "stacked", showBreadcrumb: true, stickyBuyBar: false });
     expect(String(main.shippingNote)).toContain("etiqueta em até 1 dia útil");
+  });
+});
+
+describe("vídeo, data e hora", () => {
+  const def = (o: object) => ({ id: "x", label: "x", ...o }) as never;
+  it("aceita só YouTube e arquivos https de vídeo", () => {
+    for (const ok of ["https://youtu.be/dQw4w9WgXcQ", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "https://cdn.exemplo.com/v/promo.mp4", "https://cdn.exemplo.com/a.webm?x=1", ""]) expect(isValidVideoRef(ok), ok).toBe(true);
+    for (const bad of ["http://cdn.exemplo.com/a.mp4", "javascript:alert(1)", "https://vimeo.com/123", "https://exemplo.com/pagina", "data:video/mp4;base64,AAA"]) expect(isValidVideoRef(bad), bad).toBe(false);
+    expect(youtubeIdOf("https://youtu.be/dQw4w9WgXcQ?t=5")).toBe("dQw4w9WgXcQ"); expect(youtubeIdOf("https://exemplo.com")).toBeNull();
+    expect(normalizeValue(def({ type: "video", default: "" }), "https://vimeo.com/1")).toBe("");
+  });
+  it("valida data e hora que existem", () => {
+    expect(isValidDateTime("2026-12-31T23:59")).toBe(true); expect(isValidDateTime("")).toBe(true);
+    for (const bad of ["2026-02-30T10:00", "2026-13-01T10:00", "2026-12-31 23:59", "amanhã", "2026-12-31T25:00"]) expect(isValidDateTime(bad), bad).toBe(false);
+    expect(normalizeValue(def({ type: "datetime", default: "" }), "31/12/2026")).toBe("");
+  });
+});
+
+describe("seções dos temas pagos", () => {
+  const THEME_KEYS = ["arena", "editorial", "signature"];
+  it("só referenciam temas que existem", () => { for (const s of SECTION_SCHEMAS) for (const t of s.themes ?? []) expect(THEME_KEYS, `${s.type}: ${t}`).toContain(t); });
+  it("as seções novas são exclusivas dos temas pagos e a base continua livre", () => {
+    for (const type of ["image-hero", "slideshow", "video-hero", "category-grid", "image-with-text", "testimonials", "faq", "lookbook", "countdown", "cta-banner", "product-tabs", "header-plus"]) expect(sectionSchema(type)!.themes?.length, type).toBeGreaterThan(0);
+    for (const type of ["hero", "trust-bar", "product-showcase", "rich-text", "header", "footer", "product-main"]) expect(sectionSchema(type)!.themes, type).toBeUndefined();
+  });
+  it("cabeçalho simples e cabeçalho com menu grande se excluem", () => {
+    const hdr = normalizeTemplate({ v: 1, order: ["header", "plus"], sections: { header: { type: "header" }, plus: { type: "header-plus" } } }, "header").template;
+    expect(hdr.order).toEqual(["header"]);
+    expect(() => addSection(hdr, "header-plus", { region: "header" })).toThrow(/uma seção/);
+  });
+  it("presets de blocos usam só blocos declarados e respeitam o limite", () => {
+    for (const s of SECTION_SCHEMAS) for (const p of s.presets) expect((p.blocks ?? []).length, s.type).toBeLessThanOrEqual(s.maxBlocks ?? 24);
   });
 });

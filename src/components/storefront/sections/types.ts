@@ -19,7 +19,9 @@ export type SectionCtx = {
   product?: PublicProduct;
   related?: PublicProduct[];
   /** Página de catálogo: filtros da busca e a categoria escolhida. */
-  query?: { category?: string; q?: string };
+  query?: { category?: string; q?: string; sort?: string };
+  /** Id da primeira seção visível de conteúdo (recebe o título principal da página). */
+  firstId?: string;
 };
 
 export type SectionProps = {

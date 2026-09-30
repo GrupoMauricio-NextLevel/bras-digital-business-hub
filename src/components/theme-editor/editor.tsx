@@ -23,7 +23,7 @@ type Device = "desktop" | "tablet" | "mobile";
 type Save = "saved" | "dirty" | "saving" | "error";
 const PAGE: PageKind = "home";
 const DEVICES = [{ key: "desktop", label: "Computador", icon: Monitor, px: null }, { key: "tablet", label: "Tablet", icon: Tablet, px: 768 }, { key: "mobile", label: "Celular", icon: Smartphone, px: 390 }] as const;
-const ADVANCED_STYLE = new Set(["headingFont", "bodyFont", "radius", "buttons"]);
+const ADVANCED_STYLE = new Set(["headingFont", "bodyFont", "radius", "buttons", "quickView", "animations"]);
 const sig = (d: Doc) => JSON.stringify(d);
 const editable = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
 

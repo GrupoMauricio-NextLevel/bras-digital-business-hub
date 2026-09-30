@@ -26,7 +26,7 @@ export function normalizeTemplate(raw: unknown, region: SectionRegion, page?: Pa
     if (!schema) { issues.push(`Seção “${id}” de tipo desconhecido (${s.type}) removida.`); continue; }
     if (schema.region !== region) { issues.push(`Seção “${schema.name}” não pertence a este local.`); continue; }
     if (region === "content" && page && !schema.pages.includes(page)) { issues.push(`Seção “${schema.name}” não é permitida nesta página.`); continue; }
-    if (schema.singleton) { if (singletons.has(schema.type)) { issues.push(`Só pode haver uma seção “${schema.name}”.`); continue; } singletons.add(schema.type); }
+    if (schema.singleton) { const key = schema.slot ?? schema.type; if (singletons.has(key)) { issues.push(`Só pode haver uma seção “${schema.name}”.`); continue; } singletons.add(key); }
     const rawBlocks = isObj(s.blocks) ? s.blocks : {};
     const bids = [...(Array.isArray(s.blockOrder) ? s.blockOrder.filter((x): x is string => typeof x === "string") : []), ...Object.keys(rawBlocks)];
     const blocks: Record<string, BlockInstance> = {}; const blockOrder: string[] = []; const bseen = new Set<string>(); const perType: Record<string, number> = {};
@@ -66,7 +66,7 @@ export function addSection(t: Template, type: string, opts: { region: SectionReg
   if (schema.region !== opts.region) throw new TemplateOpError("Esta seção não pode ser usada aqui.");
   if (opts.region === "content" && opts.page && !schema.pages.includes(opts.page)) throw new TemplateOpError("Esta seção não é permitida nesta página.");
   if (t.order.length >= LIMITS.sections) throw new TemplateOpError(`Limite de ${LIMITS.sections} seções.`);
-  if (schema.singleton && t.order.some((id) => t.sections[id]!.type === type)) throw new TemplateOpError(`Só pode haver uma seção “${schema.name}”.`);
+  if (schema.singleton && t.order.some((id) => { const o = sectionSchema(t.sections[id]!.type); return (o?.slot ?? o?.type) === (schema.slot ?? schema.type); })) throw new TemplateOpError(`Só pode haver uma seção “${schema.name}”.`);
   const preset = schema.presets[opts.preset ?? 0] ?? schema.presets[0];
   const id = newSectionId(type, t.order);
   const blocks: Record<string, BlockInstance> = {}; const blockOrder: string[] = [];
@@ -178,7 +178,7 @@ export function legacyGlobals(store: { primaryColor: string; accentColor: string
   };
 }
 
-export const DEFAULT_STYLE: ThemeStyle = { primary: "#0f172a", accent: "#16a34a", headingFont: "display", bodyFont: "moderna", radius: 16, buttons: "solid" };
+export const DEFAULT_STYLE: ThemeStyle = { primary: "#0f172a", accent: "#16a34a", headingFont: "display", bodyFont: "moderna", radius: 16, buttons: "solid", quickView: false, animations: false };
 export function normalizeStyle(raw: Partial<Record<keyof ThemeStyle, unknown>> | undefined): ThemeStyle {
   const r = raw ?? {};
   const def = (id: keyof ThemeStyle) => STYLE_DEFS.find((d) => d.id === id)!;
@@ -186,6 +186,7 @@ export function normalizeStyle(raw: Partial<Record<keyof ThemeStyle, unknown>> |
     primary: normalizeValue(def("primary"), r.primary ?? DEFAULT_STYLE.primary) as string, accent: normalizeValue(def("accent"), r.accent ?? DEFAULT_STYLE.accent) as string,
     headingFont: normalizeValue(def("headingFont"), r.headingFont ?? DEFAULT_STYLE.headingFont) as string, bodyFont: normalizeValue(def("bodyFont"), r.bodyFont ?? DEFAULT_STYLE.bodyFont) as string,
     radius: normalizeValue(def("radius"), r.radius ?? DEFAULT_STYLE.radius) as number, buttons: normalizeValue(def("buttons"), r.buttons ?? DEFAULT_STYLE.buttons) as ThemeStyle["buttons"],
+    quickView: normalizeValue(def("quickView"), r.quickView ?? DEFAULT_STYLE.quickView) as boolean, animations: normalizeValue(def("animations"), r.animations ?? DEFAULT_STYLE.animations) as boolean,
   };
 }
 /** Configurações globais do tema, no mesmo formato das seções (o editor as desenha do mesmo jeito). */
@@ -196,6 +197,8 @@ export const STYLE_DEFS = [
   { id: "bodyFont", type: "font", label: "Fonte do texto", default: DEFAULT_STYLE.bodyFont },
   { id: "radius", type: "range", label: "Cantos arredondados", min: 0, max: 28, step: 2, unit: "px", default: DEFAULT_STYLE.radius },
   { id: "buttons", type: "select", label: "Botões", options: [{ value: "solid", label: "Preenchidos" }, { value: "outline", label: "Só contorno" }], default: DEFAULT_STYLE.buttons },
+  { id: "quickView", type: "checkbox", label: "Compra rápida nos cartões de produto", default: DEFAULT_STYLE.quickView },
+  { id: "animations", type: "checkbox", label: "Movimento discreto ao rolar", default: DEFAULT_STYLE.animations },
 ] as const satisfies readonly import("./types").SettingDef[];
 
 export function normalizeGlobals(raw: unknown): { globals: ThemeGlobals; issues: string[] } {

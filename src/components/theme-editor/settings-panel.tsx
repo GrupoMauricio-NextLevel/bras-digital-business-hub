@@ -4,7 +4,7 @@ import { Lock } from "lucide-react";
 import { FormField } from "@/components/app/form-field";
 import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { ColorField, FontPicker, LinkPicker, RangeField, ResourcePicker, RichTextLite } from "@/components/ds/fields";
-import { isValidImageRef } from "@/lib/themes/settings";
+import { isValidDateTime, isValidImageRef, isValidVideoRef } from "@/lib/themes/settings";
 import type { SettingDef, SettingValue } from "@/lib/themes/types";
 
 export type PickerData = { products: { id: string; label: string; sublabel?: string }[]; categories: { id: string; label: string }[] };
@@ -31,6 +31,9 @@ export function SettingField({ def, value, onChange, data, idPrefix, locked }: {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={String(v)} alt="" className="mt-2 h-20 rounded-md border border-border object-cover" />
       ) : null}</FormField>; }
+    case "video": { const ok = isValidVideoRef(String(v)); return <FormField label={def.label} htmlFor={id} error={ok ? undefined : "Use um link do YouTube ou um arquivo https terminado em .mp4, .webm ou .mov."} hint="Link do YouTube ou arquivo de vídeo (mp4, webm).">
+      <Input id={id} value={String(v)} placeholder="https://youtu.be/…" aria-invalid={!ok} onChange={(e) => onChange(e.target.value)} /></FormField>; }
+    case "datetime": return wrap(<Input id={id} type="datetime-local" value={String(v)} aria-invalid={!isValidDateTime(String(v))} onChange={(e) => onChange(e.target.value)} />);
     case "product": return <ResourcePicker id={id} label={def.label} noun="produto" options={data.products} value={v ? [String(v)] : []} onChange={(ids) => onChange(ids[0] ?? "")} />;
     case "collection": return wrap(<Select id={id} value={String(v)} onChange={(e) => onChange(e.target.value)}><option value="">Nenhuma</option>{data.categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}</Select>);
     case "font": return <div><FontPicker label={def.label} value={String(v)} onChange={onChange} />{lockNote}</div>;

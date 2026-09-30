@@ -2,10 +2,11 @@ import Link from "next/link";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import type { PublicProduct } from "@/lib/queries/storefront";
+import { QuickViewButton } from "./quick-view";
 
-export function ProductCard({ product, slug }: { product: PublicProduct; slug: string }) {
+export function ProductCard({ product, slug, quickView = false }: { product: PublicProduct; slug: string; quickView?: boolean }) {
   const soldOut = product.available === 0;
-  return (
+  const link = (
     <Link href={`/store/${slug}/product/${product.slug}`} className="group block">
       <div className="relative overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:-translate-y-0.5">
         <ProductArt images={product.images} size="lg" className="bg-neutral-100 transition-transform duration-500 group-hover:scale-[1.03]" />
@@ -17,5 +18,13 @@ export function ProductCard({ product, slug }: { product: PublicProduct; slug: s
         <div className="text-sm font-semibold">{formatBRL(product.priceCents)}</div>
       </div>
     </Link>
+  );
+  if (!quickView || soldOut) return link;
+  // Com compra rápida o botão fica fora do link (não pode haver botão dentro de link) e sobre a área da imagem.
+  return (
+    <div className="group relative">
+      {link}
+      <div className="pointer-events-none absolute inset-x-0 top-0 aspect-[4/5]"><QuickViewButton product={product} slug={slug} /></div>
+    </div>
   );
 }

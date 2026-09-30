@@ -8,6 +8,7 @@ import { StoreHeader } from "@/components/storefront/header";
 import { BuyBox } from "@/components/storefront/buy-box";
 import { ThumbsGallery } from "@/components/storefront/product-gallery";
 import { CartView } from "@/app/store/[slug]/cart/cart-view";
+import { SortSelect } from "@/components/storefront/sort-select";
 import { renderMarkdownLite } from "@/lib/ds/text";
 import { resolveLink } from "@/lib/themes/template";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,7 @@ export function AnnouncementBar({ settings, ctx }: SectionProps) {
 
 /** O cabeçalho é um componente de cliente (carrinho e menu); as configurações chegam por propriedades. */
 export function HeaderSection({ settings, ctx }: SectionProps) {
-  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} />;
+  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} />;
 }
 
 export function Hero({ settings, ctx }: SectionProps) {
@@ -84,7 +85,7 @@ export function ProductShowcase({ id, settings, ctx }: SectionProps) {
   return (
     <section className="mt-10">
       <div className="mb-5 flex items-end justify-between"><div><h2 className="text-xl font-semibold tracking-tight">{str(settings.title)}</h2>{str(settings.subtitle) ? <p className="text-sm text-neutral-500">{str(settings.subtitle)}</p> : null}</div>{str(settings.linkLabel) ? <Link href={resolveLink(ctx.base, str(settings.linkHref))} className="text-sm font-medium underline-offset-4 hover:underline">{str(settings.linkLabel)}</Link> : null}</div>
-      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>
+      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>
     </section>
   );
 }
@@ -106,7 +107,7 @@ export function ProductGrid({ id, settings, ctx }: SectionProps) {
   return (
     <section className="mt-12">
       <h2 className="mb-5 text-xl font-semibold tracking-tight">{str(settings.title)}</h2>
-      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>
+      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>
     </section>
   );
 }
@@ -122,15 +123,15 @@ export function RichText({ settings }: SectionProps) {
 }
 
 export function Footer({ settings, ctx }: SectionProps) {
-  const { store } = ctx;
+  const { store } = ctx; const dark = settings.tone === "dark";
   return (
-    <footer className="border-t border-neutral-200 bg-neutral-50">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className={cn("border-t", dark ? "border-white/10 bg-neutral-950 text-neutral-300" : "border-neutral-200 bg-neutral-50")}>
+      <div className={cn("mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6", !dark && "text-neutral-500")}>
         <div>{str(settings.text) || store.name}</div>
         <div className="flex gap-4 text-xs">
           {settings.showInstagram !== false && store.instagram ? <span>@{store.instagram.replace("@", "")}</span> : null}
           {settings.showBadges !== false ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}
-          {store.offer !== "STORE_OWN" ? <span className="flex items-center gap-1.5 text-neutral-400">Tecnologia <Logo tone="on-light" className="h-4" /></span> : null}
+          {store.offer !== "STORE_OWN" ? <span className={cn("flex items-center gap-1.5", dark ? "text-neutral-400" : "text-neutral-400")}>Tecnologia <Logo tone={dark ? "on-dark" : "on-light"} className="h-4" /></span> : null}
         </div>
       </div>
     </footer>
@@ -168,7 +169,7 @@ export function ProductRelated({ settings, ctx }: SectionProps) {
   return (
     <section className="mt-16">
       <h2 className="mb-5 text-xl font-semibold tracking-tight">{str(settings.title)}</h2>
-      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>
+      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>
     </section>
   );
 }
@@ -187,6 +188,7 @@ export function CollectionHeader({ settings, ctx }: SectionProps) {
             <input name="q" defaultValue={q} placeholder="Buscar produto…" aria-label="Buscar produto" className="h-11 w-full rounded-lg border border-neutral-300 bg-white pl-9 pr-3 text-sm outline-none focus:border-neutral-900" />
           </form>
         ) : null}
+        {settings.showSort === true ? <SortSelect value={ctx.query?.sort ?? ""} /> : null}
       </div>
       {settings.showCategories !== false ? (
         <div className="nl-scroll mb-6 flex gap-2 overflow-x-auto pb-1">
@@ -201,7 +203,7 @@ export function CollectionHeader({ settings, ctx }: SectionProps) {
 export function CollectionGrid({ settings, ctx }: SectionProps) {
   const cols = COLS[Number(settings.columns)] ?? COLS[4]!;
   if (ctx.products.length === 0) return <div className="rounded-xl border border-dashed border-neutral-300 p-12 text-center text-sm text-neutral-500">{str(settings.emptyText)}</div>;
-  return <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{ctx.products.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>;
+  return <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{ctx.products.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>;
 }
 
 export function CartMain({ ctx }: SectionProps) { return <CartView slug={ctx.slug} />; }

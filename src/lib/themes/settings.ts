@@ -20,6 +20,13 @@ export function defaultValue(def: SettingDef): SettingValue {
 
 export const defaultsFor = (defs: SettingDef[]): Record<string, SettingValue> => Object.fromEntries(defs.map((d) => [d.id, defaultValue(d)]));
 
+/** Vídeo aceito: arquivo https (mp4, webm, mov) ou link do YouTube. Nada de outros serviços nem de HTML. */
+export const YOUTUBE_ID = /^(?:https:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/))([A-Za-z0-9_-]{11})(?:[?&#].*)?$/;
+export function isValidVideoRef(v: string): boolean { return v === "" || YOUTUBE_ID.test(v) || /^https:\/\/[^\s?#]+\.(mp4|webm|mov)(\?[^\s]*)?$/i.test(v); }
+export function youtubeIdOf(v: string): string | null { return YOUTUBE_ID.exec(v)?.[1] ?? null; }
+/** Data e hora do editor (AAAA-MM-DDTHH:mm) que realmente existem. */
+export function isValidDateTime(v: string): boolean { if (v === "") return true; const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(v); if (!m) return false; const d = new Date(Date.UTC(+m[1]!, +m[2]! - 1, +m[3]!, +m[4]!, +m[5]!)); return d.getUTCFullYear() === +m[1]! && d.getUTCMonth() === +m[2]! - 1 && d.getUTCDate() === +m[3]! && d.getUTCHours() === +m[4]!; }
+
 /** Endereço de imagem aceito: caminho da loja ou https. Nada de javascript: nem HTML. */
 export function isValidImageRef(v: string): boolean { return v === "" || /^\/[^\s]*$/.test(v) || /^https:\/\/[^\s]+$/.test(v); }
 
@@ -43,6 +50,8 @@ export function normalizeValue(def: SettingDef, raw: unknown): SettingValue {
     case "font": return typeof raw === "string" && FONT_CHOICES.some((f) => f.key === raw) ? raw : fallback;
     case "url": { if (typeof raw !== "string") return fallback; const v = raw.trim().slice(0, def.maxLength ?? DEFAULT_MAX.url!); return isValidLink(v) ? v : fallback; }
     case "image": { if (typeof raw !== "string") return fallback; const v = raw.trim().slice(0, def.maxLength ?? DEFAULT_MAX.image!); return isValidImageRef(v) ? v : fallback; }
+    case "video": { if (typeof raw !== "string") return fallback; const v = raw.trim().slice(0, 500); return isValidVideoRef(v) ? v : fallback; }
+    case "datetime": { if (typeof raw !== "string") return fallback; const v = raw.trim(); return isValidDateTime(v) ? v : fallback; }
     case "product": case "collection": return typeof raw === "string" && /^[A-Za-z0-9_-]{0,60}$/.test(raw) ? raw : fallback;
     default: { // text, textarea, richtext
       if (typeof raw !== "string") return fallback;

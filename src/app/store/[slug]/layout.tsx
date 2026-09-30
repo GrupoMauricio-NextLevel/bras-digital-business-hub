@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDb } from "@/db/client";
-import { getStorefront } from "@/lib/queries/storefront";
+import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
 import { resolveGlobals } from "@/lib/themes/store";
 import { fontStack } from "@/lib/ds/fonts";
@@ -36,17 +36,19 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const { globals } = await resolveGlobals(await getDb(), sf.store, { draft: preview });
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
-  const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products: [], planned: {}, hero: undefined, globals, page: "home" as const };
+  const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
+  const products = (await getStorefrontCatalog(sf.store.id)).map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
+  const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
   return (
     <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
       {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
       {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
-        <SectionList template={globals.header} ctx={ctx} />
+        <SectionList template={globals.header} ctx={ctx} region="header" />
         <main className="flex-1">{children}</main>
       </CartProvider>
-      <SectionList template={globals.footer} ctx={ctx} />
+      <SectionList template={globals.footer} ctx={ctx} region="footer" />
     </div>
   );
 }
