@@ -33,7 +33,7 @@ export const priceBookSchema = z.object({
   channel: z.object({ setupCommissionBps: bps, guaranteeDays: days }),
   templates: z.record(z.enum(["PRO", "ELITE"]), z.object({ oneTimeCents: cents, monthlyCents: cents })),
   services: z.object({ targetMarginBps: bps }),
-  billing: z.object({ dueDay: z.number().int().min(1).max(28), waiverDays: days, priceLockMonths: z.number().int().min(0).max(60) }),
+  billing: z.object({ dueDay: z.number().int().min(1).max(28), waiverDays: days, priceLockMonths: z.number().int().min(0).max(60), /** Desconto para pagar por Pix (em centésimos de %) sobre o preço de lista, que é o valor cheio no cartão em até 6x. */ pixDiscountBps: z.number().int().min(0).max(5000).default(1000) }),
   dunning: z.object({ warningDays: days, partialBlockDays: days, suspendedDays: days, closedDays: days }),
   costs: z.object({ collectionFeeBps: bps, infraPerStoreCents: cents, supportPerSupplierCents: cents }),
   /** Add-ons mensais/anuais liberados por entitlement. audience: quem pode comprar. */
@@ -58,7 +58,7 @@ export const DEFAULT_PRICE_BOOK: PriceBook = {
   channel: { setupCommissionBps: 2500, guaranteeDays: 7 },
   templates: { PRO: { oneTimeCents: 29_700, monthlyCents: 3_900 }, ELITE: { oneTimeCents: 69_700, monthlyCents: 8_900 } },
   services: { targetMarginBps: 5000 },
-  billing: { dueDay: 5, waiverDays: 90, priceLockMonths: 12 },
+  billing: { dueDay: 5, waiverDays: 90, priceLockMonths: 12, pixDiscountBps: 1000 },
   // Prazos flexíveis: aviso 3 dias após o vencimento, bloqueio parcial em 15, suspensão em 25 e encerramento em 90.
   dunning: { warningDays: 3, partialBlockDays: 15, suspendedDays: 25, closedDays: 90 },
   costs: { collectionFeeBps: 200, infraPerStoreCents: 800, supportPerSupplierCents: 50_000 },

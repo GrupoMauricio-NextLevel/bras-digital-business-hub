@@ -103,3 +103,20 @@ export async function createPixPayment(token: string, input: { amountCents: numb
   if (!td?.qr_code) throw new MercadoPagoError("Mercado Pago não devolveu o código Pix.");
   return { paymentId: String(r.id), qrCode: td.qr_code, qrCodeBase64: td.qr_code_base64 ?? "" };
 }
+
+export type InvoicePreferenceInput = { externalReference: string; title: string; amountCents: number; payerEmail: string; notificationUrl?: string; backUrls?: { success: string; failure: string; pending: string }; maxInstallments: number };
+
+/** Checkout Pro só com cartão de crédito, em até N parcelas, para faturas da NextLevel (o valor cheio da lista). */
+export async function createInvoicePreference(token: string, input: InvoicePreferenceInput, fetchImpl: FetchLike = fetch): Promise<Preference> {
+  const body: Record<string, unknown> = {
+    items: [{ id: input.externalReference, title: input.title.slice(0, 250), quantity: 1, unit_price: input.amountCents / 100, currency_id: "BRL" }],
+    payer: { email: input.payerEmail },
+    external_reference: input.externalReference,
+    statement_descriptor: "NEXTLEVEL",
+    payment_methods: { installments: input.maxInstallments, excluded_payment_types: ["debit_card", "ticket", "atm", "bank_transfer", "prepaid_card", "account_money"].map((id) => ({ id })) },
+  };
+  if (input.notificationUrl) body.notification_url = input.notificationUrl;
+  if (input.backUrls) { body.back_urls = input.backUrls; body.auto_return = "approved"; }
+  const pref = await call<{ id: string; init_point: string }>(fetchImpl, token, "/checkout/preferences", { method: "POST", body: JSON.stringify(body) });
+  return { id: pref.id, checkoutUrl: pref.init_point };
+}

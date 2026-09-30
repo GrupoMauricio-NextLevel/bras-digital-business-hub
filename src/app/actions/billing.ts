@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { getSession, isDemoMode } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
-import { buyAddon, chargeInvoice, chargeInvoiceDemo, checkPayment, connectNextLevelMp, simulateNextLevelPayment } from "@/lib/domain/nextlevel-billing";
+import { buyAddon, chargeInvoice, chargeInvoiceCard, chargeInvoiceCardDemo, chargeInvoiceDemo, checkPayment, connectNextLevelMp, simulateNextLevelPayment, switchInvoiceMethod } from "@/lib/domain/nextlevel-billing";
 import { getBaseUrl, isPublicHttps } from "@/lib/base-url";
 
 async function ctx() {
@@ -48,4 +48,24 @@ export async function simulatePaymentAction(paymentId: string) {
 
 export async function buyAddonAction(key: string, cycle: "MONTHLY" | "ANNUAL") {
   return runAction(async () => { const { session, db } = await ctx(); const r = await buyAddon(db, session.actor, key, cycle); refresh(); return r; });
+}
+
+/** Troca a fatura do tema entre Pix (com desconto) e cartão (valor cheio, em até 6x). */
+export async function switchInvoiceMethodAction(invoiceId: string, method: "PIX" | "CARD") {
+  return runAction(async () => { const { session, db } = await ctx(); const r = await switchInvoiceMethod(db, session.actor, invoiceId, method === "CARD" ? "CARD" : "PIX"); refresh(); return r; });
+}
+
+/** Cartão em até 6x: devolve o endereço do checkout do Mercado Pago (ou, em demonstração, uma cobrança simulada). */
+export async function chargeInvoiceCardAction(invoiceId: string, returnPath?: string) {
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    try {
+      const baseUrl = await getBaseUrl();
+      const r = await chargeInvoiceCard(db, session.actor, invoiceId, { baseUrl, payerEmail: session.user.email, returnPath });
+      return { id: r.id, checkoutUrl: r.checkoutUrl as string | null, demo: false };
+    } catch (e) {
+      if (e instanceof DomainError && e.code === "NL_MP_NOT_CONFIGURED" && isDemoMode()) { const r = await chargeInvoiceCardDemo(db, session.actor, invoiceId); return { id: r.id, checkoutUrl: null as string | null, demo: true }; }
+      throw e;
+    }
+  });
 }

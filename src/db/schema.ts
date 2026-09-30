@@ -661,6 +661,9 @@ export const nextlevelPayments = pgTable("nextlevel_payments", {
   invoiceId: text("invoice_id").notNull().references(() => financeInvoices.id),
   mpPaymentId: text("mp_payment_id").unique(),
   status: text("status", { enum: ["PENDING", "PAID", "EXPIRED", "FAILED"] }).notNull().default("PENDING"),
+  /** PIX (código copia e cola) ou CARD (Checkout Pro do Mercado Pago, em até 6x). */
+  method: text("method", { enum: ["PIX", "CARD"] }).notNull().default("PIX"),
+  checkoutUrl: text("checkout_url"),
   amountCents: integer("amount_cents").notNull(),
   pixCode: text("pix_code"),
   pixQrBase64: text("pix_qr_base64"),

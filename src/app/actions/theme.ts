@@ -77,8 +77,8 @@ export async function tryThemeAction(key: string) {
 export async function exitTryThemeAction() {
   (await cookies()).delete(TRY_COOKIE);
 }
-export async function buyThemeAction(key: string) {
-  return runAction(async () => { const { session, db } = await ctx(); const r = await buyTheme(db, session.actor, z.string().min(1).parse(key)); revalidatePath("/merchant", "layout"); return r; });
+export async function buyThemeAction(key: string, method: "PIX" | "CARD" = "PIX") {
+  return runAction(async () => { const { session, db } = await ctx(); const r = await buyTheme(db, session.actor, z.string().min(1).parse(key), z.enum(["PIX", "CARD"]).parse(method)); revalidatePath("/merchant", "layout"); return r; });
 }
 export async function installThemeAction(key: string) {
   return runAction(async () => {

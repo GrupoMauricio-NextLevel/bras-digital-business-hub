@@ -4,7 +4,8 @@ import { entitlements, financeInvoices, stores, storeThemes, themeGlobals, theme
 import { assertCanAccess, type Actor } from "@/lib/domain/access";
 import { emitEvent } from "@/lib/domain/events";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
-import { supplierOfStore } from "@/lib/domain/nextlevel-billing";
+import { supplierOfStore, themeQuote, switchInvoiceMethod } from "@/lib/domain/nextlevel-billing";
+import { amountFor, type PaymentMethod, type Quote } from "@/lib/finance/pricing";
 import { requireFeature } from "@/lib/features";
 import { newId } from "@/lib/ids";
 import { THEME_BY_KEY, themeEntitlementKey } from "./catalog";
@@ -32,7 +33,7 @@ export async function ownedThemeKeys(db: Database, storeId: string, now = new Da
   return owned;
 }
 
-export type ThemeCard = { key: string; name: string; tier: string; priceCents: number; tagline: string; description: string; features: string[]; previewAccent: string; owned: boolean; active: boolean; openInvoiceId: string | null };
+export type ThemeCard = { key: string; name: string; tier: string; priceCents: number; tagline: string; description: string; features: string[]; previewAccent: string; owned: boolean; active: boolean; openInvoiceId: string | null; quote: Quote; openMethod: PaymentMethod | null };
 
 /** Vitrine de temas para o lojista, com estado (comprado, ativo, fatura em aberto). */
 export async function themeCardsFor(db: Database, actor: Actor): Promise<ThemeCard[]> {
@@ -42,15 +43,20 @@ export async function themeCardsFor(db: Database, actor: Actor): Promise<ThemeCa
     db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, store.id)).limit(1),
     db.select().from(financeInvoices).where(and(eq(financeInvoices.storeId, store.id), eq(financeInvoices.kind, "ADDON"), eq(financeInvoices.status, "OPEN"))),
   ]);
+  const quotes = new Map<string, Quote>();
+  for (const t of rows) if (THEME_BY_KEY[t.key]) quotes.set(t.key, await themeQuote(db, t.key));
   return rows.flatMap((t) => {
     const info = THEME_BY_KEY[t.key]; if (!info) return [];
     const inv = invoices.find((i) => i.dedupeKey.split(":")[2] === themeEntitlementKey(t.key));
-    return [{ key: t.key, name: t.name, tier: t.tier, priceCents: t.priceCents, tagline: info.tagline, description: t.description, features: t.features, previewAccent: t.previewAccent, owned: owned.has(t.key), active: active[0]?.key === t.key, openInvoiceId: inv?.id ?? null }];
+    return [{ key: t.key, name: t.name, tier: t.tier, priceCents: t.priceCents, tagline: info.tagline, description: t.description, features: t.features, previewAccent: t.previewAccent, owned: owned.has(t.key), active: active[0]?.key === t.key, openInvoiceId: inv?.id ?? null, openMethod: inv ? (inv.lines[0]?.kind === "THEME_CARD" ? "CARD" as const : "PIX" as const) : null, quote: quotes.get(t.key)! }];
   }).sort((a, b) => a.priceCents - b.priceCents);
 }
 
-/** Gera a fatura (Pix) do tema. Pago, a licença é permanente para a loja. */
-export async function buyTheme(db: Database, actor: Actor, key: string, now = new Date()) {
+/**
+ * Gera a fatura do tema. O preço de lista é o valor cheio no cartão (em até 6x); o Pix tem desconto.
+ * Se já há fatura aberta, só troca o método. Pago, a licença é permanente para a loja.
+ */
+export async function buyTheme(db: Database, actor: Actor, key: string, method: PaymentMethod = "PIX", now = new Date()) {
   const store = await ownStore(db, actor);
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
@@ -59,12 +65,14 @@ export async function buyTheme(db: Database, actor: Actor, key: string, now = ne
   const ent = themeEntitlementKey(key);
   const dedupeKey = `ADDON:${store.id}:${ent}:LIFETIME:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
-  if (existing && existing.status === "OPEN") return { invoiceId: existing.id, amountCents: existing.amountCents };
+  if (existing && existing.status === "OPEN") { const r = await switchInvoiceMethod(db, actor, existing.id, method); return { invoiceId: existing.id, amountCents: r.amountCents, method }; }
+  const q = await themeQuote(db, key); const amount = amountFor(q, method);
   const id = newId("fin"); const due = new Date(now); due.setUTCDate(due.getUTCDate() + 3);
   const supplierId = await supplierOfStore(db, store.id);
-  await db.insert(financeInvoices).values({ id, dedupeKey, payerType: "STORE", supplierId, storeId: store.id, kind: "ADDON", description: `Tema ${theme.name} (licença permanente)`, amountCents: theme.priceCents, lines: [{ kind: "ADDON", description: `Tema ${theme.name} · licença permanente`, amountCents: theme.priceCents }], status: "OPEN", dueDate: due.toISOString() });
-  await emitEvent(db, { type: "THEME_ORDERED", supplierId, storeId: store.id, actorRole: actor.role, payload: { key, invoiceId: id } });
-  return { invoiceId: id, amountCents: theme.priceCents };
+  const line = { kind: method === "CARD" ? "THEME_CARD" : "THEME_PIX", description: method === "CARD" ? `Tema ${theme.name} · cartão em até ${q.installments}x` : `Tema ${theme.name} · Pix com ${q.pixDiscountPct}% de desconto`, amountCents: amount };
+  await db.insert(financeInvoices).values({ id, dedupeKey: existing ? `${dedupeKey}:${now.getTime()}` : dedupeKey, payerType: "STORE", supplierId, storeId: store.id, kind: "ADDON", description: `Tema ${theme.name} (licença permanente)`, amountCents: amount, lines: [line], status: "OPEN", dueDate: due.toISOString() });
+  await emitEvent(db, { type: "THEME_ORDERED", supplierId, storeId: store.id, actorRole: actor.role, payload: { key, invoiceId: id, method } });
+  return { invoiceId: id, amountCents: amount, method };
 }
 
 const DEFAULT_HERO_TITLE = "Bem-vindo à nossa loja";

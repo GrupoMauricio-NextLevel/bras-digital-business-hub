@@ -4,13 +4,15 @@ import type { Database } from "@/db/client";
 import { financeInvoices, nextlevelPayments, platformSettings, stores } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { decryptSecret, encryptSecret } from "@/lib/security/crypto";
-import { createPixPayment, getPayment, MercadoPagoError, verifyAccessToken, type FetchLike } from "@/lib/payments/mercadopago";
+import { createInvoicePreference, createPixPayment, findApprovedPaymentId, getPayment, MercadoPagoError, verifyAccessToken, type FetchLike } from "@/lib/payments/mercadopago";
 import { ADDON_KEYS, type AddonKey } from "@/lib/finance/price-book";
 import { isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { getPriceBook, markInvoicePaid } from "./finance";
 import { grantEntitlement, tenantOf } from "./entitlements";
+import { CARD_MAX_INSTALLMENTS, amountFor, quote, type PaymentMethod } from "@/lib/finance/pricing";
+import { THEME_BY_KEY } from "@/lib/themes/catalog";
 
 const MP_KEY = "nextlevel_mp";
 type MpSetting = { tokenEnc: string; accountId: string; nickname: string; isTest: boolean };
@@ -81,11 +83,14 @@ export async function syncNextLevelPayment(db: Database, paymentRowId: string, f
   const row = await db.query.nextlevelPayments.findFirst({ where: eq(nextlevelPayments.id, paymentRowId) });
   if (!row) return { paid: false };
   if (row.status === "PAID") return { paid: true };
-  if (!row.mpPaymentId) return { paid: false };
-  const p = await getPayment(await nlToken(db), row.mpPaymentId, fetchImpl);
+  const token = await nlToken(db);
+  // Cartão (Checkout Pro): o pagamento nasce depois do clique; procuramos o aprovado pela referência da cobrança.
+  const paymentId = row.mpPaymentId ?? (row.method === "CARD" ? await findApprovedPaymentId(token, row.id, fetchImpl) : null);
+  if (!paymentId) return { paid: false };
+  const p = await getPayment(token, paymentId, fetchImpl);
   if (p.externalReference !== row.id || p.status !== "approved") return { paid: false };
   if (p.amountCents < row.amountCents) throw new DomainError("AMOUNT_MISMATCH", "Valor pago menor que o da fatura.");
-  await db.update(nextlevelPayments).set({ status: "PAID", paidAt: new Date().toISOString() }).where(eq(nextlevelPayments.id, row.id));
+  await db.update(nextlevelPayments).set({ status: "PAID", paidAt: new Date().toISOString(), mpPaymentId: paymentId }).where(eq(nextlevelPayments.id, row.id));
   await markInvoicePaid(db, row.invoiceId);
   return { paid: true };
 }
@@ -187,4 +192,61 @@ export async function addonViewsFor(db: Database, actor: Actor) {
     const open = invoices.find((i) => i.kind === "ADDON" && i.status === "OPEN" && i.dedupeKey.split(":")[2] === k);
     return { key: k, name: a.name, description: a.description, monthlyCents: a.monthlyCents, annualCents: a.annualCents, active: Boolean(active), endsAt: active?.endsAt ?? null, openInvoiceId: open?.id ?? null };
   });
+}
+
+// ---------------------------------------------------------------------------
+// Cartão em até 6x (valor cheio) ou Pix (com desconto) para temas
+// ---------------------------------------------------------------------------
+const themeKeyOfInvoice = (dedupeKey: string): string | null => { const e = dedupeKey.split(":")[2]; return e?.startsWith("THEME_") ? e.replace("THEME_", "").toLowerCase() : null; };
+export const invoiceMethod = (lines: { kind: string }[]): PaymentMethod => (lines[0]?.kind === "THEME_CARD" ? "CARD" : "PIX");
+
+/** Preço do tema nos dois métodos. O valor cheio (lista) é o do cartão; o Pix leva o desconto da tabela de preços. */
+export async function themeQuote(db: Database, key: string) {
+  const info = THEME_BY_KEY[key]; if (!info) throw new NotFoundError("Tema não encontrado.");
+  const book = await getPriceBook(db);
+  return quote(info.priceCents, book.billing.pixDiscountBps);
+}
+
+/** Troca o método de uma fatura de tema em aberto: recalcula o valor (Pix com desconto ou cartão cheio) e invalida cobranças pendentes. */
+export async function switchInvoiceMethod(db: Database, actor: Actor, invoiceId: string, method: PaymentMethod) {
+  const inv = await loadOwnInvoice(db, actor, invoiceId);
+  if (inv.status !== "OPEN") throw new DomainError("INVOICE_STATE", "Esta fatura não está em aberto.");
+  const key = themeKeyOfInvoice(inv.dedupeKey);
+  if (!key) throw new DomainError("NOT_SWITCHABLE", "Esta fatura não tem opção de cartão.");
+  if (invoiceMethod(inv.lines) === method) return { invoiceId, amountCents: inv.amountCents, method };
+  const q = await themeQuote(db, key);
+  const amount = amountFor(q, method);
+  const name = THEME_BY_KEY[key]!.name;
+  const lines = [{ kind: method === "CARD" ? "THEME_CARD" : "THEME_PIX", description: method === "CARD" ? `Tema ${name} · cartão em até ${q.installments}x` : `Tema ${name} · Pix com ${q.pixDiscountPct}% de desconto`, amountCents: amount }];
+  await db.update(financeInvoices).set({ amountCents: amount, lines }).where(eq(financeInvoices.id, invoiceId));
+  await db.update(nextlevelPayments).set({ status: "EXPIRED" }).where(and(eq(nextlevelPayments.invoiceId, invoiceId), eq(nextlevelPayments.status, "PENDING")));
+  return { invoiceId, amountCents: amount, method };
+}
+
+/** Checkout Pro (cartão em até 6x) para a fatura: devolve o endereço do Mercado Pago para o cliente pagar. */
+export async function chargeInvoiceCard(db: Database, actor: Actor, invoiceId: string, opts: { fetchImpl?: FetchLike; baseUrl: string; payerEmail?: string; returnPath?: string }) {
+  let inv = await loadOwnInvoice(db, actor, invoiceId);
+  if (inv.status !== "OPEN") throw new DomainError("INVOICE_STATE", "Esta fatura não está em aberto.");
+  if (themeKeyOfInvoice(inv.dedupeKey) && invoiceMethod(inv.lines) !== "CARD") { await switchInvoiceMethod(db, actor, invoiceId, "CARD"); inv = await loadOwnInvoice(db, actor, invoiceId); }
+  const open = await db.select().from(nextlevelPayments).where(and(eq(nextlevelPayments.invoiceId, invoiceId), eq(nextlevelPayments.status, "PENDING"), eq(nextlevelPayments.method, "CARD"))).orderBy(desc(nextlevelPayments.createdAt)).limit(1);
+  if (open[0]?.checkoutUrl && open[0].amountCents === inv.amountCents) return { id: open[0].id, checkoutUrl: open[0].checkoutUrl };
+  const token = await nlToken(db);
+  const id = newId("nlp");
+  const https = opts.baseUrl.startsWith("https://");
+  const ret = `${opts.baseUrl}${opts.returnPath ?? "/merchant/templates"}?pago=${id}`;
+  try {
+    const pref = await createInvoicePreference(token, { externalReference: id, title: inv.description, amountCents: inv.amountCents, payerEmail: opts.payerEmail ?? "cobranca@nextlevel.app", maxInstallments: CARD_MAX_INSTALLMENTS, notificationUrl: https ? `${opts.baseUrl}/api/webhooks/mercadopago-nextlevel?payment=${id}` : undefined, backUrls: https ? { success: ret, failure: ret, pending: ret } : undefined }, opts.fetchImpl);
+    await db.insert(nextlevelPayments).values({ id, invoiceId, method: "CARD", checkoutUrl: pref.checkoutUrl, amountCents: inv.amountCents });
+    return { id, checkoutUrl: pref.checkoutUrl };
+  } catch (e) { if (e instanceof MercadoPagoError) throw new DomainError("CARD_FAILED", e.message); throw e; }
+}
+
+/** Demonstração: cartão fictício, quitado só pelo botão de simulação. */
+export async function chargeInvoiceCardDemo(db: Database, actor: Actor, invoiceId: string) {
+  let inv = await loadOwnInvoice(db, actor, invoiceId);
+  if (inv.status !== "OPEN") throw new DomainError("INVOICE_STATE", "Esta fatura não está em aberto.");
+  if (themeKeyOfInvoice(inv.dedupeKey) && invoiceMethod(inv.lines) !== "CARD") { await switchInvoiceMethod(db, actor, invoiceId, "CARD"); inv = await loadOwnInvoice(db, actor, invoiceId); }
+  const id = newId("nlp");
+  await db.insert(nextlevelPayments).values({ id, invoiceId, method: "CARD", mpPaymentId: `demo_${id}`, amountCents: inv.amountCents, checkoutUrl: null });
+  return { id, amountCents: inv.amountCents };
 }

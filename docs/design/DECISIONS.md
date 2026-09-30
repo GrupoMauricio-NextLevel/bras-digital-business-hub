@@ -183,3 +183,10 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Logo e imagens:** envio de imagem (PNG, JPG ou WebP, até 1,5 MB, tipo conferido pelos bytes, 80 por loja) servida em `/assets/[id]` com cache longo; a logo aparece no cabeçalho (altura ajustável); todo campo de imagem do editor ganhou "Enviar".
 - **Editor com as quatro páginas** (inicial, produto, catálogo, carrinho), cada uma com prévia própria.
 - Migração 0015. Testes `tests/storefront-journey.test.ts`; e2e `e2e/storefront-journey.mjs`.
+
+## D28. T1: temas à venda com cartão em até 6x, Pix com desconto e instalação imediata
+- **Preço de lista = valor cheio do cartão** (até 6x). O Pix mostra o mesmo preço com desconto configurável (`billing.pixDiscountBps`, padrão 10%); a conta fica em `src/lib/finance/pricing.ts` (`quote`).
+- Botão do card: "Comprar em até 6x de R$ X" abre o checkout NextLevel com as duas formas lado a lado; o cartão é Checkout Pro do Mercado Pago (só crédito, no máximo 6 parcelas) e o Pix usa o QR já existente. Trocar de forma reaproveita a fatura (`switchInvoiceMethod`).
+- **Instalação imediata:** ao confirmar o pagamento o tema é liberado e o diálogo "Instalar agora" abre sozinho; no retorno do Mercado Pago (`?pago=`) o estado é sincronizado pela referência externa.
+- Em demonstração o cartão é simulado, com aviso "CARTÃO SIMULADO".
+- Migração 0016 (`nextlevel_payments.method`, `checkout_url`). Testes `tests/pricing.test.ts`, `tests/theme-install.test.ts`; e2e `e2e/theme-store.mjs`.

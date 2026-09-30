@@ -1,3 +1,6 @@
+import { newId } from "@/lib/ids";
+import { nextlevelPayments } from "@/db/schema";
+import { chargeInvoiceCard, connectNextLevelMp, simulateNextLevelPayment, syncNextLevelPayment } from "@/lib/domain/nextlevel-billing";
 import { beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { entitlements, financeInvoices, stores, storeThemes, themes } from "@/db/schema";
@@ -78,7 +81,7 @@ describe("compra e instalação com 1 clique", () => {
   });
   it("tema pago não instala sem comprar", async () => { await expect(installTheme(ctx.db, A(), "arena")).rejects.toMatchObject({ code: "THEME_NOT_OWNED" }); });
   it("gera a fatura com o preço certo e repetir devolve a mesma", async () => {
-    const r = await buyTheme(ctx.db, A(), "arena"); expect(r.amountCents).toBe(29900);
+    const r = await buyTheme(ctx.db, A(), "arena"); expect(r.amountCents).toBe(26910); // Pix: R$ 299,00 com 10% de desconto
     expect((await buyTheme(ctx.db, A(), "arena")).invoiceId).toBe(r.invoiceId);
     const inv = (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.id, r.invoiceId)))[0]!; expect(inv.kind).toBe("ADDON"); expect(inv.storeId).toBe(id()); expect(inv.description).toContain("Arena");
     expect((await themeCardsFor(ctx.db, A())).find((c) => c.key === "arena")!.openInvoiceId).toBe(r.invoiceId);
@@ -117,5 +120,41 @@ describe("compra e instalação com 1 clique", () => {
     const drop = { userId: "u", role: "STORE_OWNER", organizationId: "o", supplierId: null, storeId: ctx.seed.stores.classics.id } as const;
     await expect(buyTheme(ctx.db, drop, "arena")).rejects.toBeInstanceOf(DomainError);
     await expect(installTheme(ctx.db, ctx.actors.arena, "inexistente")).rejects.toMatchObject({ code: expect.stringMatching(/NOT_FOUND/) });
+  });
+
+  it("cartão cobra o valor cheio (em até 6x), Pix cobra com desconto, e trocar de método recalcula a mesma fatura", async () => {
+    const card = await buyTheme(ctx.db, A(), "editorial", "CARD");
+    expect(card.amountCents).toBe(69900);
+    const pix = await buyTheme(ctx.db, A(), "editorial", "PIX");
+    expect(pix.invoiceId).toBe(card.invoiceId); expect(pix.amountCents).toBe(62910);
+    const c = (await themeCardsFor(ctx.db, A())).find((x) => x.key === "editorial")!;
+    expect(c.quote).toMatchObject({ listCents: 69900, pixCents: 62910, installments: 6, installmentCents: 11650 }); expect(c.openMethod).toBe("PIX");
+  });
+  it("pagando no cartão a licença é liberada e o tema pode ser instalado na hora", async () => {
+    const r = await buyTheme(ctx.db, A(), "signature", "CARD");
+    const nlp = newId("nlp");
+    await ctx.db.insert(nextlevelPayments).values({ id: nlp, invoiceId: r.invoiceId, method: "CARD", mpPaymentId: `demo_${nlp}`, amountCents: r.amountCents });
+    await simulateNextLevelPayment(ctx.db, A(), nlp);
+    expect((await ownedThemeKeys(ctx.db, id())).has("signature")).toBe(true);
+    await expect(installTheme(ctx.db, A(), "signature")).resolves.toMatchObject({ installed: true });
+  });
+  it("cartão em produção: cria o checkout do Mercado Pago só com crédito e até 6 parcelas e confirma pela referência", async () => {
+    await connectNextLevelMp(ctx.db, ctx.actors.master, "TEST-1234567890123456789012345", async () => new Response(JSON.stringify({ id: 1, nickname: "NL" }), { status: 200 }));
+    const r = await buyTheme(ctx.db, A(), "editorial", "CARD");
+    let body: Record<string, unknown> = {};
+    const fetchImpl = async (url: string, init?: RequestInit) => { if (url.includes("/checkout/preferences")) { body = JSON.parse(String(init?.body)); return new Response(JSON.stringify({ id: "pref1", init_point: "https://mp.example/checkout" }), { status: 200 }); } return new Response("{}", { status: 200 }); };
+    const out = await chargeInvoiceCard(ctx.db, A(), r.invoiceId, { fetchImpl, baseUrl: "https://app.superdrop.com.br" });
+    expect(out.checkoutUrl).toBe("https://mp.example/checkout");
+    const pm = body.payment_methods as { installments: number; excluded_payment_types: { id: string }[] };
+    expect(pm.installments).toBe(6); expect(pm.excluded_payment_types.map((x) => x.id)).toEqual(expect.arrayContaining(["bank_transfer", "debit_card", "ticket"]));
+    expect(String((body.items as { unit_price: number }[])[0]!.unit_price)).toBe("699");
+    const paidFetch = async (url: string) => {
+      if (url.includes("/v1/payments/search")) return new Response(JSON.stringify({ results: [{ id: 777, status: "approved" }] }), { status: 200 });
+      if (url.includes("/v1/payments/777")) return new Response(JSON.stringify({ id: 777, status: "approved", external_reference: out.id, transaction_amount: 699 }), { status: 200 });
+      return new Response("{}", { status: 200 });
+    };
+    expect((await syncNextLevelPayment(ctx.db, out.id, paidFetch)).paid).toBe(true);
+    expect((await ownedThemeKeys(ctx.db, id())).has("editorial")).toBe(true);
+    expect((await syncNextLevelPayment(ctx.db, out.id, paidFetch)).paid).toBe(true); // idempotente
   });
 });

@@ -32,20 +32,17 @@ if (JSON.stringify(await sectionIds(ap)) !== JSON.stringify(before)) fail("visit
 if (await ap.locator("[data-preview-banner]").count()) fail("visitante viu o aviso de prévia");
 ok("prévia não vaza para o público");
 
-// Comprar → pagar (demo) → instalar
+// Comprar (Pix com desconto) → pagar (demo) → o diálogo de instalação abre sozinho
 await p.goto(B + "/merchant/templates", { waitUntil: "networkidle" });
-await p.getByRole("button", { name: /Comprar por R\$\s*299/ }).click();
-await p.getByRole("button", { name: /Pagar R\$\s*299.*por Pix/ }).click();
+await p.getByRole("button", { name: /Comprar em até 6x/ }).first().click();
+await p.getByRole("radio", { name: /Pix/ }).click();
+await p.getByRole("button", { name: /Pagar R\$\s*[\d.,]+\s*por Pix/ }).first().click();
 await p.getByRole("button", { name: /Simular pagamento/ }).click();
-await p.waitForSelector("text=Pagamento confirmado", { timeout: 20000 });
-await p.keyboard.press("Escape");
-await p.reload({ waitUntil: "networkidle" });
-const inst = p.getByRole("button", { name: /Instalar com 1 clique/ });
-if (!(await inst.count())) fail("sem o botão Instalar após o pagamento");
-else {
-  await inst.first().click();
-  await p.getByRole("dialog").getByRole("button", { name: /Instalar/ }).click();
-  await p.waitForSelector("text=instalado", { timeout: 30000 });
+await p.waitForSelector("text=Instalar o tema", { timeout: 30000 });
+ok("pagamento confirmado abre a instalação na hora");
+await p.getByRole("button", { name: "Instalar agora" }).click();
+await p.waitForSelector("text=instalado", { timeout: 30000 });
+{
   ok("compra, pagamento e instalação");
   await ap.goto(`${B}/store/mantos-shop`, { waitUntil: "networkidle" });
   const after = await sectionIds(ap);
