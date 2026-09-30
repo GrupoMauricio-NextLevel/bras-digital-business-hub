@@ -241,3 +241,12 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Painel:** menu sem saldo e recargas, sem aviso de "loja própria do fornecedor", rótulo "Minha loja"; checklist "no ar" ganha "Publicar 5 produtos".
 - **Dívida:** o modelo geral `seller` (fase P6) substitui a Central oculta. A venda real só começa ao ligar `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true` (depende do Mercado Pago da NextLevel conectado e do frete real, fase P1).
 - Migração 0022. Testes `tests/independent.test.ts`; e2e `e2e/conta-simples.mjs`.
+
+## D35. P1a: frete real por CEP, calculado no servidor
+- **Brecha fechada:** antes, o checkout aceitava o valor do frete enviado pelo navegador. Agora `placeStorefrontOrderAction` exige a forma de entrega escolhida (`shippingServiceId`) e recalcula a cotação no servidor (`resolveShipping`); o valor do cliente é descartado. Pedido manual do lojista (painel) continua informando o frete.
+- **`src/lib/shipping/quote.ts`:** interface `ShippingProvider` com SuperFrete e Melhor Envio (token criptografado já existente em `suppliers`), uma embalagem por pedido (peso somado, alturas empilhadas) lida do catálogo da loja, prazo = transportadora + dias de preparo, acréscimo de embalagem. **PRECISA VALIDAR com token real** (formatos de pedido/resposta seguem a documentação pública; bases trocáveis por `SHIPPING_MELHOR_ENVIO_BASE` e `SHIPPING_SUPERFRETE_BASE` para sandbox).
+- **Nunca sem opção:** sem transportadora conectada, sem CEP de origem, erro ou tempo esgotado (8 s) → "Entrega padrão" da loja, marcando a cotação como degradada.
+- **Regras da loja** em `stores.shipping_config` (Configurações → Frete e entrega): frete grátis a partir de valor (no serviço mais barato), entrega padrão e prazo, dias de preparo, acréscimo, retirada na loja. Padrões vêm do schema Zod (editáveis por loja).
+- **Origem:** `suppliers.shipping_origin_zip` (na conta simples, a Central oculta). A conta simples conecta a transportadora na própria tela de Configurações, reaproveitando o cartão do fornecedor e `catalogSupplierId`.
+- **Pedido:** `orders.shipping_service` e `shipping_days` guardam o que o cliente escolheu.
+- Migração 0023. Testes `tests/shipping.test.ts`; e2e `e2e/frete.mjs`. **Falta no P1:** compra de etiqueta pela API com rastreio automático, `PaymentProvider` e cupom de desconto do consumidor.

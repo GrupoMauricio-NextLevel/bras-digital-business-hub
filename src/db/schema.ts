@@ -51,6 +51,8 @@ export const suppliers = pgTable("suppliers", {
   shippingProvider: text("shipping_provider"),
   shippingTokenEnc: text("shipping_token_enc"),
   shippingAccount: text("shipping_account"),
+  /** CEP de onde saem os pedidos (só dígitos): origem das cotações de frete. */
+  shippingOriginZip: text("shipping_origin_zip"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   city: text("city"),
   state: text("state"),
@@ -101,6 +103,8 @@ export const stores = pgTable("stores", {
   mpPublicKey: text("mp_public_key"),
   shippingProvider: text("shipping_provider"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
+  /** Regras de frete da loja (frete grátis, taxa fixa, retirada, prazo de preparo). */
+  shippingConfig: jsonb("shipping_config").$type<Record<string, unknown>>(),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   publishedAt: ts("published_at"),
   /** Teste e assinatura: sem nenhuma das duas datas a loja não tem regra de acesso (contas antigas e demonstração). */
@@ -325,6 +329,9 @@ export const orders = pgTable("orders", {
   shippingZip: text("shipping_zip"),
   subtotalCents: integer("subtotal_cents").notNull(),
   shippingCents: integer("shipping_cents").notNull().default(0),
+  /** Serviço de frete escolhido na compra (nome para exibir) e prazo estimado em dias úteis. */
+  shippingService: text("shipping_service"),
+  shippingDays: integer("shipping_days"),
   totalCents: integer("total_cents").notNull(),
   costTotalCents: integer("cost_total_cents").notNull(),
   notes: text("notes"),

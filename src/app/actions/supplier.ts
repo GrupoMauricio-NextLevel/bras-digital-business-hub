@@ -213,6 +213,19 @@ export async function connectShippingAction(input: z.input<typeof shippingSchema
   });
 }
 
+/** CEP de onde saem os pedidos (origem das cotações de frete). Serve ao fornecedor e à conta simples. */
+export async function setOriginZipAction(zip: string) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const digits = zip.replace(/\D/g, "");
+    if (digits.length !== 8) throw new ForbiddenError("Informe um CEP válido (8 números).");
+    await (await getDb()).update(suppliers).set({ shippingOriginZip: digits }).where(eq(suppliers.id, supplierId));
+    revalidatePath("/supplier", "layout");
+    revalidatePath("/merchant", "layout");
+    return undefined;
+  });
+}
+
 export async function disconnectShippingAction() {
   return runAction(async () => {
     const { supplierId } = await supplierCtx();

@@ -7,8 +7,8 @@ import { Lock, CreditCard, QrCode } from "lucide-react";
 import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
-import { shippingFor } from "@/lib/storefront-rules";
-import { placeStorefrontOrderAction } from "@/app/actions/storefront";
+import { placeStorefrontOrderAction, quoteShippingAction } from "@/app/actions/storefront";
+import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
 
 const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
@@ -19,7 +19,29 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
   const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: true });
   const [payment, setPayment] = React.useState<"pix" | "card">("pix");
   const [pending, start] = React.useTransition();
-  const shipping = shippingFor(cart.subtotal);
+  const zipDigits = f.zip.replace(/\D/g, "");
+  const cartKey = cart.lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.packId ?? ""}:${l.quantity}`).join("|");
+  const quoteKey = zipDigits.length === 8 && cartKey ? `${zipDigits}|${cartKey}` : "";
+  // Resultado da cotação guardado com a chave (CEP + carrinho) a que pertence: se a chave muda, o resultado antigo deixa de valer.
+  const [quote, setQuote] = React.useState<{ key: string; options: ShippingQuote[]; error: string | null; picked: string }>({ key: "", options: [], error: null, picked: "" });
+  const current = quote.key === quoteKey && quoteKey ? quote : null;
+  const options = current?.options ?? [];
+  const quoteError = current?.error ?? null;
+  const quoting = !!quoteKey && !current;
+  const serviceId = current?.picked ?? "";
+  const chosen = options.find((o) => o.serviceId === serviceId) ?? null;
+  const shipping = chosen?.priceCents ?? 0;
+  React.useEffect(() => {
+    if (!quoteKey) return;
+    let alive = true;
+    quoteShippingAction(slug, { zip: zipDigits, items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })) }).then((r) => {
+      if (!alive) return;
+      setQuote(r.ok ? { key: quoteKey, options: r.data.options, error: null, picked: r.data.options[0]?.serviceId ?? "" } : { key: quoteKey, options: [], error: r.error, picked: "" });
+    });
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- quoteKey resume CEP e carrinho
+  }, [quoteKey, slug]);
+  const setServiceId = (id: string) => setQuote((q) => ({ ...q, picked: id }));
   const base = `/store/${slug}`;
 
   if (cart.ready && cart.lines.length === 0) {
@@ -28,10 +50,12 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!chosen) { toast.error("Informe o CEP e escolha a forma de entrega."); return; }
     start(async () => {
       const r = await placeStorefrontOrderAction(slug, {
         customer: { name: f.name, email: f.email, phone: f.phone || undefined, marketingOptIn: f.marketingOptIn },
-        shipping: { address: f.address, city: f.city, state: f.state, zip: f.zip, costCents: shipping },
+        shipping: { address: f.address, city: f.city, state: f.state, zip: f.zip, costCents: 0 },
+        shippingServiceId: chosen.serviceId,
         items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
         notes: payment === "pix" ? "Preferência de pagamento: Pix" : "Preferência de pagamento: Cartão",
@@ -62,7 +86,22 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
               <input className={input} placeholder="CEP" required value={f.zip} onChange={(e) => setF({ ...f, zip: e.target.value })} />
               <input className={cn(input, "sm:col-span-2")} placeholder="Endereço e número" required value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} />
               <input className={cn(input, "sm:col-span-2")} placeholder="Cidade" required value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />
-              <select className={input} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["SP", "RJ", "MG", "PR", "SC", "RS", "BA", "PE", "CE", "GO", "DF", "ES"].map((s) => <option key={s}>{s}</option>)}</select>
+              <select className={input} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map((s) => <option key={s}>{s}</option>)}</select>
+            </div>
+            <div className="mt-4" aria-live="polite" data-shipping-options>
+              {quoting ? <p className="text-sm text-neutral-500">Calculando o frete…</p> : null}
+              {quoteError ? <p role="alert" className="text-sm text-red-600">{quoteError}</p> : null}
+              {!quoting && !quoteError && zipDigits.length !== 8 ? <p className="text-sm text-neutral-500">Digite o CEP para ver as opções de entrega.</p> : null}
+              {options.length ? (
+                <fieldset className="space-y-2"><legend className="mb-1 text-sm font-medium">Forma de entrega</legend>
+                  {options.map((o) => (
+                    <label key={o.serviceId} className={cn("flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 text-sm", serviceId === o.serviceId ? "border-neutral-900 ring-1 ring-neutral-900" : "border-neutral-300")}>
+                      <span className="flex items-center gap-2"><input type="radio" name="shipping" value={o.serviceId} checked={serviceId === o.serviceId} onChange={() => setServiceId(o.serviceId)} /><span>{o.name}{o.days !== null ? <span className="block text-xs text-neutral-500">{o.kind === "PICKUP" ? "Pronto em" : "Chega em"} até {o.days} {o.days === 1 ? "dia útil" : "dias úteis"}</span> : null}</span></span>
+                      <span className="font-medium tabular-nums">{o.priceCents === 0 ? "Grátis" : formatBRL(o.priceCents)}</span>
+                    </label>
+                  ))}
+                </fieldset>
+              ) : null}
             </div>
           </section>
           <section>
@@ -80,10 +119,10 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
           <ul className="mt-3 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
           <dl className="mt-4 space-y-2 border-t border-neutral-200 pt-3 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
-            <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd className="tabular-nums">{shipping === 0 ? "Grátis" : formatBRL(shipping)}</dd></div>
+            <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd className="tabular-nums">{!chosen ? "—" : shipping === 0 ? "Grátis" : formatBRL(shipping)}</dd></div>
             <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal + shipping)}</dd></div>
           </dl>
-          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
+          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
           <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento (Pix, cartão ou boleto).</p>
         </aside>
       </form>

@@ -11,6 +11,7 @@ import { createPreference, MercadoPagoError } from "@/lib/payments/mercadopago";
 import { syncOrderPayment } from "@/lib/payments/service";
 import { decryptSecret } from "@/lib/security/crypto";
 import { getBaseUrl, isPublicHttps } from "@/lib/base-url";
+import { quoteShipping, resolveShipping, type QuoteItem } from "@/lib/shipping/quote";
 
 const RESERVATION_MINUTES_ONLINE = 30;
 const RESERVATION_MINUTES_MANUAL = 60 * 48;
@@ -23,7 +24,18 @@ export type PlacedOrder = { orderId: string; number: number; checkoutUrl: string
  *  - sem Mercado Pago em demo mode  → pagamento simulado como aprovado
  *  - sem Mercado Pago em produção   → pedido PENDING para o lojista combinar o pagamento (reserva de 48h)
  */
-export async function placeStorefrontOrderAction(slug: string, input: Omit<CreateOrderInput, "storeId" | "channel" | "customerPaymentStatus">) {
+/** Cotação de frete por CEP para o carrinho (o valor é sempre calculado aqui, no servidor). */
+export async function quoteShippingAction(slug: string, input: { zip: string; items: QuoteItem[] }) {
+  return runAction(async () => {
+    const db = await getDb();
+    const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
+    if (!store) throw new NotFoundError("Loja não encontrada.");
+    const q = await quoteShipping(db, { storeId: store.id, toZip: input.zip, items: input.items });
+    return { options: q.options, degraded: q.degraded, freeApplied: q.freeApplied };
+  });
+}
+
+export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<CreateOrderInput, "storeId" | "channel" | "customerPaymentStatus"> & { shippingServiceId?: string }) {
   return runAction(async (): Promise<PlacedOrder> => {
     const db = await getDb();
     await expireStaleReservations(db);
@@ -33,6 +45,11 @@ export async function placeStorefrontOrderAction(slug: string, input: Omit<Creat
       const s = await getSession();
       if (!s || (s.store?.id !== store.id && s.user.role !== "NEXTLEVEL_MASTER")) throw new DomainError("STORE_UNPUBLISHED", "Esta loja ainda não está publicada.");
     }
+    const { shippingServiceId, ...rest } = rawInput;
+    if (!shippingServiceId) throw new DomainError("SHIPPING_REQUIRED", "Escolha a forma de entrega.");
+    // O frete vem de uma cotação nova feita aqui; o valor enviado pelo navegador é descartado.
+    const pick = await resolveShipping(db, { storeId: store.id, toZip: rest.shipping?.zip ?? "", serviceId: shippingServiceId, items: rest.items.map((i) => ({ productId: i.productId, variantId: i.variantId, packId: i.packId, quantity: i.quantity })) });
+    const input = { ...rest, shipping: { ...rest.shipping, costCents: pick.priceCents, serviceName: pick.name, days: pick.days } };
     const token = decryptSecret(store.mpAccessTokenEnc);
     const base = { ...input, storeId: store.id, channel: "ONLINE_STORE" as const };
 

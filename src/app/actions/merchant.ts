@@ -222,3 +222,19 @@ export async function activateAllProductsAction() {
     return { activated, skipped };
   });
 }
+
+// ---------------------------------------------------------------------------
+// Regras de frete da loja (frete grátis, entrega padrão, retirada, prazo de preparo)
+// ---------------------------------------------------------------------------
+import { shippingConfigSchema } from "@/lib/shipping/quote";
+
+export async function saveShippingConfigAction(input: z.input<typeof shippingConfigSchema>) {
+  return runAction(async () => {
+    const { storeId, db, session } = await storeCtx();
+    const cfg = shippingConfigSchema.parse(input);
+    await db.update(stores).set({ shippingConfig: cfg, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    await db.insert(activities).values({ id: newId("act"), scope: "STORE", storeId, type: "SHIPPING_RULES_SAVED", message: "Regras de frete atualizadas" });
+    revalidateStore(session.store?.slug);
+    return undefined;
+  });
+}

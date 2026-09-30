@@ -31,6 +31,7 @@
 - **Dívida a registrar:** modelo geral `seller` (fase P6) substitui a Central oculta.
 
 ### P1 — Frete real e pagamentos (base para atacado e live)
+> **P1a FEITO (D35, migração 0023):** cotação por CEP no servidor (SuperFrete/Melhor Envio/tabela da loja), frete grátis, retirada, regras em Configurações, `e2e/frete.mjs`. **Falta:** compra de etiqueta pela API + rastreio automático (P1b), `PaymentProvider` (P1c), cupom de desconto do consumidor (P1d).
 - **`ShippingProvider`** (interface em `src/lib/shipping/`): `quote({ from, to, items })`, `buyLabel(order)`, `track(code)`; implementações SuperFrete e Melhor Envio (a conexão e o token criptografado já existem em `providers.ts`). Cotação por CEP no checkout (`shippingCents` deixa de ser informado à mão), regra de frete grátis por valor/região em `store_settings`, retirada na loja, prazo estimado.
 - **Compra de etiqueta pela API** com débito do saldo (carteira) ou do Mercado Pago da loja; guardar etiqueta em `order_label_files`; rastreio automático (cron) que avança `SHIPPED → DELIVERED` e dispara e-mails.
 - **`PaymentProvider`:** extrair de `payments/mercadopago.ts` uma interface (`createPix`, `createCardCheckout`, `getPayment`) e manter Mercado Pago como implementação; adaptadores futuros (Pix direto, Asaas). Parcelamento configurável por loja; cupom de desconto do consumidor (estende `coupons`: `kind = DISCOUNT`, valor fixo ou %, mínimo, validade, limite por CPF).
