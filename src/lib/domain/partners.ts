@@ -12,7 +12,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { periodBounds, periodOf } from "./finance";
 import { normalizeTaxId, storeAccess } from "./store-access";
-import { emails, sendEmail } from "@/lib/email";
+import { appUrl, emails, sendEmail } from "@/lib/email";
 
 const SETTINGS_KEY = "partner_settings";
 const DAY = 86_400_000;
@@ -197,6 +197,7 @@ export async function recordActivation(db: Database, inv: typeof financeInvoices
   const created = await insertEntry(db, { partnerId: p.id, storeId: store.id, invoiceId: inv.id, kind: "SETUP", baseCents: setup, rateBps: bps, amountCents: commissionOf(setup, bps), period, status: "PENDING", availableAt, dedupeKey: `SETUP:${inv.id}` });
   if (first > 0) await insertEntry(db, { partnerId: p.id, storeId: store.id, invoiceId: inv.id, kind: "MAINTENANCE", baseCents: first, rateBps: s.maintenanceBps, amountCents: commissionOf(first, s.maintenanceBps), period, status: "PENDING", availableAt, dedupeKey: `MAINT:${inv.id}` });
   if (created && p.status === "INACTIVE") await db.update(partners).set({ status: "ACTIVE" }).where(eq(partners.id, p.id));
+  if (created) { const first = tierFor(already + 1, s).next; await sendEmail(db, { kind: "PARTNER_ACTIVATION", to: (await db.query.users.findFirst({ where: eq(users.id, p.userId) }))!.email, dedupeKey: `PARTNER_ACTIVATION:${inv.id}`, ...emails.partnerActivation(`${appUrl()}/partner/finance`, first ? `\n\nFaltam ${first.needed} ativação(ões) neste mês para a faixa de ${first.bps / 100}%.` : "\n\nVocê está na faixa máxima do mês.") }); }
   if (created) await emitEvent(db, { type: "PARTNER_ACTIVATION", storeId: store.id, payload: { partnerId: p.id, period, bps }, dedupeKey: `PARTNER_ACTIVATION:${inv.id}` });
 }
 

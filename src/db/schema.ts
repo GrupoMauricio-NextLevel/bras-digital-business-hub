@@ -870,6 +870,8 @@ export const emailOutbox = pgTable("email_outbox", {
   body: text("body").notNull(),
   status: text("status", { enum: ["LOGGED", "SENT", "FAILED"] }).notNull(),
   error: text("error"),
+  /** Trava de envio único (ex.: um aviso de vencimento por fatura e dia). */
+  dedupeKey: text("dedupe_key").unique(),
   createdAt: createdAt(),
 }, (t) => [index("email_outbox_created_idx").on(t.createdAt)]);
 

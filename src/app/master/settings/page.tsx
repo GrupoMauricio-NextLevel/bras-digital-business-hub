@@ -6,12 +6,21 @@ import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db/client";
 import { getNextLevelMp } from "@/lib/domain/nextlevel-billing";
 import { NextLevelMpCard } from "./nextlevel-mp-card";
+import { EmailTest } from "./email-card";
+import { requireRole } from "@/lib/require-session";
+import { desc } from "drizzle-orm";
+import { emailOutbox } from "@/db/schema";
+import { formatDateTime } from "@/lib/utils";
 
 const ROLE: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 export default async function SettingsPage() {
+  const session = await requireRole("NEXTLEVEL_MASTER");
   const users = await listUsers();
-  const mp = await getNextLevelMp(await getDb());
+  const db = await getDb();
+  const mp = await getNextLevelMp(db);
+  const emailConfigured = !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM;
+  const recent = await db.select({ id: emailOutbox.id, kind: emailOutbox.kind, to: emailOutbox.toEmail, subject: emailOutbox.subject, status: emailOutbox.status, error: emailOutbox.error, at: emailOutbox.createdAt }).from(emailOutbox).orderBy(desc(emailOutbox.createdAt)).limit(20);
   return (
     <>
       <PageHeader title="Configurações" description="Parâmetros globais da plataforma." />
@@ -19,6 +28,17 @@ export default async function SettingsPage() {
         <Card className="md:col-span-2">
           <CardHeader><div><CardTitle>Recebimento da NextLevel (Mercado Pago)</CardTitle><CardDescription>Conta que recebe setups, mensalidades, taxas, serviços e add-ons por Pix.</CardDescription></div></CardHeader>
           <CardContent><NextLevelMpCard connected={mp.connected} nickname={mp.nickname} isTest={mp.isTest} /></CardContent>
+        </Card>
+        <Card className="md:col-span-2">
+          <CardHeader><div><CardTitle>E-mails do sistema</CardTitle><CardDescription>{emailConfigured ? "Envio ativo pela Resend." : "Envio desativado: defina RESEND_API_KEY e EMAIL_FROM no servidor. Enquanto isso os e-mails só ficam registrados abaixo."}</CardDescription></div><Badge tone={emailConfigured ? "success" : "warning"}>{emailConfigured ? "Ativo" : "Sem provedor"}</Badge></CardHeader>
+          <CardContent className="space-y-4">
+            <EmailTest configured={emailConfigured} defaultTo={session.user.email} />
+            {recent.length === 0 ? <p className="text-sm text-muted-foreground">Nenhum e-mail registrado ainda.</p> : (
+              <ul className="divide-y divide-border text-sm" aria-label="Últimos e-mails">{recent.map((e) => (
+                <li key={e.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span className="min-w-0"><span className="block truncate font-medium">{e.subject}</span><span className="block truncate text-xs text-muted-foreground">{e.to} · {e.kind} · {formatDateTime(e.at)}{e.error ? ` · ${e.error}` : ""}</span></span><Badge tone={e.status === "SENT" ? "success" : e.status === "FAILED" ? "danger" : "outline"}>{e.status === "SENT" ? "Enviado" : e.status === "FAILED" ? "Falhou" : "Registrado"}</Badge></li>
+              ))}</ul>
+            )}
+          </CardContent>
         </Card>
         <Card>
           <CardHeader><div><CardTitle>Modelos comerciais</CardTitle><CardDescription>Configuráveis por fornecedor (businessModel, platformFeePercent, setupFee).</CardDescription></div></CardHeader>

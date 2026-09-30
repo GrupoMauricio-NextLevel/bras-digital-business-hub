@@ -200,3 +200,17 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   else await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));
   return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: !!code };
 }
+
+/** Avisa por e-mail os donos de lojas cujo teste termina em até 2 dias (uma vez por loja). */
+export async function runTrialReminders(db: Database, now = new Date()): Promise<{ sent: number }> {
+  const { notifyTenant, emails } = await import("@/lib/email");
+  const soon = new Date(now.getTime() + 2 * DAY).toISOString();
+  const rows = await db.select().from(stores).where(and(sql`${stores.trialEndsAt} is not null`, sql`${stores.trialEndsAt} > ${now.toISOString()}`, sql`${stores.trialEndsAt} <= ${soon}`));
+  let sent = 0;
+  for (const s of rows) {
+    if (s.paidUntil && new Date(s.paidUntil) > now) continue;
+    const days = Math.max(0, Math.ceil((new Date(s.trialEndsAt!).getTime() - now.getTime()) / DAY));
+    sent += await notifyTenant(db, { storeId: s.id }, { kind: "TRIAL_ENDING", dedupeKey: `TRIAL_END:${s.id}`, ...emails.trialEnding(days, "/merchant") });
+  }
+  return { sent };
+}

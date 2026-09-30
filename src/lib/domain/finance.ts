@@ -253,6 +253,10 @@ export async function markInvoicePaid(db: Database, invoiceId: string, now = new
   await fulfillPaidInvoice(db, inv, now);
   const paid = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) });
   if (paid) await (await import("./partners")).onInvoicePaid(db, paid, now);
+  if (paid && paid.amountCents > 0) {
+    const { notifyTenant, emails } = await import("@/lib/email");
+    await notifyTenant(db, { storeId: paid.payerType === "STORE" ? paid.storeId : null, supplierId: paid.payerType === "SUPPLIER" ? paid.supplierId : null, partnerId: paid.payerType === "PARTNER" ? paid.partnerId : null }, { kind: "INVOICE_PAID", dedupeKey: `INVOICE_PAID:${paid.id}`, ...emails.invoicePaid(paid.description, paid.amountCents, paid.payerType === "STORE" ? "/merchant" : paid.payerType === "PARTNER" ? "/partner/finance" : "/supplier/invoices") });
+  }
   await emitEvent(db, { type: "INVOICE_PAID", supplierId: inv.supplierId, storeId: inv.storeId, payload: { invoiceId, kind: inv.kind, amountCents: inv.amountCents }, dedupeKey: `INVOICE_PAID:${invoiceId}` });
   await refreshSupplierAccess(db, now);
   return (await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) }))!;
@@ -371,6 +375,8 @@ export async function runDunningNotices(db: Database, now = new Date()): Promise
     if (!(await emitEvent(db, { type: "DUNNING_NOTICE", supplierId: inv.supplierId, storeId: inv.storeId, payload: { invoiceId: inv.id, offset }, dedupeKey: `DUNNING:${inv.id}:${offset}` }))) continue;
     const msg = offset < 0 ? `A fatura "${inv.description}" vence em ${-offset} dias.` : offset === 0 ? `A fatura "${inv.description}" vence hoje.` : `A fatura "${inv.description}" está ${offset} dias em atraso. Pague por Pix para evitar bloqueios.`;
     await db.insert(activities).values({ id: newId("act"), scope: inv.payerType === "STORE" ? "STORE" : "SUPPLIER", supplierId: inv.supplierId, storeId: inv.storeId, type: "DUNNING", message: msg });
+    const { notifyTenant, emails } = await import("@/lib/email");
+    await notifyTenant(db, { storeId: inv.payerType === "STORE" ? inv.storeId : null, supplierId: inv.payerType === "SUPPLIER" ? inv.supplierId : null, partnerId: inv.payerType === "PARTNER" ? inv.partnerId : null }, { kind: "DUNNING", dedupeKey: `DUNNING:${inv.id}:${offset}`, ...emails.dunning(msg, inv.payerType === "STORE" ? "/merchant" : inv.payerType === "PARTNER" ? "/partner/finance" : "/supplier/invoices") });
     notices++;
   }
   return { notices };
@@ -420,6 +426,7 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   }
   result.accessChanged = (await refreshSupplierAccess(db, now)).changed.length;
   await runDunningNotices(db, now);
+  await (await import("./store-access")).runTrialReminders(db, now);
   await (await import("./partners")).runDailyPartnerJobs(db, now);
   return result;
 }

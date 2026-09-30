@@ -14,7 +14,7 @@ const axeOf = async (p) => { await p.emulateMedia({ reducedMotion: "reduce" }); 
 
 const PUBLIC = ["/", "/planos", "/como-funciona", "/faq", "/loja-nextlevel", "/parceiros", "/parceiros/cadastro", "/parceiros/termos", "/seja-fornecedor", "/cadastro", "/login", "/esqueci-senha", "/f/mantosshop", "/store/mantos-shop"];
 const ROLES = [
-  [/Equipe NextLevel/, ["/master", "/master/orders?tab=lojas", "/master/orders?tab=fornecedores", "/master/office", "/master/crm", "/master/partners", "/master/partners?tab=regras", "/master/finance", "/master/services", "/master/suppliers"]],
+  [/Equipe NextLevel/, ["/master", "/master/orders?tab=lojas", "/master/orders?tab=fornecedores", "/master/office", "/master/crm", "/master/partners", "/master/partners?tab=regras", "/master/finance", "/master/services", "/master/suppliers", "/master/settings"]],
   [/Alex \(Alpha Outfit\)/, ["/supplier", "/supplier/products", "/supplier/invoices", "/supplier/store", "/supplier/stores", "/supplier/orders"]],
   [/Ana Paula Ribeiro/, ["/merchant", "/merchant/orders", "/merchant/products", "/merchant/templates", "/merchant/finance", "/merchant/customers", "/merchant/services", "/merchant/analytics"]],
   [/Camila Duarte/, ["/partner", "/partner/links", "/partner/coupons", "/partner/referrals", "/partner/finance", "/partner/profile"]],

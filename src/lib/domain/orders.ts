@@ -1,3 +1,4 @@
+import { emailOrderCustomer } from "./order-emails";
 import { isBlocked } from "./store-access";
 import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -226,7 +227,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
   const order = await loadOwned(db, actor, orderId);
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (order.customerPaymentStatus === "PAID") return order;
-  return db.transaction(async (tx) => {
+  const done = await db.transaction(async (tx) => {
     await tx.update(orders).set({ customerPaymentStatus: "PAID" }).where(eq(orders.id, orderId));
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
@@ -235,6 +236,8 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
     const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
     return fresh!;
   });
+  await emailOrderCustomer(db, orderId, "PAID");
+  return done;
 }
 
 export const labelSchema = z.object({ code: z.string().min(4, "Informe o código da etiqueta"), carrier: z.string().min(2, "Informe a transportadora") });
@@ -277,7 +280,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
     await applyStatus(tx, order, next, statusMessage(next), actor);
     await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next)}` });
     return { ...order, status: next };
-  });
+  }).then(async (r) => { if (next === "SHIPPED") await emailOrderCustomer(db, orderId, "SHIPPED"); return r; });
 }
 
 export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
@@ -345,7 +348,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
     return { changed: false as const, status: order.status };
   }
 
-  return db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     await tx.update(orders).set({ customerPaymentStatus: "PAID", paymentProvider: info.provider, paymentReference: info.reference, reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: `Pagamento do cliente aprovado (${info.provider === "MERCADO_PAGO" ? "Mercado Pago" : "demonstração"} · ${info.reference}).`, actorRole: SYSTEM_ACTOR });
@@ -361,6 +364,8 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
     const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
     return { changed: true as const, status: fresh!.status };
   });
+  await emailOrderCustomer(db, orderId, "PAID");
+  return result;
 }
 
 /**
