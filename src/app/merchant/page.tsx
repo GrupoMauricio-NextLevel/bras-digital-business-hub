@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, ShoppingCart, TrendingUp, Users, Wallet, ExternalLink, AlertCircle, CheckCircle2, Circle, ArrowRight } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { SalesChart } from "@/components/app/sales-chart";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { ActivityFeed } from "@/components/shared/activity-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,8 @@ import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { formatDate, cn } from "@/lib/utils";
+
+function greeting() { const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date())); return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
 
 export default async function MerchantHome() {
   const session = await requireRole("STORE_OWNER");
@@ -53,7 +56,7 @@ export default async function MerchantHome() {
         </section>
       ) : null}
       <PageHeader
-        title={isLite ? "Seu dia" : `Olá, ${session.user.name.split(" ")[0]}`}
+        title={`${greeting()}, ${session.user.name.split(" ")[0]}`}
         description={<span>{store.name} · <StatusBadge value={store.status} dot /> {store.publishedAt ? <span className="text-success">Loja publicada</span> : <span className="text-warning">Loja não publicada</span>}</span>}
         actions={<><a href={`/store/${store.slug}`} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink /> Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>}
       />
@@ -84,11 +87,16 @@ export default async function MerchantHome() {
       <div className="mb-6"><ServiceSpotlight hub={hub} base="/merchant" /></div>
 
       <MetricGrid>
-        <MetricCard label="Vendas (30 dias)" value={formatBRL(o.sales)} icon={TrendingUp} tone="success" hint={`${o.last30Count} pedidos`} />
-        <MetricCard label="Margem estimada" value={formatBRL(o.margin)} icon={Wallet} tone="info" hint="Venda − custo Central" />
-        <MetricCard label="Pedidos" value={o.ordersCount} icon={ShoppingCart} hint="Total válidos" />
+        <MetricCard label="Vendas (30 dias)" value={formatBRL(o.sales)} icon={TrendingUp} tone="success" delta={o.salesDelta} hint={`${o.last30Count} pedidos · vs. 30 dias antes`} />
+        <MetricCard label="Margem estimada" value={formatBRL(o.margin)} icon={Wallet} tone="info" delta={o.marginDelta} hint="Venda − custo Central" />
+        <MetricCard label="Pedidos (30 dias)" value={o.last30Count} icon={ShoppingCart} delta={o.countDelta} hint={`${o.ordersCount} no total`} href="/merchant/orders" />
         <MetricCard label="Clientes" value={o.customers} icon={Users} hint="Da sua loja" />
       </MetricGrid>
+
+      <Card className="mt-6">
+        <CardHeader className="pb-2"><div><CardTitle className="text-base">Vendas por dia</CardTitle><p className="text-sm text-muted-foreground">Últimos 30 dias</p></div></CardHeader>
+        <CardContent><SalesChart data={o.daily} /></CardContent>
+      </Card>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">

@@ -20,7 +20,7 @@ export default async function MasterOrdersPage({ searchParams }: { searchParams:
           <FilterChips param="status" options={ORDER_STATUSES.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} />
         </FilterBar>
       </Suspense>
-      <OrdersTable rows={rows} basePath="/master/orders" />
+      <OrdersTable rows={rows} basePath="/master/orders" quickView />
     </>
   );
 }

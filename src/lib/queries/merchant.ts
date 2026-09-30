@@ -27,6 +27,13 @@ export async function getMerchantOverview(store: Store) {
   const valid = all.filter((o) => o.status !== "CANCELED");
   const last30 = valid.filter((o) => new Date(o.createdAt) >= since);
   const sales = last30.reduce((s, o) => s + o.totalCents, 0);
+  const prevSince = new Date(since); prevSince.setDate(prevSince.getDate() - 30);
+  const prev30 = valid.filter((o) => new Date(o.createdAt) >= prevSince && new Date(o.createdAt) < since);
+  const prevSales = prev30.reduce((s, o) => s + o.totalCents, 0);
+  const prevMargin = prev30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
+  const pct = (cur: number, prev: number) => (prev > 0 ? ((cur - prev) / prev) * 100 : undefined);
+  const days = Array.from({ length: 30 }, (_, i) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (29 - i)); return d; });
+  const daily = days.map((d) => { const end = new Date(d); end.setDate(end.getDate() + 1); return { date: d.toISOString().slice(0, 10), cents: valid.filter((o) => { const t = new Date(o.createdAt); return t >= d && t < end; }).reduce((s, o) => s + o.totalCents, 0) }; });
   const margin = last30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   const pendingCentral = valid.filter((o) => o.customerPaymentStatus === "PAID" && o.centralPaymentStatus !== "PAID");
   const pendingLabel = valid.filter((o) => o.centralPaymentStatus === "PAID" && o.shippingLabelStatus !== "READY");
@@ -35,7 +42,7 @@ export async function getMerchantOverview(store: Store) {
   const [custCount] = await db.select({ n: count() }).from(storeCustomers).where(eq(storeCustomers.storeId, store.id));
   const recent = await db.select().from(activities).where(and(eq(activities.storeId, store.id), eq(activities.scope, "STORE"))).orderBy(desc(activities.createdAt)).limit(8);
   const sub = await getSubscription(store.id);
-  return { ordersCount: valid.length, sales, margin, last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store), subscription: sub };
+  return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store), subscription: sub };
 }
 
 export async function getSubscription(storeId: string) {

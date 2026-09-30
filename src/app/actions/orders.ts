@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, type CreateOrderInput } from "@/lib/domain/orders";
+import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, type CreateOrderInput } from "@/lib/domain/orders";
 import type { OrderStatus } from "@/db/schema";
 
 async function actor() {
@@ -56,4 +56,14 @@ export async function createManualOrderAction(input: Omit<CreateOrderInput, "sto
     revalidateOrders();
     return r;
   });
+}
+
+/** Resumo do pedido para a gaveta de visualização rápida (só o que o ator pode ver). */
+export async function orderQuickViewAction(orderId: string) {
+  const s = await getSession();
+  if (!s) return null;
+  try {
+    const { order, items, events } = await getOrderForActor(await getDb(), s.actor, orderId);
+    return { order, items, events: events.slice(0, 12), role: s.user.role };
+  } catch { return null; }
 }

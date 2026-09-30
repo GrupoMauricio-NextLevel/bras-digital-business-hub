@@ -45,7 +45,9 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
   const pathname = usePathname();
   const isActive = (item: NavItem) => (item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/"));
   const pinned = items.filter((i) => i.pinned);
-  const rest = items.filter((i) => !i.pinned);
+  // Agrupa por seção mantendo a ordem em que cada grupo aparece pela primeira vez.
+  const order = [...new Set(items.filter((i) => !i.pinned).map((i) => i.group ?? ""))];
+  const rest = items.filter((i) => !i.pinned).sort((a, b) => order.indexOf(a.group ?? "") - order.indexOf(b.group ?? ""));
   return (
     <nav className="flex flex-col gap-1" aria-label="Menu principal">
       {pinned.map((item) => {
@@ -59,17 +61,21 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
           </Link>
         );
       })}
-      {rest.map((item) => {
+      {rest.map((item, idx) => {
         const Icon = ICONS[item.icon];
         const active = isActive(item);
+        const heading = item.group && item.group !== rest[idx - 1]?.group ? item.group : null;
         return (
-          <Link key={item.href} href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
+          <React.Fragment key={item.href}>
+          {heading ? (collapsed ? <div className={cn("mx-3 my-1 h-px bg-sidebar-border", idx === 0 && "hidden")} aria-hidden /> : <div className={cn("px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted", idx === 0 ? "pt-1" : "pt-4")}>{heading}</div>) : null}
+          <Link href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
             className={cn("relative flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium transition-colors", active ? "bg-sidebar-active text-sidebar-active-foreground shadow-sm" : "text-sidebar-foreground hover:bg-sidebar-hover", collapsed && "justify-center px-0")}>
             {active ? <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent" aria-hidden /> : null}
             <Icon className={cn("size-4 shrink-0", active ? "text-accent-foreground" : "text-sidebar-muted")} />
             {collapsed ? null : <span className="flex-1 truncate">{item.label}</span>}
             {!collapsed && item.locked ? <Lock className="size-3.5 text-sidebar-muted" aria-label="Recurso bloqueado no seu plano" /> : null}
           </Link>
+          </React.Fragment>
         );
       })}
     </nav>
@@ -98,7 +104,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
     </div>
   );
 
-  const bottomItems = items.filter((i) => !i.pinned).slice(0, 4);
+  const bottomItems = items.filter((i) => !i.pinned).slice(0, 3);
   const pinnedItem = items.find((i) => i.pinned);
 
   return (
@@ -144,7 +150,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
           {demoUsers && onSwitch ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm" className="gap-2"><Repeat className="size-3.5" /><span className="hidden sm:inline">Demo:</span> <span className="hidden max-w-24 truncate sm:inline">{roleLabel}</span><ChevronDown className="size-3.5 text-muted-foreground" /></Button>
+                <Button variant="secondary" size="sm" className="gap-2" aria-label="Alternar perfil de demonstração"><Repeat className="size-3.5" /><span className="hidden sm:inline">Demo:</span> <span className="hidden max-w-24 truncate sm:inline">{roleLabel}</span><ChevronDown className="size-3.5 text-muted-foreground" /></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-72">
                 <DropdownMenuLabel>Alternar perfil de demonstração</DropdownMenuLabel>
@@ -168,7 +174,8 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>{userName}</DropdownMenuLabel>
-              <div className="px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge></div>
+              <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge><span className="min-w-0 truncate text-xs text-muted-foreground">{tenantName}</span></div>
+              {storefrontHref ? <DropdownMenuItem asChild><a href={storefrontHref} target="_blank" rel="noreferrer"><ExternalLink /> Ver loja virtual</a></DropdownMenuItem> : null}
               <DropdownMenuSeparator />
               {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
               <DropdownMenuItem onSelect={() => onLogout?.()}><LogOut /> Sair</DropdownMenuItem>
@@ -176,20 +183,20 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
           </DropdownMenu>
         </header>
 
-        <main id="conteudo" className={cn("mx-auto w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 animate-fade-in", minimal ? "max-w-6xl" : "max-w-7xl", !minimal && "pb-28 lg:pb-8")}>{banner}{children}</main>
+        <main id="conteudo" className={cn("mx-auto w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 animate-fade-in", minimal ? "max-w-6xl" : "max-w-7xl", !minimal && "pb-32 lg:pb-8")}>{banner}{children}</main>
       </div>
 
       {!minimal ? (
-        <nav className="nl-no-print fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden" aria-label="Atalhos">
-          <ul className="grid grid-cols-5">
+        <nav className="nl-no-print pointer-events-none fixed inset-x-0 bottom-0 z-30 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden" aria-label="Atalhos">
+          <ul className="pointer-events-auto mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface/95 p-1.5 shadow-lg backdrop-blur">
             {bottomItems.map((item) => {
               const Icon = ICONS[item.icon];
               const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <li key={item.href}><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active ? "text-accent-foreground" : "text-muted-foreground")}><Icon className={cn("size-5", active && "text-accent-foreground")} /><span className="max-w-full truncate px-1">{item.label}</span></Link></li>
+                <li key={item.href} className="min-w-0 flex-1"><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium transition-colors", active ? "bg-accent-soft text-accent-foreground" : "text-muted-foreground")}><Icon className="size-5" /><span className="max-w-full truncate">{item.label}</span></Link></li>
               );
             })}
-            <li><button onClick={() => setOpen(true)} className="flex min-h-14 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
+            <li className="min-w-0 flex-1"><button onClick={() => setOpen(true)} className="flex min-h-12 w-full flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
           </ul>
         </nav>
       ) : null}

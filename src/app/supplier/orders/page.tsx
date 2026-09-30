@@ -16,7 +16,7 @@ export default async function SupplierOrdersPage({ searchParams }: { searchParam
     <>
       <PageHeader title="Pedidos da rede" description="Todos os pedidos das lojas abastecidas pela Central. Valores de custo são o que a Central recebe." />
       <Suspense><FilterBar><FilterChips param="status" options={ORDER_STATUSES.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} /></FilterBar></Suspense>
-      <OrdersTable rows={rows} basePath="/supplier/orders" showCost />
+      <OrdersTable rows={rows} basePath="/supplier/orders" showCost quickView />
     </>
   );
 }
