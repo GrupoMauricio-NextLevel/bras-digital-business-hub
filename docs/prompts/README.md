@@ -11,6 +11,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | `nextlevel-commerce-plataforma.md` | **Documento-mestre (N0 feita, D33):** NextLevel Commerce, plataforma de lojas virtuais (marca, módulos, fases N0 a N10). Base: `docs/nextlevel-commerce/aproveitamento-superdrop.md` | **Em andamento (N0 concluída)** |
 | `editor-templates-evolucao.md` | **Editor de temas e Templates** (T0 a T9): 10 temas (4 grátis e 6 avançados), editor v2, régua de qualidade, loja de temas, Theme Store aberta | **A fazer** |
 | `imagens-temas-gpt.md` | **Prompt para o GPT** gerar imagens fictícias (produtos, banners, lookbook) dos 10 temas, com lotes, formatos e manifesto | **Salvo** (você leva ao GPT quando quiser; depois me traga as imagens) |
+| `pesquisa-tiktok-shop-integracao.md` | **Pesquisa para o GPT** sobre integração máxima com o TikTok Shop (elegibilidade, API, afiliados, teste controlado). A resposta volta para cá e vira `tiktok-shop-integracao.md` | **Salvo** (aguardando a pesquisa) |
 | `promessas-commerce.md` | **Promessas da NextLevel Commerce** (P0 a P6): conta simples, frete e pagamentos, atacado B2B, influenciadores, feed e live shop, Theme Engine v2 | **A fazer** (P0 é o pré-requisito do lançamento) |
 | `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
 | `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
