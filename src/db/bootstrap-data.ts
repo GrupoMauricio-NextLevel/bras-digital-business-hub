@@ -4,6 +4,7 @@ import { organizations, themes, users } from "./schema";
 import { seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
+import { seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -20,7 +21,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   const orgCount = Number(((await db.execute(sql`select count(*)::int as n from organizations`)) as { rows: { n: number }[] }).rows[0]?.n ?? 0);
 
   if (opts.seedDemo) {
-    if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports)"); }
+    if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)"); }
     else log.push("banco já populado (demo não reaplicado)");
     return log;
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- logo e foto vêm do fornecedor (endereço livre) */
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -35,9 +36,10 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
   const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition hover:opacity-90";
   return (
     <div style={vars} className="min-h-screen bg-white text-neutral-900">
+      {p.demoContent ? <p role="note" className="bg-amber-100 px-4 py-1.5 text-center text-xs font-medium text-amber-900">Página de demonstração: logo, fotos e depoimentos reais serão enviados pelo fornecedor (conteúdo a fornecer).</p> : null}
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-lg text-sm font-extrabold" style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>{p.logoText}</span><span className="text-lg font-bold">{p.name}</span></div>
+          <div className="flex items-center gap-3">{p.logoUrl ? <img src={p.logoUrl} alt={p.name} className="h-10 w-auto max-w-40 object-contain" /> : <><span className="flex size-10 items-center justify-center rounded-lg text-sm font-extrabold" style={{ background: "var(--lp-primary)", color: "var(--lp-on-primary)" }}>{p.logoText}</span><span className="text-lg font-bold">{p.name}</span></>}</div>
           <nav className="flex items-center gap-4 text-sm font-medium"><a href="#planos" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Planos</a><a href="#faq" className="hidden text-neutral-600 hover:text-neutral-900 sm:inline">Dúvidas</a><Link href="/login" className="rounded-lg border border-neutral-300 px-4 py-2 hover:bg-neutral-50">Entrar</Link></nav>
         </div>
       </header>
@@ -53,9 +55,13 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
               <a href="#como-funciona" className={`${btn} border border-white/40`}>Como funciona</a>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3" aria-hidden>
-            {p.products.slice(0, 6).map((pr) => <div key={pr.id} className="rounded-xl bg-white/10 p-2"><ProductArt images={pr.images} /></div>)}
-          </div>
+          {p.heroUrl ? (
+            <img src={p.heroUrl} alt="" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-xl" />
+          ) : (
+            <div className="grid grid-cols-3 gap-3" aria-hidden>
+              {p.products.slice(0, 6).map((pr) => <div key={pr.id} className="rounded-xl bg-white/10 p-2"><ProductArt images={pr.images} /></div>)}
+            </div>
+          )}
         </div>
       </section>
 
@@ -104,6 +110,15 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
         </div>
       </section>
 
+      {p.testimonials.length ? (
+        <section className="mx-auto max-w-6xl px-4 py-14" aria-labelledby="prova">
+          <h2 id="prova" className="text-2xl font-bold">Quem vende com a {p.name}</h2>
+          <ul className="mt-6 grid gap-4 md:grid-cols-2">
+            {p.testimonials.map((t, i) => <li key={i}><figure className="h-full rounded-xl border border-neutral-200 p-5"><blockquote className="text-neutral-700">“{t.text}”</blockquote><figcaption className="mt-3 text-sm"><span className="font-semibold">{t.name}</span> · <span className="text-neutral-500">{t.role}</span></figcaption></figure></li>)}
+          </ul>
+        </section>
+      ) : null}
+
       <section id="faq" className="mx-auto max-w-3xl px-4 py-14">
         <h2 className="text-2xl font-bold">Perguntas frequentes</h2>
         <div className="mt-6 space-y-3">{p.faq.map((f) => <details key={f.q} className="rounded-xl border border-neutral-200 p-4"><summary className="cursor-pointer font-semibold">{f.q}</summary><p className="mt-2 text-neutral-600">{f.a}</p></details>)}</div>
@@ -115,6 +130,8 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
           <a href={cta} target={wa ? "_blank" : undefined} rel="noreferrer" className={btn} style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Falar com a {p.name} <ArrowRight className="size-5" aria-hidden /></a>
         </div>
       </section>
+
+      {wa ? <a href={wa} target="_blank" rel="noreferrer" aria-label={`Falar com a ${p.name} no WhatsApp`} className="fixed inset-x-4 bottom-4 z-30 flex h-12 items-center justify-center gap-2 rounded-full text-base font-semibold shadow-lg md:hidden" style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Falar no WhatsApp</a> : null}
 
       <footer className="border-t border-neutral-200 py-6 text-center text-xs text-neutral-500">© {new Date().getFullYear()} {p.name} · Tecnologia <Logo tone="on-light" className="ml-1 inline h-4 align-middle" /></footer>
     </div>

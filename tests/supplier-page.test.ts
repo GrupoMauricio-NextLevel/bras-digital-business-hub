@@ -5,6 +5,7 @@ import { runMigrations } from "@/db/migrate";
 import { seedDatabase } from "@/db/seed";
 import { seedShowcase } from "@/db/showcase";
 import { suppliers } from "@/db/schema";
+import { seedDemoSuppliers } from "@/db/demo-suppliers";
 import { getPublicSupplierPage } from "@/lib/domain/supplier-page";
 
 let db: Database;
@@ -28,5 +29,19 @@ describe("página de vendas do fornecedor", () => {
     expect(await getPublicSupplierPage(db, "nao-existe")).toBeNull();
     await db.update(suppliers).set({ status: "SUSPENDED" }).where(eq(suppliers.slug, "megatron"));
     expect(await getPublicSupplierPage(db, "megatron")).toBeNull();
+  });
+
+  it("Alpha Outfit e MantosShop: páginas de demonstração marcadas, sem custo, e idempotentes", async () => {
+    await seedDemoSuppliers(db); await seedDemoSuppliers(db);
+    for (const slug of ["alpha-outfit", "mantosshop"]) {
+      const p = await getPublicSupplierPage(db, slug);
+      expect(p?.demoContent).toBe(true);
+      expect(p?.products).toHaveLength(4);
+      expect(p?.testimonials.length).toBeGreaterThan(0);
+      const json = JSON.stringify(p);
+      for (const banned of ["costCents", "minimumPriceCents", "onHand", "passwordHash", "@demo.superdrop"]) expect(json).not.toContain(banned);
+    }
+    expect((await getPublicSupplierPage(db, "mantosshop"))?.faq.some((f) => f.a.includes("MANTOSSHOP7"))).toBe(true);
+    expect((await getPublicSupplierPage(db, "alpha-outfit"))?.faq.some((f) => f.a.includes("ALPHA7"))).toBe(true);
   });
 });

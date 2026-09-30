@@ -315,6 +315,7 @@ export const supplierOps = pgTable("supplier_ops", {
 
 /** Página de vendas pública do fornecedor (/f/[slug]). Sem linha, a página usa textos padrão gerados a partir do nome. */
 export type SupplierPageFaq = { q: string; a: string };
+export type SupplierPageTestimonial = { name: string; role: string; text: string };
 export const supplierPages = pgTable("supplier_pages", {
   supplierId: text("supplier_id").primaryKey().references(() => suppliers.id),
   headline: text("headline").notNull(),
@@ -326,6 +327,12 @@ export const supplierPages = pgTable("supplier_pages", {
   benefits: jsonb("benefits").$type<string[]>().notNull().default([]),
   faq: jsonb("faq").$type<SupplierPageFaq[]>().notNull().default([]),
   published: boolean("published").notNull().default(true),
+  /** Logo e imagem de destaque enviados pelo fornecedor (endereço em /brand/... ou https). */
+  logoUrl: text("logo_url"),
+  heroUrl: text("hero_url"),
+  testimonials: jsonb("testimonials").$type<SupplierPageTestimonial[]>().notNull().default([]),
+  /** Conteúdo ainda demonstrativo: a página mostra o aviso "conteúdo a fornecer". */
+  demoContent: boolean("demo_content").notNull().default(false),
   updatedAt: updatedAt(),
 });
 

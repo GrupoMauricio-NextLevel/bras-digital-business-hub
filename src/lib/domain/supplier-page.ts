@@ -1,12 +1,13 @@
 import { and, asc, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { products, supplierPages, suppliers, type SupplierPageFaq } from "@/db/schema";
+import { products, supplierPages, suppliers, type SupplierPageFaq, type SupplierPageTestimonial } from "@/db/schema";
 import { getPriceBook } from "./finance";
 import { OFFER_KEYS, type OfferKey } from "@/lib/finance/price-book";
 
 export type PublicSupplierPage = {
   slug: string; name: string; headline: string; subheadline: string; logoText: string; primaryColor: string; accentColor: string; whatsapp: string | null;
   benefits: string[]; faq: SupplierPageFaq[];
+  logoUrl: string | null; heroUrl: string | null; testimonials: SupplierPageTestimonial[]; demoContent: boolean;
   products: { id: string; name: string; images: string[]; suggestedPriceCents: number }[];
   plans: { key: OfferKey; name: string; description: string; monthlyCents: number; setupCents: number }[];
 };
@@ -44,6 +45,7 @@ export async function getPublicSupplierPage(db: Database, slug: string): Promise
     headline: row?.headline ?? d.headline, subheadline: row?.subheadline ?? d.subheadline,
     logoText: row?.logoText ?? initials(supplier.name), primaryColor: row?.primaryColor ?? "#0f172a", accentColor: row?.accentColor ?? "#16a34a", whatsapp: row?.whatsapp ?? null,
     benefits: row?.benefits?.length ? row.benefits : d.benefits, faq: row?.faq?.length ? row.faq : d.faq,
+    logoUrl: row?.logoUrl ?? null, heroUrl: row?.heroUrl ?? null, testimonials: row?.testimonials ?? [], demoContent: row?.demoContent ?? false,
     products: list.map((p) => ({ id: p.id, name: p.name, images: p.images, suggestedPriceCents: p.suggestedPriceCents })),
     plans: OFFER_KEYS.map((k) => ({ key: k, name: book.offers[k].name, description: book.offers[k].description, monthlyCents: book.offers[k].monthlyCents, setupCents: book.offers[k].setupCents })),
   };
