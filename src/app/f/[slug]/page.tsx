@@ -6,6 +6,7 @@ import { ArrowRight, Check, Package, Printer, Store, Wallet } from "lucide-react
 import { getDb } from "@/db/client";
 import { getPublicSupplierPage } from "@/lib/domain/supplier-page";
 import { Logo } from "@/components/brand/logo";
+import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import { readableOn } from "@/lib/utils";
@@ -134,7 +135,12 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
 
       {wa ? <a href={wa} target="_blank" rel="noreferrer" aria-label={`Falar com a ${p.name} no WhatsApp`} className="fixed inset-x-4 bottom-4 z-30 flex h-12 items-center justify-center gap-2 rounded-full text-base font-semibold shadow-lg md:hidden" style={{ background: "var(--lp-accent)", color: "var(--lp-on-accent)" }}>Falar no WhatsApp</a> : null}
 
-      <footer className="border-t border-neutral-200 py-6 text-center text-xs text-neutral-500">© {new Date().getFullYear()} {p.name} · Tecnologia <Logo tone="on-light" className="ml-1 inline h-4 align-middle" /></footer>
+      <footer className="border-t border-neutral-200 py-8 text-xs text-neutral-500">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 text-center">
+          <p>© {new Date().getFullYear()} {p.name} · Tecnologia <Logo tone="on-light" className="ml-1 inline h-4 align-middle" /></p>
+          <NextLevelSignature />
+        </div>
+      </footer>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
+import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { ForceLight } from "@/components/portal/force-light";
 
 const NAV = [
@@ -27,7 +28,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 text-sm text-neutral-600 md:grid-cols-3">
           <div><Logo tone="on-light" className="h-8" /><p className="mt-2">Loja online sem estoque, com fornecedor que separa e envia.</p></div>
           <div className="flex flex-col gap-1">{NAV.map((n) => <Link key={n.href} href={n.href} className="hover:text-neutral-900">{n.label}</Link>)}<Link href="/cadastro" className="hover:text-neutral-900">Criar minha loja</Link><Link href="/login" className="hover:text-neutral-900">Área de membros</Link><Link href="/seja-fornecedor" className="hover:text-neutral-900">Seja fornecedor</Link></div>
-          <p className="text-xs text-neutral-600">© {new Date().getFullYear()} NextLevel Marketing Ltda. Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público.</p>
+          <div className="text-xs text-neutral-600"><NextLevelSignature /><p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público.</p></div>
         </div>
       </footer>
     </div>

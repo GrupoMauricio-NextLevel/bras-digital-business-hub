@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb } from "@/db/client";
 import { Logo } from "@/components/brand/logo";
+import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { listSignupSuppliers } from "@/lib/domain/store-access";
 import { getPriceBook } from "@/lib/domain/finance";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
@@ -24,6 +25,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
       <p className="mt-1 text-center text-sm text-muted-foreground">Escolha o plano, pague por Pix e o acesso é liberado na hora. Tem cupom do seu fornecedor? Teste 7 dias sem cartão.</p>
       <SignupForm initialCode={(sp.cupom ?? "").toUpperCase().slice(0, 24)} initialOffer={plano} initialSupplier={fornecedor} offers={offers} suppliers={suppliers} />
       <p className="mt-4 text-center text-sm text-muted-foreground">Já tem conta? <Link href="/login" className="font-semibold underline">Entrar na área de membros</Link></p>
+      <NextLevelSignature compact className="mt-8 justify-center text-center text-muted-foreground" />
     </main>
   );
 }

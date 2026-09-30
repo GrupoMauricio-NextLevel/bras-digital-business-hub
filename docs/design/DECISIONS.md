@@ -151,3 +151,10 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Cobrança única na ativação:** a fatura de ativação já soma setup e primeira mensalidade; depois vêm mensalidades por Pix (preço de lista × meses).
 - **Fornecedor obrigatório** no cadastro sem cupom (vem da página do fornecedor ou é escolhido na lista).
 - e2e `e2e/checkout-flow.mjs`, `e2e/trial-block.mjs`; testes de cadastro em `tests/store-access.test.ts`.
+
+## D24. Programa de Parceiros Oficiais (decisões do dono e padrões propostos)
+- **Vertente 1, afiliados:** vendem a oportunidade de negócio (o sistema pronto) e ganham renda extra por indicação. Painel próprio (escritório virtual) com links rastreáveis, cupons de 7 dias e financeiro com saque.
+- **Cadastro gratuito, com meta de 1 ativação por mês.** Comissão sobre o setup: 1 a 4 ativações 15%, 5 a 9 ativações 20%, 10 ou mais 25% (a confirmar o limite de 10). Manutenção fixa de 5% sobre as mensalidades.
+- Padrões propostos (a confirmar): faixa por mês civil com ajuste no fechamento; manutenção enquanto o indicado pagar; parceiro sem ativação fica inativo mas continua recebendo o que já gerou; garantia antes do saque; atribuição por cupom ou último link em 30 dias; comissão de um nível só.
+- Prompt completo em `docs/prompts/programa-parceiros.md` (fases PA0 a PA7).
+- Rodapé das páginas públicas passa a mostrar a logo NextLevel e "SuperDrop é um sistema de tecnologia desenvolvido pela NextLevel Marketing Ltda." (`NextLevelSignature`).

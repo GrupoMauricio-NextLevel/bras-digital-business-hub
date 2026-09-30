@@ -1,5 +1,6 @@
 import { Lock, LifeBuoy, Mail, MessageCircle } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { supportContacts } from "@/lib/support";
 import { formatBRL } from "@/lib/money";
@@ -34,6 +35,7 @@ export function BlockedScreen({ storeName, reason, invoice, demo, logout }: { st
           {c.whatsappUrl ? <a href={c.whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 font-medium hover:bg-surface-muted"><MessageCircle className="size-4" aria-hidden /> Falar com o suporte</a> : null}
           {c.email ? <a href={`mailto:${c.email}`} className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 font-medium hover:bg-surface-muted"><Mail className="size-4" aria-hidden /> {c.email}</a> : null}
         </div>
+        <NextLevelSignature compact className="mt-5 justify-center text-center text-muted-foreground" />
         {logout ? <form action={logout} className="mt-4"><button className="text-xs text-muted-foreground underline">Sair</button></form> : null}
       </main>
     </div>
