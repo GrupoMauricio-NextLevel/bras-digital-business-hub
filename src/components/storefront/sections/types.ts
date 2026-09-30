@@ -1,6 +1,6 @@
 import type { Store } from "@/db/schema";
 import type { PublicProduct } from "@/lib/queries/storefront";
-import type { SettingValue, ThemeGlobals } from "@/lib/themes/types";
+import type { PageKind, SettingValue, ThemeGlobals } from "@/lib/themes/types";
 
 /** Tudo o que uma seção precisa para se desenhar. Os dados já vêm resolvidos pelo servidor. */
 export type SectionCtx = {
@@ -14,6 +14,12 @@ export type SectionCtx = {
   planned: Record<string, PublicProduct[]>;
   hero: PublicProduct | undefined;
   globals: ThemeGlobals;
+  page: PageKind;
+  /** Página de produto: o produto aberto e os relacionados da mesma categoria. */
+  product?: PublicProduct;
+  related?: PublicProduct[];
+  /** Página de catálogo: filtros da busca e a categoria escolhida. */
+  query?: { category?: string; q?: string };
 };
 
 export type SectionProps = {

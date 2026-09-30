@@ -36,7 +36,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const { globals } = await resolveGlobals(await getDb(), sf.store, { draft: preview });
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
-  const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products: [], planned: {}, hero: undefined, globals };
+  const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products: [], planned: {}, hero: undefined, globals, page: "home" as const };
   return (
     <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}

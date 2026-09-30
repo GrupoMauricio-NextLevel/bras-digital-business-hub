@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { ThemeSettingsData } from "@/db/schema";
 import { normalizeSettings, normalizeValue } from "@/lib/themes/settings";
 import { SECTION_SCHEMAS, sectionSchema } from "@/lib/themes/sections";
-import { addBlock, addSection, duplicateSection, legacyGlobals, moveBlock, moveSection, normalizeGlobals, normalizeStyle, normalizeTemplate, planProducts, removeBlock, removeSection, resolveLink, sameTemplate, setBlockSetting, setSectionHidden, setSetting, templateFromLegacy, TemplateOpError } from "@/lib/themes/template";
+import { addBlock, addSection, defaultTemplate, duplicateSection, legacyGlobals, moveBlock, moveSection, normalizeGlobals, normalizeStyle, normalizeTemplate, planProducts, removeBlock, removeSection, resolveLink, sameTemplate, setBlockSetting, setSectionHidden, setSetting, templateFromLegacy, TemplateOpError } from "@/lib/themes/template";
 import type { Template } from "@/lib/themes/types";
 
 const legacy: ThemeSettingsData = { heroTitle: "Vista o manto", heroSubtitle: "Camisas oficiais", heroCta: "Ver catálogo", announcement: "Frete grátis", banners: [{ title: "Lançamento", subtitle: "Coleção nova", tone: "accent" }, { title: "Promo", subtitle: "", tone: "neutral" }], showCategories: true, footerText: "Mantos Shop" };
@@ -155,5 +155,23 @@ describe("links do tema", () => {
     expect(resolveLink("/store/x", "/catalog")).toBe("/store/x/catalog"); expect(resolveLink("/store/x", "/")).toBe("/store/x");
     expect(resolveLink("/store/x", "https://wa.me/55")).toBe("https://wa.me/55"); expect(resolveLink("/store/x", "#topo")).toBe("#topo"); expect(resolveLink("/store/x", "")).toBe("/store/x");
     expect(resolveLink("/store/x", "//evil.com")).toBe("//evil.com");
+  });
+});
+
+describe("modelos padrão das outras páginas", () => {
+  it("produto, catálogo e carrinho têm as seções da loja atual e já são válidos", () => {
+    const order = (page: "product" | "collection" | "cart") => defaultTemplate(page, legacy).order;
+    expect(order("product")).toEqual(["product", "related"]); expect(order("collection")).toEqual(["header", "grid"]); expect(order("cart")).toEqual(["cart"]);
+    for (const page of ["product", "collection", "cart"] as const) { const t = defaultTemplate(page, legacy); expect(normalizeTemplate(t, "content", page).template).toEqual(t); expect(normalizeTemplate(t, "content", page).issues).toEqual([]); }
+  });
+  it("seções de página específica não entram em outra página", () => {
+    expect(normalizeTemplate({ v: 1, order: ["p"], sections: { p: { type: "product-main" } } }, "content", "home").template.order).toEqual([]);
+    expect(() => addSection(templateFromLegacy(legacy), "cart-main", { region: "content", page: "home" })).toThrow(TemplateOpError);
+    expect(() => addSection(defaultTemplate("product", legacy), "product-main", { region: "content", page: "product" })).toThrow(/uma seção/);
+  });
+  it("padrões da página de produto reproduzem a loja atual", () => {
+    const main = defaultTemplate("product", legacy).sections.product!.settings;
+    expect(main).toMatchObject({ gallery: "stacked", showBreadcrumb: true, stickyBuyBar: false });
+    expect(String(main.shippingNote)).toContain("etiqueta em até 1 dia útil");
   });
 });

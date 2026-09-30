@@ -3,6 +3,5 @@ import path from "node:path";
 
 export default defineConfig({
   test: { include: ["tests/**/*.test.{ts,tsx}"], environment: "node" },
-  esbuild: { jsx: "automatic" },
   resolve: { alias: { "@": path.resolve(__dirname, "src") } },
 });

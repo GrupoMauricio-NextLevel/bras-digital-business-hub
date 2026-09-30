@@ -4,12 +4,13 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/store/x", useRouter: () => ({ push() {}, replace() {} }) }));
-vi.mock("@/components/storefront/cart-context", () => ({ useCart: () => ({ count: 0, ready: true }) }));
+vi.mock("@/components/storefront/cart-context", () => ({ useCart: () => ({ count: 0, ready: true, lines: [], add() {}, update() {}, remove() {}, clear() {}, subtotal: 0 }) }));
+vi.mock("sonner", () => ({ toast: Object.assign(() => {}, { success() {}, error() {} }) }));
 
 import { SectionList, type SectionCtx } from "@/components/storefront/sections";
 import type { ThemeSettingsData } from "@/db/schema";
 import { SECTION_SCHEMAS } from "@/lib/themes/sections";
-import { addSection, legacyGlobals, normalizeTemplate, planProducts, setSectionHidden, setSetting, templateFromLegacy } from "@/lib/themes/template";
+import { addSection, defaultTemplate, legacyGlobals, normalizeTemplate, planProducts, setSectionHidden, setSetting, templateFromLegacy } from "@/lib/themes/template";
 import type { PublicProduct } from "@/lib/queries/storefront";
 
 const legacy: ThemeSettingsData = { heroTitle: "Vista o manto", heroSubtitle: "Camisas oficiais", heroCta: "Ver catálogo", announcement: "Frete grátis", banners: [{ title: "Lançamento", subtitle: "Coleção nova", tone: "accent" }], showCategories: true, footerText: "Mantos Shop" };
@@ -19,7 +20,7 @@ const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}
 function render(template = templateFromLegacy(legacy), products: PublicProduct[] = Array.from({ length: 9 }, (_, i) => product(i)), region: "content" | "header" | "footer" = "content") {
   const globals = legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy);
   const { lists, hero } = planProducts(template, products);
-  const ctx: SectionCtx = { slug: "mantos", base: "/store/mantos", store, categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals };
+  const ctx: SectionCtx = { slug: "mantos", base: "/store/mantos", store, categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals, page: "home" };
   const t = region === "header" ? globals.header : region === "footer" ? globals.footer : template;
   return renderToStaticMarkup(<SectionList template={t} ctx={ctx} />);
 }
@@ -60,4 +61,32 @@ describe("renderização das seções", () => {
     const head = render(undefined, [], "header"); expect(head).toContain("Frete grátis"); expect(head).toContain("Mantos Shop");
     const foot = render(undefined, [], "footer"); expect(foot).toContain("Pagamento seguro"); expect(foot).toContain("@mantosshop"); expect(foot).toContain("Tecnologia");
   });
+});
+
+describe("páginas de produto, catálogo e carrinho", () => {
+  const products = Array.from({ length: 6 }, (_, i) => product(i));
+  const globals = legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy);
+  const page = (kind: "product" | "collection" | "cart", extra: Partial<SectionCtx> = {}, mut?: (t: ReturnType<typeof defaultTemplate>) => ReturnType<typeof defaultTemplate>) => {
+    let t = defaultTemplate(kind, legacy); if (mut) t = mut(t);
+    const { lists, hero } = planProducts(t, products);
+    return renderToStaticMarkup(<SectionList template={t} ctx={{ slug: "mantos", base: "/store/mantos", store, categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals, page: kind, ...extra }} />);
+  };
+  it("produto: caminho, título, tamanhos, botão de compra e relacionados", () => {
+    const html = page("product", { product: { ...products[0]!, variants: [{ id: "v1", size: "M", available: 3 }] }, related: products.slice(1, 4) });
+    for (const t of ["Camisa 0", "Adicionar ao carrinho", "Tamanho", "Você também pode gostar", "Catálogo"]) expect(html).toContain(t);
+    expect(html).toContain("etiqueta em até 1 dia útil");
+  });
+  it("produto: opções de galeria e sem relacionados", () => {
+    const base = { product: { ...products[0]!, images: ["https://cdn.exemplo.com/a.webp", "https://cdn.exemplo.com/b.webp"] } };
+    expect(page("product", { ...base, related: [] }, (t) => setSetting(t, "product", "gallery", "grid"))).toContain("col-span-2");
+    expect(page("product", { ...base, related: [] }, (t) => setSetting(t, "product", "gallery", "thumbs"))).toContain("Ver imagem 2");
+    expect(page("product", { ...base, related: [] })).not.toContain("Você também pode gostar");
+    expect(page("product", { ...base, related: [] }, (t) => setSetting(t, "product", "showBreadcrumb", false))).not.toContain("Início");
+  });
+  it("catálogo: cabeçalho, busca, categorias e grade; vazio mostra o texto", () => {
+    const html = page("collection", { query: { category: "camisas" } }); expect(html).toContain("Camisas"); expect(html).toContain("6 produtos"); expect(html).toContain('name="q"'); expect(html).toContain("Todos");
+    expect(page("collection", { products: [] })).toContain("Nenhum produto encontrado.");
+    expect(page("collection", {}, (t) => setSetting(setSetting(t, "header", "showSearch", false), "header", "showCount", false))).not.toContain('name="q"');
+  });
+  it("carrinho renderiza sem quebrar (vazio)", () => { expect(page("cart")).toContain("Seu carrinho está vazio"); });
 });

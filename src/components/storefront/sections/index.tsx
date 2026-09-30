@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Template } from "@/lib/themes/types";
-import { AnnouncementBar, CategoryChips, Footer, HeaderSection, Hero, ProductGrid, ProductShowcase, PromoBanners, RichText, TrustBar } from "./sections";
+import { AnnouncementBar, CartMain, CategoryChips, CollectionGrid, CollectionHeader, Footer, HeaderSection, Hero, ProductGrid, ProductMain, ProductRelated, ProductShowcase, PromoBanners, RichText, TrustBar } from "./sections";
 import type { SectionCtx, SectionProps } from "./types";
 
 export type { SectionCtx } from "./types";
@@ -9,6 +9,7 @@ export type { SectionCtx } from "./types";
 export const SECTION_COMPONENTS: Record<string, (props: SectionProps) => React.ReactNode> = {
   "announcement-bar": AnnouncementBar, header: HeaderSection, hero: Hero, "trust-bar": TrustBar, "category-chips": CategoryChips,
   "product-showcase": ProductShowcase, "promo-banners": PromoBanners, "product-grid": ProductGrid, "rich-text": RichText, footer: Footer,
+  "product-main": ProductMain, "product-related": ProductRelated, "collection-header": CollectionHeader, "collection-grid": CollectionGrid, "cart-main": CartMain,
 };
 
 /**

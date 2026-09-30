@@ -75,6 +75,35 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     presets: [{ name: "Texto" }],
   },
   {
+    type: "product-main", name: "Produto", description: "Galeria, título, preço, tamanhos e botão de compra.", category: "Produtos", region: "content", pages: ["product"], singleton: true,
+    settings: [
+      { id: "gallery", type: "select", label: "Galeria", options: [{ value: "stacked", label: "Imagem grande" }, { value: "thumbs", label: "Imagem e miniaturas" }, { value: "grid", label: "Grade de imagens" }], default: "stacked" },
+      { id: "showBreadcrumb", type: "checkbox", label: "Mostrar caminho (Início > Catálogo)", default: true },
+      { id: "shippingNote", type: "text", label: "Aviso de envio", default: "Enviado pela Central Sports · etiqueta em até 1 dia útil após confirmação", maxLength: 140 },
+      { id: "stickyBuyBar", type: "checkbox", label: "Barra fixa de compra no celular", default: false },
+    ],
+    presets: [{ name: "Produto" }],
+  },
+  {
+    type: "product-related", name: "Produtos relacionados", description: "Outros produtos da mesma categoria.", category: "Produtos", region: "content", pages: ["product"],
+    settings: [{ id: "title", type: "text", label: "Título", default: "Você também pode gostar", maxLength: 80 }, { id: "count", type: "range", label: "Quantidade", min: 2, max: 8, step: 1, default: 4 }, COLUMNS()],
+    presets: [{ name: "Produtos relacionados" }],
+  },
+  {
+    type: "collection-header", name: "Cabeçalho do catálogo", description: "Título, contagem, busca e categorias.", category: "Produtos", region: "content", pages: ["collection"], singleton: true,
+    settings: [{ id: "showCount", type: "checkbox", label: "Mostrar quantidade de produtos", default: true }, { id: "showSearch", type: "checkbox", label: "Mostrar busca", default: true }, { id: "showCategories", type: "checkbox", label: "Mostrar categorias", default: true }],
+    presets: [{ name: "Cabeçalho do catálogo" }],
+  },
+  {
+    type: "collection-grid", name: "Grade do catálogo", description: "Os produtos da busca ou categoria escolhida.", category: "Produtos", region: "content", pages: ["collection"], singleton: true,
+    settings: [COLUMNS(), { id: "emptyText", type: "text", label: "Texto quando não há produtos", default: "Nenhum produto encontrado.", maxLength: 100 }],
+    presets: [{ name: "Grade do catálogo" }],
+  },
+  {
+    type: "cart-main", name: "Carrinho", description: "Itens, frete e resumo do pedido.", category: "Produtos", region: "content", pages: ["cart"], singleton: true,
+    settings: [], presets: [{ name: "Carrinho" }],
+  },
+  {
     type: "footer", name: "Rodapé", description: "Texto, redes e selos.", category: "Rodapé", region: "footer", pages: ["home", "product", "collection", "cart"], singleton: true,
     settings: [{ id: "text", type: "text", label: "Texto do rodapé", default: "", maxLength: 160 }, { id: "showInstagram", type: "checkbox", label: "Mostrar Instagram", default: true }, { id: "showBadges", type: "checkbox", label: "Mostrar “Pagamento seguro” e “Envio para todo o Brasil”", default: true }],
     presets: [{ name: "Rodapé padrão" }],

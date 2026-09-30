@@ -9,13 +9,20 @@ import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
-export function BuyBox({ product, slug }: { product: PublicProduct; slug: string }) {
+export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Sports · etiqueta em até 1 dia útil após confirmação", stickyBar = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean }) {
   const cart = useCart();
   const router = useRouter();
   const [mode, setMode] = React.useState<"unit" | "pack">(product.sellsUnit ? "unit" : "pack");
   const [variantId, setVariantId] = React.useState<string>(product.variants.find((v) => v.available > 0)?.id ?? "");
   const [qty, setQty] = React.useState(1);
   const [added, setAdded] = React.useState(false);
+  const ctaRef = React.useRef<HTMLDivElement>(null);
+  const [ctaVisible, setCtaVisible] = React.useState(true);
+  React.useEffect(() => {
+    if (!stickyBar || !ctaRef.current || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setCtaVisible(!!e?.isIntersecting), { threshold: 0.2 });
+    io.observe(ctaRef.current); return () => io.disconnect();
+  }, [stickyBar]);
   const pack = product.packs[0];
   const variant = product.variants.find((v) => v.id === variantId);
   const max = mode === "unit" ? variant?.available ?? 0 : pack?.available ?? 0;
@@ -63,7 +70,7 @@ export function BuyBox({ product, slug }: { product: PublicProduct; slug: string
         </div>
       ) : null}
 
-      <div className="mt-6 flex items-center gap-3">
+      <div ref={ctaRef} className="mt-6 flex items-center gap-3">
         <div className="flex h-11 items-center rounded-lg border border-neutral-300">
           <button type="button" className="px-3 disabled:opacity-40" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Menos"><Minus className="size-4" /></button>
           <span className="w-8 text-center text-sm font-medium tabular-nums">{qty}</span>
@@ -71,7 +78,13 @@ export function BuyBox({ product, slug }: { product: PublicProduct; slug: string
         </div>
         <SfButton className="h-11 flex-1" onClick={add} disabled={max === 0}>{added ? <><Check className="size-4" /> Adicionado</> : <><ShoppingBag className="size-4" /> {max === 0 ? "Esgotado" : "Adicionar ao carrinho"}</>}</SfButton>
       </div>
-      <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" /> Enviado pela Central Sports · etiqueta em até 1 dia útil após confirmação</div>
+      <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" /> {shippingNote}</div>
+      {stickyBar && !ctaVisible ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-neutral-200 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur sm:hidden" data-sticky-buy-bar>
+          <div className="min-w-0 flex-1"><div className="truncate text-sm font-medium">{product.name}</div><div className="text-sm font-semibold">{formatBRL(price)}</div></div>
+          <SfButton className="h-11 px-6" onClick={add} disabled={max === 0}>{max === 0 ? "Esgotado" : "Comprar"}</SfButton>
+        </div>
+      ) : null}
     </div>
   );
 }

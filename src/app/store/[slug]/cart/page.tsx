@@ -1,6 +1,6 @@
-import { CartView } from "./cart-view";
+import { StorePage } from "@/components/storefront/store-page";
 
 export default async function CartPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <CartView slug={slug} />;
+  return <StorePage slug={slug} page="cart" />;
 }

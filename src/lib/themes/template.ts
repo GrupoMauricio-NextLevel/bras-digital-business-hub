@@ -204,9 +204,12 @@ export function normalizeGlobals(raw: unknown): { globals: ThemeGlobals; issues:
   return { globals: { v: 1, style: normalizeStyle(isObj(r.style) ? r.style : undefined), header: h.template, footer: f.template }, issues: [...h.issues, ...f.issues] };
 }
 
-/** Modelo de cada página quando a loja ainda não tem um salvo. Só a página inicial tem seções nesta fase. */
+/** Modelo de cada página quando a loja ainda não tem um salvo (o mesmo visual que a loja sempre teve). */
 export function defaultTemplate(page: PageKind, settings: ThemeSettingsData, themeKey = "starter"): Template {
-  return page === "home" ? templateFromLegacy(settings, themeKey) : emptyTemplate();
+  if (page === "home") return templateFromLegacy(settings, themeKey);
+  if (page === "product") return build("content", "product", [["product", { type: "product-main" }], ["related", { type: "product-related" }]]);
+  if (page === "collection") return build("content", "collection", [["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]]);
+  return build("content", "cart", [["cart", { type: "cart-main" }]]);
 }
 
 // ---------------------------------------------------------------------------

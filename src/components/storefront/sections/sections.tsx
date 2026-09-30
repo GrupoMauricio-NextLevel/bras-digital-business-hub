@@ -1,10 +1,13 @@
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Clock, Heart, RefreshCw, ShieldCheck, Star, Truck, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronRight, Clock, Heart, RefreshCw, Search, ShieldCheck, Star, Truck, type LucideIcon } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ProductArt } from "@/components/app/product-art";
 import { ProductCard } from "@/components/storefront/product-card";
 import { StoreHeader } from "@/components/storefront/header";
+import { BuyBox } from "@/components/storefront/buy-box";
+import { ThumbsGallery } from "@/components/storefront/product-gallery";
+import { CartView } from "@/app/store/[slug]/cart/cart-view";
 import { renderMarkdownLite } from "@/lib/ds/text";
 import { resolveLink } from "@/lib/themes/template";
 import { cn } from "@/lib/utils";
@@ -133,3 +136,72 @@ export function Footer({ settings, ctx }: SectionProps) {
     </footer>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Página de produto, catálogo e carrinho
+// ---------------------------------------------------------------------------
+export function ProductMain({ settings, ctx }: SectionProps) {
+  const product = ctx.product; if (!product) return null;
+  const base = ctx.base; const gallery = str(settings.gallery) || "stacked";
+  const real = product.images.filter((i) => /^https?:\/\//.test(i) || i.startsWith("data:image"));
+  return (
+    <>
+      {settings.showBreadcrumb !== false ? <nav className="mb-6 flex items-center gap-1 text-xs text-neutral-500"><Link href={base} className="hover:text-neutral-900">Início</Link><ChevronRight className="size-3" /><Link href={`${base}/catalog`} className="hover:text-neutral-900">Catálogo</Link><ChevronRight className="size-3" /><span className="text-neutral-900">{product.name}</span></nav> : null}
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+        {gallery === "thumbs" ? <ThumbsGallery images={product.images} name={product.name} /> : gallery === "grid" && real.length > 1 ? (
+          <div className="grid grid-cols-2 gap-3">{real.slice(0, 6).map((img, i) => <ProductArt key={i} images={[img]} size="lg" alt={i === 0 ? product.name : ""} className={cn("rounded-2xl bg-neutral-100", i === 0 && "col-span-2")} />)}</div>
+        ) : (
+          <div className="space-y-3">
+            <ProductArt images={product.images} size="lg" className="rounded-2xl bg-neutral-100" />
+            <div className="grid grid-cols-4 gap-3">{[0, 1, 2, 3].map((i) => <ProductArt key={i} images={product.images} size="md" className="rounded-xl bg-neutral-100 opacity-70" />)}</div>
+          </div>
+        )}
+        <BuyBox product={product} slug={ctx.slug} shippingNote={str(settings.shippingNote)} stickyBar={settings.stickyBuyBar === true} />
+      </div>
+    </>
+  );
+}
+
+export function ProductRelated({ settings, ctx }: SectionProps) {
+  const list = (ctx.related ?? []).slice(0, Number(settings.count) || 4); if (!list.length) return null;
+  const cols = COLS[Number(settings.columns)] ?? COLS[4]!;
+  return (
+    <section className="mt-16">
+      <h2 className="mb-5 text-xl font-semibold tracking-tight">{str(settings.title)}</h2>
+      <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>
+    </section>
+  );
+}
+
+export function CollectionHeader({ settings, ctx }: SectionProps) {
+  const base = `${ctx.base}/catalog`; const { category, q } = ctx.query ?? {};
+  const cat = ctx.categories.find((c) => c.slug === category); const count = ctx.products.length;
+  return (
+    <>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div><h1 className="text-2xl font-semibold tracking-tight">{cat?.name ?? "Catálogo"}</h1>{settings.showCount !== false ? <p className="text-sm text-neutral-500">{count} produto{count === 1 ? "" : "s"}</p> : null}</div>
+        {settings.showSearch !== false ? (
+          <form className="relative w-full sm:w-72" action={base}>
+            {category ? <input type="hidden" name="category" value={category} /> : null}
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
+            <input name="q" defaultValue={q} placeholder="Buscar produto…" aria-label="Buscar produto" className="h-11 w-full rounded-lg border border-neutral-300 bg-white pl-9 pr-3 text-sm outline-none focus:border-neutral-900" />
+          </form>
+        ) : null}
+      </div>
+      {settings.showCategories !== false ? (
+        <div className="nl-scroll mb-6 flex gap-2 overflow-x-auto pb-1">
+          <Link href={base} className={cn("shrink-0 rounded-full border px-4 py-2 text-sm", !category ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>Todos</Link>
+          {ctx.categories.map((c) => <Link key={c.id} href={`${base}?category=${c.slug}`} className={cn("shrink-0 rounded-full border px-4 py-2 text-sm", category === c.slug ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>{c.name}</Link>)}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+export function CollectionGrid({ settings, ctx }: SectionProps) {
+  const cols = COLS[Number(settings.columns)] ?? COLS[4]!;
+  if (ctx.products.length === 0) return <div className="rounded-xl border border-dashed border-neutral-300 p-12 text-center text-sm text-neutral-500">{str(settings.emptyText)}</div>;
+  return <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{ctx.products.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} />)}</div>;
+}
+
+export function CartMain({ ctx }: SectionProps) { return <CartView slug={ctx.slug} />; }
