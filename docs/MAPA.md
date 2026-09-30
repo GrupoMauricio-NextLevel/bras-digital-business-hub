@@ -3,6 +3,9 @@
 Tamanho relativo: **P** pequeno, **M** médio, **G** grande. Não são prazos.
 
 ## Onde estamos (feito)
+Rodada visual concluída (ver `docs/design/DECISIONS.md`, D10): portal público, home Lite, análise e prévia em 3 larguras no Pro, Loja NextLevel com pedido de serviço, recomendações e conversa nos painéis.
+
+
 Painéis Master (torre de controle), Fornecedor (esteira ao vivo, corte, ondas), Expedição (sem valores), Membro; carteira com recarga Pix; etiqueta em PDF; cobrança da NextLevel por Pix e add-ons (simulado); racional de preços e planos (documentos); site real em `app.superdrop.com.br` com domínio conectado; vitrine de demonstração (Mega Tron / MRS Sports), página `/f/megatron`, pós-venda e etiquetas do membro.
 
 ## Bloco A: ações suas (sem código)

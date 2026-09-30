@@ -8,6 +8,8 @@ import { CutoffBanner } from "@/components/dispatch/cutoff-banner";
 import { LiveSync } from "@/components/dispatch/live-sync";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
+import { ServiceSpotlight } from "@/components/services/spotlight";
+import { getServicesHub } from "@/lib/queries/services-hub";
 import { ESTEIRA_COLUMNS, loadEsteira, supplierOnboarding } from "@/lib/domain/operations";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +18,7 @@ export default async function SupplierHome() {
   const db = await getDb();
   const supplierId = session.supplier!.id;
   const [e, onboarding] = await Promise.all([loadEsteira(db, session.actor), supplierOnboarding(db, supplierId)]);
+  const hub = await getServicesHub(session);
   const n = (s: string) => e.orders.filter((o) => o.status === s).length;
   const late = e.orders.filter((o) => o.status !== "SHIPPED" && o.status !== "AWAITING_CENTRAL_PAYMENT" && o.ageMinutes > 24 * 60).length;
 
@@ -39,6 +42,8 @@ export default async function SupplierHome() {
           </ol>
         </CardContent></Card>
       ) : null}
+
+      <div className="mb-5"><ServiceSpotlight hub={hub} base="/supplier" /></div>
 
       <CutoffBanner cutoff={{ state: e.cutoff.state, cutoffAt: e.cutoff.cutoffAt, nextWorkingDate: e.cutoff.nextWorkingDate, nextCutoffAt: e.cutoff.nextCutoffAt, timezone: e.ops.timezone }} className="mb-4" />
 

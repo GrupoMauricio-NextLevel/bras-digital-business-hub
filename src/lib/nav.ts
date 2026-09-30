@@ -88,6 +88,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       NEXTLEVEL_ITEM("/merchant"),
       { label: "Início", href: "/merchant", icon: "Home", exact: true },
       { label: "Pedidos", href: "/merchant/orders", icon: "ShoppingCart" },
+      { label: "Análise", href: "/merchant/analytics", icon: "BarChart3" },
       { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck" },
       { label: "Etiquetas", href: "/merchant/labels", icon: "Printer" },
       { label: "Catálogo", href: "/merchant/products", icon: "Package" },

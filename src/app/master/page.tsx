@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CircleAlert, Factory, Info, ShoppingCart, Store, TrendingUp, Wallet } from "lucide-react";
+import { AlertTriangle, ArrowRight, Sparkles, CircleAlert, Factory, Info, ShoppingCart, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { ActivityFeed } from "@/components/shared/activity-feed";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { getPlatformOverview } from "@/lib/queries/master";
 import { listOrdersForActor } from "@/lib/domain/orders";
+import { listServiceOrders } from "@/lib/domain/services";
 import { BAND_LABEL, buildAlerts, healthScore, loadTowerSnapshot, type HealthBand, type Severity } from "@/lib/domain/control-tower";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
@@ -27,6 +28,9 @@ export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const [overview, orders, snap] = await Promise.all([getPlatformOverview(), listOrdersForActor(db, session.actor, { limit: 6 }), loadTowerSnapshot(db)]);
+  const serviceOrders = await listServiceOrders(db, session.actor);
+  const svcWaiting = serviceOrders.filter((o) => ["REQUESTED", "IN_ANALYSIS"].includes(o.order.status)).length;
+  const svcActive = serviceOrders.filter((o) => ["QUOTED", "IN_PROGRESS"].includes(o.order.status)).length;
   const alerts = buildAlerts(snap);
   const health = snap.stores.map((s) => ({ s, h: healthScore(s) }));
   const bands = (["HEALTHY", "ATTENTION", "RISK"] as HealthBand[]).map((b) => ({ band: b, n: health.filter((x) => x.h.band === b).length }));
@@ -37,10 +41,11 @@ export default async function MasterDashboard() {
   return (
     <>
       <PageHeader title="Torre de controle" description="O que precisa da sua atenção agora, a saúde da rede e a receita da NextLevel." />
-      <MetricGrid>
+      <MetricGrid className="lg:grid-cols-5">
         <MetricCard label="Receita NextLevel (mês)" value={formatBRL(overview.platformRevenue)} icon={Wallet} tone="info" hint={`${formatBRL(overview.subscriptionRevenue)} recorrente + ${formatBRL(overview.feeRevenue)} taxas`} href="/master/finance" />
         <MetricCard label="GMV da rede" value={formatCompactBRL(overview.gmv)} icon={TrendingUp} tone="success" hint={`${overview.orders} pedidos`} />
         <MetricCard label="Rede" value={`${overview.suppliers} forn. · ${overview.stores} lojas`} icon={Factory} hint={`${overview.activeStores} ativas · ${overview.suspendedStores} suspensas`} href="/master/suppliers" />
+        <MetricCard label="Loja NextLevel" value={`${svcWaiting} aguardando`} icon={Sparkles} tone={svcWaiting ? "warning" : "neutral"} hint={`${svcActive} em orçamento ou execução`} href="/master/services" />
         <MetricCard label="Alertas abertos" value={alerts.length} icon={AlertTriangle} tone={urgent ? "danger" : alerts.length ? "warning" : "success"} hint={urgent ? `${urgent} urgente(s)` : "Nada urgente"} />
       </MetricGrid>
 

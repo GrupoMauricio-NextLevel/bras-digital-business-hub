@@ -9,6 +9,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
+import { ServiceSpotlight } from "@/components/services/spotlight";
+import { getServicesHub } from "@/lib/queries/services-hub";
 import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
@@ -25,6 +27,7 @@ export default async function MerchantHome() {
     { n: o.inProgress.length, label: "em separação/envio na Central", href: "/merchant/orders?status=READY_TO_PICK", tone: "info" },
   ].filter((p) => p.n > 0);
 
+  const hub = await getServicesHub(session);
   const isLite = store.offer !== "STORE_OWN";
   const balance = isLite ? await getBalanceCents(await getDb(), store.id) : 0;
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
@@ -77,6 +80,8 @@ export default async function MerchantHome() {
           </CardContent>
         </Card>
       ) : null}
+
+      <div className="mb-6"><ServiceSpotlight hub={hub} base="/merchant" /></div>
 
       <MetricGrid>
         <MetricCard label="Vendas (30 dias)" value={formatBRL(o.sales)} icon={TrendingUp} tone="success" hint={`${o.last30Count} pedidos`} />

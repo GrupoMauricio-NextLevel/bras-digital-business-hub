@@ -3,6 +3,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { StatusBadge } from "@/components/app/status-badge";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { getDb } from "@/db/client";
 import { services, stores, suppliers } from "@/db/schema";
@@ -44,6 +45,7 @@ export default async function MasterServicesPage() {
                   <div className="flex items-center gap-2"><span className="text-xs text-muted-foreground">{formatDateTime(o.createdAt)}</span><StatusBadge value={o.status === "DELIVERED" ? "PAID" : o.status === "CANCELED" ? "CANCELED" : "PENDING"} dot={false} /><span className="text-xs font-medium">{STATUS_LABEL[o.status]}</span></div>
                 </div>
                 <p className="rounded-md bg-surface-muted p-3 text-sm">{o.briefing}</p>
+                <Link href={`/master/services/${o.id}`} className="text-sm font-medium text-accent hover:underline">Abrir conversa</Link>
                 {o.quotedCents ? <p className="text-sm">Orçamento: <strong className="tabular-nums">{formatBRL(o.quotedCents)}</strong></p> : null}
                 <ServiceOrderActions id={o.id} status={o.status} defaultQuote={o.quotedCents ?? catalog.find((c) => c.name === serviceName)?.priceFromCents ?? 0} />
               </CardContent></Card>

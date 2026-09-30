@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus, Save, Trash2 } from "lucide-react";
+import { Monitor, Plus, Save, Smartphone, Tablet, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/app/form-field";
@@ -14,7 +14,11 @@ import { readableOn } from "@/lib/utils";
 type State = { logoText: string; primaryColor: string; accentColor: string; settings: ThemeSettingsData };
 const PRESETS = [["#0f172a", "#16a34a"], ["#1d4ed8", "#f59e0b"], ["#7c2d12", "#ca8a04"], ["#111827", "#dc2626"], ["#065f46", "#f97316"], ["#4c1d95", "#22d3ee"]];
 
-export function AppearanceForm({ initial, slug, name }: { initial: State; slug: string; name: string }) {
+const WIDTHS = [{ key: "desktop", label: "Computador", px: null, icon: Monitor }, { key: "tablet", label: "Tablet", px: 768, icon: Tablet }, { key: "mobile", label: "Celular", px: 390, icon: Smartphone }] as const;
+
+export function AppearanceForm({ initial, slug, name, advanced = false }: { initial: State; slug: string; name: string; advanced?: boolean }) {
+  const [width, setWidth] = React.useState<(typeof WIDTHS)[number]["key"]>("desktop");
+  const frame = WIDTHS.find((w) => w.key === width)!;
   const router = useRouter();
   const [s, setS] = React.useState<State>(initial);
   const [pending, start] = React.useTransition();
@@ -80,7 +84,12 @@ export function AppearanceForm({ initial, slug, name }: { initial: State; slug: 
             <div className="px-4 py-8" style={{ background: `${s.accentColor}14` }}><div className="text-lg font-semibold">{s.settings.heroTitle}</div><div className="mt-1 text-xs text-muted-foreground">{s.settings.heroSubtitle}</div><span className="mt-3 inline-block rounded-md px-3 py-1.5 text-xs font-medium" style={{ background: s.accentColor, color: readableOn(s.accentColor) }}>{s.settings.heroCta}</span></div>
             <div className="grid grid-cols-4 gap-2 p-4">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="aspect-[4/5] rounded-md bg-surface-muted" />)}</div>
           </div>
-          <div className="overflow-hidden rounded-lg border border-border"><iframe key={previewKey} title="Loja" src={`/store/${slug}`} className="h-[420px] w-full bg-white" /></div>
+          {advanced ? (
+            <div role="group" aria-label="Largura da pré-visualização" className="flex gap-1 rounded-lg bg-surface-muted p-1">
+              {WIDTHS.map((w) => { const Icon = w.icon; return <button key={w.key} type="button" aria-pressed={width === w.key} onClick={() => setWidth(w.key)} className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition ${width === w.key ? "bg-surface shadow-sm" : "text-muted-foreground hover:text-foreground"}`}><Icon className="size-4" aria-hidden />{w.label}{w.px ? ` · ${w.px}px` : ""}</button>; })}
+            </div>
+          ) : null}
+          <div className="overflow-x-auto rounded-lg border border-border bg-surface-muted"><iframe key={previewKey} title={`Loja (${frame.label})`} src={`/store/${slug}`} style={{ width: advanced && frame.px ? frame.px : "100%", maxWidth: "100%" }} className={`mx-auto block bg-white ${advanced ? "h-[560px]" : "h-[420px]"}`} /></div>
         </div>
       </div>
     </div>
