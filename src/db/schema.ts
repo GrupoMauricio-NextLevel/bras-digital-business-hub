@@ -82,9 +82,35 @@ export const stores = pgTable("stores", {
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   publishedAt: ts("published_at"),
+  /** Teste e assinatura: sem nenhuma das duas datas a loja não tem regra de acesso (contas antigas e demonstração). */
+  trialEndsAt: ts("trial_ends_at"),
+  paidUntil: ts("paid_until"),
+  couponId: text("coupon_id"),
+  /** CPF/CNPJ só com dígitos: um teste por documento. */
+  taxId: text("tax_id"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("stores_network_idx").on(t.networkId)]);
+
+/** Cupons de teste. Cada cupom pertence a um fornecedor (atribuição da loja à rede dele). */
+export const coupons = pgTable("coupons", {
+  id: id(),
+  code: text("code").notNull().unique(),
+  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  trialDays: integer("trial_days").notNull().default(7),
+  maxRedemptions: integer("max_redemptions"),
+  redemptions: integer("redemptions").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+});
+
+/** Um teste por CPF/CNPJ: o documento (só dígitos) é único. */
+export const trialClaims = pgTable("trial_claims", {
+  taxId: text("tax_id").primaryKey(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  couponId: text("coupon_id").notNull().references(() => coupons.id),
+  createdAt: createdAt(),
+});
 
 export const users = pgTable("users", {
   id: id(),
@@ -580,7 +606,7 @@ export const financeInvoices = pgTable("finance_invoices", {
   payerType: text("payer_type", { enum: ["SUPPLIER", "STORE"] }).notNull(),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
-  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "ADDON", "SERVICE"] }).notNull(),
+  kind: text("kind", { enum: ["SUPPLIER_SETUP", "SUPPLIER_SUBSCRIPTION", "SUPPLIER_CLOSING", "STORE_SETUP", "STORE_PLAN", "ADDON", "SERVICE"] }).notNull(),
   /** Competência YYYY-MM (mensalidade e fechamento). */
   period: text("period"),
   description: text("description").notNull(),

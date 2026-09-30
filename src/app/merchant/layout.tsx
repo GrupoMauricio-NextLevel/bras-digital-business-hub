@@ -4,11 +4,35 @@ import { getDb } from "@/db/client";
 import { financeInvoices } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { formatBRL } from "@/lib/money";
-import { Clock } from "lucide-react";
+import { Clock, Hourglass } from "lucide-react";
+import Link from "next/link";
+import { BlockedScreen } from "@/components/app/blocked-screen";
+import { ensurePlanInvoice, storeAccess } from "@/lib/domain/store-access";
+import { isDemoMode } from "@/lib/auth";
+import { logout } from "@/app/actions/auth";
+import { TrialDemoButton } from "./trial-demo-button";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await requireRole("STORE_OWNER");
   let banner: React.ReactNode = null;
+  const access = session.store ? storeAccess(session.store) : null;
+  if (session.store && access?.state === "BLOCKED") {
+    const db = await getDb();
+    // Setup em aberto vem primeiro; depois do pagamento aparece a fatura do plano.
+    const setup = await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, session.store.id), eq(financeInvoices.kind, "STORE_SETUP"), eq(financeInvoices.status, "OPEN")) });
+    const inv = setup ? { invoiceId: setup.id, amountCents: setup.amountCents, description: `Setup da loja · ${setup.description}` } : await ensurePlanInvoice(db, session.store, 1);
+    return <BlockedScreen storeName={session.store.name} reason={session.store.paidUntil ? "PLAN" : "TRIAL"} invoice={{ id: inv.invoiceId, amountCents: inv.amountCents, description: inv.description }} demo={isDemoMode()} logout={logout} />;
+  }
+  if (access?.state === "TRIAL") {
+    banner = (
+      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info-soft p-4 text-sm text-info" data-trial-banner>
+        <Hourglass className="size-4" aria-hidden />
+        <div className="min-w-0 flex-1"><span className="font-semibold">Teste gratuito: {access.daysLeft} {access.daysLeft === 1 ? "dia restante" : "dias restantes"}.</span> Tudo está liberado. Para continuar depois, assine por Pix.</div>
+        <Link href="/merchant/finance" className="font-semibold underline">Assinar agora</Link>
+        {isDemoMode() ? <TrialDemoButton /> : null}
+      </div>
+    );
+  }
   if (session.store?.status === "PENDING_PAYMENT") {
     const inv = await (await getDb()).query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, session.store.id), eq(financeInvoices.kind, "STORE_SETUP")) });
     banner = (

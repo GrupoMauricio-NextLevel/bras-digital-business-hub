@@ -11,7 +11,7 @@ import { formatBRL } from "@/lib/money";
 type Pix = { id: string; pixCode: string; pixQrBase64: string; amountCents: number; demo: boolean };
 
 /** Botão "Pagar por Pix" de uma fatura da NextLevel: mostra o código, confere sozinho e libera a fatura. */
-export function InvoicePay({ invoiceId, label = "Pagar por Pix", demo }: { invoiceId: string; label?: string; demo: boolean }) {
+export function InvoicePay({ invoiceId, label = "Pagar por Pix", demo, autoOpen = false, large = false }: { invoiceId: string; label?: string; demo: boolean; autoOpen?: boolean; large?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [pix, setPix] = React.useState<Pix | null>(null);
@@ -38,9 +38,13 @@ export function InvoicePay({ invoiceId, label = "Pagar por Pix", demo }: { invoi
     setPaid(false); setPix({ id: r.data.id, pixCode: r.data.pixCode, pixQrBase64: r.data.pixQrBase64, amountCents: r.data.amountCents, demo: r.data.demo }); setOpen(true);
   };
 
+  const auto = React.useRef(false);
+  React.useEffect(() => { if (autoOpen && !auto.current) { auto.current = true; void start(); } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoOpen]);
+
   return (
     <>
-      <Button size="sm" onClick={start} loading={busy}><QrCode /> {label}</Button>
+      <Button size={large ? "lg" : "sm"} onClick={start} loading={busy}><QrCode /> {label}</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent title="Pagamento por Pix" description={pix ? `Valor: ${formatBRL(pix.amountCents)}. A confirmação é automática.` : undefined}>
           {pix ? (paid ? <p className="text-sm font-medium text-success">Pagamento confirmado. Obrigado!</p> : (

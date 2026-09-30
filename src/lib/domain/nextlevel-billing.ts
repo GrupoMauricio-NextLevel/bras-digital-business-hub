@@ -62,7 +62,7 @@ export async function chargeInvoice(db: Database, actor: Actor, invoiceId: strin
   if (inv.status === "PAID" || inv.status === "WAIVED" || inv.status === "CANCELED") throw new DomainError("INVOICE_STATE", "Esta fatura não está em aberto.");
   if (inv.amountCents <= 0) throw new DomainError("INVOICE_ZERO", "Fatura sem valor a pagar.");
   const open = await db.select().from(nextlevelPayments).where(and(eq(nextlevelPayments.invoiceId, invoiceId), eq(nextlevelPayments.status, "PENDING"))).orderBy(desc(nextlevelPayments.createdAt)).limit(1);
-  if (open[0]?.expiresAt && new Date(open[0].expiresAt) > new Date() && open[0].pixCode) return { id: open[0].id, pixCode: open[0].pixCode, pixQrBase64: open[0].pixQrBase64 ?? "", expiresAt: open[0].expiresAt, amountCents: inv.amountCents };
+  if (open[0]?.expiresAt && new Date(open[0].expiresAt) > new Date() && open[0].pixCode) return { id: open[0].id, pixCode: open[0].pixCode, pixQrBase64: open[0].pixQrBase64 ?? "", expiresAt: open[0].expiresAt, amountCents: inv.amountCents, demo: !!open[0].mpPaymentId?.startsWith("demo_") };
   const token = await nlToken(db);
   const id = newId("nlp");
   const expiresAt = new Date(Date.now() + 60 * 60_000);
@@ -131,6 +131,7 @@ export async function supplierOfStore(db: Database, storeId: string): Promise<st
 
 /** Chamado por `markInvoicePaid`: fatura de add-on paga concede o direito pelo período contratado. */
 export async function fulfillPaidInvoice(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
+  if (inv.kind === "STORE_PLAN") { const { fulfillPlanInvoice } = await import("./store-access"); await fulfillPlanInvoice(db, inv, now); return; }
   if (inv.kind !== "ADDON") return;
   const key = inv.dedupeKey.split(":")[2];
   const cycle = inv.dedupeKey.split(":")[3];

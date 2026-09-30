@@ -24,7 +24,7 @@ export async function chargeInvoiceAction(invoiceId: string) {
     const { session, db } = await ctx();
     try {
       const url = await getBaseUrl();
-      return { ...(await chargeInvoice(db, session.actor, invoiceId, { notificationBaseUrl: isPublicHttps(url) ? url : undefined, payerEmail: session.user.email })), demo: false };
+      return { demo: false, ...(await chargeInvoice(db, session.actor, invoiceId, { notificationBaseUrl: isPublicHttps(url) ? url : undefined, payerEmail: session.user.email })) };
     } catch (e) {
       if (e instanceof DomainError && e.code === "NL_MP_NOT_CONFIGURED" && isDemoMode()) return { ...(await chargeInvoiceDemo(db, session.actor, invoiceId)), demo: true };
       throw e;

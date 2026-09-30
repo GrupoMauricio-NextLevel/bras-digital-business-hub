@@ -5,7 +5,7 @@ import { runMigrations } from "@/db/migrate";
 import { seedDatabase } from "@/db/seed";
 import { seedShowcase } from "@/db/showcase";
 import { suppliers } from "@/db/schema";
-import { seedDemoSuppliers } from "@/db/demo-suppliers";
+import { applyLaunchBranding, seedDemoSuppliers } from "@/db/demo-suppliers";
 import { getPublicSupplierPage } from "@/lib/domain/supplier-page";
 
 let db: Database;
@@ -43,5 +43,12 @@ describe("página de vendas do fornecedor", () => {
     }
     expect((await getPublicSupplierPage(db, "mantosshop"))?.faq.some((f) => f.a.includes("MANTOSSHOP7"))).toBe(true);
     expect((await getPublicSupplierPage(db, "alpha-outfit"))?.faq.some((f) => f.a.includes("ALPHA7"))).toBe(true);
+  });
+
+  it("demonstração traz logo e WhatsApp reais; a produção só aplica a marca a fornecedores já cadastrados, sem duplicar", async () => {
+    const p = await getPublicSupplierPage(db, "mantosshop");
+    expect(p?.logoUrl).toBe("/brand/suppliers/mantosshop.webp"); expect(p?.whatsapp).toBe("5511958784061");
+    expect((await getPublicSupplierPage(db, "alpha-outfit"))?.whatsapp).toBe("5511976640355");
+    expect(await applyLaunchBranding(db)).toEqual([]);
   });
 });

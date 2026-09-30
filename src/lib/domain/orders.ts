@@ -1,3 +1,4 @@
+import { isBlocked } from "./store-access";
 import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -61,6 +62,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const store = await db.query.stores.findFirst({ where: eq(stores.id, input.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
   if (store.status !== "ACTIVE") throw new DomainError("STORE_INACTIVE", "Loja não está ativa.");
+  if (isBlocked(store)) throw new DomainError("STORE_BLOCKED", "Esta loja está temporariamente indisponível.");
   const network = await db.query.networks.findFirst({ where: eq(networks.id, store.networkId) });
   if (!network) throw new NotFoundError("Rede não encontrada.");
   const access = await capabilitiesForSupplier(db, network.supplierId);

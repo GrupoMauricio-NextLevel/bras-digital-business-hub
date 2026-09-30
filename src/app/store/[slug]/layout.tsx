@@ -13,6 +13,7 @@ import { CartProvider } from "@/components/storefront/cart-context";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
+import { isBlocked } from "@/lib/domain/store-access";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -25,7 +26,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const session = await getSession();
-  const previewing = !sf.store.publishedAt || sf.store.status !== "ACTIVE";
+  const previewing = !sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store);
   if (previewing && !session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 p-6 text-center">

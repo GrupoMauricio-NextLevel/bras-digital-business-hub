@@ -58,3 +58,15 @@ export async function attachDemoLabelAction(orderId: string) {
     return r;
   });
 }
+
+/** Demonstração: encerra o teste agora para mostrar a tela de bloqueio e o pagamento que libera sozinho. */
+export async function simulateTrialEndAction() {
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    const storeId = requireStoreId(session.actor);
+    const { stores } = await import("@/db/schema");
+    await db.update(stores).set({ trialEndsAt: new Date(Date.now() - 60_000).toISOString(), paidUntil: null }).where(eq(stores.id, storeId));
+    refresh();
+    return undefined;
+  });
+}

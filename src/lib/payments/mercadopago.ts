@@ -60,6 +60,8 @@ export async function createPreference(token: string, input: PreferenceInput, fe
     external_reference: input.orderId,
     statement_descriptor: input.storeName.replace(/[^\w ]/g, "").slice(0, 22) || "LOJA",
     metadata: { order_id: input.orderId, order_number: input.orderNumber },
+    /** Somente Pix: exclui cartão, boleto, caixa eletrônico e saldo em conta. */
+    payment_methods: { excluded_payment_types: ["credit_card", "debit_card", "ticket", "atm", "prepaid_card", "account_money"].map((id) => ({ id })) },
   };
   if (input.notificationUrl) body.notification_url = input.notificationUrl;
   if (input.backUrls) { body.back_urls = input.backUrls; body.auto_return = "approved"; }

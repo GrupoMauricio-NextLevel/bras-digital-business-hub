@@ -85,6 +85,13 @@
       "when": 1790740254680,
       "tag": "0011_supplier_page_media",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1790742525316,
+      "tag": "0012_trial_and_coupons",
+      "breakpoints": true
     }
   ]
 }

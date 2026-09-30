@@ -134,3 +134,12 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Comissão dos fundadores:** vale por **tempo indeterminado**.
 - **Teste de 7 dias:** todas as funcionalidades liberadas. Ao acabar sem pagamento, o **acesso é bloqueado** e a tela mostra em destaque como pagar: **QR code Pix e contato do suporte em todos os cantos**. O **pagamento libera o sistema automaticamente**.
 - **Ainda em aberto:** logos e fotos de Alpha Outfit e MantosShop, WhatsApp de cada um, depoimentos reais.
+
+## D22. P1: teste de 7 dias, bloqueio, cadastro com cupom e Pix
+- **Acesso da loja** (`store-access.ts`): `trial_ends_at` e `paid_until` na loja. Sem as duas datas não há regra (contas antigas e de demonstração seguem livres). Teste vigente = tudo liberado; depois, **bloqueio total** do painel, do editor e da loja pública, que só mostram a tela de pagamento. A criação de pedidos também é recusada.
+- **Tela de bloqueio:** fatura por Pix com QR code aberto sozinho, passo a passo, **suporte nos quatro cantos** (`NEXT_PUBLIC_SUPPORT_WHATSAPP` e `NEXT_PUBLIC_SUPPORT_EMAIL`). O setup em aberto vem primeiro; depois o plano (preço de lista × meses, sem desconto por ciclo). **Pagar libera sozinho** (`fulfillPlanInvoice`).
+- **Cupom** (`coupons`): pertence ao fornecedor (atribuição), 7 dias, limite opcional; **um teste por CPF/CNPJ** válido (`trial_claims`). Fornecedor cria cupons e copia o link `/cadastro?cupom=CODIGO`; Master ou fornecedor **prorrogam** (+3 dias). Migração 0012.
+- **Cadastro público** `/cadastro`: cria a loja na rede do fornecedor do cupom, o dono escolhe a senha, o teste começa e entra direto no painel.
+- **Checkout das lojas somente Pix:** preferência do Mercado Pago exclui cartão, débito, boleto, caixa eletrônico e saldo. Cartão em 1x (+6%) fica para a cobrança dos planos, quando houver cartão.
+- **Alpha Outfit e MantosShop:** logos, WhatsApp (Thiago e Alex) e cupons `ALPHA7` e `MANTOSSHOP7` aplicados. Em produção, `applyLaunchBranding` aplica a marca, o WhatsApp e o cupom assim que o Master cadastrar os dois fornecedores (slugs `alpha-outfit` e `mantosshop`).
+- **Ainda do P1:** taxa por pedido e fechamento mensal, e-mail transacional e recuperar senha, cobrança automática recorrente, comissão dos fundadores, Academy, termos com aceite versionado.
