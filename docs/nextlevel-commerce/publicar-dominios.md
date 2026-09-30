@@ -1,5 +1,7 @@
 # Publicar a NextLevel Commerce nos domínios (passo a passo do dono)
 
+> **Guia mais recente (Neon + domínio, com a recomendação de usar `lojas.nextlevelgroup.com.br`):** `neon-e-dominio.md`. A "conta simples" (N1) já existe: o cadastro abre ao ligar `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true`.
+
 O mesmo serviço do Render (`superdrop`) responde por várias marcas. A marca vem do endereço acessado (`src/lib/brand.ts`). Hoje:
 
 | Endereço | Marca | Estado |
