@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
 import { requireRole } from "@/lib/require-session";
+import { getDb } from "@/db/client";
+import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { formatDate, cn } from "@/lib/utils";
@@ -23,10 +25,32 @@ export default async function MerchantHome() {
     { n: o.inProgress.length, label: "em separação/envio na Central", href: "/merchant/orders?status=READY_TO_PICK", tone: "info" },
   ].filter((p) => p.n > 0);
 
+  const isLite = store.offer !== "STORE_OWN";
+  const balance = isLite ? await getBalanceCents(await getDb(), store.id) : 0;
+  const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
+  const needsTopUp = waitingCents > balance;
+
   return (
     <>
+      {isLite ? (
+        <section aria-label="Saldo" className="mb-6 overflow-hidden rounded-2xl bg-primary text-primary-foreground">
+          <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+            <div>
+              <p className="text-sm font-medium opacity-90">Olá, {session.user.name.split(" ")[0]} · {store.name}</p>
+              <p className="mt-3 text-sm opacity-80">Saldo para pedidos</p>
+              <p className="text-5xl font-extrabold tabular-nums tracking-tight">{formatBRL(balance)}</p>
+              <p className="mt-2 text-sm opacity-90">
+                {needsTopUp ? `Faltam ${formatBRL(waitingCents - balance)} para liberar ${o.pendingCentral.length} ${o.pendingCentral.length === 1 ? "pedido" : "pedidos"} que já foram pagos pelo cliente.` : o.pendingCentral.length ? "Saldo suficiente para os pedidos em espera." : "O custo de cada pedido pago é debitado daqui."}
+              </p>
+            </div>
+            <Link href="/merchant/wallet" className="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-neutral-900 shadow-md transition hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <Wallet className="size-5" aria-hidden /> {needsTopUp ? "Recarregar agora" : "Recarregar por Pix"}
+            </Link>
+          </div>
+        </section>
+      ) : null}
       <PageHeader
-        title={`Olá, ${session.user.name.split(" ")[0]}`}
+        title={isLite ? "Seu dia" : `Olá, ${session.user.name.split(" ")[0]}`}
         description={<span>{store.name} · <StatusBadge value={store.status} dot /> {store.publishedAt ? <span className="text-success">Loja publicada</span> : <span className="text-warning">Loja não publicada</span>}</span>}
         actions={<><a href={`/store/${store.slug}`} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink /> Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>}
       />
