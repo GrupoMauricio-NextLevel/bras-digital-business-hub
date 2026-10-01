@@ -1,5 +1,6 @@
 "use client";
 import { Logo } from "@/components/brand/logo";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,7 +19,11 @@ import { ThemeToggle } from "./theme-toggle";
 
 export type DemoUser = { id: string; name: string; email: string; role: string };
 
+export type ShellBrand = { code: string; name: string; logo: "superdrop" | "nextlevel"; wordmark?: string; accentColor: string };
+
 export type AppShellProps = {
+  /** Marca do endereço: logo e nome do painel. Sem ela, SuperDrop. */
+  brand?: ShellBrand;
   panel: Panel;
   /** "minimal" = expedição: sem menu lateral, topo simples. */
   variant?: "full" | "minimal";
@@ -82,7 +87,7 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
   );
 }
 
-export function AppShell({ panel, variant = "full", items, quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, notices = [], search, banner, children }: AppShellProps) {
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, notices = [], search, banner, children }: AppShellProps) {
   const [open, setOpen] = React.useState(false);
   const [palette, setPalette] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
@@ -99,7 +104,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
 
   const brand = (compact?: boolean) => (
     <div className={cn("flex items-center gap-2.5", compact ? "justify-center" : "px-3")}>
-      <Logo variant="mark" tone={panel === "master" ? "on-dark" : "auto"} className="h-9 shrink-0" alt="SuperDrop" />
+      {shellBrand && shellBrand.logo !== "superdrop" ? <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-extrabold text-white" style={{ background: shellBrand.accentColor }}>NL</span> : <Logo variant="mark" tone={panel === "master" ? "on-dark" : "auto"} className="h-9 shrink-0" alt="SuperDrop" />}
       {compact ? null : <div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight text-sidebar-active-foreground">{tenantName}</div><div className="truncate text-xs text-sidebar-muted">{tenantSub ?? roleLabel}</div></div>}
     </div>
   );
@@ -121,7 +126,7 @@ export function AppShell({ panel, variant = "full", items, quick = [], roleLabel
             ) : null}
           </div>
           <div className="flex items-center justify-between border-t border-sidebar-border p-3">
-            {collapsed ? null : <Logo tone={panel === "master" ? "on-dark" : "auto"} className="h-5" />}
+            {collapsed ? null : shellBrand && shellBrand.logo !== "superdrop" ? <BrandLogo brand={shellBrand} tone={panel === "master" ? "on-dark" : "on-light"} className="h-4" /> : <Logo tone={panel === "master" ? "on-dark" : "auto"} className="h-5" />}
             <button onClick={toggleCollapsed} className="rounded-md p-1.5 text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground" aria-label={collapsed ? "Expandir menu" : "Recolher menu"}>{collapsed ? <PanelLeftOpen className="size-4" /> : <PanelLeftClose className="size-4" />}</button>
           </div>
         </aside>

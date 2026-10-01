@@ -100,3 +100,22 @@ export function brandForHost(host: string | null | undefined, env: Record<string
 
 /** A marca liga o módulo? */
 export const brandHas = (b: Brand, m: BrandModule) => b.modules.includes(m);
+
+/** Marca dona do endereço, só quando o domínio pertence a uma marca (null em localhost e endereços técnicos). */
+export function brandOfHostStrict(host: string | null | undefined, env: Record<string, string | undefined> = process.env): Brand | null {
+  const all = brandsFrom(env);
+  const h = (host ?? "").split(":")[0]!.toLowerCase();
+  if (!h) return null;
+  for (const b of Object.values(all)) if (b.domains.some((d) => h === d || h.endsWith(`.${d}`))) return b;
+  return null;
+}
+
+/**
+ * Cada conta pertence a uma marca e só entra pelo endereço dela. A equipe NextLevel (holding) entra em qualquer um.
+ * Endereços técnicos (sem marca) não bloqueiam ninguém. Devolve o aviso a mostrar, ou null se pode entrar.
+ */
+export function accountBrandConflict(account: { role: string; brand: BrandCode }, hostBrand: Brand | null, env: Record<string, string | undefined> = process.env): { message: string } | null {
+  if (!hostBrand || account.role === "NEXTLEVEL_MASTER" || account.brand === hostBrand.code) return null;
+  const own = brandByCode(account.brand, env);
+  return { message: `Sua conta é da ${own.name}. Entre pelo endereço ${own.baseUrl.replace(/^https?:\/\//, "")}.` };
+}

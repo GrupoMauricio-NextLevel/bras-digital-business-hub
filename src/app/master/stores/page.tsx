@@ -11,10 +11,12 @@ import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
 import { brandByCode } from "@/lib/brand";
+import { masterBrandFilter } from "@/lib/brand-server";
 
 export default async function StoresPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; offer?: string; marca?: string }> }) {
   const sp = await searchParams;
-  const [rows, snap] = await Promise.all([listStoresWithPlan(sp), getDb().then((db) => loadTowerSnapshot(db))]);
+  const marca = await masterBrandFilter(sp.marca);
+  const [rows, snap] = await Promise.all([listStoresWithPlan({ ...sp, marca }), getDb().then((db) => loadTowerSnapshot(db))]);
   const signal = new Map(snap.stores.map((x) => [x.id, x]));
   return (
     <>
@@ -23,7 +25,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
         <FilterBar>
           <SearchInput placeholder="Buscar loja…" />
           <FilterChips param="offer" allLabel="Todas as ofertas" options={[{ value: "DROP_MANUAL", label: "Drop manual" }, { value: "STORE_SUBDOMAIN", label: "Loja SuperDrop" }, { value: "STORE_OWN", label: "Loja própria" }]} />
-          <FilterChips param="marca" allLabel="Todas as marcas" options={[{ value: "NEXTLEVEL_COMMERCE", label: "NextLevel Commerce" }, { value: "SUPERDROP", label: "SuperDrop" }, { value: "BRAS_DIGITAL", label: "Brás Digital" }]} />
+          <FilterChips param="marca" allLabel={marca && !sp.marca ? `Só ${brandByCode(marca).name}` : "Todas as marcas"} options={[{ value: "todas", label: "Todas as marcas" }, { value: "NEXTLEVEL_COMMERCE", label: "NextLevel Commerce" }, { value: "SUPERDROP", label: "SuperDrop" }, { value: "BRAS_DIGITAL", label: "Brás Digital" }]} />
           <FilterChips param="status" allLabel="Todas" options={[{ value: "ACTIVE", label: "Ativas" }, { value: "SUSPENDED", label: "Suspensas" }, { value: "CLOSED", label: "Encerradas" }]} />
         </FilterBar>
       </Suspense>

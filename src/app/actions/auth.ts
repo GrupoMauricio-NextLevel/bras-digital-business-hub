@@ -1,10 +1,12 @@
 "use server";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { suppliers, users } from "@/db/schema";
+import { organizations, suppliers, users } from "@/db/schema";
+import { accountBrandConflict, brandOfHostStrict, type BrandCode } from "@/lib/brand";
+import { BRAND_PREVIEW_COOKIE } from "@/lib/brand-server";
 import { clearSessionCookie, getSession, homeFor, isDemoMode, setSessionCookie } from "@/lib/auth";
 import { hashPassword, verifyPassword } from "@/lib/security/password";
 import { runAction } from "@/lib/action-result";
@@ -25,6 +27,12 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
       const sup = await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) });
       if (sup?.status === "CLOSED") throw new DomainError("ACCOUNT_CLOSED", "Conta encerrada. Entre em contato com a NextLevel.");
     }
+    const org = await db.query.organizations.findFirst({ where: eq(organizations.id, user.organizationId) });
+    const h = await headers();
+    // Na prévia (/lojas) o endereço não manda; só vale a trava nos endereços oficiais de cada marca.
+    const preview = !!(await cookies()).get(BRAND_PREVIEW_COOKIE)?.value;
+    const conflict = accountBrandConflict({ role: user.role, brand: (org?.brand ?? "SUPERDROP") as BrandCode }, preview ? null : brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host")));
+    if (conflict) throw new DomainError("WRONG_BRAND", conflict.message);
     await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, user.id));
     await setSessionCookie(user.id);
     return { redirectTo: user.mustChangePassword ? "/account/password" : homeFor(user.role) };

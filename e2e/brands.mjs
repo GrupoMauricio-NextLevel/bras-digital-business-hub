@@ -51,6 +51,31 @@ if (!/sem estoque/i.test(await pp.getByRole("heading", { level: 1 }).innerText()
 await pv.close();
 ok("prévia por caminho: /lojas liga a NextLevel Commerce e /lojas/sair volta ao SuperDrop");
 
+// Cada marca é uma casa: conta presa à marca, painel com a cara da marca, menu sem o que a marca não usa
+const lc = await ctxFor("lojas.nextlevelgroup.com.br"); const lp = await lc.newPage();
+lp.on("pageerror", (e) => fail("pageerror login commerce: " + e.message));
+const tryLogin = async (pg, email) => { await pg.goto(B + "/login", { waitUntil: "networkidle" }); await pg.getByLabel("E-mail").fill(email); await pg.getByLabel("Senha").fill("demo1234"); await pg.getByRole("button", { name: /Entrar/ }).click(); };
+await lp.goto(B + "/login", { waitUntil: "networkidle" });
+if (!(await lp.getByRole("img", { name: /NextLevel Commerce/ }).count())) fail("login da Commerce sem a logo da marca");
+if (/SuperDrop/.test(await lp.locator("body").innerText())) fail("login da Commerce mostra SuperDrop");
+await tryLogin(lp, "dono@mantosshop.demo");
+await lp.waitForSelector("text=Sua conta é da SuperDrop", { timeout: 30000 }); ok("lojista do SuperDrop não entra pelo endereço da Commerce e vê o endereço certo");
+await tryLogin(lp, "master@nextlevel.demo");
+await lp.waitForURL(/\/master\/commerce/, { timeout: 60000 }); await lp.waitForLoadState("networkidle");
+const menu = await lp.locator("aside").first().innerText();
+for (const t of ["Fornecedores", "Redes"]) if (menu.includes(t)) fail(`menu do Master na Commerce mostra "${t}"`);
+if (!menu.includes("NextLevel Commerce")) fail("menu do Master na Commerce sem a área da marca");
+ok("Master na Commerce abre na área da marca e o menu não tem fornecedores nem redes");
+await lc.close();
+const sc = await ctxFor("superdrop.com.br"); const sdp = await sc.newPage();
+await tryLogin(sdp, "master@nextlevel.demo");
+await sdp.waitForURL((u) => u.pathname === "/master", { timeout: 60000 }); await sdp.waitForLoadState("networkidle");
+const menu2 = await sdp.locator("aside").first().innerText();
+for (const t of ["Fornecedores", "Redes"]) if (!menu2.includes(t)) fail(`menu do Master no SuperDrop sem "${t}"`);
+if (menu2.includes("NextLevel Commerce")) fail("menu do SuperDrop mostra a área da Commerce");
+ok("Master no SuperDrop mantém fornecedores e redes e não mistura a Commerce");
+await sc.close();
+
 // Lista de espera
 await p.goto(B + "/quero-minha-loja", { waitUntil: "networkidle" });
 const RUN = Date.now().toString().slice(-6);

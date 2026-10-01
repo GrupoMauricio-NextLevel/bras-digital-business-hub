@@ -67,3 +67,42 @@ describe("marca nos cadastros e nos e-mails", () => {
     await expect(listBrandLeads(ctx.db, ctx.actors.mantos)).rejects.toThrow(/NextLevel/);
   });
 });
+
+import { accountBrandConflict, brandOfHostStrict } from "@/lib/brand";
+import { NAV, navForBrand } from "@/lib/nav";
+
+describe("conta presa à marca", () => {
+  const commerce = brandOfHostStrict("lojas.nextlevelgroup.com.br")!;
+  const superdrop = brandOfHostStrict("superdrop.com.br")!;
+  it("endereços técnicos não têm marca estrita (não bloqueiam)", () => {
+    expect(brandOfHostStrict("localhost:3100")).toBeNull();
+    expect(brandOfHostStrict("superdrop.onrender.com")).toBeNull();
+    expect(accountBrandConflict({ role: "STORE_OWNER", brand: "NEXTLEVEL_COMMERCE" }, null)).toBeNull();
+  });
+  it("lojista de uma marca não entra pelo endereço da outra e recebe o endereço certo", () => {
+    const c = accountBrandConflict({ role: "STORE_OWNER", brand: "SUPERDROP" }, commerce);
+    expect(c?.message).toMatch(/SuperDrop/); expect(c?.message).toMatch(/superdrop\.com\.br/);
+    expect(accountBrandConflict({ role: "STORE_OWNER", brand: "NEXTLEVEL_COMMERCE" }, superdrop)?.message).toMatch(/nextlevelgroup\.com\.br/);
+    expect(accountBrandConflict({ role: "STORE_OWNER", brand: "SUPERDROP" }, superdrop)).toBeNull();
+  });
+  it("a equipe NextLevel (Master) entra em qualquer marca", () => {
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, commerce)).toBeNull();
+  });
+});
+
+describe("menu do Master por marca", () => {
+  const labels = (code: "NEXTLEVEL_COMMERCE" | "SUPERDROP") => {
+    const b = brandOfHostStrict(code === "SUPERDROP" ? "superdrop.com.br" : "lojas.nextlevelgroup.com.br")!;
+    return navForBrand(NAV.NEXTLEVEL_MASTER.items, b).map((i) => i.label);
+  };
+  it("na Commerce não há fornecedores, redes nem catálogo da rede, e há a área da marca", () => {
+    const l = labels("NEXTLEVEL_COMMERCE");
+    expect(l).toContain("NextLevel Commerce"); expect(l).toContain("Lojas");
+    for (const x of ["Fornecedores", "Redes", "Catálogo"]) expect(l).not.toContain(x);
+  });
+  it("no SuperDrop mantém tudo e não mostra a área da Commerce", () => {
+    const l = labels("SUPERDROP");
+    for (const x of ["Fornecedores", "Redes", "Catálogo", "Parceiros"]) expect(l).toContain(x);
+    expect(l).not.toContain("NextLevel Commerce");
+  });
+});

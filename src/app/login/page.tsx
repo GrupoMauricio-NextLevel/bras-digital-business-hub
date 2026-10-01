@@ -4,7 +4,8 @@ import { ArrowRight, Factory, Store, ShieldCheck, Handshake } from "lucide-react
 import { getSession, homeFor, isDemoMode } from "@/lib/auth";
 import { listDemoUsers, loginAs } from "@/app/actions/auth";
 import { Badge } from "@/components/ui/badge";
-import { Logo } from "@/components/brand/logo";
+import { BrandLogo } from "@/components/brand/brand-logo";
+import { getBrand } from "@/lib/brand-server";
 import { LoginForm } from "./login-form";
 import { DEMO_PASSWORD } from "@/db/seed-constants";
 
@@ -19,6 +20,7 @@ const ROLE_META = {
 export default async function LoginPage() {
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
+  const brand = await getBrand();
   const demo = isDemoMode();
   const users = demo ? await listDemoUsers() : [];
 
@@ -26,9 +28,9 @@ export default async function LoginPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-4 py-12">
         <div className="mb-8">
-          <h1 className="sr-only">SuperDrop</h1>
-          <Logo className="h-12 sm:h-14" />
-          <p className="mt-2 text-sm text-muted-foreground">Plataforma NextLevel para quem vende e para quem fornece.</p>
+          <h1 className="sr-only">{brand.name}</h1>
+          <BrandLogo brand={brand} className="h-12 sm:h-14" priority />
+          <p className="mt-2 text-sm text-muted-foreground">{brand.modules.includes("dropship") ? "Plataforma NextLevel para quem vende e para quem fornece." : "Entre na sua loja virtual NextLevel Commerce."}</p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-5">

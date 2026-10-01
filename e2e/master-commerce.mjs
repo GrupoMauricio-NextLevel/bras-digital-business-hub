@@ -1,5 +1,5 @@
 /**
- * Master: área "NextLevel Commerce" (lojas da marca, interessados, receita, lista do que falta para lançar) e faixa no dashboard.
+ * Master no endereço da Commerce: abre na área da marca (lojas, interessados, receita, lista do que falta para lançar).
  * Uso: E2E_BASE=http://localhost:3100 node e2e/master-commerce.mjs   (reinicie o servidor demo antes)
  */
 import { chromium } from "playwright-core";
@@ -9,13 +9,11 @@ const axeSource = readFileSync(createRequire(import.meta.url).resolve("axe-core/
 const B = process.env.E2E_BASE ?? "http://localhost:3100";
 const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium" });
 const bad = []; const fail = (m) => bad.push(m); const ok = (m) => console.log("✔", m);
-const ctx = await b.newContext({ viewport: { width: 1360, height: 950 } }); const p = await ctx.newPage();
+const ctx = await b.newContext({ viewport: { width: 1360, height: 950 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } }); const p = await ctx.newPage();
 p.on("pageerror", (e) => fail("pageerror: " + e.message));
 await p.goto(B + "/login", { waitUntil: "networkidle" }); await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
-await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 }); await p.waitForLoadState("networkidle");
-if (!(await p.locator("[data-commerce-strip]").count())) fail("dashboard sem a faixa da NextLevel Commerce"); else ok("dashboard mostra a faixa da NextLevel Commerce");
-await p.getByRole("link", { name: "NextLevel Commerce" }).first().click();
-await p.waitForURL(/\/master\/commerce/, { timeout: 60000 }); await p.waitForLoadState("networkidle");
+await p.waitForURL(/\/master\/commerce/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
+ok("no endereço da Commerce o Master abre direto na área da marca");
 for (const t of [/Faltam \d+ item/, /Sem usuários de demonstração/, /Mercado Pago da NextLevel/, /Cadastro de lojas aberto/, /Lojas da marca/, /Interessados/]) if (!(await p.getByText(t).first().count())) fail("página sem " + t);
 ok("página da marca com lista de lançamento, lojas e interessados");
 if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail("rolagem horizontal");

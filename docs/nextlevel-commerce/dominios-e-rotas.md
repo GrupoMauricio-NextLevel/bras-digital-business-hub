@@ -1,4 +1,8 @@
-# Racional de domínios, painéis e acessos (PROPOSTA v3, aguardando aprovação do dono)
+# Racional de domínios, painéis e acessos
+
+> **DECISÃO FINAL (D38):** **2 domínios, sem custo e sem terceiro domínio pago:** `superdrop.com.br` (SuperDrop) e `lojas.nextlevelgroup.com.br` (NextLevel Commerce). Cada marca é uma "casa" com painéis dentro do próprio endereço; **não há `office.`** e o `app.superdrop.com.br` sai. A primeira parte já está no código (marca por endereço nos painéis, conta presa à marca, menu e início do Master por marca). Faltam: escopo de dados do Master por marca nas demais listas, `/loja/<slug>` oficial e, se quiser separar totalmente, um serviço e um banco por marca (a variável `DEPLOY_BRAND`).
+
+## (proposta v3, histórico)
 
 > **v3 (mais recente): cada marca vira um sistema separado**, com domínio, banco, Master e visual próprios, **todos rodando o mesmo código**. As seções abaixo (v2) continuam valendo como mapa de páginas de cada marca; o que muda é que cada marca passa a ter a **sua própria implantação**.
 >

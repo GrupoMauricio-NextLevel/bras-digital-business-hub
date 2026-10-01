@@ -1,4 +1,5 @@
 import type { Role } from "@/lib/domain/access";
+import type { Brand, BrandCode } from "@/lib/brand";
 
 export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
@@ -20,6 +21,10 @@ export type NavItem = {
   group?: string;
   /** Recurso bloqueado na oferta atual: mostra cadeado e leva ao upgrade. */
   locked?: boolean;
+  /** Item que só existe em marcas com este módulo (dropshipping) ou com o programa de parceiros aberto. */
+  needs?: "dropship" | "partners";
+  /** Item exclusivo de uma marca. */
+  onlyBrand?: BrandCode;
 };
 
 export type QuickAction = { label: string; href: string; icon: NavIcon };
@@ -32,15 +37,15 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
-      { label: "NextLevel Commerce", href: "/master/commerce", icon: "Globe", group: "Plataformas" },
+      { label: "NextLevel Commerce", href: "/master/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE" },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
-      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede" },
-      { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede" },
+      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship" },
+      { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship" },
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
-      { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede" },
+      { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede", needs: "dropship" },
       { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
-      { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio" },
+      { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro", href: "/master/finance", icon: "Wallet", group: "Negócio" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
@@ -131,3 +136,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     ],
   },
 };
+
+/** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
+export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {
+  return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code));
+}

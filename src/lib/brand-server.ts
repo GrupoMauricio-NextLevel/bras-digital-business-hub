@@ -1,6 +1,6 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { brandByCode, brandForHost, type Brand } from "@/lib/brand";
+import { brandByCode, brandForHost, brandOfHostStrict, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
 /** Cookie do modo prévia: `/lojas` liga a NextLevel Commerce num endereço que ainda não é dela (ex.: superdrop.com.br). */
 export const BRAND_PREVIEW_COOKIE = "nl-brand";
@@ -12,6 +12,19 @@ export async function getBrand(): Promise<Brand> {
   // Só o endereço da marca padrão aceita a prévia; o endereço próprio de cada marca sempre manda.
   if (brand.code === "SUPERDROP" && (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value === "NEXTLEVEL_COMMERCE") return brandByCode("NEXTLEVEL_COMMERCE");
   return brand;
+}
+
+/**
+ * Marca padrão dos filtros do Master: a do endereço oficial (ou da prévia). Em endereço técnico ou localhost não filtra.
+ * `marca=todas` na URL mostra todas; um código de marca mostra só aquela.
+ */
+export async function masterBrandFilter(raw: string | undefined): Promise<BrandCode | undefined> {
+  if (raw === "todas") return undefined;
+  if (raw && isBrandCode(raw)) return raw;
+  const h = await headers();
+  const preview = (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value;
+  if (isBrandCode(preview)) return preview;
+  return brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code;
 }
 
 /** Leva ao início quando a marca do endereço não tem o recurso (evita páginas de outra marca em domínio errado). */

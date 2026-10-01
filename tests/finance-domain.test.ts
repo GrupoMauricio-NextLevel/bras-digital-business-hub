@@ -140,9 +140,12 @@ describe("loja adquirida pelo fornecedor", () => {
   it("comissão em garantia não é abatida antes do prazo", async () => {
     const s = await createStore(ctx.db, ctx.seed.supplierId, { name: "Loja Recente", ownerName: "Dono", ownerEmail: "recente@loja.com", offer: "STORE_OWN" });
     await markInvoicePaid(ctx.db, s.invoiceId!);
-    const est = await estimateClosing(ctx.db, ctx.seed.supplierId, period(), true);
-    expect(est.closing.lines.filter((l) => l.kind === "COMMISSION_CREDIT")).toHaveLength(2);
-    await closeMonth(ctx.db, period());
+    // Competência anterior à compra: a garantia (7 dias a partir de hoje) termina depois do fim dela em qualquer dia do mês.
+    // (O teste antigo usava a competência atual e só passava nos últimos 7 dias do mês.)
+    const before = periodOf(new Date(Date.now() - 40 * 86_400_000));
+    const est = await estimateClosing(ctx.db, ctx.seed.supplierId, before, true);
+    expect(est.closing.lines.filter((l) => l.kind === "COMMISSION_CREDIT" && l.description.includes("Loja Recente"))).toHaveLength(0);
+    await closeMonth(ctx.db, before);
     expect((await ctx.db.query.storeAcquisitions.findFirst({ where: eq(storeAcquisitions.storeId, s.storeId) }))?.status).toBe("GUARANTEE");
   });
 
