@@ -33,7 +33,10 @@ export async function registerPartnerAction(input: z.input<typeof partnerSignupS
     await sendEmail(db, { kind: "WELCOME_PARTNER", to: input.email.toLowerCase(), brand: brand.code, ...m });
     return { ok: true as const };
   });
-  if (r.ok) redirect("/partner");
+  if (r.ok) {
+    const office = (await getBrand()).officeUrl;
+    redirect(office ? `${office}/login?conta=criada` : "/partner");
+  }
   return r;
 }
 

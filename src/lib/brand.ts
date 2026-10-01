@@ -24,6 +24,8 @@ export type Brand = {
   domains: string[];
   /** Endereço público principal (links de e-mail e SEO). */
   baseUrl: string;
+  /** Endereço só dos painéis (login, Master, fornecedor, lojista, afiliado), ex.: https://office.superdrop.com.br. Nulo = painéis no endereço público. Liga-se por variável de ambiente, depois que o domínio estiver verificado. */
+  officeUrl: string | null;
   primaryColor: string;
   accentColor: string;
   logo: "superdrop" | "nextlevel";
@@ -41,6 +43,7 @@ export type Brand = {
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
+const url = (v: string | undefined) => (v ? v.trim().replace(/\/$/, "") : null);
 const LEGAL = (n: string) => `${n} é um sistema de tecnologia desenvolvido pela NextLevel Marketing Ltda.`;
 
 /** Domínios podem ser ajustados por variável de ambiente sem novo deploy de código (lista separada por vírgula). */
@@ -51,7 +54,8 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       tagline: "A loja virtual feita para quem vende moda no Brasil",
       description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado, influenciadores e live shop.",
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
-      baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://nextlevelgroup.com.br",
+      baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
+      officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),
       primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel", wordmark: "Commerce",
       modules: ["stores", "themes", "partners"], emailFromName: "NextLevel Commerce", legalLine: LEGAL("NextLevel Commerce"),
       // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
@@ -63,6 +67,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       description: "Monte sua loja online com produtos de fornecedores parceiros, sem estoque. Assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom.",
       domains: list(env.BRAND_DOMAINS_SUPERDROP, ["superdrop.com.br"]),
       baseUrl: env.BRAND_URL_SUPERDROP ?? "https://superdrop.com.br",
+      officeUrl: url(env.BRAND_OFFICE_SUPERDROP),
       primaryColor: "#0f1c16", accentColor: "#22c55e", logo: "superdrop",
       modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true,
     },
@@ -72,6 +77,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       description: "Marketplace atacadista com lojas e fornecedores do Brás. Em breve.",
       domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, []),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://nextlevelgroup.com.br",
+      officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: "#3b0764", accentColor: "#f59e0b", logo: "nextlevel", wordmark: "Brás Digital",
       modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
     },

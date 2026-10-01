@@ -29,6 +29,10 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     await sendEmail(db, { kind: "WELCOME_STORE", to: input.email.toLowerCase(), brand: brand.code, ...m });
     return { ok: true as const };
   });
-  if (r.ok) redirect("/merchant");
+  if (r.ok) {
+    // Com endereço de painéis separado, a sessão não vale lá: leva ao login do escritório com o aviso de conta criada.
+    const office = (await getBrand()).officeUrl;
+    redirect(office ? `${office}/login?conta=criada` : "/merchant");
+  }
   return r;
 }

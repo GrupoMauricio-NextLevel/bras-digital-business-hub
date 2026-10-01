@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { slugFromHost } from "@/lib/store-url";
+import { routeHost } from "@/lib/host-routing";
 
 /**
  * Subdomínio da loja: `slug.<SUPERDROP_ROOT_DOMAIN>/x` é servido por `/store/slug/x`.
@@ -16,6 +17,14 @@ export function proxy(req: NextRequest) {
     else res.cookies.set("nl-brand", "NEXTLEVEL_COMMERCE", { path: "/", sameSite: "lax", secure: proto === "https", maxAge: 60 * 60 * 24 * 30 });
     return res;
   }
+  // Endereço público × endereço dos painéis de cada marca (ver src/lib/host-routing.ts).
+  const hostHeader = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const route = routeHost({ host: hostHeader, pathname: path, search: req.nextUrl.search });
+  if (route.kind === "redirect") {
+    const proto = req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
+    return NextResponse.redirect(route.url.startsWith("/") ? new URL(route.url, `${proto}://${hostHeader ?? req.nextUrl.host}`) : route.url, 307);
+  }
+  if (route.kind === "rewrite") { const u = req.nextUrl.clone(); u.pathname = route.path; return NextResponse.rewrite(u); }
   const slug = slugFromHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host"));
   if (!slug) return NextResponse.next();
   const url = req.nextUrl.clone();

@@ -17,7 +17,10 @@ const ROLE_META = {
   AFFILIATE: { label: "Parceiro", desc: "Links, cupons e comissões", icon: Handshake, tone: "brand" as const },
 };
 
-export default async function LoginPage() {
+const AREA: Record<string, string> = { fornecedor: "painel do fornecedor", loja: "painel da loja", afiliado: "painel do afiliado" };
+
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ area?: string; nome?: string; conta?: string }> }) {
+  const sp = await searchParams;
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
@@ -36,6 +39,8 @@ export default async function LoginPage() {
         <div className="grid gap-8 md:grid-cols-5">
           <div className="md:col-span-2">
             <h2 className="text-xl font-semibold tracking-tight">Entrar</h2>
+            {sp.conta === "criada" ? <p role="status" className="mt-2 rounded-md bg-success-soft px-3 py-2 text-sm text-success">Conta criada! Entre com o e-mail e a senha que você cadastrou.</p> : null}
+            {sp.area && AREA[sp.area] ? <p className="mt-2 rounded-md bg-surface-muted px-3 py-2 text-sm">Entrar no {AREA[sp.area]}{sp.nome && /^[a-z0-9-]+$/.test(sp.nome) ? ` · ${sp.nome}` : ""}.</p> : null}
             <p className="mt-1 text-sm text-muted-foreground">Use o e-mail e a senha recebidos no convite.</p>
             <div className="mt-5"><LoginForm /></div>
           </div>
