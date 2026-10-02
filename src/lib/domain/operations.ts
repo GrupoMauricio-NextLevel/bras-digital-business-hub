@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gt, inArray, lt, max } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
+import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, userProductAccess, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { generateTemporaryPassword, hashPassword } from "@/lib/security/password";
 import { assertCanAccess, hasAreaRole, isSupplierSide, requireSupplierId, requireSupplierOperationalId, type Actor } from "./access";
@@ -59,7 +59,7 @@ export async function loadEsteira(db: Database, actor: Actor, now = new Date()) 
   const statuses = (dispatchOnly ? DISPATCH_COLUMNS : ESTEIRA_COLUMNS) as readonly OrderStatus[];
   const dayStart = new Date(now.getTime() - 36 * 3_600_000).toISOString();
   const rows = await db.select({ o: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId))
-    .where(and(eq(orders.supplierId, supplierId), inArray(orders.status, [...statuses]))).orderBy(asc(orders.centralPaidAt), asc(orders.createdAt));
+    .where(and(eq(orders.supplierId, supplierId), eq(orders.sourceArea, "SUPERDROP"), inArray(orders.status, [...statuses]))).orderBy(asc(orders.centralPaidAt), asc(orders.createdAt));
   const relevant = rows.filter((r) => r.o.status !== "SHIPPED" || (r.o.updatedAt >= dayStart && localDate(new Date(r.o.updatedAt), ops.timezone) === cutoff.today));
   const ids = relevant.map((r) => r.o.id);
   const [items, labels, claims, waveRows, prints] = ids.length ? await Promise.all([
@@ -231,34 +231,49 @@ export async function dispatchSeats(db: Database, supplierId: string, now = new 
 }
 
 export async function listTeam(db: Database, actor: Actor) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
-  return db.select({ id: users.id, name: users.name, email: users.email, role: users.role, lastLoginAt: users.lastLoginAt, mustChangePassword: users.mustChangePassword }).from(users).where(eq(users.supplierId, actor.supplierId)).orderBy(users.name);
+  const supplierId = requireSupplierId(actor);
+  return db.select({ id: users.id, name: users.name, email: users.email, role: users.role, lastLoginAt: users.lastLoginAt, mustChangePassword: users.mustChangePassword }).from(users).where(eq(users.supplierId, supplierId)).orderBy(users.name);
 }
 
 const memberSchema = z.object({ name: z.string().trim().min(2, "Informe o nome"), email: z.string().email("E-mail inválido") });
 
 /** Gestor cria um usuário de expedição com senha temporária (respeita o limite de assentos). */
 export async function createDispatchUser(db: Database, actor: Actor, raw: z.input<typeof memberSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor cria usuários da equipe.");
+  const supplierId = requireSupplierId(actor);
   const input = memberSchema.parse(raw);
   const email = input.email.toLowerCase();
   if (await db.query.users.findFirst({ where: eq(users.email, email) })) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
-  const seats = await dispatchSeats(db, actor.supplierId);
+  const seats = await dispatchSeats(db, supplierId);
   if (seats.used >= seats.total) throw new DomainError("NO_SEATS", `Limite de ${seats.total} usuários de expedição atingido. Contrate um assento extra em Financeiro > Add-ons.`);
-  const supplier = await db.query.suppliers.findFirst({ where: eq(suppliers.id, actor.supplierId) });
+  const supplier = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) });
   if (!supplier) throw new NotFoundError("Fornecedor não encontrado.");
   const temporaryPassword = generateTemporaryPassword();
-  await db.insert(users).values({ id: newId("usr"), name: input.name, email, role: "SUPPLIER_DISPATCH", organizationId: supplier.organizationId, supplierId: supplier.id, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
-  await emitEvent(db, { type: "DISPATCH_USER_CREATED", supplierId: supplier.id, actorRole: actor.role });
+  const userId = newId("usr");
+  await db.transaction(async (tx) => {
+    await tx.insert(users).values({ id: userId, name: input.name, email, role: "SUPPLIER_DISPATCH", organizationId: supplier.organizationId, supplierId: supplier.id, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
+    await tx.insert(userProductAccess).values({
+      id: newId("upa"),
+      userId,
+      organizationId: supplier.organizationId,
+      area: "SUPERDROP",
+      role: "OPERATOR",
+      supplierId: supplier.id,
+      active: true,
+    });
+    await emitEvent(tx, { type: "DISPATCH_USER_CREATED", supplierId: supplier.id, actorRole: actor.role });
+  });
   return { email, temporaryPassword };
 }
 
 export async function removeDispatchUser(db: Database, actor: Actor, userId: string) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
+  const supplierId = requireSupplierId(actor);
   const u = await db.query.users.findFirst({ where: eq(users.id, userId) });
-  if (!u || u.supplierId !== actor.supplierId || u.role !== "SUPPLIER_DISPATCH") throw new NotFoundError("Usuário não encontrado.");
-  await db.delete(orderClaims).where(eq(orderClaims.userId, userId));
-  await db.delete(users).where(eq(users.id, userId));
+  if (!u || u.supplierId !== supplierId || u.role !== "SUPPLIER_DISPATCH") throw new NotFoundError("Usuário não encontrado.");
+  await db.transaction(async (tx) => {
+    await tx.delete(orderClaims).where(eq(orderClaims.userId, userId));
+    await tx.delete(userProductAccess).where(eq(userProductAccess.userId, userId));
+    await tx.delete(users).where(eq(users.id, userId));
+  });
 }
 
 // ---------------------------------------------------------------------------
