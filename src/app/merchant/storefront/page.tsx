@@ -6,11 +6,14 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { computeOnboarding, getStoreTheme } from "@/lib/queries/merchant";
 import { buttonVariants } from "@/components/ui/button";
 import { PublishToggle } from "./publish-toggle";
-import { Badge } from "@/components/ui/badge";\nimport { getDb } from "@/db/client";\nimport { isCommerceStore } from "@/lib/store-brand";
+import { Badge } from "@/components/ui/badge";
+import { getDb } from "@/db/client";
+import { isCommerceStore } from "@/lib/store-brand";
 
 export default async function StorefrontPage() {
   const session = await requireStoreAdmin();
-  const store = session.store!;\n  const commerce = await isCommerceStore(await getDb(), store);
+  const store = session.store!;
+  const commerce = await isCommerceStore(await getDb(), store);
   const { current } = await getStoreTheme(store.id);
   const onboarding = computeOnboarding(store);
   const url = `/store/${store.slug}`;
