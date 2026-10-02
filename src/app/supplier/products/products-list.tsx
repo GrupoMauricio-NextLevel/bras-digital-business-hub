@@ -27,7 +27,7 @@ const DEFAULT_VIEWS: IndexView[] = [
 ];
 
 /** Lista de produtos do fornecedor: busca, filtros, visões salvas e edição em lote de status. */
-export function ProductsList({ rows, categories, base = "/supplier/products" }: { rows: ProductRow[]; categories: string[]; base?: string }) {
+export function ProductsList({ rows, categories, base = "/supplier/products", independent = false }: { rows: ProductRow[]; categories: string[]; base?: string; independent?: boolean }) {
   const router = useRouter();
   const run = (status: "ACTIVE" | "DRAFT" | "ARCHIVED", done: string) => async (ids: string[]) => {
     const r = await bulkProductStatusAction(ids, status);
@@ -36,7 +36,7 @@ export function ProductsList({ rows, categories, base = "/supplier/products" }: 
   const columns: IndexColumn<ProductRow>[] = [
     { key: "name", header: "Produto", sortKey: "name", primary: true, cell: (r) => <div className="flex items-center gap-3"><ProductArt images={r.images} size="sm" /><div className="min-w-0"><div className="truncate font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.sku} · {r.category}</div></div></div> },
     { key: "type", header: "Venda", hideBelow: "md", cell: (r) => <div className="flex gap-1">{r.sellsUnit ? <Badge tone="outline">Unitária</Badge> : null}{r.sellsPack ? <Badge tone="info">Grade</Badge> : null}</div> },
-    { key: "dist", header: "Distribuição", hideBelow: "lg", cell: (r) => <StatusBadge value={r.distribution} /> },
+    ...(independent ? [] : [{ key: "dist", header: "Distribuição", hideBelow: "lg" as const, cell: (r: ProductRow) => <StatusBadge value={r.distribution} /> }]),
     { key: "cost", header: "Custo", sortKey: "cost", align: "right", cell: (r) => <span className="tabular-nums">{formatBRL(r.costCents)}</span> },
     { key: "price", header: "Sugerido", sortKey: "price", align: "right", hideBelow: "md", cell: (r) => <span className="tabular-nums">{formatBRL(r.suggestedPriceCents)}</span> },
     { key: "stock", header: "Disponível", sortKey: "stock", align: "right", cell: (r) => <span className={cn("font-medium tabular-nums", r.available < 10 && "text-warning")}>{r.available} <span className="text-xs font-normal text-muted-foreground">/ {r.onHand}</span></span> },
@@ -52,7 +52,7 @@ export function ProductsList({ rows, categories, base = "/supplier/products" }: 
         { key: "stock", label: "Estoque", options: [{ value: "ok", label: "Normal" }, { value: "low", label: "Baixo" }, { value: "out", label: "Zerado" }] },
       ]}
       bulkActions={[{ label: "Ativar", onRun: run("ACTIVE", "ativados") }, { label: "Passar para rascunho", onRun: run("DRAFT", "em rascunho") }, { label: "Arquivar", tone: "danger", onRun: run("ARCHIVED", "arquivados") }]}
-      empty={<EmptyState icon={Package} title="Nenhum produto" description="Cadastre o primeiro produto para distribuir à rede." />}
+      empty={<EmptyState icon={Package} title="Nenhum produto" description={independent ? "Cadastre o primeiro produto da sua loja." : "Cadastre o primeiro produto para distribuir à rede."} />}
     />
   );
 }
