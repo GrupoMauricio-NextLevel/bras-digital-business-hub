@@ -16,7 +16,7 @@ const NAV = [
   { href: "/merchant/analytics", label: "Análise", icon: BarChart3, group: "VENDAS" },
   { href: "/merchant/customers", label: "Clientes", icon: Users, group: "VENDAS" },
   { href: "/merchant/after-sales", label: "Pós-venda", icon: ReceiptText, group: "VENDAS" },
-  { href: "/merchant/catalogo", label: "Produtos", icon: Package, group: "CATÁLOGO" },
+  { href: "/merchant/catalogo", label: "Produtos", icon: Package, group: "CATÁLOGO" },\n  { href: "/merchant/catalogo/categorias", label: "Categorias", icon: Tag, group: "CATÁLOGO" },
   { href: "/merchant/storefront", label: "Loja virtual", icon: Globe2, group: "LOJA ONLINE" },
   { href: "/theme-editor", label: "Aparência", icon: Palette, group: "LOJA ONLINE" },
   { href: "/merchant/templates", label: "Temas", icon: Store, group: "LOJA ONLINE" },
