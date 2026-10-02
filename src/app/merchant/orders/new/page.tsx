@@ -23,7 +23,7 @@ export default async function NewOrderPage() {
   return (
     <>
       <PageHeader backHref="/merchant/orders" title="Novo pedido" description={independent ? "Venda manual: WhatsApp, Instagram ou balcão. O estoque é reservado no momento da criação." : "Venda manual: WhatsApp, Instagram ou balcão. O estoque é reservado na Central no momento da criação."} />
-      <NewOrderForm items={items} />
+      <NewOrderForm items={items} independent={independent} />
     </>
   );
 }
