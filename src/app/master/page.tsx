@@ -1,29 +1,22 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, Sparkles, CircleAlert, Factory, Info, ShoppingCart, Store, TrendingUp, Wallet } from "lucide-react";
+import { AlertTriangle, ArrowRight, CircleAlert, Factory, Info, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 import { ActivityFeed } from "@/components/shared/activity-feed";
 import { OrdersTable } from "@/components/shared/orders-table";
-import { EmptyState } from "@/components/app/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { getPlatformOverview } from "@/lib/queries/master";
 import { redirect } from "next/navigation";
 import { getBrand } from "@/lib/brand-server";
 import { listOrdersForActor } from "@/lib/domain/orders";
-import { listServiceOrders } from "@/lib/domain/services";
-import { BAND_LABEL, buildAlerts, healthScore, loadTowerSnapshot, type HealthBand, type Severity } from "@/lib/domain/control-tower";
+import { BAND_LABEL, buildAlerts, healthScore, loadTowerSnapshot, type HealthBand } from "@/lib/domain/control-tower";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { formatBRL, formatCompactBRL } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
-const SEV: Record<Severity, { icon: typeof Info; box: string; label: string }> = {
-  danger: { icon: CircleAlert, box: "border-danger/40 bg-danger-soft/50 text-danger", label: "Urgente" },
-  warning: { icon: AlertTriangle, box: "border-warning/40 bg-warning-soft/50 text-warning", label: "Atenção" },
-  info: { icon: Info, box: "border-info/40 bg-info-soft/50 text-info", label: "Oportunidade" },
-};
 const BAND_COLOR: Record<HealthBand, string> = { HEALTHY: "bg-success", ATTENTION: "bg-warning", RISK: "bg-danger" };
 const OFFER_LABEL = { DROP_MANUAL: "Drop manual", STORE_SUBDOMAIN: "Loja SuperDrop", STORE_OWN: "Loja própria" } as const;
 
@@ -33,9 +26,6 @@ export default async function MasterDashboard() {
   if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/master/commerce");
   const db = await getDb();
   const [overview, orders, snap] = await Promise.all([getPlatformOverview(), listOrdersForActor(db, session.actor, { limit: 6 }), loadTowerSnapshot(db)]);
-  const serviceOrders = await listServiceOrders(db, session.actor);
-  const svcWaiting = serviceOrders.filter((o) => ["REQUESTED", "IN_ANALYSIS"].includes(o.order.status)).length;
-  const svcActive = serviceOrders.filter((o) => ["QUOTED", "IN_PROGRESS"].includes(o.order.status)).length;
   const alerts = buildAlerts(snap);
   const health = snap.stores.map((s) => ({ s, h: healthScore(s) }));
   const bands = (["HEALTHY", "ATTENTION", "RISK"] as HealthBand[]).map((b) => ({ band: b, n: health.filter((x) => x.h.band === b).length }));
