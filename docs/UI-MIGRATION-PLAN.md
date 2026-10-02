@@ -44,7 +44,7 @@ Ordem:
 3. Supplier Orders — DONE
 4. Supplier Products — DONE
 5. Inventory — DONE
-6. Stores
+6. Stores — BLOCKED (connector write)
 7. Wallets — DONE
 8. Finance — DONE
 9. Merchant Home — DONE
@@ -55,7 +55,7 @@ Ordem:
 14. Customers — DONE
 15. Analytics
 16. After Sales — DONE
-17. Settings
+17. Settings — DONE
 
 ## Fase 4 — Master
 Status: TODO
@@ -97,3 +97,6 @@ Cada etapa só termina com:
 
 ### Shared order detail
 - DONE: situação atual, próxima etapa e responsável visíveis no topo do pedido.
+
+### Services
+- DONE: contexto operacional compartilhado na Loja NextLevel para fornecedor e lojista.
