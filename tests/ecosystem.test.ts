@@ -6,6 +6,7 @@ import {
   rolesForArea,
   type AccessGrant,
 } from "@/lib/ecosystem";
+import { requireStoreId, requireSupplierId, requireSupplierOperationalId, type Actor } from "@/lib/domain/access";
 
 describe("NextLevel Ecosystem", () => {
   it("mantém um único catálogo oficial de áreas", () => {
@@ -72,5 +73,41 @@ describe("NextLevel Ecosystem", () => {
     expect(hasAreaAccess(supplier, "BRAS_DIGITAL")).toBe(false);
     expect(hasAreaAccess(merchant, "SUPERDROP")).toBe(true);
     expect(hasAreaAccess(merchant, "CREATORS_HUB")).toBe(false);
+  });
+});
+
+
+describe("SuperDrop grant-aware scopes", () => {
+  const baseActor = {
+    userId: "user-1",
+    role: "NEXTLEVEL_MASTER",
+    organizationId: "org-1",
+    supplierId: null,
+    storeId: null,
+  } satisfies Omit<Actor, "grants">;
+
+  it("resolve a loja pelo grant MERCHANT_OWNER sem depender de users.store_id", () => {
+    const actor: Actor = {
+      ...baseActor,
+      grants: [{ area: "SUPERDROP", role: "MERCHANT_OWNER", organizationId: "org-1", storeId: "store-1" }],
+    };
+    expect(requireStoreId(actor)).toBe("store-1");
+  });
+
+  it("resolve o fornecedor pelo grant SUPPLIER_ADMIN sem depender de users.supplier_id", () => {
+    const actor: Actor = {
+      ...baseActor,
+      grants: [{ area: "SUPERDROP", role: "SUPPLIER_ADMIN", organizationId: "org-1", supplierId: "supplier-1" }],
+    };
+    expect(requireSupplierId(actor)).toBe("supplier-1");
+  });
+
+  it("permite OPERATOR na operação sem conceder administração do fornecedor", () => {
+    const actor: Actor = {
+      ...baseActor,
+      grants: [{ area: "SUPERDROP", role: "OPERATOR", organizationId: "org-1", supplierId: "supplier-1" }],
+    };
+    expect(requireSupplierOperationalId(actor)).toBe("supplier-1");
+    expect(() => requireSupplierId(actor)).toThrow();
   });
 });
