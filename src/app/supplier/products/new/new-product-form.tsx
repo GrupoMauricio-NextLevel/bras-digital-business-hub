@@ -206,7 +206,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
             </CardContent>
           </Card>
 
-          <Card>
+          {!independent ? <Card>
             <CardHeader><CardTitle>Distribuição</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               <FormField label="Quem pode vender" htmlFor="dist"><Select id="dist" value={f.distribution} onChange={(e) => set({ distribution: e.target.value as Form["distribution"] })}><option value="ALL_NETWORK">Toda a rede</option><option value="SELECTED_STORES">Lojas selecionadas</option></Select></FormField>
@@ -216,7 +216,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
                 )
               ) : null}
             </CardContent>
-          </Card>
+          </Card> : null}
         </>}
       />
     </form>
