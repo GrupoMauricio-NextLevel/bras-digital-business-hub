@@ -1,3 +1,4 @@
+import "./commerce.css";
 import { CommerceHeader } from "./header";
 import { CommerceFooter } from "./sections";
 import { supportContacts } from "@/lib/support";
@@ -15,7 +16,7 @@ export function CommerceShell({ children, cta, legal }: { children: React.ReactN
   const c = supportContacts();
   const whatsapp = c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero saber mais sobre a NextLevel Commerce.")}`) : null;
   return (
-    <div className="min-h-screen bg-[#f5f1e8] text-[#14213d]">
+    <div className="cm-root min-h-screen bg-[#f5f1e8] text-[#14213d]">
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Ir para o conteúdo</a>
       <CommerceHeader nav={COMMERCE_NAV} cta={cta} />
       <main id="conteudo">{children}</main>

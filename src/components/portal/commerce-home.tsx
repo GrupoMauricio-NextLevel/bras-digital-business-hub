@@ -2,21 +2,19 @@ import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 import { formatBRL } from "@/lib/money";
-import { SECTION_SCHEMAS } from "@/lib/themes/sections";
-import { Customizer } from "@/components/portal/commerce/customizer";
 import { DEMO_STORES } from "@/components/portal/commerce/demo-stores";
 import { StoreGallery, type GalleryTheme } from "@/components/portal/commerce/store-gallery";
-import { EditorFrame } from "@/components/portal/commerce/editor-frame";
-import { ClosingCta, Facts, Faq, ForWhom, H2, Hero, Operation, Steps, ThemesAndPrices } from "@/components/portal/commerce/sections";
+import { Bento } from "@/components/portal/commerce/bento";
+import { HeroV2 } from "@/components/portal/commerce/hero-v2";
+import { Marquee } from "@/components/portal/commerce/marquee";
+import { Personalize } from "@/components/portal/commerce/personalize";
+import { ClosingCta, Faq, ForWhom, H2, Operation, Steps, ThemesAndPrices } from "@/components/portal/commerce/sections";
 
 /**
  * Home da NextLevel Commerce (v1, protótipo em revisão): o que é, que lojas dá para montar, como a marca ganha forma,
  * o que o painel faz, como começar. Só anuncia o que existe; atacado e demais frentes ficam de fora.
  * Documento de decisões: docs/design/HOME-COMMERCE-V1.md.
  */
-/** Quantidade de tipos de seção do motor de temas (lida do esquema, não escrita à mão). */
-const SECTION_TYPES = SECTION_SCHEMAS.length;
-
 export function CommerceHome({ brand }: { brand: Brand }) {
   const cta = brand.signupOpen ? "/cadastro" : "/quero-minha-loja";
   const themes: Record<string, GalleryTheme> = Object.fromEntries(THEME_CATALOG.map((t) => [t.key, { key: t.key, name: t.name, priceLabel: t.priceCents === 0 ? "grátis" : formatBRL(t.priceCents), tagline: t.tagline, features: t.features.slice(0, 4) }]));
@@ -27,8 +25,15 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.baseUrl, parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda." } },
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
-      <Hero cta={cta} signupOpen={brand.signupOpen} />
-      <Facts themeCount={THEME_CATALOG.length} sectionTypes={SECTION_TYPES} />
+      <HeroV2 cta={cta} signupOpen={brand.signupOpen} />
+      <Marquee />
+
+      <section id="canais" aria-labelledby="canais-t" className={`${section} bg-[#f5f1e8]`}>
+        <div className="mx-auto max-w-6xl">
+          <h2 id="canais-t" className={`${H2} mb-12 max-w-3xl text-[#14213d] sm:text-5xl`}>Venda pela loja, receba por Pix e acompanhe tudo em um só lugar.</h2>
+          <Bento />
+        </div>
+      </section>
 
       <section id="para-quem" aria-labelledby="pq-t" className={section}>
         <div className="mx-auto max-w-6xl">
@@ -47,18 +52,14 @@ export function CommerceHome({ brand }: { brand: Brand }) {
 
       <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-[#fbf8f1]`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="pers-t" className={`${H2} max-w-2xl text-[#14213d]`}>Deixe a loja com a cara da sua marca.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-[#14213d]/85">Você monta a loja em um editor visual: escolhe as seções, muda a ordem, vê a prévia e só então publica.</p>
-          <div className="mt-10"><EditorFrame /></div>
-          <h3 className="mb-6 mt-16 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold text-[#14213d]">Experimente quatro escolhas de estilo</h3>
-          <Customizer />
+          <h2 id="pers-t" className={`${H2} mb-12 max-w-3xl text-[#14213d] sm:text-5xl`}>Deixe a loja com a cara da sua marca, sem escrever código.</h2>
+          <Personalize />
         </div>
       </section>
 
-      <section id="operacao" aria-labelledby="op-t" className={`${section}`}>
+      <section id="operacao" aria-labelledby="op-t" className={`${section} bg-[#0e1a33]`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="op-t" className={`${H2} max-w-2xl text-[#14213d]`}>Depois que a loja está no ar, o painel cuida do resto.</h2>
-          <p className="mb-14 mt-4 max-w-2xl text-lg text-[#14213d]/85">Três tarefas do dia a dia, mostradas com dados de demonstração.</p>
+          <h2 id="op-t" className={`${H2} mb-16 max-w-3xl text-[#f5f1e8] sm:text-5xl`}>Depois que a loja está no ar, o painel cuida do resto.</h2>
           <Operation />
         </div>
       </section>

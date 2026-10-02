@@ -1,0 +1,31 @@
+/* Movimento e composição da home da NextLevel Commerce. Prefixo cm- para não afetar nenhuma outra tela. */
+.cm-grid-bg {
+  background-image: linear-gradient(rgba(245, 241, 232, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 241, 232, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+}
+@keyframes cm-word-in { from { opacity: 0; transform: translateY(0.55em); } to { opacity: 1; transform: none; } }
+.cm-word { display: inline-block; animation: cm-word-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes cm-marquee { to { transform: translateX(-50%); } }
+.cm-marquee-track { display: flex; width: max-content; animation: cm-marquee 40s linear infinite; }
+.cm-marquee:hover .cm-marquee-track { animation-play-state: paused; }
+@keyframes cm-pop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
+.cm-pop { animation: cm-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes cm-pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); } }
+.cm-live-dot { animation: cm-pulse-dot 2.2s ease-out infinite; }
+@supports (animation-timeline: view()) {
+  @keyframes cm-rise { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+  .cm-reveal { animation: cm-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 38%; }
+  @keyframes cm-drift-up { to { transform: translateY(-70px); } }
+  @keyframes cm-drift-up-fast { to { transform: translateY(-130px); } }
+  .cm-drift { animation: cm-drift-up linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+  .cm-drift-fast { animation: cm-drift-up-fast linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-word, .cm-pop, .cm-live-dot, .cm-reveal, .cm-drift, .cm-drift-fast { animation: none !important; }
+  .cm-marquee-track { animation: none; flex-wrap: wrap; width: auto; }
+  .cm-marquee-track [aria-hidden="true"] { display: none; }
+}
+
+@media (max-width: 767px) { .cm-drift, .cm-drift-fast { animation: none !important; } }

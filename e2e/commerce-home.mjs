@@ -30,12 +30,14 @@ for (const [name, vp] of [["desktop", { width: 1440, height: 900 }], ["tablet", 
   const tabs = p.getByRole("tab"); ok((await tabs.count()) === 3, `${name}: três lojas de exemplo`);
   await tabs.nth(1).click(); ok(/Ateliê Sala/.test(await p.locator("#painel-loja").innerText()), `${name}: aba Casa troca a loja`);
   await tabs.nth(2).click(); ok(/Rota 7/.test(await p.locator("#painel-loja").innerText()), `${name}: aba Acessórios troca a loja`);
-  // simulação
+  // personalização: o passo 2 acende a faixa de confiança no dispositivo
   await p.locator("#personalizar").scrollIntoViewIfNeeded();
-  const before = await p.locator("#personalizar [aria-live]").evaluate((e) => getComputedStyle(e.firstElementChild).backgroundColor);
-  await p.getByRole("radio", { name: /Vinho/ }).click();
-  const after = await p.locator("#personalizar [aria-live]").evaluate((e) => getComputedStyle(e.firstElementChild).backgroundColor);
-  ok(before !== after, `${name}: escolher cor muda a prévia`);
+  await p.getByRole("button", { name: /Adicione seções prontas/ }).click();
+  ok(await p.locator("#personalizar").getByText("Faixa de confiança").first().isVisible(), `${name}: passo 2 mostra a faixa de confiança`);
+  await p.getByRole("radio", { name: /Vinho/ }).first().click();
+  ok((await p.locator("#personalizar [aria-pressed]").count()) === 3, `${name}: três passos de personalização`);
+  // palavra que alterna (ou fixa, com movimento reduzido) e botão comercial
+  ok((await p.locator("h1").innerText()).length > 20, `${name}: título presente`);
   // perguntas
   await p.locator("#duvidas summary").first().click(); ok(await p.locator("#duvidas details[open]").count() === 1, `${name}: pergunta abre`);
   // ações com destino

@@ -1,55 +1,11 @@
 import Link from "next/link";
 import { formatBRL } from "@/lib/money";
-import { BrowserFrame, StoreMock } from "./store-mock";
-import { DEMO_STORES } from "./demo-stores";
-import { OrdersSnippet, PaymentSnippet, SalesSnippet } from "./operation";
+import { Phone, Tablet } from "./device";
+import { OrdersPanel, PayScreen, SalesPanel } from "./panel-ui";
 import { Wordmark } from "./header";
 
 export const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl";
-export const CTA = "inline-flex h-12 items-center justify-center rounded-md bg-[#f2b600] px-6 text-base font-bold text-[#14213d] transition-colors hover:bg-[#ffc933] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14213d]";
-
-export function Hero({ cta, signupOpen }: { cta: string; signupOpen: boolean }) {
-  const moda = DEMO_STORES[0]!;
-  return (
-    <section className="bg-[#f5f1e8]" aria-labelledby="titulo">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-14 pt-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 lg:pb-20 lg:pt-16">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#1f47c9]">Plataforma de lojas virtuais</p>
-          <h1 id="titulo" className="mt-4 font-[family-name:var(--nl-font-display)] text-[2rem] font-extrabold leading-[1.08] tracking-tight text-[#14213d] sm:text-5xl">Crie a loja virtual da sua marca e cuide de tudo em um só painel.</h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#14213d]/85">A NextLevel Commerce reúne a vitrine da sua loja, o pagamento por Pix e cartão, os pedidos e os clientes. Você escolhe um tema, ajusta ao seu estilo e acompanha cada venda.</p>
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href={cta} className={`${CTA} w-full sm:w-auto`}>Quero minha loja</Link>
-            <a href="#exemplos" className="text-base font-semibold text-[#14213d] underline decoration-[#f2b600] decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver lojas de exemplo</a>
-          </div>
-          <p className="mt-5 max-w-md text-sm text-[#14213d]/75">{signupOpen ? "Crie sua conta e comece a montar a loja." : "O cadastro está por convite no momento: deixe seu contato e a equipe responde."}</p>
-        </div>
-        <div>
-          <BrowserFrame label={`Loja de demonstração: ${moda.name}. Nomes, produtos e preços fictícios.`}><StoreMock store={moda} eager /></BrowserFrame>
-          <p className="mt-4 flex items-start gap-3 rounded-lg border border-[#14213d]/15 bg-white px-4 py-3 text-sm text-neutral-900 lg:ml-auto lg:max-w-md">
-            <span aria-hidden className="mt-1 size-2.5 shrink-0 rounded-full bg-emerald-600" />
-            <span><b>Pedido #1042 pago por Pix</b> · {formatBRL(18990)}<br /><span className="text-neutral-600">Conferido automaticamente e pronto para envio. Painel da loja, dados de demonstração.</span></span>
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function Facts({ themeCount, sectionTypes }: { themeCount: number; sectionTypes: number }) {
-  const items = [
-    [String(themeCount), "temas, com 1 grátis"],
-    [String(sectionTypes), "tipos de seção para montar suas páginas"],
-    ["6x", "no cartão, e Pix com confirmação automática"],
-    ["1", "painel para pedidos, clientes e vendas"],
-  ];
-  return (
-    <section aria-label="O que a loja já traz" className="border-y border-[#14213d]/12 bg-[#ece7dc]">
-      <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-5 px-4 py-6 md:grid-cols-4">
-        {items.map(([n, t]) => <div key={t} className="flex items-baseline gap-3"><dt className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tabular-nums text-[#14213d]">{n}</dt><dd className="text-sm leading-snug text-[#14213d]/85">{t}</dd></div>)}
-      </dl>
-    </section>
-  );
-}
+export const CTA = "inline-flex h-12 items-center justify-center rounded-full bg-[#f2b600] px-7 text-base font-bold text-[#14213d] transition-colors hover:bg-[#ffc933] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14213d]";
 
 export function ForWhom({ cta }: { cta: string }) {
   const rows = [
@@ -72,22 +28,23 @@ export function ForWhom({ cta }: { cta: string }) {
 
 export function Operation() {
   const rows = [
-    { id: "pedidos", title: "Veja cada pedido chegar", situation: "Vendeu pelo Instagram e perdeu a conta de quem já pagou?", text: "Todos os pedidos ficam em uma lista, com a situação de cada um: aguardando pagamento, pago ou enviado. O cliente acompanha o dele por um link.", visual: <OrdersSnippet /> },
-    { id: "vendas", title: "Descubra o que vende e para onde", situation: "Não sabe quais produtos dão lucro nem em que horário o cliente compra?", text: "O painel mostra vendas por estado, margem por produto, recompra e os horários de maior movimento.", visual: <SalesSnippet /> },
-    { id: "pagamento", title: "Receba por Pix e cartão", situation: "Cansou de conferir comprovante um a um?", text: "O cliente paga na loja por Pix ou cartão em até 6x. Você conecta a sua conta do Mercado Pago, e o pagamento é conferido automaticamente antes de liberar o pedido.", visual: <PaymentSnippet /> },
+    { id: "pedidos", title: "Veja cada pedido chegar", situation: "Vendeu pelo Instagram e perdeu a conta de quem já pagou?", text: "Todos os pedidos ficam em uma lista, com o canal e a situação de cada um: aguardando pagamento, pago ou enviado. O cliente acompanha o dele por um link.", visual: <Tablet><OrdersPanel side={false} /></Tablet> },
+    { id: "vendas", title: "Descubra o que vende e para onde", situation: "Não sabe quais produtos dão lucro nem em que horário o cliente compra?", text: "O painel mostra vendas por estado, margem por produto, recompra e os horários de maior movimento.", visual: <Tablet><SalesPanel /></Tablet> },
+    { id: "pagamento", title: "Receba por Pix e cartão", situation: "Cansou de conferir comprovante um a um?", text: "O cliente paga na loja por Pix ou cartão em até 6x. Você conecta a sua conta do Mercado Pago, e o pagamento é conferido automaticamente antes de liberar o pedido.", visual: <div className="mx-auto w-[16rem]"><Phone><PayScreen /></Phone></div> },
   ];
   return (
-    <div className="space-y-16 md:space-y-20">
+    <div className="space-y-20 md:space-y-28">
       {rows.map((r, n) => (
-        <article key={r.id} className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+        <article key={r.id} className="cm-reveal grid items-center gap-8 md:grid-cols-2 md:gap-16">
           <div className={n % 2 ? "md:order-2" : ""}>
-            <p className="text-sm font-semibold text-[#1f47c9]">{r.situation}</p>
-            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold leading-tight text-[#14213d] sm:text-3xl">{r.title}</h3>
-            <p className="mt-3 max-w-md text-lg leading-relaxed text-[#14213d]/85">{r.text}</p>
+            <p className="text-sm font-semibold text-[#f2b600]">{r.situation}</p>
+            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-[#f5f1e8] sm:text-4xl">{r.title}</h3>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-[#f5f1e8]/80">{r.text}</p>
           </div>
           <div className={n % 2 ? "md:order-1" : ""}>{r.visual}</div>
         </article>
       ))}
+      <p className="text-xs text-[#f5f1e8]/60">Painel de demonstração, com nomes, valores e canais fictícios.</p>
     </div>
   );
 }
