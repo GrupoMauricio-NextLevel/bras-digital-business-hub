@@ -16,7 +16,7 @@ const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 te
 export function CheckoutForm({ slug, storeName }: { slug: string; storeName: string }) {
   const cart = useCart();
   const router = useRouter();
-  const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: true });
+  const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: false });
   const [payment, setPayment] = React.useState<"pix" | "card">("pix");
   const [pending, start] = React.useTransition();
   const shipping = shippingFor(cart.subtotal);
@@ -62,7 +62,7 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
               <input className={input} placeholder="CEP" required value={f.zip} onChange={(e) => setF({ ...f, zip: e.target.value })} />
               <input className={cn(input, "sm:col-span-2")} placeholder="Endereço e número" required value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} />
               <input className={cn(input, "sm:col-span-2")} placeholder="Cidade" required value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />
-              <select className={input} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["SP", "RJ", "MG", "PR", "SC", "RS", "BA", "PE", "CE", "GO", "DF", "ES"].map((s) => <option key={s}>{s}</option>)}</select>
+              <select className={input} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"].map((s) => <option key={s}>{s}</option>)}</select>
             </div>
           </section>
           <section>
