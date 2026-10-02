@@ -63,8 +63,8 @@ export function NewStoreForm({ offers }: { offers: OfferView[] }) {
         <CardHeader><CardTitle>Lojista (dono)</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <FormField label="Nome" htmlFor="on"><Input id="on" required value={f.ownerName} onChange={(e) => setF({ ...f, ownerName: e.target.value })} /></FormField>
-          <FormField label="E-mail de acesso" htmlFor="oe" hint="Receberá uma senha temporária"><Input id="oe" type="email" required value={f.ownerEmail} onChange={(e) => setF({ ...f, ownerEmail: e.target.value })} /></FormField>
-          <Button type="submit" className="w-full" loading={pending}>Criar loja ({chosen.name}) e convidar</Button>
+          <FormField label="E-mail de acesso" htmlFor="oe" hint="A senha temporária será exibida após a criação para você entregar ao lojista"><Input id="oe" type="email" required value={f.ownerEmail} onChange={(e) => setF({ ...f, ownerEmail: e.target.value })} /></FormField>
+          <Button type="submit" className="w-full" loading={pending}>Criar loja ({chosen.name}) e gerar acesso</Button>
         </CardContent>
       </Card>
     </form>
