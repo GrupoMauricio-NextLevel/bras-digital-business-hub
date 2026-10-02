@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertCircle, ArrowRight, CheckCircle2, Circle, ExternalLink, Plus, Printer, ShoppingCart, TrendingUp, Users, Wallet } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, ExternalLink, Plus, Printer, ShoppingCart, TrendingUp, Users, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
 import { OperationalPulse, type PulseItem } from "@/components/app/operational-pulse";
