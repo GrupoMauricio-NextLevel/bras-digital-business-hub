@@ -163,3 +163,20 @@ describe("preferência do Checkout Pro", () => {
     await expect(createPreference("x", { orderId: "o", orderNumber: 1, storeName: "L", items: [], shippingCents: 0, payer: { name: "A", email: "a@a.com" } }, fetchImpl)).rejects.toThrow(/inválido ou expirado/);
   });
 });
+
+describe("Mercado Pago — reconciliação de aviso perdido", () => {
+  it("paga o pedido cujo webhook se perdeu, isola falhas do provedor e não mexe em pedido já pago", async () => {
+    const { reconcilePendingPayments } = await import("@/lib/payments/service");
+    const lost = await pendingOrder("mantos");
+    const down = await pendingOrder("mantos");
+    const fetchImpl: FetchLike = async (input, init) => {
+      if (input.includes(`external_reference=${down.orderId}`)) throw new Error("provedor fora do ar");
+      return mpFetch({ "700": { status: "approved", external_reference: lost.orderId, transaction_amount: lost.totalCents / 100 } })(input, init);
+    };
+    const r = await reconcilePendingPayments(ctx.db, fetchImpl);
+    expect(r).toMatchObject({ checked: 2, paid: 1, failed: 1 });
+    expect((await ctx.db.query.orders.findFirst({ where: eq(orders.id, lost.orderId) }))!.customerPaymentStatus).toBe("PAID");
+    expect((await ctx.db.query.orders.findFirst({ where: eq(orders.id, down.orderId) }))!.status).toBe("PENDING");
+    expect((await reconcilePendingPayments(ctx.db, fetchImpl)).checked).toBe(1);
+  });
+});

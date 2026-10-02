@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/db/client";
+import { reconcilePendingPayments } from "@/lib/payments/service";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { expireUnfundedOrders } from "@/lib/domain/wallet";
 
@@ -10,7 +11,8 @@ export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ ok: false }, { status: 401 });
   const db = await getDb();
+  const reconciled = await reconcilePendingPayments(db);
   const r = await expireStaleReservations(db);
   const unfunded = await expireUnfundedOrders(db);
-  return NextResponse.json({ ok: true, ...r, unfunded });
+  return NextResponse.json({ ok: true, ...r, unfunded, reconciled });
 }

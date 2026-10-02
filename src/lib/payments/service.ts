@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { orders, stores } from "@/db/schema";
 import { markCustomerPaidBySystem } from "@/lib/domain/orders";
@@ -42,4 +42,22 @@ export async function syncOrderPayment(db: Database, orderId: string, fetchImpl:
   if (!paymentId) return { paid: false };
   const r = await syncMercadoPagoPayment(db, { storeSlug: store.slug, paymentId }, fetchImpl);
   return { paid: r.outcome === "PAID" };
+}
+
+/**
+ * Rede de segurança para aviso (webhook) perdido: consulta na API do provedor os pedidos do Mercado Pago ainda
+ * pendentes e ainda dentro da reserva. Rode ANTES de cancelar reservas vencidas. A falha de um pedido (provedor fora do ar,
+ * token inválido) não interrompe os demais e nunca cancela nada; o pedido segue pendente até a próxima rodada.
+ */
+export async function reconcilePendingPayments(db: Database, fetchImpl: FetchLike = fetch, now = new Date()): Promise<{ checked: number; paid: number; failed: number }> {
+  const pending = await db.select({ id: orders.id }).from(orders).where(and(eq(orders.paymentProvider, "MERCADO_PAGO"), eq(orders.status, "PENDING"), eq(orders.customerPaymentStatus, "PENDING"), gt(orders.reservationExpiresAt, new Date(now.getTime() - 3_600_000).toISOString()))).limit(200);
+  let paid = 0, failed = 0;
+  for (const o of pending) {
+    try {
+      if ((await syncOrderPayment(db, o.id, fetchImpl)).paid) paid++;
+    } catch {
+      failed++;
+    }
+  }
+  return { checked: pending.length, paid, failed };
 }
