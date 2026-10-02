@@ -10,14 +10,14 @@ import { independentSupplierOfStore } from "@/lib/domain/independent";
 import { parseShippingConfig } from "@/lib/shipping/quote";
 import { isDemoMode } from "@/lib/auth";
 import { eq } from "drizzle-orm";
-import { suppliers } from "@/db/schema";
+import { suppliers } from "@/db/schema";\nimport { isCommerceStore } from "@/lib/store-brand";
 
 export const dynamic = "force-dynamic";
 
 export default async function MerchantSettingsPage() {
   const session = await requireStoreAdmin();
   const s = session.store!;
-  const db = await getDb();
+  const db = await getDb();\n  const commerce = await isCommerceStore(db, s);
   const hiddenId = await independentSupplierOfStore(db, s.id);
   const sup = hiddenId ? await db.query.suppliers.findFirst({ where: eq(suppliers.id, hiddenId) }) : null;
   const shippingConfig = parseShippingConfig(s.shippingConfig);
@@ -33,7 +33,7 @@ export default async function MerchantSettingsPage() {
   ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
-      <PageHeader title="Configurações" description="Dados da loja e integrações (modo demonstração: nada é conectado de verdade)." />
+      <PageHeader title="Configurações" description={commerce ? "Dados da empresa, pagamentos, frete, domínio e integrações da sua operação de e-commerce." : "Dados da loja e integrações (modo demonstração: nada é conectado de verdade)."} />
       <OperationalPulse className="mb-5" items={[
         { label: "Dados da loja", value: profileComplete ? "Prontos" : "Incompletos", icon: Store, tone: profileComplete ? "success" : "warning", hint: s.name },
         { label: "Pagamentos", value: paymentConnected ? "Conectado" : "Pendente", icon: CreditCard, tone: paymentConnected ? "success" : "danger", hint: "Mercado Pago" },
