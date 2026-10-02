@@ -26,7 +26,8 @@ export default async function MerchantFinancePage() {
   const db = await getDb();
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
-  const independent = await isIndependentStore(db, session.store!.id);\n  const commerce = await isCommerceStore(db, session.store!);
+  const independent = await isIndependentStore(db, session.store!.id);
+  const commerce = await isCommerceStore(db, session.store!);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
