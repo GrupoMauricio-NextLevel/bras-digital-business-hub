@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { generateTemporaryPassword, hashPassword } from "@/lib/security/password";
-import { assertCanAccess, isSupplierSide, type Actor } from "./access";
+import { assertCanAccess, hasAreaRole, isSupplierSide, requireSupplierId, requireSupplierOperationalId, type Actor } from "./access";
 import { DEFAULT_CUTOFFS, cutoffStatus, localDate, validateOps, waveDateFor, type Ops } from "./cutoff";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
@@ -26,13 +26,13 @@ export async function getOps(db: Database, supplierId: string): Promise<Ops & { 
 const opsSchema = z.object({ timezone: z.string().min(3), cutoffs: z.object({ mon: z.string().nullable(), tue: z.string().nullable(), wed: z.string().nullable(), thu: z.string().nullable(), fri: z.string().nullable(), sat: z.string().nullable(), sun: z.string().nullable() }), holidays: z.array(z.string()).max(60) });
 
 export async function saveOps(db: Database, actor: Actor, raw: z.input<typeof opsSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor do fornecedor configura o corte.");
+  const supplierId = requireSupplierId(actor);
   const input = opsSchema.parse(raw);
   const err = validateOps(input as Ops);
   if (err) throw new DomainError("OPS_INVALID", err);
   const value = { timezone: input.timezone, cutoffs: input.cutoffs as Cutoffs, holidays: [...new Set(input.holidays)].sort() };
-  await db.insert(supplierOps).values({ supplierId: actor.supplierId, ...value }).onConflictDoUpdate({ target: supplierOps.supplierId, set: { ...value, updatedAt: new Date().toISOString() } });
-  await emitEvent(db, { type: "CUTOFF_CONFIGURED", supplierId: actor.supplierId, actorRole: actor.role });
+  await db.insert(supplierOps).values({ supplierId, ...value }).onConflictDoUpdate({ target: supplierOps.supplierId, set: { ...value, updatedAt: new Date().toISOString() } });
+  await emitEvent(db, { type: "CUTOFF_CONFIGURED", supplierId, actorRole: actor.role });
 }
 
 // ---------------------------------------------------------------------------
@@ -52,11 +52,10 @@ export const ESTEIRA_COLUMNS = ["AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "R
 export const DISPATCH_COLUMNS = ["READY_TO_PICK", "PICKING", "READY_TO_SHIP", "SHIPPED"] as const;
 
 export async function loadEsteira(db: Database, actor: Actor, now = new Date()) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
-  const supplierId = actor.supplierId;
+  const supplierId = requireSupplierOperationalId(actor);
   const ops = await getOps(db, supplierId);
   const cutoff = cutoffStatus(ops, now);
-  const dispatchOnly = actor.role === "SUPPLIER_DISPATCH";
+  const dispatchOnly = hasAreaRole(actor, "SUPERDROP", "OPERATOR") && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
   const statuses = (dispatchOnly ? DISPATCH_COLUMNS : ESTEIRA_COLUMNS) as readonly OrderStatus[];
   const dayStart = new Date(now.getTime() - 36 * 3_600_000).toISOString();
   const rows = await db.select({ o: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId))
