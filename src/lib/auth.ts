@@ -2,9 +2,10 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { users, stores, suppliers, type User } from "@/db/schema";
+import { users, stores, suppliers, userProductAccess, type User } from "@/db/schema";
 import { actorFromUser, type Actor, type Role } from "@/lib/domain/access";
 import { NAV } from "@/lib/nav";
+import type { AccessGrant } from "@/lib/ecosystem";
 import { signSession, verifySession } from "@/lib/security/crypto";
 
 export const SESSION_COOKIE = "nl_session";
@@ -13,6 +14,7 @@ const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 export type Session = {
   user: User;
   actor: Actor;
+  grants: AccessGrant[];
   store: typeof stores.$inferSelect | null;
   supplier: typeof suppliers.$inferSelect | null;
 };
@@ -26,7 +28,18 @@ export const getSession = cache(async (): Promise<Session | null> => {
   if (!user) return null;
   const store = user.storeId ? (await db.query.stores.findFirst({ where: eq(stores.id, user.storeId) })) ?? null : null;
   const supplier = user.supplierId ? (await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) })) ?? null : null;
-  return { user, actor: actorFromUser(user), store, supplier };
+  const rows = await db.select().from(userProductAccess).where(eq(userProductAccess.userId, user.id));
+  const grants: AccessGrant[] = rows
+    .filter((row) => row.active)
+    .map((row) => ({
+      area: row.area,
+      role: row.role,
+      organizationId: row.organizationId,
+      supplierId: row.supplierId,
+      storeId: row.storeId,
+      active: row.active,
+    }));
+  return { user, actor: actorFromUser(user, grants), grants, store, supplier };
 });
 
 export async function setSessionCookie(userId: string) {
