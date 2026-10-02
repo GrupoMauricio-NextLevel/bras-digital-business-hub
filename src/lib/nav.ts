@@ -109,6 +109,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Loja Virtual", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
       { label: "Editor do tema", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
       { label: "Templates", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
+      { label: "Campanhas", href: "/merchant/campanhas", icon: "Image", group: "Loja virtual" },
       { label: "Conteúdo", href: "/merchant/content", icon: "Image", group: "Catálogo" },
       { label: "Saldo e recargas", href: "/merchant/wallet", icon: "Wallet", group: "Financeiro" },
       { label: "Financeiro", href: "/merchant/finance", icon: "Landmark", group: "Financeiro" },

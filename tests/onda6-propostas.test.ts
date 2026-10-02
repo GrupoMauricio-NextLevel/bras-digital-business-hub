@@ -45,3 +45,20 @@ describe("Onda 6 — propostas comerciais", () => {
     await expect(cancelProposal(ctx.db, ctx.seed.stores.arena.id, row.id)).rejects.toThrow(/não encontrada/);
   });
 });
+
+describe("Onda 7 — campanhas agendadas", () => {
+  it("só aparece dentro da janela, recusa link inseguro e outra loja não apaga", async () => {
+    const { createCampaign, currentCampaign, deleteCampaign, isSafeLink } = await import("@/lib/domain/campaigns");
+    const mantos = ctx.seed.stores.mantos.id;
+    const t0 = new Date("2026-10-10T12:00:00Z");
+    const { id } = await createCampaign(ctx.db, mantos, { text: "Frete grátis no fim de semana", startsAt: "2026-10-11T03:00:00.000Z", endsAt: "2026-10-12T03:00:00.000Z", linkUrl: "/store/mantos/catalog" });
+    expect(await currentCampaign(ctx.db, mantos, t0)).toBeNull();
+    expect((await currentCampaign(ctx.db, mantos, new Date("2026-10-11T15:00:00Z")))?.text).toMatch(/Frete/);
+    expect(await currentCampaign(ctx.db, mantos, new Date("2026-10-12T03:00:00Z"))).toBeNull();
+    expect(await currentCampaign(ctx.db, ctx.seed.stores.arena.id, new Date("2026-10-11T15:00:00Z"))).toBeNull();
+    expect(["javascript:alert(1)", "//evil.com", "http://x.com", "data:text/html,x"].some(isSafeLink)).toBe(false);
+    await expect(createCampaign(ctx.db, mantos, { text: "Aviso ok", startsAt: "2026-10-11T03:00:00Z", endsAt: "2026-10-12T03:00:00Z", linkUrl: "javascript:alert(1)" })).rejects.toThrow(/link/i);
+    await expect(createCampaign(ctx.db, mantos, { text: "Aviso ok", startsAt: "2026-10-12T03:00:00Z", endsAt: "2026-10-11T03:00:00Z" })).rejects.toThrow(/depois do início/);
+    await expect(deleteCampaign(ctx.db, ctx.seed.stores.arena.id, id)).rejects.toThrow(/não encontrada/);
+  });
+});

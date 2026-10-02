@@ -18,6 +18,7 @@ import { readableOn } from "@/lib/utils";
 import Link from "next/link";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { isBlocked } from "@/lib/domain/store-access";
+import { currentCampaign, isSafeLink } from "@/lib/domain/campaigns";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -47,6 +48,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
+  const campaign = await currentCampaign(db, sf.store.id);
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const products = (await getStorefrontCatalog(sf.store.id)).map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
@@ -55,6 +57,11 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
       {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
       {trial ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900" data-try-banner>Testando o tema <b>{trial.name}</b> com os seus produtos. Nada foi instalado. <form action={exitTryThemeAction} className="inline"><button className="underline">Sair do teste</button></form></div> : null}
+      {campaign ? (
+        <div className="px-4 py-2 text-center text-sm font-medium" style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }} data-campaign>
+          {campaign.linkUrl && isSafeLink(campaign.linkUrl) ? <Link href={campaign.linkUrl} className="underline-offset-2 hover:underline">{campaign.text}</Link> : campaign.text}
+        </div>
+      ) : null}
       {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />

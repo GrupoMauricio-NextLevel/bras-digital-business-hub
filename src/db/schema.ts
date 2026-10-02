@@ -1053,3 +1053,18 @@ export const proposals = pgTable("proposals", {
   orderId: text("order_id").references(() => orders.id),
   createdAt: createdAt(),
 }, (t) => [index("proposals_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// Campanhas da loja: faixa de aviso no topo da vitrine com agenda (início e fim)
+// ---------------------------------------------------------------------------
+export const storeCampaigns = pgTable("store_campaigns", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  text: text("text").notNull(),
+  /** Link seguro: caminho da própria loja (começa com /) ou https://. */
+  linkUrl: text("link_url"),
+  startsAt: ts("starts_at").notNull(),
+  endsAt: ts("ends_at").notNull(),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+}, (t) => [index("store_campaigns_store_idx").on(t.storeId)]);
