@@ -176,6 +176,13 @@
       "when": 1790930674443,
       "tag": "0024_crm_notas_etiquetas",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1790930969531,
+      "tag": "0025_propostas",
+      "breakpoints": true
     }
   ]
 }

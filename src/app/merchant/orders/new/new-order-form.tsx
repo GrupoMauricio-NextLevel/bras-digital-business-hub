@@ -10,6 +10,7 @@ import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import { createManualOrderAction } from "@/app/actions/orders";
+import { createProposalAction } from "@/app/actions/proposals";
 import { EmptyState } from "@/components/app/empty-state";
 
 export type CatalogItem = {
@@ -73,6 +74,15 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
         customerPaymentStatus: paid ? "PAID" : "PENDING", notes: notes || undefined,
       });
       if (r.ok) { toast.success(`Pedido #${r.data.number} criado`); router.push(`/merchant/orders/${r.data.orderId}`); } else toast.error(r.error);
+    });
+  };
+
+  const propose = () => {
+    if (lines.length === 0) return toast.error("Adicione ao menos um item.");
+    if (!customer.name || !customer.email) return toast.error("Informe nome e e-mail do cliente para gerar a proposta.");
+    start(async () => {
+      const r = await createProposalAction({ customer: { name: customer.name, email: customer.email, phone: customer.phone || undefined }, items: lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })), validDays: 3 });
+      if (r.ok) { toast.success("Proposta criada (válida por 3 dias)"); router.push("/merchant/orders/propostas"); } else toast.error(r.error);
     });
   };
 
@@ -140,6 +150,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
               <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(subtotal + shippingCents)}</dd></div>
             </dl>
             <Button type="submit" className="w-full" size="lg" loading={pending} disabled={lines.length === 0}>Criar pedido</Button>
+            <Button type="button" variant="secondary" className="w-full" loading={pending} disabled={lines.length === 0} onClick={propose}>Gerar proposta (link para o cliente)</Button>
             <p className="text-xs text-muted-foreground">{hasPack ? "Venda de atacado (grade)." : "Venda de varejo."} O estoque será reservado na Central.</p>
           </CardContent>
         </Card>

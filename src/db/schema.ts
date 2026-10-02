@@ -1031,3 +1031,25 @@ export const storeAssets = pgTable("store_assets", {
   dataBase64: text("data_base64").notNull(),
   createdAt: createdAt(),
 }, (t) => [index("store_assets_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// Propostas comerciais (venda assistida): link com validade que vira pedido uma única vez
+// ---------------------------------------------------------------------------
+export const PROPOSAL_STATUSES = ["OPEN", "CONVERTED", "CANCELED"] as const;
+export type ProposalLine = { productId: string; variantId?: string; packId?: string; quantity: number; label: string; unitPriceCents: number };
+export const proposals = pgTable("proposals", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  /** Código longo e aleatório do link público. */
+  token: text("token").notNull().unique(),
+  status: text("status", { enum: PROPOSAL_STATUSES }).notNull().default("OPEN"),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone"),
+  items: jsonb("items").$type<ProposalLine[]>().notNull(),
+  /** Soma dos itens no momento da proposta (sem frete). Ao aceitar, o pedido só nasce se o catálogo ainda tiver o mesmo valor. */
+  subtotalCents: integer("subtotal_cents").notNull(),
+  expiresAt: ts("expires_at").notNull(),
+  orderId: text("order_id").references(() => orders.id),
+  createdAt: createdAt(),
+}, (t) => [index("proposals_store_idx").on(t.storeId)]);

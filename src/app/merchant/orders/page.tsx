@@ -22,7 +22,7 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
   const statuses = ORDER_STATUSES.filter((s) => !independent || s !== "AWAITING_CENTRAL_PAYMENT");
   return (
     <>
-      <PageHeader title="Pedidos" description="Pedidos da loja virtual, WhatsApp, Instagram e vendas manuais — todos com o mesmo catálogo e estoque." actions={<div className="flex flex-wrap items-center gap-2">{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></div>} />
+      <PageHeader title="Pedidos" description="Pedidos da loja virtual, WhatsApp, Instagram e vendas manuais — todos com o mesmo catálogo e estoque." actions={<div className="flex flex-wrap items-center gap-2">{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></div>} />
       <Suspense><FilterBar><FilterChips param="status" options={statuses.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} /></FilterBar></Suspense>
       <OrdersTable rows={rows} basePath="/merchant/orders" showStore={false} quickView showCentral={!independent} />
     </>
