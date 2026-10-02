@@ -81,6 +81,8 @@ export const stores = pgTable("stores", {
   shippingProvider: text("shipping_provider"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
+  /** Próximo número sequencial de pedido desta loja; incrementado atomicamente. */
+  nextOrderNumber: integer("next_order_number").notNull().default(1001),
   publishedAt: ts("published_at"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
