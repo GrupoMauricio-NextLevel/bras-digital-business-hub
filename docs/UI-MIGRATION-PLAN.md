@@ -58,7 +58,15 @@ Ordem:
 17. Settings — DONE
 
 ## Fase 4 — Master
-Status: TODO
+Status: IN_PROGRESS
+
+Entregue:
+- Master Home / Torre de Controle
+- Fornecedores
+- Lojas
+- Pedidos e comissões
+- Financeiro
+- Loja NextLevel / Serviços
 Transformar em control center:
 - alertas
 - saúde do ecossistema
