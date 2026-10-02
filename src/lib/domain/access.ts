@@ -58,6 +58,17 @@ export function hasAreaRole(actor: Actor, area: ProductArea, role: EcosystemAcce
   );
 }
 
+export function grantForAreaRole(
+  actor: Actor,
+  area: ProductArea,
+  roles: EcosystemAccessRole | EcosystemAccessRole[],
+): AccessGrant | null {
+  const allowed = Array.isArray(roles) ? roles : [roles];
+  return grantsForActor(actor).find(
+    (grant) => grant.area === area && allowed.includes(grant.role) && grant.active !== false,
+  ) ?? null;
+}
+
 export function isMaster(actor: Actor): boolean {
   return actor.role === "NEXTLEVEL_MASTER";
 }
@@ -65,30 +76,49 @@ export function isMaster(actor: Actor): boolean {
 /** Garante que o ator pode enxergar um registro pertencente a (storeId, supplierId). */
 export function assertCanAccess(actor: Actor, target: { storeId?: string | null; supplierId?: string | null }): void {
   if (isMaster(actor)) return;
-  if (actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH") {
-    if (target.supplierId && actor.supplierId === target.supplierId) return;
-    throw new ForbiddenError();
-  }
-  if (actor.role === "STORE_OWNER") {
-    if (target.storeId && actor.storeId === target.storeId) return;
-    throw new ForbiddenError();
-  }
+
+  const supplierGrant = grantForAreaRole(actor, "SUPERDROP", ["SUPPLIER_ADMIN", "OPERATOR"]);
+  if (supplierGrant?.supplierId && target.supplierId && supplierGrant.supplierId === target.supplierId) return;
+
+  const merchantGrant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  if (merchantGrant?.storeId && target.storeId && merchantGrant.storeId === target.storeId) return;
+
+  // Ponte defensiva para sessões antigas sem grants persistidos.
+  if ((actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH") && target.supplierId && actor.supplierId === target.supplierId) return;
+  if (actor.role === "STORE_OWNER" && target.storeId && actor.storeId === target.storeId) return;
+
   throw new ForbiddenError();
 }
 
 export function requireStoreId(actor: Actor): string {
-  if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Ação disponível apenas para lojistas.");
-  return actor.storeId;
+  const grant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  const storeId = grant?.storeId ?? actor.storeId;
+  const legacyOk = actor.role === "STORE_OWNER";
+  if ((!grant && !legacyOk) || !storeId) throw new ForbiddenError("Ação disponível apenas para lojistas.");
+  return storeId;
 }
 
 /** Expedição enxerga só a operação (sem valores); o ADM enxerga tudo do fornecedor. */
 export function isSupplierSide(actor: Actor): boolean {
-  return actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH";
+  return !!grantForAreaRole(actor, "SUPERDROP", ["SUPPLIER_ADMIN", "OPERATOR"])
+    || actor.role === "SUPPLIER_ADMIN"
+    || actor.role === "SUPPLIER_DISPATCH";
 }
 
 export function requireSupplierId(actor: Actor): string {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Ação disponível apenas para o fornecedor.");
-  return actor.supplierId;
+  const grant = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
+  const supplierId = grant?.supplierId ?? actor.supplierId;
+  const legacyOk = actor.role === "SUPPLIER_ADMIN";
+  if ((!grant && !legacyOk) || !supplierId) throw new ForbiddenError("Ação disponível apenas para o fornecedor.");
+  return supplierId;
+}
+
+export function requireSupplierOperationalId(actor: Actor): string {
+  const grant = grantForAreaRole(actor, "SUPERDROP", ["SUPPLIER_ADMIN", "OPERATOR"]);
+  const supplierId = grant?.supplierId ?? actor.supplierId;
+  const legacyOk = actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH";
+  if ((!grant && !legacyOk) || !supplierId) throw new ForbiddenError("Ação disponível apenas para a operação do fornecedor.");
+  return supplierId;
 }
 
 export function requireMaster(actor: Actor): void {
