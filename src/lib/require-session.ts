@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import { getSession, type Session } from "./auth";
 import type { Role } from "./domain/access";
 import { homeFor } from "./auth";
-import { canAccessArea, grantForAreaRole, type ProductArea } from "./domain/access";
-import type { EcosystemAccessRole } from "./ecosystem";
+import { canAccessArea, grantForAreaRole } from "./domain/access";
+import type { EcosystemAccessRole, ProductArea } from "./ecosystem";
 
 /** Garante sessão com o papel legado esperado; usar apenas enquanto a migração não terminar. */
 export async function requireRole(role: Role | Role[]): Promise<Session> {
