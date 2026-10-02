@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { computeStoreAnalytics, type AnalyticsItem, type AnalyticsOrder } from "@/lib/domain/analytics";
 
 const now = new Date("2026-03-30T15:00:00Z");
-const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
+const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", customerPaymentStatus: "PAID", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
 
 describe("analytics da loja", () => {
-  it("soma vendas e margem da janela e ignora cancelados", () => {
-    const a = computeStoreAnalytics([o("1", "2026-03-29", 12000, 8000), o("2", "2026-03-30", 12000, 8000), o("3", "2026-03-30", 5000, 3000, { status: "CANCELED" })], [], now);
+  it("soma vendas e margem da janela e ignora cancelados ou não pagos", () => {
+    const a = computeStoreAnalytics([o("1", "2026-03-29", 12000, 8000), o("2", "2026-03-30", 12000, 8000), o("3", "2026-03-30", 5000, 3000, { status: "CANCELED" }), o("4", "2026-03-30", 9000, 4000, { customerPaymentStatus: "PENDING" })], [], now);
     expect(a.salesCents).toBe(24000); expect(a.marginCents).toBe(8000); expect(a.marginPercent).toBe(33.3); expect(a.orders).toBe(2); expect(a.avgTicketCents).toBe(12000);
     expect(a.days).toHaveLength(30); expect(a.days.at(-1)).toMatchObject({ date: "2026-03-30", salesCents: 12000, orders: 1 });
   });
