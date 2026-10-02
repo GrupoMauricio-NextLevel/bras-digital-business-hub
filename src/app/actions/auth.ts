@@ -10,6 +10,7 @@ import { BRAND_PREVIEW_COOKIE } from "@/lib/brand-server";
 import { clearSessionCookie, getSession, homeFor, isDemoMode, setSessionCookie } from "@/lib/auth";
 import { hashPassword, verifyPassword } from "@/lib/security/password";
 import { runAction } from "@/lib/action-result";
+import { isDemoAccountEmail } from "@/lib/security/demo-accounts";
 import { DomainError } from "@/lib/domain/errors";
 import { requestPasswordReset, resetPassword } from "@/lib/domain/password-reset";
 import { getBaseUrl } from "@/lib/base-url";
@@ -22,7 +23,7 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     const data = loginSchema.parse(input);
     const db = await getDb();
     const user = await db.query.users.findFirst({ where: eq(users.email, data.email.toLowerCase()) });
-    if (!user || !verifyPassword(data.password, user.passwordHash)) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");
+    if (!user || !verifyPassword(data.password, user.passwordHash) || (!isDemoMode() && isDemoAccountEmail(user.email))) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");
     if (user.supplierId) {
       const sup = await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) });
       if (sup?.status === "CLOSED") throw new DomainError("ACCOUNT_CLOSED", "Conta encerrada. Entre em contato com a NextLevel.");

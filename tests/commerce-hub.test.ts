@@ -21,13 +21,17 @@ describe("hub da marca no Master", () => {
     expect(hub.stores[0]).toMatchObject({ name: "Moda Brás", independent: true });
   });
   it("lista do que falta: demonstração no banco, Mercado Pago e cadastro fechado bloqueiam", async () => {
-    const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", { DATABASE_URL: "pglite://memory" });
+    const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", { DATABASE_URL: "pglite://memory", NEXT_PUBLIC_DEMO_MODE: "true" });
     const by = Object.fromEntries(hub.checks.map((c) => [c.key, c]));
-    expect(by.demo!.ok).toBe(false);       // o banco de teste tem usuários .demo
+    expect(by.demo!.ok).toBe(false);       // o banco de teste tem usuários .demo e a demonstração está ligada
     expect(by.mp!.ok).toBe(false);
     expect(by.signup!.ok).toBe(false);
     expect(by.db!.ok).toBe(false);
     expect(hub.ready).toBe(false);
+  });
+  it("conta de demonstração no banco com a demonstração desligada fica bloqueada no login (item verde)", async () => {
+    const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", { DATABASE_URL: "pglite://memory" });
+    expect(hub.checks.find((c) => c.key === "demo")!.ok).toBe(true);
   });
   it("variáveis completas deixam os itens de ambiente verdes", async () => {
     const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", env);

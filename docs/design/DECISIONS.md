@@ -280,3 +280,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D40. Foco: só os domínios do que está em andamento
 - **Agora:** `master.nextlevelgroup.com.br` (Master central), `lojas.nextlevelgroup.com.br` (NextLevel Commerce) e os do SuperDrop (`superdrop.com.br`, `office.superdrop.com.br`).
 - **Etapa futura (sem domínio apontado até haver código):** `hubcreators.nextlevelgroup.com.br`, `bras.superdrop.com.br`, `chinahubglobal.com.br`. As marcas já existem no código com página "em breve", mas ficam sem endereço no Render e no DNS por enquanto, sem custo. Backlog dessas frentes em `docs/prompts/README.md`.
+
+## D41. Contas de demonstração bloqueadas fora da demonstração
+- E-mails `*.demo` e `@demo.superdrop.com.br` (senha conhecida `demo1234`) **não entram** quando `NEXT_PUBLIC_DEMO_MODE` não é `true`: o login responde "senha errada" e uma sessão antiga delas deixa de valer (`isDemoAccountEmail`, `src/lib/security/demo-accounts.ts`; `loginAction` e `getSession`). Nada é apagado do banco. A lista de lançamento do Master trata o item como verde quando elas estão bloqueadas e vermelho se a demonstração estiver ligada com elas no banco.
+- Testes `tests/security.test.ts` e `tests/commerce-hub.test.ts`.

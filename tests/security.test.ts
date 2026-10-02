@@ -41,3 +41,11 @@ describe("segredos e sessão", () => {
     expect(verifySession(undefined)).toBeNull();
   });
 });
+
+import { isDemoAccountEmail } from "@/lib/security/demo-accounts";
+describe("contas de demonstração fora da demonstração", () => {
+  it("reconhece os e-mails de demonstração e não confunde com contas reais", () => {
+    for (const e of ["master@nextlevel.demo", "dono@mantosshop.demo", "DONO@ARENA10.DEMO", "parceira@demo.superdrop.com.br"]) expect(isDemoAccountEmail(e)).toBe(true);
+    for (const e of ["maria@modabras.com.br", "demo@gmail.com", "meu@demonstracao.com.br", "", null, undefined]) expect(isDemoAccountEmail(e)).toBe(false);
+  });
+});
