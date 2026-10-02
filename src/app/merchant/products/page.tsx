@@ -27,11 +27,11 @@ export default async function MerchantProductsPage() {
   const inactive = items.length - active;
   const blockedByStock = items.filter((i) => !i.active && !!i.shortSizes).length;
   const low = items.filter((i) => i.available < 5).length;
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     blockedByStock > 0 ? { id: "blocked", title: "Produtos que ainda não podem ser ativados", description: "A grade mínima de estoque não foi atingida em alguns tamanhos.", count: blockedByStock, tone: "warning", icon: AlertTriangle, href: "/merchant/products", actionLabel: "Ver produtos" } : null,
     inactive - blockedByStock > 0 ? { id: "inactive", title: "Produtos disponíveis, mas fora da sua loja", description: "Você pode ativar esses itens e definir o preço de venda.", count: inactive - blockedByStock, tone: "info", icon: Power, href: "/merchant/products", actionLabel: "Ativar produtos" } : null,
     low > 0 ? { id: "low", title: "Produtos com pouca disponibilidade", description: "Estoque baixo pode interromper vendas em breve.", count: low, tone: "warning", icon: Package, href: "/merchant/products", actionLabel: "Acompanhar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Produtos" description="Veja o que está vendendo, o que pode ser ativado e onde o estoque da Central limita sua oferta." />

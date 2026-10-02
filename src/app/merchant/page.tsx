@@ -33,7 +33,7 @@ export default async function MerchantHome() {
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
 
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     o.pendingCentral.length > 0 ? {
       id: "funds",
       title: needsTopUp ? "Recarregue para liberar pedidos" : "Pedidos aguardando liberação pela Central",
@@ -74,7 +74,7 @@ export default async function MerchantHome() {
       href: "/merchant/orders?status=READY_TO_PICK",
       actionLabel: "Acompanhar",
     } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
 
   const pulse: PulseItem[] = isLite ? [
     { label: "Saldo para pedidos", value: formatBRL(balance), icon: Wallet, tone: needsTopUp ? "danger" : "success", hint: needsTopUp ? "recarga necessária" : "disponível agora", href: "/merchant/wallet" },

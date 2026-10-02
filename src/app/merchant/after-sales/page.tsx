@@ -10,11 +10,11 @@ import { Headset, Truck, AlertTriangle, PackageCheck } from "lucide-react";
 export default async function AfterSalesPage() {
   const session = await requireRole("STORE_OWNER");
   const d = await loadAfterSales(await getDb(), session.actor);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     d.summary.attention > 0 ? { id: "attention", title: "Pedidos precisam de contato ou revisão", description: "Estão parados além do ritmo normal do pós-venda.", count: d.summary.attention, tone: "warning", icon: AlertTriangle, href: "#pos-venda", actionLabel: "Revisar" } : null,
     d.summary.inTransit > 0 ? { id: "transit", title: "Acompanhar pedidos em trânsito", description: "Confirme a evolução do transporte e antecipe problemas de entrega.", count: d.summary.inTransit, tone: "info", icon: Truck, href: "#pos-venda", actionLabel: "Acompanhar" } : null,
     d.summary.delivered > 0 ? { id: "delivered", title: "Aproveite entregas recentes", description: "É o melhor momento para pedir avaliação e reforçar relacionamento.", count: d.summary.delivered, tone: "success", icon: PackageCheck, href: "#pos-venda", actionLabel: "Ver entregues" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Pós-venda" description="Acompanhe cada pedido até a entrega, fale com o cliente pelo WhatsApp com mensagem pronta e registre o atendimento." />

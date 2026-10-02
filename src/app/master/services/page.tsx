@@ -25,10 +25,10 @@ export default async function MasterServicesPage() {
   const waiting = orders.filter((o) => ["REQUESTED", "IN_ANALYSIS"].includes(o.order.status));
   const pipeline = orders.filter((o) => o.order.status === "QUOTED" || o.order.status === "IN_PROGRESS").reduce((s, o) => s + (o.order.quotedCents ?? 0), 0);
   const delivered = orders.filter((o) => o.order.status === "DELIVERED").reduce((s, o) => s + (o.order.quotedCents ?? 0), 0);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     waiting.length > 0 ? { id: "waiting", title: "Pedidos aguardando análise ou orçamento", description: "Entradas novas da Loja NextLevel ainda sem avanço comercial.", count: waiting.length, tone: "warning", icon: Sparkles, href: "#fila", actionLabel: "Atender" } : null,
     open.filter((o) => o.order.status === "IN_PROGRESS").length > 0 ? { id: "progress", title: "Serviços em execução", description: "Acompanhe prazos e comunicação com o cliente.", count: open.filter((o) => o.order.status === "IN_PROGRESS").length, tone: "info", icon: BriefcaseBusiness, href: "#fila", actionLabel: "Acompanhar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Loja NextLevel" description="Fila de pedidos de serviço de fornecedores e lojistas, orçamentos e a vitrine que eles enxergam." />

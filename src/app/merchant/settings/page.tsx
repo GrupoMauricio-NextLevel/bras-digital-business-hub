@@ -26,11 +26,11 @@ export default async function MerchantSettingsPage() {
   const shippingReady = connect ? connect.status === "CONNECTED" : s.shippingStatus === "CONNECTED";
   const domainReady = s.domainStatus === "CONNECTED";
   const profileComplete = Boolean(s.name && s.contactEmail && s.whatsapp);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     !paymentConnected ? { id: "payment", title: "Conecte o Mercado Pago", description: "Sem uma conta conectada, sua loja não consegue confirmar pagamentos automaticamente.", tone: "danger", icon: CreditCard, href: "#payments", actionLabel: "Conectar" } : null,
     !shippingReady ? { id: "shipping", title: "Revise o frete da loja", description: "A configuração de envio ainda não está pronta para cotação completa.", tone: "warning", icon: Truck, href: "#shipping", actionLabel: "Configurar" } : null,
     !profileComplete ? { id: "profile", title: "Complete os dados públicos da loja", description: "Contato e identificação aumentam confiança no checkout e no rodapé.", tone: "warning", icon: Store, href: "#dados", actionLabel: "Completar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Configurações" description="Dados da loja e integrações (modo demonstração: nada é conectado de verdade)." />

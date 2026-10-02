@@ -25,11 +25,11 @@ export default async function SettingsPage() {
   const emailConfigured = !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM;
   const recent = await db.select({ id: emailOutbox.id, kind: emailOutbox.kind, to: emailOutbox.toEmail, subject: emailOutbox.subject, status: emailOutbox.status, error: emailOutbox.error, at: emailOutbox.createdAt }).from(emailOutbox).orderBy(desc(emailOutbox.createdAt)).limit(20);
   const failedEmails = recent.filter((e) => e.status === "FAILED").length;
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     !mp.connected ? { id: "mp", title: "Conecte o recebimento da NextLevel", description: "Setups, mensalidades, taxas e serviços dependem desta conta.", tone: "danger", icon: CreditCard, href: "#recebimento", actionLabel: "Configurar" } : null,
     !emailConfigured ? { id: "email", title: "Ative o provedor de e-mail", description: "Os e-mails continuam registrados, mas não são enviados sem configuração.", tone: "warning", icon: Mail, href: "#email", actionLabel: "Revisar" } : null,
     failedEmails > 0 ? { id: "failed", title: "Existem e-mails com falha", description: "Revise as últimas tentativas registradas.", count: failedEmails, tone: "warning", icon: AlertTriangle, href: "#email", actionLabel: "Ver falhas" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Configurações" description="Parâmetros globais da plataforma." />

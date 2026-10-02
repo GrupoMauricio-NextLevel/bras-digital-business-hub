@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, CreditCard, Globe, Truck } from "lucide-react";
+import { CheckCircle2, CreditCard, Globe, Truck } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
 import { OperationalPulse } from "@/components/app/operational-pulse";
@@ -16,10 +16,10 @@ export default async function SupplierSettingsPage() {
   const s = session.supplier!;
   const walletConnected = Boolean(s.walletMpTokenEnc);
   const shippingConnected = s.shippingStatus === "CONNECTED";
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     !walletConnected ? { id: "wallet", title: "Conecte a carteira de recargas", description: "Sem a conta Mercado Pago, os lojistas não conseguem recarregar saldo.", tone: "danger", icon: CreditCard, href: "#wallet", actionLabel: "Configurar" } : null,
     !shippingConnected ? { id: "shipping", title: "Revise a plataforma de envio", description: "A integração de frete ainda não está conectada para a operação própria.", tone: "warning", icon: Truck, href: "#shipping", actionLabel: "Configurar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Configurações" description="Dados do fornecedor e modelo comercial com a NextLevel." />

@@ -30,13 +30,13 @@ export default async function SupplierHome() {
   const picking = n("PICKING");
   const readyToShip = n("READY_TO_SHIP");
 
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     ready > 0 ? { id: "ready", title: "Separar pedidos liberados", description: "Pedidos pagos, com etiqueta e prontos para entrar na bancada.", count: ready, tone: "info", icon: Package, href: "/supplier/dispatch", actionLabel: "Abrir expedição" } : null,
     readyToShip > 0 ? { id: "ship", title: "Despachar pedidos conferidos", description: "A separação terminou e estes pedidos já podem sair da Central.", count: readyToShip, tone: "success", icon: Truck, href: "/supplier/dispatch", actionLabel: "Despachar" } : null,
     awaitingLabel > 0 ? { id: "labels", title: "Acompanhar etiquetas pendentes", description: "Os lojistas ainda precisam anexar o arquivo de envio.", count: awaitingLabel, tone: "warning", icon: Printer, href: "/supplier/orders?status=AWAITING_LABEL", actionLabel: "Ver pedidos" } : null,
     awaitingFunds > 0 ? { id: "funds", title: "Pedidos aguardando recarga", description: "O cliente já avançou, mas o saldo do lojista ainda não liberou a Central.", count: awaitingFunds, tone: "warning", icon: Wallet, href: "/supplier/wallets", actionLabel: "Ver recargas" } : null,
     late > 0 ? { id: "late", title: "Revisar pedidos atrasados", description: "Pedidos operacionais parados há mais de 24 horas.", count: late, tone: "danger", icon: AlertTriangle, href: "/supplier/orders", actionLabel: "Revisar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
 
   return (
     <>

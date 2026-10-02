@@ -21,11 +21,11 @@ export async function ProductsBody({ supplierId, base = "/supplier/products", in
   const draft = rows.filter((r) => r.status === "DRAFT").length;
   const low = rows.filter((r) => r.available > 0 && r.available < 10).length;
   const out = rows.filter((r) => r.available === 0).length;
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     out > 0 ? { id: "out", title: "Produtos sem estoque disponível", description: "Esses itens podem interromper vendas ou ativações na rede.", count: out, tone: "danger", icon: AlertTriangle, href: base, actionLabel: "Revisar catálogo" } : null,
     low > 0 ? { id: "low", title: "Produtos com estoque baixo", description: "Disponibilidade abaixo de 10 unidades.", count: low, tone: "warning", icon: Package, href: base, actionLabel: "Acompanhar" } : null,
     draft > 0 ? { id: "draft", title: "Produtos ainda em rascunho", description: "Revise cadastro, preço e estoque antes de ativar.", count: draft, tone: "neutral", icon: Archive, href: base, actionLabel: "Revisar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title={independent ? "Meus produtos" : "Produtos"} description={independent ? "Cadastre o que você vende, com fotos, preço e estoque." : "Catálogo central. Cadastre uma vez e distribua para a rede."} actions={<><Link href={`${base}/categorias`} className={buttonVariants({ variant: "ghost" })}>Categorias</Link><Link href={`${base}/import`} className={buttonVariants({ variant: "secondary" })}><Upload /> Importar planilha</Link><Link href={`${base}/new`} className={buttonVariants()}><Plus /> Novo produto</Link></>} />

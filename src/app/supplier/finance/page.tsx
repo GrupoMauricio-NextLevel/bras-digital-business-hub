@@ -45,10 +45,10 @@ export default async function SupplierFinancePage() {
   const overdue = open.filter((i) => i.status === "OVERDUE");
   const openCents = open.reduce((sum, i) => sum + i.amountCents, 0);
   const overdueCents = overdue.reduce((sum, i) => sum + i.amountCents, 0);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     overdue.length > 0 ? { id: "overdue", title: "Regularize faturas vencidas", description: formatBRL(overdueCents) + " em atraso com a NextLevel.", count: overdue.length, tone: "danger", icon: AlertTriangle, href: "#faturas", actionLabel: "Regularizar" } : null,
     est.closing.netCents > 0 ? { id: "closing", title: "Prepare o fechamento do mês", description: "Estimativa atual de " + formatBRL(est.closing.netCents) + " para o próximo fechamento.", tone: "warning", icon: ReceiptText, href: "#fechamento", actionLabel: "Ver composição" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
 
   return (
     <>

@@ -18,10 +18,10 @@ export default async function WalletsPage() {
   const low = o.stores.filter((s) => s.balanceCents < 2000 && s.status === "ACTIVE");
   const stuckOrders = stuck.reduce((s, x) => s + x.awaitingOrders, 0);
   const stuckCents = stuck.reduce((s, x) => s + x.awaitingCents, 0);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     stuckOrders > 0 ? { id: "stuck", title: "Lojistas com pedidos bloqueados", description: formatBRL(stuckCents) + " em custo aguardando saldo.", count: stuckOrders, tone: "warning", icon: AlertTriangle, href: "#lojistas", actionLabel: "Ver lojistas" } : null,
     low.length > 0 ? { id: "low", title: "Saldos baixos podem travar novos pedidos", description: "Lojistas ativos com menos de R$ 20,00 disponíveis.", count: low.length, tone: "warning", icon: Store, href: "#lojistas", actionLabel: "Acompanhar" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
 
   return (
     <>

@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default async function TemplatesPage() {
   const themes = await listThemes();
-  const active = themes.filter((t) => t.active).length;
+  const active = themes.filter((t) => t.available).length;
   return (
     <>
       <PageHeader title="Templates" description="Theme Store da NextLevel. Conteúdo é separado do layout: a loja troca de tema sem perder produtos, clientes, pedidos ou configurações." />

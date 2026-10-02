@@ -31,10 +31,10 @@ export default async function MerchantFinancePage() {
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
   const openInvoiceCents = openInvoices.reduce((sum, i) => sum + i.amountCents, 0);
   const overdueCents = overdueInvoices.reduce((sum, i) => sum + i.amountCents, 0);
-  const queue: ActionQueueItem[] = [
+  const queue = ([
     overdueInvoices.length > 0 ? { id: "overdue", title: "Faturas vencidas com a NextLevel", description: formatBRL(overdueCents) + " precisam ser regularizados.", count: overdueInvoices.length, tone: "danger", icon: AlertTriangle, href: "#faturas", actionLabel: "Regularizar" } : null,
     f.owedToCentral > 0 && !independent ? { id: "central", title: "Pedidos pagos aguardam saldo", description: formatBRL(f.owedToCentral) + " em custo ainda não foi liberado para a Central.", tone: "warning", icon: Wallet, href: "/merchant/wallet", actionLabel: "Ver saldo" } : null,
-  ].filter((item): item is ActionQueueItem => Boolean(item));
+  ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Financeiro" description={independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
