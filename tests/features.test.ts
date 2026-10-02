@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { canUse, minOfferFor, requireFeature } from "@/lib/features";
 import { slugFromHost, storeUrl } from "@/lib/store-url";
+import { computeOnboarding } from "@/lib/queries/merchant";
+import { freshDb } from "./setup";
 
 describe("gates por oferta", () => {
   it("Drop manual não tem vitrine nem domínio; Loja própria libera tudo", () => {
@@ -15,6 +17,15 @@ describe("gates por oferta", () => {
   it("requireFeature explica onde liberar", () => {
     expect(() => requireFeature("STORE_SUBDOMAIN", "customDomain")).toThrow(/Loja própria/);
     expect(() => requireFeature("STORE_OWN", "customDomain")).not.toThrow();
+  });
+
+  it("onboarding cobra apenas etapas disponíveis na oferta", async () => {
+    const { db, seed } = await freshDb();
+    const store = await db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, seed.stores.mantos.id) });
+    expect(store).toBeTruthy();
+    expect(computeOnboarding({ ...store!, offer: "DROP_MANUAL" }).steps.map((s) => s.key)).toEqual(["data"]);
+    expect(computeOnboarding({ ...store!, offer: "STORE_SUBDOMAIN" }).steps.map((s) => s.key)).toEqual(["data", "logo", "colors", "payments", "publish"]);
+    expect(computeOnboarding({ ...store!, offer: "STORE_OWN" }).steps.map((s) => s.key)).toEqual(["data", "logo", "colors", "payments", "publish", "domain"]);
   });
 });
 
