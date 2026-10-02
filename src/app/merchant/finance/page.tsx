@@ -1,5 +1,7 @@
+import { AlertTriangle, ReceiptText, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { OrderStatusBadge, StatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,16 +28,23 @@ export default async function MerchantFinancePage() {
   const independent = await isIndependentStore(db, session.store!.id);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
+  const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
+  const openInvoiceCents = openInvoices.reduce((sum, i) => sum + i.amountCents, 0);
+  const overdueCents = overdueInvoices.reduce((sum, i) => sum + i.amountCents, 0);
+  const queue: ActionQueueItem[] = [
+    overdueInvoices.length > 0 ? { id: "overdue", title: "Faturas vencidas com a NextLevel", description: formatBRL(overdueCents) + " precisam ser regularizados.", count: overdueInvoices.length, tone: "danger", icon: AlertTriangle, href: "#faturas", actionLabel: "Regularizar" } : null,
+    f.owedToCentral > 0 && !independent ? { id: "central", title: "Pedidos pagos aguardam saldo", description: formatBRL(f.owedToCentral) + " em custo ainda não foi liberado para a Central.", tone: "warning", icon: Wallet, href: "/merchant/wallet", actionLabel: "Ver saldo" } : null,
+  ].filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Financeiro" description={independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
-      <MetricGrid className="mb-6">
-        {feeNow.bps > 0 ? <MetricCard label="Taxa por pedido (mês)" value={formatBRL(feeNow.feeCents)} hint={`${feeNow.bps / 100}% sobre ${formatBRL(feeNow.baseCents)} em ${feeNow.orders} pedido(s), cobrada no fechamento`} /> : null}
-        <MetricCard label="Recebido de clientes" value={formatBRL(f.received)} tone="success" />
-        {independent ? null : <MetricCard label="Aguardando recarga" value={formatBRL(f.owedToCentral)} tone={f.owedToCentral ? "warning" : "neutral"} hint="Custo de pedidos pagos sem saldo" />}
-        {independent ? null : <MetricCard label="Custo debitado do saldo" value={formatBRL(f.paidToCentral)} />}
-        <MetricCard label="Margem acumulada" value={formatBRL(f.margin)} tone="info" hint="Vendas − custo dos produtos" />
-      </MetricGrid>
+      <OperationalPulse className="mb-5" items={[
+        { label: "Recebido de clientes", value: formatBRL(f.received), icon: TrendingUp, tone: "success", hint: "vendas confirmadas" },
+        { label: "Margem acumulada", value: formatBRL(f.margin), icon: Wallet, tone: "info", hint: "vendas − custo" },
+        { label: independent ? "Taxa do mês" : "Aguardando saldo", value: independent ? formatBRL(feeNow.feeCents) : formatBRL(f.owedToCentral), icon: ReceiptText, tone: !independent && f.owedToCentral ? "warning" : "neutral", hint: independent ? "fechamento NextLevel" : "pedidos pagos sem liberação" },
+        { label: "Faturas em aberto", value: formatBRL(openInvoiceCents), icon: AlertTriangle, tone: overdueInvoices.length ? "danger" : openInvoices.length ? "warning" : "success", hint: openInvoices.length ? openInvoices.length + " pendência(s)" : "nenhuma pendência" },
+      ]} />
+      <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="Pendências que podem afetar sua operação." emptyMessage="Nenhuma pendência financeira crítica agora." />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <SectionTitle title="Pedidos" />
@@ -67,7 +76,7 @@ export default async function MerchantFinancePage() {
       </div>
       <div className="mt-8 space-y-6">
         {openInvoices.length ? (
-          <section>
+          <section id="faturas">
             <h2 className="mb-3 text-base font-semibold">Faturas em aberto com a NextLevel</h2>
             <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
               {openInvoices.map((i) => <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm"><span><span className="font-medium">{i.description}</span> <span className="text-muted-foreground">· vence {formatDate(i.dueDate)}</span></span><span className="flex items-center gap-3"><span className="tabular-nums">{formatBRL(i.amountCents)}</span><InvoicePay invoiceId={i.id} demo={demo} /></span></li>)}
