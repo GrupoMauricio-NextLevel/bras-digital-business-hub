@@ -1,11 +1,13 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
+import { requireStoreId } from "@/lib/domain/access";
 import { getMerchantProducts } from "@/lib/queries/merchant";
 import { NewOrderForm } from "./new-order-form";
 
 export default async function NewOrderPage() {
-  const session = await requireRole("STORE_OWNER");
-  const catalog = (await getMerchantProducts(session.store!.id)).filter((c) => c.storeProduct.active);
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
+  const storeId = requireStoreId(session.actor);
+  const catalog = (await getMerchantProducts(storeId)).filter((c) => c.storeProduct.active);
   const items = catalog.map((c) => ({
     productId: c.product.id,
     name: c.product.name,
