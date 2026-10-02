@@ -5,7 +5,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, LogOut, ExternalLink, ChevronDown, Repeat, KeyRound, Search, PanelLeftClose, PanelLeftOpen, MoreHorizontal, Lock, Sparkles } from "lucide-react";
-import { cn, initials } from "@/lib/utils";
+import { cn, initials, readableOn } from "@/lib/utils";
 import type { NavItem, Panel, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
 import { Drawer } from "@/components/ui/dialog";
@@ -104,7 +104,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
 
   const brand = (compact?: boolean) => (
     <div className={cn("flex items-center gap-2.5", compact ? "justify-center" : "px-3")}>
-      {shellBrand && shellBrand.logo !== "superdrop" ? <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-extrabold text-white" style={{ background: shellBrand.accentColor }}>NL</span> : <Logo variant="mark" tone={panel === "master" ? "on-dark" : "auto"} className="h-9 shrink-0" alt="SuperDrop" />}
+      {shellBrand && shellBrand.logo !== "superdrop" ? <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-extrabold" style={{ background: shellBrand.accentColor, color: readableOn(shellBrand.accentColor) }}>NL</span> : <Logo variant="mark" tone={panel === "master" ? "on-dark" : "auto"} className="h-9 shrink-0" alt="SuperDrop" />}
       {compact ? null : <div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight text-sidebar-active-foreground">{tenantName}</div><div className="truncate text-xs text-sidebar-muted">{tenantSub ?? roleLabel}</div></div>}
     </div>
   );
