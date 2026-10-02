@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { computeStoreAnalytics, type AnalyticsItem, type AnalyticsOrder } from "@/lib/domain/analytics";
 
 const now = new Date("2026-03-30T15:00:00Z");
-const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
+const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", customerPaymentStatus: "PAID", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
 
 describe("analytics da loja", () => {
   it("soma vendas e margem da janela e ignora cancelados", () => {
@@ -30,7 +30,7 @@ describe("analytics da loja", () => {
 });
 
 describe("estado e mapa de calor", () => {
-  const base = { channel: "ONLINE_STORE", subtotalCents: 10_000, costTotalCents: 6_000, status: "PAID" };
+  const base = { channel: "ONLINE_STORE", subtotalCents: 10_000, costTotalCents: 6_000, status: "PAID", customerPaymentStatus: "PAID" };
   it("agrupa vendas e clientes por UF e ignora pedidos sem estado", () => {
     const now = new Date("2026-06-15T12:00:00Z");
     const a = computeStoreAnalytics([
@@ -53,5 +53,20 @@ describe("estado e mapa de calor", () => {
     expect(a.heatmap.grid[3]![23]).toBe(1);
     expect(a.heatmap.peak).toEqual({ weekday: 3, hour: 12, orders: 2 });
     expect(a.heatmap.max).toBe(2);
+  });
+});
+
+describe("contrato único de venda (Onda 5)", () => {
+  it("pedido pendente, estornado ou cancelado não entra em vendas nem margem; frete fica de fora", () => {
+    const now = new Date("2026-03-30T18:00:00Z");
+    const a = computeStoreAnalytics([
+      o("pago", "2026-03-30", 10000, 6000),
+      o("pendente", "2026-03-30", 9000, 5000, { customerPaymentStatus: "PENDING" }),
+      o("estornado", "2026-03-30", 8000, 4000, { customerPaymentStatus: "REFUNDED" }),
+      o("cancelado", "2026-03-30", 7000, 3000, { status: "CANCELED" }),
+    ], [], now);
+    expect(a.orders).toBe(1);
+    expect(a.salesCents).toBe(10000);
+    expect(a.marginCents).toBe(4000);
   });
 });

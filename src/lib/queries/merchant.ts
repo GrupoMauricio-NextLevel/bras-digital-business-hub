@@ -1,6 +1,7 @@
 import { and, count, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { activities, invoices, orders, plans, serviceLeads, services, storeCustomers, storeProducts, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
+import { isEligibleSale } from "@/lib/domain/analytics";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { independentSupplierOfStore } from "@/lib/domain/independent";
 
@@ -26,16 +27,17 @@ export async function getMerchantOverview(store: Store) {
   const since = new Date();
   since.setDate(since.getDate() - 30);
   const all = await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt));
-  const valid = all.filter((o) => o.status !== "CANCELED");
-  const last30 = valid.filter((o) => new Date(o.createdAt) >= since);
-  const sales = last30.reduce((s, o) => s + o.totalCents, 0);
+  const valid = all.filter((o) => o.status !== "CANCELED"); // não cancelados (pendências)
+  const sold = all.filter(isEligibleSale); // vendas: pagas e não canceladas (contrato único)
+  const last30 = sold.filter((o) => new Date(o.createdAt) >= since);
+  const sales = last30.reduce((s, o) => s + o.subtotalCents, 0);
   const prevSince = new Date(since); prevSince.setDate(prevSince.getDate() - 30);
-  const prev30 = valid.filter((o) => new Date(o.createdAt) >= prevSince && new Date(o.createdAt) < since);
-  const prevSales = prev30.reduce((s, o) => s + o.totalCents, 0);
+  const prev30 = sold.filter((o) => new Date(o.createdAt) >= prevSince && new Date(o.createdAt) < since);
+  const prevSales = prev30.reduce((s, o) => s + o.subtotalCents, 0);
   const prevMargin = prev30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   const pct = (cur: number, prev: number) => (prev > 0 ? ((cur - prev) / prev) * 100 : undefined);
   const days = Array.from({ length: 30 }, (_, i) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (29 - i)); return d; });
-  const daily = days.map((d) => { const end = new Date(d); end.setDate(end.getDate() + 1); return { date: d.toISOString().slice(0, 10), cents: valid.filter((o) => { const t = new Date(o.createdAt); return t >= d && t < end; }).reduce((s, o) => s + o.totalCents, 0) }; });
+  const daily = days.map((d) => { const end = new Date(d); end.setDate(end.getDate() + 1); return { date: d.toISOString().slice(0, 10), cents: sold.filter((o) => { const t = new Date(o.createdAt); return t >= d && t < end; }).reduce((s, o) => s + o.subtotalCents, 0) }; });
   const margin = last30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   const pendingCentral = valid.filter((o) => o.customerPaymentStatus === "PAID" && o.centralPaymentStatus !== "PAID");
   const pendingLabel = valid.filter((o) => o.centralPaymentStatus === "PAID" && o.shippingLabelStatus !== "READY");
@@ -85,9 +87,9 @@ export async function getMerchantFinance(storeId: string) {
   const db = (await getDb());
   const rows = await db.select().from(orders).where(and(eq(orders.storeId, storeId), ne(orders.status, "CANCELED"))).orderBy(desc(orders.createdAt));
   const received = rows.filter((o) => o.customerPaymentStatus === "PAID").reduce((s, o) => s + o.totalCents, 0);
-  const owedToCentral = rows.filter((o) => o.centralPaymentStatus !== "PAID").reduce((s, o) => s + o.costTotalCents, 0);
+  const owedToCentral = rows.filter((o) => o.customerPaymentStatus === "PAID" && o.centralPaymentStatus !== "PAID").reduce((s, o) => s + o.costTotalCents, 0);
   const paidToCentral = rows.filter((o) => o.centralPaymentStatus === "PAID").reduce((s, o) => s + o.costTotalCents, 0);
-  const margin = rows.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
+  const margin = rows.filter(isEligibleSale).reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   return { rows, received, owedToCentral, paidToCentral, margin, subscription: await getSubscription(storeId) };
 }
 

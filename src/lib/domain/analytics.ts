@@ -1,5 +1,5 @@
 /** Análise de vendas do lojista: funções puras sobre pedidos e itens já carregados. */
-export type AnalyticsOrder = { id: string; status: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string; shippingState?: string | null };
+export type AnalyticsOrder = { id: string; status: string; customerPaymentStatus: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string; shippingState?: string | null };
 export type AnalyticsItem = { orderId: string; productName: string; quantity: number; lineTotalCents: number; unitCostCents: number };
 
 export type StoreAnalytics = {
@@ -15,14 +15,21 @@ export type StoreAnalytics = {
   heatmap: { grid: number[][]; max: number; peak: { weekday: number; hour: number; orders: number } | null };
 };
 
+/**
+ * Contrato único de "venda" (painel inicial, análise e exportações):
+ * pedido NÃO cancelado e com pagamento do cliente CONFIRMADO (não conta pedido pendente nem estornado).
+ * O valor da venda é o subtotal dos produtos (sem frete); margem = subtotal − custo dos produtos.
+ */
+export const isEligibleSale = (o: { status: string; customerPaymentStatus: string }) => o.status !== "CANCELED" && o.customerPaymentStatus === "PAID";
+
 const DAY = 86_400_000;
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
-/** Vendas válidas: tudo que não foi cancelado. Janela em dias corridos até `now` (UTC). */
+/** Vendas elegíveis (`isEligibleSale`). Janela em dias corridos até `now` (UTC). */
 export function computeStoreAnalytics(orders: AnalyticsOrder[], items: AnalyticsItem[], now: Date, windowDays = 30): StoreAnalytics {
   const start = new Date(now.getTime() - (windowDays - 1) * DAY); start.setUTCHours(0, 0, 0, 0);
   const prevStart = new Date(start.getTime() - windowDays * DAY);
-  const valid = orders.filter((o) => o.status !== "CANCELED");
+  const valid = orders.filter(isEligibleSale);
   const inWindow = valid.filter((o) => new Date(o.createdAt) >= start);
   const previous = valid.filter((o) => { const t = new Date(o.createdAt); return t >= prevStart && t < start; });
 
