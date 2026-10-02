@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, serviceMessages, serviceOrders, services, stores, type ServiceOrderStatus, type Service } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { assertCanAccess, isMaster, type Actor } from "./access";
+import { assertCanAccess, grantForAreaRole, isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 
 export type Audience = "lite" | "pro" | "supplier";
@@ -66,19 +66,23 @@ const requestSchema = z.object({ serviceId: z.string().min(1), briefing: z.strin
 
 export async function requestService(db: Database, actor: Actor, raw: z.input<typeof requestSchema>) {
   const input = requestSchema.parse(raw);
-  const isStore = actor.role === "STORE_OWNER" && actor.storeId;
-  const isSupplier = actor.role === "SUPPLIER_ADMIN" && actor.supplierId;
+  const storeGrant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  const supplierGrant = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
+  const isStore = Boolean(storeGrant?.storeId);
+  const isSupplier = Boolean(supplierGrant?.supplierId);
+  const storeId = storeGrant?.storeId ?? null;
+  const supplierId = supplierGrant?.supplierId ?? null;
   if (!isStore && !isSupplier) throw new ForbiddenError("Apenas lojistas e fornecedores contratam serviços.");
   const service = await db.query.services.findFirst({ where: eq(services.id, input.serviceId) });
   if (!service || !service.active) throw new NotFoundError("Serviço não encontrado.");
   if (isSupplier ? !service.audience.includes("supplier") : !(service.audience.includes("lite") || service.audience.includes("pro"))) throw new DomainError("NOT_FOR_YOU", "Este serviço não está disponível para o seu perfil.");
-  const open = await db.select().from(serviceOrders).where(and(eq(serviceOrders.serviceId, service.id), isStore ? eq(serviceOrders.storeId, actor.storeId!) : eq(serviceOrders.supplierId, actor.supplierId!)));
+  const open = await db.select().from(serviceOrders).where(and(eq(serviceOrders.serviceId, service.id), isStore ? eq(serviceOrders.storeId, storeId!) : eq(serviceOrders.supplierId, supplierId!)));
   if (open.some((o) => !["DELIVERED", "CANCELED"].includes(o.status))) throw new DomainError("ALREADY_REQUESTED", "Você já tem um pedido em andamento para este serviço.");
   const id = newId("sor");
   await db.transaction(async (tx) => {
-    await tx.insert(serviceOrders).values({ id, serviceId: service.id, requesterType: isStore ? "STORE" : "SUPPLIER", storeId: isStore ? actor.storeId : null, supplierId: isSupplier ? actor.supplierId : actor.supplierId ?? null, requesterUserId: actor.userId, briefing: input.briefing });
+    await tx.insert(serviceOrders).values({ id, serviceId: service.id, requesterType: isStore ? "STORE" : "SUPPLIER", storeId: isStore ? storeId : null, supplierId: supplierId, requesterUserId: actor.userId, briefing: input.briefing });
     await tx.insert(serviceMessages).values({ id: newId("smg"), serviceOrderId: id, authorRole: actor.role, authorUserId: actor.userId, body: input.briefing });
-    await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId: isStore ? actor.storeId : null, supplierId: isSupplier ? actor.supplierId : null, type: "SERVICE_REQUESTED", message: `Novo pedido de serviço: ${service.name}` });
+    await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId: isStore ? storeId : null, supplierId: isSupplier ? supplierId : null, type: "SERVICE_REQUESTED", message: `Novo pedido de serviço: ${service.name}` });
   });
   return { id };
 }
@@ -88,7 +92,10 @@ async function loadServiceOrder(db: Database, actor: Actor, id: string) {
   if (!o) throw new NotFoundError("Pedido de serviço não encontrado.");
   if (!isMaster(actor)) {
     if (o.requesterType === "STORE") assertCanAccess(actor, { storeId: o.storeId });
-    else if (actor.role !== "SUPPLIER_ADMIN" || actor.supplierId !== o.supplierId) throw new ForbiddenError();
+    else {
+      const supplierGrant = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
+      if (!supplierGrant?.supplierId || supplierGrant.supplierId !== o.supplierId) throw new ForbiddenError();
+    }
   }
   return o;
 }
@@ -96,8 +103,10 @@ async function loadServiceOrder(db: Database, actor: Actor, id: string) {
 export async function listServiceOrders(db: Database, actor: Actor) {
   const rows = await db.select({ order: serviceOrders, serviceName: services.name }).from(serviceOrders).innerJoin(services, eq(services.id, serviceOrders.serviceId)).orderBy(desc(serviceOrders.createdAt));
   if (isMaster(actor)) return rows;
-  if (actor.role === "STORE_OWNER") return rows.filter((r) => r.order.storeId === actor.storeId);
-  if (actor.role === "SUPPLIER_ADMIN") return rows.filter((r) => r.order.requesterType === "SUPPLIER" && r.order.supplierId === actor.supplierId);
+  const storeGrant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  if (storeGrant?.storeId) return rows.filter((r) => r.order.storeId === storeGrant.storeId);
+  const supplierGrant = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
+  if (supplierGrant?.supplierId) return rows.filter((r) => r.order.requesterType === "SUPPLIER" && r.order.supplierId === supplierGrant.supplierId);
   return [];
 }
 

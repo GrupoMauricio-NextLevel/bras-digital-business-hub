@@ -1,13 +1,13 @@
 import { PageHeader } from "@/components/app/page-header";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { loadAfterSales } from "@/lib/domain/after-sales";
 import { AfterSalesBoard } from "./after-sales-board";
 import { Headset, Truck, AlertTriangle, PackageCheck } from "lucide-react";
 
 export default async function AfterSalesPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const d = await loadAfterSales(await getDb(), session.actor);
   return (
     <>

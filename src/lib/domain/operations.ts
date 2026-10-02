@@ -91,10 +91,10 @@ export async function loadEsteira(db: Database, actor: Actor, now = new Date()) 
 
 /** Marca de versão da esteira: muda quando qualquer pedido, claim ou onda do fornecedor muda (base do modo ao vivo). */
 export async function ordersVersion(db: Database, supplierId: string): Promise<string> {
-  const [o] = await db.select({ t: max(orders.updatedAt), n: count() }).from(orders).where(eq(orders.supplierId, supplierId));
+  const [o] = await db.select({ t: max(orders.updatedAt), n: count() }).from(orders).where(and(eq(orders.supplierId, supplierId), eq(orders.sourceArea, "SUPERDROP")));
   const [c] = await db.select({ t: max(orderClaims.claimedAt), n: count() }).from(orderClaims).where(eq(orderClaims.supplierId, supplierId));
   const [w] = await db.select({ n: count() }).from(pickWaveOrders).innerJoin(pickWaves, eq(pickWaves.id, pickWaveOrders.waveId)).where(eq(pickWaves.supplierId, supplierId));
-  const [p] = await db.select({ n: count() }).from(labelPrints).innerJoin(orders, eq(orders.id, labelPrints.orderId)).where(eq(orders.supplierId, supplierId));
+  const [p] = await db.select({ n: count() }).from(labelPrints).innerJoin(orders, eq(orders.id, labelPrints.orderId)).where(and(eq(orders.supplierId, supplierId), eq(orders.sourceArea, "SUPERDROP")));
   return [o?.t ?? "0", o?.n ?? 0, c?.t ?? "0", c?.n ?? 0, w?.n ?? 0, p?.n ?? 0].join("|");
 }
 
@@ -157,7 +157,12 @@ export async function createWave(db: Database, actor: Actor, raw: z.input<typeof
   const ops = await getOps(db, supplierId);
   const today = localDate(now, ops.timezone);
   return db.transaction(async (tx) => {
-    const ready = await tx.select().from(orders).where(and(eq(orders.supplierId, supplierId), eq(orders.status, "READY_TO_PICK"), eq(orders.shippingLabelStatus, "READY"))).orderBy(asc(orders.centralPaidAt));
+    const ready = await tx.select().from(orders).where(and(
+      eq(orders.supplierId, supplierId),
+      eq(orders.sourceArea, "SUPERDROP"),
+      eq(orders.status, "READY_TO_PICK"),
+      eq(orders.shippingLabelStatus, "READY"),
+    )).orderBy(asc(orders.centralPaidAt));
     const already = new Set((await tx.select({ id: pickWaveOrders.orderId }).from(pickWaveOrders)).map((r) => r.id));
     let picked = ready.filter((o) => !already.has(o.id));
     if (input.untilCutoff) picked = picked.filter((o) => o.centralPaidAt && waveDateFor(ops, new Date(o.centralPaidAt)) <= today);
@@ -207,7 +212,10 @@ export function aggregatePickingList(items: { orderId: string; productName: stri
 
 export async function pickingListFor(db: Database, actor: Actor, orderIds: string[]) {
   if (!isSupplierSide(actor)) throw new ForbiddenError();
-  const found = orderIds.length ? await db.select().from(orders).where(inArray(orders.id, orderIds)) : [];
+  const found = orderIds.length ? await db.select().from(orders).where(and(
+    inArray(orders.id, orderIds),
+    eq(orders.sourceArea, "SUPERDROP"),
+  )) : [];
   for (const o of found) assertCanAccess(actor, o);
   const items = found.length ? await db.select().from(orderItems).where(inArray(orderItems.orderId, found.map((o) => o.id))) : [];
   const stock = items.length ? await db.select({ id: products.id, sku: products.sku }).from(products).where(inArray(products.id, [...new Set(items.map((i) => i.productId))])) : [];

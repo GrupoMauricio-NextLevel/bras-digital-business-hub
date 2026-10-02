@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { StatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getSupplierProduct } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const MOVEMENT: Record<string, string> = { IN: "Entrada", RESERVE: "Reserva", RELEASE: "Liberação", SALE: "Venda", ADJUSTMENT: "Ajuste" };
 
 export default async function SupplierProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const { id } = await params;
   const data = await getSupplierProduct(session.supplier!.id, id);
   if (!data) notFound();

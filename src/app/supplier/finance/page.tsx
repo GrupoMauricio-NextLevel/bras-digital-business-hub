@@ -5,7 +5,7 @@ import { DataTable } from "@/components/app/data-table";
 import { StatusBadge, OrderStatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getSupplierFinance } from "@/lib/queries/supplier";
 import { getDb } from "@/db/client";
 import { financeInvoices, storeAcquisitions, stores } from "@/db/schema";
@@ -25,7 +25,7 @@ import { RationaleList } from "@/components/finance/rationale-list";
 const KIND: Record<string, string> = { SUPPLIER_SETUP: "Setup", SUPPLIER_SUBSCRIPTION: "Mensalidade", SUPPLIER_CLOSING: "Fechamento mensal", ADDON: "Add-on", SERVICE: "Serviço" };
 
 export default async function SupplierFinancePage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const supplier = session.supplier!;
   const db = await getDb();
   const period = periodOf(new Date());

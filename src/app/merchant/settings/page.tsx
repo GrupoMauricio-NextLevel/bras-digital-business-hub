@@ -1,10 +1,10 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { SettingsForms } from "./settings-forms";
 import { getBaseUrl } from "@/lib/base-url";
 
 export default async function MerchantSettingsPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const s = session.store!;
   return (
     <>

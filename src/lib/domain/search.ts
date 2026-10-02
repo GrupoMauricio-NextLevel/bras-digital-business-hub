@@ -1,7 +1,7 @@
-import { and, desc, eq, ilike, or } from "drizzle-orm";
+import { and, desc, eq, ilike, or, type SQL } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { networks, orders, products, storeCustomers, customers, stores, suppliers } from "@/db/schema";
-import type { Actor } from "./access";
+import { grantForAreaRole, isMaster, type Actor } from "./access";
 
 export type SearchHit = { id: string; kind: "order" | "store" | "product" | "supplier" | "customer"; title: string; subtitle: string; href: string };
 
@@ -16,9 +16,9 @@ export async function globalSearch(db: Database, actor: Actor, raw: string, limi
   const hits: SearchHit[] = [];
   const num = /^#?\d+$/.test(q) ? Number(q.replace("#", "")) : null;
 
-  const orderWhere = (scope: ReturnType<typeof eq> | undefined) => and(scope, or(num !== null ? eq(orders.number, num) : undefined, ilike(orders.customerName, like(q))));
+  const orderWhere = (scope?: SQL) => and(scope, or(num !== null ? eq(orders.number, num) : undefined, ilike(orders.customerName, like(q))));
 
-  if (actor.role === "NEXTLEVEL_MASTER") {
+  if (isMaster(actor)) {
     const base = "/master";
     const o = await db.select({ id: orders.id, number: orders.number, name: orders.customerName, store: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(orderWhere(undefined)).orderBy(desc(orders.createdAt)).limit(limit);
     hits.push(...o.map((r) => ({ id: r.id, kind: "order" as const, title: `Pedido #${r.number}`, subtitle: `${r.store} · ${r.name}`, href: `${base}/orders/${r.id}` })));
@@ -26,19 +26,21 @@ export async function globalSearch(db: Database, actor: Actor, raw: string, limi
     hits.push(...s.map((r) => ({ id: r.id, kind: "store" as const, title: r.name, subtitle: `Loja · /store/${r.slug}`, href: `${base}/stores?q=${encodeURIComponent(r.name)}` })));
     const f = await db.select({ id: suppliers.id, name: suppliers.name }).from(suppliers).where(ilike(suppliers.name, like(q))).limit(limit);
     hits.push(...f.map((r) => ({ id: r.id, kind: "supplier" as const, title: r.name, subtitle: "Fornecedor", href: `${base}/finance?tab=contracts` })));
-  } else if (actor.role === "SUPPLIER_ADMIN" && actor.supplierId) {
+  } else if (grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")?.supplierId) {
+    const supplierId = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")!.supplierId!;
     const base = "/supplier";
-    const o = await db.select({ id: orders.id, number: orders.number, name: orders.customerName, store: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(orderWhere(eq(orders.supplierId, actor.supplierId))).orderBy(desc(orders.createdAt)).limit(limit);
+    const o = await db.select({ id: orders.id, number: orders.number, name: orders.customerName, store: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(orderWhere(and(eq(orders.supplierId, supplierId), eq(orders.sourceArea, "SUPERDROP")))).orderBy(desc(orders.createdAt)).limit(limit);
     hits.push(...o.map((r) => ({ id: r.id, kind: "order" as const, title: `Pedido #${r.number}`, subtitle: `${r.store} · ${r.name}`, href: `${base}/orders/${r.id}` })));
-    const s = await db.select({ id: stores.id, name: stores.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(eq(networks.supplierId, actor.supplierId), ilike(stores.name, like(q)))).limit(limit);
+    const s = await db.select({ id: stores.id, name: stores.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(eq(networks.supplierId, supplierId), ilike(stores.name, like(q)))).limit(limit);
     hits.push(...s.map((r) => ({ id: r.id, kind: "store" as const, title: r.name, subtitle: "Lojista da rede", href: `${base}/stores` })));
-    const p = await db.select({ id: products.id, name: products.name, sku: products.sku }).from(products).where(and(eq(products.supplierId, actor.supplierId), or(ilike(products.name, like(q)), ilike(products.sku, like(q))))).limit(limit);
+    const p = await db.select({ id: products.id, name: products.name, sku: products.sku }).from(products).where(and(eq(products.supplierId, supplierId), or(ilike(products.name, like(q)), ilike(products.sku, like(q))))).limit(limit);
     hits.push(...p.map((r) => ({ id: r.id, kind: "product" as const, title: r.name, subtitle: `SKU ${r.sku}`, href: `${base}/products/${r.id}` })));
-  } else if (actor.role === "STORE_OWNER" && actor.storeId) {
+  } else if (grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER")?.storeId) {
+    const storeId = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER")!.storeId!;
     const base = "/merchant";
-    const o = await db.select({ id: orders.id, number: orders.number, name: orders.customerName }).from(orders).where(orderWhere(eq(orders.storeId, actor.storeId))).orderBy(desc(orders.createdAt)).limit(limit);
+    const o = await db.select({ id: orders.id, number: orders.number, name: orders.customerName }).from(orders).where(orderWhere(and(eq(orders.storeId, storeId), eq(orders.sourceArea, "SUPERDROP")))).orderBy(desc(orders.createdAt)).limit(limit);
     hits.push(...o.map((r) => ({ id: r.id, kind: "order" as const, title: `Pedido #${r.number}`, subtitle: r.name, href: `${base}/orders/${r.id}` })));
-    const c = await db.select({ id: storeCustomers.id, name: customers.name, email: customers.email }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(and(eq(storeCustomers.storeId, actor.storeId), or(ilike(customers.name, like(q)), ilike(customers.email, like(q))))).limit(limit);
+    const c = await db.select({ id: storeCustomers.id, name: customers.name, email: customers.email }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(and(eq(storeCustomers.storeId, storeId), or(ilike(customers.name, like(q)), ilike(customers.email, like(q))))).limit(limit);
     hits.push(...c.map((r) => ({ id: r.id, kind: "customer" as const, title: r.name, subtitle: r.email, href: `${base}/customers` })));
   }
   return hits.slice(0, limit * 3);

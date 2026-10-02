@@ -50,7 +50,7 @@ async function loadOwnInvoice(db: Database, actor: Actor, invoiceId: string) {
   if (!inv) throw new NotFoundError("Fatura não encontrada.");
   if (!isMaster(actor)) {
     const t = tenantOf(actor);
-    const own = t && ((t.type === "STORE" && inv.storeId === t.storeId && inv.payerType === "STORE") || (t.type === "SUPPLIER" && inv.supplierId === t.supplierId && inv.payerType === "SUPPLIER" && actor.role === "SUPPLIER_ADMIN"));
+    const own = t && ((t.type === "STORE" && inv.storeId === t.storeId && inv.payerType === "STORE") || (t.type === "SUPPLIER" && inv.supplierId === t.supplierId && inv.payerType === "SUPPLIER"));
     if (!own) throw new ForbiddenError();
   }
   return inv;
@@ -103,7 +103,7 @@ export async function listInvoicesFor(db: Database, actor: Actor) {
 // ---------------------------------------------------------------------------
 export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "MONTHLY" | "ANNUAL", now = new Date()) {
   const t = tenantOf(actor);
-  if (!t || (actor.role !== "STORE_OWNER" && actor.role !== "SUPPLIER_ADMIN")) throw new ForbiddenError("Apenas lojistas e fornecedores compram add-ons.");
+  if (!t) throw new ForbiddenError("Apenas lojistas e fornecedores compram add-ons.");
   if (!(ADDON_KEYS as readonly string[]).includes(key)) throw new NotFoundError("Add-on não encontrado.");
   const book = await getPriceBook(db);
   const addon = book.addons[key as AddonKey];

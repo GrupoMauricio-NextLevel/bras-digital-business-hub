@@ -2,14 +2,14 @@ import { ExternalLink, Globe } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { computeOnboarding, getStoreTheme } from "@/lib/queries/merchant";
 import { buttonVariants } from "@/components/ui/button";
 import { PublishToggle } from "./publish-toggle";
 import { Badge } from "@/components/ui/badge";
 
 export default async function StorefrontPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const store = session.store!;
   const { current } = await getStoreTheme(store.id);
   const onboarding = computeOnboarding(store);

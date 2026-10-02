@@ -1,11 +1,11 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { NewStoreForm } from "./new-store-form";
 import { getDb } from "@/db/client";
 import { ensureContract, getPriceBook } from "@/lib/domain/finance";
 
 export default async function NewStorePage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const db = await getDb();
   const [book, contract] = await Promise.all([getPriceBook(db), ensureContract(db, session.supplier!.id)]);
   const offers = (Object.keys(book.offers) as (keyof typeof book.offers)[]).map((k) => ({ key: k, ...book.offers[k], commissionCents: Math.round((book.offers[k].setupCents * contract.storeSetupCommissionBps) / 10000) }));

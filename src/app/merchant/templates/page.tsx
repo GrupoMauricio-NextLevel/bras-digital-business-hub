@@ -5,12 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db/client";
 import { isDemoMode } from "@/lib/auth";
 import { canUse } from "@/lib/features";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { themeCardsFor } from "@/lib/themes/install";
 import { ThemeStore } from "./theme-store";
 
 export default async function MerchantTemplatesPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const store = session.store!;
   return (
     <>

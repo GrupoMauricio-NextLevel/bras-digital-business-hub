@@ -1,13 +1,13 @@
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { formatBRL } from "@/lib/money";
 import { SupplierWalletCard } from "./wallet-card";
 import { Badge } from "@/components/ui/badge";
 
 export default async function SupplierSettingsPage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const s = session.supplier!;
   return (
     <>

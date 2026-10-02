@@ -9,13 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineArea } from "@/components/finance/charts";
 import { getDb } from "@/db/client";
 import { orderItems, orders } from "@/db/schema";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
 import { canUse } from "@/lib/features";
 import { formatBRL } from "@/lib/money";
 
 export default async function AnalyticsPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const store = session.store!;
   return (
     <>

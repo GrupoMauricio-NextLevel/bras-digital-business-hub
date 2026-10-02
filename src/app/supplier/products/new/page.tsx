@@ -1,11 +1,11 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getSupplierStores } from "@/lib/queries/supplier";
 import { getSupplierProducts } from "@/lib/queries/supplier";
 import { NewProductForm } from "./new-product-form";
 
 export default async function NewProductPage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const [stores, { categories }] = await Promise.all([getSupplierStores(session.supplier!.id), getSupplierProducts(session.supplier!.id)]);
   return (
     <>
