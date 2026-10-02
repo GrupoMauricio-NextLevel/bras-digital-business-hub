@@ -176,3 +176,36 @@ Antes de criar uma tabela ou módulo novo, responder:
 4. Migrar telas existentes para contexto de vertical.
 5. Criar entidades específicas de Brás Digital, Creators Hub e China Hub somente quando necessárias.
 6. Remover dependência de `users.role` apenas após todos os fluxos estarem migrados e cobertos por testes.
+
+
+## Fronteiras do Commerce Core
+
+Para reduzir duplicação, cada responsabilidade deve ter um único dono arquitetural.
+
+| Responsabilidade | Dono | Observação |
+|---|---|---|
+| Organizações e usuários | Commerce Core | Identidade compartilhada entre verticais |
+| Grants e permissões | Commerce Core | Acesso varia por organização + área + papel |
+| Produto e variante | Commerce Core | SKU único |
+| Estoque | Commerce Core | Saldo físico único, consumido por múltiplos canais |
+| Cliente | Commerce Core | Pode comprar por diferentes canais |
+| Pedido | Commerce Core | A origem fica em `source_area` |
+| Pagamento, carteira e frete | Commerce Core | Infraestrutura operacional comum |
+| Loja, tema e checkout | Commerce Core | Superfície compartilhada/reutilizável |
+| Rede de dropshipping | SuperDrop | Regra comercial específica |
+| Oferta B2B/atacado | Brás Digital | Regra comercial específica |
+| Campanha, atribuição e creator | Creators Hub | Entidades específicas da vertical |
+| Importador, representante e onboarding | China Hub | Entidades específicas da vertical |
+
+### Regra de dependência
+
+As verticais podem depender do Commerce Core. O Commerce Core não deve depender de regras de uma vertical.
+
+```text
+SuperDrop ───────┐
+Brás Digital ────┼──> Commerce Core
+Creators Hub ────┤
+China Hub ───────┘
+```
+
+Quando uma funcionalidade específica precisar alterar catálogo, estoque, cliente, pedido, pagamento ou frete, ela deve chamar a regra do core e registrar o contexto da vertical, em vez de criar uma cópia da entidade.
