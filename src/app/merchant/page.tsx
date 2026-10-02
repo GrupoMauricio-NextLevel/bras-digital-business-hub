@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Plus, ShoppingCart, TrendingUp, Users, Wallet, ExternalLink, AlertCircle, CheckCircle2, Circle, ArrowRight } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, Circle, ExternalLink, Plus, Printer, ShoppingCart, TrendingUp, Users, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
+import { OperationalPulse, type PulseItem } from "@/components/app/operational-pulse";
 import { SalesChart } from "@/components/app/sales-chart";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { ActivityFeed } from "@/components/shared/activity-feed";
@@ -17,58 +18,111 @@ import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { formatDate, cn } from "@/lib/utils";
 
-function greeting() { const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date())); return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
+function greeting() {
+  const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
+  return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+}
 
 export default async function MerchantHome() {
   const session = await requireStoreAdmin();
   const store = session.store!;
   const o = await getMerchantOverview(store);
-  const pendencies = [
-    { n: o.pendingCustomer.length, label: "aguardando pagamento do cliente", href: "/merchant/orders?status=PENDING", tone: "neutral" },
-    { n: o.pendingCentral.length, label: "para pagar à Central", href: "/merchant/orders?status=AWAITING_CENTRAL_PAYMENT", tone: "warning" },
-    { n: o.pendingLabel.length, label: "aguardando etiqueta", href: "/merchant/orders?status=AWAITING_LABEL", tone: "warning" },
-    { n: o.inProgress.length, label: "em separação/envio na Central", href: "/merchant/orders?status=READY_TO_PICK", tone: "info" },
-  ].filter((p) => p.n > 0);
-
   const hub = await getServicesHub(session);
   const isLite = store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(await getDb(), store.id) : 0;
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
 
+  const queue: ActionQueueItem[] = [
+    o.pendingCentral.length > 0 ? {
+      id: "funds",
+      title: needsTopUp ? "Recarregue para liberar pedidos" : "Pedidos aguardando liberação pela Central",
+      description: needsTopUp ? "Faltam " + formatBRL(waitingCents - balance) + " para liberar " + o.pendingCentral.length + " pedido(s) já pago(s) pelo cliente." : "Seu saldo cobre os pedidos em espera.",
+      count: o.pendingCentral.length,
+      tone: needsTopUp ? "danger" : "warning",
+      icon: Wallet,
+      href: "/merchant/wallet",
+      actionLabel: needsTopUp ? "Recarregar" : "Ver saldo",
+    } : null,
+    o.pendingLabel.length > 0 ? {
+      id: "label",
+      title: "Envie as etiquetas pendentes",
+      description: "Sem o PDF da etiqueta a Central não consegue colocar o pedido na separação.",
+      count: o.pendingLabel.length,
+      tone: "warning",
+      icon: Printer,
+      href: "/merchant/labels",
+      actionLabel: "Enviar etiqueta",
+    } : null,
+    o.pendingCustomer.length > 0 ? {
+      id: "customer",
+      title: "Clientes ainda não concluíram o pagamento",
+      description: "Acompanhe os pedidos pendentes e retome o contato quando necessário.",
+      count: o.pendingCustomer.length,
+      tone: "neutral",
+      icon: ShoppingCart,
+      href: "/merchant/orders?status=PENDING",
+      actionLabel: "Ver pedidos",
+    } : null,
+    o.inProgress.length > 0 ? {
+      id: "progress",
+      title: "Pedidos em preparação na Central",
+      description: "Já estão em separação, conferência ou envio.",
+      count: o.inProgress.length,
+      tone: "info",
+      icon: ShoppingCart,
+      href: "/merchant/orders?status=READY_TO_PICK",
+      actionLabel: "Acompanhar",
+    } : null,
+  ].filter((item): item is ActionQueueItem => Boolean(item));
+
+  const pulse: PulseItem[] = isLite ? [
+    { label: "Saldo para pedidos", value: formatBRL(balance), icon: Wallet, tone: needsTopUp ? "danger" : "success", hint: needsTopUp ? "recarga necessária" : "disponível agora", href: "/merchant/wallet" },
+    { label: "Pedidos aguardando saldo", value: o.pendingCentral.length, icon: ShoppingCart, tone: o.pendingCentral.length ? "warning" : "success", hint: o.pendingCentral.length ? formatBRL(waitingCents) + " em custo" : "nenhum bloqueado", href: "/merchant/orders?status=AWAITING_CENTRAL_PAYMENT" },
+    { label: "Vendas · 30 dias", value: formatBRL(o.sales), icon: TrendingUp, tone: "success", delta: o.salesDelta, hint: o.last30Count + " pedidos" },
+    { label: "Margem estimada", value: formatBRL(o.margin), icon: Wallet, tone: "info", delta: o.marginDelta, hint: o.independent ? "venda − custo dos produtos" : "venda − custo Central" },
+  ] : [
+    { label: "Vendas · 30 dias", value: formatBRL(o.sales), icon: TrendingUp, tone: "success", delta: o.salesDelta, hint: o.last30Count + " pedidos" },
+    { label: "Pedidos · 30 dias", value: o.last30Count, icon: ShoppingCart, tone: "info", delta: o.countDelta, hint: o.ordersCount + " no total", href: "/merchant/orders" },
+    { label: "Margem estimada", value: formatBRL(o.margin), icon: Wallet, tone: "info", delta: o.marginDelta, hint: o.independent ? "venda − custo dos produtos" : "venda − custo Central" },
+    { label: "Clientes", value: o.customers, icon: Users, tone: "neutral", hint: "da sua loja", href: "/merchant/customers" },
+  ];
+
   return (
     <>
-      {isLite ? (
-        <section aria-label="Saldo" className="mb-6 overflow-hidden rounded-2xl bg-primary text-primary-foreground">
-          <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
-            <div>
-              <p className="text-sm font-medium opacity-90">Olá, {session.user.name.split(" ")[0]} · {store.name}</p>
-              <p className="mt-3 text-sm opacity-80">Saldo para pedidos</p>
-              <p className="text-5xl font-extrabold tabular-nums tracking-tight">{formatBRL(balance)}</p>
-              <p className="mt-2 text-sm opacity-90">
-                {needsTopUp ? `Faltam ${formatBRL(waitingCents - balance)} para liberar ${o.pendingCentral.length} ${o.pendingCentral.length === 1 ? "pedido" : "pedidos"} que já foram pagos pelo cliente.` : o.pendingCentral.length ? "Saldo suficiente para os pedidos em espera." : "O custo de cada pedido pago é debitado daqui."}
-              </p>
-            </div>
-            <Link href="/merchant/wallet" className="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-neutral-900 shadow-md transition hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-              <Wallet className="size-5" aria-hidden /> {needsTopUp ? "Recarregar agora" : "Recarregar por Pix"}
-            </Link>
-          </div>
-        </section>
-      ) : null}
       <PageHeader
-        title={`${greeting()}, ${session.user.name.split(" ")[0]}`}
+        title={greeting() + ", " + session.user.name.split(" ")[0]}
         description={<span>{store.name} · <StatusBadge value={store.status} dot /> {store.publishedAt ? <span className="text-success">Loja publicada</span> : <span className="text-warning">Loja não publicada</span>}</span>}
-        actions={<><a href={`/store/${store.slug}`} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink /> Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>}
+        actions={<><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink /> Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>}
       />
+
+      <OperationalPulse className="mb-5" items={pulse} />
+
+      <div className="mb-6 grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.55fr)]">
+        <ActionQueue
+          items={queue}
+          title="O que precisa de você agora"
+          description="As prioridades da sua operação, em ordem de impacto."
+          emptyMessage="Tudo em dia. Nenhuma pendência nos pedidos."
+        />
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2"><CardTitle className="text-base">Sua loja</CardTitle></CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="flex items-center justify-between gap-3"><span className="text-muted-foreground">Status</span><StatusBadge value={store.status} dot /></div>
+            <div className="flex items-center justify-between gap-3"><span className="text-muted-foreground">Publicação</span><span className={store.publishedAt ? "font-medium text-success" : "font-medium text-warning"}>{store.publishedAt ? "Publicada" : "Não publicada"}</span></div>
+            {isLite ? <Link href="/merchant/wallet" className={buttonVariants({ className: "mt-2 w-full" })}><Wallet /> {needsTopUp ? "Recarregar agora" : "Recarregar por Pix"}</Link> : <Link href="/merchant/storefront" className={buttonVariants({ variant: "secondary", className: "mt-2 w-full" })}>Gerenciar loja</Link>}
+          </CardContent>
+        </Card>
+      </div>
 
       {o.onboarding.percent < 100 ? (
         <Card className="mb-6">
           <CardHeader className="pb-2">
-            <div><CardTitle className="text-base">Sua loja está {o.onboarding.percent}% pronta</CardTitle><p className="text-sm text-muted-foreground">Complete as etapas para começar a vender com tudo configurado.</p></div>
+            <div><CardTitle className="text-base">Sua loja está {o.onboarding.percent}% pronta</CardTitle><p className="text-sm text-muted-foreground">Complete as etapas para vender com tudo configurado.</p></div>
             <span className="text-2xl font-semibold tabular-nums">{o.onboarding.steps.filter((s) => s.done).length}/{o.onboarding.steps.length}</span>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-surface-muted"><div className="h-full rounded-full bg-brand transition-all" style={{ width: `${o.onboarding.percent}%` }} /></div>
+            <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-surface-muted"><div className="h-full rounded-full bg-brand transition-all" style={{ width: String(o.onboarding.percent) + "%" }} /></div>
             <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {o.onboarding.steps.map((s) => (
                 <li key={s.key}>
@@ -86,36 +140,12 @@ export default async function MerchantHome() {
 
       <div className="mb-6"><ServiceSpotlight hub={hub} base="/merchant" /></div>
 
-      <MetricGrid>
-        <MetricCard label="Vendas (30 dias)" value={formatBRL(o.sales)} icon={TrendingUp} tone="success" delta={o.salesDelta} hint={`${o.last30Count} pedidos · vs. 30 dias antes`} />
-        <MetricCard label="Margem estimada" value={formatBRL(o.margin)} icon={Wallet} tone="info" delta={o.marginDelta} hint={o.independent ? "Venda − custo dos produtos" : "Venda − custo Central"} />
-        <MetricCard label="Pedidos (30 dias)" value={o.last30Count} icon={ShoppingCart} delta={o.countDelta} hint={`${o.ordersCount} no total`} href="/merchant/orders" />
-        <MetricCard label="Clientes" value={o.customers} icon={Users} hint="Da sua loja" />
-      </MetricGrid>
-
-      <Card className="mt-6">
-        <CardHeader className="pb-2"><div><CardTitle className="text-base">Vendas por dia</CardTitle><p className="text-sm text-muted-foreground">Últimos 30 dias</p></div></CardHeader>
-        <CardContent><SalesChart data={o.daily} /></CardContent>
-      </Card>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div>
-            <SectionTitle title="O que preciso fazer agora?" />
-            {pendencies.length === 0 ? (
-              <Card><CardContent className="flex items-center gap-3 py-5 text-sm"><CheckCircle2 className="size-5 text-success" /> Tudo em dia. Nenhuma pendência nos pedidos.</CardContent></Card>
-            ) : (
-              <div className="grid gap-2 sm:grid-cols-2">
-                {pendencies.map((p) => (
-                  <Link key={p.label} href={p.href} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm transition-colors hover:bg-surface-hover">
-                    <AlertCircle className={cn("size-5", p.tone === "warning" ? "text-warning" : p.tone === "info" ? "text-info" : "text-muted-foreground")} />
-                    <div className="text-sm"><span className="font-semibold">{p.n}</span> {p.n === 1 ? "pedido" : "pedidos"} {p.label}</div>
-                    <ArrowRight className="ml-auto size-4 text-subtle-foreground" />
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <Card>
+            <CardHeader className="pb-2"><div><CardTitle className="text-base">Vendas por dia</CardTitle><p className="text-sm text-muted-foreground">Últimos 30 dias</p></div></CardHeader>
+            <CardContent><SalesChart data={o.daily} /></CardContent>
+          </Card>
           <div>
             <SectionTitle title="Pedidos recentes" action={<Link href="/merchant/orders" className={buttonVariants({ variant: "ghost", size: "sm" })}>Ver todos</Link>} />
             <OrdersTable rows={o.recentOrders.map((order) => ({ order, storeName: store.name, storeSlug: store.slug }))} basePath="/merchant/orders" showStore={false} />
