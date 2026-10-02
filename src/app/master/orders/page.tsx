@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { FilterBar, FilterChips } from "@/components/app/filter-bar";
 import { LinkTabs } from "@/components/app/link-tabs";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { EmptyState } from "@/components/app/empty-state";
 import { StatusBadge } from "@/components/app/status-badge";
 import { Card } from "@/components/ui/card";
@@ -16,7 +16,7 @@ import { requireRole } from "@/lib/require-session";
 import { ORDER_STATUSES, type OrderStatus } from "@/db/schema";
 import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 import { formatBRL } from "@/lib/money";
-import { Factory } from "lucide-react";
+import { Factory, ShoppingCart, TrendingUp, Wallet } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 const num = "text-right tabular-nums";
@@ -48,12 +48,12 @@ export default async function MasterOrdersPage({ searchParams }: { searchParams:
     const [ctl, rows] = await Promise.all([storeOrderControl(db, session.actor, period), listOrdersForActor(db, session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined })]);
     return (
       <>
-        <MetricGrid className="mb-6">
-          <MetricCard label="Pedidos pagos" value={ctl.totals.orders} hint={`Competência ${period}`} />
-          <MetricCard label="Vendas das lojas" value={formatBRL(ctl.totals.sales)} tone="info" hint="Produtos, sem frete" />
-          <MetricCard label="Margem dos lojistas" value={formatBRL(ctl.totals.margin)} tone="success" hint="Venda menos custo da Central" />
-          <MetricCard label="Comissão NextLevel" value={formatBRL(ctl.totals.fee)} tone="info" hint={`Taxa de volume atribuída às lojas · mais ${formatBRL(ctl.totals.memberFee)} de taxa por pedido dos membros`} />
-        </MetricGrid>
+        <OperationalPulse className="mb-6" items={[
+          { label: "Pedidos pagos", value: ctl.totals.orders, icon: ShoppingCart, tone: "info", hint: "competência " + period },
+          { label: "Vendas das lojas", value: formatBRL(ctl.totals.sales), icon: TrendingUp, tone: "success", hint: "produtos, sem frete" },
+          { label: "Margem lojistas", value: formatBRL(ctl.totals.margin), icon: Wallet, tone: "success", hint: "venda menos custo" },
+          { label: "Comissão NextLevel", value: formatBRL(ctl.totals.fee), icon: Wallet, tone: "info", hint: "taxa atribuída à operação" },
+        ]} />
         <SectionTitle title="Comissão por loja" description="A taxa do fornecedor à NextLevel repartida pelas lojas que geraram o volume. O complemento até a taxa mínima não entra aqui." />
         {ctl.rows.length === 0 ? <EmptyState compact icon={Factory} title="Sem pedidos pagos nesta competência" description="Escolha outro mês ou aguarde as primeiras vendas." /> : (
           <Card><Table>
@@ -76,12 +76,12 @@ export default async function MasterOrdersPage({ searchParams }: { searchParams:
     const ctl = await supplierOrderControl(db, session.actor, period);
     return (
       <>
-        <MetricGrid className="mb-6">
-          <MetricCard label="Pedidos na Central" value={ctl.totals.orders} hint={`Pagos à Central em ${period}`} />
-          <MetricCard label="Base de cobrança" value={formatBRL(ctl.totals.base)} tone="info" hint="Custo pago à Central" />
-          <MetricCard label="Comissão NextLevel" value={formatBRL(ctl.totals.fee)} tone="info" hint="Taxa de volume, por pedido e mínimo" />
-          <MetricCard label="Comissões de canal" value={formatBRL(ctl.totals.channel)} tone="warning" hint="Abatidas dos fornecedores no fechamento" />
-        </MetricGrid>
+        <OperationalPulse className="mb-6" items={[
+          { label: "Pedidos na Central", value: ctl.totals.orders, icon: ShoppingCart, tone: "info", hint: "pagos em " + period },
+          { label: "Base de cobrança", value: formatBRL(ctl.totals.base), icon: TrendingUp, tone: "info", hint: "custo pago à Central" },
+          { label: "Comissão NextLevel", value: formatBRL(ctl.totals.fee), icon: Wallet, tone: "success", hint: "volume, pedido e mínimo" },
+          { label: "Comissões de canal", value: formatBRL(ctl.totals.channel), icon: Wallet, tone: "warning", hint: "abatimentos no fechamento" },
+        ]} />
         <SectionTitle title="Comissão por fornecedor" description="É o que a NextLevel cobra de cada fornecedor no fechamento do mês, já com as comissões de canal a abater. Fornecedores não veem as taxas uns dos outros." />
         <Card><Table>
           <THead><TR><TH>Fornecedor</TH><TH>Modelo</TH><TH className={num}>Pedidos</TH><TH className={num}>Base</TH><TH className={num}>Taxa</TH><TH className={num}>Comissão NextLevel</TH><TH className={num}>Abatimento de canal</TH><TH className={num}>A cobrar</TH><TH>Fatura</TH></TR></THead>
