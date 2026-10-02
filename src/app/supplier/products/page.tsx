@@ -17,7 +17,7 @@ export async function ProductsBody({ supplierId, base = "/supplier/products", in
   const rows: ProductRow[] = items.map((r) => ({ id: r.product.id, name: r.product.name, sku: r.product.sku, category: r.categoryName, images: r.product.images, sellsUnit: r.product.sellsUnit, sellsPack: r.product.sellsPack, distribution: r.product.distribution, costCents: r.product.costCents, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status, available: r.available, onHand: r.onHand }));
   return (
     <>
-      <PageHeader title={independent ? "Meus produtos" : "Produtos"} description={independent ? "Cadastre o que você vende, com fotos, preço e estoque." : "Catálogo central. Cadastre uma vez e distribua para a rede."} actions={<><Link href={`${base}/import`} className={buttonVariants({ variant: "secondary" })}><Upload /> Importar planilha</Link><Link href={`${base}/new`} className={buttonVariants()}><Plus /> Novo produto</Link></>} />
+      <PageHeader title={independent ? "Meus produtos" : "Produtos"} description={independent ? "Cadastre o que você vende, com fotos, preço e estoque." : "Catálogo central. Cadastre uma vez e distribua para a rede."} actions={<><Link href={`${base}/categorias`} className={buttonVariants({ variant: "ghost" })}>Categorias</Link><Link href={`${base}/import`} className={buttonVariants({ variant: "secondary" })}><Upload /> Importar planilha</Link><Link href={`${base}/new`} className={buttonVariants()}><Plus /> Novo produto</Link></>} />
       <ProductsList rows={rows} categories={categories.map((c) => c.name)} base={base} />
     </>
   );

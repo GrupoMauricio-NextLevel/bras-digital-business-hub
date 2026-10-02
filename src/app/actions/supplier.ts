@@ -233,3 +233,35 @@ export async function disconnectShippingAction() {
     return undefined;
   });
 }
+
+// ---------------------------------------------------------------------------
+// Categorias
+// ---------------------------------------------------------------------------
+import { createCategory, deleteCategory, renameCategory } from "@/lib/domain/categories";
+
+export async function createCategoryAction(name: string) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    await createCategory(await getDb(), supplierId, name);
+    revalidatePanels();
+    return undefined;
+  });
+}
+
+export async function renameCategoryAction(id: string, name: string) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    await renameCategory(await getDb(), supplierId, id, name);
+    revalidatePanels();
+    return undefined;
+  });
+}
+
+export async function deleteCategoryAction(id: string) {
+  return runAction(async () => {
+    const { supplierId } = await supplierCtx();
+    const r = await deleteCategory(await getDb(), supplierId, id);
+    revalidatePanels();
+    return r;
+  });
+}

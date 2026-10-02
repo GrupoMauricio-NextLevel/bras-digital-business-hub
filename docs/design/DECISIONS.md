@@ -304,3 +304,6 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Textos:** a conta simples deixa de ver "Central", recarga e saldo (pedidos, financeiro, etiquetas, novo pedido, detalhe); SuperDrop mantém os textos.
 - **Atualização de telas:** ações de estoque/catálogo do fornecedor revalidam painel da Central e do lojista.
 - Sem migração de banco. Testes: `tests/onda1-commerce.test.ts`.
+
+## D45. Onda 2: categorias do catálogo (CRUD) para Central e conta simples
+- Categorias já existiam só como texto digitado no produto. Agora há lista com contagem de produtos, criar, renomear (sem duplicar nome) e excluir **sem apagar produtos** (ficam sem categoria), sempre limitado à Central do usuário (`src/lib/domain/categories.ts`). Telas: `/supplier/products/categorias` e `/merchant/catalogo/categorias` (mesmo corpo). Duplicar, arquivar em lote, importar CSV e fotos já existiam e foram mantidos. Sem migração. Variantes avançadas e preço por variante continuam **fora** (exigem contrato e migração aprovados). Teste: `tests/onda2-categorias.test.ts`.
