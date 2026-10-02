@@ -8,6 +8,12 @@ import { markInvoicePaid } from "@/lib/domain/finance";
 import { createOrder } from "@/lib/domain/orders";
 import { createProduct } from "@/lib/domain/products";
 import { signupMember } from "@/lib/domain/store-access";
+import { createDiscount } from "@/lib/domain/discounts";
+import { setPriceTiers } from "@/lib/domain/price-tiers";
+import { createCampaign } from "@/lib/domain/campaigns";
+import { createProposal } from "@/lib/domain/proposals";
+import { inviteStaff } from "@/lib/domain/store-team";
+import { submitReview } from "@/lib/domain/reviews";
 
 export const COMMERCE_DEMO_EMAIL = "lojista@commerce.demo";
 
@@ -47,5 +53,15 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
     const when = daysAgo(i * 2);
     await db.update(s.orders).set({ channel: CHANNELS[i], createdAt: when, updatedAt: when, ...(i >= 5 && paid ? { status: "SHIPPED" as const } : {}) }).where(eq(s.orders.id, orderId));
   }
+
+  // Funções novas, prontas para você testar na demonstração (nada disso vai para produção: a conta só existe no modo de demonstração).
+  const first = made[0]!;
+  await createDiscount(db, r.storeId, { code: "BEMVINDO10", kind: "PERCENT", value: 10, maxRedemptions: 50 });
+  await setPriceTiers(db, r.storeId, first.productId, [{ minQty: 6, priceCents: Math.round(first.price * 0.9) }, { minQty: 12, priceCents: Math.round(first.price * 0.8) }]);
+  await createCampaign(db, r.storeId, { text: "Frete grátis acima de R$ 299 neste fim de semana", startsAt: daysAgo(1), endsAt: new Date(Date.now() + 30 * 86_400_000).toISOString() });
+  await createProposal(db, r.storeId, { customer: { name: "Loja da Marta", email: "marta@exemplo.com" }, items: [{ productId: first.productId, variantId: first.variantId, quantity: 6 }] });
+  await inviteStaff(db, owner, { name: "Paulo (equipe)", email: "equipe@commerce.demo", password: DEMO_PASSWORD });
+  const shipped = (await db.select().from(s.orders).where(eq(s.orders.storeId, r.storeId))).find((o) => o.status === "SHIPPED" && o.customerPaymentStatus === "PAID");
+  if (shipped) await submitReview(db, r.storeId, { number: String(shipped.number), email: shipped.customerEmail, productId: (await db.select().from(s.orderItems).where(eq(s.orderItems.orderId, shipped.id)))[0]!.productId, rating: 5, body: "Peça linda e chegou rápido. Recomendo!" });
   return true;
 }

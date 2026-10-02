@@ -17,6 +17,14 @@ describe("conta de demonstração da Commerce", () => {
     const rows = await db.select().from(orders).where(eq(orders.storeId, store.id));
     expect(rows.length).toBe(8);
     expect(new Set(rows.map((o) => o.channel)).size).toBeGreaterThanOrEqual(3);
+    // Funções novas já vêm preparadas para a demonstração.
+    const { storeDiscounts, storePriceTiers, storeCampaigns, proposals, productReviews } = await import("@/db/schema");
+    expect((await db.select().from(storeDiscounts).where(eq(storeDiscounts.storeId, store.id))).map((d) => d.code)).toEqual(["BEMVINDO10"]);
+    expect((await db.select().from(storePriceTiers).where(eq(storePriceTiers.storeId, store.id))).length).toBe(2);
+    expect((await db.select().from(storeCampaigns).where(eq(storeCampaigns.storeId, store.id))).length).toBe(1);
+    expect((await db.select().from(proposals).where(eq(proposals.storeId, store.id))).length).toBe(1);
+    expect((await db.select().from(productReviews).where(eq(productReviews.storeId, store.id))).map((r) => r.status)).toEqual(["PENDING"]);
+    expect((await db.query.users.findFirst({ where: eq(users.email, "equipe@commerce.demo") }))!.storeRole).toBe("STAFF");
     expect(await seedCommerceDemo(db)).toBe(false);
   });
 });
