@@ -60,3 +60,64 @@ END $$;
 INSERT INTO "product_channels" ("product_id","area","active")
 SELECT "id",'SUPERDROP',true FROM "products"
 ON CONFLICT ("product_id","area") DO NOTHING;
+
+
+-- Habilitações iniciais por organização: preserva o comportamento atual.
+INSERT INTO "organization_products" ("organization_id","area","status")
+SELECT "id",'SUPERDROP','ACTIVE'
+FROM "organizations"
+WHERE "type" IN ('SUPPLIER','MERCHANT')
+ON CONFLICT ("organization_id","area") DO NOTHING;
+
+INSERT INTO "organization_products" ("organization_id","area","status")
+SELECT o."id", a."area", 'ACTIVE'
+FROM "organizations" o
+CROSS JOIN (VALUES
+  ('NEXTLEVEL_COMMERCE'),
+  ('SUPERDROP'),
+  ('BRAS_DIGITAL'),
+  ('CREATORS_HUB'),
+  ('CHINA_HUB')
+) AS a("area")
+WHERE o."type" = 'NEXTLEVEL'
+ON CONFLICT ("organization_id","area") DO NOTHING;
+
+-- Converte os papéis legados em grants explícitos sem remover users.role.
+INSERT INTO "user_product_access"
+  ("id","user_id","organization_id","area","role","supplier_id","store_id","active")
+SELECT
+  'legacy_' || u."id" || '_superdrop',
+  u."id",
+  u."organization_id",
+  'SUPERDROP',
+  CASE
+    WHEN u."role" = 'SUPPLIER_ADMIN' THEN 'SUPPLIER_ADMIN'
+    WHEN u."role" = 'SUPPLIER_DISPATCH' THEN 'OPERATOR'
+    ELSE 'MERCHANT_OWNER'
+  END,
+  u."supplier_id",
+  u."store_id",
+  true
+FROM "users" u
+WHERE u."role" IN ('SUPPLIER_ADMIN','SUPPLIER_DISPATCH','STORE_OWNER')
+ON CONFLICT ("user_id","organization_id","area","role") DO NOTHING;
+
+INSERT INTO "user_product_access"
+  ("id","user_id","organization_id","area","role","active")
+SELECT
+  'legacy_' || u."id" || '_' || lower(a."area"),
+  u."id",
+  u."organization_id",
+  a."area",
+  'PLATFORM_ADMIN',
+  true
+FROM "users" u
+CROSS JOIN (VALUES
+  ('NEXTLEVEL_COMMERCE'),
+  ('SUPERDROP'),
+  ('BRAS_DIGITAL'),
+  ('CREATORS_HUB'),
+  ('CHINA_HUB')
+) AS a("area")
+WHERE u."role" = 'NEXTLEVEL_MASTER'
+ON CONFLICT ("user_id","organization_id","area","role") DO NOTHING;
