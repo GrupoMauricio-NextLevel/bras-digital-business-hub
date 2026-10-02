@@ -1,6 +1,6 @@
 import { and, eq, inArray, or, exists } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
+import { productChannels, productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
 import { getLevels, type InventoryLevel } from "./inventory";
 
 export type StoreCatalogItem = {
@@ -25,6 +25,15 @@ export async function listStoreCatalog(db: Database, storeId: string, opts: { on
   const accessible = and(
     eq(products.supplierId, network.supplierId),
     eq(products.status, "ACTIVE"),
+    exists(
+      db.select()
+        .from(productChannels)
+        .where(and(
+          eq(productChannels.productId, products.id),
+          eq(productChannels.area, "SUPERDROP"),
+          eq(productChannels.active, true),
+        )),
+    ),
     or(
       eq(products.distribution, "ALL_NETWORK"),
       exists(db.select().from(productStoreAccess).where(and(eq(productStoreAccess.productId, products.id), eq(productStoreAccess.storeId, storeId)))),
