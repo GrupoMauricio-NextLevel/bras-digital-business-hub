@@ -3,7 +3,6 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { listTeam } from "@/lib/domain/store-team";
 import { TeamManager } from "./team-manager";
-import { getDb } from "@/db/client";
 import { isCommerceStore } from "@/lib/store-brand";
 
 export const dynamic = "force-dynamic";
