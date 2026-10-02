@@ -127,7 +127,7 @@ export async function releaseClaim(db: Database, actor: Actor, orderId: string) 
   if (!order) throw new NotFoundError("Pedido não encontrado.");
   assertCanAccess(actor, order);
   const cur = await db.query.orderClaims.findFirst({ where: eq(orderClaims.orderId, orderId) });
-  if (cur && cur.userId !== actor.userId && actor.role !== "SUPPLIER_ADMIN") throw new ForbiddenError("Só quem está separando (ou o gestor) libera o pedido.");
+  if (cur && cur.userId !== actor.userId && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")) throw new ForbiddenError("Só quem está separando (ou o gestor) libera o pedido.");
   await db.delete(orderClaims).where(eq(orderClaims.orderId, orderId));
 }
 
@@ -138,7 +138,7 @@ export async function dispatchAdvance(db: Database, actor: Actor, orderId: strin
   else {
     const cur = await db.query.orderClaims.findFirst({ where: eq(orderClaims.orderId, orderId) });
     const fresh = cur && new Date(cur.claimedAt).getTime() > now.getTime() - CLAIM_MINUTES * 60_000;
-    if (fresh && cur.userId !== actor.userId && actor.role !== "SUPPLIER_ADMIN") throw new DomainError("CLAIMED", `${cur.userName} está separando este pedido.`);
+    if (fresh && cur.userId !== actor.userId && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")) throw new DomainError("CLAIMED", `${cur.userName} está separando este pedido.`);
   }
   const r = await advanceOrder(db, actor, orderId, next);
   if (next !== "PICKING") await db.delete(orderClaims).where(eq(orderClaims.orderId, orderId));
@@ -152,9 +152,8 @@ const waveSchema = z.object({ orderIds: z.array(z.string()).max(200).optional(),
 
 /** Cria uma onda com pedidos prontos para separar (com etiqueta) que ainda não estão em outra onda. */
 export async function createWave(db: Database, actor: Actor, raw: z.input<typeof waveSchema>, now = new Date()) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
+  const supplierId = requireSupplierOperationalId(actor);
   const input = waveSchema.parse(raw);
-  const supplierId = actor.supplierId;
   const ops = await getOps(db, supplierId);
   const today = localDate(now, ops.timezone);
   return db.transaction(async (tx) => {
@@ -176,17 +175,17 @@ export async function createWave(db: Database, actor: Actor, raw: z.input<typeof
 }
 
 export async function loadWave(db: Database, actor: Actor, waveId: string) {
-  if (!isSupplierSide(actor)) throw new ForbiddenError();
+  const supplierId = requireSupplierOperationalId(actor);
   const wave = await db.query.pickWaves.findFirst({ where: eq(pickWaves.id, waveId) });
   if (!wave) throw new NotFoundError("Onda não encontrada.");
-  if (wave.supplierId !== actor.supplierId) throw new ForbiddenError();
+  if (wave.supplierId !== supplierId) throw new ForbiddenError();
   const links = await db.select({ orderId: pickWaveOrders.orderId }).from(pickWaveOrders).where(eq(pickWaveOrders.waveId, waveId));
   return { wave, orderIds: links.map((l) => l.orderId) };
 }
 
 export async function listWaves(db: Database, actor: Actor, limit = 20) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
-  const rows = await db.select({ wave: pickWaves, n: count(pickWaveOrders.orderId) }).from(pickWaves).leftJoin(pickWaveOrders, eq(pickWaveOrders.waveId, pickWaves.id)).where(eq(pickWaves.supplierId, actor.supplierId)).groupBy(pickWaves.id).orderBy(desc(pickWaves.number)).limit(limit);
+  const supplierId = requireSupplierOperationalId(actor);
+  const rows = await db.select({ wave: pickWaves, n: count(pickWaveOrders.orderId) }).from(pickWaves).leftJoin(pickWaveOrders, eq(pickWaveOrders.waveId, pickWaves.id)).where(eq(pickWaves.supplierId, supplierId)).groupBy(pickWaves.id).orderBy(desc(pickWaves.number)).limit(limit);
   return rows;
 }
 
