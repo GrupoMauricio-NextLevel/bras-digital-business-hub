@@ -31,6 +31,40 @@ function Buttons({ settings, ctx }: { settings: SectionProps["settings"]; ctx: S
   );
 }
 
+export function ArenaHero({ id, settings, ctx }: SectionProps) {
+  const H = ctx.firstId === id ? "h1" : "h2";
+  const product = settings.showProduct !== false ? ctx.hero : undefined;
+  return (
+    <section className="relative left-1/2 mt-0 w-screen -translate-x-1/2 overflow-hidden bg-[#07110c] text-white">
+      <div className="absolute inset-0 opacity-30" aria-hidden style={{ backgroundImage: "linear-gradient(rgba(34,197,94,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,.13) 1px, transparent 1px)", backgroundSize: "44px 44px", maskImage: "linear-gradient(to right, black, transparent 82%)" }} />
+      <div className="absolute -left-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-[var(--sf-accent)] opacity-10 blur-3xl" aria-hidden />
+      <div className="relative mx-auto grid min-h-[560px] max-w-6xl items-center gap-8 px-6 py-16 sm:px-8 lg:grid-cols-[1.08fr_.92fr] lg:px-6">
+        <div className="relative z-10 max-w-2xl">
+          {str(settings.eyebrow) ? <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-bold tracking-[0.18em] text-[var(--sf-accent)]"><span className="size-1.5 rounded-full bg-[var(--sf-accent)]" aria-hidden />{str(settings.eyebrow)}</div> : null}
+          <H className="max-w-3xl text-4xl font-black uppercase leading-[.92] tracking-[-0.035em] sm:text-6xl lg:text-7xl">{str(settings.heading)}</H>
+          {str(settings.text) ? <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">{str(settings.text)}</p> : null}
+          <div className="mt-8 flex flex-wrap gap-3">
+            {str(settings.ctaLabel) ? <Link href={resolveLink(ctx.base, str(settings.ctaLink))} className="sf-btn inline-flex h-12 items-center rounded-lg px-6 text-sm font-bold uppercase tracking-wide transition hover:-translate-y-0.5 hover:brightness-110" style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{str(settings.ctaLabel)}</Link> : null}
+            {str(settings.secondaryLabel) ? <Link href={resolveLink(ctx.base, str(settings.secondaryLink))} className="inline-flex h-12 items-center rounded-lg border border-white/20 bg-white/5 px-6 text-sm font-semibold transition hover:bg-white/10">{str(settings.secondaryLabel)}</Link> : null}
+          </div>
+        </div>
+        {product ? (
+          <div className="relative mx-auto hidden w-full max-w-md lg:block">
+            <div className="absolute -inset-8 rounded-full bg-[var(--sf-accent)] opacity-15 blur-3xl" aria-hidden />
+            <Link href={`${ctx.base}/product/${product.slug}`} className="group relative block rotate-[2deg] overflow-hidden rounded-2xl border border-white/10 bg-white p-5 shadow-2xl transition duration-500 hover:rotate-0 hover:scale-[1.02]">
+              <ProductArt images={product.images} size="lg" alt={product.name} className="aspect-[4/5] rounded-xl bg-neutral-100 object-contain" />
+              <div className="mt-4 flex items-end justify-between gap-3 text-neutral-950">
+                <div className="min-w-0"><div className="text-[10px] font-bold tracking-[.16em] text-emerald-700">{str(settings.productBadge)}</div><div className="mt-1 truncate text-base font-bold">{product.name}</div></div>
+                <span className="shrink-0 rounded-full bg-neutral-950 px-3 py-1.5 text-xs font-bold text-white">VER</span>
+              </div>
+            </Link>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 export function ImageHero({ id, settings, ctx }: SectionProps) {
   const H = ctx.firstId === id ? "h1" : "h2"; const fw = settings.fullWidth === true; const light = settings.textColor !== "dark";
   return (
