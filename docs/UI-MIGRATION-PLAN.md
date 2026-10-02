@@ -58,7 +58,7 @@ Ordem:
 17. Settings — DONE
 
 ## Fase 4 — Master
-Status: IN_PROGRESS
+Status: DONE
 
 Entregue:
 - Master Home / Torre de Controle
@@ -67,6 +67,12 @@ Entregue:
 - Pedidos e comissões
 - Financeiro
 - Loja NextLevel / Serviços
+- CRM
+- Redes
+- Catálogo
+- Templates
+- Planos
+- Configurações
 Transformar em control center:
 - alertas
 - saúde do ecossistema
