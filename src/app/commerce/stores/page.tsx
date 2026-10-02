@@ -1,18 +1,18 @@
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { getCommerceConsole } from "@/lib/domain/commerce-console";
+import { CommerceStoreActions } from "@/components/commerce/commerce-store-actions";
 
 export default async function CommerceStoresPage() {
   const session=await requireRole("NEXTLEVEL_MASTER"); const data=await getCommerceConsole(await getDb(),session.actor);
   return <><Header eyebrow="PORTFÓLIO" title="Lojas" text="Cada operação digital da NextLevel Commerce, sem fornecedores ou redes do SuperDrop."/>
     <div className="mt-10 border-t border-white/10">
-      <div className="hidden grid-cols-[1.3fr_.7fr_.6fr_.6fr] gap-4 border-b border-white/10 py-3 text-[9px] tracking-[.18em] text-zinc-600 md:grid"><span>LOJA</span><span>PUBLICAÇÃO</span><span>ACESSO</span><span>DOMÍNIO</span></div>
-      {data.stores.map(({store,access})=><div key={store.id} className="grid gap-3 border-b border-white/10 py-5 md:grid-cols-[1.3fr_.7fr_.6fr_.6fr] md:items-center">
+      <div className="hidden grid-cols-[1.25fr_.55fr_.55fr_.75fr_auto] gap-4 border-b border-white/10 py-3 text-[9px] tracking-[.18em] text-zinc-600 md:grid"><span>LOJA</span><span>PUBLICAÇÃO</span><span>ACESSO</span><span>DOMÍNIO</span><span className="text-right">GESTÃO</span></div>
+      {data.stores.map(({store,access})=><div key={store.id} className="grid gap-3 border-b border-white/10 py-5 md:grid-cols-[1.25fr_.55fr_.55fr_.75fr_auto] md:items-center">
         <div><div className="text-sm font-medium text-zinc-200">{store.name}</div><div className="mt-1 text-xs text-zinc-600">/{store.slug}</div></div>
         <div className="text-xs text-zinc-400">{store.publishedAt?"Publicada":"Rascunho"}</div>
         <div className="text-xs text-zinc-400">{access.state}{access.daysLeft!==null?` · ${access.daysLeft}d`:""}</div>
-        <div className="text-xs text-zinc-400">{store.domainStatus==="CONNECTED"?(store.customDomain??"Conectado"):"Sem domínio próprio"}</div>
-      </div>)}
+        <div className="text-xs text-zinc-400">{store.domainStatus==="CONNECTED"?(store.customDomain??"Conectado"):"Sem domínio próprio"}</div>\n        <CommerceStoreActions storeId={store.id} status={store.status} slug={store.slug} canExtendTrial={access.state==="TRIAL" || access.state==="BLOCKED"} />\n      </div>)}
       {!data.stores.length?<Empty/>:null}
     </div></>;
 }

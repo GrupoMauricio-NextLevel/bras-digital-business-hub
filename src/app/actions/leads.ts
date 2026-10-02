@@ -29,6 +29,8 @@ export async function updateLeadAction(id: string, patch: { status?: "NEW" | "CO
     if (!s) throw new ForbiddenError("Sessão expirada.");
     await updateBrandLead(await getDb(), s.actor, id, patch);
     revalidatePath("/master/crm");
+    revalidatePath("/commerce/leads");
+    revalidatePath("/commerce");
     return undefined;
   });
 }

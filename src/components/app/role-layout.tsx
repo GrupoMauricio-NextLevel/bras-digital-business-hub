@@ -12,6 +12,7 @@ import { recentNotices } from "@/lib/queries/notifications";
 import { independentSupplierOfStore } from "@/lib/domain/independent";
 import { CommerceMerchantShell } from "@/components/commerce/commerce-merchant-shell";
 import { brandOfStore } from "@/lib/store-brand";
+import { hasCommerceMasterReturn, returnToCommerceMasterAction } from "@/app/actions/commerce-admin";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -43,15 +44,13 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   const visible = session.user.role === "STORE_OWNER" && session.user.storeRole === "STAFF" ? navItems.filter((i) => STAFF_OK.some((p) => i.href.startsWith(p))) : navItems;
   const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items, brand);
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
-  if (session.user.role === "STORE_OWNER" && store && brand.code === "NEXTLEVEL_COMMERCE") {
-    return (
+  if (session.user.role === "STORE_OWNER" && store && brand.code === "NEXTLEVEL_COMMERCE") {\n    const assisted = await hasCommerceMasterReturn();\n    return (
       <CommerceMerchantShell
         storeName={store.name}
         userName={session.user.name}
         storefrontHref={storefrontHref}
         staff={session.user.storeRole === "STAFF"}
-        onLogout={logout}
-      >
+        onLogout={logout}\n        assisted={assisted}\n        onReturnToMaster={returnToCommerceMasterAction}\n      >
         {children}
       </CommerceMerchantShell>
     );

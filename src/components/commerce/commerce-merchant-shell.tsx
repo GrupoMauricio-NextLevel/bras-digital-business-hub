@@ -61,7 +61,7 @@ function Navigation({ pathname, staff, onNavigate }: { pathname: string; staff: 
 }
 
 export function CommerceMerchantShell({
-  children, storeName, userName, storefrontHref, staff, onLogout,
+  children, storeName, userName, storefrontHref, staff, onLogout, assisted = false, onReturnToMaster,
 }: {
   children: React.ReactNode;
   storeName: string;
@@ -69,6 +69,8 @@ export function CommerceMerchantShell({
   storefrontHref?: string;
   staff: boolean;
   onLogout?: () => Promise<void>;
+  assisted?: boolean;
+  onReturnToMaster?: () => Promise<void>;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
@@ -86,7 +88,7 @@ export function CommerceMerchantShell({
     </aside>
 
     <div className="lg:pl-[248px]">
-      <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200 bg-[#f7f8f8]/95 px-4 backdrop-blur md:px-7 dark:border-white/10 dark:bg-[#08090b]/95">
+      {assisted ? <div className="flex min-h-10 items-center justify-between gap-3 border-b border-cyan-400/20 bg-cyan-400/[.08] px-4 text-xs text-cyan-800 md:px-7 dark:text-cyan-200"><span>Modo suporte · você está vendo a loja como o lojista.</span><form action={onReturnToMaster}><button className="font-semibold underline underline-offset-4">Voltar ao Commerce</button></form></div> : null}\n      <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200 bg-[#f7f8f8]/95 px-4 backdrop-blur md:px-7 dark:border-white/10 dark:bg-[#08090b]/95">
         <button onClick={() => setOpen(true)} className="mr-3 p-2 text-slate-500 lg:hidden" aria-label="Abrir menu"><Menu className="size-5"/></button>
         <div className="min-w-0 flex-1"><div className="text-[9px] font-semibold tracking-[.22em] text-cyan-600 dark:text-cyan-400">COMMERCE</div><div className="truncate text-sm font-medium">{storeName}</div></div>
         {storefrontHref ? <a href={storefrontHref} target="_blank" rel="noreferrer" className="mr-2 hidden items-center gap-2 border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 hover:text-slate-950 sm:flex dark:border-white/10 dark:bg-transparent dark:text-zinc-400 dark:hover:text-white"><ExternalLink className="size-3.5"/> Ver loja</a> : null}
