@@ -234,6 +234,7 @@ async function applyStatus(db: Database, order: typeof orders.$inferSelect, next
 
 /** Lojista confirma que o cliente pagou (vendas manuais). */
 export async function confirmCustomerPayment(db: Database, actor: Actor, orderId: string) {
+  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Apenas o lojista confirma pagamentos de vendas manuais.");
   const order = await loadOwned(db, actor, orderId);
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (order.customerPaymentStatus === "PAID") return order;
@@ -254,6 +255,7 @@ export const labelSchema = z.object({ code: z.string().min(4, "Informe o código
 
 /** Lojista registra a etiqueta (SuperFrete/Melhor Envio — demonstração). */
 export async function registerShippingLabel(db: Database, actor: Actor, orderId: string, raw: z.input<typeof labelSchema>) {
+  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("A etiqueta é responsabilidade do lojista.");
   const data = labelSchema.parse(raw);
   const order = await loadOwned(db, actor, orderId);
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
@@ -271,6 +273,7 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
 
 /** Avanço operacional (fornecedor/expedição). */
 export async function advanceOrder(db: Database, actor: Actor, orderId: string, next: OrderStatus) {
+  if (!isSupplierSide(actor)) throw new ForbiddenError("Apenas a Central avança a expedição do pedido.");
   const order = await loadOwned(db, actor, orderId);
   if (!canTransition(order.status, next)) throw new DomainError("INVALID_TRANSITION", `Transição ${order.status} → ${next} não permitida.`);
   if (next !== "CANCELED") {
