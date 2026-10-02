@@ -8,7 +8,7 @@
 - Botão "Verificar pagamento" para o lojista (Onda 1).
 
 ## Depende de você (preciso antes de continuar)
-1. **Agendador:** criar no Render as chamadas a `/api/cron/expire-reservations` (a cada 5–10 min) e `/api/cron/finance` (1x/dia) com `Authorization: Bearer $CRON_SECRET`. Sem isso a reconciliação e a expiração não rodam.
+1. **Agendador:** criar no Render as chamadas a `/api/cron/expire-reservations` (a cada 5–10 min) e `/api/cron/finance` (1x/dia) com `Authorization: Bearer $CRON_SECRET`. Sem isso a reconciliação e a expiração não rodam. **Alternativa sem custo:** no GitHub (Settings → Secrets and variables → Actions) crie o segredo `CRON_SECRET` (mesmo valor do Render) e a variável `APP_URL`; o fluxo `rotinas.yml` passa a chamar sozinho (não precisa das duas formas). O Master mostra "Rotinas automáticas rodando" na lista de lançamento da Commerce.
 2. **Mercado Pago real/teste:** conta da NextLevel conectada no Master e uma loja de teste com credencial de teste, para homologar pagamento, webhook e valor inválido com evidência. Custo: taxas do Mercado Pago só em transação real.
 3. **Compra de etiqueta (SuperFrete/Melhor Envio):** exige token, saldo e **gasto real**. Só implemento a compra idempotente (com tratamento de timeout incerto e conferência) depois da sua autorização específica.
 4. **Nota fiscal:** projeto separado (certificado, regras tributárias, provedor). Não há documento fiscal no sistema; a folha impressa diz "não é documento fiscal".
