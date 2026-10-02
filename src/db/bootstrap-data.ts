@@ -7,6 +7,7 @@ import { seedShowcase } from "./showcase";
 import { seedCommerceDemo } from "./commerce-demo";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
+import { ensureShowcaseStores } from "@/lib/themes/showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 
@@ -27,6 +28,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
     await seedDemoPartner(db);
+    for (const l of await ensureShowcaseStores(db)) log.push(l);
     return log;
   }
 
@@ -36,6 +38,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   else for (const l of await syncThemeCatalog(db)) log.push(l);
 
   if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
+  for (const l of await ensureShowcaseStores(db)) log.push(l);
 
   if (opts.masterEmail && opts.masterPassword) {
     const email = opts.masterEmail.toLowerCase();

@@ -1,0 +1,1 @@
+ALTER TABLE "stores" ADD COLUMN "showcase_theme" text;

@@ -46,7 +46,7 @@ export async function themeCardsFor(db: Database, actor: Actor): Promise<ThemeCa
   const quotes = new Map<string, Quote>();
   for (const t of rows) if (THEME_BY_KEY[t.key]) quotes.set(t.key, await themeQuote(db, t.key));
   return rows.flatMap((t) => {
-    const info = THEME_BY_KEY[t.key]; if (!info) return [];
+    const info = THEME_BY_KEY[t.key]; if (!info || info.released === false) return [];
     const inv = invoices.find((i) => i.dedupeKey.split(":")[2] === themeEntitlementKey(t.key));
     return [{ key: t.key, name: t.name, tier: t.tier, priceCents: t.priceCents, tagline: info.tagline, description: t.description, features: t.features, previewAccent: t.previewAccent, owned: owned.has(t.key), active: active[0]?.key === t.key, openInvoiceId: inv?.id ?? null, openMethod: inv ? (inv.lines[0]?.kind === "THEME_CARD" ? "CARD" as const : "PIX" as const) : null, quote: quotes.get(t.key)! }];
   }).sort((a, b) => a.priceCents - b.priceCents);
@@ -87,31 +87,27 @@ export async function presetContextFor(db: Database, store: typeof stores.$infer
   const ctx: PresetContext = {
     storeName: store.name, tagline: store.tagline, primary: current.globals.style.primary, accent: current.globals.style.accent,
     announcement: String(oldAnn?.settings.text ?? ""), footerText: String(oldFoot?.settings.text ?? ""),
-    hero: oldHero && oldTitle && oldTitle !== DEFAULT_HERO_TITLE ? { title: oldTitle, subtitle: String(oldHero.settings.subtitle ?? ""), ctaLabel: String(oldHero.settings.ctaLabel ?? "Ver catálogo") } : undefined,
+    hero: oldHero && oldTitle && oldTitle !== DEFAULT_HERO_TITLE && oldTitle !== `Bem-vindo à ${store.name}` ? { title: oldTitle, subtitle: String(oldHero.settings.subtitle ?? ""), ctaLabel: String(oldHero.settings.ctaLabel ?? "Ver catálogo") } : undefined,
     now,
   };
   return { ctx, current };
 }
 
 /**
- * Instala um tema com 1 clique: monta as quatro páginas e o estilo a partir do modelo do tema, com o nome, o texto do destaque,
- * o aviso e o rodapé que a loja já tinha, e publica na hora. O estado anterior fica no histórico ("Antes de instalar …")
- * e pode ser restaurado a qualquer momento.
+ * Monta e publica o tema na loja (sem checar compra: quem chama garante a licença). Usada pela instalação do lojista
+ * e pelas lojas de demonstração. O estado anterior fica no histórico ("Antes de instalar …").
  */
-export async function installTheme(db: Database, actor: Actor, key: string, now = new Date()) {
-  const store = await ownStore(db, actor);
+export async function applyThemeToStore(db: Database, store: typeof stores.$inferSelect, key: string, by: string, now = new Date(), images?: PresetContext["images"]) {
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
-  if (!(await ownedThemeKeys(db, store.id, now)).has(key)) throw new DomainError("THEME_NOT_OWNED", `O tema ${theme.name} ainda não foi comprado. Gere a fatura e pague por Pix para instalar.`);
-
   const { ctx, current } = await presetContextFor(db, store, now);
-  const preset = buildPreset(key, ctx);
+  const preset = buildPreset(key, images ? { ...ctx, images } : ctx);
   if (!preset) throw new NotFoundError("Modelo do tema não encontrado.");
   const version = await db.query.themeVersions.findFirst({ where: and(eq(themeVersions.themeId, theme.id), eq(themeVersions.status, "PUBLISHED")) });
   if (!version) throw new NotFoundError("Versão do tema não encontrada.");
 
   await db.transaction(async (tx) => {
-    const t = tx as unknown as Database; const by = actor.userId; const before = `Antes de instalar ${theme.name}`;
+    const t = tx as unknown as Database; const before = `Antes de instalar ${theme.name}`;
     for (const page of PAGE_KINDS) await saveSnapshot(t, store.id, page, (await resolveTemplate(t, store, page)).template, before, by);
     await saveSnapshot(t, store.id, "globals", current.globals, before, by);
     const iso = now.toISOString();
@@ -128,6 +124,21 @@ export async function installTheme(db: Database, actor: Actor, key: string, now 
     if (has) await tx.update(storeThemes).set({ themeId: theme.id, themeVersionId: version.id, activatedAt: iso }).where(eq(storeThemes.storeId, store.id));
     else await tx.insert(storeThemes).values({ storeId: store.id, themeId: theme.id, themeVersionId: version.id });
   });
+  return { name: theme.name };
+}
+
+/**
+ * Instala um tema com 1 clique: monta as quatro páginas e o estilo a partir do modelo do tema, com o nome, o texto do destaque,
+ * o aviso e o rodapé que a loja já tinha, e publica na hora. O estado anterior fica no histórico ("Antes de instalar …")
+ * e pode ser restaurado a qualquer momento.
+ */
+export async function installTheme(db: Database, actor: Actor, key: string, now = new Date()) {
+  const store = await ownStore(db, actor);
+  const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
+  if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
+  if (!(await ownedThemeKeys(db, store.id, now)).has(key)) throw new DomainError("THEME_NOT_OWNED", `O tema ${theme.name} ainda não foi comprado. Gere a fatura e pague por Pix para instalar.`);
+
+  await applyThemeToStore(db, store, key, actor.userId, now);
   await emitEvent(db, { type: "THEME_INSTALLED", storeId: store.id, actorRole: actor.role, payload: { key } });
   return { installed: true as const, name: theme.name };
 }

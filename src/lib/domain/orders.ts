@@ -68,6 +68,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const input = createOrderSchema.parse(rawInput);
   const store = await db.query.stores.findFirst({ where: eq(stores.id, input.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
+  if (store.showcaseTheme) throw new DomainError("SHOWCASE_STORE", "Esta é uma loja de demonstração do tema: não recebe pedidos.");
   if (store.status !== "ACTIVE") throw new DomainError("STORE_INACTIVE", "Loja não está ativa.");
   if (isBlocked(store)) throw new DomainError("STORE_BLOCKED", "Esta loja está temporariamente indisponível.");
   const network = await db.query.networks.findFirst({ where: eq(networks.id, store.networkId) });

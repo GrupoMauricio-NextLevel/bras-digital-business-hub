@@ -20,7 +20,7 @@ const DEVICES = [{ key: "desktop", label: "Computador", icon: Monitor, px: null 
 type Mock = "starter" | "arena" | "editorial" | "signature";
 
 /** Vitrine de temas: ver com os produtos da loja, comprar por Pix e instalar com 1 clique. */
-export function ThemeStore({ cards, slug, demo, returning }: { cards: ThemeCard[]; slug: string; demo: boolean; returning?: { paymentId: string; key: string; paid: boolean } | null }) {
+export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { cards: ThemeCard[]; slug: string; demo: boolean; returning?: { paymentId: string; key: string; paid: boolean } | null; autoPreview?: string }) {
   const router = useRouter();
   const [preview, setPreview] = React.useState<ThemeCard | null>(null);
   const [confirm, setConfirm] = React.useState<ThemeCard | null>(null);
@@ -47,12 +47,6 @@ export function ThemeStore({ cards, slug, demo, returning }: { cards: ThemeCard[
     setPay({ invoiceId: r.data.invoiceId, method: "CARD", cardPaymentId: card.data.id, demoCard: card.data.demo });
   };
   const simulateCard = async (paymentId: string) => { const r = await simulatePaymentAction(paymentId); if (!r.ok) return toast.error(r.error); await checkPaymentAction(paymentId); router.refresh(); };
-  // Pagou: fecha o checkout e abre a instalação na hora (1 clique).
-  React.useEffect(() => {
-    const key = buying.current ?? returning?.key; if (!key) return;
-    const c = cards.find((x) => x.key === key);
-    if (c?.owned && !c.active) { buying.current = null; const id = requestAnimationFrame(() => { setCheckout(null); setPay(null); setConfirm(c); toast.success(`Pagamento confirmado! O tema ${c.name} já está liberado.`); }); return () => cancelAnimationFrame(id); }
-  }, [cards, returning?.key]);
   // Voltou do checkout do Mercado Pago: confere o pagamento até aparecer.
   React.useEffect(() => {
     if (!returning || returning.paid) return;
@@ -64,6 +58,20 @@ export function ThemeStore({ cards, slug, demo, returning }: { cards: ThemeCard[
     if (!r.ok) return toast.error(r.error);
     setConfirm(null); setPreview(null); toast.success(`Tema ${r.data.name} instalado. Sua loja já usa o novo visual.`, { action: { label: "Editar no editor", onClick: () => router.push("/theme-editor") } }); router.refresh();
   };
+
+  // Pagou: fecha o checkout e já instala o tema (compra e instalação em 1 clique).
+  React.useEffect(() => {
+    const key = buying.current ?? returning?.key; if (!key) return;
+    const c = cards.find((x) => x.key === key);
+    if (c?.owned && !c.active) { buying.current = null; const id = requestAnimationFrame(() => { setCheckout(null); setPay(null); toast.success(`Pagamento confirmado! Instalando o tema ${c.name}…`); void install(c); }); return () => cancelAnimationFrame(id); }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cards, returning?.key]);
+  // Veio da página pública de temas (?ver=tema): abre a prévia com os produtos da loja, uma única vez.
+  const autoOpened = React.useRef(false);
+  React.useEffect(() => {
+    if (!autoPreview) return; const c = cards.find((x) => x.key === autoPreview); if (!c) return;
+    const id = requestAnimationFrame(() => { if (autoOpened.current) return; autoOpened.current = true; void openPreview(c); }); return () => cancelAnimationFrame(id);
+  }, [autoPreview, cards]);
 
   const action = (c: ThemeCard, size: "sm" | "md" = "md") => {
     if (c.active) return <span className="inline-flex h-9 items-center gap-1.5 rounded-md bg-success-soft px-3 text-sm font-medium text-success"><Check className="size-4" aria-hidden /> Tema ativo</span>;

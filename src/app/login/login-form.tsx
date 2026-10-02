@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { loginAction } from "@/app/actions/auth";
 
-export function LoginForm() {
+export function LoginForm({ voltar }: { voltar?: string }) {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -20,7 +20,7 @@ export function LoginForm() {
         setError(null);
         start(async () => {
           const r = await loginAction({ email, password });
-          if (r.ok) { toast.success("Bem-vindo!"); router.push(r.data.redirectTo); router.refresh(); } else setError(r.error);
+          if (r.ok) { toast.success("Bem-vindo!"); router.push(voltar && r.data.redirectTo.startsWith("/merchant") ? voltar : r.data.redirectTo); router.refresh(); } else setError(r.error);
         });
       }}
     >

@@ -193,7 +193,7 @@ describe("vídeo, data e hora", () => {
 });
 
 describe("seções dos temas pagos", () => {
-  const THEME_KEYS = ["arena", "editorial", "signature"];
+  const THEME_KEYS = ["aurora", "arena", "editorial", "signature"];
   it("só referenciam temas que existem", () => { for (const s of SECTION_SCHEMAS) for (const t of s.themes ?? []) expect(THEME_KEYS, `${s.type}: ${t}`).toContain(t); });
   it("as seções novas são exclusivas dos temas pagos e a base continua livre", () => {
     for (const type of ["image-hero", "slideshow", "video-hero", "category-grid", "image-with-text", "testimonials", "faq", "lookbook", "countdown", "cta-banner", "product-tabs", "header-plus"]) expect(sectionSchema(type)!.themes?.length, type).toBeGreaterThan(0);

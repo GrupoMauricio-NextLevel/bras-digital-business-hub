@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const sf = await getStorefront(slug);
-  if (!sf || !sf.store.publishedAt) return new Response("User-agent: *\nDisallow: /\n", { headers: { "content-type": "text/plain; charset=utf-8" } });
+  if (!sf || !sf.store.publishedAt || sf.store.showcaseTheme) return new Response("User-agent: *\nDisallow: /\n", { headers: { "content-type": "text/plain; charset=utf-8" } });
   const o = await storeOrigin(sf.store);
   const base = new URL(o).pathname.replace(/\/$/, "");
   const body = ["User-agent: *", "Allow: /", `Disallow: ${base}/cart`, `Disallow: ${base}/checkout`, `Disallow: ${base}/order/`, `Disallow: ${base}/proposta/`, `Disallow: ${base}/acompanhar`, "", `Sitemap: ${o}/sitemap.xml`, ""].join("\n");

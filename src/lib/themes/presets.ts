@@ -3,7 +3,7 @@ import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
 import type { PageKind, SettingValue, Template, ThemeGlobals, ThemeStyle } from "./types";
 
 /** Dados da loja que os temas usam para nascer já com o nome, as cores e os textos dela. */
-export type PresetContext = { storeName: string; tagline: string | null; primary: string; accent: string; announcement: string; footerText: string; hero?: { title: string; subtitle: string; ctaLabel: string }; now: Date };
+export type PresetContext = { storeName: string; tagline: string | null; primary: string; accent: string; announcement: string; footerText: string; hero?: { title: string; subtitle: string; ctaLabel: string }; /** Fotos opcionais (lojas de demonstração); clientes colocam as próprias pelo editor. */ images?: { hero?: string; about?: string }; now: Date };
 export type ThemePreset = { style: ThemeStyle; globals: ThemeGlobals; pages: Record<PageKind, Template> };
 
 type Item = [string, SectionSpec];
@@ -37,6 +37,31 @@ function starter(c: PresetContext): ThemePreset {
       [["product", { type: "product-main", settings: { gallery: "thumbs" } }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
       [["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]],
       [["cart", { type: "cart-main" }]],
+    ),
+  };
+}
+
+function aurora(c: PresetContext): ThemePreset {
+  const style = normalizeStyle({ primary: "#1f2a44", accent: "#be185d", headingFont: "display", bodyFont: "moderna", radius: 14, buttons: "solid", quickView: true, animations: false });
+  const help = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento pelo WhatsApp para escolher o tamanho e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
+  return {
+    style,
+    globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
+    pages: pages(
+      [
+        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? `Novidades na ${c.storeName}`, text: c.hero?.subtitle ?? "Peças escolhidas com carinho, com envio para todo o Brasil.", ctaLabel: c.hero?.ctaLabel ?? "Ver novidades", height: "lg", overlay: 35, align: "left", fullWidth: true } }],
+        ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
+        ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: "circles" } }],
+        ["featured", { type: "product-showcase", settings: { title: "Escolhidos para você", subtitle: "Os destaques da loja", source: "featured", count: 4 } }],
+        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte em poucas linhas o que torna a sua loja especial.", ctaLabel: "Conhecer o catálogo", ratio: "square" } }],
+        ["latest", { type: "product-showcase", settings: { title: "Acabaram de chegar", subtitle: "", source: "latest", count: 4 } }],
+        ["faq", { type: "faq", blocks: blocksOf("faq") }],
+        help(),
+        ["grid", { type: "product-grid" }],
+      ],
+      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true, shippingNote: "Envio para todo o Brasil · etiqueta em até 1 dia útil após a confirmação" } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
+      [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], help()],
+      [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
     ),
   };
 }
@@ -119,6 +144,6 @@ function signature(c: PresetContext): ThemePreset {
   };
 }
 
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, arena, editorial, signature };
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, aurora, arena, editorial, signature };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }

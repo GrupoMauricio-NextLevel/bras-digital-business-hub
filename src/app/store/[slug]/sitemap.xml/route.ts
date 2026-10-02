@@ -8,7 +8,7 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const sf = await getStorefront(slug);
-  if (!sf || !sf.store.publishedAt) return new Response("Não encontrado", { status: 404 });
+  if (!sf || !sf.store.publishedAt || sf.store.showcaseTheme) return new Response("Não encontrado", { status: 404 });
   const o = await storeOrigin(sf.store);
   const products = await getStorefrontCatalog(sf.store.id);
   const urls = [o, `${o}/catalog`, ...products.map((c) => `${o}/product/${c.product.slug}`)];

@@ -20,10 +20,12 @@ const ROLE_META = {
 
 const AREA: Record<string, string> = { fornecedor: "painel do fornecedor", loja: "painel da loja", afiliado: "painel do afiliado" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ area?: string; nome?: string; conta?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ area?: string; nome?: string; conta?: string; voltar?: string }> }) {
   const sp = await searchParams;
   const session = await getSession();
-  if (session) redirect(homeFor(session.user.role));
+  // Retorno só para a vitrine de temas do lojista (endereço fixo, nada de redirecionamento aberto).
+  const voltar = sp.voltar && /^\/merchant\/templates(\?ver=[a-z0-9-]{1,30})?$/.test(sp.voltar) ? sp.voltar : undefined;
+  if (session) redirect(voltar && session.user.role === "STORE_OWNER" ? voltar : homeFor(session.user.role));
   if (sp.area === "afiliado") redirect("/parceiros/entrar");
   const brand = await getBrand();
   const demo = isDemoMode();
@@ -64,7 +66,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       {sp.conta === "criada" ? <p role="status" className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">Conta criada! Entre com o e-mail e a senha que você cadastrou.</p> : null}
       {sp.area && AREA[sp.area] ? <p className="mt-3 rounded-lg bg-neutral-100 px-3 py-2 text-sm text-neutral-800">Entrar no {AREA[sp.area]}{sp.nome && /^[a-z0-9-]+$/.test(sp.nome) ? ` · ${sp.nome}` : ""}.</p> : null}
       <p className="mt-2 text-sm text-neutral-600">Use o e-mail e a senha do seu cadastro ou do convite.</p>
-      <div className="mt-6"><LoginForm /></div>
+      <div className="mt-6"><LoginForm voltar={voltar} /></div>
       <div className="mt-6 space-y-2 border-t border-neutral-200 pt-5 text-sm text-neutral-700">
         <p>{brand.signupOpen ? "Ainda não tem uma loja? " : "Quer uma loja? "}<Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className="font-semibold text-neutral-950 underline underline-offset-2">{brand.signupOpen ? "Criar agora" : "Falar com a gente"}</Link></p>
         {brand.modules.includes("partners") ? <p>É parceiro? <Link href="/parceiros/entrar" className="font-semibold text-neutral-950 underline underline-offset-2">Entrar como parceiro</Link></p> : null}

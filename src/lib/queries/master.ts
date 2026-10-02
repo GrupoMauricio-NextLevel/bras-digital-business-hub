@@ -1,4 +1,4 @@
-import { and, count, desc, eq, ne, sum } from "drizzle-orm";
+import { and, count, desc, eq, isNull, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { financeOverview, periodOf } from "@/lib/domain/finance";
 import { supplierContracts } from "@/db/schema";
@@ -7,7 +7,7 @@ import { activities, invoices, networks, orders, organizations, plans, products,
 export async function getPlatformOverview() {
   const db = (await getDb());
   const [supplierCount] = await db.select({ n: count() }).from(suppliers).where(eq(suppliers.hidden, false));
-  const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).groupBy(stores.status);
+  const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).where(isNull(stores.showcaseTheme)).groupBy(stores.status);
   const [orderStats] = await db.select({ n: count(), gmv: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED"));
   const fin = await financeOverview(db, periodOf(new Date()));
   const recent = await db.select().from(activities).orderBy(desc(activities.createdAt)).limit(10);
@@ -64,7 +64,7 @@ export async function listStoresWithPlan(filter: { q?: string; status?: string; 
     .innerJoin(suppliers, eq(suppliers.id, networks.supplierId))
     .leftJoin(subscriptions, eq(subscriptions.storeId, stores.id))
     .leftJoin(plans, eq(plans.id, subscriptions.planId))
-    .where(and(filter.status ? eq(stores.status, filter.status as "ACTIVE") : undefined, filter.offer ? eq(stores.offer, filter.offer as "DROP_MANUAL") : undefined, filter.marca ? eq(organizations.brand, filter.marca as "SUPERDROP") : undefined))
+    .where(and(isNull(stores.showcaseTheme), filter.status ? eq(stores.status, filter.status as "ACTIVE") : undefined, filter.offer ? eq(stores.offer, filter.offer as "DROP_MANUAL") : undefined, filter.marca ? eq(organizations.brand, filter.marca as "SUPERDROP") : undefined))
     .orderBy(stores.name);
   const orderCounts = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.storeId);
   const q = filter.q?.toLowerCase();

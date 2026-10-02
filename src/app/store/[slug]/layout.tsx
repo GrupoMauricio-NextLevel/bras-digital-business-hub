@@ -6,6 +6,7 @@ import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
+import { THEME_BY_KEY } from "@/lib/themes/catalog";
 import { resolveGlobals } from "@/lib/themes/store";
 import { tryingTheme } from "@/lib/themes/try";
 import { fontStack } from "@/lib/ds/fonts";
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const sf = await getStorefront(slug);
   if (!sf) return { title: "Loja" };
+  if (sf.store.showcaseTheme) return { title: { default: `Demonstração do tema ${THEME_BY_KEY[sf.store.showcaseTheme]?.name ?? ""}`.trim(), template: "%s · Demonstração" }, robots: { index: false, follow: false } };
   const origin = await storeOrigin(sf.store);
   const description = shortDescription(sf.settings.heroSubtitle || sf.store.tagline, `Loja virtual ${sf.store.name}.`);
   // Páginas internas definem "title" próprio e herdam o nome da loja pelo modelo.
@@ -36,7 +38,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const session = await getSession();
-  const previewing = !sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store);
+  const showcase = sf.store.showcaseTheme ? THEME_BY_KEY[sf.store.showcaseTheme] ?? null : null;
+  const previewing = !showcase && (!sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store));
   if (previewing && !session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 p-6 text-center">
@@ -64,6 +67,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
   return (
     <div style={vars} data-buttons={st.buttons} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
+      {showcase ? <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-neutral-900 px-4 py-2 text-center text-xs text-white" data-showcase-banner><span>Loja de demonstração do tema <b>{showcase.name}</b> · produtos de exemplo, nada aqui é vendido.</span><a href={`/temas/${showcase.key}`} target="_top" className="rounded bg-white px-2.5 py-1 font-semibold text-neutral-900">{showcase.released === false ? "Ver detalhes do tema" : "Quero este tema"}</a></div> : null}
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: esta loja não está publicada. Apenas você a vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
       {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
       {trial ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900" data-try-banner>Testando o tema <b>{trial.name}</b> com os seus produtos. Nada foi instalado. <form action={exitTryThemeAction} className="inline"><button className="underline">Sair do teste</button></form></div> : null}
@@ -72,7 +76,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
           {campaign.linkUrl && isSafeLink(campaign.linkUrl) ? <Link href={campaign.linkUrl} className="underline-offset-2 hover:underline">{campaign.text}</Link> : campaign.text}
         </div>
       ) : null}
-      {!previewing ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(orgLd) }} /> : null}
+      {!previewing && !showcase ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(orgLd) }} /> : null}
       {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />

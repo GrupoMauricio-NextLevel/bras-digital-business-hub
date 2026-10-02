@@ -23,11 +23,11 @@ const pay = async (invoiceId: string) => { const inv = await markInvoicePaid(ctx
 const ctxp: PresetContext = { storeName: "Loja Teste", tagline: "Slogan da loja", primary: "#0f172a", accent: "#16a34a", announcement: "", footerText: "", now: new Date("2026-05-10T12:00:00Z") };
 
 describe("catálogo de temas", () => {
-  it("tem os quatro temas com os preços do dono", () => {
-    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["arena", 29900], ["editorial", 69900], ["signature", 149900]]);
+  it("tem os temas com os preços definidos (Aurora é proposta, em aprovação)", () => {
+    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["aurora", 14900], ["arena", 29900], ["editorial", 69900], ["signature", 149900]]);
   });
   it("a semente já traz o catálogo novo e sincronizar de novo não muda nada", async () => {
-    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "editorial", "signature", "starter"]); expect(rows.every((r) => r.available)).toBe(true);
+    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "aurora", "editorial", "signature", "starter"]); expect(rows.filter((r) => !r.available).map((r) => r.key)).toEqual(["aurora"]);
     expect(await syncThemeCatalog(ctx.db)).toEqual([]);
   });
   it("converte os temas antigos (pro e elite) mantendo o id das lojas ligadas", async () => {
