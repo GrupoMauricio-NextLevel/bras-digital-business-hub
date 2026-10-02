@@ -57,7 +57,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
     NEXTLEVEL_COMMERCE: {
       code: "NEXTLEVEL_COMMERCE", name: "NextLevel Commerce", live: true,
       tagline: "A loja virtual feita para quem vende moda no Brasil",
-      description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado, influenciadores e live shop.",
+      description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado.",
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["lojas.nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),

@@ -8,7 +8,7 @@ const FAQ_COMMERCE = [
   { q: "Como abro a minha loja?", a: "Deixe seus dados em \"Quero minha loja\". A equipe fala com você pelo WhatsApp, importa os seus produtos por planilha, escolhe o tema com você e publica a loja." },
   { q: "Como recebo dos clientes?", a: "Pelo Mercado Pago, com Pix como padrão e cartão em até 6x. O pagamento é conferido automaticamente." },
   { q: "Posso ter meu domínio e minha marca?", a: "Sim, no plano de loja própria você usa o seu domínio, sua logo e suas cores." },
-  { q: "E o atacado, influenciadores e live?", a: "Estão em construção e chegam em etapas. Quem entra agora acompanha a evolução e ajuda a priorizar." },
+  { q: "E o atacado?", a: "Está em construção e chega em etapas. Quem entra agora acompanha a evolução e ajuda a priorizar." },
 ];
 
 export const metadata: Metadata = { title: "Perguntas frequentes" };

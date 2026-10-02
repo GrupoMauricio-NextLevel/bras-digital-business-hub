@@ -137,7 +137,7 @@ Reaproveita `product_packs`, `saleType WHOLESALE`, pedidos e importação. Const
 - **Painel do atacadista** (histórico, segunda via, reposição).
 **Aceite:** uma loja do Brás vende no varejo e no atacado no mesmo catálogo, com preço por faixa, mínimo, aprovação de cliente e pedido por planilha, sem quebrar o varejo.
 
-### 5.4 Influenciadores — onda 2
+### 5.4 Influenciadores — ADIADO (D42)
 Reaproveita `partners` (links, cupons, livro-razão, garantia, saque, antifraude) e eventos de pedido. Construir:
 - **Papel `INFLUENCER`** e cadastro com perfil (redes, nicho, audiência) e termos versionados.
 - **Programa por loja:** o lojista convida influenciadores, define **comissão por venda** (percentual e regras por categoria), prazo de garantia e cupom; o influenciador pode ter **vitrine própria** (`/i/<nome>` com seleção de produtos e link rastreável).
@@ -146,7 +146,7 @@ Reaproveita `partners` (links, cupons, livro-razão, garantia, saque, antifraude
 - **Antifraude e conformidade:** autoindicação, cupons vazados, taxa de estorno; contrato simples e emissão de RPA/nota (fora de escopo automático, com orientação).
 **Aceite:** o lojista convida um influenciador, este vende com cupom e link, a comissão nasce em garantia, vira disponível e é sacada; estorno desfaz.
 
-### 5.5 Feed e Live Shop — onda 3
+### 5.5 Feed e Live Shop — ADIADO (D42)
 Novo módulo, sem equivalente hoje. Construir:
 - **Feed de compra:** rolagem vertical de vídeos curtos e fotos com produtos marcados, "comprar" direto para o carrinho, curtir e salvar, seção de tema que exibe o feed da loja e um **feed da plataforma** (descoberta entre lojas, com regras de curadoria).
 - **Live:** agendamento e página da live, produtos fixados durante a transmissão, compra dentro da live, chat com moderação, replay com produtos, notificação aos inscritos (com consentimento).

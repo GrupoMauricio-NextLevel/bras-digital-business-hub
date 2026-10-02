@@ -50,7 +50,7 @@
 **Testes:** prioridade de preço em todos os casos-limite; mínimos; caixa fechada; aprovação; visitante não vê preço; concorrência de estoque em pedido grande; isolamento entre lojas.
 **Aceite:** uma loja vende no varejo e no atacado no mesmo catálogo, com preço por faixa, mínimo, aprovação de cliente, pedido por planilha e faturado aprovado, sem quebrar o varejo. Só então o portal troca "Em breve" por disponível.
 
-### P3 — Influenciadores (módulo `influencers`), sobre o programa de parceiros
+### P3 — Influenciadores (ADIADO, D42: não desenvolver agora) (módulo `influencers`), sobre o programa de parceiros
 **Reuso máximo:** `partners`, `partner_links`, `partner_clicks`, `partner_commissions` (livro-razão imutável), `partner_payouts`, antifraude, `coupons`, cookie `nl-ref`, `runDailyPartnerJobs`.
 **Modelo:**
 - `partners.kind` ganha `INFLUENCER` (enum extensível já previsto); `partners.profile` JSON (redes, nicho, audiência).
@@ -62,7 +62,7 @@
 **Testes:** atribuição (cupom > link > nenhum), comissão sobre valor pago sem frete, estorno desfaz, garantia e saque, faixa mín/máx, isolamento (um lojista não vê influenciadores de outro), autoindicação, idempotência.
 **Aceite:** o lojista convida um influenciador, este vende com cupom e link, a comissão nasce em garantia, vira disponível e é sacada; o estorno desfaz.
 
-### P4 — Feed e Live Shop (módulo `liveShop`)
+### P4 — Feed e Live Shop (ADIADO, D42: não desenvolver agora) (módulo `liveShop`)
 **Reuso:** motor de seções de tema, `store_assets`, `store_customers`, checkout, `domain_events`, `influencers` (P3), e-mail (E-plataforma).
 **Interface `VideoProvider`** (`src/lib/video/`): `createUpload()`, `getAsset(id)`, `createLiveStream()`, `endLive()`, `signPlaybackUrl()`; primeira implementação escolhida por custo (Mux, Cloudflare Stream ou Bunny Stream: **decidir e registrar em D34+ com estimativa de custo por minuto**); implementação simulada para testes.
 **Modelo:** `videos` (`storeId`, `providerAssetId`, `status`, `durationMs`, `posterUrl`, `caption`, `published`, `sortOrder`), `video_products` (produtos marcados, com tempo opcional), `lives` (`storeId`, `title`, `scheduledAt`, `status: SCHEDULED|LIVE|ENDED|CANCELED`, `providerStreamId`, `chatEnabled`, `replayVideoId`), `live_pins` (produto fixado no tempo), `live_messages` (chat com moderação), `live_subscriptions` (aviso ao inscrito, com consentimento), `video_reports` (denúncias).

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, BarChart3, CreditCard, Globe, Layers, Mail, MessagesSquare, Palette, PlayCircle, ShoppingBag, Sparkles, Store, Users } from "lucide-react";
+import { BadgeCheck, BarChart3, CreditCard, Globe, Layers, Mail, MessagesSquare, Palette, ShoppingBag, Sparkles, Store } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { Reveal } from "@/components/portal/reveal";
@@ -22,9 +22,7 @@ const TODAY = [
 /** O que vem por aí: sempre marcado como "em breve", nunca como pronto. */
 const SOON = [
   { i: Layers, t: "Atacado de verdade", d: "Preço por faixa de quantidade, pedido mínimo, grade por cor e tamanho e cadastro de cliente atacadista com aprovação." },
-  { i: Users, t: "Programa de influenciadores", d: "Convide influenciadores, cada um com link, cupom e comissão sobre as vendas que gerar." },
-  { i: PlayCircle, t: "Feed e live shop", d: "Vídeos curtos com produto marcado e lives com compra dentro da transmissão." },
-  { i: Sparkles, t: "Temas de nível internacional", d: "Novas seções, animações sóbrias, desempenho medido e temas de designers parceiros." },
+    { i: Sparkles, t: "Temas de nível internacional", d: "Novas seções, animações sóbrias, desempenho medido e temas de designers parceiros." },
 ];
 
 const STEPS = [

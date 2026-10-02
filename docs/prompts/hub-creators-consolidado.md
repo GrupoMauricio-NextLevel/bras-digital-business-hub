@@ -1,3 +1,5 @@
+> **ADIADO (D42, 2026-10-02):** o dono tirou influenciadores, creators, feed e live da fila ativa. Documento preservado para a etapa futura; não desenvolver agora.
+
 # Hub Creators: projeto único e consolidado (prompt-mestre)
 
 > **Status: PROPOSTA PARA O DONO AVALIAR. Nada foi implementado.** Consolida em um só projeto o que estava espalhado em `creator-commerce-plataforma.md` (arquitetura de plataforma independente), `creator-hub-tiktok.md` (rastreio, atribuição, comissões, amostras, TikTok), `promessas-commerce.md` P3 (influenciadores) e P4 (feed e live), `nextlevel-commerce-plataforma.md` seções 5.4 e 5.5, e `pesquisa-tiktok-shop-integracao.md`. **Este arquivo passa a ser a fonte única do Hub Creators**; os outros viram referência de detalhe. Decisão do dono: influenciadores, lives e creators vivem **todos** no Hub Creators (domínio `hubcreators.nextlevelgroup.com.br`, marca `HUB_CREATORS` já existente em `src/lib/brand.ts`), fora do Commerce. Etapa futura (D40): só vai ao ar com código desenvolvido.
