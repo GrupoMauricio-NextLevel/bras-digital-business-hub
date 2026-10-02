@@ -5,7 +5,7 @@ import { activities, orderEvents, orders, stores, suppliers, walletAccounts, wal
 import { newId } from "@/lib/ids";
 import { decryptSecret } from "@/lib/security/crypto";
 import { createPixPayment, getPayment, MercadoPagoError, type FetchLike } from "@/lib/payments/mercadopago";
-import { assertCanAccess, isMaster, type Actor } from "./access";
+import { assertCanAccess, hasAreaRole, requireStoreId, requireSupplierId, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { cancelOrderBySystem } from "./orders";
 import { resolveFulfillmentStatus } from "./order-status";
@@ -85,13 +85,50 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
 
 /** Depois de um crédito: debita os pedidos que esperam saldo, do mais antigo para o mais novo (FIFO estrito). */
 export async function settleAwaitingOrders(tx: Tx, storeId: string): Promise<number> {
-  const waiting = await tx.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING"))).orderBy(asc(orders.awaitingFundsSince), asc(orders.createdAt));
+  const waiting = await tx.select({ id: orders.id }).from(orders).where(and(
+    eq(orders.storeId, storeId),
+    eq(orders.sourceArea, "SUPERDROP"),
+    eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+    eq(orders.centralPaymentStatus, "PENDING"),
+  )).orderBy(asc(orders.awaitingFundsSince), asc(orders.createdAt));
   let n = 0;
   for (const w of waiting) {
     if ((await tryDebitOrder(tx, w.id)) !== "DEBITED") break;
     n++;
   }
   return n;
+}
+
+/** Devolve à carteira o custo já debitado quando um pedido SuperDrop é cancelado antes do envio. Idempotente. */
+export async function refundOrderDebit(tx: Tx, orderId: string, actorUserId?: string): Promise<"REFUNDED" | "SKIPPED"> {
+  const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+  if (!order || order.sourceArea !== "SUPERDROP" || order.centralPaymentStatus !== "PAID") return "SKIPPED";
+
+  const existing = await tx.query.walletEntries.findFirst({
+    where: and(eq(walletEntries.orderId, orderId), eq(walletEntries.type, "ORDER_REFUND")),
+  });
+  if (existing) return "SKIPPED";
+
+  await post(tx, order.storeId, {
+    type: "ORDER_REFUND",
+    amountCents: order.costTotalCents,
+    orderId,
+    note: `Estorno do custo do pedido #${order.number}`,
+    actorUserId,
+  });
+  await tx.update(orders).set({
+    centralPaymentStatus: "PENDING",
+    centralPaidAt: null,
+    updatedAt: new Date().toISOString(),
+  }).where(eq(orders.id, orderId));
+  await tx.insert(orderEvents).values({
+    id: newId("evt"),
+    orderId,
+    type: "CENTRAL_REFUNDED",
+    message: "Custo devolvido ao saldo após cancelamento.",
+    actorRole: actorUserId ? "USER" : "SYSTEM",
+  });
+  return "REFUNDED";
 }
 
 // ---------------------------------------------------------------------------
@@ -118,7 +155,7 @@ const manualSchema = z.object({ amountCents: z.number().int().positive().max(MAX
 
 /** Crédito manual auditado (ADM do fornecedor da loja ou master). Substitui o antigo "confirmar pagamento". */
 export async function manualCredit(db: Database, actor: Actor, storeId: string, raw: z.input<typeof manualSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" && !isMaster(actor)) throw new ForbiddenError();
+  if (!hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN") && !hasAreaRole(actor, "SUPERDROP", "PLATFORM_ADMIN")) throw new ForbiddenError();
   const input = manualSchema.parse(raw);
   const store = await loadStore(db, storeId);
   assertCanAccess(actor, { storeId, supplierId: store.supplierId });
@@ -131,7 +168,7 @@ export async function manualCredit(db: Database, actor: Actor, storeId: string, 
 
 /** Débito manual auditado (correções). Nunca deixa o saldo negativo. */
 export async function manualDebit(db: Database, actor: Actor, storeId: string, raw: z.input<typeof manualSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" && !isMaster(actor)) throw new ForbiddenError();
+  if (!hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN") && !hasAreaRole(actor, "SUPERDROP", "PLATFORM_ADMIN")) throw new ForbiddenError();
   const input = manualSchema.parse(raw);
   const store = await loadStore(db, storeId);
   assertCanAccess(actor, { storeId, supplierId: store.supplierId });
@@ -142,7 +179,8 @@ export async function manualDebit(db: Database, actor: Actor, storeId: string, r
 // Recarga Pix (conta Mercado Pago do fornecedor)
 // ---------------------------------------------------------------------------
 export async function createRecharge(db: Database, actor: Actor, storeId: string, amountCents: number, opts: { notificationBaseUrl?: string; fetchImpl?: FetchLike; payerEmail?: string } = {}) {
-  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Recarga disponível apenas para o lojista.");
+  const ownedStoreId = requireStoreId(actor);
+  if (ownedStoreId !== storeId) throw new ForbiddenError("Recarga disponível apenas para sua loja.");
   const store = await loadStore(db, storeId);
   assertCanAccess(actor, { storeId, supplierId: store.supplierId });
   if (!Number.isInteger(amountCents) || amountCents < MIN_RECHARGE_CENTS || amountCents > MAX_RECHARGE_CENTS) throw new DomainError("INVALID_AMOUNT", "Informe um valor entre R$ 10,00 e R$ 50.000,00.");
@@ -163,7 +201,8 @@ export async function createRecharge(db: Database, actor: Actor, storeId: string
 
 /** Demonstração (sem token do fornecedor): gera um Pix fictício que só é "pago" pelo botão de simulação. */
 export async function createDemoRecharge(db: Database, actor: Actor, storeId: string, amountCents: number) {
-  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Recarga disponível apenas para o lojista.");
+  const ownedStoreId = requireStoreId(actor);
+  if (ownedStoreId !== storeId) throw new ForbiddenError("Recarga disponível apenas para sua loja.");
   const store = await loadStore(db, storeId);
   assertCanAccess(actor, { storeId, supplierId: store.supplierId });
   if (!Number.isInteger(amountCents) || amountCents < MIN_RECHARGE_CENTS || amountCents > MAX_RECHARGE_CENTS) throw new DomainError("INVALID_AMOUNT", "Informe um valor entre R$ 10,00 e R$ 50.000,00.");
@@ -206,7 +245,12 @@ export async function listRecharges(db: Database, actor: Actor, storeId: string,
 // ---------------------------------------------------------------------------
 export async function expireUnfundedOrders(db: Database, now = new Date()): Promise<{ canceled: number }> {
   const limit = new Date(now.getTime() - AWAITING_FUNDS_HOURS * 3_600_000).toISOString();
-  const stale = await db.select().from(orders).where(and(eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING"), lt(orders.awaitingFundsSince, limit)));
+  const stale = await db.select().from(orders).where(and(
+    eq(orders.sourceArea, "SUPERDROP"),
+    eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+    eq(orders.centralPaymentStatus, "PENDING"),
+    lt(orders.awaitingFundsSince, limit),
+  ));
   for (const o of stale) {
     await cancelOrderBySystem(db, o.id, `sem recarga de saldo em ${AWAITING_FUNDS_HOURS}h. Cliente já pagou: estornar no Mercado Pago da loja.`);
     await db.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: o.supplierId, storeId: o.storeId, type: "FUNDS_EXPIRED", message: `Pedido #${o.number} cancelado por falta de saldo. Estorne o cliente.` });
@@ -216,15 +260,20 @@ export async function expireUnfundedOrders(db: Database, now = new Date()): Prom
 
 /** Visão do fornecedor sobre as carteiras dos lojistas da rede: saldo, pedidos aguardando e última recarga. */
 export async function walletOverviewForSupplier(db: Database, actor: Actor) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
-  const rows = await db.select({ store: stores }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, actor.supplierId));
+  const supplierId = requireSupplierId(actor);
+  const rows = await db.select({ store: stores }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId));
   const out = [];
   for (const { store } of rows) {
     const balance = await getBalanceCents(db, store.id);
-    const waiting = await db.select({ cost: orders.costTotalCents }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING")));
+    const waiting = await db.select({ cost: orders.costTotalCents }).from(orders).where(and(
+      eq(orders.storeId, store.id),
+      eq(orders.sourceArea, "SUPERDROP"),
+      eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+      eq(orders.centralPaymentStatus, "PENDING"),
+    ));
     const last = await db.select().from(walletRecharges).where(and(eq(walletRecharges.storeId, store.id), eq(walletRecharges.status, "PAID"))).orderBy(desc(walletRecharges.paidAt)).limit(1);
     out.push({ storeId: store.id, name: store.name, offer: store.offer, status: store.status, balanceCents: balance, awaitingOrders: waiting.length, awaitingCents: waiting.reduce((s, w) => s + w.cost, 0), lastRechargeAt: last[0]?.paidAt ?? null, lastRechargeCents: last[0]?.amountCents ?? null });
   }
-  const paid30 = await db.select({ n: walletRecharges.amountCents, at: walletRecharges.paidAt }).from(walletRecharges).where(and(eq(walletRecharges.supplierId, actor.supplierId), eq(walletRecharges.status, "PAID")));
+  const paid30 = await db.select({ n: walletRecharges.amountCents, at: walletRecharges.paidAt }).from(walletRecharges).where(and(eq(walletRecharges.supplierId, supplierId), eq(walletRecharges.status, "PAID")));
   return { stores: out.sort((a, b) => b.awaitingCents - a.awaitingCents || a.balanceCents - b.balanceCents), receivedCents: paid30.reduce((s, r) => s + r.n, 0), rechargeCount: paid30.length };
 }

@@ -1,10 +1,10 @@
 import { and, asc, count, desc, eq, gt, inArray, lt, max } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
+import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, userProductAccess, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { generateTemporaryPassword, hashPassword } from "@/lib/security/password";
-import { assertCanAccess, isSupplierSide, type Actor } from "./access";
+import { assertCanAccess, hasAreaRole, isSupplierSide, requireSupplierId, requireSupplierOperationalId, type Actor } from "./access";
 import { DEFAULT_CUTOFFS, cutoffStatus, localDate, validateOps, waveDateFor, type Ops } from "./cutoff";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
@@ -26,13 +26,13 @@ export async function getOps(db: Database, supplierId: string): Promise<Ops & { 
 const opsSchema = z.object({ timezone: z.string().min(3), cutoffs: z.object({ mon: z.string().nullable(), tue: z.string().nullable(), wed: z.string().nullable(), thu: z.string().nullable(), fri: z.string().nullable(), sat: z.string().nullable(), sun: z.string().nullable() }), holidays: z.array(z.string()).max(60) });
 
 export async function saveOps(db: Database, actor: Actor, raw: z.input<typeof opsSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor do fornecedor configura o corte.");
+  const supplierId = requireSupplierId(actor);
   const input = opsSchema.parse(raw);
   const err = validateOps(input as Ops);
   if (err) throw new DomainError("OPS_INVALID", err);
   const value = { timezone: input.timezone, cutoffs: input.cutoffs as Cutoffs, holidays: [...new Set(input.holidays)].sort() };
-  await db.insert(supplierOps).values({ supplierId: actor.supplierId, ...value }).onConflictDoUpdate({ target: supplierOps.supplierId, set: { ...value, updatedAt: new Date().toISOString() } });
-  await emitEvent(db, { type: "CUTOFF_CONFIGURED", supplierId: actor.supplierId, actorRole: actor.role });
+  await db.insert(supplierOps).values({ supplierId, ...value }).onConflictDoUpdate({ target: supplierOps.supplierId, set: { ...value, updatedAt: new Date().toISOString() } });
+  await emitEvent(db, { type: "CUTOFF_CONFIGURED", supplierId, actorRole: actor.role });
 }
 
 // ---------------------------------------------------------------------------
@@ -52,15 +52,14 @@ export const ESTEIRA_COLUMNS = ["AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "R
 export const DISPATCH_COLUMNS = ["READY_TO_PICK", "PICKING", "READY_TO_SHIP", "SHIPPED"] as const;
 
 export async function loadEsteira(db: Database, actor: Actor, now = new Date()) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
-  const supplierId = actor.supplierId;
+  const supplierId = requireSupplierOperationalId(actor);
   const ops = await getOps(db, supplierId);
   const cutoff = cutoffStatus(ops, now);
-  const dispatchOnly = actor.role === "SUPPLIER_DISPATCH";
+  const dispatchOnly = hasAreaRole(actor, "SUPERDROP", "OPERATOR") && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
   const statuses = (dispatchOnly ? DISPATCH_COLUMNS : ESTEIRA_COLUMNS) as readonly OrderStatus[];
   const dayStart = new Date(now.getTime() - 36 * 3_600_000).toISOString();
   const rows = await db.select({ o: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId))
-    .where(and(eq(orders.supplierId, supplierId), inArray(orders.status, [...statuses]))).orderBy(asc(orders.centralPaidAt), asc(orders.createdAt));
+    .where(and(eq(orders.supplierId, supplierId), eq(orders.sourceArea, "SUPERDROP"), inArray(orders.status, [...statuses]))).orderBy(asc(orders.centralPaidAt), asc(orders.createdAt));
   const relevant = rows.filter((r) => r.o.status !== "SHIPPED" || (r.o.updatedAt >= dayStart && localDate(new Date(r.o.updatedAt), ops.timezone) === cutoff.today));
   const ids = relevant.map((r) => r.o.id);
   const [items, labels, claims, waveRows, prints] = ids.length ? await Promise.all([
@@ -128,7 +127,7 @@ export async function releaseClaim(db: Database, actor: Actor, orderId: string) 
   if (!order) throw new NotFoundError("Pedido não encontrado.");
   assertCanAccess(actor, order);
   const cur = await db.query.orderClaims.findFirst({ where: eq(orderClaims.orderId, orderId) });
-  if (cur && cur.userId !== actor.userId && actor.role !== "SUPPLIER_ADMIN") throw new ForbiddenError("Só quem está separando (ou o gestor) libera o pedido.");
+  if (cur && cur.userId !== actor.userId && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")) throw new ForbiddenError("Só quem está separando (ou o gestor) libera o pedido.");
   await db.delete(orderClaims).where(eq(orderClaims.orderId, orderId));
 }
 
@@ -139,7 +138,7 @@ export async function dispatchAdvance(db: Database, actor: Actor, orderId: strin
   else {
     const cur = await db.query.orderClaims.findFirst({ where: eq(orderClaims.orderId, orderId) });
     const fresh = cur && new Date(cur.claimedAt).getTime() > now.getTime() - CLAIM_MINUTES * 60_000;
-    if (fresh && cur.userId !== actor.userId && actor.role !== "SUPPLIER_ADMIN") throw new DomainError("CLAIMED", `${cur.userName} está separando este pedido.`);
+    if (fresh && cur.userId !== actor.userId && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")) throw new DomainError("CLAIMED", `${cur.userName} está separando este pedido.`);
   }
   const r = await advanceOrder(db, actor, orderId, next);
   if (next !== "PICKING") await db.delete(orderClaims).where(eq(orderClaims.orderId, orderId));
@@ -153,9 +152,8 @@ const waveSchema = z.object({ orderIds: z.array(z.string()).max(200).optional(),
 
 /** Cria uma onda com pedidos prontos para separar (com etiqueta) que ainda não estão em outra onda. */
 export async function createWave(db: Database, actor: Actor, raw: z.input<typeof waveSchema>, now = new Date()) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
+  const supplierId = requireSupplierOperationalId(actor);
   const input = waveSchema.parse(raw);
-  const supplierId = actor.supplierId;
   const ops = await getOps(db, supplierId);
   const today = localDate(now, ops.timezone);
   return db.transaction(async (tx) => {
@@ -177,17 +175,17 @@ export async function createWave(db: Database, actor: Actor, raw: z.input<typeof
 }
 
 export async function loadWave(db: Database, actor: Actor, waveId: string) {
-  if (!isSupplierSide(actor)) throw new ForbiddenError();
+  const supplierId = requireSupplierOperationalId(actor);
   const wave = await db.query.pickWaves.findFirst({ where: eq(pickWaves.id, waveId) });
   if (!wave) throw new NotFoundError("Onda não encontrada.");
-  if (wave.supplierId !== actor.supplierId) throw new ForbiddenError();
+  if (wave.supplierId !== supplierId) throw new ForbiddenError();
   const links = await db.select({ orderId: pickWaveOrders.orderId }).from(pickWaveOrders).where(eq(pickWaveOrders.waveId, waveId));
   return { wave, orderIds: links.map((l) => l.orderId) };
 }
 
 export async function listWaves(db: Database, actor: Actor, limit = 20) {
-  if (!isSupplierSide(actor) || !actor.supplierId) throw new ForbiddenError();
-  const rows = await db.select({ wave: pickWaves, n: count(pickWaveOrders.orderId) }).from(pickWaves).leftJoin(pickWaveOrders, eq(pickWaveOrders.waveId, pickWaves.id)).where(eq(pickWaves.supplierId, actor.supplierId)).groupBy(pickWaves.id).orderBy(desc(pickWaves.number)).limit(limit);
+  const supplierId = requireSupplierOperationalId(actor);
+  const rows = await db.select({ wave: pickWaves, n: count(pickWaveOrders.orderId) }).from(pickWaves).leftJoin(pickWaveOrders, eq(pickWaveOrders.waveId, pickWaves.id)).where(eq(pickWaves.supplierId, supplierId)).groupBy(pickWaves.id).orderBy(desc(pickWaves.number)).limit(limit);
   return rows;
 }
 
@@ -233,34 +231,49 @@ export async function dispatchSeats(db: Database, supplierId: string, now = new 
 }
 
 export async function listTeam(db: Database, actor: Actor) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
-  return db.select({ id: users.id, name: users.name, email: users.email, role: users.role, lastLoginAt: users.lastLoginAt, mustChangePassword: users.mustChangePassword }).from(users).where(eq(users.supplierId, actor.supplierId)).orderBy(users.name);
+  const supplierId = requireSupplierId(actor);
+  return db.select({ id: users.id, name: users.name, email: users.email, role: users.role, lastLoginAt: users.lastLoginAt, mustChangePassword: users.mustChangePassword }).from(users).where(eq(users.supplierId, supplierId)).orderBy(users.name);
 }
 
 const memberSchema = z.object({ name: z.string().trim().min(2, "Informe o nome"), email: z.string().email("E-mail inválido") });
 
 /** Gestor cria um usuário de expedição com senha temporária (respeita o limite de assentos). */
 export async function createDispatchUser(db: Database, actor: Actor, raw: z.input<typeof memberSchema>) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError("Apenas o gestor cria usuários da equipe.");
+  const supplierId = requireSupplierId(actor);
   const input = memberSchema.parse(raw);
   const email = input.email.toLowerCase();
   if (await db.query.users.findFirst({ where: eq(users.email, email) })) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
-  const seats = await dispatchSeats(db, actor.supplierId);
+  const seats = await dispatchSeats(db, supplierId);
   if (seats.used >= seats.total) throw new DomainError("NO_SEATS", `Limite de ${seats.total} usuários de expedição atingido. Contrate um assento extra em Financeiro > Add-ons.`);
-  const supplier = await db.query.suppliers.findFirst({ where: eq(suppliers.id, actor.supplierId) });
+  const supplier = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) });
   if (!supplier) throw new NotFoundError("Fornecedor não encontrado.");
   const temporaryPassword = generateTemporaryPassword();
-  await db.insert(users).values({ id: newId("usr"), name: input.name, email, role: "SUPPLIER_DISPATCH", organizationId: supplier.organizationId, supplierId: supplier.id, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
-  await emitEvent(db, { type: "DISPATCH_USER_CREATED", supplierId: supplier.id, actorRole: actor.role });
+  const userId = newId("usr");
+  await db.transaction(async (tx) => {
+    await tx.insert(users).values({ id: userId, name: input.name, email, role: "SUPPLIER_DISPATCH", organizationId: supplier.organizationId, supplierId: supplier.id, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
+    await tx.insert(userProductAccess).values({
+      id: newId("upa"),
+      userId,
+      organizationId: supplier.organizationId,
+      area: "SUPERDROP",
+      role: "OPERATOR",
+      supplierId: supplier.id,
+      active: true,
+    });
+    await emitEvent(tx, { type: "DISPATCH_USER_CREATED", supplierId: supplier.id, actorRole: actor.role });
+  });
   return { email, temporaryPassword };
 }
 
 export async function removeDispatchUser(db: Database, actor: Actor, userId: string) {
-  if (actor.role !== "SUPPLIER_ADMIN" || !actor.supplierId) throw new ForbiddenError();
+  const supplierId = requireSupplierId(actor);
   const u = await db.query.users.findFirst({ where: eq(users.id, userId) });
-  if (!u || u.supplierId !== actor.supplierId || u.role !== "SUPPLIER_DISPATCH") throw new NotFoundError("Usuário não encontrado.");
-  await db.delete(orderClaims).where(eq(orderClaims.userId, userId));
-  await db.delete(users).where(eq(users.id, userId));
+  if (!u || u.supplierId !== supplierId || u.role !== "SUPPLIER_DISPATCH") throw new NotFoundError("Usuário não encontrado.");
+  await db.transaction(async (tx) => {
+    await tx.delete(orderClaims).where(eq(orderClaims.userId, userId));
+    await tx.delete(userProductAccess).where(eq(userProductAccess.userId, userId));
+    await tx.delete(users).where(eq(users.id, userId));
+  });
 }
 
 // ---------------------------------------------------------------------------

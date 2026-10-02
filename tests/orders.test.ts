@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { freshDb, customer } from "./setup";
-import { createOrder, registerShippingLabel, advanceOrder, cancelOrder, getOrderForActor } from "@/lib/domain/orders";
+import { createOrder, registerShippingLabel, advanceOrder, cancelOrder, getOrderForActor, listOrdersForActor } from "@/lib/domain/orders";
 import { getLevel } from "@/lib/domain/inventory";
 import { resolveFulfillmentStatus, canTransition } from "@/lib/domain/order-status";
+import { and, eq } from "drizzle-orm";
+import { orders, productChannels } from "@/db/schema";
+import type { Actor } from "@/lib/domain/access";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 const v = (i: number, size: string) => ctx.seed.variantsByProduct.get(ctx.seed.productIds[i]!)!.find((x) => x.size === size)!.id;
@@ -97,5 +100,52 @@ describe("pedido aparece para lojista e fornecedor corretos", () => {
     await expect(getOrderForActor(ctx.db, ctx.actors.supplier, r.orderId)).resolves.toBeTruthy();
     await expect(getOrderForActor(ctx.db, ctx.actors.master, r.orderId)).resolves.toBeTruthy();
     await expect(getOrderForActor(ctx.db, ctx.actors.arena, r.orderId)).rejects.toThrow(/não permitido/);
+  });
+});
+
+
+describe("SuperDrop — canais e grants", () => {
+  it("grava SUPERDROP como origem padrão do pedido", async () => {
+    const r = await createOrder(ctx.db, {
+      storeId: ctx.seed.stores.mantos.id,
+      customer,
+      items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "M"), quantity: 1 }],
+    });
+    const order = await ctx.db.query.orders.findFirst({ where: eq(orders.id, r.orderId) });
+    expect(order?.sourceArea).toBe("SUPERDROP");
+  });
+
+  it("não vende no SuperDrop produto cujo canal foi desativado", async () => {
+    const productId = ctx.seed.productIds[11]!;
+    await ctx.db.update(productChannels)
+      .set({ active: false })
+      .where(and(eq(productChannels.productId, productId), eq(productChannels.area, "SUPERDROP")));
+
+    await expect(createOrder(ctx.db, {
+      storeId: ctx.seed.stores.mantos.id,
+      customer,
+      items: [{ productId, variantId: v(11, "M"), quantity: 1 }],
+    })).rejects.toThrow(/não disponível/);
+  });
+
+  it("lista pedidos pelo grant MERCHANT_OWNER mesmo sem papel legado de lojista", async () => {
+    const actor: Actor = {
+      userId: "grant-user",
+      role: "NEXTLEVEL_MASTER",
+      organizationId: "org-grant",
+      supplierId: null,
+      storeId: null,
+      grants: [{
+        area: "SUPERDROP",
+        role: "MERCHANT_OWNER",
+        organizationId: "org-grant",
+        storeId: ctx.seed.stores.mantos.id,
+      }],
+    };
+
+    const rows = await listOrdersForActor(ctx.db, actor);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((row) => row.order.storeId === ctx.seed.stores.mantos.id)).toBe(true);
+    await expect(getOrderForActor(ctx.db, actor, rows[0]!.order.id)).resolves.toBeTruthy();
   });
 });

@@ -101,6 +101,40 @@ export const users = pgTable("users", {
   createdAt: createdAt(),
 });
 
+
+/**
+ * Produtos/verticais habilitados para uma organização.
+ * O Commerce Core é único; esta tabela apenas controla quais superfícies a organização utiliza.
+ */
+export const organizationProducts = pgTable("organization_products", {
+  organizationId: text("organization_id").notNull().references(() => organizations.id),
+  area: text("area", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB"] }).notNull(),
+  status: text("status", { enum: ["ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
+  config: jsonb("config").$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [primaryKey({ columns: [t.organizationId, t.area] })]);
+
+/**
+ * Grants multi-produto. users.role permanece temporariamente como compatibilidade
+ * até todas as telas migrarem para a autorização por área + papel.
+ */
+export const userProductAccess = pgTable("user_product_access", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  organizationId: text("organization_id").notNull().references(() => organizations.id),
+  area: text("area", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB"] }).notNull(),
+  role: text("role", { enum: ["PLATFORM_ADMIN", "VERTICAL_ADMIN", "SUPPLIER_ADMIN", "MERCHANT_OWNER", "CREATOR", "PARTNER", "OPERATOR", "VIEWER"] }).notNull(),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  storeId: text("store_id").references(() => stores.id),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+}, (t) => [
+  uniqueIndex("user_product_access_unique").on(t.userId, t.organizationId, t.area, t.role),
+  index("user_product_access_user_idx").on(t.userId),
+  index("user_product_access_org_idx").on(t.organizationId, t.area),
+]);
+
 // ---------------------------------------------------------------------------
 // Catálogo central
 // ---------------------------------------------------------------------------
@@ -170,6 +204,18 @@ export const productStoreAccess = pgTable("product_store_access", {
 }, (t) => [primaryKey({ columns: [t.productId, t.storeId] })]);
 
 /** Preço/ativação do produto na loja (não duplica estoque). */
+/**
+ * Um produto central pode ser distribuído em várias verticais sem duplicar SKU ou estoque.
+ */
+export const productChannels = pgTable("product_channels", {
+  productId: text("product_id").notNull().references(() => products.id),
+  area: text("area", { enum: ["SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB"] }).notNull(),
+  active: boolean("active").notNull().default(true),
+  config: jsonb("config").$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [primaryKey({ columns: [t.productId, t.area] })]);
+
 export const storeProducts = pgTable("store_products", {
   storeId: text("store_id").notNull().references(() => stores.id),
   productId: text("product_id").notNull().references(() => products.id),
@@ -243,6 +289,8 @@ export const orders = pgTable("orders", {
   supplierId: text("supplier_id").notNull().references(() => suppliers.id),
   storeCustomerId: text("store_customer_id").references(() => storeCustomers.id),
   channel: text("channel", { enum: ["ONLINE_STORE", "WHATSAPP", "INSTAGRAM", "MANUAL"] }).notNull().default("ONLINE_STORE"),
+  /** Vertical que originou o pedido; estoque e pedido continuam únicos no Commerce Core. */
+  sourceArea: text("source_area", { enum: ["SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB"] }).notNull().default("SUPERDROP"),
   saleType: text("sale_type", { enum: ["RETAIL", "WHOLESALE"] }).notNull().default("RETAIL"),
   status: text("status", { enum: ORDER_STATUSES }).notNull().default("PENDING"),
   customerPaymentStatus: text("customer_payment_status", { enum: ["PENDING", "PAID", "REFUNDED"] }).notNull().default("PENDING"),
@@ -743,6 +791,9 @@ export type ProductPack = typeof productPacks.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type OrganizationProduct = typeof organizationProducts.$inferSelect;
+export type UserProductAccess = typeof userProductAccess.$inferSelect;
+export type ProductChannel = typeof productChannels.$inferSelect;
 export type Theme = typeof themes.$inferSelect;
 export type Service = typeof services.$inferSelect;
 export type SupplierContract = typeof supplierContracts.$inferSelect;

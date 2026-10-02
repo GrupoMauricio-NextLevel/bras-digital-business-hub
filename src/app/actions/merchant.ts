@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
+import { activities, productChannels, productPacks, productStoreAccess, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
@@ -77,11 +77,30 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     const data = listingSchema.parse(input);
     const product = await db.query.products.findFirst({ where: eq(products.id, data.productId) });
     if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
+
+    const superdropChannel = await db.query.productChannels.findFirst({
+      where: and(
+        eq(productChannels.productId, product.id),
+        eq(productChannels.area, "SUPERDROP"),
+        eq(productChannels.active, true),
+      ),
+    });
+    if (!superdropChannel) throw new NotFoundError("Produto não está habilitado no SuperDrop.");
+
     if (product.distribution === "SELECTED_STORES") {
       const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
       if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
     }
     if (data.priceCents < product.minimumPriceCents) throw new DomainError("BELOW_MINIMUM", "Preço abaixo do mínimo definido pelo fornecedor.");
+
+    if (data.packPriceCents != null) {
+      const packs = await db.select().from(productPacks).where(eq(productPacks.productId, product.id));
+      const minimumPackPrice = packs.reduce((max, pack) => Math.max(max, pack.minimumPriceCents), 0);
+      if (minimumPackPrice > 0 && data.packPriceCents < minimumPackPrice) {
+        throw new DomainError("BELOW_PACK_MINIMUM", "Preço da grade abaixo do mínimo definido pelo fornecedor.");
+      }
+    }
+
     const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)) });
     const values = { active: data.active, priceCents: data.priceCents, packPriceCents: data.packPriceCents ?? null };
     if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)));

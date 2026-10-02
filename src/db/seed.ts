@@ -108,6 +108,7 @@ export async function seedDatabase(db: Database) {
       id: productId, supplierId, networkId, categoryId: catByName.get(p.category), name: p.name, slug: slugify(p.name), description: p.description, sku: p.sku,
       images: [`art:${p.art}`], costCents: p.cost, suggestedPriceCents: p.suggested, minimumPriceCents: p.minimum, distribution: p.distribution ?? "ALL_NETWORK", sellsUnit: true, sellsPack: !!p.pack, createdAt: iso(40 - i),
     });
+    await db.insert(s.productChannels).values({ productId, area: "SUPERDROP", active: true });
     const variants = SIZES.map((size, position) => ({ id: newId("var"), productId, size, sku: `${p.sku}-${size}`, position }));
     await db.insert(s.productVariants).values(variants);
     variantsByProduct.set(productId, variants);
