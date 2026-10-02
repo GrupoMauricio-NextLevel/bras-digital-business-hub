@@ -32,8 +32,9 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
-      { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
-      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede" },
+      { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Governança" },
+      { label: "Ecossistema", href: "/master/ecosystem", icon: "Network", group: "Governança" },
+      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede atual" },
       { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede" },
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
       { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede" },
@@ -44,6 +45,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio" },
     ],
     quick: [
+      { label: "Abrir ecossistema", href: "/master/ecosystem", icon: "Network" },
       { label: "Novo fornecedor", href: "/master/suppliers/new", icon: "Factory" },
       { label: "Fechar competência", href: "/master/finance?tab=invoices", icon: "Wallet" },
       { label: "Simulador de ganhos", href: "/master/finance?tab=simulator", icon: "BarChart3" },
