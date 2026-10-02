@@ -4,13 +4,13 @@ import { DataTable } from "@/components/app/data-table";
 import { EmptyState } from "@/components/app/empty-state";
 import { OrderStatusBadge } from "@/components/app/status-badge";
 import { LabelUploader } from "@/components/shared/label-uploader";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { labelQueue } from "@/lib/domain/after-sales";
 import { formatDateTime } from "@/lib/utils";
 
 export default async function LabelsPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const rows = await labelQueue(await getDb(), session.actor);
   return (
     <>
