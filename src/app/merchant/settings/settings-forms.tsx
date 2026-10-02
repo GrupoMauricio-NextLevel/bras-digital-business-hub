@@ -20,7 +20,7 @@ export function SettingsForms({ store }: { store: StoreData }) {
   const [mpKey, setMpKey] = React.useState("");
   const [ship, setShip] = React.useState("Melhor Envio");
   const [domain, setDomain] = React.useState(store.customDomain ?? "");
-  const integrate = (kind: "payments" | "shipping" | "domain", provider: string) => start(async () => { const r = await configureIntegrationAction({ kind, provider }); if (r.ok) { toast.success("Configuração salva (demonstração)"); router.refresh(); } else toast.error(r.error); });
+  const integrate = (kind: "payments" | "shipping" | "domain", provider: string) => start(async () => { const r = await configureIntegrationAction({ kind, provider }); if (r.ok) { toast.success(kind === "shipping" ? "Preferência de frete salva" : "Solicitação salva"); router.refresh(); } else toast.error(r.error); });
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -57,10 +57,10 @@ export function SettingsForms({ store }: { store: StoreData }) {
         </CardContent>
       </Card>
       <Card id="shipping">
-        <CardHeader><div className="flex items-center gap-2"><Truck className="size-4 text-muted-foreground" /><div><CardTitle>Frete e etiquetas</CardTitle><CardDescription>Você gera a etiqueta e informa à Central.</CardDescription></div></div><StatusBadge value={store.shippingStatus} /></CardHeader>
+        <CardHeader><div className="flex items-center gap-2"><Truck className="size-4 text-muted-foreground" /><div><CardTitle>Frete e etiquetas</CardTitle><CardDescription>Fluxo manual: gere a etiqueta na plataforma escolhida e anexe o PDF ao pedido.</CardDescription></div></div><StatusBadge value={store.shippingStatus} /></CardHeader>
         <CardContent className="space-y-3">
           <FormField label="Plataforma" htmlFor="ship"><Select id="ship" value={ship} onChange={(e) => setShip(e.target.value)}><option>Melhor Envio</option><option>SuperFrete</option></Select></FormField>
-          <Button variant="secondary" className="w-full" loading={pending} onClick={() => integrate("shipping", ship)}>{store.shippingStatus === "NOT_CONFIGURED" ? "Conectar (demonstração)" : `Reconfigurar (${store.shippingProvider})`}</Button>
+          <Button variant="secondary" className="w-full" loading={pending} onClick={() => integrate("shipping", ship)}>{store.shippingStatus === "NOT_CONFIGURED" ? "Salvar plataforma usada" : `Alterar plataforma (${store.shippingProvider})`}</Button>
         </CardContent>
       </Card>
       <Card id="domain" className="lg:col-span-2">
