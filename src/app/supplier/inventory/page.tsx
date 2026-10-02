@@ -3,13 +3,13 @@ import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { FilterBar, FilterChips, SearchInput } from "@/components/app/filter-bar";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getSupplierInventory } from "@/lib/queries/supplier";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default async function InventoryPage({ searchParams }: { searchParams: Promise<{ q?: string; level?: string }> }) {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const { q, level } = await searchParams;
   const all = await getSupplierInventory(session.supplier!.id);
   const rows = all.filter((r) => (!q || r.product.name.toLowerCase().includes(q.toLowerCase()) || r.variant.sku.toLowerCase().includes(q.toLowerCase())) && (!level || (level === "low" ? r.available < 5 : level === "reserved" ? r.reserved > 0 : true)));
