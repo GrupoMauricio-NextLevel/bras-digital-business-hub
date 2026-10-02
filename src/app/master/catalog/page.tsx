@@ -1,4 +1,6 @@
+import { Archive, Package, Tags } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { ProductArt } from "@/components/app/product-art";
@@ -8,9 +10,18 @@ import { Badge } from "@/components/ui/badge";
 
 export default async function CatalogPage() {
   const rows = await listAllProducts();
+  const active = rows.filter((r) => r.product.status === "ACTIVE").length;
+  const draft = rows.filter((r) => r.product.status === "DRAFT").length;
+  const suppliers = new Set(rows.map((r) => r.product.supplierId)).size;
   return (
     <>
       <PageHeader title="Catálogo central" description="Todos os produtos cadastrados pelos fornecedores da plataforma." />
+      <OperationalPulse className="mb-5" items={[
+        { label: "Produtos", value: rows.length, icon: Package, tone: "neutral", hint: active + " ativos" },
+        { label: "Rascunhos", value: draft, icon: Archive, tone: draft ? "warning" : "success", hint: "ainda não ativos" },
+        { label: "Fornecedores", value: suppliers, icon: Tags, tone: "info", hint: "origens do catálogo" },
+        { label: "Ativos", value: active, icon: Package, tone: "success", hint: "disponíveis na plataforma" },
+      ]} />
       <DataTable
         rows={rows}
         rowKey={(r) => r.product.id}
