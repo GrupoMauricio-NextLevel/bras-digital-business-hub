@@ -1,7 +1,7 @@
 import { ServiceOrderPage } from "@/components/services/order-page";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 
 export default async function SupplierServiceOrder({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   return <ServiceOrderPage session={session} id={(await params).id} backHref="/supplier/services" />;
 }
