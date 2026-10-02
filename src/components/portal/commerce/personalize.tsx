@@ -6,9 +6,9 @@ import { DEMO_STORES } from "./demo-stores";
 import { Photo } from "./store-mock";
 
 const THEMES = [
-  { key: "marinho", label: "Marinho e dourado", primary: "#14213d", accent: "#b7791f", font: "moderna" },
-  { key: "musgo", label: "Musgo e coral", primary: "#1f3d2b", accent: "#e0573f", font: "elegante" },
-  { key: "vinho", label: "Vinho e rosé", primary: "#5b1230", accent: "#c0507a", font: "moderna" },
+  { key: "marinho", label: "Marinho e dourado", primary: "#14213d", accent: "#8a5a12", font: "moderna" },
+  { key: "musgo", label: "Musgo e coral", primary: "#1f3d2b", accent: "#b8400f", font: "elegante" },
+  { key: "vinho", label: "Vinho e rosé", primary: "#5b1230", accent: "#a8325f", font: "moderna" },
 ] as const;
 
 const STEPS = [
@@ -44,8 +44,8 @@ export function Personalize() {
           <li key={s.t} data-step={n} ref={(el) => { refs.current[n] = el; }} className="lg:flex lg:min-h-[58vh] lg:items-center">
             <button type="button" onClick={() => setStep(n)} aria-pressed={step === n} className={`w-full border-l-4 py-3 pl-5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14213d] ${step === n ? "border-[#f2b600]" : "border-[#14213d]/15 hover:border-[#14213d]/40"}`}>
               <span className="text-sm font-bold uppercase tracking-wider text-[#1f47c9]">Passo {n + 1}</span>
-              <span className={`mt-1 block font-[family-name:var(--nl-font-display)] text-2xl font-extrabold leading-tight transition-colors sm:text-3xl ${step === n ? "text-[#14213d]" : "text-[#14213d]/45"}`}>{s.t}</span>
-              <span className={`mt-2 block max-w-md text-lg leading-relaxed transition-opacity ${step === n ? "text-[#14213d]/85 opacity-100" : "opacity-60"}`}>{s.d}</span>
+              <span className={`mt-1 block font-[family-name:var(--nl-font-display)] text-2xl font-extrabold leading-tight transition-colors sm:text-3xl ${step === n ? "text-[#14213d]" : "text-[#5b6577]"}`}>{s.t}</span>
+              <span className={`mt-2 block max-w-md text-lg leading-relaxed transition-opacity ${step === n ? "text-[#14213d]/85" : "text-[#5b6577]"}`}>{s.d}</span>
             </button>
           </li>
         ))}

@@ -12,7 +12,7 @@ export type DemoStore = {
   nav: string[]; products: DemoProduct[]; alt: string;
 };
 
-const p = (dir: string, n: string) => `/portal/commerce/${dir}-${n}.jpg`;
+const p = (dir: string, n: string) => `/portal/commerce/${dir}-${n}.webp`;
 
 export const DEMO_STORES: DemoStore[] = [
   {

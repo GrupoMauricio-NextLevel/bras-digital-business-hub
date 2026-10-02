@@ -36,7 +36,7 @@ export function StoreMock({ store, eager = false }: { store: DemoStore; eager?: 
         <div className="relative">
           <Photo src={store.banner.img} alt="" eager={eager} ratio="16/8" className="max-h-72" />
           <div className="absolute inset-y-0 left-0 flex max-w-[62%] flex-col justify-center gap-2 bg-gradient-to-r from-[#faf7f2]/90 via-[#faf7f2]/70 to-transparent p-4 sm:p-7">
-            <h3 className="text-lg leading-tight sm:text-2xl">{store.banner.title}</h3>
+            <p className="text-lg leading-tight sm:text-2xl">{store.banner.title}</p>
             <p className="hidden text-xs text-[#44403c] sm:block">{store.banner.text}</p>
             <span className="mt-1 inline-flex w-fit border border-[#1c1917] px-3 py-1.5 text-[11px] tracking-wide">{store.banner.cta}</span>
           </div>
@@ -61,7 +61,7 @@ export function StoreMock({ store, eager = false }: { store: DemoStore; eager?: 
       <div className={`relative ${sig ? "m-3 overflow-hidden rounded-xl" : "m-3 overflow-hidden rounded-[20px]"}`}>
         <Photo src={store.banner.img} alt="" eager={eager} ratio="16/7" className="max-h-60" />
         <div className="absolute inset-y-0 left-0 flex max-w-[60%] flex-col justify-center gap-1.5 bg-gradient-to-r from-black/65 via-black/35 to-transparent p-4 text-white sm:p-6">
-          <h3 className="text-base font-extrabold leading-tight sm:text-xl">{store.banner.title}</h3>
+          <p className="text-base font-extrabold leading-tight sm:text-xl">{store.banner.title}</p>
           <p className="hidden text-xs text-white/90 sm:block">{store.banner.text}</p>
           <span className="mt-1 inline-flex w-fit rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-neutral-900">{store.banner.cta}</span>
         </div>

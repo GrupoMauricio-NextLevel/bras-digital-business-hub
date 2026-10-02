@@ -4,6 +4,7 @@ import { organizations, themes, users } from "./schema";
 import { seedDigitalProducts, seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
+import { seedCommerceDemo } from "./commerce-demo";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { newId } from "@/lib/ids";
@@ -24,6 +25,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)"); }
     else log.push("banco já populado (demo não reaplicado)");
     if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
+    if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
     await seedDemoPartner(db);
     return log;
   }

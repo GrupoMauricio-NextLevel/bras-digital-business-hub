@@ -9,7 +9,7 @@ export type CommerceNav = { href: string; label: string }[];
 export function Wordmark({ light = false }: { light?: boolean }) {
   return (
     <span className="inline-flex items-baseline gap-1.5 font-[family-name:var(--nl-font-display)] text-base tracking-tight sm:text-lg">
-      <b className={`font-extrabold ${light ? "text-[#f5f1e8]" : "text-[#14213d]"}`}>NextLevel</b>
+      <b className={`font-extrabold ${light ? "text-[#f5f1e8]" : "text-[#14213d]"}`}>NextLevel</b>{" "}
       <i aria-hidden className="inline-block size-1.5 translate-y-[-1px] bg-[#f2b600]" />
       <span className={`font-medium ${light ? "text-[#f5f1e8]/80" : "text-[#14213d]/75"}`}>Commerce</span>
     </span>
@@ -31,7 +31,7 @@ export function CommerceHeader({ nav, cta: action }: { nav: CommerceNav; cta: { 
     <header className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-4">
       <div className="mx-auto max-w-6xl rounded-[1.75rem] border border-[#14213d]/10 bg-[#f5f1e8]/97 shadow-[0_8px_30px_-12px_rgba(14,26,51,0.45)] backdrop-blur-md">
       <div className="flex h-14 items-center gap-2 px-4 sm:gap-6 sm:pl-6 sm:pr-3">
-        <Link href="/" aria-label="NextLevel Commerce, página inicial" className="shrink-0 min-w-0"><Wordmark /></Link>
+        <Link href="/" className="shrink-0 min-w-0"><Wordmark /></Link>
         <nav aria-label="Principal" className="ml-4 hidden items-center gap-6 text-sm font-medium text-[#14213d]/80 lg:flex">
           {nav.map((n) => <a key={n.href} href={n.href} className="py-2 hover:text-[#14213d] hover:underline hover:decoration-[#f2b600] hover:decoration-2 hover:underline-offset-8">{n.label}</a>)}
         </nav>
