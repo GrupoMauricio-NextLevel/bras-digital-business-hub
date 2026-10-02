@@ -1,0 +1,17 @@
+# Atualizações automáticas de dependências: o GitHub abre um pedido por semana quando há versão nova (ou correção de segurança).
+# Nada é publicado sozinho: cada pedido passa pela verificação (tipos, estilo, testes e build) e só entra com aprovação.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      patch-e-minor:
+        update-types: [patch, minor]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
