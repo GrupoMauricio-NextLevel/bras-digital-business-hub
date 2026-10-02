@@ -34,3 +34,6 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 
 ## A estudar (pendente)
 - **Command center antigo (GPT Sites):** páginas e código do sistema anterior do dono, hospedado no GPT Sites (`painel`, `studio`, `creators`, `idesa`, `mauricio` em `nextlevelgroup.com.br`). Estudar o que dá para aproveitar no ecossistema NextLevel, sem apagar nem sobrescrever os endereços existentes.
+
+## Etapa futura: Hub Creators, Brás Digital e China Hub
+Decisão do dono: **só entram no ar (domínio + DNS) quando já houver código desenvolvido.** O que existe hoje é apenas uma página "em breve" com lista de espera, já pronta no código mas **desligada na prática** (sem domínio apontado). Foco atual: SuperDrop (em produção, clientes e lojas para subir), NextLevel Commerce (lojas virtuais: P0 e P1a feitos) e o Master central. Ordem sugerida quando chegar a hora: Hub Creators (`creator-commerce-plataforma.md` e `creator-hub-tiktok.md`), China Hub (cadastro de fornecedor importador, mandarim/espanhol), Brás Digital (marketplace sobre lojas e pedidos).

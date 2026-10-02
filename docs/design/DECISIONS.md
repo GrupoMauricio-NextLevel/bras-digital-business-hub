@@ -276,3 +276,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Painéis por produto:** `BRAND_OFFICE_<MARCA>` separa o endereço dos painéis (liga-se por variável, desligado por padrão). `/loja/<nome>` é apelido da vitrine.
 - **Pendente:** escopo de dados do Master por produto em Pedidos, CRM, Parceiros e Financeiro; desenvolvimento dos produtos novos (Hub Creators, Brás Digital, China Hub).
 - Testes `tests/brand.test.ts` e `tests/host-routing.test.ts`; e2e `e2e/brands.mjs`, `e2e/dominios.mjs`. Guia do dono: `docs/nextlevel-commerce/ligar-escritorio.md`.
+
+## D40. Foco: só os domínios do que está em andamento
+- **Agora:** `master.nextlevelgroup.com.br` (Master central), `lojas.nextlevelgroup.com.br` (NextLevel Commerce) e os do SuperDrop (`superdrop.com.br`, `office.superdrop.com.br`).
+- **Etapa futura (sem domínio apontado até haver código):** `hubcreators.nextlevelgroup.com.br`, `bras.superdrop.com.br`, `chinahubglobal.com.br`. As marcas já existem no código com página "em breve", mas ficam sem endereço no Render e no DNS por enquanto, sem custo. Backlog dessas frentes em `docs/prompts/README.md`.

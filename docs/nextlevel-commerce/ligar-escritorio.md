@@ -1,5 +1,7 @@
 # Conectar os domínios do ecossistema NextLevel (Hostinger + Render)
 
+> **DECISÃO DO DONO (foco no que está em andamento):** agora só se conectam **`master.nextlevelgroup.com.br`**, **`lojas.nextlevelgroup.com.br`** (NextLevel Commerce) e os domínios do **SuperDrop** (`superdrop.com.br`, `office.superdrop.com.br`). **Ficam para outra etapa, quando já houver código desenvolvido:** `hubcreators.nextlevelgroup.com.br` (Hub Creators), `bras.superdrop.com.br` (Brás Digital) e `chinahubglobal.com.br` (China Hub). Não adicionar esses três no Render nem criar o DNS deles por enquanto (cada domínio extra custa US$ 0,25/mês). O código já os reconhece, então quando chegar a hora basta adicioná-los.
+
 Um serviço no Render atende **todos** os endereços. O sistema reconhece o produto pelo endereço digitado. Tudo abaixo é feito nos sites do Render e da Hostinger.
 
 ## Mapa final
