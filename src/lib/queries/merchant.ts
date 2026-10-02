@@ -2,21 +2,35 @@ import { and, count, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { activities, customers, invoices, marketingConsents, orders, plans, serviceLeads, services, storeCustomers, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
 import { listStoreCatalog } from "@/lib/domain/catalog";
+import { canUse } from "@/lib/features";
 
 export type OnboardingStep = { key: string; label: string; done: boolean; href: string };
 
 export function computeOnboarding(store: Store): { steps: OnboardingStep[]; percent: number } {
   const steps: OnboardingStep[] = [
     { key: "data", label: "Dados da loja", done: !!store.name && !!store.tagline && !!store.whatsapp, href: "/merchant/settings" },
-    { key: "logo", label: "Adicionar logo", done: !!store.logoText || !!store.logoUrl, href: "/merchant/appearance" },
-    { key: "colors", label: "Escolher cores", done: store.primaryColor !== "#0f172a" || store.accentColor !== "#16a34a", href: "/merchant/appearance" },
-    { key: "payments", label: "Configurar pagamentos", done: store.paymentStatus === "CONNECTED", href: "/merchant/settings#payments" },
-    { key: "shipping", label: "Configurar frete", done: store.shippingStatus !== "NOT_CONFIGURED", href: "/merchant/settings#shipping" },
-    { key: "domain", label: "Conectar domínio", done: store.domainStatus === "CONNECTED", href: "/merchant/settings#domain" },
-    { key: "publish", label: "Publicar loja", done: !!store.publishedAt, href: "/merchant/storefront" },
   ];
+
+  if (canUse(store.offer, "appearanceBasic")) {
+    steps.push(
+      { key: "logo", label: "Adicionar logo", done: !!store.logoText || !!store.logoUrl, href: "/merchant/appearance" },
+      { key: "colors", label: "Escolher cores", done: store.primaryColor !== "#0f172a" || store.accentColor !== "#16a34a", href: "/merchant/appearance" },
+    );
+  }
+
+  if (canUse(store.offer, "storefront")) {
+    steps.push(
+      { key: "payments", label: "Configurar pagamentos", done: store.paymentStatus === "CONNECTED", href: "/merchant/settings#payments" },
+      { key: "publish", label: "Publicar loja", done: !!store.publishedAt, href: "/merchant/storefront" },
+    );
+  }
+
+  if (canUse(store.offer, "customDomain")) {
+    steps.push({ key: "domain", label: "Conectar domínio", done: store.domainStatus === "CONNECTED", href: "/merchant/settings#domain" });
+  }
+
   const done = steps.filter((s) => s.done).length;
-  return { steps, percent: Math.round((done / steps.length) * 100) };
+  return { steps, percent: steps.length ? Math.round((done / steps.length) * 100) : 100 };
 }
 
 export async function getMerchantOverview(store: Store) {
@@ -25,15 +39,16 @@ export async function getMerchantOverview(store: Store) {
   since.setDate(since.getDate() - 30);
   const all = await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt));
   const valid = all.filter((o) => o.status !== "CANCELED");
-  const last30 = valid.filter((o) => new Date(o.createdAt) >= since);
+  const paid = valid.filter((o) => o.customerPaymentStatus === "PAID");
+  const last30 = paid.filter((o) => new Date(o.createdAt) >= since);
   const sales = last30.reduce((s, o) => s + o.totalCents, 0);
   const prevSince = new Date(since); prevSince.setDate(prevSince.getDate() - 30);
-  const prev30 = valid.filter((o) => new Date(o.createdAt) >= prevSince && new Date(o.createdAt) < since);
+  const prev30 = paid.filter((o) => new Date(o.createdAt) >= prevSince && new Date(o.createdAt) < since);
   const prevSales = prev30.reduce((s, o) => s + o.totalCents, 0);
   const prevMargin = prev30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   const pct = (cur: number, prev: number) => (prev > 0 ? ((cur - prev) / prev) * 100 : undefined);
   const days = Array.from({ length: 30 }, (_, i) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (29 - i)); return d; });
-  const daily = days.map((d) => { const end = new Date(d); end.setDate(end.getDate() + 1); return { date: d.toISOString().slice(0, 10), cents: valid.filter((o) => { const t = new Date(o.createdAt); return t >= d && t < end; }).reduce((s, o) => s + o.totalCents, 0) }; });
+  const daily = days.map((d) => { const end = new Date(d); end.setDate(end.getDate() + 1); return { date: d.toISOString().slice(0, 10), cents: paid.filter((o) => { const t = new Date(o.createdAt); return t >= d && t < end; }).reduce((s, o) => s + o.totalCents, 0) }; });
   const margin = last30.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   const pendingCentral = valid.filter((o) => o.customerPaymentStatus === "PAID" && o.centralPaymentStatus !== "PAID");
   const pendingLabel = valid.filter((o) => o.centralPaymentStatus === "PAID" && o.shippingLabelStatus !== "READY");
@@ -88,9 +103,10 @@ export async function getMerchantFinance(storeId: string) {
   const db = (await getDb());
   const rows = await db.select().from(orders).where(and(eq(orders.storeId, storeId), ne(orders.status, "CANCELED"))).orderBy(desc(orders.createdAt));
   const received = rows.filter((o) => o.customerPaymentStatus === "PAID").reduce((s, o) => s + o.totalCents, 0);
-  const owedToCentral = rows.filter((o) => o.centralPaymentStatus !== "PAID").reduce((s, o) => s + o.costTotalCents, 0);
-  const paidToCentral = rows.filter((o) => o.centralPaymentStatus === "PAID").reduce((s, o) => s + o.costTotalCents, 0);
-  const margin = rows.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
+  const paidOrders = rows.filter((o) => o.customerPaymentStatus === "PAID");
+  const owedToCentral = paidOrders.filter((o) => o.centralPaymentStatus !== "PAID").reduce((s, o) => s + o.costTotalCents, 0);
+  const paidToCentral = paidOrders.filter((o) => o.centralPaymentStatus === "PAID").reduce((s, o) => s + o.costTotalCents, 0);
+  const margin = paidOrders.reduce((s, o) => s + (o.subtotalCents - o.costTotalCents), 0);
   return { rows, received, owedToCentral, paidToCentral, margin, subscription: await getSubscription(storeId) };
 }
 
