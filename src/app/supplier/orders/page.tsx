@@ -13,9 +13,11 @@ import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 export default async function SupplierOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const session = await requireRole("SUPPLIER_ADMIN");
   const { status } = await searchParams;
-  const rows = await listOrdersForActor((await getDb()), session.actor, { status: ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined });
-  const count = (value: OrderStatus) => rows.filter((row) => row.order.status === value).length;
-  const activeCount = rows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
+  const selectedStatus = ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined;
+  const allRows = await listOrdersForActor((await getDb()), session.actor);
+  const rows = selectedStatus ? allRows.filter((row) => row.order.status === selectedStatus) : allRows;
+  const count = (value: OrderStatus) => allRows.filter((row) => row.order.status === value).length;
+  const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
   return (
     <>
       <PageHeader title="Pedidos da rede" description="Todos os pedidos das lojas abastecidas pela Central. Valores de custo são o que a Central recebe." />
