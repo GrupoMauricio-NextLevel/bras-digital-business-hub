@@ -26,7 +26,7 @@ O Codex (visual) trabalha **no computador do dono** numa branch própria (`codex
 O Render publica **a cada push** da branch de publicação, que hoje é `claude/wonderful-cannon-5o38v5` (o dono pode trocar para `main` depois). Claude e Codex trabalham **nessa mesma branch**:
 1. **Antes de começar e antes de cada push:** `git pull --rebase origin claude/wonderful-cannon-5o38v5`. Se houver conflito, resolva mantendo o trabalho dos dois (nunca descarte o do outro agente) e rode os testes.
 2. **Commits pequenos e frequentes**, com mensagem clara em português, e `git push` em seguida (cada push publica em cerca de 3 a 6 minutos).
-3. **Antes de dar push** rode `npx tsc --noEmit`, `npx eslint src e2e tests` e, se mexeu em lógica, `npx vitest run`; mudança grande: `npm run build`. A verificação automática (`.github/workflows/ci.yml`) roda os mesmos passos depois do push.
+3. **Verificações automáticas** (detalhes em `docs/nextlevel-commerce/verificacao-automatica.md`): rode `npm run ganchos` uma vez por cópia; commit e push passam a rodar tipos e estilo sozinhos. **Antes de dar push** rode `npx tsc --noEmit`, `npx eslint src e2e tests` e, se mexeu em lógica, `npx vitest run`; mudança grande: `npm run build`. A verificação automática (`.github/workflows/ci.yml`) roda os mesmos passos depois do push.
 4. Nunca force push (`--force`) nessa branch.
 5. Mudança de comportamento exige teste. Alterou `src/db/schema.ts`? `npx drizzle-kit generate --name <assunto>` e commite `drizzle/` (nunca edite migração já publicada).
 6. Segredos: nunca no código. Tokens só criptografados (`encryptSecret`); nada em log, tela ou e-mail.

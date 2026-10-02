@@ -1,25 +1,62 @@
-# Proteção da produção: toda mudança (de qualquer agente ou pessoa) passa por tipos, lint, testes e build antes de ir para o ar.
+# Proteção da produção: toda mudança (de qualquer agente ou pessoa) passa por tipos, estilo, testes e build antes de ir para o ar.
+# Os três grupos rodam em paralelo (o total é o do mais lento, os testes). Para o Render só publicar depois de tudo verde, use
+# "Auto-Deploy: After CI Checks Pass" no Render e marque "verificar" como obrigatória na regra da branch (ver docs/nextlevel-commerce/verificacao-automatica.md).
 name: verificar
 on:
   push:
-    branches: [main, staging, "claude/**", "codex/**"]
+    branches: [main, staging, "claude/**", "codex/**", "visual/**"]
   pull_request:
+concurrency:
+  group: verificar-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  DATABASE_URL: pglite://memory
+  SESSION_SECRET: teste-ci-segredo-1234567890
+  CRON_SECRET: teste-ci-cron-1234567890
 jobs:
-  verificar:
+  tipos-e-estilo:
+    name: tipos e estilo
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      DATABASE_URL: pglite://memory
-      SESSION_SECRET: teste-ci-segredo-1234567890
-      CRON_SECRET: teste-ci-cron-1234567890
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+        with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: npx tsc --noEmit
-      - run: npx eslint src e2e tests
+      - run: npx eslint src e2e tests --max-warnings=0
+  testes:
+    name: testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
       - run: npx vitest run
+  build:
+    name: build de produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - run: npm ci
       - run: npm run build
+  verificar:
+    name: verificar
+    if: always()
+    needs: [tipos-e-estilo, testes, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tudo verde?
+        run: |
+          echo "tipos e estilo: ${{ needs.tipos-e-estilo.result }} · testes: ${{ needs.testes.result }} · build: ${{ needs.build.result }}"
+          [ "${{ needs.tipos-e-estilo.result }}" = "success" ] && [ "${{ needs.testes.result }}" = "success" ] && [ "${{ needs.build.result }}" = "success" ]

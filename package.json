@@ -16,7 +16,10 @@
     "db:reset": "rm -rf data/pg && npm run db:migrate && npm run db:seed",
     "db:bootstrap": "tsx scripts/bootstrap.ts",
     "start:prod": "npm run db:bootstrap && next start -p ${PORT:-3000}",
-    "e2e": "bash e2e/run.sh"
+    "e2e": "bash e2e/run.sh",
+    "verificar": "tsc --noEmit && eslint src e2e tests --max-warnings=0 && vitest run",
+    "verificar:rapido": "tsc --noEmit && eslint src e2e tests --max-warnings=0",
+    "ganchos": "bash scripts/instalar-ganchos.sh"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",
