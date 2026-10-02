@@ -14,7 +14,7 @@ export type ProductContext = {
 
 export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
   master: { key: "master", name: "NextLevel Master", shortName: "Master", descriptor: "Control Center", accent: "#2563EB", accentSoft: "#E8F0FF", accentContrast: "#FFFFFF", href: "/master", available: true },
-  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Core operacional", accent: "#0891B2", accentSoft: "#E2F7FB", accentContrast: "#FFFFFF", href: "/master/commerce", available: true },
+  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Core operacional", accent: "#0891B2", accentSoft: "#E2F7FB", accentContrast: "#FFFFFF", href: "/commerce", available: true },
   superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição & Dropshipping", accent: "#F97316", accentSoft: "#FFF0E6", accentContrast: "#17120E", href: "/master", available: true },
   bras: { key: "bras", name: "Brás Digital", shortName: "Brás Digital", descriptor: "Atacado B2B", accent: "#D59A16", accentSoft: "#FFF6DC", accentContrast: "#17130A", available: false },
   creators: { key: "creators", name: "Creators Hub", shortName: "Creators", descriptor: "Creators & Social Commerce", accent: "#A855F7", accentSoft: "#F4E8FF", accentContrast: "#FFFFFF", available: false },
@@ -22,7 +22,7 @@ export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
 };
 
 export function productContextForPath(pathname: string, panel?: string): ProductContext {
-  if (pathname.startsWith("/master/commerce")) return PRODUCT_CONTEXTS.commerce;
+  if (pathname.startsWith("/commerce")) return PRODUCT_CONTEXTS.commerce;
   if (pathname.startsWith("/merchant") || pathname.startsWith("/supplier")) return PRODUCT_CONTEXTS.superdrop;
   if (pathname.startsWith("/master")) return PRODUCT_CONTEXTS.master;
   if (panel === "master") return PRODUCT_CONTEXTS.master;

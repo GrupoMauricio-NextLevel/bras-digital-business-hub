@@ -37,7 +37,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
-      { label: "NextLevel Commerce", href: "/master/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE" },
+      { label: "NextLevel Commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE" },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship" },
       { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship" },

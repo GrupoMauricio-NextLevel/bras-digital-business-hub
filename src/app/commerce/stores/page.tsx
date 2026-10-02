@@ -1,0 +1,20 @@
+import { getDb } from "@/db/client";
+import { requireRole } from "@/lib/require-session";
+import { getCommerceConsole } from "@/lib/domain/commerce-console";
+
+export default async function CommerceStoresPage() {
+  const session=await requireRole("NEXTLEVEL_MASTER"); const data=await getCommerceConsole(await getDb(),session.actor);
+  return <><Header eyebrow="PORTFÓLIO" title="Lojas" text="Cada operação digital da NextLevel Commerce, sem fornecedores ou redes do SuperDrop."/>
+    <div className="mt-10 border-t border-white/10">
+      <div className="hidden grid-cols-[1.3fr_.7fr_.6fr_.6fr] gap-4 border-b border-white/10 py-3 text-[9px] tracking-[.18em] text-zinc-600 md:grid"><span>LOJA</span><span>PUBLICAÇÃO</span><span>ACESSO</span><span>DOMÍNIO</span></div>
+      {data.stores.map(({store,access})=><div key={store.id} className="grid gap-3 border-b border-white/10 py-5 md:grid-cols-[1.3fr_.7fr_.6fr_.6fr] md:items-center">
+        <div><div className="text-sm font-medium text-zinc-200">{store.name}</div><div className="mt-1 text-xs text-zinc-600">/{store.slug}</div></div>
+        <div className="text-xs text-zinc-400">{store.publishedAt?"Publicada":"Rascunho"}</div>
+        <div className="text-xs text-zinc-400">{access.state}{access.daysLeft!==null?` · ${access.daysLeft}d`:""}</div>
+        <div className="text-xs text-zinc-400">{store.domainStatus==="CONNECTED"?(store.customDomain??"Conectado"):"Sem domínio próprio"}</div>
+      </div>)}
+      {!data.stores.length?<Empty/>:null}
+    </div></>;
+}
+function Header({eyebrow,title,text}:{eyebrow:string;title:string;text:string}){return <div><div className="text-[10px] tracking-[.22em] text-cyan-400">{eyebrow}</div><h1 className="mt-2 text-4xl font-semibold tracking-[-.05em]">{title}</h1><p className="mt-3 max-w-2xl text-sm text-zinc-500">{text}</p></div>}
+function Empty(){return <div className="py-12 text-sm text-zinc-600">Nenhum registro Commerce encontrado.</div>}

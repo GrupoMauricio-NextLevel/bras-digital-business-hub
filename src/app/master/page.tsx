@@ -20,7 +20,7 @@ function greeting() {
 
 export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
-  if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/master/commerce");
+  if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/commerce");
   const db = await getDb();
   const [overview, orders, snap] = await Promise.all([
     getPlatformOverview(),
