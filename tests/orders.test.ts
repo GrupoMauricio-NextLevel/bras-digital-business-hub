@@ -70,12 +70,15 @@ describe("pedido — golden path", () => {
     expect((await getLevel(ctx.db, v(0, "M"))).reserved).toBe(m.reserved + 4);
   });
 
-  it("cancelamento libera a reserva", async () => {
+  it("cancelamento de pedido não pago libera a reserva; pedido pago exige estorno", async () => {
     const variantId = v(11, "GG");
     const before = await getLevel(ctx.db, variantId);
-    const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer, items: [{ productId: ctx.seed.productIds[11]!, variantId, quantity: 1 }], customerPaymentStatus: "PAID" });
-    await cancelOrder(ctx.db, ctx.actors.mantos, r.orderId);
+    const unpaid = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer: { ...customer, email: "cancel-unpaid@teste.com" }, items: [{ productId: ctx.seed.productIds[11]!, variantId, quantity: 1 }] });
+    await cancelOrder(ctx.db, ctx.actors.mantos, unpaid.orderId);
     expect((await getLevel(ctx.db, variantId)).reserved).toBe(before.reserved);
+
+    const paid = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer: { ...customer, email: "cancel-paid@teste.com" }, items: [{ productId: ctx.seed.productIds[11]!, variantId, quantity: 1 }], customerPaymentStatus: "PAID" });
+    await expect(cancelOrder(ctx.db, ctx.actors.mantos, paid.orderId)).rejects.toThrow(/estorno/);
   });
 
   it("falha sem estoque e não grava pedido parcial", async () => {
