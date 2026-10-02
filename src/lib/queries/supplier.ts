@@ -5,7 +5,7 @@ import { listSupplierCatalog } from "@/lib/domain/catalog";
 
 export async function getSupplierOverview(supplierId: string) {
   const db = (await getDb());
-  const [sales] = await db.select({ n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED")));
+  const [sales] = await db.select({ n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"), eq(orders.customerPaymentStatus, "PAID")));
   const statusRows = await db.select({ status: orders.status, n: count() }).from(orders).where(eq(orders.supplierId, supplierId)).groupBy(orders.status);
   const byStatus = Object.fromEntries(statusRows.map((r) => [r.status, r.n])) as Record<string, number>;
   const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId)).groupBy(stores.status);
@@ -90,7 +90,7 @@ export async function getSupplierInventory(supplierId: string) {
 export async function getSupplierStores(supplierId: string) {
   const db = (await getDb());
   const rows = await db.select({ store: stores, networkName: networks.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId)).orderBy(stores.name);
-  const stats = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"))).groupBy(orders.storeId);
+  const stats = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents), cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"), eq(orders.customerPaymentStatus, "PAID"))).groupBy(orders.storeId);
   const listings = await db.select({ storeId: storeProducts.storeId, n: count() }).from(storeProducts).where(eq(storeProducts.active, true)).groupBy(storeProducts.storeId);
   const owners = await db.select({ id: users.id, name: users.name, email: users.email, storeId: users.storeId, lastLoginAt: users.lastLoginAt }).from(users).where(eq(users.role, "STORE_OWNER"));
   return rows.map((r) => {
@@ -108,8 +108,9 @@ export async function getSupplierContent(supplierId: string) {
 export async function getSupplierFinance(supplierId: string) {
   const db = (await getDb());
   const rows = await db.select({ order: orders, storeName: stores.name }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(and(eq(orders.supplierId, supplierId), ne(orders.status, "CANCELED"))).orderBy(desc(orders.createdAt));
-  const received = rows.filter((r) => r.order.centralPaymentStatus === "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);
-  const pending = rows.filter((r) => r.order.centralPaymentStatus !== "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);
-  const gmv = rows.reduce((s, r) => s + r.order.totalCents, 0);
+  const paidRows = rows.filter((r) => r.order.customerPaymentStatus === "PAID");
+  const received = paidRows.filter((r) => r.order.centralPaymentStatus === "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);
+  const pending = paidRows.filter((r) => r.order.centralPaymentStatus !== "PAID").reduce((s, r) => s + r.order.costTotalCents, 0);
+  const gmv = paidRows.reduce((s, r) => s + r.order.totalCents, 0);
   return { rows, received, pending, gmv };
 }
