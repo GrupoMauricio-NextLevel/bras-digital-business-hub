@@ -1,0 +1,25 @@
+# Proteção da produção: toda mudança (de qualquer agente ou pessoa) passa por tipos, lint, testes e build antes de ir para o ar.
+name: verificar
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: pglite://memory
+      SESSION_SECRET: teste-ci-segredo-1234567890
+      CRON_SECRET: teste-ci-cron-1234567890
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx eslint src e2e tests
+      - run: npx vitest run
+      - run: npm run build
