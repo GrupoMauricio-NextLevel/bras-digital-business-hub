@@ -74,13 +74,15 @@ export function isMaster(actor: Actor): boolean {
 }
 
 /** Garante que o ator pode enxergar um registro pertencente a (storeId, supplierId). */
-export function assertCanAccess(actor: Actor, target: { storeId?: string | null; supplierId?: string | null }): void {
-  if (hasAreaRole(actor, "SUPERDROP", "PLATFORM_ADMIN")) return;
+export function assertCanAccess(actor: Actor, target: { storeId?: string | null; supplierId?: string | null; sourceArea?: ProductArea | null }): void {
+  const area = target.sourceArea ?? "SUPERDROP";
 
-  const supplierGrant = grantForAreaRole(actor, "SUPERDROP", ["SUPPLIER_ADMIN", "OPERATOR"]);
+  if (hasAreaRole(actor, area, "PLATFORM_ADMIN")) return;
+
+  const supplierGrant = grantForAreaRole(actor, area, ["SUPPLIER_ADMIN", "OPERATOR"]);
   if (supplierGrant?.supplierId && target.supplierId && supplierGrant.supplierId === target.supplierId) return;
 
-  const merchantGrant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  const merchantGrant = grantForAreaRole(actor, area, "MERCHANT_OWNER");
   if (merchantGrant?.storeId && target.storeId && merchantGrant.storeId === target.storeId) return;
 
   throw new ForbiddenError();
