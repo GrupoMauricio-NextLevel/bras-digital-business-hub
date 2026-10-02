@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { SettingsForms } from "./settings-forms";
 import { getBaseUrl } from "@/lib/base-url";
 import { getDb } from "@/db/client";
@@ -12,7 +12,7 @@ import { suppliers } from "@/db/schema";
 export const dynamic = "force-dynamic";
 
 export default async function MerchantSettingsPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const s = session.store!;
   const db = await getDb();
   const hiddenId = await independentSupplierOfStore(db, s.id);

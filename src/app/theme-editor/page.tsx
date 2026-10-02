@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { ThemeEditor } from "@/components/theme-editor/editor";
 import { getDb } from "@/db/client";
 import { canUse } from "@/lib/features";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getStorefront, getStorefrontCatalog } from "@/lib/queries/storefront";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
 import type { Doc } from "@/lib/themes/editor-state";
@@ -11,7 +11,7 @@ import { formatBRL } from "@/lib/money";
 const OFFER_NAME = { DROP_MANUAL: "oferta Drop manual", STORE_SUBDOMAIN: "Loja SuperDrop", STORE_OWN: "Loja própria" } as const;
 
 export default async function ThemeEditorPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const store = session.store!;
   // Drop manual não tem loja virtual: leva para os serviços, onde está o upgrade.
   if (!canUse(store.offer, "storefront")) redirect("/merchant/services?pedir=upgrade-loja-superdrop");

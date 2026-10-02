@@ -1,4 +1,5 @@
 "use server";
+import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
@@ -9,6 +10,7 @@ import { createCoupon, extendTrial } from "@/lib/domain/store-access";
 async function session() {
   const s = await getSession();
   if (!s) throw new ForbiddenError("Sessão expirada.");
+  assertStoreAdmin(s.actor);
   return s;
 }
 

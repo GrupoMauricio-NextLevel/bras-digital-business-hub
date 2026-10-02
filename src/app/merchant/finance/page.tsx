@@ -3,7 +3,7 @@ import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { DataTable } from "@/components/app/data-table";
 import { OrderStatusBadge, StatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getMerchantFinance } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
@@ -18,7 +18,7 @@ import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
 
 export default async function MerchantFinancePage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const f = await getMerchantFinance(session.store!.id);
   const db = await getDb();
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);

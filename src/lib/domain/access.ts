@@ -10,10 +10,17 @@ export type Actor = {
   organizationId: string;
   supplierId: string | null;
   storeId: string | null;
+  /** Dentro da loja: ausente ou OWNER = dono; STAFF = equipe com acesso operacional. */
+  storeRole?: "OWNER" | "STAFF";
 };
 
 export function actorFromUser(user: User): Actor {
-  return { userId: user.id, role: user.role, organizationId: user.organizationId, supplierId: user.supplierId, storeId: user.storeId };
+  return { userId: user.id, role: user.role, organizationId: user.organizationId, supplierId: user.supplierId, storeId: user.storeId, storeRole: user.storeRole };
+}
+
+/** Funções de dono (finanças, configurações, equipe, preços e publicação). Equipe da loja não passa. */
+export function assertStoreAdmin(actor: Actor): void {
+  if (actor.role === "STORE_OWNER" && actor.storeRole === "STAFF") throw new ForbiddenError("Esta função é só do dono da loja.");
 }
 
 export function isMaster(actor: Actor): boolean {

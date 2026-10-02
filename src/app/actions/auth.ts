@@ -23,7 +23,7 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     const data = loginSchema.parse(input);
     const db = await getDb();
     const user = await db.query.users.findFirst({ where: eq(users.email, data.email.toLowerCase()) });
-    if (!user || !verifyPassword(data.password, user.passwordHash) || (!isDemoMode() && isDemoAccountEmail(user.email))) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");
+    if (!user || user.disabledAt || !verifyPassword(data.password, user.passwordHash) || (!isDemoMode() && isDemoAccountEmail(user.email))) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");
     if (user.supplierId) {
       const sup = await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) });
       if (sup?.status === "CLOSED") throw new DomainError("ACCOUNT_CLOSED", "Conta encerrada. Entre em contato com a NextLevel.");

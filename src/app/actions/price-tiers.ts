@@ -1,4 +1,5 @@
 "use server";
+import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
@@ -11,6 +12,7 @@ export async function setPriceTiersAction(productId: string, tiers: { minQty: nu
   return runAction(async () => {
     const session = await getSession();
     if (!session) throw new ForbiddenError("Sessão expirada.");
+    assertStoreAdmin(session.actor);
     await setPriceTiers(await getDb(), requireStoreId(session.actor), productId, tiers);
     revalidatePath("/merchant/atacado");
     if (session.store?.slug) revalidatePath(`/store/${session.store.slug}`, "layout");

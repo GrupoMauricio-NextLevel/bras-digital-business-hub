@@ -1,4 +1,5 @@
 "use server";
+import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -17,6 +18,7 @@ import { MercadoPagoError, verifyAccessToken } from "@/lib/payments/mercadopago"
 async function ctx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
+  assertStoreAdmin(session.actor);
   return { session, db: await getDb() };
 }
 

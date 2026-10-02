@@ -24,7 +24,7 @@ export const getSession = cache(async (): Promise<Session | null> => {
   if (!payload) return null;
   const db = await getDb();
   const user = await db.query.users.findFirst({ where: eq(users.id, payload.uid) });
-  if (!user) return null;
+  if (!user || user.disabledAt) return null;
   // Conta de demonstração (senha conhecida) não vale fora do modo de demonstração, nem com sessão antiga.
   if (!isDemoMode() && isDemoAccountEmail(user.email)) return null;
   const store = user.storeId ? (await db.query.stores.findFirst({ where: eq(stores.id, user.storeId) })) ?? null : null;

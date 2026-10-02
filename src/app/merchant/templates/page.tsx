@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db/client";
 import { isDemoMode } from "@/lib/auth";
 import { canUse } from "@/lib/features";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { themeCardsFor } from "@/lib/themes/install";
 import { eq } from "drizzle-orm";
 import { financeInvoices, nextlevelPayments } from "@/db/schema";
@@ -13,7 +13,7 @@ import { ThemeStore } from "./theme-store";
 
 export default async function MerchantTemplatesPage({ searchParams }: { searchParams: Promise<{ pago?: string }> }) {
   const { pago } = await searchParams;
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const store = session.store!;
   let returning: { paymentId: string; key: string; paid: boolean } | null = null;
   if (pago && /^nlp_[a-z0-9]+$/i.test(pago)) {

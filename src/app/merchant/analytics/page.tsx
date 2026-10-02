@@ -10,13 +10,13 @@ import { LineArea } from "@/components/finance/charts";
 import { Heatmap } from "@/components/finance/heatmap";
 import { getDb } from "@/db/client";
 import { orderItems, orders } from "@/db/schema";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
 import { canUse } from "@/lib/features";
 import { formatBRL } from "@/lib/money";
 
 export default async function AnalyticsPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const store = session.store!;
   return (
     <>

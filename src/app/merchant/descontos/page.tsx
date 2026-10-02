@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { listDiscounts } from "@/lib/domain/discounts";
 import { storeModality } from "@/lib/domain/order-policy";
@@ -9,7 +9,7 @@ import { DiscountManager } from "./discount-manager";
 export const dynamic = "force-dynamic";
 
 export default async function DescontosPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const db = await getDb();
   if ((await storeModality(db, session.store!.id)) === "NETWORK") redirect("/merchant");
   const rows = await listDiscounts(db, session.store!.id);

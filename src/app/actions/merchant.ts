@@ -1,4 +1,5 @@
 "use server";
+import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -12,9 +13,10 @@ import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors"
 import { newId } from "@/lib/ids";
 import { requireFeature } from "@/lib/features";
 
-async function storeCtx() {
+async function storeCtx(opts: { allowStaff?: boolean } = {}) {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
+  if (!opts.allowStaff) assertStoreAdmin(session.actor);
   const storeId = requireStoreId(session.actor);
   return { storeId, session, db: (await getDb()) };
 }
@@ -82,7 +84,7 @@ const listingSchema = z.object({ productId: z.string().min(1), active: z.boolean
 /** Lojista ativa/desativa produto e define preço (respeitando preço mínimo do fornecedor). */
 export async function upsertStoreProductAction(input: z.input<typeof listingSchema>) {
   return runAction(async () => {
-    const { storeId, db, session } = await storeCtx();
+    const { storeId, db, session } = await storeCtx({ allowStaff: true });
     const data = listingSchema.parse(input);
     const product = await db.query.products.findFirst({ where: eq(products.id, data.productId) });
     if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
@@ -198,7 +200,7 @@ export async function disconnectMercadoPagoAction() {
 /** Ativa na loja todos os produtos acessíveis ainda não ativados, com preço sugerido pelo fornecedor. */
 export async function activateAllProductsAction() {
   return runAction(async () => {
-    const { storeId, db, session } = await storeCtx();
+    const { storeId, db, session } = await storeCtx({ allowStaff: true });
     const { listStoreCatalog } = await import("@/lib/domain/catalog");
     const items = await listStoreCatalog(db, storeId, { onlyActive: false });
     let activated = 0; let skipped = 0;

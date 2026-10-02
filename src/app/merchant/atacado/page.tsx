@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { storeModality } from "@/lib/domain/order-policy";
@@ -9,7 +9,7 @@ import { TiersEditor } from "./tiers-editor";
 export const dynamic = "force-dynamic";
 
 export default async function AtacadoPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const db = await getDb();
   if ((await storeModality(db, session.store!.id)) === "NETWORK") redirect("/merchant");
   const items = (await listStoreCatalog(db, session.store!.id)).map((c) => ({ productId: c.product.id, name: c.product.name, priceCents: c.storeProduct.priceCents, floorCents: Math.max(c.product.costCents, c.product.minimumPriceCents), tiers: c.tiers }));

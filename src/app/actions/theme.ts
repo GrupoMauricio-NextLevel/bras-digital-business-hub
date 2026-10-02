@@ -1,4 +1,5 @@
 "use server";
+import { assertStoreAdmin } from "@/lib/domain/access";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
@@ -19,6 +20,7 @@ import { PAGE_KINDS } from "@/lib/themes/types";
 async function ctx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
+  assertStoreAdmin(session.actor);
   return { session, storeId: requireStoreId(session.actor), db: await getDb() };
 }
 const page = z.enum(PAGE_KINDS);

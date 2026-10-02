@@ -116,6 +116,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Conteúdo", href: "/merchant/content", icon: "Image", group: "Catálogo" },
       { label: "Saldo e recargas", href: "/merchant/wallet", icon: "Wallet", group: "Financeiro" },
       { label: "Financeiro", href: "/merchant/finance", icon: "Landmark", group: "Financeiro" },
+      { label: "Equipe", href: "/merchant/team", icon: "Users", group: "Conta" },
       { label: "Configurações", href: "/merchant/settings", icon: "Settings", group: "Conta" },
     ],
     quick: [

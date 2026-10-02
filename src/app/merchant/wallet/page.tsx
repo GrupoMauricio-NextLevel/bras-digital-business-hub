@@ -7,7 +7,7 @@ import { getDb } from "@/db/client";
 import { orders } from "@/db/schema";
 import { and, eq, sum } from "drizzle-orm";
 import { isDemoMode } from "@/lib/auth";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getBalanceCents, listWalletEntries } from "@/lib/domain/wallet";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
@@ -16,7 +16,7 @@ import { WalletRecharge } from "./wallet-recharge";
 const TYPE_LABEL = { RECHARGE: "Recarga Pix", ORDER_DEBIT: "Custo de pedido", ORDER_REFUND: "Estorno", MANUAL_CREDIT: "Crédito manual", MANUAL_DEBIT: "Débito manual" } as const;
 
 export default async function WalletPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const db = await getDb();
   const storeId = session.store!.id;
   const [balance, entries] = await Promise.all([getBalanceCents(db, storeId), listWalletEntries(db, session.actor, storeId, 30)]);

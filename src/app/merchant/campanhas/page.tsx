@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/app/page-header";
-import { requireRole } from "@/lib/require-session";
+import { requireStoreAdmin } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { listCampaigns } from "@/lib/domain/campaigns";
 import { CampaignManager } from "./campaign-manager";
@@ -7,7 +7,7 @@ import { CampaignManager } from "./campaign-manager";
 export const dynamic = "force-dynamic";
 
 export default async function CampanhasPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireStoreAdmin();
   const rows = await listCampaigns(await getDb(), session.store!.id);
   const now = new Date().toISOString();
   return (
