@@ -9,7 +9,8 @@ const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } }))
 // Público: galeria, detalhe e demonstração (sem login)
 await p.goto(`${base}/temas`, { waitUntil: "load" });
 ok(await p.locator("h1", { hasText: "Temas para a sua loja" }).count() === 1, "galeria pública abre");
-ok(await p.getByText("Aurora").count() === 0, "tema em aprovação não aparece na galeria");
+ok(await p.getByText("Ninho").count() === 0, "tema em aprovação não aparece na galeria");
+ok(await p.getByRole("heading", { name: "Lume" }).count() >= 1, "Lume (tema de entrada) aparece na galeria pública");
 await p.goto(`${base}/demo/arena`, { waitUntil: "load" });
 await p.waitForTimeout(1500);
 const frame = p.frameLocator("iframe");
@@ -17,7 +18,7 @@ ok(await frame.locator("[data-showcase-banner]").count() === 1, "demonstração 
 await frame.locator('a[href*="/cart"]').first().click().catch(() => {});
 await p.goto(`${base}/store/demo-arena/checkout`, { waitUntil: "load" });
 ok(await p.getByText("Esta é uma loja de demonstração").count() === 1, "checkout da demonstração não vende");
-await p.goto(`${base}/demo/aurora`, { waitUntil: "load" });
+await p.goto(`${base}/demo/ninho`, { waitUntil: "load" });
 ok(await p.getByText("Em aprovação").count() >= 1, "link do tema em aprovação funciona e é identificado");
 
 // Lojista da Commerce: entra pelo link da página pública e volta para o tema escolhido
@@ -30,7 +31,7 @@ ok(await p.getByText("Tema Arena com os seus produtos").count() === 1, "abre a p
 const prev = p.frameLocator("iframe[title^='Prévia']");
 ok(await prev.locator("body").innerText().then((t) => /Fio & Linha|Poncho|Jaqueta/.test(t)), "prévia mostra produtos da loja do cliente");
 await p.keyboard.press("Escape");
-ok(await p.getByText("Aurora").count() === 0, "lojista não vê tema em aprovação");
+ok(await p.getByText("Ninho").count() === 0, "lojista não vê tema em aprovação");
 
 // Compra simulada (cartão de demonstração) e instalação automática, sem passo extra
 const arena = p.locator("li", { has: p.locator("h3", { hasText: "Arena" }) });

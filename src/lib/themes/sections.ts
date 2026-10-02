@@ -2,7 +2,7 @@ import type { SectionSchema, SettingDef } from "./types";
 
 const TONES = [{ value: "primary", label: "Cor principal" }, { value: "accent", label: "Cor de destaque" }, { value: "neutral", label: "Neutro escuro" }];
 const ICONS = [{ value: "truck", label: "Caminhão" }, { value: "shield", label: "Escudo" }, { value: "refresh", label: "Troca" }, { value: "star", label: "Estrela" }, { value: "heart", label: "Coração" }, { value: "clock", label: "Relógio" }];
-const ARENA_UP = ["aurora", "arena", "editorial", "signature"];
+const ARENA_UP = ["lume", "ninho", "arena", "editorial", "signature"];
 const HEIGHT: SettingDef = { id: "height", type: "select", label: "Altura", options: [{ value: "sm", label: "Baixa" }, { value: "md", label: "Média" }, { value: "lg", label: "Alta" }, { value: "full", label: "Tela cheia" }], default: "md" };
 const ALIGN: SettingDef = { id: "align", type: "select", label: "Alinhamento do texto", options: [{ value: "left", label: "Esquerda" }, { value: "center", label: "Centro" }, { value: "right", label: "Direita" }], default: "left" };
 const TEXT_TONE: SettingDef = { id: "textColor", type: "select", label: "Cor do texto", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light" };
@@ -143,7 +143,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     presets: [{ name: "Grade de categorias" }],
   },
   {
-    type: "image-with-text", name: "Imagem com texto", description: "Imagem de um lado e texto com botão do outro.", category: "Conteúdo", region: "content", pages: ["home", "product", "collection"], themes: ["aurora", "editorial", "signature"],
+    type: "image-with-text", name: "Imagem com texto", description: "Imagem de um lado e texto com botão do outro.", category: "Conteúdo", region: "content", pages: ["home", "product", "collection"], themes: ["lume", "ninho", "editorial", "signature"],
     settings: [{ id: "image", type: "image", label: "Imagem", default: "" }, { id: "heading", type: "text", label: "Título", default: "Feito com cuidado", maxLength: 100 }, { id: "body", type: "richtext", label: "Texto", default: "Conte o que torna as suas peças especiais." }, { id: "ctaLabel", type: "text", label: "Texto do botão", default: "", maxLength: 40 }, { id: "ctaLink", type: "url", label: "Link do botão", default: "/catalog" }, { id: "reverse", type: "checkbox", label: "Imagem à direita", default: false }, { id: "ratio", type: "select", label: "Formato da imagem", options: [{ value: "portrait", label: "Retrato" }, { value: "square", label: "Quadrado" }, { value: "landscape", label: "Paisagem" }], default: "portrait" }],
     presets: [{ name: "Imagem com texto" }],
   },
@@ -176,7 +176,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     presets: [{ name: "Chamada para ação" }],
   },
   {
-    type: "product-tabs", name: "Abas do produto", description: "Descrição, envio e trocas em blocos que abrem e fecham.", category: "Produtos", region: "content", pages: ["product"], themes: ["aurora", "editorial", "signature"], maxBlocks: 5,
+    type: "product-tabs", name: "Abas do produto", description: "Descrição, envio e trocas em blocos que abrem e fecham.", category: "Produtos", region: "content", pages: ["product"], themes: ["lume", "ninho", "editorial", "signature"], maxBlocks: 5,
     settings: [], blocks: [{ type: "tab", name: "Aba", limit: 5, settings: [{ id: "title", type: "text", label: "Título", default: "Detalhes", maxLength: 40 }, { id: "body", type: "richtext", label: "Texto", default: "" }, { id: "useProductDescription", type: "checkbox", label: "Usar a descrição do produto", default: false }] }],
     presets: [{ name: "Abas do produto", blocks: [{ type: "tab", settings: { title: "Descrição", useProductDescription: true } }, { type: "tab", settings: { title: "Envio e prazos", body: "O pedido é separado em até 1 dia útil. O prazo de entrega aparece no fechamento da compra." } }, { type: "tab", settings: { title: "Trocas", body: "Você tem 7 dias após o recebimento para pedir a troca de tamanho." } }] }],
   },

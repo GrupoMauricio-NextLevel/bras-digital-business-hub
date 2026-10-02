@@ -2,6 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Check, CreditCard, Eye, Monitor, Palette, QrCode, Smartphone, Tablet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { InvoicePay } from "@/components/finance/invoice-pay";
-import { ThemeMock } from "@/components/portal/theme-showcase";
 import { buyThemeAction, exitTryThemeAction, installThemeAction, tryThemeAction } from "@/app/actions/theme";
 import { chargeInvoiceCardAction, checkPaymentAction, simulatePaymentAction } from "@/app/actions/billing";
 import type { ThemeCard } from "@/lib/themes/install";
@@ -17,7 +17,6 @@ import { formatBRL } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 const DEVICES = [{ key: "desktop", label: "Computador", icon: Monitor, px: null }, { key: "tablet", label: "Tablet", icon: Tablet, px: 768 }, { key: "mobile", label: "Celular", icon: Smartphone, px: 390 }] as const;
-type Mock = "starter" | "arena" | "editorial" | "signature";
 
 /** Vitrine de temas: ver com os produtos da loja, comprar por Pix e instalar com 1 clique. */
 export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { cards: ThemeCard[]; slug: string; demo: boolean; returning?: { paymentId: string; key: string; paid: boolean } | null; autoPreview?: string }) {
@@ -85,7 +84,7 @@ export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { card
         {cards.map((c) => (
           <li key={c.key}>
             <Card className={cn("flex h-full flex-col overflow-hidden", c.active && "ring-2 ring-accent")}>
-              <div className="relative border-b border-border bg-neutral-100 p-3" aria-hidden><div className="pointer-events-none overflow-hidden rounded-md border border-neutral-200 shadow-sm"><ThemeMock k={c.key as Mock} /></div></div>
+              <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-neutral-100" aria-hidden><Image src={`/temas/${c.key}-desktop.webp`} alt="" fill sizes="(min-width:1280px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover object-top" /></div>
               <CardContent className="flex flex-1 flex-col gap-3 pt-4">
                 <div className="flex items-start justify-between gap-2"><div><h3 className="text-base font-semibold">{c.name}</h3><p className="text-xs text-muted-foreground">{c.tagline}</p></div><div className="text-right"><div className="text-lg font-bold tabular-nums">{c.priceCents === 0 ? "Grátis" : formatBRL(c.priceCents)}</div>{c.priceCents > 0 ? <div className="text-[11px] text-muted-foreground">no cartão em até {c.quote.installments}x de {formatBRL(c.quote.installmentCents)}</div> : null}{c.priceCents > 0 ? <div className="text-[11px] font-medium text-success">ou {formatBRL(c.quote.pixCents)} no Pix ({c.quote.pixDiscountPct}% off)</div> : null}{c.priceCents > 0 ? <div className="text-[11px] text-muted-foreground">licença permanente</div> : null}</div></div>
                 <div className="flex flex-wrap gap-1.5">{c.active ? <Badge tone="success" dot>Ativo</Badge> : null}{c.owned && c.priceCents > 0 ? <Badge tone="info">Comprado</Badge> : null}</div>

@@ -41,19 +41,21 @@ function starter(c: PresetContext): ThemePreset {
   };
 }
 
-function aurora(c: PresetContext): ThemePreset {
-  const style = normalizeStyle({ primary: "#1f2a44", accent: "#be185d", headingFont: "display", bodyFont: "moderna", radius: 14, buttons: "solid", quickView: true, animations: false });
-  const help = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento pelo WhatsApp para escolher o tamanho e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
+/** Degrau de entrada dos temas pagos: o mesmo padrão de página em segmentos e cores diferentes (Lume, Ninho…). */
+type EntryLook = { primary: string; accent: string; headingFont: string; radius: number; catStyle: "circles" | "cards"; heroFallback: { title: (name: string) => string; text: string; cta: string }; featured: { title: string; subtitle: string }; aboutCta: string };
+function entryTheme(c: PresetContext, look: EntryLook): ThemePreset {
+  const style = normalizeStyle({ primary: look.primary, accent: look.accent, headingFont: look.headingFont, bodyFont: "moderna", radius: look.radius, buttons: "solid", quickView: true, animations: false });
+  const help = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento pelo WhatsApp para escolher e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
   return {
     style,
     globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
     pages: pages(
       [
-        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? `Novidades na ${c.storeName}`, text: c.hero?.subtitle ?? "Peças escolhidas com carinho, com envio para todo o Brasil.", ctaLabel: c.hero?.ctaLabel ?? "Ver novidades", height: "lg", overlay: 35, align: "left", fullWidth: true } }],
+        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? look.heroFallback.title(c.storeName), text: c.hero?.subtitle ?? look.heroFallback.text, ctaLabel: c.hero?.ctaLabel ?? look.heroFallback.cta, height: "lg", overlay: 35, align: "left", fullWidth: true } }],
         ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
-        ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: "circles" } }],
-        ["featured", { type: "product-showcase", settings: { title: "Escolhidos para você", subtitle: "Os destaques da loja", source: "featured", count: 4 } }],
-        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte em poucas linhas o que torna a sua loja especial.", ctaLabel: "Conhecer o catálogo", ratio: "square" } }],
+        ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: look.catStyle } }],
+        ["featured", { type: "product-showcase", settings: { title: look.featured.title, subtitle: look.featured.subtitle, source: "featured", count: 4 } }],
+        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte em poucas linhas o que torna a sua loja especial.", ctaLabel: look.aboutCta, ratio: "square" } }],
         ["latest", { type: "product-showcase", settings: { title: "Acabaram de chegar", subtitle: "", source: "latest", count: 4 } }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
         help(),
@@ -65,6 +67,8 @@ function aurora(c: PresetContext): ThemePreset {
     ),
   };
 }
+const lume = (c: PresetContext) => entryTheme(c, { primary: "#1f2a44", accent: "#be185d", headingFont: "display", radius: 14, catStyle: "circles", heroFallback: { title: (n) => `Novidades na ${n}`, text: "Peças escolhidas com carinho, com envio para todo o Brasil.", cta: "Ver novidades" }, featured: { title: "Escolhidos para você", subtitle: "Os destaques da loja" }, aboutCta: "Conhecer o catálogo" });
+const ninho = (c: PresetContext) => entryTheme(c, { primary: "#2f4a3a", accent: "#b4532a", headingFont: "editorial", radius: 10, catStyle: "cards", heroFallback: { title: (n) => `Deixe a casa com a sua cara na ${n}`, text: "Móveis e peças de decoração escolhidos para o seu lar, com envio para todo o Brasil.", cta: "Ver a coleção" }, featured: { title: "Para o seu lar", subtitle: "Os destaques da casa" }, aboutCta: "Ver todos os móveis" });
 
 function arena(c: PresetContext): ThemePreset {
   const style = normalizeStyle({ primary: "#0f1c16", accent: "#22c55e", headingFont: "condensada", bodyFont: "moderna", radius: 8, buttons: "solid", quickView: true, animations: true });
@@ -144,6 +148,6 @@ function signature(c: PresetContext): ThemePreset {
   };
 }
 
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, aurora, arena, editorial, signature };
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, lume, ninho, arena, editorial, signature };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }

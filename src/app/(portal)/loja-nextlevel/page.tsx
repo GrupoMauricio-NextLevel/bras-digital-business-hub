@@ -8,6 +8,7 @@ import { BuyButton } from "@/components/nextlevel-shop/buy-button";
 import { Reveal } from "@/components/portal/reveal";
 import { supportContacts } from "@/lib/support";
 import { formatBRL } from "@/lib/money";
+import { publicThemes } from "@/lib/themes/gallery";
 import type { DigitalCategory } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,7 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
   const brand = await getBrand();
   const db = await getDb();
   const products = await listDigitalProducts(db);
+  const paidThemes = (await publicThemes(db)).filter((t) => t.priceCents > 0);
   const featured = products.find((p) => p.featured) ?? products[0];
   const rest = products.filter((p) => p.id !== featured?.id);
   const c = supportContacts();
@@ -56,6 +58,21 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
           </ul>
         </div>
       </section>
+
+      {paidThemes.length ? (
+        <section className="bg-white py-14" aria-labelledby="temas-loja">
+          <div className="mx-auto max-w-6xl px-4">
+            <h2 id="temas-loja" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Temas para a sua loja</h2>
+            <p className="mt-2 max-w-2xl text-neutral-700">Veja cada tema em uma loja de exemplo, antes de comprar. Compra única, instalação em 1 clique.</p>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {paidThemes.map((t) => (
+                <li key={t.key}><Link href={`/temas/${t.key}`} className="block rounded-xl border border-neutral-200 p-4 transition hover:border-neutral-400"><span className="block text-lg font-bold">{t.name}</span><span className="block text-sm text-neutral-700">{t.niche}</span><span className="mt-2 block font-extrabold tabular-nums">{t.quote ? `${formatBRL(t.quote.pixCents)} no Pix` : formatBRL(t.priceCents)}</span></Link></li>
+              ))}
+            </ul>
+            <Link href="/temas" className="mt-5 inline-flex font-semibold text-[#0b6b34] underline">Ver todos os temas</Link>
+          </div>
+        </section>
+      ) : null}
 
       {featured ? (
         <section className="bg-[#f4f6f5] py-16" aria-labelledby="destaque">

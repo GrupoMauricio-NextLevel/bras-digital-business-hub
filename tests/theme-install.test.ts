@@ -23,11 +23,11 @@ const pay = async (invoiceId: string) => { const inv = await markInvoicePaid(ctx
 const ctxp: PresetContext = { storeName: "Loja Teste", tagline: "Slogan da loja", primary: "#0f172a", accent: "#16a34a", announcement: "", footerText: "", now: new Date("2026-05-10T12:00:00Z") };
 
 describe("catálogo de temas", () => {
-  it("tem os temas com os preços definidos (Aurora é proposta, em aprovação)", () => {
-    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["aurora", 14900], ["arena", 29900], ["editorial", 69900], ["signature", 149900]]);
+  it("tem os temas com os preços definidos (Ninho em aprovação)", () => {
+    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["lume", 14900], ["ninho", 14900], ["arena", 29900], ["editorial", 69900], ["signature", 149900]]);
   });
   it("a semente já traz o catálogo novo e sincronizar de novo não muda nada", async () => {
-    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "aurora", "editorial", "signature", "starter"]); expect(rows.filter((r) => !r.available).map((r) => r.key)).toEqual(["aurora"]);
+    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "editorial", "lume", "ninho", "signature", "starter"]); expect(rows.filter((r) => !r.available).map((r) => r.key)).toEqual(["ninho"]);
     expect(await syncThemeCatalog(ctx.db)).toEqual([]);
   });
   it("converte os temas antigos (pro e elite) mantendo o id das lojas ligadas", async () => {
@@ -75,8 +75,8 @@ describe("modelos dos temas", () => {
 
 describe("compra e instalação com 1 clique", () => {
   const A = () => ctx.actors.arena; const id = () => ctx.seed.stores.arena.id;
-  it("a vitrine mostra os quatro temas, com o Starter já disponível", async () => {
-    const cards = await themeCardsFor(ctx.db, A()); expect(cards.map((c) => c.key)).toEqual(["starter", "arena", "editorial", "signature"]);
+  it("a vitrine mostra só os temas à venda, com o Starter já disponível", async () => {
+    const cards = await themeCardsFor(ctx.db, A()); expect(cards.map((c) => c.key)).toEqual(["starter", "lume", "arena", "editorial", "signature"]);
     expect(cards.find((c) => c.key === "starter")!.owned).toBe(true); expect(cards.find((c) => c.key === "arena")!.owned).toBe(false); expect(cards.find((c) => c.key === "starter")!.active).toBe(true);
   });
   it("tema pago não instala sem comprar", async () => { await expect(installTheme(ctx.db, A(), "arena")).rejects.toMatchObject({ code: "THEME_NOT_OWNED" }); });

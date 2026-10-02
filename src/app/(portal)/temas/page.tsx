@@ -26,7 +26,7 @@ export default async function Temas() {
             </Link>
             <div className="flex flex-1 flex-col gap-3 p-5">
               <div className="flex items-start justify-between gap-3">
-                <div><h2 className="text-xl font-bold">{t.name}</h2><p className="text-sm text-neutral-700">{t.niche}</p></div>
+                <div><h2 className="sr-only">{t.name}</h2>{t.logo ? <Image src={t.logo} alt={t.name} width={120} height={36} className="h-9 w-auto" /> : <p aria-hidden className="text-xl font-bold">{t.name}</p>}<p className="mt-1 text-sm text-neutral-700">{t.niche}</p></div>
                 <p className="text-right text-lg font-extrabold tabular-nums">{t.priceCents === 0 ? "Grátis" : formatBRL(t.priceCents)}</p>
               </div>
               <p className="flex-1 text-sm text-neutral-700">{t.tagline}.</p>
