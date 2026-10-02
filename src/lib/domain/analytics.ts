@@ -1,5 +1,5 @@
 /** Análise de vendas do lojista: funções puras sobre pedidos e itens já carregados. */
-export type AnalyticsOrder = { id: string; status: string; customerPaymentStatus: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string; shippingState?: string | null };
+export type AnalyticsOrder = { id: string; status: string; customerPaymentStatus: string; channel: string; customerEmail: string; subtotalCents: number; discountCents: number; costTotalCents: number; createdAt: string; shippingState?: string | null };
 export type AnalyticsItem = { orderId: string; productName: string; quantity: number; lineTotalCents: number; unitCostCents: number };
 
 export type StoreAnalytics = {
@@ -22,6 +22,9 @@ export type StoreAnalytics = {
  */
 export const isEligibleSale = (o: { status: string; customerPaymentStatus: string }) => o.status !== "CANCELED" && o.customerPaymentStatus === "PAID";
 
+/** Valor líquido da venda: subtotal dos produtos menos o desconto do cupom (sem frete). */
+export const netSaleCents = (o: { subtotalCents: number; discountCents: number }) => o.subtotalCents - o.discountCents;
+
 const DAY = 86_400_000;
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -35,14 +38,14 @@ export function computeStoreAnalytics(orders: AnalyticsOrder[], items: Analytics
 
   const days = Array.from({ length: windowDays }, (_, i) => { const d = new Date(start.getTime() + i * DAY); return { date: dayKey(d), label: `${d.getUTCDate()}/${d.getUTCMonth() + 1}`, salesCents: 0, orders: 0 }; });
   const byDate = new Map(days.map((d) => [d.date, d]));
-  for (const o of inWindow) { const d = byDate.get(o.createdAt.slice(0, 10)); if (d) { d.salesCents += o.subtotalCents; d.orders += 1; } }
+  for (const o of inWindow) { const d = byDate.get(o.createdAt.slice(0, 10)); if (d) { d.salesCents += netSaleCents(o); d.orders += 1; } }
 
-  const salesCents = inWindow.reduce((s, o) => s + o.subtotalCents, 0);
-  const marginCents = inWindow.reduce((s, o) => s + o.subtotalCents - o.costTotalCents, 0);
-  const previousSalesCents = previous.reduce((s, o) => s + o.subtotalCents, 0);
+  const salesCents = inWindow.reduce((s, o) => s + netSaleCents(o), 0);
+  const marginCents = inWindow.reduce((s, o) => s + netSaleCents(o) - o.costTotalCents, 0);
+  const previousSalesCents = previous.reduce((s, o) => s + netSaleCents(o), 0);
 
   const channels = new Map<string, { orders: number; salesCents: number }>();
-  for (const o of inWindow) { const c = channels.get(o.channel) ?? { orders: 0, salesCents: 0 }; c.orders += 1; c.salesCents += o.subtotalCents; channels.set(o.channel, c); }
+  for (const o of inWindow) { const c = channels.get(o.channel) ?? { orders: 0, salesCents: 0 }; c.orders += 1; c.salesCents += netSaleCents(o); channels.set(o.channel, c); }
 
   const ids = new Set(inWindow.map((o) => o.id));
   const prods = new Map<string, { units: number; salesCents: number; marginCents: number }>();
@@ -53,7 +56,7 @@ export function computeStoreAnalytics(orders: AnalyticsOrder[], items: Analytics
   const repeatCustomers = [...perCustomer.values()].filter((n) => n > 1).length;
 
   const states = new Map<string, { orders: number; salesCents: number; customers: Set<string> }>();
-  for (const o of inWindow) { const uf = (o.shippingState ?? "").trim().toUpperCase().slice(0, 2); if (!uf) continue; const c = states.get(uf) ?? { orders: 0, salesCents: 0, customers: new Set<string>() }; c.orders += 1; c.salesCents += o.subtotalCents; c.customers.add(o.customerEmail.trim().toLowerCase()); states.set(uf, c); }
+  for (const o of inWindow) { const uf = (o.shippingState ?? "").trim().toUpperCase().slice(0, 2); if (!uf) continue; const c = states.get(uf) ?? { orders: 0, salesCents: 0, customers: new Set<string>() }; c.orders += 1; c.salesCents += netSaleCents(o); c.customers.add(o.customerEmail.trim().toLowerCase()); states.set(uf, c); }
   const grid = Array.from({ length: 7 }, () => Array.from({ length: 24 }, () => 0));
   for (const o of inWindow) { const br = new Date(new Date(o.createdAt).getTime() - 3 * 3_600_000); grid[br.getUTCDay()]![br.getUTCHours()]! += 1; }
   let peak: StoreAnalytics["heatmap"]["peak"] = null; let max = 0;

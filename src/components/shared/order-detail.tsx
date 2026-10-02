@@ -71,6 +71,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
               </ul>
               <dl className="space-y-1 border-t border-border px-5 py-4 text-sm">
                 <div className="flex justify-between text-muted-foreground"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(order.subtotalCents)}</dd></div>
+                {order.discountCents > 0 ? <div className="flex justify-between text-success"><dt>Desconto{order.discountCode ? ` (${order.discountCode})` : ""}</dt><dd className="tabular-nums">− {formatBRL(order.discountCents)}</dd></div> : null}
                 <div className="flex justify-between text-muted-foreground"><dt>Frete</dt><dd className="tabular-nums">{formatBRL(order.shippingCents)}</dd></div>
                 <div className="flex justify-between font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(order.totalCents)}</dd></div>
                 <div className="flex justify-between pt-2 text-xs text-muted-foreground"><dt>{independent ? "Custo dos produtos" : "Custo à Central"}</dt><dd className="tabular-nums">{formatBRL(order.costTotalCents)}</dd></div>

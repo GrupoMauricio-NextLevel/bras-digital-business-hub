@@ -13,6 +13,7 @@ import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-sta
 import { capabilitiesForSupplier } from "./finance";
 import { assertCanFulfilOrder, assertManualPaymentConfirmable, storeModality } from "./order-policy";
 import { tryDebitOrder } from "./wallet";
+import { priceDiscount, redeemDiscount, releaseDiscount } from "./discounts";
 
 export const orderLineSchema = z.object({
   productId: z.string().min(1),
@@ -43,6 +44,7 @@ export const createOrderSchema = z.object({
   items: z.array(orderLineSchema).min(1, "Adicione ao menos um item"),
   customerPaymentStatus: z.enum(["PENDING", "PAID"]).default("PENDING"),
   notes: z.string().optional(),
+  discountCode: z.string().trim().max(24).optional(),
 });
 
 export type CreateOrderInput = z.input<typeof createOrderSchema>;
@@ -99,13 +101,16 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
 
   const subtotal = lines.reduce((s, l) => s + l.lineTotalCents, 0);
   const costTotal = lines.reduce((s, l) => s + l.unitCostCents * l.quantity, 0);
-  const total = subtotal + input.shipping.costCents;
+  const discount = input.discountCode ? await priceDiscount(db, store.id, input.discountCode, subtotal, costTotal) : null;
+  const discountCents = discount?.cents ?? 0;
+  const total = subtotal - discountCents + input.shipping.costCents;
 
   // Consolida reservas por variante para validar disponibilidade agregada.
   const merged = new Map<string, number>();
   for (const r of reservations) merged.set(r.variantId, (merged.get(r.variantId) ?? 0) + r.quantity);
 
   return db.transaction(async (tx) => {
+    if (discount) await redeemDiscount(tx, discount.id);
     for (const [variantId, quantity] of merged) {
       await reserveStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
     }
@@ -137,6 +142,9 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       paymentProvider: options.paymentProvider ?? "MANUAL",
       reservationExpiresAt: options.reservationMinutes && input.customerPaymentStatus !== "PAID" ? new Date(Date.now() + options.reservationMinutes * 60_000).toISOString() : null,
       subtotalCents: subtotal,
+      discountCents,
+      discountId: discount?.id ?? null,
+      discountCode: discount?.code ?? null,
       shippingCents: input.shipping.costCents,
       shippingService: input.shipping.serviceName ?? null,
       shippingDays: input.shipping.days ?? null,
@@ -335,6 +343,7 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     const merged = await expandReservations(tx, items);
     for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
+    if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: "Pedido cancelado. Reserva de estoque liberada.", actorRole: actor.role });
     return "WON" as const;
   });
@@ -431,6 +440,7 @@ export async function expireStaleReservations(db: Database, now = new Date()): P
       if (!fresh || fresh.status !== "PENDING" || fresh.customerPaymentStatus !== "PENDING") return;
       const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, order.id));
       for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: order.id, note: "Reserva expirada" });
+      await releaseDiscount(tx, order.discountId);
       await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, order.id));
       await tx.insert(orderEvents).values({ id: newId("evt"), orderId: order.id, type: "RESERVATION_EXPIRED", message: "Pagamento não realizado a tempo. Pedido cancelado e estoque liberado.", actorRole: SYSTEM_ACTOR });
       expired++;
@@ -446,6 +456,7 @@ export async function cancelOrderBySystem(db: Database, orderId: string, reason:
   await db.transaction(async (tx) => {
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, note: reason });
+    if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
     await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: `Pedido cancelado: ${reason}`, actorRole: SYSTEM_ACTOR });
   });

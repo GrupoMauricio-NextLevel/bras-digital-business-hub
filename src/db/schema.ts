@@ -331,6 +331,10 @@ export const orders = pgTable("orders", {
   shippingState: text("shipping_state"),
   shippingZip: text("shipping_zip"),
   subtotalCents: integer("subtotal_cents").notNull(),
+  /** Desconto do cupom do consumidor (subtotal acima é bruto; venda líquida = subtotal − desconto). */
+  discountCents: integer("discount_cents").notNull().default(0),
+  discountId: text("discount_id"),
+  discountCode: text("discount_code"),
   shippingCents: integer("shipping_cents").notNull().default(0),
   /** Serviço de frete escolhido na compra (nome para exibir) e prazo estimado em dias úteis. */
   shippingService: text("shipping_service"),
@@ -1068,3 +1072,22 @@ export const storeCampaigns = pgTable("store_campaigns", {
   active: boolean("active").notNull().default(true),
   createdAt: createdAt(),
 }, (t) => [index("store_campaigns_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// Cupons de desconto do consumidor (por loja). Separados de `coupons`, que são cupons de teste grátis (código global).
+// ---------------------------------------------------------------------------
+export const storeDiscounts = pgTable("store_discounts", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  code: text("code").notNull(),
+  kind: text("kind", { enum: ["PERCENT", "FIXED"] }).notNull(),
+  /** PERCENT: 1 a 90. FIXED: centavos. */
+  value: integer("value").notNull(),
+  minSubtotalCents: integer("min_subtotal_cents").notNull().default(0),
+  maxRedemptions: integer("max_redemptions"),
+  redemptions: integer("redemptions").notNull().default(0),
+  startsAt: ts("starts_at"),
+  expiresAt: ts("expires_at"),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("store_discounts_code_unique").on(t.storeId, t.code)]);

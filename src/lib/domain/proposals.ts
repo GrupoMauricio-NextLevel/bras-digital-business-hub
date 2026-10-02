@@ -15,7 +15,7 @@ const createSchema = z.object({
 });
 
 /** Preço e descrição vêm SEMPRE do catálogo da loja no servidor (nunca do navegador). */
-async function priceLines(db: Database, storeId: string, items: z.infer<typeof orderLineSchema>[]): Promise<ProposalLine[]> {
+export async function priceLines(db: Database, storeId: string, items: z.infer<typeof orderLineSchema>[]): Promise<ProposalLine[]> {
   const catalog = new Map((await listStoreCatalog(db, storeId)).map((c) => [c.product.id, c]));
   return items.map((l) => {
     const c = catalog.get(l.productId);

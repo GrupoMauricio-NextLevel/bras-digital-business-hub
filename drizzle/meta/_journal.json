@@ -190,6 +190,13 @@
       "when": 1790931246810,
       "tag": "0026_campanhas",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1790932591006,
+      "tag": "0027_cupons_desconto",
+      "breakpoints": true
     }
   ]
 }

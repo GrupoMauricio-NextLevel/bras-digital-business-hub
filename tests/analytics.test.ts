@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { computeStoreAnalytics, type AnalyticsItem, type AnalyticsOrder } from "@/lib/domain/analytics";
 
 const now = new Date("2026-03-30T15:00:00Z");
-const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", customerPaymentStatus: "PAID", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
+const o = (id: string, date: string, subtotal: number, cost: number, extra: Partial<AnalyticsOrder> = {}): AnalyticsOrder => ({ id, status: "DELIVERED", customerPaymentStatus: "PAID", channel: "ONLINE_STORE", customerEmail: `${id}@x.com`, subtotalCents: subtotal, discountCents: 0, costTotalCents: cost, createdAt: `${date}T12:00:00Z`, ...extra });
 
 describe("analytics da loja", () => {
   it("soma vendas e margem da janela e ignora cancelados", () => {
@@ -30,7 +30,7 @@ describe("analytics da loja", () => {
 });
 
 describe("estado e mapa de calor", () => {
-  const base = { channel: "ONLINE_STORE", subtotalCents: 10_000, costTotalCents: 6_000, status: "PAID", customerPaymentStatus: "PAID" };
+  const base = { channel: "ONLINE_STORE", subtotalCents: 10_000, discountCents: 0, costTotalCents: 6_000, status: "PAID", customerPaymentStatus: "PAID" };
   it("agrupa vendas e clientes por UF e ignora pedidos sem estado", () => {
     const now = new Date("2026-06-15T12:00:00Z");
     const a = computeStoreAnalytics([

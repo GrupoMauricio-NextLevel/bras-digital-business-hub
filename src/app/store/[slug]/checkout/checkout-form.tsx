@@ -7,7 +7,7 @@ import { Lock, CreditCard, QrCode } from "lucide-react";
 import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
-import { placeStorefrontOrderAction, quoteShippingAction } from "@/app/actions/storefront";
+import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction } from "@/app/actions/storefront";
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +41,14 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- quoteKey resume CEP e carrinho
   }, [quoteKey, slug]);
+  const [codeInput, setCodeInput] = React.useState("");
+  const [appliedRaw, setApplied] = React.useState<{ key: string; code: string; cents: number } | null>(null);
+  const applied = appliedRaw && appliedRaw.key === cartKey ? appliedRaw : null; // trocou o carrinho: o cupom precisa ser aplicado de novo
+  const discount = applied?.cents ?? 0;
+  const applyCode = () => start(async () => {
+    const r = await previewDiscountAction(slug, codeInput, cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })));
+    if (r.ok) { setApplied({ key: cartKey, code: r.data.code, cents: r.data.cents }); toast.success("Cupom aplicado"); } else { setApplied(null); toast.error(r.error); }
+  });
   const setServiceId = (id: string) => setQuote((q) => ({ ...q, picked: id }));
   const base = `/store/${slug}`;
 
@@ -58,6 +66,7 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
         shippingServiceId: chosen.serviceId,
         items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
+        discountCode: applied?.code,
         notes: payment === "pix" ? "Preferência de pagamento: Pix" : "Preferência de pagamento: Cartão",
       });
       if (!r.ok) { toast.error(r.error); return; }
@@ -119,9 +128,11 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
           <ul className="mt-3 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
           <dl className="mt-4 space-y-2 border-t border-neutral-200 pt-3 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
+            {discount > 0 ? <div className="flex justify-between text-green-700"><dt>Cupom {applied?.code}</dt><dd className="tabular-nums">− {formatBRL(discount)}</dd></div> : null}
             <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd className="tabular-nums">{!chosen ? "—" : shipping === 0 ? "Grátis" : formatBRL(shipping)}</dd></div>
-            <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal + shipping)}</dd></div>
+            <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal - discount + shipping)}</dd></div>
           </dl>
+          <div className="mt-4 flex gap-2"><input aria-label="Cupom de desconto" placeholder="Cupom de desconto" value={codeInput} onChange={(e) => setCodeInput(e.target.value)} className="h-10 min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 text-sm" /><button type="button" onClick={applyCode} disabled={pending || codeInput.trim().length < 3} className="h-10 rounded-lg border border-neutral-300 px-4 text-sm font-medium disabled:opacity-50">Aplicar</button></div>
           <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
           <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento (Pix, cartão ou boleto).</p>
         </aside>

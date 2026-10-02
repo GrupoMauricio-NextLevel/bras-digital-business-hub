@@ -33,6 +33,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
   const [paid, setPaid] = React.useState(true);
   const [shippingCents, setShippingCents] = React.useState(0);
   const [notes, setNotes] = React.useState("");
+  const [discountCode, setDiscountCode] = React.useState("");
   const [pending, start] = React.useTransition();
 
   const product = items.find((i) => i.productId === productId);
@@ -71,7 +72,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
         customer: { name: customer.name, email: customer.email, phone: customer.phone || undefined, marketingOptIn: customer.marketingOptIn },
         shipping: { costCents: shippingCents },
         items: lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
-        customerPaymentStatus: paid ? "PAID" : "PENDING", notes: notes || undefined,
+        customerPaymentStatus: paid ? "PAID" : "PENDING", notes: notes || undefined, discountCode: discountCode.trim() || undefined,
       });
       if (r.ok) { toast.success(`Pedido #${r.data.number} criado`); router.push(`/merchant/orders/${r.data.orderId}`); } else toast.error(r.error);
     });
@@ -149,6 +150,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
               <div className="flex justify-between text-muted-foreground"><dt>Frete</dt><dd className="tabular-nums">{formatBRL(shippingCents)}</dd></div>
               <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(subtotal + shippingCents)}</dd></div>
             </dl>
+            <label className="block text-sm font-medium">Cupom de desconto (opcional)<Input className="mt-1" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Ex.: BEMVINDO10" maxLength={24} /></label>
             <Button type="submit" className="w-full" size="lg" loading={pending} disabled={lines.length === 0}>Criar pedido</Button>
             <Button type="button" variant="secondary" className="w-full" loading={pending} disabled={lines.length === 0} onClick={propose}>Gerar proposta (link para o cliente)</Button>
             <p className="text-xs text-muted-foreground">{hasPack ? "Venda de atacado (grade)." : "Venda de varejo."} O estoque será reservado na Central.</p>

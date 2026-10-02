@@ -67,12 +67,16 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
     const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MERCADO_PAGO", reservationMinutes: RESERVATION_MINUTES_ONLINE });
     try {
       const items = await db.select().from(orderItems).where(eq(orderItems.orderId, r.orderId));
+      const placed = (await db.query.orders.findFirst({ where: eq(orders.id, r.orderId) }))!;
       const url = await getBaseUrl();
       const https = isPublicHttps(url);
       const back = `${url}/store/${slug}/order/${r.orderId}`;
       const pref = await createPreference(token, {
         orderId: r.orderId, orderNumber: r.number, storeName: store.name,
-        items: items.map((i) => ({ id: i.id, title: `${i.productName} · ${i.label.split(" (")[0]}`, quantity: i.quantity, unitPriceCents: i.unitPriceCents })),
+        // Com cupom, um único item com o valor líquido: o Mercado Pago cobra exatamente subtotal − desconto + frete.
+        items: placed.discountCents > 0
+          ? [{ id: placed.id, title: `Pedido #${r.number} (cupom ${placed.discountCode})`, quantity: 1, unitPriceCents: placed.subtotalCents - placed.discountCents }]
+          : items.map((i) => ({ id: i.id, title: `${i.productName} · ${i.label.split(" (")[0]}`, quantity: i.quantity, unitPriceCents: i.unitPriceCents })),
         shippingCents: input.shipping?.costCents ?? 0,
         payer: { name: input.customer.name, email: input.customer.email },
         notificationUrl: https ? `${url}/api/webhooks/mercadopago?store=${slug}` : undefined,
@@ -87,6 +91,21 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
       if (e instanceof MercadoPagoError) throw new DomainError("PAYMENT_PROVIDER", "Não foi possível iniciar o pagamento. Tente novamente em instantes.");
       throw e;
     }
+  });
+}
+
+/** Prévia do desconto no carrinho (o valor final é recalculado ao criar o pedido). */
+export async function previewDiscountAction(slug: string, code: string, items: QuoteItem[]) {
+  return runAction(async () => {
+    const db = await getDb();
+    const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
+    if (!store) throw new NotFoundError("Loja não encontrada.");
+    const { priceLines } = await import("@/lib/domain/proposals");
+    const lines = await priceLines(db, store.id, items);
+    const subtotal = lines.reduce((s, l) => s + l.unitPriceCents * l.quantity, 0);
+    const { priceDiscount } = await import("@/lib/domain/discounts");
+    const d = await priceDiscount(db, store.id, code, subtotal, null);
+    return { code: d.code, cents: d.cents };
   });
 }
 
