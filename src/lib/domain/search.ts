@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or } from "drizzle-orm";
+import { and, desc, eq, ilike, or, type SQL } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { networks, orders, products, storeCustomers, customers, stores, suppliers } from "@/db/schema";
 import { grantForAreaRole, isMaster, type Actor } from "./access";
@@ -16,7 +16,7 @@ export async function globalSearch(db: Database, actor: Actor, raw: string, limi
   const hits: SearchHit[] = [];
   const num = /^#?\d+$/.test(q) ? Number(q.replace("#", "")) : null;
 
-  const orderWhere = (scope: ReturnType<typeof eq> | undefined) => and(scope, or(num !== null ? eq(orders.number, num) : undefined, ilike(orders.customerName, like(q))));
+  const orderWhere = (scope?: SQL) => and(scope, or(num !== null ? eq(orders.number, num) : undefined, ilike(orders.customerName, like(q))));
 
   if (isMaster(actor)) {
     const base = "/master";
