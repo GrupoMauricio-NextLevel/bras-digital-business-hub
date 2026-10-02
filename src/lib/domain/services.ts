@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, serviceMessages, serviceOrders, services, stores, type ServiceOrderStatus, type Service } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { assertCanAccess, grantForAreaRole, hasAreaRole, isMaster, type Actor } from "./access";
+import { assertCanAccess, grantForAreaRole, isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 
 export type Audience = "lite" | "pro" | "supplier";
