@@ -24,7 +24,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       <div className="text-center">
         <CheckCircle2 className="mx-auto size-12" style={{ color: "var(--sf-accent)" }} />
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">{order.status === "CANCELED" ? "Pedido cancelado" : paid ? "Pedido confirmado!" : "Pedido recebido"}</h1>
-        <p className="mt-1 text-sm text-neutral-500">{order.status === "CANCELED" ? "O pagamento não foi concluído a tempo e o estoque foi liberado. Você pode fazer um novo pedido." : `Obrigado, ${order.customerName.split(" ")[0]}. Enviaremos os detalhes para ${order.customerEmail}.`}</p>
+        <p className="mt-1 text-sm text-neutral-500">{order.status === "CANCELED" ? "O pagamento não foi concluído a tempo e o estoque foi liberado. Você pode fazer um novo pedido." : `Obrigado, ${order.customerName.split(" ")[0]}. Guarde o número #${order.number} para acompanhar seu pedido.`}</p>
         <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-1.5 text-sm">Pedido <b>#{order.number}</b></div>
       </div>
       {order.status !== "CANCELED" && !paid && order.paymentProvider === "MERCADO_PAGO" ? <PaymentWatcher slug={slug} orderId={order.id} checkoutUrl={order.paymentCheckoutUrl} expiresAt={order.reservationExpiresAt} /> : null}
