@@ -4,7 +4,7 @@ import { PDFDocument } from "pdf-lib";
 import type { Database } from "@/db/client";
 import { activities, labelPrints, orderEvents, orderItems, orderLabelFiles, orders } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { assertCanAccess, isSupplierSide, type Actor } from "./access";
+import { assertCanAccess, hasAreaRole, isSupplierSide, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { resolveFulfillmentStatus } from "./order-status";
 
@@ -28,7 +28,7 @@ async function loadOrder(db: Database, actor: Actor, orderId: string) {
 
 /** Lojista anexa a etiqueta (PDF do SuperFrete). Valida assinatura, tamanho, limite por pedido e duplicidade. */
 export async function addLabelFile(db: Database, actor: Actor, orderId: string, file: { filename: string; bytes: Uint8Array }) {
-  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Apenas o lojista anexa a etiqueta.");
+  if (!hasAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER")) throw new ForbiddenError("Apenas o lojista anexa a etiqueta.");
   const order = await loadOrder(db, actor, orderId);
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (["SHIPPED", "DELIVERED"].includes(order.status)) throw new DomainError("ORDER_SHIPPED", "Pedido já enviado.");
@@ -55,7 +55,7 @@ export async function addLabelFile(db: Database, actor: Actor, orderId: string, 
 
 /** Remove um arquivo enquanto o pedido ainda não começou a ser separado. Sem arquivos, a etiqueta volta a pendente. */
 export async function removeLabelFile(db: Database, actor: Actor, orderId: string, fileId: string) {
-  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Apenas o lojista remove a etiqueta.");
+  if (!hasAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER")) throw new ForbiddenError("Apenas o lojista remove a etiqueta.");
   const order = await loadOrder(db, actor, orderId);
   if (!["PENDING", "AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "READY_TO_PICK"].includes(order.status)) throw new DomainError("ORDER_LOCKED", "A separação já começou; fale com a Central.");
   await db.transaction(async (tx) => {
