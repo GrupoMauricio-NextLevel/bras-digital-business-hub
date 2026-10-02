@@ -1,6 +1,6 @@
 import { and, count, desc, eq, inArray, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { activities, contentItems, inventory, inventoryMovements, networks, orders, productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores, categories, users } from "@/db/schema";
+import { activities, contentItems, financeInvoices, inventory, inventoryMovements, networks, orders, plans, productPackItems, productPacks, productStoreAccess, productVariants, products, storeAcquisitions, storeProducts, stores, subscriptions, categories, users, walletAccounts } from "@/db/schema";
 import { listSupplierCatalog } from "@/lib/domain/catalog";
 
 export async function getSupplierOverview(supplierId: string) {
@@ -98,6 +98,51 @@ export async function getSupplierStores(supplierId: string) {
     const owner = owners.find((o) => o.storeId === r.store.id) ?? null;
     return { ...r, owner, orders: st?.n ?? 0, gmv: Number(st?.total ?? 0), cost: Number(st?.cost ?? 0), products: listings.find((l) => l.storeId === r.store.id)?.n ?? 0 };
   });
+}
+
+export async function getSupplierStoreDetail(supplierId: string, storeId: string) {
+  const db = await getDb();
+  const owned = await db.select({ store: stores, networkName: networks.name }).from(stores)
+    .innerJoin(networks, eq(networks.id, stores.networkId))
+    .where(and(eq(stores.id, storeId), eq(networks.supplierId, supplierId))).limit(1);
+  if (!owned[0]) return null;
+
+  const store = owned[0].store;
+  const [owner, acquisition, wallet, subRow, orderRows, productRows] = await Promise.all([
+    db.query.users.findFirst({ where: and(eq(users.storeId, storeId), eq(users.role, "STORE_OWNER")) }),
+    db.query.storeAcquisitions.findFirst({ where: and(eq(storeAcquisitions.storeId, storeId), eq(storeAcquisitions.supplierId, supplierId)) }),
+    db.query.walletAccounts.findFirst({ where: eq(walletAccounts.storeId, storeId) }),
+    db.select({ sub: subscriptions, plan: plans }).from(subscriptions).innerJoin(plans, eq(plans.id, subscriptions.planId)).where(eq(subscriptions.storeId, storeId)).limit(1),
+    db.select().from(orders).where(and(eq(orders.storeId, storeId), eq(orders.supplierId, supplierId))).orderBy(desc(orders.createdAt)),
+    db.select({ active: storeProducts.active }).from(storeProducts).where(eq(storeProducts.storeId, storeId)),
+  ]);
+
+  const invoice = acquisition?.invoiceId
+    ? await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.id, acquisition.invoiceId), eq(financeInvoices.storeId, storeId)) })
+    : null;
+  const paidOrders = orderRows.filter((o) => o.customerPaymentStatus === "PAID" && o.status !== "CANCELED");
+  const waitingFunds = orderRows.filter((o) => o.status === "AWAITING_CENTRAL_PAYMENT");
+  const waitingLabel = orderRows.filter((o) => o.status === "AWAITING_LABEL");
+
+  return {
+    store,
+    networkName: owned[0].networkName,
+    owner: owner ? { id: owner.id, name: owner.name, email: owner.email, lastLoginAt: owner.lastLoginAt, mustChangePassword: owner.mustChangePassword } : null,
+    acquisition,
+    invoice,
+    subscription: subRow[0] ?? null,
+    balanceCents: wallet?.balanceCents ?? 0,
+    stats: {
+      activeProducts: productRows.filter((p) => p.active).length,
+      paidOrders: paidOrders.length,
+      gmvCents: paidOrders.reduce((sum, o) => sum + o.totalCents, 0),
+      centralRevenueCents: paidOrders.filter((o) => o.centralPaymentStatus === "PAID").reduce((sum, o) => sum + o.costTotalCents, 0),
+      waitingFunds: waitingFunds.length,
+      waitingFundsCents: waitingFunds.reduce((sum, o) => sum + o.costTotalCents, 0),
+      waitingLabel: waitingLabel.length,
+    },
+    recentOrders: orderRows.slice(0, 8),
+  };
 }
 
 export async function getSupplierContent(supplierId: string) {
