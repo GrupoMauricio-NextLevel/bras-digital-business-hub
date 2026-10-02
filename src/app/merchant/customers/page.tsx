@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Download, ShieldCheck } from "lucide-react";
+import { Download, ShieldCheck, ShoppingCart, UserCheck, Users, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { FilterBar, SearchInput } from "@/components/app/filter-bar";
 import { requireRole } from "@/lib/require-session";
@@ -19,9 +20,19 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
   const session = await requireRole("STORE_OWNER");
   const { q, tag } = await searchParams;
   const rows = await listStoreCustomers(await getDb(), session.store!.id, { q, tag });
+  const totalSpent = rows.reduce((sum, r) => sum + r.sc.totalSpentCents, 0);
+  const repeat = rows.filter((r) => r.sc.ordersCount > 1).length;
+  const consented = rows.filter((r) => r.consents.length > 0).length;
+  const ordersCount = rows.reduce((sum, r) => sum + r.sc.ordersCount, 0);
   return (
     <>
       <PageHeader title="Clientes" description="Clientes da sua loja. Dados de marketing só são utilizáveis com consentimento registrado." actions={<a href="/api/crm/export" className={buttonVariants({ variant: "secondary" })}><Download /> Exportar contatos com consentimento</a>} />
+      <OperationalPulse className="mb-5" items={[
+        { label: "Clientes", value: rows.length, icon: Users, tone: "neutral", hint: "na base atual" },
+        { label: "Compraram novamente", value: repeat, icon: UserCheck, tone: repeat ? "success" : "neutral", hint: "mais de 1 pedido" },
+        { label: "Pedidos da base", value: ordersCount, icon: ShoppingCart, tone: "info", hint: "histórico acumulado" },
+        { label: "Valor movimentado", value: formatBRL(totalSpent), icon: Wallet, tone: "success", hint: consented + " com consentimento" },
+      ]} />
       <Card className="mb-4"><CardContent className="flex items-start gap-3 py-4 text-sm"><ShieldCheck className="mt-0.5 size-4 text-success" /><div><span className="font-medium">Privacidade.</span> <span className="text-muted-foreground">Anotações e etiquetas são só da sua loja. Atender um pedido não autoriza campanhas: a exportação inclui apenas quem consentiu.</span></div></CardContent></Card>
       <Suspense><FilterBar><SearchInput placeholder="Buscar por nome, e-mail ou telefone" /></FilterBar></Suspense>
       <DataTable
