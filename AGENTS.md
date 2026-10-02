@@ -17,6 +17,9 @@ Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle
 - **Domínio, banco, pagamentos, frete, acesso, testes** (Claude): `src/lib/domain/**`, `src/lib/finance/**`, `src/lib/shipping/**`, `src/db/**`, `src/app/actions/**`, `drizzle/**`, `tests/**`.
 - Precisa mexer na área do outro? Faça o mínimo, descreva no commit e avise o dono.
 
+## Visual: trabalhar local, ao vivo, e publicar só no final
+O Codex (visual) trabalha **no computador do dono** numa branch própria (`codex/visual`): `scripts/dev-demo.ps1` liga o sistema em `http://localhost:3100` com atualização automática a cada arquivo salvo (guia em `docs/nextlevel-commerce/visualizar-ao-vivo.md`). **Nada vai para o Render até o dono aprovar uma etapa.** Aprovada, una a branch à de publicação (abaixo) com `git pull --rebase`.
+
 ## Fluxo de trabalho (um Render só, uma branch de publicação)
 O Render publica **a cada push** da branch de publicação, que hoje é `claude/wonderful-cannon-5o38v5` (o dono pode trocar para `main` depois). Claude e Codex trabalham **nessa mesma branch**:
 1. **Antes de começar e antes de cada push:** `git pull --rebase origin claude/wonderful-cannon-5o38v5`. Se houver conflito, resolva mantendo o trabalho dos dois (nunca descarte o do outro agente) e rode os testes.
