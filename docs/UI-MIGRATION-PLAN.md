@@ -13,6 +13,11 @@ Status: DONE
 
 ## Fase 1 — Foundation
 Status: IN_PROGRESS
+
+Entregue:
+- ActionQueue / Fila do Dia
+- OperationalPulse / Pulso Operacional
+- showcase v4 em /dev/design
 1. consolidar tokens existentes
 2. introduzir ActionQueue
 3. introduzir OperationalPulse
@@ -21,7 +26,10 @@ Status: IN_PROGRESS
 6. ampliar /dev/design para QA visual
 
 ## Fase 2 — AppShell
-Status: TODO
+Status: IN_PROGRESS
+
+Entregue:
+- breadcrumb operacional automático tenant → tela atual
 - contexto produto/vertical
 - tenant/papel mais claros
 - navegação mobile
@@ -29,17 +37,17 @@ Status: TODO
 - ações rápidas
 
 ## Fase 3 — SuperDrop
-Status: TODO
+Status: IN_PROGRESS
 Ordem:
-1. Supplier Home
-2. Dispatch
+1. Supplier Home — DONE
+2. Dispatch — DONE
 3. Supplier Orders
 4. Supplier Products
 5. Inventory
 6. Stores
 7. Wallets
 8. Finance
-9. Merchant Home
+9. Merchant Home — DONE
 10. Merchant Orders
 11. Merchant Wallet
 12. Products/Catalog
