@@ -13,6 +13,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende SuperDrop (em produção, com clientes), NextLevel Commerce e o Master central. **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
 
 ## Divisão de trabalho (para dois agentes não colidirem)
+> **Atualização (2026-10-02, dono):** o primeiro teste de design no Codex não deu bom resultado e o dono pausou o visual lá. **Por ora o Claude também faz o visual**, trabalhando em branch própria (`visual/v4`), mostrando capturas de tela ao dono e só publicando na branch de publicação depois da aprovação. O Codex só volta se o dono decidir. As regras abaixo continuam valendo se ele voltar.
+
 - **Visual e design** (Codex): `src/components/**`, `src/app/(portal)/**`, `src/app/globals.css`, `src/lib/themes/**`, `public/**` e o aspecto das telas dos painéis. Mantenha a lógica e os dados como estão; não mude regras de negócio.
 - **Domínio, banco, pagamentos, frete, acesso, testes** (Claude): `src/lib/domain/**`, `src/lib/finance/**`, `src/lib/shipping/**`, `src/db/**`, `src/app/actions/**`, `drizzle/**`, `tests/**`.
 - Precisa mexer na área do outro? Faça o mínimo, descreva no commit e avise o dono.
