@@ -44,13 +44,18 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   const visible = session.user.role === "STORE_OWNER" && session.user.storeRole === "STAFF" ? navItems.filter((i) => STAFF_OK.some((p) => i.href.startsWith(p))) : navItems;
   const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items, brand);
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
-  if (session.user.role === "STORE_OWNER" && store && brand.code === "NEXTLEVEL_COMMERCE") {\n    const assisted = await hasCommerceMasterReturn();\n    return (
+  if (session.user.role === "STORE_OWNER" && store && brand.code === "NEXTLEVEL_COMMERCE") {
+    const assisted = await hasCommerceMasterReturn();
+    return (
       <CommerceMerchantShell
         storeName={store.name}
         userName={session.user.name}
         storefrontHref={storefrontHref}
         staff={session.user.storeRole === "STAFF"}
-        onLogout={logout}\n        assisted={assisted}\n        onReturnToMaster={returnToCommerceMasterAction}\n      >
+        onLogout={logout}
+        assisted={assisted}
+        onReturnToMaster={returnToCommerceMasterAction}
+      >
         {children}
       </CommerceMerchantShell>
     );
