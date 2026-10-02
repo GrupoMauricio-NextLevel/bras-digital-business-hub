@@ -20,7 +20,7 @@ export type CatalogItem = {
 };
 type Line = { key: string; productId: string; variantId?: string; packId?: string; quantity: number; label: string; unitPrice: number };
 
-export function NewOrderForm({ items }: { items: CatalogItem[] }) {
+export function NewOrderForm({ items, independent = false }: { items: CatalogItem[]; independent?: boolean }) {
   const router = useRouter();
   const [lines, setLines] = React.useState<Line[]>([]);
   const first = items[0];
@@ -153,7 +153,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
             <label className="block text-sm font-medium">Cupom de desconto (opcional)<Input className="mt-1" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Ex.: BEMVINDO10" maxLength={24} /></label>
             <Button type="submit" className="w-full" size="lg" loading={pending} disabled={lines.length === 0}>Criar pedido</Button>
             <Button type="button" variant="secondary" className="w-full" loading={pending} disabled={lines.length === 0} onClick={propose}>Gerar proposta (link para o cliente)</Button>
-            <p className="text-xs text-muted-foreground">{hasPack ? "Venda de atacado (grade)." : "Venda de varejo."} O estoque será reservado na Central.</p>
+            <p className="text-xs text-muted-foreground">{hasPack ? "Venda de atacado (grade)." : "Venda de varejo."} {independent ? "O estoque da sua loja será reservado ao criar o pedido." : "O estoque será reservado na Central."}</p>
           </CardContent>
         </Card>
       </div>

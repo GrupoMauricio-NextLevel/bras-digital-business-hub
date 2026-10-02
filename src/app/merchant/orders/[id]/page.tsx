@@ -5,6 +5,7 @@ import { getOrderForActor } from "@/lib/domain/orders";
 import { DomainError } from "@/lib/domain/errors";
 import { canFulfilOrder, storeModality } from "@/lib/domain/order-policy";
 import { OrderDetail } from "@/components/shared/order-detail";
+import { isCommerceStore } from "@/lib/store-brand";
 
 async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: string) {
   try {
@@ -20,7 +21,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const data = await loadOrder(session.actor, id);
   if (!data) notFound();
-  const modality = await storeModality(await getDb(), data.order.storeId);
+  const db = await getDb();
+  const modality = await storeModality(db, data.order.storeId);
   const canFulfil = canFulfilOrder(session.actor, data.order, modality);
-  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} />;
+  const commerce = await isCommerceStore(db, session.store!);
+  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} productLabel={commerce ? "NextLevel Commerce" : "SuperDrop"} />;
 }

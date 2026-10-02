@@ -14,13 +14,15 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
 import { canUse } from "@/lib/features";
 import { formatBRL } from "@/lib/money";
+import { isCommerceStore } from "@/lib/store-brand";
 
 export default async function AnalyticsPage() {
   const session = await requireStoreAdmin();
   const store = session.store!;
+  const commerce = await isCommerceStore(await getDb(), store);
   return (
     <>
-      <PageHeader title="Análise de vendas" description="Últimos 30 dias, comparados com os 30 anteriores. Margem = venda menos custo da Central." />
+      <PageHeader title="Análise de vendas" description={commerce ? "Últimos 30 dias, comparados com os 30 anteriores. Acompanhe vendas, margem, recorrência e comportamento dos clientes." : "Últimos 30 dias, comparados com os 30 anteriores. Margem = venda menos custo da Central."} />
       <FeatureGate offer={store.offer} feature="analytics">
         <AnalyticsBody storeId={store.id} allowed={canUse(store.offer, "analytics")} />
       </FeatureGate>
