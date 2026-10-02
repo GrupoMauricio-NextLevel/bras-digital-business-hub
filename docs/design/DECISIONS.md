@@ -311,3 +311,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D46. Onda 3: nota interna e folha de impressão do pedido
 - **Nota interna** (`addOrderNote`): evento `NOTE_INTERNAL` no histórico, 2 a 500 letras, só quem enxerga o pedido; a página do cliente não lista eventos, então a nota nunca vaza. Sem migração.
 - **Impressão** (`/merchant/orders/[id]/print`, `/supplier/orders/[id]/print`): lista de separação com destinatário, itens e total, marcada **"Não é documento fiscal"**. Não mostra custo nem notas internas. Nota fiscal real e devolução ficam fora (projeto especializado). Teste em `tests/onda1-commerce.test.ts`.
+
+## D47. Onda 4: CRM básico por loja (etiquetas, anotação, histórico, consentimento, exportação)
+- **Migração 0024:** `store_customers.notes` e `store_customers.tags` (perfil só da loja; a pessoa em outra loja tem outro registro). `customers` global não é editado.
+- **Domínio** `src/lib/domain/crm.ts`: lista com busca e filtro por etiqueta, perfil + compras ativas (cancelados fora), salvar etiquetas/anotação (limites 10 etiquetas, 1000 letras), revogar consentimento (mantém o histórico com `revokedAt`) e exportação CSV **só de quem consentiu** e **da própria loja**, com proteção contra fórmula em planilha. Tudo valida a loja; outra loja recebe "não encontrado". Corrigida a consulta antiga que carregava consentimentos de todas as lojas.
+- **Telas:** `/merchant/customers` (busca, etiquetas, exportar) e `/merchant/customers/[id]`; rota `/api/crm/export` (só dono). Pontos, créditos e impersonação ficam fora. Teste `tests/onda4-crm.test.ts`.

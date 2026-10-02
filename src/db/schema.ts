@@ -278,6 +278,9 @@ export const storeCustomers = pgTable("store_customers", {
   ordersCount: integer("orders_count").notNull().default(0),
   totalSpentCents: integer("total_spent_cents").notNull().default(0),
   lastOrderAt: ts("last_order_at"),
+  /** Anotação e etiquetas só desta loja: a mesma pessoa em outra loja tem o seu próprio perfil. */
+  notes: text("notes"),
+  tags: jsonb("tags").$type<string[]>().notNull().default([]),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("store_customers_unique").on(t.storeId, t.customerId)]);
 

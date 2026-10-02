@@ -169,6 +169,13 @@
       "when": 1790790327792,
       "tag": "0023_frete_cotacao",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1790930674443,
+      "tag": "0024_crm_notas_etiquetas",
+      "breakpoints": true
     }
   ]
 }

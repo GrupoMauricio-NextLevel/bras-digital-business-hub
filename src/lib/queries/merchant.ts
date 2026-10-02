@@ -1,6 +1,6 @@
 import { and, count, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { activities, customers, invoices, marketingConsents, orders, plans, serviceLeads, services, storeCustomers, storeProducts, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
+import { activities, invoices, orders, plans, serviceLeads, services, storeCustomers, storeProducts, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { independentSupplierOfStore } from "@/lib/domain/independent";
 
@@ -60,13 +60,6 @@ export async function getSubscription(storeId: string) {
 export async function getMerchantProducts(storeId: string) {
   const db = (await getDb());
   return listStoreCatalog(db, storeId, { onlyActive: false });
-}
-
-export async function getMerchantCustomers(storeId: string) {
-  const db = (await getDb());
-  const rows = await db.select({ sc: storeCustomers, customer: customers }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(eq(storeCustomers.storeId, storeId)).orderBy(desc(storeCustomers.lastOrderAt));
-  const consents = await db.select().from(marketingConsents);
-  return rows.map((r) => ({ ...r, consents: consents.filter((c) => c.storeCustomerId === r.sc.id && !c.revokedAt) }));
 }
 
 export async function getStoreTheme(storeId: string) {
