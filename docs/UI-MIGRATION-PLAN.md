@@ -46,15 +46,15 @@ Ordem:
 5. Inventory — DONE
 6. Stores
 7. Wallets — DONE
-8. Finance
+8. Finance — DONE
 9. Merchant Home — DONE
 10. Merchant Orders — DONE
 11. Merchant Wallet — DONE
 12. Products/Catalog — DONE
 13. Storefront
-14. Customers
+14. Customers — DONE
 15. Analytics
-16. After Sales
+16. After Sales — DONE
 17. Settings
 
 ## Fase 4 — Master
