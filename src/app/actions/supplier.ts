@@ -1,9 +1,9 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, productVariants, products } from "@/db/schema";
+import { activities, networks, productStoreAccess, productVariants, products, stores } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { requireSupplierId } from "@/lib/domain/access";
@@ -56,13 +56,18 @@ export async function setDistributionAction(input: z.input<typeof distributionSc
     const db = (await getDb());
     const product = await db.query.products.findFirst({ where: and(eq(products.id, data.productId), eq(products.supplierId, supplierId)) });
     if (!product) throw new NotFoundError("Produto não encontrado.");
+    const selectedStoreIds = [...new Set(data.storeIds)];
+    if (data.distribution === "SELECTED_STORES" && selectedStoreIds.length) {
+      const ownedStores = await db.select({ id: stores.id }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(inArray(stores.id, selectedStoreIds), eq(networks.supplierId, supplierId)));
+      if (ownedStores.length !== selectedStoreIds.length) throw new ForbiddenError("Uma ou mais lojas selecionadas não pertencem à sua rede.");
+    }
     await db.transaction(async (tx) => {
       await tx.update(products).set({ distribution: data.distribution, updatedAt: new Date().toISOString() }).where(eq(products.id, product.id));
       await tx.delete(productStoreAccess).where(eq(productStoreAccess.productId, product.id));
-      if (data.distribution === "SELECTED_STORES" && data.storeIds.length) {
-        await tx.insert(productStoreAccess).values(data.storeIds.map((storeId) => ({ productId: product.id, storeId })));
+      if (data.distribution === "SELECTED_STORES" && selectedStoreIds.length) {
+        await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId: product.id, storeId })));
       }
-      await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "DISTRIBUTION", message: `Distribuição de “${product.name}” alterada para ${data.distribution === "ALL_NETWORK" ? "toda a rede" : `${data.storeIds.length} loja(s)`}` });
+      await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "DISTRIBUTION", message: `Distribuição de “${product.name}” alterada para ${data.distribution === "ALL_NETWORK" ? "toda a rede" : `${selectedStoreIds.length} loja(s)`}` });
     });
     revalidatePath("/supplier", "layout");
     revalidatePath("/merchant", "layout");
