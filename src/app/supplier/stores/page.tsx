@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getSupplierStores } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { StoreOwnerActions } from "./owner-actions";
 
 export default async function SupplierStoresPage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const rows = await getSupplierStores(session.supplier!.id);
   return (
     <>
