@@ -106,8 +106,12 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
 
     const storeCustomerId = await upsertStoreCustomer(tx, store.id, input.customer, total);
 
-    const numberRow = await tx.select({ nextNumber: sql<number>`coalesce(max(${orders.number}), 1000) + 1` }).from(orders).where(eq(orders.storeId, store.id));
-    const nextNumber = Number(numberRow[0]?.nextNumber ?? 1001);
+    const numberRow = await tx.update(stores)
+      .set({ nextOrderNumber: sql`${stores.nextOrderNumber} + 1` })
+      .where(eq(stores.id, store.id))
+      .returning({ nextOrderNumber: stores.nextOrderNumber });
+    if (!numberRow[0]) throw new NotFoundError("Loja não encontrada.");
+    const nextNumber = numberRow[0].nextOrderNumber - 1;
 
     const status = resolveFulfillmentStatus({ status: "PENDING", customerPaymentStatus: input.customerPaymentStatus, centralPaymentStatus: "PENDING", shippingLabelStatus: "PENDING" });
 
@@ -140,6 +144,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CREATED", message: `Pedido criado via ${channelLabel(input.channel)}. Estoque reservado.`, actorRole: "SYSTEM" });
     if (input.customerPaymentStatus === "PAID") {
       await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado (demonstração).", actorRole: "SYSTEM" });
+      await recordPaidCustomerMetrics(tx, storeCustomerId, total);
     }
     await tx.insert(activities).values([
       { id: newId("act"), scope: "STORE", storeId: store.id, supplierId: network.supplierId, type: "ORDER_CREATED", message: `Novo pedido #${nextNumber} de ${input.customer.name}` },
@@ -159,7 +164,7 @@ function channelLabel(c: string) {
   return { ONLINE_STORE: "loja virtual", WHATSAPP: "WhatsApp", INSTAGRAM: "Instagram", MANUAL: "venda manual" }[c] ?? c;
 }
 
-async function upsertStoreCustomer(db: Database, storeId: string, c: { name: string; email: string; phone?: string; marketingOptIn: boolean }, totalCents: number) {
+async function upsertStoreCustomer(db: Database, storeId: string, c: { name: string; email: string; phone?: string; marketingOptIn: boolean }, _totalCents: number) {
   const email = c.email.toLowerCase();
   let customer = await db.query.customers.findFirst({ where: eq(customers.email, email) });
   if (!customer) {
@@ -171,15 +176,23 @@ async function upsertStoreCustomer(db: Database, storeId: string, c: { name: str
   let storeCustomerId: string;
   if (!sc) {
     storeCustomerId = newId("sc");
-    await db.insert(storeCustomers).values({ id: storeCustomerId, storeId, customerId: customer.id, ordersCount: 1, totalSpentCents: totalCents, lastOrderAt: new Date().toISOString() });
+    await db.insert(storeCustomers).values({ id: storeCustomerId, storeId, customerId: customer.id, ordersCount: 0, totalSpentCents: 0 });
   } else {
     storeCustomerId = sc.id;
-    await db.update(storeCustomers).set({ ordersCount: sc.ordersCount + 1, totalSpentCents: sc.totalSpentCents + totalCents, lastOrderAt: new Date().toISOString() }).where(eq(storeCustomers.id, sc.id));
   }
   if (c.marketingOptIn) {
     await db.insert(marketingConsents).values({ id: newId("mc"), storeCustomerId, purpose: "WHATSAPP_MARKETING", source: "CHECKOUT" });
   }
   return storeCustomerId;
+}
+
+async function recordPaidCustomerMetrics(db: Database, storeCustomerId: string | null, totalCents: number) {
+  if (!storeCustomerId) return;
+  await db.update(storeCustomers).set({
+    ordersCount: sql`${storeCustomers.ordersCount} + 1`,
+    totalSpentCents: sql`${storeCustomers.totalSpentCents} + ${totalCents}`,
+    lastOrderAt: new Date().toISOString(),
+  }).where(eq(storeCustomers.id, storeCustomerId));
 }
 
 // ---------------------------------------------------------------------------
@@ -225,7 +238,9 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (order.customerPaymentStatus === "PAID") return order;
   return db.transaction(async (tx) => {
-    await tx.update(orders).set({ customerPaymentStatus: "PAID" }).where(eq(orders.id, orderId));
+    const changed = await tx.update(orders).set({ customerPaymentStatus: "PAID", updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.customerPaymentStatus, "PENDING"))).returning({ id: orders.id });
+    if (!changed[0]) return (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!;
+    await recordPaidCustomerMetrics(tx, order.storeCustomerId, order.totalCents);
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
@@ -344,7 +359,12 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
   }
 
   return db.transaction(async (tx) => {
-    await tx.update(orders).set({ customerPaymentStatus: "PAID", paymentProvider: info.provider, paymentReference: info.reference, reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
+    const changed = await tx.update(orders).set({ customerPaymentStatus: "PAID", paymentProvider: info.provider, paymentReference: info.reference, reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.customerPaymentStatus, "PENDING"))).returning({ id: orders.id });
+    if (!changed[0]) {
+      const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+      return { changed: false as const, status: fresh?.status ?? order.status };
+    }
+    await recordPaidCustomerMetrics(tx, order.storeCustomerId, order.totalCents);
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: `Pagamento do cliente aprovado (${info.provider === "MERCADO_PAGO" ? "Mercado Pago" : "demonstração"} · ${info.reference}).`, actorRole: SYSTEM_ACTOR });
     if (next !== order.status) {
