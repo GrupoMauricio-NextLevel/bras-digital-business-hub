@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, type CreateOrderInput } from "@/lib/domain/orders";
+import { addOrderNote, advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, type CreateOrderInput } from "@/lib/domain/orders";
 import { syncOrderPayment } from "@/lib/payments/service";
 import type { OrderStatus } from "@/db/schema";
 
@@ -79,4 +79,13 @@ export async function orderQuickViewAction(orderId: string) {
     const { order, items, events } = await getOrderForActor(await getDb(), s.actor, orderId);
     return { order, items, events: events.slice(0, 12), role: s.user.role };
   } catch { return null; }
+}
+
+export async function addOrderNoteAction(orderId: string, text: string) {
+  return runAction(async () => {
+    const s = await actor();
+    await addOrderNote(await getDb(), s.actor, orderId, text);
+    revalidateOrders();
+    return undefined;
+  });
 }

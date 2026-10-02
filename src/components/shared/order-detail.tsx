@@ -5,6 +5,9 @@ import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 import type { Order, OrderItem } from "@/db/schema";
 import { OrderActions } from "./order-actions";
+import { OrderNoteForm } from "./order-note-form";
+import Link from "next/link";
+import { Printer } from "lucide-react";
 import type { Role } from "@/lib/domain/access";
 import { CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -35,7 +38,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
 
   return (
     <>
-      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent} />} />
+      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden /> Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent} /></div>} />
 
       {order.status !== "CANCELED" ? (
         <div className="mb-6 rounded-lg border border-border bg-surface p-4 shadow-sm">
@@ -79,11 +82,12 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
           <Card>
             <CardHeader><CardTitle>Histórico</CardTitle></CardHeader>
             <CardContent>
+              <OrderNoteForm orderId={order.id} />
               <ol className="relative space-y-4 border-l border-border pl-4">
                 {events.map((e) => (
                   <li key={e.id} className="relative text-sm">
                     <span className="absolute -left-[21px] top-1.5 size-2.5 rounded-full border-2 border-surface bg-border-strong" />
-                    <p>{e.message}</p>
+                    <p>{e.type === "NOTE_INTERNAL" ? <><span className="mr-1 rounded bg-warning-soft px-1.5 py-0.5 text-xs font-medium text-warning">Nota interna</span>{e.message}</> : e.message}</p>
                     <p className="text-xs text-muted-foreground">{formatDateTime(e.createdAt)}{e.actorRole ? ` · ${e.actorRole === "SYSTEM" ? "sistema" : e.actorRole === "STORE_OWNER" ? "lojista" : e.actorRole === "SUPPLIER_ADMIN" ? "fornecedor" : "NextLevel"}` : ""}</p>
                   </li>
                 ))}

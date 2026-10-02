@@ -272,6 +272,15 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
   });
 }
 
+/** Nota interna do pedido: aparece só no histórico dos painéis (nunca na página do cliente). */
+export async function addOrderNote(db: Database, actor: Actor, orderId: string, raw: string) {
+  const text = raw.trim();
+  if (text.length < 2) throw new DomainError("INVALID_NOTE", "Escreva a nota (mínimo 2 letras).");
+  if (text.length > 500) throw new DomainError("INVALID_NOTE", "A nota pode ter no máximo 500 caracteres.");
+  await loadOwned(db, actor, orderId);
+  await db.insert(orderEvents).values({ id: newId("evt"), orderId, type: "NOTE_INTERNAL", message: text, actorRole: actor.role });
+}
+
 /**
  * Avanço operacional. Quem pode: fornecedor/expedição (da Central do pedido), Master e, em conta simples,
  * o dono da própria loja. A mudança de status é condicional: repetir o mesmo avanço não baixa estoque duas vezes.

@@ -224,3 +224,17 @@ describe("Onda 1 — dinheiro: conta simples não usa carteira; SuperDrop manté
     expect(["AWAITING_LABEL", "AWAITING_CENTRAL_PAYMENT"]).toContain(row.status);
   });
 });
+
+describe("Onda 3 — notas internas do pedido", () => {
+  it("dono grava nota interna; outro tenant não grava; nota curta é recusada", async () => {
+    const { addOrderNote } = await import("@/lib/domain/orders");
+    const a = await independent(1);
+    const b = await independent(2);
+    const o = await sell(a);
+    await addOrderNote(ctx.db, a.owner, o.orderId, "Cliente pediu embalagem para presente");
+    const evs = (await ctx.db.select().from(orderEvents).where(eq(orderEvents.orderId, o.orderId))).filter((e) => e.type === "NOTE_INTERNAL");
+    expect(evs).toHaveLength(1);
+    await expect(addOrderNote(ctx.db, b.owner, o.orderId, "invasão")).rejects.toThrow();
+    await expect(addOrderNote(ctx.db, a.owner, o.orderId, " ")).rejects.toThrow(/mínimo/);
+  });
+});

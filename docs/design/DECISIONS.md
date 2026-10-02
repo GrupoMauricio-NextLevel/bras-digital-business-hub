@@ -307,3 +307,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 
 ## D45. Onda 2: categorias do catálogo (CRUD) para Central e conta simples
 - Categorias já existiam só como texto digitado no produto. Agora há lista com contagem de produtos, criar, renomear (sem duplicar nome) e excluir **sem apagar produtos** (ficam sem categoria), sempre limitado à Central do usuário (`src/lib/domain/categories.ts`). Telas: `/supplier/products/categorias` e `/merchant/catalogo/categorias` (mesmo corpo). Duplicar, arquivar em lote, importar CSV e fotos já existiam e foram mantidos. Sem migração. Variantes avançadas e preço por variante continuam **fora** (exigem contrato e migração aprovados). Teste: `tests/onda2-categorias.test.ts`.
+
+## D46. Onda 3: nota interna e folha de impressão do pedido
+- **Nota interna** (`addOrderNote`): evento `NOTE_INTERNAL` no histórico, 2 a 500 letras, só quem enxerga o pedido; a página do cliente não lista eventos, então a nota nunca vaza. Sem migração.
+- **Impressão** (`/merchant/orders/[id]/print`, `/supplier/orders/[id]/print`): lista de separação com destinatário, itens e total, marcada **"Não é documento fiscal"**. Não mostra custo nem notas internas. Nota fiscal real e devolução ficam fora (projeto especializado). Teste em `tests/onda1-commerce.test.ts`.
