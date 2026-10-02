@@ -31,6 +31,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
   const [channel, setChannel] = React.useState<"WHATSAPP" | "INSTAGRAM" | "MANUAL" | "ONLINE_STORE">("WHATSAPP");
   const [paid, setPaid] = React.useState(true);
   const [shippingCents, setShippingCents] = React.useState(0);
+  const [shipping, setShipping] = React.useState({ zip: "", address: "", city: "", state: "SP" });
   const [notes, setNotes] = React.useState("");
   const [pending, start] = React.useTransition();
 
@@ -68,7 +69,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
       const r = await createManualOrderAction({
         channel, saleType: hasPack ? "WHOLESALE" : "RETAIL",
         customer: { name: customer.name, email: customer.email, phone: customer.phone || undefined, marketingOptIn: customer.marketingOptIn },
-        shipping: { costCents: shippingCents },
+        shipping: { ...shipping, costCents: shippingCents },
         items: lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         customerPaymentStatus: paid ? "PAID" : "PENDING", notes: notes || undefined,
       });
@@ -124,6 +125,16 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
             <FormField label="WhatsApp" htmlFor="cphone"><Input id="cphone" value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} placeholder="11 99999-0000" /></FormField>
             <div className="flex items-end pb-2"><Switch checked={customer.marketingOptIn} onCheckedChange={(v) => setCustomer({ ...customer, marketingOptIn: v })} label="Cliente autorizou contato de marketing" /></div>
             <FormField label="Observações" htmlFor="notes" className="sm:col-span-2"><Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Ex.: retirar na loja; presente" /></FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Entrega</CardTitle></CardHeader>
+          <CardContent className="grid gap-3 sm:grid-cols-3">
+            <FormField label="CEP" htmlFor="zip"><Input id="zip" value={shipping.zip} onChange={(e) => setShipping({ ...shipping, zip: e.target.value })} placeholder="00000-000" /></FormField>
+            <FormField label="Endereço e número" htmlFor="address" className="sm:col-span-2"><Input id="address" value={shipping.address} onChange={(e) => setShipping({ ...shipping, address: e.target.value })} placeholder="Rua, número e complemento" /></FormField>
+            <FormField label="Cidade" htmlFor="city" className="sm:col-span-2"><Input id="city" value={shipping.city} onChange={(e) => setShipping({ ...shipping, city: e.target.value })} /></FormField>
+            <FormField label="UF" htmlFor="state"><Select id="state" value={shipping.state} onChange={(e) => setShipping({ ...shipping, state: e.target.value })}>{["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"].map((uf) => <option key={uf}>{uf}</option>)}</Select></FormField>
+            <p className="sm:col-span-3 text-xs text-muted-foreground">Preencha quando houver envio. Esses dados ficam no pedido para gerar a etiqueta e orientar a Central.</p>
           </CardContent>
         </Card>
       </div>
