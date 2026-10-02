@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { orderEvents, orderItems, orderLabelFiles, orders, stores } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { assertCanAccess, type Actor } from "./access";
+import { assertCanAccess, hasAreaRole, requireStoreId, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 
 export type AfterSalesStage = "AWAITING_CUSTOMER" | "AWAITING_FUNDS" | "AWAITING_LABEL" | "IN_DISPATCH" | "IN_TRANSIT" | "DELIVERED";
@@ -65,11 +65,11 @@ export function messageFor(stage: AfterSalesStage, o: { number: number; customer
 }
 
 export async function loadAfterSales(db: Database, actor: Actor, now = new Date()) {
-  if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Área do lojista.");
-  const store = await db.query.stores.findFirst({ where: eq(stores.id, actor.storeId) });
+  const storeId = requireStoreId(actor);
+  const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
   const since = new Date(now.getTime() - 14 * 86_400_000).toISOString();
-  const rows = (await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt)))
+  const rows = (await db.select().from(orders).where(and(eq(orders.storeId, store.id), eq(orders.sourceArea, "SUPERDROP"))).orderBy(desc(orders.createdAt)))
     .filter((o) => o.status !== "DELIVERED" || o.updatedAt >= since);
   const ids = rows.map((r) => r.id);
   const [items, events, labels] = ids.length ? await Promise.all([
@@ -99,7 +99,7 @@ const noteSchema = z.string().trim().min(2, "Escreva a anotação").max(500, "M�
 
 /** Anotação de atendimento no histórico do pedido (visível ao lojista e à Central). */
 export async function addOrderNote(db: Database, actor: Actor, orderId: string, raw: string) {
-  if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Apenas o lojista anota no pedido.");
+  if (!hasAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER")) throw new ForbiddenError("Apenas o lojista anota no pedido.");
   const text = noteSchema.parse(raw);
   const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
   if (!order) throw new NotFoundError("Pedido não encontrado.");
@@ -110,8 +110,13 @@ export async function addOrderNote(db: Database, actor: Actor, orderId: string, 
 
 /** Fila de etiquetas do lojista: pedidos que esperam o PDF e os que já têm etiqueta e aguardam a separação. */
 export async function labelQueue(db: Database, actor: Actor) {
-  if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Área do lojista.");
-  const rows = await db.select().from(orders).where(and(eq(orders.storeId, actor.storeId), inArray(orders.status, ["AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "READY_TO_PICK"]), gte(orders.createdAt, new Date(Date.now() - 60 * 86_400_000).toISOString()))).orderBy(orders.createdAt);
+  const storeId = requireStoreId(actor);
+  const rows = await db.select().from(orders).where(and(
+    eq(orders.storeId, storeId),
+    eq(orders.sourceArea, "SUPERDROP"),
+    inArray(orders.status, ["AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL", "READY_TO_PICK"]),
+    gte(orders.createdAt, new Date(Date.now() - 60 * 86_400_000).toISOString()),
+  )).orderBy(orders.createdAt);
   const ids = rows.map((r) => r.id);
   const items = ids.length ? await db.select().from(orderItems).where(inArray(orderItems.orderId, ids)) : [];
   const labels = ids.length ? await db.select({ orderId: orderLabelFiles.orderId }).from(orderLabelFiles).where(inArray(orderLabelFiles.orderId, ids)) : [];
