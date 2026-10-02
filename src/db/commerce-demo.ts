@@ -54,6 +54,8 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
     await db.update(s.orders).set({ channel: CHANNELS[i], createdAt: when, updatedAt: when, ...(i >= 5 && paid ? { status: "SHIPPED" as const } : {}) }).where(eq(s.orders.id, orderId));
   }
 
+  // Loja já publicada: na demonstração o cliente consegue comprar sem o dono precisar publicar antes.
+  await db.update(s.stores).set({ publishedAt: new Date().toISOString() }).where(eq(s.stores.id, r.storeId));
   // Funções novas, prontas para você testar na demonstração (nada disso vai para produção: a conta só existe no modo de demonstração).
   const first = made[0]!;
   await createDiscount(db, r.storeId, { code: "BEMVINDO10", kind: "PERCENT", value: 10, maxRedemptions: 50 });
@@ -61,6 +63,7 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
   await createCampaign(db, r.storeId, { text: "Frete grátis acima de R$ 299 neste fim de semana", startsAt: daysAgo(1), endsAt: new Date(Date.now() + 30 * 86_400_000).toISOString() });
   await createProposal(db, r.storeId, { customer: { name: "Loja da Marta", email: "marta@exemplo.com" }, items: [{ productId: first.productId, variantId: first.variantId, quantity: 6 }] });
   await inviteStaff(db, owner, { name: "Paulo (equipe)", email: "equipe@commerce.demo", password: DEMO_PASSWORD });
+  await db.update(s.users).set({ mustChangePassword: false }).where(eq(s.users.email, "equipe@commerce.demo")); // só na demonstração: sem troca obrigatória
   const shipped = (await db.select().from(s.orders).where(eq(s.orders.storeId, r.storeId))).find((o) => o.status === "SHIPPED" && o.customerPaymentStatus === "PAID");
   if (shipped) await submitReview(db, r.storeId, { number: String(shipped.number), email: shipped.customerEmail, productId: (await db.select().from(s.orderItems).where(eq(s.orderItems.orderId, shipped.id)))[0]!.productId, rating: 5, body: "Peça linda e chegou rápido. Recomendo!" });
   return true;
