@@ -42,15 +42,15 @@ Ordem:
 1. Supplier Home — DONE
 2. Dispatch — DONE
 3. Supplier Orders — DONE
-4. Supplier Products
-5. Inventory
+4. Supplier Products — DONE
+5. Inventory — DONE
 6. Stores
 7. Wallets — DONE
 8. Finance
 9. Merchant Home — DONE
 10. Merchant Orders — DONE
 11. Merchant Wallet — DONE
-12. Products/Catalog
+12. Products/Catalog — DONE
 13. Storefront
 14. Customers
 15. Analytics
