@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { walletOverviewForSupplier } from "@/lib/domain/wallet";
 import { formatBRL } from "@/lib/money";
@@ -11,7 +11,7 @@ import { formatDate } from "@/lib/utils";
 import { CreditButton } from "./credit-button";
 
 export default async function WalletsPage() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const o = await walletOverviewForSupplier(await getDb(), session.actor);
   const stuck = o.stores.filter((s) => s.awaitingOrders > 0);
   const low = o.stores.filter((s) => s.balanceCents < 2000 && s.status === "ACTIVE");
