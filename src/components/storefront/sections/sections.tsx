@@ -131,7 +131,7 @@ export function Footer({ settings, ctx }: SectionProps) {
         <div className="flex gap-4 text-xs">
           {settings.showInstagram !== false && store.instagram ? <span>@{store.instagram.replace("@", "")}</span> : null}
           {settings.showBadges !== false ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}
-          {store.offer !== "STORE_OWN" ? <span className={cn("flex items-center gap-1.5", dark ? "text-neutral-400" : "text-neutral-400")}>Tecnologia <Logo tone={dark ? "on-dark" : "on-light"} className="h-4" /></span> : null}
+          {store.offer !== "STORE_OWN" ? <span className={cn("flex items-center gap-1.5", dark ? "text-neutral-400" : "text-neutral-600")}>Tecnologia <Logo tone={dark ? "on-dark" : "on-light"} className="h-4" /></span> : null}
         </div>
       </div>
     </footer>

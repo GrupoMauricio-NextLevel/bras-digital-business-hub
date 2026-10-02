@@ -18,9 +18,9 @@ import { submitReview } from "@/lib/domain/reviews";
 export const COMMERCE_DEMO_EMAIL = "lojista@commerce.demo";
 
 const PRODUCTS = [
-  { name: "Poncho de tricô cru", sku: "FL-01", price: 17990 }, { name: "Camiseta verde-musgo", sku: "FL-02", price: 7990 },
-  { name: "Jaqueta de couro sintético", sku: "FL-03", price: 28990 }, { name: "Sandália salto bloco", sku: "FL-04", price: 21990 },
-  { name: "Conjunto de moletom amarelo", sku: "FL-05", price: 24990 }, { name: "Terno azul xadrez", sku: "FL-06", price: 54990 },
+  { name: "Poncho de tricô cru", sku: "FL-01", price: 17990, photo: "moda-1" }, { name: "Camiseta verde-musgo", sku: "FL-02", price: 7990, photo: "moda-2" },
+  { name: "Jaqueta de couro sintético", sku: "FL-03", price: 28990, photo: "moda-3" }, { name: "Sandália salto bloco", sku: "FL-04", price: 21990, photo: "moda-4" },
+  { name: "Conjunto de moletom amarelo", sku: "FL-05", price: 24990, photo: "moda-hero" }, { name: "Terno azul xadrez", sku: "FL-06", price: 54990, photo: "moda-5" },
 ] as const;
 
 const BUYERS = ["Marina Souza", "Carlos Almeida", "Joana Pires", "Rafael Mota", "Bia Tavares", "Lucas Freitas", "Paula Nunes", "Diego Costa"];
@@ -41,7 +41,7 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
   const supplierId = await catalogSupplierId(db, owner);
   const made: { productId: string; variantId: string; price: number }[] = [];
   for (const p of PRODUCTS) {
-    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, categoryName: "Moda", costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: [{ size: "M", initialStock: 40 }, { size: "G", initialStock: 40 }] });
+    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, categoryName: "Moda", images: [`/portal/commerce/${p.photo}.webp`], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: [{ size: "M", initialStock: 40 }, { size: "G", initialStock: 40 }] });
     await db.insert(s.storeProducts).values({ storeId: r.storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: made.length < 4 });
     const v = (await db.select().from(s.productVariants).where(eq(s.productVariants.productId, productId)))[0]!;
     made.push({ productId, variantId: v.id, price: p.price });

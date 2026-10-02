@@ -5,13 +5,23 @@ import { cn } from "@/lib/utils";
  * Imagem de produto. Aceita URLs http(s) (upload real) ou o descritor
  * "art:<cor1>,<cor2>,<cor3>" (arte determinística usada no seed).
  */
-export function ProductArt({ images, className, size = "md", alt = "" }: { images: string[]; className?: string; size?: "sm" | "md" | "lg"; alt?: string }) {
+const ASSET = /^\/assets\/ast_[a-z0-9]+$/i;
+const SRC_WIDTHS = [320, 640, 960];
+
+/** `priority`: imagem principal da página (carrega primeiro, sem atraso). As demais carregam sob demanda. */
+export function ProductArt({ images, className, size = "md", alt = "", priority = false }: { images: string[]; className?: string; size?: "sm" | "md" | "lg"; alt?: string; priority?: boolean }) {
   const dims = { sm: "size-10", md: "aspect-square w-full", lg: "aspect-[4/5] w-full" }[size];
-  const url = images.find((i) => /^https?:\/\//.test(i) || i.startsWith("data:image"));
+  const url = images.find((i) => /^https?:\/\//.test(i) || i.startsWith("data:image") || i.startsWith("/"));
   if (url) {
     return (
       <div className={cn("overflow-hidden rounded-md bg-surface-muted", dims, className)}>
-        <img src={url} alt={alt} className="h-full w-full object-cover" loading="lazy" />
+        <img
+          src={ASSET.test(url) ? `${url}?w=640` : url}
+          srcSet={ASSET.test(url) ? SRC_WIDTHS.map((w) => `${url}?w=${w} ${w}w`).join(", ") : undefined}
+          sizes={ASSET.test(url) ? (size === "sm" ? "96px" : "(min-width: 1024px) 25vw, 50vw") : undefined}
+          width={size === "lg" ? 800 : 800} height={size === "lg" ? 1000 : 800}
+          alt={alt} className="h-full w-full object-cover" decoding="async"
+          loading={priority ? "eager" : "lazy"} {...(priority ? { fetchPriority: "high" as const } : {})} />
       </div>
     );
   }

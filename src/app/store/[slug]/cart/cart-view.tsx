@@ -10,10 +10,11 @@ export function CartView({ slug }: { slug: string }) {
   const cart = useCart();
   const base = `/store/${slug}`;
   const shipping = cart.subtotal >= FREE_SHIPPING_FROM_CENTS ? 0 : SHIPPING_FLAT_CENTS;
-  if (!cart.ready) return <div className="mx-auto max-w-6xl px-4 py-16 text-center text-sm text-neutral-500">Carregando carrinho…</div>;
+  // Espaço reservado enquanto o carrinho do navegador carrega: evita o salto de layout quando o conteúdo aparece.
+  if (!cart.ready) return <div className="mx-auto min-h-[70vh] max-w-6xl px-4 py-16 text-center text-sm text-neutral-500" aria-busy="true"><h1 className="sr-only">Carrinho</h1>Carregando carrinho…</div>;
   if (cart.lines.length === 0) {
     return (
-      <div className="mx-auto max-w-md px-4 py-20 text-center">
+      <div className="mx-auto min-h-[60vh] max-w-md px-4 py-20 text-center">
         <ShoppingBag className="mx-auto size-10 text-neutral-300" />
         <h1 className="mt-4 text-xl font-semibold">Seu carrinho está vazio</h1>
         <p className="mt-1 text-sm text-neutral-500">Explore o catálogo e encontre seu manto.</p>

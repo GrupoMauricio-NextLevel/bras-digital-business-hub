@@ -19,11 +19,16 @@ import Link from "next/link";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { isBlocked } from "@/lib/domain/store-access";
 import { currentCampaign, isSafeLink } from "@/lib/domain/campaigns";
+import { ldJson, shortDescription, storeOrigin } from "@/lib/storefront-seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const sf = await getStorefront(slug);
-  return { title: sf ? { absolute: `${sf.store.name} · ${sf.store.tagline ?? "Loja oficial"}` } : "Loja", description: sf?.settings.heroSubtitle };
+  if (!sf) return { title: "Loja" };
+  const origin = await storeOrigin(sf.store);
+  const description = shortDescription(sf.settings.heroSubtitle || sf.store.tagline, `Loja virtual ${sf.store.name}.`);
+  // Páginas internas definem "title" próprio e herdam o nome da loja pelo modelo.
+  return { title: { default: `${sf.store.name} · ${sf.store.tagline ?? "Loja oficial"}`, template: `%s · ${sf.store.name}` }, description, alternates: { canonical: origin }, openGraph: { siteName: sf.store.name, locale: "pt_BR", type: "website", url: origin } };
 }
 
 export default async function StoreLayout({ params, children }: { params: Promise<{ slug: string }>; children: React.ReactNode }) {
@@ -49,6 +54,11 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
   const campaign = await currentCampaign(db, sf.store.id);
+  const origin = await storeOrigin(sf.store);
+  const orgLd = [
+    { "@context": "https://schema.org", "@type": "Organization", name: sf.store.name, url: origin, ...(sf.store.logoUrl ? { logo: sf.store.logoUrl.startsWith("/") ? `${origin.replace(/\/store\/.*$/, "")}${sf.store.logoUrl}` : sf.store.logoUrl } : {}), ...(sf.store.instagram ? { sameAs: [`https://instagram.com/${sf.store.instagram.replace(/^@/, "")}`] } : {}) },
+    { "@context": "https://schema.org", "@type": "WebSite", name: sf.store.name, url: origin, potentialAction: { "@type": "SearchAction", target: `${origin}/catalog?q={search_term_string}`, "query-input": "required name=search_term_string" } },
+  ];
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const products = (await getStorefrontCatalog(sf.store.id)).map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
@@ -62,6 +72,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
           {campaign.linkUrl && isSafeLink(campaign.linkUrl) ? <Link href={campaign.linkUrl} className="underline-offset-2 hover:underline">{campaign.text}</Link> : campaign.text}
         </div>
       ) : null}
+      {!previewing ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(orgLd) }} /> : null}
       {preview ? <PreviewBridge /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />

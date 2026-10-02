@@ -54,7 +54,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
   const base = `/store/${slug}`;
 
   if (cart.ready && cart.lines.length === 0) {
-    return <div className="mx-auto max-w-md px-4 py-20 text-center text-sm text-neutral-500">Seu carrinho está vazio. <Link href={`${base}/catalog`} className="underline">Voltar ao catálogo</Link></div>;
+    return <div className="mx-auto min-h-[60vh] max-w-md px-4 py-20 text-center text-sm text-neutral-500"><h1 className="sr-only">Finalizar compra</h1>Seu carrinho está vazio. <Link href={`${base}/catalog`} className="underline">Voltar ao catálogo</Link></div>;
   }
 
   const submit = (e: React.FormEvent) => {
@@ -126,7 +126,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
         </div>
         <aside className="h-fit rounded-2xl border border-neutral-200 p-5 lg:sticky lg:top-24">
           <h2 className="text-base font-semibold">Resumo do pedido</h2>
-          <ul className="mt-3 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
+          <ul className="mt-3 min-h-24 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
           <dl className="mt-4 space-y-2 border-t border-neutral-200 pt-3 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
             {discount > 0 ? <div className="flex justify-between text-green-700"><dt>Cupom {applied?.code}</dt><dd className="tabular-nums">− {formatBRL(discount)}</dd></div> : null}

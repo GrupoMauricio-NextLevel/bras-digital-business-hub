@@ -8,7 +8,7 @@ import { formatBRL } from "@/lib/money";
 import { reviewableItems } from "@/lib/domain/reviews";
 import { ReviewForm } from "@/components/storefront/review-form";
 
-export const metadata: Metadata = { title: "Acompanhar pedido", robots: { index: false } };
+export const metadata: Metadata = { title: "Acompanhar pedido", robots: { index: false, follow: false } };
 
 /** Consulta pública: número do pedido e e-mail da compra. Sem login. */
 export default async function TrackPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ pedido?: string; email?: string }> }) {
