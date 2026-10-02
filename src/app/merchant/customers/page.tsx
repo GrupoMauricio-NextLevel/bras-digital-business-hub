@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getMerchantCustomers } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { formatDate, initials } from "@/lib/utils";
@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
 
 export default async function CustomersPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const rows = await getMerchantCustomers(session.store!.id);
   return (
     <>
