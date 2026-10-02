@@ -1,5 +1,12 @@
 import type { User } from "@/db/schema";
 import { ForbiddenError } from "./errors";
+import {
+  hasAreaAccess,
+  legacyRoleDefaultGrants,
+  type AccessGrant,
+  type EcosystemAccessRole,
+  type ProductArea,
+} from "@/lib/ecosystem";
 
 export type Role = User["role"];
 
@@ -10,10 +17,45 @@ export type Actor = {
   organizationId: string;
   supplierId: string | null;
   storeId: string | null;
+  /** Grants multi-produto. Ausente = usa a ponte de compatibilidade do papel legado. */
+  grants?: AccessGrant[];
 };
 
-export function actorFromUser(user: User): Actor {
-  return { userId: user.id, role: user.role, organizationId: user.organizationId, supplierId: user.supplierId, storeId: user.storeId };
+export function actorFromUser(user: User, grants?: AccessGrant[]): Actor {
+  return {
+    userId: user.id,
+    role: user.role,
+    organizationId: user.organizationId,
+    supplierId: user.supplierId,
+    storeId: user.storeId,
+    grants,
+  };
+}
+
+export function grantsForActor(actor: Actor): AccessGrant[] {
+  if (actor.grants && actor.grants.length > 0) return actor.grants;
+  return legacyRoleDefaultGrants({
+    role: actor.role,
+    organizationId: actor.organizationId,
+    supplierId: actor.supplierId,
+    storeId: actor.storeId,
+  });
+}
+
+export function canAccessArea(actor: Actor, area: ProductArea): boolean {
+  return hasAreaAccess(grantsForActor(actor), area);
+}
+
+export function requireAreaAccess(actor: Actor, area: ProductArea): void {
+  if (!canAccessArea(actor, area)) {
+    throw new ForbiddenError("Você não tem acesso a este produto da plataforma.");
+  }
+}
+
+export function hasAreaRole(actor: Actor, area: ProductArea, role: EcosystemAccessRole): boolean {
+  return grantsForActor(actor).some(
+    (grant) => grant.area === area && grant.role === role && grant.active !== false,
+  );
 }
 
 export function isMaster(actor: Actor): boolean {
