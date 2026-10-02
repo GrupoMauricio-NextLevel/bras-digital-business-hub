@@ -82,6 +82,31 @@ describe("carteira — regra D2", () => {
     await cancelOrder(ctx.db, ctx.actors.arena, r.orderId);
     expect(await getBalanceCents(ctx.db, arena())).toBe(bal);
   });
+
+  it("cancelar pedido já debitado devolve o custo à carteira uma única vez", async () => {
+    const storeId = ctx.seed.stores.mantos.id;
+    const before = await getBalanceCents(ctx.db, storeId);
+    const r = await createOrder(ctx.db, {
+      storeId,
+      customer,
+      items: [{
+        productId: ctx.seed.productIds[11]!,
+        variantId: ctx.seed.variantsByProduct.get(ctx.seed.productIds[11]!)!.find((x) => x.size === "M")!.id,
+        quantity: 1,
+      }],
+      customerPaymentStatus: "PAID",
+    });
+    const afterDebit = await getBalanceCents(ctx.db, storeId);
+    expect(afterDebit).toBeLessThan(before);
+
+    await cancelOrder(ctx.db, ctx.actors.mantos, r.orderId);
+
+    expect(await getBalanceCents(ctx.db, storeId)).toBe(before);
+    const refunds = (await ctx.db.select().from(walletEntries).where(eq(walletEntries.orderId, r.orderId)))
+      .filter((entry) => entry.type === "ORDER_REFUND");
+    expect(refunds).toHaveLength(1);
+    expect(await getBalanceCents(ctx.db, storeId)).toBe(await entriesSum(storeId));
+  });
 });
 
 describe("recarga Pix", () => {
