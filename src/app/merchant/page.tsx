@@ -8,7 +8,7 @@ import { ActivityFeed } from "@/components/shared/activity-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { ServiceSpotlight } from "@/components/services/spotlight";
 import { getServicesHub } from "@/lib/queries/services-hub";
@@ -20,7 +20,7 @@ import { formatDate, cn } from "@/lib/utils";
 function greeting() { const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date())); return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
 
 export default async function MerchantHome() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const store = session.store!;
   const o = await getMerchantOverview(store);
   const pendencies = [
