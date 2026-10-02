@@ -1,3 +1,5 @@
+> **CONSOLIDADO:** a fonte única do Hub Creators agora é `hub-creators-consolidado.md`. Este arquivo fica como referência de detalhe (detalhe de TikTok, rastreio e comissões).
+
 # Creator Hub + TikTok (NextLevel Commerce): prompt salvo para implementar com calma
 
 > **ATUALIZADO:** a premissa "Creator Hub como módulo interno do Commerce" foi **substituída** por `creator-commerce-plataforma.md` (Creator Commerce como produto independente). Este arquivo segue válido como detalhamento de TikTok, rastreio, atribuição, comissões e amostras, **dentro do domínio Creator Platform**. Leia o outro primeiro.

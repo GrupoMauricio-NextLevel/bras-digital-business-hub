@@ -1,3 +1,5 @@
+> **CONSOLIDADO:** a fonte única do Hub Creators agora é `hub-creators-consolidado.md`. Este arquivo fica como referência de detalhe (arquitetura de plataforma).
+
 # Creator Commerce Platform (produto independente do ecossistema NextLevel): prompt salvo
 
 > **Status: SALVO, NÃO IMPLEMENTADO.** Guardado para uma fase futura. **Este documento SUBSTITUI a premissa de `creator-hub-tiktok.md` de que o Creator Hub é só um módulo interno do Commerce.** O conteúdo de `creator-hub-tiktok.md` (integração TikTok, links rastreáveis, atribuição, comissões, amostras, Pixel/Events API, webhooks, idempotência, segurança) continua válido como **detalhamento**, agora dentro do domínio Creator Platform.
