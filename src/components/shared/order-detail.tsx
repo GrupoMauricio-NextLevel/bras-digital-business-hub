@@ -21,9 +21,10 @@ type Props = {
   /** Calculados no servidor (política de pedido): o botão só aparece; a regra real está no domínio. */
   canFulfil?: boolean;
   independent?: boolean;
+  productLabel?: string;
 };
 
-export function OrderDetail({ role, backHref, order, items, events, store, labels, canFulfil, independent }: Props) {
+export function OrderDetail({ role, backHref, order, items, events, store, labels, canFulfil, independent, productLabel = "SuperDrop" }: Props) {
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },
     ...(independent ? [] : [{ label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" }]),
@@ -38,9 +39,9 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
     if (order.status === "PENDING") return { title: "Aguardando pagamento do cliente", detail: "O estoque permanece reservado enquanto o pagamento é concluído.", owner: "Cliente", tone: "warning" as const, icon: Wallet };
     if (order.status === "AWAITING_CENTRAL_PAYMENT") return { title: "Aguardando saldo do lojista", detail: "O pedido só entra na operação da Central após o débito do custo.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Wallet };
     if (order.status === "AWAITING_LABEL") return { title: "Aguardando etiqueta de envio", detail: "A etiqueta precisa estar pronta antes da separação.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Printer };
-    if (order.status === "READY_TO_PICK") return { title: "Pronto para separação", detail: "Pagamento e etiqueta estão confirmados. O pedido pode entrar na bancada.", owner: role === "STORE_OWNER" ? "Central" : "Expedição", tone: "info" as const, icon: Package };
-    if (order.status === "PICKING") return { title: "Em separação", detail: "A expedição está preparando e conferindo os itens.", owner: "Expedição", tone: "info" as const, icon: Package };
-    if (order.status === "READY_TO_SHIP") return { title: "Pronto para despachar", detail: "A separação terminou e o pedido pode sair da Central.", owner: "Expedição", tone: "success" as const, icon: Truck };
+    if (order.status === "READY_TO_PICK") return { title: "Pronto para separação", detail: "Pagamento e etiqueta estão confirmados. O pedido pode entrar na preparação.", owner: role === "STORE_OWNER" ? (independent ? "Sua loja" : "Central") : "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "PICKING") return { title: "Em separação", detail: independent ? "Sua equipe está preparando e conferindo os itens." : "A expedição está preparando e conferindo os itens.", owner: independent ? "Sua loja" : "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "READY_TO_SHIP") return { title: "Pronto para despachar", detail: independent ? "A preparação terminou e o pedido está pronto para envio." : "A separação terminou e o pedido pode sair da Central.", owner: independent ? "Sua loja" : "Expedição", tone: "success" as const, icon: Truck };
     if (order.status === "SHIPPED") return { title: "Pedido enviado", detail: "Acompanhe o transporte até a entrega ao cliente.", owner: "Transportadora", tone: "success" as const, icon: Truck };
     return { title: "Pedido entregue", detail: "Fluxo operacional concluído.", owner: "Concluído", tone: "success" as const, icon: CheckCircle2 };
   })();
@@ -48,7 +49,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
 
   return (
     <>
-      <header className="mb-7 border-b border-border pb-6"><Link href={backHref} className="text-xs font-medium text-muted-foreground hover:text-foreground">← Voltar aos pedidos</Link><div className="mt-4 flex flex-wrap items-end justify-between gap-5"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent)]">SuperDrop / Pedido</p><div className="mt-1 flex flex-wrap items-center gap-3"><h1 className="text-4xl font-semibold tracking-[-.045em]">{`#${order.number}`}</h1><OrderStatusBadge status={order.status} /></div><div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground"><span>{store?.name}</span><span>·</span><span>{formatDateTime(order.createdAt)}</span><span>·</span><StatusBadge value={order.channel}/><StatusBadge value={order.saleType}/></div></div><div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden/>Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent}/></div></div></header>
+      <header className="mb-7 border-b border-border pb-6"><Link href={backHref} className="text-xs font-medium text-muted-foreground hover:text-foreground">← Voltar aos pedidos</Link><div className="mt-4 flex flex-wrap items-end justify-between gap-5"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent)]">{productLabel} / Pedido</p><div className="mt-1 flex flex-wrap items-center gap-3"><h1 className="text-4xl font-semibold tracking-[-.045em]">{`#${order.number}`}</h1><OrderStatusBadge status={order.status} /></div><div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground"><span>{store?.name}</span><span>·</span><span>{formatDateTime(order.createdAt)}</span><span>·</span><StatusBadge value={order.channel}/><StatusBadge value={order.saleType}/></div></div><div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden/>Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent}/></div></div></header>
 
       <section className="mb-5 overflow-hidden border-y border-border" aria-label="Próxima ação do pedido">
         <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_auto]">
