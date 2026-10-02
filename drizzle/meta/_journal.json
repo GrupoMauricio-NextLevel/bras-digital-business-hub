@@ -218,6 +218,13 @@
       "when": 1790935284621,
       "tag": "0030_equipe_loja",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1790935736419,
+      "tag": "0031_avise_me",
+      "breakpoints": true
     }
   ]
 }

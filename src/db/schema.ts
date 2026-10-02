@@ -1123,3 +1123,17 @@ export const productReviews = pgTable("product_reviews", {
   status: text("status", { enum: REVIEW_STATUSES }).notNull().default("PENDING"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("product_reviews_order_product").on(t.orderId, t.productId), index("product_reviews_product_idx").on(t.storeId, t.productId)]);
+
+// ---------------------------------------------------------------------------
+// Avise-me: cliente deixa o contato num tamanho esgotado; o lojista vê a demanda e avisa por conta própria (nada é enviado automaticamente)
+// ---------------------------------------------------------------------------
+export const stockAlerts = pgTable("stock_alerts", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  productId: text("product_id").notNull().references(() => products.id),
+  variantId: text("variant_id").notNull().references(() => productVariants.id),
+  contactKind: text("contact_kind", { enum: ["EMAIL", "WHATSAPP"] }).notNull(),
+  contact: text("contact").notNull(),
+  notifiedAt: ts("notified_at"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("stock_alerts_unique").on(t.storeId, t.variantId, t.contact), index("stock_alerts_store_idx").on(t.storeId)]);

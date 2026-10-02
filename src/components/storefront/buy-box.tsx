@@ -1,4 +1,5 @@
 "use client";
+import { StockAlertForm } from "./stock-alert-form";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -71,6 +72,8 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
           <div className="mt-2 text-xs text-neutral-500">{pack.available > 0 ? `${pack.available} grade(s) disponíveis` : "Sem grades disponíveis no momento"}</div>
         </div>
       ) : null}
+
+      {mode === "unit" ? <StockAlertForm slug={slug} productId={product.id} soldOut={product.variants.filter((v) => v.available === 0).map((v) => ({ id: v.id, size: v.size }))} /> : null}
 
       <div ref={ctaRef} className="mt-6 flex items-center gap-3">
         <div className="flex h-11 items-center rounded-lg border border-neutral-300">
