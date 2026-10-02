@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, categories, productPackItems, productPacks, productStoreAccess, productVariants, products } from "@/db/schema";
+import { activities, categories, productChannels, productPackItems, productPacks, productStoreAccess, productVariants, products } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "./inventory";
 import { DomainError } from "./errors";
@@ -69,6 +69,9 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
       status: input.status, distribution: input.distribution, sellsUnit: input.sellsUnit, sellsPack: input.sellsPack,
       seoTitle: input.seoTitle, seoDescription: input.seoDescription,
     });
+    // Cadastro feito pelo painel atual do fornecedor nasce no canal SuperDrop.
+    // Outras verticais são habilitadas explicitamente, sem duplicar o SKU.
+    await tx.insert(productChannels).values({ productId, area: "SUPERDROP", active: true });
     const variantRows = sizes.map((s, position) => ({ id: newId("var"), productId, size: s.size, sku: `${input.sku}-${s.size}`, position }));
     await tx.insert(productVariants).values(variantRows);
     for (const [i, v] of variantRows.entries()) {
