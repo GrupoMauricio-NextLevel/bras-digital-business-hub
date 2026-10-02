@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { freshDb, customer } from "./setup";
-import { createOrder, registerShippingLabel, advanceOrder, cancelOrder, getOrderForActor } from "@/lib/domain/orders";
+import { createOrder, registerShippingLabel, advanceOrder, cancelOrder, confirmCustomerPayment, getOrderForActor } from "@/lib/domain/orders";
 import { getLevel } from "@/lib/domain/inventory";
 import { resolveFulfillmentStatus, canTransition } from "@/lib/domain/order-status";
 
@@ -36,9 +36,28 @@ describe("pedido — golden path", () => {
     expect(r.status).toBe("AWAITING_LABEL");
   });
 
-  it("pedido manual sem pagamento do cliente fica PENDING", async () => {
+  it("pedido manual sem pagamento do cliente fica PENDING e só entra no LTV depois de pago", async () => {
     const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, channel: "MANUAL", customer, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "G"), quantity: 1 }] });
     expect(r.status).toBe("PENDING");
+    const order = (await getOrderForActor(ctx.db, ctx.actors.mantos, r.orderId)).order;
+    const before = await ctx.db.query.storeCustomers.findFirst({ where: (sc, { eq }) => eq(sc.id, order.storeCustomerId!) });
+    expect(before).toMatchObject({ ordersCount: 0, totalSpentCents: 0 });
+
+    await confirmCustomerPayment(ctx.db, ctx.actors.mantos, r.orderId);
+    const paid = await ctx.db.query.storeCustomers.findFirst({ where: (sc, { eq }) => eq(sc.id, order.storeCustomerId!) });
+    expect(paid?.ordersCount).toBe(1);
+    expect(paid?.totalSpentCents).toBe(r.totalCents);
+
+    await confirmCustomerPayment(ctx.db, ctx.actors.mantos, r.orderId);
+    const afterRetry = await ctx.db.query.storeCustomers.findFirst({ where: (sc, { eq }) => eq(sc.id, order.storeCustomerId!) });
+    expect(afterRetry?.ordersCount).toBe(1);
+    expect(afterRetry?.totalSpentCents).toBe(r.totalCents);
+  });
+
+  it("gera números sequenciais por loja usando o contador atômico", async () => {
+    const a = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer: { ...customer, email: "seq-a@teste.com" }, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "G"), quantity: 1 }] });
+    const b = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer: { ...customer, email: "seq-b@teste.com" }, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "G"), quantity: 1 }] });
+    expect(b.number).toBe(a.number + 1);
   });
 
   it("grade de 12 reserva a distribuição por tamanho", async () => {
