@@ -115,7 +115,7 @@ describe("ecossistema: um domínio para cada produto", () => {
     expect(h("office.superdrop.com.br")).toBe("SUPERDROP");
     expect(h("bras.superdrop.com.br")).toBe("BRAS_DIGITAL");
     expect(h("lojas.nextlevelgroup.com.br")).toBe("NEXTLEVEL_COMMERCE");
-    expect(h("creators.nextlevelgroup.com.br")).toBe("CREATORS_HUB");
+    expect(h("hubcreators.nextlevelgroup.com.br")).toBe("CREATORS_HUB");
     expect(h("master.nextlevelgroup.com.br")).toBe("NEXTLEVEL");
     expect(h("chinahubglobal.com.br")).toBe("CHINA_HUB");
     expect(h("www.chinahubglobal.com.br")).toBe("CHINA_HUB");

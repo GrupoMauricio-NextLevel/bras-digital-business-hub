@@ -77,7 +77,7 @@ ok("Master no SuperDrop mantém fornecedores e redes e não mistura a Commerce")
 await sc.close();
 
 // Produtos novos (em breve) e Master central, cada um no seu endereço
-for (const [host, nome, extra] of [["creators.nextlevelgroup.com.br", "Hub Creators", null], ["bras.superdrop.com.br", "Brás Digital", null], ["chinahubglobal.com.br", "China Hub", "把货卖到巴西"]]) {
+for (const [host, nome, extra] of [["hubcreators.nextlevelgroup.com.br", "Hub Creators", null], ["bras.superdrop.com.br", "Brás Digital", null], ["chinahubglobal.com.br", "China Hub", "把货卖到巴西"]]) {
   const sc2 = await ctxFor(host, 390); const sp2 = await sc2.newPage();
   sp2.on("pageerror", (e) => fail(`pageerror ${host}: ` + e.message));
   await sp2.goto(B + "/", { waitUntil: "networkidle" });

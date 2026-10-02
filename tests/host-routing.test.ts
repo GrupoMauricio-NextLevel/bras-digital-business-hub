@@ -63,7 +63,7 @@ describe("Master central e produtos em breve", () => {
     expect(go("superdrop.com.br", "/master", {})).toEqual({ kind: "next" });
   });
   it("produto em breve mostra só a página inicial e a lista de espera", () => {
-    for (const host of ["bras.superdrop.com.br", "creators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
+    for (const host of ["bras.superdrop.com.br", "hubcreators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
       expect(go(host, "/", {})).toEqual({ kind: "next" });
       expect(go(host, "/quero-minha-loja", {})).toEqual({ kind: "next" });
       expect(go(host, "/planos", {})).toEqual({ kind: "redirect", url: "/" });
