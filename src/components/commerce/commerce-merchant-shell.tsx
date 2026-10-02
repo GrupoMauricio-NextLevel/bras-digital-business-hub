@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3, ChevronRight, CircleUserRound, ExternalLink, Globe2, Home, LogOut,
+  BarChart3, ChevronRight, CircleUserRound, CreditCard, ExternalLink, Globe2, Home, LogOut,
   Menu, Package, Palette, ReceiptText, Settings, ShoppingBag, Store, Tag, Users, X,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/app/theme-toggle";
@@ -23,7 +23,7 @@ const NAV = [
   { href: "/merchant/campanhas", label: "Campanhas", icon: Tag, group: "CRESCIMENTO" },
   { href: "/merchant/descontos", label: "Cupons", icon: Tag, group: "CRESCIMENTO" },
   { href: "/merchant/avaliacoes", label: "Avaliações", icon: CircleUserRound, group: "CRESCIMENTO" },
-  { href: "/merchant/finance", label: "Financeiro", icon: ReceiptText, group: "GESTÃO" },
+  { href: "/merchant/finance", label: "Financeiro", icon: ReceiptText, group: "GESTÃO" },\n  { href: "/merchant/finance#assinatura", label: "Minha assinatura", icon: CreditCard, group: "GESTÃO" },
   { href: "/merchant/team", label: "Equipe", icon: Users, group: "GESTÃO" },
   { href: "/merchant/settings", label: "Configurações", icon: Settings, group: "GESTÃO" },
 ] as const;
