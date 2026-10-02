@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { EsteiraBoard } from "@/components/dispatch/esteira-board";
 import { CutoffBanner } from "@/components/dispatch/cutoff-banner";
 import { LiveSync } from "@/components/dispatch/live-sync";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { ServiceSpotlight } from "@/components/services/spotlight";
 import { getServicesHub } from "@/lib/queries/services-hub";
@@ -14,7 +14,7 @@ import { ESTEIRA_COLUMNS, loadEsteira, supplierOnboarding } from "@/lib/domain/o
 import { cn } from "@/lib/utils";
 
 export default async function SupplierHome() {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const db = await getDb();
   const supplierId = session.supplier!.id;
   const [e, onboarding] = await Promise.all([loadEsteira(db, session.actor), supplierOnboarding(db, supplierId)]);
