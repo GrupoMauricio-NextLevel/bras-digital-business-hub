@@ -6,6 +6,7 @@ import { getDb } from "@/db/client";
 import { dispatchSeats, listTeam } from "@/lib/domain/operations";
 import { formatDateTime } from "@/lib/utils";
 import { TeamPanel } from "./team-panel";
+import { RemoveMemberButton } from "./remove-member-button";
 
 const ROLE = { SUPPLIER_ADMIN: "Gestor", SUPPLIER_DISPATCH: "Expedição" } as const;
 
@@ -23,6 +24,7 @@ export default async function TeamPage() {
           { key: "r", header: "Papel", cell: (u) => <StatusBadge value={u.role === "SUPPLIER_ADMIN" ? "ACTIVE" : "READY"} dot={false} /> },
           { key: "p", header: "Perfil", cell: (u) => ROLE[u.role as keyof typeof ROLE] ?? u.role },
           { key: "l", header: "Último acesso", cell: (u) => (u.lastLoginAt ? formatDateTime(u.lastLoginAt) : u.mustChangePassword ? "Aguardando primeiro acesso" : "—"), mobile: false },
+          { key: "a", header: "", className: "text-right", cell: (u) => u.role === "SUPPLIER_DISPATCH" ? <RemoveMemberButton userId={u.id} name={u.name} /> : null },
         ]} />
       </div>
     </>
