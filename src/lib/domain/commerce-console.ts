@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { brandLeads, financeInvoices, orders, organizations, products, storeProducts, stores } from "@/db/schema";
 import { requireMaster, type Actor } from "./access";
@@ -9,7 +9,7 @@ const BRAND = "NEXTLEVEL_COMMERCE" as const;
 async function commerceStoreRows(db: Database) {
   return db.select({ store: stores }).from(stores)
     .innerJoin(organizations, eq(organizations.id, stores.organizationId))
-    .where(eq(organizations.brand, BRAND))
+    .where(and(eq(organizations.brand, BRAND), isNull(stores.showcaseTheme)))
     .orderBy(desc(stores.createdAt));
 }
 
