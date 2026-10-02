@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/portal/json-ld";
 import { Reveal } from "@/components/portal/reveal";
 import { ThemeShowcase } from "@/components/portal/theme-showcase";
 import { supportContacts } from "@/lib/support";
+import { readableOn } from "@/lib/utils";
 
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
 const sectionTitle = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl";
@@ -49,7 +50,7 @@ export function CommerceHome({ brand }: { brand: Brand }) {
           <h1 className="nl-display mt-5 max-w-4xl">A loja virtual que o seu negócio merece, no ar sem complicação.</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-blue-100/90">Tema bonito, Pix e cartão, pedidos organizados e uma equipe que ajuda você a colocar tudo no ar. Do Brás para o Brasil inteiro.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href={cta} className={`${btn} text-white hover:opacity-90 focus-visible:outline-white`} style={{ background: brand.accentColor }}>{brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
+            <Link href={cta} className={`${btn} hover:opacity-90 focus-visible:outline-white`} style={{ background: brand.accentColor, color: readableOn(brand.accentColor) }}>{brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
             <a href="#temas" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Ver os temas</a>
             {talk ? <a href={talk} target="_blank" rel="noreferrer" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Falar no WhatsApp</a> : null}
           </div>
@@ -98,7 +99,7 @@ export function CommerceHome({ brand }: { brand: Brand }) {
       <section className="py-20 text-white" style={{ background: brand.primaryColor }}>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4">
           <div><ShoppingBag className="mb-3 size-8 text-blue-200" aria-hidden /><h2 className={`${sectionTitle} max-w-xl`}>Pronto para abrir a sua loja?</h2><p className="mt-3 max-w-lg text-blue-100/90">Deixe seus dados e a equipe fala com você pelo WhatsApp.</p></div>
-          <div className="flex flex-wrap gap-3"><Link href={cta} className={`${btn} text-white hover:opacity-90 focus-visible:outline-white`} style={{ background: brand.accentColor }}><MessagesSquare className="size-5" aria-hidden /> {brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link></div>
+          <div className="flex flex-wrap gap-3"><Link href={cta} className={`${btn} hover:opacity-90 focus-visible:outline-white`} style={{ background: brand.accentColor, color: readableOn(brand.accentColor) }}><MessagesSquare className="size-5" aria-hidden /> {brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link></div>
         </div>
       </section>
     </>

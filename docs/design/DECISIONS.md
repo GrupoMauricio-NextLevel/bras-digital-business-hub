@@ -288,3 +288,9 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D42. Influenciadores fora do escopo por ora; ajuste de expectativa visual
 - **Influenciadores, creators, feed e live saem da fila ativa** (dono, 2026-10-02). Nada de `influencers`, `liveShop` ou "programa de influenciadores" aparece como promessa no portal do Commerce (texto retirado de `commerce-home.tsx`, FAQ e descrição da marca). `hub-creators-consolidado.md`, P3/P4 de `promessas-commerce.md` e as seções 5.4/5.5 do prompt-mestre ficam **adiados**, sem apagar. O programa de **parceiros (afiliados de planos)** continua como está.
 - **Foco: alicerce e esqueleto bem feitos.** Páginas públicas das lojas o mais próximo possível da qualidade do Shopify; painéis internos com **identidade original** (fugir do visual genérico de painel feito por IA); **paleta de todas as marcas reformulada**. Proposta e critérios em `docs/design/DIRECAO-VISUAL-V4.md` (aguardando aprovação do dono antes de implementar).
+
+## D43. Paletas por marca e tema Starter como base da vitrine
+- **Aprovado pelo dono:** direção "mesa do atacadista" e paletas papel + tinta + sinal por marca (`docs/design/DIRECAO-VISUAL-V4.md`). Implementado o alicerce: `src/lib/brand-palette.ts` (paleta clara e escura por marca, contraste WCAG calculado), `primaryColor`/`accentColor` de `brand.ts` derivados dela, variáveis `--brand-paper/ink/signal/on-signal/signal-text/support` injetadas no `<head>` pelo layout raiz, texto de botão e de e-mail legível sobre a cor de sinal (`onSignal`). Tokens atuais dos painéis **não foram alterados**; o Codex passa a consumir `--brand-*`.
+- Temas das lojas dos lojistas ficam fora da paleta da marca.
+- **Vitrine:** o tema **Starter** é o ponto de partida; evolução por seção em `docs/design/PLANO-VITRINE-V4.md`.
+- Teste `tests/brand-palette.test.ts`.

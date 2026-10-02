@@ -11,6 +11,8 @@ export const HOLDING_CODE: BrandCode = "NEXTLEVEL";
 export const PRODUCT_BRANDS = BRAND_CODES.filter((c) => c !== HOLDING_CODE) as Exclude<BrandCode, "NEXTLEVEL">[];
 
 /** Módulos que uma marca liga por padrão (a compra avulsa e os planos refinam por loja). */
+import { PALETTES } from "@/lib/brand-palette";
+
 export const BRAND_MODULES = ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"] as const;
 export type BrandModule = (typeof BRAND_MODULES)[number];
 
@@ -61,7 +63,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["lojas.nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),
-      primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel", wordmark: "Commerce",
+      primaryColor: PALETTES.NEXTLEVEL_COMMERCE.light.ink, accentColor: PALETTES.NEXTLEVEL_COMMERCE.light.signal, logo: "nextlevel", wordmark: "Commerce",
       modules: ["stores", "themes", "partners"], emailFromName: "NextLevel Commerce", legalLine: LEGAL("NextLevel Commerce"),
       // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
       signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true", soon: null,
@@ -73,7 +75,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_SUPERDROP, ["superdrop.com.br"]),
       baseUrl: env.BRAND_URL_SUPERDROP ?? "https://superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_SUPERDROP),
-      primaryColor: "#0f1c16", accentColor: "#22c55e", logo: "superdrop",
+      primaryColor: PALETTES.SUPERDROP.light.ink, accentColor: PALETTES.SUPERDROP.light.signal, logo: "superdrop",
       modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true, soon: null,
     },
     BRAS_DIGITAL: {
@@ -83,7 +85,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
-      primaryColor: "#3b0764", accentColor: "#f59e0b", logo: "nextlevel", wordmark: "Brás Digital",
+      primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
       modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
       soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Vendedores de varejo e de atacado menor do Brás reunidos em um marketplace, com loja própria, preço de atacado e pedido organizado.", bullets: ["Vitrine para varejo e atacado menor", "Preço por quantidade e pedido mínimo", "Lojas e fornecedores do Brás no mesmo lugar"], leadTitle: "Quero participar da Brás Digital" },
     },
@@ -94,7 +96,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_CREATORS_HUB, ["hubcreators.nextlevelgroup.com.br"]),
       baseUrl: env.BRAND_URL_CREATORS_HUB ?? "https://hubcreators.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_CREATORS_HUB),
-      primaryColor: "#1e1b4b", accentColor: "#7e22ce", logo: "nextlevel", wordmark: "Creators",
+      primaryColor: PALETTES.CREATORS_HUB.light.ink, accentColor: PALETTES.CREATORS_HUB.light.signal, logo: "nextlevel", wordmark: "Creators",
       modules: ["stores", "partners", "influencers", "liveShop"], emailFromName: "Hub Creators", legalLine: LEGAL("Hub Creators"), signupOpen: false, partnersOpen: false,
       soon: { headline: "Quem cria e quem vende, no mesmo lugar.", text: "Influenciadores e vendedores do TikTok e de outras redes conectados a marcas, com link rastreável, campanha, amostra e comissão calculada sobre a venda real.", bullets: ["Link rastreável por criador e campanha", "Comissão sobre venda confirmada", "Pedido de amostra e acompanhamento"], leadTitle: "Quero entrar no Hub Creators" },
     },
@@ -105,7 +107,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_CHINA_HUB, ["chinahubglobal.com.br"]),
       baseUrl: env.BRAND_URL_CHINA_HUB ?? "https://chinahubglobal.com.br",
       officeUrl: url(env.BRAND_OFFICE_CHINA_HUB),
-      primaryColor: "#450a0a", accentColor: "#ef4444", logo: "nextlevel", wordmark: "China Hub",
+      primaryColor: PALETTES.CHINA_HUB.light.ink, accentColor: PALETTES.CHINA_HUB.light.signal, logo: "nextlevel", wordmark: "China Hub",
       modules: ["stores", "themes", "partners", "dropship", "wholesale"], emailFromName: "China Hub", legalLine: LEGAL("China Hub"), signupOpen: false, partnersOpen: false,
       soon: { headline: "Seu catálogo importado, vendendo no Brasil inteiro.", text: "Fornecedores e importadores conectados a uma rede de lojistas e representantes, com pedido, expedição e pagamento organizados em português.", bullets: ["Rede de lojistas e representantes", "Pedido e expedição organizados", "Atendimento em português, espanhol e mandarim"], leadTitle: "Quero ser fornecedor no China Hub", zh: { headline: "把货卖到巴西，全国分销", text: "连接巴西批发商与零售店网络，由本地系统统一管理订单与发货。" } },
     },
@@ -116,7 +118,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL, ["master.nextlevelgroup.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL ?? "https://master.nextlevelgroup.com.br",
       officeUrl: null,
-      primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel",
+      primaryColor: PALETTES.NEXTLEVEL.light.ink, accentColor: PALETTES.NEXTLEVEL.light.signal, logo: "nextlevel",
       modules: ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"], emailFromName: "NextLevel", legalLine: LEGAL("NextLevel"), signupOpen: false, partnersOpen: true, soon: null,
     },
   };

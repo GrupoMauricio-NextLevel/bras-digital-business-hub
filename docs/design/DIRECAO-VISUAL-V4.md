@@ -1,6 +1,6 @@
 # Direção visual v4: alicerce, ajuste de expectativa, identidade original e cores
 
-> 2026-10-02. **Proposta para o dono aprovar antes de implementar.** Registrada em D42. Quem executa o visual é o Codex (`AGENTS.md`); eu entrego o alicerce técnico (tokens por marca, desempenho, testes) e este briefing.
+> 2026-10-02. **Aprovada pelo dono (aceitou as recomendações); alicerce de cores implementado em `src/lib/brand-palette.ts`. Plano da vitrine em `PLANO-VITRINE-V4.md`.** Registrada em D42. Quem executa o visual é o Codex (`AGENTS.md`); eu entrego o alicerce técnico (tokens por marca, desempenho, testes) e este briefing.
 
 ## 1. Ajuste de expectativa (honesto)
 **Páginas públicas "o mais perto possível do Shopify".** Dá para chegar muito perto no que o cliente final **vê e sente**; não dá para igualar o que o Shopify tem por trás.
