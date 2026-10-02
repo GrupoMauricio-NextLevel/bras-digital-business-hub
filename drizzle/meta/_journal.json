@@ -204,6 +204,13 @@
       "when": 1790933625653,
       "tag": "0028_preco_por_quantidade",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1790934659309,
+      "tag": "0029_avaliacoes",
+      "breakpoints": true
     }
   ]
 }

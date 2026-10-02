@@ -1102,3 +1102,20 @@ export const storePriceTiers = pgTable("store_price_tiers", {
   minQty: integer("min_qty").notNull(),
   priceCents: integer("price_cents").notNull(),
 }, (t) => [uniqueIndex("store_price_tiers_unique").on(t.storeId, t.productId, t.minQty)]);
+
+// ---------------------------------------------------------------------------
+// Avaliações de produto: só de quem comprou (pedido pago e enviado), com moderação do lojista
+// ---------------------------------------------------------------------------
+export const REVIEW_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+export const productReviews = pgTable("product_reviews", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  productId: text("product_id").notNull().references(() => products.id),
+  orderId: text("order_id").notNull().references(() => orders.id),
+  /** Só o primeiro nome aparece publicamente. */
+  authorName: text("author_name").notNull(),
+  rating: integer("rating").notNull(),
+  body: text("body"),
+  status: text("status", { enum: REVIEW_STATUSES }).notNull().default("PENDING"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("product_reviews_order_product").on(t.orderId, t.productId), index("product_reviews_product_idx").on(t.storeId, t.productId)]);

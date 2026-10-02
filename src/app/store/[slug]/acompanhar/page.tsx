@@ -5,6 +5,8 @@ import { getStorefront } from "@/lib/queries/storefront";
 import { trackOrder } from "@/lib/domain/tracking";
 import { OrderJourney } from "@/components/storefront/order-journey";
 import { formatBRL } from "@/lib/money";
+import { reviewableItems } from "@/lib/domain/reviews";
+import { ReviewForm } from "@/components/storefront/review-form";
 
 export const metadata: Metadata = { title: "Acompanhar pedido", robots: { index: false } };
 
@@ -14,6 +16,7 @@ export default async function TrackPage({ params, searchParams }: { params: Prom
   const sf = await getStorefront(slug); if (!sf) notFound();
   const searched = Boolean(sp.pedido && sp.email);
   const order = searched ? await trackOrder(await getDb(), sf.store.id, { number: sp.pedido!, email: sp.email! }) : null;
+  const reviewable = order ? await reviewableItems(await getDb(), sf.store.id, { number: sp.pedido!, email: sp.email! }) : [];
   const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
@@ -32,6 +35,7 @@ export default async function TrackPage({ params, searchParams }: { params: Prom
           <ul className="mt-6 divide-y divide-neutral-200 rounded-xl border border-neutral-200 text-sm">{order.items.map((i, n) => <li key={n} className="flex justify-between gap-3 px-4 py-2.5"><span>{i.quantity}× {i.name}</span><span className="text-neutral-500">{i.label}</span></li>)}</ul>
         </section>
       ) : null}
+      {order && reviewable.length ? <ReviewForm slug={slug} number={sp.pedido!} email={sp.email!} items={reviewable} /> : null}
     </div>
   );
 }

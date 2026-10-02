@@ -5,7 +5,7 @@ import { financeInvoices, orders, productVariants, storeDiscounts, storeProducts
 import { signupMember } from "@/lib/domain/store-access";
 import { catalogSupplierId } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
-import { cancelOrder, createOrder } from "@/lib/domain/orders";
+import { advanceOrder, cancelOrder, createOrder, registerShippingLabel } from "@/lib/domain/orders";
 import { actorFromUser } from "@/lib/domain/access";
 import { markInvoicePaid } from "@/lib/domain/finance";
 import { createDiscount } from "@/lib/domain/discounts";
@@ -89,5 +89,31 @@ describe("Onda 9 — preço por quantidade", () => {
     const a = await independent(1);
     const b = await independent(2);
     await expect(setPriceTiers(ctx.db, b.storeId, a.productId, [{ minQty: 6, priceCents: 9000 }])).rejects.toThrow(/não encontrado/);
+  });
+});
+
+describe("Onda 9 — avaliações de clientes", () => {
+  it("só avalia quem comprou (pago e enviado); uma por produto; moderação publica; outra loja não modera", async () => {
+    const { reviewableItems, submitReview, approvedReviews, listReviewsForStore, moderateReview } = await import("@/lib/domain/reviews");
+    const a = await independent(1);
+    const b = await independent(2);
+    const o = await buy(a, undefined, 1, true);
+    const who = { number: String((await ctx.db.query.orders.findFirst({ where: eq(orders.id, o.orderId) }))!.number), email: customer.email };
+    // antes do envio: não pode avaliar
+    expect(await reviewableItems(ctx.db, a.storeId, who)).toEqual([]);
+    await expect(submitReview(ctx.db, a.storeId, { ...who, productId: a.productId, rating: 5 })).rejects.toThrow(/pago e enviado/);
+    await registerShippingLabel(ctx.db, a.owner, o.orderId, { code: "ME123456BR", carrier: "Correios" });
+    for (const st of ["PICKING", "READY_TO_SHIP", "SHIPPED"] as const) await advanceOrder(ctx.db, a.owner, o.orderId, st);
+    expect((await reviewableItems(ctx.db, a.storeId, who)).map((i) => i.productId)).toEqual([a.productId]);
+    await expect(submitReview(ctx.db, a.storeId, { ...who, email: "outro@x.com", productId: a.productId, rating: 5 })).rejects.toThrow(/pago e enviado/);
+    await expect(submitReview(ctx.db, a.storeId, { ...who, productId: a.productId, rating: 9 })).rejects.toThrow();
+    await submitReview(ctx.db, a.storeId, { ...who, productId: a.productId, rating: 4, body: "Chegou rápido" });
+    await expect(submitReview(ctx.db, a.storeId, { ...who, productId: a.productId, rating: 5 })).rejects.toThrow(/já avaliou/);
+    expect((await approvedReviews(ctx.db, a.storeId, a.productId)).count).toBe(0); // pendente não aparece
+    const rev = (await listReviewsForStore(ctx.db, a.storeId))[0]!.r;
+    await expect(moderateReview(ctx.db, b.storeId, rev.id, "APPROVED")).rejects.toThrow(/não encontrada/);
+    await moderateReview(ctx.db, a.storeId, rev.id, "APPROVED");
+    const pub = await approvedReviews(ctx.db, a.storeId, a.productId);
+    expect([pub.count, pub.avg, pub.items[0]!.author]).toEqual([1, 4, "Cliente"]);
   });
 });
