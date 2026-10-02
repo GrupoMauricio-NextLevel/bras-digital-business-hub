@@ -1,8 +1,9 @@
 import { Suspense } from "react";
+import { AlertTriangle, Boxes, PackageCheck } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { FilterBar, FilterChips, SearchInput } from "@/components/app/filter-bar";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { requireRole } from "@/lib/require-session";
 import { getSupplierInventory } from "@/lib/queries/supplier";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +19,12 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHeader title="Estoque central" description="Um único estoque físico para toda a rede. Nenhuma loja possui estoque próprio." />
-      <MetricGrid className="mb-6">
-        <MetricCard label="Físico" value={onHand} />
-        <MetricCard label="Reservado" value={reserved} tone="warning" />
-        <MetricCard label="Disponível" value={Math.max(0, onHand - reserved)} tone="success" />
-        <MetricCard label="Baixo estoque" value={low} tone={low ? "danger" : "neutral"} hint="Variantes com < 5 disponíveis" />
-      </MetricGrid>
+      <OperationalPulse className="mb-5" items={[
+        { label: "Estoque físico", value: onHand, icon: Boxes, tone: "neutral", hint: "unidades registradas" },
+        { label: "Reservado", value: reserved, icon: PackageCheck, tone: reserved ? "warning" : "neutral", hint: "já comprometido com pedidos" },
+        { label: "Disponível", value: Math.max(0, onHand - reserved), icon: Boxes, tone: "success", hint: "livre para novas vendas" },
+        { label: "Baixo estoque", value: low, icon: AlertTriangle, tone: low ? "danger" : "success", hint: "variantes com menos de 5" },
+      ]} />
       <Suspense>
         <FilterBar>
           <SearchInput placeholder="Produto ou SKU…" />
