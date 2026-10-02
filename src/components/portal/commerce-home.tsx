@@ -2,16 +2,21 @@ import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 import { formatBRL } from "@/lib/money";
+import { SECTION_SCHEMAS } from "@/lib/themes/sections";
 import { Customizer } from "@/components/portal/commerce/customizer";
 import { DEMO_STORES } from "@/components/portal/commerce/demo-stores";
 import { StoreGallery, type GalleryTheme } from "@/components/portal/commerce/store-gallery";
-import { ClosingCta, Faq, H2, Hero, Operation, Steps, ThemesAndPrices } from "@/components/portal/commerce/sections";
+import { EditorFrame } from "@/components/portal/commerce/editor-frame";
+import { ClosingCta, Facts, Faq, ForWhom, H2, Hero, Operation, Steps, ThemesAndPrices } from "@/components/portal/commerce/sections";
 
 /**
  * Home da NextLevel Commerce (v1, protótipo em revisão): o que é, que lojas dá para montar, como a marca ganha forma,
  * o que o painel faz, como começar. Só anuncia o que existe; atacado e demais frentes ficam de fora.
  * Documento de decisões: docs/design/HOME-COMMERCE-V1.md.
  */
+/** Quantidade de tipos de seção do motor de temas (lida do esquema, não escrita à mão). */
+const SECTION_TYPES = SECTION_SCHEMAS.length;
+
 export function CommerceHome({ brand }: { brand: Brand }) {
   const cta = brand.signupOpen ? "/cadastro" : "/quero-minha-loja";
   const themes: Record<string, GalleryTheme> = Object.fromEntries(THEME_CATALOG.map((t) => [t.key, { key: t.key, name: t.name, priceLabel: t.priceCents === 0 ? "grátis" : formatBRL(t.priceCents), tagline: t.tagline, features: t.features.slice(0, 4) }]));
@@ -23,6 +28,14 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
       <Hero cta={cta} signupOpen={brand.signupOpen} />
+      <Facts themeCount={THEME_CATALOG.length} sectionTypes={SECTION_TYPES} />
+
+      <section id="para-quem" aria-labelledby="pq-t" className={section}>
+        <div className="mx-auto max-w-6xl">
+          <h2 id="pq-t" className={`${H2} mb-10 max-w-2xl text-[#14213d]`}>Para quem vende e quer uma loja de verdade.</h2>
+          <ForWhom cta={cta} />
+        </div>
+      </section>
 
       <section id="exemplos" aria-labelledby="exemplos-t" className={`${section} bg-[#14213d]`}>
         <div className="mx-auto max-w-6xl">
@@ -35,8 +48,10 @@ export function CommerceHome({ brand }: { brand: Brand }) {
       <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-[#fbf8f1]`}>
         <div className="mx-auto max-w-6xl">
           <h2 id="pers-t" className={`${H2} max-w-2xl text-[#14213d]`}>Deixe a loja com a cara da sua marca.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-[#14213d]/85">Experimente quatro escolhas que o editor de temas já oferece e veja a vitrine mudar.</p>
-          <div className="mt-10"><Customizer /></div>
+          <p className="mt-4 max-w-2xl text-lg text-[#14213d]/85">Você monta a loja em um editor visual: escolhe as seções, muda a ordem, vê a prévia e só então publica.</p>
+          <div className="mt-10"><EditorFrame /></div>
+          <h3 className="mb-6 mt-16 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold text-[#14213d]">Experimente quatro escolhas de estilo</h3>
+          <Customizer />
         </div>
       </section>
 

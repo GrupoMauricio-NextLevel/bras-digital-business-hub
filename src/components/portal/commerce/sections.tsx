@@ -18,7 +18,7 @@ export function Hero({ cta, signupOpen }: { cta: string; signupOpen: boolean }) 
           <h1 id="titulo" className="mt-4 font-[family-name:var(--nl-font-display)] text-[2rem] font-extrabold leading-[1.08] tracking-tight text-[#14213d] sm:text-5xl">Crie a loja virtual da sua marca e cuide de tudo em um só painel.</h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#14213d]/85">A NextLevel Commerce reúne a vitrine da sua loja, o pagamento por Pix e cartão, os pedidos e os clientes. Você escolhe um tema, ajusta ao seu estilo e acompanha cada venda.</p>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href={cta} className={CTA}>Quero minha loja</Link>
+            <Link href={cta} className={`${CTA} w-full sm:w-auto`}>Quero minha loja</Link>
             <a href="#exemplos" className="text-base font-semibold text-[#14213d] underline decoration-[#f2b600] decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver lojas de exemplo</a>
           </div>
           <p className="mt-5 max-w-md text-sm text-[#14213d]/75">{signupOpen ? "Crie sua conta e comece a montar a loja." : "O cadastro está por convite no momento: deixe seu contato e a equipe responde."}</p>
@@ -32,6 +32,41 @@ export function Hero({ cta, signupOpen }: { cta: string; signupOpen: boolean }) 
         </div>
       </div>
     </section>
+  );
+}
+
+export function Facts({ themeCount, sectionTypes }: { themeCount: number; sectionTypes: number }) {
+  const items = [
+    [String(themeCount), "temas, com 1 grátis"],
+    [String(sectionTypes), "tipos de seção para montar suas páginas"],
+    ["6x", "no cartão, e Pix com confirmação automática"],
+    ["1", "painel para pedidos, clientes e vendas"],
+  ];
+  return (
+    <section aria-label="O que a loja já traz" className="border-y border-[#14213d]/12 bg-[#ece7dc]">
+      <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-5 px-4 py-6 md:grid-cols-4">
+        {items.map(([n, t]) => <div key={t} className="flex items-baseline gap-3"><dt className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tabular-nums text-[#14213d]">{n}</dt><dd className="text-sm leading-snug text-[#14213d]/85">{t}</dd></div>)}
+      </dl>
+    </section>
+  );
+}
+
+export function ForWhom({ cta }: { cta: string }) {
+  const rows = [
+    { who: "Vende pelo Instagram e pelo WhatsApp", text: "Reúna produtos, preços e pagamento numa loja com endereço próprio, em vez de combinar tudo por mensagem." },
+    { who: "Tem loja física e quer vender também online", text: "Cadastre os produtos por planilha e receba os pedidos da internet no mesmo painel." },
+    { who: "Já tem loja em outra plataforma", text: "Traga o seu catálogo por planilha e monte um tema com a sua identidade. Clientes e pedidos antigos não são importados." },
+  ];
+  return (
+    <ul className="divide-y divide-[#14213d]/15 border-y border-[#14213d]/15">
+      {rows.map((r) => (
+        <li key={r.who} className="grid gap-2 py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] md:items-center md:gap-10">
+          <h3 className="font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-[#14213d]">{r.who}</h3>
+          <p className="text-[17px] leading-relaxed text-[#14213d]/85">{r.text}</p>
+          <Link href={cta} className="text-base font-semibold text-[#1f47c9] underline underline-offset-4 hover:no-underline">Quero começar assim</Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -108,7 +143,7 @@ export function ThemesAndPrices({ themes }: { themes: ThemeRow[] }) {
 const FAQ = [
   { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
   { q: "Posso usar a minha identidade?", a: "Sim: logo, cores, fontes e textos são seus. O domínio próprio (seudominio.com.br) faz parte do plano de loja própria." },
-  { q: "Como conheço os temas?", a: "Pelas lojas de exemplo desta página. Hoje são quatro temas: Starter (grátis), Arena, Editorial e Signature. As lojas de exemplo são de demonstração, não clientes reais." },
+  { q: "Quanto custa?", a: "Os temas custam: Starter grátis, Arena R$ 299, Editorial R$ 699 e Signature R$ 1.499 (valores do catálogo de hoje, que podem mudar). O plano da loja, com mensalidade e taxas, é combinado na conversa com a equipe: ainda não há uma tabela pública de planos." },
   { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes e análise de vendas. Atacado (preço por quantidade e pedido mínimo) está em construção e ainda não pode ser usado." },
   { q: "Como começo?", a: "Deixe seu contato. O cadastro aberto ao público ainda não foi liberado; a equipe da NextLevel responde e combina os próximos passos." },
 ];

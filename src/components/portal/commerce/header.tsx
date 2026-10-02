@@ -38,7 +38,8 @@ export function CommerceHeader({ nav, cta: action }: { nav: CommerceNav; cta: { 
           <Link href="/login" className="text-sm font-semibold text-[#14213d] hover:underline">Entrar</Link>
           <Link href={action.href} className={cta}>{action.label}</Link>
         </div>
-        <button ref={btn} type="button" className="ml-auto inline-flex size-11 items-center justify-center rounded-md text-[#14213d] hover:bg-[#14213d]/8 focus-visible:outline-2 focus-visible:outline-[#14213d] lg:hidden" aria-expanded={open} aria-controls="menu-celular" aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen(!open)}>
+        <Link href={action.href} className={`${cta} ml-auto h-10 whitespace-nowrap px-3 text-[13px] lg:hidden`}><span className="min-[420px]:hidden">Começar</span><span className="hidden min-[420px]:inline">{action.label}</span></Link>
+        <button ref={btn} type="button" className="inline-flex size-11 items-center justify-center rounded-md text-[#14213d] hover:bg-[#14213d]/8 focus-visible:outline-2 focus-visible:outline-[#14213d] lg:hidden" aria-expanded={open} aria-controls="menu-celular" aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen(!open)}>
           {open ? <X className="size-6" aria-hidden /> : <Menu className="size-6" aria-hidden />}
         </button>
       </div>

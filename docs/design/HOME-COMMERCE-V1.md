@@ -37,3 +37,13 @@ Menu do celular (botão, Esc fecha, foco), abas das lojas de exemplo (setas do t
 ## Verificações
 `e2e/commerce-home.mjs` (3 larguras: estrutura, rolagem horizontal, imagens, menu, abas, simulação, perguntas, links, console), `npx tsc --noEmit`, `npx eslint src e2e tests`, `npm run build`.
 **Não feito:** medição de desempenho (Lighthouse), teste em navegadores reais de celular, revisão com leitor de tela, axe automatizado nesta página.
+
+## Revisão com a referência (capturas do celular enviadas pelo dono, 20 telas da Nuvemshop)
+**O que foi aproveitado (e só com o que o produto prova):**
+- Mostrar o editor de verdade, com o resultado ao lado: `editor-frame.tsx` reproduz a estrutura do editor de hoje (barra com Computador/Tablet/Celular, Desfazer/Refazer, Rascunho salvo, Histórico, Ver loja, Publicar; lista de seções; Adicionar seção; Cores, fontes e estilo), legendado como ilustração.
+- Caminhos por situação do visitante: seção "Para quem vende e quer uma loja de verdade" (Instagram e WhatsApp, loja física, outra plataforma), sem prometer migração de clientes e pedidos.
+- Faixa de fatos com números reais lidos do código (temas do catálogo, tipos de seção do motor, Pix e cartão em até 6x).
+- Pergunta de preço respondida de frente na seção de dúvidas ("Quanto custa?").
+- Botões em largura total no celular e botão comercial sempre visível no cabeçalho do celular.
+- Botão flutuante de WhatsApp, só quando `NEXT_PUBLIC_SUPPORT_WHATSAPP` estiver configurado.
+**O que foi deixado de fora, e por quê:** vídeo de fundo (pesado e sem material próprio), prova social numérica e logos de clientes (não há clientes reais para citar; inventar seria falso), assistente de IA (não existe), simulador de faturamento e comparativo de planos (fora do escopo desta etapa e as regras de preço estão em aberto), carrossel de recursos, barra fixa de lançamentos, palavra em itálico serifado nos títulos (é a assinatura tipográfica deles).
