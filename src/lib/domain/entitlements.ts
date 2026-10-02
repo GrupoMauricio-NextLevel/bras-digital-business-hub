@@ -3,14 +3,16 @@ import type { Database } from "@/db/client";
 import { entitlements } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { DomainError } from "./errors";
-import type { Actor } from "./access";
+import { grantForAreaRole, type Actor } from "./access";
 
 export type Tenant = { type: "STORE"; storeId: string } | { type: "SUPPLIER"; supplierId: string };
 
 /** Tenant do ator (lojista ou fornecedor); null para master/expedição sem tenant próprio. */
 export function tenantOf(actor: Actor): Tenant | null {
-  if (actor.role === "STORE_OWNER" && actor.storeId) return { type: "STORE", storeId: actor.storeId };
-  if ((actor.role === "SUPPLIER_ADMIN" || actor.role === "SUPPLIER_DISPATCH") && actor.supplierId) return { type: "SUPPLIER", supplierId: actor.supplierId };
+  const merchant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  if (merchant?.storeId) return { type: "STORE", storeId: merchant.storeId };
+  const supplier = grantForAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN");
+  if (supplier?.supplierId) return { type: "SUPPLIER", supplierId: supplier.supplierId };
   return null;
 }
 
