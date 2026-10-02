@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { activities, customers, orderEvents, orderLabelFiles, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
-import { assertCanAccess, isSupplierSide, type Actor } from "./access";
+import { assertCanAccess, grantForAreaRole, hasAreaRole, type Actor } from "./access";
 import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
@@ -52,6 +52,8 @@ type Reservation = { variantId: string; quantity: number };
 export type CreateOrderOptions = {
   /** Definidos apenas pelo servidor (nunca vindos do cliente). */
   paymentProvider?: "DEMO" | "MERCADO_PAGO" | "MANUAL";
+  /** Vertical que originou a venda. */
+  sourceArea?: "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB";
   /** Minutos até a reserva de estoque expirar se o cliente não pagar. */
   reservationMinutes?: number;
 };
@@ -118,6 +120,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       supplierId: network.supplierId,
       storeCustomerId,
       channel: input.channel,
+      sourceArea: options.sourceArea ?? "SUPERDROP",
       saleType: input.saleType,
       status,
       customerPaymentStatus: input.customerPaymentStatus,
@@ -197,11 +200,30 @@ export async function getOrderForActor(db: Database, actor: Actor, orderId: stri
 }
 
 export async function listOrdersForActor(db: Database, actor: Actor, opts: { status?: OrderStatus; limit?: number } = {}) {
-  const scope =
-    actor.role === "STORE_OWNER" ? eq(orders.storeId, actor.storeId ?? "__none__") : isSupplierSide(actor) ? eq(orders.supplierId, actor.supplierId ?? "__none__") : undefined;
-  const where = and(scope, opts.status ? eq(orders.status, opts.status) : undefined);
-  const rows = await db.select({ order: orders, storeName: stores.name, storeSlug: stores.slug }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).where(where).orderBy(desc(orders.createdAt)).limit(opts.limit ?? 100);
-  return rows;
+  const platformGrant = grantForAreaRole(actor, "SUPERDROP", "PLATFORM_ADMIN");
+  const merchantGrant = grantForAreaRole(actor, "SUPERDROP", "MERCHANT_OWNER");
+  const supplierGrant = grantForAreaRole(actor, "SUPERDROP", ["SUPPLIER_ADMIN", "OPERATOR"]);
+
+  const scope = platformGrant
+    ? undefined
+    : merchantGrant?.storeId
+      ? eq(orders.storeId, merchantGrant.storeId)
+      : supplierGrant?.supplierId
+        ? eq(orders.supplierId, supplierGrant.supplierId)
+        : eq(orders.id, "__forbidden__");
+
+  const where = and(
+    eq(orders.sourceArea, "SUPERDROP"),
+    scope,
+    opts.status ? eq(orders.status, opts.status) : undefined,
+  );
+  return db
+    .select({ order: orders, storeName: stores.name, storeSlug: stores.slug })
+    .from(orders)
+    .innerJoin(stores, eq(stores.id, orders.storeId))
+    .where(where)
+    .orderBy(desc(orders.createdAt))
+    .limit(opts.limit ?? 100);
 }
 
 // ---------------------------------------------------------------------------
@@ -279,7 +301,9 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
 }
 
 export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
-  if (actor.role === "SUPPLIER_DISPATCH") throw new ForbiddenError("A expedição não cancela pedidos.");
+  if (hasAreaRole(actor, "SUPERDROP", "OPERATOR") && !hasAreaRole(actor, "SUPERDROP", "SUPPLIER_ADMIN")) {
+    throw new ForbiddenError("A expedição não cancela pedidos.");
+  }
   const order = await loadOwned(db, actor, orderId);
   if (!CANCELABLE.includes(order.status)) throw new DomainError("INVALID_TRANSITION", "Pedido não pode mais ser cancelado.");
   return db.transaction(async (tx) => {
