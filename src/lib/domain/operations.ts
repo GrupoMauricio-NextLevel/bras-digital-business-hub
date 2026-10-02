@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gt, inArray, lt, max } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { entitlements, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
+import { entitlements, inventory, networks, orderClaims, orderItems, orderLabelFiles, orders, pickWaveOrders, pickWaves, productVariants, stores, supplierOps, suppliers, users, labelPrints, products, type Cutoffs, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { generateTemporaryPassword, hashPassword } from "@/lib/security/password";
 import { assertCanAccess, isSupplierSide, type Actor } from "./access";
@@ -266,18 +266,23 @@ export async function removeDispatchUser(db: Database, actor: Actor, userId: str
 // ---------------------------------------------------------------------------
 // Onboarding do fornecedor
 // ---------------------------------------------------------------------------
-export type OnboardingStep = { key: "wallet" | "cutoff" | "team" | "catalog"; label: string; hint: string; href: string; done: boolean };
+export type OnboardingStep = { key: "wallet" | "cutoff" | "team" | "catalog" | "stock" | "stores"; label: string; hint: string; href: string; done: boolean };
 
 export async function supplierOnboarding(db: Database, supplierId: string): Promise<{ steps: OnboardingStep[]; doneCount: number }> {
   const s = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) });
   const ops = await db.query.supplierOps.findFirst({ where: eq(supplierOps.supplierId, supplierId) });
   const team = (await db.select({ n: count() }).from(users).where(and(eq(users.supplierId, supplierId), eq(users.role, "SUPPLIER_DISPATCH"))))[0]?.n ?? 0;
   const prods = (await db.select({ n: count() }).from(products).where(eq(products.supplierId, supplierId)))[0]?.n ?? 0;
+  const storeCount = (await db.select({ n: count() }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId)))[0]?.n ?? 0;
+  const stockRows = await db.select({ onHand: inventory.onHand, reserved: inventory.reserved }).from(inventory).innerJoin(productVariants, eq(productVariants.id, inventory.variantId)).innerJoin(products, eq(products.id, productVariants.productId)).where(eq(products.supplierId, supplierId));
+  const availableStock = stockRows.reduce((sum, row) => sum + Math.max(0, row.onHand - row.reserved), 0);
   const steps: OnboardingStep[] = [
     { key: "wallet", label: "Conectar o Mercado Pago", hint: "Receba as recargas Pix dos lojistas na sua conta.", href: "/supplier/settings", done: Boolean(s?.walletMpTokenEnc) },
     { key: "cutoff", label: "Definir o horário de corte", hint: "Pedidos pagos até o corte saem no mesmo dia.", href: "/supplier/operations", done: Boolean(ops) },
     { key: "team", label: "Cadastrar a equipe de expedição", hint: "Quem separa e imprime as etiquetas.", href: "/supplier/team", done: team > 0 },
     { key: "catalog", label: "Cadastrar produtos", hint: "Seu catálogo abastece todas as lojas da rede.", href: "/supplier/products", done: prods > 0 },
+    { key: "stock", label: "Dar entrada no estoque", hint: "Tenha ao menos uma unidade disponível para vender.", href: "/supplier/inventory", done: availableStock > 0 },
+    { key: "stores", label: "Cadastrar o primeiro lojista", hint: "Crie uma loja para começar a distribuir o catálogo.", href: "/supplier/stores/new", done: storeCount > 0 },
   ];
   return { steps, doneCount: steps.filter((x) => x.done).length };
 }
