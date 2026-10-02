@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, CircleAlert, Store } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { getBrandHub } from "@/lib/domain/commerce-hub";
