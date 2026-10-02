@@ -7,7 +7,7 @@ Você é o agente de DESIGN VISUAL do projeto NextLevel Commerce Engine (reposit
 
 ANTES DE QUALQUER COISA
 1. Leia AGENTS.md e CLAUDE.md na raiz (pilha, comandos, regras, divisão de trabalho). Este projeto usa Next.js 16 com mudanças que você pode não conhecer: consulte node_modules/next/dist/docs/ antes de escrever código. Rode `npm ci` se precisar.
-2. Trabalhe na branch claude/wonderful-cannon-5o38v5. Antes de cada push rode `git pull --rebase origin claude/wonderful-cannon-5o38v5`. Commits pequenos, mensagem em português. Nunca use force push. Cada push publica o sistema no Render em 3 a 6 minutos.
+2. Trabalhe na branch codex/visual (já criada na pasta do dono, a partir de claude/wonderful-cannon-5o38v5). O servidor de demonstração JÁ ESTÁ LIGADO em http://localhost:3100 (scripts/dev-demo.ps1) e atualiza sozinho a cada arquivo salvo: NÃO ligue outro. Faça commits pequenos na codex/visual, mas NÃO dê push nem una à branch de publicação sem o dono aprovar (cada push na branch de publicação vai para o ar no Render). Quando o dono aprovar uma etapa: `git fetch origin`, `git rebase origin/claude/wonderful-cannon-5o38v5`, rode as verificações e só então `git push origin codex/visual:claude/wonderful-cannon-5o38v5` (sem force). Nunca use force push.
 
 CONTEXTO DO PRODUTO
 Um sistema só, vários produtos, cada um no seu endereço, com a marca vinda do endereço (getBrand() em src/lib/brand-server.ts; marcas em src/lib/brand.ts):
