@@ -85,13 +85,50 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
 
 /** Depois de um crédito: debita os pedidos que esperam saldo, do mais antigo para o mais novo (FIFO estrito). */
 export async function settleAwaitingOrders(tx: Tx, storeId: string): Promise<number> {
-  const waiting = await tx.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING"))).orderBy(asc(orders.awaitingFundsSince), asc(orders.createdAt));
+  const waiting = await tx.select({ id: orders.id }).from(orders).where(and(
+    eq(orders.storeId, storeId),
+    eq(orders.sourceArea, "SUPERDROP"),
+    eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+    eq(orders.centralPaymentStatus, "PENDING"),
+  )).orderBy(asc(orders.awaitingFundsSince), asc(orders.createdAt));
   let n = 0;
   for (const w of waiting) {
     if ((await tryDebitOrder(tx, w.id)) !== "DEBITED") break;
     n++;
   }
   return n;
+}
+
+/** Devolve à carteira o custo já debitado quando um pedido SuperDrop é cancelado antes do envio. Idempotente. */
+export async function refundOrderDebit(tx: Tx, orderId: string, actorUserId?: string): Promise<"REFUNDED" | "SKIPPED"> {
+  const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+  if (!order || order.sourceArea !== "SUPERDROP" || order.centralPaymentStatus !== "PAID") return "SKIPPED";
+
+  const existing = await tx.query.walletEntries.findFirst({
+    where: and(eq(walletEntries.orderId, orderId), eq(walletEntries.type, "ORDER_REFUND")),
+  });
+  if (existing) return "SKIPPED";
+
+  await post(tx, order.storeId, {
+    type: "ORDER_REFUND",
+    amountCents: order.costTotalCents,
+    orderId,
+    note: `Estorno do custo do pedido #${order.number}`,
+    actorUserId,
+  });
+  await tx.update(orders).set({
+    centralPaymentStatus: "PENDING",
+    centralPaidAt: null,
+    updatedAt: new Date().toISOString(),
+  }).where(eq(orders.id, orderId));
+  await tx.insert(orderEvents).values({
+    id: newId("evt"),
+    orderId,
+    type: "CENTRAL_REFUNDED",
+    message: "Custo devolvido ao saldo após cancelamento.",
+    actorRole: actorUserId ? "USER" : "SYSTEM",
+  });
+  return "REFUNDED";
 }
 
 // ---------------------------------------------------------------------------
@@ -208,7 +245,12 @@ export async function listRecharges(db: Database, actor: Actor, storeId: string,
 // ---------------------------------------------------------------------------
 export async function expireUnfundedOrders(db: Database, now = new Date()): Promise<{ canceled: number }> {
   const limit = new Date(now.getTime() - AWAITING_FUNDS_HOURS * 3_600_000).toISOString();
-  const stale = await db.select().from(orders).where(and(eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING"), lt(orders.awaitingFundsSince, limit)));
+  const stale = await db.select().from(orders).where(and(
+    eq(orders.sourceArea, "SUPERDROP"),
+    eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+    eq(orders.centralPaymentStatus, "PENDING"),
+    lt(orders.awaitingFundsSince, limit),
+  ));
   for (const o of stale) {
     await cancelOrderBySystem(db, o.id, `sem recarga de saldo em ${AWAITING_FUNDS_HOURS}h. Cliente já pagou: estornar no Mercado Pago da loja.`);
     await db.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: o.supplierId, storeId: o.storeId, type: "FUNDS_EXPIRED", message: `Pedido #${o.number} cancelado por falta de saldo. Estorne o cliente.` });
@@ -223,7 +265,12 @@ export async function walletOverviewForSupplier(db: Database, actor: Actor) {
   const out = [];
   for (const { store } of rows) {
     const balance = await getBalanceCents(db, store.id);
-    const waiting = await db.select({ cost: orders.costTotalCents }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING")));
+    const waiting = await db.select({ cost: orders.costTotalCents }).from(orders).where(and(
+      eq(orders.storeId, store.id),
+      eq(orders.sourceArea, "SUPERDROP"),
+      eq(orders.status, "AWAITING_CENTRAL_PAYMENT"),
+      eq(orders.centralPaymentStatus, "PENDING"),
+    ));
     const last = await db.select().from(walletRecharges).where(and(eq(walletRecharges.storeId, store.id), eq(walletRecharges.status, "PAID"))).orderBy(desc(walletRecharges.paidAt)).limit(1);
     out.push({ storeId: store.id, name: store.name, offer: store.offer, status: store.status, balanceCents: balance, awaitingOrders: waiting.length, awaitingCents: waiting.reduce((s, w) => s + w.cost, 0), lastRechargeAt: last[0]?.paidAt ?? null, lastRechargeCents: last[0]?.amountCents ?? null });
   }
