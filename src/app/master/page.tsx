@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Sparkles, CircleAlert, Factory, Info, ShoppingCart, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { ActivityFeed } from "@/components/shared/activity-feed";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { EmptyState } from "@/components/app/empty-state";
@@ -41,42 +42,30 @@ export default async function MasterDashboard() {
   const risky = health.filter((x) => x.h.band !== "HEALTHY").sort((a, b) => a.h.score - b.h.score).slice(0, 5);
   const byOffer = (["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] as const).map((o) => ({ offer: o, n: snap.stores.filter((s) => s.offer === o).length }));
   const urgent = alerts.filter((a) => a.severity === "danger").length;
+  const queue: ActionQueueItem[] = alerts.map((a) => ({
+    id: a.key,
+    title: a.title,
+    description: a.detail,
+    count: a.count,
+    tone: a.severity === "danger" ? "danger" : a.severity === "warning" ? "warning" : "info",
+    icon: a.severity === "danger" ? CircleAlert : a.severity === "warning" ? AlertTriangle : Info,
+    href: a.href,
+    actionLabel: "Resolver",
+  }));
 
   return (
     <>
       <PageHeader title="Torre de controle" description="O que precisa da sua atenção agora, a saúde da rede e a receita da NextLevel." />
-      <MetricGrid className="lg:grid-cols-5">
-        <MetricCard label="Receita NextLevel (mês)" value={formatBRL(overview.platformRevenue)} icon={Wallet} tone="info" hint={`${formatBRL(overview.subscriptionRevenue)} recorrente + ${formatBRL(overview.feeRevenue)} taxas`} href="/master/finance" />
-        <MetricCard label="GMV da rede" value={formatCompactBRL(overview.gmv)} icon={TrendingUp} tone="success" hint={`${overview.orders} pedidos`} />
-        <MetricCard label="Rede" value={`${overview.suppliers} forn. · ${overview.stores} lojas`} icon={Factory} hint={`${overview.activeStores} ativas · ${overview.suspendedStores} suspensas`} href="/master/suppliers" />
-        <MetricCard label="Loja NextLevel" value={`${svcWaiting} aguardando`} icon={Sparkles} tone={svcWaiting ? "warning" : "neutral"} hint={`${svcActive} em orçamento ou execução`} href="/master/services" />
-        <MetricCard label="Alertas abertos" value={alerts.length} icon={AlertTriangle} tone={urgent ? "danger" : alerts.length ? "warning" : "success"} hint={urgent ? `${urgent} urgente(s)` : "Nada urgente"} />
-      </MetricGrid>
+      <OperationalPulse className="mb-6" items={[
+        { label: "Receita NextLevel · mês", value: formatBRL(overview.platformRevenue), icon: Wallet, tone: "info", hint: formatBRL(overview.subscriptionRevenue) + " recorrente", href: "/master/finance" },
+        { label: "GMV da rede", value: formatCompactBRL(overview.gmv), icon: TrendingUp, tone: "success", hint: overview.orders + " pedidos" },
+        { label: "Rede ativa", value: overview.activeStores, icon: Factory, tone: overview.suspendedStores ? "warning" : "success", hint: overview.suppliers + " forn. · " + overview.stores + " lojas", href: "/master/suppliers" },
+        { label: "Alertas", value: alerts.length, icon: AlertTriangle, tone: urgent ? "danger" : alerts.length ? "warning" : "success", hint: urgent ? urgent + " urgente(s)" : "nada urgente" },
+      ]} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-5">
         <section className="lg:col-span-3" aria-labelledby="fila">
-          <SectionTitle title="Fila de atenção" description="Ordenada por gravidade. Cada item leva direto à tela que resolve." />
-          {alerts.length === 0 ? (
-            <EmptyState compact icon={ShoppingCart} title="Tudo em ordem" description="Nenhum alerta aberto. Aproveite para oferecer serviços aos lojistas." />
-          ) : (
-            <ul className="space-y-2" id="fila">
-              {alerts.map((a) => {
-                const v = SEV[a.severity]; const Icon = v.icon;
-                return (
-                  <li key={a.key}>
-                    <Link href={a.href} className={cn("group flex items-start gap-3 rounded-lg border p-3 transition hover:shadow-md", v.box)}>
-                      <Icon className="mt-0.5 size-5 shrink-0" aria-hidden />
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center gap-2"><span className="text-sm font-semibold text-foreground">{a.title}</span><span className="rounded-full bg-background/70 px-2 text-xs font-semibold tabular-nums">{a.count}</span><span className="sr-only">{v.label}</span></span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span>
-                      </span>
-                      <ArrowRight className="mt-1 size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5" aria-hidden />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <ActionQueue items={queue} title="Fila de atenção" description="Ordenada por gravidade. Cada item leva direto à tela que resolve." emptyMessage="Tudo em ordem. Nenhum alerta aberto agora." />
         </section>
 
         <section className="space-y-6 lg:col-span-2" aria-label="Saúde da rede">
