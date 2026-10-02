@@ -128,7 +128,7 @@ export function Footer({ settings, ctx }: SectionProps) {
     <footer className={cn("border-t", dark ? "border-white/10 bg-neutral-950 text-neutral-300" : "border-neutral-200 bg-neutral-50")}>
       <div className={cn("mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6", !dark && "text-neutral-500")}>
         <div>{str(settings.text) || store.name}{settings.showLegal !== false && (store.legalName || store.cnpj || store.contactEmail || store.address) ? <div className="mt-1 text-xs opacity-80">{[store.legalName, store.cnpj ? `${store.cnpj.length === 11 ? "CPF" : "CNPJ"} ${store.cnpj}` : "", store.address, store.contactEmail].filter(Boolean).join(" · ")}</div> : null}</div>
-        <div className="flex gap-4 text-xs">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
           {settings.showInstagram !== false && store.instagram ? <span>@{store.instagram.replace("@", "")}</span> : null}
           {settings.showBadges !== false ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}
           {store.offer !== "STORE_OWN" ? <span className={cn("flex items-center gap-1.5", dark ? "text-neutral-400" : "text-neutral-600")}>Tecnologia <Logo tone={dark ? "on-dark" : "on-light"} className="h-4" /></span> : null}
