@@ -4,6 +4,7 @@ import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { ForceLight } from "@/components/portal/force-light";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { CommerceShell } from "@/components/portal/commerce/commerce-shell";
 
 /** Estrutura do portal público: claro, editorial e independente do tema dos painéis. Menu, logo e rodapé vêm da marca do endereço. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export default async function PortalLayout({ children }: { children: React.React
     ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
     : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
+  if (brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon) return <><ForceLight /><CommerceShell cta={cta} legal={brand.legalLine}>{children}</CommerceShell></>;
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <ForceLight />
