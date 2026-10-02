@@ -31,7 +31,7 @@ type Draft = { f: Form; rows: Row[]; storeIds: string[]; savedAt: number };
 const readDraft = (): Draft | null => { try { const raw = localStorage.getItem(DRAFT_KEY); return raw ? (JSON.parse(raw) as Draft) : null; } catch { return null; } };
 const writeDraft = (d: Draft | null) => { try { if (d) localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); else localStorage.removeItem(DRAFT_KEY); } catch { /* armazenamento bloqueado */ } };
 
-export function NewProductForm({ stores, categories, minStock = 4, base = "/supplier/products" }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number; base?: string }) {
+export function NewProductForm({ stores, categories, minStock = 4, base = "/supplier/products", independent = false, commerce = false }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number; base?: string; independent?: boolean; commerce?: boolean }) {
   const router = useRouter();
   const [f, setF] = React.useState<Form>({ ...EMPTY, category: categories[0] ?? "" });
   const [rows, setRows] = React.useState<Row[]>(rowsFor("ADULT_MALE"));
@@ -105,7 +105,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           </Card>
 
           <Card>
-            <CardHeader><div><CardTitle>Tamanhos e estoque inicial</CardTitle><CardDescription>Um único estoque central para toda a rede.{f.sellsPack ? " A coluna Grade define quantas peças de cada tamanho vão em cada grade." : ""}</CardDescription></div></CardHeader>
+            <CardHeader><div><CardTitle>Tamanhos e estoque inicial</CardTitle><CardDescription>{independent ? "Estoque próprio da sua loja por variante." : "Um único estoque central para toda a rede."}{f.sellsPack ? " A coluna Grade define quantas peças de cada tamanho vão em cada grade." : ""}</CardDescription></div></CardHeader>
             <CardContent className="space-y-3">
               <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Grade de tamanhos">
                 <span className="text-xs text-muted-foreground">Grade:</span>
@@ -181,9 +181,9 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           <Card>
             <CardHeader><CardTitle>Preços</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <FormField label="Custo (R$)" htmlFor="cost" hint="Quanto o lojista paga à Central"><Input id="cost" required inputMode="decimal" value={f.cost} onChange={(e) => set({ cost: e.target.value })} placeholder="59,00" /></FormField>
-              <FormField label="Preço sugerido (R$)" htmlFor="sug"><Input id="sug" required inputMode="decimal" value={f.suggested} onChange={(e) => set({ suggested: e.target.value })} placeholder="149,90" /></FormField>
-              <FormField label="Preço mínimo (R$)" htmlFor="min" hint="Lojas não podem vender abaixo disso"><Input id="min" inputMode="decimal" value={f.minimum} onChange={(e) => set({ minimum: e.target.value })} placeholder="119,90" /></FormField>
+              <FormField label="Custo (R$)" htmlFor="cost" hint={commerce ? "Seu custo de aquisição do produto" : independent ? "Seu custo do produto" : "Quanto o lojista paga à Central"}><Input id="cost" required inputMode="decimal" value={f.cost} onChange={(e) => set({ cost: e.target.value })} placeholder="59,00" /></FormField>
+              <FormField label={commerce ? "Preço de venda (R$)" : "Preço sugerido (R$)"} htmlFor="sug"><Input id="sug" required inputMode="decimal" value={f.suggested} onChange={(e) => set({ suggested: e.target.value })} placeholder="149,90" /></FormField>
+              <FormField label={commerce ? "Preço promocional mínimo (R$)" : "Preço mínimo (R$)"} htmlFor="min" hint={commerce ? "Referência para proteger sua margem em promoções" : independent ? "Menor preço de referência" : "Lojas não podem vender abaixo disso"}><Input id="min" inputMode="decimal" value={f.minimum} onChange={(e) => set({ minimum: e.target.value })} placeholder="119,90" /></FormField>
               {cost > 0 ? <div className="flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Sugerir preço pela margem"><span className="text-muted-foreground">Sugerir com margem:</span>{[40, 50, 60].map((m) => <Button key={m} type="button" size="sm" variant="secondary" onClick={() => { const p = Math.round(cost / (1 - m / 100) / 100) * 100 - 10; set({ suggested: (p / 100).toFixed(2).replace(".", ","), minimum: (Math.round(p * 0.8 / 100) * 100 - 10 > cost ? (Math.round(p * 0.8 / 100) * 100 - 10) / 100 : cost / 100).toFixed(2).replace(".", ",") }); }}>{m}%</Button>)}</div> : null}
               {sug > 0 && cost > 0 ? <dl className="grid grid-cols-3 gap-2 rounded-md bg-surface-muted px-3 py-2 text-center text-xs"><div><dt className="text-muted-foreground">Margem</dt><dd className="font-semibold tabular-nums">{formatBRL(margin)}</dd></div><div><dt className="text-muted-foreground">Margem %</dt><dd className="font-semibold tabular-nums">{marginPct}%</dd></div><div><dt className="text-muted-foreground">Markup</dt><dd className="font-semibold tabular-nums">{markup}%</dd></div></dl> : null}
               {priceIssue ? <p role="alert" className="flex items-center gap-1.5 text-xs text-warning"><AlertTriangle className="size-3.5" aria-hidden /> {priceIssue}</p> : null}
