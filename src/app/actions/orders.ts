@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
 import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, type CreateOrderInput } from "@/lib/domain/orders";
+import { syncOrderPayment } from "@/lib/payments/service";
 import type { OrderStatus } from "@/db/schema";
 
 async function actor() {
@@ -28,6 +29,18 @@ export async function confirmCustomerPaymentAction(orderId: string) {
   });
 }
 
+
+/** Consulta o Mercado Pago e confirma o pagamento se (e só se) o provedor confirmar. */
+export async function syncOrderPaymentAction(orderId: string) {
+  return runAction(async () => {
+    const s = await actor();
+    const db = await getDb();
+    await getOrderForActor(db, s.actor, orderId); // isolamento: só quem enxerga o pedido
+    const r = await syncOrderPayment(db, orderId);
+    revalidateOrders();
+    return { paid: r.paid };
+  });
+}
 
 export async function advanceOrderAction(orderId: string, next: OrderStatus) {
   return runAction(async () => {

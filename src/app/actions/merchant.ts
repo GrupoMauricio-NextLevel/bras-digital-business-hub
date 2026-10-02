@@ -3,9 +3,10 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
+import { activities, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
+import { assertProductListable } from "@/lib/domain/catalog";
 import { requireStoreId } from "@/lib/domain/access";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { newId } from "@/lib/ids";
@@ -85,10 +86,7 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     const data = listingSchema.parse(input);
     const product = await db.query.products.findFirst({ where: eq(products.id, data.productId) });
     if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
-    if (product.distribution === "SELECTED_STORES") {
-      const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
-      if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
-    }
+    await assertProductListable(db, storeId, product);
     if (data.priceCents < product.minimumPriceCents) throw new DomainError("BELOW_MINIMUM", "Preço abaixo do mínimo definido pelo fornecedor.");
     const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)) });
     if (data.active && !existing?.active && session.store?.kind !== "SUPPLIER_OWN") {

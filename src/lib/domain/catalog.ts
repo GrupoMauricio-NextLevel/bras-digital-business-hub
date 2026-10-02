@@ -1,6 +1,7 @@
 import { activationCheck, type ActivationCheck } from "./size-grids";
 import { and, eq, inArray, or, exists } from "drizzle-orm";
 import type { Database } from "@/db/client";
+import { ForbiddenError, NotFoundError } from "./errors";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
 import { getLevels, type InventoryLevel } from "./inventory";
 
@@ -108,4 +109,20 @@ export async function checkProductActivation(db: Database, productId: string): P
   const variants = await db.select().from(productVariants).where(eq(productVariants.productId, productId));
   const levels = await getLevels(db, variants.map((v) => v.id));
   return activationCheck(variants.map((v) => ({ size: v.size, available: levels.get(v.id)?.available ?? 0 })), min);
+}
+
+
+/**
+ * A loja só lista produto ativo do catálogo da sua própria rede (ou da sua Central, na conta simples) e,
+ * quando a distribuição é "lojas selecionadas", só se tiver acesso concedido. Nunca de outro fornecedor.
+ */
+export async function assertProductListable(db: Database, storeId: string, product: typeof products.$inferSelect | undefined | null): Promise<void> {
+  if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
+  const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
+  const network = store ? await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, store.networkId) }) : null;
+  if (!network || product.supplierId !== network.supplierId) throw new NotFoundError("Produto indisponível.");
+  if (product.distribution === "SELECTED_STORES") {
+    const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
+    if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
+  }
 }

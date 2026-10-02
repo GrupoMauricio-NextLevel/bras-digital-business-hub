@@ -6,15 +6,17 @@ import { OrderStatusBadge } from "@/components/app/status-badge";
 import { LabelUploader } from "@/components/shared/label-uploader";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
+import { isIndependentStore } from "@/lib/domain/order-policy";
 import { labelQueue } from "@/lib/domain/after-sales";
 import { formatDateTime } from "@/lib/utils";
 
 export default async function LabelsPage() {
   const session = await requireRole("STORE_OWNER");
   const rows = await labelQueue(await getDb(), session.actor);
+  const independent = await isIndependentStore(await getDb(), session.store?.id);
   return (
     <>
-      <PageHeader title="Etiquetas" description="Gere a etiqueta no SuperFrete e anexe o PDF (máx. 3 MB). Com a etiqueta anexada e o saldo debitado, o pedido entra na fila de expedição da Central." />
+      <PageHeader title="Etiquetas" description={independent ? "Gere a etiqueta no SuperFrete e anexe o PDF (máx. 3 MB). Com a etiqueta anexada, o pedido fica pronto para você separar e enviar." : "Gere a etiqueta no SuperFrete e anexe o PDF (máx. 3 MB). Com a etiqueta anexada e o saldo debitado, o pedido entra na fila de expedição da Central."} />
       <DataTable
         rows={rows}
         rowKey={(r) => r.order.id}

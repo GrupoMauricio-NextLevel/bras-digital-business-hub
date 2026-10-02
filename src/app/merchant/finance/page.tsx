@@ -12,6 +12,7 @@ import { getDb } from "@/db/client";
 import { addonViewsFor, listInvoicesFor } from "@/lib/domain/nextlevel-billing";
 import { getPriceBook, periodOf, storeOrderFeeFor } from "@/lib/domain/finance";
 import { buildRationale } from "@/lib/finance/rationale";
+import { isIndependentStore } from "@/lib/domain/order-policy";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
@@ -22,16 +23,17 @@ export default async function MerchantFinancePage() {
   const db = await getDb();
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
+  const independent = await isIndependentStore(db, session.store!.id);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
   return (
     <>
-      <PageHeader title="Financeiro" description="Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem." />
+      <PageHeader title="Financeiro" description={independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
       <MetricGrid className="mb-6">
         {feeNow.bps > 0 ? <MetricCard label="Taxa por pedido (mês)" value={formatBRL(feeNow.feeCents)} hint={`${feeNow.bps / 100}% sobre ${formatBRL(feeNow.baseCents)} em ${feeNow.orders} pedido(s), cobrada no fechamento`} /> : null}
         <MetricCard label="Recebido de clientes" value={formatBRL(f.received)} tone="success" />
-        <MetricCard label="Aguardando recarga" value={formatBRL(f.owedToCentral)} tone={f.owedToCentral ? "warning" : "neutral"} hint="Custo de pedidos pagos sem saldo" />
-        <MetricCard label="Custo debitado do saldo" value={formatBRL(f.paidToCentral)} />
+        {independent ? null : <MetricCard label="Aguardando recarga" value={formatBRL(f.owedToCentral)} tone={f.owedToCentral ? "warning" : "neutral"} hint="Custo de pedidos pagos sem saldo" />}
+        {independent ? null : <MetricCard label="Custo debitado do saldo" value={formatBRL(f.paidToCentral)} />}
         <MetricCard label="Margem acumulada" value={formatBRL(f.margin)} tone="info" hint="Vendas − custo dos produtos" />
       </MetricGrid>
       <div className="grid gap-6 lg:grid-cols-3">
@@ -41,7 +43,7 @@ export default async function MerchantFinancePage() {
             { key: "n", header: "Pedido", primary: true, cell: (o) => <div><div className="font-medium">#{o.number}</div><div className="text-xs text-muted-foreground">{o.customerName}</div></div> },
             { key: "status", header: "Status", cell: (o) => <OrderStatusBadge status={o.status} /> },
             { key: "cust", header: "Cliente", cell: (o) => <StatusBadge value={o.customerPaymentStatus} />, mobile: false },
-            { key: "central", header: "Saldo", cell: (o) => <StatusBadge value={o.centralPaymentStatus} /> },
+            ...(independent ? [] : [{ key: "central", header: "Saldo", cell: (o: (typeof f.rows)[number]) => <StatusBadge value={o.centralPaymentStatus} /> }]),
             { key: "total", header: "Venda", className: "text-right", cell: (o) => <span className="tabular-nums">{formatBRL(o.totalCents)}</span> },
             { key: "cost", header: "Custo", className: "text-right", cell: (o) => <span className="tabular-nums text-muted-foreground">{formatBRL(o.costTotalCents)}</span> },
             { key: "margin", header: "Margem", className: "text-right", cell: (o) => <span className="font-medium tabular-nums text-success">{formatBRL(o.subtotalCents - o.costTotalCents)}</span> },

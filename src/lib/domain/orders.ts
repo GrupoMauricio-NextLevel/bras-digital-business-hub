@@ -1,6 +1,6 @@
 import { emailOrderCustomer } from "./order-emails";
 import { isBlocked } from "./store-access";
-import { and, desc, eq, lt, sql } from "drizzle-orm";
+import { and, desc, eq, lt, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, customers, orderEvents, orderLabelFiles, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
@@ -11,6 +11,7 @@ import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
 import { capabilitiesForSupplier } from "./finance";
+import { assertCanFulfilOrder, assertManualPaymentConfirmable, storeModality } from "./order-policy";
 import { tryDebitOrder } from "./wallet";
 
 export const orderLineSchema = z.object({
@@ -226,22 +227,30 @@ async function applyStatus(db: Database, order: typeof orders.$inferSelect, next
   await db.insert(orderEvents).values({ id: newId("evt"), orderId: order.id, type: `STATUS_${next}`, message, actorRole: actor.role });
 }
 
-/** Lojista confirma que o cliente pagou (vendas manuais). */
+/**
+ * Lojista confirma que o cliente pagou (somente vendas manuais). Pedido de gateway só é confirmado
+ * pela consulta ao provedor. Idempotente e seguro contra cliques/abas duplicadas: só um vence a corrida.
+ */
 export async function confirmCustomerPayment(db: Database, actor: Actor, orderId: string) {
   const order = await loadOwned(db, actor, orderId);
-  if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   if (order.customerPaymentStatus === "PAID") return order;
-  const done = await db.transaction(async (tx) => {
-    await tx.update(orders).set({ customerPaymentStatus: "PAID" }).where(eq(orders.id, orderId));
+  assertManualPaymentConfirmable(order);
+  const won = await db.transaction(async (tx) => {
+    const claimed = await tx.update(orders).set({ customerPaymentStatus: "PAID", updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.customerPaymentStatus, "PENDING"), ne(orders.status, "CANCELED"))).returning({ id: orders.id });
+    if (claimed.length === 0) return null;
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
     await tryDebitOrder(tx, orderId);
-    const fresh = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
-    return fresh!;
+    return (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!;
   });
+  if (!won) {
+    const fresh = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    if (fresh?.customerPaymentStatus === "PAID") return fresh;
+    throw new DomainError("STATE_CONFLICT", "O pedido mudou enquanto você confirmava. Atualize a página e confira.");
+  }
   await emailOrderCustomer(db, orderId, "PAID");
-  return done;
+  return won;
 }
 
 export const labelSchema = z.object({ code: z.string().min(4, "Informe o código da etiqueta"), carrier: z.string().min(2, "Informe a transportadora") });
@@ -263,41 +272,69 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
   });
 }
 
-/** Avanço operacional (fornecedor/expedição). */
+/**
+ * Avanço operacional. Quem pode: fornecedor/expedição (da Central do pedido), Master e, em conta simples,
+ * o dono da própria loja. A mudança de status é condicional: repetir o mesmo avanço não baixa estoque duas vezes.
+ */
 export async function advanceOrder(db: Database, actor: Actor, orderId: string, next: OrderStatus) {
   const order = await loadOwned(db, actor, orderId);
+  if (next === "CANCELED") return cancelOrder(db, actor, orderId);
+  if (order.status === next) return { ...order, status: next }; // repetição: sucesso idempotente, sem efeitos
   if (!canTransition(order.status, next)) throw new DomainError("INVALID_TRANSITION", `Transição ${order.status} → ${next} não permitida.`);
-  if (next !== "CANCELED") {
+  const modality = await assertCanFulfilOrder(db, actor, order);
+  if (modality !== "INDEPENDENT" || actor.role !== "STORE_OWNER") {
     const access = await capabilitiesForSupplier(db, order.supplierId);
     if (!access.caps.canExpedite) throw new DomainError("SUPPLIER_BLOCKED", "Expedição indisponível por pendência financeira com a NextLevel.");
   }
-  if (next === "CANCELED") return cancelOrder(db, actor, orderId);
   if (next === "READY_TO_PICK" && (order.centralPaymentStatus !== "PAID" || order.shippingLabelStatus !== "READY")) {
-    throw new DomainError("NOT_READY", "Pedido só fica pronto para separação com pagamento à Central e etiqueta.");
+    throw new DomainError("NOT_READY", modality === "INDEPENDENT" ? "O pedido só fica pronto para separação com pagamento do cliente e etiqueta." : "Pedido só fica pronto para separação com pagamento à Central e etiqueta.");
   }
-  return db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
+    const claimed = await tx.update(orders).set({ status: next, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.status, order.status))).returning({ id: orders.id });
+    if (claimed.length === 0) return "LOST" as const;
     if (next === "SHIPPED") {
       const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       const merged = await expandReservations(tx, items);
       for (const [variantId, quantity] of merged) await consumeReservation(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
     }
-    await applyStatus(tx, order, next, statusMessage(next), actor);
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: actor.role });
     await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next)}` });
-    return { ...order, status: next };
-  }).then(async (r) => { if (next === "SHIPPED") await emailOrderCustomer(db, orderId, "SHIPPED"); return r; });
+    return "WON" as const;
+  });
+  if (result === "LOST") {
+    const fresh = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    if (fresh?.status === next) return fresh;
+    throw new DomainError("STATE_CONFLICT", "O pedido mudou de etapa enquanto você agia. Atualize a página e confira.");
+  }
+  if (next === "SHIPPED") await emailOrderCustomer(db, orderId, "SHIPPED");
+  return { ...order, status: next };
 }
 
+/** Cancela o pedido e libera a reserva uma única vez (repetir o cancelamento não devolve estoque de novo). */
 export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
   if (actor.role === "SUPPLIER_DISPATCH") throw new ForbiddenError("A expedição não cancela pedidos.");
   const order = await loadOwned(db, actor, orderId);
+  if (order.status === "CANCELED") return { ...order, status: "CANCELED" as const };
   if (!CANCELABLE.includes(order.status)) throw new DomainError("INVALID_TRANSITION", "Pedido não pode mais ser cancelado.");
-  return db.transaction(async (tx) => {
+  if (actor.role === "STORE_OWNER") await assertCanFulfilOrder(db, actor, order).catch(async (e) => {
+    // dono de loja de rede/própria cancelava antes da Onda 1: mantém esse comportamento; só a conta simples passa pela política de plano
+    if ((await storeModality(db, order.storeId)) === "INDEPENDENT") throw e;
+  });
+  const result = await db.transaction(async (tx) => {
+    const claimed = await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.status, order.status))).returning({ id: orders.id });
+    if (claimed.length === 0) return "LOST" as const;
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     const merged = await expandReservations(tx, items);
     for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
-    await applyStatus(tx, order, "CANCELED", "Pedido cancelado. Reserva de estoque liberada.", actor);
-    return { ...order, status: "CANCELED" as const };
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: "Pedido cancelado. Reserva de estoque liberada.", actorRole: actor.role });
+    return "WON" as const;
   });
+  if (result === "LOST") {
+    const fresh = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    if (fresh?.status === "CANCELED") return fresh;
+    throw new DomainError("STATE_CONFLICT", "O pedido mudou de etapa enquanto você agia. Atualize a página e confira.");
+  }
+  return { ...order, status: "CANCELED" as const };
 }
 
 async function expandReservations(db: Database, items: (typeof orderItems.$inferSelect)[]) {

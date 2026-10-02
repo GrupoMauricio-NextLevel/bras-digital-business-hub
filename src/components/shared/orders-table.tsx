@@ -9,7 +9,7 @@ import { ShoppingCart } from "lucide-react";
 
 export type OrderRow = { order: Order; storeName: string; storeSlug: string };
 
-export function OrdersTable({ rows, basePath, showStore = true, showCost = false, quickView = false }: { rows: OrderRow[]; basePath: string; showStore?: boolean; showCost?: boolean; quickView?: boolean }) {
+export function OrdersTable({ rows, basePath, showStore = true, showCost = false, quickView = false, showCentral = true }: { rows: OrderRow[]; basePath: string; showStore?: boolean; showCost?: boolean; quickView?: boolean; showCentral?: boolean }) {
   return (
     <DataTable<OrderRow>
       rows={rows}
@@ -21,7 +21,7 @@ export function OrdersTable({ rows, basePath, showStore = true, showCost = false
         ...(showStore ? [{ key: "store", header: "Loja", cell: (r: OrderRow) => r.storeName }] : []),
         { key: "channel", header: "Canal", cell: (r) => <StatusBadge value={r.order.channel} /> },
         { key: "status", header: "Status", cell: (r) => <OrderStatusBadge status={r.order.status} /> },
-        { key: "central", header: "Central", cell: (r) => <StatusBadge value={r.order.centralPaymentStatus} />, mobile: false },
+        ...(showCentral ? [{ key: "central", header: "Central", cell: (r: OrderRow) => <StatusBadge value={r.order.centralPaymentStatus} />, mobile: false }] : []),
         { key: "label", header: "Etiqueta", cell: (r) => <StatusBadge value={r.order.shippingLabelStatus} />, mobile: false },
         { key: "total", header: showCost ? "Custo" : "Total", className: "text-right", cell: (r) => <span className="font-medium tabular-nums">{formatBRL(showCost ? r.order.costTotalCents : r.order.totalCents)}</span> },
         { key: "date", header: "Data", className: "text-right text-muted-foreground", cell: (r) => formatDateTime(r.order.createdAt) },

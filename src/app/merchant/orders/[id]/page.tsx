@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { getOrderForActor } from "@/lib/domain/orders";
 import { DomainError } from "@/lib/domain/errors";
+import { canFulfilOrder, storeModality } from "@/lib/domain/order-policy";
 import { OrderDetail } from "@/components/shared/order-detail";
 
 async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: string) {
@@ -19,5 +20,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const data = await loadOrder(session.actor, id);
   if (!data) notFound();
-  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} />;
+  const modality = await storeModality(await getDb(), data.order.storeId);
+  const canFulfil = canFulfilOrder(session.actor, data.order, modality);
+  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} />;
 }

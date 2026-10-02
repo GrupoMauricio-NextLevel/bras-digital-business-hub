@@ -294,3 +294,13 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Temas das lojas dos lojistas ficam fora da paleta da marca.
 - **Vitrine:** o tema **Starter** é o ponto de partida; evolução por seção em `docs/design/PLANO-VITRINE-V4.md`.
 - Teste `tests/brand-palette.test.ts`.
+
+## D44. Onda 1: expedição própria da conta simples, pagamento manual x gateway, dono só lista o que é seu
+- **Quem expede:** a modalidade da loja vem do banco (`storeModality`: conta simples = Central oculta; loja própria de fornecedor; loja de rede), nunca de marca, cookie ou tela. Só o dono de **conta simples** separa e envia o próprio pedido; dono de loja de rede (SuperDrop) continua sem expedir (a Central faz). Regra única em `src/lib/domain/order-policy.ts`, aplicada no servidor (`advanceOrder`); o botão na tela só reflete essa regra.
+- **Fonte financeira da conta simples:** o plano da própria loja (`isBlocked`). Plano vencido bloqueia expedição; não se consulta a Central oculta, que não tem cobrança.
+- **Confirmação de pagamento:** `confirmCustomerPayment` só vale para pedido de pagamento **manual** (WhatsApp, balcão, Pix combinado). Pedido do Mercado Pago só é confirmado pela consulta à API do provedor (nova ação "Verificar pagamento", `syncOrderPaymentAction`). Pedido cancelado ou estornado nunca é marcado como pago.
+- **Concorrência:** avançar, cancelar e confirmar usam atualização condicional ao estado esperado dentro da transação. Repetir o mesmo avanço é sucesso sem efeito; avanço simultâneo tem um vencedor e o outro recebe sucesso idempotente ou `STATE_CONFLICT`. Estoque baixa/libera uma vez só; e-mail e eventos não duplicam.
+- **Listagem de produto:** `assertProductListable` (domínio) exige que o produto seja ativo e do catálogo da rede/Central da própria loja; `SELECTED_STORES` continua exigindo acesso. Produto de outro fornecedor ou de outra conta simples é recusado sem gravar nada.
+- **Textos:** a conta simples deixa de ver "Central", recarga e saldo (pedidos, financeiro, etiquetas, novo pedido, detalhe); SuperDrop mantém os textos.
+- **Atualização de telas:** ações de estoque/catálogo do fornecedor revalidam painel da Central e do lojista.
+- Sem migração de banco. Testes: `tests/onda1-commerce.test.ts`.

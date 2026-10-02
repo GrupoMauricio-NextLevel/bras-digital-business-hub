@@ -24,6 +24,12 @@ async function assertOwnsVariant(supplierId: string, variantId: string) {
   if (!row[0]) throw new NotFoundError("Variante não pertence a este fornecedor.");
 }
 
+/** Estoque e catálogo aparecem no painel da Central e no do lojista (conta simples): atualiza os dois. */
+function revalidatePanels() {
+  revalidatePath("/supplier", "layout");
+  revalidatePath("/merchant", "layout");
+}
+
 const stockSchema = z.object({ variantId: z.string().min(1), quantity: z.coerce.number().int(), note: z.string().optional() });
 
 export async function receiveStockAction(input: z.input<typeof stockSchema>) {
@@ -32,7 +38,7 @@ export async function receiveStockAction(input: z.input<typeof stockSchema>) {
     const data = stockSchema.parse(input);
     await assertOwnsVariant(supplierId, data.variantId);
     await receiveStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note });
-    revalidatePath("/supplier", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -43,7 +49,7 @@ export async function adjustStockAction(input: z.input<typeof stockSchema>) {
     const data = stockSchema.parse(input);
     await assertOwnsVariant(supplierId, data.variantId);
     await adjustStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note });
-    revalidatePath("/supplier", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -65,8 +71,7 @@ export async function setDistributionAction(input: z.input<typeof distributionSc
       }
       await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "DISTRIBUTION", message: `Distribuição de “${product.name}” alterada para ${data.distribution === "ALL_NETWORK" ? "toda a rede" : `${data.storeIds.length} loja(s)`}` });
     });
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -97,8 +102,7 @@ export async function updateProductAction(input: z.input<typeof productSchema>) 
     const db = (await getDb());
     const updated = await db.update(products).set({ ...data, updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), eq(products.supplierId, supplierId))).returning({ id: products.id });
     if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -112,8 +116,7 @@ export async function createProductAction(input: CreateProductInput) {
   return runAction(async () => {
     const { supplierId } = await supplierCtx();
     const r = await createProduct(await getDb(), supplierId, input);
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return r;
   });
 }
@@ -122,7 +125,7 @@ export async function duplicateProductAction(productId: string) {
   return runAction(async () => {
     const { supplierId } = await supplierCtx();
     const r = await duplicateProduct(await getDb(), supplierId, productId);
-    revalidatePath("/supplier", "layout");
+    revalidatePanels();
     return r;
   });
 }
@@ -132,8 +135,7 @@ export async function bulkProductStatusAction(ids: string[], status: "ACTIVE" | 
     const { supplierId } = await supplierCtx();
     if (ids.length > 200) throw new ForbiddenError("Limite de 200 produtos por vez.");
     const n = await setProductsStatus(await getDb(), supplierId, ids, z.enum(["ACTIVE", "DRAFT", "ARCHIVED"]).parse(status));
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return { updated: n };
   });
 }
@@ -163,8 +165,7 @@ export async function importProductsCsvAction(input: z.input<typeof importSchema
     const matrix = await readSpreadsheet(data.source);
     if (matrix.length < 2) throw new ForbiddenError("Planilha vazia ou sem linhas de produto.");
     const result = await importRows(await getDb(), supplierId, matrix, data.mode);
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return result;
   });
 }
@@ -178,8 +179,7 @@ export async function updateProductImagesAction(input: z.input<typeof imagesSche
     const db = await getDb();
     const updated = await db.update(products).set({ images: data.images.length ? data.images : ["art:#111827,#ffffff,#9ca3af"], updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), eq(products.supplierId, supplierId))).returning({ id: products.id });
     if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -202,13 +202,13 @@ export async function connectShippingAction(input: z.input<typeof shippingSchema
     if (!data.token) {
       if (!isDemoMode()) throw new ForbiddenError("Cole o token da plataforma de envio.");
       await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "DEMO", shippingAccount: "conta de demonstração", shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
-      revalidatePath("/supplier", "layout");
+      revalidatePanels();
       return { account: "conta de demonstração" };
     }
     let account: string;
     try { account = (await verifyShippingToken(data.provider, data.token.trim())).account; } catch (e) { throw new ForbiddenError(e instanceof ShippingError ? e.message : "Não foi possível validar o token."); }
     await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "CONNECTED", shippingAccount: account, shippingTokenEnc: encryptSecret(data.token.trim()) }).where(eq(suppliers.id, supplierId));
-    revalidatePath("/supplier", "layout");
+    revalidatePanels();
     return { account };
   });
 }
@@ -220,8 +220,7 @@ export async function setOriginZipAction(zip: string) {
     const digits = zip.replace(/\D/g, "");
     if (digits.length !== 8) throw new ForbiddenError("Informe um CEP válido (8 números).");
     await (await getDb()).update(suppliers).set({ shippingOriginZip: digits }).where(eq(suppliers.id, supplierId));
-    revalidatePath("/supplier", "layout");
-    revalidatePath("/merchant", "layout");
+    revalidatePanels();
     return undefined;
   });
 }
@@ -230,7 +229,7 @@ export async function disconnectShippingAction() {
   return runAction(async () => {
     const { supplierId } = await supplierCtx();
     await (await getDb()).update(suppliers).set({ shippingProvider: null, shippingStatus: "NOT_CONFIGURED", shippingAccount: null, shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
-    revalidatePath("/supplier", "layout");
+    revalidatePanels();
     return undefined;
   });
 }

@@ -17,12 +17,15 @@ type Props = {
   events: { id: string; type: string; message: string; actorRole: string | null; createdAt: string }[];
   store: { name: string; slug: string } | null | undefined;
   labels?: { id: string; filename: string; sizeBytes: number }[];
+  /** Calculados no servidor (política de pedido): o botão só aparece; a regra real está no domínio. */
+  canFulfil?: boolean;
+  independent?: boolean;
 };
 
-export function OrderDetail({ role, backHref, order, items, events, store, labels }: Props) {
+export function OrderDetail({ role, backHref, order, items, events, store, labels, canFulfil, independent }: Props) {
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },
-    { label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" },
+    ...(independent ? [] : [{ label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" }]),
     { label: "Etiqueta de envio", done: order.shippingLabelStatus === "READY" },
     { label: "Separação", done: ["PICKING", "READY_TO_SHIP", "SHIPPED", "DELIVERED"].includes(order.status) },
     { label: "Enviado", done: ["SHIPPED", "DELIVERED"].includes(order.status) },
@@ -32,7 +35,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
 
   return (
     <>
-      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<OrderActions role={role} order={order} labels={labels} />} />
+      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent} />} />
 
       {order.status !== "CANCELED" ? (
         <div className="mb-6 rounded-lg border border-border bg-surface p-4 shadow-sm">
@@ -67,7 +70,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
                 <div className="flex justify-between text-muted-foreground"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(order.subtotalCents)}</dd></div>
                 <div className="flex justify-between text-muted-foreground"><dt>Frete</dt><dd className="tabular-nums">{formatBRL(order.shippingCents)}</dd></div>
                 <div className="flex justify-between font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(order.totalCents)}</dd></div>
-                <div className="flex justify-between pt-2 text-xs text-muted-foreground"><dt>Custo à Central</dt><dd className="tabular-nums">{formatBRL(order.costTotalCents)}</dd></div>
+                <div className="flex justify-between pt-2 text-xs text-muted-foreground"><dt>{independent ? "Custo dos produtos" : "Custo à Central"}</dt><dd className="tabular-nums">{formatBRL(order.costTotalCents)}</dd></div>
                 {role === "STORE_OWNER" ? <div className="flex justify-between text-xs text-success"><dt>Sua margem estimada</dt><dd className="tabular-nums">{formatBRL(order.subtotalCents - order.costTotalCents)}</dd></div> : null}
               </dl>
             </CardContent>

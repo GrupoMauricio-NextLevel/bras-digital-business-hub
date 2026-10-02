@@ -9,10 +9,10 @@ import { CANCELABLE, NEXT_ACTION, ORDER_STATUS_LABEL } from "@/lib/domain/order-
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { LabelUploader } from "./label-uploader";
-import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction } from "@/app/actions/orders";
+import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction, syncOrderPaymentAction } from "@/app/actions/orders";
 import type { ActionResult } from "@/lib/action-result";
 
-export function OrderActions({ role, order }: { role: Role; order: Order; labels?: { id: string; filename: string }[] }) {
+export function OrderActions({ role, order, canFulfil = false, independent = false }: { role: Role; order: Order; labels?: { id: string; filename: string }[]; canFulfil?: boolean; independent?: boolean }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
 
@@ -33,16 +33,21 @@ export function OrderActions({ role, order }: { role: Role; order: Order; labels
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {isMerchant && order.customerPaymentStatus !== "PAID" ? (
+      {isMerchant && order.customerPaymentStatus !== "PAID" && order.paymentProvider === "MANUAL" ? (
         <Button variant="secondary" loading={pending} onClick={() => handle(() => confirmCustomerPaymentAction(order.id), "Pagamento do cliente confirmado")}>
           <CheckCircle2 /> Confirmar pagamento do cliente
         </Button>
       ) : null}
-      {isMerchant && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
+      {isMerchant && order.customerPaymentStatus !== "PAID" && order.paymentProvider === "MERCADO_PAGO" ? (
+        <Button variant="secondary" loading={pending} onClick={() => handle(async () => { const r = await syncOrderPaymentAction(order.id); if (r.ok && !r.data.paid) toast.info("O Mercado Pago ainda não confirmou este pagamento."); return r; }, "Consulta ao Mercado Pago concluída")}>
+          <CheckCircle2 /> Verificar pagamento
+        </Button>
+      ) : null}
+      {isMerchant && !independent && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
         <a href="/merchant/wallet" className="inline-flex h-9 items-center gap-2 rounded-md bg-warning-soft px-3 text-sm font-medium text-warning">Aguardando recarga · recarregar saldo</a>
       ) : null}
       {isMerchant && order.status !== "SHIPPED" ? <LabelUploader orderId={order.id} hasLabel={order.shippingLabelStatus === "READY"} primary={order.centralPaymentStatus === "PAID"} /> : null}
-      {isSupplier && next ? (
+      {(isSupplier || (isMerchant && canFulfil)) && next ? (
         <Button loading={pending} onClick={() => handle(() => advanceOrderAction(order.id, next.next), ORDER_STATUS_LABEL[next.next])}>
           {next.label} <ArrowRight />
         </Button>
