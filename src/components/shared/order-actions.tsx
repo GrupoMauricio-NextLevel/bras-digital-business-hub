@@ -41,13 +41,13 @@ export function OrderActions({ role, order }: { role: Role; order: Order; labels
       {isMerchant && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
         <a href="/merchant/wallet" className="inline-flex h-9 items-center gap-2 rounded-md bg-warning-soft px-3 text-sm font-medium text-warning">Aguardando recarga · recarregar saldo</a>
       ) : null}
-      {isMerchant && order.status !== "SHIPPED" ? <LabelUploader orderId={order.id} hasLabel={order.shippingLabelStatus === "READY"} primary={order.centralPaymentStatus === "PAID"} /> : null}
+      {isMerchant && order.customerPaymentStatus === "PAID" && order.status !== "SHIPPED" ? <LabelUploader orderId={order.id} hasLabel={order.shippingLabelStatus === "READY"} primary={order.centralPaymentStatus === "PAID"} /> : null}
       {isSupplier && next ? (
         <Button loading={pending} onClick={() => handle(() => advanceOrderAction(order.id, next.next), ORDER_STATUS_LABEL[next.next])}>
           {next.label} <ArrowRight />
         </Button>
       ) : null}
-      {(isMerchant || role === "SUPPLIER_ADMIN") && CANCELABLE.includes(order.status) ? (
+      {(isMerchant || role === "SUPPLIER_ADMIN") && order.customerPaymentStatus !== "PAID" && CANCELABLE.includes(order.status) ? (
         <ConfirmDialog
           trigger={<Button variant="ghost" className="text-danger hover:bg-danger-soft"><Ban /> Cancelar</Button>}
           title="Cancelar pedido"
