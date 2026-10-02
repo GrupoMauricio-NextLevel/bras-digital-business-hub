@@ -27,7 +27,8 @@ jobs:
               echo "::warning::$base respondeu $status (tentativa $tentativa)"; sleep 20
             done
             if [ "$ok" != "1" ]; then echo "::error::$base está fora do ar ou lento demais"; falhou=1; fi
-            # Banco: o health do sistema precisa responder ok:true
+            # Banco: o health do sistema precisa responder ok:true. O endereço do Master só tem login e painéis (redireciona o health), então fica de fora.
+            case "$base" in *master.*) continue;; esac
             saude=$(curl -s --max-time 20 "$base/api/health" || true)
             case "$saude" in *'"ok":true'*) echo "OK  $base/api/health";; *) echo "::error::$base/api/health não confirmou o banco"; falhou=1;; esac
           done
