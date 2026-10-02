@@ -9,7 +9,7 @@ import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
 import { capabilitiesForSupplier } from "./finance";
-import { tryDebitOrder } from "./wallet";
+import { refundOrderDebit, tryDebitOrder } from "./wallet";
 
 export const orderLineSchema = z.object({
   productId: z.string().min(1),
@@ -310,7 +310,8 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     const merged = await expandReservations(tx, items);
     for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
-    await applyStatus(tx, order, "CANCELED", "Pedido cancelado. Reserva de estoque liberada.", actor);
+    await refundOrderDebit(tx, orderId, actor.userId);
+    await applyStatus(tx, order, "CANCELED", "Pedido cancelado. Reserva de estoque liberada e custo devolvido quando aplicável.", actor);
     return { ...order, status: "CANCELED" as const };
   });
 }
@@ -413,6 +414,7 @@ export async function cancelOrderBySystem(db: Database, orderId: string, reason:
   await db.transaction(async (tx) => {
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, note: reason });
+    await refundOrderDebit(tx, orderId);
     await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: `Pedido cancelado: ${reason}`, actorRole: SYSTEM_ACTOR });
   });
