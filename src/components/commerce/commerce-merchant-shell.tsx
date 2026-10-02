@@ -16,14 +16,16 @@ const NAV = [
   { href: "/merchant/analytics", label: "Análise", icon: BarChart3, group: "VENDAS" },
   { href: "/merchant/customers", label: "Clientes", icon: Users, group: "VENDAS" },
   { href: "/merchant/after-sales", label: "Pós-venda", icon: ReceiptText, group: "VENDAS" },
-  { href: "/merchant/catalogo", label: "Produtos", icon: Package, group: "CATÁLOGO" },\n  { href: "/merchant/catalogo/categorias", label: "Categorias", icon: Tag, group: "CATÁLOGO" },
+  { href: "/merchant/catalogo", label: "Produtos", icon: Package, group: "CATÁLOGO" },
+  { href: "/merchant/catalogo/categorias", label: "Categorias", icon: Tag, group: "CATÁLOGO" },
   { href: "/merchant/storefront", label: "Loja virtual", icon: Globe2, group: "LOJA ONLINE" },
   { href: "/theme-editor", label: "Aparência", icon: Palette, group: "LOJA ONLINE" },
   { href: "/merchant/templates", label: "Temas", icon: Store, group: "LOJA ONLINE" },
   { href: "/merchant/campanhas", label: "Campanhas", icon: Tag, group: "CRESCIMENTO" },
   { href: "/merchant/descontos", label: "Cupons", icon: Tag, group: "CRESCIMENTO" },
   { href: "/merchant/avaliacoes", label: "Avaliações", icon: CircleUserRound, group: "CRESCIMENTO" },
-  { href: "/merchant/finance", label: "Financeiro", icon: ReceiptText, group: "GESTÃO" },\n  { href: "/merchant/finance#assinatura", label: "Minha assinatura", icon: CreditCard, group: "GESTÃO" },
+  { href: "/merchant/finance", label: "Financeiro", icon: ReceiptText, group: "GESTÃO" },
+  { href: "/merchant/finance#assinatura", label: "Minha assinatura", icon: CreditCard, group: "GESTÃO" },
   { href: "/merchant/team", label: "Equipe", icon: Users, group: "GESTÃO" },
   { href: "/merchant/settings", label: "Configurações", icon: Settings, group: "GESTÃO" },
 ] as const;
@@ -88,7 +90,8 @@ export function CommerceMerchantShell({
     </aside>
 
     <div className="lg:pl-[248px]">
-      {assisted ? <div className="flex min-h-10 items-center justify-between gap-3 border-b border-cyan-400/20 bg-cyan-400/[.08] px-4 text-xs text-cyan-800 md:px-7 dark:text-cyan-200"><span>Modo suporte · você está vendo a loja como o lojista.</span><form action={onReturnToMaster}><button className="font-semibold underline underline-offset-4">Voltar ao Commerce</button></form></div> : null}\n      <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200 bg-[#f7f8f8]/95 px-4 backdrop-blur md:px-7 dark:border-white/10 dark:bg-[#08090b]/95">
+      {assisted ? <div className="flex min-h-10 items-center justify-between gap-3 border-b border-cyan-400/20 bg-cyan-400/[.08] px-4 text-xs text-cyan-800 md:px-7 dark:text-cyan-200"><span>Modo suporte · você está vendo a loja como o lojista.</span><form action={onReturnToMaster}><button className="font-semibold underline underline-offset-4">Voltar ao Commerce</button></form></div> : null}
+      <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200 bg-[#f7f8f8]/95 px-4 backdrop-blur md:px-7 dark:border-white/10 dark:bg-[#08090b]/95">
         <button onClick={() => setOpen(true)} className="mr-3 p-2 text-slate-500 lg:hidden" aria-label="Abrir menu"><Menu className="size-5"/></button>
         <div className="min-w-0 flex-1"><div className="text-[9px] font-semibold tracking-[.22em] text-cyan-600 dark:text-cyan-400">COMMERCE</div><div className="truncate text-sm font-medium">{storeName}</div></div>
         {storefrontHref ? <a href={storefrontHref} target="_blank" rel="noreferrer" className="mr-2 hidden items-center gap-2 border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 hover:text-slate-950 sm:flex dark:border-white/10 dark:bg-transparent dark:text-zinc-400 dark:hover:text-white"><ExternalLink className="size-3.5"/> Ver loja</a> : null}
