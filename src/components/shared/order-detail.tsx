@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderStatusBadge, StatusBadge } from "@/components/app/status-badge";
-import { PageHeader } from "@/components/app/page-header";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 import type { Order, OrderItem } from "@/db/schema";
@@ -49,12 +48,12 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
 
   return (
     <>
-      <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden /> Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent} /></div>} />
+      <header className="mb-7 border-b border-border pb-6"><Link href={backHref} className="text-xs font-medium text-muted-foreground hover:text-foreground">← Voltar aos pedidos</Link><div className="mt-4 flex flex-wrap items-end justify-between gap-5"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent)]">SuperDrop / Pedido</p><div className="mt-1 flex flex-wrap items-center gap-3"><h1 className="text-4xl font-semibold tracking-[-.045em]">{`#${order.number}`}</h1><OrderStatusBadge status={order.status} /></div><div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground"><span>{store?.name}</span><span>·</span><span>{formatDateTime(order.createdAt)}</span><span>·</span><StatusBadge value={order.channel}/><StatusBadge value={order.saleType}/></div></div><div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden/>Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent}/></div></div></header>
 
-      <section className="mb-5 overflow-hidden rounded-lg border border-border bg-surface" aria-label="Próxima ação do pedido">
+      <section className="mb-5 overflow-hidden border-y border-border" aria-label="Próxima ação do pedido">
         <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_auto]">
           <div className="flex items-start gap-3 p-4 sm:p-5">
-            <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-muted", nextStep.tone === "danger" ? "text-danger" : nextStep.tone === "warning" ? "text-warning" : nextStep.tone === "success" ? "text-success" : "text-info")}><NextIcon className="size-4" aria-hidden /></span>
+            <span className={cn("flex size-9 shrink-0 items-center justify-center border-l-2 border-[var(--product-accent)] bg-surface-muted", nextStep.tone === "danger" ? "text-danger" : nextStep.tone === "warning" ? "text-warning" : nextStep.tone === "success" ? "text-success" : "text-info")}><NextIcon className="size-4" aria-hidden /></span>
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Situação atual</p>
               <h2 className="mt-0.5 text-base font-semibold">{nextStep.title}</h2>
@@ -69,7 +68,7 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
       </section>
 
       {order.status !== "CANCELED" ? (
-        <div className="mb-6 rounded-lg border border-border bg-surface p-4">
+        <div className="mb-7 border-b border-border pb-6 pt-1">
           <ol className="grid grid-cols-3 gap-3 sm:grid-cols-6">
             {steps.map((s) => (
               <li key={s.label} className="flex items-center gap-2 text-xs sm:flex-col sm:items-start">
