@@ -22,7 +22,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
 }
 
 /** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo/[id]`): sem rede, sem distribuição. */
-export async function ProductBody({ supplierId, id, base = "/supplier/products", independent = false }: { supplierId: string; id: string; base?: string; independent?: boolean }) {
+export async function ProductBody({ supplierId, id, base = "/supplier/products", independent = false, commerce = false }: { supplierId: string; id: string; base?: string; independent?: boolean; commerce?: boolean }) {
   const data = await getSupplierProduct(supplierId, id);
   if (!data) notFound();
   const { product, variants, packs, movements } = data;
@@ -35,7 +35,7 @@ export async function ProductBody({ supplierId, id, base = "/supplier/products",
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>Disponível = físico − reservado. Pedidos reservam; a expedição baixa.</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.size }))} /></CardHeader>
+            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>{commerce ? "Disponível = físico − reservado. As vendas reservam e baixam o estoque da sua loja." : "Disponível = físico − reservado. Pedidos reservam; a expedição baixa."}</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.size }))} /></CardHeader>
             <CardContent className="px-0 pb-0">
               <Table>
                 <THead><TR className="hover:bg-transparent"><TH>Tamanho</TH><TH>SKU</TH><TH className="text-right">Físico</TH><TH className="text-right">Reservado</TH><TH className="text-right">Disponível</TH></TR></THead>
