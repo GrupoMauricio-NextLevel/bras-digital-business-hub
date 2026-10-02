@@ -1139,3 +1139,16 @@ export const stockAlerts = pgTable("stock_alerts", {
   notifiedAt: ts("notified_at"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("stock_alerts_unique").on(t.storeId, t.variantId, t.contact), index("stock_alerts_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// Rotinas agendadas: último resultado de cada uma (o Master vê se pararam de rodar)
+// ---------------------------------------------------------------------------
+export const jobRuns = pgTable("job_runs", {
+  id: id(),
+  job: text("job").notNull(),
+  ok: boolean("ok").notNull(),
+  /** Resumo curto e sem dado pessoal (contagens, mensagem de erro resumida). */
+  detail: text("detail"),
+  durationMs: integer("duration_ms").notNull().default(0),
+  createdAt: createdAt(),
+}, (t) => [index("job_runs_job_idx").on(t.job, t.createdAt)]);

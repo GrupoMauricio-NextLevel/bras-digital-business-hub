@@ -232,6 +232,13 @@
       "when": 1790936663060,
       "tag": "0032_pedido_minimo",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1790941814267,
+      "tag": "0033_rotinas_execucoes",
+      "breakpoints": true
     }
   ]
 }

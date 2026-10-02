@@ -1,0 +1,34 @@
+# Vigia o site no ar a cada 15 minutos. Se um endereço falhar duas vezes seguidas, a execução fica vermelha e o GitHub avisa por e-mail
+# (Configurações do GitHub → Notificações → Actions). Para mudar os endereços, crie a variável MONITOR_URLS no repositório
+# (endereços separados por espaço). Para silenciar numa manutenção: aba Actions → "Monitor do site" → Disable workflow.
+name: Monitor do site
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  no-ar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Conferir endereços
+        env:
+          URLS: ${{ vars.MONITOR_URLS || 'https://lojas.nextlevelgroup.com.br https://superdrop.com.br https://master.nextlevelgroup.com.br' }}
+        run: |
+          falhou=0
+          for base in $URLS; do
+            ok=0
+            for tentativa in 1 2; do
+              code=$(curl -s -o /dev/null -w '%{http_code} %{time_total}' --max-time 20 "$base/login" || echo "000 0")
+              status=${code%% *}; tempo=${code##* }
+              if [ "$status" = "200" ]; then ok=1; echo "OK  $base ($status, ${tempo}s)"; break; fi
+              echo "::warning::$base respondeu $status (tentativa $tentativa)"; sleep 20
+            done
+            if [ "$ok" != "1" ]; then echo "::error::$base está fora do ar ou lento demais"; falhou=1; fi
+            # Banco: o health do sistema precisa responder ok:true
+            saude=$(curl -s --max-time 20 "$base/api/health" || true)
+            case "$saude" in *'"ok":true'*) echo "OK  $base/api/health";; *) echo "::error::$base/api/health não confirmou o banco"; falhou=1;; esac
+          done
+          exit $falhou

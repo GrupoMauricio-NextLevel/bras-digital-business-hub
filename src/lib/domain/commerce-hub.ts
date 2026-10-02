@@ -1,3 +1,4 @@
+import { jobStatus } from "./job-runs";
 import { and, desc, eq, gte, inArray, like, or } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { brandLeads, financeInvoices, orders, organizations, storeProducts, stores, users } from "@/db/schema";
@@ -36,8 +37,11 @@ export async function getBrandHub(db: Database, actor: Actor, code: BrandCode = 
   // Usuários de demonstração em produção são uma brecha (senha conhecida).
   const demoUsers = await db.select({ email: users.email }).from(users).where(or(like(users.email, "%.demo"), like(users.email, "%@demo.superdrop.com.br")));
   const mp = await getNextLevelMp(db);
+  const jobs = await jobStatus(db);
+  const lateJobs = jobs.filter((j) => j.late || j.lastOk === false);
   const checks: LaunchCheck[] = [
     { key: "demo", label: "Contas de demonstração não podem entrar", ok: demoUsers.length === 0 || env.NEXT_PUBLIC_DEMO_MODE !== "true", hint: demoUsers.length === 0 ? "Nenhuma conta de demonstração no banco." : env.NEXT_PUBLIC_DEMO_MODE === "true" ? `Modo de demonstração ligado com ${demoUsers.length} conta(s) de senha conhecida (demo1234). Desligue NEXT_PUBLIC_DEMO_MODE antes de divulgar.` : `${demoUsers.length} conta(s) de demonstração existem no banco, mas o login delas está bloqueado. Pode apagá-las quando quiser.`, severity: "blocker" },
+    { key: "cron", label: "Rotinas automáticas rodando (cobrança, reservas e conferência de pagamentos)", ok: lateJobs.length === 0, hint: lateJobs.length === 0 ? jobs.map((j) => `${j.label}: ok`).join(" · ") : `Atrasadas ou com falha: ${lateJobs.map((j) => j.label).join(", ")}. Crie no Render as chamadas agendadas (veja docs/nextlevel-commerce/onda-8-homologacao.md).`, severity: "blocker" },
     { key: "mp", label: "Mercado Pago da NextLevel conectado (recebe os Pix dos planos)", ok: mp.connected, hint: mp.connected ? `Conta ${mp.nickname ?? "conectada"}${mp.isTest ? " (modo de teste)" : ""}.` : "Conecte em Configurações do Master.", href: "/master/settings", severity: "blocker" },
     { key: "signup", label: "Cadastro de lojas aberto na marca", ok: brand.signupOpen, hint: brand.signupOpen ? "Aberto: BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true." : "Fechado (lista de espera). Ligue BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true no Render quando estiver pronto.", severity: "blocker" },
     { key: "domain", label: "Endereço próprio da marca no ar", ok: !!env.BRAND_URL_NEXTLEVEL_COMMERCE, hint: `Endereço oficial hoje: ${brand.baseUrl}. Defina BRAND_URL_NEXTLEVEL_COMMERCE e BRAND_DOMAINS_NEXTLEVEL_COMMERCE quando o domínio estiver apontado.`, severity: "recommended" },

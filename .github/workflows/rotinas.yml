@@ -1,0 +1,30 @@
+# Alternativa ao agendador do Render: chama as rotinas do sistema pelo GitHub.
+# Só roda se o repositório tiver o SEGREDO CRON_SECRET (o mesmo valor do Render) e a VARIÁVEL APP_URL (ex.: https://lojas.nextlevelgroup.com.br).
+# Sem eles, o fluxo avisa e termina sem fazer nada. Se você já criou as chamadas no Render, NÃO precisa deste.
+name: Rotinas do sistema
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # liberar reservas e conferir pagamentos
+    - cron: "0 3 * * *"      # rotina financeira diária (03:00 UTC)
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chamar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Chamar a rotina
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+          AGENDA: ${{ github.event.schedule }}
+        run: |
+          if [ -z "$CRON_SECRET" ] || [ -z "$APP_URL" ]; then
+            echo "::notice::CRON_SECRET (segredo) e APP_URL (variável) não definidos: nada a fazer."; exit 0
+          fi
+          rota=expire-reservations
+          [ "$AGENDA" = "0 3 * * *" ] && rota=finance
+          code=$(curl -s -o /tmp/resposta.json -w '%{http_code}' --max-time 120 -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/$rota")
+          echo "rotina $rota → HTTP $code"
+          [ "$code" = "200" ] || { echo "::error::rotina $rota falhou (HTTP $code)"; exit 1; }
