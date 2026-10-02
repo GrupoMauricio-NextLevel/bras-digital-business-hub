@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
+import { activities, networks, productPacks, productStoreAccess, products, serviceLeads, services, storeProducts, storeThemes, stores, themeSettings, themeVersions, themes, type ThemeSettingsData } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
@@ -77,11 +77,18 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     const data = listingSchema.parse(input);
     const product = await db.query.products.findFirst({ where: eq(products.id, data.productId) });
     if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
+    const network = await db.query.networks.findFirst({ where: eq(networks.id, session.store!.networkId) });
+    if (!network || product.supplierId !== network.supplierId) throw new ForbiddenError("Produto não pertence à rede desta loja.");
     if (product.distribution === "SELECTED_STORES") {
       const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
       if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
     }
     if (data.priceCents < product.minimumPriceCents) throw new DomainError("BELOW_MINIMUM", "Preço abaixo do mínimo definido pelo fornecedor.");
+    if (data.packPriceCents !== null && data.packPriceCents !== undefined) {
+      const packs = await db.select({ minimumPriceCents: productPacks.minimumPriceCents }).from(productPacks).where(eq(productPacks.productId, product.id));
+      const packMinimum = packs.reduce((max, p) => Math.max(max, p.minimumPriceCents), 0);
+      if (packMinimum > 0 && data.packPriceCents < packMinimum) throw new DomainError("BELOW_MINIMUM", "Preço da grade abaixo do mínimo definido pelo fornecedor.");
+    }
     const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)) });
     const values = { active: data.active, priceCents: data.priceCents, packPriceCents: data.packPriceCents ?? null };
     if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)));
