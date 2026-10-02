@@ -17,11 +17,14 @@ Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle
 - **Domínio, banco, pagamentos, frete, acesso, testes** (Claude): `src/lib/domain/**`, `src/lib/finance/**`, `src/lib/shipping/**`, `src/db/**`, `src/app/actions/**`, `drizzle/**`, `tests/**`.
 - Precisa mexer na área do outro? Faça o mínimo, descreva no commit e avise o dono.
 
-## Fluxo de trabalho
-1. **Nunca trabalhe direto na `main`** (é a produção). Cada agente usa a sua branch (`codex/<assunto>` ou `claude/<assunto>`) e abre pull request para `staging`; só o dono leva `staging` para `main`.
-2. Antes de abrir o PR rode: `npx tsc --noEmit`, `npx eslint src e2e tests`, `npx vitest run` e `npm run build`. A verificação automática (`.github/workflows/ci.yml`) roda os mesmos passos.
-3. Mudança de comportamento exige teste. Alterou `src/db/schema.ts`? `npx drizzle-kit generate --name <assunto>` e commite `drizzle/` (nunca edite migração já publicada).
-4. Não crie PR/commit com segredos. Tokens só criptografados (`encryptSecret`); nada em log, tela ou e-mail.
+## Fluxo de trabalho (um Render só, uma branch de publicação)
+O Render publica **a cada push** da branch de publicação, que hoje é `claude/wonderful-cannon-5o38v5` (o dono pode trocar para `main` depois). Claude e Codex trabalham **nessa mesma branch**:
+1. **Antes de começar e antes de cada push:** `git pull --rebase origin claude/wonderful-cannon-5o38v5`. Se houver conflito, resolva mantendo o trabalho dos dois (nunca descarte o do outro agente) e rode os testes.
+2. **Commits pequenos e frequentes**, com mensagem clara em português, e `git push` em seguida (cada push publica em cerca de 3 a 6 minutos).
+3. **Antes de dar push** rode `npx tsc --noEmit`, `npx eslint src e2e tests` e, se mexeu em lógica, `npx vitest run`; mudança grande: `npm run build`. A verificação automática (`.github/workflows/ci.yml`) roda os mesmos passos depois do push.
+4. Nunca force push (`--force`) nessa branch.
+5. Mudança de comportamento exige teste. Alterou `src/db/schema.ts`? `npx drizzle-kit generate --name <assunto>` e commite `drizzle/` (nunca edite migração já publicada).
+6. Segredos: nunca no código. Tokens só criptografados (`encryptSecret`); nada em log, tela ou e-mail.
 
 ## Regras que não podem quebrar
 - Página que consulta o banco declara `export const dynamic = "force-dynamic"`.

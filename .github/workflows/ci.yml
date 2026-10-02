@@ -2,7 +2,7 @@
 name: verificar
 on:
   push:
-    branches: [main, staging]
+    branches: [main, staging, "claude/**", "codex/**"]
   pull_request:
 jobs:
   verificar:

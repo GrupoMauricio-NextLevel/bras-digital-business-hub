@@ -1,4 +1,8 @@
-# Trabalhar com o Codex e o Claude no mesmo sistema (plano)
+# Trabalhar com o Codex e o Claude no mesmo sistema
+
+> **DECISÃO DO DONO (simples, sem clientes no sistema por enquanto):** **um único Render**, **uma única branch de publicação** (`claude/wonderful-cannon-5o38v5`, a que o Render já usa). Claude e Codex fazem commits e push nela; cada push publica em cerca de 3 a 6 minutos. O objetivo é dividir o uso de tokens entre os dois. Sem branch `staging`, sem segundo serviço. As regras de convivência estão no `AGENTS.md` (puxar com `--rebase` antes de cada push, commits pequenos, sem force push, divisão de arquivos). **Quando houver clientes de verdade, voltar ao desenho abaixo (`main` + `staging`).**
+
+## (Plano mais seguro, para quando houver clientes)
 
 ## Ideia
 - **Codex** cuida do **design visual** (componentes, portal, temas, aparência dos painéis).
