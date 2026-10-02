@@ -29,7 +29,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
   const [qty, setQty] = React.useState(1);
   const [customer, setCustomer] = React.useState({ name: "", email: "", phone: "", marketingOptIn: false });
   const [channel, setChannel] = React.useState<"WHATSAPP" | "INSTAGRAM" | "MANUAL" | "ONLINE_STORE">("WHATSAPP");
-  const [paid, setPaid] = React.useState(true);
+  const [paid, setPaid] = React.useState(false);
   const [shippingCents, setShippingCents] = React.useState(0);
   const [shipping, setShipping] = React.useState({ zip: "", address: "", city: "", state: "SP" });
   const [notes, setNotes] = React.useState("");
@@ -144,7 +144,7 @@ export function NewOrderForm({ items }: { items: CatalogItem[] }) {
           <CardContent className="space-y-4">
             <FormField label="Canal de venda" htmlFor="channel"><Select id="channel" value={channel} onChange={(e) => setChannel(e.target.value as typeof channel)}><option value="WHATSAPP">WhatsApp</option><option value="INSTAGRAM">Instagram</option><option value="MANUAL">Manual / balcão</option></Select></FormField>
             <FormField label="Frete (R$)" htmlFor="ship"><Input id="ship" type="number" min={0} step="0.01" value={(shippingCents / 100).toFixed(2)} onChange={(e) => setShippingCents(Math.round(Number(e.target.value) * 100))} /></FormField>
-            <Switch checked={paid} onCheckedChange={setPaid} label="Cliente já pagou" />
+            <Switch checked={paid} onCheckedChange={setPaid} label="Confirmo que o cliente já pagou" />
             <dl className="space-y-1 border-t border-border pt-3 text-sm">
               <div className="flex justify-between text-muted-foreground"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(subtotal)}</dd></div>
               <div className="flex justify-between text-muted-foreground"><dt>Frete</dt><dd className="tabular-nums">{formatBRL(shippingCents)}</dd></div>
