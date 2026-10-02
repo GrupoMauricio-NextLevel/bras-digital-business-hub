@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { PageHeader } from "@/components/app/page-header";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { FilterBar, FilterChips } from "@/components/app/filter-bar";
 import { listOrdersForActor } from "@/lib/domain/orders";
@@ -26,7 +25,7 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
   const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
   return (
     <>
-      <div className="mb-7 border-b border-border pb-6"><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent)]">SuperDrop / Operação</p><div className="mt-2 flex flex-wrap items-end justify-between gap-5"><div><h1 className="text-4xl font-semibold tracking-[-.045em]">Pedidos</h1><p className="mt-2 max-w-2xl text-sm text-muted-foreground">Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo.</p></div></div></div><PageHeader className="sr-only" title="Pedidos" description="Pedidos" actions={<div className="flex flex-wrap items-center gap-2">{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></div>} />
+      <div className="mb-7 border-b border-border pb-6"><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent)]">SuperDrop / Operação</p><div className="mt-2 flex flex-wrap items-end justify-between gap-5"><div><h1 className="text-4xl font-semibold tracking-[-.045em]">Pedidos</h1><p className="mt-2 max-w-2xl text-sm text-muted-foreground">Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo.</p></div><div className="flex flex-wrap items-center gap-2">{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></div></div></div>
       <section className="mb-7 border-y border-border py-5" aria-label="Resumo dos pedidos">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
           <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Ativos</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{activeCount}</dd></div>
