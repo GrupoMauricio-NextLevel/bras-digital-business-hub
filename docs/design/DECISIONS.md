@@ -362,3 +362,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Agendador:** duas opções, sem custo extra: (1) Render Cron Job; (2) `.github/workflows/rotinas.yml`, que só age se o repositório tiver o segredo `CRON_SECRET` e a variável `APP_URL` (sem eles, avisa e não faz nada). Não é preciso as duas.
 - **A1:** `.github/workflows/monitor.yml` confere a cada 15 min o `/login` e o `/api/health` (banco) de lojas, superdrop e master; falha duas vezes seguidas = execução vermelha e e-mail do GitHub. Endereços ajustáveis pela variável `MONITOR_URLS`; para silenciar numa manutenção, desabilitar o fluxo na aba Actions.
 - Não verificado: execução real dos fluxos no GitHub (só validei a sintaxe) e dos endereços de produção. Teste `tests/rotinas.test.ts`.
+
+## D58. Proteção da produção, fase A2: painel de erros do Master
+- Tabela `error_events` (migração 0034). **Erros do servidor** entram por `src/instrumentation.ts` (`onRequestError` do Next 16) e **erros de tela** pela tela de erro, que avisa `POST /api/errors` (aberto, por isso: limite de 10 por minuto por endereço, corpo até 4 KB, tudo mascarado no servidor). Agrupa pelo mesmo erro (origem + rota + mensagem sem números) somando a contagem; se um erro resolvido voltar, **reabre sozinho**; guarda no máximo 500 grupos.
+- **Privacidade (LGPD):** e-mails, telefones, CPF/CNPJ e fichas longas são mascarados antes de gravar; a rota perde parâmetros e identificadores; a pilha é cortada. Só o Master lê e resolve (`/master/errors`). Registrar nunca lança (não pode piorar a falha que está registrando).
+- Não verificado: captura real no Render (só testei o domínio; o gancho do Next roda em produção). Testes `tests/painel-erros.test.ts`.

@@ -239,6 +239,13 @@
       "when": 1790941814267,
       "tag": "0033_rotinas_execucoes",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1790942161448,
+      "tag": "0034_painel_erros",
+      "breakpoints": true
     }
   ]
 }

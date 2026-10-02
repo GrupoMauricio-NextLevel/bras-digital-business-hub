@@ -1152,3 +1152,20 @@ export const jobRuns = pgTable("job_runs", {
   durationMs: integer("duration_ms").notNull().default(0),
   createdAt: createdAt(),
 }, (t) => [index("job_runs_job_idx").on(t.job, t.createdAt)]);
+
+// ---------------------------------------------------------------------------
+// Painel de erros: exceções do servidor e do navegador, agrupadas (mensagens já mascaradas)
+// ---------------------------------------------------------------------------
+export const errorEvents = pgTable("error_events", {
+  id: id(),
+  /** Hash da origem + rota + mensagem sem números: o mesmo erro repetido soma na mesma linha. */
+  fingerprint: text("fingerprint").notNull().unique(),
+  origin: text("origin", { enum: ["SERVER", "BROWSER"] }).notNull(),
+  route: text("route").notNull(),
+  message: text("message").notNull(),
+  stack: text("stack"),
+  count: integer("count").notNull().default(1),
+  firstAt: ts("first_at").notNull().defaultNow(),
+  lastAt: ts("last_at").notNull().defaultNow(),
+  resolvedAt: ts("resolved_at"),
+}, (t) => [index("error_events_last_idx").on(t.lastAt)]);
