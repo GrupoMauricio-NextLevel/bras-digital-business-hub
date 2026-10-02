@@ -6,6 +6,7 @@ import { getSession, homeFor } from "@/lib/auth";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
 import { CommerceHome } from "@/components/portal/commerce-home";
+import { SoonHome } from "@/components/portal/soon-home";
 import { Logo } from "@/components/brand/logo";
 import { HowItWorks } from "@/components/portal/how-it-works";
 import { JsonLd } from "@/components/portal/json-ld";
@@ -43,7 +44,9 @@ export default async function Portal() {
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
-  // Marcas sem dropshipping (NextLevel Commerce, Brás Digital) têm portal próprio.
+  // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
+  if (brand.soon) return <SoonHome brand={brand} />;
+  // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio.
   if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);
   return (

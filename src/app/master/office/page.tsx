@@ -14,7 +14,7 @@ import { requireRole } from "@/lib/require-session";
 import { nextlevelOffice } from "@/lib/domain/nextlevel-office";
 import { nlSalesSummary } from "@/lib/domain/nl-sales";
 import { formatBRL } from "@/lib/money";
-import { BRAND_CODES, brandByCode } from "@/lib/brand";
+import { PRODUCT_BRANDS, brandByCode } from "@/lib/brand";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +40,7 @@ export default async function MasterOfficePage({ searchParams }: { searchParams:
         <MetricCard label="Vendas digitais (mês)" value={formatBRL(sales.revenueMonthCents)} icon={Coins} tone="success" hint={`${sales.toContact} para contatar`} />
       </MetricGrid>
       <LinkTabs label="Origem da receita" active={tab} items={TABS.map((t) => ({ ...t, href: `/master/office?tab=${t.key}&marca=${marca ?? "todas"}` }))} />
-      <div className="mb-4 flex flex-wrap gap-2 text-xs" role="group" aria-label="Filtrar por marca">{[["todas", "Todas as marcas"], ...BRAND_CODES.map((c) => [c, brandByCode(c).name])].map(([k, l]) => <Link key={k} href={`/master/office?tab=${tab}&marca=${k}`} aria-current={(marca ?? "todas") === k ? "true" : undefined} className={`rounded-full border px-3 py-1 font-medium ${(marca ?? "todas") === k ? "border-accent bg-accent-soft" : "border-border text-muted-foreground"}`}>{l}</Link>)}</div>
+      <div className="mb-4 flex flex-wrap gap-2 text-xs" role="group" aria-label="Filtrar por marca">{[["todas", "Todas as marcas"], ...PRODUCT_BRANDS.map((c) => [c, brandByCode(c).name])].map(([k, l]) => <Link key={k} href={`/master/office?tab=${tab}&marca=${k}`} aria-current={(marca ?? "todas") === k ? "true" : undefined} className={`rounded-full border px-3 py-1 font-medium ${(marca ?? "todas") === k ? "border-accent bg-accent-soft" : "border-border text-muted-foreground"}`}>{l}</Link>)}</div>
 
       {tab === "assinaturas" ? (
         <>

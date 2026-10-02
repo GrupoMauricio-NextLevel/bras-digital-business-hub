@@ -3,14 +3,15 @@ import { BRAND_CODES, brandByCode, brandForHost, brandHas, brandsFrom, defaultBr
 
 describe("marcas do portfólio", () => {
   it("resolve a marca pelo domínio, com subdomínios e porta, e cai na marca padrão para endereços desconhecidos", () => {
-    expect(brandForHost("nextlevelgroup.com.br", {}).code).toBe("NEXTLEVEL_COMMERCE");
-    expect(brandForHost("www.nextlevelgroup.com.br:443", {}).code).toBe("NEXTLEVEL_COMMERCE");
+    expect(brandForHost("lojas.nextlevelgroup.com.br", {}).code).toBe("NEXTLEVEL_COMMERCE");
+    expect(brandForHost("lojas.nextlevelgroup.com.br:443", {}).code).toBe("NEXTLEVEL_COMMERCE");
     expect(brandForHost("app.nextlevelcommerce.com.br", {}).code).toBe("NEXTLEVEL_COMMERCE");
     expect(brandForHost("superdrop.com.br", {}).code).toBe("SUPERDROP");
     expect(brandForHost("loja1.superdrop.com.br", {}).code).toBe("SUPERDROP");
     expect(brandForHost("localhost:3100", {}).code).toBe("SUPERDROP");
     expect(brandForHost(null, {}).code).toBe("SUPERDROP");
     expect(brandForHost("evilnextlevelgroup.com.br", {}).code).toBe("SUPERDROP");
+    expect(brandForHost("nextlevelgroup.com.br", {}).code).toBe("SUPERDROP"); // a raiz é o site da holding, fora do sistema
   });
   it("domínios e marca padrão vêm de variáveis de ambiente", () => {
     const env = { BRAND_DOMAINS_BRAS_DIGITAL: "brasdigital.com.br, www.brasdigital.com.br", DEFAULT_BRAND: "NEXTLEVEL_COMMERCE" };
@@ -104,5 +105,33 @@ describe("menu do Master por marca", () => {
     const l = labels("SUPERDROP");
     for (const x of ["Fornecedores", "Redes", "Catálogo", "Parceiros"]) expect(l).toContain(x);
     expect(l).not.toContain("NextLevel Commerce");
+  });
+});
+
+describe("ecossistema: um domínio para cada produto", () => {
+  const h = (host: string) => brandForHost(host, {}).code;
+  it("cada endereço cai no seu produto; o mais específico vence", () => {
+    expect(h("superdrop.com.br")).toBe("SUPERDROP");
+    expect(h("office.superdrop.com.br")).toBe("SUPERDROP");
+    expect(h("bras.superdrop.com.br")).toBe("BRAS_DIGITAL");
+    expect(h("lojas.nextlevelgroup.com.br")).toBe("NEXTLEVEL_COMMERCE");
+    expect(h("creators.nextlevelgroup.com.br")).toBe("CREATORS_HUB");
+    expect(h("master.nextlevelgroup.com.br")).toBe("NEXTLEVEL");
+    expect(h("chinahubglobal.com.br")).toBe("CHINA_HUB");
+    expect(h("www.chinahubglobal.com.br")).toBe("CHINA_HUB");
+  });
+  it("produtos novos estão marcados como 'em breve' e a holding não vende nada", () => {
+    const all = brandsFrom({});
+    for (const c of ["BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB"] as const) { expect(all[c].soon?.headline).toBeTruthy(); expect(all[c].signupOpen).toBe(false); expect(all[c].live).toBe(false); }
+    expect(all.SUPERDROP.soon).toBeNull(); expect(all.NEXTLEVEL_COMMERCE.soon).toBeNull(); expect(all.NEXTLEVEL.signupOpen).toBe(false);
+    expect(all.CHINA_HUB.soon?.zh?.headline).toBeTruthy();
+  });
+  it("Master só entra pelo endereço central quando MASTER_HOST_ONLY=true; os demais perfis não entram nele", () => {
+    const central = brandByCode("NEXTLEVEL", {}); const sd = brandByCode("SUPERDROP", {});
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, {})).toBeNull();
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, { MASTER_HOST_ONLY: "true" })?.message).toMatch(/master\.nextlevelgroup\.com\.br/);
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, central, { MASTER_HOST_ONLY: "true" })).toBeNull();
+    expect(accountBrandConflict({ role: "STORE_OWNER", brand: "SUPERDROP" }, central, {})?.message).toMatch(/só da equipe/);
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, null, { MASTER_HOST_ONLY: "true" })).toBeNull(); // endereço técnico nunca tranca
   });
 });

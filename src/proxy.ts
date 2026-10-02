@@ -21,8 +21,12 @@ export function proxy(req: NextRequest) {
   const hostHeader = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   const route = routeHost({ host: hostHeader, pathname: path, search: req.nextUrl.search });
   if (route.kind === "redirect") {
-    const proto = req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
-    return NextResponse.redirect(route.url.startsWith("/") ? new URL(route.url, `${proto}://${hostHeader ?? req.nextUrl.host}`) : route.url, 307);
+    // Destino no mesmo endereço: monta o endereço completo com o host recebido (o Next não aceita Location relativa).
+    if (route.url.startsWith("/")) {
+      const proto = req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
+      return NextResponse.redirect(new URL(route.url, `${proto}://${req.headers.get("host") ?? hostHeader ?? req.nextUrl.host}`), 307);
+    }
+    return NextResponse.redirect(route.url, 307);
   }
   if (route.kind === "rewrite") { const u = req.nextUrl.clone(); u.pathname = route.path; return NextResponse.rewrite(u); }
   const slug = slugFromHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host"));

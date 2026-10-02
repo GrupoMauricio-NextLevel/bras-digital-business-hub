@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { routeHost, isPanelPath, panelUrl } from "@/lib/host-routing";
 
-const env = { BRAND_OFFICE_SUPERDROP: "https://office.superdrop.com.br", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://lojas.nextlevelgroup.com.br" };
+const env = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br,office.nextlevelgroup.com.br", BRAND_OFFICE_SUPERDROP: "https://office.superdrop.com.br", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://lojas.nextlevelgroup.com.br" };
 const go = (host: string, pathname: string, e: Record<string, string | undefined> = env, search = "") => routeHost({ host, pathname, search }, e);
 
 describe("endereço público × endereço dos painéis", () => {
@@ -46,5 +46,28 @@ describe("endereço público × endereço dos painéis", () => {
     expect(isPanelPath("/merchant")).toBe(true); expect(isPanelPath("/merchantx")).toBe(false); expect(isPanelPath("/store/x")).toBe(false);
     expect(panelUrl({ baseUrl: "https://a.com", officeUrl: "https://o.a.com" }, "/login")).toBe("https://o.a.com/login");
     expect(panelUrl({ baseUrl: "https://a.com", officeUrl: null }, "/login")).toBe("https://a.com/login");
+  });
+});
+
+describe("Master central e produtos em breve", () => {
+  it("no Master central só há login e painéis; o resto volta ao login", () => {
+    expect(go("master.nextlevelgroup.com.br", "/login", {})).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/master/stores", {})).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/planos", {})).toEqual({ kind: "redirect", url: "/login" });
+    expect(go("master.nextlevelgroup.com.br", "/", {})).toEqual({ kind: "redirect", url: "/login" });
+  });
+  it("com MASTER_HOST_ONLY o /master dos produtos leva ao endereço central, mantendo o caminho", () => {
+    const e = { MASTER_HOST_ONLY: "true" };
+    expect(go("superdrop.com.br", "/master/orders", e, "?a=1")).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master/orders?a=1" });
+    expect(go("lojas.nextlevelgroup.com.br", "/master", e)).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master" });
+    expect(go("superdrop.com.br", "/master", {})).toEqual({ kind: "next" });
+  });
+  it("produto em breve mostra só a página inicial e a lista de espera", () => {
+    for (const host of ["bras.superdrop.com.br", "creators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
+      expect(go(host, "/", {})).toEqual({ kind: "next" });
+      expect(go(host, "/quero-minha-loja", {})).toEqual({ kind: "next" });
+      expect(go(host, "/planos", {})).toEqual({ kind: "redirect", url: "/" });
+      expect(go(host, "/login", {})).toEqual({ kind: "next" });
+    }
   });
 });

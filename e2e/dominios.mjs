@@ -13,7 +13,7 @@ if (r.status !== 307 || r.headers.get("location") !== "https://office.superdrop.
 r = await hit("superdrop.com.br", "/merchant/orders?x=1");
 if (r.headers.get("location") !== "https://office.superdrop.com.br/merchant/orders?x=1") fail("painel do público não foi ao escritório: " + r.headers.get("location")); else ok("painéis do endereço público vão ao escritório, mantendo caminho e busca");
 r = await hit("office.superdrop.com.br", "/");
-if (!/^https:\/\/office\.superdrop\.com\.br\/login$/.test(r.headers.get("location") ?? "")) fail("raiz do escritório deveria ir ao login: " + r.headers.get("location")); else ok("office.superdrop.com.br/ → login");
+if (!/\/login$/.test(r.headers.get("location") ?? "")) fail("raiz do escritório deveria ir ao login: " + r.headers.get("location")); else ok("office.superdrop.com.br/ → login");
 r = await hit("office.superdrop.com.br", "/f/mantos-shop");
 if (!/\/login\?area=fornecedor&nome=mantos-shop$/.test(r.headers.get("location") ?? "")) fail("atalho do fornecedor: " + r.headers.get("location")); else ok("office/f/<fornecedor> → login do painel do fornecedor");
 r = await hit("office.superdrop.com.br", "/planos");

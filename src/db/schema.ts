@@ -28,7 +28,7 @@ export const organizations = pgTable("organizations", {
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
   type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
   /** Marca por onde o cliente entrou (NextLevel Commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
-  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL"] }).notNull().default("SUPERDROP"),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] }).notNull().default("SUPERDROP"),
   createdAt: createdAt(),
 });
 
@@ -901,7 +901,7 @@ export const passwordResets = pgTable("password_resets", {
 // ---------------------------------------------------------------------------
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
-  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL"] }).notNull(),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] }).notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),

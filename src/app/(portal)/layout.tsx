@@ -9,10 +9,10 @@ import { getBrand } from "@/lib/brand-server";
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
   const dropship = brandHas(brand, "dropship");
-  const NAV = dropship
+  const NAV = brand.soon ? [] : dropship
     ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
     : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
-  const cta = brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
+  const cta = brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <ForceLight />

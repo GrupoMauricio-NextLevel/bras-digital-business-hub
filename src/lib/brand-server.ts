@@ -1,6 +1,6 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { brandByCode, brandForHost, brandOfHostStrict, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
+import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
 /** Cookie do modo prévia: `/lojas` liga a NextLevel Commerce num endereço que ainda não é dela (ex.: superdrop.com.br). */
 export const BRAND_PREVIEW_COOKIE = "nl-brand";
@@ -24,7 +24,9 @@ export async function masterBrandFilter(raw: string | undefined): Promise<BrandC
   const h = await headers();
   const preview = (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value;
   if (isBrandCode(preview)) return preview;
-  return brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code;
+  const code = brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code;
+  // No endereço do Master central (holding) a visão padrão é a de todos os produtos.
+  return code === HOLDING_CODE ? undefined : code;
 }
 
 /** Leva ao início quando a marca do endereço não tem o recurso (evita páginas de outra marca em domínio errado). */

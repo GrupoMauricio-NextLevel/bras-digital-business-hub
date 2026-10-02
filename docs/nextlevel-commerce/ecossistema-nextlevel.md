@@ -1,4 +1,6 @@
-# Ecossistema NextLevel: um sistema central, cada produto no seu domínio (PROPOSTA, aguardando aprovação)
+# Ecossistema NextLevel: um sistema central, cada produto no seu domínio
+
+> **CONFIRMADO (D39):** 1 sistema, 1 Render, 1 Neon. Mapa de domínios e passo a passo atualizados em `ligar-escritorio.md`.
 
 **Decisão do dono:** 1 sistema central da NextLevel, com 1 serviço no Render (plano Starter, US$ 7/mês) e 1 banco no Neon. Produtos, cada um com o seu domínio, todos sob uma **gestão Master** única. **O SuperDrop já tem clientes e lojas para subir: não pode sofrer nenhuma regressão.**
 

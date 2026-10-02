@@ -139,5 +139,5 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {
-  return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code));
+  return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code || brand.code === "NEXTLEVEL"));
 }

@@ -4,8 +4,11 @@
  * a fronteira continua sendo o tenant. Texto de marca nunca fica fixo em componente: vem daqui.
  * Puro (sem Next/React), para servir servidor, e-mail, testes e rotas.
  */
-export const BRAND_CODES = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL"] as const;
+export const BRAND_CODES = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] as const;
 export type BrandCode = (typeof BRAND_CODES)[number];
+/** "NEXTLEVEL" é a holding: só aparece no endereço do Master central. Os demais são produtos que têm contas, lojas e fornecedores. */
+export const HOLDING_CODE: BrandCode = "NEXTLEVEL";
+export const PRODUCT_BRANDS = BRAND_CODES.filter((c) => c !== HOLDING_CODE) as Exclude<BrandCode, "NEXTLEVEL">[];
 
 /** Módulos que uma marca liga por padrão (a compra avulsa e os planos refinam por loja). */
 export const BRAND_MODULES = ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"] as const;
@@ -40,6 +43,8 @@ export type Brand = {
   signupOpen: boolean;
   /** O programa de parceiros está aberto nesta marca (depende de planos e comissões da própria marca). */
   partnersOpen: boolean;
+  /** Produto ainda sem sistema próprio: o portal mostra uma página "em breve" com lista de espera, sem prometer o que não existe. */
+  soon: { headline: string; text: string; bullets: string[]; leadTitle: string; zh?: { headline: string; text: string } } | null;
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
@@ -53,13 +58,13 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       code: "NEXTLEVEL_COMMERCE", name: "NextLevel Commerce", live: true,
       tagline: "A loja virtual feita para quem vende moda no Brasil",
       description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado, influenciadores e live shop.",
-      domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
+      domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["lojas.nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),
       primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel", wordmark: "Commerce",
       modules: ["stores", "themes", "partners"], emailFromName: "NextLevel Commerce", legalLine: LEGAL("NextLevel Commerce"),
       // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
-      signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true",
+      signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true", soon: null,
     },
     SUPERDROP: {
       code: "SUPERDROP", name: "SuperDrop", live: true,
@@ -69,17 +74,50 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       baseUrl: env.BRAND_URL_SUPERDROP ?? "https://superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_SUPERDROP),
       primaryColor: "#0f1c16", accentColor: "#22c55e", logo: "superdrop",
-      modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true,
+      modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true, soon: null,
     },
     BRAS_DIGITAL: {
       code: "BRAS_DIGITAL", name: "Brás Digital", live: false,
       tagline: "O atacado do Brás em uma vitrine só",
       description: "Marketplace atacadista com lojas e fornecedores do Brás. Em breve.",
-      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, []),
-      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://nextlevelgroup.com.br",
+      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
+      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: "#3b0764", accentColor: "#f59e0b", logo: "nextlevel", wordmark: "Brás Digital",
       modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
+      soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Vendedores de varejo e de atacado menor do Brás reunidos em um marketplace, com loja própria, preço de atacado e pedido organizado.", bullets: ["Vitrine para varejo e atacado menor", "Preço por quantidade e pedido mínimo", "Lojas e fornecedores do Brás no mesmo lugar"], leadTitle: "Quero participar da Brás Digital" },
+    },
+    CREATORS_HUB: {
+      code: "CREATORS_HUB", name: "Hub Creators", live: false,
+      tagline: "Influenciadores e vendedores que vendem juntos",
+      description: "Plataforma para marcas e criadores de conteúdo venderem juntos: links rastreáveis, campanhas, amostras e comissões. Em breve.",
+      domains: list(env.BRAND_DOMAINS_CREATORS_HUB, ["creators.nextlevelgroup.com.br"]),
+      baseUrl: env.BRAND_URL_CREATORS_HUB ?? "https://creators.nextlevelgroup.com.br",
+      officeUrl: url(env.BRAND_OFFICE_CREATORS_HUB),
+      primaryColor: "#1e1b4b", accentColor: "#7e22ce", logo: "nextlevel", wordmark: "Creators",
+      modules: ["stores", "partners", "influencers", "liveShop"], emailFromName: "Hub Creators", legalLine: LEGAL("Hub Creators"), signupOpen: false, partnersOpen: false,
+      soon: { headline: "Quem cria e quem vende, no mesmo lugar.", text: "Influenciadores e vendedores do TikTok e de outras redes conectados a marcas, com link rastreável, campanha, amostra e comissão calculada sobre a venda real.", bullets: ["Link rastreável por criador e campanha", "Comissão sobre venda confirmada", "Pedido de amostra e acompanhamento"], leadTitle: "Quero entrar no Hub Creators" },
+    },
+    CHINA_HUB: {
+      code: "CHINA_HUB", name: "China Hub", live: false,
+      tagline: "Fornecedores e importadores conectados ao Brasil",
+      description: "Rede para fornecedores e importadores levarem o seu catálogo a lojistas de todo o Brasil. Em breve.",
+      domains: list(env.BRAND_DOMAINS_CHINA_HUB, ["chinahubglobal.com.br"]),
+      baseUrl: env.BRAND_URL_CHINA_HUB ?? "https://chinahubglobal.com.br",
+      officeUrl: url(env.BRAND_OFFICE_CHINA_HUB),
+      primaryColor: "#450a0a", accentColor: "#ef4444", logo: "nextlevel", wordmark: "China Hub",
+      modules: ["stores", "themes", "partners", "dropship", "wholesale"], emailFromName: "China Hub", legalLine: LEGAL("China Hub"), signupOpen: false, partnersOpen: false,
+      soon: { headline: "Seu catálogo importado, vendendo no Brasil inteiro.", text: "Fornecedores e importadores conectados a uma rede de lojistas e representantes, com pedido, expedição e pagamento organizados em português.", bullets: ["Rede de lojistas e representantes", "Pedido e expedição organizados", "Atendimento em português, espanhol e mandarim"], leadTitle: "Quero ser fornecedor no China Hub", zh: { headline: "把货卖到巴西，全国分销", text: "连接巴西批发商与零售店网络，由本地系统统一管理订单与发货。" } },
+    },
+    NEXTLEVEL: {
+      code: "NEXTLEVEL", name: "NextLevel", live: true,
+      tagline: "Gestão central do ecossistema NextLevel",
+      description: "Painel de gestão da NextLevel Marketing: todos os produtos em um só lugar.",
+      domains: list(env.BRAND_DOMAINS_NEXTLEVEL, ["master.nextlevelgroup.com.br"]),
+      baseUrl: env.BRAND_URL_NEXTLEVEL ?? "https://master.nextlevelgroup.com.br",
+      officeUrl: null,
+      primaryColor: "#0b1a3a", accentColor: "#2563eb", logo: "nextlevel",
+      modules: ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"], emailFromName: "NextLevel", legalLine: LEGAL("NextLevel"), signupOpen: false, partnersOpen: true, soon: null,
     },
   };
 }
@@ -96,12 +134,18 @@ export function brandByCode(code: string | null | undefined, env: Record<string,
   return isBrandCode(code) ? all[code] : all[defaultBrandCode(env)];
 }
 
+/** O domínio mais específico vence (ex.: `bras.superdrop.com.br` é do Brás Digital, mesmo `superdrop.com.br` sendo do SuperDrop). */
+function longestMatch(all: Record<BrandCode, Brand>, h: string): Brand | null {
+  let best: { b: Brand; len: number } | null = null;
+  for (const b of Object.values(all)) for (const d of b.domains) if ((h === d || h.endsWith(`.${d}`)) && (!best || d.length > best.len)) best = { b, len: d.length };
+  return best?.b ?? null;
+}
+
 /** Marca de um endereço: o domínio exato ou qualquer subdomínio dele (www, app). Sem correspondência, a marca padrão. */
 export function brandForHost(host: string | null | undefined, env: Record<string, string | undefined> = process.env): Brand {
   const all = brandsFrom(env);
   const h = (host ?? "").split(":")[0]!.toLowerCase();
-  if (h) for (const b of Object.values(all)) if (b.domains.some((d) => h === d || h.endsWith(`.${d}`))) return b;
-  return all[defaultBrandCode(env)];
+  return longestMatch(all, h) ?? all[defaultBrandCode(env)];
 }
 
 /** A marca liga o módulo? */
@@ -111,9 +155,7 @@ export const brandHas = (b: Brand, m: BrandModule) => b.modules.includes(m);
 export function brandOfHostStrict(host: string | null | undefined, env: Record<string, string | undefined> = process.env): Brand | null {
   const all = brandsFrom(env);
   const h = (host ?? "").split(":")[0]!.toLowerCase();
-  if (!h) return null;
-  for (const b of Object.values(all)) if (b.domains.some((d) => h === d || h.endsWith(`.${d}`))) return b;
-  return null;
+  return h ? longestMatch(all, h) : null;
 }
 
 /**
@@ -121,7 +163,15 @@ export function brandOfHostStrict(host: string | null | undefined, env: Record<s
  * Endereços técnicos (sem marca) não bloqueiam ninguém. Devolve o aviso a mostrar, ou null se pode entrar.
  */
 export function accountBrandConflict(account: { role: string; brand: BrandCode }, hostBrand: Brand | null, env: Record<string, string | undefined> = process.env): { message: string } | null {
-  if (!hostBrand || account.role === "NEXTLEVEL_MASTER" || account.brand === hostBrand.code) return null;
+  if (!hostBrand) return null;
+  const masterHost = brandByCode(HOLDING_CODE, env).baseUrl.replace(/^https?:\/\//, "");
+  if (account.role === "NEXTLEVEL_MASTER") {
+    // Com MASTER_HOST_ONLY=true a equipe NextLevel entra só pelo endereço do Master central.
+    if (env.MASTER_HOST_ONLY === "true" && hostBrand.code !== HOLDING_CODE) return { message: `A equipe NextLevel entra pelo endereço ${masterHost}.` };
+    return null;
+  }
+  if (account.brand === hostBrand.code) return null;
+  if (hostBrand.code === HOLDING_CODE) return { message: "Este endereço é só da equipe NextLevel. Entre pelo endereço do seu produto." };
   const own = brandByCode(account.brand, env);
   return { message: `Sua conta é da ${own.name}. Entre pelo endereço ${own.baseUrl.replace(/^https?:\/\//, "")}.` };
 }

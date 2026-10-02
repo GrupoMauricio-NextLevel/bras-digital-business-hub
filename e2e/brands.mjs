@@ -14,7 +14,7 @@ const ctxFor = (host, w = 1280) => b.newContext({ viewport: { width: w, height: 
 
 // NextLevel Commerce (domínio da holding usado para lojas virtuais)
 for (const w of [390, 1280]) {
-  const c = await ctxFor("nextlevelgroup.com.br", w); const p = await c.newPage();
+  const c = await ctxFor("lojas.nextlevelgroup.com.br", w); const p = await c.newPage();
   p.on("pageerror", (e) => fail("pageerror commerce: " + e.message));
   await p.goto(B + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(1000);
   const h1 = await p.getByRole("heading", { level: 1 }).innerText();
@@ -27,7 +27,7 @@ for (const w of [390, 1280]) {
 }
 ok("portal NextLevel Commerce (390 e 1280): título, texto, sem SuperDrop, sem rolagem, axe limpo");
 
-const c = await ctxFor("www.nextlevelgroup.com.br"); const p = await c.newPage();
+const c = await ctxFor("lojas.nextlevelgroup.com.br"); const p = await c.newPage();
 p.on("pageerror", (e) => fail("pageerror: " + e.message));
 for (const [path, expect] of [["/cadastro", "/quero-minha-loja"], ["/seja-fornecedor", "/"], ["/como-funciona", "/"], ["/parceiros", "/"]]) {
   await p.goto(B + path, { waitUntil: "networkidle" });
@@ -75,6 +75,35 @@ for (const t of ["Fornecedores", "Redes"]) if (!menu2.includes(t)) fail(`menu do
 if (menu2.includes("NextLevel Commerce")) fail("menu do SuperDrop mostra a área da Commerce");
 ok("Master no SuperDrop mantém fornecedores e redes e não mistura a Commerce");
 await sc.close();
+
+// Produtos novos (em breve) e Master central, cada um no seu endereço
+for (const [host, nome, extra] of [["creators.nextlevelgroup.com.br", "Hub Creators", null], ["bras.superdrop.com.br", "Brás Digital", null], ["chinahubglobal.com.br", "China Hub", "把货卖到巴西"]]) {
+  const sc2 = await ctxFor(host, 390); const sp2 = await sc2.newPage();
+  sp2.on("pageerror", (e) => fail(`pageerror ${host}: ` + e.message));
+  await sp2.goto(B + "/", { waitUntil: "networkidle" });
+  const txt = await sp2.locator("body").innerText();
+  if (!txt.includes("Em breve")) fail(`${host}: sem o aviso "Em breve"`);
+  if (/SuperDrop/.test(txt) && nome !== "Brás Digital") fail(`${host}: mostra SuperDrop`);
+  if (extra && !txt.includes(extra)) fail(`${host}: sem o texto em mandarim`);
+  if (!(await sp2.title()).includes(nome)) fail(`${host}: título sem a marca: ` + (await sp2.title()));
+  if (await sp2.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail(`${host}: rolagem horizontal`);
+  const ax = await axe(sp2); if (ax.length) fail(`${host}: axe ${ax.join(" | ")}`);
+  await sp2.goto(B + "/planos", { waitUntil: "networkidle" });
+  if (new URL(sp2.url()).pathname !== "/") fail(`${host}: /planos deveria voltar à página inicial`);
+  await sc2.close();
+}
+ok("Brás Digital, Hub Creators e China Hub: página 'em breve' própria, sem SuperDrop, sem rolagem, axe limpo");
+const mhc = await ctxFor("master.nextlevelgroup.com.br"); const mhp = await mhc.newPage();
+await mhp.goto(B + "/planos", { waitUntil: "networkidle" });
+if (new URL(mhp.url()).pathname !== "/login") fail("Master central: página pública deveria ir ao login: " + mhp.url());
+await mhp.getByLabel("E-mail").fill("dono@mantosshop.demo"); await mhp.getByLabel("Senha").fill("demo1234"); await mhp.getByRole("button", { name: /Entrar/ }).click();
+await mhp.waitForSelector("text=só da equipe NextLevel", { timeout: 30000 });
+await mhp.getByLabel("E-mail").fill("master@nextlevel.demo"); await mhp.getByRole("button", { name: /Entrar/ }).click();
+await mhp.waitForURL((u) => u.pathname === "/master", { timeout: 60000 }); await mhp.waitForLoadState("networkidle");
+const menu3 = await mhp.locator("aside").first().innerText();
+for (const t of ["Fornecedores", "NextLevel Commerce", "Lojas"]) if (!menu3.includes(t)) fail(`Master central sem "${t}" no menu`);
+ok("Master central: só a equipe entra, e o menu mostra todos os produtos");
+await mhc.close();
 
 // Lista de espera
 await p.goto(B + "/quero-minha-loja", { waitUntil: "networkidle" });

@@ -10,7 +10,7 @@ const bad = []; const fail = (m) => bad.push(m); const ok = (m) => console.log("
 const cpfDigit = (d) => { let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * (d.length + 1 - i); const r = (sum * 10) % 11; return r === 10 ? 0 : r; };
 const makeCpf = () => { const d = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10)); if (d.every((x) => x === d[0])) d[0] = (d[0] + 1) % 10; d.push(cpfDigit(d)); d.push(cpfDigit(d)); return d.join(""); };
 const RUN = Date.now().toString(36);
-const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, extraHTTPHeaders: { "x-forwarded-host": "nextlevelgroup.com.br" } });
+const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } });
 const p = await ctx.newPage();
 p.on("pageerror", (e) => fail("pageerror: " + e.message));
 

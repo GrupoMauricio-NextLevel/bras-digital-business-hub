@@ -1,4 +1,4 @@
-import { brandOfHostStrict } from "./brand";
+import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
 
 /**
  * Cada marca tem um endereço PÚBLICO (portal, vitrines, lojas dos fornecedores) e, se configurado, um endereço de PAINÉIS
@@ -17,6 +17,15 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const search = input.search ?? "";
   const host = bare(input.host);
   const brand = brandOfHostStrict(host, env);
+  // Master central (holding): só painéis e login. Qualquer outra página vai ao login.
+  if (brand?.code === HOLDING_CODE) {
+    if (isPanelPath(pathname)) return { kind: "next" };
+    return { kind: "redirect", url: "/login" };
+  }
+  // Com MASTER_HOST_ONLY=true o Master só abre no endereço central; nos endereços dos produtos vai para lá.
+  if (brand && env.MASTER_HOST_ONLY === "true" && (pathname === "/master" || pathname.startsWith("/master/"))) {
+    return { kind: "redirect", url: `${brandByCode(HOLDING_CODE, env).baseUrl}${pathname}${search}` };
+  }
   const officeHost = brand?.officeUrl ? bare(new URL(brand.officeUrl).host) : null;
   const isOffice = !!officeHost && host === officeHost;
   const passthrough = pathname.startsWith("/api/") || pathname === "/api" || pathname.startsWith("/_next/");
@@ -35,6 +44,8 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
     return { kind: "redirect", url: `${brand.baseUrl}${pathname}${search}` };
   }
 
+  // Produto sem sistema ainda ("em breve"): só a página inicial, a lista de espera e os painéis; o resto volta para a página inicial.
+  if (brand?.soon && !isPanelPath(pathname) && pathname !== "/" && pathname !== "/quero-minha-loja" && !pathname.startsWith("/r/")) return { kind: "redirect", url: "/" };
   if (brand?.officeUrl && isPanelPath(pathname)) return { kind: "redirect", url: `${brand.officeUrl}${pathname}${search}` };
 
   // `/loja/<nome>` é o endereço bonito da vitrine do vendedor (a rota interna continua `/store/<nome>`).
