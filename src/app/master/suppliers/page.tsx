@@ -1,4 +1,4 @@
-import { AlertTriangle, Factory, Package, Store, TrendingUp } from "lucide-react";
+import { Factory, Package, Plus, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
@@ -7,7 +7,6 @@ import { listSuppliers } from "@/lib/queries/master";
 import { formatBRL } from "@/lib/money";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SuppliersPage() {
