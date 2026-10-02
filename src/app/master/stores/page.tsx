@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AlertTriangle, Store, TrendingUp, Wallet } from "lucide-react";
+import { AlertTriangle, ExternalLink, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
@@ -11,7 +11,6 @@ import { getDb } from "@/db/client";
 import { storeUrl } from "@/lib/store-url";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
 import { PRODUCT_BRANDS, brandByCode } from "@/lib/brand";
 import { masterBrandFilter } from "@/lib/brand-server";
 
