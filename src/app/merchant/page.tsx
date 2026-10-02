@@ -31,15 +31,13 @@ export default async function MerchantHome() {
   ].filter((p) => p.n > 0);
 
   const hub = await getServicesHub(session);
-  const isLite = store.offer !== "STORE_OWN";
-  const balance = isLite ? await getBalanceCents(await getDb(), store.id) : 0;
+  const balance = await getBalanceCents(await getDb(), store.id);
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
 
   return (
     <>
-      {isLite ? (
-        <section aria-label="Saldo" className="mb-6 overflow-hidden rounded-2xl bg-primary text-primary-foreground">
+      <section aria-label="Saldo" className="mb-6 overflow-hidden rounded-2xl bg-primary text-primary-foreground">
           <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
             <div>
               <p className="text-sm font-medium opacity-90">Olá, {session.user.name.split(" ")[0]} · {store.name}</p>
@@ -54,7 +52,6 @@ export default async function MerchantHome() {
             </Link>
           </div>
         </section>
-      ) : null}
       <PageHeader
         title={`${greeting()}, ${session.user.name.split(" ")[0]}`}
         description={<span>{store.name} · <StatusBadge value={store.status} dot /> {store.publishedAt ? <span className="text-success">Loja publicada</span> : <span className="text-warning">Loja não publicada</span>}</span>}
