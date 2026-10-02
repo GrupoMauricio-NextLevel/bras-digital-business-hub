@@ -23,11 +23,11 @@ export const getSession = cache(async (): Promise<Session | null> => {
   const jar = await cookies();
   const payload = verifySession(jar.get(SESSION_COOKIE)?.value);
   if (!payload) return null;
+
   const db = await getDb();
   const user = await db.query.users.findFirst({ where: eq(users.id, payload.uid) });
   if (!user) return null;
-  const store = user.storeId ? (await db.query.stores.findFirst({ where: eq(stores.id, user.storeId) })) ?? null : null;
-  const supplier = user.supplierId ? (await db.query.suppliers.findFirst({ where: eq(suppliers.id, user.supplierId) })) ?? null : null;
+
   const rows = await db.select().from(userProductAccess).where(eq(userProductAccess.userId, user.id));
   const grants: AccessGrant[] = rows
     .filter((row) => row.active)
@@ -39,7 +39,26 @@ export const getSession = cache(async (): Promise<Session | null> => {
       storeId: row.storeId,
       active: row.active,
     }));
-  return { user, actor: actorFromUser(user, grants), grants, store, supplier };
+
+  const superdropMerchant = grants.find((g) => g.area === "SUPERDROP" && g.role === "MERCHANT_OWNER");
+  const superdropSupplier = grants.find((g) => g.area === "SUPERDROP" && (g.role === "SUPPLIER_ADMIN" || g.role === "OPERATOR"));
+
+  const resolvedStoreId = superdropMerchant?.storeId ?? user.storeId;
+  const resolvedSupplierId = superdropSupplier?.supplierId ?? user.supplierId;
+
+  const store = resolvedStoreId
+    ? (await db.query.stores.findFirst({ where: eq(stores.id, resolvedStoreId) })) ?? null
+    : null;
+  const supplier = resolvedSupplierId
+    ? (await db.query.suppliers.findFirst({ where: eq(suppliers.id, resolvedSupplierId) })) ?? null
+    : null;
+
+  const actor = actorFromUser(
+    { ...user, storeId: resolvedStoreId ?? null, supplierId: resolvedSupplierId ?? null },
+    grants,
+  );
+
+  return { user, actor, grants, store, supplier };
 });
 
 export async function setSessionCookie(userId: string) {
