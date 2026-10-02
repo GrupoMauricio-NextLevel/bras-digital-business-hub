@@ -16,6 +16,8 @@ import { ICONS } from "./icons";
 import { CommandPalette } from "./command-palette";
 import { NotificationsMenu, type NoticeView } from "./notifications-menu";
 import { ThemeToggle } from "./theme-toggle";
+import { ProductSwitcher } from "./product-switcher";
+import { productContextForPath } from "@/lib/product-context";
 
 export type DemoUser = { id: string; name: string; email: string; role: string };
 
@@ -74,9 +76,9 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
           <React.Fragment key={item.href}>
           {heading ? (collapsed ? <div className={cn("mx-3 my-1 h-px bg-sidebar-border", idx === 0 && "hidden")} aria-hidden /> : <div className={cn("px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted", idx === 0 ? "pt-1" : "pt-4")}>{heading}</div>) : null}
           <Link href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
-            className={cn("relative flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium transition-colors", active ? "bg-sidebar-active text-sidebar-active-foreground shadow-sm" : "text-sidebar-foreground hover:bg-sidebar-hover", collapsed && "justify-center px-0")}>
-            {active ? <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent" aria-hidden /> : null}
-            <Icon className={cn("size-4 shrink-0", active ? "text-accent-foreground" : "text-sidebar-muted")} />
+            className={cn("relative flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors", active ? "text-sidebar-active-foreground" : "text-sidebar-foreground hover:bg-sidebar-hover", collapsed && "justify-center px-0")}>
+            {active ? <span className="absolute left-0 top-1/2 h-6 w-[2px] -translate-y-1/2 bg-[var(--product-accent)]" aria-hidden /> : null}
+            <Icon className={cn("size-4 shrink-0", active ? "text-[var(--product-accent)]" : "text-sidebar-muted")} />
             {collapsed ? null : <span className="flex-1 truncate">{item.label}</span>}
             {!collapsed && item.locked ? <Lock className="size-3.5 text-sidebar-muted" aria-label="Recurso bloqueado no seu plano" /> : null}
           </Link>
@@ -93,6 +95,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
   const [collapsed, setCollapsed] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
+  const product = productContextForPath(pathname, panel);
 
   React.useEffect(() => { const id = requestAnimationFrame(() => { try { setCollapsed(localStorage.getItem("nl-sidebar") === "1"); } catch { /* ignore */ } }); return () => cancelAnimationFrame(id); }, []);
   React.useEffect(() => {
@@ -114,12 +117,12 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
   const currentItem = [...items].sort((a, b) => b.href.length - a.href.length).find((item) => item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/"));
 
   return (
-    <div data-panel={panel} className="min-h-screen bg-background text-foreground">
+    <div data-panel={panel} data-product={product.key} style={{ "--product-accent": product.accent, "--product-accent-soft": product.accentSoft, "--product-accent-contrast": product.accentContrast } as React.CSSProperties} className="min-h-screen bg-background text-foreground">
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground">Pular para o conteúdo</a>
 
       {!minimal ? (
         <aside className={cn("fixed inset-y-0 left-0 z-20 hidden flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200 lg:flex", collapsed ? "w-[72px]" : "w-64")}>
-          <div className="flex h-16 items-center border-b border-sidebar-border">{brand(collapsed)}</div>
+          <div className="flex h-20 items-center border-b border-sidebar-border">{collapsed ? brand(true) : <div className="px-3"><ProductSwitcher current={product} master={panel === "master"} /></div>}</div>
           <div className="nl-scroll flex-1 overflow-y-auto p-3">
             <NavLinks items={items} collapsed={collapsed} />
             {storefrontHref && !collapsed ? (
@@ -141,11 +144,11 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
       ) : null}
 
       <div className={cn(!minimal && "transition-[padding] duration-200", !minimal && (collapsed ? "lg:pl-[72px]" : "lg:pl-64"))}>
-        <header className="nl-no-print sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-border bg-surface/90 px-3 backdrop-blur sm:gap-3 sm:px-6">
+        <header className="nl-no-print sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur sm:gap-3 sm:px-6">
           {!minimal ? <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu /></Button> : (
             <div className="flex items-center gap-2.5"><Logo variant="mark" className="h-9" /><div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight">{tenantName}</div><div className="truncate text-xs text-muted-foreground">{roleLabel}</div></div></div>
           )}
-          {!minimal ? <div className="min-w-0 flex-1 truncate text-sm font-semibold lg:hidden">{tenantName}</div> : null}
+          {!minimal ? <div className="min-w-0 flex-1 lg:hidden"><ProductSwitcher current={product} master={panel === "master"} /></div> : null}
           {!minimal ? (
             <div className="hidden min-w-0 items-center gap-2 lg:flex" aria-label="Contexto atual">
               <span className="max-w-44 truncate text-sm font-medium text-muted-foreground">{tenantName}</span>
@@ -200,16 +203,16 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
       </div>
 
       {!minimal ? (
-        <nav className="nl-no-print pointer-events-none fixed inset-x-0 bottom-0 z-30 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden" aria-label="Atalhos">
-          <ul className="pointer-events-auto mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface/95 p-1.5 shadow-lg backdrop-blur">
+        <nav className="nl-no-print pointer-events-none fixed inset-x-0 bottom-0 z-30 lg:hidden" aria-label="Atalhos">
+          <ul className="pointer-events-auto mx-auto flex max-w-md items-center justify-between border-t border-border bg-background/95 px-2 pb-[max(.35rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur">
             {bottomItems.map((item) => {
               const Icon = ICONS[item.icon];
               const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <li key={item.href} className="min-w-0 flex-1"><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium transition-colors", active ? "bg-accent-soft text-accent-foreground" : "text-muted-foreground")}><Icon className="size-5" /><span className="max-w-full truncate">{item.label}</span></Link></li>
+                <li key={item.href} className="min-w-0 flex-1"><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("relative flex min-h-12 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-medium transition-colors", active ? "text-foreground" : "text-muted-foreground")}><Icon className={cn("size-[18px]", active && "text-[var(--product-accent)]")} /><span className="max-w-full truncate">{item.label}</span>{active ? <span className="absolute top-0 h-[2px] w-7 bg-[var(--product-accent)]" aria-hidden /> : null}</Link></li>
               );
             })}
-            <li className="min-w-0 flex-1"><button onClick={() => setOpen(true)} className="flex min-h-12 w-full flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
+            <li className="min-w-0 flex-1"><button onClick={() => setOpen(true)} className="flex min-h-12 w-full flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>
           </ul>
         </nav>
       ) : null}

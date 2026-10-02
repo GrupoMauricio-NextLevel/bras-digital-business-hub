@@ -1,104 +1,80 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CircleAlert, Factory, Info, Store, TrendingUp, Wallet } from "lucide-react";
-import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
-import { OperationalPulse } from "@/components/app/operational-pulse";
+import { ArrowRight, CircleAlert } from "lucide-react";
+import { BusinessPortal } from "@/components/app/business-portal";
 import { ActivityFeed } from "@/components/shared/activity-feed";
 import { OrdersTable } from "@/components/shared/orders-table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
 import { getPlatformOverview } from "@/lib/queries/master";
 import { redirect } from "next/navigation";
 import { getBrand } from "@/lib/brand-server";
 import { listOrdersForActor } from "@/lib/domain/orders";
-import { BAND_LABEL, buildAlerts, healthScore, loadTowerSnapshot, type HealthBand } from "@/lib/domain/control-tower";
+import { buildAlerts, loadTowerSnapshot } from "@/lib/domain/control-tower";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { formatBRL, formatCompactBRL } from "@/lib/money";
-import { cn } from "@/lib/utils";
+import { PRODUCT_CONTEXTS } from "@/lib/product-context";
 
-const BAND_COLOR: Record<HealthBand, string> = { HEALTHY: "bg-success", ATTENTION: "bg-warning", RISK: "bg-danger" };
-const OFFER_LABEL = { DROP_MANUAL: "Drop manual", STORE_SUBDOMAIN: "Loja SuperDrop", STORE_OWN: "Loja própria" } as const;
+function greeting() {
+  const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
+  return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+}
 
 export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
-  // Cada marca tem a sua casa: no endereço da Commerce o início do Master é a área da marca.
   if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/master/commerce");
   const db = await getDb();
-  const [overview, orders, snap] = await Promise.all([getPlatformOverview(), listOrdersForActor(db, session.actor, { limit: 6 }), loadTowerSnapshot(db)]);
+  const [overview, orders, snap] = await Promise.all([
+    getPlatformOverview(),
+    listOrdersForActor(db, session.actor, { limit: 6 }),
+    loadTowerSnapshot(db),
+  ]);
   const alerts = buildAlerts(snap);
-  const health = snap.stores.map((s) => ({ s, h: healthScore(s) }));
-  const bands = (["HEALTHY", "ATTENTION", "RISK"] as HealthBand[]).map((b) => ({ band: b, n: health.filter((x) => x.h.band === b).length }));
-  const risky = health.filter((x) => x.h.band !== "HEALTHY").sort((a, b) => a.h.score - b.h.score).slice(0, 5);
-  const byOffer = (["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] as const).map((o) => ({ offer: o, n: snap.stores.filter((s) => s.offer === o).length }));
   const urgent = alerts.filter((a) => a.severity === "danger").length;
-  const queue: ActionQueueItem[] = alerts.map((a) => ({
-    id: a.key,
-    title: a.title,
-    description: a.detail,
-    count: a.count,
-    tone: a.severity === "danger" ? "danger" : a.severity === "warning" ? "warning" : "info",
-    icon: a.severity === "danger" ? CircleAlert : a.severity === "warning" ? AlertTriangle : Info,
-    href: a.href,
-    actionLabel: "Resolver",
-  }));
+  const firstName = session.user.name.split(" ")[0];
 
   return (
-    <>
-      <PageHeader title="Torre de controle" description="O que precisa da sua atenção agora, a saúde da rede e a receita da NextLevel." />
-      <OperationalPulse className="mb-6" items={[
-        { label: "Receita NextLevel · mês", value: formatBRL(overview.platformRevenue), icon: Wallet, tone: "info", hint: formatBRL(overview.subscriptionRevenue) + " recorrente", href: "/master/finance" },
-        { label: "GMV da rede", value: formatCompactBRL(overview.gmv), icon: TrendingUp, tone: "success", hint: overview.orders + " pedidos" },
-        { label: "Rede ativa", value: overview.activeStores, icon: Factory, tone: overview.suspendedStores ? "warning" : "success", hint: overview.suppliers + " forn. · " + overview.stores + " lojas", href: "/master/suppliers" },
-        { label: "Alertas", value: alerts.length, icon: AlertTriangle, tone: urgent ? "danger" : alerts.length ? "warning" : "success", hint: urgent ? urgent + " urgente(s)" : "nada urgente" },
-      ]} />
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-5">
-        <section className="lg:col-span-3" aria-labelledby="fila">
-          <ActionQueue items={queue} title="Fila de atenção" description="Ordenada por gravidade. Cada item leva direto à tela que resolve." emptyMessage="Tudo em ordem. Nenhum alerta aberto agora." />
-        </section>
-
-        <section className="space-y-6 lg:col-span-2" aria-label="Saúde da rede">
-          <Card>
-            <CardHeader><CardTitle>Saúde das lojas</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex h-3 w-full gap-0.5 overflow-hidden rounded-full" role="img" aria-label={bands.map((b) => `${BAND_LABEL[b.band]}: ${b.n}`).join(", ")}>
-                {bands.filter((b) => b.n > 0).map((b) => <span key={b.band} className={cn("h-full", BAND_COLOR[b.band])} style={{ flex: b.n }} />)}
-              </div>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                {bands.map((b) => <li key={b.band} className="flex items-center gap-1.5"><span className={cn("size-2.5 rounded-sm", BAND_COLOR[b.band])} aria-hidden />{BAND_LABEL[b.band]} <strong className="tabular-nums">{b.n}</strong></li>)}
-              </ul>
-              {risky.length ? (
-                <ul className="divide-y divide-border text-sm">
-                  {risky.map(({ s, h }) => (
-                    <li key={s.id} className="py-2">
-                      <div className="flex items-center justify-between gap-2"><span className="truncate font-medium">{s.name}</span><span className={cn("rounded px-1.5 text-xs font-semibold tabular-nums", h.band === "RISK" ? "bg-danger-soft text-danger" : "bg-warning-soft text-warning")}>{h.score}</span></div>
-                      <p className="text-xs text-muted-foreground">{OFFER_LABEL[s.offer]} · {h.reasons[0]}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : <p className="text-sm text-muted-foreground">Nenhuma loja em atenção.</p>}
-              <Link href="/master/stores" className={buttonVariants({ variant: "ghost", size: "sm" })}>Ver todas as lojas <ArrowRight /></Link>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>Lojas por oferta</CardTitle></CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm">
-                {byOffer.map((o) => <li key={o.offer} className="flex items-center justify-between"><span className="flex items-center gap-2"><Store className="size-4 text-muted-foreground" aria-hidden />{OFFER_LABEL[o.offer]}</span><strong className="tabular-nums">{o.n}</strong></li>)}
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <SectionTitle title="Pedidos recentes" action={<Link href="/master/orders" className={buttonVariants({ variant: "ghost", size: "sm" })}>Ver todos</Link>} />
-          <OrdersTable rows={orders} basePath="/master/orders" />
+    <div className="mx-auto max-w-[1180px]">
+      <section className="border-b border-border pb-10 pt-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--product-accent)]">NextLevel Control Center</p>
+        <h1 className="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-[.9] tracking-[-.055em]">
+          {greeting()},<br /><span className="text-muted-foreground">{firstName}.</span>
+        </h1>
+        <div className="mt-10 grid gap-6 border-t border-border pt-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
+          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Volume da rede</div><div className="mt-2 text-3xl font-semibold tracking-[-.035em] tabular-nums sm:text-4xl">{formatBRL(overview.gmv)}</div><div className="mt-1 text-sm text-muted-foreground">{overview.orders} pedidos processados</div></div>
+          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Receita NextLevel</div><div className="mt-2 text-xl font-semibold tabular-nums">{formatBRL(overview.platformRevenue)}</div><div className="mt-1 text-xs text-muted-foreground">{formatBRL(overview.subscriptionRevenue)} recorrente</div></div>
+          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Rede ativa</div><div className="mt-2 text-xl font-semibold tabular-nums">{overview.activeStores}</div><div className="mt-1 text-xs text-muted-foreground">{overview.suppliers} forn. · {overview.stores} lojas</div></div>
+          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Atenção</div><div className="mt-2 text-xl font-semibold tabular-nums">{alerts.length}</div><div className="mt-1 text-xs text-muted-foreground">{urgent ? urgent + " urgente(s)" : "nenhum urgente"}</div></div>
         </div>
-        <ActivityFeed items={overview.recent} />
-      </div>
-    </>
+      </section>
+
+      <section className="py-10" aria-labelledby="business-title">
+        <div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Ecossistema</p><h2 id="business-title" className="mt-1 text-2xl font-semibold tracking-[-.03em]">Seus negócios</h2></div><p className="hidden max-w-sm text-right text-xs leading-relaxed text-muted-foreground sm:block">Entre em uma operação sem sair do NextLevel OS. Cada negócio mantém sua própria identidade e contexto.</p></div>
+        <BusinessPortal product={PRODUCT_CONTEXTS.superdrop} attention={alerts.length ? alerts.length + " situação(ões) na operação" : "Operação sem alertas críticos"} metrics={[
+          { label: "GMV", value: formatCompactBRL(overview.gmv) },
+          { label: "Pedidos", value: overview.orders },
+          { label: "Rede", value: overview.stores + " lojas" },
+        ]} />
+        <BusinessPortal product={PRODUCT_CONTEXTS.commerce} metrics={[
+          { label: "Função", value: "Core" },
+          { label: "Escopo", value: "Commerce" },
+          { label: "Estado", value: "Ativo" },
+        ]} />
+        <BusinessPortal product={PRODUCT_CONTEXTS.bras} metrics={[{ label: "Modelo", value: "B2B" }, { label: "Mercado", value: "Atacado" }, { label: "Estado", value: "Preparação" }]} />
+        <BusinessPortal product={PRODUCT_CONTEXTS.creators} metrics={[{ label: "Modelo", value: "Creators" }, { label: "Canal", value: "Social" }, { label: "Estado", value: "Preparação" }]} />
+        <BusinessPortal product={PRODUCT_CONTEXTS.china} metrics={[{ label: "Modelo", value: "Cross-border" }, { label: "Mercado", value: "Brasil ↔ China" }, { label: "Estado", value: "Preparação" }]} />
+      </section>
+
+      <section className="grid gap-10 border-t border-border py-10 lg:grid-cols-[1fr_.65fr]">
+        <div>
+          <div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Agora</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">O que exige atenção</h2></div></div>
+          {alerts.length ? <ol className="divide-y divide-border border-y border-border">{alerts.slice(0,6).map((a) => <li key={a.key}><Link href={a.href} className="group flex min-h-16 items-center gap-4 py-4"><CircleAlert className="size-4 shrink-0 text-[var(--product-accent)]" /><span className="min-w-0 flex-1"><span className="block text-sm font-medium">{a.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span></span><span className="tabular-nums text-sm font-semibold">{a.count}</span><ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" /></Link></li>)}</ol> : <div className="border-y border-border py-8"><p className="text-lg font-medium">Operação limpa.</p><p className="mt-1 text-sm text-muted-foreground">Nenhuma situação exige sua atenção agora.</p></div>}
+        </div>
+        <div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Fluxo do ecossistema</p><ActivityFeed items={overview.recent} /></div>
+      </section>
+
+      <section className="border-t border-border py-10">
+        <div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Rede</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">Pedidos recentes</h2></div><Link href="/master/orders" className="flex items-center gap-2 text-xs font-semibold">Ver todos <ArrowRight className="size-4" /></Link></div>
+        <OrdersTable rows={orders} basePath="/master/orders" />
+      </section>
+    </div>
   );
 }

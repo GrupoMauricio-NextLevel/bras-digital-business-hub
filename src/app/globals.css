@@ -346,3 +346,116 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
 .sf-root { font-family: var(--sf-font-body, var(--font-sans)); }
 .sf-root h1, .sf-root h2 { font-family: var(--sf-font-heading, var(--font-display)); }
 .sf-root[data-buttons="outline"] .sf-btn { background: transparent !important; color: var(--sf-primary) !important; border: 2px solid var(--sf-primary); }
+
+
+/* ===========================================================================
+   NextLevel OS — visual context layer
+   Product color is orientation, never a global wash. This layer intentionally
+   neutralizes the old green identity while legacy components are migrated.
+   =========================================================================== */
+:root {
+  --nl-canvas: #f5f5f3;
+  --nl-surface-1: #fbfbfa;
+  --nl-surface-2: #f0f0ed;
+  --nl-surface-elevated: #ffffff;
+  --nl-text-primary: #151515;
+  --nl-text-secondary: #60605b;
+  --nl-text-tertiary: #92928b;
+  --nl-hairline: #deded8;
+  --product-accent: #2563eb;
+  --product-accent-soft: #e8f0ff;
+  --product-accent-contrast: #ffffff;
+
+  --background: var(--nl-canvas);
+  --surface: var(--nl-surface-1);
+  --raised: var(--nl-surface-elevated);
+  --surface-muted: var(--nl-surface-2);
+  --surface-hover: #eaeae6;
+  --border: var(--nl-hairline);
+  --border-strong: #c8c8c1;
+  --foreground: var(--nl-text-primary);
+  --muted-foreground: var(--nl-text-secondary);
+  --subtle-foreground: var(--nl-text-tertiary);
+  --brand: var(--product-accent);
+  --brand-soft: var(--product-accent-soft);
+  --accent: var(--product-accent);
+  --accent-soft: var(--product-accent-soft);
+  --accent-foreground: var(--product-accent);
+  --ring: var(--product-accent);
+  --sidebar-bg: #efefec;
+  --sidebar-fg: #343431;
+  --sidebar-muted: #777770;
+  --sidebar-active-bg: transparent;
+  --sidebar-active-fg: #111111;
+  --sidebar-border: var(--nl-hairline);
+  --sidebar-hover: rgba(20,20,20,.045);
+}
+
+[data-product="master"] { --product-accent:#2563eb; --product-accent-soft:#e8f0ff; --product-accent-contrast:#fff; }
+[data-product="commerce"] { --product-accent:#0891b2; --product-accent-soft:#e2f7fb; --product-accent-contrast:#fff; }
+[data-product="superdrop"] { --product-accent:#f97316; --product-accent-soft:#fff0e6; --product-accent-contrast:#17120e; }
+[data-product="bras"] { --product-accent:#d59a16; --product-accent-soft:#fff6dc; --product-accent-contrast:#17130a; }
+[data-product="creators"] { --product-accent:#a855f7; --product-accent-soft:#f4e8ff; --product-accent-contrast:#fff; }
+[data-product="china"] { --product-accent:#d73737; --product-accent-soft:#ffe9e7; --product-accent-contrast:#fff; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nl-canvas:#0c0c0d;
+    --nl-surface-1:#111113;
+    --nl-surface-2:#171719;
+    --nl-surface-elevated:#1c1c1f;
+    --nl-text-primary:#f1f1ef;
+    --nl-text-secondary:#a5a5a0;
+    --nl-text-tertiary:#70706b;
+    --nl-hairline:#29292c;
+    --background:var(--nl-canvas);
+    --surface:var(--nl-surface-1);
+    --raised:var(--nl-surface-elevated);
+    --surface-muted:var(--nl-surface-2);
+    --surface-hover:#1e1e21;
+    --border:var(--nl-hairline);
+    --border-strong:#3a3a3e;
+    --foreground:var(--nl-text-primary);
+    --muted-foreground:var(--nl-text-secondary);
+    --subtle-foreground:var(--nl-text-tertiary);
+    --sidebar-bg:#101012;
+    --sidebar-fg:#d8d8d4;
+    --sidebar-muted:#85857f;
+    --sidebar-active-bg:transparent;
+    --sidebar-active-fg:#fff;
+    --sidebar-border:var(--nl-hairline);
+    --sidebar-hover:rgba(255,255,255,.045);
+  }
+}
+
+:root[data-theme="dark"] {
+  --nl-canvas:#0c0c0d;
+  --nl-surface-1:#111113;
+  --nl-surface-2:#171719;
+  --nl-surface-elevated:#1c1c1f;
+  --nl-text-primary:#f1f1ef;
+  --nl-text-secondary:#a5a5a0;
+  --nl-text-tertiary:#70706b;
+  --nl-hairline:#29292c;
+  --background:var(--nl-canvas);
+  --surface:var(--nl-surface-1);
+  --raised:var(--nl-surface-elevated);
+  --surface-muted:var(--nl-surface-2);
+  --surface-hover:#1e1e21;
+  --border:var(--nl-hairline);
+  --border-strong:#3a3a3e;
+  --foreground:var(--nl-text-primary);
+  --muted-foreground:var(--nl-text-secondary);
+  --subtle-foreground:var(--nl-text-tertiary);
+  --sidebar-bg:#101012;
+  --sidebar-fg:#d8d8d4;
+  --sidebar-muted:#85857f;
+  --sidebar-active-bg:transparent;
+  --sidebar-active-fg:#fff;
+  --sidebar-border:var(--nl-hairline);
+  --sidebar-hover:rgba(255,255,255,.045);
+}
+
+.nl-os-rule { border-color: var(--nl-hairline); }
+.nl-os-accent { color: var(--product-accent); }
+.nl-os-tabular { font-variant-numeric: tabular-nums; }
