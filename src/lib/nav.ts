@@ -44,6 +44,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
       { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede", needs: "dropship" },
       { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação" },
+      { label: "Resumo do dia", href: "/master/summary", icon: "LayoutDashboard", group: "Operação" },
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },

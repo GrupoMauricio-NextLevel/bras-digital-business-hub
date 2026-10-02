@@ -367,3 +367,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Tabela `error_events` (migração 0034). **Erros do servidor** entram por `src/instrumentation.ts` (`onRequestError` do Next 16) e **erros de tela** pela tela de erro, que avisa `POST /api/errors` (aberto, por isso: limite de 10 por minuto por endereço, corpo até 4 KB, tudo mascarado no servidor). Agrupa pelo mesmo erro (origem + rota + mensagem sem números) somando a contagem; se um erro resolvido voltar, **reabre sozinho**; guarda no máximo 500 grupos.
 - **Privacidade (LGPD):** e-mails, telefones, CPF/CNPJ e fichas longas são mascarados antes de gravar; a rota perde parâmetros e identificadores; a pilha é cortada. Só o Master lê e resolve (`/master/errors`). Registrar nunca lança (não pode piorar a falha que está registrando).
 - Não verificado: captura real no Render (só testei o domínio; o gancho do Next roda em produção). Testes `tests/painel-erros.test.ts`.
+
+## D59. Proteção da produção, fase A3: resumo do dia para o dono
+- `buildDailySummary` (só contagens e valores, **sem nome, e-mail ou telefone de cliente**): vendas pagas e não canceladas das últimas 24 h (produtos menos desconto), lojas e interessados novos, faturas vencidas, pedidos parados há mais de 2 dias, erros do sistema abertos/novos e rotinas atrasadas. `renderSummary` monta um texto curto em português simples com **o que precisa de atenção primeiro**. Tela: `/master/summary`.
+- **E-mail:** a rotina diária (`/api/cron/finance`) envia o resumo aos usuários Master, **uma vez por dia e por pessoa** (`dedupeKey`). Sem Resend configurado, o texto fica só na caixa de saída (e na tela). Nenhuma mensagem sai para cliente.
+- Teste `tests/resumo-dia.test.ts`.
