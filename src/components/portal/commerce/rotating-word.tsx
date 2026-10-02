@@ -12,7 +12,7 @@ export function RotatingWord({ words }: { words: string[] }) {
   return (
     <>
       <span className="sr-only">{words.join(", ")}</span>
-      <span aria-hidden className="inline-block min-w-[6ch] text-[#f2b600]"><span key={i} className="cm-word">{words[i]}</span></span>
+      <span aria-hidden className="inline-block min-w-[6ch] text-[#f2b600]"><span key={i} className={i > 0 ? "cm-word" : undefined}>{words[i]}</span></span>
     </>
   );
 }
