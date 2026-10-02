@@ -3,10 +3,10 @@ import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
-import { requireRole } from "@/lib/require-session";
+import { requireProductArea } from "@/lib/require-session";
 
 export default async function Page() {
-  await requireRole("NEXTLEVEL_MASTER");
+  await requireProductArea("NEXTLEVEL_COMMERCE");
 
   return (
     <>
