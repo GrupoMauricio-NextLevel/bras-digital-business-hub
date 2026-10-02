@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { getOrderForActor } from "@/lib/domain/orders";
 import { DomainError } from "@/lib/domain/errors";
@@ -15,7 +15,7 @@ async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: stri
 }
 
 export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requireRole("SUPPLIER_ADMIN");
+  const session = await requireAreaRole("SUPERDROP", "SUPPLIER_ADMIN");
   const { id } = await params;
   const data = await loadOrder(session.actor, id);
   if (!data) notFound();
