@@ -18,6 +18,7 @@ import { isIndependentStore } from "@/lib/domain/order-policy";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
+import { isCommerceStore } from "@/lib/store-brand";
 
 export default async function MerchantFinancePage() {
   const session = await requireStoreAdmin();
@@ -25,7 +26,7 @@ export default async function MerchantFinancePage() {
   const db = await getDb();
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
-  const independent = await isIndependentStore(db, session.store!.id);
+  const independent = await isIndependentStore(db, session.store!.id);\n  const commerce = await isCommerceStore(db, session.store!);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
@@ -37,17 +38,17 @@ export default async function MerchantFinancePage() {
   ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
-      <PageHeader title="Financeiro" description={independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
+      <PageHeader title={commerce ? "Financeiro da loja" : "Financeiro"} description={commerce ? "Acompanhe o dinheiro que entra pelas vendas, o custo dos produtos e a margem da sua operação." : independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
       <OperationalPulse className="mb-5" items={[
         { label: "Recebido de clientes", value: formatBRL(f.received), icon: TrendingUp, tone: "success", hint: "vendas confirmadas" },
         { label: "Margem acumulada", value: formatBRL(f.margin), icon: Wallet, tone: "info", hint: "vendas − custo" },
-        { label: independent ? "Taxa do mês" : "Aguardando saldo", value: independent ? formatBRL(feeNow.feeCents) : formatBRL(f.owedToCentral), icon: ReceiptText, tone: !independent && f.owedToCentral ? "warning" : "neutral", hint: independent ? "fechamento NextLevel" : "pedidos pagos sem liberação" },
-        { label: "Faturas em aberto", value: formatBRL(openInvoiceCents), icon: AlertTriangle, tone: overdueInvoices.length ? "danger" : openInvoices.length ? "warning" : "success", hint: openInvoices.length ? openInvoices.length + " pendência(s)" : "nenhuma pendência" },
+        { label: commerce ? "Custos dos produtos" : independent ? "Taxa do mês" : "Aguardando saldo", value: commerce ? formatBRL(f.paidToCentral) : independent ? formatBRL(feeNow.feeCents) : formatBRL(f.owedToCentral), icon: ReceiptText, tone: !independent && f.owedToCentral ? "warning" : "neutral", hint: commerce ? "nas vendas processadas" : independent ? "fechamento NextLevel" : "pedidos pagos sem liberação" },
+        { label: commerce ? "A receber" : "Faturas em aberto", value: commerce ? formatBRL(f.rows.filter((o) => o.customerPaymentStatus !== "PAID").reduce((s,o)=>s+o.totalCents,0)) : formatBRL(openInvoiceCents), icon: AlertTriangle, tone: commerce ? "neutral" : overdueInvoices.length ? "danger" : openInvoices.length ? "warning" : "success", hint: commerce ? "pedidos ainda não pagos" : openInvoices.length ? openInvoices.length + " pendência(s)" : "nenhuma pendência" },
       ]} />
-      <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="Pendências que podem afetar sua operação." emptyMessage="Nenhuma pendência financeira crítica agora." />
+      {commerce ? null : <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="Pendências que podem afetar sua operação." emptyMessage="Nenhuma pendência financeira crítica agora." />}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <SectionTitle title="Pedidos" />
+          <SectionTitle title={commerce ? "Movimentação das vendas" : "Pedidos"} />
           <DataTable rows={f.rows} rowKey={(o) => o.id} rowHref={(o) => `/merchant/orders/${o.id}`} columns={[
             { key: "n", header: "Pedido", primary: true, cell: (o) => <div><div className="font-medium">#{o.number}</div><div className="text-xs text-muted-foreground">{o.customerName}</div></div> },
             { key: "status", header: "Status", cell: (o) => <OrderStatusBadge status={o.status} /> },
