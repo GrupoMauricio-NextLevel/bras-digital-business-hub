@@ -197,6 +197,13 @@
       "when": 1790932591006,
       "tag": "0027_cupons_desconto",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1790933625653,
+      "tag": "0028_preco_por_quantidade",
+      "breakpoints": true
     }
   ]
 }

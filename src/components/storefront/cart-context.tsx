@@ -1,7 +1,22 @@
 "use client";
 import * as React from "react";
 
-export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number };
+export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number;
+  /** Preço por quantidade do produto (soma das unidades do mesmo produto no carrinho). */
+  tiers?: { minQty: number; priceCents: number }[] };
+
+/** Preço unitário efetivo de cada linha (mesma regra do servidor, que recalcula tudo ao criar o pedido). */
+export function priceCartLines(lines: CartLine[]): CartLine[] {
+  const qty = new Map<string, number>();
+  for (const l of lines) if (!l.packId) qty.set(l.productId, (qty.get(l.productId) ?? 0) + l.quantity);
+  return lines.map((l) => {
+    if (l.packId || !l.tiers?.length) return l;
+    const total = qty.get(l.productId) ?? l.quantity;
+    let best = 0, price = l.unitPriceCents;
+    for (const t of l.tiers) if (total >= t.minQty && t.minQty > best) { best = t.minQty; price = Math.min(l.unitPriceCents, t.priceCents); }
+    return { ...l, unitPriceCents: price };
+  });
+}
 
 /**
  * Store externo por loja (localStorage) consumido via useSyncExternalStore,
@@ -55,7 +70,8 @@ type Ctx = {
 const CartContext = React.createContext<Ctx | null>(null);
 
 export function CartProvider({ storeSlug, children }: { storeSlug: string; children: React.ReactNode }) {
-  const { lines, ready } = useCartLines(storeSlug);
+  const { lines: rawLines, ready } = useCartLines(storeSlug);
+  const lines = React.useMemo(() => priceCartLines(rawLines), [rawLines]);
   const value = React.useMemo<Ctx>(() => ({
     lines,
     ready,

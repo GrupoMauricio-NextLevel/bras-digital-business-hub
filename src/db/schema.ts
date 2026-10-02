@@ -1091,3 +1091,14 @@ export const storeDiscounts = pgTable("store_discounts", {
   active: boolean("active").notNull().default(true),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("store_discounts_code_unique").on(t.storeId, t.code)]);
+
+// ---------------------------------------------------------------------------
+// Preço de atacado por quantidade (a partir de N peças do mesmo produto, preço unitário menor). Só conta simples/loja própria.
+// ---------------------------------------------------------------------------
+export const storePriceTiers = pgTable("store_price_tiers", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  productId: text("product_id").notNull().references(() => products.id),
+  minQty: integer("min_qty").notNull(),
+  priceCents: integer("price_cents").notNull(),
+}, (t) => [uniqueIndex("store_price_tiers_unique").on(t.storeId, t.productId, t.minQty)]);

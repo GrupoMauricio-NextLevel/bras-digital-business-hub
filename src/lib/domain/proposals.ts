@@ -7,6 +7,7 @@ import { DomainError, NotFoundError } from "./errors";
 import { listStoreCatalog } from "./catalog";
 import { createOrder, orderLineSchema } from "./orders";
 import { z } from "zod";
+import { unitPriceForQty } from "./price-tiers";
 
 const createSchema = z.object({
   customer: z.object({ name: z.string().min(2, "Informe o nome"), email: z.string().email("E-mail inválido"), phone: z.string().optional() }),
@@ -17,6 +18,8 @@ const createSchema = z.object({
 /** Preço e descrição vêm SEMPRE do catálogo da loja no servidor (nunca do navegador). */
 export async function priceLines(db: Database, storeId: string, items: z.infer<typeof orderLineSchema>[]): Promise<ProposalLine[]> {
   const catalog = new Map((await listStoreCatalog(db, storeId)).map((c) => [c.product.id, c]));
+  const qtyByProduct = new Map<string, number>();
+  for (const l of items) if (!l.packId) qtyByProduct.set(l.productId, (qtyByProduct.get(l.productId) ?? 0) + l.quantity);
   return items.map((l) => {
     const c = catalog.get(l.productId);
     if (!c) throw new DomainError("PRODUCT_NOT_AVAILABLE", "Produto não disponível para esta loja.");
@@ -27,7 +30,7 @@ export async function priceLines(db: Database, storeId: string, items: z.infer<t
     }
     const v = c.variants.find((x) => x.id === l.variantId);
     if (!v || !c.product.sellsUnit) throw new DomainError("VARIANT_NOT_AVAILABLE", "Tamanho não disponível.");
-    return { ...l, label: `${c.product.name} — Tam. ${v.size}`, unitPriceCents: c.storeProduct.priceCents };
+    return { ...l, label: `${c.product.name} — Tam. ${v.size}`, unitPriceCents: unitPriceForQty(c.storeProduct.priceCents, c.tiers, qtyByProduct.get(l.productId) ?? l.quantity) };
   });
 }
 

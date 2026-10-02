@@ -44,6 +44,7 @@ export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
     categoryName: categoryName ?? "",
     priceCents: item.storeProduct.priceCents,
     packPriceCents: item.storeProduct.packPriceCents,
+    tiers: item.tiers,
     featured: item.storeProduct.featured,
     sellsUnit: item.product.sellsUnit,
     sellsPack: item.product.sellsPack,

@@ -4,8 +4,11 @@ import type { Database } from "@/db/client";
 import { ForbiddenError, NotFoundError } from "./errors";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
 import { getLevels, type InventoryLevel } from "./inventory";
+import { loadTiers, type Tier } from "./price-tiers";
 
 export type StoreCatalogItem = {
+  /** Faixas de preço por quantidade (vazio em loja de rede). */
+  tiers: Tier[];
   product: typeof products.$inferSelect;
   storeProduct: typeof storeProducts.$inferSelect;
   variants: (typeof productVariants.$inferSelect & { level: InventoryLevel })[];
@@ -76,6 +79,7 @@ async function hydrate(db: Database, rows: { product: typeof products.$inferSele
   const packs = await db.select().from(productPacks).where(inArray(productPacks.productId, ids));
   const packItems = packs.length ? await db.select().from(productPackItems).where(inArray(productPackItems.packId, packs.map((p) => p.id))) : [];
   const variantById = new Map(variants.map((v) => [v.id, v]));
+  const tierMap = await loadTiers(db, [...new Set(rows.map((r) => r.storeProduct.storeId))], ids);
 
   return rows.map(({ product, storeProduct }) => {
     const pv = variants.filter((v) => v.productId === product.id).sort((a, b) => a.position - b.position).map((v) => ({ ...v, level: levels.get(v.id)! }));
@@ -86,7 +90,7 @@ async function hydrate(db: Database, rows: { product: typeof products.$inferSele
         const available = items.length ? Math.min(...items.map((i) => Math.floor((levels.get(i.variantId)?.available ?? 0) / i.quantity))) : 0;
         return { ...p, items, available };
       });
-    return { product, storeProduct, variants: pv, packs: pp };
+    return { product, storeProduct, variants: pv, packs: pp, tiers: (tierMap.get(`${storeProduct.storeId}:${product.id}`) ?? []).sort((a, b) => a.minQty - b.minQty) };
   });
 }
 

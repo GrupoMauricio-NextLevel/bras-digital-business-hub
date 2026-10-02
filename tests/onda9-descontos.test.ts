@@ -17,7 +17,7 @@ async function independent(n = 1) {
   const r = await signupMember(ctx.db, { storeName: `Moda ${n}`, ownerName: "Maria Souza", email: `maria${n}@moda.com.br`, password: "senha-segura-1", taxId: n === 1 ? "529.982.247-25" : "111.444.777-35", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never);
   await markInvoicePaid(ctx.db, (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!.id);
   const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  const { productId } = await createProduct(ctx.db, await catalogSupplierId(ctx.db, owner), { name: "Vestido", sku: `V-${n}`, categoryName: "Vestidos", costCents: 4000, suggestedPriceCents: 10000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 20 }] });
+  const { productId } = await createProduct(ctx.db, await catalogSupplierId(ctx.db, owner), { name: "Vestido", sku: `V-${n}`, categoryName: "Vestidos", costCents: 4000, suggestedPriceCents: 10000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 100 }] });
   await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 10000, packPriceCents: null, active: true, featured: false });
   const variantId = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!.id;
   return { ...r, owner, productId, variantId };
@@ -64,5 +64,30 @@ describe("Onda 9 — cupom de desconto do consumidor", () => {
 
   it("loja de rede (SuperDrop) não cria nem usa cupom", async () => {
     await expect(createDiscount(ctx.db, ctx.seed.stores.mantos.id, { code: "REDE", kind: "PERCENT", value: 10 })).rejects.toThrow(/rede/);
+  });
+});
+
+describe("Onda 9 — preço por quantidade", () => {
+  it("faixa vale pela soma dos tamanhos, respeita custo/ordem e é recalculada no servidor", async () => {
+    const { setPriceTiers } = await import("@/lib/domain/price-tiers");
+    const { createProposal } = await import("@/lib/domain/proposals");
+    const i = await independent();
+    await expect(setPriceTiers(ctx.db, i.storeId, i.productId, [{ minQty: 6, priceCents: 3000 }])).rejects.toThrow(/abaixo do custo/); // custo 4000
+    await expect(setPriceTiers(ctx.db, i.storeId, i.productId, [{ minQty: 6, priceCents: 9000 }, { minQty: 12, priceCents: 9500 }])).rejects.toThrow(/menor/);
+    await setPriceTiers(ctx.db, i.storeId, i.productId, [{ minQty: 6, priceCents: 9000 }, { minQty: 12, priceCents: 8000 }]);
+    const row = async (q: number) => (await ctx.db.query.orders.findFirst({ where: eq(orders.id, (await buy(i, undefined, q)).orderId) }))!;
+    expect((await row(5)).subtotalCents).toBe(5 * 10000);
+    expect((await row(6)).subtotalCents).toBe(6 * 9000);
+    expect((await row(12)).subtotalCents).toBe(12 * 8000);
+    const p = await createProposal(ctx.db, i.storeId, { customer: { name: "Cliente Atacado", email: "at@x.com" }, items: [{ productId: i.productId, variantId: i.variantId, quantity: 6 }] });
+    expect((await ctx.db.query.proposals.findFirst({ where: (t, { eq: e }) => e(t.token, p.token) }))!.subtotalCents).toBe(54000);
+  });
+
+  it("loja de rede não cria faixa; outra loja não altera as faixas alheias", async () => {
+    const { setPriceTiers } = await import("@/lib/domain/price-tiers");
+    await expect(setPriceTiers(ctx.db, ctx.seed.stores.mantos.id, ctx.seed.productIds[11]!, [{ minQty: 6, priceCents: 1 }])).rejects.toThrow(/rede/);
+    const a = await independent(1);
+    const b = await independent(2);
+    await expect(setPriceTiers(ctx.db, b.storeId, a.productId, [{ minQty: 6, priceCents: 9000 }])).rejects.toThrow(/não encontrado/);
   });
 });

@@ -32,18 +32,20 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
     if (max === 0) return toast.error("Sem estoque disponível.");
     if (mode === "unit" && !variant) return toast.error("Escolha um tamanho.");
     cart.add(mode === "unit"
-      ? { productId: product.id, variantId: variant!.id, name: product.name, label: `Tam. ${variant!.size}`, unitPriceCents: price, quantity: qty, images: product.images, max }
+      ? { productId: product.id, variantId: variant!.id, name: product.name, label: `Tam. ${variant!.size}`, unitPriceCents: price, quantity: qty, images: product.images, max, tiers: product.tiers }
       : { productId: product.id, packId: pack!.id, name: product.name, label: `${pack!.name} (${pack!.items.map((i) => `${i.size}:${i.quantity}`).join(" ")})`, unitPriceCents: price, quantity: qty, images: product.images, max });
     setAdded(true);
     toast.success("Adicionado ao carrinho", { action: { label: "Ver carrinho", onClick: () => router.push(`/store/${slug}/cart`) } });
     setTimeout(() => setAdded(false), 1500);
   };
 
+  const tiers = mode === "unit" ? product.tiers : [];
   return (
     <div className="flex flex-col">
       <div className="text-xs uppercase tracking-wide text-neutral-500">{product.categoryName}</div>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{product.name}</h1>
       <div className="mt-3 flex items-baseline gap-3"><span className="text-2xl font-semibold">{formatBRL(price)}</span>{mode === "unit" ? <span className="text-sm text-neutral-500">ou 6x de {formatBRL(Math.round(price / 6))}</span> : <span className="text-sm text-neutral-500">{pack ? `${formatBRL(Math.round(price / pack.totalQuantity))} por peça` : null}</span>}</div>
+      {tiers.length ? <ul className="mt-2 text-sm text-neutral-600" aria-label="Preço por quantidade">{tiers.map((t) => <li key={t.minQty}>A partir de {t.minQty} peças: <b>{formatBRL(t.priceCents)}</b> cada</li>)}</ul> : null}
       <p className="mt-4 text-sm leading-relaxed text-neutral-600">{product.description}</p>
 
       {product.sellsUnit && product.sellsPack ? (
