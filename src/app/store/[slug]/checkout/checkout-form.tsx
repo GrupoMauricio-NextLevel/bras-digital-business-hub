@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
 
-export function CheckoutForm({ slug, storeName }: { slug: string; storeName: string }) {
+export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: string; storeName: string; minOrderCents?: number }) {
   const cart = useCart();
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: true });
@@ -49,6 +49,7 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
     const r = await previewDiscountAction(slug, codeInput, cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })));
     if (r.ok) { setApplied({ key: cartKey, code: r.data.code, cents: r.data.cents }); toast.success("Cupom aplicado"); } else { setApplied(null); toast.error(r.error); }
   });
+  const belowMin = minOrderCents > 0 && cart.subtotal - discount < minOrderCents;
   const setServiceId = (id: string) => setQuote((q) => ({ ...q, picked: id }));
   const base = `/store/${slug}`;
 
@@ -133,7 +134,8 @@ export function CheckoutForm({ slug, storeName }: { slug: string; storeName: str
             <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal - discount + shipping)}</dd></div>
           </dl>
           <div className="mt-4 flex gap-2"><input aria-label="Cupom de desconto" placeholder="Cupom de desconto" value={codeInput} onChange={(e) => setCodeInput(e.target.value)} className="h-10 min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 text-sm" /><button type="button" onClick={applyCode} disabled={pending || codeInput.trim().length < 3} className="h-10 rounded-lg border border-neutral-300 px-4 text-sm font-medium disabled:opacity-50">Aplicar</button></div>
-          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
+          {belowMin ? <p role="alert" className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Pedido mínimo da loja: {formatBRL(minOrderCents)} em produtos. Faltam {formatBRL(minOrderCents - (cart.subtotal - discount))}.</p> : null}
+          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen || belowMin}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
           <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento (Pix, cartão ou boleto).</p>
         </aside>
       </form>

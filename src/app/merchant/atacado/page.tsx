@@ -5,6 +5,7 @@ import { getDb } from "@/db/client";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { storeModality } from "@/lib/domain/order-policy";
 import { TiersEditor } from "./tiers-editor";
+import { MinOrder } from "./min-order";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,8 @@ export default async function AtacadoPage() {
   const items = (await listStoreCatalog(db, session.store!.id)).map((c) => ({ productId: c.product.id, name: c.product.name, priceCents: c.storeProduct.priceCents, floorCents: Math.max(c.product.costCents, c.product.minimumPriceCents), tiers: c.tiers }));
   return (
     <>
-      <PageHeader title="Preço por quantidade" description="Defina preços menores para quem leva mais peças do mesmo produto (somando os tamanhos). Vale na loja, nas propostas e nos pedidos manuais." />
+      <PageHeader title="Atacado" description="Pedido mínimo e preço por quantidade. Defina preços menores para quem leva mais peças do mesmo produto (somando os tamanhos). Vale na loja, nas propostas e nos pedidos manuais." />
+      <MinOrder cents={session.store!.minOrderCents} />
       {items.length === 0 ? <p className="text-sm text-muted-foreground">Ative produtos na sua loja para criar faixas.</p> : <TiersEditor items={items} />}
     </>
   );

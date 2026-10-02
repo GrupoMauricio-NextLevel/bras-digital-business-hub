@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { products, storePriceTiers, storeProducts } from "@/db/schema";
+import { products, storePriceTiers, storeProducts, stores } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { DomainError, NotFoundError } from "./errors";
 import { storeModality } from "./order-policy";
@@ -12,6 +12,13 @@ export type Tier = { minQty: number; priceCents: number };
  * Preço unitário para a quantidade total do MESMO produto no pedido (soma dos tamanhos; grades/packs ficam fora).
  * Pega a faixa de maior quantidade mínima atingida; nunca sobe o preço base.
  */
+/** Pedido mínimo da loja (0 = sem mínimo). Não existe em loja de rede (SuperDrop). */
+export async function setMinOrder(db: Database, storeId: string, cents: number) {
+  if (!Number.isInteger(cents) || cents < 0 || cents > 100_000_00) throw new DomainError("INVALID_MIN_ORDER", "Informe um valor entre R$ 0 e R$ 100.000.");
+  if ((await storeModality(db, storeId)) === "NETWORK") throw new DomainError("MIN_ORDER_NOT_ALLOWED", "Pedido mínimo não está disponível para lojas de rede.");
+  await db.update(stores).set({ minOrderCents: cents }).where(eq(stores.id, storeId));
+}
+
 export function unitPriceForQty(baseCents: number, tiers: Tier[], totalQty: number): number {
   let price = baseCents;
   let best = 0;

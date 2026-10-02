@@ -107,6 +107,10 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const costTotal = lines.reduce((s, l) => s + l.unitCostCents * l.quantity, 0);
   const discount = input.discountCode ? await priceDiscount(db, store.id, input.discountCode, subtotal, costTotal) : null;
   const discountCents = discount?.cents ?? 0;
+  // Pedido mínimo da loja (atacado): vale só para compra pela loja virtual; venda manual do próprio lojista não é barrada.
+  if (input.channel === "ONLINE_STORE" && store.minOrderCents > 0 && subtotal - discountCents < store.minOrderCents) {
+    throw new DomainError("MIN_ORDER", `Pedido mínimo desta loja: R$ ${(store.minOrderCents / 100).toFixed(2).replace(".", ",")} em produtos.`);
+  }
   const total = subtotal - discountCents + input.shipping.costCents;
 
   // Consolida reservas por variante para validar disponibilidade agregada.

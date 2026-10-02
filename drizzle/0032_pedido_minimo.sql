@@ -1,0 +1,1 @@
+ALTER TABLE "stores" ADD COLUMN "min_order_cents" integer DEFAULT 0 NOT NULL;

@@ -84,6 +84,8 @@ export const stores = pgTable("stores", {
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
   tagline: text("tagline"),
+  /** Pedido mínimo (centavos) para compras pela loja virtual; 0 = sem mínimo. Só conta simples/loja própria. */
+  minOrderCents: integer("min_order_cents").notNull().default(0),
   logoUrl: text("logo_url"),
   logoText: text("logo_text"),
   primaryColor: text("primary_color").notNull().default("#0f172a"),

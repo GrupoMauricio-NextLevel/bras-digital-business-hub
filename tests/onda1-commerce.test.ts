@@ -238,3 +238,17 @@ describe("Onda 3 — notas internas do pedido", () => {
     await expect(addOrderNote(ctx.db, a.owner, o.orderId, " ")).rejects.toThrow(/mínimo/);
   });
 });
+
+describe("Pedido mínimo (atacado)", () => {
+  it("barra compra online abaixo do mínimo, libera acima, não barra venda manual e não existe em loja de rede", async () => {
+    const { setMinOrder } = await import("@/lib/domain/price-tiers");
+    const i = await independent();
+    await setMinOrder(ctx.db, i.storeId, 25000);
+    const online = (qty: number) => createOrder(ctx.db, { storeId: i.storeId, channel: "ONLINE_STORE", customer, items: [{ productId: i.productId, variantId: i.variantId, quantity: qty }], customerPaymentStatus: "PENDING" }, { paymentProvider: "MANUAL" });
+    await expect(online(1)).rejects.toThrow(/Pedido mínimo/); // 1 × R$ 90 < R$ 250
+    await expect(online(3)).resolves.toBeTruthy(); // 3 × R$ 90 = R$ 270
+    await expect(createOrder(ctx.db, { storeId: i.storeId, channel: "MANUAL", customer, items: [{ productId: i.productId, variantId: i.variantId, quantity: 1 }], customerPaymentStatus: "PENDING" })).resolves.toBeTruthy();
+    await expect(setMinOrder(ctx.db, ctx.seed.stores.mantos.id, 1000)).rejects.toThrow(/rede/);
+    await expect(setMinOrder(ctx.db, i.storeId, -5)).rejects.toThrow();
+  });
+});
