@@ -109,6 +109,15 @@ describe("regra pagamento + etiqueta", () => {
   });
 });
 
+describe("permissões de ações do pedido", () => {
+  it("somente lojista confirma pagamento manual e anexa etiqueta; só a Central avança expedição", async () => {
+    const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, channel: "MANUAL", customer: { ...customer, email: "roles@teste.com" }, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "M"), quantity: 1 }] });
+    await expect(confirmCustomerPayment(ctx.db, ctx.actors.supplier, r.orderId)).rejects.toThrow(/Apenas o lojista/);
+    await expect(registerShippingLabel(ctx.db, ctx.actors.supplier, r.orderId, { code: "X1234", carrier: "Teste" })).rejects.toThrow(/responsabilidade do lojista/);
+    await expect(advanceOrder(ctx.db, ctx.actors.mantos, r.orderId, "AWAITING_CENTRAL_PAYMENT")).rejects.toThrow(/Apenas a Central/);
+  });
+});
+
 describe("pedido aparece para lojista e fornecedor corretos", () => {
   it("lojista e fornecedor enxergam; outro lojista não", async () => {
     const r = await createOrder(ctx.db, { storeId: ctx.seed.stores.mantos.id, customer, items: [{ productId: ctx.seed.productIds[11]!, variantId: v(11, "M"), quantity: 1 }] });
