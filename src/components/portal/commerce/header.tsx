@@ -8,7 +8,7 @@ export type CommerceNav = { href: string; label: string }[];
 /** Assinatura provisória (proposta): texto, sem arte. A logomarca definitiva não é trocada nesta etapa. */
 export function Wordmark({ light = false }: { light?: boolean }) {
   return (
-    <span className="inline-flex items-baseline gap-1.5 font-[family-name:var(--nl-font-display)] text-lg tracking-tight">
+    <span className="inline-flex items-baseline gap-1.5 font-[family-name:var(--nl-font-display)] text-base tracking-tight sm:text-lg">
       <b className={`font-extrabold ${light ? "text-[#f5f1e8]" : "text-[#14213d]"}`}>NextLevel</b>
       <i aria-hidden className="inline-block size-1.5 translate-y-[-1px] bg-[#f2b600]" />
       <span className={`font-medium ${light ? "text-[#f5f1e8]/80" : "text-[#14213d]/75"}`}>Commerce</span>
@@ -29,8 +29,8 @@ export function CommerceHeader({ nav, cta: action }: { nav: CommerceNav; cta: { 
   }, [open]);
   return (
     <header className="sticky top-0 z-30 border-b border-[#14213d]/12 bg-[#f5f1e8]/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
-        <Link href="/" aria-label="NextLevel Commerce, página inicial" className="shrink-0"><Wordmark /></Link>
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:gap-6">
+        <Link href="/" aria-label="NextLevel Commerce, página inicial" className="shrink-0 min-w-0"><Wordmark /></Link>
         <nav aria-label="Principal" className="ml-4 hidden items-center gap-6 text-sm font-medium text-[#14213d]/80 lg:flex">
           {nav.map((n) => <a key={n.href} href={n.href} className="py-2 hover:text-[#14213d] hover:underline hover:decoration-[#f2b600] hover:decoration-2 hover:underline-offset-8">{n.label}</a>)}
         </nav>
