@@ -134,10 +134,12 @@ describe("configuração, equipe e onboarding", () => {
   it("remover só usuários de expedição do próprio fornecedor", async () => {
     await expect(removeDispatchUser(ctx.db, ctx.actors.supplier, ctx.actors.supplier.userId)).rejects.toThrow(/não encontrado/);
   });
-  it("onboarding reflete os quatro passos", async () => {
+  it("onboarding reflete prontidão operacional completa", async () => {
     const before = await supplierOnboarding(ctx.db, ctx.seed.supplierId);
-    expect(before.steps.map((s) => s.key)).toEqual(["wallet", "cutoff", "team", "catalog"]);
+    expect(before.steps.map((s) => s.key)).toEqual(["wallet", "cutoff", "team", "catalog", "stock", "stores"]);
     expect(before.steps.find((s) => s.key === "cutoff")!.done).toBe(false);
+    expect(before.steps.find((s) => s.key === "stock")!.done).toBe(true);
+    expect(before.steps.find((s) => s.key === "stores")!.done).toBe(true);
     const ops = await getOps(ctx.db, ctx.seed.supplierId);
     await saveOps(ctx.db, ctx.actors.supplier, ops);
     expect((await supplierOnboarding(ctx.db, ctx.seed.supplierId)).steps.find((s) => s.key === "cutoff")!.done).toBe(true);
