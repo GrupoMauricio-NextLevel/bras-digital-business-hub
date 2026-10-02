@@ -4,8 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ArrowLeft, BarChart3, ChevronRight, CreditCard, Globe2, Inbox, LayoutGrid,
-  Menu, Package, ReceiptText, Settings, ShoppingBag, Store, Users, X,
+  ArrowLeft, ChevronRight, CreditCard, Inbox, LayoutGrid,
+  Menu, Package, Settings, ShoppingBag, Store, X,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { cn, initials } from "@/lib/utils";
