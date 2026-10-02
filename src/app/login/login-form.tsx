@@ -3,10 +3,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LogIn } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FormField } from "@/components/app/form-field";
 import { loginAction } from "@/app/actions/auth";
 
 export function LoginForm() {
@@ -15,6 +11,7 @@ export function LoginForm() {
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [pending, start] = React.useTransition();
+  const field = "mt-1 h-12 w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--brand-signal-text)]";
   return (
     <form
       className="space-y-4"
@@ -27,10 +24,11 @@ export function LoginForm() {
         });
       }}
     >
-      <FormField label="E-mail" htmlFor="email"><Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></FormField>
-      <FormField label="Senha" htmlFor="password" error={error ?? undefined}><Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} /></FormField>
-      <Button type="submit" className="w-full" loading={pending}><LogIn /> Entrar</Button>
-      <p className="text-center text-sm"><Link href="/esqueci-senha" className="font-medium text-accent-foreground underline">Esqueci a minha senha</Link></p>
+      <label htmlFor="email" className="block text-sm font-medium text-neutral-800">E-mail<input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={field} /></label>
+      <label htmlFor="password" className="block text-sm font-medium text-neutral-800">Senha<input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} aria-describedby={error ? "login-error" : undefined} className={field} /></label>
+      {error ? <p id="login-error" role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p> : null}
+      <button type="submit" disabled={pending} className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--brand-signal)] px-6 text-base font-semibold text-[var(--brand-on-signal)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-signal-text)] disabled:opacity-60">{pending ? "Entrando…" : "Entrar"}</button>
+      <p className="text-center text-sm"><Link href="/esqueci-senha" className="font-medium text-neutral-700 underline underline-offset-2">Esqueci a minha senha</Link></p>
     </form>
   );
 }
