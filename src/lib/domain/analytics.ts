@@ -1,5 +1,5 @@
 /** Análise de vendas do lojista: funções puras sobre pedidos e itens já carregados. */
-export type AnalyticsOrder = { id: string; status: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string };
+export type AnalyticsOrder = { id: string; status: string; customerPaymentStatus: string; channel: string; customerEmail: string; subtotalCents: number; costTotalCents: number; createdAt: string };
 export type AnalyticsItem = { orderId: string; productName: string; quantity: number; lineTotalCents: number; unitCostCents: number };
 
 export type StoreAnalytics = {
@@ -14,11 +14,11 @@ export type StoreAnalytics = {
 const DAY = 86_400_000;
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
-/** Vendas válidas: tudo que não foi cancelado. Janela em dias corridos até `now` (UTC). */
+/** Vendas válidas: apenas pedidos pagos e não cancelados. Janela em dias corridos até `now` (UTC). */
 export function computeStoreAnalytics(orders: AnalyticsOrder[], items: AnalyticsItem[], now: Date, windowDays = 30): StoreAnalytics {
   const start = new Date(now.getTime() - (windowDays - 1) * DAY); start.setUTCHours(0, 0, 0, 0);
   const prevStart = new Date(start.getTime() - windowDays * DAY);
-  const valid = orders.filter((o) => o.status !== "CANCELED");
+  const valid = orders.filter((o) => o.status !== "CANCELED" && o.customerPaymentStatus === "PAID");
   const inWindow = valid.filter((o) => new Date(o.createdAt) >= start);
   const previous = valid.filter((o) => { const t = new Date(o.createdAt); return t >= prevStart && t < start; });
 
