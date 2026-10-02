@@ -10,14 +10,16 @@ import { independentSupplierOfStore } from "@/lib/domain/independent";
 import { parseShippingConfig } from "@/lib/shipping/quote";
 import { isDemoMode } from "@/lib/auth";
 import { eq } from "drizzle-orm";
-import { suppliers } from "@/db/schema";\nimport { isCommerceStore } from "@/lib/store-brand";
+import { suppliers } from "@/db/schema";
+import { isCommerceStore } from "@/lib/store-brand";
 
 export const dynamic = "force-dynamic";
 
 export default async function MerchantSettingsPage() {
   const session = await requireStoreAdmin();
   const s = session.store!;
-  const db = await getDb();\n  const commerce = await isCommerceStore(db, s);
+  const db = await getDb();
+  const commerce = await isCommerceStore(db, s);
   const hiddenId = await independentSupplierOfStore(db, s.id);
   const sup = hiddenId ? await db.query.suppliers.findFirst({ where: eq(suppliers.id, hiddenId) }) : null;
   const shippingConfig = parseShippingConfig(s.shippingConfig);
