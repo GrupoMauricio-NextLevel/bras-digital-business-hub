@@ -7,9 +7,8 @@ import type { Order, OrderItem } from "@/db/schema";
 import { OrderActions } from "./order-actions";
 import { OrderNoteForm } from "./order-note-form";
 import Link from "next/link";
-import { Printer } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Circle, Package, Printer, Truck, Wallet } from "lucide-react";
 import type { Role } from "@/lib/domain/access";
-import { CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -35,13 +34,42 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
     { label: "Entregue", done: order.status === "DELIVERED" },
   ];
   const showCost = role !== "STORE_OWNER" || true;
+  const nextStep = (() => {
+    if (order.status === "CANCELED") return { title: "Pedido cancelado", detail: "Nenhuma ação operacional é necessária.", owner: "Concluído", tone: "danger" as const, icon: AlertTriangle };
+    if (order.status === "PENDING") return { title: "Aguardando pagamento do cliente", detail: "O estoque permanece reservado enquanto o pagamento é concluído.", owner: "Cliente", tone: "warning" as const, icon: Wallet };
+    if (order.status === "AWAITING_CENTRAL_PAYMENT") return { title: "Aguardando saldo do lojista", detail: "O pedido só entra na operação da Central após o débito do custo.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Wallet };
+    if (order.status === "AWAITING_LABEL") return { title: "Aguardando etiqueta de envio", detail: "A etiqueta precisa estar pronta antes da separação.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Printer };
+    if (order.status === "READY_TO_PICK") return { title: "Pronto para separação", detail: "Pagamento e etiqueta estão confirmados. O pedido pode entrar na bancada.", owner: role === "STORE_OWNER" ? "Central" : "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "PICKING") return { title: "Em separação", detail: "A expedição está preparando e conferindo os itens.", owner: "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "READY_TO_SHIP") return { title: "Pronto para despachar", detail: "A separação terminou e o pedido pode sair da Central.", owner: "Expedição", tone: "success" as const, icon: Truck };
+    if (order.status === "SHIPPED") return { title: "Pedido enviado", detail: "Acompanhe o transporte até a entrega ao cliente.", owner: "Transportadora", tone: "success" as const, icon: Truck };
+    return { title: "Pedido entregue", detail: "Fluxo operacional concluído.", owner: "Concluído", tone: "success" as const, icon: CheckCircle2 };
+  })();
+  const NextIcon = nextStep.icon;
 
   return (
     <>
       <PageHeader backHref={backHref} title={`Pedido #${order.number}`} badge={<OrderStatusBadge status={order.status} />} description={<span>{store?.name} · {formatDateTime(order.createdAt)} · <StatusBadge value={order.channel} /> <StatusBadge value={order.saleType} /></span>} actions={<div className="flex flex-wrap items-center gap-2"><Link href={`${backHref}/${order.id}/print`} className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-surface-muted"><Printer className="size-4" aria-hidden /> Imprimir</Link><OrderActions role={role} order={order} labels={labels} canFulfil={canFulfil} independent={independent} /></div>} />
 
+      <section className="mb-5 overflow-hidden rounded-lg border border-border bg-surface" aria-label="Próxima ação do pedido">
+        <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="flex items-start gap-3 p-4 sm:p-5">
+            <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-muted", nextStep.tone === "danger" ? "text-danger" : nextStep.tone === "warning" ? "text-warning" : nextStep.tone === "success" ? "text-success" : "text-info")}><NextIcon className="size-4" aria-hidden /></span>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Situação atual</p>
+              <h2 className="mt-0.5 text-base font-semibold">{nextStep.title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{nextStep.detail}</p>
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-4 border-t border-border bg-surface-muted/40 px-4 py-3 md:min-w-48 md:flex-col md:items-start md:justify-center md:border-l md:border-t-0">
+            <span className="text-xs font-medium text-muted-foreground">Responsável agora</span>
+            <span className="inline-flex items-center gap-1.5 text-sm font-semibold">{nextStep.owner}<ArrowRight className="size-3.5" aria-hidden /></span>
+          </div>
+        </div>
+      </section>
+
       {order.status !== "CANCELED" ? (
-        <div className="mb-6 rounded-lg border border-border bg-surface p-4 shadow-sm">
+        <div className="mb-6 rounded-lg border border-border bg-surface p-4">
           <ol className="grid grid-cols-3 gap-3 sm:grid-cols-6">
             {steps.map((s) => (
               <li key={s.label} className="flex items-center gap-2 text-xs sm:flex-col sm:items-start">
