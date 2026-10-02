@@ -7,8 +7,9 @@ import { getDb } from "@/db/client";
 import { orders } from "@/db/schema";
 import { and, eq, sum } from "drizzle-orm";
 import { isDemoMode } from "@/lib/auth";
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { getBalanceCents, listWalletEntries } from "@/lib/domain/wallet";
+import { requireStoreId } from "@/lib/domain/access";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { WalletRecharge } from "./wallet-recharge";
@@ -16,11 +17,11 @@ import { WalletRecharge } from "./wallet-recharge";
 const TYPE_LABEL = { RECHARGE: "Recarga Pix", ORDER_DEBIT: "Custo de pedido", ORDER_REFUND: "Estorno", MANUAL_CREDIT: "Crédito manual", MANUAL_DEBIT: "Débito manual" } as const;
 
 export default async function WalletPage() {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   const db = await getDb();
-  const storeId = session.store!.id;
+  const storeId = requireStoreId(session.actor);
   const [balance, entries] = await Promise.all([getBalanceCents(db, storeId), listWalletEntries(db, session.actor, storeId, 30)]);
-  const [waiting] = await db.select({ cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.status, "AWAITING_CENTRAL_PAYMENT")));
+  const [waiting] = await db.select({ cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.sourceArea, "SUPERDROP"), eq(orders.status, "AWAITING_CENTRAL_PAYMENT")));
   const waitingCents = Number(waiting?.cost ?? 0);
   return (
     <>
