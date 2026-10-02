@@ -1,5 +1,7 @@
 import { Suspense } from "react";
+import { AlertTriangle, ExternalLink, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { FilterBar, FilterChips, SearchInput } from "@/components/app/filter-bar";
@@ -9,7 +11,6 @@ import { getDb } from "@/db/client";
 import { storeUrl } from "@/lib/store-url";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
 import { PRODUCT_BRANDS, brandByCode } from "@/lib/brand";
 import { masterBrandFilter } from "@/lib/brand-server";
 
@@ -18,9 +19,19 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
   const marca = await masterBrandFilter(sp.marca);
   const [rows, snap] = await Promise.all([listStoresWithPlan({ ...sp, marca }), getDb().then((db) => loadTowerSnapshot(db))]);
   const signal = new Map(snap.stores.map((x) => [x.id, x]));
+  const healthy = rows.filter((r) => { const s = signal.get(r.store.id); return s ? healthScore(s).band === "HEALTHY" : false; }).length;
+  const risk = rows.filter((r) => { const s = signal.get(r.store.id); return s ? healthScore(s).band === "RISK" : false; }).length;
+  const gmv = rows.reduce((sum, r) => sum + r.gmv, 0);
+  const balance = rows.reduce((sum, r) => sum + (signal.get(r.store.id)?.balanceCents ?? 0), 0);
   return (
     <>
       <PageHeader title="Lojas" description="Todos os lojistas da rede por oferta: Drop manual, Loja SuperDrop (subdomínio) e Loja própria (domínio próprio), com saúde, saldo e situação." />
+      <OperationalPulse className="mb-5" items={[
+        { label: "Lojas", value: rows.length, icon: Store, tone: "neutral", hint: healthy + " saudáveis" },
+        { label: "Em risco", value: risk, icon: AlertTriangle, tone: risk ? "danger" : "success", hint: risk ? "exigem atenção" : "nenhuma em risco" },
+        { label: "GMV", value: formatBRL(gmv), icon: TrendingUp, tone: "success", hint: "resultado das lojas filtradas" },
+        { label: "Saldo agregado", value: formatBRL(balance), icon: Wallet, tone: "info", hint: "saldos operacionais" },
+      ]} />
       <Suspense>
         <FilterBar>
           <SearchInput placeholder="Buscar loja…" />
