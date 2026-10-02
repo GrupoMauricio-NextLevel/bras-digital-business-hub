@@ -299,6 +299,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
 export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
   if (actor.role === "SUPPLIER_DISPATCH") throw new ForbiddenError("A expedição não cancela pedidos.");
   const order = await loadOwned(db, actor, orderId);
+  if (order.customerPaymentStatus === "PAID") throw new DomainError("REFUND_REQUIRED", "Pedido já pago pelo cliente. Faça o estorno antes de cancelar.");
   if (!CANCELABLE.includes(order.status)) throw new DomainError("INVALID_TRANSITION", "Pedido não pode mais ser cancelado.");
   return db.transaction(async (tx) => {
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
