@@ -1,4 +1,4 @@
-import { requireRole } from "@/lib/require-session";
+import { requireAreaRole } from "@/lib/require-session";
 import { RoleLayout } from "@/components/app/role-layout";
 import { getDb } from "@/db/client";
 import { financeInvoices } from "@/db/schema";
@@ -7,7 +7,7 @@ import { formatBRL } from "@/lib/money";
 import { Clock } from "lucide-react";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const session = await requireRole("STORE_OWNER");
+  const session = await requireAreaRole("SUPERDROP", "MERCHANT_OWNER");
   let banner: React.ReactNode = null;
   if (session.store?.status === "PENDING_PAYMENT") {
     const inv = await (await getDb()).query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, session.store.id), eq(financeInvoices.kind, "STORE_SETUP")) });
