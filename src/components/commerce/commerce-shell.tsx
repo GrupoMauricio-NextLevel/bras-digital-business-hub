@@ -21,24 +21,32 @@ const NAV = [
 ] as const;
 
 const MOBILE = NAV.slice(0, 4);
+const GROUPS = [...new Set(NAV.map((n) => n.group))];
 
-export function CommerceShell({ children, userName }: { children: React.ReactNode; userName: string }) {
-  const pathname = usePathname();
-  const [open, setOpen] = React.useState(false);
-  const active = (href: string, exact?: boolean) => exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
-  const groups = [...new Set(NAV.map((n) => n.group))];
+function isActive(pathname: string, href: string, exact?: boolean) {
+  return exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
+}
 
-  const Navigation = ({ mobile = false }: { mobile?: boolean }) => (
+function CommerceNavigation({
+  pathname,
+  mobile = false,
+  onNavigate,
+}: {
+  pathname: string;
+  mobile?: boolean;
+  onNavigate: () => void;
+}) {
+  return (
     <div className={mobile ? "px-5 pb-8" : "px-5"}>
-      {groups.map((group) => (
+      {GROUPS.map((group) => (
         <div key={group} className="mb-7">
           <div className="mb-2 px-2 text-[10px] font-semibold tracking-[0.22em] text-zinc-500">{group}</div>
           <div className="space-y-0.5">
             {NAV.filter((n) => n.group === group).map((item) => {
               const Icon = item.icon;
-              const on = active(item.href, "exact" in item && item.exact);
+              const on = isActive(pathname, item.href, "exact" in item && item.exact);
               return (
-                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
+                <Link key={item.href} href={item.href} onClick={onNavigate}
                   className={cn("group flex min-h-11 items-center gap-3 border-l-2 px-3 text-sm transition-colors",
                     on ? "border-cyan-400 bg-cyan-400/[0.07] text-zinc-50" : "border-transparent text-zinc-400 hover:text-zinc-100")}>
                   <Icon className={cn("size-[18px]", on ? "text-cyan-400" : "text-zinc-600 group-hover:text-zinc-400")} />
@@ -52,6 +60,12 @@ export function CommerceShell({ children, userName }: { children: React.ReactNod
       ))}
     </div>
   );
+}
+
+export function CommerceShell({ children, userName }: { children: React.ReactNode; userName: string }) {
+  const pathname = usePathname();
+  const [open, setOpen] = React.useState(false);
+  const active = (href: string, exact?: boolean) => isActive(pathname, href, exact);
 
   return (
     <div data-product="commerce" className="min-h-dvh bg-[#08090b] text-zinc-100 [--product-accent:#22d3ee] [--product-accent-soft:#083344]">
@@ -66,7 +80,7 @@ export function CommerceShell({ children, userName }: { children: React.ReactNod
             <div className="mt-1 text-xs text-zinc-500">Store Operating System</div>
           </div>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto"><Navigation /></div>
+        <div className="min-h-0 flex-1 overflow-y-auto"><CommerceNavigation pathname={pathname} onNavigate={() => setOpen(false)} /></div>
         <div className="border-t border-white/10 px-7 py-5">
           <div className="flex items-center gap-3">
             <span className="flex size-8 items-center justify-center rounded-full bg-zinc-100 text-[10px] font-bold text-zinc-900">{initials(userName)}</span>
@@ -103,7 +117,7 @@ export function CommerceShell({ children, userName }: { children: React.ReactNod
               <button onClick={() => setOpen(false)} className="p-2 text-zinc-500"><X className="size-5" /></button>
             </div>
             <Link href="/master" onClick={() => setOpen(false)} className="mx-7 mb-8 flex items-center gap-2 border-y border-white/10 py-3 text-xs text-zinc-400"><ArrowLeft className="size-4" /> Voltar ao NextLevel Master</Link>
-            <Navigation mobile />
+            <CommerceNavigation pathname={pathname} mobile onNavigate={() => setOpen(false)} />
           </aside>
         </div>
       ) : null}
