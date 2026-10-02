@@ -1,10 +1,11 @@
+import { BriefcaseBusiness, CheckCircle2, Sparkles, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
+import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { EmptyState } from "@/components/app/empty-state";
 import { StatusBadge } from "@/components/app/status-badge";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
 import { getDb } from "@/db/client";
 import { services, stores, suppliers } from "@/db/schema";
 import { requireRole } from "@/lib/require-session";
@@ -24,17 +25,22 @@ export default async function MasterServicesPage() {
   const waiting = orders.filter((o) => ["REQUESTED", "IN_ANALYSIS"].includes(o.order.status));
   const pipeline = orders.filter((o) => o.order.status === "QUOTED" || o.order.status === "IN_PROGRESS").reduce((s, o) => s + (o.order.quotedCents ?? 0), 0);
   const delivered = orders.filter((o) => o.order.status === "DELIVERED").reduce((s, o) => s + (o.order.quotedCents ?? 0), 0);
+  const queue: ActionQueueItem[] = [
+    waiting.length > 0 ? { id: "waiting", title: "Pedidos aguardando análise ou orçamento", description: "Entradas novas da Loja NextLevel ainda sem avanço comercial.", count: waiting.length, tone: "warning", icon: Sparkles, href: "#fila", actionLabel: "Atender" } : null,
+    open.filter((o) => o.order.status === "IN_PROGRESS").length > 0 ? { id: "progress", title: "Serviços em execução", description: "Acompanhe prazos e comunicação com o cliente.", count: open.filter((o) => o.order.status === "IN_PROGRESS").length, tone: "info", icon: BriefcaseBusiness, href: "#fila", actionLabel: "Acompanhar" } : null,
+  ].filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
       <PageHeader title="Loja NextLevel" description="Fila de pedidos de serviço de fornecedores e lojistas, orçamentos e a vitrine que eles enxergam." />
-      <MetricGrid className="mb-8">
-        <MetricCard label="Pedidos abertos" value={open.length} icon={Sparkles} hint={`${waiting.length} aguardando orçamento`} tone={waiting.length ? "warning" : "neutral"} />
-        <MetricCard label="Em orçamento/execução" value={formatBRL(pipeline)} tone="info" hint="Valor orçado em andamento" />
-        <MetricCard label="Entregue" value={formatBRL(delivered)} tone="success" hint="Receita de serviços concluídos" />
-        <MetricCard label="Catálogo" value={`${catalog.filter((c) => c.active).length}/${catalog.length}`} hint="Serviços visíveis" />
-      </MetricGrid>
+      <OperationalPulse className="mb-5" items={[
+        { label: "Pedidos abertos", value: open.length, icon: BriefcaseBusiness, tone: open.length ? "info" : "success", hint: waiting.length + " aguardando orçamento" },
+        { label: "Pipeline", value: formatBRL(pipeline), icon: Wallet, tone: pipeline ? "info" : "neutral", hint: "valor orçado em andamento" },
+        { label: "Entregue", value: formatBRL(delivered), icon: CheckCircle2, tone: "success", hint: "receita concluída" },
+        { label: "Catálogo ativo", value: catalog.filter((c) => c.active).length, icon: Sparkles, tone: "neutral", hint: catalog.length + " serviços cadastrados" },
+      ]} />
+      <ActionQueue className="mb-6" items={queue} title="Fila comercial da Loja NextLevel" description="Prioridades que precisam de resposta ou acompanhamento." emptyMessage="Nenhum serviço aguardando atenção agora." />
 
-      <SectionTitle title="Fila de pedidos" />
+      <div id="fila"><SectionTitle title="Fila de pedidos" /></div>
       {orders.length === 0 ? <EmptyState compact icon={Sparkles} title="Nenhum pedido ainda" description="Quando um fornecedor ou lojista contratar um serviço, ele aparece aqui." /> : (
         <ul className="space-y-3">
           {orders.map(({ order: o, serviceName }) => (

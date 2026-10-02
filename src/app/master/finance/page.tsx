@@ -1,6 +1,8 @@
 import { eq } from "drizzle-orm";
 import { Suspense } from "react";
+import { AlertTriangle, FileText, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
 import { financeOverview, getPriceBook, periodOf } from "@/lib/domain/finance";
@@ -15,6 +17,7 @@ import { estimateClosing } from "@/lib/domain/finance";
 import { suppliers } from "@/db/schema";
 import { RationaleList } from "@/components/finance/rationale-list";
 import { buildRationale, marginAlerts } from "@/lib/finance/rationale";
+import { formatBRL } from "@/lib/money";
 
 export default async function FinancePage({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
   await requireRole("NEXTLEVEL_MASTER");
@@ -30,10 +33,20 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
   }
   const names = new Map(supplierList.map((s) => [s.id, s.name]));
   const invoices: InvoiceView[] = overview.invoices.map((i) => ({ id: i.id, kind: i.kind, description: i.description, payer: i.payerType === "STORE" ? "Lojista" : names.get(i.supplierId ?? "") ?? "Fornecedor", period: i.period, amountCents: i.amountCents, status: i.status, dueDate: i.dueDate, paidAt: i.paidAt, lines: i.lines }));
+  const openInvoices = invoices.filter((i) => i.status === "OPEN" || i.status === "OVERDUE");
+  const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
+  const openCents = openInvoices.reduce((sum, i) => sum + i.amountCents, 0);
+  const paidCents = invoices.filter((i) => i.status === "PAID").reduce((sum, i) => sum + i.amountCents, 0);
 
   return (
     <>
       <PageHeader title="Financeiro" description="Mapa completo das receitas da NextLevel, contratos dos fornecedores, cobrança e simulador de ganhos. Fiscal fica fora do escopo por enquanto." />
+      <OperationalPulse className="mb-6" items={[
+        { label: "Receita registrada", value: formatBRL(paidCents), icon: TrendingUp, tone: "success", hint: "faturas pagas no conjunto atual" },
+        { label: "Em aberto", value: formatBRL(openCents), icon: FileText, tone: openInvoices.length ? "warning" : "success", hint: openInvoices.length + " fatura(s)" },
+        { label: "Vencidas", value: overdueInvoices.length, icon: AlertTriangle, tone: overdueInvoices.length ? "danger" : "success", hint: overdueInvoices.length ? "exigem cobrança" : "nenhuma vencida" },
+        { label: "Fornecedores", value: supplierList.length, icon: Wallet, tone: "neutral", hint: "contratos monitorados" },
+      ]} />
       <Suspense>
         <FinanceTabs
           initial="overview"

@@ -4,7 +4,7 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut, ExternalLink, ChevronDown, Repeat, KeyRound, Search, PanelLeftClose, PanelLeftOpen, MoreHorizontal, Lock, Sparkles } from "lucide-react";
+import { Menu, LogOut, ExternalLink, ChevronDown, ChevronRight, Repeat, KeyRound, Search, PanelLeftClose, PanelLeftOpen, MoreHorizontal, Lock, Sparkles } from "lucide-react";
 import { cn, initials, readableOn } from "@/lib/utils";
 import type { NavItem, Panel, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
@@ -111,6 +111,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
 
   const bottomItems = items.filter((i) => !i.pinned).slice(0, 3);
   const pinnedItem = items.find((i) => i.pinned);
+  const currentItem = [...items].sort((a, b) => b.href.length - a.href.length).find((item) => item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/"));
 
   return (
     <div data-panel={panel} className="min-h-screen bg-background text-foreground">
@@ -145,6 +146,13 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
             <div className="flex items-center gap-2.5"><Logo variant="mark" className="h-9" /><div className="min-w-0"><div className="truncate text-sm font-semibold leading-tight">{tenantName}</div><div className="truncate text-xs text-muted-foreground">{roleLabel}</div></div></div>
           )}
           {!minimal ? <div className="min-w-0 flex-1 truncate text-sm font-semibold lg:hidden">{tenantName}</div> : null}
+          {!minimal ? (
+            <div className="hidden min-w-0 items-center gap-2 lg:flex" aria-label="Contexto atual">
+              <span className="max-w-44 truncate text-sm font-medium text-muted-foreground">{tenantName}</span>
+              <ChevronRight className="size-3.5 shrink-0 text-subtle-foreground" aria-hidden />
+              <span className="max-w-52 truncate text-sm font-semibold text-foreground">{currentItem?.label ?? roleLabel}</span>
+            </div>
+          ) : null}
           <div className="flex-1" />
           {!minimal ? (
             <button onClick={() => setPalette(true)} className="hidden h-9 w-72 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface-muted px-3 text-sm text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground md:flex" aria-label="Buscar e navegar (Ctrl K)">

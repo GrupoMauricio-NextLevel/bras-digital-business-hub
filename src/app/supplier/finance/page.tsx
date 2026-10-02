@@ -1,6 +1,8 @@
 import { desc, eq, and } from "drizzle-orm";
+import { AlertTriangle, ReceiptText, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge, OrderStatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +42,13 @@ export default async function SupplierFinancePage() {
   const t = est.terms;
   const waived = isWaived(t.monthlyWaivedUntil, new Date());
   const open = invoices.filter((i) => i.status === "OPEN" || i.status === "OVERDUE");
+  const overdue = open.filter((i) => i.status === "OVERDUE");
+  const openCents = open.reduce((sum, i) => sum + i.amountCents, 0);
+  const overdueCents = overdue.reduce((sum, i) => sum + i.amountCents, 0);
+  const queue: ActionQueueItem[] = [
+    overdue.length > 0 ? { id: "overdue", title: "Regularize faturas vencidas", description: formatBRL(overdueCents) + " em atraso com a NextLevel.", count: overdue.length, tone: "danger", icon: AlertTriangle, href: "#faturas", actionLabel: "Regularizar" } : null,
+    est.closing.netCents > 0 ? { id: "closing", title: "Prepare o fechamento do mês", description: "Estimativa atual de " + formatBRL(est.closing.netCents) + " para o próximo fechamento.", tone: "warning", icon: ReceiptText, href: "#fechamento", actionLabel: "Ver composição" } : null,
+  ].filter((item): item is ActionQueueItem => Boolean(item));
 
   return (
     <>
@@ -48,15 +57,16 @@ export default async function SupplierFinancePage() {
         <div className="mb-6 rounded-lg border border-danger/30 bg-danger-soft/50 p-4 text-sm"><div className="font-semibold">Acesso com restrição: <StatusBadge value={supplier.status} /></div><p className="mt-1 text-muted-foreground">Há faturas vencidas com a NextLevel. Regularize para restabelecer todas as funções.</p></div>
       ) : null}
 
-      <MetricGrid className="mb-6">
-        <MetricCard label="Mensalidade" value={waived ? "Isenta" : formatBRL(t.monthlyFeeCents)} tone={waived ? "success" : "neutral"} hint={waived ? `Até ${formatDate(t.monthlyWaivedUntil)}` : t.model === "SUPERDROP" ? `Faixa ${TIER_LABEL[t.tier]}` : "White Label"} />
-        <MetricCard label="Taxa de volume" value={`${t.volumeFeeBps / 100}%`} hint={`Mínimo mensal de ${formatBRL(t.minMonthlyFeeCents)}`} />
-        <MetricCard label={`Pago à Central em ${period}`} value={formatBRL(est.baseCents)} tone="info" hint={`${est.orders} ${est.orders === 1 ? "pedido" : "pedidos"} com pagamento confirmado`} />
-        <MetricCard label="A pagar no fechamento" value={formatBRL(est.closing.netCents)} tone={est.closing.netCents ? "warning" : "success"} hint={est.closing.commissionCreditCents ? `Já abate ${formatBRL(est.closing.commissionCreditCents)} de comissões` : "Estimativa do mês corrente"} />
-      </MetricGrid>
+      <OperationalPulse className="mb-5" items={[
+        { label: "Movimento do mês", value: formatBRL(est.baseCents), icon: TrendingUp, tone: "info", hint: est.orders + " pedido(s) confirmados" },
+        { label: "Fechamento estimado", value: formatBRL(est.closing.netCents), icon: ReceiptText, tone: est.closing.netCents ? "warning" : "success", hint: est.closing.commissionCreditCents ? "já considera comissões" : "mês corrente" },
+        { label: "Faturas em aberto", value: formatBRL(openCents), icon: AlertTriangle, tone: overdue.length ? "danger" : open.length ? "warning" : "success", hint: open.length ? open.length + " pendência(s)" : "nenhuma pendência" },
+        { label: "Mensalidade", value: waived ? "Isenta" : formatBRL(t.monthlyFeeCents), icon: Wallet, tone: waived ? "success" : "neutral", hint: waived ? "isenção vigente" : t.model === "SUPERDROP" ? "faixa " + TIER_LABEL[t.tier] : "White Label" },
+      ]} />
+      <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="O que exige decisão antes de afetar a operação." emptyMessage="Nenhuma pendência financeira crítica agora." />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
-        <Card>
+        <Card id="fechamento">
           <CardHeader><div><CardTitle>Estimativa do fechamento de {period}</CardTitle><CardDescription>Cobrado depois do fim do mês, com vencimento no dia 5.</CardDescription></div></CardHeader>
           <CardContent>
             <ul className="divide-y divide-border text-sm">
@@ -76,7 +86,7 @@ export default async function SupplierFinancePage() {
         </Card>
       </div>
 
-      <h2 className="mb-3 text-base font-semibold">Faturas da NextLevel {open.length ? <span className="ml-1 text-sm font-normal text-warning">{open.length} em aberto</span> : null}</h2>
+      <h2 id="faturas" className="mb-3 text-base font-semibold">Faturas da NextLevel {open.length ? <span className="ml-1 text-sm font-normal text-warning">{open.length} em aberto</span> : null}</h2>
       <DataTable rows={invoices} rowKey={(i) => i.id} columns={[
         { key: "d", header: "Fatura", primary: true, cell: (i) => <div><div className="font-medium">{i.description}</div><div className="text-xs text-muted-foreground">{KIND[i.kind]}</div></div> },
         { key: "a", header: "Valor", className: "text-right", cell: (i) => <span className="font-medium tabular-nums">{formatBRL(i.amountCents)}</span> },

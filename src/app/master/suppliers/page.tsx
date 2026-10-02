@@ -1,18 +1,30 @@
+import { Factory, Package, Plus, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { listSuppliers } from "@/lib/queries/master";
 import { formatBRL } from "@/lib/money";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SuppliersPage() {
   const rows = await listSuppliers();
+  const active = rows.filter((r) => r.status === "ACTIVE").length;
+  const withoutContract = rows.filter((r) => !r.contract).length;
+  const stores = rows.reduce((sum, r) => sum + r.storeCount, 0);
+  const products = rows.reduce((sum, r) => sum + r.productCount, 0);
+  const gmv = rows.reduce((sum, r) => sum + r.gmv, 0);
   return (
     <>
       <PageHeader title="Fornecedores" description="Centrais que abastecem a rede com catálogo e estoque." actions={<Link href="/master/suppliers/new" className={buttonVariants()}><Plus /> Novo fornecedor</Link>} />
+      <OperationalPulse className="mb-5" items={[
+        { label: "Fornecedores", value: rows.length, icon: Factory, tone: "neutral", hint: active + " ativos" },
+        { label: "Lojas conectadas", value: stores, icon: Store, tone: "info", hint: "na rede dos fornecedores" },
+        { label: "Produtos centrais", value: products, icon: Package, tone: "neutral", hint: "catálogo agregado" },
+        { label: "GMV da rede", value: formatBRL(gmv), icon: TrendingUp, tone: withoutContract ? "warning" : "success", hint: withoutContract ? withoutContract + " sem contrato" : "contratos completos" },
+      ]} />
       <DataTable
         rows={rows}
         rowKey={(r) => r.id}

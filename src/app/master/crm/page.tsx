@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ExternalLink, Inbox } from "lucide-react";
+import { ExternalLink, Inbox, ShoppingCart, TrendingUp, Users } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 import { EmptyState } from "@/components/app/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db/client";
@@ -44,12 +44,12 @@ export default async function MasterCrmPage({ searchParams }: { searchParams: Pr
     <>
       <PageHeader title="CRM · Loja NextLevel" description="Pedidos que chegam da Loja NextLevel pública: da cobrança à entrega, com anotações de cada contato." actions={<Link href="/loja-nextlevel" target="_blank" className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline">Ver a loja pública <ExternalLink className="size-3.5" aria-hidden /></Link>} />
       {tabs}
-      <MetricGrid className="mb-8">
-        <MetricCard label="Para contatar" value={summary.toContact} icon={Inbox} tone={summary.toContact ? "warning" : "neutral"} hint="Pagos, ainda sem contato" />
-        <MetricCard label="Em andamento" value={summary.active} tone="info" hint="Em contato ou execução" />
-        <MetricCard label="Receita do mês" value={formatBRL(summary.revenueMonthCents)} tone="success" hint={`${formatBRL(summary.revenueCents)} no total`} />
-        <MetricCard label="Aguardando pagamento" value={summary.awaiting} hint="Checkout iniciado" />
-      </MetricGrid>
+      <OperationalPulse className="mb-6" items={[
+        { label: "Para contatar", value: summary.toContact, icon: Inbox, tone: summary.toContact ? "warning" : "success", hint: "pagos sem contato" },
+        { label: "Em andamento", value: summary.active, icon: Users, tone: "info", hint: "contato ou execução" },
+        { label: "Receita do mês", value: formatBRL(summary.revenueMonthCents), icon: TrendingUp, tone: "success", hint: formatBRL(summary.revenueCents) + " no total" },
+        { label: "Aguardando pagamento", value: summary.awaiting, icon: ShoppingCart, tone: summary.awaiting ? "warning" : "neutral", hint: "checkout iniciado" },
+      ]} />
 
       <SectionTitle title="Funil de pedidos" description="Cada coluna é uma etapa. Abra o cartão para falar com o cliente e avançar." />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5" data-testid="crm-board">
