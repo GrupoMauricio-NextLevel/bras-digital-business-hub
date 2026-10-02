@@ -5,8 +5,8 @@ import { listPlansWithSubs } from "@/lib/queries/master";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
-import { MetricCard, MetricGrid } from "@/components/app/metric-card";
+import { AlertTriangle, Check, CreditCard, TrendingUp } from "lucide-react";
+import { OperationalPulse } from "@/components/app/operational-pulse";
 
 export default async function PlansPage() {
   const { plans, subs, invoices } = await listPlansWithSubs();
@@ -14,12 +14,12 @@ export default async function PlansPage() {
   return (
     <>
       <PageHeader title="Planos e assinaturas" description="Mensalidade das lojas. Regra futura: 15 dias de atraso → SUSPENDED · 30 dias → CLOSED." />
-      <MetricGrid className="mb-6">
-        <MetricCard label="MRR" value={formatBRL(subs.filter((s) => s.sub.status === "ACTIVE").reduce((a, s) => a + s.planPrice, 0))} hint="Assinaturas ativas" tone="success" />
-        <MetricCard label="Faturas pagas" value={inv("PAID")?.n ?? 0} hint={formatBRL(Number(inv("PAID")?.total ?? 0))} />
-        <MetricCard label="Em aberto" value={inv("OPEN")?.n ?? 0} hint={formatBRL(Number(inv("OPEN")?.total ?? 0))} tone="warning" />
-        <MetricCard label="Vencidas" value={inv("OVERDUE")?.n ?? 0} hint={formatBRL(Number(inv("OVERDUE")?.total ?? 0))} tone="danger" />
-      </MetricGrid>
+      <OperationalPulse className="mb-6" items={[
+        { label: "MRR", value: formatBRL(subs.filter((s) => s.sub.status === "ACTIVE").reduce((a, s) => a + s.planPrice, 0)), icon: TrendingUp, tone: "success", hint: "assinaturas ativas" },
+        { label: "Faturas pagas", value: inv("PAID")?.n ?? 0, icon: CreditCard, tone: "success", hint: formatBRL(Number(inv("PAID")?.total ?? 0)) },
+        { label: "Em aberto", value: inv("OPEN")?.n ?? 0, icon: CreditCard, tone: (inv("OPEN")?.n ?? 0) ? "warning" : "success", hint: formatBRL(Number(inv("OPEN")?.total ?? 0)) },
+        { label: "Vencidas", value: inv("OVERDUE")?.n ?? 0, icon: AlertTriangle, tone: (inv("OVERDUE")?.n ?? 0) ? "danger" : "success", hint: formatBRL(Number(inv("OVERDUE")?.total ?? 0)) },
+      ]} />
       <div className="grid gap-4 md:grid-cols-3">
         {plans.map((p) => (
           <Card key={p.id}>
