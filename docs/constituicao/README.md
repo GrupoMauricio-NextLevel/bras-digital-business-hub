@@ -16,7 +16,7 @@ Ordem normativa: **00 Constituição** > decisões registradas em `docs/design/D
 | 09 | `09-INTEGRATIONS-EXTENSIBILITY.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
 | 10 | `10-SECURITY-RELIABILITY.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
 | 11 | `11-QUALITY-ENGINEERING.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
-| 12 | `12-COMMERCE-INTELLIGENCE.md` | Aguardando envio |
+| 12 | `12-COMMERCE-INTELLIGENCE.md` | Recebido (cruzamento: `CRUZAMENTO-12-INTELIGENCIA.md`) |
 | 13 | `13-ROADMAP-GAPS-DECISIONS.md` | Aguardando envio |
 
 Os números 02 a 13 vêm da lista do próprio documento 01 (seção 22). Outros arquivos desta pasta: `AUDITORIA-2026-10.md` (sistema contra a Constituição) e `F0-CONFIRMACAO-2026-10-03.md` (confirmação dos achados).
