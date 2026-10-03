@@ -17,7 +17,7 @@ HIERARQUIA E CONFLITO
 Constituição > decisões registradas > este prompt > a tarefa. Se qualquer passo abaixo conflitar com a Constituição, PARE, explique, e registre a decisão antes de seguir (arts. 41 e 42). Nunca "resolva" o conflito em silêncio.
 
 REGRAS DE SEGURANÇA (valem para todas as fases)
-1. Teste que falha primeiro: para cada falha da auditoria, escreva o teste que a reproduz e mostre-o VERMELHO antes de corrigir; só então corrija e mostre VERDE. Sem reprodução, não é correção.
+1. Teste que falha primeiro: para cada falha da auditoria, escreva o teste mínimo que a reproduz e mostre-o VERMELHO antes de corrigir; só então corrija e mostre VERDE. Sem reprodução, não é correção. Poucos testes, mas os certos: um por regra de negócio nova, nada de bateria extensa por fase.
 2. Migração só aditiva ("expandir, depois contrair"): coluna nova com default ou anulável, preenchimento de dados na própria migração, nada de apagar nem renomear coluna usada. Nunca edite migração já publicada; use `npx drizzle-kit generate --name <assunto>` (a numeração atual manda: confira `ls drizzle | tail`). Prove que atualiza um banco ANTIGO com dados (skill nova-migracao, passo 4).
 3. Produção tem dados reais. Antes de publicar migração com preenchimento de dados, peça ao dono para confirmar que existe backup do Neon (ponto de restauração). Registre isso na resposta.
 4. SuperDrop não muda de comportamento sem teste. Toda alteração em src/lib/domain/orders.ts roda os testes de pedido, tenancy e a jornada e2e completa (e2e/jornada-completa.mjs).
@@ -26,8 +26,10 @@ REGRAS DE SEGURANÇA (valem para todas as fases)
 7. Não aplique o ramo `audit/usability-critical-flows` inteiro: ele nasceu de uma base antiga (a migração dele se chama 0012 e colide com a atual 0012). Aproveite o que vale por commit isolado (ver F1 e F2), revisando cada um.
 8. Verdade (art. 19): o que for simulado ou parcial é dito como simulado ou parcial, na tela e na entrega.
 
-CICLO DE CADA FASE
-(a) Reproduzir (teste vermelho) → (b) corrigir mínimo → (c) teste verde + testes vizinhos → (d) skill simplify na diferença → (e) skill code-review (e security-review quando tocar permissão, dinheiro ou dado pessoal) → (f) bateria da skill publicar (tsc, eslint, vitest completo, build) → (g) e2e relevante (skill e2e-demo) → (h) decisão em DECISIONS.md → (i) push → (j) conferir o site e reportar. Só então a próxima fase.
+CICLO DE CADA FASE (modo rápido, decisão do dono em 2026-10-03: poucos testes por fase e uma fase final só de testes)
+(a) Reproduzir o achado com o teste mínimo que o prova (vermelho) → (b) corrigir o mínimo → (c) rodar SÓ os arquivos de teste da área tocada (`npx vitest run tests/<area>.test.ts`), nunca a suíte inteira → (d) `npx tsc --noEmit` e `npx eslint src e2e tests` (rápidos; o hook do push também roda) → (e) `npm run build` SOMENTE se mexeu em rota, página, esquema do banco ou `dynamic` → (f) decisão em DECISIONS.md → (g) push → (h) conferir o site e o resultado do GitHub Actions (roda a suíte completa na nuvem, ~17 min) → (i) reportar.
+EXCEÇÃO QUE NÃO SE NEGOCIA: se a fase toca dinheiro, pedido, estoque, permissão, isolamento entre lojas, migração com preenchimento de dados ou o comportamento do SuperDrop, rode também os testes vizinhos dessa área (orders, tenancy, finance, independent, payments, conforme o caso) ANTES do push, porque o Render publica no push sem esperar o GitHub.
+Skills simplify, code-review e security-review ficam para o fim de cada fase que mexe em dinheiro, permissão ou dado pessoal (não em toda fase). Se o GitHub Actions ficar vermelho depois do push, a próxima ação é corrigir, antes de qualquer fase nova.
 
 FASE F0. CONFIRMAR (sem alterar código de produto)
 Confirme com teste ou leitura cada achado da auditoria e anote o que NÃO se confirmou: (1) `grep -rn "insert(orders)" src` para achar TODO lugar que cria pedido (checkout, pedido manual, proposta, pagamento) e dizer quais usam o cálculo "maior + 1"; (2) distribuição: chamar a ação com `storeIds` de outra rede e mostrar que grava; (3) grade: listar produto com `packPriceCents` abaixo do piso e mostrar que grava; (4) simule dois `createOrder` na mesma loja e descreva o que acontece (o índice único `orders_store_number` impede repetição; o provável é a segunda falhar). ATENÇÃO: PGlite tem uma conexão só; ele NÃO prova concorrência real. Diga isso e valide a alocação por propriedade (ver F1), não por corrida simulada.
@@ -55,8 +57,11 @@ Exportar pedidos, produtos e clientes da loja (CSV) pelo domínio, só para o do
 FASE F7. RAMOS DE DESIGN (art. 13.1)
 Ramos fora do Render: design/system-redesign-final-20261002, design/nextlevel-os-revolution, audit/usability-critical-flows (parte visual), feat/theme-arena-premium-v1, feat/master-scenario-data, main (ecossistema). NÃO fazer merge geral: todos conflitam com a branch atual (12 arquivos no redesign). Para cada ramo: listar o que traz, o que já existe na branch atual, o conflito, e propor entrar por partes (um painel por vez), cada parte com capturas antes/depois (qa-visual) para o dono aprovar. Skill painel-interno manda: cada papel e cada marca vê só o que existe para ele. Nada entra sem o OK visual do dono.
 
+FASE F8. TESTES FINAIS (só depois de F0 a F7 aprovadas, ou quando o dono pedir)
+Uma fase inteira só para verificar, sem escrever funcionalidade nova: (1) `npx vitest run` completo; (2) `npm run build`; (3) e2e: `jornada-completa`, `smoke-demo`, `temas-pagos`, `checkout-flow`, `polish-v8` (4 larguras + axe); (4) concorrência de verdade do número do pedido contra um Postgres de verdade (não PGlite), se o dono liberar um banco de teste; (5) skill desempenho: Lighthouse nas páginas públicas e tempo do checkout com o contador; (6) varredura de erros em páginas públicas e painéis (como a feita em 2026-10-03); (7) revisão final code-review e security-review sobre todo o conjunto. Corrija o que aparecer, registre em DECISIONS.md e entregue um relatório com o que passou, o que falhou e o que NÃO foi medido.
+
 ENTREGA (ao fim de cada fase)
-Em português simples: o que mudou; o teste vermelho→verde; o que foi e NÃO foi medido; o que depende do dono (backup do Neon, decisões); resultado de tsc, eslint, vitest, build e e2e; decisão registrada (D63+); e UMA pergunta de aprovação. Espere o OK.
+Em português simples: o que mudou; o teste vermelho→verde; o que foi e NÃO foi medido; o que depende do dono (backup do Neon, decisões); resultado do que foi rodado (tsc, eslint, testes da área, build se aplicável) e do GitHub Actions; decisão registrada (D63+); e UMA pergunta de aprovação. Espere o OK.
 
 FORA DE ESCOPO
 Novos temas, páginas de vendas, redesign de marca, planos e preços, nota fiscal e etiqueta paga, produtos "em breve" (Creators Hub, Brás Digital, China Hub).
@@ -73,7 +78,7 @@ Novos temas, páginas de vendas, redesign de marca, planos e preços, nota fisca
 | `desempenho` | F1, F4 | Latência do checkout com contador; consultas da faixa de prontidão sem laço |
 | `code-review` e `security-review` | F1, F2, F5, F6 | Revisão antes de publicar; segurança onde há dinheiro, permissão e dado pessoal |
 | `simplify` | todas | Enxugar a diferença antes da revisão |
-| `publicar` | fim de cada fase | Bateria completa e conferência do site |
+| `publicar` | fim de cada fase | Modo rápido (testes só da área, tipos, estilo, build quando preciso); suíte completa na fase F8 e na nuvem |
 | `tema-pago`, `pagina-de-vendas`, `dataviz`, artifacts | não se aplicam | Estão fora do escopo deste trabalho |
 
 ## 4. O que depende do dono

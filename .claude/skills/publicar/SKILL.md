@@ -17,4 +17,11 @@ description: Publicar o trabalho no Render com segurança. Use quando o dono ped
 6. Confira o site: `curl -s -o /dev/null -w "%{http_code}" https://superdrop.com.br/<rota nova>`. Se seguir 404 por mais de ~10 min, peça ao dono o log do deploy (aba Logs no Render) e não declare sucesso.
 7. Reporte ao dono em português, sem jargão: o que foi publicado, o que foi verificado e o que ficou pendente (inclusive variáveis do Render).
 
+## Modo rápido (decisão do dono, 2026-10-03)
+Quando o dono pedir "modo rápido" ou "só o necessário", ou o prompt da fase disser:
+- Rode `npx tsc --noEmit` e `npx eslint src e2e tests` (o hook do push também roda), os arquivos de teste **da área tocada** e `npm run build` **só se** mexeu em rota, página, esquema do banco ou `dynamic`. Não rode `npx vitest run` completo.
+- **Não vale o modo rápido** (rode também os testes vizinhos da área antes do push) quando a mudança toca dinheiro, pedido, estoque, permissão, isolamento entre lojas, migração com preenchimento de dados ou comportamento do SuperDrop: o Render publica no push sem esperar o GitHub.
+- Depois do push, confira o resultado do GitHub Actions (`verificar`, ~17 min, suíte completa). Vermelho = corrigir antes de qualquer trabalho novo.
+- A suíte completa, o e2e e o Lighthouse ficam para a fase final de testes.
+
 Nunca crie PR sem pedido do dono.
