@@ -4,6 +4,9 @@
 
 Sistema de tecnologia da **NextLevel Marketing Ltda** (dono: Mauricio). Plataforma de lojas online sem estoque: fornecedores (Centrais), lojistas membros, parceiros afiliados e o painel Master. **Fale com o dono em português, sem jargão**; código, nomes de arquivos e commits em português do jeito que o projeto já faz.
 
+## Constituição da plataforma de lojas virtuais (autoridade máxima do e-commerce)
+Leia `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` antes de decisão estrutural (dados, pedidos, pagamentos, estoque, temas, permissões, fronteira entre o motor de lojas e SuperDrop/Master). Ordem normativa: Constituição > decisões aprovadas em `docs/design/DECISIONS.md` > documentos especializados > tarefa atual. Conflito com uma tarefa: identificar, explicar, registrar a decisão (nunca quebrar em silêncio). Auditoria contra os artigos: `docs/constituicao/AUDITORIA-2026-10.md`.
+
 ## Pilha
 Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind v4 · Radix · Drizzle ORM (PGlite local/produção simples, Postgres/Neon externo) · Zod · Vitest · Playwright (via `playwright-core`, scripts em `e2e/`). Deploy: Docker no Render, direto da branch de trabalho; cada push publica.
 

@@ -385,3 +385,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Ninho** (casa e decoração, tons de terra e verde-sálvia, mesmo padrão e mesmo preço R$ 149) criado como `released: false`: só abre por link (`/demo/ninho`) até o dono aprovar. Os dois temas saem da mesma função `entryTheme` (cores, fonte, textos e formato das categorias mudam; a estrutura é a mesma).
 - Loja de demonstração por segmento: moda (12 produtos) e casa (6 produtos: faltam fotos de casa no acervo).
 - O console da Commerce e as contagens do Master ignoram as lojas de demonstração.
+
+## D62. Constituição da plataforma de lojas virtuais adotada como autoridade máxima do e-commerce
+- **Decisão (dono, 2026-10-03):** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` passa a ser a norma de mais alto nível para o motor de lojas. Ordem: Constituição > decisões registradas > documentos especializados > tarefa. Registrada no `CLAUDE.md` e no `AGENTS.md`.
+- **Auditoria inicial:** `docs/constituicao/AUDITORIA-2026-10.md` (3 artigos violados, 3 falhas reais, plano em 7 passos). Correção ali: o número do pedido não repete (índice único); a compra simultânea é que pode falhar.
+- **Exceção registrada (art. 39):** a "Central oculta" das lojas da Commerce contraria o art. 4. Fica como exceção temporária até haver ADR e plano de migração para tornar fornecedor e rede opcionais no motor.

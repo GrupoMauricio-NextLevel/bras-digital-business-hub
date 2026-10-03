@@ -10,6 +10,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # NextLevel Commerce Engine: regras para agentes (Codex, Claude e pessoas)
 
+> **Autoridade máxima do e-commerce:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`. Em conflito, ela vence; registre a exceção em `docs/design/DECISIONS.md`.
+
 Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende SuperDrop (em produção, com clientes), NextLevel Commerce e o Master central. **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
 
 ## Divisão de trabalho (para dois agentes não colidirem)
