@@ -6,7 +6,7 @@ Ordem normativa: **00 Constituição** > decisões registradas em `docs/design/D
 |---|---|---|
 | 00 | `00-CONSTITUICAO-ECOMMERCE.md` | Recebido e em vigor |
 | 01 | `01-WBUY-RESEARCH-INTELLIGENCE.md` | Recebido (evidência de benchmark; não é especificação) |
-| 02 | `02-COMMERCE-CORE.md` | Aguardando envio |
+| 02 | `02-COMMERCE-CORE.md` | Recebido (cruzamento: `CRUZAMENTO-02-COMMERCE-CORE.md`) |
 | 03 | `03-PLATFORM-CORE.md` | Aguardando envio |
 | 04 | `04-VISUAL-COMMERCE.md` | Aguardando envio |
 | 05 | `05-MERCHANT-PANEL-UX.md` | Aguardando envio |

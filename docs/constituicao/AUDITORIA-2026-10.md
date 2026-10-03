@@ -5,6 +5,7 @@
 
 ## Resumo
 - **Violados (3):** motor acoplado à "Central" do SuperDrop (art. 4); sem "esta loja está pronta para vender?" (art. 30); fatos de pedido, pagamento e estoque sem evento semântico (art. 22, parcial forte).
+- **Achado novo (documento 02):** reserva de estoque sem atomicidade, com risco de vender mais do que existe. Ver `CRUZAMENTO-02-COMMERCE-CORE.md`. É a falha mais grave da lista e passa a ser a F1.0.
 - **Falhas reais de segurança e dinheiro (3):** distribuição de produto aceita lojas de outra rede; preço da grade pode ficar abaixo do mínimo; número do pedido pode derrubar o checkout em compras simultâneas.
 - **Correção de uma afirmação anterior:** o número do pedido **não** se repete (há índice único `orders_store_number`). O que acontece é que a segunda compra simultânea **falha** com erro, porque o número é calculado como "maior + 1" sem contador atômico.
 
@@ -16,7 +17,7 @@
 | 5, 6 | Capacidades e cinco camadas | ◐ | Domínio separado em `src/lib/domain`, temas em `src/lib/themes`, analytics em `analytics.ts`. Fronteiras não são formais. |
 | 7 | Direção de dependência | ? | Não conferi se algum módulo de domínio importa marca ou tema. |
 | 8, 9 | Domínio antes da interface; fonte de verdade | ? | Não auditei duplicidades de cliente entre módulos. |
-| 10 | Invariantes acima de conveniência | ◐ | Valores em centavos, estoque com reserva. Mas: preço da grade abaixo do mínimo (ver abaixo). |
+| 10 | Invariantes acima de conveniência | ✘ | Valores em centavos. **Estoque: `reserveStock` lê, compara e grava sem atomicidade (risco de overselling).** Preço da grade abaixo do mínimo (ver abaixo). |
 | 11 | Histórico não é reescrito | ◐ | Itens guardam `product_name`, `label`, `unit_price`, `unit_cost`; pedido guarda endereço e totais. Faltam foto, SKU e descrição do produto na hora da compra. |
 | 12 | Isolamento entre lojas | ◐ | Forte: `assertCanAccess`, testes `tenancy`, webhook confere dono do pedido. **Falha confirmada na F0 (gravidade baixa):** `src/app/actions/supplier.ts` (linha 69) e `src/lib/domain/products.ts` (linha 91) gravam `storeIds` sem conferir que são da rede do fornecedor. A loja de fora ainda não consegue vender o produto (`assertProductListable`). Ver `F0-CONFIRMACAO-2026-10-03.md`. |
 | 13, 14 | Visual como arquitetura; guarda-corpos | ◐ | Temas não definem preço nem estoque (✔). Painéis têm três visuais em disputa (ramos de design não juntados). |
