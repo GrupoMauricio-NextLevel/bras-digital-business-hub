@@ -4,6 +4,7 @@ import type { Database } from "@/db/client";
 import { emailOutbox, organizations, partners, users } from "@/db/schema";
 import { brandByCode, type Brand, type BrandCode } from "@/lib/brand";
 import { newId } from "@/lib/ids";
+import { timeoutSignal } from "@/lib/http-timeout";
 
 export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null };
 
@@ -41,7 +42,7 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
   let status: "SENT" | "FAILED" = "SENT"; let error: string | null = null;
   try {
     const replyTo = process.env.EMAIL_REPLY_TO;
-    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand), ...(replyTo ? { reply_to: replyTo } : {}) }) });
+    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand), ...(replyTo ? { reply_to: replyTo } : {}) }) });
     if (!res.ok) { status = "FAILED"; error = `HTTP ${res.status}`; }
   } catch (e) { status = "FAILED"; error = e instanceof Error ? e.message.slice(0, 200) : "erro"; }
   try { await db.update(emailOutbox).set({ status, error }).where(eq(emailOutbox.id, id)); } catch (e) { console.error("[email outbox]", e); }

@@ -1,4 +1,5 @@
 import type { FetchLike } from "@/lib/payments/mercadopago";
+import { timeoutSignal } from "@/lib/http-timeout";
 
 /** Plataformas de envio que o fornecedor pode conectar. A verificação consulta a conta com o token informado. */
 export const SHIPPING_PROVIDERS = {
@@ -14,7 +15,7 @@ export async function verifyShippingToken(provider: ShippingProviderKey, token: 
   const p = SHIPPING_PROVIDERS[provider];
   let res: Response;
   try {
-    res = await fetchImpl(p.url, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "User-Agent": "SuperDrop (suporte@superdrop.com.br)" } });
+    res = await fetchImpl(p.url, { signal: timeoutSignal(), headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "User-Agent": "SuperDrop (suporte@superdrop.com.br)" } });
   } catch { throw new ShippingError(`Não foi possível falar com o ${p.name}. Tente de novo em instantes.`); }
   if (res.status === 401 || res.status === 403) throw new ShippingError(`O ${p.name} recusou o token. Gere um novo e confira as permissões.`);
   if (!res.ok) throw new ShippingError(`O ${p.name} respondeu com erro (${res.status}).`);

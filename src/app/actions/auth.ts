@@ -15,12 +15,15 @@ import { DomainError } from "@/lib/domain/errors";
 import { requestPasswordReset, resetPassword } from "@/lib/domain/password-reset";
 import { getBaseUrl } from "@/lib/base-url";
 import { rateLimit } from "@/lib/rate-limit";
+import { allowLoginAttempt } from "@/lib/security/login-limit";
 
 const loginSchema = z.object({ email: z.string().email("E-mail inválido"), password: z.string().min(1, "Informe a senha") });
 
 export async function loginAction(input: z.input<typeof loginSchema>) {
   return runAction(async () => {
     const data = loginSchema.parse(input);
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!allowLoginAttempt(ip, data.email)) throw new DomainError("RATE_LIMIT", "Muitas tentativas de entrada. Aguarde alguns minutos e tente de novo.");
     const db = await getDb();
     const user = await db.query.users.findFirst({ where: eq(users.email, data.email.toLowerCase()) });
     if (!user || user.disabledAt || !verifyPassword(data.password, user.passwordHash) || (!isDemoMode() && isDemoAccountEmail(user.email))) throw new DomainError("INVALID_CREDENTIALS", "E-mail ou senha incorretos.");

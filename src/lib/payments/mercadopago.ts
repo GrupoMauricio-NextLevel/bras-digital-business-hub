@@ -3,6 +3,8 @@
  * pois o cliente paga direto para o lojista (sem split no MVP).
  * `fetchImpl` é injetável para testes.
  */
+import { isTimeoutError, timeoutSignal } from "@/lib/http-timeout";
+
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
 /** Sobrescrevível (MERCADOPAGO_API_URL) para apontar a um servidor simulado em testes ponta a ponta. */
@@ -16,7 +18,13 @@ export class MercadoPagoError extends Error {
 }
 
 async function call<T>(fetchImpl: FetchLike, token: string, path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetchImpl(`${API}${path}`, { ...init, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(init.headers ?? {}) } });
+  let res: Response;
+  try {
+    res = await fetchImpl(`${API}${path}`, { ...init, signal: init.signal ?? timeoutSignal(), headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(init.headers ?? {}) } });
+  } catch (e) {
+    if (isTimeoutError(e)) throw new MercadoPagoError("O Mercado Pago demorou demais para responder. Tente de novo em instantes.", 504);
+    throw e;
+  }
   const text = await res.text();
   let body: unknown = null;
   try { body = text ? JSON.parse(text) : null; } catch { /* corpo não JSON */ }

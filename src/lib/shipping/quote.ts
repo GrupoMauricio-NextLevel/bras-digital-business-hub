@@ -6,6 +6,7 @@ import { DomainError } from "@/lib/domain/errors";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { decryptSecret } from "@/lib/security/crypto";
 import type { FetchLike } from "@/lib/payments/mercadopago";
+import { timeoutSignal } from "@/lib/http-timeout";
 import { ShippingError, type ShippingProviderKey } from "./providers";
 
 /**
@@ -52,7 +53,7 @@ export function melhorEnvioProvider(token: string, fetchImpl: FetchLike = fetch,
     key: "MELHOR_ENVIO",
     async quote(req) {
       const res = await fetchImpl(`${base}/me/shipment/calculate`, {
-        method: "POST",
+        method: "POST", signal: timeoutSignal(),
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
         body: JSON.stringify({
           from: { postal_code: req.fromZip }, to: { postal_code: req.toZip },
@@ -74,7 +75,7 @@ export function superFreteProvider(token: string, fetchImpl: FetchLike = fetch, 
     key: "SUPERFRETE",
     async quote(req) {
       const res = await fetchImpl(`${base}/calculator`, {
-        method: "POST",
+        method: "POST", signal: timeoutSignal(),
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
         body: JSON.stringify({
           from: { postal_code: req.fromZip }, to: { postal_code: req.toZip }, services: "1,2,17",
