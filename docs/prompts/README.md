@@ -36,6 +36,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 3. Novas dúvidas ou pedidos: acrescente em **Ideias soltas** (ou peça para criar o prompt).
 
 - `temas-pagos-um-a-um.md`: loja de temas pagos, um por vez (infraestrutura feita; primeiro tema: Lume, em aprovação). Skill: `/tema-pago`.
+- `constituicao-correcoes-e-fundacao.md`: correções e fundação segundo a Constituição (número do pedido, piso da grade, isolamento entre redes, eventos, loja pronta para vender, Central oculta, privacidade, ramos de design). SALVO, aguardando ordem do dono.
 
 ## A estudar (pendente)
 - **Command center antigo (GPT Sites):** páginas e código do sistema anterior do dono, hospedado no GPT Sites (`painel`, `studio`, `creators`, `idesa`, `mauricio` em `nextlevelgroup.com.br`). Estudar o que dá para aproveitar no ecossistema NextLevel, sem apagar nem sobrescrever os endereços existentes.
