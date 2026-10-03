@@ -11,6 +11,7 @@ import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { isCommerceStore } from "@/lib/store-brand";
+import { getStoreReadiness } from "@/lib/domain/readiness";
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -24,9 +25,12 @@ export default async function MerchantHome() {
   const [o, commerce] = await Promise.all([getMerchantOverview(store), isCommerceStore(db, store)]);
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
+  const readiness = commerce ? await getStoreReadiness(db, store.id) : null;
+  const firstMissing = readiness?.missingBlocking[0];
   const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
   const attention = (commerce ? [
+    firstMissing ? { key:"readiness", title:"Sua loja ainda não está pronta para vender", detail:`Falta: ${firstMissing.label.toLowerCase()}. ${firstMissing.detail}`, count:readiness!.missingBlocking.length, href:firstMissing.fixHref, action:"Resolver", icon:ShoppingCart } : null,
     !store.publishedAt ? { key:"publish", title:"Sua loja ainda não está publicada", detail:"Revise a vitrine e publique quando estiver pronta para receber clientes.", count:1, href:"/merchant/storefront", action:"Revisar loja", icon:ExternalLink } : null,
     o.onboarding.percent < 100 ? { key:"onboarding", title:"Configuração da loja incompleta", detail:`Seu checklist está em ${o.onboarding.percent}%. Complete os itens para deixar a operação pronta.`, count:100-o.onboarding.percent, href:"/merchant/storefront", action:"Continuar", icon:ShoppingCart } : null,
     o.pendingCustomer.length ? { key:"customer", title:"Vendas aguardando pagamento", detail:"Pedidos iniciados por clientes que ainda não tiveram o pagamento confirmado.", count:o.pendingCustomer.length, href:"/merchant/orders?status=PENDING", action:"Ver vendas", icon:ShoppingCart } : null,
