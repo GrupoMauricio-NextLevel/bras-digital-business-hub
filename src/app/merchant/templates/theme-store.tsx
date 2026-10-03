@@ -72,10 +72,11 @@ export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { card
     const id = requestAnimationFrame(() => { if (autoOpened.current) return; autoOpened.current = true; void openPreview(c); }); return () => cancelAnimationFrame(id);
   }, [autoPreview, cards]);
 
-  const action = (c: ThemeCard, size: "sm" | "md" = "md") => {
+  const action = (c: ThemeCard, size: "sm" | "md" = "md", wide = false) => {
+    const fit = wide ? "h-auto min-h-9 w-full whitespace-normal py-2 text-center" : undefined;
     if (c.active) return <span className="inline-flex h-9 items-center gap-1.5 rounded-md bg-success-soft px-3 text-sm font-medium text-success"><Check className="size-4" aria-hidden /> Tema ativo</span>;
-    if (c.owned) return <Button size={size} onClick={() => setConfirm(c)} loading={busy === `install-${c.key}`}>Instalar com 1 clique</Button>;
-    return <Button size={size} onClick={() => startCheckout(c)}>Comprar em até {c.quote.installments}x de {formatBRL(c.quote.installmentCents)}</Button>;
+    if (c.owned) return <Button size={size} className={fit} onClick={() => setConfirm(c)} loading={busy === `install-${c.key}`}>Instalar com 1 clique</Button>;
+    return <Button size={size} className={fit} onClick={() => startCheckout(c)}>Comprar em até {c.quote.installments}x de {formatBRL(c.quote.installmentCents)}</Button>;
   };
 
   return (
@@ -90,7 +91,7 @@ export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { card
                 <div className="flex flex-wrap gap-1.5">{c.key === "arena" ? <Badge tone="info">Novo · Recomendado</Badge> : null}{c.active ? <Badge tone="success" dot>Ativo</Badge> : null}{c.owned && c.priceCents > 0 ? <Badge tone="info">Comprado</Badge> : null}</div>
                 <ul className="flex-1 space-y-1.5 text-sm">{c.features.slice(0, 4).map((f) => <li key={f} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-accent-foreground" aria-hidden /><span>{f}</span></li>)}</ul>
                 <div className="flex flex-wrap items-center gap-2 pt-1">
-                  {action(c)}
+                  {action(c, "md", true)}
                   <Button variant="ghost" size="md" onClick={() => openPreview(c)} loading={busy === `try-${c.key}`}><Eye aria-hidden /> Ver com meus produtos</Button>
                 </div>
               </CardContent>

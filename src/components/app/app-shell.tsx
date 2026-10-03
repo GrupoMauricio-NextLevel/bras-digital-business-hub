@@ -122,7 +122,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
 
       {!minimal ? (
         <aside className={cn("fixed inset-y-0 left-0 z-20 hidden flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200 lg:flex", collapsed ? "w-[72px]" : "w-64")}>
-          <div className="flex h-20 items-center border-b border-sidebar-border">{collapsed ? brand(true) : <div className="px-3"><ProductSwitcher current={product} master={panel === "master"} /></div>}</div>
+          <div className="flex h-20 items-center border-b border-sidebar-border">{collapsed ? brand(true) : <div className="px-3"><ProductSwitcher current={product} master={panel === "master"} onDark={panel === "master"} /></div>}</div>
           <div className="nl-scroll flex-1 overflow-y-auto p-3">
             <NavLinks items={items} collapsed={collapsed} />
             {storefrontHref && !collapsed ? (
