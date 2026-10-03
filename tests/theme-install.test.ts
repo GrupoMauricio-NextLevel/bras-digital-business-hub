@@ -56,7 +56,7 @@ describe("modelos dos temas", () => {
   });
   it("os temas pagos têm identidade própria e os recursos prometidos", () => {
     const a = buildPreset("arena", ctxp)!, e = buildPreset("editorial", ctxp)!, s = buildPreset("signature", ctxp)!;
-    expect(a.globals.header.sections.header!.settings.tone).toBe("dark"); expect(a.style.quickView).toBe(true); expect(Object.values(a.pages.home.sections).some((x) => x.type === "slideshow")).toBe(true);
+    expect(a.globals.header.sections.header!.settings.tone).toBe("dark"); expect(a.style.quickView).toBe(true); expect(Object.values(a.pages.home.sections).some((x) => x.type === "arena-hero")).toBe(true);
     expect(Object.values(a.pages.home.sections).find((x) => x.type === "countdown")!.settings.until).toBe("2026-05-17T23:59");
     expect(e.style.headingFont).toBe("elegante"); expect(e.style.radius).toBe(0); expect(Object.values(e.pages.product.sections).some((x) => x.type === "product-tabs")).toBe(true);
     expect(Object.values(s.globals.header.sections).some((x) => x.type === "header-plus")).toBe(true); expect(s.pages.product.sections.product!.settings.stickyBuyBar).toBe(true); expect(s.style.animations).toBe(true);
@@ -68,7 +68,7 @@ describe("modelos dos temas", () => {
   });
   it("carrega o texto do destaque e o nome da loja", () => {
     const p = buildPreset("arena", { ...ctxp, hero: { title: "Título antigo", subtitle: "Sub antigo", ctaLabel: "Comprar" }, announcement: "Aviso antigo" })!;
-    const slide = p.pages.home.sections.slides!; expect(slide.blocks[slide.blockOrder[0]!]!.settings.heading).toBe("Título antigo"); expect(p.globals.header.sections.announcement!.settings.text).toBe("Aviso antigo");
+    expect(p.pages.home.sections.arena!.settings.heading).toBe("Título antigo"); expect(p.globals.header.sections.announcement!.settings.text).toBe("Aviso antigo");
     expect(buildPreset("signature", ctxp)!.pages.home.sections.slides!.blocks["slide-1"]!.settings.heading).toContain("Loja Teste");
   });
 });
@@ -94,7 +94,7 @@ describe("compra e instalação com 1 clique", () => {
     const before = (await resolveGlobals(ctx.db, await store(id()))).globals;
     expect((await installTheme(ctx.db, A(), "arena")).name).toBe("Arena");
     const s = await store(id());
-    const home = await resolveTemplate(ctx.db, s, "home"); expect(home.source).toBe("published"); expect(Object.values(home.template.sections).some((x) => x.type === "slideshow")).toBe(true);
+    const home = await resolveTemplate(ctx.db, s, "home"); expect(home.source).toBe("published"); expect(Object.values(home.template.sections).some((x) => x.type === "arena-hero")).toBe(true);
     for (const page of PAGE_KINDS) expect((await resolveTemplate(ctx.db, s, page)).source).toBe("published");
     const g = await resolveGlobals(ctx.db, s); expect(g.globals.style.headingFont).toBe("condensada"); expect(s.primaryColor).toBe("#0f1c16");
     const active = await ctx.db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, id())); expect(active[0]!.key).toBe("arena");
