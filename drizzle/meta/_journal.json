@@ -260,6 +260,13 @@
       "when": 1791060488377,
       "tag": "0036_estoque_trilha_saldos",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791061775855,
+      "tag": "0037_checkout_chave_idempotencia",
+      "breakpoints": true
     }
   ]
 }

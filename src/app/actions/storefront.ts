@@ -52,19 +52,28 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
     const input = { ...rest, shipping: { ...rest.shipping, costCents: pick.priceCents, serviceName: pick.name, days: pick.days } };
     const token = decryptSecret(store.mpAccessTokenEnc);
     const base = { ...input, storeId: store.id, channel: "ONLINE_STORE" as const };
+    // Mesma tentativa reenviada (duplo clique, volta e reenvia): devolve o pedido que já existe, sem novo pedido nem nova cobrança.
+    const replayed = async (r: { orderId: string; number: number; replayed?: boolean }): Promise<PlacedOrder | null> => {
+      if (!r.replayed) return null;
+      const o = await db.query.orders.findFirst({ where: eq(orders.id, r.orderId) });
+      return { orderId: r.orderId, number: r.number, checkoutUrl: o?.paymentCheckoutUrl ?? null, mode: (o?.paymentProvider ?? "MANUAL") as PlacedOrder["mode"] };
+    };
 
     if (!token) {
       if (isDemoMode()) {
         const r = await createOrder(db, { ...base, customerPaymentStatus: "PAID" }, { paymentProvider: "DEMO" });
+        const again = await replayed(r); if (again) return again;
         revalidateAll(slug);
         return { orderId: r.orderId, number: r.number, checkoutUrl: null, mode: "DEMO" };
       }
       const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MANUAL", reservationMinutes: RESERVATION_MINUTES_MANUAL });
+      const again = await replayed(r); if (again) return again;
       revalidateAll(slug);
       return { orderId: r.orderId, number: r.number, checkoutUrl: null, mode: "MANUAL" };
     }
 
     const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MERCADO_PAGO", reservationMinutes: RESERVATION_MINUTES_ONLINE });
+    const again = await replayed(r); if (again) return again;
     try {
       const items = await db.select().from(orderItems).where(eq(orderItems.orderId, r.orderId));
       const placed = (await db.query.orders.findFirst({ where: eq(orders.id, r.orderId) }))!;

@@ -335,6 +335,8 @@ export const orders = pgTable("orders", {
   /** Pagamento do cliente: provedor e referência externa (id do pagamento no Mercado Pago). */
   paymentProvider: text("payment_provider", { enum: ["DEMO", "MERCADO_PAGO", "MANUAL"] }).notNull().default("MANUAL"),
   paymentReference: text("payment_reference"),
+  /** Chave enviada pelo checkout para que reenviar a mesma compra devolva o mesmo pedido (documento 02 §46). */
+  idempotencyKey: text("idempotency_key"),
   paymentCheckoutUrl: text("payment_checkout_url"),
   /** Reserva de estoque expira se o cliente não pagar até aqui. */
   reservationExpiresAt: ts("reservation_expires_at"),
@@ -359,7 +361,7 @@ export const orders = pgTable("orders", {
   notes: text("notes"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
-}, (t) => [index("orders_store_idx").on(t.storeId), index("orders_supplier_idx").on(t.supplierId), uniqueIndex("orders_store_number").on(t.storeId, t.number)]);
+}, (t) => [index("orders_store_idx").on(t.storeId), index("orders_supplier_idx").on(t.supplierId), uniqueIndex("orders_store_number").on(t.storeId, t.number), uniqueIndex("orders_store_idempotency").on(t.storeId, t.idempotencyKey)]);
 
 export const orderItems = pgTable("order_items", {
   id: id(),

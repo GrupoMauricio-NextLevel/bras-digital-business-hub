@@ -13,12 +13,21 @@ import { cn } from "@/lib/utils";
 
 const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
 
+/** Resumo curto do carrinho (não é segurança): muda a chave quando o carrinho muda, para nunca reaproveitar um pedido de outra compra. */
+function fingerprint(text: string): string {
+  let h = 5381;
+  for (let i = 0; i < text.length; i++) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+
 export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: string; storeName: string; minOrderCents?: number }) {
   const cart = useCart();
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: true });
   const [payment, setPayment] = React.useState<"pix" | "card">("pix");
   const [pending, start] = React.useTransition();
+  // Uma chave por tentativa de compra: reenviar a mesma compra devolve o mesmo pedido. Muda se o carrinho mudar.
+  const [attemptId] = React.useState(() => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`));
   const zipDigits = f.zip.replace(/\D/g, "");
   const cartKey = cart.lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.packId ?? ""}:${l.quantity}`).join("|");
   const quoteKey = zipDigits.length === 8 && cartKey ? `${zipDigits}|${cartKey}` : "";
@@ -68,6 +77,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
         items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
         discountCode: applied?.code,
+        idempotencyKey: `${attemptId}:${fingerprint(cart.lines.map((l) => `${l.productId}.${l.variantId}.${l.packId ?? ""}.${l.quantity}`).join("|"))}`,
         notes: payment === "pix" ? "Preferência de pagamento: Pix" : "Preferência de pagamento: Cartão",
       });
       if (!r.ok) { toast.error(r.error); return; }

@@ -46,6 +46,8 @@ export const createOrderSchema = z.object({
   customerPaymentStatus: z.enum(["PENDING", "PAID"]).default("PENDING"),
   notes: z.string().optional(),
   discountCode: z.string().trim().max(24).optional(),
+  /** Gerada pelo checkout a cada tentativa de compra: repetir a mesma chave devolve o pedido já criado. */
+  idempotencyKey: z.string().trim().min(8).max(120).optional(),
 });
 
 export type CreateOrderInput = z.input<typeof createOrderSchema>;
@@ -68,6 +70,13 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const input = createOrderSchema.parse(rawInput);
   const store = await db.query.stores.findFirst({ where: eq(stores.id, input.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
+  const replayOf = async () => {
+    if (!input.idempotencyKey) return null;
+    const prior = await db.query.orders.findFirst({ where: and(eq(orders.storeId, store.id), eq(orders.idempotencyKey, input.idempotencyKey)) });
+    return prior ? { orderId: prior.id, number: prior.number, status: prior.status, totalCents: prior.totalCents, replayed: true as boolean } : null;
+  };
+  const already = await replayOf();
+  if (already) return already;
   if (store.showcaseTheme) throw new DomainError("SHOWCASE_STORE", "Esta é uma loja de demonstração do tema: não recebe pedidos.");
   if (store.status !== "ACTIVE") throw new DomainError("STORE_INACTIVE", "Loja não está ativa.");
   if (isBlocked(store)) throw new DomainError("STORE_BLOCKED", "Esta loja está temporariamente indisponível.");
@@ -118,7 +127,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const merged = new Map<string, number>();
   for (const r of reservations) merged.set(r.variantId, (merged.get(r.variantId) ?? 0) + r.quantity);
 
-  return db.transaction(async (tx) => {
+  try {
+  return await db.transaction(async (tx) => {
     if (discount) await redeemDiscount(tx, discount.id);
     for (const [variantId, quantity] of merged) {
       await reserveStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
@@ -137,6 +147,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       storeId: store.id,
       supplierId: network.supplierId,
       storeCustomerId,
+      idempotencyKey: input.idempotencyKey,
       channel: input.channel,
       saleType: input.saleType,
       status,
@@ -176,8 +187,16 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       await tryDebitOrder(tx, orderId);
       finalStatus = (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!.status;
     }
-    return { orderId, number: nextNumber, status: finalStatus, totalCents: total };
+    return { orderId, number: nextNumber, status: finalStatus, totalCents: total, replayed: false as boolean };
   });
+  } catch (e) {
+    // Duas requisições com a mesma chave ao mesmo tempo: o índice único deixa passar uma só; a outra devolve o pedido da primeira.
+    if (input.idempotencyKey && /orders_store_idempotency/.test(`${String(e)} ${String((e as { cause?: unknown }).cause ?? "")}`)) {
+      const prior = await replayOf();
+      if (prior) return prior;
+    }
+    throw e;
+  }
 }
 
 function channelLabel(c: string) {

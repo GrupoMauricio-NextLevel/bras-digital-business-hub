@@ -38,3 +38,6 @@ O Render publica **a cada push** da branch de publicação, que hoje é `claude/
 - Valores em centavos; textos ao usuário em português claro; sem promessa de ganho; acessibilidade AA (sem rolagem horizontal em 360 px).
 - Um tenant nunca lê dados de outro; permissões no servidor; a marca vem do endereço (`getBrand()`), nunca fixa em componente.
 - **SuperDrop está em produção:** não mude o comportamento dele sem teste.
+
+## Orquestrador de engenharia (documentos oficiais)
+O orquestrador completo (matriz tarefa → documentos, protocolo "relatar primeiro", portões de qualidade) está em `docs/constituicao/AGENTS-ORQUESTRADOR.md`. Ele complementa este arquivo; em conflito valem este arquivo e `CLAUDE.md` (Next.js, branch de publicação, modo rápido D64). Exceção registrada em D65: a autorização permanente do dono ("autorizo publicar sempre que for preciso") vale no lugar da regra "sem deploy sem autorização explícita" do orquestrador.

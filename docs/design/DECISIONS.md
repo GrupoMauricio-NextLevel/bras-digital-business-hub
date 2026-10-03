@@ -402,3 +402,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Decisão:** manter o modo rápido (tipos, estilo e testes da área tocada; build só quando muda rota, página ou banco; suíte completa na nuvem depois do push e na F8). **Não vale o modo rápido** para dinheiro, pedido, estoque, permissão, isolamento entre lojas, migração com dados e SuperDrop: esses rodam os testes vizinhos antes do push (coincide com os bloqueios de release do 11 §145).
 - **Alternativa não adotada:** portão completo antes de cada push (mais lento, mais seguro).
 - **Revisão:** voltar ao portão completo se um teste adiado causar incidente, se mais de uma pessoa passar a publicar, ou se o dono pedir.
+
+## D65. Orquestrador AGENTS.md e doc 13 adotados; publicação segue a autorização do dono (2026-10-03)
+- Doc 13 (roadmap, lacunas P0–P4, ADRs) salvo em `docs/constituicao/`; o orquestrador fica em `docs/constituicao/AGENTS-ORQUESTRADOR.md` e é referenciado pelo `AGENTS.md` do repositório, sem substituí-lo (preserva aviso do Next.js, branch de publicação e modo rápido).
+- Conflito: o orquestrador veda deploy sem autorização explícita; o dono autorizou publicar sempre que preciso, então a autorização permanente prevalece. Exceções que continuam pedindo confirmação: migração com preenchimento de dados em produção (F1.1, aguarda backup do Neon), apagar dados, mudar segredos.
+- Matriz de lacunas: consolidada em `AUDITORIA-2026-10.md` e nos `CRUZAMENTO-*`.
