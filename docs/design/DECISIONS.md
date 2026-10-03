@@ -390,3 +390,9 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Decisão (dono, 2026-10-03):** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` passa a ser a norma de mais alto nível para o motor de lojas. Ordem: Constituição > decisões registradas > documentos especializados > tarefa. Registrada no `CLAUDE.md` e no `AGENTS.md`.
 - **Auditoria inicial:** `docs/constituicao/AUDITORIA-2026-10.md` (3 artigos violados, 3 falhas reais, plano em 7 passos). Correção ali: o número do pedido não repete (índice único); a compra simultânea é que pode falhar.
 - **Exceção registrada (art. 39):** a "Central oculta" das lojas da Commerce contraria o art. 4. Fica como exceção temporária até haver ADR e plano de migração para tornar fornecedor e rede opcionais no motor.
+
+## D63. Instalação de tema publica na hora (exceção ao documento 07 §17)
+- **Contexto:** o documento oficial 07 §17 diz que instalar um tema não deve alterar a loja pública automaticamente; o dono pediu compra e instalação em 1 clique (2026-10-02), e o sistema instala e publica no mesmo passo.
+- **Decisão:** manter o 1 clique como **exceção temporária**, com salvaguardas: a prévia com os produtos da própria loja vem antes (`/merchant/templates?ver=<tema>`); o estado anterior fica no histórico ("Antes de instalar …") e pode ser restaurado; trocar de tema nunca apaga produtos, clientes, pedidos ou configurações.
+- **Alternativa não adotada:** instalar em rascunho e publicar depois (mais seguro, mais um clique).
+- **Revisão:** se o dono preferir o fluxo em rascunho, ou se houver reclamação de loja que instalou sem querer.

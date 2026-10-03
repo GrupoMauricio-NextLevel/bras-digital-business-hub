@@ -9,10 +9,10 @@ Ordem normativa: **00 Constituição** > decisões registradas em `docs/design/D
 | 02 | `02-COMMERCE-CORE.md` | Recebido (cruzamento: `CRUZAMENTO-02-COMMERCE-CORE.md`) |
 | 03 | `03-PLATFORM-CORE.md` | Recebido (cruzamento: `CRUZAMENTO-03-04-PLATFORM-VISUAL.md`) |
 | 04 | `04-VISUAL-COMMERCE.md` | Recebido (cruzamento: `CRUZAMENTO-03-04-PLATFORM-VISUAL.md`) |
-| 05 | `05-MERCHANT-PANEL-UX.md` | Aguardando envio |
-| 06 | `06-STOREFRONT-UX-CONVERSION.md` | Aguardando envio |
-| 07 | `07-THEMES-TEMPLATES-SEGMENTS.md` | Aguardando envio |
-| 08 | `08-DATA-ARCHITECTURE.md` | Aguardando envio |
+| 05 | `05-MERCHANT-PANEL-UX.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
+| 06 | `06-STOREFRONT-UX-CONVERSION.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
+| 07 | `07-THEMES-TEMPLATES-SEGMENTS.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
+| 08 | `08-DATA-ARCHITECTURE.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
 | 09 | `09-INTEGRATIONS-EXTENSIBILITY.md` | Aguardando envio |
 | 10 | `10-SECURITY-RELIABILITY.md` | Aguardando envio |
 | 11 | `11-QUALITY-ENGINEERING.md` | Aguardando envio |
