@@ -396,3 +396,9 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Decisão:** manter o 1 clique como **exceção temporária**, com salvaguardas: a prévia com os produtos da própria loja vem antes (`/merchant/templates?ver=<tema>`); o estado anterior fica no histórico ("Antes de instalar …") e pode ser restaurado; trocar de tema nunca apaga produtos, clientes, pedidos ou configurações.
 - **Alternativa não adotada:** instalar em rascunho e publicar depois (mais seguro, mais um clique).
 - **Revisão:** se o dono preferir o fluxo em rascunho, ou se houver reclamação de loja que instalou sem querer.
+
+## D64. Modo rápido de verificação convive com o documento 11 (exceção ao §103 e §104)
+- **Contexto:** o documento oficial 11 pede unitário, integração, build e tipos antes do merge e proíbe publicar com risco de vazamento, pagamento duplicado ou estoque corrompido. O dono decidiu (2026-10-03) por poucos testes por fase e uma fase final só de testes, porque a suíte completa leva cerca de 10 minutos e o Render publica no push.
+- **Decisão:** manter o modo rápido (tipos, estilo e testes da área tocada; build só quando muda rota, página ou banco; suíte completa na nuvem depois do push e na F8). **Não vale o modo rápido** para dinheiro, pedido, estoque, permissão, isolamento entre lojas, migração com dados e SuperDrop: esses rodam os testes vizinhos antes do push (coincide com os bloqueios de release do 11 §145).
+- **Alternativa não adotada:** portão completo antes de cada push (mais lento, mais seguro).
+- **Revisão:** voltar ao portão completo se um teste adiado causar incidente, se mais de uma pessoa passar a publicar, ou se o dono pedir.

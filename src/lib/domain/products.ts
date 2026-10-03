@@ -1,10 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, categories, productPackItems, productPacks, productStoreAccess, productVariants, products } from "@/db/schema";
+import { activities, categories, networks, productPackItems, productPacks, productStoreAccess, productVariants, products, stores } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "./inventory";
-import { DomainError } from "./errors";
+import { DomainError, ForbiddenError } from "./errors";
 import { capabilitiesForSupplier } from "./finance";
 import { SIZE_GRID_KEYS } from "./size-grids";
 
@@ -62,6 +62,7 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
   const dupSku = await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, input.sku)) });
   if (dupSku) throw new DomainError("SKU_TAKEN", `Já existe um produto com o SKU ${input.sku}.`);
 
+  const selectedStoreIds = input.distribution === "SELECTED_STORES" ? await assertStoresInSupplierNetwork(db, supplierId, input.storeIds) : [];
   const productId = newId("prd");
   await db.transaction(async (tx) => {
     const categoryId = await ensureCategory(tx, supplierId, input.categoryName);
@@ -88,8 +89,8 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
       await tx.insert(productPacks).values({ id: packId, productId, name: input.pack.name, totalQuantity: total, costCents: input.pack.costCents, suggestedPriceCents: input.pack.suggestedPriceCents, minimumPriceCents: input.pack.minimumPriceCents });
       await tx.insert(productPackItems).values(variantRows.map((v, i) => ({ packId, variantId: v.id, quantity: sizes[i]!.packQuantity })).filter((x) => x.quantity > 0));
     }
-    if (input.distribution === "SELECTED_STORES" && input.storeIds.length) {
-      await tx.insert(productStoreAccess).values(input.storeIds.map((storeId) => ({ productId, storeId })));
+    if (selectedStoreIds.length) {
+      await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId, storeId })));
     }
     await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "PRODUCT_CREATED", message: `Produto “${input.name.trim()}” cadastrado (${input.sku})` });
   });
@@ -128,3 +129,15 @@ export async function setProductsStatus(db: Database, supplierId: string, ids: s
 
 // A importação (CSV e XLSX) vive em ./product-import; estas exportações mantêm a API antiga.
 export { parseProductsCsv, CSV_TEMPLATE, CSV_COLUMNS, type CsvRow } from "./product-import";
+
+/**
+ * Garante que todas as lojas escolhidas pertencem à rede do fornecedor (Constituição arts. 12 e 20). Devolve os ids sem repetição.
+ * Qualquer loja de fora recusa a operação inteira: nada é gravado.
+ */
+export async function assertStoresInSupplierNetwork(db: Database, supplierId: string, storeIds: string[]): Promise<string[]> {
+  const unique = [...new Set(storeIds)];
+  if (unique.length === 0) return unique;
+  const own = await db.select({ id: stores.id }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(inArray(stores.id, unique), eq(networks.supplierId, supplierId)));
+  if (own.length !== unique.length) throw new ForbiddenError("Uma ou mais lojas selecionadas não pertencem à sua rede.");
+  return unique;
+}

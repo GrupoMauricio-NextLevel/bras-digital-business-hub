@@ -1,7 +1,7 @@
 import { activationCheck, type ActivationCheck } from "./size-grids";
 import { and, eq, inArray, or, exists } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { ForbiddenError, NotFoundError } from "./errors";
+import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
 import { getLevels, type InventoryLevel } from "./inventory";
 import { loadTiers, type Tier } from "./price-tiers";
@@ -129,4 +129,16 @@ export async function assertProductListable(db: Database, storeId: string, produ
     const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
     if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
   }
+}
+
+/**
+ * Piso de preço do fornecedor no servidor: a unidade não pode ficar abaixo de `minimumPriceCents` e a grade não pode ficar
+ * abaixo do maior piso entre as grades do produto (Constituição art. 10; 02 §73).
+ */
+export async function assertListingPrices(db: Database, product: Pick<typeof products.$inferSelect, "id" | "minimumPriceCents">, prices: { priceCents: number; packPriceCents?: number | null }): Promise<void> {
+  if (prices.priceCents < product.minimumPriceCents) throw new DomainError("BELOW_MINIMUM", "Preço abaixo do mínimo definido pelo fornecedor.");
+  if (prices.packPriceCents === null || prices.packPriceCents === undefined) return;
+  const packs = await db.select({ minimumPriceCents: productPacks.minimumPriceCents }).from(productPacks).where(eq(productPacks.productId, product.id));
+  const packMinimum = packs.reduce((max, p) => Math.max(max, p.minimumPriceCents), 0);
+  if (packMinimum > 0 && prices.packPriceCents < packMinimum) throw new DomainError("BELOW_MINIMUM", "Preço da grade abaixo do mínimo definido pelo fornecedor.");
 }

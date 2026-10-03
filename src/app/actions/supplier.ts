@@ -63,11 +63,12 @@ export async function setDistributionAction(input: z.input<typeof distributionSc
     const db = (await getDb());
     const product = await db.query.products.findFirst({ where: and(eq(products.id, data.productId), eq(products.supplierId, supplierId)) });
     if (!product) throw new NotFoundError("Produto não encontrado.");
+    const selectedStoreIds = data.distribution === "SELECTED_STORES" ? await assertStoresInSupplierNetwork(db, supplierId, data.storeIds) : [];
     await db.transaction(async (tx) => {
       await tx.update(products).set({ distribution: data.distribution, updatedAt: new Date().toISOString() }).where(eq(products.id, product.id));
       await tx.delete(productStoreAccess).where(eq(productStoreAccess.productId, product.id));
-      if (data.distribution === "SELECTED_STORES" && data.storeIds.length) {
-        await tx.insert(productStoreAccess).values(data.storeIds.map((storeId) => ({ productId: product.id, storeId })));
+      if (selectedStoreIds.length) {
+        await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId: product.id, storeId })));
       }
       await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "DISTRIBUTION", message: `Distribuição de “${product.name}” alterada para ${data.distribution === "ALL_NETWORK" ? "toda a rede" : `${data.storeIds.length} loja(s)`}` });
     });
@@ -110,7 +111,7 @@ export async function updateProductAction(input: z.input<typeof productSchema>) 
 // ---------------------------------------------------------------------------
 // Cadastro e importação de produtos
 // ---------------------------------------------------------------------------
-import { createProduct, duplicateProduct, setProductsStatus, type CreateProductInput } from "@/lib/domain/products";
+import { assertStoresInSupplierNetwork, createProduct, duplicateProduct, setProductsStatus, type CreateProductInput } from "@/lib/domain/products";
 
 export async function createProductAction(input: CreateProductInput) {
   return runAction(async () => {

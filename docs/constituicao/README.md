@@ -13,9 +13,9 @@ Ordem normativa: **00 Constituição** > decisões registradas em `docs/design/D
 | 06 | `06-STOREFRONT-UX-CONVERSION.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
 | 07 | `07-THEMES-TEMPLATES-SEGMENTS.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
 | 08 | `08-DATA-ARCHITECTURE.md` | Recebido (cruzamento: `CRUZAMENTO-05-08-PAINEL-LOJA-TEMAS-DADOS.md`) |
-| 09 | `09-INTEGRATIONS-EXTENSIBILITY.md` | Aguardando envio |
-| 10 | `10-SECURITY-RELIABILITY.md` | Aguardando envio |
-| 11 | `11-QUALITY-ENGINEERING.md` | Aguardando envio |
+| 09 | `09-INTEGRATIONS-EXTENSIBILITY.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
+| 10 | `10-SECURITY-RELIABILITY.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
+| 11 | `11-QUALITY-ENGINEERING.md` | Recebido (cruzamento: `CRUZAMENTO-09-11-INTEGRACOES-SEGURANCA-QUALIDADE.md`) |
 | 12 | `12-COMMERCE-INTELLIGENCE.md` | Aguardando envio |
 | 13 | `13-ROADMAP-GAPS-DECISIONS.md` | Aguardando envio |
 
