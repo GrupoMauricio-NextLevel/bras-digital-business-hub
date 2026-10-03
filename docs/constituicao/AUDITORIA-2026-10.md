@@ -18,7 +18,7 @@
 | 8, 9 | Domínio antes da interface; fonte de verdade | ? | Não auditei duplicidades de cliente entre módulos. |
 | 10 | Invariantes acima de conveniência | ◐ | Valores em centavos, estoque com reserva. Mas: preço da grade abaixo do mínimo (ver abaixo). |
 | 11 | Histórico não é reescrito | ◐ | Itens guardam `product_name`, `label`, `unit_price`, `unit_cost`; pedido guarda endereço e totais. Faltam foto, SKU e descrição do produto na hora da compra. |
-| 12 | Isolamento entre lojas | ◐ | Forte: `assertCanAccess`, testes `tenancy`, webhook confere dono do pedido. **Falha confirmada:** `src/app/actions/supplier.ts` (linha 69) e `src/lib/domain/products.ts` (linha 91) gravam `storeIds` sem conferir que são da rede do fornecedor. |
+| 12 | Isolamento entre lojas | ◐ | Forte: `assertCanAccess`, testes `tenancy`, webhook confere dono do pedido. **Falha confirmada na F0 (gravidade baixa):** `src/app/actions/supplier.ts` (linha 69) e `src/lib/domain/products.ts` (linha 91) gravam `storeIds` sem conferir que são da rede do fornecedor. A loja de fora ainda não consegue vender o produto (`assertProductListable`). Ver `F0-CONFIRMACAO-2026-10-03.md`. |
 | 13, 14 | Visual como arquitetura; guarda-corpos | ◐ | Temas não definem preço nem estoque (✔). Painéis têm três visuais em disputa (ramos de design não juntados). |
 | 15 | Configurar ≠ publicar | ✔ | Rascunho, prévia, publicar, histórico e restaurar no editor de temas (`src/lib/themes/store.ts`). |
 | 16–18 | Mobile, desempenho, acessibilidade | ◐ | Medido com axe, 360 px e Lighthouse. Hoje achei rolagem lateral nas lojas (corrigida). LCP do Starter 3,0 s, acima da meta de 2,5 s. |
