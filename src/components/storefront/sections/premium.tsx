@@ -68,7 +68,7 @@ export function ArenaHero({ id, settings, ctx }: SectionProps) {
 export function ImageHero({ id, settings, ctx }: SectionProps) {
   const H = ctx.firstId === id ? "h1" : "h2"; const fw = settings.fullWidth === true; const light = settings.textColor !== "dark";
   return (
-    <section className={cn("relative mt-6 flex overflow-hidden", full(fw), HEIGHTS[str(settings.height)] ?? HEIGHTS.md)} style={heroBackground(str(settings.image))}>
+    <section className={cn("sf-on-image relative mt-6 flex overflow-hidden", full(fw), HEIGHTS[str(settings.height)] ?? HEIGHTS.md)} style={heroBackground(str(settings.image))}>
       <div className="absolute inset-0" style={{ background: `rgba(0,0,0,${Number(settings.overlay) / 100})` }} aria-hidden />
       <div className={cn("relative z-10 mx-auto flex w-full max-w-6xl flex-col justify-center gap-4 px-6 py-12 sm:px-12", ALIGN[str(settings.align)] ?? ALIGN.left, light ? "text-white" : "text-neutral-900")}>
         <H className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">{str(settings.heading)}</H>

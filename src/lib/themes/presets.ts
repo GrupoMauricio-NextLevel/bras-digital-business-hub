@@ -103,8 +103,8 @@ function editorial(c: PresetContext): ThemePreset {
     globals: globals(style, [announcement(c, "", "neutral"), ["header", { type: "header", settings: { tone: "light" } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
     pages: pages(
       [
-        ["hero", { type: "image-hero", settings: { heading: c.hero?.title ?? "A coleção da estação", text: c.hero?.subtitle ?? "Peças pensadas para durar, com acabamento que faz diferença.", ctaLabel: c.hero?.ctaLabel ?? "Ver a coleção", height: "lg", fullWidth: true, overlay: 35, align: "left" } }],
-        ["about", { type: "image-with-text", settings: { heading: "Feito para durar", body: `Na ${c.storeName}, cada peça é escolhida pelo caimento, pelo tecido e pelo acabamento.`, ctaLabel: "Conhecer o catálogo", ratio: "portrait" } }],
+        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? "A coleção da estação", text: c.hero?.subtitle ?? "Peças pensadas para durar, com acabamento que faz diferença.", ctaLabel: c.hero?.ctaLabel ?? "Ver a coleção", height: "lg", fullWidth: true, overlay: 35, align: "left" } }],
+        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: "Feito para durar", body: `Na ${c.storeName}, cada peça é escolhida pelo caimento, pelo tecido e pelo acabamento.`, ctaLabel: "Conhecer o catálogo", ratio: "portrait" } }],
         ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", columns: 3, style: "cards" } }],
         ["showcase", { type: "product-showcase", settings: { title: "Seleção da estação", subtitle: "", source: "featured", count: 4 } }],
         ["look", { type: "lookbook", blocks: blocksOf("lookbook") }],
@@ -128,11 +128,11 @@ function signature(c: PresetContext): ThemePreset {
     globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299 · Envio em até 1 dia útil", "accent"), ["header", { type: "header-plus", settings: { tone: "light", sticky: true, showSearch: true }, blocks: blocksOf("header-plus") }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
     pages: pages(
       [
-        ["slides", { type: "slideshow", settings: { height: "lg", fullWidth: true }, blocks: blocksOf("slideshow", [{ heading: c.hero?.title ?? `Coleção nova na ${c.storeName}`, text: c.hero?.subtitle ?? "Os lançamentos que você esperava, com envio rápido.", ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos" }]) }],
+        ["slides", { type: "slideshow", settings: { height: "lg", fullWidth: true }, blocks: blocksOf("slideshow", [{ image: c.images?.hero ?? "", heading: c.hero?.title ?? `Coleção nova na ${c.storeName}`, text: c.hero?.subtitle ?? "Os lançamentos que você esperava, com envio rápido.", ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos" }]) }],
         ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
         ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: "circles" } }],
         ["latest", { type: "product-showcase", settings: { title: "Novidades", subtitle: "Recém-chegados à loja", source: "latest", count: 8 } }],
-        ["promo", { type: "image-hero", settings: { heading: "Ofertas da temporada", text: "Selecionamos os modelos com os melhores preços.", ctaLabel: "Aproveitar", height: "md", overlay: 45, align: "center" } }],
+        ["promo", { type: "image-hero", settings: { image: c.images?.about ?? "", heading: "Ofertas da temporada", text: "Selecionamos os modelos com os melhores preços.", ctaLabel: "Aproveitar", height: "md", overlay: 45, align: "center" } }],
         ["video", { type: "video-hero", settings: { heading: "Veja em movimento", text: "Cole o link do seu vídeo e mostre a coleção.", fullWidth: false }, hidden: true }],
         ["countdown", { type: "countdown", settings: { heading: "A oferta termina em", until: untilDays(c.now, 7), tone: "accent" } }],
         ["look", { type: "lookbook", blocks: blocksOf("lookbook") }],
