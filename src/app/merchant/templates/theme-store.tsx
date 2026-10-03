@@ -87,7 +87,7 @@ export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { card
               <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-neutral-100" aria-hidden><Image src={`/temas/${c.key}-desktop.webp`} alt="" fill sizes="(min-width:1280px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover object-top" /></div>
               <CardContent className="flex flex-1 flex-col gap-3 pt-4">
                 <div className="flex items-start justify-between gap-2"><div><h3 className="text-base font-semibold">{c.name}</h3><p className="text-xs text-muted-foreground">{c.tagline}</p></div><div className="text-right"><div className="text-lg font-bold tabular-nums">{c.priceCents === 0 ? "Grátis" : formatBRL(c.priceCents)}</div>{c.priceCents > 0 ? <div className="text-[11px] text-muted-foreground">no cartão em até {c.quote.installments}x de {formatBRL(c.quote.installmentCents)}</div> : null}{c.priceCents > 0 ? <div className="text-[11px] font-medium text-success">ou {formatBRL(c.quote.pixCents)} no Pix ({c.quote.pixDiscountPct}% off)</div> : null}{c.priceCents > 0 ? <div className="text-[11px] text-muted-foreground">licença permanente</div> : null}</div></div>
-                <div className="flex flex-wrap gap-1.5">{c.active ? <Badge tone="success" dot>Ativo</Badge> : null}{c.owned && c.priceCents > 0 ? <Badge tone="info">Comprado</Badge> : null}</div>
+                <div className="flex flex-wrap gap-1.5">{c.key === "arena" ? <Badge tone="info">Novo · Recomendado</Badge> : null}{c.active ? <Badge tone="success" dot>Ativo</Badge> : null}{c.owned && c.priceCents > 0 ? <Badge tone="info">Comprado</Badge> : null}</div>
                 <ul className="flex-1 space-y-1.5 text-sm">{c.features.slice(0, 4).map((f) => <li key={f} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-accent-foreground" aria-hidden /><span>{f}</span></li>)}</ul>
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                   {action(c)}
@@ -98,7 +98,7 @@ export function ThemeStore({ cards, slug, demo, returning, autoPreview }: { card
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-sm text-muted-foreground">Quer ajustar cores, fontes e seções? <Link href="/theme-editor" className="inline-flex items-center gap-1 font-medium text-accent-foreground underline"><Palette className="size-3.5" aria-hidden /> Abrir o editor do tema</Link></p>
+      <p className="mt-4 text-sm text-muted-foreground">Você pode testar qualquer tema com os produtos reais da sua loja antes de comprar. A prévia não altera o que seus clientes estão vendo. Quer ajustar cores, fontes e seções? <Link href="/theme-editor" className="inline-flex items-center gap-1 font-medium text-accent-foreground underline"><Palette className="size-3.5" aria-hidden /> Abrir o editor do tema</Link></p>
 
       <Dialog open={preview !== null} onOpenChange={(o) => { if (!o) void closePreview(); }}>
         {preview ? (

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const THEMES = [
   { key: "starter", name: "Starter", price: "Grátis", note: "Já incluso. Limpo e pronto para vender.", features: ["Página inicial com vitrine", "Catálogo, produto e carrinho", "Cores, logo e textos"] },
-  { key: "arena", name: "Arena", price: "R$ 299", note: "Esportivo, para camisas de time.", features: ["Vitrine por clube e coleção", "Selo de autenticidade", "Faixa de envio e prazos"] },
+  { key: "arena", name: "Arena", price: "R$ 299", note: "Esportivo, criado para lojas de camisas de time.", features: ["Hero esportivo com produto real", "Categorias, vitrines e campanhas", "Compra rápida e experiência mobile"] },
   { key: "editorial", name: "Editorial", price: "R$ 699", note: "Foco em imagem, marca e tipografia.", features: ["Lookbook e vídeo na página inicial", "Seções e blocos configuráveis", "Tipografia refinada"] },
   { key: "signature", name: "Signature", price: "R$ 1.499", note: "A vitrine completa, no nível das grandes lojas.", features: ["Menu grande, busca com sugestões e compra rápida", "Barra fixa de compra no celular", "Todas as seções e animações discretas"] },
 ] as const;
@@ -33,7 +33,7 @@ export function ThemeShowcase() {
         <h3 className="nl-title">{t.name}</h3>
         <p className="mt-1 text-neutral-600">{t.note}</p>
         <ul className="mt-4 space-y-2">{t.features.map((f) => <li key={f} className="flex gap-2.5 text-sm"><Check className="mt-0.5 size-4 shrink-0 text-[#0d803e]" aria-hidden />{f}</li>)}</ul>
-        <p className="mt-5 flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-sm"><MousePointerClick className="size-4 shrink-0" aria-hidden /> {t.key === "starter" ? "Já vem ativo na sua loja." : "Compra pela Loja NextLevel e instalação com 1 clique. Lançamento em breve."}</p>
+        <p className="mt-5 flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-sm"><MousePointerClick className="size-4 shrink-0" aria-hidden /> {t.key === "starter" ? "Já vem ativo na sua loja." : "Disponível na Loja NextLevel: compre e instale com 1 clique."}</p>
       </div>
     </div>
   );

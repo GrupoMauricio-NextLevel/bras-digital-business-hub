@@ -78,7 +78,7 @@ function arena(c: PresetContext): ThemePreset {
     globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299", "primary"), ["header", { type: "header", settings: { tone: "dark", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
     pages: pages(
       [
-        ["slides", { type: "slideshow", settings: { height: "lg", fullWidth: false }, blocks: blocksOf("slideshow", [{ heading: c.hero?.title ?? `Vista a paixão com a ${c.storeName}`, text: c.hero?.subtitle ?? "As camisas mais desejadas, com envio rápido.", ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos" }]) }],
+        ["arena", { type: "arena-hero", settings: { eyebrow: "NOVA TEMPORADA", heading: c.hero?.title ?? "Vista a paixão. Jogue do seu jeito.", text: c.hero?.subtitle ?? `Os mantos mais desejados estão na ${c.storeName}. Escolha o seu e entre em campo.`, ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos", ctaLink: "/catalog", secondaryLabel: "Explorar catálogo", secondaryLink: "/catalog", productBadge: "DESTAQUE DA SEMANA", showProduct: true } }],
         ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
         ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: "cards" } }],
         ["best", { type: "product-showcase", settings: { title: "Mais vendidos", subtitle: "Os favoritos da torcida", count: 8, source: "featured" } }],

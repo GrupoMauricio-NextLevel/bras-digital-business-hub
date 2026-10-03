@@ -110,6 +110,21 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   },
   // ------------------------------------------------------------------ seções dos temas pagos
   {
+    type: "arena-hero", name: "Destaque Arena", description: "Destaque esportivo de alto impacto que usa automaticamente um produto real da loja.", category: "Destaque", region: "content", pages: ["home"], themes: ["arena", "signature"],
+    settings: [
+      { id: "eyebrow", type: "text", label: "Chamada superior", default: "NOVA TEMPORADA", maxLength: 40 },
+      { id: "heading", type: "text", label: "Título", default: "Vista a paixão. Jogue do seu jeito.", maxLength: 100 },
+      { id: "text", type: "textarea", label: "Texto", default: "Camisas selecionadas para quem vive futebol dentro e fora do estádio.", maxLength: 240 },
+      { id: "ctaLabel", type: "text", label: "Botão principal", default: "Ver lançamentos", maxLength: 40 },
+      { id: "ctaLink", type: "url", label: "Link principal", default: "/catalog" },
+      { id: "secondaryLabel", type: "text", label: "Segundo botão", default: "Explorar catálogo", maxLength: 40 },
+      { id: "secondaryLink", type: "url", label: "Link do segundo botão", default: "/catalog" },
+      { id: "productBadge", type: "text", label: "Selo do produto", default: "DESTAQUE DA SEMANA", maxLength: 40 },
+      { id: "showProduct", type: "checkbox", label: "Mostrar produto em destaque", default: true },
+    ],
+    presets: [{ name: "Destaque Arena" }],
+  },
+  {
     type: "image-hero", name: "Destaque com imagem", description: "Imagem grande com texto e botões por cima.", category: "Destaque", region: "content", pages: ["home", "collection"], themes: ARENA_UP,
     settings: [
       { id: "image", type: "image", label: "Imagem de fundo", default: "" },
