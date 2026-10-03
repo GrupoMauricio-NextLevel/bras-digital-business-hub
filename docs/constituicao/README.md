@@ -7,8 +7,8 @@ Ordem normativa: **00 Constituição** > decisões registradas em `docs/design/D
 | 00 | `00-CONSTITUICAO-ECOMMERCE.md` | Recebido e em vigor |
 | 01 | `01-WBUY-RESEARCH-INTELLIGENCE.md` | Recebido (evidência de benchmark; não é especificação) |
 | 02 | `02-COMMERCE-CORE.md` | Recebido (cruzamento: `CRUZAMENTO-02-COMMERCE-CORE.md`) |
-| 03 | `03-PLATFORM-CORE.md` | Aguardando envio |
-| 04 | `04-VISUAL-COMMERCE.md` | Aguardando envio |
+| 03 | `03-PLATFORM-CORE.md` | Recebido (cruzamento: `CRUZAMENTO-03-04-PLATFORM-VISUAL.md`) |
+| 04 | `04-VISUAL-COMMERCE.md` | Recebido (cruzamento: `CRUZAMENTO-03-04-PLATFORM-VISUAL.md`) |
 | 05 | `05-MERCHANT-PANEL-UX.md` | Aguardando envio |
 | 06 | `06-STOREFRONT-UX-CONVERSION.md` | Aguardando envio |
 | 07 | `07-THEMES-TEMPLATES-SEGMENTS.md` | Aguardando envio |

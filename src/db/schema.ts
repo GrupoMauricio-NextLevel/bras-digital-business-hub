@@ -265,6 +265,13 @@ export const inventoryMovements = pgTable("inventory_movements", {
   referenceType: text("reference_type"),
   referenceId: text("reference_id"),
   note: text("note"),
+  /** Saldos logo antes e logo depois do movimento (trilha auditável). Movimentos antigos ficam sem estes valores. */
+  onHandBefore: integer("on_hand_before"),
+  onHandAfter: integer("on_hand_after"),
+  reservedBefore: integer("reserved_before"),
+  reservedAfter: integer("reserved_after"),
+  /** Quem fez, quando houver usuário (pedido público e rotinas não têm). */
+  actorUserId: text("actor_user_id"),
   createdAt: createdAt(),
 }, (t) => [index("movements_variant_idx").on(t.variantId)]);
 

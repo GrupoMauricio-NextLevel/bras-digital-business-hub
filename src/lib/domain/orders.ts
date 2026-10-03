@@ -321,7 +321,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
     if (next === "SHIPPED") {
       const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       const merged = await expandReservations(tx, items);
-      for (const [variantId, quantity] of merged) await consumeReservation(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
+      for (const [variantId, quantity] of merged) await consumeReservation(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, actorUserId: actor.userId });
     }
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: actor.role });
     await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next)}` });
@@ -351,7 +351,7 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     if (claimed.length === 0) return "LOST" as const;
     const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     const merged = await expandReservations(tx, items);
-    for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
+    for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, actorUserId: actor.userId });
     if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: "Pedido cancelado. Reserva de estoque liberada.", actorRole: actor.role });
     return "WON" as const;

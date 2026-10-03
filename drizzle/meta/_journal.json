@@ -253,6 +253,13 @@
       "when": 1790949118152,
       "tag": "0035_loja_demonstracao_tema",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791060488377,
+      "tag": "0036_estoque_trilha_saldos",
+      "breakpoints": true
     }
   ]
 }

@@ -34,10 +34,10 @@ const stockSchema = z.object({ variantId: z.string().min(1), quantity: z.coerce.
 
 export async function receiveStockAction(input: z.input<typeof stockSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { supplierId, session } = await supplierCtx();
     const data = stockSchema.parse(input);
     await assertOwnsVariant(supplierId, data.variantId);
-    await receiveStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note });
+    await receiveStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note, actorUserId: session.actor.userId });
     revalidatePanels();
     return undefined;
   });
@@ -45,10 +45,10 @@ export async function receiveStockAction(input: z.input<typeof stockSchema>) {
 
 export async function adjustStockAction(input: z.input<typeof stockSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { supplierId, session } = await supplierCtx();
     const data = stockSchema.parse(input);
     await assertOwnsVariant(supplierId, data.variantId);
-    await adjustStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note });
+    await adjustStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note, actorUserId: session.actor.userId });
     revalidatePanels();
     return undefined;
   });
