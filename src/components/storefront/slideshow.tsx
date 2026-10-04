@@ -13,6 +13,8 @@ export function Slideshow({ slides, autoplay, seconds, height, dots, arrows, ful
   const [i, setI] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
   const n = slides.length;
+  // Deslizar o dedo troca o slide (as setas só aparecem em tela maior).
+  const touchX = React.useRef<number | null>(null);
   React.useEffect(() => {
     if (!autoplay || paused || n < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setI((x) => (x + 1) % n), seconds * 1000);
@@ -21,7 +23,7 @@ export function Slideshow({ slides, autoplay, seconds, height, dots, arrows, ful
   if (n === 0) return null;
   const go = (d: number) => setI((x) => (x + d + n) % n);
   return (
-    <section aria-roledescription="carrossel" aria-label="Destaques" className={cn("relative mt-6 overflow-hidden", fullWidth ? "left-1/2 w-screen -translate-x-1/2" : "rounded-[var(--sf-radius,16px)]", HEIGHTS[height])} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
+    <section aria-roledescription="carrossel" aria-label="Destaques" onTouchStart={(e) => { touchX.current = e.touches[0]?.clientX ?? null; }} onTouchEnd={(e) => { const x0 = touchX.current; touchX.current = null; const x1 = e.changedTouches[0]?.clientX; if (x0 !== null && x1 !== undefined && Math.abs(x1 - x0) > 40) go(x1 < x0 ? 1 : -1); }} className={cn("relative mt-6 overflow-hidden", fullWidth ? "left-1/2 w-screen -translate-x-1/2" : "rounded-[var(--sf-radius,16px)]", HEIGHTS[height])} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
       {slides.map((s, k) => {
         const H = (firstHeading && k === 0 ? "h1" : "h2") as "h1" | "h2";
         return (
@@ -36,10 +38,10 @@ export function Slideshow({ slides, autoplay, seconds, height, dots, arrows, ful
         );
       })}
       {arrows && n > 1 ? <>
-        <button type="button" onClick={() => go(-1)} aria-label="Slide anterior" className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/85 p-2 text-neutral-900 shadow hover:bg-white"><ChevronLeft className="size-5" aria-hidden /></button>
-        <button type="button" onClick={() => go(1)} aria-label="Próximo slide" className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/85 p-2 text-neutral-900 shadow hover:bg-white"><ChevronRight className="size-5" aria-hidden /></button>
+        <button type="button" onClick={() => go(-1)} aria-label="Slide anterior" className="absolute left-3 top-1/2 z-20 -translate-y-1/2 hidden size-11 items-center justify-center rounded-full bg-white/85 sm:flex text-neutral-900 shadow hover:bg-white"><ChevronLeft className="size-5" aria-hidden /></button>
+        <button type="button" onClick={() => go(1)} aria-label="Próximo slide" className="absolute right-3 top-1/2 z-20 -translate-y-1/2 hidden size-11 items-center justify-center rounded-full bg-white/85 sm:flex text-neutral-900 shadow hover:bg-white"><ChevronRight className="size-5" aria-hidden /></button>
       </> : null}
-      {dots && n > 1 ? <div className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2" role="group" aria-label="Escolher slide">{slides.map((s, k) => <button key={s.id} type="button" onClick={() => setI(k)} aria-label={`Ir para o slide ${k + 1}`} aria-current={k === i} className={cn("h-2 rounded-full transition-all", k === i ? "w-6 bg-white" : "w-2 bg-white/60 hover:bg-white/80")} />)}</div> : null}
+      {dots && n > 1 ? <div className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2" role="group" aria-label="Escolher slide">{slides.map((s, k) => <button key={s.id} type="button" onClick={() => setI(k)} aria-label={`Ir para o slide ${k + 1}`} aria-current={k === i} className="flex h-8 min-w-8 items-center justify-center"><span className={cn("block h-2 rounded-full transition-all", k === i ? "w-6 bg-white" : "w-2 bg-white/60 hover:bg-white/80")} /></button>)}</div> : null}
     </section>
   );
 }

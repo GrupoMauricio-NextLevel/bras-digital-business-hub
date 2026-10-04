@@ -73,7 +73,7 @@ export function CategoryChips({ settings, ctx }: SectionProps) {
     <section className="mt-10">
       {str(settings.heading) ? <h2 className="mb-3 text-xl font-semibold tracking-tight">{str(settings.heading)}</h2> : null}
       <div className="nl-scroll flex gap-2 overflow-x-auto pb-1">
-        {ctx.categories.map((c) => <Link key={c.id} href={`${ctx.base}/catalog?category=${c.slug}`} className="shrink-0 rounded-full border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-900">{c.name}</Link>)}
+        {ctx.categories.map((c) => <Link key={c.id} href={`${ctx.base}/catalog?category=${c.slug}`} className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-neutral-300 px-4 text-sm hover:border-neutral-900">{c.name}</Link>)}
       </div>
     </section>
   );
@@ -84,7 +84,7 @@ export function ProductShowcase({ id, settings, ctx }: SectionProps) {
   const cols = COLS[Number(settings.columns)] ?? COLS[4]!;
   return (
     <section className="mt-10">
-      <div className="mb-5 flex items-end justify-between"><div><h2 className="text-xl font-semibold tracking-tight">{str(settings.title)}</h2>{str(settings.subtitle) ? <p className="text-sm text-neutral-500">{str(settings.subtitle)}</p> : null}</div>{str(settings.linkLabel) ? <Link href={resolveLink(ctx.base, str(settings.linkHref))} className="text-sm font-medium underline-offset-4 hover:underline">{str(settings.linkLabel)}</Link> : null}</div>
+      <div className="mb-5 flex items-end justify-between"><div><h2 className="text-xl font-semibold tracking-tight">{str(settings.title)}</h2>{str(settings.subtitle) ? <p className="text-sm text-neutral-500">{str(settings.subtitle)}</p> : null}</div>{str(settings.linkLabel) ? <Link href={resolveLink(ctx.base, str(settings.linkHref))} className="inline-flex min-h-11 items-center text-sm font-medium underline-offset-4 hover:underline">{str(settings.linkLabel)}</Link> : null}</div>
       <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{list.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>
     </section>
   );
@@ -192,8 +192,8 @@ export function CollectionHeader({ settings, ctx }: SectionProps) {
       </div>
       {settings.showCategories !== false ? (
         <div className="nl-scroll mb-6 flex gap-2 overflow-x-auto pb-1">
-          <Link href={base} className={cn("shrink-0 rounded-full border px-4 py-2 text-sm", !category ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>Todos</Link>
-          {ctx.categories.map((c) => <Link key={c.id} href={`${base}?category=${c.slug}`} className={cn("shrink-0 rounded-full border px-4 py-2 text-sm", category === c.slug ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>{c.name}</Link>)}
+          <Link href={base} className={cn("inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm", !category ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>Todos</Link>
+          {ctx.categories.map((c) => <Link key={c.id} href={`${base}?category=${c.slug}`} className={cn("inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm", category === c.slug ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>{c.name}</Link>)}
         </div>
       ) : null}
     </>

@@ -52,8 +52,8 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
   return (
     <header className={cn("top-0 z-30 border-b backdrop-blur", T.bar, sticky && "sticky")} onMouseLeave={() => setMega(null)}>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <button className={cn("rounded-md p-2 sm:hidden", T.hover)} onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
-        <Link href={base} className="flex items-center gap-2.5">
+        <button className={cn("inline-flex size-11 items-center justify-center rounded-md sm:hidden", T.hover)} onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
+        <Link href={base} className="flex min-h-11 items-center gap-2.5">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- logo enviada pelo lojista
             <img src={logoUrl} alt={name} style={{ height: logoHeight }} className="w-auto max-w-[180px] object-contain" />
@@ -77,7 +77,7 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
           {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-56 lg:block xl:w-72" /> : null}
           <Link href={`${base}/acompanhar`} className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden /> Acompanhar pedido</Link>
           {whatsapp ? <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer" className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm sm:inline-flex", dark ? "text-neutral-300" : "text-neutral-600", T.hover)}><MessageCircle className="size-4" /> WhatsApp</a> : null}
-          <Link href={`${base}/cart`} className={cn("relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
+          <Link href={`${base}/cart`} className={cn("relative inline-flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
             <ShoppingBag className="size-5" />
             <span className="hidden sm:inline">Carrinho</span>
             {ready && count > 0 ? <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full text-[10px] font-semibold sm:static sm:size-auto sm:rounded-full sm:px-2 sm:py-0.5" style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{count}</span> : null}

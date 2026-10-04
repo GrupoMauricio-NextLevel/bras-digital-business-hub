@@ -33,9 +33,9 @@ export function CartView({ slug }: { slug: string }) {
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3"><div><div className="text-sm font-medium">{l.name}</div><div className="text-xs text-neutral-500">{l.label}</div></div><div className="text-sm font-semibold tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</div></div>
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="flex h-9 items-center rounded-lg border border-neutral-300"><button className="px-2.5" onClick={() => cart.update(l.key, l.quantity - 1)} aria-label="Menos"><Minus className="size-3.5" /></button><span className="w-7 text-center text-sm tabular-nums">{l.quantity}</span><button className="px-2.5 disabled:opacity-40" disabled={l.quantity >= l.max} onClick={() => cart.update(l.key, l.quantity + 1)} aria-label="Mais"><Plus className="size-3.5" /></button></div>
+                  <div className="flex h-11 items-center rounded-lg border border-neutral-300"><button className="flex h-full min-w-11 items-center justify-center" onClick={() => cart.update(l.key, l.quantity - 1)} aria-label="Menos"><Minus className="size-3.5" /></button><span className="w-7 text-center text-sm tabular-nums">{l.quantity}</span><button className="flex h-full min-w-11 items-center justify-center disabled:opacity-40" disabled={l.quantity >= l.max} onClick={() => cart.update(l.key, l.quantity + 1)} aria-label="Mais"><Plus className="size-3.5" /></button></div>
                   <span className="text-xs text-neutral-500">{formatBRL(l.unitPriceCents)} cada</span>
-                  <button className="ml-auto inline-flex items-center gap-1 text-xs text-neutral-500 hover:text-red-600" onClick={() => cart.remove(l.key)}><Trash2 className="size-3.5" /> Remover</button>
+                  <button className="ml-auto inline-flex min-h-11 items-center gap-1 px-1 text-xs text-neutral-500 hover:text-red-600" onClick={() => cart.remove(l.key)}><Trash2 className="size-3.5" /> Remover</button>
                 </div>
               </div>
             </li>
@@ -50,7 +50,7 @@ export function CartView({ slug }: { slug: string }) {
           </dl>
           {shipping > 0 ? <p className="mt-2 text-xs text-neutral-500">Faltam {formatBRL(FREE_SHIPPING_FROM_CENTS - cart.subtotal)} para frete grátis.</p> : null}
           <Link href={`${base}/checkout`} className="mt-5 flex h-12 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all hover:brightness-95" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>Finalizar compra <ArrowRight className="size-4" /></Link>
-          <Link href={`${base}/catalog`} className="mt-3 block text-center text-sm text-neutral-500 hover:text-neutral-900">Continuar comprando</Link>
+          <Link href={`${base}/catalog`} className="mt-3 flex min-h-11 items-center justify-center text-sm text-neutral-500 hover:text-neutral-900">Continuar comprando</Link>
         </aside>
       </div>
     </div>

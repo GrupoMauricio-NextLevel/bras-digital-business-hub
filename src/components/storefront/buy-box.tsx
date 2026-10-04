@@ -77,9 +77,9 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
 
       <div ref={ctaRef} className="mt-6 flex items-center gap-3">
         <div className="flex h-11 items-center rounded-lg border border-neutral-300">
-          <button type="button" className="px-3 disabled:opacity-40" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Menos"><Minus className="size-4" /></button>
+          <button type="button" className="flex h-full min-w-11 items-center justify-center disabled:opacity-40" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Menos"><Minus className="size-4" /></button>
           <span className="w-8 text-center text-sm font-medium tabular-nums">{qty}</span>
-          <button type="button" className="px-3 disabled:opacity-40" onClick={() => setQty(Math.min(max, qty + 1))} disabled={qty >= max} aria-label="Mais"><Plus className="size-4" /></button>
+          <button type="button" className="flex h-full min-w-11 items-center justify-center disabled:opacity-40" onClick={() => setQty(Math.min(max, qty + 1))} disabled={qty >= max} aria-label="Mais"><Plus className="size-4" /></button>
         </div>
         <SfButton className="h-11 flex-1" onClick={add} disabled={max === 0}>{added ? <><Check className="size-4" /> Adicionado</> : <><ShoppingBag className="size-4" /> {max === 0 ? "Esgotado" : "Adicionar ao carrinho"}</>}</SfButton>
       </div>

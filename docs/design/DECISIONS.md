@@ -431,3 +431,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D70. Chave de idempotência liberada quando o sistema cancela o pedido (2026-10-04)
 - Falha encontrada na própria F1.2: se a cobrança falhava (Mercado Pago fora do ar) o pedido era cancelado, mas repetir a compra com a mesma chave devolvia o pedido cancelado e o cliente não conseguia pagar. Reproduzido em teste (vermelho), corrigido (verde): pedido cancelado deixa de contar como "a mesma tentativa"; a chave é liberada e a nova tentativa cria outro pedido. Vale também para reserva vencida.
 - Cobertura nova: `tests/checkout-idempotencia.test.ts` (cancelamento e nova tentativa; cancelar duas vezes não devolve estoque duas vezes) e `tests/loop-negativos.test.ts` (quantidade inválida, produto arquivado/anúncio desativado, variante errada, estoque insuficiente em compra mista, loja suspensa/bloqueada, e-mail inválido, produto de outra loja).
+
+## D71. Alvos de toque e carrossel no celular (2026-10-04)
+- Medição a 390 px: menu (36), carrinho, chips de categoria (38), botões −/+ de quantidade (14 a 16 px de altura), "Continuar comprando", "Remover", logo, setas (36) e bolinhas (8) do carrossel ficavam abaixo de 40 a 44 px. Agora todos têm no mínimo 44 px (bolinhas: área de 32 px). As setas do carrossel somem no celular, porque cobriam o texto; no lugar vale deslizar o dedo (testado) e as bolinhas.
+- Verificado nas lojas mantos-shop, Lume, Arena e Signature: sem rolagem lateral, nenhum alvo abaixo do mínimo fora do aviso de demonstração.
