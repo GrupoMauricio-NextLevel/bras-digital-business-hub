@@ -36,6 +36,6 @@ Prioridade: P0 crítico, P1 fundacional, P2 essencial, P3 diferenciação, P4 ot
 |----|--------|--------|
 | G-30 | Temas pagos com identidade e foto própria | Lume, Arena, Editorial, Signature no ar; Ninho pronto (DONO libera); fotos próprias (DONO) |
 | G-31 | Textos da conta simples sem conceitos de Central/recarga | FEITO |
-| G-32 | Mocks, rotas mortas e funções de fachada (doc 13 §39 a §41) | NÃO AUDITADO |
+| G-32 | Mocks, rotas mortas e funções de fachada (doc 13 §39 a §41) | PARCIAL. Varredura do código por texto (TODO, mock, "em breve", botão sem ação): nenhuma função de fachada encontrada; os "mock" são janelas ilustrativas das páginas de venda (rotuladas) e os "em breve" são avisos honestos de produtos fora do foco. NÃO feito: varredura clicando em cada botão no navegador e mapa de rotas sem link |
 | G-33 | Ramos de design e auditoria parados | Painéis já integrados; Arena integrado; `audit/usability-critical-flows` aproveitado só em "frete exige endereço"; demais itens avaliados e recusados (ver D66) |
 | G-34 | Testes finais: suíte completa, e2e, concorrência real, carga, restauração | F8, só quando o dono pedir |
