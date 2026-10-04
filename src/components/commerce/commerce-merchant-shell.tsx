@@ -1,5 +1,7 @@
 "use client";
 
+// Commerce shell intentionally isolated from SuperDrop navigation.
+
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
