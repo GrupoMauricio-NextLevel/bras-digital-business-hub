@@ -1,0 +1,22 @@
+/** Grava uma demonstração curta (tema, menu, reflexo do hero, gaveta) em docs/commerce-visual/v2/demo-motion.webm. */
+import { chromium } from "playwright-core";
+import { mkdirSync, renameSync } from "node:fs";
+const B = process.env.E2E_BASE ?? "http://localhost:3100";
+mkdirSync("docs/commerce-visual/v2/_v", { recursive: true });
+const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium" });
+const ctx = await b.newContext({ viewport: { width: 1280, height: 760 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" }, recordVideo: { dir: "docs/commerce-visual/v2/_v", size: { width: 1280, height: 760 } } });
+const p = await ctx.newPage();
+await p.goto(`${B}/login`, { waitUntil: "networkidle" });
+await p.fill("#email", "lojista@commerce.demo"); await p.fill("#password", "demo1234"); await p.getByRole("button", { name: /Entrar/ }).click();
+await p.waitForURL(/\/merchant/); await p.evaluate(() => localStorage.setItem("nl-theme", "light")); await p.goto(B + "/merchant", { waitUntil: "networkidle" });
+await p.addStyleTag({ content: "nextjs-portal{display:none!important}" });
+await p.waitForTimeout(2600);
+await p.getByRole("radio", { name: "Escuro" }).click(); await p.waitForTimeout(1200);
+await p.getByRole("button", { name: /^Vendas$/ }).click(); await p.waitForTimeout(700);
+await p.getByRole("link", { name: "Pedidos", exact: true }).click(); await p.waitForLoadState("networkidle"); await p.waitForTimeout(1200);
+await p.getByRole("radio", { name: "Claro" }).click(); await p.waitForTimeout(1200);
+await p.setViewportSize({ width: 390, height: 760 }); await p.waitForTimeout(600);
+await p.getByRole("button", { name: "Mais" }).click(); await p.waitForTimeout(1200);
+await p.keyboard.press("Escape"); await p.waitForTimeout(700);
+const path = await p.video().path(); await ctx.close(); await b.close();
+renameSync(path, "docs/commerce-visual/v2/demo-motion.webm"); console.log("vídeo salvo");

@@ -13,7 +13,7 @@ export function SimulateOrderButton() {
   const router = useRouter();
   const [busy, setBusy] = React.useState(false);
   return (
-    <Button variant="secondary" loading={busy} onClick={async () => { setBusy(true); const r = await simulateCustomerOrderAction(); setBusy(false); if (r.ok) { toast.success(`Venda simulada #${r.data.number} de ${r.data.customer}: ${ORDER_STATUS_LABEL[r.data.status as OrderStatus]}`); router.refresh(); } else toast.error(r.error); }}>
+    <Button variant="ghost" loading={busy} onClick={async () => { setBusy(true); const r = await simulateCustomerOrderAction(); setBusy(false); if (r.ok) { toast.success(`Venda simulada #${r.data.number} de ${r.data.customer}: ${ORDER_STATUS_LABEL[r.data.status as OrderStatus]}`); router.refresh(); } else toast.error(r.error); }}>
       <Sparkles /> Simular venda (demo)
     </Button>
   );

@@ -62,3 +62,38 @@ export function FilterChips({ param, options, allLabel = "Todos" }: { param: str
 export function FilterBar({ children, className }: { children: React.ReactNode; className?: string }) {
   return <div className={cn("mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", className)}>{children}</div>;
 }
+
+/** Abas para as visões frequentes e um seletor agrupado para os demais valores (todas as opções continuam disponíveis). */
+export function FilterTabs({ param, primary, rest, allLabel = "Todos", restLabel = "Outros status" }: { param: string; primary: { value: string; label: string; count?: number }[]; rest: { value: string; label: string }[]; allLabel?: string; restLabel?: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const current = params.get(param) ?? "";
+  const set = (v: string) => {
+    const next = new URLSearchParams(params.toString());
+    if (v) next.set(param, v);
+    else next.delete(param);
+    const qs = next.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname);
+  };
+  const inRest = rest.some((r) => r.value === current);
+  const tab = (value: string, label: string, count?: number) => (
+    <button key={value} type="button" role="tab" aria-selected={current === value} onClick={() => set(value)} className="cm-tab">
+      {label}{typeof count === "number" ? <span className="cm-count">{count}</span> : null}
+    </button>
+  );
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <div role="tablist" aria-label="Visões de pedidos" className="cm-tabs nl-scroll">{tab("", allLabel)}{primary.map((o) => tab(o.value, o.label, o.count))}</div>
+      {rest.length ? (
+        <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <span className="sr-only sm:not-sr-only">{restLabel}</span>
+          <select value={inRest ? current : ""} onChange={(e) => set(e.target.value)} className="h-10 rounded-xl border border-[var(--glass-line)] bg-[var(--glass-fn)] px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)]">
+            <option value="">{inRest ? "Limpar filtro" : "Outros status…"}</option>
+            {rest.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
+          </select>
+        </label>
+      ) : null}
+    </div>
+  );
+}

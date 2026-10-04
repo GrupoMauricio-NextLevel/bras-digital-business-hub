@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
@@ -90,7 +91,8 @@ function Navigation({ pathname, staff, onNavigate }: { pathname: string; staff: 
 
 function Identity({ storeName }: { storeName: string }) {
   return <div className="px-6 pb-5 pt-6">
-    <div className="text-[10px] font-semibold uppercase tracking-[.22em] text-[var(--product-accent-text)]">NextLevel Commerce</div>
+    <span className="cm-brand-plate"><Image src="/brand/nextlevel-logo.webp" width={640} height={174} alt="NextLevel" className="h-6 w-auto" /></span>
+    <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[.22em] text-[var(--product-accent-text)]">Commerce</div>
     <div className="mt-2 truncate text-lg font-semibold tracking-[-.02em]">{storeName}</div>
     <div className="mt-0.5 text-xs text-muted-foreground">Painel da loja</div>
   </div>;

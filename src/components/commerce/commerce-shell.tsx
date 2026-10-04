@@ -52,7 +52,7 @@ function Identity() {
     <Link href="/master" className="mb-5 inline-flex min-h-11 items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="size-3.5" aria-hidden /> Voltar ao Master</Link>
     <div className="text-[10px] font-semibold uppercase tracking-[.22em] text-[var(--product-accent-text)]">NextLevel</div>
     <div className="mt-1 text-2xl font-semibold tracking-[-.03em]">Commerce</div>
-    <div className="mt-0.5 text-xs text-muted-foreground">Console administrativo das lojas</div>
+    <div className="mt-1.5 inline-flex rounded-full border border-[var(--glass-line)] px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">Administração da plataforma</div>
   </div>;
 }
 
@@ -63,7 +63,7 @@ export function CommerceShell({ children, userName }: { children: React.ReactNod
   const current = NAV.find((n) => active(n.href, "exact" in n && n.exact));
 
   return (
-    <div data-product="commerce" className="cm-app cm-theme-anim">
+    <div data-product="commerce" className="cm-app cm-admin cm-theme-anim">
       <div className="cm-ambient" aria-hidden />
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-lg focus:bg-surface focus:px-3 focus:py-2 focus:text-sm">Pular para o conteúdo</a>
       <aside className="cm-sidebar fixed inset-y-0 left-0 z-30 hidden w-[252px] lg:flex lg:flex-col">

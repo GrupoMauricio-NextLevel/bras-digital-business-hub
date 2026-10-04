@@ -19,7 +19,7 @@ export default async function CommercePage() {
     <>
       <div className="max-w-4xl">
         <div className="text-[10px] font-semibold tracking-[0.26em] text-[var(--product-accent-text)]">NEXTLEVEL COMMERCE · CONTROL ROOM</div>
-        <h1 className="mt-3 text-[clamp(2.2rem,6vw,5.5rem)] font-semibold leading-[.92] tracking-[-0.065em] text-foreground">Lojas digitais,<br/><span className="text-muted-foreground">como um negócio.</span></h1>
+        <h1 className="mt-3 text-[clamp(1.75rem,3.6vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.04em] text-foreground">Lojas digitais, <span className="text-muted-foreground">como um negócio.</span></h1>
         <p className="mt-6 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">Aqui entram somente as operações da Commerce: lojas, assinaturas, vendas, catálogo e aquisição. Distribuição, fornecedores e saldo do SuperDrop não fazem parte deste console.</p>
       </div>
 
