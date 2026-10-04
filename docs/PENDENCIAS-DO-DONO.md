@@ -11,7 +11,8 @@ Atualizado em 2026-10-04. Nada aqui bloqueia o trabalho em andamento.
 | 4 | Credencial de teste do Mercado Pago e o segredo de assinatura do webhook | Só você gera no painel do Mercado Pago | Valido a compra de ponta a ponta e a assinatura do webhook |
 | 5 | `CRON_SECRET` e agendador no Render | Rotinas (expirar reservas, lembretes) precisam de um agendador | Ligo as rotinas |
 | 6 | Chave do Resend e e-mail remetente | Para os e-mails transacionais saírem de verdade | Conferir envio |
-| 7 | Banco de teste Postgres de verdade (pode ser um Neon separado) | O teste de concorrência real (dois compradores da última peça) não roda no banco local | Rodar a fase F8 |
+| 7 | Reenviar a pasta `.claude` do kit de skills (repo-auditor, root-cause, impact-analysis, acceptance-designer, ux-flow-auditor, security-guardian, release-gate, architecture-drift e prompt-architect) | Só o README chegou (`docs/SKILLS-KIT-README.md`); as skills em si não vieram | Instalo em `.claude/skills/` e passo a usar nas fases certas |
+| 8 | Banco de teste Postgres de verdade (pode ser um Neon separado) | O teste de concorrência real (dois compradores da última peça) não roda no banco local | Rodar a fase F8 |
 
 ## Decisões (documentos em `docs/adr/`)
 - ADR-0001 pagamento e estorno como entidades próprias.
