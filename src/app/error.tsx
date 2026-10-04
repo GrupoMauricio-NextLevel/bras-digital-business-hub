@@ -14,7 +14,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     <div className="mx-auto max-w-lg p-8">
       <ErrorState
         title="Não foi possível carregar esta página"
-        description="Tivemos um problema temporário. Tente novamente em instantes. Se continuar, volte ao início."
+        description={`Tivemos um problema temporário. Tente novamente em instantes. Se continuar, volte ao início${error.digest ? ` e informe o código ${error.digest}` : ""}.`}
         action={<div className="flex flex-wrap justify-center gap-2"><Button onClick={reset}>Tentar novamente</Button><Link href="/" className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-4 text-sm">Voltar ao início</Link></div>}
       />
     </div>

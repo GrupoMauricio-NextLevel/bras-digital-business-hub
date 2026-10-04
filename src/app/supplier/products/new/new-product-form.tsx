@@ -116,7 +116,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
                 <p className="pb-2 text-xs text-muted-foreground">As lojas só ativam o produto com pelo menos {minStock} peças por tamanho.</p>
               </div>
               {rows.some((r) => r.size && (Number(r.stock) || 0) < minStock) ? <p role="status" className="flex items-center gap-1.5 text-xs text-warning"><AlertTriangle className="size-3.5" aria-hidden /> Estoque abaixo de {minStock} em {rows.filter((r) => r.size && (Number(r.stock) || 0) < minStock).map((r) => r.size).join(", ")}: as lojas ainda não conseguirão ativar.</p> : null}
-              <div className="overflow-x-auto"><table className="w-full min-w-[30rem] text-sm">
+              <div className="relative overflow-x-auto"><table className="w-full min-w-[30rem] text-sm">
                 <thead><tr className="text-left text-xs font-medium uppercase tracking-wide text-muted-foreground"><th className="pb-2 pr-2 font-medium">Tamanho</th><th className="pb-2 pr-2 font-medium">SKU da variação</th><th className="pb-2 pr-2 font-medium">Estoque</th>{f.sellsPack ? <th className="pb-2 pr-2 font-medium">Grade</th> : null}<th className="pb-2"><span className="sr-only">Remover</span></th></tr></thead>
                 <tbody>
                   {rows.map((r, i) => (

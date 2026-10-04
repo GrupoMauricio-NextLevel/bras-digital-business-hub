@@ -48,7 +48,7 @@ export function Page({ title, subtitle, breadcrumbs, badge, primaryAction, secon
 /** Duas colunas: conteúdo principal e lateral (status, organização, prévia). A lateral gruda ao rolar em telas grandes. */
 export function TwoColumn({ main, aside, asideSticky = true, className }: { main: React.ReactNode; aside: React.ReactNode; asideSticky?: boolean; className?: string }) {
   return (
-    <div className={cn("grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]", className)}>
+    <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]", className)}>
       <div className="min-w-0 space-y-6">{main}</div>
       <aside className={cn("min-w-0 space-y-6", asideSticky && "lg:sticky lg:top-24 lg:self-start")}>{aside}</aside>
     </div>

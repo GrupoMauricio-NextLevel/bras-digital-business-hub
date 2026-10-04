@@ -438,3 +438,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 
 ## D72. Erros inesperados deixam de ser caixa-preta (2026-10-04)
 - Antes: erro inesperado numa ação do servidor (inclusive falha do Mercado Pago no checkout) só ia para o log do servidor; o Master nunca via. Agora `runAction` e o checkout registram em `error_events` (mascarado e agrupado) com origem, última loja (slug público) e um código curto que o cliente recebe na mensagem. Migração 0039: 3 colunas anuláveis, sem mexer em dados.
+
+## D73. Rolagem lateral no cadastro de produto (2026-10-04)
+- Causa raiz: o texto só-para-leitor-de-tela ("Remover") da tabela de tamanhos é posicionado de forma absoluta e escapava do recorte da tabela (o recorte não era a referência de posição), esticando a página para 476 px no celular. Correção: o recorte passa a ser `relative`. Também a base do `TwoColumn` passou a ter coluna explícita. Novo e2e `e2e/painel-loja-vazia.mjs` (25 telas do lojista com loja zerada, 2 larguras). Varredura de 69 telas (fornecedor, Master e lojista de rede) a 390 px: sem rolagem lateral.
+- Tela de erro do navegador passa a mostrar o código (digest) e a registrá-lo no painel de erros.
