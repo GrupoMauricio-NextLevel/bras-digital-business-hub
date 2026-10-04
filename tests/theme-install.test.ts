@@ -158,3 +158,25 @@ describe("compra e instalação com 1 clique", () => {
     expect((await syncNextLevelPayment(ctx.db, out.id, paidFetch)).paid).toBe(true); // idempotente
   });
 });
+
+describe("tema controla só a apresentação: dois temas, o mesmo núcleo", () => {
+  it("instalar e trocar de tema não altera catálogo, preços, estoque nem pedidos", async () => {
+    const { listStoreCatalog } = await import("@/lib/domain/catalog");
+    const { inventory, orders: ordersTable, storeProducts: sp } = await import("@/db/schema");
+    const A = ctx.actors.arena; const storeId = ctx.seed.stores.arena.id;
+    const core = async () => ({
+      catalog: (await listStoreCatalog(ctx.db, storeId, { onlyActive: false })).map((c) => ({ id: c.product.id, price: c.storeProduct.priceCents, pack: c.storeProduct.packPriceCents, active: c.storeProduct.active })).sort((a, b) => a.id.localeCompare(b.id)),
+      listings: (await ctx.db.select().from(sp).where(eq(sp.storeId, storeId))).length,
+      stock: (await ctx.db.select().from(inventory)).map((i) => `${i.variantId}:${i.onHand}:${i.reserved}`).sort(),
+      orders: (await ctx.db.select().from(ordersTable).where(eq(ordersTable.storeId, storeId))).map((o) => `${o.id}:${o.status}:${o.totalCents}`).sort(),
+    });
+    const before = await core();
+    for (const key of ["arena", "lume"]) { if (!(await ownedThemeKeys(ctx.db, storeId)).has(key)) { const r = await buyTheme(ctx.db, A, key); await pay(r.invoiceId); } await installTheme(ctx.db, A, key); expect(await core()).toEqual(before); }
+    // Os dois temas são visualmente diferentes (o destaque da página inicial muda), e o núcleo continua o mesmo.
+    const homeTypes = async () => Object.values((await resolveTemplate(ctx.db, await store(storeId), "home")).template.sections).map((x) => x.type).sort();
+    await installTheme(ctx.db, A, "arena"); const arenaHome = await homeTypes();
+    await installTheme(ctx.db, A, "lume"); const lumeHome = await homeTypes();
+    expect(arenaHome).not.toEqual(lumeHome);
+    expect(await core()).toEqual(before);
+  });
+});
