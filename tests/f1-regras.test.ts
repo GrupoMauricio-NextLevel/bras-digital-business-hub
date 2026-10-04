@@ -53,3 +53,13 @@ describe("F2: distribuição só para lojas da própria rede", () => {
     await expect(assertStoresInSupplierNetwork(ctx.db, "sup_inexistente", [other.id])).rejects.toMatchObject({ name: "ForbiddenError" });
   });
 });
+
+describe("F1.3: frete cobrado exige endereço", () => {
+  it("com frete sem endereço recusa; sem frete ou com endereço completo aceita", async () => {
+    const { createOrderSchema } = await import("@/lib/domain/orders");
+    const base = { storeId: "s", customer: { name: "Fulano", email: "f@x.com" }, items: [{ productId: "p", variantId: "v", quantity: 1 }] };
+    expect(createOrderSchema.safeParse({ ...base, shipping: { costCents: 1500 } }).success).toBe(false);
+    expect(createOrderSchema.safeParse({ ...base, shipping: { costCents: 0 } }).success).toBe(true);
+    expect(createOrderSchema.safeParse({ ...base, shipping: { costCents: 1500, address: "Rua A, 1", city: "SP", state: "SP", zip: "01310-100" } }).success).toBe(true);
+  });
+});
