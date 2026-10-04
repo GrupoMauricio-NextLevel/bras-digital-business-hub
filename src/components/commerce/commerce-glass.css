@@ -159,3 +159,6 @@
 
 /* Âncoras de página não ficam sob o cabeçalho fixo */
 [data-product="commerce"] [id] { scroll-margin-top: 5rem; }
+
+/* Busca Ctrl+K: o campo ganha anel discreto dentro da própria barra */
+.cm-app [role="dialog"] input:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; border-radius: 10px; }

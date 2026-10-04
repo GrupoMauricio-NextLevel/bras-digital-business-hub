@@ -123,6 +123,7 @@ export function CommerceMerchantShell({
   const pathname = usePathname();
   const [drawer, setDrawer] = React.useState(false);
   const [palette, setPalette] = React.useState(false);
+  const [scope, setScope] = React.useState<HTMLElement | null>(null);
   const crumbs = crumbOf(pathname, staff);
 
   React.useEffect(() => {
@@ -141,7 +142,7 @@ export function CommerceMerchantShell({
     <div className="min-w-0"><div className="truncate text-sm font-medium">{userName}</div><div className="text-xs text-muted-foreground">{staff ? "Equipe da loja" : "Administrador da loja"}</div></div>
   </div>;
 
-  return <div data-product="commerce" className="cm-app cm-theme-anim">
+  return <div data-product="commerce" className="cm-app cm-theme-anim" ref={setScope}>
     <div className="cm-ambient" aria-hidden />
     <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-lg focus:bg-surface focus:px-3 focus:py-2 focus:text-sm">Pular para o conteúdo</a>
 
@@ -193,7 +194,7 @@ export function CommerceMerchantShell({
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
 
-    {search ? <CommandPalette open={palette} onOpenChange={setPalette} items={paletteItems} quick={QUICK} search={search} /> : null}
+    {search ? <CommandPalette open={palette} onOpenChange={setPalette} items={paletteItems} quick={QUICK} search={search} container={scope} /> : null}
 
     <nav aria-label="Atalhos" className="cm-sidebar fixed inset-x-0 bottom-0 z-30 border-t border-[var(--glass-line)] pb-[max(.3rem,env(safe-area-inset-bottom))] lg:hidden" style={{ borderRight: 0 }}>
       <div className="grid grid-cols-5">{MOBILE.map((item) => {

@@ -12,7 +12,7 @@ type Item = { key: string; group: string; label: string; hint?: string; href: st
 const KIND_ICON = { order: ShoppingCart, store: Store, product: Package, supplier: Factory, customer: User } as const;
 
 /** Ctrl/Cmd+K: navegar, executar ações rápidas e buscar pedidos, lojas e produtos do seu escopo. */
-export function CommandPalette({ open, onOpenChange, items, quick, search }: { open: boolean; onOpenChange: (o: boolean) => void; items: NavItem[]; quick: QuickAction[]; search?: (q: string) => Promise<SearchHit[]> }) {
+export function CommandPalette({ open, onOpenChange, items, quick, search, container }: { open: boolean; onOpenChange: (o: boolean) => void; items: NavItem[]; quick: QuickAction[]; search?: (q: string) => Promise<SearchHit[]>; /** Onde montar a janela (o painel Commerce usa o próprio escopo de tema). */ container?: HTMLElement | null }) {
   const router = useRouter();
   const [q, setQ] = React.useState("");
   const [hits, setHits] = React.useState<SearchHit[]>([]);
@@ -51,7 +51,7 @@ export function CommandPalette({ open, onOpenChange, items, quick, search }: { o
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setQ(""); setHits([]); setActive(0); } }}>
-      <DialogPrimitive.Portal>
+      <DialogPrimitive.Portal container={container ?? undefined}>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/45 animate-fade-in" />
         <DialogPrimitive.Content className="fixed left-1/2 top-[12vh] z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-raised shadow-md animate-pop focus:outline-none" onKeyDown={onKey}>
           <DialogPrimitive.Title className="sr-only">Buscar e navegar</DialogPrimitive.Title>
