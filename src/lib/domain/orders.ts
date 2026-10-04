@@ -42,6 +42,13 @@ export const createOrderSchema = z.object({
     costCents: z.number().int().nonnegative().default(0),
     serviceName: z.string().max(120).optional(),
     days: z.number().int().nonnegative().nullable().optional(),
+  }).superRefine((shipping, ctx) => {
+    // Frete cobrado exige para onde enviar (ajuste vindo da auditoria de usabilidade).
+    if (shipping.costCents <= 0) return;
+    if (!shipping.address?.trim()) ctx.addIssue({ code: "custom", path: ["address"], message: "Informe o endereço quando houver frete." });
+    if (!shipping.city?.trim()) ctx.addIssue({ code: "custom", path: ["city"], message: "Informe a cidade quando houver frete." });
+    if (!shipping.state?.trim()) ctx.addIssue({ code: "custom", path: ["state"], message: "Informe a UF quando houver frete." });
+    if (!shipping.zip?.trim()) ctx.addIssue({ code: "custom", path: ["zip"], message: "Informe o CEP quando houver frete." });
   }).default({ costCents: 0 }),
   items: z.array(orderLineSchema).min(1, "Adicione ao menos um item"),
   customerPaymentStatus: z.enum(["PENDING", "PAID"]).default("PENDING"),
