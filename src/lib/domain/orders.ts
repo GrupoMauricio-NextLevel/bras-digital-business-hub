@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, customers, orderEvents, orderLabelFiles, orderItems, orders, storeCustomers, stores, networks, marketingConsents, type OrderStatus } from "@/db/schema";
 import { newId } from "@/lib/ids";
+import { emitEvent } from "./events";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { assertCanAccess, isSupplierSide, type Actor } from "./access";
 import { listStoreCatalog } from "./catalog";
@@ -187,6 +188,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       await tryDebitOrder(tx, orderId);
       finalStatus = (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!.status;
     }
+    await emitEvent(tx as unknown as Database, { type: "ORDER_CREATED", storeId: store.id, supplierId: network.supplierId, payload: { orderId, number: nextNumber, totalCents: total }, dedupeKey: `ORDER_CREATED:${orderId}` });
+    if (input.customerPaymentStatus === "PAID") await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: store.id, supplierId: network.supplierId, payload: { orderId, totalCents: total }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     return { orderId, number: nextNumber, status: finalStatus, totalCents: total, replayed: false as boolean };
   });
   } catch (e) {
@@ -276,6 +279,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
     if (claimed.length === 0) return null;
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
+    await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId, totalCents: order.totalCents }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
     await tryDebitOrder(tx, orderId);
     return (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!;
@@ -343,6 +347,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
       for (const [variantId, quantity] of merged) await consumeReservation(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, actorUserId: actor.userId });
     }
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: actor.role });
+    if (next === "SHIPPED") await emitEvent(tx as unknown as Database, { type: "ORDER_SHIPPED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId }, dedupeKey: `ORDER_SHIPPED:${orderId}` });
     await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next)}` });
     return "WON" as const;
   });
@@ -372,6 +377,7 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     const merged = await expandReservations(tx, items);
     for (const [variantId, quantity] of merged) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, actorUserId: actor.userId });
     if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
+    await emitEvent(tx as unknown as Database, { type: "ORDER_CANCELED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId }, dedupeKey: `ORDER_CANCELED:${orderId}` });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: "Pedido cancelado. Reserva de estoque liberada.", actorRole: actor.role });
     return "WON" as const;
   });
@@ -443,6 +449,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
       await tx.update(orders).set({ status: next }).where(eq(orders.id, orderId));
       await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: SYSTEM_ACTOR });
     }
+    await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: order.storeId, supplierId: order.supplierId, payload: { orderId, totalCents: order.totalCents, provider: info.provider }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     await tx.insert(activities).values([
       { id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} pago pelo cliente` },
       { id: newId("act"), scope: "SUPPLIER", supplierId: order.supplierId, storeId: order.storeId, type: "CUSTOMER_PAID", message: `Pedido #${order.number} de ${order.customerName} foi pago` },
@@ -470,6 +477,7 @@ export async function expireStaleReservations(db: Database, now = new Date()): P
       for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: order.id, note: "Reserva expirada" });
       await releaseDiscount(tx, order.discountId);
       await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, order.id));
+      await emitEvent(tx as unknown as Database, { type: "ORDER_CANCELED", storeId: order.storeId, supplierId: order.supplierId, payload: { orderId: order.id, reason: "RESERVATION_EXPIRED" }, dedupeKey: `ORDER_CANCELED:${order.id}` });
       await tx.insert(orderEvents).values({ id: newId("evt"), orderId: order.id, type: "RESERVATION_EXPIRED", message: "Pagamento não realizado a tempo. Pedido cancelado e estoque liberado.", actorRole: SYSTEM_ACTOR });
       expired++;
     });
@@ -486,6 +494,7 @@ export async function cancelOrderBySystem(db: Database, orderId: string, reason:
     for (const [variantId, quantity] of await expandReservations(tx, items)) await releaseStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, note: reason });
     if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
     await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
+    await emitEvent(tx as unknown as Database, { type: "ORDER_CANCELED", storeId: order.storeId, supplierId: order.supplierId, payload: { orderId, reason: "SYSTEM" }, dedupeKey: `ORDER_CANCELED:${orderId}` });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: `Pedido cancelado: ${reason}`, actorRole: SYSTEM_ACTOR });
   });
 }
