@@ -32,6 +32,7 @@ export function NewOrderForm({ items, independent = false }: { items: CatalogIte
   const [channel, setChannel] = React.useState<"WHATSAPP" | "INSTAGRAM" | "MANUAL" | "ONLINE_STORE">("WHATSAPP");
   const [paid, setPaid] = React.useState(true);
   const [shippingCents, setShippingCents] = React.useState(0);
+  const [addr, setAddr] = React.useState({ address: "", city: "", state: "", zip: "" });
   const [notes, setNotes] = React.useState("");
   const [discountCode, setDiscountCode] = React.useState("");
   const [pending, start] = React.useTransition();
@@ -70,7 +71,7 @@ export function NewOrderForm({ items, independent = false }: { items: CatalogIte
       const r = await createManualOrderAction({
         channel, saleType: hasPack ? "WHOLESALE" : "RETAIL",
         customer: { name: customer.name, email: customer.email, phone: customer.phone || undefined, marketingOptIn: customer.marketingOptIn },
-        shipping: { costCents: shippingCents },
+        shipping: { costCents: shippingCents, ...(shippingCents > 0 ? addr : {}) },
         items: lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         customerPaymentStatus: paid ? "PAID" : "PENDING", notes: notes || undefined, discountCode: discountCode.trim() || undefined,
       });
@@ -144,6 +145,14 @@ export function NewOrderForm({ items, independent = false }: { items: CatalogIte
           <CardContent className="space-y-4">
             <FormField label="Canal de venda" htmlFor="channel"><Select id="channel" value={channel} onChange={(e) => setChannel(e.target.value as typeof channel)}><option value="WHATSAPP">WhatsApp</option><option value="INSTAGRAM">Instagram</option><option value="MANUAL">Manual / balcão</option></Select></FormField>
             <FormField label="Frete (R$)" htmlFor="ship"><Input id="ship" type="number" min={0} step="0.01" value={(shippingCents / 100).toFixed(2)} onChange={(e) => setShippingCents(Math.round(Number(e.target.value) * 100))} /></FormField>
+            {shippingCents > 0 ? (
+              <div className="space-y-3 border-t border-border pt-3">
+                <p className="text-xs text-muted-foreground">Com frete, informe para onde enviar.</p>
+                <FormField label="Endereço" htmlFor="addr"><Input id="addr" value={addr.address} onChange={(e) => setAddr({ ...addr, address: e.target.value })} placeholder="Rua, número, complemento" /></FormField>
+                <div className="grid grid-cols-[1fr_72px] gap-2"><FormField label="Cidade" htmlFor="city"><Input id="city" value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} /></FormField><FormField label="UF" htmlFor="uf"><Input id="uf" maxLength={2} value={addr.state} onChange={(e) => setAddr({ ...addr, state: e.target.value.toUpperCase() })} /></FormField></div>
+                <FormField label="CEP" htmlFor="zip"><Input id="zip" inputMode="numeric" value={addr.zip} onChange={(e) => setAddr({ ...addr, zip: e.target.value })} placeholder="00000-000" /></FormField>
+              </div>
+            ) : null}
             <Switch checked={paid} onCheckedChange={setPaid} label="Cliente já pagou" />
             <dl className="space-y-1 border-t border-border pt-3 text-sm">
               <div className="flex justify-between text-muted-foreground"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(subtotal)}</dd></div>

@@ -49,7 +49,7 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
   for (let i = 0; i < BUYERS.length; i++) {
     const it = made[i % made.length]!;
     const paid = i % 4 !== 1;
-    const { orderId } = await createOrder(db, { storeId: r.storeId, customer: { name: BUYERS[i]!, email: `cliente${i + 1}@exemplo.com`, marketingOptIn: false }, shipping: { city: ["São Paulo", "Belo Horizonte", "Curitiba", "Recife"][i % 4]!, state: ["SP", "MG", "PR", "PE"][i % 4]!, costCents: 1990 }, items: [{ productId: it.productId, variantId: it.variantId, quantity: 1 + (i % 2) }], customerPaymentStatus: paid ? "PAID" : "PENDING" });
+    const { orderId } = await createOrder(db, { storeId: r.storeId, customer: { name: BUYERS[i]!, email: `cliente${i + 1}@exemplo.com`, marketingOptIn: false }, shipping: { address: `Rua Exemplo, ${100 + i}`, zip: "01310-100", city: ["São Paulo", "Belo Horizonte", "Curitiba", "Recife"][i % 4]!, state: ["SP", "MG", "PR", "PE"][i % 4]!, costCents: 1990 }, items: [{ productId: it.productId, variantId: it.variantId, quantity: 1 + (i % 2) }], customerPaymentStatus: paid ? "PAID" : "PENDING" });
     const when = daysAgo(i * 2);
     await db.update(s.orders).set({ channel: CHANNELS[i], createdAt: when, updatedAt: when, ...(i >= 5 && paid ? { status: "SHIPPED" as const } : {}) }).where(eq(s.orders.id, orderId));
   }
