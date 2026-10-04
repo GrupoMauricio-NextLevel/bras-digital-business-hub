@@ -5,6 +5,7 @@ import { seedDigitalProducts, seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
 import { seedCommerceDemo } from "./commerce-demo";
+import { seedCommerceRichDemo } from "./commerce-demo-rich";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { ensureShowcaseStores } from "@/lib/themes/showcase";
@@ -27,6 +28,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     else log.push("banco já populado (demo não reaplicado)");
     if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
+    if (await seedCommerceRichDemo(db)) log.push("loja de teste completa da Commerce criada (completo@commerce.demo)");
     await seedDemoPartner(db);
     for (const l of await ensureShowcaseStores(db)) log.push(l);
     return log;
