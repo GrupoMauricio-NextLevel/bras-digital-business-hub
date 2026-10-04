@@ -407,3 +407,14 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Doc 13 (roadmap, lacunas P0–P4, ADRs) salvo em `docs/constituicao/`; o orquestrador fica em `docs/constituicao/AGENTS-ORQUESTRADOR.md` e é referenciado pelo `AGENTS.md` do repositório, sem substituí-lo (preserva aviso do Next.js, branch de publicação e modo rápido).
 - Conflito: o orquestrador veda deploy sem autorização explícita; o dono autorizou publicar sempre que preciso, então a autorização permanente prevalece. Exceções que continuam pedindo confirmação: migração com preenchimento de dados em produção (F1.1, aguarda backup do Neon), apagar dados, mudar segredos.
 - Matriz de lacunas: consolidada em `AUDITORIA-2026-10.md` e nos `CRUZAMENTO-*`.
+
+## D66. Rodada de 2026-10-04: lojas virtuais, visual e privacidade
+- **Arena premium integrado** (destaque esportivo com produto real); Editorial e Signature passam a abrir com foto; miniaturas versionadas no nome (`-2`) para não servir imagem antiga do cache.
+- **Publicação do tema é tudo-ou-nada** (`publishAllDrafts`): páginas e estilo numa só transação; aviso (não bloqueio) de cor clara demais no editor.
+- **Saúde separada de desempenho** (doc 12): vendas baixas viram "oportunidade", não derrubam a nota.
+- **Eventos de pedido** (`ORDER_CREATED`, `PAYMENT_APPROVED`, `ORDER_SHIPPED`, `ORDER_CANCELED`) emitidos na mesma transação, idempotentes por `dedupeKey`, só com ids e valores.
+- **Privacidade (F6):** exportação CSV e exclusão de dados de UM cliente, só do dono da loja, auditada. A exclusão anonimiza identificação e preserva o pedido (valores, itens, datas). **Política de retenção continua sendo decisão do dono e jurídica**: proposta de prazo ainda não definida.
+- **Auditoria F1.3:** aplicado só "frete cobrado exige endereço". Não aplicado "pagar antes de cancelar": sem fluxo de estorno (ADR-0001) tornaria pedidos pagos impossíveis de cancelar. Não aplicado "só a Central avança a expedição": quebraria lojas independentes.
+- **Ninho não foi liberado para venda:** o ambiente bloqueou mudar o que está à venda sem confirmação direta; fica em `docs/PENDENCIAS-DO-DONO.md`.
+- **Kit de skills de análise** instalado em `.claude/skills/` (somente leitura/análise).
+- ADRs 0001 a 0005 em `docs/adr/` aguardam o dono.
