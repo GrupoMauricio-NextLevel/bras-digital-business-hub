@@ -70,7 +70,7 @@ export default async function MerchantHome() {
         <div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Fluxo recente</p><ActivityFeed items={o.recent}/></div>
       </section>
 
-      <section className="border-t border-border py-9"><div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Operação</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">Pedidos recentes</h2></div><Link href="/merchant/orders" className="flex items-center gap-2 text-xs font-semibold">Ver todos <ArrowRight className="size-4"/></Link></div><OrdersTable rows={o.recentOrders.map((order) => ({ order, storeName:store.name, storeSlug:store.slug }))} basePath="/merchant/orders" showStore={false}/></section>
+      <section className="border-t border-border py-9"><div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Operação</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">Pedidos recentes</h2></div><Link href="/merchant/orders" className="flex items-center gap-2 text-xs font-semibold">Ver todos <ArrowRight className="size-4"/></Link></div><OrdersTable rows={o.recentOrders.map((order) => ({ order, storeName:store.name, storeSlug:store.slug }))} basePath="/merchant/orders" showStore={false} showCentral={!o.independent}/></section>
     </div>
   );
 }

@@ -17,3 +17,11 @@ Evidência (leitura): `src/lib/domain/order-policy.ts` (capacidade de expedir po
 
 ## Estado do repositório
 Tudo que foi feito antes desta regra já está publicado (autorização permanente anterior). Daqui em diante: commits locais, sem push.
+
+## Lote 3: pacote D (copy da conta simples), evidência no navegador
+- Problema: na conta simples (`lojista@commerce.demo`) a tela inicial mostrava a coluna "Central" nos pedidos e `/merchant/wallet` (saldo e recargas da Central) abria pela URL.
+- Mudança mínima: carteira redireciona a conta simples para `/merchant/finance`; coluna "Central" some na tela inicial da conta simples (`showCentral={!o.independent}`).
+- Arquivos: `src/app/merchant/wallet/page.tsx`, `src/app/merchant/page.tsx`.
+- Verificação: tipos e estilo ok; navegador local: conta simples vai da carteira para o Financeiro e não vê a coluna; loja da rede SuperDrop mantém carteira e coluna (linguagem do SuperDrop preservada, como pede o aceite D).
+- Não alterado de propósito: texto de `/merchant/products` ("estoque da Central"), pois é a tela das lojas de rede.
+- Risco: baixo (só tela). Pendência: pacote E (atualização após ações) ainda não conferido no navegador.
