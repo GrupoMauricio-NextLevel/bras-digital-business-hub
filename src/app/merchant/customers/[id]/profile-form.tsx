@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { revokeConsentAction, updateCustomerProfileAction } from "@/app/actions/crm";
+import { anonymizeCustomerAction, revokeConsentAction, updateCustomerProfileAction } from "@/app/actions/crm";
 
 export function CustomerProfileForm({ storeCustomerId, notes, tags, consents }: { storeCustomerId: string; notes: string; tags: string; consents: string[] }) {
   const router = useRouter();
@@ -29,6 +29,14 @@ export function CustomerProfileForm({ storeCustomerId, notes, tags, consents }: 
               <Button variant="secondary" className="mt-2" loading={pending} onClick={() => { if (window.confirm("Revogar o consentimento deste cliente? Ele sai das exportações.")) start(async () => { const r = await revokeConsentAction(storeCustomerId); if (r.ok) { toast.success("Consentimento revogado"); router.refresh(); } else toast.error(r.error); }); }}>Revogar consentimento</Button>
             </>
           ) : <p className="text-muted-foreground">Sem consentimento: não use este contato em campanhas.</p>}
+        </div>
+        <div className="border-t border-border pt-3">
+          <p className="font-medium">Dados pessoais deste cliente</p>
+          <p className="text-muted-foreground">O titular pode pedir uma cópia dos dados ou a exclusão. A exclusão remove nome, e-mail, telefone, endereço e anotações; os pedidos ficam com valores e datas, sem identificação.</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <a href={`/api/store/customer/${storeCustomerId}/export`} className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-4 text-sm font-medium hover:bg-surface-hover">Baixar os dados</a>
+            <Button variant="danger" loading={pending} onClick={() => { if (window.confirm("Excluir os dados pessoais deste cliente? Não dá para desfazer.")) start(async () => { const r = await anonymizeCustomerAction(storeCustomerId); if (r.ok) { toast.success("Dados do cliente removidos."); router.push("/merchant/customers"); router.refresh(); } else toast.error(r.error); }); }}>Excluir dados do cliente</Button>
+          </div>
         </div>
       </CardContent>
     </Card>

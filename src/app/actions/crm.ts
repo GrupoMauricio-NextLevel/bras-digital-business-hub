@@ -6,6 +6,7 @@ import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
 import { ForbiddenError } from "@/lib/domain/errors";
 import { revokeMarketingConsents, updateStoreCustomerProfile } from "@/lib/domain/crm";
+import { anonymizeCustomer } from "@/lib/domain/privacy";
 
 async function ctx() {
   const session = await getSession();
@@ -28,5 +29,15 @@ export async function revokeConsentAction(storeCustomerId: string) {
     const r = await revokeMarketingConsents(db, storeId, storeCustomerId);
     revalidatePath("/merchant", "layout");
     return r;
+  });
+}
+
+export async function anonymizeCustomerAction(storeCustomerId: string) {
+  return runAction(async () => {
+    const session = await getSession();
+    if (!session) throw new ForbiddenError("Sessão expirada.");
+    await anonymizeCustomer(await getDb(), session.actor, storeCustomerId);
+    revalidatePath("/merchant", "layout");
+    return undefined;
   });
 }

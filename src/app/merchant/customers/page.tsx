@@ -27,6 +27,9 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHeader title="Clientes" description="Clientes da sua loja. Dados de marketing só são utilizáveis com consentimento registrado." actions={<a href="/api/crm/export" className={buttonVariants({ variant: "secondary" })}><Download /> Exportar contatos com consentimento</a>} />
+      {/* eslint-disable @next/next/no-html-link-for-pages -- downloads de arquivo, não navegação */}
+      <p className="mb-4 text-sm text-muted-foreground">Seus dados são seus. Baixe em planilha: <a className="font-medium underline underline-offset-2" href="/api/store/export/pedidos">pedidos</a> · <a className="font-medium underline underline-offset-2" href="/api/store/export/produtos">produtos</a> · <a className="font-medium underline underline-offset-2" href="/api/store/export/clientes">clientes</a>. Cada download fica registrado.</p>
+      {/* eslint-enable @next/next/no-html-link-for-pages */}
       <OperationalPulse className="mb-5" items={[
         { label: "Clientes", value: rows.length, icon: Users, tone: "neutral", hint: "na base atual" },
         { label: "Compraram novamente", value: repeat, icon: UserCheck, tone: repeat ? "success" : "neutral", hint: "mais de 1 pedido" },

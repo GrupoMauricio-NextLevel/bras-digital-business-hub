@@ -51,7 +51,7 @@ export async function revokeMarketingConsents(db: Database, storeId: string, sto
   return { revoked: done.length };
 }
 
-const csvCell = (v: string) => `"${(/^[=+\-@\t\r]/.test(v) ? `'${v}` : v).replace(/"/g, '""')}"`;
+export const csvCell = (v: string) => `"${(/^[=+\-@\t\r]/.test(v) ? `'${v}` : v).replace(/"/g, '""')}"`;
 
 /**
  * Exporta os contatos que autorizaram marketing por e-mail ou WhatsApp. Quem não consentiu (ou revogou) não sai.
