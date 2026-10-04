@@ -117,6 +117,32 @@ export async function publishGlobals(db: Database, actor: Actor, storeId: string
   return { published: true as const };
 }
 
+/**
+ * Publica TODAS as páginas com rascunho e o estilo global numa única transação: ou vai tudo, ou nada
+ * (nunca cabeçalho novo com página antiga). Valida tudo antes de gravar qualquer coisa.
+ */
+export async function publishAllDrafts(db: Database, actor: Actor, storeId: string, label = "Publicação") {
+  const store = await loadStore(db, storeId); assertEditor(actor, store);
+  const rows = await db.select().from(themeTemplates).where(eq(themeTemplates.storeId, storeId));
+  const pages = rows.filter((r) => r.draft).map((r) => ({ page: r.page as PageKind, template: normalizeTemplate(r.draft, "content", r.page as PageKind).template }));
+  const gRow = await db.query.themeGlobals.findFirst({ where: eq(themeGlobals.storeId, storeId) });
+  const globals = gRow?.draft ? normalizeGlobals(gRow.draft).globals : null;
+  if (!pages.length && !globals) return { pages: 0, globals: false };
+  const now = new Date().toISOString();
+  await db.transaction(async (tx) => {
+    for (const p of pages) {
+      await tx.update(themeTemplates).set({ published: p.template, draft: null, updatedAt: now }).where(and(eq(themeTemplates.storeId, storeId), eq(themeTemplates.page, p.page)));
+      await saveSnapshot(tx as unknown as Database, storeId, p.page, p.template, label, actor.userId);
+    }
+    if (globals) {
+      await tx.update(themeGlobals).set({ published: globals, draft: null, updatedAt: now }).where(eq(themeGlobals.storeId, storeId));
+      await tx.update(stores).set({ primaryColor: globals.style.primary, accentColor: globals.style.accent, updatedAt: now }).where(eq(stores.id, storeId));
+      await saveSnapshot(tx as unknown as Database, storeId, "globals", globals, label, actor.userId);
+    }
+  });
+  return { pages: pages.length, globals: !!globals };
+}
+
 export async function discardDraft(db: Database, actor: Actor, storeId: string, page: PageKind | "globals") {
   const store = await loadStore(db, storeId); assertEditor(actor, store);
   if (page === "globals") await db.update(themeGlobals).set({ draft: null, updatedAt: new Date().toISOString() }).where(eq(themeGlobals.storeId, storeId));

@@ -2,10 +2,8 @@
 import { assertStoreAdmin } from "@/lib/domain/access";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { themeTemplates } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { requireStoreId } from "@/lib/domain/access";
@@ -14,7 +12,7 @@ import { PREVIEW_COOKIE } from "@/lib/themes/preview";
 import { TRY_COOKIE } from "@/lib/themes/try";
 import { THEME_BY_KEY } from "@/lib/themes/catalog";
 import { buyTheme, installTheme } from "@/lib/themes/install";
-import { discardDraft, listVersions, publishGlobals, publishTemplate, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
+import { discardDraft, listVersions, publishAllDrafts, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { PAGE_KINDS } from "@/lib/themes/types";
 
 async function ctx() {
@@ -45,12 +43,9 @@ export async function saveGlobalsDraftAction(globals: unknown) {
 export async function publishThemeAction(label?: string) {
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
-    const rows = await db.select().from(themeTemplates).where(eq(themeTemplates.storeId, storeId));
-    let pages = 0;
-    for (const r of rows) if (r.draft && (await publishTemplate(db, session.actor, storeId, r.page, label ?? "Publicação")).published) pages++;
-    const g = await publishGlobals(db, session.actor, storeId, label ?? "Publicação do estilo");
+    const r = await publishAllDrafts(db, session.actor, storeId, label ?? "Publicação");
     refresh(session.store?.slug); revalidatePath("/merchant", "layout");
-    return { pages, globals: g.published };
+    return { pages: r.pages, globals: r.globals };
   });
 }
 export async function discardThemeDraftAction() {

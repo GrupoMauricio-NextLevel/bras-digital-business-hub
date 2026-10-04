@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { runMigrations } from "@/db/migrate";
 import { stores, themeSettings } from "@/db/schema";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
-import { discardDraft, listVersions, publishGlobals, publishTemplate, resolveGlobals, resolveTemplate, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
+import { discardDraft, listVersions, publishAllDrafts, publishGlobals, publishTemplate, resolveGlobals, resolveTemplate, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { addSection, moveSection, setSetting, templateFromLegacy } from "@/lib/themes/template";
 import { freshDb } from "./setup";
 
@@ -92,5 +92,25 @@ describe("regras por oferta e por dono", () => {
     const evil = structuredClone(cur); evil.sections.hero!.settings.ctaLink = "javascript:alert(1)"; evil.sections.hero!.settings.title = "x".repeat(5000);
     const r = await saveTemplateDraft(ctx.db, A(), id(), "home", evil);
     expect(r.template.sections.hero!.settings.ctaLink).toBe("/catalog"); expect(String(r.template.sections.hero!.settings.title).length).toBeLessThanOrEqual(120);
+  });
+});
+
+describe("FV: publicação atômica de todos os rascunhos", () => {
+  const A = () => ctx.actors.mantos; const id = () => ctx.seed.stores.mantos.id;
+  it("publica páginas e estilo juntos, com histórico; sem rascunho não faz nada", async () => {
+    const s = await store(id());
+    const home = (await resolveTemplate(ctx.db, s, "home")).template; const cart = (await resolveTemplate(ctx.db, s, "cart")).template;
+    await saveTemplateDraft(ctx.db, A(), id(), "home", setSetting(home, "hero", "title", "Atômico 1"));
+    await saveTemplateDraft(ctx.db, A(), id(), "cart", cart);
+    const g = (await resolveGlobals(ctx.db, s, { draft: true })).globals; await saveGlobalsDraft(ctx.db, A(), id(), { ...g, style: { ...g.style, accent: "#123456" } });
+    const r = await publishAllDrafts(ctx.db, A(), id(), "Teste");
+    expect(r).toEqual({ pages: 2, globals: true });
+    const live = await resolveTemplate(ctx.db, s, "home"); expect(live.source).toBe("published"); expect(live.template.sections.hero!.settings.title).toBe("Atômico 1"); expect(live.hasDraft).toBe(false);
+    expect((await resolveGlobals(ctx.db, s)).globals.style.accent).toBe("#123456"); expect((await store(id())).accentColor).toBe("#123456");
+    expect((await listVersions(ctx.db, A(), id(), "home")).some((v) => v.label === "Teste")).toBe(true);
+    expect(await publishAllDrafts(ctx.db, A(), id())).toEqual({ pages: 0, globals: false });
+  });
+  it("quem não é editor da loja não publica nada", async () => {
+    await expect(publishAllDrafts(ctx.db, ctx.actors.supplier, id())).rejects.toBeInstanceOf(ForbiddenError);
   });
 });
