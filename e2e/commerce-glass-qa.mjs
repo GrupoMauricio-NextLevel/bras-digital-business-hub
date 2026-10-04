@@ -119,8 +119,9 @@ const setTheme = (p, t) => p.evaluate((x) => localStorage.setItem("nl-theme", x)
       }
       // detalhe do primeiro pedido
       await p.goto(B + "/merchant/orders", { waitUntil: "networkidle" });
-      const first = p.locator("table tbody tr a, a[href^='/merchant/orders/']").first();
-      if (await first.count()) { await first.click(); await p.waitForLoadState("networkidle"); await check(p, `demo detalhe-pedido ${theme} @${w}`, { shot: `demo-pedido-detalhe-${theme}-${w}` }); }
+      const first = p.locator("a[href^='/merchant/orders/']:not([href*='propostas']):not([href$='/new']):visible").first();
+      if (!(await first.count())) fail(`demo detalhe-pedido ${theme} @${w}: nenhum pedido para abrir`);
+      else { await first.click(); await p.waitForLoadState("networkidle"); if (/propostas|\/new/.test(p.url())) fail("abriu a tela errada: " + p.url()); await check(p, `demo detalhe-pedido ${theme} @${w}`, { shot: `demo-pedido-detalhe-${theme}-${w}` }); }
     }
   }
   ok("loja com dados: telas preenchidas, vazias por filtro e detalhe");

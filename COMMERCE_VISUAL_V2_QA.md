@@ -16,7 +16,7 @@ Capturas: `docs/commerce-visual/v2/` (`novo-*` primeiro acesso, `demo-*` com dad
 ## Limitações (sem rodeio)
 - Os dados de "loja com dados" vêm do banco de demonstração (simulação de venda e a loja Fio & Linha); isso prova a aparência com conteúdo, não o comportamento com volume real. Não testei paginação com centenas de pedidos nem nomes extremos de cliente/loja.
 - Produtos: 6 itens com foto; não testei produto sem foto, variantes múltiplas, upload nem erro de validação do formulário (só o formulário vazio nos dois temas).
-- Detalhe de pedido verificado só quanto a layout, rolagem e axe; não revisei cada linha visualmente nos dois temas.
+- Detalhe de pedido: a primeira versão do roteiro abria a tela de Propostas por engano (seletor errado) e por isso o detalhe não tinha sido conferido de verdade. Corrigido: agora o roteiro falha se abrir a tela errada, e vi o detalhe real (pedido #1032) em Escuro 1440 e Claro 390: layout, linha do tempo, itens e cartões legíveis. A loja de demonstração ainda mostra conceitos do SuperDrop nesse detalhe ("Saldo (custo)", "Anexar etiqueta"); isso vem do modelo de dados, fora do escopo visual.
 - Financeiro: "Caixa da loja" e "Assinatura NextLevel" ficaram com títulos separados (e o link "Minha assinatura" do menu agora leva à seção). Configurações ganhou um índice por assunto (Dados, Pagamentos, Frete, Domínio). O conteúdo dos formulários não foi movido nem alterado. O formulário de produto é compartilhado com o SuperDrop e só herda o visual.
 - Contraste: axe sobre a composição renderizada nas telas acima; não medi todos os pares sobre o brilho do hero. Tooltips/selects nativos/calendários não foram revisados.
 - Paleta de comandos (Ctrl+K) abre em camada fora do painel com cores gerais.
