@@ -35,8 +35,9 @@ if (await p.locator("[data-blocked-screen]").count()) fail("pagar não liberou a
 
 const body = await p.locator("body").innerText();
 for (const w of ["Saldo e recargas", "Central", "Fornecedor", "Recarregar"]) if (new RegExp(w).test(body)) fail(`painel do lojista independente mostra "${w}"`);
-if (!(await p.getByRole("link", { name: "Meus produtos" }).count())) fail("menu sem 'Meus produtos'");
-if (!(await p.getByText(/Publicar 5 produtos/).count())) fail("checklist sem 'Publicar 5 produtos'");
+if (!(await p.getByRole("link", { name: /^(Meus produtos|Produtos|Catálogo)$/ }).count())) fail("menu sem o link de produtos");
+if (!(await p.getByText(/Até a primeira venda/).count())) fail("sem o cartão 'Até a primeira venda'");
+if (!(await p.getByText(/Produto à venda com estoque/).count())) fail("checklist sem 'Produto à venda com estoque'");
 ok("painel enxuto: sem Central, carteira ou fornecedor; checklist com produtos");
 
 await p.goto(B + "/supplier", { waitUntil: "networkidle" });

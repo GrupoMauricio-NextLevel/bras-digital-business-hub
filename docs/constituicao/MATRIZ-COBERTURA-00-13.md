@@ -90,3 +90,15 @@ READY 23 · PARTIAL 9 · MISSING 6 · CONFLICT 2 · NEEDS_DECISION 12.
 
 ## Lotes da noite (ordem)
 A trilha de auditoria (FEITO) · B eventos de estoque (StockOut) · C retry limitado para leituras externas · D checklist de primeira venda · E blocos do início com falha isolada · depois testes, mobile e acessibilidade do loop comercial.
+
+## Estado do primeiro loop comercial (verificado em 2026-10-04, navegador local, banco de demonstração)
+| Passo | Resultado | Prova |
+|---|---|---|
+| 1 Criar loja (conta simples, Commerce) | OK | `e2e/conta-simples.mjs` |
+| 2 a 4 Criar produto, variantes/SKU, estoque | OK | `e2e/conta-simples.mjs` |
+| 5 Publicar produto | OK | `e2e/conta-simples.mjs` |
+| 6 Ver a vitrine | OK | `e2e/storefront-journey.mjs`, 6 lojas de demonstração sem rolagem lateral a 360 px |
+| 7 a 9 Carrinho, checkout, pagamento (demonstração) | OK | `e2e/jornada-completa.mjs` (atacado + cupom) |
+| 10 a 11 Pedido criado e estoque atualizado | OK | `e2e/jornada-completa.mjs`, `tests/estoque-atomico`, `tests/checkout-idempotencia` |
+| 12 Operar o pedido no painel (etiqueta, separar, enviar, nota, avaliação) | OK | `e2e/jornada-completa.mjs` |
+**Não provado:** pagamento real no Mercado Pago (credencial de teste é do dono), concorrência real em Postgres e carga (F8).
