@@ -22,4 +22,4 @@ export async function publicTheme(db: Database, key: string): Promise<PublicThem
 }
 
 /** Imagens de apresentação (capturas das lojas de demonstração), guardadas em public/temas. */
-export const themeShot = (key: string, device: "desktop" | "mobile") => `/temas/${key}-${device}.webp`;
+export const themeShot = (key: string, device: "desktop" | "mobile") => `/temas/${key}-${device}-2.webp`;
