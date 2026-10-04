@@ -6,6 +6,7 @@ import { orderItems, orders, stores } from "@/db/schema";
 import { getSession, isDemoMode } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { DomainError, NotFoundError } from "@/lib/domain/errors";
+import { recordError } from "@/lib/domain/error-log";
 import { cancelOrderBySystem, createOrder, expireStaleReservations, type CreateOrderInput } from "@/lib/domain/orders";
 import { createPreference, MercadoPagoError } from "@/lib/payments/mercadopago";
 import { syncOrderPayment } from "@/lib/payments/service";
@@ -97,7 +98,12 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
       return { orderId: r.orderId, number: r.number, checkoutUrl: pref.checkoutUrl, mode: "MERCADO_PAGO" };
     } catch (e) {
       await cancelOrderBySystem(db, r.orderId, "falha ao iniciar o pagamento");
-      if (e instanceof MercadoPagoError) throw new DomainError("PAYMENT_PROVIDER", "Não foi possível iniciar o pagamento. Tente novamente em instantes.");
+      if (e instanceof MercadoPagoError) {
+        // O cliente vê uma mensagem simples; o Master vê o que o provedor respondeu, para qual loja e com que código.
+        const ref = Math.random().toString(36).slice(2, 8).toUpperCase();
+        await recordError(db, { origin: "SERVER", route: `/store/${slug}/checkout`, message: `Mercado Pago (HTTP ${e.status ?? "?"}): ${e.message}`, context: "mercadopago", storeSlug: slug, ref });
+        throw new DomainError("PAYMENT_PROVIDER", `Não foi possível iniciar o pagamento. Tente novamente em instantes (código ${ref}).`);
+      }
       throw e;
     }
   });

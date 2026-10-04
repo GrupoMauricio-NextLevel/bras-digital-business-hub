@@ -274,6 +274,13 @@
       "when": 1791091149226,
       "tag": "0038_trilha_de_auditoria",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1791094329184,
+      "tag": "0039_erros_com_loja_e_codigo",
+      "breakpoints": true
     }
   ]
 }

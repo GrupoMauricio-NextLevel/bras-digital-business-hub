@@ -12,7 +12,7 @@ export default async function ErrorsPage() {
   return (
     <>
       <PageHeader title="Erros do sistema" description="Falhas do servidor e das telas, agrupadas. Dados pessoais e segredos são removidos antes de guardar. Marque como resolvido depois de corrigir: se voltar, reabre sozinho." />
-      <ErrorList rows={rows.map((e) => ({ id: e.id, origin: e.origin, route: e.route, message: e.message, stack: e.stack, count: e.count, firstAt: e.firstAt, lastAt: e.lastAt, resolved: !!e.resolvedAt }))} />
+      <ErrorList rows={rows.map((e) => ({ id: e.id, origin: e.origin, route: e.route, message: e.message, stack: e.stack, count: e.count, firstAt: e.firstAt, lastAt: e.lastAt, resolved: !!e.resolvedAt, context: e.context, storeSlug: e.lastStoreSlug, ref: e.lastRef }))} />
     </>
   );
 }

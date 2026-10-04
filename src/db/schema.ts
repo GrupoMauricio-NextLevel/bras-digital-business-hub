@@ -1196,4 +1196,8 @@ export const errorEvents = pgTable("error_events", {
   firstAt: ts("first_at").notNull().defaultNow(),
   lastAt: ts("last_at").notNull().defaultNow(),
   resolvedAt: ts("resolved_at"),
+  /** De onde veio (ação do painel, provedor de pagamento...), e a última loja e código de referência afetados. Só o slug público, nunca dado pessoal. */
+  context: text("context"),
+  lastStoreSlug: text("last_store_slug"),
+  lastRef: text("last_ref"),
 }, (t) => [index("error_events_last_idx").on(t.lastAt)]);

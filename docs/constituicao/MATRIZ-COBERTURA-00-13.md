@@ -71,6 +71,11 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | 05 | Visões salvas, ações em massa, desfazer | MISSING | — | — | P3 | — | Backlog |
 | 05 | Onboarding até a primeira venda | READY | `getStoreReadiness` (itens, `percent`, `hasFirstSale`) e cartão "Até a primeira venda" no início da loja Commerce | Conferido só por teste e por tipos; a tela com checklist visível não foi vista no navegador (a conta de demonstração já vendeu) | P2 | — | Conferir visualmente com loja nova |
 
+## 6b. Observabilidade (doc 10 §121 a §130, doc 09 §107 a §111)
+| Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
+|---|---|---|---|---|---|---|---|
+| 10, 09 | Erro inesperado visível ao Master, com loja, origem e código | READY | `runAction` registra e devolve código ao usuário; erro do Mercado Pago no checkout registrado com loja e código; migração 0039; `/master/errors` mostra loja, origem e código | Sem correlação entre erro e pedido; sem log por chamada de provedor; jobs/rotinas sem registro de execução no mesmo painel | P1 | — | Registrar falha de rotinas (`job-runs`) no painel |
+
 ## 7. Dados, privacidade e confiabilidade
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
 |---|---|---|---|---|---|---|---|

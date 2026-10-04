@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { resolveErrorAction } from "@/app/actions/errors";
 import { formatDateTime } from "@/lib/utils";
 
-type Row = { id: string; origin: "SERVER" | "BROWSER"; route: string; message: string; stack: string | null; count: number; firstAt: string; lastAt: string; resolved: boolean };
+type Row = { id: string; origin: "SERVER" | "BROWSER"; route: string; message: string; stack: string | null; count: number; firstAt: string; lastAt: string; resolved: boolean; context: string | null; storeSlug: string | null; ref: string | null };
 
 export function ErrorList({ rows }: { rows: Row[] }) {
   const router = useRouter();
@@ -20,7 +20,7 @@ export function ErrorList({ rows }: { rows: Row[] }) {
             <span className="font-medium">{e.message}</span>
             <span className="text-xs text-muted-foreground">{e.count}× · {e.origin === "SERVER" ? "servidor" : "navegador"} · {e.resolved ? "resolvido" : "aberto"}</span>
           </div>
-          <div className="text-xs text-muted-foreground">Rota {e.route} · primeira {formatDateTime(e.firstAt)} · última {formatDateTime(e.lastAt)}</div>
+          <div className="text-xs text-muted-foreground">Rota {e.route}{e.storeSlug ? ` · loja ${e.storeSlug}` : ""}{e.context ? ` · origem ${e.context}` : ""}{e.ref ? ` · código ${e.ref}` : ""} · primeira {formatDateTime(e.firstAt)} · última {formatDateTime(e.lastAt)}</div>
           {e.stack ? <details className="text-xs text-muted-foreground"><summary className="cursor-pointer">Detalhe técnico</summary><p className="mt-1 break-words font-mono">{e.stack}</p></details> : null}
           {!e.resolved ? <Button variant="secondary" loading={pending} onClick={() => start(async () => { const r = await resolveErrorAction(e.id); if (r.ok) router.refresh(); else toast.error(r.error); })}>Marcar como resolvido</Button> : null}
         </li>

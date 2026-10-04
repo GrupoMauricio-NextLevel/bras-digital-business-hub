@@ -435,3 +435,6 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D71. Alvos de toque e carrossel no celular (2026-10-04)
 - Medição a 390 px: menu (36), carrinho, chips de categoria (38), botões −/+ de quantidade (14 a 16 px de altura), "Continuar comprando", "Remover", logo, setas (36) e bolinhas (8) do carrossel ficavam abaixo de 40 a 44 px. Agora todos têm no mínimo 44 px (bolinhas: área de 32 px). As setas do carrossel somem no celular, porque cobriam o texto; no lugar vale deslizar o dedo (testado) e as bolinhas.
 - Verificado nas lojas mantos-shop, Lume, Arena e Signature: sem rolagem lateral, nenhum alvo abaixo do mínimo fora do aviso de demonstração.
+
+## D72. Erros inesperados deixam de ser caixa-preta (2026-10-04)
+- Antes: erro inesperado numa ação do servidor (inclusive falha do Mercado Pago no checkout) só ia para o log do servidor; o Master nunca via. Agora `runAction` e o checkout registram em `error_events` (mascarado e agrupado) com origem, última loja (slug público) e um código curto que o cliente recebe na mensagem. Migração 0039: 3 colunas anuláveis, sem mexer em dados.
