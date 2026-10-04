@@ -43,3 +43,5 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 
 ## Etapa futura: Hub Creators, Brás Digital e China Hub
 Decisão do dono: **só entram no ar (domínio + DNS) quando já houver código desenvolvido.** O que existe hoje é apenas uma página "em breve" com lista de espera, já pronta no código mas **desligada na prática** (sem domínio apontado). Foco atual: SuperDrop (em produção, clientes e lojas para subir), NextLevel Commerce (lojas virtuais: P0 e P1a feitos) e o Master central. Ordem sugerida quando chegar a hora: Hub Creators (`creator-commerce-plataforma.md` e `creator-hub-tiktok.md`), China Hub (cadastro de fornecedor importador, mandarim/espanhol), Brás Digital (marketplace sobre lojas e pedidos).
+
+- `codex-avaliacao-profunda.md`: prompt para o Codex fazer uma avaliação profunda, só leitura, do Commerce e entregar relatório.
