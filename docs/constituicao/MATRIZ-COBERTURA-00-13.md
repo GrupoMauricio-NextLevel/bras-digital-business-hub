@@ -30,7 +30,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
 |---|---|---|---|---|---|---|---|
 | 02 | Carrinho no servidor | NEEDS_DECISION | `localStorage` | Sem revalidação persistida | P2 | ADR | Decisão |
-| 02 §46 | Idempotência do checkout | READY | `orders.idempotency_key`, `tests/checkout-idempotencia` | — | P0 | — | — |
+| 02 §46 | Idempotência do checkout | READY | `orders.idempotency_key`; pedido cancelado pelo sistema libera a chave (D70); `tests/checkout-idempotencia`, `tests/loop-negativos` | — | P0 | — | — |
 | 02, 08 | Número do pedido atômico | NEEDS_DECISION | `max(number)+1` com índice único | Corrida resulta em falha, não em duplicata | P0 | backup do Neon | Dono confirma backup; migração pronta no plano (F1.1) |
 | 02 | Pedido e itens com snapshot | READY | `orders`, `order_items` | — | — | — | — |
 | 02 | Frete cobrado exige endereço | READY | `createOrderSchema` | — | P1 | — | — |
@@ -52,7 +52,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 ## 5. Storefront, temas e visual
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
 |---|---|---|---|---|---|---|---|
-| 06 | Jornada de compra completa | READY | loja, produto, carrinho, checkout, acompanhamento | Zoom, guia de medidas, imagem por variante | P3 | — | Backlog |
+| 06 | Jornada de compra completa | READY | loja, produto, carrinho, checkout, acompanhamento; alvos de toque de 44 px e carrossel com deslizar (D71); AA nas lojas e painéis (D68); e2e de acabamento em 4 larguras passa | Zoom, guia de medidas, imagem por variante | P3 | — | Backlog |
 | 06 | Busca com tolerância a erro | PARTIAL | busca simples | — | P3 | — | Backlog |
 | 04, 07 | Publicação de tema atômica | READY | `publishAllDrafts` | — | P1 | — | — |
 | 04 | Aviso de legibilidade das cores | READY | `styleContrastWarnings` | Só cor principal/destaque | P3 | — | — |
@@ -96,7 +96,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | 12 | Alertas e recomendações | PARTIAL | `buildAlerts` | Recomendação com explicação | P4 | dados | Backlog |
 
 ## Totais
-READY 23 · PARTIAL 9 · MISSING 6 · CONFLICT 2 · NEEDS_DECISION 12.
+READY 28 · PARTIAL 8 · MISSING 6 · CONFLICT 2 · NEEDS_DECISION 12.
 
 ## Lotes da noite (ordem)
 A trilha de auditoria (FEITO) · B eventos de estoque (StockOut) · C retry limitado para leituras externas · D checklist de primeira venda · E blocos do início com falha isolada · depois testes, mobile e acessibilidade do loop comercial.
