@@ -81,6 +81,12 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const replayOf = async () => {
     if (!input.idempotencyKey) return null;
     const prior = await db.query.orders.findFirst({ where: and(eq(orders.storeId, store.id), eq(orders.idempotencyKey, input.idempotencyKey)) });
+    // Tentativa que o sistema cancelou (falha ao iniciar o pagamento, reserva vencida): não é mais "a mesma compra".
+    // Libera a chave para o cliente poder tentar de novo, em vez de devolver um pedido cancelado.
+    if (prior?.status === "CANCELED") {
+      await db.update(orders).set({ idempotencyKey: null }).where(eq(orders.id, prior.id));
+      return null;
+    }
     return prior ? { orderId: prior.id, number: prior.number, status: prior.status, totalCents: prior.totalCents, replayed: true as boolean } : null;
   };
   const already = await replayOf();

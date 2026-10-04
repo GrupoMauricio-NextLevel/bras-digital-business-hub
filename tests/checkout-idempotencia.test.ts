@@ -44,3 +44,26 @@ describe("F1.2 idempotência da finalização do checkout (02 §46)", () => {
     await expect(make(ctx.seed.stores.mantos.id, "curta")).rejects.toBeDefined();
   });
 });
+
+describe("idempotência após cancelamento do sistema", () => {
+  it("falha ao iniciar o pagamento cancela e devolve o estoque; tentar de novo com a mesma chave cria pedido novo", async () => {
+    const { cancelOrderBySystem } = await import("@/lib/domain/orders");
+    const { getLevel } = await import("@/lib/domain/inventory");
+    const { orders } = await import("@/db/schema");
+    const { eq: eqq } = await import("drizzle-orm");
+    const st = ctx.seed.stores.mantos.id;
+    const l = line() as unknown as { variantId: string };
+    const before = (await getLevel(ctx.db, l.variantId)).available;
+    const first = await make(st, "tentativa-falha:abc");
+    expect((await getLevel(ctx.db, l.variantId)).available).toBe(before - 1);
+    await cancelOrderBySystem(ctx.db, first.orderId, "falha ao iniciar o pagamento");
+    await cancelOrderBySystem(ctx.db, first.orderId, "repetido");
+    expect((await getLevel(ctx.db, l.variantId)).available).toBe(before);
+    expect((await ctx.db.query.orders.findFirst({ where: eqq(orders.id, first.orderId) }))!.status).toBe("CANCELED");
+    const retry = await make(st, "tentativa-falha:abc");
+    expect(retry.orderId).not.toBe(first.orderId);
+    expect(retry.replayed).toBe(false);
+    expect((await ctx.db.query.orders.findFirst({ where: eqq(orders.id, retry.orderId) }))!.status).not.toBe("CANCELED");
+    expect((await getLevel(ctx.db, l.variantId)).available).toBe(before - 1);
+  });
+});

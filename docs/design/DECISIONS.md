@@ -427,3 +427,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D69. Consentimento de marketing no checkout começa desmarcado (2026-10-04)
 - A caixa "Aceito receber novidades por WhatsApp" vinha marcada. Consentimento precisa ser escolha ativa do titular (doc 10, "consentimento registrável"; LGPD). Agora começa desmarcada; só grava consentimento (`marketing_consents`) se o cliente marcar. Reversível, só aumenta a proteção.
 - Efeito comercial: a base de contatos autorizados cresce mais devagar, mas fica válida para campanhas.
+
+## D70. Chave de idempotência liberada quando o sistema cancela o pedido (2026-10-04)
+- Falha encontrada na própria F1.2: se a cobrança falhava (Mercado Pago fora do ar) o pedido era cancelado, mas repetir a compra com a mesma chave devolvia o pedido cancelado e o cliente não conseguia pagar. Reproduzido em teste (vermelho), corrigido (verde): pedido cancelado deixa de contar como "a mesma tentativa"; a chave é liberada e a nova tentativa cria outro pedido. Vale também para reserva vencida.
+- Cobertura nova: `tests/checkout-idempotencia.test.ts` (cancelamento e nova tentativa; cancelar duas vezes não devolve estoque duas vezes) e `tests/loop-negativos.test.ts` (quantidade inválida, produto arquivado/anúncio desativado, variante errada, estoque insuficiente em compra mista, loja suspensa/bloqueada, e-mail inválido, produto de outra loja).
