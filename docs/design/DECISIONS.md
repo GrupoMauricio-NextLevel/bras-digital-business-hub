@@ -450,3 +450,10 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D75. Console da administração Commerce: "\n" solto e contraste (2026-10-04)
 - A tela Lojas do console `/commerce` mostrava "\n" literal (quebra de linha escapada no código). Corrigido. O console escuro falhava o contraste AA em todas as 7 telas (cinzas zinc-500/600 sobre quase preto): texto secundário passou a `zinc-400`. Verificado com axe a 1440 e 390 px: sem violação grave nem rolagem lateral.
 - Painel do lojista: "Configuração da loja incompleta" mostrava a porcentagem que falta como se fosse contagem; agora mostra quantos passos faltam.
+
+## D76. Painéis Commerce com a identidade da home institucional (2026-10-04)
+- Pedido do dono: sem tela preta no painel do lojista; seguir as cores da home institucional da Commerce, com variação para o modo escuro.
+- Causa: o painel do lojista Commerce tinha `dark:bg-[#08090b]` (preto) e destaque ciano; o console da administração era preto fixo, com cinzas e ciano escritos direto nas classes.
+- Paleta (tokens em `globals.css`, escopo `[data-product="commerce"]`, nada vaza para SuperDrop ou Master): claro = papel quente #F5F1E8, tinta azul-marinho #14213D, azul #1F47C9 em links e rótulos, amarelo-etiqueta #F2B600 só em botões de destaque; escuro = azul-marinho (#0D1530 fundo, #121C3B cartões, #F5F1E8 texto, #8FA8FF links, botão principal amarelo com texto escuro), sem preto puro.
+- As duas cascas (`commerce-merchant-shell`, `commerce-shell`) e as 7 telas do console passaram a usar os tokens (nenhuma cor fixa). Contraste medido nos dois modos: texto 14:1 e 16:1; secundário 6,5:1 e 9,7:1; azul 6,6:1 e 7,9:1.
+- Verificado com axe: 16 telas × claro e escuro × 1440 e 390 px, sem violação grave nem rolagem lateral.

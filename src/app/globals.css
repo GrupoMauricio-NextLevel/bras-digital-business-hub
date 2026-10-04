@@ -393,7 +393,8 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
 }
 
 [data-product="master"] { --product-accent:#2563eb; --product-accent-soft:#e8f0ff; --product-accent-contrast:#fff; }
-[data-product="commerce"] { --product-accent:#0891b2; --product-accent-soft:#e2f7fb; --product-accent-contrast:#fff; }
+/* Commerce: paleta da home institucional (papel quente, tinta azul-marinho, amarelo-etiqueta, azul). Ver bloco "Painéis Commerce" no fim do arquivo. */
+[data-product="commerce"] { --product-accent:#1f47c9; --product-accent-soft:#e6ecfb; --product-accent-contrast:#fff; }
 [data-product="superdrop"] { --product-accent:#f97316; --product-accent-soft:#fff0e6; --product-accent-contrast:#17120e; }
 [data-product="bras"] { --product-accent:#d59a16; --product-accent-soft:#fff6dc; --product-accent-contrast:#17130a; }
 [data-product="creators"] { --product-accent:#a855f7; --product-accent-soft:#f4e8ff; --product-accent-contrast:#fff; }
@@ -464,3 +465,43 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
 .nl-os-rule { border-color: var(--nl-hairline); }
 .nl-os-accent { color: var(--product-accent); }
 .nl-os-tabular { font-variant-numeric: tabular-nums; }
+
+/* ===========================================================================
+   Painéis Commerce (lojista e administração): mesma identidade da home institucional.
+   Claro (padrão): papel quente #F5F1E8, tinta azul-marinho #14213D, azul #1F47C9 em links e rótulos,
+   amarelo-etiqueta #F2B600 só em botões de destaque (texto escuro). Escuro: variação azul-marinho, sem preto puro.
+   Contrastes medidos (WCAG): texto 14:1, secundário 6,5:1, azul 6,6:1; no escuro 16:1, 9,7:1 e 7,9:1.
+   =========================================================================== */
+[data-product="commerce"] {
+  --product-accent:#1f47c9; --product-accent-soft:#e6ecfb; --product-accent-contrast:#ffffff; --product-accent-text:#1f47c9;
+  --background:#f5f1e8; --surface:#fbf8f0; --raised:#ffffff; --sunken:#ede7d8; --surface-muted:#ede7d8; --surface-hover:#e6dfcc;
+  --border:#dcd4bf; --border-strong:#c5bb9f;
+  --foreground:#14213d; --muted-foreground:#4b5573; --subtle-foreground:#5a6482;
+  --primary:#14213d; --primary-hover:#22335c; --primary-foreground:#f5f1e8;
+  --brand:#f2b600; --brand-foreground:#14213d; --brand-soft:#fff3cc;
+  --accent:#1f47c9; --accent-soft:#e6ecfb; --accent-foreground:#1f47c9; --on-accent:#ffffff; --link:#1f47c9; --ring:#1f47c9;
+  --sidebar-bg:#efe9da; --sidebar-fg:#14213d; --sidebar-muted:#5a6482; --sidebar-active-bg:rgba(20,33,61,.07); --sidebar-active-fg:#14213d; --sidebar-border:#dcd4bf; --sidebar-hover:rgba(20,33,61,.05);
+  background: var(--background); color: var(--foreground);
+}
+:root[data-theme="dark"] [data-product="commerce"] {
+  --product-accent:#8fa8ff; --product-accent-soft:#1b2a5e; --product-accent-contrast:#0d1530; --product-accent-text:#8fa8ff;
+  --background:#0d1530; --surface:#121c3b; --raised:#18244a; --sunken:#0a1128; --surface-muted:#1a2650; --surface-hover:#213062;
+  --border:#2b3a6b; --border-strong:#3b4c85;
+  --foreground:#f5f1e8; --muted-foreground:#b7bed6; --subtle-foreground:#9aa3c4;
+  --primary:#f2b600; --primary-hover:#ffc933; --primary-foreground:#14213d;
+  --brand:#f2b600; --brand-foreground:#14213d; --brand-soft:#3a3010;
+  --accent:#8fa8ff; --accent-soft:#1b2a5e; --accent-foreground:#a9bcff; --on-accent:#0d1530; --link:#a9bcff; --ring:#8fa8ff;
+  --sidebar-bg:#0a1128; --sidebar-fg:#e7e4da; --sidebar-muted:#9aa3c4; --sidebar-active-bg:rgba(143,168,255,.12); --sidebar-active-fg:#ffffff; --sidebar-border:#2b3a6b; --sidebar-hover:rgba(245,241,232,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-product="commerce"] {
+    --product-accent:#8fa8ff; --product-accent-soft:#1b2a5e; --product-accent-contrast:#0d1530; --product-accent-text:#8fa8ff;
+    --background:#0d1530; --surface:#121c3b; --raised:#18244a; --sunken:#0a1128; --surface-muted:#1a2650; --surface-hover:#213062;
+    --border:#2b3a6b; --border-strong:#3b4c85;
+    --foreground:#f5f1e8; --muted-foreground:#b7bed6; --subtle-foreground:#9aa3c4;
+    --primary:#f2b600; --primary-hover:#ffc933; --primary-foreground:#14213d;
+    --brand:#f2b600; --brand-foreground:#14213d; --brand-soft:#3a3010;
+    --accent:#8fa8ff; --accent-soft:#1b2a5e; --accent-foreground:#a9bcff; --on-accent:#0d1530; --link:#a9bcff; --ring:#8fa8ff;
+    --sidebar-bg:#0a1128; --sidebar-fg:#e7e4da; --sidebar-muted:#9aa3c4; --sidebar-active-bg:rgba(143,168,255,.12); --sidebar-active-fg:#ffffff; --sidebar-border:#2b3a6b; --sidebar-hover:rgba(245,241,232,.06);
+  }
+}
