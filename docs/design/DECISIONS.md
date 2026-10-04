@@ -446,3 +446,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D74. Diagnóstico de loja para o Master e regra de frete configurado (2026-10-04)
 - Nova tela `/master/stores/[slug]` (só Master, só leitura): prontidão, integrações, plano, pedidos por estado e parados, eventos de 7 dias, erros ligados à loja (com código) e mudanças recentes. Segredos nunca são lidos.
 - "Frete configurado" passa a exigir plataforma conectada ou regras próprias; frete em demonstração não conta (apareceu como ok por engano no diagnóstico).
+
+## D75. Console da administração Commerce: "\n" solto e contraste (2026-10-04)
+- A tela Lojas do console `/commerce` mostrava "\n" literal (quebra de linha escapada no código). Corrigido. O console escuro falhava o contraste AA em todas as 7 telas (cinzas zinc-500/600 sobre quase preto): texto secundário passou a `zinc-400`. Verificado com axe a 1440 e 390 px: sem violação grave nem rolagem lateral.
+- Painel do lojista: "Configuração da loja incompleta" mostrava a porcentagem que falta como se fosse contagem; agora mostra quantos passos faltam.
