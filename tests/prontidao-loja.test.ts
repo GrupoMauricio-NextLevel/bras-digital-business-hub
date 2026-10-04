@@ -35,3 +35,15 @@ describe("F4: loja pronta para vender", () => {
     expect(rd.items.find((i) => i.key === "payment")).toMatchObject({ ok: false });
   });
 });
+
+describe("F4: frete em demonstração não conta como configurado", () => {
+  it("DEMO sem regras próprias fica pendente; regras próprias ou plataforma conectada resolvem", async () => {
+    const id = ctx.seed.stores.arena.id;
+    await ctx.db.update(stores).set({ shippingStatus: "DEMO", shippingConfig: null }).where(eq(stores.id, id));
+    expect((await getStoreReadiness(ctx.db, id)).items.find((i) => i.key === "shipping")!.ok).toBe(false);
+    await ctx.db.update(stores).set({ shippingConfig: { flatCents: 1500 } }).where(eq(stores.id, id));
+    expect((await getStoreReadiness(ctx.db, id)).items.find((i) => i.key === "shipping")!.ok).toBe(true);
+    await ctx.db.update(stores).set({ shippingConfig: null, shippingStatus: "CONNECTED" }).where(eq(stores.id, id));
+    expect((await getStoreReadiness(ctx.db, id)).items.find((i) => i.key === "shipping")!.ok).toBe(true);
+  });
+});

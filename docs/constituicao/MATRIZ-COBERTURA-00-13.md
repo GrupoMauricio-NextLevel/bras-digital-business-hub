@@ -76,6 +76,11 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 |---|---|---|---|---|---|---|---|
 | 10, 09 | Erro inesperado visível ao Master, com loja, origem e código | READY | `runAction` registra e devolve código ao usuário; erro do Mercado Pago no checkout registrado com loja e código; migração 0039; `/master/errors` mostra loja, origem e código | Sem correlação entre erro e pedido; sem log por chamada de provedor; jobs/rotinas sem registro de execução no mesmo painel | P1 | — | Registrar falha de rotinas (`job-runs`) no painel |
 
+## 6c. Platform Ops
+| Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
+|---|---|---|---|---|---|---|---|
+| 03, 10 | Diagnóstico de uma loja para o Master (estado, prontidão, integrações, erros, mudanças, pedidos parados) | READY | `diagnostics.ts`, `/master/stores/[slug]`, `tests/diagnostico-loja` | Sem diagnóstico de rotinas (jobs) nem de provedores por chamada; sem ações seguras (reprocessar, reenviar) | P2 | — | Ligar `job-runs` ao diagnóstico |
+
 ## 7. Dados, privacidade e confiabilidade
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
 |---|---|---|---|---|---|---|---|

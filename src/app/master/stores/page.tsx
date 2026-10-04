@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { AlertTriangle, ExternalLink, Store, TrendingUp, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
@@ -44,7 +45,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
         rows={rows}
         rowKey={(r) => r.store.id}
         columns={[
-          { key: "name", header: "Loja", primary: true, cell: (r) => <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded text-[10px] font-bold text-white" style={{ background: r.store.primaryColor }}>{r.store.logoText}</span><div><div className="font-medium">{r.store.name}</div><div className="text-xs text-muted-foreground">{r.networkName}</div></div></div> },
+          { key: "name", header: "Loja", primary: true, cell: (r) => <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded text-[10px] font-bold text-white" style={{ background: r.store.primaryColor }}>{r.store.logoText}</span><div><Link href={`/master/stores/${r.store.slug}`} className="font-medium underline-offset-2 hover:underline">{r.store.name}</Link><div className="text-xs text-muted-foreground">{r.networkName}</div></div></div> },
           { key: "offer", header: "Oferta", cell: (r) => <StatusBadge value={r.store.offer} />, mobile: false },
           { key: "brand", header: "Marca", cell: (r) => <span className="text-xs">{brandByCode(r.brand).name}</span>, mobile: false },
           { key: "opp", header: "Oportunidade", cell: (r) => { const sg = signal.get(r.store.id); const o = sg ? opportunities(sg) : []; return o.length ? <span title={o.join(" · ")} className="text-xs text-muted-foreground">Vendas baixas</span> : <span className="text-xs text-subtle-foreground">—</span>; } },

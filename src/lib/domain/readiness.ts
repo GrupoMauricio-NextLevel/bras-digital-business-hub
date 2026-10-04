@@ -26,7 +26,8 @@ export async function getStoreReadiness(db: Database, storeId: string, now = new
   const theme = await db.query.storeThemes.findFirst({ where: eq(storeThemes.storeId, storeId) });
   const access = storeAccess(store, now);
   const hasLegal = !!store.legalName && !!(store.cnpj || store.taxId) && !!store.contactEmail;
-  const shippingSet = store.shippingStatus !== "NOT_CONFIGURED" || store.shippingConfig != null;
+  // Frete em modo demonstração não conta: só plataforma conectada ou regras próprias da loja.
+  const shippingSet = store.shippingStatus === "CONNECTED" || store.shippingConfig != null;
 
   const items: ReadinessItem[] = [
     { key: "products", ok: sellable.length > 0, blocking: true, label: "Produto à venda com estoque", detail: sellable.length ? `${sellable.length} produto(s) prontos para vender.` : "Nenhum produto ativo, com estoque e preço dentro do mínimo.", fixHref: "/merchant/catalogo" },

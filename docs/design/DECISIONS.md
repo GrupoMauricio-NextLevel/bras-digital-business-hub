@@ -442,3 +442,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D73. Rolagem lateral no cadastro de produto (2026-10-04)
 - Causa raiz: o texto só-para-leitor-de-tela ("Remover") da tabela de tamanhos é posicionado de forma absoluta e escapava do recorte da tabela (o recorte não era a referência de posição), esticando a página para 476 px no celular. Correção: o recorte passa a ser `relative`. Também a base do `TwoColumn` passou a ter coluna explícita. Novo e2e `e2e/painel-loja-vazia.mjs` (25 telas do lojista com loja zerada, 2 larguras). Varredura de 69 telas (fornecedor, Master e lojista de rede) a 390 px: sem rolagem lateral.
 - Tela de erro do navegador passa a mostrar o código (digest) e a registrá-lo no painel de erros.
+
+## D74. Diagnóstico de loja para o Master e regra de frete configurado (2026-10-04)
+- Nova tela `/master/stores/[slug]` (só Master, só leitura): prontidão, integrações, plano, pedidos por estado e parados, eventos de 7 dias, erros ligados à loja (com código) e mudanças recentes. Segredos nunca são lidos.
+- "Frete configurado" passa a exigir plataforma conectada ou regras próprias; frete em demonstração não conta (apareceu como ok por engano no diagnóstico).
