@@ -17,7 +17,10 @@ export type StoreSignal = {
 export type SupplierSignal = { id: string; name: string; status: string; walletConnected: boolean; stores: number };
 export type TowerSnapshot = { stores: StoreSignal[]; suppliers: SupplierSignal[]; serviceOrdersWaiting: number };
 
-/** Pontuação 0–100 de saúde de uma loja. Pura e explicável: devolve também os motivos. */
+/**
+ * Pontuação 0–100 de SAÚDE de uma loja: só o estado da infraestrutura comercial (pagamento, domínio, recarga, suspensão).
+ * Poucas vendas é desempenho, não defeito: isso vai para `opportunities` (documento 12 §14).
+ */
 export function healthScore(s: StoreSignal): { score: number; band: HealthBand; reasons: string[] } {
   let score = 100;
   const reasons: string[] = [];
@@ -25,14 +28,21 @@ export function healthScore(s: StoreSignal): { score: number; band: HealthBand; 
   if (s.status === "SUSPENDED") hit(40, "Loja suspensa por inadimplência");
   if (s.status === "PENDING_PAYMENT") hit(20, "Setup ainda não pago");
   if (s.status === "ACTIVE") {
-    if (s.orders30 === 0 && s.ageDays > 14) hit(30, "Sem pedidos nos últimos 30 dias");
-    else if (s.orders30 < 3 && s.ageDays > 30) hit(15, "Poucos pedidos no mês");
     if (s.offer !== "DROP_MANUAL" && !s.mpConnected) hit(15, "Mercado Pago da loja não conectado");
     if (s.awaitingFunds > 0) hit(s.oldestAwaitingHours >= 24 ? 20 : 10, `${s.awaitingFunds} pedido(s) aguardando recarga`);
     if (s.offer === "STORE_OWN" && s.customDomain && s.domainStatus !== "CONNECTED") hit(10, "Domínio próprio pendente");
   }
   score = Math.max(0, Math.min(100, score));
   return { score, band: score >= 75 ? "HEALTHY" : score >= 50 ? "ATTENTION" : "RISK", reasons };
+}
+
+/** Oportunidades comerciais (desempenho), separadas da saúde: nunca derrubam a nota. */
+export function opportunities(s: StoreSignal): string[] {
+  const out: string[] = [];
+  if (s.status !== "ACTIVE") return out;
+  if (s.orders30 === 0 && s.ageDays > 14) out.push("Sem pedidos nos últimos 30 dias: vale revisar catálogo, preços e divulgação");
+  else if (s.orders30 < 3 && s.ageDays > 30) out.push("Poucos pedidos no mês: há espaço para crescer");
+  return out;
 }
 
 export const BAND_LABEL: Record<HealthBand, string> = { HEALTHY: "Saudável", ATTENTION: "Atenção", RISK: "Risco" };

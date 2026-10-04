@@ -6,7 +6,7 @@ import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { FilterBar, FilterChips, SearchInput } from "@/components/app/filter-bar";
 import { listStoresWithPlan } from "@/lib/queries/master";
-import { BAND_LABEL, healthScore, loadTowerSnapshot } from "@/lib/domain/control-tower";
+import { BAND_LABEL, healthScore, loadTowerSnapshot, opportunities } from "@/lib/domain/control-tower";
 import { getDb } from "@/db/client";
 import { storeUrl } from "@/lib/store-url";
 import { formatBRL } from "@/lib/money";
@@ -47,6 +47,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
           { key: "name", header: "Loja", primary: true, cell: (r) => <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded text-[10px] font-bold text-white" style={{ background: r.store.primaryColor }}>{r.store.logoText}</span><div><div className="font-medium">{r.store.name}</div><div className="text-xs text-muted-foreground">{r.networkName}</div></div></div> },
           { key: "offer", header: "Oferta", cell: (r) => <StatusBadge value={r.store.offer} />, mobile: false },
           { key: "brand", header: "Marca", cell: (r) => <span className="text-xs">{brandByCode(r.brand).name}</span>, mobile: false },
+          { key: "opp", header: "Oportunidade", cell: (r) => { const sg = signal.get(r.store.id); const o = sg ? opportunities(sg) : []; return o.length ? <span title={o.join(" · ")} className="text-xs text-muted-foreground">Vendas baixas</span> : <span className="text-xs text-subtle-foreground">—</span>; } },
           { key: "health", header: "Saúde", cell: (r) => { const sg = signal.get(r.store.id); if (!sg) return null; const h = healthScore(sg); return <span title={h.reasons.join(" · ") || "Sem pendências"} className={h.band === "HEALTHY" ? "text-success" : h.band === "ATTENTION" ? "text-warning" : "text-danger"}>{BAND_LABEL[h.band]} · {h.score}</span>; } },
           { key: "balance", header: "Saldo", className: "text-right", mobile: false, cell: (r) => <span className="tabular-nums">{formatBRL(signal.get(r.store.id)?.balanceCents ?? 0)}</span> },
           { key: "status", header: "Status", cell: (r) => <StatusBadge value={r.store.status} dot /> },

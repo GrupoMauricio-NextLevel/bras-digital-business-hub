@@ -1,15 +1,22 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { freshDb } from "./setup";
-import { buildAlerts, healthScore, loadTowerSnapshot, type StoreSignal } from "@/lib/domain/control-tower";
+import { buildAlerts, healthScore, opportunities, loadTowerSnapshot, type StoreSignal } from "@/lib/domain/control-tower";
 
 const base: StoreSignal = { id: "s1", name: "Loja", slug: "loja", offer: "STORE_SUBDOMAIN", status: "ACTIVE", supplierId: "f1", supplierName: "Forn", orders30: 12, lastOrderAt: null, ageDays: 90, balanceCents: 10000, awaitingFunds: 0, oldestAwaitingHours: 0, mpConnected: true, customDomain: null, domainStatus: "NOT_CONFIGURED" };
 
 describe("saúde da loja", () => {
   it("loja ativa e vendendo é saudável", () => { const h = healthScore(base); expect(h.score).toBe(100); expect(h.band).toBe("HEALTHY"); });
-  it("sem vendas, sem Mercado Pago e travada por saldo cai para risco, com motivos", () => {
+  it("sem Mercado Pago e travada por saldo cai para atenção, com motivos; vender pouco não pesa", () => {
     const h = healthScore({ ...base, orders30: 0, mpConnected: false, awaitingFunds: 2, oldestAwaitingHours: 30 });
-    expect(h.band).toBe("RISK");
-    expect(h.reasons).toHaveLength(3);
+    expect(h.band).toBe("ATTENTION");
+    expect(h.reasons).toHaveLength(2);
+    expect(healthScore({ ...base, orders30: 0 }).score).toBe(100);
+  });
+  it("poucas vendas viram oportunidade, não defeito", () => {
+    expect(opportunities({ ...base, orders30: 0 })).toHaveLength(1);
+    expect(opportunities({ ...base, orders30: 1 })).toHaveLength(1);
+    expect(opportunities(base)).toEqual([]);
+    expect(opportunities({ ...base, orders30: 0, status: "SUSPENDED" })).toEqual([]);
   });
   it("Drop manual não é penalizado por não ter Mercado Pago; suspensa pesa", () => {
     expect(healthScore({ ...base, offer: "DROP_MANUAL", mpConnected: false }).score).toBe(100);
