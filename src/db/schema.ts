@@ -727,6 +727,23 @@ export const domainEvents = pgTable("domain_events", {
   createdAt: createdAt(),
 }, (t) => [index("domain_events_type_idx").on(t.type), index("domain_events_store_idx").on(t.storeId)]);
 
+/**
+ * Trilha de auditoria geral (documento 03 §43 a §45): quem mudou o quê e quando. Só campos não sensíveis
+ * (preço, equipe, dados legais, publicação); segredos e senhas nunca entram. Complementa `activities` (linha do tempo visível).
+ */
+export const auditLog = pgTable("audit_log", {
+  id: id(),
+  storeId: text("store_id"),
+  supplierId: text("supplier_id"),
+  actorUserId: text("actor_user_id"),
+  actorRole: text("actor_role"),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id"),
+  changes: jsonb("changes").$type<Record<string, { from?: unknown; to?: unknown }>>().notNull().default({}),
+  createdAt: createdAt(),
+}, (t) => [index("audit_log_store_idx").on(t.storeId, t.createdAt), index("audit_log_entity_idx").on(t.entityType, t.entityId)]);
+
 /** Loja adquirida por um fornecedor: origem da comissão de canal sobre o setup. */
 export const storeAcquisitions = pgTable("store_acquisitions", {
   id: id(),

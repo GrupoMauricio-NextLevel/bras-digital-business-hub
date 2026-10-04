@@ -11,6 +11,7 @@ import { assertListingPrices, assertProductListable } from "@/lib/domain/catalog
 import { requireStoreId } from "@/lib/domain/access";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { newId } from "@/lib/ids";
+import { recordAudit } from "@/lib/domain/audit";
 import { requireFeature } from "@/lib/features";
 
 async function storeCtx(opts: { allowStaff?: boolean } = {}) {
@@ -40,7 +41,10 @@ export async function updateStoreAction(input: z.input<typeof storeSchema>) {
     if (parsed.cnpj !== undefined) { const d = parsed.cnpj.replace(/\D/g, ""); if (d === "") cnpj = null; else { try { cnpj = normalizeTaxId(d); } catch { throw new DomainError("CNPJ", "CNPJ ou CPF inválido."); } } }
     const data = { ...parsed, cnpj, legalName: parsed.legalName?.trim() || null, contactEmail: parsed.contactEmail?.trim() || null, address: parsed.address?.trim() || null };
     if (data.cnpj === undefined) delete (data as { cnpj?: unknown }).cnpj;
+    const beforeStore = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
     await db.update(stores).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    const keys = Object.keys(data) as (keyof typeof data)[];
+    await recordAudit(db, session.actor, { action: "STORE_DATA_UPDATED", entityType: "store", entityId: storeId, storeId, before: Object.fromEntries(keys.map((k) => [k, (beforeStore as Record<string, unknown> | undefined)?.[k] ?? null])), after: Object.fromEntries(keys.map((k) => [k, data[k] ?? null])) });
     revalidateStore(session.store?.slug);
     return undefined;
   });
@@ -99,6 +103,7 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     const values = { active: data.active, priceCents: data.priceCents, packPriceCents: data.packPriceCents ?? null };
     if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)));
     else await db.insert(storeProducts).values({ storeId, productId: product.id, ...values });
+    await recordAudit(db, session.actor, { action: existing ? "LISTING_UPDATED" : "LISTING_CREATED", entityType: "store_product", entityId: product.id, storeId, before: existing ? { active: existing.active, priceCents: existing.priceCents, packPriceCents: existing.packPriceCents } : {}, after: values });
     revalidateStore(session.store?.slug);
     return undefined;
   });
@@ -160,6 +165,7 @@ export async function publishStoreAction(publish: boolean) {
     if (publish) requireFeature(session.store!.offer, "storefront");
     if (publish && session.store?.status !== "ACTIVE") throw new DomainError("STORE_NOT_ACTIVE", "A loja só pode ser publicada depois da confirmação do pagamento do setup.");
     await db.update(stores).set({ publishedAt: publish ? new Date().toISOString() : null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    await recordAudit(db, session.actor, { action: publish ? "STORE_PUBLISHED" : "STORE_UNPUBLISHED", entityType: "store", entityId: storeId, storeId }, { force: true });
     revalidateStore(session.store?.slug);
     return undefined;
   });
@@ -183,6 +189,7 @@ export async function connectMercadoPagoAction(input: z.input<typeof mpSchema>) 
     let account;
     try { account = await verifyAccessToken(token); } catch (e) { throw new DomainError("MP_TOKEN", e instanceof MercadoPagoError ? e.message : "Não foi possível validar o token."); }
     await db.update(stores).set({ paymentProvider: "Mercado Pago", paymentStatus: "CONNECTED", mpAccessTokenEnc: encryptSecret(token), mpPublicKey: data.publicKey?.trim() || null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    await recordAudit(db, session.actor, { action: "PAYMENT_CONNECTED", entityType: "store", entityId: storeId, storeId }, { force: true });
     revalidateStore(session.store?.slug);
     return { nickname: account.nickname, isTest: account.isTest };
   });
@@ -191,6 +198,7 @@ export async function connectMercadoPagoAction(input: z.input<typeof mpSchema>) 
 export async function disconnectMercadoPagoAction() {
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
+    await recordAudit(db, session.actor, { action: "PAYMENT_DISCONNECTED", entityType: "store", entityId: storeId, storeId }, { force: true });
     await db.update(stores).set({ paymentProvider: null, paymentStatus: "NOT_CONFIGURED", mpAccessTokenEnc: null, mpPublicKey: null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
     revalidateStore(session.store?.slug);
     return undefined;
@@ -232,7 +240,9 @@ export async function saveShippingConfigAction(input: z.input<typeof shippingCon
   return runAction(async () => {
     const { storeId, db, session } = await storeCtx();
     const cfg = shippingConfigSchema.parse(input);
+    const beforeCfg = (await db.query.stores.findFirst({ where: eq(stores.id, storeId) }))?.shippingConfig ?? {};
     await db.update(stores).set({ shippingConfig: cfg, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
+    await recordAudit(db, session.actor, { action: "SHIPPING_RULES_UPDATED", entityType: "store", entityId: storeId, storeId, before: beforeCfg as Record<string, unknown>, after: cfg as Record<string, unknown> });
     await db.insert(activities).values({ id: newId("act"), scope: "STORE", storeId, type: "SHIPPING_RULES_SAVED", message: "Regras de frete atualizadas" });
     revalidateStore(session.store?.slug);
     return undefined;

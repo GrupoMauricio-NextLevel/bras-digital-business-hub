@@ -418,3 +418,8 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Ninho não foi liberado para venda:** o ambiente bloqueou mudar o que está à venda sem confirmação direta; fica em `docs/PENDENCIAS-DO-DONO.md`.
 - **Kit de skills de análise** instalado em `.claude/skills/` (somente leitura/análise).
 - ADRs 0001 a 0005 em `docs/adr/` aguardam o dono.
+
+## D67. Trilha de auditoria geral (ADR-0005, parte 1) implementada (2026-10-04)
+- Tabela nova `audit_log` (migração 0038, só cria tabela, sem mexer em dados) e `recordAudit`/`listAudit`. Registra quem, o quê e antes/depois só de campos não sensíveis; campos com token, senha, chave ou Pix gravam apenas "alterado".
+- Escopo desta etapa: dados da loja, preço/ativação de produto, publicação, frete, equipe, conexão do Mercado Pago, exportação e exclusão de dados de cliente. Visível ao dono em `/merchant/auditoria`.
+- Não decide CSP nem assinatura do webhook (partes 2 e 3 do ADR-0005 seguem aguardando o dono).

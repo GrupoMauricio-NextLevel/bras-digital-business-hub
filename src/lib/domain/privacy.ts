@@ -5,6 +5,7 @@ import { newId } from "@/lib/ids";
 import { ForbiddenError, NotFoundError } from "./errors";
 import { assertStoreAdmin, type Actor } from "./access";
 import { csvCell } from "./crm";
+import { recordAudit } from "./audit";
 
 /**
  * Privacidade e exportação (Constituição arts. 21 e 29). Tudo filtrado pela loja do ator; só o dono da loja.
@@ -33,6 +34,7 @@ export async function exportStoreCsv(db: Database, actor: Actor, kind: "orders" 
     const rows = await db.select({ sc: storeCustomers, c: customers }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(eq(storeCustomers.storeId, storeId));
     csv = toCsv(["nome", "email", "telefone", "pedidos", "total_gasto_centavos", "etiquetas"], rows.map((r) => [r.c.name, r.c.email, r.c.phone ?? "", String(r.sc.ordersCount), String(r.sc.totalSpentCents), r.sc.tags.join(" ")]));
   }
+  await recordAudit(db, actor, { action: "DATA_EXPORT", entityType: "store", entityId: storeId, storeId }, { force: true });
   await audit(db, storeId, "DATA_EXPORT", `Exportação de ${kind === "orders" ? "pedidos" : kind === "products" ? "produtos" : "clientes"} em CSV.`);
   return csv;
 }
@@ -71,6 +73,7 @@ export async function anonymizeCustomer(db: Database, actor: Actor, storeCustome
     await tx.update(storeCustomers).set({ notes: null, tags: [] }).where(eq(storeCustomers.id, sc.id));
     const others = await tx.select({ id: storeCustomers.id }).from(storeCustomers).where(and(eq(storeCustomers.customerId, sc.customerId), ne(storeCustomers.id, sc.id))).limit(1);
     if (!others.length) await tx.update(customers).set({ name: "Cliente removido", email: `removido-${tag}@anonimo.invalid`, phone: null }).where(eq(customers.id, sc.customerId));
+    await recordAudit(tx as unknown as Database, actor, { action: "CUSTOMER_ANONYMIZED", entityType: "store_customer", entityId: sc.id, storeId }, { force: true });
     await audit(tx as unknown as Database, storeId, "CUSTOMER_ANONYMIZED", "Dados pessoais de um cliente foram removidos a pedido do titular.");
   });
 }

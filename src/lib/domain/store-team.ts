@@ -1,5 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
+import { recordAudit } from "./audit";
 import type { Database } from "@/db/client";
 import { stores, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
@@ -42,6 +43,7 @@ export async function inviteStaff(db: Database, actor: Actor, raw: z.input<typeo
   if (!store) throw new NotFoundError("Loja não encontrada.");
   const id = newId("usr");
   await db.insert(users).values({ id, name: d.name, email: d.email, role: "STORE_OWNER", storeRole: "STAFF", organizationId: store.organizationId, storeId, passwordHash: hashPassword(d.password), mustChangePassword: true });
+  await recordAudit(db, actor, { action: "STAFF_INVITED", entityType: "user", entityId: id, storeId }, { force: true });
   return { id };
 }
 
@@ -50,4 +52,5 @@ export async function removeStaff(db: Database, actor: Actor, userId: string) {
   const storeId = ownerStore(actor);
   const done = await db.update(users).set({ disabledAt: new Date().toISOString() }).where(and(eq(users.id, userId), eq(users.storeId, storeId), eq(users.storeRole, "STAFF"))).returning({ id: users.id });
   if (done.length === 0) throw new NotFoundError("Pessoa da equipe não encontrada.");
+  await recordAudit(db, actor, { action: "STAFF_REMOVED", entityType: "user", entityId: userId, storeId }, { force: true });
 }

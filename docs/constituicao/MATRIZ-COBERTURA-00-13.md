@@ -12,7 +12,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | 10 | Login com limite de tentativas | PARTIAL | `login-limit.ts` | Em memória, por instância | P1 | ADR-0003 | Compartilhar entre instâncias quando houver mais de uma |
 | 03, 10 | Sessões revogáveis, 2FA | NEEDS_DECISION | cookie assinado sem registro | Sem revogação nem 2FA | P1 | — | ADR-0003 |
 | 03 | Um usuário em várias lojas | NEEDS_DECISION | `users.store_id` único | — | P2 | ADR-0004 | Decisão do dono |
-| 03 | Trilha de auditoria geral | MISSING | `activities` (visível) e `domain_events` | Sem "quem mudou o quê" | P1 | ADR-0005 | Lote A (tabela aditiva) |
+| 03 | Trilha de auditoria geral | READY | `audit_log` (migração 0038), `audit.ts`, `/merchant/auditoria`; ligada em dados da loja, preço, publicação, frete, equipe, Mercado Pago, exportação e exclusão de cliente | Preço no Master e ações de fornecedor ainda sem registro | P1 | — | Estender a ações do Master e do fornecedor |
 | 00 art. 4 | Loja sem fornecedor obrigatório | CONFLICT | Central oculta (D62) | Acoplamento em 9 tabelas | P1 | ADR-0002 | NEEDS_DECISION |
 | 10 | Cabeçalhos de segurança, CSP | PARTIAL | `next.config.ts` (sem CSP) | CSP ausente | P1 | ADR-0005 | CSP em modo relatório |
 
@@ -86,7 +86,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | 12 | Alertas e recomendações | PARTIAL | `buildAlerts` | Recomendação com explicação | P4 | dados | Backlog |
 
 ## Totais
-READY 22 · PARTIAL 9 · MISSING 7 · CONFLICT 2 · NEEDS_DECISION 12.
+READY 23 · PARTIAL 9 · MISSING 6 · CONFLICT 2 · NEEDS_DECISION 12.
 
 ## Lotes da noite (ordem)
-A trilha de auditoria (aditiva) · B eventos de estoque (StockOut) · C retry limitado para leituras externas · D checklist de primeira venda · E blocos do início com falha isolada · depois testes, mobile e acessibilidade do loop comercial.
+A trilha de auditoria (FEITO) · B eventos de estoque (StockOut) · C retry limitado para leituras externas · D checklist de primeira venda · E blocos do início com falha isolada · depois testes, mobile e acessibilidade do loop comercial.

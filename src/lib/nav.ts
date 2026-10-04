@@ -121,6 +121,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Saldo e recargas", href: "/merchant/wallet", icon: "Wallet", group: "Financeiro" },
       { label: "Financeiro", href: "/merchant/finance", icon: "Landmark", group: "Financeiro" },
       { label: "Equipe", href: "/merchant/team", icon: "Users", group: "Conta" },
+      { label: "Histórico", href: "/merchant/auditoria", icon: "Settings", group: "Conta" },
       { label: "Configurações", href: "/merchant/settings", icon: "Settings", group: "Conta" },
     ],
     quick: [

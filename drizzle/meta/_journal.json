@@ -267,6 +267,13 @@
       "when": 1791061775855,
       "tag": "0037_checkout_chave_idempotencia",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791091149226,
+      "tag": "0038_trilha_de_auditoria",
+      "breakpoints": true
     }
   ]
 }
