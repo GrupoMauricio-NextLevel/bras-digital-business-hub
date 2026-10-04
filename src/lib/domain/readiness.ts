@@ -1,6 +1,6 @@
 import { and, eq, gt, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { inventory, productVariants, products, storeProducts, storeThemes, stores } from "@/db/schema";
+import { inventory, orders, productVariants, products, storeProducts, storeThemes, stores } from "@/db/schema";
 import { NotFoundError } from "./errors";
 import { storeAccess } from "./store-access";
 
@@ -9,7 +9,7 @@ import { storeAccess } from "./store-access";
  * `blocking` = sem isso o cliente não consegue comprar de verdade; os demais são recomendados.
  */
 export type ReadinessItem = { key: string; ok: boolean; blocking: boolean; label: string; detail: string; fixHref: string };
-export type StoreReadiness = { ready: boolean; items: ReadinessItem[]; missingBlocking: ReadinessItem[] };
+export type StoreReadiness = { ready: boolean; items: ReadinessItem[]; missingBlocking: ReadinessItem[]; /** Marco de primeira venda: já existe pedido pago na loja. */ hasFirstSale: boolean; percent: number };
 
 export async function getStoreReadiness(db: Database, storeId: string, now = new Date()): Promise<StoreReadiness> {
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
@@ -38,5 +38,7 @@ export async function getStoreReadiness(db: Database, storeId: string, now = new
     { key: "legal", ok: hasLegal, blocking: false, label: "Dados legais da loja", detail: hasLegal ? "Razão social, documento e e-mail de contato preenchidos." : "Faltam razão social, CNPJ/CPF ou e-mail de contato (dão confiança ao cliente).", fixHref: "/merchant/settings" },
   ];
   const missingBlocking = items.filter((i) => i.blocking && !i.ok);
-  return { ready: missingBlocking.length === 0, items, missingBlocking };
+  const paid = await db.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.customerPaymentStatus, "PAID"))).limit(1);
+  const percent = Math.round((items.filter((i) => i.ok).length / items.length) * 100);
+  return { ready: missingBlocking.length === 0, items, missingBlocking, hasFirstSale: paid.length > 0, percent };
 }

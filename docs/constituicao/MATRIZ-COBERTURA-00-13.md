@@ -64,12 +64,12 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 ## 6. Painel do lojista e operação
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |
 |---|---|---|---|---|---|---|---|
-| 05 | "Loja pronta para vender" | READY | `getStoreReadiness` + aviso no início | Checklist completo até a 1ª venda | P2 | — | Lote D (checklist) |
+| 05 | "Loja pronta para vender" | READY | `getStoreReadiness` + aviso no início | — | P2 | — | — |
 | 05, 12 | Início sem KPI cenográfico | PARTIAL | métricas reais; desempenho × operação | Falha isolada por bloco | P2 | — | Lote E |
 | 05 | Pedido: ações pela modalidade | READY | `order-policy`, `tests/onda1-commerce` | — | P1 | — | — |
 | 05 | Textos da conta simples sem Central | READY | fixes de hoje | — | P2 | — | — |
 | 05 | Visões salvas, ações em massa, desfazer | MISSING | — | — | P3 | — | Backlog |
-| 05 | Onboarding até a primeira venda | PARTIAL | teste de 7 dias | Marco de primeira venda | P2 | — | Lote D |
+| 05 | Onboarding até a primeira venda | READY | `getStoreReadiness` (itens, `percent`, `hasFirstSale`) e cartão "Até a primeira venda" no início da loja Commerce | Conferido só por teste e por tipos; a tela com checklist visível não foi vista no navegador (a conta de demonstração já vendeu) | P2 | — | Conferir visualmente com loja nova |
 
 ## 7. Dados, privacidade e confiabilidade
 | Doc | Capacidade | Estado | Evidência | Gap | Prio | Dep. | Próxima ação |

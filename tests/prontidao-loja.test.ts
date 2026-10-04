@@ -15,13 +15,14 @@ describe("F4: loja pronta para vender", () => {
     expect(rd.ready).toBe(false);
     expect(rd.missingBlocking.map((i) => i.key)).toEqual(expect.arrayContaining(["products", "payment", "published"]));
     expect(rd.items.every((i) => i.fixHref.startsWith("/merchant/"))).toBe(true);
+    expect(rd.hasFirstSale).toBe(false); expect(rd.percent).toBeLessThan(100);
   });
   it("loja com produto, estoque, pagamento conectado e publicada fica pronta; sem estoque deixa de ficar", async () => {
     const id = ctx.seed.stores.mantos.id;
     await ctx.db.update(stores).set({ paymentStatus: "CONNECTED", publishedAt: new Date().toISOString(), status: "ACTIVE", trialEndsAt: null, paidUntil: null }).where(eq(stores.id, id));
     const rd = await getStoreReadiness(ctx.db, id);
     expect(rd.missingBlocking).toEqual([]);
-    expect(rd.ready).toBe(true);
+    expect(rd.ready).toBe(true); expect(rd.hasFirstSale).toBe(true);
     await ctx.db.update(storeProducts).set({ active: false }).where(eq(storeProducts.storeId, id));
     const rd2 = await getStoreReadiness(ctx.db, id);
     expect(rd2.ready).toBe(false);

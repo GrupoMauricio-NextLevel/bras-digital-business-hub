@@ -70,6 +70,16 @@ export default async function MerchantHome() {
         <div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Fluxo recente</p><ActivityFeed items={o.recent}/></div>
       </section>
 
+      {readiness && !readiness.hasFirstSale ? (
+        <section className="border-t border-border py-9" aria-label="Até a primeira venda">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Até a primeira venda</p><h2 className="mt-1 text-xl font-semibold tracking-tight">{readiness.ready ? "Tudo pronto: falta só o primeiro cliente" : "Faltam passos para você vender"}</h2></div><span className="text-sm tabular-nums text-muted-foreground">{readiness.percent}% pronto</span></div>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {readiness.items.map((i) => (
+              <li key={i.key}><Link href={i.fixHref} className="flex items-start gap-3 border border-border bg-surface px-3 py-2.5 text-sm transition-colors hover:bg-surface-hover"><span aria-hidden className={i.ok ? "mt-0.5 text-success" : "mt-0.5 text-subtle-foreground"}>{i.ok ? "✓" : "○"}</span><span className="min-w-0"><span className="block font-medium">{i.label}{i.blocking ? "" : " (recomendado)"}</span><span className="block text-xs text-muted-foreground">{i.detail}</span></span></Link></li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <section className="border-t border-border py-9"><div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Operação</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">Pedidos recentes</h2></div><Link href="/merchant/orders" className="flex items-center gap-2 text-xs font-semibold">Ver todos <ArrowRight className="size-4"/></Link></div><OrdersTable rows={o.recentOrders.map((order) => ({ order, storeName:store.name, storeSlug:store.slug }))} basePath="/merchant/orders" showStore={false} showCentral={!o.independent}/></section>
     </div>
   );
