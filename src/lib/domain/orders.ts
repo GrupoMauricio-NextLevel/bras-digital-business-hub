@@ -12,7 +12,7 @@ import { listStoreCatalog } from "./catalog";
 import { consumeReservation, releaseStock, reserveStock } from "./inventory";
 import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-status";
 import { capabilitiesForSupplier } from "./finance";
-import { assertCanFulfilOrder, assertManualPaymentConfirmable, storeModality } from "./order-policy";
+import { assertCanFulfilOrder, assertManualPaymentConfirmable, isIndependentStore, storeModality } from "./order-policy";
 import { tryDebitOrder } from "./wallet";
 import { unitPriceForQty } from "./price-tiers";
 import { priceDiscount, redeemDiscount, releaseDiscount } from "./discounts";
@@ -287,7 +287,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
     const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
     await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId, totalCents: order.totalCents }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
-    if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
+    if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actor);
     await tryDebitOrder(tx, orderId);
     return (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!;
   });
@@ -311,7 +311,7 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
     await tx.update(orders).set({ shippingLabelStatus: "READY", shippingLabelCode: data.code, shippingCarrier: data.carrier }).where(eq(orders.id, orderId));
     const next = resolveFulfillmentStatus({ ...order, shippingLabelStatus: "READY" });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "LABEL_READY", message: `Etiqueta ${data.code} (${data.carrier}) registrada.`, actorRole: actor.role });
-    if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next), actor);
+    if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actor);
     if (next === "READY_TO_PICK") {
       await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId: order.supplierId, storeId: order.storeId, type: "READY_TO_PICK", message: `Pedido #${order.number} pronto para separação` });
     }
@@ -353,9 +353,9 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
       const merged = await expandReservations(tx, items);
       for (const [variantId, quantity] of merged) await consumeReservation(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId, actorUserId: actor.userId });
     }
-    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: actor.role });
+    await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actorRole: actor.role });
     if (next === "SHIPPED") await emitEvent(tx as unknown as Database, { type: "ORDER_SHIPPED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId }, dedupeKey: `ORDER_SHIPPED:${orderId}` });
-    await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next)}` });
+    await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: `STATUS_${next}`, message: `Pedido #${order.number}: ${statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId))}` });
     return "WON" as const;
   });
   if (result === "LOST") {
@@ -408,7 +408,7 @@ async function expandReservations(db: Database, items: (typeof orderItems.$infer
   return merged;
 }
 
-function statusMessage(s: OrderStatus): string {
+function statusMessage(s: OrderStatus, independent = false): string {
   const map: Record<OrderStatus, string> = {
     PENDING: "Aguardando pagamento do cliente.",
     AWAITING_CENTRAL_PAYMENT: "Aguardando recarga de saldo do lojista.",
@@ -420,6 +420,11 @@ function statusMessage(s: OrderStatus): string {
     DELIVERED: "Pedido entregue.",
     CANCELED: "Pedido cancelado.",
   };
+  // Conta simples (independente) não tem Central nem saldo de recarga: o texto fala do que ela realmente vê.
+  if (independent) {
+    map.AWAITING_CENTRAL_PAYMENT = "Pagamento confirmado. Liberando o pedido para separação.";
+    map.READY_TO_PICK = "Pronto para separação.";
+  }
   return map[s];
 }
 
@@ -454,7 +459,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: `Pagamento do cliente aprovado (${info.provider === "MERCADO_PAGO" ? "Mercado Pago" : "demonstração"} · ${info.reference}).`, actorRole: SYSTEM_ACTOR });
     if (next !== order.status) {
       await tx.update(orders).set({ status: next }).where(eq(orders.id, orderId));
-      await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next), actorRole: SYSTEM_ACTOR });
+      await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actorRole: SYSTEM_ACTOR });
     }
     await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: order.storeId, supplierId: order.supplierId, payload: { orderId, totalCents: order.totalCents, provider: info.provider }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     await tx.insert(activities).values([

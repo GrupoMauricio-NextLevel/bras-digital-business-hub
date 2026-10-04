@@ -252,3 +252,31 @@ describe("Pedido mínimo (atacado)", () => {
     await expect(setMinOrder(ctx.db, i.storeId, -5)).rejects.toThrow();
   });
 });
+
+describe("Onda 1, pacote D: textos do pedido na conta simples", () => {
+  it("conta simples não vê 'recarga de saldo' nem 'Central' na linha do tempo do pedido pago", async () => {
+    const { freshDb } = await import("./setup");
+    const { signupMember } = await import("@/lib/domain/store-access");
+    const { createProduct } = await import("@/lib/domain/products");
+    const { createOrder, confirmCustomerPayment } = await import("@/lib/domain/orders");
+    const { actorFromUser } = await import("@/lib/domain/access");
+    const { orderEvents, users, productVariants, storeProducts } = await import("@/db/schema");
+    const { eq } = await import("drizzle-orm");
+    const { db } = await freshDb();
+    const r = await signupMember(db, { storeName: "Loja Simples Texto", ownerName: "Dona Texto", email: "texto@simples.loja", password: "senha-forte-123", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
+    const owner = (await db.query.users.findFirst({ where: eq(users.email, "texto@simples.loja") }))!;
+    const actor = actorFromUser(owner);
+    const { financeInvoices } = await import("@/db/schema");
+    const { markInvoicePaid } = await import("@/lib/domain/finance");
+    const plan = (await db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!;
+    await markInvoicePaid(db, plan.id);
+    const supplierId = (await (await import("@/lib/domain/independent")).independentSupplierOfStore(db, r.storeId))!;
+    const { productId } = await createProduct(db, supplierId, { name: "Item", sku: "TXT-1", categoryName: "Geral", images: [], costCents: 1000, suggestedPriceCents: 3000, minimumPriceCents: 2000, sizes: [{ size: "U", initialStock: 5 }] } as never);
+    const v = (await db.query.productVariants.findFirst({ where: eq(productVariants.productId, productId) }))!;
+    await db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 3000, active: true }).onConflictDoNothing();
+    const o = await createOrder(db, { storeId: r.storeId, customer: { name: "Cli Texto", email: "cli@texto.com" }, items: [{ productId, variantId: v.id, quantity: 1 }], channel: "WHATSAPP" } as never);
+    await confirmCustomerPayment(db, actor, o.orderId);
+    const msgs = (await db.select().from(orderEvents).where(eq(orderEvents.orderId, o.orderId))).map((e) => e.message).join(" | ");
+    expect(msgs).not.toMatch(/recarga|Central/i);
+  });
+});

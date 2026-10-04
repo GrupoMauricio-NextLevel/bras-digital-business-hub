@@ -25,3 +25,10 @@ Tudo que foi feito antes desta regra já está publicado (autorização permanen
 - Verificação: tipos e estilo ok; navegador local: conta simples vai da carteira para o Financeiro e não vê a coluna; loja da rede SuperDrop mantém carteira e coluna (linguagem do SuperDrop preservada, como pede o aceite D).
 - Não alterado de propósito: texto de `/merchant/products` ("estoque da Central"), pois é a tela das lojas de rede.
 - Risco: baixo (só tela). Pendência: pacote E (atualização após ações) ainda não conferido no navegador.
+
+## Lote 4: pacote E conferido; texto do pedido da conta simples corrigido
+- Pacote E (navegador local, conta simples): confirmar pagamento manual atualizou o detalhe do pedido na hora e a lista de pedidos na navegação seguinte, sem sair e entrar. Conforme.
+- Problema achado: na linha do tempo do pedido pago da conta simples aparecia "Aguardando recarga de saldo do lojista" (e "Pronto para separação na Central"), conceitos que ela não tem.
+- Mudança mínima: `statusMessage(s, independent)` em `src/lib/domain/orders.ts` troca só esses dois textos quando a loja é independente; SuperDrop mantém os textos atuais. Nenhuma regra de pedido, estoque ou dinheiro mudou.
+- Teste: `tests/onda1-commerce.test.ts` (novo caso) + vizinhos `orders`, `tenancy`, `independent`, `eventos-pedido`, `checkout-idempotencia` (todos passando).
+- Risco: baixo (apenas texto). Eventos antigos já gravados continuam com o texto antigo.
