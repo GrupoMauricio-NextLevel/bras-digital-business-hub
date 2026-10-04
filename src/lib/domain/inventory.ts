@@ -1,6 +1,7 @@
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { inventory, inventoryMovements, productVariants } from "@/db/schema";
+import { emitEvent } from "./events";
 import { DomainError } from "./errors";
 import { newId } from "@/lib/ids";
 
@@ -81,6 +82,8 @@ export async function reserveStock(db: Database, variantId: string, quantity: nu
     throw new DomainError("INSUFFICIENT_STOCK", `Estoque insuficiente (disponível: ${available}, solicitado: ${quantity}).`);
   }
   await logMovement(db, variantId, "RESERVE", quantity, ref, { onHand: row.onHand, reserved: row.reserved - quantity }, row);
+  // Esgotou com esta reserva (a atualização condicional garante uma única transição por vez). Só ids e números.
+  if (row.onHand - row.reserved === 0) await emitEvent(db, { type: "STOCK_OUT", payload: { variantId, onHand: row.onHand } });
 }
 
 /** Libera reserva (cancelamento/expiração). */

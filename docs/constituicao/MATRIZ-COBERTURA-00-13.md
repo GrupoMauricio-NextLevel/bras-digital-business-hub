@@ -35,7 +35,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 | 02 | Pedido e itens com snapshot | READY | `orders`, `order_items` | — | — | — | — |
 | 02 | Frete cobrado exige endereço | READY | `createOrderSchema` | — | P1 | — | — |
 | 02 | Estados de pedido (pagamento e envio separados) | PARTIAL | `order-status.ts` mistura | Máquina única | P2 | ADR | Backlog |
-| 02, 12 | Eventos de pedido | READY | `ORDER_CREATED`, `PAYMENT_APPROVED`, `ORDER_SHIPPED`, `ORDER_CANCELED` | Eventos de estoque (StockOut) | P1 | — | Lote B |
+| 02, 12 | Eventos de pedido e estoque | READY | `ORDER_CREATED`, `PAYMENT_APPROVED`, `ORDER_SHIPPED`, `ORDER_CANCELED`, `STOCK_OUT` | — | P1 | — | — |
 | 02 | Pagamento e estorno como entidades | NEEDS_DECISION | só `payment_provider/reference` | Sem tentativas nem estorno parcial | P1 | ADR-0001 | Decisão |
 | 02 | Remessas (rastreio por pacote) | MISSING | um código por pedido | — | P3 | ADR | Backlog |
 | 02 | Cancelar pedido pago exige estorno | NEEDS_DECISION | cancelamento direto | Depende de fluxo de estorno | P1 | ADR-0001 | Junto do estorno |

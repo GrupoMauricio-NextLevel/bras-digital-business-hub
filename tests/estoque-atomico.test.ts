@@ -64,3 +64,22 @@ describe("estoque: conferir e gravar numa instrução só (Constituição art. 1
     expect(fin.onHandAfter).toBe(last.onHand); expect(fin.reservedAfter).toBe(last.reserved);
   });
 });
+
+describe("F3: evento de estoque esgotado", () => {
+  it("emite STOCK_OUT uma vez ao reservar a última peça, e não ao falhar depois", async () => {
+    const { domainEvents } = await import("@/db/schema");
+    const { eq: eqq } = await import("drizzle-orm");
+    const { freshDb: fresh } = await import("./setup");
+    const { db, seed } = await fresh();
+    const v = (await db.query.productVariants.findFirst({ where: (t, { eq: e }) => e(t.productId, seed.productIds[0]!) }))!;
+    const { getLevel, reserveStock } = await import("@/lib/domain/inventory");
+    const { available } = await getLevel(db, v.id);
+    await reserveStock(db, v.id, available - 1);
+    expect((await db.select().from(domainEvents).where(eqq(domainEvents.type, "STOCK_OUT"))).length).toBe(0);
+    await reserveStock(db, v.id, 1);
+    const evs = await db.select().from(domainEvents).where(eqq(domainEvents.type, "STOCK_OUT"));
+    expect(evs).toHaveLength(1); expect(evs[0]!.payload).toMatchObject({ variantId: v.id });
+    await expect(reserveStock(db, v.id, 1)).rejects.toMatchObject({ code: "INSUFFICIENT_STOCK" });
+    expect((await db.select().from(domainEvents).where(eqq(domainEvents.type, "STOCK_OUT")))).toHaveLength(1);
+  });
+});
