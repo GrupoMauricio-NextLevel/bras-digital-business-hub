@@ -22,7 +22,7 @@ export function DataTable<T>({ rows, columns, rowKey, empty, rowHref, className 
   const primary = columns.find((c) => c.primary) ?? columns[0]!;
   const rest = columns.filter((c) => c !== primary && c.mobile !== false);
   return (
-    <div className={cn("rounded-lg border border-border bg-surface shadow-sm", className)}>
+    <div className={cn("ds-table rounded-lg border border-border bg-surface shadow-sm", className)}>
       <div className="hidden md:block">
         <Table>
           <THead>

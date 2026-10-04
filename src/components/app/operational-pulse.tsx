@@ -25,7 +25,7 @@ const TONE: Record<PulseTone, string> = {
 
 export function OperationalPulse({ items, label = "Pulso operacional", className }: { items: PulseItem[]; label?: string; className?: string }) {
   return (
-    <section className={cn("overflow-hidden rounded-lg border border-border bg-surface", className)} aria-label={label}>
+    <section className={cn("ds-pulse overflow-hidden rounded-lg border border-border bg-surface", className)} aria-label={label}>
       <div className="grid divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4">
         {items.map((item, index) => {
           const Icon = item.icon;

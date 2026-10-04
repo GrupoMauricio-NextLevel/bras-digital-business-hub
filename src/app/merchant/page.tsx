@@ -12,6 +12,7 @@ import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { isCommerceStore } from "@/lib/store-brand";
 import { getStoreReadiness } from "@/lib/domain/readiness";
+import { CommerceHome } from "@/components/commerce/commerce-home";
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -40,6 +41,8 @@ export default async function MerchantHome() {
     o.pendingLabel.length ? { key:"labels", title:"Etiquetas pendentes", detail:"A Central só inicia a separação depois do PDF da etiqueta.", count:o.pendingLabel.length, href:"/merchant/labels", action:"Enviar", icon:Printer } : null,
     o.pendingCustomer.length ? { key:"customer", title:"Clientes não concluíram o pagamento", detail:"Pedidos iniciados que ainda não avançaram para a operação.", count:o.pendingCustomer.length, href:"/merchant/orders?status=PENDING", action:"Ver pedidos", icon:ShoppingCart } : null,
   ]).filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+  if (commerce) return <CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} />;
 
   return (
     <div className="mx-auto max-w-[1180px]">

@@ -55,6 +55,7 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
         onLogout={logout}
         assisted={assisted}
         onReturnToMaster={returnToCommerceMasterAction}
+        search={globalSearchAction}
       >
         {children}
       </CommerceMerchantShell>

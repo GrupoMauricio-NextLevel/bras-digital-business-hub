@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f4f6f5" }, { media: "(prefers-color-scheme: dark)", color: "#09100c" }] };
 
 /** Aplica o tema salvo antes da primeira pintura, evitando o flash. */
-const THEME_SCRIPT = `try{var t=localStorage.getItem("nl-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
+const THEME_SCRIPT = `try{var t=localStorage.getItem("nl-theme");if(t==="dark"||t==="light"||t==="system")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();

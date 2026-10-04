@@ -1,0 +1,110 @@
+/* ===========================================================================
+   NextLevel Commerce, vidro azul (Claro e Escuro). Escopo [data-product="commerce"]: nada vaza para SuperDrop ou Master.
+   Claro (padrão, sem escolha salva): fundo gelo, azul royal, vidro branco translúcido.
+   Escuro: azul-marinho em camadas, royal e electric blue, sem preto chapado.
+   Escolha do usuário: data-theme="light" | "dark" | "system" (system segue o aparelho).
+   Contrastes medidos (WCAG): texto 15:1 / 17:1; secundário 5,8:1 / 10,5:1; azul 5,5:1 / 6,5:1; botão azul 5,9:1 / 4,9:1.
+   =========================================================================== */
+[data-product="commerce"] {
+  --product-accent:#2457e6; --product-accent-soft:#e3ecfd; --product-accent-contrast:#ffffff; --product-accent-text:#2457e6;
+  --background:#f4f7fc; --surface:#ffffff; --raised:#ffffff; --sunken:#eaf1fc; --surface-muted:#eaf1fc; --surface-hover:#e1ebfa;
+  --border:#d5e0f2; --border-strong:#b9c9e6;
+  --foreground:#14213a; --muted-foreground:#52627b; --subtle-foreground:#5d6c85;
+  --primary:#2457e6; --primary-hover:#1b47c4; --primary-foreground:#ffffff;
+  --brand:#2457e6; --brand-foreground:#ffffff; --brand-soft:#e3ecfd;
+  --accent:#2457e6; --accent-soft:#e3ecfd; --accent-foreground:#1b47c4; --on-accent:#ffffff; --link:#2457e6; --ring:#2457e6;
+  --sidebar-bg:#f8faff; --sidebar-fg:#14213a; --sidebar-muted:#52627b; --sidebar-active-bg:rgba(36,87,230,.12); --sidebar-active-fg:#1b47c4; --sidebar-border:rgba(36,87,230,.14); --sidebar-hover:rgba(36,87,230,.06);
+  --glass-id:linear-gradient(135deg,rgba(255,255,255,.80) 0%,rgba(226,237,255,.56) 100%); --glass-fn:rgba(255,255,255,.80); --glass-work:rgba(255,255,255,.95); --glass-side:rgba(250,252,255,.80);
+  --glass-line:rgba(36,87,230,.14); --glass-edge:rgba(255,255,255,.95); --glass-shadow:0 10px 34px rgba(36,87,230,.10),0 2px 8px rgba(20,33,58,.06); --glow:rgba(36,87,230,.38);
+  --ambient:radial-gradient(60% 55% at 88% -5%,rgba(66,120,255,.30),transparent 70%),radial-gradient(45% 45% at 5% 95%,rgba(120,170,255,.22),transparent 70%),radial-gradient(35% 30% at 50% 40%,rgba(255,255,255,.7),transparent 70%);
+  color-scheme:light;
+}
+:root[data-theme="dark"] [data-product="commerce"] {
+  --product-accent:#6b96ff; --product-accent-soft:#16295a; --product-accent-contrast:#081329; --product-accent-text:#6b96ff;
+  --background:#081329; --surface:#132444; --raised:#18294f; --sunken:#0d1c38; --surface-muted:#0d1c38; --surface-hover:#1a2d57;
+  --border:#243a66; --border-strong:#34508a;
+  --foreground:#f0f5ff; --muted-foreground:#b5c4df; --subtle-foreground:#93a6c8;
+  --primary:#3468e8; --primary-hover:#4a7bf2; --primary-foreground:#ffffff;
+  --brand:#3468e8; --brand-foreground:#ffffff; --brand-soft:#16295a;
+  --accent:#6b96ff; --accent-soft:#16295a; --accent-foreground:#9ab7ff; --on-accent:#081329; --link:#8fb0ff; --ring:#9ab7ff;
+  --sidebar-bg:#0a1730; --sidebar-fg:#e6eeff; --sidebar-muted:#93a6c8; --sidebar-active-bg:rgba(107,150,255,.18); --sidebar-active-fg:#ffffff; --sidebar-border:rgba(120,160,255,.22); --sidebar-hover:rgba(107,150,255,.08);
+  --glass-id:linear-gradient(135deg,rgba(48,84,170,.46) 0%,rgba(13,28,56,.66) 100%); --glass-fn:rgba(19,36,68,.68); --glass-work:rgba(19,36,68,.93); --glass-side:rgba(8,19,41,.74);
+  --glass-line:rgba(120,160,255,.22); --glass-edge:rgba(170,196,255,.20); --glass-shadow:0 14px 44px rgba(0,0,0,.40); --glow:rgba(70,120,255,.55);
+  --ambient:radial-gradient(60% 55% at 85% -8%,rgba(52,104,232,.50),transparent 70%),radial-gradient(50% 45% at 0% 100%,rgba(30,72,190,.38),transparent 70%),radial-gradient(30% 25% at 55% 35%,rgba(100,150,255,.10),transparent 70%);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] [data-product="commerce"] {
+  --product-accent:#6b96ff; --product-accent-soft:#16295a; --product-accent-contrast:#081329; --product-accent-text:#6b96ff;
+  --background:#081329; --surface:#132444; --raised:#18294f; --sunken:#0d1c38; --surface-muted:#0d1c38; --surface-hover:#1a2d57;
+  --border:#243a66; --border-strong:#34508a;
+  --foreground:#f0f5ff; --muted-foreground:#b5c4df; --subtle-foreground:#93a6c8;
+  --primary:#3468e8; --primary-hover:#4a7bf2; --primary-foreground:#ffffff;
+  --brand:#3468e8; --brand-foreground:#ffffff; --brand-soft:#16295a;
+  --accent:#6b96ff; --accent-soft:#16295a; --accent-foreground:#9ab7ff; --on-accent:#081329; --link:#8fb0ff; --ring:#9ab7ff;
+  --sidebar-bg:#0a1730; --sidebar-fg:#e6eeff; --sidebar-muted:#93a6c8; --sidebar-active-bg:rgba(107,150,255,.18); --sidebar-active-fg:#ffffff; --sidebar-border:rgba(120,160,255,.22); --sidebar-hover:rgba(107,150,255,.08);
+  --glass-id:linear-gradient(135deg,rgba(48,84,170,.46) 0%,rgba(13,28,56,.66) 100%); --glass-fn:rgba(19,36,68,.68); --glass-work:rgba(19,36,68,.93); --glass-side:rgba(8,19,41,.74);
+  --glass-line:rgba(120,160,255,.22); --glass-edge:rgba(170,196,255,.20); --glass-shadow:0 14px 44px rgba(0,0,0,.40); --glow:rgba(70,120,255,.55);
+  --ambient:radial-gradient(60% 55% at 85% -8%,rgba(52,104,232,.50),transparent 70%),radial-gradient(50% 45% at 0% 100%,rgba(30,72,190,.38),transparent 70%),radial-gradient(30% 25% at 55% 35%,rgba(100,150,255,.10),transparent 70%);
+  color-scheme:dark;
+  }
+}
+
+/* ---- Estrutura: fundo ambiente, barra lateral e cabeçalho de vidro ------------------------------------------ */
+.cm-app { position: relative; isolation: isolate; min-height: 100dvh; background: var(--background); color: var(--foreground); }
+.cm-ambient { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--ambient); }
+.cm-ambient::after { content: ""; position: absolute; inset: -20%; background: radial-gradient(35% 30% at 70% 10%, var(--glow), transparent 70%); opacity: .22; animation: cm-drift 22s ease-in-out infinite alternate; }
+.cm-sidebar { background: var(--glass-side); border-right: 1px solid var(--glass-line); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); box-shadow: inset -1px 0 0 var(--glass-edge); }
+.cm-header { background: color-mix(in srgb, var(--background) 72%, transparent); border-bottom: 1px solid var(--glass-line); -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3); }
+
+/* ---- Três níveis de vidro -------------------------------------------------------------------------------------- */
+.cm-glass-id { position: relative; overflow: hidden; background: var(--glass-id); border: 1px solid var(--glass-line); border-radius: 24px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5); }
+.cm-glass-id::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 38%); opacity: .5; }
+.cm-glass-fn { background: var(--glass-fn); border: 1px solid var(--glass-line); border-radius: 18px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3); }
+.cm-glass-work { background: var(--glass-work); border: 1px solid var(--glass-line); border-radius: 16px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cm-sidebar, .cm-header, .cm-glass-id, .cm-glass-fn { background: var(--surface); }
+}
+
+/* Componentes compartilhados dentro do painel Commerce ganham a materialidade sem mudar de código nas outras marcas. */
+[data-product="commerce"] .ds-card { background: var(--glass-fn); border-color: var(--glass-line); border-radius: 16px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); }
+[data-product="commerce"] .ds-table { background: var(--glass-work); border-color: var(--glass-line); border-radius: 16px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); overflow: hidden; }
+[data-product="commerce"] .ds-pulse { background: var(--glass-fn); border-color: var(--glass-line); border-radius: 18px; box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow); }
+
+/* ---- Navegação ---------------------------------------------------------------------------------------------------- */
+.cm-nav-item { position: relative; display: flex; min-height: 44px; align-items: center; gap: 12px; border-radius: 12px; padding: 0 12px; font-size: 14px; color: var(--sidebar-muted); transition: background-color .16s ease, color .16s ease, box-shadow .16s ease; }
+.cm-nav-item:hover { background: var(--sidebar-hover); color: var(--foreground); }
+.cm-nav-item[aria-current="page"] { background: var(--sidebar-active-bg); color: var(--sidebar-active-fg); font-weight: 600; box-shadow: inset 0 0 0 1px var(--glass-line), inset 0 1px 0 var(--glass-edge); }
+.cm-nav-item:focus-visible, .cm-nav-group:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.cm-nav-group { display: flex; min-height: 44px; width: 100%; align-items: center; gap: 12px; border-radius: 12px; padding: 0 12px; font-size: 14px; font-weight: 600; color: var(--foreground); transition: background-color .16s ease; }
+.cm-nav-group:hover { background: var(--sidebar-hover); }
+.cm-nav-group[data-has-active="true"] { color: var(--sidebar-active-fg); }
+.cm-nav-sub { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s ease; }
+.cm-nav-sub[data-open="true"] { grid-template-rows: 1fr; }
+.cm-nav-sub > div { overflow: hidden; }
+
+/* ---- Movimento: pequeno, curto e sem atrapalhar a operação ------------------------------------------------- */
+@keyframes cm-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
+@keyframes cm-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes cm-wave { from { transform: translateX(0); } to { transform: translateX(-4%); } }
+.cm-enter { animation: cm-enter .28s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.cm-lift { transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+.cm-lift:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--product-accent) 40%, var(--glass-line)); }
+.cm-lift:active { transform: translateY(0) scale(.99); }
+.cm-hero-art { position: absolute; right: -2%; top: 0; height: 100%; width: min(58%, 640px); pointer-events: none; opacity: .95; }
+.cm-hero-art .cm-wave { animation: cm-wave 16s ease-in-out infinite alternate; transform-origin: center; }
+.cm-hero-glow { position: absolute; inset: -30% -10% auto auto; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 68%); opacity: .35; pointer-events: none; animation: cm-drift 20s ease-in-out infinite alternate; }
+.cm-theme-anim, .cm-theme-anim .cm-glass-fn, .cm-theme-anim .cm-glass-work { transition: background-color .24s ease, border-color .24s ease, color .24s ease; }
+@media (max-width: 767px) { .cm-hero-art { display: none; } .cm-ambient::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .cm-ambient::after, .cm-hero-glow, .cm-hero-art .cm-wave, .cm-enter { animation: none !important; }
+  .cm-nav-sub, .cm-lift, .cm-nav-item, .cm-theme-anim, .cm-theme-anim * { transition: none !important; }
+  .cm-lift:hover { transform: none; }
+}
+
+/* Seletor de tema (Claro / Escuro / Sistema) */
+.cm-switch { background: var(--glass-fn); border: 1px solid var(--glass-line); }
+.cm-switch-opt { color: var(--muted-foreground); transition: background-color .16s ease, color .16s ease; }
+.cm-switch-opt:hover { color: var(--foreground); }
+.cm-switch-opt[aria-checked="true"] { background: var(--primary); color: var(--primary-foreground); }
+.cm-switch-opt:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
