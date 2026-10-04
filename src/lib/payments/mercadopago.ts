@@ -3,7 +3,7 @@
  * pois o cliente paga direto para o lojista (sem split no MVP).
  * `fetchImpl` é injetável para testes.
  */
-import { isTimeoutError, timeoutSignal } from "@/lib/http-timeout";
+import { isRetryableStatus, isTimeoutError, retryDelayMs, sleep, timeoutSignal } from "@/lib/http-timeout";
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
@@ -17,22 +17,34 @@ export class MercadoPagoError extends Error {
   }
 }
 
+/**
+ * Chamada ao Mercado Pago. Leituras (GET) tentam até 3 vezes em falha temporária (sem resposta, 429, 5xx);
+ * cobranças e criações (POST) nunca são repetidas aqui, para não cobrar duas vezes.
+ */
 async function call<T>(fetchImpl: FetchLike, token: string, path: string, init: RequestInit = {}): Promise<T> {
-  let res: Response;
-  try {
-    res = await fetchImpl(`${API}${path}`, { ...init, signal: init.signal ?? timeoutSignal(), headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(init.headers ?? {}) } });
-  } catch (e) {
-    if (isTimeoutError(e)) throw new MercadoPagoError("O Mercado Pago demorou demais para responder. Tente de novo em instantes.", 504);
-    throw e;
+  const isRead = !init.method || init.method.toUpperCase() === "GET";
+  const attempts = isRead ? 3 : 1;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    let res: Response;
+    try {
+      res = await fetchImpl(`${API}${path}`, { ...init, signal: init.signal ?? timeoutSignal(), headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(init.headers ?? {}) } });
+    } catch (e) {
+      lastError = isTimeoutError(e) ? new MercadoPagoError("O Mercado Pago demorou demais para responder. Tente de novo em instantes.", 504) : e;
+      if (attempt < attempts) { await sleep(retryDelayMs(attempt)); continue; }
+      throw lastError;
+    }
+    if (isRead && attempt < attempts && isRetryableStatus(res.status)) { await sleep(retryDelayMs(attempt)); continue; }
+    const text = await res.text();
+    let body: unknown = null;
+    try { body = text ? JSON.parse(text) : null; } catch { /* corpo não JSON */ }
+    if (!res.ok) {
+      const msg = (body as { message?: string } | null)?.message ?? `HTTP ${res.status}`;
+      throw new MercadoPagoError(res.status === 401 ? "Access token do Mercado Pago inválido ou expirado." : `Mercado Pago: ${msg}`, res.status);
+    }
+    return body as T;
   }
-  const text = await res.text();
-  let body: unknown = null;
-  try { body = text ? JSON.parse(text) : null; } catch { /* corpo não JSON */ }
-  if (!res.ok) {
-    const msg = (body as { message?: string } | null)?.message ?? `HTTP ${res.status}`;
-    throw new MercadoPagoError(res.status === 401 ? "Access token do Mercado Pago inválido ou expirado." : `Mercado Pago: ${msg}`, res.status);
-  }
-  return body as T;
+  throw lastError;
 }
 
 export type MpAccount = { id: number; nickname: string; siteId: string; isTest: boolean };

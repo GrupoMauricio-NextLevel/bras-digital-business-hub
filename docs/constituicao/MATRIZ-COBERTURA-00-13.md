@@ -45,7 +45,7 @@ Agrupada por capacidade, na ordem real de dependência (não por número de docu
 |---|---|---|---|---|---|---|---|
 | 09 | Pagamento só vale conferido na API | READY | `payments/mercadopago.ts`, `markCustomerPaidBySystem` | — | P0 | — | — |
 | 09, 10 | Assinatura do webhook | NEEDS_DECISION | corpo nunca confiável | Sem `x-signature` | P1 | segredo do dono | Dono gera o segredo |
-| 09, 10 | Tempo máximo das chamadas externas | READY | `http-timeout.ts` | Sem retry/backoff/disjuntor | P1 | — | Lote C (retry com limite para leituras) |
+| 09, 10 | Tempo máximo e repetição das chamadas externas | READY | `http-timeout.ts`; leituras ao Mercado Pago repetem até 3 vezes em falha temporária, cobrança nunca repete | Sem disjuntor; cotação de frete sem repetição | P1 | — | Backlog |
 | 09 | Contrato por categoria e saúde de integração | PARTIAL | adapters existem | Saúde só por coluna | P2 | — | Backlog |
 | 09 | Pixels e funil de eventos | MISSING | — | Sem `view_item` etc. | P3 | — | Backlog (precisa de consentimento) |
 
