@@ -11,7 +11,7 @@ export default async function CommerceStoresPage() {
       {data.stores.map(({store,access})=><div key={store.id} className="grid gap-3 border-b border-border py-5 md:grid-cols-[1.25fr_.55fr_.55fr_.75fr_auto] md:items-center">
         <div><div className="text-sm font-medium text-foreground">{store.name}</div><div className="mt-1 text-xs text-muted-foreground">/{store.slug}</div></div>
         <div className="text-xs text-muted-foreground">{store.publishedAt?"Publicada":"Rascunho"}</div>
-        <div className="text-xs text-muted-foreground">{access.state}{access.daysLeft!==null?` · ${access.daysLeft}d`:""}</div>
+        <div className="text-xs text-muted-foreground">{({PAID:"Assinatura em dia",TRIAL:"Em teste",FREE:"Sem plano",BLOCKED:"Bloqueada"} as Record<string,string>)[access.state]??access.state}{access.daysLeft!==null&&access.daysLeft>0?` · ${access.daysLeft} dias`:""}</div>
         <div className="text-xs text-muted-foreground">{store.domainStatus==="CONNECTED"?(store.customDomain??"Conectado"):"Sem domínio próprio"}</div>
         <CommerceStoreActions storeId={store.id} status={store.status} slug={store.slug} canExtendTrial={access.state==="TRIAL" || access.state==="BLOCKED"} />
       </div>)}

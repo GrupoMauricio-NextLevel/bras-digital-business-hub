@@ -17,10 +17,10 @@ Capturas: `docs/commerce-visual/v2/` (`novo-*` primeiro acesso, `demo-*` com dad
 - Os dados de "loja com dados" vêm do banco de demonstração (simulação de venda e a loja Fio & Linha); isso prova a aparência com conteúdo, não o comportamento com volume real. Não testei paginação com centenas de pedidos nem nomes extremos de cliente/loja.
 - Produtos: 6 itens com foto; não testei produto sem foto, variantes múltiplas, upload nem erro de validação do formulário (só o formulário vazio nos dois temas).
 - Detalhe de pedido verificado só quanto a layout, rolagem e axe; não revisei cada linha visualmente nos dois temas.
-- Financeiro e Configurações apenas herdam o novo tom; não foram recompostos.
+- Financeiro: "Caixa da loja" e "Assinatura NextLevel" ficaram com títulos separados (e o link "Minha assinatura" do menu agora leva à seção). Configurações ganhou um índice por assunto (Dados, Pagamentos, Frete, Domínio). O conteúdo dos formulários não foi movido nem alterado. O formulário de produto é compartilhado com o SuperDrop e só herda o visual.
 - Contraste: axe sobre a composição renderizada nas telas acima; não medi todos os pares sobre o brilho do hero. Tooltips/selects nativos/calendários não foram revisados.
 - Paleta de comandos (Ctrl+K) abre em camada fora do painel com cores gerais.
 - Não rodei a suíte completa (`vitest`), por só mudar apresentação. Não testei Safari/Firefox, leitor de tela, nem fonte ampliada do sistema.
-- ADM: a coluna "Acesso" mostra "PAID · 31d" cru (dado já existente; não alterei).
+- ADM: coluna "Acesso" agora em português (Assinatura em dia, Em teste, Sem plano, Bloqueada); Configurações mostra "Não configurado" em vez do código interno do domínio.
 - Reação do hero ao ponteiro não foi implementada.
 - Isolamento Master/SuperDrop: estilos ficam sob `[data-product="commerce"]`; `FilterTabs` e as mudanças em Pedidos/Temas só entram para lojas Commerce (Pedidos) ou como classes inertes fora do Commerce. Não fiz comparação visual lado a lado do SuperDrop/Master nesta rodada.

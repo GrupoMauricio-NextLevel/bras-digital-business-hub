@@ -49,7 +49,7 @@ export default async function MerchantFinancePage() {
       {commerce ? null : <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="Pendências que podem afetar sua operação." emptyMessage="Nenhuma pendência financeira crítica agora." />}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <SectionTitle title={commerce ? "Movimentação das vendas" : "Pedidos"} />
+          <SectionTitle title={commerce ? "Caixa da loja: movimentação das vendas" : "Pedidos"} description={commerce ? "Dinheiro que entra pelos pedidos dos seus clientes." : undefined} />
           <DataTable rows={f.rows} rowKey={(o) => o.id} rowHref={(o) => `/merchant/orders/${o.id}`} columns={[
             { key: "n", header: "Pedido", primary: true, cell: (o) => <div><div className="font-medium">#{o.number}</div><div className="text-xs text-muted-foreground">{o.customerName}</div></div> },
             { key: "status", header: "Status", cell: (o) => <OrderStatusBadge status={o.status} /> },
@@ -60,7 +60,8 @@ export default async function MerchantFinancePage() {
             { key: "margin", header: "Margem", className: "text-right", cell: (o) => <span className="font-medium tabular-nums text-success">{formatBRL(o.subtotalCents - o.costTotalCents)}</span> },
           ]} />
         </div>
-        <div className="space-y-4">
+        <div id="assinatura" className="scroll-mt-24 space-y-4">
+          <SectionTitle title="Assinatura NextLevel" description="O que você paga à plataforma, separado do dinheiro das suas vendas." />
           {f.subscription ? (
             <Card>
               <CardHeader><CardTitle>Mensalidade</CardTitle><StatusBadge value={f.subscription.sub.status} dot /></CardHeader>

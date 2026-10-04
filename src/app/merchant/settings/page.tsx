@@ -36,11 +36,12 @@ export default async function MerchantSettingsPage() {
   return (
     <>
       <PageHeader title="Configurações" description={commerce ? "Dados da empresa, pagamentos, frete, domínio e integrações da sua operação de e-commerce." : "Dados da loja e integrações (modo demonstração: nada é conectado de verdade)."} />
+      {commerce ? <nav aria-label="Nesta página" className="cm-tabs mb-5">{[["#dados", "Dados da loja"], ["#payments", "Pagamentos"], ["#shipping", "Frete"], ["#domain", "Domínio"]].map(([href, label]) => <a key={href} href={href} className="cm-tab">{label}</a>)}</nav> : null}
       <OperationalPulse className="mb-5" items={[
         { label: "Dados da loja", value: profileComplete ? "Prontos" : "Incompletos", icon: Store, tone: profileComplete ? "success" : "warning", hint: s.name },
         { label: "Pagamentos", value: paymentConnected ? "Conectado" : "Pendente", icon: CreditCard, tone: paymentConnected ? "success" : "danger", hint: "Mercado Pago" },
         { label: "Frete", value: shippingReady ? "Configurado" : "Pendente", icon: Truck, tone: shippingReady ? "success" : "warning", hint: connect?.provider ?? s.shippingProvider ?? "sem provedor" },
-        { label: "Domínio", value: domainReady ? "Conectado" : s.domainStatus, icon: Globe, tone: domainReady ? "success" : "neutral", hint: s.customDomain ?? "subdomínio da plataforma" },
+        { label: "Domínio", value: domainReady ? "Conectado" : s.domainStatus === "PENDING" ? "Aguardando" : "Não configurado", icon: Globe, tone: domainReady ? "success" : "neutral", hint: s.customDomain ?? "subdomínio da plataforma" },
       ]} />
       <ActionQueue className="mb-6" items={queue} title="Configurações que exigem atenção" description="O que falta para sua loja operar com menos atrito." emptyMessage="As configurações essenciais estão prontas." />
       <section id="dados">

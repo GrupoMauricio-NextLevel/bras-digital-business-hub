@@ -156,3 +156,6 @@
 .cm-admin .cm-ambient { opacity: .55; }
 .cm-admin .cm-ambient::after { animation: none; }
 .cm-admin main { padding-top: 1.5rem; }
+
+/* Âncoras de página não ficam sob o cabeçalho fixo */
+[data-product="commerce"] [id] { scroll-margin-top: 5rem; }
