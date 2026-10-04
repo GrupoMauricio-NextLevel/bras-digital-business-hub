@@ -1,6 +1,7 @@
 import type { ThemeSettingsData } from "@/db/schema";
 import { defaultsFor, normalizeSettings, normalizeValue } from "./settings";
 import { sectionSchema } from "./sections";
+import { contrastRatio } from "@/lib/ds/color";
 import { ID_PATTERN, LIMITS, type BlockInstance, type PageKind, type SectionInstance, type SectionRegion, type SettingValue, type Template, type ThemeGlobals, type ThemeStyle } from "./types";
 
 export const emptyTemplate = (): Template => ({ v: 1, sections: {}, order: [] });
@@ -209,7 +210,18 @@ export const STYLE_DEFS = [
 export function normalizeGlobals(raw: unknown): { globals: ThemeGlobals; issues: string[] } {
   const r = isObj(raw) ? raw : {};
   const h = normalizeTemplate(r.header, "header"); const f = normalizeTemplate(r.footer, "footer");
-  return { globals: { v: 1, style: normalizeStyle(isObj(r.style) ? r.style : undefined), header: h.template, footer: f.template }, issues: [...h.issues, ...f.issues] };
+  const style = normalizeStyle(isObj(r.style) ? r.style : undefined);
+  return { globals: { v: 1, style, header: h.template, footer: f.template }, issues: [...h.issues, ...f.issues, ...styleContrastWarnings(style)] };
+}
+
+/** Avisos de legibilidade (não bloqueiam): as cores escolhidas precisam ser legíveis sobre o fundo branco da loja. */
+export function styleContrastWarnings(style: { primary: string; accent: string }): string[] {
+  const out: string[] = [];
+  try {
+    if (contrastRatio(style.primary, "#ffffff") < 4.5) out.push("A cor principal é clara demais: textos e links podem ficar difíceis de ler no fundo branco.");
+    if (contrastRatio(style.accent, "#ffffff") < 2) out.push("A cor de destaque é clara demais para aparecer bem no fundo branco.");
+  } catch { /* cor inválida já é corrigida em normalizeStyle */ }
+  return out;
 }
 
 /** Modelo de cada página quando a loja ainda não tem um salvo (o mesmo visual que a loja sempre teve). */

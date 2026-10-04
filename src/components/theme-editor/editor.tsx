@@ -64,7 +64,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
       const run = (async () => {
         setSave("saving");
         for (const p of parts.pages) { const r = await saveTemplateDraftAction(p, snapshot.pages[p]); if (!r.ok) { toast.error(r.error); setSave("error"); return false; } }
-        if (parts.globals) { const r = await saveGlobalsDraftAction(snapshot.globals); if (!r.ok) { toast.error(r.error); setSave("error"); return false; } }
+        if (parts.globals) { const r = await saveGlobalsDraftAction(snapshot.globals); if (!r.ok) { toast.error(r.error); setSave("error"); return false; } const warn = r.data.issues.find((i) => i.includes("clara demais")); if (warn) toast.warning(warn, { id: "contrast-warning" }); }
         savedRef.current = snapshot; post({ type: "refresh" });
         setSave(sig(docRef.current) === sig(snapshot) ? "saved" : "dirty");
         return true;

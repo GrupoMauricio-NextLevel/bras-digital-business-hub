@@ -208,3 +208,12 @@ describe("seções dos temas pagos", () => {
     for (const s of SECTION_SCHEMAS) for (const p of s.presets) expect((p.blocks ?? []).length, s.type).toBeLessThanOrEqual(s.maxBlocks ?? 24);
   });
 });
+
+describe("FV: avisos de legibilidade das cores", () => {
+  it("cor clara demais gera aviso; cores escuras não", async () => {
+    const { styleContrastWarnings } = await import("@/lib/themes/template");
+    expect(styleContrastWarnings({ primary: "#0f172a", accent: "#c2410c" })).toEqual([]);
+    expect(styleContrastWarnings({ primary: "#f5f5f5", accent: "#fefefe" })).toHaveLength(2);
+    expect(styleContrastWarnings({ primary: "#1c1917", accent: "#ffff99" })).toHaveLength(1);
+  });
+});
