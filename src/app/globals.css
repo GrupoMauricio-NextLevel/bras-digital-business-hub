@@ -36,7 +36,7 @@
   --ring: #12a150;
 
   /* Estados */
-  --success: #147a3c;
+  --success: #11703a;
   --success-soft: #dcf5e6;
   --warning: #a4570a;
   --warning-soft: #fdf0cf;
@@ -361,7 +361,7 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
   --nl-surface-elevated: #ffffff;
   --nl-text-primary: #151515;
   --nl-text-secondary: #60605b;
-  --nl-text-tertiary: #92928b;
+  --nl-text-tertiary: #6a6a63;
   --nl-hairline: #deded8;
   --product-accent: #2563eb;
   --product-accent-soft: #e8f0ff;
@@ -385,7 +385,7 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
   --ring: var(--product-accent);
   --sidebar-bg: #efefec;
   --sidebar-fg: #343431;
-  --sidebar-muted: #777770;
+  --sidebar-muted: #66665f;
   --sidebar-active-bg: transparent;
   --sidebar-active-fg: #111111;
   --sidebar-border: var(--nl-hairline);
@@ -398,6 +398,10 @@ h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.015
 [data-product="bras"] { --product-accent:#d59a16; --product-accent-soft:#fff6dc; --product-accent-contrast:#17130a; }
 [data-product="creators"] { --product-accent:#a855f7; --product-accent-soft:#f4e8ff; --product-accent-contrast:#fff; }
 [data-product="china"] { --product-accent:#d73737; --product-accent-soft:#ffe9e7; --product-accent-contrast:#fff; }
+/* Cor de destaque usada como TEXTO pequeno em fundo claro: escurecida para passar de 4,5:1 (AA). */
+[data-product] { --product-accent-text: color-mix(in srgb, var(--product-accent) 70%, #000); }
+:root[data-theme="dark"] [data-product] { --product-accent-text: var(--product-accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) [data-product] { --product-accent-text: var(--product-accent); } }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {

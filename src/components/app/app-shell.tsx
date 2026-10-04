@@ -78,7 +78,7 @@ function NavLinks({ items, collapsed, onNavigate }: { items: NavItem[]; collapse
           <Link href={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined}
             className={cn("relative flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors", active ? "text-sidebar-active-foreground" : "text-sidebar-foreground hover:bg-sidebar-hover", collapsed && "justify-center px-0")}>
             {active ? <span className="absolute left-0 top-1/2 h-6 w-[2px] -translate-y-1/2 bg-[var(--product-accent)]" aria-hidden /> : null}
-            <Icon className={cn("size-4 shrink-0", active ? "text-[var(--product-accent)]" : "text-sidebar-muted")} />
+            <Icon className={cn("size-4 shrink-0", active ? "text-[var(--product-accent-text)]" : "text-sidebar-muted")} />
             {collapsed ? null : <span className="flex-1 truncate">{item.label}</span>}
             {!collapsed && item.locked ? <Lock className="size-3.5 text-sidebar-muted" aria-label="Recurso bloqueado no seu plano" /> : null}
           </Link>
@@ -209,7 +209,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, qu
               const Icon = ICONS[item.icon];
               const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <li key={item.href} className="min-w-0 flex-1"><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("relative flex min-h-12 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-medium transition-colors", active ? "text-foreground" : "text-muted-foreground")}><Icon className={cn("size-[18px]", active && "text-[var(--product-accent)]")} /><span className="max-w-full truncate">{item.label}</span>{active ? <span className="absolute top-0 h-[2px] w-7 bg-[var(--product-accent)]" aria-hidden /> : null}</Link></li>
+                <li key={item.href} className="min-w-0 flex-1"><Link href={item.href} aria-current={active ? "page" : undefined} className={cn("relative flex min-h-12 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-medium transition-colors", active ? "text-foreground" : "text-muted-foreground")}><Icon className={cn("size-[18px]", active && "text-[var(--product-accent-text)]")} /><span className="max-w-full truncate">{item.label}</span>{active ? <span className="absolute top-0 h-[2px] w-7 bg-[var(--product-accent)]" aria-hidden /> : null}</Link></li>
               );
             })}
             <li className="min-w-0 flex-1"><button onClick={() => setOpen(true)} className="flex min-h-12 w-full flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-medium text-muted-foreground">{pinnedItem ? <Sparkles className="size-5 text-accent-foreground" /> : <MoreHorizontal className="size-5" />}<span>Mais</span></button></li>

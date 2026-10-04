@@ -16,7 +16,7 @@ export function BusinessPortal({ product, metrics, attention }: {
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
         {metrics.map((metric) => <div key={metric.label} className="min-w-0"><dt className="text-[10px] font-semibold uppercase tracking-[.13em] text-subtle-foreground">{metric.label}</dt><dd className="mt-1 truncate text-base font-semibold tabular-nums">{metric.value}</dd></div>)}
       </dl>
-      <div className="flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-[.12em]" style={{ color: product.accent }}>
+      <div className="flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-[.12em]" style={{ color: `color-mix(in srgb, ${product.accent} 60%, var(--foreground))` }}>
         {product.available ? <>Entrar <ArrowUpRight className="size-4" /></> : <span className="text-subtle-foreground">Em preparação</span>}
       </div>
     </div>

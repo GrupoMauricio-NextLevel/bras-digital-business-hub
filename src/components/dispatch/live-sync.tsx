@@ -43,7 +43,7 @@ export function LiveSync() {
     <span role="status" className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", state === "live" ? "border-success/40 bg-success-soft text-success" : state === "polling" ? "border-warning/40 bg-warning-soft text-warning" : "border-border text-muted-foreground")}>
       <Radio className={cn("size-3.5", state === "live" && "animate-pulse")} aria-hidden />
       {state === "live" ? "Ao vivo" : state === "polling" ? "Sincronizando" : "Sem conexão"}
-      {ago !== null ? <span className="font-normal opacity-80">· {ago < 5 ? "agora" : `há ${ago}s`}</span> : null}
+      {ago !== null ? <span className="font-normal">· {ago < 5 ? "agora" : `há ${ago}s`}</span> : null}
     </span>
   );
 }

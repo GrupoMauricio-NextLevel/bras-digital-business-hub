@@ -34,7 +34,7 @@ export default async function MasterDashboard() {
   return (
     <div className="mx-auto max-w-[1180px]">
       <section className="border-b border-border pb-10 pt-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--product-accent)]">NextLevel Control Center</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--product-accent-text)]">NextLevel Control Center</p>
         <h1 className="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-[.9] tracking-[-.055em]">
           {greeting()},<br /><span className="text-muted-foreground">{firstName}.</span>
         </h1>
@@ -66,7 +66,7 @@ export default async function MasterDashboard() {
       <section className="grid gap-10 border-t border-border py-10 lg:grid-cols-[1fr_.65fr]">
         <div>
           <div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Agora</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">O que exige atenção</h2></div></div>
-          {alerts.length ? <ol className="divide-y divide-border border-y border-border">{alerts.slice(0,6).map((a) => <li key={a.key}><Link href={a.href} className="group flex min-h-16 items-center gap-4 py-4"><CircleAlert className="size-4 shrink-0 text-[var(--product-accent)]" /><span className="min-w-0 flex-1"><span className="block text-sm font-medium">{a.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span></span><span className="tabular-nums text-sm font-semibold">{a.count}</span><ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" /></Link></li>)}</ol> : <div className="border-y border-border py-8"><p className="text-lg font-medium">Operação limpa.</p><p className="mt-1 text-sm text-muted-foreground">Nenhuma situação exige sua atenção agora.</p></div>}
+          {alerts.length ? <ol className="divide-y divide-border border-y border-border">{alerts.slice(0,6).map((a) => <li key={a.key}><Link href={a.href} className="group flex min-h-16 items-center gap-4 py-4"><CircleAlert className="size-4 shrink-0 text-[var(--product-accent-text)]" /><span className="min-w-0 flex-1"><span className="block text-sm font-medium">{a.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span></span><span className="tabular-nums text-sm font-semibold">{a.count}</span><ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" /></Link></li>)}</ol> : <div className="border-y border-border py-8"><p className="text-lg font-medium">Operação limpa.</p><p className="mt-1 text-sm text-muted-foreground">Nenhuma situação exige sua atenção agora.</p></div>}
         </div>
         <div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Fluxo do ecossistema</p><ActivityFeed items={overview.recent} /></div>
       </section>
