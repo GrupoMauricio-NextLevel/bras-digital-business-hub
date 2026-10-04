@@ -12,9 +12,9 @@ const bad = []; const fail = (m) => bad.push(m); const ok = (m) => console.log("
 const ctx = await b.newContext({ viewport: { width: 1360, height: 950 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } }); const p = await ctx.newPage();
 p.on("pageerror", (e) => fail("pageerror: " + e.message));
 await p.goto(B + "/login", { waitUntil: "networkidle" }); await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
-await p.waitForURL(/\/master\/commerce/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
+await p.waitForURL(/\/commerce/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
 ok("no endereço da Commerce o Master abre direto na área da marca");
-for (const t of [/Faltam \d+ item/, /Sem usuários de demonstração/, /Mercado Pago da NextLevel/, /Cadastro de lojas aberto/, /Lojas da marca/, /Interessados/]) if (!(await p.getByText(t).first().count())) fail("página sem " + t);
+for (const t of [/bloqueios? para lançamento/, /Mercado Pago da NextLevel/, /Lojas em operação/, /Prontidão/, /Interessados/]) if (!(await p.getByText(t).first().count())) fail("página sem " + t);
 ok("página da marca com lista de lançamento, lojas e interessados");
 if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail("rolagem horizontal");
 await p.evaluate(axeSource);
