@@ -32,3 +32,9 @@ Tudo que foi feito antes desta regra já está publicado (autorização permanen
 - Mudança mínima: `statusMessage(s, independent)` em `src/lib/domain/orders.ts` troca só esses dois textos quando a loja é independente; SuperDrop mantém os textos atuais. Nenhuma regra de pedido, estoque ou dinheiro mudou.
 - Teste: `tests/onda1-commerce.test.ts` (novo caso) + vizinhos `orders`, `tenancy`, `independent`, `eventos-pedido`, `checkout-idempotencia` (todos passando).
 - Risco: baixo (apenas texto). Eventos antigos já gravados continuam com o texto antigo.
+
+## Lote 5: rolagem lateral no celular (360 px)
+- Conferi 11 telas do lojista (início, pedidos, produtos, catálogo, clientes, financeiro, configurações, templates, loja virtual, novo pedido, análise) na conta simples e na conta de rede: sem rolagem lateral e sem erro de página. Sem alteração de código.
+
+## Fim do trabalho seguro desta sessão
+Itens restantes dependem do dono (ver `docs/PENDENCIAS-DO-DONO.md`) ou são a fase final de testes (F8). Nada foi publicado.
