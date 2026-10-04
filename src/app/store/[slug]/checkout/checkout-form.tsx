@@ -23,7 +23,7 @@ function fingerprint(text: string): string {
 export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: string; storeName: string; minOrderCents?: number }) {
   const cart = useCart();
   const router = useRouter();
-  const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: true });
+  const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: false });
   const [payment, setPayment] = React.useState<"pix" | "card">("pix");
   const [pending, start] = React.useTransition();
   // Uma chave por tentativa de compra: reenviar a mesma compra devolve o mesmo pedido. Muda se o carrinho mudar.

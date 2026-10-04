@@ -423,3 +423,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - Tabela nova `audit_log` (migração 0038, só cria tabela, sem mexer em dados) e `recordAudit`/`listAudit`. Registra quem, o quê e antes/depois só de campos não sensíveis; campos com token, senha, chave ou Pix gravam apenas "alterado".
 - Escopo desta etapa: dados da loja, preço/ativação de produto, publicação, frete, equipe, conexão do Mercado Pago, exportação e exclusão de dados de cliente. Visível ao dono em `/merchant/auditoria`.
 - Não decide CSP nem assinatura do webhook (partes 2 e 3 do ADR-0005 seguem aguardando o dono).
+
+## D69. Consentimento de marketing no checkout começa desmarcado (2026-10-04)
+- A caixa "Aceito receber novidades por WhatsApp" vinha marcada. Consentimento precisa ser escolha ativa do titular (doc 10, "consentimento registrável"; LGPD). Agora começa desmarcada; só grava consentimento (`marketing_consents`) se o cliente marcar. Reversível, só aumenta a proteção.
+- Efeito comercial: a base de contatos autorizados cresce mais devagar, mas fica válida para campanhas.
