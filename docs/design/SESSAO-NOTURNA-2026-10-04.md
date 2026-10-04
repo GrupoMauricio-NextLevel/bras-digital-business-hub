@@ -1,0 +1,19 @@
+# Log da sessão autônoma (2026-10-04)
+
+Regra do dono nesta sessão: **sem deploy e sem publicar** (nada de `git push`). Só trabalho local, commits locais e relatório.
+
+## Lote 1: salvar os arquivos que faltavam
+- Motivo: o dono perguntou se tudo estava salvo. Dois arquivos enviados não estavam no repositório: `PROMPT-MESTRE-CLAUDE-CODE-COMMERCE.md` e `COMMERCE-MEMORIA-FUNCIONAL-E-PLANO-CLAUDE.md`.
+- Arquivos: `docs/nextlevel-commerce/PROMPT-MESTRE-CLAUDE-CODE-COMMERCE.md`, `docs/nextlevel-commerce/COMMERCE-MEMORIA-FUNCIONAL-E-PLANO-CLAUDE.md`.
+- Testes: nenhum (só documentos). Risco: nenhum.
+
+## Lote 2: o prompt mestre (Onda 1) contra o código
+Evidência (leitura): `src/lib/domain/order-policy.ts` (capacidade de expedir por modalidade, confirmação manual vs gateway), `src/lib/domain/catalog.ts` e `products.ts` (posse e distribuição do produto), `tests/onda1-commerce.test.ts`, `tests/independent.test.ts`.
+- Pacote A (expedir a própria loja): existe, com política de domínio reutilizável e teste.
+- Pacote B (manual versus gateway): existe (`assertManualPaymentConfirmable`).
+- Pacote C (posse e publicação de produto): existe (`assertProductListable`, `assertStoresInSupplierNetwork`).
+- Pacotes D (copy da modalidade) e E (revalidação após ação): não verificados nesta sessão; exigem conferência no navegador.
+- Conclusão: a Onda 1 parece já executada em sessões anteriores; falta só a conferência de D e E.
+
+## Estado do repositório
+Tudo que foi feito antes desta regra já está publicado (autorização permanente anterior). Daqui em diante: commits locais, sem push.
