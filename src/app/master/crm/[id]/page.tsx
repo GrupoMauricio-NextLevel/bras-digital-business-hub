@@ -47,7 +47,7 @@ export default async function CrmOrderPage({ params }: { params: Promise<{ id: s
             <p>{o.buyerName}</p>
             <p><a className="text-accent-foreground hover:underline" href={`mailto:${o.buyerEmail}`}>{o.buyerEmail}</a></p>
             <p className="tabular-nums">{o.buyerPhone}</p>
-            <a href={wa} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-md bg-success px-3 text-sm font-semibold text-white hover:opacity-90"><MessageCircle className="size-4" aria-hidden /> Chamar no WhatsApp</a>
+            <a href={wa} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-md bg-success px-3 text-sm font-semibold text-canvas hover:opacity-90"><MessageCircle className="size-4" aria-hidden /> Chamar no WhatsApp</a>
           </CardContent></Card>
           <Card><CardContent className="space-y-1 pt-4 text-sm">
             <h3 className="font-semibold">Pagamento</h3>

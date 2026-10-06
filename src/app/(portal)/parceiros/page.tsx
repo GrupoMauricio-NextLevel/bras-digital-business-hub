@@ -50,64 +50,64 @@ export default async function Parceiros() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="relative overflow-hidden bg-[#1c1003] text-white">
+      <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-80" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(245,158,11,0.25), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-16 md:pt-24">
-          <span className="inline-flex rounded-full border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-3 py-1 text-xs font-semibold text-[#fcd34d]">Programa de Parceiros Oficiais</span>
+          <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-highlight">Programa de Parceiros Oficiais</span>
           <h1 className="nl-display mt-5 max-w-4xl">Tenha um negócio próprio vendendo tecnologia que já funciona.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#e7d9c6]">O {brand.name} é um sistema pronto de loja online. Você indica, acompanha tudo no seu escritório virtual e recebe comissão sobre o setup e sobre as mensalidades de cada cliente.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">O {brand.name} é um sistema pronto de loja online. Você indica, acompanha tudo no seu escritório virtual e recebe comissão sobre o setup e sobre as mensalidades de cada cliente.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/parceiros/cadastro" className={`${btn} bg-[#f59e0b] text-[#1c1003] hover:bg-[#fbbf24] focus-visible:outline-white`}>Quero ser parceiro</Link>
-            <Link href="/login" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Entrar no escritório</Link>
+            <Link href="/parceiros/cadastro" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser parceiro</Link>
+            <Link href="/login" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Entrar no escritório</Link>
           </div>
-          <ul className="mt-8 grid gap-3 text-sm text-[#e7d9c6] sm:grid-cols-3">
-            {tiers.map((t) => <li key={t.min} className="rounded-xl border border-white/15 bg-white/5 p-4"><span className="block text-3xl font-extrabold text-[#fcd34d] tabular-nums">{t.bps / 100}%</span>{t.max ? (t.min === t.max ? `com ${t.min} ativação no mês` : `de ${t.min} a ${t.max} ativações no mês`) : `a partir de ${t.min} ativações no mês`}<span className="block text-xs text-[#cbb99d]">de comissão sobre o setup</span></li>)}
+          <ul className="mt-8 grid gap-3 text-sm text-band-muted sm:grid-cols-3">
+            {tiers.map((t) => <li key={t.min} className="rounded-xl border border-band-foreground/15 bg-surface/5 p-4"><span className="block text-3xl font-extrabold text-highlight tabular-nums">{t.bps / 100}%</span>{t.max ? (t.min === t.max ? `com ${t.min} ativação no mês` : `de ${t.min} a ${t.max} ativações no mês`) : `a partir de ${t.min} ativações no mês`}<span className="block text-xs text-band-muted">de comissão sobre o setup</span></li>)}
           </ul>
-          <p className="mt-4 text-sm text-[#cbb99d]">Mais {settings.maintenanceBps / 100}% fixos sobre cada mensalidade paga pelos clientes que você indicou.</p>
+          <p className="mt-4 text-sm text-band-muted">Mais {settings.maintenanceBps / 100}% fixos sobre cada mensalidade paga pelos clientes que você indicou.</p>
         </div>
       </section>
 
-      <section className="bg-[#f4f6f5] py-16" aria-labelledby="calc">
+      <section className="bg-canvas py-16" aria-labelledby="calc">
         <div className="mx-auto max-w-4xl px-4">
           <h2 id="calc" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Simule o seu potencial</h2>
-          <p className="mt-2 text-neutral-600">Escolha o plano e quantas ativações você quer fazer por mês.</p>
+          <p className="mt-2 text-muted-foreground">Escolha o plano e quantas ativações você quer fazer por mês.</p>
           <div className="mt-6"><PartnerCalculator settings={settings} plans={plans} /></div>
         </div>
       </section>
 
-      <section className="bg-white py-16" aria-labelledby="como">
+      <section className="bg-surface py-16" aria-labelledby="como">
         <div className="mx-auto max-w-6xl px-4">
           <h2 id="como" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Como funciona</h2>
           <ol className="mt-8 grid gap-5 md:grid-cols-4">{STEPS.map((s, n) => (
-            <li key={s.t} className="h-full rounded-2xl border border-neutral-200 p-6"><span className="flex size-10 items-center justify-center rounded-full bg-[#b45309] text-sm font-bold text-white">{n + 1}</span><h3 className="mt-4 text-lg font-bold">{s.t}</h3><p className="mt-1 text-sm text-neutral-600">{s.d}</p></li>
+            <li key={s.t} className="h-full rounded-2xl border border-border p-6"><span className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-band-foreground">{n + 1}</span><h3 className="mt-4 text-lg font-bold">{s.t}</h3><p className="mt-1 text-sm text-muted-foreground">{s.d}</p></li>
           ))}</ol>
         </div>
       </section>
 
-      <section className="bg-[#f4f6f5] py-16" aria-labelledby="recebe">
+      <section className="bg-canvas py-16" aria-labelledby="recebe">
         <div className="mx-auto max-w-6xl px-4">
           <h2 id="recebe" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">O que você recebe como parceiro</h2>
           <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{PERKS.map((p) => (
-            <li key={p.t} className="rounded-2xl border border-neutral-200 bg-white p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-[#fdebd3] text-[#92400e]"><p.i className="size-5" aria-hidden /></span><h3 className="mt-4 font-bold">{p.t}</h3><p className="mt-1 text-sm text-neutral-600">{p.d}</p></li>
+            <li key={p.t} className="rounded-2xl border border-border bg-surface p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-highlight-soft text-link"><p.i className="size-5" aria-hidden /></span><h3 className="mt-4 font-bold">{p.t}</h3><p className="mt-1 text-sm text-muted-foreground">{p.d}</p></li>
           ))}</ul>
-          <div className="mt-10 rounded-2xl border border-[#b45309]/30 bg-[#fdebd3] p-6 text-[#7c2d12]">
+          <div className="mt-10 rounded-2xl border border-primary/30 bg-highlight-soft p-6 text-highlight-foreground">
             <h3 className="flex items-center gap-2 text-lg font-bold"><BadgeCheck className="size-5" aria-hidden /> A regra de ouro: 1 ativação por mês</h3>
             <p className="mt-2 text-sm">Para manter o cadastro gratuito e continuar captando, ative {settings.monthlyGoal} novo cliente por mês. Sem ativação, o cadastro fica inativo (reativar custa {formatBRL(settings.inactiveFeeCents)}/mês), mas você <b>continua recebendo a manutenção</b> dos clientes que já trouxe.</p>
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-16" aria-labelledby="faq">
+      <section className="bg-surface py-16" aria-labelledby="faq">
         <div className="mx-auto max-w-3xl px-4">
           <h2 id="faq" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Perguntas frequentes</h2>
-          <div className="mt-6 divide-y divide-neutral-200 rounded-2xl border border-neutral-200">{FAQ.map(([q, a]) => (
-            <details key={q} className="group p-5"><summary className="cursor-pointer list-none font-semibold marker:hidden">{q}</summary><p className="mt-2 text-sm text-neutral-700">{a}</p></details>
+          <div className="mt-6 divide-y divide-border rounded-2xl border border-border">{FAQ.map(([q, a]) => (
+            <details key={q} className="group p-5"><summary className="cursor-pointer list-none font-semibold marker:hidden">{q}</summary><p className="mt-2 text-sm text-body">{a}</p></details>
           ))}</div>
-          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-[#1c1003] p-6 text-white">
-            <div><p className="flex items-center gap-2 text-lg font-bold"><Coins className="size-5 text-[#fcd34d]" aria-hidden /> Pronto para começar?</p><p className="text-sm text-[#e7d9c6]">O cadastro é gratuito e leva 2 minutos.</p></div>
-            <Link href="/parceiros/cadastro" className={`${btn} bg-[#f59e0b] text-[#1c1003] hover:bg-[#fbbf24] focus-visible:outline-white`}>Quero ser parceiro</Link>
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-band p-6 text-band-foreground">
+            <div><p className="flex items-center gap-2 text-lg font-bold"><Coins className="size-5 text-highlight" aria-hidden /> Pronto para começar?</p><p className="text-sm text-band-muted">O cadastro é gratuito e leva 2 minutos.</p></div>
+            <Link href="/parceiros/cadastro" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser parceiro</Link>
           </div>
-          <p className="mt-6 text-xs text-neutral-600">Ao participar você aceita os <Link href="/parceiros/termos" className="font-semibold underline">termos do programa</Link>. Os ganhos dependem das suas vendas e não são garantidos.</p>
+          <p className="mt-6 text-xs text-muted-foreground">Ao participar você aceita os <Link href="/parceiros/termos" className="font-semibold underline">termos do programa</Link>. Os ganhos dependem das suas vendas e não são garantidos.</p>
         </div>
       </section>
     </>

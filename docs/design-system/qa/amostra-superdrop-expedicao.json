@@ -1,0 +1,511 @@
+{
+  "results": [
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 1440,
+      "side": null,
+      "top": {
+        "w": 1440,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1200,
+        "h": 1735,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 1132,
+        "h": 93,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 180,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 840,
+      "side": null,
+      "top": {
+        "w": 840,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 1987,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 129,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 390,
+      "side": null,
+      "top": {
+        "w": 390,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 3010,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 127,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 320,
+      "side": null,
+      "top": {
+        "w": 320,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 3114,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 127,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 1440,
+      "side": null,
+      "top": {
+        "w": 1440,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1200,
+        "h": 1735,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 1132,
+        "h": 93,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 180,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 840,
+      "side": null,
+      "top": {
+        "w": 840,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 1987,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 129,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 390,
+      "side": null,
+      "top": {
+        "w": 390,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 3010,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 127,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    },
+    {
+      "account": "superdrop-expedicao",
+      "route": "/supplier/dispatch",
+      "theme": "superdrop",
+      "width": 320,
+      "side": null,
+      "top": {
+        "w": 320,
+        "h": 64,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 3114,
+        "radius": "0px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 104,
+        "h": 48,
+        "radius": "14px",
+        "font": "16px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px 24px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "17px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 127,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": null
+    }
+  ],
+  "diffsGeometria": []
+}

@@ -4,7 +4,7 @@ import { ArrowDownRight, ArrowUpRight, Minus, type LucideIcon } from "lucide-rea
 import { cn } from "@/lib/utils";
 
 type Tone = "neutral" | "success" | "warning" | "danger" | "info";
-const TONE: Record<Tone, string> = { neutral: "text-muted-foreground bg-surface-muted", success: "text-success bg-success-soft", warning: "text-warning bg-warning-soft", danger: "text-danger bg-danger-soft", info: "text-info bg-info-soft" };
+const TONE: Record<Tone, string> = { neutral: "", success: "!bg-success-soft !text-success", warning: "!bg-warning-soft !text-warning", danger: "!bg-danger-soft !text-danger", info: "!bg-info-soft !text-info" };
 
 function Spark({ data }: { data: number[] }) {
   if (data.length < 2) return null;
@@ -23,25 +23,25 @@ export function MetricCard({ label, value, hint, icon: Icon, tone = "neutral", c
   const body = (
     <>
       <div className="flex items-start justify-between gap-2">
-        <span className="min-w-0 truncate text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</span>
-        {Icon ? <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-md", TONE[tone])}><Icon className="size-4" /></span> : null}
+        <span className="ds-kpi-label min-w-0"><span className="truncate">{label}</span></span>
+        {Icon ? <span className={cn("ds-kpi-icon", TONE[tone])}><Icon className="size-4" aria-hidden /></span> : null}
       </div>
       <div className="mt-2 flex items-end justify-between gap-2">
-        <div className="min-w-0 truncate font-display text-2xl font-semibold tracking-tight tabular-nums">{value}</div>
+        <div className="ds-kpi-value min-w-0 truncate">{value}</div>
         {trend ? <Spark data={trend} /> : null}
       </div>
       {(hint || DeltaIcon) ? (
-        <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+        <div className="ds-kpi-detail mt-1 flex flex-wrap items-center gap-x-2">
           {DeltaIcon && delta !== undefined ? <span className={cn("inline-flex items-center gap-0.5 font-medium", good === null ? "" : good ? "text-success" : "text-danger")}><DeltaIcon className="size-3.5" aria-hidden />{Math.abs(delta).toFixed(1).replace(".", ",")}%<span className="sr-only">{delta > 0 ? " de alta" : delta < 0 ? " de queda" : " estável"}</span></span> : null}
           {hint ? <span className="min-w-0">{hint}</span> : null}
         </div>
       ) : null}
     </>
   );
-  const cls = cn("block min-w-0 rounded-lg border border-border bg-surface p-4 shadow-sm", href && "transition hover:border-accent/50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-accent", className);
+  const cls = cn("ds-kpi block", href && "ds-lift", className);
   return href ? <Link href={href} className={cls}>{body}</Link> : <div className={cls}>{body}</div>;
 }
 
 export function MetricGrid({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("grid gap-3 sm:grid-cols-2 lg:grid-cols-4 [&>*]:min-w-0", className)}>{children}</div>;
+  return <div className={cn("ds-kpis [&>*]:min-w-0", className)}>{children}</div>;
 }

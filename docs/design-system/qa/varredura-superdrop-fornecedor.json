@@ -1,0 +1,806 @@
+{
+  "results": [
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/services",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/operations",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/wallets",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/invoices",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/finance",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/stores",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/store",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/team",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/inventory",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/content",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/settings",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/dispatch",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_o3z3zmo2mqcp",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_nllnknt3wluo",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_gt9qggjzj075",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_49w98jm91b0r",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_vexac3u06yqj",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_k00muzag4fma",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_how40ahc8zpo",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_qyqwcwqfrx5r",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_flxp38e0kcmu",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_4njlpn2u0f33",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_sji1ddbu1cip",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_y24kcr43kq01",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_ue3s1040nwcp",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_klfdpvcjsm3k",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_uxxy6wj16hc8",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_cx3p29rfu6jq",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_oyl1o0y1hmu4",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_wk2q8w7iajsn",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_lg3rqmvbe7hx",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_fx012zr7vm80",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_raarfrlx4qqc",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_nvn7w1j909ku",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_obiv64o3atvf",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_ycvlj0zozz9m",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_l31pymbpv6x5",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_r8607ve2pzzz",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_1ids85rnb5mi",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_fegljcbexgwg",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/categorias",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_6lh6n7761i3d",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_l7ylwi3juegc",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_1otzitgczaqq",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_7mb2eex94ln0",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_uoj4a53b8sru",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/dispatch/shipped",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/services",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/operations",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/wallets",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/invoices",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/finance",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/stores",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/store",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/team",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/inventory",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/content",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/settings",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/dispatch",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_o3z3zmo2mqcp",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_nllnknt3wluo",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_gt9qggjzj075",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_49w98jm91b0r",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_vexac3u06yqj",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_k00muzag4fma",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_how40ahc8zpo",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_qyqwcwqfrx5r",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_flxp38e0kcmu",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_4njlpn2u0f33",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_sji1ddbu1cip",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_y24kcr43kq01",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_ue3s1040nwcp",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_klfdpvcjsm3k",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_uxxy6wj16hc8",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_cx3p29rfu6jq",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_oyl1o0y1hmu4",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_wk2q8w7iajsn",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_lg3rqmvbe7hx",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_fx012zr7vm80",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_raarfrlx4qqc",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_nvn7w1j909ku",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_obiv64o3atvf",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_ycvlj0zozz9m",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_l31pymbpv6x5",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_r8607ve2pzzz",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_1ids85rnb5mi",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/orders/ord_fegljcbexgwg",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/categorias",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_6lh6n7761i3d",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_l7ylwi3juegc",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_1otzitgczaqq",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_7mb2eex94ln0",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/products/prd_uoj4a53b8sru",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-fornecedor",
+      "route": "/supplier/dispatch/shipped",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [],
+  "diffsGeometria": []
+}

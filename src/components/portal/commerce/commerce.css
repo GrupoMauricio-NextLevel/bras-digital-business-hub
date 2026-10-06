@@ -1,6 +1,6 @@
 /* Movimento e composição da home da NextLevel Commerce. Prefixo cm- para não afetar nenhuma outra tela. */
 .cm-grid-bg {
-  background-image: linear-gradient(rgba(245, 241, 232, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 241, 232, 0.06) 1px, transparent 1px);
+  background-image: linear-gradient(color-mix(in srgb, var(--ds-band-fg) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--ds-band-fg) 7%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);

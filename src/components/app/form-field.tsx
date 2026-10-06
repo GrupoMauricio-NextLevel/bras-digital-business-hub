@@ -7,7 +7,7 @@ export function FormField({ label, hint, error, htmlFor, children, className }: 
     <div className={cn("space-y-1.5", className)}>
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
-      {error ? <p className="text-xs text-danger">{error}</p> : hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      {error ? <p className="ds-field-error" role="alert">{error}</p> : hint ? <p className="ds-field-hint">{hint}</p> : null}
     </div>
   );
 }

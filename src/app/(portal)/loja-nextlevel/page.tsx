@@ -40,54 +40,54 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
   const talk = c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Tenho uma dúvida sobre a Loja NextLevel.")}`) : c.email ? `mailto:${c.email}?subject=${encodeURIComponent("Loja NextLevel")}` : null;
   return (
     <>
-      <section className="relative overflow-hidden bg-[#08120c] text-white">
+      <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 15% -10%, rgba(34,197,94,0.22), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-16 md:pt-24">
-          <span className="inline-flex rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-3 py-1 text-xs font-semibold text-[#86efac]">Loja NextLevel</span>
+          <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Loja NextLevel</span>
           <h1 className="nl-display mt-5 max-w-4xl">O time da NextLevel trabalhando para a sua loja vender mais.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#c3d3ca]">Assessoria, configuração, criativos e treinamento feitos por quem opera a plataforma {brand.name}. Você escolhe, paga em 1 clique e a equipe começa.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">Assessoria, configuração, criativos e treinamento feitos por quem opera a plataforma {brand.name}. Você escolhe, paga em 1 clique e a equipe começa.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#ofertas" className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>Ver as ofertas</a>
-            {talk ? <a href={talk} target={c.whatsappUrl ? "_blank" : undefined} rel="noreferrer" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Falar com a equipe</a> : null}
+            <a href="#ofertas" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Ver as ofertas</a>
+            {talk ? <a href={talk} target={c.whatsappUrl ? "_blank" : undefined} rel="noreferrer" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Falar com a equipe</a> : null}
           </div>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#b4c6bb]">
-            <li className="flex items-center gap-2"><ShieldCheck className="size-4 text-[#86efac]" aria-hidden /> Pagamento seguro pelo Mercado Pago</li>
-            <li className="flex items-center gap-2"><QrCode className="size-4 text-[#86efac]" aria-hidden /> Pix com desconto</li>
-            <li className="flex items-center gap-2"><CreditCard className="size-4 text-[#86efac]" aria-hidden /> Cartão em até 6x</li>
-            <li className="flex items-center gap-2"><BadgeCheck className="size-4 text-[#86efac]" aria-hidden /> Atendimento humano no WhatsApp</li>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-band-muted">
+            <li className="flex items-center gap-2"><ShieldCheck className="size-4 text-reflection" aria-hidden /> Pagamento seguro pelo Mercado Pago</li>
+            <li className="flex items-center gap-2"><QrCode className="size-4 text-reflection" aria-hidden /> Pix com desconto</li>
+            <li className="flex items-center gap-2"><CreditCard className="size-4 text-reflection" aria-hidden /> Cartão em até 6x</li>
+            <li className="flex items-center gap-2"><BadgeCheck className="size-4 text-reflection" aria-hidden /> Atendimento humano no WhatsApp</li>
           </ul>
         </div>
       </section>
 
       {paidThemes.length ? (
-        <section className="bg-white py-14" aria-labelledby="temas-loja">
+        <section className="bg-surface py-14" aria-labelledby="temas-loja">
           <div className="mx-auto max-w-6xl px-4">
             <h2 id="temas-loja" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Temas para a sua loja</h2>
-            <p className="mt-2 max-w-2xl text-neutral-700">Veja cada tema em uma loja de exemplo, antes de comprar. Compra única, instalação em 1 clique.</p>
+            <p className="mt-2 max-w-2xl text-body">Veja cada tema em uma loja de exemplo, antes de comprar. Compra única, instalação em 1 clique.</p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {paidThemes.map((t) => (
-                <li key={t.key}><Link href={`/temas/${t.key}`} className="block rounded-xl border border-neutral-200 p-4 transition hover:border-neutral-400"><span className="block text-lg font-bold">{t.name}</span><span className="block text-sm text-neutral-700">{t.niche}</span><span className="mt-2 block font-extrabold tabular-nums">{t.quote ? `${formatBRL(t.quote.pixCents)} no Pix` : formatBRL(t.priceCents)}</span></Link></li>
+                <li key={t.key}><Link href={`/temas/${t.key}`} className="block rounded-xl border border-border p-4 transition hover:border-border"><span className="block text-lg font-bold">{t.name}</span><span className="block text-sm text-body">{t.niche}</span><span className="mt-2 block font-extrabold tabular-nums">{t.quote ? `${formatBRL(t.quote.pixCents)} no Pix` : formatBRL(t.priceCents)}</span></Link></li>
               ))}
             </ul>
-            <Link href="/temas" className="mt-5 inline-flex font-semibold text-[#0b6b34] underline">Ver todos os temas</Link>
+            <Link href="/temas" className="mt-5 inline-flex font-semibold text-link underline">Ver todos os temas</Link>
           </div>
         </section>
       ) : null}
 
       {featured ? (
-        <section className="bg-[#f4f6f5] py-16" aria-labelledby="destaque">
+        <section className="bg-canvas py-16" aria-labelledby="destaque">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 lg:grid-cols-2">
             <Reveal>
-              <span className="inline-flex rounded-full bg-[#0f1c16] px-3 py-1 text-xs font-semibold text-white">{featured.badge ?? "Destaque"}</span>
+              <span className="inline-flex rounded-full bg-band px-3 py-1 text-xs font-semibold text-band-foreground">{featured.badge ?? "Destaque"}</span>
               <h2 id="destaque" className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{featured.name}</h2>
-              <p className="mt-3 text-lg text-neutral-700">{featured.tagline}</p>
-              <p className="mt-3 text-neutral-600">{featured.description}</p>
+              <p className="mt-3 text-lg text-body">{featured.tagline}</p>
+              <p className="mt-3 text-muted-foreground">{featured.description}</p>
             </Reveal>
-            <Reveal className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
-              <ul className="space-y-2 text-sm">{featured.highlights.map((h) => <li key={h} className="flex gap-2"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#0b6b34]" aria-hidden /> {h}</li>)}</ul>
-              <div className="mt-5 border-t border-neutral-200 pt-5">
-                <p className="text-4xl font-extrabold tabular-nums">{formatBRL(featured.quote.pixCents)} <span className="text-base font-semibold text-[#0b6b34]">no Pix</span></p>
-                <p className="mt-1 text-sm text-neutral-600">ou {formatBRL(featured.quote.listCents)} no cartão em até {featured.quote.installments}x de {formatBRL(featured.quote.installmentCents)}</p>
+            <Reveal className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+              <ul className="space-y-2 text-sm">{featured.highlights.map((h) => <li key={h} className="flex gap-2"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-link" aria-hidden /> {h}</li>)}</ul>
+              <div className="mt-5 border-t border-border pt-5">
+                <p className="text-4xl font-extrabold tabular-nums">{formatBRL(featured.quote.pixCents)} <span className="text-base font-semibold text-link">no Pix</span></p>
+                <p className="mt-1 text-sm text-muted-foreground">ou {formatBRL(featured.quote.listCents)} no cartão em até {featured.quote.installments}x de {formatBRL(featured.quote.installmentCents)}</p>
                 <div className="mt-4"><BuyButton slug={featured.slug} name={featured.name} quote={featured.quote} affiliateRef={ref} label={`Comprar ${featured.name}`} /></div>
               </div>
             </Reveal>
@@ -95,21 +95,21 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
         </section>
       ) : null}
 
-      <section id="ofertas" className="bg-white py-16" aria-labelledby="ofertas-t">
+      <section id="ofertas" className="bg-surface py-16" aria-labelledby="ofertas-t">
         <div className="mx-auto max-w-6xl px-4">
           <h2 id="ofertas-t" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">{rest.length ? "Mais ofertas" : "Ofertas"}</h2>
-          <p className="mt-2 max-w-2xl text-neutral-600">Cada oferta mostra o que você recebe. O valor cheio é o do cartão; no Pix você paga menos.</p>
-          {rest.length === 0 ? <p className="mt-8 rounded-xl border border-dashed border-neutral-300 p-8 text-center text-neutral-600">Novas ofertas em breve. Fale com a equipe para um projeto sob medida.</p> : (
+          <p className="mt-2 max-w-2xl text-muted-foreground">Cada oferta mostra o que você recebe. O valor cheio é o do cartão; no Pix você paga menos.</p>
+          {rest.length === 0 ? <p className="mt-8 rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">Novas ofertas em breve. Fale com a equipe para um projeto sob medida.</p> : (
             <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((p) => { const Icon = ICONS[p.category]; return (
-                <li key={p.id} className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
-                  <div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center rounded-lg bg-[#f0fdf4] text-[#0b6b34]"><Icon className="size-5" aria-hidden /></span><span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-700">{p.badge ?? CAT_LABEL[p.category]}</span></div>
+                <li key={p.id} className="flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm">
+                  <div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center rounded-lg bg-success-soft text-link"><Icon className="size-5" aria-hidden /></span><span className="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold text-body">{p.badge ?? CAT_LABEL[p.category]}</span></div>
                   <h3 className="mt-4 text-lg font-bold">{p.name}</h3>
-                  <p className="mt-1 text-sm text-neutral-600">{p.tagline}</p>
-                  <ul className="mt-4 space-y-1.5 text-sm text-neutral-700">{p.highlights.slice(0, 3).map((h) => <li key={h} className="flex gap-2"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#0b6b34]" aria-hidden /> {h}</li>)}</ul>
+                  <p className="mt-1 text-sm text-muted-foreground">{p.tagline}</p>
+                  <ul className="mt-4 space-y-1.5 text-sm text-body">{p.highlights.slice(0, 3).map((h) => <li key={h} className="flex gap-2"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-link" aria-hidden /> {h}</li>)}</ul>
                   <div className="mt-auto pt-5">
-                    <p className="text-2xl font-extrabold tabular-nums">{formatBRL(p.quote.pixCents)} <span className="text-sm font-semibold text-[#0b6b34]">no Pix</span></p>
-                    <p className="mb-4 text-xs text-neutral-600">ou {formatBRL(p.quote.listCents)} em até {p.quote.installments}x de {formatBRL(p.quote.installmentCents)}</p>
+                    <p className="text-2xl font-extrabold tabular-nums">{formatBRL(p.quote.pixCents)} <span className="text-sm font-semibold text-link">no Pix</span></p>
+                    <p className="mb-4 text-xs text-muted-foreground">ou {formatBRL(p.quote.listCents)} em até {p.quote.installments}x de {formatBRL(p.quote.installmentCents)}</p>
                     <BuyButton slug={p.slug} name={p.name} quote={p.quote} affiliateRef={ref} />
                   </div>
                 </li>
@@ -119,21 +119,21 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
         </div>
       </section>
 
-      <section className="bg-[#f4f6f5] py-16" aria-labelledby="como">
+      <section className="bg-canvas py-16" aria-labelledby="como">
         <div className="mx-auto max-w-6xl px-4">
           <h2 id="como" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Como funciona</h2>
           <ol className="mt-8 grid gap-5 md:grid-cols-3">
             {STEPS.map((s, n) => (
-              <li key={s.t} className="rounded-2xl border border-neutral-200 bg-white p-6">
-                <span className="flex size-10 items-center justify-center rounded-full bg-[#0f1c16] text-sm font-bold text-white">{n + 1}</span>
-                <h3 className="mt-4 flex items-center gap-2 text-lg font-bold"><s.i className="size-5 text-[#0b6b34]" aria-hidden /> {s.t}</h3>
-                <p className="mt-1 text-sm text-neutral-600">{s.d}</p>
+              <li key={s.t} className="rounded-2xl border border-border bg-surface p-6">
+                <span className="flex size-10 items-center justify-center rounded-full bg-band text-sm font-bold text-band-foreground">{n + 1}</span>
+                <h3 className="mt-4 flex items-center gap-2 text-lg font-bold"><s.i className="size-5 text-link" aria-hidden /> {s.t}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
               </li>
             ))}
           </ol>
-          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-[#0f1c16] p-6 text-white">
-            <div><p className="text-lg font-bold">Ainda não tem a sua loja?</p><p className="text-sm text-[#c3d3ca]">{brand.signupOpen ? `Crie a sua loja ${brand.name} e teste 7 dias com o cupom do seu fornecedor.` : "Deixe seus dados e a equipe ajuda você a abrir a sua loja."}</p></div>
-            <Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>{brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-band p-6 text-band-foreground">
+            <div><p className="text-lg font-bold">Ainda não tem a sua loja?</p><p className="text-sm text-band-muted">{brand.signupOpen ? `Crie a sua loja ${brand.name} e teste 7 dias com o cupom do seu fornecedor.` : "Deixe seus dados e a equipe ajuda você a abrir a sua loja."}</p></div>
+            <Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>{brand.signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
           </div>
         </div>
       </section>

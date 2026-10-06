@@ -461,3 +461,10 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 ## D77 — Painel Commerce em vidro azul, Claro e Escuro (2026-10-04)
 Decisão do dono: as duas imagens aprovadas (Claro e Escuro) e o prompt `PROMPT_CLAUDE_NEXTLEVEL_COMMERCE_GLASS_LIGHT_DARK.md` são a direção visual. **Substitui a D76** (paleta papel/marinho). Escopo apenas visual, dentro de `[data-product="commerce"]`; Master e SuperDrop intocados. Tema Claro/Escuro/Sistema, claro por padrão quando não há escolha salva (`nl-theme`). Menu agrupado só com rotas existentes (`COMMERCE_NAVIGATION_MAP.md`). Início recomposto (`CommerceHome`) só para lojas Commerce; o caminho SuperDrop de `/merchant` não mudou. Restante das telas herda por ganchos (`ds-card`, `ds-table`, `ds-pulse`); ver limites em `COMMERCE_VISUAL_QA.md`. Missão sem publicação: só commits locais até o dono pedir.
 
+
+## D78 — Sistema de design compartilhado (NextLevel, Commerce, SuperDrop e projetos futuros) (2026-10-06)
+Decisão do dono (pacote de referência `commerce-interface-reference`): um único núcleo de forma, e a única variação por empresa é a paleta de cores. **Substitui o CSS de vidro específico do Commerce (D77) e os climas por painel**; mantém o azul aprovado do Commerce como cor primária do tema `commerce`.
+- Núcleo em `src/design-system/` (`tokens.css` medidas, `core.css` componentes, `themes.ts` contrato de cores, `components/` casca operacional e pública). Componentes não têm condição por empresa (teste `tests/design-system.test.ts`).
+- Duas famílias: painéis operacionais (`OperationalShell`/`AppShell`) e páginas públicas (`PublicShell`). Tema por marca do endereço (`getThemeKey`), modo Claro/Escuro/Sistema salvo em `nl-theme`.
+- Contraste AA conferido por teste em 6 temas × 2 modos; varredura de 130 rotas e das páginas públicas em 4 larguras (`docs/design-system/MATRIZ-COBERTURA.md`).
+- Diferença consciente: Expedição usa densidade de toque. Pendências do dono: `docs/design-system/DECISOES-PENDENTES.md` (paletas de Brás, Creators e China; logos oficiais ficam para o final).

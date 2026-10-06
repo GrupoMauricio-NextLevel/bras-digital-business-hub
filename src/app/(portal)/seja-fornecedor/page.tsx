@@ -43,71 +43,71 @@ export default async function SejaFornecedor() {
   const contact = c.whatsappUrl ? { href: c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero ser fornecedor SuperDrop.")}`), external: true } : c.email ? { href: `mailto:${c.email}?subject=${encodeURIComponent("Quero ser fornecedor SuperDrop")}`, external: false } : null;
   return (
     <>
-      <section className="relative overflow-hidden bg-[#08120c] text-white">
+      <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(34,197,94,0.20), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-16 md:pt-24">
-          <span className="inline-flex rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-3 py-1 text-xs font-semibold text-[#86efac]">Para quem produz, importa ou distribui</span>
+          <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Para quem produz, importa ou distribui</span>
           <h1 className="nl-display mt-5 max-w-4xl">Transforme o seu catálogo em uma rede de lojas que vende todo dia.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#c3d3ca]">A SuperDrop entrega a plataforma completa para você operar como fornecedor: lojas dos seus membros, expedição organizada, carteira por Pix e receita recorrente sobre cada pedido. Você foca no produto; o sistema cuida do resto.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">A SuperDrop entrega a plataforma completa para você operar como fornecedor: lojas dos seus membros, expedição organizada, carteira por Pix e receita recorrente sobre cada pedido. Você foca no produto; o sistema cuida do resto.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            {contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>Quero ser fornecedor <ArrowRight className="size-5" aria-hidden /></a> : null}
-            <a href="#modelos" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Ver os modelos e valores</a>
+            {contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser fornecedor <ArrowRight className="size-5" aria-hidden /></a> : null}
+            <a href="#modelos" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Ver os modelos e valores</a>
           </div>
-          <p className="mt-4 text-sm text-[#b4c6bb]">Fornecedores no lançamento: Alpha Outfit e MantosShop · sem taxa por pedido nos primeiros 15 dias</p>
+          <p className="mt-4 text-sm text-band-muted">Fornecedores no lançamento: Alpha Outfit e MantosShop · sem taxa por pedido nos primeiros 15 dias</p>
           <Reveal className="relative mx-auto mt-14 max-w-5xl"><LiveConveyor /></Reveal>
         </div>
       </section>
 
-      <section className="bg-[#f4f6f5] py-20">
+      <section className="bg-canvas py-20">
         <div className="mx-auto max-w-6xl px-4">
-          <Reveal><h2 className={`${title} max-w-3xl`}>Uma oportunidade de negócio com um sistema robusto por trás</h2><p className="mt-3 max-w-2xl text-lg text-neutral-600">Você não precisa construir tecnologia, contratar time de sistemas nem administrar cada loja. Entra com o produto e ganha escala.</p></Reveal>
-          <ul className="mt-10 grid gap-4 md:grid-cols-2">{OPPORTUNITY.map((o, n) => { const Icon = o.i; return <Reveal as="li" key={o.t} delay={n * 80} className="rounded-2xl border border-neutral-200 bg-white p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-[#22c55e]/15 text-[#12a150]"><Icon className="size-5" aria-hidden /></span><h3 className="mt-4 text-lg font-bold">{o.t}</h3><p className="mt-1.5 text-neutral-600">{o.d}</p></Reveal>; })}</ul>
+          <Reveal><h2 className={`${title} max-w-3xl`}>Uma oportunidade de negócio com um sistema robusto por trás</h2><p className="mt-3 max-w-2xl text-lg text-muted-foreground">Você não precisa construir tecnologia, contratar time de sistemas nem administrar cada loja. Entra com o produto e ganha escala.</p></Reveal>
+          <ul className="mt-10 grid gap-4 md:grid-cols-2">{OPPORTUNITY.map((o, n) => { const Icon = o.i; return <Reveal as="li" key={o.t} delay={n * 80} className="rounded-2xl border border-border bg-surface p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-reflection"><Icon className="size-5" aria-hidden /></span><h3 className="mt-4 text-lg font-bold">{o.t}</h3><p className="mt-1.5 text-muted-foreground">{o.d}</p></Reveal>; })}</ul>
         </div>
       </section>
 
-      <section className="bg-white py-20">
+      <section className="bg-surface py-20">
         <div className="mx-auto max-w-6xl px-4">
-          <Reveal><h2 className={`${title} max-w-2xl`}>Uma tela para cada pessoa da sua operação</h2><p className="mt-3 max-w-2xl text-lg text-neutral-600">Quem gerencia, quem separa e quem vende veem só o que precisam para trabalhar.</p></Reveal>
+          <Reveal><h2 className={`${title} max-w-2xl`}>Uma tela para cada pessoa da sua operação</h2><p className="mt-3 max-w-2xl text-lg text-muted-foreground">Quem gerencia, quem separa e quem vende veem só o que precisam para trabalhar.</p></Reveal>
           <div className="mt-10"><PanelsShowcase /></div>
         </div>
       </section>
 
-      <section className="bg-[#08120c] py-20 text-white">
+      <section className="bg-band py-20 text-band-foreground">
         <div className="mx-auto max-w-6xl px-4">
           <Reveal><h2 className={`${title} max-w-2xl`}>Feito para a rotina de quem expede</h2></Reveal>
-          <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-            {OPS.map((o, n) => { const Icon = o.i; return <Reveal as="li" key={o.t} delay={n * 60} className="bg-[#0d1c14] p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-[#22c55e]/15 text-[#22c55e]"><Icon className="size-5" aria-hidden /></span><h3 className="mt-4 font-bold">{o.t}</h3><p className="mt-1.5 text-sm leading-relaxed text-[#b4c6bb]">{o.d}</p></Reveal>; })}
+          <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-band-foreground/10 sm:grid-cols-2 lg:grid-cols-3">
+            {OPS.map((o, n) => { const Icon = o.i; return <Reveal as="li" key={o.t} delay={n * 60} className="bg-band p-6"><span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-reflection"><Icon className="size-5" aria-hidden /></span><h3 className="mt-4 font-bold">{o.t}</h3><p className="mt-1.5 text-sm leading-relaxed text-band-muted">{o.d}</p></Reveal>; })}
           </ul>
         </div>
       </section>
 
-      <section id="modelos" className="scroll-mt-20 bg-[#f4f6f5] py-20">
+      <section id="modelos" className="scroll-mt-20 bg-canvas py-20">
         <div className="mx-auto max-w-6xl px-4">
-          <Reveal><h2 className={`${title} max-w-2xl`}>Modelos de operação</h2><p className="mt-3 max-w-2xl text-lg text-neutral-600">Sem taxa por pedido nos primeiros 15 dias. A taxa incide sobre os produtos, sem o frete.</p></Reveal>
+          <Reveal><h2 className={`${title} max-w-2xl`}>Modelos de operação</h2><p className="mt-3 max-w-2xl text-lg text-muted-foreground">Sem taxa por pedido nos primeiros 15 dias. A taxa incide sobre os produtos, sem o frete.</p></Reveal>
           <ul className="mt-10 grid gap-4 md:grid-cols-2">
             {SUPPLIER_PLANS.map((p) => (
-              <li key={p.key} id={p.key} className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-6">
-                <h3 className="text-2xl font-bold">{p.name}</h3><p className="text-neutral-600">{p.tagline}</p>
-                <dl className="mt-4 grid grid-cols-3 gap-3 text-sm"><div><dt className="text-neutral-600">Setup</dt><dd className="text-lg font-bold tabular-nums">{p.setup}</dd></div><div><dt className="text-neutral-600">Mensal</dt><dd className="text-lg font-bold tabular-nums">{p.monthly}</dd></div><div><dt className="text-neutral-600">Por pedido</dt><dd className="text-lg font-bold tabular-nums">{p.fee}</dd></div></dl>
-                <ul className="mt-4 flex-1 space-y-2 text-sm">{p.items.map((i) => <li key={i} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#12a150]" aria-hidden />{i}</li>)}</ul>
-                {contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} mt-5 bg-[#0f1c16] text-white hover:bg-[#1c2e25]`}>Quero o modelo {p.name}</a> : null}
+              <li key={p.key} id={p.key} className="flex flex-col rounded-2xl border border-border bg-surface p-6">
+                <h3 className="text-2xl font-bold">{p.name}</h3><p className="text-muted-foreground">{p.tagline}</p>
+                <dl className="mt-4 grid grid-cols-3 gap-3 text-sm"><div><dt className="text-muted-foreground">Setup</dt><dd className="text-lg font-bold tabular-nums">{p.setup}</dd></div><div><dt className="text-muted-foreground">Mensal</dt><dd className="text-lg font-bold tabular-nums">{p.monthly}</dd></div><div><dt className="text-muted-foreground">Por pedido</dt><dd className="text-lg font-bold tabular-nums">{p.fee}</dd></div></dl>
+                <ul className="mt-4 flex-1 space-y-2 text-sm">{p.items.map((i) => <li key={i} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-reflection" aria-hidden />{i}</li>)}</ul>
+                {contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} mt-5 bg-band text-band-foreground hover:bg-band-line`}>Quero o modelo {p.name}</a> : null}
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      <section className="bg-white py-20">
+      <section className="bg-surface py-20">
         <div className="mx-auto max-w-6xl px-4">
           <Reveal><h2 className={`${title} max-w-2xl`}>Como se torna fornecedor</h2></Reveal>
-          <ol className="mt-10 grid gap-4 md:grid-cols-3">{STEPS.map((s, n) => <Reveal as="li" key={s.t} delay={n * 80} className="rounded-2xl border border-neutral-200 p-6"><span className="flex size-10 items-center justify-center rounded-full bg-[#0f1c16] font-bold text-[#22c55e]">{n + 1}</span><h3 className="mt-4 font-bold">{s.t}</h3><p className="mt-1.5 text-neutral-600">{s.d}</p></Reveal>)}</ol>
+          <ol className="mt-10 grid gap-4 md:grid-cols-3">{STEPS.map((s, n) => <Reveal as="li" key={s.t} delay={n * 80} className="rounded-2xl border border-border p-6"><span className="flex size-10 items-center justify-center rounded-full bg-band font-bold text-reflection">{n + 1}</span><h3 className="mt-4 font-bold">{s.t}</h3><p className="mt-1.5 text-muted-foreground">{s.d}</p></Reveal>)}</ol>
         </div>
       </section>
 
-      <section className="bg-[#08120c] py-20 text-white">
+      <section className="bg-band py-20 text-band-foreground">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 md:flex-row md:items-center md:justify-between">
-          <div><Store className="mb-4 size-9 text-[#22c55e]" aria-hidden /><h2 className={`${title} max-w-xl`}>Pronto para ter uma rede de lojas vendendo o seu produto?</h2></div>
-          <div className="flex flex-wrap gap-3">{contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} bg-[#22c55e] text-[#052e14] hover:bg-[#4ade80] focus-visible:outline-white`}>Quero ser fornecedor</a> : null}<Link href="/login" className={`${btn} border border-white/30 hover:bg-white/10 focus-visible:outline-white`}>Já sou fornecedor: entrar</Link></div>
+          <div><Store className="mb-4 size-9 text-reflection" aria-hidden /><h2 className={`${title} max-w-xl`}>Pronto para ter uma rede de lojas vendendo o seu produto?</h2></div>
+          <div className="flex flex-wrap gap-3">{contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser fornecedor</a> : null}<Link href="/login" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Já sou fornecedor: entrar</Link></div>
         </div>
       </section>
     </>

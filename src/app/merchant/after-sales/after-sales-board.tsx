@@ -49,7 +49,7 @@ function Card({ o }: { o: AfterSalesOrder }) {
       ) : null}
       {o.notes.length ? <ul className="mt-2 space-y-1 border-l-2 border-border pl-2 text-xs text-muted-foreground">{o.notes.map((n) => <li key={n.id}>{n.text}</li>)}</ul> : null}
       <div className="mt-3 flex flex-wrap items-center gap-1">
-        {o.whatsappUrl ? <a href={o.whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-success px-3 text-xs font-medium text-white hover:opacity-90"><MessageCircle className="size-3.5" aria-hidden />Falar no WhatsApp</a> : <span className="text-xs text-muted-foreground">Sem telefone</span>}
+        {o.whatsappUrl ? <a href={o.whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-success px-3 text-xs font-medium text-canvas hover:opacity-90"><MessageCircle className="size-3.5" aria-hidden />Falar no WhatsApp</a> : <span className="text-xs text-muted-foreground">Sem telefone</span>}
         <NoteButton orderId={o.id} number={o.number} />
       </div>
     </article>

@@ -29,7 +29,7 @@ function Mock({ step }: { step: (typeof STEPS)[number]["key"] }) {
       {step === "pix" ? <>
         <p className="text-xs font-semibold text-muted-foreground">Saldo e recargas</p>
         <div className="flex items-center gap-3 rounded-md border border-border bg-surface p-3">
-          <div className="grid size-16 shrink-0 grid-cols-5 gap-0.5 rounded bg-white p-1 ring-1 ring-border">{Array.from({ length: 25 }).map((_, i) => <span key={i} className={cn("rounded-[1px]", [0, 1, 3, 4, 5, 9, 10, 12, 14, 15, 19, 20, 21, 23, 24, 7, 17].includes(i) ? "bg-neutral-900" : "bg-white")} />)}</div>
+          <div className="grid size-16 shrink-0 grid-cols-5 gap-0.5 rounded bg-surface p-1 ring-1 ring-border">{Array.from({ length: 25 }).map((_, i) => <span key={i} className={cn("rounded-[1px]", [0, 1, 3, 4, 5, 9, 10, 12, 14, 15, 19, 20, 21, 23, 24, 7, 17].includes(i) ? "bg-band" : "bg-surface")} />)}</div>
           <div className="text-xs"><p className="font-semibold">Pix de R$ 400,00</p><p className="text-muted-foreground">Expira em 30 minutos</p><p className="mt-1 font-semibold text-success">Confirmação automática</p></div>
         </div>
         <div className={row}><span>Custo do pedido #1046</span><span className="tabular-nums font-semibold">− R$ 80,00</span></div>
@@ -63,9 +63,9 @@ export function HowItWorks() {
       <div role="tablist" aria-label="Etapas do fluxo" aria-orientation="vertical" className="space-y-2" onKeyDown={onKey}>
         {STEPS.map((s, n) => { const Icon = s.icon; const on = n === i; return (
           <button key={s.key} ref={(el) => { refs.current[n] = el; }} role="tab" id={`hiw-tab-${s.key}`} aria-selected={on} aria-controls="hiw-panel" tabIndex={on ? 0 : -1} onClick={() => setI(n)}
-            className={cn("flex w-full items-start gap-4 rounded-xl border p-4 text-left transition-all", on ? "border-neutral-900 bg-white shadow-md" : "border-neutral-200 bg-white/60 hover:bg-white")}>
-            <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors", on ? "bg-[#0f1c16] text-[#22c55e]" : "bg-neutral-100 text-neutral-600")}><Icon className="size-5" aria-hidden /></span>
-            <span><span className="block text-xs font-semibold text-neutral-600">Passo {n + 1}</span><span className="block font-semibold">{s.title}</span><span className={cn("mt-1 block text-sm text-neutral-600", !on && "hidden sm:block sm:line-clamp-1")}>{s.text}</span></span>
+            className={cn("flex w-full items-start gap-4 rounded-xl border p-4 text-left transition-all", on ? "border-foreground bg-surface shadow-md" : "border-border bg-surface/60 hover:bg-surface")}>
+            <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors", on ? "bg-band text-reflection" : "bg-surface-muted text-muted-foreground")}><Icon className="size-5" aria-hidden /></span>
+            <span><span className="block text-xs font-semibold text-muted-foreground">Passo {n + 1}</span><span className="block font-semibold">{s.title}</span><span className={cn("mt-1 block text-sm text-muted-foreground", !on && "hidden sm:block sm:line-clamp-1")}>{s.text}</span></span>
           </button>
         ); })}
       </div>

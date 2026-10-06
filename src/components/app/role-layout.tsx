@@ -4,13 +4,14 @@ import { globalSearchAction } from "@/app/actions/search";
 import { isDemoMode, type Session } from "@/lib/auth";
 import { canUse, type FeatureKey } from "@/lib/features";
 import { storeUrl } from "@/lib/store-url";
-import { NAV, navForBrand, type Panel } from "@/lib/nav";
+import { COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand } from "@/lib/brand-server";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
 import { independentSupplierOfStore } from "@/lib/domain/independent";
-import { CommerceMerchantShell } from "@/components/commerce/commerce-merchant-shell";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
 import { hasCommerceMasterReturn, returnToCommerceMasterAction } from "@/app/actions/commerce-admin";
 
@@ -26,7 +27,7 @@ export function panelFor(session: Session): Panel {
 /** Itens do menu do lojista e o recurso que os libera; sem o recurso aparecem com cadeado. */
 const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/theme-editor": "appearanceBasic", "/merchant/templates": "templatesStarter" };
 
-export async function RoleLayout({ session, children, banner }: { session: Session; children: React.ReactNode; banner?: React.ReactNode }) {
+export async function RoleLayout({ session, children, banner, scope }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" = console administrativo da Commerce dentro do Master. */ scope?: "commerce-admin" }) {
   // Libera reservas de pedidos não pagos vencidos (rede de segurança além do cron).
   const db = await getDb();
   await expireStaleReservations(db);
@@ -44,21 +45,43 @@ export async function RoleLayout({ session, children, banner }: { session: Sessi
   const visible = session.user.role === "STORE_OWNER" && session.user.storeRole === "STAFF" ? navItems.filter((i) => STAFF_OK.some((p) => i.href.startsWith(p))) : navItems;
   const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items, brand);
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
-  if (session.user.role === "STORE_OWNER" && store && brand.code === "NEXTLEVEL_COMMERCE") {
-    const assisted = await hasCommerceMasterReturn();
+  const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
+  if (commerceStore || scope === "commerce-admin") {
+    const assisted = commerceStore ? await hasCommerceMasterReturn() : false;
+    const staff = session.user.storeRole === "STAFF";
+    const commerceItems = commerceStore
+      ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
+      : COMMERCE_ADMIN_NAV;
+    const assistedBar = assisted ? (
+      <div className="mb-5 flex min-h-10 flex-wrap items-center justify-between gap-3 rounded-[var(--ds-r-control)] border border-border bg-[var(--ds-soft)] px-4 py-2 text-sm text-[var(--ds-link)]">
+        <span>Modo suporte · você está vendo a loja como o lojista.</span>
+        <form action={returnToCommerceMasterAction}><button className="font-bold underline underline-offset-4">Voltar ao Commerce</button></form>
+      </div>
+    ) : null;
+    const demoUsersC = isDemoMode() ? await listDemoUsers() : undefined;
     return (
-      <CommerceMerchantShell
-        storeName={store.name}
+      <AppShell
+        brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
+        panel={panelFor(session)}
+        items={commerceItems}
+        navMode={commerceStore ? "accordion" : "sections"}
+        quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
+        roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
+        tenantName={commerceStore ? store!.name : "NextLevel Commerce"}
+        tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
         userName={session.user.name}
-        storefrontHref={storefrontHref}
-        staff={session.user.storeRole === "STAFF"}
+        storefrontHref={commerceStore ? storefrontHref : undefined}
+        demoUsers={demoUsersC}
+        onSwitch={loginAs}
         onLogout={logout}
-        assisted={assisted}
-        onReturnToMaster={returnToCommerceMasterAction}
+        passwordHref="/account/password"
+        notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
+        sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
+        banner={<>{assistedBar}{banner}</>}
       >
         {children}
-      </CommerceMerchantShell>
+      </AppShell>
     );
   }
 

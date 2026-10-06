@@ -1,0 +1,102 @@
+{
+  "results": [
+    {
+      "account": "parceiro",
+      "route": "/partner",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/links",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/coupons",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/referrals",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/finance",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/profile",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/links",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/coupons",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/referrals",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/finance",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "parceiro",
+      "route": "/partner/profile",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [],
+  "diffsGeometria": []
+}

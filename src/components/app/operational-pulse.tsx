@@ -25,18 +25,18 @@ const TONE: Record<PulseTone, string> = {
 
 export function OperationalPulse({ items, label = "Pulso operacional", className }: { items: PulseItem[]; label?: string; className?: string }) {
   return (
-    <section className={cn("ds-pulse overflow-hidden rounded-lg border border-border bg-surface", className)} aria-label={label}>
+    <section className={cn("ds-card ds-card--flush", className)} aria-label={label}>
       <div className="grid divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4">
         {items.map((item, index) => {
           const Icon = item.icon;
           const DeltaIcon = item.delta === undefined ? null : item.delta > 0 ? ArrowUpRight : item.delta < 0 ? ArrowDownRight : Minus;
           const content = (
             <div className="flex min-h-[76px] items-center gap-3 px-4 py-3">
-              {Icon ? <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-surface-muted text-muted-foreground"><Icon className="size-4" aria-hidden /></span> : null}
+              {Icon ? <span className="flex size-8 shrink-0 items-center justify-center rounded-[var(--ds-r-control-sm)] bg-[var(--ds-soft)] text-[var(--ds-link)]"><Icon className="size-4" aria-hidden /></span> : null}
               <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{item.label}</div>
+                <div className="text-[length:var(--ds-fs-label)] font-bold text-muted-foreground">{item.label}</div>
                 <div className={cn("mt-0.5 flex min-w-0 items-baseline gap-2", TONE[item.tone ?? "neutral"])}>
-                  <span className="truncate text-lg font-semibold tabular-nums tracking-tight">{item.value}</span>
+                  <span className="truncate text-lg font-extrabold tabular-nums tracking-tight">{item.value}</span>
                   {DeltaIcon && item.delta !== undefined ? <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums"><DeltaIcon className="size-3" aria-hidden />{Math.abs(item.delta).toFixed(1).replace(".", ",")}%</span> : null}
                 </div>
                 {item.hint ? <div className="mt-0.5 truncate text-xs text-muted-foreground">{item.hint}</div> : null}

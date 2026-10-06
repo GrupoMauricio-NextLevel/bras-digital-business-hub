@@ -16,7 +16,7 @@ export default async function CadastroParceiro() {
   return (
     <PartnerShell program={`Parceiros ${brand.name}`} title="Crie sua conta de parceiro" intro="Cadastro gratuito. Seus links e cupons ficam prontos assim que você entrar.">
       <PartnerSignupForm termsVersion={s.termsVersion} />
-      <p className="mt-8 text-sm text-neutral-700">Já é parceiro? <Link href="/parceiros/entrar" className="font-semibold text-neutral-950 underline underline-offset-2">Entrar</Link></p>
+      <p className="mt-8 text-sm text-body">Já é parceiro? <Link href="/parceiros/entrar" className="font-semibold text-foreground underline underline-offset-2">Entrar</Link></p>
     </PartnerShell>
   );
 }

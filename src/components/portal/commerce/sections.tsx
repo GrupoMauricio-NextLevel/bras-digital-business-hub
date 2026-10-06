@@ -2,10 +2,9 @@ import Link from "next/link";
 import { formatBRL } from "@/lib/money";
 import { Phone, Tablet } from "./device";
 import { OrdersPanel, PayScreen, SalesPanel } from "./panel-ui";
-import { Wordmark } from "./header";
 
 export const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl";
-export const CTA = "inline-flex h-12 items-center justify-center rounded-full bg-[#f2b600] px-7 text-base font-bold text-[#14213d] transition-colors hover:bg-[#ffc933] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14213d]";
+export const CTA = "inline-flex h-12 items-center justify-center rounded-full bg-primary px-7 text-base font-bold text-primary-foreground transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export function ForWhom({ cta }: { cta: string }) {
   const rows = [
@@ -14,12 +13,12 @@ export function ForWhom({ cta }: { cta: string }) {
     { who: "Já tem loja em outra plataforma", text: "Traga o seu catálogo por planilha e monte um tema com a sua identidade. Clientes e pedidos antigos não são importados." },
   ];
   return (
-    <ul className="divide-y divide-[#14213d]/15 border-y border-[#14213d]/15">
+    <ul className="divide-y divide-border border-y border-border">
       {rows.map((r) => (
         <li key={r.who} className="grid gap-2 py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] md:items-center md:gap-10">
-          <h3 className="font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-[#14213d]">{r.who}</h3>
-          <p className="text-[17px] leading-relaxed text-[#14213d]/85">{r.text}</p>
-          <Link href={cta} className="text-base font-semibold text-[#1f47c9] underline underline-offset-4 hover:no-underline">Quero começar assim</Link>
+          <h3 className="font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-foreground">{r.who}</h3>
+          <p className="text-[17px] leading-relaxed text-body">{r.text}</p>
+          <Link href={cta} className="text-base font-semibold text-link underline underline-offset-4 hover:no-underline">Quero começar assim</Link>
         </li>
       ))}
     </ul>
@@ -37,14 +36,14 @@ export function Operation() {
       {rows.map((r, n) => (
         <article key={r.id} className="cm-reveal grid items-center gap-8 md:grid-cols-2 md:gap-16">
           <div className={n % 2 ? "md:order-2" : ""}>
-            <p className="text-sm font-semibold text-[#f2b600]">{r.situation}</p>
-            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-[#f5f1e8] sm:text-4xl">{r.title}</h3>
-            <p className="mt-4 max-w-md text-lg leading-relaxed text-[#f5f1e8]/80">{r.text}</p>
+            <p className="text-sm font-semibold text-highlight">{r.situation}</p>
+            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-band-foreground sm:text-4xl">{r.title}</h3>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-band-muted">{r.text}</p>
           </div>
           <div className={n % 2 ? "md:order-1" : ""}>{r.visual}</div>
         </article>
       ))}
-      <p className="text-xs text-[#f5f1e8]/60">Painel de demonstração, com nomes, valores e canais fictícios.</p>
+      <p className="text-xs text-band-foreground/60">Painel de demonstração, com nomes, valores e canais fictícios.</p>
     </div>
   );
 }
@@ -60,10 +59,10 @@ export function Steps({ cta }: { cta: string }) {
     <div>
       <ol className="grid gap-x-8 gap-y-10 md:grid-cols-4">
         {steps.map((s, n) => (
-          <li key={s.t} className="border-t-2 border-[#14213d] pt-4">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#1f47c9]">{n + 1} · {s.phase}</p>
-            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-[#14213d]">{s.t}</h3>
-            <p className="mt-2 text-[15px] leading-relaxed text-[#14213d]/85">{s.d}</p>
+          <li key={s.t} className="border-t-2 border-foreground pt-4">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-link">{n + 1} · {s.phase}</p>
+            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-foreground">{s.t}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-body">{s.d}</p>
           </li>
         ))}
       </ol>
@@ -77,21 +76,21 @@ export function ThemesAndPrices({ themes }: { themes: ThemeRow[] }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
-        <h2 className={`${H2} text-[#14213d]`}>Comece com um tema grátis. Troque quando quiser.</h2>
-        <p className="mt-4 max-w-md text-lg leading-relaxed text-[#14213d]/85">O tema Starter já vem com a sua loja. Os temas pagos são instalados com um clique e mantêm o seu conteúdo.</p>
-        <p className="mt-4 max-w-md text-[15px] text-[#14213d]/75">O plano da sua loja (mensalidade, domínio próprio e módulos) é combinado na conversa com a equipe, de acordo com o tamanho da operação.</p>
-        <Link href="/planos" className="mt-6 inline-block text-base font-semibold text-[#14213d] underline decoration-[#f2b600] decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver como os planos funcionam</Link>
+        <h2 className={`${H2} text-foreground`}>Comece com um tema grátis. Troque quando quiser.</h2>
+        <p className="mt-4 max-w-md text-lg leading-relaxed text-body">O tema Starter já vem com a sua loja. Os temas pagos são instalados com um clique e mantêm o seu conteúdo.</p>
+        <p className="mt-4 max-w-md text-[15px] text-body">O plano da sua loja (mensalidade, domínio próprio e módulos) é combinado na conversa com a equipe, de acordo com o tamanho da operação.</p>
+        <Link href="/planos" className="mt-6 inline-block text-base font-semibold text-foreground underline decoration-[#f2b600] decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver como os planos funcionam</Link>
       </div>
       <div>
-        <ul className="divide-y divide-[#14213d]/15 border-y border-[#14213d]/15">
+        <ul className="divide-y divide-border border-y border-border">
           {themes.map((t) => (
             <li key={t.key} className="flex items-baseline justify-between gap-4 py-4">
-              <div><p className="font-[family-name:var(--nl-font-display)] text-lg font-extrabold text-[#14213d]">{t.name}</p><p className="text-[15px] text-[#14213d]/80">{t.tagline}</p></div>
-              <p className="shrink-0 text-lg font-bold tabular-nums text-[#14213d]">{t.priceCents === 0 ? "Grátis" : formatBRL(t.priceCents)}</p>
+              <div><p className="font-[family-name:var(--nl-font-display)] text-lg font-extrabold text-foreground">{t.name}</p><p className="text-[15px] text-body">{t.tagline}</p></div>
+              <p className="shrink-0 text-lg font-bold tabular-nums text-foreground">{t.priceCents === 0 ? "Grátis" : formatBRL(t.priceCents)}</p>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm text-[#14213d]/70">Valores do catálogo de temas de hoje; podem mudar. Compra pela Loja NextLevel.</p>
+        <p className="mt-3 text-sm text-muted-foreground">Valores do catálogo de temas de hoje; podem mudar. Compra pela Loja NextLevel.</p>
       </div>
     </div>
   );
@@ -106,13 +105,13 @@ const FAQ = [
 ];
 export function Faq() {
   return (
-    <div className="mx-auto max-w-3xl divide-y divide-[#14213d]/15 border-y border-[#14213d]/15">
+    <div className="mx-auto max-w-3xl divide-y divide-border border-y border-border">
       {FAQ.map((f) => (
         <details key={f.q} className="group py-1">
-          <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-lg font-semibold text-[#14213d] marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14213d] [&::-webkit-details-marker]:hidden">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-lg font-semibold text-foreground marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
             {f.q}<span aria-hidden className="text-2xl font-normal leading-none transition-transform group-open:rotate-45">+</span>
           </summary>
-          <p className="pb-4 pr-8 text-[17px] leading-relaxed text-[#14213d]/85">{f.a}</p>
+          <p className="pb-4 pr-8 text-[17px] leading-relaxed text-body">{f.a}</p>
         </details>
       ))}
     </div>
@@ -123,23 +122,10 @@ export function ClosingCta({ cta, signupOpen }: { cta: string; signupOpen: boole
   return (
     <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4">
       <div>
-        <h2 className={`${H2} max-w-xl text-[#f5f1e8]`}>Veja a sua marca numa loja assim.</h2>
-        <p className="mt-3 max-w-lg text-lg text-[#f5f1e8]/85">{signupOpen ? "Crie a sua conta e comece a montar." : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
+        <h2 className={`${H2} max-w-xl text-band-foreground`}>Veja a sua marca numa loja assim.</h2>
+        <p className="mt-3 max-w-lg text-lg text-band-foreground/85">{signupOpen ? "Crie a sua conta e comece a montar." : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
       </div>
       <Link href={cta} className={CTA}>Quero minha loja</Link>
     </div>
-  );
-}
-
-export function CommerceFooter({ legal, nav }: { legal: string; nav: { href: string; label: string }[] }) {
-  return (
-    <footer className="bg-[#0e1626] text-[#f5f1e8]/80">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm md:grid-cols-[1.4fr_1fr_1fr]">
-        <div><Wordmark light /><p className="mt-3 max-w-xs">Plataforma de lojas virtuais da NextLevel Marketing.</p></div>
-        <ul className="space-y-2">{nav.map((n) => <li key={n.href}><a href={n.href} className="hover:text-white hover:underline">{n.label}</a></li>)}</ul>
-        <ul className="space-y-2"><li><Link href="/planos" className="hover:text-white hover:underline">Planos</Link></li><li><Link href="/loja-nextlevel" className="hover:text-white hover:underline">Loja NextLevel</Link></li><li><Link href="/faq" className="hover:text-white hover:underline">Perguntas frequentes</Link></li><li><Link href="/login" className="hover:text-white hover:underline">Entrar</Link></li></ul>
-      </div>
-      <p className="mx-auto max-w-6xl border-t border-[#f5f1e8]/15 px-4 py-5 text-xs text-[#f5f1e8]/70">{legal} © {new Date().getFullYear()} NextLevel Marketing Ltda.</p>
-    </footer>
   );
 }

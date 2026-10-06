@@ -1,0 +1,3480 @@
+{
+  "results": [
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 10247,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 340,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 1847,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 146,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 171,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 138,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 10396,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 244,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2457,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 138,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 122,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 138,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 23350,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 240,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4845,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 149,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 120,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 23525,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 240,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4961,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 149,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 120,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 10247,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 340,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 1847,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 146,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 171,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 138,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2349,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 128,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "26px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 116,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 299,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 10396,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 244,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2457,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 138,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 122,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 138,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2676,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 112,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 108,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 214,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 23350,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 240,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4845,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 149,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 120,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 4597,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/orders",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 23525,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 240,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 109,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/master/finance",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4961,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 149,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 120,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "master-nextlevel",
+      "route": "/commerce/stores",
+      "theme": "nextlevel",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4822,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 275,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "18px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 119,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 210,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 110,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    }
+  ],
+  "diffsGeometria": [
+    {
+      "width": 1440,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 840,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 390,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 320,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 1440,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 840,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 390,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    },
+    {
+      "width": 320,
+      "ref": "master-nextlevel /master nextlevel",
+      "outro": "master-nextlevel /master/orders nextlevel",
+      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
+      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
+    }
+  ]
+}

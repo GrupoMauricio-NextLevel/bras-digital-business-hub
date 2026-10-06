@@ -46,13 +46,13 @@ export function FilterChips({ param, options, allLabel = "Todos" }: { param: str
     router.replace(qs ? `${pathname}?${qs}` : pathname);
   };
   const chip = (value: string, label: string, count?: number) => (
-    <button key={value} onClick={() => set(value)} className={cn("inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors", current === value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-surface text-muted-foreground hover:text-foreground")}>
+    <button key={value} type="button" aria-pressed={current === value} onClick={() => set(value)} className="ds-seg-btn">
       {label}
-      {typeof count === "number" ? <span className={cn("rounded-full px-1.5 text-[10px]", current === value ? "bg-white/20" : "bg-surface-muted")}>{count}</span> : null}
+      {typeof count === "number" ? <span className="ds-count">{count}</span> : null}
     </button>
   );
   return (
-    <div className="nl-scroll flex gap-2 overflow-x-auto pb-1">
+    <div className="ds-seg nl-scroll">
       {chip("", allLabel)}
       {options.map((o) => chip(o.value, o.label, o.count))}
     </div>
@@ -78,17 +78,17 @@ export function FilterTabs({ param, primary, rest, allLabel = "Todos", restLabel
   };
   const inRest = rest.some((r) => r.value === current);
   const tab = (value: string, label: string, count?: number) => (
-    <button key={value} type="button" role="tab" aria-selected={current === value} onClick={() => set(value)} className="cm-tab">
-      {label}{typeof count === "number" ? <span className="cm-count">{count}</span> : null}
+    <button key={value} type="button" role="tab" aria-selected={current === value} onClick={() => set(value)} className="ds-seg-btn">
+      {label}{typeof count === "number" ? <span className="ds-count">{count}</span> : null}
     </button>
   );
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div role="tablist" aria-label="Visões de pedidos" className="cm-tabs nl-scroll">{tab("", allLabel)}{primary.map((o) => tab(o.value, o.label, o.count))}</div>
+      <div role="tablist" aria-label="Visões de pedidos" className="ds-seg nl-scroll">{tab("", allLabel)}{primary.map((o) => tab(o.value, o.label, o.count))}</div>
       {rest.length ? (
         <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
           <span className="sr-only sm:not-sr-only">{restLabel}</span>
-          <select value={inRest ? current : ""} onChange={(e) => set(e.target.value)} className="h-10 rounded-xl border border-[var(--glass-line)] bg-[var(--glass-fn)] px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)]">
+          <select value={inRest ? current : ""} onChange={(e) => set(e.target.value)} className="h-10 rounded-[var(--ds-r-control)] border border-border bg-surface px-3 text-sm font-semibold text-foreground">
             <option value="">{inRest ? "Limpar filtro" : "Outros status…"}</option>
             {rest.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
           </select>

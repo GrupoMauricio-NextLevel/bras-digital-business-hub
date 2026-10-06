@@ -27,8 +27,8 @@ function Delta({ value }: { value?: number }) {
 }
 
 function Kpi({ icon: Icon, label, value, note, i }: { icon: LucideIcon; label: string; value: string; note?: React.ReactNode; i: number }) {
-  return <div className="cm-glass-fn cm-lift cm-enter p-3.5 sm:p-5" style={stagger(i)}>
-    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[var(--product-accent-text)] sm:size-8 sm:rounded-xl"><Icon className="size-4" aria-hidden /></span><span className="truncate">{label}</span></div>
+  return <div className="ds-card ds-kpi-card ds-lift ds-enter !p-3.5 sm:!p-5" style={stagger(i)}>
+    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[var(--ds-link)] sm:size-8 sm:rounded-xl"><Icon className="size-4" aria-hidden /></span><span className="truncate">{label}</span></div>
     <div className="mt-2.5 text-[1.3rem] font-semibold leading-none tracking-[-.03em] tabular-nums sm:mt-3 sm:text-[1.75rem]">{value}</div>
     {note ? <div className="mt-1.5 text-xs text-muted-foreground">{note}</div> : null}
   </div>;
@@ -64,7 +64,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     { href: "/merchant/finance", label: "Financeiro", icon: Wallet },
   ];
 
-  const status = <section className="cm-glass-fn cm-enter p-5 sm:p-6" style={stagger(3)} aria-labelledby="cm-status">
+  const status = <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(3)} aria-labelledby="cm-status">
     <h2 id="cm-status" className="text-base font-semibold tracking-[-.01em]">Status da loja</h2>
     <div className="mt-4 flex items-center gap-5">
       {readiness ? <Ring done={reqDone} total={reqTotal} /> : null}
@@ -77,25 +77,23 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     </div>
   </section>;
 
-  const nextStep = next ? <section className="cm-glass-fn cm-enter relative overflow-hidden p-5 sm:p-6" style={stagger(2)} aria-labelledby="cm-next">
-    <p className="text-[11px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent-text)]">Próximo passo</p>
+  const nextStep = next ? <section className="ds-card ds-enter relative overflow-hidden p-5 sm:p-6" style={stagger(2)} aria-labelledby="cm-next">
+    <p className="text-[11px] font-semibold uppercase tracking-[.16em] text-[var(--ds-link)]">Próximo passo</p>
     <h2 id="cm-next" className="mt-2 text-xl font-semibold leading-snug tracking-[-.02em]">{next.title}</h2>
     <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">{next.detail}</p>
     <Link href={next.href} className={buttonVariants({ size: "lg" }) + " mt-5"}>{next.action}<ArrowRight /></Link>
-  </section> : <section className="cm-glass-fn cm-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="cm-next">
-    <p className="text-[11px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent-text)]">Próximo passo</p>
+  </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="cm-next">
+    <p className="text-[11px] font-semibold uppercase tracking-[.16em] text-[var(--ds-link)]">Próximo passo</p>
     <h2 id="cm-next" className="mt-2 text-xl font-semibold tracking-[-.02em]">Sua loja está pronta para vender.</h2>
     <p className="mt-2 text-sm text-muted-foreground">Divulgue o endereço da vitrine ou registre uma venda manual.</p>
     <Link href="/merchant/orders/new" className={buttonVariants({ size: "lg" }) + " mt-5"}><Plus />Novo pedido</Link>
   </section>;
 
   return <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
-    <section className="cm-glass-id cm-hero cm-enter px-5 py-6 sm:px-10 sm:py-9">
-      <div className="cm-hero-line" aria-hidden />
-      <div className="cm-hero-glow" aria-hidden />
-      <div className="cm-hero-stage" aria-hidden><span className="cm-blade cm-blade-c" /><span className="cm-blade cm-blade-a" /><span className="cm-blade cm-blade-b" /></div>
+    <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
+            <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
       <div className="relative max-w-[60%] max-sm:max-w-none">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--product-accent-text)]">Visão geral da loja</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da loja</p>
         <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>
         <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{store.name}</span></p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
@@ -122,21 +120,21 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     </section>
 
     {!firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
-      {operational.length || next ? <section className="cm-glass-fn cm-enter p-5 sm:p-6" style={stagger(5)} aria-labelledby="cm-att">
+      {operational.length || next ? <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)} aria-labelledby="cm-att">
         <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">O que precisa de você</h2>
         <ol className="mt-3 divide-y divide-border">{[...(next ? [next] : []), ...operational].map((item) => { const Icon = item.icon; return <li key={item.key}>
           <Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--product-accent-text)]"><Icon className="size-[18px]" aria-hidden /></span>
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"><Icon className="size-[18px]" aria-hidden /></span>
             <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
-            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-[var(--product-accent-text)]">{item.count}</span>
+            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-[var(--ds-link)]">{item.count}</span>
             <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
           </Link></li>; })}</ol>
-      </section> : <section className="cm-glass-fn cm-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">O que precisa de você</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
+      </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">O que precisa de você</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
       {status}
     </div> : null}
 
     {firstAccess && readiness ? (
-      <section className="cm-glass-work cm-enter p-5 sm:p-6" style={stagger(4)} aria-labelledby="cm-first">
+      <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(4)} aria-labelledby="cm-first">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-muted-foreground">Até a primeira venda</p><h2 id="cm-first" className="mt-1 text-base font-semibold tracking-[-.01em]">{readiness.ready ? "Tudo pronto: falta só o primeiro cliente" : "Faltam passos para você vender"}</h2></div><span className="text-sm tabular-nums text-muted-foreground">{reqDone} de {reqTotal} requisitos</span></div>
         <ul className="grid gap-2 sm:grid-cols-2">
           {readiness.items.map((i) => <li key={i.key}><Link href={i.fixHref} className="flex min-h-11 items-start gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm transition-colors hover:bg-surface-hover"><span aria-hidden className={i.ok ? "mt-0.5 text-success" : "mt-0.5 text-subtle-foreground"}>{i.ok ? "✓" : "○"}</span><span className="min-w-0"><span className="block font-medium">{i.label}{i.blocking ? "" : " (recomendado)"}</span><span className="block text-xs text-muted-foreground">{i.detail}</span></span></Link></li>)}
@@ -145,20 +143,20 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     ) : null}
 
     <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
-      <section className="cm-glass-work cm-enter p-5 sm:p-6" style={stagger(6)} aria-labelledby="cm-orders">
-        <div className="mb-3 flex items-end justify-between"><h2 id="cm-orders" className="text-base font-semibold tracking-[-.01em]">Pedidos recentes</h2>{o.recentOrders.length ? <Link href="/merchant/orders" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--product-accent-text)]">Ver todos <ArrowRight className="size-4" aria-hidden /></Link> : null}</div>
+      <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(6)} aria-labelledby="cm-orders">
+        <div className="mb-3 flex items-end justify-between"><h2 id="cm-orders" className="text-base font-semibold tracking-[-.01em]">Pedidos recentes</h2>{o.recentOrders.length ? <Link href="/merchant/orders" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver todos <ArrowRight className="size-4" aria-hidden /></Link> : null}</div>
         {o.recentOrders.length ? <OrdersTable rows={o.recentOrders.map((order) => ({ order, storeName: store.name, storeSlug: store.slug }))} basePath="/merchant/orders" showStore={false} showCentral={!o.independent} />
           : <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-border px-4 py-5"><p className="max-w-sm text-sm text-muted-foreground">Os pedidos da vitrine e as vendas manuais aparecem aqui assim que existirem.</p><Link href="/merchant/orders/new" className={buttonVariants({ variant: "secondary" })}><Plus />Registrar venda manual</Link></div>}
       </section>
 
       <div className="space-y-5 sm:space-y-6">
-        <section className="cm-glass-fn cm-enter p-5 sm:p-6" style={stagger(7)} aria-labelledby="cm-quick">
+        <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(7)} aria-labelledby="cm-quick">
           <h2 id="cm-quick" className="text-base font-semibold tracking-[-.01em]">Ações rápidas</h2>
-          <ul className="mt-3 grid grid-cols-2 gap-2.5">{QUICK.map((q) => { const Icon = q.icon; return <li key={q.href}><Link href={q.href} className="cm-lift flex min-h-[64px] flex-col items-start justify-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 text-sm font-medium"><Icon className="size-[18px] text-[var(--product-accent-text)]" aria-hidden />{q.label}</Link></li>; })}</ul>
+          <ul className="mt-3 grid grid-cols-2 gap-2.5">{QUICK.map((q) => { const Icon = q.icon; return <li key={q.href}><Link href={q.href} className="ds-lift flex min-h-[64px] flex-col items-start justify-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 text-sm font-medium"><Icon className="size-[18px] text-[var(--ds-link)]" aria-hidden />{q.label}</Link></li>; })}</ul>
         </section>
-        <section className="cm-glass-fn cm-warm cm-enter p-5 sm:p-6" style={stagger(8)} aria-labelledby="cm-themes">
-          <div className="flex items-end justify-between"><h2 id="cm-themes" className="cm-warm-title text-base font-semibold tracking-[-.01em]">Aparência da loja</h2><Link href="/merchant/templates" className="cm-warm-title inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold">Ver temas <ArrowRight className="size-4" aria-hidden /></Link></div>
-          <ul className="mt-1 grid grid-cols-3 gap-2.5">{THEMES.map((t) => <li key={t.key}><Link href="/merchant/templates" className="cm-lift block overflow-hidden rounded-xl border border-border bg-surface"><Image src={themeShot(t.key, "desktop")} alt={`Tema ${t.name}`} width={240} height={150} className="aspect-[8/5] w-full object-cover object-top" /><span className="block px-2 py-1.5 text-xs font-medium">{t.name}</span></Link></li>)}</ul>
+        <section className="ds-card ds-warm ds-enter p-5 sm:p-6" style={stagger(8)} aria-labelledby="cm-themes">
+          <div className="flex items-end justify-between"><h2 id="cm-themes" className="ds-warm-title text-base font-semibold tracking-[-.01em]">Aparência da loja</h2><Link href="/merchant/templates" className="ds-warm-title inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold">Ver temas <ArrowRight className="size-4" aria-hidden /></Link></div>
+          <ul className="mt-1 grid grid-cols-3 gap-2.5">{THEMES.map((t) => <li key={t.key}><Link href="/merchant/templates" className="ds-lift block overflow-hidden rounded-xl border border-border bg-surface"><Image src={themeShot(t.key, "desktop")} alt={`Tema ${t.name}`} width={240} height={150} className="aspect-[8/5] w-full object-cover object-top" /><span className="block px-2 py-1.5 text-xs font-medium">{t.name}</span></Link></li>)}</ul>
         </section>
       </div>
     </div>

@@ -36,7 +36,7 @@ export default async function MerchantSettingsPage() {
   return (
     <>
       <PageHeader title="Configurações" description={commerce ? "Dados da empresa, pagamentos, frete, domínio e integrações da sua operação de e-commerce." : "Dados da loja e integrações (modo demonstração: nada é conectado de verdade)."} />
-      {commerce ? <nav aria-label="Nesta página" className="cm-tabs mb-5">{[["#dados", "Dados da loja"], ["#payments", "Pagamentos"], ["#shipping", "Frete"], ["#domain", "Domínio"]].map(([href, label]) => <a key={href} href={href} className="cm-tab">{label}</a>)}</nav> : null}
+      {commerce ? <nav aria-label="Nesta página" className="ds-seg mb-5">{[["#dados", "Dados da loja"], ["#payments", "Pagamentos"], ["#shipping", "Frete"], ["#domain", "Domínio"]].map(([href, label]) => <a key={href} href={href} className="ds-seg-btn">{label}</a>)}</nav> : null}
       <OperationalPulse className="mb-5" items={[
         { label: "Dados da loja", value: profileComplete ? "Prontos" : "Incompletos", icon: Store, tone: profileComplete ? "success" : "warning", hint: s.name },
         { label: "Pagamentos", value: paymentConnected ? "Conectado" : "Pendente", icon: CreditCard, tone: paymentConnected ? "success" : "danger", hint: "Mercado Pago" },

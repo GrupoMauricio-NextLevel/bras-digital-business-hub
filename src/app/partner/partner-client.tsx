@@ -14,7 +14,7 @@ export function CopyButton({ text, label = "Copiar", size = "sm" }: { text: stri
 }
 
 export function WhatsAppShare({ text }: { text: string }) {
-  return <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-success px-3 text-sm font-semibold text-white hover:opacity-90"><MessageCircle className="size-4" aria-hidden /> Enviar no WhatsApp</a>;
+  return <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-success px-3 text-sm font-semibold text-canvas hover:opacity-90"><MessageCircle className="size-4" aria-hidden /> Enviar no WhatsApp</a>;
 }
 
 const PLANS = [["", "Todos os planos"], ["DROP_MANUAL", "Drop manual"], ["STORE_SUBDOMAIN", "Loja SuperDrop"], ["STORE_OWN", "Loja própria"]] as const;

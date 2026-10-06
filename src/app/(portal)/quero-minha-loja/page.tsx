@@ -16,9 +16,9 @@ export default async function QueroMinhaLoja() {
   return (
     <div className="mx-auto max-w-lg px-4 py-14">
       <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">{brand.soon ? brand.soon.leadTitle : "Quero minha loja"}</h1>
-      <p className="mt-2 text-neutral-600">{brand.soon ? `O ${brand.name} ainda está sendo construído. Conte um pouco sobre o seu negócio e a equipe avisa quando abrir.` : `Conte um pouco sobre o seu negócio. A equipe da ${brand.name} fala com você pelo WhatsApp para combinar a implantação.`}</p>
+      <p className="mt-2 text-muted-foreground">{brand.soon ? `O ${brand.name} ainda está sendo construído. Conte um pouco sobre o seu negócio e a equipe avisa quando abrir.` : `Conte um pouco sobre o seu negócio. A equipe da ${brand.name} fala com você pelo WhatsApp para combinar a implantação.`}</p>
       <LeadForm brandName={brand.name} accent={brand.primaryColor} />
-      <p className="mt-6 text-sm text-neutral-600">Prefere conversar agora? {c.whatsappUrl ? <a className="font-semibold underline" href={c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero abrir a minha loja na ${brand.name}.`)}`)} target="_blank" rel="noreferrer">Chame no WhatsApp</a> : c.email ? <a className="font-semibold underline" href={`mailto:${c.email}`}>{c.email}</a> : "Fale com a equipe pelos canais do rodapé."} Já tem conta? <Link href="/login" className="font-semibold underline">Entrar</Link></p>
+      <p className="mt-6 text-sm text-muted-foreground">Prefere conversar agora? {c.whatsappUrl ? <a className="font-semibold underline" href={c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero abrir a minha loja na ${brand.name}.`)}`)} target="_blank" rel="noreferrer">Chame no WhatsApp</a> : c.email ? <a className="font-semibold underline" href={`mailto:${c.email}`}>{c.email}</a> : "Fale com a equipe pelos canais do rodapé."} Já tem conta? <Link href="/login" className="font-semibold underline">Entrar</Link></p>
     </div>
   );
 }

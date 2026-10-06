@@ -1,3 +1,4 @@
+import "./commerce/commerce.css";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
@@ -28,45 +29,45 @@ export function CommerceHome({ brand }: { brand: Brand }) {
       <HeroV2 cta={cta} signupOpen={brand.signupOpen} />
       <Marquee />
 
-      <section id="canais" aria-labelledby="canais-t" className={`${section} bg-[#f5f1e8]`}>
+      <section id="canais" aria-labelledby="canais-t" className={`${section} bg-canvas`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="canais-t" className={`${H2} mb-12 max-w-3xl text-[#14213d] sm:text-5xl`}>Venda pela loja, receba por Pix e acompanhe tudo em um só lugar.</h2>
+          <h2 id="canais-t" className={`${H2} mb-12 max-w-3xl text-foreground sm:text-5xl`}>Venda pela loja, receba por Pix e acompanhe tudo em um só lugar.</h2>
           <Bento />
         </div>
       </section>
 
       <section id="para-quem" aria-labelledby="pq-t" className={section}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="pq-t" className={`${H2} mb-10 max-w-2xl text-[#14213d]`}>Para quem vende e quer uma loja de verdade.</h2>
+          <h2 id="pq-t" className={`${H2} mb-10 max-w-2xl text-foreground`}>Para quem vende e quer uma loja de verdade.</h2>
           <ForWhom cta={cta} />
         </div>
       </section>
 
-      <section id="exemplos" aria-labelledby="exemplos-t" className={`${section} bg-[#14213d]`}>
+      <section id="exemplos" aria-labelledby="exemplos-t" className={`${section} bg-band`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="exemplos-t" className={`${H2} max-w-2xl text-[#f5f1e8]`}>Moda, casa, acessórios: cada loja com a sua cara.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-[#f5f1e8]/85">Três lojas de demonstração, criadas com temas que existem hoje. Nomes, produtos e preços são fictícios.</p>
+          <h2 id="exemplos-t" className={`${H2} max-w-2xl text-band-foreground`}>Moda, casa, acessórios: cada loja com a sua cara.</h2>
+          <p className="mt-4 max-w-2xl text-lg text-band-foreground/85">Três lojas de demonstração, criadas com temas que existem hoje. Nomes, produtos e preços são fictícios.</p>
           <div className="mt-10"><StoreGallery stores={DEMO_STORES} themes={themes} ctaHref={cta} /></div>
         </div>
       </section>
 
-      <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-[#fbf8f1]`}>
+      <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-highlight-soft`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="pers-t" className={`${H2} mb-12 max-w-3xl text-[#14213d] sm:text-5xl`}>Deixe a loja com a cara da sua marca, sem escrever código.</h2>
+          <h2 id="pers-t" className={`${H2} mb-12 max-w-3xl text-foreground sm:text-5xl`}>Deixe a loja com a cara da sua marca, sem escrever código.</h2>
           <Personalize />
         </div>
       </section>
 
-      <section id="operacao" aria-labelledby="op-t" className={`${section} bg-[#0e1a33]`}>
+      <section id="operacao" aria-labelledby="op-t" className={`${section} bg-band`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="op-t" className={`${H2} mb-16 max-w-3xl text-[#f5f1e8] sm:text-5xl`}>Depois que a loja está no ar, o painel cuida do resto.</h2>
+          <h2 id="op-t" className={`${H2} mb-16 max-w-3xl text-band-foreground sm:text-5xl`}>Depois que a loja está no ar, o painel cuida do resto.</h2>
           <Operation />
         </div>
       </section>
 
-      <section id="comecar" aria-labelledby="com-t" className={`${section} bg-[#fbf8f1]`}>
+      <section id="comecar" aria-labelledby="com-t" className={`${section} bg-highlight-soft`}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="com-t" className={`${H2} mb-12 max-w-2xl text-[#14213d]`}>Do primeiro contato à loja publicada.</h2>
+          <h2 id="com-t" className={`${H2} mb-12 max-w-2xl text-foreground`}>Do primeiro contato à loja publicada.</h2>
           <Steps cta={cta} />
         </div>
       </section>
@@ -75,11 +76,11 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         <div className="mx-auto max-w-6xl"><ThemesAndPrices themes={THEME_CATALOG.map((t) => ({ key: t.key, name: t.name, priceCents: t.priceCents, tagline: t.tagline }))} /></div>
       </section>
 
-      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-[#fbf8f1]`}>
-        <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-[#14213d]`}>Perguntas que costumam aparecer.</h2><Faq /></div>
+      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-highlight-soft`}>
+        <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas que costumam aparecer.</h2><Faq /></div>
       </section>
 
-      <section className="bg-[#14213d] py-16 md:py-20" aria-label="Chamada final"><ClosingCta cta={cta} signupOpen={brand.signupOpen} /></section>
+      <section className="bg-band py-16 md:py-20" aria-label="Chamada final"><ClosingCta cta={cta} signupOpen={brand.signupOpen} /></section>
     </>
   );
 }

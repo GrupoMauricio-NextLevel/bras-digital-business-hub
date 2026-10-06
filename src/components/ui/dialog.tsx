@@ -11,8 +11,8 @@ export const DialogClose = DialogPrimitive.Close;
 export function DialogContent({ className, children, title, description, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { title: string; description?: string }) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[1px] animate-fade-in" />
-      <DialogPrimitive.Content className={cn("fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-surface p-6 shadow-md animate-fade-in focus:outline-none", className)} {...props}>
+      <DialogPrimitive.Overlay className="ds-scrim animate-fade-in" />
+      <DialogPrimitive.Content className={cn("ds-dialog focus:outline-none", className)} {...props}>
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <DialogPrimitive.Title className="text-base font-semibold">{title}</DialogPrimitive.Title>
@@ -33,8 +33,8 @@ export function Drawer({ open, onOpenChange, title, description, children, side 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 animate-fade-in" />
-        <DialogPrimitive.Content className={cn("fixed inset-y-0 z-50 flex w-[88%] max-w-md flex-col bg-surface shadow-md focus:outline-none", side === "right" ? "right-0 border-l animate-slide-in-right" : "left-0 border-r animate-slide-in-left", className)}>
+        <DialogPrimitive.Overlay className="ds-scrim animate-fade-in" />
+        <DialogPrimitive.Content className={cn("ds-drawer ds-drawer--panel flex max-w-md flex-col focus:outline-none", side === "right" ? "ds-drawer--right animate-slide-in-right" : "ds-drawer--left animate-slide-in-left", className)}>
           <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
             <div>
               <DialogPrimitive.Title className="text-base font-semibold">{title}</DialogPrimitive.Title>

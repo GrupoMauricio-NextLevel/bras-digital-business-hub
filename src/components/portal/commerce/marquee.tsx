@@ -4,11 +4,11 @@ const ITEMS = ["Temas prontos", "Editor visual", "Pix com confirmação automát
 export function Marquee() {
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
-      {ITEMS.map((t) => <li key={t} className="flex items-center whitespace-nowrap px-6 text-[15px] font-bold text-[#14213d]"><span aria-hidden className="mr-6 inline-block size-2 rotate-45 bg-[#14213d]" />{t}</li>)}
+      {ITEMS.map((t) => <li key={t} className="flex items-center whitespace-nowrap px-6 text-[15px] font-bold text-primary-foreground"><span aria-hidden className="mr-6 inline-block size-2 rotate-45 bg-primary-foreground" />{t}</li>)}
     </ul>
   );
   return (
-    <div className="cm-marquee overflow-hidden border-y border-[#14213d]/15 bg-[#f2b600] py-3.5" role="region" aria-label="O que a loja já traz hoje">
+    <div className="cm-marquee overflow-hidden border-y border-border bg-primary py-3.5" role="region" aria-label="O que a loja já traz hoje">
       <div className="cm-marquee-track">{row(false)}{row(true)}</div>
     </div>
   );

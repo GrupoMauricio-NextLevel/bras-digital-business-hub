@@ -12,9 +12,9 @@ export default async function TermosParceiros() {
   const s = await getPartnerSettings(await getDb());
   const tiers = [...s.tiers].sort((a, b) => a.min - b.min).map((t) => `${t.bps / 100}% (${t.max ? `${t.min}${t.max !== t.min ? ` a ${t.max}` : ""}` : `${t.min} ou mais`} ativações no mês)`).join(", ");
   return (
-    <article className="mx-auto max-w-3xl space-y-5 px-4 py-14 text-neutral-800">
+    <article className="mx-auto max-w-3xl space-y-5 px-4 py-14 text-foreground">
       <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Termos do Programa de Parceiros</h1>
-      <p className="text-sm text-neutral-600">Versão {s.termsVersion}. Programa operado pela NextLevel Marketing Ltda. Este texto é um modelo de partida e deve passar por revisão jurídica e contábil antes do lançamento público.</p>
+      <p className="text-sm text-muted-foreground">Versão {s.termsVersion}. Programa operado pela NextLevel Marketing Ltda. Este texto é um modelo de partida e deve passar por revisão jurídica e contábil antes do lançamento público.</p>
       <h2 className="text-xl font-bold">1. O programa</h2>
       <p>O parceiro indica lojistas para assinar planos SuperDrop e recebe comissão sobre os pagamentos efetivamente realizados por esses clientes. O programa cobre apenas a venda de planos; não há comissão sobre frete, taxa por pedido, serviços da Loja NextLevel, temas ou qualquer venda dos clientes indicados.</p>
       <h2 className="text-xl font-bold">2. Ativação e meta mensal</h2>

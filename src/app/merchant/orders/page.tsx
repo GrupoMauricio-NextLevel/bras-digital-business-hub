@@ -9,10 +9,12 @@ import { requireRole } from "@/lib/require-session";
 import { ORDER_STATUSES, type OrderStatus } from "@/db/schema";
 import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHeader } from "@/components/app/page-header";
 import { SimulateOrderButton } from "./simulate-order-button";
 import { isIndependentStore } from "@/lib/domain/order-policy";
 import { isDemoMode } from "@/lib/auth";
 import { isCommerceStore } from "@/lib/store-brand";
+import { MetricCard } from "@/components/app/metric-card";
 
 const COMMERCE_TABS: OrderStatus[] = ["PENDING", "SHIPPED", "DELIVERED"];
 
@@ -29,20 +31,19 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
   const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
   return (
     <>
-      <div className="mb-7 border-b border-border pb-6"><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[var(--product-accent-text)]">{commerce ? "NextLevel Commerce / Vendas" : "SuperDrop / Operação"}</p><div className="mt-2 flex flex-wrap items-end justify-between gap-5"><div><h1 className="text-4xl font-semibold tracking-[-.045em]">Pedidos</h1><p className="mt-2 max-w-2xl text-sm text-muted-foreground">Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo.</p></div><div className="flex flex-wrap items-center gap-2">{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></div></div></div>
-      <section className={commerce ? "cm-glass-fn mb-6 px-5 py-4" : "mb-7 border-y border-border py-5"} aria-label="Resumo dos pedidos">
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
-          <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Ativos</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{activeCount}</dd></div>
-          {commerce ? <>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Aguardando pagamento</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("PENDING")}</dd></div>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Em preparação</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("READY_TO_PICK") + count("PICKING") + count("READY_TO_SHIP")}</dd></div>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Enviados</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("SHIPPED")}</dd></div>
-          </> : <>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Aguardando saldo</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("AWAITING_CENTRAL_PAYMENT")}</dd></div>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Aguardando etiqueta</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("AWAITING_LABEL")}</dd></div>
-            <div><dt className="text-[10px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Na Central</dt><dd className="mt-1 text-2xl font-semibold tabular-nums">{count("READY_TO_PICK") + count("PICKING") + count("READY_TO_SHIP")}</dd></div>
-          </>}
-        </dl>
+      <PageHeader eyebrow={commerce ? "NextLevel Commerce / Vendas" : "SuperDrop / Operação"} title="Pedidos" description="Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo."
+        actions={<>{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>} />
+      <section className="ds-kpis mb-6" aria-label="Resumo dos pedidos">
+        <MetricCard label="Ativos" value={activeCount} />
+        {commerce ? <>
+          <MetricCard label="Aguardando pagamento" value={count("PENDING")} />
+          <MetricCard label="Em preparação" value={count("READY_TO_PICK") + count("PICKING") + count("READY_TO_SHIP")} />
+          <MetricCard label="Enviados" value={count("SHIPPED")} />
+        </> : <>
+          <MetricCard label="Aguardando saldo" value={count("AWAITING_CENTRAL_PAYMENT")} />
+          <MetricCard label="Aguardando etiqueta" value={count("AWAITING_LABEL")} />
+          <MetricCard label="Na Central" value={count("READY_TO_PICK") + count("PICKING") + count("READY_TO_SHIP")} />
+        </>}
       </section>
       <Suspense><FilterBar>{commerce
         ? <FilterTabs param="status" primary={COMMERCE_TABS.filter((s) => statuses.includes(s)).map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s], count: count(s) }))} rest={statuses.filter((s) => !COMMERCE_TABS.includes(s)).map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} />

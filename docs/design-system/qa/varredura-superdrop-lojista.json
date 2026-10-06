@@ -1,0 +1,1062 @@
+{
+  "results": [
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/analytics",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/after-sales",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/labels",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/products",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/content",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/storefront",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/templates",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/campanhas",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/descontos",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/avaliacoes",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/avise-me",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/atacado",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/wallet",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/finance",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/team",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/auditoria",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/settings",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_86gi11z2i0ca",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wjro77dbgw6n",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_ivge0tdndraz",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_5jlg0gpjuv1x",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_uci9g1ny82zt",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services/sor_uujhzjp52pgh",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services/sor_hryzl0fuqovm",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/propostas",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_1hckptvt1u73",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_oe0e0jia7p2t",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_dqe1n3s5saw2",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wuv830hamqy9",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_idvdczs8zsad",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_9dkh2uyov70i",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_4atd62mx78tr",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_33vfzgkgyvl8",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wofpmzododtx",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_e20q669tpsdf",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_mkmde59qp520",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_bb3ek13suk1p",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_hwyrqlk8itwu",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_90i88uzun3im",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_0qicaploa56i",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_3332six0x4xl",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_pet0b35c2izm",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_f19zqzhh0s9w",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_dqeexxwbckye",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_0tmkhihrml61",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_3ubo5ng4v2gl",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_s1o1fg8e6b9l",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_x7exk7tx1okm",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_k2abso0u2ycb",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_fqejj1e074vx",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_x0l5v1m8vei2",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_y8qkafvhn5lb",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_0jzdpl9v23xp",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_1f7nr74x7d08",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_k7hp2x5k9t9y",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_rq2aujx0646c",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_ct0zd8xhaxhl",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_hm6qfv9wej83",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_fqa9ciwzvvxt",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_62y74rl3am4p",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_cdjin0ip1605",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_dymgnmrawxhw",
+      "theme": "light",
+      "width": 1440,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/analytics",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/after-sales",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/labels",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/products",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/content",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/storefront",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/templates",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/campanhas",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/descontos",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/avaliacoes",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/avise-me",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/atacado",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/wallet",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/finance",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/team",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/auditoria",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/settings",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_86gi11z2i0ca",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wjro77dbgw6n",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_ivge0tdndraz",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_5jlg0gpjuv1x",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_uci9g1ny82zt",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services/sor_uujhzjp52pgh",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/services/sor_hryzl0fuqovm",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/propostas",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_1hckptvt1u73",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_oe0e0jia7p2t",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_dqe1n3s5saw2",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wuv830hamqy9",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_idvdczs8zsad",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_9dkh2uyov70i",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_4atd62mx78tr",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_33vfzgkgyvl8",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_wofpmzododtx",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_e20q669tpsdf",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_mkmde59qp520",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_bb3ek13suk1p",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_hwyrqlk8itwu",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_90i88uzun3im",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_0qicaploa56i",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_3332six0x4xl",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_pet0b35c2izm",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_f19zqzhh0s9w",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_dqeexxwbckye",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_0tmkhihrml61",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_3ubo5ng4v2gl",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_s1o1fg8e6b9l",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/orders/ord_x7exk7tx1okm",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_k2abso0u2ycb",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_fqejj1e074vx",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_x0l5v1m8vei2",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_y8qkafvhn5lb",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_0jzdpl9v23xp",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_1f7nr74x7d08",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_k7hp2x5k9t9y",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_rq2aujx0646c",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_ct0zd8xhaxhl",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_hm6qfv9wej83",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_fqa9ciwzvvxt",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_62y74rl3am4p",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_cdjin0ip1605",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "superdrop-lojista",
+      "route": "/merchant/customers/sc_dymgnmrawxhw",
+      "theme": "dark",
+      "width": 390,
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [],
+  "diffsGeometria": []
+}

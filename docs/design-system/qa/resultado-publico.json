@@ -1,0 +1,3546 @@
+[
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.animate-fade-in.shadow-sm.rounded-md:nth-child(2) > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#1042</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.animate-fade-in.shadow-sm.rounded-md:nth-child(2) > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#1042</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.p-2 > .tabular-nums <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.p-2 > .tabular-nums <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.p-2 > .tabular-nums <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.min-h-40.bg-surface-muted\\/70.p-2:nth-child(1) > .space-y-1\\.5 > .animate-fade-in.shadow-sm.rounded-md > .tabular-nums.font-semibold <p class=\"font-semibold tabular-nums\">#<!-- -->1044</p>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": [
+      "axe: color-contrast:.py-2.px-3.justify-between:nth-child(2) > .font-medium <span class=\"font-medium\">Camisa Tailandesa 01</span>"
+    ]
+  },
+  {
+    "host": "superdrop",
+    "route": "/login",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/alpha-outfit",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/f/mantosshop",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "superdrop",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/login",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "commerce",
+    "route": "/demo/arena",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "light",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 840,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/login",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/esqueci-senha",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/planos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/faq",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/como-funciona",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/loja-nextlevel",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/temas/arena",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/quero-minha-loja",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/seja-fornecedor",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/termos",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/entrar",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/parceiros/cadastro",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  },
+  {
+    "host": "nextlevel",
+    "route": "/fornecedores",
+    "theme": "dark",
+    "width": 320,
+    "status": 200,
+    "problems": []
+  }
+]

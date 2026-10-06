@@ -32,27 +32,27 @@ export function PayPanel({ pay, onPaid }: { pay: PayData; onPaid?: () => void })
 
   return (
     <div className="space-y-4" data-testid="nl-pay-panel">
-      {pay.demo ? <p role="note" className="rounded-md bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900">PAGAMENTO SIMULADO · demonstração, nenhum dinheiro real é movimentado</p> : null}
-      <p className="text-sm text-neutral-600">Valor a pagar: <b className="text-neutral-900 tabular-nums">{formatBRL(pay.chargedCents)}</b> {pay.method === "PIX" ? "no Pix" : "no cartão, em até 6x"}</p>
+      {pay.demo ? <p role="note" className="rounded-md bg-warning-soft px-3 py-2 text-xs font-semibold text-warning">PAGAMENTO SIMULADO · demonstração, nenhum dinheiro real é movimentado</p> : null}
+      <p className="text-sm text-muted-foreground">Valor a pagar: <b className="text-foreground tabular-nums">{formatBRL(pay.chargedCents)}</b> {pay.method === "PIX" ? "no Pix" : "no cartão, em até 6x"}</p>
       {pay.method === "PIX" ? (
         <>
           {pay.pixQrBase64 ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img alt="QR Code Pix" src={`data:image/png;base64,${pay.pixQrBase64}`} className="mx-auto size-48 rounded-lg border border-neutral-200 bg-white p-2" />
+            <img alt="QR Code Pix" src={`data:image/png;base64,${pay.pixQrBase64}`} className="mx-auto size-48 rounded-lg border border-border bg-surface p-2" />
           ) : null}
-          <code className="block break-all rounded-md bg-neutral-100 p-3 text-xs" data-testid="nl-pix-code">{pay.pixCode}</code>
+          <code className="block break-all rounded-md bg-surface-muted p-3 text-xs" data-testid="nl-pix-code">{pay.pixCode}</code>
           <div className="flex flex-wrap gap-2">
-            <button type="button" className={`${btn} bg-[#0f1c16] text-white hover:bg-[#1c2e25] focus-visible:outline-[#0f1c16]`} onClick={() => { void navigator.clipboard?.writeText(pay.pixCode ?? ""); toast.success("Código copiado"); }}><Copy className="size-4" /> Copiar código Pix</button>
-            <button type="button" className={`${btn} border border-neutral-300 hover:bg-neutral-100 focus-visible:outline-[#0f1c16]`} onClick={() => void check(false)}><RefreshCw className="size-4" /> Já paguei</button>
+            <button type="button" className={`${btn} bg-band text-band-foreground hover:bg-band-line focus-visible:outline-ring`} onClick={() => { void navigator.clipboard?.writeText(pay.pixCode ?? ""); toast.success("Código copiado"); }}><Copy className="size-4" /> Copiar código Pix</button>
+            <button type="button" className={`${btn} border border-border hover:bg-surface-muted focus-visible:outline-ring`} onClick={() => void check(false)}><RefreshCw className="size-4" /> Já paguei</button>
           </div>
         </>
       ) : pay.demo ? null : (
-        <a href={pay.checkoutUrl} className={`${btn} w-full bg-[#0f1c16] text-white hover:bg-[#1c2e25] focus-visible:outline-[#0f1c16]`}><ExternalLink className="size-4" /> Pagar no cartão (Mercado Pago)</a>
+        <a href={pay.checkoutUrl} className={`${btn} w-full bg-band text-band-foreground hover:bg-band-line focus-visible:outline-ring`}><ExternalLink className="size-4" /> Pagar no cartão (Mercado Pago)</a>
       )}
       {pay.demo ? (
-        <button type="button" disabled={busy} className={`${btn} w-full border border-amber-400 bg-amber-50 text-amber-900 hover:bg-amber-100 focus-visible:outline-amber-500`} onClick={async () => { setBusy(true); const r = await simulateNlPaymentAction(pay.token); setBusy(false); if (!r.ok) toast.error(r.error); else await check(); }}>Simular pagamento (demo)</button>
+        <button type="button" disabled={busy} className={`${btn} w-full border border-warning bg-warning-soft text-warning hover:bg-warning-soft focus-visible:outline-warning`} onClick={async () => { setBusy(true); const r = await simulateNlPaymentAction(pay.token); setBusy(false); if (!r.ok) toast.error(r.error); else await check(); }}>Simular pagamento (demo)</button>
       ) : null}
-      <p className="text-xs text-neutral-500">A confirmação é automática. Guarde o link desta página para acompanhar o seu pedido.</p>
+      <p className="text-xs text-muted-foreground">A confirmação é automática. Guarde o link desta página para acompanhar o seu pedido.</p>
     </div>
   );
 }

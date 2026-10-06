@@ -2,16 +2,17 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const badgeVariants = cva("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap", {
+/** Pill do sistema de design (.ds-pill). A cor do estado vem do tema; "brand" usa a cor funcional do projeto. */
+const badgeVariants = cva("ds-pill", {
   variants: {
     tone: {
-      neutral: "bg-surface-muted text-foreground border-transparent",
-      success: "bg-success-soft text-success border-transparent",
-      warning: "bg-warning-soft text-warning border-transparent",
-      danger: "bg-danger-soft text-danger border-transparent",
-      info: "bg-info-soft text-info border-transparent",
-      brand: "bg-brand-soft text-success border-transparent",
-      outline: "bg-transparent text-muted-foreground border-border",
+      neutral: "ds-pill--mute",
+      success: "ds-pill--ok",
+      warning: "ds-pill--warn",
+      danger: "ds-pill--bad",
+      info: "ds-pill--info",
+      brand: "",
+      outline: "ds-pill--outline",
     },
   },
   defaultVariants: { tone: "neutral" },
@@ -26,7 +27,7 @@ export function Badge({ className, tone, dot, icon, children, ...props }: BadgeP
   return (
     <span className={cn(badgeVariants({ tone }), className)} {...props}>
       {icon ? <span aria-hidden className="flex shrink-0 [&>svg]:size-3">{icon}</span> : null}
-      {dot && !icon ? <span className="size-1.5 rounded-full bg-current" /> : null}
+      {dot && !icon ? <span className="size-1.5 rounded-full bg-current" aria-hidden /> : null}
       {children}
     </span>
   );

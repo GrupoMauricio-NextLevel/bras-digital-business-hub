@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/app/page-header";
 import { AlertTriangle, Package, PackageCheck, Truck } from "lucide-react";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
@@ -17,14 +18,7 @@ export default async function DispatchPage() {
 
   return (
     <div className="nl-touch space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Modo expedição</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">Olá, {session.user.name.split(" ")[0]}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Separe, confira e despache com o mínimo de toques.</p>
-        </div>
-        <LiveSync />
-      </div>
+      <PageHeader eyebrow="Modo expedição" title={`Olá, ${session.user.name.split(" ")[0]}`} description="Separe, confira e despache com o mínimo de toques." actions={<LiveSync />} />
 
       <DispatchNav active="/supplier/dispatch" adm={session.user.role === "SUPPLIER_ADMIN"} />
 

@@ -4,7 +4,8 @@ import type { Brand, BrandCode } from "@/lib/brand";
 export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
-  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox" | "Link2" | "Ticket" | "HandCoins";
+  | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox" | "Link2" | "Ticket" | "HandCoins"
+  | "ShoppingBag" | "Megaphone" | "ReceiptText" | "Tag" | "LayoutGrid";
 
 export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro" | "partner";
 
@@ -21,11 +22,16 @@ export type NavItem = {
   group?: string;
   /** Recurso bloqueado na oferta atual: mostra cadeado e leva ao upgrade. */
   locked?: boolean;
+  /** Aparece na barra de atalhos do celular (sem nenhum marcado, vale os 3 primeiros). */
+  bottom?: boolean;
   /** Item que só existe em marcas com este módulo (dropshipping) ou com o programa de parceiros aberto. */
   needs?: "dropship" | "partners";
   /** Item exclusivo de uma marca. */
   onlyBrand?: BrandCode;
 };
+
+/** Como o menu agrupa: "sections" = títulos de seção sempre abertos; "accordion" = grupos que abrem e fecham (aria-expanded). É estrutura do fluxo, não da empresa. */
+export type NavMode = "sections" | "accordion";
 
 export type QuickAction = { label: string; href: string; icon: NavIcon };
 
@@ -146,6 +152,43 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     ],
   },
 };
+
+/** Ícone do grupo no modo "accordion". */
+export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Catálogo": "Package", Marketing: "Megaphone", "Loja virtual": "Store", "Gestão": "BarChart3", "Configurações": "Settings" };
+
+/** Painel do lojista Commerce (grupos que abrem). Só rotas que existem. Equipe (STAFF) é filtrada no servidor pelo `STAFF_NAV_PREFIXES`. */
+export const COMMERCE_STORE_NAV: NavItem[] = [
+  { label: "Início", href: "/merchant", icon: "Home", exact: true, bottom: true },
+  { label: "Pedidos", href: "/merchant/orders", icon: "ShoppingBag", group: "Vendas", bottom: true },
+  { label: "Clientes", href: "/merchant/customers", icon: "Users", group: "Vendas" },
+  { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck", group: "Vendas" },
+  { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Catálogo", bottom: true },
+  { label: "Categorias", href: "/merchant/catalogo/categorias", icon: "Tag", group: "Catálogo" },
+  { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Marketing" },
+  { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Marketing" },
+  { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Marketing" },
+  { label: "Visão da loja", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
+  { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
+  { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
+  { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Gestão" },
+  { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: "Gestão", bottom: true },
+  { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Configurações" },
+  { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Configurações" },
+  { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Configurações" },
+  { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Configurações" },
+];
+export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo"];
+
+/** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
+export const COMMERCE_ADMIN_NAV: NavItem[] = [
+  { label: "Visão geral", href: "/commerce", icon: "LayoutGrid", exact: true, group: "Plataforma", bottom: true },
+  { label: "Lojas", href: "/commerce/stores", icon: "Store", group: "Operação", bottom: true },
+  { label: "Vendas", href: "/commerce/orders", icon: "ShoppingBag", group: "Operação", bottom: true },
+  { label: "Catálogo das lojas", href: "/commerce/catalog", icon: "Package", group: "Operação" },
+  { label: "Interessados", href: "/commerce/leads", icon: "Inbox", group: "Crescimento" },
+  { label: "Assinaturas", href: "/commerce/plans", icon: "CreditCard", group: "Negócio" },
+  { label: "Plataforma", href: "/commerce/settings", icon: "Settings", group: "Sistema" },
+];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {

@@ -12,6 +12,9 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { formatBRL, formatCompactBRL } from "@/lib/money";
 import { PRODUCT_CONTEXTS } from "@/lib/product-context";
+import { PageHeader, SectionTitle } from "@/components/app/page-header";
+import { MetricCard } from "@/components/app/metric-card";
+import { EmptyState } from "@/components/app/empty-state";
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -32,22 +35,18 @@ export default async function MasterDashboard() {
   const firstName = session.user.name.split(" ")[0];
 
   return (
-    <div className="mx-auto max-w-[1180px]">
-      <section className="border-b border-border pb-10 pt-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--product-accent-text)]">NextLevel Control Center</p>
-        <h1 className="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-[.9] tracking-[-.055em]">
-          {greeting()},<br /><span className="text-muted-foreground">{firstName}.</span>
-        </h1>
-        <div className="mt-10 grid gap-6 border-t border-border pt-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
-          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Volume da rede</div><div className="mt-2 text-3xl font-semibold tracking-[-.035em] tabular-nums sm:text-4xl">{formatBRL(overview.gmv)}</div><div className="mt-1 text-sm text-muted-foreground">{overview.orders} pedidos processados</div></div>
-          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Receita NextLevel</div><div className="mt-2 text-xl font-semibold tabular-nums">{formatBRL(overview.platformRevenue)}</div><div className="mt-1 text-xs text-muted-foreground">{formatBRL(overview.subscriptionRevenue)} recorrente</div></div>
-          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Rede ativa</div><div className="mt-2 text-xl font-semibold tabular-nums">{overview.activeStores}</div><div className="mt-1 text-xs text-muted-foreground">{overview.suppliers} forn. · {overview.stores} lojas</div></div>
-          <div><div className="text-[11px] font-semibold uppercase tracking-[.14em] text-subtle-foreground">Atenção</div><div className="mt-2 text-xl font-semibold tabular-nums">{alerts.length}</div><div className="mt-1 text-xs text-muted-foreground">{urgent ? urgent + " urgente(s)" : "nenhum urgente"}</div></div>
-        </div>
+    <>
+      <PageHeader eyebrow="NextLevel Control Center" title={`${greeting()}, ${firstName}.`} description="Visão de todos os produtos do ecossistema." />
+      <section className="ds-kpis mb-6" aria-label="Resumo da rede">
+        <MetricCard label="Volume da rede" value={formatBRL(overview.gmv)} hint={`${overview.orders} pedidos processados`} />
+        <MetricCard label="Receita NextLevel" value={formatBRL(overview.platformRevenue)} hint={`${formatBRL(overview.subscriptionRevenue)} recorrente`} />
+        <MetricCard label="Rede ativa" value={overview.activeStores} hint={`${overview.suppliers} forn. · ${overview.stores} lojas`} />
+        <MetricCard label="Atenção" value={alerts.length} hint={urgent ? `${urgent} urgente(s)` : "nenhum urgente"} tone={urgent ? "danger" : "neutral"} />
       </section>
 
-      <section className="py-10" aria-labelledby="business-title">
-        <div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Ecossistema</p><h2 id="business-title" className="mt-1 text-2xl font-semibold tracking-[-.03em]">Seus negócios</h2></div><p className="hidden max-w-sm text-right text-xs leading-relaxed text-muted-foreground sm:block">Entre em uma operação sem sair do NextLevel OS. Cada negócio mantém sua própria identidade e contexto.</p></div>
+      <section className="mb-6" aria-labelledby="business-title">
+        <SectionTitle title="Seus negócios" description="Cada negócio mantém sua operação e seu contexto." />
+        <div className="grid gap-3">
         <BusinessPortal product={PRODUCT_CONTEXTS.superdrop} attention={alerts.length ? alerts.length + " situação(ões) na operação" : "Operação sem alertas críticos"} metrics={[
           { label: "GMV", value: formatCompactBRL(overview.gmv) },
           { label: "Pedidos", value: overview.orders },
@@ -61,20 +60,20 @@ export default async function MasterDashboard() {
         <BusinessPortal product={PRODUCT_CONTEXTS.bras} metrics={[{ label: "Modelo", value: "B2B" }, { label: "Mercado", value: "Atacado" }, { label: "Estado", value: "Preparação" }]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.creators} metrics={[{ label: "Modelo", value: "Creators" }, { label: "Canal", value: "Social" }, { label: "Estado", value: "Preparação" }]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.china} metrics={[{ label: "Modelo", value: "Cross-border" }, { label: "Mercado", value: "Brasil ↔ China" }, { label: "Estado", value: "Preparação" }]} />
+              </div>
       </section>
+      <div className="ds-grid ds-grid--main mb-6">
+        <section className="ds-card">
+          <SectionTitle title="O que exige atenção" action={<Link href="/master/errors" className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-[var(--ds-link)]">Ver alertas <ArrowRight className="size-4" aria-hidden /></Link>} />
+          {alerts.length ? <ol className="divide-y divide-border">{alerts.slice(0, 6).map((a) => <li key={a.key}><Link href={a.href} className="group flex min-h-16 items-center gap-4 py-3"><CircleAlert className="size-4 shrink-0 text-[var(--ds-link)]" aria-hidden /><span className="min-w-0 flex-1"><span className="block text-sm font-bold">{a.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span></span><span className="ds-pill">{a.count}</span><ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" aria-hidden /></Link></li>)}</ol> : <EmptyState compact title="Operação limpa" description="Nenhuma situação exige sua atenção agora." />}
+        </section>
+        <section className="ds-card"><SectionTitle title="Fluxo do ecossistema" /><ActivityFeed items={overview.recent} /></section>
+      </div>
 
-      <section className="grid gap-10 border-t border-border py-10 lg:grid-cols-[1fr_.65fr]">
-        <div>
-          <div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Agora</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">O que exige atenção</h2></div></div>
-          {alerts.length ? <ol className="divide-y divide-border border-y border-border">{alerts.slice(0,6).map((a) => <li key={a.key}><Link href={a.href} className="group flex min-h-16 items-center gap-4 py-4"><CircleAlert className="size-4 shrink-0 text-[var(--product-accent-text)]" /><span className="min-w-0 flex-1"><span className="block text-sm font-medium">{a.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">{a.detail}</span></span><span className="tabular-nums text-sm font-semibold">{a.count}</span><ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" /></Link></li>)}</ol> : <div className="border-y border-border py-8"><p className="text-lg font-medium">Operação limpa.</p><p className="mt-1 text-sm text-muted-foreground">Nenhuma situação exige sua atenção agora.</p></div>}
-        </div>
-        <div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Fluxo do ecossistema</p><ActivityFeed items={overview.recent} /></div>
-      </section>
-
-      <section className="border-t border-border py-10">
-        <div className="mb-5 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-subtle-foreground">Rede</p><h2 className="mt-1 text-2xl font-semibold tracking-[-.03em]">Pedidos recentes</h2></div><Link href="/master/orders" className="flex items-center gap-2 text-xs font-semibold">Ver todos <ArrowRight className="size-4" /></Link></div>
+      <section>
+        <div className="flex items-end justify-between"><SectionTitle title="Pedidos recentes" /><Link href="/master/orders" className="mb-3 inline-flex min-h-11 items-center gap-1 text-sm font-bold text-[var(--ds-link)]">Ver todos <ArrowRight className="size-4" aria-hidden /></Link></div>
         <OrdersTable rows={orders} basePath="/master/orders" />
       </section>
-    </div>
+    </>
   );
 }

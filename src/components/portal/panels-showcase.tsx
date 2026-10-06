@@ -31,7 +31,7 @@ function Screen({ k }: { k: PanelKey }) {
         <div className="rounded-xl border-2 border-primary px-4 py-3 text-center text-sm font-bold text-primary">Imprimir etiquetas da onda</div>
       </> : null}
       {k === "lite" ? <>
-        <div className="rounded-xl bg-primary p-4 text-primary-foreground"><p className="text-[11px] opacity-90">Saldo para pedidos</p><p className="text-3xl font-extrabold tabular-nums">R$ 340,00</p><span className="mt-2 inline-block rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-neutral-900">Recarregar por Pix</span></div>
+        <div className="rounded-xl bg-primary p-4 text-primary-foreground"><p className="text-[11px] opacity-90">Saldo para pedidos</p><p className="text-3xl font-extrabold tabular-nums">R$ 340,00</p><span className="mt-2 inline-block rounded-lg bg-surface px-3 py-1.5 text-xs font-bold text-foreground">Recarregar por Pix</span></div>
         <div className="grid grid-cols-2 gap-2">{[["Para pagar", "2 pedidos"], ["Aguardando etiqueta", "3 pedidos"]].map(([l, v]) => <div key={l} className={kpi}><p className="text-[10px] uppercase text-muted-foreground">{l}</p><p className="text-sm font-bold">{v}</p></div>)}</div>
         <div className="rounded-lg border border-accent/30 bg-accent-soft p-2.5 text-[11px]"><p className="font-semibold text-accent-foreground">Recomendado para você</p><p className="text-muted-foreground">Banners de campanha ajudam a divulgar a loja.</p></div>
       </> : null}
@@ -49,18 +49,18 @@ export function PanelsShowcase() {
   const p = PANELS[i]!;
   return (
     <div>
-      <div role="tablist" aria-label="Painéis" className="mb-8 inline-flex flex-wrap gap-1 rounded-xl bg-neutral-200/70 p-1" onKeyDown={onKey}>
-        {PANELS.map((x, n) => <button key={x.key} ref={(el) => { refs.current[n] = el; }} role="tab" id={`pn-tab-${x.key}`} aria-selected={n === i} aria-controls="pn-panel" tabIndex={n === i ? 0 : -1} onClick={() => setI(n)} className={cn("rounded-lg px-4 py-2 text-sm font-semibold transition-colors", n === i ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-900")}>{x.label}</button>)}
+      <div role="tablist" aria-label="Painéis" className="mb-8 inline-flex flex-wrap gap-1 rounded-xl bg-surface-muted ring-1 ring-border p-1" onKeyDown={onKey}>
+        {PANELS.map((x, n) => <button key={x.key} ref={(el) => { refs.current[n] = el; }} role="tab" id={`pn-tab-${x.key}`} aria-selected={n === i} aria-controls="pn-panel" tabIndex={n === i ? 0 : -1} onClick={() => setI(n)} className={cn("rounded-lg px-4 py-2 text-sm font-semibold transition-colors", n === i ? "bg-surface shadow-sm" : "text-muted-foreground hover:text-foreground")}>{x.label}</button>)}
       </div>
       <div id="pn-panel" role="tabpanel" aria-labelledby={`pn-tab-${p.key}`} className="grid items-center gap-8 lg:grid-cols-[1fr_1.15fr]">
         <div>
           <h3 className="nl-title">{p.title}</h3>
-          <p className="mt-3 text-neutral-600">{p.text}</p>
-          <ul className="mt-5 space-y-2.5">{p.bullets.map((b) => <li key={b} className="flex gap-2.5 text-sm"><Check className="mt-0.5 size-4 shrink-0 text-[#0d803e]" aria-hidden />{b}</li>)}</ul>
+          <p className="mt-3 text-muted-foreground">{p.text}</p>
+          <ul className="mt-5 space-y-2.5">{p.bullets.map((b) => <li key={b} className="flex gap-2.5 text-sm"><Check className="mt-0.5 size-4 shrink-0 text-link" aria-hidden />{b}</li>)}</ul>
         </div>
         <MockWindow title={p.url} panel={p.key === "dispatch" ? "dispatch" : p.key}><Screen k={p.key} /></MockWindow>
       </div>
-      <p className="mt-4 text-xs text-neutral-600">Telas com dados simulados.</p>
+      <p className="mt-4 text-xs text-muted-foreground">Telas com dados simulados.</p>
     </div>
   );
 }

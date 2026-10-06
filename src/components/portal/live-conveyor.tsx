@@ -60,7 +60,7 @@ export function LiveConveyor({ className }: { className?: string }) {
                   <p className="mb-2 flex items-center justify-between text-[11px] font-semibold text-muted-foreground">{label}<span className="rounded-full bg-surface px-1.5 tabular-nums">{col.length}</span></p>
                   <ul className="space-y-1.5">
                     {col.slice(-3).map((o) => (
-                      <li key={o.id} className={cn("rounded-md border border-border bg-surface p-2 text-[11px] shadow-sm animate-fade-in", s === 3 && "opacity-70")}>
+                      <li key={o.id} className={cn("rounded-md border border-border bg-surface p-2 text-[11px] shadow-sm animate-fade-in", s === 3 && "bg-surface-muted")}>
                         <p className="font-semibold tabular-nums">#{o.id}</p><p className="truncate text-muted-foreground">{o.name}</p>
                         {s === 1 ? <p className="mt-1 font-medium text-success">Saldo debitado</p> : null}
                       </li>

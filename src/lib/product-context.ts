@@ -1,3 +1,5 @@
+import { themeColors, type ThemeKey } from "@/design-system/themes";
+
 export type ProductContextKey = "master" | "commerce" | "superdrop" | "bras" | "creators" | "china";
 
 export type ProductContext = {
@@ -12,21 +14,29 @@ export type ProductContext = {
   available: boolean;
 };
 
+/** Cor de orientação de cada produto: sai do TEMA (themes.ts), uma única fonte. */
+const accentOf = (k: ThemeKey) => { const c = themeColors(k, "light"); return { accent: c.primary, accentSoft: c.soft, accentContrast: c.primaryContrast }; };
+
 export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
-  master: { key: "master", name: "NextLevel Master", shortName: "Master", descriptor: "Control Center", accent: "#2563EB", accentSoft: "#E8F0FF", accentContrast: "#FFFFFF", href: "/master", available: true },
-  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Core operacional", accent: "#0891B2", accentSoft: "#E2F7FB", accentContrast: "#FFFFFF", href: "/commerce", available: true },
-  superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição & Dropshipping", accent: "#F97316", accentSoft: "#FFF0E6", accentContrast: "#17120E", href: "/master", available: true },
-  bras: { key: "bras", name: "Brás Digital", shortName: "Brás Digital", descriptor: "Atacado B2B", accent: "#D59A16", accentSoft: "#FFF6DC", accentContrast: "#17130A", available: false },
-  creators: { key: "creators", name: "Creators Hub", shortName: "Creators", descriptor: "Creators & Social Commerce", accent: "#A855F7", accentSoft: "#F4E8FF", accentContrast: "#FFFFFF", available: false },
-  china: { key: "china", name: "China Hub", shortName: "China Hub", descriptor: "Brasil ↔ China", accent: "#D73737", accentSoft: "#FFE9E7", accentContrast: "#FFFFFF", available: false },
+  master: { key: "master", name: "NextLevel Master", shortName: "Master", descriptor: "Control Center", ...accentOf("nextlevel"), href: "/master", available: true },
+  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Core operacional", ...accentOf("commerce"), href: "/commerce", available: true },
+  superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição & Dropshipping", ...accentOf("superdrop"), href: "/master", available: true },
+  bras: { key: "bras", name: "Brás Digital", shortName: "Brás Digital", descriptor: "Atacado B2B", ...accentOf("bras"), available: false },
+  creators: { key: "creators", name: "Creators Hub", shortName: "Creators", descriptor: "Creators & Social Commerce", ...accentOf("creators"), available: false },
+  china: { key: "china", name: "China Hub", shortName: "China Hub", descriptor: "Brasil ↔ China", ...accentOf("china"), available: false },
 };
 
-export function productContextForPath(pathname: string, panel?: string): ProductContext {
+/** Contexto de produto do painel: vem da MARCA (e, no Master, do módulo aberto), nunca de um padrão fixo. */
+export function productContextForPath(pathname: string, panel?: string, brandCode?: string): ProductContext {
   if (pathname.startsWith("/commerce")) return PRODUCT_CONTEXTS.commerce;
-  if (pathname.startsWith("/merchant") || pathname.startsWith("/supplier")) return PRODUCT_CONTEXTS.superdrop;
-  if (pathname.startsWith("/master")) return PRODUCT_CONTEXTS.master;
-  if (panel === "master") return PRODUCT_CONTEXTS.master;
-  return PRODUCT_CONTEXTS.superdrop;
+  if (pathname.startsWith("/master") || panel === "master") return PRODUCT_CONTEXTS.master;
+  switch (brandCode) {
+    case "NEXTLEVEL_COMMERCE": return PRODUCT_CONTEXTS.commerce;
+    case "BRAS_DIGITAL": return PRODUCT_CONTEXTS.bras;
+    case "CREATORS_HUB": return PRODUCT_CONTEXTS.creators;
+    case "CHINA_HUB": return PRODUCT_CONTEXTS.china;
+    default: return PRODUCT_CONTEXTS.superdrop;
+  }
 }
 
 export const BUSINESS_CONTEXTS = [

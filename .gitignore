@@ -155,3 +155,7 @@ next-env.d.ts
 *.zip
 
 .e2e/
+
+# Capturas pesadas do QA do sistema de design (regeneráveis: docs/design-system/README.md)
+docs/design-system/capturas/
+docs/design-system/capturas-publicas/

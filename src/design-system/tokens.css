@@ -1,0 +1,154 @@
+/* ===========================================================================
+   Sistema de design compartilhado (NextLevel, Commerce, SuperDrop e projetos futuros).
+   ESTE ARQUIVO NÃO TEM COR DE EMPRESA. Cores vêm de `themes.ts` (variáveis --ds-* no <html data-ds-theme>).
+   Aqui ficam só a forma: tipografia, espaçamento, dimensões, raios, camadas, movimento, e a ponte para os nomes antigos
+   (--background, --surface, --primary...) que os componentes existentes já usam.
+   Medidas extraídas da referência (commerce-interface-reference), conforme DESIGN_SYSTEM.md: valores observados, não uma grade inventada.
+   =========================================================================== */
+:root {
+  /* ---- Tipografia ---------------------------------------------------------------------------------------------- */
+  --ds-font-ui: var(--nl-font-display), "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --ds-fs-caption: 0.74rem;   /* pill */
+  --ds-fs-label: 0.78rem;     /* rótulo e detalhe de KPI */
+  --ds-fs-small: 0.86rem;
+  --ds-fs-nav: 0.9rem;        /* navegação e botão operacional */
+  --ds-fs-body: 1rem;
+  --ds-fs-lead: clamp(1rem, 1.5vw, 1.15rem);
+  --ds-fs-title: clamp(1.55rem, 3vw, 2.2rem);   /* título de página operacional */
+  --ds-fs-kpi: clamp(1.3rem, 2.2vw, 1.8rem);
+  --ds-fs-h2: clamp(1.7rem, 3.6vw, 2.6rem);     /* título de seção pública */
+  --ds-fs-hero: clamp(2.3rem, 5.6vw, 4.3rem);   /* hero público */
+  --ds-lh-title: 1.1;
+  --ds-lh-body: 1.55;
+  --ds-tracking-title: -0.03em;
+  --ds-tracking-eyebrow: 0.2em;
+
+  /* ---- Espaçamento: valores recorrentes observados (8/10/12/14/16/18/20/24/28/32) ------------------------------ */
+  --ds-space-1: 4px; --ds-space-2: 8px; --ds-space-3: 12px; --ds-space-4: 16px; --ds-space-5: 20px;
+  --ds-space-6: 24px; --ds-space-7: 32px; --ds-space-8: 40px; --ds-space-9: 56px; --ds-space-10: 72px;
+  --ds-gap-kpi: 14px;
+  --ds-pad-content: clamp(18px, 2.4vw, 34px);
+  --ds-pad-card: clamp(18px, 2vw, 26px);
+  --ds-pad-section: clamp(40px, 6vw, 72px);
+
+  /* ---- Dimensões ------------------------------------------------------------------------------------------------- */
+  --ds-side-w: 272px;
+  --ds-side-w-collapsed: 78px;
+  --ds-content-max: 1400px;
+  --ds-top-h: 64px;
+  --ds-kpi-min: 190px;
+  --ds-control-h: 44px;
+  --ds-control-h-sm: 36px;
+  --ds-public-w: 1200px;
+  --ds-public-header-h: 72px;
+  --ds-public-control-h: 50px;
+
+  /* ---- Raios (famílias, não um raio único) ------------------------------------------------------------------------ */
+  --ds-r-control: 12px; --ds-r-control-sm: 10px; --ds-r-field: 12px;
+  --ds-r-kpi: 18px; --ds-r-card: 22px; --ds-r-empty: 18px; --ds-r-guide: 20px;
+  --ds-r-public-card: 24px; --ds-r-public-control: 14px; --ds-r-dialog: 24px; --ds-r-pill: 999px;
+
+  /* ---- Camadas (uma única escada; diálogo sempre acima da barra lateral) ------------------------------------------- */
+  --ds-z-top: 40; --ds-z-scrim: 55; --ds-z-side: 60; --ds-z-dropdown: 70; --ds-z-skip: 80; --ds-z-modal: 100; --ds-z-popover: 130; --ds-z-toast: 140;
+
+  /* ---- Movimento ---------------------------------------------------------------------------------------------------- */
+  --ds-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ds-dur-fast: 120ms; --ds-dur-base: 200ms; --ds-dur-slow: 250ms;
+
+  /* ---- Sombras: forma fixa, cor vem do tema (--ds-shadow-rgb) ------------------------------------------------------ */
+  --ds-shadow-sm: 0 1px 2px rgb(var(--ds-shadow-rgb) / 0.05), 0 6px 18px rgb(var(--ds-shadow-rgb) / 0.06);
+  --ds-shadow-md: 0 2px 6px rgb(var(--ds-shadow-rgb) / 0.06), 0 18px 40px rgb(var(--ds-shadow-rgb) / 0.1);
+  --ds-shadow-lg: 0 30px 70px rgb(var(--ds-shadow-rgb) / 0.28);
+}
+
+/* A ponte também vale dentro de pré-visualizações escopadas (galeria), para o tema da seção valer nas classes utilitárias. */
+:root, [data-ds-preview] {
+  /* ===== Ponte: nomes antigos → papéis do tema (um único lugar de verdade para cor) ====================================== */
+  --background: var(--ds-canvas);
+  --surface: var(--ds-surface);
+  --raised: var(--ds-surface);
+  --sunken: var(--ds-surface-2);
+  --surface-muted: var(--ds-surface-2);
+  --surface-hover: color-mix(in srgb, var(--ds-surface-2) 70%, var(--ds-surface));
+  --border: var(--ds-line);
+  --border-strong: color-mix(in srgb, var(--ds-ink) 26%, var(--ds-canvas));
+  --foreground: var(--ds-ink);
+  --muted-foreground: var(--ds-muted);
+  --subtle-foreground: var(--ds-muted);
+
+  --primary: var(--ds-primary);
+  --primary-foreground: var(--ds-primary-contrast);
+  --primary-hover: var(--ds-primary-hover);
+  --secondary: var(--ds-surface-2);
+  --secondary-foreground: var(--ds-ink);
+  --brand: var(--ds-primary);
+  --brand-foreground: var(--ds-primary-contrast);
+  --brand-soft: var(--ds-soft);
+  /* "accent" dos componentes antigos = cor funcional (ação/seleção). O destaque decorativo do tema é --ds-accent. */
+  --accent: var(--ds-primary);
+  --accent-soft: var(--ds-soft);
+  --accent-foreground: var(--ds-link);
+  --on-accent: var(--ds-primary-contrast);
+  --link: var(--ds-link);
+  --ring: var(--ds-ring);
+
+  --success: var(--ds-success); --success-soft: var(--ds-success-soft);
+  --warning: var(--ds-warning); --warning-soft: var(--ds-warning-soft);
+  --danger: var(--ds-danger); --danger-soft: var(--ds-danger-soft); --danger-foreground: var(--ds-surface);
+  --info: var(--ds-info); --info-soft: var(--ds-info-soft);
+
+  --sidebar-bg: var(--ds-side-bg);
+  --sidebar-fg: var(--ds-side-fg);
+  --sidebar-muted: var(--ds-side-muted);
+  --sidebar-active-bg: var(--ds-side-active-bg);
+  --sidebar-active-fg: var(--ds-side-active-fg);
+  --sidebar-border: var(--ds-side-line);
+  --sidebar-hover: var(--ds-side-hover);
+
+  --product-accent: var(--ds-primary);
+  --product-accent-soft: var(--ds-soft);
+  --product-accent-contrast: var(--ds-primary-contrast);
+  --product-accent-text: var(--ds-link);
+
+  --radius-sm: var(--ds-r-control-sm);
+  --radius: var(--ds-r-control);
+  --radius-lg: var(--ds-r-kpi);
+  --shadow-sm: var(--ds-shadow-sm);
+  --shadow-md: var(--ds-shadow-md);
+  --shadow-lg: var(--ds-shadow-lg);
+  --ease-standard: var(--ds-ease);
+  --dur-fast: var(--ds-dur-fast); --dur-base: var(--ds-dur-base); --dur-slow: var(--ds-dur-slow);
+
+  /* Gráficos: a paleta categórica (--series-N) vem de themes.ts; grade e eixo seguem o tema. */
+  --viz-grid: var(--ds-line);
+  --viz-axis: color-mix(in srgb, var(--ds-ink) 22%, var(--ds-canvas));
+}
+
+/* ---- Base ------------------------------------------------------------------------------------------------------- */
+body {
+  font-family: var(--ds-font-ui);
+  font-size: var(--ds-fs-body);
+  line-height: var(--ds-lh-body);
+  background: var(--ds-canvas);
+  color: var(--ds-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* Títulos herdam a cor do contexto (faixas escuras mantêm o texto claro); páginas e cartões fixam a tinta onde precisam. */
+h1, h2, h3, h4, .font-display { font-family: var(--ds-font-ui); text-wrap: balance; }
+h1 { letter-spacing: var(--ds-tracking-title); font-weight: 800; }
+h2 { letter-spacing: -0.025em; font-weight: 800; }
+h3 { letter-spacing: -0.012em; font-weight: 700; }
+p { text-wrap: pretty; }
+strong, b, dd, td.num, .nl-num, .ds-num { font-variant-numeric: tabular-nums; }
+a { text-underline-offset: 3px; }
+::selection { background: var(--ds-soft); }
+:where(button, a, input, select, textarea, summary, [role="tab"], [role="combobox"], [role="radio"]):focus-visible {
+  outline: 3px solid var(--ds-ring); outline-offset: 2px; border-radius: var(--ds-r-control-sm);
+}
+/* Densidade de toque (Expedição e telas de campo): mesma geometria, texto e alvos maiores. */
+[data-density="touch"] { font-size: 17px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}

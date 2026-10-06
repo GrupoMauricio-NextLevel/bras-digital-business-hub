@@ -20,12 +20,12 @@ export function BlockedScreen({ storeName, reason, invoice, others = [], demo, l
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background p-4 text-foreground" data-blocked-screen>
       {(["left-3 top-3", "right-3 top-3", "bottom-3 left-3", "bottom-3 right-3"] as const).map((pos) => <div key={pos}>{support(pos)}</div>)}
-      <main className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 text-center shadow-lg sm:p-8">
+      <main className="w-full max-w-lg rounded-[var(--ds-r-dialog)] border border-border bg-surface p-6 text-center shadow-[var(--ds-shadow-lg)] sm:p-8">
         <Logo className="mx-auto h-8" />
         <span className="mx-auto mt-6 flex size-12 items-center justify-center rounded-full bg-warning-soft text-warning"><Lock className="size-6" aria-hidden /></span>
-        <h1 className="mt-4 text-2xl font-bold tracking-tight">{reason === "SUPPLIER" ? "Acesso pausado por fatura em atraso" : reason === "NEW" ? "Falta só o pagamento para liberar sua loja" : reason === "TRIAL" ? "Seu teste gratuito terminou" : "Sua assinatura venceu"}</h1>
+        <h1 className="mt-4 text-2xl font-extrabold tracking-[-0.02em]">{reason === "SUPPLIER" ? "Acesso pausado por fatura em atraso" : reason === "NEW" ? "Falta só o pagamento para liberar sua loja" : reason === "TRIAL" ? "Seu teste gratuito terminou" : "Sua assinatura venceu"}</h1>
         <p className="mt-2 text-muted-foreground">{reason === "SUPPLIER" ? <><b className="text-foreground">{storeName}</b> está com faturas vencidas. Seus dados, produtos e estoque estão guardados. Pague por Pix e o painel volta na hora, sem precisar falar com ninguém.</> : reason === "NEW" ? <>A loja <b className="text-foreground">{storeName}</b> foi criada. Pague por Pix e o acesso ao plano escolhido é liberado na hora, sem precisar falar com ninguém.</> : <>O acesso à loja <b className="text-foreground">{storeName}</b> está pausado. Seus dados estão guardados. Pague por Pix e o sistema é liberado na hora, sem precisar falar com ninguém.</>}</p>
-        <div className="mt-6 rounded-xl border-2 border-accent bg-accent-soft/40 p-5">
+        <div className="mt-6 rounded-[var(--ds-r-card)] border-2 border-accent bg-accent-soft/40 p-5">
           <p className="text-sm font-medium">{invoice.description}</p>
           <p className="text-4xl font-extrabold tabular-nums">{formatBRL(invoice.amountCents)}</p>
           <div className="mt-4 flex justify-center"><InvoicePay key={invoice.id} invoiceId={invoice.id} label="Pagar com Pix (QR code)" demo={demo} autoOpen large /></div>

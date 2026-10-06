@@ -1,16 +1,17 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/** Cartão do sistema de design (raio 22, borda leve, sombra pequena). Sem padding próprio: use CardHeader/CardContent. */
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("ds-card rounded-lg border border-border bg-surface shadow-sm", className)} {...props} />;
+  return <div className={cn("ds-card ds-card--flush", className)} {...props} />;
 }
 
 export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex items-start justify-between gap-4 px-5 pt-5 pb-3", className)} {...props} />;
+  return <div className={cn("flex items-start justify-between gap-4 px-[var(--ds-pad-card)] pt-[var(--ds-pad-card)] pb-3", className)} {...props} />;
 }
 
 export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("text-sm font-semibold text-foreground", className)} {...props} />;
+  return <h3 className={cn("text-[0.95rem] font-bold tracking-[-0.01em] text-foreground", className)} {...props} />;
 }
 
 export function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
@@ -18,9 +19,9 @@ export function CardDescription({ className, ...props }: React.HTMLAttributes<HT
 }
 
 export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 pb-5", className)} {...props} />;
+  return <div className={cn("px-[var(--ds-pad-card)] pb-[var(--ds-pad-card)]", className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex items-center gap-3 border-t border-border px-5 py-3", className)} {...props} />;
+  return <div className={cn("flex items-center gap-3 border-t border-border px-[var(--ds-pad-card)] py-3", className)} {...props} />;
 }
