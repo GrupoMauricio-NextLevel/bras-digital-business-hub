@@ -31,7 +31,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 ## Mapa rápido
 - Domínio: `src/lib/domain/` (finance, store-access, partners, nl-sales, orders, own-store, provisioning…) · Preços: `src/lib/finance/` · Temas: `src/lib/themes/` · E-mail: `src/lib/email.ts`
 - Telas: `src/app/master`, `supplier`, `merchant`, `partner`, `(portal)` (público), `store/[slug]` (loja do membro), `f/[slug]` (página do fornecedor)
-- Prompts para desenvolver aos poucos: `docs/prompts/` (editor de temas: `editor-templates-evolucao.md`; imagens para o GPT: `imagens-temas-gpt.md`) (comece por `README.md`); decisões: `docs/design/DECISIONS.md`; visão geral: `ARCHITECTURE.md`, `docs/MAPA.md`, `docs/PLANOS.md`
+- Prompts para desenvolver aos poucos: `docs/prompts/` (editor de temas: `editor-templates-evolucao.md`; imagens para o GPT: `imagens-temas-gpt.md` e `imagens-paginas-publicas-gpt.md`; **próxima rodada do dono: `auditoria-dono-paineis-e-paginas.md`** — suporte entre painéis, identidade das marcas, páginas públicas) · links de tudo: `docs/LINKS.md` (comece por `README.md`); decisões: `docs/design/DECISIONS.md`; visão geral: `ARCHITECTURE.md`, `docs/MAPA.md`, `docs/PLANOS.md`
 - Skills do projeto (`.claude/skills/`, uso: `/publicar`, `/e2e-demo`, `/nova-migracao`, `/desenvolver-prompt`): `publicar`, `e2e-demo`, `nova-migracao`, `desenvolver-prompt`. Kit de análise (só quando reduz uma incerteza real; guia em `docs/SKILLS-KIT-README.md`): `repo-auditor`, `root-cause`, `impact-analysis`, `acceptance-designer`, `ux-flow-auditor`, `security-guardian`, `release-gate`, `architecture-drift`
 
 ## Direção do produto (atual)

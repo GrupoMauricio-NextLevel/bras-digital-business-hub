@@ -5,6 +5,8 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 ## Prompts prontos
 | Prompt | Assunto | Estado |
 |---|---|---|
+| `auditoria-dono-paineis-e-paginas.md` | **Rodada do dono:** navegação e lógica por marca e papel, suporte com troca de negócio e de painel (modo suporte auditado), identidade das marcas nos painéis, Master × marcas, páginas públicas de alto nível | **A fazer (próxima)** |
+| `imagens-paginas-publicas-gpt.md` | **Prompt para o GPT** gerar as fotos das páginas públicas SuperDrop e Commerce (lotes, nomes, proporções) | **Salvo** (você leva ao GPT; depois me traga as imagens) |
 | `programa-parceiros.md` | Programa de Parceiros (afiliados) | Feito (PA0 a PA7, D30) |
 | `demandas-2026-09-fase-longa.md` | Demandas da fase longa (fornecedor, loja do membro, temas, Master) | Feito (D22 a D32) |
 | `email-transacional.md` | Plataforma de e-mail em três camadas (SuperDrop, fornecedor, membro) | **A fazer** (base pronta: layout, fila simples, avisos) |
