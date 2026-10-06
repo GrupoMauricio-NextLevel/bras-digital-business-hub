@@ -52,7 +52,7 @@ export default async function Portal() {
   return (
     <>
       <JsonLd data={[
-        { "@context": "https://schema.org", "@type": "Organization", name: "SuperDrop", url: "https://superdrop.com.br", logo: "https://superdrop.com.br/brand/superdrop-logo-light.png", parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda" } },
+        { "@context": "https://schema.org", "@type": "Organization", name: "SuperDrop", url: "https://superdrop.com.br", logo: "https://superdrop.com.br/brand/v2/superdrop/claro/assinatura-completa-640.png", parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda" } },
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "SuperDrop", applicationCategory: "BusinessApplication", operatingSystem: "Web", description: "Loja online sem estoque para quem vende, com fornecedores que separam e enviam." },
         { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
       ]} />
@@ -61,7 +61,7 @@ export default async function Portal() {
       <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(34,197,94,0.20), transparent 60%), radial-gradient(40rem 24rem at 0% 110%, rgba(34,197,94,0.08), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-8 pt-16 md:pt-24">
-          <Logo variant="mark" tone="on-dark" className="pointer-events-none absolute right-4 top-16 hidden h-56 drop-shadow-[0_0_48px_rgba(57,255,20,0.25)] xl:block" alt="" />
+          <Logo variant="mark" tone="on-dark" className="pointer-events-none absolute right-4 top-16 hidden h-56 drop-shadow-[0_0_48px_rgba(98,194,104,0.25)] xl:block" alt="" />
           <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Pix na hora · ou teste 7 dias com o cupom do seu fornecedor</span>
           <h1 className="nl-display mt-5 max-w-4xl">Sua loja online sem estoque, pronta para vender hoje.</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">Escolha os produtos de fornecedores parceiros, monte a sua loja em minutos e venda. O fornecedor separa e envia; você fica com a margem. Assine por Pix e o acesso é liberado na hora.</p>

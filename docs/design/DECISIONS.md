@@ -468,3 +468,12 @@ Decisão do dono (pacote de referência `commerce-interface-reference`): um úni
 - Duas famílias: painéis operacionais (`OperationalShell`/`AppShell`) e páginas públicas (`PublicShell`). Tema por marca do endereço (`getThemeKey`), modo Claro/Escuro/Sistema salvo em `nl-theme`.
 - Contraste AA conferido por teste em 6 temas × 2 modos; varredura de 130 rotas e das páginas públicas em 4 larguras (`docs/design-system/MATRIZ-COBERTURA.md`).
 - Diferença consciente: Expedição usa densidade de toque. Pendências do dono: `docs/design-system/DECISOES-PENDENTES.md` (paletas de Brás, Creators e China; logos oficiais ficam para o final).
+
+## D79 — Sistema de cores v2 e logos oficiais por marca (2026-10-06)
+Decisão do dono: proposta `brand-system-v2/` aprovada ("está tudo aprovado, pode aplicar tudo"). **Substitui as paletas de D77/D78** (azul vidro Commerce, laranja NextLevel, verde SuperDrop antigo, rosa/vermelho provisórios das marcas futuras).
+- Neutros compartilhados: navy #101B34 e off-white #F4F1E9 (claro: fundo off-white, superfície branca; escuro: superfície navy, fundo #0B1427).
+- Cor de assinatura por marca, aplicada no raio das logos oficiais e nos pontos de ação (botão, item ativo, seleção, link, foco): NextLevel amarelo #F5BC00 · Commerce azul #2F81F4 · SuperDrop verde #2D9E3B · Creators magenta #D44790 · Play violeta #A15EDD · China Hub jade #00979D · Brás laranja #D35C00. Valores de interface por tema em `brand-system-v2/paletas.json`; no código: `src/design-system/themes.ts` (tema novo `play`) e `src/lib/brand-palette.ts`.
+- Amarelo é do grupo: destaque secundário dos produtos; nunca texto no claro (usa bronze #7B4C00).
+- Estados (sucesso, alerta, erro, informação) iguais em todas as marcas, sempre com ícone e texto.
+- Logos e favicons: cópias do kit oficial v1 com o raio recolorido (`public/brand/v2/`), via `BrandLogo`/`Logo`; favicon por marca do endereço (`brandIcons`); marcas sem logo oficial (Brás, China) aparecem só com o nome em texto e usam o favicon do grupo.
+- Pendências conhecidas: serrilhado dos contornos do kit acima de ~1200 px (pede redesenho manual); CMYK/Pantone não definidos.

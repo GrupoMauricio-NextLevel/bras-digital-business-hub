@@ -1,3 +1,5 @@
+> **Atualização 2026-10-06 (D79):** paletas resolvidas pelo sistema de cores v2 aprovado (`brand-system-v2/`): Commerce azul, NextLevel amarelo do grupo, SuperDrop verde, Creators magenta, Play violeta, China Hub jade, Brás laranja; logos oficiais do kit v1 aplicadas. Os itens abaixo ficam como histórico.
+
 # Decisões que dependem do dono (sinalizadas, não decididas)
 
 1. **Cor primária do Commerce:** o painel já aprovado usa **azul** (`#2557DA`) com cobre e ciano; a identidade da home institucional usa **amarelo-etiqueta** (`#F2B600`) com tinta azul-marinho. O tema `commerce` mantém o azul aprovado. Trocar é mudar duas linhas em `themes.ts`.

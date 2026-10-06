@@ -350,7 +350,7 @@
         "pad": "16px 18px"
       },
       "h1": {
-        "w": 319,
+        "w": 324,
         "h": 39,
         "radius": "0px",
         "font": "35.2px",
@@ -638,7 +638,7 @@
         "pad": "16px 18px"
       },
       "h1": {
-        "w": 228,
+        "w": 232,
         "h": 28,
         "radius": "0px",
         "font": "25.2px",
@@ -926,7 +926,7 @@
         "pad": "12px 14px"
       },
       "h1": {
-        "w": 225,
+        "w": 228,
         "h": 27,
         "radius": "0px",
         "font": "24.8px",
@@ -1214,7 +1214,7 @@
         "pad": "12px 14px"
       },
       "h1": {
-        "w": 225,
+        "w": 228,
         "h": 27,
         "radius": "0px",
         "font": "24.8px",
@@ -1502,7 +1502,7 @@
         "pad": "16px 18px"
       },
       "h1": {
-        "w": 319,
+        "w": 324,
         "h": 39,
         "radius": "0px",
         "font": "35.2px",
@@ -1790,7 +1790,7 @@
         "pad": "16px 18px"
       },
       "h1": {
-        "w": 228,
+        "w": 232,
         "h": 28,
         "radius": "0px",
         "font": "25.2px",
@@ -2078,7 +2078,7 @@
         "pad": "12px 14px"
       },
       "h1": {
-        "w": 225,
+        "w": 228,
         "h": 27,
         "radius": "0px",
         "font": "24.8px",
@@ -2366,7 +2366,7 @@
         "pad": "12px 14px"
       },
       "h1": {
-        "w": 225,
+        "w": 228,
         "h": 27,
         "radius": "0px",
         "font": "24.8px",
@@ -2595,118 +2595,5 @@
       "pill": null
     }
   ],
-  "diffsGeometria": [
-    {
-      "width": 1440,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 1440,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 840,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 840,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 390,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 390,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 320,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 320,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 1440,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 1440,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":272},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 840,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 840,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 390,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 390,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 320,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/wallet superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    },
-    {
-      "width": 320,
-      "ref": "superdrop-lojista /merchant superdrop",
-      "outro": "superdrop-lojista /merchant/products superdrop",
-      "refSig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":{\"r\":\"18px\"}}",
-      "sig": "{\"side\":{\"w\":0},\"top\":{\"h\":65},\"btn\":{\"h\":44,\"r\":\"12px\",\"f\":\"display\"},\"kpi\":null}"
-    }
-  ]
+  "diffsGeometria": []
 }

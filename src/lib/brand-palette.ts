@@ -17,37 +17,18 @@ export type PaletteMode = {
 };
 export type BrandPalette = { light: PaletteMode; dark: PaletteMode; support: string; /** Marca pensada primeiro para o modo escuro (Hub Creators). */ darkFirst: boolean };
 
+/** Sistema de cores v2 (decisão D79): neutros navy/off-white compartilhados; sinal = cor de assinatura da marca; apoio = amarelo do grupo. */
+const NEU = { light: { paper: "#F4F1E9", ink: "#101B34" }, dark: { paper: "#0B1427", ink: "#F4F1E9" } } as const;
+const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): BrandPalette => ({
+  light: { ...NEU.light, signal: l[0], signalText: l[1] }, dark: { ...NEU.dark, signal: d[0], signalText: d[1] }, support, darkFirst: false,
+});
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
-  NEXTLEVEL_COMMERCE: {
-    light: { paper: "#F5F1E8", ink: "#14213D", signal: "#F2B600", signalText: "#1F47C9" },
-    dark: { paper: "#0E1626", ink: "#F5F1E8", signal: "#F2B600", signalText: "#F2B600" },
-    support: "#2F5BEA", darkFirst: false,
-  },
-  SUPERDROP: {
-    light: { paper: "#F2EBDD", ink: "#0F1A14", signal: "#127A44", signalText: "#127A44" },
-    dark: { paper: "#0B130F", ink: "#F2EBDD", signal: "#2FBF72", signalText: "#2FBF72" },
-    support: "#B7793B", darkFirst: false,
-  },
-  BRAS_DIGITAL: {
-    light: { paper: "#F6F1EA", ink: "#2A0F18", signal: "#8C1D40", signalText: "#8C1D40" },
-    dark: { paper: "#1A0A10", ink: "#F6F1EA", signal: "#E0557F", signalText: "#F07A9F" },
-    support: "#C79A2B", darkFirst: false,
-  },
-  CREATORS_HUB: {
-    light: { paper: "#F4F4F0", ink: "#0B0B10", signal: "#C6F432", signalText: "#4D6B00" },
-    dark: { paper: "#0B0B10", ink: "#F4F4F0", signal: "#C6F432", signalText: "#C6F432" },
-    support: "#FF4D8D", darkFirst: true,
-  },
-  CHINA_HUB: {
-    light: { paper: "#F5F0E6", ink: "#1A1210", signal: "#B3141F", signalText: "#B3141F" },
-    dark: { paper: "#150E0C", ink: "#F5F0E6", signal: "#E5484D", signalText: "#F26A6F" },
-    support: "#0F6B5C", darkFirst: false,
-  },
-  NEXTLEVEL: {
-    light: { paper: "#EFEBE3", ink: "#101418", signal: "#FF5A1F", signalText: "#B93C0A" },
-    dark: { paper: "#0C0F12", ink: "#EFEBE3", signal: "#FF6B35", signalText: "#FF7A4D" },
-    support: "#14213D", darkFirst: false,
-  },
+  NEXTLEVEL_COMMERCE: pal(["#196BD8", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
+  SUPERDROP: pal(["#118728", "#03721D"], ["#62C268", "#62C268"]),
+  BRAS_DIGITAL: pal(["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
+  CREATORS_HUB: pal(["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
+  CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
+  NEXTLEVEL: pal(["#F5BC00", "#7B4C00"], ["#F5BC00", "#F5BC00"], "#101B34"),
 };
 
 const channel = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };

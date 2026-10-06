@@ -1,0 +1,85 @@
+{
+  "arquivos": 371,
+  "svg": {
+    "total": 64,
+    "xml_invalido": [],
+    "externos": [],
+    "fontes_ou_texto": [],
+    "contorno_diferente": []
+  },
+  "png": {
+    "total": 209,
+    "logos_sem_transparencia": [],
+    "favicons_nao_opacos": [],
+    "dimensao_errada": []
+  },
+  "webp": {
+    "total": 64,
+    "sem_alfa": []
+  },
+  "ico": {
+    "total": 8,
+    "problemas": []
+  },
+  "caminhos": {
+    "quebrados": []
+  },
+  "cores_do_raio": [
+    {
+      "arquivo": "logos/commerce/claro/monograma.svg",
+      "preenchimentos": [
+        "#101B34",
+        "#2F81F4"
+      ]
+    },
+    {
+      "arquivo": "logos/commerce/escuro/monograma.svg",
+      "preenchimentos": [
+        "#F4F1E9",
+        "#71AAFF"
+      ]
+    },
+    {
+      "arquivo": "logos/creators/claro/monograma.svg",
+      "preenchimentos": [
+        "#101B34",
+        "#D44790"
+      ]
+    },
+    {
+      "arquivo": "logos/creators/escuro/monograma.svg",
+      "preenchimentos": [
+        "#F4F1E9",
+        "#F975B5"
+      ]
+    },
+    {
+      "arquivo": "logos/nextlevel/claro/monograma.svg",
+      "preenchimentos": [
+        "#101B34",
+        "#F5BC00"
+      ]
+    },
+    {
+      "arquivo": "logos/nextlevel/escuro/monograma.svg",
+      "preenchimentos": [
+        "#F4F1E9",
+        "#F5BC00"
+      ]
+    },
+    {
+      "arquivo": "logos/superdrop/claro/monograma.svg",
+      "preenchimentos": [
+        "#101B34",
+        "#2D9E3B"
+      ]
+    },
+    {
+      "arquivo": "logos/superdrop/escuro/monograma.svg",
+      "preenchimentos": [
+        "#F4F1E9",
+        "#62C268"
+      ]
+    }
+  ]
+}

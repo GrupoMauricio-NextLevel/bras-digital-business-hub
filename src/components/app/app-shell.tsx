@@ -9,7 +9,7 @@ import type { SearchHit } from "@/lib/domain/search";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
-import { BrandLogo } from "@/components/brand/brand-logo";
+import { BrandLogo, logoOficial } from "@/components/brand/brand-logo";
 import { ICONS } from "./icons";
 import { CommandPalette } from "./command-palette";
 import { NotificationsMenu, type NoticeView } from "./notifications-menu";
@@ -68,15 +68,14 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
   const current = activeHref(pathname, items);
   const currentItem = items.find((i) => i.href === current);
   const bottomItems = (items.some((i) => i.bottom) ? items.filter((i) => i.bottom) : items.filter((i) => !i.pinned).slice(0, 3)).slice(0, 4);
-  const dark = panel === "master";
 
   const logo = shellBrand && shellBrand.logo !== "superdrop"
-    ? <BrandLogo brand={shellBrand} tone={dark ? "on-dark" : "auto"} className="h-6" />
+    ? <BrandLogo brand={shellBrand} tone="auto" className="h-6" />
     : <Logo tone="auto" className="h-6" />;
   const brandNode = (
     <div className="ds-brand">
       <span className="ds-brand-full">{logo}</span>
-      <span className="ds-brand-mark" aria-hidden>{(shellBrand?.name ?? "S").slice(0, 1)}</span>
+      <span className="ds-brand-mark" aria-hidden>{logoOficial(shellBrand?.code ?? "SUPERDROP") ? <BrandLogo brand={{ code: shellBrand?.code ?? "SUPERDROP", name: "" }} variant="monograma" className="h-6" /> : (shellBrand?.name ?? "S").slice(0, 1)}</span>
     </div>
   );
 

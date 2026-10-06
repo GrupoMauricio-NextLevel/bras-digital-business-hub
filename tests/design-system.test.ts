@@ -21,7 +21,7 @@ describe("sistema de design: contrato de tema por cores", () => {
     expect(css).toContain(':root[data-ds-theme="commerce"]{');
     expect(css).toContain('[data-theme="dark"]');
     expect(css).toContain("prefers-color-scheme: dark");
-    expect(css).toContain("--ds-primary:#2557DA");
+    expect(css).toContain("--ds-primary:#196BD8");
   });
 
   it("todos os temas definem exatamente os mesmos papéis (só os valores mudam)", () => {

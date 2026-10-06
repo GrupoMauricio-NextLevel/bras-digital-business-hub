@@ -1,0 +1,3731 @@
+{
+  "versao": "2.0.0",
+  "gerado_em": "2026-10-06",
+  "modelo_de_cor": "Hex sRGB; OKLCH (CSS Color 4) calculado a partir do Hex. Fora do gamut sRGB, o croma é reduzido mantendo L e H.",
+  "base_compartilhada": {
+    "navy": {
+      "hex": "#101B34",
+      "oklch": "oklch(22.7% 0.051 264.7)"
+    },
+    "amarelo": {
+      "hex": "#F5BC00",
+      "oklch": "oklch(82.4% 0.169 86.5)"
+    },
+    "offwhite": {
+      "hex": "#F4F1E9",
+      "oklch": "oklch(95.8% 0.011 89.7)"
+    },
+    "neutros": {
+      "50": {
+        "hex": "#FDFAF1",
+        "oklch": "oklch(98.5% 0.012 91.5)"
+      },
+      "100": {
+        "hex": "#F3F0E7",
+        "oklch": "oklch(95.5% 0.012 91.5)"
+      },
+      "200": {
+        "hex": "#E1DED5",
+        "oklch": "oklch(90.0% 0.013 91.5)"
+      },
+      "300": {
+        "hex": "#B9C4DC",
+        "oklch": "oklch(81.9% 0.036 265.9)"
+      },
+      "400": {
+        "hex": "#939FB7",
+        "oklch": "oklch(70.1% 0.038 264.3)"
+      },
+      "500": {
+        "hex": "#6F7A93",
+        "oklch": "oklch(57.9% 0.041 266.4)"
+      },
+      "600": {
+        "hex": "#4F5B73",
+        "oklch": "oklch(47.0% 0.042 264.0)"
+      },
+      "700": {
+        "hex": "#37425A",
+        "oklch": "oklch(38.0% 0.044 265.3)"
+      },
+      "800": {
+        "hex": "#222D45",
+        "oklch": "oklch(29.9% 0.046 264.9)"
+      },
+      "900": {
+        "hex": "#101B34",
+        "oklch": "oklch(22.7% 0.051 264.7)"
+      },
+      "950": {
+        "hex": "#050E25",
+        "oklch": "oklch(17.1% 0.050 264.1)"
+      }
+    }
+  },
+  "neutros_por_tema": {
+    "claro": {
+      "canvas": {
+        "hex": "#F4F1E9",
+        "oklch": "oklch(95.8% 0.011 89.7)"
+      },
+      "surface": {
+        "hex": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 0.0)"
+      },
+      "surface-2": {
+        "hex": "#ECE8DD",
+        "oklch": "oklch(93.1% 0.015 90.2)"
+      },
+      "text-primary": {
+        "hex": "#101B34",
+        "oklch": "oklch(22.7% 0.051 264.7)"
+      },
+      "text-secondary": {
+        "hex": "#4A5268",
+        "oklch": "oklch(44.0% 0.038 269.2)"
+      },
+      "border": {
+        "hex": "#D8D3C6",
+        "oklch": "oklch(86.7% 0.018 89.4)"
+      },
+      "border-strong": {
+        "hex": "#7C8294",
+        "oklch": "oklch(60.8% 0.028 270.9)"
+      },
+      "overlay": {
+        "valor": "rgba(16,27,52,.45)"
+      }
+    },
+    "escuro": {
+      "canvas": {
+        "hex": "#0B1427",
+        "oklch": "oklch(19.4% 0.041 263.8)"
+      },
+      "surface": {
+        "hex": "#101B34",
+        "oklch": "oklch(22.7% 0.051 264.7)"
+      },
+      "surface-2": {
+        "hex": "#18264A",
+        "oklch": "oklch(27.7% 0.069 266.0)"
+      },
+      "text-primary": {
+        "hex": "#F4F1E9",
+        "oklch": "oklch(95.8% 0.011 89.7)"
+      },
+      "text-secondary": {
+        "hex": "#B3B9CA",
+        "oklch": "oklch(78.6% 0.025 270.3)"
+      },
+      "border": {
+        "hex": "#2A3961",
+        "oklch": "oklch(35.2% 0.073 267.1)"
+      },
+      "border-strong": {
+        "hex": "#7D88A6",
+        "oklch": "oklch(62.9% 0.047 269.2)"
+      },
+      "overlay": {
+        "valor": "rgba(4,8,18,.6)"
+      }
+    }
+  },
+  "semanticos": {
+    "claro": {
+      "success": {
+        "fg": {
+          "hex": "#007E4D",
+          "oklch": "oklch(52.2% 0.123 157.8)"
+        },
+        "soft": {
+          "hex": "#DBF9E6",
+          "oklch": "oklch(95.5% 0.040 157.8)"
+        },
+        "onSoft": {
+          "hex": "#007F4E",
+          "oklch": "oklch(52.5% 0.123 157.9)"
+        },
+        "solid": {
+          "hex": "#008854",
+          "oklch": "oklch(55.2% 0.129 158.0)"
+        },
+        "onSolid": {
+          "hex": "#FFFFFF",
+          "oklch": "oklch(100.0% 0.000 0.0)"
+        },
+        "borda": {
+          "hex": "#8DD7AC",
+          "oklch": "oklch(81.9% 0.096 157.9)"
+        }
+      },
+      "warning": {
+        "fg": {
+          "hex": "#986200",
+          "oklch": "oklch(54.2% 0.116 72.0)"
+        },
+        "soft": {
+          "hex": "#FFEDD8",
+          "oklch": "oklch(95.5% 0.034 71.7)"
+        },
+        "onSoft": {
+          "hex": "#976200",
+          "oklch": "oklch(54.0% 0.115 72.5)"
+        },
+        "solid": {
+          "hex": "#A46A00",
+          "oklch": "oklch(57.3% 0.123 71.9)"
+        },
+        "onSolid": {
+          "hex": "#FFFFFF",
+          "oklch": "oklch(100.0% 0.000 0.0)"
+        },
+        "borda": {
+          "hex": "#E9BB82",
+          "oklch": "oklch(82.0% 0.091 72.0)"
+        }
+      },
+      "danger": {
+        "fg": {
+          "hex": "#BF443C",
+          "oklch": "oklch(55.6% 0.160 27.2)"
+        },
+        "soft": {
+          "hex": "#FFEBE8",
+          "oklch": "oklch(95.5% 0.022 27.8)"
+        },
+        "onSoft": {
+          "hex": "#BE433C",
+          "oklch": "oklch(55.4% 0.160 26.8)"
+        },
+        "solid": {
+          "hex": "#C94D45",
+          "oklch": "oklch(58.5% 0.160 26.8)"
+        },
+        "onSolid": {
+          "hex": "#FFFFFF",
+          "oklch": "oklch(100.0% 0.000 0.0)"
+        },
+        "borda": {
+          "hex": "#FCACA3",
+          "oklch": "oklch(81.9% 0.096 26.4)"
+        }
+      },
+      "info": {
+        "fg": {
+          "hex": "#0075A5",
+          "oklch": "oklch(53.2% 0.114 235.9)"
+        },
+        "soft": {
+          "hex": "#E1F3FF",
+          "oklch": "oklch(95.4% 0.025 236.8)"
+        },
+        "onSoft": {
+          "hex": "#0075A5",
+          "oklch": "oklch(53.2% 0.114 235.9)"
+        },
+        "solid": {
+          "hex": "#007EB2",
+          "oklch": "oklch(56.1% 0.121 236.3)"
+        },
+        "onSolid": {
+          "hex": "#FFFFFF",
+          "oklch": "oklch(100.0% 0.000 0.0)"
+        },
+        "borda": {
+          "hex": "#93CDF0",
+          "oklch": "oklch(82.1% 0.077 235.5)"
+        }
+      }
+    },
+    "escuro": {
+      "success": {
+        "fg": {
+          "hex": "#00A366",
+          "oklch": "oklch(63.0% 0.147 158.1)"
+        },
+        "soft": {
+          "hex": "#13323E",
+          "oklch": "oklch(30.0% 0.042 226.3)"
+        },
+        "onSoft": {
+          "hex": "#00AB6B",
+          "oklch": "oklch(65.3% 0.153 158.0)"
+        },
+        "solid": {
+          "hex": "#43D58F",
+          "oklch": "oklch(77.9% 0.159 158.0)"
+        },
+        "onSolid": {
+          "hex": "#101B34",
+          "oklch": "oklch(22.7% 0.051 264.7)"
+        },
+        "borda": {
+          "hex": "#14574C",
+          "oklch": "oklch(41.3% 0.067 179.3)"
+        }
+      },
+      "warning": {
+        "fg": {
+          "hex": "#C48000",
+          "oklch": "oklch(65.4% 0.140 72.2)"
+        },
+        "soft": {
+          "hex": "#2D2D37",
+          "oklch": "oklch(30.1% 0.018 285.3)"
+        },
+        "onSoft": {
+          "hex": "#CD8600",
+          "oklch": "oklch(67.7% 0.145 72.1)"
+        },
+        "solid": {
+          "hex": "#F2A635",
+          "oklch": "oklch(78.1% 0.150 72.1)"
+        },
+        "onSolid": {
+          "hex": "#101B34",
+          "oklch": "oklch(22.7% 0.051 264.7)"
+        },
+        "borda": {
+          "hex": "#5B4735",
+          "oklch": "oklch(41.4% 0.039 63.4)"
+        }
+      },
+      "danger": {
+        "fg": {
+          "hex": "#E5665C",
+          "oklch": "oklch(66.4% 0.160 26.8)"
+        },
+        "soft": {
+          "hex": "#35293B",
+          "oklch": "oklch(30.2% 0.036 314.2)"
+        },
+        "onSoft": {
+          "hex": "#ED6D62",
+          "oklch": "oklch(68.7% 0.160 27.0)"
+        },
+        "solid": {
+          "hex": "#FF968A",
+          "oklch": "oklch(78.0% 0.128 27.3)"
+        },
+        "onSolid": {
+          "hex": "#101B34",
+          "oklch": "oklch(22.7% 0.051 264.7)"
+        },
+        "borda": {
+          "hex": "#6B3A43",
+          "oklch": "oklch(41.2% 0.070 8.8)"
+        }
+      },
+      "info": {
+        "fg": {
+          "hex": "#1E97D0",
+          "oklch": "oklch(64.1% 0.130 235.9)"
+        },
+        "soft": {
+          "hex": "#142F4E",
+          "oklch": "oklch(30.1% 0.065 253.5)"
+        },
+        "onSoft": {
+          "hex": "#299ED7",
+          "oklch": "oklch(66.3% 0.130 235.7)"
+        },
+        "solid": {
+          "hex": "#58C4FF",
+          "oklch": "oklch(78.1% 0.130 235.8)"
+        },
+        "onSolid": {
+          "hex": "#101B34",
+          "oklch": "oklch(22.7% 0.051 264.7)"
+        },
+        "borda": {
+          "hex": "#174F77",
+          "oklch": "oklch(41.2% 0.088 244.3)"
+        }
+      }
+    }
+  },
+  "marcas": [
+    {
+      "id": "nextlevel",
+      "nome": "NextLevel Soluções Digitais",
+      "papel": "Marca central do grupo",
+      "status": "oficial (logo no kit v1)",
+      "nome_da_cor": "Amarelo NextLevel",
+      "assinatura": {
+        "hex": "#F5BC00",
+        "oklch": "oklch(82.4% 0.169 86.5)"
+      },
+      "elemento_com_a_cor": "raio da logo e do monograma (o preenchimento que hoje é #F5BC00)",
+      "escala": {
+        "50": {
+          "hex": "#FFF8E7",
+          "oklch": "oklch(98.0% 0.024 88.2)"
+        },
+        "100": {
+          "hex": "#FEEFCA",
+          "oklch": "oklch(95.5% 0.051 88.6)"
+        },
+        "200": {
+          "hex": "#FDE09B",
+          "oklch": "oklch(91.5% 0.093 87.7)"
+        },
+        "300": {
+          "hex": "#F9CF62",
+          "oklch": "oklch(87.0% 0.135 88.2)"
+        },
+        "400": {
+          "hex": "#F5BC00",
+          "oklch": "oklch(82.4% 0.169 86.5)"
+        },
+        "500": {
+          "hex": "#D69D00",
+          "oklch": "oklch(73.1% 0.150 82.4)"
+        },
+        "600": {
+          "hex": "#B67F00",
+          "oklch": "oklch(63.6% 0.132 78.2)"
+        },
+        "700": {
+          "hex": "#986400",
+          "oklch": "oklch(54.6% 0.116 73.7)"
+        },
+        "800": {
+          "hex": "#7B4C00",
+          "oklch": "oklch(46.0% 0.100 69.5)"
+        },
+        "900": {
+          "hex": "#603701",
+          "oklch": "oklch(37.9% 0.084 65.1)"
+        },
+        "950": {
+          "hex": "#432200",
+          "oklch": "oklch(29.1% 0.068 60.8)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#D69D00",
+            "oklch": "oklch(73.1% 0.150 82.4)"
+          },
+          "brand-active": {
+            "hex": "#B67F00",
+            "oklch": "oklch(63.6% 0.132 78.2)"
+          },
+          "brand-soft": {
+            "hex": "#FEEFCA",
+            "oklch": "oklch(95.5% 0.051 88.6)"
+          },
+          "brand-soft-strong": {
+            "hex": "#FDE09B",
+            "oklch": "oklch(91.5% 0.093 87.7)"
+          },
+          "brand-on-soft": {
+            "hex": "#7B4C00",
+            "oklch": "oklch(46.0% 0.100 69.5)"
+          },
+          "brand-text": {
+            "hex": "#7B4C00",
+            "oklch": "oklch(46.0% 0.100 69.5)"
+          },
+          "brand-indicator": {
+            "hex": "#B67F00",
+            "oklch": "oklch(63.6% 0.132 78.2)"
+          },
+          "brand-mark": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "focus-ring": {
+            "hex": "#B67F00",
+            "oklch": "oklch(63.6% 0.132 78.2)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#F9CF62",
+            "oklch": "oklch(87.0% 0.135 88.2)"
+          },
+          "brand-active": {
+            "hex": "#DFA600",
+            "oklch": "oklch(75.8% 0.156 83.7)"
+          },
+          "brand-soft": {
+            "hex": "#33353B",
+            "oklch": "oklch(32.9% 0.011 271.1)"
+          },
+          "brand-soft-strong": {
+            "hex": "#49443D",
+            "oklch": "oklch(38.9% 0.013 76.4)"
+          },
+          "brand-on-soft": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "brand-text": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "brand-indicator": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "brand-mark": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          },
+          "focus-ring": {
+            "hex": "#F5BC00",
+            "oklch": "oklch(82.4% 0.169 86.5)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 400,
+          "text": 800,
+          "indicator": 600,
+          "mark": 400
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#F5BC00"
+            ],
+            "contraste": 9.83,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#D69D00"
+            ],
+            "contraste": 7.07,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#B67F00"
+            ],
+            "contraste": 4.9,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#7B4C00",
+              "#F4F1E9"
+            ],
+            "contraste": 6.47,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#7B4C00",
+              "#FFFFFF"
+            ],
+            "contraste": 7.3,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#7B4C00",
+              "#ECE8DD"
+            ],
+            "contraste": 5.96,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#7B4C00",
+              "#FEEFCA"
+            ],
+            "contraste": 6.4,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#7B4C00",
+              "#FDE09B"
+            ],
+            "contraste": 5.67,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#B67F00",
+              "#FFFFFF"
+            ],
+            "contraste": 3.49,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#B67F00",
+              "#F4F1E9"
+            ],
+            "contraste": 3.09,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#B67F00",
+              "#FFFFFF"
+            ],
+            "contraste": 3.49,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#F5BC00",
+              "#F4F1E9"
+            ],
+            "contraste": 1.54,
+            "criterio": "uso proibido no claro (amarelo como texto)",
+            "resultado": "uso proibido pela regra"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#F5BC00",
+              "#FFFFFF"
+            ],
+            "contraste": 1.74,
+            "criterio": "observação: componente ≥3:1",
+            "resultado": "atendido pelo rótulo (ver observação)"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#F5BC00",
+              "#F4F1E9"
+            ],
+            "contraste": 1.54,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); abaixo de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#F5BC00"
+            ],
+            "contraste": 9.83,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#F9CF62"
+            ],
+            "contraste": 11.5,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#DFA600"
+            ],
+            "contraste": 7.81,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#F5BC00",
+              "#0B1427"
+            ],
+            "contraste": 10.56,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#F5BC00",
+              "#101B34"
+            ],
+            "contraste": 9.83,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#F5BC00",
+              "#18264A"
+            ],
+            "contraste": 8.53,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#F5BC00",
+              "#33353B"
+            ],
+            "contraste": 7.05,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#F5BC00",
+              "#49443D"
+            ],
+            "contraste": 5.55,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#F5BC00",
+              "#101B34"
+            ],
+            "contraste": 9.83,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#F5BC00",
+              "#0B1427"
+            ],
+            "contraste": 10.56,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#F5BC00",
+              "#101B34"
+            ],
+            "contraste": 9.83,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#F5BC00",
+              "#0B1427"
+            ],
+            "contraste": 10.56,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#F5BC00",
+              "#101B34"
+            ],
+            "contraste": 9.83,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#F5BC00",
+              "#101B34"
+            ],
+            "contraste": 9.83,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "commerce",
+      "nome": "NextLevel Commerce",
+      "papel": "Motor de catálogo, pedidos e checkout",
+      "status": "oficial (logo no kit v1)",
+      "nome_da_cor": "Azul Commerce",
+      "assinatura": {
+        "hex": "#2F81F4",
+        "oklch": "oklch(61.6% 0.190 257.9)"
+      },
+      "elemento_com_a_cor": "raio da logo e do monograma (o preenchimento que hoje é #F5BC00)",
+      "escala": {
+        "50": {
+          "hex": "#F2F7FF",
+          "oklch": "oklch(97.5% 0.012 259.8)"
+        },
+        "100": {
+          "hex": "#E2EEFF",
+          "oklch": "oklch(94.5% 0.026 257.0)"
+        },
+        "200": {
+          "hex": "#C5DDFF",
+          "oklch": "oklch(89.1% 0.054 257.1)"
+        },
+        "300": {
+          "hex": "#A0C6FF",
+          "oklch": "oklch(82.0% 0.091 258.3)"
+        },
+        "400": {
+          "hex": "#71AAFF",
+          "oklch": "oklch(73.5% 0.138 258.2)"
+        },
+        "500": {
+          "hex": "#2F81F4",
+          "oklch": "oklch(61.6% 0.190 257.9)"
+        },
+        "600": {
+          "hex": "#196BD8",
+          "oklch": "oklch(54.5% 0.184 257.9)"
+        },
+        "700": {
+          "hex": "#0E59B9",
+          "oklch": "oklch(48.1% 0.167 257.8)"
+        },
+        "800": {
+          "hex": "#064595",
+          "oklch": "oklch(40.6% 0.144 258.0)"
+        },
+        "900": {
+          "hex": "#043372",
+          "oklch": "oklch(33.4% 0.119 258.2)"
+        },
+        "950": {
+          "hex": "#032350",
+          "oklch": "oklch(26.5% 0.091 257.9)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#196BD8",
+            "oklch": "oklch(54.5% 0.184 257.9)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#0E59B9",
+            "oklch": "oklch(48.1% 0.167 257.8)"
+          },
+          "brand-active": {
+            "hex": "#064595",
+            "oklch": "oklch(40.6% 0.144 258.0)"
+          },
+          "brand-soft": {
+            "hex": "#E2EEFF",
+            "oklch": "oklch(94.5% 0.026 257.0)"
+          },
+          "brand-soft-strong": {
+            "hex": "#C5DDFF",
+            "oklch": "oklch(89.1% 0.054 257.1)"
+          },
+          "brand-on-soft": {
+            "hex": "#0E59B9",
+            "oklch": "oklch(48.1% 0.167 257.8)"
+          },
+          "brand-text": {
+            "hex": "#0E59B9",
+            "oklch": "oklch(48.1% 0.167 257.8)"
+          },
+          "brand-indicator": {
+            "hex": "#2F81F4",
+            "oklch": "oklch(61.6% 0.190 257.9)"
+          },
+          "brand-mark": {
+            "hex": "#2F81F4",
+            "oklch": "oklch(61.6% 0.190 257.9)"
+          },
+          "focus-ring": {
+            "hex": "#2F81F4",
+            "oklch": "oklch(61.6% 0.190 257.9)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#A0C6FF",
+            "oklch": "oklch(82.0% 0.091 258.3)"
+          },
+          "brand-active": {
+            "hex": "#458EF8",
+            "oklch": "oklch(65.3% 0.174 258.0)"
+          },
+          "brand-soft": {
+            "hex": "#172D56",
+            "oklch": "oklch(30.3% 0.079 261.6)"
+          },
+          "brand-soft-strong": {
+            "hex": "#1B396C",
+            "oklch": "oklch(35.1% 0.096 260.3)"
+          },
+          "brand-on-soft": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          },
+          "brand-text": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          },
+          "brand-indicator": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          },
+          "brand-mark": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          },
+          "focus-ring": {
+            "hex": "#71AAFF",
+            "oklch": "oklch(73.5% 0.138 258.2)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#196BD8"
+            ],
+            "contraste": 5.08,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#0E59B9"
+            ],
+            "contraste": 6.67,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#064595"
+            ],
+            "contraste": 9.16,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#0E59B9",
+              "#F4F1E9"
+            ],
+            "contraste": 5.91,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#0E59B9",
+              "#FFFFFF"
+            ],
+            "contraste": 6.67,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#0E59B9",
+              "#ECE8DD"
+            ],
+            "contraste": 5.45,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#0E59B9",
+              "#E2EEFF"
+            ],
+            "contraste": 5.69,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#0E59B9",
+              "#C5DDFF"
+            ],
+            "contraste": 4.82,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#2F81F4",
+              "#FFFFFF"
+            ],
+            "contraste": 3.77,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#2F81F4",
+              "#F4F1E9"
+            ],
+            "contraste": 3.34,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#2F81F4",
+              "#FFFFFF"
+            ],
+            "contraste": 3.77,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#196BD8",
+              "#F4F1E9"
+            ],
+            "contraste": 4.5,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#196BD8",
+              "#FFFFFF"
+            ],
+            "contraste": 5.08,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#2F81F4",
+              "#F4F1E9"
+            ],
+            "contraste": 3.34,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#71AAFF"
+            ],
+            "contraste": 7.24,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#A0C6FF"
+            ],
+            "contraste": 9.78,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#458EF8"
+            ],
+            "contraste": 5.27,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#71AAFF",
+              "#0B1427"
+            ],
+            "contraste": 7.78,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#71AAFF",
+              "#101B34"
+            ],
+            "contraste": 7.24,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#71AAFF",
+              "#18264A"
+            ],
+            "contraste": 6.29,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#71AAFF",
+              "#172D56"
+            ],
+            "contraste": 5.75,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#71AAFF",
+              "#1B396C"
+            ],
+            "contraste": 4.81,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#71AAFF",
+              "#101B34"
+            ],
+            "contraste": 7.24,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#71AAFF",
+              "#0B1427"
+            ],
+            "contraste": 7.78,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#71AAFF",
+              "#101B34"
+            ],
+            "contraste": 7.24,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#71AAFF",
+              "#0B1427"
+            ],
+            "contraste": 7.78,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#71AAFF",
+              "#101B34"
+            ],
+            "contraste": 7.24,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#71AAFF",
+              "#101B34"
+            ],
+            "contraste": 7.24,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "superdrop",
+      "nome": "SuperDrop",
+      "papel": "Distribuição e dropshipping",
+      "status": "oficial (logo no kit v1)",
+      "nome_da_cor": "Verde SuperDrop",
+      "assinatura": {
+        "hex": "#2D9E3B",
+        "oklch": "oklch(61.6% 0.171 145.0)"
+      },
+      "elemento_com_a_cor": "raio da logo e do monograma (o preenchimento que hoje é #F5BC00)",
+      "escala": {
+        "50": {
+          "hex": "#F0FAF0",
+          "oklch": "oklch(97.5% 0.017 145.4)"
+        },
+        "100": {
+          "hex": "#DFF3DF",
+          "oklch": "oklch(94.4% 0.034 145.3)"
+        },
+        "200": {
+          "hex": "#BEE8BE",
+          "oklch": "oklch(89.0% 0.072 144.9)"
+        },
+        "300": {
+          "hex": "#92D994",
+          "oklch": "oklch(82.1% 0.119 145.0)"
+        },
+        "400": {
+          "hex": "#62C268",
+          "oklch": "oklch(73.4% 0.156 145.0)"
+        },
+        "500": {
+          "hex": "#2D9E3B",
+          "oklch": "oklch(61.6% 0.171 145.0)"
+        },
+        "600": {
+          "hex": "#118728",
+          "oklch": "oklch(54.4% 0.164 145.1)"
+        },
+        "700": {
+          "hex": "#03721D",
+          "oklch": "oklch(48.0% 0.149 145.1)"
+        },
+        "800": {
+          "hex": "#005A13",
+          "oklch": "oklch(40.6% 0.128 144.9)"
+        },
+        "900": {
+          "hex": "#00440C",
+          "oklch": "oklch(33.6% 0.106 144.9)"
+        },
+        "950": {
+          "hex": "#012F07",
+          "oklch": "oklch(26.6% 0.082 145.0)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#118728",
+            "oklch": "oklch(54.4% 0.164 145.1)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#03721D",
+            "oklch": "oklch(48.0% 0.149 145.1)"
+          },
+          "brand-active": {
+            "hex": "#005A13",
+            "oklch": "oklch(40.6% 0.128 144.9)"
+          },
+          "brand-soft": {
+            "hex": "#DFF3DF",
+            "oklch": "oklch(94.4% 0.034 145.3)"
+          },
+          "brand-soft-strong": {
+            "hex": "#BEE8BE",
+            "oklch": "oklch(89.0% 0.072 144.9)"
+          },
+          "brand-on-soft": {
+            "hex": "#03721D",
+            "oklch": "oklch(48.0% 0.149 145.1)"
+          },
+          "brand-text": {
+            "hex": "#03721D",
+            "oklch": "oklch(48.0% 0.149 145.1)"
+          },
+          "brand-indicator": {
+            "hex": "#2D9E3B",
+            "oklch": "oklch(61.6% 0.171 145.0)"
+          },
+          "brand-mark": {
+            "hex": "#2D9E3B",
+            "oklch": "oklch(61.6% 0.171 145.0)"
+          },
+          "focus-ring": {
+            "hex": "#2D9E3B",
+            "oklch": "oklch(61.6% 0.171 145.0)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#92D994",
+            "oklch": "oklch(82.1% 0.119 145.0)"
+          },
+          "brand-active": {
+            "hex": "#3FA949",
+            "oklch": "oklch(65.2% 0.166 144.9)"
+          },
+          "brand-soft": {
+            "hex": "#15343B",
+            "oklch": "oklch(30.5% 0.039 214.5)"
+          },
+          "brand-soft-strong": {
+            "hex": "#18433E",
+            "oklch": "oklch(35.1% 0.048 184.9)"
+          },
+          "brand-on-soft": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          },
+          "brand-text": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          },
+          "brand-indicator": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          },
+          "brand-mark": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          },
+          "focus-ring": {
+            "hex": "#62C268",
+            "oklch": "oklch(73.4% 0.156 145.0)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#118728"
+            ],
+            "contraste": 4.65,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#03721D"
+            ],
+            "contraste": 6.13,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#005A13"
+            ],
+            "contraste": 8.5,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#03721D",
+              "#F4F1E9"
+            ],
+            "contraste": 5.43,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#03721D",
+              "#FFFFFF"
+            ],
+            "contraste": 6.13,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#03721D",
+              "#ECE8DD"
+            ],
+            "contraste": 5,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#03721D",
+              "#DFF3DF"
+            ],
+            "contraste": 5.26,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#03721D",
+              "#BEE8BE"
+            ],
+            "contraste": 4.51,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#2D9E3B",
+              "#FFFFFF"
+            ],
+            "contraste": 3.46,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#2D9E3B",
+              "#F4F1E9"
+            ],
+            "contraste": 3.07,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#2D9E3B",
+              "#FFFFFF"
+            ],
+            "contraste": 3.46,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#118728",
+              "#F4F1E9"
+            ],
+            "contraste": 4.12,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#118728",
+              "#FFFFFF"
+            ],
+            "contraste": 4.65,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#2D9E3B",
+              "#F4F1E9"
+            ],
+            "contraste": 3.07,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#62C268"
+            ],
+            "contraste": 7.68,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#92D994"
+            ],
+            "contraste": 10.24,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#3FA949"
+            ],
+            "contraste": 5.68,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#62C268",
+              "#0B1427"
+            ],
+            "contraste": 8.25,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#62C268",
+              "#101B34"
+            ],
+            "contraste": 7.68,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#62C268",
+              "#18264A"
+            ],
+            "contraste": 6.67,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#62C268",
+              "#15343B"
+            ],
+            "contraste": 5.95,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#62C268",
+              "#18433E"
+            ],
+            "contraste": 4.94,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#62C268",
+              "#101B34"
+            ],
+            "contraste": 7.68,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#62C268",
+              "#0B1427"
+            ],
+            "contraste": 8.25,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#62C268",
+              "#101B34"
+            ],
+            "contraste": 7.68,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#62C268",
+              "#0B1427"
+            ],
+            "contraste": 8.25,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#62C268",
+              "#101B34"
+            ],
+            "contraste": 7.68,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#62C268",
+              "#101B34"
+            ],
+            "contraste": 7.68,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "creators",
+      "nome": "Creators Hub",
+      "papel": "Campanhas, links e comissões dos creators",
+      "status": "oficial (logo no kit v1)",
+      "nome_da_cor": "Magenta Creators",
+      "assinatura": {
+        "hex": "#D44790",
+        "oklch": "oklch(61.5% 0.190 352.2)"
+      },
+      "elemento_com_a_cor": "raio da logo e do monograma (o preenchimento que hoje é #F5BC00)",
+      "escala": {
+        "50": {
+          "hex": "#FFF3F8",
+          "oklch": "oklch(97.5% 0.014 350.1)"
+        },
+        "100": {
+          "hex": "#FFE5EF",
+          "oklch": "oklch(94.6% 0.031 352.4)"
+        },
+        "200": {
+          "hex": "#FFC9DF",
+          "oklch": "oklch(89.0% 0.067 352.2)"
+        },
+        "300": {
+          "hex": "#FFA4CC",
+          "oklch": "oklch(82.0% 0.117 352.1)"
+        },
+        "400": {
+          "hex": "#F975B5",
+          "oklch": "oklch(73.6% 0.175 351.9)"
+        },
+        "500": {
+          "hex": "#D44790",
+          "oklch": "oklch(61.5% 0.190 352.2)"
+        },
+        "600": {
+          "hex": "#BA327B",
+          "oklch": "oklch(54.5% 0.184 352.2)"
+        },
+        "700": {
+          "hex": "#9E2567",
+          "oklch": "oklch(48.0% 0.168 352.1)"
+        },
+        "800": {
+          "hex": "#7E1951",
+          "oklch": "oklch(40.5% 0.145 352.0)"
+        },
+        "900": {
+          "hex": "#60123D",
+          "oklch": "oklch(33.5% 0.118 351.9)"
+        },
+        "950": {
+          "hex": "#440B2A",
+          "oklch": "oklch(26.6% 0.092 352.0)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#BA327B",
+            "oklch": "oklch(54.5% 0.184 352.2)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#9E2567",
+            "oklch": "oklch(48.0% 0.168 352.1)"
+          },
+          "brand-active": {
+            "hex": "#7E1951",
+            "oklch": "oklch(40.5% 0.145 352.0)"
+          },
+          "brand-soft": {
+            "hex": "#FFE5EF",
+            "oklch": "oklch(94.6% 0.031 352.4)"
+          },
+          "brand-soft-strong": {
+            "hex": "#FFC9DF",
+            "oklch": "oklch(89.0% 0.067 352.2)"
+          },
+          "brand-on-soft": {
+            "hex": "#9E2567",
+            "oklch": "oklch(48.0% 0.168 352.1)"
+          },
+          "brand-text": {
+            "hex": "#9E2567",
+            "oklch": "oklch(48.0% 0.168 352.1)"
+          },
+          "brand-indicator": {
+            "hex": "#D44790",
+            "oklch": "oklch(61.5% 0.190 352.2)"
+          },
+          "brand-mark": {
+            "hex": "#D44790",
+            "oklch": "oklch(61.5% 0.190 352.2)"
+          },
+          "focus-ring": {
+            "hex": "#D44790",
+            "oklch": "oklch(61.5% 0.190 352.2)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#FFA4CC",
+            "oklch": "oklch(82.0% 0.117 352.1)"
+          },
+          "brand-active": {
+            "hex": "#DF559B",
+            "oklch": "oklch(65.1% 0.185 352.0)"
+          },
+          "brand-soft": {
+            "hex": "#362745",
+            "oklch": "oklch(30.4% 0.056 306.3)"
+          },
+          "brand-soft-strong": {
+            "hex": "#4C2D50",
+            "oklch": "oklch(35.0% 0.071 322.8)"
+          },
+          "brand-on-soft": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          },
+          "brand-text": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          },
+          "brand-indicator": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          },
+          "brand-mark": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          },
+          "focus-ring": {
+            "hex": "#F975B5",
+            "oklch": "oklch(73.6% 0.175 351.9)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#BA327B"
+            ],
+            "contraste": 5.48,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#9E2567"
+            ],
+            "contraste": 7.21,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#7E1951"
+            ],
+            "contraste": 9.79,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#9E2567",
+              "#F4F1E9"
+            ],
+            "contraste": 6.38,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#9E2567",
+              "#FFFFFF"
+            ],
+            "contraste": 7.21,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#9E2567",
+              "#ECE8DD"
+            ],
+            "contraste": 5.89,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#9E2567",
+              "#FFE5EF"
+            ],
+            "contraste": 6.08,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#9E2567",
+              "#FFC9DF"
+            ],
+            "contraste": 5.03,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#D44790",
+              "#FFFFFF"
+            ],
+            "contraste": 4.11,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#D44790",
+              "#F4F1E9"
+            ],
+            "contraste": 3.65,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#D44790",
+              "#FFFFFF"
+            ],
+            "contraste": 4.11,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#BA327B",
+              "#F4F1E9"
+            ],
+            "contraste": 4.86,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#BA327B",
+              "#FFFFFF"
+            ],
+            "contraste": 5.48,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#D44790",
+              "#F4F1E9"
+            ],
+            "contraste": 3.65,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#F975B5"
+            ],
+            "contraste": 6.71,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#FFA4CC"
+            ],
+            "contraste": 9.31,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#DF559B"
+            ],
+            "contraste": 4.81,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#F975B5",
+              "#0B1427"
+            ],
+            "contraste": 7.21,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#F975B5",
+              "#101B34"
+            ],
+            "contraste": 6.71,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#F975B5",
+              "#18264A"
+            ],
+            "contraste": 5.82,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#F975B5",
+              "#362745"
+            ],
+            "contraste": 5.37,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#F975B5",
+              "#4C2D50"
+            ],
+            "contraste": 4.58,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#F975B5",
+              "#101B34"
+            ],
+            "contraste": 6.71,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#F975B5",
+              "#0B1427"
+            ],
+            "contraste": 7.21,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#F975B5",
+              "#101B34"
+            ],
+            "contraste": 6.71,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#F975B5",
+              "#0B1427"
+            ],
+            "contraste": 7.21,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#F975B5",
+              "#101B34"
+            ],
+            "contraste": 6.71,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#F975B5",
+              "#101B34"
+            ],
+            "contraste": 6.71,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "play",
+      "nome": "NextLevel Play",
+      "papel": "Feed, lives e compras (planejada)",
+      "status": "planejada (proposta de cor, sem logo oficial)",
+      "nome_da_cor": "Violeta Play",
+      "assinatura": {
+        "hex": "#A15EDD",
+        "oklch": "oklch(61.4% 0.190 305.9)"
+      },
+      "elemento_com_a_cor": "reservado ao raio quando a logo oficial existir",
+      "escala": {
+        "50": {
+          "hex": "#F9F4FF",
+          "oklch": "oklch(97.4% 0.015 306.4)"
+        },
+        "100": {
+          "hex": "#F2E8FF",
+          "oklch": "oklch(94.6% 0.032 305.3)"
+        },
+        "200": {
+          "hex": "#E6D0FF",
+          "oklch": "oklch(89.1% 0.068 306.2)"
+        },
+        "300": {
+          "hex": "#D6B1FF",
+          "oklch": "oklch(82.0% 0.114 305.7)"
+        },
+        "400": {
+          "hex": "#C588FF",
+          "oklch": "oklch(73.5% 0.175 306.2)"
+        },
+        "500": {
+          "hex": "#A15EDD",
+          "oklch": "oklch(61.4% 0.190 305.9)"
+        },
+        "600": {
+          "hex": "#8B4AC3",
+          "oklch": "oklch(54.5% 0.185 305.9)"
+        },
+        "700": {
+          "hex": "#753CA6",
+          "oklch": "oklch(48.0% 0.166 305.8)"
+        },
+        "800": {
+          "hex": "#5D2C85",
+          "oklch": "oklch(40.5% 0.145 306.3)"
+        },
+        "900": {
+          "hex": "#462165",
+          "oklch": "oklch(33.5% 0.117 306.1)"
+        },
+        "950": {
+          "hex": "#301547",
+          "oklch": "oklch(26.4% 0.091 305.9)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#8B4AC3",
+            "oklch": "oklch(54.5% 0.185 305.9)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#753CA6",
+            "oklch": "oklch(48.0% 0.166 305.8)"
+          },
+          "brand-active": {
+            "hex": "#5D2C85",
+            "oklch": "oklch(40.5% 0.145 306.3)"
+          },
+          "brand-soft": {
+            "hex": "#F2E8FF",
+            "oklch": "oklch(94.6% 0.032 305.3)"
+          },
+          "brand-soft-strong": {
+            "hex": "#E6D0FF",
+            "oklch": "oklch(89.1% 0.068 306.2)"
+          },
+          "brand-on-soft": {
+            "hex": "#753CA6",
+            "oklch": "oklch(48.0% 0.166 305.8)"
+          },
+          "brand-text": {
+            "hex": "#753CA6",
+            "oklch": "oklch(48.0% 0.166 305.8)"
+          },
+          "brand-indicator": {
+            "hex": "#A15EDD",
+            "oklch": "oklch(61.4% 0.190 305.9)"
+          },
+          "brand-mark": {
+            "hex": "#A15EDD",
+            "oklch": "oklch(61.4% 0.190 305.9)"
+          },
+          "focus-ring": {
+            "hex": "#A15EDD",
+            "oklch": "oklch(61.4% 0.190 305.9)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#D6B1FF",
+            "oklch": "oklch(82.0% 0.114 305.7)"
+          },
+          "brand-active": {
+            "hex": "#AC6BE7",
+            "oklch": "oklch(65.1% 0.185 306.1)"
+          },
+          "brand-soft": {
+            "hex": "#2B2852",
+            "oklch": "oklch(30.3% 0.074 284.3)"
+          },
+          "brand-soft-strong": {
+            "hex": "#3C3065",
+            "oklch": "oklch(35.0% 0.090 291.5)"
+          },
+          "brand-on-soft": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          },
+          "brand-text": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          },
+          "brand-indicator": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          },
+          "brand-mark": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          },
+          "focus-ring": {
+            "hex": "#C588FF",
+            "oklch": "oklch(73.5% 0.175 306.2)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#8B4AC3"
+            ],
+            "contraste": 5.43,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#753CA6"
+            ],
+            "contraste": 7.11,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#5D2C85"
+            ],
+            "contraste": 9.7,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#753CA6",
+              "#F4F1E9"
+            ],
+            "contraste": 6.3,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#753CA6",
+              "#FFFFFF"
+            ],
+            "contraste": 7.11,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#753CA6",
+              "#ECE8DD"
+            ],
+            "contraste": 5.81,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#753CA6",
+              "#F2E8FF"
+            ],
+            "contraste": 6.01,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#753CA6",
+              "#E6D0FF"
+            ],
+            "contraste": 5.02,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#A15EDD",
+              "#FFFFFF"
+            ],
+            "contraste": 4.07,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#A15EDD",
+              "#F4F1E9"
+            ],
+            "contraste": 3.61,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#A15EDD",
+              "#FFFFFF"
+            ],
+            "contraste": 4.07,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#8B4AC3",
+              "#F4F1E9"
+            ],
+            "contraste": 4.81,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#8B4AC3",
+              "#FFFFFF"
+            ],
+            "contraste": 5.43,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#A15EDD",
+              "#F4F1E9"
+            ],
+            "contraste": 3.61,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#C588FF"
+            ],
+            "contraste": 6.79,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#D6B1FF"
+            ],
+            "contraste": 9.44,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#AC6BE7"
+            ],
+            "contraste": 4.89,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#C588FF",
+              "#0B1427"
+            ],
+            "contraste": 7.29,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#C588FF",
+              "#101B34"
+            ],
+            "contraste": 6.79,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#C588FF",
+              "#18264A"
+            ],
+            "contraste": 5.89,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#C588FF",
+              "#2B2852"
+            ],
+            "contraste": 5.46,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#C588FF",
+              "#3C3065"
+            ],
+            "contraste": 4.63,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#C588FF",
+              "#101B34"
+            ],
+            "contraste": 6.79,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#C588FF",
+              "#0B1427"
+            ],
+            "contraste": 7.29,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#C588FF",
+              "#101B34"
+            ],
+            "contraste": 6.79,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#C588FF",
+              "#0B1427"
+            ],
+            "contraste": 7.29,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#C588FF",
+              "#101B34"
+            ],
+            "contraste": 6.79,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#C588FF",
+              "#101B34"
+            ],
+            "contraste": 6.79,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chinahub",
+      "nome": "China Hub",
+      "papel": "Fornecedores e importadores (planejada)",
+      "status": "planejada (proposta de cor, sem logo oficial)",
+      "nome_da_cor": "Jade China Hub",
+      "assinatura": {
+        "hex": "#00979D",
+        "oklch": "oklch(61.5% 0.104 199.8)"
+      },
+      "elemento_com_a_cor": "reservado ao raio quando a logo oficial existir",
+      "escala": {
+        "50": {
+          "hex": "#EEF9FA",
+          "oklch": "oklch(97.4% 0.012 203.5)"
+        },
+        "100": {
+          "hex": "#DBF2F3",
+          "oklch": "oklch(94.5% 0.024 199.9)"
+        },
+        "200": {
+          "hex": "#B5E5E8",
+          "oklch": "oklch(88.9% 0.050 201.0)"
+        },
+        "300": {
+          "hex": "#7ED5DA",
+          "oklch": "oklch(82.0% 0.084 200.4)"
+        },
+        "400": {
+          "hex": "#3BBEC5",
+          "oklch": "oklch(73.5% 0.110 200.3)"
+        },
+        "500": {
+          "hex": "#00979D",
+          "oklch": "oklch(61.5% 0.104 199.8)"
+        },
+        "600": {
+          "hex": "#008085",
+          "oklch": "oklch(54.5% 0.093 199.6)"
+        },
+        "700": {
+          "hex": "#006B70",
+          "oklch": "oklch(48.0% 0.082 200.5)"
+        },
+        "800": {
+          "hex": "#005458",
+          "oklch": "oklch(40.5% 0.069 200.4)"
+        },
+        "900": {
+          "hex": "#003F42",
+          "oklch": "oklch(33.4% 0.057 200.1)"
+        },
+        "950": {
+          "hex": "#002C2E",
+          "oklch": "oklch(26.6% 0.045 199.5)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#008085",
+            "oklch": "oklch(54.5% 0.093 199.6)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#006B70",
+            "oklch": "oklch(48.0% 0.082 200.5)"
+          },
+          "brand-active": {
+            "hex": "#005458",
+            "oklch": "oklch(40.5% 0.069 200.4)"
+          },
+          "brand-soft": {
+            "hex": "#DBF2F3",
+            "oklch": "oklch(94.5% 0.024 199.9)"
+          },
+          "brand-soft-strong": {
+            "hex": "#B5E5E8",
+            "oklch": "oklch(88.9% 0.050 201.0)"
+          },
+          "brand-on-soft": {
+            "hex": "#006B70",
+            "oklch": "oklch(48.0% 0.082 200.5)"
+          },
+          "brand-text": {
+            "hex": "#006B70",
+            "oklch": "oklch(48.0% 0.082 200.5)"
+          },
+          "brand-indicator": {
+            "hex": "#00979D",
+            "oklch": "oklch(61.5% 0.104 199.8)"
+          },
+          "brand-mark": {
+            "hex": "#00979D",
+            "oklch": "oklch(61.5% 0.104 199.8)"
+          },
+          "focus-ring": {
+            "hex": "#00979D",
+            "oklch": "oklch(61.5% 0.104 199.8)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#7ED5DA",
+            "oklch": "oklch(82.0% 0.084 200.4)"
+          },
+          "brand-active": {
+            "hex": "#1AA3A9",
+            "oklch": "oklch(65.2% 0.106 199.7)"
+          },
+          "brand-soft": {
+            "hex": "#143248",
+            "oklch": "oklch(30.6% 0.054 243.0)"
+          },
+          "brand-soft-strong": {
+            "hex": "#164054",
+            "oklch": "oklch(35.2% 0.058 232.4)"
+          },
+          "brand-on-soft": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          },
+          "brand-text": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          },
+          "brand-indicator": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          },
+          "brand-mark": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          },
+          "focus-ring": {
+            "hex": "#3BBEC5",
+            "oklch": "oklch(73.5% 0.110 200.3)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#008085"
+            ],
+            "contraste": 4.74,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#006B70"
+            ],
+            "contraste": 6.29,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#005458"
+            ],
+            "contraste": 8.72,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#006B70",
+              "#F4F1E9"
+            ],
+            "contraste": 5.58,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#006B70",
+              "#FFFFFF"
+            ],
+            "contraste": 6.29,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#006B70",
+              "#ECE8DD"
+            ],
+            "contraste": 5.14,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#006B70",
+              "#DBF2F3"
+            ],
+            "contraste": 5.4,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#006B70",
+              "#B5E5E8"
+            ],
+            "contraste": 4.6,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#00979D",
+              "#FFFFFF"
+            ],
+            "contraste": 3.55,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#00979D",
+              "#F4F1E9"
+            ],
+            "contraste": 3.15,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#00979D",
+              "#FFFFFF"
+            ],
+            "contraste": 3.55,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#008085",
+              "#F4F1E9"
+            ],
+            "contraste": 4.2,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#008085",
+              "#FFFFFF"
+            ],
+            "contraste": 4.74,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#00979D",
+              "#F4F1E9"
+            ],
+            "contraste": 3.15,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#3BBEC5"
+            ],
+            "contraste": 7.62,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#7ED5DA"
+            ],
+            "contraste": 10.11,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#1AA3A9"
+            ],
+            "contraste": 5.58,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#3BBEC5",
+              "#0B1427"
+            ],
+            "contraste": 8.18,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#3BBEC5",
+              "#101B34"
+            ],
+            "contraste": 7.62,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#3BBEC5",
+              "#18264A"
+            ],
+            "contraste": 6.61,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#3BBEC5",
+              "#143248"
+            ],
+            "contraste": 5.92,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#3BBEC5",
+              "#164054"
+            ],
+            "contraste": 4.94,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#3BBEC5",
+              "#101B34"
+            ],
+            "contraste": 7.62,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#3BBEC5",
+              "#0B1427"
+            ],
+            "contraste": 8.18,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#3BBEC5",
+              "#101B34"
+            ],
+            "contraste": 7.62,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#3BBEC5",
+              "#0B1427"
+            ],
+            "contraste": 8.18,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#3BBEC5",
+              "#101B34"
+            ],
+            "contraste": 7.62,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#3BBEC5",
+              "#101B34"
+            ],
+            "contraste": 7.62,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bras",
+      "nome": "Brás Digital",
+      "papel": "Ecossistema comercial do Brás (planejada)",
+      "status": "planejada (proposta de cor, sem logo oficial)",
+      "nome_da_cor": "Laranja Brás",
+      "assinatura": {
+        "hex": "#D35C00",
+        "oklch": "oklch(61.5% 0.170 47.1)"
+      },
+      "elemento_com_a_cor": "reservado ao raio quando a logo oficial existir",
+      "escala": {
+        "50": {
+          "hex": "#FFF4EF",
+          "oklch": "oklch(97.4% 0.014 46.2)"
+        },
+        "100": {
+          "hex": "#FFE7DC",
+          "oklch": "oklch(94.4% 0.030 46.3)"
+        },
+        "200": {
+          "hex": "#FFCFB8",
+          "oklch": "oklch(89.0% 0.063 47.0)"
+        },
+        "300": {
+          "hex": "#FFAE86",
+          "oklch": "oklch(82.0% 0.110 47.0)"
+        },
+        "400": {
+          "hex": "#FB8342",
+          "oklch": "oklch(73.4% 0.166 46.7)"
+        },
+        "500": {
+          "hex": "#D35C00",
+          "oklch": "oklch(61.5% 0.170 47.1)"
+        },
+        "600": {
+          "hex": "#B34D00",
+          "oklch": "oklch(54.4% 0.150 47.1)"
+        },
+        "700": {
+          "hex": "#974000",
+          "oklch": "oklch(48.1% 0.132 47.2)"
+        },
+        "800": {
+          "hex": "#773100",
+          "oklch": "oklch(40.5% 0.111 47.3)"
+        },
+        "900": {
+          "hex": "#5B2300",
+          "oklch": "oklch(33.4% 0.093 46.6)"
+        },
+        "950": {
+          "hex": "#411700",
+          "oklch": "oklch(26.6% 0.074 46.8)"
+        }
+      },
+      "papeis": {
+        "claro": {
+          "brand-primary": {
+            "hex": "#B34D00",
+            "oklch": "oklch(54.4% 0.150 47.1)"
+          },
+          "brand-on-primary": {
+            "hex": "#FFFFFF",
+            "oklch": "oklch(100.0% 0.000 0.0)"
+          },
+          "brand-hover": {
+            "hex": "#974000",
+            "oklch": "oklch(48.1% 0.132 47.2)"
+          },
+          "brand-active": {
+            "hex": "#773100",
+            "oklch": "oklch(40.5% 0.111 47.3)"
+          },
+          "brand-soft": {
+            "hex": "#FFE7DC",
+            "oklch": "oklch(94.4% 0.030 46.3)"
+          },
+          "brand-soft-strong": {
+            "hex": "#FFCFB8",
+            "oklch": "oklch(89.0% 0.063 47.0)"
+          },
+          "brand-on-soft": {
+            "hex": "#974000",
+            "oklch": "oklch(48.1% 0.132 47.2)"
+          },
+          "brand-text": {
+            "hex": "#974000",
+            "oklch": "oklch(48.1% 0.132 47.2)"
+          },
+          "brand-indicator": {
+            "hex": "#D35C00",
+            "oklch": "oklch(61.5% 0.170 47.1)"
+          },
+          "brand-mark": {
+            "hex": "#D35C00",
+            "oklch": "oklch(61.5% 0.170 47.1)"
+          },
+          "focus-ring": {
+            "hex": "#D35C00",
+            "oklch": "oklch(61.5% 0.170 47.1)"
+          }
+        },
+        "escuro": {
+          "brand-primary": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          },
+          "brand-on-primary": {
+            "hex": "#101B34",
+            "oklch": "oklch(22.7% 0.051 264.7)"
+          },
+          "brand-hover": {
+            "hex": "#FFAE86",
+            "oklch": "oklch(82.0% 0.110 47.0)"
+          },
+          "brand-active": {
+            "hex": "#DF681D",
+            "oklch": "oklch(65.2% 0.169 47.1)"
+          },
+          "brand-soft": {
+            "hex": "#352B37",
+            "oklch": "oklch(30.5% 0.025 320.7)"
+          },
+          "brand-soft-strong": {
+            "hex": "#4B3337",
+            "oklch": "oklch(35.0% 0.035 8.0)"
+          },
+          "brand-on-soft": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          },
+          "brand-text": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          },
+          "brand-indicator": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          },
+          "brand-mark": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          },
+          "focus-ring": {
+            "hex": "#FB8342",
+            "oklch": "oklch(73.4% 0.166 46.7)"
+          }
+        }
+      },
+      "origem_dos_papeis": {
+        "claro": {
+          "primary": 600,
+          "text": 700,
+          "indicator": 500,
+          "mark": 500
+        },
+        "escuro": {
+          "primary": 400,
+          "text": 400,
+          "indicator": 400,
+          "mark": 400
+        }
+      },
+      "pares": {
+        "claro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#FFFFFF",
+              "#B34D00"
+            ],
+            "contraste": 5.28,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#FFFFFF",
+              "#974000"
+            ],
+            "contraste": 6.89,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#FFFFFF",
+              "#773100"
+            ],
+            "contraste": 9.44,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#974000",
+              "#F4F1E9"
+            ],
+            "contraste": 6.1,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#974000",
+              "#FFFFFF"
+            ],
+            "contraste": 6.89,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#974000",
+              "#ECE8DD"
+            ],
+            "contraste": 5.63,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#974000",
+              "#FFE7DC"
+            ],
+            "contraste": 5.81,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#974000",
+              "#FFCFB8"
+            ],
+            "contraste": 4.88,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#D35C00",
+              "#FFFFFF"
+            ],
+            "contraste": 3.96,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#D35C00",
+              "#F4F1E9"
+            ],
+            "contraste": 3.51,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#D35C00",
+              "#FFFFFF"
+            ],
+            "contraste": 3.96,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#B34D00",
+              "#F4F1E9"
+            ],
+            "contraste": 4.68,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#B34D00",
+              "#FFFFFF"
+            ],
+            "contraste": 5.28,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "off-white",
+            "cores": [
+              "#D35C00",
+              "#F4F1E9"
+            ],
+            "contraste": 3.51,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ],
+        "escuro": [
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-primary",
+            "cores": [
+              "#101B34",
+              "#FB8342"
+            ],
+            "contraste": 6.86,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-hover",
+            "cores": [
+              "#101B34",
+              "#FFAE86"
+            ],
+            "contraste": 9.48,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-primary",
+            "fundo": "brand-active",
+            "cores": [
+              "#101B34",
+              "#DF681D"
+            ],
+            "contraste": 4.99,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "canvas",
+            "cores": [
+              "#FB8342",
+              "#0B1427"
+            ],
+            "contraste": 7.37,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface",
+            "cores": [
+              "#FB8342",
+              "#101B34"
+            ],
+            "contraste": 6.86,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-text",
+            "fundo": "surface-2",
+            "cores": [
+              "#FB8342",
+              "#18264A"
+            ],
+            "contraste": 5.96,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft",
+            "cores": [
+              "#FB8342",
+              "#352B37"
+            ],
+            "contraste": 5.43,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-on-soft",
+            "fundo": "brand-soft-strong",
+            "cores": [
+              "#FB8342",
+              "#4B3337"
+            ],
+            "contraste": 4.61,
+            "criterio": "texto comum ≥4,5:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "surface",
+            "cores": [
+              "#FB8342",
+              "#101B34"
+            ],
+            "contraste": 6.86,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-indicator",
+            "fundo": "canvas",
+            "cores": [
+              "#FB8342",
+              "#0B1427"
+            ],
+            "contraste": 7.37,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "focus-ring",
+            "fundo": "surface",
+            "cores": [
+              "#FB8342",
+              "#101B34"
+            ],
+            "contraste": 6.86,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "canvas",
+            "cores": [
+              "#FB8342",
+              "#0B1427"
+            ],
+            "contraste": 7.37,
+            "criterio": "texto grande ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-primary",
+            "fundo": "surface",
+            "cores": [
+              "#FB8342",
+              "#101B34"
+            ],
+            "contraste": 6.86,
+            "criterio": "componente ≥3:1",
+            "resultado": "aprovado"
+          },
+          {
+            "frente": "brand-mark (raio)",
+            "fundo": "navy",
+            "cores": [
+              "#FB8342",
+              "#101B34"
+            ],
+            "contraste": 6.86,
+            "criterio": "logotipo (isento do 1.4.3/1.4.11)",
+            "resultado": "isento (logotipo); acima de 3:1"
+          }
+        ]
+      }
+    }
+  ],
+  "distancia_minima_entre_assinaturas": [
+    {
+      "par": "superdrop × chinahub",
+      "deltaE_OK": 0.13949999999999999
+    },
+    {
+      "par": "creators × play",
+      "deltaE_OK": 0.1494
+    },
+    {
+      "par": "commerce × play",
+      "deltaE_OK": 0.15439999999999998
+    },
+    {
+      "par": "commerce × chinahub",
+      "deltaE_OK": 0.1612
+    },
+    {
+      "par": "creators × bras",
+      "deltaE_OK": 0.1666
+    }
+  ]
+}

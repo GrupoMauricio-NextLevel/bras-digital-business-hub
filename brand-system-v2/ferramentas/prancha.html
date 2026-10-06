@@ -1,0 +1,72 @@
+<!doctype html><html lang="pt-BR" data-theme="light"><head><meta charset="utf-8"><title>Prancha</title><link rel="stylesheet" href="../tokens.css"><style>
+*{box-sizing:border-box}
+html{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--canvas);color:var(--text-primary)}
+body{margin:0;line-height:1.5}
+.so-escuro{display:none!important}
+[data-theme="dark"] .so-claro{display:none!important}
+[data-theme="dark"] .so-escuro{display:inline-block!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .so-claro{display:none!important}:root:not([data-theme="light"]) .so-escuro{display:inline-block!important}}
+a{color:var(--brand-text)}
+:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+.sem-logo{display:inline-flex;flex-direction:column;line-height:1.15}
+.sem-logo b{font-size:1.05rem;letter-spacing:-.01em}
+.sem-logo small{font-size:.72rem;color:var(--text-secondary);font-weight:600}
+
+body{width:2400px;padding:56px;background:#E6E3DA}
+h1{margin:0 0 6px;font-size:44px;letter-spacing:-.02em;color:#101B34}
+.sub{margin:0 0 36px;font-size:20px;color:#4A5268}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.row-l{grid-column:1/-1;font-size:18px;font-weight:700;color:#4A5268;margin:10px 0 -6px;text-transform:uppercase;letter-spacing:.12em}
+.pn{border-radius:22px;padding:34px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;height:220px}
+.pn.claro{background:#F4F1E9}.pn.escuro{background:#101B34}
+.pn .a{height:150px;width:auto;max-width:660px}
+.pn-b{display:flex;align-items:center;gap:18px}
+.pn .m{height:90px;width:auto}
+.pn .f{border-radius:4px}
+.cores{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:40px}
+.c{background:#fff;border-radius:18px;padding:14px;color:#101B34}
+.c .sw{height:120px;border-radius:12px;margin-bottom:12px}
+.c .sw2{display:flex;height:26px;border-radius:8px;overflow:hidden;margin-bottom:12px}.c .sw2 i{flex:1}
+.c b{display:block;font-size:18px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c span{display:block;font-size:15px;color:#4A5268}
+.c code{display:block;font-size:15px;margin-top:6px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.c .st{display:inline-block;margin-top:10px;font-size:13px;font-weight:700;border:1.5px solid #7C8294;border-radius:999px;padding:2px 10px}
+.c .st.pl{border-style:dashed}
+</style></head><body>
+<h1>Ecossistema NextLevel · cores de assinatura v2</h1>
+<p class="sub">Quatro marcas oficiais em claro e escuro (assinatura completa, monograma e favicons 32/16 px) e as sete cores de assinatura. O raio leva a cor da marca; navy, off-white e o desenho das letras são compartilhados.</p>
+<div class="grid"><p class="row-l">NextLevel Soluções Digitais</p>
+  <div class="pn claro" data-theme="light" data-brand="nextlevel">
+    <img class="a" src="../logos/nextlevel/claro/assinatura-completa.svg" alt="NextLevel Soluções Digitais">
+    <div class="pn-b"><img class="m" src="../logos/nextlevel/claro/monograma.svg" alt=""><img class="f" src="../favicons/nextlevel/claro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/nextlevel/claro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div>
+  <div class="pn escuro" data-theme="dark" data-brand="nextlevel">
+    <img class="a" src="../logos/nextlevel/escuro/assinatura-completa.svg" alt="NextLevel Soluções Digitais">
+    <div class="pn-b"><img class="m" src="../logos/nextlevel/escuro/monograma.svg" alt=""><img class="f" src="../favicons/nextlevel/escuro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/nextlevel/escuro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div><p class="row-l">NextLevel Commerce</p>
+  <div class="pn claro" data-theme="light" data-brand="commerce">
+    <img class="a" src="../logos/commerce/claro/assinatura-completa.svg" alt="NextLevel Commerce">
+    <div class="pn-b"><img class="m" src="../logos/commerce/claro/monograma.svg" alt=""><img class="f" src="../favicons/commerce/claro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/commerce/claro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div>
+  <div class="pn escuro" data-theme="dark" data-brand="commerce">
+    <img class="a" src="../logos/commerce/escuro/assinatura-completa.svg" alt="NextLevel Commerce">
+    <div class="pn-b"><img class="m" src="../logos/commerce/escuro/monograma.svg" alt=""><img class="f" src="../favicons/commerce/escuro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/commerce/escuro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div><p class="row-l">SuperDrop</p>
+  <div class="pn claro" data-theme="light" data-brand="superdrop">
+    <img class="a" src="../logos/superdrop/claro/assinatura-completa.svg" alt="SuperDrop">
+    <div class="pn-b"><img class="m" src="../logos/superdrop/claro/monograma.svg" alt=""><img class="f" src="../favicons/superdrop/claro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/superdrop/claro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div>
+  <div class="pn escuro" data-theme="dark" data-brand="superdrop">
+    <img class="a" src="../logos/superdrop/escuro/assinatura-completa.svg" alt="SuperDrop">
+    <div class="pn-b"><img class="m" src="../logos/superdrop/escuro/monograma.svg" alt=""><img class="f" src="../favicons/superdrop/escuro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/superdrop/escuro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div><p class="row-l">Creators Hub</p>
+  <div class="pn claro" data-theme="light" data-brand="creators">
+    <img class="a" src="../logos/creators/claro/assinatura-completa.svg" alt="Creators Hub">
+    <div class="pn-b"><img class="m" src="../logos/creators/claro/monograma.svg" alt=""><img class="f" src="../favicons/creators/claro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/creators/claro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div>
+  <div class="pn escuro" data-theme="dark" data-brand="creators">
+    <img class="a" src="../logos/creators/escuro/assinatura-completa.svg" alt="Creators Hub">
+    <div class="pn-b"><img class="m" src="../logos/creators/escuro/monograma.svg" alt=""><img class="f" src="../favicons/creators/escuro/favicon-32x32.png" alt="" width="32" height="32"><img class="f" src="../favicons/creators/escuro/favicon-16x16.png" alt="" width="16" height="16"></div>
+  </div></div>
+<div class="cores"><div class="c"><div class="sw" style="background:#F5BC00"></div><div class="sw2"><i style="background:#FFF8E7"></i><i style="background:#FEEFCA"></i><i style="background:#FDE09B"></i><i style="background:#F9CF62"></i><i style="background:#F5BC00"></i><i style="background:#D69D00"></i><i style="background:#B67F00"></i><i style="background:#986400"></i><i style="background:#7B4C00"></i><i style="background:#603701"></i><i style="background:#432200"></i></div><b>NextLevel (grupo)</b><span>Amarelo NextLevel</span><code>#F5BC00</code><code>oklch(82.4% 0.169 86.5)</code><span class="st ">Oficial</span></div><div class="c"><div class="sw" style="background:#2F81F4"></div><div class="sw2"><i style="background:#F2F7FF"></i><i style="background:#E2EEFF"></i><i style="background:#C5DDFF"></i><i style="background:#A0C6FF"></i><i style="background:#71AAFF"></i><i style="background:#2F81F4"></i><i style="background:#196BD8"></i><i style="background:#0E59B9"></i><i style="background:#064595"></i><i style="background:#043372"></i><i style="background:#032350"></i></div><b>NextLevel Commerce</b><span>Azul Commerce</span><code>#2F81F4</code><code>oklch(61.6% 0.190 257.9)</code><span class="st ">Oficial</span></div><div class="c"><div class="sw" style="background:#2D9E3B"></div><div class="sw2"><i style="background:#F0FAF0"></i><i style="background:#DFF3DF"></i><i style="background:#BEE8BE"></i><i style="background:#92D994"></i><i style="background:#62C268"></i><i style="background:#2D9E3B"></i><i style="background:#118728"></i><i style="background:#03721D"></i><i style="background:#005A13"></i><i style="background:#00440C"></i><i style="background:#012F07"></i></div><b>SuperDrop</b><span>Verde SuperDrop</span><code>#2D9E3B</code><code>oklch(61.6% 0.171 145.0)</code><span class="st ">Oficial</span></div><div class="c"><div class="sw" style="background:#D44790"></div><div class="sw2"><i style="background:#FFF3F8"></i><i style="background:#FFE5EF"></i><i style="background:#FFC9DF"></i><i style="background:#FFA4CC"></i><i style="background:#F975B5"></i><i style="background:#D44790"></i><i style="background:#BA327B"></i><i style="background:#9E2567"></i><i style="background:#7E1951"></i><i style="background:#60123D"></i><i style="background:#440B2A"></i></div><b>Creators Hub</b><span>Magenta Creators</span><code>#D44790</code><code>oklch(61.5% 0.190 352.2)</code><span class="st ">Oficial</span></div><div class="c"><div class="sw" style="background:#A15EDD"></div><div class="sw2"><i style="background:#F9F4FF"></i><i style="background:#F2E8FF"></i><i style="background:#E6D0FF"></i><i style="background:#D6B1FF"></i><i style="background:#C588FF"></i><i style="background:#A15EDD"></i><i style="background:#8B4AC3"></i><i style="background:#753CA6"></i><i style="background:#5D2C85"></i><i style="background:#462165"></i><i style="background:#301547"></i></div><b>NextLevel Play</b><span>Violeta Play</span><code>#A15EDD</code><code>oklch(61.4% 0.190 305.9)</code><span class="st pl">Planejada · sem logo</span></div><div class="c"><div class="sw" style="background:#00979D"></div><div class="sw2"><i style="background:#EEF9FA"></i><i style="background:#DBF2F3"></i><i style="background:#B5E5E8"></i><i style="background:#7ED5DA"></i><i style="background:#3BBEC5"></i><i style="background:#00979D"></i><i style="background:#008085"></i><i style="background:#006B70"></i><i style="background:#005458"></i><i style="background:#003F42"></i><i style="background:#002C2E"></i></div><b>China Hub</b><span>Jade China Hub</span><code>#00979D</code><code>oklch(61.5% 0.104 199.8)</code><span class="st pl">Planejada · sem logo</span></div><div class="c"><div class="sw" style="background:#D35C00"></div><div class="sw2"><i style="background:#FFF4EF"></i><i style="background:#FFE7DC"></i><i style="background:#FFCFB8"></i><i style="background:#FFAE86"></i><i style="background:#FB8342"></i><i style="background:#D35C00"></i><i style="background:#B34D00"></i><i style="background:#974000"></i><i style="background:#773100"></i><i style="background:#5B2300"></i><i style="background:#411700"></i></div><b>Brás Digital</b><span>Laranja Brás</span><code>#D35C00</code><code>oklch(61.5% 0.170 47.1)</code><span class="st pl">Planejada · sem logo</span></div></div>
+</body></html>

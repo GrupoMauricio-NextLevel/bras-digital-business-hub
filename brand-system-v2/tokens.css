@@ -1,0 +1,490 @@
+/* =============================================================================
+   Ecossistema NextLevel — tokens de cor v2 (gerado; não edite à mão: veja paletas.json)
+   Uso: <html data-brand="commerce" data-theme="light|dark">. Sem data-theme, segue o sistema.
+   Sem data-brand, vale NextLevel (marca do grupo).
+   Neutros e semânticos são compartilhados; só --brand-* muda por marca.
+   ============================================================================= */
+
+/* ---- Primitivos (não mudam por tema) ---- */
+:root {
+  --nl-navy: #101B34;
+  --nl-amarelo: #F5BC00;
+  --nl-offwhite: #F4F1E9;
+  --neutral-50: #FDFAF1;
+  --neutral-100: #F3F0E7;
+  --neutral-200: #E1DED5;
+  --neutral-300: #B9C4DC;
+  --neutral-400: #939FB7;
+  --neutral-500: #6F7A93;
+  --neutral-600: #4F5B73;
+  --neutral-700: #37425A;
+  --neutral-800: #222D45;
+  --neutral-900: #101B34;
+  --neutral-950: #050E25;
+  --nextlevel-50: #FFF8E7;
+  --nextlevel-100: #FEEFCA;
+  --nextlevel-200: #FDE09B;
+  --nextlevel-300: #F9CF62;
+  --nextlevel-400: #F5BC00;
+  --nextlevel-500: #D69D00;
+  --nextlevel-600: #B67F00;
+  --nextlevel-700: #986400;
+  --nextlevel-800: #7B4C00;
+  --nextlevel-900: #603701;
+  --nextlevel-950: #432200;
+  --commerce-50: #F2F7FF;
+  --commerce-100: #E2EEFF;
+  --commerce-200: #C5DDFF;
+  --commerce-300: #A0C6FF;
+  --commerce-400: #71AAFF;
+  --commerce-500: #2F81F4;
+  --commerce-600: #196BD8;
+  --commerce-700: #0E59B9;
+  --commerce-800: #064595;
+  --commerce-900: #043372;
+  --commerce-950: #032350;
+  --superdrop-50: #F0FAF0;
+  --superdrop-100: #DFF3DF;
+  --superdrop-200: #BEE8BE;
+  --superdrop-300: #92D994;
+  --superdrop-400: #62C268;
+  --superdrop-500: #2D9E3B;
+  --superdrop-600: #118728;
+  --superdrop-700: #03721D;
+  --superdrop-800: #005A13;
+  --superdrop-900: #00440C;
+  --superdrop-950: #012F07;
+  --creators-50: #FFF3F8;
+  --creators-100: #FFE5EF;
+  --creators-200: #FFC9DF;
+  --creators-300: #FFA4CC;
+  --creators-400: #F975B5;
+  --creators-500: #D44790;
+  --creators-600: #BA327B;
+  --creators-700: #9E2567;
+  --creators-800: #7E1951;
+  --creators-900: #60123D;
+  --creators-950: #440B2A;
+  --play-50: #F9F4FF;
+  --play-100: #F2E8FF;
+  --play-200: #E6D0FF;
+  --play-300: #D6B1FF;
+  --play-400: #C588FF;
+  --play-500: #A15EDD;
+  --play-600: #8B4AC3;
+  --play-700: #753CA6;
+  --play-800: #5D2C85;
+  --play-900: #462165;
+  --play-950: #301547;
+  --chinahub-50: #EEF9FA;
+  --chinahub-100: #DBF2F3;
+  --chinahub-200: #B5E5E8;
+  --chinahub-300: #7ED5DA;
+  --chinahub-400: #3BBEC5;
+  --chinahub-500: #00979D;
+  --chinahub-600: #008085;
+  --chinahub-700: #006B70;
+  --chinahub-800: #005458;
+  --chinahub-900: #003F42;
+  --chinahub-950: #002C2E;
+  --bras-50: #FFF4EF;
+  --bras-100: #FFE7DC;
+  --bras-200: #FFCFB8;
+  --bras-300: #FFAE86;
+  --bras-400: #FB8342;
+  --bras-500: #D35C00;
+  --bras-600: #B34D00;
+  --bras-700: #974000;
+  --bras-800: #773100;
+  --bras-900: #5B2300;
+  --bras-950: #411700;
+}
+
+/* ---- Neutros e semânticos: claro (padrão) ---- */
+:root, [data-theme="light"] {
+  color-scheme: light;
+  --canvas: #F4F1E9;
+  --surface: #FFFFFF;
+  --surface-2: #ECE8DD;
+  --text-primary: #101B34;
+  --text-secondary: #4A5268;
+  --border: #D8D3C6;
+  --border-strong: #7C8294;
+  --overlay: rgba(16,27,52,.45);
+  --success: #007E4D;
+  --success-soft: #DBF9E6;
+  --on-success-soft: #007F4E;
+  --success-solid: #008854;
+  --on-success-solid: #FFFFFF;
+  --success-border: #8DD7AC;
+  --warning: #986200;
+  --warning-soft: #FFEDD8;
+  --on-warning-soft: #976200;
+  --warning-solid: #A46A00;
+  --on-warning-solid: #FFFFFF;
+  --warning-border: #E9BB82;
+  --danger: #BF443C;
+  --danger-soft: #FFEBE8;
+  --on-danger-soft: #BE433C;
+  --danger-solid: #C94D45;
+  --on-danger-solid: #FFFFFF;
+  --danger-border: #FCACA3;
+  --info: #0075A5;
+  --info-soft: #E1F3FF;
+  --on-info-soft: #0075A5;
+  --info-solid: #007EB2;
+  --on-info-solid: #FFFFFF;
+  --info-border: #93CDF0;
+}
+/* ---- Neutros e semânticos: escuro ---- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #0B1427;
+  --surface: #101B34;
+  --surface-2: #18264A;
+  --text-primary: #F4F1E9;
+  --text-secondary: #B3B9CA;
+  --border: #2A3961;
+  --border-strong: #7D88A6;
+  --overlay: rgba(4,8,18,.6);
+  --success: #00A366;
+  --success-soft: #13323E;
+  --on-success-soft: #00AB6B;
+  --success-solid: #43D58F;
+  --on-success-solid: #101B34;
+  --success-border: #14574C;
+  --warning: #C48000;
+  --warning-soft: #2D2D37;
+  --on-warning-soft: #CD8600;
+  --warning-solid: #F2A635;
+  --on-warning-solid: #101B34;
+  --warning-border: #5B4735;
+  --danger: #E5665C;
+  --danger-soft: #35293B;
+  --on-danger-soft: #ED6D62;
+  --danger-solid: #FF968A;
+  --on-danger-solid: #101B34;
+  --danger-border: #6B3A43;
+  --info: #1E97D0;
+  --info-soft: #142F4E;
+  --on-info-soft: #299ED7;
+  --info-solid: #58C4FF;
+  --on-info-solid: #101B34;
+  --info-border: #174F77;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --canvas: #0B1427;
+    --surface: #101B34;
+    --surface-2: #18264A;
+    --text-primary: #F4F1E9;
+    --text-secondary: #B3B9CA;
+    --border: #2A3961;
+    --border-strong: #7D88A6;
+    --overlay: rgba(4,8,18,.6);
+    --success: #00A366;
+    --success-soft: #13323E;
+    --on-success-soft: #00AB6B;
+    --success-solid: #43D58F;
+    --on-success-solid: #101B34;
+    --success-border: #14574C;
+    --warning: #C48000;
+    --warning-soft: #2D2D37;
+    --on-warning-soft: #CD8600;
+    --warning-solid: #F2A635;
+    --on-warning-solid: #101B34;
+    --warning-border: #5B4735;
+    --danger: #E5665C;
+    --danger-soft: #35293B;
+    --on-danger-soft: #ED6D62;
+    --danger-solid: #FF968A;
+    --on-danger-solid: #101B34;
+    --danger-border: #6B3A43;
+    --info: #1E97D0;
+    --info-soft: #142F4E;
+    --on-info-soft: #299ED7;
+    --info-solid: #58C4FF;
+    --on-info-solid: #101B34;
+    --info-border: #174F77;
+  }
+}
+
+/* ---- Marca: papéis no claro ---- */
+:root, [data-brand="nextlevel"] {
+  --brand-primary: #F5BC00;
+  --brand-on-primary: #101B34;
+  --brand-hover: #D69D00;
+  --brand-active: #B67F00;
+  --brand-soft: #FEEFCA;
+  --brand-soft-strong: #FDE09B;
+  --brand-on-soft: #7B4C00;
+  --brand-text: #7B4C00;
+  --brand-indicator: #B67F00;
+  --brand-mark: #F5BC00;
+  --focus-ring: #B67F00;
+}
+[data-brand="commerce"] {
+  --brand-primary: #196BD8;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #0E59B9;
+  --brand-active: #064595;
+  --brand-soft: #E2EEFF;
+  --brand-soft-strong: #C5DDFF;
+  --brand-on-soft: #0E59B9;
+  --brand-text: #0E59B9;
+  --brand-indicator: #2F81F4;
+  --brand-mark: #2F81F4;
+  --focus-ring: #2F81F4;
+}
+[data-brand="superdrop"] {
+  --brand-primary: #118728;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #03721D;
+  --brand-active: #005A13;
+  --brand-soft: #DFF3DF;
+  --brand-soft-strong: #BEE8BE;
+  --brand-on-soft: #03721D;
+  --brand-text: #03721D;
+  --brand-indicator: #2D9E3B;
+  --brand-mark: #2D9E3B;
+  --focus-ring: #2D9E3B;
+}
+[data-brand="creators"] {
+  --brand-primary: #BA327B;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #9E2567;
+  --brand-active: #7E1951;
+  --brand-soft: #FFE5EF;
+  --brand-soft-strong: #FFC9DF;
+  --brand-on-soft: #9E2567;
+  --brand-text: #9E2567;
+  --brand-indicator: #D44790;
+  --brand-mark: #D44790;
+  --focus-ring: #D44790;
+}
+[data-brand="play"] {
+  --brand-primary: #8B4AC3;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #753CA6;
+  --brand-active: #5D2C85;
+  --brand-soft: #F2E8FF;
+  --brand-soft-strong: #E6D0FF;
+  --brand-on-soft: #753CA6;
+  --brand-text: #753CA6;
+  --brand-indicator: #A15EDD;
+  --brand-mark: #A15EDD;
+  --focus-ring: #A15EDD;
+}
+[data-brand="chinahub"] {
+  --brand-primary: #008085;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #006B70;
+  --brand-active: #005458;
+  --brand-soft: #DBF2F3;
+  --brand-soft-strong: #B5E5E8;
+  --brand-on-soft: #006B70;
+  --brand-text: #006B70;
+  --brand-indicator: #00979D;
+  --brand-mark: #00979D;
+  --focus-ring: #00979D;
+}
+[data-brand="bras"] {
+  --brand-primary: #B34D00;
+  --brand-on-primary: #FFFFFF;
+  --brand-hover: #974000;
+  --brand-active: #773100;
+  --brand-soft: #FFE7DC;
+  --brand-soft-strong: #FFCFB8;
+  --brand-on-soft: #974000;
+  --brand-text: #974000;
+  --brand-indicator: #D35C00;
+  --brand-mark: #D35C00;
+  --focus-ring: #D35C00;
+}
+
+/* ---- Marca: papéis no escuro ---- */
+[data-theme="dark"]:not([data-brand]), [data-theme="dark"] [data-brand="nextlevel"], [data-theme="dark"][data-brand="nextlevel"], [data-brand="nextlevel"][data-theme="dark"] {
+  --brand-primary: #F5BC00;
+  --brand-on-primary: #101B34;
+  --brand-hover: #F9CF62;
+  --brand-active: #DFA600;
+  --brand-soft: #33353B;
+  --brand-soft-strong: #49443D;
+  --brand-on-soft: #F5BC00;
+  --brand-text: #F5BC00;
+  --brand-indicator: #F5BC00;
+  --brand-mark: #F5BC00;
+  --focus-ring: #F5BC00;
+}
+[data-theme="dark"] [data-brand="commerce"], [data-theme="dark"][data-brand="commerce"], [data-brand="commerce"][data-theme="dark"] {
+  --brand-primary: #71AAFF;
+  --brand-on-primary: #101B34;
+  --brand-hover: #A0C6FF;
+  --brand-active: #458EF8;
+  --brand-soft: #172D56;
+  --brand-soft-strong: #1B396C;
+  --brand-on-soft: #71AAFF;
+  --brand-text: #71AAFF;
+  --brand-indicator: #71AAFF;
+  --brand-mark: #71AAFF;
+  --focus-ring: #71AAFF;
+}
+[data-theme="dark"] [data-brand="superdrop"], [data-theme="dark"][data-brand="superdrop"], [data-brand="superdrop"][data-theme="dark"] {
+  --brand-primary: #62C268;
+  --brand-on-primary: #101B34;
+  --brand-hover: #92D994;
+  --brand-active: #3FA949;
+  --brand-soft: #15343B;
+  --brand-soft-strong: #18433E;
+  --brand-on-soft: #62C268;
+  --brand-text: #62C268;
+  --brand-indicator: #62C268;
+  --brand-mark: #62C268;
+  --focus-ring: #62C268;
+}
+[data-theme="dark"] [data-brand="creators"], [data-theme="dark"][data-brand="creators"], [data-brand="creators"][data-theme="dark"] {
+  --brand-primary: #F975B5;
+  --brand-on-primary: #101B34;
+  --brand-hover: #FFA4CC;
+  --brand-active: #DF559B;
+  --brand-soft: #362745;
+  --brand-soft-strong: #4C2D50;
+  --brand-on-soft: #F975B5;
+  --brand-text: #F975B5;
+  --brand-indicator: #F975B5;
+  --brand-mark: #F975B5;
+  --focus-ring: #F975B5;
+}
+[data-theme="dark"] [data-brand="play"], [data-theme="dark"][data-brand="play"], [data-brand="play"][data-theme="dark"] {
+  --brand-primary: #C588FF;
+  --brand-on-primary: #101B34;
+  --brand-hover: #D6B1FF;
+  --brand-active: #AC6BE7;
+  --brand-soft: #2B2852;
+  --brand-soft-strong: #3C3065;
+  --brand-on-soft: #C588FF;
+  --brand-text: #C588FF;
+  --brand-indicator: #C588FF;
+  --brand-mark: #C588FF;
+  --focus-ring: #C588FF;
+}
+[data-theme="dark"] [data-brand="chinahub"], [data-theme="dark"][data-brand="chinahub"], [data-brand="chinahub"][data-theme="dark"] {
+  --brand-primary: #3BBEC5;
+  --brand-on-primary: #101B34;
+  --brand-hover: #7ED5DA;
+  --brand-active: #1AA3A9;
+  --brand-soft: #143248;
+  --brand-soft-strong: #164054;
+  --brand-on-soft: #3BBEC5;
+  --brand-text: #3BBEC5;
+  --brand-indicator: #3BBEC5;
+  --brand-mark: #3BBEC5;
+  --focus-ring: #3BBEC5;
+}
+[data-theme="dark"] [data-brand="bras"], [data-theme="dark"][data-brand="bras"], [data-brand="bras"][data-theme="dark"] {
+  --brand-primary: #FB8342;
+  --brand-on-primary: #101B34;
+  --brand-hover: #FFAE86;
+  --brand-active: #DF681D;
+  --brand-soft: #352B37;
+  --brand-soft-strong: #4B3337;
+  --brand-on-soft: #FB8342;
+  --brand-text: #FB8342;
+  --brand-indicator: #FB8342;
+  --brand-mark: #FB8342;
+  --focus-ring: #FB8342;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-brand]), :root:not([data-theme="light"]) [data-brand="nextlevel"]:not([data-theme="light"]) {
+    --brand-primary: #F5BC00;
+    --brand-on-primary: #101B34;
+    --brand-hover: #F9CF62;
+    --brand-active: #DFA600;
+    --brand-soft: #33353B;
+    --brand-soft-strong: #49443D;
+    --brand-on-soft: #F5BC00;
+    --brand-text: #F5BC00;
+    --brand-indicator: #F5BC00;
+    --brand-mark: #F5BC00;
+    --focus-ring: #F5BC00;
+  }
+  :root:not([data-theme="light"])[data-brand="commerce"], :root:not([data-theme="light"]) [data-brand="commerce"]:not([data-theme="light"]) {
+    --brand-primary: #71AAFF;
+    --brand-on-primary: #101B34;
+    --brand-hover: #A0C6FF;
+    --brand-active: #458EF8;
+    --brand-soft: #172D56;
+    --brand-soft-strong: #1B396C;
+    --brand-on-soft: #71AAFF;
+    --brand-text: #71AAFF;
+    --brand-indicator: #71AAFF;
+    --brand-mark: #71AAFF;
+    --focus-ring: #71AAFF;
+  }
+  :root:not([data-theme="light"])[data-brand="superdrop"], :root:not([data-theme="light"]) [data-brand="superdrop"]:not([data-theme="light"]) {
+    --brand-primary: #62C268;
+    --brand-on-primary: #101B34;
+    --brand-hover: #92D994;
+    --brand-active: #3FA949;
+    --brand-soft: #15343B;
+    --brand-soft-strong: #18433E;
+    --brand-on-soft: #62C268;
+    --brand-text: #62C268;
+    --brand-indicator: #62C268;
+    --brand-mark: #62C268;
+    --focus-ring: #62C268;
+  }
+  :root:not([data-theme="light"])[data-brand="creators"], :root:not([data-theme="light"]) [data-brand="creators"]:not([data-theme="light"]) {
+    --brand-primary: #F975B5;
+    --brand-on-primary: #101B34;
+    --brand-hover: #FFA4CC;
+    --brand-active: #DF559B;
+    --brand-soft: #362745;
+    --brand-soft-strong: #4C2D50;
+    --brand-on-soft: #F975B5;
+    --brand-text: #F975B5;
+    --brand-indicator: #F975B5;
+    --brand-mark: #F975B5;
+    --focus-ring: #F975B5;
+  }
+  :root:not([data-theme="light"])[data-brand="play"], :root:not([data-theme="light"]) [data-brand="play"]:not([data-theme="light"]) {
+    --brand-primary: #C588FF;
+    --brand-on-primary: #101B34;
+    --brand-hover: #D6B1FF;
+    --brand-active: #AC6BE7;
+    --brand-soft: #2B2852;
+    --brand-soft-strong: #3C3065;
+    --brand-on-soft: #C588FF;
+    --brand-text: #C588FF;
+    --brand-indicator: #C588FF;
+    --brand-mark: #C588FF;
+    --focus-ring: #C588FF;
+  }
+  :root:not([data-theme="light"])[data-brand="chinahub"], :root:not([data-theme="light"]) [data-brand="chinahub"]:not([data-theme="light"]) {
+    --brand-primary: #3BBEC5;
+    --brand-on-primary: #101B34;
+    --brand-hover: #7ED5DA;
+    --brand-active: #1AA3A9;
+    --brand-soft: #143248;
+    --brand-soft-strong: #164054;
+    --brand-on-soft: #3BBEC5;
+    --brand-text: #3BBEC5;
+    --brand-indicator: #3BBEC5;
+    --brand-mark: #3BBEC5;
+    --focus-ring: #3BBEC5;
+  }
+  :root:not([data-theme="light"])[data-brand="bras"], :root:not([data-theme="light"]) [data-brand="bras"]:not([data-theme="light"]) {
+    --brand-primary: #FB8342;
+    --brand-on-primary: #101B34;
+    --brand-hover: #FFAE86;
+    --brand-active: #DF681D;
+    --brand-soft: #352B37;
+    --brand-soft-strong: #4B3337;
+    --brand-on-soft: #FB8342;
+    --brand-text: #FB8342;
+    --brand-indicator: #FB8342;
+    --brand-mark: #FB8342;
+    --focus-ring: #FB8342;
+  }
+}

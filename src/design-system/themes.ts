@@ -11,7 +11,7 @@
  */
 import { contrastRatio, onSignal } from "@/lib/brand-palette";
 
-export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china"] as const;
+export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play"] as const;
 export type ThemeKey = (typeof THEME_KEYS)[number];
 export type ThemeMode = "light" | "dark";
 
@@ -33,38 +33,30 @@ export type ThemeColors = {
 type ModeInput = { canvas: string; ink: string; primary: string; link: string; accent: string; accentText: string; accentSoft?: string; reflection?: string; surface?: string; sideBg?: string };
 type ThemeInput = { label: string; light: ModeInput; dark: ModeInput };
 
-/** Paletas de entrada. Derivadas das identidades existentes (`src/lib/brand-palette.ts`); o que precisar de decisão do dono está em docs/design-system/DECISOES-PENDENTES.md. */
+/**
+ * Paletas de entrada: sistema de cores v2 aprovado pelo dono (brand-system-v2/, decisão D79).
+ * Neutros compartilhados por todas as marcas (navy #101B34 e off-white #F4F1E9); cada marca só traz a cor de assinatura
+ * (botão, link, seleção, foco) e o amarelo do grupo entra como destaque secundário dos produtos.
+ */
+const N = { light: { canvas: "#F4F1E9", ink: "#101B34", surface: "#FFFFFF" }, dark: { canvas: "#0B1427", ink: "#F4F1E9", surface: "#101B34" } } as const;
+const GRUPO = { light: { accent: "#F5BC00", accentText: "#7B4C00", accentSoft: "#FEEFCA" }, dark: { accent: "#F5BC00", accentText: "#F5BC00" } } as const;
+const produto = (label: string, l: [string, string], d: [string, string]): ThemeInput => ({
+  label,
+  light: { ...N.light, ...GRUPO.light, primary: l[0], link: l[1] },
+  dark: { ...N.dark, ...GRUPO.dark, primary: d[0], link: d[1] },
+});
 export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   nextlevel: {
-    label: "NextLevel (holding e Master)",
-    light: { canvas: "#EFEBE3", ink: "#101418", primary: "#FF5A1F", link: "#B93C0A", accent: "#14213D", accentText: "#14213D", reflection: "#FFB38A" },
-    dark: { canvas: "#0C0F12", ink: "#EFEBE3", primary: "#FF6B35", link: "#FF8A5C", accent: "#7C93D6", accentText: "#AFC0F2", reflection: "#FFB38A" },
+    label: "NextLevel Soluções Digitais (grupo e Master)",
+    light: { ...N.light, primary: "#F5BC00", link: "#7B4C00", accent: "#101B34", accentText: "#101B34", accentSoft: "#E6E8EE" },
+    dark: { ...N.dark, primary: "#F5BC00", link: "#F5BC00", accent: "#B3B9CA", accentText: "#D6DAE5" },
   },
-  commerce: {
-    label: "NextLevel Commerce",
-    light: { canvas: "#F3F6FB", ink: "#162842", primary: "#2557DA", link: "#214ECA", accent: "#EDAA86", accentText: "#914721", accentSoft: "#FFF0E6", reflection: "#82DFEE", surface: "#FFFFFF" },
-    dark: { canvas: "#09172E", ink: "#EFF5FF", primary: "#3565DF", link: "#91B3FF", accent: "#F1AC85", accentText: "#F4B693", accentSoft: "#352927", reflection: "#82E3F6", surface: "#152641" },
-  },
-  superdrop: {
-    label: "SuperDrop",
-    light: { canvas: "#F2EBDD", ink: "#0F1A14", primary: "#127A44", link: "#0E6537", accent: "#B7793B", accentText: "#7A4A14", reflection: "#9BE0B8" },
-    dark: { canvas: "#0B130F", ink: "#F2EBDD", primary: "#2FBF72", link: "#4ADB8C", accent: "#D9A066", accentText: "#E8B982", reflection: "#7EF0B0" },
-  },
-  bras: {
-    label: "Brás Digital",
-    light: { canvas: "#F6F1EA", ink: "#2A0F18", primary: "#8C1D40", link: "#8C1D40", accent: "#C79A2B", accentText: "#7A5A0B", reflection: "#F2B3C6" },
-    dark: { canvas: "#1A0A10", ink: "#F6F1EA", primary: "#E0557F", link: "#F07A9F", accent: "#E3B84A", accentText: "#EBC96F", reflection: "#F5A3BB" },
-  },
-  creators: {
-    label: "Hub Creators",
-    light: { canvas: "#F4F4F0", ink: "#0B0B10", primary: "#4D6B00", link: "#4D6B00", accent: "#FF4D8D", accentText: "#B3004E", reflection: "#C6F432" },
-    dark: { canvas: "#0B0B10", ink: "#F4F4F0", primary: "#C6F432", link: "#C6F432", accent: "#FF7AAB", accentText: "#FF9DC0", reflection: "#C6F432" },
-  },
-  china: {
-    label: "China Hub",
-    light: { canvas: "#F5F0E6", ink: "#1A1210", primary: "#B3141F", link: "#B3141F", accent: "#0F6B5C", accentText: "#0B5246", reflection: "#F2A0A5" },
-    dark: { canvas: "#150E0C", ink: "#F5F0E6", primary: "#E5484D", link: "#F26A6F", accent: "#35B3A0", accentText: "#6FD3C3", reflection: "#F59A9E" },
-  },
+  commerce: produto("NextLevel Commerce", ["#196BD8", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
+  superdrop: produto("SuperDrop", ["#118728", "#03721D"], ["#62C268", "#62C268"]),
+  creators: produto("Creators Hub", ["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
+  play: produto("NextLevel Play (planejada)", ["#8B4AC3", "#753CA6"], ["#C588FF", "#C588FF"]),
+  china: produto("China Hub (planejada)", ["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
+  bras: produto("Brás Digital (planejada)", ["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
 };
 
 /** Marca do sistema (código de `src/lib/brand.ts`) → tema. Marca desconhecida cai na holding. */
@@ -87,8 +79,8 @@ const rgba = (hex: string, alpha: number) => { const [r, g, b] = toRgb(hex); ret
 
 /** Cores de estado: iguais em todos os temas (status não é identidade de marca). */
 const STATE = {
-  light: { success: "#11703A", successSoft: "#DCF5E6", warning: "#8A4B00", warningSoft: "#FDF0CF", danger: "#B42318", dangerSoft: "#FDE4E1", info: "#1D4ED8", infoSoft: "#DFE9FD" },
-  dark: { success: "#5DDB8F", successSoft: "#12301E", warning: "#F2B45A", warningSoft: "#33240B", danger: "#FF8A7D", dangerSoft: "#3A1512", info: "#8FB0FF", infoSoft: "#14233F" },
+  light: { success: "#007E4D", successSoft: "#DBF9E6", warning: "#8F5C00", warningSoft: "#FFEDD8", danger: "#B53C35", dangerSoft: "#FFEBE8", info: "#0075A5", infoSoft: "#E1F3FF" },
+  dark: { success: "#43D58F", successSoft: "#13323E", warning: "#F2A635", warningSoft: "#2D2D37", danger: "#FF968A", dangerSoft: "#35293B", info: "#58C4FF", infoSoft: "#142F4E" },
 } as const;
 
 /** Texto secundário: clareia a mistura até passar de 4,6:1 sobre as duas superfícies de leitura. */

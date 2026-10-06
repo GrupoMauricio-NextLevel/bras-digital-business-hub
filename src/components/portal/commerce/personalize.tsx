@@ -42,7 +42,7 @@ export function Personalize() {
       <ol className="space-y-3 lg:space-y-0">
         {STEPS.map((s, n) => (
           <li key={s.t} data-step={n} ref={(el) => { refs.current[n] = el; }} className="lg:flex lg:min-h-[58vh] lg:items-center">
-            <button type="button" onClick={() => setStep(n)} aria-pressed={step === n} className={`w-full border-l-4 py-3 pl-5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring ${step === n ? "border-[#f2b600]" : "border-border hover:border-foreground/40"}`}>
+            <button type="button" onClick={() => setStep(n)} aria-pressed={step === n} className={`w-full border-l-4 py-3 pl-5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring ${step === n ? "border-primary" : "border-border hover:border-foreground/40"}`}>
               <span className="text-sm font-bold uppercase tracking-wider text-link">Passo {n + 1}</span>
               <span className={`mt-1 block font-[family-name:var(--nl-font-display)] text-2xl font-extrabold leading-tight transition-colors sm:text-3xl ${step === n ? "text-foreground" : "text-muted-foreground"}`}>{s.t}</span>
               <span className={`mt-2 block max-w-md text-lg leading-relaxed transition-opacity ${step === n ? "text-body" : "text-muted-foreground"}`}>{s.d}</span>
@@ -66,7 +66,7 @@ export function Personalize() {
                   {[...BASE, TRUST].map((sec) => {
                     const idx = order.findIndex((o) => o.id === sec.id);
                     const present = idx >= 0;
-                    return <div key={sec.id} className="absolute inset-x-0 flex items-center rounded-md border bg-surface px-2 transition-all duration-500" style={{ height: ROW - 6, top: (present ? idx : 2) * ROW, opacity: present ? 1 : 0, borderColor: sec.id === "confianca" && step >= 1 ? "#f2b600" : "#e5e5e5" }}><span className="mr-1.5 text-muted-foreground">⋮⋮</span>{sec.label}</div>;
+                    return <div key={sec.id} className="absolute inset-x-0 flex items-center rounded-md border bg-surface px-2 transition-all duration-500" style={{ height: ROW - 6, top: (present ? idx : 2) * ROW, opacity: present ? 1 : 0, borderColor: sec.id === "confianca" && step >= 1 ? "var(--ds-primary)" : "#e5e5e5" }}><span className="mr-1.5 text-muted-foreground">⋮⋮</span>{sec.label}</div>;
                   })}
                 </div>
                 <p className={`mt-3 rounded-md border border-dashed px-2 py-1.5 text-center font-semibold transition-colors ${step === 1 ? "border-[#1f47c9] bg-[#1f47c9]/10 text-link" : "border-border text-muted-foreground"}`}>+ Adicionar seção</p>

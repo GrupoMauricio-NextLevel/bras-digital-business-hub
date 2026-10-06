@@ -1,0 +1,703 @@
+{
+  "results": [
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 6978,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 6612,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 93,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 134,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 9503,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 8948,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 84,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 96,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 19543,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 18882,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 19703,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 19042,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 6978,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 6612,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 93,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 134,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 9503,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 8948,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 84,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 96,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 19543,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 18882,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-equipe",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 19703,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 19042,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    }
+  ],
+  "diffsGeometria": []
+}

@@ -12,12 +12,13 @@ type Props = {
   priority?: boolean;
 };
 
+// Logo oficial (kit v1) com o raio verde SuperDrop do sistema de cores v2 (decisão D79).
 const FILES = {
-  full: { light: { src: "/brand/superdrop-logo-light.webp", w: 480, h: 122 }, dark: { src: "/brand/superdrop-logo-dark.webp", w: 480, h: 119 } },
-  mark: { light: { src: "/brand/superdrop-mark.webp", w: 240, h: 256 }, dark: { src: "/brand/superdrop-mark-dark.webp", w: 251, h: 256 } },
+  full: { light: { src: "/brand/v2/superdrop/claro/compacta.svg", w: 1495, h: 404 }, dark: { src: "/brand/v2/superdrop/escuro/compacta.svg", w: 1495, h: 404 } },
+  mark: { light: { src: "/brand/v2/superdrop/claro/monograma.svg", w: 353, h: 249 }, dark: { src: "/brand/v2/superdrop/escuro/monograma.svg", w: 353, h: 249 } },
 } as const;
 
-/** Logo da SuperDrop. A versão escura (texto branco) vale para fundos escuros; a clara (texto preto) para fundos claros. */
+/** Logo da SuperDrop. A versão escura (letras off-white) vale para fundos escuros; a clara (letras navy) para fundos claros. */
 export function Logo({ variant = "full", tone = "auto", className, alt = "SuperDrop", priority = false }: Props) {
   const f = FILES[variant];
   const img = (v: "light" | "dark", extra: string, a: string) => (

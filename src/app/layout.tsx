@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { getBrand } from "@/lib/brand-server";
 import { brandCssVars } from "@/lib/brand-palette";
 import { getThemeKey } from "@/lib/theme-server";
+import { brandIcons } from "@/components/brand/brand-logo";
 import { THEME_PREPAINT_SCRIPT, themeCss } from "@/design-system/themes";
 
 const display = localFont({ src: "./fonts/jakarta-latin.woff2", variable: "--nl-font-display", display: "swap", weight: "200 800" });
@@ -17,10 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? brand.baseUrl),
     title: { default: brand.name, template: `%s · ${brand.name}` },
     description: `${brand.name}: ${brand.description} Plataforma da NextLevel Marketing.`,
+    icons: brandIcons(brand.code),
   };
 }
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f4f6f5" }, { media: "(prefers-color-scheme: dark)", color: "#09100c" }] };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#F4F1E9" }, { media: "(prefers-color-scheme: dark)", color: "#0B1427" }] };
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

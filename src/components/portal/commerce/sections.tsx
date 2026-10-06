@@ -79,7 +79,7 @@ export function ThemesAndPrices({ themes }: { themes: ThemeRow[] }) {
         <h2 className={`${H2} text-foreground`}>Comece com um tema grátis. Troque quando quiser.</h2>
         <p className="mt-4 max-w-md text-lg leading-relaxed text-body">O tema Starter já vem com a sua loja. Os temas pagos são instalados com um clique e mantêm o seu conteúdo.</p>
         <p className="mt-4 max-w-md text-[15px] text-body">O plano da sua loja (mensalidade, domínio próprio e módulos) é combinado na conversa com a equipe, de acordo com o tamanho da operação.</p>
-        <Link href="/planos" className="mt-6 inline-block text-base font-semibold text-foreground underline decoration-[#f2b600] decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver como os planos funcionam</Link>
+        <Link href="/planos" className="mt-6 inline-block text-base font-semibold text-foreground underline decoration-primary decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver como os planos funcionam</Link>
       </div>
       <div>
         <ul className="divide-y divide-border border-y border-border">

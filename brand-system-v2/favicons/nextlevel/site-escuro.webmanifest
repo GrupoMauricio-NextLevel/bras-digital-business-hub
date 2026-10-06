@@ -1,0 +1,29 @@
+{
+  "name": "NextLevel Soluções Digitais",
+  "short_name": "NextLevel",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101B34",
+  "theme_color": "#101B34",
+  "icons": [
+    {
+      "src": "escuro/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "escuro/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "escuro/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

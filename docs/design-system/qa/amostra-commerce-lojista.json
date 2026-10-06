@@ -1,0 +1,3231 @@
+{
+  "results": [
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "light",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "light",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "light",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "light",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "dark",
+      "width": 1440,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "dark",
+      "width": 840,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "dark",
+      "width": 390,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "dark",
+      "width": 320,
+      "mode": "amostra",
+      "status": 200,
+      "problems": []
+    }
+  ],
+  "geometry": [
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 1461,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 263,
+        "h": 139,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 611,
+        "h": 46,
+        "radius": "0px",
+        "font": "44px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 6978,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 6612,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 93,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 134,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2996,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 151,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 67,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 11560,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 281,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 96,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2632,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 242,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2379,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 392,
+        "h": 139,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 431,
+        "h": 37,
+        "radius": "0px",
+        "font": "35.28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 9503,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 8948,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 84,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 96,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 3176,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 108,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 67,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 10605,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 201,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 96,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2697,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 173,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 2765,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 175,
+        "h": 114,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "14px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 320,
+        "h": 29,
+        "radius": "0px",
+        "font": "28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 19543,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 18882,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 8602,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 107,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 25646,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 198,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 3936,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 171,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 3104,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 140,
+        "h": 114,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "14px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 250,
+        "h": 29,
+        "radius": "0px",
+        "font": "28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 19703,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 19042,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 8849,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 107,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 26033,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 198,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4391,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 171,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 1461,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 263,
+        "h": 139,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 611,
+        "h": 46,
+        "radius": "0px",
+        "font": "44px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 6978,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 6612,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 265,
+        "h": 93,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 134,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2996,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 151,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 67,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 11560,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 281,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 96,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 1440,
+      "side": {
+        "w": 272,
+        "h": 900,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 1168,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 32px"
+      },
+      "content": {
+        "w": 1168,
+        "h": 2632,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "34px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 1100,
+        "h": 93,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 242,
+        "h": 39,
+        "radius": "0px",
+        "font": "35.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2379,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 392,
+        "h": 139,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 431,
+        "h": 37,
+        "radius": "0px",
+        "font": "35.28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 9503,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 8948,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 257,
+        "h": 84,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 18px"
+      },
+      "h1": {
+        "w": 96,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 82,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 3176,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 108,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 67,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 10605,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 201,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 96,
+        "h": 27,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 840,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 840,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 20.16px"
+      },
+      "content": {
+        "w": 840,
+        "h": 2697,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "20.16px 20.16px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 800,
+        "h": 185,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 173,
+        "h": 28,
+        "radius": "0px",
+        "font": "25.2px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 2765,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 175,
+        "h": 114,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "14px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 320,
+        "h": 29,
+        "radius": "0px",
+        "font": "28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 19543,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 18882,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 176,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 8602,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 107,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 25646,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 198,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 390,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 390,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 390,
+        "h": 3936,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 362,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 171,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 3104,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 140,
+        "h": 114,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "14px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 250,
+        "h": 29,
+        "radius": "0px",
+        "font": "28px",
+        "weight": "600",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/orders",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 19703,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 19042,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": {
+        "w": 141,
+        "h": 76,
+        "radius": "18px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "12px 14px"
+      },
+      "h1": {
+        "w": 94,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/catalogo",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 8849,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 107,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/finance",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 26033,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 198,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 0,
+        "h": 0,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    },
+    {
+      "account": "commerce-lojista",
+      "route": "/merchant/settings",
+      "theme": "commerce",
+      "width": 320,
+      "side": {
+        "w": 0,
+        "h": 0,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "top": {
+        "w": 320,
+        "h": 65,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "10px 14px"
+      },
+      "content": {
+        "w": 320,
+        "h": 4391,
+        "radius": "0px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "16px 14px 96px"
+      },
+      "btn": {
+        "w": 44,
+        "h": 44,
+        "radius": "12px",
+        "font": "14.4px",
+        "weight": "700",
+        "family": "display",
+        "pad": "0px"
+      },
+      "card": {
+        "w": 292,
+        "h": 370,
+        "radius": "22px",
+        "font": "16px",
+        "weight": "400",
+        "family": "display",
+        "pad": "0px"
+      },
+      "kpi": null,
+      "h1": {
+        "w": 171,
+        "h": 27,
+        "radius": "0px",
+        "font": "24.8px",
+        "weight": "800",
+        "family": "display",
+        "pad": "0px"
+      },
+      "pill": {
+        "w": 137,
+        "h": 28,
+        "radius": "999px",
+        "font": "11.84px",
+        "weight": "800",
+        "family": "display",
+        "pad": "5px 11px"
+      }
+    }
+  ],
+  "diffsGeometria": []
+}

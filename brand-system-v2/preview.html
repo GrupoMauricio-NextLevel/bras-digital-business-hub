@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cores NextLevel v2</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box}
+html{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--canvas);color:var(--text-primary)}
+body{margin:0;line-height:1.5}
+.so-escuro{display:none!important}
+[data-theme="dark"] .so-claro{display:none!important}
+[data-theme="dark"] .so-escuro{display:inline-block!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .so-claro{display:none!important}:root:not([data-theme="light"]) .so-escuro{display:inline-block!important}}
+a{color:var(--brand-text)}
+:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+.sem-logo{display:inline-flex;flex-direction:column;line-height:1.15}
+.sem-logo b{font-size:1.05rem;letter-spacing:-.01em}
+.sem-logo small{font-size:.72rem;color:var(--text-secondary);font-weight:600}
+
+.wrap{max-width:1360px;margin:0 auto;padding:24px 20px 64px}
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:28px}
+.top h1{margin:0;font-size:clamp(1.4rem,2.6vw,2rem);letter-spacing:-.02em}
+.top p{margin:4px 0 0;color:var(--text-secondary);max-width:70ch}
+.tema{display:inline-flex;border:1px solid var(--border-strong);border-radius:999px;padding:3px;background:var(--surface)}
+.tema button{border:0;background:transparent;color:var(--text-primary);font:inherit;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer}
+.tema button[aria-pressed="true"]{background:var(--text-primary);color:var(--canvas)}
+h2{font-size:1.25rem;margin:40px 0 6px;letter-spacing:-.01em}
+.lede{color:var(--text-secondary);margin:0 0 18px;max-width:80ch}
+.paletas{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+@media (max-width:1180px){.paletas{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:640px){.paletas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pal-h{display:flex;flex-direction:column;gap:6px;min-height:118px}
+.pal-logo{height:40px;display:flex;align-items:center}
+.pal-logo .mono{height:36px;width:auto}
+.pal-sem{height:34px;padding:0 8px;border:1.5px dashed var(--border-strong);border-radius:8px;display:grid;place-items:center;color:var(--text-secondary);font-size:.7rem;font-weight:700}
+.pal h3{margin:0;font-size:.92rem;line-height:1.2}
+.pal p{margin:0;font-size:.72rem;color:var(--text-secondary);line-height:1.3}
+.status{align-self:flex-start;font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:999px;border:1px solid var(--border-strong)}
+.status.pl{border-style:dashed}
+.sw{height:72px;border-radius:12px;display:flex;align-items:flex-end;padding:8px}
+.sw-n{font-size:.68rem;font-weight:700;background:var(--surface);color:var(--text-primary);padding:2px 7px;border-radius:999px;line-height:1.3}
+.cods{margin:0;display:grid;gap:0;font-size:.7rem}
+.cods dt{color:var(--text-secondary);font-weight:600}.cods dd{margin:0 0 4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.72rem;overflow-wrap:anywhere}
+.esc{display:grid;grid-template-columns:repeat(11,1fr);gap:0;padding:0;margin:0;list-style:none;border-radius:8px;overflow:hidden;height:22px}
+.esc li span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.papeis{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.82rem}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:8px 14px;background:var(--brand-primary);color:var(--brand-on-primary);cursor:pointer}
+.btn:hover{background:var(--brand-hover)}.btn:active{background:var(--brand-active)}
+.btn.foco{outline:3px solid var(--focus-ring);outline-offset:2px}
+.btn-sm{padding:6px 12px;font-size:.85rem}.btn-full{width:100%;padding:12px}
+.btn-2{font:inherit;font-weight:700;border:1.5px solid var(--border-strong);border-radius:10px;padding:7px 14px;background:var(--surface);color:var(--text-primary);cursor:pointer}
+.chip-soft{background:var(--brand-soft);color:var(--brand-on-soft);font-weight:700;padding:5px 10px;border-radius:999px}
+.ind{width:4px;height:26px;border-radius:4px;background:var(--brand-indicator)}
+.logos{display:grid;gap:12px}
+.lrow{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.6fr) 90px 120px;gap:20px;align-items:center}
+.lrow .lg{max-width:100%;height:auto}
+.lrow .c1 .lg{width:min(320px,100%)}.lrow .c2 .lg{width:min(240px,100%)}.lrow .c3 .lg{width:72px}
+.favs{display:flex;gap:10px;align-items:end;font-size:.7rem;color:var(--text-secondary)}
+.favs img{display:block;image-rendering:auto}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+.app{background:var(--canvas);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.app-top{display:flex;gap:10px;align-items:center;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);min-width:0}
+.app-top .btn-sm{flex:none}
+.app-marca{flex:none;min-width:0}.app-marca .wm{height:26px;width:auto}.app-marca .sem-logo b{font-size:.95rem}
+.app-nav{display:flex;gap:2px;margin-left:auto;font-size:.82rem;min-width:0;overflow:hidden}
+.app-nav a{color:var(--text-primary);text-decoration:none;padding:5px 7px;border-radius:8px;font-weight:600;white-space:nowrap}
+.app-nav a[aria-current]{box-shadow:inset 0 -3px 0 var(--brand-indicator)}
+.app-body{display:grid;grid-template-columns:132px 1fr}
+.side{background:var(--surface);border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:2px}
+.it{display:block;padding:7px 10px;border-radius:9px;color:var(--text-primary);text-decoration:none;font-size:.85rem;font-weight:600;position:relative}
+.it.ativo{background:var(--brand-soft);color:var(--brand-on-soft)}
+.it.ativo::before{content:"";position:absolute;left:-8px;top:6px;bottom:6px;width:4px;border-radius:0 4px 4px 0;background:var(--brand-indicator)}
+.main{padding:14px;display:grid;gap:12px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px}
+.card p{margin:0}.card-k{font-size:.78rem;color:var(--text-secondary);font-weight:600}.card-v{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+.sem-row{display:flex;gap:6px;margin:6px 0!important}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;padding:2px 8px 2px 6px;border-radius:999px}
+.badge svg{width:14px;height:14px}
+.s-ok{background:var(--success-soft);color:var(--on-success-soft)}.s-al{background:var(--warning-soft);color:var(--on-warning-soft)}
+.acoes{display:flex;flex-wrap:wrap;gap:8px}
+.checkout{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:grid;gap:8px}
+.co-t{margin:0;font-weight:800}
+.op{display:flex;align-items:center;gap:8px;border:1.5px solid var(--border-strong);border-radius:10px;padding:8px 10px;font-weight:600;font-size:.88rem}
+.op small{color:var(--text-secondary);font-weight:500;margin-left:auto}
+.op.sel{border-color:var(--brand-indicator);background:var(--brand-soft);color:var(--brand-on-soft)}
+.op.sel small{color:var(--brand-on-soft)}
+.radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border-strong);flex:none}
+.radio.on{border:5px solid var(--brand-indicator)}
+.tot{display:flex;justify-content:space-between;margin:2px 0}
+.sems{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.al{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;border:1px solid;font-size:.9rem}
+.al svg{width:20px;height:20px;flex:none;margin-top:1px}
+.al b{display:block}
+.a-ok{background:var(--success-soft);color:var(--on-success-soft);border-color:var(--success-border)}
+.a-al{background:var(--warning-soft);color:var(--on-warning-soft);border-color:var(--warning-border)}
+.a-er{background:var(--danger-soft);color:var(--on-danger-soft);border-color:var(--danger-border)}
+.a-in{background:var(--info-soft);color:var(--on-info-soft);border-color:var(--info-border)}
+.nota{font-size:.85rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:40px;padding-top:16px}
+@media (max-width:760px){.lrow{grid-template-columns:1fr}.apps{grid-template-columns:1fr}.app-body{grid-template-columns:1fr}.side{flex-direction:row;overflow:auto;border-right:0;border-bottom:1px solid var(--border)}.it.ativo::before{display:none}.app-nav{display:none}}
+</style>
+<script>
+(function(){try{var t=localStorage.getItem("nl-preview-tema");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><h1>Cores do ecossistema NextLevel · v2</h1>
+    <p>Sete marcas, uma família: navy e off-white em comum, cor de assinatura própria no raio de cada logo. Proposta para aprovação, sem alterar as logos oficiais.</p></div>
+    <div class="tema" role="group" aria-label="Tema">
+      <button type="button" data-t="light">Claro</button><button type="button" data-t="dark">Escuro</button><button type="button" data-t="">Sistema</button>
+    </div>
+  </header>
+
+  <h2>As sete paletas lado a lado</h2>
+  <p class="lede">Quatro marcas oficiais (logo no kit v1) e três planejadas, identificadas como proposta. Os botões e marcadores abaixo usam os tokens reais de cada marca no tema atual.</p>
+  <div class="paletas">
+<article class="pal" data-brand="nextlevel">
+  <header class="pal-h">
+    <div class="pal-logo"><img class="lg so-claro mono" src="logos/nextlevel/claro/monograma.svg" alt="NextLevel Soluções Digitais"><img class="lg so-escuro mono" src="logos/nextlevel/escuro/monograma.svg" alt="NextLevel Soluções Digitais"></div>
+    <h3>NextLevel Soluções Digitais</h3><p>Marca central do grupo</p>
+  </header>
+  <span class="status of">Oficial</span>
+  <div class="sw" style="background:#F5BC00"><span class="sw-n">Amarelo NextLevel</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#F5BC00</dd><dt>OKLCH</dt><dd>82.4% 0.169 86.5</dd></dl>
+  <ol class="esc" aria-label="Escala Amarelo NextLevel"><li style="background:#FFF8E7" title="50 #FFF8E7"><span>50</span></li><li style="background:#FEEFCA" title="100 #FEEFCA"><span>100</span></li><li style="background:#FDE09B" title="200 #FDE09B"><span>200</span></li><li style="background:#F9CF62" title="300 #F9CF62"><span>300</span></li><li style="background:#F5BC00" title="400 #F5BC00"><span>400</span></li><li style="background:#D69D00" title="500 #D69D00"><span>500</span></li><li style="background:#B67F00" title="600 #B67F00"><span>600</span></li><li style="background:#986400" title="700 #986400"><span>700</span></li><li style="background:#7B4C00" title="800 #7B4C00"><span>800</span></li><li style="background:#603701" title="900 #603701"><span>900</span></li><li style="background:#432200" title="950 #432200"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="commerce">
+  <header class="pal-h">
+    <div class="pal-logo"><img class="lg so-claro mono" src="logos/commerce/claro/monograma.svg" alt="NextLevel Commerce"><img class="lg so-escuro mono" src="logos/commerce/escuro/monograma.svg" alt="NextLevel Commerce"></div>
+    <h3>NextLevel Commerce</h3><p>Motor de catálogo, pedidos e checkout</p>
+  </header>
+  <span class="status of">Oficial</span>
+  <div class="sw" style="background:#2F81F4"><span class="sw-n">Azul Commerce</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#2F81F4</dd><dt>OKLCH</dt><dd>61.6% 0.190 257.9</dd></dl>
+  <ol class="esc" aria-label="Escala Azul Commerce"><li style="background:#F2F7FF" title="50 #F2F7FF"><span>50</span></li><li style="background:#E2EEFF" title="100 #E2EEFF"><span>100</span></li><li style="background:#C5DDFF" title="200 #C5DDFF"><span>200</span></li><li style="background:#A0C6FF" title="300 #A0C6FF"><span>300</span></li><li style="background:#71AAFF" title="400 #71AAFF"><span>400</span></li><li style="background:#2F81F4" title="500 #2F81F4"><span>500</span></li><li style="background:#196BD8" title="600 #196BD8"><span>600</span></li><li style="background:#0E59B9" title="700 #0E59B9"><span>700</span></li><li style="background:#064595" title="800 #064595"><span>800</span></li><li style="background:#043372" title="900 #043372"><span>900</span></li><li style="background:#032350" title="950 #032350"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="superdrop">
+  <header class="pal-h">
+    <div class="pal-logo"><img class="lg so-claro mono" src="logos/superdrop/claro/monograma.svg" alt="SuperDrop"><img class="lg so-escuro mono" src="logos/superdrop/escuro/monograma.svg" alt="SuperDrop"></div>
+    <h3>SuperDrop</h3><p>Distribuição e dropshipping</p>
+  </header>
+  <span class="status of">Oficial</span>
+  <div class="sw" style="background:#2D9E3B"><span class="sw-n">Verde SuperDrop</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#2D9E3B</dd><dt>OKLCH</dt><dd>61.6% 0.171 145.0</dd></dl>
+  <ol class="esc" aria-label="Escala Verde SuperDrop"><li style="background:#F0FAF0" title="50 #F0FAF0"><span>50</span></li><li style="background:#DFF3DF" title="100 #DFF3DF"><span>100</span></li><li style="background:#BEE8BE" title="200 #BEE8BE"><span>200</span></li><li style="background:#92D994" title="300 #92D994"><span>300</span></li><li style="background:#62C268" title="400 #62C268"><span>400</span></li><li style="background:#2D9E3B" title="500 #2D9E3B"><span>500</span></li><li style="background:#118728" title="600 #118728"><span>600</span></li><li style="background:#03721D" title="700 #03721D"><span>700</span></li><li style="background:#005A13" title="800 #005A13"><span>800</span></li><li style="background:#00440C" title="900 #00440C"><span>900</span></li><li style="background:#012F07" title="950 #012F07"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="creators">
+  <header class="pal-h">
+    <div class="pal-logo"><img class="lg so-claro mono" src="logos/creators/claro/monograma.svg" alt="Creators Hub"><img class="lg so-escuro mono" src="logos/creators/escuro/monograma.svg" alt="Creators Hub"></div>
+    <h3>Creators Hub</h3><p>Campanhas, links e comissões dos creators</p>
+  </header>
+  <span class="status of">Oficial</span>
+  <div class="sw" style="background:#D44790"><span class="sw-n">Magenta Creators</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#D44790</dd><dt>OKLCH</dt><dd>61.5% 0.190 352.2</dd></dl>
+  <ol class="esc" aria-label="Escala Magenta Creators"><li style="background:#FFF3F8" title="50 #FFF3F8"><span>50</span></li><li style="background:#FFE5EF" title="100 #FFE5EF"><span>100</span></li><li style="background:#FFC9DF" title="200 #FFC9DF"><span>200</span></li><li style="background:#FFA4CC" title="300 #FFA4CC"><span>300</span></li><li style="background:#F975B5" title="400 #F975B5"><span>400</span></li><li style="background:#D44790" title="500 #D44790"><span>500</span></li><li style="background:#BA327B" title="600 #BA327B"><span>600</span></li><li style="background:#9E2567" title="700 #9E2567"><span>700</span></li><li style="background:#7E1951" title="800 #7E1951"><span>800</span></li><li style="background:#60123D" title="900 #60123D"><span>900</span></li><li style="background:#440B2A" title="950 #440B2A"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="play">
+  <header class="pal-h">
+    <div class="pal-logo"><span class="pal-sem">sem logo</span></div>
+    <h3>NextLevel Play</h3><p>Feed, lives e compras</p>
+  </header>
+  <span class="status pl">Planejada · sem logo oficial</span>
+  <div class="sw" style="background:#A15EDD"><span class="sw-n">Violeta Play</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#A15EDD</dd><dt>OKLCH</dt><dd>61.4% 0.190 305.9</dd></dl>
+  <ol class="esc" aria-label="Escala Violeta Play"><li style="background:#F9F4FF" title="50 #F9F4FF"><span>50</span></li><li style="background:#F2E8FF" title="100 #F2E8FF"><span>100</span></li><li style="background:#E6D0FF" title="200 #E6D0FF"><span>200</span></li><li style="background:#D6B1FF" title="300 #D6B1FF"><span>300</span></li><li style="background:#C588FF" title="400 #C588FF"><span>400</span></li><li style="background:#A15EDD" title="500 #A15EDD"><span>500</span></li><li style="background:#8B4AC3" title="600 #8B4AC3"><span>600</span></li><li style="background:#753CA6" title="700 #753CA6"><span>700</span></li><li style="background:#5D2C85" title="800 #5D2C85"><span>800</span></li><li style="background:#462165" title="900 #462165"><span>900</span></li><li style="background:#301547" title="950 #301547"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="chinahub">
+  <header class="pal-h">
+    <div class="pal-logo"><span class="pal-sem">sem logo</span></div>
+    <h3>China Hub</h3><p>Fornecedores e importadores</p>
+  </header>
+  <span class="status pl">Planejada · sem logo oficial</span>
+  <div class="sw" style="background:#00979D"><span class="sw-n">Jade China Hub</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#00979D</dd><dt>OKLCH</dt><dd>61.5% 0.104 199.8</dd></dl>
+  <ol class="esc" aria-label="Escala Jade China Hub"><li style="background:#EEF9FA" title="50 #EEF9FA"><span>50</span></li><li style="background:#DBF2F3" title="100 #DBF2F3"><span>100</span></li><li style="background:#B5E5E8" title="200 #B5E5E8"><span>200</span></li><li style="background:#7ED5DA" title="300 #7ED5DA"><span>300</span></li><li style="background:#3BBEC5" title="400 #3BBEC5"><span>400</span></li><li style="background:#00979D" title="500 #00979D"><span>500</span></li><li style="background:#008085" title="600 #008085"><span>600</span></li><li style="background:#006B70" title="700 #006B70"><span>700</span></li><li style="background:#005458" title="800 #005458"><span>800</span></li><li style="background:#003F42" title="900 #003F42"><span>900</span></li><li style="background:#002C2E" title="950 #002C2E"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article>
+<article class="pal" data-brand="bras">
+  <header class="pal-h">
+    <div class="pal-logo"><span class="pal-sem">sem logo</span></div>
+    <h3>Brás Digital</h3><p>Ecossistema comercial do Brás</p>
+  </header>
+  <span class="status pl">Planejada · sem logo oficial</span>
+  <div class="sw" style="background:#D35C00"><span class="sw-n">Laranja Brás</span></div>
+  <dl class="cods"><dt>Assinatura</dt><dd>#D35C00</dd><dt>OKLCH</dt><dd>61.5% 0.170 47.1</dd></dl>
+  <ol class="esc" aria-label="Escala Laranja Brás"><li style="background:#FFF4EF" title="50 #FFF4EF"><span>50</span></li><li style="background:#FFE7DC" title="100 #FFE7DC"><span>100</span></li><li style="background:#FFCFB8" title="200 #FFCFB8"><span>200</span></li><li style="background:#FFAE86" title="300 #FFAE86"><span>300</span></li><li style="background:#FB8342" title="400 #FB8342"><span>400</span></li><li style="background:#D35C00" title="500 #D35C00"><span>500</span></li><li style="background:#B34D00" title="600 #B34D00"><span>600</span></li><li style="background:#974000" title="700 #974000"><span>700</span></li><li style="background:#773100" title="800 #773100"><span>800</span></li><li style="background:#5B2300" title="900 #5B2300"><span>900</span></li><li style="background:#411700" title="950 #411700"><span>950</span></li></ol>
+  <div class="papeis">
+    <button class="btn">Botão</button>
+    <span class="chip-soft">Selecionado</span>
+    <span class="ind" aria-hidden="true"></span>
+    <a href="#" onclick="return false">Link da marca</a>
+  </div>
+</article></div>
+
+  <h2>Logos oficiais com a cor de assinatura</h2>
+  <p class="lede">Só o preenchimento do raio mudou; letras, proporções e símbolos são os do kit v1. A versão clara é para fundos claros e a escura para fundos escuros. Os favicons estão em tamanho real (32 e 16 px).</p>
+  <div class="logos">
+    <div class="lrow" data-brand="nextlevel">
+      <div class="c1"><img class="lg so-claro " src="logos/nextlevel/claro/assinatura-completa.svg" alt="NextLevel Soluções Digitais"><img class="lg so-escuro " src="logos/nextlevel/escuro/assinatura-completa.svg" alt="NextLevel Soluções Digitais"></div>
+      <div class="c2"><img class="lg so-claro " src="logos/nextlevel/claro/compacta.svg" alt="NextLevel Soluções Digitais"><img class="lg so-escuro " src="logos/nextlevel/escuro/compacta.svg" alt="NextLevel Soluções Digitais"></div>
+      <div class="c3"><img class="lg so-claro " src="logos/nextlevel/claro/monograma.svg" alt="NextLevel Soluções Digitais"><img class="lg so-escuro " src="logos/nextlevel/escuro/monograma.svg" alt="NextLevel Soluções Digitais"></div>
+      <div class="favs"><span><img class="so-claro" src="favicons/nextlevel/claro/favicon-32x32.png" width="32" height="32" alt=""><img class="so-escuro" src="favicons/nextlevel/escuro/favicon-32x32.png" width="32" height="32" alt="">32</span><span><img class="so-claro" src="favicons/nextlevel/claro/favicon-16x16.png" width="16" height="16" alt=""><img class="so-escuro" src="favicons/nextlevel/escuro/favicon-16x16.png" width="16" height="16" alt="">16</span></div>
+    </div>
+    <div class="lrow" data-brand="commerce">
+      <div class="c1"><img class="lg so-claro " src="logos/commerce/claro/assinatura-completa.svg" alt="NextLevel Commerce"><img class="lg so-escuro " src="logos/commerce/escuro/assinatura-completa.svg" alt="NextLevel Commerce"></div>
+      <div class="c2"><img class="lg so-claro " src="logos/commerce/claro/compacta.svg" alt="NextLevel Commerce"><img class="lg so-escuro " src="logos/commerce/escuro/compacta.svg" alt="NextLevel Commerce"></div>
+      <div class="c3"><img class="lg so-claro " src="logos/commerce/claro/monograma.svg" alt="NextLevel Commerce"><img class="lg so-escuro " src="logos/commerce/escuro/monograma.svg" alt="NextLevel Commerce"></div>
+      <div class="favs"><span><img class="so-claro" src="favicons/commerce/claro/favicon-32x32.png" width="32" height="32" alt=""><img class="so-escuro" src="favicons/commerce/escuro/favicon-32x32.png" width="32" height="32" alt="">32</span><span><img class="so-claro" src="favicons/commerce/claro/favicon-16x16.png" width="16" height="16" alt=""><img class="so-escuro" src="favicons/commerce/escuro/favicon-16x16.png" width="16" height="16" alt="">16</span></div>
+    </div>
+    <div class="lrow" data-brand="superdrop">
+      <div class="c1"><img class="lg so-claro " src="logos/superdrop/claro/assinatura-completa.svg" alt="SuperDrop"><img class="lg so-escuro " src="logos/superdrop/escuro/assinatura-completa.svg" alt="SuperDrop"></div>
+      <div class="c2"><img class="lg so-claro " src="logos/superdrop/claro/compacta.svg" alt="SuperDrop"><img class="lg so-escuro " src="logos/superdrop/escuro/compacta.svg" alt="SuperDrop"></div>
+      <div class="c3"><img class="lg so-claro " src="logos/superdrop/claro/monograma.svg" alt="SuperDrop"><img class="lg so-escuro " src="logos/superdrop/escuro/monograma.svg" alt="SuperDrop"></div>
+      <div class="favs"><span><img class="so-claro" src="favicons/superdrop/claro/favicon-32x32.png" width="32" height="32" alt=""><img class="so-escuro" src="favicons/superdrop/escuro/favicon-32x32.png" width="32" height="32" alt="">32</span><span><img class="so-claro" src="favicons/superdrop/claro/favicon-16x16.png" width="16" height="16" alt=""><img class="so-escuro" src="favicons/superdrop/escuro/favicon-16x16.png" width="16" height="16" alt="">16</span></div>
+    </div>
+    <div class="lrow" data-brand="creators">
+      <div class="c1"><img class="lg so-claro " src="logos/creators/claro/assinatura-completa.svg" alt="Creators Hub"><img class="lg so-escuro " src="logos/creators/escuro/assinatura-completa.svg" alt="Creators Hub"></div>
+      <div class="c2"><img class="lg so-claro " src="logos/creators/claro/compacta.svg" alt="Creators Hub"><img class="lg so-escuro " src="logos/creators/escuro/compacta.svg" alt="Creators Hub"></div>
+      <div class="c3"><img class="lg so-claro " src="logos/creators/claro/monograma.svg" alt="Creators Hub"><img class="lg so-escuro " src="logos/creators/escuro/monograma.svg" alt="Creators Hub"></div>
+      <div class="favs"><span><img class="so-claro" src="favicons/creators/claro/favicon-32x32.png" width="32" height="32" alt=""><img class="so-escuro" src="favicons/creators/escuro/favicon-32x32.png" width="32" height="32" alt="">32</span><span><img class="so-claro" src="favicons/creators/claro/favicon-16x16.png" width="16" height="16" alt=""><img class="so-escuro" src="favicons/creators/escuro/favicon-16x16.png" width="16" height="16" alt="">16</span></div>
+    </div>
+  </div>
+
+  <h2>Na interface: cabeçalho, menu lateral, botão, card e checkout</h2>
+  <p class="lede">Superfícies neutras; a cor de assinatura aparece no botão principal, no item ativo, na seleção do checkout, nos links e no anel de foco.</p>
+  <div class="apps">
+<section class="app" data-brand="nextlevel" aria-label="Interface de exemplo: NextLevel Soluções Digitais">
+  <header class="app-top">
+    <div class="app-marca"><img class="lg so-claro wm" src="logos/nextlevel/claro/compacta.svg" alt="NextLevel Soluções Digitais"><img class="lg so-escuro wm" src="logos/nextlevel/escuro/compacta.svg" alt="NextLevel Soluções Digitais"></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="commerce" aria-label="Interface de exemplo: NextLevel Commerce">
+  <header class="app-top">
+    <div class="app-marca"><img class="lg so-claro wm" src="logos/commerce/claro/compacta.svg" alt="NextLevel Commerce"><img class="lg so-escuro wm" src="logos/commerce/escuro/compacta.svg" alt="NextLevel Commerce"></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="superdrop" aria-label="Interface de exemplo: SuperDrop">
+  <header class="app-top">
+    <div class="app-marca"><img class="lg so-claro wm" src="logos/superdrop/claro/compacta.svg" alt="SuperDrop"><img class="lg so-escuro wm" src="logos/superdrop/escuro/compacta.svg" alt="SuperDrop"></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="creators" aria-label="Interface de exemplo: Creators Hub">
+  <header class="app-top">
+    <div class="app-marca"><img class="lg so-claro wm" src="logos/creators/claro/compacta.svg" alt="Creators Hub"><img class="lg so-escuro wm" src="logos/creators/escuro/compacta.svg" alt="Creators Hub"></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="play" aria-label="Interface de exemplo: NextLevel Play">
+  <header class="app-top">
+    <div class="app-marca"><span class="sem-logo wm"><b>NextLevel Play</b><small>Proposta · sem logo oficial</small></span></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="chinahub" aria-label="Interface de exemplo: China Hub">
+  <header class="app-top">
+    <div class="app-marca"><span class="sem-logo wm"><b>China Hub</b><small>Proposta · sem logo oficial</small></span></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="app" data-brand="bras" aria-label="Interface de exemplo: Brás Digital">
+  <header class="app-top">
+    <div class="app-marca"><span class="sem-logo wm"><b>Brás Digital</b><small>Proposta · sem logo oficial</small></span></div>
+    <nav class="app-nav" aria-label="Exemplo"><a href="#" aria-current="page" onclick="return false">Início</a><a href="#" onclick="return false">Produtos</a><a href="#" onclick="return false">Ajuda</a></nav>
+    <button class="btn btn-sm">Entrar</button>
+  </header>
+  <div class="app-body">
+    <aside class="side" aria-label="Menu de exemplo">
+      <a class="it ativo" href="#" onclick="return false">Painel</a><a class="it" href="#" onclick="return false">Pedidos</a><a class="it" href="#" onclick="return false">Catálogo</a><a class="it" href="#" onclick="return false">Financeiro</a>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <p class="card-k">Vendas da semana</p><p class="card-v">R$ 12.480,00</p>
+        <p class="sem-row"><span class="badge s-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pago</span><span class="badge s-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Aguardando</span></p>
+        <a href="#" onclick="return false">Ver relatório</a>
+      </div>
+      <div class="acoes"><button class="btn">Ação principal</button><button class="btn-2">Secundária</button><button class="btn foco">Foco</button></div>
+      <div class="checkout">
+        <p class="co-t">Pagamento</p>
+        <label class="op sel"><span class="radio on" aria-hidden="true"></span>Pix <small>aprovação na hora</small></label>
+        <label class="op"><span class="radio" aria-hidden="true"></span>Cartão <small>até 6x</small></label>
+        <p class="tot"><span>Total</span><b>R$ 189,90</b></p>
+        <button class="btn btn-full">Pagar com Pix</button>
+      </div>
+    </div>
+  </div>
+</section></div>
+
+  <h2>Cores de estado (iguais em todas as marcas)</h2>
+  <p class="lede">Sucesso, alerta, erro e informação nunca dependem só da cor: sempre têm ícone e texto. Isso evita confusão com o verde do SuperDrop, o azul do Commerce e o amarelo do grupo.</p>
+  <div class="sems">
+    <div class="al a-ok"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Pagamento confirmado</b>Pedido liberado para separação.</div></div>
+    <div class="al a-al"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l8 14H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b>Saldo baixo</b>Recarregue para não travar pedidos.</div></div>
+    <div class="al a-er"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b>Falha no pagamento</b>O cartão foi recusado pelo banco.</div></div>
+    <div class="al a-in"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9v5M10 6v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b>Nova versão do tema</b>Veja o que mudou antes de publicar.</div></div>
+  </div>
+
+  <p class="nota">Arquivos: tokens.css, tokens.json, paletas.json, contrastes.csv. As marcas NextLevel Play, China Hub e Brás Digital ainda não têm logo oficial: aqui aparecem só com o nome em texto e a cor proposta.</p>
+</div>
+<script>
+(function(){var b=document.querySelectorAll(".tema button"),h=document.documentElement;function s(){var t=h.getAttribute("data-theme")||"";b.forEach(function(x){x.setAttribute("aria-pressed",String(x.dataset.t===t))})}
+b.forEach(function(x){x.addEventListener("click",function(){if(x.dataset.t)h.setAttribute("data-theme",x.dataset.t);else h.removeAttribute("data-theme");try{localStorage.setItem("nl-preview-tema",x.dataset.t)}catch(e){}s()})});s()})();
+</script>
+</body>
+</html>
