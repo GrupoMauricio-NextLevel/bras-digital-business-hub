@@ -1,0 +1,705 @@
+{
+  "family": "sport",
+  "name": "Sport",
+  "demoStore": "Linha de Jogo",
+  "themes": [
+    {
+      "key": "lance",
+      "name": "Lance",
+      "level": 1,
+      "release": "review",
+      "priceCents": 0,
+      "pricePending": false
+    },
+    {
+      "key": "torcida",
+      "name": "Torcida",
+      "level": 2,
+      "release": "review",
+      "priceCents": 0,
+      "pricePending": true
+    },
+    {
+      "key": "arena",
+      "name": "Arena",
+      "level": 3,
+      "release": "released",
+      "priceCents": 29900,
+      "pricePending": false
+    },
+    {
+      "key": "podio",
+      "name": "Pódio",
+      "level": 4,
+      "release": "review",
+      "priceCents": 0,
+      "pricePending": true
+    }
+  ],
+  "assets": [
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-hero-1",
+      "position": "Página inicial · Destaque com banners · slide 1",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Assunto à direita (68% / 50% no computador; 50% / 40% no celular)",
+      "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
+      "scene": "Jogador amador de costas, sem rosto reconhecível, com camisa listrada vermelha e preta sem escudo, em campo de grama ao entardecer",
+      "overlayText": "Pronto para o jogo · Ver camisas",
+      "alt": "Jogador com camisa listrada em campo ao entardecer",
+      "file": "/temas/familias/sport/sport-hero-1.webp",
+      "fileMobile": "/temas/familias/sport/sport-hero-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-hero-2",
+      "position": "Página inicial · Destaque com banners · slide 2",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro-direita",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Pessoa correndo em pista de atletismo com regata azul lisa, movimento congelado",
+      "overlayText": "Linha de treino · Ver treino",
+      "alt": "Pessoa correndo com regata azul",
+      "file": "/temas/familias/sport/sport-hero-2.webp",
+      "fileMobile": "/temas/familias/sport/sport-hero-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-hero-3",
+      "position": "Página inicial · Destaque com banners · slide 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Criança chutando bola em quadra, camisa verde listrada sem escudo",
+      "overlayText": "Para os pequenos · Ver infantil",
+      "alt": "Criança chutando bola em quadra",
+      "file": "/temas/familias/sport/sport-hero-3.webp",
+      "fileMobile": "/temas/familias/sport/sport-hero-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-hero-4",
+      "position": "Página inicial · Destaque com banners · slide de campanha agendada",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Camisas lisas e listradas penduradas lado a lado em vestiário de madeira",
+      "overlayText": "Campanha de fim de temporada (agendada) · Ver camisas",
+      "alt": "Camisas penduradas em vestiário",
+      "file": "/temas/familias/sport/sport-hero-4.webp",
+      "fileMobile": "/temas/familias/sport/sport-hero-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-apoio-1",
+      "position": "Página inicial · Dois banners de apoio · esquerda",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre para título e botão",
+      "scene": "Camiseta de treino preta dobrada sobre banco de academia",
+      "overlayText": "Treino · Ver",
+      "alt": "Camiseta de treino preta sobre banco",
+      "file": "/temas/familias/sport/sport-apoio-1.webp",
+      "fileMobile": "/temas/familias/sport/sport-apoio-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-apoio-2",
+      "position": "Página inicial · Dois banners de apoio · direita",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "scene": "Garrafa térmica, meião e mochila sobre grama sintética",
+      "overlayText": "Acessórios · Ver",
+      "alt": "Garrafa, meião e mochila sobre grama",
+      "file": "/temas/familias/sport/sport-apoio-2.webp",
+      "fileMobile": "/temas/familias/sport/sport-apoio-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-faixa-1",
+      "position": "Página inicial · Faixa de campanha",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Assunto à direita (72% / 50%)",
+      "safeArea": "55% à esquerda livres para texto (computador)",
+      "scene": "Detalhe de tecido dry listrado com textura de furinhos, à direita do quadro",
+      "overlayText": "Vista o seu time de amigos · Ver camisas",
+      "alt": "Detalhe de tecido esportivo listrado",
+      "file": "/temas/familias/sport/sport-faixa-1.webp",
+      "fileMobile": "/temas/familias/sport/sport-faixa-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-sobre",
+      "position": "Página inicial · Imagem com texto (sobre a loja)",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Sem texto por cima",
+      "scene": "Mãos amarrando chuteira no gramado",
+      "overlayText": "(texto ao lado da imagem)",
+      "alt": "Mãos amarrando chuteira",
+      "file": "/temas/familias/sport/sport-sobre.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-mosaico-1",
+      "position": "Página inicial · Mosaico de banners · peça grande",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1200,
+          1500
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre para título",
+      "scene": "Time amador abraçado de costas, camisas iguais sem escudo",
+      "overlayText": "Camisas",
+      "alt": "Time amador abraçado de costas",
+      "file": "/temas/familias/sport/sport-mosaico-1.webp",
+      "fileMobile": "/temas/familias/sport/sport-mosaico-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-mosaico-2",
+      "position": "Página inicial · Mosaico de banners · menor 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Pessoa alongando em parque com roupa de treino",
+      "overlayText": "Treino",
+      "alt": "Pessoa alongando no parque",
+      "file": "/temas/familias/sport/sport-mosaico-2.webp",
+      "fileMobile": "/temas/familias/sport/sport-mosaico-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-mosaico-3",
+      "position": "Página inicial · Mosaico de banners · menor 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Garrafa térmica e toalha sobre banco do vestiário",
+      "overlayText": "Acessórios",
+      "alt": "Garrafa e toalha no vestiário",
+      "file": "/temas/familias/sport/sport-mosaico-3.webp",
+      "fileMobile": "/temas/familias/sport/sport-mosaico-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-mosaico-4",
+      "position": "Página inicial · Mosaico 1+4 · menor 3",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Criança com camisa laranja segurando bola",
+      "overlayText": "Infantil",
+      "alt": "Criança segurando bola",
+      "file": "/temas/familias/sport/sport-mosaico-4.webp",
+      "fileMobile": "/temas/familias/sport/sport-mosaico-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-mosaico-5",
+      "position": "Página inicial · Mosaico 1+4 · menor 4",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Par de meiões dobrados sobre a grama",
+      "overlayText": "Meias",
+      "alt": "Meiões dobrados na grama",
+      "file": "/temas/familias/sport/sport-mosaico-5.webp",
+      "fileMobile": "/temas/familias/sport/sport-mosaico-5-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-look-1",
+      "position": "Página inicial · Galeria Em campo · 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo da imagem (fora da foto)",
+      "scene": "Pelada de fim de semana em campo de terra",
+      "overlayText": "(título abaixo)",
+      "alt": "Pelada em campo de terra",
+      "file": "/temas/familias/sport/sport-look-1.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-look-2",
+      "position": "Página inicial · Galeria Em campo · 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Corrida de rua ao amanhecer",
+      "overlayText": "(título abaixo)",
+      "alt": "Corrida de rua ao amanhecer",
+      "file": "/temas/familias/sport/sport-look-2.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-look-3",
+      "position": "Página inicial · Galeria Em campo · 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Treino funcional em academia com camiseta de compressão",
+      "overlayText": "(título abaixo)",
+      "alt": "Treino em academia",
+      "file": "/temas/familias/sport/sport-look-3.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "sport",
+      "palette": "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas",
+      "light": "Luz de fim de tarde em campo aberto ou estúdio com contraste alto",
+      "provisional": null,
+      "id": "sport-look-4",
+      "position": "Página inicial · Galeria Em campo · 4",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Torcida amadora na beira do campo com camisas lisas coloridas",
+      "overlayText": "(título abaixo)",
+      "alt": "Torcida na beira do campo",
+      "file": "/temas/familias/sport/sport-look-4.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    }
+  ],
+  "products": [
+    {
+      "sku": "LJ-01",
+      "name": "Camisa listrada vermelha e preta",
+      "category": "Camisas",
+      "file": "/temas/familias/sport/produtos/LJ-01.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-02",
+      "name": "Camisa lisa verde",
+      "category": "Camisas",
+      "file": "/temas/familias/sport/produtos/LJ-02.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-03",
+      "name": "Camisa tricolor azul, branca e vermelha",
+      "category": "Camisas",
+      "file": "/temas/familias/sport/produtos/LJ-03.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-04",
+      "name": "Camisa de goleiro amarela",
+      "category": "Camisas",
+      "file": "/temas/familias/sport/produtos/LJ-04.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-05",
+      "name": "Camisa retrô branca com gola polo",
+      "category": "Camisas",
+      "file": "/temas/familias/sport/produtos/LJ-05.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-06",
+      "name": "Camiseta de treino preta",
+      "category": "Treino",
+      "file": "/temas/familias/sport/produtos/LJ-06.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-07",
+      "name": "Regata de corrida azul",
+      "category": "Treino",
+      "file": "/temas/familias/sport/produtos/LJ-07.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-08",
+      "name": "Camiseta de compressão cinza",
+      "category": "Treino",
+      "file": "/temas/familias/sport/produtos/LJ-08.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-09",
+      "name": "Camisa infantil listrada verde",
+      "category": "Infantil",
+      "file": "/temas/familias/sport/produtos/LJ-09.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-10",
+      "name": "Camisa infantil lisa laranja",
+      "category": "Infantil",
+      "file": "/temas/familias/sport/produtos/LJ-10.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-11",
+      "name": "Conjunto infantil de treino",
+      "category": "Infantil",
+      "file": "/temas/familias/sport/produtos/LJ-11.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-12",
+      "name": "Meião de futebol",
+      "category": "Acessórios",
+      "file": "/temas/familias/sport/produtos/LJ-12.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-13",
+      "name": "Garrafa térmica 750 ml",
+      "category": "Acessórios",
+      "file": "/temas/familias/sport/produtos/LJ-13.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "LJ-14",
+      "name": "Mochila esportiva",
+      "category": "Acessórios",
+      "file": "/temas/familias/sport/produtos/LJ-14.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    }
+  ]
+}

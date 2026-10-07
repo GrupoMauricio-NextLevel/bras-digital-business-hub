@@ -1,4 +1,5 @@
 import * as React from "react";
+import { preload } from "react-dom";
 import Link from "next/link";
 import { BannerCarousel } from "@/components/storefront/banner-carousel";
 import { BannerVideo } from "@/components/storefront/banner-video";
@@ -23,6 +24,9 @@ export function BannerImage({ s, sizes, priority, className }: { s: S; sizes: st
   const desktop = str(s.image); const mobile = str(s.imageMobile) || desktop;
   const alt = s.decorative === true ? "" : str(s.alt) || str(s.title);
   const vars = { "--fx": `${num(s.focusX, 50)}%`, "--fy": `${num(s.focusY, 50)}%`, "--mx": `${num(s.focusMobileX, 50)}%`, "--my": `${num(s.focusMobileY, 50)}%` } as React.CSSProperties;
+  // A imagem principal (acima da dobra) é pedida já no início do HTML, antes de o navegador montar a página.
+  // Com imagem própria de celular não há como pedir só a certa por aqui; o <picture> escolhe sozinho.
+  if (priority && desktop && mobile === desktop) preload(srcSetOf(desktop) ? `${desktop}?w=1280` : desktop, { as: "image", fetchPriority: "high", imageSrcSet: srcSetOf(desktop), imageSizes: sizes });
   if (!desktop) {
     // Sem imagem enviada: fundo nas cores da loja (nunca foto aleatória). O editor mostra o aviso de imagem pendente.
     return <div aria-hidden className={cn("absolute inset-0", className)} style={{ background: "linear-gradient(135deg, var(--sf-primary), color-mix(in srgb, var(--sf-accent) 55%, var(--sf-primary)))" }} data-banner-empty />;

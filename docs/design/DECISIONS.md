@@ -504,3 +504,14 @@ Pedido do dono (`Prompt-NextLevel.md`, auditoria em `docs/temas-modulares/AUDITO
 - **Verdade comercial:** modelos sem "frete grátis", prazos ou depoimentos inventados; contagem e depoimentos nascem ocultos (A11/A12); preços públicos de uma fonte só (A13).
 - **Preços atuais preservados.** Proposta de preços dos temas novos fica em `docs/temas-modulares/CATALOGO.md` (não aplicada).
 - **Conflito registrado:** skill `tema-pago` ("não comece o tema N+1 sem OK do tema N") passa a valer para liberação comercial, não para desenvolvimento local reversível (proposta; skill não alterada).
+
+## D83 — Famílias de temas sobre um construtor único por nível (2026-10-07)
+Continuação de D82 (`Prompt-NextLevel.md`). Branch `claude/temas-modulares-v1`, sem publicação.
+- **Composição por nível é única** (`presets-familia.ts`); a família entra só com identidade (estilos e textos, `familias-specs.ts`) e os ids de imagem do manifesto. Moda, Casa e Sport com 4 níveis cada; Arena (N3 Sport, à venda) mantém a composição com que foi vendido.
+- **Mesmo catálogo e mesmas imagens em todos os níveis da família** (comparação justa); 14 produtos, 4 categorias, variações e 1 esgotado por família.
+- **Temas novos nascem em revisão** e, se pagos sem preço aprovado, com "preço em definição" (`pricePending`); proposta de preços em `docs/temas-modulares/CATALOGO.md`, não aplicada.
+- **Ninho** (em revisão, sem compradores) passa do catálogo de sofás ao Casa em Ordem.
+- **Imagens**: arquivo final do dono em `public/temas/familias/` substitui a provisória sem mudar código; sem imagem adequada no acervo, banner pendente com fundo nas cores do tema e produto com ilustração neutra (pote, caixa, cesto, frasco, camisa).
+- **Beauty, Conecta e Atacado** ficam para a próxima etapa (checkpoint): basta uma spec, um catálogo e o manifesto.
+- **Desempenho**: meta de nota ≥ 90 e CLS atingidas; LCP 2,7 a 3,3 s no celular simulado (meta 2,5 s) fica pendente, medir de novo com as imagens finais.
+

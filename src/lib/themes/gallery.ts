@@ -21,5 +21,4 @@ export async function publicTheme(db: Database, key: string): Promise<PublicThem
   return { ...info, quote: info.priceCents > 0 ? await themeQuote(db, key) : null, demoReady: !!demo?.showcaseTheme, logo: themeLogo(key) };
 }
 
-/** Imagens de apresentação (capturas das lojas de demonstração), guardadas em public/temas. */
-export const themeShot = (key: string, device: "desktop" | "mobile") => `/temas/${key}-${device}-2.webp`;
+export { themeShot } from "./shots";

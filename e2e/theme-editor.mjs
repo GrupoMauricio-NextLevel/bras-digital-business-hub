@@ -86,8 +86,8 @@ ok("clicar na prévia seleciona a seção");
 await pro.getByRole("button", { name: /Cores, fontes e estilo/ }).click();
 await pro.getByLabel("Cor principal: seletor").waitFor();
 await pro.locator("#style-primary").fill("#7c2d12"); await saved(pro);
-await pro.waitForTimeout(600);
-const primary = await frame.locator(".sf-root").evaluate((e) => getComputedStyle(e).getPropertyValue("--sf-primary").trim());
+const readPrimary = () => frame.locator(".sf-root").evaluate((e) => getComputedStyle(e).getPropertyValue("--sf-primary").trim());
+let primary = await readPrimary(); for (let i = 0; i < 20 && primary !== "#7c2d12"; i++) { await pro.waitForTimeout(500); primary = await readPrimary(); }
 if (primary !== "#7c2d12") fail("cor principal não chegou à prévia: " + primary);
 await pro.getByLabel("Cantos arredondados: valor").fill("4"); await saved(pro);
 ok("estilo global (cor e cantos) na prévia");

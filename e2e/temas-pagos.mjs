@@ -17,7 +17,7 @@ const frame = p.frameLocator("iframe");
 ok(await frame.locator("[data-showcase-banner]").count() === 1, "demonstração mostra o aviso de loja de exemplo");
 await frame.locator('a[href*="/cart"]').first().click().catch(() => {});
 await p.goto(`${base}/store/demo-arena/checkout`, { waitUntil: "load" });
-ok(await p.getByText("Esta é uma loja de demonstração").count() === 1, "checkout da demonstração não vende");
+ok(await p.getByText("Compra de demonstração.").count() === 1, "checkout da demonstração é simulado e não vende");
 await p.goto(`${base}/demo/ninho`, { waitUntil: "load" });
 ok(await p.getByText("Em aprovação").count() >= 1, "link do tema em aprovação funciona e é identificado");
 

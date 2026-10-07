@@ -4,6 +4,7 @@ import { runMigrations } from "@/db/migrate";
 import { bootstrapDatabase } from "@/db/bootstrap-data";
 import { users, themes, plans, services } from "@/db/schema";
 import { verifyPassword } from "@/lib/security/password";
+import { THEME_CATALOG } from "@/lib/themes/catalog";
 
 describe("bootstrap de produção", () => {
   it("cria dados de referência e o master sem dados de demonstração; é idempotente", async () => {
@@ -11,7 +12,9 @@ describe("bootstrap de produção", () => {
     await runMigrations(db);
     const first = await bootstrapDatabase(db, { seedDemo: false, masterEmail: "Admin@NextLevel.com", masterPassword: "senha-bem-longa-123" });
     expect(first.join(" ")).toMatch(/master criado/);
-    expect((await db.select().from(themes)).length).toBe(6);
+    // Todos os temas do catálogo entram no banco; os em revisão ficam indisponíveis para compra.
+    expect((await db.select().from(themes)).length).toBe(THEME_CATALOG.length);
+    expect((await db.select().from(themes)).filter((t) => t.available).map((t) => t.key).sort()).toEqual(THEME_CATALOG.filter((t) => t.release === "released").map((t) => t.key).sort());
     expect((await db.select().from(plans)).length).toBe(3);
     expect((await db.select().from(services)).length).toBe(13);
     // As lojas de demonstração dos temas têm donos desativados (ninguém entra); só o master é um usuário ativo.
@@ -22,7 +25,9 @@ describe("bootstrap de produção", () => {
     expect(verifyPassword("senha-bem-longa-123", all[0]?.passwordHash)).toBe(true);
     await bootstrapDatabase(db, { seedDemo: false, masterEmail: "admin@nextlevel.com", masterPassword: "senha-bem-longa-123" });
     expect((await db.select().from(users)).filter((u) => !u.disabledAt)).toHaveLength(1);
-    expect((await db.select().from(themes)).length).toBe(6);
+    // Todos os temas do catálogo entram no banco; os em revisão ficam indisponíveis para compra.
+    expect((await db.select().from(themes)).length).toBe(THEME_CATALOG.length);
+    expect((await db.select().from(themes)).filter((t) => t.available).map((t) => t.key).sort()).toEqual(THEME_CATALOG.filter((t) => t.release === "released").map((t) => t.key).sort());
   });
   it("rejeita senha de master curta", async () => {
     const { db } = await createDatabase("pglite://memory");

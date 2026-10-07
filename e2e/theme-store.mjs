@@ -32,21 +32,19 @@ if (JSON.stringify(await sectionIds(ap)) !== JSON.stringify(before)) fail("visit
 if (await ap.locator("[data-preview-banner]").count()) fail("visitante viu o aviso de prévia");
 ok("prévia não vaza para o público");
 
-// Comprar (Pix com desconto) → pagar (demo) → o diálogo de instalação abre sozinho
+// Comprar (Pix com desconto) → pagar (demo) → o tema já fica instalado e ativo (instalação automática após o pagamento)
 await p.goto(B + "/merchant/templates", { waitUntil: "networkidle" });
 await p.getByRole("button", { name: /Comprar em até 6x/ }).first().click();
 await p.getByRole("radio", { name: /Pix/ }).click();
 await p.getByRole("button", { name: /Pagar R\$\s*[\d.,]+\s*por Pix/ }).first().click();
 await p.getByRole("button", { name: /Simular pagamento/ }).click();
-await p.waitForSelector("text=Instalar o tema", { timeout: 30000 });
-ok("pagamento confirmado abre a instalação na hora");
-await p.getByRole("button", { name: "Instalar agora" }).click();
 await p.waitForSelector("text=instalado", { timeout: 30000 });
+ok("pagamento confirmado instala o tema sem passo extra");
 {
   ok("compra, pagamento e instalação");
   await ap.goto(`${B}/store/mantos-shop`, { waitUntil: "networkidle" });
   const after = await sectionIds(ap);
-  if (JSON.stringify(after) === JSON.stringify(before)) fail("a loja pública não mudou após instalar");
+  if (JSON.stringify(after) === JSON.stringify(before)) fail("a loja pública não mudou após instalar: " + after.join(","));
   else ok("loja pública usa o tema novo: " + after.join(","));
   await p.goto(B + "/merchant/templates", { waitUntil: "networkidle" });
   if (!(await p.getByText("Tema ativo").count())) fail("sem o selo Tema ativo");
