@@ -11,7 +11,7 @@ import { attachDemoLabelAction } from "@/app/actions/demo";
 
 const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
-/** Anexa a etiqueta (PDF do SuperFrete) a um pedido. Em demonstração, também gera uma etiqueta de exemplo. */
+/** Anexa a etiqueta (PDF do SuperFrete, Melhor Envio ou Onlog) a um pedido. Em demonstração, também gera uma etiqueta de exemplo. */
 export function LabelUploader({ orderId, hasLabel = false, primary = false, size }: { orderId: string; hasLabel?: boolean; primary?: boolean; size?: "sm" | "md" | "lg" }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -24,7 +24,7 @@ export function LabelUploader({ orderId, hasLabel = false, primary = false, size
         <Tag /> {hasLabel ? "Anexar outra etiqueta" : "Anexar etiqueta (PDF)"}
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent title="Anexar etiqueta de envio" description="Envie o PDF gerado no SuperFrete (máx. 3 MB, até 5 arquivos por pedido). A Central imprime a etiqueta na expedição.">
+        <DialogContent title="Anexar etiqueta de envio" description="Envie o PDF gerado na sua plataforma de envio: SuperFrete, Melhor Envio ou Onlog (máx. 3 MB, até 5 arquivos por pedido). A Central imprime a etiqueta na expedição.">
           <form
             className="space-y-4"
             onSubmit={async (e) => {

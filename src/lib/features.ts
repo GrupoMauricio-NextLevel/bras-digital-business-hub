@@ -35,7 +35,7 @@ export const FEATURE_INFO: Record<FeatureKey, { label: string; pitch: string }> 
   manualOrders: { label: "Pedidos manuais", pitch: "Venda por WhatsApp, Instagram ou balcão usando o estoque central." },
   catalog: { label: "Catálogo da Central", pitch: "Ative produtos e defina seu preço com margem calculada." },
   wallet: { label: "Saldo e recarga Pix", pitch: "Recarregue por Pix e tenha pedidos liberados automaticamente." },
-  labels: { label: "Etiquetas de envio", pitch: "Anexe a etiqueta do SuperFrete para a Central despachar." },
+  labels: { label: "Etiquetas de envio", pitch: "Anexe a etiqueta da sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) para a Central despachar." },
   customers: { label: "Clientes", pitch: "Histórico de compras e consentimentos de marketing." },
   financeBasic: { label: "Financeiro simples", pitch: "Saldo, extrato e recargas em um só lugar." },
   services: { label: "Loja NextLevel", pitch: "Serviços e upgrades para acelerar seu negócio." },

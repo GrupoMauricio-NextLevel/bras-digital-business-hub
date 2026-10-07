@@ -529,3 +529,12 @@ Pedido do dono: "faz o Beauty e Conecta" e, sobre Atacado: "não é o módulo de
 - Ilustrações novas de produto: celular e fone. Banners pendentes (cores do tema) até as imagens do dono; manifestos e prompt atualizados.
 - O seletor de variação da página do produto passa a se chamar pelo que as variações são (`src/lib/variant-label.ts`): "Tamanho" para grades de roupa e calçado (igual a antes, SuperDrop não muda), "Caixa" para "Cx 12" e "Opção" para cor, modelo ou tela. O aviso "Tamanho esgotado? Avise-me" continua com o texto antigo (pendência pequena).
 
+
+
+## D87 — Onlog como plataforma de envio (2026-10-07)
+Pedido do dono (urgência no SuperDrop): fornecedor e lojista podem escolher a Onlog nas plataformas de envio, só com a credencial, como na wBuy.
+- A Onlog entra ao lado de SuperFrete e Melhor Envio: mesmo cartão (fornecedor e lojista de conta simples), credencial guardada criptografada (`encryptSecret`), conferida na própria Onlog antes de conectar.
+- Endereço e formato vêm do código do plugin oficial "Frete Onlog" para WooCommerce (WordPress.org, arquivado): `https://apponlog.com.br/apiwoocommerce`, credencial em `Authorization: Bearer`, conferência em `POST /frete/disponibilidade`, cotação em `POST /frete/valores` com `{ frete: { cepori, cepdes, cartTotal, produtos } }` e resposta `{ data: [{ id, name, text_label, price }] }`. **Precisa validar com credencial real** (como SuperFrete e Melhor Envio); base trocável por `SHIPPING_ONLOG_BASE`. Se a Onlog falhar, o checkout cai na entrega padrão da loja (regra já existente).
+- "Valor fixo adicional" da wBuy = "Acréscimo fixo sobre a cotação" que a loja já tem nas regras de frete. "Estados permitidos (UF)" não foi feito nesta rodada.
+- Textos de etiqueta passam a citar SuperFrete, Melhor Envio ou Onlog. Teste: `tests/shipping.test.ts` (2 novos) e `e2e/onlog.mjs`.
+

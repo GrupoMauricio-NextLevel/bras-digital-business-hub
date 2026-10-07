@@ -16,7 +16,7 @@ export default async function LabelsPage() {
   const independent = await isIndependentStore(await getDb(), session.store?.id);
   return (
     <>
-      <PageHeader title="Etiquetas" description={independent ? "Gere a etiqueta no SuperFrete e anexe o PDF (máx. 3 MB). Com a etiqueta anexada, o pedido fica pronto para você separar e enviar." : "Gere a etiqueta no SuperFrete e anexe o PDF (máx. 3 MB). Com a etiqueta anexada e o saldo debitado, o pedido entra na fila de expedição da Central."} />
+      <PageHeader title="Etiquetas" description={independent ? "Gere a etiqueta na sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) e anexe o PDF (máx. 3 MB). Com a etiqueta anexada, o pedido fica pronto para você separar e enviar." : "Gere a etiqueta na sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) e anexe o PDF (máx. 3 MB). Com a etiqueta anexada e o saldo debitado, o pedido entra na fila de expedição da Central."} />
       <DataTable
         rows={rows}
         rowKey={(r) => r.order.id}

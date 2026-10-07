@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 const STEPS = [
   { icon: Package, title: "Escolha o catálogo", text: "Ative os produtos que quer vender e defina o seu preço." },
   { icon: Wallet, title: "Recarregue por Pix", text: "O custo de cada pedido é debitado do seu saldo." },
-  { icon: Printer, title: "Anexe a etiqueta", text: "Gere no SuperFrete e envie o PDF. A Central separa e despacha." },
+  { icon: Printer, title: "Anexe a etiqueta", text: "Gere na sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) e envie o PDF. A Central separa e despacha." },
   { icon: Store, title: "Venda e acompanhe", text: "Loja online, pós-venda e financeiro em um só painel." },
 ];
 

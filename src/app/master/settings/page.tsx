@@ -73,7 +73,7 @@ export default async function SettingsPage() {
         <Card>
           <CardHeader><div><CardTitle>Integrações</CardTitle><CardDescription>Adapters preparados, sem integração real no MVP.</CardDescription></div></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            {["Mercado Pago", "Melhor Envio", "SuperFrete", "WhatsApp Business", "Meta / Instagram"].map((i) => <div key={i} className="flex justify-between"><span>{i}</span><Badge tone="outline">Não conectado</Badge></div>)}
+            {["Mercado Pago", "Melhor Envio", "SuperFrete", "Onlog", "WhatsApp Business", "Meta / Instagram"].map((i) => <div key={i} className="flex justify-between"><span>{i}</span><Badge tone="outline">Não conectado</Badge></div>)}
           </CardContent>
         </Card>
         <Card>

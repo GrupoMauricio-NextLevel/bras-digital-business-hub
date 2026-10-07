@@ -26,7 +26,7 @@ async function loadOrder(db: Database, actor: Actor, orderId: string) {
   return order;
 }
 
-/** Lojista anexa a etiqueta (PDF do SuperFrete). Valida assinatura, tamanho, limite por pedido e duplicidade. */
+/** Lojista anexa a etiqueta (PDF da plataforma de envio). Valida assinatura, tamanho, limite por pedido e duplicidade. */
 export async function addLabelFile(db: Database, actor: Actor, orderId: string, file: { filename: string; bytes: Uint8Array }) {
   if (actor.role !== "STORE_OWNER") throw new ForbiddenError("Apenas o lojista anexa a etiqueta.");
   const order = await loadOrder(db, actor, orderId);
@@ -34,7 +34,7 @@ export async function addLabelFile(db: Database, actor: Actor, orderId: string, 
   if (["SHIPPED", "DELIVERED"].includes(order.status)) throw new DomainError("ORDER_SHIPPED", "Pedido já enviado.");
   if (file.bytes.length === 0) throw new DomainError("EMPTY_FILE", "Arquivo vazio.");
   if (file.bytes.length > MAX_LABEL_BYTES) throw new DomainError("FILE_TOO_LARGE", "A etiqueta deve ter no máximo 3 MB.");
-  if (!isPdf(file.bytes)) throw new DomainError("NOT_PDF", "Envie a etiqueta em PDF (arquivo do SuperFrete).");
+  if (!isPdf(file.bytes)) throw new DomainError("NOT_PDF", "Envie a etiqueta em PDF (arquivo da plataforma de envio).");
   const sha256 = createHash("sha256").update(file.bytes).digest("hex");
   return db.transaction(async (tx) => {
     const existing = await tx.select({ id: orderLabelFiles.id, sha256: orderLabelFiles.sha256 }).from(orderLabelFiles).where(eq(orderLabelFiles.orderId, orderId));

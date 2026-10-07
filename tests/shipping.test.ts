@@ -4,7 +4,8 @@ import { freshDb } from "./setup";
 import { stores, suppliers } from "@/db/schema";
 import { listStoreCatalog } from "@/lib/domain/catalog";
 import { encryptSecret } from "@/lib/security/crypto";
-import { melhorEnvioProvider, parcelFor, parseShippingConfig, quoteShipping, resolveShipping, superFreteProvider } from "@/lib/shipping/quote";
+import { melhorEnvioProvider, onlogProvider, parcelFor, parseShippingConfig, quoteShipping, resolveShipping, superFreteProvider } from "@/lib/shipping/quote";
+import { SHIPPING_PROVIDER_KEYS, verifyShippingToken } from "@/lib/shipping/providers";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
@@ -14,7 +15,7 @@ async function cart() {
   const item = (await listStoreCatalog(ctx.db, ctx.seed.stores.mantos.id)).find((i) => i.variants.length && i.variants[0]!.level.available > 2)!;
   return { item, items: [{ productId: item.product.id, variantId: item.variants[0]!.id, quantity: 1 }] };
 }
-async function connect(provider: "MELHOR_ENVIO" | "SUPERFRETE" = "SUPERFRETE") {
+async function connect(provider: "MELHOR_ENVIO" | "SUPERFRETE" | "ONLOG" = "SUPERFRETE") {
   await ctx.db.update(suppliers).set({ shippingProvider: provider, shippingStatus: "CONNECTED", shippingTokenEnc: encryptSecret("token-de-teste-1234567890"), shippingOriginZip: "01001000" }).where(eq(suppliers.id, ctx.seed.supplierId));
 }
 const setCfg = (cfg: Record<string, unknown>) => ctx.db.update(stores).set({ shippingConfig: cfg }).where(eq(stores.id, ctx.seed.stores.mantos.id));
@@ -49,6 +50,28 @@ describe("cotação de frete", () => {
     expect(q.options.map((o) => [o.name, o.priceCents, o.days])).toEqual([["SuperFrete PAC", 2390, 7], ["SuperFrete SEDEX", 4250, 3]]);
     const sent = JSON.parse(calls[0]!.body);
     expect(sent.from.postal_code).toBe("01001000"); expect(sent.to.postal_code).toBe("20040020"); expect(sent.package.weight).toBeGreaterThan(0);
+  });
+  it("Onlog: envia CEPs, total e embalagem no formato da Onlog e lê os serviços (credencial no cabeçalho)", async () => {
+    await connect("ONLOG"); await setCfg({ freeFromCents: null, markupCents: 0, handlingDays: 1 });
+    const { items } = await cart();
+    const calls: { url: string; body: string; auth: string }[] = [];
+    const fetchImpl = (async (url: string, init: RequestInit) => { calls.push({ url: String(url), body: String(init.body), auth: String((init.headers as Record<string, string>).Authorization) }); return json({ data: [{ id: 7, name: "SEDEX", text_label: "SEDEX", price: 38.4, prazo: 2 }, { id: 8, name: "PAC", text_label: "PAC", price: "19,90" }, { id: 9, name: "X", text_label: "Sem preço" }] }); }) as unknown as typeof fetch;
+    const q = await quoteShipping(ctx.db, { storeId: ctx.seed.stores.mantos.id, toZip: "20040-020", items }, fetchImpl);
+    expect(calls[0]!.url).toBe("https://apponlog.com.br/apiwoocommerce/frete/valores");
+    expect(calls[0]!.auth).toBe("Bearer token-de-teste-1234567890");
+    const sent = JSON.parse(calls[0]!.body);
+    expect(sent.frete).toMatchObject({ cepori: "01001000", cepdes: "20040020" }); expect(sent.frete.produtos[0].weight).toBeGreaterThan(0); expect(sent.frete.cartTotal).toBeGreaterThan(0);
+    expect(q.options.filter((o) => o.kind === "CARRIER").map((o) => [o.name, o.priceCents, o.days])).toEqual([["PAC", 1990, null], ["SEDEX", 3840, 3]]);
+  });
+  it("Onlog aparece como plataforma e a credencial é conferida na Onlog (recusada → mensagem clara)", async () => {
+    expect(SHIPPING_PROVIDER_KEYS).toContain("ONLOG");
+    let method = "";
+    const ok = (async (_u: string, init: RequestInit) => { method = String(init.method); return json([{ id: 1 }]); }) as unknown as typeof fetch;
+    expect(await verifyShippingToken("ONLOG", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.x.y", ok)).toEqual({ account: "credencial Onlog" });
+    expect(method).toBe("POST");
+    const denied = (async () => json({ message: "Unauthorized" }, 401)) as unknown as typeof fetch;
+    await expect(verifyShippingToken("ONLOG", "credencial-errada-123456789", denied)).rejects.toThrow(/Onlog recusou/);
+    expect(onlogProvider("t").key).toBe("ONLOG");
   });
   it("Melhor Envio: usa o preço da conta e ignora serviços com erro", async () => {
     const p = melhorEnvioProvider("tk", (async () => json([{ id: 1, name: "PAC", price: "30.00", custom_price: "25.50", delivery_time: 5, company: { name: "Correios" } }, { id: 3, name: ".Package", error: "indisponível", company: { name: "Jadlog" } }])) as typeof fetch);

@@ -7,11 +7,11 @@ import { listStoreCatalog } from "@/lib/domain/catalog";
 import { decryptSecret } from "@/lib/security/crypto";
 import type { FetchLike } from "@/lib/payments/mercadopago";
 import { timeoutSignal } from "@/lib/http-timeout";
-import { ShippingError, type ShippingProviderKey } from "./providers";
+import { ONLOG_BASE, ShippingError, type ShippingProviderKey } from "./providers";
 
 /**
  * Cotação de frete (P1). O servidor sempre recalcula o frete: o valor enviado pelo navegador nunca vale.
- * Provedores (SuperFrete, Melhor Envio) ficam atrás da mesma interface; sem provedor conectado, ou se ele falhar,
+ * Provedores (SuperFrete, Melhor Envio, Onlog) ficam atrás da mesma interface; sem provedor conectado, ou se ele falhar,
  * vale a tabela da loja (`shippingConfig`), para o cliente nunca ficar sem opção de entrega.
  */
 export type ShippingQuote = { serviceId: string; carrier: string; name: string; priceCents: number; days: number | null; kind: "CARRIER" | "TABLE" | "PICKUP" };
@@ -92,6 +92,30 @@ export function superFreteProvider(token: string, fetchImpl: FetchLike = fetch, 
   };
 }
 
+/**
+ * Onlog (PRECISA VALIDAR com credencial real): POST /frete/valores com { frete: { cepori, cepdes, cartTotal, produtos } },
+ * resposta { data: [{ id, name, text_label, price, prazo? }] }, formato do plugin oficial para WooCommerce. Mandamos o
+ * pedido como uma embalagem (mesma regra das outras plataformas); peso em kg e valores em reais, como a Onlog espera.
+ */
+export function onlogProvider(token: string, fetchImpl: FetchLike = fetch, base = ONLOG_BASE): ShippingProvider {
+  return {
+    key: "ONLOG",
+    async quote(req) {
+      const total = req.parcel.insuranceCents / 100;
+      const res = await fetchImpl(`${base}/frete/valores`, {
+        method: "POST", signal: timeoutSignal(),
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
+        body: JSON.stringify({ frete: { cepori: req.fromZip, cepdes: req.toZip, cartTotal: total, produtos: [{ height: req.parcel.heightCm, width: req.parcel.widthCm, length: req.parcel.lengthCm, weight: Math.max(0.01, req.parcel.weightG / 1000), quantity: 1, price: total }] } }),
+      });
+      if (!res.ok) throw new ShippingError(`Onlog respondeu ${res.status}`);
+      const body = (await res.json().catch(() => ({}))) as { data?: { id?: number | string; name?: string; text_label?: string; price?: unknown; prazo?: unknown; days?: unknown; delivery_time?: unknown }[] };
+      return (Array.isArray(body.data) ? body.data : []).filter((r) => num(r.price) !== null).map((r) => ({
+        serviceId: `ON:${r.id ?? r.name}`, carrier: "Onlog", name: (r.text_label || r.name || "Onlog").trim(), priceCents: Math.round(num(r.price)! * 100), days: num(r.prazo ?? r.days ?? r.delivery_time),
+      }));
+    },
+  };
+}
+
 /** Uma embalagem por pedido: soma pesos, empilha alturas e usa a maior largura e comprimento (simples e conservador). */
 export function parcelFor(items: { quantity: number; weightG: number; lengthCm: number; widthCm: number; heightCm: number; valueCents: number }[]): QuoteParcel {
   let weightG = 0, lengthCm = 1, widthCm = 1, heightCm = 0, insuranceCents = 0;
@@ -133,7 +157,7 @@ async function providerFor(db: Database, storeId: string, fetchImpl: FetchLike):
   if (!r || r.s !== "CONNECTED" || !r.t) return null;
   const token = decryptSecret(r.t);
   if (!token) return null;
-  return r.p === "MELHOR_ENVIO" ? melhorEnvioProvider(token, fetchImpl) : r.p === "SUPERFRETE" ? superFreteProvider(token, fetchImpl) : null;
+  return r.p === "MELHOR_ENVIO" ? melhorEnvioProvider(token, fetchImpl) : r.p === "SUPERFRETE" ? superFreteProvider(token, fetchImpl) : r.p === "ONLOG" ? onlogProvider(token, fetchImpl) : null;
 }
 
 export type QuoteResult = { options: ShippingQuote[]; degraded: boolean; subtotalCents: number; freeApplied: boolean };

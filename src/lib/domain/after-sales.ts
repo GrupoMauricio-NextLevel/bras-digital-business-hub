@@ -11,7 +11,7 @@ export const STAGE_ORDER: AfterSalesStage[] = ["AWAITING_CUSTOMER", "AWAITING_FU
 export const STAGE_LABEL: Record<AfterSalesStage, { title: string; hint: string }> = {
   AWAITING_CUSTOMER: { title: "Cliente ainda não pagou", hint: "Cobre o cliente pelo WhatsApp" },
   AWAITING_FUNDS: { title: "Aguardando recarga", hint: "Recarregue o saldo para liberar" },
-  AWAITING_LABEL: { title: "Falta a etiqueta", hint: "Anexe o PDF do SuperFrete" },
+  AWAITING_LABEL: { title: "Falta a etiqueta", hint: "Anexe o PDF da etiqueta" },
   IN_DISPATCH: { title: "Na Central", hint: "Separação e conferência" },
   IN_TRANSIT: { title: "A caminho do cliente", hint: "Enviado, acompanhe a entrega" },
   DELIVERED: { title: "Entregues (14 dias)", hint: "Peça uma avaliação" },
