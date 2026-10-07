@@ -23,7 +23,7 @@ const srcSetOf = (src: string) => (/^\/assets\/ast_[a-z0-9]+$/i.test(src) ? ASSE
  */
 export function BannerImage({ s, sizes, priority, className }: { s: S; sizes: string; priority: boolean; className?: string }) {
   const desktop = str(s.image); const mobile = str(s.imageMobile) || desktop;
-  const alt = s.decorative === true ? "" : str(s.alt) || str(s.title);
+  const alt = s.decorative === true ? "" : (str(s.alt) || str(s.title)).replace(/\*/g, "");
   const vars = { "--fx": `${num(s.focusX, 50)}%`, "--fy": `${num(s.focusY, 50)}%`, "--mx": `${num(s.focusMobileX, 50)}%`, "--my": `${num(s.focusMobileY, 50)}%` } as React.CSSProperties;
   // A imagem principal (acima da dobra) é pedida já no início do HTML, antes de o navegador montar a página.
   // Com imagem própria de celular não há como pedir só a certa por aqui; o <picture> escolhe sozinho.
@@ -47,6 +47,15 @@ export function BannerImage({ s, sizes, priority, className }: { s: S; sizes: st
   );
 }
 
+/**
+ * Título com destaque: a palavra entre asteriscos (*cidade*) ganha a cor de destaque e itálico. O resto é texto puro
+ * (nada de HTML vindo do lojista).
+ */
+export function Emph({ text }: { text: string }) {
+  const parts = text.split(/\*([^*]+)\*/g);
+  return <>{parts.map((p, k) => (k % 2 ? <em key={k} className="italic" style={{ color: "color-mix(in srgb, var(--sf-accent) 80%, currentColor)" }}>{p}</em> : <React.Fragment key={k}>{p}</React.Fragment>))}</>;
+}
+
 const ALIGN: Record<string, string> = { left: "items-start text-left", center: "items-center text-center", right: "items-end text-right" };
 /**
  * Links de banner não são pré-carregados: a seleção de campanha (/catalog?produtos=…) deixava a conexão de pré-carga
@@ -61,7 +70,7 @@ function Overlay({ s, ctx, heading, compact = false }: { s: S; ctx: SectionProps
     <>
       <div aria-hidden className="absolute inset-0" style={{ background: light ? `linear-gradient(to top, rgba(0,0,0,${num(s.overlay, 30) / 100 + 0.15}), rgba(0,0,0,${num(s.overlay, 30) / 100 * 0.6}))` : `rgba(255,255,255,${num(s.overlay, 30) / 100})` }} />
       <div className={cn("relative z-10 flex h-full w-full flex-col justify-end gap-2", compact ? "p-4 sm:p-5" : "mx-auto max-w-6xl px-5 py-8 sm:px-10 sm:py-12", ALIGN[str(s.align)] ?? ALIGN.left, light ? "sf-on-image text-white" : "text-neutral-950")}>
-        {title ? <H className={cn("max-w-[34rem] font-semibold tracking-tight", compact ? "text-lg sm:text-xl" : "text-3xl leading-tight sm:text-5xl")}>{title}</H> : null}
+        {title ? <H className={cn("max-w-[34rem] font-semibold tracking-tight", compact ? "text-lg sm:text-xl" : "text-3xl leading-tight sm:text-5xl")}><Emph text={title} /></H> : null}
         {sub ? <p className={cn("max-w-[30rem] opacity-90", compact ? "text-sm" : "text-base sm:text-lg")}>{sub}</p> : null}
         {cta ? <Link href={href} prefetch={false} className={cn("sf-btn mt-1 inline-flex items-center rounded-lg font-medium transition hover:brightness-95", compact ? "h-10 px-4 text-sm" : "h-12 px-6 text-sm")} style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{cta}</Link> : null}
       </div>
@@ -99,7 +108,7 @@ export function HeroBanner({ id, settings, blocks, ctx }: SectionProps) {
     </div>
   );
   const wrap = cn("mt-0 overflow-hidden", fw ? "relative left-1/2 w-screen -translate-x-1/2" : "mt-6 rounded-[var(--sf-radius,16px)]");
-  if (live.length === 1) return <section className={wrap} aria-label={str(live[0]!.settings.title) || "Destaque"} data-banner-position="hero">{slide(live[0]!, 0)}</section>;
+  if (live.length === 1) return <section className={wrap} aria-label={str(live[0]!.settings.title).replace(/\*/g, "") || "Destaque"} data-banner-position="hero">{slide(live[0]!, 0)}</section>;
   return <div className={wrap} data-banner-position="hero"><BannerCarousel slides={live.map(slide)} autoplay={settings.autoplay === true} seconds={num(settings.interval, 6)} /></div>;
 }
 
@@ -120,7 +129,7 @@ const STRIP_RATIO: Record<string, string> = { sm: "md:aspect-[4/1]", md: "md:asp
 export function BannerStrip({ settings, blocks, ctx }: SectionProps) {
   const b = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId })[0];
   if (!b || (!showable(b, ctx.editing) && !str(b.settings.title))) return null;
-  return <section aria-label={str(b.settings.title) || "Campanha"} className="mt-8" data-banner-position="strip"><Tile s={b.settings} ctx={ctx} className={cn("aspect-[3/2] rounded-[var(--sf-radius,16px)]", STRIP_RATIO[str(settings.height)] ?? STRIP_RATIO.sm)}><BannerImage s={b.settings} sizes="100vw" priority={false} /><Overlay s={b.settings} ctx={ctx} heading="h2" compact /></Tile></section>;
+  return <section aria-label={str(b.settings.title).replace(/\*/g, "") || "Campanha"} className="mt-8" data-banner-position="strip"><Tile s={b.settings} ctx={ctx} className={cn("aspect-[3/2] rounded-[var(--sf-radius,16px)]", STRIP_RATIO[str(settings.height)] ?? STRIP_RATIO.sm)}><BannerImage s={b.settings} sizes="100vw" priority={false} /><Overlay s={b.settings} ctx={ctx} heading="h2" compact /></Tile></section>;
 }
 
 /** Mosaico (N3+): uma peça grande e menores, em grade assimétrica. */

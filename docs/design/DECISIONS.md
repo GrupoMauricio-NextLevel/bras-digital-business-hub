@@ -548,3 +548,16 @@ Pedido do dono (urgência no SuperDrop): fornecedor e lojista podem escolher a O
 - "Valor fixo adicional" da wBuy = "Acréscimo fixo sobre a cotação" que a loja já tem nas regras de frete. "Estados permitidos (UF)" não foi feito nesta rodada.
 - Textos de etiqueta passam a citar SuperFrete, Melhor Envio ou Onlog. Teste: `tests/shipping.test.ts` (2 novos) e `e2e/onlog.mjs`.
 
+
+## D88 — Banners que organizam a navegação (2026-10-07)
+Pedido do dono: faltava o grupo de banners que guia o cliente pela loja (hero moderno nos temas caros, categorias, novidades, ofertas). Prompt de imagens: `docs/prompts/banners-navegacao-temas-gpt.md`.
+- **Cinco seções novas** (todas com texto escrito pelo sistema, nunca na imagem; palavra entre asteriscos ganha destaque):
+  - `hero-layers` (N3, `hero.layers`): fundo + produto recortado que acompanha mouse e rolagem só com `transform`; imagem própria do celular; sem movimento para quem pediu menos movimento.
+  - `hero-immersive` (N4, `hero.immersive`): fundo, recorte e primeiro plano em velocidades diferentes, até 3 quadros e 3 textos trocados pela rolagem (seção presa na tela). Sem JavaScript ou com menos movimento: um quadro parado com o último texto e o botão.
+  - `nav-cards` (N2: 2 cartões; N3/N4: 4): Novidades, Ofertas, Mais vendidos, Kits; no Atacado, "Como comprar" leva às perguntas frequentes (`#perguntas`).
+  - `category-banner` (N3, `navigation.categoryBanner`): faixa no topo da página de cada categoria (por id ou endereço da categoria) e uma geral para "todos os produtos".
+  - `welcome-coupon` (N2, `marketing.welcomeCoupon`): janela de boas-vindas que só aparece se o cupom configurado existe e vale agora; o código não vai para a página, é entregue pela ação com e-mail **e consentimento** (gravado em `marketing_consents`, origem `WELCOME_COUPON`, cliente com etiqueta `cupom-boas-vindas`, sem duplicar); uma vez por visitante; limite por IP. Loja de demonstração mostra o código sem guardar contato.
+- **Temas das famílias**: N2 ganha cartões e cupom; N3 abre com o destaque em camadas (campanhas viram carrossel mais abaixo), ganha categorias com imagem, 4 cartões e banner por categoria; N4 abre com o destaque imersivo (campanhas e a agendada num carrossel abaixo), 4 cartões e banner por categoria. N1 continua simples. Sport N3 (Arena) mantém o destaque próprio. Textos por nível em `src/lib/themes/familias-banners.ts` (escada: N2 benefício, N3 editorial, N4 voz de marca); microtextos de confiança ficam vazios para o lojista escrever só o que cumpre.
+- **Sem imagem própria**, camadas e imersivo usam a foto do destaque principal (nunca um bloco vazio). Lojas de demonstração ganham o cupom `BEMVINDO10` (10%).
+- **Imagens do dono**: `npx tsx scripts/importar-banners.ts <pasta>` converte `<loja>__<nome>.png` para WebP + AVIF em `public/demos/<loja>/v1/banners/`; as demonstrações usam sozinhas o que existir (`showcase.ts → bannerMedia`), preenchendo também destaque, apoio e faixa das lojas sem campanhas no pacote.
+- Testes: `tests/banners-navegacao.test.tsx` (níveis, presets, desenho, cupom) e `e2e/banners-navegacao.mjs` (360/768/1440, passos na rolagem, janela do cupom, sem rolagem horizontal, axe).

@@ -9,6 +9,7 @@
  */
 import type { ThemeFamily, ThemeLevel } from "./levels";
 import { packageOf } from "./pacotes";
+import { slugify } from "@/lib/ids";
 
 /** `photo` é a foto principal; `photos` todas as fotos existentes no pacote (a principal primeiro), sem preencher lacunas. */
 export type DemoProduct = { name: string; sku: string; price: number; photo: string; photos: string[]; category: string; featured?: boolean; variants: string[]; soldOut?: boolean; description: string };
@@ -192,7 +193,29 @@ function productsOf(family: ThemeFamily): DemoProduct[] {
     return { name: x.name, sku: x.sku, price: x.priceCents, photo: photos[0] ?? "", photos, category: x.category, featured: featured.has(x.sku), variants: x.sizes?.length ? x.sizes : ["Único"], soldOut: x.inventoryDemo <= 0, description: x.description };
   });
 }
-const demo = (family: ThemeFamily, tagline: string, assets: FamilyAsset[]): FamilyDemo => ({ family, storeName: packageOf(family)?.store ?? "", tagline, products: productsOf(family), assets, menu: [] });
+/**
+ * Posições dos banners de navegação (D88), iguais em todas as famílias: destaque em camadas (N3), imersivo (N4),
+ * cartões, banner por categoria e cupom. Arquivos em /demos/<loja>/v1/banners/ (scripts/importar-banners.ts);
+ * cena e texto de cada uma em docs/prompts/banners-navegacao-temas-gpt.md.
+ */
+const PORTRAIT = { desktop: { ratio: "4:5", size: [1080, 1350] as [number, number] } };
+function navigationAssets(family: ThemeFamily, look: Pick<FamilyAsset, "palette" | "light">): FamilyAsset[] {
+  const a = (id: string, position: string, levels: ThemeLevel[], size: Pick<FamilyAsset, "desktop" | "mobile">, safeArea: string, overlayText: string): FamilyAsset =>
+    ({ id: `${family}-${id}`, family, position, levels, ...size, focus: "Centro", safeArea, scene: "Ver docs/prompts/banners-navegacao-temas-gpt.md", ...look, overlayText, alt: "", provisional: null });
+  const cats = [...new Set((packageOf(family)?.products ?? []).map((p) => p.category))];
+  return [
+    a("camadas-fundo", "Página inicial · Destaque em camadas · fundo (cenário sem produto)", [3], HERO, "Terço esquerdo livre", "Linha de chamada, título, texto e dois botões"),
+    a("camadas-recorte", "Página inicial · Destaque em camadas · produto recortado (PNG sem fundo)", [3], { desktop: { ratio: "1:1", size: [1600, 1600] } }, "Sem texto por cima", "(nenhum)"),
+    a("imersivo-fundo", "Página inicial · Destaque imersivo · fundo", [4], HERO, "Metade esquerda livre", "Três textos em sequência e botão"),
+    a("imersivo-recorte", "Página inicial · Destaque imersivo · recorte (PNG sem fundo)", [4], PORTRAIT, "Sem texto por cima", "(nenhum)"),
+    a("imersivo-frente", "Página inicial · Destaque imersivo · primeiro plano (PNG sem fundo)", [4], { desktop: { ratio: "21:9", size: [2400, 1029] } }, "Borda inferior", "(nenhum)"),
+    ...[1, 2, 3].map((k) => a(`seq-${k}`, `Página inicial · Destaque imersivo · quadro ${k} da sequência`, [4], { desktop: HERO.desktop }, "Metade esquerda livre", `Texto ${k} da sequência`)),
+    ...[1, 2, 3, 4].map((k) => a(`nav-${k}`, `Página inicial · Cartões de navegação · ${k}`, k <= 2 ? [2, 3, 4] : [3, 4], PORTRAIT, "Terço inferior livre", "Linha de chamada, título e botão")),
+    ...cats.map((c) => a(`cat-${slugify(c)}`, `Coleção · Banner da categoria ${c}`, [3, 4], STRIP, "Metade esquerda livre", `${c} · subtítulo`)),
+    a("cupom", "Página inicial · Janela do cupom de boas-vindas", [2, 3, 4], { desktop: SQUARE.desktop }, "Metade superior livre", "(texto ao lado da imagem)"),
+  ];
+}
+const demo = (family: ThemeFamily, tagline: string, assets: FamilyAsset[]): FamilyDemo => ({ family, storeName: packageOf(family)?.store ?? "", tagline, products: productsOf(family), assets: [...assets, ...navigationAssets(family, { palette: assets[0]!.palette, light: assets[0]!.light })], menu: [] });
 
 export const FAMILY_DEMOS: Partial<Record<ThemeFamily, FamilyDemo>> = {
   moda: demo("moda", "Básicos, camisas, calças e conjuntos para a cidade", MODA_ASSETS),

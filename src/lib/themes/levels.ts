@@ -44,6 +44,10 @@ export const CAPABILITY_LEVEL = {
   "hero.slides": 2, "banner.extraSlots": 2,
   "hero.carousel": 3, "banner.mosaic": 3, "banner.betweenShowcases": 3, "campaign.sets": 3,
   "hero.video": 4, "banner.schedule": 4, "banner.conditions": 4,
+  // Banners que organizam a navegação (D88)
+  "navigation.cards": 2, "marketing.welcomeCoupon": 2,
+  "hero.layers": 3, "navigation.categoryBanner": 3,
+  "hero.immersive": 4,
   // Conteúdo
   "content.basic": 1,
   "content.imageText": 2, "content.faq": 2, "content.cta": 2,
@@ -68,6 +72,9 @@ export const CAPABILITY_LABEL: Record<Capability, string> = {
   "hero.slides": "Destaque com até 2 slides", "banner.extraSlots": "Banners extras na home e na coleção",
   "hero.carousel": "Carrossel com até 6 slides", "banner.mosaic": "Mosaico de banners", "banner.betweenShowcases": "Banners entre vitrines", "campaign.sets": "Conjuntos de campanha",
   "hero.video": "Destaque com vídeo", "banner.schedule": "Agendamento de banners", "banner.conditions": "Banners por contexto",
+  "navigation.cards": "Cartões de navegação (novidades, ofertas)", "marketing.welcomeCoupon": "Cupom de boas-vindas",
+  "hero.layers": "Destaque em camadas com movimento", "navigation.categoryBanner": "Banner no topo de cada categoria",
+  "hero.immersive": "Destaque imersivo com animação na rolagem",
   "content.basic": "Textos, vitrines e selos", "content.imageText": "Imagem com texto", "content.faq": "Perguntas frequentes", "content.cta": "Chamada para ação",
   "content.lookbook": "Lookbook", "content.testimonials": "Depoimentos", "content.countdown": "Contagem regressiva",
   "product.basic": "Galeria, variações e compra", "product.quickView": "Compra rápida", "product.tabs": "Abas no produto", "product.stickyBar": "Barra fixa de compra no celular",

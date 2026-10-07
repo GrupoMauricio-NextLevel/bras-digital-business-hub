@@ -25,6 +25,8 @@ export type SectionCtx = {
   /** Momento da renderização (agenda de banners) e categoria aberta na coleção (condição por contexto). */
   now?: Date;
   categoryId?: string | null;
+  /** Cupom de boas-vindas válido agora (só o rótulo; o código é revelado pela ação, com consentimento). */
+  welcome?: { label: string; minText: string | null } | null;
   /** Id da primeira seção visível de conteúdo (recebe o título principal da página). */
   firstId?: string;
 };

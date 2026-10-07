@@ -96,11 +96,11 @@ export async function presetContextFor(db: Database, store: typeof stores.$infer
  * Monta e publica o tema na loja (sem checar compra: quem chama garante a licença). Usada pela instalação do lojista
  * e pelas lojas de demonstração. O estado anterior fica no histórico ("Antes de instalar …").
  */
-export async function applyThemeToStore(db: Database, store: typeof stores.$inferSelect, key: string, by: string, now = new Date(), images?: PresetContext["images"], extra?: Partial<Pick<PresetContext, "media" | "categories" | "categoryImages">>) {
+export async function applyThemeToStore(db: Database, store: typeof stores.$inferSelect, key: string, by: string, now = new Date(), images?: PresetContext["images"], extra?: Partial<Pick<PresetContext, "media" | "categories" | "categoryImages" | "welcomeCode">>) {
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
   const { ctx, current } = await presetContextFor(db, store, now);
-  const preset = buildPreset(key, { ...ctx, ...(images ? { images } : {}), ...(extra?.media ? { media: extra.media } : {}), ...(extra?.categories ? { categories: extra.categories } : {}), ...(extra?.categoryImages ? { categoryImages: extra.categoryImages } : {}) });
+  const preset = buildPreset(key, { ...ctx, ...(images ? { images } : {}), ...(extra?.media ? { media: extra.media } : {}), ...(extra?.categories ? { categories: extra.categories } : {}), ...(extra?.categoryImages ? { categoryImages: extra.categoryImages } : {}), ...(extra?.welcomeCode ? { welcomeCode: extra.welcomeCode } : {}) });
   if (!preset) throw new NotFoundError("Modelo do tema não encontrado.");
   const version = await db.query.themeVersions.findFirst({ where: and(eq(themeVersions.themeId, theme.id), eq(themeVersions.status, "PUBLISHED")) });
   if (!version) throw new NotFoundError("Versão do tema não encontrada.");

@@ -6,13 +6,14 @@
 import { slugify } from "@/lib/ids";
 import type { FamilySpec, Slot } from "./presets-familia";
 import { packageOf, selectionLink, type PackageCampaign } from "./pacotes";
+import { BANNERS } from "./familias-banners";
 
 const cat = (name: string) => `/catalog?category=${slugify(name)}`;
 const cats = (...names: string[]) => names.map((name) => ({ name, slug: slugify(name) }));
 
 /** Moda · Trama Urbana (Trama N1, Lume N2, Editorial N3, Atelier N4). */
 export const MODA: FamilySpec = {
-  id: "moda",
+  id: "moda", banners: BANNERS.moda,
   styles: [
     { primary: "#1c1c1c", accent: "#9a3412", headingFont: "display", radius: 6 },
     { primary: "#1f2a44", accent: "#be185d", headingFont: "display", radius: 14 },
@@ -37,7 +38,7 @@ export const MODA: FamilySpec = {
 
 /** Casa · Casa em Ordem (Lar N1, Ninho N2, Varanda N3, Morada N4): utilidades e organização. */
 export const CASA: FamilySpec = {
-  id: "casa",
+  id: "casa", banners: BANNERS.casa,
   styles: [
     { primary: "#28423a", accent: "#b4532a", headingFont: "display", radius: 10 },
     { primary: "#2f4a3a", accent: "#b4532a", headingFont: "editorial", radius: 10 },
@@ -62,7 +63,7 @@ export const CASA: FamilySpec = {
 
 /** Sport · Linha de Jogo (Lance N1, Torcida N2, Arena N3 (já vendido, composição própria), Pódio N4): camisas genéricas. */
 export const SPORT: FamilySpec = {
-  id: "sport",
+  id: "sport", banners: BANNERS.sport,
   styles: [
     { primary: "#0f172a", accent: "#16a34a", headingFont: "condensada", radius: 8 },
     { primary: "#111827", accent: "#2563eb", headingFont: "condensada", radius: 12 },
@@ -87,7 +88,7 @@ export const SPORT: FamilySpec = {
 
 /** Beauty · Bela Essência (Pétala N1, Brilho N2, Aura N3, Musa N4): acessórios de beleza (sem promessa de resultado). */
 export const BEAUTY: FamilySpec = {
-  id: "beauty",
+  id: "beauty", banners: BANNERS.beauty,
   styles: [
     { primary: "#3f2a33", accent: "#be185d", headingFont: "display", radius: 12 },
     { primary: "#4a2c3a", accent: "#c2417a", headingFont: "elegante", radius: 18 },
@@ -112,7 +113,7 @@ export const BEAUTY: FamilySpec = {
 
 /** Conecta · Ponto Conecta (Sinal N1, Pulso N2, Circuito N3, Órbita N4): acessórios de celular, sem marcas de fabricantes. */
 export const CONECTA: FamilySpec = {
-  id: "conecta",
+  id: "conecta", banners: BANNERS.conecta,
   styles: [
     { primary: "#0f172a", accent: "#2563eb", headingFont: "display", radius: 10 },
     { primary: "#111827", accent: "#7c3aed", headingFont: "display", radius: 16 },
@@ -141,7 +142,7 @@ export const CONECTA: FamilySpec = {
  * Textos sem promessa de frete, prazo ou preço: condições comerciais o lojista escreve no editor.
  */
 export const ATACADO: FamilySpec = {
-  id: "atacado",
+  id: "atacado", banners: BANNERS.atacado,
   styles: [
     { primary: "#111827", accent: "#ea580c", headingFont: "condensada", radius: 6 },
     { primary: "#1e293b", accent: "#f59e0b", headingFont: "condensada", radius: 10 },

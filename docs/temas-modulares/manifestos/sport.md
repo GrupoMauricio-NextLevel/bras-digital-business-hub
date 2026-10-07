@@ -2,7 +2,7 @@
 
 > Gerado por `npx tsx scripts/manifesto-temas.ts`. Os quatro níveis usam o mesmo catálogo e as mesmas imagens; o nível decide quais posições aparecem.
 
-Pacote visual `linha-de-jogo`: 60 de 60 imagens prontas (COMPLETE). Posições dos temas com imagem do pacote: 17 de 17.
+Pacote visual `linha-de-jogo`: 60 de 60 imagens prontas (COMPLETE). Posições dos temas com imagem do pacote: 17 de 34.
 
 Temas: Lance (N1) · Torcida (N2) · Arena (N3) · Pódio (N4)
 
@@ -27,6 +27,23 @@ Temas: Lance (N1) · Torcida (N2) · Arena (N3) · Pódio (N4)
 | sport-look-2 | Página inicial · Galeria Em campo · 2 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | integrado | `linha-de-jogo:essenciais-hero-mobile`<br>`/demos/linha-de-jogo/v1/campanhas/essenciais-hero-mobile.webp` |
 | sport-look-3 | Página inicial · Galeria Em campo · 3 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | integrado | `linha-de-jogo:equipados-hero-mobile`<br>`/demos/linha-de-jogo/v1/campanhas/equipados-hero-mobile.webp` |
 | sport-look-4 | Página inicial · Galeria Em campo · 4 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | integrado | `linha-de-jogo:movimento-apoio-01`<br>`/demos/linha-de-jogo/v1/campanhas/movimento-apoio-01.webp` |
+| sport-camadas-fundo | Página inicial · Destaque em camadas · fundo (cenário sem produto) | N3 | 21:9 (2400×1029 px) | 4:5 (1080×1350 px) | pendente | (fundo nas cores do tema) |
+| sport-camadas-recorte | Página inicial · Destaque em camadas · produto recortado (PNG sem fundo) | N3 | 1:1 (1600×1600 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-imersivo-fundo | Página inicial · Destaque imersivo · fundo | N4 | 21:9 (2400×1029 px) | 4:5 (1080×1350 px) | pendente | (fundo nas cores do tema) |
+| sport-imersivo-recorte | Página inicial · Destaque imersivo · recorte (PNG sem fundo) | N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-imersivo-frente | Página inicial · Destaque imersivo · primeiro plano (PNG sem fundo) | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-seq-1 | Página inicial · Destaque imersivo · quadro 1 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-seq-2 | Página inicial · Destaque imersivo · quadro 2 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-seq-3 | Página inicial · Destaque imersivo · quadro 3 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-nav-1 | Página inicial · Cartões de navegação · 1 | N2, N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-nav-2 | Página inicial · Cartões de navegação · 2 | N2, N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-nav-3 | Página inicial · Cartões de navegação · 3 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-nav-4 | Página inicial · Cartões de navegação · 4 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| sport-cat-camisas | Coleção · Banner da categoria Camisas | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| sport-cat-vestuario | Coleção · Banner da categoria Vestuário | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| sport-cat-treino | Coleção · Banner da categoria Treino | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| sport-cat-acessorios | Coleção · Banner da categoria Acessórios | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| sport-cupom | Página inicial · Janela do cupom de boas-vindas | N2, N3, N4 | 1:1 (1200×1200 px) | usa a do computador | pendente | (fundo nas cores do tema) |
 
 ## Categorias com imagem própria
 

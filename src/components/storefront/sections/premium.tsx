@@ -167,7 +167,7 @@ export function Faq({ settings, blocks }: SectionProps) {
   if (!blocks.length) return null;
   const ld = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: blocks.map((b) => ({ "@type": "Question", name: str(b.settings.question), acceptedAnswer: { "@type": "Answer", text: str(b.settings.answer) } })) };
   return (
-    <section className="mx-auto mt-16 max-w-3xl">
+    <section id="perguntas" className="mx-auto mt-16 max-w-3xl scroll-mt-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
       {str(settings.heading) ? <h2 className="mb-5 text-2xl font-semibold tracking-tight">{str(settings.heading)}</h2> : null}
       <div className="divide-y divide-neutral-200 rounded-[var(--sf-radius,16px)] border border-neutral-200">

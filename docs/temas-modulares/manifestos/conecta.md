@@ -2,7 +2,7 @@
 
 > Gerado por `npx tsx scripts/manifesto-temas.ts`. Os quatro níveis usam o mesmo catálogo e as mesmas imagens; o nível decide quais posições aparecem.
 
-Pacote visual `ponto-conecta`: 12 de 60 imagens prontas (PARTIAL). Posições dos temas com imagem do pacote: 0 de 17.
+Pacote visual `ponto-conecta`: 12 de 60 imagens prontas (PARTIAL). Posições dos temas com imagem do pacote: 0 de 34.
 
 Temas: Sinal (N1) · Pulso (N2) · Circuito (N3) · Órbita (N4)
 
@@ -27,6 +27,23 @@ Temas: Sinal (N1) · Pulso (N2) · Circuito (N3) · Órbita (N4)
 | conecta-look-2 | Página inicial · Galeria No dia a dia · 2 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
 | conecta-look-3 | Página inicial · Galeria No dia a dia · 3 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
 | conecta-look-4 | Página inicial · Galeria No dia a dia · 4 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-camadas-fundo | Página inicial · Destaque em camadas · fundo (cenário sem produto) | N3 | 21:9 (2400×1029 px) | 4:5 (1080×1350 px) | pendente | (fundo nas cores do tema) |
+| conecta-camadas-recorte | Página inicial · Destaque em camadas · produto recortado (PNG sem fundo) | N3 | 1:1 (1600×1600 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-imersivo-fundo | Página inicial · Destaque imersivo · fundo | N4 | 21:9 (2400×1029 px) | 4:5 (1080×1350 px) | pendente | (fundo nas cores do tema) |
+| conecta-imersivo-recorte | Página inicial · Destaque imersivo · recorte (PNG sem fundo) | N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-imersivo-frente | Página inicial · Destaque imersivo · primeiro plano (PNG sem fundo) | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-seq-1 | Página inicial · Destaque imersivo · quadro 1 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-seq-2 | Página inicial · Destaque imersivo · quadro 2 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-seq-3 | Página inicial · Destaque imersivo · quadro 3 da sequência | N4 | 21:9 (2400×1029 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-nav-1 | Página inicial · Cartões de navegação · 1 | N2, N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-nav-2 | Página inicial · Cartões de navegação · 2 | N2, N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-nav-3 | Página inicial · Cartões de navegação · 3 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-nav-4 | Página inicial · Cartões de navegação · 4 | N3, N4 | 4:5 (1080×1350 px) | usa a do computador | pendente | (fundo nas cores do tema) |
+| conecta-cat-audio | Coleção · Banner da categoria Áudio | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| conecta-cat-mesa | Coleção · Banner da categoria Mesa | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| conecta-cat-conexoes | Coleção · Banner da categoria Conexões | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| conecta-cat-mobilidade | Coleção · Banner da categoria Mobilidade | N3, N4 | 4:1 (2400×600 px) | 3:2 (1200×800 px) | pendente | (fundo nas cores do tema) |
+| conecta-cupom | Página inicial · Janela do cupom de boas-vindas | N2, N3, N4 | 1:1 (1200×1200 px) | usa a do computador | pendente | (fundo nas cores do tema) |
 
 ## Categorias com imagem própria
 

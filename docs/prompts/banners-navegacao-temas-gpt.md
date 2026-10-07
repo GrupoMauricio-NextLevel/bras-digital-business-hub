@@ -441,6 +441,8 @@ Ordem sugerida, do que mais vende para o que menos vende: **hero (desktop e celu
 
 ## Parte C: para o desenvolvimento (não cole no GPT)
 
+> **Estado (D88):** as peças abaixo já existem no sistema. Para usar as imagens, rode `npx tsx scripts/importar-banners.ts <pasta>` com os arquivos nomeados como neste documento.
+
 O que o sistema já tem e o que precisa ganhar para usar todas essas imagens:
 
 | Peça | Hoje | Precisa |

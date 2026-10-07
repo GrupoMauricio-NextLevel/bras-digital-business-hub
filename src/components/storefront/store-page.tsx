@@ -6,6 +6,7 @@ import { isPreviewMode } from "@/lib/themes/preview";
 import { tryingTheme } from "@/lib/themes/try";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
 import { planProducts } from "@/lib/themes/template";
+import { welcomeOffer } from "@/lib/domain/welcome-coupon";
 import type { PageKind } from "@/lib/themes/types";
 
 /** Espaçamento externo de cada página (o mesmo que as páginas tinham antes dos modelos). */
@@ -46,9 +47,12 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
     else if (sort === "newest") products = [...products].reverse();
   }
   const { lists, hero } = planProducts(template, products);
+  // Cupom de boas-vindas: a janela só aparece se o cupom configurado existe e vale agora (o código não vai para a página).
+  const wc = page === "home" ? Object.values(template.sections).find((x) => x.type === "welcome-coupon" && !x.hidden) : undefined;
+  const welcome = wc && typeof wc.settings.code === "string" && wc.settings.code ? await welcomeOffer(db, sf.store.id, wc.settings.code) : null;
   return (
     <div className={WRAP[page]}>
-      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId, editing: preview || !!trial }} />
+      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId, editing: preview || !!trial, welcome }} />
     </div>
   );
 }

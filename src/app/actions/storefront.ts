@@ -144,3 +144,26 @@ function revalidateAll(slug: string) {
   revalidatePath(`/store/${slug}`, "layout");
 }
 
+
+/**
+ * Cupom de boas-vindas (pública): o código vem do tema publicado da loja, nunca do navegador, e só é revelado com
+ * e-mail e consentimento. Limite por IP para frear coleta automática.
+ */
+export async function claimWelcomeCouponAction(slug: string, input: { email: string; consent: boolean }) {
+  return runAction(async () => {
+    const { headers } = await import("next/headers");
+    const { rateLimit } = await import("@/lib/rate-limit");
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`welcome:${ip}`, 8, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
+    const db = await getDb();
+    const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
+    if (!store) throw new NotFoundError("Loja não encontrada.");
+    const { resolveTemplate } = await import("@/lib/themes/store");
+    const { template } = await resolveTemplate(db, store, "home");
+    const section = Object.values(template.sections).find((s) => s.type === "welcome-coupon" && !s.hidden);
+    const code = typeof section?.settings.code === "string" ? section.settings.code : "";
+    if (!code) throw new DomainError("DISCOUNT_INVALID", "Este cupom não está mais disponível.");
+    const { claimWelcomeCoupon } = await import("@/lib/domain/welcome-coupon");
+    return claimWelcomeCoupon(db, store.id, code, input as { email: string; consent: true });
+  });
+}

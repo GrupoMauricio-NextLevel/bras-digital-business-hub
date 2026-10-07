@@ -491,6 +491,411 @@
       "image": null,
       "imageMobile": null,
       "source": null
+    },
+    {
+      "id": "conecta-camadas-fundo",
+      "position": "Página inicial · Destaque em camadas · fundo (cenário sem produto)",
+      "levels": [
+        3
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço esquerdo livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-camadas-recorte",
+      "position": "Página inicial · Destaque em camadas · produto recortado (PNG sem fundo)",
+      "levels": [
+        3
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1600,
+          1600
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Sem texto por cima",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-imersivo-fundo",
+      "position": "Página inicial · Destaque imersivo · fundo",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-imersivo-recorte",
+      "position": "Página inicial · Destaque imersivo · recorte (PNG sem fundo)",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Sem texto por cima",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-imersivo-frente",
+      "position": "Página inicial · Destaque imersivo · primeiro plano (PNG sem fundo)",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Borda inferior",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-seq-1",
+      "position": "Página inicial · Destaque imersivo · quadro 1 da sequência",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-seq-2",
+      "position": "Página inicial · Destaque imersivo · quadro 2 da sequência",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-seq-3",
+      "position": "Página inicial · Destaque imersivo · quadro 3 da sequência",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-nav-1",
+      "position": "Página inicial · Cartões de navegação · 1",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-nav-2",
+      "position": "Página inicial · Cartões de navegação · 2",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-nav-3",
+      "position": "Página inicial · Cartões de navegação · 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-nav-4",
+      "position": "Página inicial · Cartões de navegação · 4",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-cat-audio",
+      "position": "Coleção · Banner da categoria Áudio",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-cat-mesa",
+      "position": "Coleção · Banner da categoria Mesa",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-cat-conexoes",
+      "position": "Coleção · Banner da categoria Conexões",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-cat-mobilidade",
+      "position": "Coleção · Banner da categoria Mobilidade",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
+    },
+    {
+      "id": "conecta-cupom",
+      "position": "Página inicial · Janela do cupom de boas-vindas",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": null,
+      "focus": "Centro",
+      "safeArea": "Metade superior livre",
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     }
   ],
   "categoryImages": {},

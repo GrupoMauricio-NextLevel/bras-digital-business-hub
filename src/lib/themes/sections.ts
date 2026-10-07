@@ -36,6 +36,29 @@ export const BANNER_CAMPAIGN: SettingDef[] = [
 ];
 const BANNER = (extra: SettingDef[] = []): SettingDef[] => [...BANNER_MEDIA, ...BANNER_TEXT, ...extra, ...BANNER_CAMPAIGN];
 
+// ------------------------------------------------------------------ destaques em camadas (D88)
+const EMPH_INFO = "Uma palavra entre asteriscos ganha destaque: Feito para a *cidade*.";
+const TEXT_COLOR: SettingDef = { id: "textColor", type: "select", label: "Cor do texto", options: [{ value: "light", label: "Claro" }, { value: "dark", label: "Escuro" }], default: "light", group: "Texto" };
+const OVERLAY: SettingDef = { id: "overlay", type: "range", label: "Escurecer o fundo (legibilidade)", min: 0, max: 80, step: 5, unit: "%", default: 25, group: "Texto" };
+const LAYER_IMAGES: SettingDef[] = [
+  { id: "background", type: "image", label: "Fundo do computador (cenário sem produto)", default: "", group: "Imagem" },
+  { id: "backgroundMobile", type: "image", label: "Fundo do celular (opcional)", default: "", group: "Imagem" },
+  pct("focusX", "Foco horizontal no computador"), pct("focusY", "Foco vertical no computador"),
+  { id: "cutout", type: "image", label: "Produto recortado (PNG sem fundo)", default: "", group: "Imagem", info: "Sem recorte, o destaque mostra só o fundo." },
+  { id: "alt", type: "text", label: "Descrição do produto", default: "", maxLength: 140, group: "Imagem" },
+];
+const HERO_COPY: SettingDef[] = [
+  { id: "eyebrow", type: "text", label: "Linha de chamada (opcional)", default: "", maxLength: 40, group: "Texto" },
+  { id: "title", type: "text", label: "Título", default: "", maxLength: 90, group: "Texto", info: EMPH_INFO },
+  { id: "subtitle", type: "text", label: "Texto", default: "", maxLength: 180, group: "Texto" },
+  { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Comprar agora", maxLength: 40, group: "Texto" },
+  { id: "link", type: "url", label: "Link do botão", default: "/catalog", group: "Texto" },
+  { id: "secondaryLabel", type: "text", label: "Segundo link (opcional)", default: "", maxLength: 40, group: "Texto" },
+  { id: "secondaryLink", type: "url", label: "Endereço do segundo link", default: "/catalog", group: "Texto" },
+  { id: "note", type: "text", label: "Microtexto de confiança (opcional)", default: "", maxLength: 80, group: "Texto", info: "Ex.: Troca fácil em 30 dias. Só escreva o que a loja cumpre." },
+  TEXT_COLOR, OVERLAY,
+];
+
 /**
  * Catálogo de seções do tema (esquemas puros: o editor e a validação usam os mesmos).
  * Os componentes que desenham cada seção ficam em `components/storefront/sections`.
@@ -164,6 +187,75 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     settings: [{ id: "layout", type: "select", label: "Composição", options: [{ value: "1-2", label: "Uma grande e duas menores" }, { value: "2-2", label: "Quatro iguais" }, { value: "1-4", label: "Uma grande e quatro menores" }], default: "1-2" }, { id: "heading", type: "text", label: "Título (opcional)", default: "", maxLength: 80 }],
     blocks: [{ type: "banner", name: "Banner", limit: 5, maxByLevel: [0, 0, 5, 5], settings: BANNER() }],
     presets: [{ name: "Mosaico de banners", blocks: [{ type: "banner", settings: { title: "Coleção", ctaLabel: "Ver" } }, { type: "banner", settings: { title: "Básicos" } }, { type: "banner", settings: { title: "Acessórios" } }] }],
+  },
+  // ------------------------------------------------------------------ banners que organizam a navegação (D88)
+  {
+    type: "hero-layers", name: "Destaque em camadas", description: "Fundo e produto recortado em camadas: o produto se move com o mouse e a rolagem. Imagem própria para o celular.", category: "Destaque", region: "content", pages: ["home"], requires: "hero.layers",
+    settings: [...LAYER_IMAGES, ...HERO_COPY, { id: "motion", type: "checkbox", label: "Movimento ao passar o mouse e ao rolar", default: true, group: "Movimento", info: "Desligado para quem pediu menos movimento no aparelho." }],
+    presets: [{ name: "Destaque em camadas", settings: { title: "O *básico* que virou assinatura", subtitle: "Peças escolhidas para acompanhar o seu dia.", ctaLabel: "Comprar agora", link: "/catalog" } }],
+  },
+  {
+    type: "hero-immersive", name: "Destaque imersivo", description: "Três camadas que se movem em velocidades diferentes e uma sequência de até três quadros que muda conforme o cliente rola a página, com um texto por quadro.", category: "Destaque", region: "content", pages: ["home"], requires: "hero.immersive", maxBlocks: 3,
+    settings: [
+      ...LAYER_IMAGES,
+      { id: "foreground", type: "image", label: "Primeiro plano (PNG sem fundo, opcional)", default: "", group: "Imagem", info: "Elemento desfocado na frente (tecido, folhas, partículas). Move mais rápido que o resto." },
+      { id: "frame1", type: "image", label: "Sequência · quadro 1 (opcional)", default: "", group: "Sequência" },
+      { id: "frame2", type: "image", label: "Sequência · quadro 2", default: "", group: "Sequência" },
+      { id: "frame3", type: "image", label: "Sequência · quadro 3", default: "", group: "Sequência", info: "Mesma cena e enquadramento nos três quadros. Sem sequência, o fundo fica parado e só os textos mudam." },
+      { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Comprar agora", maxLength: 40, group: "Texto" },
+      { id: "link", type: "url", label: "Link do botão", default: "/catalog", group: "Texto" },
+      { id: "secondaryLabel", type: "text", label: "Segundo link (opcional)", default: "", maxLength: 40, group: "Texto" },
+      { id: "secondaryLink", type: "url", label: "Endereço do segundo link", default: "/catalog", group: "Texto" },
+      { id: "note", type: "text", label: "Microtexto de confiança junto do botão", default: "", maxLength: 80, group: "Texto", info: "Ex.: Troca fácil em 30 dias. Só escreva o que a loja cumpre." },
+      { id: "mobileTitle", type: "text", label: "Título curto para o celular (opcional)", default: "", maxLength: 60, group: "Texto" },
+      TEXT_COLOR, OVERLAY,
+    ],
+    blocks: [{ type: "step", name: "Texto da sequência", limit: 3, settings: [{ id: "eyebrow", type: "text", label: "Linha de chamada (opcional)", default: "", maxLength: 40 }, { id: "title", type: "text", label: "Título", default: "", maxLength: 90, info: EMPH_INFO }, { id: "subtitle", type: "text", label: "Texto (opcional)", default: "", maxLength: 160 }] }],
+    presets: [{ name: "Destaque imersivo", settings: { ctaLabel: "Comprar agora", link: "/catalog" }, blocks: [{ type: "step", settings: { title: "Toda história tem um *começo*." } }, { type: "step", settings: { title: "E um motivo." } }, { type: "step", settings: { title: "Escreva a *sua*", eyebrow: "COLEÇÃO" } }] }],
+  },
+  {
+    type: "nav-cards", name: "Cartões de navegação", description: "Dois a quatro cartões verticais que levam a Novidades, Ofertas, Mais vendidos ou Kits e ensinam o cliente a navegar na loja.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "navigation.cards", maxBlocks: 4,
+    settings: [{ id: "heading", type: "text", label: "Título (opcional)", default: "", maxLength: 60 }],
+    blocks: [{ type: "card", name: "Cartão", limit: 4, maxByLevel: [0, 2, 4, 4], settings: [
+      { id: "image", type: "image", label: "Imagem (retrato 4:5)", default: "", group: "Imagem" },
+      { id: "alt", type: "text", label: "Descrição da imagem", default: "", maxLength: 140, group: "Imagem" },
+      { id: "eyebrow", type: "text", label: "Linha de chamada (opcional)", default: "", maxLength: 30, group: "Texto" },
+      { id: "title", type: "text", label: "Título", default: "", maxLength: 60, group: "Texto", info: EMPH_INFO },
+      { id: "subtitle", type: "text", label: "Texto (opcional)", default: "", maxLength: 90, group: "Texto" },
+      { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Ver", maxLength: 30, group: "Texto" },
+      { id: "link", type: "url", label: "Link", default: "/catalog", group: "Texto" },
+    ] }],
+    presets: [{ name: "Cartões de navegação", blocks: [{ type: "card", settings: { title: "Novidades", ctaLabel: "Ver o que chegou", link: "/catalog?sort=newest" } }, { type: "card", settings: { title: "Ofertas", ctaLabel: "Ver ofertas", link: "/catalog" } }] }],
+  },
+  {
+    type: "category-banner", name: "Banner da categoria", description: "Faixa com imagem e texto no topo da página de cada categoria. Cada banner vale para uma categoria; um sem categoria aparece em “Todos os produtos”.", category: "Destaque", region: "content", pages: ["collection"], requires: "navigation.categoryBanner", maxBlocks: 12, singleton: true,
+    settings: [],
+    blocks: [{ type: "banner", name: "Banner de categoria", limit: 12, maxByLevel: [0, 0, 12, 12], settings: [
+      { id: "category", type: "collection", label: "Categoria", default: "", info: "Vazio = página com todos os produtos." },
+      ...BANNER_MEDIA,
+      { id: "image", type: "image", label: "Imagem do computador (faixa larga)", default: "", group: "Imagem" },
+      { id: "imageMobile", type: "image", label: "Imagem do celular (opcional)", default: "", group: "Imagem" },
+      { id: "alt", type: "text", label: "Descrição da imagem", default: "", maxLength: 140, group: "Imagem" },
+      { id: "title", type: "text", label: "Título (vazio = nome da categoria)", default: "", maxLength: 80, group: "Texto", info: EMPH_INFO },
+      { id: "subtitle", type: "text", label: "Texto", default: "", maxLength: 140, group: "Texto" },
+      TEXT_COLOR, OVERLAY,
+    ] }],
+    presets: [{ name: "Banner da categoria", blocks: [{ type: "banner", settings: { title: "", subtitle: "" } }] }],
+  },
+  {
+    type: "welcome-coupon", name: "Cupom de boas-vindas", description: "Janela que aparece uma vez para quem visita a loja pela primeira vez: o cliente deixa o e-mail e recebe um cupom ativo da loja.", category: "Destaque", region: "content", pages: ["home"], requires: "marketing.welcomeCoupon", singleton: true,
+    settings: [
+      { id: "code", type: "text", label: "Código do cupom", default: "", maxLength: 24, info: "Use um cupom ativo de Marketing › Cupons. Se ele vencer ou acabar, a janela deixa de aparecer sozinha." },
+      { id: "image", type: "image", label: "Imagem (quadrada)", default: "", group: "Imagem" },
+      { id: "alt", type: "text", label: "Descrição da imagem", default: "", maxLength: 140, group: "Imagem" },
+      { id: "eyebrow", type: "text", label: "Linha de chamada (opcional)", default: "BOAS-VINDAS", maxLength: 30, group: "Texto" },
+      { id: "title", type: "text", label: "Título", default: "Sua primeira compra com desconto", maxLength: 80, group: "Texto", info: EMPH_INFO },
+      { id: "subtitle", type: "text", label: "Texto", default: "Deixe seu e-mail e receba o cupom na hora.", maxLength: 140, group: "Texto" },
+      { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Receber cupom", maxLength: 30, group: "Texto" },
+      { id: "note", type: "text", label: "Microtexto", default: "Sem spam. Cancele quando quiser.", maxLength: 80, group: "Texto" },
+      { id: "delay", type: "range", label: "Aparecer depois de", min: 3, max: 30, step: 1, unit: "s", default: 8 },
+    ],
+    presets: [{ name: "Cupom de boas-vindas" }],
   },
   // ------------------------------------------------------------------ seções por nível (requires) e por identidade (families)
   {

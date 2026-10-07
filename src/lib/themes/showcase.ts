@@ -9,7 +9,11 @@ import { catalogSupplierId } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { signupMember } from "@/lib/domain/store-access";
 import { hasPublicDemo, THEME_BY_KEY, THEME_CATALOG } from "./catalog";
-import { brandLogo, categoryImages, slotImage } from "./pacotes";
+import { brandLogo, categoryImages, packageOf, slotImage } from "./pacotes";
+import { BANNERS } from "./familias-banners";
+import { slugify } from "@/lib/ids";
+import { storeDiscounts } from "@/db/schema";
+import { createDiscount } from "@/lib/domain/discounts";
 import { demoFamilyOf, type AssetStatus, type DemoProduct, type FamilyAsset, type FamilyDemo } from "./families";
 import { applyThemeToStore, presetContextFor } from "./install";
 import { buildPreset, type PresetContext } from "./presets";
@@ -47,6 +51,44 @@ export function resolveAsset(a: FamilyAsset): { image: string; imageMobile: stri
   return { image: "", imageMobile: "", alt: a.alt, status: "pendente" };
 }
 const mediaOf = (d: FamilyDemo): NonNullable<PresetContext["media"]> => Object.fromEntries(d.assets.map((a) => { const r = resolveAsset(a); return [a.id, { image: r.image, imageMobile: r.imageMobile, alt: r.alt }]; }));
+/**
+ * Banners de navegação gerados pelo dono (D88): arquivos em /demos/<loja>/v1/banners/<nome>.webp, com os nomes do
+ * prompt docs/prompts/banners-navegacao-temas-gpt.md (sem o prefixo da loja). Só entra o que existe no disco; posições
+ * sem arquivo continuam pendentes. Também cobrem destaque, apoio e faixa das lojas cujo pacote não tem campanhas.
+ */
+function bannerMedia(d: FamilyDemo): NonNullable<PresetContext["media"]> {
+  const p = packageOf(d.family); if (!p) return {};
+  const file = (name: string) => { const f = `/demos/${p.slug}/v1/banners/${name}.webp`; return fileOk(f) ? f : ""; };
+  const out: NonNullable<PresetContext["media"]> = {};
+  const put = (id: string, desktop: string, mobile = "", alt = "") => { const image = file(desktop); if (image) out[`${d.family}-${id}`] = { image, imageMobile: mobile ? file(mobile) : "", alt }; };
+  put("camadas-fundo", "hero-camadas__fundo-desktop", "hero-camadas__fundo-mobile");
+  put("camadas-recorte", "hero-camadas__recorte", "", d.storeName);
+  put("imersivo-fundo", "hero-imersivo__fundo-desktop", "hero-imersivo__fundo-mobile");
+  put("imersivo-recorte", "hero-imersivo__recorte", "", d.storeName);
+  put("imersivo-frente", "hero-imersivo__primeiro-plano");
+  for (const k of [1, 2, 3]) put(`seq-${k}`, `hero-imersivo__seq-${k}`);
+  const b = BANNERS[d.family as keyof typeof BANNERS];
+  b?.nav.forEach((n, i) => put(`nav-${i + 1}`, n.file));
+  for (const c of new Set(p.products.map((x) => x.category))) put(`cat-${slugify(c)}`, `cat-${slugify(c)}`);
+  put("cupom", "cupom");
+  const [c1, c2, c3] = p.campaigns;
+  [c1, c2, c3].forEach((c, i) => c && put(`hero-${i + 1}`, `hero-${c.id}__desktop`, `hero-${c.id}__mobile`, c.headline));
+  put("hero-4", "hero-sazonal__desktop", "hero-sazonal__mobile");
+  put("apoio-1", "apoio-1"); put("apoio-2", "apoio-2"); put("faixa-1", "faixa");
+  return out;
+}
+/** Imagem do pacote primeiro; o banner gerado só preenche posição que estava pendente. */
+const withBanners = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => {
+  const extra = bannerMedia(d); const out = { ...m };
+  for (const [id, v] of Object.entries(extra)) if (!out[id]?.image) out[id] = { ...v, alt: v.alt || out[id]?.alt || "" };
+  return out;
+};
+/** Cupom de exemplo das lojas de demonstração (a janela de boas-vindas mostra o código sem guardar contato). */
+export const DEMO_WELCOME_CODE = "BEMVINDO10";
+async function ensureDemoCoupon(db: Database, storeId: string) {
+  const has = await db.query.storeDiscounts.findFirst({ where: and(eq(storeDiscounts.storeId, storeId), eq(storeDiscounts.code, DEMO_WELCOME_CODE)) });
+  if (!has) await createDiscount(db, storeId, { code: DEMO_WELCOME_CODE, kind: "PERCENT", value: 10 });
+}
 /** Fotos dos temas que ainda usam `images` (Starter, Signature, Arena): as da família da demonstração. */
 const imagesOf = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => ({ hero: m[`${d.family}-hero-1`]?.image || "", about: m[`${d.family}-sobre`]?.image || "" });
 /** Fotos do produto: as do pacote visual (todas as existentes, a principal primeiro). */
@@ -100,9 +142,10 @@ export async function ensureShowcaseStores(db: Database, now = new Date()): Prom
     let store = await db.query.stores.findFirst({ where: and(eq(stores.showcaseTheme, info.key), isNotNull(stores.showcaseTheme)) });
     if (!store) { const id = await createShowcaseStore(db, info.key, info.name, demo); store = (await db.query.stores.findFirst({ where: eq(stores.id, id) }))!; log.push(`loja de demonstração do tema ${info.key} criada`); }
     else if (await syncProducts(db, store, demo)) { store = (await db.query.stores.findFirst({ where: eq(stores.id, store.id) }))!; log.push(`catálogo da demonstração ${info.key} ajustado`); }
-    const media = mediaOf(demo);
+    const media = withBanners(demo, mediaOf(demo));
     const cats = await demoCategories(db, store.id);
-    const extra = { images: imagesOf(demo, media), media, categories: cats, categoryImages: categoryImages(demo.family) };
+    await ensureDemoCoupon(db, store.id);
+    const extra = { images: imagesOf(demo, media), media, categories: cats, categoryImages: categoryImages(demo.family), welcomeCode: DEMO_WELCOME_CODE };
     const { ctx } = await presetContextFor(db, store, now);
     const preset = buildPreset(info.key, { ...ctx, ...extra });
     const rows = await db.select().from(themeTemplates).where(eq(themeTemplates.storeId, store.id));

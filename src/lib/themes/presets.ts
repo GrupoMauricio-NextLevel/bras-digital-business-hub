@@ -12,6 +12,8 @@ export type PresetContext = { storeName: string; tagline: string | null; primary
   categories?: { name: string; slug: string }[];
   /** Imagem própria de cada categoria (nome → imagem), quando a loja tem (lojas de demonstração: pacote visual). */
   categoryImages?: Record<string, string>;
+  /** Código do cupom de boas-vindas (lojas de demonstração); clientes escolhem um cupom ativo no editor. */
+  welcomeCode?: string;
   now: Date };
 export type ThemePreset = { style: ThemeStyle; globals: ThemeGlobals; pages: Record<PageKind, Template> };
 

@@ -12,6 +12,8 @@ import type { PresetContext, ThemePreset } from "./presets";
 import { announcement, blocksOf, globals, pages, type Item } from "./presets";
 import { normalizeStyle } from "./template";
 import type { SettingValue, ThemeStyle } from "./types";
+import { slugify } from "@/lib/ids";
+import type { FamilyBanners, NavTxt } from "./familias-banners";
 
 type Txt = string | ((store: string) => string);
 export type Slot = { title: Txt; subtitle?: Txt; cta?: string; link?: string; align?: "left" | "center" | "right" };
@@ -28,6 +30,8 @@ export type FamilySpec = {
   n2: { hero: Slot; hero2: Slot; cats: string; featured: string; featuredSub: string; latest: string; about: { heading: Txt; body: Txt } };
   n3: { hero: Slot; hero2: Slot; hero3: Slot; mosaicHeading: string; mosaic: [Slot, Slot, Slot]; featured: string; latest: string; gallery: { heading: string; subtitle: string; items: [string, string, string, string]; links?: string[] }; about: { heading: Txt; body: Txt } };
   n4: { hero: Slot; campaign: Slot; cats: string; mosaic: [string, string, string, string, string]; mosaicLinks?: string[]; featured: string; latest: string };
+  /** Banners que organizam a navegação (D88): destaque em camadas, imersivo, cartões, banner de categoria, cupom. */
+  banners?: FamilyBanners;
 };
 
 const txt = (t: Txt | undefined, c: PresetContext) => (typeof t === "function" ? t(c.storeName) : t ?? "");
@@ -45,6 +49,56 @@ const supportItem = (c: PresetContext, f: FamilySpec, ratio?: string): Item => [
 /** Blocos de imagem de categoria (só as categorias com imagem própria). */
 const catBlocks = (c: PresetContext) => Object.entries(c.categoryImages ?? {}).map(([category, image]) => ({ type: "category-image", settings: { category, image } }));
 const productPage = (gallery: string, related: Focus = {}): Item[] => [["product", { type: "product-main", settings: { gallery, stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["related", { type: "product-related", settings: related }]];
+
+// ------------------------------------------------------------------ banners de navegação (D88)
+type Lv = 2 | 3 | 4;
+const m = (c: PresetContext, id: string) => c.media?.[id];
+/** Cartões de navegação: N2 usa os dois com texto próprio do N2; N3 e N4, os quatro. */
+const navItem = (c: PresetContext, f: FamilySpec, lv: Lv): Item | null => {
+  const b = f.banners; if (!b) return null;
+  const cards = b.nav.map((n, i) => ({ n, i, t: (lv === 2 ? n.n2 : lv === 3 ? n.n3 : n.n4) as NavTxt | undefined })).filter((x) => x.t);
+  return ["navegue", { type: "nav-cards", settings: { heading: "" }, blocks: cards.slice(0, lv === 2 ? 2 : 4).map(({ n, i, t }) => {
+    const img = m(c, `${f.id}-nav-${i + 1}`);
+    return { type: "card", settings: { image: img?.image ?? "", alt: img?.alt ?? "", eyebrow: t!.eyebrow ?? "", title: t!.title, subtitle: t!.subtitle ?? "", ctaLabel: t!.cta, link: n.link } };
+  }) }];
+};
+/** Cupom de boas-vindas: nasce com o código do cupom da demonstração (lojas reais escolhem o delas no editor). */
+const welcomeItem = (c: PresetContext, f: FamilySpec, lv: Lv): Item | null => {
+  const b = f.banners; if (!b) return null;
+  const w = lv === 2 ? { eyebrow: "BOAS-VINDAS", ...b.welcome.n2 } : lv === 3 ? b.welcome.n3 : { eyebrow: "", ...b.welcome.n4 };
+  const img = m(c, `${f.id}-cupom`);
+  return ["boas-vindas", { type: "welcome-coupon", settings: { code: c.welcomeCode ?? "", image: img?.image ?? "", alt: img?.alt ?? "", eyebrow: w.eyebrow, title: w.title, subtitle: w.subtitle, note: "Sem spam. Cancele quando quiser.", delay: 10 } }];
+};
+/** Fundo do destaque em camadas/imersivo: a imagem própria quando existe; senão a do destaque principal (nunca vazio à toa). */
+const layerBg = (c: PresetContext, f: FamilySpec, key: "camadas" | "imersivo") => {
+  const own = m(c, `${f.id}-${key}-fundo`); const h = m(c, `${f.id}-hero-1`);
+  return own?.image ? { background: own.image, backgroundMobile: own.imageMobile ?? "" } : { background: h?.image ?? "", backgroundMobile: h?.imageMobile ?? "" };
+};
+const layersItem = (c: PresetContext, f: FamilySpec): Item | null => {
+  const b = f.banners?.layers; if (!b) return null;
+  const cut = m(c, `${f.id}-camadas-recorte`);
+  return ["hero", { type: "hero-layers", settings: { ...layerBg(c, f, "camadas"), ...f.heroFocus, cutout: cut?.image ?? "", alt: cut?.alt ?? "", eyebrow: b.eyebrow, title: c.hero?.title ?? b.title, subtitle: c.hero?.subtitle ?? b.subtitle, ctaLabel: c.hero?.ctaLabel ?? b.cta, link: "/catalog", secondaryLabel: b.secondary, secondaryLink: b.secondaryLink ?? "/catalog", note: "", overlay: 25, motion: true } }];
+};
+const immersiveItem = (c: PresetContext, f: FamilySpec): Item | null => {
+  const b = f.banners?.immersive; if (!b) return null;
+  const cut = m(c, `${f.id}-imersivo-recorte`); const fg = m(c, `${f.id}-imersivo-frente`);
+  const frames = [1, 2, 3].map((k) => m(c, `${f.id}-seq-${k}`)?.image ?? "");
+  return ["hero", { type: "hero-immersive", settings: { ...layerBg(c, f, "imersivo"), ...f.heroFocus, cutout: cut?.image ?? "", alt: cut?.alt ?? "", foreground: fg?.image ?? "", frame1: frames[0]!, frame2: frames[1]!, frame3: frames[2]!, ctaLabel: b.cta, link: "/catalog", secondaryLabel: b.secondary, secondaryLink: b.secondaryLink ?? "/catalog", note: "", mobileTitle: b.mobileTitle, overlay: 25 },
+    blocks: b.steps.map((st) => ({ type: "step", settings: { eyebrow: st.eyebrow ?? "", title: st.title, subtitle: st.subtitle ?? "" } })) }];
+};
+/** Banner do topo de cada categoria (N3/N4): um geral (todos os produtos) e um por categoria, com a imagem da categoria. */
+const categoryBannerItem = (c: PresetContext, f: FamilySpec, lv: 3 | 4): Item | null => {
+  const b = f.banners; if (!b) return null;
+  const cats = c.categories?.length ? c.categories : f.fallbackCategories;
+  const strip = m(c, `${f.id}-faixa-1`);
+  const general = { type: "banner", settings: { category: "", image: strip?.image ?? "", imageMobile: strip?.imageMobile ?? "", alt: "", title: "Toda a coleção", subtitle: "", ...f.stripFocus } };
+  return ["banner-categoria", { type: "category-banner", blocks: [general, ...cats.slice(0, 11).map((k) => {
+    const own = m(c, `${f.id}-cat-${slugify(k.name)}`); const img = own?.image || c.categoryImages?.[k.name] || "";
+    const sub = b.categories[k.name];
+    return { type: "banner", settings: { category: k.slug, image: img, imageMobile: own?.imageMobile ?? "", alt: "", title: lv === 4 && sub ? sub.n4 : k.name, subtitle: lv === 3 ? sub?.n3 ?? "" : "" } };
+  })] }];
+};
+const present = (...items: (Item | null)[]): Item[] => items.filter((x): x is Item => !!x);
 
 /** N1 — Grátis. */
 export const levelOne = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
@@ -84,11 +138,13 @@ export const levelTwo = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
         ] }],
         ["cats", { type: "category-grid", settings: { heading: f.n2.cats, style: "circles" }, blocks: catBlocks(c) }],
         ["destaques", { type: "product-showcase", settings: { title: f.n2.featured, subtitle: f.n2.featuredSub, source: "featured", count: 4 } }],
+        ...present(navItem(c, f, 2)),
         supportItem(c, f, "portrait"),
         ["novidades", { type: "product-showcase", settings: { title: f.n2.latest, subtitle: "", source: "latest", count: 4 } }],
         ["sobre", { type: "image-with-text", settings: { image: c.media?.[`${f.id}-sobre`]?.image ?? c.images?.about ?? "", heading: txt(f.n2.about.heading, c), body: c.tagline ?? txt(f.n2.about.body, c), ctaLabel: "Conhecer o catálogo", ratio: "square" } }],
         stripItem(c, f),
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
+        ...present(welcomeItem(c, f, 2)),
         ["grid", { type: "product-grid" }],
       ],
       productPage("thumbs"),
@@ -107,23 +163,29 @@ export const levelThree = (f: FamilySpec) => (c: PresetContext): ThemePreset => 
     globals: globals(st, [announcement(c, "", "neutral"), ["header", { type: "header", settings: { tone: "light" } }]], footer(c, "light")),
     pages: pages(
       [
-        ["hero", { type: "hero-banner", settings: { height: "lg", fullWidth: true, autoplay: false }, blocks: [
+        // Com banners de navegação: destaque em camadas na abertura e as campanhas num carrossel mais abaixo.
+        ...(f.banners ? present(layersItem(c, f), ["cats", { type: "category-grid", settings: { heading: f.n2.cats, style: "circles", showCount: false }, blocks: catBlocks(c) }], navItem(c, f, 3)) : [["hero", { type: "hero-banner", settings: { height: "lg", fullWidth: true, autoplay: false }, blocks: [
           { type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n3.hero), f.heroFocus) },
           { type: "slide", settings: banner(c, `${f.id}-hero-2`, f.n3.hero2) },
           { type: "slide", settings: banner(c, `${f.id}-hero-3`, f.n3.hero3) },
-        ] }],
+        ] }] as Item]),
         ["mosaico", { type: "banner-mosaic", settings: { layout: "1-2", heading: f.n3.mosaicHeading }, blocks: f.n3.mosaic.map((s, i) => ({ type: "banner", settings: banner(c, `${f.id}-mosaico-${i + 1}`, s) })) }],
         ["destaques", { type: "product-showcase", settings: { title: f.n3.featured, subtitle: "", source: "featured", count: 4 } }],
+        ...(f.banners ? [["campanhas", { type: "hero-banner", settings: { height: "md", fullWidth: false, autoplay: false }, blocks: [
+          { type: "slide", settings: banner(c, `${f.id}-hero-2`, f.n3.hero2) },
+          { type: "slide", settings: banner(c, `${f.id}-hero-3`, f.n3.hero3) },
+        ] }] as Item] : []),
         stripItem(c, f, "md"),
         ["novidades", { type: "product-showcase", settings: { title: f.n3.latest, subtitle: "", source: "latest", count: 4 } }],
         ["look", { type: "lookbook", settings: { heading: g.heading, subtitle: g.subtitle }, blocks: g.items.map((title, i) => ({ type: "look", settings: { image: c.media?.[`${f.id}-look-${i + 1}`]?.image ?? "", title, link: g.links?.[i] ?? "/catalog" } })) }],
         ["sobre", { type: "image-with-text", settings: { image: c.media?.[`${f.id}-sobre`]?.image ?? "", heading: txt(f.n3.about.heading, c), body: txt(f.n3.about.body, c), ctaLabel: "Conhecer o catálogo", ratio: "portrait" } }],
         ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
+        ...present(welcomeItem(c, f, 3)),
         ["grid", { type: "product-grid" }],
       ],
       productPage("thumbs"),
-      [["header", { type: "collection-header", settings: { showSort: true } }], ["faixa", { type: "banner-strip", blocks: [{ type: "banner", settings: banner(c, `${f.id}-faixa-1`, { title: f.strip.title, cta: f.strip.cta, link: f.strip.link }, f.stripFocus) }] }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]],
+      f.banners ? [categoryBannerItem(c, f, 3)!, ["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]] : [["header", { type: "collection-header", settings: { showSort: true } }], ["faixa", { type: "banner-strip", blocks: [{ type: "banner", settings: banner(c, `${f.id}-faixa-1`, { title: f.strip.title, cta: f.strip.cta, link: f.strip.link }, f.stripFocus) }] }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]],
       [["cart", { type: "cart-main" }], ["more", { type: "product-showcase", settings: { title: "Combine com", subtitle: "", source: "featured", count: 4 } }]],
     ),
   };
@@ -142,13 +204,16 @@ export const levelFour = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
     globals: globals(st, [announcement(c, "", "accent"), ["header", { type: "header-plus", settings: { tone: "light", sticky: true, showSearch: true }, blocks: [...menu, { type: "menu-item", settings: { label: "Tudo", link: "/catalog", children: "" } }] }]], footer(c, "dark")),
     pages: pages(
       [
-        ["hero", { type: "hero-banner", settings: { height: "lg", fullWidth: true, autoplay: true, interval: 7 }, blocks: [
-          { type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n4.hero), f.heroFocus) },
+        ...present(immersiveItem(c, f)),
+        [f.banners ? "campanhas" : "hero", { type: "hero-banner", settings: { height: f.banners ? "md" : "lg", fullWidth: !f.banners, autoplay: true, interval: 7 }, blocks: [
+          // Com o destaque imersivo na abertura, a foto principal não se repete no carrossel de campanhas.
+          ...(f.banners ? [] : [{ type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n4.hero), f.heroFocus) }]),
           { type: "slide", settings: banner(c, `${f.id}-hero-4`, f.n4.campaign, { startsAt: brt(c.now, 3), endsAt: brt(c.now, 10) }) },
           { type: "slide", settings: banner(c, `${f.id}-hero-2`, { ...f.n3.hero2, align: "center" }) },
           { type: "slide", settings: banner(c, `${f.id}-hero-3`, { ...f.n3.hero3, align: "right" }) },
         ] }],
         ["cats", { type: "category-grid", settings: { heading: f.n4.cats, style: "circles", showCount: false }, blocks: catBlocks(c) }],
+        ...present(navItem(c, f, 4)),
         ["mosaico", { type: "banner-mosaic", settings: { layout: "1-4" }, blocks: f.n4.mosaic.map((title, i) => ({ type: "banner", settings: banner(c, `${f.id}-mosaico-${i + 1}`, { title, link: f.n4.mosaicLinks?.[i] ?? f.n3.mosaic[i]?.link }) })) }],
         ["destaques", { type: "product-showcase", settings: { title: f.n4.featured, subtitle: "", source: "featured", count: 8 } }],
         supportItem(c, f, "portrait"),
@@ -156,10 +221,11 @@ export const levelFour = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
         ["novidades", { type: "product-showcase", settings: { title: f.n4.latest, subtitle: "", source: "latest", count: 4 } }],
         ["countdown", { type: "countdown", settings: { heading: "A campanha termina em", text: "Defina a data da sua campanha real antes de mostrar.", until: brt(c.now, 10), tone: "accent" }, hidden: true }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
+        ...present(welcomeItem(c, f, 4)),
         ["grid", { type: "product-grid" }],
       ],
       productPage("grid", { count: 8 }),
-      [["hero", { type: "hero-banner", settings: { height: "sm", fullWidth: false }, blocks: [{ type: "slide", settings: banner(c, `${f.id}-faixa-1`, { title: "Toda a coleção" }, f.stripFocus) }] }], ["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]],
+      f.banners ? [categoryBannerItem(c, f, 4)!, ["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]] : [["hero", { type: "hero-banner", settings: { height: "sm", fullWidth: false }, blocks: [{ type: "slide", settings: banner(c, `${f.id}-faixa-1`, { title: "Toda a coleção" }, f.stripFocus) }] }], ["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid", settings: { columns: 3 } }]],
       [["cart", { type: "cart-main" }], ["more", { type: "product-showcase", settings: { title: "Combine com", subtitle: "", source: "featured", count: 4 } }]],
     ),
   };
