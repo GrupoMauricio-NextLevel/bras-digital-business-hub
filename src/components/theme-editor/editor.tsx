@@ -18,7 +18,10 @@ import { ImageUploadButton } from "./image-upload";
 import { setStoreLogoAction } from "@/app/actions/assets";
 import { PAGE_LABEL, type PageKind, type SettingValue, type Template, type ThemeStyle } from "@/lib/themes/types";
 import { cn } from "@/lib/utils";
-import { AddSectionDialog, VersionsDialog } from "./dialogs";
+import { AddSectionDialog, PageTemplatesDialog, VersionsDialog } from "./dialogs";
+import { saveSectionTemplateAction } from "@/app/actions/theme";
+import { newSectionId } from "@/lib/themes/template";
+import { LayoutTemplate } from "lucide-react";
 import { MediaLibraryProvider } from "./media-library";
 import { BannerMediaPanel, MEDIA_FIELDS } from "./banner-media";
 import { scheduleIssues } from "@/lib/themes/banners";
@@ -45,6 +48,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const [ready, setReady] = React.useState(false);
   const [adding, setAdding] = React.useState<Region | null>(null);
   const [versions, setVersions] = React.useState(false);
+  const [pageModels, setPageModels] = React.useState(false);
   const [publishing, setPublishing] = React.useState(false);
   const [mobileTab, setMobileTab] = React.useState<"tree" | "preview" | "settings">("preview");
   const frameRef = React.useRef<HTMLIFrameElement>(null);
@@ -104,6 +108,13 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
     return () => { cancelAnimationFrame(raf); clearTimeout(t); };
   }, [doc, flush]);
 
+  // Sair com alterações ainda não gravadas pede confirmação do navegador (nada se perde por engano).
+  React.useEffect(() => {
+    if (save === "saved") return;
+    const onLeave = (e: BeforeUnloadEvent) => { e.preventDefault(); };
+    window.addEventListener("beforeunload", onLeave); return () => window.removeEventListener("beforeunload", onLeave);
+  }, [save]);
+
   // ---- Alterações -----------------------------------------------------------
   const commit = React.useCallback((next: Doc, key?: string) => setHist((h) => pushHistory(h, next, key ?? null)), []);
   const mutate = (region: Region, fn: (t: Template) => Template, key?: string): boolean => {
@@ -144,6 +155,10 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
     removeBlock: (region, sid, bid) => { mutate(region, (t) => removeBlock(t, sid, bid)); },
   };
 
+  const insertSaved = (inst: import("@/lib/themes/types").SectionInstance) => {
+    if (!adding) return; const region = adding; let nid = "";
+    if (mutate(region, (cur) => { nid = newSectionId(inst.type, cur.order); return { ...cur, sections: { ...cur.sections, [nid]: inst }, order: [...cur.order, nid] }; })) select({ kind: "section", region, id: nid });
+  };
   const pickSection = (type: string) => {
     if (!adding) return; const region = adding; let nid = "";
     const t = getTemplate(doc, region, page); const curId = sectionIdOf(sel); const at = sel && sel.kind !== "style" && sel.region === region && curId ? t.order.indexOf(curId) + 1 : undefined;
@@ -206,6 +221,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
           </button>
         </div>
         <Button variant="ghost" size="sm" onClick={() => setVersions(true)}><History aria-hidden /> <span className="sr-only md:not-sr-only">Histórico</span></Button>
+        {ctx.caps.has("editor.pageTemplates") ? <Button variant="ghost" size="sm" onClick={() => setPageModels(true)}><LayoutTemplate aria-hidden /> <span className="sr-only md:not-sr-only">Modelos</span></Button> : null}
         <a href={`/store/${slug}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-surface-muted hover:text-foreground"><ExternalLink className="size-4" aria-hidden /> <span className="sr-only lg:not-sr-only">Ver loja</span></a>
         {dirtyPublish ? <Button variant="ghost" size="sm" onClick={discard}>Descartar</Button> : null}
         <Button size="sm" onClick={publish} loading={publishing} disabled={!dirtyPublish}>Publicar</Button>
@@ -246,7 +262,11 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
                 ); })}
               </CardContent></Card>
             ) : selSection && schema && sel?.kind === "section" ? (
-              <Card><CardHeader><div><CardTitle>{schema.name}</CardTitle><p className="text-xs text-muted-foreground">{schema.description}</p></div></CardHeader><CardContent className="space-y-4">
+              <Card><CardHeader><div><CardTitle>{schema.name}</CardTitle><p className="text-xs text-muted-foreground">{schema.description}</p>
+                {sel.region === "content" && !schema.singleton && !schema.required ? (ctx.caps.has("editor.sectionTemplates")
+                  ? <button type="button" className="mt-1 text-xs font-medium text-accent-foreground underline" onClick={async () => { const name = window.prompt("Nome do modelo de seção", schema.name); if (!name) return; const r = await saveSectionTemplateAction(name, selSection); if (r.ok) toast.success("Modelo salvo. Use em “Adicionar seção”."); else toast.error(r.error); }}>Salvar como modelo</button>
+                  : <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground"><Lock className="size-3" aria-hidden /> Modelos de seção: temas N3</p>) : null}
+              </div></CardHeader><CardContent className="space-y-4">
                 {schema.settings.length === 0 ? <p className="text-sm text-muted-foreground">Esta seção é configurada pelos blocos, no menu à esquerda.</p> : null}
                 {schema.settings.map((def) => <LockedField key={def.id} def={def} ctx={ctx}><SettingField def={def} value={selSection.settings[def.id]} idPrefix={`s-${sel.id}`} data={picker} locked={!settingAllowed(ctx, def).ok} onChange={(v) => mutate(sel.region, (t) => setSetting(t, sel.id, def.id, v), `${sel.id}.${def.id}`)} /></LockedField>)}
               </CardContent></Card>
@@ -269,7 +289,8 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         </aside>
       </div>
 
-      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={page} current={getTemplate(doc, adding ?? "content", page)} ctx={ctx} upgradeHref={upgradeHref} onPick={pickSection} />
+      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={page} current={getTemplate(doc, adding ?? "content", page)} ctx={ctx} upgradeHref={upgradeHref} onPick={pickSection} onPickSaved={insertSaved} />
+      <PageTemplatesDialog open={pageModels} onOpenChange={setPageModels} page={page} current={doc.pages[page]} onApply={(t) => mutate("content", () => t)} />
       <VersionsDialog open={versions} onOpenChange={setVersions} page={page} />
     </div>
     </MediaLibraryProvider>

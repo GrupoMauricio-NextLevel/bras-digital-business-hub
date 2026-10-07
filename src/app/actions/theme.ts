@@ -14,6 +14,7 @@ import { THEME_BY_KEY } from "@/lib/themes/catalog";
 import { buyTheme, installTheme } from "@/lib/themes/install";
 import { discardDraft, draftRevisions, listVersions, publishAllDrafts, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { PAGE_KINDS } from "@/lib/themes/types";
+import { deleteSavedTemplate, listSavedTemplates, savePageTemplate, saveSectionTemplate } from "@/lib/themes/saved-templates";
 
 async function ctx() {
   const session = await getSession();
@@ -85,4 +86,18 @@ export async function installThemeAction(key: string) {
     const { session, db } = await ctx(); const r = await installTheme(db, session.actor, z.string().min(1).parse(key));
     (await cookies()).delete(TRY_COOKIE); refresh(session.store?.slug); revalidatePath("/merchant", "layout"); return r;
   });
+}
+
+// ---- Modelos salvos (N3: seção · N4: página/campanha) -------------------------------------------
+export async function listSavedTemplatesAction() {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); return listSavedTemplates(db, session.actor, storeId); });
+}
+export async function saveSectionTemplateAction(name: string, section: unknown) {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); return saveSectionTemplate(db, session.actor, storeId, { name: z.string().max(60).parse(name), section }); });
+}
+export async function savePageTemplateAction(name: string, p: string, template: unknown) {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); return savePageTemplate(db, session.actor, storeId, { name: z.string().max(60).parse(name), page: page.parse(p), template }); });
+}
+export async function deleteSavedTemplateAction(id: string) {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); await deleteSavedTemplate(db, session.actor, storeId, z.string().regex(/^tst_[a-z0-9]+$/i).parse(id)); return undefined; });
 }
