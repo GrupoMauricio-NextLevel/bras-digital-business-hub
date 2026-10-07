@@ -1,0 +1,622 @@
+[
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1209,
+    "h1": "Operação de hoje",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/services",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1674,
+    "h1": "Loja NextLevel",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1395,
+    "h1": "Pedidos da rede",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/operations",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1210,
+    "h1": "Corte e operação",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/wallets",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1420,
+    "h1": "Recargas dos lojistas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/invoices",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1355,
+    "h1": "Faturas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/finance",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1136,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/stores",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1230,
+    "h1": "Lojistas da rede",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/store",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1595,
+    "h1": "Minha loja",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/team",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1259,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1521,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/inventory",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1386,
+    "h1": "Estoque central",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/content",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1521,
+    "h1": "Central de conteúdo",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/settings",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1168,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/dispatch",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1561,
+    "h1": "Olá, Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_snesu1cf0ih9",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1548,
+    "h1": "#1026",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_jhxf7wus109b",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1599,
+    "h1": "#1017",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_ixw7ras8bi36",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1383,
+    "h1": "#1023",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_gikox2tk147d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1280,
+    "h1": "#1020",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_zg56kya9553g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1161,
+    "h1": "#1019",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_lem4oj1i1j3m",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1339,
+    "h1": "#1028",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_jka0rjvhc4e7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1299,
+    "h1": "#1027",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_5wp34jnk1xn1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1223,
+    "h1": "#1016",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_fz2bqfytfxp1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1439,
+    "h1": "#1015",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_rynyx74ilk4g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1135,
+    "h1": "#1022",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_g31xc6p141zf",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1329,
+    "h1": "#1018",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_0uiotwvtk4ji",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1446,
+    "h1": "#1014",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_mboky5d59f4s",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1388,
+    "h1": "#1021",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_jgxaehw2cajc",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1391,
+    "h1": "#1013",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_6id3awp50eya",
+    "largura": 1440,
+    "status": 200,
+    "ms": 936,
+    "h1": "#1012",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_pwgmofly3q0l",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1094,
+    "h1": "#1011",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_lm8f7736u4gd",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1444,
+    "h1": "#1010",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_qouawiq46ahv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1265,
+    "h1": "#1025",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_yuwiev33a0zr",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1223,
+    "h1": "#1009",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_n4a55zv1p2cv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1304,
+    "h1": "#1008",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_h0hd7nk660dp",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1446,
+    "h1": "#1024",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_7y8co16xnkrf",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1531,
+    "h1": "#1007",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_y1jhn4fp9mrg",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1294,
+    "h1": "#1006",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_gje0flospnv8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1249,
+    "h1": "#1005",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_ywbyslfu6eka",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1130,
+    "h1": "#1004",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_v4ltbb5gje2d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 976,
+    "h1": "#1003",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_ts2mh1ksg7l7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1091,
+    "h1": "#1002",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders/ord_b34kr4err0tn",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1216,
+    "h1": "#1001",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/stores/new",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1173,
+    "h1": "Nova loja",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/categorias",
+    "largura": 1440,
+    "status": 200,
+    "ms": 995,
+    "h1": "Categorias",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/import",
+    "largura": 1440,
+    "status": 200,
+    "ms": 806,
+    "h1": "Importar produtos por planilha",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/new",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1127,
+    "h1": "Novo produto",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/prd_c0hazj2nm7di",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1116,
+    "h1": "Camisa Tailandesa Grená e Verde Listrada",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/prd_jait87pd5qnc",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1126,
+    "h1": "Camisa Tailandesa Branca Clássica",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/prd_9vf4iat24yo9",
+    "largura": 1440,
+    "status": 200,
+    "ms": 960,
+    "h1": "Camisa Tailandesa Preta e Branca",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/prd_xyw9a8kmm6ok",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1118,
+    "h1": "Camisa Tailandesa Azul Royal",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/prd_d9prkl7gieep",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1416,
+    "h1": "Camisa Tailandesa Azul Celeste e Preta",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/dispatch/shipped",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1062,
+    "h1": "",
+    "problemas": [
+      "sem título (h1)"
+    ]
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products/import/modelo",
+    "largura": 1440,
+    "status": 0,
+    "problemas": [
+      "falha: page.goto: Download is starting\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3100/supplier/prod"
+    ]
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier",
+    "largura": 390,
+    "status": 200,
+    "ms": 764,
+    "h1": "Operação de hoje",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/services",
+    "largura": 390,
+    "status": 200,
+    "ms": 759,
+    "h1": "Loja NextLevel",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/orders",
+    "largura": 390,
+    "status": 200,
+    "ms": 847,
+    "h1": "Pedidos da rede",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/operations",
+    "largura": 390,
+    "status": 200,
+    "ms": 700,
+    "h1": "Corte e operação",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/wallets",
+    "largura": 390,
+    "status": 200,
+    "ms": 654,
+    "h1": "Recargas dos lojistas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/invoices",
+    "largura": 390,
+    "status": 200,
+    "ms": 621,
+    "h1": "Faturas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/finance",
+    "largura": 390,
+    "status": 200,
+    "ms": 690,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/stores",
+    "largura": 390,
+    "status": 200,
+    "ms": 633,
+    "h1": "Lojistas da rede",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/store",
+    "largura": 390,
+    "status": 200,
+    "ms": 681,
+    "h1": "Minha loja",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/team",
+    "largura": 390,
+    "status": 200,
+    "ms": 646,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/products",
+    "largura": 390,
+    "status": 200,
+    "ms": 663,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/inventory",
+    "largura": 390,
+    "status": 200,
+    "ms": 648,
+    "h1": "Estoque central",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/content",
+    "largura": 390,
+    "status": 200,
+    "ms": 648,
+    "h1": "Central de conteúdo",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "/supplier/settings",
+    "largura": 390,
+    "status": 200,
+    "ms": 720,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-fornecedor",
+    "rota": "(menu do celular)",
+    "largura": 390,
+    "problemas": []
+  }
+]

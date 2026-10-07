@@ -1,0 +1,116 @@
+[
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1159,
+    "h1": "Olá, Camila",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/links",
+    "largura": 1440,
+    "status": 200,
+    "ms": 992,
+    "h1": "Links de divulgação",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/coupons",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1109,
+    "h1": "Cupons de 7 dias",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/referrals",
+    "largura": 1440,
+    "status": 200,
+    "ms": 853,
+    "h1": "Indicados",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/finance",
+    "largura": 1440,
+    "status": 200,
+    "ms": 986,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/profile",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1352,
+    "h1": "Meu perfil",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner",
+    "largura": 390,
+    "status": 200,
+    "ms": 1649,
+    "h1": "Olá, Camila",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/links",
+    "largura": 390,
+    "status": 200,
+    "ms": 684,
+    "h1": "Links de divulgação",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/coupons",
+    "largura": 390,
+    "status": 200,
+    "ms": 1454,
+    "h1": "Cupons de 7 dias",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/referrals",
+    "largura": 390,
+    "status": 200,
+    "ms": 807,
+    "h1": "Indicados",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/finance",
+    "largura": 390,
+    "status": 200,
+    "ms": 2247,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "/partner/profile",
+    "largura": 390,
+    "status": 200,
+    "ms": 1270,
+    "h1": "Meu perfil",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-parceiro",
+    "rota": "(menu do celular)",
+    "largura": 390,
+    "problemas": []
+  }
+]

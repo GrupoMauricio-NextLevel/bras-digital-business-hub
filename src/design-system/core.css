@@ -332,3 +332,12 @@
 .ds-support-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 18px; padding: 10px 14px; border-radius: var(--ds-r-control); border: 1px solid var(--ds-info); background: var(--ds-info-soft); color: var(--ds-info); font-size: var(--ds-fs-small); }
 .ds-support-bar--act { border-color: var(--ds-warning); background: var(--ds-warning-soft); color: var(--ds-warning); }
 .ds-support-meta { color: var(--ds-text); }
+
+/* ---- Espaço de imagem em criação (páginas públicas): mesma proporção da foto final, sem salto de layout ---- */
+.ds-img-slot { position: relative; display: grid; place-items: center; overflow: hidden; margin: 0; border-radius: var(--ds-r-public-card); border: 1px dashed color-mix(in srgb, var(--ds-primary) 35%, var(--ds-line)); background:
+  radial-gradient(120% 90% at 85% 10%, color-mix(in srgb, var(--ds-primary) 16%, transparent), transparent 60%),
+  radial-gradient(90% 80% at 10% 95%, color-mix(in srgb, var(--ds-accent) 14%, transparent), transparent 60%),
+  repeating-linear-gradient(135deg, color-mix(in srgb, var(--ds-ink) 4%, transparent) 0 1px, transparent 1px 14px),
+  var(--ds-surface-2); }
+.ds-img-slot-in { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 16px; border-radius: var(--ds-r-control); background: color-mix(in srgb, var(--ds-surface) 82%, transparent); color: var(--ds-muted); font-size: var(--ds-fs-small); font-weight: 700; text-align: center; }
+.ds-img-slot-in code { font-size: 11px; font-weight: 600; opacity: .8; }

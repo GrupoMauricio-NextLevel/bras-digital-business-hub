@@ -1,0 +1,521 @@
+[
+  {
+    "conta": "master",
+    "rota": "/master",
+    "largura": 1440,
+    "status": 200,
+    "ms": 819,
+    "h1": "Bom dia, Equipe.",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/services",
+    "largura": 1440,
+    "status": 200,
+    "ms": 737,
+    "h1": "Loja NextLevel",
+    "problemas": [
+      "texto: valor vazio em R$ → “as. Abrir conversa Orçamento R$ Enviar orçamento Iniciar an”"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/commerce",
+    "largura": 1440,
+    "status": 200,
+    "ms": 795,
+    "h1": "Bom dia, Equipe.",
+    "problemas": [
+      "menu ativo errado (/master)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/clientes",
+    "largura": 1440,
+    "status": 200,
+    "ms": 728,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders",
+    "largura": 1440,
+    "status": 200,
+    "ms": 889,
+    "h1": "Pedidos e comissões",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/summary",
+    "largura": 1440,
+    "status": 200,
+    "ms": 704,
+    "h1": "Resumo do dia",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/errors",
+    "largura": 1440,
+    "status": 200,
+    "ms": 730,
+    "h1": "Erros do sistema",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/integridade",
+    "largura": 1440,
+    "status": 200,
+    "ms": 777,
+    "h1": "Integridade dos dados",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/crm",
+    "largura": 1440,
+    "status": 200,
+    "ms": 728,
+    "h1": "CRM · Loja NextLevel",
+    "problemas": [
+      "texto: valor vazio em R$ → “Destaque Preço cheio (cartão) R$ Salvar preço Tirar destaque”"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/suppliers",
+    "largura": 1440,
+    "status": 200,
+    "ms": 736,
+    "h1": "Fornecedores",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/networks",
+    "largura": 1440,
+    "status": 200,
+    "ms": 708,
+    "h1": "Redes",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/stores",
+    "largura": 1440,
+    "status": 200,
+    "ms": 806,
+    "h1": "Lojas",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/catalog",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1008,
+    "h1": "Catálogo central",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/partners",
+    "largura": 1440,
+    "status": 200,
+    "ms": 741,
+    "h1": "Programa de Parceiros",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/office",
+    "largura": 1440,
+    "status": 200,
+    "ms": 778,
+    "h1": "Escritório virtual",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/finance",
+    "largura": 1440,
+    "status": 200,
+    "ms": 907,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/templates",
+    "largura": 1440,
+    "status": 200,
+    "ms": 718,
+    "h1": "Templates",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/plans",
+    "largura": 1440,
+    "status": 200,
+    "ms": 760,
+    "h1": "Planos e assinaturas",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/settings",
+    "largura": 1440,
+    "status": 200,
+    "ms": 727,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_4fd7syv652d8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15089,
+    "h1": "#1036",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_snesu1cf0ih9",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15087,
+    "h1": "#1026",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_jhxf7wus109b",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15115,
+    "h1": "#1017",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_ixw7ras8bi36",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15097,
+    "h1": "#1023",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_lx3qe1q1wj8d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15102,
+    "h1": "#1001",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_gikox2tk147d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15097,
+    "h1": "#1020",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/services/sor_ub3ng3w9nbct",
+    "largura": 1440,
+    "status": 200,
+    "ms": 887,
+    "h1": "Banners",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/services/sor_narb70j0f534",
+    "largura": 1440,
+    "status": 200,
+    "ms": 775,
+    "h1": "Tráfego Pago",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_zg56kya9553g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15089,
+    "h1": "#1019",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_1rbygbqcqsol",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15087,
+    "h1": "#1007",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_d9ar7oxore6q",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15098,
+    "h1": "#1050",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_5mv37hxbx2f0",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15083,
+    "h1": "#1005",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_kl72szfw1gwg",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15087,
+    "h1": "#1006",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_lem4oj1i1j3m",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15087,
+    "h1": "#1028",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders/ord_jka0rjvhc4e7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 15097,
+    "h1": "#1027",
+    "problemas": [
+      "lenta (15.1 s)"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master",
+    "largura": 390,
+    "status": 200,
+    "ms": 688,
+    "h1": "Bom dia, Equipe.",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/services",
+    "largura": 390,
+    "status": 200,
+    "ms": 645,
+    "h1": "Loja NextLevel",
+    "problemas": [
+      "texto: valor vazio em R$ → “as. Abrir conversa Orçamento R$ Enviar orçamento Iniciar an”"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/commerce",
+    "largura": 390,
+    "status": 200,
+    "ms": 716,
+    "h1": "Bom dia, Equipe.",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/clientes",
+    "largura": 390,
+    "status": 200,
+    "ms": 706,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/orders",
+    "largura": 390,
+    "status": 200,
+    "ms": 1123,
+    "h1": "Pedidos e comissões",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/summary",
+    "largura": 390,
+    "status": 200,
+    "ms": 656,
+    "h1": "Resumo do dia",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/errors",
+    "largura": 390,
+    "status": 200,
+    "ms": 663,
+    "h1": "Erros do sistema",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/integridade",
+    "largura": 390,
+    "status": 200,
+    "ms": 635,
+    "h1": "Integridade dos dados",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/crm",
+    "largura": 390,
+    "status": 200,
+    "ms": 646,
+    "h1": "CRM · Loja NextLevel",
+    "problemas": [
+      "texto: valor vazio em R$ → “Destaque Preço cheio (cartão) R$ Salvar preço Tirar destaque”"
+    ]
+  },
+  {
+    "conta": "master",
+    "rota": "/master/suppliers",
+    "largura": 390,
+    "status": 200,
+    "ms": 664,
+    "h1": "Fornecedores",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/networks",
+    "largura": 390,
+    "status": 200,
+    "ms": 654,
+    "h1": "Redes",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/stores",
+    "largura": 390,
+    "status": 200,
+    "ms": 668,
+    "h1": "Lojas",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/catalog",
+    "largura": 390,
+    "status": 200,
+    "ms": 992,
+    "h1": "Catálogo central",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/partners",
+    "largura": 390,
+    "status": 200,
+    "ms": 656,
+    "h1": "Programa de Parceiros",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/office",
+    "largura": 390,
+    "status": 200,
+    "ms": 662,
+    "h1": "Escritório virtual",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/finance",
+    "largura": 390,
+    "status": 200,
+    "ms": 708,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/templates",
+    "largura": 390,
+    "status": 200,
+    "ms": 647,
+    "h1": "Templates",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/plans",
+    "largura": 390,
+    "status": 200,
+    "ms": 668,
+    "h1": "Planos e assinaturas",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "/master/settings",
+    "largura": 390,
+    "status": 200,
+    "ms": 656,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "master",
+    "rota": "(menu do celular)",
+    "largura": 390,
+    "problemas": []
+  }
+]

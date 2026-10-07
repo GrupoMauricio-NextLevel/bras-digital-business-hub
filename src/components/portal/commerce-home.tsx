@@ -1,3 +1,4 @@
+import { MosaicoEditorial } from "@/components/portal/mosaico-editorial";
 import "./commerce/commerce.css";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
@@ -34,6 +35,15 @@ export function CommerceHome({ brand }: { brand: Brand }) {
           <h2 id="canais-t" className={`${H2} mb-12 max-w-3xl text-foreground sm:text-5xl`}>Venda pela loja, receba por Pix e acompanhe tudo em um só lugar.</h2>
           <Bento />
         </div>
+      </section>
+
+      <section id="bastidores" aria-label="Sua marca, sua operação" className={section}>
+        <MosaicoEditorial marca="commerce" eyebrow="Sua marca, sua operação" titulo="Do ateliê ao pedido embalado, tudo com a sua cara." texto="Fotografe, cadastre, venda e entregue com a identidade da sua marca. O painel acompanha cada etapa."
+          pecas={[
+            { nome: "cm-hero-marca-propria", alt: "Ateliê de moda com araras, peças dobradas e notebook aberto", ratio: "4 / 5", titulo: "Sua marca no centro", texto: "Tema, cores e domínio próprios, sem cara de marketplace." },
+            { nome: "cm-catalogo-fotografia", alt: "Mini estúdio fotografando uma peça em manequim invisível", ratio: "4 / 3", titulo: "Catálogo que vende", texto: "Fotos, variações e estoque organizados no painel." },
+            { nome: "cm-pedido-embalado", alt: "Sacola de loja própria com papel de seda azul", ratio: "4 / 3", titulo: "Pedido com a sua embalagem", texto: "Pix e cartão confirmados antes de separar." },
+          ]} />
       </section>
 
       <section id="para-quem" aria-labelledby="pq-t" className={section}>

@@ -14,10 +14,10 @@ export function ProductSwitcher({ current, master = false, onDark = false }: { c
         className="group flex min-h-11 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--product-accent)]">
         <span className="h-7 w-[3px] shrink-0 bg-[var(--product-accent)]" aria-hidden />
         <span className="min-w-0">
-          <span className={`block text-[10px] font-semibold uppercase tracking-[.16em] ${onDark ? "text-sidebar-foreground/70" : "text-muted-foreground"}`}>NextLevel /</span>
-          <span className={`block truncate text-sm font-semibold tracking-tight ${onDark ? "text-sidebar-foreground" : "text-foreground"}`}>{current.shortName}</span>
+          <span className={`block text-[10px] font-semibold uppercase tracking-[.16em] ${onDark ? "text-sidebar-foreground/70" : "text-[var(--ds-side-muted)]"}`}>NextLevel /</span>
+          <span className={`block truncate text-sm font-semibold tracking-tight ${onDark ? "text-sidebar-foreground" : "text-[var(--ds-side-fg)]"}`}>{current.shortName}</span>
         </span>
-        <ChevronDown className={`size-3.5 transition-transform group-aria-expanded:rotate-180 ${onDark ? "text-sidebar-foreground/70" : "text-muted-foreground"}`} aria-hidden />
+        <ChevronDown className={`size-3.5 transition-transform group-aria-expanded:rotate-180 ${onDark ? "text-sidebar-foreground/70" : "text-[var(--ds-side-muted)]"}`} aria-hidden />
       </button>
       {open ? (
         <>

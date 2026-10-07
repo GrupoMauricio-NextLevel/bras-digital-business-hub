@@ -15,6 +15,7 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { Reveal } from "@/components/portal/reveal";
 import { SaleCalculator } from "@/components/portal/sale-calculator";
 import { ThemeShowcase } from "@/components/portal/theme-showcase";
+import { MosaicoEditorial } from "@/components/portal/mosaico-editorial";
 import { FAQ } from "./content";
 
 export const dynamic = "force-dynamic";
@@ -91,6 +92,16 @@ export default async function Portal() {
           <Reveal><h2 className={`${sectionTitle} max-w-2xl`}>Tudo para começar a vender sem complicação</h2></Reveal>
           <ul className="mt-10 grid gap-4 md:grid-cols-3">{PROBLEMS.map((p, n) => <Reveal as="li" key={p.t} delay={n * 90} className="rounded-2xl border border-border bg-surface p-6"><h3 className="text-lg font-bold">{p.t}</h3><p className="mt-2 text-muted-foreground">{p.d}</p></Reveal>)}</ul>
         </div>
+      </section>
+
+      {/* 3b. Bastidores: do fornecedor à casa do cliente (fotografia de direção de arte) */}
+      <section className="bg-surface py-20" aria-label="Bastidores da operação">
+        <MosaicoEditorial marca="superdrop" eyebrow="Bastidores" titulo="Você vende. O fornecedor separa, etiqueta e envia." texto="Cada pedido pago da sua loja vai para a Central do fornecedor, que separa, embala e despacha."
+          pecas={[
+            { nome: "sd-hero-fornecedor-separando", alt: "Mãos separando peças em caixas numa bancada de expedição", ratio: "4 / 5", titulo: "Separação na Central", texto: "O fornecedor recebe o pedido pago e separa as peças." },
+            { nome: "sd-etiqueta-impressora", alt: "Impressora térmica soltando uma etiqueta de envio", ratio: "4 / 3", titulo: "Etiqueta junto com o pedido", texto: "A Central só separa com a etiqueta em mãos, sem erro de endereço." },
+            { nome: "sd-pacote-entregue", alt: "Caixa fechada com fita verde na porta de um apartamento", ratio: "4 / 3", titulo: "Entregue na casa do cliente", texto: "Você acompanha cada etapa do pedido no painel." },
+          ]} />
       </section>
 
       {/* 4. Como funciona */}

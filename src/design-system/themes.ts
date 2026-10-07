@@ -9,7 +9,7 @@
  * Os demais papéis (superfícies, linhas, texto secundário, estados de menu) são derivados e conferidos por `tests/design-system.test.ts` (WCAG AA).
  * Puro (sem React/Next): serve servidor, e-mail e testes.
  */
-import { contrastRatio, onSignal } from "@/lib/brand-palette";
+import { contrastRatio, luminance, onSignal } from "@/lib/brand-palette";
 
 export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play"] as const;
 export type ThemeKey = (typeof THEME_KEYS)[number];
@@ -33,6 +33,17 @@ export type ThemeColors = {
 type ModeInput = { canvas: string; ink: string; primary: string; link: string; accent: string; accentText: string; accentSoft?: string; reflection?: string; surface?: string; sideBg?: string };
 type ThemeInput = { label: string; light: ModeInput; dark: ModeInput };
 
+// ---- utilidades de cor (hex) ----
+const clamp = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
+const toRgb = (hex: string): [number, number, number] => { const c = hex.replace("#", ""); return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]; };
+const toHex = (r: number, g: number, b: number) => "#" + [r, g, b].map((v) => clamp(v).toString(16).padStart(2, "0")).join("").toUpperCase();
+/** Mistura `a` com `b`: t = 0 devolve `a`, t = 1 devolve `b`. */
+export function mix(a: string, b: string, t: number): string {
+  const [ar, ag, ab] = toRgb(a), [br, bg, bb] = toRgb(b);
+  return toHex(ar + (br - ar) * t, ag + (bg - ag) * t, ab + (bb - ab) * t);
+}
+const rgba = (hex: string, alpha: number) => { const [r, g, b] = toRgb(hex); return `rgba(${r},${g},${b},${alpha})`; };
+
 /**
  * Paletas de entrada: sistema de cores v2 aprovado pelo dono (brand-system-v2/, decisão D79).
  * Neutros compartilhados por todas as marcas (navy #101B34 e off-white #F4F1E9); cada marca só traz a cor de assinatura
@@ -40,15 +51,18 @@ type ThemeInput = { label: string; light: ModeInput; dark: ModeInput };
  */
 const N = { light: { canvas: "#F4F1E9", ink: "#101B34", surface: "#FFFFFF" }, dark: { canvas: "#0B1427", ink: "#F4F1E9", surface: "#101B34" } } as const;
 const GRUPO = { light: { accent: "#F5BC00", accentText: "#7B4C00", accentSoft: "#FEEFCA" }, dark: { accent: "#F5BC00", accentText: "#F5BC00" } } as const;
+// Identidade nos painéis (D81): no claro, a barra lateral leva um véu da cor da marca; no escuro, fundo e superfícies
+// ganham um leve tom da marca sobre o navy compartilhado (mesma família, marca reconhecível).
 const produto = (label: string, l: [string, string], d: [string, string]): ThemeInput => ({
   label,
-  light: { ...N.light, ...GRUPO.light, primary: l[0], link: l[1] },
-  dark: { ...N.dark, ...GRUPO.dark, primary: d[0], link: d[1] },
+  light: { ...N.light, ...GRUPO.light, primary: l[0], link: l[1], sideBg: mix(N.light.canvas, l[0], 0.09) },
+  dark: { ...N.dark, ...GRUPO.dark, primary: d[0], link: d[1], canvas: mix(N.dark.canvas, d[0], 0.05), surface: mix(N.dark.surface, d[0], 0.06) },
 });
 export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   nextlevel: {
     label: "NextLevel Soluções Digitais (grupo e Master)",
-    light: { ...N.light, primary: "#F5BC00", link: "#7B4C00", accent: "#101B34", accentText: "#101B34", accentSoft: "#E6E8EE" },
+    // O grupo assina com a barra lateral navy e o amarelo do raio.
+    light: { ...N.light, primary: "#F5BC00", link: "#7B4C00", accent: "#101B34", accentText: "#101B34", accentSoft: "#E6E8EE", sideBg: "#101B34" },
     dark: { ...N.dark, primary: "#F5BC00", link: "#F5BC00", accent: "#B3B9CA", accentText: "#D6DAE5" },
   },
   commerce: produto("NextLevel Commerce", ["#196BD8", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
@@ -66,16 +80,6 @@ export const THEME_FOR_BRAND: Record<string, ThemeKey> = {
 };
 export const themeKeyForBrand = (code: string | null | undefined): ThemeKey => THEME_FOR_BRAND[code ?? ""] ?? "nextlevel";
 
-// ---- utilidades de cor (hex) ----
-const clamp = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
-const toRgb = (hex: string): [number, number, number] => { const c = hex.replace("#", ""); return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]; };
-const toHex = (r: number, g: number, b: number) => "#" + [r, g, b].map((v) => clamp(v).toString(16).padStart(2, "0")).join("").toUpperCase();
-/** Mistura `a` com `b`: t = 0 devolve `a`, t = 1 devolve `b`. */
-export function mix(a: string, b: string, t: number): string {
-  const [ar, ag, ab] = toRgb(a), [br, bg, bb] = toRgb(b);
-  return toHex(ar + (br - ar) * t, ag + (bg - ag) * t, ab + (bb - ab) * t);
-}
-const rgba = (hex: string, alpha: number) => { const [r, g, b] = toRgb(hex); return `rgba(${r},${g},${b},${alpha})`; };
 
 /** Cores de estado: iguais em todos os temas (status não é identidade de marca). */
 const STATE = {
@@ -115,14 +119,28 @@ export function deriveColors(mode: ThemeMode, i: ModeInput): ThemeColors {
     accent: i.accent, accentSoft, accentText: i.accentText,
     reflection: i.reflection ?? mix(i.primary, "#FFFFFF", 0.5),
     ...STATE[mode],
-    sideBg, sideFg: dark ? mix(i.ink, canvas, 0.14) : text, sideMuted: readableMuted(i.ink, sideBg, [sideBg]),
-    sideActiveBg: dark ? mix(sideBg, i.primary, 0.3) : mix(sideBg, i.primary, 0.14), sideActiveFg: dark ? "#FFFFFF" : i.link,
-    sideLine: dark ? mix(i.ink, sideBg, 0.86) : line, sideHover: rgba(dark ? "#FFFFFF" : i.ink, dark ? 0.06 : 0.05),
+    ...side(dark, i, sideBg, canvas, text, line),
     band: bandBg, bandFg, bandMuted: readableMuted(bandFg, bandBg, [bandBg]), bandLine: mix(bandFg, bandBg, 0.82),
     glass: rgba(canvas, dark ? 0.82 : 0.86), ring: dark ? mix(i.link, "#FFFFFF", 0.25) : i.link,
     shadowRgb: dark ? "0 0 0" : toRgb(i.ink).join(" "),
     heroFrom: dark ? mix(canvas, i.primary, 0.32) : mix(surface, i.primary, 0.2),
     heroTo: dark ? mix(canvas, i.primary, 0.08) : mix(surface, i.reflection ?? i.primary, 0.12),
+  };
+}
+
+/** Papéis da barra lateral: valem para barra clara ou escura (o Master usa navy mesmo no modo claro). */
+function side(dark: boolean, i: ModeInput, sideBg: string, canvas: string, text: string, line: string) {
+  const sideDark = dark || luminance(sideBg) < 0.18;
+  if (!sideDark) {
+    const sideActiveBg = mix(sideBg, i.primary, 0.16);
+    return { sideBg, sideFg: text, sideMuted: readableMuted(i.ink, sideBg, [sideBg]), sideActiveBg, sideActiveFg: contrastRatio(i.link, sideActiveBg) >= 4.6 ? i.link : i.ink, sideLine: line, sideHover: rgba(i.ink, 0.05) };
+  }
+  const fg = dark ? mix(i.ink, canvas, 0.14) : mix("#F4F1E9", sideBg, 0.06);
+  const sideActiveBg = mix(sideBg, i.primary, dark ? 0.3 : 0.2);
+  return {
+    sideBg, sideFg: fg, sideMuted: readableMuted(fg, sideBg, [sideBg]), sideActiveBg,
+    sideActiveFg: !dark && contrastRatio(i.primary, sideActiveBg) >= 4.6 ? i.primary : "#FFFFFF",
+    sideLine: mix(fg, sideBg, 0.86), sideHover: rgba("#FFFFFF", 0.06),
   };
 }
 
@@ -145,7 +163,10 @@ const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}
 export function themeCss(key: ThemeKey): string {
   const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));
   const sel = `:root[data-ds-theme="${key}"]`;
-  return seriesCss() + `${sel}{color-scheme:light;${light}}` +
+  // Barra lateral escura no modo claro (ex.: navy do Master): o logo dentro dela usa a versão para fundo escuro.
+  const sideDarkInLight = luminance(themeColors(key, "light").sideBg) < 0.18;
+  const sideLogo = sideDarkInLight ? `${sel} :is(.ds-side,.ds-drawer) .nl-logo-light{display:none}${sel} :is(.ds-side,.ds-drawer) .nl-logo-dark{display:inline-block}` : "";
+  return seriesCss() + sideLogo + `${sel}{color-scheme:light;${light}}` +
     `${sel}[data-theme="dark"]{color-scheme:dark;${dark}}` +
     `@media (prefers-color-scheme: dark){${sel}:not([data-theme="light"]){color-scheme:dark;${dark}}}`;
 }

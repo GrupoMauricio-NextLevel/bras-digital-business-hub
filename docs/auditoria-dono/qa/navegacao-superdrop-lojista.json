@@ -1,0 +1,826 @@
+[
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1551,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/services",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1374,
+    "h1": "Loja NextLevel",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1306,
+    "h1": "Pedidos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/analytics",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1099,
+    "h1": "Análise de vendas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/after-sales",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1613,
+    "h1": "Pós-venda",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/labels",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1131,
+    "h1": "Etiquetas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1166,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/products",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1397,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/content",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1165,
+    "h1": "Conteúdo",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/storefront",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1330,
+    "h1": "Loja virtual",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/theme-editor",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1483,
+    "h1": "",
+    "problemas": [
+      "sem título (h1)"
+    ]
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/templates",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1216,
+    "h1": "Temas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/campanhas",
+    "largura": 1440,
+    "status": 200,
+    "ms": 939,
+    "h1": "Campanhas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/descontos",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1415,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/avaliacoes",
+    "largura": 1440,
+    "status": 200,
+    "ms": 910,
+    "h1": "Avaliações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/avise-me",
+    "largura": 1440,
+    "status": 200,
+    "ms": 730,
+    "h1": "Avise-me",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/atacado",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1196,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/wallet",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1140,
+    "h1": "Saldo e recargas",
+    "problemas": [
+      "texto: valor vazio em R$ → “egar por Pix Valor da recarga R$ Gerar Pix Extrato Entradas”"
+    ]
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/finance",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1218,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/team",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1200,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/auditoria",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1452,
+    "h1": "Histórico de mudanças",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/settings",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1455,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/new",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1199,
+    "h1": "Novo pedido",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_snesu1cf0ih9",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1380,
+    "h1": "#1026",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_jhxf7wus109b",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1142,
+    "h1": "#1017",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_ixw7ras8bi36",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1082,
+    "h1": "#1023",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_gikox2tk147d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 970,
+    "h1": "#1020",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_zg56kya9553g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 824,
+    "h1": "#1019",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/services/sor_ub3ng3w9nbct",
+    "largura": 1440,
+    "status": 200,
+    "ms": 805,
+    "h1": "Banners",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/services/sor_narb70j0f534",
+    "largura": 1440,
+    "status": 200,
+    "ms": 891,
+    "h1": "Tráfego Pago",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/propostas",
+    "largura": 1440,
+    "status": 200,
+    "ms": 996,
+    "h1": "Propostas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_lem4oj1i1j3m",
+    "largura": 1440,
+    "status": 200,
+    "ms": 977,
+    "h1": "#1028",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_jka0rjvhc4e7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 956,
+    "h1": "#1027",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_5wp34jnk1xn1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1073,
+    "h1": "#1016",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_fz2bqfytfxp1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 999,
+    "h1": "#1015",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_rynyx74ilk4g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 915,
+    "h1": "#1022",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_g31xc6p141zf",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1209,
+    "h1": "#1018",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_0uiotwvtk4ji",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1465,
+    "h1": "#1014",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_mboky5d59f4s",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1107,
+    "h1": "#1021",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_jgxaehw2cajc",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1060,
+    "h1": "#1013",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_6id3awp50eya",
+    "largura": 1440,
+    "status": 200,
+    "ms": 851,
+    "h1": "#1012",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_pwgmofly3q0l",
+    "largura": 1440,
+    "status": 200,
+    "ms": 861,
+    "h1": "#1011",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_lm8f7736u4gd",
+    "largura": 1440,
+    "status": 200,
+    "ms": 775,
+    "h1": "#1010",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_qouawiq46ahv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 744,
+    "h1": "#1025",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_yuwiev33a0zr",
+    "largura": 1440,
+    "status": 200,
+    "ms": 732,
+    "h1": "#1009",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_n4a55zv1p2cv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 735,
+    "h1": "#1008",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_h0hd7nk660dp",
+    "largura": 1440,
+    "status": 200,
+    "ms": 840,
+    "h1": "#1024",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_7y8co16xnkrf",
+    "largura": 1440,
+    "status": 200,
+    "ms": 822,
+    "h1": "#1007",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_y1jhn4fp9mrg",
+    "largura": 1440,
+    "status": 200,
+    "ms": 756,
+    "h1": "#1006",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_gje0flospnv8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 727,
+    "h1": "#1005",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_ywbyslfu6eka",
+    "largura": 1440,
+    "status": 200,
+    "ms": 711,
+    "h1": "#1004",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_v4ltbb5gje2d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 736,
+    "h1": "#1003",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_ts2mh1ksg7l7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 728,
+    "h1": "#1002",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders/ord_b34kr4err0tn",
+    "largura": 1440,
+    "status": 200,
+    "ms": 789,
+    "h1": "#1001",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_nbuumkkrbuc7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 905,
+    "h1": "Mariana Pires",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_ka2kplzfrfq0",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1023,
+    "h1": "Gustavo Reis",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_fk8yhnv2v7yv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 836,
+    "h1": "Larissa Moura",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_3w6u2r09y79z",
+    "largura": 1440,
+    "status": 200,
+    "ms": 772,
+    "h1": "Bruno Teixeira",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_p0ysspd7so1j",
+    "largura": 1440,
+    "status": 200,
+    "ms": 805,
+    "h1": "Aline Cardoso",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_i0skjagr8xf8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 843,
+    "h1": "Vinícius Prado",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_tuuvfx76ve97",
+    "largura": 1440,
+    "status": 200,
+    "ms": 784,
+    "h1": "Fernanda Lopes",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_rczhemltj02k",
+    "largura": 1440,
+    "status": 200,
+    "ms": 767,
+    "h1": "Thiago Bastos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_yr468fkykw6e",
+    "largura": 1440,
+    "status": 200,
+    "ms": 722,
+    "h1": "Patrícia Nogueira",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_930uvc344ast",
+    "largura": 1440,
+    "status": 200,
+    "ms": 749,
+    "h1": "Lucas Barreto",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_bb2w96dhne0r",
+    "largura": 1440,
+    "status": 200,
+    "ms": 728,
+    "h1": "Camila Duarte",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_v1crqu8lnrdm",
+    "largura": 1440,
+    "status": 200,
+    "ms": 728,
+    "h1": "Diego Ferraz",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_shiuoenasydt",
+    "largura": 1440,
+    "status": 200,
+    "ms": 727,
+    "h1": "Juliana Alves",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers/sc_lkpv0otdwydi",
+    "largura": 1440,
+    "status": 200,
+    "ms": 724,
+    "h1": "Rafael Monteiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant",
+    "largura": 390,
+    "status": 200,
+    "ms": 671,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/services",
+    "largura": 390,
+    "status": 200,
+    "ms": 653,
+    "h1": "Loja NextLevel",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/orders",
+    "largura": 390,
+    "status": 200,
+    "ms": 693,
+    "h1": "Pedidos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/analytics",
+    "largura": 390,
+    "status": 200,
+    "ms": 618,
+    "h1": "Análise de vendas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/after-sales",
+    "largura": 390,
+    "status": 200,
+    "ms": 655,
+    "h1": "Pós-venda",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/labels",
+    "largura": 390,
+    "status": 200,
+    "ms": 647,
+    "h1": "Etiquetas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/customers",
+    "largura": 390,
+    "status": 200,
+    "ms": 638,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/products",
+    "largura": 390,
+    "status": 200,
+    "ms": 632,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/content",
+    "largura": 390,
+    "status": 200,
+    "ms": 648,
+    "h1": "Conteúdo",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/storefront",
+    "largura": 390,
+    "status": 200,
+    "ms": 762,
+    "h1": "Loja virtual",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/theme-editor",
+    "largura": 390,
+    "status": 200,
+    "ms": 876,
+    "h1": "",
+    "problemas": [
+      "sem título (h1)"
+    ]
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/templates",
+    "largura": 390,
+    "status": 200,
+    "ms": 645,
+    "h1": "Temas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/campanhas",
+    "largura": 390,
+    "status": 200,
+    "ms": 626,
+    "h1": "Campanhas",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/descontos",
+    "largura": 390,
+    "status": 200,
+    "ms": 793,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/avaliacoes",
+    "largura": 390,
+    "status": 200,
+    "ms": 616,
+    "h1": "Avaliações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/avise-me",
+    "largura": 390,
+    "status": 200,
+    "ms": 616,
+    "h1": "Avise-me",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/atacado",
+    "largura": 390,
+    "status": 200,
+    "ms": 756,
+    "h1": "Boa noite, Marcelo.",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/wallet",
+    "largura": 390,
+    "status": 200,
+    "ms": 651,
+    "h1": "Saldo e recargas",
+    "problemas": [
+      "texto: valor vazio em R$ → “egar por Pix Valor da recarga R$ Gerar Pix Extrato Entradas”"
+    ]
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/finance",
+    "largura": 390,
+    "status": 200,
+    "ms": 736,
+    "h1": "Financeiro",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/team",
+    "largura": 390,
+    "status": 200,
+    "ms": 622,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/auditoria",
+    "largura": 390,
+    "status": 200,
+    "ms": 601,
+    "h1": "Histórico de mudanças",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "/merchant/settings",
+    "largura": 390,
+    "status": 200,
+    "ms": 679,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "superdrop-lojista",
+    "rota": "(menu do celular)",
+    "largura": 390,
+    "problemas": []
+  }
+]

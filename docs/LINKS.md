@@ -60,7 +60,7 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 **Entrada:** https://master.nextlevelgroup.com.br/login
 
 **Painel Master** (https://master.nextlevelgroup.com.br/master)
-- Dashboard `/master` · Resumo do dia `/master/summary` · Pedidos `/master/orders` · Erros do sistema `/master/errors` · Integridade dos dados `/master/integridade` · CRM Loja NextLevel `/master/crm`
+- Dashboard `/master` · **Clientes e suporte** `/master/clientes` (achar qualquer cliente e entrar em modo suporte) · Página de cada marca: SuperDrop `/master/marcas/superdrop` · Commerce `/master/marcas/commerce` · Resumo do dia `/master/summary` · Pedidos `/master/orders` · Erros do sistema `/master/errors` · Integridade dos dados `/master/integridade` · CRM Loja NextLevel `/master/crm`
 - Rede: Fornecedores `/master/suppliers` (novo `/master/suppliers/new`) · Redes `/master/networks` · Lojas `/master/stores` · Catálogo `/master/catalog` · Parceiros `/master/partners`
 - Negócio: Financeiro `/master/finance` · Planos `/master/plans` · Temas `/master/templates` · Escritório virtual `/master/office` · Configurações `/master/settings`
 - Console Commerce: https://master.nextlevelgroup.com.br/commerce

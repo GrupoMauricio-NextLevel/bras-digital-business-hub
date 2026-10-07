@@ -3,7 +3,7 @@ import { ArrowRight, CircleAlert } from "lucide-react";
 import { BusinessPortal } from "@/components/app/business-portal";
 import { ActivityFeed } from "@/components/shared/activity-feed";
 import { OrdersTable } from "@/components/shared/orders-table";
-import { getPlatformOverview } from "@/lib/queries/master";
+import { getPlatformOverview, listStoresWithPlan } from "@/lib/queries/master";
 import { redirect } from "next/navigation";
 import { getBrand } from "@/lib/brand-server";
 import { listOrdersForActor } from "@/lib/domain/orders";
@@ -25,11 +25,16 @@ export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/commerce");
   const db = await getDb();
-  const [overview, orders, snap] = await Promise.all([
+  const [overview, orders, snap, sdStores, cmStores] = await Promise.all([
     getPlatformOverview(),
     listOrdersForActor(db, session.actor, { limit: 6 }),
     loadTowerSnapshot(db),
+    listStoresWithPlan({ marca: "SUPERDROP" }),
+    listStoresWithPlan({ marca: "NEXTLEVEL_COMMERCE" }),
   ]);
+  // Cada cartão de negócio mostra só os números daquela marca (mesma conta da página da marca e da lista de lojas).
+  const brandNumbers = (rows: Awaited<ReturnType<typeof listStoresWithPlan>>) => ({ gmv: rows.reduce((s, r) => s + r.gmv, 0), sales: rows.reduce((s, r) => s + r.orderCount, 0), stores: rows.length, active: rows.filter((r) => r.store.status === "ACTIVE").length });
+  const sd = brandNumbers(sdStores), cm = brandNumbers(cmStores);
   const alerts = buildAlerts(snap);
   const urgent = alerts.filter((a) => a.severity === "danger").length;
   const firstName = session.user.name.split(" ")[0];
@@ -38,7 +43,7 @@ export default async function MasterDashboard() {
     <>
       <PageHeader eyebrow="NextLevel Control Center" title={`${greeting()}, ${firstName}.`} description="Visão de todos os produtos do ecossistema." />
       <section className="ds-kpis mb-6" aria-label="Resumo da rede">
-        <MetricCard label="Volume da rede" value={formatBRL(overview.gmv)} hint={`${overview.orders} pedidos processados`} />
+        <MetricCard label="Volume da rede" value={formatBRL(overview.gmv)} hint={`${overview.orders} vendas pagas (sem frete)`} />
         <MetricCard label="Receita NextLevel" value={formatBRL(overview.platformRevenue)} hint={`${formatBRL(overview.subscriptionRevenue)} recorrente`} />
         <MetricCard label="Rede ativa" value={overview.activeStores} hint={`${overview.suppliers} forn. · ${overview.stores} lojas`} />
         <MetricCard label="Atenção" value={alerts.length} hint={urgent ? `${urgent} urgente(s)` : "nenhum urgente"} tone={urgent ? "danger" : "neutral"} />
@@ -48,14 +53,14 @@ export default async function MasterDashboard() {
         <SectionTitle title="Seus negócios" description="Cada negócio mantém sua operação e seu contexto." />
         <div className="grid gap-3">
         <BusinessPortal product={PRODUCT_CONTEXTS.superdrop} attention={alerts.length ? alerts.length + " situação(ões) na operação" : "Operação sem alertas críticos"} metrics={[
-          { label: "GMV", value: formatCompactBRL(overview.gmv) },
-          { label: "Pedidos", value: overview.orders },
-          { label: "Rede", value: overview.stores + " lojas" },
+          { label: "Vendas pagas", value: formatCompactBRL(sd.gmv) },
+          { label: "Pedidos pagos", value: sd.sales },
+          { label: "Lojas", value: `${sd.active} de ${sd.stores} no ar` },
         ]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.commerce} metrics={[
-          { label: "Função", value: "Core" },
-          { label: "Escopo", value: "Commerce" },
-          { label: "Estado", value: "Ativo" },
+          { label: "Vendas pagas", value: formatCompactBRL(cm.gmv) },
+          { label: "Pedidos pagos", value: cm.sales },
+          { label: "Lojas", value: `${cm.active} de ${cm.stores} no ar` },
         ]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.bras} metrics={[{ label: "Modelo", value: "B2B" }, { label: "Mercado", value: "Atacado" }, { label: "Estado", value: "Preparação" }]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.creators} metrics={[{ label: "Modelo", value: "Creators" }, { label: "Canal", value: "Social" }, { label: "Estado", value: "Preparação" }]} />

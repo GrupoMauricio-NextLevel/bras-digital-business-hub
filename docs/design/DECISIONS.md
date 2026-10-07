@@ -484,3 +484,12 @@ Rodada do dono (`docs/prompts/auditoria-dono-paineis-e-paginas.md`, fases 0 e 2)
 - Modo suporte para todos os papéis de clientes (lojista, equipe, fornecedor, expedição, parceiro) de todas as marcas, a partir de `/master/clientes` (e do console Commerce).
 - Motivo obrigatório; começa em **somente leitura** (bloqueio central em `runAction`); "agir em nome do cliente" é um segundo passo confirmado; entrada, liberação e saída na trilha `audit_log`, visível ao dono da loja.
 - Detalhes e testes: `docs/auditoria-dono/03-suporte.md`.
+
+## D81 — Painéis com a identidade da marca e Master por marca (2026-10-07)
+Rodada do dono (`docs/prompts/auditoria-dono-paineis-e-paginas.md`, fases 1, 3, 4 e 5).
+- **Identidade:** a barra lateral de cada painel leva um toque da cor da marca (claro: 9% da primária sobre o fundo; escuro: fundo e superfície com 5–6% da primária). O Master usa barra navy também no modo claro; nela, logo e seletor de negócio usam a versão para fundo escuro. Tudo no contrato `src/design-system/themes.ts` (sem condição por empresa nos componentes); contraste AA conferido por teste.
+- **Mesmo contrato de venda em todo lugar:** o Master passa a contar só vendas pagas, não canceladas, subtotal menos desconto, sem frete (igual ao painel do lojista). Os cartões de negócio do Master mostram os números **daquela marca** (antes o SuperDrop mostrava o volume da rede inteira).
+- **Janela única de 30 dias** (`salesWindow`) para o início do lojista e a Análise.
+- **Master × marcas:** página por marca (`/master/marcas/superdrop`, `/master/marcas/commerce`) com saúde, clientes que precisam de atenção (com "Ver como cliente") e atalhos; o seletor de negócio leva a ela.
+- `/commerce` aberto no endereço do Master não volta mais ao login (estava fora da lista de prefixos de painel).
+- Páginas públicas: espaços "Imagem em criação" (`ImagemEmCriacao`) que trocam sozinhos pela foto quando o arquivo existir em `public/portal/<marca>/v3/` (lista em `MANIFESTO.md`; prompt das imagens em `docs/prompts/imagens-paginas-publicas-gpt.md`).

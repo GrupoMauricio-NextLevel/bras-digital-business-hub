@@ -1,0 +1,799 @@
+[
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1250,
+    "h1": "Boa noite, Helena.",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1440,
+    "h1": "Pedidos",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/customers",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1453,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/after-sales",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1389,
+    "h1": "Pós-venda",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/catalogo",
+    "largura": 1440,
+    "status": 200,
+    "ms": 2013,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/catalogo/categorias",
+    "largura": 1440,
+    "status": 200,
+    "ms": 682,
+    "h1": "Categorias",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/campanhas",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1215,
+    "h1": "Campanhas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/descontos",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1110,
+    "h1": "Cupons de desconto",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/avaliacoes",
+    "largura": 1440,
+    "status": 200,
+    "ms": 671,
+    "h1": "Avaliações",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/storefront",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1193,
+    "h1": "Loja virtual",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/theme-editor",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1831,
+    "h1": "",
+    "problemas": [
+      "sem título (h1)"
+    ]
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/templates",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1044,
+    "h1": "Temas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/analytics",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1163,
+    "h1": "Análise de vendas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/finance",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1259,
+    "h1": "Financeiro da loja",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/settings",
+    "largura": 1440,
+    "status": 200,
+    "ms": 830,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/team",
+    "largura": 1440,
+    "status": 200,
+    "ms": 893,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/auditoria",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1268,
+    "h1": "Histórico de mudanças",
+    "problemas": [
+      "texto: null solto → “nvite 07 de out., 02:51 role: null → \"STAFF\" · email: null →”"
+    ]
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/new",
+    "largura": 1440,
+    "status": 200,
+    "ms": 725,
+    "h1": "Novo pedido",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_4fd7syv652d8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 983,
+    "h1": "#1036",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_d9ar7oxore6q",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1127,
+    "h1": "#1050",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_neqfpohq90e5",
+    "largura": 1440,
+    "status": 200,
+    "ms": 840,
+    "h1": "#1078",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_f0uj6lovgj93",
+    "largura": 1440,
+    "status": 200,
+    "ms": 732,
+    "h1": "#1144",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_1f3ygx9p00n4",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1081,
+    "h1": "#1109",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/catalogo/new",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1039,
+    "h1": "Novo produto",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/propostas",
+    "largura": 1440,
+    "status": 200,
+    "ms": 663,
+    "h1": "Propostas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_p02f4pu12sj6",
+    "largura": 1440,
+    "status": 200,
+    "ms": 845,
+    "h1": "#1098",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_pyqgbila226x",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1119,
+    "h1": "#1025",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_puifcc7irvh8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1091,
+    "h1": "#1115",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_bqsk7ixndnck",
+    "largura": 1440,
+    "status": 200,
+    "ms": 753,
+    "h1": "#1099",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_qw2lx5apq3vy",
+    "largura": 1440,
+    "status": 200,
+    "ms": 916,
+    "h1": "#1085",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_lhw585ypux24",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1170,
+    "h1": "#1043",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_o14i92cd5yj7",
+    "largura": 1440,
+    "status": 200,
+    "ms": 820,
+    "h1": "#1074",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_icqpwl1vrwib",
+    "largura": 1440,
+    "status": 200,
+    "ms": 864,
+    "h1": "#1127",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_q6qbzcgu8zfv",
+    "largura": 1440,
+    "status": 200,
+    "ms": 899,
+    "h1": "#1061",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_3evj3l66hcym",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1080,
+    "h1": "#1063",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_4vw1xk6gn2x9",
+    "largura": 1440,
+    "status": 200,
+    "ms": 730,
+    "h1": "#1007",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_9xlwi3tfna8g",
+    "largura": 1440,
+    "status": 200,
+    "ms": 904,
+    "h1": "#1084",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_b8j4wow06pby",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1140,
+    "h1": "#1026",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_nroyawdipwwb",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1120,
+    "h1": "#1024",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_tomwto23fwi0",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1220,
+    "h1": "#1135",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_4kj40bgliho2",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1306,
+    "h1": "#1072",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_b631iar9pnat",
+    "largura": 1440,
+    "status": 200,
+    "ms": 850,
+    "h1": "#1114",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_hqe1wg7c319d",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1012,
+    "h1": "#1119",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_u8ef0n6zb1j1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1222,
+    "h1": "#1052",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_ktwuh672hzoc",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1241,
+    "h1": "#1071",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_90xhmiw9w8nq",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1097,
+    "h1": "#1028",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_0linicw8jf4k",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1072,
+    "h1": "#1131",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_ovmb1k92poj2",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1030,
+    "h1": "#1027",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_x9xntvp9qgfy",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1008,
+    "h1": "#1141",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_wdip8mtb7myi",
+    "largura": 1440,
+    "status": 200,
+    "ms": 752,
+    "h1": "#1046",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_v3m01sdo6txu",
+    "largura": 1440,
+    "status": 200,
+    "ms": 898,
+    "h1": "#1107",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_8ffnv4t28rrp",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1076,
+    "h1": "#1123",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_0yzuuu83jorj",
+    "largura": 1440,
+    "status": 200,
+    "ms": 784,
+    "h1": "#1014",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_8yv2vkpxhso8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 685,
+    "h1": "#1031",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_p16ene993uyn",
+    "largura": 1440,
+    "status": 200,
+    "ms": 704,
+    "h1": "#1075",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_6rve0kch5uqq",
+    "largura": 1440,
+    "status": 200,
+    "ms": 835,
+    "h1": "#1019",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_lnzjyel6go1j",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1078,
+    "h1": "#1102",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_rkdih4luh6q8",
+    "largura": 1440,
+    "status": 200,
+    "ms": 886,
+    "h1": "#1069",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_atelnnth2v3f",
+    "largura": 1440,
+    "status": 200,
+    "ms": 743,
+    "h1": "#1029",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_vdaok6n5xk4l",
+    "largura": 1440,
+    "status": 200,
+    "ms": 699,
+    "h1": "#1004",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_50gntooa8qqu",
+    "largura": 1440,
+    "status": 200,
+    "ms": 937,
+    "h1": "#1125",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_4f70qg28i9b3",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1198,
+    "h1": "#1128",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_sm1y0e97jniu",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1079,
+    "h1": "#1083",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_lj97l5ol3ozb",
+    "largura": 1440,
+    "status": 200,
+    "ms": 1033,
+    "h1": "#1100",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_zui34t3mqs5j",
+    "largura": 1440,
+    "status": 200,
+    "ms": 861,
+    "h1": "#1113",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_nz9bo6te0um5",
+    "largura": 1440,
+    "status": 200,
+    "ms": 849,
+    "h1": "#1130",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_h1bn6v56d1an",
+    "largura": 1440,
+    "status": 200,
+    "ms": 822,
+    "h1": "#1143",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_3ng1bcnykcht",
+    "largura": 1440,
+    "status": 200,
+    "ms": 756,
+    "h1": "#1062",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_u4c35kzp2103",
+    "largura": 1440,
+    "status": 200,
+    "ms": 686,
+    "h1": "#1121",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders/ord_iq83gvha93p1",
+    "largura": 1440,
+    "status": 200,
+    "ms": 678,
+    "h1": "#1008",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant",
+    "largura": 390,
+    "status": 200,
+    "ms": 685,
+    "h1": "Boa noite, Helena.",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/orders",
+    "largura": 390,
+    "status": 200,
+    "ms": 804,
+    "h1": "Pedidos",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/customers",
+    "largura": 390,
+    "status": 200,
+    "ms": 692,
+    "h1": "Clientes",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/after-sales",
+    "largura": 390,
+    "status": 200,
+    "ms": 743,
+    "h1": "Pós-venda",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/catalogo",
+    "largura": 390,
+    "status": 200,
+    "ms": 778,
+    "h1": "Produtos",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/catalogo/categorias",
+    "largura": 390,
+    "status": 200,
+    "ms": 723,
+    "h1": "Categorias",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/campanhas",
+    "largura": 390,
+    "status": 200,
+    "ms": 673,
+    "h1": "Campanhas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/descontos",
+    "largura": 390,
+    "status": 200,
+    "ms": 623,
+    "h1": "Cupons de desconto",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/avaliacoes",
+    "largura": 390,
+    "status": 200,
+    "ms": 676,
+    "h1": "Avaliações",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/storefront",
+    "largura": 390,
+    "status": 200,
+    "ms": 841,
+    "h1": "Loja virtual",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/theme-editor",
+    "largura": 390,
+    "status": 200,
+    "ms": 1031,
+    "h1": "",
+    "problemas": [
+      "sem título (h1)"
+    ]
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/templates",
+    "largura": 390,
+    "status": 200,
+    "ms": 769,
+    "h1": "Temas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/analytics",
+    "largura": 390,
+    "status": 200,
+    "ms": 765,
+    "h1": "Análise de vendas",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/finance",
+    "largura": 390,
+    "status": 200,
+    "ms": 875,
+    "h1": "Financeiro da loja",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/settings",
+    "largura": 390,
+    "status": 200,
+    "ms": 788,
+    "h1": "Configurações",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/team",
+    "largura": 390,
+    "status": 200,
+    "ms": 682,
+    "h1": "Equipe",
+    "problemas": []
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "/merchant/auditoria",
+    "largura": 390,
+    "status": 200,
+    "ms": 618,
+    "h1": "Histórico de mudanças",
+    "problemas": [
+      "texto: null solto → “nvite 07 de out., 02:51 role: null → \"STAFF\" · email: null →”"
+    ]
+  },
+  {
+    "conta": "commerce-dono",
+    "rota": "(menu do celular)",
+    "largura": 390,
+    "problemas": []
+  }
+]

@@ -19,8 +19,8 @@ const accentOf = (k: ThemeKey) => { const c = themeColors(k, "light"); return { 
 
 export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
   master: { key: "master", name: "NextLevel Master", shortName: "Master", descriptor: "Control Center", ...accentOf("nextlevel"), href: "/master", available: true },
-  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Core operacional", ...accentOf("commerce"), href: "/commerce", available: true },
-  superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição & Dropshipping", ...accentOf("superdrop"), href: "/master", available: true },
+  commerce: { key: "commerce", name: "NextLevel Commerce", shortName: "Commerce", descriptor: "Lojas virtuais", ...accentOf("commerce"), href: "/master/marcas/commerce", available: true },
+  superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição e dropshipping", ...accentOf("superdrop"), href: "/master/marcas/superdrop", available: true },
   bras: { key: "bras", name: "Brás Digital", shortName: "Brás Digital", descriptor: "Atacado B2B", ...accentOf("bras"), available: false },
   creators: { key: "creators", name: "Creators Hub", shortName: "Creators", descriptor: "Creators & Social Commerce", ...accentOf("creators"), available: false },
   china: { key: "china", name: "China Hub", shortName: "China Hub", descriptor: "Brasil ↔ China", ...accentOf("china"), available: false },
