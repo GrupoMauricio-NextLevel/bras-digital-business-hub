@@ -1,3 +1,4 @@
+import type { OwnerRef } from "@/lib/domain/independent";
 import { PageHeader } from "@/components/app/page-header";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
@@ -12,7 +13,7 @@ export default async function CategoriasPage() {
 }
 
 /** Corpo compartilhado com a conta simples (`/merchant/catalogo/categorias`). */
-export async function CategoriasBody({ supplierId, base }: { supplierId: string; base: string }) {
+export async function CategoriasBody({ supplierId, base }: { supplierId: OwnerRef; base: string }) {
   const rows = await listCategories(await getDb(), supplierId);
   return (
     <>

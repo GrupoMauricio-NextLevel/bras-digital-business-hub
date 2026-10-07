@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/require-session";
 import { RoleLayout } from "@/components/app/role-layout";
 import { getDb } from "@/db/client";
 import { financeInvoices } from "@/db/schema";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
+import { isIndependentStore } from "@/lib/domain/independent";
 import { and, eq } from "drizzle-orm";
 import { formatBRL } from "@/lib/money";
 import { Clock, Hourglass } from "lucide-react";
@@ -34,7 +34,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       </div>
     );
   }
-  if (session.store?.kind === "SUPPLIER_OWN" && !(await independentSupplierOfStore(await getDb(), session.store.id))) {
+  if (session.store?.kind === "SUPPLIER_OWN" && !(await isIndependentStore(await getDb(), session.store.id))) {
     banner = (
       <div className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info-soft p-4 text-sm text-info" data-own-store-banner>
         <StoreIcon className="size-4" aria-hidden />

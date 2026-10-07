@@ -10,7 +10,7 @@
  * Datas em timestamptz lidas como ISO string. Dialeto Postgres (Neon/Netlify DB em produção, PGlite localmente).
  */
 import { sql } from "drizzle-orm";
-import { pgTable, text, integer, boolean, jsonb, timestamp, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, jsonb, timestamp, primaryKey, uniqueIndex, index, check, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 /** Datas como ISO string (timestamptz no banco), para manter as regras de negócio agnósticas ao driver. */
 const ts = (name: string) => timestamp(name, { mode: "string", withTimezone: true });
@@ -45,7 +45,7 @@ export const suppliers = pgTable("suppliers", {
   /** Token do Mercado Pago do fornecedor usado nas recargas Pix dos lojistas (criptografado). */
   walletMpTokenEnc: text("wallet_mp_token_enc"),
   walletMpAccountId: text("wallet_mp_account_id"),
-  /** Central oculta de um lojista independente (conta simples): nunca aparece para o lojista nem nas listas de fornecedores. */
+  /** Legado (D89): marcava a antiga "Central oculta" das lojas da Commerce, removida pela migração 0041. Sempre falso. */
   hidden: boolean("hidden").notNull().default(false),
   /** Plataforma de envio conectada (SuperFrete, Melhor Envio ou Onlog): token criptografado e conta. */
   shippingProvider: text("shipping_provider"),
@@ -70,7 +70,8 @@ export const networks = pgTable("networks", {
 export const stores = pgTable("stores", {
   id: id(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
-  networkId: text("network_id").notNull().references(() => networks.id),
+  /** Rede do fornecedor (SuperDrop). Vazio = loja independente da NextLevel Commerce, dona do próprio catálogo (D89). */
+  networkId: text("network_id").references(() => networks.id),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   status: text("status", { enum: ["PENDING_PAYMENT", "ACTIVE", "SUSPENDED", "CLOSED"] }).notNull().default("ACTIVE"),
@@ -105,8 +106,12 @@ export const stores = pgTable("stores", {
   /** Access token do Mercado Pago da loja, criptografado (AES-256-GCM). */
   mpAccessTokenEnc: text("mp_access_token_enc"),
   mpPublicKey: text("mp_public_key"),
+  /** Plataforma de envio da loja independente (D89; na loja do SuperDrop vale a do fornecedor). Token só criptografado. */
   shippingProvider: text("shipping_provider"),
   shippingStatus: text("shipping_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
+  shippingTokenEnc: text("shipping_token_enc"),
+  shippingAccount: text("shipping_account"),
+  shippingOriginZip: text("shipping_origin_zip"),
   /** Regras de frete da loja (frete grátis, taxa fixa, retirada, prazo de preparo). */
   shippingConfig: jsonb("shipping_config").$type<Record<string, unknown>>(),
   domainStatus: text("domain_status", { enum: ["NOT_CONFIGURED", "PENDING", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
@@ -165,16 +170,20 @@ export const users = pgTable("users", {
 // ---------------------------------------------------------------------------
 // Catálogo central
 // ---------------------------------------------------------------------------
+/** Dono do catálogo (D89): um fornecedor do SuperDrop OU uma loja independente da Commerce, nunca os dois. */
 export const categories = pgTable("categories", {
   id: id(),
-  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  storeId: text("store_id").references((): AnyPgColumn => stores.id),
   name: text("name").notNull(),
   slug: text("slug").notNull(),
-});
+}, (t) => [check("categories_one_owner", sql`(${t.supplierId} is null) <> (${t.storeId} is null)`), index("categories_store_idx").on(t.storeId)]);
 
 export const products = pgTable("products", {
   id: id(),
-  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  /** Dono do catálogo (D89): fornecedor do SuperDrop OU loja independente da Commerce (`store_id`), nunca os dois. */
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  storeId: text("store_id").references((): AnyPgColumn => stores.id),
   networkId: text("network_id").references(() => networks.id),
   categoryId: text("category_id").references(() => categories.id),
   name: text("name").notNull(),
@@ -205,7 +214,7 @@ export const products = pgTable("products", {
   seoDescription: text("seo_description").notNull().default(""),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
-}, (t) => [uniqueIndex("products_supplier_slug").on(t.supplierId, t.slug), uniqueIndex("products_supplier_sku").on(t.supplierId, t.sku)]);
+}, (t) => [uniqueIndex("products_supplier_slug").on(t.supplierId, t.slug), uniqueIndex("products_supplier_sku").on(t.supplierId, t.sku), uniqueIndex("products_store_slug").on(t.storeId, t.slug), uniqueIndex("products_store_sku").on(t.storeId, t.sku), check("products_one_owner", sql`(${t.supplierId} is null) <> (${t.storeId} is null)`)]);
 
 export const productVariants = pgTable("product_variants", {
   id: id(),
@@ -318,7 +327,8 @@ export const orders = pgTable("orders", {
   id: id(),
   number: integer("number").notNull(),
   storeId: text("store_id").notNull().references(() => stores.id),
-  supplierId: text("supplier_id").notNull().references(() => suppliers.id),
+  /** Fornecedor que atende o pedido (SuperDrop). Vazio = pedido de loja independente da Commerce (D89). */
+  supplierId: text("supplier_id").references(() => suppliers.id),
   storeCustomerId: text("store_customer_id").references(() => storeCustomers.id),
   channel: text("channel", { enum: ["ONLINE_STORE", "WHATSAPP", "INSTAGRAM", "MANUAL"] }).notNull().default("ONLINE_STORE"),
   saleType: text("sale_type", { enum: ["RETAIL", "WHOLESALE"] }).notNull().default("RETAIL"),

@@ -108,11 +108,14 @@ export async function claimOrder(db: Database, actor: Actor, orderId: string, no
   if (!order) throw new NotFoundError("Pedido não encontrado.");
   assertCanAccess(actor, order);
   if (!["READY_TO_PICK", "PICKING"].includes(order.status)) throw new DomainError("NOT_PICKABLE", "Este pedido não está na fila de separação.");
+  // Separação em equipe é da Central do fornecedor; pedido de loja independente não passa por aqui.
+  if (!order.supplierId) throw new DomainError("NOT_PICKABLE", "Este pedido é separado pela própria loja.");
+  const supplierId = order.supplierId;
   const user = await db.query.users.findFirst({ where: eq(users.id, actor.userId) });
   const limit = new Date(now.getTime() - CLAIM_MINUTES * 60_000).toISOString();
   return db.transaction(async (tx) => {
     await tx.delete(orderClaims).where(and(eq(orderClaims.orderId, orderId), lt(orderClaims.claimedAt, limit)));
-    const inserted = await tx.insert(orderClaims).values({ orderId, supplierId: order.supplierId, userId: actor.userId, userName: user?.name ?? "Equipe", claimedAt: now.toISOString() }).onConflictDoNothing().returning({ orderId: orderClaims.orderId });
+    const inserted = await tx.insert(orderClaims).values({ orderId, supplierId, userId: actor.userId, userName: user?.name ?? "Equipe", claimedAt: now.toISOString() }).onConflictDoNothing().returning({ orderId: orderClaims.orderId });
     if (inserted.length === 0) {
       const cur = await tx.query.orderClaims.findFirst({ where: eq(orderClaims.orderId, orderId) });
       if (cur && cur.userId !== actor.userId) throw new DomainError("CLAIMED", `${cur.userName} já está separando este pedido.`);

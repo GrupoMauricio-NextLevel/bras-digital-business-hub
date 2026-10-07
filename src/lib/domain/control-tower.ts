@@ -9,7 +9,8 @@ export type HealthBand = "HEALTHY" | "ATTENTION" | "RISK";
 export type StoreSignal = {
   id: string; name: string; slug: string; offer: "DROP_MANUAL" | "STORE_SUBDOMAIN" | "STORE_OWN";
   status: "PENDING_PAYMENT" | "ACTIVE" | "SUSPENDED" | "CLOSED";
-  supplierId: string; supplierName: string;
+  /** Vazio na loja independente da Commerce (D89). */
+  supplierId: string | null; supplierName: string | null;
   orders30: number; lastOrderAt: string | null; ageDays: number;
   balanceCents: number; awaitingFunds: number; oldestAwaitingHours: number;
   mpConnected: boolean; customDomain: string | null; domainStatus: "NOT_CONFIGURED" | "PENDING" | "CONNECTED";
@@ -82,7 +83,7 @@ export function buildAlerts(snap: TowerSnapshot): Alert[] {
 /** Coleta os sinais do banco para a torre de controle. */
 export async function loadTowerSnapshot(db: Database, now = new Date()): Promise<TowerSnapshot> {
   const since = new Date(now.getTime() - 30 * 86_400_000).toISOString();
-  const rows = await db.select({ store: stores, supplierId: suppliers.id, supplierName: suppliers.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).innerJoin(suppliers, eq(suppliers.id, networks.supplierId));
+  const rows = await db.select({ store: stores, supplierId: suppliers.id, supplierName: suppliers.name }).from(stores).leftJoin(networks, eq(networks.id, stores.networkId)).leftJoin(suppliers, eq(suppliers.id, networks.supplierId));
   const ord = await db.select({ storeId: orders.storeId, n: sql<number>`count(*)`, last: sql<string>`max(${orders.createdAt})` }).from(orders).where(and(ne(orders.status, "CANCELED"), gte(orders.createdAt, since))).groupBy(orders.storeId);
   const lastAny = await db.select({ storeId: orders.storeId, last: sql<string>`max(${orders.createdAt})` }).from(orders).groupBy(orders.storeId);
   const waiting = await db.select({ storeId: orders.storeId, n: sql<number>`count(*)`, oldest: sql<string>`min(${orders.awaitingFundsSince})` }).from(orders).where(and(eq(orders.status, "AWAITING_CENTRAL_PAYMENT"), eq(orders.centralPaymentStatus, "PENDING"))).groupBy(orders.storeId);

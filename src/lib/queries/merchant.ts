@@ -3,7 +3,7 @@ import { getDb } from "@/db/client";
 import { activities, invoices, orders, plans, serviceLeads, services, storeCustomers, storeProducts, storeThemes, subscriptions, themeSettings, themes, type Store, type ThemeSettingsData } from "@/db/schema";
 import { computeStoreAnalytics, isEligibleSale, netSaleCents, salesWindow } from "@/lib/domain/analytics";
 import { listStoreCatalog } from "@/lib/domain/catalog";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
+import { isIndependentStore } from "@/lib/domain/independent";
 
 export type OnboardingStep = { key: string; label: string; done: boolean; href: string };
 
@@ -43,7 +43,7 @@ export async function getMerchantOverview(store: Store) {
   const [custCount] = await db.select({ n: count() }).from(storeCustomers).where(eq(storeCustomers.storeId, store.id));
   const recent = await db.select().from(activities).where(and(eq(activities.storeId, store.id), eq(activities.scope, "STORE"))).orderBy(desc(activities.createdAt)).limit(8);
   const sub = await getSubscription(store.id);
-  const independentId = await independentSupplierOfStore(db, store.id);
+  const independentId = await isIndependentStore(db, store.id);
   const activeProducts = independentId ? (await db.select({ n: count() }).from(storeProducts).where(and(eq(storeProducts.storeId, store.id), eq(storeProducts.active, true))))[0]?.n ?? 0 : 0;
   return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store, { independent: !!independentId, activeProducts }), independent: !!independentId, subscription: sub };
 }

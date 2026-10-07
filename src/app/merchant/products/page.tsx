@@ -1,3 +1,4 @@
+import { ownerKey, ownerOfRow } from "@/lib/domain/independent";
 import { AlertTriangle, Package, PackageCheck, Power } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { ActionQueue, type ActionQueueItem } from "@/components/app/action-queue";
@@ -14,9 +15,9 @@ export default async function MerchantProductsPage() {
   const catalog = await getMerchantProducts(session.store!.id);
   const db = await getDb();
   const minBySupplier = new Map<string, number>();
-  for (const c of catalog) if (!minBySupplier.has(c.product.supplierId)) minBySupplier.set(c.product.supplierId, await getMinActivationStock(db, c.product.supplierId));
+  for (const c of catalog) { const k = ownerKey(ownerOfRow(c.product)); if (!minBySupplier.has(k)) minBySupplier.set(k, await getMinActivationStock(db, ownerOfRow(c.product))); }
   const items = catalog.map((c) => ({
-    shortSizes: (() => { const chk = activationCheck(c.variants.map((v) => ({ size: v.size, available: v.level.available })), minBySupplier.get(c.product.supplierId) ?? 4); return chk.ok ? null : { min: chk.min, sizes: chk.short.map((x) => x.size) }; })(),
+    shortSizes: (() => { const chk = activationCheck(c.variants.map((v) => ({ size: v.size, available: v.level.available })), minBySupplier.get(ownerKey(ownerOfRow(c.product))) ?? 4); return chk.ok ? null : { min: chk.min, sizes: chk.short.map((x) => x.size) }; })(),
     productId: c.product.id, name: c.product.name, sku: c.product.sku, images: c.product.images, description: c.product.description,
     costCents: c.product.costCents, suggestedPriceCents: c.product.suggestedPriceCents, minimumPriceCents: c.product.minimumPriceCents,
     sellsPack: c.product.sellsPack, packSuggested: c.packs[0]?.suggestedPriceCents ?? null, packMinimum: c.packs[0]?.minimumPriceCents ?? null,

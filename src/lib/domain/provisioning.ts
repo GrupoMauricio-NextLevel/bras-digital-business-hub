@@ -83,15 +83,23 @@ export async function createSupplier(db: Database, raw: z.input<typeof createSup
 /** Fornecedor cria uma loja na sua rede e convida o lojista. */
 export type StoreCreated = { storeId: string; slug: string; credentials: Credentials; offer: OfferKey; requiresPayment: boolean; setupCents: number; commissionCents: number; invoiceId: string | null };
 
-export async function createStore(db: Database, supplierId: string, raw: z.input<typeof createStoreSchema>): Promise<StoreCreated> {
+/**
+ * Cria a loja. Com `supplierId`: loja de membro na rede do fornecedor (SuperDrop). Com `null`: loja independente da
+ * NextLevel Commerce (D89), sem fornecedor, sem rede e dona do próprio catálogo.
+ */
+export async function createStore(db: Database, supplierId: string | null, raw: z.input<typeof createStoreSchema>): Promise<StoreCreated> {
   const input = createStoreSchema.parse(raw);
   const email = input.ownerEmail.toLowerCase();
   await ensureEmailFree(db, email);
-  const network = await db.query.networks.findFirst({ where: eq(networks.supplierId, supplierId) });
-  const supplierOrg = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) }).then((sp) => sp ? db.query.organizations.findFirst({ where: eq(organizations.id, sp.organizationId) }) : null);
-  const brand = input.brand ?? supplierOrg?.brand ?? defaultBrandCode();
-  if (!network) throw new DomainError("NETWORK_NOT_FOUND", "Fornecedor sem rede configurada.");
-  if (!(await capabilitiesForSupplier(db, supplierId)).caps.canCreateStores) throw new DomainError("SUPPLIER_BLOCKED", "Novas lojas estão bloqueadas por pendência financeira com a NextLevel.");
+  let network: typeof networks.$inferSelect | undefined;
+  let brand = input.brand ?? defaultBrandCode();
+  if (supplierId) {
+    network = await db.query.networks.findFirst({ where: eq(networks.supplierId, supplierId) });
+    const supplierOrg = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) }).then((sp) => sp ? db.query.organizations.findFirst({ where: eq(organizations.id, sp.organizationId) }) : null);
+    brand = input.brand ?? supplierOrg?.brand ?? defaultBrandCode();
+    if (!network) throw new DomainError("NETWORK_NOT_FOUND", "Fornecedor sem rede configurada.");
+    if (!(await capabilitiesForSupplier(db, supplierId)).caps.canCreateStores) throw new DomainError("SUPPLIER_BLOCKED", "Novas lojas estão bloqueadas por pendência financeira com a NextLevel.");
+  }
   const temporaryPassword = generateTemporaryPassword();
   const storeId = newId("sto");
   let slug = "";
@@ -100,7 +108,7 @@ export async function createStore(db: Database, supplierId: string, raw: z.input
     slug = await uniqueSlug(tx, input.slug ?? input.name, "stores");
     const orgId = newId("org");
     await tx.insert(organizations).values({ id: orgId, name: input.name, slug: await uniqueSlug(tx, input.name, "organizations"), type: "MERCHANT", brand });
-    await tx.insert(stores).values({ id: storeId, organizationId: orgId, networkId: network.id, name: input.name, slug, offer: input.offer, status: "PENDING_PAYMENT", tagline: input.tagline, whatsapp: input.whatsapp, logoText: input.name.split(" ").map((p) => p[0]).join("").slice(0, 3).toUpperCase() });
+    await tx.insert(stores).values({ id: storeId, organizationId: orgId, networkId: network?.id ?? null, name: input.name, slug, offer: input.offer, status: "PENDING_PAYMENT", tagline: input.tagline, whatsapp: input.whatsapp, logoText: input.name.split(" ").map((p) => p[0]).join("").slice(0, 3).toUpperCase() });
     await tx.insert(users).values({ id: newId("usr"), name: input.ownerName, email, role: "STORE_OWNER", organizationId: orgId, storeId, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
     const plan = (await tx.select().from(plans).where(eq(plans.key, input.offer)).limit(1))[0] ?? (await tx.select().from(plans).orderBy(plans.priceCents).limit(1))[0];
     const periodEnd = new Date(); periodEnd.setDate(periodEnd.getDate() + 30);
@@ -112,10 +120,11 @@ export async function createStore(db: Database, supplierId: string, raw: z.input
     const version = starter ? await tx.query.themeVersions.findFirst({ where: eq(themeVersions.themeId, starter.id) }) : null;
     if (starter && version) await tx.insert(storeThemes).values({ storeId, themeId: starter.id, themeVersionId: version.id });
     await tx.insert(themeSettings).values({ storeId, settings: { ...defaultThemeSettings(), heroTitle: `Bem-vindo à ${input.name}`, footerText: input.name } });
-    await tx.insert(activities).values([
+    if (network) await tx.insert(activities).values([
       { id: newId("act"), scope: "SUPPLIER", supplierId, storeId, type: "STORE_CREATED", message: `Loja ${input.name} criada e lojista convidado` },
       { id: newId("act"), scope: "PLATFORM", supplierId, storeId, type: "STORE_CREATED", message: `Loja ${input.name} criada na rede ${network.name}` },
     ]);
+    else await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId, type: "STORE_CREATED", message: `Loja independente ${input.name} criada (NextLevel Commerce)` });
   });
   return { storeId, slug, credentials: { email, temporaryPassword }, offer: input.offer, ...acquisition };
 }

@@ -1,6 +1,6 @@
 # ADR-0002. Desacoplar a "Central oculta" das lojas simples
 
-**Estado:** proposta, aguardando o dono. **Constituição:** art. 4 (loja não depende de fornecedor), art. 35 (decisão cara de reverter). Exceção vigente: D62.
+**Estado:** decidido pelo dono em 2026-10-07 e implementado (D89): loja independente sem fornecedor nem rede, dona do catálogo. **Constituição:** art. 4 (loja não depende de fornecedor), art. 35 (decisão cara de reverter). Exceção vigente: D62.
 
 ## Situação hoje (fato)
 - Toda loja precisa de uma rede (`stores.network_id` obrigatório) e todo pedido de um fornecedor (`orders.supplier_id` obrigatório; também em `products`, `invoices` e outras 6 tabelas).

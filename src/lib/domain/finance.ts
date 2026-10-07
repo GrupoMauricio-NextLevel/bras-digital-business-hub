@@ -204,21 +204,22 @@ export async function closeMonth(db: Database, period: string, now = new Date())
 // Aquisição de lojas (setup pago à NextLevel, comissão de canal)
 // ---------------------------------------------------------------------------
 /** Registra uma loja nova: fatura de setup + primeira mensalidade (pagas antes da liberação) e a comissão do fornecedor. */
-export async function registerStoreAcquisition(db: Database, input: { storeId: string; supplierId: string; offer: OfferKey; storeName: string; now?: Date }): Promise<{ invoiceId: string | null; setupCents: number; commissionCents: number; requiresPayment: boolean }> {
+export async function registerStoreAcquisition(db: Database, input: { storeId: string; supplierId: string | null; offer: OfferKey; storeName: string; now?: Date }): Promise<{ invoiceId: string | null; setupCents: number; commissionCents: number; requiresPayment: boolean }> {
   const now = input.now ?? new Date();
   const book = await getPriceBook(db);
-  const contract = await ensureContract(db, input.supplierId, { now });
+  // Loja independente da Commerce (D89): paga só à NextLevel; não há fornecedor, contrato nem comissão de canal.
+  const contract = input.supplierId ? await ensureContract(db, input.supplierId, { now }) : null;
   const offer = book.offers[input.offer];
   const setupCents = offer.setupCents;
   if (setupCents === 0 && offer.monthlyCents === 0) return { invoiceId: null, setupCents: 0, commissionCents: 0, requiresPayment: false };
-  const commissionCents = storeSetupCommission(setupCents, contract.storeSetupCommissionBps);
+  const commissionCents = contract ? storeSetupCommission(setupCents, contract.storeSetupCommissionBps) : 0;
   const due = new Date(now); due.setDate(due.getDate() + 7);
   const lines: InvoiceLine[] = [];
   if (setupCents > 0) lines.push({ kind: "STORE_SETUP", description: `Setup ${offer.name}`, amountCents: setupCents });
   lines.push({ kind: "STORE_FIRST_MONTH", description: `Primeira mensalidade ${offer.name}`, amountCents: offer.monthlyCents });
   const total = lines.reduce((s, l) => s + l.amountCents, 0);
   const inv = await insertInvoiceOnce(db, { dedupeKey: `STORESETUP:${input.storeId}`, payerType: "STORE", supplierId: input.supplierId, storeId: input.storeId, kind: "STORE_SETUP", description: `Ativação da loja ${input.storeName}`, amountCents: total, lines, status: "OPEN", dueDate: due.toISOString() });
-  await db.insert(storeAcquisitions).values({ id: newId("acq"), storeId: input.storeId, supplierId: input.supplierId, offer: input.offer, setupCents, commissionBps: contract.storeSetupCommissionBps, commissionCents, status: "PENDING_PAYMENT", invoiceId: inv.id });
+  if (input.supplierId && contract) await db.insert(storeAcquisitions).values({ id: newId("acq"), storeId: input.storeId, supplierId: input.supplierId, offer: input.offer, setupCents, commissionBps: contract.storeSetupCommissionBps, commissionCents, status: "PENDING_PAYMENT", invoiceId: inv.id });
   return { invoiceId: inv.id, setupCents, commissionCents, requiresPayment: true };
 }
 

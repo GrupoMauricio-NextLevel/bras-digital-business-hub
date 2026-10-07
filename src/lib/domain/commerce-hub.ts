@@ -5,7 +5,7 @@ import { brandLeads, financeInvoices, orders, organizations, storeProducts, stor
 import { brandByCode, type BrandCode } from "@/lib/brand";
 import { requireMaster, type Actor } from "./access";
 import { getNextLevelMp } from "./nextlevel-billing";
-import { independentSupplierOfStore } from "./independent";
+import { isIndependentStore } from "./independent";
 import { storeAccess } from "./store-access";
 
 export type LaunchCheck = { key: string; label: string; ok: boolean; hint: string; href?: string; severity: "blocker" | "recommended" };
@@ -28,7 +28,7 @@ export async function getBrandHub(db: Database, actor: Actor, code: BrandCode = 
   const list = [];
   for (const { store } of rows) {
     const access = storeAccess(store, now);
-    list.push({ id: store.id, name: store.name, slug: store.slug, status: store.status, offer: store.offer, createdAt: store.createdAt, published: !!store.publishedAt, independent: !!(await independentSupplierOfStore(db, store.id)), access: access.state, activeProducts: productCount.get(store.id) ?? 0 });
+    list.push({ id: store.id, name: store.name, slug: store.slug, status: store.status, offer: store.offer, createdAt: store.createdAt, published: !!store.publishedAt, independent: !!(await isIndependentStore(db, store.id)), access: access.state, activeProducts: productCount.get(store.id) ?? 0 });
   }
   const leads = await db.select().from(brandLeads).where(eq(brandLeads.brand, code)).orderBy(desc(brandLeads.createdAt));
   const leadCount = { NEW: 0, CONTACTED: 0, WON: 0, LOST: 0 } as Record<string, number>;

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { freshDb, customer } from "./setup";
 import { financeInvoices, orders, productVariants, storeDiscounts, storeProducts, users } from "@/db/schema";
 import { signupMember } from "@/lib/domain/store-access";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { advanceOrder, cancelOrder, createOrder, registerShippingLabel } from "@/lib/domain/orders";
 import { actorFromUser } from "@/lib/domain/access";
@@ -17,7 +17,7 @@ async function independent(n = 1) {
   const r = await signupMember(ctx.db, { storeName: `Moda ${n}`, ownerName: "Maria Souza", email: `maria${n}@moda.com.br`, password: "senha-segura-1", taxId: n === 1 ? "529.982.247-25" : "111.444.777-35", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never);
   await markInvoicePaid(ctx.db, (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!.id);
   const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  const { productId } = await createProduct(ctx.db, await catalogSupplierId(ctx.db, owner), { name: "Vestido", sku: `V-${n}`, categoryName: "Vestidos", costCents: 4000, suggestedPriceCents: 10000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 100 }] });
+  const { productId } = await createProduct(ctx.db, await catalogOwner(ctx.db, owner), { name: "Vestido", sku: `V-${n}`, categoryName: "Vestidos", costCents: 4000, suggestedPriceCents: 10000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 100 }] });
   await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 10000, packPriceCents: null, active: true, featured: false });
   const variantId = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!.id;
   return { ...r, owner, productId, variantId };

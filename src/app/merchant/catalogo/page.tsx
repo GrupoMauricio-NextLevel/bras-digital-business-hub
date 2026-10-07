@@ -6,7 +6,7 @@ import { ProductsBody } from "@/app/supplier/products/page";
 export const dynamic = "force-dynamic";
 
 export default async function MeusProdutos() {
-  const { session, supplierId } = await requireIndependent();
+  const { session, owner } = await requireIndependent();
   const commerce = await isCommerceStore(await getDb(), session.store!);
-  return <ProductsBody supplierId={supplierId} base="/merchant/catalogo" independent commerce={commerce} />;
+  return <ProductsBody supplierId={owner} base="/merchant/catalogo" independent commerce={commerce} />;
 }

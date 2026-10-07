@@ -13,7 +13,6 @@ import { emitEvent } from "./events";
 import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
-import { createHiddenCentral } from "./independent";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
@@ -165,7 +164,7 @@ export const signupSchema = z.object({
   /** Marca do endereço em que o cadastro foi feito. */
   brand: z.enum(BRAND_CODES).optional(),
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
-  /** Conta simples: a loja abre sem fornecedor (Central oculta). Vale nas marcas sem o módulo de dropshipping. */
+  /** Loja independente da NextLevel Commerce (D89): abre sem fornecedor e sem rede, dona do próprio catálogo. */
   independent: z.boolean().default(false),
 });
 
@@ -199,11 +198,9 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
     supplierId = sup.id;
   }
-  if (independent) {
-    if (await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) })) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
-    supplierId = (await createHiddenCentral(db, { name: input.storeName, brand: input.brand })).supplierId;
-  }
-  const created = await createStore(db, supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });
+  if (independent && (await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) }))) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
+  // Loja independente da NextLevel Commerce (D89): sem fornecedor e sem rede.
+  const created = await createStore(db, independent ? null : supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });
   if (independent) await db.update(stores).set({ kind: "SUPPLIER_OWN" }).where(eq(stores.id, created.storeId));
   const user = await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) });
   if (!user) throw new NotFoundError("Usuário não encontrado.");

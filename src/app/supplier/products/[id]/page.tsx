@@ -1,3 +1,4 @@
+import type { OwnerRef } from "@/lib/domain/independent";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { StatusBadge } from "@/components/app/status-badge";
@@ -22,7 +23,7 @@ export default async function SupplierProductPage({ params }: { params: Promise<
 }
 
 /** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo/[id]`): sem rede, sem distribuição. */
-export async function ProductBody({ supplierId, id, base = "/supplier/products", independent = false, commerce = false }: { supplierId: string; id: string; base?: string; independent?: boolean; commerce?: boolean }) {
+export async function ProductBody({ supplierId, id, base = "/supplier/products", independent = false, commerce = false }: { supplierId: OwnerRef; id: string; base?: string; independent?: boolean; commerce?: boolean }) {
   const data = await getSupplierProduct(supplierId, id);
   if (!data) notFound();
   const { product, variants, packs, movements } = data;

@@ -42,6 +42,8 @@ try {
   await cust.getByRole("button", { name: /Ir para o pagamento/ }).click();
   await cust.waitForURL(/\/order\//, { timeout: 60000 });
   const orderUrl = cust.url();
+  // A página de confirmação termina de carregar depois da troca de endereço.
+  await cust.getByText(/Pedido (confirmado|recebido)/).first().waitFor({ timeout: 15000 }).catch(() => {});
   must(await cust.getByText(/Pedido (confirmado|recebido)/).first().isVisible(), "página de confirmação do pedido");
   step("cliente: pedido criado " + orderUrl.split("/").pop());
 

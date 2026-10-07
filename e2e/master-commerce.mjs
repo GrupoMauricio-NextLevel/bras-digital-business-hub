@@ -14,7 +14,7 @@ p.on("pageerror", (e) => fail("pageerror: " + e.message));
 await p.goto(B + "/login", { waitUntil: "networkidle" }); await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
 await p.waitForURL(/\/commerce/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
 ok("no endereço da Commerce o Master abre direto na área da marca");
-for (const t of [/bloqueios? para lançamento/, /Mercado Pago da NextLevel/, /Lojas em operação/, /Prontidão/, /Interessados/]) if (!(await p.getByText(t).first().count())) fail("página sem " + t);
+for (const t of [/bloqueio(s|\(s\))? para lançamento/, /Mercado Pago da NextLevel/, /Lojas em operação/, /Prontidão/, /Interessados/]) if (!(await p.getByText(t).first().count())) fail("página sem " + t);
 ok("página da marca com lista de lançamento, lojas e interessados");
 if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail("rolagem horizontal");
 await p.evaluate(axeSource);

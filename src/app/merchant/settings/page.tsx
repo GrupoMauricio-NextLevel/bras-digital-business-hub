@@ -6,11 +6,8 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { SettingsForms } from "./settings-forms";
 import { getBaseUrl } from "@/lib/base-url";
 import { getDb } from "@/db/client";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
 import { parseShippingConfig } from "@/lib/shipping/quote";
 import { isDemoMode } from "@/lib/auth";
-import { eq } from "drizzle-orm";
-import { suppliers } from "@/db/schema";
 import { isCommerceStore } from "@/lib/store-brand";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +17,10 @@ export default async function MerchantSettingsPage() {
   const s = session.store!;
   const db = await getDb();
   const commerce = await isCommerceStore(db, s);
-  const hiddenId = await independentSupplierOfStore(db, s.id);
-  const sup = hiddenId ? await db.query.suppliers.findFirst({ where: eq(suppliers.id, hiddenId) }) : null;
+  // Loja independente (D89): a plataforma de envio é da própria loja.
+  const independent = !s.networkId;
   const shippingConfig = parseShippingConfig(s.shippingConfig);
-  const connect = sup ? { provider: sup.shippingProvider, status: sup.shippingStatus, account: sup.shippingAccount, originZip: sup.shippingOriginZip ?? "", demo: isDemoMode() } : null;
+  const connect = independent ? { provider: s.shippingProvider, status: s.shippingStatus, account: s.shippingAccount, originZip: s.shippingOriginZip ?? "", demo: isDemoMode() } : null;
   const paymentConnected = !!s.mpAccessTokenEnc;
   const shippingReady = connect ? connect.status === "CONNECTED" : s.shippingStatus === "CONNECTED";
   const domainReady = s.domainStatus === "CONNECTED";

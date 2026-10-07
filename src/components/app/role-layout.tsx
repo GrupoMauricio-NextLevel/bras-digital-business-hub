@@ -9,7 +9,7 @@ import { getBrand } from "@/lib/brand-server";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
+import { isIndependentStore } from "@/lib/domain/independent";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
@@ -38,7 +38,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
   const brand = store ? await brandOfStore(db, store) : await getBrand();
-  const independent = !!store && store.kind === "SUPPLIER_OWN" && !!(await independentSupplierOfStore(db, store.id));
+  const independent = !!store && store.kind === "SUPPLIER_OWN" && !!(await isIndependentStore(db, store.id));
   const ownItems = store?.kind === "SUPPLIER_OWN" ? nav.items.filter((i) => i.href !== "/merchant/wallet") : nav.items;
   // Conta simples: "Meus produtos" cadastra o que vende; "Preços e publicação" escolhe o que aparece na loja.
   const navItems = independent ? ownItems.flatMap((i) => i.href === "/merchant/products" ? [{ ...i, label: "Preços e publicação" }, { label: "Meus produtos", href: "/merchant/catalogo", icon: "Package" as const, group: i.group }] : [i]) : ownItems;

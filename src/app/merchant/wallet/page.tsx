@@ -10,7 +10,7 @@ import { orders } from "@/db/schema";
 import { and, eq, sum } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { isDemoMode } from "@/lib/auth";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
+import { isIndependentStore } from "@/lib/domain/independent";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { getBalanceCents, listWalletEntries } from "@/lib/domain/wallet";
 import { formatBRL } from "@/lib/money";
@@ -24,7 +24,7 @@ export default async function WalletPage() {
   const db = await getDb();
   const storeId = session.store!.id;
   // Conta simples não tem carteira de recarga da Central: o assunto financeiro dela fica no Financeiro.
-  if (await independentSupplierOfStore(db, storeId)) redirect("/merchant/finance");
+  if (await isIndependentStore(db, storeId)) redirect("/merchant/finance");
   const [balance, entries] = await Promise.all([getBalanceCents(db, storeId), listWalletEntries(db, session.actor, storeId, 30)]);
   const [waiting] = await db.select({ cost: sum(orders.costTotalCents) }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.status, "AWAITING_CENTRAL_PAYMENT")));
   const waitingCents = Number(waiting?.cost ?? 0);

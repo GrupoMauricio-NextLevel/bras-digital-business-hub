@@ -7,6 +7,7 @@ import { receiveStock } from "./inventory";
 import { DomainError, ForbiddenError } from "./errors";
 import { capabilitiesForSupplier } from "./finance";
 import { SIZE_GRID_KEYS } from "./size-grids";
+import { ownedBy, ownerColumns, toOwner, type OwnerRef } from "./independent";
 
 const money = z.coerce.number().int().nonnegative();
 
@@ -37,19 +38,23 @@ export const createProductSchema = z.object({
 });
 export type CreateProductInput = z.input<typeof createProductSchema>;
 
-export async function ensureCategory(db: Database, supplierId: string, name: string): Promise<string> {
+/** Categoria do dono do catálogo (fornecedor do SuperDrop ou loja independente da Commerce, D89). */
+export async function ensureCategory(db: Database, ownerRef: OwnerRef, name: string): Promise<string> {
   const slug = slugify(name);
-  const existing = await db.query.categories.findFirst({ where: and(eq(categories.supplierId, supplierId), eq(categories.slug, slug)) });
+  const existing = await db.query.categories.findFirst({ where: and(ownedBy(categories, ownerRef), eq(categories.slug, slug)) });
   if (existing) return existing.id;
   const id = newId("cat");
-  await db.insert(categories).values({ id, supplierId, name: name.trim(), slug });
+  await db.insert(categories).values({ id, ...ownerColumns(ownerRef), name: name.trim(), slug });
   return id;
 }
 
 /** Cadastra um produto completo: variantes, estoque inicial, grade e distribuição. */
-export async function createProduct(db: Database, supplierId: string, raw: CreateProductInput): Promise<{ productId: string }> {
+export async function createProduct(db: Database, ownerRef: OwnerRef, raw: CreateProductInput): Promise<{ productId: string }> {
   const input = createProductSchema.parse(raw);
-  if (!(await capabilitiesForSupplier(db, supplierId)).caps.canManageCatalog) throw new DomainError("SUPPLIER_BLOCKED", "Cadastro de produtos indisponível por pendência financeira com a NextLevel.");
+  const owner = toOwner(ownerRef); const supplierId = owner.supplierId ?? null;
+  if (supplierId && !(await capabilitiesForSupplier(db, supplierId)).caps.canManageCatalog) throw new DomainError("SUPPLIER_BLOCKED", "Cadastro de produtos indisponível por pendência financeira com a NextLevel.");
+  // Loja independente: o produto é só dela, sem distribuição para outras lojas.
+  if (owner.storeId) { input.distribution = "ALL_NETWORK"; input.storeIds = []; }
   if (input.minimumPriceCents > input.suggestedPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser maior que o sugerido.");
   if (input.costCents > input.minimumPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser menor que o custo.");
   if (!input.sellsUnit && !input.sellsPack) throw new DomainError("SALE_TYPE", "Escolha venda unitária, grade ou ambas.");
@@ -59,18 +64,18 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
     if (!input.pack) throw new DomainError("PACK", "Informe os preços da grade.");
     if (sizes.reduce((s, x) => s + x.packQuantity, 0) === 0) throw new DomainError("PACK", "Defina a quantidade por tamanho da grade.");
   }
-  const dupSku = await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, input.sku)) });
+  const dupSku = await db.query.products.findFirst({ where: and(ownedBy(products, owner), eq(products.sku, input.sku)) });
   if (dupSku) throw new DomainError("SKU_TAKEN", `Já existe um produto com o SKU ${input.sku}.`);
 
-  const selectedStoreIds = input.distribution === "SELECTED_STORES" ? await assertStoresInSupplierNetwork(db, supplierId, input.storeIds) : [];
+  const selectedStoreIds = supplierId && input.distribution === "SELECTED_STORES" ? await assertStoresInSupplierNetwork(db, supplierId, input.storeIds) : [];
   const productId = newId("prd");
   await db.transaction(async (tx) => {
-    const categoryId = await ensureCategory(tx, supplierId, input.categoryName);
+    const categoryId = await ensureCategory(tx, owner, input.categoryName);
     let slug = slugify(input.name);
-    const dupSlug = await tx.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.slug, slug)) });
+    const dupSlug = await tx.query.products.findFirst({ where: and(ownedBy(products, owner), eq(products.slug, slug)) });
     if (dupSlug) slug = `${slug}-${input.sku.toLowerCase()}`;
     await tx.insert(products).values({
-      id: productId, supplierId, categoryId, name: input.name.trim(), slug, description: input.description, sku: input.sku,
+      id: productId, ...ownerColumns(owner), categoryId, name: input.name.trim(), slug, description: input.description, sku: input.sku,
       images: input.images.length ? input.images : [`art:#111827,#ffffff,#9ca3af`],
       costCents: input.costCents, suggestedPriceCents: input.suggestedPriceCents, minimumPriceCents: input.minimumPriceCents,
       status: input.status, distribution: input.distribution, sellsUnit: input.sellsUnit, sellsPack: input.sellsPack,
@@ -92,22 +97,23 @@ export async function createProduct(db: Database, supplierId: string, raw: Creat
     if (selectedStoreIds.length) {
       await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId, storeId })));
     }
-    await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId, type: "PRODUCT_CREATED", message: `Produto “${input.name.trim()}” cadastrado (${input.sku})` });
+    await tx.insert(activities).values({ id: newId("act"), scope: supplierId ? "SUPPLIER" : "STORE", supplierId, storeId: owner.storeId ?? null, type: "PRODUCT_CREATED", message: `Produto “${input.name.trim()}” cadastrado (${input.sku})` });
   });
   return { productId };
 }
 
 /** Duplica um produto como rascunho: mesmos dados, variantes e grade, sem estoque, com SKU "-COPIA". */
-export async function duplicateProduct(db: Database, supplierId: string, productId: string): Promise<{ productId: string }> {
-  const src = await db.query.products.findFirst({ where: and(eq(products.id, productId), eq(products.supplierId, supplierId)) });
+export async function duplicateProduct(db: Database, ownerRef: OwnerRef, productId: string): Promise<{ productId: string }> {
+  const owner = toOwner(ownerRef);
+  const src = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, owner)) });
   if (!src) throw new DomainError("NOT_FOUND", "Produto não encontrado.");
   const variants = await db.select().from(productVariants).where(eq(productVariants.productId, src.id)).orderBy(productVariants.position);
   const packs = await db.select().from(productPacks).where(eq(productPacks.productId, src.id));
   const category = src.categoryId ? await db.query.categories.findFirst({ where: eq(categories.id, src.categoryId) }) : null;
   let sku = `${src.sku}-COPIA`; let n = 2;
-  while (await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, sku)) })) sku = `${src.sku}-COPIA${n++}`;
+  while (await db.query.products.findFirst({ where: and(ownedBy(products, owner), eq(products.sku, sku)) })) sku = `${src.sku}-COPIA${n++}`;
   const packItems = packs.length ? await db.select().from(productPackItems).where(eq(productPackItems.packId, packs[0]!.id)) : [];
-  const created = await createProduct(db, supplierId, {
+  const created = await createProduct(db, owner, {
     name: `${src.name} (cópia)`, sku, description: src.description, categoryName: category?.name ?? "Geral", images: src.images,
     costCents: src.costCents, suggestedPriceCents: src.suggestedPriceCents, minimumPriceCents: src.minimumPriceCents,
     status: "DRAFT", distribution: "ALL_NETWORK", storeIds: [], sellsUnit: src.sellsUnit, sellsPack: src.sellsPack, seoTitle: src.seoTitle, seoDescription: src.seoDescription,
@@ -119,11 +125,11 @@ export async function duplicateProduct(db: Database, supplierId: string, product
 }
 
 /** Muda o status de vários produtos do fornecedor de uma vez (edição em lote). */
-export async function setProductsStatus(db: Database, supplierId: string, ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED"): Promise<number> {
+export async function setProductsStatus(db: Database, ownerRef: OwnerRef, ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED"): Promise<number> {
   if (ids.length === 0) return 0;
-  const rows = await db.select({ id: products.id }).from(products).where(and(eq(products.supplierId, supplierId), inArray(products.id, ids)));
+  const rows = await db.select({ id: products.id }).from(products).where(and(ownedBy(products, ownerRef), inArray(products.id, ids)));
   if (rows.length === 0) return 0;
-  await db.update(products).set({ status, updatedAt: new Date().toISOString() }).where(and(eq(products.supplierId, supplierId), inArray(products.id, rows.map((r) => r.id))));
+  await db.update(products).set({ status, updatedAt: new Date().toISOString() }).where(and(ownedBy(products, ownerRef), inArray(products.id, rows.map((r) => r.id))));
   return rows.length;
 }
 

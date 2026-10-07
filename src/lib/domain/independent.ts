@@ -1,48 +1,56 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, type SQL } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { activities, networks, organizations, stores, supplierContracts, suppliers } from "@/db/schema";
-import { BRAND_CODES, defaultBrandCode, type BrandCode } from "@/lib/brand";
-import { newId, slugify } from "@/lib/ids";
+import { networks, stores } from "@/db/schema";
+import { BRAND_CODES, type BrandCode } from "@/lib/brand";
 import type { Actor } from "./access";
-import { ForbiddenError } from "./errors";
-import { ensureContract } from "./finance";
+import { ForbiddenError, NotFoundError } from "./errors";
 
 /**
- * Conta simples (D34): o lojista da NextLevel Commerce abre a loja sem fornecedor. Por baixo existe uma Central
- * oculta (supplier `hidden`) que só guarda catálogo, estoque e pedidos; o lojista nunca a vê, não paga taxa de
- * Central e não tem carteira (a loja nasce `SUPPLIER_OWN`, em que o custo do pedido é interno).
- * Dívida: o modelo geral `seller` (fase P6) substitui a Central oculta.
+ * Loja independente da NextLevel Commerce (D89): não tem fornecedor nem rede. É dona do próprio catálogo
+ * (`products.store_id`, `categories.store_id`) e dos próprios pedidos (`orders.supplier_id` vazio).
+ * Lojas de membros do SuperDrop continuam numa rede de fornecedor, com o catálogo do fornecedor.
+ * Só a tecnologia e os temas são compartilhados entre os dois produtos; não há relação entre os dados.
  */
-export async function createHiddenCentral(db: Database, input: { name: string; brand?: (typeof BRAND_CODES)[number] }): Promise<{ supplierId: string }> {
-  const base = slugify(input.name) || "loja";
-  const suffix = newId().slice(0, 6);
-  const orgId = newId("org");
-  const supplierId = newId("sup");
-  await db.insert(organizations).values({ id: orgId, name: `Central de ${input.name}`, slug: `c-${base}-${suffix}`, type: "SUPPLIER", brand: input.brand ?? defaultBrandCode() });
-  await db.insert(suppliers).values({ id: supplierId, organizationId: orgId, name: input.name, slug: `c-${base}-${suffix}`, hidden: true, businessModel: "WHITE_LABEL", platformFeePercent: 0, setupFeeCents: 0 });
-  await db.insert(networks).values({ id: newId("net"), supplierId, name: `Rede ${input.name}`, slug: `rede-c-${base}-${suffix}` });
-  // Contrato zerado: a cobrança é só a do plano da loja (nenhuma taxa de Central nem comissão de canal).
-  await ensureContract(db, supplierId);
-  await db.update(supplierContracts).set({ monthlyFeeCents: 0, setupFeeCents: 0, volumeFeeBps: 0, minMonthlyFeeCents: 0, perOrderFeeCents: 0, storeSetupCommissionBps: 0 }).where(eq(supplierContracts.supplierId, supplierId));
-  await db.insert(activities).values({ id: newId("act"), scope: "PLATFORM", supplierId, type: "HIDDEN_CENTRAL_CREATED", message: `Conta simples criada para ${input.name}` });
-  return { supplierId };
+
+/** Dono de um catálogo: um fornecedor do SuperDrop ou uma loja independente da Commerce. */
+export type CatalogOwner = { supplierId: string; storeId?: undefined } | { storeId: string; supplierId?: undefined };
+/** Aceita o id do fornecedor (forma antiga, SuperDrop) ou o dono explícito. */
+export type OwnerRef = CatalogOwner | string;
+export const toOwner = (o: OwnerRef): CatalogOwner => (typeof o === "string" ? { supplierId: o } : o);
+/** Colunas de dono para gravar numa linha de catálogo. */
+export const ownerColumns = (o: OwnerRef) => { const x = toOwner(o); return x.supplierId ? { supplierId: x.supplierId, storeId: null } : { supplierId: null, storeId: x.storeId! }; };
+/** Condição "pertence a este dono" para tabelas com `supplierId` e `storeId`. */
+export function ownedBy(table: { supplierId: Parameters<typeof eq>[0]; storeId: Parameters<typeof eq>[0] }, o: OwnerRef): SQL {
+  const x = toOwner(o);
+  return x.supplierId ? eq(table.supplierId, x.supplierId) : eq(table.storeId, x.storeId!);
+}
+/** Dono de uma linha já lida do banco. */
+export const ownerOfRow = (r: { supplierId: string | null; storeId: string | null }): CatalogOwner => (r.supplierId ? { supplierId: r.supplierId } : { storeId: r.storeId! });
+export const ownerKey = (o: OwnerRef) => { const x = toOwner(o); return x.supplierId ? `sup:${x.supplierId}` : `sto:${x.storeId}`; };
+
+/** A loja é independente (Commerce, sem fornecedor)? */
+export async function isIndependentStore(db: Database, storeId: string | null | undefined): Promise<boolean> {
+  if (!storeId) return false;
+  const s = await db.query.stores.findFirst({ where: eq(stores.id, storeId), columns: { networkId: true } });
+  return !!s && !s.networkId;
 }
 
-/** Fornecedor (Central) por trás de uma loja, quando ela é independente (conta simples). */
-export async function independentSupplierOfStore(db: Database, storeId: string | null | undefined): Promise<string | null> {
-  if (!storeId) return null;
-  const r = await db.select({ supplierId: suppliers.id }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).innerJoin(suppliers, eq(suppliers.id, networks.supplierId)).where(and(eq(stores.id, storeId), eq(suppliers.hidden, true))).limit(1);
+/** Fornecedor da rede de uma loja do SuperDrop (null para loja independente). */
+export async function supplierOfStore(db: Database, storeId: string): Promise<string | null> {
+  const r = await db.select({ supplierId: networks.supplierId }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(eq(stores.id, storeId))).limit(1);
   return r[0]?.supplierId ?? null;
 }
 
-/** Central a que o ator pode dar manutenção no catálogo: a do fornecedor, ou a oculta do lojista independente. */
-export async function catalogSupplierId(db: Database, actor: Actor): Promise<string> {
-  if (actor.role === "SUPPLIER_ADMIN" && actor.supplierId) return actor.supplierId;
-  if (actor.role === "STORE_OWNER") {
-    const id = await independentSupplierOfStore(db, actor.storeId);
-    if (id) return id;
+/** Catálogo que o ator mantém: o do fornecedor, ou o da própria loja quando ela é independente. */
+export async function catalogOwner(db: Database, actor: Actor): Promise<CatalogOwner> {
+  if (actor.role === "SUPPLIER_ADMIN" && actor.supplierId) return { supplierId: actor.supplierId };
+  if (actor.role === "STORE_OWNER" && actor.storeId) {
+    const s = await db.query.stores.findFirst({ where: eq(stores.id, actor.storeId), columns: { id: true, networkId: true } });
+    if (!s) throw new NotFoundError("Loja não encontrada.");
+    if (!s.networkId) return { storeId: s.id };
   }
-  throw new ForbiddenError("Ação disponível apenas para o fornecedor ou para a conta simples da loja.");
+  throw new ForbiddenError("Ação disponível apenas para o fornecedor ou para a loja independente.");
 }
 
+export { BRAND_CODES };
 export type { BrandCode };

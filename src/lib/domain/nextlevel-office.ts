@@ -16,11 +16,12 @@ export async function nextlevelOffice(db: Database, actor: Actor, now = new Date
 
   const brandOf = new Map((await db.select({ id: organizations.id, brand: organizations.brand }).from(organizations)).map((o) => [o.id, o.brand] as const));
   const inBrand = (orgId: string) => !brand || brandOf.get(orgId) === brand;
-  const storeSubs = storeRows.filter((s) => s.kind === "MEMBER" && inBrand(s.organizationId)).map((s) => {
+  // Assinaturas de lojas: membros do SuperDrop e lojas independentes da Commerce (D89), todas pagas à NextLevel.
+  const storeSubs = storeRows.filter((s) => (s.kind === "MEMBER" || !s.networkId) && !s.showcaseTheme && inBrand(s.organizationId)).map((s) => {
     const acc: StoreAccess = storeAccess(s, now);
     const supplier = supplierRows.find((x) => x.id === netRows.find((n) => n.id === s.networkId)?.supplierId);
     const monthly = book.offers[s.offer]?.monthlyCents ?? 0;
-    return { storeId: s.id, name: s.name, supplierName: supplier?.name ?? "—", offer: s.offer, state: acc.state, endsAt: acc.endsAt?.toISOString() ?? null, daysLeft: acc.daysLeft, monthlyCents: monthly };
+    return { storeId: s.id, name: s.name, supplierName: supplier?.name ?? (s.networkId ? "—" : "Loja independente (Commerce)"), offer: s.offer, state: acc.state, endsAt: acc.endsAt?.toISOString() ?? null, daysLeft: acc.daysLeft, monthlyCents: monthly };
   });
   const supplierSubs = [];
   for (const s of supplierRows.filter((x) => x.status !== "CLOSED" && inBrand(x.organizationId))) {

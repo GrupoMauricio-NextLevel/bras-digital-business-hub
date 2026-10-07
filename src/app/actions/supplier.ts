@@ -3,10 +3,10 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
-import { activities, productStoreAccess, productVariants, products, suppliers } from "@/db/schema";
+import { activities, productStoreAccess, productVariants, products, stores, suppliers } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner, ownedBy, type CatalogOwner } from "@/lib/domain/independent";
 import { ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { adjustStock, receiveStock } from "@/lib/domain/inventory";
 import { newId } from "@/lib/ids";
@@ -14,13 +14,20 @@ import { newId } from "@/lib/ids";
 async function supplierCtx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");
-  // Fornecedor, ou lojista de conta simples (Central oculta) mexendo no próprio catálogo.
-  return { supplierId: await catalogSupplierId(await getDb(), session.actor), session };
+  // Fornecedor (SuperDrop) ou loja independente da Commerce mexendo no próprio catálogo (D89).
+  return { owner: await catalogOwner(await getDb(), session.actor), session };
 }
 
-async function assertOwnsVariant(supplierId: string, variantId: string) {
+/** Grava a configuração de envio no dono: o fornecedor, ou a própria loja independente. */
+async function setShipping(owner: CatalogOwner, values: { shippingProvider?: string | null; shippingStatus?: "NOT_CONFIGURED" | "DEMO" | "CONNECTED"; shippingAccount?: string | null; shippingTokenEnc?: string | null; shippingOriginZip?: string }) {
+  const db = await getDb();
+  if (owner.supplierId) await db.update(suppliers).set(values).where(eq(suppliers.id, owner.supplierId));
+  else await db.update(stores).set({ ...values, updatedAt: new Date().toISOString() }).where(eq(stores.id, owner.storeId!));
+}
+
+async function assertOwnsVariant(owner: CatalogOwner, variantId: string) {
   const db = (await getDb());
-  const row = await db.select({ id: productVariants.id }).from(productVariants).innerJoin(products, eq(products.id, productVariants.productId)).where(and(eq(productVariants.id, variantId), eq(products.supplierId, supplierId))).limit(1);
+  const row = await db.select({ id: productVariants.id }).from(productVariants).innerJoin(products, eq(products.id, productVariants.productId)).where(and(eq(productVariants.id, variantId), ownedBy(products, owner))).limit(1);
   if (!row[0]) throw new NotFoundError("Variante não pertence a este fornecedor.");
 }
 
@@ -34,9 +41,9 @@ const stockSchema = z.object({ variantId: z.string().min(1), quantity: z.coerce.
 
 export async function receiveStockAction(input: z.input<typeof stockSchema>) {
   return runAction(async () => {
-    const { supplierId, session } = await supplierCtx();
+    const { owner, session } = await supplierCtx();
     const data = stockSchema.parse(input);
-    await assertOwnsVariant(supplierId, data.variantId);
+    await assertOwnsVariant(owner, data.variantId);
     await receiveStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note, actorUserId: session.actor.userId });
     revalidatePanels();
     return undefined;
@@ -45,9 +52,9 @@ export async function receiveStockAction(input: z.input<typeof stockSchema>) {
 
 export async function adjustStockAction(input: z.input<typeof stockSchema>) {
   return runAction(async () => {
-    const { supplierId, session } = await supplierCtx();
+    const { owner, session } = await supplierCtx();
     const data = stockSchema.parse(input);
-    await assertOwnsVariant(supplierId, data.variantId);
+    await assertOwnsVariant(owner, data.variantId);
     await adjustStock((await getDb()), data.variantId, data.quantity, { referenceType: "MANUAL", note: data.note, actorUserId: session.actor.userId });
     revalidatePanels();
     return undefined;
@@ -58,11 +65,14 @@ const distributionSchema = z.object({ productId: z.string().min(1), distribution
 
 export async function setDistributionAction(input: z.input<typeof distributionSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = distributionSchema.parse(input);
     const db = (await getDb());
-    const product = await db.query.products.findFirst({ where: and(eq(products.id, data.productId), eq(products.supplierId, supplierId)) });
+    const product = await db.query.products.findFirst({ where: and(eq(products.id, data.productId), ownedBy(products, owner)) });
     if (!product) throw new NotFoundError("Produto não encontrado.");
+    // Distribuição entre lojas é coisa de rede de fornecedor; loja independente vende só na própria loja.
+    if (!owner.supplierId) throw new ForbiddenError("Na loja independente o produto aparece só na sua loja.");
+    const supplierId = owner.supplierId;
     const selectedStoreIds = data.distribution === "SELECTED_STORES" ? await assertStoresInSupplierNetwork(db, supplierId, data.storeIds) : [];
     await db.transaction(async (tx) => {
       await tx.update(products).set({ distribution: data.distribution, updatedAt: new Date().toISOString() }).where(eq(products.id, product.id));
@@ -97,11 +107,11 @@ const productSchema = z.object({
 
 export async function updateProductAction(input: z.input<typeof productSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = productSchema.parse(input);
     if (data.minimumPriceCents > data.suggestedPriceCents) throw new ForbiddenError("Preço mínimo não pode ser maior que o sugerido.");
     const db = (await getDb());
-    const updated = await db.update(products).set({ ...data, updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), eq(products.supplierId, supplierId))).returning({ id: products.id });
+    const updated = await db.update(products).set({ ...data, updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), ownedBy(products, owner))).returning({ id: products.id });
     if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
     revalidatePanels();
     return undefined;
@@ -115,8 +125,8 @@ import { assertStoresInSupplierNetwork, createProduct, duplicateProduct, setProd
 
 export async function createProductAction(input: CreateProductInput) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    const r = await createProduct(await getDb(), supplierId, input);
+    const { owner } = await supplierCtx();
+    const r = await createProduct(await getDb(), owner, input);
     revalidatePanels();
     return r;
   });
@@ -124,8 +134,8 @@ export async function createProductAction(input: CreateProductInput) {
 
 export async function duplicateProductAction(productId: string) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    const r = await duplicateProduct(await getDb(), supplierId, productId);
+    const { owner } = await supplierCtx();
+    const r = await duplicateProduct(await getDb(), owner, productId);
     revalidatePanels();
     return r;
   });
@@ -133,9 +143,9 @@ export async function duplicateProductAction(productId: string) {
 
 export async function bulkProductStatusAction(ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED") {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     if (ids.length > 200) throw new ForbiddenError("Limite de 200 produtos por vez.");
-    const n = await setProductsStatus(await getDb(), supplierId, ids, z.enum(["ACTIVE", "DRAFT", "ARCHIVED"]).parse(status));
+    const n = await setProductsStatus(await getDb(), owner, ids, z.enum(["ACTIVE", "DRAFT", "ARCHIVED"]).parse(status));
     revalidatePanels();
     return { updated: n };
   });
@@ -148,24 +158,24 @@ const importSchema = z.object({ source: z.discriminatedUnion("kind", [z.object({
 /** Confere a planilha sem gravar nada: mostra o que será criado, atualizado, ignorado e os erros linha a linha. */
 export async function previewProductsImportAction(input: z.input<typeof importSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = importSchema.parse(input);
     const { readSpreadsheet, previewImport } = await import("@/lib/domain/product-import-server");
     const matrix = await readSpreadsheet(data.source);
     if (matrix.length < 2) throw new ForbiddenError("Planilha vazia ou sem linhas de produto.");
-    return previewImport(await getDb(), supplierId, matrix, data.mode);
+    return previewImport(await getDb(), owner, matrix, data.mode);
   });
 }
 
 /** Importa produtos de CSV ou XLSX. Cada linha é independente: erros não impedem as demais. */
 export async function importProductsCsvAction(input: z.input<typeof importSchema> | string) {
   return runAction(async (): Promise<ImportResult> => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = importSchema.parse(typeof input === "string" ? { source: { kind: "csv", text: input } } : input);
     const { readSpreadsheet, importRows } = await import("@/lib/domain/product-import-server");
     const matrix = await readSpreadsheet(data.source);
     if (matrix.length < 2) throw new ForbiddenError("Planilha vazia ou sem linhas de produto.");
-    const result = await importRows(await getDb(), supplierId, matrix, data.mode);
+    const result = await importRows(await getDb(), owner, matrix, data.mode);
     revalidatePanels();
     return result;
   });
@@ -175,10 +185,10 @@ const imagesSchema = z.object({ productId: z.string().min(1), images: z.array(z.
 
 export async function updateProductImagesAction(input: z.input<typeof imagesSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = imagesSchema.parse(input);
     const db = await getDb();
-    const updated = await db.update(products).set({ images: data.images.length ? data.images : ["art:#111827,#ffffff,#9ca3af"], updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), eq(products.supplierId, supplierId))).returning({ id: products.id });
+    const updated = await db.update(products).set({ images: data.images.length ? data.images : ["art:#111827,#ffffff,#9ca3af"], updatedAt: new Date().toISOString() }).where(and(eq(products.id, data.productId), ownedBy(products, owner))).returning({ id: products.id });
     if (updated.length === 0) throw new NotFoundError("Produto não encontrado.");
     revalidatePanels();
     return undefined;
@@ -197,18 +207,17 @@ const shippingSchema = z.object({ provider: z.enum(SHIPPING_PROVIDER_KEYS as [Sh
 /** Conecta a plataforma de envio: valida o token na própria plataforma e guarda criptografado. Em demonstração, aceita conexão simulada. */
 export async function connectShippingAction(input: z.input<typeof shippingSchema>) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const data = shippingSchema.parse(input);
-    const db = await getDb();
     if (!data.token) {
       if (!isDemoMode()) throw new ForbiddenError("Cole o token da plataforma de envio.");
-      await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "DEMO", shippingAccount: "conta de demonstração", shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
+      await setShipping(owner, { shippingProvider: data.provider, shippingStatus: "DEMO", shippingAccount: "conta de demonstração", shippingTokenEnc: null });
       revalidatePanels();
       return { account: "conta de demonstração" };
     }
     let account: string;
     try { account = (await verifyShippingToken(data.provider, data.token.trim())).account; } catch (e) { throw new ForbiddenError(e instanceof ShippingError ? e.message : "Não foi possível validar o token."); }
-    await db.update(suppliers).set({ shippingProvider: data.provider, shippingStatus: "CONNECTED", shippingAccount: account, shippingTokenEnc: encryptSecret(data.token.trim()) }).where(eq(suppliers.id, supplierId));
+    await setShipping(owner, { shippingProvider: data.provider, shippingStatus: "CONNECTED", shippingAccount: account, shippingTokenEnc: encryptSecret(data.token.trim()) });
     revalidatePanels();
     return { account };
   });
@@ -217,10 +226,10 @@ export async function connectShippingAction(input: z.input<typeof shippingSchema
 /** CEP de onde saem os pedidos (origem das cotações de frete). Serve ao fornecedor e à conta simples. */
 export async function setOriginZipAction(zip: string) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
+    const { owner } = await supplierCtx();
     const digits = zip.replace(/\D/g, "");
     if (digits.length !== 8) throw new ForbiddenError("Informe um CEP válido (8 números).");
-    await (await getDb()).update(suppliers).set({ shippingOriginZip: digits }).where(eq(suppliers.id, supplierId));
+    await setShipping(owner, { shippingOriginZip: digits });
     revalidatePanels();
     return undefined;
   });
@@ -228,8 +237,8 @@ export async function setOriginZipAction(zip: string) {
 
 export async function disconnectShippingAction() {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    await (await getDb()).update(suppliers).set({ shippingProvider: null, shippingStatus: "NOT_CONFIGURED", shippingAccount: null, shippingTokenEnc: null }).where(eq(suppliers.id, supplierId));
+    const { owner } = await supplierCtx();
+    await setShipping(owner, { shippingProvider: null, shippingStatus: "NOT_CONFIGURED", shippingAccount: null, shippingTokenEnc: null });
     revalidatePanels();
     return undefined;
   });
@@ -242,8 +251,8 @@ import { createCategory, deleteCategory, renameCategory } from "@/lib/domain/cat
 
 export async function createCategoryAction(name: string) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    await createCategory(await getDb(), supplierId, name);
+    const { owner } = await supplierCtx();
+    await createCategory(await getDb(), owner, name);
     revalidatePanels();
     return undefined;
   });
@@ -251,8 +260,8 @@ export async function createCategoryAction(name: string) {
 
 export async function renameCategoryAction(id: string, name: string) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    await renameCategory(await getDb(), supplierId, id, name);
+    const { owner } = await supplierCtx();
+    await renameCategory(await getDb(), owner, id, name);
     revalidatePanels();
     return undefined;
   });
@@ -260,8 +269,8 @@ export async function renameCategoryAction(id: string, name: string) {
 
 export async function deleteCategoryAction(id: string) {
   return runAction(async () => {
-    const { supplierId } = await supplierCtx();
-    const r = await deleteCategory(await getDb(), supplierId, id);
+    const { owner } = await supplierCtx();
+    const r = await deleteCategory(await getDb(), owner, id);
     revalidatePanels();
     return r;
   });

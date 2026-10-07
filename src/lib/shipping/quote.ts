@@ -146,14 +146,22 @@ async function itemsForParcel(db: Database, storeId: string, items: QuoteItem[])
   return { parcelItems: out, subtotalCents };
 }
 
+/**
+ * Plataforma de envio que atende a loja: a do fornecedor da rede (SuperDrop) ou a da própria loja independente (D89).
+ */
+async function shippingSourceOf(db: Database, storeId: string): Promise<{ p: string | null; t: string | null; s: string; z: string | null } | null> {
+  const r = (await db.select({ net: stores.networkId, sp: stores.shippingProvider, st: stores.shippingTokenEnc, ss: stores.shippingStatus, sz: stores.shippingOriginZip, fp: suppliers.shippingProvider, ft: suppliers.shippingTokenEnc, fs: suppliers.shippingStatus, fz: suppliers.shippingOriginZip })
+    .from(stores).leftJoin(networks, eq(networks.id, stores.networkId)).leftJoin(suppliers, eq(suppliers.id, networks.supplierId)).where(eq(stores.id, storeId)).limit(1))[0];
+  if (!r) return null;
+  return r.net ? { p: r.fp, t: r.ft, s: r.fs ?? "NOT_CONFIGURED", z: r.fz } : { p: r.sp, t: r.st, s: r.ss, z: r.sz };
+}
+
 async function originZipOf(db: Database, storeId: string): Promise<string> {
-  const r = await db.select({ z: suppliers.shippingOriginZip }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).innerJoin(suppliers, eq(suppliers.id, networks.supplierId)).where(eq(stores.id, storeId)).limit(1);
-  return onlyDigits(r[0]?.z);
+  return onlyDigits((await shippingSourceOf(db, storeId))?.z);
 }
 
 async function providerFor(db: Database, storeId: string, fetchImpl: FetchLike): Promise<ShippingProvider | null> {
-  const row = await db.select({ p: suppliers.shippingProvider, t: suppliers.shippingTokenEnc, s: suppliers.shippingStatus }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).innerJoin(suppliers, eq(suppliers.id, networks.supplierId)).where(eq(stores.id, storeId)).limit(1);
-  const r = row[0];
+  const r = await shippingSourceOf(db, storeId);
   if (!r || r.s !== "CONNECTED" || !r.t) return null;
   const token = decryptSecret(r.t);
   if (!token) return null;

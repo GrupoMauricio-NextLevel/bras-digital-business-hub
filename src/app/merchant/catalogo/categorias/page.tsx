@@ -4,6 +4,6 @@ import { CategoriasBody } from "@/app/supplier/products/categorias/page";
 export const dynamic = "force-dynamic";
 
 export default async function Categorias() {
-  const { supplierId } = await requireIndependent();
-  return <CategoriasBody supplierId={supplierId} base="/merchant/catalogo" />;
+  const { owner } = await requireIndependent();
+  return <CategoriasBody supplierId={owner} base="/merchant/catalogo" />;
 }

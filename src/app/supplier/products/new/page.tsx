@@ -1,3 +1,4 @@
+import type { OwnerRef } from "@/lib/domain/independent";
 import { PageHeader } from "@/components/app/page-header";
 import { requireRole } from "@/lib/require-session";
 import { getSupplierStores } from "@/lib/queries/supplier";
@@ -12,8 +13,8 @@ export default async function NewProductPage() {
 }
 
 /** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo/new`). */
-export async function NewProductBody({ supplierId, base = "/supplier/products", independent = false, commerce = false }: { supplierId: string; base?: string; independent?: boolean; commerce?: boolean }) {
-  const [stores, { categories }] = await Promise.all([independent ? Promise.resolve([]) : getSupplierStores(supplierId), getSupplierProducts(supplierId)]);
+export async function NewProductBody({ supplierId, base = "/supplier/products", independent = false, commerce = false }: { supplierId: OwnerRef; base?: string; independent?: boolean; commerce?: boolean }) {
+  const [stores, { categories }] = await Promise.all([typeof supplierId !== "string" && !supplierId.supplierId ? Promise.resolve([]) : getSupplierStores(typeof supplierId === "string" ? supplierId : supplierId.supplierId!), getSupplierProducts(supplierId)]);
   return (
     <>
       <PageHeader backHref={base} title="Novo produto" description={independent ? "Cadastre o produto com foto, preço e estoque. Depois é só publicar na sua loja." : "Cadastre uma vez: a rede inteira (ou lojas selecionadas) passa a poder vender, todas usando este estoque central."} />

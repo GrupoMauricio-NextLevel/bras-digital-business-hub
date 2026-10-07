@@ -1,3 +1,4 @@
+import type { OwnerRef } from "@/lib/domain/independent";
 import Link from "next/link";
 import { AlertTriangle, Archive, Package, Plus, Upload } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
@@ -14,7 +15,7 @@ export default async function SupplierProducts() {
 }
 
 /** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo`). */
-export async function ProductsBody({ supplierId, base = "/supplier/products", independent = false, commerce = false }: { supplierId: string; base?: string; independent?: boolean; commerce?: boolean }) {
+export async function ProductsBody({ supplierId, base = "/supplier/products", independent = false, commerce = false }: { supplierId: OwnerRef; base?: string; independent?: boolean; commerce?: boolean }) {
   const { items, categories } = await getSupplierProducts(supplierId);
   const rows: ProductRow[] = items.map((r) => ({ id: r.product.id, name: r.product.name, sku: r.product.sku, category: r.categoryName, images: r.product.images, sellsUnit: r.product.sellsUnit, sellsPack: r.product.sellsPack, distribution: r.product.distribution, costCents: r.product.costCents, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status, available: r.available, onHand: r.onHand }));
   const active = rows.filter((r) => r.status === "ACTIVE").length;

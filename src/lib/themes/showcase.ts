@@ -5,7 +5,7 @@ import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { products, storeProducts, stores, themeTemplates, users } from "@/db/schema";
 import { actorFromUser } from "@/lib/domain/access";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner, type OwnerRef } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { signupMember } from "@/lib/domain/store-access";
 import { hasPublicDemo, THEME_BY_KEY, THEME_CATALOG } from "./catalog";
@@ -94,7 +94,7 @@ const imagesOf = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => ({ h
 /** Fotos do produto: as do pacote visual (todas as existentes, a principal primeiro). */
 export const productPhotos = (p: DemoProduct) => (p.photos.length ? p.photos : [p.photo]);
 
-async function addProducts(db: Database, storeId: string, supplierId: string, list: DemoProduct[]) {
+async function addProducts(db: Database, storeId: string, supplierId: OwnerRef, list: DemoProduct[]) {
   for (const p of list) {
     const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: p.description, categoryName: p.category, images: productPhotos(p), costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: p.variants.map((v) => ({ size: v, initialStock: p.soldOut ? 0 : 40 })) });
     await db.insert(storeProducts).values({ storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured });
@@ -105,7 +105,7 @@ async function createShowcaseStore(db: Database, themeKey: string, themeName: st
   const email = `demo-${themeKey}@demonstracao.nextlevel.invalid`;
   const r = await signupMember(db, { storeName: demo.storeName, ownerName: `Demonstração ${themeName}`, email, password: randomBytes(24).toString("base64url"), taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
   const owner = actorFromUser((await db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  await addProducts(db, r.storeId, await catalogSupplierId(db, owner), demo.products);
+  await addProducts(db, r.storeId, await catalogOwner(db, owner), demo.products);
   // Sem dono com acesso; a loja fica fora das contagens (CLOSED) mas aparece na vitrine pública pelo marcador de demonstração.
   await db.update(users).set({ disabledAt: new Date().toISOString() }).where(eq(users.id, r.userId));
   await db.update(stores).set({ slug: showcaseSlug(themeKey), showcaseTheme: themeKey, status: "CLOSED", publishedAt: new Date().toISOString(), paidUntil: FAR, trialEndsAt: null, tagline: demo.tagline, logoText: demo.storeName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(), logoUrl: demoLogo(themeKey, demo), updatedAt: new Date().toISOString() }).where(eq(stores.id, r.storeId));
@@ -120,7 +120,7 @@ async function syncProducts(db: Database, store: typeof stores.$inferSelect, dem
   let changed = false;
   if (missing.length) {
     const owner = (await db.select().from(users).where(eq(users.organizationId, store.organizationId)))[0]!;
-    await addProducts(db, store.id, await catalogSupplierId(db, actorFromUser(owner)), missing); changed = true;
+    await addProducts(db, store.id, await catalogOwner(db, actorFromUser(owner)), missing); changed = true;
   }
   for (const r of rows) {
     const p = want.get(r.sku);

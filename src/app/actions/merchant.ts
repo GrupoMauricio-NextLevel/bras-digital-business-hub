@@ -1,4 +1,5 @@
 "use server";
+import { ownerKey, ownerOfRow } from "@/lib/domain/independent";
 import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
@@ -217,8 +218,8 @@ export async function activateAllProductsAction() {
     const minStock = new Map<string, number>();
     for (const it of items) {
       if (it.storeProduct.active) continue;
-      if (!minStock.has(it.product.supplierId)) minStock.set(it.product.supplierId, await getMinActivationStock(db, it.product.supplierId));
-      const min = minStock.get(it.product.supplierId) ?? 4;
+      const key = ownerKey(ownerOfRow(it.product)); if (!minStock.has(key)) minStock.set(key, await getMinActivationStock(db, ownerOfRow(it.product)));
+      const min = minStock.get(key) ?? 4;
       if (session.store?.kind !== "SUPPLIER_OWN" && !activationCheck(it.variants.map((v) => ({ size: v.size, available: v.level.available })), min).ok) { skipped++; continue; }
       const values = { active: true, priceCents: it.storeProduct.priceCents || it.product.suggestedPriceCents, packPriceCents: it.storeProduct.packPriceCents ?? it.packs[0]?.suggestedPriceCents ?? null };
       const existing = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, it.product.id)) });

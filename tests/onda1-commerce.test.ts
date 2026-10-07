@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { freshDb, customer } from "./setup";
 import { financeInvoices, orderEvents, orders, productStoreAccess, productVariants, products, storeProducts, stores, users, walletEntries } from "@/db/schema";
 import { signupMember } from "@/lib/domain/store-access";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, registerShippingLabel } from "@/lib/domain/orders";
 import { actorFromUser } from "@/lib/domain/access";
@@ -26,7 +26,7 @@ async function independent(n = 1) {
   const plan = (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!;
   await markInvoicePaid(ctx.db, plan.id);
   const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  const supplierId = await catalogSupplierId(ctx.db, owner);
+  const supplierId = await catalogOwner(ctx.db, owner);
   const { productId } = await createProduct(ctx.db, supplierId, { name: `Vestido ${n}`, sku: `VST-${n}`, categoryName: "Vestidos", costCents: 3000, suggestedPriceCents: 9000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 10 }] });
   await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false });
   const variantId = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!.id;
@@ -270,7 +270,7 @@ describe("Onda 1, pacote D: textos do pedido na conta simples", () => {
     const { markInvoicePaid } = await import("@/lib/domain/finance");
     const plan = (await db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!;
     await markInvoicePaid(db, plan.id);
-    const supplierId = (await (await import("@/lib/domain/independent")).independentSupplierOfStore(db, r.storeId))!;
+    const supplierId = { storeId: r.storeId };
     const { productId } = await createProduct(db, supplierId, { name: "Item", sku: "TXT-1", categoryName: "Geral", images: [], costCents: 1000, suggestedPriceCents: 3000, minimumPriceCents: 2000, sizes: [{ size: "U", initialStock: 5 }] } as never);
     const v = (await db.query.productVariants.findFirst({ where: eq(productVariants.productId, productId) }))!;
     await db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 3000, active: true }).onConflictDoNothing();

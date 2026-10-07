@@ -1,15 +1,16 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { eq } from "drizzle-orm";
 import { freshDb, customer } from "./setup";
-import { financeInvoices, networks, orders, productVariants, storeProducts, stores, suppliers, users } from "@/db/schema";
+import { categories, financeInvoices, networks, orders, productVariants, products, storeAcquisitions, storeProducts, stores, suppliers, users } from "@/db/schema";
 import { signupMember } from "@/lib/domain/store-access";
-import { catalogSupplierId, independentSupplierOfStore } from "@/lib/domain/independent";
+import { catalogOwner, isIndependentStore } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { createOrder } from "@/lib/domain/orders";
 import { actorFromUser } from "@/lib/domain/access";
 import { financeOverview, closeMonth, markInvoicePaid } from "@/lib/domain/finance";
 import { listSignupSuppliers } from "@/lib/domain/store-access";
 import { getLevel } from "@/lib/domain/inventory";
+import { assertProductListable, listStoreCatalog } from "@/lib/domain/catalog";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
@@ -20,78 +21,82 @@ const open = (over: Record<string, unknown> = {}) => signupMember(ctx.db, { stor
 
 const product = (sku: string) => ({ name: `Vestido ${sku}`, sku, categoryName: "Vestidos", costCents: 3000, suggestedPriceCents: 9000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 10 }] });
 
-describe("conta simples (abrir loja sem fornecedor)", () => {
-  it("cria Central oculta, loja própria, usuário dono e fatura do plano, sem taxa de Central", async () => {
+describe("loja independente da NextLevel Commerce (D89: sem fornecedor, sem rede)", () => {
+  it("abre sem fornecedor nem rede: loja, usuário dono e fatura do plano paga à NextLevel, sem comissão de canal", async () => {
+    const supBefore = (await ctx.db.select().from(suppliers)).length; const netBefore = (await ctx.db.select().from(networks)).length;
     const r = await open();
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
-    expect(store.kind).toBe("SUPPLIER_OWN");
-    const hidden = await independentSupplierOfStore(ctx.db, r.storeId);
-    expect(hidden).toBeTruthy();
-    const sup = (await ctx.db.query.suppliers.findFirst({ where: eq(suppliers.id, hidden!) }))!;
-    expect(sup.hidden).toBe(true); expect(sup.platformFeePercent).toBe(0);
+    expect(store.networkId).toBeNull();
+    expect(await isIndependentStore(ctx.db, r.storeId)).toBe(true);
+    // Nenhum fornecedor, rede ou comissão é criado para a loja.
+    expect((await ctx.db.select().from(suppliers)).length).toBe(supBefore);
+    expect((await ctx.db.select().from(networks)).length).toBe(netBefore);
+    expect(await ctx.db.select().from(storeAcquisitions).where(eq(storeAcquisitions.storeId, r.storeId))).toHaveLength(0);
     const user = (await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!;
-    expect(user.role).toBe("STORE_OWNER");
-    // Só um usuário: não há gestor de fornecedor para a Central oculta.
-    expect((await ctx.db.select().from(users).where(eq(users.supplierId, hidden!))).length).toBe(0);
+    expect(user.role).toBe("STORE_OWNER"); expect(user.supplierId).toBeNull();
     const invs = await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId));
-    expect(invs.every((i) => i.payerType === "STORE")).toBe(true);
     expect(invs.length).toBeGreaterThan(0);
+    expect(invs.every((i) => i.payerType === "STORE" && i.supplierId === null)).toBe(true);
   });
 
-  it("a Central oculta não aparece na lista de fornecedores nem no Master", async () => {
+  it("não aparece entre os fornecedores nem no fechamento dos fornecedores", async () => {
     await open();
     expect((await listSignupSuppliers(ctx.db)).every((s) => !s.slug.startsWith("c-"))).toBe(true);
-    const visible = await ctx.db.select().from(suppliers).where(eq(suppliers.hidden, false));
+    const all = await ctx.db.select().from(suppliers);
+    expect(all.every((s) => !s.hidden)).toBe(true);
     const ov = await financeOverview(ctx.db, "2026-10");
-    expect(ov.perSupplier.length).toBe(visible.length);
-  });
-
-  it("fechamento mensal não cobra a Central oculta", async () => {
-    const r = await open();
-    const hidden = (await independentSupplierOfStore(ctx.db, r.storeId))!;
+    expect(ov.perSupplier.length).toBe(all.length);
     await closeMonth(ctx.db, "2026-10");
-    const invs = await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.supplierId, hidden));
-    expect(invs.filter((i) => i.payerType === "SUPPLIER")).toHaveLength(0);
   });
 
-  it("e-mail repetido é recusado e cupom de fornecedor não vale na conta simples", async () => {
+  it("e-mail repetido é recusado", async () => {
     await open();
     await expect(open({ taxId: CPF2 })).rejects.toThrow(/e-mail/i);
   });
 
-  it("cadastra produto na própria Central oculta e vende sem carteira", async () => {
+  it("o catálogo é da própria loja: produto e categoria com store_id, sem fornecedor; vende sem carteira", async () => {
     const r = await open();
     const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-    const supplierId = await catalogSupplierId(ctx.db, owner);
+    const catalog = await catalogOwner(ctx.db, owner);
+    expect(catalog).toEqual({ storeId: r.storeId });
     // Antes do pagamento do plano a loja não vende (bloqueada); pago o Pix, libera.
     await expect(createOrder(ctx.db, { storeId: r.storeId, customer, items: [], customerPaymentStatus: "PAID" })).rejects.toThrow();
     const plan = (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!;
     await markInvoicePaid(ctx.db, plan.id);
-    const { productId } = await createProduct(ctx.db, supplierId, product("VST-1"));
+    const { productId } = await createProduct(ctx.db, catalog, product("VST-1"));
+    const p = (await ctx.db.query.products.findFirst({ where: eq(products.id, productId) }))!;
+    expect(p.storeId).toBe(r.storeId); expect(p.supplierId).toBeNull();
+    const cat = (await ctx.db.query.categories.findFirst({ where: eq(categories.id, p.categoryId!) }))!;
+    expect(cat.storeId).toBe(r.storeId); expect(cat.supplierId).toBeNull();
     await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false });
+    expect((await listStoreCatalog(ctx.db, r.storeId)).map((c) => c.product.id)).toEqual([productId]);
     const variant = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!;
     const before = (await getLevel(ctx.db, variant.id)).available;
     const o = await createOrder(ctx.db, { storeId: r.storeId, customer, items: [{ productId, variantId: variant.id, quantity: 2 }], customerPaymentStatus: "PAID" });
     expect((await getLevel(ctx.db, variant.id)).available).toBe(before - 2);
     const row = (await ctx.db.query.orders.findFirst({ where: eq(orders.id, o.orderId) }))!;
+    expect(row.supplierId).toBeNull();
     expect(row.centralPaymentStatus).toBe("PAID");
     expect(row.status).toBe("AWAITING_LABEL");
   });
 
-  it("isolamento: uma conta simples não mexe no catálogo da outra nem no de fornecedor", async () => {
+  it("isolamento: uma loja independente não vê nem vende o catálogo de outra, e membro de fornecedor não mexe no catálogo dela", async () => {
     const a = await open();
     const b = await open({ email: "joao@loja.com.br", storeName: "Loja do João", taxId: CPF2 });
     const ownerA = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, a.userId) }))!);
-    const supA = await catalogSupplierId(ctx.db, ownerA);
-    const supB = (await independentSupplierOfStore(ctx.db, b.storeId))!;
-    expect(supA).not.toBe(supB);
-    const nets = await ctx.db.select().from(networks);
-    expect(nets.find((n) => n.supplierId === supA)?.id).not.toBe(nets.find((n) => n.supplierId === supB)?.id);
-    // Lojista membro de fornecedor comum não ganha acesso ao catálogo.
-    await expect(catalogSupplierId(ctx.db, ctx.actors.mantos)).rejects.toThrow();
+    const { productId } = await createProduct(ctx.db, await catalogOwner(ctx.db, ownerA), product("VST-A"));
+    const pa = (await ctx.db.query.products.findFirst({ where: eq(products.id, productId) }))!;
+    await ctx.db.update(products).set({ status: "ACTIVE" }).where(eq(products.id, productId));
+    await expect(assertProductListable(ctx.db, b.storeId, { ...pa, status: "ACTIVE" })).rejects.toThrow();
+    expect(await listStoreCatalog(ctx.db, b.storeId)).toHaveLength(0);
+    // Loja de membro (SuperDrop) não ganha acesso ao catálogo de ninguém pelo caminho da loja independente.
+    await expect(catalogOwner(ctx.db, ctx.actors.mantos)).rejects.toThrow();
+    // O mesmo SKU pode existir em lojas diferentes (cada loja tem o seu catálogo).
+    const ownerB = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, b.userId) }))!);
+    await expect(createProduct(ctx.db, await catalogOwner(ctx.db, ownerB), product("VST-A"))).resolves.toBeTruthy();
   });
 
-  it("sem o modo independente, o cadastro continua exigindo fornecedor", async () => {
+  it("sem o modo independente, o cadastro continua exigindo fornecedor (SuperDrop)", async () => {
     await expect(signupMember(ctx.db, { storeName: "Outra", ownerName: "Ana Lima", email: "ana@x.com.br", password: "senha-segura-1", taxId: CPF, offer: "STORE_SUBDOMAIN" })).rejects.toThrow(/fornecedor/i);
   });
 });

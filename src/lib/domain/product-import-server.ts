@@ -2,6 +2,7 @@ import ExcelJS from "exceljs";
 import JSZip from "jszip";
 import { and, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
+import { ownedBy, type OwnerRef } from "./independent";
 import { categories, products } from "@/db/schema";
 import { csvToMatrix, parseProductRows, CSV_COLUMNS, type ImportRow } from "./product-import";
 import { SIZE_GRIDS } from "./size-grids";
@@ -67,15 +68,15 @@ export async function normalizeXlsx(buf: Buffer): Promise<Buffer> {
 export type PreviewLine = { line: number; sku: string; name: string; action: "CREATE" | "UPDATE" | "SKIP" | "ERROR"; errors: string[]; warnings: string[]; sizes: string; grid: string; newCategory: boolean };
 export type Preview = { lines: PreviewLine[]; total: number; create: number; update: number; errors: number; warnings: number; minActivationStock: number };
 
-export async function previewImport(db: Database, supplierId: string, matrix: string[][], mode: "skip" | "update"): Promise<Preview> {
+export async function previewImport(db: Database, owner: OwnerRef, matrix: string[][], mode: "skip" | "update"): Promise<Preview> {
   if (matrix.length - 1 > MAX_IMPORT_ROWS) throw new DomainError("TOO_MANY_ROWS", `Limite de ${MAX_IMPORT_ROWS} produtos por importação.`);
-  const min = await getMinActivationStock(db, supplierId);
+  const min = await getMinActivationStock(db, owner);
   const rows = parseProductRows(matrix, { minActivationStock: min });
-  const existingCats = new Set((await db.select({ n: categories.name }).from(categories).where(eq(categories.supplierId, supplierId))).map((c) => c.n.toLowerCase()));
+  const existingCats = new Set((await db.select({ n: categories.name }).from(categories).where(ownedBy(categories, owner))).map((c) => c.n.toLowerCase()));
   const lines: PreviewLine[] = [];
   for (const r of rows) {
     const sku = (r.raw.sku ?? "").toUpperCase();
-    const exists = sku ? await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, sku)) }) : null;
+    const exists = sku ? await db.query.products.findFirst({ where: and(ownedBy(products, owner), eq(products.sku, sku)) }) : null;
     const action: PreviewLine["action"] = r.errors.length ? "ERROR" : exists ? (mode === "update" ? "UPDATE" : "SKIP") : "CREATE";
     const warnings = [...r.warnings];
     if (exists && mode === "skip" && !r.errors.length) warnings.push("SKU já existe: linha ignorada (troque para “atualizar” para alterar preços e textos)");
@@ -87,33 +88,33 @@ export async function previewImport(db: Database, supplierId: string, matrix: st
 
 export type ImportOutcome = { created: number; updated: number; skipped: number; failed: { line: number; name: string; error: string }[] };
 
-export async function importRows(db: Database, supplierId: string, matrix: string[][], mode: "skip" | "update"): Promise<ImportOutcome> {
+export async function importRows(db: Database, owner: OwnerRef, matrix: string[][], mode: "skip" | "update"): Promise<ImportOutcome> {
   if (matrix.length - 1 > MAX_IMPORT_ROWS) throw new DomainError("TOO_MANY_ROWS", `Limite de ${MAX_IMPORT_ROWS} produtos por importação.`);
   const rows = parseProductRows(matrix);
   const out: ImportOutcome = { created: 0, updated: 0, skipped: 0, failed: [] };
   for (const row of rows) {
     if (!row.input) { out.failed.push({ line: row.line, name: row.raw.nome ?? "", error: row.errors.join(", ") }); continue; }
     try {
-      const existing = await db.query.products.findFirst({ where: and(eq(products.supplierId, supplierId), eq(products.sku, row.input.sku.trim().toUpperCase())) });
+      const existing = await db.query.products.findFirst({ where: and(ownedBy(products, owner), eq(products.sku, row.input.sku.trim().toUpperCase())) });
       if (existing) {
         if (mode === "skip") { out.skipped++; continue; }
-        await updateFromRow(db, supplierId, existing.id, row);
+        await updateFromRow(db, owner, existing.id, row);
         out.updated++;
-      } else { await createProduct(db, supplierId, row.input); out.created++; }
+      } else { await createProduct(db, owner, row.input); out.created++; }
     } catch (e) { out.failed.push({ line: row.line, name: row.raw.nome ?? "", error: e instanceof Error ? e.message : "erro" }); }
   }
   return out;
 }
 
 /** Atualiza dados comerciais de um produto existente; estoque, tamanhos e grade não mudam. */
-async function updateFromRow(db: Database, supplierId: string, productId: string, row: ImportRow) {
+async function updateFromRow(db: Database, owner: OwnerRef, productId: string, row: ImportRow) {
   const i = row.input!;
-  const categoryId = await ensureCategory(db, supplierId, i.categoryName);
+  const categoryId = await ensureCategory(db, owner, i.categoryName);
   await db.update(products).set({
     name: i.name.trim(), description: i.description ?? "", categoryId, costCents: Number(i.costCents), suggestedPriceCents: Number(i.suggestedPriceCents), minimumPriceCents: Number(i.minimumPriceCents),
     ...(i.images && i.images.length ? { images: i.images } : {}), status: i.status ?? "ACTIVE", sizeGrid: i.sizeGrid ?? "CUSTOM", seoTitle: i.seoTitle ?? "", seoDescription: i.seoDescription ?? "",
     weightG: Number(i.weightG ?? 300), lengthCm: Number(i.lengthCm ?? 30), widthCm: Number(i.widthCm ?? 25), heightCm: Number(i.heightCm ?? 3), updatedAt: new Date().toISOString(),
-  }).where(and(eq(products.id, productId), eq(products.supplierId, supplierId)));
+  }).where(and(eq(products.id, productId), ownedBy(products, owner)));
 }
 
 /** Modelo .xlsx com exemplos, listas suspensas e uma aba de instruções e tamanhos. */

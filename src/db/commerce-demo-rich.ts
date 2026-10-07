@@ -3,7 +3,7 @@ import type { Database } from "./client";
 import * as s from "./schema";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { actorFromUser } from "@/lib/domain/access";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner } from "@/lib/domain/independent";
 import { markInvoicePaid } from "@/lib/domain/finance";
 import { addOrderNote, advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, registerShippingLabel } from "@/lib/domain/orders";
 import { createProduct } from "@/lib/domain/products";
@@ -91,7 +91,7 @@ export async function seedCommerceRichDemo(db: Database): Promise<boolean> {
   const r = await signupMember(db, { storeName: "Casa Aurora", ownerName: "Helena Duarte", email: COMMERCE_RICH_EMAIL, password: DEMO_PASSWORD, taxId: "529.982.247-25", offer: "STORE_OWN", independent: true, brand: "NEXTLEVEL_COMMERCE" } as Parameters<typeof signupMember>[1]);
   for (const inv of await db.select().from(s.financeInvoices).where(eq(s.financeInvoices.storeId, r.storeId))) await markInvoicePaid(db, inv.id);
   const owner = actorFromUser((await db.query.users.findFirst({ where: eq(s.users.id, r.userId) }))!);
-  const supplierId = await catalogSupplierId(db, owner);
+  const supplierId = await catalogOwner(db, owner);
 
   // ---- Dados públicos e regras da loja ----
   await db.update(s.stores).set({

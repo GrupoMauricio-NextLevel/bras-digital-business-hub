@@ -58,7 +58,7 @@ export async function storeOrderControl(db: Database, actor: Actor, period: stri
     const fee = sup && terms.get(sup.id) ? volumeFee({ ...terms.get(sup.id)!, minMonthlyFeeCents: 0 }, { baseCents: central.reduce((t, o) => t + o.costTotalCents, 0), orders: central.length }).totalCents : 0;
     const sales = mine.reduce((t, o) => t + o.subtotalCents, 0), cost = mine.reduce((t, o) => t + o.costTotalCents, 0);
     if (!mine.length && !acq) continue;
-    rows.push({ storeId: st.id, name: st.name, supplierName: sup?.name ?? "—", offer: st.offer, orders: mine.length, salesCents: sales, costCents: cost, marginCents: sales - cost, nextlevelFeeCents: fee, memberFeeCents: (await storeOrderFeeFor(db, st.id, period, book)).feeCents, setupCommissionCents: acq?.commissionCents ?? 0, setupCommissionStatus: acq?.status ?? null });
+    rows.push({ storeId: st.id, name: st.name, supplierName: sup?.name ?? (st.networkId ? "—" : "Loja independente (Commerce)"), offer: st.offer, orders: mine.length, salesCents: sales, costCents: cost, marginCents: sales - cost, nextlevelFeeCents: fee, memberFeeCents: (await storeOrderFeeFor(db, st.id, period, book)).feeCents, setupCommissionCents: acq?.commissionCents ?? 0, setupCommissionStatus: acq?.status ?? null });
   }
   rows.sort((a, b) => b.salesCents - a.salesCents);
   return { period, rows, totals: rows.reduce((t, r) => ({ orders: t.orders + r.orders, sales: t.sales + r.salesCents, margin: t.margin + r.marginCents, fee: t.fee + r.nextlevelFeeCents, memberFee: t.memberFee + r.memberFeeCents }), { orders: 0, sales: 0, margin: 0, fee: 0, memberFee: 0 }) };

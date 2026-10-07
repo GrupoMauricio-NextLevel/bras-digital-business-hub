@@ -94,10 +94,15 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   if (store.showcaseTheme) throw new DomainError("SHOWCASE_STORE", "Esta é uma loja de demonstração do tema: não recebe pedidos.");
   if (store.status !== "ACTIVE") throw new DomainError("STORE_INACTIVE", "Loja não está ativa.");
   if (isBlocked(store)) throw new DomainError("STORE_BLOCKED", "Esta loja está temporariamente indisponível.");
-  const network = await db.query.networks.findFirst({ where: eq(networks.id, store.networkId) });
-  if (!network) throw new NotFoundError("Rede não encontrada.");
-  const access = await capabilitiesForSupplier(db, network.supplierId);
-  if (!access.caps.canCreateOrders) throw new DomainError("SUPPLIER_BLOCKED", "Esta loja não pode receber novos pedidos no momento. Entre em contato com a loja.");
+  // Loja do SuperDrop: o pedido é do fornecedor da rede. Loja independente da Commerce (D89): sem fornecedor.
+  let supplierId: string | null = null;
+  if (store.networkId) {
+    const network = await db.query.networks.findFirst({ where: eq(networks.id, store.networkId) });
+    if (!network) throw new NotFoundError("Rede não encontrada.");
+    supplierId = network.supplierId;
+    const access = await capabilitiesForSupplier(db, network.supplierId);
+    if (!access.caps.canCreateOrders) throw new DomainError("SUPPLIER_BLOCKED", "Esta loja não pode receber novos pedidos no momento. Entre em contato com a loja.");
+  }
 
   const catalog = await listStoreCatalog(db, store.id);
   const byProduct = new Map(catalog.map((c) => [c.product.id, c]));
@@ -159,7 +164,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       id: orderId,
       number: nextNumber,
       storeId: store.id,
-      supplierId: network.supplierId,
+      supplierId: supplierId,
       storeCustomerId,
       idempotencyKey: input.idempotencyKey,
       channel: input.channel,
@@ -192,8 +197,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado (demonstração).", actorRole: "SYSTEM" });
     }
     await tx.insert(activities).values([
-      { id: newId("act"), scope: "STORE", storeId: store.id, supplierId: network.supplierId, type: "ORDER_CREATED", message: `Novo pedido #${nextNumber} de ${input.customer.name}` },
-      { id: newId("act"), scope: "SUPPLIER", storeId: store.id, supplierId: network.supplierId, type: "ORDER_CREATED", message: `${store.name} recebeu o pedido #${nextNumber}` },
+      { id: newId("act"), scope: "STORE", storeId: store.id, supplierId: supplierId, type: "ORDER_CREATED", message: `Novo pedido #${nextNumber} de ${input.customer.name}` },
+      { id: newId("act"), scope: "SUPPLIER", storeId: store.id, supplierId: supplierId, type: "ORDER_CREATED", message: `${store.name} recebeu o pedido #${nextNumber}` },
     ]);
 
     let finalStatus = status;
@@ -201,8 +206,8 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       await tryDebitOrder(tx, orderId);
       finalStatus = (await tx.query.orders.findFirst({ where: eq(orders.id, orderId) }))!.status;
     }
-    await emitEvent(tx as unknown as Database, { type: "ORDER_CREATED", storeId: store.id, supplierId: network.supplierId, payload: { orderId, number: nextNumber, totalCents: total }, dedupeKey: `ORDER_CREATED:${orderId}` });
-    if (input.customerPaymentStatus === "PAID") await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: store.id, supplierId: network.supplierId, payload: { orderId, totalCents: total }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
+    await emitEvent(tx as unknown as Database, { type: "ORDER_CREATED", storeId: store.id, supplierId: supplierId, payload: { orderId, number: nextNumber, totalCents: total }, dedupeKey: `ORDER_CREATED:${orderId}` });
+    if (input.customerPaymentStatus === "PAID") await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: store.id, supplierId: supplierId, payload: { orderId, totalCents: total }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     return { orderId, number: nextNumber, status: finalStatus, totalCents: total, replayed: false as boolean };
   });
   } catch (e) {
@@ -344,7 +349,7 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
   if (order.status === next) return { ...order, status: next }; // repetição: sucesso idempotente, sem efeitos
   if (!canTransition(order.status, next)) throw new DomainError("INVALID_TRANSITION", `Transição ${order.status} → ${next} não permitida.`);
   const modality = await assertCanFulfilOrder(db, actor, order);
-  if (modality !== "INDEPENDENT" || actor.role !== "STORE_OWNER") {
+  if (order.supplierId && (modality !== "INDEPENDENT" || actor.role !== "STORE_OWNER")) {
     const access = await capabilitiesForSupplier(db, order.supplierId);
     if (!access.caps.canExpedite) throw new DomainError("SUPPLIER_BLOCKED", "Expedição indisponível por pendência financeira com a NextLevel.");
   }

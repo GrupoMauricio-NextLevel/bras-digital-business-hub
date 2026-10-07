@@ -1,12 +1,10 @@
 import { redirect } from "next/navigation";
-import { getDb } from "@/db/client";
-import { independentSupplierOfStore } from "@/lib/domain/independent";
+import type { CatalogOwner } from "@/lib/domain/independent";
 import { requireRole } from "./require-session";
 
-/** Só o lojista de conta simples (Central oculta) entra; membros de fornecedor seguem pelo painel deles. */
-export async function requireIndependent() {
+/** Só o lojista de loja independente da Commerce entra (D89); membros de fornecedor seguem pelo painel deles. */
+export async function requireIndependent(): Promise<{ session: Awaited<ReturnType<typeof requireRole>>; owner: CatalogOwner }> {
   const session = await requireRole("STORE_OWNER");
-  const supplierId = await independentSupplierOfStore(await getDb(), session.store?.id);
-  if (!supplierId) redirect("/merchant/products");
-  return { session, supplierId };
+  if (!session.store || session.store.networkId) redirect("/merchant/products");
+  return { session, owner: { storeId: session.store.id } };
 }

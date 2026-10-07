@@ -3,7 +3,7 @@ import type { Database } from "./client";
 import * as s from "./schema";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { actorFromUser } from "@/lib/domain/access";
-import { catalogSupplierId } from "@/lib/domain/independent";
+import { catalogOwner } from "@/lib/domain/independent";
 import { markInvoicePaid } from "@/lib/domain/finance";
 import { createOrder } from "@/lib/domain/orders";
 import { createProduct } from "@/lib/domain/products";
@@ -38,7 +38,7 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
   const r = await signupMember(db, { storeName: "Fio & Linha", ownerName: "Ana Ribeiro", email: COMMERCE_DEMO_EMAIL, password: DEMO_PASSWORD, taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
   for (const inv of await db.select().from(s.financeInvoices).where(eq(s.financeInvoices.storeId, r.storeId))) await markInvoicePaid(db, inv.id);
   const owner = actorFromUser((await db.query.users.findFirst({ where: eq(s.users.id, r.userId) }))!);
-  const supplierId = await catalogSupplierId(db, owner);
+  const supplierId = await catalogOwner(db, owner);
   const made: { productId: string; variantId: string; price: number }[] = [];
   for (const p of PRODUCTS) {
     const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, categoryName: "Moda", images: [`/portal/commerce/${p.photo}.webp`], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: [{ size: "M", initialStock: 40 }, { size: "G", initialStock: 40 }] });

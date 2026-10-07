@@ -2,6 +2,7 @@ import { and, count, desc, eq, inArray, ne, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { activities, contentItems, inventory, inventoryMovements, networks, orders, productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores, categories, users } from "@/db/schema";
 import { listSupplierCatalog } from "@/lib/domain/catalog";
+import { ownedBy, toOwner, type OwnerRef } from "@/lib/domain/independent";
 
 export async function getSupplierOverview(supplierId: string) {
   const db = (await getDb());
@@ -33,10 +34,11 @@ export async function getSupplierOverview(supplierId: string) {
   };
 }
 
-export async function getSupplierProducts(supplierId: string, filter: { q?: string; category?: string } = {}) {
+/** Catálogo do dono: fornecedor do SuperDrop ou loja independente da Commerce (D89). */
+export async function getSupplierProducts(owner: OwnerRef, filter: { q?: string; category?: string } = {}) {
   const db = (await getDb());
-  const rows = await listSupplierCatalog(db, supplierId);
-  const cats = await db.select().from(categories).where(eq(categories.supplierId, supplierId));
+  const rows = await listSupplierCatalog(db, owner);
+  const cats = await db.select().from(categories).where(ownedBy(categories, owner));
   const catById = new Map(cats.map((c) => [c.id, c.name]));
   const q = filter.q?.toLowerCase();
   return {
@@ -47,15 +49,16 @@ export async function getSupplierProducts(supplierId: string, filter: { q?: stri
   };
 }
 
-export async function getSupplierProduct(supplierId: string, productId: string) {
+export async function getSupplierProduct(owner: OwnerRef, productId: string) {
   const db = (await getDb());
-  const product = await db.query.products.findFirst({ where: and(eq(products.id, productId), eq(products.supplierId, supplierId)) });
+  const own = toOwner(owner);
+  const product = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, own)) });
   if (!product) return null;
   const variants = await db.select({ variant: productVariants, inv: inventory }).from(productVariants).leftJoin(inventory, eq(inventory.variantId, productVariants.id)).where(eq(productVariants.productId, productId)).orderBy(productVariants.position);
   const packs = await db.select().from(productPacks).where(eq(productPacks.productId, productId));
   const packItems = packs.length ? await db.select().from(productPackItems).where(inArray(productPackItems.packId, packs.map((p) => p.id))) : [];
   const access = await db.select({ storeId: productStoreAccess.storeId }).from(productStoreAccess).where(eq(productStoreAccess.productId, productId));
-  const networkStores = await db.select({ id: stores.id, name: stores.name, slug: stores.slug, status: stores.status }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, supplierId));
+  const networkStores = own.supplierId ? await db.select({ id: stores.id, name: stores.name, slug: stores.slug, status: stores.status }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(eq(networks.supplierId, own.supplierId)) : [];
   const listings = await db.select().from(storeProducts).where(eq(storeProducts.productId, productId));
   const movements = await db.select({ m: inventoryMovements, size: productVariants.size }).from(inventoryMovements).innerJoin(productVariants, eq(productVariants.id, inventoryMovements.variantId)).where(eq(productVariants.productId, productId)).orderBy(desc(inventoryMovements.createdAt)).limit(15);
   const category = product.categoryId ? await db.query.categories.findFirst({ where: eq(categories.id, product.categoryId) }) : null;

@@ -5,6 +5,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
 import { getLevels, type InventoryLevel } from "./inventory";
 import { loadTiers, type Tier } from "./price-tiers";
+import { ownedBy, ownerOfRow, toOwner, type OwnerRef } from "./independent";
 
 export type StoreCatalogItem = {
   /** Faixas de preço por quantidade (vazio em loja de rede). */
@@ -24,11 +25,17 @@ export type StoreCatalogItem = {
 export async function listStoreCatalog(db: Database, storeId: string, opts: { onlyActive?: boolean } = {}): Promise<StoreCatalogItem[]> {
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
   if (!store) return [];
-  const network = await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, store.networkId) });
-  if (!network) return [];
+  // Loja independente (D89): só o próprio catálogo. Loja do SuperDrop: o catálogo do fornecedor da rede.
+  let owned;
+  if (store.networkId) {
+    const nid = store.networkId;
+    const network = await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, nid) });
+    if (!network) return [];
+    owned = eq(products.supplierId, network.supplierId);
+  } else owned = eq(products.storeId, store.id);
 
   const accessible = and(
-    eq(products.supplierId, network.supplierId),
+    owned,
     eq(products.status, "ACTIVE"),
     or(
       eq(products.distribution, "ALL_NETWORK"),
@@ -57,8 +64,8 @@ export async function listStoreCatalog(db: Database, storeId: string, opts: { on
   return hydrate(db, rows);
 }
 
-export async function listSupplierCatalog(db: Database, supplierId: string) {
-  const rows = await db.select().from(products).where(eq(products.supplierId, supplierId));
+export async function listSupplierCatalog(db: Database, owner: OwnerRef) {
+  const rows = await db.select().from(products).where(ownedBy(products, owner));
   const ids = rows.map((r) => r.id);
   const variants = ids.length ? await db.select().from(productVariants).where(inArray(productVariants.productId, ids)) : [];
   const levels = await getLevels(db, variants.map((v) => v.id));
@@ -100,8 +107,12 @@ export async function getStoreCatalogItem(db: Database, storeId: string, product
 }
 
 /** Estoque mínimo por tamanho definido pelo fornecedor (padrão 4) para as lojas ativarem um produto. */
-export async function getMinActivationStock(db: Database, supplierId: string): Promise<number> {
-  const ops = await db.query.supplierOps.findFirst({ where: (o, { eq }) => eq(o.supplierId, supplierId) });
+export async function getMinActivationStock(db: Database, owner: OwnerRef | null): Promise<number> {
+  const o = owner ? toOwner(owner) : null;
+  // Loja independente não tem regra de fornecedor: vale o padrão.
+  if (!o?.supplierId) return 4;
+  const sid = o.supplierId;
+  const ops = await db.query.supplierOps.findFirst({ where: (x, { eq }) => eq(x.supplierId, sid) });
   return ops?.minActivationStock ?? 4;
 }
 
@@ -109,7 +120,7 @@ export async function getMinActivationStock(db: Database, supplierId: string): P
 export async function checkProductActivation(db: Database, productId: string): Promise<ActivationCheck> {
   const product = await db.query.products.findFirst({ where: eq(products.id, productId) });
   if (!product) return { ok: false, min: 0, short: [] };
-  const min = await getMinActivationStock(db, product.supplierId);
+  const min = await getMinActivationStock(db, ownerOfRow(product));
   const variants = await db.select().from(productVariants).where(eq(productVariants.productId, productId));
   const levels = await getLevels(db, variants.map((v) => v.id));
   return activationCheck(variants.map((v) => ({ size: v.size, available: levels.get(v.id)?.available ?? 0 })), min);
@@ -123,8 +134,15 @@ export async function checkProductActivation(db: Database, productId: string): P
 export async function assertProductListable(db: Database, storeId: string, product: typeof products.$inferSelect | undefined | null): Promise<void> {
   if (!product || product.status !== "ACTIVE") throw new NotFoundError("Produto indisponível.");
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
-  const network = store ? await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, store.networkId) }) : null;
-  if (!network || product.supplierId !== network.supplierId) throw new NotFoundError("Produto indisponível.");
+  if (!store) throw new NotFoundError("Produto indisponível.");
+  if (!store.networkId) {
+    // Loja independente: só os produtos dela mesma.
+    if (product.storeId !== store.id) throw new NotFoundError("Produto indisponível.");
+  } else {
+    const nid = store.networkId;
+    const network = await db.query.networks.findFirst({ where: (n, { eq }) => eq(n.id, nid) });
+    if (!network || product.supplierId !== network.supplierId) throw new NotFoundError("Produto indisponível.");
+  }
   if (product.distribution === "SELECTED_STORES") {
     const access = await db.query.productStoreAccess.findFirst({ where: and(eq(productStoreAccess.productId, product.id), eq(productStoreAccess.storeId, storeId)) });
     if (!access) throw new ForbiddenError("Este produto não está distribuído para sua loja.");
