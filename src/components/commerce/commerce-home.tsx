@@ -126,7 +126,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
           <Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"><Icon className="size-[18px]" aria-hidden /></span>
             <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
-            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-[var(--ds-link)]">{item.count}</span>
+            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-foreground">{item.count}</span>
             <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
           </Link></li>; })}</ol>
       </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">O que precisa de você</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
