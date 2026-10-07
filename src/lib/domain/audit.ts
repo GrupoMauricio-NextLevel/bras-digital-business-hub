@@ -39,3 +39,34 @@ export async function listAudit(db: Database, actor: Actor, limit = 100) {
   if (actor.role !== "STORE_OWNER" || !actor.storeId || actor.storeRole === "STAFF") throw new ForbiddenError("Só o dono da loja vê o histórico de mudanças.");
   return db.select().from(auditLog).where(eq(auditLog.storeId, actor.storeId)).orderBy(desc(auditLog.createdAt)).limit(Math.min(limit, 200));
 }
+
+// ---------------------------------------------------------------------------
+// Texto legível para o dono da loja (nunca mostrar nome de campo técnico nem JSON).
+// ---------------------------------------------------------------------------
+const FIELD_LABEL: Record<string, string> = {
+  role: "papel", storeRole: "papel na loja", email: "e-mail", name: "nome", status: "situação", priceCents: "preço", compareAtCents: "preço de comparação",
+  active: "ativo", published: "publicado", stock: "estoque", title: "título", slug: "endereço", offer: "plano", customDomain: "domínio próprio",
+  motivo: "motivo", modo: "modo", kind: "tipo", rules: "regras", freeShippingFromCents: "frete grátis a partir de",
+};
+const VALUE_LABEL: Record<string, string> = {
+  STAFF: "equipe", OWNER: "dono", ACTIVE: "ativo", SUSPENDED: "suspenso", CLOSED: "encerrado", PENDING_PAYMENT: "aguardando pagamento",
+  STORE_OWNER: "lojista", SUPPLIER_ADMIN: "fornecedor", SUPPLIER_DISPATCH: "expedição", AFFILIATE: "parceiro", NEXTLEVEL_MASTER: "NextLevel",
+  DROP_MANUAL: "Drop manual", STORE_SUBDOMAIN: "Loja SuperDrop", STORE_OWN: "Loja própria",
+};
+function describeValue(field: string, v: unknown): string {
+  if (v === null || v === undefined || v === "") return "vazio";
+  if (typeof v === "boolean") return v ? "sim" : "não";
+  if (typeof v === "number" && /Cents$/.test(field)) return (v / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  if (typeof v === "string") return VALUE_LABEL[v] ?? v;
+  if (Array.isArray(v)) return `${v.length} ${v.length === 1 ? "item" : "itens"}`;
+  return "alterado";
+}
+/** Ex.: { role: { from: null, to: "STAFF" } } → ["papel: vazio → equipe"]. Campos sensíveis viram "alterado". */
+export function describeChanges(changes: Record<string, { from?: unknown; to?: unknown }>): string[] {
+  return Object.entries(changes).map(([k, v]) => {
+    const label = FIELD_LABEL[k] ?? k.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+    if (!v || !("to" in v)) return `${label}: alterado`;
+    if (!("from" in v) || v.from === null || v.from === undefined) return `${label}: ${describeValue(k, v.to)}`;
+    return `${label}: ${describeValue(k, v.from)} → ${describeValue(k, v.to)}`;
+  });
+}

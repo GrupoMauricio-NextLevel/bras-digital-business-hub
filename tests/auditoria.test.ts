@@ -36,3 +36,12 @@ describe("trilha de auditoria", () => {
     expect((await listAudit(ctx.db, ctx.actors.arena)).some((a) => a.action === "STAFF_INVITED")).toBe(false);
   });
 });
+
+describe("trilha de auditoria em texto para o dono", () => {
+  it("sem nome técnico, sem null e sem JSON", async () => {
+    const { describeChanges } = await import("@/lib/domain/audit");
+    const t = describeChanges({ role: { from: null, to: "STAFF" }, email: { from: null, to: "ana@loja.com" }, priceCents: { from: 1000, to: 1250 }, published: { from: false, to: true }, mpToken: {} }).join(" · ");
+    expect(t).toBe("papel: equipe · e-mail: ana@loja.com · preço: R$ 10,00 → R$ 12,50 · publicado: não → sim · mp token: alterado");
+    expect(t).not.toMatch(/null|undefined|\{|"/);
+  });
+});

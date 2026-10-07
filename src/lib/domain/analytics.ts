@@ -29,12 +29,18 @@ const DAY = 86_400_000;
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
 /** Vendas elegíveis (`isEligibleSale`). Janela em dias corridos até `now` (UTC). */
-export function computeStoreAnalytics(orders: AnalyticsOrder[], items: AnalyticsItem[], now: Date, windowDays = 30): StoreAnalytics {
+/** Janela única de "últimos N dias" (dias corridos em UTC até hoje) usada no painel inicial e na análise: os dois mostram o mesmo número. */
+export function salesWindow<T extends { status: string; customerPaymentStatus: string; createdAt: string }>(orders: T[], now: Date, windowDays = 30) {
   const start = new Date(now.getTime() - (windowDays - 1) * DAY); start.setUTCHours(0, 0, 0, 0);
   const prevStart = new Date(start.getTime() - windowDays * DAY);
   const valid = orders.filter(isEligibleSale);
   const inWindow = valid.filter((o) => new Date(o.createdAt) >= start);
   const previous = valid.filter((o) => { const t = new Date(o.createdAt); return t >= prevStart && t < start; });
+  return { start, valid, inWindow, previous };
+}
+
+export function computeStoreAnalytics(orders: AnalyticsOrder[], items: AnalyticsItem[], now: Date, windowDays = 30): StoreAnalytics {
+  const { start, inWindow, previous } = salesWindow(orders, now, windowDays);
 
   const days = Array.from({ length: windowDays }, (_, i) => { const d = new Date(start.getTime() + i * DAY); return { date: dayKey(d), label: `${d.getUTCDate()}/${d.getUTCMonth() + 1}`, salesCents: 0, orders: 0 }; });
   const byDate = new Map(days.map((d) => [d.date, d]));

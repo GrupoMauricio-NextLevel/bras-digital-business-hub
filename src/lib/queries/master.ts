@@ -1,14 +1,18 @@
-import { and, count, desc, eq, isNull, ne, sum } from "drizzle-orm";
+import { and, count, desc, eq, isNull, ne, sql, sum } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { financeOverview, periodOf } from "@/lib/domain/finance";
 import { supplierContracts } from "@/db/schema";
 import { activities, invoices, networks, orders, organizations, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
 
+/** Contrato único de venda no Master (igual ao painel do lojista): pago, não cancelado, subtotal menos desconto, sem frete. */
+const SALE_WHERE = () => and(ne(orders.status, "CANCELED"), eq(orders.customerPaymentStatus, "PAID"));
+const SALE_SUM = () => sql<number>`coalesce(sum(${orders.subtotalCents} - ${orders.discountCents}), 0)`;
+
 export async function getPlatformOverview() {
   const db = (await getDb());
   const [supplierCount] = await db.select({ n: count() }).from(suppliers).where(eq(suppliers.hidden, false));
   const storeRows = await db.select({ status: stores.status, n: count() }).from(stores).where(isNull(stores.showcaseTheme)).groupBy(stores.status);
-  const [orderStats] = await db.select({ n: count(), gmv: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED"));
+  const [orderStats] = await db.select({ n: count(), gmv: SALE_SUM() }).from(orders).where(SALE_WHERE());
   const fin = await financeOverview(db, periodOf(new Date()));
   const recent = await db.select().from(activities).orderBy(desc(activities.createdAt)).limit(10);
   const byStatus = Object.fromEntries(storeRows.map((r) => [r.status, r.n]));
@@ -33,7 +37,7 @@ export async function listSuppliers() {
   const rows = await db.select().from(suppliers).where(eq(suppliers.hidden, false));
   const storeCounts = await db.select({ supplierId: networks.supplierId, n: count(stores.id) }).from(networks).leftJoin(stores, eq(stores.networkId, networks.id)).groupBy(networks.supplierId);
   const productCounts = await db.select({ supplierId: products.supplierId, n: count() }).from(products).groupBy(products.supplierId);
-  const gmv = await db.select({ supplierId: orders.supplierId, total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.supplierId);
+  const gmv = await db.select({ supplierId: orders.supplierId, total: SALE_SUM() }).from(orders).where(SALE_WHERE()).groupBy(orders.supplierId);
   const contracts = await db.select().from(supplierContracts);
   return rows.map((s) => ({
     ...s,
@@ -66,7 +70,8 @@ export async function listStoresWithPlan(filter: { q?: string; status?: string; 
     .leftJoin(plans, eq(plans.id, subscriptions.planId))
     .where(and(isNull(stores.showcaseTheme), filter.status ? eq(stores.status, filter.status as "ACTIVE") : undefined, filter.offer ? eq(stores.offer, filter.offer as "DROP_MANUAL") : undefined, filter.marca ? eq(organizations.brand, filter.marca as "SUPERDROP") : undefined))
     .orderBy(stores.name);
-  const orderCounts = await db.select({ storeId: orders.storeId, n: count(), total: sum(orders.totalCents) }).from(orders).where(ne(orders.status, "CANCELED")).groupBy(orders.storeId);
+  // Mesmo contrato de venda do painel do lojista (isEligibleSale + netSaleCents): pago, não cancelado, sem frete.
+  const orderCounts = await db.select({ storeId: orders.storeId, n: count(), total: SALE_SUM() }).from(orders).where(SALE_WHERE()).groupBy(orders.storeId);
   const q = filter.q?.toLowerCase();
   return rows
     .filter((r) => !q || r.store.name.toLowerCase().includes(q) || r.store.slug.includes(q))

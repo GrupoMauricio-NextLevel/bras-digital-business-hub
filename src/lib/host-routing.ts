@@ -5,7 +5,7 @@ import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
  * (o "escritório": login, Master, fornecedor, lojista, afiliado). Esta função pura decide o que fazer com uma requisição.
  * Sem `officeUrl` na marca (padrão) nada muda: os painéis ficam no endereço público. Só `/loja/<nome>` vira apelido da vitrine.
  */
-export const PANEL_PREFIXES = ["/master", "/supplier", "/merchant", "/partner", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
+export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string } | { kind: "rewrite"; path: string };

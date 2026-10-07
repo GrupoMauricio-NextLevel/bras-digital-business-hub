@@ -53,6 +53,9 @@ describe("Master central e produtos em breve", () => {
   it("no Master central só há login e painéis; o resto volta ao login", () => {
     expect(go("master.nextlevelgroup.com.br", "/login", {})).toEqual({ kind: "next" });
     expect(go("master.nextlevelgroup.com.br", "/master/stores", {})).toEqual({ kind: "next" });
+    // Console Commerce é painel do Master: abre no endereço central (antes voltava ao login e ao /master)
+    expect(go("master.nextlevelgroup.com.br", "/commerce", {})).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/commerce/stores", {})).toEqual({ kind: "next" });
     expect(go("master.nextlevelgroup.com.br", "/planos", {})).toEqual({ kind: "redirect", url: "/login" });
     expect(go("master.nextlevelgroup.com.br", "/", {})).toEqual({ kind: "redirect", url: "/login" });
   });

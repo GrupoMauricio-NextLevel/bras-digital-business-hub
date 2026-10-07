@@ -158,6 +158,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   return (
     <div className="flex h-full flex-col bg-background">
       <header className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-3 py-2">
+        <h1 className="sr-only">Editor do tema da loja</h1>
         <Button variant="ghost" size="sm" onClick={leave}><ArrowLeft aria-hidden /> Painel</Button>
         <div className="mr-2 hidden min-w-0 sm:block"><p className="truncate text-sm font-semibold leading-tight">{storeName}</p><p className="text-[11px] text-muted-foreground">Editor do tema</p></div>
         <label className="sr-only" htmlFor="page-select">Página</label>

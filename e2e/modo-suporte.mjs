@@ -21,14 +21,14 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   for (const [email, home, papel] of [["loja@mrssports.demo", "/merchant", "lojista"], ["expedicao@megatron.demo", "/supplier/dispatch", "expedição"], ["parceira@demo.superdrop.com.br", "/partner", "parceiro"], ["completo@commerce.demo", "/merchant", "lojista Commerce"]]) {
     await p.goto(B + "/master/clientes?marca=todas&q=" + encodeURIComponent(email));
     const row = p.locator("tr, li, [role=row], .ds-card div").filter({ hasText: email }).first();
-    if (!(await p.locator(`text=${email} >> visible=true`).first().isVisible().catch(() => false))) { fail(`${w}px: cliente ${email} não aparece na central`); continue; }
+    if (!(await p.locator(`text=${email} >> visible=true`).first().waitFor({ timeout: 20000 }).then(() => true).catch(() => false))) { fail(`${w}px: cliente ${email} não aparece na central`); continue; }
     await p.getByRole("button", { name: /Ver como cliente/ }).first().click();
     await p.getByRole("button", { name: "Conferir pedido" }).click();
     if (w === 390 && papel === "lojista") await p.screenshot({ path: `${OUT}/suporte-motivo-390.png` });
     await p.getByRole("button", { name: "Entrar em modo suporte" }).click();
     await p.waitForURL((u) => u.pathname.startsWith(home), { timeout: 30000 }).catch(() => fail(`${w}px ${papel}: não abriu ${home} (está em ${p.url()})`));
     const bar = p.locator(".ds-support-bar");
-    if (!(await bar.isVisible().catch(() => false))) { fail(`${w}px ${papel}: faixa do modo suporte não aparece`); continue; }
+    if (!(await bar.waitFor({ timeout: 20000 }).then(() => true).catch(() => false))) { fail(`${w}px ${papel}: faixa do modo suporte não aparece`); continue; }
     const txt = await bar.innerText();
     if (!/somente leitura/.test(txt) || !/Conferir pedido/.test(txt)) fail(`${w}px ${papel}: faixa sem modo/motivo (${txt.slice(0, 80)})`); else ok(`${w}px ${papel}: entrou em modo suporte com faixa e motivo`);
     if (papel === "lojista") await p.screenshot({ path: `${OUT}/suporte-faixa-${papel}-${w}.png` });
@@ -46,7 +46,7 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   await p.goto(B + "/master/clientes?marca=todas");
   await p.screenshot({ path: `${OUT}/central-clientes-${w}.png`, fullPage: w === 1440 ? false : true });
   // histórico registra os acessos
-  if (!(await p.getByText("Entrou em modo suporte").first().isVisible().catch(() => false))) fail(`${w}px: histórico de suporte vazio`); else ok(`${w}px: histórico de acessos de suporte visível`);
+  if (!(await p.locator("text=Entrou em modo suporte >> visible=true").first().waitFor({ timeout: 20000 }).then(() => true).catch(() => false))) fail(`${w}px: histórico de suporte vazio`); else ok(`${w}px: histórico de acessos de suporte visível`);
   await ctx.close();
 }
 

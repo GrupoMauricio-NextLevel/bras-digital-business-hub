@@ -12,7 +12,7 @@ export default async function ShippedPage() {
   const shipped = e.orders.filter((o) => o.status === "SHIPPED");
   return (
     <div className="nl-touch">
-      <div className="mb-4 flex justify-end"><LiveSync /></div>
+      <div className="mb-4 flex items-center justify-between gap-3"><h1 className="text-xl font-extrabold">Enviados</h1><LiveSync /></div>
       <DispatchNav active="/supplier/dispatch/shipped" adm={session.user.role === "SUPPLIER_ADMIN"} />
       {shipped.length === 0 ? <EmptyState icon={Truck} title="Nada enviado hoje" description="Os pedidos marcados como enviados aparecem aqui." /> : (
         <ul className="grid gap-3 md:grid-cols-2">

@@ -70,3 +70,17 @@ describe("contrato único de venda (Onda 5)", () => {
     expect(a.marginCents).toBe(4000);
   });
 });
+
+describe("mesmo número de 30 dias no início do painel e na análise", () => {
+  it("pedido no limite da janela conta igual nas duas telas", async () => {
+    const { computeStoreAnalytics, salesWindow, netSaleCents } = await import("@/lib/domain/analytics");
+    const now = new Date("2026-10-07T02:30:00Z");
+    const mk = (id: string, iso: string, cents: number) => ({ id, status: "PAID", customerPaymentStatus: "PAID", channel: "STOREFRONT", customerEmail: id + "@x.com", subtotalCents: cents, discountCents: 0, costTotalCents: 0, createdAt: iso });
+    const orders = [mk("a", "2026-09-08T00:10:00Z", 1000), mk("b", "2026-09-07T23:50:00Z", 2000), mk("c", "2026-10-07T01:00:00Z", 500)];
+    const a = computeStoreAnalytics(orders, [], now, 30);
+    const w = salesWindow(orders, now, 30);
+    expect(a.salesCents).toBe(w.inWindow.reduce((s, o) => s + netSaleCents(o), 0));
+    expect(w.inWindow.map((o) => o.id).sort()).toEqual(["a", "c"]);
+    expect(a.days.reduce((s, d) => s + d.salesCents, 0)).toBe(a.salesCents);
+  });
+});
