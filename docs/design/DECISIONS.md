@@ -515,3 +515,9 @@ Continuação de D82 (`Prompt-NextLevel.md`). Branch `claude/temas-modulares-v1`
 - **Beauty, Conecta e Atacado** ficam para a próxima etapa (checkpoint): basta uma spec, um catálogo e o manifesto.
 - **Desempenho**: meta de nota ≥ 90 e CLS atingidas; LCP 2,7 a 3,3 s no celular simulado (meta 2,5 s) fica pendente, medir de novo com as imagens finais.
 
+## D84 — Todos os temas à venda (2026-10-07)
+Pedido do dono: "pode publicar todas as atualizações! quero o máximo de temas possíveis à venda; as imagens vou enviar na sequência".
+- Os 9 temas em revisão passam a `released`: Trama, Lar e Lance (N1, grátis); Ninho e Torcida (N2, R$ 149); Varanda (N3, R$ 299); Atelier, Morada e Pódio (N4, R$ 999). Preços seguem a proposta de `docs/temas-modulares/CATALOGO.md`; no N4 foi escolhido R$ 999 (topo da faixa sugerida de R$ 699 a R$ 999). Os preços já vendidos não mudam (Lume, Arena, Editorial, Signature).
+- Casa e Sport vão ao ar com banners no fundo das cores do tema e produtos ilustrados até as imagens do dono chegarem; trocar a imagem não exige código (manifesto).
+- Liberação continua no servidor: um tema que volte a `review` sai da galeria e não vende (testes simulam esse caso).
+

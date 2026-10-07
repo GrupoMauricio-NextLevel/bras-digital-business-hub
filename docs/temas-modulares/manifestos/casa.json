@@ -7,7 +7,7 @@
       "key": "lar",
       "name": "Lar",
       "level": 1,
-      "release": "review",
+      "release": "released",
       "priceCents": 0,
       "pricePending": false
     },
@@ -15,7 +15,7 @@
       "key": "ninho",
       "name": "Ninho",
       "level": 2,
-      "release": "review",
+      "release": "released",
       "priceCents": 14900,
       "pricePending": false
     },
@@ -23,17 +23,17 @@
       "key": "varanda",
       "name": "Varanda",
       "level": 3,
-      "release": "review",
-      "priceCents": 0,
-      "pricePending": true
+      "release": "released",
+      "priceCents": 29900,
+      "pricePending": false
     },
     {
       "key": "morada",
       "name": "Morada",
       "level": 4,
-      "release": "review",
-      "priceCents": 0,
-      "pricePending": true
+      "release": "released",
+      "priceCents": 99900,
+      "pricePending": false
     }
   ],
   "assets": [

@@ -23,14 +23,15 @@ const pay = async (invoiceId: string) => { const inv = await markInvoicePaid(ctx
 const ctxp: PresetContext = { storeName: "Loja Teste", tagline: "Slogan da loja", primary: "#0f172a", accent: "#16a34a", announcement: "", footerText: "", now: new Date("2026-05-10T12:00:00Z") };
 
 describe("catálogo de temas", () => {
-  it("tem os temas com os preços definidos (temas novos em revisão; pagos sem preço aprovado ficam em definição)", () => {
-    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["trama", 0], ["lume", 14900], ["lar", 0], ["ninho", 14900], ["lance", 0], ["torcida", 0], ["arena", 29900], ["editorial", 69900], ["varanda", 0], ["atelier", 0], ["morada", 0], ["podio", 0], ["signature", 149900]]);
-    expect(THEME_CATALOG.find((t) => t.key === "atelier")).toMatchObject({ release: "review", pricePending: true, level: 4 });
+  it("tem os temas com os preços definidos pelo dono, todos à venda; pago sem preço ficaria em definição", () => {
+    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["trama", 0], ["lume", 14900], ["lar", 0], ["ninho", 14900], ["lance", 0], ["torcida", 14900], ["arena", 29900], ["editorial", 69900], ["varanda", 29900], ["atelier", 99900], ["morada", 99900], ["podio", 99900], ["signature", 149900]]);
+    // D84: o dono liberou todos os temas para venda.
+    expect(THEME_CATALOG.every((t) => t.release === "released")).toBe(true);
     // Nenhum tema em revisão é vendido; todo tema pago sem preço tem a marca de preço em definição.
     for (const t of THEME_CATALOG) if (t.level > 1 && t.priceCents === 0) expect(t.pricePending, t.key).toBe(true);
   });
   it("a semente já traz o catálogo novo e sincronizar de novo não muda nada", async () => {
-    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "atelier", "editorial", "lance", "lar", "lume", "morada", "ninho", "podio", "signature", "starter", "torcida", "trama", "varanda"]); expect(rows.filter((r) => !r.available).map((r) => r.key).sort()).toEqual(["atelier", "lance", "lar", "morada", "ninho", "podio", "torcida", "trama", "varanda"]);
+    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "atelier", "editorial", "lance", "lar", "lume", "morada", "ninho", "podio", "signature", "starter", "torcida", "trama", "varanda"]); expect(rows.filter((r) => !r.available).map((r) => r.key)).toEqual([]);
     expect(await syncThemeCatalog(ctx.db)).toEqual([]);
   });
   it("converte os temas antigos (pro e elite) mantendo o id das lojas ligadas", async () => {
@@ -81,7 +82,9 @@ describe("modelos dos temas", () => {
 describe("compra e instalação com 1 clique", () => {
   const A = () => ctx.actors.arena; const id = () => ctx.seed.stores.arena.id;
   it("a vitrine mostra só os temas à venda, com o Starter já disponível", async () => {
-    const cards = await themeCardsFor(ctx.db, A()); expect(cards.map((c) => c.key)).toEqual(["starter", "lume", "arena", "editorial", "signature"]);
+    const cards = await themeCardsFor(ctx.db, A()); expect(cards.map((c) => c.key).sort()).toEqual(THEME_CATALOG.filter((t) => t.release === "released").map((t) => t.key).sort());
+    // Os grátis (N1) já vêm liberados para toda loja.
+    for (const k of ["trama", "lar", "lance"]) expect(cards.find((c) => c.key === k)!.owned, k).toBe(true);
     expect(cards.find((c) => c.key === "starter")!.owned).toBe(true); expect(cards.find((c) => c.key === "arena")!.owned).toBe(false); expect(cards.find((c) => c.key === "starter")!.active).toBe(true);
   });
   it("tema pago não instala sem comprar", async () => { await expect(installTheme(ctx.db, A(), "arena")).rejects.toMatchObject({ code: "THEME_NOT_OWNED" }); });

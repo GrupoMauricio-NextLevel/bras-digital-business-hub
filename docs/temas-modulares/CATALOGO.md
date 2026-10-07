@@ -1,19 +1,21 @@
 # Catálogo de temas por família e nível
 
 > Fonte de verdade: `src/lib/themes/catalog.ts`. Estados: **à venda** (`released`), **em revisão** (`review`: demonstração por link, não vende nem instala) e rascunho (`draft`: não aparece).
-> Nenhum preço foi alterado nesta rodada. Os valores "propostos" abaixo são só sugestão para o dono decidir.
+> Preços dos temas já vendidos não mudaram. Os temas novos usam a proposta abaixo (D84).
 
 | Família (loja de exemplo) | N1 Grátis | N2 NextLevel Commerce | N3 Commerce PRO | N4 Commerce ULTIMATE |
 |---|---|---|---|---|
-| Base (catálogo Moda) | **Starter**: à venda, grátis | (nenhum) | (nenhum) | **Signature**: à venda, R$ 1.499 |
-| Moda (Trama Urbana) | **Trama**: em revisão, grátis | **Lume**: à venda, R$ 149 | **Editorial**: à venda, R$ 699 | **Atelier**: em revisão, preço em definição |
-| Casa (Casa em Ordem) | **Lar**: em revisão, grátis | **Ninho**: em revisão, R$ 149 | **Varanda**: em revisão, preço em definição | **Morada**: em revisão, preço em definição |
-| Sport (Linha de Jogo) | **Lance**: em revisão, grátis | **Torcida**: em revisão, preço em definição | **Arena**: à venda, R$ 299 (composição própria, mantida) | **Pódio**: em revisão, preço em definição |
+| Base (catálogo Moda) | **Starter**: grátis | (nenhum) | (nenhum) | **Signature**: R$ 1.499 |
+| Moda (Trama Urbana) | **Trama**: grátis | **Lume**: R$ 149 | **Editorial**: R$ 699 | **Atelier**: R$ 999 |
+| Casa (Casa em Ordem) | **Lar**: grátis | **Ninho**: R$ 149 | **Varanda**: R$ 299 | **Morada**: R$ 999 |
+| Sport (Linha de Jogo) | **Lance**: grátis | **Torcida**: R$ 149 | **Arena**: R$ 299 (composição própria, mantida) | **Pódio**: R$ 999 |
 | Beauty (Bela Essência) | (próxima etapa) | | | |
 | Conecta (Ponto Conecta) | (próxima etapa) | | | |
 | Atacado (Giro Distribuidora) | (próxima etapa) | | | |
 
-## Proposta de preços (NÃO aplicada; decisão do dono)
+Todos à venda desde D84 (decisão do dono, 2026-10-07).
+
+## Proposta de preços (aplicada em D84 para os temas novos)
 Hoje os preços não seguem o nível: Editorial (N3) custa R$ 699 e Arena (N3) custa R$ 299. Proposta para os temas novos, sem mexer nos já vendidos:
 - N2: R$ 149 (igual a Lume e Ninho).
 - N3: R$ 299 (igual a Arena). Editorial continua R$ 699 enquanto o dono não decidir.

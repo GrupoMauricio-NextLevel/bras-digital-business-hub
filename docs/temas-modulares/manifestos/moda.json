@@ -7,7 +7,7 @@
       "key": "trama",
       "name": "Trama",
       "level": 1,
-      "release": "review",
+      "release": "released",
       "priceCents": 0,
       "pricePending": false
     },
@@ -31,9 +31,9 @@
       "key": "atelier",
       "name": "Atelier",
       "level": 4,
-      "release": "review",
-      "priceCents": 0,
-      "pricePending": true
+      "release": "released",
+      "priceCents": 99900,
+      "pricePending": false
     }
   ],
   "assets": [

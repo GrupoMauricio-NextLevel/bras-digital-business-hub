@@ -7,7 +7,7 @@
       "key": "lance",
       "name": "Lance",
       "level": 1,
-      "release": "review",
+      "release": "released",
       "priceCents": 0,
       "pricePending": false
     },
@@ -15,9 +15,9 @@
       "key": "torcida",
       "name": "Torcida",
       "level": 2,
-      "release": "review",
-      "priceCents": 0,
-      "pricePending": true
+      "release": "released",
+      "priceCents": 14900,
+      "pricePending": false
     },
     {
       "key": "arena",
@@ -31,9 +31,9 @@
       "key": "podio",
       "name": "Pódio",
       "level": 4,
-      "release": "review",
-      "priceCents": 0,
-      "pricePending": true
+      "release": "released",
+      "priceCents": 99900,
+      "pricePending": false
     }
   ],
   "assets": [

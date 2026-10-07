@@ -77,12 +77,17 @@ describe("lojas de demonstração dos temas", () => {
 });
 
 describe("vitrine pública de temas", () => {
-  it("só lista o que está à venda; o tema em aprovação abre por link, com preço do catálogo", async () => {
-    const list = await publicThemes(ctx.db);
-    expect(list.map((t) => t.key)).toEqual(["starter", "lume", "arena", "editorial", "signature"]);
-    expect(list.find((t) => t.key === "arena")!.quote!.listCents).toBe(THEME_BY_KEY.arena!.priceCents);
-    const ninho = (await publicTheme(ctx.db, "ninho"))!;
-    expect(ninho.release).toBe("review"); expect(ninho.demoReady).toBe(true); expect(ninho.quote!.listCents).toBe(14900);
+  it("só lista o que está à venda; um tema em aprovação abre por link, com preço do catálogo", async () => {
+    expect((await publicThemes(ctx.db)).map((t) => t.key)).toEqual(THEME_CATALOG.filter((t) => t.release === "released").map((t) => t.key));
+    // Todos estão à venda hoje (D84); um tema que volte para revisão sai da galeria e continua abrindo por link.
+    const ninhoInfo = THEME_BY_KEY.ninho!; ninhoInfo.release = "review";
+    try {
+      const list = await publicThemes(ctx.db);
+      expect(list.map((t) => t.key)).not.toContain("ninho");
+      expect(list.find((t) => t.key === "arena")!.quote!.listCents).toBe(THEME_BY_KEY.arena!.priceCents);
+      const ninho = (await publicTheme(ctx.db, "ninho"))!;
+      expect(ninho.release).toBe("review"); expect(ninho.demoReady).toBe(true); expect(ninho.quote!.listCents).toBe(14900);
+    } finally { ninhoInfo.release = "released"; }
     expect(await publicTheme(ctx.db, "nao-existe")).toBeNull();
   });
 });
@@ -92,6 +97,9 @@ describe("lojista", () => {
     const r = await signupMember(ctx.db, { storeName: "Minha Loja", ownerName: "Ana", email: "ana@exemplo.com", password: "senha-forte-123", taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
     for (const inv of await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId))) await markInvoicePaid(ctx.db, inv.id);
     const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
+    // Simula um tema em aprovação (hoje todos estão à venda, D84).
+    const ninho = THEME_BY_KEY.ninho!; ninho.release = "review";
+    await ctx.db.update(themes).set({ available: false }).where(eq(themes.key, "ninho"));
     const cards = await themeCardsFor(ctx.db, owner);
     expect(cards.map((c) => c.key)).not.toContain("ninho");
     // Tentativa direta (sem passar pela vitrine): compra e instalação recusadas no servidor, sem fatura criada.
@@ -99,7 +107,7 @@ describe("lojista", () => {
     await expect(installTheme(ctx.db, owner, "ninho")).rejects.toMatchObject({ code: "THEME_NOT_RELEASED" });
     expect((await ctx.db.select().from(financeInvoices).where(and(eq(financeInvoices.storeId, r.storeId), eq(financeInvoices.kind, "ADDON"))))).toHaveLength(0);
     // Quando o dono aprovar (released), a compra funciona e a instalação mantém os dados.
-    const ninho = THEME_BY_KEY.ninho!; ninho.release = "released";
+    ninho.release = "released";
     try {
       await ctx.db.update(themes).set({ available: true }).where(eq(themes.key, "ninho"));
       const bought = await buyTheme(ctx.db, owner, "ninho", "PIX");
@@ -109,6 +117,6 @@ describe("lojista", () => {
       const t = (await resolveTemplate(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!, "home")).template;
       expect(Object.values(t.sections).some((s) => s.type === "hero-banner")).toBe(true);
       expect((await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!.name).toBe("Minha Loja");
-    } finally { ninho.release = "review"; }
+    } finally { ninho.release = "released"; }
   });
 });

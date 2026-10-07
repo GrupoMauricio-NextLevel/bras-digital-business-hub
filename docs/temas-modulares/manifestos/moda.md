@@ -2,7 +2,7 @@
 
 > Gerado por `npx tsx scripts/manifesto-temas.ts`. Os quatro níveis usam as mesmas imagens; o nível decide quais posições aparecem.
 
-Temas: Trama (N1, em revisão) · Lume (N2, à venda) · Editorial (N3, à venda) · Atelier (N4, em revisão)
+Temas: Trama (N1, à venda) · Lume (N2, à venda) · Editorial (N3, à venda) · Atelier (N4, à venda)
 
 Paleta: Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo  
 Luz: Luz natural lateral, suave, fim de tarde

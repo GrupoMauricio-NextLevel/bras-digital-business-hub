@@ -2,7 +2,7 @@
 
 > Gerado por `npx tsx scripts/manifesto-temas.ts`. Os quatro níveis usam as mesmas imagens; o nível decide quais posições aparecem.
 
-Temas: Lar (N1, em revisão) · Ninho (N2, em revisão) · Varanda (N3, em revisão) · Morada (N4, em revisão)
+Temas: Lar (N1, à venda) · Ninho (N2, à venda) · Varanda (N3, à venda) · Morada (N4, à venda)
 
 Paleta: Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas  
 Luz: Luz natural de janela, manhã, sombras suaves

@@ -2,7 +2,7 @@
 
 > Gerado por `npx tsx scripts/manifesto-temas.ts`. Os quatro níveis usam as mesmas imagens; o nível decide quais posições aparecem.
 
-Temas: Lance (N1, em revisão) · Torcida (N2, em revisão) · Arena (N3, à venda) · Pódio (N4, em revisão)
+Temas: Lance (N1, à venda) · Torcida (N2, à venda) · Arena (N3, à venda) · Pódio (N4, à venda)
 
 Paleta: Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas  
 Luz: Luz de fim de tarde em campo aberto ou estúdio com contraste alto

@@ -28,7 +28,7 @@ describe("níveis e capacidades", () => {
   });
   it("o catálogo separa família, nível e liberação, preservando chaves e preços", () => {
     expect(THEME_BY_KEY.lume).toMatchObject({ family: "moda", level: 2, release: "released", priceCents: 14900 });
-    expect(THEME_BY_KEY.ninho).toMatchObject({ family: "casa", level: 2, release: "review", priceCents: 14900 });
+    expect(THEME_BY_KEY.ninho).toMatchObject({ family: "casa", level: 2, release: "released", priceCents: 14900 });
     expect(THEME_BY_KEY.arena).toMatchObject({ family: "sport", level: 3, priceCents: 29900 });
     expect(THEME_BY_KEY.signature).toMatchObject({ level: 4, priceCents: 149900 });
   });
@@ -162,6 +162,6 @@ describe("migração do catálogo", () => {
     const rows = await ctx.db.select().from(themes);
     expect(new Set(rows.map((r) => r.key)).size).toBe(rows.length);
     expect(rows.find((r) => r.key === "arena")).toMatchObject({ family: "sport", level: 3, release: "released", available: true });
-    expect(rows.find((r) => r.key === "ninho")).toMatchObject({ release: "review", available: false });
+    expect(rows.find((r) => r.key === "ninho")).toMatchObject({ family: "casa", level: 2, release: "released", available: true });
   });
 });
