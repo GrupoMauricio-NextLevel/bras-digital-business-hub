@@ -8,6 +8,7 @@ import type { PublicProduct } from "@/lib/queries/storefront";
 import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
+import { variantLabel } from "@/lib/variant-label";
 import { cn } from "@/lib/utils";
 
 export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Sports · etiqueta em até 1 dia útil após confirmação", stickyBar = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean }) {
@@ -58,7 +59,7 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
 
       {mode === "unit" ? (
         <div className="mt-6">
-          <div className="mb-2 flex items-center justify-between text-sm"><span className="font-medium">Tamanho</span>{variant ? <span className="text-neutral-500">{variant.available > 0 ? `${variant.available} disponíveis` : "esgotado"}</span> : null}</div>
+          <div className="mb-2 flex items-center justify-between text-sm"><span className="font-medium">{variantLabel(product.variants.map((v) => v.size))}</span>{variant ? <span className="text-neutral-500">{variant.available > 0 ? `${variant.available} disponíveis` : "esgotado"}</span> : null}</div>
           <div className="flex flex-wrap gap-2">
             {product.variants.map((v) => (
               <button key={v.id} type="button" disabled={v.available === 0} onClick={() => { setVariantId(v.id); setQty(1); }} className={cn("h-11 min-w-[52px] rounded-lg border px-4 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 disabled:line-through", variantId === v.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 hover:border-neutral-900")}>{v.size}</button>
@@ -83,7 +84,7 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
         </div>
         <SfButton className="h-11 flex-1" onClick={add} disabled={max === 0}>{added ? <><Check className="size-4" /> Adicionado</> : <><ShoppingBag className="size-4" /> {max === 0 ? "Esgotado" : "Adicionar ao carrinho"}</>}</SfButton>
       </div>
-      <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" /> {shippingNote}</div>
+      {shippingNote ? <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" aria-hidden /> {shippingNote}</div> : null}
       {stickyBar && !ctaVisible ? (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-neutral-200 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur sm:hidden" data-sticky-buy-bar>
           <div className="min-w-0 flex-1"><div className="truncate text-sm font-medium">{product.name}</div><div className="text-sm font-semibold">{formatBRL(price)}</div></div>

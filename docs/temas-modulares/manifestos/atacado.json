@@ -1,0 +1,705 @@
+{
+  "family": "atacado",
+  "name": "Atacado",
+  "demoStore": "Giro Distribuidora",
+  "themes": [
+    {
+      "key": "fardo",
+      "name": "Fardo",
+      "level": 1,
+      "release": "released",
+      "priceCents": 0,
+      "pricePending": false
+    },
+    {
+      "key": "lote",
+      "name": "Lote",
+      "level": 2,
+      "release": "released",
+      "priceCents": 14900,
+      "pricePending": false
+    },
+    {
+      "key": "galpao",
+      "name": "Galpão",
+      "level": 3,
+      "release": "released",
+      "priceCents": 29900,
+      "pricePending": false
+    },
+    {
+      "key": "porto",
+      "name": "Porto",
+      "level": 4,
+      "release": "released",
+      "priceCents": 99900,
+      "pricePending": false
+    }
+  ],
+  "assets": [
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-hero-1",
+      "position": "Página inicial · Destaque com banners · slide 1",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Assunto à direita (68% / 50% no computador; 50% / 45% no celular)",
+      "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
+      "scene": "Corredor de galpão com caixas de papelão fechadas e empilhadas em paletes, etiquetas em branco",
+      "overlayText": "Atacado por caixa fechada · Ver catálogo",
+      "alt": "Galpão com caixas fechadas em paletes",
+      "file": "/temas/familias/atacado/atacado-hero-1.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-hero-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-hero-2",
+      "position": "Página inicial · Destaque com banners · slide 2",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro-direita",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Caixa aberta mostrando potes e garrafas plásticas organizados, vista de cima",
+      "overlayText": "Utilidades para revenda · Ver utilidades",
+      "alt": "Caixa aberta com utilidades plásticas",
+      "file": "/temas/familias/atacado/atacado-hero-2.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-hero-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-hero-3",
+      "position": "Página inicial · Destaque com banners · slide 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Caixa aberta com carrinhos de brinquedo sortidos, sem marcas ou personagens",
+      "overlayText": "Brinquedos por caixa · Ver brinquedos",
+      "alt": "Caixa com carrinhos de brinquedo sortidos",
+      "file": "/temas/familias/atacado/atacado-hero-3.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-hero-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-hero-4",
+      "position": "Página inicial · Destaque com banners · slide de campanha agendada",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Contêiner aberto num pátio com paletes de caixas na porta, fim de tarde",
+      "overlayText": "Chegada de contêiner (agendada) · Ver novidades",
+      "alt": "Contêiner aberto com paletes de caixas",
+      "file": "/temas/familias/atacado/atacado-hero-4.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-hero-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-apoio-1",
+      "position": "Página inicial · Dois banners de apoio · esquerda",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre para título e botão",
+      "scene": "Prateleira de galpão com kits de potes empilhados",
+      "overlayText": "Utilidades · Ver",
+      "alt": "Prateleira com kits de potes",
+      "file": "/temas/familias/atacado/atacado-apoio-1.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-apoio-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-apoio-2",
+      "position": "Página inicial · Dois banners de apoio · direita",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "scene": "Bolas de vinil e quebra-cabeças em caixas abertas",
+      "overlayText": "Brinquedos · Ver",
+      "alt": "Bolas e quebra-cabeças em caixas",
+      "file": "/temas/familias/atacado/atacado-apoio-2.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-apoio-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-faixa-1",
+      "position": "Página inicial · Faixa de campanha",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Assunto à direita (72% / 50%)",
+      "safeArea": "55% à esquerda livres para texto (computador)",
+      "scene": "Pilha de caixas de papelão lacradas com fita, à direita do quadro, fundo claro",
+      "overlayText": "Venda por caixa fechada · Ver catálogo",
+      "alt": "Pilha de caixas lacradas",
+      "file": "/temas/familias/atacado/atacado-faixa-1.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-faixa-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-sobre",
+      "position": "Página inicial · Imagem com texto (sobre a loja)",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Sem texto por cima",
+      "scene": "Mãos fechando caixa com fita adesiva na bancada de expedição",
+      "overlayText": "(texto ao lado da imagem)",
+      "alt": "Mãos fechando uma caixa com fita",
+      "file": "/temas/familias/atacado/atacado-sobre.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-mosaico-1",
+      "position": "Página inicial · Mosaico de banners · peça grande",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1200,
+          1500
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre para título",
+      "scene": "Palete com caixas de utilidades envolto em filme plástico",
+      "overlayText": "Utilidades",
+      "alt": "Palete com caixas envolto em filme",
+      "file": "/temas/familias/atacado/atacado-mosaico-1.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-mosaico-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-mosaico-2",
+      "position": "Página inicial · Mosaico de banners · menor 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Caixa com massinhas de modelar coloridas",
+      "overlayText": "Brinquedos",
+      "alt": "Caixa com massinhas coloridas",
+      "file": "/temas/familias/atacado/atacado-mosaico-2.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-mosaico-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-mosaico-3",
+      "position": "Página inicial · Mosaico de banners · menor 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Cadernos empilhados com capas coloridas sem marca",
+      "overlayText": "Papelaria",
+      "alt": "Cadernos empilhados",
+      "file": "/temas/familias/atacado/atacado-mosaico-3.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-mosaico-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-mosaico-4",
+      "position": "Página inicial · Mosaico 1+4 · menor 3",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Cabos e fones em embalagens individuais organizados numa caixa",
+      "overlayText": "Acessórios",
+      "alt": "Cabos e fones em embalagens",
+      "file": "/temas/familias/atacado/atacado-mosaico-4.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-mosaico-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-mosaico-5",
+      "position": "Página inicial · Mosaico 1+4 · menor 4",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Caixa nova sendo aberta com estilete, produtos aparecendo",
+      "overlayText": "Lançamentos",
+      "alt": "Caixa nova sendo aberta",
+      "file": "/temas/familias/atacado/atacado-mosaico-5.webp",
+      "fileMobile": "/temas/familias/atacado/atacado-mosaico-5-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-look-1",
+      "position": "Página inicial · Galeria Do galpão para a sua loja · 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo da imagem (fora da foto)",
+      "scene": "Corredor de estoque com prateleiras altas",
+      "overlayText": "(título abaixo)",
+      "alt": "Corredor de estoque",
+      "file": "/temas/familias/atacado/atacado-look-1.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-look-2",
+      "position": "Página inicial · Galeria Do galpão para a sua loja · 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Pessoa separando pedidos com prancheta, de costas",
+      "overlayText": "(título abaixo)",
+      "alt": "Pessoa separando pedidos",
+      "file": "/temas/familias/atacado/atacado-look-2.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-look-3",
+      "position": "Página inicial · Galeria Do galpão para a sua loja · 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Caixa fechada com etiqueta em branco sobre a bancada",
+      "overlayText": "(título abaixo)",
+      "alt": "Caixa fechada com etiqueta",
+      "file": "/temas/familias/atacado/atacado-look-3.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "atacado",
+      "palette": "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado",
+      "light": "Luz de galpão clara e uniforme, sem sombras duras",
+      "provisional": null,
+      "id": "atacado-look-4",
+      "position": "Página inicial · Galeria Do galpão para a sua loja · 4",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Caixas sendo carregadas num caminhão baú",
+      "overlayText": "(título abaixo)",
+      "alt": "Caixas sendo carregadas no caminhão",
+      "file": "/temas/familias/atacado/atacado-look-4.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    }
+  ],
+  "products": [
+    {
+      "sku": "GD-01",
+      "name": "Kit potes plásticos com tampa (3 peças)",
+      "category": "Utilidades",
+      "file": "/temas/familias/atacado/produtos/GD-01.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-02",
+      "name": "Garrafa plástica 500 ml",
+      "category": "Utilidades",
+      "file": "/temas/familias/atacado/produtos/GD-02.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-03",
+      "name": "Organizador de gaveta",
+      "category": "Utilidades",
+      "file": "/temas/familias/atacado/produtos/GD-03.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-04",
+      "name": "Pano de microfibra 40×40",
+      "category": "Utilidades",
+      "file": "/temas/familias/atacado/produtos/GD-04.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-05",
+      "name": "Carrinho de fricção",
+      "category": "Brinquedos",
+      "file": "/temas/familias/atacado/produtos/GD-05.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-06",
+      "name": "Massinha de modelar 6 cores",
+      "category": "Brinquedos",
+      "file": "/temas/familias/atacado/produtos/GD-06.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-07",
+      "name": "Bola de vinil 20 cm",
+      "category": "Brinquedos",
+      "file": "/temas/familias/atacado/produtos/GD-07.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-08",
+      "name": "Quebra-cabeça 60 peças",
+      "category": "Brinquedos",
+      "file": "/temas/familias/atacado/produtos/GD-08.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-09",
+      "name": "Caderno brochura 96 folhas",
+      "category": "Papelaria",
+      "file": "/temas/familias/atacado/produtos/GD-09.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-10",
+      "name": "Caneta esferográfica azul",
+      "category": "Papelaria",
+      "file": "/temas/familias/atacado/produtos/GD-10.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-11",
+      "name": "Estojo escolar com zíper",
+      "category": "Papelaria",
+      "file": "/temas/familias/atacado/produtos/GD-11.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-12",
+      "name": "Cabo USB-C 1 m",
+      "category": "Acessórios",
+      "file": "/temas/familias/atacado/produtos/GD-12.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-13",
+      "name": "Fone com fio P2",
+      "category": "Acessórios",
+      "file": "/temas/familias/atacado/produtos/GD-13.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "GD-14",
+      "name": "Capinha de silicone sortida",
+      "category": "Acessórios",
+      "file": "/temas/familias/atacado/produtos/GD-14.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    }
+  ]
+}

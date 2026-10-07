@@ -83,3 +83,82 @@ export const SPORT: FamilySpec = {
   },
   n4: { hero: { title: (n) => `${n}: a temporada`, subtitle: "Camisas e treino com cara de loja oficial.", cta: "Ver a coleção" }, campaign: { title: "Campanha de fim de temporada", subtitle: "Slide agendado: aparece só no período definido.", cta: "Ver camisas", link: cat("Camisas") }, cats: "Explore a loja", mosaic: ["Camisas", "Treino", "Acessórios", "Infantil", "Meias"], featured: "Seleção da temporada", latest: "Recém-chegados" },
 };
+
+/** Beauty · Bela Essência (Pétala N1, Brilho N2, Aura N3, Musa N4): acessórios de beleza (sem promessa de resultado). */
+export const BEAUTY: FamilySpec = {
+  id: "beauty",
+  styles: [
+    { primary: "#3f2a33", accent: "#be185d", headingFont: "display", radius: 12 },
+    { primary: "#4a2c3a", accent: "#c2417a", headingFont: "elegante", radius: 18 },
+    { primary: "#2e2328", accent: "#a8556f", headingFont: "editorial", radius: 4 },
+    { primary: "#26181f", accent: "#b45309", headingFont: "elegante", radius: 10 },
+  ],
+  heroFocus: { focusX: 66, focusMobileX: 50, focusMobileY: 42 }, stripFocus: { focusX: 72 },
+  support: [{ title: "Cabelo", cta: "Ver", link: cat("Cabelo") }, { title: "Maquiagem", cta: "Ver", link: cat("Maquiagem") }],
+  strip: { title: "Tudo no lugar na penteadeira", subtitle: "Organizadores e nécessaires.", cta: "Ver organização", link: cat("Organização") },
+  fallbackCategories: cats("Cabelo", "Maquiagem", "Organização", "Cuidados"),
+  n1: { hero: { title: "Seu ritual, do seu jeito", subtitle: "Acessórios de beleza para o dia a dia.", cta: "Ver produtos" }, cats: "Compre por categoria", latest: "Novidades", featured: "Mais procurados" },
+  n2: { hero: { title: (n) => `Novidades na ${n}`, subtitle: "Acessórios de beleza escolhidos com cuidado.", cta: "Ver novidades" }, hero2: { title: "Pincéis e esponjas", cta: "Ver maquiagem", link: cat("Maquiagem"), align: "center" }, cats: "Compre por categoria", featured: "Escolhidos para você", featuredSub: "Os destaques da loja", latest: "Acabaram de chegar", about: { heading: (n) => `Sobre a ${n}`, body: "Conte em poucas linhas o que torna a sua loja especial." } },
+  n3: {
+    hero: { title: "Beleza com calma", subtitle: "Acessórios para o seu ritual.", cta: "Ver a seleção" }, hero2: { title: "Pincéis e esponjas", cta: "Ver maquiagem", link: cat("Maquiagem") }, hero3: { title: "Cabelo em dia", cta: "Ver cabelo", link: cat("Cabelo") },
+    mosaicHeading: "Escolha por momento", mosaic: [{ title: "Maquiagem", link: cat("Maquiagem") }, { title: "Cabelo", link: cat("Cabelo") }, { title: "Organização", link: cat("Organização") }],
+    featured: "Seleção da estação", latest: "Recém-chegados",
+    gallery: { heading: "Rituais", subtitle: "Ideias com produtos da loja", items: ["Manhã", "Noite", "Viagem", "Fim de semana"] },
+    about: { heading: "Feito para durar", body: (n) => `Na ${n}, cada acessório é escolhido pelo acabamento, pela praticidade e pelo cuidado com o uso diário.` },
+  },
+  n4: { hero: { title: (n) => `${n}: o seu ritual`, subtitle: "Acessórios de beleza com acabamento de marca.", cta: "Ver a coleção" }, campaign: { title: "Campanha de presentes", subtitle: "Slide agendado: aparece só no período definido.", cta: "Ver kits", link: cat("Organização") }, cats: "Explore a loja", mosaic: ["Maquiagem", "Cabelo", "Organização", "Cuidados", "Kits"], featured: "Seleção da casa", latest: "Recém-chegados" },
+};
+
+/** Conecta · Ponto Conecta (Sinal N1, Pulso N2, Circuito N3, Órbita N4): acessórios de celular, sem marcas de fabricantes. */
+export const CONECTA: FamilySpec = {
+  id: "conecta",
+  styles: [
+    { primary: "#0f172a", accent: "#2563eb", headingFont: "display", radius: 10 },
+    { primary: "#111827", accent: "#7c3aed", headingFont: "display", radius: 16 },
+    { primary: "#0b1120", accent: "#0891b2", headingFont: "condensada", radius: 6 },
+    { primary: "#030712", accent: "#16a34a", headingFont: "display", radius: 12 },
+  ],
+  heroFocus: { focusX: 68, focusMobileX: 50, focusMobileY: 40 }, stripFocus: { focusX: 72 },
+  support: [{ title: "Capinhas", cta: "Ver", link: cat("Capinhas") }, { title: "Fones de ouvido", cta: "Ver", link: cat("Fones") }],
+  strip: { title: "Carregue sem complicação", subtitle: "Cabos, carregadores e baterias portáteis.", cta: "Ver carregadores", link: cat("Cabos e carregadores") },
+  fallbackCategories: cats("Capinhas", "Cabos e carregadores", "Fones", "Suportes"),
+  n1: { hero: { title: "Tudo para o seu celular", subtitle: "Capinhas, cabos, fones e suportes.", cta: "Ver produtos" }, cats: "Compre por categoria", latest: "Novidades", featured: "Mais procurados" },
+  n2: { hero: { title: (n) => `Novidades na ${n}`, subtitle: "Acessórios para o celular do dia a dia.", cta: "Ver novidades" }, hero2: { title: "Som sem fio", cta: "Ver fones", link: cat("Fones"), align: "center" }, cats: "Compre por categoria", featured: "Escolhidos para você", featuredSub: "Os destaques da loja", latest: "Acabaram de chegar", about: { heading: (n) => `Sobre a ${n}`, body: "Conte em poucas linhas o que torna a sua loja especial." } },
+  n3: {
+    hero: { title: "Conectado o dia inteiro", subtitle: "Acessórios para casa, trabalho e viagem.", cta: "Ver a seleção" }, hero2: { title: "Som sem fio", cta: "Ver fones", link: cat("Fones") }, hero3: { title: "No carro e na mesa", cta: "Ver suportes", link: cat("Suportes") },
+    mosaicHeading: "Escolha por uso", mosaic: [{ title: "Capinhas", link: cat("Capinhas") }, { title: "Carregadores", link: cat("Cabos e carregadores") }, { title: "Fones", link: cat("Fones") }],
+    featured: "Seleção da semana", latest: "Recém-chegados",
+    gallery: { heading: "No dia a dia", subtitle: "Combinações com produtos da loja", items: ["Trabalho", "Viagem", "Treino", "Carro"] },
+    about: { heading: "Feito para o uso de verdade", body: (n) => `Na ${n}, cada acessório traz a especificação clara na página: potência, comprimento e compatibilidade.` },
+  },
+  n4: { hero: { title: (n) => `${n}: sempre conectado`, subtitle: "Acessórios com cara de loja de tecnologia.", cta: "Ver a coleção" }, campaign: { title: "Campanha de volta às aulas", subtitle: "Slide agendado: aparece só no período definido.", cta: "Ver carregadores", link: cat("Cabos e carregadores") }, cats: "Explore a loja", mosaic: ["Capinhas", "Carregadores", "Fones", "Suportes", "Películas"], featured: "Seleção da semana", latest: "Recém-chegados" },
+};
+
+/**
+ * Atacado · Giro Distribuidora (Fardo N1, Lote N2, Galpão N3, Porto N4): loja de importador/atacadista (Brás, Canindé)
+ * que vende caixa fechada para lojistas e distribuidores. É identidade de tema, não o módulo de atacado (lista de preços).
+ * Textos sem promessa de frete, prazo ou preço: condições comerciais o lojista escreve no editor.
+ */
+export const ATACADO: FamilySpec = {
+  id: "atacado",
+  styles: [
+    { primary: "#111827", accent: "#ea580c", headingFont: "condensada", radius: 6 },
+    { primary: "#1e293b", accent: "#f59e0b", headingFont: "condensada", radius: 10 },
+    { primary: "#0c1a2b", accent: "#dc2626", headingFont: "condensada", radius: 4 },
+    { primary: "#0a0a0a", accent: "#b45309", headingFont: "condensada", radius: 8 },
+  ],
+  heroFocus: { focusX: 68, focusMobileX: 50, focusMobileY: 45 }, stripFocus: { focusX: 72 },
+  support: [{ title: "Utilidades", cta: "Ver", link: cat("Utilidades") }, { title: "Brinquedos", cta: "Ver", link: cat("Brinquedos") }],
+  strip: { title: "Venda por caixa fechada", subtitle: "Quantidade por caixa em cada produto.", cta: "Ver catálogo", link: "/catalog" },
+  fallbackCategories: cats("Utilidades", "Brinquedos", "Papelaria", "Acessórios"),
+  n1: { hero: { title: "Atacado por caixa fechada", subtitle: "Para lojistas, revendedores e distribuidores.", cta: "Ver catálogo" }, cats: "Compre por categoria", latest: "Chegou no estoque", featured: "Mais pedidos" },
+  n2: { hero: { title: (n) => `${n}: atacado para revenda`, subtitle: "Caixa fechada para lojistas e distribuidores.", cta: "Ver catálogo" }, hero2: { title: "Utilidades para revenda", cta: "Ver utilidades", link: cat("Utilidades"), align: "center" }, cats: "Compre por categoria", featured: "Mais pedidos", featuredSub: "Os itens que mais saem", latest: "Chegou no estoque", about: { heading: (n) => `Sobre a ${n}`, body: "Conte de onde vem a sua mercadoria, para quem você vende e como funciona o pedido." } },
+  n3: {
+    hero: { title: "Importação direta para o seu estoque", subtitle: "Caixa fechada para revenda.", cta: "Ver catálogo" }, hero2: { title: "Utilidades para revenda", cta: "Ver utilidades", link: cat("Utilidades") }, hero3: { title: "Brinquedos por caixa", cta: "Ver brinquedos", link: cat("Brinquedos") },
+    mosaicHeading: "Escolha por linha", mosaic: [{ title: "Utilidades", link: cat("Utilidades") }, { title: "Brinquedos", link: cat("Brinquedos") }, { title: "Papelaria", link: cat("Papelaria") }],
+    featured: "Mais pedidos", latest: "Chegou no estoque",
+    gallery: { heading: "Do galpão para a sua loja", subtitle: "Como os produtos chegam", items: ["Estoque", "Separação", "Caixa fechada", "Expedição"] },
+    about: { heading: "Quem somos", body: (n) => `A ${n} vende por caixa fechada para lojistas e distribuidores. Cada produto mostra quantas unidades vêm na caixa.` },
+  },
+  n4: { hero: { title: (n) => `${n}: importação e atacado`, subtitle: "Caixa fechada para revenda.", cta: "Ver catálogo" }, campaign: { title: "Chegada de contêiner", subtitle: "Slide agendado: aparece só no período definido.", cta: "Ver novidades", link: "/catalog" }, cats: "Linhas de produto", mosaic: ["Utilidades", "Brinquedos", "Papelaria", "Acessórios", "Lançamentos"], featured: "Mais pedidos", latest: "Chegou no estoque" },
+};

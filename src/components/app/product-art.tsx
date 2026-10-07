@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 /**
  * Imagem de produto. Aceita URLs http(s) (upload real) ou o descritor
  * "art:<cor1>,<cor2>,<cor3>[,<forma>]" (arte determinística usada no seed e nas demonstrações). Formas: camisa (padrão),
- * pote, caixa, cesto e frasco: ilustrações neutras para produtos sem foto, nunca uma foto aleatória.
+ * pote, caixa, cesto, frasco, celular e fone: ilustrações neutras para produtos sem foto, nunca uma foto aleatória.
  */
 const ASSET = /^\/assets\/ast_[a-z0-9]+$/i;
 const SRC_WIDTHS = [320, 640, 960];
@@ -43,6 +43,16 @@ export function ProductArt({ images, className, size = "md", alt = "", priority 
           <path d="M42 40 Q60 14 78 40" fill="none" stroke={c3} strokeWidth="5" strokeLinecap="round" />
           <path d="M22 44 L98 44 L90 102 L30 102 Z" fill={c1} stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
           {[56, 68, 80, 92].map((y) => <path key={y} d={`M${24 + (y - 44) * 0.14} ${y} L${96 - (y - 44) * 0.14} ${y}`} stroke={c3} strokeWidth="2.5" opacity="0.6" />)}
+        </>) : shape === "celular" ? (<>
+          <rect x="34" y="10" width="52" height="100" rx="10" fill={c1} stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
+          <rect x="40" y="16" width="20" height="20" rx="5" fill={c2} opacity="0.85" />
+          <circle cx="50" cy="26" r="4" fill={c3} />
+        </>) : shape === "fone" ? (<>
+          <path d="M26 66 Q26 22 60 22 Q94 22 94 66" fill="none" stroke={c3} strokeWidth="7" strokeLinecap="round" />
+          <rect x="18" y="60" width="22" height="36" rx="9" fill={c1} stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
+          <rect x="80" y="60" width="22" height="36" rx="9" fill={c1} stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
+          <rect x="23" y="68" width="12" height="20" rx="5" fill={c2} opacity="0.7" />
+          <rect x="85" y="68" width="12" height="20" rx="5" fill={c2} opacity="0.7" />
         </>) : shape === "frasco" ? (<>
           <rect x="52" y="12" width="16" height="14" rx="3" fill={c3} />
           <path d="M48 26 L72 26 L76 38 Q90 42 90 56 L90 100 Q90 106 84 106 L36 106 Q30 106 30 100 L30 56 Q30 42 44 38 Z" fill={c1} stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />

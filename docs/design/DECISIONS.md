@@ -521,3 +521,11 @@ Pedido do dono: "pode publicar todas as atualizações! quero o máximo de temas
 - Casa e Sport vão ao ar com banners no fundo das cores do tema e produtos ilustrados até as imagens do dono chegarem; trocar a imagem não exige código (manifesto).
 - Liberação continua no servidor: um tema que volte a `review` sai da galeria e não vende (testes simulam esse caso).
 
+## D85 — Famílias Beauty, Conecta e Atacado (2026-10-07)
+Pedido do dono: "faz o Beauty e Conecta" e, sobre Atacado: "não é o módulo de atacado, é uma loja com tema voltado ao atacado, importadores do Brás e Canindé, com venda de caixa fechada, para atacadistas e distribuidores de todo o Brasil".
+- 12 temas novos, já à venda (seguindo D84): Beauty (Pétala, Brilho, Aura, Musa), Conecta (Sinal, Pulso, Circuito, Órbita) e Atacado (Fardo, Lote, Galpão, Porto). Preços por nível: grátis, R$ 149, R$ 299, R$ 999.
+- **Atacado é identidade de tema**, não o módulo de atacado. Na demonstração (Giro Distribuidora), o preço é da caixa, a variação diz quantas unidades vêm nela e a descrição mostra o valor por unidade. Caixas de tamanhos diferentes com o mesmo preço não são usadas (enganariam o cliente).
+- Beauty: acessórios de beleza, sem promessa de resultado. Conecta: sem marcas de fabricantes; especificação técnica clara. Atacado: sem marcas licenciadas.
+- Ilustrações novas de produto: celular e fone. Banners pendentes (cores do tema) até as imagens do dono; manifestos e prompt atualizados.
+- O seletor de variação da página do produto passa a se chamar pelo que as variações são (`src/lib/variant-label.ts`): "Tamanho" para grades de roupa e calçado (igual a antes, SuperDrop não muda), "Caixa" para "Cx 12" e "Opção" para cor, modelo ou tela. O aviso "Tamanho esgotado? Avise-me" continua com o texto antigo (pendência pequena).
+

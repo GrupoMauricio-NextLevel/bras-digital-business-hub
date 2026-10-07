@@ -9,11 +9,11 @@
 | Moda (Trama Urbana) | **Trama**: grátis | **Lume**: R$ 149 | **Editorial**: R$ 699 | **Atelier**: R$ 999 |
 | Casa (Casa em Ordem) | **Lar**: grátis | **Ninho**: R$ 149 | **Varanda**: R$ 299 | **Morada**: R$ 999 |
 | Sport (Linha de Jogo) | **Lance**: grátis | **Torcida**: R$ 149 | **Arena**: R$ 299 (composição própria, mantida) | **Pódio**: R$ 999 |
-| Beauty (Bela Essência) | (próxima etapa) | | | |
-| Conecta (Ponto Conecta) | (próxima etapa) | | | |
-| Atacado (Giro Distribuidora) | (próxima etapa) | | | |
+| Beauty (Bela Essência) | **Pétala**: grátis | **Brilho**: R$ 149 | **Aura**: R$ 299 | **Musa**: R$ 999 |
+| Conecta (Ponto Conecta) | **Sinal**: grátis | **Pulso**: R$ 149 | **Circuito**: R$ 299 | **Órbita**: R$ 999 |
+| Atacado (Giro Distribuidora) | **Fardo**: grátis | **Lote**: R$ 149 | **Galpão**: R$ 299 | **Porto**: R$ 999 |
 
-Todos à venda desde D84 (decisão do dono, 2026-10-07).
+26 temas, todos à venda (D84 e D85, decisões do dono, 2026-10-07). Atacado é uma **família de tema** para importadores e atacadistas (Brás, Canindé) que vendem caixa fechada; não é o módulo de atacado (lista de preços por quantidade), que segue indisponível.
 
 ## Proposta de preços (aplicada em D84 para os temas novos)
 Hoje os preços não seguem o nível: Editorial (N3) custa R$ 699 e Arena (N3) custa R$ 299. Proposta para os temas novos, sem mexer nos já vendidos:

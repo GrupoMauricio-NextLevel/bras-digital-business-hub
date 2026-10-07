@@ -1,0 +1,705 @@
+{
+  "family": "conecta",
+  "name": "Conecta",
+  "demoStore": "Ponto Conecta",
+  "themes": [
+    {
+      "key": "sinal",
+      "name": "Sinal",
+      "level": 1,
+      "release": "released",
+      "priceCents": 0,
+      "pricePending": false
+    },
+    {
+      "key": "pulso",
+      "name": "Pulso",
+      "level": 2,
+      "release": "released",
+      "priceCents": 14900,
+      "pricePending": false
+    },
+    {
+      "key": "circuito",
+      "name": "Circuito",
+      "level": 3,
+      "release": "released",
+      "priceCents": 29900,
+      "pricePending": false
+    },
+    {
+      "key": "orbita",
+      "name": "Órbita",
+      "level": 4,
+      "release": "released",
+      "priceCents": 99900,
+      "pricePending": false
+    }
+  ],
+  "assets": [
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-hero-1",
+      "position": "Página inicial · Destaque com banners · slide 1",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Assunto à direita (68% / 50% no computador; 50% / 40% no celular)",
+      "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
+      "scene": "Celular genérico (sem logo) com capinha azul, fone sem fio e cabo trançado sobre mesa de madeira clara",
+      "overlayText": "Tudo para o seu celular · Ver produtos",
+      "alt": "Celular com capinha, fone e cabo sobre a mesa",
+      "file": "/temas/familias/conecta/conecta-hero-1.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-hero-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-hero-2",
+      "position": "Página inicial · Destaque com banners · slide 2",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro-direita",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Pessoa de costas com headphone dobrável lilás, caminhando na rua",
+      "overlayText": "Som sem fio · Ver fones",
+      "alt": "Pessoa com headphone caminhando",
+      "file": "/temas/familias/conecta/conecta-hero-2.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-hero-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-hero-3",
+      "position": "Página inicial · Destaque com banners · slide 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Celular num suporte veicular no painel de um carro, tela apagada",
+      "overlayText": "No carro e na mesa · Ver suportes",
+      "alt": "Celular em suporte veicular",
+      "file": "/temas/familias/conecta/conecta-hero-3.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-hero-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-hero-4",
+      "position": "Página inicial · Destaque com banners · slide de campanha agendada",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "21:9",
+        "size": [
+          2400,
+          1029
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Metade esquerda livre",
+      "scene": "Mochila aberta com bateria portátil, cabo e fone, sobre carteira escolar",
+      "overlayText": "Campanha de volta às aulas (agendada) · Ver carregadores",
+      "alt": "Mochila com bateria portátil e fone",
+      "file": "/temas/familias/conecta/conecta-hero-4.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-hero-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-apoio-1",
+      "position": "Página inicial · Dois banners de apoio · esquerda",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre para título e botão",
+      "scene": "Capinhas coloridas empilhadas em leque",
+      "overlayText": "Capinhas · Ver",
+      "alt": "Capinhas coloridas em leque",
+      "file": "/temas/familias/conecta/conecta-apoio-1.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-apoio-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-apoio-2",
+      "position": "Página inicial · Dois banners de apoio · direita",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:3",
+        "size": [
+          1600,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "4:3",
+        "size": [
+          1080,
+          810
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Terço inferior livre",
+      "scene": "Fone sem fio com estojo aberto sobre fundo grafite",
+      "overlayText": "Fones de ouvido · Ver",
+      "alt": "Fone sem fio com estojo aberto",
+      "file": "/temas/familias/conecta/conecta-apoio-2.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-apoio-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-faixa-1",
+      "position": "Página inicial · Faixa de campanha",
+      "levels": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:1",
+        "size": [
+          2400,
+          600
+        ]
+      },
+      "mobile": {
+        "ratio": "3:2",
+        "size": [
+          1200,
+          800
+        ]
+      },
+      "focus": "Assunto à direita (72% / 50%)",
+      "safeArea": "55% à esquerda livres para texto (computador)",
+      "scene": "Carregador de parede e cabo trançado enrolado, à direita do quadro, fundo branco",
+      "overlayText": "Carregue sem complicação · Ver carregadores",
+      "alt": "Carregador de parede e cabo trançado",
+      "file": "/temas/familias/conecta/conecta-faixa-1.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-faixa-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-sobre",
+      "position": "Página inicial · Imagem com texto (sobre a loja)",
+      "levels": [
+        2,
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Sem texto por cima",
+      "scene": "Mãos colocando película num celular sobre bancada",
+      "overlayText": "(texto ao lado da imagem)",
+      "alt": "Mãos aplicando película no celular",
+      "file": "/temas/familias/conecta/conecta-sobre.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-mosaico-1",
+      "position": "Página inicial · Mosaico de banners · peça grande",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1200,
+          1500
+        ]
+      },
+      "mobile": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre para título",
+      "scene": "Celular com capinha carteira aberta mostrando cartões",
+      "overlayText": "Capinhas",
+      "alt": "Capinha carteira aberta",
+      "file": "/temas/familias/conecta/conecta-mosaico-1.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-mosaico-1-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-mosaico-2",
+      "position": "Página inicial · Mosaico de banners · menor 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Bateria portátil carregando um celular sobre o sofá",
+      "overlayText": "Carregadores",
+      "alt": "Bateria portátil carregando celular",
+      "file": "/temas/familias/conecta/conecta-mosaico-2.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-mosaico-2-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-mosaico-3",
+      "position": "Página inicial · Mosaico de banners · menor 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Fone com fio enrolado sobre caderno",
+      "overlayText": "Fones",
+      "alt": "Fone com fio sobre caderno",
+      "file": "/temas/familias/conecta/conecta-mosaico-3.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-mosaico-3-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-mosaico-4",
+      "position": "Página inicial · Mosaico 1+4 · menor 3",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Suporte de mesa com celular ao lado do notebook",
+      "overlayText": "Suportes",
+      "alt": "Suporte de mesa com celular",
+      "file": "/temas/familias/conecta/conecta-mosaico-4.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-mosaico-4-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-mosaico-5",
+      "position": "Página inicial · Mosaico 1+4 · menor 4",
+      "levels": [
+        4
+      ],
+      "desktop": {
+        "ratio": "1:1",
+        "size": [
+          1200,
+          1200
+        ]
+      },
+      "mobile": {
+        "ratio": "1:1",
+        "size": [
+          1080,
+          1080
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Canto inferior esquerdo livre",
+      "scene": "Película de vidro sendo aplicada, reflexo de luz",
+      "overlayText": "Películas",
+      "alt": "Película de vidro sendo aplicada",
+      "file": "/temas/familias/conecta/conecta-mosaico-5.webp",
+      "fileMobile": "/temas/familias/conecta/conecta-mosaico-5-mobile.webp",
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-look-1",
+      "position": "Página inicial · Galeria No dia a dia · 1",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo da imagem (fora da foto)",
+      "scene": "Mesa de trabalho com suporte, cabo e fone",
+      "overlayText": "(título abaixo)",
+      "alt": "Mesa de trabalho com acessórios",
+      "file": "/temas/familias/conecta/conecta-look-1.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-look-2",
+      "position": "Página inicial · Galeria No dia a dia · 2",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Mala de mão com bateria portátil e headphone",
+      "overlayText": "(título abaixo)",
+      "alt": "Mala com bateria e headphone",
+      "file": "/temas/familias/conecta/conecta-look-2.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-look-3",
+      "position": "Página inicial · Galeria No dia a dia · 3",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Pessoa correndo com fone sem fio, de costas",
+      "overlayText": "(título abaixo)",
+      "alt": "Pessoa correndo com fone sem fio",
+      "file": "/temas/familias/conecta/conecta-look-3.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    },
+    {
+      "family": "conecta",
+      "palette": "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca",
+      "light": "Luz de estúdio limpa e fria, reflexos controlados",
+      "provisional": null,
+      "id": "conecta-look-4",
+      "position": "Página inicial · Galeria No dia a dia · 4",
+      "levels": [
+        3,
+        4
+      ],
+      "desktop": {
+        "ratio": "4:5",
+        "size": [
+          1080,
+          1350
+        ]
+      },
+      "focus": "Centro",
+      "safeArea": "Título abaixo",
+      "scene": "Painel de carro com suporte veicular e carregador",
+      "overlayText": "(título abaixo)",
+      "alt": "Painel de carro com suporte",
+      "file": "/temas/familias/conecta/conecta-look-4.webp",
+      "fileMobile": null,
+      "status": "pendente"
+    }
+  ],
+  "products": [
+    {
+      "sku": "PC-01",
+      "name": "Capinha de silicone com interior macio",
+      "category": "Capinhas",
+      "file": "/temas/familias/conecta/produtos/PC-01.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-02",
+      "name": "Capinha transparente com bordas reforçadas",
+      "category": "Capinhas",
+      "file": "/temas/familias/conecta/produtos/PC-02.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-03",
+      "name": "Capinha carteira de couro sintético",
+      "category": "Capinhas",
+      "file": "/temas/familias/conecta/produtos/PC-03.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-04",
+      "name": "Película de vidro temperado",
+      "category": "Capinhas",
+      "file": "/temas/familias/conecta/produtos/PC-04.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-05",
+      "name": "Carregador de parede USB-C 20 W",
+      "category": "Cabos e carregadores",
+      "file": "/temas/familias/conecta/produtos/PC-05.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-06",
+      "name": "Cabo USB-C para USB-C trançado",
+      "category": "Cabos e carregadores",
+      "file": "/temas/familias/conecta/produtos/PC-06.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-07",
+      "name": "Bateria portátil 10.000 mAh",
+      "category": "Cabos e carregadores",
+      "file": "/temas/familias/conecta/produtos/PC-07.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-08",
+      "name": "Carregador veicular duplo",
+      "category": "Cabos e carregadores",
+      "file": "/temas/familias/conecta/produtos/PC-08.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-09",
+      "name": "Fone sem fio com estojo",
+      "category": "Fones",
+      "file": "/temas/familias/conecta/produtos/PC-09.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-10",
+      "name": "Fone com fio USB-C",
+      "category": "Fones",
+      "file": "/temas/familias/conecta/produtos/PC-10.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-11",
+      "name": "Headphone dobrável",
+      "category": "Fones",
+      "file": "/temas/familias/conecta/produtos/PC-11.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-12",
+      "name": "Suporte de mesa ajustável",
+      "category": "Suportes",
+      "file": "/temas/familias/conecta/produtos/PC-12.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-13",
+      "name": "Suporte veicular de grade",
+      "category": "Suportes",
+      "file": "/temas/familias/conecta/produtos/PC-13.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    },
+    {
+      "sku": "PC-14",
+      "name": "Anel de apoio para celular",
+      "category": "Suportes",
+      "file": "/temas/familias/conecta/produtos/PC-14.webp",
+      "ratio": "1:1 (1200×1200 px)",
+      "status": "ilustração provisória"
+    }
+  ]
+}

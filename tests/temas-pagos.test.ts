@@ -43,7 +43,7 @@ describe("lojas de demonstração dos temas", () => {
     expect(first.settings.image).toBe(""); expect(first.settings.alt).toMatch(/Despensa/);
     expect((await demoStore("ninho")).name).toBe("Casa em Ordem");
   });
-  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async (family, keys) => {
+  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async (family, keys) => {
     const skusOf = async (key: string) => {
       const rows = await ctx.db.select({ sku: products.sku, cat: products.categoryId, pid: products.id }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(and(eq(storeProducts.storeId, (await demoStore(key)).id), eq(storeProducts.active, true)));
       return rows;

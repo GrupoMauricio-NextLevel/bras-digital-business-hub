@@ -8,7 +8,7 @@ import { chromium } from "playwright-core";
 import sharp from "sharp";
 const B = process.env.E2E_BASE ?? "http://localhost:3100";
 const VER = 3;
-const KEYS = (process.env.TEMAS ?? "starter,trama,lume,lar,ninho,lance,torcida,arena,editorial,varanda,atelier,morada,podio,signature").split(",");
+const KEYS = (process.env.TEMAS ?? "starter,trama,lume,lar,ninho,lance,torcida,arena,editorial,varanda,atelier,morada,podio,petala,brilho,aura,musa,sinal,pulso,circuito,orbita,fardo,lote,galpao,porto,signature").split(",");
 const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium" });
 for (const key of KEYS) {
   for (const [device, vp, out] of [["desktop", { width: 1440, height: 1000 }, [900, 625]], ["mobile", { width: 390, height: 844 }, [390, 844]]]) {

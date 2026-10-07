@@ -26,7 +26,7 @@ export const FAMILY_INFO: Record<ThemeFamily, { name: string; segment: string; d
   casa: { name: "Casa", segment: "Utilidades e organização", demoStore: "Casa em Ordem" },
   beauty: { name: "Beauty", segment: "Acessórios de beleza", demoStore: "Bela Essência" },
   conecta: { name: "Conecta", segment: "Acessórios de celular e pequenos eletrônicos", demoStore: "Ponto Conecta" },
-  atacado: { name: "Atacado", segment: "Variedades para revenda", demoStore: "Giro Distribuidora" },
+  atacado: { name: "Atacado", segment: "Importadores e atacadistas: venda por caixa fechada", demoStore: "Giro Distribuidora" },
 };
 
 /**

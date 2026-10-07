@@ -1,6 +1,6 @@
 import { sectionSchema } from "./sections";
 import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
-import { CASA, MODA, SPORT } from "./familias-specs";
+import { ATACADO, BEAUTY, CASA, CONECTA, MODA, SPORT } from "./familias-specs";
 import { familyBuilders } from "./presets-familia";
 import type { PageKind, SettingValue, Template, ThemeGlobals, ThemeStyle } from "./types";
 
@@ -106,6 +106,9 @@ function signature(c: PresetContext): ThemePreset {
 const [trama, lume, editorial, atelier] = familyBuilders(MODA);
 const [lar, ninho, varanda, morada] = familyBuilders(CASA);
 const [lance, torcida, , podio] = familyBuilders(SPORT);
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio };
+const [petala, brilho, aura, musa] = familyBuilders(BEAUTY);
+const [sinal, pulso, circuito, orbita] = familyBuilders(CONECTA);
+const [fardo, lote, galpao, porto] = familyBuilders(ATACADO);
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio, petala, brilho, aura, musa, sinal, pulso, circuito, orbita, fardo, lote, galpao, porto };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }
