@@ -188,7 +188,7 @@ export function Lookbook({ settings, blocks, ctx }: SectionProps) {
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2 md:gap-4">
         {blocks.map((b, i) => (
           <li key={b.id} className={cn(i === 0 ? "col-span-2 row-span-2" : lookSpan(i, blocks.length))}>
-            <Link href={resolveLink(ctx.base, str(b.settings.link))} className="group relative block h-full min-h-[180px] overflow-hidden rounded-[var(--sf-radius,16px)] bg-neutral-100" style={heroBackground(str(b.settings.image))}>
+            <Link href={resolveLink(ctx.base, str(b.settings.link))} prefetch={false} className="group relative block h-full min-h-[180px] overflow-hidden rounded-[var(--sf-radius,16px)] bg-neutral-100" style={heroBackground(str(b.settings.image))}>
               <span className="absolute inset-0 bg-black/20 transition group-hover:bg-black/35" aria-hidden />
               <span className="absolute inset-x-0 bottom-0 p-4 text-sm font-medium text-white sm:text-base">{str(b.settings.title)}</span>
             </Link>

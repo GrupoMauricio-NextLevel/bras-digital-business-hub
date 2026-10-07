@@ -48,6 +48,10 @@ export function BannerImage({ s, sizes, priority, className }: { s: S; sizes: st
 }
 
 const ALIGN: Record<string, string> = { left: "items-start text-left", center: "items-center text-center", right: "items-end text-right" };
+/**
+ * Links de banner não são pré-carregados: a seleção de campanha (/catalog?produtos=…) deixava a conexão de pré-carga
+ * aberta no navegador; a página abre normalmente no clique.
+ */
 /** Texto por cima da imagem, com escurecimento ajustável para legibilidade. */
 function Overlay({ s, ctx, heading, compact = false }: { s: S; ctx: SectionProps["ctx"]; heading: "h1" | "h2" | "h3"; compact?: boolean }) {
   const H = heading; const light = s.textColor !== "dark";
@@ -59,7 +63,7 @@ function Overlay({ s, ctx, heading, compact = false }: { s: S; ctx: SectionProps
       <div className={cn("relative z-10 flex h-full w-full flex-col justify-end gap-2", compact ? "p-4 sm:p-5" : "mx-auto max-w-6xl px-5 py-8 sm:px-10 sm:py-12", ALIGN[str(s.align)] ?? ALIGN.left, light ? "sf-on-image text-white" : "text-neutral-950")}>
         {title ? <H className={cn("max-w-[34rem] font-semibold tracking-tight", compact ? "text-lg sm:text-xl" : "text-3xl leading-tight sm:text-5xl")}>{title}</H> : null}
         {sub ? <p className={cn("max-w-[30rem] opacity-90", compact ? "text-sm" : "text-base sm:text-lg")}>{sub}</p> : null}
-        {cta ? <Link href={href} className={cn("sf-btn mt-1 inline-flex items-center rounded-lg font-medium transition hover:brightness-95", compact ? "h-10 px-4 text-sm" : "h-12 px-6 text-sm")} style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{cta}</Link> : null}
+        {cta ? <Link href={href} prefetch={false} className={cn("sf-btn mt-1 inline-flex items-center rounded-lg font-medium transition hover:brightness-95", compact ? "h-10 px-4 text-sm" : "h-12 px-6 text-sm")} style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{cta}</Link> : null}
       </div>
     </>
   );
@@ -68,7 +72,7 @@ function Overlay({ s, ctx, heading, compact = false }: { s: S; ctx: SectionProps
 /** Peça inteira clicável quando há link e não há botão (bom para mosaico e apoio). */
 function Tile({ s, ctx, children, className }: { s: S; ctx: SectionProps["ctx"]; children: React.ReactNode; className?: string }) {
   const href = str(s.link); const label = str(s.title) || str(s.alt) || "Ver";
-  if (href && !str(s.ctaLabel)) return <Link href={resolveLink(ctx.base, href)} aria-label={label} className={cn("group relative block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2", className)}>{children}</Link>;
+  if (href && !str(s.ctaLabel)) return <Link href={resolveLink(ctx.base, href)} prefetch={false} aria-label={label} className={cn("group relative block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2", className)}>{children}</Link>;
   return <div className={cn("relative overflow-hidden", className)}>{children}</div>;
 }
 
