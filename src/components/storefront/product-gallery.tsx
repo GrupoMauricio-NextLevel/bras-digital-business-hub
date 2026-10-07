@@ -3,10 +3,13 @@ import * as React from "react";
 import { ProductArt } from "@/components/app/product-art";
 import { cn } from "@/lib/utils";
 
+export const isPhoto = (x: string) => /^https?:\/\//.test(x) || x.startsWith("data:image") || (x.startsWith("/") && !x.startsWith("//"));
+
 /** Miniaturas clicáveis com a imagem escolhida em destaque. Sem imagens reais, mostra a arte padrão do produto. */
 export function ThumbsGallery({ images, name }: { images: string[]; name: string }) {
   const [i, setI] = React.useState(0);
-  const list = images.filter((x) => /^https?:\/\//.test(x) || x.startsWith("data:image"));
+  // Fotos reais: endereço externo, imagem enviada (/assets/…), imagem do próprio site (/demos/…) ou embutida; "art:" é só a ilustração.
+  const list = images.filter(isPhoto);
   return (
     <div className="space-y-3">
       <ProductArt images={list.length ? [list[i]!] : images} size="lg" alt={name} priority className="rounded-2xl bg-neutral-100" />

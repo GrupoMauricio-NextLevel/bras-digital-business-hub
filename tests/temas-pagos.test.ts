@@ -43,7 +43,7 @@ describe("lojas de demonstração dos temas", () => {
     expect(first.settings.image).toBe(""); expect(first.settings.alt).toMatch(/Despensa/);
     expect((await demoStore("ninho")).name).toBe("Casa em Ordem");
   });
-  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async (family, keys) => {
+  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (catálogo do pacote visual, 4 categorias, esgotado só se o pacote disser)", async (family, keys) => {
     const skusOf = async (key: string) => {
       const rows = await ctx.db.select({ sku: products.sku, cat: products.categoryId, pid: products.id }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(and(eq(storeProducts.storeId, (await demoStore(key)).id), eq(storeProducts.active, true)));
       return rows;
@@ -53,14 +53,15 @@ describe("lojas de demonstração dos temas", () => {
     expect(new Set(base.map((r) => r.cat)).size).toBe(4);
     for (const key of keys.slice(1)) expect((await skusOf(key)).map((r) => r.sku).sort(), key).toEqual(base.map((r) => r.sku).sort());
     const variants = await ctx.db.select().from(productVariants).where(inArray(productVariants.productId, base.map((r) => r.pid)));
-    expect(variants.length).toBeGreaterThan(base.length);
-    const sold = demoFamilyOf(family)!.products.find((p) => p.soldOut)!;
-    const soldPid = base.find((r) => r.sku === sold.sku)!.pid;
-    const soldVars = variants.filter((v) => v.productId === soldPid).map((v) => v.id);
-    const stock = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, soldVars));
-    expect(stock.reduce((t, r) => t + r.onHand, 0)).toBe(0);
-    const other = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, variants.filter((v) => v.productId !== soldPid).map((v) => v.id)));
-    expect(other.every((r) => r.onHand > 0)).toBe(true);
+    // Cada produto tem ao menos uma variação; esgotado (estoque 0) só onde o pacote visual diz (D86).
+    expect(variants.length).toBeGreaterThanOrEqual(base.length);
+    const soldSkus = new Set(demoFamilyOf(family)!.products.filter((p) => p.soldOut).map((p) => p.sku));
+    const stock = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, variants.map((v) => v.id)));
+    for (const r of base) {
+      const vids = new Set(variants.filter((v) => v.productId === r.pid).map((v) => v.id));
+      const onHand = stock.filter((x) => vids.has(x.variantId)).reduce((t, x) => t + x.onHand, 0);
+      if (soldSkus.has(r.sku)) expect(onHand, r.sku).toBe(0); else expect(onHand, r.sku).toBeGreaterThan(0);
+    }
     // N1 com banners fixos; N4 com campanha agendada; nenhum banner aponta para foto aleatória fora do manifesto
     const home = async (key: string) => (await resolveTemplate(ctx.db, await demoStore(key), "home")).template;
     const types = async (key: string) => Object.values((await home(key)).sections).map((x) => x.type);

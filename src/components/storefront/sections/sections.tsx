@@ -180,7 +180,7 @@ export function CollectionHeader({ settings, ctx }: SectionProps) {
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div><h1 className="text-2xl font-semibold tracking-tight">{cat?.name ?? "Catálogo"}</h1>{settings.showCount !== false ? <p className="text-sm text-neutral-500">{count} produto{count === 1 ? "" : "s"}</p> : null}</div>
+        <div><h1 className="text-2xl font-semibold tracking-tight">{cat?.name ?? (ctx.query?.produtos ? "Seleção" : "Catálogo")}</h1>{settings.showCount !== false ? <p className="text-sm text-neutral-500">{count} produto{count === 1 ? "" : "s"}</p> : null}</div>
         {settings.showSearch !== false ? (
           <form className="relative w-full sm:w-72" action={base}>
             {category ? <input type="hidden" name="category" value={category} /> : null}

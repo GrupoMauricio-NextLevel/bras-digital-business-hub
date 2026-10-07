@@ -2,46 +2,44 @@
   "family": "casa",
   "name": "Casa",
   "demoStore": "Casa em Ordem",
+  "package": {
+    "slug": "casa-em-ordem",
+    "status": "PARTIAL",
+    "generated": 39,
+    "expected": 60
+  },
   "themes": [
     {
       "key": "lar",
       "name": "Lar",
       "level": 1,
       "release": "released",
-      "priceCents": 0,
-      "pricePending": false
+      "priceCents": 0
     },
     {
       "key": "ninho",
       "name": "Ninho",
       "level": 2,
       "release": "released",
-      "priceCents": 14900,
-      "pricePending": false
+      "priceCents": 14900
     },
     {
       "key": "varanda",
       "name": "Varanda",
       "level": 3,
       "release": "released",
-      "priceCents": 29900,
-      "pricePending": false
+      "priceCents": 29900
     },
     {
       "key": "morada",
       "name": "Morada",
       "level": 4,
       "release": "released",
-      "priceCents": 99900,
-      "pricePending": false
+      "priceCents": 99900
     }
   ],
-  "assets": [
+  "slots": [
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-hero-1",
       "position": "Página inicial · Destaque com banners · slide 1",
       "levels": [
@@ -66,18 +64,12 @@
       },
       "focus": "Assunto à direita (65% / 50% no computador; 50% / 45% no celular)",
       "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
-      "scene": "Despensa organizada com potes de vidro, cestos de fibra e etiquetas em branco, prateleiras de madeira clara",
-      "overlayText": "Casa organizada, dia mais leve · Ver produtos",
-      "alt": "Despensa organizada com potes de vidro e cestos de fibra",
-      "file": "/temas/familias/casa/casa-hero-1.webp",
-      "fileMobile": "/temas/familias/casa/casa-hero-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-hero-2",
       "position": "Página inicial · Destaque com banners · slide 2",
       "levels": [
@@ -101,18 +93,12 @@
       },
       "focus": "Centro-direita",
       "safeArea": "Metade esquerda livre",
-      "scene": "Bancada de cozinha com porta-temperos, tábua de bambu e escorredor compacto",
-      "overlayText": "Cozinha prática · Ver cozinha",
-      "alt": "Bancada de cozinha organizada",
-      "file": "/temas/familias/casa/casa-hero-2.webp",
-      "fileMobile": "/temas/familias/casa/casa-hero-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-hero-3",
       "position": "Página inicial · Destaque com banners · slide 3",
       "levels": [
@@ -135,18 +121,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Área de serviço com cesto de roupa dobrável, prendedores de bambu e borrifador de vidro",
-      "overlayText": "Lavanderia sem bagunça · Ver lavanderia",
-      "alt": "Área de serviço organizada",
-      "file": "/temas/familias/casa/casa-hero-3.webp",
-      "fileMobile": "/temas/familias/casa/casa-hero-3-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-hero-4",
       "position": "Página inicial · Destaque com banners · slide de campanha agendada",
       "levels": [
@@ -168,18 +148,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Caixas organizadoras empilhadas, vista frontal, fundo liso verde-sálvia",
-      "overlayText": "Semana da organização (agendada) · Ver organizadores",
-      "alt": "Caixas organizadoras empilhadas",
-      "file": "/temas/familias/casa/casa-hero-4.webp",
-      "fileMobile": "/temas/familias/casa/casa-hero-4-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-apoio-1",
       "position": "Página inicial · Dois banners de apoio · esquerda",
       "levels": [
@@ -204,18 +178,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre para título e botão",
-      "scene": "Potes herméticos de vidro com grãos, sobre bancada clara",
-      "overlayText": "Cozinha em ordem · Ver",
-      "alt": "Potes de vidro com grãos",
-      "file": "/temas/familias/casa/casa-apoio-1.webp",
-      "fileMobile": "/temas/familias/casa/casa-apoio-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-apoio-2",
       "position": "Página inicial · Dois banners de apoio · direita",
       "levels": [
@@ -240,18 +208,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre",
-      "scene": "Organizador de box com frascos âmbar, azulejo branco",
-      "overlayText": "Banheiro e lavanderia · Ver",
-      "alt": "Organizador de box com frascos",
-      "file": "/temas/familias/casa/casa-apoio-2.webp",
-      "fileMobile": "/temas/familias/casa/casa-apoio-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-faixa-1",
       "position": "Página inicial · Faixa de campanha",
       "levels": [
@@ -276,18 +238,12 @@
       },
       "focus": "Assunto à direita (72% / 50%)",
       "safeArea": "55% à esquerda livres para texto (computador)",
-      "scene": "Gaveta aberta com divisores organizando talheres, à direita do quadro",
-      "overlayText": "Cada coisa no seu lugar · Ver organização",
-      "alt": "Gaveta com divisores organizando talheres",
-      "file": "/temas/familias/casa/casa-faixa-1.webp",
-      "fileMobile": "/temas/familias/casa/casa-faixa-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-sobre",
       "position": "Página inicial · Imagem com texto (sobre a loja)",
       "levels": [
@@ -302,20 +258,15 @@
           1200
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Sem texto por cima",
-      "scene": "Mãos colocando etiqueta em pote de vidro, sobre mesa de madeira",
-      "overlayText": "(texto ao lado da imagem)",
-      "alt": "Mãos etiquetando um pote de vidro",
-      "file": "/temas/familias/casa/casa-sobre.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-mosaico-1",
       "position": "Página inicial · Mosaico de banners · peça grande",
       "levels": [
@@ -338,18 +289,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre para título",
-      "scene": "Armário aberto com cestos e caixas organizadoras alinhados",
-      "overlayText": "Organização",
-      "alt": "Armário com cestos e caixas organizadoras",
-      "file": "/temas/familias/casa/casa-mosaico-1.webp",
-      "fileMobile": "/temas/familias/casa/casa-mosaico-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-mosaico-2",
       "position": "Página inicial · Mosaico de banners · menor 1",
       "levels": [
@@ -372,18 +317,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Porta-temperos giratório visto de cima",
-      "overlayText": "Cozinha",
-      "alt": "Porta-temperos giratório",
-      "file": "/temas/familias/casa/casa-mosaico-2.webp",
-      "fileMobile": "/temas/familias/casa/casa-mosaico-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-mosaico-3",
       "position": "Página inicial · Mosaico de banners · menor 2",
       "levels": [
@@ -406,18 +345,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Porta-escovas de cerâmica e dispenser âmbar sobre pia",
-      "overlayText": "Banheiro",
-      "alt": "Porta-escovas e dispenser sobre a pia",
-      "file": "/temas/familias/casa/casa-mosaico-3.webp",
-      "fileMobile": "/temas/familias/casa/casa-mosaico-3-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-mosaico-4",
       "position": "Página inicial · Mosaico 1+4 · menor 3",
       "levels": [
@@ -439,18 +372,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Cesto de roupa dobrável com toalhas dobradas",
-      "overlayText": "Lavanderia",
-      "alt": "Cesto com toalhas dobradas",
-      "file": "/temas/familias/casa/casa-mosaico-4.webp",
-      "fileMobile": "/temas/familias/casa/casa-mosaico-4-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-mosaico-5",
       "position": "Página inicial · Mosaico 1+4 · menor 4",
       "levels": [
@@ -472,18 +399,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Prateleira de despensa com potes etiquetados",
-      "overlayText": "Despensa",
-      "alt": "Prateleira de despensa com potes",
-      "file": "/temas/familias/casa/casa-mosaico-5.webp",
-      "fileMobile": "/temas/familias/casa/casa-mosaico-5-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-look-1",
       "position": "Página inicial · Galeria de ambientes · 1",
       "levels": [
@@ -497,20 +418,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo da imagem (fora da foto)",
-      "scene": "Despensa com potes e cestos",
-      "overlayText": "(título abaixo)",
-      "alt": "Despensa organizada",
-      "file": "/temas/familias/casa/casa-look-1.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-look-2",
       "position": "Página inicial · Galeria de ambientes · 2",
       "levels": [
@@ -524,20 +440,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Bancada de cozinha limpa com tábua e escorredor",
-      "overlayText": "(título abaixo)",
-      "alt": "Bancada de cozinha organizada",
-      "file": "/temas/familias/casa/casa-look-2.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-look-3",
       "position": "Página inicial · Galeria de ambientes · 3",
       "levels": [
@@ -551,20 +462,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Armário de roupas com cabides de veludo iguais",
-      "overlayText": "(título abaixo)",
-      "alt": "Armário com cabides de veludo",
-      "file": "/temas/familias/casa/casa-look-3.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "casa",
-      "palette": "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas",
-      "light": "Luz natural de janela, manhã, sombras suaves",
-      "provisional": null,
       "id": "casa-look-4",
       "position": "Página inicial · Galeria de ambientes · 4",
       "levels": [
@@ -578,128 +484,184 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Área de serviço com cesto, borrifador e prendedores",
-      "overlayText": "(título abaixo)",
-      "alt": "Área de serviço organizada",
-      "file": "/temas/familias/casa/casa-look-4.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     }
   ],
+  "categoryImages": {
+    "Decoração": "/demos/casa-em-ordem/v1/categorias/categoria-01.webp",
+    "Cozinha": "/demos/casa-em-ordem/v1/categorias/categoria-02.webp",
+    "Organização": "/demos/casa-em-ordem/v1/categorias/categoria-03.webp"
+  },
   "products": [
     {
-      "sku": "CO-01",
-      "name": "Cesto organizador de fibra natural",
-      "category": "Organização",
-      "file": "/temas/familias/casa/produtos/CO-01.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-001",
+      "name": "Vaso Curva",
+      "category": "Decoração",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-02",
-      "name": "Caixa organizadora com tampa",
-      "category": "Organização",
-      "file": "/temas/familias/casa/produtos/CO-02.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-002",
+      "name": "Bandeja Natural",
+      "category": "Decoração",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-03",
-      "name": "Divisor de gaveta ajustável",
-      "category": "Organização",
-      "file": "/temas/familias/casa/produtos/CO-03.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-003",
+      "name": "Vela Horizonte",
+      "category": "Decoração",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/vela-decorativa-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/vela-decorativa-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/vela-decorativa-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-04",
-      "name": "Cabide de veludo antideslizante",
-      "category": "Organização",
-      "file": "/temas/familias/casa/produtos/CO-04.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "CO-05",
-      "name": "Pote hermético de vidro 1 litro",
+      "sku": "CO-004",
+      "name": "Pote Despensa",
       "category": "Cozinha",
-      "file": "/temas/familias/casa/produtos/CO-05.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/pote-vidro-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/pote-vidro-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/pote-vidro-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-06",
-      "name": "Porta-temperos giratório",
+      "sku": "CO-005",
+      "name": "Jarra Mesa",
       "category": "Cozinha",
-      "file": "/temas/familias/casa/produtos/CO-06.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-07",
-      "name": "Escorredor de louça compacto",
+      "sku": "CO-006",
+      "name": "Kit Utensílios",
       "category": "Cozinha",
-      "file": "/temas/familias/casa/produtos/CO-07.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-08",
-      "name": "Tábua de corte de bambu",
-      "category": "Cozinha",
-      "file": "/temas/familias/casa/produtos/CO-08.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-007",
+      "name": "Cesto Trama",
+      "category": "Organização",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/cesto-organizador-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/cesto-organizador-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/cesto-organizador-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-09",
-      "name": "Porta-escovas de cerâmica",
-      "category": "Banheiro",
-      "file": "/temas/familias/casa/produtos/CO-09.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-008",
+      "name": "Caixa Modular",
+      "category": "Organização",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-10",
-      "name": "Organizador de box sem furo",
-      "category": "Banheiro",
-      "file": "/temas/familias/casa/produtos/CO-10.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-009",
+      "name": "Kit Cabides",
+      "category": "Organização",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/cabides-madeira-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/cabides-madeira-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/cabides-madeira-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-11",
-      "name": "Dispenser de sabonete líquido",
-      "category": "Banheiro",
-      "file": "/temas/familias/casa/produtos/CO-11.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-010",
+      "name": "Almofada Textura",
+      "category": "Têxteis",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/almofada-areia-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/almofada-areia-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/almofada-areia-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-12",
-      "name": "Cesto de roupa dobrável",
-      "category": "Lavanderia",
-      "file": "/temas/familias/casa/produtos/CO-12.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-011",
+      "name": "Manta Aconchego",
+      "category": "Têxteis",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/manta-cru-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/manta-cru-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/manta-cru-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "CO-13",
-      "name": "Prendedores de roupa de bambu",
-      "category": "Lavanderia",
-      "file": "/temas/familias/casa/produtos/CO-13.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "CO-012",
+      "name": "Kit Toalhas",
+      "category": "Têxteis",
+      "photos": [
+        "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-01.webp",
+        "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-02.webp",
+        "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-03.webp"
+      ],
+      "soldOut": false
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "acolher",
+      "headline": "Detalhes que acolhem",
+      "cta": "Ver decoração",
+      "skus": [
+        "CO-001",
+        "CO-002",
+        "CO-003"
+      ]
     },
     {
-      "sku": "CO-14",
-      "name": "Borrifador de vidro 500 ml",
-      "category": "Lavanderia",
-      "file": "/temas/familias/casa/produtos/CO-14.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "id": "organizar",
+      "headline": "Mais espaço para o seu dia",
+      "cta": "Ver organização",
+      "skus": [
+        "CO-007",
+        "CO-008",
+        "CO-009"
+      ]
+    },
+    {
+      "id": "cotidiano",
+      "headline": "Sua casa, do seu jeito",
+      "cta": "Explorar coleção",
+      "skus": [
+        "CO-005",
+        "CO-010",
+        "CO-011"
+      ]
     }
   ]
 }

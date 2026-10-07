@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import { avifOf } from "@/lib/themes/avif";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,6 +16,8 @@ export function ProductArt({ images, className, size = "md", alt = "", priority 
   if (url) {
     return (
       <div className={cn("overflow-hidden rounded-md bg-surface-muted", dims, className)}>
+        <picture className="contents">
+        {avifOf(url) ? <source type="image/avif" srcSet={avifOf(url)!} /> : null}
         <img
           src={ASSET.test(url) ? `${url}?w=640` : url}
           srcSet={ASSET.test(url) ? SRC_WIDTHS.map((w) => `${url}?w=${w} ${w}w`).join(", ") : undefined}
@@ -23,6 +25,7 @@ export function ProductArt({ images, className, size = "md", alt = "", priority 
           width={size === "lg" ? 800 : 800} height={size === "lg" ? 1000 : 800}
           alt={alt} className="h-full w-full object-cover" decoding="async"
           loading={priority ? "eager" : "lazy"} {...(priority ? { fetchPriority: "high" as const } : {})} />
+        </picture>
       </div>
     );
   }

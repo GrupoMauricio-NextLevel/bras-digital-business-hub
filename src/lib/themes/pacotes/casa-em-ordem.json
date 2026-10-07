@@ -1,0 +1,565 @@
+{
+ "slug": "casa-em-ordem",
+ "family": "casa",
+ "store": "Casa em Ordem",
+ "status": "PARTIAL",
+ "generated": 39,
+ "expected": 60,
+ "palette": {
+  "ink": "#3A3835",
+  "accent": "#B89468",
+  "background": "#F5F1E8"
+ },
+ "products": [
+  {
+   "sku": "CO-001",
+   "slug": "vaso-ceramica",
+   "name": "Vaso Curva",
+   "category": "Decoração",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-001-01",
+    "CO-001-02",
+    "CO-001-03"
+   ]
+  },
+  {
+   "sku": "CO-002",
+   "slug": "bandeja-madeira",
+   "name": "Bandeja Natural",
+   "category": "Decoração",
+   "priceCents": 11990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-002-01",
+    "CO-002-02",
+    "CO-002-03"
+   ]
+  },
+  {
+   "sku": "CO-003",
+   "slug": "vela-decorativa",
+   "name": "Vela Horizonte",
+   "category": "Decoração",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-003-01",
+    "CO-003-02",
+    "CO-003-03"
+   ]
+  },
+  {
+   "sku": "CO-004",
+   "slug": "pote-vidro",
+   "name": "Pote Despensa",
+   "category": "Cozinha",
+   "priceCents": 4990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-004-01",
+    "CO-004-02",
+    "CO-004-03"
+   ]
+  },
+  {
+   "sku": "CO-005",
+   "slug": "jarra-ceramica",
+   "name": "Jarra Mesa",
+   "category": "Cozinha",
+   "priceCents": 9990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-005-01",
+    "CO-005-02",
+    "CO-005-03"
+   ]
+  },
+  {
+   "sku": "CO-006",
+   "slug": "utensilios-madeira",
+   "name": "Kit Utensílios",
+   "category": "Cozinha",
+   "priceCents": 6990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-006-01",
+    "CO-006-02",
+    "CO-006-03"
+   ]
+  },
+  {
+   "sku": "CO-007",
+   "slug": "cesto-organizador",
+   "name": "Cesto Trama",
+   "category": "Organização",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-007-01",
+    "CO-007-02",
+    "CO-007-03"
+   ]
+  },
+  {
+   "sku": "CO-008",
+   "slug": "caixa-organizadora",
+   "name": "Caixa Modular",
+   "category": "Organização",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-008-01",
+    "CO-008-02",
+    "CO-008-03"
+   ]
+  },
+  {
+   "sku": "CO-009",
+   "slug": "cabides-madeira",
+   "name": "Kit Cabides",
+   "category": "Organização",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-009-01",
+    "CO-009-02",
+    "CO-009-03"
+   ]
+  },
+  {
+   "sku": "CO-010",
+   "slug": "almofada-areia",
+   "name": "Almofada Textura",
+   "category": "Têxteis",
+   "priceCents": 6990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-010-01",
+    "CO-010-02",
+    "CO-010-03"
+   ]
+  },
+  {
+   "sku": "CO-011",
+   "slug": "manta-cru",
+   "name": "Manta Aconchego",
+   "category": "Têxteis",
+   "priceCents": 12990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-011-01",
+    "CO-011-02",
+    "CO-011-03"
+   ]
+  },
+  {
+   "sku": "CO-012",
+   "slug": "toalhas-cinza",
+   "name": "Kit Toalhas",
+   "category": "Têxteis",
+   "priceCents": 9990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "CO-012-01",
+    "CO-012-02",
+    "CO-012-03"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "acolher",
+   "headline": "Detalhes que acolhem",
+   "cta": "Ver decoração",
+   "skus": [
+    "CO-001",
+    "CO-002",
+    "CO-003"
+   ]
+  },
+  {
+   "id": "organizar",
+   "headline": "Mais espaço para o seu dia",
+   "cta": "Ver organização",
+   "skus": [
+    "CO-007",
+    "CO-008",
+    "CO-009"
+   ]
+  },
+  {
+   "id": "cotidiano",
+   "headline": "Sua casa, do seu jeito",
+   "cta": "Explorar coleção",
+   "skus": [
+    "CO-005",
+    "CO-010",
+    "CO-011"
+   ]
+  }
+ ],
+ "assets": {
+  "CO-001-01": {
+   "qualifiedId": "casa-em-ordem:CO-001-01",
+   "kind": "produto",
+   "sku": "CO-001",
+   "alt": "Vaso Curva — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-001-02": {
+   "qualifiedId": "casa-em-ordem:CO-001-02",
+   "kind": "produto",
+   "sku": "CO-001",
+   "alt": "Vaso Curva — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-001-03": {
+   "qualifiedId": "casa-em-ordem:CO-001-03",
+   "kind": "produto",
+   "sku": "CO-001",
+   "alt": "Vaso Curva — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/vaso-ceramica-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-002-01": {
+   "qualifiedId": "casa-em-ordem:CO-002-01",
+   "kind": "produto",
+   "sku": "CO-002",
+   "alt": "Bandeja Natural — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-002-02": {
+   "qualifiedId": "casa-em-ordem:CO-002-02",
+   "kind": "produto",
+   "sku": "CO-002",
+   "alt": "Bandeja Natural — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-002-03": {
+   "qualifiedId": "casa-em-ordem:CO-002-03",
+   "kind": "produto",
+   "sku": "CO-002",
+   "alt": "Bandeja Natural — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/bandeja-madeira-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-003-01": {
+   "qualifiedId": "casa-em-ordem:CO-003-01",
+   "kind": "produto",
+   "sku": "CO-003",
+   "alt": "Vela Horizonte — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/vela-decorativa-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-003-02": {
+   "qualifiedId": "casa-em-ordem:CO-003-02",
+   "kind": "produto",
+   "sku": "CO-003",
+   "alt": "Vela Horizonte — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/vela-decorativa-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-003-03": {
+   "qualifiedId": "casa-em-ordem:CO-003-03",
+   "kind": "produto",
+   "sku": "CO-003",
+   "alt": "Vela Horizonte — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/vela-decorativa-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-004-01": {
+   "qualifiedId": "casa-em-ordem:CO-004-01",
+   "kind": "produto",
+   "sku": "CO-004",
+   "alt": "Pote Despensa — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/pote-vidro-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-004-02": {
+   "qualifiedId": "casa-em-ordem:CO-004-02",
+   "kind": "produto",
+   "sku": "CO-004",
+   "alt": "Pote Despensa — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/pote-vidro-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-004-03": {
+   "qualifiedId": "casa-em-ordem:CO-004-03",
+   "kind": "produto",
+   "sku": "CO-004",
+   "alt": "Pote Despensa — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/pote-vidro-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-005-01": {
+   "qualifiedId": "casa-em-ordem:CO-005-01",
+   "kind": "produto",
+   "sku": "CO-005",
+   "alt": "Jarra Mesa — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-005-02": {
+   "qualifiedId": "casa-em-ordem:CO-005-02",
+   "kind": "produto",
+   "sku": "CO-005",
+   "alt": "Jarra Mesa — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-005-03": {
+   "qualifiedId": "casa-em-ordem:CO-005-03",
+   "kind": "produto",
+   "sku": "CO-005",
+   "alt": "Jarra Mesa — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/jarra-ceramica-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-006-01": {
+   "qualifiedId": "casa-em-ordem:CO-006-01",
+   "kind": "produto",
+   "sku": "CO-006",
+   "alt": "Kit Utensílios — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-006-02": {
+   "qualifiedId": "casa-em-ordem:CO-006-02",
+   "kind": "produto",
+   "sku": "CO-006",
+   "alt": "Kit Utensílios — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-006-03": {
+   "qualifiedId": "casa-em-ordem:CO-006-03",
+   "kind": "produto",
+   "sku": "CO-006",
+   "alt": "Kit Utensílios — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/utensilios-madeira-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-007-01": {
+   "qualifiedId": "casa-em-ordem:CO-007-01",
+   "kind": "produto",
+   "sku": "CO-007",
+   "alt": "Cesto Trama — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/cesto-organizador-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-007-02": {
+   "qualifiedId": "casa-em-ordem:CO-007-02",
+   "kind": "produto",
+   "sku": "CO-007",
+   "alt": "Cesto Trama — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/cesto-organizador-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-007-03": {
+   "qualifiedId": "casa-em-ordem:CO-007-03",
+   "kind": "produto",
+   "sku": "CO-007",
+   "alt": "Cesto Trama — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/cesto-organizador-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-008-01": {
+   "qualifiedId": "casa-em-ordem:CO-008-01",
+   "kind": "produto",
+   "sku": "CO-008",
+   "alt": "Caixa Modular — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-008-02": {
+   "qualifiedId": "casa-em-ordem:CO-008-02",
+   "kind": "produto",
+   "sku": "CO-008",
+   "alt": "Caixa Modular — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-008-03": {
+   "qualifiedId": "casa-em-ordem:CO-008-03",
+   "kind": "produto",
+   "sku": "CO-008",
+   "alt": "Caixa Modular — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/caixa-organizadora-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-009-01": {
+   "qualifiedId": "casa-em-ordem:CO-009-01",
+   "kind": "produto",
+   "sku": "CO-009",
+   "alt": "Kit Cabides — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/cabides-madeira-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-009-02": {
+   "qualifiedId": "casa-em-ordem:CO-009-02",
+   "kind": "produto",
+   "sku": "CO-009",
+   "alt": "Kit Cabides — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/cabides-madeira-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-009-03": {
+   "qualifiedId": "casa-em-ordem:CO-009-03",
+   "kind": "produto",
+   "sku": "CO-009",
+   "alt": "Kit Cabides — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/cabides-madeira-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-010-01": {
+   "qualifiedId": "casa-em-ordem:CO-010-01",
+   "kind": "produto",
+   "sku": "CO-010",
+   "alt": "Almofada Textura — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/almofada-areia-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-010-02": {
+   "qualifiedId": "casa-em-ordem:CO-010-02",
+   "kind": "produto",
+   "sku": "CO-010",
+   "alt": "Almofada Textura — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/almofada-areia-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-010-03": {
+   "qualifiedId": "casa-em-ordem:CO-010-03",
+   "kind": "produto",
+   "sku": "CO-010",
+   "alt": "Almofada Textura — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/almofada-areia-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-011-01": {
+   "qualifiedId": "casa-em-ordem:CO-011-01",
+   "kind": "produto",
+   "sku": "CO-011",
+   "alt": "Manta Aconchego — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/manta-cru-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-011-02": {
+   "qualifiedId": "casa-em-ordem:CO-011-02",
+   "kind": "produto",
+   "sku": "CO-011",
+   "alt": "Manta Aconchego — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/manta-cru-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-011-03": {
+   "qualifiedId": "casa-em-ordem:CO-011-03",
+   "kind": "produto",
+   "sku": "CO-011",
+   "alt": "Manta Aconchego — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/manta-cru-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-012-01": {
+   "qualifiedId": "casa-em-ordem:CO-012-01",
+   "kind": "produto",
+   "sku": "CO-012",
+   "alt": "Kit Toalhas — vista principal",
+   "src": "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-012-02": {
+   "qualifiedId": "casa-em-ordem:CO-012-02",
+   "kind": "produto",
+   "sku": "CO-012",
+   "alt": "Kit Toalhas — detalhe",
+   "src": "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "CO-012-03": {
+   "qualifiedId": "casa-em-ordem:CO-012-03",
+   "kind": "produto",
+   "sku": "CO-012",
+   "alt": "Kit Toalhas — vista complementar",
+   "src": "/demos/casa-em-ordem/v1/produtos/toalhas-cinza-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "cat-01": {
+   "qualifiedId": "casa-em-ordem:cat-01",
+   "kind": "categoria",
+   "alt": "Decoração",
+   "src": "/demos/casa-em-ordem/v1/categorias/categoria-01.webp",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-02": {
+   "qualifiedId": "casa-em-ordem:cat-02",
+   "kind": "categoria",
+   "alt": "Cozinha",
+   "src": "/demos/casa-em-ordem/v1/categorias/categoria-02.webp",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-03": {
+   "qualifiedId": "casa-em-ordem:cat-03",
+   "kind": "categoria",
+   "alt": "Organização",
+   "src": "/demos/casa-em-ordem/v1/categorias/categoria-03.webp",
+   "width": 1200,
+   "height": 1200
+  }
+ }
+}

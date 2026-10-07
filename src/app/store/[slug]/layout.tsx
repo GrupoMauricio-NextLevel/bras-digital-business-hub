@@ -21,12 +21,17 @@ import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { isBlocked } from "@/lib/domain/store-access";
 import { currentCampaign, isSafeLink } from "@/lib/domain/campaigns";
 import { ldJson, shortDescription, storeOrigin } from "@/lib/storefront-seo";
+import { socialImage } from "@/lib/themes/pacotes";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const sf = await getStorefront(slug);
   if (!sf) return { title: "Loja" };
-  if (sf.store.showcaseTheme) return { title: { default: `Demonstração do tema ${THEME_BY_KEY[sf.store.showcaseTheme]?.name ?? ""}`.trim(), template: "%s · Demonstração" }, robots: { index: false, follow: false } };
+  if (sf.store.showcaseTheme) {
+    // Demonstração: imagem de compartilhamento do pacote visual da loja, quando existe (continua fora dos buscadores).
+    const info = THEME_BY_KEY[sf.store.showcaseTheme]; const og = info ? socialImage(info.family) : null;
+    return { title: { default: `Demonstração do tema ${info?.name ?? ""}`.trim(), template: "%s · Demonstração" }, robots: { index: false, follow: false }, ...(og ? { openGraph: { siteName: sf.store.name, locale: "pt_BR", type: "website", images: [{ url: og.url, width: og.width, height: og.height, alt: sf.store.name }] } } : {}) };
+  }
   const origin = await storeOrigin(sf.store);
   const description = shortDescription(sf.settings.heroSubtitle || sf.store.tagline, `Loja virtual ${sf.store.name}.`);
   // Páginas internas definem "title" próprio e herdam o nome da loja pelo modelo.

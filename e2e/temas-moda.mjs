@@ -13,6 +13,8 @@ const SHOTS = process.argv.includes("--capturas");
 const OUT = "docs/temas-modulares/evidencias/e3", DIR = `${OUT}/capturas`;
 mkdirSync(DIR, { recursive: true });
 const STORES = (process.env.TEMAS ?? "trama,lume,editorial,atelier").split(",");
+// Fotos realmente pintadas na tela (não só presentes no HTML): largura natural > 0 e sem quebra.
+const brokenImages = (p) => p.evaluate(() => [...document.images].filter((i) => i.complete && i.naturalWidth === 0 && i.getAttribute("src")).map((i) => i.currentSrc || i.src));
 const WIDTHS = [360, 768, 1440];
 const axeOf = async (p) => { await p.evaluate(axeSource); return p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] }, exclude: ["iframe", "nextjs-portal"] })).violations.filter((x) => ["serious", "critical"].includes(x.impact)).map((x) => x.id + ":" + (x.nodes[0]?.target?.join(" ") ?? "") + " " + (x.nodes[0]?.html ?? "").slice(0, 80))); };
 
@@ -22,14 +24,18 @@ for (const key of STORES) {
   const base = `${B}/store/demo-${key}`;
   for (const w of WIDTHS) {
     const ctx = await b.newContext({ viewport: { width: w, height: w < 500 ? 800 : 900 }, reducedMotion: "reduce" });
-    const p = await ctx.newPage(); p.setDefaultTimeout(45000);
+    const p = await ctx.newPage(); p.setDefaultTimeout(90000);
     let errs = [];
     p.on("pageerror", (e) => errs.push("pageerror: " + e.message));
     p.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource/.test(m.text())) errs.push("console: " + m.text().slice(0, 140)); });
+    // Imagem ou arquivo que não carrega (404/500) é erro, mesmo que o console só mostre "Failed to load resource".
+    p.on("response", (r) => { if (r.status() >= 400 && !/favicon/.test(r.url())) errs.push(`HTTP ${r.status()}: ${r.url().replace(B, "")}`); });
+    p.on("requestfailed", (r) => { if (!/favicon|_next\/webpack-hmr/.test(r.url()) && !/ERR_ABORTED/.test(r.failure()?.errorText ?? "")) errs.push(`falhou: ${r.url().replace(B, "")}`); });
     const check = async (name, extra = {}) => {
       await p.waitForTimeout(400);
       const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       const axe = await axeOf(p);
+      for (const b of await brokenImages(p)) errs.push("imagem quebrada: " + b.replace(B, ""));
       const r = { key, w, page: name, url: p.url().replace(B, ""), errors: errs, overflow, axe, ...extra };
       results.push(r); errs = [];
       if (SHOTS && name === "home") { await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } window.scrollTo(0, 0); }); await p.waitForLoadState("networkidle"); await p.waitForTimeout(500); }
@@ -72,7 +78,7 @@ for (const key of STORES) {
 // Galeria pública (Commerce): filtros por nível e família, página do tema com a comparação da família
 if (!process.env.TEMAS) for (const w of WIDTHS) {
   const ctx = await b.newContext({ viewport: { width: w, height: w < 500 ? 800 : 900 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } });
-  const p = await ctx.newPage(); p.setDefaultTimeout(45000); let errs = []; p.on("pageerror", (e) => errs.push(e.message));
+  const p = await ctx.newPage(); p.setDefaultTimeout(90000); let errs = []; p.on("pageerror", (e) => errs.push(e.message));
   for (const [name, path] of [["galeria", "/temas"], ["galeria-moda", "/temas?familia=moda"], ["galeria-n4", "/temas?nivel=4"], ["tema-atelier", "/temas/atelier"], ["tema-lume", "/temas/lume"], ["demo-atelier", "/demo/atelier"]]) {
     const st = (await p.goto(B + path, { waitUntil: "networkidle" }))?.status();
     const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

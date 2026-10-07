@@ -1,0 +1,793 @@
+{
+ "slug": "linha-de-jogo",
+ "family": "sport",
+ "store": "Linha de Jogo",
+ "status": "COMPLETE",
+ "generated": 60,
+ "expected": 60,
+ "palette": {
+  "ink": "#17191F",
+  "accent": "#F26932",
+  "background": "#F2F0EB"
+ },
+ "products": [
+  {
+   "sku": "LJ-001",
+   "slug": "camisa-preta",
+   "name": "Camisa Jogo Noturno",
+   "category": "Camisas",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-001-01",
+    "LJ-001-02",
+    "LJ-001-03"
+   ]
+  },
+  {
+   "sku": "LJ-002",
+   "slug": "camisa-marfim",
+   "name": "Camisa Arquibancada",
+   "category": "Camisas",
+   "priceCents": 9990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-002-01",
+    "LJ-002-02",
+    "LJ-002-03"
+   ]
+  },
+  {
+   "sku": "LJ-003",
+   "slug": "camisa-laranja",
+   "name": "Camisa Ritmo",
+   "category": "Camisas",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-003-01",
+    "LJ-003-02",
+    "LJ-003-03"
+   ]
+  },
+  {
+   "sku": "LJ-004",
+   "slug": "bermuda-treino",
+   "name": "Bermuda Treino",
+   "category": "Vestuário",
+   "priceCents": 7990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-004-01",
+    "LJ-004-02",
+    "LJ-004-03"
+   ]
+  },
+  {
+   "sku": "LJ-005",
+   "slug": "calca-treino",
+   "name": "Calça Movimento",
+   "category": "Vestuário",
+   "priceCents": 12990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-005-01",
+    "LJ-005-02",
+    "LJ-005-03"
+   ]
+  },
+  {
+   "sku": "LJ-006",
+   "slug": "jaqueta-treino",
+   "name": "Jaqueta Pré-jogo",
+   "category": "Vestuário",
+   "priceCents": 17990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-006-01",
+    "LJ-006-02",
+    "LJ-006-03"
+   ]
+  },
+  {
+   "sku": "LJ-007",
+   "slug": "bola-campo",
+   "name": "Bola Geométrica",
+   "category": "Treino",
+   "priceCents": 11990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-007-01",
+    "LJ-007-02",
+    "LJ-007-03"
+   ]
+  },
+  {
+   "sku": "LJ-008",
+   "slug": "cones-treino",
+   "name": "Kit Cones Treino",
+   "category": "Treino",
+   "priceCents": 4990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-008-01",
+    "LJ-008-02",
+    "LJ-008-03"
+   ]
+  },
+  {
+   "sku": "LJ-009",
+   "slug": "corda-pular",
+   "name": "Corda Ritmo",
+   "category": "Treino",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-009-01",
+    "LJ-009-02",
+    "LJ-009-03"
+   ]
+  },
+  {
+   "sku": "LJ-010",
+   "slug": "garrafa-esportiva",
+   "name": "Garrafa Quadra",
+   "category": "Acessórios",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-010-01",
+    "LJ-010-02",
+    "LJ-010-03"
+   ]
+  },
+  {
+   "sku": "LJ-011",
+   "slug": "mochila-treino",
+   "name": "Mochila Vestiário",
+   "category": "Acessórios",
+   "priceCents": 14990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-011-01",
+    "LJ-011-02",
+    "LJ-011-03"
+   ]
+  },
+  {
+   "sku": "LJ-012",
+   "slug": "meias-esportivas",
+   "name": "Par Meias Jogo",
+   "category": "Acessórios",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "LJ-012-01",
+    "LJ-012-02",
+    "LJ-012-03"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "essenciais",
+   "headline": "Prepare o próximo jogo",
+   "cta": "Ver essenciais",
+   "skus": [
+    "LJ-001",
+    "LJ-004",
+    "LJ-007"
+   ]
+  },
+  {
+   "id": "movimento",
+   "headline": "Seu ritmo, sua escolha",
+   "cta": "Explorar treino",
+   "skus": [
+    "LJ-005",
+    "LJ-006",
+    "LJ-009"
+   ]
+  },
+  {
+   "id": "equipados",
+   "headline": "Tudo pronto para entrar em campo",
+   "cta": "Ver acessórios",
+   "skus": [
+    "LJ-010",
+    "LJ-011",
+    "LJ-012"
+   ]
+  }
+ ],
+ "assets": {
+  "LJ-001-01": {
+   "qualifiedId": "linha-de-jogo:LJ-001-01",
+   "kind": "produto",
+   "sku": "LJ-001",
+   "alt": "Camisa Jogo Noturno — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-preta-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-preta-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-001-02": {
+   "qualifiedId": "linha-de-jogo:LJ-001-02",
+   "kind": "produto",
+   "sku": "LJ-001",
+   "alt": "Camisa Jogo Noturno — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-preta-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-preta-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-001-03": {
+   "qualifiedId": "linha-de-jogo:LJ-001-03",
+   "kind": "produto",
+   "sku": "LJ-001",
+   "alt": "Camisa Jogo Noturno — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-preta-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-preta-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-002-01": {
+   "qualifiedId": "linha-de-jogo:LJ-002-01",
+   "kind": "produto",
+   "sku": "LJ-002",
+   "alt": "Camisa Arquibancada — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-002-02": {
+   "qualifiedId": "linha-de-jogo:LJ-002-02",
+   "kind": "produto",
+   "sku": "LJ-002",
+   "alt": "Camisa Arquibancada — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-002-03": {
+   "qualifiedId": "linha-de-jogo:LJ-002-03",
+   "kind": "produto",
+   "sku": "LJ-002",
+   "alt": "Camisa Arquibancada — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-marfim-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-003-01": {
+   "qualifiedId": "linha-de-jogo:LJ-003-01",
+   "kind": "produto",
+   "sku": "LJ-003",
+   "alt": "Camisa Ritmo — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-003-02": {
+   "qualifiedId": "linha-de-jogo:LJ-003-02",
+   "kind": "produto",
+   "sku": "LJ-003",
+   "alt": "Camisa Ritmo — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-003-03": {
+   "qualifiedId": "linha-de-jogo:LJ-003-03",
+   "kind": "produto",
+   "sku": "LJ-003",
+   "alt": "Camisa Ritmo — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/camisa-laranja-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-004-01": {
+   "qualifiedId": "linha-de-jogo:LJ-004-01",
+   "kind": "produto",
+   "sku": "LJ-004",
+   "alt": "Bermuda Treino — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-004-02": {
+   "qualifiedId": "linha-de-jogo:LJ-004-02",
+   "kind": "produto",
+   "sku": "LJ-004",
+   "alt": "Bermuda Treino — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-004-03": {
+   "qualifiedId": "linha-de-jogo:LJ-004-03",
+   "kind": "produto",
+   "sku": "LJ-004",
+   "alt": "Bermuda Treino — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bermuda-treino-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-005-01": {
+   "qualifiedId": "linha-de-jogo:LJ-005-01",
+   "kind": "produto",
+   "sku": "LJ-005",
+   "alt": "Calça Movimento — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/calca-treino-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/calca-treino-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-005-02": {
+   "qualifiedId": "linha-de-jogo:LJ-005-02",
+   "kind": "produto",
+   "sku": "LJ-005",
+   "alt": "Calça Movimento — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/calca-treino-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/calca-treino-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-005-03": {
+   "qualifiedId": "linha-de-jogo:LJ-005-03",
+   "kind": "produto",
+   "sku": "LJ-005",
+   "alt": "Calça Movimento — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/calca-treino-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/calca-treino-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-006-01": {
+   "qualifiedId": "linha-de-jogo:LJ-006-01",
+   "kind": "produto",
+   "sku": "LJ-006",
+   "alt": "Jaqueta Pré-jogo — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-006-02": {
+   "qualifiedId": "linha-de-jogo:LJ-006-02",
+   "kind": "produto",
+   "sku": "LJ-006",
+   "alt": "Jaqueta Pré-jogo — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-006-03": {
+   "qualifiedId": "linha-de-jogo:LJ-006-03",
+   "kind": "produto",
+   "sku": "LJ-006",
+   "alt": "Jaqueta Pré-jogo — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/jaqueta-treino-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-007-01": {
+   "qualifiedId": "linha-de-jogo:LJ-007-01",
+   "kind": "produto",
+   "sku": "LJ-007",
+   "alt": "Bola Geométrica — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/bola-campo-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bola-campo-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-007-02": {
+   "qualifiedId": "linha-de-jogo:LJ-007-02",
+   "kind": "produto",
+   "sku": "LJ-007",
+   "alt": "Bola Geométrica — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/bola-campo-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bola-campo-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-007-03": {
+   "qualifiedId": "linha-de-jogo:LJ-007-03",
+   "kind": "produto",
+   "sku": "LJ-007",
+   "alt": "Bola Geométrica — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/bola-campo-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/bola-campo-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-008-01": {
+   "qualifiedId": "linha-de-jogo:LJ-008-01",
+   "kind": "produto",
+   "sku": "LJ-008",
+   "alt": "Kit Cones Treino — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/cones-treino-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/cones-treino-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-008-02": {
+   "qualifiedId": "linha-de-jogo:LJ-008-02",
+   "kind": "produto",
+   "sku": "LJ-008",
+   "alt": "Kit Cones Treino — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/cones-treino-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/cones-treino-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-008-03": {
+   "qualifiedId": "linha-de-jogo:LJ-008-03",
+   "kind": "produto",
+   "sku": "LJ-008",
+   "alt": "Kit Cones Treino — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/cones-treino-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/cones-treino-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-009-01": {
+   "qualifiedId": "linha-de-jogo:LJ-009-01",
+   "kind": "produto",
+   "sku": "LJ-009",
+   "alt": "Corda Ritmo — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/corda-pular-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/corda-pular-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-009-02": {
+   "qualifiedId": "linha-de-jogo:LJ-009-02",
+   "kind": "produto",
+   "sku": "LJ-009",
+   "alt": "Corda Ritmo — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/corda-pular-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/corda-pular-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-009-03": {
+   "qualifiedId": "linha-de-jogo:LJ-009-03",
+   "kind": "produto",
+   "sku": "LJ-009",
+   "alt": "Corda Ritmo — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/corda-pular-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/corda-pular-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-010-01": {
+   "qualifiedId": "linha-de-jogo:LJ-010-01",
+   "kind": "produto",
+   "sku": "LJ-010",
+   "alt": "Garrafa Quadra — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-010-02": {
+   "qualifiedId": "linha-de-jogo:LJ-010-02",
+   "kind": "produto",
+   "sku": "LJ-010",
+   "alt": "Garrafa Quadra — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-010-03": {
+   "qualifiedId": "linha-de-jogo:LJ-010-03",
+   "kind": "produto",
+   "sku": "LJ-010",
+   "alt": "Garrafa Quadra — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/garrafa-esportiva-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-011-01": {
+   "qualifiedId": "linha-de-jogo:LJ-011-01",
+   "kind": "produto",
+   "sku": "LJ-011",
+   "alt": "Mochila Vestiário — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/mochila-treino-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/mochila-treino-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-011-02": {
+   "qualifiedId": "linha-de-jogo:LJ-011-02",
+   "kind": "produto",
+   "sku": "LJ-011",
+   "alt": "Mochila Vestiário — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/mochila-treino-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/mochila-treino-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-011-03": {
+   "qualifiedId": "linha-de-jogo:LJ-011-03",
+   "kind": "produto",
+   "sku": "LJ-011",
+   "alt": "Mochila Vestiário — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/mochila-treino-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/mochila-treino-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-012-01": {
+   "qualifiedId": "linha-de-jogo:LJ-012-01",
+   "kind": "produto",
+   "sku": "LJ-012",
+   "alt": "Par Meias Jogo — vista principal",
+   "src": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-012-02": {
+   "qualifiedId": "linha-de-jogo:LJ-012-02",
+   "kind": "produto",
+   "sku": "LJ-012",
+   "alt": "Par Meias Jogo — detalhe",
+   "src": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "LJ-012-03": {
+   "qualifiedId": "linha-de-jogo:LJ-012-03",
+   "kind": "produto",
+   "sku": "LJ-012",
+   "alt": "Par Meias Jogo — vista complementar",
+   "src": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/produtos/meias-esportivas-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "cat-01": {
+   "qualifiedId": "linha-de-jogo:cat-01",
+   "kind": "categoria",
+   "alt": "Camisas",
+   "src": "/demos/linha-de-jogo/v1/categorias/categoria-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/categorias/categoria-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-02": {
+   "qualifiedId": "linha-de-jogo:cat-02",
+   "kind": "categoria",
+   "alt": "Vestuário",
+   "src": "/demos/linha-de-jogo/v1/categorias/categoria-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/categorias/categoria-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-03": {
+   "qualifiedId": "linha-de-jogo:cat-03",
+   "kind": "categoria",
+   "alt": "Treino",
+   "src": "/demos/linha-de-jogo/v1/categorias/categoria-03.webp",
+   "avif": "/demos/linha-de-jogo/v1/categorias/categoria-03.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-04": {
+   "qualifiedId": "linha-de-jogo:cat-04",
+   "kind": "categoria",
+   "alt": "Acessórios",
+   "src": "/demos/linha-de-jogo/v1/categorias/categoria-04.webp",
+   "avif": "/demos/linha-de-jogo/v1/categorias/categoria-04.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "essenciais-hero-desktop": {
+   "qualifiedId": "linha-de-jogo:essenciais-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/essenciais-hero-desktop.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/essenciais-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "essenciais-hero-mobile": {
+   "qualifiedId": "linha-de-jogo:essenciais-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/essenciais-hero-mobile.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/essenciais-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "essenciais-apoio-01": {
+   "qualifiedId": "linha-de-jogo:essenciais-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/essenciais-apoio-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/essenciais-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "essenciais-apoio-02": {
+   "qualifiedId": "linha-de-jogo:essenciais-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/essenciais-apoio-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/essenciais-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "movimento-hero-desktop": {
+   "qualifiedId": "linha-de-jogo:movimento-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/movimento-hero-desktop.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/movimento-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "movimento-hero-mobile": {
+   "qualifiedId": "linha-de-jogo:movimento-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/movimento-hero-mobile.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/movimento-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "movimento-apoio-01": {
+   "qualifiedId": "linha-de-jogo:movimento-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/movimento-apoio-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/movimento-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "movimento-apoio-02": {
+   "qualifiedId": "linha-de-jogo:movimento-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/movimento-apoio-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/movimento-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "equipados-hero-desktop": {
+   "qualifiedId": "linha-de-jogo:equipados-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/equipados-hero-desktop.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/equipados-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "equipados-hero-mobile": {
+   "qualifiedId": "linha-de-jogo:equipados-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/equipados-hero-mobile.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/equipados-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "equipados-apoio-01": {
+   "qualifiedId": "linha-de-jogo:equipados-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/equipados-apoio-01.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/equipados-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "equipados-apoio-02": {
+   "qualifiedId": "linha-de-jogo:equipados-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/campanhas/equipados-apoio-02.webp",
+   "avif": "/demos/linha-de-jogo/v1/campanhas/equipados-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "editorial-historia": {
+   "qualifiedId": "linha-de-jogo:editorial-historia",
+   "kind": "editorial",
+   "alt": "Composição editorial da loja fictícia Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/editorial/historia.webp",
+   "avif": "/demos/linha-de-jogo/v1/editorial/historia.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "editorial-materiais": {
+   "qualifiedId": "linha-de-jogo:editorial-materiais",
+   "kind": "editorial",
+   "alt": "Composição editorial da loja fictícia Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/editorial/materiais.webp",
+   "avif": "/demos/linha-de-jogo/v1/editorial/materiais.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "editorial-lookbook": {
+   "qualifiedId": "linha-de-jogo:editorial-lookbook",
+   "kind": "editorial",
+   "alt": "Composição editorial da loja fictícia Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/editorial/lookbook.webp",
+   "avif": "/demos/linha-de-jogo/v1/editorial/lookbook.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "marca-principal": {
+   "qualifiedId": "linha-de-jogo:marca-principal",
+   "kind": "marca",
+   "alt": "Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/marca/principal.png",
+   "width": 1600,
+   "height": 400,
+   "vector": true
+  },
+  "marca-clara": {
+   "qualifiedId": "linha-de-jogo:marca-clara",
+   "kind": "marca",
+   "alt": "Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/marca/clara.png",
+   "width": 1600,
+   "height": 400,
+   "vector": true
+  },
+  "marca-escura": {
+   "qualifiedId": "linha-de-jogo:marca-escura",
+   "kind": "marca",
+   "alt": "Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/marca/escura.png",
+   "width": 1600,
+   "height": 400,
+   "vector": true
+  },
+  "marca-simbolo": {
+   "qualifiedId": "linha-de-jogo:marca-simbolo",
+   "kind": "marca",
+   "alt": "Linha de Jogo",
+   "src": "/demos/linha-de-jogo/v1/marca/simbolo.png",
+   "width": 1024,
+   "height": 1024,
+   "vector": true
+  },
+  "social-compartilhamento": {
+   "qualifiedId": "linha-de-jogo:social-compartilhamento",
+   "kind": "social",
+   "alt": "",
+   "src": "/demos/linha-de-jogo/v1/social/compartilhamento.webp",
+   "avif": "/demos/linha-de-jogo/v1/social/compartilhamento.avif",
+   "width": 1200,
+   "height": 630
+  }
+ }
+}

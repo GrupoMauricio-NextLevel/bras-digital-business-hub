@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BannerCarousel } from "@/components/storefront/banner-carousel";
 import { BannerVideo } from "@/components/storefront/banner-video";
 import { liveBlocks } from "@/lib/themes/banners";
+import { avifOf } from "@/lib/themes/avif";
 import { resolveLink } from "@/lib/themes/template";
 import { cn } from "@/lib/utils";
 import type { SectionProps } from "./types";
@@ -26,14 +27,20 @@ export function BannerImage({ s, sizes, priority, className }: { s: S; sizes: st
   const vars = { "--fx": `${num(s.focusX, 50)}%`, "--fy": `${num(s.focusY, 50)}%`, "--mx": `${num(s.focusMobileX, 50)}%`, "--my": `${num(s.focusMobileY, 50)}%` } as React.CSSProperties;
   // A imagem principal (acima da dobra) é pedida já no início do HTML, antes de o navegador montar a página.
   // Com imagem própria de celular não há como pedir só a certa por aqui; o <picture> escolhe sozinho.
-  if (priority && desktop && mobile === desktop) preload(srcSetOf(desktop) ? `${desktop}?w=1280` : desktop, { as: "image", fetchPriority: "high", imageSrcSet: srcSetOf(desktop), imageSizes: sizes });
+  const avifD = avifOf(desktop); const avifM = avifOf(mobile);
+  if (priority && desktop && mobile === desktop) {
+    if (avifD) preload(avifD, { as: "image", type: "image/avif", fetchPriority: "high" });
+    else preload(srcSetOf(desktop) ? `${desktop}?w=1280` : desktop, { as: "image", fetchPriority: "high", imageSrcSet: srcSetOf(desktop), imageSizes: sizes });
+  }
   if (!desktop) {
     // Sem imagem enviada: fundo nas cores da loja (nunca foto aleatória). O editor mostra o aviso de imagem pendente.
     return <div aria-hidden className={cn("absolute inset-0", className)} style={{ background: "linear-gradient(135deg, var(--sf-primary), color-mix(in srgb, var(--sf-accent) 55%, var(--sf-primary)))" }} data-banner-empty />;
   }
   return (
     <picture className={cn("absolute inset-0 block", className)} style={vars}>
+      {mobile !== desktop && avifM ? <source media="(max-width: 767px)" type="image/avif" srcSet={avifM} /> : null}
       {mobile !== desktop ? <source media="(max-width: 767px)" srcSet={srcSetOf(mobile) ?? mobile} sizes="100vw" /> : null}
+      {avifD ? <source type="image/avif" srcSet={avifD} /> : null}
       <img src={srcSetOf(desktop) ? `${desktop}?w=1280` : desktop} srcSet={srcSetOf(desktop)} sizes={sizes} alt={alt} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async"
         className="size-full object-cover [object-position:var(--mx)_var(--my)] md:[object-position:var(--fx)_var(--fy)]" />
     </picture>

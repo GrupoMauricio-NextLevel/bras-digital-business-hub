@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { SectionList } from "@/components/storefront/sections";
 import { getDb } from "@/db/client";
-import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
+import { getStorefront, getStorefrontCatalog, idsBySkus, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
 import { tryingTheme } from "@/lib/themes/try";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
@@ -15,7 +15,7 @@ const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:
  * Monta uma página da loja a partir do modelo (publicado, ou o rascunho na prévia do dono),
  * com os produtos já repartidos entre as seções.
  */
-export async function StorePage({ slug, page, productSlug, query }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string } }) {
+export async function StorePage({ slug, page, productSlug, query }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string; produtos?: string } }) {
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const db = await getDb();
@@ -37,6 +37,8 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   if (page === "collection") {
     const cat = sf.categories.find((c) => c.slug === query?.category); categoryId = cat?.id ?? null;
     products = all.filter((p) => (!cat || p.categoryId === cat.id) && (!query?.q || p.name.toLowerCase().includes(query.q.toLowerCase())));
+    const picked = idsBySkus(catalog, query?.produtos);
+    if (picked) products = picked.map((id) => products.find((p) => p.id === id)).filter((p): p is (typeof products)[number] => !!p);
     const sort = query?.sort;
     if (sort === "price-asc") products = [...products].sort((a, b) => a.priceCents - b.priceCents);
     else if (sort === "price-desc") products = [...products].sort((a, b) => b.priceCents - a.priceCents);

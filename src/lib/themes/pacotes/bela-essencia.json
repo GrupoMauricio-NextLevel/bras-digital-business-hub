@@ -1,0 +1,452 @@
+{
+ "slug": "bela-essencia",
+ "family": "beauty",
+ "store": "Bela Essência",
+ "status": "PARTIAL",
+ "generated": 27,
+ "expected": 60,
+ "palette": {
+  "ink": "#382839",
+  "accent": "#B99368",
+  "background": "#F7F0EA"
+ },
+ "products": [
+  {
+   "sku": "BE-001",
+   "slug": "pincel-po",
+   "name": "Pincel Nuvem",
+   "category": "Pincéis",
+   "priceCents": 4990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-001-01",
+    "BE-001-02",
+    "BE-001-03"
+   ]
+  },
+  {
+   "sku": "BE-002",
+   "slug": "kit-pinceis",
+   "name": "Kit Essenciais",
+   "category": "Pincéis",
+   "priceCents": 7990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-002-01",
+    "BE-002-02",
+    "BE-002-03"
+   ]
+  },
+  {
+   "sku": "BE-003",
+   "slug": "esponja-gota",
+   "name": "Esponja Gota",
+   "category": "Pincéis",
+   "priceCents": 1990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-003-01",
+    "BE-003-02",
+    "BE-003-03"
+   ]
+  },
+  {
+   "sku": "BE-004",
+   "slug": "necessaire-plum",
+   "name": "Nécessaire Ritual",
+   "category": "Organização",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-004-01",
+    "BE-004-02",
+    "BE-004-03"
+   ]
+  },
+  {
+   "sku": "BE-005",
+   "slug": "organizador-acrilico",
+   "name": "Organizador Cristal",
+   "category": "Organização",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-005-01",
+    "BE-005-02",
+    "BE-005-03"
+   ]
+  },
+  {
+   "sku": "BE-006",
+   "slug": "porta-pinceis",
+   "name": "Porta-pincéis",
+   "category": "Organização",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-006-01",
+    "BE-006-02",
+    "BE-006-03"
+   ]
+  },
+  {
+   "sku": "BE-007",
+   "slug": "espelho-mesa",
+   "name": "Espelho Aurora",
+   "category": "Acessórios",
+   "priceCents": 9990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-007-01",
+    "BE-007-02",
+    "BE-007-03"
+   ]
+  },
+  {
+   "sku": "BE-008",
+   "slug": "faixa-cabelo",
+   "name": "Faixa Ritual",
+   "category": "Acessórios",
+   "priceCents": 2490,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-008-01",
+    "BE-008-02"
+   ]
+  },
+  {
+   "sku": "BE-009",
+   "slug": "rolo-facial",
+   "name": "Rolo Essência",
+   "category": "Acessórios",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-009-01"
+   ]
+  },
+  {
+   "sku": "BE-010",
+   "slug": "frasco-vidro",
+   "name": "Frasco Aurora",
+   "category": "Embalagens",
+   "priceCents": 6990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-010-01"
+   ]
+  },
+  {
+   "sku": "BE-011",
+   "slug": "pote-ritual",
+   "name": "Pote Ritual",
+   "category": "Embalagens",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-011-01"
+   ]
+  },
+  {
+   "sku": "BE-012",
+   "slug": "frasco-gotas",
+   "name": "Frasco Gotas",
+   "category": "Embalagens",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "BE-012-01"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "ritual",
+   "headline": "Seu ritual, sua essência",
+   "cta": "Ver essenciais",
+   "skus": [
+    "BE-001",
+    "BE-003",
+    "BE-007"
+   ]
+  },
+  {
+   "id": "organizar",
+   "headline": "Beleza também é organização",
+   "cta": "Ver organizadores",
+   "skus": [
+    "BE-004",
+    "BE-005",
+    "BE-006"
+   ]
+  },
+  {
+   "id": "detalhes",
+   "headline": "Detalhes para o seu espaço",
+   "cta": "Explorar acessórios",
+   "skus": [
+    "BE-008",
+    "BE-010",
+    "BE-011"
+   ]
+  }
+ ],
+ "assets": {
+  "BE-001-01": {
+   "qualifiedId": "bela-essencia:BE-001-01",
+   "kind": "produto",
+   "sku": "BE-001",
+   "alt": "Pincel Nuvem — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/pincel-po-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-001-02": {
+   "qualifiedId": "bela-essencia:BE-001-02",
+   "kind": "produto",
+   "sku": "BE-001",
+   "alt": "Pincel Nuvem — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/pincel-po-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-001-03": {
+   "qualifiedId": "bela-essencia:BE-001-03",
+   "kind": "produto",
+   "sku": "BE-001",
+   "alt": "Pincel Nuvem — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/pincel-po-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-002-01": {
+   "qualifiedId": "bela-essencia:BE-002-01",
+   "kind": "produto",
+   "sku": "BE-002",
+   "alt": "Kit Essenciais — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/kit-pinceis-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-002-02": {
+   "qualifiedId": "bela-essencia:BE-002-02",
+   "kind": "produto",
+   "sku": "BE-002",
+   "alt": "Kit Essenciais — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/kit-pinceis-02.webp",
+   "width": 1120,
+   "height": 1400,
+   "layoutReview": true
+  },
+  "BE-002-03": {
+   "qualifiedId": "bela-essencia:BE-002-03",
+   "kind": "produto",
+   "sku": "BE-002",
+   "alt": "Kit Essenciais — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/kit-pinceis-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-003-01": {
+   "qualifiedId": "bela-essencia:BE-003-01",
+   "kind": "produto",
+   "sku": "BE-003",
+   "alt": "Esponja Gota — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/esponja-gota-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-003-02": {
+   "qualifiedId": "bela-essencia:BE-003-02",
+   "kind": "produto",
+   "sku": "BE-003",
+   "alt": "Esponja Gota — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/esponja-gota-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-003-03": {
+   "qualifiedId": "bela-essencia:BE-003-03",
+   "kind": "produto",
+   "sku": "BE-003",
+   "alt": "Esponja Gota — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/esponja-gota-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-004-01": {
+   "qualifiedId": "bela-essencia:BE-004-01",
+   "kind": "produto",
+   "sku": "BE-004",
+   "alt": "Nécessaire Ritual — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/necessaire-plum-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-004-02": {
+   "qualifiedId": "bela-essencia:BE-004-02",
+   "kind": "produto",
+   "sku": "BE-004",
+   "alt": "Nécessaire Ritual — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/necessaire-plum-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-004-03": {
+   "qualifiedId": "bela-essencia:BE-004-03",
+   "kind": "produto",
+   "sku": "BE-004",
+   "alt": "Nécessaire Ritual — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/necessaire-plum-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-005-01": {
+   "qualifiedId": "bela-essencia:BE-005-01",
+   "kind": "produto",
+   "sku": "BE-005",
+   "alt": "Organizador Cristal — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/organizador-acrilico-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-005-02": {
+   "qualifiedId": "bela-essencia:BE-005-02",
+   "kind": "produto",
+   "sku": "BE-005",
+   "alt": "Organizador Cristal — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/organizador-acrilico-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-005-03": {
+   "qualifiedId": "bela-essencia:BE-005-03",
+   "kind": "produto",
+   "sku": "BE-005",
+   "alt": "Organizador Cristal — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/organizador-acrilico-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-006-01": {
+   "qualifiedId": "bela-essencia:BE-006-01",
+   "kind": "produto",
+   "sku": "BE-006",
+   "alt": "Porta-pincéis — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/porta-pinceis-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-006-02": {
+   "qualifiedId": "bela-essencia:BE-006-02",
+   "kind": "produto",
+   "sku": "BE-006",
+   "alt": "Porta-pincéis — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/porta-pinceis-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-006-03": {
+   "qualifiedId": "bela-essencia:BE-006-03",
+   "kind": "produto",
+   "sku": "BE-006",
+   "alt": "Porta-pincéis — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/porta-pinceis-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-007-01": {
+   "qualifiedId": "bela-essencia:BE-007-01",
+   "kind": "produto",
+   "sku": "BE-007",
+   "alt": "Espelho Aurora — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/espelho-mesa-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-007-02": {
+   "qualifiedId": "bela-essencia:BE-007-02",
+   "kind": "produto",
+   "sku": "BE-007",
+   "alt": "Espelho Aurora — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/espelho-mesa-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-007-03": {
+   "qualifiedId": "bela-essencia:BE-007-03",
+   "kind": "produto",
+   "sku": "BE-007",
+   "alt": "Espelho Aurora — vista complementar",
+   "src": "/demos/bela-essencia/v1/produtos/espelho-mesa-03.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-008-01": {
+   "qualifiedId": "bela-essencia:BE-008-01",
+   "kind": "produto",
+   "sku": "BE-008",
+   "alt": "Faixa Ritual — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/faixa-cabelo-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-008-02": {
+   "qualifiedId": "bela-essencia:BE-008-02",
+   "kind": "produto",
+   "sku": "BE-008",
+   "alt": "Faixa Ritual — detalhe",
+   "src": "/demos/bela-essencia/v1/produtos/faixa-cabelo-02.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-009-01": {
+   "qualifiedId": "bela-essencia:BE-009-01",
+   "kind": "produto",
+   "sku": "BE-009",
+   "alt": "Rolo Essência — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/rolo-facial-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-010-01": {
+   "qualifiedId": "bela-essencia:BE-010-01",
+   "kind": "produto",
+   "sku": "BE-010",
+   "alt": "Frasco Aurora — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/frasco-vidro-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-011-01": {
+   "qualifiedId": "bela-essencia:BE-011-01",
+   "kind": "produto",
+   "sku": "BE-011",
+   "alt": "Pote Ritual — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/pote-ritual-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "BE-012-01": {
+   "qualifiedId": "bela-essencia:BE-012-01",
+   "kind": "produto",
+   "sku": "BE-012",
+   "alt": "Frasco Gotas — vista principal",
+   "src": "/demos/bela-essencia/v1/produtos/frasco-gotas-01.webp",
+   "width": 1120,
+   "height": 1400
+  }
+ }
+}

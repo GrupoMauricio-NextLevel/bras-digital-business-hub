@@ -1,0 +1,301 @@
+{
+ "slug": "giro-distribuidora",
+ "family": "atacado",
+ "store": "Giro Distribuidora",
+ "status": "PARTIAL",
+ "generated": 12,
+ "expected": 60,
+ "palette": {
+  "ink": "#28282C",
+  "accent": "#B84638",
+  "background": "#F4EEE4"
+ },
+ "products": [
+  {
+   "sku": "GD-001",
+   "slug": "meias-basicas",
+   "name": "Kit Meias Básicas",
+   "category": "Têxteis",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-001-01"
+   ]
+  },
+  {
+   "sku": "GD-002",
+   "slug": "camisetas-basicas",
+   "name": "Kit Camisetas Básicas",
+   "category": "Têxteis",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-002-01"
+   ]
+  },
+  {
+   "sku": "GD-003",
+   "slug": "panos-cozinha",
+   "name": "Kit Panos Cozinha",
+   "category": "Têxteis",
+   "priceCents": 1990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-003-01"
+   ]
+  },
+  {
+   "sku": "GD-004",
+   "slug": "copos-plasticos",
+   "name": "Kit Copos",
+   "category": "Utilidades",
+   "priceCents": 2490,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-004-01"
+   ]
+  },
+  {
+   "sku": "GD-005",
+   "slug": "potes-modulares",
+   "name": "Kit Potes",
+   "category": "Utilidades",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-005-01"
+   ]
+  },
+  {
+   "sku": "GD-006",
+   "slug": "escovas-limpeza",
+   "name": "Kit Escovas",
+   "category": "Utilidades",
+   "priceCents": 2490,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-006-01"
+   ]
+  },
+  {
+   "sku": "GD-007",
+   "slug": "bolsas-dobraveis",
+   "name": "Kit Bolsas Dobráveis",
+   "category": "Acessórios",
+   "priceCents": 3490,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-007-01"
+   ]
+  },
+  {
+   "sku": "GD-008",
+   "slug": "necessaires-basicas",
+   "name": "Kit Nécessaires",
+   "category": "Acessórios",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-008-01"
+   ]
+  },
+  {
+   "sku": "GD-009",
+   "slug": "garrafas-basicas",
+   "name": "Kit Garrafas",
+   "category": "Acessórios",
+   "priceCents": 4990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-009-01"
+   ]
+  },
+  {
+   "sku": "GD-010",
+   "slug": "cadernos-kraft",
+   "name": "Kit Cadernos",
+   "category": "Papelaria",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-010-01"
+   ]
+  },
+  {
+   "sku": "GD-011",
+   "slug": "canetas-basicas",
+   "name": "Kit Canetas",
+   "category": "Papelaria",
+   "priceCents": 990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-011-01"
+   ]
+  },
+  {
+   "sku": "GD-012",
+   "slug": "pastas-organizacao",
+   "name": "Kit Pastas",
+   "category": "Papelaria",
+   "priceCents": 1990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "GD-012-01"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "mix",
+   "headline": "Um mix para sua vitrine",
+   "cta": "Explorar mix",
+   "skus": [
+    "GD-002",
+    "GD-004",
+    "GD-010"
+   ]
+  },
+  {
+   "id": "organizar",
+   "headline": "Sua seleção, bem organizada",
+   "cta": "Ver utilidades",
+   "skus": [
+    "GD-005",
+    "GD-006",
+    "GD-009"
+   ]
+  },
+  {
+   "id": "essenciais",
+   "headline": "Essenciais para o seu catálogo",
+   "cta": "Ver seleção",
+   "skus": [
+    "GD-001",
+    "GD-007",
+    "GD-011"
+   ]
+  }
+ ],
+ "assets": {
+  "GD-001-01": {
+   "qualifiedId": "giro-distribuidora:GD-001-01",
+   "kind": "produto",
+   "sku": "GD-001",
+   "alt": "Kit Meias Básicas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/meias-basicas-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-002-01": {
+   "qualifiedId": "giro-distribuidora:GD-002-01",
+   "kind": "produto",
+   "sku": "GD-002",
+   "alt": "Kit Camisetas Básicas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/camisetas-basicas-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-003-01": {
+   "qualifiedId": "giro-distribuidora:GD-003-01",
+   "kind": "produto",
+   "sku": "GD-003",
+   "alt": "Kit Panos Cozinha — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/panos-cozinha-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-004-01": {
+   "qualifiedId": "giro-distribuidora:GD-004-01",
+   "kind": "produto",
+   "sku": "GD-004",
+   "alt": "Kit Copos — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/copos-plasticos-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-005-01": {
+   "qualifiedId": "giro-distribuidora:GD-005-01",
+   "kind": "produto",
+   "sku": "GD-005",
+   "alt": "Kit Potes — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/potes-modulares-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-006-01": {
+   "qualifiedId": "giro-distribuidora:GD-006-01",
+   "kind": "produto",
+   "sku": "GD-006",
+   "alt": "Kit Escovas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/escovas-limpeza-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-007-01": {
+   "qualifiedId": "giro-distribuidora:GD-007-01",
+   "kind": "produto",
+   "sku": "GD-007",
+   "alt": "Kit Bolsas Dobráveis — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/bolsas-dobraveis-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-008-01": {
+   "qualifiedId": "giro-distribuidora:GD-008-01",
+   "kind": "produto",
+   "sku": "GD-008",
+   "alt": "Kit Nécessaires — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/necessaires-basicas-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-009-01": {
+   "qualifiedId": "giro-distribuidora:GD-009-01",
+   "kind": "produto",
+   "sku": "GD-009",
+   "alt": "Kit Garrafas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/garrafas-basicas-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-010-01": {
+   "qualifiedId": "giro-distribuidora:GD-010-01",
+   "kind": "produto",
+   "sku": "GD-010",
+   "alt": "Kit Cadernos — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/cadernos-kraft-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-011-01": {
+   "qualifiedId": "giro-distribuidora:GD-011-01",
+   "kind": "produto",
+   "sku": "GD-011",
+   "alt": "Kit Canetas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/canetas-basicas-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "GD-012-01": {
+   "qualifiedId": "giro-distribuidora:GD-012-01",
+   "kind": "produto",
+   "sku": "GD-012",
+   "alt": "Kit Pastas — vista principal",
+   "src": "/demos/giro-distribuidora/v1/produtos/pastas-organizacao-01.webp",
+   "width": 1120,
+   "height": 1400
+  }
+ }
+}

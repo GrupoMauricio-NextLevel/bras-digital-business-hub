@@ -529,6 +529,16 @@ Pedido do dono: "faz o Beauty e Conecta" e, sobre Atacado: "não é o módulo de
 - Ilustrações novas de produto: celular e fone. Banners pendentes (cores do tema) até as imagens do dono; manifestos e prompt atualizados.
 - O seletor de variação da página do produto passa a se chamar pelo que as variações são (`src/lib/variant-label.ts`): "Tamanho" para grades de roupa e calçado (igual a antes, SuperDrop não muda), "Caixa" para "Cx 12" e "Opção" para cor, modelo ou tela. O aviso "Tamanho esgotado? Avise-me" continua com o texto antigo (pendência pequena).
 
+## D86 — Pacotes visuais das lojas de demonstração incorporados (2026-10-07)
+Pedido do dono (Lotes 1 e 2 + "pode executar"): incorporar só imagens GENERATED, sem gerar novas nem inventar caminhos; preservar identidades, namespaces, SKUs e caminhos; sem alterar dados de clientes; sem push, merge ou deploy (branch local `claude/incorporacao-pacotes-visuais`).
+- **Arquivos**: 210 imagens (322 arquivos: WebP, AVIF e PNG da mesma imagem contam como uma) copiadas para `public/demos/<loja>/v1/`, cada uma conferida pelo SHA-256 e pelo tamanho do manifesto (`scripts/importar-pacotes-visuais.ts`). Resumo por loja em `src/lib/themes/pacotes/<loja>.json`; mapa WebP→AVIF em `avif.json`.
+- **Catálogo das lojas de demonstração = catálogo do pacote** (12 SKUs por loja, nomes, categorias e preços do pacote). Isso substitui os catálogos escritos à mão em D83/D85 (só lojas de demonstração; nenhuma loja real é tocada). Variações: tamanhos do pacote ou "Único". Esgotado só onde o pacote diz (TU-012); a regra "um esgotado por família" deixa de valer.
+- **Posições de imagem dos temas** (`pacotes.ts`): as 3 campanhas (destaque computador e celular, 2 apoios) e as 3 editoriais ocupam as posições; onde o pacote não tem imagem, a posição fica pendente (fundo nas cores do tema). Moda e Esporte: 17/17; Casa, Beleza, Tecnologia e Atacado: 0/17 (pacotes só com fotos de produto e, em Casa, de categoria).
+- **Textos das campanhas** (título e chamada) são texto da página, editável, nunca na foto; o link de cada campanha mostra exatamente os SKUs dela (`/catalog?produtos=SKU,SKU`, novo filtro do catálogo, com teste).
+- **Identidade da loja**: cores de tinta e destaque do `identidade.json` aplicadas aos temas da família (fontes, cantos e botões continuam por nível). Moda não tem identidade no pacote e mantém as cores do tema. Logo PNG transparente no cabeçalho (Moda e Esporte; vetorização pendente); imagem de compartilhamento nas demonstrações que têm.
+- **Motor**: AVIF com reserva WebP (banners e fotos de produto); galeria do produto passa a mostrar miniaturas de fotos do próprio site e enviadas pela biblioteca (antes só endereços externos); "Grade de categorias" ganha blocos opcionais "Imagem de categoria" (qualquer loja pode usar; sem bloco, foto do primeiro produto).
+- **BE-002-02** (montagem em painéis): fica como 2ª foto da galeria do kit de pincéis, mostrada inteira (proporção 4:5 igual à da galeria); nunca é foto de cartão.
+- O prompt de geração de imagens foi encerrado; manifestos de incorporação em `docs/temas-modulares/manifestos/`.
 
 
 ## D87 — Onlog como plataforma de envio (2026-10-07)

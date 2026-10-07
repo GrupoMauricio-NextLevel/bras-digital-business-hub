@@ -1,0 +1,863 @@
+{
+ "slug": "trama-urbana",
+ "family": "moda",
+ "store": "Trama Urbana",
+ "status": "COMPLETE",
+ "generated": 60,
+ "expected": 60,
+ "palette": null,
+ "products": [
+  {
+   "sku": "TU-001",
+   "slug": "camiseta-algodao-offwhite",
+   "name": "Camiseta Algodão Essencial",
+   "category": "Básicos",
+   "priceCents": 6990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Camiseta adulta unissex off-white, gola redonda canelada, manga curta, corte reto, algodão opaco; sem estampa.",
+   "images": [
+    "TU-001-01",
+    "TU-001-02",
+    "TU-001-03"
+   ]
+  },
+  {
+   "sku": "TU-002",
+   "slug": "camiseta-navy",
+   "name": "Camiseta Urbana Navy",
+   "category": "Básicos",
+   "priceCents": 7990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Camiseta adulta unissex navy, manga curta, corte levemente amplo, gola redonda, algodão encorpado; sem estampa.",
+   "images": [
+    "TU-002-01",
+    "TU-002-02",
+    "TU-002-03"
+   ]
+  },
+  {
+   "sku": "TU-003",
+   "slug": "regata-canelada",
+   "name": "Regata Canelada Areia",
+   "category": "Básicos",
+   "priceCents": 5990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G"
+   ],
+   "description": "Produto fictício para demonstração. Regata feminina adulta areia, alças largas, decote redondo, malha canelada opaca.",
+   "images": [
+    "TU-003-01",
+    "TU-003-02",
+    "TU-003-03"
+   ]
+  },
+  {
+   "sku": "TU-004",
+   "slug": "camisa-linho",
+   "name": "Camisa Textura Natural",
+   "category": "Camisas",
+   "priceCents": 15990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Camisa adulta unissex de tecido com aparência de linho cru, manga longa, colarinho clássico, botões discretos cor marfim.",
+   "images": [
+    "TU-004-01",
+    "TU-004-02",
+    "TU-004-03"
+   ]
+  },
+  {
+   "sku": "TU-005",
+   "slug": "camisa-azul",
+   "name": "Camisa Azul Horizonte",
+   "category": "Camisas",
+   "priceCents": 13990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Camisa masculina adulta azul acinzentado, manga curta, colarinho aberto, botões discretos, corte reto.",
+   "images": [
+    "TU-005-01",
+    "TU-005-02",
+    "TU-005-03"
+   ]
+  },
+  {
+   "sku": "TU-006",
+   "slug": "calca-sarja",
+   "name": "Calça Sarja Urbana",
+   "category": "Calças",
+   "priceCents": 18990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "38",
+    "40",
+    "42",
+    "44",
+    "46"
+   ],
+   "description": "Produto fictício para demonstração. Calça masculina adulta sarja navy, pernas retas, cintura com passantes e bolsos laterais discretos.",
+   "images": [
+    "TU-006-01",
+    "TU-006-02",
+    "TU-006-03"
+   ]
+  },
+  {
+   "sku": "TU-007",
+   "slug": "calca-wide",
+   "name": "Calça Wide Areia",
+   "category": "Calças",
+   "priceCents": 19990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "36",
+    "38",
+    "40",
+    "42",
+    "44"
+   ],
+   "description": "Produto fictício para demonstração. Calça feminina adulta bege areia, cintura alta, pernas amplas e pregas frontais suaves.",
+   "images": [
+    "TU-007-01",
+    "TU-007-02",
+    "TU-007-03"
+   ]
+  },
+  {
+   "sku": "TU-008",
+   "slug": "bermuda-caqui",
+   "name": "Bermuda Essencial Caqui",
+   "category": "Calças",
+   "priceCents": 11990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "38",
+    "40",
+    "42",
+    "44",
+    "46"
+   ],
+   "description": "Produto fictício para demonstração. Bermuda masculina adulta caqui, corte reto, comprimento acima do joelho, passantes e bolsos laterais.",
+   "images": [
+    "TU-008-01",
+    "TU-008-02",
+    "TU-008-03"
+   ]
+  },
+  {
+   "sku": "TU-009",
+   "slug": "conjunto-terracota",
+   "name": "Conjunto Movimento Terracota",
+   "category": "Conjuntos",
+   "priceCents": 24990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Conjunto feminino adulto terracota fosco: blusa de manga curta e calça reta, tecido opaco com textura suave.",
+   "images": [
+    "TU-009-01",
+    "TU-009-02",
+    "TU-009-03"
+   ]
+  },
+  {
+   "sku": "TU-010",
+   "slug": "conjunto-navy",
+   "name": "Conjunto Relax Navy",
+   "category": "Conjuntos",
+   "priceCents": 22990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Conjunto adulto unissex navy: camiseta de manga curta e bermuda lisa, malha encorpada, sem cordões com texto.",
+   "images": [
+    "TU-010-01",
+    "TU-010-02",
+    "TU-010-03"
+   ]
+  },
+  {
+   "sku": "TU-011",
+   "slug": "jaqueta-areia",
+   "name": "Jaqueta Camadas Areia",
+   "category": "Camisas",
+   "priceCents": 27990,
+   "inventoryDemo": 20,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Jaqueta adulta unissex areia, gola simples, zíper frontal sem marca, dois bolsos frontais, tecido fosco.",
+   "images": [
+    "TU-011-01",
+    "TU-011-02",
+    "TU-011-03"
+   ]
+  },
+  {
+   "sku": "TU-012",
+   "slug": "camisa-overshirt",
+   "name": "Overshirt Urbana Navy",
+   "category": "Camisas",
+   "priceCents": 21990,
+   "inventoryDemo": 0,
+   "sizes": [
+    "P",
+    "M",
+    "G",
+    "GG"
+   ],
+   "description": "Produto fictício para demonstração. Sobrecamisa adulta unissex navy, manga longa, dois bolsos quadrados no peito e botões tonais.",
+   "images": [
+    "TU-012-01",
+    "TU-012-02",
+    "TU-012-03"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "lancamento",
+   "headline": "Essenciais da cidade",
+   "cta": "Ver novidades",
+   "skus": [
+    "TU-001",
+    "TU-004",
+    "TU-006"
+   ]
+  },
+  {
+   "id": "colecao",
+   "headline": "Texturas que acompanham você",
+   "cta": "Explorar coleção",
+   "skus": [
+    "TU-009",
+    "TU-003",
+    "TU-007"
+   ]
+  },
+  {
+   "id": "selecao",
+   "headline": "Seu próximo conjunto começa aqui",
+   "cta": "Ver seleção",
+   "skus": [
+    "TU-010",
+    "TU-011",
+    "TU-012"
+   ]
+  }
+ ],
+ "assets": {
+  "TU-001-01": {
+   "qualifiedId": "trama-urbana:TU-001-01",
+   "kind": "produto",
+   "sku": "TU-001",
+   "alt": "Camiseta Algodão Essencial — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-001-02": {
+   "qualifiedId": "trama-urbana:TU-001-02",
+   "kind": "produto",
+   "sku": "TU-001",
+   "alt": "Camiseta Algodão Essencial — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-001-03": {
+   "qualifiedId": "trama-urbana:TU-001-03",
+   "kind": "produto",
+   "sku": "TU-001",
+   "alt": "Camiseta Algodão Essencial — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-002-01": {
+   "qualifiedId": "trama-urbana:TU-002-01",
+   "kind": "produto",
+   "sku": "TU-002",
+   "alt": "Camiseta Urbana Navy — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-navy-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-navy-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-002-02": {
+   "qualifiedId": "trama-urbana:TU-002-02",
+   "kind": "produto",
+   "sku": "TU-002",
+   "alt": "Camiseta Urbana Navy — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-navy-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-navy-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-002-03": {
+   "qualifiedId": "trama-urbana:TU-002-03",
+   "kind": "produto",
+   "sku": "TU-002",
+   "alt": "Camiseta Urbana Navy — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/camiseta-navy-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camiseta-navy-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-003-01": {
+   "qualifiedId": "trama-urbana:TU-003-01",
+   "kind": "produto",
+   "sku": "TU-003",
+   "alt": "Regata Canelada Areia — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/regata-canelada-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/regata-canelada-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-003-02": {
+   "qualifiedId": "trama-urbana:TU-003-02",
+   "kind": "produto",
+   "sku": "TU-003",
+   "alt": "Regata Canelada Areia — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/regata-canelada-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/regata-canelada-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-003-03": {
+   "qualifiedId": "trama-urbana:TU-003-03",
+   "kind": "produto",
+   "sku": "TU-003",
+   "alt": "Regata Canelada Areia — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/regata-canelada-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/regata-canelada-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-004-01": {
+   "qualifiedId": "trama-urbana:TU-004-01",
+   "kind": "produto",
+   "sku": "TU-004",
+   "alt": "Camisa Textura Natural — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-linho-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-linho-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-004-02": {
+   "qualifiedId": "trama-urbana:TU-004-02",
+   "kind": "produto",
+   "sku": "TU-004",
+   "alt": "Camisa Textura Natural — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-linho-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-linho-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-004-03": {
+   "qualifiedId": "trama-urbana:TU-004-03",
+   "kind": "produto",
+   "sku": "TU-004",
+   "alt": "Camisa Textura Natural — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-linho-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-linho-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-005-01": {
+   "qualifiedId": "trama-urbana:TU-005-01",
+   "kind": "produto",
+   "sku": "TU-005",
+   "alt": "Camisa Azul Horizonte — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-azul-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-azul-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-005-02": {
+   "qualifiedId": "trama-urbana:TU-005-02",
+   "kind": "produto",
+   "sku": "TU-005",
+   "alt": "Camisa Azul Horizonte — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-azul-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-azul-02.avif",
+   "width": 1008,
+   "height": 1260
+  },
+  "TU-005-03": {
+   "qualifiedId": "trama-urbana:TU-005-03",
+   "kind": "produto",
+   "sku": "TU-005",
+   "alt": "Camisa Azul Horizonte — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-azul-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-azul-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-006-01": {
+   "qualifiedId": "trama-urbana:TU-006-01",
+   "kind": "produto",
+   "sku": "TU-006",
+   "alt": "Calça Sarja Urbana — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/calca-sarja-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-sarja-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-006-02": {
+   "qualifiedId": "trama-urbana:TU-006-02",
+   "kind": "produto",
+   "sku": "TU-006",
+   "alt": "Calça Sarja Urbana — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/calca-sarja-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-sarja-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-006-03": {
+   "qualifiedId": "trama-urbana:TU-006-03",
+   "kind": "produto",
+   "sku": "TU-006",
+   "alt": "Calça Sarja Urbana — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/calca-sarja-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-sarja-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-007-01": {
+   "qualifiedId": "trama-urbana:TU-007-01",
+   "kind": "produto",
+   "sku": "TU-007",
+   "alt": "Calça Wide Areia — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/calca-wide-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-wide-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-007-02": {
+   "qualifiedId": "trama-urbana:TU-007-02",
+   "kind": "produto",
+   "sku": "TU-007",
+   "alt": "Calça Wide Areia — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/calca-wide-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-wide-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-007-03": {
+   "qualifiedId": "trama-urbana:TU-007-03",
+   "kind": "produto",
+   "sku": "TU-007",
+   "alt": "Calça Wide Areia — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/calca-wide-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/calca-wide-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-008-01": {
+   "qualifiedId": "trama-urbana:TU-008-01",
+   "kind": "produto",
+   "sku": "TU-008",
+   "alt": "Bermuda Essencial Caqui — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/bermuda-caqui-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/bermuda-caqui-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-008-02": {
+   "qualifiedId": "trama-urbana:TU-008-02",
+   "kind": "produto",
+   "sku": "TU-008",
+   "alt": "Bermuda Essencial Caqui — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/bermuda-caqui-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/bermuda-caqui-02.avif",
+   "width": 904,
+   "height": 1130
+  },
+  "TU-008-03": {
+   "qualifiedId": "trama-urbana:TU-008-03",
+   "kind": "produto",
+   "sku": "TU-008",
+   "alt": "Bermuda Essencial Caqui — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/bermuda-caqui-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/bermuda-caqui-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-009-01": {
+   "qualifiedId": "trama-urbana:TU-009-01",
+   "kind": "produto",
+   "sku": "TU-009",
+   "alt": "Conjunto Movimento Terracota — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-terracota-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-terracota-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-009-02": {
+   "qualifiedId": "trama-urbana:TU-009-02",
+   "kind": "produto",
+   "sku": "TU-009",
+   "alt": "Conjunto Movimento Terracota — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-terracota-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-terracota-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-009-03": {
+   "qualifiedId": "trama-urbana:TU-009-03",
+   "kind": "produto",
+   "sku": "TU-009",
+   "alt": "Conjunto Movimento Terracota — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-terracota-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-terracota-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-010-01": {
+   "qualifiedId": "trama-urbana:TU-010-01",
+   "kind": "produto",
+   "sku": "TU-010",
+   "alt": "Conjunto Relax Navy — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-navy-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-navy-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-010-02": {
+   "qualifiedId": "trama-urbana:TU-010-02",
+   "kind": "produto",
+   "sku": "TU-010",
+   "alt": "Conjunto Relax Navy — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-navy-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-navy-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-010-03": {
+   "qualifiedId": "trama-urbana:TU-010-03",
+   "kind": "produto",
+   "sku": "TU-010",
+   "alt": "Conjunto Relax Navy — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/conjunto-navy-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/conjunto-navy-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-011-01": {
+   "qualifiedId": "trama-urbana:TU-011-01",
+   "kind": "produto",
+   "sku": "TU-011",
+   "alt": "Jaqueta Camadas Areia — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/jaqueta-areia-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/jaqueta-areia-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-011-02": {
+   "qualifiedId": "trama-urbana:TU-011-02",
+   "kind": "produto",
+   "sku": "TU-011",
+   "alt": "Jaqueta Camadas Areia — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/jaqueta-areia-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/jaqueta-areia-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-011-03": {
+   "qualifiedId": "trama-urbana:TU-011-03",
+   "kind": "produto",
+   "sku": "TU-011",
+   "alt": "Jaqueta Camadas Areia — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/jaqueta-areia-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/jaqueta-areia-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-012-01": {
+   "qualifiedId": "trama-urbana:TU-012-01",
+   "kind": "produto",
+   "sku": "TU-012",
+   "alt": "Overshirt Urbana Navy — vista frontal",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-overshirt-01.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-overshirt-01.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-012-02": {
+   "qualifiedId": "trama-urbana:TU-012-02",
+   "kind": "produto",
+   "sku": "TU-012",
+   "alt": "Overshirt Urbana Navy — detalhe de acabamento",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-overshirt-02.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-overshirt-02.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "TU-012-03": {
+   "qualifiedId": "trama-urbana:TU-012-03",
+   "kind": "produto",
+   "sku": "TU-012",
+   "alt": "Overshirt Urbana Navy — vista complementar",
+   "src": "/demos/trama-urbana/v1/produtos/camisa-overshirt-03.webp",
+   "avif": "/demos/trama-urbana/v1/produtos/camisa-overshirt-03.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "cat-basicos": {
+   "qualifiedId": "trama-urbana:cat-basicos",
+   "kind": "categoria",
+   "alt": "Básicos",
+   "src": "/demos/trama-urbana/v1/categorias/basicos.webp",
+   "avif": "/demos/trama-urbana/v1/categorias/basicos.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-camisas": {
+   "qualifiedId": "trama-urbana:cat-camisas",
+   "kind": "categoria",
+   "alt": "Camisas",
+   "src": "/demos/trama-urbana/v1/categorias/camisas.webp",
+   "avif": "/demos/trama-urbana/v1/categorias/camisas.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-calcas": {
+   "qualifiedId": "trama-urbana:cat-calcas",
+   "kind": "categoria",
+   "alt": "Calças",
+   "src": "/demos/trama-urbana/v1/categorias/calcas.webp",
+   "avif": "/demos/trama-urbana/v1/categorias/calcas.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "cat-conjuntos": {
+   "qualifiedId": "trama-urbana:cat-conjuntos",
+   "kind": "categoria",
+   "alt": "Conjuntos",
+   "src": "/demos/trama-urbana/v1/categorias/conjuntos.webp",
+   "avif": "/demos/trama-urbana/v1/categorias/conjuntos.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "lancamento-hero-desktop": {
+   "qualifiedId": "trama-urbana:lancamento-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/lancamento-hero-desktop.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/lancamento-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "lancamento-hero-mobile": {
+   "qualifiedId": "trama-urbana:lancamento-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/lancamento-hero-mobile.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/lancamento-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "lancamento-apoio-01": {
+   "qualifiedId": "trama-urbana:lancamento-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-01.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "lancamento-apoio-02": {
+   "qualifiedId": "trama-urbana:lancamento-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-02.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "colecao-hero-desktop": {
+   "qualifiedId": "trama-urbana:colecao-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/colecao-hero-desktop.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/colecao-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "colecao-hero-mobile": {
+   "qualifiedId": "trama-urbana:colecao-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/colecao-hero-mobile.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/colecao-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "colecao-apoio-01": {
+   "qualifiedId": "trama-urbana:colecao-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/colecao-apoio-01.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/colecao-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "colecao-apoio-02": {
+   "qualifiedId": "trama-urbana:colecao-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/colecao-apoio-02.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/colecao-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "selecao-hero-desktop": {
+   "qualifiedId": "trama-urbana:selecao-hero-desktop",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/selecao-hero-desktop.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/selecao-hero-desktop.avif",
+   "width": 1932,
+   "height": 805
+  },
+  "selecao-hero-mobile": {
+   "qualifiedId": "trama-urbana:selecao-hero-mobile",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/selecao-hero-mobile.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/selecao-hero-mobile.avif",
+   "width": 1120,
+   "height": 1400
+  },
+  "selecao-apoio-01": {
+   "qualifiedId": "trama-urbana:selecao-apoio-01",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/selecao-apoio-01.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/selecao-apoio-01.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "selecao-apoio-02": {
+   "qualifiedId": "trama-urbana:selecao-apoio-02",
+   "kind": "campanha",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/campanhas/selecao-apoio-02.webp",
+   "avif": "/demos/trama-urbana/v1/campanhas/selecao-apoio-02.avif",
+   "width": 1200,
+   "height": 1200
+  },
+  "editorial-historia": {
+   "qualifiedId": "trama-urbana:editorial-historia",
+   "kind": "editorial",
+   "alt": "Ateliê e materiais da loja fictícia Trama Urbana",
+   "src": "/demos/trama-urbana/v1/editorial/historia.webp",
+   "avif": "/demos/trama-urbana/v1/editorial/historia.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "editorial-materiais": {
+   "qualifiedId": "trama-urbana:editorial-materiais",
+   "kind": "editorial",
+   "alt": "Ateliê e materiais da loja fictícia Trama Urbana",
+   "src": "/demos/trama-urbana/v1/editorial/materiais.webp",
+   "avif": "/demos/trama-urbana/v1/editorial/materiais.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "editorial-lookbook": {
+   "qualifiedId": "trama-urbana:editorial-lookbook",
+   "kind": "editorial",
+   "alt": "Ateliê e materiais da loja fictícia Trama Urbana",
+   "src": "/demos/trama-urbana/v1/editorial/lookbook.webp",
+   "avif": "/demos/trama-urbana/v1/editorial/lookbook.avif",
+   "width": 1200,
+   "height": 800
+  },
+  "marca-principal": {
+   "qualifiedId": "trama-urbana:marca-principal",
+   "kind": "marca",
+   "alt": "Trama Urbana",
+   "src": "/demos/trama-urbana/v1/marca/principal.png",
+   "width": 1600,
+   "height": 400,
+   "vector": true
+  },
+  "marca-clara": {
+   "qualifiedId": "trama-urbana:marca-clara",
+   "kind": "marca",
+   "alt": "Trama Urbana",
+   "src": "/demos/trama-urbana/v1/marca/clara.png",
+   "width": 1600,
+   "height": 400,
+   "vector": true
+  },
+  "marca-escura": {
+   "qualifiedId": "trama-urbana:marca-escura",
+   "kind": "marca",
+   "alt": "Trama Urbana",
+   "src": "/demos/trama-urbana/v1/marca/escura.png",
+   "width": 1599,
+   "height": 400,
+   "vector": true
+  },
+  "marca-simbolo": {
+   "qualifiedId": "trama-urbana:marca-simbolo",
+   "kind": "marca",
+   "alt": "Trama Urbana",
+   "src": "/demos/trama-urbana/v1/marca/simbolo.png",
+   "width": 768,
+   "height": 768,
+   "vector": true
+  },
+  "social-compartilhamento": {
+   "qualifiedId": "trama-urbana:social-compartilhamento",
+   "kind": "social",
+   "alt": "",
+   "src": "/demos/trama-urbana/v1/social/compartilhamento.webp",
+   "avif": "/demos/trama-urbana/v1/social/compartilhamento.avif",
+   "width": 1200,
+   "height": 630
+  }
+ }
+}

@@ -211,7 +211,9 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   },
   {
     type: "category-grid", name: "Grade de categorias", description: "Cartões das categorias do catálogo.", category: "Produtos", region: "content", pages: ["home", "collection"], requires: "navigation.visualCategories",
-    settings: [{ id: "heading", type: "text", label: "Título", default: "Compre por categoria", maxLength: 80 }, COLUMNS(4), { id: "style", type: "select", label: "Formato", options: [{ value: "cards", label: "Cartões" }, { value: "circles", label: "Círculos" }], default: "cards" }, { id: "showCount", type: "checkbox", label: "Mostrar quantidade de produtos", default: true }],
+    settings: [{ id: "heading", type: "text", label: "Título", default: "Compre por categoria", maxLength: 80 }, COLUMNS(4), { id: "style", type: "select", label: "Formato", options: [{ value: "cards", label: "Cartões" }, { value: "circles", label: "Círculos" }], default: "cards" }, { id: "showCount", type: "checkbox", label: "Mostrar quantidade de produtos", default: true }], maxBlocks: 12,
+    // Imagem própria por categoria (opcional): sem bloco, a categoria usa a foto do primeiro produto.
+    blocks: [{ type: "category-image", name: "Imagem de categoria", limit: 12, settings: [{ id: "category", type: "text", label: "Categoria (nome como no catálogo)", default: "", maxLength: 60 }, { id: "image", type: "image", label: "Imagem", default: "" }] }],
     presets: [{ name: "Grade de categorias" }],
   },
   {

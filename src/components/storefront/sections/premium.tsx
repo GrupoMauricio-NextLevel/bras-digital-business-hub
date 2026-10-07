@@ -100,8 +100,10 @@ export function VideoHero({ id, settings, ctx }: SectionProps) {
   );
 }
 
-export function CategoryGrid({ settings, ctx }: SectionProps) {
+export function CategoryGrid({ settings, blocks, ctx }: SectionProps) {
   if (!ctx.categories.length) return null;
+  const key = (x: string) => x.trim().toLowerCase();
+  const own = new Map(blocks.filter((b) => str(b.settings.image)).map((b) => [key(str(b.settings.category)), str(b.settings.image)]));
   const cols = COLS[Number(settings.columns)] ?? COLS[4]!; const circles = settings.style === "circles";
   return (
     <section className="mt-12">
@@ -112,7 +114,7 @@ export function CategoryGrid({ settings, ctx }: SectionProps) {
           return (
             <li key={c.id}><Link href={`${ctx.base}/catalog?category=${c.slug}`} className="group block text-center">
               <div className={cn("overflow-hidden bg-neutral-100 transition-transform duration-300 group-hover:-translate-y-0.5", circles ? "mx-auto aspect-square w-full max-w-[200px] rounded-full" : "rounded-xl")}>
-                <ProductArt images={items[0]?.images ?? []} size={circles ? "md" : "lg"} className={cn("bg-neutral-100 transition-transform duration-500 group-hover:scale-[1.04]", circles && "rounded-full")} />
+                <ProductArt images={own.get(key(c.name)) ?? own.get(key(c.slug)) ? [(own.get(key(c.name)) ?? own.get(key(c.slug)))!] : items[0]?.images ?? []} alt="" size={circles ? "md" : "lg"} className={cn("bg-neutral-100 transition-transform duration-500 group-hover:scale-[1.04]", circles && "rounded-full")} />
               </div>
               <div className="mt-3 text-sm font-medium group-hover:underline">{c.name}</div>
               {settings.showCount !== false ? <div className="text-xs text-neutral-500">{items.length} produto{items.length === 1 ? "" : "s"}</div> : null}

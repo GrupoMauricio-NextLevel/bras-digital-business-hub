@@ -3,13 +3,15 @@
  * Dentro de uma família, os QUATRO níveis usam os MESMOS produtos e as MESMAS imagens: a diferença vem dos módulos e da
  * composição, nunca de fotos piores no grátis. Nomes de lojas são fictícios (não são marcas registradas).
  *
- * Imagens: cada asset tem um id estável. A loja usa o arquivo final (public/temas/familias/<família>/<id>.webp, entregue pelo
- * dono depois do GPT) quando ele existe; até lá, usa uma imagem PROVISÓRIA do acervo autorizado do repositório, identificada.
- * Trocar a imagem não exige mexer em componente: basta salvar o arquivo com o nome do manifesto.
+ * Catálogo e imagens vêm dos pacotes visuais do dono (pacotes.ts, public/demos/<loja>/v1/). Este arquivo guarda as POSIÇÕES de
+ * imagem dos temas (proporção, foco, área livre); pacotes.ts diz qual imagem do pacote ocupa cada posição. Posição sem
+ * imagem pronta no pacote fica pendente (fundo nas cores do tema), nunca com foto de outro segmento.
  */
 import type { ThemeFamily, ThemeLevel } from "./levels";
+import { packageOf } from "./pacotes";
 
-export type DemoProduct = { name: string; sku: string; price: number; photo: string; category: string; featured?: boolean; variants: string[]; soldOut?: boolean; description: string };
+/** `photo` é a foto principal; `photos` todas as fotos existentes no pacote (a principal primeiro), sem preencher lacunas. */
+export type DemoProduct = { name: string; sku: string; price: number; photo: string; photos: string[]; category: string; featured?: boolean; variants: string[]; soldOut?: boolean; description: string };
 export type AssetStatus = "pendente" | "provisório" | "recebido" | "validado" | "integrado";
 export type FamilyAsset = {
   id: string; family: ThemeFamily;
@@ -23,25 +25,8 @@ export type FamilyAsset = {
   provisional: string | null;
 };
 
-const P = (n: string) => `/portal/commerce/${n}.webp`;
 
 // ---------------------------------------------------------------------------------------------------- Moda · Trama Urbana
-const MODA_PRODUCTS: DemoProduct[] = [
-  { name: "Conjunto de moletom mostarda", sku: "TU-01", price: 24990, photo: P("moda-hero"), category: "Conjuntos", featured: true, variants: ["P", "M", "G", "GG"], description: "Moletom flanelado com calça de cintura elástica. Tecido: 70% algodão e 30% poliéster. Modelagem ampla." },
-  { name: "Conjunto canelado areia", sku: "TU-02", price: 19990, photo: "art:#e7d8c3,#c8b49a,#f5efe6", category: "Conjuntos", variants: ["P", "M", "G"], description: "Blusa e calça em malha canelada. Tecido: viscose com elastano. Modelagem justa. Imagem provisória (ilustração)." },
-  { name: "Poncho de tricô cru", sku: "TU-03", price: 17990, photo: P("moda-1"), category: "Peças avulsas", featured: true, variants: ["Único"], description: "Tricô de fio acrílico com franjas. Tamanho único, veste do P ao G." },
-  { name: "Jaqueta de couro sintético", sku: "TU-04", price: 28990, photo: P("moda-3"), category: "Peças avulsas", featured: true, variants: ["P", "M", "G"], description: "Jaqueta estilo motociclista com zíper metálico. Material: poliuretano com forro de poliéster." },
-  { name: "Blazer xadrez azul", sku: "TU-05", price: 32990, photo: P("moda-5"), category: "Peças avulsas", variants: ["P", "M", "G"], soldOut: true, description: "Blazer de alfaiataria com dois botões. Tecido: poliviscose. Produto esgotado (estado de exemplo)." },
-  { name: "Camiseta básica verde-musgo", sku: "TU-06", price: 7990, photo: P("moda-2"), category: "Básicos", variants: ["P", "M", "G", "GG"], description: "Malha 100% algodão penteado, gola careca. Modelagem reta." },
-  { name: "Camiseta básica branca", sku: "TU-07", price: 6990, photo: "art:#ffffff,#e5e5e5,#f4f4f4", category: "Básicos", featured: true, variants: ["P", "M", "G", "GG"], description: "Malha 100% algodão, gola careca. Imagem provisória (ilustração)." },
-  { name: "Regata canelada off-white", sku: "TU-08", price: 5990, photo: "art:#f4efe6,#e8e0d2,#fbf8f2", category: "Básicos", variants: ["P", "M", "G"], description: "Malha canelada com elastano. Imagem provisória (ilustração)." },
-  { name: "Calça jogger preta", sku: "TU-09", price: 15990, photo: "art:#1f1f1f,#3a3a3a,#2a2a2a", category: "Básicos", variants: ["P", "M", "G", "GG"], description: "Moletom leve com punho na barra e bolsos laterais. Imagem provisória (ilustração)." },
-  { name: "Sandália de salto bloco", sku: "TU-10", price: 21990, photo: P("moda-4"), category: "Acessórios", variants: ["34", "35", "36", "37", "38", "39"], description: "Salto bloco de 6 cm, tiras finas e fivela. Material sintético." },
-  { name: "Bolsa estruturada vermelha", sku: "TU-11", price: 32990, photo: P("ace-1"), category: "Acessórios", featured: true, variants: ["Único"], description: "Bolsa de mão com alça removível. Material sintético, forro em tecido." },
-  { name: "Bolsa de palha laranja", sku: "TU-12", price: 26990, photo: P("ace-2"), category: "Acessórios", variants: ["Único"], description: "Palha sintética trançada com alças de couro sintético." },
-  { name: "Brincos dourados trançados", sku: "TU-13", price: 8990, photo: P("ace-3"), category: "Acessórios", variants: ["Único"], description: "Metal com banho dourado, fecho de pressão." },
-  { name: "Carteira de couro marrom", sku: "TU-14", price: 11990, photo: P("ace-4"), category: "Acessórios", variants: ["Único"], description: "Couro legítimo com divisórias para cartões." },
-];
 
 const HERO = { desktop: { ratio: "21:9", size: [2400, 1029] as [number, number] }, mobile: { ratio: "4:5", size: [1080, 1350] as [number, number] } };
 const DUO = { desktop: { ratio: "4:3", size: [1600, 1200] as [number, number] }, mobile: { ratio: "4:3", size: [1080, 810] as [number, number] } };
@@ -52,44 +37,28 @@ const MODA_LOOK = { palette: "Neutros quentes (areia, cru, preto) com acento fer
 const modaAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light">): FamilyAsset => ({ family: "moda", ...MODA_LOOK, ...a });
 
 const MODA_ASSETS: FamilyAsset[] = [
-  modaAsset({ id: "moda-hero-1", position: "Página inicial · Destaque com banners · slide 1", levels: [1, 2, 3, 4], ...HERO, focus: "Pessoa à direita do quadro (foco 70% / 50% no computador; 50% / 40% no celular)", safeArea: "Metade esquerda livre para o título (computador); terço inferior livre no celular", scene: "Modelo de costas/perfil, sem rosto reconhecível, vestindo conjunto de moletom mostarda numa rua de bairro com muro claro", overlayText: "Coleção da estação · Básicos que combinam com tudo · Ver coleção", alt: "Conjunto de moletom mostarda em uma rua clara", provisional: P("moda-hero-wide") }),
-  modaAsset({ id: "moda-hero-2", position: "Página inicial · Destaque com banners · slide 2", levels: [2, 3, 4], ...HERO, focus: "Peças no centro-direita", safeArea: "Metade esquerda livre", scene: "Arara com peças em tons de areia e preto num estúdio claro, sem etiquetas legíveis", overlayText: "Básicos para todo dia · Ver básicos", alt: "Arara com básicos em tons neutros", provisional: P("moda-2") }),
-  modaAsset({ id: "moda-hero-3", position: "Página inicial · Destaque com banners · slide 3", levels: [3, 4], ...HERO, focus: "Centro", safeArea: "Metade esquerda livre", scene: "Detalhe de jaqueta de couro sintético preta sobre cadeira de madeira", overlayText: "Jaquetas e peças avulsas · Ver peças", alt: "Jaqueta preta sobre cadeira de madeira", provisional: P("moda-3") }),
-  modaAsset({ id: "moda-hero-4", position: "Página inicial · Destaque com banners · slide de campanha agendada", levels: [4], ...HERO, focus: "Centro", safeArea: "Metade esquerda livre", scene: "Composição de acessórios (bolsa, brincos, carteira) sobre tecido cru, vista de cima", overlayText: "Campanha da estação (agendada) · Ver acessórios", alt: "Acessórios sobre tecido cru", provisional: P("ace-hero") }),
-  modaAsset({ id: "moda-apoio-1", position: "Página inicial · Dois banners de apoio · esquerda", levels: [1, 2, 3, 4], ...DUO, focus: "Centro", safeArea: "Terço inferior livre para título e botão", scene: "Poncho de tricô cru dobrado sobre banco de madeira", overlayText: "Peças avulsas · Ver", alt: "Poncho de tricô cru sobre banco", provisional: P("moda-1") }),
-  modaAsset({ id: "moda-apoio-2", position: "Página inicial · Dois banners de apoio · direita", levels: [1, 2, 3, 4], ...DUO, focus: "Centro", safeArea: "Terço inferior livre", scene: "Bolsa estruturada vermelha sobre pedestal claro", overlayText: "Acessórios · Ver", alt: "Bolsa vermelha sobre pedestal", provisional: P("ace-1") }),
-  modaAsset({ id: "moda-faixa-1", position: "Página inicial · Faixa de campanha", levels: [1, 2, 3, 4], ...STRIP, focus: "Assunto à direita (75% / 50%)", safeArea: "55% à esquerda livres para texto (computador)", scene: "Textura de malha canelada areia com uma peça dobrada à direita", overlayText: "Monte o seu conjunto · Ver conjuntos", alt: "Malha canelada areia com peça dobrada", provisional: P("moda-5") }),
-  modaAsset({ id: "moda-sobre", position: "Página inicial · Imagem com texto (sobre a marca)", levels: [2, 3, 4], desktop: { ratio: "1:1", size: [1200, 1200] }, focus: "Centro", safeArea: "Sem texto por cima", scene: "Mãos ajustando a barra de uma calça numa bancada de costura", overlayText: "(texto ao lado da imagem)", alt: "Mãos ajustando a barra de uma calça", provisional: P("moda-hero") }),
-  modaAsset({ id: "moda-mosaico-1", position: "Página inicial · Mosaico de banners · peça grande", levels: [3, 4], ...MOSAIC_BIG, focus: "Centro", safeArea: "Canto inferior esquerdo livre para título", scene: "Modelo de corpo inteiro (sem rosto) com conjunto canelado areia", overlayText: "Conjuntos", alt: "Conjunto canelado areia", provisional: P("moda-hero") }),
-  modaAsset({ id: "moda-mosaico-2", position: "Página inicial · Mosaico de banners · menor 1", levels: [3, 4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Pilha de camisetas básicas dobradas em tons neutros", overlayText: "Básicos", alt: "Camisetas básicas dobradas", provisional: P("moda-2") }),
-  modaAsset({ id: "moda-mosaico-3", position: "Página inicial · Mosaico de banners · menor 2", levels: [3, 4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Sandália de salto bloco sobre piso de cimento queimado", overlayText: "Calçados e acessórios", alt: "Sandália de salto bloco", provisional: P("moda-4") }),
-  modaAsset({ id: "moda-mosaico-4", position: "Página inicial · Mosaico 1+4 · menor 3", levels: [4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Brincos dourados trançados sobre linho", overlayText: "Bijuterias", alt: "Brincos dourados sobre linho", provisional: P("ace-3") }),
-  modaAsset({ id: "moda-mosaico-5", position: "Página inicial · Mosaico 1+4 · menor 4", levels: [4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Carteira de couro marrom aberta sobre madeira", overlayText: "Carteiras", alt: "Carteira de couro marrom", provisional: P("ace-4") }),
-  modaAsset({ id: "moda-look-1", position: "Página inicial · Lookbook · 1", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo da imagem (fora da foto)", scene: "Look urbano com jaqueta preta e calça jogger, de costas, numa escada", overlayText: "(título abaixo)", alt: "Look urbano com jaqueta preta", provisional: P("moda-3") }),
-  modaAsset({ id: "moda-look-2", position: "Página inicial · Lookbook · 2", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look de fim de semana com conjunto mostarda e tênis branco", overlayText: "(título abaixo)", alt: "Look de fim de semana mostarda", provisional: P("moda-hero") }),
-  modaAsset({ id: "moda-look-3", position: "Página inicial · Lookbook · 3", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look com poncho cru e bolsa de palha num café", overlayText: "(título abaixo)", alt: "Look com poncho e bolsa de palha", provisional: P("moda-1") }),
-  modaAsset({ id: "moda-look-4", position: "Página inicial · Lookbook · 4", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look com blazer xadrez azul e camiseta branca", overlayText: "(título abaixo)", alt: "Look com blazer xadrez azul", provisional: P("moda-5") }),
+  modaAsset({ id: "moda-hero-1", position: "Página inicial · Destaque com banners · slide 1", levels: [1, 2, 3, 4], ...HERO, focus: "Pessoa à direita do quadro (foco 70% / 50% no computador; 50% / 40% no celular)", safeArea: "Metade esquerda livre para o título (computador); terço inferior livre no celular", scene: "Modelo de costas/perfil, sem rosto reconhecível, vestindo conjunto de moletom mostarda numa rua de bairro com muro claro", overlayText: "Coleção da estação · Básicos que combinam com tudo · Ver coleção", alt: "Conjunto de moletom mostarda em uma rua clara", provisional: null }),
+  modaAsset({ id: "moda-hero-2", position: "Página inicial · Destaque com banners · slide 2", levels: [2, 3, 4], ...HERO, focus: "Peças no centro-direita", safeArea: "Metade esquerda livre", scene: "Arara com peças em tons de areia e preto num estúdio claro, sem etiquetas legíveis", overlayText: "Básicos para todo dia · Ver básicos", alt: "Arara com básicos em tons neutros", provisional: null }),
+  modaAsset({ id: "moda-hero-3", position: "Página inicial · Destaque com banners · slide 3", levels: [3, 4], ...HERO, focus: "Centro", safeArea: "Metade esquerda livre", scene: "Detalhe de jaqueta de couro sintético preta sobre cadeira de madeira", overlayText: "Jaquetas e peças avulsas · Ver peças", alt: "Jaqueta preta sobre cadeira de madeira", provisional: null }),
+  modaAsset({ id: "moda-hero-4", position: "Página inicial · Destaque com banners · slide de campanha agendada", levels: [4], ...HERO, focus: "Centro", safeArea: "Metade esquerda livre", scene: "Composição de acessórios (bolsa, brincos, carteira) sobre tecido cru, vista de cima", overlayText: "Campanha da estação (agendada) · Ver acessórios", alt: "Acessórios sobre tecido cru", provisional: null }),
+  modaAsset({ id: "moda-apoio-1", position: "Página inicial · Dois banners de apoio · esquerda", levels: [1, 2, 3, 4], ...DUO, focus: "Centro", safeArea: "Terço inferior livre para título e botão", scene: "Poncho de tricô cru dobrado sobre banco de madeira", overlayText: "Peças avulsas · Ver", alt: "Poncho de tricô cru sobre banco", provisional: null }),
+  modaAsset({ id: "moda-apoio-2", position: "Página inicial · Dois banners de apoio · direita", levels: [1, 2, 3, 4], ...DUO, focus: "Centro", safeArea: "Terço inferior livre", scene: "Bolsa estruturada vermelha sobre pedestal claro", overlayText: "Acessórios · Ver", alt: "Bolsa vermelha sobre pedestal", provisional: null }),
+  modaAsset({ id: "moda-faixa-1", position: "Página inicial · Faixa de campanha", levels: [1, 2, 3, 4], ...STRIP, focus: "Assunto à direita (75% / 50%)", safeArea: "55% à esquerda livres para texto (computador)", scene: "Textura de malha canelada areia com uma peça dobrada à direita", overlayText: "Monte o seu conjunto · Ver conjuntos", alt: "Malha canelada areia com peça dobrada", provisional: null }),
+  modaAsset({ id: "moda-sobre", position: "Página inicial · Imagem com texto (sobre a marca)", levels: [2, 3, 4], desktop: { ratio: "1:1", size: [1200, 1200] }, focus: "Centro", safeArea: "Sem texto por cima", scene: "Mãos ajustando a barra de uma calça numa bancada de costura", overlayText: "(texto ao lado da imagem)", alt: "Mãos ajustando a barra de uma calça", provisional: null }),
+  modaAsset({ id: "moda-mosaico-1", position: "Página inicial · Mosaico de banners · peça grande", levels: [3, 4], ...MOSAIC_BIG, focus: "Centro", safeArea: "Canto inferior esquerdo livre para título", scene: "Modelo de corpo inteiro (sem rosto) com conjunto canelado areia", overlayText: "Conjuntos", alt: "Conjunto canelado areia", provisional: null }),
+  modaAsset({ id: "moda-mosaico-2", position: "Página inicial · Mosaico de banners · menor 1", levels: [3, 4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Pilha de camisetas básicas dobradas em tons neutros", overlayText: "Básicos", alt: "Camisetas básicas dobradas", provisional: null }),
+  modaAsset({ id: "moda-mosaico-3", position: "Página inicial · Mosaico de banners · menor 2", levels: [3, 4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Sandália de salto bloco sobre piso de cimento queimado", overlayText: "Calçados e acessórios", alt: "Sandália de salto bloco", provisional: null }),
+  modaAsset({ id: "moda-mosaico-4", position: "Página inicial · Mosaico 1+4 · menor 3", levels: [4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Brincos dourados trançados sobre linho", overlayText: "Bijuterias", alt: "Brincos dourados sobre linho", provisional: null }),
+  modaAsset({ id: "moda-mosaico-5", position: "Página inicial · Mosaico 1+4 · menor 4", levels: [4], ...SQUARE, focus: "Centro", safeArea: "Canto inferior esquerdo livre", scene: "Carteira de couro marrom aberta sobre madeira", overlayText: "Carteiras", alt: "Carteira de couro marrom", provisional: null }),
+  modaAsset({ id: "moda-look-1", position: "Página inicial · Lookbook · 1", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo da imagem (fora da foto)", scene: "Look urbano com jaqueta preta e calça jogger, de costas, numa escada", overlayText: "(título abaixo)", alt: "Look urbano com jaqueta preta", provisional: null }),
+  modaAsset({ id: "moda-look-2", position: "Página inicial · Lookbook · 2", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look de fim de semana com conjunto mostarda e tênis branco", overlayText: "(título abaixo)", alt: "Look de fim de semana mostarda", provisional: null }),
+  modaAsset({ id: "moda-look-3", position: "Página inicial · Lookbook · 3", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look com poncho cru e bolsa de palha num café", overlayText: "(título abaixo)", alt: "Look com poncho e bolsa de palha", provisional: null }),
+  modaAsset({ id: "moda-look-4", position: "Página inicial · Lookbook · 4", levels: [3, 4], desktop: { ratio: "4:5", size: [1080, 1350] }, focus: "Centro", safeArea: "Título abaixo", scene: "Look com blazer xadrez azul e camiseta branca", overlayText: "(título abaixo)", alt: "Look com blazer xadrez azul", provisional: null }),
 ];
 
 // ---------------------------------------------------------------------------------------------------- Casa · Casa em Ordem
 // Sem fotos adequadas no acervo (o acervo de casa é de sofás): produtos com ilustração neutra e banners pendentes
 // (fundo nas cores do tema) até as imagens finais do GPT.
-const CASA_PRODUCTS: DemoProduct[] = [
-  { name: "Cesto organizador de fibra natural", sku: "CO-01", price: 8990, photo: "art:#d6b98c,#f3e7d3,#a8865a,cesto", category: "Organização", featured: true, variants: ["P", "M", "G"], description: "Fibra de taboa trançada à mão, com alças. P: 20 cm · M: 28 cm · G: 36 cm de largura." },
-  { name: "Caixa organizadora com tampa", sku: "CO-02", price: 5990, photo: "art:#e7e5e4,#ffffff,#a8a29e,caixa", category: "Organização", variants: ["Branca", "Areia"], description: "Plástico resistente, empilhável, 12 litros. Tampa com encaixe." },
-  { name: "Divisor de gaveta ajustável", sku: "CO-03", price: 3990, photo: "art:#cbd5e1,#f8fafc,#94a3b8,caixa", category: "Organização", variants: ["Kit 4"], description: "Divisórias que se encaixam no tamanho da gaveta. Kit com 4 peças." },
-  { name: "Cabide de veludo antideslizante", sku: "CO-04", price: 4990, photo: "art:#57534e,#e7e5e4,#78716c,caixa", category: "Organização", soldOut: true, variants: ["Kit 10"], description: "Cabides finos que economizam espaço no armário. Produto esgotado (estado de exemplo)." },
-  { name: "Pote hermético de vidro 1 litro", sku: "CO-05", price: 3490, photo: "art:#e0f2f1,#ffffff,#94a3b8,pote", category: "Cozinha", featured: true, variants: ["1 un.", "Kit 3"], description: "Vidro borossilicato com tampa de bambu e vedação de silicone." },
-  { name: "Porta-temperos giratório", sku: "CO-06", price: 7990, photo: "art:#fef3c7,#ffffff,#d6b98c,pote", category: "Cozinha", variants: ["12 un."], description: "Base giratória com 12 potes de vidro e etiquetas." },
-  { name: "Escorredor de louça compacto", sku: "CO-07", price: 11990, photo: "art:#e5e7eb,#ffffff,#9ca3af,caixa", category: "Cozinha", variants: ["Inox", "Preto"], description: "Aço com pintura epóxi, bandeja removível e porta-talheres." },
-  { name: "Tábua de corte de bambu", sku: "CO-08", price: 4590, photo: "art:#d6b98c,#efe2c8,#a8865a,caixa", category: "Cozinha", variants: ["Média", "Grande"], description: "Bambu tratado com óleo mineral. Média: 30×20 cm · Grande: 40×28 cm." },
-  { name: "Porta-escovas de cerâmica", sku: "CO-09", price: 3990, photo: "art:#f5f5f4,#ffffff,#d6d3d1,pote", category: "Banheiro", variants: ["Branco", "Sálvia"], description: "Cerâmica esmaltada com furo de drenagem." },
-  { name: "Organizador de box sem furo", sku: "CO-10", price: 6990, photo: "art:#d1d5db,#f9fafb,#9ca3af,caixa", category: "Banheiro", featured: true, variants: ["Único"], description: "Prateleira de aço com adesivo de alta fixação. Suporta até 3 kg." },
-  { name: "Dispenser de sabonete líquido", sku: "CO-11", price: 2990, photo: "art:#ecfccb,#ffffff,#a3a3a3,frasco", category: "Banheiro", variants: ["300 ml"], description: "Vidro âmbar com válvula de aço. Capacidade de 300 ml." },
-  { name: "Cesto de roupa dobrável", sku: "CO-12", price: 7490, photo: "art:#e7e5e4,#fafaf9,#a8a29e,cesto", category: "Lavanderia", featured: true, variants: ["40 L", "60 L"], description: "Tecido de algodão com estrutura de arame e alças." },
-  { name: "Prendedores de roupa de bambu", sku: "CO-13", price: 1990, photo: "art:#d6b98c,#efe2c8,#a8865a,caixa", category: "Lavanderia", variants: ["Kit 24"], description: "Bambu com mola de aço inoxidável. Kit com 24 unidades." },
-  { name: "Borrifador de vidro 500 ml", sku: "CO-14", price: 3290, photo: "art:#e0f2fe,#ffffff,#94a3b8,frasco", category: "Lavanderia", variants: ["500 ml"], description: "Vidro com gatilho regulável, para água de passar ou limpeza." },
-];
 const CASA_LOOK = { palette: "Verde-sálvia, madeira clara, branco quente e terracota; sem cores saturadas", light: "Luz natural de janela, manhã, sombras suaves" };
 const casaAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light" | "provisional">): FamilyAsset => ({ family: "casa", ...CASA_LOOK, provisional: null, ...a });
 const CASA_ASSETS: FamilyAsset[] = [
@@ -114,22 +83,6 @@ const CASA_ASSETS: FamilyAsset[] = [
 
 // ---------------------------------------------------------------------------------------------------- Sport · Linha de Jogo
 // Camisas genéricas (sem escudo, marca ou nome de clube). Produtos com ilustração de camisa nas cores; banners pendentes.
-const SPORT_PRODUCTS: DemoProduct[] = [
-  { name: "Camisa listrada vermelha e preta", sku: "LJ-01", price: 11990, photo: "art:#b91c1c,#111827,#f87171", category: "Camisas", featured: true, variants: ["P", "M", "G", "GG"], description: "Tecido dry leve, gola redonda, sem escudo ou marca. Pronta para personalizar." },
-  { name: "Camisa lisa verde", sku: "LJ-02", price: 9990, photo: "art:#15803d,#ffffff,#86efac", category: "Camisas", featured: true, variants: ["P", "M", "G", "GG"], description: "Tecido dry com proteção UV, gola V, sem escudo." },
-  { name: "Camisa tricolor azul, branca e vermelha", sku: "LJ-03", price: 11990, photo: "art:#1d4ed8,#ffffff,#dc2626", category: "Camisas", variants: ["P", "M", "G"], description: "Faixas verticais, tecido dry, sem escudo ou marca." },
-  { name: "Camisa de goleiro amarela", sku: "LJ-04", price: 12990, photo: "art:#facc15,#111827,#fde68a", category: "Camisas", soldOut: true, variants: ["P", "M", "G"], description: "Manga longa com cotoveleira acolchoada. Produto esgotado (estado de exemplo)." },
-  { name: "Camisa retrô branca com gola polo", sku: "LJ-05", price: 13990, photo: "art:#ffffff,#1f2937,#e5e7eb", category: "Camisas", variants: ["P", "M", "G", "GG"], description: "Algodão com elastano, gola polo com botões, estilo anos 80, sem escudo." },
-  { name: "Camiseta de treino preta", sku: "LJ-06", price: 7990, photo: "art:#111827,#22c55e,#374151", category: "Treino", featured: true, variants: ["P", "M", "G", "GG"], description: "Tecido respirável com recortes laterais em tela." },
-  { name: "Regata de corrida azul", sku: "LJ-07", price: 6990, photo: "art:#2563eb,#ffffff,#93c5fd", category: "Treino", variants: ["P", "M", "G"], description: "Tecido ultraleve com secagem rápida." },
-  { name: "Camiseta de compressão cinza", sku: "LJ-08", price: 8990, photo: "art:#4b5563,#e5e7eb,#9ca3af", category: "Treino", variants: ["P", "M", "G"], description: "Poliamida com elastano, ajuste ao corpo." },
-  { name: "Camisa infantil listrada verde", sku: "LJ-09", price: 7990, photo: "art:#16a34a,#ffffff,#bbf7d0", category: "Infantil", featured: true, variants: ["4", "6", "8", "10", "12"], description: "Tecido dry macio, sem escudo. Tamanhos de 4 a 12 anos." },
-  { name: "Camisa infantil lisa laranja", sku: "LJ-10", price: 6990, photo: "art:#ea580c,#ffffff,#fdba74", category: "Infantil", variants: ["4", "6", "8", "10"], description: "Tecido dry, gola redonda, sem escudo." },
-  { name: "Conjunto infantil de treino", sku: "LJ-11", price: 10990, photo: "art:#0f172a,#38bdf8,#1e293b", category: "Infantil", variants: ["4", "6", "8", "10", "12"], description: "Camiseta e bermuda em tecido leve." },
-  { name: "Meião de futebol", sku: "LJ-12", price: 2990, photo: "art:#111827,#ffffff,#6b7280,caixa", category: "Acessórios", variants: ["33-38", "39-44"], description: "Poliamida com reforço no calcanhar e na ponta." },
-  { name: "Garrafa térmica 750 ml", sku: "LJ-13", price: 5990, photo: "art:#0f766e,#ffffff,#5eead4,frasco", category: "Acessórios", featured: true, variants: ["Preta", "Verde"], description: "Aço inoxidável de parede dupla, tampa com alça." },
-  { name: "Mochila esportiva", sku: "LJ-14", price: 14990, photo: "art:#1f2937,#f59e0b,#4b5563,caixa", category: "Acessórios", variants: ["Único"], description: "25 litros, compartimento para calçado e bolso para garrafa." },
-];
 const SPORT_LOOK = { palette: "Grama, preto e branco com um acento vibrante (verde ou amarelo); sem escudos, patrocínios ou marcas", light: "Luz de fim de tarde em campo aberto ou estúdio com contraste alto" };
 const sportAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light" | "provisional">): FamilyAsset => ({ family: "sport", ...SPORT_LOOK, provisional: null, ...a });
 const SPORT_ASSETS: FamilyAsset[] = [
@@ -154,22 +107,6 @@ const SPORT_ASSETS: FamilyAsset[] = [
 
 // ---------------------------------------------------------------------------------------------------- Beauty · Bela Essência
 // Acessórios de beleza (não cosméticos): sem promessa de resultado, sem marcas. Banners pendentes até as imagens finais.
-const BEAUTY_PRODUCTS: DemoProduct[] = [
-  { name: "Escova raquete de cerdas mistas", sku: "BE-01", price: 4990, photo: "art:#f5d0dc,#ffffff,#be185d,caixa", category: "Cabelo", featured: true, variants: ["Rosa", "Preta"], description: "Base almofadada e cerdas mistas de nylon. Cabo emborrachado." },
-  { name: "Kit de presilhas de acetato", sku: "BE-02", price: 2990, photo: "art:#e8d5c4,#fff7ed,#a16207,caixa", category: "Cabelo", variants: ["Kit 6"], description: "Seis presilhas em tons de tartaruga e nude." },
-  { name: "Touca de cetim para dormir", sku: "BE-03", price: 3990, photo: "art:#e9d5ff,#faf5ff,#7c3aed,cesto", category: "Cabelo", variants: ["Lilás", "Preta", "Nude"], description: "Cetim com elástico revestido, tamanho único." },
-  { name: "Elásticos de seda", sku: "BE-04", price: 1990, photo: "art:#fce7f3,#ffffff,#db2777,caixa", category: "Cabelo", variants: ["Kit 5"], description: "Elásticos revestidos de tecido acetinado. Kit com 5." },
-  { name: "Kit de pincéis para maquiagem", sku: "BE-05", price: 8990, photo: "art:#3f2a33,#f5d0dc,#a8556f,caixa", category: "Maquiagem", featured: true, variants: ["12 pç"], description: "Doze pincéis de cerdas sintéticas com estojo de tecido." },
-  { name: "Esponja de maquiagem gota", sku: "BE-06", price: 2490, photo: "art:#fbcfe8,#ffffff,#ec4899,pote", category: "Maquiagem", variants: ["Rosa", "Bege"], description: "Esponja sem látex, formato gota. Use úmida ou seca." },
-  { name: "Curvex de aço inox", sku: "BE-07", price: 3490, photo: "art:#d4d4d8,#fafafa,#71717a,caixa", category: "Maquiagem", soldOut: true, variants: ["Único"], description: "Aço inoxidável com refil de silicone. Produto esgotado (estado de exemplo)." },
-  { name: "Espelho de mesa com luz", sku: "BE-08", price: 11990, photo: "art:#fde68a,#ffffff,#d97706,pote", category: "Maquiagem", featured: true, variants: ["Branco", "Rosa"], description: "Espelho redondo com luz de LED regulável. Funciona com pilhas ou cabo USB." },
-  { name: "Organizador de acrílico giratório", sku: "BE-09", price: 7990, photo: "art:#f1f5f9,#ffffff,#94a3b8,caixa", category: "Organização", featured: true, variants: ["Único"], description: "Acrílico transparente com base giratória e divisórias." },
-  { name: "Nécessaire de viagem com alça", sku: "BE-10", price: 5990, photo: "art:#f5d0dc,#ffffff,#9d174d,cesto", category: "Organização", variants: ["P", "M"], description: "Tecido impermeável por dentro, zíper e alça lateral." },
-  { name: "Kit de frascos para viagem", sku: "BE-11", price: 3490, photo: "art:#e0f2fe,#ffffff,#0284c7,frasco", category: "Organização", variants: ["Kit 4"], description: "Quatro frascos de silicone de 90 ml com tampa. Respeitam o limite de bagagem de mão." },
-  { name: "Faixa de cabelo para skincare", sku: "BE-12", price: 2490, photo: "art:#fce7f3,#ffffff,#f472b6,cesto", category: "Cuidados", variants: ["Rosa", "Branca"], description: "Tecido atoalhado macio com fecho de velcro." },
-  { name: "Rolo facial de pedra", sku: "BE-13", price: 4990, photo: "art:#d1fae5,#ffffff,#059669,caixa", category: "Cuidados", featured: true, variants: ["Verde", "Rosa"], description: "Pedra natural polida com suporte de metal. Acessório de massagem, não é tratamento." },
-  { name: "Toalha turbante de microfibra", sku: "BE-14", price: 3990, photo: "art:#ede9fe,#ffffff,#8b5cf6,cesto", category: "Cuidados", variants: ["Lilás", "Bege"], description: "Microfibra leve com botão de fixação." },
-];
 const BEAUTY_LOOK = { palette: "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos", light: "Luz suave e difusa de estúdio, manhã, sem brilho estourado" };
 const beautyAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light" | "provisional">): FamilyAsset => ({ family: "beauty", ...BEAUTY_LOOK, provisional: null, ...a });
 const BEAUTY_ASSETS: FamilyAsset[] = [
@@ -194,22 +131,6 @@ const BEAUTY_ASSETS: FamilyAsset[] = [
 
 // ---------------------------------------------------------------------------------------------------- Conecta · Ponto Conecta
 // Acessórios de celular sem marca de fabricante; especificação técnica clara, sem promessa de desempenho.
-const CONECTA_PRODUCTS: DemoProduct[] = [
-  { name: "Capinha de silicone com interior macio", sku: "PC-01", price: 3990, photo: "art:#1e3a8a,#dbeafe,#3b82f6,celular", category: "Capinhas", featured: true, variants: ["6,1\"", "6,7\""], description: "Silicone com forro de microfibra. Escolha pelo tamanho da tela." },
-  { name: "Capinha transparente com bordas reforçadas", sku: "PC-02", price: 2990, photo: "art:#e2e8f0,#ffffff,#94a3b8,celular", category: "Capinhas", variants: ["6,1\"", "6,7\""], description: "Policarbonato transparente com cantos em TPU." },
-  { name: "Capinha carteira de couro sintético", sku: "PC-03", price: 4990, photo: "art:#78350f,#fef3c7,#92400e,celular", category: "Capinhas", variants: ["6,1\"", "6,7\""], description: "Fechamento magnético e dois espaços para cartão." },
-  { name: "Película de vidro temperado", sku: "PC-04", price: 1990, photo: "art:#f1f5f9,#ffffff,#cbd5e1,celular", category: "Capinhas", variants: ["6,1\"", "6,7\""], description: "Vidro de 0,3 mm com aplicador. Kit com 1 unidade." },
-  { name: "Carregador de parede USB-C 20 W", sku: "PC-05", price: 6990, photo: "art:#ffffff,#e5e7eb,#9ca3af,caixa", category: "Cabos e carregadores", featured: true, variants: ["Branco", "Preto"], description: "Saída USB-C de 20 W. Bivolt." },
-  { name: "Cabo USB-C para USB-C trançado", sku: "PC-06", price: 3490, photo: "art:#111827,#e5e7eb,#4b5563,caixa", category: "Cabos e carregadores", variants: ["1 m", "2 m"], description: "Revestimento trançado de nylon, suporta até 60 W." },
-  { name: "Bateria portátil 10.000 mAh", sku: "PC-07", price: 12990, photo: "art:#1f2937,#22c55e,#374151,caixa", category: "Cabos e carregadores", featured: true, variants: ["Preta", "Branca"], description: "Duas saídas (USB-A e USB-C) e indicador de carga." },
-  { name: "Carregador veicular duplo", sku: "PC-08", price: 4490, photo: "art:#111827,#60a5fa,#374151,caixa", category: "Cabos e carregadores", soldOut: true, variants: ["Único"], description: "Duas saídas USB para tomada 12 V. Produto esgotado (estado de exemplo)." },
-  { name: "Fone sem fio com estojo", sku: "PC-09", price: 14990, photo: "art:#ffffff,#e5e7eb,#9ca3af,fone", category: "Fones", featured: true, variants: ["Branco", "Preto"], description: "Bluetooth 5.3, estojo de recarga com cabo USB-C." },
-  { name: "Fone com fio USB-C", sku: "PC-10", price: 3990, photo: "art:#111827,#f3f4f6,#4b5563,fone", category: "Fones", variants: ["Único"], description: "Microfone no cabo e botão de atender chamadas. Cabo de 1,2 m." },
-  { name: "Headphone dobrável", sku: "PC-11", price: 18990, photo: "art:#7c3aed,#ede9fe,#5b21b6,fone", category: "Fones", variants: ["Lilás", "Preto"], description: "Bluetooth, almofadas macias e cabo P2 para uso com fio." },
-  { name: "Suporte de mesa ajustável", sku: "PC-12", price: 4990, photo: "art:#d1d5db,#f9fafb,#6b7280,caixa", category: "Suportes", featured: true, variants: ["Prata", "Preto"], description: "Alumínio dobrável com altura e ângulo ajustáveis." },
-  { name: "Suporte veicular de grade", sku: "PC-13", price: 3990, photo: "art:#111827,#9ca3af,#374151,caixa", category: "Suportes", variants: ["Único"], description: "Encaixe na saída de ar com garra ajustável de 5,5 a 8,5 cm." },
-  { name: "Anel de apoio para celular", sku: "PC-14", price: 1490, photo: "art:#fbbf24,#fffbeb,#d97706,caixa", category: "Suportes", variants: ["Ouro", "Prata", "Preto"], description: "Adesivo reposicionável, gira 360 graus." },
-];
 const CONECTA_LOOK = { palette: "Grafite, branco e um acento azul ou verde; sem logos de fabricantes nem telas com marca", light: "Luz de estúdio limpa e fria, reflexos controlados" };
 const conectaAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light" | "provisional">): FamilyAsset => ({ family: "conecta", ...CONECTA_LOOK, provisional: null, ...a });
 const CONECTA_ASSETS: FamilyAsset[] = [
@@ -235,22 +156,6 @@ const CONECTA_ASSETS: FamilyAsset[] = [
 // ---------------------------------------------------------------------------------------------------- Atacado · Giro Distribuidora
 // Loja de importador/atacadista (Brás, Canindé): venda por caixa fechada. O preço é da caixa; a variação diz quantas
 // unidades vêm nela e a descrição mostra o valor por unidade. Sem marcas licenciadas; banners pendentes.
-const ATACADO_PRODUCTS: DemoProduct[] = [
-  { name: "Kit potes plásticos com tampa (3 peças)", sku: "GD-01", price: 8990, photo: "art:#e0f2fe,#ffffff,#0284c7,pote", category: "Utilidades", featured: true, variants: ["Cx 12"], description: "Caixa fechada com 12 kits (R$ 7,49 por kit). Polipropileno, tampa com trava. 3 tamanhos por kit." },
-  { name: "Garrafa plástica 500 ml", sku: "GD-02", price: 11990, photo: "art:#bbf7d0,#ffffff,#16a34a,frasco", category: "Utilidades", variants: ["Azul", "Verde", "Rosa"], description: "Caixa fechada com 24 unidades (R$ 5,00 por unidade). Tampa de rosca. A caixa vem com uma cor só, escolhida na variação." },
-  { name: "Organizador de gaveta", sku: "GD-03", price: 14390, photo: "art:#e5e7eb,#ffffff,#9ca3af,caixa", category: "Utilidades", featured: true, variants: ["Cx 24"], description: "Caixa fechada com 24 unidades (R$ 6,00 por unidade). Plástico rígido, 23×15 cm." },
-  { name: "Pano de microfibra 40×40", sku: "GD-04", price: 9590, photo: "art:#fde68a,#ffffff,#d97706,caixa", category: "Utilidades", variants: ["Cx 48"], description: "Caixa fechada com 48 unidades (R$ 2,00 por unidade). Cores sortidas, embalado em pacote com 4." },
-  { name: "Carrinho de fricção", sku: "GD-05", price: 16790, photo: "art:#fecaca,#ffffff,#dc2626,caixa", category: "Brinquedos", featured: true, variants: ["Cx 24"], description: "Caixa fechada com 24 unidades (R$ 7,00 por unidade). Plástico, cores sortidas. Idade indicada na embalagem: 3 anos ou mais." },
-  { name: "Massinha de modelar 6 cores", sku: "GD-06", price: 12590, photo: "art:#ddd6fe,#ffffff,#7c3aed,pote", category: "Brinquedos", variants: ["Cx 36"], description: "Caixa fechada com 36 unidades (R$ 3,50 por unidade). Potes de 50 g com 6 cores. Idade indicada: 3 anos ou mais." },
-  { name: "Bola de vinil 20 cm", sku: "GD-07", price: 13490, photo: "art:#bfdbfe,#ffffff,#2563eb,caixa", category: "Brinquedos", variants: ["Cx 30"], description: "Caixa fechada com 30 unidades (R$ 4,50 por unidade). Vinil estampado, enviada vazia. Idade indicada: 3 anos ou mais." },
-  { name: "Quebra-cabeça 60 peças", sku: "GD-08", price: 11990, photo: "art:#fef3c7,#ffffff,#f59e0b,caixa", category: "Brinquedos", featured: true, variants: ["Cx 20"], description: "Caixa fechada com 20 unidades (R$ 6,00 por unidade). Papelão rígido, temas sortidos." },
-  { name: "Caderno brochura 96 folhas", sku: "GD-09", price: 17490, photo: "art:#cffafe,#ffffff,#0891b2,caixa", category: "Papelaria", featured: true, variants: ["Cx 50"], description: "Caixa fechada com 50 unidades (R$ 3,50 por unidade). Capa sortida, folhas pautadas." },
-  { name: "Caneta esferográfica azul", sku: "GD-10", price: 10990, photo: "art:#dbeafe,#ffffff,#1d4ed8,caixa", category: "Papelaria", variants: ["Cx 144"], description: "Caixa fechada com 144 unidades (R$ 0,76 por unidade). Ponta média de 1,0 mm. Caixa com 144 unidades." },
-  { name: "Estojo escolar com zíper", sku: "GD-11", price: 14390, photo: "art:#fce7f3,#ffffff,#db2777,cesto", category: "Papelaria", variants: ["Cx 24"], description: "Caixa fechada com 24 unidades (R$ 6,00 por unidade). Tecido, estampas sortidas." },
-  { name: "Cabo USB-C 1 m", sku: "GD-12", price: 14990, photo: "art:#111827,#e5e7eb,#4b5563,caixa", category: "Acessórios", featured: true, variants: ["Cx 50"], description: "Caixa fechada com 50 unidades (R$ 3,00 por unidade). Cabo de dados e carga, embalagem individual." },
-  { name: "Fone com fio P2", sku: "GD-13", price: 15990, photo: "art:#111827,#f3f4f6,#4b5563,fone", category: "Acessórios", variants: ["Cx 40"], description: "Caixa fechada com 40 unidades (R$ 4,00 por unidade). Embalagem individual em blister." },
-  { name: "Capinha de silicone sortida", sku: "GD-14", price: 14990, photo: "art:#a7f3d0,#ecfdf5,#059669,celular", category: "Acessórios", soldOut: true, variants: ["Cx 60"], description: "Caixa fechada com 60 unidades (R$ 2,50 por unidade). Modelos e cores sortidos. Produto esgotado (estado de exemplo)." },
-];
 const ATACADO_LOOK = { palette: "Papelão kraft, preto, branco e um acento laranja; aparência de galpão organizado", light: "Luz de galpão clara e uniforme, sem sombras duras" };
 const atacadoAsset = (a: Omit<FamilyAsset, "family" | "palette" | "light" | "provisional">): FamilyAsset => ({ family: "atacado", ...ATACADO_LOOK, provisional: null, ...a });
 const ATACADO_ASSETS: FamilyAsset[] = [
@@ -274,13 +179,28 @@ const ATACADO_ASSETS: FamilyAsset[] = [
 ];
 
 export type FamilyDemo = { family: ThemeFamily; storeName: string; tagline: string; products: DemoProduct[]; assets: FamilyAsset[]; menu: { label: string; children: string }[] };
+
+/**
+ * Catálogo da demonstração vindo do pacote visual da loja (SKUs, nomes, categorias e preços preservados). Variações: os
+ * tamanhos do pacote ou "Único"; esgotado só quando o pacote diz (estoque 0); destaques são os SKUs das campanhas.
+ */
+function productsOf(family: ThemeFamily): DemoProduct[] {
+  const p = packageOf(family); if (!p) return [];
+  const featured = new Set(p.campaigns.flatMap((c) => c.skus));
+  return p.products.map((x) => {
+    const photos = x.images.map((id) => p.assets[id]!.src);
+    return { name: x.name, sku: x.sku, price: x.priceCents, photo: photos[0] ?? "", photos, category: x.category, featured: featured.has(x.sku), variants: x.sizes?.length ? x.sizes : ["Único"], soldOut: x.inventoryDemo <= 0, description: x.description };
+  });
+}
+const demo = (family: ThemeFamily, tagline: string, assets: FamilyAsset[]): FamilyDemo => ({ family, storeName: packageOf(family)?.store ?? "", tagline, products: productsOf(family), assets, menu: [] });
+
 export const FAMILY_DEMOS: Partial<Record<ThemeFamily, FamilyDemo>> = {
-  casa: { family: "casa", storeName: "Casa em Ordem", tagline: "Utilidades e organização para cada cômodo", products: CASA_PRODUCTS, assets: CASA_ASSETS, menu: [] },
-  sport: { family: "sport", storeName: "Linha de Jogo", tagline: "Camisas e peças de treino", products: SPORT_PRODUCTS, assets: SPORT_ASSETS, menu: [] },
-  beauty: { family: "beauty", storeName: "Bela Essência", tagline: "Acessórios de beleza para o dia a dia", products: BEAUTY_PRODUCTS, assets: BEAUTY_ASSETS, menu: [] },
-  conecta: { family: "conecta", storeName: "Ponto Conecta", tagline: "Acessórios para o seu celular", products: CONECTA_PRODUCTS, assets: CONECTA_ASSETS, menu: [] },
-  atacado: { family: "atacado", storeName: "Giro Distribuidora", tagline: "Importação e atacado por caixa fechada", products: ATACADO_PRODUCTS, assets: ATACADO_ASSETS, menu: [] },
-  moda: { family: "moda", storeName: "Trama Urbana", tagline: "Básicos e conjuntos para o dia a dia", products: MODA_PRODUCTS, assets: MODA_ASSETS, menu: [{ label: "Básicos", children: "Camisetas | /catalog?category=basicos\nCalças | /catalog?category=basicos" }, { label: "Conjuntos", children: "" }, { label: "Peças avulsas", children: "" }, { label: "Acessórios", children: "Bolsas | /catalog?category=acessorios\nBijuterias | /catalog?category=acessorios" }] },
+  moda: demo("moda", "Básicos, camisas, calças e conjuntos para a cidade", MODA_ASSETS),
+  sport: demo("sport", "Camisas, vestuário e treino", SPORT_ASSETS),
+  casa: demo("casa", "Decoração, cozinha, organização e têxteis", CASA_ASSETS),
+  beauty: demo("beauty", "Pincéis, organização e acessórios de beleza", BEAUTY_ASSETS),
+  conecta: demo("conecta", "Áudio, mesa, conexões e mobilidade", CONECTA_ASSETS),
+  atacado: demo("atacado", "Atacado para revenda: têxteis, utilidades, acessórios e papelaria", ATACADO_ASSETS),
 };
 
 /** Família que cada tema usa na demonstração (temas base reaproveitam o catálogo Moda, como antes). */

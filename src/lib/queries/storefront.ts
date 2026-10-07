@@ -54,3 +54,14 @@ export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
   };
 }
 export type PublicProduct = ReturnType<typeof toPublicProduct>;
+
+/**
+ * Seleção por SKU (links de campanha: `/catalog?produtos=SKU1,SKU2`): ids dos produtos da loja com esses SKUs, na ordem
+ * pedida. SKU que a loja não tem é ignorado (nunca inventa produto); no máximo 50 por link.
+ */
+export function idsBySkus(catalog: { product: { id: string; sku: string } }[], raw: string | undefined): string[] | null {
+  const skus = (raw ?? "").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 50);
+  if (!skus.length) return null;
+  const bySku = new Map(catalog.map((c) => [c.product.sku.toUpperCase(), c.product.id]));
+  return skus.map((s) => bySku.get(s.toUpperCase())).filter((x): x is string => !!x);
+}

@@ -2,46 +2,44 @@
   "family": "beauty",
   "name": "Beauty",
   "demoStore": "Bela Essência",
+  "package": {
+    "slug": "bela-essencia",
+    "status": "PARTIAL",
+    "generated": 27,
+    "expected": 60
+  },
   "themes": [
     {
       "key": "petala",
       "name": "Pétala",
       "level": 1,
       "release": "released",
-      "priceCents": 0,
-      "pricePending": false
+      "priceCents": 0
     },
     {
       "key": "brilho",
       "name": "Brilho",
       "level": 2,
       "release": "released",
-      "priceCents": 14900,
-      "pricePending": false
+      "priceCents": 14900
     },
     {
       "key": "aura",
       "name": "Aura",
       "level": 3,
       "release": "released",
-      "priceCents": 29900,
-      "pricePending": false
+      "priceCents": 29900
     },
     {
       "key": "musa",
       "name": "Musa",
       "level": 4,
       "release": "released",
-      "priceCents": 99900,
-      "pricePending": false
+      "priceCents": 99900
     }
   ],
-  "assets": [
+  "slots": [
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-hero-1",
       "position": "Página inicial · Destaque com banners · slide 1",
       "levels": [
@@ -66,18 +64,12 @@
       },
       "focus": "Assunto à direita (66% / 50% no computador; 50% / 42% no celular)",
       "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
-      "scene": "Penteadeira clara com escova, pincéis num copo e espelho redondo, sem rótulos legíveis",
-      "overlayText": "Seu ritual, do seu jeito · Ver produtos",
-      "alt": "Penteadeira com escova, pincéis e espelho",
-      "file": "/temas/familias/beauty/beauty-hero-1.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-hero-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-hero-2",
       "position": "Página inicial · Destaque com banners · slide 2",
       "levels": [
@@ -101,18 +93,12 @@
       },
       "focus": "Centro-direita",
       "safeArea": "Metade esquerda livre",
-      "scene": "Pincéis de maquiagem e esponjas em leque sobre tecido nude",
-      "overlayText": "Pincéis e esponjas · Ver maquiagem",
-      "alt": "Pincéis e esponjas sobre tecido nude",
-      "file": "/temas/familias/beauty/beauty-hero-2.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-hero-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-hero-3",
       "position": "Página inicial · Destaque com banners · slide 3",
       "levels": [
@@ -135,18 +121,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Pessoa de costas prendendo o cabelo com presilha de acetato, sem rosto",
-      "overlayText": "Cabelo em dia · Ver cabelo",
-      "alt": "Pessoa prendendo o cabelo com presilha",
-      "file": "/temas/familias/beauty/beauty-hero-3.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-hero-3-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-hero-4",
       "position": "Página inicial · Destaque com banners · slide de campanha agendada",
       "levels": [
@@ -168,18 +148,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Caixa de presente aberta com nécessaire, rolo facial e toalha turbante",
-      "overlayText": "Campanha de presentes (agendada) · Ver kits",
-      "alt": "Caixa de presente com acessórios de beleza",
-      "file": "/temas/familias/beauty/beauty-hero-4.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-hero-4-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-apoio-1",
       "position": "Página inicial · Dois banners de apoio · esquerda",
       "levels": [
@@ -204,18 +178,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre para título e botão",
-      "scene": "Escova raquete e elásticos de seda sobre mármore claro",
-      "overlayText": "Cabelo · Ver",
-      "alt": "Escova e elásticos sobre mármore",
-      "file": "/temas/familias/beauty/beauty-apoio-1.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-apoio-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-apoio-2",
       "position": "Página inicial · Dois banners de apoio · direita",
       "levels": [
@@ -240,18 +208,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre",
-      "scene": "Kit de pincéis em estojo de tecido aberto",
-      "overlayText": "Maquiagem · Ver",
-      "alt": "Kit de pincéis em estojo aberto",
-      "file": "/temas/familias/beauty/beauty-apoio-2.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-apoio-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-faixa-1",
       "position": "Página inicial · Faixa de campanha",
       "levels": [
@@ -276,18 +238,12 @@
       },
       "focus": "Assunto à direita (72% / 50%)",
       "safeArea": "55% à esquerda livres para texto (computador)",
-      "scene": "Organizador de acrílico com pincéis e esponjas, à direita do quadro, fundo rosa claro",
-      "overlayText": "Tudo no lugar na penteadeira · Ver organização",
-      "alt": "Organizador de acrílico com pincéis",
-      "file": "/temas/familias/beauty/beauty-faixa-1.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-faixa-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-sobre",
       "position": "Página inicial · Imagem com texto (sobre a loja)",
       "levels": [
@@ -302,20 +258,15 @@
           1200
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Sem texto por cima",
-      "scene": "Mãos arrumando acessórios numa nécessaire sobre a cama",
-      "overlayText": "(texto ao lado da imagem)",
-      "alt": "Mãos arrumando uma nécessaire",
-      "file": "/temas/familias/beauty/beauty-sobre.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-mosaico-1",
       "position": "Página inicial · Mosaico de banners · peça grande",
       "levels": [
@@ -338,18 +289,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre para título",
-      "scene": "Espelho com luz sobre penteadeira, pincéis ao lado",
-      "overlayText": "Maquiagem",
-      "alt": "Espelho com luz na penteadeira",
-      "file": "/temas/familias/beauty/beauty-mosaico-1.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-mosaico-1-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-mosaico-2",
       "position": "Página inicial · Mosaico de banners · menor 1",
       "levels": [
@@ -372,18 +317,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Presilhas de acetato espalhadas sobre linho",
-      "overlayText": "Cabelo",
-      "alt": "Presilhas de acetato sobre linho",
-      "file": "/temas/familias/beauty/beauty-mosaico-2.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-mosaico-2-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-mosaico-3",
       "position": "Página inicial · Mosaico de banners · menor 2",
       "levels": [
@@ -406,18 +345,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Nécessaire fechada com frascos de viagem ao lado",
-      "overlayText": "Organização",
-      "alt": "Nécessaire com frascos de viagem",
-      "file": "/temas/familias/beauty/beauty-mosaico-3.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-mosaico-3-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-mosaico-4",
       "position": "Página inicial · Mosaico 1+4 · menor 3",
       "levels": [
@@ -439,18 +372,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Rolo facial de pedra verde sobre toalha branca",
-      "overlayText": "Cuidados",
-      "alt": "Rolo facial sobre toalha",
-      "file": "/temas/familias/beauty/beauty-mosaico-4.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-mosaico-4-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-mosaico-5",
       "position": "Página inicial · Mosaico 1+4 · menor 4",
       "levels": [
@@ -472,18 +399,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Kit embrulhado com fita, vista de cima",
-      "overlayText": "Kits",
-      "alt": "Kit de presente embrulhado",
-      "file": "/temas/familias/beauty/beauty-mosaico-5.webp",
-      "fileMobile": "/temas/familias/beauty/beauty-mosaico-5-mobile.webp",
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-look-1",
       "position": "Página inicial · Galeria Rituais · 1",
       "levels": [
@@ -497,20 +418,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo da imagem (fora da foto)",
-      "scene": "Bancada de banheiro de manhã com faixa de cabelo e rolo facial",
-      "overlayText": "(título abaixo)",
-      "alt": "Bancada de banheiro de manhã",
-      "file": "/temas/familias/beauty/beauty-look-1.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-look-2",
       "position": "Página inicial · Galeria Rituais · 2",
       "levels": [
@@ -524,20 +440,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Touca de cetim e toalha turbante dobradas na cama à noite",
-      "overlayText": "(título abaixo)",
-      "alt": "Touca de cetim na cama",
-      "file": "/temas/familias/beauty/beauty-look-2.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-look-3",
       "position": "Página inicial · Galeria Rituais · 3",
       "levels": [
@@ -551,20 +462,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Mala aberta com nécessaire e frascos de viagem",
-      "overlayText": "(título abaixo)",
-      "alt": "Mala com nécessaire",
-      "file": "/temas/familias/beauty/beauty-look-3.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     },
     {
-      "family": "beauty",
-      "palette": "Rosa queimado, nude, vinho e dourado suave; fundos claros e limpos",
-      "light": "Luz suave e difusa de estúdio, manhã, sem brilho estourado",
-      "provisional": null,
       "id": "beauty-look-4",
       "position": "Página inicial · Galeria Rituais · 4",
       "levels": [
@@ -578,128 +484,171 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Cesta de piquenique com espelho e presilhas, luz de sábado",
-      "overlayText": "(título abaixo)",
-      "alt": "Cesta com espelho e presilhas",
-      "file": "/temas/familias/beauty/beauty-look-4.webp",
-      "fileMobile": null,
-      "status": "pendente"
+      "status": "pendente",
+      "image": null,
+      "imageMobile": null,
+      "source": null
     }
   ],
+  "categoryImages": {},
   "products": [
     {
-      "sku": "BE-01",
-      "name": "Escova raquete de cerdas mistas",
-      "category": "Cabelo",
-      "file": "/temas/familias/beauty/produtos/BE-01.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-001",
+      "name": "Pincel Nuvem",
+      "category": "Pincéis",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/pincel-po-01.webp",
+        "/demos/bela-essencia/v1/produtos/pincel-po-02.webp",
+        "/demos/bela-essencia/v1/produtos/pincel-po-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-02",
-      "name": "Kit de presilhas de acetato",
-      "category": "Cabelo",
-      "file": "/temas/familias/beauty/produtos/BE-02.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-002",
+      "name": "Kit Essenciais",
+      "category": "Pincéis",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/kit-pinceis-01.webp",
+        "/demos/bela-essencia/v1/produtos/kit-pinceis-02.webp",
+        "/demos/bela-essencia/v1/produtos/kit-pinceis-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-03",
-      "name": "Touca de cetim para dormir",
-      "category": "Cabelo",
-      "file": "/temas/familias/beauty/produtos/BE-03.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-003",
+      "name": "Esponja Gota",
+      "category": "Pincéis",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/esponja-gota-01.webp",
+        "/demos/bela-essencia/v1/produtos/esponja-gota-02.webp",
+        "/demos/bela-essencia/v1/produtos/esponja-gota-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-04",
-      "name": "Elásticos de seda",
-      "category": "Cabelo",
-      "file": "/temas/familias/beauty/produtos/BE-04.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "BE-05",
-      "name": "Kit de pincéis para maquiagem",
-      "category": "Maquiagem",
-      "file": "/temas/familias/beauty/produtos/BE-05.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "BE-06",
-      "name": "Esponja de maquiagem gota",
-      "category": "Maquiagem",
-      "file": "/temas/familias/beauty/produtos/BE-06.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "BE-07",
-      "name": "Curvex de aço inox",
-      "category": "Maquiagem",
-      "file": "/temas/familias/beauty/produtos/BE-07.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "BE-08",
-      "name": "Espelho de mesa com luz",
-      "category": "Maquiagem",
-      "file": "/temas/familias/beauty/produtos/BE-08.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "BE-09",
-      "name": "Organizador de acrílico giratório",
+      "sku": "BE-004",
+      "name": "Nécessaire Ritual",
       "category": "Organização",
-      "file": "/temas/familias/beauty/produtos/BE-09.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/necessaire-plum-01.webp",
+        "/demos/bela-essencia/v1/produtos/necessaire-plum-02.webp",
+        "/demos/bela-essencia/v1/produtos/necessaire-plum-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-10",
-      "name": "Nécessaire de viagem com alça",
+      "sku": "BE-005",
+      "name": "Organizador Cristal",
       "category": "Organização",
-      "file": "/temas/familias/beauty/produtos/BE-10.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/organizador-acrilico-01.webp",
+        "/demos/bela-essencia/v1/produtos/organizador-acrilico-02.webp",
+        "/demos/bela-essencia/v1/produtos/organizador-acrilico-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-11",
-      "name": "Kit de frascos para viagem",
+      "sku": "BE-006",
+      "name": "Porta-pincéis",
       "category": "Organização",
-      "file": "/temas/familias/beauty/produtos/BE-11.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/porta-pinceis-01.webp",
+        "/demos/bela-essencia/v1/produtos/porta-pinceis-02.webp",
+        "/demos/bela-essencia/v1/produtos/porta-pinceis-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-12",
-      "name": "Faixa de cabelo para skincare",
-      "category": "Cuidados",
-      "file": "/temas/familias/beauty/produtos/BE-12.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-007",
+      "name": "Espelho Aurora",
+      "category": "Acessórios",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/espelho-mesa-01.webp",
+        "/demos/bela-essencia/v1/produtos/espelho-mesa-02.webp",
+        "/demos/bela-essencia/v1/produtos/espelho-mesa-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-13",
-      "name": "Rolo facial de pedra",
-      "category": "Cuidados",
-      "file": "/temas/familias/beauty/produtos/BE-13.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-008",
+      "name": "Faixa Ritual",
+      "category": "Acessórios",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/faixa-cabelo-01.webp",
+        "/demos/bela-essencia/v1/produtos/faixa-cabelo-02.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "BE-14",
-      "name": "Toalha turbante de microfibra",
-      "category": "Cuidados",
-      "file": "/temas/familias/beauty/produtos/BE-14.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "sku": "BE-009",
+      "name": "Rolo Essência",
+      "category": "Acessórios",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/rolo-facial-01.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "BE-010",
+      "name": "Frasco Aurora",
+      "category": "Embalagens",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/frasco-vidro-01.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "BE-011",
+      "name": "Pote Ritual",
+      "category": "Embalagens",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/pote-ritual-01.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "BE-012",
+      "name": "Frasco Gotas",
+      "category": "Embalagens",
+      "photos": [
+        "/demos/bela-essencia/v1/produtos/frasco-gotas-01.webp"
+      ],
+      "soldOut": false
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "ritual",
+      "headline": "Seu ritual, sua essência",
+      "cta": "Ver essenciais",
+      "skus": [
+        "BE-001",
+        "BE-003",
+        "BE-007"
+      ]
+    },
+    {
+      "id": "organizar",
+      "headline": "Beleza também é organização",
+      "cta": "Ver organizadores",
+      "skus": [
+        "BE-004",
+        "BE-005",
+        "BE-006"
+      ]
+    },
+    {
+      "id": "detalhes",
+      "headline": "Detalhes para o seu espaço",
+      "cta": "Explorar acessórios",
+      "skus": [
+        "BE-008",
+        "BE-010",
+        "BE-011"
+      ]
     }
   ]
 }

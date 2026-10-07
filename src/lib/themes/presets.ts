@@ -1,6 +1,6 @@
 import { sectionSchema } from "./sections";
 import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
-import { ATACADO, BEAUTY, CASA, CONECTA, MODA, SPORT } from "./familias-specs";
+import { ATACADO, BEAUTY, CASA, CONECTA, MODA, SPORT, withPackage } from "./familias-specs";
 import { familyBuilders } from "./presets-familia";
 import type { PageKind, SettingValue, Template, ThemeGlobals, ThemeStyle } from "./types";
 
@@ -10,6 +10,8 @@ export type PresetContext = { storeName: string; tagline: string | null; primary
   media?: Record<string, { image: string; imageMobile?: string; alt: string }>;
   /** Categorias reais da loja (menu grande do N4). */
   categories?: { name: string; slug: string }[];
+  /** Imagem própria de cada categoria (nome → imagem), quando a loja tem (lojas de demonstração: pacote visual). */
+  categoryImages?: Record<string, string>;
   now: Date };
 export type ThemePreset = { style: ThemeStyle; globals: ThemeGlobals; pages: Record<PageKind, Template> };
 
@@ -103,12 +105,12 @@ function signature(c: PresetContext): ThemePreset {
 
 // Famílias (composição por nível em presets-familia.ts; identidade em familias-specs.ts). Arena (N3 Sport) mantém a
 // composição com que já é vendido; os demais temas das famílias usam o construtor do nível.
-const [trama, lume, editorial, atelier] = familyBuilders(MODA);
-const [lar, ninho, varanda, morada] = familyBuilders(CASA);
-const [lance, torcida, , podio] = familyBuilders(SPORT);
-const [petala, brilho, aura, musa] = familyBuilders(BEAUTY);
-const [sinal, pulso, circuito, orbita] = familyBuilders(CONECTA);
-const [fardo, lote, galpao, porto] = familyBuilders(ATACADO);
+const [trama, lume, editorial, atelier] = familyBuilders(withPackage(MODA, "moda"));
+const [lar, ninho, varanda, morada] = familyBuilders(withPackage(CASA, "casa"));
+const [lance, torcida, , podio] = familyBuilders(withPackage(SPORT, "sport"));
+const [petala, brilho, aura, musa] = familyBuilders(withPackage(BEAUTY, "beauty"));
+const [sinal, pulso, circuito, orbita] = familyBuilders(withPackage(CONECTA, "conecta"));
+const [fardo, lote, galpao, porto] = familyBuilders(withPackage(ATACADO, "atacado"));
 const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio, petala, brilho, aura, musa, sinal, pulso, circuito, orbita, fardo, lote, galpao, porto };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }

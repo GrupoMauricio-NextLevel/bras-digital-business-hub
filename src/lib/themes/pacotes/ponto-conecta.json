@@ -1,0 +1,301 @@
+{
+ "slug": "ponto-conecta",
+ "family": "conecta",
+ "store": "Ponto Conecta",
+ "status": "PARTIAL",
+ "generated": 12,
+ "expected": 60,
+ "palette": {
+  "ink": "#172B3B",
+  "accent": "#38A9C0",
+  "background": "#EEF2F4"
+ },
+ "products": [
+  {
+   "sku": "PC-001",
+   "slug": "fone-overear",
+   "name": "Fone Orbit",
+   "category": "Áudio",
+   "priceCents": 19990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-001-01"
+   ]
+  },
+  {
+   "sku": "PC-002",
+   "slug": "fone-intra",
+   "name": "Fone Duo",
+   "category": "Áudio",
+   "priceCents": 12990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-002-01"
+   ]
+  },
+  {
+   "sku": "PC-003",
+   "slug": "caixa-som",
+   "name": "Caixa Pulse",
+   "category": "Áudio",
+   "priceCents": 14990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-003-01"
+   ]
+  },
+  {
+   "sku": "PC-004",
+   "slug": "mouse-navy",
+   "name": "Mouse Navega",
+   "category": "Mesa",
+   "priceCents": 7990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-004-01"
+   ]
+  },
+  {
+   "sku": "PC-005",
+   "slug": "teclado-compacto",
+   "name": "Teclado Compacto",
+   "category": "Mesa",
+   "priceCents": 17990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-005-01"
+   ]
+  },
+  {
+   "sku": "PC-006",
+   "slug": "suporte-notebook",
+   "name": "Suporte Eleva",
+   "category": "Mesa",
+   "priceCents": 9990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-006-01"
+   ]
+  },
+  {
+   "sku": "PC-007",
+   "slug": "cabo-trancado",
+   "name": "Cabo Trama",
+   "category": "Conexões",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-007-01"
+   ]
+  },
+  {
+   "sku": "PC-008",
+   "slug": "hub-mesa",
+   "name": "Hub Mesa",
+   "category": "Conexões",
+   "priceCents": 8990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-008-01"
+   ]
+  },
+  {
+   "sku": "PC-009",
+   "slug": "carregador-bloco",
+   "name": "Adaptador Bloco",
+   "category": "Conexões",
+   "priceCents": 4990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-009-01"
+   ]
+  },
+  {
+   "sku": "PC-010",
+   "slug": "suporte-celular",
+   "name": "Suporte Ângulo",
+   "category": "Mobilidade",
+   "priceCents": 3990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-010-01"
+   ]
+  },
+  {
+   "sku": "PC-011",
+   "slug": "bolsa-tech",
+   "name": "Bolsa Tech",
+   "category": "Mobilidade",
+   "priceCents": 6990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-011-01"
+   ]
+  },
+  {
+   "sku": "PC-012",
+   "slug": "apoio-pulso",
+   "name": "Apoio Conforto",
+   "category": "Mobilidade",
+   "priceCents": 2990,
+   "inventoryDemo": 20,
+   "description": "Produto fictício para demonstração visual; especificações comerciais não verificadas.",
+   "images": [
+    "PC-012-01"
+   ]
+  }
+ ],
+ "campaigns": [
+  {
+   "id": "mesa",
+   "headline": "Conecte seu espaço",
+   "cta": "Ver mesa",
+   "skus": [
+    "PC-004",
+    "PC-005",
+    "PC-006"
+   ]
+  },
+  {
+   "id": "audio",
+   "headline": "O seu próximo ritmo",
+   "cta": "Explorar áudio",
+   "skus": [
+    "PC-001",
+    "PC-002",
+    "PC-003"
+   ]
+  },
+  {
+   "id": "rotina",
+   "headline": "Pronto para acompanhar você",
+   "cta": "Ver acessórios",
+   "skus": [
+    "PC-007",
+    "PC-010",
+    "PC-011"
+   ]
+  }
+ ],
+ "assets": {
+  "PC-001-01": {
+   "qualifiedId": "ponto-conecta:PC-001-01",
+   "kind": "produto",
+   "sku": "PC-001",
+   "alt": "Fone Orbit — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/fone-overear-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-002-01": {
+   "qualifiedId": "ponto-conecta:PC-002-01",
+   "kind": "produto",
+   "sku": "PC-002",
+   "alt": "Fone Duo — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/fone-intra-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-003-01": {
+   "qualifiedId": "ponto-conecta:PC-003-01",
+   "kind": "produto",
+   "sku": "PC-003",
+   "alt": "Caixa Pulse — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/caixa-som-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-004-01": {
+   "qualifiedId": "ponto-conecta:PC-004-01",
+   "kind": "produto",
+   "sku": "PC-004",
+   "alt": "Mouse Navega — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/mouse-navy-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-005-01": {
+   "qualifiedId": "ponto-conecta:PC-005-01",
+   "kind": "produto",
+   "sku": "PC-005",
+   "alt": "Teclado Compacto — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/teclado-compacto-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-006-01": {
+   "qualifiedId": "ponto-conecta:PC-006-01",
+   "kind": "produto",
+   "sku": "PC-006",
+   "alt": "Suporte Eleva — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/suporte-notebook-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-007-01": {
+   "qualifiedId": "ponto-conecta:PC-007-01",
+   "kind": "produto",
+   "sku": "PC-007",
+   "alt": "Cabo Trama — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/cabo-trancado-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-008-01": {
+   "qualifiedId": "ponto-conecta:PC-008-01",
+   "kind": "produto",
+   "sku": "PC-008",
+   "alt": "Hub Mesa — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/hub-mesa-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-009-01": {
+   "qualifiedId": "ponto-conecta:PC-009-01",
+   "kind": "produto",
+   "sku": "PC-009",
+   "alt": "Adaptador Bloco — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/carregador-bloco-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-010-01": {
+   "qualifiedId": "ponto-conecta:PC-010-01",
+   "kind": "produto",
+   "sku": "PC-010",
+   "alt": "Suporte Ângulo — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/suporte-celular-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-011-01": {
+   "qualifiedId": "ponto-conecta:PC-011-01",
+   "kind": "produto",
+   "sku": "PC-011",
+   "alt": "Bolsa Tech — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/bolsa-tech-01.webp",
+   "width": 1120,
+   "height": 1400
+  },
+  "PC-012-01": {
+   "qualifiedId": "ponto-conecta:PC-012-01",
+   "kind": "produto",
+   "sku": "PC-012",
+   "alt": "Apoio Conforto — vista principal",
+   "src": "/demos/ponto-conecta/v1/produtos/apoio-pulso-01.webp",
+   "width": 1120,
+   "height": 1400
+  }
+ }
+}

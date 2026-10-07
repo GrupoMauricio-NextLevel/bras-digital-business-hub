@@ -26,8 +26,8 @@ export type FamilySpec = {
   fallbackCategories: { name: string; slug: string }[];
   n1: { hero: Slot; cats: string; latest: string; featured: string };
   n2: { hero: Slot; hero2: Slot; cats: string; featured: string; featuredSub: string; latest: string; about: { heading: Txt; body: Txt } };
-  n3: { hero: Slot; hero2: Slot; hero3: Slot; mosaicHeading: string; mosaic: [Slot, Slot, Slot]; featured: string; latest: string; gallery: { heading: string; subtitle: string; items: [string, string, string, string] }; about: { heading: Txt; body: Txt } };
-  n4: { hero: Slot; campaign: Slot; cats: string; mosaic: [string, string, string, string, string]; featured: string; latest: string };
+  n3: { hero: Slot; hero2: Slot; hero3: Slot; mosaicHeading: string; mosaic: [Slot, Slot, Slot]; featured: string; latest: string; gallery: { heading: string; subtitle: string; items: [string, string, string, string]; links?: string[] }; about: { heading: Txt; body: Txt } };
+  n4: { hero: Slot; campaign: Slot; cats: string; mosaic: [string, string, string, string, string]; mosaicLinks?: string[]; featured: string; latest: string };
 };
 
 const txt = (t: Txt | undefined, c: PresetContext) => (typeof t === "function" ? t(c.storeName) : t ?? "");
@@ -42,6 +42,8 @@ const style = (base: Partial<ThemeStyle>) => normalizeStyle({ bodyFont: "moderna
 const footer = (c: PresetContext, tone: "light" | "dark"): Item[] => [["footer", { type: "footer", settings: { text: c.footerText, tone } }]];
 const stripItem = (c: PresetContext, f: FamilySpec, height?: string): Item => ["faixa", { type: "banner-strip", ...(height ? { settings: { height } } : {}), blocks: [{ type: "banner", settings: banner(c, `${f.id}-faixa-1`, f.strip, f.stripFocus) }] }];
 const supportItem = (c: PresetContext, f: FamilySpec, ratio?: string): Item => ["apoio", { type: "banner-duo", ...(ratio ? { settings: { ratio } } : {}), blocks: f.support.map((s, i) => ({ type: "banner", settings: banner(c, `${f.id}-apoio-${i + 1}`, s) })) }];
+/** Blocos de imagem de categoria (só as categorias com imagem própria). */
+const catBlocks = (c: PresetContext) => Object.entries(c.categoryImages ?? {}).map(([category, image]) => ({ type: "category-image", settings: { category, image } }));
 const productPage = (gallery: string, related: Focus = {}): Item[] => [["product", { type: "product-main", settings: { gallery, stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["related", { type: "product-related", settings: related }]];
 
 /** N1 — Grátis. */
@@ -80,7 +82,7 @@ export const levelTwo = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
           { type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n2.hero), f.heroFocus) },
           { type: "slide", settings: banner(c, `${f.id}-hero-2`, f.n2.hero2) },
         ] }],
-        ["cats", { type: "category-grid", settings: { heading: f.n2.cats, style: "circles" } }],
+        ["cats", { type: "category-grid", settings: { heading: f.n2.cats, style: "circles" }, blocks: catBlocks(c) }],
         ["destaques", { type: "product-showcase", settings: { title: f.n2.featured, subtitle: f.n2.featuredSub, source: "featured", count: 4 } }],
         supportItem(c, f, "portrait"),
         ["novidades", { type: "product-showcase", settings: { title: f.n2.latest, subtitle: "", source: "latest", count: 4 } }],
@@ -114,7 +116,7 @@ export const levelThree = (f: FamilySpec) => (c: PresetContext): ThemePreset => 
         ["destaques", { type: "product-showcase", settings: { title: f.n3.featured, subtitle: "", source: "featured", count: 4 } }],
         stripItem(c, f, "md"),
         ["novidades", { type: "product-showcase", settings: { title: f.n3.latest, subtitle: "", source: "latest", count: 4 } }],
-        ["look", { type: "lookbook", settings: { heading: g.heading, subtitle: g.subtitle }, blocks: g.items.map((title, i) => ({ type: "look", settings: { image: c.media?.[`${f.id}-look-${i + 1}`]?.image ?? "", title, link: "/catalog" } })) }],
+        ["look", { type: "lookbook", settings: { heading: g.heading, subtitle: g.subtitle }, blocks: g.items.map((title, i) => ({ type: "look", settings: { image: c.media?.[`${f.id}-look-${i + 1}`]?.image ?? "", title, link: g.links?.[i] ?? "/catalog" } })) }],
         ["sobre", { type: "image-with-text", settings: { image: c.media?.[`${f.id}-sobre`]?.image ?? "", heading: txt(f.n3.about.heading, c), body: txt(f.n3.about.body, c), ctaLabel: "Conhecer o catálogo", ratio: "portrait" } }],
         ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
@@ -146,11 +148,11 @@ export const levelFour = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
           { type: "slide", settings: banner(c, `${f.id}-hero-2`, { ...f.n3.hero2, align: "center" }) },
           { type: "slide", settings: banner(c, `${f.id}-hero-3`, { ...f.n3.hero3, align: "right" }) },
         ] }],
-        ["cats", { type: "category-grid", settings: { heading: f.n4.cats, style: "circles", showCount: false } }],
-        ["mosaico", { type: "banner-mosaic", settings: { layout: "1-4" }, blocks: f.n4.mosaic.map((title, i) => ({ type: "banner", settings: banner(c, `${f.id}-mosaico-${i + 1}`, { title, link: f.n3.mosaic[i]?.link }) })) }],
+        ["cats", { type: "category-grid", settings: { heading: f.n4.cats, style: "circles", showCount: false }, blocks: catBlocks(c) }],
+        ["mosaico", { type: "banner-mosaic", settings: { layout: "1-4" }, blocks: f.n4.mosaic.map((title, i) => ({ type: "banner", settings: banner(c, `${f.id}-mosaico-${i + 1}`, { title, link: f.n4.mosaicLinks?.[i] ?? f.n3.mosaic[i]?.link }) })) }],
         ["destaques", { type: "product-showcase", settings: { title: f.n4.featured, subtitle: "", source: "featured", count: 8 } }],
         supportItem(c, f, "portrait"),
-        ["look", { type: "lookbook", settings: { heading: f.n3.gallery.heading, subtitle: f.n3.gallery.subtitle }, blocks: f.n3.gallery.items.map((title, i) => ({ type: "look", settings: { image: c.media?.[`${f.id}-look-${i + 1}`]?.image ?? "", title, link: "/catalog" } })) }],
+        ["look", { type: "lookbook", settings: { heading: f.n3.gallery.heading, subtitle: f.n3.gallery.subtitle }, blocks: f.n3.gallery.items.map((title, i) => ({ type: "look", settings: { image: c.media?.[`${f.id}-look-${i + 1}`]?.image ?? "", title, link: f.n3.gallery.links?.[i] ?? "/catalog" } })) }],
         ["novidades", { type: "product-showcase", settings: { title: f.n4.latest, subtitle: "", source: "latest", count: 4 } }],
         ["countdown", { type: "countdown", settings: { heading: "A campanha termina em", text: "Defina a data da sua campanha real antes de mostrar.", until: brt(c.now, 10), tone: "accent" }, hidden: true }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],

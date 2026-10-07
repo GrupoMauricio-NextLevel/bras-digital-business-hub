@@ -19,7 +19,7 @@ export type SectionCtx = {
   product?: PublicProduct;
   related?: PublicProduct[];
   /** Página de catálogo: filtros da busca e a categoria escolhida. */
-  query?: { category?: string; q?: string; sort?: string };
+  query?: { category?: string; q?: string; sort?: string; produtos?: string };
   /** Momento da renderização (agenda de banners) e categoria aberta na coleção (condição por contexto). */
   now?: Date;
   categoryId?: string | null;

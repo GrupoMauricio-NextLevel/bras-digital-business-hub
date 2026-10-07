@@ -4,7 +4,8 @@
  * Textos: sem promessa de frete, prazo, desconto ou depoimento; o que é da loja real o lojista escreve no editor.
  */
 import { slugify } from "@/lib/ids";
-import type { FamilySpec } from "./presets-familia";
+import type { FamilySpec, Slot } from "./presets-familia";
+import { packageOf, selectionLink, type PackageCampaign } from "./pacotes";
 
 const cat = (name: string) => `/catalog?category=${slugify(name)}`;
 const cats = (...names: string[]) => names.map((name) => ({ name, slug: slugify(name) }));
@@ -149,7 +150,7 @@ export const ATACADO: FamilySpec = {
   ],
   heroFocus: { focusX: 68, focusMobileX: 50, focusMobileY: 45 }, stripFocus: { focusX: 72 },
   support: [{ title: "Utilidades", cta: "Ver", link: cat("Utilidades") }, { title: "Brinquedos", cta: "Ver", link: cat("Brinquedos") }],
-  strip: { title: "Venda por caixa fechada", subtitle: "Quantidade por caixa em cada produto.", cta: "Ver catálogo", link: "/catalog" },
+  strip: { title: "Venda por caixa fechada", subtitle: "Para lojistas, revendedores e distribuidores.", cta: "Ver catálogo", link: "/catalog" },
   fallbackCategories: cats("Utilidades", "Brinquedos", "Papelaria", "Acessórios"),
   n1: { hero: { title: "Atacado por caixa fechada", subtitle: "Para lojistas, revendedores e distribuidores.", cta: "Ver catálogo" }, cats: "Compre por categoria", latest: "Chegou no estoque", featured: "Mais pedidos" },
   n2: { hero: { title: (n) => `${n}: atacado para revenda`, subtitle: "Caixa fechada para lojistas e distribuidores.", cta: "Ver catálogo" }, hero2: { title: "Utilidades para revenda", cta: "Ver utilidades", link: cat("Utilidades"), align: "center" }, cats: "Compre por categoria", featured: "Mais pedidos", featuredSub: "Os itens que mais saem", latest: "Chegou no estoque", about: { heading: (n) => `Sobre a ${n}`, body: "Conte de onde vem a sua mercadoria, para quem você vende e como funciona o pedido." } },
@@ -158,7 +159,32 @@ export const ATACADO: FamilySpec = {
     mosaicHeading: "Escolha por linha", mosaic: [{ title: "Utilidades", link: cat("Utilidades") }, { title: "Brinquedos", link: cat("Brinquedos") }, { title: "Papelaria", link: cat("Papelaria") }],
     featured: "Mais pedidos", latest: "Chegou no estoque",
     gallery: { heading: "Do galpão para a sua loja", subtitle: "Como os produtos chegam", items: ["Estoque", "Separação", "Caixa fechada", "Expedição"] },
-    about: { heading: "Quem somos", body: (n) => `A ${n} vende por caixa fechada para lojistas e distribuidores. Cada produto mostra quantas unidades vêm na caixa.` },
+    about: { heading: "Quem somos", body: (n) => `A ${n} vende para lojistas, revendedores e distribuidores. Condições de pedido mínimo e frete ficam descritas pela loja.` },
   },
   n4: { hero: { title: (n) => `${n}: importação e atacado`, subtitle: "Caixa fechada para revenda.", cta: "Ver catálogo" }, campaign: { title: "Chegada de contêiner", subtitle: "Slide agendado: aparece só no período definido.", cta: "Ver novidades", link: "/catalog" }, cats: "Linhas de produto", mosaic: ["Utilidades", "Brinquedos", "Papelaria", "Acessórios", "Lançamentos"], featured: "Mais pedidos", latest: "Chegou no estoque" },
 };
+
+/**
+ * Ajusta a identidade da família ao pacote visual da loja de demonstração (D86): as 3 campanhas do pacote viram os
+ * slides e banners (título e chamada em texto da página; link mostra exatamente os SKUs da campanha), as categorias
+ * passam a ser as do catálogo do pacote e as cores seguem a identidade da loja (tinta e destaque), mantendo por nível
+ * as fontes, cantos e botões. Sem pacote, a família fica como está.
+ */
+export function withPackage(spec: FamilySpec, family: Parameters<typeof packageOf>[0]): FamilySpec {
+  const p = packageOf(family); if (!p || p.campaigns.length < 3) return spec;
+  const [c1, c2, c3] = p.campaigns as [PackageCampaign, PackageCampaign, PackageCampaign];
+  const slot = (c: PackageCampaign, extra: Partial<Slot> = {}): Slot => ({ title: c.headline, cta: c.cta, link: selectionLink(c.skus), ...extra });
+  const categories = [...new Set(p.products.map((x) => x.category))];
+  const styles = (p.palette ? spec.styles.map((st) => ({ ...st, primary: p.palette!.ink, accent: p.palette!.accent })) : spec.styles) as FamilySpec["styles"];
+  return {
+    ...spec, styles,
+    // As fotos de apoio e do mosaico são das campanhas: levam à seleção da própria campanha.
+    support: [slot(c1), { title: "", cta: "", link: selectionLink(c1.skus) }],
+    strip: slot(c3, { subtitle: "" }),
+    fallbackCategories: cats(...categories),
+    n1: { ...spec.n1, hero: slot(c1) },
+    n2: { ...spec.n2, hero: slot(c1), hero2: slot(c2, { align: "center" }) },
+    n3: { ...spec.n3, hero: slot(c1), hero2: slot(c2), hero3: slot(c3), gallery: { ...spec.n3.gallery, items: [spec.n3.gallery.heading, c1.headline, c3.headline, c2.headline], links: ["/catalog", ...[c1, c3, c2].map((c) => selectionLink(c.skus))] }, mosaicHeading: c2.headline, mosaic: [slot(c2, { title: c2.cta, cta: "" }), slot(c2, { title: "", cta: "" }), slot(c2, { title: "", cta: "" })] },
+    n4: { ...spec.n4, hero: slot(c1), campaign: { ...spec.n4.campaign, link: selectionLink(c3.skus) }, mosaic: [c2.cta, "", "", c3.cta, ""], mosaicLinks: [c2, c2, c2, c3, c3].map((c) => selectionLink(c.skus)) },
+  };
+}

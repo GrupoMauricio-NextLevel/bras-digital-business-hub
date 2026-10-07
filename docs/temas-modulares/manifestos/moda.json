@@ -2,45 +2,44 @@
   "family": "moda",
   "name": "Moda",
   "demoStore": "Trama Urbana",
+  "package": {
+    "slug": "trama-urbana",
+    "status": "COMPLETE",
+    "generated": 60,
+    "expected": 60
+  },
   "themes": [
     {
       "key": "trama",
       "name": "Trama",
       "level": 1,
       "release": "released",
-      "priceCents": 0,
-      "pricePending": false
+      "priceCents": 0
     },
     {
       "key": "lume",
       "name": "Lume",
       "level": 2,
       "release": "released",
-      "priceCents": 14900,
-      "pricePending": false
+      "priceCents": 14900
     },
     {
       "key": "editorial",
       "name": "Editorial",
       "level": 3,
       "release": "released",
-      "priceCents": 69900,
-      "pricePending": false
+      "priceCents": 69900
     },
     {
       "key": "atelier",
       "name": "Atelier",
       "level": 4,
       "release": "released",
-      "priceCents": 99900,
-      "pricePending": false
+      "priceCents": 99900
     }
   ],
-  "assets": [
+  "slots": [
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-hero-1",
       "position": "Página inicial · Destaque com banners · slide 1",
       "levels": [
@@ -65,18 +64,12 @@
       },
       "focus": "Pessoa à direita do quadro (foco 70% / 50% no computador; 50% / 40% no celular)",
       "safeArea": "Metade esquerda livre para o título (computador); terço inferior livre no celular",
-      "scene": "Modelo de costas/perfil, sem rosto reconhecível, vestindo conjunto de moletom mostarda numa rua de bairro com muro claro",
-      "overlayText": "Coleção da estação · Básicos que combinam com tudo · Ver coleção",
-      "alt": "Conjunto de moletom mostarda em uma rua clara",
-      "provisional": "/portal/commerce/moda-hero-wide.webp",
-      "file": "/temas/familias/moda/moda-hero-1.webp",
-      "fileMobile": "/temas/familias/moda/moda-hero-1-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/lancamento-hero-desktop.webp",
+      "imageMobile": "/demos/trama-urbana/v1/campanhas/lancamento-hero-mobile.webp",
+      "source": "trama-urbana:lancamento-hero-desktop"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-hero-2",
       "position": "Página inicial · Destaque com banners · slide 2",
       "levels": [
@@ -100,18 +93,12 @@
       },
       "focus": "Peças no centro-direita",
       "safeArea": "Metade esquerda livre",
-      "scene": "Arara com peças em tons de areia e preto num estúdio claro, sem etiquetas legíveis",
-      "overlayText": "Básicos para todo dia · Ver básicos",
-      "alt": "Arara com básicos em tons neutros",
-      "provisional": "/portal/commerce/moda-2.webp",
-      "file": "/temas/familias/moda/moda-hero-2.webp",
-      "fileMobile": "/temas/familias/moda/moda-hero-2-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/colecao-hero-desktop.webp",
+      "imageMobile": "/demos/trama-urbana/v1/campanhas/colecao-hero-mobile.webp",
+      "source": "trama-urbana:colecao-hero-desktop"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-hero-3",
       "position": "Página inicial · Destaque com banners · slide 3",
       "levels": [
@@ -134,18 +121,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Detalhe de jaqueta de couro sintético preta sobre cadeira de madeira",
-      "overlayText": "Jaquetas e peças avulsas · Ver peças",
-      "alt": "Jaqueta preta sobre cadeira de madeira",
-      "provisional": "/portal/commerce/moda-3.webp",
-      "file": "/temas/familias/moda/moda-hero-3.webp",
-      "fileMobile": "/temas/familias/moda/moda-hero-3-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/selecao-hero-desktop.webp",
+      "imageMobile": "/demos/trama-urbana/v1/campanhas/selecao-hero-mobile.webp",
+      "source": "trama-urbana:selecao-hero-desktop"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-hero-4",
       "position": "Página inicial · Destaque com banners · slide de campanha agendada",
       "levels": [
@@ -167,18 +148,12 @@
       },
       "focus": "Centro",
       "safeArea": "Metade esquerda livre",
-      "scene": "Composição de acessórios (bolsa, brincos, carteira) sobre tecido cru, vista de cima",
-      "overlayText": "Campanha da estação (agendada) · Ver acessórios",
-      "alt": "Acessórios sobre tecido cru",
-      "provisional": "/portal/commerce/ace-hero.webp",
-      "file": "/temas/familias/moda/moda-hero-4.webp",
-      "fileMobile": "/temas/familias/moda/moda-hero-4-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/selecao-hero-desktop.webp",
+      "imageMobile": "/demos/trama-urbana/v1/campanhas/selecao-hero-mobile.webp",
+      "source": "trama-urbana:selecao-hero-desktop"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-apoio-1",
       "position": "Página inicial · Dois banners de apoio · esquerda",
       "levels": [
@@ -203,18 +178,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre para título e botão",
-      "scene": "Poncho de tricô cru dobrado sobre banco de madeira",
-      "overlayText": "Peças avulsas · Ver",
-      "alt": "Poncho de tricô cru sobre banco",
-      "provisional": "/portal/commerce/moda-1.webp",
-      "file": "/temas/familias/moda/moda-apoio-1.webp",
-      "fileMobile": "/temas/familias/moda/moda-apoio-1-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-01.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:lancamento-apoio-01"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-apoio-2",
       "position": "Página inicial · Dois banners de apoio · direita",
       "levels": [
@@ -239,18 +208,12 @@
       },
       "focus": "Centro",
       "safeArea": "Terço inferior livre",
-      "scene": "Bolsa estruturada vermelha sobre pedestal claro",
-      "overlayText": "Acessórios · Ver",
-      "alt": "Bolsa vermelha sobre pedestal",
-      "provisional": "/portal/commerce/ace-1.webp",
-      "file": "/temas/familias/moda/moda-apoio-2.webp",
-      "fileMobile": "/temas/familias/moda/moda-apoio-2-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/lancamento-apoio-02.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:lancamento-apoio-02"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-faixa-1",
       "position": "Página inicial · Faixa de campanha",
       "levels": [
@@ -275,18 +238,12 @@
       },
       "focus": "Assunto à direita (75% / 50%)",
       "safeArea": "55% à esquerda livres para texto (computador)",
-      "scene": "Textura de malha canelada areia com uma peça dobrada à direita",
-      "overlayText": "Monte o seu conjunto · Ver conjuntos",
-      "alt": "Malha canelada areia com peça dobrada",
-      "provisional": "/portal/commerce/moda-5.webp",
-      "file": "/temas/familias/moda/moda-faixa-1.webp",
-      "fileMobile": "/temas/familias/moda/moda-faixa-1-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/editorial/materiais.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:editorial-materiais"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-sobre",
       "position": "Página inicial · Imagem com texto (sobre a marca)",
       "levels": [
@@ -301,20 +258,15 @@
           1200
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Sem texto por cima",
-      "scene": "Mãos ajustando a barra de uma calça numa bancada de costura",
-      "overlayText": "(texto ao lado da imagem)",
-      "alt": "Mãos ajustando a barra de uma calça",
-      "provisional": "/portal/commerce/moda-hero.webp",
-      "file": "/temas/familias/moda/moda-sobre.webp",
-      "fileMobile": null,
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/editorial/historia.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:editorial-historia"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-mosaico-1",
       "position": "Página inicial · Mosaico de banners · peça grande",
       "levels": [
@@ -337,18 +289,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre para título",
-      "scene": "Modelo de corpo inteiro (sem rosto) com conjunto canelado areia",
-      "overlayText": "Conjuntos",
-      "alt": "Conjunto canelado areia",
-      "provisional": "/portal/commerce/moda-hero.webp",
-      "file": "/temas/familias/moda/moda-mosaico-1.webp",
-      "fileMobile": "/temas/familias/moda/moda-mosaico-1-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/colecao-hero-mobile.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:colecao-hero-mobile"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-mosaico-2",
       "position": "Página inicial · Mosaico de banners · menor 1",
       "levels": [
@@ -371,18 +317,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Pilha de camisetas básicas dobradas em tons neutros",
-      "overlayText": "Básicos",
-      "alt": "Camisetas básicas dobradas",
-      "provisional": "/portal/commerce/moda-2.webp",
-      "file": "/temas/familias/moda/moda-mosaico-2.webp",
-      "fileMobile": "/temas/familias/moda/moda-mosaico-2-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/colecao-apoio-01.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:colecao-apoio-01"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-mosaico-3",
       "position": "Página inicial · Mosaico de banners · menor 2",
       "levels": [
@@ -405,18 +345,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Sandália de salto bloco sobre piso de cimento queimado",
-      "overlayText": "Calçados e acessórios",
-      "alt": "Sandália de salto bloco",
-      "provisional": "/portal/commerce/moda-4.webp",
-      "file": "/temas/familias/moda/moda-mosaico-3.webp",
-      "fileMobile": "/temas/familias/moda/moda-mosaico-3-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/colecao-apoio-02.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:colecao-apoio-02"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-mosaico-4",
       "position": "Página inicial · Mosaico 1+4 · menor 3",
       "levels": [
@@ -438,18 +372,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Brincos dourados trançados sobre linho",
-      "overlayText": "Bijuterias",
-      "alt": "Brincos dourados sobre linho",
-      "provisional": "/portal/commerce/ace-3.webp",
-      "file": "/temas/familias/moda/moda-mosaico-4.webp",
-      "fileMobile": "/temas/familias/moda/moda-mosaico-4-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/selecao-apoio-01.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:selecao-apoio-01"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-mosaico-5",
       "position": "Página inicial · Mosaico 1+4 · menor 4",
       "levels": [
@@ -471,18 +399,12 @@
       },
       "focus": "Centro",
       "safeArea": "Canto inferior esquerdo livre",
-      "scene": "Carteira de couro marrom aberta sobre madeira",
-      "overlayText": "Carteiras",
-      "alt": "Carteira de couro marrom",
-      "provisional": "/portal/commerce/ace-4.webp",
-      "file": "/temas/familias/moda/moda-mosaico-5.webp",
-      "fileMobile": "/temas/familias/moda/moda-mosaico-5-mobile.webp",
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/selecao-apoio-02.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:selecao-apoio-02"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-look-1",
       "position": "Página inicial · Lookbook · 1",
       "levels": [
@@ -496,20 +418,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo da imagem (fora da foto)",
-      "scene": "Look urbano com jaqueta preta e calça jogger, de costas, numa escada",
-      "overlayText": "(título abaixo)",
-      "alt": "Look urbano com jaqueta preta",
-      "provisional": "/portal/commerce/moda-3.webp",
-      "file": "/temas/familias/moda/moda-look-1.webp",
-      "fileMobile": null,
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/editorial/lookbook.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:editorial-lookbook"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-look-2",
       "position": "Página inicial · Lookbook · 2",
       "levels": [
@@ -523,20 +440,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Look de fim de semana com conjunto mostarda e tênis branco",
-      "overlayText": "(título abaixo)",
-      "alt": "Look de fim de semana mostarda",
-      "provisional": "/portal/commerce/moda-hero.webp",
-      "file": "/temas/familias/moda/moda-look-2.webp",
-      "fileMobile": null,
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/lancamento-hero-mobile.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:lancamento-hero-mobile"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-look-3",
       "position": "Página inicial · Lookbook · 3",
       "levels": [
@@ -550,20 +462,15 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Look com poncho cru e bolsa de palha num café",
-      "overlayText": "(título abaixo)",
-      "alt": "Look com poncho e bolsa de palha",
-      "provisional": "/portal/commerce/moda-1.webp",
-      "file": "/temas/familias/moda/moda-look-3.webp",
-      "fileMobile": null,
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/selecao-hero-mobile.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:selecao-hero-mobile"
     },
     {
-      "family": "moda",
-      "palette": "Neutros quentes (areia, cru, preto) com acento ferrugem; sem verde corporativo",
-      "light": "Luz natural lateral, suave, fim de tarde",
       "id": "moda-look-4",
       "position": "Página inicial · Lookbook · 4",
       "levels": [
@@ -577,129 +484,185 @@
           1350
         ]
       },
+      "mobile": null,
       "focus": "Centro",
       "safeArea": "Título abaixo",
-      "scene": "Look com blazer xadrez azul e camiseta branca",
-      "overlayText": "(título abaixo)",
-      "alt": "Look com blazer xadrez azul",
-      "provisional": "/portal/commerce/moda-5.webp",
-      "file": "/temas/familias/moda/moda-look-4.webp",
-      "fileMobile": null,
-      "status": "provisório"
+      "status": "integrado",
+      "image": "/demos/trama-urbana/v1/campanhas/colecao-apoio-01.webp",
+      "imageMobile": null,
+      "source": "trama-urbana:colecao-apoio-01"
     }
   ],
+  "categoryImages": {
+    "Básicos": "/demos/trama-urbana/v1/categorias/basicos.webp",
+    "Camisas": "/demos/trama-urbana/v1/categorias/camisas.webp",
+    "Calças": "/demos/trama-urbana/v1/categorias/calcas.webp",
+    "Conjuntos": "/demos/trama-urbana/v1/categorias/conjuntos.webp"
+  },
   "products": [
     {
-      "sku": "TU-01",
-      "name": "Conjunto de moletom mostarda",
+      "sku": "TU-001",
+      "name": "Camiseta Algodão Essencial",
+      "category": "Básicos",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-01.webp",
+        "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-02.webp",
+        "/demos/trama-urbana/v1/produtos/camiseta-algodao-offwhite-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-002",
+      "name": "Camiseta Urbana Navy",
+      "category": "Básicos",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/camiseta-navy-01.webp",
+        "/demos/trama-urbana/v1/produtos/camiseta-navy-02.webp",
+        "/demos/trama-urbana/v1/produtos/camiseta-navy-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-003",
+      "name": "Regata Canelada Areia",
+      "category": "Básicos",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/regata-canelada-01.webp",
+        "/demos/trama-urbana/v1/produtos/regata-canelada-02.webp",
+        "/demos/trama-urbana/v1/produtos/regata-canelada-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-004",
+      "name": "Camisa Textura Natural",
+      "category": "Camisas",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/camisa-linho-01.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-linho-02.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-linho-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-005",
+      "name": "Camisa Azul Horizonte",
+      "category": "Camisas",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/camisa-azul-01.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-azul-02.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-azul-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-006",
+      "name": "Calça Sarja Urbana",
+      "category": "Calças",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/calca-sarja-01.webp",
+        "/demos/trama-urbana/v1/produtos/calca-sarja-02.webp",
+        "/demos/trama-urbana/v1/produtos/calca-sarja-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-007",
+      "name": "Calça Wide Areia",
+      "category": "Calças",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/calca-wide-01.webp",
+        "/demos/trama-urbana/v1/produtos/calca-wide-02.webp",
+        "/demos/trama-urbana/v1/produtos/calca-wide-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-008",
+      "name": "Bermuda Essencial Caqui",
+      "category": "Calças",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/bermuda-caqui-01.webp",
+        "/demos/trama-urbana/v1/produtos/bermuda-caqui-02.webp",
+        "/demos/trama-urbana/v1/produtos/bermuda-caqui-03.webp"
+      ],
+      "soldOut": false
+    },
+    {
+      "sku": "TU-009",
+      "name": "Conjunto Movimento Terracota",
       "category": "Conjuntos",
-      "file": "/temas/familias/moda/produtos/TU-01.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/conjunto-terracota-01.webp",
+        "/demos/trama-urbana/v1/produtos/conjunto-terracota-02.webp",
+        "/demos/trama-urbana/v1/produtos/conjunto-terracota-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "TU-02",
-      "name": "Conjunto canelado areia",
+      "sku": "TU-010",
+      "name": "Conjunto Relax Navy",
       "category": "Conjuntos",
-      "file": "/temas/familias/moda/produtos/TU-02.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/conjunto-navy-01.webp",
+        "/demos/trama-urbana/v1/produtos/conjunto-navy-02.webp",
+        "/demos/trama-urbana/v1/produtos/conjunto-navy-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "TU-03",
-      "name": "Poncho de tricô cru",
-      "category": "Peças avulsas",
-      "file": "/temas/familias/moda/produtos/TU-03.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
+      "sku": "TU-011",
+      "name": "Jaqueta Camadas Areia",
+      "category": "Camisas",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/jaqueta-areia-01.webp",
+        "/demos/trama-urbana/v1/produtos/jaqueta-areia-02.webp",
+        "/demos/trama-urbana/v1/produtos/jaqueta-areia-03.webp"
+      ],
+      "soldOut": false
     },
     {
-      "sku": "TU-04",
-      "name": "Jaqueta de couro sintético",
-      "category": "Peças avulsas",
-      "file": "/temas/familias/moda/produtos/TU-04.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
+      "sku": "TU-012",
+      "name": "Overshirt Urbana Navy",
+      "category": "Camisas",
+      "photos": [
+        "/demos/trama-urbana/v1/produtos/camisa-overshirt-01.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-overshirt-02.webp",
+        "/demos/trama-urbana/v1/produtos/camisa-overshirt-03.webp"
+      ],
+      "soldOut": true
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "lancamento",
+      "headline": "Essenciais da cidade",
+      "cta": "Ver novidades",
+      "skus": [
+        "TU-001",
+        "TU-004",
+        "TU-006"
+      ]
     },
     {
-      "sku": "TU-05",
-      "name": "Blazer xadrez azul",
-      "category": "Peças avulsas",
-      "file": "/temas/familias/moda/produtos/TU-05.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
+      "id": "colecao",
+      "headline": "Texturas que acompanham você",
+      "cta": "Explorar coleção",
+      "skus": [
+        "TU-009",
+        "TU-003",
+        "TU-007"
+      ]
     },
     {
-      "sku": "TU-06",
-      "name": "Camiseta básica verde-musgo",
-      "category": "Básicos",
-      "file": "/temas/familias/moda/produtos/TU-06.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
-    },
-    {
-      "sku": "TU-07",
-      "name": "Camiseta básica branca",
-      "category": "Básicos",
-      "file": "/temas/familias/moda/produtos/TU-07.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "TU-08",
-      "name": "Regata canelada off-white",
-      "category": "Básicos",
-      "file": "/temas/familias/moda/produtos/TU-08.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "TU-09",
-      "name": "Calça jogger preta",
-      "category": "Básicos",
-      "file": "/temas/familias/moda/produtos/TU-09.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "ilustração provisória"
-    },
-    {
-      "sku": "TU-10",
-      "name": "Sandália de salto bloco",
-      "category": "Acessórios",
-      "file": "/temas/familias/moda/produtos/TU-10.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
-    },
-    {
-      "sku": "TU-11",
-      "name": "Bolsa estruturada vermelha",
-      "category": "Acessórios",
-      "file": "/temas/familias/moda/produtos/TU-11.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
-    },
-    {
-      "sku": "TU-12",
-      "name": "Bolsa de palha laranja",
-      "category": "Acessórios",
-      "file": "/temas/familias/moda/produtos/TU-12.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
-    },
-    {
-      "sku": "TU-13",
-      "name": "Brincos dourados trançados",
-      "category": "Acessórios",
-      "file": "/temas/familias/moda/produtos/TU-13.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
-    },
-    {
-      "sku": "TU-14",
-      "name": "Carteira de couro marrom",
-      "category": "Acessórios",
-      "file": "/temas/familias/moda/produtos/TU-14.webp",
-      "ratio": "1:1 (1200×1200 px)",
-      "status": "provisório"
+      "id": "selecao",
+      "headline": "Seu próximo conjunto começa aqui",
+      "cta": "Ver seleção",
+      "skus": [
+        "TU-010",
+        "TU-011",
+        "TU-012"
+      ]
     }
   ]
 }
