@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import JSZip from "jszip";
 import { and, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { categories, products } from "@/db/schema";
@@ -17,7 +18,8 @@ export async function readSpreadsheet(src: ImportSource): Promise<string[][]> {
   const buf = Buffer.from(src.base64, "base64");
   if (buf.length > 6_000_000) throw new DomainError("FILE_TOO_BIG", "Arquivo maior que 6 MB.");
   const wb = new ExcelJS.Workbook();
-  await wb.xlsx.load(buf as unknown as ArrayBuffer);
+  try { await wb.xlsx.load((await normalizeXlsx(buf)) as unknown as ArrayBuffer); }
+  catch { throw new DomainError("INVALID_FILE", "Não conseguimos ler esta planilha. Abra no Excel ou Google Planilhas, salve como .xlsx (ou exporte em .csv) e envie de novo."); }
   const ws = wb.getWorksheet("Produtos") ?? wb.worksheets[0];
   if (!ws) throw new DomainError("EMPTY_FILE", "A planilha não tem abas.");
   const out: string[][] = [];
@@ -31,6 +33,35 @@ export async function readSpreadsheet(src: ImportSource): Promise<string[][]> {
     out.push(cells);
   });
   return out;
+}
+
+const SHEET_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+
+/**
+ * Planilhas geradas por outros sistemas (ex.: exportações adaptadas da wBuy, feitas com a biblioteca OpenXML do .NET)
+ * escrevem as tags com prefixo (`<x:worksheet>`, `<x:row>`). O Excel aceita, mas o leitor (ExcelJS) não reconhece e quebra.
+ * Aqui o prefixo do namespace da planilha é removido antes da leitura; o conteúdo não muda.
+ */
+export async function normalizeXlsx(buf: Buffer): Promise<Buffer> {
+  let zip: JSZip;
+  try { zip = await JSZip.loadAsync(buf); } catch { return buf; }
+  let changed = false;
+  for (const entry of Object.values(zip.files)) {
+    if (entry.dir || !/\.(xml|rels)$/i.test(entry.name)) continue;
+    const xml = await entry.async("string");
+    const prefix = new RegExp(`xmlns:([A-Za-z_][\\w.-]*)="${SHEET_NS}"`).exec(xml)?.[1];
+    const noBom = xml.replace(/^\uFEFF/, "");
+    if (!prefix && noBom === xml) continue;
+    let out = noBom;
+    if (prefix) {
+      const hasDefault = new RegExp(`xmlns="${SHEET_NS}"`).test(out);
+      out = out.replace(new RegExp(`<(/?)${prefix}:`, "g"), "<$1").replace(new RegExp(`\\sxmlns:${prefix}="${SHEET_NS}"`, "g"), hasDefault ? "" : ` xmlns="${SHEET_NS}"`);
+      if (!hasDefault) { let first = true; out = out.replace(new RegExp(` xmlns="${SHEET_NS}"`, "g"), (m) => (first ? ((first = false), m) : "")); }
+    }
+    zip.file(entry.name, out);
+    changed = true;
+  }
+  return changed ? await zip.generateAsync({ type: "nodebuffer" }) : buf;
 }
 
 export type PreviewLine = { line: number; sku: string; name: string; action: "CREATE" | "UPDATE" | "SKIP" | "ERROR"; errors: string[]; warnings: string[]; sizes: string; grid: string; newCategory: boolean };

@@ -81,7 +81,8 @@ export function parseProductRows(matrix: string[][], opts: { minActivationStock?
     if (cost > 0 && sug > 0 && (sug - cost) / sug < 0.15) warnings.push("margem do lojista abaixo de 15%");
     const min4 = opts.minActivationStock ?? 0;
     if (min4 > 0 && st.stock.some((q) => q < min4)) warnings.push(`estoque abaixo de ${min4} em algum tamanho: as lojas não conseguirão ativar`);
-    const num = (v: string | undefined, d: number, label: string) => { if (!v) return d; const n = int(v); if (!Number.isFinite(n) || n <= 0) { errors.push(`${label} inválido`); return d; } return n; };
+    // Medidas com casas decimais (ex.: altura 0.2 cm vinda da wBuy) arredondam para no mínimo 1.
+    const num = (v: string | undefined, d: number, label: string) => { if (!v) return d; const n = int(v); const raw = Number(String(v).replace(/[^\d.-]/g, "")); if (!Number.isFinite(n) || raw <= 0) { errors.push(`${label} inválido`); return d; } return Math.max(1, n); };
     const status = /^(rascunho|draft|inativo)$/i.test(raw.status ?? "") ? "DRAFT" : "ACTIVE";
     const gsum = grade.reduce((a, b) => a + b, 0);
     const input: CreateProductInput = {

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { eq } from "drizzle-orm";
+import JSZip from "jszip";
 import { freshDb } from "./setup";
 import { products, supplierOps } from "@/db/schema";
 import { parseProductRows, parseStock } from "@/lib/domain/product-import";
@@ -54,6 +55,31 @@ describe("leitura da planilha", () => {
     expect(rows.every((r) => r.errors.length === 0)).toBe(true);
     expect(rows[0]!.input?.sizes.map((s) => s.size)).toEqual(["P", "M", "G", "GG", "XX1", "2XL"]);
     expect(rows[2]!.input?.sizes.map((s) => s.size)).toEqual(["18", "20", "22", "24", "26", "28"]);
+  });
+  it("medida com casas decimais (altura 0.2 cm, como na wBuy) vira 1 cm em vez de erro", () => {
+    const [r] = parseProductRows([[...head, "altura_cm"], ["Manto", "b-1", "Times", "infantil", "40", "100", "", "5", "0.2"]]);
+    expect(r!.errors).toEqual([]); expect(r!.input!.heightCm).toBe(1);
+    const [z] = parseProductRows([[...head, "altura_cm"], ["Manto", "b-1", "Times", "infantil", "40", "100", "", "5", "0"]]);
+    expect(z!.errors.join()).toMatch(/altura inválido/);
+  });
+  it("lê planilha gravada com prefixo nas tags (<x:worksheet>, gerada por outros sistemas) e recusa arquivo quebrado com mensagem clara", async () => {
+    // Recria o formato da planilha adaptada da wBuy: mesmas abas, tags com prefixo "x:", BOM e caminhos absolutos.
+    const zip = await JSZip.loadAsync(await buildTemplateXlsx());
+    const NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+    for (const f of Object.values(zip.files)) {
+      if (f.dir || !/\.(xml|rels)$/.test(f.name)) continue;
+      let xml = await f.async("string");
+      if (xml.includes(`xmlns="${NS}"`)) xml = xml.replace(`xmlns="${NS}"`, `xmlns:x="${NS}"`).replace(/<(\/?)(?![?!])([A-Za-z])/g, (m, slash: string, c: string, off: number, all: string) => (/^[A-Za-z]+:/.test(all.slice(off + 1 + slash.length)) ? m : `<${slash}x:${c}`));
+      xml = xml.replace(/Target="(?!\/)(xl\/|worksheets|styles|theme|sharedStrings)/g, (_m, p: string) => `Target="/${f.name.startsWith("xl/") ? "xl/" : ""}${p}`);
+      zip.file(f.name, "\uFEFF" + xml);
+    }
+    const buf = await zip.generateAsync({ type: "nodebuffer" });
+    expect((await zip.file("xl/workbook.xml")!.async("string"))).toContain("<x:workbook");
+    const rows = parseProductRows(await readSpreadsheet({ kind: "xlsx", base64: buf.toString("base64") }));
+    expect(rows.length).toBe(3);
+    expect(rows.every((r) => r.errors.length === 0)).toBe(true);
+    expect(rows[0]!.raw.nome).toBe("Manto Exemplo 2025");
+    await expect(readSpreadsheet({ kind: "xlsx", base64: Buffer.from("não é planilha").toString("base64") })).rejects.toMatchObject({ code: "INVALID_FILE" });
   });
 });
 
