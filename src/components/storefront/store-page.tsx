@@ -28,14 +28,14 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
 
-  let products = all; let product; let related;
+  let products = all; let product; let related; let categoryId: string | null = null;
   if (page === "product") {
     product = all.find((p) => p.slug === productSlug);
     if (!product) notFound();
     related = all.filter((p) => p.id !== product!.id && p.categoryId === product!.categoryId).slice(0, 8);
   }
   if (page === "collection") {
-    const cat = sf.categories.find((c) => c.slug === query?.category);
+    const cat = sf.categories.find((c) => c.slug === query?.category); categoryId = cat?.id ?? null;
     products = all.filter((p) => (!cat || p.categoryId === cat.id) && (!query?.q || p.name.toLowerCase().includes(query.q.toLowerCase())));
     const sort = query?.sort;
     if (sort === "price-asc") products = [...products].sort((a, b) => a.priceCents - b.priceCents);
@@ -46,7 +46,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const { lists, hero } = planProducts(template, products);
   return (
     <div className={WRAP[page]}>
-      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query }} />
+      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId }} />
     </div>
   );
 }

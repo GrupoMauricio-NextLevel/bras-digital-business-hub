@@ -532,6 +532,10 @@ export const themes = pgTable("themes", {
   features: jsonb("features").$type<string[]>().notNull().default([]),
   previewAccent: text("preview_accent").notNull(),
   available: boolean("available").notNull().default(false),
+  /** Espelho do catálogo (src/lib/themes/catalog.ts): família, nível N1–N4 e estado de liberação. */
+  family: text("family").notNull().default("base"),
+  level: integer("level").notNull().default(1),
+  release: text("release", { enum: ["released", "review", "draft"] }).notNull().default("released"),
 });
 
 export const themeVersions = pgTable("theme_versions", {
@@ -574,6 +578,8 @@ export const themeTemplates = pgTable("theme_templates", {
   page: text("page", { enum: ["home", "product", "collection", "cart"] }).notNull(),
   draft: jsonb("draft").$type<import("@/lib/themes/types").Template | null>(),
   published: jsonb("published").$type<import("@/lib/themes/types").Template | null>(),
+  /** Sobe a cada gravação do rascunho: duas abas com a mesma base não se sobrescrevem em silêncio. */
+  revision: integer("revision").notNull().default(0),
   updatedAt: updatedAt(),
 }, (t) => [primaryKey({ columns: [t.storeId, t.page] })]);
 
@@ -582,6 +588,7 @@ export const themeGlobals = pgTable("theme_globals", {
   storeId: text("store_id").primaryKey().references(() => stores.id),
   draft: jsonb("draft").$type<import("@/lib/themes/types").ThemeGlobals | null>(),
   published: jsonb("published").$type<import("@/lib/themes/types").ThemeGlobals | null>(),
+  revision: integer("revision").notNull().default(0),
   updatedAt: updatedAt(),
 });
 
@@ -594,8 +601,24 @@ export const themeTemplateVersions = pgTable("theme_template_versions", {
   snapshot: jsonb("snapshot").$type<unknown>().notNull(),
   label: text("label").notNull(),
   createdBy: text("created_by"),
+  /** Tema ativo quando a versão foi guardada (restaurar volta a ele, se a loja tiver direito). */
+  themeKey: text("theme_key"),
+  /** "draft" quando a versão guarda um rascunho (ex.: antes de instalar outro tema). */
+  kind: text("kind", { enum: ["published", "draft"] }).notNull().default("published"),
   createdAt: createdAt(),
 }, (t) => [index("theme_template_versions_idx").on(t.storeId, t.page)]);
+
+/** Modelos salvos pelo lojista: seção (N3) ou página/campanha (N4). Só da própria loja. */
+export const themeSavedTemplates = pgTable("theme_saved_templates", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  kind: text("kind", { enum: ["section", "page"] }).notNull(),
+  name: text("name").notNull(),
+  page: text("page"),
+  data: jsonb("data").$type<unknown>().notNull(),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("theme_saved_templates_store_idx").on(t.storeId)]);
 
 // ---------------------------------------------------------------------------
 // Planos / Assinaturas
@@ -1067,6 +1090,14 @@ export const storeAssets = pgTable("store_assets", {
   mime: text("mime").notNull(),
   sizeBytes: integer("size_bytes").notNull(),
   dataBase64: text("data_base64").notNull(),
+  /** Dimensões conferidas na decodificação (nulas em imagens antigas, preenchidas ao serem lidas). */
+  width: integer("width"),
+  height: integer("height"),
+  /** Nome amigável e descrição padrão para leitores de tela (cada uso pode trocar). */
+  name: text("name"),
+  alt: text("alt"),
+  /** Arquivada: some da biblioteca, mas continua servida enquanto houver uso publicado ou versão restaurável. */
+  archivedAt: ts("archived_at"),
   createdAt: createdAt(),
 }, (t) => [index("store_assets_store_idx").on(t.storeId)]);
 

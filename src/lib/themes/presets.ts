@@ -48,7 +48,7 @@ function entryTheme(c: PresetContext, look: EntryLook): ThemePreset {
   const help = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento pelo WhatsApp para escolher e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
   return {
     style,
-    globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
+    globals: globals(style, [announcement(c, "", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
     pages: pages(
       [
         ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? look.heroFallback.title(c.storeName), text: c.hero?.subtitle ?? look.heroFallback.text, ctaLabel: c.hero?.ctaLabel ?? look.heroFallback.cta, height: "lg", overlay: 35, align: "left", fullWidth: true } }],
@@ -61,7 +61,7 @@ function entryTheme(c: PresetContext, look: EntryLook): ThemePreset {
         help(),
         ["grid", { type: "product-grid" }],
       ],
-      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true, shippingNote: "Envio para todo o Brasil · etiqueta em até 1 dia útil após a confirmação" } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
+      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
       [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], help()],
       [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
     ),
@@ -75,14 +75,14 @@ function arena(c: PresetContext): ThemePreset {
   const wa = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento rápido pelo WhatsApp para escolher o tamanho e acompanhar o seu pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
   return {
     style,
-    globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299", "primary"), ["header", { type: "header", settings: { tone: "dark", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
+    globals: globals(style, [announcement(c, "", "primary"), ["header", { type: "header", settings: { tone: "dark", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
     pages: pages(
       [
         ["arena", { type: "arena-hero", settings: { eyebrow: "NOVA TEMPORADA", heading: c.hero?.title ?? "Vista a paixão. Jogue do seu jeito.", text: c.hero?.subtitle ?? `Os mantos mais desejados estão na ${c.storeName}. Escolha o seu e entre em campo.`, ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos", ctaLink: "/catalog", secondaryLabel: "Explorar catálogo", secondaryLink: "/catalog", productBadge: "DESTAQUE DA SEMANA", showProduct: true } }],
         ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
         ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: "cards" } }],
         ["best", { type: "product-showcase", settings: { title: "Mais vendidos", subtitle: "Os favoritos da torcida", count: 8, source: "featured" } }],
-        ["countdown", { type: "countdown", settings: { heading: "Oferta relâmpago termina em", text: "Aproveite os preços da semana.", until: untilDays(c.now, 7), tone: "neutral" } }],
+        ["countdown", { type: "countdown", settings: { heading: "Oferta relâmpago termina em", text: "Defina a data da sua oferta real antes de mostrar.", until: untilDays(c.now, 7), tone: "neutral" }, hidden: true }],
         ["banners", { type: "promo-banners", blocks: [{ type: "banner", settings: { title: "Coleção nova", subtitle: "Acabou de chegar", tone: "primary", link: "/catalog" } }, { type: "banner", settings: { title: "Clássicos", subtitle: "Peças que viraram história", tone: "accent", link: "/catalog" } }] }],
         ["latest", { type: "product-showcase", settings: { title: "Lançamentos", subtitle: "Recém-chegados", source: "latest", count: 4 } }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
@@ -108,13 +108,13 @@ function editorial(c: PresetContext): ThemePreset {
         ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", columns: 3, style: "cards" } }],
         ["showcase", { type: "product-showcase", settings: { title: "Seleção da estação", subtitle: "", source: "featured", count: 4 } }],
         ["look", { type: "lookbook", blocks: blocksOf("lookbook") }],
-        ["proof", { type: "testimonials", blocks: blocksOf("testimonials") }],
+        ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }],
         ["story", { type: "image-with-text", settings: { heading: "Nossa história", body: c.tagline ?? "Conte de onde vem a sua marca e o que a torna única.", reverse: true, ratio: "square" } }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
         ["cta", { type: "cta-banner", settings: { heading: "Receba novidades primeiro", text: "Fale com a gente no WhatsApp e entre na lista de lançamentos.", buttonLabel: "Entrar na lista", tone: "light" } }],
         ["grid", { type: "product-grid" }],
       ],
-      [["product", { type: "product-main", settings: { gallery: "thumbs" } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["proof", { type: "testimonials", blocks: blocksOf("testimonials") }], ["related", { type: "product-related" }]],
+      [["product", { type: "product-main", settings: { gallery: "thumbs" } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }], ["related", { type: "product-related" }]],
       [["header", { type: "collection-header" }], ["grid", { type: "collection-grid", settings: { columns: 3 } }], ["cta", { type: "cta-banner", settings: { tone: "light", heading: "Não achou o que procurava?" } }]],
       [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }]],
     ),
@@ -125,7 +125,7 @@ function signature(c: PresetContext): ThemePreset {
   const style = normalizeStyle({ primary: "#0f172a", accent: "#c2410c", headingFont: "display", bodyFont: "moderna", radius: 12, buttons: "solid", quickView: true, animations: true });
   return {
     style,
-    globals: globals(style, [announcement(c, "Frete grátis acima de R$ 299 · Envio em até 1 dia útil", "accent"), ["header", { type: "header-plus", settings: { tone: "light", sticky: true, showSearch: true }, blocks: blocksOf("header-plus") }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
+    globals: globals(style, [announcement(c, "", "accent"), ["header", { type: "header-plus", settings: { tone: "light", sticky: true, showSearch: true }, blocks: blocksOf("header-plus") }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
     pages: pages(
       [
         ["slides", { type: "slideshow", settings: { height: "lg", fullWidth: true }, blocks: blocksOf("slideshow", [{ image: c.images?.hero ?? "", heading: c.hero?.title ?? `Coleção nova na ${c.storeName}`, text: c.hero?.subtitle ?? "Os lançamentos que você esperava, com envio rápido.", ctaLabel: c.hero?.ctaLabel ?? "Ver lançamentos" }]) }],
@@ -134,14 +134,14 @@ function signature(c: PresetContext): ThemePreset {
         ["latest", { type: "product-showcase", settings: { title: "Novidades", subtitle: "Recém-chegados à loja", source: "latest", count: 8 } }],
         ["promo", { type: "image-hero", settings: { image: c.images?.about ?? "", heading: "Ofertas da temporada", text: "Selecionamos os modelos com os melhores preços.", ctaLabel: "Aproveitar", height: "md", overlay: 45, align: "center" } }],
         ["video", { type: "video-hero", settings: { heading: "Veja em movimento", text: "Cole o link do seu vídeo e mostre a coleção.", fullWidth: false }, hidden: true }],
-        ["countdown", { type: "countdown", settings: { heading: "A oferta termina em", until: untilDays(c.now, 7), tone: "accent" } }],
+        ["countdown", { type: "countdown", settings: { heading: "A oferta termina em", text: "Defina a data da sua oferta real antes de mostrar.", until: untilDays(c.now, 7), tone: "accent" }, hidden: true }],
         ["look", { type: "lookbook", blocks: blocksOf("lookbook") }],
-        ["proof", { type: "testimonials", blocks: blocksOf("testimonials") }],
+        ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }],
         ["faq", { type: "faq", blocks: blocksOf("faq") }],
         ["cta", { type: "cta-banner", settings: { heading: "Atendimento que resolve", text: "Fale com a gente e receba ajuda para escolher o tamanho ideal.", buttonLabel: "Chamar no WhatsApp", tone: "accent" } }],
         ["grid", { type: "product-grid" }],
       ],
-      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["proof", { type: "testimonials", blocks: blocksOf("testimonials") }], ["related", { type: "product-related" }]],
+      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }], ["related", { type: "product-related" }]],
       [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], ["cta", { type: "cta-banner", settings: { tone: "accent", heading: "Precisa de ajuda para escolher?" } }]],
       [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
     ),

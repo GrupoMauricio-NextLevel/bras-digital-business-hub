@@ -1,6 +1,6 @@
-import { and, eq, gt, isNull, like, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { entitlements, financeInvoices, stores, storeThemes, themeGlobals, themeTemplates, themes, themeVersions } from "@/db/schema";
+import { financeInvoices, stores, storeThemes, themeGlobals, themeTemplates, themes, themeVersions } from "@/db/schema";
 import { assertCanAccess, type Actor } from "@/lib/domain/access";
 import { emitEvent } from "@/lib/domain/events";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
@@ -9,6 +9,8 @@ import { amountFor, type PaymentMethod, type Quote } from "@/lib/finance/pricing
 import { requireFeature } from "@/lib/features";
 import { newId } from "@/lib/ids";
 import { THEME_BY_KEY, themeEntitlementKey } from "./catalog";
+import { hasStorefront, ownedThemeKeys } from "./license";
+import { canInstall, canPurchase } from "./policy";
 import { buildPreset, type PresetContext } from "./presets";
 import { resolveGlobals, resolveTemplate, saveSnapshot } from "./store";
 import { normalizeGlobals, normalizeTemplate } from "./template";
@@ -25,13 +27,8 @@ async function ownStore(db: Database, actor: Actor, storeId?: string) {
   return store;
 }
 
-/** Temas que a loja pode instalar: o Starter (grátis) e os pagos já comprados (licença permanente) ou concedidos como cortesia. */
-export async function ownedThemeKeys(db: Database, storeId: string, now = new Date()): Promise<Set<string>> {
-  const rows = await db.select().from(entitlements).where(and(eq(entitlements.storeId, storeId), like(entitlements.key, "THEME_%"), or(isNull(entitlements.endsAt), gt(entitlements.endsAt, now.toISOString()))));
-  const owned = new Set<string>(["starter"]);
-  for (const r of rows) { const k = r.key.replace("THEME_", "").toLowerCase(); if (THEME_BY_KEY[k]) owned.add(k); }
-  return owned;
-}
+/** Temas que a loja pode instalar (grátis liberados + licenças ativas). Fonte única em license.ts. */
+export { ownedThemeKeys };
 
 export type ThemeCard = { key: string; name: string; tier: string; priceCents: number; tagline: string; description: string; features: string[]; previewAccent: string; owned: boolean; active: boolean; openInvoiceId: string | null; quote: Quote; openMethod: PaymentMethod | null };
 
@@ -46,7 +43,7 @@ export async function themeCardsFor(db: Database, actor: Actor): Promise<ThemeCa
   const quotes = new Map<string, Quote>();
   for (const t of rows) if (THEME_BY_KEY[t.key]) quotes.set(t.key, await themeQuote(db, t.key));
   return rows.flatMap((t) => {
-    const info = THEME_BY_KEY[t.key]; if (!info || info.released === false) return [];
+    const info = THEME_BY_KEY[t.key]; if (!info || (info.release !== "released" && !owned.has(t.key))) return [];
     const inv = invoices.find((i) => i.dedupeKey.split(":")[2] === themeEntitlementKey(t.key));
     return [{ key: t.key, name: t.name, tier: t.tier, priceCents: t.priceCents, tagline: info.tagline, description: t.description, features: t.features, previewAccent: t.previewAccent, owned: owned.has(t.key), active: active[0]?.key === t.key, openInvoiceId: inv?.id ?? null, openMethod: inv ? (inv.lines[0]?.kind === "THEME_CARD" ? "CARD" as const : "PIX" as const) : null, quote: quotes.get(t.key)! }];
   }).sort((a, b) => a.priceCents - b.priceCents);
@@ -60,8 +57,10 @@ export async function buyTheme(db: Database, actor: Actor, key: string, method: 
   const store = await ownStore(db, actor);
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
-  if (theme.priceCents === 0) throw new DomainError("FREE_THEME", "Este tema é grátis: é só instalar.");
-  if ((await ownedThemeKeys(db, store.id, now)).has(key)) throw new DomainError("ALREADY_OWNED", "Você já tem este tema. É só instalar.");
+  // Mesma política da vitrine: tema em revisão não é vendido, nem por chamada direta.
+  const owned = (await ownedThemeKeys(db, store.id, now)).has(key);
+  const verdict = canPurchase(info, { storefront: hasStorefront(store), owned });
+  if (!verdict.ok) throw new DomainError(verdict.reason === "NOT_RELEASED" ? "THEME_NOT_RELEASED" : info.priceCents === 0 ? "FREE_THEME" : owned ? "ALREADY_OWNED" : verdict.reason, verdict.message);
   const ent = themeEntitlementKey(key);
   const dedupeKey = `ADDON:${store.id}:${ent}:LIFETIME:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
@@ -106,25 +105,33 @@ export async function applyThemeToStore(db: Database, store: typeof stores.$infe
   const version = await db.query.themeVersions.findFirst({ where: and(eq(themeVersions.themeId, theme.id), eq(themeVersions.status, "PUBLISHED")) });
   if (!version) throw new NotFoundError("Versão do tema não encontrada.");
 
+  const previousKey = (await db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, store.id)).limit(1))[0]?.key ?? "starter";
+  let draftsSaved = 0;
   await db.transaction(async (tx) => {
     const t = tx as unknown as Database; const before = `Antes de instalar ${theme.name}`;
-    for (const page of PAGE_KINDS) await saveSnapshot(t, store.id, page, (await resolveTemplate(t, store, page)).template, before, by);
-    await saveSnapshot(t, store.id, "globals", current.globals, before, by);
+    // Rascunhos não publicados vão para o histórico ANTES de serem trocados (nada some em silêncio).
+    const rows = await tx.select().from(themeTemplates).where(eq(themeTemplates.storeId, store.id));
+    for (const r of rows) if (r.draft) { await saveSnapshot(t, store.id, r.page, r.draft, `Rascunho guardado antes de instalar ${theme.name}`, by, { themeKey: previousKey, kind: "draft" }); draftsSaved++; }
+    const gRow = await tx.query.themeGlobals.findFirst({ where: eq(themeGlobals.storeId, store.id) });
+    if (gRow?.draft) { await saveSnapshot(t, store.id, "globals", gRow.draft, `Rascunho guardado antes de instalar ${theme.name}`, by, { themeKey: previousKey, kind: "draft" }); draftsSaved++; }
+    for (const page of PAGE_KINDS) await saveSnapshot(t, store.id, page, (await resolveTemplate(t, store, page)).template, before, by, { themeKey: previousKey });
+    await saveSnapshot(t, store.id, "globals", current.globals, before, by, { themeKey: previousKey });
     const iso = now.toISOString();
     for (const page of PAGE_KINDS) {
       const tpl: Template = normalizeTemplate(preset.pages[page], "content", page).template;
-      await tx.insert(themeTemplates).values({ storeId: store.id, page, published: tpl, draft: null }).onConflictDoUpdate({ target: [themeTemplates.storeId, themeTemplates.page], set: { published: tpl, draft: null, updatedAt: iso } });
-      await saveSnapshot(t, store.id, page, tpl, `Tema ${theme.name} instalado`, by);
+      const rev = (rows.find((r) => r.page === page)?.revision ?? 0) + 1;
+      await tx.insert(themeTemplates).values({ storeId: store.id, page, published: tpl, draft: null, revision: rev }).onConflictDoUpdate({ target: [themeTemplates.storeId, themeTemplates.page], set: { published: tpl, draft: null, revision: rev, updatedAt: iso } });
+      await saveSnapshot(t, store.id, page, tpl, `Tema ${theme.name} instalado`, by, { themeKey: key });
     }
-    const g = normalizeGlobals(preset.globals).globals;
-    await tx.insert(themeGlobals).values({ storeId: store.id, published: g, draft: null }).onConflictDoUpdate({ target: themeGlobals.storeId, set: { published: g, draft: null, updatedAt: iso } });
-    await saveSnapshot(t, store.id, "globals", g, `Tema ${theme.name} instalado`, by);
+    const g = normalizeGlobals(preset.globals).globals; const grev = (gRow?.revision ?? 0) + 1;
+    await tx.insert(themeGlobals).values({ storeId: store.id, published: g, draft: null, revision: grev }).onConflictDoUpdate({ target: themeGlobals.storeId, set: { published: g, draft: null, revision: grev, updatedAt: iso } });
+    await saveSnapshot(t, store.id, "globals", g, `Tema ${theme.name} instalado`, by, { themeKey: key });
     await tx.update(stores).set({ primaryColor: g.style.primary, accentColor: g.style.accent, updatedAt: iso }).where(eq(stores.id, store.id));
     const has = await tx.query.storeThemes.findFirst({ where: eq(storeThemes.storeId, store.id) });
     if (has) await tx.update(storeThemes).set({ themeId: theme.id, themeVersionId: version.id, activatedAt: iso }).where(eq(storeThemes.storeId, store.id));
     else await tx.insert(storeThemes).values({ storeId: store.id, themeId: theme.id, themeVersionId: version.id });
   });
-  return { name: theme.name };
+  return { name: theme.name, draftsSaved };
 }
 
 /**
@@ -136,9 +143,10 @@ export async function installTheme(db: Database, actor: Actor, key: string, now 
   const store = await ownStore(db, actor);
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
-  if (!(await ownedThemeKeys(db, store.id, now)).has(key)) throw new DomainError("THEME_NOT_OWNED", `O tema ${theme.name} ainda não foi comprado. Gere a fatura e pague por Pix para instalar.`);
+  const verdict = canInstall(info, { storefront: hasStorefront(store), owned: (await ownedThemeKeys(db, store.id, now)).has(key) });
+  if (!verdict.ok) throw new DomainError(verdict.reason === "NO_LICENSE" ? "THEME_NOT_OWNED" : verdict.reason === "NOT_RELEASED" ? "THEME_NOT_RELEASED" : verdict.reason, verdict.message);
 
-  await applyThemeToStore(db, store, key, actor.userId, now);
+  const r = await applyThemeToStore(db, store, key, actor.userId, now);
   await emitEvent(db, { type: "THEME_INSTALLED", storeId: store.id, actorRole: actor.role, payload: { key } });
-  return { installed: true as const, name: theme.name };
+  return { installed: true as const, name: theme.name, draftsSaved: r.draftsSaved };
 }

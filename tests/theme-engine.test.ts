@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ThemeSettingsData } from "@/db/schema";
 import { normalizeSettings, normalizeValue } from "@/lib/themes/settings";
+import { CAPABILITIES, CAPABILITY_LEVEL, FAMILIES } from "@/lib/themes/levels";
 import { SECTION_SCHEMAS, sectionSchema } from "@/lib/themes/sections";
 import { isValidDateTime, isValidVideoRef, youtubeIdOf } from "@/lib/themes/settings";
 import { addBlock, addSection, defaultTemplate, duplicateSection, legacyGlobals, moveBlock, moveSection, normalizeGlobals, normalizeStyle, normalizeTemplate, planProducts, removeBlock, removeSection, resolveLink, sameTemplate, setBlockSetting, setSectionHidden, setSetting, templateFromLegacy, TemplateOpError } from "@/lib/themes/template";
@@ -173,7 +174,8 @@ describe("modelos padrão das outras páginas", () => {
   it("padrões da página de produto reproduzem a loja atual", () => {
     const main = defaultTemplate("product", legacy).sections.product!.settings;
     expect(main).toMatchObject({ gallery: "stacked", showBreadcrumb: true, stickyBuyBar: false });
-    expect(String(main.shippingNote)).toContain("etiqueta em até 1 dia útil");
+    // Sem promessa de prazo por padrão (A11): o lojista escreve o aviso que a operação dele cumpre.
+    expect(main.shippingNote).toBe("");
   });
 });
 
@@ -192,12 +194,16 @@ describe("vídeo, data e hora", () => {
   });
 });
 
-describe("seções dos temas pagos", () => {
-  const THEME_KEYS = ["lume", "ninho", "arena", "editorial", "signature"];
-  it("só referenciam temas que existem", () => { for (const s of SECTION_SCHEMAS) for (const t of s.themes ?? []) expect(THEME_KEYS, `${s.type}: ${t}`).toContain(t); });
-  it("as seções novas são exclusivas dos temas pagos e a base continua livre", () => {
-    for (const type of ["image-hero", "slideshow", "video-hero", "category-grid", "image-with-text", "testimonials", "faq", "lookbook", "countdown", "cta-banner", "product-tabs", "header-plus"]) expect(sectionSchema(type)!.themes?.length, type).toBeGreaterThan(0);
-    for (const type of ["hero", "trust-bar", "product-showcase", "rich-text", "header", "footer", "product-main"]) expect(sectionSchema(type)!.themes, type).toBeUndefined();
+describe("seções por nível e por identidade", () => {
+  it("toda seção declara uma capacidade conhecida e só famílias que existem", () => {
+    for (const s of SECTION_SCHEMAS) {
+      if (s.requires) expect(CAPABILITIES, s.type).toContain(s.requires);
+      for (const f of s.families ?? []) expect(FAMILIES, s.type).toContain(f);
+    }
+  });
+  it("as seções avançadas exigem nível acima do grátis e a base continua no N1", () => {
+    for (const type of ["slideshow", "video-hero", "category-grid", "image-with-text", "testimonials", "faq", "lookbook", "countdown", "cta-banner", "product-tabs", "header-plus", "banner-mosaic"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires!], type).toBeGreaterThan(1);
+    for (const type of ["hero", "trust-bar", "product-showcase", "rich-text", "header", "footer", "product-main", "hero-banner", "banner-duo", "banner-strip"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires ?? "content.basic"], type).toBe(1);
   });
   it("cabeçalho simples e cabeçalho com menu grande se excluem", () => {
     const hdr = normalizeTemplate({ v: 1, order: ["header", "plus"], sections: { header: { type: "header" }, plus: { type: "header-plus" } } }, "header").template;

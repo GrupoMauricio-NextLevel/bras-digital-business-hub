@@ -10,7 +10,7 @@ export type PublicTheme = ThemeInfo & { quote: Quote | null; demoReady: boolean;
 
 /** Temas à venda, para a página pública. O preço sai do catálogo e da tabela de preços, nunca de texto fixo. */
 export async function publicThemes(db: Database): Promise<PublicTheme[]> {
-  const list = THEME_CATALOG.filter((t) => t.released !== false);
+  const list = THEME_CATALOG.filter((t) => t.release === "released");
   return Promise.all(list.map((t) => publicTheme(db, t.key) as Promise<PublicTheme>));
 }
 

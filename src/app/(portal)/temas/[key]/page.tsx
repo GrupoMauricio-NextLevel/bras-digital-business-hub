@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ key: stri
   const { key } = await params;
   const t = await publicTheme(await getDb(), key);
   if (!t) return { title: "Tema" };
-  return { title: `Tema ${t.name}`, description: `${t.tagline}. Veja o tema ${t.name} funcionando em uma loja de exemplo.`, alternates: { canonical: `/temas/${t.key}` }, robots: t.released === false ? { index: false, follow: false } : undefined };
+  return { title: `Tema ${t.name}`, description: `${t.tagline}. Veja o tema ${t.name} funcionando em uma loja de exemplo.`, alternates: { canonical: `/temas/${t.key}` }, robots: t.release !== "released" ? { index: false, follow: false } : undefined };
 }
 
 const has = (key: string, d: "desktop" | "mobile") => existsSync(join(process.cwd(), "public", themeShot(key, d)));
@@ -27,7 +27,7 @@ export default async function TemaPage({ params }: { params: Promise<{ key: stri
   const t = await publicTheme(db, key);
   if (!t) notFound();
   const brand = await getBrand();
-  const pending = t.released === false;
+  const pending = t.release !== "released";
   const buy = `/login?voltar=${encodeURIComponent(`/merchant/templates?ver=${t.key}`)}`;
   const noStore = brand.signupOpen ? { href: "/cadastro", label: "Ainda não tenho loja" } : { href: "/quero-minha-loja", label: "Ainda não tenho loja" };
   return (

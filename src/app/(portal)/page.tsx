@@ -15,6 +15,8 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { Reveal } from "@/components/portal/reveal";
 import { SaleCalculator } from "@/components/portal/sale-calculator";
 import { ThemeShowcase } from "@/components/portal/theme-showcase";
+import { isReleased, THEME_BY_KEY } from "@/lib/themes/catalog";
+import { formatBRL } from "@/lib/money";
 import { MosaicoEditorial } from "@/components/portal/mosaico-editorial";
 import { ImagemEmCriacao, TexturaDeFundo } from "@/components/portal/imagem-em-criacao";
 import { FAQ } from "./content";
@@ -117,7 +119,7 @@ export default async function Portal() {
       <section className="bg-surface py-20">
         <div className="mx-auto max-w-6xl px-4">
           <Reveal><h2 className={`${sectionTitle} max-w-3xl`}>Uma loja bonita, que você monta sem programar</h2><p className="mt-3 max-w-2xl text-lg text-muted-foreground">Comece com o tema grátis. Quando quiser mais, compre um tema pronto na Loja NextLevel e instale com 1 clique.</p></Reveal>
-          <div className="mt-10"><ThemeShowcase /></div>
+          <div className="mt-10"><ThemeShowcase prices={Object.fromEntries((["starter", "arena", "editorial", "signature"] as const).flatMap((k) => { const t = THEME_BY_KEY[k]; return t && isReleased(t) ? [[k, t.priceCents === 0 ? "Grátis" : formatBRL(t.priceCents)]] : []; }))} /></div>
         </div>
       </section>
 

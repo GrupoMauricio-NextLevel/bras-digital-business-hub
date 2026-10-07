@@ -11,24 +11,28 @@ import { KeyboardHint } from "@/components/ds/fields";
 import { discardThemeDraftAction, enterThemePreviewAction, exitThemePreviewAction, publishThemeAction, saveGlobalsDraftAction, saveTemplateDraftAction } from "@/app/actions/theme";
 import { canRedo, canUndo, changedParts, getTemplate, newHistory, pushHistory, reconcileSelection, redo, setTemplate, undo, type Doc, type Region, type Selection } from "@/lib/themes/editor-state";
 import { sectionSchema } from "@/lib/themes/sections";
-import { addBlock, addSection, duplicateSection, moveBlock, moveSection, removeBlock, removeSection, setBlockSetting, setSectionHidden, setSetting, STYLE_DEFS, TemplateOpError } from "@/lib/themes/template";
+import { addBlock, addSection, DEFAULT_STYLE, duplicateSection, moveBlock, moveSection, removeBlock, removeSection, setBlockSetting, setSectionHidden, setSetting, STYLE_DEFS, TemplateOpError } from "@/lib/themes/template";
+import { checkStyleChange, checkTemplateChange, hydrateContext, settingAllowed, STYLE_MIN_LEVEL, structureRights, violationMessage, type SerializedContext, type Violation } from "@/lib/themes/policy";
+import { LEVEL_INFO } from "@/lib/themes/levels";
 import { ImageUploadButton } from "./image-upload";
 import { setStoreLogoAction } from "@/app/actions/assets";
 import { PAGE_LABEL, type PageKind, type SettingValue, type Template, type ThemeStyle } from "@/lib/themes/types";
 import { cn } from "@/lib/utils";
 import { AddSectionDialog, VersionsDialog } from "./dialogs";
+import { MediaLibraryProvider } from "./media-library";
+import { BannerMediaPanel, MEDIA_FIELDS } from "./banner-media";
+import { scheduleIssues } from "@/lib/themes/banners";
 import { SettingField, type PickerData } from "./settings-panel";
 import { SectionTree, type TreeActions } from "./tree";
 
-export type EditorProps = { logoUrl: string | null; storeName: string; slug: string; offerName: string; initial: Doc; published: Doc; advanced: boolean; premium: boolean; upgradeHref: string; picker: PickerData; previewPaths: Record<PageKind, string> };
+export type EditorProps = { logoUrl: string | null; storeName: string; slug: string; offerName: string; initial: Doc; published: Doc; policy: SerializedContext; revisions: Record<PageKind | "globals", number>; upgradeHref: string; picker: PickerData; previewPaths: Record<PageKind, string> };
 type Device = "desktop" | "tablet" | "mobile";
 type Save = "saved" | "dirty" | "saving" | "error";
 const DEVICES = [{ key: "desktop", label: "Computador", icon: Monitor, px: null }, { key: "tablet", label: "Tablet", icon: Tablet, px: 768 }, { key: "mobile", label: "Celular", icon: Smartphone, px: 390 }] as const;
-const ADVANCED_STYLE = new Set(["headingFont", "bodyFont", "radius", "buttons", "quickView", "animations"]);
 const sig = (d: Doc) => JSON.stringify(d);
 const editable = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
 
-export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerName, initial, published: publishedInitial, advanced, premium, upgradeHref, picker, previewPaths }: EditorProps) {
+export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerName, initial, published: publishedInitial, policy, revisions, upgradeHref, picker, previewPaths }: EditorProps) {
   const router = useRouter();
   const [page, setPage] = React.useState<PageKind>("home");
   const [logo, setLogo] = React.useState<string | null>(logoUrlInitial);
@@ -47,7 +51,15 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const savedRef = React.useRef<Doc>(initial);
   const docRef = React.useRef(doc); React.useEffect(() => { docRef.current = doc; }, [doc]);
   const flushing = React.useRef<Promise<boolean> | null>(null);
-  const lockHint = `Disponível na oferta Loja própria. Você está na ${offerName}.`;
+  // Política única (a mesma do servidor): o que o tema ATIVO permite. O servidor confere de novo ao salvar e publicar.
+  const ctx = React.useMemo(() => hydrateContext(policy), [policy]);
+  const rights = structureRights(ctx);
+  const revRef = React.useRef(revisions);
+  const [conflict, setConflict] = React.useState(false);
+  const levelLabel = `${LEVEL_INFO[ctx.level].short} · ${LEVEL_INFO[ctx.level].name}`;
+  const lockHint = `Recurso de temas de nível superior. O tema ${ctx.themeName} é ${levelLabel}.`;
+  void offerName;
+  const blocked = (v: Violation[]) => { toast.error(violationMessage(v), { id: "theme-policy", action: v.some((x) => x.requiredLevel) ? { label: "Ver temas", onClick: () => router.push(upgradeHref) } : undefined }); };
 
   // A prévia do rascunho precisa do cookie antes de a loja carregar no quadro.
   React.useEffect(() => { let live = true; enterThemePreviewAction().then(() => { if (live) setReady(true); }); return () => { live = false; }; }, []);
@@ -63,8 +75,17 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
       if (!parts.pages.length && !parts.globals) return true;
       const run = (async () => {
         setSave("saving");
-        for (const p of parts.pages) { const r = await saveTemplateDraftAction(p, snapshot.pages[p]); if (!r.ok) { toast.error(r.error); setSave("error"); return false; } }
-        if (parts.globals) { const r = await saveGlobalsDraftAction(snapshot.globals); if (!r.ok) { toast.error(r.error); setSave("error"); return false; } const warn = r.data.issues.find((i) => i.includes("clara demais")); if (warn) toast.warning(warn, { id: "contrast-warning" }); }
+        for (const p of parts.pages) {
+          const r = await saveTemplateDraftAction(p, snapshot.pages[p], revRef.current[p]);
+          if (!r.ok) { if (r.code === "DRAFT_CONFLICT") setConflict(true); else toast.error(r.error); setSave("error"); return false; }
+          revRef.current = { ...revRef.current, [p]: r.data.revision };
+        }
+        if (parts.globals) {
+          const r = await saveGlobalsDraftAction(snapshot.globals, revRef.current.globals);
+          if (!r.ok) { if (r.code === "DRAFT_CONFLICT") setConflict(true); else toast.error(r.error); setSave("error"); return false; }
+          revRef.current = { ...revRef.current, globals: r.data.revision };
+          const warn = r.data.issues.find((i) => i.includes("clara demais")); if (warn) toast.warning(warn, { id: "contrast-warning" });
+        }
         savedRef.current = snapshot; post({ type: "refresh" });
         setSave(sig(docRef.current) === sig(snapshot) ? "saved" : "dirty");
         return true;
@@ -86,10 +107,13 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   // ---- Alterações -----------------------------------------------------------
   const commit = React.useCallback((next: Doc, key?: string) => setHist((h) => pushHistory(h, next, key ?? null)), []);
   const mutate = (region: Region, fn: (t: Template) => Template, key?: string): boolean => {
-    try { commit(setTemplate(doc, region, page, fn(getTemplate(doc, region, page))), key); return true; }
-    catch (e) { if (e instanceof TemplateOpError) { toast.error(e.message); return false; } throw e; }
+    try {
+      const cur = getTemplate(doc, region, page); const next = fn(cur);
+      const v = checkTemplateChange(ctx, cur, next, { region, page: region === "content" ? page : undefined });
+      if (v.length) { blocked(v); return false; }
+      commit(setTemplate(doc, region, page, next), key); return true;
+    } catch (e) { if (e instanceof TemplateOpError) { toast.error(e.message); return false; } throw e; }
   };
-  const needAdvanced = () => { if (advanced) return true; toast(lockHint, { action: { label: "Ver como liberar", onClick: () => router.push(upgradeHref) } }); return false; };
 
   const select = React.useCallback((s: Selection) => { setSel(s); if (s) setMobileTab("settings"); }, []);
   React.useEffect(() => { const id = requestAnimationFrame(() => setSel((s) => reconcileSelection(doc, s, page))); return () => cancelAnimationFrame(id); }, [doc, page]);
@@ -110,14 +134,14 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
 
   const actions: TreeActions = {
     select, hover: (id) => post({ type: "hover", id }),
-    move: (region, id, to) => { if (needAdvanced()) mutate(region, (t) => moveSection(t, id, to)); },
-    toggle: (region, id) => { if (needAdvanced()) mutate(region, (t) => setSectionHidden(t, id, !t.sections[id]?.hidden)); },
-    duplicate: (region, id) => { if (!needAdvanced()) return; let nid = ""; if (mutate(region, (t) => { const r = duplicateSection(t, id); nid = r.id; return r.template; })) select({ kind: "section", region, id: nid }); },
-    remove: (region, id) => { if (!needAdvanced()) return; const name = sectionSchema(getTemplate(doc, region, page).sections[id]?.type ?? "")?.name ?? "Seção"; if (mutate(region, (t) => removeSection(t, id))) toast(`${name} removida`, { action: { label: "Desfazer", onClick: () => setHist((h) => undo(h)) } }); },
-    addSection: (region) => { if (needAdvanced()) setAdding(region); },
-    addBlock: (region, sid, type) => { if (needAdvanced()) mutate(region, (t) => addBlock(t, sid, type).template); },
-    moveBlock: (region, sid, bid, to) => { if (needAdvanced()) mutate(region, (t) => moveBlock(t, sid, bid, to)); },
-    removeBlock: (region, sid, bid) => { if (needAdvanced()) mutate(region, (t) => removeBlock(t, sid, bid)); },
+    move: (region, id, to) => { mutate(region, (t) => moveSection(t, id, to)); },
+    toggle: (region, id) => { mutate(region, (t) => setSectionHidden(t, id, !t.sections[id]?.hidden)); },
+    duplicate: (region, id) => { let nid = ""; if (mutate(region, (t) => { const r = duplicateSection(t, id); nid = r.id; return r.template; })) select({ kind: "section", region, id: nid }); },
+    remove: (region, id) => { const name = sectionSchema(getTemplate(doc, region, page).sections[id]?.type ?? "")?.name ?? "Seção"; if (mutate(region, (t) => removeSection(t, id))) toast(`${name} removida`, { action: { label: "Desfazer", onClick: () => setHist((h) => undo(h)) } }); },
+    addSection: (region) => { if (rights.add === "none") { toast(`O tema ${ctx.themeName} (${levelLabel}) tem a composição fixa: edite o conteúdo dos espaços. Temas N2 em diante acrescentam espaços.`, { action: { label: "Ver temas", onClick: () => router.push(upgradeHref) } }); return; } setAdding(region); },
+    addBlock: (region, sid, type) => { mutate(region, (t) => addBlock(t, sid, type).template); },
+    moveBlock: (region, sid, bid, to) => { mutate(region, (t) => moveBlock(t, sid, bid, to)); },
+    removeBlock: (region, sid, bid) => { mutate(region, (t) => removeBlock(t, sid, bid)); },
   };
 
   const pickSection = (type: string) => {
@@ -131,8 +155,9 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const publish = async () => {
     setPublishing(true); const ok = await flush();
     if (!ok) { setPublishing(false); return; }
-    const r = await publishThemeAction(); setPublishing(false);
-    if (r.ok) { setPublished(savedRef.current); toast.success("Tema publicado. Sua loja já mostra as mudanças."); } else toast.error(r.error);
+    const r = await publishThemeAction(undefined, revRef.current); setPublishing(false);
+    if (r.ok) { revRef.current = r.data.revisions; setPublished(savedRef.current); toast.success("Tema publicado. Sua loja já mostra as mudanças."); }
+    else if (r.code === "DRAFT_CONFLICT") setConflict(true); else toast.error(r.error);
   };
   const discard = async () => { if (!window.confirm("Descartar todas as alterações não publicadas?")) return; const r = await discardThemeDraftAction(); if (r.ok) window.location.reload(); else toast.error(r.error); };
   const leave = async () => { await flush(); await exitThemePreviewAction(); router.push("/merchant"); };
@@ -151,11 +176,16 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const selId = sectionIdOf(sel);
   const selSection = sel && sel.kind !== "style" && selId ? getTemplate(doc, sel.region, page).sections[selId] : undefined;
   const schema = selSection ? sectionSchema(selSection.type) : undefined;
-  const setStyle = (id: keyof ThemeStyle, v: SettingValue) => commit({ ...doc, globals: { ...doc.globals, style: { ...doc.globals.style, [id]: v } } }, `style.${id}`);
+  const setStyle = (id: keyof ThemeStyle, v: SettingValue) => {
+    const next = { ...doc.globals.style, [id]: v } as ThemeStyle;
+    const viol = checkStyleChange(ctx, doc.globals.style, next, DEFAULT_STYLE); if (viol.length) { blocked(viol); return; }
+    commit({ ...doc, globals: { ...doc.globals, style: next } }, `style.${id}`);
+  };
   const dev = DEVICES.find((d) => d.key === device)!;
   const saveLabel = save === "saving" ? "Salvando…" : save === "dirty" ? "Alterações não salvas" : save === "error" ? "Erro ao salvar. Toque para tentar de novo" : "Rascunho salvo";
 
   return (
+    <MediaLibraryProvider>
     <div className="flex h-full flex-col bg-background">
       <header className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-3 py-2">
         <h1 className="sr-only">Editor do tema da loja</h1>
@@ -187,8 +217,9 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
 
       <div className="flex min-h-0 flex-1">
         <aside aria-label="Seções da página" className={cn("nl-scroll w-full shrink-0 overflow-y-auto border-r border-border bg-surface lg:block lg:w-72", mobileTab === "tree" ? "block" : "hidden")}>
-          {!advanced ? <div className="p-3 pb-0"><Banner tone="info" title={`Você está na ${offerName}`}>Aqui você edita textos e cores. Mudar a ordem e as seções está na <Link href={upgradeHref} className="font-medium underline">Loja própria</Link>.</Banner></div> : null}
-          <SectionTree header={doc.globals.header} content={doc.pages[page]} footer={doc.globals.footer} pageLabel={PAGE_LABEL[page]} sel={sel} advanced={advanced} actions={actions} lockHint={lockHint} />
+          {conflict ? <div className="p-3 pb-0"><Banner tone="warning" title="Outra aba mudou este rascunho">Para não apagar o trabalho de ninguém, nada desta aba foi gravado por cima. <button type="button" className="font-medium underline" onClick={() => window.location.reload()}>Recarregar a versão mais nova</button></Banner></div> : null}
+          <div className="p-3 pb-0"><LevelCard ctx={ctx} rights={rights} levelLabel={levelLabel} upgradeHref={upgradeHref} /></div>
+          <SectionTree header={doc.globals.header} content={doc.pages[page]} footer={doc.globals.footer} pageLabel={PAGE_LABEL[page]} sel={sel} ctx={ctx} page={page} actions={actions} lockHint={lockHint} />
         </aside>
 
         <main className={cn("min-w-0 flex-1 bg-surface-muted p-3 lg:block", mobileTab === "preview" ? "block" : "hidden")}>
@@ -207,23 +238,29 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
                   <ImageUploadButton label={logo ? "Trocar logo" : "Enviar logo"} maxSide={640} format="png" onUploaded={async (url) => { const r = await setStoreLogoAction(url); if (r.ok) { setLogo(url); post({ type: "refresh" }); } else toast.error(r.error); }} />
                   <p className="text-[11px] text-muted-foreground">PNG com fundo transparente fica melhor. A altura ajusta-se no cabeçalho.</p>
                 </div>
-                {STYLE_DEFS.map((def) => { const locked = ADVANCED_STYLE.has(def.id) && !advanced; return (
+                {STYLE_DEFS.map((def) => { const min = STYLE_MIN_LEVEL[def.id as keyof ThemeStyle]; const locked = !!min && !settingAllowed(ctx, { ...def, minLevel: min } as never).ok; return (
                   <fieldset key={def.id} disabled={locked} className={cn(locked && "opacity-60")}>
                     <SettingField def={def} value={doc.globals.style[def.id as keyof ThemeStyle]} onChange={(v) => setStyle(def.id as keyof ThemeStyle, v)} data={picker} idPrefix="style" locked={locked} />
-                    {locked ? <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground"><Lock className="size-3" aria-hidden /> <Link href={upgradeHref} className="underline">Loja própria</Link></p> : null}
+                    {locked && min ? <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground"><Lock className="size-3" aria-hidden /> Temas {LEVEL_INFO[min].short} · <Link href={upgradeHref} className="underline">ver temas</Link></p> : null}
                   </fieldset>
                 ); })}
               </CardContent></Card>
             ) : selSection && schema && sel?.kind === "section" ? (
               <Card><CardHeader><div><CardTitle>{schema.name}</CardTitle><p className="text-xs text-muted-foreground">{schema.description}</p></div></CardHeader><CardContent className="space-y-4">
                 {schema.settings.length === 0 ? <p className="text-sm text-muted-foreground">Esta seção é configurada pelos blocos, no menu à esquerda.</p> : null}
-                {schema.settings.map((def) => <SettingField key={def.id} def={def} value={selSection.settings[def.id]} idPrefix={`s-${sel.id}`} data={picker} onChange={(v) => mutate(sel.region, (t) => setSetting(t, sel.id, def.id, v), `${sel.id}.${def.id}`)} />)}
+                {schema.settings.map((def) => <LockedField key={def.id} def={def} ctx={ctx}><SettingField def={def} value={selSection.settings[def.id]} idPrefix={`s-${sel.id}`} data={picker} locked={!settingAllowed(ctx, def).ok} onChange={(v) => mutate(sel.region, (t) => setSetting(t, sel.id, def.id, v), `${sel.id}.${def.id}`)} /></LockedField>)}
               </CardContent></Card>
             ) : selSection && schema && sel?.kind === "block" ? (() => {
               const b = selSection.blocks[sel.blockId]; const bdef = b ? schema.blocks?.find((d) => d.type === b.type) : undefined;
               if (!b || !bdef) return null;
+              const isBanner = bdef.settings.some((d) => d.id === "focusX");
+              const issues = isBanner ? scheduleIssues([{ id: sel.blockId, settings: b.settings }], new Date()) : [];
+              const patch = (p: Record<string, SettingValue>) => mutate(sel.region, (t) => Object.entries(p).reduce((acc, [k, v]) => setBlockSetting(acc, sel.sectionId, sel.blockId, k, v), t), `${sel.blockId}.media`);
+              let lastGroup: string | undefined;
               return <Card><CardHeader><div><CardTitle>{bdef.name}</CardTitle><p className="text-xs text-muted-foreground">Em {schema.name}</p></div></CardHeader><CardContent className="space-y-4">
-                {bdef.settings.map((def) => <SettingField key={def.id} def={def} value={b.settings[def.id]} idPrefix={`b-${sel.blockId}`} data={picker} onChange={(v) => mutate(sel.region, (t) => setBlockSetting(t, sel.sectionId, sel.blockId, def.id, v), `${sel.blockId}.${def.id}`)} />)}
+                {isBanner ? <BannerMediaPanel sectionType={selSection.type} settings={b.settings} onSet={patch} idPrefix={`bm-${sel.blockId}`} /> : null}
+                {issues.map((m) => <p key={m} role="status" className="rounded-md bg-warning-soft p-2 text-xs text-warning">{m}</p>)}
+                {bdef.settings.filter((def) => !(isBanner && MEDIA_FIELDS.has(def.id))).map((def) => { const head = def.group && def.group !== lastGroup && def.group !== "Imagem" ? def.group : null; lastGroup = def.group; return <React.Fragment key={def.id}>{head ? <p className="border-t border-border pt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{head}</p> : null}<LockedField key={def.id} def={def} ctx={ctx}><SettingField def={def} value={b.settings[def.id]} idPrefix={`b-${sel.blockId}`} data={picker} locked={!settingAllowed(ctx, def).ok} onChange={(v) => mutate(sel.region, (t) => setBlockSetting(t, sel.sectionId, sel.blockId, def.id, v), `${sel.blockId}.${def.id}`)} /></LockedField></React.Fragment>; })}
               </CardContent></Card>;
             })() : (
               <div className="rounded-lg border border-dashed border-border-strong p-6 text-center text-sm text-muted-foreground"><p className="font-medium text-foreground">Selecione uma seção</p><p className="mt-1">Clique em uma seção da lista ou direto na prévia para editar.</p><p className="mt-3 text-xs">Desfazer <KeyboardHint keys={["Ctrl", "Z"]} /> · Salvar <KeyboardHint keys={["Ctrl", "S"]} /></p></div>
@@ -232,8 +269,29 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         </aside>
       </div>
 
-      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={page} current={getTemplate(doc, adding ?? "content", page)} premium={premium} onPick={pickSection} />
+      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={page} current={getTemplate(doc, adding ?? "content", page)} ctx={ctx} upgradeHref={upgradeHref} onPick={pickSection} />
       <VersionsDialog open={versions} onOpenChange={setVersions} page={page} />
+    </div>
+    </MediaLibraryProvider>
+  );
+}
+
+/** Ajuste acima do nível: aparece (para mostrar o valor), mas travado e com o nível necessário. */
+function LockedField({ def, ctx, children }: { def: import("@/lib/themes/types").SettingDef; ctx: ReturnType<typeof hydrateContext>; children: React.ReactNode }) {
+  const v = settingAllowed(ctx, def);
+  if (v.ok) return <>{children}</>;
+  return <fieldset disabled className="opacity-60">{children}<p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground"><Lock className="size-3" aria-hidden /> Temas {def.minLevel ? LEVEL_INFO[def.minLevel].short : ""} ({def.minLevel ? LEVEL_INFO[def.minLevel].name : ""})</p></fieldset>;
+}
+
+/** O que o tema ativo permite editar (nível e compatibilidade), com o caminho para níveis acima. */
+function LevelCard({ ctx, rights, levelLabel, upgradeHref }: { ctx: ReturnType<typeof hydrateContext>; rights: ReturnType<typeof structureRights>; levelLabel: string; upgradeHref: string }) {
+  const can = [rights.add === "any" ? "adicionar, mover e duplicar seções" : rights.add === "approved" ? `acrescentar até ${rights.extraLimit} espaços aprovados por página` : "editar o conteúdo dos espaços do tema", "ocultar espaços opcionais", "imagens com foco e versão de celular"];
+  return (
+    <div className="rounded-lg border border-border bg-surface-muted p-3 text-xs" aria-label="Nível do tema">
+      <p className="font-semibold text-foreground">Tema {ctx.themeName} · {levelLabel}</p>
+      <p className="mt-1 text-muted-foreground">Você pode {can.join(", ")}.</p>
+      {ctx.legacy.size ? <p className="mt-1 text-muted-foreground">Sua oferta Loja própria mantém a reorganização de seções que ela já incluía.</p> : null}
+      {ctx.level < 4 ? <Link href={upgradeHref} className="mt-1.5 inline-block font-medium text-accent-foreground underline">Comparar níveis de tema</Link> : null}
     </div>
   );
 }

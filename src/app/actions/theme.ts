@@ -12,7 +12,7 @@ import { PREVIEW_COOKIE } from "@/lib/themes/preview";
 import { TRY_COOKIE } from "@/lib/themes/try";
 import { THEME_BY_KEY } from "@/lib/themes/catalog";
 import { buyTheme, installTheme } from "@/lib/themes/install";
-import { discardDraft, listVersions, publishAllDrafts, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
+import { discardDraft, draftRevisions, listVersions, publishAllDrafts, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { PAGE_KINDS } from "@/lib/themes/types";
 
 async function ctx() {
@@ -32,20 +32,23 @@ export async function exitThemePreviewAction() {
   (await cookies()).delete(PREVIEW_COOKIE);
 }
 
-export async function saveTemplateDraftAction(p: string, template: unknown) {
-  return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveTemplateDraft(db, session.actor, storeId, page.parse(p), template); return { issues: r.issues }; });
+const rev = z.number().int().min(0).optional();
+/** Salva o rascunho; `baseRevision` é a revisão que o editor conhece (outra aba mudou → conflito, nada é sobrescrito). */
+export async function saveTemplateDraftAction(p: string, template: unknown, baseRevision?: number) {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveTemplateDraft(db, session.actor, storeId, page.parse(p), template, { baseRevision: rev.parse(baseRevision) }); return { issues: r.issues, revision: r.revision }; });
 }
-export async function saveGlobalsDraftAction(globals: unknown) {
-  return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveGlobalsDraft(db, session.actor, storeId, globals); return { issues: r.issues }; });
+export async function saveGlobalsDraftAction(globals: unknown, baseRevision?: number) {
+  return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveGlobalsDraft(db, session.actor, storeId, globals, { baseRevision: rev.parse(baseRevision) }); return { issues: r.issues, revision: r.revision }; });
 }
 
 /** Publica todas as páginas com rascunho e o estilo global. */
-export async function publishThemeAction(label?: string) {
+const revisionsSchema = z.object({ home: rev, product: rev, collection: rev, cart: rev, globals: rev }).partial().optional();
+export async function publishThemeAction(label?: string, expected?: Partial<Record<string, number>>) {
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
-    const r = await publishAllDrafts(db, session.actor, storeId, label ?? "Publicação");
+    const r = await publishAllDrafts(db, session.actor, storeId, z.string().max(80).optional().parse(label) ?? "Publicação", { expected: revisionsSchema.parse(expected) });
     refresh(session.store?.slug); revalidatePath("/merchant", "layout");
-    return { pages: r.pages, globals: r.globals };
+    return { pages: r.pages, globals: r.globals, revisions: await draftRevisions(db, storeId) };
   });
 }
 export async function discardThemeDraftAction() {

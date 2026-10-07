@@ -493,3 +493,14 @@ Rodada do dono (`docs/prompts/auditoria-dono-paineis-e-paginas.md`, fases 1, 3, 
 - **Master × marcas:** página por marca (`/master/marcas/superdrop`, `/master/marcas/commerce`) com saúde, clientes que precisam de atenção (com "Ver como cliente") e atalhos; o seletor de negócio leva a ela.
 - `/commerce` aberto no endereço do Master não volta mais ao login (estava fora da lista de prefixos de painel).
 - Páginas públicas: espaços "Imagem em criação" (`ImagemEmCriacao`) que trocam sozinhos pela foto quando o arquivo existir em `public/portal/<marca>/v3/` (lista em `MANIFESTO.md`; prompt das imagens em `docs/prompts/imagens-paginas-publicas-gpt.md`).
+
+## D82 — Temas por nível (N1–N4), política única e direitos preservados (2026-10-07)
+Pedido do dono (`Prompt-NextLevel.md`, auditoria em `docs/temas-modulares/AUDITORIA.md`). Branch `claude/temas-modulares-v1`, sem publicação.
+- **Edição deriva do tema ativo + licença, não do plano.** Fim do cadeado "Loja própria" para editar o que o tema vendeu. A oferta Loja própria mantém, por compatibilidade explícita, a reorganização de seções da base e o estilo avançado que o "Editor avançado" incluía (`LEGACY_PLAN_GRANTS`); seções de temas pagos exigem a licença do tema.
+- **Capacidades semânticas** substituem as listas de nomes de tema nas seções (`requires`, `families`, `module`); níveis cumulativos (`src/lib/themes/levels.ts`). Política pura única (`policy.ts`) usada pelo editor (cadeados, diálogo, árvore) e pelo servidor (salvar, publicar, restaurar, comprar, instalar). Especificação: `docs/temas-modulares/ESPECIFICACAO.md`.
+- **Liberação no servidor:** `release` (`released`/`review`/`draft`) bloqueia compra e instalação de tema não liberado também por chamada direta (corrige A01); licença já comprada continua instalável.
+- **Compatibilidade:** o que já está no documento continua valendo; Editorial mantém o vídeo que anunciava (`grants`); restaurar versão de outro tema reativa o tema se houver licença.
+- **Rascunho nunca some:** instalar guarda rascunhos no histórico (corrige A04); revisão por página e conflito entre abas (`DRAFT_CONFLICT`, corrige A05).
+- **Verdade comercial:** modelos sem "frete grátis", prazos ou depoimentos inventados; contagem e depoimentos nascem ocultos (A11/A12); preços públicos de uma fonte só (A13).
+- **Preços atuais preservados.** Proposta de preços dos temas novos fica em `docs/temas-modulares/CATALOGO.md` (não aplicada).
+- **Conflito registrado:** skill `tema-pago` ("não comece o tema N+1 sem OK do tema N") passa a valer para liberação comercial, não para desenvolvimento local reversível (proposta; skill não alterada).

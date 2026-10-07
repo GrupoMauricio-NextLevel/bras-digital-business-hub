@@ -5,6 +5,9 @@ import { FormField } from "@/components/app/form-field";
 import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { ColorField, FontPicker, LinkPicker, RangeField, ResourcePicker, RichTextLite } from "@/components/ds/fields";
 import { ImageUploadButton } from "./image-upload";
+import { useMediaLibrary } from "./media-library";
+import { Images } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { isValidDateTime, isValidImageRef, isValidVideoRef } from "@/lib/themes/settings";
 import type { SettingDef, SettingValue } from "@/lib/themes/types";
 
@@ -27,7 +30,7 @@ export function SettingField({ def, value, onChange, data, idPrefix, locked }: {
     case "checkbox": return <div className="py-1"><Switch checked={v === true} onCheckedChange={onChange} label={def.label} /></div>;
     case "url": return <LinkPicker id={id} label={def.label} value={String(v)} onChange={onChange} destinations={DESTINATIONS} />;
     case "image": { const ok = isValidImageRef(String(v)); return <FormField label={def.label} htmlFor={id} error={ok ? undefined : "Use um endereço https:// ou um caminho da loja."} hint="Envie uma imagem do seu computador ou cole o endereço (https://).">
-      <div className="flex gap-2"><Input id={id} value={String(v)} placeholder="https://…" aria-invalid={!ok} onChange={(e) => onChange(e.target.value)} /><ImageUploadButton onUploaded={onChange} label="Enviar" /></div>
+      <div className="flex gap-2"><Input id={id} value={String(v)} placeholder="https://…" aria-invalid={!ok} onChange={(e) => onChange(e.target.value)} /><LibraryButton onPick={onChange} /></div>
       {ok && String(v) ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={String(v)} alt="" className="mt-2 h-20 rounded-md border border-border object-cover" />
@@ -39,4 +42,11 @@ export function SettingField({ def, value, onChange, data, idPrefix, locked }: {
     case "collection": return wrap(<Select id={id} value={String(v)} onChange={(e) => onChange(e.target.value)}><option value="">Nenhuma</option>{data.categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}</Select>);
     case "font": return <div><FontPicker label={def.label} value={String(v)} onChange={onChange} />{lockNote}</div>;
   }
+}
+
+/** Abre a biblioteca de imagens (quando o editor a oferece); fora dele, cai no envio simples. */
+function LibraryButton({ onPick }: { onPick: (url: string) => void }) {
+  const pick = useMediaLibrary();
+  if (!pick) return <ImageUploadButton onUploaded={onPick} label="Enviar" />;
+  return <Button type="button" size="sm" variant="secondary" onClick={async () => { const u = await pick(); if (u) onPick(u); }}><Images aria-hidden /> Biblioteca</Button>;
 }

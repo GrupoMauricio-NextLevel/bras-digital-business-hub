@@ -104,14 +104,16 @@ export function ThemesAndPrices({ themes }: { themes: ThemeRow[] }) {
 const FAQ = [
   { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
   { q: "Posso usar a minha identidade?", a: "Sim: logo, cores, fontes e textos são seus. O domínio próprio (seudominio.com.br) faz parte do plano de loja própria." },
-  { q: "Quanto custa?", a: "Os temas custam: Starter grátis, Arena R$ 299, Editorial R$ 699 e Signature R$ 1.499 (valores do catálogo de hoje, que podem mudar). O plano da loja, com mensalidade e taxas, é combinado na conversa com a equipe: ainda não há uma tabela pública de planos." },
+  { q: "Quanto custa?", a: "" /* montada a partir do catálogo de temas (fonte única) */ },
   { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes e análise de vendas. Atacado (preço por quantidade e pedido mínimo) está em construção e ainda não pode ser usado." },
   { q: "Como começo?", a: "Deixe seu contato. O cadastro aberto ao público ainda não foi liberado; a equipe da NextLevel responde e combina os próximos passos." },
 ];
-export function Faq() {
+export function Faq({ themes }: { themes: { name: string; priceCents: number }[] }) {
+  const prices = themes.map((t) => `${t.name} ${t.priceCents === 0 ? "grátis" : formatBRL(t.priceCents)}`).join(", ");
+  const items = FAQ.map((f) => (f.q === "Quanto custa?" ? { ...f, a: `Os temas custam: ${prices} (valores do catálogo de hoje, que podem mudar). O plano da loja, com mensalidade e taxas, é combinado na conversa com a equipe: ainda não há uma tabela pública de planos.` } : f));
   return (
     <div className="mx-auto max-w-3xl divide-y divide-border border-y border-border">
-      {FAQ.map((f) => (
+      {items.map((f) => (
         <details key={f.q} className="group py-1">
           <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-lg font-semibold text-foreground marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
             {f.q}<span aria-hidden className="text-2xl font-normal leading-none transition-transform group-open:rotate-45">+</span>

@@ -1,4 +1,5 @@
 /** Motor de temas: modelo de dados (seções, blocos, modelos de página em JSON e estilo global). */
+import type { Capability, PlatformModule, ThemeFamily, ThemeLevel } from "./levels";
 export const PAGE_KINDS = ["home", "product", "collection", "cart"] as const;
 export type PageKind = (typeof PAGE_KINDS)[number];
 export const PAGE_LABEL: Record<PageKind, string> = { home: "Página inicial", product: "Página de produto", collection: "Coleção", cart: "Carrinho" };
@@ -17,9 +18,14 @@ export type SettingDef = {
   options?: { value: string; label: string }[];
   min?: number; max?: number; step?: number; unit?: string;
   maxLength?: number;
+  /** Nível mínimo de tema para mudar este ajuste (o valor que o tema traz continua valendo nos níveis menores). */
+  minLevel?: ThemeLevel;
+  /** Agrupa ajustes no editor (ex.: "Imagem", "Texto", "Campanha"). */
+  group?: string;
 };
 
-export type BlockDef = { type: string; name: string; settings: SettingDef[]; limit?: number };
+/** `maxByLevel`: quantos blocos deste tipo cada nível permite (N1, N2, N3, N4). */
+export type BlockDef = { type: string; name: string; settings: SettingDef[]; limit?: number; maxByLevel?: readonly [number, number, number, number] };
 export type SectionRegion = "header" | "content" | "footer";
 export type SectionCategory = "Cabeçalho" | "Rodapé" | "Destaque" | "Produtos" | "Conteúdo" | "Confiança";
 
@@ -35,10 +41,14 @@ export type SectionSchema = {
   singleton?: boolean;
   /** Seções de um mesmo espaço se excluem (ex.: cabeçalho simples e cabeçalho com menu grande). */
   slot?: string;
-  /** Recurso pago ou avançado: o editor mostra cadeado nas ofertas que não liberam. */
-  premium?: boolean;
-  /** Temas que incluem esta seção. Sem a lista, a seção é livre; com ela, só quem tem um desses temas pode usá-la. */
-  themes?: string[];
+  /** Capacidade que o tema ativo precisa conceder para ADICIONAR esta seção (padrão: conteúdo básico, todos os níveis). */
+  requires?: Capability;
+  /** Seção de identidade: só os temas destas famílias a oferecem (ex.: destaque esportivo). Sem a lista, vale para todas. */
+  families?: ThemeFamily[];
+  /** Módulo operacional da plataforma de que a seção depende (contratado à parte; sem ele, a seção não aparece na loja). */
+  module?: PlatformModule;
+  /** Espaço obrigatório da página (não pode ser ocultado nem removido). */
+  required?: boolean;
   settings: SettingDef[];
   blocks?: BlockDef[];
   maxBlocks?: number;

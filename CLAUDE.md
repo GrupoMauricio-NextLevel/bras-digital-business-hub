@@ -26,7 +26,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Regra de negócio configurável vem de `platform_settings` (tabela de preços `getPriceBook`, regras de parceiros `getPartnerSettings`), nunca fixa no código.
 - Acessibilidade AA: `axe` sem violações graves, sem rolagem horizontal em 360 px; use `e2e/polish-v8.mjs` para varrer.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D82). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D83). Mudanças de comportamento sem teste não entram.
 
 ## Mapa rápido
 - Domínio: `src/lib/domain/` (finance, store-access, partners, nl-sales, orders, own-store, provisioning…) · Preços: `src/lib/finance/` · Temas: `src/lib/themes/` · E-mail: `src/lib/email.ts`

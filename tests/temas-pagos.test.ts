@@ -54,7 +54,7 @@ describe("vitrine pública de temas", () => {
     expect(list.map((t) => t.key)).toEqual(["starter", "lume", "arena", "editorial", "signature"]);
     expect(list.find((t) => t.key === "arena")!.quote!.listCents).toBe(THEME_BY_KEY.arena!.priceCents);
     const ninho = (await publicTheme(ctx.db, "ninho"))!;
-    expect(ninho.released).toBe(false); expect(ninho.demoReady).toBe(true); expect(ninho.quote!.listCents).toBe(14900);
+    expect(ninho.release).toBe("review"); expect(ninho.demoReady).toBe(true); expect(ninho.quote!.listCents).toBe(14900);
     expect(await publicTheme(ctx.db, "nao-existe")).toBeNull();
   });
 });
@@ -66,8 +66,12 @@ describe("lojista", () => {
     const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
     const cards = await themeCardsFor(ctx.db, owner);
     expect(cards.map((c) => c.key)).not.toContain("ninho");
+    // Tentativa direta (sem passar pela vitrine): compra e instalação recusadas no servidor, sem fatura criada.
+    await expect(buyTheme(ctx.db, owner, "ninho", "PIX")).rejects.toMatchObject({ code: "THEME_NOT_RELEASED" });
+    await expect(installTheme(ctx.db, owner, "ninho")).rejects.toMatchObject({ code: "THEME_NOT_RELEASED" });
+    expect((await ctx.db.select().from(financeInvoices).where(and(eq(financeInvoices.storeId, r.storeId), eq(financeInvoices.kind, "ADDON"))))).toHaveLength(0);
     // Quando o dono aprovar (released), a compra funciona e a instalação mantém os dados.
-    const ninho = THEME_BY_KEY.ninho!; ninho.released = true;
+    const ninho = THEME_BY_KEY.ninho!; ninho.release = "released";
     try {
       await ctx.db.update(themes).set({ available: true }).where(eq(themes.key, "ninho"));
       const bought = await buyTheme(ctx.db, owner, "ninho", "PIX");
@@ -77,6 +81,6 @@ describe("lojista", () => {
       const t = (await resolveTemplate(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!, "home")).template;
       expect(Object.values(t.sections).some((s) => s.type === "image-hero")).toBe(true);
       expect((await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!.name).toBe("Minha Loja");
-    } finally { ninho.released = false; }
+    } finally { ninho.release = "review"; }
   });
 });

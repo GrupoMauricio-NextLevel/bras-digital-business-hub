@@ -3,7 +3,7 @@ import { ImagemEmCriacao, TexturaDeFundo } from "@/components/portal/imagem-em-c
 import "./commerce/commerce.css";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
-import { THEME_CATALOG } from "@/lib/themes/catalog";
+import { isReleased, THEME_CATALOG } from "@/lib/themes/catalog";
 import { formatBRL } from "@/lib/money";
 import { DEMO_STORES } from "@/components/portal/commerce/demo-stores";
 import { StoreGallery, type GalleryTheme } from "@/components/portal/commerce/store-gallery";
@@ -88,11 +88,11 @@ export function CommerceHome({ brand }: { brand: Brand }) {
       </section>
 
       <section id="valores" aria-label="Temas e valores" className={section}>
-        <div className="mx-auto max-w-6xl"><ThemesAndPrices themes={THEME_CATALOG.map((t) => ({ key: t.key, name: t.name, priceCents: t.priceCents, tagline: t.tagline }))} /></div>
+        <div className="mx-auto max-w-6xl"><ThemesAndPrices themes={THEME_CATALOG.filter(isReleased).map((t) => ({ key: t.key, name: t.name, priceCents: t.priceCents, tagline: t.tagline }))} /></div>
       </section>
 
       <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-highlight-soft`}>
-        <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas que costumam aparecer.</h2><Faq /></div>
+        <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas que costumam aparecer.</h2><Faq themes={THEME_CATALOG.filter(isReleased).map((t) => ({ name: t.name, priceCents: t.priceCents }))} /></div>
       </section>
 
       <section className="relative overflow-hidden bg-band py-16 md:py-20" aria-label="Chamada final"><TexturaDeFundo marca="commerce" nome="cm-textura-fundo" /><div className="relative"><ClosingCta cta={cta} signupOpen={brand.signupOpen} /></div></section>

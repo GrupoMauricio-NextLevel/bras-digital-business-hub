@@ -1,0 +1,5 @@
+Migração 0040_temas_modulares aplicada sobre banco com o esquema do commit f4c6457 (pasta drizzle extraída por git archive),
+com um tema legado "pro" (id thm_legado) inserido direto no banco. Depois: runMigrations + bootstrap (2 vezes).
+Resultado (07/10/2026):
+TEMAS [{"id":"thm_legado","key":"arena","family":"sport","level":3,"release":"released","available":true},{"key":"editorial","family":"moda","level":3,"release":"released"},{"key":"lume","family":"moda","level":2,"release":"released"},{"key":"ninho","family":"casa","level":2,"release":"review","available":false},{"key":"signature","family":"base","level":4},{"key":"starter","family":"base","level":1}]
+- id do tema legado preservado (lojas e licenças continuam ligadas); uma linha só por chave; rodar de novo não muda nada.

@@ -7,15 +7,25 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { inputClass } from "@/components/ui/input";
 import { listThemeVersionsAction, restoreThemeVersionAction } from "@/app/actions/theme";
 import { SECTION_SCHEMAS } from "@/lib/themes/sections";
+import { LEVEL_INFO } from "@/lib/themes/levels";
+import { sectionAvailability, type EditingContext } from "@/lib/themes/policy";
 import type { PageKind, SectionRegion, Template } from "@/lib/themes/types";
 import { cn, formatDateTime } from "@/lib/utils";
 
-/** Catálogo de seções: busca, agrupado por categoria, com seção única já usada e recurso pago sinalizados. */
-export function AddSectionDialog({ open, onOpenChange, region, page, current, premium, onPick }: { open: boolean; onOpenChange: (o: boolean) => void; region: SectionRegion; page: PageKind; current: Template; premium: boolean; onPick: (type: string) => void }) {
+/**
+ * Catálogo de seções: busca, agrupado por categoria. A disponibilidade vem da MESMA política do servidor:
+ * seções de nível acima aparecem com cadeado e o nível; as de identidade de outra família não aparecem.
+ */
+export function AddSectionDialog({ open, onOpenChange, region, page, current, ctx, upgradeHref, onPick }: { open: boolean; onOpenChange: (o: boolean) => void; region: SectionRegion; page: PageKind; current: Template; ctx: EditingContext; upgradeHref: string; onPick: (type: string) => void }) {
   const [q, setQ] = React.useState("");
   const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const used = new Set(current.order.map((id) => current.sections[id]!.type));
-  const list = SECTION_SCHEMAS.filter((s) => s.region === region && (region !== "content" || s.pages.includes(page)) && fold(`${s.name} ${s.description} ${s.category}`).includes(fold(q)));
+  const list = SECTION_SCHEMAS.filter((s) => {
+    if (s.region !== region || (region === "content" && !s.pages.includes(page))) return false;
+    const v = sectionAvailability(ctx, s.type, { region, page });
+    if (!v.ok && (v.reason === "FAMILY_ONLY" || v.reason === "INCOMPATIBLE")) return false; // identidade de outra família: não polui a lista
+    return fold(`${s.name} ${s.description} ${s.category}`).includes(fold(q));
+  });
   const groups = [...new Set(list.map((s) => s.category))];
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) setQ(""); }}>
@@ -26,15 +36,16 @@ export function AddSectionDialog({ open, onOpenChange, region, page, current, pr
             <section key={g} aria-label={g}>
               <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{g}</h3>
               <ul className="space-y-1.5">
-                {list.filter((s) => s.category === g).map((s) => { const disabled = (s.singleton && used.has(s.type)) || (s.premium && !premium); return (
-                  <li key={s.type}><button type="button" disabled={disabled} onClick={() => { onPick(s.type); onOpenChange(false); }} className="flex w-full items-start gap-3 rounded-lg border border-border p-3 text-left transition hover:border-accent hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-50">
-                    <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{s.name}{s.premium ? <span className="ml-2 inline-flex items-center gap-1 rounded bg-accent-soft px-1.5 text-[10px] font-semibold text-accent-foreground"><Lock className="size-3" aria-hidden /> Premium</span> : null}</span><span className="block text-xs text-muted-foreground">{s.singleton && used.has(s.type) ? "Já está na página." : s.description}</span></span>
+                {list.filter((s) => s.category === g).map((s) => { const v = sectionAvailability(ctx, s.type, { region, page }); const usedUp = s.singleton && used.has(s.type); const disabled = usedUp || !v.ok; return (
+                  <li key={s.type}><button type="button" disabled={disabled} onClick={() => { onPick(s.type); onOpenChange(false); }} className="flex w-full items-start gap-3 rounded-lg border border-border p-3 text-left transition hover:border-accent hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60">
+                    <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{s.name}{!v.ok && v.requiredLevel ? <span className="ml-2 inline-flex items-center gap-1 rounded bg-accent-soft px-1.5 text-[10px] font-semibold text-accent-foreground"><Lock className="size-3" aria-hidden /> {LEVEL_INFO[v.requiredLevel].short} · {LEVEL_INFO[v.requiredLevel].name}</span> : null}</span><span className="block text-xs text-muted-foreground">{usedUp ? "Já está na página." : !v.ok ? v.message : s.description}</span></span>
                   </button></li>
                 ); })}
               </ul>
             </section>
           ))}
           {list.length === 0 ? <p className="p-4 text-center text-sm text-muted-foreground">Nenhuma seção encontrada.</p> : null}
+          <p className="px-1 text-xs text-muted-foreground">Seções com cadeado fazem parte de temas de nível superior. <a href={upgradeHref} className="font-medium underline">Comparar temas</a></p>
         </div>
       </DialogContent>
     </Dialog>

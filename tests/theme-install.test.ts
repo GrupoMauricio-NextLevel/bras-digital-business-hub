@@ -1,3 +1,4 @@
+import { makeEditingContext, sectionAvailability } from "@/lib/themes/policy";
 import { newId } from "@/lib/ids";
 import { nextlevelPayments } from "@/db/schema";
 import { chargeInvoiceCard, connectNextLevelMp, simulateNextLevelPayment, syncNextLevelPayment } from "@/lib/domain/nextlevel-billing";
@@ -7,10 +8,9 @@ import { entitlements, financeInvoices, stores, storeThemes, themes } from "@/db
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { markInvoicePaid } from "@/lib/domain/finance";
 import { fulfillPaidInvoice } from "@/lib/domain/nextlevel-billing";
-import { syncThemeCatalog, THEME_CATALOG } from "@/lib/themes/catalog";
+import { syncThemeCatalog, THEME_BY_KEY, THEME_CATALOG } from "@/lib/themes/catalog";
 import { buyTheme, installTheme, ownedThemeKeys, themeCardsFor } from "@/lib/themes/install";
 import { buildPreset, presetKeys, type PresetContext } from "@/lib/themes/presets";
-import { sectionSchema } from "@/lib/themes/sections";
 import { listVersions, resolveGlobals, resolveTemplate } from "@/lib/themes/store";
 import { normalizeGlobals, normalizeTemplate } from "@/lib/themes/template";
 import { PAGE_KINDS } from "@/lib/themes/types";
@@ -40,16 +40,18 @@ describe("catálogo de temas", () => {
   });
 });
 
+// Contexto de um tema sem nenhuma concessão de plano: o modelo do tema precisa caber no próprio nível.
+const ctxOf = (key: string) => { const t = THEME_BY_KEY[key]!; return makeEditingContext({ themeKey: key, themeName: t.name, family: t.family, level: t.level, grants: t.grants, offer: "STORE_SUBDOMAIN" }); };
 describe("modelos dos temas", () => {
   it("todos são válidos, sem nenhum aviso, e só usam seções que o próprio tema inclui", () => {
     for (const key of presetKeys) {
       const p = buildPreset(key, ctxp)!;
       for (const page of PAGE_KINDS) {
         const t = p.pages[page]; expect(normalizeTemplate(t, "content", page).issues, `${key}/${page}`).toEqual([]); expect(normalizeTemplate(t, "content", page).template).toEqual(t);
-        for (const s of Object.values(t.sections)) { const themesOf = sectionSchema(s.type)!.themes; if (themesOf) expect(themesOf, `${key}/${page}: ${s.type}`).toContain(key); }
+        for (const s of Object.values(t.sections)) expect(sectionAvailability(ctxOf(key), s.type, { region: "content", page }), `${key}/${page}: ${s.type}`).toEqual({ ok: true });
       }
       expect(normalizeGlobals(p.globals).issues, key).toEqual([]);
-      for (const s of [...Object.values(p.globals.header.sections), ...Object.values(p.globals.footer.sections)]) { const themesOf = sectionSchema(s.type)!.themes; if (themesOf) expect(themesOf, `${key}: ${s.type}`).toContain(key); }
+      for (const [region, g] of [["header", p.globals.header], ["footer", p.globals.footer]] as const) for (const s of Object.values(g.sections)) expect(sectionAvailability(ctxOf(key), s.type, { region }), `${key}: ${s.type}`).toEqual({ ok: true });
       expect(p.pages.product.order.some((id) => p.pages.product.sections[id]!.type === "product-main"), key).toBe(true);
       expect(p.pages.cart.order.some((id) => p.pages.cart.sections[id]!.type === "cart-main"), key).toBe(true);
     }

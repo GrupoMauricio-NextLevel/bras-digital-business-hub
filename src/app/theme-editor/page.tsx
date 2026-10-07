@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 import { ThemeEditor } from "@/components/theme-editor/editor";
 import { getDb } from "@/db/client";
 import { canUse } from "@/lib/features";
+import { editingContextFor } from "@/lib/themes/license";
+import { draftRevisions } from "@/lib/themes/store";
+import { serializeContext } from "@/lib/themes/policy";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { getStorefront, getStorefrontCatalog } from "@/lib/queries/storefront";
 import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
@@ -23,13 +26,15 @@ export default async function ThemeEditorPage() {
   const drafts = await Promise.all(kinds.map((k) => resolveTemplate(db, store, k, { draft: true })));
   const pubs = await Promise.all(kinds.map((k) => resolveTemplate(db, store, k)));
   const pages = (list: typeof drafts): Doc["pages"] => ({ home: list[0]!.template, product: list[1]!.template, collection: list[2]!.template, cart: list[3]!.template });
+  const ctx = serializeContext(await editingContextFor(db, store));
+  const revisions = await draftRevisions(db, store.id);
   const firstProduct = catalog[0]?.product.slug;
   const previewPaths = { home: `/store/${store.slug}`, product: firstProduct ? `/store/${store.slug}/product/${firstProduct}` : `/store/${store.slug}/catalog`, collection: `/store/${store.slug}/catalog`, cart: `/store/${store.slug}/cart` };
   return (
     <ThemeEditor
       logoUrl={store.logoUrl} storeName={store.name} slug={store.slug} offerName={OFFER_NAME[store.offer]}
       initial={{ pages: pages(drafts), globals: gDraft.globals }} published={{ pages: pages(pubs), globals: gPub.globals }} previewPaths={previewPaths}
-      advanced={canUse(store.offer, "appearanceAdvanced")} premium={canUse(store.offer, "templatesPremium")} upgradeHref="/merchant/services?pedir=upgrade-loja-propria"
+      policy={ctx} revisions={revisions} upgradeHref="/merchant/templates"
       picker={{ products: catalog.map((c) => ({ id: c.product.id, label: c.product.name, sublabel: formatBRL(c.storeProduct.priceCents) })), categories: (sf?.categories ?? []).map((c) => ({ id: c.id, label: c.name })) }}
     />
   );

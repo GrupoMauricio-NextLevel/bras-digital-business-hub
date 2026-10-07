@@ -68,14 +68,15 @@ describe("rascunho, publicação e histórico (Loja própria)", () => {
 
 describe("regras por oferta e por dono", () => {
   const A = () => ctx.actors.arena; const id = () => ctx.seed.stores.arena.id;
-  it("Loja SuperDrop edita textos e cores, mas não a estrutura nem a tipografia", async () => {
+  it("Loja SuperDrop com o tema grátis (N1) edita textos, cores e fontes, mas não a estrutura nem cantos/botões", async () => {
     const s = await store(id()); const cur = (await resolveTemplate(ctx.db, s, "home")).template;
     await saveTemplateDraft(ctx.db, A(), id(), "home", setSetting(cur, "hero", "title", "Arena 10 oficial"));
-    await expect(saveTemplateDraft(ctx.db, A(), id(), "home", addSection(cur, "rich-text", { region: "content", page: "home" }).template)).rejects.toMatchObject({ code: "FEATURE_LOCKED" });
+    await expect(saveTemplateDraft(ctx.db, A(), id(), "home", addSection(cur, "rich-text", { region: "content", page: "home" }).template)).rejects.toMatchObject({ code: "THEME_LOCKED" });
     await expect(saveTemplateDraft(ctx.db, A(), id(), "home", moveSection(cur, "grid", 0))).rejects.toBeInstanceOf(DomainError);
     const g = (await resolveGlobals(ctx.db, s)).globals;
     await saveGlobalsDraft(ctx.db, A(), id(), { ...g, style: { ...g.style, primary: "#1d4ed8" } });
-    await expect(saveGlobalsDraft(ctx.db, A(), id(), { ...g, style: { ...g.style, headingFont: "elegante" } })).rejects.toMatchObject({ code: "FEATURE_LOCKED" });
+    await saveGlobalsDraft(ctx.db, A(), id(), { ...g, style: { ...g.style, primary: "#1d4ed8", headingFont: "elegante" } });
+    await expect(saveGlobalsDraft(ctx.db, A(), id(), { ...g, style: { ...g.style, primary: "#1d4ed8", headingFont: "elegante", radius: 4 } })).rejects.toMatchObject({ code: "THEME_LOCKED" });
   });
   it("outra loja não edita o tema alheio; o Master pode", async () => {
     const mantos = ctx.seed.stores.mantos.id; const cur = (await resolveTemplate(ctx.db, await store(mantos), "home")).template;

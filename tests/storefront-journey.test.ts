@@ -10,7 +10,8 @@ import { SECTION_SCHEMAS } from "@/lib/themes/sections";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
-const PNG = "data:image/png;base64," + Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0, 0, 0]).toString("base64");
+// PNG real de 2×2 (decodifica de verdade; só o cabeçalho não basta mais).
+const PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAEklEQVQImWMwTptpnDaTAUIBAB/uBMm6iK1UAAAAAElFTkSuQmCC";
 
 async function place(storeKey: "mantos" | "arena" = "mantos", email = "cliente@teste.com") {
   const pid = ctx.seed.productIds[0]!;

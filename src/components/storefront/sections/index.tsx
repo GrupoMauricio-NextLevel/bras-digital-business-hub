@@ -3,7 +3,10 @@ import type { Template } from "@/lib/themes/types";
 import { AnnouncementBar, CartMain, CategoryChips, CollectionGrid, CollectionHeader, Footer, HeaderSection, Hero, ProductGrid, ProductMain, ProductRelated, ProductShowcase, PromoBanners, RichText, TrustBar } from "./sections";
 import { ArenaHero, CategoryGrid, CountdownSection, CtaBanner, Faq, HeaderPlus, ImageHero, ImageWithText, Lookbook, ProductTabs, SlideshowSection, Testimonials, VideoHero } from "./premium";
 import { SecuritySeals, StoreAbout, WhatsappFloat } from "./trust";
+import { BannerDuo, BannerMosaic, BannerStrip, HeroBanner } from "./banners";
 import { Reveal } from "@/components/portal/reveal";
+import { sectionSchema } from "@/lib/themes/sections";
+import { PLATFORM_MODULES } from "@/lib/themes/levels";
 import type { SectionCtx, SectionProps } from "./types";
 
 export type { SectionCtx } from "./types";
@@ -14,6 +17,7 @@ export const SECTION_COMPONENTS: Record<string, (props: SectionProps) => React.R
   "product-showcase": ProductShowcase, "promo-banners": PromoBanners, "product-grid": ProductGrid, "rich-text": RichText, footer: Footer,
   "product-main": ProductMain, "product-related": ProductRelated, "collection-header": CollectionHeader, "collection-grid": CollectionGrid, "cart-main": CartMain,
   "arena-hero": ArenaHero, "image-hero": ImageHero, slideshow: SlideshowSection, "video-hero": VideoHero, "category-grid": CategoryGrid, "image-with-text": ImageWithText, testimonials: Testimonials, faq: Faq, lookbook: Lookbook, countdown: CountdownSection, "cta-banner": CtaBanner, "product-tabs": ProductTabs, "header-plus": HeaderPlus,
+  "hero-banner": HeroBanner, "banner-duo": BannerDuo, "banner-strip": BannerStrip, "banner-mosaic": BannerMosaic,
 };
 
 /**
@@ -21,7 +25,8 @@ export const SECTION_COMPONENTS: Record<string, (props: SectionProps) => React.R
  * `display: contents` marcado com `data-section-id`, que o editor usa para localizar e destacar sem mexer no layout.
  */
 export function SectionList({ template, ctx, animate = false, region = "content" }: { template: Template; ctx: SectionCtx; animate?: boolean; region?: "header" | "content" | "footer" }) {
-  const visible = template.order.filter((id) => !template.sections[id]?.hidden);
+  // Seção que depende de módulo operacional não disponível degrada em silêncio para o visitante (nunca quebra a página).
+  const visible = template.order.filter((id) => { const s = template.sections[id]; if (!s || s.hidden) return false; const m = sectionSchema(s.type)?.module; return !m || PLATFORM_MODULES[m].available; });
   const firstId = region === "content" ? visible[0] : undefined;
   const c = { ...ctx, firstId };
   return (

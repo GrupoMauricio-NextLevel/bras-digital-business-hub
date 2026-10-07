@@ -13,5 +13,5 @@ export default async function DemoPage({ params }: { params: Promise<{ key: stri
   const { key } = await params;
   const t = await publicTheme(await getDb(), key);
   if (!t || !t.demoReady) notFound();
-  return <DemoFrame name={t.name} themeKey={t.key} src={`/store/${showcaseSlug(t.key)}`} pending={t.released === false} priceCents={t.priceCents} />;
+  return <DemoFrame name={t.name} themeKey={t.key} src={`/store/${showcaseSlug(t.key)}`} pending={t.release !== "released"} priceCents={t.priceCents} />;
 }

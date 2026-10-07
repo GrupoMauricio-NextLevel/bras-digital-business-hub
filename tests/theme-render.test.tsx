@@ -75,7 +75,7 @@ describe("páginas de produto, catálogo e carrinho", () => {
   it("produto: caminho, título, tamanhos, botão de compra e relacionados", () => {
     const html = page("product", { product: { ...products[0]!, variants: [{ id: "v1", size: "M", available: 3 }] }, related: products.slice(1, 4) });
     for (const t of ["Camisa 0", "Adicionar ao carrinho", "Tamanho", "Você também pode gostar", "Catálogo"]) expect(html).toContain(t);
-    expect(html).toContain("etiqueta em até 1 dia útil");
+    expect(html).not.toContain("Central Sports"); expect(html).not.toContain("1 dia útil");
   });
   it("produto: opções de galeria e sem relacionados", () => {
     const base = { product: { ...products[0]!, images: ["https://cdn.exemplo.com/a.webp", "https://cdn.exemplo.com/b.webp"] } };
@@ -116,7 +116,7 @@ describe("seções dos temas pagos", () => {
   it("categorias, imagem com texto, depoimentos, lookbook e chamada", () => {
     expect(build("category-grid")).toContain("/store/mantos/catalog?category=camisas");
     expect(build("image-with-text", "content", (t, id) => setSetting(t, id, "body", "**Forte** <script>x</script>"))).not.toContain("<script>");
-    const dep = build("testimonials"); expect(dep).toContain("Depoimento de exemplo"); expect(dep).toContain("5 de 5 estrelas");
+    const dep = build("testimonials"); expect(dep).toContain("Troque por um depoimento real"); expect(dep).toContain("5 de 5 estrelas");
     expect(build("lookbook")).toContain("Dia de jogo"); expect(build("cta-banner")).toContain("https://wa.me/5511999990001");
   });
   it("perguntas frequentes trazem dados estruturados sem fechar o script", () => {
