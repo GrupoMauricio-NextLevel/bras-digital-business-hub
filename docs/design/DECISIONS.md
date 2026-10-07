@@ -477,3 +477,10 @@ Decisão do dono: proposta `brand-system-v2/` aprovada ("está tudo aprovado, po
 - Estados (sucesso, alerta, erro, informação) iguais em todas as marcas, sempre com ícone e texto.
 - Logos e favicons: cópias do kit oficial v1 com o raio recolorido (`public/brand/v2/`), via `BrandLogo`/`Logo`; favicon por marca do endereço (`brandIcons`); marcas sem logo oficial (Brás, China) aparecem só com o nome em texto e usam o favicon do grupo.
 - Pendências conhecidas: serrilhado dos contornos do kit acima de ~1200 px (pede redesenho manual); CMYK/Pantone não definidos.
+
+## D80 — Modo suporte seguro e central de clientes (2026-10-07)
+Rodada do dono (`docs/prompts/auditoria-dono-paineis-e-paginas.md`, fases 0 e 2).
+- **Falha corrigida:** o "Entrar como lojista" do Commerce guardava o código do Master num cookie sem assinatura e confiava nele para devolver o acesso Master. Substituído por permissão assinada, presa à sessão do cliente (`sup`), com prazo de 1 hora e operador conferido a cada requisição.
+- Modo suporte para todos os papéis de clientes (lojista, equipe, fornecedor, expedição, parceiro) de todas as marcas, a partir de `/master/clientes` (e do console Commerce).
+- Motivo obrigatório; começa em **somente leitura** (bloqueio central em `runAction`); "agir em nome do cliente" é um segundo passo confirmado; entrada, liberação e saída na trilha `audit_log`, visível ao dono da loja.
+- Detalhes e testes: `docs/auditoria-dono/03-suporte.md`.

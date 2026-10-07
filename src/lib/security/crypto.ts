@@ -31,20 +31,20 @@ export function decryptSecret(payload: string | null | undefined): string | null
 }
 
 /** Token de sessão assinado: base64url(payload).assinatura */
-export function signSession(payload: { uid: string; exp: number }): string {
+export function signSession(payload: { uid: string; exp: number; sup?: string }): string {
   const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const sig = createHmac("sha256", secret()).update(body).digest("base64url");
   return `${body}.${sig}`;
 }
 
-export function verifySession(token: string | undefined): { uid: string; exp: number } | null {
+export function verifySession(token: string | undefined): { uid: string; exp: number; sup?: string } | null {
   if (!token) return null;
   const [body, sig] = token.split(".");
   if (!body || !sig) return null;
   const expected = createHmac("sha256", secret()).update(body).digest("base64url");
   if (expected.length !== sig.length || !timingSafeEq(expected, sig)) return null;
   try {
-    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as { uid: string; exp: number };
+    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as { uid: string; exp: number; sup?: string };
     if (!payload.uid || payload.exp < Date.now()) return null;
     return payload;
   } catch {
@@ -56,4 +56,29 @@ function timingSafeEq(a: string, b: string): boolean {
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
+}
+
+/**
+ * Token assinado para outro propósito que não a sessão (ex.: modo suporte). O propósito entra na assinatura,
+ * então um token de um tipo nunca vale como outro.
+ */
+export function signToken<T extends { exp: number }>(purpose: string, payload: T): string {
+  const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = createHmac("sha256", secret()).update(`${purpose}:${body}`).digest("base64url");
+  return `${body}.${sig}`;
+}
+
+export function verifyToken<T extends { exp: number }>(purpose: string, token: string | undefined): T | null {
+  if (!token) return null;
+  const [body, sig] = token.split(".");
+  if (!body || !sig) return null;
+  const expected = createHmac("sha256", secret()).update(`${purpose}:${body}`).digest("base64url");
+  if (expected.length !== sig.length || !timingSafeEq(expected, sig)) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as T;
+    if (typeof payload.exp !== "number" || payload.exp < Date.now()) return null;
+    return payload;
+  } catch {
+    return null;
+  }
 }

@@ -5,6 +5,12 @@ export type ActionResult<T = undefined> = { ok: true; data: T } | { ok: false; e
 
 /** Envolve uma server action convertendo erros de domínio/validação em resultado legível. */
 export async function runAction<T>(fn: () => Promise<T>): Promise<ActionResult<T>> {
+  // Modo suporte começa em somente leitura: nenhuma ação muda dados até o operador liberar "agir em nome do cliente".
+  try {
+    const { getSession } = await import("./auth");
+    const s = await getSession();
+    if (s?.support && !s.support.act) return { ok: false, error: "Modo suporte em somente leitura. Para fazer esta ação pelo cliente, use \"Agir em nome do cliente\" na faixa do topo.", code: "SUPPORT_READ_ONLY" };
+  } catch { /* fora de uma requisição (testes, scripts): segue */ }
   try {
     const data = await fn();
     return { ok: true, data };

@@ -327,3 +327,8 @@
 .ds-side .ds-switcher button { color: var(--ds-side-fg); }
 .nl-shell { display: contents; }
 
+
+/* ---- Modo suporte: faixa fixa no topo do conteúdo ---- */
+.ds-support-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 18px; padding: 10px 14px; border-radius: var(--ds-r-control); border: 1px solid var(--ds-info); background: var(--ds-info-soft); color: var(--ds-info); font-size: var(--ds-fs-small); }
+.ds-support-bar--act { border-color: var(--ds-warning); background: var(--ds-warning-soft); color: var(--ds-warning); }
+.ds-support-meta { color: var(--ds-text); }

@@ -54,6 +54,9 @@ export async function loginAs(email: string) {
 }
 
 export async function logout() {
+  // Sair durante o modo suporte encerra o suporte (registrado) e volta à conta Master.
+  const session = await getSession();
+  if (session?.support) { const { exitSupportAction } = await import("./support"); await exitSupportAction(); }
   await clearSessionCookie();
   redirect("/login");
 }

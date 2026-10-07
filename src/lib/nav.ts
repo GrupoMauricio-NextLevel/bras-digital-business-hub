@@ -5,7 +5,7 @@ export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
   | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox" | "Link2" | "Ticket" | "HandCoins"
-  | "ShoppingBag" | "Megaphone" | "ReceiptText" | "Tag" | "LayoutGrid";
+  | "ShoppingBag" | "Megaphone" | "ReceiptText" | "Tag" | "LayoutGrid" | "LifeBuoy";
 
 export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro" | "partner";
 
@@ -45,6 +45,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       NEXTLEVEL_ITEM("/master"),
       { label: "NextLevel Commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE" },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
+      { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
       { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship" },
       { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship" },
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },

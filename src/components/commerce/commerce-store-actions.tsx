@@ -3,14 +3,15 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ExternalLink, LogIn, MoreHorizontal, PauseCircle, PlayCircle, TimerReset } from "lucide-react";
-import { enterCommerceStoreAction, extendCommerceTrialAction, setCommerceStoreStatusAction } from "@/app/actions/commerce-admin";
+import { ExternalLink, MoreHorizontal, PauseCircle, PlayCircle, TimerReset } from "lucide-react";
+import { extendCommerceTrialAction, setCommerceStoreStatusAction } from "@/app/actions/commerce-admin";
+import { SupportEnterButton } from "@/components/support/support-enter";
 
 export function CommerceStoreActions({ storeId, status, slug, canExtendTrial }: { storeId:string; status:string; slug:string; canExtendTrial:boolean }) {
   const router=useRouter(); const [open,setOpen]=React.useState(false); const [pending,start]=React.useTransition();
   const run=(fn:()=>Promise<{ok:boolean;error?:string}>)=>start(async()=>{const r=await fn(); if(!r.ok) toast.error(r.error??"Não foi possível concluir."); else {toast.success("Atualizado.");setOpen(false);router.refresh();}});
   return <div className="relative flex items-center justify-end gap-2">
-    <form action={enterCommerceStoreAction.bind(null,storeId)}><button disabled={pending} className="inline-flex h-9 items-center gap-2 border border-[var(--product-accent)] px-3 text-[11px] font-medium text-[var(--product-accent-text)] hover:bg-sidebar-active"><LogIn className="size-3.5"/> Entrar como lojista</button></form>
+    <SupportEnterButton storeId={storeId} name="o lojista" back="/commerce/stores" label="Ver como lojista" />
     <button onClick={()=>setOpen(!open)} className="flex size-9 items-center justify-center border border-border text-muted-foreground hover:text-foreground" aria-label="Ações"><MoreHorizontal className="size-4"/></button>
     {open?<div className="absolute right-0 top-11 z-20 w-56 border border-border bg-surface p-1 shadow-2xl">
       <a href={"/store/"+slug} target="_blank" rel="noreferrer" className="flex h-10 items-center gap-2 px-3 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground"><ExternalLink className="size-3.5"/> Abrir loja pública</a>

@@ -13,7 +13,7 @@ import { independentSupplierOfStore } from "@/lib/domain/independent";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
-import { hasCommerceMasterReturn, returnToCommerceMasterAction } from "@/app/actions/commerce-admin";
+import { SupportBar } from "@/components/support/support-bar";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -32,6 +32,8 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const db = await getDb();
   await expireStaleReservations(db);
   const nav = NAV[session.user.role];
+  const sup = session.support;
+  const supportBar = sup ? <SupportBar clientName={session.user.name} roleLabel={session.store?.name ?? session.supplier?.name ?? nav.label} operatorName={sup.operatorName} reason={sup.reason} act={sup.act} until={new Date(sup.exp).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })} /> : null;
   const store = session.store;
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
@@ -47,17 +49,10 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   if (commerceStore || scope === "commerce-admin") {
-    const assisted = commerceStore ? await hasCommerceMasterReturn() : false;
     const staff = session.user.storeRole === "STAFF";
     const commerceItems = commerceStore
       ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
       : COMMERCE_ADMIN_NAV;
-    const assistedBar = assisted ? (
-      <div className="mb-5 flex min-h-10 flex-wrap items-center justify-between gap-3 rounded-[var(--ds-r-control)] border border-border bg-[var(--ds-soft)] px-4 py-2 text-sm text-[var(--ds-link)]">
-        <span>Modo suporte · você está vendo a loja como o lojista.</span>
-        <form action={returnToCommerceMasterAction}><button className="font-bold underline underline-offset-4">Voltar ao Commerce</button></form>
-      </div>
-    ) : null;
     const demoUsersC = isDemoMode() ? await listDemoUsers() : undefined;
     return (
       <AppShell
@@ -78,7 +73,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
-        banner={<>{assistedBar}{banner}</>}
+        banner={<>{supportBar}{banner}</>}
       >
         {children}
       </AppShell>
@@ -90,7 +85,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : "NextLevel");
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={banner}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={<>{supportBar}{banner}</>}>
       {children}
     </AppShell>
   );
