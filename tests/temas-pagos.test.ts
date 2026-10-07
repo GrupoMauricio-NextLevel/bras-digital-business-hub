@@ -9,6 +9,7 @@ import { signupMember } from "@/lib/domain/store-access";
 import { THEME_BY_KEY, THEME_CATALOG } from "@/lib/themes/catalog";
 import { publicTheme, publicThemes } from "@/lib/themes/gallery";
 import { buyTheme, installTheme, themeCardsFor } from "@/lib/themes/install";
+import { demoFamilyOf } from "@/lib/themes/families";
 import { ensureShowcaseStores, SHOWCASE_PRODUCTS, showcaseSlug } from "@/lib/themes/showcase";
 import { resolveTemplate } from "@/lib/themes/store";
 import { freshDb } from "./setup";
@@ -23,7 +24,7 @@ describe("lojas de demonstração dos temas", () => {
       const s = await demoStore(t.key);
       expect(s.showcaseTheme, t.key).toBe(t.key);
       expect(s.status).toBe("CLOSED");
-      expect((await ctx.db.select().from(storeProducts).where(eq(storeProducts.storeId, s.id))).length).toBe(t.key === "ninho" ? 6 : SHOWCASE_PRODUCTS.length);
+      expect((await ctx.db.select().from(storeProducts).where(eq(storeProducts.storeId, s.id))).length).toBe(SHOWCASE_PRODUCTS.length);
       const applied = await ctx.db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, s.id));
       expect(applied[0]?.key, t.key).toBe(t.key);
     }
@@ -35,23 +36,25 @@ describe("lojas de demonstração dos temas", () => {
     expect(await ensureShowcaseStores(ctx.db)).toEqual([]);
     expect((await ctx.db.select().from(stores)).length).toBe(before);
   });
-  it("a home da demonstração do Ninho usa as fotos de exemplo", async () => {
+  it("Casa sem imagem final: o banner fica pendente (fundo do tema), nunca com foto de outro segmento", async () => {
     const t = (await resolveTemplate(ctx.db, await demoStore("ninho"), "home")).template;
-    const hero = Object.values(t.sections).find((s) => s.type === "image-hero")!;
-    expect(String(hero.settings.image)).toMatch(/^\/portal\/commerce\/.+\.webp$/);
+    const hero = Object.values(t.sections).find((s) => s.type === "hero-banner")!;
+    const first = hero.blocks[hero.blockOrder[0]!]!;
+    expect(first.settings.image).toBe(""); expect(first.settings.alt).toMatch(/Despensa/);
+    expect((await demoStore("ninho")).name).toBe("Casa em Ordem");
   });
-  it("família Moda: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async () => {
+  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async (family, keys) => {
     const skusOf = async (key: string) => {
       const rows = await ctx.db.select({ sku: products.sku, cat: products.categoryId, pid: products.id }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(and(eq(storeProducts.storeId, (await demoStore(key)).id), eq(storeProducts.active, true)));
       return rows;
     };
-    const base = await skusOf("trama");
+    const base = await skusOf(keys[0]);
     expect(base.length).toBeGreaterThanOrEqual(12);
     expect(new Set(base.map((r) => r.cat)).size).toBe(4);
-    for (const key of ["lume", "editorial", "atelier"]) expect((await skusOf(key)).map((r) => r.sku).sort()).toEqual(base.map((r) => r.sku).sort());
+    for (const key of keys.slice(1)) expect((await skusOf(key)).map((r) => r.sku).sort(), key).toEqual(base.map((r) => r.sku).sort());
     const variants = await ctx.db.select().from(productVariants).where(inArray(productVariants.productId, base.map((r) => r.pid)));
     expect(variants.length).toBeGreaterThan(base.length);
-    const sold = SHOWCASE_PRODUCTS.find((p) => p.soldOut)!;
+    const sold = demoFamilyOf(family)!.products.find((p) => p.soldOut)!;
     const soldPid = base.find((r) => r.sku === sold.sku)!.pid;
     const soldVars = variants.filter((v) => v.productId === soldPid).map((v) => v.id);
     const stock = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, soldVars));
@@ -61,9 +64,9 @@ describe("lojas de demonstração dos temas", () => {
     // N1 com banners fixos; N4 com campanha agendada; nenhum banner aponta para foto aleatória fora do manifesto
     const home = async (key: string) => (await resolveTemplate(ctx.db, await demoStore(key), "home")).template;
     const types = async (key: string) => Object.values((await home(key)).sections).map((x) => x.type);
-    expect(await types("trama")).toContain("hero-banner");
-    expect(await types("editorial")).toContain("banner-mosaic");
-    expect(JSON.stringify(await home("atelier"))).toMatch(/startsAt/);
+    expect(await types(keys[0])).toContain("hero-banner");
+    if (keys[2] !== "arena") expect(await types(keys[2])).toContain("banner-mosaic");
+    expect(JSON.stringify(await home(keys[3]))).toMatch(/startsAt/);
   });
   it("não aceita pedido, mesmo com tudo certo", async () => {
     const s = await demoStore("ninho");
@@ -104,7 +107,7 @@ describe("lojista", () => {
       expect((await ctx.db.select().from(entitlements).where(and(eq(entitlements.storeId, r.storeId), eq(entitlements.key, "THEME_NINHO")))).length).toBe(1);
       await installTheme(ctx.db, owner, "ninho");
       const t = (await resolveTemplate(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!, "home")).template;
-      expect(Object.values(t.sections).some((s) => s.type === "image-hero")).toBe(true);
+      expect(Object.values(t.sections).some((s) => s.type === "hero-banner")).toBe(true);
       expect((await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!.name).toBe("Minha Loja");
     } finally { ninho.release = "review"; }
   });

@@ -23,12 +23,14 @@ const pay = async (invoiceId: string) => { const inv = await markInvoicePaid(ctx
 const ctxp: PresetContext = { storeName: "Loja Teste", tagline: "Slogan da loja", primary: "#0f172a", accent: "#16a34a", announcement: "", footerText: "", now: new Date("2026-05-10T12:00:00Z") };
 
 describe("catálogo de temas", () => {
-  it("tem os temas com os preços definidos (Trama, Ninho e Atelier em revisão; preço do Atelier em definição)", () => {
-    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["trama", 0], ["lume", 14900], ["ninho", 14900], ["arena", 29900], ["editorial", 69900], ["atelier", 0], ["signature", 149900]]);
+  it("tem os temas com os preços definidos (temas novos em revisão; pagos sem preço aprovado ficam em definição)", () => {
+    expect(THEME_CATALOG.map((t) => [t.key, t.priceCents])).toEqual([["starter", 0], ["trama", 0], ["lume", 14900], ["lar", 0], ["ninho", 14900], ["lance", 0], ["torcida", 0], ["arena", 29900], ["editorial", 69900], ["varanda", 0], ["atelier", 0], ["morada", 0], ["podio", 0], ["signature", 149900]]);
     expect(THEME_CATALOG.find((t) => t.key === "atelier")).toMatchObject({ release: "review", pricePending: true, level: 4 });
+    // Nenhum tema em revisão é vendido; todo tema pago sem preço tem a marca de preço em definição.
+    for (const t of THEME_CATALOG) if (t.level > 1 && t.priceCents === 0) expect(t.pricePending, t.key).toBe(true);
   });
   it("a semente já traz o catálogo novo e sincronizar de novo não muda nada", async () => {
-    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "atelier", "editorial", "lume", "ninho", "signature", "starter", "trama"]); expect(rows.filter((r) => !r.available).map((r) => r.key).sort()).toEqual(["atelier", "ninho", "trama"]);
+    const rows = await ctx.db.select().from(themes); expect(rows.map((r) => r.key).sort()).toEqual(["arena", "atelier", "editorial", "lance", "lar", "lume", "morada", "ninho", "podio", "signature", "starter", "torcida", "trama", "varanda"]); expect(rows.filter((r) => !r.available).map((r) => r.key).sort()).toEqual(["atelier", "lance", "lar", "morada", "ninho", "podio", "torcida", "trama", "varanda"]);
     expect(await syncThemeCatalog(ctx.db)).toEqual([]);
   });
   it("converte os temas antigos (pro e elite) mantendo o id das lojas ligadas", async () => {

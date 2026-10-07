@@ -1,6 +1,7 @@
 import { sectionSchema } from "./sections";
 import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
-import { modaAtelier, modaEditorial, modaLume, modaTrama } from "./presets-moda";
+import { CASA, MODA, SPORT } from "./familias-specs";
+import { familyBuilders } from "./presets-familia";
 import type { PageKind, SettingValue, Template, ThemeGlobals, ThemeStyle } from "./types";
 
 /** Dados da loja que os temas usam para nascer já com o nome, as cores e os textos dela. */
@@ -46,34 +47,6 @@ function starter(c: PresetContext): ThemePreset {
     ),
   };
 }
-
-/** Degrau de entrada dos temas pagos: o mesmo padrão de página em segmentos e cores diferentes (Lume, Ninho…). */
-type EntryLook = { primary: string; accent: string; headingFont: string; radius: number; catStyle: "circles" | "cards"; heroFallback: { title: (name: string) => string; text: string; cta: string }; featured: { title: string; subtitle: string }; aboutCta: string };
-function entryTheme(c: PresetContext, look: EntryLook): ThemePreset {
-  const style = normalizeStyle({ primary: look.primary, accent: look.accent, headingFont: look.headingFont, bodyFont: "moderna", radius: look.radius, buttons: "solid", quickView: true, animations: false });
-  const help = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Ficou com dúvida? Chame a gente", text: "Atendimento pelo WhatsApp para escolher e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
-  return {
-    style,
-    globals: globals(style, [announcement(c, "", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
-    pages: pages(
-      [
-        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? look.heroFallback.title(c.storeName), text: c.hero?.subtitle ?? look.heroFallback.text, ctaLabel: c.hero?.ctaLabel ?? look.heroFallback.cta, height: "lg", overlay: 35, align: "left", fullWidth: true } }],
-        ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
-        ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", style: look.catStyle } }],
-        ["featured", { type: "product-showcase", settings: { title: look.featured.title, subtitle: look.featured.subtitle, source: "featured", count: 4 } }],
-        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte em poucas linhas o que torna a sua loja especial.", ctaLabel: look.aboutCta, ratio: "square" } }],
-        ["latest", { type: "product-showcase", settings: { title: "Acabaram de chegar", subtitle: "", source: "latest", count: 4 } }],
-        ["faq", { type: "faq", blocks: blocksOf("faq") }],
-        help(),
-        ["grid", { type: "product-grid" }],
-      ],
-      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
-      [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], help()],
-      [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
-    ),
-  };
-}
-const ninho = (c: PresetContext) => entryTheme(c, { primary: "#2f4a3a", accent: "#b4532a", headingFont: "editorial", radius: 10, catStyle: "cards", heroFallback: { title: (n) => `Deixe a casa com a sua cara na ${n}`, text: "Móveis e peças de decoração escolhidos para o seu lar.", cta: "Ver a coleção" }, featured: { title: "Para o seu lar", subtitle: "Os destaques da casa" }, aboutCta: "Ver todos os móveis" });
 
 function arena(c: PresetContext): ThemePreset {
   const style = normalizeStyle({ primary: "#0f1c16", accent: "#22c55e", headingFont: "condensada", bodyFont: "moderna", radius: 8, buttons: "solid", quickView: true, animations: true });
@@ -128,7 +101,11 @@ function signature(c: PresetContext): ThemePreset {
   };
 }
 
-// Família Moda (Trama N1 · Lume N2 · Editorial N3 · Atelier N4): composição em presets-moda.ts.
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, lume: modaLume, ninho, arena, editorial: modaEditorial, signature, trama: modaTrama, atelier: modaAtelier };
+// Famílias (composição por nível em presets-familia.ts; identidade em familias-specs.ts). Arena (N3 Sport) mantém a
+// composição com que já é vendido; os demais temas das famílias usam o construtor do nível.
+const [trama, lume, editorial, atelier] = familyBuilders(MODA);
+const [lar, ninho, varanda, morada] = familyBuilders(CASA);
+const [lance, torcida, , podio] = familyBuilders(SPORT);
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }

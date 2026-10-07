@@ -24,19 +24,7 @@ import { PAGE_KINDS } from "./types";
 export const showcaseSlug = (themeKey: string) => `demo-${themeKey}`;
 const FAR = "2099-12-31T00:00:00.000Z";
 
-/** Catálogo antigo da casa (Ninho) até a família Casa ganhar o seu catálogo sintético completo. */
-const LEGACY_CASA: FamilyDemo = {
-  family: "casa", storeName: "Loja Exemplo", tagline: "Casa e decoração", assets: [], menu: [],
-  products: [
-    { name: "Sofá de veludo verde", sku: "EX-01", price: 289900, photo: "/portal/commerce/casa-1.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-    { name: "Sofá de couro caramelo", sku: "EX-02", price: 349900, photo: "/portal/commerce/casa-2.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-    { name: "Sofá laranja com almofada", sku: "EX-03", price: 259900, photo: "/portal/commerce/casa-3.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-    { name: "Poltrona amarela", sku: "EX-04", price: 119900, photo: "/portal/commerce/casa-hero.webp", category: "Cadeiras e poltronas", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-    { name: "Cadeira estofada cinza", sku: "EX-05", price: 49900, photo: "/portal/commerce/casa-4.webp", category: "Cadeiras e poltronas", variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-    { name: "Banco alto de madeira", sku: "EX-06", price: 29900, photo: "/portal/commerce/casa-5.webp", category: "Cadeiras e poltronas", variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
-  ],
-};
-const demoOf = (themeKey: string): FamilyDemo => (themeKey === "ninho" ? LEGACY_CASA : demoFamilyOf(THEME_BY_KEY[themeKey]!.family)!);
+const demoOf = (themeKey: string): FamilyDemo => demoFamilyOf(THEME_BY_KEY[themeKey]!.family)!;
 /** Produtos de exemplo da família Moda (catálogo de referência das demonstrações). */
 export const SHOWCASE_PRODUCTS = demoFamilyOf("moda")!.products;
 
@@ -57,11 +45,13 @@ export function resolveAsset(a: FamilyAsset): { image: string; imageMobile: stri
 }
 const mediaOf = (d: FamilyDemo): NonNullable<PresetContext["media"]> => Object.fromEntries(d.assets.map((a) => { const r = resolveAsset(a); return [a.id, { image: r.image, imageMobile: r.imageMobile, alt: r.alt }]; }));
 /** Fotos dos temas que ainda usam `images` (Starter, Signature, Arena): as da família da demonstração. */
-const imagesOf = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => ({ hero: m[`${d.family}-hero-1`]?.image || "/portal/commerce/moda-hero-wide.webp", about: m[`${d.family}-sobre`]?.image || "/portal/commerce/moda-2.webp" });
+const imagesOf = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => ({ hero: m[`${d.family}-hero-1`]?.image || "", about: m[`${d.family}-sobre`]?.image || "" });
+/** Foto do produto: a final do dono (public/temas/familias/<família>/produtos/<SKU>.webp), senão a provisória do catálogo. */
+export const productPhoto = (family: string, p: DemoProduct) => { const f = `/temas/familias/${family}/produtos/${p.sku}.webp`; return fileOk(f) ? f : p.photo; };
 
-async function addProducts(db: Database, storeId: string, supplierId: string, list: DemoProduct[]) {
+async function addProducts(db: Database, storeId: string, supplierId: string, list: DemoProduct[], family: string) {
   for (const p of list) {
-    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: p.description, categoryName: p.category, images: [p.photo], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: p.variants.map((v) => ({ size: v, initialStock: p.soldOut ? 0 : 40 })) });
+    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: p.description, categoryName: p.category, images: [productPhoto(family, p)], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: p.variants.map((v) => ({ size: v, initialStock: p.soldOut ? 0 : 40 })) });
     await db.insert(storeProducts).values({ storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured });
   }
 }
@@ -70,7 +60,7 @@ async function createShowcaseStore(db: Database, themeKey: string, themeName: st
   const email = `demo-${themeKey}@demonstracao.nextlevel.invalid`;
   const r = await signupMember(db, { storeName: demo.storeName, ownerName: `Demonstração ${themeName}`, email, password: randomBytes(24).toString("base64url"), taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
   const owner = actorFromUser((await db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  await addProducts(db, r.storeId, await catalogSupplierId(db, owner), demo.products);
+  await addProducts(db, r.storeId, await catalogSupplierId(db, owner), demo.products, demo.family);
   // Sem dono com acesso; a loja fica fora das contagens (CLOSED) mas aparece na vitrine pública pelo marcador de demonstração.
   await db.update(users).set({ disabledAt: new Date().toISOString() }).where(eq(users.id, r.userId));
   await db.update(stores).set({ slug: showcaseSlug(themeKey), showcaseTheme: themeKey, status: "CLOSED", publishedAt: new Date().toISOString(), paidUntil: FAR, trialEndsAt: null, tagline: demo.tagline, logoText: demo.storeName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(), logoUrl: themeLogo(themeKey), updatedAt: new Date().toISOString() }).where(eq(stores.id, r.storeId));
@@ -79,17 +69,19 @@ async function createShowcaseStore(db: Database, themeKey: string, themeName: st
 
 /** Deixa o catálogo da demonstração igual ao da família (acrescenta o que falta, desativa o que saiu, ajusta destaque). */
 async function syncProducts(db: Database, store: typeof stores.$inferSelect, demo: FamilyDemo): Promise<boolean> {
-  const rows = await db.select({ productId: storeProducts.productId, active: storeProducts.active, featured: storeProducts.featured, sku: products.sku }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(eq(storeProducts.storeId, store.id));
+  const rows = await db.select({ productId: storeProducts.productId, active: storeProducts.active, featured: storeProducts.featured, sku: products.sku, images: products.images }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(eq(storeProducts.storeId, store.id));
   const want = new Map(demo.products.map((p) => [p.sku, p]));
   const missing = demo.products.filter((p) => !rows.some((r) => r.sku === p.sku));
   let changed = false;
   if (missing.length) {
     const owner = (await db.select().from(users).where(eq(users.organizationId, store.organizationId)))[0]!;
-    await addProducts(db, store.id, await catalogSupplierId(db, actorFromUser(owner)), missing); changed = true;
+    await addProducts(db, store.id, await catalogSupplierId(db, actorFromUser(owner)), missing, demo.family); changed = true;
   }
   for (const r of rows) {
     const p = want.get(r.sku);
     const active = !!p, featured = !!p?.featured;
+    // Foto final entregue pelo dono troca a provisória sem recriar o produto.
+    if (p && JSON.stringify(r.images) !== JSON.stringify([productPhoto(demo.family, p)])) { await db.update(products).set({ images: [productPhoto(demo.family, p)] }).where(eq(products.id, r.productId)); changed = true; }
     if (r.active !== active || r.featured !== featured) { await db.update(storeProducts).set({ active, featured }).where(and(eq(storeProducts.storeId, store.id), eq(storeProducts.productId, r.productId))); changed = true; }
   }
   if (store.name !== demo.storeName || store.tagline !== demo.tagline) { await db.update(stores).set({ name: demo.storeName, tagline: demo.tagline, updatedAt: new Date().toISOString() }).where(eq(stores.id, store.id)); changed = true; }
