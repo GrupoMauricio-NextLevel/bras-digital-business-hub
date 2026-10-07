@@ -1,9 +1,9 @@
 [
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "home",
-  "url": "/store/demo-petala",
+  "url": "/store/demo-trama",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -17,59 +17,59 @@
   "sections": 9
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "colecao",
-  "url": "/store/demo-petala/catalog?category=cabelo",
+  "url": "/store/demo-trama/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "produto",
-  "url": "/store/demo-petala/product/elasticos-de-seda",
+  "url": "/store/demo-trama/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "carrinho",
-  "url": "/store/demo-petala/cart",
+  "url": "/store/demo-trama/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "checkout",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 360,
   "page": "confirmacao",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "home",
-  "url": "/store/demo-petala",
+  "url": "/store/demo-trama",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -83,59 +83,59 @@
   "sections": 9
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "colecao",
-  "url": "/store/demo-petala/catalog?category=cabelo",
+  "url": "/store/demo-trama/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "produto",
-  "url": "/store/demo-petala/product/elasticos-de-seda",
+  "url": "/store/demo-trama/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "carrinho",
-  "url": "/store/demo-petala/cart",
+  "url": "/store/demo-trama/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "checkout",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 768,
   "page": "confirmacao",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "home",
-  "url": "/store/demo-petala",
+  "url": "/store/demo-trama",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -149,59 +149,59 @@
   "sections": 9
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "colecao",
-  "url": "/store/demo-petala/catalog?category=cabelo",
+  "url": "/store/demo-trama/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "produto",
-  "url": "/store/demo-petala/product/elasticos-de-seda",
+  "url": "/store/demo-trama/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "carrinho",
-  "url": "/store/demo-petala/cart",
+  "url": "/store/demo-trama/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "checkout",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "petala",
+  "key": "trama",
   "w": 1440,
   "page": "confirmacao",
-  "url": "/store/demo-petala/checkout",
+  "url": "/store/demo-trama/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "home",
-  "url": "/store/demo-brilho",
+  "url": "/store/demo-lume",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -215,59 +215,59 @@
   "sections": 10
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "colecao",
-  "url": "/store/demo-brilho/catalog?category=maquiagem",
+  "url": "/store/demo-lume/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "produto",
-  "url": "/store/demo-brilho/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-lume/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "carrinho",
-  "url": "/store/demo-brilho/cart",
+  "url": "/store/demo-lume/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "checkout",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 360,
   "page": "confirmacao",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "home",
-  "url": "/store/demo-brilho",
+  "url": "/store/demo-lume",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -281,59 +281,59 @@
   "sections": 10
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "colecao",
-  "url": "/store/demo-brilho/catalog?category=maquiagem",
+  "url": "/store/demo-lume/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "produto",
-  "url": "/store/demo-brilho/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-lume/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "carrinho",
-  "url": "/store/demo-brilho/cart",
+  "url": "/store/demo-lume/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "checkout",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 768,
   "page": "confirmacao",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "home",
-  "url": "/store/demo-brilho",
+  "url": "/store/demo-lume",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -347,59 +347,59 @@
   "sections": 10
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "colecao",
-  "url": "/store/demo-brilho/catalog?category=maquiagem",
+  "url": "/store/demo-lume/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "produto",
-  "url": "/store/demo-brilho/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-lume/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "carrinho",
-  "url": "/store/demo-brilho/cart",
+  "url": "/store/demo-lume/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "checkout",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "brilho",
+  "key": "lume",
   "w": 1440,
   "page": "confirmacao",
-  "url": "/store/demo-brilho/checkout",
+  "url": "/store/demo-lume/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "home",
-  "url": "/store/demo-aura",
+  "url": "/store/demo-editorial",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -413,59 +413,59 @@
   "sections": 10
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "colecao",
-  "url": "/store/demo-aura/catalog?category=maquiagem",
+  "url": "/store/demo-editorial/catalog",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 12
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "produto",
-  "url": "/store/demo-aura/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-editorial/product/bermuda-essencial-caqui",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "carrinho",
-  "url": "/store/demo-aura/cart",
+  "url": "/store/demo-editorial/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "checkout",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 360,
   "page": "confirmacao",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "home",
-  "url": "/store/demo-aura",
+  "url": "/store/demo-editorial",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -479,59 +479,59 @@
   "sections": 10
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "colecao",
-  "url": "/store/demo-aura/catalog?category=maquiagem",
+  "url": "/store/demo-editorial/catalog",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 12
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "produto",
-  "url": "/store/demo-aura/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-editorial/product/bermuda-essencial-caqui",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "carrinho",
-  "url": "/store/demo-aura/cart",
+  "url": "/store/demo-editorial/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "checkout",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 768,
   "page": "confirmacao",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "home",
-  "url": "/store/demo-aura",
+  "url": "/store/demo-editorial",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -545,59 +545,59 @@
   "sections": 10
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "colecao",
-  "url": "/store/demo-aura/catalog?category=maquiagem",
+  "url": "/store/demo-editorial/catalog",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 12
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "produto",
-  "url": "/store/demo-aura/product/espelho-de-mesa-com-luz",
+  "url": "/store/demo-editorial/product/bermuda-essencial-caqui",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "soldOutSeen": true
+  "soldOutSeen": false
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "carrinho",
-  "url": "/store/demo-aura/cart",
+  "url": "/store/demo-editorial/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "checkout",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "aura",
+  "key": "editorial",
   "w": 1440,
   "page": "confirmacao",
-  "url": "/store/demo-aura/checkout",
+  "url": "/store/demo-editorial/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "home",
-  "url": "/store/demo-musa",
+  "url": "/store/demo-atelier",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -611,59 +611,59 @@
   "sections": 10
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "colecao",
-  "url": "/store/demo-musa/catalog?category=cabelo",
+  "url": "/store/demo-atelier/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "produto",
-  "url": "/store/demo-musa/product/elasticos-de-seda",
+  "url": "/store/demo-atelier/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "carrinho",
-  "url": "/store/demo-musa/cart",
+  "url": "/store/demo-atelier/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "checkout",
-  "url": "/store/demo-musa/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 360,
   "page": "confirmacao",
-  "url": "/store/demo-musa/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "home",
-  "url": "/store/demo-musa",
+  "url": "/store/demo-atelier",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -677,59 +677,59 @@
   "sections": 10
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "colecao",
-  "url": "/store/demo-musa/catalog?category=cabelo",
+  "url": "/store/demo-atelier/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "products": 3
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "produto",
-  "url": "/store/demo-musa/product/elasticos-de-seda",
+  "url": "/store/demo-atelier/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "carrinho",
-  "url": "/store/demo-musa/cart",
+  "url": "/store/demo-atelier/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "checkout",
-  "url": "/store/demo-musa/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 768,
   "page": "confirmacao",
-  "url": "/store/demo-musa/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 1440,
   "page": "home",
-  "url": "/store/demo-musa",
+  "url": "/store/demo-atelier",
   "errors": [],
   "overflow": 0,
   "axe": [],
@@ -743,1636 +743,286 @@
   "sections": 10
  },
  {
-  "key": "musa",
+  "key": "atelier",
   "w": 1440,
   "page": "colecao",
-  "url": "/store/demo-musa/catalog?category=cabelo",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 4
- },
- {
-  "key": "musa",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-musa/product/elasticos-de-seda",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "musa",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-musa/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "musa",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-musa/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "musa",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-musa/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-sinal",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-sinal/catalog?category=capinhas",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 4
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-sinal/product/capinha-carteira-de-couro-sintetico",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-sinal/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "sinal",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-sinal",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-sinal/catalog?category=capinhas",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 4
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-sinal/product/capinha-carteira-de-couro-sintetico",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-sinal/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "sinal",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-sinal",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-sinal/catalog?category=capinhas",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 4
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-sinal/product/capinha-carteira-de-couro-sintetico",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-sinal/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "sinal",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-sinal/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "pulso",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-pulso",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "pulso",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-pulso/catalog?category=fones",
+  "url": "/store/demo-atelier/catalog?category=basicos",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "products": 3
  },
  {
-  "key": "pulso",
-  "w": 360,
+  "key": "atelier",
+  "w": 1440,
   "page": "produto",
-  "url": "/store/demo-pulso/product/fone-com-fio-usb-c",
+  "url": "/store/demo-atelier/product/camiseta-algodao-essencial",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "soldOutSeen": false
  },
  {
-  "key": "pulso",
-  "w": 360,
+  "key": "atelier",
+  "w": 1440,
   "page": "carrinho",
-  "url": "/store/demo-pulso/cart",
+  "url": "/store/demo-atelier/cart",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "lines": 5
  },
  {
-  "key": "pulso",
-  "w": 360,
+  "key": "atelier",
+  "w": 1440,
   "page": "checkout",
-  "url": "/store/demo-pulso/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": [],
   "demoNote": true
  },
  {
-  "key": "pulso",
-  "w": 360,
+  "key": "atelier",
+  "w": 1440,
   "page": "confirmacao",
-  "url": "/store/demo-pulso/checkout",
+  "url": "/store/demo-atelier/checkout",
   "errors": [],
   "overflow": 0,
   "axe": []
  },
  {
-  "key": "pulso",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-pulso",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 360,
+  "page": "galeria",
+  "url": "/temas",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "pulso",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-pulso/catalog?category=fones",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
+  "cards": 26,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "pulso",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-pulso/product/fone-com-fio-usb-c",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "pulso",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-pulso/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "pulso",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-pulso/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "pulso",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-pulso/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "pulso",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-pulso",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 360,
+  "page": "galeria-moda",
+  "url": "/temas?familia=moda",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "pulso",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-pulso/catalog?category=fones",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
+  "cards": 4,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "pulso",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-pulso/product/fone-com-fio-usb-c",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "pulso",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-pulso/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "pulso",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-pulso/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "pulso",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-pulso/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "circuito",
+  "key": "galeria",
   "w": 360,
-  "page": "home",
-  "url": "/store/demo-circuito",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "galeria-n4",
+  "url": "/temas?nivel=4",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "circuito",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-circuito/catalog?category=fones",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
+  "cards": 7,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "circuito",
+  "key": "galeria",
   "w": 360,
-  "page": "produto",
-  "url": "/store/demo-circuito/product/fone-com-fio-usb-c",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "circuito",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-circuito/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "circuito",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "circuito",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "circuito",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-circuito",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "tema-atelier",
+  "url": "/temas/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "circuito",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-circuito/catalog?category=fones",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "circuito",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-circuito/product/fone-com-fio-usb-c",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "circuito",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-circuito/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "circuito",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "circuito",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "circuito",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-circuito",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 360,
+  "page": "tema-lume",
+  "url": "/temas/lume",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "circuito",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-circuito/catalog?category=fones",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "circuito",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-circuito/product/fone-com-fio-usb-c",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "circuito",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-circuito/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "circuito",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "circuito",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-circuito/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "orbita",
+  "key": "galeria",
   "w": 360,
-  "page": "home",
-  "url": "/store/demo-orbita",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "demo-atelier",
+  "url": "/demo/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "orbita",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-orbita/catalog?category=cabos-e-carregadores",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "orbita",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-orbita/product/bateria-portatil-10-000-mah",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "orbita",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-orbita/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "orbita",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "orbita",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "orbita",
+  "key": "galeria",
   "w": 768,
-  "page": "home",
-  "url": "/store/demo-orbita",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "galeria",
+  "url": "/temas",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "orbita",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-orbita/catalog?category=cabos-e-carregadores",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 26,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "orbita",
+  "key": "galeria",
   "w": 768,
-  "page": "produto",
-  "url": "/store/demo-orbita/product/bateria-portatil-10-000-mah",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "orbita",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-orbita/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "orbita",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "orbita",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "orbita",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-orbita",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "galeria-moda",
+  "url": "/temas?familia=moda",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "orbita",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-orbita/catalog?category=cabos-e-carregadores",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 4,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "orbita",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-orbita/product/bateria-portatil-10-000-mah",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "orbita",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-orbita/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "orbita",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "orbita",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-orbita/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "fardo",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-fardo",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 768,
+  "page": "galeria-n4",
+  "url": "/temas?nivel=4",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "fardo",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-fardo/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 7,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "fardo",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-fardo/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "fardo",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-fardo/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "fardo",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "fardo",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "fardo",
+  "key": "galeria",
   "w": 768,
-  "page": "home",
-  "url": "/store/demo-fardo",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "tema-atelier",
+  "url": "/temas/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "fardo",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-fardo/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "fardo",
+  "key": "galeria",
   "w": 768,
-  "page": "produto",
-  "url": "/store/demo-fardo/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "fardo",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-fardo/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "fardo",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "fardo",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "fardo",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-fardo",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "tema-lume",
+  "url": "/temas/lume",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 9
- },
- {
-  "key": "fardo",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-fardo/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "fardo",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-fardo/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "fardo",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-fardo/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "fardo",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "fardo",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-fardo/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "lote",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-lote",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 768,
+  "page": "demo-atelier",
+  "url": "/demo/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "lote",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-lote/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "lote",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-lote/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "lote",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-lote/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "lote",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "lote",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "lote",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-lote",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 1440,
+  "page": "galeria",
+  "url": "/temas",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "lote",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-lote/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 26,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "lote",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-lote/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "lote",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-lote/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "lote",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "lote",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "lote",
+  "key": "galeria",
   "w": 1440,
-  "page": "home",
-  "url": "/store/demo-lote",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "galeria-moda",
+  "url": "/temas?familia=moda",
   "status": 200,
-  "banners": [
-   "hero",
-   "duo",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "lote",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-lote/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 4,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "lote",
+  "key": "galeria",
   "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-lote/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "lote",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-lote/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "lote",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "lote",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-lote/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "galpao",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-galpao",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "galeria-n4",
+  "url": "/temas?nivel=4",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "galpao",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-galpao/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 7,
+  "pricePending": false,
+  "compare": false
  },
  {
-  "key": "galpao",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-galpao/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "galpao",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-galpao/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "galpao",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "galpao",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "galpao",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-galpao",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "key": "galeria",
+  "w": 1440,
+  "page": "tema-atelier",
+  "url": "/temas/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "galpao",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-galpao/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "galpao",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-galpao/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "galpao",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-galpao/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "galpao",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "galpao",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "galpao",
+  "key": "galeria",
   "w": 1440,
-  "page": "home",
-  "url": "/store/demo-galpao",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "tema-lume",
+  "url": "/temas/lume",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "strip"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "galpao",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-galpao/catalog?category=utilidades",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 4
+  "cards": 0,
+  "pricePending": false,
+  "compare": true
  },
  {
-  "key": "galpao",
+  "key": "galeria",
   "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-galpao/product/garrafa-plastica-500-ml",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "galpao",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-galpao/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "galpao",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "galpao",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-galpao/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "home",
-  "url": "/store/demo-porto",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
+  "page": "demo-atelier",
+  "url": "/demo/atelier",
   "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "colecao",
-  "url": "/store/demo-porto/catalog?category=acessorios",
   "errors": [],
   "overflow": 0,
   "axe": [],
-  "products": 3
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "produto",
-  "url": "/store/demo-porto/product/cabo-usb-c-1-m",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "carrinho",
-  "url": "/store/demo-porto/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "checkout",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "porto",
-  "w": 360,
-  "page": "confirmacao",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "home",
-  "url": "/store/demo-porto",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "colecao",
-  "url": "/store/demo-porto/catalog?category=acessorios",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 3
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "produto",
-  "url": "/store/demo-porto/product/cabo-usb-c-1-m",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "carrinho",
-  "url": "/store/demo-porto/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "checkout",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "porto",
-  "w": 768,
-  "page": "confirmacao",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "home",
-  "url": "/store/demo-porto",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "status": 200,
-  "banners": [
-   "hero",
-   "mosaic",
-   "duo"
-  ],
-  "slides": 1,
-  "sections": 10
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "colecao",
-  "url": "/store/demo-porto/catalog?category=acessorios",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "products": 3
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "produto",
-  "url": "/store/demo-porto/product/cabo-usb-c-1-m",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "soldOutSeen": false
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "carrinho",
-  "url": "/store/demo-porto/cart",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "lines": 5
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "checkout",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": [],
-  "demoNote": true
- },
- {
-  "key": "porto",
-  "w": 1440,
-  "page": "confirmacao",
-  "url": "/store/demo-porto/checkout",
-  "errors": [],
-  "overflow": 0,
-  "axe": []
+  "cards": 0,
+  "pricePending": false,
+  "compare": false
  }
 ]

@@ -1,0 +1,15 @@
+build 0
+== smoke-demo
+DEMO OK
+== theme-store
+LOJA DE TEMAS OK
+== temas-pagos
+tudo certo
+== theme-engine
+MOTOR DE TEMAS OK
+== theme-editor
+EDITOR DE TEMA OK
+== temas-editor-niveis
+EDITOR POR NÍVEL OK
+== 24 lojas: 432 verificações; 0 com problema.
+90 verificações; 0 com problema.
