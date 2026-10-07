@@ -11,7 +11,7 @@ import { SectionList, type SectionCtx } from "@/components/storefront/sections";
 import { parseMenuChildren } from "@/components/storefront/sections/premium";
 import type { ThemeSettingsData } from "@/db/schema";
 import { SECTION_SCHEMAS } from "@/lib/themes/sections";
-import { addSection, defaultTemplate, legacyGlobals, normalizeTemplate, planProducts, setSectionHidden, setSetting, templateFromLegacy } from "@/lib/themes/template";
+import { addSection, defaultTemplate, setBlockSetting, legacyGlobals, normalizeTemplate, planProducts, setSectionHidden, setSetting, templateFromLegacy } from "@/lib/themes/template";
 import type { PublicProduct } from "@/lib/queries/storefront";
 
 const legacy: ThemeSettingsData = { heroTitle: "Vista o manto", heroSubtitle: "Camisas oficiais", heroCta: "Ver catálogo", announcement: "Frete grátis", banners: [{ title: "Lançamento", subtitle: "Coleção nova", tone: "accent" }], showCategories: true, footerText: "Mantos Shop" };
@@ -117,7 +117,9 @@ describe("seções dos temas pagos", () => {
     expect(build("category-grid")).toContain("/store/mantos/catalog?category=camisas");
     expect(build("image-with-text", "content", (t, id) => setSetting(t, id, "body", "**Forte** <script>x</script>"))).not.toContain("<script>");
     const dep = build("testimonials"); expect(dep).toContain("Troque por um depoimento real"); expect(dep).toContain("5 de 5 estrelas");
-    expect(build("lookbook")).toContain("Dia de jogo"); expect(build("cta-banner")).toContain("https://wa.me/5511999990001");
+    // Lookbook sem foto: na loja publicada some (D86); com foto, aparece com o título.
+    expect(build("lookbook")).not.toContain("Dia de jogo");
+    expect(build("lookbook", "content", (t, id) => { let x = t; for (const b of t.sections[id]!.blockOrder) x = setBlockSetting(x, id, b, "image", "/demos/x.webp"); return x; })).toContain("Dia de jogo"); expect(build("cta-banner")).toContain("https://wa.me/5511999990001");
   });
   it("perguntas frequentes trazem dados estruturados sem fechar o script", () => {
     const html = build("faq", "content", (t, id) => setSetting(t, id, "heading", "</script><b>x")); expect(html).toContain("FAQPage"); expect(html).toContain("<details"); expect(html.split("</script>").length).toBe(2);

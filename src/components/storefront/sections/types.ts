@@ -20,6 +20,8 @@ export type SectionCtx = {
   related?: PublicProduct[];
   /** Página de catálogo: filtros da busca e a categoria escolhida. */
   query?: { category?: string; q?: string; sort?: string; produtos?: string };
+  /** Prévia do editor: posições de imagem vazias aparecem (fundo do tema) para o lojista saber onde colocar a foto. */
+  editing?: boolean;
   /** Momento da renderização (agenda de banners) e categoria aberta na coleção (condição por contexto). */
   now?: Date;
   categoryId?: string | null;

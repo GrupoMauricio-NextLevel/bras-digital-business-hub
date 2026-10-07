@@ -65,3 +65,36 @@ describe("pacotes visuais nas lojas de demonstração", () => {
     expect(THEME_CATALOG.filter((x) => x.family !== "base").every((x) => PACKAGES[x.family])).toBe(true);
   });
 });
+
+describe("posições de imagem vazias", () => {
+  const base = { slug: "x", base: "/store/x", store: {} as never, categories: [], products: [], planned: {}, hero: undefined, globals: {} as never, page: "home" as const };
+  const mosaic = () => {
+    const a = addSection({ v: 1, sections: {}, order: [] }, "banner-mosaic", { region: "content", page: "home" });
+    let t = a.template; const ids = t.sections[a.id]!.blockOrder;
+    t = setBlockSetting(t, a.id, ids[0]!, "image", "/demos/x.webp"); t = setBlockSetting(t, a.id, ids[0]!, "title", "Com foto");
+    return t;
+  };
+  it("na loja publicada, peça sem imagem não aparece; na prévia do editor aparece (para indicar onde falta a foto)", () => {
+    const live = renderToStaticMarkup(SectionList({ template: mosaic(), ctx: base as SectionCtx }));
+    const editing = renderToStaticMarkup(SectionList({ template: mosaic(), ctx: { ...base, editing: true } as SectionCtx }));
+    expect((live.match(/data-banner-empty/g) ?? []).length).toBe(0); expect(live).toContain("Com foto");
+    expect((editing.match(/data-banner-empty/g) ?? []).length).toBeGreaterThan(0);
+  });
+  it("destaque sem nenhuma imagem fica baixo, só com título e chamada", () => {
+    const a = addSection({ v: 1, sections: {}, order: [] }, "hero-banner", { region: "content", page: "home" });
+    const t = setBlockSetting(a.template, a.id, a.template.sections[a.id]!.blockOrder[0]!, "title", "Campanha");
+    const html = renderToStaticMarkup(SectionList({ template: t, ctx: base as SectionCtx }));
+    expect(html).toContain("Campanha"); expect(html).toContain("min-h-[260px]"); expect(html).not.toContain("aspect-[4/5]");
+  });
+});
+
+describe("imagem com texto sem foto", () => {
+  it("na loja publicada mostra só o texto; na prévia do editor mostra o espaço da foto", () => {
+    const base = { slug: "x", base: "/store/x", store: {} as never, categories: [], products: [], planned: {}, hero: undefined, globals: {} as never, page: "home" as const };
+    const a = addSection({ v: 1, sections: {}, order: [] }, "image-with-text", { region: "content", page: "home" });
+    const live = renderToStaticMarkup(SectionList({ template: a.template, ctx: base as SectionCtx }));
+    const editing = renderToStaticMarkup(SectionList({ template: a.template, ctx: { ...base, editing: true } as SectionCtx }));
+    expect(live).toContain("text-center"); expect(live).toContain('class="hidden"');
+    expect(editing).not.toContain('class="hidden"');
+  });
+});

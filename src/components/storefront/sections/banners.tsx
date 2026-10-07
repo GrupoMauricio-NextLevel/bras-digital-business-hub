@@ -77,13 +77,20 @@ function Tile({ s, ctx, children, className }: { s: S; ctx: SectionProps["ctx"];
 }
 
 const HERO_RATIO: Record<string, string> = { sm: "md:aspect-[3/1]", md: "md:aspect-[21/9]", lg: "md:aspect-[16/9]" };
+/**
+ * Na loja publicada, peça de banner sem imagem e sem texto não aparece (não vira um bloco vazio), e o destaque sem nenhuma
+ * imagem fica baixo, só com título e chamada. Na prévia do editor tudo aparece, para o lojista ver onde falta a foto.
+ */
+const hasImage = (b: { settings: S }) => !!str(b.settings.image);
+const showable = (b: { settings: S }, editing?: boolean) => editing || hasImage(b);
 
 /** Destaque com banners (N1: 1 imagem; N2: 2 slides; N3+: carrossel; N4: vídeo e agendamento). */
 export function HeroBanner({ id, settings, blocks, ctx }: SectionProps) {
   const live = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId });
   if (!live.length) return null;
   const first = ctx.firstId === id; const fw = settings.fullWidth !== false;
-  const frame = cn("relative aspect-[4/5] w-full sm:aspect-[4/3]", HERO_RATIO[str(settings.height)] ?? HERO_RATIO.md);
+  const compact = !ctx.editing && !live.some(hasImage);
+  const frame = compact ? "relative flex min-h-[260px] w-full items-end sm:min-h-[320px]" : cn("relative aspect-[4/5] w-full sm:aspect-[4/3]", HERO_RATIO[str(settings.height)] ?? HERO_RATIO.md);
   const slide = (b: (typeof live)[number], k: number) => (
     <div key={b.id} className={frame} data-banner-slide={b.id}>
       {str(b.settings.video) ? <BannerVideo src={str(b.settings.video)} poster={str(b.settings.image)} /> : null}
@@ -99,7 +106,7 @@ export function HeroBanner({ id, settings, blocks, ctx }: SectionProps) {
 const DUO_RATIO: Record<string, string> = { landscape: "sm:aspect-[4/3]", portrait: "sm:aspect-[4/5]", square: "sm:aspect-square" };
 /** Dois banners de apoio lado a lado (empilhados no celular). */
 export function BannerDuo({ settings, blocks, ctx }: SectionProps) {
-  const live = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId }).slice(0, 2);
+  const live = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId }).filter((b) => showable(b, ctx.editing)).slice(0, 2);
   if (!live.length) return null;
   return (
     <section aria-label="Banners" className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4" data-banner-position="duo">
@@ -112,13 +119,13 @@ const STRIP_RATIO: Record<string, string> = { sm: "md:aspect-[4/1]", md: "md:asp
 /** Faixa de campanha: uma imagem larga com texto e botão. */
 export function BannerStrip({ settings, blocks, ctx }: SectionProps) {
   const b = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId })[0];
-  if (!b) return null;
+  if (!b || (!showable(b, ctx.editing) && !str(b.settings.title))) return null;
   return <section aria-label={str(b.settings.title) || "Campanha"} className="mt-8" data-banner-position="strip"><Tile s={b.settings} ctx={ctx} className={cn("aspect-[3/2] rounded-[var(--sf-radius,16px)]", STRIP_RATIO[str(settings.height)] ?? STRIP_RATIO.sm)}><BannerImage s={b.settings} sizes="100vw" priority={false} /><Overlay s={b.settings} ctx={ctx} heading="h2" compact /></Tile></section>;
 }
 
 /** Mosaico (N3+): uma peça grande e menores, em grade assimétrica. */
 export function BannerMosaic({ settings, blocks, ctx }: SectionProps) {
-  const live = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId });
+  const live = liveBlocks(blocks, { now: ctx.now ?? new Date(), page: ctx.page, categoryId: ctx.categoryId }).filter((b) => showable(b, ctx.editing));
   if (!live.length) return null;
   const layout = str(settings.layout) || "1-2"; const big = layout !== "2-2";
   return (

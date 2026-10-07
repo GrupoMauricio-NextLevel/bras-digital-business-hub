@@ -129,9 +129,11 @@ export function CategoryGrid({ settings, blocks, ctx }: SectionProps) {
 const RATIO = { portrait: "aspect-[4/5]", square: "aspect-square", landscape: "aspect-[3/2]" } as Record<string, string>;
 export function ImageWithText({ settings, ctx }: SectionProps) {
   const img = str(settings.image);
+  // Sem foto na loja publicada: só o texto, centralizado (sem bloco vazio). Na prévia do editor o espaço da foto aparece.
+  const textOnly = !img && !ctx.editing;
   return (
-    <section className="mt-16 grid items-center gap-8 md:grid-cols-2 md:gap-14">
-      <div className={cn(settings.reverse === true && "md:order-2")}>
+    <section className={cn("mt-16 grid items-center gap-8 md:gap-14", textOnly ? "mx-auto max-w-2xl text-center" : "md:grid-cols-2")}>
+      <div className={cn(settings.reverse === true && "md:order-2", textOnly && "hidden")}>
         {img ? <ProductArt images={[img]} size="md" alt={str(settings.heading)} className={cn("w-full rounded-[var(--sf-radius,16px)] bg-neutral-100", RATIO[str(settings.ratio)] ?? RATIO.portrait)} /> : <div className={cn("w-full rounded-[var(--sf-radius,16px)]", RATIO[str(settings.ratio)] ?? RATIO.portrait)} style={heroBackground("")} aria-hidden />}
       </div>
       <div>
@@ -180,7 +182,9 @@ function lookSpan(i: number, n: number) {
   const rest = n - 1, last = i === n - 1;
   return cn(rest % 2 === 1 && last && "col-span-2", rest === 1 ? "md:col-span-2 md:row-span-2" : rest === 2 ? "md:col-span-2" : rest === 3 && last ? "md:col-span-2" : "");
 }
-export function Lookbook({ settings, blocks, ctx }: SectionProps) {
+export function Lookbook({ settings, blocks: all, ctx }: SectionProps) {
+  // Na loja publicada, look sem imagem não aparece; na prévia do editor aparece para indicar onde falta a foto.
+  const blocks = ctx.editing ? all : all.filter((b) => str(b.settings.image));
   if (!blocks.length) return null;
   return (
     <section className="mt-16">

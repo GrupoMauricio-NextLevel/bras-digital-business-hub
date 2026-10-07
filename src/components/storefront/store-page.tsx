@@ -48,7 +48,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const { lists, hero } = planProducts(template, products);
   return (
     <div className={WRAP[page]}>
-      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId }} />
+      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId, editing: preview || !!trial }} />
     </div>
   );
 }
