@@ -47,7 +47,7 @@ export function BannerMediaPanel({ sectionType, settings, onSet, idPrefix }: { s
   };
   return (
     <div className="space-y-3 rounded-lg border border-border p-3" aria-label="Imagem do banner">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-medium">Imagem</p>
         <div role="radiogroup" aria-label="Aparelho" className="flex gap-0.5 rounded-md bg-surface-muted p-0.5">
           {(["desktop", "mobile"] as const).map((d) => <button key={d} type="button" role="radio" aria-checked={device === d} onClick={() => setDevice(d)} className={cn("flex items-center gap-1 rounded px-2 py-1 text-xs", device === d ? "bg-surface shadow-sm" : "text-muted-foreground")}>{d === "desktop" ? <Monitor className="size-3.5" aria-hidden /> : <Smartphone className="size-3.5" aria-hidden />}{d === "desktop" ? "Computador" : "Celular"}</button>)}
@@ -77,8 +77,8 @@ export function BannerMediaPanel({ sectionType, settings, onSet, idPrefix }: { s
       </div>
       <div className="rounded-md bg-surface-muted p-2 text-xs">
         <p className="font-medium text-foreground">Imagem do celular</p>
-        {mobileOwn ? <div className="mt-1 flex items-center justify-between gap-2"><span className="truncate text-muted-foreground">Imagem própria para o celular</span><span className="flex gap-1"><Button type="button" size="sm" variant="ghost" onClick={() => void choose("imageMobile")}>Trocar</Button><Button type="button" size="sm" variant="ghost" onClick={() => onSet({ imageMobile: "" })}>Usar a do computador</Button></span></div>
-          : <div className="mt-1 flex items-center justify-between gap-2"><span className="text-muted-foreground">Usa a do computador, com o foco do celular.</span><Button type="button" size="sm" variant="ghost" onClick={() => void choose("imageMobile")} disabled={!desktop}>Escolher outra</Button></div>}
+        {mobileOwn ? <div className="mt-1 flex flex-col items-start gap-1"><span className="text-muted-foreground">Imagem própria para o celular</span><span className="flex gap-1"><Button type="button" size="sm" variant="ghost" onClick={() => void choose("imageMobile")}>Trocar</Button><Button type="button" size="sm" variant="ghost" onClick={() => onSet({ imageMobile: "" })}>Usar a do computador</Button></span></div>
+          : <div className="mt-1 flex flex-col items-start gap-1"><span className="text-muted-foreground">Usa a do computador, com o foco do celular.</span><Button type="button" size="sm" variant="ghost" onClick={() => void choose("imageMobile")} disabled={!desktop}>Escolher outra</Button></div>}
       </div>
       <FormField label="Endereço da imagem (opcional)" htmlFor={`${idPrefix}-url`} error={isValidImageRef(desktop) ? undefined : "Use um endereço https:// ou uma imagem da biblioteca."} hint="Prefira a biblioteca: ela guarda o original e gera versões leves.">
         <Input id={`${idPrefix}-url`} value={desktop} placeholder="https://…" onChange={(e) => onSet({ image: e.target.value })} />

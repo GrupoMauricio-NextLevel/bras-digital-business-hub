@@ -62,8 +62,9 @@ await pro.getByRole("button", { name: "Mover Todos os produtos para cima" }).cli
 await frame.locator("[data-section-id]").first().waitFor();
 await pro.waitForTimeout(800);
 const o1 = await order(); if (o1.join() === o0.join()) fail("reordenar não mudou a prévia: " + o1.join());
-await pro.locator("body").click({ position: { x: 5, y: 5 } }); await pro.keyboard.press("Control+z"); await saved(pro); await pro.waitForTimeout(800);
-const o2 = await order(); if (o2.join() !== o0.join()) fail("desfazer não restaurou a ordem: " + o2.join());
+await pro.locator("body").click({ position: { x: 5, y: 5 } }); await pro.keyboard.press("Control+z"); await saved(pro);
+// A prévia recarrega depois de gravar: espera a ordem voltar (até 10 s) em vez de um tempo fixo.
+let o2 = await order(); for (let i = 0; i < 20 && o2.join() !== o0.join(); i++) { await pro.waitForTimeout(500); o2 = await order(); } if (o2.join() !== o0.join()) fail("desfazer não restaurou a ordem: " + o2.join());
 await pro.keyboard.press("Control+Shift+z"); await pro.waitForTimeout(400);
 ok("reordenar seções, desfazer e refazer");
 
@@ -112,7 +113,7 @@ const liteCtx = await b.newContext({ viewport: { width: 1440, height: 900 } });
 const lite = await loginAs(liteCtx, /Marcelo R\. Santos/);
 await lite.goto(B + "/theme-editor", { waitUntil: "networkidle" });
 await lite.frameLocator("iframe").locator("h1").first().waitFor({ timeout: 30000 });
-if (!(await lite.getByText(/Você está na Loja SuperDrop/).count())) fail("aviso de oferta ausente no Lite");
+if (!(await lite.getByText(/^Tema .+ · N\d/).count())) fail("cartão do nível do tema ausente no Lite");
 await lite.getByRole("button", { name: "Adicionar seção" }).click();
 if (await lite.getByRole("dialog").count()) fail("Lite conseguiu abrir o catálogo de seções");
 if (!(await lite.getByRole("button", { name: "Mover Todos os produtos para cima" }).isDisabled())) fail("Lite pode reordenar");

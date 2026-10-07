@@ -8,7 +8,9 @@ import { Check } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
 import { formatBRL } from "@/lib/money";
+import { hasPublicDemo, THEME_CATALOG } from "@/lib/themes/catalog";
 import { publicTheme, themeShot } from "@/lib/themes/gallery";
+import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +30,8 @@ export default async function TemaPage({ params }: { params: Promise<{ key: stri
   if (!t) notFound();
   const brand = await getBrand();
   const pending = t.release !== "released";
+  // Comparação da família: os temas vendidos e os em revisão (estes só por link, nunca à venda).
+  const family = t.family === "base" ? [] : THEME_CATALOG.filter((x) => x.family === t.family && hasPublicDemo(x)).sort((a, b) => a.level - b.level);
   const buy = `/login?voltar=${encodeURIComponent(`/merchant/templates?ver=${t.key}`)}`;
   const noStore = brand.signupOpen ? { href: "/cadastro", label: "Ainda não tenho loja" } : { href: "/quero-minha-loja", label: "Ainda não tenho loja" };
   return (
@@ -37,13 +41,15 @@ export default async function TemaPage({ params }: { params: Promise<{ key: stri
       <div className="mt-4 grid gap-10 lg:grid-cols-[1.25fr_1fr]">
         <div>
           <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight sm:text-5xl">{t.name}</h1>
+          <p className="mt-2 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-surface-muted px-2.5 py-1">{LEVEL_INFO[t.level].short} · {LEVEL_INFO[t.level].name}</span><span className="rounded-full bg-surface-muted px-2.5 py-1">Família {FAMILY_INFO[t.family].name}</span></p>
           <p className="mt-2 text-lg text-body">{t.tagline}. <span className="text-muted-foreground">Pensado para: {t.niche.toLowerCase()}.</span></p>
           <p className="mt-4 max-w-xl text-body">{t.description}</p>
           <ul className="mt-6 space-y-2">{t.features.map((f) => <li key={f} className="flex gap-2 text-foreground"><Check className="mt-0.5 size-5 shrink-0 text-success" aria-hidden />{f}</li>)}</ul>
           <div className="mt-8 rounded-2xl border border-border bg-surface-muted p-5">
             {t.quote ? (
               <p className="text-foreground"><span className="text-3xl font-extrabold tabular-nums">{formatBRL(t.quote.listCents)}</span> no cartão em até {t.quote.installments}x de {formatBRL(t.quote.installmentCents)}, ou <b>{formatBRL(t.quote.pixCents)}</b> no Pix. <span className="block text-sm text-muted-foreground">Compra única, licença permanente para a sua loja. Sem mensalidade.</span></p>
-            ) : <p className="text-lg font-bold">Grátis, já incluso em toda loja.</p>}
+            ) : t.pricePending ? <p className="text-lg font-bold">Preço em definição. <span className="block text-sm font-normal text-muted-foreground">O valor é anunciado quando o tema for liberado para venda.</span></p>
+              : <p className="text-lg font-bold">{pending ? "Grátis quando for liberado." : "Grátis, já incluso em toda loja."}</p>}
             <div className="mt-4 flex flex-wrap gap-3">
               {t.demoReady ? <Link href={`/demo/${t.key}`} className="inline-flex h-12 items-center rounded-lg bg-band px-6 font-semibold text-band-foreground hover:bg-band">Ver demonstração</Link> : null}
               {!pending ? <Link href={buy} className="inline-flex h-12 items-center rounded-lg px-6 font-semibold text-band-foreground" style={{ background: brand.primaryColor }}>Já tenho loja: quero este tema</Link> : null}
@@ -57,6 +63,26 @@ export default async function TemaPage({ params }: { params: Promise<{ key: stri
           {has(t.key, "mobile") ? <Image src={themeShot(t.key, "mobile")} alt={`Tema ${t.name} no celular`} width={390} height={844} sizes="(min-width:1024px) 160px, 30vw" className="absolute -bottom-6 right-3 w-[30%] rounded-2xl border-4 border-band-foreground shadow-xl" /> : null}
         </div>
       </div>
+      {family.length > 1 ? (
+        <section className="mt-16" aria-labelledby="familia">
+          <h2 id="familia" className="text-2xl font-bold tracking-tight">Família {FAMILY_INFO[t.family].name}: compare os níveis</h2>
+          <p className="mt-1 text-body">Os níveis usam a mesma loja de exemplo{FAMILY_INFO[t.family].demoStore ? ` (${FAMILY_INFO[t.family].demoStore})` : ""}, com os mesmos produtos e imagens. O que muda é o que dá para montar e editar.</p>
+          <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {family.map((f) => (
+              <li key={f.key} className={`flex flex-col rounded-xl border p-4 ${f.key === t.key ? "border-foreground" : "border-border"}`}>
+                <p className="text-xs font-semibold text-muted-foreground">{LEVEL_INFO[f.level].short} · {LEVEL_INFO[f.level].name}</p>
+                <p className="mt-1 text-lg font-bold">{f.name}</p>
+                <p className="text-sm text-body">{LEVEL_INFO[f.level].goal}</p>
+                <p className="mt-2 text-sm font-semibold tabular-nums">{f.pricePending ? "Preço em definição" : f.priceCents === 0 ? "Grátis" : formatBRL(f.priceCents)}{f.release !== "released" ? <span className="ml-1 font-normal text-warning">· em revisão</span> : null}</p>
+                <div className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-3 text-sm font-medium">
+                  <Link href={`/demo/${f.key}`} className="underline">Demonstração</Link>
+                  {f.key !== t.key ? <Link href={`/temas/${f.key}`} className="underline">Detalhes</Link> : <span className="text-muted-foreground">Você está aqui</span>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
       <p className="mt-10 text-sm text-muted-foreground">As imagens e a demonstração usam uma loja de exemplo com produtos fictícios.</p>
     </div>
   );

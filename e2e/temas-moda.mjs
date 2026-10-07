@@ -69,6 +69,22 @@ for (const key of STORES) {
     await ctx.close();
   }
 }
+// Galeria pública (Commerce): filtros por nível e família, página do tema com a comparação da família
+if (!process.env.TEMAS) for (const w of WIDTHS) {
+  const ctx = await b.newContext({ viewport: { width: w, height: w < 500 ? 800 : 900 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } });
+  const p = await ctx.newPage(); p.setDefaultTimeout(45000); let errs = []; p.on("pageerror", (e) => errs.push(e.message));
+  for (const [name, path] of [["galeria", "/temas"], ["galeria-moda", "/temas?familia=moda"], ["galeria-n4", "/temas?nivel=4"], ["tema-atelier", "/temas/atelier"], ["tema-lume", "/temas/lume"], ["demo-atelier", "/demo/atelier"]]) {
+    const st = (await p.goto(B + path, { waitUntil: "networkidle" }))?.status();
+    const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    const axe = await axeOf(p);
+    const text = await p.locator("main").innerText().catch(() => "");
+    const r = { key: "galeria", w, page: name, url: path, status: st, errors: errs, overflow, axe, cards: await p.locator('ul[aria-label="Temas"] > li').count(), pricePending: /Preço em definição/.test(text), compare: /compare os níveis/.test(text) };
+    results.push(r); errs = [];
+    if (SHOTS) await p.screenshot({ path: `${DIR}/${name}-${w}.png`, fullPage: true });
+    console.log(`galeria ${w} ${name}: ${st} ${overflow > 1 ? "ROLAGEM " + overflow : "ok"} cartões=${r.cards}${r.pricePending ? " preço-em-definição" : ""}${r.compare ? " comparação" : ""}${axe.length ? " axe=" + axe.join(" | ") : ""}`);
+  }
+  await ctx.close();
+}
 await b.close();
 writeFileSync(`${OUT}/resultado.json`, JSON.stringify(results, null, 1));
 const bad = results.filter((r) => r.overflow > 1 || r.axe.length || r.errors.length || (r.status && r.status !== 200));
