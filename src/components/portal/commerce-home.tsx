@@ -1,4 +1,5 @@
 import { MosaicoEditorial } from "@/components/portal/mosaico-editorial";
+import { ImagemEmCriacao, TexturaDeFundo } from "@/components/portal/imagem-em-criacao";
 import "./commerce/commerce.css";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
@@ -40,15 +41,18 @@ export function CommerceHome({ brand }: { brand: Brand }) {
       <section id="bastidores" aria-label="Sua marca, sua operação" className={section}>
         <MosaicoEditorial marca="commerce" eyebrow="Sua marca, sua operação" titulo="Do ateliê ao pedido embalado, tudo com a sua cara." texto="Fotografe, cadastre, venda e entregue com a identidade da sua marca. O painel acompanha cada etapa."
           pecas={[
-            { nome: "cm-hero-marca-propria", alt: "Ateliê de moda com araras, peças dobradas e notebook aberto", ratio: "4 / 5", titulo: "Sua marca no centro", texto: "Tema, cores e domínio próprios, sem cara de marketplace." },
-            { nome: "cm-catalogo-fotografia", alt: "Mini estúdio fotografando uma peça em manequim invisível", ratio: "4 / 3", titulo: "Catálogo que vende", texto: "Fotos, variações e estoque organizados no painel." },
-            { nome: "cm-pedido-embalado", alt: "Sacola de loja própria com papel de seda azul", ratio: "4 / 3", titulo: "Pedido com a sua embalagem", texto: "Pix e cartão confirmados antes de separar." },
+            { nome: "cm-hero-marca-propria", alt: "Ateliê de moda com araras, peças dobradas e notebook aberto", ratio: "4 / 5", posicao: "40% 50%", titulo: "Sua marca no centro", texto: "Tema, cores e domínio próprios, sem cara de marketplace." },
+            { nome: "cm-catalogo-fotografia", alt: "Mini estúdio fotografando uma peça em manequim invisível", ratio: "4 / 3", posicao: "42% 50%", titulo: "Catálogo que vende", texto: "Fotos, variações e estoque organizados no painel." },
+            { nome: "cm-pedido-embalado", alt: "Sacola de loja própria com papel de seda azul", ratio: "4 / 3", posicao: "50% 58%", titulo: "Pedido com a sua embalagem", texto: "Pix e cartão confirmados antes de separar." },
           ]} />
       </section>
 
       <section id="para-quem" aria-labelledby="pq-t" className={section}>
         <div className="mx-auto max-w-6xl">
-          <h2 id="pq-t" className={`${H2} mb-10 max-w-2xl text-foreground`}>Para quem vende e quer uma loja de verdade.</h2>
+          <div className="mb-10 grid items-end gap-8 md:grid-cols-[1fr_minmax(0,14rem)]">
+            <h2 id="pq-t" className={`${H2} max-w-2xl text-foreground`}>Para quem vende e quer uma loja de verdade.</h2>
+            <ImagemEmCriacao marca="commerce" nome="cm-hero-celular-vitrine" alt="Mão segurando o celular diante de uma arara de roupas" ratio="4 / 5" posicao="50% 40%" className="mx-auto w-full max-w-[14rem] md:mx-0" />
+          </div>
           <ForWhom cta={cta} />
         </div>
       </section>
@@ -57,6 +61,7 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         <div className="mx-auto max-w-6xl">
           <h2 id="exemplos-t" className={`${H2} max-w-2xl text-band-foreground`}>Moda, casa, acessórios: cada loja com a sua cara.</h2>
           <p className="mt-4 max-w-2xl text-lg text-band-foreground/85">Três lojas de demonstração, criadas com temas que existem hoje. Nomes, produtos e preços são fictícios.</p>
+          <ImagemEmCriacao marca="commerce" nome="cm-temas-ambiente" alt="Três ambientes de loja lado a lado: moda, acessórios e casa, com a mesma luz" ratio="21 / 9" posicao="50% 55%" className="mt-8" />
           <div className="mt-10"><StoreGallery stores={DEMO_STORES} themes={themes} ctaHref={cta} /></div>
         </div>
       </section>
@@ -90,7 +95,7 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas que costumam aparecer.</h2><Faq /></div>
       </section>
 
-      <section className="bg-band py-16 md:py-20" aria-label="Chamada final"><ClosingCta cta={cta} signupOpen={brand.signupOpen} /></section>
+      <section className="relative overflow-hidden bg-band py-16 md:py-20" aria-label="Chamada final"><TexturaDeFundo marca="commerce" nome="cm-textura-fundo" /><div className="relative"><ClosingCta cta={cta} signupOpen={brand.signupOpen} /></div></section>
     </>
   );
 }

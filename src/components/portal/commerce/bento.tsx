@@ -22,7 +22,7 @@ export function Bento() {
 
       <a href="#operacao" className={`${card} cm-reveal bg-primary text-primary-foreground`}>
         <div className="relative z-10">
-          <p className="text-sm font-bold uppercase tracking-wider text-primary-foreground/80">Pagamento</p>
+          <p className="text-sm font-bold uppercase tracking-wider text-primary-foreground">Pagamento</p>
           <h3 className="mt-2 max-w-[14rem] font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight">Pix e cartão em até 6x</h3>
         </div>
         <div className="absolute -bottom-16 right-6 w-[13.5rem] transition-transform duration-500 group-hover:-translate-y-3 sm:right-10"><Phone><PayScreen /></Phone></div>

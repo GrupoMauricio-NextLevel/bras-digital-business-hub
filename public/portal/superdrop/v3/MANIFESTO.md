@@ -1,11 +1,16 @@
-# Imagens esperadas (superdrop, v3)
+# Imagens da página pública SuperDrop (v3)
 
-Cada arquivo aqui entra sozinho na página pública no lugar do aviso "Imagem em criação" (componente `ImagemEmCriacao`).
-Formatos aceitos: `.avif`, `.webp` ou `.png`, com o nome exato abaixo. Prompt para gerar: `docs/prompts/imagens-paginas-publicas-gpt.md`.
+Cada arquivo entra na página pelo componente `ImagemEmCriacao` (ou `TexturaDeFundo`). Sem arquivo válido, aparece o aviso "Imagem em criação" no mesmo tamanho.
+Formatos: `.avif`, `.webp`, `.png` com o nome exato abaixo; arquivo vazio é ignorado. Pacote de origem e cenas: `docs/imagens-paginas-publicas/`.
 
-| Arquivo | Proporção exibida | Onde aparece |
-|---|---|---|
-| sd-hero-fornecedor-separando | 4:5 (gerar em 16:9 ou 4:5; o centro é usado) | Home → Bastidores (foto grande) |
-| sd-etiqueta-impressora | 4:3 | Home → Bastidores |
-| sd-pacote-entregue | 4:3 (gerar 4:5; o centro é usado) | Home → Bastidores |
-| sd-hero-celular-venda, sd-expedicao-esteira, sd-lojista-home-office, sd-pix-pagamento, sd-fornecedor-parceiro, sd-textura-fundo | conforme o prompt | reservadas para as próximas seções |
+| Arquivo | Formatos instalados | Onde aparece (home superdrop.com.br) | Recorte exibido |
+|---|---|---|---|
+| sd-hero-fornecedor-separando | avif, webp, png | Bastidores → foto grande "Separação na Central" | 4:5 |
+| sd-etiqueta-impressora | avif, webp, png | Bastidores → "Etiqueta junto com o pedido" | 4:3 |
+| sd-pacote-entregue | avif, webp, png | Bastidores → "Entregue na casa do cliente" | 4:3 |
+| sd-expedicao-esteira | avif, webp, png | "Tudo para começar…" → cartão "Vender sem estoque" | 16:10 |
+| sd-lojista-home-office | avif, webp, png | "Tudo para começar…" → cartão "Loja profissional sem programar" | 16:10 |
+| sd-pix-pagamento | avif, webp, png | "Tudo para começar…" → cartão "Dinheiro sob controle" | 16:10 |
+| sd-fornecedor-parceiro | avif, png (webp veio vazio no pacote) | "Quanto sobra em uma venda?" → ao lado de "É fornecedor?" | 3:2 |
+| sd-hero-celular-venda | avif, png (webp veio vazio no pacote) | "Escolha o plano e comece hoje" → ao lado do título | 4:5 |
+| sd-textura-fundo | avif, webp, png | Chamada final "Pronto para abrir a sua loja?" → fundo decorativo (alt vazio) | cobre a seção |

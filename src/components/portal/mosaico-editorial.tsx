@@ -1,7 +1,7 @@
 import { ImagemEmCriacao } from "@/components/portal/imagem-em-criacao";
 import { Reveal } from "@/components/portal/reveal";
 
-type Peca = { nome: string; alt: string; ratio: string; titulo: string; texto: string };
+type Peca = { nome: string; alt: string; ratio: string; titulo: string; texto: string; posicao?: string };
 
 /**
  * Mosaico editorial (assimétrico): uma foto grande e duas menores, cada uma com legenda curta do que acontece de verdade
@@ -18,9 +18,9 @@ export function MosaicoEditorial({ marca, eyebrow, titulo, texto, pecas }: { mar
         <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{texto}</p>
       </Reveal>
       <div className="mt-10 grid gap-5 md:grid-cols-[1.35fr_1fr] md:grid-rows-[auto_auto]">
-        <Reveal as="article" className="md:row-span-2"><figure className="m-0"><ImagemEmCriacao marca={marca} nome={a.nome} alt={a.alt} ratio={a.ratio} sizes="(min-width: 768px) 58vw, 100vw" />{legenda(a)}</figure></Reveal>
-        <Reveal as="article" delay={120}><figure className="m-0"><ImagemEmCriacao marca={marca} nome={b.nome} alt={b.alt} ratio={b.ratio} sizes="(min-width: 768px) 40vw, 100vw" />{legenda(b)}</figure></Reveal>
-        <Reveal as="article" delay={220}><figure className="m-0"><ImagemEmCriacao marca={marca} nome={c.nome} alt={c.alt} ratio={c.ratio} sizes="(min-width: 768px) 40vw, 100vw" />{legenda(c)}</figure></Reveal>
+        <Reveal as="article" className="md:row-span-2"><figure className="m-0"><ImagemEmCriacao marca={marca} nome={a.nome} alt={a.alt} ratio={a.ratio} posicao={a.posicao} />{legenda(a)}</figure></Reveal>
+        <Reveal as="article" delay={120}><figure className="m-0"><ImagemEmCriacao marca={marca} nome={b.nome} alt={b.alt} ratio={b.ratio} posicao={b.posicao} />{legenda(b)}</figure></Reveal>
+        <Reveal as="article" delay={220}><figure className="m-0"><ImagemEmCriacao marca={marca} nome={c.nome} alt={c.alt} ratio={c.ratio} posicao={c.posicao} />{legenda(c)}</figure></Reveal>
       </div>
     </div>
   );

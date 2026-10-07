@@ -1,0 +1,182 @@
+[
+  {
+    "arquivo": "sd-hero-fornecedor-separando",
+    "proporcao": "16:9",
+    "dimensoes_png": [
+      1672,
+      940
+    ],
+    "webp_bytes": 79794,
+    "cena": "mãos separando peças de roupa dobradas em caixas kraft numa bancada de expedição organizada; fita verde; luz da manhã."
+  },
+  {
+    "arquivo": "sd-hero-celular-venda",
+    "proporcao": "4:5",
+    "dimensoes_png": [
+      1122,
+      1402
+    ],
+    "webp_bytes": 96248,
+    "cena": "mão segurando celular de tela lisa sobre uma mesa com café e sacola de envio; notificação imaginária sugerida só pela luz da tela."
+  },
+  {
+    "arquivo": "sd-expedicao-esteira",
+    "proporcao": "16:9",
+    "dimensoes_png": [
+      1672,
+      940
+    ],
+    "webp_bytes": 84060,
+    "cena": "prateleiras de estoque de fornecedor com caixas padronizadas e etiquetas lisas, carrinho, chão limpo; ritmo e ordem."
+  },
+  {
+    "arquivo": "sd-etiqueta-impressora",
+    "proporcao": "4:3",
+    "dimensoes_png": [
+      1448,
+      1086
+    ],
+    "webp_bytes": 90706,
+    "cena": "impressora térmica soltando etiqueta lisa, mãos com luva fina, rolo de fita verde."
+  },
+  {
+    "arquivo": "sd-lojista-home-office",
+    "proporcao": "16:9",
+    "dimensoes_png": [
+      1672,
+      940
+    ],
+    "webp_bytes": 105418,
+    "cena": "lojista de costas trabalhando no notebook de tela lisa, sala clara, plantas, caixa de produto ao lado."
+  },
+  {
+    "arquivo": "sd-pix-pagamento",
+    "proporcao": "1:1",
+    "dimensoes_png": [
+      1254,
+      1254
+    ],
+    "webp_bytes": 79088,
+    "cena": "celular de tela lisa sobre bancada com maquininha desligada e comprovante dobrado sem texto; sensação de pagamento instantâneo."
+  },
+  {
+    "arquivo": "sd-fornecedor-parceiro",
+    "proporcao": "3:2",
+    "dimensoes_png": [
+      1536,
+      1024
+    ],
+    "webp_bytes": 95254,
+    "cena": "aperto de mãos sobre bancada de estoque, pilhas de peças dobradas, fundo desfocado."
+  },
+  {
+    "arquivo": "sd-pacote-entregue",
+    "proporcao": "4:5",
+    "dimensoes_png": [
+      1122,
+      1402
+    ],
+    "webp_bytes": 104898,
+    "cena": "caixa kraft fechada com fita verde na porta de um apartamento, luz de fim de tarde."
+  },
+  {
+    "arquivo": "sd-textura-fundo",
+    "proporcao": "21:9",
+    "dimensoes_png": [
+      1916,
+      821
+    ],
+    "webp_bytes": 178666,
+    "cena": "textura abstrata de papel kraft e tecido navy, para fundo de seção."
+  },
+  {
+    "arquivo": "cm-hero-marca-propria",
+    "proporcao": "16:9",
+    "dimensoes_png": [
+      1672,
+      940
+    ],
+    "webp_bytes": 125452,
+    "cena": "ateliê de moda com araras, peças dobradas com etiqueta lisa e sacolas off-white; notebook de tela lisa aberto; detalhe azul."
+  },
+  {
+    "arquivo": "cm-hero-celular-vitrine",
+    "proporcao": "4:5",
+    "dimensoes_png": [
+      1122,
+      1402
+    ],
+    "webp_bytes": 46206,
+    "cena": "mão segurando celular de tela lisa diante de uma arara de roupas desfocada."
+  },
+  {
+    "arquivo": "cm-catalogo-fotografia",
+    "proporcao": "3:2",
+    "dimensoes_png": [
+      1536,
+      1024
+    ],
+    "webp_bytes": 58320,
+    "cena": "mini estúdio caseiro fotografando uma peça em manequim invisível, luz de softbox, celular no tripé."
+  },
+  {
+    "arquivo": "cm-checkout-cartao",
+    "proporcao": "1:1",
+    "dimensoes_png": [
+      1254,
+      1254
+    ],
+    "webp_bytes": 63110,
+    "cena": "mãos com cartão sem números próximo a notebook de tela lisa, xícara azul."
+  },
+  {
+    "arquivo": "cm-pedido-embalado",
+    "proporcao": "4:5",
+    "dimensoes_png": [
+      1122,
+      1402
+    ],
+    "webp_bytes": 61268,
+    "cena": "sacola off-white de loja própria com papel de seda azul, sobre mesa de madeira."
+  },
+  {
+    "arquivo": "cm-dono-gestao",
+    "proporcao": "16:9",
+    "dimensoes_png": [
+      1672,
+      940
+    ],
+    "webp_bytes": 75746,
+    "cena": "pessoa de costas analisando um monitor de tela lisa num escritório pequeno e organizado, quadro com notas sem texto."
+  },
+  {
+    "arquivo": "cm-temas-ambiente",
+    "proporcao": "21:9",
+    "dimensoes_png": [
+      1916,
+      821
+    ],
+    "webp_bytes": 227170,
+    "cena": "três ambientes de loja (moda, acessórios, casa) lado a lado, mesma luz, para ilustrar estilos de tema."
+  },
+  {
+    "arquivo": "cm-equipe-atendimento",
+    "proporcao": "3:2",
+    "dimensoes_png": [
+      1536,
+      1024
+    ],
+    "webp_bytes": 99890,
+    "cena": "duas pessoas de costas conferindo pedidos em tablet de tela lisa, estoque leve ao fundo."
+  },
+  {
+    "arquivo": "cm-textura-fundo",
+    "proporcao": "21:9",
+    "dimensoes_png": [
+      1916,
+      821
+    ],
+    "webp_bytes": 147476,
+    "cena": "textura abstrata de tecido azul profundo e papel off-white, para fundo de seção."
+  }
+]

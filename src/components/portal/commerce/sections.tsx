@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatBRL } from "@/lib/money";
 import { Phone, Tablet } from "./device";
 import { OrdersPanel, PayScreen, SalesPanel } from "./panel-ui";
+import { ImagemEmCriacao } from "@/components/portal/imagem-em-criacao";
 
 export const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl";
 export const CTA = "inline-flex h-12 items-center justify-center rounded-full bg-primary px-7 text-base font-bold text-primary-foreground transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -27,9 +28,9 @@ export function ForWhom({ cta }: { cta: string }) {
 
 export function Operation() {
   const rows = [
-    { id: "pedidos", title: "Veja cada pedido chegar", situation: "Vendeu pelo Instagram e perdeu a conta de quem já pagou?", text: "Todos os pedidos ficam em uma lista, com o canal e a situação de cada um: aguardando pagamento, pago ou enviado. O cliente acompanha o dele por um link.", visual: <Tablet><OrdersPanel side={false} /></Tablet> },
-    { id: "vendas", title: "Descubra o que vende e para onde", situation: "Não sabe quais produtos dão lucro nem em que horário o cliente compra?", text: "O painel mostra vendas por estado, margem por produto, recompra e os horários de maior movimento.", visual: <Tablet><SalesPanel /></Tablet> },
-    { id: "pagamento", title: "Receba por Pix e cartão", situation: "Cansou de conferir comprovante um a um?", text: "O cliente paga na loja por Pix ou cartão em até 6x. Você conecta a sua conta do Mercado Pago, e o pagamento é conferido automaticamente antes de liberar o pedido.", visual: <div className="mx-auto w-[16rem]"><Phone><PayScreen /></Phone></div> },
+    { id: "pedidos", title: "Veja cada pedido chegar", situation: "Vendeu pelo Instagram e perdeu a conta de quem já pagou?", text: "Todos os pedidos ficam em uma lista, com o canal e a situação de cada um: aguardando pagamento, pago ou enviado. O cliente acompanha o dele por um link.", foto: { nome: "cm-equipe-atendimento", alt: "Duas pessoas de costas conferindo pedidos num tablet, com estoque ao fundo", posicao: "45% 45%" }, visual: <Tablet><OrdersPanel side={false} /></Tablet> },
+    { id: "vendas", title: "Descubra o que vende e para onde", situation: "Não sabe quais produtos dão lucro nem em que horário o cliente compra?", text: "O painel mostra vendas por estado, margem por produto, recompra e os horários de maior movimento.", foto: { nome: "cm-dono-gestao", alt: "Pessoa de costas analisando o monitor num escritório pequeno e organizado", posicao: "60% 45%" }, visual: <Tablet><SalesPanel /></Tablet> },
+    { id: "pagamento", title: "Receba por Pix e cartão", situation: "Cansou de conferir comprovante um a um?", text: "O cliente paga na loja por Pix ou cartão em até 6x. Você conecta a sua conta do Mercado Pago, e o pagamento é conferido automaticamente antes de liberar o pedido.", foto: { nome: "cm-checkout-cartao", alt: "Mãos segurando um cartão ao lado do notebook, com uma xícara azul", posicao: "45% 50%" }, visual: <div className="mx-auto w-[16rem]"><Phone><PayScreen /></Phone></div> },
   ];
   return (
     <div className="space-y-20 md:space-y-28">
@@ -40,7 +41,11 @@ export function Operation() {
             <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-band-foreground sm:text-4xl">{r.title}</h3>
             <p className="mt-4 max-w-md text-lg leading-relaxed text-band-muted">{r.text}</p>
           </div>
-          <div className={n % 2 ? "md:order-1" : ""}>{r.visual}</div>
+          {/* Foto da situação real ao fundo e a tela de demonstração do painel por cima, deslocada para baixo. */}
+          <div className={n % 2 ? "md:order-1" : ""}>
+            <ImagemEmCriacao marca="commerce" nome={r.foto.nome} alt={r.foto.alt} ratio="4 / 3" posicao={r.foto.posicao} className={`w-full sm:w-[86%] ${n % 2 ? "sm:ml-auto" : ""}`} />
+            <div className={`relative -mt-12 w-full sm:-mt-28 sm:w-[92%] ${n % 2 ? "" : "sm:ml-auto"}`}>{r.visual}</div>
+          </div>
         </article>
       ))}
       <p className="text-xs text-band-foreground/60">Painel de demonstração, com nomes, valores e canais fictícios.</p>
