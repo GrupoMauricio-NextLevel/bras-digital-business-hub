@@ -45,7 +45,7 @@ function Overlay({ s, ctx, heading, compact = false }: { s: S; ctx: SectionProps
   return (
     <>
       <div aria-hidden className="absolute inset-0" style={{ background: light ? `linear-gradient(to top, rgba(0,0,0,${num(s.overlay, 30) / 100 + 0.15}), rgba(0,0,0,${num(s.overlay, 30) / 100 * 0.6}))` : `rgba(255,255,255,${num(s.overlay, 30) / 100})` }} />
-      <div className={cn("relative z-10 flex h-full w-full flex-col justify-end gap-2", compact ? "p-4 sm:p-5" : "mx-auto max-w-6xl px-5 py-8 sm:px-10 sm:py-12", ALIGN[str(s.align)] ?? ALIGN.left, light ? "text-white" : "text-neutral-950")}>
+      <div className={cn("relative z-10 flex h-full w-full flex-col justify-end gap-2", compact ? "p-4 sm:p-5" : "mx-auto max-w-6xl px-5 py-8 sm:px-10 sm:py-12", ALIGN[str(s.align)] ?? ALIGN.left, light ? "sf-on-image text-white" : "text-neutral-950")}>
         {title ? <H className={cn("max-w-[34rem] font-semibold tracking-tight", compact ? "text-lg sm:text-xl" : "text-3xl leading-tight sm:text-5xl")}>{title}</H> : null}
         {sub ? <p className={cn("max-w-[30rem] opacity-90", compact ? "text-sm" : "text-base sm:text-lg")}>{sub}</p> : null}
         {cta ? <Link href={href} className={cn("sf-btn mt-1 inline-flex items-center rounded-lg font-medium transition hover:brightness-95", compact ? "h-10 px-4 text-sm" : "h-12 px-6 text-sm")} style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{cta}</Link> : null}

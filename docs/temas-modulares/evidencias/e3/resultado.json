@@ -1,0 +1,794 @@
+[
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "home",
+  "url": "/store/demo-trama",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 9
+ },
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "colecao",
+  "url": "/store/demo-trama/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "produto",
+  "url": "/store/demo-trama/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "carrinho",
+  "url": "/store/demo-trama/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "checkout",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "trama",
+  "w": 360,
+  "page": "confirmacao",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "home",
+  "url": "/store/demo-trama",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 9
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "colecao",
+  "url": "/store/demo-trama/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "produto",
+  "url": "/store/demo-trama/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "carrinho",
+  "url": "/store/demo-trama/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "checkout",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "trama",
+  "w": 768,
+  "page": "confirmacao",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "home",
+  "url": "/store/demo-trama",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 9
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "colecao",
+  "url": "/store/demo-trama/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "produto",
+  "url": "/store/demo-trama/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "carrinho",
+  "url": "/store/demo-trama/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "checkout",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "trama",
+  "w": 1440,
+  "page": "confirmacao",
+  "url": "/store/demo-trama/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "home",
+  "url": "/store/demo-lume",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "colecao",
+  "url": "/store/demo-lume/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "produto",
+  "url": "/store/demo-lume/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "carrinho",
+  "url": "/store/demo-lume/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "checkout",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "lume",
+  "w": 360,
+  "page": "confirmacao",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "home",
+  "url": "/store/demo-lume",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "colecao",
+  "url": "/store/demo-lume/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "produto",
+  "url": "/store/demo-lume/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "carrinho",
+  "url": "/store/demo-lume/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "checkout",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "lume",
+  "w": 768,
+  "page": "confirmacao",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "home",
+  "url": "/store/demo-lume",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "duo",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "colecao",
+  "url": "/store/demo-lume/catalog?category=conjuntos",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 2
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "produto",
+  "url": "/store/demo-lume/product/conjunto-canelado-areia",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "carrinho",
+  "url": "/store/demo-lume/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "checkout",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "lume",
+  "w": 1440,
+  "page": "confirmacao",
+  "url": "/store/demo-lume/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "home",
+  "url": "/store/demo-editorial",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "colecao",
+  "url": "/store/demo-editorial/catalog",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 14
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "produto",
+  "url": "/store/demo-editorial/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": true
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "carrinho",
+  "url": "/store/demo-editorial/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "checkout",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "editorial",
+  "w": 360,
+  "page": "confirmacao",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "home",
+  "url": "/store/demo-editorial",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "colecao",
+  "url": "/store/demo-editorial/catalog",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 14
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "produto",
+  "url": "/store/demo-editorial/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": true
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "carrinho",
+  "url": "/store/demo-editorial/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "checkout",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "editorial",
+  "w": 768,
+  "page": "confirmacao",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "home",
+  "url": "/store/demo-editorial",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "strip"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "colecao",
+  "url": "/store/demo-editorial/catalog",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 14
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "produto",
+  "url": "/store/demo-editorial/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": true
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "carrinho",
+  "url": "/store/demo-editorial/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "checkout",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "editorial",
+  "w": 1440,
+  "page": "confirmacao",
+  "url": "/store/demo-editorial/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "home",
+  "url": "/store/demo-atelier",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "duo"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "colecao",
+  "url": "/store/demo-atelier/catalog?category=acessorios",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 5
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "produto",
+  "url": "/store/demo-atelier/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "carrinho",
+  "url": "/store/demo-atelier/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "checkout",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "atelier",
+  "w": 360,
+  "page": "confirmacao",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "home",
+  "url": "/store/demo-atelier",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "duo"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "colecao",
+  "url": "/store/demo-atelier/catalog?category=acessorios",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 5
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "produto",
+  "url": "/store/demo-atelier/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "carrinho",
+  "url": "/store/demo-atelier/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "checkout",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "atelier",
+  "w": 768,
+  "page": "confirmacao",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "home",
+  "url": "/store/demo-atelier",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "status": 200,
+  "banners": [
+   "hero",
+   "mosaic",
+   "duo"
+  ],
+  "slides": 1,
+  "sections": 10
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "colecao",
+  "url": "/store/demo-atelier/catalog?category=acessorios",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "products": 5
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "produto",
+  "url": "/store/demo-atelier/product/bolsa-de-palha-laranja",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "soldOutSeen": false
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "carrinho",
+  "url": "/store/demo-atelier/cart",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "lines": 5
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "checkout",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": [],
+  "demoNote": true
+ },
+ {
+  "key": "atelier",
+  "w": 1440,
+  "page": "confirmacao",
+  "url": "/store/demo-atelier/checkout",
+  "errors": [],
+  "overflow": 0,
+  "axe": []
+ }
+]

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStorefront } from "@/lib/queries/storefront";
 import { CheckoutForm } from "./checkout-form";
+import { DemoCheckout } from "./demo-checkout";
+import { THEME_BY_KEY } from "@/lib/themes/catalog";
 
 export const metadata: Metadata = { title: "Finalizar compra", robots: { index: false, follow: false } };
 
@@ -9,6 +11,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const sf = await getStorefront(slug);
   if (!sf) notFound();
-  if (sf.store.showcaseTheme) return <div className="mx-auto max-w-lg px-4 py-16 text-center"><h1 className="text-2xl font-semibold">Esta é uma loja de demonstração</h1><p className="mt-3 text-neutral-600">Os produtos são de exemplo e não existe compra aqui. Gostou do visual? Veja os detalhes do tema.</p><a href={`/temas/${sf.store.showcaseTheme}`} target="_top" className="mt-6 inline-flex h-11 items-center rounded-lg bg-neutral-900 px-5 font-semibold text-white">Ver o tema</a></div>;
+  // Loja de demonstração: fechamento simulado só no navegador (o servidor continua recusando pedido: createOrder → SHOWCASE_STORE).
+  if (sf.store.showcaseTheme) return <DemoCheckout slug={slug} themeKey={sf.store.showcaseTheme} themeName={THEME_BY_KEY[sf.store.showcaseTheme]?.name ?? "do tema"} />;
   return <CheckoutForm slug={slug} storeName={sf.store.name} minOrderCents={sf.store.minOrderCents} />;
 }

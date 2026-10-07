@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { and, eq } from "drizzle-orm";
-import { entitlements, financeInvoices, orders, storeProducts, stores, storeThemes, themes, users } from "@/db/schema";
+import { and, eq, inArray } from "drizzle-orm";
+import { entitlements, financeInvoices, inventory, orders, productVariants, products, storeProducts, stores, storeThemes, themes, users } from "@/db/schema";
 import { createOrder } from "@/lib/domain/orders";
 import { markInvoicePaid } from "@/lib/domain/finance";
 import { fulfillPaidInvoice } from "@/lib/domain/nextlevel-billing";
@@ -39,6 +39,31 @@ describe("lojas de demonstração dos temas", () => {
     const t = (await resolveTemplate(ctx.db, await demoStore("ninho"), "home")).template;
     const hero = Object.values(t.sections).find((s) => s.type === "image-hero")!;
     expect(String(hero.settings.image)).toMatch(/^\/portal\/commerce\/.+\.webp$/);
+  });
+  it("família Moda: os quatro níveis usam o mesmo catálogo (12+ produtos, 4 categorias, variações e um esgotado)", async () => {
+    const skusOf = async (key: string) => {
+      const rows = await ctx.db.select({ sku: products.sku, cat: products.categoryId, pid: products.id }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(and(eq(storeProducts.storeId, (await demoStore(key)).id), eq(storeProducts.active, true)));
+      return rows;
+    };
+    const base = await skusOf("trama");
+    expect(base.length).toBeGreaterThanOrEqual(12);
+    expect(new Set(base.map((r) => r.cat)).size).toBe(4);
+    for (const key of ["lume", "editorial", "atelier"]) expect((await skusOf(key)).map((r) => r.sku).sort()).toEqual(base.map((r) => r.sku).sort());
+    const variants = await ctx.db.select().from(productVariants).where(inArray(productVariants.productId, base.map((r) => r.pid)));
+    expect(variants.length).toBeGreaterThan(base.length);
+    const sold = SHOWCASE_PRODUCTS.find((p) => p.soldOut)!;
+    const soldPid = base.find((r) => r.sku === sold.sku)!.pid;
+    const soldVars = variants.filter((v) => v.productId === soldPid).map((v) => v.id);
+    const stock = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, soldVars));
+    expect(stock.reduce((t, r) => t + r.onHand, 0)).toBe(0);
+    const other = await ctx.db.select().from(inventory).where(inArray(inventory.variantId, variants.filter((v) => v.productId !== soldPid).map((v) => v.id)));
+    expect(other.every((r) => r.onHand > 0)).toBe(true);
+    // N1 com banners fixos; N4 com campanha agendada; nenhum banner aponta para foto aleatória fora do manifesto
+    const home = async (key: string) => (await resolveTemplate(ctx.db, await demoStore(key), "home")).template;
+    const types = async (key: string) => Object.values((await home(key)).sections).map((x) => x.type);
+    expect(await types("trama")).toContain("hero-banner");
+    expect(await types("editorial")).toContain("banner-mosaic");
+    expect(JSON.stringify(await home("atelier"))).toMatch(/startsAt/);
   });
   it("não aceita pedido, mesmo com tudo certo", async () => {
     const s = await demoStore("ninho");

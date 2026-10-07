@@ -1,90 +1,126 @@
 import { randomBytes } from "node:crypto";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { statSync } from "node:fs";
+import { join } from "node:path";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { storeProducts, stores, themeTemplates, users } from "@/db/schema";
+import { products, storeProducts, stores, themeTemplates, users } from "@/db/schema";
 import { actorFromUser } from "@/lib/domain/access";
 import { catalogSupplierId } from "@/lib/domain/independent";
 import { createProduct } from "@/lib/domain/products";
 import { signupMember } from "@/lib/domain/store-access";
-import { THEME_CATALOG } from "./catalog";
+import { hasPublicDemo, THEME_BY_KEY, THEME_CATALOG } from "./catalog";
+import { demoFamilyOf, finalAssetPath, type AssetStatus, type DemoProduct, type FamilyAsset, type FamilyDemo } from "./families";
 import { applyThemeToStore, presetContextFor } from "./install";
-import { buildPreset } from "./presets";
+import { buildPreset, type PresetContext } from "./presets";
 import { normalizeTemplate, sameTemplate } from "./template";
 import { PAGE_KINDS } from "./types";
 
 /**
- * Lojas de demonstração dos temas (uma por tema): lojas de verdade, mas fictícias, com o tema instalado. Servem à página
- * pública de temas e ao link de demonstração. Regras: nunca recebem pedido (createOrder recusa), não têm dono com acesso
- * (usuário desativado), não aparecem nas contagens do Master e não são indexadas. Idempotentes e só criam o que falta.
+ * Lojas de demonstração dos temas (uma por tema): lojas de verdade, mas fictícias, com o tema instalado. Regras de isolamento:
+ * nunca recebem pedido (createOrder recusa; o checkout é simulado só no navegador), não têm dono com acesso (usuário desativado),
+ * ficam fora das contagens do Master (CLOSED) e não são indexadas. Idempotentes: só criam/ajustam o que falta.
+ * Dentro de uma família, todas as lojas usam os mesmos produtos e imagens (comparação justa entre níveis).
  */
 export const showcaseSlug = (themeKey: string) => `demo-${themeKey}`;
-const IMG = (n: string) => `/portal/commerce/${n}.webp`;
 const FAR = "2099-12-31T00:00:00.000Z";
 
-type Item = { name: string; sku: string; price: number; photo: string; category: string; featured?: boolean };
-type ShowcaseSet = { products: Item[]; images: { hero: string; about: string } };
-/** Produtos de exemplo, com fotos do acervo do repositório. Os preços são ilustrativos. */
-const MODA: ShowcaseSet = {
-  images: { hero: IMG("moda-hero-wide"), about: IMG("moda-2") },
+/** Catálogo antigo da casa (Ninho) até a família Casa ganhar o seu catálogo sintético completo. */
+const LEGACY_CASA: FamilyDemo = {
+  family: "casa", storeName: "Loja Exemplo", tagline: "Casa e decoração", assets: [], menu: [],
   products: [
-    { name: "Conjunto de moletom amarelo", sku: "EX-01", price: 24990, photo: "moda-hero", category: "Roupas", featured: true },
-    { name: "Jaqueta de couro sintético", sku: "EX-02", price: 28990, photo: "moda-3", category: "Roupas", featured: true },
-    { name: "Poncho de tricô cru", sku: "EX-03", price: 17990, photo: "moda-1", category: "Roupas", featured: true },
-    { name: "Terno azul xadrez", sku: "EX-04", price: 54990, photo: "moda-5", category: "Roupas" },
-    { name: "Camiseta verde-musgo", sku: "EX-05", price: 7990, photo: "moda-2", category: "Roupas" },
-    { name: "Bolsa estruturada vermelha", sku: "EX-06", price: 32990, photo: "ace-1", category: "Bolsas", featured: true },
-    { name: "Bolsa de palha laranja", sku: "EX-07", price: 26990, photo: "ace-2", category: "Bolsas" },
-    { name: "Mochila azul urbana", sku: "EX-08", price: 19990, photo: "ace-5", category: "Bolsas" },
-    { name: "Brincos dourados trançados", sku: "EX-09", price: 8990, photo: "ace-3", category: "Acessórios e calçados" },
-    { name: "Carteira de couro marrom", sku: "EX-10", price: 11990, photo: "ace-4", category: "Acessórios e calçados" },
-    { name: "Sandálias de salto bloco", sku: "EX-11", price: 21990, photo: "moda-4", category: "Acessórios e calçados" },
-    { name: "Fones de ouvido sem fio", sku: "EX-12", price: 15990, photo: "ace-6", category: "Acessórios e calçados" },
+    { name: "Sofá de veludo verde", sku: "EX-01", price: 289900, photo: "/portal/commerce/casa-1.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
+    { name: "Sofá de couro caramelo", sku: "EX-02", price: 349900, photo: "/portal/commerce/casa-2.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
+    { name: "Sofá laranja com almofada", sku: "EX-03", price: 259900, photo: "/portal/commerce/casa-3.webp", category: "Sofás", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
+    { name: "Poltrona amarela", sku: "EX-04", price: 119900, photo: "/portal/commerce/casa-hero.webp", category: "Cadeiras e poltronas", featured: true, variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
+    { name: "Cadeira estofada cinza", sku: "EX-05", price: 49900, photo: "/portal/commerce/casa-4.webp", category: "Cadeiras e poltronas", variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
+    { name: "Banco alto de madeira", sku: "EX-06", price: 29900, photo: "/portal/commerce/casa-5.webp", category: "Cadeiras e poltronas", variants: ["Único"], description: "Produto de exemplo, usado só para mostrar como o tema fica." },
   ],
 };
-const CASA: ShowcaseSet = {
-  images: { hero: IMG("casa-hero-wide"), about: IMG("casa-3") },
-  products: [
-    { name: "Sofá de veludo verde", sku: "EX-01", price: 289900, photo: "casa-1", category: "Sofás", featured: true },
-    { name: "Sofá de couro caramelo", sku: "EX-02", price: 349900, photo: "casa-2", category: "Sofás", featured: true },
-    { name: "Sofá laranja com almofada", sku: "EX-03", price: 259900, photo: "casa-3", category: "Sofás", featured: true },
-    { name: "Poltrona amarela", sku: "EX-04", price: 119900, photo: "casa-hero", category: "Cadeiras e poltronas", featured: true },
-    { name: "Cadeira estofada cinza", sku: "EX-05", price: 49900, photo: "casa-4", category: "Cadeiras e poltronas" },
-    { name: "Banco alto de madeira", sku: "EX-06", price: 29900, photo: "casa-5", category: "Cadeiras e poltronas" },
-  ],
-};
-const SET_OF: Record<string, ShowcaseSet> = { ninho: CASA };
-const setOf = (themeKey: string) => SET_OF[themeKey] ?? MODA;
-export const SHOWCASE_PRODUCTS = MODA.products;
+const demoOf = (themeKey: string): FamilyDemo => (themeKey === "ninho" ? LEGACY_CASA : demoFamilyOf(THEME_BY_KEY[themeKey]!.family)!);
+/** Produtos de exemplo da família Moda (catálogo de referência das demonstrações). */
+export const SHOWCASE_PRODUCTS = demoFamilyOf("moda")!.products;
+
 /** Logo de cada tema (arquivo em public/temas); temas sem logo usam só o texto. */
 const LOGO: Record<string, string> = { lume: "/temas/lume-logo.svg", ninho: "/temas/ninho-logo.svg" };
 export const themeLogo = (key: string): string | null => LOGO[key] ?? null;
 
-async function createShowcaseStore(db: Database, themeKey: string, themeName: string) {
-  const email = `demo-${themeKey}@demonstracao.nextlevel.invalid`;
-  const r = await signupMember(db, { storeName: "Loja Exemplo", ownerName: `Demonstração ${themeName}`, email, password: randomBytes(24).toString("base64url"), taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
-  const owner = actorFromUser((await db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
-  const supplierId = await catalogSupplierId(db, owner);
-  for (const p of setOf(themeKey).products) {
-    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: "Produto de exemplo, usado só para mostrar como o tema fica.", categoryName: p.category, images: [IMG(p.photo)], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: [{ size: "M", initialStock: 40 }, { size: "G", initialStock: 40 }] });
-    await db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured });
+const fileOk = (publicPath: string) => { try { return statSync(join(process.cwd(), "public", publicPath)).size > 0; } catch { return false; } };
+/**
+ * Imagem de um asset do manifesto: o arquivo final (se o dono já salvou em public/temas/familias/…), senão a provisória
+ * do acervo. Estado: integrado (final no lugar), provisório (acervo) ou pendente (sem imagem: fundo nas cores do tema).
+ */
+export function resolveAsset(a: FamilyAsset): { image: string; imageMobile: string; alt: string; status: AssetStatus } {
+  const final = finalAssetPath(a), finalMobile = finalAssetPath(a, "mobile");
+  if (fileOk(final)) return { image: final, imageMobile: fileOk(finalMobile) ? finalMobile : "", alt: a.alt, status: "integrado" };
+  if (a.provisional) return { image: a.provisional, imageMobile: "", alt: a.alt, status: "provisório" };
+  return { image: "", imageMobile: "", alt: a.alt, status: "pendente" };
+}
+const mediaOf = (d: FamilyDemo): NonNullable<PresetContext["media"]> => Object.fromEntries(d.assets.map((a) => { const r = resolveAsset(a); return [a.id, { image: r.image, imageMobile: r.imageMobile, alt: r.alt }]; }));
+/** Fotos dos temas que ainda usam `images` (Starter, Signature, Arena): as da família da demonstração. */
+const imagesOf = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => ({ hero: m[`${d.family}-hero-1`]?.image || "/portal/commerce/moda-hero-wide.webp", about: m[`${d.family}-sobre`]?.image || "/portal/commerce/moda-2.webp" });
+
+async function addProducts(db: Database, storeId: string, supplierId: string, list: DemoProduct[]) {
+  for (const p of list) {
+    const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: p.description, categoryName: p.category, images: [p.photo], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: p.variants.map((v) => ({ size: v, initialStock: p.soldOut ? 0 : 40 })) });
+    await db.insert(storeProducts).values({ storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured });
   }
+}
+
+async function createShowcaseStore(db: Database, themeKey: string, themeName: string, demo: FamilyDemo) {
+  const email = `demo-${themeKey}@demonstracao.nextlevel.invalid`;
+  const r = await signupMember(db, { storeName: demo.storeName, ownerName: `Demonstração ${themeName}`, email, password: randomBytes(24).toString("base64url"), taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
+  const owner = actorFromUser((await db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
+  await addProducts(db, r.storeId, await catalogSupplierId(db, owner), demo.products);
   // Sem dono com acesso; a loja fica fora das contagens (CLOSED) mas aparece na vitrine pública pelo marcador de demonstração.
   await db.update(users).set({ disabledAt: new Date().toISOString() }).where(eq(users.id, r.userId));
-  await db.update(stores).set({ slug: showcaseSlug(themeKey), showcaseTheme: themeKey, status: "CLOSED", publishedAt: new Date().toISOString(), paidUntil: FAR, trialEndsAt: null, tagline: `Demonstração do tema ${themeName}`, logoText: "EX", logoUrl: themeLogo(themeKey), updatedAt: new Date().toISOString() }).where(eq(stores.id, r.storeId));
+  await db.update(stores).set({ slug: showcaseSlug(themeKey), showcaseTheme: themeKey, status: "CLOSED", publishedAt: new Date().toISOString(), paidUntil: FAR, trialEndsAt: null, tagline: demo.tagline, logoText: demo.storeName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(), logoUrl: themeLogo(themeKey), updatedAt: new Date().toISOString() }).where(eq(stores.id, r.storeId));
   return r.storeId;
 }
 
-/** Cria o que falta e deixa cada loja de demonstração com o visual atual do tema. Devolve o que mudou. */
+/** Deixa o catálogo da demonstração igual ao da família (acrescenta o que falta, desativa o que saiu, ajusta destaque). */
+async function syncProducts(db: Database, store: typeof stores.$inferSelect, demo: FamilyDemo): Promise<boolean> {
+  const rows = await db.select({ productId: storeProducts.productId, active: storeProducts.active, featured: storeProducts.featured, sku: products.sku }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(eq(storeProducts.storeId, store.id));
+  const want = new Map(demo.products.map((p) => [p.sku, p]));
+  const missing = demo.products.filter((p) => !rows.some((r) => r.sku === p.sku));
+  let changed = false;
+  if (missing.length) {
+    const owner = (await db.select().from(users).where(eq(users.organizationId, store.organizationId)))[0]!;
+    await addProducts(db, store.id, await catalogSupplierId(db, actorFromUser(owner)), missing); changed = true;
+  }
+  for (const r of rows) {
+    const p = want.get(r.sku);
+    const active = !!p, featured = !!p?.featured;
+    if (r.active !== active || r.featured !== featured) { await db.update(storeProducts).set({ active, featured }).where(and(eq(storeProducts.storeId, store.id), eq(storeProducts.productId, r.productId))); changed = true; }
+  }
+  if (store.name !== demo.storeName || store.tagline !== demo.tagline) { await db.update(stores).set({ name: demo.storeName, tagline: demo.tagline, updatedAt: new Date().toISOString() }).where(eq(stores.id, store.id)); changed = true; }
+  return changed;
+}
+
+/** Cria o que falta e deixa cada loja de demonstração com o catálogo da família e o visual atual do tema. */
 export async function ensureShowcaseStores(db: Database, now = new Date()): Promise<string[]> {
   const log: string[] = [];
-  for (const info of THEME_CATALOG) {
+  for (const info of THEME_CATALOG.filter(hasPublicDemo)) {
+    const demo = demoOf(info.key);
     let store = await db.query.stores.findFirst({ where: and(eq(stores.showcaseTheme, info.key), isNotNull(stores.showcaseTheme)) });
-    if (!store) { const id = await createShowcaseStore(db, info.key, info.name); store = (await db.query.stores.findFirst({ where: eq(stores.id, id) }))!; log.push(`loja de demonstração do tema ${info.key} criada`); }
+    if (!store) { const id = await createShowcaseStore(db, info.key, info.name, demo); store = (await db.query.stores.findFirst({ where: eq(stores.id, id) }))!; log.push(`loja de demonstração do tema ${info.key} criada`); }
+    else if (await syncProducts(db, store, demo)) { store = (await db.query.stores.findFirst({ where: eq(stores.id, store.id) }))!; log.push(`catálogo da demonstração ${info.key} ajustado`); }
+    const media = mediaOf(demo);
+    const cats = await demoCategories(db, store.id);
+    const extra = { images: imagesOf(demo, media), media, categories: cats };
     const { ctx } = await presetContextFor(db, store, now);
-    const preset = buildPreset(info.key, { ...ctx, images: setOf(info.key).images });
+    const preset = buildPreset(info.key, { ...ctx, ...extra });
     const rows = await db.select().from(themeTemplates).where(eq(themeTemplates.storeId, store.id));
     const upToDate = !!preset && PAGE_KINDS.every((page) => { const r = rows.find((x) => x.page === page); return !!r?.published && sameTemplate(normalizeTemplate(r.published, "content", page).template, normalizeTemplate(preset.pages[page], "content", page).template); });
-    if (!upToDate) { await applyThemeToStore(db, store, info.key, store.id, now, setOf(info.key).images); log.push(`tema ${info.key} aplicado na loja de demonstração`); }
+    if (!upToDate) { await applyThemeToStore(db, store, info.key, store.id, now, extra.images, extra); log.push(`tema ${info.key} aplicado na loja de demonstração`); }
   }
   return log;
+}
+
+/** Categorias com produto ativo na loja (para o menu grande do N4). */
+async function demoCategories(db: Database, storeId: string) {
+  const { categories } = await import("@/db/schema");
+  const rows = await db.select({ categoryId: products.categoryId }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.active, true)));
+  const ids = [...new Set(rows.map((r) => r.categoryId).filter((x): x is string => !!x))];
+  if (!ids.length) return [];
+  return (await db.select({ name: categories.name, slug: categories.slug }).from(categories).where(inArray(categories.id, ids))).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }

@@ -60,11 +60,11 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
           ) : (
             <>
               <span className="flex size-9 items-center justify-center rounded-md text-xs font-bold" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>{logoText ?? name.slice(0, 2).toUpperCase()}</span>
-              <span className="text-base font-semibold tracking-tight">{name}</span>
+              <span className="whitespace-nowrap text-base font-semibold tracking-tight">{name}</span>
             </>
           )}
         </Link>
-        <nav className="ml-6 hidden items-center gap-5 text-sm sm:flex" aria-label="Principal">
+        <nav className={cn("hidden items-center whitespace-nowrap text-sm sm:flex", links.length > 3 ? "ml-2 gap-4" : "ml-6 gap-5")} aria-label="Principal">
           {links.map((l, i) => (
             <div key={`${l.label}-${i}`} className="relative" onMouseEnter={() => setMega(l.children.length ? i : null)}>
               {l.children.length ? (
@@ -74,8 +74,9 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-2">
-          {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-56 lg:block xl:w-72" /> : null}
-          <Link href={`${base}/acompanhar`} className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden /> Acompanhar pedido</Link>
+          {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-52 lg:block xl:w-64" /> : null}
+          {/* Com busca e menu grande, o atalho vira só o ícone para a barra caber numa linha. */}
+          <Link href={`${base}/acompanhar`} aria-label={showSearch ? "Acompanhar pedido" : undefined} title={showSearch ? "Acompanhar pedido" : undefined} className={cn("hidden min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden />{showSearch ? null : " Acompanhar pedido"}</Link>
           {whatsapp ? <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer" className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm sm:inline-flex", dark ? "text-neutral-300" : "text-neutral-600", T.hover)}><MessageCircle className="size-4" /> WhatsApp</a> : null}
           <Link href={`${base}/cart`} className={cn("relative inline-flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
             <ShoppingBag className="size-5" />

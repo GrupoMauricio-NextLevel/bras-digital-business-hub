@@ -1,22 +1,28 @@
 import { sectionSchema } from "./sections";
 import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
+import { modaAtelier, modaEditorial, modaLume, modaTrama } from "./presets-moda";
 import type { PageKind, SettingValue, Template, ThemeGlobals, ThemeStyle } from "./types";
 
 /** Dados da loja que os temas usam para nascer já com o nome, as cores e os textos dela. */
-export type PresetContext = { storeName: string; tagline: string | null; primary: string; accent: string; announcement: string; footerText: string; hero?: { title: string; subtitle: string; ctaLabel: string }; /** Fotos opcionais (lojas de demonstração); clientes colocam as próprias pelo editor. */ images?: { hero?: string; about?: string }; now: Date };
+export type PresetContext = { storeName: string; tagline: string | null; primary: string; accent: string; announcement: string; footerText: string; hero?: { title: string; subtitle: string; ctaLabel: string }; /** Fotos opcionais (lojas de demonstração); clientes colocam as próprias pelo editor. */ images?: { hero?: string; about?: string };
+  /** Imagens de banner por id do manifesto da família (lojas de demonstração). Sem elas, os banners nascem com o fundo nas cores do tema. */
+  media?: Record<string, { image: string; imageMobile?: string; alt: string }>;
+  /** Categorias reais da loja (menu grande do N4). */
+  categories?: { name: string; slug: string }[];
+  now: Date };
 export type ThemePreset = { style: ThemeStyle; globals: ThemeGlobals; pages: Record<PageKind, Template> };
 
-type Item = [string, SectionSpec];
+export type Item = [string, SectionSpec];
 type BlockSpec = { type: string; settings?: Record<string, SettingValue> };
 /** Blocos do preset padrão de uma seção, com ajustes opcionais por posição. */
-const blocksOf = (type: string, over: Record<string, SettingValue>[] = []): BlockSpec[] => (sectionSchema(type)!.presets[0]!.blocks ?? []).map((b, i) => ({ type: b.type, settings: { ...(b.settings ?? {}), ...(over[i] ?? {}) } }));
-const untilDays = (now: Date, days: number) => { const d = new Date(now); d.setUTCDate(d.getUTCDate() + days); return `${d.toISOString().slice(0, 10)}T23:59`; };
-const globals = (style: ThemeStyle, header: Item[], footer: Item[]): ThemeGlobals => ({ v: 1, style, header: buildTemplate("header", undefined, header), footer: buildTemplate("footer", undefined, footer.some(([, sp]) => sp.type === "whatsapp-float") ? footer : [...footer, ["wa", { type: "whatsapp-float" }]]) });
+export const blocksOf = (type: string, over: Record<string, SettingValue>[] = []): BlockSpec[] => (sectionSchema(type)!.presets[0]!.blocks ?? []).map((b, i) => ({ type: b.type, settings: { ...(b.settings ?? {}), ...(over[i] ?? {}) } }));
+export const untilDays = (now: Date, days: number) => { const d = new Date(now); d.setUTCDate(d.getUTCDate() + days); return `${d.toISOString().slice(0, 10)}T23:59`; };
+export const globals = (style: ThemeStyle, header: Item[], footer: Item[]): ThemeGlobals => ({ v: 1, style, header: buildTemplate("header", undefined, header), footer: buildTemplate("footer", undefined, footer.some(([, sp]) => sp.type === "whatsapp-float") ? footer : [...footer, ["wa", { type: "whatsapp-float" }]]) });
 const seals = (): Item => ["seals", { type: "security-seals", blocks: blocksOf("security-seals") }];
 /** Todos os temas nascem com selos de segurança: na página inicial (no fim), no produto (logo abaixo da compra) e no carrinho. */
 const withSeals = (items: Item[], at: number | "end"): Item[] => (items.some(([, sp]) => sp.type === "security-seals") ? items : at === "end" ? [...items, seals()] : [...items.slice(0, at), seals(), ...items.slice(at)]);
-const pages = (home: Item[], product: Item[], collection: Item[], cart: Item[]): Record<PageKind, Template> => ({ home: buildTemplate("content", "home", withSeals(home, "end")), product: buildTemplate("content", "product", withSeals(product, 1)), collection: buildTemplate("content", "collection", collection), cart: buildTemplate("content", "cart", withSeals(cart, "end")) });
-const announcement = (c: PresetContext, fallback: string, tone: string): Item => ["announcement", { type: "announcement-bar", settings: { text: c.announcement.trim() || fallback, tone }, hidden: !c.announcement.trim() && !fallback }];
+export const pages = (home: Item[], product: Item[], collection: Item[], cart: Item[]): Record<PageKind, Template> => ({ home: buildTemplate("content", "home", withSeals(home, "end")), product: buildTemplate("content", "product", withSeals(product, 1)), collection: buildTemplate("content", "collection", collection), cart: buildTemplate("content", "cart", withSeals(cart, "end")) });
+export const announcement = (c: PresetContext, fallback: string, tone: string): Item => ["announcement", { type: "announcement-bar", settings: { text: c.announcement.trim() || fallback, tone }, hidden: !c.announcement.trim() && !fallback }];
 
 // ---------------------------------------------------------------------------
 function starter(c: PresetContext): ThemePreset {
@@ -67,8 +73,7 @@ function entryTheme(c: PresetContext, look: EntryLook): ThemePreset {
     ),
   };
 }
-const lume = (c: PresetContext) => entryTheme(c, { primary: "#1f2a44", accent: "#be185d", headingFont: "display", radius: 14, catStyle: "circles", heroFallback: { title: (n) => `Novidades na ${n}`, text: "Peças escolhidas com carinho, com envio para todo o Brasil.", cta: "Ver novidades" }, featured: { title: "Escolhidos para você", subtitle: "Os destaques da loja" }, aboutCta: "Conhecer o catálogo" });
-const ninho = (c: PresetContext) => entryTheme(c, { primary: "#2f4a3a", accent: "#b4532a", headingFont: "editorial", radius: 10, catStyle: "cards", heroFallback: { title: (n) => `Deixe a casa com a sua cara na ${n}`, text: "Móveis e peças de decoração escolhidos para o seu lar, com envio para todo o Brasil.", cta: "Ver a coleção" }, featured: { title: "Para o seu lar", subtitle: "Os destaques da casa" }, aboutCta: "Ver todos os móveis" });
+const ninho = (c: PresetContext) => entryTheme(c, { primary: "#2f4a3a", accent: "#b4532a", headingFont: "editorial", radius: 10, catStyle: "cards", heroFallback: { title: (n) => `Deixe a casa com a sua cara na ${n}`, text: "Móveis e peças de decoração escolhidos para o seu lar.", cta: "Ver a coleção" }, featured: { title: "Para o seu lar", subtitle: "Os destaques da casa" }, aboutCta: "Ver todos os móveis" });
 
 function arena(c: PresetContext): ThemePreset {
   const style = normalizeStyle({ primary: "#0f1c16", accent: "#22c55e", headingFont: "condensada", bodyFont: "moderna", radius: 8, buttons: "solid", quickView: true, animations: true });
@@ -92,31 +97,6 @@ function arena(c: PresetContext): ThemePreset {
       [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["faq", { type: "faq", blocks: blocksOf("faq") }], ["related", { type: "product-related" }]],
       [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], wa()],
       [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
-    ),
-  };
-}
-
-function editorial(c: PresetContext): ThemePreset {
-  const style = normalizeStyle({ primary: "#1c1917", accent: "#a16207", headingFont: "elegante", bodyFont: "moderna", radius: 0, buttons: "outline", quickView: false, animations: true });
-  return {
-    style,
-    globals: globals(style, [announcement(c, "", "neutral"), ["header", { type: "header", settings: { tone: "light" } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "light" } }]]),
-    pages: pages(
-      [
-        ["hero", { type: "image-hero", settings: { image: c.images?.hero ?? "", heading: c.hero?.title ?? "A coleção da estação", text: c.hero?.subtitle ?? "Peças pensadas para durar, com acabamento que faz diferença.", ctaLabel: c.hero?.ctaLabel ?? "Ver a coleção", height: "lg", fullWidth: true, overlay: 35, align: "left" } }],
-        ["about", { type: "image-with-text", settings: { image: c.images?.about ?? "", heading: "Feito para durar", body: `Na ${c.storeName}, cada peça é escolhida pelo caimento, pelo tecido e pelo acabamento.`, ctaLabel: "Conhecer o catálogo", ratio: "portrait" } }],
-        ["cats", { type: "category-grid", settings: { heading: "Compre por categoria", columns: 3, style: "cards" } }],
-        ["showcase", { type: "product-showcase", settings: { title: "Seleção da estação", subtitle: "", source: "featured", count: 4 } }],
-        ["look", { type: "lookbook", blocks: blocksOf("lookbook") }],
-        ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }],
-        ["story", { type: "image-with-text", settings: { heading: "Nossa história", body: c.tagline ?? "Conte de onde vem a sua marca e o que a torna única.", reverse: true, ratio: "square" } }],
-        ["faq", { type: "faq", blocks: blocksOf("faq") }],
-        ["cta", { type: "cta-banner", settings: { heading: "Receba novidades primeiro", text: "Fale com a gente no WhatsApp e entre na lista de lançamentos.", buttonLabel: "Entrar na lista", tone: "light" } }],
-        ["grid", { type: "product-grid" }],
-      ],
-      [["product", { type: "product-main", settings: { gallery: "thumbs" } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["proof", { type: "testimonials", blocks: blocksOf("testimonials"), hidden: true }], ["related", { type: "product-related" }]],
-      [["header", { type: "collection-header" }], ["grid", { type: "collection-grid", settings: { columns: 3 } }], ["cta", { type: "cta-banner", settings: { tone: "light", heading: "Não achou o que procurava?" } }]],
-      [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }]],
     ),
   };
 }
@@ -148,6 +128,7 @@ function signature(c: PresetContext): ThemePreset {
   };
 }
 
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, lume, ninho, arena, editorial, signature };
+// Família Moda (Trama N1 · Lume N2 · Editorial N3 · Atelier N4): composição em presets-moda.ts.
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, lume: modaLume, ninho, arena, editorial: modaEditorial, signature, trama: modaTrama, atelier: modaAtelier };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }
