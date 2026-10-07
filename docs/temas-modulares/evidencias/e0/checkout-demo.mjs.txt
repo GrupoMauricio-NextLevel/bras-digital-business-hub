@@ -1,0 +1,11 @@
+import { chromium } from "playwright-core";
+const B = "http://localhost:3100", OUT = "docs/temas-modulares/evidencias/e0";
+const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, extraHTTPHeaders: { "x-forwarded-host": "lojas.nextlevelgroup.com.br" } });
+const p = await ctx.newPage(); p.setDefaultTimeout(30000);
+await p.goto(B + "/"); console.log("home commerce mostra Ninho na tabela de valores:", (await p.locator("#valores").innerText()).includes("Ninho"));
+await p.goto(B + "/store/demo-lume/product/bolsa-estruturada-vermelha"); await p.getByRole("button", { name: /Adicionar|Comprar/i }).first().click(); await p.waitForTimeout(600);
+await p.goto(B + "/store/demo-lume/cart"); await p.getByRole("link", { name: /Finalizar compra/ }).or(p.getByRole("button", { name: /Finalizar compra/ })).first().click(); await p.waitForTimeout(1500);
+console.log("checkout url:", p.url()); await p.screenshot({ path: `${OUT}/demo-lume-checkout-390.png`, fullPage: true });
+console.log("checkout texto:", (await p.locator("main").innerText()).replace(/\s+/g, " ").slice(0, 400));
+await b.close();

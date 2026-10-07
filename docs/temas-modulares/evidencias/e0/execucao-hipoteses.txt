@@ -1,0 +1,13 @@
+==== E0 ====
+H6 buyTheme(ninho) pela loja Arena 10 (STORE_SUBDOMAIN): OK (aceito)
+H2 saveTemplateDraft(STORE_OWN, sem licença Arena/Signature, com slideshow): OK (aceito)
+H2 rascunho persistido contém slideshow: true
+H1 installTheme(lume) STORE_SUBDOMAIN: OK (aceito)
+H1 adicionar FAQ (seção do Lume) com licença Lume em STORE_SUBDOMAIN: RECUSADO FEATURE_LOCKED Editor avançado da loja está disponível na oferta Loja própria. Veja como liberar na Loja NextLevel.
+H9 instalar starter com rascunho existente: OK (aceito)
+H9 rascunho ainda existe: false
+H9 alguma versão guarda o marcador do rascunho: false
+Concorrência: segunda aba com base antiga: OK (aceito)
+Concorrência: valor final: ABA-B
+H8 PNG corrompido: OK (aceito)
+============

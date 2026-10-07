@@ -1,0 +1,65 @@
+/** Auditoria E0 (temporária): reproduz o comportamento ATUAL. Cada teste registra o que acontece hoje. */
+import { beforeAll, describe, expect, it } from "vitest";
+import { and, eq } from "drizzle-orm";
+import { entitlements, themeTemplates, themeTemplateVersions } from "@/db/schema";
+import { freshDb } from "./setup";
+import { syncThemeCatalog } from "@/lib/themes/catalog";
+import { buyTheme, installTheme } from "@/lib/themes/install";
+import { resolveTemplate, saveTemplateDraft } from "@/lib/themes/store";
+import { addSection } from "@/lib/themes/template";
+import { saveStoreAsset } from "@/lib/domain/assets";
+import { newId } from "@/lib/ids";
+
+let ctx: Awaited<ReturnType<typeof freshDb>>;
+const log: string[] = [];
+const out = (k: string, v: unknown) => { log.push(`${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`); };
+const tryRun = async (f: () => Promise<unknown>) => { try { await f(); return "OK (aceito)"; } catch (e) { return `RECUSADO ${(e as { code?: string }).code ?? ""} ${(e as Error).message}`; } };
+beforeAll(async () => { ctx = await freshDb(); await syncThemeCatalog(ctx.db); }, 120_000);
+
+describe("E0", () => {
+  it("H6 compra de tema em aprovação (ninho)", async () => {
+    out("H6 buyTheme(ninho) pela loja Arena 10 (STORE_SUBDOMAIN)", await tryRun(() => buyTheme(ctx.db, ctx.actors.arena, "ninho", "PIX")));
+  });
+  it("H1/H2 loja STORE_OWN sem licença adiciona seção de tema pago (slideshow, só arena/signature)", async () => {
+    const cur = (await resolveTemplate(ctx.db, (await ctx.db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, ctx.actors.mantos.storeId!) }))!, "home", { draft: true })).template;
+    const next = addSection(cur, "slideshow", { region: "content", page: "home" }).template;
+    out("H2 saveTemplateDraft(STORE_OWN, sem licença Arena/Signature, com slideshow)", await tryRun(() => saveTemplateDraft(ctx.db, ctx.actors.mantos, ctx.actors.mantos.storeId!, "home", next)));
+    const header = await resolveTemplate(ctx.db, (await ctx.db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, ctx.actors.mantos.storeId!) }))!, "home", { draft: true });
+    out("H2 rascunho persistido contém slideshow", Object.values(header.template.sections).some((s) => s.type === "slideshow"));
+  });
+  it("H1 loja STORE_SUBDOMAIN com licença Lume não muda a estrutura", async () => {
+    await ctx.db.insert(entitlements).values({ id: newId("ent"), storeId: ctx.actors.arena.storeId!, key: "THEME_LUME", source: "PURCHASE", tenantType: "STORE" } as never);
+    out("H1 installTheme(lume) STORE_SUBDOMAIN", await tryRun(() => installTheme(ctx.db, ctx.actors.arena, "lume")));
+    const store = (await ctx.db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, ctx.actors.arena.storeId!) }))!;
+    const cur = (await resolveTemplate(ctx.db, store, "home", { draft: true })).template;
+    const next = addSection(cur, "faq", { region: "content", page: "home" }).template;
+    out("H1 adicionar FAQ (seção do Lume) com licença Lume em STORE_SUBDOMAIN", await tryRun(() => saveTemplateDraft(ctx.db, ctx.actors.arena, store.id, "home", next)));
+  });
+  it("H9 instalar tema descarta rascunho sem cópia", async () => {
+    const store = (await ctx.db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, ctx.actors.arena.storeId!) }))!;
+    const cur = (await resolveTemplate(ctx.db, store, "home", { draft: true })).template;
+    const heroId = cur.order[0]!; const edited = structuredClone(cur); const s = edited.sections[heroId]!; const k = Object.keys(s.settings).find((x) => typeof s.settings[x] === "string" && x.toLowerCase().includes("head") || x === "title") ?? Object.keys(s.settings)[0]!; s.settings[k] = "RASCUNHO-MARCADOR-123";
+    await saveTemplateDraft(ctx.db, ctx.actors.arena, store.id, "home", edited);
+    out("H9 instalar starter com rascunho existente", await tryRun(() => installTheme(ctx.db, ctx.actors.arena, "starter")));
+    const row = await ctx.db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, "home")) });
+    out("H9 rascunho ainda existe", !!row?.draft);
+    const vers = await ctx.db.select().from(themeTemplateVersions).where(eq(themeTemplateVersions.storeId, store.id));
+    out("H9 alguma versão guarda o marcador do rascunho", vers.some((v) => JSON.stringify(v.snapshot).includes("RASCUNHO-MARCADOR-123")));
+  });
+  it("Concorrência: duas abas", async () => {
+    const store = (await ctx.db.query.stores.findFirst({ where: (s, { eq }) => eq(s.id, ctx.actors.arena.storeId!) }))!;
+    const base = (await resolveTemplate(ctx.db, store, "home", { draft: true })).template;
+    const a = structuredClone(base); const b = structuredClone(base); const id = base.order[0]!;
+    const key = Object.keys(a.sections[id]!.settings).find((x) => typeof a.sections[id]!.settings[x] === "string")!;
+    a.sections[id]!.settings[key] = "ABA-A"; b.sections[id]!.settings[key] = "ABA-B";
+    await saveTemplateDraft(ctx.db, ctx.actors.arena, store.id, "home", a);
+    out("Concorrência: segunda aba com base antiga", await tryRun(() => saveTemplateDraft(ctx.db, ctx.actors.arena, store.id, "home", b)));
+    const now = (await resolveTemplate(ctx.db, store, "home", { draft: true })).template;
+    out("Concorrência: valor final", now.sections[id]!.settings[key]);
+  });
+  it("H8 upload de PNG corrompido (cabeçalho válido, sem imagem)", async () => {
+    const bad = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(40, 7)]);
+    out("H8 PNG corrompido", await tryRun(() => saveStoreAsset(ctx.db, ctx.actors.mantos, ctx.actors.mantos.storeId!, `data:image/png;base64,${bad.toString("base64")}`)));
+  });
+  it("relatório", () => { console.log("\n==== E0 ====\n" + log.join("\n") + "\n============"); expect(log.length).toBeGreaterThan(0); });
+});
