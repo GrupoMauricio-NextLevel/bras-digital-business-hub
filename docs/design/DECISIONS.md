@@ -584,3 +584,120 @@ Pedido do dono (prompt "Financeiro Master unificado da Nextlevel"): "O Master ad
 - **Flags:** `FIN_CATALOG_MASTER`, `FIN_COMMERCE_PLANS`, `FIN_PAGARME` (desligada), `FIN_PARTNER_COMMISSIONS_V2`, `FIN_PUBLIC_SOLUTIONS`.
 - **Pendências do dono/externas:** chave e webhook do Pagar.me; confirmar a conta MP da NextLevel conectada em produção e configurar "parcelado sem juros para o comprador" (o acréscimo de 16% já está no preço); 2FA (hoje reautenticação por senha); termos/contratos e revisão contábil da taxa de plataforma; preços de marketing e consultoria (hoje sob consulta).
 - Testes: `tests/financeiro-master.test.ts`, `tests/financeiro-jornada.test.ts` (+ ajuste em `commerce-hub` e `health`).
+## D91 — Brás Digital passa a prioridade: plataforma de atacado de caixa fechada (2026-10-07)
+Pedido do dono: conectar as principais importadoras chinesas do Brás num sistema automatizado e sincronizado, só para alto atacado de caixa fechada, para quem vende em Mercado Livre e outros canais, lojistas e distribuidores de todo o Brasil. "Não vai ser só um site": painel de pedidos, feed de vídeo e lives, checkout, estoque em caixas ao vivo e pedido mínimo. Substitui a linha do `CLAUDE.md` que deixava a Brás Digital "para outra etapa". Documento de execução: `docs/prompts/bras-digital-plataforma.md`.
+- **Nome:** Brás Digital. O nome China Hub fica reservado e não aparece nesta frente.
+- **Acesso fechado:** sem site público na versão 1. **Preço nunca é público**: só membro aprovado (CNPJ validado) e logado enxerga preço e estoque.
+- **Três painéis, cada um com experiência própria:** Estúdio (o dono: produção de conteúdo, lives, membros, comissões), Balcão (a importadora: **somente** reservas pagas, estoque, retirada e extrato; nunca vê a carteira de clientes, o conteúdo nem a análise do dono) e Meu Brás (o membro). Onde mora o Estúdio (módulo do Master com filtro de marca ou área própria) se decide na Fase 0, respeitando "Master é um só" (4A, regra 8).
+- **Regras de negócio:** venda só em caixa fechada, pedido mínimo de 1 caixa; pagamento só em Pix e dinheiro; a importadora recebe direto e o dono recebe comissão acordada por importadora; retirada no Brás com a transportadora do cliente (sem cálculo de frete); estoque em caixas visível ao vivo.
+- **Conteúdo:** feed vertical de vídeo com barra de compra e lives em horário marcado com ofertas das importadoras (lote reservado para a live). Interface `VideoProvider` nova (regra 7 da 4A); vídeo nunca no servidor do app.
+- **Brás Digital Analytics:** tendência de produto no Mercado Livre com IA, começando por uma versão básica. **Brás Full:** atender o Full do Mercado Livre dos clientes (fase 3; o que a API do Mercado Livre automatiza no envio de estoque ainda precisa ser confirmado).
+- **Bling:** desejado, fica para a segunda fase se der problema. A fase 1 usa estoque manual e por planilha, com a interface de conector já pronta para plugar.
+- **Arquitetura:** mesmo motor, mesmo repositório, mesmo deploy e mesmo banco (regra 4A). A marca `BRAS_DIGITAL` já existe em `src/lib/brand.ts`. Independência de produto, não de infraestrutura. Estender antes de criar: caixa = `product_packs`, estoque = `inventory`, pedido = `orders` com `saleType: WHOLESALE`. Tabelas novas, só se faltar, com prefixo `bd_`.
+- **Publicação:** nada vai ao ar por esta decisão. O trabalho fica na branch `claude/bras-digital` até o dono aprovar uma etapa (aprovado em 2026-10-08, ver D96). O dono pagará o plano do Render.
+- **Pendências do dono:** perguntas da seção 15 do documento (importadora piloto e se ela usa Bling com API, Pix dentro do Split do Mercado Pago, base da comissão, regras de dinheiro e cancelamento, Full, provedor de vídeo e orçamento, validação de CNPJ).
+- Testes: nenhum (decisão e documentação; nenhum código alterado).
+
+## D92 — Brás Digital: respostas da Fase 0, página pública e cadastro de membro (2026-10-08)
+Respostas do dono às pendências da Fase 0 e pedido de "uma página pública para apresentação e cadastro de lojistas", com os vídeos de análise de produto e o botão de compra (cadastro primeiro), apresentando a Brás com força e com botões de cadastro e de área do cliente. **Numeração:** nesta branch (`claude/bras-digital`) a D91 é "Brás Digital passa a prioridade"; na branch de publicação a D91 é o Financeiro Master. Ao unir, renumerar esta e a D91 da Brás para os próximos números livres.
+- **Estúdio dentro do Master:** `/master/bras` (item "Brás Digital" no menu do Master). Vídeos e membros. Só o Master.
+- **Membro comprador:** cadastro grátis e simples com CNPJ (dígitos verificadores conferidos; um cadastro por CNPJ e por e-mail), **liberado na hora** (escolha do dono entre "aprovação no Master" e "na hora"). O Master pode **bloquear** com motivo (concorrente, importadora se passando por lojista); bloqueado não vê preço. Papel novo `BRAS_MEMBER`, organização `MERCHANT` da marca Brás, tabela `bd_members`. Área do membro: `/meu-bras`.
+- **Importadora (Balcão):** **nunca** vê dados do cliente: só os dados de envio de cada pedido (como o Mercado Livre faz com o vendedor). Contato do membro fica só com a Brás Digital. O Balcão continua como prévia escondida (`BRAS_PANELS`) até o fluxo de pedido existir.
+- **Dinheiro (primeira etapa):** sem Split nem automação. O valor vai inteiro para a importadora e ela paga ao dono a comissão combinada, à parte. Nada disso está no código ainda; automatizar fica para depois.
+- **Atendimento:** cancelamento, ocorrência e reembolso são responsabilidade da Brás Digital (do dono), não da importadora.
+- **Segunda etapa:** vídeo/live próprio, Bling, WhatsApp automático, IA de tendência e validação do CNPJ na Receita. **Depois:** "últimas caixas", validade do estoque e concorrência de estoque (vender a mesma caixa duas vezes).
+- **Vídeos:** ficam no **YouTube** (Shorts ou vídeo comum); o Master cola o link no Estúdio, ordena, pausa e remove (`bd_videos`, com auditoria). A página carrega só a miniatura até o clique (o player do YouTube não pesa a página). O registro do vídeo não guarda preço nem importadora.
+- **Página pública:** muda a D91 ("sem site público na versão 1"). Com `BRAND_SIGNUP_BRAS_DIGITAL=true` o endereço da Brás mostra a apresentação (herói com o feed real, vídeos com "Quero comprar" → cadastro, como funciona, para quem, proteção de dados, dúvidas) e o cadastro; sem a variável, segue "em breve". No endereço da Brás só abrem `/`, `/cadastro`, a lista de espera, `/r/` e os painéis; páginas das outras marcas voltam ao início. A apresentação pode ser indexada; preço nunca aparece fora do login.
+- **Compra na primeira etapa:** "Quero comprar" no Meu Brás abre o WhatsApp da equipe (`BRAS_WHATSAPP`, ou o do suporte) com a empresa e o produto na mensagem; a equipe confirma preço, caixas e pagamento. O catálogo com preço e estoque e o pedido pelo sistema entram quando as importadoras forem conectadas.
+- Testes: `tests/bras-membros.test.ts`, `tests/bras-videos.test.ts`, `tests/bras-visibility.test.ts`, `tests/bras-panels.test.ts`, `tests/host-routing.test.ts`; navegador: `e2e/bras-portal.mjs`. Migração: `drizzle/0042_bras_membros_e_videos.sql` (só cria tabelas; ao unir com a branch de publicação, que já tem uma 0042, gerar de novo com o próximo número).
+
+## D93 — Brás Digital: catálogo por vídeo e pedido de compra manual (2026-10-08)
+Pedido do dono: "qual o próximo passo? pode executar sem minha intervenção". Próximo passo da D92: o membro ver preço e caixas e fazer o pedido pelo sistema, dentro do que já foi decidido (pagamento direto à importadora, comissão manual, estoque sem controle por enquanto, importadora vendo só o envio).
+- **Exceção registrada à regra "estender antes de criar" da D91** (caixa = `product_packs`, pedido = `orders`):
+  - **Pedidos:** `orders` exige loja (`store_id`), pagamento e reserva de estoque. O membro da Brás não tem loja, e na primeira etapa o pagamento e o estoque são combinados à mão.
+  - **Importadoras:** cadastrar a importadora como fornecedor (`createSupplier`) cria contrato, faturas da NextLevel e login de fornecedor, o que contraria a D92.
+  - **Solução:** tabelas próprias com prefixo `bd_`: `bd_importers` (sem login), `bd_offers` (uma por vídeo) e `bd_requests` (pedido de compra).
+  - **Quando o pagamento ou o estoque forem automatizados:** decidir se o pedido migra para `orders`, com loja-sombra do membro ou com `store_id` opcional.
+- **Oferta:** importadora, preço da caixa, unidades por caixa e caixas disponíveis (vazio = "consultar"). Só o membro **ativo** recebe esses dados (`listBrasFeed` passa por `canViewBrasCommercialData`). Visitante, bloqueado e outros papéis recebem só o vídeo. Importadora pausada tira a oferta do ar.
+- **Pedido:** o membro escolhe quantas caixas e informa transportadora e endereço de envio.
+  - Preço, produto e importadora são copiados na hora do pedido; mudar a oferta depois não altera o pedido.
+  - Número sequencial a partir de 1001.
+  - Aviso no sino do Master, sem dado pessoal na mensagem.
+  - Caminho do pedido: Recebido → Confirmado → Pago → Retirado; dá para cancelar até a retirada. Só o Master muda o status, com auditoria e trava contra mudança simultânea.
+- **Estoque:** "caixas disponíveis" é informativo. Recusa pedido acima do número informado, mas não dá baixa nem trava concorrência (D92: controlar depois). A equipe confirma antes do pagamento.
+- **Importadora:** `brasShippingView` é a lista do que ela poderá receber: número, produto, caixas, status, transportadora, destinatário e endereço. Nunca CNPJ, empresa, e-mail, WhatsApp, observação ou valores. Teste garante.
+- Telas:
+  - **Estúdio:** abas Vídeos e ofertas, Pedidos, Membros e Importadoras.
+  - **Meu Brás:** Produtos com preço, Fazer pedido e Meus pedidos.
+- Testes: `tests/bras-catalogo.test.ts` e `e2e/bras-portal.mjs` (oferta, pedido, confirmação, bloqueio esconde o preço). Migração: `drizzle/0043_bras_catalogo_e_pedidos.sql`, só cria tabelas. Ao unir com a branch de publicação, as migrações da Brás saem como 0043 e 0044.
+
+## D94 — Brás Digital: Estúdio e Meu Brás com a identidade da Brás (2026-10-08)
+Pedido do dono: "por que tem logo SuperDrop no painel Brás Digital?" e "o painel ficou verde por quê? Cada marca precisa da sua cor".
+- **Causa:** o Estúdio ficava dentro da casca do Master (`/master/bras`), que pega cor e logo do endereço. No teste local, o endereço do Master era tratado como SuperDrop: verde e logo SuperDrop. Em produção apareceria o amarelo e a logo da NextLevel, também errado para a Brás.
+- **Correção:** o Estúdio virou uma área do Master com a cara da Brás, como o console da Commerce.
+  - Endereço `/bras` (só o Master entra; `/master/bras` leva para lá).
+  - Nome "Brás Digital" no menu e "Voltar ao Master".
+  - Menu próprio: Pedidos, Vídeos e ofertas, Importadoras, Membros.
+  - Cor laranja da Brás.
+- **Como a cor da área funciona:** `AreaTheme` (`themeAreaCss` + `brandAreaCssVars`) vale sobre a cor do endereço. Ele fica no layout da área, então voltar ao Master devolve a cor do Master. O Meu Brás usa o mesmo, para ficar laranja em qualquer endereço.
+- **Logo:** o pacote de marcas (`brand-system-v2/LEIA-ME.md`) não tem logo da Brás ("Planejadas, só com cor: play, chinahub, bras"). Como manda a D79, a Brás aparece com o nome em texto, sem logo inventada. Quando o dono enviar a logo oficial, entra em `public/brand/v2/bras/` e em `OFICIAIS` (`src/components/brand/brand-logo.tsx`).
+- Testes: `tests/area-theme.test.ts` (a cor da área vence a do endereço nos modos claro, escuro e sistema) e `e2e/bras-portal.mjs` (nome da Brás no menu, cor primária laranja no Estúdio e no Meu Brás, Master volta à própria cor).
+
+## D95 — Brás Digital: descobertas em três camadas e a análise como produto pago (2026-10-08)
+Racional do dono: conteúdo que só apresenta produto é irrelevante. O Shorts precisa mostrar que o produto é uma **descoberta** e convidar para a **análise de mercado** (tendência e por que é o produto certo). Separar o sistema público de descoberta do interno de análise aprofundada, que é onde entra o acesso pago. O dono aceitou as recomendações:
+1. Esconder a importadora até o pedido confirmado: sim.
+2. O membro grátis vê o veredito e um trecho do vídeo: sim.
+3. Cobrar pelos dois modelos: assinatura e liberação por volume de compra.
+4. Ritmo: 4 descobertas por semana no começo.
+5. YouTube não listado na fase grátis; vídeo privado quando passar a cobrar.
+
+**Regra de ouro:** comprar é sempre grátis; o que se cobra é a inteligência (a análise). Isso protege a comissão e faz a análise puxar compras.
+
+**Camadas (servidor decide, `listBrasFeed(db, nível)` e `brasAccessFor`):**
+
+| Camada | Quem | O que vê |
+|---|---|---|
+| Visitante | qualquer pessoa | Shorts, título, gancho, sinal de tendência só em palavras (o Estúdio recusa números no sinal) |
+| Membro | cadastro grátis ativo | + veredito, nota 0 a 10, trecho (vídeo separado), preço da caixa, caixas, pedido |
+| Análise | lançamento: todo membro; depois: assinatura ou volume | + vídeo completo, tendência, concorrência, preço no Mercado Livre, margem bruta estimada (com aviso: antes de taxas, frete e impostos, sem garantia), riscos, como anunciar |
+
+**Importadora:** sai da oferta do membro. Aparece como "importadora parceira verificada"; o nome só aparece no pedido confirmado, pago ou retirado (`listMyBrasRequests`).
+
+**Cobrança (configurável em `platform_settings`, chave `bras.analysis_access`, tela Estúdio → Acesso à análise):**
+- **Modo padrão OPEN (lançamento):** forma a biblioteca de análises.
+- **PAID:** exige preço da assinatura, volume ou os dois. O volume conta pedidos pagos ou retirados numa janela (padrão 30 dias).
+- **Assinatura:** liberada à mão pelo Master (`bd_access_grants`, com validade; renovar soma dias; revogar). A cobrança automática entra pelo Financeiro Master depois da união com a branch de publicação.
+
+**Banco:** colunas novas em `bd_videos` (a descoberta): sinal, veredito, nota, trecho, vídeo da análise, dados da análise. Tabela nova `bd_access_grants`. Migração `0044_bras_descobertas_e_acesso`, só acrescenta.
+
+**Telas:**
+- **Estúdio:** Descobertas (editor por camada e roteiro de produção) e Acesso à análise.
+- **Meu Brás:** Descobertas e a página de cada descoberta (análise aberta ou trancada, com "como liberar" e o andamento da compra no período).
+- **Página pública:** "Achados do Brás, com análise de mercado", a seção "Da descoberta à decisão" e dúvidas que acompanham o modo de cobrança.
+
+**Testes:** `tests/bras-descobertas.test.ts` (camadas, vazamentos, assinatura, volume, travas do editor, margem), `tests/bras-catalogo.test.ts` (importadora oculta até confirmar) e `e2e/bras-portal.mjs` (análise aberta, troca para paga, trancada sem vazar, liberação manual).
+
+## D96 — Brás Digital: endereço provisório no domínio do grupo (2026-10-08)
+O dono ainda não comprou o domínio da Brás. O `brasdigital.com.br` (e `.com`, `.net.br`) já tem outro dono desde 2000. Dos domínios do dono, a escolha provisória é **`bras.nextlevelgroup.com.br`**:
+- a Brás é marca do grupo, como `lojas.` (Commerce) e `master.` (Master);
+- `bras.superdrop.com.br` misturaria com outro produto;
+- `megatroncomercio.com.br` é nome de empresa e passaria a ideia de loja de uma importadora só;
+- `chinahubglobal.com.br` é reservado ao China Hub (D91).
+
+O sistema reconhece o endereço pelo domínio mais específico: `master.` segue Master e `lojas.` segue Commerce (teste em `tests/brand.test.ts`).
+
+Trocar depois é só configuração (`BRAND_DOMAINS_BRAS_DIGITAL`, `BRAND_URL_BRAS_DIGITAL`), mantendo o provisório levando ao novo.
+
+**Pendência do dono:** antes de investir no nome em muitos vídeos, consultar a marca "Brás Digital" no INPI.
+
+**Ligar:** registro `bras` no DNS de `nextlevelgroup.com.br` apontando para o Render, e o domínio adicionado em Custom Domains. Só depois de a Brás estar na branch de publicação.
+
+**Publicação (2026-10-08, "feito, pode publicar tudo"):** DNS `bras` → Render e domínio verificado no Render pelo dono. A Brás entrou na branch de publicação junto com a home da Commerce (D97). As três migrações da branch da Brás viraram uma só, `0043_bras_digital` (só cria as tabelas `bd_*`; a `0042` em produção é a do Financeiro, D90), e as decisões da Brás foram renumeradas de D90–D95 para D91–D96, porque a D90 de produção já era o Financeiro. A página pública e o cadastro continuam fechados ("em breve") até o dono ligar `BRAND_SIGNUP_BRAS_DIGITAL=true`; o Estúdio (`/bras`) já fica no Master.
+
+## D97 — Home da NextLevel Commerce: cadastro sozinho, planos com simulador e vitrine de temas (2026-10-08)
+Pedido do dono: "o cliente não consegue pagar e criar a sua conta sozinho, está enviando pra aguardar contato, isso não pode"; "o visual da apresentação dos planos está básico demais"; "mostrar o preço dos templates só com o texto do título não pode, melhor avaliar toda a home e refazer o conteúdo e a ordem de tudo". Referências: Nuvemshop (régua de faturamento, mensal/anual) e Wbuy (plano em destaque, economia no anual).
+- **Cadastro aberto:** `BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true` ligado no Render com autorização do dono. Todos os botões da home levam a `/cadastro` (plano e ciclo vêm do endereço: `?plano=COMMERCE_PRO&ciclo=ANNUAL`); oferta de entrada da D90 (3 dias grátis, 1º mês R$ 9,90, taxa zero por 3 meses).
+- **Planos (`CommercePricing`):** alternância Mensal/Anual com o desconto calculado do catálogo; régua "Quanto você vende por mês?" soma mensalidade e taxa sobre as vendas e destaca o plano mais em conta para aquele faturamento (no topo da régua, o Enterprise sob consulta). É estimativa: o texto diz que não inclui as tarifas do Mercado Pago. Preços e taxas vêm sempre do catálogo Master (`commercePlansView`), nunca fixos.
+- **Temas (`ThemeGallery`):** captura real de cada tema no computador e no celular, filtro por segmento, preço (ou "Grátis") e link para a demonstração, no lugar da lista só com nomes.
+- **Ordem da home:** abertura → lojas de exemplo → como começar (3 passos, sem "aguarde contato") → para quem → canais e recursos → personalização → operação → temas → planos → dúvidas (respostas montadas com os dados reais de planos, oferta e temas) → chamada final. Saíram o mosaico editorial e a seção de temas só com título e preço.
+- Testes: `e2e/commerce-home-v2.mjs` (cadastro com plano e ciclo, régua, filtro de temas, 360/1440, axe, sem rolagem horizontal) e a suíte completa.

@@ -70,7 +70,7 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   creators: produto("Creators Hub", ["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
   play: produto("NextLevel Play (planejada)", ["#8B4AC3", "#753CA6"], ["#C588FF", "#C588FF"]),
   china: produto("China Hub (planejada)", ["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
-  bras: produto("Brás Digital (planejada)", ["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
+  bras: produto("Brás Digital", ["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
 };
 
 /** Marca do sistema (código de `src/lib/brand.ts`) → tema. Marca desconhecida cai na holding. */
@@ -167,6 +167,22 @@ export function themeCss(key: ThemeKey): string {
   const sideDarkInLight = luminance(themeColors(key, "light").sideBg) < 0.18;
   const sideLogo = sideDarkInLight ? `${sel} :is(.ds-side,.ds-drawer) .nl-logo-light{display:none}${sel} :is(.ds-side,.ds-drawer) .nl-logo-dark{display:inline-block}` : "";
   return seriesCss() + sideLogo + `${sel}{color-scheme:light;${light}}` +
+    `${sel}[data-theme="dark"]{color-scheme:dark;${dark}}` +
+    `@media (prefers-color-scheme: dark){${sel}:not([data-theme="light"]){color-scheme:dark;${dark}}}`;
+}
+
+/**
+ * Tema de uma ÁREA, independente do endereço (ex.: o Estúdio da Brás aberto pelo Master, o Meu Brás): as mesmas variáveis
+ * de `themeCss`, com seletor mais forte que o do tema do <html>, para valer sobre ele. Renderizado pelo layout da área,
+ * entra e sai junto com ela na navegação (o tema do <html> é do layout raiz e não muda ao trocar de página).
+ */
+export function themeAreaCss(key: ThemeKey): string {
+  const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));
+  // Mais forte que `:root[data-ds-theme="…"]` do tema do endereço (0,2,0): aqui (0,3,1).
+  const sel = "html:root:root[data-ds-theme]";
+  const sideDarkInLight = luminance(themeColors(key, "light").sideBg) < 0.18;
+  const sideLogo = sideDarkInLight ? `${sel} :is(.ds-side,.ds-drawer) .nl-logo-light{display:none}${sel} :is(.ds-side,.ds-drawer) .nl-logo-dark{display:inline-block}` : "";
+  return sideLogo + `${sel}{color-scheme:light;${light}}` +
     `${sel}[data-theme="dark"]{color-scheme:dark;${dark}}` +
     `@media (prefers-color-scheme: dark){${sel}:not([data-theme="light"]){color-scheme:dark;${dark}}}`;
 }

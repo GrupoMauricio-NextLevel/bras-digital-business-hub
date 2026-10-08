@@ -302,6 +302,13 @@
       "when": 1791422069640,
       "tag": "0042_financeiro_master",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1791501734957,
+      "tag": "0043_bras_digital",
+      "breakpoints": true
     }
   ]
 }

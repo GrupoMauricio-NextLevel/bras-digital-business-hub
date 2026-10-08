@@ -4,8 +4,9 @@ import { globalSearchAction } from "@/app/actions/search";
 import { isDemoMode, type Session } from "@/lib/auth";
 import { canUse, type FeatureKey } from "@/lib/features";
 import { storeUrl } from "@/lib/store-url";
-import { COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navForBrand, type Panel } from "@/lib/nav";
+import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand } from "@/lib/brand-server";
+import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
@@ -27,7 +28,7 @@ export function panelFor(session: Session): Panel {
 /** Itens do menu do lojista e o recurso que os libera; sem o recurso aparecem com cadeado. */
 const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/theme-editor": "appearanceBasic", "/merchant/templates": "templatesStarter" };
 
-export async function RoleLayout({ session, children, banner, scope }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" = console administrativo da Commerce dentro do Master. */ scope?: "commerce-admin" }) {
+export async function RoleLayout({ session, children, banner, scope }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" / "bras-admin" = console administrativo da marca dentro do Master. */ scope?: "commerce-admin" | "bras-admin" }) {
   // Libera reservas de pedidos não pagos vencidos (rede de segurança além do cron).
   const db = await getDb();
   await expireStaleReservations(db);
@@ -48,6 +49,33 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items, brand);
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
+  if (scope === "bras-admin") {
+    // Estúdio da Brás (D92): só o Master entra; nome, menu e cor da Brás, com volta ao Master.
+    const bras = brandByCode("BRAS_DIGITAL");
+    return (
+      <AppShell
+        brand={{ code: bras.code, name: bras.name, logo: bras.logo, wordmark: bras.wordmark, accentColor: bras.accentColor }}
+        panel="master"
+        items={BRAS_ADMIN_NAV}
+        navMode="sections"
+        quick={[]}
+        roleLabel="Estúdio Brás Digital"
+        tenantName="Brás Digital"
+        tenantSub="Estúdio · NextLevel Master"
+        userName={session.user.name}
+        demoUsers={isDemoMode() ? await listDemoUsers() : undefined}
+        onSwitch={loginAs}
+        onLogout={logout}
+        passwordHref="/account/password"
+        notices={await recentNotices(session.actor)}
+        search={globalSearchAction}
+        sideTop={<div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
+        banner={<>{supportBar}{banner}</>}
+      >
+        {children}
+      </AppShell>
+    );
+  }
   if (commerceStore || scope === "commerce-admin") {
     const staff = session.user.storeRole === "STAFF";
     const commerceItems = commerceStore

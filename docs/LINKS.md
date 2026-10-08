@@ -67,7 +67,7 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 
 ## Marcas em preparação (página "em breve")
 - China Hub: https://chinahubglobal.com.br/ (responde)
-- Brás Digital: https://bras.superdrop.com.br/ (domínio ainda não ligado no Render/DNS)
+- Brás Digital: https://bras.nextlevelgroup.com.br/ (endereço provisório no domínio do grupo, D96; ainda não ligado no Render/DNS)
 - Hub Creators: https://hubcreators.nextlevelgroup.com.br/ (domínio ainda não ligado)
 - NextLevel Commerce, domínio próprio: https://nextlevelcommerce.com.br/ (ainda não registrado/ligado)
 

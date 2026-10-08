@@ -55,6 +55,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
+      { label: "Brás Digital", href: "/bras", icon: "Boxes", group: "Plataformas" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },
@@ -137,6 +138,17 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Ver loja NextLevel", href: "/merchant/services", icon: "Sparkles" },
     ],
   },
+  BRAS_MEMBER: {
+    base: "/meu-bras",
+    label: "Membro Brás Digital",
+    items: [
+      { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
+      { label: "Descobertas", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
+      { label: "Meus pedidos", href: "/meu-bras/pedidos", icon: "ReceiptText", group: "Meu Brás" },
+      { label: "Minha empresa", href: "/meu-bras/empresa", icon: "Settings", group: "Conta" },
+    ],
+    quick: [],
+  },
   AFFILIATE: {
     base: "/partner",
     label: "Parceiro",
@@ -192,6 +204,15 @@ export const COMMERCE_ADMIN_NAV: NavItem[] = [
   { label: "Interessados", href: "/commerce/leads", icon: "Inbox", group: "Crescimento" },
   { label: "Assinaturas", href: "/commerce/plans", icon: "CreditCard", group: "Negócio" },
   { label: "Plataforma", href: "/commerce/settings", icon: "Settings", group: "Sistema" },
+];
+
+/** Estúdio da Brás Digital (D92): área do Master com menu, nome e cor da Brás. */
+export const BRAS_ADMIN_NAV: NavItem[] = [
+  { label: "Pedidos", href: "/bras", icon: "Inbox", exact: true, group: "Operação", bottom: true },
+  { label: "Descobertas", href: "/bras/descobertas", icon: "LayoutGrid", group: "Catálogo", bottom: true },
+  { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
+  { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
+  { label: "Acesso à análise", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },
 ];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */

@@ -47,6 +47,11 @@ export type Brand = {
   partnersOpen: boolean;
   /** Produto ainda sem sistema próprio: o portal mostra uma página "em breve" com lista de espera, sem prometer o que não existe. */
   soon: { headline: string; text: string; bullets: string[]; leadTitle: string; zh?: { headline: string; text: string } } | null;
+  /**
+   * Operação comercial fechada: preço, estoque, nome de importadora/fornecedor e vídeo completo só para membro aprovado,
+   * nada indexável e nenhuma página pública de fornecedor. Ausente = falso (as marcas abertas não mudam).
+   */
+  closedCommerce?: boolean;
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
@@ -79,15 +84,18 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true, soon: null,
     },
     BRAS_DIGITAL: {
-      code: "BRAS_DIGITAL", name: "Brás Digital", live: false,
+      // D92: com BRAND_SIGNUP_BRAS_DIGITAL=true abre a página pública e o cadastro grátis com CNPJ; sem ela, segue "em breve".
+      code: "BRAS_DIGITAL", name: "Brás Digital", live: env.BRAND_SIGNUP_BRAS_DIGITAL === "true",
       tagline: "O atacado do Brás em uma vitrine só",
-      description: "Marketplace atacadista com lojas e fornecedores do Brás. Em breve.",
-      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
-      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
+      description: env.BRAND_SIGNUP_BRAS_DIGITAL === "true"
+        ? "Atacado em caixa fechada das importadoras do Brás, com vídeos de análise de produto. Cadastro grátis com CNPJ; preço e estoque só para membros."
+        : "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
+      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.nextlevelgroup.com.br"]),
+      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
-      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
-      soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Vendedores de varejo e de atacado menor do Brás reunidos em um marketplace, com loja própria, preço de atacado e pedido organizado.", bullets: ["Vitrine para varejo e atacado menor", "Preço por quantidade e pedido mínimo", "Lojas e fornecedores do Brás no mesmo lugar"], leadTitle: "Quero participar da Brás Digital" },
+      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: env.BRAND_SIGNUP_BRAS_DIGITAL === "true", partnersOpen: false, closedCommerce: true,
+      soon: env.BRAND_SIGNUP_BRAS_DIGITAL === "true" ? null : { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
     },
     CREATORS_HUB: {
       code: "CREATORS_HUB", name: "Hub Creators", live: false,
@@ -124,6 +132,15 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
   };
 }
 
+/** A marca opera fechada (ver `Brand.closedCommerce`): configuração da marca, nunca condicional por empresa em componente. */
+export const isClosedCommerceBrand = (brand: Pick<Brand, "closedCommerce"> | null | undefined): boolean => brand?.closedCommerce === true;
+
+/** Códigos das marcas fechadas, para filtrar consultas no banco (ex.: fornecedores que não podem aparecer em página pública). */
+export function closedCommerceBrandCodes(env: Record<string, string | undefined> = process.env): BrandCode[] {
+  const all = brandsFrom(env);
+  return BRAND_CODES.filter((c) => isClosedCommerceBrand(all[c]));
+}
+
 export const isBrandCode = (v: unknown): v is BrandCode => typeof v === "string" && (BRAND_CODES as readonly string[]).includes(v);
 
 /** Marca padrão quando o endereço não pertence a nenhuma marca (localhost, endereço técnico do Render). Padrão: SuperDrop, a marca em produção. */
@@ -136,7 +153,7 @@ export function brandByCode(code: string | null | undefined, env: Record<string,
   return isBrandCode(code) ? all[code] : all[defaultBrandCode(env)];
 }
 
-/** O domínio mais específico vence (ex.: `bras.superdrop.com.br` é do Brás Digital, mesmo `superdrop.com.br` sendo do SuperDrop). */
+/** O domínio mais específico vence (ex.: `bras.nextlevelgroup.com.br` é do Brás Digital, mesmo `superdrop.com.br` sendo do SuperDrop). */
 function longestMatch(all: Record<BrandCode, Brand>, h: string): Brand | null {
   let best: { b: Brand; len: number } | null = null;
   for (const b of Object.values(all)) for (const d of b.domains) if ((h === d || h.endsWith(`.${d}`)) && (!best || d.length > best.len)) best = { b, len: d.length };

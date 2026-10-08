@@ -3,6 +3,7 @@ import type { Database } from "@/db/client";
 import { coupons, products, supplierPages, suppliers, type SupplierPageFaq, type SupplierPageTestimonial } from "@/db/schema";
 import { getPriceBook } from "./finance";
 import { OFFER_KEYS, type OfferKey } from "@/lib/finance/price-book";
+import { isClosedCommerceOrganization } from "./bras/fronteira";
 
 export type PublicSupplierPage = {
   slug: string; name: string; headline: string; subheadline: string; logoText: string; primaryColor: string; accentColor: string; whatsapp: string | null;
@@ -31,11 +32,13 @@ export function defaultContent(name: string) {
 
 /**
  * Dados públicos da página de vendas do fornecedor. Nunca inclui custo, estoque, contrato nem qualquer dado de cliente.
- * Fornecedores suspensos ou encerrados não têm página.
+ * Fornecedores suspensos ou encerrados não têm página, nem fornecedores de marca de operação fechada (Brás Digital).
  */
 export async function getPublicSupplierPage(db: Database, slug: string): Promise<PublicSupplierPage | null> {
   const supplier = await db.query.suppliers.findFirst({ where: eq(suppliers.slug, slug) });
   if (!supplier || supplier.status === "SUSPENDED" || supplier.status === "CLOSED") return null;
+  // Importadora de marca fechada (Brás Digital) não tem página pública: nome, produtos e preços só para membro aprovado.
+  if (await isClosedCommerceOrganization(db, supplier.organizationId)) return null;
   const row = await db.query.supplierPages.findFirst({ where: eq(supplierPages.supplierId, supplier.id) });
   if (row && !row.published) return null;
   const d = defaultContent(supplier.name);

@@ -16,6 +16,7 @@ const ROLE_META = {
   SUPPLIER_DISPATCH: { label: "Expedição", desc: "Fila de separação e etiquetas, sem valores", icon: Factory, tone: "info" as const },
   STORE_OWNER: { label: "Lojista", desc: "Loja white label e pedidos", icon: Store, tone: "brand" as const },
   AFFILIATE: { label: "Parceiro", desc: "Links, cupons e comissões", icon: Handshake, tone: "brand" as const },
+  BRAS_MEMBER: { label: "Membro Brás", desc: "Atacado em caixa fechada", icon: Store, tone: "brand" as const },
 };
 
 const AREA: Record<string, string> = { fornecedor: "painel do fornecedor", loja: "painel da loja", afiliado: "painel do afiliado" };
@@ -68,7 +69,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <p className="mt-2 text-sm text-muted-foreground">Use o e-mail e a senha do seu cadastro ou do convite.</p>
       <div className="mt-6"><LoginForm voltar={voltar} /></div>
       <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm text-body">
-        <p>{brand.signupOpen ? "Ainda não tem uma loja? " : "Quer uma loja? "}<Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className="font-semibold text-foreground underline underline-offset-2">{brand.signupOpen ? "Criar agora" : "Falar com a gente"}</Link></p>
+        {brand.closedCommerce && brand.signupOpen
+          ? <p>Ainda não é membro? <Link href="/cadastro" className="font-semibold text-foreground underline underline-offset-2">Cadastrar minha empresa (grátis)</Link></p>
+          : <p>{brand.signupOpen ? "Ainda não tem uma loja? " : "Quer uma loja? "}<Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className="font-semibold text-foreground underline underline-offset-2">{brand.signupOpen ? "Criar agora" : "Falar com a gente"}</Link></p>}
         {brand.modules.includes("partners") ? <p>É parceiro? <Link href="/parceiros/entrar" className="font-semibold text-foreground underline underline-offset-2">Entrar como parceiro</Link></p> : null}
       </div>
     </AuthCardShell>

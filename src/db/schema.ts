@@ -152,7 +152,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -1254,7 +1254,7 @@ export const errorEvents = pgTable("error_events", {
   lastRef: text("last_ref"),
 }, (t) => [index("error_events_last_idx").on(t.lastAt)]);
 
-// ===========================================================================
+// ====================================================================
 // Financeiro corporativo da NextLevel (D90): `nextlevel_corporate_finance`.
 // Só o Master escreve aqui. Os painéis de fornecedor, membro, loja e parceiro apenas leem o que foi publicado
 // (preço autorizado, checkout, proposta). Valores em centavos; preços versionados e imutáveis.
@@ -1592,3 +1592,134 @@ export const partnerLeads = pgTable("partner_leads", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [uniqueIndex("partner_leads_email_unique").on(t.email), index("partner_leads_partner_idx").on(t.partnerId, t.stage)]);
+
+// ---------------------------------------------------------------------------
+// Brás Digital (D92): membro comprador com CNPJ e vídeos de análise da página pública
+// ---------------------------------------------------------------------------
+/** Membro comprador da Brás (lojista B2B). Cadastro grátis com CNPJ libera na hora; o Master pode bloquear. Um cadastro por CNPJ. */
+export const bdMembers = pgTable("bd_members", {
+  id: id(),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  organizationId: text("organization_id").notNull().references(() => organizations.id),
+  /** CNPJ só com dígitos (14), dígitos verificadores conferidos no cadastro. */
+  cnpj: text("cnpj").notNull().unique(),
+  companyName: text("company_name").notNull(),
+  whatsapp: text("whatsapp").notNull(),
+  status: text("status", { enum: ["ACTIVE", "BLOCKED"] }).notNull().default("ACTIVE"),
+  blockedAt: ts("blocked_at"),
+  /** Motivo interno do bloqueio (só o Master vê). */
+  blockedReason: text("blocked_reason"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt)]);
+
+/** Dados da análise de mercado de uma descoberta (D95). Só para quem tem acesso à análise; nunca promessa de ganho. */
+export type BrasAnalysis = {
+  /** Tendência: por que o produto está em alta (buscas, sazonalidade). */
+  trend?: string;
+  /** Concorrência: quantos vendem, como vendem. */
+  competition?: string;
+  /** Faixa de preço de venda praticada no Mercado Livre, por unidade (centavos). */
+  salePriceMinCents?: number;
+  salePriceMaxCents?: number;
+  /** Riscos e cuidados. */
+  risks?: string;
+  /** Como anunciar: título, fotos, preço de entrada. */
+  howToSell?: string;
+};
+
+/**
+ * Descoberta da Brás (D92/D95; nome técnico `bd_videos` mantido): o Shorts público (`youtube_id`, vertical) convida para a
+ * análise de mercado. Público: título, gancho (`summary`) e sinal de tendência em palavras. Membro: veredito, nota e trecho.
+ * Acesso à análise: vídeo completo (`analysis_youtube_id`, horizontal) e os dados (`analysis`). Sem preço nem importadora aqui.
+ */
+export const bdVideos = pgTable("bd_videos", {
+  id: id(),
+  youtubeId: text("youtube_id").notNull().unique(),
+  title: text("title").notNull(),
+  summary: text("summary"),
+  position: integer("position").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  /** Sinal de tendência só em palavras, público (ex.: "Buscas subindo"). Nunca números. */
+  trendSignal: text("trend_signal"),
+  /** Veredito e nota (0 a 10): o membro grátis vê. */
+  verdict: text("verdict"),
+  score: integer("score"),
+  /** Trecho da análise (vídeo curto separado, não listado): o membro grátis vê. */
+  teaserYoutubeId: text("teaser_youtube_id"),
+  /** Análise completa (YouTube não listado na fase grátis; vídeo privado quando passar a cobrar, D95). */
+  analysisYoutubeId: text("analysis_youtube_id"),
+  analysis: jsonb("analysis").$type<BrasAnalysis>(),
+  analysisUpdatedAt: ts("analysis_updated_at"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_videos_order_idx").on(t.active, t.position)]);
+
+// ---------------------------------------------------------------------------
+// Brás Digital (D93): importadoras sem login, oferta por vídeo e pedido de compra do membro (primeira etapa, manual)
+// ---------------------------------------------------------------------------
+/** Importadora da Brás, cadastrada pelo Master só para organizar ofertas. Sem login nem acesso a membros (o Balcão vem depois). */
+export const bdImporters = pgTable("bd_importers", {
+  id: id(),
+  name: text("name").notNull(),
+  /** Anotações internas do Master (comissão combinada, contato). Nunca saem para o membro. */
+  notes: text("notes"),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+});
+
+/** Oferta do vídeo: preço da caixa, unidades e caixas disponíveis (informativo, sem baixa automática). Só membro ativo vê. */
+export const bdOffers = pgTable("bd_offers", {
+  id: id(),
+  videoId: text("video_id").notNull().unique().references(() => bdVideos.id, { onDelete: "cascade" }),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  priceBoxCents: integer("price_box_cents").notNull(),
+  unitsPerBox: integer("units_per_box").notNull(),
+  /** Null = "consultar a equipe". */
+  boxesAvailable: integer("boxes_available"),
+  updatedAt: updatedAt(),
+  updatedBy: text("updated_by"),
+});
+
+/**
+ * Pedido de compra do membro (D93). Preço, produto e importadora copiados no momento do pedido.
+ * Dados de envio ficam aqui porque a importadora (quando tiver o Balcão) vê só eles (`brasShippingView`).
+ */
+export const bdRequests = pgTable("bd_requests", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  videoId: text("video_id").references(() => bdVideos.id, { onDelete: "set null" }),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  productTitle: text("product_title").notNull(),
+  importerName: text("importer_name").notNull(),
+  boxes: integer("boxes").notNull(),
+  unitsPerBox: integer("units_per_box").notNull(),
+  priceBoxCents: integer("price_box_cents").notNull(),
+  totalCents: integer("total_cents").notNull(),
+  status: text("status", { enum: ["NEW", "CONFIRMED", "PAID", "PICKED_UP", "CANCELED"] }).notNull().default("NEW"),
+  carrier: text("carrier").notNull(),
+  shipName: text("ship_name").notNull(),
+  shipAddress: text("ship_address").notNull(),
+  shipCity: text("ship_city").notNull(),
+  shipState: text("ship_state").notNull(),
+  shipZip: text("ship_zip").notNull(),
+  /** Observação do membro para a equipe (não vai para a importadora). */
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt)]);
+
+/**
+ * Acesso à análise completa liberado a um membro (D95): assinatura paga (por enquanto confirmada à mão pelo Master, até a
+ * cobrança entrar pelo Financeiro Master) ou cortesia. Vale até `valid_until`; revogado não vale.
+ */
+export const bdAccessGrants = pgTable("bd_access_grants", {
+  id: id(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  kind: text("kind", { enum: ["SUBSCRIPTION", "COURTESY"] }).notNull(),
+  validUntil: ts("valid_until").notNull(),
+  note: text("note"),
+  revokedAt: ts("revoked_at"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_access_grants_member_idx").on(t.memberId, t.validUntil)]);

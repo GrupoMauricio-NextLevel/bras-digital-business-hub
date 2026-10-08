@@ -1,8 +1,8 @@
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { coupons, financeInvoices, partners, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
-import { BRAND_CODES } from "@/lib/brand";
+import { coupons, financeInvoices, organizations, partners, stores, suppliers, trialClaims, users, type InvoiceLine, type Store } from "@/db/schema";
+import { BRAND_CODES, closedCommerceBrandCodes } from "@/lib/brand";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { hashPassword } from "@/lib/security/password";
 import { createStore } from "./provisioning";
@@ -13,6 +13,7 @@ import { emitEvent } from "./events";
 import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
+import { isClosedCommerceSupplier } from "./bras/fronteira";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
@@ -176,10 +177,12 @@ export const signupSchema = z.object({
   cycle: z.enum(["MONTHLY", "ANNUAL"]).default("MONTHLY"),
 });
 
-/** Fornecedores que aceitam novos membros (página pública ativa). */
+/** Fornecedores que aceitam novos membros (página pública ativa). Importadoras de marca fechada (Brás Digital) nunca entram na lista pública. */
 export async function listSignupSuppliers(db: Database) {
-  const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status }).from(suppliers).where(eq(suppliers.hidden, false));
-  return rows.filter((r) => r.status === "ACTIVE" || r.status === "WARNING").map((r) => ({ slug: r.slug, name: r.name }));
+  const closed = closedCommerceBrandCodes();
+  const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status, brand: organizations.brand }).from(suppliers)
+    .innerJoin(organizations, eq(organizations.id, suppliers.organizationId)).where(eq(suppliers.hidden, false));
+  return rows.filter((r) => (r.status === "ACTIVE" || r.status === "WARNING") && !closed.includes(r.brand)).map((r) => ({ slug: r.slug, name: r.name }));
 }
 
 export async function signupMember(db: Database, raw: z.input<typeof signupSchema>, now = new Date()) {
@@ -206,6 +209,8 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
     if (!sup || sup.status === "SUSPENDED" || sup.status === "CLOSED") throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
     supplierId = sup.id;
   }
+  // Importadora de marca fechada (Brás Digital) não abastece loja aberta por cadastro público: mesma resposta de fornecedor inválido, sem revelar que existe.
+  if (!independent && (await isClosedCommerceSupplier(db, supplierId))) throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
   if (independent && (await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) }))) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
   // Loja independente da NextLevel Commerce (D89): sem fornecedor e sem rede.
   const created = await createStore(db, independent ? null : supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });

@@ -28,7 +28,11 @@ describe("marcas do portfólio", () => {
     expect(all.BRAS_DIGITAL.live).toBe(false);
     expect(all.NEXTLEVEL_COMMERCE.signupOpen).toBe(false);
     expect(brandsFrom({ BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true" }).NEXTLEVEL_COMMERCE.signupOpen).toBe(true);
-    expect(brandByCode("BRAS_DIGITAL", {}).name).toBe("Brás Digital");
+    const bras = brandByCode("BRAS_DIGITAL", {});
+    expect(bras.name).toBe("Brás Digital");
+    expect(bras.signupOpen).toBe(false);
+    expect(bras.description).toMatch(/fechada/i);
+    expect(bras.soon?.text).toMatch(/membros aprovados/i);
     expect(brandByCode("xyz", {}).code).toBe("SUPERDROP");
   });
 });
@@ -113,7 +117,10 @@ describe("ecossistema: um domínio para cada produto", () => {
   it("cada endereço cai no seu produto; o mais específico vence", () => {
     expect(h("superdrop.com.br")).toBe("SUPERDROP");
     expect(h("office.superdrop.com.br")).toBe("SUPERDROP");
-    expect(h("bras.superdrop.com.br")).toBe("BRAS_DIGITAL");
+    expect(h("bras.nextlevelgroup.com.br")).toBe("BRAS_DIGITAL");
+    // D96: endereço provisório da Brás no domínio do grupo, sem se confundir com o Master nem com a Commerce.
+    expect(h("master.nextlevelgroup.com.br")).toBe("NEXTLEVEL");
+    expect(h("lojas.nextlevelgroup.com.br")).toBe("NEXTLEVEL_COMMERCE");
     expect(h("lojas.nextlevelgroup.com.br")).toBe("NEXTLEVEL_COMMERCE");
     expect(h("hubcreators.nextlevelgroup.com.br")).toBe("CREATORS_HUB");
     expect(h("master.nextlevelgroup.com.br")).toBe("NEXTLEVEL");

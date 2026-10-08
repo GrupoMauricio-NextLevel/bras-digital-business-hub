@@ -3,8 +3,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, BarChart3, FileText, Globe, Palette, Store, Wallet } from "lucide-react";
 import { getSession, homeFor } from "@/lib/auth";
-import { brandHas } from "@/lib/brand";
+import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
+import { getDb } from "@/db/client";
+import { listPublicBrasVideos } from "@/lib/domain/bras/videos";
+import { getBrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
+import { BrasHome } from "@/components/portal/bras/bras-home";
 import { getBrand } from "@/lib/brand-server";
+import { robotsForBrandPortal } from "@/lib/bras/visibility";
 import { CommerceHome } from "@/components/portal/commerce-home";
 import { SoonHome } from "@/components/portal/soon-home";
 import { Logo } from "@/components/brand/logo";
@@ -24,7 +29,7 @@ import { FAQ } from "./content";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
-  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" } };
+  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}) };
 }
 
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
@@ -50,6 +55,8 @@ export default async function Portal() {
   const brand = await getBrand();
   // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
+  // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
+  if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysisMode={(await getBrasAnalysisSettings(db)).mode} />; }
   // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio.
   if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);

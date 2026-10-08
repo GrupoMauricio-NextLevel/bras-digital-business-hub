@@ -53,6 +53,14 @@ const decl = (m: PaletteMode) => `--brand-paper:${m.paper};--brand-ink:${m.ink};
  * CSS com as variáveis `--brand-*` da marca (claro e escuro). Só constantes do código entram aqui,
  * então é seguro injetar no <head>. Não altera os tokens atuais dos painéis: quem desenha (Codex) passa a consumir `--brand-*`.
  */
+/** As mesmas variáveis `--brand-*`, com seletor mais forte, para uma área com marca própria (ver `themeAreaCss`). */
+export function brandAreaCssVars(code: string): string {
+  const p = paletteOf(code);
+  return `html:root{${decl(p.light)}--brand-support:${p.support};}` +
+    `@media (prefers-color-scheme: dark){html:root:not([data-theme="light"]){${decl(p.dark)}}}` +
+    `html:root[data-theme="dark"]{${decl(p.dark)}}`;
+}
+
 export function brandCssVars(code: string): string {
   const p = paletteOf(code);
   return `:root{${decl(p.light)}--brand-support:${p.support};}` +

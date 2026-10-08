@@ -1,6 +1,6 @@
 # Conectar os domínios do ecossistema NextLevel (Hostinger + Render)
 
-> **DECISÃO DO DONO (foco no que está em andamento):** agora só se conectam **`master.nextlevelgroup.com.br`**, **`lojas.nextlevelgroup.com.br`** (NextLevel Commerce) e os domínios do **SuperDrop** (`superdrop.com.br`, `office.superdrop.com.br`). **Ficam para outra etapa, quando já houver código desenvolvido:** `hubcreators.nextlevelgroup.com.br` (Hub Creators), `bras.superdrop.com.br` (Brás Digital) e `chinahubglobal.com.br` (China Hub). Não adicionar esses três no Render nem criar o DNS deles por enquanto (cada domínio extra custa US$ 0,25/mês). O código já os reconhece, então quando chegar a hora basta adicioná-los.
+> **DECISÃO DO DONO (foco no que está em andamento):** agora só se conectam **`master.nextlevelgroup.com.br`**, **`lojas.nextlevelgroup.com.br`** (NextLevel Commerce) e os domínios do **SuperDrop** (`superdrop.com.br`, `office.superdrop.com.br`). **Ficam para outra etapa, quando já houver código desenvolvido:** `hubcreators.nextlevelgroup.com.br` (Hub Creators), `bras.nextlevelgroup.com.br` (Brás Digital) e `chinahubglobal.com.br` (China Hub). Não adicionar esses três no Render nem criar o DNS deles por enquanto (cada domínio extra custa US$ 0,25/mês). O código já os reconhece, então quando chegar a hora basta adicioná-los.
 
 Um serviço no Render atende **todos** os endereços. O sistema reconhece o produto pelo endereço digitado. Tudo abaixo é feito nos sites do Render e da Hostinger.
 
@@ -12,14 +12,14 @@ Um serviço no Render atende **todos** os endereços. O sistema reconhece o prod
 | `hubcreators.nextlevelgroup.com.br` | **Hub Creators** | página "em breve" + lista de espera |
 | `superdrop.com.br` | **SuperDrop** (público) | já no ar |
 | `office.superdrop.com.br` | SuperDrop (painéis: login, fornecedor, lojista, afiliado) | já adicionado no Render |
-| `bras.superdrop.com.br` | **Brás Digital** | página "em breve" + lista de espera |
+| `bras.nextlevelgroup.com.br` | **Brás Digital** | página "em breve" + lista de espera |
 | `chinahubglobal.com.br` (+ `www`) | **China Hub** | página "em breve" + lista de espera |
 | `app.superdrop.com.br` | (antigo) | **remover** quando o `office.` estiver em uso (economiza US$ 0,25/mês) |
 
 O endereço principal `nextlevelgroup.com.br` **continua sendo o site da holding** (GPT Sites). Não mexa nele.
 
 ## Passo 1: adicionar no Render (um por vez)
-Render → seu serviço → **Settings → Custom Domains → Add Custom Domain**. Adicione: `master.nextlevelgroup.com.br`, `hubcreators.nextlevelgroup.com.br`, `bras.superdrop.com.br`, `chinahubglobal.com.br` (e `www.chinahubglobal.com.br`, que o Render costuma criar como redirecionamento).
+Render → seu serviço → **Settings → Custom Domains → Add Custom Domain**. Adicione: `master.nextlevelgroup.com.br`, `hubcreators.nextlevelgroup.com.br`, `bras.nextlevelgroup.com.br`, `chinahubglobal.com.br` (e `www.chinahubglobal.com.br`, que o Render costuma criar como redirecionamento).
 Para cada um, o Render mostra o registro DNS a criar. **Copie exatamente o que ele mostrar.**
 
 ## Passo 2: criar os registros na Hostinger
@@ -55,7 +55,7 @@ Os endereços dos produtos já vêm de fábrica no sistema; **não precisa** def
 ## Passo 5: conferir
 1. `https://master.nextlevelgroup.com.br` mostra a tela de login (e nada mais). Entre com o seu Master.
 2. `https://lojas.nextlevelgroup.com.br` mostra o portal da **NextLevel Commerce**.
-3. `https://hubcreators.nextlevelgroup.com.br`, `https://bras.superdrop.com.br` e `https://chinahubglobal.com.br` mostram a página **"Em breve"** de cada produto.
+3. `https://hubcreators.nextlevelgroup.com.br`, `https://bras.nextlevelgroup.com.br` e `https://chinahubglobal.com.br` mostram a página **"Em breve"** de cada produto.
 4. `https://superdrop.com.br` continua igual; `https://superdrop.com.br/login` leva a `office.superdrop.com.br/login`.
 5. Só depois de tudo certo, remova o `app.superdrop.com.br` do Render (avise quem usa).
 

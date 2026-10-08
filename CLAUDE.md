@@ -26,7 +26,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Regra de negócio configurável vem de `platform_settings` (tabela de preços `getPriceBook`, regras de parceiros `getPartnerSettings`), nunca fixa no código.
 - Acessibilidade AA: `axe` sem violações graves, sem rolagem horizontal em 360 px; use `e2e/polish-v8.mjs` para varrer.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D91). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D98). Mudanças de comportamento sem teste não entram.
 
 ## Mapa rápido
 - Domínio: `src/lib/domain/` (finance, store-access, partners, nl-sales, orders, own-store, provisioning…) · Preços: `src/lib/finance/` · Temas: `src/lib/themes/` · E-mail: `src/lib/email.ts`
@@ -35,7 +35,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Skills do projeto (`.claude/skills/`, uso: `/publicar`, `/e2e-demo`, `/nova-migracao`, `/desenvolver-prompt`): `publicar`, `e2e-demo`, `nova-migracao`, `desenvolver-prompt`. Kit de análise (só quando reduz uma incerteza real; guia em `docs/SKILLS-KIT-README.md`): `repo-auditor`, `root-cause`, `impact-analysis`, `acceptance-designer`, `ux-flow-auditor`, `security-guardian`, `release-gate`, `architecture-drift`
 
 ## Direção do produto (atual)
-**Foco atual (decisão do dono):** SuperDrop (em produção, com clientes e lojas para subir), NextLevel Commerce (lojas virtuais) e o Master central (`master.nextlevelgroup.com.br`). **Hub Creators, Brás Digital e China Hub ficam para outra etapa**: sem domínio no Render/DNS até haver código desenvolvido (hoje só têm página "em breve" no código). Um Render (Starter) e um Neon para tudo; um domínio por produto (ver `docs/nextlevel-commerce/ligar-escritorio.md`).
+**Foco atual (decisão do dono):** SuperDrop (em produção, com clientes e lojas para subir), NextLevel Commerce (lojas virtuais) e o Master central (`master.nextlevelgroup.com.br`). **Atualização (D91, 2026-10-07): a Brás Digital passou a ser prioridade**: plataforma fechada de atacado de caixa fechada com feed de vídeo e lives. Leia `docs/prompts/bras-digital-plataforma.md` (o adendo no começo prevalece) e as decisões D91 a D96. Desde 2026-10-08 a Brás está na branch de publicação, em `bras.nextlevelgroup.com.br` (D96); a página pública e o cadastro só abrem com `BRAND_SIGNUP_BRAS_DIGITAL=true` (sem ela, "em breve"). **Hub Creators e China Hub ficam para outra etapa**: sem domínio no Render/DNS até haver código desenvolvido (hoje só têm página "em breve" no código). Um Render (Starter) e um Neon para tudo; um domínio por produto (ver `docs/nextlevel-commerce/ligar-escritorio.md`).
 
 O foco passou de SuperDrop para **NextLevel Commerce**, a plataforma de lojas virtuais (o SuperDrop é um módulo, em pausa). Leia `docs/prompts/nextlevel-commerce-plataforma.md` e `docs/nextlevel-commerce/aproveitamento-superdrop.md` antes de propor trabalho novo. Holding: `nextlevelgroup.com.br`; produto: `nextlevelcommerce.com.br` (a registrar).
 
