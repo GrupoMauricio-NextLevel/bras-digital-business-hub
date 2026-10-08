@@ -4,7 +4,7 @@ import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isDemoMode } from "@/lib/auth";
 
-type Marca = "superdrop" | "commerce";
+type Marca = "superdrop" | "commerce" | "bras";
 const FORMATOS = ["avif", "webp", "png"] as const;
 type Formato = (typeof FORMATOS)[number];
 

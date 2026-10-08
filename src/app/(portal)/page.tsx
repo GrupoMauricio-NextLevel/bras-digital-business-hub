@@ -3,7 +3,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, BarChart3, FileText, Globe, Palette, Store, Wallet } from "lucide-react";
 import { getSession, homeFor } from "@/lib/auth";
-import { brandHas } from "@/lib/brand";
+import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
+import { getDb } from "@/db/client";
+import { listPublicBrasVideos } from "@/lib/domain/bras/videos";
+import { BrasHome } from "@/components/portal/bras/bras-home";
 import { getBrand } from "@/lib/brand-server";
 import { robotsForBrandPortal } from "@/lib/bras/visibility";
 import { CommerceHome } from "@/components/portal/commerce-home";
@@ -51,6 +54,8 @@ export default async function Portal() {
   const brand = await getBrand();
   // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
+  // Operação fechada já aberta (Brás Digital, D91): apresentação, vídeos de análise e cadastro; nunca preço.
+  if (isClosedCommerceBrand(brand)) return <BrasHome brand={brand} videos={await listPublicBrasVideos(await getDb())} />;
   // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio.
   if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);

@@ -55,6 +55,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
+      { label: "Brás Digital", href: "/master/bras", icon: "Boxes", group: "Plataformas" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro", href: "/master/finance", icon: "Wallet", group: "Negócio" },
@@ -135,6 +136,16 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" },
       { label: "Ver loja NextLevel", href: "/merchant/services", icon: "Sparkles" },
     ],
+  },
+  BRAS_MEMBER: {
+    base: "/meu-bras",
+    label: "Membro Brás Digital",
+    items: [
+      { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
+      { label: "Vídeos de produtos", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
+      { label: "Minha empresa", href: "/meu-bras/empresa", icon: "Settings", group: "Conta" },
+    ],
+    quick: [],
   },
   AFFILIATE: {
     base: "/partner",

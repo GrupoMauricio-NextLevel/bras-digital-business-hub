@@ -27,7 +27,7 @@ export function BrasShell({ panel, regions }: { panel: BrasPanelKey; regions: Sh
           </section>
         ))}
       </div>
-      <p className="mt-6 text-sm text-muted-foreground">Outras cascas: {BRAS_PANELS.filter((x) => x.key !== panel).map((x, i) => <span key={x.key}>{i ? " · " : ""}<Link className="font-semibold text-link underline" href={x.path}>{x.name}</Link></span>)}</p>
+      <p className="mt-6 text-sm text-muted-foreground"><Link className="font-semibold text-link underline" href="/master/bras">Voltar ao Estúdio</Link></p>
     </>
   );
 }

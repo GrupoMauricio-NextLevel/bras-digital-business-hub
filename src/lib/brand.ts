@@ -84,15 +84,18 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       modules: ["stores", "themes", "partners", "dropship"], emailFromName: "SuperDrop", legalLine: LEGAL("SuperDrop"), signupOpen: true, partnersOpen: true, soon: null,
     },
     BRAS_DIGITAL: {
-      code: "BRAS_DIGITAL", name: "Brás Digital", live: false,
+      // D91: com BRAND_SIGNUP_BRAS_DIGITAL=true abre a página pública e o cadastro grátis com CNPJ; sem ela, segue "em breve".
+      code: "BRAS_DIGITAL", name: "Brás Digital", live: env.BRAND_SIGNUP_BRAS_DIGITAL === "true",
       tagline: "O atacado do Brás em uma vitrine só",
-      description: "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
+      description: env.BRAND_SIGNUP_BRAS_DIGITAL === "true"
+        ? "Atacado em caixa fechada das importadoras do Brás, com vídeos de análise de produto. Cadastro grátis com CNPJ; preço e estoque só para membros."
+        : "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
       domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
-      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false, closedCommerce: true,
-      soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
+      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: env.BRAND_SIGNUP_BRAS_DIGITAL === "true", partnersOpen: false, closedCommerce: true,
+      soon: env.BRAND_SIGNUP_BRAS_DIGITAL === "true" ? null : { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
     },
     CREATORS_HUB: {
       code: "CREATORS_HUB", name: "Hub Creators", live: false,

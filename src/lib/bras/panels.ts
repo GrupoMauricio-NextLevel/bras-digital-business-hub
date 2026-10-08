@@ -1,15 +1,14 @@
 import { isMaster, type Actor } from "@/lib/domain/access";
 
 /**
- * Cascas dos painéis da Brás Digital (Fase 0): Estúdio, Balcão e Meu Brás, sem lógica de negócio nem dado comercial.
- * Enquanto não houver decisão sobre quem opera cada área ([CONFIRMAR] D91 Estúdio no Master, papéis da importadora,
- * modelo de membro B2B), as cascas ficam DESLIGADAS por padrão e, ligadas, só o Master as vê, como prévia.
- * Ligar: BRAS_PANELS=true. Nenhum papel, tabela ou item de menu novo é criado aqui.
+ * Painéis da Brás Digital. D91: o Estúdio fica dentro do Master (`/master/bras`) e o Meu Brás é a área do membro (`/meu-bras`).
+ * O Balcão (importadora) segue só como prévia do Master, DESLIGADA por padrão (BRAS_PANELS=true), até existirem os papéis
+ * de acesso da importadora. Regra já decidida: a importadora vê só os dados de envio do pedido, nunca o cadastro do cliente.
  */
 export const BRAS_PANELS = [
-  { key: "estudio", path: "/master/bras/estudio", name: "Estúdio", audience: "Importadora e operação (dono da Brás)", pending: "D91: o Estúdio fica dentro do Master ou em área própria? E quem da importadora acessa." },
-  { key: "balcao", path: "/master/bras/balcao", name: "Balcão", audience: "Equipe de retirada e expedição da importadora", pending: "Papéis da importadora (reuso dos papéis de fornecedor com contexto de marca ou papéis próprios) e dados pessoais exibidos na retirada." },
-  { key: "meu-bras", path: "/master/bras/meu-bras", name: "Meu Brás", audience: "Membro comprador aprovado (lojista B2B)", pending: "Modelo de membro B2B, aprovação por CNPJ e o que o membro não aprovado vê." },
+  { key: "estudio", path: "/master/bras", name: "Estúdio", audience: "Dono da Brás Digital (Master): membros e vídeos", live: true, pending: "Próximas funções: lives, conteúdo das importadoras e alertas de estoque (segunda etapa)." },
+  { key: "balcao", path: "/master/bras/balcao", name: "Balcão", audience: "Equipe de retirada da importadora", live: false, pending: "Papéis de acesso da importadora e fluxo de pedido. Decidido (D91): a importadora vê só os dados de envio; atendimento, ocorrência e reembolso são da Brás Digital." },
+  { key: "meu-bras", path: "/meu-bras", name: "Meu Brás", audience: "Membro comprador (lojista com CNPJ)", live: true, pending: "Catálogo com preço e estoque em caixas e pedido pelo sistema, quando as importadoras forem conectadas." },
 ] as const;
 export type BrasPanelKey = (typeof BRAS_PANELS)[number]["key"];
 
@@ -17,7 +16,7 @@ export function brasPanelsEnabled(env: Record<string, string | undefined> = proc
   return env.BRAS_PANELS?.trim().toLowerCase() === "true";
 }
 
-/** Quem pode abrir a prévia: só o Master, e só com a chave ligada. Falha fechada. */
+/** Quem pode abrir a prévia do Balcão: só o Master, e só com a chave ligada. Falha fechada. */
 export function canOpenBrasPanelPreview(actor: Actor | null | undefined, env: Record<string, string | undefined> = process.env): boolean {
   return !!actor && isMaster(actor) && brasPanelsEnabled(env);
 }

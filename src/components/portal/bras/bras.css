@@ -1,0 +1,61 @@
+/* Página pública da Brás Digital (D91). Prefixo bd- para não afetar nenhuma outra marca. Cores do plano de design da Brás. */
+.bd-home {
+  --bd-navy: #101b34;
+  --bd-navy-2: #18264a;
+  --bd-papel: #f4f1e9;
+  --bd-laranja: #b34d00; /* ação sobre fundo claro (5,3:1 com branco) */
+  --bd-laranja-claro: #fb8342; /* ação e destaque sobre o azul-escuro (6,7:1) */
+  --bd-tinta-clara: #e8ecf5;
+  --bd-tinta-suave: #b9c2d6; /* texto secundário no escuro (8,9:1) */
+}
+.bd-dark { background: var(--bd-navy); color: var(--bd-tinta-clara); }
+.bd-papel { background: var(--bd-papel); color: var(--bd-navy); }
+:root[data-theme="dark"] .bd-papel { background: #0b1324; color: var(--bd-tinta-clara); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-papel { background: #0b1324; color: var(--bd-tinta-clara); } }
+
+.bd-display { font-family: var(--nl-font-display), var(--font-display), system-ui, sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.bd-h1 { font-size: clamp(2.4rem, 6.4vw, 5rem); }
+.bd-h2 { font-size: clamp(1.9rem, 4.2vw, 3.25rem); }
+.bd-accent { color: var(--bd-laranja-claro); }
+.bd-papel .bd-accent, .bd-claro .bd-accent { color: var(--bd-laranja); }
+:root[data-theme="dark"] :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-laranja-claro); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-laranja-claro); } }
+
+.bd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0 1.4rem; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: transform 0.15s ease, background 0.15s ease; text-decoration: none; }
+.bd-btn:focus-visible { outline: 3px solid var(--bd-laranja-claro); outline-offset: 3px; }
+.bd-btn:hover { transform: translateY(-1px); }
+.bd-btn--fogo { background: var(--bd-laranja-claro); color: var(--bd-navy); }
+.bd-btn--fogo:hover { background: #ff9a62; }
+.bd-btn--linha { border: 1.5px solid color-mix(in srgb, var(--bd-tinta-clara) 55%, transparent); color: var(--bd-tinta-clara); }
+.bd-btn--linha:hover { background: color-mix(in srgb, var(--bd-tinta-clara) 10%, transparent); }
+.bd-btn--escuro { background: var(--bd-navy); color: #fff; }
+.bd-btn--escuro:focus-visible { outline-color: var(--bd-laranja); }
+
+/* Grade de caixas ao fundo do herói (só ornamento). */
+.bd-caixas { background-image: linear-gradient(color-mix(in srgb, var(--bd-tinta-clara) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--bd-tinta-clara) 6%, transparent) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 25%, transparent 75%); mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 25%, transparent 75%); }
+
+/* Celular com o vídeo (herói): moldura que mostra a interface real do feed. */
+.bd-phone { position: relative; width: min(100%, 300px); aspect-ratio: 9 / 18.5; border-radius: 42px; padding: 10px; background: #050a16; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), inset 0 0 0 1.5px rgba(255, 255, 255, 0.12); }
+.bd-phone-screen { position: relative; height: 100%; overflow: hidden; border-radius: 33px; background: linear-gradient(180deg, #24345e, #0d1529); }
+
+/* Faixa em loop com as regras do atacado. */
+@keyframes bd-marquee { to { transform: translateX(-50%); } }
+.bd-marquee-track { display: flex; width: max-content; animation: bd-marquee 38s linear infinite; }
+.bd-marquee:hover .bd-marquee-track { animation-play-state: paused; }
+
+@keyframes bd-word-in { from { opacity: 0; transform: translateY(0.5em); } to { opacity: 1; transform: none; } }
+.bd-word { display: inline-block; animation: bd-word-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@supports (animation-timeline: view()) {
+  @keyframes bd-rise { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+  .bd-reveal { animation: bd-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 35%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bd-word, .bd-reveal { animation: none !important; }
+  .bd-marquee-track { animation: none; flex-wrap: wrap; width: auto; }
+  .bd-marquee-track [aria-hidden="true"] { display: none; }
+  .bd-btn:hover { transform: none; }
+}
+
+/* Número grande dos passos. */
+.bd-step-n { font-family: var(--nl-font-display), system-ui, sans-serif; font-weight: 800; font-size: 3.5rem; line-height: 1; font-variant-numeric: tabular-nums; color: transparent; -webkit-text-stroke: 1.5px var(--bd-laranja); }
+.bd-dark .bd-step-n { -webkit-text-stroke-color: var(--bd-laranja-claro); }

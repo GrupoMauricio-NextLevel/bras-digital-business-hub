@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
-import { brandHas } from "@/lib/brand";
+import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
 import { supportContacts } from "@/lib/support";
 import { PublicShell, type PublicNavItem } from "@/design-system/components/public-shell";
@@ -12,14 +12,17 @@ export default async function PortalLayout({ children }: { children: React.React
   const brand = await getBrand();
   const dropship = brandHas(brand, "dropship");
   const commerce = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
-  const nav: PublicNavItem[] = brand.soon ? [] : commerce
+  const closed = isClosedCommerceBrand(brand) && !brand.soon;
+  const nav: PublicNavItem[] = brand.soon ? [] : closed
+    ? [{ href: "/#videos", label: "Vídeos" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#para-quem", label: "Para quem" }, { href: "/#duvidas", label: "Dúvidas" }]
+    : commerce
     ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/#operacao", label: "Operação" }, { href: "/#comecar", label: "Como começar" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
       ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
-  const cta = brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
+  const cta = closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
-  const whatsapp = commerce && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero saber mais sobre a NextLevel Commerce.")}`) : null;
+  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "a Brás Digital" : "a NextLevel Commerce"}.`)}`) : null;
   return (
     <PublicShell
       brand={<BrandLogo brand={brand} tone="auto" className="h-8" priority />}

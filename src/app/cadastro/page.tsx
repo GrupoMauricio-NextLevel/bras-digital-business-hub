@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb } from "@/db/client";
-import { requireBrandFeature } from "@/lib/brand-server";
-import { brandHas } from "@/lib/brand";
+import { getBrand, requireBrandFeature } from "@/lib/brand-server";
+import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
+import { BrasSignupPage } from "./bras-signup";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { listSignupSuppliers } from "@/lib/domain/store-access";
@@ -10,11 +11,17 @@ import { getPriceBook } from "@/lib/domain/finance";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { SignupForm } from "./signup-form";
 
-export const metadata: Metadata = { title: "Criar minha loja", description: "Escolha o plano, pague por Pix e comece a vender. Com o cupom do seu fornecedor, teste 7 dias sem cartão." };
+export async function generateMetadata(): Promise<Metadata> {
+  const brand = await getBrand();
+  if (isClosedCommerceBrand(brand)) return { title: "Cadastro grátis de lojista", description: "Cadastre a sua empresa com CNPJ e veja preço e estoque em caixa fechada das importadoras do Brás." };
+  return { title: "Criar minha loja", description: "Escolha o plano, pague por Pix e comece a vender. Com o cupom do seu fornecedor, teste 7 dias sem cartão." };
+}
 export const dynamic = "force-dynamic";
 
-export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string }> }) {
+export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; video?: string }> }) {
   const brand = await requireBrandFeature("signup");
+  // Brás Digital (D91): cadastro grátis de membro com CNPJ, sem plano, loja ou fornecedor.
+  if (isClosedCommerceBrand(brand)) return <BrasSignupPage brand={brand} videoId={(await searchParams).video} />;
   const independent = !brandHas(brand, "dropship");
   const sp = await searchParams;
   const db = await getDb();

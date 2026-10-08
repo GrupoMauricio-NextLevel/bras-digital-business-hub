@@ -43,25 +43,33 @@ Onde mora o Estúdio é decisão pendente (D91 na numeração da Brás). As casc
 | 8. Galeria de design | não iniciado |
 | 9. Testes de fundação | isolamento e preço anônimo feitos; contrato do Balcão depende dos papéis e dos dados pessoais da retirada |
 
-## 4. Itens [CONFIRMAR] registrados e não implementados
+## 4. Respostas do dono (D91) e o que foi feito com elas
 
-1. Onde mora o Estúdio: módulo do Master com filtro de marca ou área própria (D91 da Brás).
-2. Modelo de membro comprador B2B e aprovação por CNPJ.
-3. Papéis da importadora (quem do Balcão vê o quê).
-4. Pix Split, base e cobrança da comissão, plano B se o Split não servir.
-5. Dados do cliente visíveis à importadora (CNPJ, documento na retirada), cancelamento, ocorrência e reembolso.
-6. Provedores: vídeo e live, Bling, WhatsApp, IA de tendência e validação de CNPJ.
-7. Parâmetros operacionais: limite de "últimas caixas", atualização e validade do estoque.
-8. Concorrência de estoque em Postgres (reserva de caixa sem vender duas vezes).
+| Pendência | Resposta do dono | Situação |
+|---|---|---|
+| 1. Onde fica o Estúdio | Dentro do Master | Feito: `/master/bras` com vídeos e membros |
+| 2. Membro comprador | Cadastro grátis e simples com CNPJ; libera na hora | Feito: `/cadastro` no endereço da Brás, `bd_members`, papel `BRAS_MEMBER`, área `/meu-bras`; o Master pode bloquear |
+| 3. O que a importadora vê | Nada do cliente, só o endereço de envio | Registrado; o Balcão segue como prévia até existir o fluxo de pedido |
+| 4. Pix Split e comissão | Nada avançado: o dinheiro vai todo para a importadora e ela paga a comissão à parte | Registrado; nada no código |
+| 5. Dados na retirada, cancelamento, ocorrência e reembolso | Só dados de envio; atendimento é responsabilidade da Brás | Registrado |
+| 6. Vídeo/live, Bling, WhatsApp, IA, validação de CNPJ | Segunda etapa | Vídeos ficam no YouTube (escolha do dono); o resto não foi feito |
+| 7. "Últimas caixas" e validade do estoque | Não dá para controlar agora | Não feito |
+| 8. Vender a mesma caixa duas vezes | Controlar depois | Não feito |
 
-Nenhum desses foi inventado no código: sem Pix, comissão, Bling, vídeo, regra de CNPJ, dado pessoal ou migração.
+Também a pedido do dono: **página pública da Brás** (apresentação forte, vídeos de análise com "Quero comprar" que leva ao cadastro, botões de cadastro e de área do cliente). Liga com `BRAND_SIGNUP_BRAS_DIGITAL=true`; sem ela continua "em breve". Na primeira etapa, "Quero comprar" dentro do Meu Brás abre o WhatsApp da equipe (`BRAS_WHATSAPP`). Fotos pendentes: `public/portal/bras/v3/MANIFESTO.md`.
+
+Verificação desta rodada: tipos, estilo e `npm run build` limpos; testes novos de membro, vídeos, rotas e indexação; `e2e/bras-portal.mjs` (página vazia e com vídeos em 360, 768 e 1440, vídeo tocando, cadastro com CNPJ inválido e válido, Meu Brás, Estúdio, bloqueio, fronteira entre marcas) sem rolagem horizontal e sem violação grave de acessibilidade.
 
 ## 5. Riscos para unir à branch de publicação
 
 - **Numeração de decisões colide.** Nesta branch, D90 é "Brás Digital passa a prioridade". Na branch de publicação, D90 é "Financeiro Master" e a próxima livre é D91. Ao unir, renumerar a decisão da Brás (e o "D91: Estúdio no Master" citado nos documentos e nas cascas) para os próximos números livres.
 - **Conflitos esperados.** Esta branch saiu de `0166f33`, antes das decisões D88 a D90 e do trabalho financeiro. Arquivos com mudança dos dois lados: `src/lib/domain/store-access.ts`, `src/app/(portal)/page.tsx`, `CLAUDE.md`, `docs/design/DECISIONS.md`. Resolver mantendo os dois trabalhos e rodar a suíte completa.
-- **`BRAS_PANELS`** não deve ser ligada em produção antes da decisão do Estúdio.
+- **Migração 0042 repetida.** Esta branch criou `drizzle/0042_bras_membros_e_videos.sql`; a de publicação já tem `0042_financeiro_master`. Ao unir, apagar a da Brás (nunca foi publicada) e gerar de novo com `npx drizzle-kit generate --name bras_membros_e_videos`, que sai como 0043.
+- **`BRAS_PANELS`** (prévia do Balcão) não deve ser ligada em produção antes do fluxo de pedido.
+- **Antes de ligar `BRAND_SIGNUP_BRAS_DIGITAL` em produção:** termos de uso e política de privacidade da Brás publicados (o cadastro guarda CNPJ, nome, e-mail e WhatsApp) e o `BRAS_WHATSAPP` configurado.
 
 ## 6. Próximo passo sugerido
 
-Revisão do dono deste relatório e das respostas aos itens da seção 4, começando por 1, 2 e 3: com eles dá para ligar o papel nas cascas e escrever o contrato do Balcão. A galeria de design (entrega 8) pode avançar quando o dono quiser ver o visual.
+1. O dono aprova o visual da página pública e do Meu Brás (capturas da rodada) e gera as 4 fotos do manifesto.
+2. Unir a branch com a de publicação (renumerar D90/D91 e a migração), conferir e publicar com `BRAND_SIGNUP_BRAS_DIGITAL` ainda desligada; ligar quando os termos estiverem prontos.
+3. Próxima etapa de produto: catálogo das importadoras com preço e estoque em caixas (projeção comercial já pronta) e o pedido pelo sistema, com o Balcão vendo só o envio.

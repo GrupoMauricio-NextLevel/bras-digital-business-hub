@@ -152,7 +152,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -1242,3 +1242,34 @@ export const errorEvents = pgTable("error_events", {
   lastStoreSlug: text("last_store_slug"),
   lastRef: text("last_ref"),
 }, (t) => [index("error_events_last_idx").on(t.lastAt)]);
+
+// ---------------------------------------------------------------------------
+// Brás Digital (D91): membro comprador com CNPJ e vídeos de análise da página pública
+// ---------------------------------------------------------------------------
+/** Membro comprador da Brás (lojista B2B). Cadastro grátis com CNPJ libera na hora; o Master pode bloquear. Um cadastro por CNPJ. */
+export const bdMembers = pgTable("bd_members", {
+  id: id(),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  organizationId: text("organization_id").notNull().references(() => organizations.id),
+  /** CNPJ só com dígitos (14), dígitos verificadores conferidos no cadastro. */
+  cnpj: text("cnpj").notNull().unique(),
+  companyName: text("company_name").notNull(),
+  whatsapp: text("whatsapp").notNull(),
+  status: text("status", { enum: ["ACTIVE", "BLOCKED"] }).notNull().default("ACTIVE"),
+  blockedAt: ts("blocked_at"),
+  /** Motivo interno do bloqueio (só o Master vê). */
+  blockedReason: text("blocked_reason"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt)]);
+
+/** Vídeo de análise de produto no YouTube, mostrado na página pública e no Meu Brás. Sem preço e sem importadora. */
+export const bdVideos = pgTable("bd_videos", {
+  id: id(),
+  youtubeId: text("youtube_id").notNull().unique(),
+  title: text("title").notNull(),
+  summary: text("summary"),
+  position: integer("position").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_videos_order_idx").on(t.active, t.position)]);

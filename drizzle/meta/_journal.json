@@ -295,6 +295,13 @@
       "when": 1791408906070,
       "tag": "0041_loja_independente_dona_do_catalogo",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1791461875842,
+      "tag": "0042_bras_membros_e_videos",
+      "breakpoints": true
     }
   ]
 }

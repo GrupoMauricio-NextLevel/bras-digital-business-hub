@@ -74,3 +74,16 @@ describe("Master central e produtos em breve", () => {
     }
   });
 });
+
+describe("Brás Digital aberta (D91): só apresentação, cadastro e painéis", () => {
+  const aberta = { BRAND_SIGNUP_BRAS_DIGITAL: "true" };
+  it("páginas da Brás e painéis seguem; páginas das outras marcas voltam para o início", () => {
+    for (const p of ["/", "/cadastro", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/esqueci-senha", "/api/health", "/r/abc"]) expect(go("bras.superdrop.com.br", p, aberta)).toEqual({ kind: "next" });
+    for (const p of ["/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.superdrop.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
+  });
+  it("as outras marcas não mudam", () => {
+    expect(go("superdrop.com.br", "/planos", aberta)).toEqual({ kind: "next" });
+    expect(isPanelPath("/meu-bras")).toBe(true);
+  });
+});
+

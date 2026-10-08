@@ -14,9 +14,9 @@ export function canViewBrasCommercialData(access: BrasCommercialAccess): boolean
 export const BRAS_NO_COMMERCIAL_ACCESS: BrasCommercialAccess = Object.freeze({ authenticated: false, approvedMember: false });
 
 /**
- * Acesso a partir da sessão do servidor. Ainda NÃO existe modelo de membro aprovado (pendência do dono:
- * modelo B2B, CNPJ e aprovação), então ninguém é tratado como aprovado: falha fechada.
- * Quando o modelo existir, a aprovação deve vir do banco (status do membro), nunca de cookie, parâmetro ou corpo da requisição.
+ * Acesso só pela sessão, sem consultar o banco: falha fechada (ninguém é tratado como membro ativo).
+ * Para liberar preço e estoque use `brasCommercialAccessFor` (src/lib/domain/bras/membros.ts), que lê o status
+ * do membro no banco (D91), nunca de cookie, parâmetro ou corpo da requisição.
  */
 export function brasCommercialAccessFromSession(session: { user: { id: string } } | null | undefined): BrasCommercialAccess {
   return { authenticated: !!session?.user?.id, approvedMember: false };
@@ -28,7 +28,7 @@ export type BrasCommercialField = (typeof BRAS_COMMERCIAL_FIELDS)[number];
 
 /**
  * Campos que visitante e membro não aprovado podem receber. Lista de permissão (não de proibição):
- * campo novo no registro não vaza por esquecimento. Prévia de vídeo/capa fica de fora até decisão do dono.
+ * campo novo no registro não vaza por esquecimento. Os vídeos públicos de análise (D91) vêm de `bd_videos`, que não guarda preço nem importadora.
  */
 export const BRAS_LOCKED_FIELDS = ["id", "title"] as const;
 export type BrasLockedField = (typeof BRAS_LOCKED_FIELDS)[number];

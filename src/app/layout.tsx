@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: brand.name, template: `%s · ${brand.name}` },
     description: `${brand.name}: ${brand.description} Plataforma da NextLevel Marketing.`,
     icons: brandIcons(brand.code),
-    // Marca de operação fechada (Brás Digital): nenhuma página do endereço é indexável. As demais marcas não mudam.
+    // Marca de operação fechada (Brás Digital) ainda "em breve": nenhuma página do endereço é indexável. As demais marcas não mudam.
     ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}),
   };
 }
