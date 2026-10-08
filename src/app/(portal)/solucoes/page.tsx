@@ -101,6 +101,11 @@ export default async function SolucoesPage() {
               <p className="mt-1 text-sm text-muted-foreground">Compra única, sem mensalidade, com loja de demonstração para ver antes.</p>
               <Link href={withAttribution(`${brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl}/temas`, attr)} className="mt-4 inline-flex text-sm font-semibold text-link underline">Ver os temas →</Link>
             </article>
+            <article className="rounded-xl border border-border bg-surface p-5">
+              <h3 className="text-xl font-bold">Cursos e assessorias</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Produtos digitais e assessorias com compra em 1 clique, sem precisar de conta.</p>
+              <Link href={withAttribution(`${superdropHref.startsWith("http") ? superdrop.baseUrl : ""}/loja-nextlevel`, attr)} className="mt-4 inline-flex text-sm font-semibold text-link underline">Ver a Loja NextLevel →</Link>
+            </article>
           </div>
         </div>
       </section>
