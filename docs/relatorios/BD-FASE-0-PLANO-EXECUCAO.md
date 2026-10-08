@@ -46,8 +46,6 @@ npx vitest run
 
 Se a mudança tocar banco: migração aditiva em `drizzle/`, plano de restauração do Neon registrado e testes de migração. Se tocar interface: validação de teclado, contraste AA e 320 px.
 
-## Bloqueio técnico atual
+## Situação (2026-10-08)
 
-O ambiente deste chat ainda não possui checkout autenticado do repositório: o Git Credential Manager falha ao iniciar antes de fornecer credenciais. Os documentos foram criados pela conexão autenticada do GitHub na branch `claude/bras-digital`.
-
-Enquanto esse checkout não estiver disponível, não é seguro editar código de produto nem alegar que tipagem, lint, testes e build passaram. O próximo avanço de código deve começar recuperando um clone funcional e rodando a suíte completa.
+O bloqueio técnico anterior (sem checkout autenticado) foi resolvido: o trabalho foi validado e continuado num checkout funcional, com tipagem, estilo e testes passando. Andamento, itens [CONFIRMAR] e riscos de união com a branch de publicação: `BD-FASE-0-RELATORIO.md`.
