@@ -90,8 +90,8 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       description: env.BRAND_SIGNUP_BRAS_DIGITAL === "true"
         ? "Atacado em caixa fechada das importadoras do Brás, com vídeos de análise de produto. Cadastro grátis com CNPJ; preço e estoque só para membros."
         : "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
-      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
-      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
+      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.nextlevelgroup.com.br"]),
+      baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
       modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: env.BRAND_SIGNUP_BRAS_DIGITAL === "true", partnersOpen: false, closedCommerce: true,
@@ -153,7 +153,7 @@ export function brandByCode(code: string | null | undefined, env: Record<string,
   return isBrandCode(code) ? all[code] : all[defaultBrandCode(env)];
 }
 
-/** O domínio mais específico vence (ex.: `bras.superdrop.com.br` é do Brás Digital, mesmo `superdrop.com.br` sendo do SuperDrop). */
+/** O domínio mais específico vence (ex.: `bras.nextlevelgroup.com.br` é do Brás Digital, mesmo `superdrop.com.br` sendo do SuperDrop). */
 function longestMatch(all: Record<BrandCode, Brand>, h: string): Brand | null {
   let best: { b: Brand; len: number } | null = null;
   for (const b of Object.values(all)) for (const d of b.domains) if ((h === d || h.endsWith(`.${d}`)) && (!best || d.length > best.len)) best = { b, len: d.length };

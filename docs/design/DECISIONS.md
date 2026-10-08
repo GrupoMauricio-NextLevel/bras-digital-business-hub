@@ -662,3 +662,18 @@ Racional do dono: conteúdo que só apresenta produto é irrelevante. O Shorts p
 - **Página pública:** "Achados do Brás, com análise de mercado", a seção "Da descoberta à decisão" e dúvidas que acompanham o modo de cobrança.
 
 **Testes:** `tests/bras-descobertas.test.ts` (camadas, vazamentos, assinatura, volume, travas do editor, margem), `tests/bras-catalogo.test.ts` (importadora oculta até confirmar) e `e2e/bras-portal.mjs` (análise aberta, troca para paga, trancada sem vazar, liberação manual).
+
+## D95 — Brás Digital: endereço provisório no domínio do grupo (2026-10-08)
+O dono ainda não comprou o domínio da Brás. O `brasdigital.com.br` (e `.com`, `.net.br`) já tem outro dono desde 2000. Dos domínios do dono, a escolha provisória é **`bras.nextlevelgroup.com.br`**:
+- a Brás é marca do grupo, como `lojas.` (Commerce) e `master.` (Master);
+- `bras.superdrop.com.br` misturaria com outro produto;
+- `megatroncomercio.com.br` é nome de empresa e passaria a ideia de loja de uma importadora só;
+- `chinahubglobal.com.br` é reservado ao China Hub (D90).
+
+O sistema reconhece o endereço pelo domínio mais específico: `master.` segue Master e `lojas.` segue Commerce (teste em `tests/brand.test.ts`).
+
+Trocar depois é só configuração (`BRAND_DOMAINS_BRAS_DIGITAL`, `BRAND_URL_BRAS_DIGITAL`), mantendo o provisório levando ao novo.
+
+**Pendência do dono:** antes de investir no nome em muitos vídeos, consultar a marca "Brás Digital" no INPI.
+
+**Ligar:** registro `bras` no DNS de `nextlevelgroup.com.br` apontando para o Render, e o domínio adicionado em Custom Domains. Só depois de a Brás estar na branch de publicação.

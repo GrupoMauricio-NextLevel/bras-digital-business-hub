@@ -66,7 +66,7 @@ describe("Master central e produtos em breve", () => {
     expect(go("superdrop.com.br", "/master", {})).toEqual({ kind: "next" });
   });
   it("produto em breve mostra só a página inicial e a lista de espera", () => {
-    for (const host of ["bras.superdrop.com.br", "hubcreators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
+    for (const host of ["bras.nextlevelgroup.com.br", "hubcreators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
       expect(go(host, "/", {})).toEqual({ kind: "next" });
       expect(go(host, "/quero-minha-loja", {})).toEqual({ kind: "next" });
       expect(go(host, "/planos", {})).toEqual({ kind: "redirect", url: "/" });
@@ -78,8 +78,8 @@ describe("Master central e produtos em breve", () => {
 describe("Brás Digital aberta (D91): só apresentação, cadastro e painéis", () => {
   const aberta = { BRAND_SIGNUP_BRAS_DIGITAL: "true" };
   it("páginas da Brás e painéis seguem; páginas das outras marcas voltam para o início", () => {
-    for (const p of ["/", "/cadastro", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/bras", "/bras/videos", "/esqueci-senha", "/api/health", "/r/abc"]) expect(go("bras.superdrop.com.br", p, aberta)).toEqual({ kind: "next" });
-    for (const p of ["/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.superdrop.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
+    for (const p of ["/", "/cadastro", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/bras", "/bras/videos", "/esqueci-senha", "/api/health", "/r/abc"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "next" });
+    for (const p of ["/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
   });
   it("as outras marcas não mudam", () => {
     expect(go("superdrop.com.br", "/planos", aberta)).toEqual({ kind: "next" });
