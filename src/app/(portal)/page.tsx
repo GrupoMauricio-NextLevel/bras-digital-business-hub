@@ -5,6 +5,7 @@ import { ArrowRight, BarChart3, FileText, Globe, Palette, Store, Wallet } from "
 import { getSession, homeFor } from "@/lib/auth";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { robotsForBrandPortal } from "@/lib/bras/visibility";
 import { CommerceHome } from "@/components/portal/commerce-home";
 import { SoonHome } from "@/components/portal/soon-home";
 import { Logo } from "@/components/brand/logo";
@@ -24,7 +25,7 @@ import { FAQ } from "./content";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
-  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(brand.code === "BRAS_DIGITAL" ? { robots: { index: false, follow: false } } : {}) };
+  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}) };
 }
 
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
