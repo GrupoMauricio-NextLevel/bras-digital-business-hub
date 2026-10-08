@@ -81,13 +81,13 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
     BRAS_DIGITAL: {
       code: "BRAS_DIGITAL", name: "Brás Digital", live: false,
       tagline: "O atacado do Brás em uma vitrine só",
-      description: "Marketplace atacadista com lojas e fornecedores do Brás. Em breve.",
+      description: "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
       domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.superdrop.com.br"]),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
       modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
-      soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Vendedores de varejo e de atacado menor do Brás reunidos em um marketplace, com loja própria, preço de atacado e pedido organizado.", bullets: ["Vitrine para varejo e atacado menor", "Preço por quantidade e pedido mínimo", "Lojas e fornecedores do Brás no mesmo lugar"], leadTitle: "Quero participar da Brás Digital" },
+      soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
     },
     CREATORS_HUB: {
       code: "CREATORS_HUB", name: "Hub Creators", live: false,
