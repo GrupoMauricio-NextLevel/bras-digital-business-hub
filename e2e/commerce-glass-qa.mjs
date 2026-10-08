@@ -41,9 +41,9 @@ const setTheme = (p, t) => p.evaluate((x) => localStorage.setItem("nl-theme", x)
   await p.goto(`${B}/cadastro`, { waitUntil: "networkidle" });
   await p.locator("#store").fill("Loja Vidro " + RUN); await p.locator("#owner").fill("Ana Souza");
   await p.locator("#email").fill(`vidro-${RUN}@teste.com`); await p.locator("#pass").fill("senha-segura-1"); await p.locator("#tax").fill(makeCpf());
-  await p.getByRole("button", { name: /Criar loja e pagar/ }).click();
+  await p.getByRole("button", { name: /Criar loja/ }).click();
   await p.waitForURL(/\/merchant/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
-  await p.waitForSelector("[data-blocked-screen]", { timeout: 30000 });
+  await p.waitForSelector("[data-blocked-screen], [data-trial-banner]", { timeout: 30000 });
   for (let step = 1; step <= 2; step++) {
     if (!(await p.locator("[data-blocked-screen]").count())) break;
     await p.getByRole("button", { name: /Simular pagamento/ }).waitFor({ timeout: 25000 });

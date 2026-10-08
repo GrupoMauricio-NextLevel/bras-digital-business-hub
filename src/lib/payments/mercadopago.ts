@@ -90,12 +90,20 @@ export async function createPreference(token: string, input: PreferenceInput, fe
   return { id: pref.id, checkoutUrl: pref.init_point };
 }
 
-export type MpPayment = { id: string; status: string; statusDetail: string | null; externalReference: string | null; amountCents: number };
+export type MpPayment = { id: string; status: string; statusDetail: string | null; externalReference: string | null; amountCents: number; feeCents?: number; netCents?: number | null; installments?: number; refundedCents?: number; method?: string | null };
 
 export async function getPayment(token: string, paymentId: string, fetchImpl: FetchLike = fetch): Promise<MpPayment> {
   if (!/^\d+$/.test(paymentId)) throw new MercadoPagoError("Identificador de pagamento inválido.");
-  const p = await call<{ id: number; status: string; status_detail?: string; external_reference?: string; transaction_amount: number }>(fetchImpl, token, `/v1/payments/${paymentId}`);
-  return { id: String(p.id), status: p.status, statusDetail: p.status_detail ?? null, externalReference: p.external_reference ?? null, amountCents: Math.round(p.transaction_amount * 100) };
+  const p = await call<{ id: number; status: string; status_detail?: string; external_reference?: string; transaction_amount: number; fee_details?: { amount: number }[]; transaction_details?: { net_received_amount?: number }; installments?: number; transaction_amount_refunded?: number; payment_type_id?: string }>(fetchImpl, token, `/v1/payments/${paymentId}`);
+  const fee = (p.fee_details ?? []).reduce((s, f) => s + Math.round((f.amount ?? 0) * 100), 0);
+  return { id: String(p.id), status: p.status, statusDetail: p.status_detail ?? null, externalReference: p.external_reference ?? null, amountCents: Math.round(p.transaction_amount * 100), feeCents: fee, netCents: p.transaction_details?.net_received_amount !== undefined ? Math.round(p.transaction_details.net_received_amount * 100) : null, installments: p.installments ?? 1, refundedCents: Math.round((p.transaction_amount_refunded ?? 0) * 100), method: p.payment_type_id ?? null };
+}
+
+/** Reembolso total (sem valor) ou parcial. Idempotente pela chave informada. */
+export async function refundPayment(token: string, paymentId: string, input: { amountCents?: number; idempotencyKey: string }, fetchImpl: FetchLike = fetch): Promise<{ id: string; amountCents: number }> {
+  if (!/^\d+$/.test(paymentId)) throw new MercadoPagoError("Identificador de pagamento inválido.");
+  const r = await call<{ id: number; amount: number }>(fetchImpl, token, `/v1/payments/${paymentId}/refunds`, { method: "POST", body: JSON.stringify(input.amountCents ? { amount: input.amountCents / 100 } : {}), headers: { "X-Idempotency-Key": input.idempotencyKey } });
+  return { id: String(r.id), amountCents: Math.round((r.amount ?? 0) * 100) };
 }
 
 /** Busca pagamentos de um pedido pela referência externa e devolve o id do primeiro aprovado (fallback quando o id não é conhecido). */
@@ -124,7 +132,7 @@ export async function createPixPayment(token: string, input: { amountCents: numb
   return { paymentId: String(r.id), qrCode: td.qr_code, qrCodeBase64: td.qr_code_base64 ?? "" };
 }
 
-export type InvoicePreferenceInput = { externalReference: string; title: string; amountCents: number; payerEmail: string; notificationUrl?: string; backUrls?: { success: string; failure: string; pending: string }; maxInstallments: number };
+export type InvoicePreferenceInput = { externalReference: string; title: string; amountCents: number; payerEmail: string; notificationUrl?: string; backUrls?: { success: string; failure: string; pending: string }; maxInstallments: number; idempotencyKey?: string };
 
 /** Checkout Pro só com cartão de crédito, em até N parcelas, para faturas da NextLevel (o valor cheio da lista). */
 export async function createInvoicePreference(token: string, input: InvoicePreferenceInput, fetchImpl: FetchLike = fetch): Promise<Preference> {
@@ -137,6 +145,6 @@ export async function createInvoicePreference(token: string, input: InvoicePrefe
   };
   if (input.notificationUrl) body.notification_url = input.notificationUrl;
   if (input.backUrls) { body.back_urls = input.backUrls; body.auto_return = "approved"; }
-  const pref = await call<{ id: string; init_point: string }>(fetchImpl, token, "/checkout/preferences", { method: "POST", body: JSON.stringify(body) });
+  const pref = await call<{ id: string; init_point: string }>(fetchImpl, token, "/checkout/preferences", { method: "POST", body: JSON.stringify(body), headers: input.idempotencyKey ? { "X-Idempotency-Key": input.idempotencyKey } : {} });
   return { id: pref.id, checkoutUrl: pref.init_point };
 }

@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const session = await getSession();
   // Retorno só para a vitrine de temas do lojista (endereço fixo, nada de redirecionamento aberto).
-  const voltar = sp.voltar && /^\/merchant\/templates(\?ver=[a-z0-9-]{1,30})?$/.test(sp.voltar) ? sp.voltar : undefined;
+  const voltar = sp.voltar && (/^\/merchant\/templates(\?ver=[a-z0-9-]{1,30})?$/.test(sp.voltar) || /^\/merchant\/services\/solucao\/[a-z0-9-]{3,60}$/.test(sp.voltar)) ? sp.voltar : undefined;
   if (session) redirect(voltar && session.user.role === "STORE_OWNER" ? voltar : homeFor(session.user.role));
   if (sp.area === "afiliado") redirect("/parceiros/entrar");
   const brand = await getBrand();

@@ -12,10 +12,11 @@ import { balances, getPartnerSettings, ledger, listPayouts, partnerOfActor, pixK
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { PayoutPanel, ReactivatePanel } from "../partner-client";
+import { partnerStatement } from "@/lib/domain/corporate-commissions";
 
 export const dynamic = "force-dynamic";
-const KIND: Record<string, string> = { SETUP: "Comissão de setup", MAINTENANCE: "Manutenção (mensalidade)", ADJUSTMENT: "Ajuste de faixa", CLAWBACK: "Estorno", PAYOUT: "Saque", PAYOUT_REVERSAL: "Saque recusado (devolvido)", FEE: "Taxa de reativação", MANUAL: "Ajuste da NextLevel" };
-const STATUS: Record<string, { label: string; tone: "warning" | "success" | "neutral" | "outline" }> = { PENDING: { label: "Em garantia", tone: "warning" }, AVAILABLE: { label: "Disponível", tone: "success" }, PAID: { label: "Pago", tone: "neutral" }, VOID: { label: "Anulado", tone: "outline" } };
+const KIND: Record<string, string> = { SALE: "Venda do catálogo NextLevel", RECURRING: "Recorrência", SETUP: "Comissão de setup", MAINTENANCE: "Manutenção (mensalidade)", ADJUSTMENT: "Ajuste de faixa", CLAWBACK: "Estorno", PAYOUT: "Saque", PAYOUT_REVERSAL: "Saque recusado (devolvido)", FEE: "Taxa de reativação", MANUAL: "Ajuste da NextLevel" };
+const STATUS: Record<string, { label: string; tone: "warning" | "success" | "neutral" | "outline" }> = { PENDING: { label: "Em carência", tone: "warning" }, AVAILABLE: { label: "Liberada", tone: "success" }, PAID: { label: "Paga", tone: "neutral" }, VOID: { label: "Cancelada/estornada", tone: "outline" } };
 const PAYOUT: Record<string, string> = { REQUESTED: "Solicitado", APPROVED: "Aprovado", PAID: "Pago", REJECTED: "Recusado" };
 
 export default async function PartnerFinance() {
@@ -23,6 +24,7 @@ export default async function PartnerFinance() {
   const db = await getDb();
   const [p, s, rows, payouts] = await Promise.all([partnerOfActor(db, session.actor), getPartnerSettings(db), ledger(db, session.actor), listPayouts(db, session.actor)]);
   const b = await balances(db, p.id);
+  const st = await partnerStatement(db, session.actor);
   return (
     <>
       <PageHeader title="Financeiro" description={`Comissões ficam em garantia por ${s.guaranteeDays} dias e só depois ficam disponíveis para saque.`} />
@@ -42,7 +44,9 @@ export default async function PartnerFinance() {
         <TBody>{payouts.map((x) => <TR key={x.id}><TD>{formatDate(x.requestedAt)}</TD><TD>{PAYOUT[x.status]}</TD><TD>{x.paidAt ? formatDate(x.paidAt) : "—"}</TD><TD className="max-w-xs truncate">{x.receiptNote ?? "—"}</TD><TD className="text-right tabular-nums">{formatBRL(x.amountCents)}</TD></TR>)}</TBody>
       </Table></Card></>) : null}
 
-      <SectionTitle title="Extrato de comissões" />
+      {st.pending.length ? (<><SectionTitle title="Pendente: vendas aguardando pagamento" description="A comissão só nasce depois que o cliente paga, e fica em carência antes de ser liberada." /><Card className="mb-8"><CardContent className="pt-5"><ul className="space-y-1 text-sm">{st.pending.map((o) => <li key={o.code} className="flex justify-between gap-2"><span>{o.productName} · {o.code}</span><span className="tabular-nums">{formatBRL(o.totalCents)}</span></li>)}</ul></CardContent></Card></>) : null}
+
+      <SectionTitle title="Extrato de comissões" description="Em carência → liberada → paga. Estornos e chargebacks aparecem como cancelados ou como débito." />
       {rows.length === 0 ? <EmptyState compact icon={Wallet} title="Sem lançamentos ainda" description="Comissões de setup e manutenção aparecem aqui." /> : (
         <Card><Table>
           <THead><TR><TH>Data</TH><TH>Lançamento</TH><TH>Loja</TH><TH>Faixa</TH><TH>Situação</TH><TH className="text-right">Valor</TH></TR></THead>

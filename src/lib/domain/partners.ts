@@ -217,7 +217,8 @@ export async function recordMaintenance(db: Database, inv: typeof financeInvoice
 /** Chamado por `markInvoicePaid` depois de quitar a fatura. */
 export async function onInvoicePaid(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
   if (inv.kind === "STORE_SETUP") await recordActivation(db, inv, now);
-  else if (inv.kind === "STORE_PLAN") await recordMaintenance(db, inv, now);
+  // Assinatura Commerce (D90) comissiona pela regra versionada em onSubscriptionInvoicePaid, não pela manutenção de 5%.
+  else if (inv.kind === "STORE_PLAN" && !inv.dedupeKey.startsWith("NLSUB:")) await recordMaintenance(db, inv, now);
   else if (inv.kind === "PARTNER_FEE" && inv.partnerId) await activateByFee(db, inv.partnerId, inv.period ?? periodOf(now));
 }
 

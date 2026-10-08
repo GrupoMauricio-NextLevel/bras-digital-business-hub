@@ -13,9 +13,9 @@ export default async function PortalLayout({ children }: { children: React.React
   const dropship = brandHas(brand, "dropship");
   const commerce = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
   const nav: PublicNavItem[] = brand.soon ? [] : commerce
-    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/#operacao", label: "Operação" }, { href: "/#comecar", label: "Como começar" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/#operacao", label: "Operação" }, { href: "/#comecar", label: "Como começar" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
-      ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
+      ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/solucoes", label: "Soluções" }, { href: "/faq", label: "Dúvidas" }]
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();

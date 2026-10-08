@@ -857,12 +857,15 @@ export const serviceLeads = pgTable("service_leads", {
 // ---------------------------------------------------------------------------
 export const PARTNER_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED"] as const;
 export type PartnerStatus = (typeof PARTNER_STATUSES)[number];
+/** Tipos de parceiro (D90). AFFILIATE é o influenciador/afiliado original. O tipo só é definido pelo Master. */
+export const PARTNER_KINDS = ["AFFILIATE", "REPRESENTATIVE", "AGENCY", "AGENCY_ELITE", "WHITE_LABEL"] as const;
+export type PartnerKind = (typeof PARTNER_KINDS)[number];
 
 export const partners = pgTable("partners", {
   id: id(),
   userId: text("user_id").notNull().unique().references(() => users.id),
-  /** Extensível: hoje só AFFILIATE. */
-  kind: text("kind", { enum: ["AFFILIATE"] }).notNull().default("AFFILIATE"),
+  /** Influenciador (AFFILIATE), Representante, Agência, Agência Elite ou White Label. Só o Master muda. */
+  kind: text("kind", { enum: PARTNER_KINDS }).notNull().default("AFFILIATE"),
   code: text("code").notNull().unique(),
   displayName: text("display_name").notNull(),
   taxId: text("tax_id").notNull().unique(),
@@ -897,7 +900,7 @@ export const partnerClicks = pgTable("partner_clicks", {
   uaHash: text("ua_hash").notNull(),
 });
 
-export const PARTNER_COMMISSION_KINDS = ["SETUP", "MAINTENANCE", "ADJUSTMENT", "CLAWBACK", "PAYOUT", "PAYOUT_REVERSAL", "FEE", "MANUAL"] as const;
+export const PARTNER_COMMISSION_KINDS = ["SETUP", "MAINTENANCE", "ADJUSTMENT", "CLAWBACK", "PAYOUT", "PAYOUT_REVERSAL", "FEE", "MANUAL", "SALE", "RECURRING"] as const;
 export type PartnerCommissionKind = (typeof PARTNER_COMMISSION_KINDS)[number];
 
 /** Livro-razão do parceiro: imutável; correções entram como lançamentos novos. Saldo disponível = soma dos lançamentos AVAILABLE. */
@@ -909,6 +912,9 @@ export const partnerCommissions = pgTable("partner_commissions", {
   /** Lançamento que este corrige (ajuste do fechamento). */
   refId: text("ref_id"),
   payoutId: text("payout_id"),
+  /** Venda do catálogo Master que gerou a comissão (D90) e a regra versionada aplicada. */
+  orderId: text("order_id"),
+  ruleId: text("rule_id"),
   kind: text("kind", { enum: PARTNER_COMMISSION_KINDS }).notNull(),
   baseCents: integer("base_cents").notNull().default(0),
   rateBps: integer("rate_bps").notNull().default(0),
@@ -983,6 +989,11 @@ export const brandLeads = pgTable("brand_leads", {
   segment: text("segment"),
   message: text("message"),
   affiliateRef: text("affiliate_ref"),
+  /** LEAD (lista de espera/implantação) ou DIAGNOSTIC (diagnóstico gratuito da Nextlevel Soluções, D90). */
+  kind: text("kind", { enum: ["LEAD", "DIAGNOSTIC"] }).notNull().default("LEAD"),
+  /** Necessidades marcadas no diagnóstico e origem (utm, página, intenção). Sem dado sensível. */
+  needs: jsonb("needs").$type<string[]>().notNull().default([]),
+  attribution: jsonb("attribution").$type<Record<string, string>>().notNull().default({}),
   status: text("status", { enum: ["NEW", "CONTACTED", "WON", "LOST"] }).notNull().default("NEW"),
   notes: text("notes"),
   createdAt: createdAt(),
@@ -1242,3 +1253,342 @@ export const errorEvents = pgTable("error_events", {
   lastStoreSlug: text("last_store_slug"),
   lastRef: text("last_ref"),
 }, (t) => [index("error_events_last_idx").on(t.lastAt)]);
+
+// ===========================================================================
+// Financeiro corporativo da NextLevel (D90): `nextlevel_corporate_finance`.
+// Só o Master escreve aqui. Os painéis de fornecedor, membro, loja e parceiro apenas leem o que foi publicado
+// (preço autorizado, checkout, proposta). Valores em centavos; preços versionados e imutáveis.
+// ===========================================================================
+export const CATALOG_FAMILIES = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "TEMA", "MARKETING", "CONSULTORIA", "WHITE_LABEL", "SUPERDROP", "ADDON"] as const;
+export type CatalogFamily = (typeof CATALOG_FAMILIES)[number];
+export const CATALOG_KINDS = ["subscription", "one_time", "quote_required", "usage_fee"] as const;
+export type CatalogKind = (typeof CATALOG_KINDS)[number];
+export const CATALOG_STATUSES = ["DRAFT", "PUBLISHED", "PAUSED", "ARCHIVED"] as const;
+export type CatalogStatus = (typeof CATALOG_STATUSES)[number];
+export const JOURNEY_PHASES = ["FUNDACAO", "LANCAMENTO", "AQUISICAO", "OTIMIZACAO", "ESCALA"] as const;
+export type JourneyPhase = (typeof JOURNEY_PHASES)[number];
+export const GATEWAYS = ["MERCADOPAGO", "PAGARME"] as const;
+export type GatewayCode = (typeof GATEWAYS)[number];
+export const PRICE_CYCLES = ["MONTHLY", "ANNUAL", "ONE_TIME", "QUOTE"] as const;
+export type PriceCycle = (typeof PRICE_CYCLES)[number];
+
+/** Conteúdo editorial da landing canônica do produto (versionado junto do produto). */
+export type CatalogContent = {
+  forWho: string[]; notFor: string[]; problem: string; outcome: string;
+  scope: string[]; deliverables: string[]; timeline?: string; limits: string[];
+  faq: { q: string; a: string }[]; policy?: string;
+  /** Benefício não monetário do parceiro no anual (crédito de setup, auditoria, tema), controlado pelo catálogo. */
+  partnerPerk?: string;
+};
+
+export const catalogProducts = pgTable("catalog_products", {
+  id: id(),
+  key: text("key").notNull().unique(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  family: text("family", { enum: CATALOG_FAMILIES }).notNull(),
+  kind: text("kind", { enum: CATALOG_KINDS }).notNull(),
+  status: text("status", { enum: CATALOG_STATUSES }).notNull().default("DRAFT"),
+  /** Fase da jornada em que o produto aparece. */
+  phase: text("phase", { enum: JOURNEY_PHASES }).notNull().default("FUNDACAO"),
+  /** Quem pode contratar: STORE (lojista/Commerce), SUPPLIER, PARTNER e PUBLIC (visitante). */
+  audience: jsonb("audience").$type<("STORE" | "SUPPLIER" | "PARTNER" | "PUBLIC")[]>().notNull().default(["STORE", "PUBLIC"]),
+  tagline: text("tagline").notNull(),
+  summary: text("summary").notNull(),
+  content: jsonb("content").$type<CatalogContent>().notNull(),
+  /** Pré-requisitos observáveis (chaves de critério da jornada ou PRODUCT:<key>). */
+  prerequisites: jsonb("prerequisites").$type<string[]>().notNull().default([]),
+  /** HARD bloqueia a compra até cumprir; RECOMMENDED só recomenda a ordem. */
+  lockMode: text("lock_mode", { enum: ["HARD", "RECOMMENDED"] }).notNull().default("RECOMMENDED"),
+  /** Produtos que esta solução prepara ou libera. */
+  unlocks: jsonb("unlocks").$type<string[]>().notNull().default([]),
+  deliveryDays: integer("delivery_days"),
+  /** Direito concedido ao pagar (entitlement), quando houver. */
+  grantsKey: text("grants_key"),
+  /** Gateway preferido do produto; vazio = regra global do Master (padrão Mercado Pago). */
+  gateway: text("gateway", { enum: GATEWAYS }),
+  /** Desconto em dinheiro que o parceiro pode dar (bps, teto do Master). */
+  partnerDiscountMaxBps: integer("partner_discount_max_bps").notNull().default(0),
+  /** Carência da comissão (dias): 14 digital/assinatura, 30 serviço/projeto. */
+  commissionHoldDays: integer("commission_hold_days").notNull().default(14),
+  /** Dados específicos da família: recursos/limites do plano, origens de migração, escopo do marketing etc. */
+  meta: jsonb("meta").$type<Record<string, unknown>>().notNull().default({}),
+  sortOrder: integer("sort_order").notNull().default(100),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("catalog_products_family_idx").on(t.family, t.status)]);
+
+/** Versão de preço: IMUTÁVEL (trigger no banco). Nova regra = nova versão; pedidos guardam o id da versão aplicada. */
+export const catalogPriceVersions = pgTable("catalog_price_versions", {
+  id: id(),
+  productId: text("product_id").notNull().references(() => catalogProducts.id),
+  cycle: text("cycle", { enum: PRICE_CYCLES }).notNull(),
+  version: integer("version").notNull(),
+  /** Preço-base em centavos; nulo = sob consulta. */
+  amountCents: integer("amount_cents"),
+  /** Taxa de plataforma sobre vendas (planos Commerce), em bps. */
+  platformFeeBps: integer("platform_fee_bps"),
+  methods: jsonb("methods").$type<("PIX" | "CARD")[]>().notNull().default(["PIX", "CARD"]),
+  pixDiscountBps: integer("pix_discount_bps").notNull().default(0),
+  cardMaxInstallments: integer("card_max_installments").notNull().default(1),
+  /** Acréscimo total do cartão sobre o preço-base (1600 = ×1,16). */
+  cardMarkupBps: integer("card_markup_bps").notNull().default(0),
+  /** Desconto exibido do anual em relação a 12 mensalidades (só informativo; o valor é amountCents). */
+  annualDiscountBps: integer("annual_discount_bps"),
+  effectiveFrom: ts("effective_from").notNull().defaultNow(),
+  authorUserId: text("author_user_id"),
+  reason: text("reason").notNull(),
+  approvalRef: text("approval_ref"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("catalog_price_versions_unique").on(t.productId, t.cycle, t.version), check("catalog_price_amount_nonneg", sql`${t.amountCents} is null or ${t.amountCents} >= 0`)]);
+
+/** Oferta/promoção versionada (teste, primeiro mês, carência de taxa, benefício não monetário). */
+export type OfferRules = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number; appliesToFamilies: CatalogFamily[]; appliesToCycles: PriceCycle[]; oncePer: "TAX_ID"; perk?: string };
+export const catalogOffers = pgTable("catalog_offers", {
+  id: id(),
+  key: text("key").notNull(),
+  version: integer("version").notNull(),
+  name: text("name").notNull(),
+  status: text("status", { enum: ["ACTIVE", "PAUSED"] }).notNull().default("ACTIVE"),
+  rules: jsonb("rules").$type<OfferRules>().notNull(),
+  effectiveFrom: ts("effective_from").notNull().defaultNow(),
+  authorUserId: text("author_user_id"),
+  reason: text("reason").notNull(),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("catalog_offers_key_version").on(t.key, t.version)]);
+
+/** Uso da oferta: uma vez por CPF/CNPJ (antiabuso). */
+export const offerRedemptions = pgTable("offer_redemptions", {
+  id: id(),
+  offerKey: text("offer_key").notNull(),
+  offerVersion: integer("offer_version").notNull(),
+  taxId: text("tax_id").notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("offer_redemptions_once").on(t.offerKey, t.taxId)]);
+
+/** Regra de comissão versionada (por família/produto, ciclo, tipo de parceiro). */
+export const commissionRules = pgTable("commission_rules", {
+  id: id(),
+  key: text("key").notNull(),
+  version: integer("version").notNull(),
+  family: text("family", { enum: CATALOG_FAMILIES }).notNull(),
+  /** Produto específico (vazio = toda a família). */
+  productKey: text("product_key"),
+  cycle: text("cycle", { enum: PRICE_CYCLES }),
+  partnerKind: text("partner_kind", { enum: PARTNER_KINDS }),
+  firstBps: integer("first_bps").notNull(),
+  recurringBps: integer("recurring_bps").notNull().default(0),
+  recurringMonths: integer("recurring_months").notNull().default(0),
+  holdDays: integer("hold_days").notNull().default(14),
+  benefit: text("benefit").notNull().default(""),
+  active: boolean("active").notNull().default(true),
+  effectiveFrom: ts("effective_from").notNull().defaultNow(),
+  authorUserId: text("author_user_id"),
+  reason: text("reason").notNull(),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("commission_rules_key_version").on(t.key, t.version)]);
+
+export const CORPORATE_ORDER_STATUSES = ["PENDING_PAYMENT", "PAID", "FAILED", "EXPIRED", "CANCELED", "REFUNDED", "CHARGEBACK"] as const;
+export type CorporateOrderStatus = (typeof CORPORATE_ORDER_STATUSES)[number];
+
+/** Snapshot imutável do preço e da regra aplicados no pedido. */
+export type PriceSnapshot = { productKey: string; productName: string; cycle: PriceCycle; priceVersionId: string; priceVersion: number; baseCents: number; method: "PIX" | "CARD"; installments: number; installmentCents: number; pixDiscountCents: number; cardMarkupCents: number; partnerDiscountCents: number; offerKey?: string; offerVersion?: number; offerDiscountCents: number; totalCents: number; rule: string };
+
+/** Pedido corporativo (checkout rápido da Loja NextLevel, interno ou público). Idempotente por `idempotency_key`. */
+export const corporateOrders = pgTable("corporate_orders", {
+  id: id(),
+  idempotencyKey: text("idempotency_key").notNull().unique(),
+  /** Código curto para o cliente (não sequencial, evita corrida). */
+  code: text("code").notNull().unique(),
+  buyerType: text("buyer_type", { enum: ["STORE", "SUPPLIER", "PARTNER", "GUEST"] }).notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  buyerUserId: text("buyer_user_id"),
+  buyerName: text("buyer_name").notNull(),
+  buyerEmail: text("buyer_email").notNull(),
+  buyerTaxId: text("buyer_tax_id"),
+  productId: text("product_id").notNull().references(() => catalogProducts.id),
+  priceVersionId: text("price_version_id").notNull().references(() => catalogPriceVersions.id),
+  cycle: text("cycle", { enum: PRICE_CYCLES }).notNull(),
+  method: text("method", { enum: ["PIX", "CARD"] }).notNull(),
+  installments: integer("installments").notNull().default(1),
+  baseCents: integer("base_cents").notNull(),
+  discountCents: integer("discount_cents").notNull().default(0),
+  markupCents: integer("markup_cents").notNull().default(0),
+  totalCents: integer("total_cents").notNull(),
+  snapshot: jsonb("snapshot").$type<PriceSnapshot>().notNull(),
+  gateway: text("gateway", { enum: GATEWAYS }).notNull(),
+  partnerId: text("partner_id"),
+  attribution: jsonb("attribution").$type<Record<string, string>>().notNull().default({}),
+  status: text("status", { enum: CORPORATE_ORDER_STATUSES }).notNull().default("PENDING_PAYMENT"),
+  /** Fatura de assinatura, quando o pedido nasceu de uma (plano Commerce). */
+  invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  paidAt: ts("paid_at"),
+  fulfilledAt: ts("fulfilled_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("corporate_orders_store_idx").on(t.storeId), index("corporate_orders_status_idx").on(t.status), check("corporate_orders_total_nonneg", sql`${t.totalCents} >= 0`)]);
+
+export const GATEWAY_TX_STATUSES = ["PENDING", "PAID", "FAILED", "CANCELED", "EXPIRED", "REFUNDED", "CHARGEBACK"] as const;
+export type GatewayTxStatus = (typeof GATEWAY_TX_STATUSES)[number];
+
+/** Tentativa de cobrança num gateway (Pix ou cartão). Nunca muda de gateway depois de criada. */
+export const gatewayTransactions = pgTable("gateway_transactions", {
+  id: id(),
+  gateway: text("gateway", { enum: GATEWAYS }).notNull(),
+  orderId: text("order_id").references(() => corporateOrders.id),
+  idempotencyKey: text("idempotency_key").notNull().unique(),
+  externalId: text("external_id"),
+  method: text("method", { enum: ["PIX", "CARD"] }).notNull(),
+  installments: integer("installments").notNull().default(1),
+  status: text("status", { enum: GATEWAY_TX_STATUSES }).notNull().default("PENDING"),
+  providerStatus: text("provider_status"),
+  grossCents: integer("gross_cents").notNull(),
+  feeCents: integer("fee_cents"),
+  netCents: integer("net_cents"),
+  refundedCents: integer("refunded_cents").notNull().default(0),
+  pixCode: text("pix_code"),
+  pixQrBase64: text("pix_qr_base64"),
+  checkoutUrl: text("checkout_url"),
+  expiresAt: ts("expires_at"),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("gateway_transactions_external").on(t.gateway, t.externalId), index("gateway_transactions_order_idx").on(t.orderId)]);
+
+/** Notificações recebidas dos gateways: chave única por evento (webhook duplicado não processa duas vezes). */
+export const paymentEvents = pgTable("payment_events", {
+  id: id(),
+  gateway: text("gateway", { enum: GATEWAYS }).notNull(),
+  eventKey: text("event_key").notNull().unique(),
+  type: text("type").notNull(),
+  externalId: text("external_id"),
+  transactionId: text("transaction_id"),
+  result: text("result", { enum: ["PROCESSED", "IGNORED", "REJECTED", "FAILED"] }).notNull(),
+  detail: text("detail"),
+  receivedAt: ts("received_at").notNull().defaultNow(),
+}, (t) => [index("payment_events_received_idx").on(t.receivedAt)]);
+
+/** Trilha financeira SÓ-INSERÇÃO (trigger impede alterar ou apagar). Nunca guarda segredo, cartão ou PII completa. */
+export const financialAuditLog = pgTable("financial_audit_log", {
+  id: id(),
+  domain: text("domain", { enum: ["nextlevel_corporate_finance", "tenant_operational_finance"] }).notNull(),
+  actorUserId: text("actor_user_id"),
+  actorRole: text("actor_role"),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id"),
+  storeId: text("store_id"),
+  supplierId: text("supplier_id"),
+  partnerId: text("partner_id"),
+  before: jsonb("before").$type<Record<string, unknown>>(),
+  after: jsonb("after").$type<Record<string, unknown>>(),
+  reason: text("reason"),
+  createdAt: createdAt(),
+}, (t) => [index("financial_audit_entity_idx").on(t.entityType, t.entityId), index("financial_audit_created_idx").on(t.createdAt)]);
+
+export const NL_SUBSCRIPTION_STATUSES = ["trial", "pending_payment", "active", "past_due", "suspended", "cancelled", "expired"] as const;
+export type NlSubscriptionStatus = (typeof NL_SUBSCRIPTION_STATUSES)[number];
+
+/** Assinatura do plano Commerce da loja (o acesso continua travado por stores.trial_ends_at / paid_until). */
+export const nlSubscriptions = pgTable("nl_subscriptions", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  productKey: text("product_key").notNull(),
+  cycle: text("cycle", { enum: ["MONTHLY", "ANNUAL"] }).notNull(),
+  status: text("status", { enum: NL_SUBSCRIPTION_STATUSES }).notNull(),
+  priceVersionId: text("price_version_id").notNull().references(() => catalogPriceVersions.id),
+  /** Valor do ciclo congelado na contratação (mudança de preço não afeta quem já assinou). */
+  amountCents: integer("amount_cents").notNull(),
+  platformFeeBps: integer("platform_fee_bps").notNull(),
+  offerKey: text("offer_key"),
+  offerVersion: integer("offer_version"),
+  firstPeriodCents: integer("first_period_cents"),
+  trialEndsAt: ts("trial_ends_at"),
+  /** Pedidos criados antes desta data não pagam taxa de plataforma. */
+  feeHolidayUntil: ts("fee_holiday_until"),
+  currentPeriodStart: ts("current_period_start"),
+  currentPeriodEnd: ts("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+  canceledAt: ts("canceled_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("nl_subscriptions_store_unique").on(t.storeId)]);
+
+export const QUOTE_STATUSES = ["REQUESTED", "DRAFTING", "SENT", "ACCEPTED", "REJECTED", "EXPIRED", "CONVERTED"] as const;
+export type QuoteStatus = (typeof QUOTE_STATUSES)[number];
+
+/** Proposta para produto sob consulta (Enterprise, Premium, Scale, White Label, pacotes de marketing). */
+export const corporateQuotes = pgTable("corporate_quotes", {
+  id: id(),
+  productId: text("product_id").notNull().references(() => catalogProducts.id),
+  status: text("status", { enum: QUOTE_STATUSES }).notNull().default("REQUESTED"),
+  requesterType: text("requester_type", { enum: ["STORE", "SUPPLIER", "PARTNER", "GUEST"] }).notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  partnerId: text("partner_id"),
+  contactName: text("contact_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  briefing: text("briefing").notNull(),
+  items: jsonb("items").$type<{ description: string; amountCents: number }[]>().notNull().default([]),
+  discountCents: integer("discount_cents").notNull().default(0),
+  totalCents: integer("total_cents"),
+  terms: text("terms"),
+  validUntil: ts("valid_until"),
+  acceptedAt: ts("accepted_at"),
+  attribution: jsonb("attribution").$type<Record<string, string>>().notNull().default({}),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("corporate_quotes_status_idx").on(t.status)]);
+
+/** Entrega de serviço/projeto vendido (Loja Pronta, Migração, Marketing): prazo, responsável, checklist e aceite. */
+export const serviceDeliveries = pgTable("service_deliveries", {
+  id: id(),
+  orderId: text("order_id").references(() => corporateOrders.id),
+  quoteId: text("quote_id").references(() => corporateQuotes.id),
+  productKey: text("product_key").notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  status: text("status", { enum: ["WAITING_BRIEFING", "IN_PROGRESS", "REVIEW", "DELIVERED", "ACCEPTED", "CANCELED"] }).notNull().default("WAITING_BRIEFING"),
+  ownerUserId: text("owner_user_id"),
+  dueAt: ts("due_at"),
+  checklist: jsonb("checklist").$type<{ label: string; done: boolean }[]>().notNull().default([]),
+  /** Migração: origem, escopo, volume prometido. Marketing: canais, verba recomendada (paga pelo cliente direto à plataforma). */
+  details: jsonb("details").$type<Record<string, unknown>>().notNull().default({}),
+  acceptedAt: ts("accepted_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("service_deliveries_order_unique").on(t.orderId), index("service_deliveries_store_idx").on(t.storeId)]);
+
+/** Conciliação: o que o sistema registrou × o que o gateway informa. */
+export const reconciliationRecords = pgTable("reconciliation_records", {
+  id: id(),
+  gateway: text("gateway", { enum: GATEWAYS }).notNull(),
+  transactionId: text("transaction_id").notNull().references(() => gatewayTransactions.id),
+  externalId: text("external_id"),
+  expectedCents: integer("expected_cents").notNull(),
+  gatewayCents: integer("gateway_cents"),
+  status: text("status", { enum: ["MATCHED", "MISMATCH", "MISSING_GATEWAY", "PENDING"] }).notNull(),
+  note: text("note"),
+  checkedAt: ts("checked_at").notNull().defaultNow(),
+}, (t) => [index("reconciliation_tx_idx").on(t.transactionId)]);
+
+/** CRM do parceiro: leads próprios, com proteção contra disputa (lead já registrado por outro parceiro). */
+export const PARTNER_LEAD_STAGES = ["NEW", "DIAG_SCHEDULED", "DIAG_DELIVERED", "PROPOSAL_SENT", "NEGOTIATION", "WON", "LOST", "ONBOARDING", "REACTIVATION"] as const;
+export type PartnerLeadStage = (typeof PARTNER_LEAD_STAGES)[number];
+export const partnerLeads = pgTable("partner_leads", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  company: text("company"),
+  stage: text("stage", { enum: PARTNER_LEAD_STAGES }).notNull().default("NEW"),
+  /** Diagnóstico padronizado: nota de maturidade, respostas, recomendações e validade. */
+  diagnosis: jsonb("diagnosis").$type<{ score: number; answers: Record<string, string>; recommendations: string[]; validUntil: string } | null>(),
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("partner_leads_email_unique").on(t.email), index("partner_leads_partner_idx").on(t.partnerId, t.stage)]);

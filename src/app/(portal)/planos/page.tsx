@@ -4,12 +4,21 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { MEMBER_FEES } from "../content";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
+import { finFlag } from "@/lib/finance/flags";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Planos", description: "Planos para quem vende: assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom." };
 
 export default async function Planos() {
   const brand = await getBrand();
+  if (!brandHas(brand, "dropship") && finFlag("FIN_COMMERCE_PLANS")) return (
+    <div className="mx-auto max-w-6xl px-4 py-16">
+      <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos {brand.name}</h1>
+      <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Preço claro, sem fidelidade. Comece com dias grátis e escolha mensal ou anual.</p>
+      <div className="mt-10"><CommercePlansSection cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} signupOpen={brand.signupOpen} /></div>
+    </div>
+  );
   if (!brandHas(brand, "dropship")) return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos</h1>

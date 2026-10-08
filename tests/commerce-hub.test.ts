@@ -16,7 +16,8 @@ describe("hub da marca no Master", () => {
     await createBrandLead(ctx.db, { brand: "SUPERDROP", name: "Outro", email: "o@x.com.br", phone: "11958784061" } as never);
     const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", env);
     expect(hub.kpis.stores).toBe(1); expect(hub.kpis.independent).toBe(1);
-    expect(hub.kpis.awaitingPayment).toBe(1); expect(hub.kpis.paying).toBe(0);
+    // D90: cliente novo da Commerce entra na oferta de entrada (3 dias grátis), não direto no bloqueio.
+    expect(hub.kpis.trial).toBe(1); expect(hub.kpis.awaitingPayment).toBe(0); expect(hub.kpis.paying).toBe(0);
     expect(hub.kpis.leadsTotal).toBe(1); expect(hub.kpis.leadsNew).toBe(1);
     expect(hub.stores[0]).toMatchObject({ name: "Moda Brás", independent: true });
   });

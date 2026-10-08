@@ -19,7 +19,7 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const brand = brandOfHostStrict(host, env);
   // Master central (holding): só painéis e login. Qualquer outra página vai ao login.
   if (brand?.code === HOLDING_CODE) {
-    if (isPanelPath(pathname)) return { kind: "next" };
+    if (isPanelPath(pathname) || pathname === "/solucoes" || pathname.startsWith("/solucoes/") || pathname.startsWith("/api/")) return { kind: "next" };
     return { kind: "redirect", url: "/login" };
   }
   // Com MASTER_HOST_ONLY=true o Master só abre no endereço central; nos endereços dos produtos vai para lá.

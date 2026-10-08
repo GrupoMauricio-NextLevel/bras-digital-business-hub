@@ -19,11 +19,17 @@ import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
 import { isCommerceStore } from "@/lib/store-brand";
+import { CommerceEvolution, FinanceAreas, Opportunities } from "@/components/nl-store/evolution";
+import { finFlag } from "@/lib/finance/flags";
 
 export default async function MerchantFinancePage() {
   const session = await requireStoreAdmin();
   const f = await getMerchantFinance(session.store!.id);
   const db = await getDb();
+  // Assinatura Commerce em teste/aguardando/atraso: a fatura do ciclo já fica disponível para pagar aqui (idempotente).
+  const { subscriptionOf, ensureSubscriptionInvoice } = await import("@/lib/domain/commerce-plans");
+  const nlSub = await subscriptionOf(db, session.store!.id);
+  if (nlSub && ["trial", "pending_payment", "past_due", "suspended"].includes(nlSub.status)) await ensureSubscriptionInvoice(db, session.store!);
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
   const independent = await isIndependentStore(db, session.store!.id);
@@ -39,7 +45,9 @@ export default async function MerchantFinancePage() {
   ] as (ActionQueueItem | null)[]).filter((item): item is ActionQueueItem => Boolean(item));
   return (
     <>
-      <PageHeader title={commerce ? "Financeiro da loja" : "Financeiro"} description={commerce ? "Acompanhe o dinheiro que entra pelas vendas, o custo dos produtos e a margem da sua operação." : independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} />
+      <PageHeader title={commerce ? "Financeiro da loja" : "Financeiro"} description={commerce ? "Acompanhe o dinheiro que entra pelas vendas, o custo dos produtos e a margem da sua operação." : independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} actions={<a href="/api/finance/export?tipo=vendas" className="ds-btn ds-btn--secondary">Exportar extrato (CSV)</a>} />
+      {finFlag("FIN_CATALOG_MASTER") ? <FinanceAreas /> : null}
+      <h2 id="operacao" className="mb-3 scroll-mt-24 text-lg font-semibold">Minha operação</h2>
       <OperationalPulse className="mb-5" items={[
         { label: "Recebido de clientes", value: formatBRL(f.received), icon: TrendingUp, tone: "success", hint: "vendas confirmadas" },
         { label: "Margem acumulada", value: formatBRL(f.margin), icon: Wallet, tone: "info", hint: "vendas − custo" },
@@ -78,6 +86,8 @@ export default async function MerchantFinancePage() {
         </div>
       </div>
       <div className="mt-8 space-y-6">
+        <h2 id="evolucao" className="scroll-mt-24 text-lg font-semibold">Minha evolução com a NextLevel</h2>
+        {finFlag("FIN_CATALOG_MASTER") ? <CommerceEvolution session={session} /> : null}
         {openInvoices.length ? (
           <section id="faturas">
             <h2 className="mb-3 text-base font-semibold">Faturas em aberto com a NextLevel</h2>
@@ -87,6 +97,7 @@ export default async function MerchantFinancePage() {
           </section>
         ) : null}
         <section><h2 className="mb-3 text-base font-semibold">Add-ons</h2><AddonCards addons={addons} demo={demo} /></section>
+        {finFlag("FIN_CATALOG_MASTER") ? <section aria-labelledby="oportunidades"><h2 id="oportunidades" className="mb-3 scroll-mt-24 text-lg font-semibold">Oportunidades</h2><Opportunities session={session} /></section> : null}
         <section><h2 className="mb-3 text-base font-semibold">Por que cobramos</h2><RationaleList items={buildRationale(book).filter((r) => r.audience !== "SUPPLIER" && (r.key.startsWith("addon:") || r.key === `offer:${session.store!.offer}`))} /></section>
       </div>
     </>

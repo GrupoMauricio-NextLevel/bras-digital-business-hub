@@ -26,7 +26,11 @@ export async function savePriceBook(db: Database, raw: unknown, userId: string):
   if (!(value.dunning.warningDays <= value.dunning.partialBlockDays && value.dunning.partialBlockDays <= value.dunning.suspendedDays && value.dunning.suspendedDays <= value.dunning.closedDays)) {
     throw new DomainError("DUNNING_ORDER", "Os prazos de atraso devem ser crescentes: aviso, bloqueio parcial, suspensão e encerramento.");
   }
+  const before = await getPriceBook(db);
   await db.insert(platformSettings).values({ key: PRICE_BOOK_KEY, value, updatedBy: userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value, updatedBy: userId, updatedAt: new Date().toISOString() } });
+  // D90: a tabela do SuperDrop passa a ter versão na trilha só-inserção (antes e depois completos).
+  const { recordFinancialAudit, CORPORATE } = await import("./fin-audit");
+  await recordFinancialAudit(db, { userId, role: "NEXTLEVEL_MASTER", organizationId: "", supplierId: null, storeId: null }, { domain: CORPORATE, action: "PRICE_BOOK_SAVED", entityType: "price_book", entityId: PRICE_BOOK_KEY, before: before as unknown as Record<string, unknown>, after: value as unknown as Record<string, unknown> });
   return value;
 }
 
@@ -233,8 +237,12 @@ export async function markInvoicePaid(db: Database, invoiceId: string, now = new
   if (inv.status === "PAID") return inv;
   if (inv.status === "CANCELED" || inv.status === "WAIVED") throw new DomainError("INVOICE_STATE", "Esta fatura não pode ser paga.");
   const book = await getPriceBook(db);
+  // Atualização condicional (D90): duas confirmações simultâneas (webhook + tela) liberam só uma vez.
+  let won = false;
   await db.transaction(async (tx) => {
-    await tx.update(financeInvoices).set({ status: "PAID", paidAt: now.toISOString() }).where(eq(financeInvoices.id, invoiceId));
+    const moved = await tx.update(financeInvoices).set({ status: "PAID", paidAt: now.toISOString() }).where(and(eq(financeInvoices.id, invoiceId), inArray(financeInvoices.status, ["OPEN", "OVERDUE"]))).returning({ id: financeInvoices.id });
+    if (!moved.length) return;
+    won = true;
     if (inv.kind === "STORE_SETUP" && inv.storeId) {
       const store = await tx.query.stores.findFirst({ where: eq(stores.id, inv.storeId) });
       if (store?.status === "PENDING_PAYMENT") await tx.update(stores).set({ status: "ACTIVE", updatedAt: now.toISOString() }).where(eq(stores.id, store.id));
@@ -251,6 +259,7 @@ export async function markInvoicePaid(db: Database, invoiceId: string, now = new
       await tx.insert(activities).values({ id: newId("act"), scope: "SUPPLIER", supplierId: inv.supplierId, type: "INVOICE_PAID", message: `Pagamento confirmado: ${inv.description}` });
     }
   });
+  if (!won) return (await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) }))!;
   await fulfillPaidInvoice(db, inv, now);
   const paid = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, invoiceId) });
   if (paid) await (await import("./partners")).onInvoicePaid(db, paid, now);
@@ -392,7 +401,12 @@ export async function runDunningNotices(db: Database, now = new Date()): Promise
  */
 export async function storeOrderFeeFor(db: Database, storeId: string, period: string, book?: PriceBook) {
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
-  if (!store || store.kind === "SUPPLIER_OWN") return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
+  if (!store) return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
+  // Loja Commerce com assinatura (D90): taxa do plano congelada na assinatura, zero na carência da oferta de entrada.
+  const { start: pStart, end: pEnd } = periodBounds(period);
+  const commerceFee = await (await import("./commerce-plans")).platformFeeFor(db, storeId, pStart, pEnd);
+  if (commerceFee) return { feeCents: commerceFee.feeCents, baseCents: commerceFee.baseCents, orders: commerceFee.orders, bps: commerceFee.bps };
+  if (store.kind === "SUPPLIER_OWN") return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
   const b = book ?? (await getPriceBook(db));
   const bps = b.orderFees[store.offer] ?? 0;
   const { start, end } = periodBounds(period);
@@ -429,6 +443,7 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   await runDunningNotices(db, now);
   await (await import("./store-access")).runTrialReminders(db, now);
   await (await import("./partners")).runDailyPartnerJobs(db, now);
+  await (await import("./commerce-plans")).runSubscriptionJobs(db, now, { suspendAfterDays: (await getPriceBook(db)).dunning.suspendedDays });
   return result;
 }
 

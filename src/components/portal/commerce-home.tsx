@@ -12,6 +12,7 @@ import { HeroV2 } from "@/components/portal/commerce/hero-v2";
 import { Marquee } from "@/components/portal/commerce/marquee";
 import { Personalize } from "@/components/portal/commerce/personalize";
 import { ClosingCta, Faq, ForWhom, H2, Operation, Steps, ThemesAndPrices } from "@/components/portal/commerce/sections";
+import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 
 /**
  * Home da NextLevel Commerce (v1, protótipo em revisão): o que é, que lojas dá para montar, como a marca ganha forma,
@@ -84,6 +85,13 @@ export function CommerceHome({ brand }: { brand: Brand }) {
         <div className="mx-auto max-w-6xl">
           <h2 id="com-t" className={`${H2} mb-12 max-w-2xl text-foreground`}>Do primeiro contato à loja publicada.</h2>
           <Steps cta={cta} />
+        </div>
+      </section>
+
+      <section id="planos" aria-labelledby="planos-t" className={`${section} bg-canvas`}>
+        <div className="mx-auto max-w-6xl">
+          <h2 id="planos-t" className={`${H2} mb-10 max-w-3xl text-foreground`}>Planos com preço claro e começo sem risco.</h2>
+          <CommercePlansSection cta={cta} signupOpen={brand.signupOpen} />
         </div>
       </section>
 

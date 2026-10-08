@@ -113,6 +113,10 @@ export type PlanMonths = keyof typeof PLAN_CYCLES;
  * é essa a cobrança (uma só). Senão, gera a mensalidade: preço de lista × meses, idempotente por loja, ciclo e mês.
  */
 export async function ensurePlanInvoice(db: Database, store: Store, months: PlanMonths = 1, now = new Date()) {
+  // Loja Commerce com assinatura (D90): valor e ciclo vêm da assinatura (plano congelado + oferta de entrada).
+  const { ensureSubscriptionInvoice } = await import("./commerce-plans");
+  const sub = await ensureSubscriptionInvoice(db, store, now);
+  if (sub) return sub;
   const setup = await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.storeId, store.id), eq(financeInvoices.kind, "STORE_SETUP"), eq(financeInvoices.status, "OPEN")) });
   if (setup) return { invoiceId: setup.id, amountCents: setup.amountCents, description: setup.description, includesSetup: true };
   const book = await getPriceBook(db);
@@ -142,6 +146,7 @@ export async function grantPlanMonths(db: Database, storeId: string, months: num
 /** Chamado quando a fatura é paga: mensalidade soma os meses contratados; ativação (setup) soma o primeiro mês. */
 export async function fulfillPlanInvoice(db: Database, inv: typeof financeInvoices.$inferSelect, now = new Date()) {
   if (!inv.storeId) return;
+  if (inv.dedupeKey.startsWith("NLSUB:")) { const { onSubscriptionInvoicePaid } = await import("./commerce-plans"); await onSubscriptionInvoicePaid(db, inv, now); return; }
   if (inv.kind === "STORE_PLAN") await grantPlanMonths(db, inv.storeId, Number(inv.dedupeKey.split(":")[3]) || 1, inv, now);
   else if (inv.kind === "STORE_SETUP") await grantPlanMonths(db, inv.storeId, 1, inv, now);
 }
@@ -166,6 +171,9 @@ export const signupSchema = z.object({
   offer: z.enum(OFFER_KEYS).default("STORE_SUBDOMAIN"),
   /** Loja independente da NextLevel Commerce (D89): abre sem fornecedor e sem rede, dona do próprio catálogo. */
   independent: z.boolean().default(false),
+  /** Plano Commerce escolhido no cadastro (D90). Só para loja independente com os planos novos ligados. */
+  plan: z.enum(["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"]).optional(),
+  cycle: z.enum(["MONTHLY", "ANNUAL"]).default("MONTHLY"),
 });
 
 /** Fornecedores que aceitam novos membros (página pública ativa). */
@@ -207,6 +215,13 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));
   await db.update(stores).set({ status: "ACTIVE", taxId }).where(eq(stores.id, created.storeId));
   await attributeStore(db, { storeId: created.storeId, taxId, email: input.email, couponCode: code, refCode: input.ref, now });
+  // Commerce com planos (D90): a assinatura decide o acesso (oferta de entrada: 3 dias grátis, 1º mês R$ 9,90, taxa zero por 3 meses).
+  const { finFlag } = await import("@/lib/finance/flags");
+  if (independent && finFlag("FIN_COMMERCE_PLANS")) {
+    const { startCommerceSubscription } = await import("./commerce-plans");
+    const sub = await startCommerceSubscription(db, { storeId: created.storeId, productKey: input.plan ?? "COMMERCE_START", cycle: input.cycle, taxId, now });
+    return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: sub.trial };
+  }
   if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });
   // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.
   else await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));

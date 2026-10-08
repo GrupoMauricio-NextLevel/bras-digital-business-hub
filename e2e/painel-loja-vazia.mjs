@@ -17,9 +17,9 @@ p.on("pageerror", (e) => fail("pageerror: " + e.message));
 await p.goto(`${B}/cadastro`, { waitUntil: "networkidle" });
 await p.locator("#store").fill("Loja Vazia " + RUN); await p.locator("#owner").fill("Dona Vazia");
 await p.locator("#email").fill(`vazia-${RUN}@teste.com`); await p.locator("#pass").fill("senha-segura-1"); await p.locator("#tax").fill(makeCpf());
-await p.getByRole("button", { name: /Criar loja e pagar/ }).click();
+await p.getByRole("button", { name: /Criar loja/ }).click();
 await p.waitForURL(/\/merchant/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
-await p.waitForSelector("[data-blocked-screen]", { timeout: 30000 });
+await p.waitForSelector("[data-blocked-screen], [data-trial-banner]", { timeout: 30000 });
 for (let step = 1; step <= 2; step++) {
   if (!(await p.locator("[data-blocked-screen]").count())) break;
   await p.getByRole("button", { name: /Simular pagamento/ }).waitFor({ timeout: 25000 });

@@ -6,7 +6,36 @@ import { routeHost } from "@/lib/host-routing";
  * Subdomínio da loja: `slug.<SUPERDROP_ROOT_DOMAIN>/x` é servido por `/store/slug/x`.
  * Sem SUPERDROP_ROOT_DOMAIN nada muda e o caminho /store/[slug] continua sendo o único endereço.
  */
+/**
+ * Atribuição (D90): visita com `ref` (código do parceiro) ou `utm_*` grava o ÚLTIMO TOQUE NÃO DIRETO em cookie primário
+ * (`nl-attr`, 30 dias; `nl-ref` com o código). Visita direta não apaga nada. Só campos curtos e sem dado pessoal.
+ */
+const ATTR = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+export function attributionFrom(url: URL): Record<string, string> | null {
+  const ref = url.searchParams.get("ref");
+  const out: Record<string, string> = {};
+  if (ref && /^[A-Za-z0-9_-]{3,24}$/.test(ref)) out.ref = ref.toUpperCase();
+  for (const k of ATTR) { const v = url.searchParams.get(k); if (v) out[k] = v.replace(/[^\w\-. ]/g, "").slice(0, 60); }
+  if (!Object.keys(out).length) return null;
+  out.page = url.pathname.slice(0, 80);
+  out.at = new Date().toISOString().slice(0, 10);
+  return out;
+}
+function withAttribution(req: NextRequest, res: NextResponse) {
+  if (req.method !== "GET" || req.nextUrl.pathname.startsWith("/api/")) return res;
+  const a = attributionFrom(req.nextUrl);
+  if (!a) return res;
+  const secure = (req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "")) === "https";
+  res.cookies.set("nl-attr", encodeURIComponent(JSON.stringify(a)), { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
+  if (a.ref) res.cookies.set("nl-ref", a.ref, { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
+  return res;
+}
+
 export function proxy(req: NextRequest) {
+  return withAttribution(req, route(req));
+}
+
+function route(req: NextRequest) {
   // Prévia da NextLevel Commerce em qualquer endereço: /lojas liga, /lojas/sair desliga (apresentação apenas, não muda permissões).
   const path = req.nextUrl.pathname;
   if (path === "/lojas" || path === "/lojas/" || path === "/lojas/sair") {

@@ -52,7 +52,7 @@ export default async function SupplierFinancePage() {
 
   return (
     <>
-      <PageHeader title="Financeiro" description="Seu contrato com a NextLevel, o que será cobrado no fechamento e as comissões pelas lojas que você traz." />
+      <PageHeader title="Financeiro" description="Seu contrato com a NextLevel, o que será cobrado no fechamento e as comissões pelas lojas que você traz. As recargas dos lojistas caem 100% na sua conta Mercado Pago." actions={<a href="/api/finance/export?tipo=recargas" className="ds-btn ds-btn--secondary">Exportar recargas (CSV)</a>} />
       {supplier.status !== "ACTIVE" ? (
         <div className="mb-6 rounded-lg border border-danger/30 bg-danger-soft/50 p-4 text-sm"><div className="font-semibold">Acesso com restrição: <StatusBadge value={supplier.status} /></div><p className="mt-1 text-muted-foreground">Há faturas vencidas com a NextLevel. Regularize para restabelecer todas as funções.</p></div>
       ) : null}

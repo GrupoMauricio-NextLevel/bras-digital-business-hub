@@ -160,6 +160,21 @@ export default async function Portal() {
         </div>
       </section>
 
+      {/* 9b. Papéis e dinheiro de cada um (D90) */}
+      <section id="papeis" className="scroll-mt-20 bg-canvas py-20" aria-labelledby="papeis-t">
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 id="papeis-t" className={sectionTitle}>Cada um com o seu papel e o seu dinheiro.</h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              { t: "Fornecedor", d: "Cadastra os produtos, separa e envia. Recebe 100% das recargas dos lojistas direto na própria conta Mercado Pago e acompanha tudo no painel dele.", href: "/seja-fornecedor", cta: "Seja fornecedor" },
+              { t: "Membro (lojista)", d: "Monta a loja, define o preço e vende. Recebe 100% das vendas na própria conta; o custo do produto é debitado do saldo que ele recarrega.", href: "/cadastro", cta: "Criar minha loja" },
+              { t: "Parceiro", d: "Indica lojistas e soluções da NextLevel e acompanha só as próprias comissões, com carência e extrato claros.", href: "/parceiros", cta: "Seja parceiro" },
+            ].map((x) => <div key={x.t} className="rounded-2xl border border-border bg-surface p-6"><h3 className="text-lg font-bold">{x.t}</h3><p className="mt-2 text-sm text-muted-foreground">{x.d}</p><Link href={x.href} className="mt-4 inline-flex text-sm font-semibold text-link underline">{x.cta} →</Link></div>)}
+          </div>
+          <p className="mt-6 text-sm text-muted-foreground">A NextLevel cobra só o que é dela (planos, taxas e serviços), em fatura separada. Precisa de loja montada, migração, temas ou anúncios? Veja as <Link href="/solucoes" className="font-semibold text-link underline">Soluções NextLevel</Link> ou peça um <Link href="/solucoes#diagnostico" className="font-semibold text-link underline">diagnóstico gratuito</Link>.</p>
+        </div>
+      </section>
+
       {/* 10. Perguntas frequentes */}
       <section className="bg-canvas py-20">
         <div className="mx-auto max-w-3xl px-4">
