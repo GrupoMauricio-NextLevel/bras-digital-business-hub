@@ -1262,7 +1262,26 @@ export const bdMembers = pgTable("bd_members", {
   createdAt: createdAt(),
 }, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt)]);
 
-/** Vídeo de análise de produto no YouTube, mostrado na página pública e no Meu Brás. Sem preço e sem importadora. */
+/** Dados da análise de mercado de uma descoberta (D94). Só para quem tem acesso à análise; nunca promessa de ganho. */
+export type BrasAnalysis = {
+  /** Tendência: por que o produto está em alta (buscas, sazonalidade). */
+  trend?: string;
+  /** Concorrência: quantos vendem, como vendem. */
+  competition?: string;
+  /** Faixa de preço de venda praticada no Mercado Livre, por unidade (centavos). */
+  salePriceMinCents?: number;
+  salePriceMaxCents?: number;
+  /** Riscos e cuidados. */
+  risks?: string;
+  /** Como anunciar: título, fotos, preço de entrada. */
+  howToSell?: string;
+};
+
+/**
+ * Descoberta da Brás (D91/D94; nome técnico `bd_videos` mantido): o Shorts público (`youtube_id`, vertical) convida para a
+ * análise de mercado. Público: título, gancho (`summary`) e sinal de tendência em palavras. Membro: veredito, nota e trecho.
+ * Acesso à análise: vídeo completo (`analysis_youtube_id`, horizontal) e os dados (`analysis`). Sem preço nem importadora aqui.
+ */
 export const bdVideos = pgTable("bd_videos", {
   id: id(),
   youtubeId: text("youtube_id").notNull().unique(),
@@ -1270,6 +1289,17 @@ export const bdVideos = pgTable("bd_videos", {
   summary: text("summary"),
   position: integer("position").notNull().default(0),
   active: boolean("active").notNull().default(true),
+  /** Sinal de tendência só em palavras, público (ex.: "Buscas subindo"). Nunca números. */
+  trendSignal: text("trend_signal"),
+  /** Veredito e nota (0 a 10): o membro grátis vê. */
+  verdict: text("verdict"),
+  score: integer("score"),
+  /** Trecho da análise (vídeo curto separado, não listado): o membro grátis vê. */
+  teaserYoutubeId: text("teaser_youtube_id"),
+  /** Análise completa (YouTube não listado na fase grátis; vídeo privado quando passar a cobrar, D94). */
+  analysisYoutubeId: text("analysis_youtube_id"),
+  analysis: jsonb("analysis").$type<BrasAnalysis>(),
+  analysisUpdatedAt: ts("analysis_updated_at"),
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("bd_videos_order_idx").on(t.active, t.position)]);
@@ -1328,3 +1358,18 @@ export const bdRequests = pgTable("bd_requests", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt)]);
+
+/**
+ * Acesso à análise completa liberado a um membro (D94): assinatura paga (por enquanto confirmada à mão pelo Master, até a
+ * cobrança entrar pelo Financeiro Master) ou cortesia. Vale até `valid_until`; revogado não vale.
+ */
+export const bdAccessGrants = pgTable("bd_access_grants", {
+  id: id(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  kind: text("kind", { enum: ["SUBSCRIPTION", "COURTESY"] }).notNull(),
+  validUntil: ts("valid_until").notNull(),
+  note: text("note"),
+  revokedAt: ts("revoked_at"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_access_grants_member_idx").on(t.memberId, t.validUntil)]);

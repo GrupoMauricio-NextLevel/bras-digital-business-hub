@@ -12,7 +12,7 @@ import type { brasRequestSchema } from "@/lib/domain/bras/catalogo";
 
 type UF = z.input<typeof brasRequestSchema>["shipState"];
 
-type Offer = { priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null; importerName: string };
+type Offer = { priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
 type Ship = { carrier: string; shipName: string; shipAddress: string; shipCity: string; shipState: string; shipZip: string } | null;
 
 export function RequestForm({ videoId, youtubeId, title, offer, ufs, initial }: { videoId: string; youtubeId: string; title: string; offer: Offer; ufs: string[]; initial: Ship }) {
@@ -35,7 +35,7 @@ export function RequestForm({ videoId, youtubeId, title, offer, ufs, initial }: 
           <img src={`https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg`} alt="" width={120} height={68} className="h-[68px] w-[120px] rounded-md bg-surface-muted object-cover" />
           <div className="min-w-0 flex-1">
             <h2 id="pd-qtd" className="font-bold">{title}</h2>
-            <p className="text-sm text-muted-foreground"><span className="tabular-nums">{formatBRL(offer.priceBoxCents)}</span> a caixa · {offer.unitsPerBox} un. por caixa · {offer.importerName}</p>
+            <p className="text-sm text-muted-foreground"><span className="tabular-nums">{formatBRL(offer.priceBoxCents)}</span> a caixa · {offer.unitsPerBox} un. por caixa · importadora parceira verificada</p>
             <p className="text-sm text-muted-foreground">{offer.boxesAvailable == null ? "Caixas disponíveis: a equipe confirma" : `${offer.boxesAvailable} caixa(s) disponíve${offer.boxesAvailable === 1 ? "l" : "is"}`}</p>
           </div>
           <div className="flex items-center gap-2" role="group" aria-label="Quantidade de caixas">
@@ -47,7 +47,7 @@ export function RequestForm({ videoId, youtubeId, title, offer, ufs, initial }: 
         </section>
         <fieldset className="ds-card grid gap-3 p-4 sm:grid-cols-2">
           <legend className="px-1 text-base font-bold">Envio</legend>
-          <p className="text-sm text-muted-foreground sm:col-span-2">A sua transportadora retira as caixas na importadora, no Brás. A importadora recebe só estes dados de envio.</p>
+          <p className="text-sm text-muted-foreground sm:col-span-2">A sua transportadora retira as caixas na importadora, no Brás. O nome e o endereço de retirada aparecem quando o pedido for confirmado. A importadora recebe só estes dados de envio.</p>
           <FormField label="Transportadora que vai retirar" htmlFor="pd-carrier" className="sm:col-span-2"><Input id="pd-carrier" required maxLength={80} value={f.carrier} onChange={(e) => set({ carrier: e.target.value })} placeholder="Ex.: Braspress, Jadlog, transportadora própria" /></FormField>
           <FormField label="Destinatário" htmlFor="pd-name" className="sm:col-span-2"><Input id="pd-name" required maxLength={80} autoComplete="name" value={f.shipName} onChange={(e) => set({ shipName: e.target.value })} /></FormField>
           <FormField label="Endereço de entrega" htmlFor="pd-addr" className="sm:col-span-2"><Input id="pd-addr" required maxLength={200} autoComplete="street-address" value={f.shipAddress} onChange={(e) => set({ shipAddress: e.target.value })} placeholder="Rua, número, complemento, bairro" /></FormField>

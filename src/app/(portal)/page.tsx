@@ -6,6 +6,7 @@ import { getSession, homeFor } from "@/lib/auth";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { listPublicBrasVideos } from "@/lib/domain/bras/videos";
+import { getBrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
 import { BrasHome } from "@/components/portal/bras/bras-home";
 import { getBrand } from "@/lib/brand-server";
 import { robotsForBrandPortal } from "@/lib/bras/visibility";
@@ -55,7 +56,7 @@ export default async function Portal() {
   // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D91): apresentação, vídeos de análise e cadastro; nunca preço.
-  if (isClosedCommerceBrand(brand)) return <BrasHome brand={brand} videos={await listPublicBrasVideos(await getDb())} />;
+  if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysisMode={(await getBrasAnalysisSettings(db)).mode} />; }
   // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio.
   if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);

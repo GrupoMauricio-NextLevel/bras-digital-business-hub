@@ -13,7 +13,10 @@ import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBras
 import { formatDate } from "@/lib/utils";
 import { OfferEditor } from "./catalogo-client";
 
-type VideoRow = { id: string; youtubeId: string; title: string; summary: string | null; active: boolean };
+import type { DiscoveryRow } from "./descoberta-editor";
+import { DiscoveryEditor } from "./descoberta-editor";
+
+type VideoRow = { id: string; youtubeId: string; title: string; summary: string | null; active: boolean; discovery: DiscoveryRow };
 
 type OfferRow = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
 type ImporterRow = { id: string; name: string; notes: string | null; active: boolean };
@@ -28,22 +31,22 @@ export function VideosManager({ videos, offers, importers }: { videos: VideoRow[
   });
   const add = (e: React.FormEvent) => {
     e.preventDefault();
-    run(async () => { const r = await addBrasVideoAction(f); if (r.ok) setF({ url: "", title: "", summary: "" }); return r; }, "Vídeo adicionado");
+    run(async () => { const r = await addBrasVideoAction(f); if (r.ok) setF({ url: "", title: "", summary: "" }); return r; }, "Descoberta adicionada");
   };
   return (
     <div className="grid gap-6 xl:grid-cols-[22rem_1fr]">
       <form onSubmit={add} className="ds-card h-fit space-y-3 p-4" aria-labelledby="novo-video">
-        <h2 id="novo-video" className="text-base font-semibold">Adicionar vídeo</h2>
-        <p className="text-sm text-muted-foreground">Publique a análise no YouTube (Shorts ou vídeo comum), copie o link e cole aqui. Não coloque preço no título: preço só aparece para membro.</p>
-        <FormField label="Link do YouTube" htmlFor="v-url"><Input id="v-url" required value={f.url} onChange={(e) => setF({ ...f, url: e.target.value })} placeholder="https://youtube.com/shorts/..." inputMode="url" /></FormField>
+        <h2 id="novo-video" className="text-base font-semibold">Nova descoberta</h2>
+        <p className="text-sm text-muted-foreground">Comece pelo Shorts de descoberta (público). Depois, na descoberta, coloque o veredito, o trecho e a análise completa. Não coloque preço no título.</p>
+        <FormField label="Link do Shorts de descoberta" htmlFor="v-url"><Input id="v-url" required value={f.url} onChange={(e) => setF({ ...f, url: e.target.value })} placeholder="https://youtube.com/shorts/..." inputMode="url" /></FormField>
         <FormField label="Título" htmlFor="v-title" hint="Até 90 caracteres"><Input id="v-title" required maxLength={90} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="Ex.: Garrafa térmica 1 L, caixa com 24" /></FormField>
-        <FormField label="Resumo (opcional)" htmlFor="v-sum" hint="Até 200 caracteres"><Textarea id="v-sum" maxLength={200} rows={3} value={f.summary} onChange={(e) => setF({ ...f, summary: e.target.value })} /></FormField>
+        <FormField label="Gancho (opcional)" htmlFor="v-sum" hint="Público. Ex.: Achei no Brás e quase ninguém vende ainda"><Textarea id="v-sum" maxLength={200} rows={3} value={f.summary} onChange={(e) => setF({ ...f, summary: e.target.value })} /></FormField>
         <Button type="submit" loading={pending} className="w-full"><Plus className="size-4" aria-hidden />Adicionar</Button>
       </form>
       {videos.length === 0 ? (
-        <EmptyState icon={Video} title="Nenhum vídeo ainda" description="A página pública mostra os vídeos na ordem desta lista. Enquanto estiver vazia, ela avisa que os primeiros vídeos estão sendo gravados." />
+        <EmptyState icon={Video} title="Nenhuma descoberta ainda" description="A página pública mostra as descobertas na ordem desta lista. Enquanto estiver vazia, ela avisa que as primeiras estão sendo gravadas." />
       ) : (
-        <ol className="space-y-3" aria-label="Vídeos na ordem da página">
+        <ol className="space-y-3" aria-label="Descobertas na ordem da página">
           {videos.map((v, i) => (
             <li key={v.id} className="ds-card flex flex-wrap items-center gap-3 p-3">
               {/* eslint-disable-next-line @next/next/no-img-element -- miniatura do próprio YouTube */}
@@ -56,11 +59,12 @@ export function VideosManager({ videos, offers, importers }: { videos: VideoRow[
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon" aria-label={`Subir ${v.title}`} disabled={pending || i === 0} onClick={() => run(() => moveBrasVideoAction(v.id, "up"), "Ordem atualizada")}><ArrowUp className="size-4" aria-hidden /></Button>
                 <Button variant="ghost" size="icon" aria-label={`Descer ${v.title}`} disabled={pending || i === videos.length - 1} onClick={() => run(() => moveBrasVideoAction(v.id, "down"), "Ordem atualizada")}><ArrowDown className="size-4" aria-hidden /></Button>
-                <Button variant="ghost" size="icon" aria-label={v.active ? `Pausar ${v.title}` : `Mostrar ${v.title}`} disabled={pending} onClick={() => run(() => setBrasVideoActiveAction(v.id, !v.active), v.active ? "Vídeo pausado" : "Vídeo na página")}>{v.active ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}</Button>
-                <ConfirmDialog destructive title="Remover vídeo?" description="Ele sai da página pública e do Meu Brás. O vídeo continua no YouTube." confirmLabel="Remover"
+                <Button variant="ghost" size="icon" aria-label={v.active ? `Pausar ${v.title}` : `Mostrar ${v.title}`} disabled={pending} onClick={() => run(() => setBrasVideoActiveAction(v.id, !v.active), v.active ? "Descoberta pausada" : "Descoberta na página")}>{v.active ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}</Button>
+                <ConfirmDialog destructive title="Remover descoberta?" description="Ela sai da página pública e do Meu Brás, com a análise e a oferta. Os vídeos continuam no YouTube." confirmLabel="Remover"
                   trigger={<Button variant="ghost" size="icon" aria-label={`Remover ${v.title}`} disabled={pending}><Trash2 className="size-4" aria-hidden /></Button>}
                   onConfirm={() => run(() => removeBrasVideoAction(v.id), "Vídeo removido")} />
               </div>
+              <DiscoveryEditor videoId={v.id} title={v.title} shortsId={v.youtubeId} d={v.discovery} />
               <OfferEditor videoId={v.id} title={v.title} offer={offers[v.id] ?? null} importers={importers} />
             </li>
           ))}

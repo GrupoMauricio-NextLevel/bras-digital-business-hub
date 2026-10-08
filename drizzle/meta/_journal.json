@@ -309,6 +309,13 @@
       "when": 1791464543962,
       "tag": "0043_bras_catalogo_e_pedidos",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1791497796312,
+      "tag": "0044_bras_descobertas_e_acesso",
+      "breakpoints": true
     }
   ]
 }

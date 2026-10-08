@@ -64,11 +64,20 @@ Verificação desta rodada: tipos, estilo e `npm run build` limpos; testes novos
 
 O membro ativo vê, em cada vídeo, o preço da caixa, as unidades, as caixas disponíveis e a importadora. Ele faz o pedido com a quantidade de caixas e os dados de envio, e acompanha tudo em "Meus pedidos". No Estúdio, o Master cadastra as importadoras (sem login), define a oferta de cada vídeo e conduz os pedidos: confirmar, marcar pago, marcar retirado ou cancelar. A visão que a importadora poderá receber (só o envio) já existe e está testada. Pagamento e estoque continuam manuais, como decidido. Suíte completa, build e roteiro no navegador passando.
 
+### Rodada D93 e D94: identidade da Brás e descobertas
+
+- **D93:** o Estúdio virou área própria do Master (`/bras`), com nome, menu e cor laranja da Brás. O Meu Brás também ficou laranja. Logo oficial da Brás pendente: o pacote de marcas não tem.
+- **D94:** cada descoberta tem três camadas.
+  - Shorts público.
+  - Para o membro grátis: veredito, trecho e preço.
+  - Análise completa: aberta no lançamento; depois por assinatura (liberada à mão no Estúdio) ou por volume de compra.
+  - A importadora fica oculta até o pedido confirmado.
+
 ## 5. Riscos para unir à branch de publicação
 
 - **Numeração de decisões colide.** Nesta branch, D90 é "Brás Digital passa a prioridade". Na branch de publicação, D90 é "Financeiro Master" e a próxima livre é D91. Ao unir, renumerar a decisão da Brás (e o "D91: Estúdio no Master" citado nos documentos e nas cascas) para os próximos números livres.
 - **Conflitos esperados.** Esta branch saiu de `0166f33`, antes das decisões D88 a D90 e do trabalho financeiro. Arquivos com mudança dos dois lados: `src/lib/domain/store-access.ts`, `src/app/(portal)/page.tsx`, `CLAUDE.md`, `docs/design/DECISIONS.md`. Resolver mantendo os dois trabalhos e rodar a suíte completa.
-- **Migrações repetidas.** Esta branch criou `0042_bras_membros_e_videos` e `0043_bras_catalogo_e_pedidos`; a de publicação já tem `0042_financeiro_master`. Ao unir, apagar as duas da Brás (nunca foram publicadas) e gerar de novo uma só com `npx drizzle-kit generate --name bras_membros_catalogo_e_pedidos`, que sai como 0043. Ajustar o nome esperado em `tests/health.test.ts`.
+- **Migrações repetidas.** Esta branch criou `0042_bras_membros_e_videos`, `0043_bras_catalogo_e_pedidos` e `0044_bras_descobertas_e_acesso`; a de publicação já tem `0042_financeiro_master`. Ao unir, apagar as três da Brás (nunca foram publicadas) e gerar de novo uma só com `npx drizzle-kit generate --name bras_digital`, que sai como 0043. Decisões D90 a D94 da Brás também precisam de novos números. A assinatura da análise passa a ser cobrada pelo Financeiro Master depois da união. Ajustar o nome esperado em `tests/health.test.ts`.
 - **`BRAS_PANELS`** (prévia do Balcão) não deve ser ligada em produção antes do fluxo de pedido.
 - **Antes de ligar `BRAND_SIGNUP_BRAS_DIGITAL` em produção:** termos de uso e política de privacidade da Brás publicados (o cadastro guarda CNPJ, nome, e-mail e WhatsApp) e o `BRAS_WHATSAPP` configurado.
 

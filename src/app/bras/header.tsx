@@ -26,7 +26,7 @@ export function EstudioHeader({ title, description, members, videos, requests }:
         <MetricCard label="Pedidos para confirmar" value={novos} icon={Inbox} tone={novos ? "warning" : "neutral"} hint={`${requests.length} no total`} href="/bras" />
         <MetricCard label="Membros ativos" value={ativos} icon={UserCheck} tone="success" hint={`${cadastrosRecentes(members)} nos últimos 7 dias`} href="/bras/membros" />
         <MetricCard label="Bloqueados" value={members.length - ativos} icon={UserX} tone={members.length - ativos ? "warning" : "neutral"} href="/bras/membros" />
-        <MetricCard label="Vídeos publicados" value={videos.filter((v) => v.active).length} icon={PlayCircle} hint={`${videos.length} na lista`} href="/bras/videos" />
+        <MetricCard label="Descobertas publicadas" value={videos.filter((v) => v.active).length} icon={PlayCircle} hint={`${videos.length} na lista`} href="/bras/descobertas" />
       </MetricGrid>
     </>
   );

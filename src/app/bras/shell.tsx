@@ -14,7 +14,7 @@ export function BrasShell({ panel, regions }: { panel: BrasPanelKey; regions: Sh
   const p = BRAS_PANELS.find((x) => x.key === panel)!;
   return (
     <>
-      <PageHeader backHref="/bras/videos" eyebrow="Brás Digital · prévia da casca" title={p.name} description={`Para: ${p.audience}. Estrutura sem dados: as funções entram quando as decisões pendentes forem tomadas.`} />
+      <PageHeader backHref="/bras/descobertas" eyebrow="Brás Digital · prévia da casca" title={p.name} description={`Para: ${p.audience}. Estrutura sem dados: as funções entram quando as decisões pendentes forem tomadas.`} />
       <p role="note" className="mb-6 rounded-lg border border-warning/40 bg-warning-soft/40 p-4 text-sm">
         <strong>Depende de decisão do dono:</strong> {p.pending}
       </p>

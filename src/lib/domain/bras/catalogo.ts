@@ -1,9 +1,9 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, bdImporters, bdMembers, bdOffers, bdRequests, bdVideos, users } from "@/db/schema";
+import { activities, bdImporters, bdMembers, bdOffers, bdRequests, bdVideos, users, type BrasAnalysis } from "@/db/schema";
+import { brasMarginRange, type BrasLevel } from "./descobertas";
 import { newId } from "@/lib/ids";
-import { canViewBrasCommercialData, type BrasCommercialAccess } from "@/lib/bras/access";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
@@ -11,7 +11,8 @@ import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 /**
  * Catálogo e pedido de compra da Brás Digital (D92), primeira etapa e manual:
  * - importadora cadastrada pelo Master, sem login (o Balcão entra depois);
- * - oferta ligada ao vídeo: importadora, preço da caixa, unidades por caixa e caixas disponíveis (informativo, sem baixa
+ * - oferta ligada à descoberta: importadora (oculta do membro até o pedido confirmado, D94), preço da caixa, unidades e
+ *   caixas disponíveis (informativo, sem baixa
  *   automática nem trava de concorrência: D91 deixou o controle de estoque para depois);
  * - pedido de compra do membro com os dados de envio; a equipe da Brás confirma preço, caixas e pagamento (o pagamento
  *   vai direto para a importadora, D91). A importadora, quando tiver acesso, recebe só a visão de envio (`brasShippingView`).
@@ -91,22 +92,37 @@ export async function listBrasOffersForMaster(db: Database, actor: Actor) {
 
 export type BrasFeedItem = {
   id: string; youtubeId: string; title: string; summary: string | null;
-  /** Presente só para membro ativo com oferta cadastrada. */
-  offer: { priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null; importerName: string } | null;
+  /** Público: sinal de tendência em palavras. */
+  trendSignal: string | null;
+  /** Membro (cadastro grátis ativo): veredito, nota, trecho da análise e se existe análise completa. */
+  member: { verdict: string | null; score: number | null; teaserYoutubeId: string | null; hasAnalysis: boolean } | null;
+  /** Membro: preço da caixa e caixas. A importadora NÃO vem aqui: só aparece no pedido confirmado (D94). */
+  offer: { priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null } | null;
+  /** Acesso à análise: vídeo completo, dados e margem estimada. */
+  analysis: { analysisYoutubeId: string | null; data: BrasAnalysis | null; margin: ReturnType<typeof brasMarginRange> } | null;
 };
 
 /**
- * Vídeos ativos com a oferta, na fronteira de dados: preço, caixas e importadora só saem do servidor para quem
- * `canViewBrasCommercialData` aprova (membro ativo, lido do banco). Os demais recebem `offer: null`.
+ * Descobertas ativas na fronteira de dados (D94): cada camada só sai do servidor para quem tem o nível.
+ * VISITOR: Shorts, título, gancho e sinal. MEMBER: + veredito, nota, trecho e oferta (sem importadora). ANALYST: + análise.
  */
-export async function listBrasFeed(db: Database, access: BrasCommercialAccess, limit = 60): Promise<BrasFeedItem[]> {
-  const vids = await db.select({ id: bdVideos.id, youtubeId: bdVideos.youtubeId, title: bdVideos.title, summary: bdVideos.summary })
-    .from(bdVideos).where(eq(bdVideos.active, true)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
-  if (!canViewBrasCommercialData(access) || !vids.length) return vids.map((v) => ({ ...v, offer: null }));
-  const offers = await db.select({ videoId: bdOffers.videoId, priceBoxCents: bdOffers.priceBoxCents, unitsPerBox: bdOffers.unitsPerBox, boxesAvailable: bdOffers.boxesAvailable, importerName: bdImporters.name, importerActive: bdImporters.active })
+export async function listBrasFeed(db: Database, level: BrasLevel, limit = 60): Promise<BrasFeedItem[]> {
+  const vids = await db.select().from(bdVideos).where(eq(bdVideos.active, true)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
+  const pub = (v: typeof vids[number]): BrasFeedItem => ({ id: v.id, youtubeId: v.youtubeId, title: v.title, summary: v.summary, trendSignal: v.trendSignal, member: null, offer: null, analysis: null });
+  if (level === "VISITOR" || !vids.length) return vids.map(pub);
+  const offers = await db.select({ videoId: bdOffers.videoId, priceBoxCents: bdOffers.priceBoxCents, unitsPerBox: bdOffers.unitsPerBox, boxesAvailable: bdOffers.boxesAvailable, importerActive: bdImporters.active })
     .from(bdOffers).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId)).where(inArray(bdOffers.videoId, vids.map((v) => v.id)));
   const by = new Map(offers.filter((o) => o.importerActive).map((o) => [o.videoId, o]));
-  return vids.map((v) => { const o = by.get(v.id); return { ...v, offer: o ? { priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: o.boxesAvailable, importerName: o.importerName } : null }; });
+  return vids.map((v) => {
+    const o = by.get(v.id);
+    const offer = o ? { priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: o.boxesAvailable } : null;
+    return {
+      ...pub(v),
+      member: { verdict: v.verdict, score: v.score, teaserYoutubeId: v.teaserYoutubeId, hasAnalysis: !!(v.analysisYoutubeId || v.analysis) },
+      offer,
+      analysis: level === "ANALYST" ? { analysisYoutubeId: v.analysisYoutubeId, data: v.analysis, margin: offer ? brasMarginRange(offer.priceBoxCents, offer.unitsPerBox, v.analysis) : null } : null,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -165,9 +181,13 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
   return { id, totalCents };
 }
 
+/** Status em que o membro já sabe de qual importadora retirar (D94: antes disso ela fica oculta). */
+export const BRAS_IMPORTER_VISIBLE: BrasRequestStatus[] = ["CONFIRMED", "PAID", "PICKED_UP"];
+
 export async function listMyBrasRequests(db: Database, actor: Actor) {
   const m = await activeMemberOf(db, actor);
-  return db.select().from(bdRequests).where(eq(bdRequests.memberId, m.id)).orderBy(desc(bdRequests.createdAt)).limit(200);
+  const rows = await db.select().from(bdRequests).where(eq(bdRequests.memberId, m.id)).orderBy(desc(bdRequests.createdAt)).limit(200);
+  return rows.map((r) => ({ ...r, importerName: BRAS_IMPORTER_VISIBLE.includes(r.status) ? r.importerName : null, importerId: BRAS_IMPORTER_VISIBLE.includes(r.status) ? r.importerId : null }));
 }
 
 /** Último endereço usado pelo membro (para já vir preenchido no próximo pedido). */

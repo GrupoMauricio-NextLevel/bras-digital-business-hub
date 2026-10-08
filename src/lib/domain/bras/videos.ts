@@ -36,11 +36,11 @@ export const brasVideoSchema = z.object({
   summary: z.string().trim().max(200, "Resumo com até 200 caracteres").optional(),
 });
 
-export type BrasPublicVideo = { id: string; youtubeId: string; title: string; summary: string | null };
+export type BrasPublicVideo = { id: string; youtubeId: string; title: string; summary: string | null; trendSignal: string | null };
 
-/** Vídeos ativos, na ordem do Estúdio. Só campos públicos (sem preço, estoque ou importadora). */
+/** Descobertas ativas, na ordem do Estúdio. Só campos públicos (sem preço, importadora, veredito ou análise). */
 export async function listPublicBrasVideos(db: Database, limit = 12): Promise<BrasPublicVideo[]> {
-  return db.select({ id: bdVideos.id, youtubeId: bdVideos.youtubeId, title: bdVideos.title, summary: bdVideos.summary })
+  return db.select({ id: bdVideos.id, youtubeId: bdVideos.youtubeId, title: bdVideos.title, summary: bdVideos.summary, trendSignal: bdVideos.trendSignal })
     .from(bdVideos).where(eq(bdVideos.active, true)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
 }
 

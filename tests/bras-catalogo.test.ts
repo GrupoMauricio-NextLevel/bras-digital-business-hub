@@ -4,7 +4,8 @@ import { freshDb } from "./setup";
 import { activities } from "@/db/schema";
 import type { Actor } from "@/lib/domain/access";
 import { addBrasVideo } from "@/lib/domain/bras/videos";
-import { brasCommercialAccessFor, getBrasMemberByUser, setBrasMemberStatus, signupBrasMember } from "@/lib/domain/bras/membros";
+import { getBrasMemberByUser, setBrasMemberStatus, signupBrasMember } from "@/lib/domain/bras/membros";
+import { brasAccessFor } from "@/lib/domain/bras/descobertas";
 import { addBrasImporter, brasShippingView, createBrasRequest, lastBrasShipping, listBrasFeed, listBrasRequestsForMaster, listMyBrasRequests, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus } from "@/lib/domain/bras/catalogo";
 
 /** D92: oferta por vídeo (só membro ativo vê), pedido de compra do membro e visão de envio da importadora. */
@@ -31,22 +32,24 @@ describe("oferta do vídeo", () => {
     await expect(addBrasImporter(ctx.db, ctx.actors.master, { name: "importadora piloto" })).rejects.toMatchObject({ code: "IMPORTER_DUP" });
   });
 
-  it("preço, caixas e importadora só chegam ao membro ativo; visitante, bloqueado e outros papéis recebem só o vídeo", async () => {
+  it("preço e caixas só chegam ao membro ativo (sem a importadora); visitante, bloqueado e outros papéis recebem só o vídeo", async () => {
     await setBrasOffer(ctx.db, ctx.actors.master, videoId, { importerId, priceBoxCents: 48000, unitsPerBox: 24, boxesAvailable: 10 });
-    const ativo = await listBrasFeed(ctx.db, await brasCommercialAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } }));
-    expect(ativo[0]!.offer).toEqual({ priceBoxCents: 48000, unitsPerBox: 24, boxesAvailable: 10, importerName: "Importadora Piloto" });
+    const ativo = await listBrasFeed(ctx.db, (await brasAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } })).level);
+    expect(ativo[0]!.offer).toEqual({ priceBoxCents: 48000, unitsPerBox: 24, boxesAvailable: 10 });
+    // D94: a importadora não sai para o membro antes do pedido confirmado.
+    expect(JSON.stringify(ativo)).not.toContain("Importadora Piloto");
     for (const s of [null, { user: { id: ctx.actors.mantos.userId, role: "STORE_OWNER" } }]) {
-      const feed = await listBrasFeed(ctx.db, await brasCommercialAccessFor(ctx.db, s));
+      const feed = await listBrasFeed(ctx.db, (await brasAccessFor(ctx.db, s)).level);
       expect(feed[0]!.offer).toBeNull();
       expect(JSON.stringify(feed)).not.toMatch(/48000|Importadora Piloto/);
     }
     await setBrasMemberStatus(ctx.db, ctx.actors.master, memberId, "BLOCKED", "teste");
-    expect((await listBrasFeed(ctx.db, await brasCommercialAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } })))[0]!.offer).toBeNull();
+    expect((await listBrasFeed(ctx.db, (await brasAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } })).level))[0]!.offer).toBeNull();
   });
 
   it("importadora pausada tira a oferta do ar; oferta removida some", async () => {
     await setBrasOffer(ctx.db, ctx.actors.master, videoId, { importerId, priceBoxCents: 48000, unitsPerBox: 24, boxesAvailable: null });
-    const acc = await brasCommercialAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } });
+    const acc = (await brasAccessFor(ctx.db, { user: { id: member.userId, role: "BRAS_MEMBER" } })).level;
     await setBrasImporterActive(ctx.db, ctx.actors.master, importerId, false);
     expect((await listBrasFeed(ctx.db, acc))[0]!.offer).toBeNull();
     await expect(createBrasRequest(ctx.db, member, { videoId, boxes: 1, ...envio })).rejects.toMatchObject({ code: "OFFER" });
@@ -63,7 +66,10 @@ describe("pedido de compra", () => {
     const r = await createBrasRequest(ctx.db, member, { videoId, boxes: 2, ...envio, notes: "Retirar à tarde" });
     expect(r.totalCents).toBe(96000);
     const [mine] = await listMyBrasRequests(ctx.db, member);
-    expect(mine).toMatchObject({ number: 1001, status: "NEW", boxes: 2, priceBoxCents: 48000, totalCents: 96000, importerName: "Importadora Piloto", productTitle: "Garrafa térmica 1 L", shipZip: "80010000" });
+    expect(mine).toMatchObject({ number: 1001, status: "NEW", boxes: 2, priceBoxCents: 48000, totalCents: 96000, importerName: null, importerId: null, productTitle: "Garrafa térmica 1 L", shipZip: "80010000" });
+    // D94: o nome da importadora só aparece para o membro depois que a equipe confirma o pedido.
+    await setBrasRequestStatus(ctx.db, ctx.actors.master, mine!.id, "CONFIRMED");
+    expect((await listMyBrasRequests(ctx.db, member))[0]!.importerName).toBe("Importadora Piloto");
     const avisos = await ctx.db.select().from(activities).where(eq(activities.type, "BRAS_REQUEST"));
     expect(avisos[0]!.message).toContain("2 caixa(s) de Garrafa térmica 1 L");
     expect(avisos[0]!.message).not.toMatch(/Ana|Curitiba|ana@/);

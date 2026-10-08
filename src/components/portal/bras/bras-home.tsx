@@ -13,6 +13,12 @@ import "./bras.css";
  * Só anuncia o que existe: o pedido pelo sistema e o catálogo com preço chegam quando as importadoras forem conectadas.
  * Fotos: public/portal/bras/v3/MANIFESTO.md (sem arquivo, aparece "Imagem em criação").
  */
+/** Dúvidas sobre a análise: a resposta sobre cobrança acompanha a regra atual do Estúdio (D94). */
+export const brasAnalysisFaq = (mode: "OPEN" | "PAID") => [
+  { q: "O que é a análise de mercado?", a: "Para cada descoberta, a gente analisa por que o produto está em alta, quantos vendem, o preço praticado no Mercado Livre, a margem estimada a partir do preço da caixa, os riscos e como anunciar. São dados e opinião, nunca promessa de ganho." },
+  { q: "A análise é paga?", a: mode === "OPEN" ? "Na fase de lançamento, a análise completa está liberada para todos os membros cadastrados. O veredito, o trecho da análise e o preço da caixa são sempre grátis para membros." : "O veredito, o trecho da análise e o preço da caixa são grátis para membros. A análise completa é liberada pela assinatura ou pelas suas compras no período. Comprar nunca é pago." },
+];
+
 export const BRAS_FAQ = [
   { q: "O cadastro é pago?", a: "Não. O cadastro é grátis para novos membros. Você informa o CNPJ da empresa, cria a senha e entra na hora." },
   { q: "Preciso ter CNPJ?", a: "Sim. A Brás Digital é só para empresas: lojistas, vendedores de marketplace e distribuidores. Um cadastro por CNPJ." },
@@ -25,7 +31,7 @@ export const BRAS_FAQ = [
 
 const STEPS = [
   { t: "Cadastre a empresa", d: "CNPJ, nome, WhatsApp e senha. É grátis e leva um minuto." },
-  { t: "Assista e escolha", d: "Cada produto tem vídeo de análise. Como membro, você vê o preço e as caixas disponíveis." },
+  { t: "Descubra e analise", d: "Cada descoberta tem análise de mercado. Como membro, você vê o veredito, o preço da caixa e as caixas disponíveis." },
   { t: "Feche o pedido", d: "A equipe da Brás Digital confirma o pedido e o pagamento com você." },
   { t: "Retire no Brás", d: "Sua transportadora retira as caixas na importadora. Ela recebe só o endereço de envio." },
 ];
@@ -36,16 +42,17 @@ const PUBLICO = [
   { icon: Truck, t: "Distribuidor de outros estados", d: "Compre do Brás de longe: retire com a sua transportadora e acompanhe tudo pelo sistema.", img: { nome: "bd-publico-distribuidor", alt: "Caixas de papelão empilhadas em um caminhão baú sendo carregado", posicao: "50% 55%" } },
 ];
 
-const FATOS = ["Só caixa fechada", "A partir de 1 caixa", "Vídeo de análise de cada produto", "Retirada no Brás com a sua transportadora", "Cadastro grátis com CNPJ", "Importadoras do Brás em um lugar só"];
+const FATOS = ["Só caixa fechada", "A partir de 1 caixa", "Análise de mercado de cada descoberta", "Retirada no Brás com a sua transportadora", "Cadastro grátis com CNPJ", "Importadoras do Brás em um lugar só"];
 
-export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVideo[] }) {
+export function BrasHome({ brand, videos, analysisMode = "OPEN" }: { brand: Brand; videos: BrasPublicVideo[]; analysisMode?: "OPEN" | "PAID" }) {
+  const faq = [...brasAnalysisFaq(analysisMode), ...BRAS_FAQ];
   const destaque = videos[0];
   const section = "scroll-mt-16 px-4 py-16 md:py-24";
   return (
     <div className="bd-home">
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.baseUrl, parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda." } },
-        { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: BRAS_FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+        { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
       ]} />
 
       {/* 1. Herói: a promessa, os dois botões e o feed real (vídeo + preço trancado + comprar). */}
@@ -60,7 +67,7 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
               <span className="bd-word" style={{ animationDelay: "0.12s" }}>no seu celular.</span>{" "}
               <span className="bd-word bd-accent" style={{ animationDelay: "0.24s" }}>Em caixa fechada.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--bd-tinta-suave)]">Veja a análise em vídeo de cada produto das importadoras do Brás antes de comprar. Para quem revende no Mercado Livre, na loja ou para o Brasil todo.</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--bd-tinta-suave)]">Descobertas das importadoras do Brás com análise de mercado: tendência, concorrência e por que é o produto certo para revender. Para quem vende no Mercado Livre, na loja ou para o Brasil todo.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/cadastro" className="bd-btn bd-btn--fogo">Cadastrar minha empresa grátis <ArrowRight className="size-5" aria-hidden /></Link>
               <Link href="/login" className="bd-btn bd-btn--linha"><UserRound className="size-5" aria-hidden />Área do cliente</Link>
@@ -70,7 +77,7 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
             </ul>
           </div>
           <div className="mx-auto w-full max-w-[300px]">
-            <div className="bd-phone" role="img" aria-label="Prévia do Meu Brás no celular: vídeo de análise do produto, preço trancado para quem não é membro e o botão Quero comprar">
+            <div className="bd-phone" role="img" aria-label="Prévia no celular: a descoberta em vídeo, a análise e o preço trancados para quem não é membro e o botão Ver análise e preço">
               <div className="bd-phone-screen">
                 {destaque ? (
                   // eslint-disable-next-line @next/next/no-img-element -- miniatura do próprio YouTube
@@ -80,13 +87,13 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
                 )}
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/85" />
                 <div aria-hidden className="absolute left-4 right-4 top-6 flex items-center justify-between text-xs font-semibold text-white">
-                  <span className="rounded-full bg-black/40 px-2.5 py-1">Análise do produto</span>
+                  <span className="rounded-full bg-black/40 px-2.5 py-1">{destaque?.trendSignal ?? "Descoberta"}</span>
                   <span className="rounded-full bg-[#fb8342] px-2.5 py-1 text-[#101b34]">Caixa fechada</span>
                 </div>
                 <div aria-hidden className="absolute bottom-4 left-4 right-4 space-y-2.5 text-white">
-                  <p className="text-base font-bold leading-snug">{destaque?.title ?? "Vídeo de análise de cada produto"}</p>
-                  <p className="flex items-center gap-2 rounded-xl bg-white/12 px-3 py-2 text-sm font-semibold backdrop-blur"><Lock className="size-4" />R$ •••• · só para membros</p>
-                  <span className="flex h-11 items-center justify-center rounded-full bg-[#fb8342] text-sm font-bold text-[#101b34]">Quero comprar</span>
+                  <p className="text-base font-bold leading-snug">{destaque?.title ?? "A descoberta da semana"}</p>
+                  <p className="flex items-center gap-2 rounded-xl bg-white/12 px-3 py-2 text-sm font-semibold backdrop-blur"><Lock className="size-4" />Análise e preço · só para membros</p>
+                  <span className="flex h-11 items-center justify-center rounded-full bg-[#fb8342] text-sm font-bold text-[#101b34]">Ver análise e preço</span>
                 </div>
               </div>
             </div>
@@ -101,27 +108,27 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
         </ul>
       </div>
 
-      {/* 3. Vídeos de análise com o botão de compra (leva ao cadastro). */}
+      {/* 3. Descobertas: Shorts público com o convite para a análise (leva ao cadastro). */}
       <section id="videos" aria-labelledby="bd-videos" className={`bd-dark ${section}`}>
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 grid items-end gap-6 md:grid-cols-[1fr_auto]">
             <div>
-              <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-laranja-claro)]">Vídeos de análise</p>
-              <h2 id="bd-videos" className="bd-display bd-h2 mt-3 max-w-3xl text-white">Veja o produto de perto <span className="bd-accent">antes de comprar a caixa.</span></h2>
+              <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-laranja-claro)]">Descobertas</p>
+              <h2 id="bd-videos" className="bd-display bd-h2 mt-3 max-w-3xl text-white">Achados do Brás, <span className="bd-accent">com análise de mercado.</span></h2>
             </div>
-            <p className="max-w-sm text-[var(--bd-tinta-suave)]">Tamanho, acabamento, embalagem e quantas unidades vêm em cada caixa. O preço aparece para quem é membro.</p>
+            <p className="max-w-sm text-[var(--bd-tinta-suave)]">O vídeo mostra a descoberta. A análise (tendência, concorrência, preço e por que é o produto certo) e o preço da caixa ficam para membros.</p>
           </div>
           {videos.length ? (
             <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {videos.map((v) => (
-                <li key={v.id} className="bd-reveal"><BrasVideoCard youtubeId={v.youtubeId} title={v.title} summary={v.summary} buy={{ href: `/cadastro?video=${v.id}`, label: "Quero comprar" }} /></li>
+                <li key={v.id} className="bd-reveal"><BrasVideoCard youtubeId={v.youtubeId} title={v.title} summary={v.summary} trendSignal={v.trendSignal} buy={{ href: `/cadastro?video=${v.id}`, label: "Ver análise e preço" }} /></li>
               ))}
             </ul>
           ) : (
             <div className="rounded-[22px] border border-dashed border-white/25 p-8 text-center md:p-12">
               <Clapperboard className="mx-auto size-10 text-[var(--bd-laranja-claro)]" aria-hidden />
-              <p className="bd-display mt-4 text-2xl text-white">Os primeiros vídeos estão sendo gravados.</p>
-              <p className="mx-auto mt-2 max-w-md text-[var(--bd-tinta-suave)]">Cadastre a empresa agora e veja cada análise, com preço e caixas disponíveis, assim que for publicada.</p>
+              <p className="bd-display mt-4 text-2xl text-white">As primeiras descobertas estão sendo gravadas.</p>
+              <p className="mx-auto mt-2 max-w-md text-[var(--bd-tinta-suave)]">Cadastre a empresa agora e veja cada descoberta, com a análise e o preço da caixa, assim que for publicada.</p>
               <Link href="/cadastro" className="bd-btn bd-btn--fogo mt-6">Cadastrar grátis</Link>
             </div>
           )}
@@ -149,6 +156,27 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
               <p className="mt-3 max-w-md leading-relaxed opacity-80">Nada de peça avulsa. Você compra como as importadoras vendem, com a quantidade de cada caixa mostrada no vídeo.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 4b. Da descoberta à decisão: as três camadas (D94). */}
+      <section aria-labelledby="bd-camadas" className={`bd-dark ${section}`}>
+        <div className="mx-auto max-w-6xl">
+          <h2 id="bd-camadas" className="bd-display bd-h2 max-w-3xl text-white">Da descoberta <span className="bd-accent">à decisão.</span></h2>
+          <ol className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              { t: "Descoberta", quem: "Para todo mundo", d: "O vídeo curto mostra o achado e o sinal de que tem algo acontecendo com ele." },
+              { t: "Membro", quem: "Grátis, com CNPJ", d: "O veredito da análise, um trecho do vídeo, o preço da caixa, as caixas disponíveis e o pedido." },
+              { t: "Análise completa", quem: analysisMode === "OPEN" ? "Liberada para membros no lançamento" : "Assinatura ou liberada pelas suas compras", d: "Tendência, concorrência, preço no Mercado Livre, margem estimada, riscos e como anunciar." },
+            ].map((c, i) => (
+              <li key={c.t} className="bd-reveal rounded-2xl bg-white/[0.06] p-6">
+                <span className="bd-step-n" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-3 text-xl font-extrabold text-white">{c.t}</h3>
+                <p className="mt-1 text-sm font-bold text-[var(--bd-laranja-claro)]">{c.quem}</p>
+                <p className="mt-2 leading-relaxed text-[var(--bd-tinta-suave)]">{c.d}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -196,7 +224,7 @@ export function BrasHome({ brand, videos }: { brand: Brand; videos: BrasPublicVi
         <div className="mx-auto max-w-3xl">
           <h2 id="bd-faq" className="bd-display bd-h2">Dúvidas</h2>
           <div className="mt-8 divide-y divide-current/15 border-y border-current/15">
-            {BRAS_FAQ.map((f) => (
+            {faq.map((f) => (
               <details key={f.q} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold focus-visible:outline-2 focus-visible:outline-offset-4">{f.q}<span aria-hidden className="text-2xl leading-none transition group-open:rotate-45">+</span></summary>
                 <p className="mt-3 leading-relaxed opacity-85">{f.a}</p>

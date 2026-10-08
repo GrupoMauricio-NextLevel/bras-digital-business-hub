@@ -628,3 +628,37 @@ Pedido do dono: "por que tem logo SuperDrop no painel Brás Digital?" e "o paine
 - **Como a cor da área funciona:** `AreaTheme` (`themeAreaCss` + `brandAreaCssVars`) vale sobre a cor do endereço. Ele fica no layout da área, então voltar ao Master devolve a cor do Master. O Meu Brás usa o mesmo, para ficar laranja em qualquer endereço.
 - **Logo:** o pacote de marcas (`brand-system-v2/LEIA-ME.md`) não tem logo da Brás ("Planejadas, só com cor: play, chinahub, bras"). Como manda a D79, a Brás aparece com o nome em texto, sem logo inventada. Quando o dono enviar a logo oficial, entra em `public/brand/v2/bras/` e em `OFICIAIS` (`src/components/brand/brand-logo.tsx`).
 - Testes: `tests/area-theme.test.ts` (a cor da área vence a do endereço nos modos claro, escuro e sistema) e `e2e/bras-portal.mjs` (nome da Brás no menu, cor primária laranja no Estúdio e no Meu Brás, Master volta à própria cor).
+
+## D94 — Brás Digital: descobertas em três camadas e a análise como produto pago (2026-10-08)
+Racional do dono: conteúdo que só apresenta produto é irrelevante. O Shorts precisa mostrar que o produto é uma **descoberta** e convidar para a **análise de mercado** (tendência e por que é o produto certo). Separar o sistema público de descoberta do interno de análise aprofundada, que é onde entra o acesso pago. O dono aceitou as recomendações:
+1. Esconder a importadora até o pedido confirmado: sim.
+2. O membro grátis vê o veredito e um trecho do vídeo: sim.
+3. Cobrar pelos dois modelos: assinatura e liberação por volume de compra.
+4. Ritmo: 4 descobertas por semana no começo.
+5. YouTube não listado na fase grátis; vídeo privado quando passar a cobrar.
+
+**Regra de ouro:** comprar é sempre grátis; o que se cobra é a inteligência (a análise). Isso protege a comissão e faz a análise puxar compras.
+
+**Camadas (servidor decide, `listBrasFeed(db, nível)` e `brasAccessFor`):**
+
+| Camada | Quem | O que vê |
+|---|---|---|
+| Visitante | qualquer pessoa | Shorts, título, gancho, sinal de tendência só em palavras (o Estúdio recusa números no sinal) |
+| Membro | cadastro grátis ativo | + veredito, nota 0 a 10, trecho (vídeo separado), preço da caixa, caixas, pedido |
+| Análise | lançamento: todo membro; depois: assinatura ou volume | + vídeo completo, tendência, concorrência, preço no Mercado Livre, margem bruta estimada (com aviso: antes de taxas, frete e impostos, sem garantia), riscos, como anunciar |
+
+**Importadora:** sai da oferta do membro. Aparece como "importadora parceira verificada"; o nome só aparece no pedido confirmado, pago ou retirado (`listMyBrasRequests`).
+
+**Cobrança (configurável em `platform_settings`, chave `bras.analysis_access`, tela Estúdio → Acesso à análise):**
+- **Modo padrão OPEN (lançamento):** forma a biblioteca de análises.
+- **PAID:** exige preço da assinatura, volume ou os dois. O volume conta pedidos pagos ou retirados numa janela (padrão 30 dias).
+- **Assinatura:** liberada à mão pelo Master (`bd_access_grants`, com validade; renovar soma dias; revogar). A cobrança automática entra pelo Financeiro Master depois da união com a branch de publicação.
+
+**Banco:** colunas novas em `bd_videos` (a descoberta): sinal, veredito, nota, trecho, vídeo da análise, dados da análise. Tabela nova `bd_access_grants`. Migração `0044_bras_descobertas_e_acesso`, só acrescenta.
+
+**Telas:**
+- **Estúdio:** Descobertas (editor por camada e roteiro de produção) e Acesso à análise.
+- **Meu Brás:** Descobertas e a página de cada descoberta (análise aberta ou trancada, com "como liberar" e o andamento da compra no período).
+- **Página pública:** "Achados do Brás, com análise de mercado", a seção "Da descoberta à decisão" e dúvidas que acompanham o modo de cobrança.
+
+**Testes:** `tests/bras-descobertas.test.ts` (camadas, vazamentos, assinatura, volume, travas do editor, margem), `tests/bras-catalogo.test.ts` (importadora oculta até confirmar) e `e2e/bras-portal.mjs` (análise aberta, troca para paga, trancada sem vazar, liberação manual).

@@ -12,6 +12,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, type brasVideoSchema } from "@/lib/domain/bras/videos";
+import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
 import { addBrasImporter, createBrasRequest, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus, type BrasRequestStatus, type brasImporterSchema, type brasOfferSchema, type brasRequestSchema } from "@/lib/domain/bras/catalogo";
 
 /** Cadastro grátis do membro comprador da Brás (D91): só no endereço da Brás com o cadastro aberto. Libera na hora. */
@@ -92,4 +93,20 @@ export async function createBrasRequestAction(input: z.input<typeof brasRequestS
   });
   if (r.ok) redirect("/meu-bras/pedidos?enviado=1");
   return r;
+}
+
+export async function setBrasDiscoveryAction(videoId: string, input: z.input<typeof brasDiscoverySchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasDiscovery(db, actor, videoId, input); refresh(); return r; });
+}
+
+export async function saveBrasAnalysisSettingsAction(input: unknown) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await saveBrasAnalysisSettings(db, actor, input); refresh(); return r; });
+}
+
+export async function grantBrasAccessAction(input: z.input<typeof brasGrantSchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await grantBrasAccess(db, actor, input); refresh(); return r; });
+}
+
+export async function revokeBrasAccessAction(grantId: string) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await revokeBrasAccess(db, actor, grantId); refresh(); return r; });
 }
