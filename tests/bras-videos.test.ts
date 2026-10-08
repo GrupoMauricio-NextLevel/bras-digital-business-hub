@@ -35,7 +35,7 @@ describe("vídeos no Estúdio", () => {
     await setBrasVideoActive(ctx.db, m, c.id, false);
     const pub = await listPublicBrasVideos(ctx.db);
     expect(pub.map((v) => v.id)).toEqual([a.id, b.id]);
-    expect(Object.keys(pub[0]!).sort()).toEqual(["id", "summary", "title", "youtubeId"]);
+    expect(Object.keys(pub[0]!).sort()).toEqual(["id", "summary", "title", "trendSignal", "youtubeId"]);
     expect((await listBrasVideosForMaster(ctx.db, m)).length).toBe(3);
     await expect(listBrasVideosForMaster(ctx.db, ctx.actors.supplier)).rejects.toThrow();
     await removeBrasVideo(ctx.db, m, b.id);
