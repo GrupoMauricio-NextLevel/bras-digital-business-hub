@@ -4,6 +4,7 @@ import { RoleLayout } from "@/components/app/role-layout";
 import { getDb } from "@/db/client";
 import { getBrasMemberByUser } from "@/lib/domain/bras/membros";
 import "@/components/portal/bras/bras.css";
+import { AreaTheme } from "@/design-system/components/area-theme";
 
 /** Meu Brás: área do membro comprador (D91). Só o papel BRAS_MEMBER entra; o resto volta ao próprio painel. */
 export default async function Layout({ children }: { children: React.ReactNode }) {
@@ -15,5 +16,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <b>Cadastro em análise pela equipe.</b> Enquanto isso, preço e estoque ficam ocultos. Fale com a Brás Digital para regularizar.
     </div>
   ) : undefined;
-  return <RoleLayout session={session} banner={banner}><div className="bd-home">{children}</div></RoleLayout>;
+  // Cor da Brás em qualquer endereço (o membro só entra pelo da Brás, mas a área não depende disso).
+  return <><AreaTheme theme="bras" brand="BRAS_DIGITAL" /><RoleLayout session={session} banner={banner}><div className="bd-home">{children}</div></RoleLayout></>;
 }

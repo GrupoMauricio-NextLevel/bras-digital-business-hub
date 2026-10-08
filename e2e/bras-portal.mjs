@@ -46,7 +46,7 @@ ok("página pública vazia");
   await p.goto(B + "/login", { waitUntil: "networkidle" });
   await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
   await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
-  await p.goto(B + "/master/bras", { waitUntil: "networkidle" });
+  await p.goto(B + "/bras/videos", { waitUntil: "networkidle" });
   const videos = [
     ["https://youtube.com/shorts/aaaaaaaaaa1", "Garrafa térmica inox 1 L, caixa com 24", "Tampa com trava, alça dobrável e embalagem individual."],
     ["https://youtu.be/bbbbbbbbbb2", "Kit 5 potes herméticos de vidro", "Tampas com 4 travas. Caixa com 12 kits."],
@@ -62,19 +62,28 @@ ok("página pública vazia");
   await p.getByRole("button", { name: "Descer Garrafa térmica inox 1 L, caixa com 24" }).click();
   await p.waitForTimeout(1500);
   // Importadora e oferta (D92): só o membro ativo vê preço e caixas.
-  await p.goto(B + "/master/bras?tab=importadoras", { waitUntil: "networkidle" });
+  await p.goto(B + "/bras/importadoras", { waitUntil: "networkidle" });
   await p.getByLabel("Nome").fill("Importadora Piloto"); await p.getByLabel(/Anotações internas/).fill("Comissão 5% acertada à parte");
   await p.getByRole("button", { name: "Cadastrar" }).click();
   await p.getByText("Importadora Piloto").first().waitFor({ timeout: 30000 });
   await check(p, "estúdio importadoras", 1440);
-  await p.goto(B + "/master/bras", { waitUntil: "networkidle" });
+  await p.goto(B + "/bras/videos", { waitUntil: "networkidle" });
   await p.getByRole("button", { name: "Definir oferta de Kit 5 potes herméticos de vidro" }).click();
   const of = p.getByRole("form", { name: "Oferta de Kit 5 potes herméticos de vidro" });
   await of.getByLabel("Preço da caixa").fill("1.890,00"); await of.getByLabel("Unidades por caixa").fill("12"); await of.getByLabel("Caixas disponíveis").fill("5");
   await of.getByRole("button", { name: "Salvar oferta" }).click();
   await p.getByText("R$ 1.890,00", { exact: false }).first().waitFor({ timeout: 30000 });
   await check(p, "estúdio vídeos", 1440);
+  // Identidade da Brás no Estúdio: nome no menu, cor laranja da marca (não o verde do SuperDrop nem o amarelo do Master).
+  if (!(await p.locator(".ds-side").getByText("Brás Digital").first().isVisible())) fail("estúdio: nome da Brás ausente no menu");
+  if (!(await p.getByRole("link", { name: "Voltar ao Master" }).isVisible())) fail("estúdio: sem Voltar ao Master");
+  const primaria = await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ds-primary").trim().toLowerCase());
+  if (primaria !== "#b34d00") fail(`estúdio: cor primária ${primaria} (esperado laranja Brás #b34d00)`);
   await p.screenshot({ path: `${OUT}/02-estudio-videos-1440.png`, fullPage: true });
+  // Voltar ao Master devolve a cor do Master.
+  await p.getByRole("link", { name: "Voltar ao Master" }).click(); await p.waitForURL((u) => u.pathname === "/master"); await p.waitForLoadState("networkidle");
+  if ((await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ds-primary").trim().toLowerCase())) === "#b34d00") fail("master: ficou com a cor da Brás");
+  await p.goto(B + "/bras/videos", { waitUntil: "networkidle" });
   await c.close();
 }
 ok("estúdio: vídeos adicionados e reordenados");
@@ -123,6 +132,7 @@ ok("página pública com vídeos");
   const consultar = await p.getByRole("link", { name: /Consultar \(Garrafa/ }).first().getAttribute("href");
   if (!consultar?.startsWith("https://wa.me/5511900000000?text=") || !decodeURIComponent(consultar).includes("Ana Utilidades LTDA")) fail(`meu brás: consultar sem oferta ${consultar}`);
   await check(p, "meu brás", 390);
+  if ((await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ds-primary").trim().toLowerCase())) !== "#b34d00") fail("meu brás: sem a cor da Brás");
   await p.screenshot({ path: `${OUT}/07-meu-bras-390.png`, fullPage: true });
   // Pedido de compra: 2 caixas, dados de envio, resumo e "Meus pedidos".
   await p.getByRole("link", { name: /Quero comprar \(Kit 5 potes/ }).first().click();
@@ -144,7 +154,7 @@ ok("página pública com vídeos");
   }
   if (!(await p.getByText("11.222.333/0001-81").isVisible())) fail("empresa: CNPJ formatado");
   // Membro não entra no Master nem no painel do lojista.
-  for (const path of ["/master/bras", "/merchant"]) { await p.goto(BRAS + path, { waitUntil: "networkidle" }); if (!new URL(p.url()).pathname.startsWith("/meu-bras")) fail(`membro abriu ${path}`); }
+  for (const path of ["/bras", "/master/bras", "/merchant"]) { await p.goto(BRAS + path, { waitUntil: "networkidle" }); if (!new URL(p.url()).pathname.startsWith("/meu-bras")) fail(`membro abriu ${path}`); }
   await c.close();
 }
 ok("cadastro e Meu Brás");
@@ -155,7 +165,7 @@ ok("cadastro e Meu Brás");
   await p.goto(B + "/login", { waitUntil: "networkidle" });
   await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
   await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
-  await p.goto(B + "/master/bras?tab=pedidos", { waitUntil: "networkidle" });
+  await p.goto(B + "/bras", { waitUntil: "networkidle" });
   await p.getByText("Pedido 1001").waitFor();
   const ped = (await p.locator("ul[aria-label='Pedidos de compra']").innerText()).replace(/\u00a0/g, " ");
   if (!/Braspress/.test(ped) || !/Ana Utilidades LTDA/.test(ped) || !/R\$ 3\.780,00/.test(ped)) fail("estúdio pedidos: dados do pedido");
@@ -163,7 +173,7 @@ ok("cadastro e Meu Brás");
   await p.getByText("Confirmado", { exact: true }).first().waitFor({ timeout: 30000 });
   await check(p, "estúdio pedidos", 1440);
   await p.screenshot({ path: `${OUT}/10b-estudio-pedidos-1440.png`, fullPage: true });
-  await p.goto(B + "/master/bras?tab=membros", { waitUntil: "networkidle" });
+  await p.goto(B + "/bras/membros", { waitUntil: "networkidle" });
   await p.getByText("Ana Utilidades LTDA").waitFor();
   await check(p, "estúdio membros", 1440);
   await p.screenshot({ path: `${OUT}/10-estudio-membros-1440.png`, fullPage: true });

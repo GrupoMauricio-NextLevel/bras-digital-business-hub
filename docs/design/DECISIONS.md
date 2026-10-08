@@ -616,3 +616,15 @@ Pedido do dono: "qual o próximo passo? pode executar sem minha intervenção". 
   - **Estúdio:** abas Vídeos e ofertas, Pedidos, Membros e Importadoras.
   - **Meu Brás:** Produtos com preço, Fazer pedido e Meus pedidos.
 - Testes: `tests/bras-catalogo.test.ts` e `e2e/bras-portal.mjs` (oferta, pedido, confirmação, bloqueio esconde o preço). Migração: `drizzle/0043_bras_catalogo_e_pedidos.sql`, só cria tabelas. Ao unir com a branch de publicação, as migrações da Brás saem como 0043 e 0044.
+
+## D93 — Brás Digital: Estúdio e Meu Brás com a identidade da Brás (2026-10-08)
+Pedido do dono: "por que tem logo SuperDrop no painel Brás Digital?" e "o painel ficou verde por quê? Cada marca precisa da sua cor".
+- **Causa:** o Estúdio ficava dentro da casca do Master (`/master/bras`), que pega cor e logo do endereço. No teste local, o endereço do Master era tratado como SuperDrop: verde e logo SuperDrop. Em produção apareceria o amarelo e a logo da NextLevel, também errado para a Brás.
+- **Correção:** o Estúdio virou uma área do Master com a cara da Brás, como o console da Commerce.
+  - Endereço `/bras` (só o Master entra; `/master/bras` leva para lá).
+  - Nome "Brás Digital" no menu e "Voltar ao Master".
+  - Menu próprio: Pedidos, Vídeos e ofertas, Importadoras, Membros.
+  - Cor laranja da Brás.
+- **Como a cor da área funciona:** `AreaTheme` (`themeAreaCss` + `brandAreaCssVars`) vale sobre a cor do endereço. Ele fica no layout da área, então voltar ao Master devolve a cor do Master. O Meu Brás usa o mesmo, para ficar laranja em qualquer endereço.
+- **Logo:** o pacote de marcas (`brand-system-v2/LEIA-ME.md`) não tem logo da Brás ("Planejadas, só com cor: play, chinahub, bras"). Como manda a D79, a Brás aparece com o nome em texto, sem logo inventada. Quando o dono enviar a logo oficial, entra em `public/brand/v2/bras/` e em `OFICIAIS` (`src/components/brand/brand-logo.tsx`).
+- Testes: `tests/area-theme.test.ts` (a cor da área vence a do endereço nos modos claro, escuro e sistema) e `e2e/bras-portal.mjs` (nome da Brás no menu, cor primária laranja no Estúdio e no Meu Brás, Master volta à própria cor).

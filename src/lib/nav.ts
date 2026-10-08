@@ -55,7 +55,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
-      { label: "Brás Digital", href: "/master/bras", icon: "Boxes", group: "Plataformas" },
+      { label: "Brás Digital", href: "/bras", icon: "Boxes", group: "Plataformas" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Financeiro", href: "/master/finance", icon: "Wallet", group: "Negócio" },
@@ -201,6 +201,14 @@ export const COMMERCE_ADMIN_NAV: NavItem[] = [
   { label: "Interessados", href: "/commerce/leads", icon: "Inbox", group: "Crescimento" },
   { label: "Assinaturas", href: "/commerce/plans", icon: "CreditCard", group: "Negócio" },
   { label: "Plataforma", href: "/commerce/settings", icon: "Settings", group: "Sistema" },
+];
+
+/** Estúdio da Brás Digital (D91): área do Master com menu, nome e cor da Brás. */
+export const BRAS_ADMIN_NAV: NavItem[] = [
+  { label: "Pedidos", href: "/bras", icon: "Inbox", exact: true, group: "Operação", bottom: true },
+  { label: "Vídeos e ofertas", href: "/bras/videos", icon: "LayoutGrid", group: "Catálogo", bottom: true },
+  { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
+  { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
 ];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
