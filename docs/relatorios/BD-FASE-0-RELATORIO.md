@@ -60,11 +60,15 @@ Também a pedido do dono: **página pública da Brás** (apresentação forte, v
 
 Verificação desta rodada: tipos, estilo e `npm run build` limpos; testes novos de membro, vídeos, rotas e indexação; `e2e/bras-portal.mjs` (página vazia e com vídeos em 360, 768 e 1440, vídeo tocando, cadastro com CNPJ inválido e válido, Meu Brás, Estúdio, bloqueio, fronteira entre marcas) sem rolagem horizontal e sem violação grave de acessibilidade.
 
+### Rodada seguinte (D92): catálogo e pedido de compra
+
+O membro ativo vê, em cada vídeo, o preço da caixa, as unidades, as caixas disponíveis e a importadora. Ele faz o pedido com a quantidade de caixas e os dados de envio, e acompanha tudo em "Meus pedidos". No Estúdio, o Master cadastra as importadoras (sem login), define a oferta de cada vídeo e conduz os pedidos: confirmar, marcar pago, marcar retirado ou cancelar. A visão que a importadora poderá receber (só o envio) já existe e está testada. Pagamento e estoque continuam manuais, como decidido. Suíte completa, build e roteiro no navegador passando.
+
 ## 5. Riscos para unir à branch de publicação
 
 - **Numeração de decisões colide.** Nesta branch, D90 é "Brás Digital passa a prioridade". Na branch de publicação, D90 é "Financeiro Master" e a próxima livre é D91. Ao unir, renumerar a decisão da Brás (e o "D91: Estúdio no Master" citado nos documentos e nas cascas) para os próximos números livres.
 - **Conflitos esperados.** Esta branch saiu de `0166f33`, antes das decisões D88 a D90 e do trabalho financeiro. Arquivos com mudança dos dois lados: `src/lib/domain/store-access.ts`, `src/app/(portal)/page.tsx`, `CLAUDE.md`, `docs/design/DECISIONS.md`. Resolver mantendo os dois trabalhos e rodar a suíte completa.
-- **Migração 0042 repetida.** Esta branch criou `drizzle/0042_bras_membros_e_videos.sql`; a de publicação já tem `0042_financeiro_master`. Ao unir, apagar a da Brás (nunca foi publicada) e gerar de novo com `npx drizzle-kit generate --name bras_membros_e_videos`, que sai como 0043.
+- **Migrações repetidas.** Esta branch criou `0042_bras_membros_e_videos` e `0043_bras_catalogo_e_pedidos`; a de publicação já tem `0042_financeiro_master`. Ao unir, apagar as duas da Brás (nunca foram publicadas) e gerar de novo uma só com `npx drizzle-kit generate --name bras_membros_catalogo_e_pedidos`, que sai como 0043. Ajustar o nome esperado em `tests/health.test.ts`.
 - **`BRAS_PANELS`** (prévia do Balcão) não deve ser ligada em produção antes do fluxo de pedido.
 - **Antes de ligar `BRAND_SIGNUP_BRAS_DIGITAL` em produção:** termos de uso e política de privacidade da Brás publicados (o cadastro guarda CNPJ, nome, e-mail e WhatsApp) e o `BRAS_WHATSAPP` configurado.
 
@@ -72,4 +76,4 @@ Verificação desta rodada: tipos, estilo e `npm run build` limpos; testes novos
 
 1. O dono aprova o visual da página pública e do Meu Brás (capturas da rodada) e gera as 4 fotos do manifesto.
 2. Unir a branch com a de publicação (renumerar D90/D91 e a migração), conferir e publicar com `BRAND_SIGNUP_BRAS_DIGITAL` ainda desligada; ligar quando os termos estiverem prontos.
-3. Próxima etapa de produto: catálogo das importadoras com preço e estoque em caixas (projeção comercial já pronta) e o pedido pelo sistema, com o Balcão vendo só o envio.
+3. Próxima etapa de produto: Balcão da importadora (login da importadora vendo só `brasShippingView` dos pedidos pagos dela) e, quando o dono quiser, controle de estoque com baixa automática e pagamento pelo sistema.

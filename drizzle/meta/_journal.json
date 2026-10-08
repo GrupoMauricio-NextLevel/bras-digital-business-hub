@@ -302,6 +302,13 @@
       "when": 1791461875842,
       "tag": "0042_bras_membros_e_videos",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1791464543962,
+      "tag": "0043_bras_catalogo_e_pedidos",
+      "breakpoints": true
     }
   ]
 }

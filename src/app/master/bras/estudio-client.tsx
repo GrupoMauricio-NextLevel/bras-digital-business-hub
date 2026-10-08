@@ -11,10 +11,14 @@ import { EmptyState } from "@/components/app/empty-state";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasMemberStatusAction, setBrasVideoActiveAction } from "@/app/actions/bras";
 import { formatDate } from "@/lib/utils";
+import { OfferEditor } from "./catalogo-client";
 
 type VideoRow = { id: string; youtubeId: string; title: string; summary: string | null; active: boolean };
 
-export function VideosManager({ videos }: { videos: VideoRow[] }) {
+type OfferRow = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
+type ImporterRow = { id: string; name: string; notes: string | null; active: boolean };
+
+export function VideosManager({ videos, offers, importers }: { videos: VideoRow[]; offers: Record<string, OfferRow>; importers: ImporterRow[] }) {
   const router = useRouter();
   const [f, setF] = React.useState({ url: "", title: "", summary: "" });
   const [pending, start] = React.useTransition();
@@ -57,6 +61,7 @@ export function VideosManager({ videos }: { videos: VideoRow[] }) {
                   trigger={<Button variant="ghost" size="icon" aria-label={`Remover ${v.title}`} disabled={pending}><Trash2 className="size-4" aria-hidden /></Button>}
                   onConfirm={() => run(() => removeBrasVideoAction(v.id), "Vídeo removido")} />
               </div>
+              <OfferEditor videoId={v.id} title={v.title} offer={offers[v.id] ?? null} importers={importers} />
             </li>
           ))}
         </ol>

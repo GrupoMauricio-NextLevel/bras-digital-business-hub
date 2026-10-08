@@ -596,3 +596,23 @@ Respostas do dono às pendências da Fase 0 e pedido de "uma página pública pa
 - **Página pública:** muda a D90 ("sem site público na versão 1"). Com `BRAND_SIGNUP_BRAS_DIGITAL=true` o endereço da Brás mostra a apresentação (herói com o feed real, vídeos com "Quero comprar" → cadastro, como funciona, para quem, proteção de dados, dúvidas) e o cadastro; sem a variável, segue "em breve". No endereço da Brás só abrem `/`, `/cadastro`, a lista de espera, `/r/` e os painéis; páginas das outras marcas voltam ao início. A apresentação pode ser indexada; preço nunca aparece fora do login.
 - **Compra na primeira etapa:** "Quero comprar" no Meu Brás abre o WhatsApp da equipe (`BRAS_WHATSAPP`, ou o do suporte) com a empresa e o produto na mensagem; a equipe confirma preço, caixas e pagamento. O catálogo com preço e estoque e o pedido pelo sistema entram quando as importadoras forem conectadas.
 - Testes: `tests/bras-membros.test.ts`, `tests/bras-videos.test.ts`, `tests/bras-visibility.test.ts`, `tests/bras-panels.test.ts`, `tests/host-routing.test.ts`; navegador: `e2e/bras-portal.mjs`. Migração: `drizzle/0042_bras_membros_e_videos.sql` (só cria tabelas; ao unir com a branch de publicação, que já tem uma 0042, gerar de novo com o próximo número).
+
+## D92 — Brás Digital: catálogo por vídeo e pedido de compra manual (2026-10-08)
+Pedido do dono: "qual o próximo passo? pode executar sem minha intervenção". Próximo passo da D91: o membro ver preço e caixas e fazer o pedido pelo sistema, dentro do que já foi decidido (pagamento direto à importadora, comissão manual, estoque sem controle por enquanto, importadora vendo só o envio).
+- **Exceção registrada à regra "estender antes de criar" da D90** (caixa = `product_packs`, pedido = `orders`):
+  - **Pedidos:** `orders` exige loja (`store_id`), pagamento e reserva de estoque. O membro da Brás não tem loja, e na primeira etapa o pagamento e o estoque são combinados à mão.
+  - **Importadoras:** cadastrar a importadora como fornecedor (`createSupplier`) cria contrato, faturas da NextLevel e login de fornecedor, o que contraria a D91.
+  - **Solução:** tabelas próprias com prefixo `bd_`: `bd_importers` (sem login), `bd_offers` (uma por vídeo) e `bd_requests` (pedido de compra).
+  - **Quando o pagamento ou o estoque forem automatizados:** decidir se o pedido migra para `orders`, com loja-sombra do membro ou com `store_id` opcional.
+- **Oferta:** importadora, preço da caixa, unidades por caixa e caixas disponíveis (vazio = "consultar"). Só o membro **ativo** recebe esses dados (`listBrasFeed` passa por `canViewBrasCommercialData`). Visitante, bloqueado e outros papéis recebem só o vídeo. Importadora pausada tira a oferta do ar.
+- **Pedido:** o membro escolhe quantas caixas e informa transportadora e endereço de envio.
+  - Preço, produto e importadora são copiados na hora do pedido; mudar a oferta depois não altera o pedido.
+  - Número sequencial a partir de 1001.
+  - Aviso no sino do Master, sem dado pessoal na mensagem.
+  - Caminho do pedido: Recebido → Confirmado → Pago → Retirado; dá para cancelar até a retirada. Só o Master muda o status, com auditoria e trava contra mudança simultânea.
+- **Estoque:** "caixas disponíveis" é informativo. Recusa pedido acima do número informado, mas não dá baixa nem trava concorrência (D91: controlar depois). A equipe confirma antes do pagamento.
+- **Importadora:** `brasShippingView` é a lista do que ela poderá receber: número, produto, caixas, status, transportadora, destinatário e endereço. Nunca CNPJ, empresa, e-mail, WhatsApp, observação ou valores. Teste garante.
+- Telas:
+  - **Estúdio:** abas Vídeos e ofertas, Pedidos, Membros e Importadoras.
+  - **Meu Brás:** Produtos com preço, Fazer pedido e Meus pedidos.
+- Testes: `tests/bras-catalogo.test.ts` e `e2e/bras-portal.mjs` (oferta, pedido, confirmação, bloqueio esconde o preço). Migração: `drizzle/0043_bras_catalogo_e_pedidos.sql`, só cria tabelas. Ao unir com a branch de publicação, as migrações da Brás saem como 0043 e 0044.

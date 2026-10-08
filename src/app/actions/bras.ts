@@ -12,6 +12,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, type brasVideoSchema } from "@/lib/domain/bras/videos";
+import { addBrasImporter, createBrasRequest, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus, type BrasRequestStatus, type brasImporterSchema, type brasOfferSchema, type brasRequestSchema } from "@/lib/domain/bras/catalogo";
 
 /** Cadastro grátis do membro comprador da Brás (D91): só no endereço da Brás com o cadastro aberto. Libera na hora. */
 export async function brasSignupAction(input: z.input<typeof brasSignupSchema>) {
@@ -56,4 +57,39 @@ export async function moveBrasVideoAction(id: string, dir: "up" | "down") {
 
 export async function removeBrasVideoAction(id: string) {
   return runAction(async () => { const { actor, db } = await master(); const r = await removeBrasVideo(db, actor, id); refresh(); return r; });
+}
+
+export async function addBrasImporterAction(input: z.input<typeof brasImporterSchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await addBrasImporter(db, actor, input); refresh(); return r; });
+}
+
+export async function setBrasImporterActiveAction(id: string, active: boolean) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasImporterActive(db, actor, id, active); refresh(); return r; });
+}
+
+export async function setBrasOfferAction(videoId: string, input: z.input<typeof brasOfferSchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasOffer(db, actor, videoId, input); refresh(); return r; });
+}
+
+export async function removeBrasOfferAction(videoId: string) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await removeBrasOffer(db, actor, videoId); refresh(); return r; });
+}
+
+export async function setBrasRequestStatusAction(id: string, status: BrasRequestStatus) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasRequestStatus(db, actor, id, status); refresh(); return r; });
+}
+
+/** Pedido de compra do membro (D92). A permissão vem da sessão e do status do membro no banco, nunca do formulário. */
+export async function createBrasRequestAction(input: z.input<typeof brasRequestSchema>) {
+  const r = await runAction(async () => {
+    const s = await getSession();
+    if (!s) throw new ForbiddenError("Sessão expirada. Entre de novo.");
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`bras-request:${s.user.id}:${ip}`, 20, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitos pedidos em pouco tempo. Fale com a equipe.");
+    const created = await createBrasRequest(await getDb(), s.actor, input);
+    refresh();
+    return created;
+  });
+  if (r.ok) redirect("/meu-bras/pedidos?enviado=1");
+  return r;
 }

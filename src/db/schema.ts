@@ -1273,3 +1273,58 @@ export const bdVideos = pgTable("bd_videos", {
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("bd_videos_order_idx").on(t.active, t.position)]);
+
+// ---------------------------------------------------------------------------
+// Brás Digital (D92): importadoras sem login, oferta por vídeo e pedido de compra do membro (primeira etapa, manual)
+// ---------------------------------------------------------------------------
+/** Importadora da Brás, cadastrada pelo Master só para organizar ofertas. Sem login nem acesso a membros (o Balcão vem depois). */
+export const bdImporters = pgTable("bd_importers", {
+  id: id(),
+  name: text("name").notNull(),
+  /** Anotações internas do Master (comissão combinada, contato). Nunca saem para o membro. */
+  notes: text("notes"),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+});
+
+/** Oferta do vídeo: preço da caixa, unidades e caixas disponíveis (informativo, sem baixa automática). Só membro ativo vê. */
+export const bdOffers = pgTable("bd_offers", {
+  id: id(),
+  videoId: text("video_id").notNull().unique().references(() => bdVideos.id, { onDelete: "cascade" }),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  priceBoxCents: integer("price_box_cents").notNull(),
+  unitsPerBox: integer("units_per_box").notNull(),
+  /** Null = "consultar a equipe". */
+  boxesAvailable: integer("boxes_available"),
+  updatedAt: updatedAt(),
+  updatedBy: text("updated_by"),
+});
+
+/**
+ * Pedido de compra do membro (D92). Preço, produto e importadora copiados no momento do pedido.
+ * Dados de envio ficam aqui porque a importadora (quando tiver o Balcão) vê só eles (`brasShippingView`).
+ */
+export const bdRequests = pgTable("bd_requests", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  videoId: text("video_id").references(() => bdVideos.id, { onDelete: "set null" }),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  productTitle: text("product_title").notNull(),
+  importerName: text("importer_name").notNull(),
+  boxes: integer("boxes").notNull(),
+  unitsPerBox: integer("units_per_box").notNull(),
+  priceBoxCents: integer("price_box_cents").notNull(),
+  totalCents: integer("total_cents").notNull(),
+  status: text("status", { enum: ["NEW", "CONFIRMED", "PAID", "PICKED_UP", "CANCELED"] }).notNull().default("NEW"),
+  carrier: text("carrier").notNull(),
+  shipName: text("ship_name").notNull(),
+  shipAddress: text("ship_address").notNull(),
+  shipCity: text("ship_city").notNull(),
+  shipState: text("ship_state").notNull(),
+  shipZip: text("ship_zip").notNull(),
+  /** Observação do membro para a equipe (não vai para a importadora). */
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt)]);

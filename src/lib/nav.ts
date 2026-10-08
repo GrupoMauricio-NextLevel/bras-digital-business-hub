@@ -142,7 +142,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "Membro Brás Digital",
     items: [
       { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
-      { label: "Vídeos de produtos", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
+      { label: "Produtos", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
+      { label: "Meus pedidos", href: "/meu-bras/pedidos", icon: "ReceiptText", group: "Meu Brás" },
       { label: "Minha empresa", href: "/meu-bras/empresa", icon: "Settings", group: "Conta" },
     ],
     quick: [],
