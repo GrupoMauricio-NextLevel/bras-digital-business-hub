@@ -162,8 +162,9 @@ export function NavCards({ settings, blocks, ctx }: SectionProps) {
           return (
             <Link key={b.id} href={href} prefetch={false} className="group relative block aspect-[4/5] overflow-hidden rounded-[var(--sf-radius,16px)] focus-visible:outline-2 focus-visible:outline-offset-2" data-nav-card>
               <BannerImage s={{ image: str(s.image), alt: str(s.alt), decorative: !str(s.alt) }} sizes="(min-width: 768px) 25vw, 50vw" priority={false} className="transition duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-              <div className="sf-on-image absolute inset-x-0 bottom-0 flex flex-col items-start gap-1 p-4 text-white sm:p-5">
+              {/* Sobre foto clara, o véu sobe até o título e a palavra em destaque fica branca (itálico), sem a cor de destaque. */}
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 via-50% to-black/10" />
+              <div className="sf-on-image absolute inset-x-0 bottom-0 flex flex-col items-start gap-1 p-4 text-white sm:p-5 [&_em]:!text-current">
                 {str(s.eyebrow) ? <p className="text-[11px] font-semibold uppercase tracking-[0.16em] opacity-90">{str(s.eyebrow)}</p> : null}
                 {str(s.title) ? <h3 className="text-lg font-semibold leading-tight sm:text-2xl"><Emph text={str(s.title)} /></h3> : null}
                 {str(s.subtitle) ? <p className="hidden text-sm opacity-90 sm:block">{str(s.subtitle)}</p> : null}

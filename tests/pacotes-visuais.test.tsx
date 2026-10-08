@@ -1,4 +1,6 @@
 import * as React from "react";
+import { statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 vi.mock("next/navigation", () => ({ usePathname: () => "/store/x", useRouter: () => ({ push() {}, replace() {} }) }));
@@ -8,6 +10,7 @@ import { isPhoto } from "@/components/storefront/product-gallery";
 import { SectionList, type SectionCtx } from "@/components/storefront/sections";
 import { idsBySkus } from "@/lib/queries/storefront";
 import { avifOf } from "@/lib/themes/avif";
+import { bannerPath, demoBanners } from "@/lib/themes/banners-demo";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 import { PACKAGES, categoryImages, selectionLink } from "@/lib/themes/pacotes";
 import { buildPreset, type PresetContext } from "@/lib/themes/presets";
@@ -96,5 +99,58 @@ describe("imagem com texto sem foto", () => {
     const editing = renderToStaticMarkup(SectionList({ template: a.template, ctx: { ...base, editing: true } as SectionCtx }));
     expect(live).toContain("text-center"); expect(live).toContain('class="hidden"');
     expect(editing).not.toContain('class="hidden"');
+  });
+});
+
+describe("banners das lojas de demonstração (6 imagens por loja: destaque de computador e de celular, 4 atalhos)", () => {
+  const onDisk = (p: string) => { try { return statSync(join(process.cwd(), "public", p)).size > 0; } catch { return false; } };
+
+  it("cada loja tem o destaque da 1ª campanha (computador e celular) e um atalho por categoria, todos com AVIF", () => {
+    for (const p of Object.values(PACKAGES)) {
+      const b = demoBanners(p!, onDisk); const fam = p!.family; const c1 = p!.campaigns[0]!;
+      expect(b.forced[`${fam}-hero-1`], p!.slug).toEqual({ image: bannerPath(p!.slug, `hero-${c1.id}__desktop`), imageMobile: bannerPath(p!.slug, `hero-${c1.id}__mobile`), alt: c1.headline });
+      for (const f of b.used) { expect(onDisk(f), f).toBe(true); expect(avifOf(f), f).toBeTruthy(); }
+      // Linha de Jogo: o pacote traz "chuteiras", que não é categoria do catálogo (Vestuário fica com a imagem do pacote).
+      const missing = [...new Set(p!.products.map((x) => x.category))].filter((c) => !b.categoryImages[c]);
+      expect(missing, p!.slug).toEqual(p!.slug === "linha-de-jogo" ? ["Vestuário"] : []);
+      expect(b.used.length, p!.slug).toBe(p!.slug === "linha-de-jogo" ? 5 : 6);
+    }
+  });
+
+  it("atalho vira imagem da categoria (grade e banner do topo); campanhas 2 e 3 usam o atalho da categoria dos seus produtos", () => {
+    const casa = PACKAGES.casa!; const b = demoBanners(casa, () => true); const at = (c: string) => bannerPath(casa.slug, `atalho-${c}`);
+    expect(b.categoryImages).toEqual({ "Decoração": at("decoracao"), "Cozinha": at("cozinha"), "Organização": at("organizacao"), "Têxteis": at("texteis") });
+    expect(b.forced["casa-cat-texteis"]!.image).toBe(at("texteis"));
+    expect(b.fill["casa-hero-2"]!.image).toBe(at("organizacao")); // campanha "organizar": só produtos de Organização
+    expect(b.fill["casa-hero-3"]!.image).toBe(at("texteis")); // "cotidiano": Têxteis é a mais frequente
+    // Faixa e blocos de apoio: recortes do destaque (nunca a versão de celular esticada numa área larga)
+    expect(b.fill["casa-faixa-1"]!.image).toBe(bannerPath(casa.slug, "hero-acolher__desktop"));
+    expect(b.fill["casa-sobre"]!.image).toBe(bannerPath(casa.slug, "hero-acolher__mobile"));
+    // Recorte de produto, galeria, camadas e sequência: sem arquivo próprio, ficam como estavam
+    for (const id of ["look-1", "camadas-recorte", "camadas-fundo", "seq-1", "imersivo-frente"]) expect(b.fill[`casa-${id}`] ?? b.forced[`casa-${id}`]).toBeUndefined();
+    // Sem repetição dentro de uma seção: 4 cartões, 5 peças do mosaico do N4; os 2 cartões do N2 diferem dos 2 apoios
+    const nav = [1, 2, 3, 4].map((k) => b.fill[`casa-nav-${k}`]!.image); expect(new Set(nav).size).toBe(4);
+    const mosaic = [1, 2, 3, 4, 5].map((k) => b.fill[`casa-mosaico-${k}`]!.image); expect(new Set(mosaic).size).toBe(5);
+    expect(new Set([nav[0], nav[1], b.fill["casa-apoio-1"]!.image, b.fill["casa-apoio-2"]!.image]).size).toBe(4);
+    // O mosaico do N3 (peças 1 a 3) não repete os atalhos das campanhas 2 e 3 do carrossel logo abaixo
+    expect(mosaic.slice(0, 3)).not.toContain(b.fill["casa-hero-2"]!.image); expect(mosaic.slice(0, 3)).not.toContain(b.fill["casa-hero-3"]!.image);
+  });
+
+  it("sem arquivo no disco, nenhuma posição recebe caminho (nunca imagem quebrada)", () => {
+    expect(demoBanners(PACKAGES.beauty!, () => false)).toEqual({ forced: {}, fill: {}, categoryImages: {}, used: [] });
+    // Só o destaque de computador: o celular usa o recorte dele, e nada de atalho inventado
+    const only = demoBanners(PACKAGES.beauty!, (f) => f.endsWith("__desktop.webp"));
+    expect(only.forced["beauty-hero-1"]!.imageMobile).toBe(""); expect(only.categoryImages).toEqual({}); expect(only.fill["beauty-hero-2"]).toBeUndefined();
+  });
+
+  it("no tema, o destaque leva a versão de celular em <source> só para telas estreitas e os atalhos vão para a grade", () => {
+    const pkg = PACKAGES.beauty!; const b = demoBanners(pkg, onDisk); const now = new Date("2026-10-01T12:00:00Z");
+    const ctx: PresetContext = { storeName: pkg.store, tagline: null, primary: "#000", accent: "#fff", announcement: "", footerText: "", now, media: { ...b.forced, ...b.fill }, categoryImages: b.categoryImages };
+    const key = THEME_CATALOG.find((x) => x.family === "beauty" && x.level === 2)!.key;
+    const tpl = buildPreset(key, ctx)!.pages.home;
+    const html = renderToStaticMarkup(SectionList({ template: tpl, ctx: { slug: "x", base: "/store/x", store: {} as never, categories: [{ id: "c1", name: "Pincéis", slug: "pinceis" }], products: [], planned: {}, hero: undefined, globals: {} as never, page: "home", now } as SectionCtx }));
+    expect(html).toContain('media="(max-width: 767px)" type="image/avif" srcSet="/demos/bela-essencia/v1/banners/hero-ritual__mobile.avif"');
+    expect(html).toContain('src="/demos/bela-essencia/v1/banners/hero-ritual__desktop.webp"');
+    expect(html).toContain("/demos/bela-essencia/v1/banners/atalho-pinceis.webp");
   });
 });

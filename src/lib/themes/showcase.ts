@@ -11,6 +11,7 @@ import { signupMember } from "@/lib/domain/store-access";
 import { hasPublicDemo, THEME_BY_KEY, THEME_CATALOG } from "./catalog";
 import { brandLogo, categoryImages, packageOf, slotImage } from "./pacotes";
 import { BANNERS } from "./familias-banners";
+import { demoBanners } from "./banners-demo";
 import { slugify } from "@/lib/ids";
 import { storeDiscounts } from "@/db/schema";
 import { createDiscount } from "@/lib/domain/discounts";
@@ -55,6 +56,7 @@ const mediaOf = (d: FamilyDemo): NonNullable<PresetContext["media"]> => Object.f
  * Banners de navegação gerados pelo dono (D88): arquivos em /demos/<loja>/v1/banners/<nome>.webp, com os nomes do
  * prompt docs/prompts/banners-navegacao-temas-gpt.md (sem o prefixo da loja). Só entra o que existe no disco; posições
  * sem arquivo continuam pendentes. Também cobrem destaque, apoio e faixa das lojas cujo pacote não tem campanhas.
+ * O pacote entregue depois (6 imagens por loja: destaque + 4 atalhos) é tratado em banners-demo.ts.
  */
 function bannerMedia(d: FamilyDemo): NonNullable<PresetContext["media"]> {
   const p = packageOf(d.family); if (!p) return {};
@@ -77,12 +79,21 @@ function bannerMedia(d: FamilyDemo): NonNullable<PresetContext["media"]> {
   put("apoio-1", "apoio-1"); put("apoio-2", "apoio-2"); put("faixa-1", "faixa");
   return out;
 }
-/** Imagem do pacote primeiro; o banner gerado só preenche posição que estava pendente. */
+/** Banners do pacote de 6 imagens por loja (banners-demo.ts): destaque responsivo e atalhos de categoria. */
+const demoBannersOf = (d: FamilyDemo) => { const p = packageOf(d.family); return p ? demoBanners(p, fileOk) : null; };
+/**
+ * Destaque e banners de categoria: os do dono valem mesmo sobre a foto do pacote. O resto: imagem do pacote primeiro; o
+ * banner gerado (nomes D88, depois os recortes do destaque e dos atalhos) só preenche posição que estava pendente.
+ */
 const withBanners = (d: FamilyDemo, m: NonNullable<PresetContext["media"]>) => {
-  const extra = bannerMedia(d); const out = { ...m };
-  for (const [id, v] of Object.entries(extra)) if (!out[id]?.image) out[id] = { ...v, alt: v.alt || out[id]?.alt || "" };
+  const demo = demoBannersOf(d); const out = { ...m };
+  for (const [id, v] of Object.entries(demo?.forced ?? {})) out[id] = { ...v, alt: v.alt || out[id]?.alt || "" };
+  for (const extra of [bannerMedia(d), demo?.fill ?? {}])
+    for (const [id, v] of Object.entries(extra)) if (!out[id]?.image) out[id] = { ...v, alt: v.alt || out[id]?.alt || "" };
   return out;
 };
+/** Imagens da grade de categorias: o atalho do dono quando existe; senão a do pacote. */
+const demoCategoryImages = (d: FamilyDemo) => ({ ...categoryImages(d.family), ...(demoBannersOf(d)?.categoryImages ?? {}) });
 /** Cupom de exemplo das lojas de demonstração (a janela de boas-vindas mostra o código sem guardar contato). */
 export const DEMO_WELCOME_CODE = "BEMVINDO10";
 async function ensureDemoCoupon(db: Database, storeId: string) {
@@ -145,7 +156,7 @@ export async function ensureShowcaseStores(db: Database, now = new Date()): Prom
     const media = withBanners(demo, mediaOf(demo));
     const cats = await demoCategories(db, store.id);
     await ensureDemoCoupon(db, store.id);
-    const extra = { images: imagesOf(demo, media), media, categories: cats, categoryImages: categoryImages(demo.family), welcomeCode: DEMO_WELCOME_CODE };
+    const extra = { images: imagesOf(demo, media), media, categories: cats, categoryImages: demoCategoryImages(demo), welcomeCode: DEMO_WELCOME_CODE };
     const { ctx } = await presetContextFor(db, store, now);
     const preset = buildPreset(info.key, { ...ctx, ...extra });
     const rows = await db.select().from(themeTemplates).where(eq(themeTemplates.storeId, store.id));

@@ -1,5 +1,7 @@
 # Banners que organizam a navegação das lojas: prompt para o gerador de imagens do GPT
 
+> **Entregue em 2026-10 (versão enxuta):** o dono gerou **6 imagens por loja** (36 no total), sem texto embutido: `<loja>__hero-<campanha>__desktop.png` e `__mobile.png` (destaque da 1ª campanha do pacote) e quatro `<loja>__atalho-<categoria>.png`. Cartões, cupom, faixa, camadas e sequência ficaram de fora de propósito. Importação: `npx tsx scripts/importar-banners.ts <pastas>`; onde cada imagem aparece: `src/lib/themes/banners-demo.ts` (destaque responsivo; atalhos na grade de categorias e no banner de cada categoria; recortes do destaque e dos atalhos nas faixas, apoios, mosaico e cupom). As posições abaixo sem arquivo continuam com as cores do tema ou somem, nunca com imagem quebrada.
+
 > Para usar no gerador de imagens do GPT. Cole primeiro a **Parte A** (regras gerais) uma vez na conversa e, depois, peça os banners **um por vez**, copiando o bloco de cada imagem da **Parte B**.
 > A **Parte C** é para o desenvolvimento do sistema; não precisa colar no GPT.
 >

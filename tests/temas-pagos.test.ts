@@ -36,11 +36,12 @@ describe("lojas de demonstração dos temas", () => {
     expect(await ensureShowcaseStores(ctx.db)).toEqual([]);
     expect((await ctx.db.select().from(stores)).length).toBe(before);
   });
-  it("Casa sem imagem final: o banner fica pendente (fundo do tema), nunca com foto de outro segmento", async () => {
+  it("Casa: o destaque usa o banner da própria loja (computador e celular), nunca foto de outro segmento", async () => {
     const t = (await resolveTemplate(ctx.db, await demoStore("ninho"), "home")).template;
     const hero = Object.values(t.sections).find((s) => s.type === "hero-banner")!;
     const first = hero.blocks[hero.blockOrder[0]!]!;
-    expect(first.settings.image).toBe(""); expect(first.settings.alt).toMatch(/Despensa/);
+    expect(first.settings.image).toBe("/demos/casa-em-ordem/v1/banners/hero-acolher__desktop.webp");
+    expect(first.settings.imageMobile).toBe("/demos/casa-em-ordem/v1/banners/hero-acolher__mobile.webp");
     expect((await demoStore("ninho")).name).toBe("Casa em Ordem");
   });
   it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["sport", ["lance", "torcida", "arena", "podio"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: os quatro níveis usam o mesmo catálogo (catálogo do pacote visual, 4 categorias, esgotado só se o pacote disser)", async (family, keys) => {
