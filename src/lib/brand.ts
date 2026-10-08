@@ -47,6 +47,11 @@ export type Brand = {
   partnersOpen: boolean;
   /** Produto ainda sem sistema próprio: o portal mostra uma página "em breve" com lista de espera, sem prometer o que não existe. */
   soon: { headline: string; text: string; bullets: string[]; leadTitle: string; zh?: { headline: string; text: string } } | null;
+  /**
+   * Operação comercial fechada: preço, estoque, nome de importadora/fornecedor e vídeo completo só para membro aprovado,
+   * nada indexável e nenhuma página pública de fornecedor. Ausente = falso (as marcas abertas não mudam).
+   */
+  closedCommerce?: boolean;
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
@@ -86,7 +91,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.superdrop.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
-      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false,
+      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: false, partnersOpen: false, closedCommerce: true,
       soon: { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
     },
     CREATORS_HUB: {
@@ -122,6 +127,15 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       modules: ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"], emailFromName: "NextLevel", legalLine: LEGAL("NextLevel"), signupOpen: false, partnersOpen: true, soon: null,
     },
   };
+}
+
+/** A marca opera fechada (ver `Brand.closedCommerce`): configuração da marca, nunca condicional por empresa em componente. */
+export const isClosedCommerceBrand = (brand: Pick<Brand, "closedCommerce"> | null | undefined): boolean => brand?.closedCommerce === true;
+
+/** Códigos das marcas fechadas, para filtrar consultas no banco (ex.: fornecedores que não podem aparecer em página pública). */
+export function closedCommerceBrandCodes(env: Record<string, string | undefined> = process.env): BrandCode[] {
+  const all = brandsFrom(env);
+  return BRAND_CODES.filter((c) => isClosedCommerceBrand(all[c]));
 }
 
 export const isBrandCode = (v: unknown): v is BrandCode => typeof v === "string" && (BRAND_CODES as readonly string[]).includes(v);

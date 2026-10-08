@@ -1,6 +1,9 @@
-import type { Brand } from "@/lib/brand";
+import { isClosedCommerceBrand, type Brand } from "@/lib/brand";
 
-/** A Brás Digital começa como operação fechada: sua página de espera não vira conteúdo indexável. */
-export function robotsForBrandPortal(brand: Pick<Brand, "code">): { index: false; follow: false } | undefined {
-  return brand.code === "BRAS_DIGITAL" ? { index: false, follow: false } : undefined;
+/**
+ * Operação fechada (hoje a Brás Digital): nenhuma página do endereço da marca vira conteúdo indexável.
+ * Vem da configuração da marca (`closedCommerce`), não de comparação com o código da empresa.
+ */
+export function robotsForBrandPortal(brand: Pick<Brand, "closedCommerce">): { index: false; follow: false } | undefined {
+  return isClosedCommerceBrand(brand) ? { index: false, follow: false } : undefined;
 }
