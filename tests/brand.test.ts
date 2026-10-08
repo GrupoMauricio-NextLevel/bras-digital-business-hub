@@ -28,7 +28,11 @@ describe("marcas do portfólio", () => {
     expect(all.BRAS_DIGITAL.live).toBe(false);
     expect(all.NEXTLEVEL_COMMERCE.signupOpen).toBe(false);
     expect(brandsFrom({ BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true" }).NEXTLEVEL_COMMERCE.signupOpen).toBe(true);
-    expect(brandByCode("BRAS_DIGITAL", {}).name).toBe("Brás Digital");
+    const bras = brandByCode("BRAS_DIGITAL", {});
+    expect(bras.name).toBe("Brás Digital");
+    expect(bras.signupOpen).toBe(false);
+    expect(bras.description).toMatch(/fechada/i);
+    expect(bras.soon?.text).toMatch(/membros aprovados/i);
     expect(brandByCode("xyz", {}).code).toBe("SUPERDROP");
   });
 });
