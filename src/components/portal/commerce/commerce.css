@@ -29,3 +29,30 @@
 }
 
 @media (max-width: 767px) { .cm-drift, .cm-drift-fast { animation: none !important; } }
+
+/* Planos (pricing.tsx): seletor mensal/anual, simulador de faturamento e cartão em destaque. */
+.cm-seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--ds-surface-2, #eef1f6); border: 1px solid var(--ds-line); }
+.cm-seg button { display: inline-flex; align-items: center; gap: 6px; min-height: 2.75rem; padding: 0 1.15rem; border-radius: 999px; font-weight: 700; font-size: 0.95rem; color: var(--ds-muted); transition: background 0.15s ease, color 0.15s ease; }
+.cm-seg button[aria-pressed="true"] { background: var(--ds-primary); color: var(--ds-primary-contrast); box-shadow: 0 6px 16px -8px rgb(var(--ds-shadow-rgb, 15 23 42) / 0.5); }
+.cm-seg button:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 2px; }
+.cm-seg-badge { border-radius: 999px; padding: 1px 7px; font-size: 0.72rem; font-weight: 800; background: var(--ds-highlight, #f2b600); color: #111827; }
+.cm-range { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 25%, var(--ds-line))); cursor: pointer; }
+.cm-range::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--ds-surface); border: 4px solid var(--ds-primary); box-shadow: 0 4px 12px -2px rgb(15 23 42 / 0.35); transition: transform 0.15s ease; }
+.cm-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--ds-surface); border: 4px solid var(--ds-primary); }
+.cm-range:active::-webkit-slider-thumb { transform: scale(1.12); }
+.cm-range:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 6px; }
+.cm-plan { will-change: transform; }
+.cm-plan--on { background: var(--ds-band); color: var(--ds-band-fg); box-shadow: 0 0 0 2px var(--ds-primary), 0 24px 48px -24px rgb(15 23 42 / 0.55); transform: translateY(-6px); }
+.cm-plan-btn { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; border-radius: 999px; font-weight: 800; background: var(--ds-primary); color: var(--ds-primary-contrast); transition: filter 0.15s ease, transform 0.15s ease; }
+.cm-plan-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.cm-plan-btn:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 3px; }
+.cm-plan-btn--ghost { background: transparent; color: var(--ds-text); border: 1.5px solid var(--ds-line); }
+.cm-plan-btn--on { background: var(--ds-highlight, #f2b600); color: #111827; }
+@media (prefers-reduced-motion: reduce) { .cm-plan, .cm-plan-btn, .cm-seg button { transition: none; } .cm-plan--on { transform: none; } }
+
+/* Vitrine de temas (theme-gallery.tsx): captura do computador com o celular por cima. */
+.cm-theme-shot { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 1.25rem; background: var(--ds-surface-2, #eef1f6); }
+.cm-theme-shot > img.cm-desk { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cm-theme-card:hover .cm-theme-shot > img.cm-desk { transform: scale(1.04); }
+.cm-theme-shot > img.cm-mob { position: absolute; right: 6%; bottom: -6%; width: 24%; aspect-ratio: 9 / 19; object-fit: cover; object-position: top; border-radius: 0.9rem; border: 4px solid #0b1220; box-shadow: 0 14px 30px -10px rgb(0 0 0 / 0.5); }
+@media (prefers-reduced-motion: reduce) { .cm-theme-shot > img.cm-desk { transition: none; } .cm-theme-card:hover .cm-theme-shot > img.cm-desk { transform: none; } }

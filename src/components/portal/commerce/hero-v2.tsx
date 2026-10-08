@@ -9,7 +9,7 @@ import { StoreMock } from "./store-mock";
 const CTA = "inline-flex h-14 items-center justify-center rounded-full bg-primary px-8 text-base font-bold text-primary-foreground transition-colors hover:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-band-foreground";
 
 /** Primeira dobra: campo de cor cheio, título enorme com palavra que alterna e um palco com dispositivos mostrando a loja e o painel. */
-export function HeroV2({ cta, signupOpen }: { cta: string; signupOpen: boolean }) {
+export function HeroV2({ cta, signupOpen, offer }: { cta: string; signupOpen: boolean; offer?: { trialDays: number; firstPeriodCents: number | null } | null }) {
   const moda = DEMO_STORES[0]!;
   return (
     <section className="relative overflow-hidden bg-band text-band-foreground" aria-labelledby="titulo">
@@ -23,10 +23,12 @@ export function HeroV2({ cta, signupOpen }: { cta: string; signupOpen: boolean }
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-band-muted sm:text-xl">Vitrine com o seu estilo, Pix e cartão, pedidos e clientes no mesmo lugar. Você escolhe um tema, ajusta a loja no editor e só publica quando quiser.</p>
         <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Link href={cta} className={`${CTA} w-full sm:w-auto`}>Quero minha loja</Link>
-          <span aria-hidden className="hidden h-10 w-px bg-surface/25 sm:block" />
-          <p className="max-w-xs text-sm text-band-foreground/75">{signupOpen ? "Crie a sua conta e comece a montar." : "Cadastro por convite no momento."} <a href="#exemplos" className="font-semibold text-band-foreground underline underline-offset-4">Ver lojas de exemplo</a></p>
+          <Link href={cta} className={`${CTA} w-full sm:w-auto`}>{signupOpen ? (offer ? "Criar minha loja grátis" : "Criar minha loja") : "Quero minha loja"}</Link>
+          <a href="#planos" className="inline-flex h-14 w-full items-center justify-center rounded-full border border-band-foreground/35 px-7 text-base font-semibold text-band-foreground hover:bg-band-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-band-foreground sm:w-auto">Ver planos</a>
         </div>
+        <p className="mt-4 text-sm text-band-foreground/75">
+          {signupOpen ? (offer ? <>{offer.trialDays} dias grátis{offer.firstPeriodCents !== null ? <> · 1º mês por {formatBRL(offer.firstPeriodCents)}</> : null} · conta criada na hora</> : "Crie a sua conta e comece a montar.") : "Cadastro por convite no momento."} · <a href="#exemplos" className="font-semibold text-band-foreground underline underline-offset-4">Ver lojas de exemplo</a>
+        </p>
       </div>
 
       <div className="relative mx-auto mt-6 max-w-6xl px-3 sm:px-4">

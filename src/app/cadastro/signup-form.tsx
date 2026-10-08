@@ -11,8 +11,8 @@ type Offer = { key: "DROP_MANUAL" | "STORE_SUBDOMAIN" | "STORE_OWN"; name: strin
 type Plan = { key: "COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE"; name: string; monthlyCents: number; annualCents: number; feeBps: number };
 type EntryOffer = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number } | null;
 
-export function SignupForm({ initialCode, initialRef, initialOffer, initialSupplier, independent = false, offers, suppliers, plans, entry, initialPlan }: { initialCode: string; initialRef?: string; initialOffer: Offer["key"]; initialSupplier: string; independent?: boolean; offers: Offer[]; suppliers: { slug: string; name: string }[]; plans?: Plan[]; entry?: EntryOffer; initialPlan?: Plan["key"] }) {
-  const [f, setF] = React.useState({ storeName: "", ownerName: "", email: "", password: "", taxId: "", code: initialCode, offer: initialOffer, supplierSlug: initialSupplier, plan: initialPlan ?? "COMMERCE_START" as Plan["key"], cycle: "MONTHLY" as "MONTHLY" | "ANNUAL" });
+export function SignupForm({ initialCode, initialRef, initialOffer, initialSupplier, independent = false, offers, suppliers, plans, entry, initialPlan, initialCycle = "MONTHLY" }: { initialCode: string; initialRef?: string; initialOffer: Offer["key"]; initialSupplier: string; independent?: boolean; offers: Offer[]; suppliers: { slug: string; name: string }[]; plans?: Plan[]; entry?: EntryOffer; initialPlan?: Plan["key"]; initialCycle?: "MONTHLY" | "ANNUAL" }) {
+  const [f, setF] = React.useState({ storeName: "", ownerName: "", email: "", password: "", taxId: "", code: initialCode, offer: initialOffer, supplierSlug: initialSupplier, plan: initialPlan ?? "COMMERCE_START" as Plan["key"], cycle: initialCycle as "MONTHLY" | "ANNUAL" });
   const usePlans = !!plans?.length;
   const [pending, start] = React.useTransition();
   const [error, setError] = React.useState<string | null>(null);

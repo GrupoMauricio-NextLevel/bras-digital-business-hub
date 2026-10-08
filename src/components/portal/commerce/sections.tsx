@@ -19,7 +19,7 @@ export function ForWhom({ cta }: { cta: string }) {
         <li key={r.who} className="grid gap-2 py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] md:items-center md:gap-10">
           <h3 className="font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-foreground">{r.who}</h3>
           <p className="text-[17px] leading-relaxed text-body">{r.text}</p>
-          <Link href={cta} className="text-base font-semibold text-link underline underline-offset-4 hover:no-underline">Quero começar assim</Link>
+          <Link href={cta} className="text-base font-semibold text-link underline underline-offset-4 hover:no-underline">Começar assim</Link>
         </li>
       ))}
     </ul>
@@ -53,64 +53,49 @@ export function Operation() {
   );
 }
 
-export function Steps({ cta }: { cta: string }) {
+export type EntryOffer = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number } | null;
+
+/** Começar sozinho, sem esperar contato: criar a conta, montar e publicar. */
+export function Steps({ cta, signupOpen, offer }: { cta: string; signupOpen: boolean; offer: EntryOffer }) {
   const steps = [
-    { phase: "Contato", t: "Deixe seu contato", d: "O cadastro está por convite. Você conta o que vende e como despacha." },
-    { phase: "Contato", t: "A equipe responde", d: "A NextLevel combina o plano com você e libera o acesso à sua conta." },
-    { phase: "Montagem", t: "Monte a loja", d: "Escolha o tema, envie os produtos por planilha e ajuste cores e textos. Dá para fazer pedidos de teste; enquanto não publica, só você vê." },
-    { phase: "Publicação", t: "Conecte o Mercado Pago e publique", d: "Com a conta conectada, a loja passa a receber pagamentos de verdade." },
+    { n: "1", t: "Crie a conta", d: offer ? `Leva 1 minuto. Você escolhe o plano e começa com ${offer.trialDays} dias grátis para montar com calma.` : "Leva 1 minuto. Você escolhe o plano e já entra no painel." },
+    { n: "2", t: "Monte a loja", d: "Escolha um tema, ajuste cores, logo e textos no editor e cadastre os produtos, um a um ou por planilha. Enquanto não publica, só você vê." },
+    { n: "3", t: "Conecte o Mercado Pago e publique", d: "Com a sua conta conectada, a loja recebe Pix e cartão e o dinheiro das vendas cai direto para você." },
   ];
   return (
     <div>
-      <ol className="grid gap-x-8 gap-y-10 md:grid-cols-4">
-        {steps.map((s, n) => (
-          <li key={s.t} className="border-t-2 border-foreground pt-4">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-link">{n + 1} · {s.phase}</p>
-            <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-foreground">{s.t}</h3>
+      <ol className="grid gap-6 md:grid-cols-3">
+        {steps.map((s) => (
+          <li key={s.t} className="relative overflow-hidden rounded-[1.5rem] border border-border bg-surface p-6">
+            <span aria-hidden className="font-[family-name:var(--nl-font-display)] text-6xl font-extrabold leading-none text-link/15">{s.n}</span>
+            <h3 className="mt-3 font-[family-name:var(--nl-font-display)] text-xl font-extrabold leading-snug text-foreground">{s.t}</h3>
             <p className="mt-2 text-[15px] leading-relaxed text-body">{s.d}</p>
           </li>
         ))}
       </ol>
-      <Link href={cta} className={`${CTA} mt-10`}>Quero minha loja</Link>
-    </div>
-  );
-}
-
-export type ThemeRow = { key: string; name: string; priceCents: number; tagline: string };
-export function ThemesAndPrices({ themes }: { themes: ThemeRow[] }) {
-  return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-      <div>
-        <h2 className={`${H2} text-foreground`}>Comece com um tema grátis. Troque quando quiser.</h2>
-        <p className="mt-4 max-w-md text-lg leading-relaxed text-body">O tema Starter já vem com a sua loja. Os temas pagos são instalados com um clique e mantêm o seu conteúdo.</p>
-        <p className="mt-4 max-w-md text-[15px] text-body">O plano da sua loja (mensalidade, domínio próprio e módulos) é combinado na conversa com a equipe, de acordo com o tamanho da operação.</p>
-        <Link href="/planos" className="mt-6 inline-block text-base font-semibold text-foreground underline decoration-primary decoration-2 underline-offset-[6px] hover:decoration-[#14213d]">Ver como os planos funcionam</Link>
-      </div>
-      <div>
-        <ul className="divide-y divide-border border-y border-border">
-          {themes.map((t) => (
-            <li key={t.key} className="flex items-baseline justify-between gap-4 py-4">
-              <div><p className="font-[family-name:var(--nl-font-display)] text-lg font-extrabold text-foreground">{t.name}</p><p className="text-[15px] text-body">{t.tagline}</p></div>
-              <p className="shrink-0 text-lg font-bold tabular-nums text-foreground">{t.priceCents === 0 ? "Grátis" : formatBRL(t.priceCents)}</p>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-sm text-muted-foreground">Valores do catálogo de temas de hoje; podem mudar. Compra pela Loja NextLevel.</p>
+      <div className="mt-10 flex flex-wrap items-center gap-4">
+        <Link href={cta} className={CTA}>{signupOpen ? "Criar minha loja agora" : "Quero minha loja"}</Link>
+        {offer && signupOpen ? <p className="text-sm text-body">{offer.trialDays} dias grátis{offer.firstPeriodCents !== null ? ` · 1º mês por ${formatBRL(offer.firstPeriodCents)}` : ""}</p> : null}
       </div>
     </div>
   );
 }
 
-const FAQ = [
-  { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
-  { q: "Posso usar a minha identidade?", a: "Sim: logo, cores, fontes e textos são seus. O domínio próprio (seudominio.com.br) faz parte do plano de loja própria." },
-  { q: "Quanto custa?", a: "" /* montada a partir do catálogo de temas (fonte única) */ },
-  { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes e análise de vendas. Atacado (preço por quantidade e pedido mínimo) está em construção e ainda não pode ser usado." },
-  { q: "Como começo?", a: "Deixe seu contato. O cadastro aberto ao público ainda não foi liberado; a equipe da NextLevel responde e combina os próximos passos." },
-];
-export function Faq({ themes }: { themes: { name: string; priceCents: number }[] }) {
-  const prices = themes.map((t) => `${t.name} ${t.priceCents === 0 ? "grátis" : formatBRL(t.priceCents)}`).join(", ");
-  const items = FAQ.map((f) => (f.q === "Quanto custa?" ? { ...f, a: `Os temas custam: ${prices} (valores do catálogo de hoje, que podem mudar). O plano da loja, com mensalidade e taxas, é combinado na conversa com a equipe: ainda não há uma tabela pública de planos.` } : f));
+export type PlanFaq = { name: string; monthlyCents: number | null; feeBps: number | null; quote: boolean };
+export function Faq({ plans, offer, themes }: { plans: PlanFaq[]; offer: EntryOffer; themes: { name: string; priceCents: number }[] }) {
+  const pagos = plans.filter((p) => !p.quote && p.monthlyCents);
+  const faixa = pagos.length ? `de ${formatBRL(Math.min(...pagos.map((p) => p.monthlyCents!)))} a ${formatBRL(Math.max(...pagos.map((p) => p.monthlyCents!)))} por mês, mais uma taxa de ${pagos.map((p) => `${((p.feeBps ?? 0) / 100).toString().replace(".", ",")}%`).join(", ")} sobre as vendas pagas, conforme o plano` : "de acordo com o plano escolhido";
+  const gratis = themes.filter((t) => t.priceCents === 0).length;
+  const pagosTemas = themes.filter((t) => t.priceCents > 0).map((t) => t.priceCents);
+  const items = [
+    { q: "Como começo?", a: `Crie a conta direto pelo site, em 1 minuto: escolha o plano e já entre no painel.${offer ? ` Clientes novos têm ${offer.trialDays} dias grátis${offer.firstPeriodCents !== null ? `, o 1º mês do plano mensal por ${formatBRL(offer.firstPeriodCents)}` : ""} e taxa zero nos primeiros ${offer.feeHolidayMonths} meses (uma vez por CPF/CNPJ).` : ""}` },
+    { q: "Quanto custa?", a: `Os planos vão ${faixa}. No anual há desconto. Operações maiores têm o Enterprise, por proposta.` },
+    { q: "Como recebo pelas vendas?", a: "Pela sua própria conta Mercado Pago: 100% das vendas caem direto para você, com Pix e cartão. A NextLevel cobra o plano e a taxa em fatura separada." },
+    { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
+    { q: "Os temas são pagos?", a: `Há ${gratis} temas grátis para começar.${pagosTemas.length ? ` Os temas pagos custam de ${formatBRL(Math.min(...pagosTemas))} a ${formatBRL(Math.max(...pagosTemas))}, em pagamento único, e são instalados com um clique mantendo o seu conteúdo.` : ""}` },
+    { q: "Posso usar o meu domínio e a minha marca?", a: "Sim: logo, cores, fontes e textos são seus, e o domínio próprio (seudominio.com.br) faz parte dos planos." },
+    { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes, cupons, campanhas e análise de vendas. Recuperação de carrinho, marketplace, ERP e API ainda não fazem parte da plataforma." },
+  ];
   return (
     <div className="mx-auto max-w-3xl divide-y divide-border border-y border-border">
       {items.map((f) => (
@@ -125,14 +110,14 @@ export function Faq({ themes }: { themes: { name: string; priceCents: number }[]
   );
 }
 
-export function ClosingCta({ cta, signupOpen }: { cta: string; signupOpen: boolean }) {
+export function ClosingCta({ cta, signupOpen, offer }: { cta: string; signupOpen: boolean; offer: EntryOffer }) {
   return (
     <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4">
       <div>
         <h2 className={`${H2} max-w-xl text-band-foreground`}>Veja a sua marca numa loja assim.</h2>
-        <p className="mt-3 max-w-lg text-lg text-band-foreground/85">{signupOpen ? "Crie a sua conta e comece a montar." : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
+        <p className="mt-3 max-w-lg text-lg text-band-foreground/85">{signupOpen ? (offer ? `Crie a conta agora e use ${offer.trialDays} dias grátis para montar.` : "Crie a sua conta e comece a montar.") : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
       </div>
-      <Link href={cta} className={CTA}>Quero minha loja</Link>
+      <Link href={cta} className={CTA}>{signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
     </div>
   );
 }

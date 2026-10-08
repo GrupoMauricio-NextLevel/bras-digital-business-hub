@@ -15,7 +15,7 @@ import { finFlag } from "@/lib/finance/flags";
 export const metadata: Metadata = { title: "Criar minha loja", description: "Escolha o plano, pague por Pix e comece a vender. Com o cupom do seu fornecedor, teste 7 dias sem cartão." };
 export const dynamic = "force-dynamic";
 
-export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string }> }) {
+export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string }> }) {
   const brand = await requireBrandFeature("signup");
   const independent = !brandHas(brand, "dropship");
   const sp = await searchParams;
@@ -34,7 +34,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
       <Link href="/" aria-label={`${brand.name}, página inicial`}><BrandLogo brand={brand} className="mx-auto h-9" /></Link>
       <h1 className="mt-6 text-center text-2xl font-bold tracking-tight">Crie sua loja em 1 minuto</h1>
       <p className="mt-1 text-center text-sm text-muted-foreground">{pv ? "Escolha o plano. Clientes novos começam com dias grátis; depois, pagamento por Pix ou cartão." : <>Escolha o plano, pague por Pix e o acesso é liberado na hora.{independent ? "" : " Tem cupom do seu fornecedor? Teste 7 dias sem cartão."}</>}</p>
-      <SignupForm initialRef={(sp.ref ?? "").slice(0, 40) || undefined} initialCode={(sp.cupom ?? "").toUpperCase().slice(0, 24)} initialOffer={plano} initialSupplier={fornecedor} independent={independent} offers={offers} suppliers={suppliers} plans={plans} entry={pv?.offer ?? null} initialPlan={initialPlan} />
+      <SignupForm initialRef={(sp.ref ?? "").slice(0, 40) || undefined} initialCode={(sp.cupom ?? "").toUpperCase().slice(0, 24)} initialOffer={plano} initialSupplier={fornecedor} independent={independent} offers={offers} suppliers={suppliers} plans={plans} entry={pv?.offer ?? null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} />
       <p className="mt-4 text-center text-sm text-muted-foreground">Já tem conta? <Link href="/login" className="font-semibold underline">Entrar na área de membros</Link></p>
       <NextLevelSignature compact className="mt-8 justify-center text-center text-muted-foreground" />
     </main>
