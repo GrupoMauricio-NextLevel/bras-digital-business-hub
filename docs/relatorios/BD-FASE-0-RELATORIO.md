@@ -23,7 +23,7 @@ Nenhuma falha causada pelo trabalho já entregue. O "Bloqueio técnico" registra
 | `5dcb4e5` | Projeção comercial | `projectBrasCommercial` entrega só campos da lista permitida; preço, estoque em caixas, importadora e vídeo completo só com membro aprovado. `brasCommercialAccessFromSession` falha fechado: até existir o modelo de membro B2B, ninguém é "membro aprovado". |
 | `7531533` | Cascas dos painéis | `/master/bras` com Estúdio, Balcão e Meu Brás: estados vazio, carregando e erro, sem nenhum dado. Abre só para o Master **e** com `BRAS_PANELS=true`; fora disso, 404. Sem papel, tabela, menu ou migração novos. Cada região mostra de qual decisão depende. |
 
-Testes da frente: `tests/brand.test.ts`, `tests/bras-visibility.test.ts`, `tests/bras-access.test.ts`, `tests/bras-fronteira.test.ts` (inclui isolamento entre tenants), `tests/bras-panels.test.ts`. Última execução: 8 arquivos, 55 testes passando; tipos e estilo limpos.
+Testes da frente: `tests/brand.test.ts`, `tests/bras-visibility.test.ts`, `tests/bras-access.test.ts`, `tests/bras-fronteira.test.ts` (inclui isolamento entre tenants), `tests/bras-panels.test.ts`. Suíte completa (`npx vitest run`): 92 arquivos, 691 testes passando; tipos e estilo limpos.
 
 ### Por que a prévia fica dentro do Master
 
