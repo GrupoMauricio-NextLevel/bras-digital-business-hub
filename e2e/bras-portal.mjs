@@ -291,6 +291,55 @@ ok("cadastro e Meu Brás");
     if (!/Sua assinatura vale até/.test(await m.p.locator("main").innerText())) fail("descoberta: aviso da assinatura ausente");
     await m.c.close();
   }
+  // D102/D103: endereço e comissão da importadora, pedido pago, comprovante de retirada, romaneio, comissões e visão geral.
+  await p.goto(B + "/bras/importadoras", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: "Editar retirada e comissão de Importadora Piloto" }).click();
+  const fi = p.getByRole("form", { name: "Retirada e comissão de Importadora Piloto" });
+  await fi.getByLabel("Endereço de retirada no Brás").fill("Rua Barão de Ladário, 100, loja 3");
+  await fi.getByLabel("Comissão (%)").fill("5");
+  await fi.getByRole("button", { name: "Salvar" }).click();
+  await p.getByText("Rua Barão de Ladário, 100, loja 3").waitFor({ timeout: 30000 });
+  await check(p, "estúdio importadoras", 1440);
+  const romaneio = await p.getByRole("link", { name: "Romaneio" }).first().getAttribute("href");
+  await p.goto(B + "/bras", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: "Marcar pago" }).first().click();
+  await p.getByText("Pago", { exact: true }).first().waitFor({ timeout: 30000 });
+  await p.waitForTimeout(800);
+  await p.goto(B + romaneio, { waitUntil: "networkidle" });
+  const rom = await p.locator("main").innerText();
+  if (!/BD-[A-Z2-9]{4}/.test(rom) || !/Braspress/.test(rom)) fail("romaneio: código ou envio ausente");
+  if (/Ana Utilidades|11\.222\.333|ana@utilidades|R\$/.test(rom)) fail("romaneio: dado do membro ou valor vazou");
+  await check(p, "romaneio", 1440);
+  await shot(p, `${OUT}/13-romaneio-1440.png`);
+  await p.goto(B + "/bras/comissoes", { waitUntil: "networkidle" });
+  if (!/Importadora Piloto/.test(await p.locator("main").innerText())) fail("comissões: importadora ausente");
+  await p.getByRole("button", { name: "Marcar como recebida" }).first().click();
+  await p.getByLabel("Observação (opcional)").fill("Pix de teste");
+  await p.getByRole("button", { name: "Confirmar" }).click();
+  await p.getByText(/Recebida em/).first().waitFor({ timeout: 30000 });
+  await check(p, "comissões", 1440);
+  await shot(p, `${OUT}/14-comissoes-1440.png`);
+  const csv = await p.request.get(B + "/bras/comissoes/csv");
+  if (csv.status() !== 200 || !/Importadora Piloto/.test(await csv.text())) fail("comissões: CSV");
+  await p.goto(B + "/bras/visao", { waitUntil: "networkidle" });
+  if (!(await p.getByRole("heading", { name: /Pagos em/ }).isVisible())) fail("visão geral: mês ausente");
+  await check(p, "visão geral", 1440);
+  await shot(p, `${OUT}/15-visao-geral-1440.png`);
+  {
+    const m = await page(390); await loginMembro(m.p);
+    await m.p.goto(BRAS + "/meu-bras/pedidos", { waitUntil: "networkidle" });
+    await m.p.getByRole("link", { name: /Comprovante de retirada/ }).first().click();
+    await m.p.waitForURL(/\/retirada$/); await m.p.waitForLoadState("networkidle");
+    const cp = await m.p.locator("main").innerText();
+    if (!/BD-[A-Z2-9]{4}/.test(cp) || !/Rua Barão de Ladário, 100, loja 3/.test(cp)) fail("comprovante: código ou endereço ausente");
+    await check(m.p, "comprovante de retirada", 390);
+    await shot(m.p, `${OUT}/07e-comprovante-390.png`);
+    const other = await m.p.goto(BRAS + "/meu-bras/pedidos/bdr_naoexiste123/retirada", { waitUntil: "networkidle" });
+    if (other?.status() !== 404) fail(`comprovante de outro pedido: status ${other?.status()}`);
+    await m.c.close();
+  }
+  // Importadora sem login e visitante não abrem o Estúdio nem o CSV.
+  { const v = await (await ctxFor(1280)).request.get(B + "/bras/comissoes/csv"); if (v.status() !== 403) fail(`CSV sem login: status ${v.status()}`); }
   await p.goto(B + "/bras/membros", { waitUntil: "networkidle" });
   await p.getByText("Ana Utilidades LTDA").waitFor();
   await check(p, "estúdio membros", 1440);

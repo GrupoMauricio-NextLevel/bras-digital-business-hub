@@ -9,6 +9,7 @@ import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 import { notifyBrasRequestCreated, notifyBrasRequestStatus } from "./avisos";
 import { brasPublishedWhere } from "./videos";
+import { brasCommissionBpsFor, newPickupCode } from "./comissoes";
 
 /**
  * Catálogo e pedido de compra da Brás Digital (D93), primeira etapa e manual:
@@ -213,7 +214,22 @@ export async function setBrasRequestStatus(db: Database, actor: Actor, id: strin
   const r = await db.query.bdRequests.findFirst({ where: eq(bdRequests.id, id) });
   if (!r) throw new NotFoundError("Pedido não encontrado.");
   if (!NEXT[r.status].includes(status)) throw new DomainError("STATUS", `Um pedido "${BRAS_REQUEST_LABEL[r.status]}" não pode ir para "${BRAS_REQUEST_LABEL[status]}".`);
-  const upd = await db.update(bdRequests).set({ status, updatedAt: new Date().toISOString() }).where(and(eq(bdRequests.id, id), eq(bdRequests.status, r.status))).returning({ id: bdRequests.id });
+  const agora = new Date().toISOString();
+  // Confirmado: nasce o código de retirada (D103). Pago: data do pagamento e comissão congelada (D102).
+  const extra: Partial<typeof bdRequests.$inferInsert> = {};
+  if (status === "CONFIRMED" && !r.pickupCode) extra.pickupCode = newPickupCode();
+  if (status === "PAID") { extra.paidAt = agora; extra.commissionBps = await brasCommissionBpsFor(db, r.importerId); }
+  let upd: { id: string }[] = [];
+  for (let tentativa = 0; tentativa < 5; tentativa++) {
+    try {
+      upd = await db.update(bdRequests).set({ status, updatedAt: agora, ...extra }).where(and(eq(bdRequests.id, id), eq(bdRequests.status, r.status))).returning({ id: bdRequests.id });
+      break;
+    } catch (e) {
+      // Colisão rara do código de retirada: sorteia outro.
+      if (!extra.pickupCode || tentativa === 4) throw e;
+      extra.pickupCode = newPickupCode();
+    }
+  }
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou enquanto você mexia. Atualize a página.");
   await recordAudit(db, actor, { action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: id, before: { status: r.status }, after: { status } });
   await notifyBrasRequestStatus(db, id, status);

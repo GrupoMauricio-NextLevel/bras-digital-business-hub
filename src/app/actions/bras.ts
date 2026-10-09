@@ -10,6 +10,7 @@ import { getBrand } from "@/lib/brand-server";
 import { isClosedCommerceBrand } from "@/lib/brand";
 import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
+import { setBrasDefaultCommissionBps, settleBrasCommission, undoBrasSettlement, updateBrasImporterDetails, type brasImporterDetailsSchema, type brasSettleSchema } from "@/lib/domain/bras/comissoes";
 import { acceptBrasTerms, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, setBrasVideoPublishAt, type brasVideoSchema } from "@/lib/domain/bras/videos";
 import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
@@ -125,4 +126,18 @@ export async function grantBrasAccessAction(input: z.input<typeof brasGrantSchem
 
 export async function revokeBrasAccessAction(grantId: string) {
   return runAction(async () => { const { actor, db } = await master(); const r = await revokeBrasAccess(db, actor, grantId); refresh(); return r; });
+}
+
+/** Comissão (D102): padrão, dados da importadora, marcar o mês como recebido e desfazer. */
+export async function setBrasDefaultCommissionAction(pct: number) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasDefaultCommissionBps(db, actor, Math.round(pct * 100)); refresh(); return r; });
+}
+export async function updateBrasImporterDetailsAction(id: string, input: z.input<typeof brasImporterDetailsSchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await updateBrasImporterDetails(db, actor, id, input); refresh(); return r; });
+}
+export async function settleBrasCommissionAction(input: z.input<typeof brasSettleSchema>) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await settleBrasCommission(db, actor, input); refresh(); return r; });
+}
+export async function undoBrasSettlementAction(id: string, reason: string) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await undoBrasSettlement(db, actor, id, reason); refresh(); return r; });
 }

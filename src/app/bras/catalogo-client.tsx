@@ -9,13 +9,58 @@ import { Badge } from "@/components/ui/badge";
 import { FormField } from "@/components/app/form-field";
 import { EmptyState } from "@/components/app/empty-state";
 import { MoneyField } from "@/components/finance/fields";
-import { addBrasImporterAction, removeBrasOfferAction, setBrasImporterActiveAction, setBrasOfferAction, setBrasRequestStatusAction } from "@/app/actions/bras";
+import { addBrasImporterAction, removeBrasOfferAction, setBrasDefaultCommissionAction, setBrasImporterActiveAction, setBrasOfferAction, setBrasRequestStatusAction, updateBrasImporterDetailsAction } from "@/app/actions/bras";
+import Link from "next/link";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 
-type Importer = { id: string; name: string; notes: string | null; active: boolean };
+type Importer = { id: string; name: string; notes: string | null; active: boolean; pickupAddress?: string | null; commissionBps?: number | null };
 
-export function ImportersManager({ importers }: { importers: Importer[] }) {
+const pct = (bps: number) => `${(bps / 100).toString().replace(".", ",")}%`;
+const lerPct = (v: string) => { const n = Number(v.replace(",", ".")); return v.trim() === "" ? null : Number.isFinite(n) ? n : NaN; };
+
+/** Comissão padrão das importadoras (D102): vale para quem não tem percentual próprio. */
+export function DefaultCommission({ bps }: { bps: number }) {
+  const router = useRouter();
+  const [v, setV] = React.useState((bps / 100).toString().replace(".", ","));
+  const [pending, start] = React.useTransition();
+  return (
+    <form className="ds-card mb-6 flex flex-wrap items-end gap-3 p-4" aria-label="Comissão padrão" onSubmit={(e) => { e.preventDefault(); const n = lerPct(v); if (n === null || Number.isNaN(n)) { toast.error("Informe a comissão em %."); return; } start(async () => { const r = await setBrasDefaultCommissionAction(n); if (r.ok) { toast.success("Comissão padrão salva"); router.refresh(); } else toast.error(r.error); }); }}>
+      <FormField label="Comissão padrão (%)" htmlFor="c-padrao" hint="Vale para a importadora sem percentual próprio. Fica congelada em cada pedido quando ele é pago." className="w-56"><Input id="c-padrao" inputMode="decimal" value={v} onChange={(e) => setV(e.target.value)} /></FormField>
+      <Button type="submit" variant="secondary" loading={pending}>Salvar</Button>
+      <p className="text-sm text-muted-foreground">Controle manual: o sistema calcula, a cobrança é feita por você. Veja em <Link href="/bras/comissoes" className="font-semibold text-link underline">Comissões</Link>.</p>
+    </form>
+  );
+}
+
+function ImporterDetails({ i, defaultBps }: { i: Importer; defaultBps: number }) {
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [f, setF] = React.useState({ address: i.pickupAddress ?? "", pct: i.commissionBps == null ? "" : (i.commissionBps / 100).toString().replace(".", ",") });
+  const [pending, start] = React.useTransition();
+  if (!open) return (
+    <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-2 text-sm">
+      <span><span className="text-muted-foreground">Retirada:</span> {i.pickupAddress ?? <em className="text-muted-foreground">sem endereço</em>}</span>
+      <span><span className="text-muted-foreground">Comissão:</span> {i.commissionBps == null ? `${pct(defaultBps)} (padrão)` : pct(i.commissionBps)}</span>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(true)} aria-label={`Editar retirada e comissão de ${i.name}`}>Editar</Button>
+      <Link href={`/bras/romaneio/${i.id}`} className="font-semibold text-link underline">Romaneio</Link>
+    </div>
+  );
+  return (
+    <form className="grid w-full gap-3 border-t border-border pt-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end" aria-label={`Retirada e comissão de ${i.name}`} onSubmit={(e) => {
+      e.preventDefault();
+      const n = lerPct(f.pct);
+      if (Number.isNaN(n)) { toast.error("Comissão inválida."); return; }
+      start(async () => { const r = await updateBrasImporterDetailsAction(i.id, { pickupAddress: f.address.trim() || null, commissionPct: n }); if (r.ok) { toast.success("Importadora atualizada"); setOpen(false); router.refresh(); } else toast.error(r.error); });
+    }}>
+      <FormField label="Endereço de retirada no Brás" htmlFor={`addr-${i.id}`} hint="O membro vê depois do pedido confirmado."><Input id={`addr-${i.id}`} maxLength={200} value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} placeholder="Rua Barão de Ladário, 000, loja 00" /></FormField>
+      <FormField label="Comissão (%)" htmlFor={`pct-${i.id}`} hint="Vazio = padrão"><Input id={`pct-${i.id}`} inputMode="decimal" value={f.pct} onChange={(e) => setF({ ...f, pct: e.target.value })} /></FormField>
+      <div className="flex gap-2"><Button type="submit" size="sm" loading={pending}>Salvar</Button><Button type="button" size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button></div>
+    </form>
+  );
+}
+
+export function ImportersManager({ importers, defaultBps = 0 }: { importers: Importer[]; defaultBps?: number }) {
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", notes: "" });
   const [pending, start] = React.useTransition();
@@ -39,6 +84,7 @@ export function ImportersManager({ importers }: { importers: Importer[] }) {
             <li key={i.id} className="ds-card flex flex-wrap items-center gap-3 p-3">
               <div className="min-w-0 flex-1"><p className="flex items-center gap-2 font-semibold">{i.name}{i.active ? <Badge tone="success">Ativa</Badge> : <Badge>Pausada</Badge>}</p>{i.notes ? <p className="text-sm text-muted-foreground">{i.notes}</p> : null}</div>
               <Button size="sm" variant="secondary" disabled={pending} onClick={() => toggle(i)}>{i.active ? "Pausar" : "Reativar"}</Button>
+              <ImporterDetails i={i} defaultBps={defaultBps} />
             </li>
           ))}
         </ul>

@@ -81,3 +81,10 @@
 .bd-tile { background: #fff; color: var(--bd-navy); }
 :root[data-theme="dark"] .bd-tile { background: #16213d; color: var(--bd-tinta-clara); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-tile { background: #16213d; color: var(--bd-tinta-clara); } }
+
+/* Impressão do comprovante de retirada e do romaneio (D103): só o conteúdo, sem menu, cabeçalho nem botões. */
+@media print {
+  .ds-side, .ds-top, .ds-skip, .bd-no-print, [data-sonner-toaster] { display: none !important; }
+  .bd-comprovante { max-width: none; color: #000; }
+  .bd-comprovante .ds-card { box-shadow: none; border: 1px solid #999; }
+}

@@ -208,7 +208,9 @@ export const COMMERCE_ADMIN_NAV: NavItem[] = [
 
 /** Estúdio da Brás Digital (D92): área do Master com menu, nome e cor da Brás. */
 export const BRAS_ADMIN_NAV: NavItem[] = [
+  { label: "Visão geral", href: "/bras/visao", icon: "LayoutDashboard", group: "Operação" },
   { label: "Pedidos", href: "/bras", icon: "Inbox", exact: true, group: "Operação", bottom: true },
+  { label: "Comissões", href: "/bras/comissoes", icon: "HandCoins", group: "Operação" },
   { label: "Descobertas", href: "/bras/descobertas", icon: "LayoutGrid", group: "Catálogo", bottom: true },
   { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
   { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },

@@ -1674,6 +1674,10 @@ export const bdImporters = pgTable("bd_importers", {
   /** Anotações internas do Master (comissão combinada, contato). Nunca saem para o membro. */
   notes: text("notes"),
   active: boolean("active").notNull().default(true),
+  /** Endereço de retirada no Brás (D103): o membro vê a partir do pedido confirmado, no comprovante de retirada. */
+  pickupAddress: text("pickup_address"),
+  /** Comissão combinada com a importadora, em pontos-base (500 = 5%). Vazio = padrão `bras.default_commission_bps` (D102). */
+  commissionBps: integer("commission_bps"),
   createdAt: createdAt(),
 });
 
@@ -1715,9 +1719,34 @@ export const bdRequests = pgTable("bd_requests", {
   shipZip: text("ship_zip").notNull(),
   /** Observação do membro para a equipe (não vai para a importadora). */
   notes: text("notes"),
+  /** Quando virou Pago (mês da comissão) e a comissão congelada nessa hora, em pontos-base (D102). */
+  paidAt: ts("paid_at"),
+  commissionBps: integer("commission_bps"),
+  /** Código de retirada (D103), gerado na confirmação: o motorista apresenta na importadora. */
+  pickupCode: text("pickup_code").unique(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
-}, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt)]);
+}, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt), index("bd_requests_importer_paid_idx").on(t.importerId, t.paidAt)]);
+
+/**
+ * Fechamento manual da comissão de uma importadora num mês (D102): o sistema calcula, o dono cobra e marca como recebida.
+ * Desfazer não apaga: marca UNDONE com motivo (trilha). Um fechamento ativo por importadora e mês.
+ */
+export const bdCommissionSettlements = pgTable("bd_commission_settlements", {
+  id: id(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  /** Mês no horário de Brasília, "AAAA-MM". */
+  month: text("month").notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  requestsCount: integer("requests_count").notNull(),
+  status: text("status", { enum: ["ACTIVE", "UNDONE"] }).notNull().default("ACTIVE"),
+  note: text("note"),
+  receivedAt: ts("received_at").notNull(),
+  createdBy: text("created_by").notNull(),
+  undoneAt: ts("undone_at"),
+  undoReason: text("undo_reason"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("bd_commission_settlements_active_unique").on(t.importerId, t.month).where(sql`status = 'ACTIVE'`)]);
 
 /**
  * Acesso à análise completa liberado a um membro (D95): assinatura paga (por enquanto confirmada à mão pelo Master, até a

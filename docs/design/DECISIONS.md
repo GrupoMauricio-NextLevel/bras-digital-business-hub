@@ -734,3 +734,19 @@ Rodada da noite (N3, N4 e N5). O Shorts precisa de um destino próprio, o dono p
 - **Agenda:** `bd_videos.publish_at` (migração `0045_bras_agenda_descobertas`). Regra de leitura em um lugar só (`brasPublishedWhere`): ativa e sem agenda ou com a hora já passada. Vale para a página pública, o feed do membro, a página da descoberta e o pedido. Sem agendador.
 - **Estúdio, Descobertas:** "Semana das descobertas" (segunda a domingo no horário de Brasília, meta em `platform_settings` `bras.weekly_goal`, padrão 4), campo "Publicar em", "Publicar agora", selo "Agendada para…", "Copiar link" (para a descrição do Shorts) e "N cadastro(s) · N pedido(s)" por descoberta.
 - Testes: `tests/bras-agenda.test.ts`, `tests/host-routing.test.ts`; e2e `bras-portal` (agenda some da página pública, página da descoberta sem preço nem veredito, 404, botão leva ao cadastro).
+
+## D102 — Brás: visão geral do Estúdio e controle manual da comissão das importadoras (2026-10-09)
+Rodada da noite (N6). O dinheiro do pedido vai todo para a importadora e ela paga a comissão ao dono à parte (D92); faltava saber quanto cada uma deve.
+- **Percentual:** por importadora (`bd_importers.commission_bps`) ou o padrão `platform_settings` `bras.default_commission_bps` (começa em 0%: o dono preenche). Editado em Importadoras.
+- **Congelado no pagamento:** ao virar Pago, o pedido grava `paid_at` e `commission_bps`. Mudar o percentual depois não reescreve o passado. Arredondamento por pedido, meio para cima, em centavos.
+- **Comissões** (`/bras/comissoes`): por importadora e mês de Brasília (últimos 6 meses), pedidos Pagos ou Retirados, comissão devida; "Marcar como recebida" grava o valor do momento em `bd_commission_settlements` (um ativo por importadora e mês); desfazer exige motivo e não apaga (fica UNDONE). Pedido pago depois do fechamento aparece como diferença, sem mudar o fechamento. CSV com `;` e vírgula decimal, sem nenhum dado do membro. Texto na tela: "Controle manual: o sistema calcula, a cobrança é feita por você".
+- **Visão geral** (`/bras/visao`, primeiro item do menu do Estúdio): pedidos recebidos há mais de 24 h, pagos no mês (pedidos, caixas, vendas, comissão), membros novos, pedidos por situação e a semana das descobertas.
+- Migração `0046_bras_comissoes_e_retirada` (aditiva). Testes: `tests/bras-comissoes.test.ts`; e2e `bras-portal` (editar importadora, marcar pago, marcar recebida, CSV, visão geral, CSV sem login = 403).
+
+## D103 — Brás: código de retirada, comprovante do membro e romaneio da importadora (2026-10-09)
+Rodada da noite (N7). A retirada é pela transportadora do cliente: o motorista precisa de um papel, e a importadora de uma lista do que separar, sem ver o cliente.
+- **Código** `BD-XXXX` (sem 0/O, 1/I/L), único, gerado ao confirmar; não muda ao pagar.
+- **Comprovante** `/meu-bras/pedidos/<id>/retirada`: código, caixas, importadora e endereço de retirada (`bd_importers.pickup_address`), transportadora e envio; imprimir e "Mandar ao motorista pelo WhatsApp". Só o dono do pedido, a partir de Confirmado (senão 404).
+- **Romaneio** `/bras/romaneio/<importadora>` (Master): pedidos Pagos daquela importadora só com `brasShippingView` + código; imprimir e copiar texto para o WhatsApp da importadora. Nenhum nome de empresa, CNPJ, telefone, e-mail ou valor.
+- CSS de impressão esconde menu e botões.
+- Testes: `tests/bras-comissoes.test.ts` (código, isolamento, chaves do romaneio); e2e `bras-portal`.

@@ -1,6 +1,7 @@
 import { requireRole } from "@/lib/require-session";
 import { RoleLayout } from "@/components/app/role-layout";
 import { AreaTheme } from "@/design-system/components/area-theme";
+import "@/components/portal/bras/bras.css";
 
 export const dynamic = "force-dynamic";
 

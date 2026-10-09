@@ -43,7 +43,10 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                 <p className="tabular-nums text-sm text-muted-foreground">{formatBRL(r.priceBoxCents)} a caixa · total {formatBRL(r.totalCents)} · retirada por {r.carrier}</p>
                 <p className="text-sm">{r.importerName ? <>Retirar na importadora: <b>{r.importerName}</b></> : "Importadora parceira: o nome aparece quando o pedido for confirmado."}</p>
                 <p className="mt-2 text-sm">{NEXT_STEP[r.status]}</p>
-                {wa && r.status !== "CANCELED" && r.status !== "PICKED_UP" ? <a href={wa} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm font-semibold text-link underline">Falar com a equipe sobre este pedido</a> : null}
+                <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  {r.status === "CONFIRMED" || r.status === "PAID" || r.status === "PICKED_UP" ? <Link href={`/meu-bras/pedidos/${r.id}/retirada`} className="font-semibold text-link underline">Comprovante de retirada{r.pickupCode ? ` (${r.pickupCode})` : ""}</Link> : null}
+                  {wa && r.status !== "CANCELED" && r.status !== "PICKED_UP" ? <a href={wa} target="_blank" rel="noreferrer" className="font-semibold text-link underline">Falar com a equipe sobre este pedido</a> : null}
+                </p>
               </li>
             );
           })}
