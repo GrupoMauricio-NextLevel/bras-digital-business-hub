@@ -835,3 +835,21 @@ O dono respondeu às perguntas do prompt `docs/prompts/bras-ecossistema-importad
   - antes desta decisão, o endereço caía na marca padrão e mostrava o SuperDrop;
   - o painel da transportadora fica para a fase F2.
 - Testes: `tests/bras-v2-f0.test.ts`, `tests/cargas.test.ts`. Migração `0048_bras_v2_perfil_suporte_pauta`.
+
+## D109 — Telas de entrada e prévias de link só com imagem da própria marca (2026-10-09)
+O dono viu o login da NextLevel Cargas com a foto de moda da Commerce e o convite "Quer uma loja?". Pediu para tirar imagens que não são da marca, enquanto não houver as certas.
+- **Login:**
+  - só foto de direção de arte da própria marca: SuperDrop (`sd-lojista-home-office`), Commerce (`cm-dono-gestao`) e Brás (`bd-cadastro-lateral`);
+  - Master, Cargas e as marcas em breve entram com fundo na cor da marca, sem foto;
+  - no computador, a foto ocupa a parte esquerda, presa à altura da tela, e o cartão fica à direita. A foto deixou de ser ampliada pela lista de perfis de demonstração.
+- **Convite do login** por marca (`loginInviteFor`):
+  - Cargas: "Cadastrar minha transportadora";
+  - Master: nenhum convite ("Acesso restrito à equipe NextLevel");
+  - marcas em breve: lista de espera;
+  - "É parceiro?" só aparece onde o programa de parceiros está aberto e nunca no Master.
+- **Parceiros:** a faixa com foto de atleta (loja de demonstração) virou faixa na cor da marca.
+- **Prévia de link (WhatsApp e redes):**
+  - antes, o arquivo `src/app/opengraph-image.png` mostrava a logo do SuperDrop em todos os endereços: Cargas, Commerce, Master e lojas;
+  - agora o SuperDrop usa a arte dele (`public/og/superdrop.png`) e a Brás a dela;
+  - as outras marcas usam um cartão gerado com o nome, a frase e a cor da marca (`/og/<marca>.png`).
+- Testes: `tests/login-marca.test.ts`.

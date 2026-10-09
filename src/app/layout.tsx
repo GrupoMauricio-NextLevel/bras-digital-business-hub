@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ogImageFor } from "@/lib/og-marca";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: brand.name, template: `%s · ${brand.name}` },
     description: `${brand.name}: ${brand.description} Plataforma da NextLevel Marketing.`,
     icons: brandIcons(brand.code),
+    // Prévia de link da própria marca (antes um arquivo único com a arte do SuperDrop valia para todos os endereços).
+    openGraph: { siteName: brand.name, locale: "pt_BR", type: "website", title: brand.name, description: brand.description, images: [ogImageFor(brand)] },
     // Marca de operação fechada (Brás Digital) ainda "em breve": nenhuma página do endereço é indexável. As demais marcas não mudam.
     ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}),
   };

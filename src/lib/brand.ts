@@ -56,6 +56,8 @@ export type Brand = {
   landing?: "cargas";
   /** Só estes caminhos públicos existem no endereço da marca (além dos painéis e de /api); o resto volta para a página inicial. */
   publicPaths?: string[];
+  /** Convite no rodapé da tela de entrada. Ausente = o convite do modelo da marca (loja, cadastro de membro, lista de espera); null = nenhum. */
+  loginInvite?: { lead: string; label: string; href: string } | null;
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
@@ -134,6 +136,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       primaryColor: PALETTES.NEXTLEVEL_CARGAS.light.ink, accentColor: PALETTES.NEXTLEVEL_CARGAS.light.signal, logo: "nextlevel", wordmark: "Cargas",
       modules: [], emailFromName: "NextLevel Cargas", legalLine: LEGAL("NextLevel Cargas"), signupOpen: false, partnersOpen: false, soon: null,
       landing: "cargas", publicPaths: ["/", ""],
+      loginInvite: { lead: "Ainda não tem cadastro?", label: "Cadastrar minha transportadora", href: "/#cadastro" },
     },
     NEXTLEVEL: {
       code: "NEXTLEVEL", name: "NextLevel", live: true,
@@ -144,8 +147,18 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       officeUrl: null,
       primaryColor: PALETTES.NEXTLEVEL.light.ink, accentColor: PALETTES.NEXTLEVEL.light.signal, logo: "nextlevel",
       modules: ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"], emailFromName: "NextLevel", legalLine: LEGAL("NextLevel"), signupOpen: false, partnersOpen: true, soon: null,
+      // Endereço só da equipe: sem convite de cadastro nem de parceiro na tela de entrada.
+      loginInvite: null,
     },
   };
+}
+
+/** Convite da tela de entrada: o da marca, ou o do modelo dela (membro da operação fechada, loja, lista de espera). Null = nenhum. */
+export function loginInviteFor(brand: Pick<Brand, "loginInvite" | "closedCommerce" | "signupOpen" | "soon">): { lead: string; label: string; href: string } | null {
+  if (brand.loginInvite !== undefined) return brand.loginInvite;
+  if (brand.soon) return { lead: "Quer entrar?", label: brand.soon.leadTitle, href: "/quero-minha-loja" };
+  if (brand.closedCommerce && brand.signupOpen) return { lead: "Ainda não é membro?", label: "Cadastrar minha empresa (grátis)", href: "/cadastro" };
+  return brand.signupOpen ? { lead: "Ainda não tem uma loja?", label: "Criar agora", href: "/cadastro" } : { lead: "Quer uma loja?", label: "Falar com a gente", href: "/quero-minha-loja" };
 }
 
 /** A marca opera fechada (ver `Brand.closedCommerce`): configuração da marca, nunca condicional por empresa em componente. */

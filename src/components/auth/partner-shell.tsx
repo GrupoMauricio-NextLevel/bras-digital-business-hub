@@ -1,18 +1,17 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
-import { AUTH_PHOTO } from "./auth-photo";
 
 /**
- * Tela de parceiros: faixa de foto no topo e folha branca arredondada que sobe sobre ela, com o nome do programa em cor de marca,
+ * Tela de parceiros: faixa na cor da marca no topo e folha branca arredondada que sobe sobre ela, com o nome do programa em cor de marca,
  * um título grande e o formulário. A foto é decorativa (alt vazio).
  */
 export function PartnerShell({ program, title, intro, children }: { program: string; title: string; intro?: ReactNode; children: ReactNode }) {
-  const photo = AUTH_PHOTO.partner;
   return (
     <>
     <main className="min-h-dvh bg-surface">
-      <div className="relative h-44 w-full overflow-hidden sm:h-56 lg:h-64">
-        <Image src={photo.src} alt={photo.alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: photo.position }} />
+      {/* Sem foto até existir uma do programa de parceiros (a de loja de demonstração não serve): faixa na cor da marca. */}
+      <div aria-hidden className="relative h-36 w-full overflow-hidden bg-band sm:h-44 lg:h-52">
+        <div className="absolute -right-32 -top-32 size-[30rem] rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(circle, var(--ds-primary), transparent 65%)" }} />
+        <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
       </div>
       <div className="relative -mt-8 rounded-t-[32px] bg-surface px-5 pb-16 pt-8 sm:px-8">
         <div className="mx-auto w-full max-w-xl">

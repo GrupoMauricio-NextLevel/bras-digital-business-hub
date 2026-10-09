@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { AuthCardShell } from "@/components/auth/auth-card-shell";
 import { getBrand } from "@/lib/brand-server";
+import { HOLDING_CODE, loginInviteFor } from "@/lib/brand";
 import { LoginForm } from "./login-form";
 import { DEMO_PASSWORD } from "@/db/seed-constants";
 
@@ -31,6 +32,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const brand = await getBrand();
   const demo = isDemoMode();
   const users = demo ? await listDemoUsers() : [];
+  const invite = loginInviteFor(brand);
 
   return (
     <AuthCardShell
@@ -69,10 +71,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <p className="mt-2 text-sm text-muted-foreground">Use o e-mail e a senha do seu cadastro ou do convite.</p>
       <div className="mt-6"><LoginForm voltar={voltar} /></div>
       <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm text-body">
-        {brand.closedCommerce && brand.signupOpen
-          ? <p>Ainda não é membro? <Link href="/cadastro" className="font-semibold text-foreground underline underline-offset-2">Cadastrar minha empresa (grátis)</Link></p>
-          : <p>{brand.signupOpen ? "Ainda não tem uma loja? " : "Quer uma loja? "}<Link href={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} className="font-semibold text-foreground underline underline-offset-2">{brand.signupOpen ? "Criar agora" : "Falar com a gente"}</Link></p>}
-        {brand.modules.includes("partners") ? <p>É parceiro? <Link href="/parceiros/entrar" className="font-semibold text-foreground underline underline-offset-2">Entrar como parceiro</Link></p> : null}
+        {invite ? <p>{invite.lead ? `${invite.lead} ` : ""}<Link href={invite.href} className="font-semibold text-foreground underline underline-offset-2">{invite.label}</Link></p> : <p className="text-muted-foreground">Acesso restrito à equipe NextLevel.</p>}
+        {brand.code !== HOLDING_CODE && brand.partnersOpen ? <p>É parceiro? <Link href="/parceiros/entrar" className="font-semibold text-foreground underline underline-offset-2">Entrar como parceiro</Link></p> : null}
       </div>
     </AuthCardShell>
   );
