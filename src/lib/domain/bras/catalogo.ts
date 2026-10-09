@@ -151,6 +151,14 @@ export const BRAS_REQUEST_LABEL: Record<BrasRequestStatus, string> = { NEW: "Rec
 /** Caminho do pedido. Cancelar vale até a retirada. */
 const NEXT: Record<BrasRequestStatus, BrasRequestStatus[]> = { NEW: ["CONFIRMED", "CANCELED"], CONFIRMED: ["PAID", "CANCELED"], PAID: ["PICKED_UP", "CANCELED"], PICKED_UP: [], CANCELED: [] };
 export const brasNextStatuses = (s: BrasRequestStatus) => NEXT[s];
+/** Próxima etapa em palavras, para o membro (Meus pedidos e início do Meu Brás). */
+export const BRAS_NEXT_STEP: Record<BrasRequestStatus, string> = {
+  NEW: "A equipe vai confirmar as caixas e o pagamento com você pelo WhatsApp.",
+  CONFIRMED: "Confirmado. Faça o pagamento combinado com a equipe.",
+  PAID: "Pago. Envie a sua transportadora para retirar no Brás.",
+  PICKED_UP: "Retirado pela transportadora.",
+  CANCELED: "Pedido cancelado.",
+};
 
 async function activeMemberOf(db: Database, actor: Actor) {
   if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Pedido disponível só para membros da Brás Digital.");

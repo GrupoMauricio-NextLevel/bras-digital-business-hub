@@ -5,7 +5,7 @@ import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
-import { BRAS_REQUEST_LABEL, listMyBrasRequests, type BrasRequestStatus } from "@/lib/domain/bras/catalogo";
+import { BRAS_NEXT_STEP, BRAS_REQUEST_LABEL, listMyBrasRequests, type BrasRequestStatus } from "@/lib/domain/bras/catalogo";
 import { brasWhatsappUrl } from "@/lib/bras/contato";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
@@ -13,13 +13,7 @@ import { formatDateTime } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 const TONE: Record<BrasRequestStatus, "info" | "warning" | "success" | "neutral" | "danger"> = { NEW: "info", CONFIRMED: "warning", PAID: "success", PICKED_UP: "neutral", CANCELED: "danger" };
-const NEXT_STEP: Record<BrasRequestStatus, string> = {
-  NEW: "A equipe vai confirmar as caixas e o pagamento com você pelo WhatsApp.",
-  CONFIRMED: "Confirmado. Faça o pagamento combinado com a equipe.",
-  PAID: "Pago. Envie a sua transportadora para retirar no Brás.",
-  PICKED_UP: "Retirado pela transportadora.",
-  CANCELED: "Pedido cancelado.",
-};
+const NEXT_STEP = BRAS_NEXT_STEP;
 
 export default async function Pedidos({ searchParams }: { searchParams: Promise<{ enviado?: string }> }) {
   const session = await requireRole("BRAS_MEMBER");

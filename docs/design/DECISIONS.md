@@ -750,3 +750,10 @@ Rodada da noite (N7). A retirada é pela transportadora do cliente: o motorista 
 - **Romaneio** `/bras/romaneio/<importadora>` (Master): pedidos Pagos daquela importadora só com `brasShippingView` + código; imprimir e copiar texto para o WhatsApp da importadora. Nenhum nome de empresa, CNPJ, telefone, e-mail ou valor.
 - CSS de impressão esconde menu e botões.
 - Testes: `tests/bras-comissoes.test.ts` (código, isolamento, chaves do romaneio); e2e `bras-portal`.
+
+## D104 — Brás: membros no Estúdio e início do Meu Brás (2026-10-09)
+Rodada da noite (N8 e N9).
+- **Membros (Estúdio):** busca por empresa, nome, e-mail ou CNPJ (com ou sem máscara, já existia); filtros Todos, Ativos, Bloqueados, Com pedido, Sem pedido e Vieram de descoberta; colunas com origem (nome da descoberta), termos não aceitos, número de pedidos, valor pago e última visita; "Exportar CSV" (`/bras/membros/csv`, só Master, contém dados pessoais: uso interno).
+- **Início do Meu Brás:** "N descobertas novas desde a sua última visita" (contadas pela hora em que entraram no ar) e "Seus pedidos em andamento" com a próxima etapa em palavras e o comprovante de retirada. A visita (`last_seen_at`) é gravada no máximo uma vez por hora.
+- Texto da próxima etapa num lugar só (`BRAS_NEXT_STEP`), usado em Meus pedidos e no início.
+- Testes: `tests/bras-membros-painel.test.ts`; e2e `bras-portal` (filtros, CSV, início com pedido em andamento).

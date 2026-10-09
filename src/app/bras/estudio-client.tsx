@@ -12,6 +12,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasMemberStatusAction, setBrasVideoActiveAction, setBrasVideoPublishAtAction } from "@/app/actions/bras";
 import { formatDate } from "@/lib/utils";
 import { quando } from "@/lib/bras/quando";
+import { formatBRL } from "@/lib/money";
 import { OfferEditor } from "./catalogo-client";
 
 import type { DiscoveryRow } from "./descoberta-editor";
@@ -111,12 +112,15 @@ export function VideosManager({ videos, offers, importers, stats = {}, baseUrl, 
   );
 }
 
-type MemberRow = { id: string; companyName: string; cnpj: string; name: string; email: string; whatsapp: string; status: "ACTIVE" | "BLOCKED"; blockedReason: string | null; createdAt: string };
+type MemberRow = { id: string; companyName: string; cnpj: string; name: string; email: string; whatsapp: string; status: "ACTIVE" | "BLOCKED"; blockedReason: string | null; createdAt: string; requests?: number; paidCents?: number; lastRequestAt?: string | null; origin?: string; termsOk?: boolean; lastSeenAt?: string | null };
+const FILTROS = [["todos", "Todos"], ["ativos", "Ativos"], ["bloqueados", "Bloqueados"], ["com-pedido", "Com pedido"], ["sem-pedido", "Sem pedido"], ["descoberta", "Vieram de descoberta"]] as const;
+type Filtro = (typeof FILTROS)[number][0];
 
 export function MembersTable({ members }: { members: MemberRow[] }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   const [q, setQ] = React.useState("");
+  const [filtro, setFiltro] = React.useState<Filtro>("todos");
   const setStatus = (m: MemberRow, status: "ACTIVE" | "BLOCKED") => start(async () => {
     const reason = status === "BLOCKED" ? window.prompt(`Motivo do bloqueio de ${m.companyName} (só a equipe vê):`)?.trim() : undefined;
     if (status === "BLOCKED" && !reason) return;
@@ -126,21 +130,29 @@ export function MembersTable({ members }: { members: MemberRow[] }) {
   if (members.length === 0) return <EmptyState icon={Lock} title="Nenhum membro ainda" description="Quem se cadastrar com CNPJ pela página pública aparece aqui na hora, já liberado. Você pode bloquear quem não for lojista." />;
   const t = q.trim().toLowerCase();
   const digits = t.replace(/\D/g, "");
-  const shown = t ? members.filter((m) => `${m.companyName} ${m.name} ${m.email}`.toLowerCase().includes(t) || (digits.length >= 3 && m.cnpj.replace(/\D/g, "").includes(digits))) : members;
+  const passa = (m: MemberRow) => filtro === "todos" || (filtro === "ativos" && m.status === "ACTIVE") || (filtro === "bloqueados" && m.status === "BLOCKED") || (filtro === "com-pedido" && (m.requests ?? 0) > 0) || (filtro === "sem-pedido" && !(m.requests ?? 0)) || (filtro === "descoberta" && m.origin?.startsWith("Descoberta"));
+  const shown = members.filter(passa).filter((m) => !t || `${m.companyName} ${m.name} ${m.email}`.toLowerCase().includes(t) || (digits.length >= 3 && m.cnpj.replace(/\D/g, "").includes(digits)));
   return (
     <div className="space-y-3">
       <label htmlFor="m-busca" className="sr-only">Buscar membro</label>
-      <Input id="m-busca" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por empresa, nome, e-mail ou CNPJ" className="max-w-md" />
+      <div className="flex flex-wrap items-center gap-3">
+        <Input id="m-busca" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por empresa, nome, e-mail ou CNPJ" className="max-w-md" />
+        <a href="/bras/membros/csv" className="ds-btn ds-btn--secondary ds-btn--sm">Exportar CSV</a>
+      </div>
+      <div role="group" aria-label="Filtrar membros" className="flex flex-wrap gap-2">
+        {FILTROS.map(([k, n]) => <button key={k} type="button" aria-pressed={filtro === k} onClick={() => setFiltro(k)} className={`min-h-9 rounded-full border px-3 text-sm font-semibold ${filtro === k ? "border-transparent bg-foreground text-surface" : "border-border bg-surface"}`}>{n}</button>)}
+      </div>
       <p className="text-xs text-muted-foreground">Dados de contato só para a equipe da Brás Digital: nunca são enviados às importadoras (elas recebem só o endereço de envio de cada pedido).</p>
       <div className="ds-card overflow-x-auto">
         <table className="w-full min-w-[44rem] text-sm">
-          <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3">Empresa</th><th scope="col" className="p-3">Contato</th><th scope="col" className="p-3">Cadastro</th><th scope="col" className="p-3">Situação</th><th scope="col" className="p-3"><span className="sr-only">Ações</span></th></tr></thead>
+          <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3">Empresa</th><th scope="col" className="p-3">Contato</th><th scope="col" className="p-3">Cadastro</th><th scope="col" className="p-3">Pedidos</th><th scope="col" className="p-3">Situação</th><th scope="col" className="p-3"><span className="sr-only">Ações</span></th></tr></thead>
           <tbody>
             {shown.map((m) => (
               <tr key={m.id} className="border-b border-border last:border-0">
                 <td className="p-3"><p className="font-semibold">{m.companyName}</p><p className="tabular-nums text-xs text-muted-foreground">{m.cnpj}</p></td>
                 <td className="p-3"><p>{m.name}</p><p className="text-xs text-muted-foreground">{m.email} · {m.whatsapp}</p></td>
-                <td className="p-3 tabular-nums">{formatDate(m.createdAt, { day: "2-digit", month: "short", year: "numeric" })}</td>
+                <td className="p-3"><p className="tabular-nums">{formatDate(m.createdAt, { day: "2-digit", month: "short", year: "numeric" })}</p>{m.origin ? <p className="text-xs text-muted-foreground">{m.origin}</p> : null}{m.termsOk === false ? <p className="text-xs text-warning">Termos ainda não aceitos</p> : null}</td>
+                <td className="p-3"><p className="tabular-nums">{m.requests ?? 0}</p>{m.paidCents ? <p className="text-xs tabular-nums text-muted-foreground">{formatBRL(m.paidCents)} pagos</p> : null}{m.lastSeenAt ? <p className="text-xs text-muted-foreground">Visto em {formatDate(m.lastSeenAt)}</p> : null}</td>
                 <td className="p-3">{m.status === "ACTIVE" ? <Badge tone="success">Ativo</Badge> : <><Badge tone="danger">Bloqueado</Badge>{m.blockedReason ? <p className="mt-1 text-xs text-muted-foreground">{m.blockedReason}</p> : null}</>}</td>
                 <td className="p-3 text-right">
                   {m.status === "ACTIVE"

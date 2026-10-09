@@ -3,9 +3,10 @@ import { ArrowRight, Boxes, MessageCircle, ShieldCheck } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
-import { getBrasMemberByUser } from "@/lib/domain/bras/membros";
+import { getBrasMemberByUser, touchBrasMemberSeen } from "@/lib/domain/bras/membros";
+import { countNewBrasDiscoveries } from "@/lib/domain/bras/videos";
 import { brasAccessFor } from "@/lib/domain/bras/descobertas";
-import { listBrasFeed } from "@/lib/domain/bras/catalogo";
+import { BRAS_NEXT_STEP, BRAS_REQUEST_LABEL, listBrasFeed, listMyBrasRequests } from "@/lib/domain/bras/catalogo";
 import { brasWhatsappUrl } from "@/lib/bras/contato";
 import { BrasFeed } from "./feed";
 
@@ -16,6 +17,10 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
   const db = await getDb();
   const [member, videos] = await Promise.all([getBrasMemberByUser(db, session.user.id), brasAccessFor(db, session).then((a) => listBrasFeed(db, a.level, 4))]);
   const ativo = member?.status === "ACTIVE";
+  // Novas desde a última visita (D104), contadas antes de gravar a visita de agora.
+  const [novas, pedidos] = await Promise.all([countNewBrasDiscoveries(db, member?.lastSeenAt ?? null), ativo ? listMyBrasRequests(db, session.actor) : Promise.resolve([])]);
+  if (member) await touchBrasMemberSeen(db, member.id, member.lastSeenAt);
+  const andamento = pedidos.filter((r) => r.status === "NEW" || r.status === "CONFIRMED" || r.status === "PAID").slice(0, 3);
   const company = member?.companyName ?? session.user.name;
   const falar = brasWhatsappUrl(`Olá! Sou da ${company}, membro da Brás Digital. Quero fazer um pedido.`);
   const novo = (await searchParams)["bem-vindo"] === "1";
@@ -23,6 +28,23 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
     <>
       <PageHeader eyebrow="Meu Brás" title={novo ? `Bem-vindo, ${session.user.name.split(" ")[0]}!` : `Olá, ${session.user.name.split(" ")[0]}`} description={`${company} · membro da Brás Digital`} />
       {novo ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Cadastro criado. Seu acesso de membro já está liberado.</p> : null}
+
+      {novas ? <p role="status" className="mb-6 rounded-lg bg-[var(--bd-laranja)]/10 px-4 py-3 text-sm"><b>{novas === 1 ? "1 descoberta nova" : `${novas} descobertas novas`}</b> desde a sua última visita. <Link href="/meu-bras/videos" className="font-semibold text-link underline">Ver agora</Link></p> : null}
+      {andamento.length ? (
+        <section aria-labelledby="mb-andamento" className="mb-8">
+          <h2 id="mb-andamento" className="mb-3 text-xl font-bold">Seus pedidos em andamento</h2>
+          <ul className="grid gap-3 md:grid-cols-3">
+            {andamento.map((r) => (
+              <li key={r.id} className="ds-card p-4">
+                <p className="flex items-center justify-between gap-2 text-sm font-semibold"><span className="tabular-nums">Pedido {r.number}</span><span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs">{BRAS_REQUEST_LABEL[r.status]}</span></p>
+                <p className="mt-1 text-sm">{r.boxes} caixa(s) de {r.productTitle}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{BRAS_NEXT_STEP[r.status]}</p>
+                {r.status !== "NEW" ? <Link href={`/meu-bras/pedidos/${r.id}/retirada`} className="mt-2 inline-block text-sm font-semibold text-link underline">Comprovante de retirada</Link> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section aria-labelledby="mb-comprar" className="bd-dark mb-8 overflow-hidden rounded-[22px] p-6 md:p-8">
         <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">

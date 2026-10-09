@@ -164,3 +164,10 @@ export async function removeBrasVideo(db: Database, actor: Actor, id: string) {
   await recordAudit(db, actor, { action: "BRAS_VIDEO_REMOVED", entityType: "bd_video", entityId: id, before: { youtubeId: v.youtubeId, title: v.title } }, { force: true });
   return { ok: true as const };
 }
+
+/** Descobertas publicadas desde uma data (D104), pela hora em que entraram no ar (agenda ou criação). Sem data = 0. */
+export async function countNewBrasDiscoveries(db: Database, since: string | null, now = new Date()): Promise<number> {
+  if (!since) return 0;
+  const [r] = await db.select({ n: count() }).from(bdVideos).where(and(brasPublishedWhere(now), sql`coalesce(${bdVideos.publishAt}, ${bdVideos.createdAt}) > ${new Date(since).toISOString()}`));
+  return Number(r?.n ?? 0);
+}

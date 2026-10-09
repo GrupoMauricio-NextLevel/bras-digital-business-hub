@@ -1,7 +1,7 @@
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq, inArray, max, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { bdMembers, bdVideos, organizations, users } from "@/db/schema";
+import { bdMembers, bdRequests, bdVideos, organizations, users } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import type { BrasCommercialAccess } from "@/lib/bras/access";
@@ -113,7 +113,7 @@ export async function brasCommercialAccessFor(db: Database, session: { user: { i
 /** Lista para o Estúdio (só Master): dados de contato do membro nunca saem para importadora. */
 export async function listBrasMembers(db: Database, actor: Actor) {
   requireMaster(actor);
-  return db.select({ id: bdMembers.id, companyName: bdMembers.companyName, cnpj: bdMembers.cnpj, whatsapp: bdMembers.whatsapp, status: bdMembers.status, blockedReason: bdMembers.blockedReason, createdAt: bdMembers.createdAt, name: users.name, email: users.email })
+  return db.select({ id: bdMembers.id, companyName: bdMembers.companyName, cnpj: bdMembers.cnpj, whatsapp: bdMembers.whatsapp, status: bdMembers.status, blockedReason: bdMembers.blockedReason, createdAt: bdMembers.createdAt, name: users.name, email: users.email, termsVersion: bdMembers.termsVersion, termsAcceptedAt: bdMembers.termsAcceptedAt, source: bdMembers.source, sourceVideoId: bdMembers.sourceVideoId, lastSeenAt: bdMembers.lastSeenAt })
     .from(bdMembers).innerJoin(users, eq(users.id, bdMembers.userId)).orderBy(desc(bdMembers.createdAt)).limit(500);
 }
 
@@ -128,4 +128,34 @@ export async function setBrasMemberStatus(db: Database, actor: Actor, memberId: 
   await db.update(bdMembers).set(after).where(eq(bdMembers.id, memberId));
   await recordAudit(db, actor, { action: status === "BLOCKED" ? "BRAS_MEMBER_BLOCKED" : "BRAS_MEMBER_ACTIVATED", entityType: "bd_member", entityId: memberId, before: { status: m.status }, after: { status } });
   return { ok: true as const };
+}
+
+/** Pedidos por membro (D104): quantos, quanto já pagou (pagos e retirados) e o último pedido. Só Master. */
+export async function brasMembersActivity(db: Database, actor: Actor): Promise<Record<string, { requests: number; paidCents: number; lastRequestAt: string | null }>> {
+  requireMaster(actor);
+  const rows = await db.select({
+    memberId: bdRequests.memberId, n: count(),
+    paid: sql<number>`coalesce(sum(case when ${inArray(bdRequests.status, ["PAID", "PICKED_UP"])} then ${bdRequests.totalCents} else 0 end), 0)`,
+    last: max(bdRequests.createdAt),
+  }).from(bdRequests).groupBy(bdRequests.memberId);
+  return Object.fromEntries(rows.map((r) => [r.memberId, { requests: Number(r.n), paidCents: Number(r.paid), lastRequestAt: r.last ? new Date(r.last).toISOString() : null }]));
+}
+
+/** Última visita ao Meu Brás (D104): grava no máximo uma vez por hora, para não escrever a cada página. */
+export async function touchBrasMemberSeen(db: Database, memberId: string, lastSeenAt: string | null, now = new Date()) {
+  if (lastSeenAt && now.getTime() - new Date(lastSeenAt).getTime() < 3600_000) return false;
+  await db.update(bdMembers).set({ lastSeenAt: now.toISOString() }).where(eq(bdMembers.id, memberId));
+  return true;
+}
+
+const csvCell = (v: string | number | null) => { const t = v == null ? "" : String(v); return /[";\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+
+/** CSV dos membros (só Master; contém dados pessoais: uso interno). Separador ;. */
+export function brasMembersCsv(members: Awaited<ReturnType<typeof listBrasMembers>>, activity: Awaited<ReturnType<typeof brasMembersActivity>>): string {
+  const head = ["Empresa", "CNPJ", "Contato", "E-mail", "WhatsApp", "Situação", "Cadastro", "Origem", "Termos aceitos", "Pedidos", "Pago (R$)"];
+  const rows = members.map((m) => {
+    const a = activity[m.id];
+    return [m.companyName, formatCnpj(m.cnpj), m.name, m.email, m.whatsapp, m.status === "ACTIVE" ? "Ativo" : "Bloqueado", new Date(m.createdAt).toISOString().slice(0, 10), m.sourceVideoId ? "descoberta" : (m.source ?? "direto"), m.termsVersion ?? "não", a?.requests ?? 0, ((a?.paidCents ?? 0) / 100).toFixed(2).replace(".", ",")].map(csvCell).join(";");
+  });
+  return [head.join(";"), ...rows].join("\n");
 }
