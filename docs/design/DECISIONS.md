@@ -762,3 +762,11 @@ Rodada da noite (N8 e N9).
 Pedido do dono: "puxa o grupo de imagens necessárias para criar no GPT relacionado ao Brás Digital; me entrega um .md com um prompt engenheiro mestre".
 - `docs/prompts/imagens-bras-digital-gpt.md`: 8 imagens do site (corredor, três "para quem", balcão da importadora, retirada, painel do cadastro, prévia de link) e 2 de apoio fora do site (fundo dos Shorts, conceito de símbolo para designer), com regras (sem texto, marca, preço ou rosto; paleta da Brás), correções prontas e checklist.
 - Lugares ligados no código, **só aparecem quando o arquivo existe** (sem quadro "Imagem em criação" na Brás): corredor em "Como funciona", balcão no cartão da importadora, retirada na seção de dados, textura no painel do cadastro, `og:image` da home da Brás (PNG/JPG/WebP; redes não leem AVIF). Manifesto atualizado.
+
+## D106 — Brás: Balcão da importadora v1 por link privado, atrás da chave (2026-10-09)
+Rodada da noite (N10). O prompt da noite sugeria um papel de login novo (`BRAS_IMPORTER`). **Escolha diferente, registrada:** link privado por importadora, sem login, porque (1) as importadoras não têm conta (D93), (2) um papel novo mexeria em login, menus e roteamento compartilhados com SuperDrop e Commerce, que estão em produção, e (3) o Balcão só mostra o que a importadora já recebe pelo romaneio (D103).
+- **Link** `/balcao/<código>` gerado no Estúdio > Importadoras (só com `BRAS_PANELS=true`): o código aparece uma vez; o banco guarda só o hash SHA-256 (`bd_importers.balcao_token_hash`, migração `0047_bras_balcao_link`); "Trocar link" invalida o anterior; "Revogar" desliga; importadora pausada não entra.
+- **Tela:** Pagos (entregar à transportadora) e Confirmados (separar), só da importadora do link, só `brasShippingView` + código; nenhum dado do comprador além do envio, nenhum valor. `noindex`, `no-referrer`.
+- **Retirada:** digitar o código do motorista (`BD-XXXX`); só pedido Pago; vira Retirado, fica na auditoria (`actor_role` BRAS_BALCAO) e avisa o membro (D100). Limite de 12 tentativas a cada 15 min por link.
+- **Chave `BRAS_PANELS` continua desligada em produção:** sem ela, `/balcao/...` é 404 e o botão nem aparece. Ligar é decisão do dono.
+- Testes: `tests/bras-balcao.test.ts`, `tests/host-routing.test.ts`; e2e `bras-portal` com `E2E_BALCAO=1` e servidor com `BRAS_PANELS=true`.

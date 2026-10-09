@@ -342,6 +342,30 @@ ok("cadastro e Meu Brás");
     if (other?.status() !== 404) fail(`comprovante de outro pedido: status ${other?.status()}`);
     await m.c.close();
   }
+  // D106: Balcão por link privado (só quando o servidor tem BRAS_PANELS=true; rode com E2E_BALCAO=1).
+  if (process.env.E2E_BALCAO === "1") {
+    await p.goto(B + "/bras/importadoras", { waitUntil: "networkidle" });
+    await p.getByRole("button", { name: "Gerar link do Balcão de Importadora Piloto" }).click();
+    const link = (await p.locator("code").filter({ hasText: "/balcao/" }).first().innerText({ timeout: 30000 })).trim();
+    const path = new URL(link).pathname;
+    const bal = await page(390);
+    const rb = await bal.p.goto(BRAS + path, { waitUntil: "networkidle" });
+    if (rb?.status() !== 200) fail(`balcão: status ${rb?.status()}`);
+    const tb = await bal.p.locator("main").innerText();
+    if (!/Pedido 1001/.test(tb) || /Ana Utilidades|11\.222\.333|ana@utilidades|R\$/.test(tb)) fail("balcão: fila errada ou dado do membro/valor vazou");
+    await check(bal.p, "balcão", 390);
+    await shot(bal.p, `${OUT}/16-balcao-390.png`);
+    const codigo = /código (BD-[A-Z2-9]{4})/.exec(tb)?.[1];
+    await bal.p.getByLabel("Código do motorista").first().fill("BD-0000");
+    await bal.p.getByRole("button", { name: "Confirmar retirada" }).first().click();
+    await bal.p.getByText(/Código de retirada não confere/).first().waitFor({ timeout: 30000 });
+    await bal.p.getByLabel("Código do motorista").first().fill(codigo ?? "");
+    await bal.p.getByRole("button", { name: "Confirmar retirada" }).first().click();
+    await bal.p.getByText(/Retirada do pedido 1001 confirmada/).waitFor({ timeout: 30000 });
+    if ((await bal.p.goto(BRAS + "/balcao/" + "x".repeat(40), { waitUntil: "networkidle" }))?.status() !== 404) fail("balcão: link inválido deveria dar 404");
+    await bal.c.close();
+    ok("balcão por link");
+  }
   // Importadora sem login e visitante não abrem o Estúdio nem o CSV.
   { const v = await (await ctxFor(1280)).request.get(B + "/bras/comissoes/csv"); if (v.status() !== 403) fail(`CSV sem login: status ${v.status()}`); }
   await p.goto(B + "/bras/membros", { waitUntil: "networkidle" });

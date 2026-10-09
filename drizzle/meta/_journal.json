@@ -330,6 +330,13 @@
       "when": 1791508040941,
       "tag": "0046_bras_comissoes_e_retirada",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1791515986362,
+      "tag": "0047_bras_balcao_link",
+      "breakpoints": true
     }
   ]
 }

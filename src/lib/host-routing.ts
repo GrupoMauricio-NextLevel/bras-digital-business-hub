@@ -49,7 +49,7 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   // Produto sem sistema ainda ("em breve"): só a página inicial, a lista de espera e os painéis; o resto volta para a página inicial.
   if (brand?.soon && !isPanelPath(pathname) && pathname !== "/" && pathname !== "/quero-minha-loja" && !pathname.startsWith("/r/")) return { kind: "redirect", url: "/" };
   // Operação fechada aberta (Brás Digital, D92): no endereço público só a apresentação, o cadastro e os painéis. As páginas das outras marcas não existem aqui.
-  if (brand?.closedCommerce && !brand.soon && !isPanelPath(pathname) && !CLOSED_PUBLIC_PATHS.includes(pathname) && !pathname.startsWith("/r/") && !/^\/d\/[a-z0-9_]+$/.test(pathname)) return { kind: "redirect", url: "/" };
+  if (brand?.closedCommerce && !brand.soon && !isPanelPath(pathname) && !CLOSED_PUBLIC_PATHS.includes(pathname) && !pathname.startsWith("/r/") && !/^\/d\/[a-z0-9_]+$/.test(pathname) && !/^\/balcao\/[A-Za-z0-9_-]{32,64}$/.test(pathname)) return { kind: "redirect", url: "/" };
   if (brand?.officeUrl && isPanelPath(pathname)) return { kind: "redirect", url: `${brand.officeUrl}${pathname}${search}` };
 
   // `/loja/<nome>` é o endereço bonito da vitrine do vendedor (a rota interna continua `/store/<nome>`).

@@ -77,3 +77,11 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 - Sistema de cores v2: pasta `brand-system-v2/` (abra `preview.html`)
 - Sistema de design: `docs/design-system/README.md`; galeria `/dev/design` só no modo demonstração
 - Decisões: `docs/design/DECISIONS.md`
+
+## Brás Digital (rodada da noite, 2026-10-09)
+- Relatório da noite: `docs/relatorios/BD-RELATORIO-NOITE-2026-10-09.md`
+- Prompt da noite: `docs/prompts/bras-digital-noite.md` · fotos para o GPT: `docs/prompts/imagens-bras-digital-gpt.md`
+- Público: https://bras.nextlevelgroup.com.br · termos: /termos · privacidade: /privacidade · descoberta: /d/<id>
+- Estúdio (Master): /bras/visao · /bras (pedidos) · /bras/comissoes · /bras/descobertas · /bras/importadoras · /bras/membros · /bras/acesso
+- Meu Brás (membro): /meu-bras · /meu-bras/pedidos (comprovante de retirada em cada pedido)
+- Balcão (importadora, só com BRAS_PANELS=true): link gerado em Estúdio > Importadoras

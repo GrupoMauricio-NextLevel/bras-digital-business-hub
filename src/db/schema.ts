@@ -1674,6 +1674,9 @@ export const bdImporters = pgTable("bd_importers", {
   /** Anotações internas do Master (comissão combinada, contato). Nunca saem para o membro. */
   notes: text("notes"),
   active: boolean("active").notNull().default(true),
+  /** Link privado do Balcão (D106): só o hash SHA-256 do código fica guardado; trocar o link invalida o anterior. */
+  balcaoTokenHash: text("balcao_token_hash").unique(),
+  balcaoTokenCreatedAt: ts("balcao_token_created_at"),
   /** Endereço de retirada no Brás (D103): o membro vê a partir do pedido confirmado, no comprovante de retirada. */
   pickupAddress: text("pickup_address"),
   /** Comissão combinada com a importadora, em pontos-base (500 = 5%). Vazio = padrão `bras.default_commission_bps` (D102). */

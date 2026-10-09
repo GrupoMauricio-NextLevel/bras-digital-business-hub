@@ -9,12 +9,29 @@ import { Badge } from "@/components/ui/badge";
 import { FormField } from "@/components/app/form-field";
 import { EmptyState } from "@/components/app/empty-state";
 import { MoneyField } from "@/components/finance/fields";
-import { addBrasImporterAction, removeBrasOfferAction, setBrasDefaultCommissionAction, setBrasImporterActiveAction, setBrasOfferAction, setBrasRequestStatusAction, updateBrasImporterDetailsAction } from "@/app/actions/bras";
+import { addBrasImporterAction, createBalcaoLinkAction, revokeBalcaoLinkAction, removeBrasOfferAction, setBrasDefaultCommissionAction, setBrasImporterActiveAction, setBrasOfferAction, setBrasRequestStatusAction, updateBrasImporterDetailsAction } from "@/app/actions/bras";
 import Link from "next/link";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 
-type Importer = { id: string; name: string; notes: string | null; active: boolean; pickupAddress?: string | null; commissionBps?: number | null };
+type Importer = { id: string; name: string; notes: string | null; active: boolean; pickupAddress?: string | null; commissionBps?: number | null; hasBalcaoLink?: boolean };
+
+/** Link privado do Balcão (D106): aparece uma vez ao gerar; trocar invalida o anterior. Só com BRAS_PANELS ligada. */
+function BalcaoLink({ i }: { i: Importer }) {
+  const router = useRouter();
+  const [url, setUrl] = React.useState<string | null>(null);
+  const [pending, start] = React.useTransition();
+  const gerar = () => start(async () => { const r = await createBalcaoLinkAction(i.id); if (r.ok) { setUrl(`${location.origin.replace("://master.", "://bras.")}${r.data.path}`); router.refresh(); } else toast.error(r.error); });
+  const revogar = () => start(async () => { const r = await revokeBalcaoLinkAction(i.id); if (r.ok) { setUrl(null); toast.success("Link do Balcão revogado"); router.refresh(); } else toast.error(r.error); });
+  return (
+    <div className="flex w-full flex-wrap items-center gap-2 border-t border-border pt-2 text-sm">
+      <span className="text-muted-foreground">Balcão:</span>
+      {url ? <><code className="max-w-full truncate rounded bg-surface-muted px-2 py-1 text-xs">{url}</code><Button size="sm" variant="secondary" onClick={async () => { try { await navigator.clipboard.writeText(url); toast.success("Link copiado. Mande só para a importadora."); } catch { toast.message(url); } }}>Copiar</Button></> : <span>{i.hasBalcaoLink ? "link ativo" : "sem link"}</span>}
+      <Button size="sm" variant="ghost" loading={pending} onClick={gerar} aria-label={`${i.hasBalcaoLink ? "Trocar" : "Gerar"} link do Balcão de ${i.name}`}>{i.hasBalcaoLink ? "Trocar link" : "Gerar link"}</Button>
+      {i.hasBalcaoLink ? <Button size="sm" variant="ghost" disabled={pending} onClick={revogar}>Revogar</Button> : null}
+    </div>
+  );
+}
 
 const pct = (bps: number) => `${(bps / 100).toString().replace(".", ",")}%`;
 const lerPct = (v: string) => { const n = Number(v.replace(",", ".")); return v.trim() === "" ? null : Number.isFinite(n) ? n : NaN; };
@@ -60,7 +77,7 @@ function ImporterDetails({ i, defaultBps }: { i: Importer; defaultBps: number })
   );
 }
 
-export function ImportersManager({ importers, defaultBps = 0 }: { importers: Importer[]; defaultBps?: number }) {
+export function ImportersManager({ importers, defaultBps = 0, balcao = false }: { importers: Importer[]; defaultBps?: number; balcao?: boolean }) {
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", notes: "" });
   const [pending, start] = React.useTransition();
@@ -85,6 +102,7 @@ export function ImportersManager({ importers, defaultBps = 0 }: { importers: Imp
               <div className="min-w-0 flex-1"><p className="flex items-center gap-2 font-semibold">{i.name}{i.active ? <Badge tone="success">Ativa</Badge> : <Badge>Pausada</Badge>}</p>{i.notes ? <p className="text-sm text-muted-foreground">{i.notes}</p> : null}</div>
               <Button size="sm" variant="secondary" disabled={pending} onClick={() => toggle(i)}>{i.active ? "Pausar" : "Reativar"}</Button>
               <ImporterDetails i={i} defaultBps={defaultBps} />
+              {balcao ? <BalcaoLink i={i} /> : null}
             </li>
           ))}
         </ul>

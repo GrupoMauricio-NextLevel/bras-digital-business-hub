@@ -6,7 +6,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | Prompt | Assunto | Estado |
 |---|---|---|
 | `imagens-bras-digital-gpt.md` | **Prompt para o GPT** gerar as fotos da Brás Digital (página pública, cadastro, prévia de link, fundo dos Shorts, conceito de logo), com nomes, proporções e regras | **Salvo** (você leva ao GPT; depois me traga as imagens) |
-| `bras-digital-noite.md` | **Brás Digital, rodada da noite (N1 a N11):** termos e aceite, e-mails e avisos, página de cada descoberta, origem do cadastro, agenda das descobertas, visão geral e comissões manuais, retirada e romaneio, membros, início do Meu Brás, Balcão v1 atrás da chave | **Em execução (2026-10-09)** |
+| `bras-digital-noite.md` | **Brás Digital, rodada da noite (N1 a N11):** termos e aceite, e-mails e avisos, página de cada descoberta, origem do cadastro, agenda das descobertas, visão geral e comissões manuais, retirada e romaneio, membros, início do Meu Brás, Balcão v1 atrás da chave | **Feito (D99 a D106; relatório `docs/relatorios/BD-RELATORIO-NOITE-2026-10-09.md`)** |
 | `auditoria-dono-paineis-e-paginas.md` | **Rodada do dono:** navegação e lógica por marca e papel, suporte com troca de negócio e de painel (modo suporte auditado), identidade das marcas nos painéis, Master × marcas, páginas públicas de alto nível | **Feito** (fases 0 a 6; D80 e D81; relatório em `docs/auditoria-dono/RELATORIO.md`). Falta só o dono: gerar as imagens das páginas públicas |
 | `imagens-paginas-publicas-gpt.md` | **Prompt para o GPT** gerar as fotos das páginas públicas SuperDrop e Commerce (lotes, nomes, proporções) | **Salvo** (você leva ao GPT; depois me traga as imagens) |
 | `programa-parceiros.md` | Programa de Parceiros (afiliados) | Feito (PA0 a PA7, D30) |

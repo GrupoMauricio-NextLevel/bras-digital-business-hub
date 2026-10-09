@@ -11,6 +11,8 @@ import { isClosedCommerceBrand } from "@/lib/brand";
 import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { setBrasDefaultCommissionBps, settleBrasCommission, undoBrasSettlement, updateBrasImporterDetails, type brasImporterDetailsSchema, type brasSettleSchema } from "@/lib/domain/bras/comissoes";
+import { balcaoConfirmPickup, createBalcaoLink, revokeBalcaoLink } from "@/lib/domain/bras/balcao";
+import { brasPanelsEnabled } from "@/lib/bras/panels";
 import { acceptBrasTerms, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, setBrasVideoPublishAt, type brasVideoSchema } from "@/lib/domain/bras/videos";
 import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
@@ -140,4 +142,25 @@ export async function settleBrasCommissionAction(input: z.input<typeof brasSettl
 }
 export async function undoBrasSettlementAction(id: string, reason: string) {
   return runAction(async () => { const { actor, db } = await master(); const r = await undoBrasSettlement(db, actor, id, reason); refresh(); return r; });
+}
+
+/** Balcão (D106): link privado por importadora, só com a chave BRAS_PANELS ligada. */
+export async function createBalcaoLinkAction(importerId: string) {
+  return runAction(async () => {
+    if (!brasPanelsEnabled()) throw new DomainError("PANELS_OFF", "O Balcão está desligado (BRAS_PANELS).");
+    const { actor, db } = await master(); const r = await createBalcaoLink(db, actor, importerId); refresh(); return r;
+  });
+}
+export async function revokeBalcaoLinkAction(importerId: string) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await revokeBalcaoLink(db, actor, importerId); refresh(); return r; });
+}
+/** Confirmação de retirada pela importadora (sem login, pelo link). Limite de tentativas por link contra chute de código. */
+export async function confirmBalcaoPickupAction(token: string, requestId: string, code: string) {
+  return runAction(async () => {
+    if (!brasPanelsEnabled()) throw new DomainError("PANELS_OFF", "Balcão indisponível.");
+    if (!rateLimit(`balcao:${token.slice(0, 16)}`, 12, 15 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
+    const r = await balcaoConfirmPickup(await getDb(), token, requestId, code);
+    revalidatePath(`/balcao/${token}`);
+    return r;
+  });
 }
