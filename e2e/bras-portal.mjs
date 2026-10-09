@@ -69,6 +69,15 @@ ok("página pública vazia");
   if ((await p.locator("ol[aria-label='Descobertas na ordem da página'] > li").count()) !== 4) fail("estúdio: 4 vídeos esperados");
   await p.getByRole("button", { name: "Descer Garrafa térmica inox 1 L, caixa com 24" }).click();
   await p.waitForTimeout(1500);
+  // D101: agenda (Organizador fica para daqui a 2 dias), semana das descobertas, link para o Shorts e resultado por descoberta.
+  if (!(await p.getByRole("heading", { name: "Semana das descobertas" }).isVisible())) fail("estúdio: semana das descobertas ausente");
+  const org = p.locator("ol[aria-label='Descobertas na ordem da página'] > li").filter({ hasText: "Organizador de gaveta modular" });
+  const daqui2 = new Date(Date.now() + 2 * 86400_000 - 3 * 3600_000).toISOString().slice(0, 16);
+  await org.getByLabel("Publicar em (horário de Brasília)").fill(daqui2);
+  await org.getByRole("button", { name: "Agendar" }).click();
+  await org.getByText(/Agendada para/).waitFor({ timeout: 30000 });
+  if (!(await org.getByRole("button", { name: /Copiar link de Organizador/ }).isVisible())) fail("estúdio: copiar link ausente");
+  if (!/0 cadastro\(s\) · 0 pedido\(s\)/.test(await org.innerText())) fail("estúdio: resultado por descoberta ausente");
   // Importadora e oferta (D93): só o membro ativo vê preço e caixas.
   await p.goto(B + "/bras/importadoras", { waitUntil: "networkidle" });
   await p.getByLabel("Nome").fill("Importadora Piloto"); await p.getByLabel(/Anotações internas/).fill("Comissão 5% acertada à parte");
@@ -118,6 +127,7 @@ for (const w of [360, 768, 1440]) {
   const txt = await p.locator("body").innerText();
   if (!/Kit 5 potes herméticos/.test(txt)) fail(`pública @${w}: vídeos não aparecem`);
   if (!/Buscas subindo/.test(txt)) fail(`pública @${w}: sinal de tendência não aparece`);
+  if (/Organizador de gaveta modular/.test(txt)) fail(`pública @${w}: descoberta agendada apareceu antes da hora`);
   if (/Produto certo para quem vende|tttttttttt1|aaaaaaaaan1|Organização de cozinha|Importadora Piloto/.test(await p.content())) fail(`pública @${w}: veredito, trecho, análise ou importadora vazaram`);
   if (/R\$\s?\d/.test(txt)) fail(`pública @${w}: preço aparece`);
   if (!(await p.getByRole("link", { name: /Área do cliente/ }).first().isVisible())) fail(`pública @${w}: botão Área do cliente invisível`);
@@ -150,6 +160,30 @@ for (const w of [360, 1440]) {
   await c.close();
 }
 ok("termos e privacidade");
+
+// 3c. Página de cada descoberta (D101): o link da descrição do Shorts. Sem preço, veredito ou importadora; leva ao cadastro.
+{
+  const { c, p } = await page(390);
+  await p.goto(BRAS + "/", { waitUntil: "networkidle" });
+  const href = await p.getByRole("link", { name: /Ver análise e preço \(Kit 5 potes/ }).getAttribute("href");
+  const vid = /video=([a-z0-9_]+)/.exec(href ?? "")?.[1];
+  if (!vid) fail("descoberta: id não encontrado");
+  const r = await p.goto(BRAS + `/d/${vid}`, { waitUntil: "networkidle" });
+  if (r?.status() !== 200) fail(`descoberta: status ${r?.status()}`);
+  if (!(await p.getByRole("heading", { level: 1, name: "Kit 5 potes herméticos de vidro" }).isVisible())) fail("descoberta: título");
+  const t = await p.locator("body").innerText();
+  if (/R\$\s?\d/.test(t) || /Produto certo para quem vende|Importadora Piloto/.test(await p.content())) fail("descoberta: dado comercial vazou");
+  const og = await p.locator("meta[property='og:image']").getAttribute("content");
+  if (!og?.includes("i.ytimg.com")) fail("descoberta: imagem de compartilhamento ausente");
+  await check(p, "descoberta", 390);
+  await shot(p, `${OUT}/03c-descoberta-390.png`);
+  for (const bad of ["/d/bdv_naoexiste123"]) { const x = await p.goto(BRAS + bad, { waitUntil: "networkidle" }); if (x?.status() !== 404) fail(`descoberta inexistente: status ${x?.status()}`); }
+  await p.goto(BRAS + `/d/${vid}`, { waitUntil: "networkidle" });
+  await p.getByRole("link", { name: "Ver análise e preço" }).last().click();
+  await p.waitForURL(new RegExp(`/cadastro\\?video=${vid}`));
+  await c.close();
+}
+ok("página da descoberta");
 
 // 4. "Quero comprar" leva ao cadastro com o produto; cadastro com CNPJ inválido falha, válido entra no Meu Brás.
 {

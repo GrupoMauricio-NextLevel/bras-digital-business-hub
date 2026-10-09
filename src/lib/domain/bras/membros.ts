@@ -8,6 +8,7 @@ import type { BrasCommercialAccess } from "@/lib/bras/access";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
+import { notifyBrasSignup } from "./avisos";
 
 /**
  * Membro comprador da Brás Digital (D92): cadastro grátis e simples com CNPJ, liberado na hora.
@@ -75,6 +76,8 @@ export async function signupBrasMember(db: Database, raw: z.input<typeof brasSig
     await tx.insert(users).values({ id: userId, name: input.name, email, role: "BRAS_MEMBER", organizationId, passwordHash: hashPassword(input.password) });
     await tx.insert(bdMembers).values({ id: memberId, userId, organizationId, cnpj, companyName: input.companyName, whatsapp: input.whatsapp, termsAcceptedAt: new Date().toISOString(), termsVersion: BRAS_TERMS_VERSION, source, sourceVideoId: video?.id ?? null });
   });
+  // Boas-vindas ao membro e aviso à equipe (D100); falha de e-mail nunca desfaz o cadastro.
+  await notifyBrasSignup(db, memberId);
   return { userId, memberId };
 }
 

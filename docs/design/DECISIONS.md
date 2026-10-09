@@ -718,3 +718,19 @@ Rodada da noite (`docs/prompts/bras-digital-noite.md`, N1 e N4). Com o cadastro 
 - Migração `0044_bras_termos_e_origem` (só colunas novas, anuláveis, e um índice).
 - **Pendências do dono:** revisão jurídica dos dois textos; dados da controladora (CNPJ, endereço, encarregado) para completar a política.
 - Testes: `tests/bras-termos.test.ts`, `tests/host-routing.test.ts`, `tests/health.test.ts`; e2e `bras-portal` (páginas em 360/1440 com axe, sem preço, links no rodapé, 404 fora da Brás, cadastro com aceite).
+
+## D100 — Brás: e-mails ao membro e à equipe (2026-10-09)
+Rodada da noite (N2). O atendimento é da Brás (D92), mas nada avisava a equipe de cadastro ou pedido, nem o membro da mudança de situação.
+- `src/lib/domain/bras/avisos.ts`, sobre o e-mail transacional existente (`sendEmail`, sem provedor novo; sem `RESEND_API_KEY` só registra em `email_outbox`).
+- **Membro:** boas-vindas; "Recebemos o seu pedido N"; confirmado (a importadora passa a aparecer, como em D95); pagamento registrado; retirado; cancelado. Um e-mail por situação (`dedupeKey` `bras-request-<id>-<situação>`).
+- **Equipe:** novo membro (empresa, CNPJ, contato, origem) e novo pedido. Destinatários em `platform_settings` `bras.team_emails`; sem a lista, os usuários Master.
+- Chamado dentro do domínio (cadastro, pedido e troca de situação), para valer também quando o Balcão mudar a situação. Falha no aviso é registrada e engolida: nunca desfaz a ação.
+- **Não feito:** aviso dentro do painel do membro. O sino (`recentNotices`) é compartilhado e não tem escopo de membro da Brás; mexer nele mudaria outras marcas. O início do Meu Brás (N9) mostra os pedidos em andamento.
+- Testes: `tests/bras-avisos.test.ts`.
+
+## D101 — Brás: página de cada descoberta, agenda de publicação e resultado por descoberta (2026-10-09)
+Rodada da noite (N3, N4 e N5). O Shorts precisa de um destino próprio, o dono publica 4 descobertas por semana e quer saber qual vídeo traz cadastro e pedido.
+- **`/d/<id>`** (portal público, só no endereço da Brás; caminho liberado só no formato `/d/<id>`): vídeo, gancho e sinal em palavras; veredito, preço, caixas e análise aparecem trancados; "Ver análise e preço" leva a `/cadastro?video=<id>` (conta na origem, D99); "Já sou membro" abre a descoberta no Meu Brás; compartilhar (menu do celular ou copiar). Metadados com a miniatura do YouTube, sem nenhum dado comercial; `noindex` como o resto da marca fechada. Inexistente, pausada ou agendada: 404.
+- **Agenda:** `bd_videos.publish_at` (migração `0045_bras_agenda_descobertas`). Regra de leitura em um lugar só (`brasPublishedWhere`): ativa e sem agenda ou com a hora já passada. Vale para a página pública, o feed do membro, a página da descoberta e o pedido. Sem agendador.
+- **Estúdio, Descobertas:** "Semana das descobertas" (segunda a domingo no horário de Brasília, meta em `platform_settings` `bras.weekly_goal`, padrão 4), campo "Publicar em", "Publicar agora", selo "Agendada para…", "Copiar link" (para a descrição do Shorts) e "N cadastro(s) · N pedido(s)" por descoberta.
+- Testes: `tests/bras-agenda.test.ts`, `tests/host-routing.test.ts`; e2e `bras-portal` (agenda some da página pública, página da descoberta sem preço nem veredito, 404, botão leva ao cadastro).

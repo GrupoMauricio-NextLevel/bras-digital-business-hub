@@ -2,26 +2,58 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowDown, ArrowUp, Eye, EyeOff, Lock, LockOpen, Plus, Trash2, Video } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarClock, Copy, Eye, EyeOff, Lock, LockOpen, Plus, Trash2, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { FormField } from "@/components/app/form-field";
 import { EmptyState } from "@/components/app/empty-state";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasMemberStatusAction, setBrasVideoActiveAction } from "@/app/actions/bras";
+import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasMemberStatusAction, setBrasVideoActiveAction, setBrasVideoPublishAtAction } from "@/app/actions/bras";
 import { formatDate } from "@/lib/utils";
+import { quando } from "@/lib/bras/quando";
 import { OfferEditor } from "./catalogo-client";
 
 import type { DiscoveryRow } from "./descoberta-editor";
 import { DiscoveryEditor } from "./descoberta-editor";
 
-type VideoRow = { id: string; youtubeId: string; title: string; summary: string | null; active: boolean; discovery: DiscoveryRow };
+type VideoRow = { id: string; youtubeId: string; title: string; summary: string | null; active: boolean; publishAt: string | null; discovery: DiscoveryRow };
+
+/** Valor para o campo datetime-local no horário de Brasília. */
+const paraCampo = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(new Date(iso).getTime() - 3 * 3600_000);
+  return d.toISOString().slice(0, 16);
+};
+
+/** Copia o link curto da descoberta para a descrição do Shorts (D101). */
+function CopyLink({ url, title }: { url: string; title: string }) {
+  return (
+    <Button variant="ghost" size="sm" aria-label={`Copiar link de ${title} para a descrição do Shorts`} onClick={async () => {
+      try { await navigator.clipboard.writeText(url); toast.success("Link copiado. Cole na descrição do Shorts."); } catch { toast.message(url); }
+    }}><Copy className="size-4" aria-hidden />Copiar link</Button>
+  );
+}
+
+/** Agenda: escolher dia e hora (Brasília) ou publicar já. A página só mostra a descoberta a partir da hora marcada. */
+function Agenda({ v, onRun, pending }: { v: VideoRow; onRun: (fn: () => Promise<{ ok: boolean; error?: string }>, ok: string) => void; pending: boolean }) {
+  const [val, setVal] = React.useState(paraCampo(v.publishAt));
+  const id = `agenda-${v.id}`;
+  return (
+    <div className="flex w-full flex-wrap items-end gap-2 border-t border-border pt-3">
+      <FormField label="Publicar em (horário de Brasília)" htmlFor={id} className="min-w-[14rem] flex-1">
+        <Input id={id} type="datetime-local" value={val} onChange={(e) => setVal(e.target.value)} />
+      </FormField>
+      <Button variant="secondary" size="sm" disabled={pending || !val} onClick={() => onRun(() => setBrasVideoPublishAtAction(v.id, `${val}:00-03:00`), "Publicação agendada")}><CalendarClock className="size-4" aria-hidden />Agendar</Button>
+      {v.publishAt ? <Button variant="ghost" size="sm" disabled={pending} onClick={() => { setVal(""); onRun(() => setBrasVideoPublishAtAction(v.id, null), "Descoberta publicada"); }}>Publicar agora</Button> : null}
+    </div>
+  );
+}
 
 type OfferRow = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
 type ImporterRow = { id: string; name: string; notes: string | null; active: boolean };
 
-export function VideosManager({ videos, offers, importers }: { videos: VideoRow[]; offers: Record<string, OfferRow>; importers: ImporterRow[] }) {
+export function VideosManager({ videos, offers, importers, stats = {}, baseUrl, now }: { videos: VideoRow[]; offers: Record<string, OfferRow>; importers: ImporterRow[]; stats?: Record<string, { signups: number; requests: number }>; baseUrl: string; now: string }) {
   const router = useRouter();
   const [f, setF] = React.useState({ url: "", title: "", summary: "" });
   const [pending, start] = React.useTransition();
@@ -52,11 +84,15 @@ export function VideosManager({ videos, offers, importers }: { videos: VideoRow[
               {/* eslint-disable-next-line @next/next/no-img-element -- miniatura do próprio YouTube */}
               <img src={`https://i.ytimg.com/vi/${v.youtubeId}/mqdefault.jpg`} alt="" width={120} height={68} loading="lazy" className="h-[68px] w-[120px] shrink-0 rounded-md bg-surface-muted object-cover" />
               <div className="min-w-0 flex-1">
-                <p className="flex flex-wrap items-center gap-2 font-semibold"><span className="tabular-nums text-muted-foreground">{i + 1}.</span>{v.title}{v.active ? <Badge tone="success">Na página</Badge> : <Badge>Pausado</Badge>}</p>
+                <p className="flex flex-wrap items-center gap-2 font-semibold"><span className="tabular-nums text-muted-foreground">{i + 1}.</span>{v.title}{!v.active ? <Badge>Pausado</Badge> : v.publishAt && v.publishAt > now ? <Badge tone="info">Agendada para {quando(v.publishAt)}</Badge> : <Badge tone="success">Na página</Badge>}</p>
                 {v.summary ? <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">{v.summary}</p> : null}
-                <a href={`https://www.youtube.com/watch?v=${v.youtubeId}`} target="_blank" rel="noreferrer" className="text-xs text-link underline">Abrir no YouTube</a>
+                <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-xs">
+                  <a href={`https://www.youtube.com/watch?v=${v.youtubeId}`} target="_blank" rel="noreferrer" className="text-link underline">Abrir no YouTube</a>
+                  <span className="text-muted-foreground" aria-label={`Resultado de ${v.title}`}>{stats[v.id]?.signups ?? 0} cadastro(s) · {stats[v.id]?.requests ?? 0} pedido(s)</span>
+                </p>
               </div>
               <div className="flex items-center gap-1">
+                <CopyLink url={`${baseUrl}/d/${v.id}`} title={v.title} />
                 <Button variant="ghost" size="icon" aria-label={`Subir ${v.title}`} disabled={pending || i === 0} onClick={() => run(() => moveBrasVideoAction(v.id, "up"), "Ordem atualizada")}><ArrowUp className="size-4" aria-hidden /></Button>
                 <Button variant="ghost" size="icon" aria-label={`Descer ${v.title}`} disabled={pending || i === videos.length - 1} onClick={() => run(() => moveBrasVideoAction(v.id, "down"), "Ordem atualizada")}><ArrowDown className="size-4" aria-hidden /></Button>
                 <Button variant="ghost" size="icon" aria-label={v.active ? `Pausar ${v.title}` : `Mostrar ${v.title}`} disabled={pending} onClick={() => run(() => setBrasVideoActiveAction(v.id, !v.active), v.active ? "Descoberta pausada" : "Descoberta na página")}>{v.active ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}</Button>
@@ -64,6 +100,7 @@ export function VideosManager({ videos, offers, importers }: { videos: VideoRow[
                   trigger={<Button variant="ghost" size="icon" aria-label={`Remover ${v.title}`} disabled={pending}><Trash2 className="size-4" aria-hidden /></Button>}
                   onConfirm={() => run(() => removeBrasVideoAction(v.id), "Vídeo removido")} />
               </div>
+              <Agenda v={v} onRun={run} pending={pending} />
               <DiscoveryEditor videoId={v.id} title={v.title} shortsId={v.youtubeId} d={v.discovery} />
               <OfferEditor videoId={v.id} title={v.title} offer={offers[v.id] ?? null} importers={importers} />
             </li>

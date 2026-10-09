@@ -7,6 +7,8 @@ import { newId } from "@/lib/ids";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
+import { notifyBrasRequestCreated, notifyBrasRequestStatus } from "./avisos";
+import { brasPublishedWhere } from "./videos";
 
 /**
  * Catálogo e pedido de compra da Brás Digital (D93), primeira etapa e manual:
@@ -106,8 +108,8 @@ export type BrasFeedItem = {
  * Descobertas ativas na fronteira de dados (D95): cada camada só sai do servidor para quem tem o nível.
  * VISITOR: Shorts, título, gancho e sinal. MEMBER: + veredito, nota, trecho e oferta (sem importadora). ANALYST: + análise.
  */
-export async function listBrasFeed(db: Database, level: BrasLevel, limit = 60): Promise<BrasFeedItem[]> {
-  const vids = await db.select().from(bdVideos).where(eq(bdVideos.active, true)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
+export async function listBrasFeed(db: Database, level: BrasLevel, limit = 60, now = new Date()): Promise<BrasFeedItem[]> {
+  const vids = await db.select().from(bdVideos).where(brasPublishedWhere(now)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
   const pub = (v: typeof vids[number]): BrasFeedItem => ({ id: v.id, youtubeId: v.youtubeId, title: v.title, summary: v.summary, trendSignal: v.trendSignal, member: null, offer: null, analysis: null });
   if (level === "VISITOR" || !vids.length) return vids.map(pub);
   const offers = await db.select({ videoId: bdOffers.videoId, priceBoxCents: bdOffers.priceBoxCents, unitsPerBox: bdOffers.unitsPerBox, boxesAvailable: bdOffers.boxesAvailable, importerActive: bdImporters.active })
@@ -163,7 +165,7 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
   const [row] = await db.select({ video: bdVideos, offer: bdOffers, importer: bdImporters }).from(bdVideos)
     .innerJoin(bdOffers, eq(bdOffers.videoId, bdVideos.id)).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId))
     .where(eq(bdVideos.id, input.videoId)).limit(1);
-  if (!row || !row.video.active || !row.importer.active) throw new DomainError("OFFER", "Este produto não está disponível para pedido agora.");
+  if (!row || !row.video.active || (row.video.publishAt && new Date(row.video.publishAt) > new Date()) || !row.importer.active) throw new DomainError("OFFER", "Este produto não está disponível para pedido agora.");
   // Conferência informativa (sem trava de concorrência, D92): a equipe confirma as caixas antes do pagamento.
   if (row.offer.boxesAvailable !== null && input.boxes > row.offer.boxesAvailable) throw new DomainError("BOXES", row.offer.boxesAvailable === 0 ? "Este produto está sem caixas disponíveis no momento." : `Disponível agora: ${row.offer.boxesAvailable} caixa(s).`);
   const id = newId("bdr");
@@ -178,6 +180,7 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
     // Aviso no sino do Master (sem dado pessoal na mensagem).
     await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", type: "BRAS_REQUEST", message: `Brás Digital: novo pedido de ${input.boxes} caixa(s) de ${row.video.title}` });
   });
+  await notifyBrasRequestCreated(db, id);
   return { id, totalCents };
 }
 
@@ -213,6 +216,7 @@ export async function setBrasRequestStatus(db: Database, actor: Actor, id: strin
   const upd = await db.update(bdRequests).set({ status, updatedAt: new Date().toISOString() }).where(and(eq(bdRequests.id, id), eq(bdRequests.status, r.status))).returning({ id: bdRequests.id });
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou enquanto você mexia. Atualize a página.");
   await recordAudit(db, actor, { action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: id, before: { status: r.status }, after: { status } });
+  await notifyBrasRequestStatus(db, id, status);
   return { ok: true as const };
 }
 

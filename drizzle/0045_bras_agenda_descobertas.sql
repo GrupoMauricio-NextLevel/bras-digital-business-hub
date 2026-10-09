@@ -1,0 +1,1 @@
+ALTER TABLE "bd_videos" ADD COLUMN "publish_at" timestamp with time zone;

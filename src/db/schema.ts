@@ -1658,6 +1658,8 @@ export const bdVideos = pgTable("bd_videos", {
   analysisYoutubeId: text("analysis_youtube_id"),
   analysis: jsonb("analysis").$type<BrasAnalysis>(),
   analysisUpdatedAt: ts("analysis_updated_at"),
+  /** Agenda (D101): vazio = publicada ao ativar; no futuro = só aparece a partir dessa hora (regra de leitura, sem agendador). */
+  publishAt: ts("publish_at"),
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("bd_videos_order_idx").on(t.active, t.position)]);

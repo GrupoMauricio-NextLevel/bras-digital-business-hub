@@ -11,7 +11,7 @@ import { isClosedCommerceBrand } from "@/lib/brand";
 import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { acceptBrasTerms, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
-import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, type brasVideoSchema } from "@/lib/domain/bras/videos";
+import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, setBrasVideoPublishAt, type brasVideoSchema } from "@/lib/domain/bras/videos";
 import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
 import { addBrasImporter, createBrasRequest, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus, type BrasRequestStatus, type brasImporterSchema, type brasOfferSchema, type brasRequestSchema } from "@/lib/domain/bras/catalogo";
 
@@ -61,6 +61,11 @@ export async function addBrasVideoAction(input: z.input<typeof brasVideoSchema>)
 
 export async function setBrasVideoActiveAction(id: string, active: boolean) {
   return runAction(async () => { const { actor, db } = await master(); const r = await setBrasVideoActive(db, actor, id, active); refresh(); return r; });
+}
+
+/** Agenda a publicação da descoberta (ISO) ou publica já (null). */
+export async function setBrasVideoPublishAtAction(id: string, publishAt: string | null) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await setBrasVideoPublishAt(db, actor, id, publishAt); refresh(); return r; });
 }
 
 export async function moveBrasVideoAction(id: string, dir: "up" | "down") {

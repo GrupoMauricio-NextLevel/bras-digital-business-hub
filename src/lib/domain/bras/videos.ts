@@ -1,7 +1,7 @@
-import { asc, eq, sql } from "drizzle-orm";
+import { and, asc, count, eq, gte, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { bdVideos } from "@/db/schema";
+import { bdMembers, bdRequests, bdVideos, platformSettings } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
@@ -38,10 +38,82 @@ export const brasVideoSchema = z.object({
 
 export type BrasPublicVideo = { id: string; youtubeId: string; title: string; summary: string | null; trendSignal: string | null };
 
-/** Descobertas ativas, na ordem do Estúdio. Só campos públicos (sem preço, importadora, veredito ou análise). */
-export async function listPublicBrasVideos(db: Database, limit = 12): Promise<BrasPublicVideo[]> {
-  return db.select({ id: bdVideos.id, youtubeId: bdVideos.youtubeId, title: bdVideos.title, summary: bdVideos.summary, trendSignal: bdVideos.trendSignal })
-    .from(bdVideos).where(eq(bdVideos.active, true)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
+/** Descoberta publicada (D101): ativa e sem agenda ou com a hora da agenda já passada. Vale para visitante, membro e pedido. */
+export const brasPublishedWhere = (now = new Date()) => and(eq(bdVideos.active, true), or(isNull(bdVideos.publishAt), lte(bdVideos.publishAt, now.toISOString())));
+
+const PUBLIC_COLS = { id: bdVideos.id, youtubeId: bdVideos.youtubeId, title: bdVideos.title, summary: bdVideos.summary, trendSignal: bdVideos.trendSignal };
+
+/** Descobertas publicadas, na ordem do Estúdio. Só campos públicos (sem preço, importadora, veredito ou análise). */
+export async function listPublicBrasVideos(db: Database, limit = 12, now = new Date()): Promise<BrasPublicVideo[]> {
+  return db.select(PUBLIC_COLS).from(bdVideos).where(brasPublishedWhere(now)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
+}
+
+/** Uma descoberta publicada para a página de compartilhamento `/d/<id>` (D101). Só campos públicos; inexistente ou fora do ar = null. */
+export async function getPublicBrasVideo(db: Database, id: string, now = new Date()): Promise<BrasPublicVideo | null> {
+  if (!/^bdv_[a-z0-9]{6,40}$/.test(id)) return null;
+  const [v] = await db.select(PUBLIC_COLS).from(bdVideos).where(and(eq(bdVideos.id, id), brasPublishedWhere(now))).limit(1);
+  return v ?? null;
+}
+
+/** Agenda a publicação (ISO) ou publica já (null). Só Master; fica na auditoria. */
+export async function setBrasVideoPublishAt(db: Database, actor: Actor, id: string, publishAt: string | null) {
+  requireMaster(actor);
+  const v = await db.query.bdVideos.findFirst({ where: eq(bdVideos.id, id) });
+  if (!v) throw new NotFoundError("Vídeo não encontrado.");
+  let iso: string | null = null;
+  if (publishAt) {
+    const d = new Date(publishAt);
+    if (Number.isNaN(d.getTime())) throw new DomainError("PUBLISH_AT", "Data de publicação inválida.");
+    iso = d.toISOString();
+  }
+  await db.update(bdVideos).set({ publishAt: iso }).where(eq(bdVideos.id, id));
+  await recordAudit(db, actor, { action: "BRAS_VIDEO_SCHEDULED", entityType: "bd_video", entityId: id, before: { publishAt: v.publishAt }, after: { publishAt: iso } });
+  return { ok: true as const, publishAt: iso };
+}
+
+const GOAL_KEY = "bras.weekly_goal";
+/** Meta semanal de descobertas (decisão do dono: 4 por semana no começo). `platform_settings` `bras.weekly_goal`. */
+export async function brasWeeklyGoal(db: Database): Promise<number> {
+  const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, GOAL_KEY) });
+  const n = Number(row?.value);
+  return Number.isInteger(n) && n >= 1 && n <= 50 ? n : 4;
+}
+
+/** Segunda-feira 00:00 no horário de Brasília (UTC-3, sem horário de verão desde 2019) da semana de `now`, em UTC. */
+export function brasWeekStart(now = new Date()): Date {
+  const local = new Date(now.getTime() - 3 * 3600_000);
+  const dow = (local.getUTCDay() + 6) % 7;
+  const start = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() - dow) + 3 * 3600_000;
+  return new Date(start);
+}
+
+/**
+ * Semana do Estúdio (D101): descobertas ativas que entram no ar de segunda a domingo (agendadas pela hora da agenda;
+ * sem agenda, pela data em que foram criadas), a meta e quanto falta.
+ */
+export async function brasWeekPlan(db: Database, actor: Actor, now = new Date()) {
+  requireMaster(actor);
+  const start = brasWeekStart(now);
+  const end = new Date(start.getTime() + 7 * 86400_000);
+  const s = start.toISOString(), e = end.toISOString();
+  const rows = await db.select({ id: bdVideos.id, title: bdVideos.title, publishAt: bdVideos.publishAt, createdAt: bdVideos.createdAt }).from(bdVideos)
+    .where(and(eq(bdVideos.active, true), or(and(isNotNull(bdVideos.publishAt), gte(bdVideos.publishAt, s), lt(bdVideos.publishAt, e)), and(isNull(bdVideos.publishAt), gte(bdVideos.createdAt, s), lt(bdVideos.createdAt, e)))));
+  const items = rows.map((r) => ({ id: r.id, title: r.title, at: r.publishAt ?? r.createdAt, scheduled: !!r.publishAt && new Date(r.publishAt) > now })).sort((a, b) => a.at.localeCompare(b.at));
+  const goal = await brasWeeklyGoal(db);
+  return { start: s, end: e, goal, items, missing: Math.max(0, goal - items.length) };
+}
+
+/** Cadastros e pedidos por descoberta (D101, origem gravada no cadastro): o dono vê qual vídeo traz membro e pedido. */
+export async function brasDiscoveryStats(db: Database, actor: Actor): Promise<Record<string, { signups: number; requests: number }>> {
+  requireMaster(actor);
+  const [s, r] = await Promise.all([
+    db.select({ id: bdMembers.sourceVideoId, n: count() }).from(bdMembers).where(isNotNull(bdMembers.sourceVideoId)).groupBy(bdMembers.sourceVideoId),
+    db.select({ id: bdRequests.videoId, n: count() }).from(bdRequests).groupBy(bdRequests.videoId),
+  ]);
+  const out: Record<string, { signups: number; requests: number }> = {};
+  for (const x of s) if (x.id) (out[x.id] ??= { signups: 0, requests: 0 }).signups = Number(x.n);
+  for (const x of r) if (x.id) (out[x.id] ??= { signups: 0, requests: 0 }).requests = Number(x.n);
+  return out;
 }
 
 export async function listBrasVideosForMaster(db: Database, actor: Actor) {

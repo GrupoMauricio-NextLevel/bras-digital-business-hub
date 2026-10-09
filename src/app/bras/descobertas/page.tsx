@@ -4,6 +4,10 @@ import { BRAS_PANELS, canOpenBrasPanelPreview } from "@/lib/bras/panels";
 import { VideosManager } from "../estudio-client";
 import { EstudioHeader } from "../header";
 import { estudioData } from "../data";
+import { getDb } from "@/db/client";
+import { brandByCode } from "@/lib/brand";
+import { brasDiscoveryStats, brasWeekPlan } from "@/lib/domain/bras/videos";
+import { WeekPlan } from "./week-plan";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +29,16 @@ function Roteiro() {
 export default async function Descobertas() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const d = await estudioData(session.actor);
+  const db = await getDb();
+  const [stats, semana] = await Promise.all([brasDiscoveryStats(db, session.actor), brasWeekPlan(db, session.actor)]);
+  const now = new Date().toISOString();
   const balcao = BRAS_PANELS.find((p) => p.key === "balcao")!;
   return (
     <>
       <EstudioHeader title="Descobertas" description="Cada descoberta tem três camadas: o Shorts público, o veredito e o trecho para o membro, e a análise completa para quem tem acesso. Mais a oferta da caixa." {...d} />
+      <WeekPlan {...semana} now={now} />
       <Roteiro />
-      <VideosManager videos={d.videos.map((v) => ({ id: v.id, youtubeId: v.youtubeId, title: v.title, summary: v.summary, active: v.active, discovery: { trendSignal: v.trendSignal, verdict: v.verdict, score: v.score, teaserYoutubeId: v.teaserYoutubeId, analysisYoutubeId: v.analysisYoutubeId, analysis: v.analysis } }))} offers={Object.fromEntries(d.offers.map((o) => [o.videoId, { importerId: o.importerId, priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: o.boxesAvailable }]))} importers={d.importers.map((i) => ({ id: i.id, name: i.name, notes: i.notes, active: i.active }))} />
+      <VideosManager stats={stats} now={now} baseUrl={brandByCode("BRAS_DIGITAL").baseUrl.replace(/\/$/, "")} videos={d.videos.map((v) => ({ id: v.id, youtubeId: v.youtubeId, title: v.title, summary: v.summary, active: v.active, publishAt: v.publishAt ? new Date(v.publishAt).toISOString() : null, discovery: { trendSignal: v.trendSignal, verdict: v.verdict, score: v.score, teaserYoutubeId: v.teaserYoutubeId, analysisYoutubeId: v.analysisYoutubeId, analysis: v.analysis } }))} offers={Object.fromEntries(d.offers.map((o) => [o.videoId, { importerId: o.importerId, priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: o.boxesAvailable }]))} importers={d.importers.map((i) => ({ id: i.id, name: i.name, notes: i.notes, active: i.active }))} />
       {canOpenBrasPanelPreview(session.actor) ? <p className="mt-8 text-sm text-muted-foreground">Prévia da próxima área: <Link className="font-semibold text-link underline" href={balcao.path}>{balcao.name}</Link> ({balcao.audience}).</p> : null}
     </>
   );
