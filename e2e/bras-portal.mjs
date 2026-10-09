@@ -197,15 +197,28 @@ ok("página da descoberta");
   await p.getByLabel("CNPJ da empresa").fill("11222333000100");
   await p.getByLabel("Nome da empresa").fill("Ana Utilidades LTDA"); await p.getByLabel("Seu nome").fill("Ana Lojista");
   await p.getByLabel("WhatsApp").fill("11988887777"); await p.getByLabel("E-mail").fill("ana@utilidades.teste"); await p.getByLabel("Senha").fill("senha-forte-1");
-  // D99: aceite obrigatório dos termos e da política (sem ele o navegador nem envia).
+  if ((await p.getByLabel("CNPJ da empresa").inputValue()) !== "11.222.333/0001-00") fail("cadastro: máscara do CNPJ");
+  // D108: passo 2 com as 7 perguntas da classificação (iniciante) e o aceite dos termos (D99).
+  await p.getByRole("button", { name: "Continuar" }).click();
+  await p.getByText("Conte sobre o seu negócio").waitFor();
   await p.getByRole("checkbox", { name: /Li e aceito os termos de uso/ }).check();
   await p.getByRole("button", { name: "Criar meu cadastro grátis" }).click();
+  await p.getByRole("alert").filter({ hasText: /Responda as 7 perguntas/ }).first().waitFor({ timeout: 10000 });
+  for (const opt of ["Estou começando e quero testar um produto", "Ainda não vendo", "Até R$ 5 mil", "Até R$ 20 mil", "Nunca comprei de importadora", "Só eu", "Aprender a comprar e vender melhor"]) await p.getByText(opt, { exact: true }).click();
+  await check(p, "cadastro passo 2", 390);
+  await shot(p, `${OUT}/06b-cadastro-perguntas-390.png`);
+  await p.getByRole("button", { name: "Criar meu cadastro grátis" }).click();
   await p.getByRole("alert").filter({ hasText: /CNPJ inválido/ }).waitFor({ timeout: 30000 });
-  if ((await p.getByLabel("CNPJ da empresa").inputValue()) !== "11.222.333/0001-00") fail("cadastro: máscara do CNPJ");
+  await p.getByRole("button", { name: "Voltar" }).click();
   await p.getByLabel("CNPJ da empresa").fill("11222333000181");
+  await p.getByRole("button", { name: "Continuar" }).click();
   await p.getByRole("button", { name: "Criar meu cadastro grátis" }).click();
   await p.waitForURL(/\/meu-bras/, { timeout: 60000 }); await p.waitForLoadState("networkidle");
   if (!(await p.getByText("Seu acesso de membro já está liberado").isVisible())) fail("meu brás: boas-vindas ausente");
+  // D108: painel do iniciante novo começa por uma caixa; plano Grátis.
+  if (!(await p.getByText("Primeiro passo seguro: uma caixa, com análise.").isVisible())) fail("meu brás: painel do iniciante ausente");
+  if (!(await p.getByRole("heading", { name: "Comece com uma caixa" }).isVisible().catch(() => false)) && !(await p.getByText("Comece com uma caixa").first().isVisible())) fail("meu brás: cartão da primeira caixa ausente");
+  if (!(await p.getByText(/Seu plano: Grátis/).isVisible())) fail("meu brás: cartão do plano ausente");
   const txtMb = (await p.locator("main").innerText()).replace(/\u00a0/g, " ");
   if (!/R\$ 1\.890,00/.test(txtMb) || !/5 caixas disponíveis/.test(txtMb)) fail("meu brás: preço/caixas não aparecem para o membro");
   if (/Importadora Piloto/.test(txtMb)) fail("meu brás: importadora aparece antes do pedido confirmado");
@@ -284,7 +297,7 @@ ok("cadastro e Meu Brás");
     await check(m.p, "descoberta trancada", 390);
     await shot(m.p, `${OUT}/07d-descoberta-trancada-390.png`);
     // Master libera a assinatura (Pix combinado) e a análise volta.
-    await p.getByRole("button", { name: "Liberar acesso" }).click();
+    await p.getByRole("button", { name: "Liberar plano" }).click();
     await p.getByText(/Acesso liberado até/).waitFor({ timeout: 30000 });
     await m.p.reload({ waitUntil: "networkidle" });
     if (!/Margem bruta estimada/.test(await m.p.locator("main").innerText())) fail("descoberta: assinatura liberada não abriu a análise");
@@ -379,6 +392,29 @@ ok("cadastro e Meu Brás");
   if (mcsv.status() !== 200 || !/11\.222\.333\/0001-81/.test(await mcsv.text())) fail("membros: CSV");
   await check(p, "estúdio membros", 1440);
   await shot(p, `${OUT}/10-estudio-membros-1440.png`);
+  // D108: nível do cliente na lista (iniciante, pelas respostas) e o filtro por nível.
+  await p.getByRole("button", { name: "Iniciante" }).click();
+  await p.getByText("Ana Utilidades LTDA").waitFor();
+  if (!(await p.getByText("pelas respostas").first().isVisible())) fail("membros: origem do nível ausente");
+  await p.getByRole("button", { name: "Grande conta" }).click();
+  if (await p.getByText("Ana Utilidades LTDA").count()) fail("membros: filtro por nível");
+  await p.getByRole("button", { name: "Todos" }).click();
+  // D108: Planos e regras (todas as abas), Atendimento e Pauta abrem sem violação de acessibilidade.
+  for (const aba of ["planos", "regras", "classificacao", "suporte", "juridico", "cubagem"]) {
+    await p.goto(B + `/bras/regras?aba=${aba}`, { waitUntil: "networkidle" });
+    await check(p, `planos e regras: ${aba}`, 1440);
+    await shot(p, `${OUT}/13-regras-${aba}-1440.png`);
+  }
+  await p.goto(B + "/bras/regras?aba=planos", { waitUntil: "networkidle" });
+  for (const n of ["Brás Prata", "Brás Ouro", "Brás Platinum", "Cargas Pro", "Cotação de contêiner fora do catálogo"]) if (!(await p.getByText(n, { exact: true }).first().isVisible())) fail(`planos e regras: ${n} ausente`);
+  await p.goto(B + "/bras/regras?aba=regras", { waitUntil: "networkidle" });
+  await p.getByLabel("Sinal", { exact: true }).fill("35");
+  await p.locator("form", { has: p.getByRole("heading", { name: "Pré-pedido (alto mar)" }) }).getByRole("button", { name: "Gravar" }).click();
+  await p.getByText("Pré-pedido: regra gravada").waitFor({ timeout: 30000 });
+  await p.goto(B + "/bras/regras?aba=juridico", { waitUntil: "networkidle" });
+  if (!/35% do valor do pedido/.test(await p.locator("main").innerText())) fail("jurídico: texto não acompanhou a regra do sinal");
+  for (const path of ["/bras/atendimento", "/bras/atendimento?aba=agenda", "/bras/pauta"]) { await p.goto(B + path, { waitUntil: "networkidle" }); await check(p, path, 1440); }
+  await p.goto(B + "/bras/membros", { waitUntil: "networkidle" });
   p.once("dialog", (d) => d.accept("Teste de bloqueio"));
   await p.getByRole("button", { name: "Bloquear" }).click();
   await p.getByText("Teste de bloqueio").waitFor({ timeout: 30000 });

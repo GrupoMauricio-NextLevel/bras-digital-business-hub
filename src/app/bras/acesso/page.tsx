@@ -17,12 +17,12 @@ export default async function Acesso() {
   const [d, settings, grants] = await Promise.all([estudioData(session.actor), getBrasAnalysisSettings(db), listBrasGrants(db, session.actor)]);
   return (
     <>
-      <EstudioHeader title="Acesso à análise" description="Quem vê a análise completa. Comprar é sempre grátis: o que se cobra é a análise." {...d} />
+      <EstudioHeader title="Acesso e planos" description="Quem vê a análise completa e qual plano cada membro tem. Comprar é sempre grátis: o que se cobra é a inteligência e o atendimento." {...d} />
       <div className="grid gap-6 xl:grid-cols-[26rem_1fr]">
         <AccessSettings settings={settings} />
         <GrantsManager
           members={d.members.filter((m) => m.status === "ACTIVE").map((m) => ({ id: m.id, label: `${m.companyName} · ${formatCnpj(m.cnpj)}` }))}
-          grants={grants.map(({ g, companyName, email }) => ({ id: g.id, companyName, email, kind: g.kind, validUntil: g.validUntil, note: g.note, active: !g.revokedAt && vigente(g.validUntil), revoked: !!g.revokedAt }))}
+          grants={grants.map(({ g, companyName, email }) => ({ id: g.id, companyName, email, kind: g.kind, plan: g.plan, validUntil: g.validUntil, note: g.note, active: !g.revokedAt && vigente(g.validUntil), revoked: !!g.revokedAt }))}
         />
       </div>
     </>

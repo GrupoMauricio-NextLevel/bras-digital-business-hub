@@ -741,6 +741,40 @@ Cada fase: domínio e testes (Vitest), telas no design system (`painel-interno`)
 
 ---
 
+### 20.1 Respostas do dono (2026-10-09, D108)
+1. **Marca:** "NextLevel Cargas" em `cargas.nextlevelgroup.com.br`. Aceito; o domínio já foi ligado no Render e na Hostinger. A página pública e a lista de interesse estão no ar.
+2. **Preços:** Prata R$ 97, Ouro R$ 197 e Platinum R$ 397; comissão por carga e publicidade como sugerido (8% / 6% / 5% por plano da transportadora; destaques R$ 197 e R$ 297 por mês). Tudo em rascunho no catálogo Master até o dono publicar.
+3. **Pré-pedido:** sinal de 30% e devolução liberada com 30 dias de atraso sobre a ETA original. Aceito.
+4. **Bling:** deixar tudo pronto para receber as credenciais (fase F7).
+5. **Advogado:** textos com dados simulados e editáveis. Feito: Brás → Planos e regras → Jurídico.
+6. **Tudo editável no Master:** Brás → Planos e regras (preços, regras, classificação, suporte, jurídico, simulador).
+
+### 20.2 Módulo K: suporte por plano (pedido do dono)
+- Grátis: perguntas frequentes.
+- Básico pago (Prata): chat e WhatsApp com a equipe.
+- Avançados (Ouro e Platinum): agenda pessoal na importadora, com 1 e 2 visitas por mês.
+- Canais e limites ficam editáveis no Master.
+- A grande conta tem WhatsApp mesmo no grátis (padrão editável).
+- Telas: Meu Brás → Suporte; Estúdio → Atendimento (conversas e agenda).
+
+### 20.3 Módulo L: classificação do cliente (pedido do dono)
+- **Separar o pequeno que está testando do cliente gigante.** O cadastro tem 7 perguntas:
+  - momento do negócio;
+  - canais;
+  - compra mensal pretendida;
+  - faturamento;
+  - experiência com importação;
+  - equipe;
+  - objetivos.
+- **Nível declarado:** pontos e cortes editáveis no Master, com pisos. Exemplo: compra acima de R$ 500 mil por mês já é grande conta.
+- **Nível comprovado:** compras pagas em 90 dias.
+- **Nível final:** vale o maior dos dois, salvo ajuste manual do Master, com motivo.
+- **No Master:** o dono vê o nível de cada cliente em Membros, com filtro, respostas e motivo.
+- **Momento da jornada:** novo, aguardando, primeira compra, recorrente ou esfriando.
+- **Meu Brás:** o painel escolhe os 3 cartões principais pelo nível, pelo momento e pelos objetivos. Exemplos:
+  - iniciante: "comece com uma caixa";
+  - grande conta: "atendimento de perto", contêiner e alto mar, marcados "em preparação" até as fases F4 a F6.
+
 ## 21. Relatório de cada fase (`docs/relatorios/BD-V2-FASE-N.md`)
 
 ```

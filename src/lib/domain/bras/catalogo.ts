@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { BRAS_UFS } from "@/lib/bras/ufs";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, bdImporters, bdMembers, bdOffers, bdRequests, bdVideos, users, type BrasAnalysis } from "@/db/schema";
@@ -131,7 +132,7 @@ export async function listBrasFeed(db: Database, level: BrasLevel, limit = 60, n
 // ---------------------------------------------------------------------------
 // Pedido de compra do membro
 // ---------------------------------------------------------------------------
-const UF = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"] as const;
+const UF = BRAS_UFS;
 export const brasRequestSchema = z.object({
   videoId: z.string().min(1),
   boxes: z.number().int().min(1, "Mínimo de 1 caixa").max(9999, "Quantidade muito alta"),
@@ -143,7 +144,7 @@ export const brasRequestSchema = z.object({
   shipZip: z.string().transform((v) => v.replace(/\D/g, "")).refine((v) => v.length === 8, "CEP com 8 números"),
   notes: z.string().trim().max(300).optional(),
 });
-export const BRAS_UFS = UF;
+export { BRAS_UFS };
 
 export const BRAS_REQUEST_STATUSES = ["NEW", "CONFIRMED", "PAID", "PICKED_UP", "CANCELED"] as const;
 export type BrasRequestStatus = (typeof BRAS_REQUEST_STATUSES)[number];

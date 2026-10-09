@@ -2,7 +2,7 @@ import type { CatalogFamily, CatalogKind, CatalogStatus, JourneyPhase, PriceCycl
 import { formatBRL } from "@/lib/money";
 import { priceDisplay, type PriceRule } from "./catalog-pricing";
 
-export const FAMILY_LABEL: Record<CatalogFamily, string> = { COMMERCE_PLAN: "Planos Commerce", LOJA_PRONTA: "Loja Pronta", MIGRACAO: "Migração", TEMA: "Temas", MARKETING: "Marketing", CONSULTORIA: "Consultoria", WHITE_LABEL: "White Label", SUPERDROP: "SuperDrop", ADDON: "Add-ons" };
+export const FAMILY_LABEL: Record<CatalogFamily, string> = { COMMERCE_PLAN: "Planos Commerce", LOJA_PRONTA: "Loja Pronta", MIGRACAO: "Migração", TEMA: "Temas", MARKETING: "Marketing", CONSULTORIA: "Consultoria", WHITE_LABEL: "White Label", SUPERDROP: "SuperDrop", ADDON: "Add-ons", BRAS_MEMBER_PLAN: "Brás: planos do membro", BRAS_IMPORTER_PLAN: "Brás: planos da importadora", CARRIER_PLAN: "Cargas: planos da transportadora", BRAS_SERVICE: "Brás: serviços", ADS: "Publicidade" };
 export const KIND_LABEL: Record<CatalogKind, string> = { subscription: "Assinatura", one_time: "Compra única", quote_required: "Sob consulta", usage_fee: "Taxa por uso" };
 export const STATUS_LABEL: Record<CatalogStatus, string> = { DRAFT: "Rascunho", PUBLISHED: "Publicado", PAUSED: "Pausado", ARCHIVED: "Arquivado" };
 export const PHASE_LABEL: Record<JourneyPhase, string> = { FUNDACAO: "Fundação", LANCAMENTO: "Lançamento", AQUISICAO: "Aquisição", OTIMIZACAO: "Otimização", ESCALA: "Escala" };

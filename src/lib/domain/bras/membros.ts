@@ -9,6 +9,7 @@ import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 import { notifyBrasSignup } from "./avisos";
+import { brasProfileSchema, saveBrasProfileFor } from "./perfil";
 
 /**
  * Membro comprador da Brás Digital (D92): cadastro grátis e simples com CNPJ, liberado na hora.
@@ -46,6 +47,8 @@ export const brasSignupSchema = z.object({
   /** Origem (D99): a descoberta do link (`/cadastro?video=`) e a fonte (utm ou página). Inválido é ignorado, nunca erro. */
   videoId: z.string().optional(),
   source: z.string().optional(),
+  /** Perfil do cadastro (D108): perguntas que classificam o cliente. O formulário sempre envia; ausente = responde depois no Meu Brás. */
+  profile: brasProfileSchema.optional(),
 });
 
 /** Versão em vigor dos termos de uso e da política de privacidade da Brás (data da publicação). Mudou o texto, mude a versão. */
@@ -76,6 +79,8 @@ export async function signupBrasMember(db: Database, raw: z.input<typeof brasSig
     await tx.insert(users).values({ id: userId, name: input.name, email, role: "BRAS_MEMBER", organizationId, passwordHash: hashPassword(input.password) });
     await tx.insert(bdMembers).values({ id: memberId, userId, organizationId, cnpj, companyName: input.companyName, whatsapp: input.whatsapp, termsAcceptedAt: new Date().toISOString(), termsVersion: BRAS_TERMS_VERSION, source, sourceVideoId: video?.id ?? null });
   });
+  // Classificação (D108): pontua as respostas com os pesos atuais do Master.
+  if (input.profile) await saveBrasProfileFor(db, memberId, input.profile);
   // Boas-vindas ao membro e aviso à equipe (D100); falha de e-mail nunca desfaz o cadastro.
   await notifyBrasSignup(db, memberId);
   return { userId, memberId };
@@ -113,7 +118,7 @@ export async function brasCommercialAccessFor(db: Database, session: { user: { i
 /** Lista para o Estúdio (só Master): dados de contato do membro nunca saem para importadora. */
 export async function listBrasMembers(db: Database, actor: Actor) {
   requireMaster(actor);
-  return db.select({ id: bdMembers.id, companyName: bdMembers.companyName, cnpj: bdMembers.cnpj, whatsapp: bdMembers.whatsapp, status: bdMembers.status, blockedReason: bdMembers.blockedReason, createdAt: bdMembers.createdAt, name: users.name, email: users.email, termsVersion: bdMembers.termsVersion, termsAcceptedAt: bdMembers.termsAcceptedAt, source: bdMembers.source, sourceVideoId: bdMembers.sourceVideoId, lastSeenAt: bdMembers.lastSeenAt })
+  return db.select({ id: bdMembers.id, companyName: bdMembers.companyName, cnpj: bdMembers.cnpj, whatsapp: bdMembers.whatsapp, status: bdMembers.status, blockedReason: bdMembers.blockedReason, createdAt: bdMembers.createdAt, name: users.name, email: users.email, termsVersion: bdMembers.termsVersion, termsAcceptedAt: bdMembers.termsAcceptedAt, source: bdMembers.source, sourceVideoId: bdMembers.sourceVideoId, lastSeenAt: bdMembers.lastSeenAt, profile: bdMembers.profile, profileScore: bdMembers.profileScore, declaredLevel: bdMembers.declaredLevel, levelOverride: bdMembers.levelOverride, levelOverrideReason: bdMembers.levelOverrideReason, profileAnsweredAt: bdMembers.profileAnsweredAt })
     .from(bdMembers).innerJoin(users, eq(users.id, bdMembers.userId)).orderBy(desc(bdMembers.createdAt)).limit(500);
 }
 
@@ -131,14 +136,36 @@ export async function setBrasMemberStatus(db: Database, actor: Actor, memberId: 
 }
 
 /** Pedidos por membro (D104): quantos, quanto já pagou (pagos e retirados) e o último pedido. Só Master. */
-export async function brasMembersActivity(db: Database, actor: Actor): Promise<Record<string, { requests: number; paidCents: number; lastRequestAt: string | null }>> {
-  requireMaster(actor);
+export type BrasMemberActivity = { requests: number; paidCents: number; lastRequestAt: string | null; paidRequests: number; paidInWindow: number; paidWindowCents: number; openUnpaid: number; lastPaidAt: string | null };
+
+/** Atividade por membro (D104, D108): pedidos, pagos (total e na janela da classificação), abertos sem pagamento e datas. */
+async function activityQuery(db: Database, windowDays: number, memberId?: string, now = new Date()): Promise<Record<string, BrasMemberActivity>> {
+  const since = new Date(now.getTime() - windowDays * 86_400_000).toISOString();
+  const pago = inArray(bdRequests.status, ["PAID", "PICKED_UP"]);
   const rows = await db.select({
     memberId: bdRequests.memberId, n: count(),
-    paid: sql<number>`coalesce(sum(case when ${inArray(bdRequests.status, ["PAID", "PICKED_UP"])} then ${bdRequests.totalCents} else 0 end), 0)`,
+    paid: sql<number>`coalesce(sum(case when ${pago} then ${bdRequests.totalCents} else 0 end), 0)`,
+    paidN: sql<number>`coalesce(sum(case when ${pago} then 1 else 0 end), 0)`,
+    paidWin: sql<number>`coalesce(sum(case when ${pago} and ${bdRequests.createdAt} >= ${since} then ${bdRequests.totalCents} else 0 end), 0)`,
+    paidWinN: sql<number>`coalesce(sum(case when ${pago} and ${bdRequests.createdAt} >= ${since} then 1 else 0 end), 0)`,
+    open: sql<number>`coalesce(sum(case when ${inArray(bdRequests.status, ["NEW", "CONFIRMED"])} then 1 else 0 end), 0)`,
+    lastPaid: sql<string | null>`max(case when ${pago} then coalesce(${bdRequests.paidAt}, ${bdRequests.createdAt}) end)`,
     last: max(bdRequests.createdAt),
-  }).from(bdRequests).groupBy(bdRequests.memberId);
-  return Object.fromEntries(rows.map((r) => [r.memberId, { requests: Number(r.n), paidCents: Number(r.paid), lastRequestAt: r.last ? new Date(r.last).toISOString() : null }]));
+  }).from(bdRequests).where(memberId ? eq(bdRequests.memberId, memberId) : undefined).groupBy(bdRequests.memberId);
+  return Object.fromEntries(rows.map((r) => [r.memberId, { requests: Number(r.n), paidCents: Number(r.paid), lastRequestAt: r.last ? new Date(r.last).toISOString() : null, paidRequests: Number(r.paidN), paidInWindow: Number(r.paidWinN), paidWindowCents: Number(r.paidWin), openUnpaid: Number(r.open), lastPaidAt: r.lastPaid ? new Date(r.lastPaid).toISOString() : null }]));
+}
+
+export const EMPTY_BRAS_ACTIVITY: BrasMemberActivity = { requests: 0, paidCents: 0, lastRequestAt: null, paidRequests: 0, paidInWindow: 0, paidWindowCents: 0, openUnpaid: 0, lastPaidAt: null };
+
+/** Pedidos por membro (só Master). `windowDays` = janela do nível comprovado (classificação). */
+export async function brasMembersActivity(db: Database, actor: Actor, windowDays = 90, now = new Date()): Promise<Record<string, BrasMemberActivity>> {
+  requireMaster(actor);
+  return activityQuery(db, windowDays, undefined, now);
+}
+
+/** Atividade do próprio membro (para o painel por nível e momento). */
+export async function brasMemberOwnActivity(db: Database, memberId: string, windowDays = 90, now = new Date()): Promise<BrasMemberActivity> {
+  return (await activityQuery(db, windowDays, memberId, now))[memberId] ?? EMPTY_BRAS_ACTIVITY;
 }
 
 /** Última visita ao Meu Brás (D104): grava no máximo uma vez por hora, para não escrever a cada página. */

@@ -3,7 +3,7 @@
  * Vale para portais e painéis; o tema das lojas dos lojistas é do lojista e não passa por aqui.
  * Cada combinação de leitura é conferida em `tests/brand-palette.test.ts` (WCAG AA).
  */
-export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL";
+export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
 
 export type PaletteMode = {
   /** Fundo geral. */
@@ -28,6 +28,8 @@ export const PALETTES: Record<PaletteCode, BrandPalette> = {
   BRAS_DIGITAL: pal(["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
   CREATORS_HUB: pal(["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
   CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
+  // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.
+  NEXTLEVEL_CARGAS: pal(["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
   NEXTLEVEL: pal(["#F5BC00", "#7B4C00"], ["#F5BC00", "#F5BC00"], "#101B34"),
 };
 

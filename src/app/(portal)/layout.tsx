@@ -13,14 +13,17 @@ export default async function PortalLayout({ children }: { children: React.React
   const dropship = brandHas(brand, "dropship");
   const commerce = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
   const closed = isClosedCommerceBrand(brand) && !brand.soon;
-  const nav: PublicNavItem[] = brand.soon ? [] : closed
+  const cargas = brand.landing === "cargas";
+  const nav: PublicNavItem[] = brand.soon ? [] : cargas
+    ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
+    : closed
     ? [{ href: "/#plataforma", label: "Plataforma" }, { href: "/#videos", label: "Descobertas" }, { href: "/#acesso", label: "Acesso" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
     ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
       ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
-  const cta = closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
+  const cta = cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "a Brás Digital" : "a NextLevel Commerce"}.`)}`) : null;
   return (

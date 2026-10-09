@@ -55,11 +55,11 @@ export function AccessSettings({ settings }: { settings: Settings }) {
   );
 }
 
-type Grant = { id: string; companyName: string; email: string; kind: "SUBSCRIPTION" | "COURTESY"; validUntil: string; note: string | null; active: boolean; revoked: boolean };
+type Grant = { id: string; companyName: string; email: string; kind: "SUBSCRIPTION" | "COURTESY"; plan: "PRATA" | "OURO" | "PLATINUM"; validUntil: string; note: string | null; active: boolean; revoked: boolean };
 
 export function GrantsManager({ members, grants }: { members: { id: string; label: string }[]; grants: Grant[] }) {
   const router = useRouter();
-  const [f, setF] = React.useState({ memberId: members[0]?.id ?? "", kind: "SUBSCRIPTION" as Grant["kind"], days: 30, note: "" });
+  const [f, setF] = React.useState({ memberId: members[0]?.id ?? "", kind: "SUBSCRIPTION" as Grant["kind"], plan: "PRATA" as "PRATA" | "OURO" | "PLATINUM", days: 30, note: "" });
   const [pending, start] = React.useTransition();
   const grant = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,24 +69,25 @@ export function GrantsManager({ members, grants }: { members: { id: string; labe
   return (
     <div className="space-y-4">
       <form onSubmit={grant} className="ds-card space-y-3 p-4" aria-labelledby="ac-lib">
-        <h2 id="ac-lib" className="text-base font-semibold">Liberar acesso a um membro</h2>
-        <p className="text-sm text-muted-foreground">Recebeu a assinatura (Pix combinado com a equipe) ou quer dar cortesia: libere aqui. Renovar soma os dias ao que ainda falta.</p>
+        <h2 id="ac-lib" className="text-base font-semibold">Liberar plano a um membro</h2>
+        <p className="text-sm text-muted-foreground">Recebeu a assinatura (Pix combinado com a equipe) ou quer dar cortesia: libere o plano aqui, até a cobrança entrar pelo Financeiro Master. Renovar o mesmo plano soma os dias; trocar de plano começa hoje. O plano define o suporte (Prata: chat e WhatsApp; Ouro e Platinum: agenda na importadora).</p>
         {members.length ? (
-          <div className="grid gap-3 md:grid-cols-[1fr_10rem_7rem]">
+          <div className="grid gap-3 md:grid-cols-[1fr_9rem_9rem_7rem]">
             <FormField label="Membro" htmlFor="ac-m"><Select id="ac-m" value={f.memberId} onChange={(e) => setF({ ...f, memberId: e.target.value })}>{members.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</Select></FormField>
             <FormField label="Tipo" htmlFor="ac-k"><Select id="ac-k" value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value as Grant["kind"] })}><option value="SUBSCRIPTION">Assinatura</option><option value="COURTESY">Cortesia</option></Select></FormField>
+            <FormField label="Plano" htmlFor="ac-p"><Select id="ac-p" value={f.plan} onChange={(e) => setF({ ...f, plan: e.target.value as typeof f.plan })}><option value="PRATA">Prata</option><option value="OURO">Ouro</option><option value="PLATINUM">Platinum</option></Select></FormField>
             <FormField label="Dias" htmlFor="ac-d"><Input id="ac-d" type="number" min={1} max={366} value={f.days} onChange={(e) => setF({ ...f, days: Number(e.target.value) })} /></FormField>
-            <FormField label="Anotação (opcional)" htmlFor="ac-n" className="md:col-span-3"><Input id="ac-n" maxLength={200} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} placeholder="Ex.: Pix de outubro recebido" /></FormField>
+            <FormField label="Anotação (opcional)" htmlFor="ac-n" className="md:col-span-4"><Input id="ac-n" maxLength={200} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} placeholder="Ex.: Pix de outubro recebido" /></FormField>
           </div>
         ) : <p className="text-sm text-muted-foreground">Nenhum membro ativo ainda.</p>}
-        <Button type="submit" loading={pending} disabled={!members.length}>Liberar acesso</Button>
+        <Button type="submit" loading={pending} disabled={!members.length}>Liberar plano</Button>
       </form>
       {grants.length === 0 ? <EmptyState icon={KeyRound} title="Nenhuma liberação" description="Quem receber assinatura ou cortesia aparece aqui, com a data de validade." /> : (
         <ul className="space-y-2" aria-label="Liberações de acesso">
           {grants.map((g) => (
             <li key={g.id} className="ds-card flex flex-wrap items-center gap-3 p-3 text-sm">
               <div className="min-w-0 flex-1">
-                <p className="flex flex-wrap items-center gap-2 font-semibold">{g.companyName}{g.revoked ? <Badge tone="danger">Revogado</Badge> : g.active ? <Badge tone="success">Ativo</Badge> : <Badge>Vencido</Badge>}<Badge tone="outline">{g.kind === "SUBSCRIPTION" ? "Assinatura" : "Cortesia"}</Badge></p>
+                <p className="flex flex-wrap items-center gap-2 font-semibold">{g.companyName}{g.revoked ? <Badge tone="danger">Revogado</Badge> : g.active ? <Badge tone="success">Ativo</Badge> : <Badge>Vencido</Badge>}<Badge tone="outline">{g.kind === "SUBSCRIPTION" ? "Assinatura" : "Cortesia"}</Badge><Badge tone="info">{g.plan === "OURO" ? "Ouro" : g.plan === "PLATINUM" ? "Platinum" : "Prata"}</Badge></p>
                 <p className="text-muted-foreground">{g.email} · até {formatDate(g.validUntil, { day: "2-digit", month: "short", year: "numeric" })}{g.note ? ` · ${g.note}` : ""}</p>
               </div>
               {g.active ? <Button size="sm" variant="ghost" disabled={pending} onClick={() => revoke(g)}>Revogar</Button> : null}

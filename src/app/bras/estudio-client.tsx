@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { FormField } from "@/components/app/form-field";
 import { EmptyState } from "@/components/app/empty-state";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasMemberStatusAction, setBrasVideoActiveAction, setBrasVideoPublishAtAction } from "@/app/actions/bras";
+import { addBrasVideoAction, moveBrasVideoAction, removeBrasVideoAction, setBrasLevelOverrideAction, setBrasMemberStatusAction, setBrasVideoActiveAction, setBrasVideoPublishAtAction } from "@/app/actions/bras";
 import { formatDate } from "@/lib/utils";
 import { quando } from "@/lib/bras/quando";
 import { formatBRL } from "@/lib/money";
+import { BRAS_LEVELS, BRAS_LEVEL_LABEL, BRAS_MOMENT_LABEL, type BrasClientLevel, type BrasMoment } from "@/lib/bras/perfil-perguntas";
+import { BRAS_PLAN_LABEL, type BrasMemberPlan } from "@/lib/bras/planos";
 import { OfferEditor } from "./catalogo-client";
 
 import type { DiscoveryRow } from "./descoberta-editor";
@@ -112,8 +114,52 @@ export function VideosManager({ videos, offers, importers, stats = {}, baseUrl, 
   );
 }
 
-type MemberRow = { id: string; companyName: string; cnpj: string; name: string; email: string; whatsapp: string; status: "ACTIVE" | "BLOCKED"; blockedReason: string | null; createdAt: string; requests?: number; paidCents?: number; lastRequestAt?: string | null; origin?: string; termsOk?: boolean; lastSeenAt?: string | null };
-const FILTROS = [["todos", "Todos"], ["ativos", "Ativos"], ["bloqueados", "Bloqueados"], ["com-pedido", "Com pedido"], ["sem-pedido", "Sem pedido"], ["descoberta", "Vieram de descoberta"]] as const;
+type MemberRow = { id: string; companyName: string; cnpj: string; name: string; email: string; whatsapp: string; status: "ACTIVE" | "BLOCKED"; blockedReason: string | null; createdAt: string; requests?: number; paidCents?: number; lastRequestAt?: string | null; origin?: string; termsOk?: boolean; lastSeenAt?: string | null;
+  /** Classificação (D108): nível final e origem, declarado × comprovado, pontos, momento, plano e respostas do cadastro. */
+  level?: { level: BrasClientLevel; source: "AJUSTE" | "DECLARADO" | "COMPROVADO" | "SEM_PERFIL"; declared: BrasClientLevel | null; proven: BrasClientLevel; score: number | null; maxScore: number; moment: BrasMoment; plan: BrasMemberPlan; overrideReason: string | null; answers: { question: string; answer: string }[] };
+};
+const LEVEL_TONE: Record<BrasClientLevel, "neutral" | "info" | "success" | "warning"> = { INICIANTE: "neutral", CRESCIMENTO: "info", PROFISSIONAL: "success", GRANDE: "warning" };
+const SOURCE_LABEL = { AJUSTE: "ajuste da equipe", DECLARADO: "pelas respostas", COMPROVADO: "pelas compras", SEM_PERFIL: "sem respostas" } as const;
+
+/** Nível do cliente com o porquê, as respostas do cadastro e o ajuste manual (motivo obrigatório). */
+function LevelCell({ m }: { m: MemberRow }) {
+  const router = useRouter();
+  const [pending, start] = React.useTransition();
+  const [lvl, setLvl] = React.useState<string>("");
+  const [why, setWhy] = React.useState("");
+  const l = m.level;
+  if (!l) return null;
+  const save = (level: BrasClientLevel | null) => start(async () => {
+    const r = await setBrasLevelOverrideAction(m.id, level, why);
+    if (r.ok) { toast.success(level ? "Nível ajustado" : "Nível volta a ser automático"); setWhy(""); router.refresh(); } else toast.error(r.error);
+  });
+  return (
+    <div className="space-y-1">
+      <Badge tone={LEVEL_TONE[l.level]}>{BRAS_LEVEL_LABEL[l.level]}</Badge>
+      <p className="text-xs text-muted-foreground">{SOURCE_LABEL[l.source]}{l.score !== null ? ` · ${l.score} de ${l.maxScore} pts` : ""}</p>
+      <p className="text-xs text-muted-foreground">{BRAS_MOMENT_LABEL[l.moment]} · plano {BRAS_PLAN_LABEL[l.plan]}</p>
+      <details className="text-xs">
+        <summary className="cursor-pointer font-semibold text-link">Respostas e ajuste</summary>
+        <div className="mt-2 w-72 space-y-2">
+          {l.answers.length ? <dl className="space-y-1">{l.answers.map((a) => <div key={a.question}><dt className="text-muted-foreground">{a.question}</dt><dd className="font-medium">{a.answer}</dd></div>)}</dl> : <p>Cadastro anterior às perguntas: o membro responde no Meu Brás.</p>}
+          <p>Declarado: <b>{l.declared ? BRAS_LEVEL_LABEL[l.declared] : "—"}</b> · Comprovado: <b>{BRAS_LEVEL_LABEL[l.proven]}</b></p>
+          {l.source === "AJUSTE" ? <p>Ajuste: {l.overrideReason}</p> : null}
+          <label className="block">Ajustar para
+            <select className="mt-1 block w-full rounded-md border border-border bg-surface px-2 py-1" value={lvl} onChange={(e) => setLvl(e.target.value)}>
+              <option value="">Escolha…</option>{BRAS_LEVELS.map((x) => <option key={x} value={x}>{BRAS_LEVEL_LABEL[x]}</option>)}
+            </select>
+          </label>
+          <label className="block">Motivo<input className="mt-1 block w-full rounded-md border border-border bg-surface px-2 py-1" value={why} onChange={(e) => setWhy(e.target.value)} placeholder="Ex.: compra contêiner fora da plataforma" /></label>
+          <div className="flex gap-2">
+            <Button size="sm" disabled={pending || !lvl} onClick={() => save(lvl as BrasClientLevel)}>Ajustar</Button>
+            {l.source === "AJUSTE" ? <Button size="sm" variant="secondary" disabled={pending} onClick={() => save(null)}>Voltar ao automático</Button> : null}
+          </div>
+        </div>
+      </details>
+    </div>
+  );
+}
+const FILTROS = [["todos", "Todos"], ["ativos", "Ativos"], ["bloqueados", "Bloqueados"], ["com-pedido", "Com pedido"], ["sem-pedido", "Sem pedido"], ["descoberta", "Vieram de descoberta"], ["GRANDE", "Grande conta"], ["PROFISSIONAL", "Profissional"], ["CRESCIMENTO", "Em crescimento"], ["INICIANTE", "Iniciante"], ["sem-perfil", "Sem respostas"]] as const;
 type Filtro = (typeof FILTROS)[number][0];
 
 export function MembersTable({ members }: { members: MemberRow[] }) {
@@ -130,7 +176,7 @@ export function MembersTable({ members }: { members: MemberRow[] }) {
   if (members.length === 0) return <EmptyState icon={Lock} title="Nenhum membro ainda" description="Quem se cadastrar com CNPJ pela página pública aparece aqui na hora, já liberado. Você pode bloquear quem não for lojista." />;
   const t = q.trim().toLowerCase();
   const digits = t.replace(/\D/g, "");
-  const passa = (m: MemberRow) => filtro === "todos" || (filtro === "ativos" && m.status === "ACTIVE") || (filtro === "bloqueados" && m.status === "BLOCKED") || (filtro === "com-pedido" && (m.requests ?? 0) > 0) || (filtro === "sem-pedido" && !(m.requests ?? 0)) || (filtro === "descoberta" && m.origin?.startsWith("Descoberta"));
+  const passa = (m: MemberRow) => filtro === "todos" || (filtro === "ativos" && m.status === "ACTIVE") || (filtro === "bloqueados" && m.status === "BLOCKED") || (filtro === "com-pedido" && (m.requests ?? 0) > 0) || (filtro === "sem-pedido" && !(m.requests ?? 0)) || (filtro === "descoberta" && m.origin?.startsWith("Descoberta")) || (filtro === "sem-perfil" && m.level?.declared === null) || (m.level?.level === filtro);
   const shown = members.filter(passa).filter((m) => !t || `${m.companyName} ${m.name} ${m.email}`.toLowerCase().includes(t) || (digits.length >= 3 && m.cnpj.replace(/\D/g, "").includes(digits)));
   return (
     <div className="space-y-3">
@@ -144,13 +190,14 @@ export function MembersTable({ members }: { members: MemberRow[] }) {
       </div>
       <p className="text-xs text-muted-foreground">Dados de contato só para a equipe da Brás Digital: nunca são enviados às importadoras (elas recebem só o endereço de envio de cada pedido).</p>
       <div className="ds-card overflow-x-auto">
-        <table className="w-full min-w-[44rem] text-sm">
-          <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3">Empresa</th><th scope="col" className="p-3">Contato</th><th scope="col" className="p-3">Cadastro</th><th scope="col" className="p-3">Pedidos</th><th scope="col" className="p-3">Situação</th><th scope="col" className="p-3"><span className="sr-only">Ações</span></th></tr></thead>
+        <table className="w-full min-w-[52rem] text-sm">
+          <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3">Empresa</th><th scope="col" className="p-3">Contato</th><th scope="col" className="p-3">Nível</th><th scope="col" className="p-3">Cadastro</th><th scope="col" className="p-3">Pedidos</th><th scope="col" className="p-3">Situação</th><th scope="col" className="p-3"><span className="sr-only">Ações</span></th></tr></thead>
           <tbody>
             {shown.map((m) => (
               <tr key={m.id} className="border-b border-border last:border-0">
                 <td className="p-3"><p className="font-semibold">{m.companyName}</p><p className="tabular-nums text-xs text-muted-foreground">{m.cnpj}</p></td>
                 <td className="p-3"><p>{m.name}</p><p className="text-xs text-muted-foreground">{m.email} · {m.whatsapp}</p></td>
+                <td className="p-3 align-top"><LevelCell m={m} /></td>
                 <td className="p-3"><p className="tabular-nums">{formatDate(m.createdAt, { day: "2-digit", month: "short", year: "numeric" })}</p>{m.origin ? <p className="text-xs text-muted-foreground">{m.origin}</p> : null}{m.termsOk === false ? <p className="text-xs text-warning">Termos ainda não aceitos</p> : null}</td>
                 <td className="p-3"><p className="tabular-nums">{m.requests ?? 0}</p>{m.paidCents ? <p className="text-xs tabular-nums text-muted-foreground">{formatBRL(m.paidCents)} pagos</p> : null}{m.lastSeenAt ? <p className="text-xs text-muted-foreground">Visto em {formatDate(m.lastSeenAt)}</p> : null}</td>
                 <td className="p-3">{m.status === "ACTIVE" ? <Badge tone="success">Ativo</Badge> : <><Badge tone="danger">Bloqueado</Badge>{m.blockedReason ? <p className="mt-1 text-xs text-muted-foreground">{m.blockedReason}</p> : null}</>}</td>

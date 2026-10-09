@@ -1,5 +1,6 @@
-import type { CatalogContent, CatalogFamily, CatalogKind, JourneyPhase, OfferRules, PartnerKind, PriceCycle } from "@/db/schema";
+import type { CatalogAudience, CatalogContent, CatalogFamily, CatalogStatus, CatalogKind, JourneyPhase, OfferRules, PartnerKind, PriceCycle } from "@/db/schema";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
+import { BRAS_SEED_PRODUCTS } from "./catalog-seed-bras";
 
 /**
  * Catálogo aprovado pelo dono (D90), versão 1. É só a SEMENTE: depois de gravado no banco, o Master é a fonte da verdade
@@ -9,7 +10,11 @@ import { THEME_CATALOG } from "@/lib/themes/catalog";
 export type SeedPrice = { cycle: PriceCycle; amountCents: number | null; platformFeeBps?: number; methods?: ("PIX" | "CARD")[]; pixDiscountBps?: number; cardMaxInstallments?: number; cardMarkupBps?: number; annualDiscountBps?: number };
 export type SeedProduct = {
   key: string; slug: string; name: string; family: CatalogFamily; kind: CatalogKind; phase: JourneyPhase;
-  audience: ("STORE" | "SUPPLIER" | "PARTNER" | "PUBLIC")[];
+  audience: CatalogAudience[];
+  /** Situação ao nascer. Padrão: publicado (tabela D90). Produtos novos sem preço publicado pelo dono nascem DRAFT. */
+  status?: CatalogStatus;
+  /** Decisão que aprovou a versão 1 do preço (padrão D90). */
+  ref?: string;
   tagline: string; summary: string; content: CatalogContent;
   prerequisites?: string[]; lockMode?: "HARD" | "RECOMMENDED"; unlocks?: string[]; deliveryDays?: number | null; grantsKey?: string | null;
   partnerDiscountMaxBps?: number; commissionHoldDays?: number; meta?: Record<string, unknown>; sortOrder: number; prices: SeedPrice[];
@@ -194,6 +199,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
     meta: { themeKey: t.key, level: t.level, family: t.family, license: "1 loja", supportOptional: true, compatibility: "Motor de temas v3" },
     prices: [{ cycle: "ONE_TIME", amountCents: t.priceCents, methods: ["PIX", "CARD"], pixDiscountBps: 1000, cardMaxInstallments: 6, cardMarkupBps: 0 }],
   })),
+  ...BRAS_SEED_PRODUCTS,
 ];
 
 export const ENTRY_OFFER_KEY = "COMMERCE_ENTRADA";

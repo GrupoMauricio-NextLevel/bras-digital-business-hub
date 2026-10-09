@@ -85,6 +85,8 @@ export async function brasAccessFor(db: Database, session: { user: { id: string;
 export const brasGrantSchema = z.object({
   memberId: z.string().min(1),
   kind: z.enum(["SUBSCRIPTION", "COURTESY"]),
+  /** Plano concedido (D108). Padrão Prata (o acesso à análise de antes). */
+  plan: z.enum(["PRATA", "OURO", "PLATINUM"]).default("PRATA"),
   days: z.number().int().min(1, "Mínimo de 1 dia").max(366, "Máximo de 1 ano"),
   note: z.string().trim().max(200).optional(),
 });
@@ -94,15 +96,15 @@ export async function grantBrasAccess(db: Database, actor: Actor, raw: z.input<t
   const input = brasGrantSchema.parse(raw);
   const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.id, input.memberId), columns: { id: true } });
   if (!m) throw new NotFoundError("Membro não encontrado.");
-  // Renovação soma a partir do fim da liberação atual (não perde os dias que faltam).
+  // Renovação do MESMO plano soma a partir do fim da liberação atual (não perde os dias que faltam); plano diferente começa já.
   const [atual] = await db.select({ validUntil: bdAccessGrants.validUntil }).from(bdAccessGrants)
-    .where(and(eq(bdAccessGrants.memberId, m.id), isNull(bdAccessGrants.revokedAt), gte(bdAccessGrants.validUntil, now.toISOString())))
+    .where(and(eq(bdAccessGrants.memberId, m.id), eq(bdAccessGrants.plan, input.plan), isNull(bdAccessGrants.revokedAt), gte(bdAccessGrants.validUntil, now.toISOString())))
     .orderBy(desc(bdAccessGrants.validUntil)).limit(1);
   const start = atual ? new Date(atual.validUntil) : now;
   const validUntil = new Date(start.getTime() + input.days * 86_400_000).toISOString();
   const id = newId("bdg");
-  await db.insert(bdAccessGrants).values({ id, memberId: m.id, kind: input.kind, validUntil, note: input.note || null, createdBy: actor.userId });
-  await recordAudit(db, actor, { action: "BRAS_ACCESS_GRANTED", entityType: "bd_access_grant", entityId: id, after: { memberId: m.id, kind: input.kind, validUntil } });
+  await db.insert(bdAccessGrants).values({ id, memberId: m.id, kind: input.kind, plan: input.plan, validUntil, note: input.note || null, createdBy: actor.userId });
+  await recordAudit(db, actor, { action: "BRAS_ACCESS_GRANTED", entityType: "bd_access_grant", entityId: id, after: { memberId: m.id, kind: input.kind, plan: input.plan, validUntil } });
   return { id, validUntil };
 }
 

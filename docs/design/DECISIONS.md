@@ -785,3 +785,53 @@ O dono trouxe as 8 fotos dos lotes 1 e 2 do GPT (`imagens-bras-digital-gpt.md`) 
   - SuperDrop, Commerce e Brás já têm as fotos da home;
   - faltam 41 imagens em 5 lotes: portas de entrada, Soluções, páginas de decisão, ilustrações dos painéis e apoio comercial;
   - cada lugar marcado "ligar" é conectado quando as imagens chegarem.
+
+## D108 — Brás v2 fase 0: respostas do dono, regras no Master, classificação do cliente, suporte por plano e NextLevel Cargas no ar (2026-10-09)
+O dono respondeu às perguntas do prompt `docs/prompts/bras-ecossistema-importadoras-conteiner-transporte.md` e acrescentou dois pedidos.
+- **Respostas aceitas:**
+  - marca de transporte "NextLevel Cargas" em `cargas.nextlevelgroup.com.br`; o dono já ligou o domínio no Render e na Hostinger;
+  - preços: Prata R$ 97, Ouro R$ 197 e Platinum R$ 397; comissão por carga e publicidade como sugerido;
+  - sinal de 30% no pré-pedido, com devolução liberada após 30 dias de atraso sobre a ETA original;
+  - Bling pronto para receber as credenciais;
+  - advogado: textos com dados simulados e editáveis;
+  - "tudo editável no Master".
+- **Regras da Brás v2:**
+  - ficam em `platform_settings` (`bras.v2_rules`) e são editadas no Master: pré-pedido, cotação, contêiner dividido, cubagem, comissão por carga e plano, estoque e Bling, limites do plano grátis, suporte por plano;
+  - cada grupo é validado separadamente: um grupo inválido volta ao padrão sem derrubar os outros;
+  - a versão sobe a cada gravação e a auditoria guarda antes e depois;
+  - simulador de cubagem puro (`brasCubageQuote`), conforme a seção 9.3 do prompt.
+- **Catálogo Master:**
+  - famílias novas `BRAS_MEMBER_PLAN`, `BRAS_IMPORTER_PLAN`, `CARRIER_PLAN`, `BRAS_SERVICE` e `ADS`;
+  - públicos novos `BRAS_MEMBER`, `IMPORTER` e `CARRIER`;
+  - 11 produtos criados em **RASCUNHO**: nada é cobrado nem aparece sem o dono publicar;
+  - sem preço anual por ora, porque o texto anual atual fala em 25%;
+  - a taxa da cotação fora do catálogo (R$ 1.500) é preço do catálogo, não regra.
+- **Suporte por plano (dono):**
+  - grátis: perguntas frequentes;
+  - Prata: + chat e WhatsApp;
+  - Ouro e Platinum: + agenda pessoal na importadora (1 e 2 visitas por mês, editável);
+  - padrão editável: a grande conta fala por WhatsApp mesmo no grátis, para não perder um cliente grande no primeiro contato;
+  - o chat é assíncrono (`bd_support_messages`) e a agenda é um pedido do membro que a equipe confirma com dia e hora (`bd_appointments`);
+  - o plano vem da liberação ativa (`bd_access_grants.plan`). As liberações antigas valem como Prata; renovar o mesmo plano soma os dias, e trocar de plano começa na hora.
+- **Classificação do cliente (dono):**
+  - o cadastro passa a ter 7 perguntas: momento, canais, compra mensal pretendida, faturamento, experiência com importação, equipe e objetivos;
+  - as respostas geram pontos e um nível declarado: Iniciante, Em crescimento, Profissional ou Grande conta;
+  - os pontos, os cortes e os pisos ficam no Master. Exemplo de piso: compra acima de R$ 500 mil por mês já é grande conta;
+  - o nível comprovado vem das compras pagas em 90 dias;
+  - vale o maior dos dois, salvo ajuste manual do Master, que exige motivo e fica na auditoria;
+  - o momento da jornada vem do comportamento: novo, aguardando, primeira compra, recorrente ou esfriando;
+  - o Meu Brás escolhe os 3 cartões principais pelo nível, pelo momento e pelos objetivos (`brasPanelPlan`). O que ainda não existe aparece como "em preparação".
+- **Modelos jurídicos** (`bras.legal`):
+  - seis textos simulados, com os dados da empresa marcados "[DADO SIMULADO]";
+  - marcadores `{{...}}` leem as regras e o catálogo na hora;
+  - "Revisado" exige o nome de quem revisou;
+  - mudar o texto sobe a versão.
+- **Pauta de conteúdo** (`bd_content_items`): versão mínima para as gravações no showroom XDX.
+- **NextLevel Cargas:**
+  - nova marca `NEXTLEVEL_CARGAS`, na cor índigo `#4B4FD8`;
+  - página pública própria (`landing: "cargas"`);
+  - só "/" é pública, via a nova lista `publicPaths` da marca; o resto volta ao início;
+  - o cadastro de interesse da transportadora, do autônomo e da importadora vai para o CRM do Master (Interessados), sem tabela nova;
+  - antes desta decisão, o endereço caía na marca padrão e mostrava o SuperDrop;
+  - o painel da transportadora fica para a fase F2.
+- Testes: `tests/bras-v2-f0.test.ts`, `tests/cargas.test.ts`. Migração `0048_bras_v2_perfil_suporte_pauta`.

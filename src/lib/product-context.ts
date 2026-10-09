@@ -1,6 +1,6 @@
 import { themeColors, type ThemeKey } from "@/design-system/themes";
 
-export type ProductContextKey = "master" | "commerce" | "superdrop" | "bras" | "creators" | "china";
+export type ProductContextKey = "master" | "commerce" | "superdrop" | "bras" | "creators" | "china" | "cargas";
 
 export type ProductContext = {
   key: ProductContextKey;
@@ -23,6 +23,7 @@ export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
   superdrop: { key: "superdrop", name: "SuperDrop", shortName: "SuperDrop", descriptor: "Distribuição e dropshipping", ...accentOf("superdrop"), href: "/master/marcas/superdrop", available: true },
   bras: { key: "bras", name: "Brás Digital", shortName: "Brás Digital", descriptor: "Atacado B2B", ...accentOf("bras"), href: "/bras", available: true },
   creators: { key: "creators", name: "Creators Hub", shortName: "Creators", descriptor: "Creators & Social Commerce", ...accentOf("creators"), available: false },
+  cargas: { key: "cargas", name: "NextLevel Cargas", shortName: "Cargas", descriptor: "Transporte e coletas", ...accentOf("cargas"), available: false },
   china: { key: "china", name: "China Hub", shortName: "China Hub", descriptor: "Brasil ↔ China", ...accentOf("china"), available: false },
 };
 
@@ -36,6 +37,7 @@ export function productContextForPath(pathname: string, panel?: string, brandCod
     case "BRAS_DIGITAL": return PRODUCT_CONTEXTS.bras;
     case "CREATORS_HUB": return PRODUCT_CONTEXTS.creators;
     case "CHINA_HUB": return PRODUCT_CONTEXTS.china;
+    case "NEXTLEVEL_CARGAS": return PRODUCT_CONTEXTS.cargas;
     default: return PRODUCT_CONTEXTS.superdrop;
   }
 }

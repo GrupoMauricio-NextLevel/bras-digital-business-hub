@@ -8,6 +8,7 @@ import { getSession, homeFor } from "@/lib/auth";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { listPublicBrasVideos } from "@/lib/domain/bras/videos";
+import { CargasHome } from "@/components/portal/cargas/cargas-home";
 import { getBrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
 import { BrasHome } from "@/components/portal/bras/bras-home";
 import { getBrand } from "@/lib/brand-server";
@@ -57,6 +58,8 @@ export default async function Portal() {
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
+  // Marca com página inicial própria (NextLevel Cargas, D108).
+  if (brand.landing === "cargas") return <CargasHome brand={brand} />;
   // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.

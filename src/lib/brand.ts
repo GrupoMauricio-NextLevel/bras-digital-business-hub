@@ -4,7 +4,7 @@
  * a fronteira continua sendo o tenant. Texto de marca nunca fica fixo em componente: vem daqui.
  * Puro (sem Next/React), para servir servidor, e-mail, testes e rotas.
  */
-export const BRAND_CODES = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] as const;
+export const BRAND_CODES = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] as const;
 export type BrandCode = (typeof BRAND_CODES)[number];
 /** "NEXTLEVEL" é a holding: só aparece no endereço do Master central. Os demais são produtos que têm contas, lojas e fornecedores. */
 export const HOLDING_CODE: BrandCode = "NEXTLEVEL";
@@ -52,6 +52,10 @@ export type Brand = {
    * nada indexável e nenhuma página pública de fornecedor. Ausente = falso (as marcas abertas não mudam).
    */
   closedCommerce?: boolean;
+  /** Página inicial própria da marca (ex.: NextLevel Cargas). Ausente = a página do modelo da marca (loja, dropshipping, fechada). */
+  landing?: "cargas";
+  /** Só estes caminhos públicos existem no endereço da marca (além dos painéis e de /api); o resto volta para a página inicial. */
+  publicPaths?: string[];
 };
 
 const list = (v: string | undefined, fallback: string[]) => (v ? v.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean) : fallback);
@@ -118,6 +122,18 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       primaryColor: PALETTES.CHINA_HUB.light.ink, accentColor: PALETTES.CHINA_HUB.light.signal, logo: "nextlevel", wordmark: "China Hub",
       modules: ["stores", "themes", "partners", "dropship", "wholesale"], emailFromName: "China Hub", legalLine: LEGAL("China Hub"), signupOpen: false, partnersOpen: false,
       soon: { headline: "Seu catálogo importado, vendendo no Brasil inteiro.", text: "Fornecedores e importadores conectados a uma rede de lojistas e representantes, com pedido, expedição e pagamento organizados em português.", bullets: ["Rede de lojistas e representantes", "Pedido e expedição organizados", "Atendimento em português, espanhol e mandarim"], leadTitle: "Quero ser fornecedor no China Hub", zh: { headline: "把货卖到巴西，全国分销", text: "连接巴西批发商与零售店网络，由本地系统统一管理订单与发货。" } },
+    },
+    NEXTLEVEL_CARGAS: {
+      // D108: marca de transporte sobre o mesmo motor. Por ora, apresentação e lista de interesse; o painel da transportadora entra na fase F2.
+      code: "NEXTLEVEL_CARGAS", name: "NextLevel Cargas", live: true,
+      tagline: "Cargas do Brás para a sua rota",
+      description: "Transportadoras e importadoras do Brás conectadas: coletas da sua rota, retirada com código e motorista sem aplicativo. Cadastro grátis.",
+      domains: list(env.BRAND_DOMAINS_NEXTLEVEL_CARGAS, ["cargas.nextlevelgroup.com.br"]),
+      baseUrl: env.BRAND_URL_NEXTLEVEL_CARGAS ?? "https://cargas.nextlevelgroup.com.br",
+      officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_CARGAS),
+      primaryColor: PALETTES.NEXTLEVEL_CARGAS.light.ink, accentColor: PALETTES.NEXTLEVEL_CARGAS.light.signal, logo: "nextlevel", wordmark: "Cargas",
+      modules: [], emailFromName: "NextLevel Cargas", legalLine: LEGAL("NextLevel Cargas"), signupOpen: false, partnersOpen: false, soon: null,
+      landing: "cargas", publicPaths: ["/", ""],
     },
     NEXTLEVEL: {
       code: "NEXTLEVEL", name: "NextLevel", live: true,

@@ -145,6 +145,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
       { label: "Descobertas", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
       { label: "Meus pedidos", href: "/meu-bras/pedidos", icon: "ReceiptText", group: "Meu Brás" },
+      { label: "Suporte", href: "/meu-bras/suporte", icon: "LifeBuoy", group: "Meu Brás" },
+      { label: "Meu perfil", href: "/meu-bras/perfil", icon: "UsersRound", group: "Conta" },
       { label: "Minha empresa", href: "/meu-bras/empresa", icon: "Settings", group: "Conta" },
     ],
     quick: [],
@@ -211,10 +213,13 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
   { label: "Visão geral", href: "/bras/visao", icon: "LayoutDashboard", group: "Operação" },
   { label: "Pedidos", href: "/bras", icon: "Inbox", exact: true, group: "Operação", bottom: true },
   { label: "Comissões", href: "/bras/comissoes", icon: "HandCoins", group: "Operação" },
+  { label: "Atendimento", href: "/bras/atendimento", icon: "LifeBuoy", group: "Operação" },
   { label: "Descobertas", href: "/bras/descobertas", icon: "LayoutGrid", group: "Catálogo", bottom: true },
   { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
+  { label: "Pauta de conteúdo", href: "/bras/pauta", icon: "Megaphone", group: "Catálogo" },
   { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
-  { label: "Acesso à análise", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },
+  { label: "Acesso e planos", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },
+  { label: "Planos e regras", href: "/bras/regras", icon: "Settings", group: "Configuração" },
 ];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */

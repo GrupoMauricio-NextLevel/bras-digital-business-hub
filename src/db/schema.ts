@@ -28,7 +28,7 @@ export const organizations = pgTable("organizations", {
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
   type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
   /** Marca por onde o cliente entrou (NextLevel Commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
-  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] }).notNull().default("SUPERDROP"),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull().default("SUPERDROP"),
   createdAt: createdAt(),
 });
 
@@ -981,7 +981,7 @@ export const passwordResets = pgTable("password_resets", {
 // ---------------------------------------------------------------------------
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
-  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL"] }).notNull(),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
@@ -1259,7 +1259,10 @@ export const errorEvents = pgTable("error_events", {
 // Só o Master escreve aqui. Os painéis de fornecedor, membro, loja e parceiro apenas leem o que foi publicado
 // (preço autorizado, checkout, proposta). Valores em centavos; preços versionados e imutáveis.
 // ===========================================================================
-export const CATALOG_FAMILIES = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "TEMA", "MARKETING", "CONSULTORIA", "WHITE_LABEL", "SUPERDROP", "ADDON"] as const;
+export const CATALOG_FAMILIES = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "TEMA", "MARKETING", "CONSULTORIA", "WHITE_LABEL", "SUPERDROP", "ADDON", "BRAS_MEMBER_PLAN", "BRAS_IMPORTER_PLAN", "CARRIER_PLAN", "BRAS_SERVICE", "ADS"] as const;
+/** Quem pode contratar um produto do catálogo. BRAS_MEMBER, IMPORTER e CARRIER: lados da Brás e da NextLevel Cargas (D108). */
+export const CATALOG_AUDIENCES = ["STORE", "SUPPLIER", "PARTNER", "PUBLIC", "BRAS_MEMBER", "IMPORTER", "CARRIER"] as const;
+export type CatalogAudience = (typeof CATALOG_AUDIENCES)[number];
 export type CatalogFamily = (typeof CATALOG_FAMILIES)[number];
 export const CATALOG_KINDS = ["subscription", "one_time", "quote_required", "usage_fee"] as const;
 export type CatalogKind = (typeof CATALOG_KINDS)[number];
@@ -1292,7 +1295,7 @@ export const catalogProducts = pgTable("catalog_products", {
   /** Fase da jornada em que o produto aparece. */
   phase: text("phase", { enum: JOURNEY_PHASES }).notNull().default("FUNDACAO"),
   /** Quem pode contratar: STORE (lojista/Commerce), SUPPLIER, PARTNER e PUBLIC (visitante). */
-  audience: jsonb("audience").$type<("STORE" | "SUPPLIER" | "PARTNER" | "PUBLIC")[]>().notNull().default(["STORE", "PUBLIC"]),
+  audience: jsonb("audience").$type<CatalogAudience[]>().notNull().default(["STORE", "PUBLIC"]),
   tagline: text("tagline").notNull(),
   summary: text("summary").notNull(),
   content: jsonb("content").$type<CatalogContent>().notNull(),
@@ -1617,8 +1620,19 @@ export const bdMembers = pgTable("bd_members", {
   sourceVideoId: text("source_video_id"),
   /** Última visita ao Meu Brás, para mostrar as descobertas novas desde então. */
   lastSeenAt: ts("last_seen_at"),
+  /** Perfil do cadastro (D108): respostas das perguntas, pontuação e nível declarado. Vazio = cadastro anterior às perguntas. */
+  profile: jsonb("profile").$type<BrasMemberProfile | null>(),
+  profileScore: integer("profile_score"),
+  declaredLevel: text("declared_level"),
+  profileAnsweredAt: ts("profile_answered_at"),
+  /** Ajuste manual do nível pelo Master (com motivo); vazio = automático (maior entre declarado e comprovado). */
+  levelOverride: text("level_override"),
+  levelOverrideReason: text("level_override_reason"),
   createdAt: createdAt(),
 }, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt), index("bd_members_source_video_idx").on(t.sourceVideoId)]);
+
+/** Respostas do perfil do membro (D108). As opções vivem em `src/lib/domain/bras/perfil.ts`. */
+export type BrasMemberProfile = { stage: string; channels: string[]; monthlyPurchase: string; revenue: string; importExperience: string; team: string; goals: string[] };
 
 /** Dados da análise de mercado de uma descoberta (D95). Só para quem tem acesso à análise; nunca promessa de ganho. */
 export type BrasAnalysis = {
@@ -1759,9 +1773,59 @@ export const bdAccessGrants = pgTable("bd_access_grants", {
   id: id(),
   memberId: text("member_id").notNull().references(() => bdMembers.id),
   kind: text("kind", { enum: ["SUBSCRIPTION", "COURTESY"] }).notNull(),
+  /** Plano concedido (D108): Prata, Ouro ou Platinum. Liberações anteriores aos planos valem como Prata. */
+  plan: text("plan", { enum: ["PRATA", "OURO", "PLATINUM"] }).notNull().default("PRATA"),
   validUntil: ts("valid_until").notNull(),
   note: text("note"),
   revokedAt: ts("revoked_at"),
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("bd_access_grants_member_idx").on(t.memberId, t.validUntil)]);
+
+/** Conversa do membro com a equipe da Brás (D108): chat assíncrono, liberado pelo plano. A importadora nunca lê. */
+export const bdSupportMessages = pgTable("bd_support_messages", {
+  id: id(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  author: text("author", { enum: ["MEMBER", "TEAM"] }).notNull(),
+  authorUserId: text("author_user_id").notNull(),
+  body: text("body").notNull(),
+  /** Lida pelo outro lado (equipe lê a do membro; membro lê a da equipe). */
+  readAt: ts("read_at"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_support_messages_member_idx").on(t.memberId, t.createdAt), index("bd_support_messages_unread_idx").on(t.author, t.readAt)]);
+
+/** Agenda pessoal na importadora (D108): o membro pede um horário; a equipe confirma dia e hora. Limite por mês no plano. */
+export const bdAppointments = pgTable("bd_appointments", {
+  id: id(),
+  memberId: text("member_id").notNull().references(() => bdMembers.id),
+  importerId: text("importer_id").references(() => bdImporters.id),
+  /** Dia preferido (AAAA-MM-DD) e período. */
+  preferredDate: text("preferred_date").notNull(),
+  period: text("period", { enum: ["MANHA", "TARDE"] }).notNull(),
+  topic: text("topic").notNull(),
+  status: text("status", { enum: ["REQUESTED", "CONFIRMED", "DONE", "CANCELED"] }).notNull().default("REQUESTED"),
+  scheduledAt: ts("scheduled_at"),
+  /** Recado da equipe ao membro (endereço, quem recebe). */
+  teamNote: text("team_note"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("bd_appointments_member_idx").on(t.memberId, t.createdAt), index("bd_appointments_status_idx").on(t.status, t.preferredDate)]);
+
+/** Pauta da máquina de conteúdo (D108): cada gravação planejada, do roteiro à publicação, ligada à importadora e à descoberta. */
+export const BRAS_CONTENT_FORMATS = ["SHORTS", "TRECHO", "ANALISE", "TOUR", "CAIXA_ABERTA", "BRAS_X_ML", "CONTEINER", "RANKING", "TRES_JEITOS"] as const;
+export const BRAS_CONTENT_STATUSES = ["IDEIA", "GRAVAR", "GRAVADO", "EDICAO", "PUBLICADO"] as const;
+export const bdContentItems = pgTable("bd_content_items", {
+  id: id(),
+  title: text("title").notNull(),
+  format: text("format", { enum: BRAS_CONTENT_FORMATS }).notNull(),
+  status: text("status", { enum: BRAS_CONTENT_STATUSES }).notNull().default("IDEIA"),
+  importerId: text("importer_id").references(() => bdImporters.id),
+  videoId: text("video_id").references(() => bdVideos.id),
+  /** Dia da gravação (AAAA-MM-DD) e quem grava. */
+  recordDate: text("record_date"),
+  owner: text("owner"),
+  hook: text("hook"),
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("bd_content_items_status_idx").on(t.status, t.recordDate)]);

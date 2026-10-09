@@ -6,7 +6,8 @@ import { users, themes, plans, services } from "@/db/schema";
 import { verifyPassword } from "@/lib/security/password";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 
-describe("bootstrap de produção", () => {
+// Cada teste aplica todas as migrações no próprio corpo (não num gancho): o limite padrão de 30 s estoura com a suíte inteira em paralelo.
+describe("bootstrap de produção", { timeout: 120_000 }, () => {
   it("cria dados de referência e o master sem dados de demonstração; é idempotente", async () => {
     const { db } = await createDatabase("pglite://memory");
     await runMigrations(db);

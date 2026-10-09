@@ -11,7 +11,7 @@
  */
 import { contrastRatio, luminance, onSignal } from "@/lib/brand-palette";
 
-export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play"] as const;
+export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play", "cargas"] as const;
 export type ThemeKey = (typeof THEME_KEYS)[number];
 export type ThemeMode = "light" | "dark";
 
@@ -71,12 +71,13 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   play: produto("NextLevel Play (planejada)", ["#8B4AC3", "#753CA6"], ["#C588FF", "#C588FF"]),
   china: produto("China Hub (planejada)", ["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   bras: produto("Brás Digital", ["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
+  cargas: produto("NextLevel Cargas", ["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
 };
 
 /** Marca do sistema (código de `src/lib/brand.ts`) → tema. Marca desconhecida cai na holding. */
 export const THEME_FOR_BRAND: Record<string, ThemeKey> = {
   NEXTLEVEL: "nextlevel", NEXTLEVEL_COMMERCE: "commerce", SUPERDROP: "superdrop",
-  BRAS_DIGITAL: "bras", CREATORS_HUB: "creators", CHINA_HUB: "china",
+  BRAS_DIGITAL: "bras", CREATORS_HUB: "creators", CHINA_HUB: "china", NEXTLEVEL_CARGAS: "cargas",
 };
 export const themeKeyForBrand = (code: string | null | undefined): ThemeKey => THEME_FOR_BRAND[code ?? ""] ?? "nextlevel";
 
