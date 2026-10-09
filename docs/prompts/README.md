@@ -5,6 +5,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 ## Prompts prontos
 | Prompt | Assunto | Estado |
 |---|---|---|
+| `bras-digital-noite.md` | **Brás Digital, rodada da noite (N1 a N11):** termos e aceite, e-mails e avisos, página de cada descoberta, origem do cadastro, agenda das descobertas, visão geral e comissões manuais, retirada e romaneio, membros, início do Meu Brás, Balcão v1 atrás da chave | **Em execução (2026-10-09)** |
 | `auditoria-dono-paineis-e-paginas.md` | **Rodada do dono:** navegação e lógica por marca e papel, suporte com troca de negócio e de painel (modo suporte auditado), identidade das marcas nos painéis, Master × marcas, páginas públicas de alto nível | **Feito** (fases 0 a 6; D80 e D81; relatório em `docs/auditoria-dono/RELATORIO.md`). Falta só o dono: gerar as imagens das páginas públicas |
 | `imagens-paginas-publicas-gpt.md` | **Prompt para o GPT** gerar as fotos das páginas públicas SuperDrop e Commerce (lotes, nomes, proporções) | **Salvo** (você leva ao GPT; depois me traga as imagens) |
 | `programa-parceiros.md` | Programa de Parceiros (afiliados) | Feito (PA0 a PA7, D30) |
