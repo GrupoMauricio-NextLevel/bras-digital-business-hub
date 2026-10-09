@@ -59,3 +59,25 @@
 /* Número grande dos passos. */
 .bd-step-n { font-family: var(--nl-font-display), system-ui, sans-serif; font-weight: 800; font-size: 3.5rem; line-height: 1; font-variant-numeric: tabular-nums; color: transparent; -webkit-text-stroke: 1.5px var(--bd-laranja); }
 .bd-dark .bd-step-n { -webkit-text-stroke-color: var(--bd-laranja-claro); }
+
+/* Home v2 (D98): botão grande, cartões do mosaico, palco do herói com deriva na rolagem e aviso que aparece. */
+.bd-btn--lg { min-height: 3.5rem; padding: 0 1.8rem; font-size: 1.05rem; }
+.bd-card { position: relative; display: flex; min-height: 24rem; flex-direction: column; justify-content: space-between; overflow: hidden; border-radius: 1.75rem; padding: 1.5rem; text-decoration: none; }
+@media (min-width: 640px) { .bd-card { padding: 2rem; } }
+.bd-card:focus-visible { outline: 3px solid var(--bd-laranja-claro); outline-offset: 3px; }
+.bd-caixas--escuro { background-image: linear-gradient(rgb(16 27 52 / 0.08) 1px, transparent 1px), linear-gradient(90deg, rgb(16 27 52 / 0.08) 1px, transparent 1px); }
+@keyframes bd-pop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
+.bd-pop { animation: bd-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s both; }
+@keyframes bd-pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); } }
+.bd-live-dot { animation: bd-pulse-dot 2.2s ease-out infinite; }
+@supports (animation-timeline: scroll()) {
+  @keyframes bd-drift-up { to { transform: translateY(-70px); } }
+  @keyframes bd-drift-up-fast { to { transform: translateY(-130px); } }
+  .bd-drift { animation: bd-drift-up linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+  .bd-drift-fast { animation: bd-drift-up-fast linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+}
+@media (max-width: 767px) { .bd-drift, .bd-drift-fast { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .bd-pop, .bd-live-dot, .bd-drift, .bd-drift-fast { animation: none !important; } }
+.bd-tile { background: #fff; color: var(--bd-navy); }
+:root[data-theme="dark"] .bd-tile { background: #16213d; color: var(--bd-tinta-clara); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-tile { background: #16213d; color: var(--bd-tinta-clara); } }

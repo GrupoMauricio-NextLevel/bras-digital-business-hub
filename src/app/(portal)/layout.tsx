@@ -14,7 +14,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const commerce = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
   const closed = isClosedCommerceBrand(brand) && !brand.soon;
   const nav: PublicNavItem[] = brand.soon ? [] : closed
-    ? [{ href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#para-quem", label: "Para quem" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#plataforma", label: "Plataforma" }, { href: "/#videos", label: "Descobertas" }, { href: "/#acesso", label: "Acesso" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
     ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
