@@ -133,6 +133,24 @@ for (const w of [360, 768, 1440]) {
 }
 ok("página pública com vídeos");
 
+// 3b. Termos de uso e política de privacidade (D99): no endereço da Brás, sem preço, com aviso de versão; links no rodapé.
+for (const w of [360, 1440]) {
+  const { c, p } = await page(w);
+  for (const [path, titulo] of [["/termos", "Termos de uso"], ["/privacidade", "Política de privacidade"]]) {
+    const r = await p.goto(BRAS + path, { waitUntil: "networkidle" });
+    if (r?.status() !== 200) fail(`${path} @${w}: status ${r?.status()}`);
+    if (!(await p.getByRole("heading", { level: 1, name: titulo }).isVisible())) fail(`${path} @${w}: título`);
+    const t = await p.locator("body").innerText();
+    if (!/Versão inicial de/.test(t)) fail(`${path} @${w}: aviso de versão ausente`);
+    if (/R\$\s?\d/.test(t)) fail(`${path} @${w}: preço aparece`);
+    if (!(await p.locator("footer").getByRole("link", { name: titulo }).isVisible())) fail(`${path} @${w}: link no rodapé`);
+    await check(p, path, w);
+    if (w === 360) await shot(p, `${OUT}/03b${path.replace("/", "-")}-360.png`);
+  }
+  await c.close();
+}
+ok("termos e privacidade");
+
 // 4. "Quero comprar" leva ao cadastro com o produto; cadastro com CNPJ inválido falha, válido entra no Meu Brás.
 {
   const { c, p } = await page(390);
@@ -145,6 +163,8 @@ ok("página pública com vídeos");
   await p.getByLabel("CNPJ da empresa").fill("11222333000100");
   await p.getByLabel("Nome da empresa").fill("Ana Utilidades LTDA"); await p.getByLabel("Seu nome").fill("Ana Lojista");
   await p.getByLabel("WhatsApp").fill("11988887777"); await p.getByLabel("E-mail").fill("ana@utilidades.teste"); await p.getByLabel("Senha").fill("senha-forte-1");
+  // D99: aceite obrigatório dos termos e da política (sem ele o navegador nem envia).
+  await p.getByRole("checkbox", { name: /Li e aceito os termos de uso/ }).check();
   await p.getByRole("button", { name: "Criar meu cadastro grátis" }).click();
   await p.getByRole("alert").filter({ hasText: /CNPJ inválido/ }).waitFor({ timeout: 30000 });
   if ((await p.getByLabel("CNPJ da empresa").inputValue()) !== "11.222.333/0001-00") fail("cadastro: máscara do CNPJ");
@@ -261,6 +281,7 @@ ok("bloqueio pelo Master");
   const { c, p } = await page(1280);
   await p.goto(BRAS + "/planos", { waitUntil: "networkidle" }); if (new URL(p.url()).pathname !== "/") fail("/planos abriu no endereço da Brás");
   await p.goto(B + "/", { waitUntil: "networkidle" }); if (/Brás Digital/.test(await p.title())) fail("SuperDrop mostrou a Brás");
+  for (const path of ["/termos", "/privacidade"]) { const r = await p.goto(B + path, { waitUntil: "networkidle" }); if (r?.status() !== 404) fail(`${path} abriu fora da Brás (${r?.status()})`); }
   await c.close();
 }
 ok("fronteira entre marcas");

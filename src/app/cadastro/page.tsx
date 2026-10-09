@@ -20,10 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export const dynamic = "force-dynamic";
 
-export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string }> }) {
+export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string; utm_source?: string }> }) {
   const brand = await requireBrandFeature("signup");
   // Brás Digital (D92): cadastro grátis de membro com CNPJ, sem plano, loja ou fornecedor.
-  if (isClosedCommerceBrand(brand)) return <BrasSignupPage brand={brand} videoId={(await searchParams).video} />;
+  if (isClosedCommerceBrand(brand)) { const q = await searchParams; return <BrasSignupPage brand={brand} videoId={q.video} source={q.utm_source} />; }
   const independent = !brandHas(brand, "dropship");
   const sp = await searchParams;
   const db = await getDb();

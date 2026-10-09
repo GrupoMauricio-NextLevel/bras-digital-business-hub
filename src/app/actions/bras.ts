@@ -10,7 +10,7 @@ import { getBrand } from "@/lib/brand-server";
 import { isClosedCommerceBrand } from "@/lib/brand";
 import { rateLimit } from "@/lib/rate-limit";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
-import { setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
+import { acceptBrasTerms, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, type brasVideoSchema } from "@/lib/domain/bras/videos";
 import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
 import { addBrasImporter, createBrasRequest, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus, type BrasRequestStatus, type brasImporterSchema, type brasOfferSchema, type brasRequestSchema } from "@/lib/domain/bras/catalogo";
@@ -39,6 +39,17 @@ async function master() {
   return { actor: s.actor, db: await getDb() };
 }
 const refresh = () => { revalidatePath("/bras", "layout"); revalidatePath("/"); revalidatePath("/meu-bras", "layout"); };
+
+/** Aceite dos termos pelo membro que se cadastrou antes deles (ou quando a versão muda). */
+export async function acceptBrasTermsAction() {
+  return runAction(async () => {
+    const session = await getSession();
+    if (!session) throw new ForbiddenError("Entre na sua conta para aceitar os termos.");
+    const r = await acceptBrasTerms(await getDb(), session.actor);
+    revalidatePath("/meu-bras", "layout");
+    return r;
+  });
+}
 
 export async function setBrasMemberStatusAction(memberId: string, status: "ACTIVE" | "BLOCKED", reason?: string) {
   return runAction(async () => { const { actor, db } = await master(); const r = await setBrasMemberStatus(db, actor, memberId, status, reason); refresh(); return r; });

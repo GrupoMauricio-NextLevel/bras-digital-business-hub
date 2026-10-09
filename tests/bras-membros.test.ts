@@ -11,7 +11,7 @@ import { NAV } from "@/lib/nav";
 /** D92: membro comprador da Brás com cadastro grátis por CNPJ, liberado na hora; o Master pode bloquear. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 const CNPJ = "11.222.333/0001-81"; // válido (dígitos verificadores)
-const base = { name: "Ana Lojista", companyName: "Ana Utilidades LTDA", cnpj: CNPJ, whatsapp: "(11) 98888-7777", email: "ana@utilidades.teste", password: "senha-forte-1" };
+const base = { name: "Ana Lojista", companyName: "Ana Utilidades LTDA", cnpj: CNPJ, whatsapp: "(11) 98888-7777", email: "ana@utilidades.teste", password: "senha-forte-1", acceptTerms: true as const };
 
 beforeEach(async () => { ctx = await freshDb(); });
 

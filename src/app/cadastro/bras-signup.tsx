@@ -10,7 +10,7 @@ import { BrasSignupForm } from "@/components/portal/bras/bras-signup-form";
 import "@/components/portal/bras/bras.css";
 
 /** Cadastro do membro comprador da Brás Digital (D92). Veio de um vídeo ("Quero comprar")? Mostra qual produto vai destravar. */
-export async function BrasSignupPage({ brand, videoId }: { brand: Brand; videoId?: string }) {
+export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand; videoId?: string; source?: string }) {
   const video = videoId && /^bdv_[a-z0-9]{6,40}$/.test(videoId)
     ? await (await getDb()).query.bdVideos.findFirst({ where: eq(bdVideos.id, videoId), columns: { title: true, youtubeId: true, active: true } })
     : null;
@@ -37,7 +37,7 @@ export async function BrasSignupPage({ brand, videoId }: { brand: Brand; videoId
             <span>Depois do cadastro você vê o preço e as caixas de <b>{video.title}</b>.</span>
           </p>
         ) : null}
-        <div className="mt-6"><BrasSignupForm /></div>
+        <div className="mt-6"><BrasSignupForm videoId={video?.active ? videoId : undefined} source={source} /></div>
         <p className="mt-6 text-center text-sm text-muted-foreground"><Lock className="mr-1 inline size-3.5 align-[-2px]" aria-hidden />Já é membro? <Link href="/login" className="font-semibold text-foreground underline">Entrar na área do cliente</Link></p>
       </div>
     </main>

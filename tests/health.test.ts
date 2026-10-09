@@ -11,7 +11,7 @@ describe("/api/health mostra a versão no ar e a última atualização do banco"
     const { GET } = await import("@/app/api/health/route");
     const body = await (await GET()).json();
     expect(body).toMatchObject({ ok: true, version: "01a89ae" });
-    expect(body.migration).toBe("0043_bras_digital");
+    expect(body.migration).toBe("0044_bras_termos_e_origem");
     delete process.env.RENDER_GIT_COMMIT;
   }, 120_000);
 });

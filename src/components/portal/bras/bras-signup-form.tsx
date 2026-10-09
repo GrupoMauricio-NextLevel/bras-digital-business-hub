@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/app/form-field";
@@ -16,14 +17,15 @@ const maskPhone = (v: string) => {
   return d.length <= 10 ? d.replace(/^(\d{2})(\d{0,4})(\d{0,4}).*/, (_, a, b, c) => [a && `(${a}`, a.length === 2 ? ") " : "", b, c && `-${c}`].join("")) : d.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
 };
 
-export function BrasSignupForm() {
+export function BrasSignupForm({ videoId, source }: { videoId?: string; source?: string }) {
   const [f, setF] = React.useState({ name: "", companyName: "", cnpj: "", whatsapp: "", email: "", password: "" });
+  const [aceite, setAceite] = React.useState(false);
   const [pending, start] = React.useTransition();
   const [error, setError] = React.useState<string | null>(null);
   const set = (patch: Partial<typeof f>) => setF((x) => ({ ...x, ...patch }));
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setError(null);
-    start(async () => { const r = await brasSignupAction(f); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
+    start(async () => { const r = await brasSignupAction({ ...f, acceptTerms: aceite as true, videoId, source }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
   };
   return (
     <form onSubmit={submit} className="space-y-3" aria-label="Cadastro de membro da Brás Digital">
@@ -33,6 +35,10 @@ export function BrasSignupForm() {
       <FormField label="WhatsApp" htmlFor="whats" hint="Com DDD. A equipe usa para confirmar pedidos."><Input id="whats" required type="tel" inputMode="tel" autoComplete="tel" placeholder="(11) 90000-0000" value={f.whatsapp} onChange={(e) => set({ whatsapp: maskPhone(e.target.value) })} /></FormField>
       <FormField label="E-mail" htmlFor="email"><Input id="email" required type="email" autoComplete="email" value={f.email} onChange={(e) => set({ email: e.target.value })} /></FormField>
       <FormField label="Senha" htmlFor="pass" hint="Mínimo de 8 caracteres"><Input id="pass" required type="password" minLength={8} autoComplete="new-password" value={f.password} onChange={(e) => set({ password: e.target.value })} /></FormField>
+      <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
+        <input type="checkbox" required checked={aceite} onChange={(e) => setAceite(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-[var(--bd-laranja)]" />
+        <span>Li e aceito os <Link href="/termos" target="_blank" className="font-semibold underline">termos de uso</Link> e a <Link href="/privacidade" target="_blank" className="font-semibold underline">política de privacidade</Link> da Brás Digital.</span>
+      </label>
       {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
       <Button type="submit" size="lg" className="w-full" loading={pending}>Criar meu cadastro grátis</Button>
       <p className="text-center text-xs text-muted-foreground">Sem taxa. Seus dados ficam com a Brás Digital: a importadora recebe só o endereço de envio de cada pedido.</p>

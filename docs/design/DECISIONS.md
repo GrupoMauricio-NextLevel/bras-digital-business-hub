@@ -709,3 +709,12 @@ Pedido do dono, vendo a página "Em breve": "totalmente simples a página públi
 - **Telas de demonstração** (`bras-ui.tsx`) com os nomes e campos reais do Meu Brás e produto fictício identificado. A página pública continua sem nenhum valor em reais (o e2e `bras-portal` confere): preços aparecem trancados, e a análise paga é descrita sem valor.
 - **Fotos do MANIFESTO** só aparecem quando o arquivo existir; sem arquivo, o cartão fica só com ícone (sem quadro "Imagem em criação" na Brás).
 - Testes: `e2e/bras-portal.mjs` (360/768/1440, axe, sem preço, sem vazamento de veredito ou importadora) e capturas por seção.
+
+## D99 — Brás: termos de uso, política de privacidade, aceite no cadastro e origem do cadastro (2026-10-09)
+Rodada da noite (`docs/prompts/bras-digital-noite.md`, N1 e N4). Com o cadastro aberto (D98), a Brás guardava CNPJ, nome, e-mail e WhatsApp sem termos nem política publicados.
+- **Páginas** `/termos` e `/privacidade` só no endereço da Brás (404 nas outras marcas; caminhos liberados em `CLOSED_PUBLIC_PATHS`). Descrevem o que o sistema faz hoje: controladora NextLevel Marketing Ltda.; dados de cadastro, pedido e uso; importadora recebe só o envio; vídeos no YouTube; cookie de sessão; direitos do titular. Aviso visível "Versão inicial, em revisão jurídica". Contato = `NEXT_PUBLIC_SUPPORT_EMAIL`. Links no rodapé do portal da Brás (as outras marcas não mudam).
+- **Aceite obrigatório** no cadastro (o domínio recusa sem aceite) e gravação de `terms_accepted_at` e `terms_version` (`BRAS_TERMS_VERSION` = 2026-10-09). Membro antigo ou versão nova: faixa no Meu Brás com "Li e aceito" (auditado, `BRAS_TERMS_ACCEPTED`).
+- **Origem do cadastro:** `source` (utm saneado, `descoberta` ou `direto`) e `source_video_id` (só descoberta que existe). Parâmetro estranho é ignorado, nunca erro. `last_seen_at` criado para o início do Meu Brás.
+- Migração `0044_bras_termos_e_origem` (só colunas novas, anuláveis, e um índice).
+- **Pendências do dono:** revisão jurídica dos dois textos; dados da controladora (CNPJ, endereço, encarregado) para completar a política.
+- Testes: `tests/bras-termos.test.ts`, `tests/host-routing.test.ts`, `tests/health.test.ts`; e2e `bras-portal` (páginas em 360/1440 com axe, sem preço, links no rodapé, 404 fora da Brás, cadastro com aceite).

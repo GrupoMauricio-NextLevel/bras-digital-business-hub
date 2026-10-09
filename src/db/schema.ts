@@ -1609,8 +1609,16 @@ export const bdMembers = pgTable("bd_members", {
   blockedAt: ts("blocked_at"),
   /** Motivo interno do bloqueio (só o Master vê). */
   blockedReason: text("blocked_reason"),
+  /** Aceite dos termos de uso e da política de privacidade da Brás (D99): data e versão aceita. Vazio = cadastro anterior aos termos. */
+  termsAcceptedAt: ts("terms_accepted_at"),
+  termsVersion: text("terms_version"),
+  /** Origem do cadastro (D99): de onde veio (descoberta, home, direto ou utm saneado) e a descoberta que trouxe o membro. */
+  source: text("source"),
+  sourceVideoId: text("source_video_id"),
+  /** Última visita ao Meu Brás, para mostrar as descobertas novas desde então. */
+  lastSeenAt: ts("last_seen_at"),
   createdAt: createdAt(),
-}, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt)]);
+}, (t) => [index("bd_members_status_idx").on(t.status, t.createdAt), index("bd_members_source_video_idx").on(t.sourceVideoId)]);
 
 /** Dados da análise de mercado de uma descoberta (D95). Só para quem tem acesso à análise; nunca promessa de ganho. */
 export type BrasAnalysis = {

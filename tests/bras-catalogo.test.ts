@@ -15,7 +15,7 @@ const envio = { carrier: "Braspress", shipName: "Ana Lojista", shipAddress: "Rua
 
 beforeEach(async () => {
   ctx = await freshDb();
-  const r = await signupBrasMember(ctx.db, { name: "Ana Lojista", companyName: "Ana Utilidades LTDA", cnpj: "11222333000181", whatsapp: "11988887777", email: "ana@utilidades.teste", password: "senha-forte-1" });
+  const r = await signupBrasMember(ctx.db, { name: "Ana Lojista", companyName: "Ana Utilidades LTDA", cnpj: "11222333000181", whatsapp: "11988887777", email: "ana@utilidades.teste", password: "senha-forte-1", acceptTerms: true as const });
   const m = (await getBrasMemberByUser(ctx.db, r.userId))!;
   memberId = m.id;
   member = { userId: r.userId, role: "BRAS_MEMBER", organizationId: m.organizationId, supplierId: null, storeId: null };
@@ -95,7 +95,7 @@ describe("pedido de compra", () => {
     await expect(setBrasRequestStatus(ctx.db, ctx.actors.master, id, "PICKED_UP")).rejects.toMatchObject({ code: "STATUS" });
     for (const s of ["CONFIRMED", "PAID", "PICKED_UP"] as const) await setBrasRequestStatus(ctx.db, ctx.actors.master, id, s);
     await expect(setBrasRequestStatus(ctx.db, ctx.actors.master, id, "CANCELED")).rejects.toMatchObject({ code: "STATUS" });
-    const outro = await signupBrasMember(ctx.db, { name: "Beto", companyName: "Beto Distribuidora", cnpj: "11444777000161", whatsapp: "21977776666", email: "beto@dist.teste", password: "senha-forte-2" });
+    const outro = await signupBrasMember(ctx.db, { name: "Beto", companyName: "Beto Distribuidora", cnpj: "11444777000161", whatsapp: "21977776666", email: "beto@dist.teste", password: "senha-forte-2", acceptTerms: true as const });
     const m2 = (await getBrasMemberByUser(ctx.db, outro.userId))!;
     expect(await listMyBrasRequests(ctx.db, { userId: outro.userId, role: "BRAS_MEMBER", organizationId: m2.organizationId, supplierId: null, storeId: null })).toEqual([]);
     await expect(listBrasRequestsForMaster(ctx.db, member)).rejects.toThrow();

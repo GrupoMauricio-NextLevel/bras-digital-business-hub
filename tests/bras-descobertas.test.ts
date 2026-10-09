@@ -15,7 +15,7 @@ const analise = { trendSignal: "Buscas subindo", verdict: "Produto certo para qu
 
 beforeEach(async () => {
   ctx = await freshDb();
-  const r = await signupBrasMember(ctx.db, { name: "Ana", companyName: "Ana Utilidades", cnpj: "11222333000181", whatsapp: "11988887777", email: "ana@u.teste", password: "senha-forte-1" });
+  const r = await signupBrasMember(ctx.db, { name: "Ana", companyName: "Ana Utilidades", cnpj: "11222333000181", whatsapp: "11988887777", email: "ana@u.teste", password: "senha-forte-1", acceptTerms: true as const });
   const m = (await getBrasMemberByUser(ctx.db, r.userId))!;
   memberId = m.id; sess = { user: { id: r.userId, role: "BRAS_MEMBER" } };
   member = { userId: r.userId, role: "BRAS_MEMBER", organizationId: m.organizationId, supplierId: null, storeId: null };

@@ -309,6 +309,13 @@
       "when": 1791501734957,
       "tag": "0043_bras_digital",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1791505263432,
+      "tag": "0044_bras_termos_e_origem",
+      "breakpoints": true
     }
   ]
 }

@@ -1,13 +1,13 @@
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { bdMembers, organizations, users } from "@/db/schema";
+import { bdMembers, bdVideos, organizations, users } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import type { BrasCommercialAccess } from "@/lib/bras/access";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
-import { DomainError, NotFoundError } from "../errors";
+import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 
 /**
  * Membro comprador da Brás Digital (D92): cadastro grátis e simples com CNPJ, liberado na hora.
@@ -40,7 +40,18 @@ export const brasSignupSchema = z.object({
   whatsapp: z.string().transform(onlyDigits).refine((v) => v.length >= 10 && v.length <= 13, "Informe o WhatsApp com DDD"),
   email: z.string().trim().email("E-mail inválido"),
   password: z.string().min(8, "A senha precisa ter ao menos 8 caracteres"),
+  /** Aceite obrigatório dos termos de uso e da política de privacidade (D99). */
+  acceptTerms: z.literal(true, { message: "Para se cadastrar, aceite os termos de uso e a política de privacidade." }),
+  /** Origem (D99): a descoberta do link (`/cadastro?video=`) e a fonte (utm ou página). Inválido é ignorado, nunca erro. */
+  videoId: z.string().optional(),
+  source: z.string().optional(),
 });
+
+/** Versão em vigor dos termos de uso e da política de privacidade da Brás (data da publicação). Mudou o texto, mude a versão. */
+export const BRAS_TERMS_VERSION = "2026-10-09";
+
+/** Fonte do cadastro saneada: letras, números, hífen e sublinhado, até 40 caracteres; vazio vira null. */
+export const cleanSource = (v: string | undefined | null) => (v ?? "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40) || null;
 
 /** Cadastro público: cria a organização da empresa (marca Brás), o usuário membro e o registro do CNPJ. Sem taxa. */
 export async function signupBrasMember(db: Database, raw: z.input<typeof brasSignupSchema>) {
@@ -53,15 +64,32 @@ export async function signupBrasMember(db: Database, raw: z.input<typeof brasSig
   if (await db.query.users.findFirst({ where: eq(users.email, email), columns: { id: true } })) {
     throw new DomainError("EMAIL_TAKEN", "Já existe uma conta com este e-mail. Entre com ele ou use outro.");
   }
+  // Origem: só descoberta que existe conta; a fonte é saneada. Nada disso bloqueia o cadastro.
+  const video = input.videoId && /^bdv_[a-z0-9]{6,40}$/.test(input.videoId) ? await db.query.bdVideos.findFirst({ where: eq(bdVideos.id, input.videoId), columns: { id: true } }) : null;
+  const source = cleanSource(input.source) ?? (video ? "descoberta" : "direto");
   const organizationId = newId("org");
   const userId = newId("usr");
   const memberId = newId("bdm");
   await db.transaction(async (tx) => {
     await tx.insert(organizations).values({ id: organizationId, name: input.companyName, slug: `${slugify(input.companyName).slice(0, 40)}-${cnpj.slice(-6)}`, type: "MERCHANT", brand: "BRAS_DIGITAL" });
     await tx.insert(users).values({ id: userId, name: input.name, email, role: "BRAS_MEMBER", organizationId, passwordHash: hashPassword(input.password) });
-    await tx.insert(bdMembers).values({ id: memberId, userId, organizationId, cnpj, companyName: input.companyName, whatsapp: input.whatsapp });
+    await tx.insert(bdMembers).values({ id: memberId, userId, organizationId, cnpj, companyName: input.companyName, whatsapp: input.whatsapp, termsAcceptedAt: new Date().toISOString(), termsVersion: BRAS_TERMS_VERSION, source, sourceVideoId: video?.id ?? null });
   });
   return { userId, memberId };
+}
+
+/** O membro precisa aceitar a versão atual dos termos (cadastro anterior aos termos ou versão nova). */
+export const brasNeedsTermsAcceptance = (m: { termsVersion: string | null } | null | undefined) => !!m && m.termsVersion !== BRAS_TERMS_VERSION;
+
+/** Aceite posterior pelo próprio membro (cadastros anteriores aos termos ou versão nova). Fica na auditoria. */
+export async function acceptBrasTerms(db: Database, actor: Actor) {
+  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Só o membro aceita os próprios termos.");
+  const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId) });
+  if (!m) throw new NotFoundError("Cadastro de membro não encontrado.");
+  if (m.termsVersion === BRAS_TERMS_VERSION) return { ok: true as const, already: true };
+  await db.update(bdMembers).set({ termsAcceptedAt: new Date().toISOString(), termsVersion: BRAS_TERMS_VERSION }).where(eq(bdMembers.id, m.id));
+  await recordAudit(db, actor, { action: "BRAS_TERMS_ACCEPTED", entityType: "bd_member", entityId: m.id, before: { termsVersion: m.termsVersion }, after: { termsVersion: BRAS_TERMS_VERSION } });
+  return { ok: true as const, already: false };
 }
 
 export async function getBrasMemberByUser(db: Database, userId: string) {
