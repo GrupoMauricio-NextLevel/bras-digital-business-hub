@@ -757,3 +757,8 @@ Rodada da noite (N8 e N9).
 - **Início do Meu Brás:** "N descobertas novas desde a sua última visita" (contadas pela hora em que entraram no ar) e "Seus pedidos em andamento" com a próxima etapa em palavras e o comprovante de retirada. A visita (`last_seen_at`) é gravada no máximo uma vez por hora.
 - Texto da próxima etapa num lugar só (`BRAS_NEXT_STEP`), usado em Meus pedidos e no início.
 - Testes: `tests/bras-membros-painel.test.ts`; e2e `bras-portal` (filtros, CSV, início com pedido em andamento).
+
+## D105 — Brás: imagens por encomenda ao GPT e lugares prontos na página (2026-10-09)
+Pedido do dono: "puxa o grupo de imagens necessárias para criar no GPT relacionado ao Brás Digital; me entrega um .md com um prompt engenheiro mestre".
+- `docs/prompts/imagens-bras-digital-gpt.md`: 8 imagens do site (corredor, três "para quem", balcão da importadora, retirada, painel do cadastro, prévia de link) e 2 de apoio fora do site (fundo dos Shorts, conceito de símbolo para designer), com regras (sem texto, marca, preço ou rosto; paleta da Brás), correções prontas e checklist.
+- Lugares ligados no código, **só aparecem quando o arquivo existe** (sem quadro "Imagem em criação" na Brás): corredor em "Como funciona", balcão no cartão da importadora, retirada na seção de dados, textura no painel do cadastro, `og:image` da home da Brás (PNG/JPG/WebP; redes não leem AVIF). Manifesto atualizado.

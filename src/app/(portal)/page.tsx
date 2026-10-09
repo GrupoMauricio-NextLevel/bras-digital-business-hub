@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -29,7 +31,9 @@ import { FAQ } from "./content";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
-  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}) };
+  // Brás: prévia de link própria quando a imagem existir (D105; redes não leem AVIF, por isso PNG/JPG/WebP).
+  const og = isClosedCommerceBrand(brand) ? (["png", "jpg", "webp"] as const).find((e) => existsSync(join(process.cwd(), "public", "portal", "bras", "v3", `bd-og-portal.${e}`))) : undefined;
+  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}), ...(og ? { openGraph: { title: brand.name, description: brand.description, images: [{ url: `/portal/bras/v3/bd-og-portal.${og}`, width: 1200, height: 630 }] } } : {}) };
 }
 
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";

@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { BrasSignupForm } from "@/components/portal/bras/bras-signup-form";
 import "@/components/portal/bras/bras.css";
+import { TexturaDeFundo } from "@/components/portal/imagem-em-criacao";
 
 /** Cadastro do membro comprador da Brás Digital (D92). Veio de um vídeo ("Quero comprar")? Mostra qual produto vai destravar. */
 export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand; videoId?: string; source?: string }) {
@@ -18,6 +19,7 @@ export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand;
     <main className="bd-home grid min-h-dvh lg:grid-cols-[1fr_minmax(0,32rem)]">
       <section className="bd-dark relative hidden overflow-hidden p-12 lg:flex lg:flex-col lg:justify-between" aria-label="Por que se cadastrar">
         <div aria-hidden className="bd-caixas pointer-events-none absolute inset-0" />
+        <TexturaDeFundo marca="bras" nome="bd-cadastro-lateral" opacidade={0.55} />
         <Link href="/" aria-label={`${brand.name}, página inicial`} className="relative"><BrandLogo brand={brand} tone="on-dark" className="h-9" /></Link>
         <div className="relative">
           <h2 className="bd-display text-5xl text-white">Cadastre a empresa. <span className="bd-accent">Veja o preço da caixa.</span></h2>

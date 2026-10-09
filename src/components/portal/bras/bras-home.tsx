@@ -253,6 +253,7 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
       <section id="como-funciona" aria-labelledby="bd-como" className={`bd-papel ${section}`}>
         <div className="mx-auto max-w-6xl">
           <h2 id="bd-como" className="bd-display bd-h2 max-w-3xl">Do vídeo à caixa na sua transportadora, <span className="bd-accent">em quatro passos.</span></h2>
+          {temFoto("bd-corredor-caixas") ? <ImagemEmCriacao marca="bras" nome="bd-corredor-caixas" alt="Corredor de importadora no Brás com caixas fechadas empilhadas até o teto" ratio="16 / 9" className="mt-10 w-full" /> : null}
           <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => (
               <li key={s.t} className="bd-reveal rounded-[1.5rem] bd-tile p-6 ring-1 ring-black/5">
@@ -296,9 +297,10 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
             <ShieldCheck className="size-10 text-[var(--bd-laranja-claro)]" aria-hidden />
             <h2 id="bd-dados" className="bd-display bd-h2 mt-4 text-white">Seus clientes e seus dados <span className="bd-accent">ficam com você.</span></h2>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--bd-tinta-suave)]">A importadora recebe só o endereço de envio do pedido. Seu CNPJ, telefone e e-mail não saem da Brás Digital, e o atendimento é com a nossa equipe.</p>
+            {temFoto("bd-retirada-transportadora") ? <ImagemEmCriacao marca="bras" nome="bd-retirada-transportadora" alt="Motorista de transportadora conferindo caixas na porta de uma importadora no Brás" ratio="4 / 3" className="mt-8 w-full max-w-lg" /> : null}
           </div>
           <div className="rounded-[1.75rem] bg-white/[0.06] p-6 ring-1 ring-white/10 md:p-8">
-            <Factory className="size-8 text-[var(--bd-laranja-claro)]" aria-hidden />
+            {temFoto("bd-importadora-balcao") ? <ImagemEmCriacao marca="bras" nome="bd-importadora-balcao" alt="Balcão de importadora no Brás com caixas organizadas" ratio="4 / 3" className="mb-6 w-full" /> : <Factory className="size-8 text-[var(--bd-laranja-claro)]" aria-hidden />}
             <h3 className="bd-display mt-4 text-2xl text-white md:text-3xl">É importadora no Brás?</h3>
             <p className="mt-3 text-[var(--bd-tinta-suave)]">A equipe da Brás Digital grava as descobertas, analisa o mercado e leva compradores com CNPJ de todo o Brasil até as suas caixas. Você recebe o pedido e o endereço de envio, sem precisar atender um a um.</p>
             {whatsImportadora ? <Link href={whatsImportadora} target="_blank" rel="noreferrer" className="bd-btn bd-btn--linha mt-6"><MessageCircle className="size-5" aria-hidden />Falar com a equipe</Link> : null}
