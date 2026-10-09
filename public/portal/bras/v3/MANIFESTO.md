@@ -17,4 +17,19 @@ Cada arquivo entra em `public/portal/bras/v3/<nome>.avif` (e `.webp` como reserv
 
 Fora do site (ficam em `docs/marca/bras/` quando chegarem): `bd-shorts-fundo` (9:16, fundo para capas dos Shorts) e `bd-logo-conceito-1..3` (referência para um designer; o nome segue em texto até o dono aprovar uma logo, D79).
 
+## Arquivos no ar (2026-10-09, lotes 1 e 2 do GPT)
+
+| Nome | Fonte PNG | AVIF (q55) | WebP (q82) | Outros |
+|---|---|---|---|---|
+| `bd-corredor-caixas` | 1672×941 | 95 KB | 164 KB | |
+| `bd-publico-marketplace` | 1448×1086 | 53 KB | 88 KB | |
+| `bd-publico-lojista` | 1448×1086 | 52 KB | 97 KB | |
+| `bd-publico-distribuidor` | 1448×1086 | 96 KB | 165 KB | |
+| `bd-importadora-balcao` | 1448×1086 | 52 KB | 85 KB | |
+| `bd-retirada-transportadora` | 1448×1086 | 74 KB | 122 KB | |
+| `bd-cadastro-lateral` | 1086×1448 | 127 KB | 223 KB | |
+| `bd-og-portal` | 1200×630 | — | — | JPG 41 KB (usado nas redes) + PNG fonte |
+
+O navegador escolhe AVIF, depois WebP e, por último, o PNG (fonte preservada). Pendentes (lote 3, opcional): `bd-shorts-fundo` e conceitos de logo.
+
 Peso máximo: 220 KB por AVIF. Ponto de foco no código (`posicao`) em `src/components/portal/bras/bras-home.tsx`.

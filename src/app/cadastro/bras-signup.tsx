@@ -27,7 +27,7 @@ export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand;
             {["Grátis para novos membros", "Só CNPJ, sem papelada", "Preço e estoque liberados na hora", "Seus dados não vão para a importadora"].map((t) => <li key={t} className="flex items-center gap-3"><BadgeCheck className="size-5 text-[var(--bd-laranja-claro)]" aria-hidden />{t}</li>)}
           </ul>
         </div>
-        <NextLevelSignature compact className="relative text-[var(--bd-tinta-suave)]" />
+        <NextLevelSignature compact product={brand.name} className="relative text-[var(--bd-tinta-suave)]" />
       </section>
       <div className="flex flex-col justify-center px-4 py-10 sm:px-10">
         <Link href="/" aria-label={`${brand.name}, página inicial`} className="lg:hidden"><BrandLogo brand={brand} className="h-9" /></Link>

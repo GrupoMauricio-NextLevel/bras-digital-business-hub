@@ -32,7 +32,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
   // Brás: prévia de link própria quando a imagem existir (D105; redes não leem AVIF, por isso PNG/JPG/WebP).
-  const og = isClosedCommerceBrand(brand) ? (["png", "jpg", "webp"] as const).find((e) => existsSync(join(process.cwd(), "public", "portal", "bras", "v3", `bd-og-portal.${e}`))) : undefined;
+  const og = isClosedCommerceBrand(brand) ? (["jpg", "png", "webp"] as const).find((e) => existsSync(join(process.cwd(), "public", "portal", "bras", "v3", `bd-og-portal.${e}`))) : undefined;
   return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}), ...(og ? { openGraph: { title: brand.name, description: brand.description, images: [{ url: `/portal/bras/v3/bd-og-portal.${og}`, width: 1200, height: 630 }] } } : {}) };
 }
 

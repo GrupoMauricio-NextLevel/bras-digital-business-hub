@@ -770,3 +770,18 @@ Rodada da noite (N10). O prompt da noite sugeria um papel de login novo (`BRAS_I
 - **Retirada:** digitar o código do motorista (`BD-XXXX`); só pedido Pago; vira Retirado, fica na auditoria (`actor_role` BRAS_BALCAO) e avisa o membro (D100). Limite de 12 tentativas a cada 15 min por link.
 - **Chave `BRAS_PANELS` continua desligada em produção:** sem ela, `/balcao/...` é 404 e o botão nem aparece. Ligar é decisão do dono.
 - Testes: `tests/bras-balcao.test.ts`, `tests/host-routing.test.ts`; e2e `bras-portal` com `E2E_BALCAO=1` e servidor com `BRAS_PANELS=true`.
+
+## D107 — Brás: fotos no ar, AVIF fora do roteamento e auditoria de imagens das marcas (2026-10-09)
+O dono trouxe as 8 fotos dos lotes 1 e 2 do GPT (`imagens-bras-digital-gpt.md`) e pediu uma auditoria de imagens para todas as marcas.
+- **Fotos da Brás:**
+  - os PNG de origem foram preservados em `public/portal/bras/v3/`, sem colisão;
+  - geradas versões AVIF (qualidade 55) e WebP (qualidade 82), entre 52 e 223 KB;
+  - a prévia de link ganhou um JPG de 41 KB, porque o PNG tinha 1,1 MB, pesado demais para o WhatsApp; os metadados preferem o JPG;
+  - o componente existente já entrega AVIF, WebP e PNG, nessa ordem, e sem arquivo o lugar não aparece.
+- **Correção encontrada na conferência:** o filtro do proxy (`src/proxy.ts`) deixava passar `.avif` pelo roteamento por endereço. No endereço da Brás, que é marca fechada, isso redirecionava as imagens para a página inicial, e elas não carregavam. `avif` entrou na lista de arquivos estáticos que pulam o roteamento. É neutro para as outras marcas, que não redirecionam caminhos desconhecidos. Teste novo em `tests/host-routing.test.ts`.
+- **Assinatura do cadastro da Brás** dizia "SuperDrop é um sistema…"; passa a usar o nome da marca do endereço.
+- **Conferência** em 360, 768 e 1440 px: proporções certas, sem rolagem lateral, texto legível sobre a foto escura do cadastro.
+- **Auditoria** em `docs/prompts/imagens-auditoria-geral-gpt.md`:
+  - SuperDrop, Commerce e Brás já têm as fotos da home;
+  - faltam 41 imagens em 5 lotes: portas de entrada, Soluções, páginas de decisão, ilustrações dos painéis e apoio comercial;
+  - cada lugar marcado "ligar" é conectado quando as imagens chegarem.

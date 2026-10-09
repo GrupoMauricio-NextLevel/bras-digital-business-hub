@@ -89,3 +89,12 @@ describe("Brás Digital aberta (D92): só apresentação, cadastro e painéis", 
   });
 });
 
+
+describe("arquivos estáticos fora do proxy (D107)", () => {
+  it("imagens AVIF, WebP, PNG e JPG não passam pelo roteamento por endereço (senão a marca fechada as redireciona)", async () => {
+    const { config } = await import("@/proxy");
+    const re = new RegExp(`^${config.matcher[0]!}$`);
+    for (const f of ["/portal/bras/v3/bd-corredor-caixas.avif", "/portal/bras/v3/bd-corredor-caixas.webp", "/portal/bras/v3/bd-og-portal.jpg", "/temas/lume-desktop-3.webp", "/brand/x.png"]) expect(re.test(f)).toBe(false);
+    for (const p of ["/", "/cadastro", "/bras/visao", "/d/bdv_abc123"]) expect(re.test(p)).toBe(true);
+  });
+});
