@@ -27,8 +27,27 @@ export const organizations = pgTable("organizations", {
   slug: text("slug").notNull().unique(),
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
   type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT"] }).notNull(),
+  /** Ficha cadastral (Receita/Sefaz). Opcional para tenants antigos; obrigatória para a marca da casa. */
+  legalName: text("legal_name"),
+  tradeName: text("trade_name"),
+  /** CNPJ só com dígitos. */
+  taxId: text("tax_id"),
+  /** Inscrição estadual como consta no cadastro, e a UF que a emitiu. */
+  stateRegistration: text("state_registration"),
+  stateRegistrationUf: text("state_registration_uf"),
+  /** Data de abertura (AAAA-MM-DD). */
+  foundedOn: text("founded_on"),
+  mainActivity: text("main_activity"),
+  registrationStatus: text("registration_status"),
+  city: text("city"),
+  state: text("state"),
+  /**
+   * Marca da casa: empresa do próprio grupo que compra das importadoras e vende como vendedora
+   * (Mega Tron). Ver docs/MEGATRON.md: o que ela compra de quem é sigiloso para os dois lados.
+   */
+  houseBrand: boolean("house_brand").notNull().default(false),
   createdAt: createdAt(),
-});
+}, (t) => [uniqueIndex("organizations_tax_id_unique").on(t.taxId)]);
 
 export const suppliers = pgTable("suppliers", {
   id: id(),

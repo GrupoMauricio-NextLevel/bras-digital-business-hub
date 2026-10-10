@@ -92,6 +92,13 @@
       "when": 1790743854680,
       "tag": "0012_ecosystem_foundation",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1790747454680,
+      "tag": "0013_house_brand",
+      "breakpoints": true
     }
   ]
 }

@@ -5,6 +5,8 @@ import { seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
 import { seedDemoSuppliers } from "./demo-suppliers";
+import { ensureHouseBrand } from "@/lib/domain/house-brand";
+import { MEGATRON } from "@/lib/house-brand";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -23,12 +25,16 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   if (opts.seedDemo) {
     if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)"); }
     else log.push("banco já populado (demo não reaplicado)");
+    await ensureHouseBrand(db);
     return log;
   }
 
   const hasThemes = (await db.select({ id: themes.id }).from(themes).limit(1)).length > 0;
   if (!hasThemes) { await seedReferenceData(db); log.push("dados de referência criados (temas, planos, serviços)"); }
   else for (const l of await syncThemeCatalog(db)) log.push(l);
+
+  // Marca da casa: só dados cadastrais e o fornecedor; o acesso da equipe é criado pelo master no painel.
+  if ((await ensureHouseBrand(db)).created) log.push(`marca da casa criada: ${MEGATRON.legalName}`);
 
   if (opts.masterEmail && opts.masterPassword) {
     const email = opts.masterEmail.toLowerCase();

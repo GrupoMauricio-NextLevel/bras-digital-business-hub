@@ -209,3 +209,7 @@ China Hub ───────┘
 ```
 
 Quando uma funcionalidade específica precisar alterar catálogo, estoque, cliente, pedido, pagamento ou frete, ela deve chamar a regra do core e registrar o contexto da vertical, em vez de criar uma cópia da entidade.
+
+## Marca da casa (Mega Tron)
+
+A Mega Tron é uma **organização** do grupo (`organizations.house_brand = true`) que atua dentro do Brás Digital e do SuperDrop. Ela não é uma vertical. Tem painel master próprio (`/master/megatron`) ligado à sua operação de importadora (`/supplier`) pela mesma organização. Regras de sigilo entre importadoras e clientes: [MEGATRON.md](./MEGATRON.md).

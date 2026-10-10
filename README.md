@@ -99,4 +99,4 @@ npm run e2e                                     # fluxo ponta a ponta com Mercad
 Roteiro em `docs/ROADMAP.md`: **U3** Lojista Lite (fluxo em uma tela e Mercado Pago da loja) · **U4** Lojista Pro (análise, editor, templates, domínio) · **U5** Loja NextLevel e Academy com compra paga · **U6** pós-venda por chat · **U7** automações, fila do dia e saúde · **U8** endurecimento, seed dos cinco perfis, E2E por papel e docs finais.
 
 ## Documentação
-`ARCHITECTURE.md` · `docs/DEMO.md` · `docs/PLANOS.md` · `docs/PORTAL.md` · `docs/NEGOCIO.md` (contexto de negócio) · `docs/FINANCEIRO.md` · `docs/ROADMAP.md` · `docs/design/DECISIONS.md` · `DEPLOY_SITES.md`.
+`ARCHITECTURE.md` · `docs/DEMO.md` · `docs/PLANOS.md` · `docs/PORTAL.md` · `docs/NEGOCIO.md` (contexto de negócio) · `docs/MEGATRON.md` (marca da casa e sigilo entre importadoras e clientes) · `docs/FINANCEIRO.md` · `docs/ROADMAP.md` · `docs/design/DECISIONS.md` · `DEPLOY_SITES.md`.

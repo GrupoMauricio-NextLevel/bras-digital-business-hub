@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Boxes, Building2, Factory, RadioTower, ShoppingBag, UsersRound } from "lucide-react";
+import { ArrowRight, Boxes, Building2, Factory, Landmark, RadioTower, ShoppingBag, UsersRound } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRole } from "@/lib/require-session";
 import { ECOSYSTEM, PRODUCT_AREAS, type ProductArea } from "@/lib/ecosystem";
+import { MEGATRON } from "@/lib/house-brand";
 
 const ICONS: Record<ProductArea, typeof Boxes> = {
   NEXTLEVEL_COMMERCE: Boxes,
@@ -58,6 +59,24 @@ export default async function EcosystemPage() {
           );
         })}
       </div>
+
+      <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Marca da casa</h2>
+      <Link href="/master/megatron" className="group block max-w-xl">
+        <Card className="transition hover:-translate-y-0.5 hover:shadow-md">
+          <CardHeader className="flex-row items-start justify-between gap-4">
+            <div className="flex size-11 items-center justify-center rounded-lg bg-muted">
+              <Landmark className="size-5" aria-hidden />
+            </div>
+            <ArrowRight className="size-4 text-muted-foreground transition group-hover:translate-x-1" aria-hidden />
+          </CardHeader>
+          <CardContent>
+            <CardTitle className="text-lg">{MEGATRON.displayName}</CardTitle>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Empresa do grupo que compra das importadoras e vende como vendedora. Painel master próprio, ligado à operação da Mega Tron no Brás Digital.
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
     </>
   );
 }

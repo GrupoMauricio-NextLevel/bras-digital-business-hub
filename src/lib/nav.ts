@@ -34,6 +34,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       NEXTLEVEL_ITEM("/master"),
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Governança" },
       { label: "Ecossistema", href: "/master/ecosystem", icon: "Network", group: "Governança" },
+      { label: "Mega Tron", href: "/master/megatron", icon: "Landmark", group: "Marca da casa" },
       { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede atual" },
       { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede" },
       { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
