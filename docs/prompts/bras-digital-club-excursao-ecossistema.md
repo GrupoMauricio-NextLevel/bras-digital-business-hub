@@ -1,5 +1,5 @@
 # BRÁS DIGITAL CLUB + CARGAS EXCURSÃO — PROMPT MESTRE DE ENGENHARIA
-## Ônibus de excursão como rede de frete do Brás, painel "tipo app" para o dono do ônibus, catálogo de ônibus para o lojista do Brasil inteiro, carga sempre com nota (Nota Fácil e Meu Contador) e um clube de benefícios que liga as empresas do grupo
+## Ônibus de excursão como rede de frete do Brás, painel "tipo app" para o dono do ônibus, catálogo de ônibus para o lojista do Brasil inteiro, carga sempre com nota (Nota Fácil e Meu Contador), um painel de frete único para o cliente, importadoras e transportadoras nas duas vias, indicações com pontos e um clube de benefícios que liga as empresas do grupo
 
 > **Pedido do dono (2026-10-10, resumo fiel):**
 > - **Primeira transportadora:** Starline Viagens e Turismo Ltda - ME (nome fantasia **Mauricio Turismo**), CNPJ **47.173.173/0001-75** (dígitos conferidos). Fundada em 15/07/2022, sede em São Paulo/SP, atividade principal hoje: agência de viagens. Modalidade: **ônibus de excursão**.
@@ -14,6 +14,12 @@
 > - **A Starline tem outras autorizações** que permitem levar carga no ônibus. O sistema guarda essas autorizações (número, validade e arquivo) e mostra o selo "documentação em dia" (seção 5.6).
 > - **O Brás Digital tem o emissor de nota fácil (Nota Fácil)**, com **promoção para novos lojistas**. A lógica: o cliente pede para a loja se cadastrar, a loja ganha o benefício e a emissão fácil, e a carga viaja com nota (Módulo E, seção 7A).
 > - **Função emergencial "Meu Contador":** para quem tem uma situação urgente e está sem nota, a equipe resolve **em algumas horas** e regulariza o transporte (seção 7A.4).
+>
+> **Pedido do dono (2026-10-10, terceira rodada):**
+> - **Um painel de frete só:** quem usa frete, seja de transportadora, seja de ônibus de excursão, usa **o mesmo painel**, e de alto nível (seção 6A).
+> - **Catálogo de transportadoras no pedido:** o cliente de **qualquer importadora** já vê as transportadoras disponíveis (a Starline e as outras) num catálogo de escolha fácil (seção 6A.2).
+> - **Importadoras e transportadoras se comunicam nas duas vias**, e cada via traz gente nova com facilidade: novas importadoras, novas transportadoras, novos clientes (seção 6B).
+> - **Quem indica ganha:** painel gamificado, começando por **pontos**, usados como **desconto**, ligado às indicações do Club (seção 7B).
 >
 > **Autoridade:** Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`) > `docs/design/DECISIONS.md` (D91 a D111 são da Brás e da Cargas) > `docs/prompts/bras-ecossistema-importadoras-conteiner-transporte.md` (Brás v2) > este documento > a tarefa do momento.
 > **Próxima decisão livre:** confira em `CLAUDE.md` (hoje D112).
@@ -50,10 +56,10 @@ Trabalhe **por fases** (seção 14). Cada fase fecha com:
 - Cadastrar a Starline como primeira transportadora (fase E0), com o documento acima.
 
 ### 0.2 Não pode fazer sem o dono
-- Ligar a cobrança do frete, a taxa da plataforma ou o crédito do Club em produção antes da **revisão jurídica e contábil** da seção 12.
+- Ligar a cobrança do frete, a taxa da plataforma ou os pontos do Club em produção antes da **revisão jurídica e contábil** da seção 12.
 - Criar domínio, mexer em DNS ou ligar chave de produção.
 - Mudar o comportamento do SuperDrop, da Commerce ou da Brás (em produção) sem teste.
-- Guardar dinheiro de terceiros (frete, crédito) numa conta da NextLevel.
+- Guardar dinheiro de terceiros (frete) numa conta da NextLevel.
 - Dar vantagem escondida às empresas do grupo na busca ou no ranking (seção 3.4).
 
 ### 0.3 Quando travar
@@ -73,14 +79,14 @@ Implemente o que não depende do item travado, deixe a chave desligada, registre
 | **Lojista e sacoleira** | Revendedor do Brasil inteiro, com CPF, MEI ou CNPJ | Achar o ônibus da região, reservar espaço, rastrear o fardo, não viajar, descontos no Club | Taxa por volume (NextLevel), compra na Mega Tron, planos da Brás Digital |
 | **Dono do ônibus** | Empresas de excursão (a Starline é a primeira) e autônomos | Pedidos de carga organizados, bagageiro cheio antes de sair, frete pago adiantado, menos fardo perdido, passageiros com desconto | Frete (Starline, quando é a Starline), taxa da plataforma (NextLevel), planos da Cargas |
 | **Loja do Brás** | Mega Tron, importadoras da Brás Digital e, depois, qualquer loja | Vende para quem não veio, entrega no ônibus com etiqueta, recebe cliente do Club | Venda (Mega Tron), comissão (NextLevel), publicidade |
-| **Guia de excursão** | Quem traz passageiros ao Brás | Crédito do Club pelas compras dos passageiros nas lojas participantes (formaliza a comissão de guia que já existe no Brás) | Fluxo de compradores nas lojas do grupo |
+| **Guia de excursão** | Quem traz passageiros ao Brás | Pontos do Club pelas compras dos passageiros nas lojas participantes (formaliza a comissão de guia que já existe no Brás) | Fluxo de compradores nas lojas do grupo |
 | **NextLevel (dono)** | Master | Uma rede onde cada lado puxa o outro, e o mapa da demanda do país | Todas as linhas acima, configuráveis no Master |
 
 ### 1.3 O volante
 1. O lojista do interior acha no catálogo o ônibus da cidade dele e reserva espaço.
 2. Ele compra da Mega Tron ou de uma importadora da Brás e escolhe **"entregar no ônibus"**.
 3. A loja etiqueta o fardo **com a nota** (Nota Fácil); sem nota, o Meu Contador resolve. O ônibus coleta e leva; o lojista retira com o código.
-4. Cada passo gera crédito do Club, que dá desconto na próxima compra ou no próximo frete.
+4. Cada passo gera pontos do Club, que viram desconto na próxima compra ou no próximo frete. Quem traz gente nova (importadora, transportadora, ônibus, lojista) ganha mais pontos.
 5. A demanda por cidade aparece no Master: **onde vale abrir uma rota nova da Starline**.
 6. Mais rotas trazem mais lojistas, mais compras e mais cargas.
 
@@ -91,6 +97,14 @@ Implemente o que não depende do item travado, deixe a chave desligada, registre
 - A **Mega Tron** é uma *loja ou importadora* (fornecedor) dentro da Brás Digital e do SuperDrop, igual a qualquer outra.
 - O **Club** é uma *camada* sobre todas as marcas, não um sistema separado.
 - Mesmo repositório, deploy, banco e Master (regra anti-duplicação do `CLAUDE.md`).
+
+### 1.5 Como tudo se conecta (o mapa)
+- **Pedido → frete:** todo pedido de importadora já oferece o catálogo de ônibus e transportadoras (6A.2); a escolha vira um frete no painel único do cliente (6A) e chega à importadora como sugestão (6B.1).
+- **Frete → nota:** nenhum frete viaja sem nota; falta de nota vira convite à loja (Nota Fácil) ou Meu Contador (7A).
+- **Tudo → pontos:** compra, frete, nota emitida e indicação geram pontos no mesmo razão (7.2), e os pontos viram desconto em qualquer empresa do grupo (7B.5).
+- **Tudo → gente nova:** cada tela tem um convite do tipo certo ("meu ônibus não está aqui", "convide a loja", "traga uma importadora"), e todos passam pelo mesmo motor de indicações (7B.1).
+- **Importadora ↔ transportadora:** preferidas, coleta fixa, demanda agregada e conversa presa à coleta (6B), com cada lado trazendo o outro.
+- **Master:** uma tela para cada alavanca (preços, tabela de pontos, missões, fila do Meu Contador, acerto entre empresas) e o funil de crescimento da rede inteira (8).
 
 ---
 
@@ -129,11 +143,11 @@ Dores de quem compra de longe: não saber em que ônibus mandar, não saber se a
   - ponto de retirada na cidade;
   - nota de pontualidade e quantos fardos já entregou pelo sistema (dado real);
   - selo "frete pago com proteção" (seção 6.5).
-- **"O meu ônibus não está aqui":** um toque abre o cadastro com nome do responsável, WhatsApp, cidade e nome da excursão. O ônibus aparece para ele na hora como **"indicado por você"**, ainda sem verificação, e o responsável recebe o convite pelo WhatsApp para assumir o perfil (seção 5.3). Cada ônibus indicado que entra dá crédito do Club a quem indicou.
+- **"O meu ônibus não está aqui":** um toque abre o cadastro com nome do responsável, WhatsApp, cidade e nome da excursão. O ônibus aparece para ele na hora como **"indicado por você"**, ainda sem verificação, e o responsável recebe o convite pelo WhatsApp para assumir o perfil (seção 5.3). Cada ônibus indicado que entra dá pontos do Club a quem indicou (seção 7B).
 - **Reserva antes de comprar:** ele reserva o espaço na viagem e recebe o código do fardo. Na loja (ou no checkout online da Mega Tron e da Brás Digital) escolhe **"entregar no ônibus"** e informa o código.
 - **Rastreio simples:** reservado → pronto na loja → coletado → no ônibus → saiu de São Paulo → chegou → retirado. Com foto do fardo e aviso no WhatsApp ou por e-mail.
 - **Um lugar para tudo:** compras de várias lojas num só pedido de frete, com o total de volumes, e o histórico do mês.
-- **Club:** cada fardo enviado dá crédito; cada compra na Mega Tron dá crédito; o crédito vira desconto no frete e nas compras. No ecossistema, quem centraliza paga menos.
+- **Club:** cada fardo enviado dá pontos; cada compra na Mega Tron dá pontos; os pontos viram desconto no frete e nas compras. No ecossistema, quem centraliza paga menos.
 - **Não precisa viajar:** a mensagem principal é *"compre do Brás de onde você está; seu ônibus de confiança traz"*.
 
 ### 3.4 Neutralidade (vale para as duas visões)
@@ -156,11 +170,13 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 | Fornecedores e pedidos do SuperDrop | `suppliers`, `orders` | Mega Tron como fornecedor; benefício do Club para lojistas do SuperDrop |
 | Catálogo Master versionado, assinaturas, gateway único | `catalog_products`, `nl_subscriptions`, `corporate_orders` (D90) | Planos da Cargas e do Club; nada de tabela de planos paralela |
 | Mercado Pago da loja (token criptografado) | `stores.mpAccessTokenEnc`, `encryptSecret` | **Mercado Pago do dono do ônibus:** o frete cai direto na conta dele |
-| Parceiros, atribuição, comissão versionada | `partners` (`PARTNER_KINDS`), `commission_rules` (D90) | **Guia de excursão** como novo `kind` de parceiro (nada de tabela nova de guias) |
+| Parceiros, atribuição, comissão versionada, links `/r/<código>` | `partners` (`PARTNER_KINDS`), `partner_links`, `commission_rules` (D90) | **Guia de excursão** como novo `kind` de parceiro (nada de tabela nova de guias); a regra "uma indicação, um dono" da seção 7B.4 decide entre comissão (parceiro) e pontos (Club) |
+| Campo de texto "Transportadora que vai retirar" no pedido da Brás | `src/app/meu-bras/pedir/[id]/request-form.tsx`, `bd_requests.carrier` | Vira a **escolha no catálogo de transportadoras** (seção 6A.2), mantendo "outra" como texto, que gera uma transportadora indicada |
+| Coletas da importadora para a transportadora | `tr_loads`, `callCarrier` (D111) | A escolha do cliente no pedido já chega à importadora como transportadora sugerida para a coleta |
 | Cupons | `coupons` | O resgate do Club gera cupom (estenda com tipo e origem; não crie outro sistema de cupom) |
 | Carteira com razão (saldo = soma dos lançamentos) | `wallet_accounts`, `wallet_entries` | **Padrão** para o razão do Club (append-only, saldo em cache conferido em teste), em tabela própria porque a carteira é da loja e o crédito do Club é da pessoa |
 | Concessões (`entitlements`) | `entitlements` | Vantagens de acesso do Club (ex.: 1 mês da análise da Brás) |
-| E-mail, avisos, jobs, erros | `src/lib/email.ts`, `avisos.ts`, `job_runs` | Avisos de status, vencimento de crédito, fechamento mensal entre empresas |
+| E-mail, avisos, jobs, erros | `src/lib/email.ts`, `avisos.ts`, `job_runs` | Avisos de status, vencimento de pontos, fechamento mensal entre empresas |
 | Modo suporte auditado | AD2 / D80 | "Ver como o dono do ônibus vê" e "ver como o lojista vê" |
 
 ---
@@ -201,7 +217,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 2. Nasce uma transportadora `INDICADA`. Ela aparece **só para quem indicou**, como "indicado por você", e o lojista já pode guardar ali o histórico dele.
 3. O responsável recebe um link pelo WhatsApp (texto pronto, sem envio automático pago) para **assumir o perfil**: confirma documento (CPF ou CNPJ conferido), cria a senha e define rota e preço. Vira `VERIFICADA` e passa a aparecer no catálogo para todos.
 4. O mesmo documento, ou o mesmo WhatsApp, nunca gera dois ônibus (reaproveita, como `createCarrier`).
-5. Quem indicou ganha crédito do Club quando o ônibus completa a primeira viagem pelo sistema (regra no Master).
+5. Quem indicou ganha pontos do Club quando o ônibus completa a primeira viagem pelo sistema (indicação confirmada, seção 7B).
 
 ### 5.4 Painel do dono do ônibus (modo app)
 Área `/excursao` (papel `CARRIER` com `operation = EXCURSAO`), feita para celular, com barra inferior:
@@ -236,7 +252,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - Quem já é membro da Brás (CNPJ, D91), lojista do SuperDrop ou da Commerce **não cria outra conta**: liga a conta existente ao Club com aceite e usa o frete pela área dela.
 - `[CONFIRMAR]` endereço: área `/club` no endereço do Club (seção 10).
 
-### 6.2 Telas
+### 6.2 Telas (próprias do ônibus, dentro do painel de frete único da seção 6A)
 - **Achar ônibus:**
   - cidade e UF (com cidades próximas), mais data;
   - lista de cartões com ônibus, dias, preço P, M e G, ponto de retirada, nota e fardos entregues;
@@ -245,7 +261,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - **Reservar:** escolher a viagem, quantos P, M e G, a(s) loja(s) de coleta e quem retira. Mostra o total na hora e paga por Pix (seção 6.4). Gera o código de cada fardo e o texto para mandar à loja ("entregue no ônibus X, viagem do dia D, fardo código C").
 - **Meus fardos:** a linha do tempo de cada fardo, com fotos.
 - **Meus ônibus:** os ônibus que ele usa, os indicados por ele e o botão **"O meu ônibus não está aqui"**.
-- **Club:** o saldo de crédito, o nível e as vantagens disponíveis (seção 7).
+- **Club:** o saldo de pontos, o nível e as vantagens disponíveis (seção 7).
 
 ### 6.3 Loja do Brás: "entregar no ônibus"
 - No pedido da Brás Digital (importadora) e no da Mega Tron, nova forma de entrega: **"Ônibus de excursão"**, com o código do fardo ou a escolha da viagem. O pedido passa a mostrar a etiqueta do fardo para imprimir.
@@ -271,6 +287,81 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 
 ---
 
+## 6A. Painel de frete do cliente: um só, para ônibus e transportadora
+
+### 6A.1 Princípio
+- O cliente não quer saber se é ônibus ou transportadora: ele quer **a mercadoria chegando, sabendo onde está e quanto custou**. Um painel só, de alto nível, para qualquer frete.
+- O mesmo conjunto de telas e componentes (`src/components/frete/*`) e o mesmo domínio (`src/lib/domain/frete/*`) aparecem:
+  - para o membro da Brás, em `/meu-bras/fretes`;
+  - para o cliente do Club, em `/club/fretes`;
+  - e depois para o lojista do SuperDrop e da Commerce.
+  É uma capacidade em vários lugares, não páginas copiadas (Constituição, seção 5).
+- **Envelope único: `tr_shipments`.** Cada frete do cliente tem:
+  - modo `ONIBUS` (aponta para os fardos, `tr_parcels`) ou `TRANSPORTADORA` (aponta para a coleta, `tr_loads`, D111);
+  - origem: pedido(s) da Brás, da Mega Tron ou de outra loja;
+  - código de rastreio para o cliente;
+  - situação unificada.
+  O que é de cada modo continua no modelo dele; o envelope só junta para o cliente.
+- **Situação unificada** (mesmas palavras para os dois modos): **Reservado → Pronto na loja → Coletado → Em viagem → Chegou → Entregue**, mais **Cancelado** e **Problema**. Cada passo tem data, foto quando houver e quem fez.
+
+### 6A.2 Catálogo de transportadoras no pedido de qualquer importadora
+- No pedido da Brás Digital (e no da Mega Tron), o campo de texto "Transportadora que vai retirar" vira **"Como sua mercadoria vai chegar"**, com cartões:
+  - **Ônibus de excursão** que atendem a cidade do endereço de entrega (dia de saída, preço por tamanho, ponto de retirada);
+  - **Transportadoras** que atendem a UF de destino (veículos, seguro, tabela ou "frete a combinar", nota de pontualidade);
+  - **"Minha transportadora ou ônibus não está aqui"**: nome e WhatsApp, e nasce uma transportadora **indicada** (seção 5.3 e 7B), sem travar o pedido.
+- Ordem dos cartões por critério público: atende o destino, data, preço, nota, "documentação em dia". Nunca por ser do grupo; a Starline leva o selo "empresa do grupo" (seção 3.4).
+- A escolha vai junto com o pedido:
+  - **ônibus:** reserva o espaço na viagem (fardos com tamanho estimado pelo produto, editável);
+  - **transportadora:** chega à importadora como **transportadora sugerida pelo cliente** na tela "Chamar transportadora" (D111), já marcada. A importadora pode trocar, com aviso ao cliente.
+- **Comparador** quando há os dois modos: "ônibus: sai quinta, chega sábado, R$ X" e "transportadora: 3 a 5 dias úteis, frete a combinar". O cliente escolhe sabendo a diferença.
+
+### 6A.3 Telas do painel (alto nível)
+- **Início:** fretes em andamento com a linha do tempo, a próxima saída de ônibus para a cidade dele e os atalhos **Novo frete**, **Rastrear** e **Indicar e ganhar pontos**.
+- **Novo frete:** escolher as compras (pedidos da Brás, da Mega Tron ou "comprei em outra loja", com loja e nota), o modo (comparador) e pagar ou confirmar.
+- **Rastreio:** linha do tempo com fotos, documentos (nota e comprovante) e o contato de quem está com a carga quando houver aceite.
+- **Catálogo:** ônibus e transportadoras da região com filtros (cidade, dia, tamanho, seguro, documentação em dia, paga na chegada). Ali ficam também os favoritos e os indicados por ele.
+- **Gastos:** frete por mês, por modo e por transportadora, e quanto os pontos já descontaram.
+- **Pontos e indicações:** o painel gamificado (seção 7B.5).
+- **Problemas:** abrir ocorrência num frete (atraso, avaria, falta), com foto. Segue para quem transporta e, se não resolver no prazo, para a equipe.
+- Celular primeiro, sem rolagem horizontal em 360 px, com tudo em 2 toques a partir do início.
+
+### 6A.4 Aceite
+- Um cliente com um pedido levado por transportadora e um fardo levado por ônibus vê os dois no mesmo painel, com a mesma linha do tempo.
+- No pedido de uma importadora qualquer, o cliente vê a Starline e as transportadoras que atendem o destino e escolhe uma. A importadora vê a escolha já marcada em "Chamar transportadora".
+- "Minha transportadora não está aqui" cria a indicada, o pedido segue, e o convite fica pronto para o WhatsApp.
+- Isolamento: o cliente só vê os próprios fretes; a transportadora sugerida não vê nada do pedido antes de ser chamada e aceitar (D111).
+
+---
+
+## 6B. Importadoras e transportadoras: as duas vias
+
+O objetivo é que cada lado **traga o outro**, e os dois tragam clientes.
+
+### 6B.1 Da importadora para a transportadora (já existe a base, D111)
+- Chamar a transportadora, ver o aceite e acompanhar a coleta (D111).
+- **Novo:** catálogo de transportadoras na importadora com os mesmos filtros do cliente; a sugestão do cliente aparece em primeiro.
+- **Novo:** "coleta fixa": a importadora combina dias fixos com uma transportadora ou ônibus (por exemplo, "Starline passa toda quinta às 15h") e os pedidos daquele destino entram sozinhos na próxima coleta fixa, com confirmação.
+- **Novo:** avaliar a transportadora depois da coleta (pontualidade e cuidado), que vira a nota pública do catálogo.
+
+### 6B.2 Da transportadora para a importadora (novo)
+- **Importadoras na rede:** a transportadora vê as importadoras do sistema com o endereço do galpão e o horário de retirada (dados públicos da ficha), e pede para entrar na **lista de preferidas** de uma importadora. A importadora aceita ou não.
+- **Demanda agregada por importadora:** volumes por UF de destino nos últimos 30 dias, sem cliente e sem valores, para a transportadora oferecer rota e coleta fixa onde há movimento.
+- **Trazer importadora:** a transportadora indica uma importadora que ela já atende fora do sistema (nome, contato, WhatsApp). O convite leva o link de cadastro da importadora (painel D110) e a indicação vale pontos (seção 7B).
+- **Trazer cliente:** o ônibus e a transportadora convidam os clientes deles a acompanhar o frete pelo painel. Cada cliente que entra pelo convite é indicação dele.
+
+### 6B.3 Conversa entre as duas
+- Cada coleta (e cada fardo) tem uma conversa curta entre importadora e transportadora, presa à coleta. Estenda o canal de suporte existente (`bd_support_messages`, com o contexto da coleta); não crie outro chat.
+- Mensagens prontas de um toque: "carga pronta", "chego em 30 min", "faltou volume", "nota anexada". Tudo fica registrado e aparece no histórico da coleta.
+- Fronteira: na conversa, ninguém vê o que o próprio painel não mostra (a transportadora não vê comprador nem preço; a importadora não vê frete nem comissão).
+
+### 6B.4 Aceite
+- A transportadora pede para ser preferida de uma importadora, a importadora aceita, e a transportadora passa a aparecer em primeiro para ela.
+- A coleta fixa junta sozinha os pedidos do destino e a importadora confirma.
+- Os testes provam que a demanda agregada não traz cliente, valor nem pedido individual.
+- A conversa fica presa à coleta e cada lado vê só a própria coleta.
+
+---
+
 ## 7. Módulo C: Brás Digital Club (clube de benefícios)
 
 ### 7.1 Identidade única
@@ -278,21 +369,23 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - `club_member_accounts`: liga o membro às contas existentes (usuário da Brás, loja do SuperDrop ou da Commerce, conta `CLUB_MEMBER`, cliente da Mega Tron). **Só com aceite** e conferência do documento. Nenhuma marca passa a ver dado de outra: o Club guarda só o necessário (nível, saldo, histórico de benefícios).
 - O lado empresa (lojas, importadoras e ônibus) também é membro do Club, como **parceiro que oferece benefício**.
 
-### 7.2 A moeda: crédito do Club, não dinheiro
-- **Crédito do Club** em centavos, num razão append-only (`club_ledger`, mesmo padrão de `wallet_entries`: saldo em cache igual à soma dos lançamentos, conferido em teste).
-- Regras que mantêm o crédito longe de produto financeiro:
-  - **não vira dinheiro**, não se saca e não se transfere;
-  - vale só como desconto dentro do ecossistema;
-  - **vence** (sugestão: 90 dias, com aviso 7 dias antes);
-  - cada lançamento tem origem (compra, frete, indicação, campanha), empresa que concedeu e empresa que vai pagar o desconto.
+### 7.2 A moeda: pontos do Club, não dinheiro
+- **Pontos do Club** (inteiros), num razão append-only (`club_ledger`, mesmo padrão de `wallet_entries`: saldo em cache igual à soma dos lançamentos, conferido em teste). É **uma moeda só** para tudo: compra, frete, indicação, missão e campanha.
+- **Valor do ponto no resgate** fica no Master, com versão (sugestão em rascunho: 100 pontos = R$ 1,00 de desconto). O resgate congela o valor do momento.
+- Regras que mantêm os pontos longe de produto financeiro:
+  - **não viram dinheiro**, não se sacam e não se transferem;
+  - valem só como desconto dentro do ecossistema (frete, compra, plano, serviço como o Meu Contador);
+  - **vencem** (sugestão: 12 meses, com aviso 30 dias antes);
+  - cada lançamento tem origem (compra, frete, indicação, missão, campanha), empresa que concedeu e empresa que vai pagar o desconto.
+- Pontos de indicação nascem **pendentes** e só ficam disponíveis quando a indicação se confirma (seção 7B.3).
 - Sem sorteio nem "concurso" (exige autorização própria); só benefício direto `[CONFIRMAR jurídico]`.
 
 ### 7.3 Níveis (calculados pela atividade; os planos pagos dão impulso)
 
 | Nível | Como chega (sugestão, rascunho) | Exemplo de vantagem |
 |---|---|---|
-| **Membro** | Cadastrou e aceitou os termos | Crédito de boas-vindas no primeiro frete |
-| **Frequente** | 3 meses seguidos com compra ou frete | Crédito maior por fardo; prioridade na lista de espera |
+| **Membro** | Cadastrou e aceitou os termos | Pontos de boas-vindas no primeiro frete |
+| **Frequente** | 3 meses seguidos com compra ou frete | Mais pontos por fardo e por frete; prioridade na lista de espera |
 | **VIP** | Gasto somado no grupo acima de R$ X em 90 dias, ou plano Ouro ou Platinum da Brás | Frete com desconto fixo, condições da Mega Tron, atendimento prioritário |
 
 - Os limites e as vantagens ficam no Master. O nível é recalculado por job diário, com histórico.
@@ -304,7 +397,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - **Para quem:** nível, tipo de cliente, região e marca de origem.
 - **Gatilho:** compra numa empresa, fardo entregue, indicação, primeira viagem, aniversário de cadastro, campanha.
 - **Recompensa:**
-  - crédito em centavos ou percentual com teto;
+  - pontos (fixos ou proporcionais ao valor, com teto);
   - cupom gerado (`coupons` estendido);
   - concessão de acesso (`entitlements`, por exemplo 1 mês da análise da Brás);
   - fardo P grátis.
@@ -316,17 +409,17 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 
 | De → Para | Benefício sugerido | Por que funciona |
 |---|---|---|
-| Comprou na **Mega Tron** → frete **Starline** | A cada R$ X em compra, crédito para 1 fardinho P | A compra puxa o frete, e o ônibus enche |
-| Mandou fardos pela **Starline** → **Mega Tron** | Crédito de R$ Y por fardo entregue, usável na Mega Tron | O frete puxa a compra |
+| Comprou na **Mega Tron** → frete **Starline** | A cada R$ X em compra, pontos que pagam 1 fardinho P | A compra puxa o frete, e o ônibus enche |
+| Mandou fardos pela **Starline** → **Mega Tron** | Pontos por fardo entregue, usáveis na Mega Tron | O frete puxa a compra |
 | **Passageiro** de excursão do Club → lojas participantes | Desconto na Mega Tron com o QR do Club no balcão | Ajuda o ônibus a vender poltrona e traz gente para a loja |
-| **Guia de excursão** (parceiro) → crédito do Club | Percentual das compras dos passageiros dele nas lojas participantes, atribuído pelo QR | Formaliza a comissão de guia que já existe no Brás, com registro |
+| **Guia de excursão** (parceiro) → pontos do Club | Percentual das compras dos passageiros dele nas lojas participantes, atribuído pelo QR | Formaliza a comissão de guia que já existe no Brás, com registro |
 | Membro **Brás Digital** pago → frete e Mega Tron | Nível VIP automático no Platinum, Frequente no Ouro | Valoriza o plano sem criar outro plano |
 | Lojista **SuperDrop** ou **Commerce** → frete Starline | Primeiro fardo com desconto | Traz o lojista online para o mundo do Brás |
-| Ônibus indicado pelo lojista → quem indicou | Crédito quando o ônibus completa a primeira viagem | O lojista traz a oferta para a rede |
+| Ônibus indicado pelo lojista → quem indicou | Pontos quando o ônibus completa a primeira viagem | O lojista traz a oferta para a rede |
 
 ### 7.6 Cartão do Club e balcão
 - **Cartão digital** com QR (identificador opaco, nunca o documento) no celular do membro.
-- **Validar no balcão** (Mega Tron primeiro): a loja bipa o QR, vê nome, nível e as vantagens válidas e registra a compra (valor) para gerar o crédito. Duas formas:
+- **Validar no balcão** (Mega Tron primeiro): a loja bipa o QR, vê nome, nível e as vantagens válidas e registra a compra (valor) para gerar os pontos. Duas formas:
   - o painel da loja ou da importadora, com login;
   - um link de balcão sem login (padrão D106), com limite de tentativas.
 - Sem integração com o PDV no início: o registro é manual no balcão `[CONFIRMAR integração com o sistema da Mega Tron]`.
@@ -341,10 +434,10 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 
 ### 7.8 Aceite
 - O membro liga a conta da Brás e a conta do Club com aceite.
-- Compra na Mega Tron registrada no balcão → crédito → usado como desconto no próximo frete.
+- Compra na Mega Tron registrada no balcão → pontos → usados como desconto no próximo frete.
 - No fechamento do mês aparece o valor que uma empresa deve à outra.
-- O crédito vence com aviso, e nada vira dinheiro.
-- Testes com saldo igual à soma do razão, sem lançamento duplicado (idempotência), crédito nunca negativo e concorrência no uso do crédito.
+- Os pontos vencem com aviso, e nada vira dinheiro.
+- Testes com saldo igual à soma do razão, sem lançamento duplicado (idempotência), saldo nunca negativo e concorrência no uso dos pontos.
 
 ---
 
@@ -371,10 +464,10 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 2. O sistema monta a mensagem de WhatsApp para a loja, com o link de cadastro no Nota Fácil e a promoção de novos lojistas: *"Emita a nota deste pedido em 2 minutos, com notas grátis no primeiro mês."*
 3. A loja se cadastra pelo link (atribuído ao cliente que convidou e ao fardo), emite a nota e o fardo vira `COM_NOTA`.
 4. **Benefício para os dois (Club):**
-   - o cliente que convidou ganha crédito quando a loja emite a primeira nota;
+   - o cliente que convidou ganha pontos quando a loja emite a primeira nota (indicação do tipo cliente → loja, seção 7B);
    - a loja ganha o selo **"Nota em dia"** no catálogo e no Club;
    - pedidos "entregar no ônibus" com loja "Nota em dia" ganham prioridade de coleta.
-5. A mesma loja convidada por vários clientes conta uma vez para cada um (cada convite é dele), e o crédito só sai uma vez por loja por cliente.
+5. A mesma loja convidada por vários clientes conta uma vez para cada um (cada convite é dele), e os pontos só saem uma vez por loja por cliente.
 
 ### 7A.4 Função emergencial "Meu Contador"
 **Para quem:** o cliente, a loja ou o dono do ônibus que se deparou com uma situação urgente e está sem nota.
@@ -404,9 +497,91 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 ### 7A.5 Aceite
 - O fardo sem nota não vira "no ônibus"; com a chave válida, vira.
 - Chave de NF-e com dígito errado é recusada com mensagem clara.
-- O convite à loja gera o link atribuído; a loja cadastra e emite (provedor falso no teste); o fardo vira `COM_NOTA` e o crédito do Club sai uma vez.
+- O convite à loja gera o link atribuído; a loja cadastra e emite (provedor falso no teste); o fardo vira `COM_NOTA` e os pontos do Club saem uma vez.
 - O Meu Contador cobra só depois do pagamento conferido, entra na fila com contagem regressiva, o contador resolve e o fardo é liberado. O contador não vê nada além do chamado.
 - O certificado A1 nunca aparece em resposta, log ou e-mail (teste procura o conteúdo na saída).
+
+---
+
+## 7B. Módulo F: Indicações em rede e pontos (painel gamificado)
+
+### 7B.1 Um sistema de indicação só
+- **Todo mundo indica todo mundo**, pelo mesmo motor, ligado ao Club. Cada membro do Club (pessoa ou empresa) tem **um código e um link de convite** (`/c/<código>`), que funcionam em qualquer marca, e convites prontos por tipo.
+- `club_referrals` registra cada indicação:
+  - quem indicou;
+  - o tipo do indicado: `CLIENTE`, `IMPORTADORA`, `TRANSPORTADORA`, `ONIBUS`, `LOJA` (Nota Fácil) ou `GUIA`;
+  - o contexto (fardo, pedido, coleta);
+  - o documento e o WhatsApp do indicado, para conferir duplicidade;
+  - a situação, por etapa: `CONVIDADO`, `CADASTROU`, `ATIVOU`, `RECORRENTE`, `RECUSADA` ou `EXPIRADA`.
+- Os convites que já aparecem neste prompt são **casos do mesmo motor**, não sistemas separados:
+  - ônibus indicado pelo lojista (5.3);
+  - transportadora "não está aqui" (6A.2);
+  - convite à loja para a nota (7A.3);
+  - importadora indicada pela transportadora (6B.2);
+  - guia de excursão (7.5).
+
+### 7B.2 Quem indica quem (as vias que trazem gente nova)
+
+| Quem indica | Indica | Quando confirma (ativou) | Pontos sugeridos (rascunho) |
+|---|---|---|---|
+| Cliente | Cliente | Primeiro pedido ou frete pago | 500 |
+| Cliente | Ônibus ou transportadora | Primeira viagem ou coleta concluída pelo sistema | 1.000 |
+| Cliente | Loja (Nota Fácil) | Primeira nota emitida | 500 |
+| Cliente | Importadora | Primeiro pedido pago na importadora | 2.000 |
+| Importadora | Transportadora | Primeira coleta concluída | 1.000 |
+| Importadora | Cliente | Primeiro pedido pago | 500 |
+| Transportadora ou ônibus | Importadora | Primeiro pedido pago na importadora | 2.000 |
+| Transportadora ou ônibus | Cliente | Primeiro frete concluído | 500 |
+| Guia de excursão | Passageiro | Primeira compra registrada numa loja participante | 300 |
+
+- Tudo editável no Master (tabela de recompensas por tipo, com versão).
+- **Etapa extra "recorrente":** bônus quando o indicado completa a terceira compra ou o terceiro frete em 90 dias (sugestão: metade dos pontos da ativação). Premia trazer gente que fica.
+
+### 7B.3 Antifraude (pontos só por gente de verdade)
+- Os pontos nascem **pendentes** no convite e ficam **disponíveis só na ativação**, que é sempre um evento real e pago (pedido pago conferido, coleta ou viagem concluída, nota emitida).
+- Mesmo documento (CPF ou CNPJ) ou mesmo WhatsApp não vira duas indicações; a primeira indicação válida é a que vale.
+- Não se indica a si mesmo, nem uma empresa em que se é sócio ou usuário.
+- Teto de pontos por mês por pessoa (sugestão 20.000, no Master); acima disso, a indicação vai para revisão do Master.
+- Estorno: pedido estornado ou cancelado devolve os pontos daquela ativação (lançamento de estorno, nunca apagar).
+- Sinais de abuso (muitos cadastros do mesmo aparelho ou endereço, indicações que nunca ativam) vão para uma fila de revisão no Master.
+
+### 7B.4 Uma indicação, um dono (ligação com o Programa de Parceiros)
+- O Programa de Parceiros (D90, comissão em dinheiro, links `/r/`) continua para quem indica **profissionalmente**. O Club (pontos, links `/c/`) é para **todo mundo**.
+- Regra única de atribuição: cada conta ou empresa nova tem **um dono de indicação**, o primeiro link válido.
+  - Se o dono for parceiro, vale a comissão do parceiro.
+  - Se for membro do Club, valem os pontos.
+  - **Nunca os dois pela mesma indicação.** O parceiro que também é membro do Club escolhe, no painel dele, se as indicações dele rendem comissão ou pontos.
+- A atribuição usa o mesmo mecanismo de origem que já existe (cookie e link de atribuição); não crie outro rastreio.
+
+### 7B.5 Painel gamificado "Indique e ganhe"
+Aparece igual em todos os painéis (cliente, importadora, transportadora, ônibus, loja), como capacidade compartilhada:
+- **Saldo de pontos** (disponíveis, pendentes e a vencer) e **quanto isso vale em desconto** hoje.
+- **Meus convites:** link, QR e mensagens prontas para WhatsApp por tipo ("convidar meu ônibus", "convidar uma importadora", "convidar um cliente").
+- **Funil das minhas indicações:** convidado → cadastrou → ativou → recorrente, com o nome e a etapa de cada indicado (só o nome e a etapa, nada mais) e um lembrete de um toque para quem parou.
+- **Missões da semana e do mês** (no Master), por exemplo:
+  - "Traga 1 transportadora: +1.000";
+  - "Seu primeiro frete por ônibus: +300";
+  - "3 fretes no mês: +500".
+  A recompensa sai quando a meta é atingida, nunca por sorteio.
+- **Níveis do Club** (Membro, Frequente e VIP, seção 7.3) com a barra do que falta para o próximo; indicações confirmadas também contam para subir.
+- **Conquistas (selos):** "Primeira indicação", "Trouxe uma importadora", "Rede de 10", "Trouxe o meu ônibus".
+- **Ranking do mês** por cidade ou estado, **só para quem aceitar aparecer**: primeiro nome e cidade, sem documento. O ranking mostra posição; a recompensa é sempre a meta (seção 12).
+- **Usar pontos:** no pagamento do frete, do pedido, do plano ou do Meu Contador, com "usar X pontos = R$ Y de desconto" e o limite por compra do Master (sugestão: até 30% do valor).
+
+### 7B.6 Quem paga o desconto dos pontos
+- **Pontos de indicação** são custo de aquisição da NextLevel, pagos pelo "caixa do Club".
+- **Pontos de compra** são pagos pela empresa onde a compra aconteceu.
+- Quando o ponto é usado numa empresa diferente da que o pagou, entra no acerto entre empresas (seção 7.7).
+- O Master mostra o **custo por indicado ativado** por tipo, para o dono ajustar a tabela de pontos.
+
+### 7B.7 Aceite
+- Um cliente convida o ônibus que já usa: os pontos ficam pendentes; o ônibus assume o perfil e conclui a primeira viagem; os pontos ficam disponíveis e o cliente usa no frete seguinte.
+- Uma transportadora indica uma importadora; a importadora entra pelo link, tem o primeiro pedido pago e a transportadora ganha os pontos.
+- O mesmo CNPJ indicado por dois membros conta só para o primeiro.
+- Um estorno devolve os pontos.
+- Um parceiro com link `/r/` e um membro com link `/c/`: só o primeiro link válido leva, e nunca os dois.
+- O teto mensal manda o excesso para revisão.
+- O painel aparece igual nos papéis cliente, importadora e transportadora.
 
 ---
 
@@ -426,6 +601,13 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
   - razão por membro (só leitura; ajuste manual com motivo e auditoria);
   - acerto entre empresas;
   - termos do Club.
+- **Indicações e pontos:**
+  - tabela de pontos por tipo de indicação e etapa;
+  - valor do ponto, teto mensal, limite de uso por compra e vencimento;
+  - missões e conquistas;
+  - fila de revisão antifraude;
+  - funil geral (convidados, cadastrados, ativados, recorrentes) e custo por indicado ativado.
+- **Frete:** todos os fretes (ônibus e transportadora) no mesmo quadro, ocorrências abertas, coletas fixas e preferidas por importadora.
 - **Nota em dia:**
   - lojas do Nota Fácil e situação da configuração fiscal;
   - promoção de novos lojistas (catálogo Master);
@@ -446,16 +628,20 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | `tr_routes`, `tr_trips` | Cargas | Rota fixa e viagem com capacidade |
 | `tr_parcels`, `tr_parcel_events` | Cargas | Fardo com código em hash, preço e taxa congelados, fotos |
 | `club_members`, `club_member_accounts` | Club | Identidade por documento, ligação com aceite |
-| `club_ledger` | Club | Razão append-only do crédito, com vencimento |
+| `club_ledger` | Club | Razão append-only dos pontos (pendente, disponível, usado, vencido, estornado) |
 | `club_benefits` (+ versões) | Club | Motor de benefícios |
-| `club_redemptions` | Club | Uso do benefício (cupom, concessão ou crédito), idempotente |
+| `club_redemptions` | Club | Uso dos pontos ou do benefício (desconto, cupom ou concessão), valor do ponto congelado, idempotente |
 | `club_settlements` | Club | Acerto mensal entre empresas |
 | `partners.kind` + `GUIA_EXCURSAO` | Parceiros | Guia de excursão, sem tabela nova |
 | `coupons` (+ `kind`, `clubBenefitId`) | Cupons | Resgate do Club gera cupom |
+| `tr_shipments` (+ eventos) | Frete | Envelope único do cliente para ônibus e transportadora, com situação unificada |
+| `tr_carrier_preferences` | Frete | Transportadora preferida de uma importadora e coleta fixa (dias e horário) |
+| `club_referrals` | Club | Motor único de indicações (tipos, etapas, contexto, antifraude) |
+| `club_missions`, `club_badges` (+ conquistas do membro) | Club | Missões, conquistas e progresso do painel gamificado |
 | `tr_carrier_documents` | Cargas | Autorizações do ônibus com validade e conferência do Master |
 | `fiscal_issuers` | Nota Fácil | Configuração fiscal da loja; certificado e senha com `encryptSecret` |
 | `fiscal_documents` | Nota Fácil | Nota emitida ou informada (chave, número, PDF, XML), ligada ao pedido e ao fardo |
-| `fiscal_invites` | Nota Fácil | Convite cliente → loja, atribuído ao fardo, para o crédito do Club |
+| `fiscal_invites` | Nota Fácil | Convite cliente → loja, atribuído ao fardo (é um `club_referrals` do tipo LOJA com o fardo como contexto; não duplique) |
 | `accounting_tickets` | Meu Contador | Chamado urgente: fardo, prazo (saída do ônibus), preço, pagamento, responsável, situação; a conversa usa o suporte existente |
 
 ---
@@ -475,11 +661,11 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 - Código do fardo, link do ajudante e QR do Club: valor aleatório, **só o hash no banco**, com limite de tentativas.
 - Documento (CPF ou CNPJ) nunca aparece no QR, na URL nem para lojas e ônibus.
 - Token do Mercado Pago do dono do ônibus só com `encryptSecret`, nunca em tela, log ou e-mail.
-- Tudo que mexe em dinheiro ou crédito entra na auditoria: aceite, preço congelado, uso de crédito, ajuste manual e acerto.
+- Tudo que mexe em dinheiro ou pontos entra na auditoria: aceite, preço congelado, uso de pontos, ajuste manual e acerto.
 - LGPD:
   - o Club guarda o mínimo;
   - ligar contas exige aceite;
-  - o membro pode ver e baixar os próprios dados e pedir a exclusão (o crédito vencido ou não usado se perde, conforme os termos);
+  - o membro pode ver e baixar os próprios dados e pedir a exclusão (pontos vencidos ou não usados se perdem, conforme os termos);
   - o mapa de demanda é agregado (nenhuma cidade com menos de N pedidos aparece identificada).
 
 ---
@@ -493,7 +679,8 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | Nota do frete | Frete cobrado por empresa pode exigir documento fiscal do serviço (CT-e) | `[CONFIRMAR contador]` como a Starline emite o documento do frete; o fardo guarda a referência |
 | Meu Contador | O serviço contábil precisa de profissional com registro no CRC; o sistema não pode emitir nota em nome de quem não é o vendedor | Atendimento por contador registrado; o sistema organiza e registra, não emite por terceiros (seção 7A.4) |
 | Certificado digital A1 da loja | Vazamento permite emitir nota em nome da loja | Só com `encryptSecret`, nunca exposto, acesso auditado (seção 7A.2) |
-| Crédito do Club | Crédito que vira dinheiro ou se transfere pode ser tratado como arranjo de pagamento | Crédito não sacável, não transferível, com vencimento e só como desconto (seção 7.2) |
+| Pontos do Club | Ponto que vira dinheiro ou se transfere pode ser tratado como arranjo de pagamento | Pontos não sacáveis, não transferíveis, com vencimento e só como desconto (seção 7.2) |
+| Ranking e premiação | Prêmio por sorteio ou concurso exige autorização | Ranking só mostra posição; a recompensa é sempre por meta atingida (pontos por indicação confirmada), nunca por sorteio |
 | Benefícios entre empresas do mesmo dono | Tratamento fiscal do desconto pago por outra empresa | O sistema só registra o acerto (seção 7.7); a forma é do contador |
 | Promoções | Sorteio e concurso exigem autorização | Só benefício direto |
 | Termos do Club e da Excursão | Código do Consumidor: regras claras, aviso de vencimento, mudança com antecedência | Textos simulados e editáveis no Master (como D108), revisados pelo advogado antes de publicar |
@@ -509,16 +696,20 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | 2 | Taxa da plataforma por fardo (valor fixo ou %) | R$ 1,50 por fardo, rascunho, só cobrada depois da revisão da seção 12 |
 | 3 | Capacidade do bagageiro em fardinhos equivalentes | 120, editável por viagem |
 | 4 | Club pago (assinatura própria) ou só gratuito com níveis | Só gratuito com níveis; os planos da Brás dão impulso |
-| 5 | Validade do crédito | 90 dias, com aviso 7 dias antes |
+| 5 | Validade dos pontos e valor do ponto | 12 meses, aviso 30 dias antes; 100 pontos = R$ 1,00 |
 | 6 | Quem paga cada benefício cruzado (quem oferece ou rateio) | Quem oferece paga |
 | 7 | Endereço do Club | `/club` dentro da Brás até haver domínio |
 | 8 | Mega Tron entra como importadora da Brás, fornecedor do SuperDrop ou os dois | Os dois, com o selo "empresa do grupo" |
-| 9 | Guia de excursão: percentual sobre as compras dos passageiros | 2% em crédito do Club, rascunho |
+| 9 | Guia de excursão: pontos sobre as compras dos passageiros | 2% do valor em pontos, rascunho |
 | 10 | Qual é o sistema emissor do Nota Fácil (provedor e acesso à API) | Cadastro, promoção e link na primeira entrega; integração quando houver o acesso |
 | 11 | Promoção de novos lojistas do Nota Fácil (o que ganha e por quanto tempo) | 30 notas grátis no primeiro mês, rascunho |
 | 12 | Meu Contador: preço, prazo em horas e horário de atendimento | Preço em rascunho, prazo de 4 horas, atendimento de segunda a sábado das 8h às 20h |
 | 13 | Quem atende o Meu Contador (equipe própria ou escritório parceiro) | Escritório parceiro com registro no CRC, acesso só à fila |
 | 14 | Números e validade das autorizações da Starline | Cadastrar na E0 com os documentos que o dono enviar |
+| 15 | Tabela de pontos por indicação (seção 7B.2) | Os valores sugeridos, em rascunho |
+| 16 | Limite de uso de pontos por compra | Até 30% do valor |
+| 17 | Ranking público por cidade | Ligado, só para quem aceitar aparecer |
+| 18 | Parceiro que também é membro do Club: comissão ou pontos | Ele escolhe no painel; o padrão é comissão |
 
 ---
 
@@ -527,15 +718,15 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | Fase | Entrega | Depende de |
 |---|---|---|
 | **E0** | Decisões (D112+), modalidade `ONIBUS_EXCURSAO`, `operation`, cadastro da **Starline** como primeira transportadora (excursão) com as autorizações dela, regras `excursion` no Master, empresas do grupo cadastradas | — |
-| **E1** | Rotas, viagens e fardos; painel do dono do ônibus em modo app (Viagem, Chamadas, Coleta, Entrega, Rotas e preços); link do ajudante; etiqueta com QR | E0 |
-| **E2** | Lado do lojista: conta `CLUB_MEMBER` mínima, achar ônibus por cidade, reservar, rastrear, "o meu ônibus não está aqui" com assumir perfil | E1 |
-| **E3** | "Entregar no ônibus" nos pedidos da Brás e da Mega Tron; balcão da loja com bipe e foto | E1, E2 |
-| **E4** | **Nota em dia:** nota no fardo (chave conferida), regra "sem nota não embarca", convite à loja, **Meu Contador** (chamado urgente pago, fila com contagem regressiva, papel do contador), autorizações do ônibus com selo | E3 |
-| **E5** | Pagamento do frete por Pix na conta do dono do ônibus (MP conferido, idempotente); fatura mensal da taxa | E2 |
-| **E6** | **Nota Fácil:** configuração fiscal da loja, emissão integrada (adaptador do provedor), promoção de novos lojistas | E4 e o acesso ao emissor (pergunta 10) |
-| **E7** | Club: identidade, ligação de contas, razão do crédito, níveis, cartão QR, validação no balcão | E2 |
-| **E8** | Motor de benefícios, benefícios cruzados do grupo (incluindo o convite à loja), guia de excursão (parceiro), acerto entre empresas | E7 |
-| **E9** | Mapa de demanda, páginas públicas (Club, Excursão e Nota Fácil) com ativos reais, relatório final | E1 a E8 |
+| **E1** | **Catálogo de transportadoras no pedido de qualquer importadora** (seção 6A.2), envelope `tr_shipments` com a situação unificada, painel de frete do cliente v1 com as coletas por transportadora (D111), sugestão do cliente chegando em "Chamar transportadora" | E0 |
+| **E2** | Excursão: rotas, viagens e fardos; painel do dono do ônibus em modo app; link do ajudante; etiqueta com QR | E0 |
+| **E3** | Painel de frete completo (ônibus e transportadora juntos, comparador, catálogo, gastos, ocorrências), "entregar no ônibus" e balcão da loja | E1, E2 |
+| **E4** | **Club base e indicações:** identidade, pontos (razão), motor único de indicações com antifraude, regra "uma indicação, um dono", painel gamificado (convites, funil, missões, níveis, conquistas, uso de pontos) em todos os papéis | E1 |
+| **E5** | Nota em dia: nota no fardo, convite à loja (pelo motor de indicações), Meu Contador, autorizações com selo | E3, E4 |
+| **E6** | As duas vias: preferidas, coleta fixa, demanda agregada, "trazer importadora", conversa presa à coleta, avaliação | E1, E4 |
+| **E7** | Pagamento do frete por Pix na conta do dono do ônibus ou da transportadora (MP conferido, idempotente), pontos como desconto no pagamento, fatura mensal da taxa | E3, E4 |
+| **E8** | Nota Fácil integrado e promoção de novos lojistas; motor de benefícios, benefícios cruzados do grupo, guia de excursão, cartão QR no balcão, acerto entre empresas | E5, E7 e o acesso ao emissor (pergunta 10) |
+| **E9** | Mapa de demanda, ranking por cidade, páginas públicas (Club, Excursão, Nota Fácil e "Indique e ganhe") com ativos reais, relatório final | E1 a E8 |
 
 ---
 
@@ -558,7 +749,9 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 - Dono do ônibus: **"Frete pago no Pix antes da viagem. Chega de cobrar na chegada."**
 - Dono do ônibus: **"Fardinho é lucro: tabela por tamanho, sem pechincha."**
 - Club: **"O que você compra aqui vira desconto ali."**
-- Club: **"Comprou na Mega Tron, ganhou crédito para o frete. Mandou pelo ônibus, ganhou crédito para a próxima compra."**
+- Club: **"Comprou na Mega Tron, ganhou pontos para o frete. Mandou pelo ônibus, ganhou pontos para a próxima compra."**
+- Indicações: **"Trouxe uma importadora, um ônibus ou um lojista? Seus pontos viram desconto."**
+- Indicações: **"Seu ônibus de sempre ainda não está aqui? Indique e ganhe pontos quando ele fizer a primeira viagem."**
 - Loja: **"Seu cliente está esperando a nota. Emita em 2 minutos, com notas grátis no primeiro mês."**
 - Lojista: **"Ficou sem nota? O Meu Contador resolve em algumas horas, antes do ônibus sair."** (só com o prazo real do Master)
 - Proibido: "frete grátis para sempre", "lucre R$ X", "carga garantida", número de clientes que não existe.
