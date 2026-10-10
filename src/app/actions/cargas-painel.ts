@@ -8,8 +8,10 @@ import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
 import {
   callCarrier, cancelLoad, carrierFromLead, carrierMarkDelivered, createCarrier, createCarrierAccess, createDriverLink, driverMarkDelivered,
-  respondLoad, revokeDriverLink, updateCarrierProfile, type CarrierInput, type callSchema,
+  respondLoad, revokeDriverLink, updateCarrierProfile, saveCarrierDocument, reviewCarrierDocument, deleteCarrierDocument, type CarrierInput, type callSchema, type carrierDocSchema,
 } from "@/lib/domain/cargas/cargas";
+import { saveExcursionRules, type excursionRulesSchema } from "@/lib/domain/cargas/regras-excursao";
+import { saveGroupCompanies, type groupCompanySchema } from "@/lib/domain/grupo";
 
 /**
  * Ações da NextLevel Cargas (D111): importadora chama a transportadora, a transportadora aceita ou recusa, o motorista
@@ -20,7 +22,7 @@ async function ctx() {
   if (!s) throw new ForbiddenError("Sessão expirada.");
   return { actor: s.actor, db: await getDb() };
 }
-const refresh = () => { revalidatePath("/importadora", "layout"); revalidatePath("/transportadora", "layout"); revalidatePath("/bras/transportadoras"); };
+const refresh = () => { revalidatePath("/importadora", "layout"); revalidatePath("/transportadora", "layout"); revalidatePath("/bras/transportadoras"); revalidatePath("/bras/excursao"); revalidatePath("/bras/grupo"); };
 
 export async function createCarrierAction(input: CarrierInput) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await createCarrier(db, actor, input); refresh(); return r; });
@@ -61,4 +63,20 @@ export async function driverDeliveredAction(token: string, loadId: string, note?
     revalidatePath(`/motorista/${token}`); refresh();
     return r;
   });
+}
+
+export async function saveCarrierDocumentAction(carrierId: string | null, input: z.input<typeof carrierDocSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await saveCarrierDocument(db, actor, carrierId, input); refresh(); return r; });
+}
+export async function reviewCarrierDocumentAction(docId: string, decision: "VERIFICADA" | "RECUSADA") {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await reviewCarrierDocument(db, actor, docId, decision); refresh(); return r; });
+}
+export async function deleteCarrierDocumentAction(docId: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await deleteCarrierDocument(db, actor, docId); refresh(); return r; });
+}
+export async function saveExcursionRulesAction(patch: Partial<z.input<typeof excursionRulesSchema>>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await saveExcursionRules(db, actor, patch); refresh(); return { version: r.version }; });
+}
+export async function saveGroupCompaniesAction(list: z.input<typeof groupCompanySchema>[]) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await saveGroupCompanies(db, actor, list); refresh(); return { count: r.length }; });
 }

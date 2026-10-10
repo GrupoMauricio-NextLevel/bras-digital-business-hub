@@ -1817,6 +1817,8 @@ export const bdRequests = pgTable("bd_requests", {
   totalCents: integer("total_cents").notNull(),
   status: text("status", { enum: ["NEW", "CONFIRMED", "PAID", "PICKED_UP", "CANCELED"] }).notNull().default("NEW"),
   carrier: text("carrier").notNull(),
+  /** Transportadora escolhida pelo membro no catálogo (D113); null = texto livre ("outra transportadora"). */
+  carrierId: text("carrier_id").references((): AnyPgColumn => trCarriers.id),
   shipName: text("ship_name").notNull(),
   shipAddress: text("ship_address").notNull(),
   shipCity: text("ship_city").notNull(),
@@ -1945,6 +1947,8 @@ export const trCarriers = pgTable("tr_carriers", {
   rateNotes: text("rate_notes"),
   plan: text("plan", { enum: ["GRATIS", "PRO", "PREMIUM"] }).notNull().default("GRATIS"),
   status: text("status", { enum: ["ATIVA", "PAUSADA"] }).notNull().default("ATIVA"),
+  /** CARGA: transportadora de carga fechada (D111). EXCURSAO: ônibus de excursão que leva fardos (D112). */
+  operation: text("operation", { enum: ["CARGA", "EXCURSAO"] }).notNull().default("CARGA"),
   organizationId: text("organization_id").references(() => organizations.id),
   /** Quem cadastrou: importadora (cadastro rápido) ou null (Master). */
   createdByImporterId: text("created_by_importer_id").references(() => bdImporters.id),
@@ -1954,6 +1958,23 @@ export const trCarriers = pgTable("tr_carriers", {
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("tr_carriers_status_idx").on(t.status)]);
+
+/** Autorizações da transportadora (D112): número, órgão e validade; o Master confere. Selo "documentação em dia". */
+export const trCarrierDocuments = pgTable("tr_carrier_documents", {
+  id: id(),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  kind: text("kind", { enum: ["FRETAMENTO", "RNTRC", "ESTADUAL", "SEGURO", "OUTRO"] }).notNull(),
+  number: text("number").notNull(),
+  issuer: text("issuer"),
+  /** AAAA-MM-DD; null = sem validade. */
+  validUntil: text("valid_until"),
+  notes: text("notes"),
+  status: text("status", { enum: ["PENDENTE", "VERIFICADA", "RECUSADA"] }).notNull().default("PENDENTE"),
+  verifiedBy: text("verified_by"),
+  verifiedAt: ts("verified_at"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("tr_carrier_documents_carrier_idx").on(t.carrierId)]);
 
 /** Pessoas com login no painel da transportadora. */
 export const trCarrierUsers = pgTable("tr_carrier_users", {
@@ -2010,3 +2031,31 @@ export const trLoadEvents = pgTable("tr_load_events", {
   actor: text("actor").notNull(),
   createdAt: createdAt(),
 }, (t) => [index("tr_load_events_load_idx").on(t.loadId, t.createdAt)]);
+
+// ---------------------------------------------------------------------------
+// Brás Digital Club: indicações em rede (D113). Um motor só para todo convite (cliente, importadora, transportadora,
+// ônibus, loja, guia). Os pontos entram na fase E4 (razão próprio); aqui fica quem indicou quem e em que etapa está.
+// ---------------------------------------------------------------------------
+export const CLUB_REFERRAL_KINDS = ["CLIENTE", "IMPORTADORA", "TRANSPORTADORA", "ONIBUS", "LOJA", "GUIA"] as const;
+export const CLUB_REFERRAL_STATUSES = ["CONVIDADO", "CADASTROU", "ATIVOU", "RECORRENTE", "RECUSADA", "EXPIRADA"] as const;
+export const clubReferrals = pgTable("club_referrals", {
+  id: id(),
+  referrerUserId: text("referrer_user_id").notNull().references(() => users.id),
+  kind: text("kind", { enum: CLUB_REFERRAL_KINDS }).notNull(),
+  name: text("name").notNull(),
+  contactName: text("contact_name"),
+  /** Só dígitos; com o tipo, identifica o indicado (a primeira indicação válida é a que vale). */
+  phone: text("phone").notNull(),
+  document: text("document"),
+  city: text("city"),
+  uf: text("uf"),
+  /** Onde nasceu o convite (ex.: pedido da Brás) e em que virou (ex.: tr_carrier). */
+  contextType: text("context_type"),
+  contextId: text("context_id"),
+  targetType: text("target_type"),
+  targetId: text("target_id"),
+  status: text("status", { enum: CLUB_REFERRAL_STATUSES }).notNull().default("CONVIDADO"),
+  activatedAt: ts("activated_at"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("club_referrals_kind_phone").on(t.kind, t.phone), index("club_referrals_referrer_idx").on(t.referrerUserId, t.createdAt), index("club_referrals_status_idx").on(t.status)]);

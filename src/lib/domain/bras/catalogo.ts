@@ -3,7 +3,7 @@ import { syncLoadCollected } from "../cargas/coleta";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, bdImporters, bdMembers, bdOffers, bdProducts, bdRequests, bdStockMovements, bdVideos, users, type BrasAnalysis } from "@/db/schema";
+import { activities, bdImporters, bdMembers, bdOffers, bdProducts, bdRequests, bdStockMovements, bdVideos, trCarriers, users, type BrasAnalysis } from "@/db/schema";
 import { applyStockDelta, brasEffectiveBoxes } from "./estoque";
 import { getBrasRules } from "./regras";
 import { brasMarginRange, type BrasLevel } from "./descobertas";
@@ -145,13 +145,17 @@ const UF = BRAS_UFS;
 export const brasRequestSchema = z.object({
   videoId: z.string().min(1),
   boxes: z.number().int().min(1, "Mínimo de 1 caixa").max(9999, "Quantidade muito alta"),
-  carrier: z.string().trim().min(2, "Informe a transportadora que vai retirar").max(80),
+  /** Escolha no catálogo da NextLevel Cargas (D113) ou o nome de outra transportadora em texto. */
+  carrierId: z.string().max(60).optional().transform((v) => v || undefined),
+  carrier: z.string().trim().max(80).optional().default(""),
   shipName: z.string().trim().min(2, "Informe o destinatário").max(80),
   shipAddress: z.string().trim().min(5, "Informe o endereço de entrega").max(200),
   shipCity: z.string().trim().min(2, "Informe a cidade").max(80),
   shipState: z.enum(UF, { message: "Escolha o estado" }),
   shipZip: z.string().transform((v) => v.replace(/\D/g, "")).refine((v) => v.length === 8, "CEP com 8 números"),
   notes: z.string().trim().max(300).optional(),
+}).superRefine((v, ctx) => {
+  if (!v.carrierId && v.carrier.length < 2) ctx.addIssue({ code: "custom", path: ["carrier"], message: "Escolha a transportadora ou o ônibus que vai levar" });
 });
 export { BRAS_UFS };
 
@@ -189,6 +193,13 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
   const prod = row.offer.productId ? await db.query.bdProducts.findFirst({ where: eq(bdProducts.id, row.offer.productId) }) : null;
   const boxesNow = brasEffectiveBoxes(row.offer.boxesAvailable, prod ? { stockBoxes: prod.stockBoxes, stockUpdatedAt: prod.stockUpdatedAt ? new Date(prod.stockUpdatedAt).toISOString() : null, status: prod.status } : null, (await getBrasRules(db)).stock.freshnessHours);
   if (boxesNow !== null && input.boxes > boxesNow) throw new DomainError("BOXES", boxesNow === 0 ? "Este produto está sem caixas disponíveis no momento." : `Disponível agora: ${boxesNow} caixa(s).`);
+  // Transportadora do catálogo: precisa estar ativa; o nome vai junto para todas as telas que já mostram o texto.
+  let carrierName = input.carrier;
+  if (input.carrierId) {
+    const c = await db.query.trCarriers.findFirst({ where: eq(trCarriers.id, input.carrierId), columns: { name: true, status: true } });
+    if (!c || c.status !== "ATIVA") throw new DomainError("CARRIER", "Essa transportadora não está disponível. Escolha outra.");
+    carrierName = c.name;
+  }
   const id = newId("bdr");
   const totalCents = row.offer.priceBoxCents * input.boxes;
   await db.transaction(async (tx) => {
@@ -196,7 +207,7 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
     await tx.insert(bdRequests).values({
       id, number: Number(n), memberId: m.id, videoId: row.video.id, importerId: row.importer.id,
       productTitle: row.video.title, importerName: row.importer.name, productId: prod?.id ?? null, boxes: input.boxes, unitsPerBox: row.offer.unitsPerBox, priceBoxCents: row.offer.priceBoxCents, totalCents,
-      carrier: input.carrier, shipName: input.shipName, shipAddress: input.shipAddress, shipCity: input.shipCity, shipState: input.shipState, shipZip: input.shipZip, notes: input.notes || null,
+      carrier: carrierName, carrierId: input.carrierId ?? null, shipName: input.shipName, shipAddress: input.shipAddress, shipCity: input.shipCity, shipState: input.shipState, shipZip: input.shipZip, notes: input.notes || null,
     });
     // Aviso no sino do Master (sem dado pessoal na mensagem).
     await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", type: "BRAS_REQUEST", message: `Brás Digital: novo pedido de ${input.boxes} caixa(s) de ${row.video.title}` });
@@ -217,7 +228,7 @@ export async function listMyBrasRequests(db: Database, actor: Actor) {
 /** Último endereço usado pelo membro (para já vir preenchido no próximo pedido). */
 export async function lastBrasShipping(db: Database, actor: Actor) {
   const m = await activeMemberOf(db, actor);
-  const [r] = await db.select({ carrier: bdRequests.carrier, shipName: bdRequests.shipName, shipAddress: bdRequests.shipAddress, shipCity: bdRequests.shipCity, shipState: bdRequests.shipState, shipZip: bdRequests.shipZip })
+  const [r] = await db.select({ carrier: bdRequests.carrier, carrierId: bdRequests.carrierId, shipName: bdRequests.shipName, shipAddress: bdRequests.shipAddress, shipCity: bdRequests.shipCity, shipState: bdRequests.shipState, shipZip: bdRequests.shipZip })
     .from(bdRequests).where(eq(bdRequests.memberId, m.id)).orderBy(desc(bdRequests.createdAt)).limit(1);
   return r ?? null;
 }

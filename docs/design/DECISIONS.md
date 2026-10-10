@@ -918,3 +918,39 @@ Pedido do dono no prompt v2 (módulo G, fase F2): "quem leva as caixas do Brás"
   - a transportadora vê do pedido só o envio (`brasShippingView`), nunca o comprador nem preço;
   - a importadora nunca vê o frete, a comissão nem o código; uma importadora não vê coleta de outra; uma transportadora não vê carga de outra.
 - Testes: `tests/cargas-cargas.test.ts` (11) e e2e `bras-portal` passo 8. Migração `0050_cargas_transportadoras`.
+
+## D112 — Club E0: ônibus de excursão, autorizações, empresas do grupo e regras da Excursão (2026-10-10)
+Primeira fase do prompt `bras-digital-club-excursao-ecossistema.md`, com as respostas do dono (a Starline tem as autorizações para carga).
+- **Ônibus de excursão é uma transportadora** (`tr_carriers.operation = EXCURSAO`, veículo "Ônibus de excursão"), sem tabela paralela. Tipo só o Master muda.
+- **Autorizações** (`tr_carrier_documents`):
+  - a transportadora informa tipo, número, órgão e validade, e o Master confere (o que o Master cadastra já nasce conferido);
+  - selo **"documentação em dia"** só com autorização conferida e dentro da validade (`cargasDocsSeal`, puro); uma conferida vencida derruba o selo;
+  - fila no Master com as que aguardam conferência e as que vencem em 30 dias.
+- **Empresas do grupo** (`platform_settings` `grupo.empresas`): Starline (CNPJ 47.173.173/0001-75), Mega Tron e NextLevel, editáveis no Master. Não são marcas. A ligação com o cadastro é pelo CNPJ e dá o selo **"empresa do grupo"**; a ordem do catálogo nunca favorece o grupo (alfabética e por critério público).
+- A tela **Empresas do grupo** traz o cadastro da Starline como transportadora pré-preenchido (nome, CNPJ, excursão); o dono completa contato e WhatsApp.
+- **Regras da Excursão** (`cargas.excursion_rules`, com versão e auditoria):
+  - tamanhos P, M e G com medida, peso e espaço no bagageiro (1, 2 e 4);
+  - taxa da plataforma por fardo (R$ 1,50) ou percentual, **com a cobrança desligada** até a revisão;
+  - capacidade padrão de 120, cancelamento até 12 h antes e "fardo só embarca com nota";
+  - tudo em rascunho.
+- Testes: `tests/cargas-excursao-e0.test.ts` (6). Migração `0051_excursao_autorizacoes`.
+
+## D113 — Club E1: catálogo de transportadoras no pedido, painel de frete único e indicação (2026-10-10)
+Pedido do dono: o cliente de qualquer importadora já vê as transportadoras disponíveis; o mesmo painel de alto nível para frete de ônibus e de transportadora; quem indica é bonificado.
+- **Pedido da Brás com catálogo:**
+  - o campo de texto "Transportadora que vai retirar" virou **"Como sua mercadoria vai chegar"**, com as transportadoras e ônibus que atendem a UF de entrega primeiro, os selos e "Outra transportadora (a minha)" em texto, como antes;
+  - a escolha fica em `bd_requests.carrier_id`, e o nome segue em `carrier` para todas as telas que já mostram o texto. Transportadora pausada não pode ser escolhida.
+- **A importadora recebe a escolha:** em "Chamar transportadora", o pedido mostra "Cliente escolheu: X" e a transportadora vem marcada quando todos os pedidos marcados apontam para a mesma (a importadora pode trocar).
+- **Painel de frete único** (`/meu-bras/fretes`):
+  - a situação é **calculada** do pedido e da coleta, sem tabela própria (uma fonte de verdade, Constituição seção 9): Reservado → Pronto na loja → Coletado no Brás → Em viagem → Entregue;
+  - mesmas palavras para ônibus e transportadora (`src/lib/frete/situacao.ts`), com código de retirada e comprovante;
+  - WhatsApp da transportadora do catálogo;
+  - frete e comissão nunca aparecem para o cliente.
+  - **Desvio registrado:** o prompt propunha a tabela `tr_shipments`. Ela fica para quando os fardos dos ônibus entrarem (E2/E3), se ainda for necessária; até lá, o envelope é calculado.
+- **Catálogo para o cliente** por estado e **"Minha transportadora ou ônibus não está aqui"**:
+  - primeira peça do **motor único de indicações** do Club (`club_referrals`): tipo + WhatsApp identificam o indicado e a primeira indicação válida vale;
+  - quem já está no catálogo não vira indicação;
+  - convite pronto para o WhatsApp.
+  - Etapas: **convidado** → **cadastrou** (a transportadora entra com o mesmo WhatsApp, ligação automática no cadastro) → **ativou** (primeira entrega concluída). Os pontos chegam com o razão do Club (E4).
+- **Master:** "Indicadas por clientes", com convite no WhatsApp e recusa.
+- Testes: `tests/frete-painel-e1.test.ts` (8) e e2e `bras-portal` passo 9. Migração `0052_frete_indicacoes`.

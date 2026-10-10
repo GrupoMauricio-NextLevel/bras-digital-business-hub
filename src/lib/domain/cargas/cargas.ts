@@ -2,11 +2,12 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { bdImporters, bdProducts, bdRequests, bdWarehouses, brandLeads, organizations, trCarrierUsers, trCarriers, trLoadEvents, trLoadRequests, trLoads, users } from "@/db/schema";
+import { bdImporters, bdProducts, bdRequests, bdWarehouses, brandLeads, organizations, trCarrierDocuments, trCarrierUsers, trCarriers, trLoadEvents, trLoadRequests, trLoads, users } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import { BRAS_UFS } from "@/lib/bras/ufs";
-import { CARGAS_VEHICLES } from "@/lib/cargas/rotulos";
+import { CARGAS_DOC_KINDS, CARGAS_VEHICLES, cargasDocsSeal, cargasToday } from "@/lib/cargas/rotulos";
+import { getGroupCompanies, groupDocuments } from "../grupo";
 import { isMaster, requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
@@ -15,6 +16,7 @@ import { myImporter, brasStaffCan } from "../bras/importadora";
 import { isValidCnpj } from "../bras/membros";
 import { getBrasRules } from "../bras/regras";
 import { isValidCpf } from "./interesse";
+import { activateCarrierReferral, linkCarrierReferral } from "../club/indicacoes";
 
 /**
  * NextLevel Cargas v1 (D111, módulo G do prompt v2). A importadora chama a transportadora para os pedidos da Brás;
@@ -42,6 +44,7 @@ export const carrierSchema = z.object({
   rntrc: z.string().trim().max(20).optional().transform((v) => v || null),
   insurance: z.boolean().default(false),
   rateNotes: z.string().trim().max(500).optional().transform((v) => v || null),
+  operation: z.enum(["CARGA", "EXCURSAO"]).default("CARGA"),
 }).superRefine((v, ctx) => {
   if (!(v.docType === "CPF" ? isValidCpf(v.document) : isValidCnpj(v.document))) ctx.addIssue({ code: "custom", path: ["document"], message: `${v.docType} inválido. Confira os números.` });
 });
@@ -60,18 +63,32 @@ export async function createCarrier(db: Database, actor: Actor, raw: CarrierInpu
   if (exists) return { id: exists.id, existed: true };
   const id = newId("trc");
   await db.insert(trCarriers).values({ id, ...v, createdByImporterId: importerId, createdBy: actor.userId });
+  await linkCarrierReferral(db, { id, phone: v.phone });
   await recordAudit(db, actor, { action: "CARGAS_CARRIER_CREATED", entityType: "tr_carrier", entityId: id, after: { name: v.name, importerId } }, { force: true });
   return { id, existed: false };
 }
 
-/** Lista para o Master (todas) ou para a importadora (só as ativas, com contato para chamar). Filtro por UF atendida. */
-export async function listCarriers(db: Database, actor: Actor, opts: { uf?: string } = {}) {
+/** Lista para o Master (todas) ou para a importadora (só as ativas, com contato para chamar). Filtro por UF atendida.
+ * Cada uma traz o selo "empresa do grupo" (CNPJ das empresas do dono, D112) e "documentação em dia". */
+export async function listCarriers(db: Database, actor: Actor, opts: { uf?: string; operation?: "CARGA" | "EXCURSAO" } = {}) {
   if (!isMaster(actor)) await myImporter(db, actor);
-  const rows = await db.select().from(trCarriers).where(isMaster(actor) ? undefined : eq(trCarriers.status, "ATIVA")).orderBy(asc(trCarriers.name));
-  return rows.filter((c) => !opts.uf || c.ufs.includes(opts.uf)).map((c) => ({
-    id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, ufs: c.ufs, vehicles: c.vehicles, plan: c.plan, status: c.status,
+  return carrierCatalog(db, { uf: opts.uf, operation: opts.operation, all: isMaster(actor), full: isMaster(actor) });
+}
+
+/** Catálogo de transportadoras (importadora, membro e Master): ativas, com selos; ordem pública (D112, seção 3.4). */
+export async function carrierCatalog(db: Database, opts: { uf?: string; operation?: "CARGA" | "EXCURSAO"; all?: boolean; full?: boolean } = {}) {
+  const [rows, docs, group] = await Promise.all([
+    db.select().from(trCarriers).where(opts.all ? undefined : eq(trCarriers.status, "ATIVA")).orderBy(asc(trCarriers.name)),
+    db.select({ carrierId: trCarrierDocuments.carrierId, status: trCarrierDocuments.status, validUntil: trCarrierDocuments.validUntil }).from(trCarrierDocuments),
+    getGroupCompanies(db),
+  ]);
+  const grupo = groupDocuments(group);
+  const today = cargasToday();
+  return rows.filter((c) => (!opts.uf || c.ufs.includes(opts.uf)) && (!opts.operation || c.operation === opts.operation)).map((c) => ({
+    id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, ufs: c.ufs, vehicles: c.vehicles, plan: c.plan, status: c.status, operation: c.operation,
     insurance: c.insurance, hasRntrc: !!c.rntrc, rateNotes: c.rateNotes, hasDriverLink: !!c.driverTokenHash,
-    ...(isMaster(actor) ? { document: c.document, docType: c.docType, email: c.email, rntrc: c.rntrc, createdByImporterId: c.createdByImporterId } : {}),
+    groupCompany: grupo.has(c.document), docsOk: cargasDocsSeal(docs.filter((d) => d.carrierId === c.id), today).ok,
+    ...(opts.full ? { document: c.document, docType: c.docType, email: c.email, rntrc: c.rntrc, createdByImporterId: c.createdByImporterId } : {}),
   }));
 }
 
@@ -106,12 +123,13 @@ const profileSchema = z.object({
   rateNotes: z.string().trim().max(500).optional(),
   plan: z.enum(["GRATIS", "PRO", "PREMIUM"]).optional(),
   status: z.enum(["ATIVA", "PAUSADA"]).optional(),
+  operation: z.enum(["CARGA", "EXCURSAO"]).optional(),
 });
 /** Perfil: a transportadora atualiza rota, veículos, documentos e tabela; plano e situação só o Master. */
 export async function updateCarrierProfile(db: Database, actor: Actor, carrierId: string | null, raw: z.input<typeof profileSchema>) {
   const s = await carrierScope(db, actor, carrierId);
   const v = profileSchema.parse(raw);
-  if (!s.master) { delete v.plan; delete v.status; }
+  if (!s.master) { delete v.plan; delete v.status; delete v.operation; }
   const patch = Object.fromEntries(Object.entries(v).filter(([, x]) => x !== undefined).map(([k, x]) => [k, x === "" ? null : x]));
   if (!Object.keys(patch).length) return { ok: true as const };
   await db.update(trCarriers).set(patch).where(eq(trCarriers.id, s.carrier.id));
@@ -168,6 +186,63 @@ export async function cargasCarrierLeads(db: Database, actor: Actor) {
   requireMaster(actor);
   const rows = await db.select().from(brandLeads).where(and(eq(brandLeads.brand, "NEXTLEVEL_CARGAS"), inArray(brandLeads.status, ["NEW", "CONTACTED"]))).orderBy(desc(brandLeads.createdAt)).limit(100);
   return rows.filter((l) => l.segment !== "IMPORTADORA").map((l) => ({ id: l.id, name: l.name, company: l.storeName, phone: l.phone, email: l.email, segment: l.segment, message: l.message, createdAt: new Date(l.createdAt).toISOString() }));
+}
+
+// ---------------------------------------------------------------------------
+// Autorizações (D112): a transportadora informa; o Master confere. Selo "documentação em dia".
+// ---------------------------------------------------------------------------
+export const carrierDocSchema = z.object({
+  kind: z.enum(CARGAS_DOC_KINDS),
+  number: z.string().trim().min(2, "Informe o número").max(60),
+  issuer: z.string().trim().max(80).optional().transform((v) => v || null),
+  validUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida").optional().or(z.literal("")).transform((v) => v || null),
+  notes: z.string().trim().max(300).optional().transform((v) => v || null),
+});
+
+export async function saveCarrierDocument(db: Database, actor: Actor, carrierId: string | null, raw: z.input<typeof carrierDocSchema>) {
+  const s = await carrierScope(db, actor, carrierId);
+  const v = carrierDocSchema.parse(raw);
+  const id = newId("trcd");
+  // Cadastrado pelo Master já nasce conferido; pela transportadora, aguarda a conferência.
+  await db.insert(trCarrierDocuments).values({ id, carrierId: s.carrier.id, ...v, status: s.master ? "VERIFICADA" : "PENDENTE", verifiedBy: s.master ? actor.userId : null, verifiedAt: s.master ? new Date().toISOString() : null, createdBy: actor.userId });
+  await recordAudit(db, actor, { action: "CARGAS_DOC_SAVED", entityType: "tr_carrier", entityId: s.carrier.id, after: { kind: v.kind, validUntil: v.validUntil } }, { force: true });
+  return { id };
+}
+
+export async function reviewCarrierDocument(db: Database, actor: Actor, docId: string, decision: "VERIFICADA" | "RECUSADA") {
+  requireMaster(actor);
+  const d = await db.query.trCarrierDocuments.findFirst({ where: eq(trCarrierDocuments.id, docId) });
+  if (!d) throw new NotFoundError("Autorização não encontrada.");
+  await db.update(trCarrierDocuments).set({ status: decision, verifiedBy: actor.userId, verifiedAt: new Date().toISOString() }).where(eq(trCarrierDocuments.id, d.id));
+  await recordAudit(db, actor, { action: "CARGAS_DOC_REVIEWED", entityType: "tr_carrier", entityId: d.carrierId, before: { status: d.status }, after: { status: decision } }, { force: true });
+  return { ok: true as const };
+}
+
+export async function deleteCarrierDocument(db: Database, actor: Actor, docId: string) {
+  const d = await db.query.trCarrierDocuments.findFirst({ where: eq(trCarrierDocuments.id, docId) });
+  if (!d) throw new NotFoundError("Autorização não encontrada.");
+  await carrierScope(db, actor, isMaster(actor) ? d.carrierId : null).then((s) => { if (s.carrier.id !== d.carrierId) throw new ForbiddenError(); });
+  await db.delete(trCarrierDocuments).where(eq(trCarrierDocuments.id, d.id));
+  await recordAudit(db, actor, { action: "CARGAS_DOC_DELETED", entityType: "tr_carrier", entityId: d.carrierId, before: { kind: d.kind, number: d.number } }, { force: true });
+  return { ok: true as const };
+}
+
+export async function listCarrierDocuments(db: Database, actor: Actor, carrierId: string | null) {
+  const s = await carrierScope(db, actor, carrierId);
+  const rows = await db.select().from(trCarrierDocuments).where(eq(trCarrierDocuments.carrierId, s.carrier.id)).orderBy(desc(trCarrierDocuments.createdAt));
+  return rows.map((d) => ({ id: d.id, kind: d.kind, number: d.number, issuer: d.issuer, validUntil: d.validUntil, notes: d.notes, status: d.status }));
+}
+
+/** Autorizações a conferir e a vencer em 30 dias (fila do Master). */
+export async function carrierDocsQueue(db: Database, actor: Actor) {
+  requireMaster(actor);
+  const today = cargasToday();
+  const limit = new Date(Date.UTC(Number(today.slice(0, 4)), Number(today.slice(5, 7)) - 1, Number(today.slice(8, 10)) + 30)).toISOString().slice(0, 10);
+  const rows = await db.select({ d: trCarrierDocuments, name: trCarriers.name }).from(trCarrierDocuments).innerJoin(trCarriers, eq(trCarriers.id, trCarrierDocuments.carrierId)).orderBy(asc(trCarrierDocuments.validUntil));
+  return {
+    pending: rows.filter((r) => r.d.status === "PENDENTE").map((r) => ({ id: r.d.id, carrierName: r.name, kind: r.d.kind, number: r.d.number, issuer: r.d.issuer, validUntil: r.d.validUntil })),
+    expiring: rows.filter((r) => r.d.status === "VERIFICADA" && r.d.validUntil && r.d.validUntil <= limit).map((r) => ({ id: r.d.id, carrierName: r.name, kind: r.d.kind, validUntil: r.d.validUntil!, expired: r.d.validUntil! < today })),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -239,7 +314,7 @@ export async function loadableRequests(db: Database, actor: Actor) {
   if (!reqs.length) return [];
   const busy = await db.select({ requestId: trLoadRequests.requestId }).from(trLoadRequests).innerJoin(trLoads, eq(trLoads.id, trLoadRequests.loadId)).where(and(inArray(trLoadRequests.requestId, reqs.map((r) => r.id)), inArray(trLoads.status, [...ACTIVE])));
   const ocupado = new Set(busy.map((b) => b.requestId));
-  return reqs.filter((r) => !ocupado.has(r.id)).map((r) => ({ id: r.id, ...brasShippingView(r) }));
+  return reqs.filter((r) => !ocupado.has(r.id)).map((r) => ({ id: r.id, ...brasShippingView(r), suggestedCarrierId: r.carrierId }));
 }
 
 /** A importadora cancela a coleta enquanto não foi coletada. Os pedidos voltam a poder entrar em outra. */
@@ -289,6 +364,7 @@ async function deliver(db: Database, carrierId: string, loadId: string, who: str
   if (l.status !== "COLETADA") throw new DomainError("STATUS", l.status === "ACEITA" ? "Primeiro a coleta no balcão, com o código de cada pedido." : "Esta coleta não está em trânsito.");
   await db.update(trLoads).set({ status: "ENTREGUE", deliveredAt: now.toISOString(), updatedAt: now.toISOString() }).where(and(eq(trLoads.id, l.id), eq(trLoads.status, "COLETADA")));
   await event(db, l.id, "ENTREGUE", who, note?.trim().slice(0, 300) || null);
+  await activateCarrierReferral(db, carrierId, now);
   return { ok: true as const };
 }
 export async function carrierMarkDelivered(db: Database, actor: Actor, loadId: string, note?: string) {

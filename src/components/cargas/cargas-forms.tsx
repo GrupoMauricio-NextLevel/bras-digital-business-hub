@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input, Select, Switch, Textarea } from "@/components/ui/input";
 import { MoneyField } from "@/components/finance/fields";
 import { BRAS_UFS } from "@/lib/bras/ufs";
-import { CARGAS_PLAN_LABEL, CARGAS_VEHICLES, CARGAS_VEHICLE_LABEL } from "@/lib/cargas/rotulos";
+import { CARGAS_DOC_KINDS, CARGAS_DOC_LABEL, CARGAS_OPERATION_LABEL, CARGAS_PLAN_LABEL, CARGAS_VEHICLES, CARGAS_VEHICLE_LABEL } from "@/lib/cargas/rotulos";
 import {
   callCarrierAction, cancelLoadAction, carrierDeliveredAction, carrierFromLeadAction, createCarrierAccessAction, createCarrierAction, createDriverLinkAction,
-  driverDeliveredAction, respondLoadAction, revokeDriverLinkAction, updateCarrierProfileAction,
+  driverDeliveredAction, respondLoadAction, revokeDriverLinkAction, updateCarrierProfileAction, saveCarrierDocumentAction, reviewCarrierDocumentAction, deleteCarrierDocumentAction,
 } from "@/app/actions/cargas-painel";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * Formulários da NextLevel Cargas (D111): importadora, transportadora, motorista e Master. O servidor confere quem
@@ -42,15 +43,26 @@ function Chips<T extends string>({ legend, options, value, onChange, label }: { 
 type Uf = (typeof BRAS_UFS)[number];
 type Vehicle = (typeof CARGAS_VEHICLES)[number];
 
-/** Cadastro rápido de transportadora (importadora ou Master). Documento já cadastrado reaproveita a existente. */
-export function CarrierForm() {
+type CarrierDefaults = { name?: string; docType?: "CNPJ" | "CPF"; document?: string; operation?: "CARGA" | "EXCURSAO"; vehicles?: Vehicle[]; ufs?: Uf[]; label?: string };
+/** Cadastro rápido de transportadora (importadora ou Master). Documento já cadastrado reaproveita a existente.
+ * `defaults` pré-preenche (ex.: a Starline, empresa do grupo); o dono completa contato e WhatsApp. */
+export function CarrierForm({ defaults, allowOperation = true }: { defaults?: CarrierDefaults; allowOperation?: boolean } = {}) {
   const { pending, run } = useRun();
-  const empty = { name: "", docType: "CNPJ" as "CNPJ" | "CPF", document: "", contactName: "", phone: "", email: "", rntrc: "", insurance: false, rateNotes: "" };
+  const empty = { name: defaults?.name ?? "", docType: defaults?.docType ?? ("CNPJ" as "CNPJ" | "CPF"), document: defaults?.document ?? "", contactName: "", phone: "", email: "", rntrc: "", insurance: false, rateNotes: "", operation: defaults?.operation ?? ("CARGA" as "CARGA" | "EXCURSAO") };
   const [f, setF] = React.useState(empty);
-  const [ufs, setUfs] = React.useState<Uf[]>(["SP"]);
-  const [vehicles, setVehicles] = React.useState<Vehicle[]>([]);
+  const [ufs, setUfs] = React.useState<Uf[]>(defaults?.ufs ?? ["SP"]);
+  const [vehicles, setVehicles] = React.useState<Vehicle[]>(defaults?.vehicles ?? []);
+  const setOperation = (operation: "CARGA" | "EXCURSAO") => { setF({ ...f, operation }); if (operation === "EXCURSAO" && !vehicles.includes("ONIBUS_EXCURSAO")) setVehicles([...vehicles, "ONIBUS_EXCURSAO"]); };
   return (
-    <form className="grid gap-3 sm:grid-cols-2" aria-label="Cadastrar transportadora" onSubmit={(e) => { e.preventDefault(); run(() => createCarrierAction({ ...f, ufs, vehicles }), (r) => (r as { data?: { existed?: boolean } }).data?.existed ? "Essa transportadora já estava cadastrada: ela já aparece na lista." : "Transportadora cadastrada", () => { setF(empty); setVehicles([]); }); }}>
+    <form className="grid gap-3 sm:grid-cols-2" aria-label={defaults?.label ?? "Cadastrar transportadora"} onSubmit={(e) => { e.preventDefault(); run(() => createCarrierAction({ ...f, ufs, vehicles }), (r) => (r as { data?: { existed?: boolean } }).data?.existed ? "Essa transportadora já estava cadastrada: ela já aparece na lista." : "Transportadora cadastrada", () => { setF(empty); setVehicles(defaults?.vehicles ?? []); }); }}>
+      {allowOperation ? (
+        <fieldset className="sm:col-span-2">
+          <legend className="mb-1 text-sm font-medium">Tipo</legend>
+          <div className="flex flex-wrap gap-2">{(["CARGA", "EXCURSAO"] as const).map((o) => (
+            <label key={o} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${f.operation === o ? "border-[var(--brand-primary)]" : "border-border"}`}><input type="radio" name="operation" checked={f.operation === o} onChange={() => setOperation(o)} />{CARGAS_OPERATION_LABEL[o]}</label>
+          ))}</div>
+        </fieldset>
+      ) : null}
       <label className={lab}>Nome da transportadora ou do motorista<Input required minLength={2} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="Ex.: Rápido Brás Transportes" className="mt-1" /></label>
       <div className="grid grid-cols-[7rem_1fr] gap-2">
         <label className={lab}>Documento<Select value={f.docType} onChange={(e) => setF({ ...f, docType: e.target.value as "CNPJ" | "CPF" })} className="mt-1"><option value="CNPJ">CNPJ</option><option value="CPF">CPF</option></Select></label>
@@ -70,7 +82,7 @@ export function CarrierForm() {
 }
 
 type CarrierOpt = { id: string; name: string; contactName: string; ufs: string[]; vehicles: string[]; plan: string; insurance: boolean; rateNotes: string | null };
-type ReqOpt = { id: string; number: number; productTitle: string; boxes: number; status: string; shipCity: string | null; shipState: string | null };
+type ReqOpt = { id: string; number: number; productTitle: string; boxes: number; status: string; shipCity: string | null; shipState: string | null; carrier?: string | null; suggestedCarrierId?: string | null };
 
 /** "Chamar transportadora": pedidos confirmados ou pagos + transportadora + dia → mensagem pronta no WhatsApp. */
 export function CallCarrierForm({ carriers, requests, warehouses, today }: { carriers: CarrierOpt[]; requests: ReqOpt[]; warehouses: { id: string; name: string; isDefault: boolean }[]; today: string }) {
@@ -81,6 +93,11 @@ export function CallCarrierForm({ carriers, requests, warehouses, today }: { car
   const ufs = new Set(requests.filter((r) => sel.includes(r.id)).map((r) => r.shipState).filter(Boolean));
   const fit = (c: CarrierOpt) => [...ufs].every((u) => c.ufs.includes(u as string));
   const boxes = requests.filter((r) => sel.includes(r.id)).reduce((s, r) => s + r.boxes, 0);
+  // Escolha do cliente no pedido (D113): se todos os pedidos marcados apontam para a mesma transportadora do catálogo, ela vem marcada.
+  const suggested = (ids: string[]) => { const s = [...new Set(requests.filter((r) => ids.includes(r.id)).map((r) => r.suggestedCarrierId ?? ""))]; return s.length === 1 && s[0] && carriers.some((c) => c.id === s[0]) ? s[0] : ""; };
+  const [touched, setTouched] = React.useState(false);
+  const pick = (id: string) => { const next = toggle(sel, id); setSel(next); if (!touched) setF((x) => ({ ...x, carrierId: suggested(next) })); };
+  const suggestedIds = new Set(requests.filter((r) => sel.includes(r.id)).map((r) => r.suggestedCarrierId).filter(Boolean));
   if (sent) return (
     <div className="rounded-lg border border-success/40 bg-success-soft p-4 text-sm" role="status">
       <p className="font-semibold">Coleta {sent.number} criada. Agora avise a transportadora:</p>
@@ -98,15 +115,15 @@ export function CallCarrierForm({ carriers, requests, warehouses, today }: { car
         <legend className="mb-2 text-sm font-semibold">1. Pedidos desta coleta</legend>
         <ul className="grid gap-2 sm:grid-cols-2">{requests.map((r) => (
           <li key={r.id}><label className={`flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm ${sel.includes(r.id) ? "border-[var(--brand-primary)]" : "border-border"}`}>
-            <input type="checkbox" className="mt-1 size-4" checked={sel.includes(r.id)} onChange={() => setSel(toggle(sel, r.id))} />
-            <span><b>Pedido {r.number}</b> · {r.boxes} cx · {r.status === "PAID" ? "pago" : "confirmado"}<span className="block text-muted-foreground">{r.productTitle} → {r.shipCity}/{r.shipState}</span></span>
+            <input type="checkbox" className="mt-1 size-4" checked={sel.includes(r.id)} onChange={() => pick(r.id)} />
+            <span><b>Pedido {r.number}</b> · {r.boxes} cx · {r.status === "PAID" ? "pago" : "confirmado"}<span className="block text-muted-foreground">{r.productTitle} → {r.shipCity}/{r.shipState}</span>{r.carrier ? <span className="block">Cliente escolheu: <b>{r.carrier}</b>{r.suggestedCarrierId ? "" : " (fora do catálogo)"}</span> : null}</span>
           </label></li>
         ))}</ul>
       </fieldset>
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className={lab}>2. Transportadora<Select required value={f.carrierId} onChange={(e) => setF({ ...f, carrierId: e.target.value })} className="mt-1">
+        <label className={lab}>2. Transportadora<Select required value={f.carrierId} onChange={(e) => { setTouched(true); setF({ ...f, carrierId: e.target.value }); }} className="mt-1">
           <option value="">Escolha</option>
-          {[...carriers].sort((a, b) => Number(fit(b)) - Number(fit(a))).map((c) => <option key={c.id} value={c.id}>{c.name}{fit(c) ? "" : " (não atende todos os estados)"}</option>)}
+          {[...carriers].sort((a, b) => Number(suggestedIds.has(b.id)) - Number(suggestedIds.has(a.id)) || Number(fit(b)) - Number(fit(a))).map((c) => <option key={c.id} value={c.id}>{c.name}{suggestedIds.has(c.id) ? " (escolhida pelo cliente)" : ""}{fit(c) ? "" : " (não atende todos os estados)"}</option>)}
         </Select></label>
         {warehouses.length ? <label className={lab}>Galpão de retirada<Select value={f.warehouseId} onChange={(e) => setF({ ...f, warehouseId: e.target.value })} className="mt-1">{warehouses.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}</Select></label> : <p className="self-end text-sm text-muted-foreground">Sem galpão cadastrado: vai o endereço de retirada da ficha.</p>}
         <label className={lab}>3. Dia da coleta<Input required type="date" min={today} value={f.pickupDate} onChange={(e) => setF({ ...f, pickupDate: e.target.value })} className="mt-1" /></label>
@@ -162,14 +179,14 @@ export function DriverLinkManager({ carrierId, has, origin }: { carrierId: strin
   );
 }
 
-type Profile = { contactName: string; phone: string; email: string | null; ufs: string[]; vehicles: string[]; rntrc: string | null; insurance: boolean; rateNotes: string | null; plan: "GRATIS" | "PRO" | "PREMIUM"; status: "ATIVA" | "PAUSADA" };
+type Profile = { contactName: string; phone: string; email: string | null; ufs: string[]; vehicles: string[]; rntrc: string | null; insurance: boolean; rateNotes: string | null; plan: "GRATIS" | "PRO" | "PREMIUM"; status: "ATIVA" | "PAUSADA"; operation?: "CARGA" | "EXCURSAO" };
 export function CarrierProfileForm({ carrierId, master, value }: { carrierId: string | null; master: boolean; value: Profile }) {
   const { pending, run } = useRun();
-  const [f, setF] = React.useState({ contactName: value.contactName, phone: value.phone, email: value.email ?? "", rntrc: value.rntrc ?? "", insurance: value.insurance, rateNotes: value.rateNotes ?? "", plan: value.plan, status: value.status });
+  const [f, setF] = React.useState({ contactName: value.contactName, phone: value.phone, email: value.email ?? "", rntrc: value.rntrc ?? "", insurance: value.insurance, rateNotes: value.rateNotes ?? "", plan: value.plan, status: value.status, operation: value.operation ?? ("CARGA" as "CARGA" | "EXCURSAO") });
   const [ufs, setUfs] = React.useState(value.ufs as Uf[]);
   const [vehicles, setVehicles] = React.useState(value.vehicles as Vehicle[]);
   return (
-    <form className="grid gap-3 sm:grid-cols-2" aria-label="Perfil da transportadora" onSubmit={(e) => { e.preventDefault(); const { plan, status, ...rest } = f; run(() => updateCarrierProfileAction(carrierId, { ...rest, ufs, vehicles, ...(master ? { plan, status } : {}) }), "Perfil atualizado"); }}>
+    <form className="grid gap-3 sm:grid-cols-2" aria-label="Perfil da transportadora" onSubmit={(e) => { e.preventDefault(); const { plan, status, operation, ...rest } = f; run(() => updateCarrierProfileAction(carrierId, { ...rest, ufs, vehicles, ...(master ? { plan, status, operation } : {}) }), "Perfil atualizado"); }}>
       <label className={lab}>Contato<Input required minLength={2} value={f.contactName} onChange={(e) => setF({ ...f, contactName: e.target.value })} className="mt-1" /></label>
       <label className={lab}>WhatsApp com DDD<Input required value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} className="mt-1" /></label>
       <label className={lab}>E-mail<Input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} className="mt-1" /></label>
@@ -181,6 +198,7 @@ export function CarrierProfileForm({ carrierId, master, value }: { carrierId: st
       {master ? <>
         <label className={lab}>Plano<Select value={f.plan} onChange={(e) => setF({ ...f, plan: e.target.value as Profile["plan"] })} className="mt-1">{Object.entries(CARGAS_PLAN_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</Select></label>
         <label className={lab}>Situação<Select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as Profile["status"] })} className="mt-1"><option value="ATIVA">Ativa</option><option value="PAUSADA">Pausada</option></Select></label>
+        <label className={lab}>Tipo<Select value={f.operation} onChange={(e) => setF({ ...f, operation: e.target.value as "CARGA" | "EXCURSAO" })} className="mt-1">{(["CARGA", "EXCURSAO"] as const).map((o) => <option key={o} value={o}>{CARGAS_OPERATION_LABEL[o]}</option>)}</Select></label>
       </> : null}
       <Button type="submit" loading={pending} className="sm:justify-self-start">Gravar perfil</Button>
     </form>
@@ -209,4 +227,39 @@ export function LeadToCarrierButton({ leadId }: { leadId: string }) {
 export function DriverDeliverButton({ token, loadId }: { token: string; loadId: string }) {
   const { pending, run } = useRun();
   return <Button size="lg" className="mt-3 w-full" disabled={pending} onClick={() => { if (window.confirm("Confirmar que entregou todos os pedidos desta coleta?")) run(() => driverDeliveredAction(token, loadId), "Entrega registrada. Obrigado!"); }}><Check className="size-5" aria-hidden />Entreguei</Button>;
+}
+
+type Doc = { id: string; kind: (typeof CARGAS_DOC_KINDS)[number]; number: string; issuer: string | null; validUntil: string | null; notes: string | null; status: "PENDENTE" | "VERIFICADA" | "RECUSADA" };
+const DOC_STATUS = { PENDENTE: { label: "Aguardando conferência", tone: "warning" }, VERIFICADA: { label: "Conferida", tone: "success" }, RECUSADA: { label: "Recusada", tone: "danger" } } as const;
+const brDate = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
+
+/** Autorizações da transportadora (D112). A transportadora informa; o Master confere (o que ele cadastra já nasce conferido). */
+export function CarrierDocsManager({ carrierId, docs, master }: { carrierId: string | null; docs: Doc[]; master: boolean }) {
+  const { pending, run } = useRun();
+  const empty = { kind: "FRETAMENTO" as Doc["kind"], number: "", issuer: "", validUntil: "", notes: "" };
+  const [f, setF] = React.useState(empty);
+  return (
+    <div className="space-y-3 text-sm">
+      {docs.length ? <ul className="space-y-2">{docs.map((d) => (
+        <li key={d.id} className="rounded-lg border border-border p-3">
+          <p className="flex flex-wrap items-center gap-2 font-semibold">{CARGAS_DOC_LABEL[d.kind]}<Badge tone={DOC_STATUS[d.status].tone}>{DOC_STATUS[d.status].label}</Badge></p>
+          <p className="text-muted-foreground">Nº {d.number}{d.issuer ? ` · ${d.issuer}` : ""}{d.validUntil ? ` · válida até ${brDate(d.validUntil)}` : " · sem validade"}</p>
+          {d.notes ? <p className="text-muted-foreground">{d.notes}</p> : null}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {master && d.status !== "VERIFICADA" ? <Button size="sm" disabled={pending} onClick={() => run(() => reviewCarrierDocumentAction(d.id, "VERIFICADA"), "Autorização conferida")}>Conferir</Button> : null}
+            {master && d.status === "PENDENTE" ? <Button size="sm" variant="secondary" disabled={pending} onClick={() => run(() => reviewCarrierDocumentAction(d.id, "RECUSADA"), "Autorização recusada")}>Recusar</Button> : null}
+            <Button size="sm" variant="ghost" disabled={pending} onClick={() => { if (window.confirm("Remover esta autorização?")) run(() => deleteCarrierDocumentAction(d.id), "Autorização removida"); }}>Remover</Button>
+          </div>
+        </li>
+      ))}</ul> : <p className="text-muted-foreground">Nenhuma autorização cadastrada. Com uma autorização conferida e dentro da validade, aparece o selo &quot;documentação em dia&quot; no catálogo.</p>}
+      <form className="grid gap-2 rounded-lg border border-dashed border-border p-3 sm:grid-cols-2" aria-label="Nova autorização" onSubmit={(e) => { e.preventDefault(); run(() => saveCarrierDocumentAction(carrierId, f), master ? "Autorização cadastrada e conferida" : "Autorização enviada para conferência", () => setF(empty)); }}>
+        <label className={lab}>Tipo<Select value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value as Doc["kind"] })} className="mt-1">{CARGAS_DOC_KINDS.map((k) => <option key={k} value={k}>{CARGAS_DOC_LABEL[k]}</option>)}</Select></label>
+        <label className={lab}>Número<Input required minLength={2} maxLength={60} value={f.number} onChange={(e) => setF({ ...f, number: e.target.value })} className="mt-1" /></label>
+        <label className={lab}>Órgão (opcional)<Input value={f.issuer} maxLength={80} onChange={(e) => setF({ ...f, issuer: e.target.value })} placeholder="Ex.: ANTT, Artesp" className="mt-1" /></label>
+        <label className={lab}>Válida até (opcional)<Input type="date" value={f.validUntil} onChange={(e) => setF({ ...f, validUntil: e.target.value })} className="mt-1" /></label>
+        <label className={`${lab} sm:col-span-2`}>Observação (opcional)<Input value={f.notes} maxLength={300} onChange={(e) => setF({ ...f, notes: e.target.value })} className="mt-1" /></label>
+        <Button type="submit" size="sm" loading={pending} className="sm:justify-self-start">Adicionar autorização</Button>
+      </form>
+    </div>
+  );
 }

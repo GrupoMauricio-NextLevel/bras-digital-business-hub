@@ -238,7 +238,7 @@ ok("página da descoberta");
   await p.locator("#oferta").getByRole("link", { name: "Quero comprar" }).click();
   await p.waitForURL(/\/meu-bras\/pedir\//); await p.waitForLoadState("networkidle");
   await p.getByRole("button", { name: "Uma caixa a mais" }).click();
-  await p.getByLabel("Transportadora que vai retirar").fill("Braspress"); await p.getByLabel("Destinatário").fill("Ana Lojista");
+  await p.getByLabel("Nome da sua transportadora").fill("Braspress"); await p.getByLabel("Destinatário").fill("Ana Lojista");
   await p.getByLabel("Endereço de entrega").fill("Rua das Flores, 100, Centro"); await p.getByLabel("Cidade").fill("Curitiba");
   await p.getByLabel("UF").selectOption("PR"); await p.getByLabel("CEP").fill("80010000");
   if (!/R\$ 3\.780,00/.test((await p.getByRole("complementary", { name: "Resumo do pedido" }).innerText()).replace(/\u00a0/g, " "))) fail("pedido: total de 2 caixas");
@@ -600,6 +600,63 @@ ok("importadora 360 e painel da importadora");
   await d.c.close();
 }
 ok("NextLevel Cargas: transportadora, acesso e link do motorista");
+
+// 9. Club E0/E1 (D112, D113): empresas do grupo e Starline pré-preenchida, regras da Excursão; o membro vê o frete no
+//    painel único, o catálogo por estado e indica o ônibus que já usa.
+{
+  const { c, p } = await page(1440);
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/bras/grupo", { waitUntil: "networkidle" });
+  if (!/47\.173\.173\/0001-75/.test(await p.locator("main").innerText())) fail("grupo: CNPJ da Starline ausente");
+  const sf = p.getByRole("form", { name: "Cadastrar Mauricio Turismo" });
+  await sf.getByLabel("Contato").fill("Mauricio"); await sf.getByLabel("WhatsApp com DDD").fill("11999990000");
+  await sf.getByText("MG", { exact: true }).click(); await sf.getByText("PR", { exact: true }).click();
+  await sf.getByRole("button", { name: "Cadastrar transportadora" }).click();
+  await p.getByText("Transportadora cadastrada", { exact: true }).first().waitFor({ timeout: 30000 });
+  await p.reload({ waitUntil: "networkidle" });
+  await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(p, "master grupo", 1440);
+  await shot(p, `${OUT}/24-master-grupo-1440.png`);
+  await p.goto(B + "/bras/excursao", { waitUntil: "networkidle" });
+  const ex = p.getByRole("form", { name: "Regras da Excursão" });
+  await ex.getByLabel("Capacidade padrão do bagageiro").fill("140");
+  await ex.getByRole("button", { name: "Gravar regras" }).click();
+  await p.getByText(/Versão 1\./).waitFor({ timeout: 30000 });
+  await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(p, "master excursão", 1440);
+  await p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
+  if (!(await p.getByText("Empresa do grupo").first().isVisible())) fail("transportadoras: selo empresa do grupo ausente");
+  await c.close();
+}
+{
+  const { c, p } = await page(390);
+  await loginMembro(p);
+  await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+  const fr = (await p.locator("main").innerText()).replace(/\u00a0/g, " ");
+  if (!/Pedido BD-1001/.test(fr)) fail("fretes: pedido 1001 não aparece");
+  if (!/Rápido Brás Transportes/.test(fr)) fail("fretes: transportadora da coleta não aparece");
+  if (/R\$ 350|comissão/i.test(fr)) fail("fretes: frete ou comissão vazou para o cliente");
+  await check(p, "meu brás fretes", 390);
+  await shot(p, `${OUT}/25-meu-bras-fretes-390.png`);
+  await p.goto(BRAS + "/meu-bras/fretes?ver=catalogo&uf=MG", { waitUntil: "networkidle" });
+  if (!(await p.getByText("Mauricio Turismo").first().isVisible())) fail("catálogo: Starline não aparece para MG");
+  await check(p, "meu brás catálogo", 390);
+  await shot(p, `${OUT}/26-meu-bras-catalogo-390.png`);
+  await p.goto(BRAS + "/meu-bras/fretes?ver=indicar", { waitUntil: "networkidle" });
+  const rf = p.getByRole("form", { name: "Indicar transportadora ou ônibus" });
+  await rf.getByText("Ônibus de excursão", { exact: true }).click();
+  await rf.getByLabel("Nome da excursão").fill("Excursão da Cida"); await rf.getByLabel("WhatsApp com DDD").fill("31988887777");
+  await rf.getByLabel("Cidade").fill("Belo Horizonte"); await rf.getByLabel("UF").selectOption("MG");
+  await rf.getByRole("button", { name: "Indicar" }).click();
+  await p.getByRole("link", { name: "Mandar convite no WhatsApp" }).waitFor({ timeout: 30000 });
+  await p.reload({ waitUntil: "networkidle" });
+  if (!(await p.getByText("Excursão da Cida").isVisible())) fail("indicar: indicação não aparece na lista");
+  await check(p, "meu brás indicar", 390);
+  await c.close();
+}
+ok("Club E0/E1: grupo, regras, painel de frete, catálogo e indicação");
 
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
