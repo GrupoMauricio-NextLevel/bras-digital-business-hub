@@ -623,7 +623,7 @@ ok("NextLevel Cargas: transportadora, acesso e link do motorista");
   const ex = p.getByRole("form", { name: "Regras da Excursão" });
   await ex.getByLabel("Capacidade padrão do bagageiro").fill("140");
   await ex.getByRole("button", { name: "Gravar regras" }).click();
-  await p.getByText(/Versão 1\./).waitFor({ timeout: 30000 });
+  await p.getByText(/versão 1,/).waitFor({ timeout: 30000 });
   await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
   await check(p, "master excursão", 1440);
   await p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
@@ -657,6 +657,120 @@ ok("NextLevel Cargas: transportadora, acesso e link do motorista");
   await c.close();
 }
 ok("Club E0/E1: grupo, regras, painel de frete, catálogo e indicação");
+
+// 10. Club E2 (D114): o ônibus (Starline) cadastra a rota e abre a viagem; o membro reserva fardos e informa a nota;
+//     o ônibus aceita, coleta pela etiqueta, sai, chega e entrega com o código do cliente.
+{
+  const NFE = "35261047173173000175550010000000111000000018";
+  const local = (h) => new Date(Date.now() + h * 3_600_000 - 3 * 3_600_000).toISOString().slice(0, 16);
+  {
+    const { c, p } = await page(1440);
+    await p.goto(B + "/login", { waitUntil: "networkidle" });
+    await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+    await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+    await p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
+    const item = p.locator("li").filter({ hasText: "Mauricio Turismo" }).filter({ has: p.getByText("Gerenciar", { exact: true }) }).first();
+    await item.getByText("Gerenciar").click();
+    const ac = item.getByRole("form", { name: "Criar acesso da transportadora" });
+    await ac.getByLabel("Nome").fill("Mauricio"); await ac.getByLabel("E-mail").fill("mauricio@starline.teste"); await ac.getByLabel("Senha provisória").fill("provisoria-123");
+    await ac.getByRole("button", { name: "Criar acesso" }).click();
+    await p.getByText(/mauricio@starline\.teste/).first().waitFor({ timeout: 30000 });
+    // A membro de exemplo foi bloqueada no passo 5: libera para reservar.
+    await p.goto(B + "/bras/membros", { waitUntil: "networkidle" });
+    if (await p.getByRole("button", { name: "Liberar", exact: true }).count()) { await p.getByRole("button", { name: "Liberar", exact: true }).first().click(); await p.getByRole("button", { name: "Bloquear", exact: true }).first().waitFor({ timeout: 30000 }); }
+    await c.close();
+  }
+  const bus = await page(390);
+  {
+    const p = bus.p;
+    await p.goto(B + "/login", { waitUntil: "networkidle" });
+    await p.getByLabel("E-mail").fill("mauricio@starline.teste"); await p.getByLabel("Senha").fill("provisoria-123");
+    await p.getByRole("button", { name: /^Entrar/ }).click();
+    await p.waitForURL(/\/account\/password/, { timeout: 60000 });
+    await p.getByLabel("Nova senha", { exact: true }).fill("senha-starline-1"); await p.getByLabel("Confirmar nova senha").fill("senha-starline-1");
+    await p.getByRole("button", { name: "Salvar senha" }).click();
+    await p.waitForURL(/\/transportadora/, { timeout: 60000 });
+    await p.goto(B + "/transportadora/rotas", { waitUntil: "networkidle" });
+    const rf = p.getByRole("form", { name: "Nova rota" });
+    await rf.getByLabel("Nome da rota").fill("Brás ↔ Belo Horizonte"); await rf.getByLabel("Cidade de origem").fill("Belo Horizonte"); await rf.getByLabel("UF").selectOption("MG");
+    await rf.getByLabel("Horas de viagem").fill("9");
+    await rf.getByLabel("Ponto de embarque no Brás").fill("Rua Rodrigues dos Santos, 600"); await rf.getByLabel("Onde o cliente retira na cidade").fill("Rodoviária de BH, plataforma 3");
+    await rf.getByText("Qua", { exact: true }).click();
+    await rf.getByRole("button", { name: "Cadastrar rota" }).click();
+    await p.getByText("Rota cadastrada").first().waitFor({ timeout: 30000 });
+    await p.reload({ waitUntil: "networkidle" });
+    const tf = p.getByRole("form", { name: "Abrir viagem" });
+    await tf.getByLabel("Chegada ao Brás").fill(local(24)); await tf.getByLabel("Saída de São Paulo").fill(local(32));
+    await tf.getByRole("button", { name: "Abrir viagem" }).click();
+    await p.getByText(/Viagem 8001 aberta/).waitFor({ timeout: 30000 });
+    await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+    await check(p, "ônibus rotas", 390);
+    await shot(p, `${OUT}/27-onibus-rotas-390.png`);
+  }
+  {
+    const { c, p } = await page(390);
+    await loginMembro(p);
+    await p.goto(BRAS + "/meu-bras/fretes?ver=onibus&uf=MG&cidade=Belo+Horizonte", { waitUntil: "networkidle" });
+    if (!(await p.getByText("Mauricio Turismo").first().isVisible())) fail("membro: ônibus não aparece para BH");
+    await check(p, "membro mandar pelo ônibus", 390);
+    await shot(p, `${OUT}/28-membro-onibus-390.png`);
+    await p.getByText("Reservar espaço neste ônibus").click();
+    const form = p.getByRole("form", { name: "Reservar na viagem 8001" });
+    await form.getByRole("button", { name: "Um Fardo M a mais" }).click();
+    await form.getByLabel("Loja onde o ônibus coleta").fill("Mega Tron, box 12"); await form.getByLabel("Quem retira na cidade").fill("Ana Recebimento");
+    await form.getByLabel(/Chave da nota/).fill(NFE);
+    await form.getByRole("button", { name: "Reservar espaço" }).click();
+    await p.getByText(/Reserva enviada/).waitFor({ timeout: 30000 });
+    await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+    if (!(await p.getByText("8001-01").first().isVisible())) fail("membro: fardo 8001-01 não aparece em Meus fretes");
+    await p.goto(BRAS + "/meu-bras/fretes/etiquetas", { waitUntil: "networkidle" });
+    if ((await p.locator("img[alt^='QR do fardo']").count()) !== 2) fail("etiquetas: esperado 2 QR");
+    await check(p, "etiquetas", 390);
+    await shot(p, `${OUT}/29-etiquetas-390.png`);
+    await c.close();
+  }
+  {
+    const p = bus.p;
+    await p.goto(B + "/transportadora", { waitUntil: "networkidle" });
+    if (!(await p.getByRole("heading", { name: "Viagem 8001" }).isVisible())) fail("ônibus: viagem não aparece no Hoje");
+    await check(p, "ônibus hoje", 390);
+    await shot(p, `${OUT}/30-onibus-chamadas-390.png`);
+    for (let i = 0; i < 2; i++) { await p.getByRole("button", { name: "Aceitar" }).first().click(); await p.getByText("Fardo aceito").first().waitFor({ timeout: 30000 }); await p.waitForTimeout(600); }
+    for (const label of ["8001-01", "8001-02"]) {
+      const cf = p.getByRole("form", { name: "Coletar fardo" }).first();
+      await cf.getByLabel("Código da etiqueta").fill(label); await cf.getByRole("button", { name: "Coletei" }).click();
+      await p.getByText(`Fardo ${label} coletado`).first().waitFor({ timeout: 30000 });
+    }
+    p.once("dialog", (d) => d.accept());
+    await p.getByRole("button", { name: "Saí de São Paulo" }).click();
+    await p.getByRole("button", { name: "Cheguei na cidade" }).waitFor({ timeout: 30000 });
+    await p.getByRole("button", { name: "Cheguei na cidade" }).click();
+    await p.getByRole("heading", { name: /Entregar na cidade/ }).waitFor({ timeout: 30000 });
+    await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+    await check(p, "ônibus entregar", 390);
+  }
+  {
+    // O código do cliente fecha a entrega (cada etiqueta com o código dela).
+    const { c, p } = await page(390);
+    await loginMembro(p);
+    await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+    const codes = {};
+    for (const label of ["8001-01", "8001-02"]) codes[label] = /EX-[0-9A-F]{6}/.exec(await p.locator("li").filter({ hasText: `Etiqueta ${label}` }).first().innerText())?.[0];
+    await c.close();
+    const bp = bus.p;
+    for (const label of ["8001-01", "8001-02"]) {
+      const df = bp.locator("li").filter({ hasText: label }).getByRole("form", { name: "Entregar fardo" });
+      await df.getByLabel("Código do cliente").fill(codes[label] ?? ""); await df.getByRole("button", { name: "Entregar" }).click();
+      await bp.getByText("Fardo entregue").first().waitFor({ timeout: 30000 }); await bp.waitForTimeout(800);
+    }
+    if (await bp.getByRole("form", { name: "Entregar fardo" }).count()) fail("ônibus: ainda há fardo para entregar");
+    await bp.goto(B + "/transportadora/extrato", { waitUntil: "networkidle" });
+    if (!/8001/.test(await bp.locator("main").innerText())) fail("extrato: viagem 8001 ausente");
+    await check(bp, "ônibus extrato", 390);
+  }
+  await bus.c.close();
+}
+ok("Club E2: rota, viagem, reserva com nota, aceite, coleta, viagem e entrega");
 
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }

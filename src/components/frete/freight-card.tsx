@@ -3,6 +3,8 @@ import { Bus, CheckCircle2, Circle, MessageCircle, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FREIGHT_STATUS_TONE, FREIGHT_STEP_HINT, FREIGHT_STEP_LABEL } from "@/lib/frete/situacao";
 import type { FreightView } from "@/lib/domain/frete/painel";
+import { formatBRL } from "@/lib/money";
+import { CancelParcelButton, ParcelInvoiceForm } from "@/components/cargas/excursao-forms";
 
 const when = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 const wa = (phone: string) => `https://wa.me/${phone.startsWith("55") ? phone : `55${phone}`}`;
@@ -14,7 +16,7 @@ export function FreightCard({ f, receiptHref }: { f: FreightView; receiptHref?: 
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <h3 id={`fr-${f.id}`} className="text-base font-bold">{f.what}</h3>
-          <p className="text-muted-foreground">Pedido {f.code} · {f.boxes} caixa(s) → {f.destination}{f.importerName ? ` · retirada na ${f.importerName}` : ""}</p>
+          <p className="text-muted-foreground">{f.parcel ? <>Etiqueta <b className="font-mono">{f.parcel.label}</b> · viagem {f.parcel.tripNumber} · sai {when(f.parcel.departAt)} · {formatBRL(f.parcel.priceCents)}</> : <>Pedido {f.code} · {f.boxes} caixa(s) → {f.destination}{f.importerName ? ` · retirada na ${f.importerName}` : ""}</>}</p>
         </div>
         <Badge tone={FREIGHT_STATUS_TONE[f.status]}>{FREIGHT_STEP_LABEL[f.status]}</Badge>
       </div>
@@ -35,7 +37,15 @@ export function FreightCard({ f, receiptHref }: { f: FreightView; receiptHref?: 
           ))}
         </ol>
       ) : null}
-      <p className="mt-2 text-muted-foreground">{FREIGHT_STEP_HINT[f.status]}</p>
+      <p className="mt-2 text-muted-foreground">{f.parcel?.note ?? FREIGHT_STEP_HINT[f.status]}</p>
+      {f.parcel ? (
+        <div className="mt-2 space-y-1">
+          <p>Retire em: {f.parcel.cityPoint}. Seu código: <span className="rounded bg-surface-muted px-2 py-0.5 font-mono font-bold tracking-wider">{f.parcel.deliveryCode}</span></p>
+          <p className="text-muted-foreground">Coleta na loja {f.parcel.storeName}; embarque no Brás: {f.parcel.brasPoint}</p>
+          {f.status !== "CANCELADO" && !f.parcel.hasInvoice ? <><p className="font-semibold text-warning">Sem nota: o fardo não embarca sem a chave da nota da loja.</p><ParcelInvoiceForm parcelId={f.id.replace(/^trp-/, "")} /></> : f.parcel.hasInvoice ? <p className="text-success">Nota registrada.</p> : null}
+          {f.parcel.canCancel ? <CancelParcelButton parcelId={f.id.replace(/^trp-/, "")} /> : null}
+        </div>
+      ) : null}
       {f.pickupCode && receiptHref ? <p className="mt-2">Código de retirada: <span className="rounded bg-surface-muted px-2 py-0.5 font-mono font-bold tracking-wider">{f.pickupCode}</span> · <Link href={receiptHref} className="font-semibold text-link underline">Comprovante</Link></p> : null}
     </li>
   );

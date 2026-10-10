@@ -6,6 +6,8 @@ import { driverQueue } from "@/lib/domain/cargas/cargas";
 import { AreaTheme } from "@/design-system/components/area-theme";
 import { LoadCard } from "@/components/cargas/load-card";
 import { DriverDeliverButton } from "@/components/cargas/cargas-forms";
+import { ExcursionBoard } from "@/components/cargas/excursion-board";
+import { helperBoard } from "@/lib/domain/cargas/excursao";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Motorista", robots: { index: false, follow: false }, referrer: "no-referrer" };
@@ -16,8 +18,10 @@ export const metadata: Metadata = { title: "Motorista", robots: { index: false, 
  */
 export default async function Motorista({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const q = await driverQueue(await getDb(), token);
+  const db = await getDb();
+  const q = await driverQueue(db, token);
   if (!q) notFound();
+  const bus = await helperBoard(db, token);
   return (
     <>
       <AreaTheme theme="cargas" brand="NEXTLEVEL_CARGAS" />
@@ -25,6 +29,8 @@ export default async function Motorista({ params }: { params: Promise<{ token: s
         <p className="text-sm font-bold uppercase tracking-widest text-[var(--brand-primary)]">NextLevel Cargas · Motorista</p>
         <h1 className="mt-1 text-2xl font-bold">{q.carrier.name}</h1>
         <p className="mt-1 text-sm text-muted-foreground">No balcão, mostre o código de cada pedido: sem o código a importadora não entrega. Dúvida: fale com a sua transportadora.</p>
+        {bus ? <section aria-label="Viagens do ônibus" className="mt-8"><ExcursionBoard trips={bus.trips} token={token} /></section> : null}
+        {bus && !q.coletar.length && !q.entregar.length ? null : <>
         <section aria-labelledby="m-col" className="mt-8">
           <h2 id="m-col" className="flex items-center gap-2 text-lg font-bold"><PackageCheck className="size-5 text-[var(--brand-primary)]" aria-hidden />Coletar ({q.coletar.length})</h2>
           {q.coletar.length ? <ul className="mt-3 space-y-3">{q.coletar.map((l) => <LoadCard key={l.id} load={l} who="motorista" showEvents={false} />)}</ul> : <p className="mt-2 text-sm text-muted-foreground">Nenhuma coleta aceita esperando.</p>}
@@ -33,6 +39,7 @@ export default async function Motorista({ params }: { params: Promise<{ token: s
           <h2 id="m-ent" className="flex items-center gap-2 text-lg font-bold"><Truck className="size-5 text-[var(--brand-primary)]" aria-hidden />Entregar ({q.entregar.length})</h2>
           {q.entregar.length ? <ul className="mt-3 space-y-3">{q.entregar.map((l) => <LoadCard key={l.id} load={l} who="motorista" showEvents={false} actions={<DriverDeliverButton token={token} loadId={l.id} />} />)}</ul> : <p className="mt-2 text-sm text-muted-foreground">Nada em trânsito.</p>}
         </section>
+        </>}
       </main>
     </>
   );

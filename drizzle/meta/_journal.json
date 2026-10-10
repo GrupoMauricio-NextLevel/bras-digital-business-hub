@@ -372,6 +372,13 @@
       "when": 1791666256109,
       "tag": "0052_frete_indicacoes",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1791669374069,
+      "tag": "0053_excursao_viagens_fardos",
+      "breakpoints": true
     }
   ]
 }

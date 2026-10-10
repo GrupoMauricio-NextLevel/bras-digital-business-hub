@@ -414,7 +414,7 @@ export async function carrierLoads(db: Database, actor: Actor, now = new Date())
     db.select({ n: sql<number>`count(*)` }).from(trLoads).where(and(eq(trLoads.carrierId, c.id), inArray(trLoads.status, ["ACEITA", "COLETADA", "ENTREGUE"]), sql`${trLoads.acceptedAt} >= ${monthStartBrt(now)}`)),
   ]);
   const usage = { commissionBps: rules.carriers.commissionBps[c.plan], acceptedThisMonth: Number(m?.n ?? 0), freeLimit: c.plan === "GRATIS" ? rules.carriers.freeLoadsPerMonth : null };
-  return { carrier: { id: c.id, name: c.name, plan: c.plan, contactName: c.contactName, phone: c.phone, email: c.email, ufs: c.ufs, vehicles: c.vehicles, rntrc: c.rntrc, insurance: c.insurance, rateNotes: c.rateNotes, status: c.status, hasDriverLink: !!c.driverTokenHash }, loads, usage };
+  return { carrier: { id: c.id, name: c.name, plan: c.plan, contactName: c.contactName, phone: c.phone, email: c.email, ufs: c.ufs, vehicles: c.vehicles, rntrc: c.rntrc, insurance: c.insurance, rateNotes: c.rateNotes, status: c.status, operation: c.operation, hasDriverLink: !!c.driverTokenHash }, loads, usage };
 }
 
 /** Coletas da importadora logada (ela nunca vê o frete combinado com o comprador nem a comissão). */

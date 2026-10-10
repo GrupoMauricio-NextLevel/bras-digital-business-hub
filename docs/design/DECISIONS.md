@@ -954,3 +954,36 @@ Pedido do dono: o cliente de qualquer importadora já vê as transportadoras dis
   - Etapas: **convidado** → **cadastrou** (a transportadora entra com o mesmo WhatsApp, ligação automática no cadastro) → **ativou** (primeira entrega concluída). Os pontos chegam com o razão do Club (E4).
 - **Master:** "Indicadas por clientes", com convite no WhatsApp e recusa.
 - Testes: `tests/frete-painel-e1.test.ts` (8) e e2e `bras-portal` passo 9. Migração `0052_frete_indicacoes`.
+
+## D114 — Club E2: Cargas Excursão (rotas, viagens, fardos e o painel do ônibus em modo app) (2026-10-10)
+Pedido do dono: um painel prático "como um app de corrida" para o dono do ônibus de excursão receber pedidos de carga, e o lojista do Brasil inteiro achando o ônibus da região dele. 80% dos pedidos são fardinhos pequenos e médios.
+- **Modelo** (aditivo, migração `0053_excursao_viagens_fardos`):
+  - `tr_routes`: rota fixa com cidade de origem, cidades atendidas, ponto de embarque no Brás, ponto de retirada na cidade, dias de chegada, horas de viagem e **tabela por tamanho** (P ≤ M ≤ G, conferida);
+  - `tr_trips`: viagem numerada a partir de 8001, com bagageiro em fardinhos equivalentes (padrão das regras D112);
+  - `tr_parcels`: fardo com etiqueta "viagem-seq" (8001-07), preço congelado na reserva, taxa congelada no aceite, código do cliente para retirar (como o código de retirada, D103) e chave da NF-e;
+  - `tr_parcel_events`: histórico append-only de cada fardo.
+- **Cliente** (Meu Brás → Fretes → "Mandar pelo ônibus"):
+  - acha viagens abertas pela cidade e UF de entrega (origem ou cidade atendida, sem diferença de acento ou maiúscula), com saída, chegada, preços e espaço livre;
+  - reserva quantos P, M e G, a loja de coleta e quem retira, e opcionalmente liga a um pedido da Brás e informa a nota;
+  - recebe as etiquetas, os códigos e o texto pronto para a loja. **Etiquetas com QR** para imprimir, sem valor nem telefone;
+  - cancela antes da coleta (aceito: até o prazo da regra).
+  Os fardos entram no **painel de frete único** (D113) com a mesma linha do tempo.
+- **Dono do ônibus** (o "Hoje" do painel da transportadora, quando o tipo é excursão):
+  - viagem com **medidor do bagageiro**;
+  - **chamadas em cartões** (Aceitar, ou Recusar com motivo de um toque);
+  - **coletar no Brás pelo código da etiqueta**, com a lista por loja;
+  - Saí de São Paulo, Cheguei, entrega com o código do cliente;
+  - **Rotas e viagens** e extrato por viagem.
+  - O **ajudante** usa o link do motorista (D111) com coleta e entrega, sem valores.
+- **Regras e fronteiras:**
+  - **aceite condicional** no banco: a soma dos aceitos nunca passa da capacidade (não vende o mesmo espaço duas vezes); viagem lotada põe a reserva na lista de espera;
+  - **sem nota não embarca** (regra `requireInvoice`, chave conferida pelo dígito, `src/lib/fiscal/nfe.ts`);
+  - ao sair, o fardo coletado vira "em viagem" e o não coletado vira "não embarcou";
+  - o dono do ônibus vê loja e destinatário, nunca documento, e-mail ou WhatsApp do cliente; outro ônibus não vê nem responde.
+  - Encerrar a viagem ativa a indicação do ônibus (D113).
+- **Desvio registrado:** o prompt sugeria a área `/excursao`. O painel ficou dentro de `/transportadora` (mesmo papel `CARRIER`, menu com "Rotas e viagens"), para não ter duas áreas para a mesma empresa. A tela "Hoje" muda conforme o tipo.
+- **Fica para depois:**
+  - pagamento do frete por Pix na conta do ônibus (E7);
+  - "pronto na loja" marcado pela loja e "entregar no ônibus" no pedido (E3);
+  - leitura do QR pela câmera (o campo aceita o código digitado).
+- Testes: `tests/excursao-e2.test.ts` (8) e e2e `bras-portal` passo 10 (rota, viagem, reserva com nota, aceite, coleta, saída, chegada e entrega).

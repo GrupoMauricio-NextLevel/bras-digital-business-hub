@@ -1976,6 +1976,83 @@ export const trCarrierDocuments = pgTable("tr_carrier_documents", {
   createdAt: createdAt(),
 }, (t) => [index("tr_carrier_documents_carrier_idx").on(t.carrierId)]);
 
+// ---------------------------------------------------------------------------
+// Cargas Excursão (D114): rota fixa, viagem com bagageiro em fardinhos equivalentes e fardos com preço congelado.
+// ---------------------------------------------------------------------------
+export const trRoutes = pgTable("tr_routes", {
+  id: id(),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  name: text("name").notNull(),
+  originCity: text("origin_city").notNull(),
+  originUf: text("origin_uf").notNull(),
+  citiesServed: jsonb("cities_served").$type<{ city: string; uf: string }[]>().notNull().default([]),
+  brasPoint: text("bras_point").notNull(),
+  cityPoint: text("city_point").notNull(),
+  /** 0 = domingo. Dias em que o ônibus chega ao Brás (informativo para o cliente). */
+  arrivalWeekdays: jsonb("arrival_weekdays").$type<number[]>().notNull().default([]),
+  travelHours: integer("travel_hours").notNull(),
+  /** Preço por fardo em centavos (P, M, G); congelado em cada fardo na reserva. */
+  prices: jsonb("prices").$type<{ P: number; M: number; G: number }>().notNull(),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+}, (t) => [index("tr_routes_carrier_idx").on(t.carrierId)]);
+
+export const trTrips = pgTable("tr_trips", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  routeId: text("route_id").notNull().references(() => trRoutes.id),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  arriveBrasAt: ts("arrive_bras_at").notNull(),
+  departAt: ts("depart_at").notNull(),
+  arriveCityAt: ts("arrive_city_at"),
+  capacityUnits: integer("capacity_units").notNull(),
+  status: text("status", { enum: ["ABERTA", "LOTADA", "EM_VIAGEM", "CHEGOU", "ENCERRADA", "CANCELADA"] }).notNull().default("ABERTA"),
+  departedAt: ts("departed_at"),
+  arrivedAt: ts("arrived_at"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+}, (t) => [index("tr_trips_carrier_idx").on(t.carrierId, t.status), index("tr_trips_depart_idx").on(t.status, t.departAt)]);
+
+export const trParcels = pgTable("tr_parcels", {
+  id: id(),
+  tripId: text("trip_id").notNull().references(() => trTrips.id),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  clientUserId: text("client_user_id").notNull().references(() => users.id),
+  memberId: text("member_id").references(() => bdMembers.id),
+  requestId: text("request_id").references(() => bdRequests.id),
+  /** Número do fardo na viagem: a etiqueta é "viagem-seq" (ex.: 8001-07). */
+  seq: integer("seq").notNull(),
+  size: text("size", { enum: ["P", "M", "G"] }).notNull(),
+  units: integer("units").notNull(),
+  priceCents: integer("price_cents").notNull(),
+  /** Taxa da plataforma congelada no aceite. */
+  feeCents: integer("fee_cents"),
+  storeName: text("store_name").notNull(),
+  storeAddress: text("store_address"),
+  recipientName: text("recipient_name").notNull(),
+  /** Código que o cliente mostra para retirar na cidade (como o código de retirada da Brás, D103). */
+  deliveryCode: text("delivery_code").notNull().unique(),
+  /** Chave da NF-e (44 dígitos, dígito conferido). Regra: sem nota não embarca. */
+  invoiceKey: text("invoice_key"),
+  status: text("status", { enum: ["SOLICITADO", "ESPERA", "ACEITO", "RECUSADO", "PRONTO", "COLETADO", "EM_VIAGEM", "CHEGOU", "ENTREGUE", "NAO_EMBARCOU", "CANCELADO"] }).notNull().default("SOLICITADO"),
+  refuseReason: text("refuse_reason"),
+  acceptedAt: ts("accepted_at"),
+  collectedAt: ts("collected_at"),
+  deliveredAt: ts("delivered_at"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("tr_parcels_trip_seq").on(t.tripId, t.seq), index("tr_parcels_client_idx").on(t.clientUserId, t.createdAt), index("tr_parcels_carrier_idx").on(t.carrierId, t.status)]);
+
+export const trParcelEvents = pgTable("tr_parcel_events", {
+  id: id(),
+  parcelId: text("parcel_id").notNull().references(() => trParcels.id),
+  kind: text("kind").notNull(),
+  actor: text("actor").notNull(),
+  note: text("note"),
+  createdAt: createdAt(),
+}, (t) => [index("tr_parcel_events_parcel_idx").on(t.parcelId, t.createdAt)]);
+
 /** Pessoas com login no painel da transportadora. */
 export const trCarrierUsers = pgTable("tr_carrier_users", {
   id: id(),

@@ -27,3 +27,19 @@ export function requestFreightStatus(r: { status: string; createdAt: string; sep
   const reached = { RESERVADO: true, PRONTO: ready, COLETADO: collected, EM_VIAGEM: traveling, ENTREGUE: delivered };
   return { status, steps: FREIGHT_STEPS.map((k) => ({ key: k, label: FREIGHT_STEP_LABEL[k], at: reached[k] ? at[k] : null, done: reached[k] })) };
 }
+
+/** Fardo de ônibus (D114) → a mesma situação e linha do tempo do frete. */
+export const PARCEL_STATUS_NOTE: Record<string, string> = {
+  SOLICITADO: "Aguardando o ônibus aceitar.", ESPERA: "Viagem lotada: você está na lista de espera.", ACEITO: "Aceito pelo ônibus. Mande a etiqueta para a loja.",
+  RECUSADO: "Recusado pelo ônibus.", NAO_EMBARCOU: "Não foi coletado antes da saída do ônibus.", CHEGOU: "Chegou na cidade: retire com o seu código.", CANCELADO: "Cancelado.",
+};
+export function parcelFreightStatus(p: { status: string; createdAt: string; events: { kind: string; at: string }[] }): { status: FreightStatus; steps: { key: FreightStep; label: string; at: string | null; done: boolean }[] } {
+  const order = ["SOLICITADO", "ESPERA", "ACEITO", "PRONTO", "COLETADO", "EM_VIAGEM", "CHEGOU", "ENTREGUE"];
+  const rank = order.indexOf(p.status);
+  const dead = ["RECUSADO", "CANCELADO", "NAO_EMBARCOU"].includes(p.status);
+  const status: FreightStatus = dead ? "CANCELADO" : p.status === "ENTREGUE" ? "ENTREGUE" : p.status === "EM_VIAGEM" || p.status === "CHEGOU" ? "EM_VIAGEM" : p.status === "COLETADO" ? "COLETADO" : p.status === "PRONTO" ? "PRONTO" : "RESERVADO";
+  const at = (kinds: string[]) => p.events.find((e) => kinds.includes(e.kind))?.at ?? null;
+  const reached: Record<FreightStep, boolean> = { RESERVADO: true, PRONTO: rank >= order.indexOf("PRONTO"), COLETADO: rank >= order.indexOf("COLETADO"), EM_VIAGEM: rank >= order.indexOf("EM_VIAGEM"), ENTREGUE: p.status === "ENTREGUE" };
+  const when: Record<FreightStep, string | null> = { RESERVADO: p.createdAt, PRONTO: at(["PRONTO"]), COLETADO: at(["COLETADO"]), EM_VIAGEM: at(["EM_VIAGEM"]), ENTREGUE: at(["ENTREGUE"]) };
+  return { status, steps: FREIGHT_STEPS.map((k) => ({ key: k, label: FREIGHT_STEP_LABEL[k], at: reached[k] ? when[k] : null, done: !dead && reached[k] })) };
+}
