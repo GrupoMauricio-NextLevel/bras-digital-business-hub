@@ -1,5 +1,5 @@
 # BRÁS DIGITAL CLUB + CARGAS EXCURSÃO — PROMPT MESTRE DE ENGENHARIA
-## Ônibus de excursão como rede de frete do Brás, painel "tipo app" para o dono do ônibus, catálogo de ônibus para o lojista do Brasil inteiro e um clube de benefícios que liga as empresas do grupo
+## Ônibus de excursão como rede de frete do Brás, painel "tipo app" para o dono do ônibus, catálogo de ônibus para o lojista do Brasil inteiro, carga sempre com nota (Nota Fácil e Meu Contador) e um clube de benefícios que liga as empresas do grupo
 
 > **Pedido do dono (2026-10-10, resumo fiel):**
 > - **Primeira transportadora:** Starline Viagens e Turismo Ltda - ME (nome fantasia **Mauricio Turismo**), CNPJ **47.173.173/0001-75** (dígitos conferidos). Fundada em 15/07/2022, sede em São Paulo/SP, atividade principal hoje: agência de viagens. Modalidade: **ônibus de excursão**.
@@ -9,6 +9,11 @@
 > - **Carga:** 80% dos pedidos são **fardinhos pequenos e fardos médios**. O ônibus não quer carga grande: **quanto menor o fardo, maior o lucro** no mesmo espaço.
 > - **Grupo do Mauricio:** Starline Viagens e Turismo (transporte de carga e ônibus de excursão), Mega Tron Comércio Eletrônico Ltda (atacado, distribuidor e importador), NextLevel Marketing Ltda (todas as marcas e sistemas). Cliente de uma empresa deve ter **benefício e desconto ao usar a outra**.
 > - **Novo sistema:** um **clube de benefícios** para fornecedores e clientes, muito bem estruturado: **Brás Digital Club**.
+>
+> **Respostas do dono (2026-10-10, segunda rodada):**
+> - **A Starline tem outras autorizações** que permitem levar carga no ônibus. O sistema guarda essas autorizações (número, validade e arquivo) e mostra o selo "documentação em dia" (seção 5.6).
+> - **O Brás Digital tem o emissor de nota fácil (Nota Fácil)**, com **promoção para novos lojistas**. A lógica: o cliente pede para a loja se cadastrar, a loja ganha o benefício e a emissão fácil, e a carga viaja com nota (Módulo E, seção 7A).
+> - **Função emergencial "Meu Contador":** para quem tem uma situação urgente e está sem nota, a equipe resolve **em algumas horas** e regulariza o transporte (seção 7A.4).
 >
 > **Autoridade:** Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`) > `docs/design/DECISIONS.md` (D91 a D111 são da Brás e da Cargas) > `docs/prompts/bras-ecossistema-importadoras-conteiner-transporte.md` (Brás v2) > este documento > a tarefa do momento.
 > **Próxima decisão livre:** confira em `CLAUDE.md` (hoje D112).
@@ -74,7 +79,7 @@ Implemente o que não depende do item travado, deixe a chave desligada, registre
 ### 1.3 O volante
 1. O lojista do interior acha no catálogo o ônibus da cidade dele e reserva espaço.
 2. Ele compra da Mega Tron ou de uma importadora da Brás e escolhe **"entregar no ônibus"**.
-3. A loja etiqueta o fardo; o ônibus coleta e leva; o lojista retira com o código.
+3. A loja etiqueta o fardo **com a nota** (Nota Fácil); sem nota, o Meu Contador resolve. O ônibus coleta e leva; o lojista retira com o código.
 4. Cada passo gera crédito do Club, que dá desconto na próxima compra ou no próximo frete.
 5. A demanda por cidade aparece no Master: **onde vale abrir uma rota nova da Starline**.
 6. Mais rotas trazem mais lojistas, mais compras e mais cargas.
@@ -175,6 +180,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
   - preço congelado na reserva; taxa da plataforma congelada no aceite;
   - código curto e QR: só o hash no banco, como D106 e D111;
   - pagamento (`A_PAGAR`, `PAGO`, `NA_CHEGADA`) e situação;
+  - **nota da mercadoria:** chave de acesso da NF-e (44 dígitos, conferida pelo dígito) ou número e série, e a situação da nota (`COM_NOTA`, `NOTA_A_CAMINHO`, `SEM_NOTA`, `MEU_CONTADOR`) (seção 7A);
   - foto de cada etapa.
 - `tr_parcel_events`: append-only, com quem, quando, onde (texto) e foto.
 - `tr_loads` (D111) continua para a carga fechada de importadora; o fardo da excursão é um modelo próprio porque a unidade é o volume, não o pedido.
@@ -215,6 +221,12 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - O ajudante não vê valores; o dono de outro ônibus não vê nada deste.
 - Preço e taxa ficam congelados: mudar a tabela depois não mexe em fardo reservado.
 
+### 5.6 Autorizações do ônibus (documentação em dia)
+- A transportadora cadastra as autorizações que tem (tipo, número, órgão, validade e arquivo em PDF ou foto). O Master confere e marca como verificada.
+- A Starline já tem as autorizações necessárias (resposta do dono): o cadastro dela na E0 já entra com os documentos que o dono enviar.
+- O catálogo mostra o selo **"documentação em dia"** só para autorização verificada e dentro da validade. 30 dias antes de vencer, o dono do ônibus e o Master recebem aviso; vencida, o selo some sozinho.
+- Os arquivos ficam no mecanismo de arquivos existente, visíveis só para a transportadora e o Master.
+
 ---
 
 ## 6. Módulo B: Frete para o lojista (catálogo de ônibus e pedidos)
@@ -239,6 +251,7 @@ A Starline e a Mega Tron são do mesmo dono da plataforma. Para que outros ônib
 - No pedido da Brás Digital (importadora) e no da Mega Tron, nova forma de entrega: **"Ônibus de excursão"**, com o código do fardo ou a escolha da viagem. O pedido passa a mostrar a etiqueta do fardo para imprimir.
 - **Balcão da loja** (padrão D106, link sem login, ou o painel da importadora, D110): "pronto para coletar" e "entregue ao ajudante", com bipe e foto.
 - A loja vê só o necessário (código, tamanho, ônibus, ponto de embarque), nunca o telefone do lojista. Mesma fronteira de D92 e D111.
+- **Nota no fardo:** ao marcar "pronto para coletar", a loja informa a nota (chave da NF-e) ou emite na hora pelo **Nota Fácil** (seção 7A.2). Loja sem nota cai no fluxo da seção 7A.
 
 ### 6.4 Pagamento do frete
 - O frete é do dono do ônibus: Pix gerado na **conta Mercado Pago dele** (token só com `encryptSecret`), conferido na API antes de valer, com idempotência por `dedupeKey`.
@@ -335,6 +348,68 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 
 ---
 
+## 7A. Módulo E: Nota em dia (Nota Fácil, convite à loja e Meu Contador)
+
+**Por que existe:** a carga só viaja regularizada. A falta de nota é o maior risco do ônibus (fiscalização na divisa) e o maior medo do lojista. Em vez de só bloquear, o sistema **resolve**: convida a loja para o emissor, ou aciona o contador em caráter de urgência. Cada caminho é uma receita e um motivo a mais para entrar no ecossistema.
+
+### 7A.1 Regra do fardo
+- O fardo só passa para **"no ônibus"** com a situação `COM_NOTA` ou `MEU_CONTADOR` resolvido. A regra fica no Master (`excursion.requireInvoice`, padrão ligado).
+- O dono do ônibus vê em cada cartão de pedido o selo **"com nota"**, **"nota a caminho"** ou **"sem nota"**, e pode recusar com um toque.
+- A chave da NF-e é conferida pelo dígito verificador (sem consultar a Sefaz nesta fase) e guardada só para o fardo; nenhum valor da nota aparece para o ônibus, só a chave e o emitente.
+
+### 7A.2 Nota Fácil (emissor da Brás Digital)
+- Para a **loja do Brás** (fornecedor, importadora ou qualquer loja que entra só para emitir): emitir NF-e a partir do pedido ou do fardo em poucos toques.
+- **`[CONFIRMAR]` qual é o sistema emissor que a Brás Digital já usa.** Se for um provedor com API, o sistema integra por uma interface própria (`src/lib/fiscal/`), como as plataformas de envio (`src/lib/shipping/`): um provedor por adaptador, testado com provedor falso. Se ainda for um sistema à parte, a fase entrega o cadastro, a promoção e o link de acesso, e a integração entra depois.
+- Configuração fiscal da loja: CNPJ, inscrição estadual, regime tributário, certificado digital A1 e senha. **Certificado e senha só com `encryptSecret`, nunca em tela, log ou e-mail.**
+- A nota emitida volta para o fardo e para o pedido sozinha (chave, número, PDF e XML guardados), e o cliente recebe o PDF.
+- **Promoção para novos lojistas** no catálogo Master (D90), família nova `FISCAL` ou dentro de `BRAS_SERVICE`, decidindo na E0:
+  - por exemplo, X notas grátis ou N meses grátis para a loja que entra pelo convite de um cliente (valores do dono, em rascunho);
+  - depois da promoção, plano mensal ou pacote de notas.
+
+### 7A.3 Convite à loja (o cliente traz a loja)
+1. No fardo "sem nota", o lojista toca em **"Pedir para a loja emitir a nota"**.
+2. O sistema monta a mensagem de WhatsApp para a loja, com o link de cadastro no Nota Fácil e a promoção de novos lojistas: *"Emita a nota deste pedido em 2 minutos, com notas grátis no primeiro mês."*
+3. A loja se cadastra pelo link (atribuído ao cliente que convidou e ao fardo), emite a nota e o fardo vira `COM_NOTA`.
+4. **Benefício para os dois (Club):**
+   - o cliente que convidou ganha crédito quando a loja emite a primeira nota;
+   - a loja ganha o selo **"Nota em dia"** no catálogo e no Club;
+   - pedidos "entregar no ônibus" com loja "Nota em dia" ganham prioridade de coleta.
+5. A mesma loja convidada por vários clientes conta uma vez para cada um (cada convite é dele), e o crédito só sai uma vez por loja por cliente.
+
+### 7A.4 Função emergencial "Meu Contador"
+**Para quem:** o cliente, a loja ou o dono do ônibus que se deparou com uma situação urgente e está sem nota.
+
+**Como funciona:**
+1. No fardo (ou no painel), o botão **"Resolver agora com o Meu Contador"** abre um chamado urgente com:
+   - o fardo, a loja e o que foi comprado (descrição e valor aproximado);
+   - quem precisa da nota;
+   - o horário da saída do ônibus, que define a urgência.
+2. Mostra o **preço do serviço** e o **prazo em horas**, ambos no Master, em rascunho até o dono definir, e cobra pelo gateway do Financeiro Master (D90). O pagamento vale só depois de conferido na API.
+3. Assim que é pago, o chamado entra na **fila da equipe contábil** (Master, área "Meu Contador"), com contagem regressiva até a saída do ônibus.
+4. O contador conversa pelo canal de suporte que já existe (estenda `bd_support_messages`; não crie outro chat) e resolve pelo caminho correto. Por exemplo:
+   - a loja emite a nota pelo Nota Fácil, com ajuda;
+   - nota avulsa na Sefaz quando couber.
+   O sistema **não emite nota por quem não é o vendedor** nem "ajeita" documento: ele organiza, acelera e registra.
+5. Resolvido, a chave da nota entra no fardo, que vira `COM_NOTA`, e todos são avisados.
+6. Se não der tempo, o chamado registra o motivo e o fardo fica para a próxima viagem, **sem custo extra de remarcação** (regra no Master).
+
+**Quem atende:** contador ou escritório com registro no CRC, da equipe ou parceiro `[CONFIRMAR quem atende e o horário de atendimento]`. Ele entra com papel próprio de equipe (acesso só à fila do Meu Contador, auditado).
+
+**Indicadores no Master:**
+- chamados abertos, em andamento e resolvidos;
+- tempo médio até resolver e porcentagem resolvida antes da saída do ônibus;
+- receita do serviço;
+- lojas que viraram clientes do Nota Fácil depois de um chamado (o Meu Contador também é porta de entrada do emissor).
+
+### 7A.5 Aceite
+- O fardo sem nota não vira "no ônibus"; com a chave válida, vira.
+- Chave de NF-e com dígito errado é recusada com mensagem clara.
+- O convite à loja gera o link atribuído; a loja cadastra e emite (provedor falso no teste); o fardo vira `COM_NOTA` e o crédito do Club sai uma vez.
+- O Meu Contador cobra só depois do pagamento conferido, entra na fila com contagem regressiva, o contador resolve e o fardo é liberado. O contador não vê nada além do chamado.
+- O certificado A1 nunca aparece em resposta, log ou e-mail (teste procura o conteúdo na saída).
+
+---
+
 ## 8. Módulo D: Master (tudo editável)
 - **Excursão:**
   - ônibus (verificados e indicados), rotas, viagens e fardos;
@@ -351,6 +426,12 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
   - razão por membro (só leitura; ajuste manual com motivo e auditoria);
   - acerto entre empresas;
   - termos do Club.
+- **Nota em dia:**
+  - lojas do Nota Fácil e situação da configuração fiscal;
+  - promoção de novos lojistas (catálogo Master);
+  - fila do **Meu Contador** com contagem regressiva, preço e prazo do serviço;
+  - indicadores da seção 7A.4;
+  - autorizações das transportadoras a conferir e a vencer.
 - **Empresas do grupo:** cadastro com dados jurídicos (Starline, Mega Tron, NextLevel). Elas aparecem como emissoras de benefício e partes do acerto.
   - Proposta: `organizations` com marca "empresa do grupo", mais os dados jurídicos. Valide contra o que existe antes de criar tabela.
 - **Planos** no catálogo Master (D90), famílias já existentes: `CARRIER_PLAN` para o ônibus e uma família nova `CLUB_PLAN` só se o dono decidir por um Club pago (seção 13).
@@ -371,6 +452,11 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | `club_settlements` | Club | Acerto mensal entre empresas |
 | `partners.kind` + `GUIA_EXCURSAO` | Parceiros | Guia de excursão, sem tabela nova |
 | `coupons` (+ `kind`, `clubBenefitId`) | Cupons | Resgate do Club gera cupom |
+| `tr_carrier_documents` | Cargas | Autorizações do ônibus com validade e conferência do Master |
+| `fiscal_issuers` | Nota Fácil | Configuração fiscal da loja; certificado e senha com `encryptSecret` |
+| `fiscal_documents` | Nota Fácil | Nota emitida ou informada (chave, número, PDF, XML), ligada ao pedido e ao fardo |
+| `fiscal_invites` | Nota Fácil | Convite cliente → loja, atribuído ao fardo, para o crédito do Club |
+| `accounting_tickets` | Meu Contador | Chamado urgente: fardo, prazo (saída do ônibus), preço, pagamento, responsável, situação; a conversa usa o suporte existente |
 
 ---
 
@@ -402,9 +488,11 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 
 | Item | Risco | O que fazer |
 |---|---|---|
-| Ônibus de fretamento turístico levando mercadoria de terceiros | A regra da ANTT e dos estados para fretamento turístico pode limitar ou exigir registro próprio para levar carga de terceiros | `[CONFIRMAR jurídico]` antes de anunciar publicamente. O sistema não incentiva irregularidade: cada fardo precisa do documento fiscal da mercadoria (seção abaixo) |
-| Starline com atividade principal "agência de viagens" | Cobrar frete pode exigir atividade (CNAE) de transporte de carga e registro de transportador (RNTRC) | `[CONFIRMAR contador]`: incluir a atividade e o registro da Starline antes do frete pago |
-| Documento fiscal da mercadoria e do frete | Mercadoria viajando sem nota fica sujeita a fiscalização de ICMS nas divisas; frete de transportadora pode exigir CT-e | O fardo guarda o número da nota da loja; o sistema avisa quando falta. Emissão de CT-e e regra de frete por estado ficam como `[CONFIRMAR contador]` |
+| Ônibus levando mercadoria de terceiros | Cada ônibus precisa da autorização própria para carga | **Starline: resolvido pelo dono** (tem as autorizações). Para os outros ônibus, o selo "documentação em dia" só com autorização verificada e válida (seção 5.6); o sistema não promete regularidade de quem não comprovou |
+| Mercadoria sem nota | Fiscalização de ICMS nas divisas | Fardo só vai "no ônibus" com nota ou com o Meu Contador resolvido (seção 7A.1) |
+| Nota do frete | Frete cobrado por empresa pode exigir documento fiscal do serviço (CT-e) | `[CONFIRMAR contador]` como a Starline emite o documento do frete; o fardo guarda a referência |
+| Meu Contador | O serviço contábil precisa de profissional com registro no CRC; o sistema não pode emitir nota em nome de quem não é o vendedor | Atendimento por contador registrado; o sistema organiza e registra, não emite por terceiros (seção 7A.4) |
+| Certificado digital A1 da loja | Vazamento permite emitir nota em nome da loja | Só com `encryptSecret`, nunca exposto, acesso auditado (seção 7A.2) |
 | Crédito do Club | Crédito que vira dinheiro ou se transfere pode ser tratado como arranjo de pagamento | Crédito não sacável, não transferível, com vencimento e só como desconto (seção 7.2) |
 | Benefícios entre empresas do mesmo dono | Tratamento fiscal do desconto pago por outra empresa | O sistema só registra o acerto (seção 7.7); a forma é do contador |
 | Promoções | Sorteio e concurso exigem autorização | Só benefício direto |
@@ -426,6 +514,11 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 | 7 | Endereço do Club | `/club` dentro da Brás até haver domínio |
 | 8 | Mega Tron entra como importadora da Brás, fornecedor do SuperDrop ou os dois | Os dois, com o selo "empresa do grupo" |
 | 9 | Guia de excursão: percentual sobre as compras dos passageiros | 2% em crédito do Club, rascunho |
+| 10 | Qual é o sistema emissor do Nota Fácil (provedor e acesso à API) | Cadastro, promoção e link na primeira entrega; integração quando houver o acesso |
+| 11 | Promoção de novos lojistas do Nota Fácil (o que ganha e por quanto tempo) | 30 notas grátis no primeiro mês, rascunho |
+| 12 | Meu Contador: preço, prazo em horas e horário de atendimento | Preço em rascunho, prazo de 4 horas, atendimento de segunda a sábado das 8h às 20h |
+| 13 | Quem atende o Meu Contador (equipe própria ou escritório parceiro) | Escritório parceiro com registro no CRC, acesso só à fila |
+| 14 | Números e validade das autorizações da Starline | Cadastrar na E0 com os documentos que o dono enviar |
 
 ---
 
@@ -433,14 +526,16 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 
 | Fase | Entrega | Depende de |
 |---|---|---|
-| **E0** | Decisões (D112+), modalidade `ONIBUS_EXCURSAO`, `operation`, cadastro da **Starline** como primeira transportadora (excursão), regras `excursion` no Master, empresas do grupo cadastradas | — |
+| **E0** | Decisões (D112+), modalidade `ONIBUS_EXCURSAO`, `operation`, cadastro da **Starline** como primeira transportadora (excursão) com as autorizações dela, regras `excursion` no Master, empresas do grupo cadastradas | — |
 | **E1** | Rotas, viagens e fardos; painel do dono do ônibus em modo app (Viagem, Chamadas, Coleta, Entrega, Rotas e preços); link do ajudante; etiqueta com QR | E0 |
 | **E2** | Lado do lojista: conta `CLUB_MEMBER` mínima, achar ônibus por cidade, reservar, rastrear, "o meu ônibus não está aqui" com assumir perfil | E1 |
 | **E3** | "Entregar no ônibus" nos pedidos da Brás e da Mega Tron; balcão da loja com bipe e foto | E1, E2 |
-| **E4** | Pagamento do frete por Pix na conta do dono do ônibus (MP conferido, idempotente); fatura mensal da taxa | E2, revisão da seção 12 para ligar |
-| **E5** | Club: identidade, ligação de contas, razão do crédito, níveis, cartão QR, validação no balcão | E2 |
-| **E6** | Motor de benefícios, benefícios cruzados do grupo, guia de excursão (parceiro), acerto entre empresas | E5 |
-| **E7** | Mapa de demanda, páginas públicas (Club e Excursão) com ativos reais, relatório final | E1 a E6 |
+| **E4** | **Nota em dia:** nota no fardo (chave conferida), regra "sem nota não embarca", convite à loja, **Meu Contador** (chamado urgente pago, fila com contagem regressiva, papel do contador), autorizações do ônibus com selo | E3 |
+| **E5** | Pagamento do frete por Pix na conta do dono do ônibus (MP conferido, idempotente); fatura mensal da taxa | E2 |
+| **E6** | **Nota Fácil:** configuração fiscal da loja, emissão integrada (adaptador do provedor), promoção de novos lojistas | E4 e o acesso ao emissor (pergunta 10) |
+| **E7** | Club: identidade, ligação de contas, razão do crédito, níveis, cartão QR, validação no balcão | E2 |
+| **E8** | Motor de benefícios, benefícios cruzados do grupo (incluindo o convite à loja), guia de excursão (parceiro), acerto entre empresas | E7 |
+| **E9** | Mapa de demanda, páginas públicas (Club, Excursão e Nota Fácil) com ativos reais, relatório final | E1 a E8 |
 
 ---
 
@@ -464,6 +559,8 @@ Por serem empresas do mesmo dono, o formato do acerto (nota de serviço de marke
 - Dono do ônibus: **"Fardinho é lucro: tabela por tamanho, sem pechincha."**
 - Club: **"O que você compra aqui vira desconto ali."**
 - Club: **"Comprou na Mega Tron, ganhou crédito para o frete. Mandou pelo ônibus, ganhou crédito para a próxima compra."**
+- Loja: **"Seu cliente está esperando a nota. Emita em 2 minutos, com notas grátis no primeiro mês."**
+- Lojista: **"Ficou sem nota? O Meu Contador resolve em algumas horas, antes do ônibus sair."** (só com o prazo real do Master)
 - Proibido: "frete grátis para sempre", "lucre R$ X", "carga garantida", número de clientes que não existe.
 
 ---
