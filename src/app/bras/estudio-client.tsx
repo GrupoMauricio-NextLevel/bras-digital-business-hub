@@ -15,7 +15,7 @@ import { quando } from "@/lib/bras/quando";
 import { formatBRL } from "@/lib/money";
 import { BRAS_LEVELS, BRAS_LEVEL_LABEL, BRAS_MOMENT_LABEL, type BrasClientLevel, type BrasMoment } from "@/lib/bras/perfil-perguntas";
 import { BRAS_PLAN_LABEL, type BrasMemberPlan } from "@/lib/bras/planos";
-import { OfferEditor } from "./catalogo-client";
+import { OfferEditor, type OfferProduct } from "./catalogo-client";
 
 import type { DiscoveryRow } from "./descoberta-editor";
 import { DiscoveryEditor } from "./descoberta-editor";
@@ -53,10 +53,10 @@ function Agenda({ v, onRun, pending }: { v: VideoRow; onRun: (fn: () => Promise<
   );
 }
 
-type OfferRow = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
+type OfferRow = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null; productId?: string | null };
 type ImporterRow = { id: string; name: string; notes: string | null; active: boolean };
 
-export function VideosManager({ videos, offers, importers, stats = {}, baseUrl, now }: { videos: VideoRow[]; offers: Record<string, OfferRow>; importers: ImporterRow[]; stats?: Record<string, { signups: number; requests: number }>; baseUrl: string; now: string }) {
+export function VideosManager({ videos, offers, importers, products = [], stats = {}, baseUrl, now }: { videos: VideoRow[]; offers: Record<string, OfferRow>; importers: ImporterRow[]; products?: OfferProduct[]; stats?: Record<string, { signups: number; requests: number }>; baseUrl: string; now: string }) {
   const router = useRouter();
   const [f, setF] = React.useState({ url: "", title: "", summary: "" });
   const [pending, start] = React.useTransition();
@@ -105,7 +105,7 @@ export function VideosManager({ videos, offers, importers, stats = {}, baseUrl, 
               </div>
               <Agenda v={v} onRun={run} pending={pending} />
               <DiscoveryEditor videoId={v.id} title={v.title} shortsId={v.youtubeId} d={v.discovery} />
-              <OfferEditor videoId={v.id} title={v.title} offer={offers[v.id] ?? null} importers={importers} />
+              <OfferEditor videoId={v.id} title={v.title} offer={offers[v.id] ?? null} importers={importers} products={products} />
             </li>
           ))}
         </ol>

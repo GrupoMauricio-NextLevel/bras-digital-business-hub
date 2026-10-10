@@ -151,6 +151,19 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     ],
     quick: [],
   },
+  // Painel da importadora parceira da Brás (D110): login próprio, só a própria importadora.
+  BRAS_IMPORTER: {
+    base: "/importadora",
+    label: "Importadora Brás Digital",
+    items: [
+      { label: "Hoje", href: "/importadora", icon: "Home", exact: true, group: "Operação", bottom: true },
+      { label: "Pedidos", href: "/importadora/pedidos", icon: "Inbox", group: "Operação", bottom: true },
+      { label: "Produtos e caixas", href: "/importadora/produtos", icon: "Package", group: "Catálogo", bottom: true },
+      { label: "Estoque", href: "/importadora/estoque", icon: "Boxes", group: "Catálogo" },
+      { label: "Galpões, equipe e ficha", href: "/importadora/galpoes", icon: "Factory", group: "Conta" },
+    ],
+    quick: [],
+  },
   AFFILIATE: {
     base: "/partner",
     label: "Parceiro",

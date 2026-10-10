@@ -853,3 +853,42 @@ O dono viu o login da NextLevel Cargas com a foto de moda da Commerce e o convit
   - agora o SuperDrop usa a arte dele (`public/og/superdrop.png`) e a Brás a dela;
   - as outras marcas usam um cartão gerado com o nome, a frase e a cor da marca (`/og/<marca>.png`).
 - Testes: `tests/login-marca.test.ts`.
+
+## D110 — Brás v2 fase 1: Importadora 360 e painel da importadora com login (2026-10-10)
+Pedido do dono no prompt v2: "o ponto de vista de cada importadora" (seções 4 a 6). D106 tinha resolvido a importadora sem conta (link do Balcão); agora ela ganha login próprio, e o link do Balcão continua como atalho de balcão e motorista.
+- **Papel e acesso:**
+  - novo papel `BRAS_IMPORTER`, com área `/importadora` na cor da Brás;
+  - a pessoa fica ligada a uma importadora por `bd_importer_users`, com função de equipe: dono, comercial, estoque, balcão ou financeiro. A matriz `brasStaffCan` decide o que cada função faz;
+  - o Master cria o login com senha provisória, trocada no primeiro acesso (mesmo padrão da equipe da loja);
+  - o dono da importadora convida a própria equipe, mas não outro dono;
+  - o Actor não mudou e as outras marcas não foram tocadas: o papel novo só aparece no menu, no login e no prefixo de painel.
+- **Fronteira (D92 mantida):**
+  - a importadora vê do pedido só `brasShippingView` (o que retirar e para onde enviar);
+  - nunca vê CNPJ, e-mail, WhatsApp, empresa do comprador, preço, total, observação nem o código de retirada. Ela confere o código que o motorista apresenta;
+  - isolamento entre importadoras testado.
+- **Produtos de caixa fechada** (`bd_products`):
+  - SKU único por importadora, unidades por caixa, medidas (cubagem calculada), peso e mínimo de caixas;
+  - faixas de preço por quantidade: a primeira começa em 1 caixa, e quem compra mais nunca paga mais caro por caixa;
+  - situação: rascunho, à venda, esgotado ou em alto mar.
+- **Estoque em caixas:**
+  - saldo em `bd_products.stock_boxes`, com trava no banco (`>= 0`) e movimentos em `bd_stock_movements`;
+  - um só caminho para mexer no saldo (`applyStockDelta`), com baixa condicional ("só baixa se ainda houver");
+  - na disputa pela última caixa, uma confirmação ganha e a outra recebe "Sem caixas" (testado com concorrência);
+  - lançamentos de entrada, saída, ajuste (com motivo) e contagem;
+  - planilha de produtos e estoque com modelo em português, prévia linha a linha e gravação só depois da confirmação.
+- **Pedido com produto ligado:**
+  - o Master liga a oferta da descoberta a um produto da mesma importadora;
+  - o membro passa a ver o saldo real enquanto o estoque estiver em dia (regra `stock.freshnessHours`); depois aparece "consultar";
+  - a confirmação pela equipe baixa as caixas na mesma transação e, sem caixas, não confirma;
+  - cancelar depois disso devolve as caixas.
+- **Painel da importadora:**
+  - Hoje: conferir caixas, separar, entregar com o código, avisos de galpão, de produtos e de estoque velho, e produtos esgotando;
+  - Pedidos, Produtos e caixas, Estoque, e Galpões, equipe e ficha;
+  - pensado para o celular, com botões grandes.
+- **Importadora 360 no Estúdio:**
+  - ficha completa (CNPJ conferido, edição auditada; plano e modo de estoque só pelo Master);
+  - saúde de 0 a 100, explicável, com 6 fatores, peso e "como melhorar", em função pura e reproduzível;
+  - vendas pagas e comissão congelada em 12 meses (gráfico de uma série, com tabela);
+  - oportunidades com premissa, acesso ao painel, galpões, produtos e estoque (onboarding assistido).
+- **Bling:** continua para a F7. O modo "Bling" fica bloqueado até as credenciais do aplicativo da NextLevel.
+- Testes: `tests/bras-importadora.test.ts` (12) e e2e `bras-portal` passo 7. Migração `0049_bras_importadora_painel`.

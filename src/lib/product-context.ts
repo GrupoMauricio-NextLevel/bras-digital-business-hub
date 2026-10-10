@@ -30,7 +30,7 @@ export const PRODUCT_CONTEXTS: Record<ProductContextKey, ProductContext> = {
 /** Contexto de produto do painel: vem da MARCA (e, no Master, do módulo aberto), nunca de um padrão fixo. */
 export function productContextForPath(pathname: string, panel?: string, brandCode?: string): ProductContext {
   if (pathname.startsWith("/commerce")) return PRODUCT_CONTEXTS.commerce;
-  if (pathname === "/bras" || pathname.startsWith("/bras/") || pathname.startsWith("/meu-bras")) return PRODUCT_CONTEXTS.bras;
+  if (pathname === "/bras" || pathname.startsWith("/bras/") || pathname.startsWith("/meu-bras") || pathname.startsWith("/importadora")) return PRODUCT_CONTEXTS.bras;
   if (pathname.startsWith("/master") || panel === "master") return PRODUCT_CONTEXTS.master;
   switch (brandCode) {
     case "NEXTLEVEL_COMMERCE": return PRODUCT_CONTEXTS.commerce;

@@ -440,6 +440,71 @@ ok("bloqueio pelo Master");
 }
 ok("fronteira entre marcas");
 
+// 7. Importadora 360 e painel da importadora com login (D110): Master cria o acesso; a importadora troca a senha,
+//    cadastra galpão e produto, lança estoque e vê o pedido só pelo envio (nada do comprador).
+{
+  const { c, p } = await page(1440);
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/bras/importadoras", { waitUntil: "networkidle" });
+  await p.getByRole("link", { name: "Importadora 360" }).first().click();
+  await p.waitForURL(/\/bras\/importadoras\/bdi_/); await p.waitForLoadState("networkidle");
+  if (!(await p.getByRole("heading", { name: "Saúde", exact: true }).isVisible())) fail("360: saúde ausente");
+  if (!(await p.getByText("Criar o acesso da importadora").first().isVisible())) fail("360: oportunidade de acesso ausente");
+  await check(p, "importadora 360", 1440);
+  await shot(p, `${OUT}/16-importadora-360-1440.png`);
+  const ac = p.getByRole("form", { name: "Criar acesso" });
+  await ac.getByLabel("Nome").fill("Seu Jorge"); await ac.getByLabel("E-mail").fill("jorge@piloto.teste"); await ac.getByLabel("Senha provisória").fill("provisoria-123");
+  await ac.getByRole("button", { name: "Criar acesso" }).click();
+  await p.getByText("jorge@piloto.teste").waitFor({ timeout: 30000 });
+  await c.close();
+}
+{
+  const { c, p } = await page(390);
+  await p.goto(BRAS + "/login", { waitUntil: "networkidle" });
+  await p.getByLabel("E-mail").fill("jorge@piloto.teste"); await p.getByLabel("Senha").fill("provisoria-123");
+  await p.getByRole("button", { name: /^Entrar/ }).click();
+  await p.waitForURL(/\/account\/password/, { timeout: 60000 });
+  await p.getByLabel("Nova senha", { exact: true }).fill("senha-da-xdx-1"); await p.getByLabel("Confirmar nova senha").fill("senha-da-xdx-1");
+  await p.getByRole("button", { name: "Salvar senha" }).click();
+  await p.waitForURL(/\/importadora/, { timeout: 60000 }); await p.waitForLoadState("networkidle");
+  if (!(await p.getByRole("heading", { name: /Hoje na Importadora Piloto/ }).isVisible())) fail("importadora: Hoje ausente");
+  await check(p, "importadora hoje", 390);
+  await shot(p, `${OUT}/17-importadora-hoje-390.png`);
+  await p.goto(BRAS + "/importadora/galpoes", { waitUntil: "networkidle" });
+  const g = p.getByRole("form", { name: "Novo galpão" });
+  await g.getByLabel("Nome").fill("Galpão Oriente"); await g.getByLabel("Endereço de retirada").fill("Rua Oriente, 500, Brás, São Paulo/SP"); await g.getByLabel("Horário de retirada").fill("Seg a sex, 8h às 17h");
+  await g.getByRole("button", { name: "Cadastrar galpão" }).click();
+  await p.getByText("Rua Oriente, 500, Brás, São Paulo/SP").first().waitFor({ timeout: 30000 });
+  await check(p, "importadora galpões", 390);
+  await p.goto(BRAS + "/importadora/produtos", { waitUntil: "networkidle" });
+  const pf = p.getByRole("form", { name: "Novo produto" });
+  await pf.getByLabel("Código (SKU)").fill("PT-5"); await pf.getByLabel("Produto").fill("Kit 5 potes herméticos de vidro"); await pf.getByLabel("Unidades por caixa").fill("12");
+  await pf.getByLabel("Comprimento (cm)").fill("40"); await pf.getByLabel("Largura (cm)").fill("30"); await pf.getByLabel("Altura (cm)").fill("25");
+  if (!/30 L/.test(await pf.innerText())) fail("produto: cubagem não calculada");
+  await pf.getByLabel("Preço da caixa").fill("1.890,00");
+  await pf.getByRole("button", { name: "Cadastrar produto" }).click();
+  await p.getByText("PT-5 · 12 un. por caixa").first().waitFor({ timeout: 30000 });
+  await check(p, "importadora produtos", 390);
+  await shot(p, `${OUT}/18-importadora-produtos-390.png`);
+  await p.goto(BRAS + "/importadora/estoque", { waitUntil: "networkidle" });
+  const mv = p.getByRole("form", { name: "Lançar estoque de Kit 5 potes herméticos de vidro" });
+  await mv.getByLabel("Caixas").fill("10"); await mv.getByRole("button", { name: "Lançar" }).click();
+  await p.getByText("Saldo: 10 caixa(s)").waitFor({ timeout: 30000 });
+  await check(p, "importadora estoque", 390);
+  await shot(p, `${OUT}/19-importadora-estoque-390.png`);
+  await p.goto(BRAS + "/importadora/pedidos?ver=todos", { waitUntil: "networkidle" });
+  const ped = (await p.locator("main").innerText()).replace(/\u00a0/g, " ");
+  if (!/Pedido 1001/.test(ped)) fail("importadora: pedido 1001 não aparece");
+  if (/Ana Utilidades|ana@utilidades|11\.222\.333|R\$ 3\.780/.test(ped)) fail("importadora: dado do comprador ou valor vazou");
+  await check(p, "importadora pedidos", 390);
+  // Isolamento: a importadora não abre o Estúdio nem o Meu Brás.
+  await p.goto(BRAS + "/bras", { waitUntil: "networkidle" }); if (/\/bras(\/|$)/.test(new URL(p.url()).pathname) && !/\/importadora/.test(p.url())) fail("importadora abriu o Estúdio");
+  await c.close();
+}
+ok("importadora 360 e painel da importadora");
+
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
 console.log(`\nTudo certo. Capturas em ${OUT}`);

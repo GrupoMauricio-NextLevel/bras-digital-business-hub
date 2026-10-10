@@ -2,7 +2,9 @@ import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, bdImporters, bdMembers, bdOffers, bdRequests, bdVideos, users, type BrasAnalysis } from "@/db/schema";
+import { activities, bdImporters, bdMembers, bdOffers, bdProducts, bdRequests, bdStockMovements, bdVideos, users, type BrasAnalysis } from "@/db/schema";
+import { applyStockDelta, brasEffectiveBoxes } from "./estoque";
+import { getBrasRules } from "./regras";
 import { brasMarginRange, type BrasLevel } from "./descobertas";
 import { newId } from "@/lib/ids";
 import { requireMaster, type Actor } from "../access";
@@ -62,8 +64,10 @@ export const brasOfferSchema = z.object({
   importerId: z.string().min(1, "Escolha a importadora"),
   priceBoxCents: z.number().int().min(100, "Informe o preço da caixa").max(100_000_000),
   unitsPerBox: z.number().int().min(1, "Informe quantas unidades vêm na caixa").max(100_000),
-  /** Caixas disponíveis (informativo). Vazio = "consultar a equipe". */
+  /** Caixas disponíveis (informativo). Vazio = "consultar a equipe". Com produto ligado, vale o estoque do produto. */
   boxesAvailable: z.number().int().min(0).max(1_000_000).nullable(),
+  /** Produto de caixa fechada da mesma importadora (D110). Vazio = sem ligação. */
+  productId: z.string().nullable().optional(),
 });
 
 export async function setBrasOffer(db: Database, actor: Actor, videoId: string, raw: z.input<typeof brasOfferSchema>) {
@@ -73,8 +77,9 @@ export async function setBrasOffer(db: Database, actor: Actor, videoId: string, 
   if (!video) throw new NotFoundError("Vídeo não encontrado.");
   const imp = await db.query.bdImporters.findFirst({ where: eq(bdImporters.id, input.importerId) });
   if (!imp || !imp.active) throw new DomainError("IMPORTER", "Escolha uma importadora ativa.");
+  if (input.productId && !(await db.query.bdProducts.findFirst({ where: and(eq(bdProducts.id, input.productId), eq(bdProducts.importerId, input.importerId)), columns: { id: true } }))) throw new DomainError("PRODUCT", "O produto ligado precisa ser da mesma importadora.");
   const before = await db.query.bdOffers.findFirst({ where: eq(bdOffers.videoId, videoId) });
-  const values = { importerId: input.importerId, priceBoxCents: input.priceBoxCents, unitsPerBox: input.unitsPerBox, boxesAvailable: input.boxesAvailable, updatedAt: new Date().toISOString(), updatedBy: actor.userId };
+  const values = { importerId: input.importerId, priceBoxCents: input.priceBoxCents, unitsPerBox: input.unitsPerBox, boxesAvailable: input.boxesAvailable, productId: input.productId ?? null, updatedAt: new Date().toISOString(), updatedBy: actor.userId };
   if (before) await db.update(bdOffers).set(values).where(eq(bdOffers.id, before.id));
   else await db.insert(bdOffers).values({ id: newId("bdo"), videoId, ...values });
   await recordAudit(db, actor, { action: "BRAS_OFFER_SAVED", entityType: "bd_offer", entityId: videoId, before: before ? { importerId: before.importerId, priceBoxCents: before.priceBoxCents, unitsPerBox: before.unitsPerBox, boxesAvailable: before.boxesAvailable } : undefined, after: { importerId: input.importerId, priceBoxCents: input.priceBoxCents, unitsPerBox: input.unitsPerBox, boxesAvailable: input.boxesAvailable } }, { force: !before });
@@ -114,12 +119,15 @@ export async function listBrasFeed(db: Database, level: BrasLevel, limit = 60, n
   const vids = await db.select().from(bdVideos).where(brasPublishedWhere(now)).orderBy(asc(bdVideos.position), asc(bdVideos.createdAt)).limit(limit);
   const pub = (v: typeof vids[number]): BrasFeedItem => ({ id: v.id, youtubeId: v.youtubeId, title: v.title, summary: v.summary, trendSignal: v.trendSignal, member: null, offer: null, analysis: null });
   if (level === "VISITOR" || !vids.length) return vids.map(pub);
-  const offers = await db.select({ videoId: bdOffers.videoId, priceBoxCents: bdOffers.priceBoxCents, unitsPerBox: bdOffers.unitsPerBox, boxesAvailable: bdOffers.boxesAvailable, importerActive: bdImporters.active })
-    .from(bdOffers).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId)).where(inArray(bdOffers.videoId, vids.map((v) => v.id)));
+  const offers = await db.select({ videoId: bdOffers.videoId, priceBoxCents: bdOffers.priceBoxCents, unitsPerBox: bdOffers.unitsPerBox, boxesAvailable: bdOffers.boxesAvailable, importerActive: bdImporters.active, stockBoxes: bdProducts.stockBoxes, stockUpdatedAt: bdProducts.stockUpdatedAt, productStatus: bdProducts.status })
+    .from(bdOffers).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId)).leftJoin(bdProducts, eq(bdProducts.id, bdOffers.productId)).where(inArray(bdOffers.videoId, vids.map((v) => v.id)));
   const by = new Map(offers.filter((o) => o.importerActive).map((o) => [o.videoId, o]));
+  // Produto ligado (D110): o saldo vem do estoque da importadora; velho demais vira "consultar".
+  const fresh = (await getBrasRules(db)).stock.freshnessHours;
   return vids.map((v) => {
     const o = by.get(v.id);
-    const offer = o ? { priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: o.boxesAvailable } : null;
+    const product = o && o.productStatus ? { stockBoxes: o.stockBoxes ?? 0, stockUpdatedAt: o.stockUpdatedAt ? new Date(o.stockUpdatedAt).toISOString() : null, status: o.productStatus } : null;
+    const offer = o ? { priceBoxCents: o.priceBoxCents, unitsPerBox: o.unitsPerBox, boxesAvailable: brasEffectiveBoxes(o.boxesAvailable, product, fresh, now) } : null;
     return {
       ...pub(v),
       member: { verdict: v.verdict, score: v.score, teaserYoutubeId: v.teaserYoutubeId, hasAnalysis: !!(v.analysisYoutubeId || v.analysis) },
@@ -176,15 +184,17 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
     .innerJoin(bdOffers, eq(bdOffers.videoId, bdVideos.id)).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId))
     .where(eq(bdVideos.id, input.videoId)).limit(1);
   if (!row || !row.video.active || (row.video.publishAt && new Date(row.video.publishAt) > new Date()) || !row.importer.active) throw new DomainError("OFFER", "Este produto não está disponível para pedido agora.");
-  // Conferência informativa (sem trava de concorrência, D92): a equipe confirma as caixas antes do pagamento.
-  if (row.offer.boxesAvailable !== null && input.boxes > row.offer.boxesAvailable) throw new DomainError("BOXES", row.offer.boxesAvailable === 0 ? "Este produto está sem caixas disponíveis no momento." : `Disponível agora: ${row.offer.boxesAvailable} caixa(s).`);
+  // Conferência na hora do pedido; a baixa de verdade (atômica) é na confirmação pela equipe (D110).
+  const prod = row.offer.productId ? await db.query.bdProducts.findFirst({ where: eq(bdProducts.id, row.offer.productId) }) : null;
+  const boxesNow = brasEffectiveBoxes(row.offer.boxesAvailable, prod ? { stockBoxes: prod.stockBoxes, stockUpdatedAt: prod.stockUpdatedAt ? new Date(prod.stockUpdatedAt).toISOString() : null, status: prod.status } : null, (await getBrasRules(db)).stock.freshnessHours);
+  if (boxesNow !== null && input.boxes > boxesNow) throw new DomainError("BOXES", boxesNow === 0 ? "Este produto está sem caixas disponíveis no momento." : `Disponível agora: ${boxesNow} caixa(s).`);
   const id = newId("bdr");
   const totalCents = row.offer.priceBoxCents * input.boxes;
   await db.transaction(async (tx) => {
     const [{ n }] = await tx.select({ n: sql<number>`coalesce(max(${bdRequests.number}), 1000) + 1` }).from(bdRequests) as [{ n: number }];
     await tx.insert(bdRequests).values({
       id, number: Number(n), memberId: m.id, videoId: row.video.id, importerId: row.importer.id,
-      productTitle: row.video.title, importerName: row.importer.name, boxes: input.boxes, unitsPerBox: row.offer.unitsPerBox, priceBoxCents: row.offer.priceBoxCents, totalCents,
+      productTitle: row.video.title, importerName: row.importer.name, productId: prod?.id ?? null, boxes: input.boxes, unitsPerBox: row.offer.unitsPerBox, priceBoxCents: row.offer.priceBoxCents, totalCents,
       carrier: input.carrier, shipName: input.shipName, shipAddress: input.shipAddress, shipCity: input.shipCity, shipState: input.shipState, shipZip: input.shipZip, notes: input.notes || null,
     });
     // Aviso no sino do Master (sem dado pessoal na mensagem).
@@ -228,14 +238,25 @@ export async function setBrasRequestStatus(db: Database, actor: Actor, id: strin
   const extra: Partial<typeof bdRequests.$inferInsert> = {};
   if (status === "CONFIRMED" && !r.pickupCode) extra.pickupCode = newPickupCode();
   if (status === "PAID") { extra.paidAt = agora; extra.commissionBps = await brasCommissionBpsFor(db, r.importerId); }
+  if (status === "PICKED_UP") extra.pickedUpAt = agora;
+  // Estoque do produto ligado (D110): confirmar baixa as caixas (só se houver); cancelar depois de baixado devolve.
+  const vendido = r.productId ? await db.query.bdStockMovements.findFirst({ where: and(eq(bdStockMovements.requestId, r.id), eq(bdStockMovements.kind, "VENDA")), columns: { id: true } }) : null;
+  const estornado = r.productId ? await db.query.bdStockMovements.findFirst({ where: and(eq(bdStockMovements.requestId, r.id), eq(bdStockMovements.kind, "ESTORNO")), columns: { id: true } }) : null;
+  const baixa = status === "CONFIRMED" && r.productId && !vendido;
+  const devolve = status === "CANCELED" && r.productId && vendido && !estornado;
   let upd: { id: string }[] = [];
   for (let tentativa = 0; tentativa < 5; tentativa++) {
     try {
-      upd = await db.update(bdRequests).set({ status, updatedAt: agora, ...extra }).where(and(eq(bdRequests.id, id), eq(bdRequests.status, r.status))).returning({ id: bdRequests.id });
+      upd = await db.transaction(async (tx) => {
+        const u = await tx.update(bdRequests).set({ status, updatedAt: agora, ...extra }).where(and(eq(bdRequests.id, id), eq(bdRequests.status, r.status))).returning({ id: bdRequests.id });
+        if (u.length && baixa) await applyStockDelta(tx, { productId: r.productId!, importerId: r.importerId, delta: -r.boxes, kind: "VENDA", source: "PEDIDO", requestId: r.id, actorUserId: actor.userId, note: `Pedido ${r.number}` });
+        if (u.length && devolve) await applyStockDelta(tx, { productId: r.productId!, importerId: r.importerId, delta: r.boxes, kind: "ESTORNO", source: "PEDIDO", requestId: r.id, actorUserId: actor.userId, note: `Pedido ${r.number} cancelado` });
+        return u;
+      });
       break;
     } catch (e) {
-      // Colisão rara do código de retirada: sorteia outro.
-      if (!extra.pickupCode || tentativa === 4) throw e;
+      // Sem caixas: a confirmação não acontece (mensagem clara). Colisão rara do código de retirada: sorteia outro.
+      if (e instanceof DomainError || !extra.pickupCode || tentativa === 4) throw e;
       extra.pickupCode = newPickupCode();
     }
   }

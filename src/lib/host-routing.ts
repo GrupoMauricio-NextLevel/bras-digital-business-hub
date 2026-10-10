@@ -5,7 +5,7 @@ import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
  * (o "escritório": login, Master, fornecedor, lojista, afiliado). Esta função pura decide o que fazer com uma requisição.
  * Sem `officeUrl` na marca (padrão) nada muda: os painéis ficam no endereço público. Só `/loja/<nome>` vira apelido da vitrine.
  */
-export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
+export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
 export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/quero-minha-loja", "/termos", "/privacidade"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));

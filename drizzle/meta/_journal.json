@@ -344,6 +344,13 @@
       "when": 1791555919777,
       "tag": "0048_bras_v2_perfil_suporte_pauta",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1791590316330,
+      "tag": "0049_bras_importadora_painel",
+      "breakpoints": true
     }
   ]
 }

@@ -66,7 +66,8 @@ export async function balcaoConfirmPickup(db: Database, token: string, requestId
   if (!r) throw new NotFoundError("Pedido não encontrado.");
   if (r.status !== "PAID") throw new DomainError("NOT_PAID", "Este pedido ainda não está pago: a retirada só é liberada depois do pagamento.");
   if (!r.pickupCode || code.trim().toUpperCase().replace(/\s/g, "") !== r.pickupCode) throw new DomainError("CODE", "Código de retirada não confere. Peça ao motorista o código do comprovante.");
-  const upd = await db.update(bdRequests).set({ status: "PICKED_UP", updatedAt: new Date().toISOString() }).where(and(eq(bdRequests.id, r.id), eq(bdRequests.status, "PAID"))).returning({ id: bdRequests.id });
+  const agora = new Date().toISOString();
+  const upd = await db.update(bdRequests).set({ status: "PICKED_UP", pickedUpAt: agora, updatedAt: agora }).where(and(eq(bdRequests.id, r.id), eq(bdRequests.status, "PAID"))).returning({ id: bdRequests.id });
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou. Atualize a página.");
   await db.insert(auditLog).values({ id: newId("aud"), actorUserId: null, actorRole: "BRAS_BALCAO", action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: r.id, changes: { status: { from: "PAID", to: "PICKED_UP" }, importerId: { to: imp.id } } });
   await notifyBrasRequestStatus(db, r.id, "PICKED_UP");

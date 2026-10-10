@@ -99,8 +99,9 @@ export function ImportersManager({ importers, defaultBps = 0, balcao = false }: 
         <ul className="space-y-2">
           {importers.map((i) => (
             <li key={i.id} className="ds-card flex flex-wrap items-center gap-3 p-3">
-              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 font-semibold">{i.name}{i.active ? <Badge tone="success">Ativa</Badge> : <Badge>Pausada</Badge>}</p>{i.notes ? <p className="text-sm text-muted-foreground">{i.notes}</p> : null}</div>
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 font-semibold"><a href={`/bras/importadoras/${i.id}`} className="underline-offset-2 hover:underline">{i.name}</a>{i.active ? <Badge tone="success">Ativa</Badge> : <Badge>Pausada</Badge>}</p>{i.notes ? <p className="text-sm text-muted-foreground">{i.notes}</p> : null}</div>
               <Button size="sm" variant="secondary" disabled={pending} onClick={() => toggle(i)}>{i.active ? "Pausar" : "Reativar"}</Button>
+              <a href={`/bras/importadoras/${i.id}`} className="ds-btn ds-btn--sm">Importadora 360</a>
               <ImporterDetails i={i} defaultBps={defaultBps} />
               {balcao ? <BalcaoLink i={i} /> : null}
             </li>
@@ -111,19 +112,22 @@ export function ImportersManager({ importers, defaultBps = 0, balcao = false }: 
   );
 }
 
-type Offer = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null };
+type Offer = { importerId: string; priceBoxCents: number; unitsPerBox: number; boxesAvailable: number | null; productId?: string | null };
+/** Produto de caixa fechada da importadora (D110), para ligar à oferta. */
+export type OfferProduct = { id: string; importerId: string; title: string; sku: string; stockBoxes: number; priceBoxCents: number; unitsPerBox: number };
 
 /** Preço da caixa, unidades e caixas disponíveis de um vídeo. Só o membro ativo vê; o público nunca. */
-export function OfferEditor({ videoId, title, offer, importers }: { videoId: string; title: string; offer: Offer | null; importers: Importer[] }) {
+export function OfferEditor({ videoId, title, offer, importers, products = [] }: { videoId: string; title: string; offer: Offer | null; importers: Importer[]; products?: OfferProduct[] }) {
   const router = useRouter();
   const active = importers.filter((i) => i.active || i.id === offer?.importerId);
   const [open, setOpen] = React.useState(false);
-  const [f, setF] = React.useState({ importerId: offer?.importerId ?? active[0]?.id ?? "", priceBoxCents: offer?.priceBoxCents ?? 0, unitsPerBox: offer?.unitsPerBox ?? 0, boxes: offer?.boxesAvailable == null ? "" : String(offer.boxesAvailable) });
+  const [f, setF] = React.useState({ importerId: offer?.importerId ?? active[0]?.id ?? "", priceBoxCents: offer?.priceBoxCents ?? 0, unitsPerBox: offer?.unitsPerBox ?? 0, boxes: offer?.boxesAvailable == null ? "" : String(offer.boxesAvailable), productId: offer?.productId ?? "" });
+  const doImp = products.filter((p) => p.importerId === f.importerId);
   const [pending, start] = React.useTransition();
   const save = (e: React.FormEvent) => {
     e.preventDefault();
     start(async () => {
-      const r = await setBrasOfferAction(videoId, { importerId: f.importerId, priceBoxCents: f.priceBoxCents, unitsPerBox: f.unitsPerBox, boxesAvailable: f.boxes.trim() === "" ? null : Number(f.boxes) });
+      const r = await setBrasOfferAction(videoId, { importerId: f.importerId, priceBoxCents: f.priceBoxCents, unitsPerBox: f.unitsPerBox, boxesAvailable: f.boxes.trim() === "" ? null : Number(f.boxes), productId: f.productId || null });
       if (r.ok) { toast.success("Oferta salva"); setOpen(false); router.refresh(); } else toast.error(r.error);
     });
   };
@@ -132,7 +136,7 @@ export function OfferEditor({ videoId, title, offer, importers }: { videoId: str
     return (
       <div className="flex w-full flex-wrap items-center gap-2 border-t border-border pt-2 text-sm">
         <Tag className="size-4 text-muted-foreground" aria-hidden />
-        {offer ? <span><b className="tabular-nums">{formatBRL(offer.priceBoxCents)}</b> a caixa · {offer.unitsPerBox} un. · {offer.boxesAvailable == null ? "caixas: consultar" : `${offer.boxesAvailable} caixa(s)`} · {importers.find((i) => i.id === offer.importerId)?.name}</span> : <span className="text-muted-foreground">Sem oferta: o membro vê o vídeo, mas não consegue pedir.</span>}
+        {offer ? <span><b className="tabular-nums">{formatBRL(offer.priceBoxCents)}</b> a caixa · {offer.unitsPerBox} un. · {offer.productId ? `estoque do produto: ${products.find((p) => p.id === offer.productId)?.stockBoxes ?? "?"} caixa(s)` : offer.boxesAvailable == null ? "caixas: consultar" : `${offer.boxesAvailable} caixa(s)`} · {importers.find((i) => i.id === offer.importerId)?.name}</span> : <span className="text-muted-foreground">Sem oferta: o membro vê o vídeo, mas não consegue pedir.</span>}
         <Button size="sm" variant="ghost" onClick={() => setOpen(true)} aria-label={`${offer ? "Editar" : "Definir"} oferta de ${title}`}>{offer ? "Editar oferta" : "Definir oferta"}</Button>
         {offer ? <Button size="sm" variant="ghost" disabled={pending} onClick={remove} aria-label={`Remover oferta de ${title}`}>Remover</Button> : null}
       </div>
@@ -141,8 +145,9 @@ export function OfferEditor({ videoId, title, offer, importers }: { videoId: str
   if (!active.length) return <p className="w-full border-t border-border pt-2 text-sm text-muted-foreground">Cadastre uma importadora na aba Importadoras antes de definir a oferta.</p>;
   return (
     <form onSubmit={save} className="grid w-full gap-3 border-t border-border pt-3 sm:grid-cols-2 lg:grid-cols-4" aria-label={`Oferta de ${title}`}>
-      <FormField label="Importadora" htmlFor={`o-imp-${videoId}`}><Select id={`o-imp-${videoId}`} value={f.importerId} onChange={(e) => setF({ ...f, importerId: e.target.value })}>{active.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}</Select></FormField>
-      <MoneyField id={`o-price-${videoId}`} label="Preço da caixa" valueCents={f.priceBoxCents} onChange={(v) => setF({ ...f, priceBoxCents: v })} />
+      <FormField label="Importadora" htmlFor={`o-imp-${videoId}`}><Select id={`o-imp-${videoId}`} value={f.importerId} onChange={(e) => setF({ ...f, importerId: e.target.value, productId: "" })}>{active.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}</Select></FormField>
+      {doImp.length ? <FormField label="Produto da importadora" htmlFor={`o-prod-${videoId}`} hint="Ligado: o membro vê o estoque real e a confirmação baixa as caixas"><Select id={`o-prod-${videoId}`} value={f.productId} onChange={(e) => { const p = doImp.find((x) => x.id === e.target.value); setF({ ...f, productId: e.target.value, ...(p ? { priceBoxCents: p.priceBoxCents, unitsPerBox: p.unitsPerBox } : {}) }); }}><option value="">Sem ligação (caixas à mão)</option>{doImp.map((p) => <option key={p.id} value={p.id}>{p.title} · {p.sku} · {p.stockBoxes} cx</option>)}</Select></FormField> : null}
+      <MoneyField key={`price-${f.productId}`} id={`o-price-${videoId}`} label="Preço da caixa" valueCents={f.priceBoxCents} onChange={(v) => setF({ ...f, priceBoxCents: v })} />
       <FormField label="Unidades por caixa" htmlFor={`o-units-${videoId}`}><Input id={`o-units-${videoId}`} type="number" min={1} required value={f.unitsPerBox || ""} onChange={(e) => setF({ ...f, unitsPerBox: Number(e.target.value) })} /></FormField>
       <FormField label="Caixas disponíveis" htmlFor={`o-boxes-${videoId}`} hint="Vazio = consultar a equipe"><Input id={`o-boxes-${videoId}`} type="number" min={0} value={f.boxes} onChange={(e) => setF({ ...f, boxes: e.target.value })} /></FormField>
       <div className="flex gap-2 sm:col-span-2 lg:col-span-4"><Button type="submit" size="sm" loading={pending}>Salvar oferta</Button><Button type="button" size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button></div>

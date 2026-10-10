@@ -152,7 +152,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER", "BRAS_IMPORTER"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -1695,8 +1695,94 @@ export const bdImporters = pgTable("bd_importers", {
   pickupAddress: text("pickup_address"),
   /** Comissão combinada com a importadora, em pontos-base (500 = 5%). Vazio = padrão `bras.default_commission_bps` (D102). */
   commissionBps: integer("commission_bps"),
+  /** Importadora 360 (D110): identidade, condições comerciais, modo de estoque e plano. Nada disso vai ao membro, salvo o nome fantasia na retirada. */
+  legalName: text("legal_name"),
+  cnpj: text("cnpj"),
+  stateRegistration: text("state_registration"),
+  description: text("description"),
+  categories: jsonb("categories").$type<string[]>().notNull().default([]),
+  origin: text("origin"),
+  contacts: jsonb("contacts").$type<{ name: string; role: string; phone?: string; email?: string; channel?: string }[]>().notNull().default([]),
+  minBoxes: integer("min_boxes"),
+  minOrderCents: integer("min_order_cents"),
+  paymentMethods: jsonb("payment_methods").$type<string[]>().notNull().default([]),
+  prepDays: integer("prep_days"),
+  exchangePolicy: text("exchange_policy"),
+  stockMode: text("stock_mode", { enum: ["MANUAL", "PLANILHA", "BLING"] }).notNull().default("MANUAL"),
+  plan: text("plan", { enum: ["GRATIS", "PRO", "PREMIUM"] }).notNull().default("GRATIS"),
+  organizationId: text("organization_id").references(() => organizations.id),
   createdAt: createdAt(),
 });
+
+/** Pessoas com login no painel da importadora (D110). Função de equipe decide o que cada uma faz. Um usuário, uma importadora. */
+export const BRAS_IMPORTER_STAFF_ROLES = ["DONO", "COMERCIAL", "ESTOQUE", "BALCAO", "FINANCEIRO"] as const;
+export const bdImporterUsers = pgTable("bd_importer_users", {
+  id: id(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  staffRole: text("staff_role", { enum: BRAS_IMPORTER_STAFF_ROLES }).notNull().default("DONO"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_importer_users_importer_idx").on(t.importerId)]);
+
+/** Galpões e pontos de retirada da importadora (D110). Um é o padrão. */
+export const bdWarehouses = pgTable("bd_warehouses", {
+  id: id(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  name: text("name").notNull(),
+  address: text("address").notNull(),
+  hours: text("hours"),
+  rules: text("rules"),
+  contact: text("contact"),
+  isDefault: boolean("is_default").notNull().default(false),
+  active: boolean("active").notNull().default(true),
+  createdAt: createdAt(),
+}, (t) => [index("bd_warehouses_importer_idx").on(t.importerId)]);
+
+/**
+ * Produto de caixa fechada da importadora (D110, seção 6.2 do prompt v2). Estoque contado EM CAIXAS, com saldo
+ * guardado (`stockBoxes`, nunca negativo, baixa condicional) e movimentos em `bd_stock_movements`. Dimensões em mm,
+ * peso em gramas (inteiros); cubagem calculada.
+ */
+export const bdProducts = pgTable("bd_products", {
+  id: id(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  sku: text("sku").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category"),
+  unitsPerBox: integer("units_per_box").notNull(),
+  boxLengthMm: integer("box_length_mm"),
+  boxWidthMm: integer("box_width_mm"),
+  boxHeightMm: integer("box_height_mm"),
+  grossWeightG: integer("gross_weight_g"),
+  /** Faixas de preço por quantidade de caixas, em ordem crescente de mínimo (a primeira começa em 1). */
+  priceTiers: jsonb("price_tiers").$type<{ minBoxes: number; priceBoxCents: number }[]>().notNull(),
+  minBoxes: integer("min_boxes").notNull().default(1),
+  warehouseId: text("warehouse_id").references(() => bdWarehouses.id),
+  ncm: text("ncm"),
+  barcode: text("barcode"),
+  status: text("status", { enum: ["RASCUNHO", "ATIVO", "ESGOTADO", "ALTO_MAR"] }).notNull().default("RASCUNHO"),
+  stockBoxes: integer("stock_boxes").notNull().default(0),
+  stockUpdatedAt: ts("stock_updated_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("bd_products_importer_sku_unique").on(t.importerId, t.sku), index("bd_products_importer_status_idx").on(t.importerId, t.status), check("bd_products_stock_non_negative", sql`${t.stockBoxes} >= 0`)]);
+
+/** Movimentos de estoque em caixas (D110): entrada, saída, ajuste, contagem e vendas. `balanceAfter` é o saldo depois do movimento. */
+export const bdStockMovements = pgTable("bd_stock_movements", {
+  id: id(),
+  productId: text("product_id").notNull().references(() => bdProducts.id),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  kind: text("kind", { enum: ["ENTRADA", "SAIDA", "AJUSTE", "CONTAGEM", "VENDA", "ESTORNO"] }).notNull(),
+  boxes: integer("boxes").notNull(),
+  balanceAfter: integer("balance_after").notNull(),
+  source: text("source", { enum: ["MANUAL", "PLANILHA", "BLING", "PEDIDO"] }).notNull(),
+  note: text("note"),
+  actorUserId: text("actor_user_id"),
+  requestId: text("request_id"),
+  createdAt: createdAt(),
+}, (t) => [index("bd_stock_movements_product_idx").on(t.productId, t.createdAt), index("bd_stock_movements_importer_idx").on(t.importerId, t.createdAt)]);
 
 /** Oferta do vídeo: preço da caixa, unidades e caixas disponíveis (informativo, sem baixa automática). Só membro ativo vê. */
 export const bdOffers = pgTable("bd_offers", {
@@ -1707,6 +1793,8 @@ export const bdOffers = pgTable("bd_offers", {
   unitsPerBox: integer("units_per_box").notNull(),
   /** Null = "consultar a equipe". */
   boxesAvailable: integer("boxes_available"),
+  /** Produto de caixa fechada da importadora (D110): ligado, o estoque mostrado ao membro vem do produto. */
+  productId: text("product_id").references(() => bdProducts.id),
   updatedAt: updatedAt(),
   updatedBy: text("updated_by"),
 });
@@ -1741,6 +1829,12 @@ export const bdRequests = pgTable("bd_requests", {
   commissionBps: integer("commission_bps"),
   /** Código de retirada (D103), gerado na confirmação: o motorista apresenta na importadora. */
   pickupCode: text("pickup_code").unique(),
+  /** Painel da importadora (D110): disponibilidade conferida e caixas separadas. */
+  availabilityConfirmedAt: ts("availability_confirmed_at"),
+  separatedAt: ts("separated_at"),
+  pickedUpAt: ts("picked_up_at"),
+  /** Produto de caixa fechada da oferta no momento do pedido (D110): a confirmação baixa o estoque dele. */
+  productId: text("product_id"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("bd_requests_member_idx").on(t.memberId, t.createdAt), index("bd_requests_status_idx").on(t.status, t.createdAt), index("bd_requests_importer_paid_idx").on(t.importerId, t.paidAt)]);
