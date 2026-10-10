@@ -1,4 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { syncLoadCollected } from "../cargas/coleta";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { auditLog, bdImporters, bdRequests } from "@/db/schema";
@@ -71,5 +72,6 @@ export async function balcaoConfirmPickup(db: Database, token: string, requestId
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou. Atualize a página.");
   await db.insert(auditLog).values({ id: newId("aud"), actorUserId: null, actorRole: "BRAS_BALCAO", action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: r.id, changes: { status: { from: "PAID", to: "PICKED_UP" }, importerId: { to: imp.id } } });
   await notifyBrasRequestStatus(db, r.id, "PICKED_UP");
+  await syncLoadCollected(db, r.id);
   return { ok: true as const, number: r.number };
 }

@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { syncLoadCollected } from "../cargas/coleta";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { BRAS_IMPORTER_STAFF_ROLES, auditLog, bdImporterUsers, bdImporters, bdProducts, bdRequests, bdStockMovements, bdWarehouses, organizations, users } from "@/db/schema";
@@ -386,6 +387,7 @@ export async function importerConfirmPickup(db: Database, actor: Actor, requestI
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou. Atualize a página.");
   await db.insert(auditLog).values({ id: newId("aud"), actorUserId: actor.userId, actorRole: "BRAS_IMPORTER", action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: r.id, changes: { status: { from: "PAID", to: "PICKED_UP" }, importerId: { to: s.importer.id } } });
   await notifyBrasRequestStatus(db, r.id, "PICKED_UP");
+  await syncLoadCollected(db, r.id);
   return { ok: true as const, number: r.number };
 }
 

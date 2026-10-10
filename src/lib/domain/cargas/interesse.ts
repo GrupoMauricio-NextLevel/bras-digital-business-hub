@@ -15,7 +15,7 @@ import { createBrandLead } from "../brand-leads";
 export { CARGAS_KINDS, CARGAS_KIND_LABEL, CARGAS_VEHICLES, CARGAS_VEHICLE_LABEL };
 
 const digits = (v: string) => v.replace(/\D/g, "");
-function isValidCpf(raw: string) {
+export function isValidCpf(raw: string) {
   const c = digits(raw);
   if (c.length !== 11 || /^(\d)\1{10}$/.test(c)) return false;
   const dv = (n: number) => { const s = c.slice(0, n).split("").reduce((a, d, i) => a + Number(d) * (n + 1 - i), 0); const r = (s * 10) % 11; return r === 10 ? 0 : r; };

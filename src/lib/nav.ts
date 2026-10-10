@@ -158,9 +158,22 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     items: [
       { label: "Hoje", href: "/importadora", icon: "Home", exact: true, group: "Operação", bottom: true },
       { label: "Pedidos", href: "/importadora/pedidos", icon: "Inbox", group: "Operação", bottom: true },
+      { label: "Transportadoras", href: "/importadora/transportadoras", icon: "Truck", group: "Operação" },
       { label: "Produtos e caixas", href: "/importadora/produtos", icon: "Package", group: "Catálogo", bottom: true },
       { label: "Estoque", href: "/importadora/estoque", icon: "Boxes", group: "Catálogo" },
       { label: "Galpões, equipe e ficha", href: "/importadora/galpoes", icon: "Factory", group: "Conta" },
+    ],
+    quick: [],
+  },
+  // Painel da transportadora na NextLevel Cargas (D111): login no endereço da Cargas, só a própria transportadora.
+  CARRIER: {
+    base: "/transportadora",
+    label: "Transportadora NextLevel Cargas",
+    items: [
+      { label: "Hoje", href: "/transportadora", icon: "Home", exact: true, group: "Cargas", bottom: true },
+      { label: "Cargas", href: "/transportadora/cargas", icon: "Truck", group: "Cargas", bottom: true },
+      { label: "Extrato", href: "/transportadora/extrato", icon: "ReceiptText", group: "Financeiro", bottom: true },
+      { label: "Perfil e motorista", href: "/transportadora/perfil", icon: "Settings", group: "Conta" },
     ],
     quick: [],
   },
@@ -230,6 +243,7 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
   { label: "Descobertas", href: "/bras/descobertas", icon: "LayoutGrid", group: "Catálogo", bottom: true },
   { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
   { label: "Pauta de conteúdo", href: "/bras/pauta", icon: "Megaphone", group: "Catálogo" },
+  { label: "Transportadoras (Cargas)", href: "/bras/transportadoras", icon: "Truck", group: "Catálogo" },
   { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
   { label: "Acesso e planos", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },
   { label: "Planos e regras", href: "/bras/regras", icon: "Settings", group: "Configuração" },

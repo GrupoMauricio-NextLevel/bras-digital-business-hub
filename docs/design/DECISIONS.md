@@ -892,3 +892,29 @@ Pedido do dono no prompt v2: "o ponto de vista de cada importadora" (seções 4 
   - oportunidades com premissa, acesso ao painel, galpões, produtos e estoque (onboarding assistido).
 - **Bling:** continua para a F7. O modo "Bling" fica bloqueado até as credenciais do aplicativo da NextLevel.
 - Testes: `tests/bras-importadora.test.ts` (12) e e2e `bras-portal` passo 7. Migração `0049_bras_importadora_painel`.
+
+## D111 — NextLevel Cargas v1: a importadora chama a transportadora (2026-10-10)
+Pedido do dono no prompt v2 (módulo G, fase F2): "quem leva as caixas do Brás". A transportadora entra como mais um ator do mesmo motor (mesmo banco, login e Master), com a marca NextLevel Cargas (D108).
+- **Papel e acesso:**
+  - novo papel `CARRIER`, com área `/transportadora` na cor da Cargas;
+  - a pessoa fica ligada a uma transportadora por `tr_carrier_users`; o Master cria o login com senha provisória (troca no primeiro acesso);
+  - a importadora (menos o financeiro) e o Master cadastram transportadoras (`tr_carriers`) com CNPJ ou CPF conferido; documento repetido reaproveita a existente;
+  - o interessado da página da Cargas vira transportadora com um botão no Master (lê estados, veículos e documento do formulário).
+- **Coleta (`tr_loads`):**
+  - a importadora junta pedidos confirmados ou pagos dela numa coleta, escolhe a transportadora, o dia (hoje até 30 dias) e o período, e recebe a mensagem pronta para o WhatsApp;
+  - um pedido não fica em duas coletas ativas; recusada ou cancelada, o pedido volta a poder entrar em outra;
+  - volume e peso estimados das medidas dos produtos ligados (D110).
+- **Aceite e comissão:**
+  - a transportadora aceita informando o frete ou recusa com motivo;
+  - a comissão da NextLevel é o percentual do plano dela (Regras da Brás: grátis 8%, Pro 6%, Premium 5%), **congelada no aceite** (mudar a regra depois não mexe em carga aceita);
+  - plano grátis: limite de cargas aceitas por mês (regra editável, 20);
+  - sem cobrança automática nesta fase: o Master vê a comissão por transportadora e mês para faturar.
+- **Coleta no balcão e entrega:**
+  - o código de retirada de cada pedido (D103) só aparece para a transportadora depois do aceite, e some depois da entrega;
+  - a carga vira "coletada" sozinha quando o último pedido sai do balcão com o código (painel da importadora, link do Balcão ou Estúdio);
+  - a transportadora ou o motorista marca "entregue".
+- **Link do motorista (padrão D106):** `/motorista/<token>`, sem login, só o hash no banco, link novo desliga o anterior; mostra coletas aceitas e em trânsito com endereço, horário e códigos, sem frete. É a única página aberta no endereço da Cargas além da home (`publicPatterns`).
+- **Fronteiras:**
+  - a transportadora vê do pedido só o envio (`brasShippingView`), nunca o comprador nem preço;
+  - a importadora nunca vê o frete, a comissão nem o código; uma importadora não vê coleta de outra; uma transportadora não vê carga de outra.
+- Testes: `tests/cargas-cargas.test.ts` (11) e e2e `bras-portal` passo 8. Migração `0050_cargas_transportadoras`.

@@ -351,6 +351,13 @@
       "when": 1791590316330,
       "tag": "0049_bras_importadora_painel",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1791643369544,
+      "tag": "0050_cargas_transportadoras",
+      "breakpoints": true
     }
   ]
 }

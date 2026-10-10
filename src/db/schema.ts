@@ -152,7 +152,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER", "BRAS_IMPORTER"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER", "BRAS_IMPORTER", "CARRIER"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -1923,3 +1923,90 @@ export const bdContentItems = pgTable("bd_content_items", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("bd_content_items_status_idx").on(t.status, t.recordDate)]);
+
+// ---------------------------------------------------------------------------
+// NextLevel Cargas (D111): transportadoras, cargas (coletas) e o link do motorista
+// ---------------------------------------------------------------------------
+/** Transportadora cadastrada (pelo Master, pela importadora ou vinda da lista de interesse). Plano define a comissão por carga. */
+export const trCarriers = pgTable("tr_carriers", {
+  id: id(),
+  name: text("name").notNull(),
+  docType: text("doc_type", { enum: ["CNPJ", "CPF"] }).notNull(),
+  /** Só dígitos, conferidos no cadastro. */
+  document: text("document").notNull().unique(),
+  contactName: text("contact_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  ufs: jsonb("ufs").$type<string[]>().notNull().default([]),
+  vehicles: jsonb("vehicles").$type<string[]>().notNull().default([]),
+  rntrc: text("rntrc"),
+  insurance: boolean("insurance").notNull().default(false),
+  /** Tabela simples em texto ou "cotar caso a caso". */
+  rateNotes: text("rate_notes"),
+  plan: text("plan", { enum: ["GRATIS", "PRO", "PREMIUM"] }).notNull().default("GRATIS"),
+  status: text("status", { enum: ["ATIVA", "PAUSADA"] }).notNull().default("ATIVA"),
+  organizationId: text("organization_id").references(() => organizations.id),
+  /** Quem cadastrou: importadora (cadastro rápido) ou null (Master). */
+  createdByImporterId: text("created_by_importer_id").references(() => bdImporters.id),
+  /** Link do motorista (sem login, padrão D106): só o hash. */
+  driverTokenHash: text("driver_token_hash").unique(),
+  driverTokenCreatedAt: ts("driver_token_created_at"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+}, (t) => [index("tr_carriers_status_idx").on(t.status)]);
+
+/** Pessoas com login no painel da transportadora. */
+export const trCarrierUsers = pgTable("tr_carrier_users", {
+  id: id(),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  createdAt: createdAt(),
+});
+
+/**
+ * Carga (coleta) chamada pela importadora para uma transportadora: um ou mais pedidos da Brás, mesma retirada.
+ * Frete informado pela transportadora ao aceitar; comissão da NextLevel congelada no aceite pelo plano da transportadora.
+ */
+export const TR_LOAD_STATUSES = ["CHAMADA", "ACEITA", "RECUSADA", "COLETADA", "ENTREGUE", "CANCELADA"] as const;
+export const trLoads = pgTable("tr_loads", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  warehouseId: text("warehouse_id").references(() => bdWarehouses.id),
+  status: text("status", { enum: TR_LOAD_STATUSES }).notNull().default("CHAMADA"),
+  pickupDate: text("pickup_date").notNull(),
+  period: text("period", { enum: ["MANHA", "TARDE"] }).notNull(),
+  boxes: integer("boxes").notNull(),
+  /** Volume e peso somados dos produtos ligados (quando há medidas). */
+  volumeLiters: integer("volume_liters"),
+  weightKg: integer("weight_kg"),
+  destinations: text("destinations").notNull(),
+  notes: text("notes"),
+  freightCents: integer("freight_cents"),
+  commissionBps: integer("commission_bps"),
+  commissionCents: integer("commission_cents"),
+  refuseReason: text("refuse_reason"),
+  createdBy: text("created_by").notNull(),
+  acceptedAt: ts("accepted_at"),
+  collectedAt: ts("collected_at"),
+  deliveredAt: ts("delivered_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("tr_loads_carrier_idx").on(t.carrierId, t.status), index("tr_loads_importer_idx").on(t.importerId, t.status)]);
+
+export const trLoadRequests = pgTable("tr_load_requests", {
+  id: id(),
+  loadId: text("load_id").notNull().references(() => trLoads.id),
+  requestId: text("request_id").notNull().references(() => bdRequests.id),
+}, (t) => [uniqueIndex("tr_load_requests_unique").on(t.loadId, t.requestId), index("tr_load_requests_request_idx").on(t.requestId)]);
+
+/** Linha do tempo da carga (chamada, aceite, coleta, entrega, ocorrência). */
+export const trLoadEvents = pgTable("tr_load_events", {
+  id: id(),
+  loadId: text("load_id").notNull().references(() => trLoads.id),
+  kind: text("kind").notNull(),
+  note: text("note"),
+  actor: text("actor").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("tr_load_events_load_idx").on(t.loadId, t.createdAt)]);

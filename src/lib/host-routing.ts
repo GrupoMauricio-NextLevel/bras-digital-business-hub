@@ -5,7 +5,7 @@ import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
  * (o "escritório": login, Master, fornecedor, lojista, afiliado). Esta função pura decide o que fazer com uma requisição.
  * Sem `officeUrl` na marca (padrão) nada muda: os painéis ficam no endereço público. Só `/loja/<nome>` vira apelido da vitrine.
  */
-export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
+export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/transportadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
 export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/quero-minha-loja", "/termos", "/privacidade"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
@@ -51,7 +51,7 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   // Operação fechada aberta (Brás Digital, D92): no endereço público só a apresentação, o cadastro e os painéis. As páginas das outras marcas não existem aqui.
   if (brand?.closedCommerce && !brand.soon && !isPanelPath(pathname) && !CLOSED_PUBLIC_PATHS.includes(pathname) && !pathname.startsWith("/r/") && !/^\/d\/[a-z0-9_]+$/.test(pathname) && !/^\/balcao\/[A-Za-z0-9_-]{32,64}$/.test(pathname)) return { kind: "redirect", url: "/" };
   // Marca com lista fechada de páginas públicas (NextLevel Cargas, D108): o resto volta para a página inicial.
-  if (brand?.publicPaths && !isPanelPath(pathname) && !brand.publicPaths.includes(pathname) && !pathname.startsWith("/r/")) return { kind: "redirect", url: "/" };
+  if (brand?.publicPaths && !isPanelPath(pathname) && !brand.publicPaths.includes(pathname) && !pathname.startsWith("/r/") && !(brand.publicPatterns ?? []).some((re) => new RegExp(re).test(pathname))) return { kind: "redirect", url: "/" };
   if (brand?.officeUrl && isPanelPath(pathname)) return { kind: "redirect", url: `${brand.officeUrl}${pathname}${search}` };
 
   // `/loja/<nome>` é o endereço bonito da vitrine do vendedor (a rota interna continua `/store/<nome>`).

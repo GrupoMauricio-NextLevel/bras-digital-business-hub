@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { syncLoadCollected } from "../cargas/coleta";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -263,6 +264,7 @@ export async function setBrasRequestStatus(db: Database, actor: Actor, id: strin
   if (!upd.length) throw new DomainError("STATUS_RACE", "O pedido mudou enquanto você mexia. Atualize a página.");
   await recordAudit(db, actor, { action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: id, before: { status: r.status }, after: { status } });
   await notifyBrasRequestStatus(db, id, status);
+  if (status === "PICKED_UP") await syncLoadCollected(db, id);
   return { ok: true as const };
 }
 

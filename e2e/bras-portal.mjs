@@ -505,6 +505,102 @@ ok("fronteira entre marcas");
 }
 ok("importadora 360 e painel da importadora");
 
+// 8. NextLevel Cargas v1 (D111): a importadora cadastra a transportadora; o Master cria o acesso; a transportadora entra,
+//    vê o painel e gera o link do motorista, que abre sem login. O fluxo de coleta inteiro está nos testes de domínio.
+{
+  const { c, p } = await page(390);
+  await p.goto(BRAS + "/login", { waitUntil: "networkidle" });
+  await p.getByLabel("E-mail").fill("jorge@piloto.teste"); await p.getByLabel("Senha").fill("senha-da-xdx-1");
+  await p.getByRole("button", { name: /^Entrar/ }).click();
+  await p.waitForURL(/\/importadora/, { timeout: 60000 });
+  await p.goto(BRAS + "/importadora/transportadoras", { waitUntil: "networkidle" });
+  const cf = p.getByRole("form", { name: "Cadastrar transportadora" });
+  await cf.getByLabel("Nome da transportadora ou do motorista").fill("Rápido Brás Transportes"); await cf.getByLabel("Número").fill("11.444.777/0001-61");
+  await cf.getByLabel("Contato").fill("Antônio"); await cf.getByLabel("WhatsApp com DDD").fill("11977776666");
+  await cf.getByText("Truck", { exact: true }).click(); await cf.getByText("PR", { exact: true }).click();
+  await cf.getByRole("button", { name: "Cadastrar transportadora" }).click();
+  await p.getByText("Atende: SP, PR").waitFor({ timeout: 30000 });
+  const semToast = async () => { await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {}); };
+  await semToast();
+  // Chamar a transportadora para o pedido pago que ainda está no galpão.
+  const call = p.getByRole("form", { name: "Chamar transportadora" });
+  if (await call.isVisible()) {
+    await call.getByRole("checkbox").first().check();
+    await call.getByLabel("2. Transportadora").selectOption({ label: "Rápido Brás Transportes" });
+    await call.getByRole("button", { name: /Chamar transportadora/ }).click();
+    await p.getByText(/Coleta 5001 criada/).waitFor({ timeout: 30000 });
+    if (!/wa\.me\/5511977776666/.test(await p.getByRole("link", { name: "Mandar no WhatsApp" }).getAttribute("href") ?? "")) fail("chamar: link do WhatsApp");
+    await p.reload({ waitUntil: "networkidle" });
+    if (!(await p.getByText("Aguardando a transportadora").first().isVisible())) fail("importadora: coleta chamada não aparece");
+  } else fail("importadora: sem pedido para chamar a transportadora");
+  await semToast();
+  await check(p, "importadora transportadoras", 390);
+  await shot(p, `${OUT}/20-importadora-transportadoras-390.png`);
+  await c.close();
+}
+{
+  const { c, p } = await page(1440);
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
+  if (!(await p.getByText(/CNPJ 11444777000161/).isVisible())) fail("master transportadoras: cadastro da importadora não aparece");
+  if (!/cadastrada por uma importadora/.test(await p.locator("main").innerText())) fail("master transportadoras: origem do cadastro");
+  await p.getByText("Gerenciar").first().click();
+  const ac = p.getByRole("form", { name: "Criar acesso da transportadora" });
+  await ac.getByLabel("Nome").fill("Antônio"); await ac.getByLabel("E-mail").fill("antonio@rapido.teste"); await ac.getByLabel("Senha provisória").fill("provisoria-123");
+  await ac.getByRole("button", { name: "Criar acesso" }).click();
+  await p.getByText(/antonio@rapido\.teste/).first().waitFor({ timeout: 30000 });
+  await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(p, "master transportadoras", 1440);
+  await shot(p, `${OUT}/21-master-transportadoras-1440.png`);
+  await c.close();
+}
+{
+  const { c, p } = await page(390);
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByLabel("E-mail").fill("antonio@rapido.teste"); await p.getByLabel("Senha").fill("provisoria-123");
+  await p.getByRole("button", { name: /^Entrar/ }).click();
+  await p.waitForURL(/\/account\/password/, { timeout: 60000 });
+  await p.getByLabel("Nova senha", { exact: true }).fill("senha-do-rapido-1"); await p.getByLabel("Confirmar nova senha").fill("senha-do-rapido-1");
+  await p.getByRole("button", { name: "Salvar senha" }).click();
+  await p.waitForURL(/\/transportadora/, { timeout: 60000 }); await p.waitForLoadState("networkidle");
+  if (!(await p.getByRole("heading", { name: "Olá, Antônio" }).isVisible())) fail("transportadora: Hoje ausente");
+  if (!/0 de 20/.test(await p.locator("main").innerText())) fail("transportadora: limite do plano grátis ausente");
+  // Aceitar a coleta com o frete: só então aparecem os códigos de retirada.
+  if (/BD-[A-Z0-9]/.test(await p.locator("main").innerText())) fail("transportadora: código antes do aceite");
+  const aceite = p.getByRole("form", { name: "Aceitar coleta" }).first();
+  await aceite.getByLabel("Valor do frete").fill("350,00");
+  await aceite.getByRole("button", { name: "Aceitar coleta" }).click();
+  await p.getByText("Aceita: coletar").first().waitFor({ timeout: 30000 });
+  await p.getByText(/pedido\(s\) e códigos de retirada/).first().click();
+  if (!/BD-[A-Z0-9]/.test(await p.locator("main").innerText())) fail("transportadora: código não aparece depois do aceite");
+  if (/Ana Utilidades|ana@utilidades|11\.222\.333|R\$ 3\.780/.test(await p.locator("main").innerText())) fail("transportadora: dado do comprador ou valor vazou");
+  await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(p, "transportadora hoje", 390);
+  await shot(p, `${OUT}/22-transportadora-hoje-390.png`);
+  for (const path of ["/transportadora/cargas", "/transportadora/extrato"]) { await p.goto(B + path, { waitUntil: "networkidle" }); await check(p, path, 390); }
+  await p.goto(B + "/transportadora/perfil", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: "Gerar link do motorista" }).click();
+  const link = (await p.locator("p.font-mono").first().innerText({ timeout: 30000 })).trim();
+  await p.waitForTimeout(300); await p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(p, "transportadora perfil", 390);
+  const path = new URL(link).pathname;
+  // Isolamento: a transportadora não abre o Estúdio nem o painel da importadora.
+  for (const x of ["/bras", "/importadora"]) { await p.goto(B + x, { waitUntil: "networkidle" }); if (new URL(p.url()).pathname.startsWith(x)) fail(`transportadora abriu ${x}`); }
+  await c.close();
+  const d = await page(390);
+  await d.p.goto(B + path, { waitUntil: "networkidle" });
+  if (!(await d.p.getByRole("heading", { name: "Rápido Brás Transportes" }).isVisible())) fail("motorista: tela não abriu");
+  if (!(await d.p.getByRole("heading", { name: "Coletar (1)" }).isVisible()) || !/BD-[A-Z0-9]/.test(await d.p.locator("main").innerText())) fail("motorista: coleta aceita com código não aparece");
+  if (/R\$/.test(await d.p.locator("main").innerText())) fail("motorista: frete vazou");
+  await check(d.p, "motorista", 390);
+  await shot(d.p, `${OUT}/23-motorista-390.png`);
+  const r = await d.c.request.get(B + "/motorista/" + "x".repeat(32)); if (r.status() !== 404) fail(`motorista com link falso: status ${r.status()}`);
+  await d.c.close();
+}
+ok("NextLevel Cargas: transportadora, acesso e link do motorista");
+
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
 console.log(`\nTudo certo. Capturas em ${OUT}`);

@@ -19,6 +19,7 @@ const ROLE_META = {
   AFFILIATE: { label: "Parceiro", desc: "Links, cupons e comissões", icon: Handshake, tone: "brand" as const },
   BRAS_MEMBER: { label: "Membro Brás", desc: "Atacado em caixa fechada", icon: Store, tone: "brand" as const },
   BRAS_IMPORTER: { label: "Importadora Brás", desc: "Pedidos, produtos e estoque em caixas", icon: Factory, tone: "info" as const },
+  CARRIER: { label: "Transportadora", desc: "Cargas, coletas e extrato (NextLevel Cargas)", icon: Factory, tone: "info" as const },
 };
 
 const AREA: Record<string, string> = { fornecedor: "painel do fornecedor", loja: "painel da loja", afiliado: "painel do afiliado" };
