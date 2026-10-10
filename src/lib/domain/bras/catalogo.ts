@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { syncLoadCollected } from "../cargas/coleta";
+import { activateClientReferral, reverseClientReferral } from "../club/pontos";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -276,6 +277,9 @@ export async function setBrasRequestStatus(db: Database, actor: Actor, id: strin
   await recordAudit(db, actor, { action: "BRAS_REQUEST_STATUS", entityType: "bd_request", entityId: id, before: { status: r.status }, after: { status } });
   await notifyBrasRequestStatus(db, id, status);
   if (status === "PICKED_UP") await syncLoadCollected(db, id);
+  // Brás Digital Club (D115): primeiro pedido pago ativa a indicação de quem trouxe o membro; estorno sem outra compra paga desfaz.
+  if (status === "PAID") await activateClientReferral(db, r.memberId);
+  if (status === "CANCELED" && r.paidAt) await reverseClientReferral(db, r.memberId);
   return { ok: true as const };
 }
 

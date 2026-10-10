@@ -67,7 +67,7 @@ export function ExcursionBoard({ trips, token }: { trips: BoardTrip[]; token?: s
                 <p className="mb-3 text-sm text-muted-foreground">Digite ou bipe o código da etiqueta de cada fardo. Fardo sem nota não embarca.</p>
                 <CollectByLabel token={token} />
                 {stores.length ? <ul className="mt-4 space-y-3">{stores.map((s) => (
-                  <li key={s}><p className="font-semibold">{s}</p><ul className="mt-1 flex flex-wrap gap-2">{toCollect.filter((p) => p.storeName === s).map((p) => <li key={p.id} className="rounded border border-border px-2 py-1 font-mono text-sm">{p.label} · {p.size}{p.hasInvoice ? "" : " · sem nota"}</li>)}</ul></li>
+                  <li key={s}><p className="font-semibold">{s}</p><ul className="mt-1 flex flex-wrap gap-2">{toCollect.filter((p) => p.storeName === s).map((p) => <li key={p.id} className={`rounded border px-2 py-1 font-mono text-sm ${p.status === "PRONTO" ? "border-success font-bold" : "border-border"}`}>{p.label} · {p.size}{p.status === "PRONTO" ? " · pronto" : ""}{p.hasInvoice ? "" : " · sem nota"}</li>)}</ul></li>
                 ))}</ul> : <p className="mt-3 text-sm text-muted-foreground">Nada para coletar agora.</p>}
               </div>
             ) : null}

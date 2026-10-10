@@ -9,7 +9,7 @@ import { MoneyField } from "@/components/finance/fields";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { formatBRL } from "@/lib/money";
 import {
-  busCollectAction, busDeliverAction, cancelMyParcelAction, createTripAction, helperCollectAction, helperDeliverAction, reserveParcelsAction, respondParcelAction, saveRouteAction,
+  busCollectAction, busDeliverAction, cancelMyParcelAction, markParcelReadyAction, createTripAction, helperCollectAction, helperDeliverAction, reserveParcelsAction, respondParcelAction, saveRouteAction,
   setParcelInvoiceAction, tripActionAction,
 } from "@/app/actions/excursao";
 
@@ -211,4 +211,10 @@ export function ParcelInvoiceForm({ parcelId }: { parcelId: string }) {
       <Button type="submit" size="sm" disabled={pending}>Registrar nota</Button>
     </form>
   );
+}
+
+/** Importadora: "pronto para coletar" (o ajudante vê na lista dele). */
+export function MarkReadyButton({ parcelId }: { parcelId: string }) {
+  const { pending, run } = useRun();
+  return <Button size="sm" disabled={pending} onClick={() => run(() => markParcelReadyAction(parcelId), "Pronto para o ônibus coletar")}><PackageCheck className="size-4" aria-hidden />Pronto para coletar</Button>;
 }

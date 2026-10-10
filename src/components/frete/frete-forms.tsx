@@ -9,10 +9,13 @@ import { BRAS_UFS } from "@/lib/bras/ufs";
 import { dismissReferralAction, referCarrierAction } from "@/app/actions/frete";
 
 /** "Minha transportadora ou ônibus não está aqui" (D113): indica com o WhatsApp e já leva o convite pronto. */
-export function ReferCarrierForm({ defaultUf }: { defaultUf?: string }) {
+type RefKind = "TRANSPORTADORA" | "ONIBUS" | "IMPORTADORA";
+const KIND_LABEL: Record<RefKind, string> = { TRANSPORTADORA: "Transportadora", ONIBUS: "Ônibus de excursão", IMPORTADORA: "Importadora" };
+const NAME_LABEL: Record<RefKind, string> = { TRANSPORTADORA: "Nome da transportadora", ONIBUS: "Nome da excursão", IMPORTADORA: "Nome da importadora" };
+export function ReferCarrierForm({ defaultUf, kinds = ["TRANSPORTADORA", "ONIBUS"] }: { defaultUf?: string; kinds?: RefKind[] }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
-  const empty = { kind: "TRANSPORTADORA" as "TRANSPORTADORA" | "ONIBUS", name: "", contactName: "", phone: "", city: "", uf: (defaultUf ?? "SP") as (typeof BRAS_UFS)[number] };
+  const empty = { kind: kinds[0]! as RefKind, name: "", contactName: "", phone: "", city: "", uf: (defaultUf ?? "SP") as (typeof BRAS_UFS)[number] };
   const [f, setF] = React.useState(empty);
   const [invite, setInvite] = React.useState<{ url: string; msg: string } | null>(null);
   const lab = "flex flex-col text-sm font-medium";
@@ -37,14 +40,14 @@ export function ReferCarrierForm({ defaultUf }: { defaultUf?: string }) {
     </div>
   );
   return (
-    <form className="grid gap-3 sm:grid-cols-2" aria-label="Indicar transportadora ou ônibus" onSubmit={submit}>
+    <form className="grid gap-3 sm:grid-cols-2" aria-label={kinds.includes("IMPORTADORA") && kinds.length === 1 ? "Indicar importadora" : "Indicar transportadora ou ônibus"} onSubmit={submit}>
       <fieldset className="sm:col-span-2">
         <legend className="mb-1 text-sm font-medium">É uma</legend>
-        <div className="flex flex-wrap gap-2">{(["TRANSPORTADORA", "ONIBUS"] as const).map((k) => (
-          <label key={k} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${f.kind === k ? "border-[var(--brand-primary)]" : "border-border"}`}><input type="radio" name="ref-kind" checked={f.kind === k} onChange={() => setF({ ...f, kind: k })} />{k === "ONIBUS" ? "Ônibus de excursão" : "Transportadora"}</label>
+        <div className="flex flex-wrap gap-2">{kinds.map((k) => (
+          <label key={k} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${f.kind === k ? "border-[var(--brand-primary)]" : "border-border"}`}><input type="radio" name="ref-kind" checked={f.kind === k} onChange={() => setF({ ...f, kind: k })} />{KIND_LABEL[k]}</label>
         ))}</div>
       </fieldset>
-      <label className={lab}>{f.kind === "ONIBUS" ? "Nome da excursão" : "Nome da transportadora"}<Input required minLength={2} maxLength={120} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="mt-1" /></label>
+      <label className={lab}>{NAME_LABEL[f.kind]}<Input required minLength={2} maxLength={120} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="mt-1" /></label>
       <label className={lab}>Responsável (opcional)<Input maxLength={80} value={f.contactName} onChange={(e) => setF({ ...f, contactName: e.target.value })} className="mt-1" /></label>
       <label className={lab}>WhatsApp com DDD<Input required inputMode="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} placeholder="Ex.: (31) 90000-0000" className="mt-1" /></label>
       <div className="grid grid-cols-[1fr_6rem] gap-2">

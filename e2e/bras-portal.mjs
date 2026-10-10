@@ -772,6 +772,55 @@ ok("Club E0/E1: grupo, regras, painel de frete, catálogo e indicação");
 }
 ok("Club E2: rota, viagem, reserva com nota, aceite, coleta, viagem e entrega");
 
+// 11. Club E4 (D115/D116): o Master ativa a indicação do ônibus; a membro vê os pontos, gera o vale; o Master baixa o vale.
+{
+  const m1 = await page(1440);
+  await m1.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await m1.p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await m1.p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await m1.p.goto(B + "/bras/club", { waitUntil: "networkidle" });
+  const ref = m1.p.locator("li").filter({ hasText: "Excursão da Cida" }).first();
+  m1.p.once("dialog", (d) => d.accept());
+  await ref.getByRole("button", { name: "Marcar como ativada" }).click();
+  await m1.p.getByText("Indicação ativada e pontos creditados").first().waitFor({ timeout: 30000 });
+  await m1.p.waitForTimeout(300); await m1.p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(m1.p, "master club", 1440);
+  await shot(m1.p, `${OUT}/31-master-club-1440.png`);
+
+  const { c, p } = await page(390);
+  await loginMembro(p);
+  await p.goto(BRAS + "/meu-bras/club", { waitUntil: "networkidle" });
+  const t = (await p.locator("main").innerText()).replace(/\u00a0/g, " ");
+  if (!/1\.000/.test(t)) fail("club: 1.000 pontos do ônibus indicado não aparecem");
+  if (!/\/c\/[A-Z0-9]{6}/.test(t)) fail("club: link de convite ausente");
+  await check(p, "meu brás club", 390);
+  await shot(p, `${OUT}/32-meu-bras-club-390.png`);
+  const rf = p.getByRole("form", { name: "Gerar vale" });
+  await rf.getByRole("button", { name: "Gerar vale" }).click();
+  await p.getByText(/Vale VALE-[0-9A-F]{6} gerado/).first().waitFor({ timeout: 30000 });
+  const code = /VALE-[0-9A-F]{6}/.exec(await p.locator("main").innerText())?.[0];
+  await c.close();
+
+  await m1.p.reload({ waitUntil: "networkidle" });
+  const vf = m1.p.getByRole("form", { name: "Baixar vale" });
+  await vf.getByLabel("Código do vale").fill(code ?? ""); await vf.getByLabel("Usado em").selectOption("MEGATRON");
+  await vf.getByRole("button", { name: "Baixar vale" }).click();
+  await m1.p.getByText(/Vale baixado: R\$/).first().waitFor({ timeout: 30000 });
+  await m1.c.close();
+
+  // As outras portas do "Indique e ganhe" abrem (transportadora e importadora).
+  const tr = await page(390);
+  await tr.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await tr.p.getByLabel("E-mail").fill("mauricio@starline.teste"); await tr.p.getByLabel("Senha").fill("senha-starline-1");
+  await tr.p.getByRole("button", { name: /^Entrar/ }).click();
+  await tr.p.waitForURL(/\/transportadora/, { timeout: 60000 });
+  await tr.p.goto(B + "/transportadora/indicacoes", { waitUntil: "networkidle" });
+  if (!(await tr.p.getByRole("form", { name: "Indicar importadora" }).isVisible())) fail("transportadora: indicar importadora ausente");
+  await check(tr.p, "transportadora indique e ganhe", 390);
+  await tr.c.close();
+}
+ok("Club E4: indicação ativada, pontos, vale e baixa no balcão");
+
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
 console.log(`\nTudo certo. Capturas em ${OUT}`);

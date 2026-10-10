@@ -7,7 +7,7 @@ import { runAction } from "@/lib/action-result";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
 import {
-  busCollectParcel, busDeliverParcel, cancelMyParcel, createTrip, helperCollectParcel, helperDeliverParcel, reserveParcels, respondParcel, saveRoute, setParcelInvoice, tripAction,
+  busCollectParcel, busDeliverParcel, cancelMyParcel, markParcelReady, createTrip, helperCollectParcel, helperDeliverParcel, reserveParcels, respondParcel, saveRoute, setParcelInvoice, tripAction,
   type RouteInput, type reserveSchema, type tripSchema,
 } from "@/lib/domain/cargas/excursao";
 
@@ -17,7 +17,7 @@ async function ctx() {
   if (!s) throw new ForbiddenError("Sessão expirada.");
   return { actor: s.actor, db: await getDb() };
 }
-const refresh = () => { revalidatePath("/transportadora", "layout"); revalidatePath("/meu-bras/fretes"); revalidatePath("/bras/excursao"); };
+const refresh = () => { revalidatePath("/transportadora", "layout"); revalidatePath("/meu-bras/fretes"); revalidatePath("/bras/excursao"); revalidatePath("/importadora/transportadoras"); };
 
 export async function saveRouteAction(carrierId: string | null, routeId: string | null, input: RouteInput) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await saveRoute(db, actor, carrierId, routeId, input); refresh(); return r; });
@@ -65,4 +65,7 @@ export async function cancelMyParcelAction(parcelId: string) {
 }
 export async function setParcelInvoiceAction(parcelId: string, key: string) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await setParcelInvoice(db, actor, parcelId, key); refresh(); return r; });
+}
+export async function markParcelReadyAction(parcelId: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await markParcelReady(db, actor, parcelId); refresh(); return r; });
 }

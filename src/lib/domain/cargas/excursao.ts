@@ -12,6 +12,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 import { getGroupCompanies, groupDocuments } from "../grupo";
 import { activateCarrierReferral } from "../club/indicacoes";
 import { carrierByDriverToken, myCarrier } from "./cargas";
+import { myImporter } from "../bras/importadora";
 import { excursionFeeCents, getExcursionRules, PARCEL_SIZES, type ParcelSize } from "./regras-excursao";
 
 /**
@@ -252,12 +253,12 @@ export async function cancelMyParcel(db: Database, actor: Actor, parcelId: strin
 export async function setParcelInvoice(db: Database, actor: Actor, parcelId: string, key: string) {
   const p = await db.query.trParcels.findFirst({ where: eq(trParcels.id, parcelId) });
   if (!p) throw new NotFoundError("Fardo não encontrado.");
-  const own = p.clientUserId === actor.userId || (actor.role === "CARRIER" && (await myCarrier(db, actor)).id === p.carrierId) || isMaster(actor);
+  const own = p.clientUserId === actor.userId || (actor.role === "CARRIER" && (await myCarrier(db, actor)).id === p.carrierId) || isMaster(actor) || (actor.role === "BRAS_IMPORTER" && !!p.requestId && !!(await importerOwnsRequest(db, actor, p.requestId)));
   if (!own) throw new NotFoundError("Fardo não encontrado.");
   const k = normalizeNfeKey(key);
   if (!isValidNfeKey(k)) throw new DomainError("NFE", "Chave da nota inválida. Confira os 44 números.");
   await db.update(trParcels).set({ invoiceKey: k, updatedAt: new Date().toISOString() }).where(eq(trParcels.id, p.id));
-  await parcelEvent(db, p.id, "NOTA", actor.role === "CARRIER" ? "Ônibus" : "Cliente", null);
+  await parcelEvent(db, p.id, "NOTA", actor.role === "CARRIER" ? "Ônibus" : actor.role === "BRAS_IMPORTER" ? "Importadora" : "Cliente", null);
   return { ok: true as const };
 }
 
@@ -422,3 +423,32 @@ export async function allTrips(db: Database, actor: Actor) {
   });
 }
 
+
+// ---------------------------------------------------------------------------
+// Importadora (a loja do Brás): fardos dos pedidos dela, "pronto para coletar" e nota (D116)
+// ---------------------------------------------------------------------------
+async function importerOwnsRequest(db: Database, actor: Actor, requestId: string) {
+  const me = await myImporter(db, actor);
+  return db.query.bdRequests.findFirst({ where: and(eq(bdRequests.id, requestId), eq(bdRequests.importerId, me.importer.id)), columns: { id: true, number: true } });
+}
+
+/** Fardos de ônibus ligados aos pedidos da importadora: o que separar, etiquetar e entregar ao ajudante. Sem valores. */
+export async function importerParcels(db: Database, actor: Actor) {
+  const me = await myImporter(db, actor);
+  const rows = await db.select({ p: trParcels, t: trTrips, r: trRoutes, c: trCarriers, req: bdRequests }).from(trParcels).innerJoin(bdRequests, eq(bdRequests.id, trParcels.requestId)).innerJoin(trTrips, eq(trTrips.id, trParcels.tripId)).innerJoin(trRoutes, eq(trRoutes.id, trTrips.routeId)).innerJoin(trCarriers, eq(trCarriers.id, trParcels.carrierId))
+    .where(and(eq(bdRequests.importerId, me.importer.id), inArray(trParcels.status, ["SOLICITADO", "ESPERA", "ACEITO", "PRONTO", "COLETADO"]))).orderBy(asc(trTrips.departAt), asc(trParcels.seq)).limit(200);
+  return rows.map(({ p, t, r, c, req }) => ({
+    id: p.id, label: `${t.number}-${String(p.seq).padStart(2, "0")}`, size: p.size, status: p.status, requestNumber: req.number, carrierName: c.name, departAt: new Date(t.departAt).toISOString(), brasPoint: r.brasPoint, hasInvoice: !!p.invoiceKey,
+  }));
+}
+
+/** A loja marca o fardo como pronto para o ajudante coletar (só fardo aceito pelo ônibus). */
+export async function markParcelReady(db: Database, actor: Actor, parcelId: string, now = new Date()) {
+  const me = await myImporter(db, actor);
+  const p = await db.query.trParcels.findFirst({ where: eq(trParcels.id, parcelId) });
+  if (!p || !p.requestId || !(await db.query.bdRequests.findFirst({ where: and(eq(bdRequests.id, p.requestId), eq(bdRequests.importerId, me.importer.id)), columns: { id: true } }))) throw new NotFoundError("Fardo não encontrado.");
+  if (p.status !== "ACEITO") throw new DomainError("STATUS", p.status === "PRONTO" ? "Esse fardo já está pronto." : "Só fardo aceito pelo ônibus fica pronto para coletar.");
+  await db.update(trParcels).set({ status: "PRONTO", updatedAt: now.toISOString() }).where(and(eq(trParcels.id, p.id), eq(trParcels.status, "ACEITO")));
+  await parcelEvent(db, p.id, "PRONTO", `Importadora ${me.importer.name}`, null);
+  return { ok: true as const };
+}

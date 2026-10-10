@@ -2136,3 +2136,41 @@ export const clubReferrals = pgTable("club_referrals", {
   createdAt: createdAt(),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 }, (t) => [uniqueIndex("club_referrals_kind_phone").on(t.kind, t.phone), index("club_referrals_referrer_idx").on(t.referrerUserId, t.createdAt), index("club_referrals_status_idx").on(t.status)]);
+
+/** Pontos do Club (D115): razão append-only. Saldo = soma dos lançamentos DISPONIVEL; REVISAO não conta até o Master liberar. */
+export const clubLedger = pgTable("club_ledger", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  /** Com sinal: ganho positivo; vale, vencimento e estorno negativos; vale cancelado volta positivo. */
+  points: integer("points").notNull(),
+  kind: text("kind", { enum: ["EARN", "REDEEM", "EXPIRE", "REVERSE", "ADJUST"] }).notNull(),
+  status: text("status", { enum: ["DISPONIVEL", "REVISAO", "RECUSADO"] }).notNull().default("DISPONIVEL"),
+  source: text("source").notNull(),
+  referenceId: text("reference_id"),
+  expiresAt: ts("expires_at"),
+  note: text("note"),
+  actorUserId: text("actor_user_id"),
+  createdAt: createdAt(),
+}, (t) => [index("club_ledger_user_idx").on(t.userId, t.createdAt), uniqueIndex("club_ledger_once").on(t.userId, t.source, t.referenceId)]);
+
+/** Vale do Club: pontos viram desconto com código, usado no balcão de uma empresa participante. */
+export const clubVouchers = pgTable("club_vouchers", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  code: text("code").notNull().unique(),
+  points: integer("points").notNull(),
+  valueCents: integer("value_cents").notNull(),
+  status: text("status", { enum: ["ATIVO", "USADO", "CANCELADO"] }).notNull().default("ATIVO"),
+  expiresAt: ts("expires_at").notNull(),
+  usedAt: ts("used_at"),
+  usedBy: text("used_by"),
+  usedNote: text("used_note"),
+  createdAt: createdAt(),
+}, (t) => [index("club_vouchers_user_idx").on(t.userId, t.createdAt)]);
+
+/** Código de convite do membro do Club (link /c/<código>). */
+export const clubCodes = pgTable("club_codes", {
+  userId: text("user_id").primaryKey().references(() => users.id),
+  code: text("code").notNull().unique(),
+  createdAt: createdAt(),
+});

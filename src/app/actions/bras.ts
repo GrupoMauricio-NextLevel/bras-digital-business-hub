@@ -1,5 +1,5 @@
 "use server";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -13,6 +13,7 @@ import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { setBrasDefaultCommissionBps, settleBrasCommission, undoBrasSettlement, updateBrasImporterDetails, type brasImporterDetailsSchema, type brasSettleSchema } from "@/lib/domain/bras/comissoes";
 import { balcaoConfirmPickup, createBalcaoLink, revokeBalcaoLink } from "@/lib/domain/bras/balcao";
 import { brasPanelsEnabled } from "@/lib/bras/panels";
+import { referrerByCode, registerClientReferral } from "@/lib/domain/club/pontos";
 import { acceptBrasTerms, getBrasMemberByUser, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, setBrasVideoPublishAt, type brasVideoSchema } from "@/lib/domain/bras/videos";
 import { grantBrasAccess, revokeBrasAccess, saveBrasAnalysisSettings, setBrasDiscovery, type brasDiscoverySchema, type brasGrantSchema } from "@/lib/domain/bras/descobertas";
@@ -31,7 +32,15 @@ export async function brasSignupAction(input: z.input<typeof brasSignupSchema>) 
     if (!isClosedCommerceBrand(brand) || !brand.signupOpen) throw new DomainError("CLOSED", "O cadastro não está aberto neste endereço.");
     const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
     if (!rateLimit(`bras-signup:${ip}`, 8, 15 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
-    const created = await signupBrasMember(await getDb(), input);
+    const db = await getDb();
+    const created = await signupBrasMember(db, input);
+    // Brás Digital Club (D115): quem chegou pelo link /c/ de um membro fica como indicação dele (parceiro /r/ tem prioridade).
+    const jar = await cookies();
+    const clubRef = jar.get("club-ref")?.value;
+    if (clubRef) {
+      const referrer = await referrerByCode(db, clubRef);
+      if (referrer) await registerClientReferral(db, { referrerUserId: referrer, newUserId: created.userId, name: input.name, phone: input.whatsapp, memberId: created.memberId, partnerAttributed: !!jar.get("nl-ref")?.value });
+    }
     await setSessionCookie(created.userId);
     return { ok: true as const };
   });

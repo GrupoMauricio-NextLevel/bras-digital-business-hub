@@ -8,6 +8,9 @@ import { importerLoads, listCarriers, loadableRequests } from "@/lib/domain/carg
 import { CARGAS_VEHICLE_LABEL, cargasToday } from "@/lib/cargas/rotulos";
 import { LoadCard } from "@/components/cargas/load-card";
 import { CallCarrierForm, CarrierForm, ImporterLoadActions } from "@/components/cargas/cargas-forms";
+import { MarkReadyButton, ParcelInvoiceForm } from "@/components/cargas/excursao-forms";
+import { importerParcels } from "@/lib/domain/cargas/excursao";
+import { PARCEL_SIZE_LABEL } from "@/lib/domain/cargas/regras-excursao";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +24,7 @@ export default async function Transportadoras() {
   const me = await myImporter(db, session.actor);
   const pode = brasStaffCan(me.staffRole, "pedidos_balcao") || brasStaffCan(me.staffRole, "pedidos_disponibilidade");
   const cadastra = me.staffRole !== "FINANCEIRO";
-  const [carriers, reqs, whs, loads] = await Promise.all([listCarriers(db, session.actor), pode ? loadableRequests(db, session.actor) : Promise.resolve([]), listWarehouses(db, session.actor, null), importerLoads(db, session.actor)]);
+  const [carriers, reqs, whs, loads, parcels] = await Promise.all([listCarriers(db, session.actor), pode ? loadableRequests(db, session.actor) : Promise.resolve([]), listWarehouses(db, session.actor, null), importerLoads(db, session.actor), importerParcels(db, session.actor)]);
   const abertas = loads.filter((l) => l.status === "CHAMADA" || l.status === "ACEITA" || l.status === "COLETADA");
   const encerradas = loads.filter((l) => !abertas.includes(l));
   return (
@@ -31,6 +34,21 @@ export default async function Transportadoras() {
         <section aria-labelledby="t-chamar" className="ds-card mb-8 p-4">
           <h2 id="t-chamar" className="mb-3 text-lg font-bold">Chamar transportadora</h2>
           <CallCarrierForm carriers={carriers} requests={reqs} warehouses={whs.filter((w) => w.active).map((w) => ({ id: w.id, name: w.name, isDefault: w.isDefault }))} today={cargasToday()} />
+        </section>
+      ) : null}
+      {parcels.length ? (
+        <section aria-labelledby="t-fardos" className="ds-card mb-8 p-4">
+          <h2 id="t-fardos" className="mb-1 text-lg font-bold">Fardos para ônibus de excursão ({parcels.length})</h2>
+          <p className="mb-3 text-sm text-muted-foreground">O cliente escolheu mandar estes pedidos pelo ônibus. Escreva o código da etiqueta no fardo, informe a nota e marque &quot;pronto&quot;: o ajudante do ônibus vê na lista dele.</p>
+          <ul className="grid gap-3 lg:grid-cols-2">{parcels.map((p) => (
+            <li key={p.id} className="rounded-lg border border-border p-3 text-sm">
+              <p className="flex flex-wrap items-center gap-2"><b className="font-mono text-base">{p.label}</b> · {PARCEL_SIZE_LABEL[p.size]} · pedido {p.requestNumber}</p>
+              <p className="text-muted-foreground">{p.carrierName} · sai {new Date(p.departAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })} · embarque: {p.brasPoint}</p>
+              <p className="mt-1">{p.status === "PRONTO" ? "Pronto: aguardando o ajudante" : p.status === "COLETADO" ? "Coletado pelo ônibus" : p.status === "ACEITO" ? "Aceito pelo ônibus" : "Aguardando o ônibus aceitar"}{p.hasInvoice ? " · nota registrada" : " · sem nota"}</p>
+              {!p.hasInvoice && p.status !== "COLETADO" ? <ParcelInvoiceForm parcelId={p.id} /> : null}
+              {p.status === "ACEITO" ? <div className="mt-2"><MarkReadyButton parcelId={p.id} /></div> : null}
+            </li>
+          ))}</ul>
         </section>
       ) : null}
       <section aria-labelledby="t-and" className="mb-8">

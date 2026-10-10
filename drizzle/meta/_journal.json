@@ -379,6 +379,13 @@
       "when": 1791669374069,
       "tag": "0053_excursao_viagens_fardos",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1791673526740,
+      "tag": "0054_club_pontos",
+      "breakpoints": true
     }
   ]
 }

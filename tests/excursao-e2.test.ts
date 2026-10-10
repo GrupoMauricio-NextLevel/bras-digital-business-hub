@@ -11,6 +11,10 @@ import {
 } from "@/lib/domain/cargas/excursao";
 import { saveExcursionRules, DEFAULT_EXCURSION_RULES } from "@/lib/domain/cargas/regras-excursao";
 import { myFreights } from "@/lib/domain/frete/painel";
+import { addBrasImporter, createBrasRequest, setBrasOffer, setBrasRequestStatus } from "@/lib/domain/bras/catalogo";
+import { addBrasVideo } from "@/lib/domain/bras/videos";
+import { createImporterAccess } from "@/lib/domain/bras/importadora";
+import { importerParcels, markParcelReady } from "@/lib/domain/cargas/excursao";
 import { isValidNfeKey } from "@/lib/fiscal/nfe";
 import { parcelFreightStatus } from "@/lib/frete/situacao";
 
@@ -151,6 +155,35 @@ describe("fardos: reserva, aceite, coleta, viagem e entrega", () => {
     await expect(busCollectParcel(ctx.db, zé, "8001-01")).rejects.toThrow(/não encontrada/);
     await tripAction(ctx.db, bus, tripId, "SAIR");
     await expect(reserveParcels(ctx.db, ana, { tripId, items: { P: 1, M: 0, G: 0 }, storeName: "Loja", recipientName: "Ana" })).rejects.toThrow(/não está recebendo/);
+  });
+});
+
+describe("importadora: fardos dos pedidos dela", () => {
+  it("vê os fardos ligados aos pedidos, informa a nota e marca pronto; outra importadora não vê", async () => {
+    const imp = (await addBrasImporter(ctx.db, ctx.actors.master, { name: "XDX Importadora" })).id;
+    const outra = (await addBrasImporter(ctx.db, ctx.actors.master, { name: "Outra" })).id;
+    const v = (await addBrasVideo(ctx.db, ctx.actors.master, { url: "aaaaaaaaaa1", title: "Garrafa" })).id;
+    await setBrasOffer(ctx.db, ctx.actors.master, v, { importerId: imp, priceBoxCents: 30_000, unitsPerBox: 24, boxesAvailable: 50 });
+    const dono = await loginComo((await createImporterAccess(ctx.db, ctx.actors.master, imp, { name: "Dono", email: "d@xdx.teste", password: "senha-forte-1" })).userId);
+    const donoOutra = await loginComo((await createImporterAccess(ctx.db, ctx.actors.master, outra, { name: "Outro", email: "o@o.teste", password: "senha-forte-1" })).userId);
+    const { id: req } = await createBrasRequest(ctx.db, ana, { videoId: v, boxes: 1, carrier: "Ônibus", shipName: "Ana", shipAddress: "Rua A, 10", shipCity: "Belo Horizonte", shipState: "MG", shipZip: "30110-000" });
+    await setBrasRequestStatus(ctx.db, ctx.actors.master, req, "CONFIRMED");
+    const { id: tripId } = await createTrip(ctx.db, bus, null, { routeId, arriveBrasAt: inDays(2), departAt: inDays(2, 8) });
+    const r = await reserveParcels(ctx.db, ana, { tripId, items: { P: 0, M: 1, G: 0 }, storeName: "XDX Importadora", recipientName: "Ana", requestId: req });
+    const pid = r.parcels[0]!.id;
+    expect((await importerParcels(ctx.db, dono)).map((p) => p.label)).toEqual(["8001-01"]);
+    expect(await importerParcels(ctx.db, donoOutra)).toEqual([]);
+    await expect(markParcelReady(ctx.db, dono, pid)).rejects.toThrow(/aceito pelo ônibus/);
+    await respondParcel(ctx.db, bus, pid, { accept: true });
+    await expect(markParcelReady(ctx.db, donoOutra, pid)).rejects.toThrow(/não encontrado/);
+    await expect(setParcelInvoice(ctx.db, donoOutra, pid, NFE)).rejects.toThrow(/não encontrado/);
+    await setParcelInvoice(ctx.db, dono, pid, NFE);
+    await markParcelReady(ctx.db, dono, pid);
+    expect((await myFreights(ctx.db, ana)).find((f) => f.id === `trp-${pid}`)!.status).toBe("PRONTO");
+    await busCollectParcel(ctx.db, bus, "8001-01");
+    expect((await importerParcels(ctx.db, dono))[0]!.status).toBe("COLETADO");
+    // Reserva com pedido de outro membro é recusada.
+    await expect(reserveParcels(ctx.db, bia, { tripId, items: { P: 1, M: 0, G: 0 }, storeName: "Loja", recipientName: "Bia", requestId: req })).rejects.toThrow(/não encontrado/);
   });
 });
 

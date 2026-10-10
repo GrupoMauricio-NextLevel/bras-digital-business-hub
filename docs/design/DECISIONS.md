@@ -987,3 +987,38 @@ Pedido do dono: um painel prático "como um app de corrida" para o dono do ônib
   - "pronto na loja" marcado pela loja e "entregar no ônibus" no pedido (E3);
   - leitura do QR pela câmera (o campo aceita o código digitado).
 - Testes: `tests/excursao-e2.test.ts` (8) e e2e `bras-portal` passo 10 (rota, viagem, reserva com nota, aceite, coleta, saída, chegada e entrega).
+
+## D115 — Club E4: pontos do Brás Digital Club, indicações que viram desconto e o painel "Indique e ganhe" (2026-10-10)
+Pedido do dono: bonificar quem traz importadoras, transportadoras e clientes, com um painel gamificado, começando por pontos que viram desconto e ligado às indicações do Club.
+- **Moeda:** pontos (inteiros), com um razão append-only (`club_ledger`): o saldo é a soma dos lançamentos disponíveis.
+  - O valor do ponto fica no Master (rascunho: 100 pontos = R$ 1,00) e é congelado no resgate.
+  - Os pontos vencem em 12 meses, por ordem de chegada: os mais antigos são os primeiros usados e os primeiros a vencer; o vencimento é lançado na leitura, sem lançar duas vezes.
+  - Não viram dinheiro, não se sacam e não se transferem.
+- **Indicação → pontos só quando ativa** (evento real e pago):
+  - cliente: o primeiro pedido pago;
+  - transportadora: a primeira entrega concluída;
+  - ônibus: a primeira viagem encerrada;
+  - importadora: confirmada pelo Master.
+  - A tabela por tipo fica no Master (cliente 500, transportadora e ônibus 1.000, importadora 2.000, loja 500, guia 300).
+  - **Estorno:** pedido pago cancelado, sem outra compra paga do indicado, devolve a ativação e os pontos (ajuste negativo, nunca apagar); se o indicado voltar a comprar, credita uma vez mais, nunca duas.
+- **Antifraude:**
+  - crédito idempotente por origem e referência;
+  - mesmo WhatsApp e mesmo tipo valem uma vez;
+  - ninguém indica a si mesmo;
+  - teto de pontos de indicação por mês (20.000), acima do qual vai para a revisão do Master.
+- **Uma indicação, um dono:** cada membro tem um código e o link `/c/<código>`, liberado nas marcas de páginas fechadas como o `/r/`. Quem chega pelo link de um parceiro (`/r/`) fica com o parceiro (comissão) e não gera pontos.
+- **Painel "Indique e ganhe"**, o mesmo componente no Meu Brás, na transportadora e na importadora:
+  - saldo e quanto vale, pontos a caminho e a vencer;
+  - link e WhatsApp de convite, e indicação de transportadora, ônibus ou importadora conforme o papel;
+  - funil (convidados, cadastraram, ativaram, recorrentes);
+  - **missões do mês** (crédito uma vez por mês, por meta atingida, nunca por sorteio);
+  - **nível** (Membro, Frequente, VIP, pela atividade), **conquistas**, vales e extrato.
+- **Resgate = vale** (`VALE-XXXXXX`, 30 dias) mostrado no balcão de uma empresa participante; o Master baixa o vale uma vez, informando a empresa. Cancelar o vale ainda não usado devolve os pontos. O acerto entre empresas (quem paga o desconto) usa esse registro na próxima fase.
+- **Master** (Brás → Brás Digital Club): pontos emitidos e em vales, revisão, vales e baixa, todas as indicações (convidar e "marcar como ativada") e as regras dos pontos.
+- Testes: `tests/club-pontos-e4.test.ts` (6) e e2e `bras-portal` passo 11. Migração `0054_club_pontos`.
+
+## D116 — Club E3 (parte): a importadora prepara os fardos do ônibus (2026-10-10)
+- Na tela Transportadoras da importadora aparecem os fardos de ônibus ligados aos pedidos dela, com etiqueta, ônibus, saída e ponto de embarque, sem valores.
+- A importadora informa a chave da nota (é ela quem fatura) e marca **"pronto para coletar"**, o que só vale para fardo aceito pelo ônibus. O ajudante vê "pronto" na lista dele, e o cliente vê o passo "Pronto na loja" no painel de frete.
+- Outra importadora não vê nem mexe; a reserva só pode ligar um pedido do próprio cliente.
+- Teste: novo caso em `tests/excursao-e2.test.ts`.
