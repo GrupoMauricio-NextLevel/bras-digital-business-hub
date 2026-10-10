@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS "organization_products" (
   CONSTRAINT "organization_products_area_check" CHECK ("area" IN ('NEXTLEVEL_COMMERCE','SUPERDROP','BRAS_DIGITAL','CREATORS_HUB','CHINA_HUB')),
   CONSTRAINT "organization_products_status_check" CHECK ("status" IN ('ACTIVE','SUSPENDED','CLOSED'))
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "user_product_access" (
   "id" text PRIMARY KEY,
@@ -26,13 +27,17 @@ CREATE TABLE IF NOT EXISTS "user_product_access" (
   CONSTRAINT "user_product_access_area_check" CHECK ("area" IN ('NEXTLEVEL_COMMERCE','SUPERDROP','BRAS_DIGITAL','CREATORS_HUB','CHINA_HUB')),
   CONSTRAINT "user_product_access_role_check" CHECK ("role" IN ('PLATFORM_ADMIN','VERTICAL_ADMIN','SUPPLIER_ADMIN','MERCHANT_OWNER','CREATOR','PARTNER','OPERATOR','VIEWER'))
 );
+--> statement-breakpoint
 
 CREATE UNIQUE INDEX IF NOT EXISTS "user_product_access_unique"
   ON "user_product_access" ("user_id","organization_id","area","role");
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_product_access_user_idx"
   ON "user_product_access" ("user_id");
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_product_access_org_idx"
   ON "user_product_access" ("organization_id","area");
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "product_channels" (
   "product_id" text NOT NULL REFERENCES "products"("id"),
@@ -44,9 +49,11 @@ CREATE TABLE IF NOT EXISTS "product_channels" (
   CONSTRAINT "product_channels_pk" PRIMARY KEY ("product_id","area"),
   CONSTRAINT "product_channels_area_check" CHECK ("area" IN ('SUPERDROP','BRAS_DIGITAL','CREATORS_HUB','CHINA_HUB'))
 );
+--> statement-breakpoint
 
 ALTER TABLE "orders"
   ADD COLUMN IF NOT EXISTS "source_area" text NOT NULL DEFAULT 'SUPERDROP';
+--> statement-breakpoint
 
 DO $$ BEGIN
   ALTER TABLE "orders"
@@ -55,11 +62,13 @@ DO $$ BEGIN
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
+--> statement-breakpoint
 
 -- O legado atual é SuperDrop; o backfill apenas explicita isso sem duplicar produto/estoque.
 INSERT INTO "product_channels" ("product_id","area","active")
 SELECT "id",'SUPERDROP',true FROM "products"
 ON CONFLICT ("product_id","area") DO NOTHING;
+--> statement-breakpoint
 
 
 -- Habilitações iniciais por organização: preserva o comportamento atual.
@@ -68,6 +77,7 @@ SELECT "id",'SUPERDROP','ACTIVE'
 FROM "organizations"
 WHERE "type" IN ('SUPPLIER','MERCHANT')
 ON CONFLICT ("organization_id","area") DO NOTHING;
+--> statement-breakpoint
 
 INSERT INTO "organization_products" ("organization_id","area","status")
 SELECT o."id", a."area", 'ACTIVE'
@@ -81,6 +91,7 @@ CROSS JOIN (VALUES
 ) AS a("area")
 WHERE o."type" = 'NEXTLEVEL'
 ON CONFLICT ("organization_id","area") DO NOTHING;
+--> statement-breakpoint
 
 -- Converte os papéis legados em grants explícitos sem remover users.role.
 INSERT INTO "user_product_access"
@@ -101,6 +112,7 @@ SELECT
 FROM "users" u
 WHERE u."role" IN ('SUPPLIER_ADMIN','SUPPLIER_DISPATCH','STORE_OWNER')
 ON CONFLICT ("user_id","organization_id","area","role") DO NOTHING;
+--> statement-breakpoint
 
 INSERT INTO "user_product_access"
   ("id","user_id","organization_id","area","role","active")
@@ -121,3 +133,4 @@ CROSS JOIN (VALUES
 ) AS a("area")
 WHERE u."role" = 'NEXTLEVEL_MASTER'
 ON CONFLICT ("user_id","organization_id","area","role") DO NOTHING;
+--> statement-breakpoint

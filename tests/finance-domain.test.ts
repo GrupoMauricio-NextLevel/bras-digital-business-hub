@@ -139,7 +139,9 @@ describe("loja adquirida pelo fornecedor", () => {
 
   it("comissão em garantia não é abatida antes do prazo", async () => {
     const s = await createStore(ctx.db, ctx.seed.supplierId, { name: "Loja Recente", ownerName: "Dono", ownerEmail: "recente@loja.com", offer: "STORE_OWN" });
-    await markInvoicePaid(ctx.db, s.invoiceId!);
+    // Pago no dia 28: os 7 dias de garantia terminam no mês seguinte, qualquer que seja a data do teste.
+    const today = new Date();
+    await markInvoicePaid(ctx.db, s.invoiceId!, new Date(today.getFullYear(), today.getMonth(), 28, 12));
     const est = await estimateClosing(ctx.db, ctx.seed.supplierId, period(), true);
     expect(est.closing.lines.filter((l) => l.kind === "COMMISSION_CREDIT")).toHaveLength(2);
     await closeMonth(ctx.db, period());

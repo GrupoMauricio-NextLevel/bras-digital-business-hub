@@ -79,6 +79,7 @@ export async function seedShowcase(db: Database) {
     const id = newId("prd");
     productIds.push(id);
     await db.insert(s.products).values({ id, supplierId, networkId, categoryId: cat.id, name: p.name, slug: slugify(p.name), description: "Camisa de tecido leve e respirável, acabamento premium e modelagem confortável. Produto genérico, sem marca de clube.", sku: p.sku, images: [`art:${p.art}`], costCents: SHOWCASE_COST_CENTS, suggestedPriceCents: SHOWCASE_PRICE_CENTS, minimumPriceCents: 10000, distribution: "ALL_NETWORK", sellsUnit: true, sellsPack: false });
+    await db.insert(s.productChannels).values({ productId: id, area: "SUPERDROP", active: true });
     const vs = SIZES.map((size, position) => ({ id: newId("var"), productId: id, size, sku: `${p.sku}-${size}`, position }));
     await db.insert(s.productVariants).values(vs);
     variants.set(id, vs);
