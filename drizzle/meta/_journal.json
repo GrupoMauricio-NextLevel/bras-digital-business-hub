@@ -386,6 +386,13 @@
       "when": 1791673526740,
       "tag": "0054_club_pontos",
       "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1791676021345,
+      "tag": "0055_meu_contador",
+      "breakpoints": true
     }
   ]
 }

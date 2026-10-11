@@ -16,7 +16,7 @@ import { creditReferral } from "./pontos";
  */
 const digits = (v: string) => v.replace(/\D/g, "");
 export const carrierReferralSchema = z.object({
-  kind: z.enum(["TRANSPORTADORA", "ONIBUS", "IMPORTADORA"]),
+  kind: z.enum(["TRANSPORTADORA", "ONIBUS", "IMPORTADORA", "LOJA"]),
   name: z.string().trim().min(2, "Informe o nome").max(120),
   contactName: z.string().trim().max(80).optional().transform((v) => v || null),
   phone: z.string().transform(digits).refine((v) => v.length >= 10 && v.length <= 13, "WhatsApp com DDD"),
@@ -31,7 +31,9 @@ const CARGAS_URL = "https://cargas.nextlevelgroup.com.br";
 
 /** Convite pronto para o WhatsApp do indicado. */
 export function carrierInviteUrl(phone: string, name: string, referrer: string, kind: string = "TRANSPORTADORA") {
-  const text = kind === "IMPORTADORA"
+  const text = kind === "LOJA"
+    ? `Olá! Sou ${referrer}, cliente de vocês. Meu pedido vai pelo ônibus e precisa da nota para embarcar. Com o Nota Fácil da Brás Digital vocês emitem em poucos minutos, com condição especial para lojista novo: https://bras.nextlevelgroup.com.br`
+    : kind === "IMPORTADORA"
     ? `Olá! ${referrer} trabalha com a Brás Digital e indicou a ${name} para vender por caixa fechada para lojistas do Brasil inteiro, com painel próprio e grátis para começar: https://bras.nextlevelgroup.com.br`
     : `Olá! ${referrer} usa a NextLevel Cargas e indicou a ${name} para receber as cargas dele do Brás pelo sistema. É grátis para a transportadora: ${CARGAS_URL}`;
   return `https://wa.me/${phone.startsWith("55") ? phone : `55${phone}`}?text=${encodeURIComponent(text)}`;
@@ -43,9 +45,9 @@ export async function referCarrier(db: Database, actor: Actor, raw: z.input<type
   const me = await db.query.users.findFirst({ where: eq(users.id, actor.userId), columns: { name: true } });
   const referrer = me?.name?.split(" ")[0] ?? "Um cliente";
   // Já está no catálogo? Então não é indicação: o cliente escolhe direto.
-  const existing = v.kind === "IMPORTADORA" ? null : (await db.select({ id: trCarriers.id, name: trCarriers.name, phone: trCarriers.phone }).from(trCarriers)).find((c) => phoneKey(c.phone) === key);
+  const existing = v.kind === "IMPORTADORA" || v.kind === "LOJA" ? null : (await db.select({ id: trCarriers.id, name: trCarriers.name, phone: trCarriers.phone }).from(trCarriers)).find((c) => phoneKey(c.phone) === key);
   if (existing) return { status: "IN_CATALOG" as const, carrierId: existing.id, carrierName: existing.name };
-  const family = v.kind === "IMPORTADORA" ? (["IMPORTADORA"] as const) : (["TRANSPORTADORA", "ONIBUS"] as const);
+  const family = v.kind === "IMPORTADORA" ? (["IMPORTADORA"] as const) : v.kind === "LOJA" ? (["LOJA"] as const) : (["TRANSPORTADORA", "ONIBUS"] as const);
   const dup = await db.query.clubReferrals.findFirst({ where: and(inArray(clubReferrals.kind, [...family]), eq(clubReferrals.phone, key)) });
   if (dup) return { status: dup.referrerUserId === actor.userId ? ("MINE" as const) : ("ALREADY_REFERRED" as const), referralId: dup.id, whatsappUrl: carrierInviteUrl(key, dup.name, referrer, dup.kind) };
   const id = newId("crf");

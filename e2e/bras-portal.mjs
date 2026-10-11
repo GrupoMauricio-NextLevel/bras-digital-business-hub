@@ -821,6 +821,63 @@ ok("Club E2: rota, viagem, reserva com nota, aceite, coleta, viagem e entrega");
 }
 ok("Club E4: indicação ativada, pontos, vale e baixa no balcão");
 
+// 12. Club E5 (D117): fardo sem nota → Meu Contador; o contador resolve e a nota vai para o fardo.
+{
+  const NFE = "35261047173173000175550010000000111000000018";
+  const local = (h) => new Date(Date.now() + h * 3_600_000 - 3 * 3_600_000).toISOString().slice(0, 16);
+  const bus = await page(390);
+  await bus.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await bus.p.getByLabel("E-mail").fill("mauricio@starline.teste"); await bus.p.getByLabel("Senha").fill("senha-starline-1");
+  await bus.p.getByRole("button", { name: /^Entrar/ }).click();
+  await bus.p.waitForURL(/\/transportadora/, { timeout: 60000 });
+  await bus.p.goto(B + "/transportadora/rotas", { waitUntil: "networkidle" });
+  const tf = bus.p.getByRole("form", { name: "Abrir viagem" });
+  await tf.getByLabel("Chegada ao Brás").fill(local(48)); await tf.getByLabel("Saída de São Paulo").fill(local(56));
+  await tf.getByRole("button", { name: "Abrir viagem" }).click();
+  await bus.p.getByText(/Viagem 8002 aberta/).waitFor({ timeout: 30000 });
+  await bus.c.close();
+
+  const { c, p } = await page(390);
+  await loginMembro(p);
+  await p.goto(BRAS + "/meu-bras/fretes?ver=onibus&uf=MG&cidade=Belo+Horizonte", { waitUntil: "networkidle" });
+  const card = p.locator("li").filter({ hasText: "viagem 8002" }).first();
+  await card.getByText("Reservar espaço neste ônibus").click();
+  const form = p.getByRole("form", { name: "Reservar na viagem 8002" });
+  await form.getByLabel("Loja onde o ônibus coleta").fill("Loja do Zé"); await form.getByLabel("Quem retira na cidade").fill("Ana Recebimento");
+  await form.getByRole("button", { name: "Reservar espaço" }).click();
+  await p.getByText(/Reserva enviada/).waitFor({ timeout: 30000 });
+  await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+  const fr = p.locator("li").filter({ hasText: "Etiqueta 8002-01" }).first();
+  await fr.getByRole("button", { name: "Resolver agora com o Meu Contador" }).click();
+  const tk = fr.getByRole("form", { name: "Abrir chamado no Meu Contador" });
+  await tk.getByLabel("O que foi comprado").fill("10 kits de potes de vidro");
+  await tk.getByRole("button", { name: "Abrir chamado urgente" }).click();
+  await p.getByText(/Chamado 3001 aberto/).first().waitFor({ timeout: 30000 });
+  await p.goto(BRAS + "/meu-bras/meu-contador", { waitUntil: "networkidle" });
+  if (!(await p.getByText("Chamado 3001 · Loja do Zé").isVisible())) fail("meu contador: chamado não aparece para o cliente");
+  await check(p, "meu contador cliente", 390);
+  await shot(p, `${OUT}/33-meu-contador-390.png`);
+
+  const m = await page(1440);
+  await m.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await m.p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await m.p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await m.p.goto(B + "/bras/meu-contador", { waitUntil: "networkidle" });
+  const rf = m.p.getByRole("form", { name: "Resolver chamado" }).first();
+  await rf.getByLabel("Chave da nota emitida").fill(NFE); await rf.getByRole("button", { name: "Resolver" }).click();
+  await m.p.getByText("Resolvido: a nota foi para o fardo").first().waitFor({ timeout: 30000 });
+  await m.p.waitForTimeout(300); await m.p.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+  await check(m.p, "master meu contador", 1440);
+  await shot(m.p, `${OUT}/34-master-meu-contador-1440.png`);
+  await m.c.close();
+
+  await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+  if (!/Nota registrada/.test(await p.locator("li").filter({ hasText: "Etiqueta 8002-01" }).first().innerText())) fail("fretes: nota do Meu Contador não chegou ao fardo");
+  await c.close();
+}
+ok("Club E5: Meu Contador resolve a nota do fardo");
+
+
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
 console.log(`\nTudo certo. Capturas em ${OUT}`);

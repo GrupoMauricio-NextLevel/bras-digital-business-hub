@@ -2174,3 +2174,38 @@ export const clubCodes = pgTable("club_codes", {
   code: text("code").notNull().unique(),
   createdAt: createdAt(),
 });
+
+// ---------------------------------------------------------------------------
+// Nota em dia (D117): função emergencial "Meu Contador". Chamado urgente ligado ao fardo, com prazo até a saída do
+// ônibus; o contador resolve pelo caminho correto e a chave da nota volta para o fardo. Conversa própria do chamado
+// (quem abre pode ser cliente, importadora ou ônibus; o suporte da Brás é só do membro).
+// ---------------------------------------------------------------------------
+export const accountingTickets = pgTable("accounting_tickets", {
+  id: id(),
+  number: integer("number").notNull().unique(),
+  requesterUserId: text("requester_user_id").notNull().references(() => users.id),
+  parcelId: text("parcel_id").references(() => trParcels.id),
+  storeName: text("store_name").notNull(),
+  storePhone: text("store_phone"),
+  description: text("description").notNull(),
+  approxValueCents: integer("approx_value_cents"),
+  deadlineAt: ts("deadline_at"),
+  /** Preço do serviço congelado na abertura; cobrado só com a cobrança ligada pelo dono. */
+  priceCents: integer("price_cents").notNull().default(0),
+  status: text("status", { enum: ["ABERTO", "EM_ATENDIMENTO", "RESOLVIDO", "SEM_SOLUCAO", "CANCELADO"] }).notNull().default("ABERTO"),
+  assignedTo: text("assigned_to"),
+  invoiceKey: text("invoice_key"),
+  resolutionNote: text("resolution_note"),
+  resolvedAt: ts("resolved_at"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+}, (t) => [index("accounting_tickets_status_idx").on(t.status, t.deadlineAt), index("accounting_tickets_requester_idx").on(t.requesterUserId, t.createdAt)]);
+
+export const accountingTicketMessages = pgTable("accounting_ticket_messages", {
+  id: id(),
+  ticketId: text("ticket_id").notNull().references(() => accountingTickets.id),
+  author: text("author", { enum: ["CLIENTE", "CONTADOR"] }).notNull(),
+  authorUserId: text("author_user_id").notNull(),
+  body: text("body").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("accounting_ticket_messages_ticket_idx").on(t.ticketId, t.createdAt)]);

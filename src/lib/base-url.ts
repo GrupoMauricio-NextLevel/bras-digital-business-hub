@@ -11,3 +11,13 @@ export async function getBaseUrl(): Promise<string> {
 }
 
 export const isPublicHttps = (url: string) => url.startsWith("https://") && !/localhost|127\.0\.0\.1/.test(url);
+
+/**
+ * Endereço público de uma requisição (para redirecionar no mesmo domínio da marca). Atrás do proxy do Render,
+ * `req.url` traz o endereço interno (ex.: localhost:10000); o domínio real vem de x-forwarded-host.
+ */
+export function requestOrigin(req: Request): string {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? new URL(req.url).host;
+  const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ?? (/^(localhost|127\.)/.test(host) ? "http" : "https");
+  return `${proto}://${host}`;
+}

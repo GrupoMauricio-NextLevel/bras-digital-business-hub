@@ -1022,3 +1022,20 @@ Pedido do dono: bonificar quem traz importadoras, transportadoras e clientes, co
 - A importadora informa a chave da nota (é ela quem fatura) e marca **"pronto para coletar"**, o que só vale para fardo aceito pelo ônibus. O ajudante vê "pronto" na lista dele, e o cliente vê o passo "Pronto na loja" no painel de frete.
 - Outra importadora não vê nem mexe; a reserva só pode ligar um pedido do próprio cliente.
 - Teste: novo caso em `tests/excursao-e2.test.ts`.
+
+## D117 — Club E5: nota em dia com o Meu Contador, convite à loja e o link público corrigido (2026-10-11)
+Respostas do dono: o Brás Digital tem o emissor Nota Fácil, com promoção para lojistas novos (o cliente pede para a loja entrar), e a função emergencial "Meu Contador" resolve em horas quem está sem nota.
+- **Fardo sem nota** (no painel de frete do cliente) tem dois caminhos:
+  - **"Pedir a nota para a loja":** indicação do tipo LOJA no motor único (D113), com a mensagem pronta do Nota Fácil para o WhatsApp da loja; o mesmo WhatsApp vale uma vez;
+  - **"Resolver agora com o Meu Contador":** chamado urgente ligado ao fardo.
+- **Meu Contador** (`accounting_tickets` e `accounting_ticket_messages`; conversa própria porque quem abre pode ser cliente, importadora ou ônibus, e o suporte da Brás é só do membro):
+  - o prazo é a saída do ônibus, ou o prazo padrão do serviço quando não há fardo;
+  - um chamado aberto por fardo;
+  - o contador assume, conversa, e **resolve com a chave da nota** (conferida): a chave vai para o fardo, que embarca. Ou encerra **"sem solução"**, com o motivo para o cliente; o fardo vai na próxima viagem;
+  - o cliente cancela só antes do atendimento;
+  - indicadores: abertos, em atendimento, resolvidos, resolvidos antes do prazo, tempo médio.
+  - O sistema **não emite nota no lugar do vendedor**: organiza, acelera e registra.
+- **Preço, prazo e horário** ficam no Master (`fiscal.meu_contador`). O preço é congelado no chamado e a **cobrança fica desligada** até o dono publicar o preço (sem dinheiro de verdade antes disso).
+- **Quem atende:** a equipe do Master nesta etapa. O papel próprio do contador (acesso só à fila) entra quando o dono definir quem atende (pergunta 13).
+- **Correção em produção (antiga):** os links `/r/<parceiro>` e `/c/<convite>` redirecionavam para o endereço interno do servidor (`localhost:10000`), porque usavam `req.url` atrás do proxy do Render. Agora usam o domínio da requisição (`requestOrigin`, x-forwarded-host), com teste.
+- Testes: `tests/meu-contador-e5.test.ts` (4) e e2e `bras-portal` passo 12. Migração `0055_meu_contador`.
