@@ -137,7 +137,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_CARGAS),
       primaryColor: PALETTES.NEXTLEVEL_CARGAS.light.ink, accentColor: PALETTES.NEXTLEVEL_CARGAS.light.signal, logo: "nextlevel", wordmark: "Cargas",
       modules: [], emailFromName: "NextLevel Cargas", legalLine: LEGAL("NextLevel Cargas"), signupOpen: false, partnersOpen: false, soon: null,
-      landing: "cargas", publicPaths: ["/", ""], publicPatterns: ["^/motorista/[A-Za-z0-9_-]{32,64}$"],
+      landing: "cargas", publicPaths: ["/", "", "/ativar"], publicPatterns: ["^/motorista/[A-Za-z0-9_-]{32,64}$"],
       loginInvite: { lead: "Ainda não tem cadastro?", label: "Cadastrar minha transportadora", href: "/#cadastro" },
     },
     NEXTLEVEL: {

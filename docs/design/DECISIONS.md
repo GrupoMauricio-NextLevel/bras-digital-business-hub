@@ -1192,3 +1192,9 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - Gaveta acessível (Radix: foco preso, Esc fecha); a faixa é decorativa (`aria-hidden`); movimento reduzido respeitado.
 - **Ligada por marca** em Master → Financeiro → Descoberta → Barra do ecossistema (`ecossistema.barra`).
 - **Fica para depois:** conta do grupo (perfis ligados à mesma pessoa, com aceite) e passagem entre domínios por código de uso único; convites no momento certo com regras no Master. Hoje o link leva ao cadastro da outra marca.
+
+## D130 — Página de ativação ao trocar de marca (P5A) (2026-10-11)
+- **`/ativar?de=<marca>`** em cada marca (fora do índice de busca): título da marca de destino, a **ponte "de onde você vem → o que ganha aqui"**, três vantagens, **números reais da rede** (só contagens e só a partir de 3, para não mostrar "0 lojas"), o **benefício de entrada** (porta de entrada D126 quando ligada; "Cadastro grátis com CNPJ" na Brás) e o botão para o cadastro com a origem (`utm_source=grupo-<marca>`).
+- O lançador "Marcas do grupo" (D129) passa a levar para essa página. Liberada nas marcas de lista fechada (Brás e Cargas).
+- Domínio em `src/lib/domain/ecossistema/ativacao.ts` (mensagens padrão por marca e ponte por par de marcas). Nenhum dado pessoal: a página é igual para todos que vêm da mesma marca.
+- **Fica para depois (conta do grupo):** hoje cada e-mail é um usuário de um papel só, então ativar outra marca é um cadastro novo. Ligar perfis da mesma pessoa (com aceite), a passagem entre domínios por código de uso único e o "ativar em 1 clique" sem redigitar dependem dessa conta do grupo. As mensagens editáveis no Master com teste A/B também ficam para depois.

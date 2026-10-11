@@ -60,13 +60,14 @@ async function benefitOf(db: Database, b: EcoBrand, now: Date): Promise<string |
   }
   return "Cadastro grátis";
 }
-const signupOf = (b: EcoBrand) => (b === "NEXTLEVEL_CARGAS" ? brandByCode(b).baseUrl : `${brandByCode(b).baseUrl}/cadastro`);
+/** Leva à página de ativação da outra marca (D130), dizendo de onde a pessoa vem. */
+const activationOf = (b: EcoBrand, from: EcoBrand) => `${brandByCode(b).baseUrl}/ativar?de=${from}`;
 
 /** Barra da marca atual, ou `null` (desligada nesta marca). */
 export async function ecosystemBar(db: Database, current: EcoBrand | null, now = new Date()): Promise<EcoBar | null> {
   if (!current || !(await getEcoSettings(db)).brands.includes(current)) return null;
   const live = ECO_BRANDS.filter((b) => b === current || brandByCode(b).live);
-  const item = async (b: EcoBrand, reason?: string): Promise<EcoItem> => ({ brand: b, name: brandByCode(b).name, pitch: PITCH[b], color: paletteOf(b).light.signal, href: b === current ? "/" : signupOf(b), benefit: b === current ? null : await benefitOf(db, b, now), reason, current: b === current });
+  const item = async (b: EcoBrand, reason?: string): Promise<EcoItem> => ({ brand: b, name: brandByCode(b).name, pitch: PITCH[b], color: paletteOf(b).light.signal, href: b === current ? "/" : activationOf(b, current), benefit: b === current ? null : await benefitOf(db, b, now), reason, current: b === current });
   const recommended = await Promise.all(RECOMMEND[current].filter((r) => live.includes(r.brand)).map((r) => item(r.brand, r.reason)));
   return {
     current,

@@ -7,7 +7,7 @@ import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
  */
 export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/transportadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
-export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/quero-minha-loja", "/termos", "/privacidade"];
+export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string } | { kind: "rewrite"; path: string };
