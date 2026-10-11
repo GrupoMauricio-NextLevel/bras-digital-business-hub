@@ -1,5 +1,7 @@
 # MAURÍCIO: AGENTE DE IA DO GRUPO MAURICIO (racional + prompt mestre de engenharia, v1)
 
+> **Atualizado pela v2:** `docs/prompts/mauricio-agente-ia-v2.md` amplia este documento (todos os públicos, cliente final, páginas públicas, níveis N0 a N6). Esta v1 continua valendo como base técnica do Maurício nos painéis.
+>
 > Documento de ideias e especificação. **Nada aqui está implementado.** Serve para alinhar o dono e para entregar a um engenheiro (humano ou IA) construir o agente em todos os painéis e marcas do grupo.
 >
 > Partes: **A** racional para o dono · **B** recomendações técnicas que fazem diferença · **C** prompt mestre para o engenheiro · **D** prompt de sistema do próprio Maurício · **E** catálogo inicial de ferramentas · **F** pendências de decisão · **G** riscos.
