@@ -5,6 +5,7 @@ const ITEMS = [
   { key: "precos", label: "Preços do grupo", href: "/master/financeiro/precos" },
   { key: "descoberta", label: "Descoberta", href: "/master/financeiro/descoberta" },
   { key: "proposta", label: "Proposta de preço", href: "/master/financeiro/proposta" },
+  { key: "experimentos", label: "Experimentos", href: "/master/financeiro/experimentos" },
   { key: "catalogo", label: "Catálogo e preços", href: "/master/financeiro/catalogo" },
   { key: "ofertas", label: "Ofertas e comissões", href: "/master/financeiro/ofertas" },
   { key: "assinaturas", label: "Assinaturas", href: "/master/financeiro/assinaturas" },

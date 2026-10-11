@@ -2406,3 +2406,31 @@ export const crossOpportunities = pgTable("cross_opportunities", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("cross_opportunities_status_idx").on(t.status)]);
+
+/**
+ * Experimentos (D136, fase P6): cada peça da porta de entrada e do ecossistema pode rodar como experimento, com grupo de
+ * controle × grupo novo sorteado por cliente (fixo), métrica principal, métrica de guarda, tamanho mínimo e data de
+ * leitura combinados antes. Nada vira padrão sem leitura escrita e decisão do dono.
+ */
+export const EXPERIMENT_PIECES = ["PORTA_SUPERDROP", "PORTA_COMMERCE", "BENEFICIOS"] as const;
+export const EXPERIMENT_STATUSES = ["RASCUNHO", "RODANDO", "ENCERRADO"] as const;
+export const experiments = pgTable("experiments", {
+  id: id(),
+  piece: text("piece", { enum: EXPERIMENT_PIECES }).notNull(),
+  name: text("name").notNull(),
+  status: text("status", { enum: EXPERIMENT_STATUSES }).notNull().default("RASCUNHO"),
+  /** % dos clientes novos que vão para o grupo novo (o resto fica no controle, como hoje). */
+  treatmentPct: integer("treatment_pct").notNull().default(50),
+  primaryMetric: text("primary_metric", { enum: ["ATIVACAO_30", "PAGANTE_30"] }).notNull(),
+  guardMetric: text("guard_metric", { enum: ["RECEITA_POR_CLIENTE", "SAIDA_30"] }).notNull(),
+  minPerGroup: integer("min_per_group").notNull().default(100),
+  readAt: ts("read_at").notNull(),
+  startedAt: ts("started_at"),
+  endedAt: ts("ended_at"),
+  /** Leitura escrita e decisão do dono (texto livre), obrigatórias para encerrar. */
+  reading: text("reading"),
+  decision: text("decision"),
+  createdBy: text("created_by").notNull(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("experiments_piece_idx").on(t.piece, t.status)]);

@@ -11,6 +11,7 @@ import { clubBalance } from "../club/pontos";
 import { getClubRules, pointsToCents } from "../club/regras";
 import { storeAccess } from "../store-access";
 import type { EntrySnapshot } from "../precos/porta-entrada";
+import { inTreatment } from "../experimentos";
 
 /**
  * Benefícios gamificados nos painéis (D128, fase P5V do prompt de público e preço). **Um agregador só**: carteira do
@@ -149,6 +150,8 @@ async function storeSimulator(db: Database, storeId: string, brand: BenefitBrand
 export async function benefitsPanel(db: Database, actor: Actor, now = new Date()): Promise<BenefitsPanel | null> {
   const brand = await brandOfActor(db, actor);
   if (!brand || !(await getBenefitsSettings(db)).brands.includes(brand)) return null;
+  // Experimento (D136): com um rodando, só o grupo novo vê os benefícios.
+  if (!(await inTreatment(db, "BENEFICIOS", actor.storeId ?? actor.userId, now))) return null;
   const [rules, bal] = await Promise.all([getClubRules(db), clubBalance(db, actor.userId, now)]);
   const wallet = { points: bal.available, valueCents: pointsToCents(bal.available, rules), expiringSoon: bal.expiringSoon, href: brand === "BRAS_DIGITAL" ? "/meu-bras/club" : brand === "NEXTLEVEL_CARGAS" ? "/transportadora/indicacoes" : null };
 

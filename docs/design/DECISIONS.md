@@ -1231,3 +1231,9 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
   - **fila de oportunidades cruzadas** (tabela `cross_opportunities`, migração 0062): regras v1 = loja que vendeu R$ 1.000+ em 30 dias e não compra na Brás; membro da Brás com pedido pago e sem frete do grupo; loja no plano grátis vendendo R$ 3.000+ (um plano pago já sairia mais barato). Cada uma com situação (nova, em contato, ativou, descartada), dono (quem mexe primeiro) e auditoria;
   - **placar do mês:** ativações por pessoa (só número e posição).
 - **Fica para depois:** funções de equipe no Master (Comercial, Suporte, Financeiro, Conteúdo) com permissões separadas, regras das oportunidades editáveis no Master, metas e bônus pelo motor de comissões, fila única de suporte e o placar das empresas do grupo (o acerto entre empresas já existe no Club, D120).
+
+## D136 — Experimentos: controle × grupo novo, leitura com incerteza e decisão do dono (P6) (2026-10-11)
+- **Master → Financeiro → Experimentos** (`/master/financeiro/experimentos`, tabela `experiments`, migração 0063): peça (porta de entrada do SuperDrop, da Commerce ou benefícios nos painéis), % no grupo novo, métrica principal (1ª venda ou pagou em 30 dias), métrica de guarda (receita por cliente ou saída), tamanho mínimo e data de leitura **combinados antes** (nasce em rascunho).
+- **Sorteio fixo por loja** (o mesmo cliente cai sempre no mesmo grupo). Com experimento rodando, só o grupo novo recebe a peça; sem experimento, a peça vale para todos quando ligada. Um experimento rodando por peça.
+- **Leitura:** lojas com 30 dias de casa por grupo, a métrica principal e a de guarda, e a frase em português simples dizendo se a diferença ainda pode ser acaso (teste de duas proporções, 95%). Avisa quando ainda não passou da data ou do tamanho combinados.
+- **Encerrar exige leitura escrita e decisão** (registradas e auditadas): nada vira padrão sem isso.

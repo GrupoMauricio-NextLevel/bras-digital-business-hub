@@ -1,4 +1,5 @@
 import { activeDoor, doorFields } from "./precos/porta-entrada";
+import { inTreatment } from "./experimentos";
 import { and, count, desc, eq, gte, inArray, lt, ne, sql, sum } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -58,7 +59,7 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
   if (await subscriptionOf(db, input.storeId)) throw new DomainError("SUB_EXISTS", "Esta loja já tem assinatura.");
   const { version, amountCents, feeBps } = await planPrice(db, input.productKey, input.cycle);
   // Porta de entrada da Commerce ligada (D126): teste reverso que cai no grátis, no lugar da oferta de entrada clássica.
-  const door = input.allowOffer === false ? null : await activeDoor(db, "NEXTLEVEL_COMMERCE", now);
+  const door = input.allowOffer === false || !(await inTreatment(db, "PORTA_COMMERCE", input.storeId, now)) ? null : await activeDoor(db, "NEXTLEVEL_COMMERCE", now);
   if (door && input.taxId) {
     const claimed = await db.insert(offerRedemptions).values({ id: newId("ofr"), offerKey: door.offerKey, offerVersion: door.version, taxId: input.taxId, storeId: input.storeId }).onConflictDoNothing().returning({ id: offerRedemptions.id });
     if (claimed.length) {

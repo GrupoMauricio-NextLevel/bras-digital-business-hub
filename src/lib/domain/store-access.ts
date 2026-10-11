@@ -15,6 +15,7 @@ import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
 import { isClosedCommerceSupplier } from "./bras/fronteira";
 import { activeDoor, creditPlanCashback, doorFields, type EntrySnapshot } from "./precos/porta-entrada";
+import { inTreatment } from "./experimentos";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
@@ -84,7 +85,7 @@ export async function startTrial(db: Database, input: { storeId: string; code: s
   const claimed = await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) });
   if (claimed) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
   // Porta de entrada do SuperDrop ligada (D126): teste reverso da porta no lugar dos dias do cupom.
-  const door = await activeDoor(db, "SUPERDROP", now);
+  const door = (await activeDoor(db, "SUPERDROP", now)) && (await inTreatment(db, "PORTA_SUPERDROP", store.id, now)) ? await activeDoor(db, "SUPERDROP", now) : null;
   const ends = new Date(now.getTime() + (door ? door.trialDays : coupon.trialDays) * DAY);
   await db.transaction(async (tx) => {
     await tx.insert(trialClaims).values({ taxId, storeId: store.id, couponId: coupon.id });
@@ -240,7 +241,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });
   else {
     // Porta do SuperDrop ligada (D126): sem cupom também entra pelo teste reverso (um por CPF/CNPJ).
-    const door = await activeDoor(db, "SUPERDROP", now);
+    const door = (await activeDoor(db, "SUPERDROP", now)) && (await inTreatment(db, "PORTA_SUPERDROP", created.storeId, now)) ? await activeDoor(db, "SUPERDROP", now) : null;
     const claimed = door ? await db.insert(trialClaims).values({ taxId, storeId: created.storeId }).onConflictDoNothing().returning({ taxId: trialClaims.taxId }) : [];
     if (door && claimed.length) {
       await db.update(stores).set({ trialEndsAt: new Date(now.getTime() + door.trialDays * DAY).toISOString(), ...doorFields(door, now) }).where(eq(stores.id, created.storeId));
