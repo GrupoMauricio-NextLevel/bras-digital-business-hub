@@ -1,11 +1,11 @@
 # Prompt de engenheiro mestre: público, personas, preço e porta de entrada de todas as marcas NextLevel
 
 > **Para que serve:** ser a base do próximo grupo de adaptações e melhorias em **todas as marcas**: SuperDrop, NextLevel Commerce, Brás Digital, NextLevel Cargas (com a Excursão), Brás Digital Club, Nota Fácil e Meu Contador, Programa de Parceiros, e depois Hub Creators e China Hub.
-> **Duas partes:**
+> **Duas partes** (a Parte A inclui, na seção A9, como mostrar os benefícios gamificados nos painéis):
 > - **Parte A** é o racional que o Claude já fez (2026-10-11), lendo o código, os documentos e o mercado.
 > - **Parte B** é o prompt para aprofundar a descoberta de cada usuário com dados reais, entrevistas e testes de preço, e só então mudar planos, telas e ofertas.
 >
-> **Como usar:** leia a Parte A, responda as perguntas da seção A9 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
+> **Como usar:** leia a Parte A, responda as perguntas da seção A10 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
 > **Autoridade:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` > `docs/design/DECISIONS.md` > este documento. Nada daqui vale como decisão até virar D-número.
 > **Legenda das afirmações:**
 > - **[fato]**: está no código ou no documento;
@@ -231,7 +231,86 @@ As duas ficam para depois, sem domínio até haver código.
 
 Os números são **pontos de partida para teste**, não decisão. O critério é: o grátis cobre o custo de servir com a taxa; o pago fica abaixo do concorrente equivalente; o upgrade se paga sozinho a partir de um volume claro.
 
-## A9. Perguntas para o dono (respondem a Parte B mais rápido)
+## A9. Como mostrar: os benefícios gamificados nos painéis, didáticos e atraentes
+> **Ponto de partida [fato]:** já existe o painel "Indique e ganhe" (`src/components/club/club-panel.tsx`), igual em todos os papéis: saldo, nível, convite, funil, missões com barra, conquistas, vales, extrato e ranking. Ele funciona, mas é uma lista de caixas parecidas, com pontos sem valor em reais em vários lugares, e fica escondido numa página. **A proposta é evoluir esse painel e espalhar os benefícios onde o cliente trabalha, não criar um "joguinho" à parte.**
+
+### A9.1 Princípios (valem para todas as marcas)
+1. **Sempre em reais.** Todo ponto aparece também em reais ("12.000 pontos = R$ 120 de desconto"). Ponto sem valor em reais não ensina nada.
+2. **O próximo passo é o herói.** Cada bloco responde "o que eu faço agora para ganhar?", com um botão que leva à tela que resolve (direção do `painel-interno`).
+3. **Mostrar o prêmio antes da tarefa.** "Publique a loja → ganhe +7 dias de Pro e 300 pontos." A recompensa aparece na trilha antes de ser conquistada, com cadeado aberto ou fechado.
+4. **Progresso visível e honesto.** Barras e degraus com números reais ("2 de 3"), sem contador falso de urgência.
+5. **Comemorar o marco, uma vez só.** Primeira venda, nível novo, vale usado: uma comemoração leve (selo animado e toast), sem atrapalhar o trabalho e sem repetir o mesmo evento.
+6. **Linguagem de quem lê no celular.** Frases curtas, verbos de ação e um "como funciona" de 3 passos ilustrados ao alcance de um toque.
+7. **Identidade de cada marca, mesma anatomia.** A cor de sinal e a tipografia são da marca; o desenho do componente é o mesmo em todos os painéis. O cliente que circula entre marcas reconhece a "carteira do grupo".
+8. **Sem cara de cassino.** Nada de roleta, sorteio, caça-níquel, raspadinha ou "você ganhou!" sem motivo. Sorteio exige autorização legal, e o prompt do Club já proíbe (seção 12 dele).
+
+### A9.2 Os componentes (um kit só, reaproveitado em todos os painéis)
+| # | Componente | O que mostra | Por que ensina | Onde aparece |
+|---|---|---|---|---|
+| 1 | **Carteira do Grupo** (faixa fixa) | Saldo em pontos e em reais + o próximo marco ("faltam 2 indicações para Frequente") | O cliente vê que tem dinheiro de desconto parado | Topo de todos os painéis (lojista, membro Brás, ônibus, transportadora, importadora, parceiro) |
+| 2 | **Trilha de primeiros passos** | 5 a 7 marcos da persona, em escada ou linha (publicar loja → 1º produto → 1ª venda → 1º Pix recebido…), com o prêmio de cada marco | Leva ao primeiro valor e mostra os "dias ganhos por conquista" | Primeira tela de cada painel nos primeiros 30 dias; depois recolhe |
+| 3 | **Medidor do teste** | Dias restantes do teste reverso, o que ele usou do plano pago e o que muda se voltar ao grátis (com marcação ✓/✗) | Mostra a perda, não a cobrança, e reduz a surpresa no fim do teste | Faixa no painel durante o teste e tela de fim de teste |
+| 4 | **Simulador "quando o plano se paga"** | Gráfico simples: custo no grátis × no pago conforme as vendas do mês, com o ponto de cruzamento e o marcador "você está aqui" | Transforma o upgrade em conta | Página de planos e cartão no painel quando ele passa do ponto de cruzamento |
+| 5 | **Escada de níveis** | Membro → Frequente → VIP como degraus, com as vantagens de cada um, o atual destacado e o que falta para subir | O cliente sabe o que ganha ao subir | Página do Club e cartão da carteira |
+| 6 | **Cartões de missão** | Meta do mês, barra, prazo ("faltam 9 dias"), recompensa em reais e a etiqueta "quase lá" quando passa de 70% | Meta curta e clara puxa o hábito | Página do Club e um cartão "missão da semana" no painel |
+| 7 | **Vitrine "Onde usar seus pontos"** | Recompensas do grupo com preço em pontos e em reais: tema, Loja Pronta, Meu Contador, frete da Starline, vale na Mega Tron. "Você já pode" fica destacado | Dá desejo e mostra o valor do cashback | Página do Club e sugestão no lugar certo (ex.: no frete, "use 3.000 pontos") |
+| 8 | **Passe do Grupo** | Mapa das marcas com o que está liberado (cadeado aberto) e como liberar o resto | Mostra o ecossistema como vantagem e puxa a venda cruzada | Página do Club e perfil |
+| 9 | **Extrato que conta a história** | Linha do tempo: ganhou (de quê), usou (onde), vai vencer (quando), com o aviso de 30 dias e o botão "usar agora" | Confiança: o cliente entende de onde veio cada ponto | Página do Club |
+| 10 | **Resumo de economia** | "Este ano você economizou R$ X com o Grupo" (anual, cashback, frete, vales), em cartão que dá para compartilhar sem dado sensível | Prova o valor de ficar e serve de divulgação | Página do Club, uma vez por mês, e um resumo anual |
+| 11 | **Ranking da cidade** | Pódio discreto, só com a posição (já existe, D122) | Comparação social sem prêmio por posição | Página do Club |
+| 12 | **Comemoração** | Selo animado e toast no marco (1ª venda, nível novo) | Reforço positivo no momento certo | Onde o marco acontece |
+
+### A9.3 Esboço (celular, 360 px)
+```
+┌──────────────────────────────────────┐
+│ 💰 R$ 34,50 em pontos   [Usar ▸]     │  ← Carteira do Grupo (faixa fixa)
+│ Faltam 2 indicações para Frequente   │
+├──────────────────────────────────────┤
+│ Seus primeiros passos      3 de 6    │  ← Trilha
+│ ●━━━●━━━●━━━○━━━○━━━○                │
+│ ✓ Loja no ar   ✓ 1º produto          │
+│ ✓ 1ª venda (+7 dias, +300 pts)       │
+│ → Próximo: receba o 1º Pix           │
+│   prêmio: +200 pts (R$ 2)  [Fazer ▸] │
+├──────────────────────────────────────┤
+│ Teste do Pro: faltam 6 dias          │  ← Medidor do teste
+│ ▓▓▓▓▓▓▓▓░░░░                          │
+│ No grátis você mantém: loja, vendas  │
+│ Você perde: tema Pro, taxa 2,5%→7%   │
+│ Com suas vendas, o Pro se paga.      │
+│ [Ver a conta]  [Assinar no Pix]      │
+└──────────────────────────────────────┘
+```
+
+### A9.4 O que cada persona vê primeiro (a mesma peça, com outro foco)
+| Persona | Primeiro destaque | Tom |
+|---|---|---|
+| P1 Carla (revendedora) | Trilha até a 1ª venda + carteira simples | "Você está a 1 passo da sua primeira venda" |
+| P2 Marcos (fornecedor) | Rede ativada: revendedoras convidadas → com venda, com prêmio por revendedora ativa | "Sua rede vendeu R$ X esta semana" |
+| P3/P4 Juliana e Rodrigo (Commerce) | Simulador do plano + Passe do Grupo + vitrine (temas) | Profissional, número primeiro |
+| P5 Dona Cida (Brás) | **Economia em reais** (frete do ônibus, cashback na Mega Tron), letra maior, poucos blocos | "Você economizou R$ 86 neste mês" |
+| P6 Rafael (marketplace) | Escada de níveis e missões (descobertas, análises) | Desafio e status |
+| P7 Importadora | Pedidos de fora de São Paulo e destaque conquistado | Resultado comercial |
+| P8 Dono do ônibus | Medidor do bagageiro (já existe) + pontos dos clientes que viajam com ele | "Seu bagageiro está 70% cheio" |
+| P11 Guia de excursão | Pontos dos passageiros dele virando desconto | "Seus passageiros te renderam R$ X" |
+| P12 Parceiro | Escada de comissão (já existe nos parceiros) + próxima faixa | "Mais 2 ativações e você sobe para 20%" |
+
+### A9.5 Regras de desenho e de acessibilidade
+- **Direção visual:** a "mesa do atacadista" (`docs/design/DIRECAO-VISUAL-V4.md`): papel quente, tinta, uma cor de sinal por marca e linhas finas. Evite gradiente roxo, cartões idênticos com sombra e ícone genérico em círculo.
+- **Gráficos:** pela skill `dataviz`: um gráfico por pergunta, cores da marca, rótulo direto (sem legenda distante) e número tabular.
+- **Movimento:** curto (até 400 ms), só nos marcos, e respeitando `prefers-reduced-motion` (sem animação para quem pediu).
+- **Acessibilidade AA:**
+  - toda barra com `role="progressbar"` e texto equivalente;
+  - informação nunca só pela cor;
+  - foco visível;
+  - sem rolagem horizontal em 360 px;
+  - contraste conferido com `readableOn`.
+- **Velocidade:** a carteira e a trilha vêm de uma consulta só por bloco, com esqueleto de carregamento. Nada de cálculo pesado a cada tela.
+- **Didático de verdade:**
+  - cada componente tem o link "Como funciona", com 3 passos ilustrados e uma pergunta frequente;
+  - o vocabulário é o mesmo em todas as marcas: pontos, vale, nível, missão, conquista.
+
+## A10. Perguntas para o dono (respondem a Parte B mais rápido)
 1. Pode ter plano grátis permanente no Commerce e no SuperDrop, com taxa maior sobre a venda? (Sugestão: sim.)
 2. Teste reverso de 14 dias que cai para o grátis, em vez de bloquear? (Sugestão: sim.)
 3. Anual "pague 8, leve 12" no Pix + 1 mês em pontos: o caixa aguenta? (Sugestão: testar com 100 clientes.)
@@ -240,6 +319,9 @@ Os números são **pontos de partida para teste**, não decisão. O critério é
 6. Quais combinações do Passe do Grupo você topa dar de presente?
 7. Tem números reais por marca (cadastros, ativações, vendas, cancelamentos)? Posso tirar do banco do Neon, só agregados e sem dados pessoais?
 8. Pode entrevistar de 5 a 8 clientes por marca? (Fornecedores do SuperDrop, a Starline, a Mega Tron, lojistas do Brás.)
+9. A Carteira do Grupo pode ficar fixa no topo de todos os painéis, ou prefere um ícone que abre? (Sugestão: faixa fixa nos primeiros 30 dias, depois um ícone com o saldo.)
+10. Comemoração com animação no marco (1ª venda, nível novo): pode? (Sugestão: sim, leve e uma vez por marco.)
+11. Quais recompensas entram primeiro na vitrine "Onde usar seus pontos"? (Sugestão: tema, Meu Contador, frete da Starline e vale na Mega Tron.)
 
 ---
 
@@ -367,6 +449,31 @@ Estenda, não duplique:
   - e2e no navegador do caminho completo de cada persona principal;
   - SuperDrop com teste de regressão;
   - tudo desligado por padrão.
+
+## B6b. Fase P5V: os benefícios gamificados nos painéis (visual e didático)
+Construa o kit da seção A9 **evoluindo o que existe** (`src/components/club/club-panel.tsx`, medidor do bagageiro, escada de comissão dos parceiros), sem criar um segundo sistema de pontos.
+- **Domínio:**
+  - um agregador só, `src/lib/domain/beneficios/painel.ts`, junta o saldo do Club, o nível, as missões, a trilha da persona, o estado do teste e o simulador do plano;
+  - entrega tudo pronto para a tela, com os valores em centavos e em pontos;
+  - **o componente não decide regra**;
+  - a trilha de cada persona (marcos, prêmio e ordem) fica no Master (`platform_settings`), versionada.
+- **Componentes:** `src/components/beneficios/*`:
+  - CarteiraGrupo, TrilhaMarcos, MedidorTeste, SimuladorPlano, EscadaNivel, CartaoMissao, VitrineRecompensas, PasseGrupo, ExtratoHistoria, ResumoEconomia, Comemoracao;
+  - todos na galeria do design system, com a cor de cada marca e o modo claro e escuro.
+- **Onde liga:**
+  1. Carteira e trilha no topo dos painéis do lojista (SuperDrop e Commerce), do Meu Brás, do ônibus, da transportadora, da importadora e do parceiro;
+  2. medidor do teste durante a oferta reversa;
+  3. simulador na página de planos e como cartão quando o cliente passa do ponto de cruzamento;
+  4. vitrine de recompensas na página do Club e como sugestão no frete e na compra de serviços.
+- **Comemoração e marcos:** cada marco é um evento idempotente (uma comemoração por marco por pessoa), registrado para medir a ativação.
+- **Medição:** eventos "viu", "clicou" e "concluiu" para cada componente, lidos no painel do experimento (fase P6). A pergunta é se a trilha e a carteira aumentam a ativação e a assinatura.
+- **Aceite (skills `acceptance-designer`, `qa-visual`, `painel-interno`):**
+  - capturas em 360, 768 e 1440 px de cada painel, em modo claro e escuro, mostradas ao dono antes de publicar;
+  - `axe` sem violação grave; navegação por teclado; movimento reduzido respeitado;
+  - todo ponto exibido também em reais; nenhum texto de sorteio ou promessa de ganho;
+  - teste de domínio do agregador (saldo, próximo marco, trilha por persona, simulador com números conhecidos);
+  - e2e: o lojista completa um marco e vê a comemoração uma vez; a carteira atualiza; o simulador mostra o cruzamento;
+  - tudo atrás de chave, ligado por marca, SuperDrop por último e com teste de regressão.
 
 ## B7. Fase P6: experimento e leitura
 - Cada peça vira um **experimento** com uma chave no Master:
