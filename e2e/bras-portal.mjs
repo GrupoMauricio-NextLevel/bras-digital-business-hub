@@ -1140,6 +1140,15 @@ if (process.env.MP_FAKE) {
   await m.p.reload({ waitUntil: "networkidle" });
   if (!(await m.p.getByText(/1 resposta\(s\)/).first().isVisible())) fail("descoberta: a resposta não foi somada");
   await shot(m.p, `${OUT}/46-master-descoberta-1440.png`);
+
+  // P3/P4 (D125): Proposta de preço em rascunho, com guarda-corpos e 12 meses em 3 cenários.
+  await m.p.goto(`${B}/master/financeiro/proposta`, { waitUntil: "networkidle" });
+  if (!(await m.p.getByRole("heading", { name: "Proposta de preço" }).isVisible())) fail("proposta: título não aparece");
+  if (await m.p.getByText("Não passa nos guarda-corpos").count()) fail("proposta: o rascunho padrão não passa nos guarda-corpos");
+  await check(m.p, "master proposta de preço", 1440);
+  await shot(m.p, `${OUT}/47-master-proposta-1440.png`);
+  await m.p.setViewportSize({ width: 360, height: 900 });
+  await check(m.p, "master proposta de preço (celular)", 360);
   await m.c.close();
 }
 ok("Club E8a: cartão no balcão, compra vira ponto e acerto entre empresas; preços do grupo e descoberta no Master");

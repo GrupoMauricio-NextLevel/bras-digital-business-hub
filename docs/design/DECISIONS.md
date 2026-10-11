@@ -1150,3 +1150,13 @@ Prompt de público e preço, fases P1 e P2.
   - o Master vê a mediana e a faixa aceitável só a partir de um mínimo de respostas por marca (padrão 5).
 - **Roteiros de entrevista** por persona em `docs/descoberta/ROTEIROS.md` (o dono aprova antes de usar; gravação só com consentimento).
 - Testes: `tests/funil-marcas-p1.test.ts`, `tests/questionario-preco-p2.test.ts`. e2e: passo 15 de `e2e/bras-portal.mjs`. Migração `0060_questionario_preco`.
+
+## D125 — Personas v1 e proposta de preço em rascunho, com simulação (2026-10-11) — RASCUNHO
+Prompt de público e preço, fases P3 e P4. **Em rascunho: nenhum preço de cliente muda.** Virar regra depende da aprovação do dono por escrito (pergunta da última fase).
+- **Personas v1** (`docs/descoberta/PERSONAS.md`): cartões P1 a P12 com fonte em cada afirmação ([sistema], [mercado], [hipótese]) e o mapa de fricção F1 a F10 com a tela e a fase que resolve.
+- **Master → Financeiro → Proposta de preço** (`/master/financeiro/proposta`):
+  - rascunho editável (`platform_settings` `precos.proposta`, com auditoria): escada da seção A8 (Commerce: Começo grátis 2,5%, Start R$ 89, Pro R$ 199, Scale R$ 449; SuperDrop: Começo grátis 7%, Loja R$ 79, Própria R$ 179), teste reverso de 14 dias, dias por conquista (+7 publicar, +7 1ª venda, teto 30), anual "pague 8, leve 12", 5% de cashback em pontos;
+  - **guarda-corpos no cenário base**: o grátis cobre o custo de servir; nenhum plano dá prejuízo; ponto de equilíbrio de cada plano contra o grátis;
+  - **12 meses em 3 cenários** contra o modelo de hoje (lido do catálogo e da tabela do SuperDrop), mais a proposta com a conversão de hoje (mostra quanto do ganho depende de mais gente assinar);
+  - custos da tabela do SuperDrop (infraestrutura, cobrança) e o custo real do ponto (margem dos serviços).
+- Simulador puro em `src/lib/finance/entry-sim.ts`. Documento: `docs/descoberta/ARQUITETURA-PRECO.md`. Testes: `tests/proposta-preco-p4.test.ts`.
