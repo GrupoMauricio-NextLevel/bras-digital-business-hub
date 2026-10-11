@@ -1,11 +1,16 @@
 # Prompt de engenheiro mestre: público, personas, preço, benefícios e o ecossistema NextLevel (arquivo consolidado)
 
 > **Para que serve:** ser a base do próximo grupo de adaptações e melhorias em **todas as marcas**: SuperDrop, NextLevel Commerce, Brás Digital, NextLevel Cargas (com a Excursão), Brás Digital Club, Nota Fácil e Meu Contador, Programa de Parceiros, e depois Hub Creators e China Hub.
-> **Duas partes.** A Parte A inclui os benefícios gamificados nos painéis (A9), a barra do ecossistema e a página de ativação ao trocar de marca (A10), e o Club como assinatura que abre todas as marcas (A11):
+> **Duas partes.** A Parte A inclui:
+> - os benefícios gamificados nos painéis (A9);
+> - a barra do ecossistema e a página de ativação ao trocar de marca (A10);
+> - o Club como assinatura que abre todas as marcas (A11);
+> - as quatro camadas do ecossistema (A12 a A16): Master e equipes, fornecedores e prestadores, usuários finais e captação, páginas públicas;
+> - a matriz de cobertura (A17).
 > - **Parte A** é o racional que o Claude já fez (2026-10-11), lendo o código, os documentos e o mercado.
 > - **Parte B** é o prompt para aprofundar a descoberta de cada usuário com dados reais, entrevistas e testes de preço, e só então mudar planos, telas e ofertas.
 >
-> **Como usar:** leia a Parte A, responda as perguntas da seção A13 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
+> **Como usar:** leia a Parte A, responda as perguntas da seção A19 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
 > **Autoridade:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` > `docs/design/DECISIONS.md` > este documento. Nada daqui vale como decisão até virar D-número.
 > **Legenda das afirmações:**
 > - **[fato]**: está no código ou no documento;
@@ -32,8 +37,14 @@
    - **Club** (grátis, pontos para todos);
    - **Club+** (multiplica pontos e dá desconto em todas as marcas);
    - **Club Total** (entrada paga de todas as marcas numa assinatura só) (A11).
-7. **Como tudo se encaixa** numa jornada de ponta a ponta (A12) e **o que preciso de você** (A13).
-8. **Parte B:** fases P0 a P6 para descobrir, decidir e construir atrás de chaves, com o SuperDrop por último.
+7. **O mesmo racional em quatro camadas (A12 a A16):**
+   - **Master:** a Torre do Ecossistema para o Mauricio gestor, a fila de oportunidades e as metas gamificadas da equipe comercial, e a fila única de suporte com prazo, nota e placar.
+   - **Fornecedores e prestadores** (importadoras, fornecedores, parceiros, transportadoras, ônibus, contadores): reputação, demanda vinda das outras marcas, missões e Carteira B2B.
+   - **Usuários finais:** o fio do grupo em toda página de captação, com o **Club como elo** em destaque, e interconexão em comprovantes, e-mails, marcos e perfil.
+   - **Páginas públicas:** o mesmo fio, a faixa "Parte do Grupo NextLevel" e o cruzamento por intenção.
+8. **A matriz de cobertura (A17)** mostra peça por superfície e é a regra de pronto de cada fase.
+9. **Como tudo se encaixa** numa jornada de ponta a ponta (A18) e **o que preciso de você** (A19).
+10. **Parte B:** fases P0 a P6 (com P5V, P5E, P5A, P5C, P5M, P5F, P5U e P5P) para descobrir, decidir e construir atrás de chaves, com o SuperDrop por último.
 
 ## Mapa do documento
 | Seção | Assunto |
@@ -44,8 +55,14 @@
 | A9 | Benefícios gamificados nos painéis (visual e didático) |
 | A10 | Barra do ecossistema e página de ativação ao trocar de marca |
 | A11 | Club como assinatura que abre o ecossistema |
-| A12 | A jornada completa: como tudo se encaixa |
-| A13 | Perguntas para o dono |
+| A12 | As quatro camadas e o Club como elo |
+| A13 | Master: Mauricio gestor, equipe comercial e equipe de suporte |
+| A14 | Fornecedores e prestadores de serviço |
+| A15 | Usuários finais, captação e interconexão |
+| A16 | Páginas públicas |
+| A17 | Matriz de cobertura (regra de pronto) |
+| A18 | A jornada completa: como tudo se encaixa |
+| A19 | Perguntas para o dono |
 | B0 a B10 | Prompt de execução por fases (P0 a P6) |
 
 ---
@@ -576,7 +593,207 @@ Celular: o fio fica no topo; o lançador entra no menu "Mais" da barra de baixo.
 - **Conta do grupo com aceite:** o Club Total só funciona com os perfis ligados à mesma pessoa (A10.2).
 - **Nenhuma marca vê os dados da outra:** o Club guarda só nível, saldo e benefícios.
 
-## A12. A jornada completa: como tudo se encaixa
+## A12. As quatro camadas do ecossistema (o mesmo racional em toda superfície)
+> **Pedido do dono (alinhamento):** o racional precisa chegar a **quatro públicos**: o Master (o Mauricio gestor, a equipe comercial e a equipe de suporte); os fornecedores e prestadores de serviço; os usuários finais de todas as plataformas (com o fio em todas as páginas de captação e o **Club como elo**); e todas as páginas públicas, com o mesmo racional dos painéis.
+
+**A regra comum (vale para as quatro camadas):** toda superfície do grupo tem, na medida certa para quem a usa, as **mesmas sete peças**:
+1. **Fio do grupo** (A10.4, camada 1).
+2. **Lançador do grupo** (A10.4, camada 2).
+3. **Carteira do Grupo e Club** (A9 e A11).
+4. **Convite no momento certo** (A10.4, camada 3).
+5. **Página de ativação** (A10.10).
+6. **Progresso gamificado** (trilha, missões, níveis, metas).
+7. **Medição** (o que cruzou de uma marca para outra).
+
+A matriz da seção A17 mostra peça por superfície e garante que nada fica de fora.
+
+### A12.1 O Club como elo (o centro do desenho)
+- **O Club é a única peça que aparece em todas as superfícies.** O fio do grupo tem um **nó do Club** no centro, em amarelo do grupo: é por ele que se entra no ecossistema.
+- **Uma conta, uma carteira, um cartão.** Cliente, fornecedor e prestador têm o mesmo cartão do Club (A9 e D120). Os pontos de tudo vão para a mesma Carteira.
+- **Toda conquista em qualquer marca soma no Club:** venda, compra, fardo entregue, nota em dia, indicação, entrega no prazo.
+- **A assinatura (Club+ e Club Total, A11) é a porta para todas as marcas.** Toda página de captação oferece "entre pelo Club".
+
+## A13. Camada Master: o Mauricio gestor, a equipe comercial e a equipe de suporte
+> **Pense como o Mauricio:** "quero ver o ecossistema girar, saber onde está o dinheiro e a oportunidade entre as empresas, e fazer a minha equipe comercial e a de suporte renderem mais, com metas claras e reconhecimento."
+
+**O que já existe [fato]:**
+- Torre de controle (`control-tower.ts`: nota de saúde, oportunidades e alertas por loja).
+- Central de clientes e modo suporte seguro (`support.ts`, AD2).
+- Escritório virtual (`nextlevel-office.ts`), CRM corporativo, parceiros, financeiro, marcas.
+- Na Brás: Estúdio, atendimento, Club, acerto entre empresas (D120) e Meu Contador (D117).
+
+**O que falta [fato]:**
+- **Hoje só existe o papel `NEXTLEVEL_MASTER`.** Não há funções de equipe (comercial, suporte, financeiro) com fila, meta e permissão próprias.
+- Não há visão do **cliente do grupo** (a mesma pessoa em várias marcas).
+
+### A13.1 Torre do Ecossistema (o Mauricio gestor)
+Uma tela de abertura do Master que responde em 10 segundos "como o grupo está girando hoje":
+- **Mapa de fluxo entre marcas:** quantos clientes de A ativaram B no mês (SuperDrop → Brás, Brás → Excursão…). É um diagrama de fluxo simples, pela skill `dataviz`, com as cores ecossistema das marcas (A10.5).
+- **Índice do Ecossistema:** % de clientes com 2 marcas ou mais, receita cruzada, pontos emitidos × usados e Club+ e Club Total ativos. Meta do mês com barra de progresso.
+- **Acerto entre empresas** (D120) visual: quem deve a quem neste mês, com o botão "marcar acertado".
+- **Placar das empresas do grupo:** quanto cada uma (Starline, Mega Tron, NextLevel) **gerou e recebeu** de cliente das outras.
+- **Alertas que pedem decisão:**
+  - cliente grande em risco em duas marcas;
+  - convite com muitas recusas;
+  - teste reverso terminando sem conversão em massa;
+  - acerto vencido.
+
+  Cada alerta tem um botão para resolver (direção do `painel-interno`: "o que eu faço agora?").
+- **Simulador de decisões:** "se eu der 3 meses de Prata para quem assina o Commerce, quanto custa e quanto volta" (motor `engine.ts`).
+
+### A13.2 Equipe comercial (gamificada para vender mais)
+- **Funções de equipe no Master:**
+  - Comercial, Suporte, Financeiro e Conteúdo, cada uma com sua fila e permissões (padrão já usado nas funções da importadora, D110);
+  - só o dono e o financeiro veem valores de acerto entre empresas.
+- **Fila de oportunidades cruzadas** (gerada pelo sistema):
+  - "cliente do SuperDrop vendendo bem e sem Brás";
+  - "importadora sem loja própria";
+  - "ônibus com bagageiro vazio na próxima viagem";
+  - "teste reverso terminando em 2 dias".
+
+  Cada item tem o motivo, o benefício do Passe do Grupo para oferecer, a mensagem pronta e o botão "enviar página de ativação" (A10.10).
+- **Metas e placar do time:**
+  - metas do mês por pessoa e por equipe: ativações cruzadas, Club+ e Club Total vendidos, recuperação de testes;
+  - barra de progresso, ranking do time (só posição e número, sem expor cliente) e conquistas internas ("primeira venda de Club Total", "10 ativações cruzadas").
+- **Comissão interna** (opcional, decisão do dono): bônus por meta atingida, calculado pelo motor de comissões que já existe.
+- **Roteiros e materiais:** os scripts de abordagem por persona (A5) e a matriz de mensagens (A10.10) ficam disponíveis na fila, com o "como funciona" de cada marca.
+
+### A13.3 Equipe de suporte (gamificada para resolver mais rápido e melhor)
+- **Fila única de atendimento do grupo:**
+  - chat da Brás, chamados do Meu Contador, ocorrências de coleta e fardo, pós-venda das lojas;
+  - prazo (SLA) por plano e por nível do Club, e prioridade para Club+ e Club Total;
+  - **a marca de origem aparece com a cor ecossistema**.
+- **Visão do cliente do grupo** (com a conta do grupo e com aceite): em que marcas está, nível do Club, testes, últimas ocorrências. Entra pelo **modo suporte seguro** que já existe, com motivo e registro.
+- **Gamificação do suporte:**
+  - resolvidos no prazo, nota do cliente após o atendimento (1 a 5) e sequência de dias sem atraso;
+  - placar da semana com reconhecimento ("atendente da semana");
+  - metas de **conversão no suporte**: atendimento que termina com o cliente ativando um benefício ou outra marca (sempre por mérito, nunca empurrando).
+- **Respostas prontas por marca e persona**, com o link para a página de ativação ou para o "como funciona".
+
+## A14. Camada dos fornecedores e prestadores de serviço
+> **Quem são:**
+> - importadoras do Brás e fornecedores (Centrais do SuperDrop, Mega Tron);
+> - parceiros comerciais (afiliados, consultores, agências, influenciadores);
+> - parceiros de serviço (transportadoras, ônibus de excursão, contadores do Meu Contador, gravação de conteúdo) e os próximos que vierem.
+
+**O que já existe [fato]:**
+- painel da importadora com funções de equipe (D110);
+- painel do fornecedor (Central, esteira, expedição, faturas);
+- painel da transportadora e do ônibus (D111 a D119);
+- painel do parceiro (comissão em faixas, D-PA);
+- fila do Meu Contador no Master (D117). O contador parceiro ainda não tem acesso próprio.
+
+### A14.1 O que todos os parceiros ganham (as sete peças, na versão de negócio)
+1. **Fio do grupo e lançador:** mostram as marcas **onde há demanda para ele**. Exemplos:
+   - para a transportadora, "clientes do SuperDrop e da Brás pedindo frete na sua rota";
+   - para a importadora, "lojistas do Commerce procurando o seu tipo de produto".
+2. **Carteira do Grupo:** os pontos do parceiro valem em serviços B2B do grupo (destaque pago, gravação no showroom, temas, Meu Contador), com o acerto entre empresas.
+3. **Reputação no ecossistema (selo e nível do parceiro):** Bronze, Prata e Ouro, calculados por **qualidade real**:
+   - entregas no prazo;
+   - avaliação (já existe para transportadora, D118);
+   - nota em dia;
+   - pedidos sem ocorrência;
+   - tempo de resposta.
+
+   O nível dá **vantagens concretas**: aparecer antes no catálogo (rotulado e sem esconder os outros, seção 3.4 do prompt do Club), taxa menor, prioridade no suporte.
+4. **Demanda do ecossistema:** uma fila de oportunidades vindas das **outras** marcas, só agregadas e sem dado do cliente (padrão D118). Exemplos:
+   - "23 pedidos para MG nesta semana";
+   - "3 lojistas pediram cotação de potes";
+   - "12 fardos sem nota esperando contador".
+5. **Missões do parceiro:**
+   - "entregue 20 coletas no prazo este mês";
+   - "responda chamados em até 2 horas";
+   - "traga 2 importadoras".
+
+   Cada uma com recompensa em pontos e em reputação.
+6. **Página de ativação para o parceiro:** a transportadora que descobre a Excursão, a importadora que descobre o Commerce e o contador que descobre o Nota Fácil ativam com um clique, com o benefício do Passe.
+7. **Painel da rede:** "você atende clientes de 3 marcas do grupo", "você trouxe 5 clientes para o Club". A **indicação** em todas as direções (D113 e D115) aparece em destaque.
+
+### A14.2 Prestador de serviço contábil (novo papel)
+- Escritório de contabilidade parceiro, com registro no CRC, com **acesso só à fila do Meu Contador** (pergunta 13 do prompt do Club).
+- Ganha: prazo e placar de chamados resolvidos, nota do cliente, nível de parceiro e a vitrine no Nota Fácil para lojas que precisam de contador.
+- Ele também tem o fio do grupo e a Carteira.
+
+## A15. Camada dos usuários finais e das páginas de captação
+> **Quem são:** revendedores (SuperDrop), marcas (Commerce), membros (Brás), clientes de frete e de ônibus, passageiros e guias (Club).
+
+### A15.1 Em toda página de captação (o fio sempre, com o Club em destaque)
+**Quais páginas:** cadastro, entrada (login), "quero minha loja", lista de espera, convite de parceiro (`/r/`), convite do Club (`/c/`), página de ativação, página de planos e "esqueci a senha".
+
+**O que todas têm:**
+- o **fio do grupo** no topo, com o nó do Club em destaque;
+- um **selo do Club** no formulário: "Ao entrar, você já é membro do Brás Digital Club: seus pontos valem em todas as marcas do grupo";
+- o benefício de boas-vindas em reais;
+- a **mesma oferta de entrada** (A7), escrita igual em todas as marcas: grátis para começar, 14 dias do plano do meio e "cancela quando quiser";
+- quem vem por convite (`/r/`, `/c/`) vê **quem convidou** (primeiro nome) e o benefício dos dois lados.
+
+### A15.2 Interconexão nas outras partes (não só no topo)
+| Onde | O que entra |
+|---|---|
+| Fim de um marco (1ª venda, 1ª compra, 1º fardo) | A comemoração mostra os pontos ganhos e **uma** sugestão de outra marca que ajuda no próximo passo |
+| Comprovantes e recibos (Pix, retirada, coleta) | Rodapé "Grupo NextLevel · você ganhou X pontos no Club" |
+| E-mails transacionais (`src/lib/email.ts`) | Rodapé com o fio do grupo em versão estática, o saldo do Club e um convite contextual por e-mail no máximo |
+| Painel de frete, catálogo, pedidos | Convites no momento certo (A10.4), com limite de frequência |
+| Perfil e conta | "Suas marcas" (conta do grupo), o cartão do Club e "ligar outra marca" |
+| Central de ajuda | O "como funciona" do ecossistema e do Club em 3 passos |
+| Notificações | No máximo 1 notificação de ecossistema por semana, desligável |
+
+### A15.3 Club em destaque para o usuário final
+- O **cartão do Club** é a segunda coisa que a pessoa vê depois do cadastro (logo após a trilha).
+- Na **vitrine "Onde usar seus pontos"** (A9), as recompensas são das **outras** marcas do grupo, e é isso que puxa o cruzamento.
+- O **comparativo Club, Club+ e Club Total** aparece quando a pessoa usa a segunda marca: é o momento em que a assinatura passa a compensar.
+
+## A16. Camada das páginas públicas (o mesmo racional dos painéis)
+**Quais páginas:** página inicial de cada marca, planos, temas, página do fornecedor (`/f/`), descobertas da Brás (`/d/`), página da Cargas e da Excursão, termos e privacidade, e as futuras páginas do Club, da Excursão e do Nota Fácil (dependem das fotos reais, `docs/prompts/fotos-club-excursao.md`).
+
+**O que todas têm:**
+- **Fio do grupo no topo**, com o mesmo comportamento dos painéis: "acorda" ao passar o mouse e leva à página pública de cada marca.
+- **Faixa "Parte do Grupo NextLevel"** perto do rodapé:
+  - as marcas como cartões com a cor ecossistema e "para quem é";
+  - o **Club no centro**: "Uma conta, pontos em todas as marcas";
+  - a família de marcas vem de `brand.ts`, sem texto fixo.
+- **Rodapé da família:** todas as marcas ativas, o Club e "seja parceiro" (fornecedor, importadora, transportadora, contador).
+- **Cruzamento por intenção:** a página de uma marca mostra a outra quando ela completa a história. Exemplos:
+  - a página do SuperDrop mostra "frete para o interior pelo ônibus";
+  - a da Brás mostra "revenda online no SuperDrop";
+  - a da Cargas mostra "seus clientes ganham pontos no Club".
+- **A mesma oferta de entrada e a mesma linguagem** dos painéis (A7), com o mesmo nome para cada coisa.
+- **Regras de página pública** (skill `pagina-de-vendas`):
+  - só ativos reais;
+  - número só com fonte (contagem real da rede);
+  - sem promessa de ganho;
+  - página leve (o fio é um componente de servidor, sem script pesado).
+
+**Onde NÃO entra:** a vitrine (loja) do lojista e a página do fornecedor em marca branca (white label), que pertencem à marca do cliente.
+
+**Isolamento:**
+- cada marca continua no seu domínio e com as suas regras de endereço (`host-routing.ts`);
+- o fio só tem links para as outras marcas, nunca mistura conteúdo.
+
+## A17. Matriz de cobertura (garante que tudo é alcançado)
+Legenda: ● tem · ◐ versão reduzida · — não tem (de propósito).
+
+| Superfície | Fio | Lançador | Carteira e Club | Convite no momento | Ativação | Gamificação | Medição |
+|---|---|---|---|---|---|---|---|
+| **Master: Mauricio (Torre do Ecossistema)** | ● | ● (todas as marcas) | ● (visão do grupo) | ● (alertas) | ◐ (enviar ao cliente) | ● (índice e metas) | ● |
+| **Master: equipe comercial** | ● | ● | ◐ | ● (fila de oportunidades) | ● (enviar página) | ● (metas, placar, conquistas) | ● |
+| **Master: equipe de suporte** | ● | ● | ◐ (visão do cliente) | ◐ | ● (link na resposta) | ● (prazo, nota, sequência) | ● |
+| **Importadora** | ● | ● | ● | ● | ● | ● (reputação, missões) | ● |
+| **Fornecedor (Central, Mega Tron)** | ● | ● | ● | ● | ● | ● | ● |
+| **Parceiro comercial (afiliado)** | ● | ● | ● | ● | ● | ● (faixas de comissão) | ● |
+| **Transportadora e ônibus** | ● | ● | ● | ● | ● | ● (reputação, bagageiro) | ● |
+| **Contador parceiro** | ● | ◐ | ● | ◐ | ● | ● (fila, prazo, nota) | ● |
+| **Usuário final: painéis** (lojista, membro, cliente de frete) | ● | ● | ● (destaque) | ● | ● | ● (trilha, missões, níveis) | ● |
+| **Páginas de captação** (cadastro, login, convites, planos, ativação) | ● (nó do Club em destaque) | — | ◐ (selo do Club) | — | ● | — | ● |
+| **Páginas públicas das marcas** | ● | — | ◐ (faixa do grupo) | ◐ (cruzamento por intenção) | ● (link) | — | ● |
+| **E-mails e comprovantes** | ◐ (estático) | — | ◐ (saldo) | ◐ (1 convite) | ● (link) | — | ● |
+| **Vitrine do lojista, marca branca, expedição, motorista, balcões, checkout** | — | — | — | — | — | — | — |
+
+**Regra de pronto:** uma fase só termina quando todas as células ● e ◐ das superfícies que ela toca existem e passaram no aceite da Parte B (capturas, `axe` e e2e).
+
+As células "—" têm um **teste que garante a ausência**: a vitrine do lojista e o checkout nunca mostram o grupo.
+
+## A18. A jornada completa: como tudo se encaixa
 **Exemplo: a Carla, do primeiro dia ao Club Total [hipótese].**
 1. **Dia 1, SuperDrop:**
    - entra pelo convite do fornecedor (Marcos) no plano **Começo grátis**, com o teste reverso de 14 dias de Pro;
@@ -600,7 +817,7 @@ Celular: o fio fica no topo; o lançador entra no menu "Mais" da barra de baixo.
 
 O mesmo desenho vale para a Dona Cida (Brás → Excursão → SuperDrop), a Juliana (Commerce → Brás) e o dono do ônibus (Cargas → Club).
 
-## A13. Perguntas para o dono (respondem a Parte B mais rápido)
+## A19. Perguntas para o dono (respondem a Parte B mais rápido)
 1. Pode ter plano grátis permanente no Commerce e no SuperDrop, com taxa maior sobre a venda? (Sugestão: sim.)
 2. Teste reverso de 14 dias que cai para o grátis, em vez de bloquear? (Sugestão: sim.)
 3. Anual "pague 8, leve 12" no Pix + 1 mês em pontos: o caixa aguenta? (Sugestão: testar com 100 clientes.)
@@ -619,13 +836,18 @@ O mesmo desenho vale para a Dona Cida (Brás → Excursão → SuperDrop), a Jul
 16. Club como assinatura: aprova testar os três níveis (Club grátis, Club+ por cerca de R$ 29,90 e Club Total por cerca de R$ 247)? (Sugestão: testar primeiro o Club+, que tem menos risco, e o Club Total com um grupo pequeno.)
 17. No Club Total, quais planos de entrada entram? (Sugestão: Loja SuperDrop, Commerce Start, Brás Prata e Cargas Pro; os maiores seguem à parte, com desconto.)
 18. Quais benefícios da Mega Tron e da Starline entram no Club+? (Sugestão: condição de atacado no balcão da Mega Tron e desconto no frete da Starline, com o acerto entre empresas.)
+19. Funções de equipe no Master: quais você quer agora? (Sugestão: Comercial e Suporte primeiro, depois Financeiro e Conteúdo.)
+20. Metas do time comercial e do suporte: tem bônus em dinheiro por meta, ou só reconhecimento no começo? (Sugestão: começar com reconhecimento e placar; bônus depois de 2 meses de dados.)
+21. A reputação de parceiro (Bronze, Prata, Ouro) pode dar taxa menor e aparecer antes no catálogo, sempre com rótulo? (Sugestão: sim.)
+22. O contador parceiro tem escritório definido? (É o primeiro prestador de serviço contábil com acesso só à fila do Meu Contador.)
+23. Os e-mails transacionais podem levar o rodapé do grupo com o saldo do Club e um convite? (Sugestão: sim, um convite no máximo por e-mail.)
 
 ---
 
 # PARTE B: o prompt (cole numa sessão nova)
 
 ## B0. Seu papel e o contrato
-Você é o engenheiro mestre de produto e preço da NextLevel. Sua missão é **descobrir em profundidade quem usa cada marca** e transformar isso em **uma arquitetura única de entrada, preço, benefícios, cashback e ecossistema para o grupo, com o Club como a assinatura que liga todas as marcas**, implementada no motor que já existe, sem quebrar o SuperDrop em produção.
+Você é o engenheiro mestre de produto e preço da NextLevel. Sua missão é **descobrir em profundidade quem usa cada marca** e transformar isso em **uma arquitetura única de entrada, preço, benefícios, cashback e ecossistema para o grupo, com o Club como a assinatura que liga todas as marcas**, aplicada nas quatro camadas (Master e equipes, fornecedores e prestadores, usuários finais e captação, páginas públicas) conforme a matriz de cobertura (A17), implementada no motor que já existe, sem quebrar o SuperDrop em produção.
 
 **Leia antes:**
 - `CLAUDE.md`, `AGENTS.md` e `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`;
@@ -848,7 +1070,76 @@ Siga a seção A11. Só depois da P4 (arquitetura de preço) aprovada.
   - e2e: assinar o Club Total no Pix e ver todas as marcas liberadas;
   - aprovação do dono por escrito antes de ligar.
 
-## B6f. Ordem recomendada das fases
+## B6g. Fase P5M: Master, equipe comercial e equipe de suporte
+Siga as seções A13 e A17.
+- **Funções de equipe no Master** (Comercial, Suporte, Financeiro, Conteúdo):
+  - permissões no servidor (`requireRole` e verificação de função), cada uma com a sua fila;
+  - só o dono e o financeiro veem os valores de acerto;
+  - migração e testes de acesso.
+- **Torre do Ecossistema:**
+  - fluxo entre marcas, índice do ecossistema, placar das empresas do grupo, acerto entre empresas e alertas com ação;
+  - dados agregados e consultas em lote (uma por bloco).
+- **Fila de oportunidades cruzadas:**
+  - regras no Master (condição, motivo, benefício, mensagem), versionadas;
+  - cada oportunidade com dono, estado (nova, em contato, ativou, descartada) e histórico.
+- **Metas e placar do time:**
+  - metas por pessoa e por equipe, conquistas internas e bônus opcional pelo motor de comissões;
+  - o placar mostra só número e posição, nunca dado de cliente.
+- **Fila única de suporte:**
+  - Brás, Meu Contador, ocorrências de frete e pós-venda;
+  - prazo por plano e por nível do Club, nota do cliente, sequência sem atraso e respostas prontas com o link de ativação;
+  - visão do cliente do grupo pelo modo suporte seguro (motivo e registro).
+- **Aceite:**
+  - testes de permissão (o comercial não vê o acerto; o suporte não altera preço);
+  - teste do índice com números conhecidos;
+  - e2e: o comercial recebe a oportunidade, envia a página de ativação, o cliente ativa e a oportunidade fica "ativou" com a meta somando;
+  - capturas em 1440 e 768 px (Master) e `axe` sem violação grave.
+
+## B6h. Fase P5F: fornecedores e prestadores de serviço
+Siga a seção A14.
+- **Reputação de parceiro** (Bronze, Prata, Ouro):
+  - cálculo no domínio a partir de dados reais (prazo, avaliação, nota em dia, ocorrências, tempo de resposta);
+  - regras e vantagens no Master;
+  - destaque sempre rotulado, sem esconder concorrentes.
+- **Demanda do ecossistema** por tipo de parceiro: sempre agregada, sem cliente, sem valor e sem pedido individual (padrão D118).
+- **Missões do parceiro e Carteira B2B:** os pontos valem em serviços do grupo, com acerto entre empresas.
+- **Papel de contador parceiro:** acesso só à fila do Meu Contador, com prazo, nota e nível.
+- **Fio, lançador e página de ativação** em todos os painéis de parceiro, com a demanda daquela marca para ele.
+- **Aceite:**
+  - teste de isolamento (o parceiro nunca vê dado de cliente de outra marca);
+  - reputação com números conhecidos;
+  - e2e de uma transportadora vendo a demanda vinda do SuperDrop e ativando a Excursão;
+  - capturas em 360 e 1440 px.
+
+## B6i. Fase P5U: usuários finais, captação e interconexão
+Siga a seção A15.
+- **Fio com o nó do Club** e o selo do Club em todas as páginas de captação: cadastro, login, convites `/r/` e `/c/`, planos, ativação, lista de espera, "esqueci a senha".
+- **Mesma oferta de entrada e mesmo texto** nas páginas de captação de todas as marcas (vindos do catálogo do Master).
+- **Interconexão:**
+  - comemoração de marco com uma sugestão;
+  - rodapé do grupo nos comprovantes e nos e-mails transacionais (`src/lib/email.ts`, versão estática do fio);
+  - "suas marcas" no perfil;
+  - limite de frequência dos convites.
+- **Club em destaque:** cartão logo após o cadastro, vitrine com recompensas das outras marcas e o comparativo dos níveis ao usar a segunda marca.
+- **Aceite:**
+  - e2e de cadastro em cada marca mostrando o fio e o selo do Club;
+  - e-mail de teste com o rodapé do grupo;
+  - nenhum convite no checkout nem no pagamento;
+  - capturas em 360, 768 e 1440 px.
+
+## B6j. Fase P5P: páginas públicas
+Siga a seção A16 (com a skill `pagina-de-vendas`).
+- **Fio do grupo** como componente de servidor em todas as páginas públicas das marcas (exceto a vitrine do lojista e a marca branca).
+- **Faixa "Parte do Grupo NextLevel"** e o **rodapé da família**, com o Club no centro, gerados a partir de `brand.ts`.
+- **Cruzamento por intenção** entre as páginas e **a mesma oferta de entrada** dos painéis.
+- **Páginas do Club, da Excursão e do Nota Fácil** só com as fotos reais da lista (`fotos-club-excursao.md`).
+- **Aceite:**
+  - capturas em 360, 768 e 1440 px de cada página pública, claro e escuro;
+  - velocidade medida pela skill `desempenho` (o fio não piora a primeira dobra);
+  - `axe` sem violação grave;
+  - teste de endereço (`host-routing`): os links levam ao domínio certo de cada marca e a vitrine do lojista continua sem o fio.
+
+## B6k. Ordem recomendada de todas as fases
 | Ordem | Fase | Depende de |
 |---|---|---|
 | 1 | P0 fonte única de preço | — |
@@ -859,7 +1150,13 @@ Siga a seção A11. Só depois da P4 (arquitetura de preço) aprovada.
 | 6 | P5V benefícios gamificados (Carteira, trilha, medidor, simulador) | P5 |
 | 7 | P5E barra do ecossistema · P5A página de ativação (com a conta do grupo) | P5V |
 | 8 | P5C Club+ e Club Total | P4, P5A |
-| 9 | P6 experimento e leitura | cada fase acima, ao ligar |
+| 9 | P5U usuários finais, captação e interconexão (fio com o nó do Club em toda captação) | P5E |
+| 10 | P5F fornecedores e prestadores de serviço | P5E, P5V |
+| 11 | P5M Master: Torre do Ecossistema, equipe comercial e suporte | P5A, P5F |
+| 12 | P5P páginas públicas (depois das fotos reais para Club, Excursão e Nota Fácil) | P5E, P5U |
+| 13 | P6 experimento e leitura | cada fase acima, ao ligar |
+
+**Regra de pronto de todas as fases:** a matriz de cobertura (A17) das superfícies tocadas está completa e aceita.
 
 ## B7. Fase P6: experimento e leitura
 - Cada peça vira um **experimento** com uma chave no Master:
@@ -881,6 +1178,8 @@ Siga a seção A11. Só depois da P4 (arquitetura de preço) aprovada.
 - Acessibilidade AA, celular primeiro (360 px).
 - Textos ao cliente em português claro.
 - **SuperDrop em produção:** nenhuma mudança de comportamento sem teste e sem o dono.
+
+- **Matriz de cobertura (A17):** nenhuma fase termina com uma célula ● ou ◐ faltando nas superfícies que tocou. As células "—" têm teste que garante a ausência (vitrine do lojista, marca branca, checkout, expedição).
 
 ## B9. Relatório de cada fase
 `docs/relatorios/PRECO-FASE-N.md`, com:
