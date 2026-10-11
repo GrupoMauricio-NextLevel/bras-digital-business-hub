@@ -16,6 +16,8 @@ import { formatBRL } from "@/lib/money";
 import { isCommerceStore } from "@/lib/store-brand";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { CommerceHome } from "@/components/commerce/commerce-home";
+import { pendingSurvey } from "@/lib/domain/precos/questionario";
+import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -26,7 +28,8 @@ export default async function MerchantHome() {
   const session = await requireStoreAdmin();
   const store = session.store!;
   const db = await getDb();
-  const [o, commerce] = await Promise.all([getMerchantOverview(store), isCommerceStore(db, store)]);
+  const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), isCommerceStore(db, store), pendingSurvey(db, session.actor)]);
+  const surveyCard = survey ? <QuestionarioPreco product={survey.product} /> : null;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
   const readiness = commerce ? await getStoreReadiness(db, store.id) : null;
@@ -45,7 +48,7 @@ export default async function MerchantHome() {
     o.pendingCustomer.length ? { key:"customer", title:"Clientes não concluíram o pagamento", detail:"Pedidos iniciados que ainda não avançaram para a operação.", count:o.pendingCustomer.length, href:"/merchant/orders?status=PENDING", action:"Ver pedidos", icon:ShoppingCart } : null,
   ]).filter((x): x is NonNullable<typeof x> => Boolean(x));
 
-  if (commerce) return <CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} />;
+  if (commerce) return <>{surveyCard}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} /></>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;
@@ -53,6 +56,7 @@ export default async function MerchantHome() {
     <>
       <PageHeader eyebrow="SuperDrop / Minha operação" title={`${greeting()}, ${first}.`} actions={actions}
         description={<span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1"><span className="font-semibold text-foreground">{store.name}</span><span aria-hidden>·</span><StatusBadge value={store.status} dot /><span aria-hidden>·</span><span>{store.publishedAt ? "Loja publicada" : "Loja não publicada"}</span></span>} />
+      {surveyCard}
 
       <section className="ds-kpis mb-6" aria-label="Resumo dos últimos 30 dias">
         <MetricCard label="Vendas · 30 dias" value={formatBRL(o.sales)} hint={`${o.last30Count} pedidos no período`} icon={Wallet} delta={o.salesDelta} />

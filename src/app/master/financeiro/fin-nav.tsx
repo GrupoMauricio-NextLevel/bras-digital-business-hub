@@ -3,6 +3,7 @@ import { LinkTabs } from "@/components/app/link-tabs";
 const ITEMS = [
   { key: "visao", label: "Visão executiva", href: "/master/financeiro" },
   { key: "precos", label: "Preços do grupo", href: "/master/financeiro/precos" },
+  { key: "descoberta", label: "Descoberta", href: "/master/financeiro/descoberta" },
   { key: "catalogo", label: "Catálogo e preços", href: "/master/financeiro/catalogo" },
   { key: "ofertas", label: "Ofertas e comissões", href: "/master/financeiro/ofertas" },
   { key: "assinaturas", label: "Assinaturas", href: "/master/financeiro/assinaturas" },

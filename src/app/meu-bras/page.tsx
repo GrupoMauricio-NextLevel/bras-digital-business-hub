@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight, Boxes, Crown, LifeBuoy, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { pendingSurvey } from "@/lib/domain/precos/questionario";
+import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
 import { getBrasMemberByUser, touchBrasMemberSeen } from "@/lib/domain/bras/membros";
 import { countNewBrasDiscoveries } from "@/lib/domain/bras/videos";
@@ -27,10 +29,11 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
   // Novas desde a última visita (D104), contadas antes de gravar a visita de agora.
   const [novas, pedidos] = await Promise.all([countNewBrasDiscoveries(db, member?.lastSeenAt ?? null), ativo ? listMyBrasRequests(db, session.actor) : Promise.resolve([])]);
   // Painel por nível e momento (D108), calculado antes de gravar a visita (o momento "esfriando" usa a última visita).
-  const [panel, respostas, planos] = await Promise.all([
+  const [panel, respostas, planos, survey] = await Promise.all([
     member && ativo ? brasMemberPanel(db, member) : Promise.resolve(null),
     member ? myBrasUnreadReplies(db, member.id) : Promise.resolve(0),
     listCatalog(db, { includeUnpublished: true, families: ["BRAS_MEMBER_PLAN"] }),
+    pendingSurvey(db, session.actor),
   ]);
   if (member) await touchBrasMemberSeen(db, member.id, member.lastSeenAt);
   const andamento = pedidos.filter((r) => r.status === "NEW" || r.status === "CONFIRMED" || r.status === "PAID").slice(0, 3);
@@ -43,6 +46,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
       {novo ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Cadastro criado. Seu acesso de membro já está liberado.</p> : null}
 
       {respostas ? <p role="status" className="mb-6 rounded-lg bg-info-soft px-4 py-3 text-sm"><b>{respostas === 1 ? "1 resposta nova" : `${respostas} respostas novas`}</b> da equipe. <Link href="/meu-bras/suporte#chat" className="font-semibold text-link underline">Abrir o chat</Link></p> : null}
+      {survey ? <QuestionarioPreco product={survey.product} /> : null}
       {panel ? (
         <section aria-labelledby="mb-agora" className="mb-8">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">

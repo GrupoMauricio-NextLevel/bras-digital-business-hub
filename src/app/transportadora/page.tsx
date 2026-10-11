@@ -2,6 +2,8 @@ import Link from "next/link";
 import { BellRing, PackageCheck, Truck } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { pendingSurvey } from "@/lib/domain/precos/questionario";
+import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
 import { carrierLoads } from "@/lib/domain/cargas/cargas";
 import { LoadCard } from "@/components/cargas/load-card";
@@ -24,7 +26,7 @@ export default async function Hoje() {
   const db = await getDb();
   const { carrier, loads, usage } = await carrierLoads(db, session.actor);
   const excursao = carrier.operation === "EXCURSAO";
-  const [trips, fixed, payQueue] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor), excursao ? carrierPaymentQueue(db, session.actor) : Promise.resolve({ onArrival: [], toRefund: [] })]);
+  const [trips, fixed, payQueue, survey] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor), excursao ? carrierPaymentQueue(db, session.actor) : Promise.resolve({ onArrival: [], toRefund: [] }), pendingSurvey(db, session.actor)]);
   const fixasHoje = fixedToday(fixed);
   const chamadas = loads.filter((l) => l.status === "CHAMADA");
   const coletar = loads.filter((l) => l.status === "ACEITA");
@@ -41,6 +43,7 @@ export default async function Hoje() {
       <PageHeader eyebrow="NextLevel Cargas" title={`Olá, ${carrier.contactName}`} description={excursao ? `Fardos do Brás para o ônibus ${carrier.name}: aceite as chamadas, colete pela etiqueta e entregue com o código do cliente.` : `Coletas das importadoras do Brás para a ${carrier.name}. Comissão da NextLevel no seu plano: ${pct(usage.commissionBps)}% do frete.`} />
       {usage.freeLimit !== null && !excursao ? <p role="note" className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Plano grátis: <b className="tabular-nums">{usage.acceptedThisMonth} de {usage.freeLimit}</b> cargas aceitas neste mês.</p> : null}
       {!carrier.hasDriverLink ? <p className="mb-6 rounded-lg bg-warning-soft px-4 py-3 text-sm">Gere o link do motorista para ele ver endereço, horário e códigos no celular. <Link href="/transportadora/perfil" className="font-semibold text-link underline">Gerar link</Link></p> : null}
+      {survey ? <QuestionarioPreco product={survey.product} /> : null}
       {fixasHoje.length ? (
         <section aria-labelledby="t-fixa" className="mb-8 rounded-xl border border-[var(--brand-primary)]/40 p-4">
           <h2 id="t-fixa" className="mb-2 text-lg font-bold">Coletas fixas de hoje</h2>

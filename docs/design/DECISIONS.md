@@ -1134,3 +1134,19 @@ Prompt `docs/prompts/publico-personas-precos-ecossistema.md`, fase P0. O dono ac
 - **Divergências aparecem no topo** (teste grátis em mais de um lugar, duas tabelas de preço da loja, desconto anual diferente por marca, planos em rascunho, documento × sistema), cada uma com a sugestão de caminho.
 - **`docs/PLANOS.md` vira histórico**; o que vale é o sistema. Regra: nenhum preço novo fixo no código; preço novo nasce no catálogo ou em `platform_settings`.
 - Só o Master vê. Testes: `tests/precos-grupo-p0.test.ts`. Documento: `docs/descoberta/PRECO-QUE-VALE.md`. e2e: passo 15 de `e2e/bras-portal.mjs`.
+
+## D124 — Descoberta: funil por marca e questionário de preço no painel (2026-10-11)
+Prompt de público e preço, fases P1 e P2.
+- **Master → Financeiro → Descoberta** (`/master/financeiro/descoberta`): funil de cada marca (Commerce, SuperDrop, Brás, Cargas) **só com números somados**:
+  - etapas do cadastro ao pagamento, com a mediana de dias entre elas;
+  - cadastros por semana (8 semanas);
+  - coortes por mês de entrada (ativo a partir do dia 30, 60 e 90; quanto rendeu ao grupo por cliente);
+  - faixas de venda dos últimos 30 dias, origem e uso de recursos (quem paga × quem não paga).
+  - Nenhum nome, documento, e-mail ou telefone (há teste). A mesma conta roda em `npx tsx scripts/funil-marcas.ts` (só leitura).
+- **Questionário de preço nos painéis** (lojista, Meu Brás, transportadora):
+  - 5 perguntas opcionais: 4 sobre o preço por mês (adaptação de Van Westendorp) e "como se sentiria sem o produto" (Sean Ellis);
+  - **desligado até o Master ligar**; aparece só depois de alguns dias de uso (padrão 7) e uma vez por marca ("agora não" também conta);
+  - **anônimo**: a resposta guarda só a marca e o mês, em tabela separada de quem já respondeu;
+  - o Master vê a mediana e a faixa aceitável só a partir de um mínimo de respostas por marca (padrão 5).
+- **Roteiros de entrevista** por persona em `docs/descoberta/ROTEIROS.md` (o dono aprova antes de usar; gravação só com consentimento).
+- Testes: `tests/funil-marcas-p1.test.ts`, `tests/questionario-preco-p2.test.ts`. e2e: passo 15 de `e2e/bras-portal.mjs`. Migração `0060_questionario_preco`.

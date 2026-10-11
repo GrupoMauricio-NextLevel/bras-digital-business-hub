@@ -421,6 +421,13 @@
       "when": 1791685876365,
       "tag": "0059_club_ranking",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1791744669881,
+      "tag": "0060_questionario_preco",
+      "breakpoints": true
     }
   ]
 }

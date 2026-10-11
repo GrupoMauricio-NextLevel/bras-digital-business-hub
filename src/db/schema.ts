@@ -2340,3 +2340,28 @@ export const clubProfiles = pgTable("club_profiles", {
   uf: text("uf").notNull(),
   updatedAt: updatedAt(),
 }, (t) => [index("club_profiles_city_idx").on(t.uf, t.city)]);
+
+/**
+ * Questionário de preço dentro do painel (D124, fase P2): as respostas ficam **sem ligação com a pessoa** (só marca e mês);
+ * quem já respondeu (ou pediu para não ver) fica em `price_survey_status`, separado, para não perguntar de novo.
+ */
+export const PRICE_SURVEY_BRANDS = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as const;
+export const priceSurveyResponses = pgTable("price_survey_responses", {
+  id: id(),
+  brand: text("brand", { enum: PRICE_SURVEY_BRANDS }).notNull(),
+  /** AAAA-MM: só o mês, para a resposta não poder ser ligada a quem respondeu pela hora. */
+  month: text("month").notNull(),
+  tooCheapCents: integer("too_cheap_cents").notNull(),
+  bargainCents: integer("bargain_cents").notNull(),
+  expensiveCents: integer("expensive_cents").notNull(),
+  tooExpensiveCents: integer("too_expensive_cents").notNull(),
+  /** "Como você se sentiria se não pudesse mais usar?" */
+  disappointment: text("disappointment", { enum: ["MUITO", "POUCO", "NADA"] }).notNull(),
+}, (t) => [index("price_survey_responses_brand_idx").on(t.brand, t.month)]);
+
+export const priceSurveyStatus = pgTable("price_survey_status", {
+  userId: text("user_id").notNull().references(() => users.id),
+  brand: text("brand", { enum: PRICE_SURVEY_BRANDS }).notNull(),
+  status: text("status", { enum: ["RESPONDEU", "DISPENSOU"] }).notNull(),
+  month: text("month").notNull(),
+}, (t) => [primaryKey({ columns: [t.userId, t.brand] })]);

@@ -1101,9 +1101,48 @@ if (process.env.MP_FAKE) {
   await m.p.setViewportSize({ width: 360, height: 900 });
   await check(m.p, "master preços do grupo (celular)", 360);
   await shot(m.p, `${OUT}/44-master-precos-grupo-360.png`);
+
+  // P1/P2 (D124): Descoberta — funil por marca (só números somados) e o questionário de preço, ligado pelo Master.
+  await m.p.setViewportSize({ width: 1440, height: 900 });
+  await m.p.goto(`${B}/master/financeiro/descoberta`, { waitUntil: "networkidle" });
+  if (!(await m.p.getByRole("heading", { name: "Descoberta: funil por marca" }).isVisible())) fail("descoberta: título não aparece");
+  if (!(await m.p.getByRole("heading", { name: "Brás Digital", exact: true }).isVisible())) fail("descoberta: funil da Brás não aparece");
+  if (await m.p.getByText("ana@utilidades.teste").count()) fail("descoberta: e-mail de cliente apareceu no funil");
+  await check(m.p, "master descoberta", 1440);
+  const qf = m.p.getByRole("form", { name: "Regras do questionário de preço" });
+  await qf.getByRole("switch", { name: /Questionário ligado/ }).click();
+  await qf.getByLabel("Perguntar só depois de").fill("0");
+  await qf.getByRole("button", { name: "Gravar" }).click();
+  await m.p.getByText("Questionário atualizado").first().waitFor({ timeout: 30000 });
+  await semToast(m.p);
+  {
+    const { c, p } = await page(390);
+    await loginMembro(p);
+    await p.goto(BRAS + "/meu-bras", { waitUntil: "networkidle" });
+    const q = p.getByRole("region", { name: /Ajude a definir o preço justo/ });
+    if (!(await q.isVisible())) fail("questionário: não aparece no Meu Brás depois de ligado");
+    else {
+      await q.getByRole("button", { name: "Responder" }).click();
+      await q.getByLabel(/1\. Tão barato/).fill("20");
+      await q.getByLabel(/2\. Uma pechincha/).fill("49");
+      await q.getByLabel(/3\. Caro, mas/).fill("97");
+      await q.getByLabel(/4\. Caro demais/).fill("197");
+      await q.getByLabel("Muito decepcionado").check();
+      await check(p, "meu brás questionário de preço", 390);
+      await shot(p, `${OUT}/45-meu-bras-questionario-390.png`);
+      await q.getByRole("button", { name: "Enviar respostas" }).click();
+      await p.getByText(/Obrigado! Sua resposta/).first().waitFor({ timeout: 30000 });
+      await p.reload({ waitUntil: "networkidle" });
+      if (await p.getByRole("region", { name: /Ajude a definir o preço justo/ }).count()) fail("questionário: aparece de novo depois de respondido");
+    }
+    await c.close();
+  }
+  await m.p.reload({ waitUntil: "networkidle" });
+  if (!(await m.p.getByText(/1 resposta\(s\)/).first().isVisible())) fail("descoberta: a resposta não foi somada");
+  await shot(m.p, `${OUT}/46-master-descoberta-1440.png`);
   await m.c.close();
 }
-ok("Club E8a: cartão no balcão, compra vira ponto e acerto entre empresas");
+ok("Club E8a: cartão no balcão, compra vira ponto e acerto entre empresas; preços do grupo e descoberta no Master");
 
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
