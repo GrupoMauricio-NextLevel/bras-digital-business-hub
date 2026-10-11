@@ -23,6 +23,8 @@ const check = async (p, label, w) => {
   if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail(`${label} @${w}: rolagem horizontal`);
   // Avisos flutuantes (toast) somem sozinhos: mede depois que saem, para não medir o meio da animação.
   await p.waitForFunction(() => !document.querySelector("[data-sonner-toast]"), null, { timeout: 15000 }).catch(() => {});
+  // Depois de uma ação, a tela se atualiza e o título volta logo em seguida: mede com o título no lugar (sem título, o axe acusa).
+  await p.waitForFunction(() => document.title.trim() !== "", null, { timeout: 15000 }).catch(() => {});
   if (w === 390 || w === 1440) { await p.emulateMedia({ reducedMotion: "reduce" }); const v = await axeOf(p); if (v.length) fail(`${label} @${w}: axe ${v.join(" | ")}`); }
 };
 // Captura de página inteira a partir do topo (com a tela rolada, a barra fixa sai deslocada na imagem).
@@ -1090,6 +1092,15 @@ if (process.env.MP_FAKE) {
   await semToast(m.p);
   await check(m.p, "master club com balcão e acerto", 1440);
   await shot(m.p, `${OUT}/43-master-club-acerto-1440.png`);
+
+  // P0 (D123): Preços do grupo — uma tabela só com o preço que vale hoje em cada marca.
+  await m.p.goto(`${B}/master/financeiro/precos`, { waitUntil: "networkidle" });
+  if (!(await m.p.getByRole("heading", { name: "Preços do grupo" }).isVisible())) fail("preços do grupo: título não aparece");
+  if (!(await m.p.getByText("Duas tabelas de preço").first().isVisible())) fail("preços do grupo: divergência não aparece");
+  await check(m.p, "master preços do grupo", 1440);
+  await m.p.setViewportSize({ width: 360, height: 900 });
+  await check(m.p, "master preços do grupo (celular)", 360);
+  await shot(m.p, `${OUT}/44-master-precos-grupo-360.png`);
   await m.c.close();
 }
 ok("Club E8a: cartão no balcão, compra vira ponto e acerto entre empresas");

@@ -1,5 +1,8 @@
 # Planos, preços e taxas: racional (v2, propostas a validar)
 
+> **Histórico (D123, 2026-10-11).** Este documento é a proposta v2 e **não é mais a fonte de preço**. O que vale hoje está em Master → Financeiro NextLevel → **Preços do grupo** (`/master/financeiro/precos`), e as divergências estão em `docs/descoberta/PRECO-QUE-VALE.md`.
+
+
 Esta versão corrige a anterior. A NextLevel **não define preço de produto**: fornecedores e membros decidem o que vendem e por quanto. A NextLevel cobra **mensalidades, setup, taxa de transação, serviços e Academy**. Nada aqui foi implementado no código ainda. Itens marcados **(proposta)** ainda não foram decididos.
 
 ## 0. Decisões confirmadas pelo dono (prevalecem sobre o restante deste arquivo)

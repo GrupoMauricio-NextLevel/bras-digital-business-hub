@@ -1127,3 +1127,10 @@ Prompt, seção 7B.5 e pergunta 17 (padrão: ligado, só para quem aceitar apare
   - entre quem aceitou, só aparece quem ativou alguma indicação no mês, mais a própria pessoa.
 - **Sem prêmio por posição nem sorteio** (seção 12 do prompt): o ranking só mostra a posição, e os pontos vêm sempre da indicação confirmada.
 - Testes: `tests/club-ranking-e9.test.ts`. e2e: passo 15 (aceitar e aparecer como "(você)").
+
+## D123 — Preço que vale: tabela única de preços do grupo no Master (2026-10-11)
+Prompt `docs/prompts/publico-personas-precos-ecossistema.md`, fase P0. O dono aceitou as recomendações da seção A19 como padrão ("aceito as recomendações"); as perguntas que sobrarem ficam para a última fase.
+- **Master → Financeiro → Preços do grupo** (`/master/financeiro/precos`) é a referência de "qual preço vale hoje": junta a tabela de preços (`getPriceBook`), o catálogo de planos e ofertas, as regras da Brás, da Excursão, do Club, dos parceiros e do Meu Contador, e os cupons com teste grátis. Cada linha diz a marca, o tipo (mensal, anual, taxa, teste, pontos…), o valor, a situação (valendo, rascunho, desligado) e o link para editar na origem. Só lê; não muda nenhum preço.
+- **Divergências aparecem no topo** (teste grátis em mais de um lugar, duas tabelas de preço da loja, desconto anual diferente por marca, planos em rascunho, documento × sistema), cada uma com a sugestão de caminho.
+- **`docs/PLANOS.md` vira histórico**; o que vale é o sistema. Regra: nenhum preço novo fixo no código; preço novo nasce no catálogo ou em `platform_settings`.
+- Só o Master vê. Testes: `tests/precos-grupo-p0.test.ts`. Documento: `docs/descoberta/PRECO-QUE-VALE.md`. e2e: passo 15 de `e2e/bras-portal.mjs`.
