@@ -28,6 +28,11 @@ export const excursionRulesSchema = z.object({
   cancelHours: z.number().int().min(0).max(240),
   /** Fardo só embarca com nota (seção 7A.1). */
   requireInvoice: z.boolean(),
+  /**
+   * Pix do frete na conta Mercado Pago do dono do ônibus (D119). Desligado: cliente e ônibus combinam o pagamento.
+   * Ligado (e o ônibus com Mercado Pago conectado): o fardo aceito só é coletado depois do Pix conferido na API.
+   */
+  pixOnline: z.boolean(),
 });
 export type ExcursionRules = z.output<typeof excursionRulesSchema>;
 
@@ -37,6 +42,7 @@ export const DEFAULT_EXCURSION_RULES: ExcursionRules = {
   defaultCapacityUnits: 120,
   cancelHours: 12,
   requireInvoice: true,
+  pixOnline: false,
 };
 
 const KEY = "cargas.excursion_rules";

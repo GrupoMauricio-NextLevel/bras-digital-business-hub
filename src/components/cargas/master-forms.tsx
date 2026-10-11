@@ -18,7 +18,7 @@ function useRun() {
 const lab = "flex flex-col text-sm font-medium";
 
 type Size = { maxCm: string; maxKg: number; units: number };
-type ExRules = { sizes: { P: Size; M: Size; G: Size }; fee: { mode: "VOLUME" | "PERCENT"; perParcelCents: number; bps: number; charging: boolean }; defaultCapacityUnits: number; cancelHours: number; requireInvoice: boolean };
+type ExRules = { sizes: { P: Size; M: Size; G: Size }; fee: { mode: "VOLUME" | "PERCENT"; perParcelCents: number; bps: number; charging: boolean }; defaultCapacityUnits: number; cancelHours: number; requireInvoice: boolean; pixOnline: boolean };
 const SIZE_LABEL = { P: "Fardinho P", M: "Fardo M", G: "Fardo G" } as const;
 
 export function ExcursionRulesEditor({ rules }: { rules: ExRules }) {
@@ -51,6 +51,7 @@ export function ExcursionRulesEditor({ rules }: { rules: ExRules }) {
         <IntField id="ex-cancel" label="Cancelamento com devolução até" suffix="h antes" value={r.cancelHours} onChange={(v) => setR({ ...r, cancelHours: v })} />
       </div>
       <Switch checked={r.requireInvoice} onCheckedChange={(v) => setR({ ...r, requireInvoice: v })} label="Fardo só embarca com nota" />
+      <Switch checked={r.pixOnline} onCheckedChange={(v) => setR({ ...r, pixOnline: v })} label="Frete pago por Pix na conta do dono do ônibus (antes da coleta)" />
       <Button type="submit" loading={pending}>Gravar regras</Button>
     </form>
   );

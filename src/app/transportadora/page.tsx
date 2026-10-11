@@ -10,6 +10,9 @@ import { ExcursionBoard } from "@/components/cargas/excursion-board";
 import { busBoard } from "@/lib/domain/cargas/excursao";
 import { LOAD_QUICK_MESSAGES, carrierFixedPickups, fixedToday } from "@/lib/domain/cargas/vias";
 import { LoadMessageForm } from "@/components/cargas/vias-forms";
+import { carrierPaymentQueue } from "@/lib/domain/cargas/frete-pix";
+import { RegisterPaymentButton } from "@/components/cargas/frete-pix-forms";
+import { formatBRL } from "@/lib/money";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +24,7 @@ export default async function Hoje() {
   const db = await getDb();
   const { carrier, loads, usage } = await carrierLoads(db, session.actor);
   const excursao = carrier.operation === "EXCURSAO";
-  const [trips, fixed] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor)]);
+  const [trips, fixed, payQueue] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor), excursao ? carrierPaymentQueue(db, session.actor) : Promise.resolve({ onArrival: [], toRefund: [] })]);
   const fixasHoje = fixedToday(fixed);
   const chamadas = loads.filter((l) => l.status === "CHAMADA");
   const coletar = loads.filter((l) => l.status === "ACEITA");
@@ -46,6 +49,13 @@ export default async function Hoje() {
         </section>
       ) : null}
       {!fixed.length ? <p className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Quer mais carga? Veja para onde vão os pedidos das importadoras do Brás e peça para ser preferida. <Link href="/transportadora/importadoras" className="font-semibold text-link underline">Importadoras na rede</Link></p> : null}
+      {payQueue.onArrival.length || payQueue.toRefund.length ? (
+        <section aria-labelledby="t-pag" className="ds-card mb-8 p-4">
+          <h2 id="t-pag" className="mb-2 text-lg font-bold">Pagamentos do frete</h2>
+          {payQueue.onArrival.length ? <><h3 className="text-sm font-semibold">Pagam na chegada ({payQueue.onArrival.length})</h3><ul className="mb-3 mt-1 space-y-2">{payQueue.onArrival.map((p) => <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 text-sm"><span><b className="font-mono">{p.label}</b> · {p.recipientName} · {formatBRL(p.priceCents)}</span><RegisterPaymentButton parcelId={p.id} label={p.label} what="RECEBIDO" /></li>)}</ul></> : null}
+          {payQueue.toRefund.length ? <><h3 className="text-sm font-semibold">Pix para devolver ({payQueue.toRefund.length})</h3><p className="text-xs text-muted-foreground">Fardos pagos que não viajaram. Devolva pelo app do Mercado Pago (Atividade → o pagamento → Devolver) e marque aqui.</p><ul className="mt-1 space-y-2">{payQueue.toRefund.map((p) => <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 text-sm"><span><b className="font-mono">{p.label}</b> · {p.recipientName} · {formatBRL(p.priceCents)}</span><RegisterPaymentButton parcelId={p.id} label={p.label} what="DEVOLVIDO" /></li>)}</ul></> : null}
+        </section>
+      ) : null}
       {excursao ? <section aria-label="Viagens do ônibus" className="mb-10"><ExcursionBoard trips={trips} /><Link href="/transportadora/rotas" className="mt-4 inline-block text-sm font-semibold text-link underline">Rotas, preços e nova viagem</Link></section> : null}
       {excursao && !loads.length ? null : <>
       {bloco("t-cham", <BellRing className="size-5 text-[var(--brand-primary)]" aria-hidden />, "Chamadas para responder", "Aceite informando o frete combinado, ou recuse com o motivo (a importadora chama outra).", chamadas)}

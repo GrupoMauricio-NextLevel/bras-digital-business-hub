@@ -1,4 +1,5 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
+import type { PayStatus } from "@/lib/cargas/rotulos";
 import type { Database } from "@/db/client";
 import { bdMembers, bdRequests, trCarriers, trLoadRequests, trLoads } from "@/db/schema";
 import { PARCEL_STATUS_NOTE, parcelFreightStatus, requestFreightStatus, type FreightStatus } from "@/lib/frete/situacao";
@@ -21,7 +22,7 @@ export type FreightView = {
   what: string; boxes: number; destination: string; importerName: string | null; pickupCode: string | null; loadNumber: number | null;
   createdAt: string;
   /** Só fardo de ônibus: etiqueta, código para retirar, nota, frete e o que dá para fazer. */
-  parcel?: { label: string; deliveryCode: string; hasInvoice: boolean; priceCents: number; note: string | null; canCancel: boolean; tripNumber: number; departAt: string; brasPoint: string; cityPoint: string; storeName: string };
+  parcel?: { label: string; deliveryCode: string; hasInvoice: boolean; priceCents: number; note: string | null; canCancel: boolean; tripId: string; tripNumber: number; departAt: string; brasPoint: string; cityPoint: string; storeName: string; payStatus: PayStatus; status: string };
 };
 
 const iso = (v: string | Date | null | undefined) => (v ? new Date(v).toISOString() : null);
@@ -36,7 +37,7 @@ export async function myFreights(db: Database, actor: Actor) {
     return {
       id: `trp-${p.id}`, code: p.label, requestId: "", mode: "ONIBUS", carrier: { id: null, name: p.carrierName, phone: p.carrierPhone, inCatalog: true },
       status: st.status, steps: st.steps, what: `${PARCEL_SIZE_LABEL[p.size]} · loja ${p.storeName}`, boxes: 1, destination: p.cityPoint, importerName: null, pickupCode: null, loadNumber: null, createdAt: p.createdAt,
-      parcel: { label: p.label, deliveryCode: p.deliveryCode, hasInvoice: p.hasInvoice, priceCents: p.priceCents ?? 0, note: PARCEL_STATUS_NOTE[p.status] ?? (p.refuseReason ? `Motivo: ${p.refuseReason}` : null), canCancel: ["SOLICITADO", "ESPERA", "ACEITO", "PRONTO"].includes(p.status), tripNumber: p.tripNumber, departAt: p.departAt, brasPoint: p.brasPoint, cityPoint: p.cityPoint, storeName: p.storeName },
+      parcel: { label: p.label, deliveryCode: p.deliveryCode, hasInvoice: p.hasInvoice, priceCents: p.priceCents ?? 0, note: PARCEL_STATUS_NOTE[p.status] ?? (p.refuseReason ? `Motivo: ${p.refuseReason}` : null), canCancel: ["SOLICITADO", "ESPERA", "ACEITO", "PRONTO"].includes(p.status), tripId: p.tripId, tripNumber: p.tripNumber, departAt: p.departAt, brasPoint: p.brasPoint, cityPoint: p.cityPoint, storeName: p.storeName, payStatus: p.payStatus, status: p.status },
     };
   });
   if (!reqs.length) return parcels;

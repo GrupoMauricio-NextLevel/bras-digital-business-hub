@@ -1057,3 +1057,21 @@ Pedido do dono: "o sistema de importadoras precisa se comunicar com as transport
 - **Mapa de demanda** (Master, em Transportadoras): cidades de destino dos últimos 90 dias em que o cliente usou transportadora fora da rede ou o estado não tem nenhuma. Mostra onde convidar transportadora ou abrir rota de ônibus.
 - "Trazer importadora" e "trazer cliente" já existiam (D115) e foram mantidos.
 - Testes: `tests/vias-e6.test.ts`. e2e: passo 13 de `e2e/bras-portal.mjs`.
+
+## D119 — Club E7: frete do ônibus por Pix na conta do dono do ônibus (2026-10-11)
+O prompt (seções 6.4 e 14) pede o frete pago antes, por Pix, direto na conta do dono do ônibus, conferido na API e idempotente.
+- **Chave nas regras da Excursão (`pixOnline`), desligada por padrão.** Desligada, nada muda: o fardo aceito fica "pagamento combinado com o ônibus", como antes. O dono liga no Master (Ônibus de excursão → Regras) quando quiser.
+- **Mercado Pago do dono do ônibus** (perfil do ônibus):
+  - o token é conferido na API (`/users/me`) e guardado só criptografado (`encryptSecret`, colunas `mp_access_token_enc` e `mp_account_id` em `tr_carriers`);
+  - nunca volta para a tela, log ou e-mail.
+  - Ônibus sem Mercado Pago continua no "combinar", mesmo com a chave ligada.
+- **Fluxo com a chave ligada:**
+  - **Aceite:** o fardo aceito nasce "a pagar" (`tr_parcels.pay_status`). O cliente gera o Pix dos fardos aceitos daquela viagem no próprio painel de frete: QR, código copia e cola e "Já paguei".
+  - **Cobrança:** `tr_freight_payments`, com o id como referência externa e chave de idempotência no Mercado Pago. Os mesmos fardos devolvem a mesma cobrança; se os fardos mudarem, a anterior expira e nasce outra com o valor certo.
+  - **Confirmação:** só vale o pagamento aprovado na API do Mercado Pago, com a referência da cobrança e o valor completo. O corpo do aviso (`/api/webhooks/mercadopago-frete?pagamento=`) nunca é confiável. A confirmação é aplicada uma única vez (atualização condicional).
+  - **Coleta:** fardo "a pagar" não embarca.
+- **Cliente de confiança:** o dono do ônibus marca o cliente, e os fardos dele pagam na chegada (`tr_trusted_clients`). O ônibus registra "recebi" para fechar a conta.
+- **Pago e não viajou** (cliente cancelou no prazo, não embarcou ou viagem cancelada): o fardo fica "devolver". O dono do ônibus devolve pelo app do Mercado Pago e marca "já devolvi". O sistema **não** estorna sozinho: o dinheiro é dele.
+- **Taxa da plataforma:** fatura mensal por ônibus no Master (taxa congelada no aceite, frete total e quanto veio por Pix). A cobrança segue desligada (`fee.charging`) até o dono publicar o preço.
+- **Fica para depois** (depende da pergunta "quem paga o desconto dos pontos", seção 7B.6): pontos do Club como desconto no Pix do frete. Hoje o vale do Club continua sendo baixado no balcão das empresas do grupo (D115).
+- Testes: `tests/frete-pix-e7.test.ts`. e2e: passo 14 de `e2e/bras-portal.mjs`, com o Mercado Pago simulado (`MP_FAKE`). O roteiro reaproveita a sessão da membro, por causa do limite de 8 logins por e-mail a cada 15 minutos.

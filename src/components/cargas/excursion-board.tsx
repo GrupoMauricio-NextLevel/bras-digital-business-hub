@@ -3,8 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/money";
 import { PARCEL_SIZE_LABEL, type ParcelSize } from "@/lib/domain/cargas/regras-excursao";
 import { CollectByLabel, DeliverParcel, ParcelCallActions, TripActions } from "./excursao-forms";
+import { TrustClientButton } from "./frete-pix-forms";
 
-type Parcel = { id: string; label: string; size: ParcelSize; units: number; status: string; storeName: string; storeAddress: string | null; recipientName: string; priceCents: number | null; hasInvoice: boolean };
+type Parcel = { id: string; label: string; size: ParcelSize; units: number; status: string; storeName: string; storeAddress: string | null; recipientName: string; priceCents: number | null; hasInvoice: boolean; payStatus?: string };
 export type BoardTrip = { id: string; number: number; status: string; routeName: string; brasPoint: string; cityPoint: string; arriveBrasAt: string; departAt: string; arriveCityAt: string | null; capacityUnits: number; usedUnits: number; freightCents: number | null; parcels: Parcel[] };
 
 const fmt = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
@@ -67,8 +68,15 @@ export function ExcursionBoard({ trips, token }: { trips: BoardTrip[]; token?: s
                 <p className="mb-3 text-sm text-muted-foreground">Digite ou bipe o código da etiqueta de cada fardo. Fardo sem nota não embarca.</p>
                 <CollectByLabel token={token} />
                 {stores.length ? <ul className="mt-4 space-y-3">{stores.map((s) => (
-                  <li key={s}><p className="font-semibold">{s}</p><ul className="mt-1 flex flex-wrap gap-2">{toCollect.filter((p) => p.storeName === s).map((p) => <li key={p.id} className={`rounded border px-2 py-1 font-mono text-sm ${p.status === "PRONTO" ? "border-success font-bold" : "border-border"}`}>{p.label} · {p.size}{p.status === "PRONTO" ? " · pronto" : ""}{p.hasInvoice ? "" : " · sem nota"}</li>)}</ul></li>
+                  <li key={s}><p className="font-semibold">{s}</p><ul className="mt-1 flex flex-wrap gap-2">{toCollect.filter((p) => p.storeName === s).map((p) => <li key={p.id} className={`rounded border px-2 py-1 font-mono text-sm ${p.status === "PRONTO" ? "border-success font-bold" : "border-border"}`}>{p.label} · {p.size}{p.status === "PRONTO" ? " · pronto" : ""}{p.hasInvoice ? "" : " · sem nota"}{p.payStatus === "A_PAGAR" ? " · Pix a pagar" : p.payStatus === "PAGO" ? " · pago" : p.payStatus === "NA_CHEGADA" ? " · paga na chegada" : ""}</li>)}</ul></li>
                 ))}</ul> : <p className="mt-3 text-sm text-muted-foreground">Nada para coletar agora.</p>}
+                {!token && toCollect.some((p) => p.payStatus === "A_PAGAR") ? (
+                  <div className="mt-4 border-t border-border pt-3">
+                    <h4 className="font-semibold">Esperando o Pix do cliente</h4>
+                    <p className="mb-2 text-sm text-muted-foreground">O fardo só embarca depois do Pix. Cliente de confiança paga na chegada.</p>
+                    <ul className="space-y-2">{toCollect.filter((p) => p.payStatus === "A_PAGAR").map((p) => <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 text-sm"><span><b className="font-mono">{p.label}</b> · {p.recipientName}{p.priceCents !== null ? ` · ${formatBRL(p.priceCents)}` : ""}</span><TrustClientButton parcelId={p.id} name={p.recipientName} /></li>)}</ul>
+                  </div>
+                ) : null}
               </div>
             ) : null}
 

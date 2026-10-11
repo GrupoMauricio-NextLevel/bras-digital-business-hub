@@ -1955,6 +1955,10 @@ export const trCarriers = pgTable("tr_carriers", {
   /** Link do motorista (sem login, padrão D106): só o hash. */
   driverTokenHash: text("driver_token_hash").unique(),
   driverTokenCreatedAt: ts("driver_token_created_at"),
+  /** Mercado Pago do dono do ônibus (D119): o frete pago por Pix cai direto na conta dele. Token só criptografado. */
+  mpAccessTokenEnc: text("mp_access_token_enc"),
+  mpAccountId: text("mp_account_id"),
+  mpConnectedAt: ts("mp_connected_at"),
   createdBy: text("created_by"),
   createdAt: createdAt(),
 }, (t) => [index("tr_carriers_status_idx").on(t.status)]);
@@ -2014,6 +2018,7 @@ export const trTrips = pgTable("tr_trips", {
   updatedAt: ts("updated_at").notNull().defaultNow(),
 }, (t) => [index("tr_trips_carrier_idx").on(t.carrierId, t.status), index("tr_trips_depart_idx").on(t.status, t.departAt)]);
 
+export const TR_PARCEL_PAY_STATUSES = ["COMBINAR", "A_PAGAR", "PAGO", "NA_CHEGADA", "RECEBIDO", "DEVOLVER", "DEVOLVIDO"] as const;
 export const trParcels = pgTable("tr_parcels", {
   id: id(),
   tripId: text("trip_id").notNull().references(() => trTrips.id),
@@ -2036,6 +2041,12 @@ export const trParcels = pgTable("tr_parcels", {
   /** Chave da NF-e (44 dígitos, dígito conferido). Regra: sem nota não embarca. */
   invoiceKey: text("invoice_key"),
   status: text("status", { enum: ["SOLICITADO", "ESPERA", "ACEITO", "RECUSADO", "PRONTO", "COLETADO", "EM_VIAGEM", "CHEGOU", "ENTREGUE", "NAO_EMBARCOU", "CANCELADO"] }).notNull().default("SOLICITADO"),
+  /**
+   * Pagamento do frete (D119). COMBINAR: Pix online desligado, cliente e ônibus combinam. A_PAGAR: Pix na conta do
+   * ônibus antes da coleta. PAGO: conferido na API do Mercado Pago. NA_CHEGADA: cliente de confiança paga na chegada;
+   * RECEBIDO: o dono do ônibus registrou. DEVOLVER/DEVOLVIDO: pago e não viajou.
+   */
+  payStatus: text("pay_status", { enum: TR_PARCEL_PAY_STATUSES }).notNull().default("COMBINAR"),
   refuseReason: text("refuse_reason"),
   acceptedAt: ts("accepted_at"),
   collectedAt: ts("collected_at"),
@@ -2238,3 +2249,27 @@ export const trLoadRatings = pgTable("tr_load_ratings", {
   comment: text("comment"),
   createdAt: createdAt(),
 }, (t) => [index("tr_load_ratings_carrier_idx").on(t.carrierId)]);
+
+/** Pix do frete (D119): cobrança na conta Mercado Pago do dono do ônibus, cobrindo os fardos a pagar do cliente numa viagem. */
+export const trFreightPayments = pgTable("tr_freight_payments", {
+  id: id(),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  tripId: text("trip_id").notNull().references(() => trTrips.id),
+  payerUserId: text("payer_user_id").notNull().references(() => users.id),
+  parcelIds: jsonb("parcel_ids").$type<string[]>().notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  status: text("status", { enum: ["PENDENTE", "PAGO", "EXPIRADO"] }).notNull().default("PENDENTE"),
+  mpPaymentId: text("mp_payment_id"),
+  pixCode: text("pix_code"),
+  expiresAt: ts("expires_at").notNull(),
+  paidAt: ts("paid_at"),
+  createdAt: createdAt(),
+}, (t) => [index("tr_freight_payments_payer_idx").on(t.payerUserId, t.tripId), index("tr_freight_payments_carrier_idx").on(t.carrierId, t.status)]);
+
+/** Clientes de confiança do ônibus (D119): pagam o frete na chegada. */
+export const trTrustedClients = pgTable("tr_trusted_clients", {
+  id: id(),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  clientUserId: text("client_user_id").notNull().references(() => users.id),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("tr_trusted_clients_unique").on(t.carrierId, t.clientUserId)]);

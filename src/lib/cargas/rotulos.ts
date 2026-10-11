@@ -31,3 +31,15 @@ export function cargasDocsSeal(docs: { status: string; validUntil: string | null
 /** Dias da semana (0 = domingo) e a coleta fixa combinada com a preferida (D118). */
 export const CARGAS_WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
 export const fixedLabel = (weekdays: number[], time: string | null) => (weekdays.length && time ? `${weekdays.map((d) => CARGAS_WEEKDAYS[d]).join(", ")} às ${time}` : "");
+
+/** Pagamento do frete do fardo (D119). */
+export type PayStatus = "COMBINAR" | "A_PAGAR" | "PAGO" | "NA_CHEGADA" | "RECEBIDO" | "DEVOLVER" | "DEVOLVIDO";
+export const PAY_STATUS_LABEL: Record<PayStatus, string> = {
+  COMBINAR: "Pagamento combinado com o ônibus",
+  A_PAGAR: "Frete a pagar por Pix",
+  PAGO: "Frete pago por Pix",
+  NA_CHEGADA: "Paga na chegada (cliente de confiança)",
+  RECEBIDO: "Frete recebido na chegada",
+  DEVOLVER: "Frete pago: o ônibus devolve o Pix",
+  DEVOLVIDO: "Pix devolvido",
+};

@@ -27,11 +27,19 @@ const check = async (p, label, w) => {
 };
 // Captura de página inteira a partir do topo (com a tela rolada, a barra fixa sai deslocada na imagem).
 const shot = async (pg, path) => { await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(250); await pg.screenshot({ path, fullPage: true }); };
+// A sessão da membro é reaproveitada entre os passos: o login tem limite de 8 tentativas por e-mail a cada 15 minutos.
+let membroCookies = null;
 const loginMembro = async (p) => {
+  if (membroCookies) {
+    await p.context().addCookies(membroCookies);
+    await p.goto(BRAS + "/meu-bras", { waitUntil: "networkidle" });
+    if (new URL(p.url()).pathname.startsWith("/meu-bras")) return;
+  }
   await p.goto(BRAS + "/login", { waitUntil: "networkidle" });
   await p.getByLabel("E-mail").fill("ana@utilidades.teste"); await p.getByLabel("Senha").fill("senha-forte-1");
   await p.getByRole("button", { name: /^Entrar/ }).click();
   await p.waitForURL(/\/meu-bras/, { timeout: 60000 }); await p.waitForLoadState("networkidle");
+  membroCookies = await p.context().cookies();
 };
 const page = async (w) => { const c = await ctxFor(w); const p = await c.newPage(); p.on("pageerror", (e) => fail(`pageerror @${w}: ${e.message}`)); return { c, p }; };
 
@@ -939,6 +947,82 @@ ok("Club E5: Meu Contador resolve a nota do fardo");
   await m.c.close();
 }
 ok("Club E6: preferida, coleta fixa e mapa de demanda");
+
+// 14. Club E7 (D119): o Master liga o Pix do frete; o ônibus conecta o Mercado Pago (simulado) e aceita o fardo; a membro
+//     paga o Pix (aprovado no Mercado Pago simulado) e o fardo fica pago; o ônibus coleta; o Master vê a taxa a faturar.
+//     Sem o Mercado Pago simulado (MP_FAKE vazio) o passo é pulado.
+if (process.env.MP_FAKE) {
+  const semToast = async (pg) => { await pg.waitForTimeout(300); await pg.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {}); };
+  const m = await page(1440);
+  await m.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await m.p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await m.p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await m.p.goto(B + "/bras/excursao", { waitUntil: "networkidle" });
+  const sw = m.p.getByRole("switch", { name: /Frete pago por Pix/ });
+  if ((await sw.getAttribute("aria-checked")) !== "true") await sw.click();
+  await m.p.getByRole("button", { name: "Gravar regras" }).click();
+  await m.p.getByText("Regras da Excursão gravadas").first().waitFor({ timeout: 30000 });
+  await semToast(m.p);
+
+  const bus = await page(390);
+  await bus.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await bus.p.getByLabel("E-mail").fill("mauricio@starline.teste"); await bus.p.getByLabel("Senha").fill("senha-starline-1");
+  await bus.p.getByRole("button", { name: /^Entrar/ }).click();
+  await bus.p.waitForURL(/\/transportadora/, { timeout: 60000 });
+  await bus.p.goto(B + "/transportadora/perfil", { waitUntil: "networkidle" });
+  const mf = bus.p.getByRole("form", { name: "Conectar Mercado Pago" });
+  await mf.getByLabel("Access Token do Mercado Pago").fill("TEST-starline-1234567890abcdef");
+  await mf.getByRole("button", { name: "Conectar" }).click();
+  await bus.p.getByText("Mercado Pago conectado").first().waitFor({ timeout: 30000 });
+  if (/TEST-starline/.test(await bus.p.content())) fail("perfil: token do Mercado Pago apareceu na página");
+  await semToast(bus.p);
+  await check(bus.p, "ônibus perfil com Mercado Pago", 390);
+  await bus.p.goto(B + "/transportadora", { waitUntil: "networkidle" });
+  await bus.p.getByRole("button", { name: "Aceitar" }).first().click();
+  await bus.p.getByText("Fardo aceito").first().waitFor({ timeout: 30000 });
+  await semToast(bus.p);
+  await bus.p.reload({ waitUntil: "networkidle" });
+  if (!(await bus.p.getByRole("heading", { name: "Esperando o Pix do cliente" }).first().isVisible())) fail("ônibus: fardo aceito não aparece esperando o Pix");
+  const cf = bus.p.getByRole("form", { name: "Coletar fardo" }).first();
+  await cf.getByLabel("Código da etiqueta").fill("8002-01"); await cf.getByRole("button", { name: "Coletei" }).click();
+  await bus.p.getByText(/Frete ainda não pago/).first().waitFor({ timeout: 30000 });
+  await semToast(bus.p);
+  await check(bus.p, "ônibus esperando Pix", 390);
+  await shot(bus.p, `${OUT}/38-onibus-esperando-pix-390.png`);
+
+  const { c, p } = await page(390);
+  await loginMembro(p);
+  await p.goto(BRAS + "/meu-bras/fretes", { waitUntil: "networkidle" });
+  const card = p.locator("li").filter({ hasText: "Etiqueta 8002-01" }).first();
+  await card.getByRole("button", { name: "Pagar o frete por Pix" }).click();
+  const grp = card.getByRole("group", { name: /Pix do frete da viagem 8002/ });
+  await grp.waitFor({ timeout: 30000 });
+  await grp.getByAltText("QR Code do Pix do frete").waitFor({ timeout: 15000 });
+  await check(p, "membro Pix do frete", 390);
+  await shot(p, `${OUT}/39-membro-pix-frete-390.png`);
+  const st = await (await fetch(process.env.MP_FAKE + "/__state")).json();
+  const pay = st.payments.filter((x) => x.pix && String(x.external_reference).startsWith("tfp_")).at(-1);
+  if (!pay) fail("Mercado Pago simulado: cobrança do frete não chegou");
+  else await fetch(`${process.env.MP_FAKE}/__approve_pix?ref=${pay.external_reference}`);
+  await grp.getByRole("button", { name: "Já paguei" }).click();
+  await p.getByText("Pagamento confirmado").first().waitFor({ timeout: 30000 });
+  await p.reload({ waitUntil: "networkidle" });
+  if (!/Frete pago por Pix/.test(await p.locator("li").filter({ hasText: "Etiqueta 8002-01" }).first().innerText())) fail("membro: fardo não aparece pago");
+  await c.close();
+
+  await bus.p.goto(B + "/transportadora", { waitUntil: "networkidle" });
+  const cf2 = bus.p.getByRole("form", { name: "Coletar fardo" }).first();
+  await cf2.getByLabel("Código da etiqueta").fill("8002-01"); await cf2.getByRole("button", { name: "Coletei" }).click();
+  await bus.p.getByText("Fardo 8002-01 coletado").first().waitFor({ timeout: 30000 });
+  await bus.c.close();
+
+  await m.p.reload({ waitUntil: "networkidle" });
+  if (!(await m.p.getByRole("heading", { name: "Taxa da plataforma a faturar" }).isVisible())) fail("master: taxa a faturar ausente");
+  await check(m.p, "master excursão com taxa", 1440);
+  await shot(m.p, `${OUT}/40-master-taxa-1440.png`);
+  await m.c.close();
+  ok("Club E7: Pix do frete na conta do ônibus, conferido e coletado");
+}
 
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }

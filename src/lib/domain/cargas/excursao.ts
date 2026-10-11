@@ -14,6 +14,7 @@ import { activateCarrierReferral } from "../club/indicacoes";
 import { carrierByDriverToken, myCarrier } from "./cargas";
 import { myImporter } from "../bras/importadora";
 import { excursionFeeCents, getExcursionRules, PARCEL_SIZES, type ParcelSize } from "./regras-excursao";
+import { acceptPayStatus } from "./frete-pix";
 
 /**
  * Cargas Excursão (D114): o ônibus de excursão como rede de frete do Brás. Rota fixa → viagem com bagageiro medido em
@@ -138,13 +139,15 @@ export async function tripAction(db: Database, actor: Actor, tripId: string, act
   const who = c.name;
   await db.transaction(async (tx) => {
     await tx.update(trTrips).set({ status: to[action], updatedAt: now.toISOString(), ...(action === "SAIR" ? { departedAt: now.toISOString() } : action === "CHEGAR" ? { arrivedAt: now.toISOString() } : {}) }).where(eq(trTrips.id, t.id));
-    const parcels = await tx.select({ id: trParcels.id, status: trParcels.status }).from(trParcels).where(eq(trParcels.tripId, t.id));
+    const parcels = await tx.select({ id: trParcels.id, status: trParcels.status, payStatus: trParcels.payStatus }).from(trParcels).where(eq(trParcels.tripId, t.id));
     for (const p of parcels) {
       let next: (typeof trParcels.$inferSelect)["status"] | null = null;
       if (action === "SAIR") next = p.status === "COLETADO" ? "EM_VIAGEM" : (["SOLICITADO", "ESPERA", "ACEITO", "PRONTO"] as string[]).includes(p.status) ? "NAO_EMBARCOU" : null;
       if (action === "CHEGAR" && p.status === "EM_VIAGEM") next = "CHEGOU";
       if (action === "CANCELAR" && (ACTIVE_PARCEL as readonly string[]).includes(p.status)) next = "CANCELADO";
-      if (next) { await tx.update(trParcels).set({ status: next, updatedAt: now.toISOString() }).where(eq(trParcels.id, p.id)); await parcelEvent(tx, p.id, next, who, action === "CANCELAR" ? "Viagem cancelada pelo ônibus" : null); }
+      // Pago e não viajou (não embarcou ou viagem cancelada): o ônibus devolve o Pix (D119).
+      const refund = (next === "NAO_EMBARCOU" || next === "CANCELADO") && p.payStatus === "PAGO";
+      if (next) { await tx.update(trParcels).set({ status: next, updatedAt: now.toISOString(), ...(refund ? { payStatus: "DEVOLVER" as const } : {}) }).where(eq(trParcels.id, p.id)); await parcelEvent(tx, p.id, next, who, action === "CANCELAR" ? "Viagem cancelada pelo ônibus" : null); }
     }
   });
   if (action === "ENCERRAR") await activateCarrierReferral(db, c.id, now);
@@ -244,8 +247,8 @@ export async function cancelMyParcel(db: Database, actor: Actor, parcelId: strin
   const t = (await db.query.trTrips.findFirst({ where: eq(trTrips.id, p.tripId) }))!;
   const rules = await getExcursionRules(db);
   if (p.status !== "SOLICITADO" && p.status !== "ESPERA" && new Date(t.departAt).getTime() - now.getTime() < rules.cancelHours * 3_600_000) throw new DomainError("LATE", `Cancelamento até ${rules.cancelHours} h antes da saída. Fale com o ônibus.`);
-  await db.update(trParcels).set({ status: "CANCELADO", updatedAt: now.toISOString() }).where(eq(trParcels.id, p.id));
-  await parcelEvent(db, p.id, "CANCELADO", "Cliente", null);
+  await db.update(trParcels).set({ status: "CANCELADO", updatedAt: now.toISOString(), ...(p.payStatus === "PAGO" ? { payStatus: "DEVOLVER" as const } : {}) }).where(eq(trParcels.id, p.id));
+  await parcelEvent(db, p.id, "CANCELADO", "Cliente", p.payStatus === "PAGO" ? "Frete pago: o ônibus devolve o Pix" : null);
   return { ok: true as const };
 }
 
@@ -281,15 +284,16 @@ export async function respondParcel(db: Database, actor: Actor, parcelId: string
   if (!(["ABERTA", "LOTADA"] as string[]).includes(t.status)) throw new DomainError("TRIP", "A viagem não está recebendo fardos.");
   const rules = await getExcursionRules(db);
   const fee = excursionFeeCents(rules, p.priceCents);
+  const payStatus = await acceptPayStatus(db, c.id, p.clientUserId, rules.pixOnline);
   await db.transaction(async (tx) => {
     // Aceite condicional: só cabe se a soma dos aceitos + este não passar da capacidade (sem vender o mesmo espaço duas vezes).
-    const upd = await tx.update(trParcels).set({ status: "ACEITO", feeCents: fee, acceptedAt: now.toISOString(), updatedAt: now.toISOString() })
+    const upd = await tx.update(trParcels).set({ status: "ACEITO", feeCents: fee, payStatus, acceptedAt: now.toISOString(), updatedAt: now.toISOString() })
       .where(and(eq(trParcels.id, p.id), inArray(trParcels.status, ["SOLICITADO", "ESPERA"]), sql`(select coalesce(sum(x.units), 0) from tr_parcels x where x.trip_id = ${t.id} and x.status in ('ACEITO','PRONTO','COLETADO','EM_VIAGEM','CHEGOU','ENTREGUE')) + ${p.units} <= ${t.capacityUnits}`))
       .returning({ id: trParcels.id });
     if (!upd.length) throw new DomainError("FULL", "Não cabe mais no bagageiro desta viagem.");
     await parcelEvent(tx, p.id, "ACEITO", c.name, null);
   });
-  return { ok: true as const, feeCents: fee };
+  return { ok: true as const, feeCents: fee, payStatus };
 }
 
 /** Label "8001-07" → fardo da viagem do próprio ônibus. */
@@ -309,6 +313,7 @@ async function collect(db: Database, carrierId: string, who: string, label: stri
   if (!(["ABERTA", "LOTADA"] as string[]).includes(t.status)) throw new DomainError("TRIP", "A viagem já saiu.");
   const rules = await getExcursionRules(db);
   if (rules.requireInvoice && !p.invoiceKey) throw new DomainError("NO_INVOICE", "Fardo sem nota não embarca. Peça a chave da nota à loja ou ao cliente.");
+  if (p.payStatus === "A_PAGAR") throw new DomainError("NOT_PAID", "Frete ainda não pago: o fardo embarca depois do Pix do cliente (ou marque o cliente como de confiança).");
   await db.update(trParcels).set({ status: "COLETADO", collectedAt: now.toISOString(), updatedAt: now.toISOString() }).where(and(eq(trParcels.id, p.id), inArray(trParcels.status, ["ACEITO", "PRONTO"])));
   await parcelEvent(db, p.id, "COLETADO", who, null);
   return { ok: true as const, parcelId: p.id };
@@ -349,11 +354,11 @@ export async function helperDeliverParcel(db: Database, token: string, parcelId:
 // ---------------------------------------------------------------------------
 export type ParcelLine = {
   id: string; label: string; size: ParcelSize; units: number; status: (typeof trParcels.$inferSelect)["status"]; storeName: string; storeAddress: string | null; recipientName: string;
-  priceCents: number | null; feeCents: number | null; hasInvoice: boolean; refuseReason: string | null; createdAt: string;
+  priceCents: number | null; feeCents: number | null; hasInvoice: boolean; refuseReason: string | null; createdAt: string; payStatus: (typeof trParcels.$inferSelect)["payStatus"];
 };
 const line = (tripNumber: number, p: typeof trParcels.$inferSelect, withMoney: boolean): ParcelLine => ({
   id: p.id, label: `${tripNumber}-${String(p.seq).padStart(2, "0")}`, size: p.size, units: p.units, status: p.status, storeName: p.storeName, storeAddress: p.storeAddress, recipientName: p.recipientName,
-  priceCents: withMoney ? p.priceCents : null, feeCents: withMoney ? p.feeCents : null, hasInvoice: !!p.invoiceKey, refuseReason: p.refuseReason, createdAt: new Date(p.createdAt).toISOString(),
+  priceCents: withMoney ? p.priceCents : null, feeCents: withMoney ? p.feeCents : null, hasInvoice: !!p.invoiceKey, refuseReason: p.refuseReason, createdAt: new Date(p.createdAt).toISOString(), payStatus: p.payStatus,
 });
 
 /** Painel do dono do ônibus: viagens ativas com medidor, chamadas e fardos (o "app de corrida"). */
@@ -393,7 +398,7 @@ export async function myParcels(db: Database, actor: Actor) {
   const ids = rows.map((x) => x.p.id);
   const evs = ids.length ? await db.select().from(trParcelEvents).where(inArray(trParcelEvents.parcelId, ids)) : [];
   return rows.map(({ p, t, r, c }) => ({
-    ...line(t.number, p, true), feeCents: null, deliveryCode: p.deliveryCode, tripNumber: t.number, tripStatus: t.status, carrierName: c.name, carrierPhone: c.phone, routeName: r.name,
+    ...line(t.number, p, true), feeCents: null, deliveryCode: p.deliveryCode, tripId: t.id, tripNumber: t.number, tripStatus: t.status, carrierName: c.name, carrierPhone: c.phone, routeName: r.name,
     brasPoint: r.brasPoint, cityPoint: r.cityPoint, departAt: new Date(t.departAt).toISOString(), arriveCityAt: t.arriveCityAt ? new Date(t.arriveCityAt).toISOString() : null,
     events: evs.filter((e) => e.parcelId === p.id).map((e) => ({ kind: e.kind, at: new Date(e.createdAt).toISOString() })),
   }));

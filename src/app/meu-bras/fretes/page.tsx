@@ -10,6 +10,7 @@ import { myReferrals } from "@/lib/domain/club/indicacoes";
 import { lastBrasShipping } from "@/lib/domain/bras/catalogo";
 import { BRAS_UFS } from "@/lib/bras/ufs";
 import { FreightCard } from "@/components/frete/freight-card";
+import { myOpenFreightPix } from "@/lib/domain/cargas/frete-pix";
 import { ReferCarrierForm } from "@/components/frete/frete-forms";
 import { ReserveParcelsForm } from "@/components/cargas/excursao-forms";
 import { excursionOptions } from "@/lib/domain/cargas/excursao";
@@ -33,7 +34,7 @@ export default async function Fretes({ searchParams }: { searchParams: Promise<{
   const db = await getDb();
   const sp = await searchParams;
   const ver = sp.ver === "catalogo" ? "catalogo" : sp.ver === "indicar" ? "indicar" : sp.ver === "onibus" ? "onibus" : "fretes";
-  const [freights, last, refs] = await Promise.all([myFreights(db, session.actor), lastBrasShipping(db, session.actor), myReferrals(db, session.actor)]);
+  const [freights, last, refs, pixes] = await Promise.all([myFreights(db, session.actor), lastBrasShipping(db, session.actor), myReferrals(db, session.actor), myOpenFreightPix(db, session.actor)]);
   const uf = (BRAS_UFS as readonly string[]).includes(sp.uf ?? "") ? sp.uf! : last?.shipState ?? "SP";
   const catalog = ver === "catalogo" ? await freightCatalogFor(db, uf) : [];
   const cidade = (sp.cidade ?? last?.shipCity ?? "").slice(0, 80);
@@ -47,7 +48,7 @@ export default async function Fretes({ searchParams }: { searchParams: Promise<{
       <LinkTabs label="Seções" active={ver} items={[{ key: "fretes", label: `Meus fretes (${andamento.length})`, href: "/meu-bras/fretes" }, { key: "onibus", label: "Mandar pelo ônibus", href: `/meu-bras/fretes?ver=onibus&uf=${uf}` }, { key: "catalogo", label: "Transportadoras e ônibus", href: `/meu-bras/fretes?ver=catalogo&uf=${uf}` }, { key: "indicar", label: "Indicar a minha", href: "/meu-bras/fretes?ver=indicar" }]} />
       {ver === "fretes" ? (
         <div className="mt-6 space-y-8">
-          {andamento.length ? <ul className="grid gap-3 lg:grid-cols-2">{andamento.map((f) => <FreightCard key={f.id} f={f} receiptHref={`/meu-bras/pedidos/${f.requestId}/retirada`} />)}</ul>
+          {andamento.length ? <ul className="grid gap-3 lg:grid-cols-2">{andamento.map((f) => <FreightCard key={f.id} f={f} receiptHref={`/meu-bras/pedidos/${f.requestId}/retirada`} openPix={f.parcel ? pixes.find((x) => x.tripId === f.parcel!.tripId) ?? null : null} />)}</ul>
             : <p className="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">Nenhum frete em andamento. No próximo pedido, escolha a transportadora ou o ônibus no catálogo e acompanhe aqui.</p>}
           {encerrados.length ? <details><summary className="cursor-pointer text-base font-bold">Entregues e cancelados ({encerrados.length})</summary><ul className="mt-3 grid gap-3 lg:grid-cols-2">{encerrados.slice(0, 40).map((f) => <FreightCard key={f.id} f={f} />)}</ul></details> : null}
         </div>
