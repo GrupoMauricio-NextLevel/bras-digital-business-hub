@@ -9,6 +9,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { cancelVoucher, redeemVoucher, reviewPoints, applyVoucher } from "@/lib/domain/club/pontos";
 import { activateReferralManually } from "@/lib/domain/club/indicacoes";
 import { saveClubRules, type clubRulesSchema } from "@/lib/domain/club/regras";
+import { setRankingOptIn, type rankingOptInSchema } from "@/lib/domain/club/ranking";
 
 /** Ações do Brás Digital Club (D115): vales, revisão e regras. */
 async function ctx() {
@@ -39,4 +40,13 @@ export async function activateReferralAction(id: string) {
 }
 export async function saveClubRulesAction(patch: Partial<z.input<typeof clubRulesSchema>>) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await saveClubRules(db, actor, patch); refresh(); return { version: r.version }; });
+}
+
+export async function setRankingOptInAction(input: { show: boolean; city: string; uf: string }) {
+  return runAction(async () => {
+    const { actor, db } = await ctx();
+    const r = await setRankingOptIn(db, actor, input as z.input<typeof rankingOptInSchema>);
+    refresh();
+    return r;
+  });
 }

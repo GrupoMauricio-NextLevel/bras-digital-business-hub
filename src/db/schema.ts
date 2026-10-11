@@ -2330,3 +2330,13 @@ export const clubSettlements = pgTable("club_settlements", {
   settledBy: text("settled_by").notNull(),
   createdAt: createdAt(),
 }, (t) => [index("club_settlements_month_idx").on(t.month)]);
+
+/** Perfil público do Club (D122): só quem aceitar aparece no ranking da cidade, com o primeiro nome e a cidade. */
+export const clubProfiles = pgTable("club_profiles", {
+  userId: text("user_id").primaryKey().references(() => users.id),
+  showInRanking: boolean("show_in_ranking").notNull().default(false),
+  displayName: text("display_name").notNull(),
+  city: text("city").notNull(),
+  uf: text("uf").notNull(),
+  updatedAt: updatedAt(),
+}, (t) => [index("club_profiles_city_idx").on(t.uf, t.city)]);

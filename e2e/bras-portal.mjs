@@ -1069,6 +1069,14 @@ if (process.env.MP_FAKE) {
   await p.reload({ waitUntil: "networkidle" });
   const after = await saldo();
   if (after - before !== 1000) fail(`cartão do Club: esperado +1.000 pontos, veio ${after - before}`);
+  // Ranking da cidade (D122): só aparece quem aceitar.
+  const rk = p.getByRole("form", { name: "Aparecer no ranking" });
+  await rk.getByLabel("Cidade").fill("Belo Horizonte"); await rk.getByLabel("UF").selectOption("MG");
+  await rk.getByRole("button", { name: "Aparecer no ranking" }).click();
+  await p.getByText("Você aparece no ranking da sua cidade").first().waitFor({ timeout: 30000 });
+  await p.getByText("(você)").first().waitFor({ timeout: 30000 });
+  await semToast(p);
+  await check(p, "ranking da cidade", 390);
   await c.close();
 
   await m.p.reload({ waitUntil: "networkidle" });

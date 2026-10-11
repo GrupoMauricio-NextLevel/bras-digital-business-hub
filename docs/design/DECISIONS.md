@@ -1117,3 +1117,13 @@ Prompt, seções 7.3 e 7.5. Padrões da seção 13 (perguntas 6 e 9), em rascunh
   - pontos como desconto no Pix do frete (depende de quem paga o desconto quando o ônibus não é do grupo);
   - Nota Fácil integrado (acesso ao emissor).
 - Testes: `tests/club-cruzados-e8b.test.ts`.
+
+## D122 — Club E9a: ranking do mês por cidade, só para quem aceitar (2026-10-11)
+Prompt, seção 7B.5 e pergunta 17 (padrão: ligado, só para quem aceitar aparecer).
+- **Aceite no "Indique e ganhe"** (Meu Brás, transportadora e importadora): a pessoa informa a cidade e a UF e aceita aparecer (`club_profiles`). Aparece só o primeiro nome do cadastro, sem documento. Ela pode sair quando quiser.
+- **Ranking do mês na cidade:**
+  - conta as indicações ativadas no mês;
+  - empate divide a posição;
+  - entre quem aceitou, só aparece quem ativou alguma indicação no mês, mais a própria pessoa.
+- **Sem prêmio por posição nem sorteio** (seção 12 do prompt): o ranking só mostra a posição, e os pontos vêm sempre da indicação confirmada.
+- Testes: `tests/club-ranking-e9.test.ts`. e2e: passo 15 (aceitar e aparecer como "(você)").

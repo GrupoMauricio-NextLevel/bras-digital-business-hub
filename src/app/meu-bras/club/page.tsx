@@ -4,6 +4,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { brandByCode } from "@/lib/brand";
 import { clubPanel } from "@/lib/domain/club/pontos";
 import { ClubPanel } from "@/components/club/club-panel";
+import { RankingCard } from "@/components/club/ranking-card";
+import { cityRanking } from "@/lib/domain/club/ranking";
 import { ReferCarrierForm } from "@/components/frete/frete-forms";
 import QRCode from "qrcode";
 import { myClubCard } from "@/lib/domain/club/balcao";
@@ -17,6 +19,7 @@ export default async function Club() {
   const db = await getDb();
   const [data, card] = await Promise.all([clubPanel(db, session.actor), myClubCard(db, session.actor.userId)]);
   const qr = await QRCode.toDataURL(`CLUB:${card.token}`, { margin: 1, width: 200, errorCorrectionLevel: "M" });
+  const ranking = await cityRanking(await getDb(), session.actor);
   return (
     <>
       <PageHeader eyebrow="Brás Digital Club" title="Indique e ganhe" description="Traga clientes, transportadoras, ônibus e importadoras para a rede. Cada indicação ativada vira pontos, e os pontos viram desconto." />
@@ -31,6 +34,7 @@ export default async function Club() {
         </div>
       </section>
       <ClubPanel data={data} inviteUrl={`${brandByCode("BRAS_DIGITAL").baseUrl}/c/${data.code}`} inviteMessage="Compre do Brás por caixa fechada na Brás Digital. Entre pelo meu convite:" referSlot={<><h3 className="mb-2 text-sm font-semibold">Indicar transportadora, ônibus ou importadora</h3><ReferCarrierForm kinds={["TRANSPORTADORA", "ONIBUS", "IMPORTADORA"]} /></>} />
+      <RankingCard ranking={ranking} />
     </>
   );
 }

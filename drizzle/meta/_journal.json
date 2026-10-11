@@ -414,6 +414,13 @@
       "when": 1791682376177,
       "tag": "0058_club_balcao",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1791685876365,
+      "tag": "0059_club_ranking",
+      "breakpoints": true
     }
   ]
 }
