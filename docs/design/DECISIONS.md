@@ -1204,3 +1204,9 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **Regras dos níveis** nas regras do Club (`club.rules.tiers`, com versão e auditoria): Club+ pontos ×2 e 20% de desconto nos planos; Club Total pontos ×3 e plano de entrada de todas as marcas liberado; **a taxa sobre a venda continua**.
 - **Master → Proposta de preço → "O Club como assinatura"**: os três níveis e a conta "quem usa o plano de entrada de todas as marcas paga X separado; com o Club Total, Y" (preços reais do catálogo e da tabela do SuperDrop).
 - **Fica para depois (depende da aprovação e da conta do grupo, D130):** assinatura por pessoa (não por loja) no checkout corporativo, concessão de acesso em cada marca, multiplicador aplicado nos créditos, queda de cada marca para o grátis no cancelamento e o acerto entre empresas dos descontos.
+
+## D132 — Fio do grupo na captação e rodapé do grupo nos e-mails (P5U, desligados) (2026-10-11)
+- **Captação:** cadastro (SuperDrop, Commerce e Brás), entrada, "esqueci a senha" e `/ativar` mostram o fio do grupo (só marcas abertas, a da página mais larga) e o **selo do Club** ("Ao entrar, você já faz parte do Club do Grupo NextLevel: seus pontos valem em todas as marcas do grupo"). Componente de servidor `FioCaptacao`.
+- **E-mails transacionais:** rodapé com a faixa de cores das marcas e a frase do Club, no HTML e no texto; ler a chave nunca impede o envio.
+- **Chaves no Master** (Descoberta → Barra do ecossistema → "Fio do grupo fora dos painéis"): captação, e-mails e páginas públicas, todas desligadas. Gravar uma chave não apaga as outras.
+- **Fica para depois:** quem convidou nos convites `/r/` e `/c/` com o benefício dos dois lados, saldo do Club no e-mail, "Suas marcas" no perfil (depende da conta do grupo, D130) e a comemoração com sugestão de outra marca.

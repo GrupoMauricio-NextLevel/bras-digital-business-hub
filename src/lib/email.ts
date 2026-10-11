@@ -14,12 +14,15 @@ const brandize = (t: string, b: Brand) => t.replaceAll("{marca}", b.name);
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /** HTML simples e compatível com clientes de e-mail (tabelas e estilos em linha), com a assinatura da NextLevel. */
-export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta">, brand: Brand = brandByCode(undefined)): string {
+/** Rodapé do grupo (D132): faixa estática com a cor de cada marca aberta e a frase do Club. */
+export type GroupFooter = { segments: { name: string; color: string }[] };
+const groupFooterHtml = (g: GroupFooter) => `<tr><td style="padding:14px 24px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${g.segments.map((s) => `<td style="height:6px;background:${s.color}"></td>`).join("")}</tr></table><p style="margin:10px 0 0;font-size:13px;color:#374151">Grupo NextLevel: ${g.segments.map((s) => esc(s.name)).join(" · ")}. Seus pontos do Club valem em todas as marcas do grupo.</p></td></tr>`;
+export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta">, brand: Brand = brandByCode(undefined), group?: GroupFooter | null): string {
   const BRAND = brand.primaryColor, ACCENT = brand.accentColor;
   const onAccent = onSignal(ACCENT);
   const paras = m.text.split(/\n{2,}/).map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#1f2937">${esc(p).replace(/\n/g, "<br>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:#0b6b34">$1</a>')}</p>`).join("");
   const cta = m.cta ? `<p style="margin:22px 0"><a href="${esc(m.cta.url)}" style="display:inline-block;background:${ACCENT};color:${onAccent};font-weight:700;text-decoration:none;padding:12px 22px;border-radius:8px;font-size:15px">${esc(m.cta.label)}</a></p>` : "";
-  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0"><tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}</td></tr><tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
+  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0"><tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}</td></tr>${group ? groupFooterHtml(group) : ""}<tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
 }
 
 /**
@@ -31,6 +34,15 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
   const id = newId("eml");
   const brand = brandByCode(m.brand);
   m = { ...m, subject: brandize(m.subject, brand), text: brandize(m.text, brand), cta: m.cta ? { ...m.cta, label: brandize(m.cta.label, brand) } : undefined };
+  // Rodapé do grupo (D132), só com a chave ligada no Master; falha ao ler a chave nunca impede o e-mail.
+  let group: GroupFooter | null = null;
+  try {
+    const eco = await import("@/lib/domain/ecossistema/lancador");
+    if ((await eco.getEcoSettings(db)).emailFooter) {
+      group = { segments: eco.groupSegments(brand.code) };
+      m = { ...m, text: `${m.text}\n\n—\nGrupo NextLevel: ${group.segments.map((x) => x.name).join(" · ")}. Seus pontos do Club valem em todas as marcas do grupo.` };
+    }
+  } catch { group = null; }
   try {
     const r = await db.insert(emailOutbox).values({ id, kind: m.kind, toEmail: m.to, subject: m.subject, body: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), status: "LOGGED", dedupeKey: m.dedupeKey ?? null }).onConflictDoNothing().returning({ id: emailOutbox.id });
     if (!r.length) return "SKIPPED";
@@ -42,7 +54,7 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
   let status: "SENT" | "FAILED" = "SENT"; let error: string | null = null;
   try {
     const replyTo = process.env.EMAIL_REPLY_TO;
-    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand), ...(replyTo ? { reply_to: replyTo } : {}) }) });
+    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand, group), ...(replyTo ? { reply_to: replyTo } : {}) }) });
     if (!res.ok) { status = "FAILED"; error = `HTTP ${res.status}`; }
   } catch (e) { status = "FAILED"; error = e instanceof Error ? e.message.slice(0, 200) : "erro"; }
   try { await db.update(emailOutbox).set({ status, error }).where(eq(emailOutbox.id, id)); } catch (e) { console.error("[email outbox]", e); }

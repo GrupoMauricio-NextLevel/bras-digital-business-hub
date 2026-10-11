@@ -33,6 +33,6 @@ export async function saveBenefitsSettingsAction(input: { brands: string[] }) {
 }
 
 /** Liga a barra do ecossistema por marca (D129). */
-export async function saveEcoSettingsAction(input: { brands: string[] }) {
+export async function saveEcoSettingsAction(input: { brands?: string[]; capture?: boolean; emailFooter?: boolean; publicPages?: boolean }) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await saveEcoSettings(db, actor, input as never); for (const p of ["/merchant", "/meu-bras", "/transportadora", "/importadora"]) revalidatePath(p, "layout"); refresh(); return r; });
 }

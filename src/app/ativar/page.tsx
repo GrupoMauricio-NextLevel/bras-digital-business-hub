@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
 import Link from "next/link";
 import { CheckCircle2, Gift } from "lucide-react";
 import { getDb } from "@/db/client";
@@ -21,6 +22,7 @@ export default async function AtivarPage({ searchParams }: { searchParams: Promi
   return (
     <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-4 py-10">
       <div className="mb-6"><BrandLogo brand={{ code: brand.code, name: brand.name }} variant="assinatura-completa" className="h-12" priority /></div>
+      <FioCaptacao brandCode={brand.code} />
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Parte do Grupo NextLevel</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight">{p.title}</h1>
       {p.bridge ? <p className="mt-3 text-lg">{p.bridge}</p> : null}

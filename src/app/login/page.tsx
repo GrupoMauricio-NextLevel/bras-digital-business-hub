@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
 import { redirect } from "next/navigation";
 import { ArrowRight, Factory, Store, ShieldCheck, Handshake } from "lucide-react";
 import { getSession, homeFor, isDemoMode } from "@/lib/auth";
@@ -39,7 +40,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <AuthCardShell
       brand={brand.code}
-      below={demo ? (
+      below={<><FioCaptacao brandCode={brand.code} />{demo ? (
         <details className="rounded-[24px] bg-surface/95 p-4 shadow-xl open:pb-5" open>
           <summary className="cursor-pointer text-sm font-semibold text-foreground">Perfis de demonstração</summary>
           <p role="note" className="mt-2 inline-block rounded bg-warning-soft px-2 py-1 text-xs font-semibold text-warning">Ambiente de demonstração · Mercado Pago e Pix SIMULADOS, dados fictícios</p>
@@ -63,7 +64,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           </div>
           <p className="mt-4 text-xs text-muted-foreground">Vitrines públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
         </details>
-      ) : undefined}
+      ) : null}</>}
     >
       <h1 className="sr-only">{brand.name}</h1>
       <BrandLogo brand={brand} className="h-9" priority />

@@ -17,18 +17,27 @@ import { activeDoor } from "../precos/porta-entrada";
  */
 export const ECO_BRANDS = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as const;
 export type EcoBrand = (typeof ECO_BRANDS)[number];
-export const ecoSettingsSchema = z.object({ brands: z.array(z.enum(ECO_BRANDS)).max(ECO_BRANDS.length) });
+export const ecoSettingsSchema = z.object({
+  brands: z.array(z.enum(ECO_BRANDS)).max(ECO_BRANDS.length),
+  /** Fio do grupo e selo do Club nas páginas de captação (cadastro, entrada, ativação, senha) — D132. */
+  capture: z.boolean().default(false),
+  /** Rodapé do grupo nos e-mails transacionais — D132. */
+  emailFooter: z.boolean().default(false),
+  /** Faixa "Parte do Grupo NextLevel" e rodapé da família nas páginas públicas — D133. */
+  publicPages: z.boolean().default(false),
+});
 const KEY = "ecossistema.barra";
 
 export async function getEcoSettings(db: Database) {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, KEY) });
   const p = ecoSettingsSchema.safeParse(row?.value);
-  return p.success ? p.data : { brands: [] as EcoBrand[] };
+  return p.success ? p.data : { brands: [] as EcoBrand[], capture: false, emailFooter: false, publicPages: false };
 }
-export async function saveEcoSettings(db: Database, actor: Actor, raw: z.input<typeof ecoSettingsSchema>) {
+/** Grava só o que veio (as outras chaves continuam como estavam). */
+export async function saveEcoSettings(db: Database, actor: Actor, raw: Partial<z.input<typeof ecoSettingsSchema>>) {
   requireMaster(actor);
   const before = await getEcoSettings(db);
-  const v = ecoSettingsSchema.parse(raw);
+  const v = ecoSettingsSchema.parse({ ...before, ...raw });
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });
   await recordAudit(db, actor, { action: "ECOSYSTEM_SETTINGS", entityType: "platform_settings", entityId: KEY, before, after: v }, { force: true });
   return v;
@@ -76,4 +85,9 @@ export async function ecosystemBar(db: Database, current: EcoBrand | null, now =
     recommended,
     all: await Promise.all(live.filter((b) => b !== current).map((b) => item(b))),
   };
+}
+
+/** Segmentos do fio para páginas sem marca "atual" de painel (captação, e-mail, páginas públicas): só marcas abertas. */
+export function groupSegments(current?: string | null) {
+  return ECO_BRANDS.filter((b) => b === current || brandByCode(b).live).map((b) => ({ brand: b, name: brandByCode(b).name, color: paletteOf(b).light.signal, current: b === current }));
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
 import { BadgeCheck, Lock, PlayCircle } from "lucide-react";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
@@ -39,6 +40,7 @@ export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand;
             <span>Depois do cadastro você vê o preço e as caixas de <b>{video.title}</b>.</span>
           </p>
         ) : null}
+        <div className="mt-6"><FioCaptacao brandCode={brand.code} /></div>
         <div className="mt-6"><BrasSignupForm videoId={video?.active ? videoId : undefined} source={source} /></div>
         <p className="mt-6 text-center text-sm text-muted-foreground"><Lock className="mr-1 inline size-3.5 align-[-2px]" aria-hidden />Já é membro? <Link href="/login" className="font-semibold text-foreground underline">Entrar na área do cliente</Link></p>
       </div>

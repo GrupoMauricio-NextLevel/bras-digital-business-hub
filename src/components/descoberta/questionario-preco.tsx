@@ -93,3 +93,17 @@ export function BeneficiosConfig({ value, brands, kind = "beneficios" }: { value
     </form>
   );
 }
+
+/** Chaves do fio do grupo fora dos painéis (D132/D133): captação, e-mails e páginas públicas. */
+export function EcoExtrasConfig({ value }: { value: { capture: boolean; emailFooter: boolean; publicPages: boolean } }) {
+  const { pending, run } = useRun();
+  const [f, setF] = React.useState(value);
+  return (
+    <form className="mt-4 space-y-2" aria-label="Fio do grupo fora dos painéis" onSubmit={(e) => { e.preventDefault(); run(() => saveEcoSettingsAction(f), "Fio do grupo atualizado"); }}>
+      <Switch checked={f.capture} onCheckedChange={(v) => setF({ ...f, capture: v })} label="Páginas de cadastro, entrada, ativação e senha (fio e selo do Club)" />
+      <Switch checked={f.emailFooter} onCheckedChange={(v) => setF({ ...f, emailFooter: v })} label="Rodapé do grupo nos e-mails" />
+      <Switch checked={f.publicPages} onCheckedChange={(v) => setF({ ...f, publicPages: v })} label="Páginas públicas das marcas (faixa e rodapé da família)" />
+      <Button type="submit" loading={pending}>Gravar</Button>
+    </form>
+  );
+}
