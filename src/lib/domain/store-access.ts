@@ -14,22 +14,27 @@ import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
 import { isClosedCommerceSupplier } from "./bras/fronteira";
+import { activeDoor, creditPlanCashback, doorFields, type EntrySnapshot } from "./precos/porta-entrada";
 
 /**
  * Regra de acesso da loja (teste de 7 dias e assinatura).
  * - Sem `trialEndsAt` e sem `paidUntil`: sem regra (contas antigas e de demonstração) → FREE.
  * - `paidUntil` no futuro → PAID. `trialEndsAt` no futuro → TRIAL. Senão → BLOCKED (só a tela de pagamento).
+ * - Loja que entrou pela porta de entrada (D126, `entryOffer`): no lugar do bloqueio cai no plano grátis → GRATIS
+ *   (continua vendendo e paga a taxa do grátis sobre a venda).
  */
-export type AccessState = "FREE" | "TRIAL" | "PAID" | "BLOCKED";
+export type AccessState = "FREE" | "TRIAL" | "PAID" | "BLOCKED" | "GRATIS";
 export type StoreAccess = { state: AccessState; endsAt: Date | null; daysLeft: number | null };
+type AccessFields = Pick<Store, "trialEndsAt" | "paidUntil"> & { entryOffer?: Store["entryOffer"] };
 
 const DAY = 86_400_000;
-export function storeAccess(store: Pick<Store, "trialEndsAt" | "paidUntil">, now = new Date()): StoreAccess {
+export function storeAccess(store: AccessFields, now = new Date()): StoreAccess {
   const paid = store.paidUntil ? new Date(store.paidUntil) : null;
   const trial = store.trialEndsAt ? new Date(store.trialEndsAt) : null;
   if (paid && paid > now) return { state: "PAID", endsAt: paid, daysLeft: Math.ceil((paid.getTime() - now.getTime()) / DAY) };
   if (trial && trial > now && !paid) return { state: "TRIAL", endsAt: trial, daysLeft: Math.ceil((trial.getTime() - now.getTime()) / DAY) };
   if (!paid && !trial) return { state: "FREE", endsAt: null, daysLeft: null };
+  if (store.entryOffer) return { state: "GRATIS", endsAt: null, daysLeft: null };
   return { state: "BLOCKED", endsAt: paid ?? trial, daysLeft: 0 };
 }
 
@@ -78,10 +83,12 @@ export async function startTrial(db: Database, input: { storeId: string; code: s
   if (coupon.supplierId && (await supplierOfStore(db, store.id)) !== coupon.supplierId) throw new DomainError("COUPON_SUPPLIER", "Este cupom é de outro fornecedor.");
   const claimed = await db.query.trialClaims.findFirst({ where: eq(trialClaims.taxId, taxId) });
   if (claimed) throw new DomainError("TRIAL_USED", "Este CPF/CNPJ já usou o teste gratuito.");
-  const ends = new Date(now.getTime() + coupon.trialDays * DAY);
+  // Porta de entrada do SuperDrop ligada (D126): teste reverso da porta no lugar dos dias do cupom.
+  const door = await activeDoor(db, "SUPERDROP", now);
+  const ends = new Date(now.getTime() + (door ? door.trialDays : coupon.trialDays) * DAY);
   await db.transaction(async (tx) => {
     await tx.insert(trialClaims).values({ taxId, storeId: store.id, couponId: coupon.id });
-    await tx.update(stores).set({ trialEndsAt: ends.toISOString(), couponId: coupon.id, taxId, updatedAt: now.toISOString() }).where(eq(stores.id, store.id));
+    await tx.update(stores).set({ trialEndsAt: ends.toISOString(), couponId: coupon.id, taxId, updatedAt: now.toISOString(), ...(door ? doorFields(door, now) : {}) }).where(eq(stores.id, store.id));
     await tx.update(coupons).set({ redemptions: sql`${coupons.redemptions} + 1` }).where(eq(coupons.id, coupon.id));
   });
   await emitEvent(db, { type: "TRIAL_STARTED", supplierId: coupon.supplierId, storeId: store.id, payload: { code: coupon.code, endsAt: ends.toISOString() }, dedupeKey: `TRIAL_STARTED:${store.id}` });
@@ -122,14 +129,16 @@ export async function ensurePlanInvoice(db: Database, store: Store, months: Plan
   if (setup) return { invoiceId: setup.id, amountCents: setup.amountCents, description: setup.description, includesSetup: true };
   const book = await getPriceBook(db);
   const offer = book.offers[store.offer];
-  const amount = offer.monthlyCents * months;
+  // Anual da porta de entrada (D126): "pague N, leve 12" (faturas de plano são só Pix).
+  const promo = months === 12 ? (store.entryOffer as EntrySnapshot | null)?.annualPromo : null;
+  const amount = offer.monthlyCents * (promo ? promo.paidMonths : months);
   const dedupeKey = `STORE_PLAN:${store.id}:${store.offer}:${months}:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
   if (existing && existing.status === "OPEN") return { invoiceId: existing.id, amountCents: existing.amountCents, description: existing.description, includesSetup: false };
   const key = existing ? `${dedupeKey}:${now.getTime()}` : dedupeKey;
   const id = newId("fin");
   const description = `Plano ${offer.name} · ${PLAN_CYCLES[months]}`;
-  const lines: InvoiceLine[] = [{ kind: "STORE_PLAN", description: `${offer.name} · ${months} ${months === 1 ? "mês" : "meses"}`, amountCents: amount }];
+  const lines: InvoiceLine[] = [{ kind: "STORE_PLAN", description: `${offer.name} · ${months} ${months === 1 ? "mês" : "meses"}${promo ? ` (pague ${promo.paidMonths}, leve 12 no Pix)` : ""}`, amountCents: amount }];
   await db.insert(financeInvoices).values({ id, dedupeKey: key, payerType: "STORE", supplierId: await supplierOfStore(db, store.id), storeId: store.id, kind: "STORE_PLAN", description, amountCents: amount, lines, status: "OPEN", dueDate: new Date(now.getTime() + 3 * DAY).toISOString() });
   return { invoiceId: id, amountCents: amount, description, includesSetup: false };
 }
@@ -150,9 +159,10 @@ export async function fulfillPlanInvoice(db: Database, inv: typeof financeInvoic
   if (inv.dedupeKey.startsWith("NLSUB:")) { const { onSubscriptionInvoicePaid } = await import("./commerce-plans"); await onSubscriptionInvoicePaid(db, inv, now); return; }
   if (inv.kind === "STORE_PLAN") await grantPlanMonths(db, inv.storeId, Number(inv.dedupeKey.split(":")[3]) || 1, inv, now);
   else if (inv.kind === "STORE_SETUP") await grantPlanMonths(db, inv.storeId, 1, inv, now);
+  await creditPlanCashback(db, inv, now);
 }
 
-export const isBlocked = (store: Pick<Store, "trialEndsAt" | "paidUntil">, now = new Date()) => storeAccess(store, now).state === "BLOCKED";
+export const isBlocked = (store: AccessFields, now = new Date()) => storeAccess(store, now).state === "BLOCKED";
 
 // ---------------------------------------------------------------------------
 // Cadastro público: com cupom inicia o teste de 7 dias; sem cupom vai direto ao pagamento do plano
@@ -228,8 +238,17 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
     return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: sub.trial };
   }
   if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });
-  // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.
-  else await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));
+  else {
+    // Porta do SuperDrop ligada (D126): sem cupom também entra pelo teste reverso (um por CPF/CNPJ).
+    const door = await activeDoor(db, "SUPERDROP", now);
+    const claimed = door ? await db.insert(trialClaims).values({ taxId, storeId: created.storeId }).onConflictDoNothing().returning({ taxId: trialClaims.taxId }) : [];
+    if (door && claimed.length) {
+      await db.update(stores).set({ trialEndsAt: new Date(now.getTime() + door.trialDays * DAY).toISOString(), ...doorFields(door, now) }).where(eq(stores.id, created.storeId));
+      return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: door.trialDays > 0 };
+    }
+    // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.
+    await db.update(stores).set({ trialEndsAt: new Date(now.getTime() - 1000).toISOString() }).where(eq(stores.id, created.storeId));
+  }
   return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: !!code };
 }
 

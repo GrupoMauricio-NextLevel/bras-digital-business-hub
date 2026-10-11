@@ -402,8 +402,16 @@ export async function runDunningNotices(db: Database, now = new Date()): Promise
 export async function storeOrderFeeFor(db: Database, storeId: string, period: string, book?: PriceBook) {
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
   if (!store) return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
-  // Loja Commerce com assinatura (D90): taxa do plano congelada na assinatura, zero na carência da oferta de entrada.
+  // Loja no plano grátis da porta de entrada (D126): se no fim do mês está no grátis, a taxa do mês é a do grátis.
   const { start: pStart, end: pEnd } = periodBounds(period);
+  const snap = store.entryOffer as { freeTierFeeBps?: number } | null;
+  if (snap && (await import("./store-access")).storeAccess(store, new Date(pEnd.getTime() - 1)).state === "GRATIS") {
+    const bps = snap.freeTierFeeBps ?? 0;
+    const [g] = await db.select({ base: sum(orders.subtotalCents), n: count() }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.customerPaymentStatus, "PAID"), ne(orders.status, "CANCELED"), ne(orders.paymentProvider, "DEMO"), gte(orders.createdAt, pStart.toISOString()), lt(orders.createdAt, pEnd.toISOString())));
+    const baseCents = Number(g?.base ?? 0);
+    return { feeCents: Math.round((baseCents * bps) / 10_000), baseCents, orders: g?.n ?? 0, bps };
+  }
+  // Loja Commerce com assinatura (D90): taxa do plano congelada na assinatura, zero na carência da oferta de entrada.
   const commerceFee = await (await import("./commerce-plans")).platformFeeFor(db, storeId, pStart, pEnd);
   if (commerceFee) return { feeCents: commerceFee.feeCents, baseCents: commerceFee.baseCents, orders: commerceFee.orders, bps: commerceFee.bps };
   if (store.kind === "SUPPLIER_OWN") return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };

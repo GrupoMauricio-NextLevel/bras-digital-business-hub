@@ -12,6 +12,8 @@ import { FAMILY_LABEL, CYCLE_LABEL } from "@/lib/finance/catalog-labels";
 import { PARTNER_KIND_LABEL } from "@/lib/domain/corporate-sales";
 import { OfferVersionForm, RuleVersionForm, TaxSettingForm } from "../catalog-admin";
 import { FinNav } from "../fin-nav";
+import { listDoors } from "@/lib/domain/precos/porta-entrada";
+import { PortaForm } from "@/components/descoberta/porta-form";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +22,7 @@ export default async function OfertasComissoes() {
   const db = await getDb();
   const [offers, rules, fin] = await Promise.all([listOffers(db, s.actor), listCommissionRules(db), getFinanceSettings(db)]);
   const entry = offers.find((o) => o.key === "COMMERCE_ENTRADA");
+  const doors = await listDoors(db, s.actor);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Ofertas e comissões" description="Oferta de entrada da Commerce e regras de comissão dos parceiros, sempre em versões: quem já recebeu uma condição mantém a dela." />
@@ -31,6 +34,13 @@ export default async function OfertasComissoes() {
           <OfferVersionForm offerKey={entry.key} rules={entry.rules} />
         </CardContent></Card>
       ) : null}
+      {doors.map(({ brand, offer }) => offer ? (
+        <Card key={brand} className="mb-6"><CardContent className="pt-5">
+          <SectionTitle title={`Porta de entrada ${brand === "SUPERDROP" ? "SuperDrop" : "Commerce"} (versão ${offer.version})`} description="“Grátis para começar, paga quando cresce” (D126): teste do plano pago que cai no grátis, dias por conquista, anual no Pix e cashback em pontos. Ligar vale só para novos clientes; quem já entrou mantém a condição." />
+          <p className="mb-4 text-sm"><Badge tone={offer.status === "ACTIVE" ? "success" : "warning"}>{offer.status === "ACTIVE" ? "Ligada" : "Desligada"}</Badge> <span className="ml-2">{offer.rules.trialDays} dias de teste · grátis com {(offer.rules.freeTierFeeBps ?? 0) / 100}% por venda · até {offer.rules.milestoneCapDays ?? 0} dias com conquistas · anual {offer.rules.annualPromo ? `pague ${offer.rules.annualPromo.paidMonths}, leve 12` : "sem promoção"} · cashback {(offer.rules.cashbackBps ?? 0) / 100}%</span></p>
+          <PortaForm brand={brand} label={brand === "SUPERDROP" ? "SuperDrop" : "Commerce"} value={{ status: offer.status, mode: offer.rules.mode === "FREE_TIER" ? "FREE_TIER" : "REVERSE_TRIAL", trialDays: offer.rules.trialDays, freeTierFeeBps: offer.rules.freeTierFeeBps ?? 0, publishDays: offer.rules.milestoneDays?.find((m) => m.event === "STORE_PUBLISHED")?.days ?? 0, firstSaleDays: offer.rules.milestoneDays?.find((m) => m.event === "FIRST_SALE")?.days ?? 0, milestoneCapDays: offer.rules.milestoneCapDays ?? 0, annualPaidMonths: offer.rules.annualPromo?.paidMonths ?? 0, cashbackBps: offer.rules.cashbackBps ?? 0 }} />
+        </CardContent></Card>
+      ) : null)}
       <SectionTitle title="Regras de comissão vigentes" description="Base = valor recebido − imposto − taxa do gateway. Estorno e chargeback anulam ou lançam débito. Verba de mídia nunca entra." />
       <DataTable rows={rules.latest} rowKey={(r) => r.id} columns={[
         { key: "k", header: "Regra", primary: true, cell: (r) => <div><div className="font-semibold">{r.key} <span className="text-xs font-normal text-muted-foreground">v{r.version}</span></div><div className="text-xs text-muted-foreground">{FAMILY_LABEL[r.family]}{r.productKey ? ` · ${r.productKey}` : ""}{r.cycle ? ` · ${CYCLE_LABEL[r.cycle]}` : ""}{r.partnerKind ? ` · ${PARTNER_KIND_LABEL[r.partnerKind]}` : ""}</div></div> },

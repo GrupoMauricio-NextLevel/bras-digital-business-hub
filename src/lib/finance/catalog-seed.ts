@@ -208,6 +208,21 @@ export const SEED_OFFER: { key: string; name: string; rules: OfferRules } = {
   rules: { trialDays: 3, firstPeriodCents: 990, feeHolidayMonths: 3, appliesToFamilies: ["COMMERCE_PLAN"], appliesToCycles: ["MONTHLY", "ANNUAL"], oncePer: "TAX_ID" },
 };
 
+/**
+ * Portas de entrada (D126): nascem **pausadas**. Valores do rascunho da proposta (D125); o Master liga marca por marca
+ * depois da aprovação do dono, criando uma versão nova.
+ */
+const door = (feeBps: number): OfferRules => ({
+  trialDays: 14, firstPeriodCents: null, feeHolidayMonths: 0, appliesToFamilies: [], appliesToCycles: ["MONTHLY", "ANNUAL"], oncePer: "TAX_ID",
+  mode: "REVERSE_TRIAL", fallbackPlanKey: "COMECO", freeTierFeeBps: feeBps,
+  milestoneDays: [{ event: "STORE_PUBLISHED", days: 7 }, { event: "FIRST_SALE", days: 7 }], milestoneCapDays: 30,
+  annualPromo: { paidMonths: 8, getMonths: 12 }, cashbackBps: 500,
+});
+export const SEED_DOOR_OFFERS: { key: string; name: string; rules: OfferRules }[] = [
+  { key: "PORTA_COMMERCE", name: "Porta de entrada Commerce", rules: door(250) },
+  { key: "PORTA_SUPERDROP", name: "Porta de entrada SuperDrop", rules: door(700) },
+];
+
 export type SeedRule = { key: string; family: CatalogFamily; productKey?: string; cycle?: PriceCycle; partnerKind?: PartnerKind; firstBps: number; recurringBps?: number; recurringMonths?: number; holdDays: number; benefit: string };
 export const SEED_COMMISSION_RULES: SeedRule[] = [
   { key: "COMMERCE_MENSAL", family: "COMMERCE_PLAN", cycle: "MONTHLY", firstBps: 2500, recurringBps: 1000, recurringMonths: 12, holdDays: 14, benefit: "R$ 9,90 no 1º mês + taxa zero por 3 meses" },

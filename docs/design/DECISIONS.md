@@ -1160,3 +1160,20 @@ Prompt de público e preço, fases P3 e P4. **Em rascunho: nenhum preço de clie
   - **12 meses em 3 cenários** contra o modelo de hoje (lido do catálogo e da tabela do SuperDrop), mais a proposta com a conversão de hoje (mostra quanto do ganho depende de mais gente assinar);
   - custos da tabela do SuperDrop (infraestrutura, cobrança) e o custo real do ponto (margem dos serviços).
 - Simulador puro em `src/lib/finance/entry-sim.ts`. Documento: `docs/descoberta/ARQUITETURA-PRECO.md`. Testes: `tests/proposta-preco-p4.test.ts`.
+
+## D126 — Porta de entrada "grátis para começar, paga quando cresce" (motor pronto, desligado) (2026-10-11)
+Prompt de público e preço, fase P5. **Tudo desligado por padrão**: nada muda para cliente até o Master ligar a porta da marca (e o dono aprovar a proposta da D125).
+- **Regras nas ofertas do catálogo** (estende `OfferRules`, sem tabela nova): `PORTA_COMMERCE` e `PORTA_SUPERDROP`, versionadas, com senha e auditoria, **nascem pausadas**. Campos novos: modo (teste reverso ou direto no grátis), taxa do plano grátis, dias por conquista (publicar a loja, 1ª venda) com teto, anual "pague N, leve 12" e cashback em pontos.
+- **A loja guarda a condição com que entrou** (`stores.entry_offer`, `stores.trial_started_at`): mudar ou pausar a porta depois não muda quem já entrou.
+- **Acesso:** com porta, o fim do teste (ou de um período pago não renovado) é o estado **"Grátis"**: a loja continua vendendo e paga a taxa do grátis sobre a venda. Sem porta, tudo como hoje (bloqueio e tela de pagamento).
+- **Dias por conquista:** uma vez por conquista (evento com chave única), até o teto contado do início do teste.
+- **Anual no SuperDrop:** a fatura de 12 meses cobra os meses pagos da porta (padrão 8); faturas de plano já são só Pix. Na Commerce o preço anual continua no catálogo (muda por versão de preço, quando aprovado).
+- **Cashback:** fatura de plano paga → pontos do Club para o dono da loja, pagos pela NextLevel, uma vez por fatura; estorno devolve os pontos.
+- **Um teste por CPF/CNPJ** (a mesma trava de hoje). Com a porta do SuperDrop ligada, o cadastro sem cupom também ganha o teste.
+- **Fica para a próxima rodada:** limites de escala do grátis (produtos, selo da marca) e o Passe do Grupo (`bundleGrants`, fase P5A).
+- Testes: `tests/porta-entrada-p5.test.ts` (inclui a regressão do SuperDrop com a porta desligada).
+
+## D127 — Ritmo de verificação: testes pesados ficam para a fase final (2026-10-11)
+Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, faça o grosso"). Exceção registrada à regra "mudança de comportamento sem teste não entra" do `CLAUDE.md`, só para esta rodada do prompt de público e preço (fases P5 a P6):
+- **Em cada fase, antes de publicar:** tipos, estilo, build de produção e um teste de domínio curto das regras novas. Tudo novo continua **desligado por padrão**, então publicar não muda nada para cliente.
+- **Na fase final (antes de ligar qualquer coisa):** bateria completa (`npx vitest run`), e2e de ponta a ponta (`e2e/bras-portal.mjs` e os de painel), capturas em 360/768/1440 e varredura de acessibilidade. A lista do que ficou para essa fase vai no relatório final.

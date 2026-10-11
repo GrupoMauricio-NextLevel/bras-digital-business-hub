@@ -1,4 +1,5 @@
 import { emailOrderCustomer } from "./order-emails";
+import { applyTrialMilestone } from "./precos/porta-entrada";
 import { isBlocked } from "./store-access";
 import { and, desc, eq, lt, ne, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -308,6 +309,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
     throw new DomainError("STATE_CONFLICT", "O pedido mudou enquanto você confirmava. Atualize a página e confira.");
   }
   await emailOrderCustomer(db, orderId, "PAID");
+  await applyTrialMilestone(db, won.storeId, "FIRST_SALE");
   return won;
 }
 
@@ -482,6 +484,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
     return { changed: true as const, status: fresh!.status };
   });
   await emailOrderCustomer(db, orderId, "PAID");
+  await applyTrialMilestone(db, order.storeId, "FIRST_SALE");
   return result;
 }
 

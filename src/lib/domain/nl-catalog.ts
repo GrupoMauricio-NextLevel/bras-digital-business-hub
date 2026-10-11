@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { CATALOG_STATUSES, catalogOffers, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
+import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
 import { isMaster, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
@@ -38,6 +38,10 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
   }
   if (!(await db.query.catalogOffers.findFirst({ where: eq(catalogOffers.key, ENTRY_OFFER_KEY) }))) {
     await db.insert(catalogOffers).values({ id: newId("cof"), key: SEED_OFFER.key, version: 1, name: SEED_OFFER.name, rules: SEED_OFFER.rules, effectiveFrom: new Date(0).toISOString(), reason: "Oferta aprovada pelo dono (D90)" }).onConflictDoNothing();
+  }
+  for (const d of SEED_DOOR_OFFERS) {
+    if (await db.query.catalogOffers.findFirst({ where: eq(catalogOffers.key, d.key) })) continue;
+    await db.insert(catalogOffers).values({ id: newId("cof"), key: d.key, version: 1, name: d.name, status: "PAUSED", rules: d.rules, effectiveFrom: new Date(0).toISOString(), reason: "Porta de entrada em rascunho, pausada até o dono aprovar (D126)" }).onConflictDoNothing();
   }
   const ruleKeys = new Set((await db.select({ key: commissionRules.key }).from(commissionRules)).map((r) => r.key));
   for (const r of SEED_COMMISSION_RULES) {

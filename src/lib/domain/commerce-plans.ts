@@ -1,3 +1,4 @@
+import { activeDoor, doorFields } from "./precos/porta-entrada";
 import { and, count, desc, eq, gte, inArray, lt, ne, sql, sum } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -56,6 +57,20 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
   const now = input.now ?? new Date();
   if (await subscriptionOf(db, input.storeId)) throw new DomainError("SUB_EXISTS", "Esta loja já tem assinatura.");
   const { version, amountCents, feeBps } = await planPrice(db, input.productKey, input.cycle);
+  // Porta de entrada da Commerce ligada (D126): teste reverso que cai no grátis, no lugar da oferta de entrada clássica.
+  const door = input.allowOffer === false ? null : await activeDoor(db, "NEXTLEVEL_COMMERCE", now);
+  if (door && input.taxId) {
+    const claimed = await db.insert(offerRedemptions).values({ id: newId("ofr"), offerKey: door.offerKey, offerVersion: door.version, taxId: input.taxId, storeId: input.storeId }).onConflictDoNothing().returning({ id: offerRedemptions.id });
+    if (claimed.length) {
+      const ends = new Date(now.getTime() + door.trialDays * DAY);
+      const id = newId("nls");
+      await db.insert(nlSubscriptions).values({ id, storeId: input.storeId, productKey: input.productKey, cycle: input.cycle, status: door.trialDays > 0 ? "trial" : "pending_payment", priceVersionId: version.id, amountCents, platformFeeBps: feeBps, offerKey: door.offerKey, offerVersion: door.version, firstPeriodCents: null, trialEndsAt: door.trialDays > 0 ? ends.toISOString() : null, feeHolidayUntil: null });
+      await db.update(stores).set({ trialEndsAt: ends.toISOString(), updatedAt: now.toISOString(), ...doorFields(door, now) }).where(eq(stores.id, input.storeId));
+      await recordFinancialAudit(db, input.actor ?? null, { domain: CORPORATE, action: "SUBSCRIPTION_STARTED", entityType: "nl_subscription", entityId: id, storeId: input.storeId, after: { productKey: input.productKey, cycle: input.cycle, amountCents, platformFeeBps: feeBps, offer: `${door.offerKey} v${door.version}`, trialEndsAt: ends.toISOString(), door: door.mode } });
+      await emitEvent(db, { type: "COMMERCE_SUBSCRIPTION_STARTED", storeId: input.storeId, payload: { productKey: input.productKey, cycle: input.cycle, offer: true, door: true }, dedupeKey: `COMMERCE_SUB:${input.storeId}` });
+      return { subscriptionId: id, trial: door.trialDays > 0, trialEndsAt: door.trialDays > 0 ? ends : null, offerApplied: true };
+    }
+  }
   let offer = input.allowOffer === false ? null : await entryOfferFor(db, input.taxId, input.cycle, now);
   if (offer && input.taxId) {
     // A chave única (oferta, CPF/CNPJ) é a trava real contra duas lojas do mesmo cliente ao mesmo tempo.

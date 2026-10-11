@@ -122,6 +122,9 @@ export const stores = pgTable("stores", {
   couponId: text("coupon_id"),
   /** CPF/CNPJ só com dígitos: um teste por documento. */
   taxId: text("tax_id"),
+  /** Porta de entrada com que a loja entrou (D126): cópia congelada da oferta; vazio = regra de hoje (teste e bloqueio). */
+  entryOffer: jsonb("entry_offer").$type<Record<string, unknown> | null>(),
+  trialStartedAt: ts("trial_started_at"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("stores_network_idx").on(t.networkId)]);
@@ -144,7 +147,8 @@ export const coupons = pgTable("coupons", {
 export const trialClaims = pgTable("trial_claims", {
   taxId: text("tax_id").primaryKey(),
   storeId: text("store_id").notNull().references(() => stores.id),
-  couponId: text("coupon_id").notNull().references(() => coupons.id),
+  /** Cupom que deu o teste; vazio = teste da porta de entrada sem cupom (D126). */
+  couponId: text("coupon_id").references(() => coupons.id),
   createdAt: createdAt(),
 });
 
@@ -1346,7 +1350,23 @@ export const catalogPriceVersions = pgTable("catalog_price_versions", {
 }, (t) => [uniqueIndex("catalog_price_versions_unique").on(t.productId, t.cycle, t.version), check("catalog_price_amount_nonneg", sql`${t.amountCents} is null or ${t.amountCents} >= 0`)]);
 
 /** Oferta/promoção versionada (teste, primeiro mês, carência de taxa, benefício não monetário). */
-export type OfferRules = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number; appliesToFamilies: CatalogFamily[]; appliesToCycles: PriceCycle[]; oncePer: "TAX_ID"; perk?: string };
+export type OfferRules = {
+  trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number; appliesToFamilies: CatalogFamily[]; appliesToCycles: PriceCycle[]; oncePer: "TAX_ID"; perk?: string;
+  /** Porta de entrada (D126): teste do plano pago que cai no grátis, ou direto no grátis. Sem `mode` = oferta clássica. */
+  mode?: "TRIAL" | "REVERSE_TRIAL" | "FREE_TIER";
+  fallbackPlanKey?: string;
+  /** Taxa sobre a venda do plano grátis (bps). */
+  freeTierFeeBps?: number;
+  /** Dias ganhos por conquista, com teto contado do início do teste. */
+  milestoneDays?: { event: "STORE_PUBLISHED" | "FIRST_SALE"; days: number }[];
+  milestoneCapDays?: number;
+  /** Anual "pague N, leve 12", só no Pix. */
+  annualPromo?: { paidMonths: number; getMonths: number } | null;
+  /** Parte da mensalidade paga que volta em pontos do Club (bps). */
+  cashbackBps?: number;
+  /** Passe do Grupo (fase P5A): acessos concedidos em outras marcas. */
+  bundleGrants?: { grantKey: string; months: number }[];
+};
 export const catalogOffers = pgTable("catalog_offers", {
   id: id(),
   key: text("key").notNull(),

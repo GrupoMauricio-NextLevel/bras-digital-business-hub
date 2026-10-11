@@ -34,6 +34,17 @@ export default async function Layout({ children }: { children: React.ReactNode }
       </div>
     );
   }
+  if (access?.state === "GRATIS") {
+    // Porta de entrada (D126): o teste acabou e a loja continua no plano grátis, pagando a taxa do grátis sobre a venda.
+    const fee = (session.store?.entryOffer as { freeTierFeeBps?: number } | null)?.freeTierFeeBps ?? 0;
+    banner = (
+      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info-soft p-4 text-sm text-info" data-free-tier-banner>
+        <Hourglass className="size-4" aria-hidden />
+        <div className="min-w-0 flex-1"><span className="font-semibold">Você está no plano grátis.</span> Sua loja continua vendendo; a taxa é de {(fee / 100).toLocaleString("pt-BR")}% sobre cada venda. Assinando, a taxa cai.</div>
+        <Link href="/merchant/finance" className="font-semibold underline">Ver planos</Link>
+      </div>
+    );
+  }
   if (session.store?.kind === "SUPPLIER_OWN" && !(await isIndependentStore(await getDb(), session.store.id))) {
     banner = (
       <div className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info-soft p-4 text-sm text-info" data-own-store-banner>

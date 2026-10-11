@@ -1,5 +1,6 @@
 "use server";
 import { ownerKey, ownerOfRow } from "@/lib/domain/independent";
+import { applyTrialMilestone } from "@/lib/domain/precos/porta-entrada";
 import { assertStoreAdmin } from "@/lib/domain/access";
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
@@ -167,6 +168,8 @@ export async function publishStoreAction(publish: boolean) {
     if (publish && session.store?.status !== "ACTIVE") throw new DomainError("STORE_NOT_ACTIVE", "A loja só pode ser publicada depois da confirmação do pagamento do setup.");
     await db.update(stores).set({ publishedAt: publish ? new Date().toISOString() : null, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId));
     await recordAudit(db, session.actor, { action: publish ? "STORE_PUBLISHED" : "STORE_UNPUBLISHED", entityType: "store", entityId: storeId, storeId }, { force: true });
+    // Porta de entrada (D126): publicar a loja durante o teste reverso ganha dias (uma vez).
+    if (publish) await applyTrialMilestone(db, storeId, "STORE_PUBLISHED");
     revalidateStore(session.store?.slug);
     return undefined;
   });
