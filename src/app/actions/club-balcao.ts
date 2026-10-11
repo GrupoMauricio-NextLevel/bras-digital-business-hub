@@ -22,7 +22,7 @@ const counterGate = (token: string, max: number) => {
 export async function counterLookupAction(token: string, card: string) {
   return runAction(async () => { counterGate(token, 60); return counterLookup(await getDb(), token, card); });
 }
-export async function registerPurchaseAction(token: string, input: { card: string; valueCents: number; receipt?: string; voucherCode?: string }) {
+export async function registerPurchaseAction(token: string, input: { card: string; valueCents: number; receipt?: string; voucherCode?: string; guideCard?: string }) {
   return runAction(async () => { counterGate(token, 40); const r = await registerPurchase(await getDb(), token, input); revalidatePath("/bras/club"); return r; });
 }
 export async function renewClubCardAction() {

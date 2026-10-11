@@ -1098,3 +1098,22 @@ Prompt, seções 7.4 a 7.7 e 7B.6. O dono deixou as perguntas para depois. Foram
   - pontos como desconto no Pix do frete;
   - Nota Fácil integrado (depende do acesso ao emissor).
 - Testes: `tests/club-balcao-e8.test.ts`. e2e: passo 15 de `e2e/bras-portal.mjs`.
+
+## D121 — Club E8b: benefícios cruzados do grupo (2026-10-11)
+Prompt, seções 7.3 e 7.5. Padrões da seção 13 (perguntas 6 e 9), em rascunho e editáveis no Master → Club → Regras ("Benefícios cruzados do grupo").
+- **Fardo entregue por ônibus de empresa do grupo** (hoje a Starline, reconhecida pelo CNPJ do cadastro em Empresas do grupo):
+  - vira pontos para o cliente (padrão 100 pontos = R$ 1,00 por fardo), **pagos pela empresa dona do ônibus** (`funder`);
+  - uma vez por fardo;
+  - ônibus de fora do grupo não dá esses pontos.
+  - Usados na Mega Tron, entram no acerto entre empresas (D120).
+- **O plano da Brás dá impulso de nível no Club** (não é outro plano): Platinum é VIP; Ouro é no mínimo Frequente.
+- **Guia de excursão no balcão:**
+  - o balcão informa o cartão do guia que trouxe o passageiro;
+  - o guia ganha o percentual da regra (padrão 2%) sobre o que o passageiro pagou, em pontos pagos pela empresa da compra;
+  - o guia não pode ser o próprio cliente;
+  - compra acima do valor de revisão também deixa os pontos do guia em revisão.
+- **Fica para depois:**
+  - motor de campanhas com orçamento e prévia (`club_benefits`);
+  - pontos como desconto no Pix do frete (depende de quem paga o desconto quando o ônibus não é do grupo);
+  - Nota Fácil integrado (acesso ao emissor).
+- Testes: `tests/club-cruzados-e8b.test.ts`.

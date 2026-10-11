@@ -29,13 +29,14 @@ export function CounterDesk({ token, companyName }: { token: string; companyName
   const { pending, run } = useRun();
   const [card, setCard] = React.useState("");
   const [look, setLook] = React.useState<Look | null>(null);
-  const [f, setF] = React.useState({ valueCents: 0, receipt: "", voucherCode: "" });
-  const [done, setDone] = React.useState<{ name: string; points: number; inReview: boolean; discountCents: number } | null>(null);
-  const reset = () => { setCard(""); setLook(null); setF({ valueCents: 0, receipt: "", voucherCode: "" }); setDone(null); };
+  const [f, setF] = React.useState({ valueCents: 0, receipt: "", voucherCode: "", guideCard: "" });
+  const [done, setDone] = React.useState<{ name: string; points: number; inReview: boolean; discountCents: number; guideName: string | null; guidePoints: number } | null>(null);
+  const reset = () => { setCard(""); setLook(null); setF({ valueCents: 0, receipt: "", voucherCode: "", guideCard: "" }); setDone(null); };
   if (done) return (
     <div role="status" className="ds-card p-4">
       <p className="text-lg font-bold">Compra registrada para {done.name}</p>
       <p className="mt-1">{done.discountCents ? `Vale usado: ${formatBRL(done.discountCents)}. ` : ""}{done.points ? `${done.points.toLocaleString("pt-BR")} pontos${done.inReview ? " (em revisão da NextLevel)" : ""}.` : "Sem pontos nesta compra."}</p>
+      {done.guideName ? <p className="mt-1">Guia {done.guideName}: {done.guidePoints.toLocaleString("pt-BR")} pontos.</p> : null}
       <Button className="mt-3" onClick={reset}>Próximo cliente</Button>
     </div>
   );
@@ -49,12 +50,13 @@ export function CounterDesk({ token, companyName }: { token: string; companyName
         </div>
       </form>
       {look ? (
-        <form className="ds-card grid gap-3 p-4" aria-label="Registrar compra" onSubmit={(e) => { e.preventDefault(); run(() => registerPurchaseAction(token, { card, valueCents: f.valueCents, receipt: f.receipt || undefined, voucherCode: f.voucherCode || undefined }), null, (r) => setDone(data(r))); }}>
+        <form className="ds-card grid gap-3 p-4" aria-label="Registrar compra" onSubmit={(e) => { e.preventDefault(); run(() => registerPurchaseAction(token, { card, valueCents: f.valueCents, receipt: f.receipt || undefined, voucherCode: f.voucherCode || undefined, guideCard: f.guideCard || undefined }), null, (r) => setDone(data(r))); }}>
           <p className="text-lg font-bold">{look.name}</p>
           <p className="text-sm">Saldo: <b className="tabular-nums">{look.available.toLocaleString("pt-BR")} pontos</b>{look.vouchers.length ? ` · ${look.vouchers.length} vale(s) ativo(s): ${look.vouchers.map((v) => formatBRL(v.valueCents)).join(", ")}` : ""}</p>
           <MoneyField id="club-value" label={`Valor da compra na ${companyName}`} valueCents={f.valueCents} onChange={(v) => setF({ ...f, valueCents: v })} />
           <label className="flex flex-col text-sm font-medium">Número do cupom ou da nota (opcional)<Input maxLength={60} value={f.receipt} onChange={(e) => setF({ ...f, receipt: e.target.value })} className="mt-1" /></label>
           {look.vouchers.length ? <label className="flex flex-col text-sm font-medium">Código do vale que o cliente mostrou (opcional)<Input maxLength={20} autoCapitalize="characters" placeholder="VALE-XXXXXX" value={f.voucherCode} onChange={(e) => setF({ ...f, voucherCode: e.target.value })} className="mt-1 font-mono uppercase" /></label> : null}
+          <label className="flex flex-col text-sm font-medium">Cartão do guia de excursão (opcional)<Input maxLength={40} autoCapitalize="characters" placeholder="Se o cliente veio com um guia" value={f.guideCard} onChange={(e) => setF({ ...f, guideCard: e.target.value })} className="mt-1 font-mono uppercase" /></label>
           <Button type="submit" disabled={pending || f.valueCents < 100}><Check className="size-4" aria-hidden />Registrar compra</Button>
         </form>
       ) : null}

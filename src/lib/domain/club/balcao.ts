@@ -114,6 +114,8 @@ const purchaseSchema = z.object({
   valueCents: z.number().int().min(100, "Informe o valor da compra").max(100_000_000),
   receipt: z.string().trim().max(60).optional().transform((v) => v || null),
   voucherCode: z.string().trim().max(20).optional().transform((v) => v || null),
+  /** Cartão do guia de excursão que trouxe o passageiro (opcional): ele ganha o percentual da regra em pontos. */
+  guideCard: z.string().trim().max(40).optional().transform((v) => v || null),
 });
 
 /**
@@ -128,6 +130,8 @@ export async function registerPurchase(db: Database, token: string, raw: z.input
   const rules = await getClubRules(db);
   if (!rules.purchase.companies.includes(counter.company)) throw new DomainError("COMPANY", "Esta empresa ainda não dá pontos por compra. Fale com a NextLevel.");
   const u = await memberByCard(db, v.card);
+  const guide = v.guideCard ? await memberByCard(db, v.guideCard) : null;
+  if (guide && guide.id === u.id) throw new DomainError("GUIDE", "O guia não pode ser o próprio cliente.");
   if (v.receipt && (await db.query.clubPurchases.findFirst({ where: and(eq(clubPurchases.company, counter.company), eq(clubPurchases.receipt, v.receipt)), columns: { id: true } }))) throw new DomainError("DUP", "Esse cupom já foi registrado.");
   let discountCents = 0;
   if (v.voucherCode) {
@@ -143,8 +147,11 @@ export async function registerPurchase(db: Database, token: string, raw: z.input
   const id = newId("clpu");
   await db.insert(clubPurchases).values({ id, counterId: counter.id, company: counter.company, userId: u.id, valueCents: v.valueCents, points, receipt: v.receipt });
   const credit = points > 0 ? await creditPoints(db, { userId: u.id, points, source: "PURCHASE", referenceId: id, funder: counter.company, review: v.valueCents > rules.purchase.reviewAboveCents, note: `Compra na ${counter.companyName}` }, rules, now) : null;
+  // Guia de excursão (D121): percentual do que o passageiro pagou, em pontos, pago pela empresa da compra.
+  const guidePoints = guide ? Math.floor((paid * rules.cross.guidePct) / 100) : 0;
+  if (guide && guidePoints > 0) await creditPoints(db, { userId: guide.id, points: guidePoints, source: "GUIDE", referenceId: id, funder: counter.company, review: v.valueCents > rules.purchase.reviewAboveCents, note: `Passageiro comprou na ${counter.companyName}` }, rules, now);
   await db.update(clubCounters).set({ lastUsedAt: now.toISOString() }).where(eq(clubCounters.id, counter.id));
-  return { name: firstName(u.name), points, inReview: credit?.status === "REVISAO", discountCents };
+  return { name: firstName(u.name), points, inReview: credit?.status === "REVISAO", discountCents, guideName: guide ? firstName(guide.name) : null, guidePoints };
 }
 
 // ---------------------------------------------------------------------------

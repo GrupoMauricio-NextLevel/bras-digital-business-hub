@@ -74,7 +74,7 @@ export function ActivateReferralButton({ id }: { id: string }) {
   return <Button size="sm" variant="secondary" disabled={pending} onClick={() => { if (window.confirm("Confirmar que essa indicação ativou (primeira venda ou entrega real)? Os pontos vão para quem indicou.")) run(() => activateReferralAction(id), "Indicação ativada e pontos creditados"); }}>Marcar como ativada</Button>;
 }
 
-type Rules = { pointsPerReal: number; referral: Record<"CLIENTE" | "IMPORTADORA" | "TRANSPORTADORA" | "ONIBUS" | "LOJA" | "GUIA", number>; monthlyCap: number; expiryMonths: number; minRedeem: number; purchase: { pointsPerReal: number; companies: string[]; reviewAboveCents: number; maxDiscountPct: number } };
+type Rules = { pointsPerReal: number; referral: Record<"CLIENTE" | "IMPORTADORA" | "TRANSPORTADORA" | "ONIBUS" | "LOJA" | "GUIA", number>; monthlyCap: number; expiryMonths: number; minRedeem: number; purchase: { pointsPerReal: number; companies: string[]; reviewAboveCents: number; maxDiscountPct: number }; cross: { parcelDeliveredPoints: number; guidePct: number } };
 const REF_LABEL = { CLIENTE: "Cliente", IMPORTADORA: "Importadora", TRANSPORTADORA: "Transportadora", ONIBUS: "Ônibus de excursão", LOJA: "Loja (Nota Fácil)", GUIA: "Guia de excursão" } as const;
 export function ClubRulesEditor({ rules }: { rules: Rules }) {
   const { pending, run } = useRun();
@@ -96,6 +96,11 @@ export function ClubRulesEditor({ rules }: { rules: Rules }) {
         <IntField id="cl-pur-ppr" label="Pontos por R$ 1,00 gasto" value={r.purchase.pointsPerReal} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, pointsPerReal: v } })} />
         <IntField id="cl-pur-rev" label="Revisão acima de" suffix="R$" value={Math.round(r.purchase.reviewAboveCents / 100)} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, reviewAboveCents: v * 100 } })} />
         <IntField id="cl-pur-max" label="Vale cobre até" suffix="% da compra" min={1} value={r.purchase.maxDiscountPct} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, maxDiscountPct: Math.min(100, v) } })} />
+      </fieldset>
+      <fieldset className="grid gap-3 sm:grid-cols-3">
+        <legend className="mb-1 text-sm font-semibold">Benefícios cruzados do grupo</legend>
+        <IntField id="cl-x-fardo" label="Pontos por fardo entregue (ônibus do grupo)" value={r.cross.parcelDeliveredPoints} onChange={(v) => setR({ ...r, cross: { ...r.cross, parcelDeliveredPoints: v } })} />
+        <IntField id="cl-x-guia" label="Guia de excursão" suffix="% da compra" value={r.cross.guidePct} onChange={(v) => setR({ ...r, cross: { ...r.cross, guidePct: Math.min(20, v) } })} />
       </fieldset>
       <Button type="submit" loading={pending}>Gravar regras</Button>
     </form>

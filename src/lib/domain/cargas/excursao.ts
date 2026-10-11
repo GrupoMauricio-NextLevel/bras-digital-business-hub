@@ -11,6 +11,7 @@ import { recordAudit } from "../audit";
 import { DomainError, ForbiddenError, NotFoundError } from "../errors";
 import { getGroupCompanies, groupDocuments } from "../grupo";
 import { activateCarrierReferral } from "../club/indicacoes";
+import { creditParcelDelivered } from "../club/pontos";
 import { carrierByDriverToken, myCarrier } from "./cargas";
 import { myImporter } from "../bras/importadora";
 import { excursionFeeCents, getExcursionRules, PARCEL_SIZES, type ParcelSize } from "./regras-excursao";
@@ -324,8 +325,13 @@ async function deliver(db: Database, carrierId: string, who: string, parcelId: s
   if (!p) throw new NotFoundError("Fardo não encontrado.");
   if (p.status !== "CHEGOU") throw new DomainError("STATUS", "Entrega só depois de marcar a chegada da viagem.");
   if (deliveryCode.trim().toUpperCase().replace(/\s/g, "") !== p.deliveryCode) throw new DomainError("CODE", "Código não confere. Peça ao cliente o código do fardo.");
-  await db.update(trParcels).set({ status: "ENTREGUE", deliveredAt: now.toISOString(), updatedAt: now.toISOString() }).where(and(eq(trParcels.id, p.id), eq(trParcels.status, "CHEGOU")));
+  const upd = await db.update(trParcels).set({ status: "ENTREGUE", deliveredAt: now.toISOString(), updatedAt: now.toISOString() }).where(and(eq(trParcels.id, p.id), eq(trParcels.status, "CHEGOU"))).returning({ id: trParcels.id });
   await parcelEvent(db, p.id, "ENTREGUE", who, null);
+  // Benefício cruzado do grupo (D121): fardo entregue por ônibus de empresa do grupo vira pontos para o cliente.
+  if (upd.length) {
+    const c = await db.query.trCarriers.findFirst({ where: eq(trCarriers.id, carrierId), columns: { document: true } });
+    if (c) await creditParcelDelivered(db, { parcelId: p.id, clientUserId: p.clientUserId, carrierDocument: c.document }, now);
+  }
   return { ok: true as const };
 }
 

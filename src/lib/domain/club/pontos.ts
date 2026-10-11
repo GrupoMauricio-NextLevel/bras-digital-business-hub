@@ -7,6 +7,7 @@ import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, NotFoundError } from "../errors";
 import { getClubRules, pointsToCents, type ClubRules } from "./regras";
+import { brasMemberPlan } from "../bras/suporte";
 
 /**
  * Pontos do Brás Digital Club (D115). Razão append-only (`club_ledger`): o saldo é a soma dos lançamentos disponíveis.
@@ -155,9 +156,10 @@ async function activity(db: Database, userId: string, now: Date) {
 export const CLUB_LEVELS = ["MEMBRO", "FREQUENTE", "VIP"] as const;
 export const CLUB_LEVEL_LABEL = { MEMBRO: "Membro", FREQUENTE: "Frequente", VIP: "VIP" } as const;
 /** Nível pela atividade (D115): Frequente com 3 fretes em 90 dias ou 1 indicação ativada; VIP com 10 fretes ou 3 indicações. */
-export function clubLevel(a: { freights90: number; activated: number }): { level: (typeof CLUB_LEVELS)[number]; next: { label: string; missing: string } | null } {
-  if (a.freights90 >= 10 || a.activated >= 3) return { level: "VIP", next: null };
-  if (a.freights90 >= 3 || a.activated >= 1) return { level: "FREQUENTE", next: { label: "VIP", missing: `${Math.max(0, 10 - a.freights90)} frete(s) em 90 dias ou ${Math.max(0, 3 - a.activated)} indicação(ões) ativada(s)` } };
+export function clubLevel(a: { freights90: number; activated: number; plan?: string | null }): { level: (typeof CLUB_LEVELS)[number]; next: { label: string; missing: string } | null } {
+  // Plano da Brás dá impulso (D121, seção 7.3): Platinum é VIP; Ouro é no mínimo Frequente. Não é outro plano.
+  if (a.plan === "PLATINUM" || a.freights90 >= 10 || a.activated >= 3) return { level: "VIP", next: null };
+  if (a.plan === "OURO" || a.freights90 >= 3 || a.activated >= 1) return { level: "FREQUENTE", next: { label: "VIP", missing: `${Math.max(0, 10 - a.freights90)} frete(s) em 90 dias ou ${Math.max(0, 3 - a.activated)} indicação(ões) ativada(s)` } };
   return { level: "MEMBRO", next: { label: "Frequente", missing: `${Math.max(0, 3 - a.freights90)} frete(s) em 90 dias ou 1 indicação ativada` } };
 }
 
@@ -178,7 +180,9 @@ export async function clubPanel(db: Database, actor: Actor, now = new Date()) {
   const pending = act.refs.filter((r) => r.status === "CONVIDADO" || r.status === "CADASTROU").reduce((s, r) => s + rules.referral[r.kind], 0);
   const funnel = { CONVIDADO: 0, CADASTROU: 0, ATIVOU: 0, RECORRENTE: 0 };
   for (const r of act.refs) if (r.status in funnel) funnel[r.status as keyof typeof funnel]++;
-  const lvl = clubLevel({ freights90: act.freights90, activated: act.activated.length });
+  const member = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId), columns: { id: true } });
+  const plan = member ? (await brasMemberPlan(db, member.id, now)).plan : null;
+  const lvl = clubLevel({ freights90: act.freights90, activated: act.activated.length, plan });
   const badges = [
     { key: "PRIMEIRA", label: "Primeira indicação", earned: act.activated.length >= 1 },
     { key: "TRANSPORTE", label: "Trouxe uma transportadora", earned: act.activated.some((r) => r.kind === "TRANSPORTADORA" || r.kind === "ONIBUS") },
@@ -190,7 +194,7 @@ export async function clubPanel(db: Database, actor: Actor, now = new Date()) {
     db.select().from(clubVouchers).where(eq(clubVouchers.userId, actor.userId)).orderBy(desc(clubVouchers.createdAt)).limit(20),
   ]);
   return {
-    rules: { pointsPerReal: rules.pointsPerReal, minRedeem: rules.minRedeem, referral: rules.referral, expiryMonths: rules.expiryMonths },
+    rules: { pointsPerReal: rules.pointsPerReal, minRedeem: rules.minRedeem, referral: rules.referral, expiryMonths: rules.expiryMonths }, plan,
     balance: bal, valueCents: pointsToCents(bal.available, rules), pending, funnel, missions, level: lvl, badges,
     code: await myClubCode(db, actor.userId),
     history: history.map((h) => ({ id: h.id, points: h.points, kind: h.kind, status: h.status, note: h.note, at: new Date(h.createdAt).toISOString() })),
@@ -304,3 +308,15 @@ export async function reviewPoints(db: Database, actor: Actor, ledgerId: string,
   return { ok: true as const };
 }
 
+
+/**
+ * Fardo entregue por ônibus de empresa do grupo (D121): pontos para o cliente, pagos pela empresa dona do ônibus.
+ * Uma vez por fardo. Ônibus de fora do grupo não dá esses pontos (o benefício é do grupo).
+ */
+export async function creditParcelDelivered(db: Database, input: { parcelId: string; clientUserId: string; carrierDocument: string }, now = new Date()) {
+  const { getGroupCompanies } = await import("../grupo");
+  const company = (await getGroupCompanies(db)).find((c) => c.cnpj && c.cnpj === input.carrierDocument);
+  if (!company) return null;
+  const rules = await getClubRules(db);
+  return creditPoints(db, { userId: input.clientUserId, points: rules.cross.parcelDeliveredPoints, source: "PARCEL_DELIVERED", referenceId: input.parcelId, funder: company.key, note: `Fardo entregue pela ${company.tradeName || company.legalName}` }, rules, now);
+}
