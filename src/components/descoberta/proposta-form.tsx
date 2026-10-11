@@ -20,7 +20,7 @@ export function PropostaForm({ value, brands }: { value: Proposal; brands: { bra
   const save = () => start(async () => { const r = await saveProposalAction(f); if (r.ok) { toast.success("Rascunho gravado e simulação refeita"); router.refresh(); } else toast.error(r.error); });
   return (
     <form aria-label="Rascunho da proposta de preço" className="space-y-6" onSubmit={(e) => { e.preventDefault(); save(); }}>
-      <fieldset className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <fieldset className="grid min-w-0 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <legend className="mb-2 text-sm font-semibold">Peças da porta de entrada</legend>
         <IntField id="pp-trial" label="Teste reverso" suffix="dias" value={f.reverseTrialDays} onChange={(v) => setF({ ...f, reverseTrialDays: v })} />
         <IntField id="pp-pub" label="Dias ao publicar" suffix="dias" value={f.milestoneDays.publish} onChange={(v) => setF({ ...f, milestoneDays: { ...f.milestoneDays, publish: v } })} />
@@ -32,7 +32,7 @@ export function PropostaForm({ value, brands }: { value: Proposal; brands: { bra
       {brands.map(({ brand, label }) => {
         const d = f.brands[brand];
         return (
-          <fieldset key={brand} className="space-y-3">
+          <fieldset key={brand} className="min-w-0 space-y-3">
             <legend className="text-sm font-semibold">{label}: escada de planos</legend>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {d.ladder.map((p, i) => (
