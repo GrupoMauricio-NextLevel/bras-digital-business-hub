@@ -6,6 +6,7 @@ import { brandFunnels, FUNNEL_BRANDS, type BrandFunnel, type FunnelCount } from 
 import { surveyResults, type SurveyResult } from "@/lib/domain/precos/questionario";
 import { BeneficiosConfig, QuestionarioConfig } from "@/components/descoberta/questionario-preco";
 import { getBenefitsSettings } from "@/lib/domain/beneficios/painel";
+import { getEcoSettings } from "@/lib/domain/ecossistema/lancador";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
@@ -115,6 +116,7 @@ export default async function DescobertaPage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const [funnels, survey, benefits] = await Promise.all([brandFunnels(db, s.actor), surveyResults(db, s.actor), getBenefitsSettings(db)]);
+  const eco = await getEcoSettings(db);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Descoberta: funil por marca" description="Quantos se cadastram, quantos ativam, quantos pagam e quanto tempo leva, por marca. Só números somados: nenhum dado pessoal." />
@@ -125,6 +127,11 @@ export default async function DescobertaPage() {
         <h2 id="h-b" className="text-lg font-bold">Benefícios gamificados nos painéis</h2>
         <p className="mb-4 text-sm text-muted-foreground">Carteira de pontos (em pontos e em reais), trilha de primeiros passos com comemoração, medidor do teste e simulador “quanto cada plano custaria para você”, no topo dos painéis do lojista, do Meu Brás e da transportadora. {benefits.brands.length ? "Ligado em " + benefits.brands.length + " marca(s)." : "Desligado em todas as marcas."}</p>
         <BeneficiosConfig value={benefits.brands} brands={FUNNEL_BRANDS.map((b) => ({ brand: b.brand, label: b.label }))} />
+      </section>
+      <section id="ecossistema" aria-labelledby="h-e" className="ds-card mb-6 p-4">
+        <h2 id="h-e" className="text-lg font-bold">Barra do ecossistema nos painéis</h2>
+        <p className="mb-4 text-sm text-muted-foreground">O fio do grupo (faixa com a cor de cada marca) e o botão “Marcas do grupo” com as marcas recomendadas para o perfil de cada cliente e o benefício de entrada. Só nos painéis de cliente; nunca na vitrine, expedição, balcão ou pagamento. {eco.brands.length ? "Ligada em " + eco.brands.length + " marca(s)." : "Desligada em todas as marcas."}</p>
+        <BeneficiosConfig kind="ecossistema" value={eco.brands} brands={FUNNEL_BRANDS.map((b) => ({ brand: b.brand, label: b.label }))} />
       </section>
       <section id="questionario" aria-labelledby="h-q" className="ds-card mb-6 p-4">
         <h2 id="h-q" className="text-lg font-bold">Questionário de preço nos painéis</h2>

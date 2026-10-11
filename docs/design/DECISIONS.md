@@ -1184,3 +1184,11 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - Componentes em `src/components/beneficios/` (o componente não decide regra). No topo do painel do lojista (SuperDrop e Commerce), do Meu Brás e da transportadora.
 - **Ligado por marca** em Master → Financeiro → Descoberta → Benefícios (`beneficios.painel`); começa desligado em todas.
 - Fica para a fase final: capturas em 360/768/1440 claro e escuro, `axe` e e2e (D127). Fica para depois: trilha editável no Master, vitrine de recompensas e escada de nível no kit.
+
+## D129 — Barra do ecossistema: fio do grupo e lançador (P5E, desligada por padrão) (2026-10-11)
+- **Domínio único** (`src/lib/domain/ecossistema/lancador.ts`): segmentos com a cor de sinal de cada marca (`brand-palette.ts`), a marca atual mais larga; lançador com "Sua marca", "Recomendadas para você" (com o motivo, por perfil: SuperDrop → Brás e Cargas; Commerce → Brás e Cargas; Brás → Cargas e Commerce; Cargas → Brás) e "Todas". Benefício de entrada vindo da porta de entrada ligada (D126) ou "Cadastro grátis".
+- **Só marcas abertas** (`brand.live`): marca fechada nunca aparece.
+- **Onde aparece:** só na casca dos painéis de cliente (lojista, Meu Brás, importadora, transportadora). Nunca na vitrine do lojista, expedição, motorista, balcões, checkout ou pagamento.
+- Gaveta acessível (Radix: foco preso, Esc fecha); a faixa é decorativa (`aria-hidden`); movimento reduzido respeitado.
+- **Ligada por marca** em Master → Financeiro → Descoberta → Barra do ecossistema (`ecossistema.barra`).
+- **Fica para depois:** conta do grupo (perfis ligados à mesma pessoa, com aceite) e passagem entre domínios por código de uso único; convites no momento certo com regras no Master. Hoje o link leva ao cadastro da outra marca.

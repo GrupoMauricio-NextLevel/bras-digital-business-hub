@@ -15,6 +15,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
 import { SupportBar } from "@/components/support/support-bar";
+import { ecosystemBar, type EcoBrand } from "@/lib/domain/ecossistema/lancador";
+import { BarraEcossistema } from "@/components/ecossistema/barra";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -35,6 +37,10 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const nav = NAV[session.user.role];
   const sup = session.support;
   const supportBar = sup ? <SupportBar clientName={session.user.name} roleLabel={session.store?.name ?? session.supplier?.name ?? nav.label} operatorName={sup.operatorName} reason={sup.reason} act={sup.act} until={new Date(sup.exp).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })} /> : null;
+  // Barra do ecossistema (D129): só nos painéis de cliente (lojista, Meu Brás, transportadora, importadora), ligada por marca.
+  const ecoBrand: EcoBrand | null = session.user.role === "BRAS_MEMBER" || session.user.role === "BRAS_IMPORTER" ? "BRAS_DIGITAL" : session.user.role === "CARRIER" ? "NEXTLEVEL_CARGAS" : session.user.role === "STORE_OWNER" && session.store ? (session.store.networkId ? "SUPERDROP" : "NEXTLEVEL_COMMERCE") : null;
+  const eco = await ecosystemBar(db, ecoBrand);
+  const ecoBar = eco ? <BarraEcossistema bar={eco} /> : null;
   const store = session.store;
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
@@ -70,7 +76,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         notices={await recentNotices(session.actor)}
         search={globalSearchAction}
         sideTop={<div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
-        banner={<>{supportBar}{banner}</>}
+        banner={<>{supportBar}{ecoBar}{banner}</>}
       >
         {children}
       </AppShell>
@@ -101,7 +107,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
-        banner={<>{supportBar}{banner}</>}
+        banner={<>{supportBar}{ecoBar}{banner}</>}
       >
         {children}
       </AppShell>
@@ -113,7 +119,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : "NextLevel");
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={<>{supportBar}{banner}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={<>{supportBar}{ecoBar}{banner}</>}>
       {children}
     </AppShell>
   );
