@@ -7,6 +7,7 @@ import { surveyResults, type SurveyResult } from "@/lib/domain/precos/questionar
 import { BeneficiosConfig, EcoExtrasConfig, QuestionarioConfig } from "@/components/descoberta/questionario-preco";
 import { getBenefitsSettings } from "@/lib/domain/beneficios/painel";
 import { getEcoSettings } from "@/lib/domain/ecossistema/lancador";
+import { reputationBoard, TIER_LABEL } from "@/lib/domain/cargas/reputacao";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
@@ -117,6 +118,7 @@ export default async function DescobertaPage() {
   const db = await getDb();
   const [funnels, survey, benefits] = await Promise.all([brandFunnels(db, s.actor), surveyResults(db, s.actor), getBenefitsSettings(db)]);
   const eco = await getEcoSettings(db);
+  const rep = await reputationBoard(db, s.actor);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Descoberta: funil por marca" description="Quantos se cadastram, quantos ativam, quantos pagam e quanto tempo leva, por marca. Só números somados: nenhum dado pessoal." />
@@ -133,6 +135,17 @@ export default async function DescobertaPage() {
         <p className="mb-4 text-sm text-muted-foreground">O fio do grupo (faixa com a cor de cada marca) e o botão “Marcas do grupo” com as marcas recomendadas para o perfil de cada cliente e o benefício de entrada. Só nos painéis de cliente; nunca na vitrine, expedição, balcão ou pagamento. {eco.brands.length ? "Ligada em " + eco.brands.length + " marca(s)." : "Desligada em todas as marcas."}</p>
         <BeneficiosConfig kind="ecossistema" value={eco.brands} brands={FUNNEL_BRANDS.map((b) => ({ brand: b.brand, label: b.label }))} />
         <EcoExtrasConfig value={{ capture: eco.capture, emailFooter: eco.emailFooter, publicPages: eco.publicPages }} />
+      </section>
+      <section id="reputacao" aria-labelledby="h-r" className="ds-card mb-6 p-4">
+        <h2 id="h-r" className="text-lg font-bold">Reputação das transportadoras e ônibus</h2>
+        <p className="mb-3 text-sm text-muted-foreground">Bronze, Prata e Ouro com dados dos últimos 180 dias. Prata: {rep.rules.PRATA.minDeliveries} entregas, avaliação {rep.rules.PRATA.minRating.toLocaleString("pt-BR")}+ e até {rep.rules.PRATA.maxRefusalPct}% de recusas. Ouro: {rep.rules.OURO.minDeliveries} entregas, {rep.rules.OURO.minRating.toLocaleString("pt-BR")}+ e até {rep.rules.OURO.maxRefusalPct}%.</p>
+        {rep.rows.length ? (
+          <div className="overflow-x-auto"><table className="w-full text-sm">
+            <caption className="sr-only">Reputação das transportadoras</caption>
+            <thead><tr className="border-b border-border text-left"><th scope="col" className="p-2">Transportadora</th><th scope="col" className="p-2">Nível</th><th scope="col" className="p-2 text-right">Entregas</th><th scope="col" className="p-2 text-right">Avaliação</th><th scope="col" className="p-2 text-right">Recusas</th></tr></thead>
+            <tbody>{rep.rows.map((r) => <tr key={r.id} className="border-b border-border last:border-0"><th scope="row" className="p-2 text-left font-medium">{r.name}</th><td className="p-2">{TIER_LABEL[r.tier]}</td><td className="p-2 text-right tabular-nums">{r.signals.deliveries}</td><td className="p-2 text-right tabular-nums">{r.signals.rating ?? "—"}</td><td className="p-2 text-right tabular-nums">{r.signals.refusalPct}%</td></tr>)}</tbody>
+          </table></div>
+        ) : <p className="text-sm text-muted-foreground">Nenhuma transportadora ativa ainda.</p>}
       </section>
       <section id="questionario" aria-labelledby="h-q" className="ds-card mb-6 p-4">
         <h2 id="h-q" className="text-lg font-bold">Questionário de preço nos painéis</h2>

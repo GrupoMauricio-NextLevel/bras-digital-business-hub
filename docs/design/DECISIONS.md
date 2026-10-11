@@ -1216,3 +1216,10 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **Nunca na vitrine do lojista** (ela não usa a casca do portal) nem na marca branca.
 - Chave "Páginas públicas" no Master (Descoberta → Barra do ecossistema), desligada.
 - **Fica para depois:** páginas do Club, da Excursão e do Nota Fácil (dependem das fotos reais, `docs/prompts/fotos-club-excursao.md`), cruzamento por intenção entre páginas e a medição de velocidade da primeira dobra (fase final, D127).
+
+## D134 — Reputação do parceiro de transporte: Bronze, Prata e Ouro (P5F) (2026-10-11)
+- Calculada no domínio (`src/lib/domain/cargas/reputacao.ts`) só com dados reais dos últimos 180 dias: entregas concluídas (cargas e fardos), avaliação média das importadoras (pontualidade e cuidado), % de recusas e fardos que não embarcaram.
+- **Regras no Master** (`parceiros.reputacao`): Prata = 10 entregas, avaliação 4+ e até 20% de recusas; Ouro = 30 entregas, 4,5+ e até 10%.
+- **Painel da transportadora:** cartão "Sua reputação no grupo" com o que falta para o próximo nível (aparece junto com os benefícios, mesma chave por marca, D128). **Master → Descoberta:** quadro com o nível de cada transportadora ativa (só números, sem cliente).
+- O destaque é sempre rotulado e nunca esconde as outras transportadoras.
+- **Fica para depois:** vantagens por nível (destaque na escolha da transportadora), reputação de importadoras e contadores parceiros, missões e Carteira B2B do parceiro, papel de contador parceiro com acesso só à fila do Meu Contador e a demanda do ecossistema por tipo de parceiro (o mapa de demanda da D118 já cobre rotas).

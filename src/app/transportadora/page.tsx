@@ -4,6 +4,7 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
+import { myReputation, TIER_LABEL } from "@/lib/domain/cargas/reputacao";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
@@ -30,6 +31,8 @@ export default async function Hoje() {
   const excursao = carrier.operation === "EXCURSAO";
   const [trips, fixed, payQueue, survey] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor), excursao ? carrierPaymentQueue(db, session.actor) : Promise.resolve({ onArrival: [], toRefund: [] }), pendingSurvey(db, session.actor)]);
   const benefits = await benefitsPanel(db, session.actor);
+  // Reputação (D134): aparece junto com os benefícios (mesma chave por marca no Master).
+  const rep = benefits ? await myReputation(db, session.actor) : null;
   const fixasHoje = fixedToday(fixed);
   const chamadas = loads.filter((l) => l.status === "CHAMADA");
   const coletar = loads.filter((l) => l.status === "ACEITA");
@@ -47,6 +50,13 @@ export default async function Hoje() {
       {usage.freeLimit !== null && !excursao ? <p role="note" className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Plano grátis: <b className="tabular-nums">{usage.acceptedThisMonth} de {usage.freeLimit}</b> cargas aceitas neste mês.</p> : null}
       {!carrier.hasDriverLink ? <p className="mb-6 rounded-lg bg-warning-soft px-4 py-3 text-sm">Gere o link do motorista para ele ver endereço, horário e códigos no celular. <Link href="/transportadora/perfil" className="font-semibold text-link underline">Gerar link</Link></p> : null}
       {benefits ? <PainelBeneficios data={benefits} /> : null}
+      {rep ? (
+        <section aria-labelledby="t-rep" className="ds-card mb-6 p-4" data-reputacao>
+          <h2 id="t-rep" className="text-sm font-semibold">Sua reputação no grupo: <span className="text-[var(--brand-primary)]">{TIER_LABEL[rep.tier]}</span></h2>
+          <p className="text-sm text-muted-foreground">Últimos 180 dias: {rep.signals.deliveries} entrega(s) · avaliação {rep.signals.rating === null ? "ainda sem avaliação" : `${rep.signals.rating.toLocaleString("pt-BR")} de 5`} · {rep.signals.refusalPct}% de recusas.</p>
+          {rep.next ? <p className="mt-1 text-sm">Para chegar ao {TIER_LABEL[rep.next.tier]}: {rep.next.missing.join("; ")}.</p> : <p className="mt-1 text-sm">Você está no nível mais alto. As importadoras veem o selo ao escolher a transportadora.</p>}
+        </section>
+      ) : null}
       {survey ? <QuestionarioPreco product={survey.product} /> : null}
       {fixasHoje.length ? (
         <section aria-labelledby="t-fixa" className="mb-8 rounded-xl border border-[var(--brand-primary)]/40 p-4">
