@@ -81,7 +81,7 @@ export function CarrierForm({ defaults, allowOperation = true }: { defaults?: Ca
   );
 }
 
-type CarrierOpt = { id: string; name: string; contactName: string; ufs: string[]; vehicles: string[]; plan: string; insurance: boolean; rateNotes: string | null };
+type CarrierOpt = { id: string; name: string; contactName: string; ufs: string[]; vehicles: string[]; plan: string; insurance: boolean; rateNotes: string | null; preferred?: boolean };
 type ReqOpt = { id: string; number: number; productTitle: string; boxes: number; status: string; shipCity: string | null; shipState: string | null; carrier?: string | null; suggestedCarrierId?: string | null };
 
 /** "Chamar transportadora": pedidos confirmados ou pagos + transportadora + dia → mensagem pronta no WhatsApp. */
@@ -123,7 +123,7 @@ export function CallCarrierForm({ carriers, requests, warehouses, today }: { car
       <div className="grid gap-3 sm:grid-cols-2">
         <label className={lab}>2. Transportadora<Select required value={f.carrierId} onChange={(e) => { setTouched(true); setF({ ...f, carrierId: e.target.value }); }} className="mt-1">
           <option value="">Escolha</option>
-          {[...carriers].sort((a, b) => Number(suggestedIds.has(b.id)) - Number(suggestedIds.has(a.id)) || Number(fit(b)) - Number(fit(a))).map((c) => <option key={c.id} value={c.id}>{c.name}{suggestedIds.has(c.id) ? " (escolhida pelo cliente)" : ""}{fit(c) ? "" : " (não atende todos os estados)"}</option>)}
+          {[...carriers].sort((a, b) => Number(suggestedIds.has(b.id)) - Number(suggestedIds.has(a.id)) || Number(!!b.preferred) - Number(!!a.preferred) || Number(fit(b)) - Number(fit(a))).map((c) => <option key={c.id} value={c.id}>{c.name}{suggestedIds.has(c.id) ? " (escolhida pelo cliente)" : c.preferred ? " (preferida)" : ""}{fit(c) ? "" : " (não atende todos os estados)"}</option>)}
         </Select></label>
         {warehouses.length ? <label className={lab}>Galpão de retirada<Select value={f.warehouseId} onChange={(e) => setF({ ...f, warehouseId: e.target.value })} className="mt-1">{warehouses.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}</Select></label> : <p className="self-end text-sm text-muted-foreground">Sem galpão cadastrado: vai o endereço de retirada da ficha.</p>}
         <label className={lab}>3. Dia da coleta<Input required type="date" min={today} value={f.pickupDate} onChange={(e) => setF({ ...f, pickupDate: e.target.value })} className="mt-1" /></label>

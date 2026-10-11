@@ -393,6 +393,13 @@
       "when": 1791676021345,
       "tag": "0055_meu_contador",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1791678530465,
+      "tag": "0056_duas_vias",
+      "breakpoints": true
     }
   ]
 }

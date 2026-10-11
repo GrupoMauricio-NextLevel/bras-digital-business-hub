@@ -27,3 +27,7 @@ export function cargasDocsSeal(docs: { status: string; validUntil: string | null
   const limit = soon.toISOString().slice(0, 10);
   return { ok: valid.length > 0 && valid.length === verified.length, expiringSoon: valid.some((d) => !!d.validUntil && d.validUntil <= limit) };
 }
+
+/** Dias da semana (0 = domingo) e a coleta fixa combinada com a preferida (D118). */
+export const CARGAS_WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
+export const fixedLabel = (weekdays: number[], time: string | null) => (weekdays.length && time ? `${weekdays.map((d) => CARGAS_WEEKDAYS[d]).join(", ")} às ${time}` : "");

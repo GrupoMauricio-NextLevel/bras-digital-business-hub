@@ -8,6 +8,8 @@ import { LoadCard } from "@/components/cargas/load-card";
 import { CarrierLoadActions } from "@/components/cargas/cargas-forms";
 import { ExcursionBoard } from "@/components/cargas/excursion-board";
 import { busBoard } from "@/lib/domain/cargas/excursao";
+import { LOAD_QUICK_MESSAGES, carrierFixedPickups, fixedToday } from "@/lib/domain/cargas/vias";
+import { LoadMessageForm } from "@/components/cargas/vias-forms";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +21,8 @@ export default async function Hoje() {
   const db = await getDb();
   const { carrier, loads, usage } = await carrierLoads(db, session.actor);
   const excursao = carrier.operation === "EXCURSAO";
-  const trips = excursao ? await busBoard(db, session.actor) : [];
+  const [trips, fixed] = await Promise.all([excursao ? busBoard(db, session.actor) : Promise.resolve([]), carrierFixedPickups(db, session.actor)]);
+  const fixasHoje = fixedToday(fixed);
   const chamadas = loads.filter((l) => l.status === "CHAMADA");
   const coletar = loads.filter((l) => l.status === "ACEITA");
   const transito = loads.filter((l) => l.status === "COLETADA");
@@ -27,7 +30,7 @@ export default async function Hoje() {
     <section aria-labelledby={id} className="mb-8">
       <h2 id={id} className="mb-1 flex items-center gap-2 text-xl font-bold">{icon}{title} <span className="rounded-full bg-[var(--brand-primary)]/15 px-2 text-base tabular-nums">{items.length}</span></h2>
       <p className="mb-3 text-sm text-muted-foreground">{hint}</p>
-      {items.length ? <ul className="grid gap-3 lg:grid-cols-2">{items.map((l) => <LoadCard key={l.id} load={l} who="transportadora" actions={<CarrierLoadActions id={l.id} status={l.status} commissionPct={pct(usage.commissionBps)} />} />)}</ul> : <p className="rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground">Nada aqui agora.</p>}
+      {items.length ? <ul className="grid gap-3 lg:grid-cols-2">{items.map((l) => <LoadCard key={l.id} load={l} who="transportadora" actions={<><CarrierLoadActions id={l.id} status={l.status} commissionPct={pct(usage.commissionBps)} /><LoadMessageForm loadId={l.id} number={l.number} quick={LOAD_QUICK_MESSAGES.transportadora} /></>} />)}</ul> : <p className="rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground">Nada aqui agora.</p>}
     </section>
   );
   return (
@@ -35,6 +38,14 @@ export default async function Hoje() {
       <PageHeader eyebrow="NextLevel Cargas" title={`Olá, ${carrier.contactName}`} description={excursao ? `Fardos do Brás para o ônibus ${carrier.name}: aceite as chamadas, colete pela etiqueta e entregue com o código do cliente.` : `Coletas das importadoras do Brás para a ${carrier.name}. Comissão da NextLevel no seu plano: ${pct(usage.commissionBps)}% do frete.`} />
       {usage.freeLimit !== null && !excursao ? <p role="note" className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Plano grátis: <b className="tabular-nums">{usage.acceptedThisMonth} de {usage.freeLimit}</b> cargas aceitas neste mês.</p> : null}
       {!carrier.hasDriverLink ? <p className="mb-6 rounded-lg bg-warning-soft px-4 py-3 text-sm">Gere o link do motorista para ele ver endereço, horário e códigos no celular. <Link href="/transportadora/perfil" className="font-semibold text-link underline">Gerar link</Link></p> : null}
+      {fixasHoje.length ? (
+        <section aria-labelledby="t-fixa" className="mb-8 rounded-xl border border-[var(--brand-primary)]/40 p-4">
+          <h2 id="t-fixa" className="mb-2 text-lg font-bold">Coletas fixas de hoje</h2>
+          <ul className="grid gap-1 text-sm">{fixasHoje.map((f) => <li key={f.id}><b>{f.time}</b> · {f.importer}{f.pickupAddress ? ` · ${f.pickupAddress}` : ""}</li>)}</ul>
+          <p className="mt-2 text-xs text-muted-foreground">Combinadas com as importadoras que têm você como preferida. A chamada com os pedidos chega aqui quando ela juntar a carga.</p>
+        </section>
+      ) : null}
+      {!fixed.length ? <p className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Quer mais carga? Veja para onde vão os pedidos das importadoras do Brás e peça para ser preferida. <Link href="/transportadora/importadoras" className="font-semibold text-link underline">Importadoras na rede</Link></p> : null}
       {excursao ? <section aria-label="Viagens do ônibus" className="mb-10"><ExcursionBoard trips={trips} /><Link href="/transportadora/rotas" className="mt-4 inline-block text-sm font-semibold text-link underline">Rotas, preços e nova viagem</Link></section> : null}
       {excursao && !loads.length ? null : <>
       {bloco("t-cham", <BellRing className="size-5 text-[var(--brand-primary)]" aria-hidden />, "Chamadas para responder", "Aceite informando o frete combinado, ou recuse com o motivo (a importadora chama outra).", chamadas)}

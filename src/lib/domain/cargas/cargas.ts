@@ -2,7 +2,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { bdImporters, bdProducts, bdRequests, bdWarehouses, brandLeads, organizations, trCarrierDocuments, trCarrierUsers, trCarriers, trLoadEvents, trLoadRequests, trLoads, users } from "@/db/schema";
+import { bdImporters, bdProducts, bdRequests, bdWarehouses, brandLeads, organizations, trCarrierDocuments, trCarrierUsers, trCarriers, trLoadEvents, trLoadRatings, trLoadRequests, trLoads, users } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import { BRAS_UFS } from "@/lib/bras/ufs";
@@ -75,19 +75,26 @@ export async function listCarriers(db: Database, actor: Actor, opts: { uf?: stri
   return carrierCatalog(db, { uf: opts.uf, operation: opts.operation, all: isMaster(actor), full: isMaster(actor) });
 }
 
+/** Nota média por transportadora (pontualidade e cuidado, de 1 a 5), com o número de avaliações. */
+export async function carrierRatings(db: Pick<Database, "select">) {
+  const rows = await db.select({ carrierId: trLoadRatings.carrierId, n: sql<number>`count(*)`, p: sql<number>`avg(${trLoadRatings.punctuality})`, c: sql<number>`avg(${trLoadRatings.care})` }).from(trLoadRatings).groupBy(trLoadRatings.carrierId);
+  return new Map(rows.map((r) => [r.carrierId, { count: Number(r.n), score: Math.round(((Number(r.p) + Number(r.c)) / 2) * 10) / 10 }]));
+}
+
 /** Catálogo de transportadoras (importadora, membro e Master): ativas, com selos; ordem pública (D112, seção 3.4). */
 export async function carrierCatalog(db: Database, opts: { uf?: string; operation?: "CARGA" | "EXCURSAO"; all?: boolean; full?: boolean } = {}) {
-  const [rows, docs, group] = await Promise.all([
+  const [rows, docs, group, ratings] = await Promise.all([
     db.select().from(trCarriers).where(opts.all ? undefined : eq(trCarriers.status, "ATIVA")).orderBy(asc(trCarriers.name)),
     db.select({ carrierId: trCarrierDocuments.carrierId, status: trCarrierDocuments.status, validUntil: trCarrierDocuments.validUntil }).from(trCarrierDocuments),
     getGroupCompanies(db),
+    carrierRatings(db),
   ]);
   const grupo = groupDocuments(group);
   const today = cargasToday();
   return rows.filter((c) => (!opts.uf || c.ufs.includes(opts.uf)) && (!opts.operation || c.operation === opts.operation)).map((c) => ({
     id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, ufs: c.ufs, vehicles: c.vehicles, plan: c.plan, status: c.status, operation: c.operation,
     insurance: c.insurance, hasRntrc: !!c.rntrc, rateNotes: c.rateNotes, hasDriverLink: !!c.driverTokenHash,
-    groupCompany: grupo.has(c.document), docsOk: cargasDocsSeal(docs.filter((d) => d.carrierId === c.id), today).ok,
+    groupCompany: grupo.has(c.document), docsOk: cargasDocsSeal(docs.filter((d) => d.carrierId === c.id), today).ok, rating: ratings.get(c.id) ?? null,
     ...(opts.full ? { document: c.document, docType: c.docType, email: c.email, rntrc: c.rntrc, createdByImporterId: c.createdByImporterId } : {}),
   }));
 }
@@ -421,7 +428,8 @@ export async function carrierLoads(db: Database, actor: Actor, now = new Date())
 export async function importerLoads(db: Database, actor: Actor) {
   const me = await myImporter(db, actor);
   const loads = await loadViews(db, eq(trLoads.importerId, me.importer.id), { withCodes: "NEVER" });
-  return loads.map((l) => ({ ...l, freightCents: null, commissionCents: null }));
+  // O aceite registra o frete no histórico; a importadora recebe o histórico sem esse valor (D118).
+  return loads.map((l) => ({ ...l, freightCents: null, commissionCents: null, events: l.events.map((e) => (e.kind === "ACEITA" ? { ...e, note: null } : e)) }));
 }
 
 /** Extrato da transportadora por mês: cargas aceitas, frete e comissão da NextLevel. */

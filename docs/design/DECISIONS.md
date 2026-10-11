@@ -1039,3 +1039,21 @@ Respostas do dono: o Brás Digital tem o emissor Nota Fácil, com promoção par
 - **Quem atende:** a equipe do Master nesta etapa. O papel próprio do contador (acesso só à fila) entra quando o dono definir quem atende (pergunta 13).
 - **Correção em produção (antiga):** os links `/r/<parceiro>` e `/c/<convite>` redirecionavam para o endereço interno do servidor (`localhost:10000`), porque usavam `req.url` atrás do proxy do Render. Agora usam o domínio da requisição (`requestOrigin`, x-forwarded-host), com teste.
 - Testes: `tests/meu-contador-e5.test.ts` (4) e e2e `bras-portal` passo 12. Migração `0055_meu_contador`.
+
+## D118 — Club E6: importadoras e transportadoras nas duas vias (2026-10-11)
+Pedido do dono: "o sistema de importadoras precisa se comunicar com as transportadoras e vice-versa", e cada via traz gente nova (prompt, seção 6B).
+- **Importadoras na rede** (`/transportadora/importadoras`): a transportadora vê as importadoras ativas, os galpões e horários (dados públicos da ficha) e **para onde vão os pedidos** nos últimos 30 dias, **somados por estado de destino**, sem cliente, valor ou pedido individual. Estado com menos de 3 pedidos entra em "outros" para não identificar ninguém. O estado que ela atende fica destacado.
+- **Preferida** (`tr_carrier_preferences`, uma linha por importadora e transportadora):
+  - a transportadora pede, com um recado;
+  - a importadora aceita ou recusa (recusada pode pedir de novo), ou marca direto a transportadora com quem já trabalha;
+  - a preferida aparece **logo depois da escolhida pelo cliente** ao chamar a coleta.
+- **Coleta fixa**: dias da semana e hora, só com preferida.
+  - No dia, a importadora vê "Coleta fixa de hoje" com os pedidos prontos para os estados que a preferida atende, já juntos, e **confirma** com um toque (vira uma coleta comum, D111).
+  - A transportadora vê "Coletas fixas de hoje" no "Hoje".
+- **Conversa presa à coleta**: mensagens prontas de um toque ("Carga pronta", "Faltou volume", "Nota anexada"; "Chego em 30 min", "Estou no galpão", "Carga entregue") ou texto curto. Só a importadora dona, a transportadora da coleta e o Master escrevem.
+  - **Exceção ao prompt (6B.3):** a conversa fica **no histórico da coleta** (`tr_load_events`, tipo MENSAGEM), não em `bd_support_messages`, porque aquele canal é preso ao membro da Brás (`member_id` obrigatório) e a coleta não tem membro. Continua sendo um registro só, sem chat novo.
+- **Correção de fronteira**: o histórico da coleta mostrava à importadora o frete informado no aceite ("Frete informado: …"). Agora a importadora recebe o histórico sem esse valor (ela nunca vê frete nem comissão, D111).
+- **Avaliação** (`tr_load_ratings`, uma por coleta, só depois de coletada ou entregue): pontualidade e cuidado, de 1 a 5, e comentário. A **nota média é pública** no catálogo (importadora, cliente e Master) a partir de 3 avaliações.
+- **Mapa de demanda** (Master, em Transportadoras): cidades de destino dos últimos 90 dias em que o cliente usou transportadora fora da rede ou o estado não tem nenhuma. Mostra onde convidar transportadora ou abrir rota de ônibus.
+- "Trazer importadora" e "trazer cliente" já existiam (D115) e foram mantidos.
+- Testes: `tests/vias-e6.test.ts`. e2e: passo 13 de `e2e/bras-portal.mjs`.

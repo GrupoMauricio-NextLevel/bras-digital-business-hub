@@ -877,6 +877,68 @@ ok("Club E4: indicação ativada, pontos, vale e baixa no balcão");
 }
 ok("Club E5: Meu Contador resolve a nota do fardo");
 
+// 13. Club E6 (D118): duas vias. A transportadora vê as importadoras e a demanda por estado e pede para ser preferida;
+//     a importadora aceita e combina a coleta fixa de hoje; a coleta fixa aparece no "Hoje" da transportadora.
+{
+  const semToast = async (pg) => { await pg.waitForTimeout(300); await pg.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {}); };
+  const imp = await page(390);
+  await imp.p.goto(BRAS + "/login", { waitUntil: "networkidle" });
+  await imp.p.getByLabel("E-mail").fill("jorge@piloto.teste"); await imp.p.getByLabel("Senha").fill("senha-da-xdx-1");
+  await imp.p.getByRole("button", { name: /^Entrar/ }).click();
+  await imp.p.waitForURL(/\/importadora/, { timeout: 60000 }); await imp.p.waitForLoadState("networkidle");
+  const nome = (await imp.p.getByText(/importadora parceira da Brás Digital/).first().locator("xpath=..").locator("b").first().innerText()).trim();
+
+  const tr = await page(390);
+  await tr.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await tr.p.getByLabel("E-mail").fill("antonio@rapido.teste"); await tr.p.getByLabel("Senha").fill("senha-do-rapido-1");
+  await tr.p.getByRole("button", { name: /^Entrar/ }).click();
+  await tr.p.waitForURL(/\/transportadora/, { timeout: 60000 });
+  await tr.p.goto(B + "/transportadora/importadoras", { waitUntil: "networkidle" });
+  const item = tr.p.locator("li").filter({ has: tr.p.getByText(nome, { exact: true }) }).first();
+  if (!/Para onde vão os pedidos/.test(await item.innerText())) fail("transportadora: demanda da importadora ausente");
+  if (/Ana Utilidades|ana@utilidades|R\$/.test(await tr.p.locator("main").innerText())) fail("importadoras na rede: dado do comprador ou valor vazou");
+  await item.getByRole("button", { name: "Pedir para ser preferida" }).click();
+  const af = tr.p.getByRole("form", { name: `Pedir para ser preferida da ${nome}` });
+  await af.getByLabel(/Recado para a importadora/).fill("Coleto toda tarde e levo para o Paraná");
+  await af.getByRole("button", { name: "Enviar pedido" }).click();
+  await tr.p.getByText("Pedido enviado").first().waitFor({ timeout: 30000 });
+  await semToast(tr.p);
+  await check(tr.p, "transportadora importadoras", 390);
+  await shot(tr.p, `${OUT}/35-transportadora-importadoras-390.png`);
+
+  await imp.p.goto(BRAS + "/importadora/transportadoras", { waitUntil: "networkidle" });
+  if (!(await imp.p.getByText("Rápido Brás Transportes quer ser sua preferida").isVisible())) fail("importadora: pedido de preferida não aparece");
+  await imp.p.getByRole("button", { name: "Aceitar Rápido Brás Transportes como preferida" }).click();
+  await imp.p.getByText("Rápido Brás Transportes agora é preferida").first().waitFor({ timeout: 30000 });
+  await semToast(imp.p);
+  const hoje = new Date(Date.now() - 3 * 3_600_000).getUTCDay();
+  const ff = imp.p.getByRole("form", { name: "Coleta fixa com Rápido Brás Transportes" });
+  await ff.getByText(["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][hoje], { exact: true }).click();
+  await ff.getByLabel("Hora").fill("15:00");
+  await ff.getByRole("button", { name: "Salvar coleta fixa" }).click();
+  await imp.p.getByText("Coleta fixa salva").first().waitFor({ timeout: 30000 });
+  await semToast(imp.p);
+  const opts = await imp.p.getByRole("form", { name: "Chamar transportadora" }).locator("option").allInnerTexts().catch(() => []);
+  if (opts.length && !opts.some((o) => /Rápido Brás Transportes \(preferida\)/.test(o))) fail("chamar: preferida não marcada na lista");
+  await check(imp.p, "importadora preferidas", 390);
+  await shot(imp.p, `${OUT}/36-importadora-preferidas-390.png`);
+  await imp.c.close();
+
+  await tr.p.goto(B + "/transportadora", { waitUntil: "networkidle" });
+  if (!(await tr.p.getByRole("heading", { name: "Coletas fixas de hoje" }).isVisible()) || !(await tr.p.getByText(new RegExp(`15:00 · ${nome}`)).isVisible())) fail("transportadora: coleta fixa de hoje não aparece");
+  await check(tr.p, "transportadora hoje com coleta fixa", 390);
+  await tr.c.close();
+
+  const m = await page(1440);
+  await m.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await m.p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await m.p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await m.p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
+  await check(m.p, "master transportadoras com mapa", 1440);
+  await shot(m.p, `${OUT}/37-master-mapa-demanda-1440.png`);
+  await m.c.close();
+}
+ok("Club E6: preferida, coleta fixa e mapa de demanda");
 
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }

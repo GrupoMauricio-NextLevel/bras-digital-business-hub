@@ -69,7 +69,7 @@ export async function freightCatalogFor(db: Database, uf?: string) {
   const list = await carrierCatalog(db, {});
   const serve = (c: { ufs: string[] }) => (uf ? c.ufs.includes(uf) : true);
   return list
-    .map((c) => ({ id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, operation: c.operation, ufs: c.ufs, vehicles: c.vehicles, insurance: c.insurance, rateNotes: c.rateNotes, groupCompany: c.groupCompany, docsOk: c.docsOk }))
+    .map((c) => ({ id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, operation: c.operation, ufs: c.ufs, vehicles: c.vehicles, insurance: c.insurance, rateNotes: c.rateNotes, groupCompany: c.groupCompany, docsOk: c.docsOk, rating: c.rating }))
     .sort((a, b) => Number(serve(b)) - Number(serve(a)) || Number(b.docsOk) - Number(a.docsOk) || a.name.localeCompare(b.name, "pt-BR"));
 }
 

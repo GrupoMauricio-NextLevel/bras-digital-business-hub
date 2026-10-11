@@ -2209,3 +2209,32 @@ export const accountingTicketMessages = pgTable("accounting_ticket_messages", {
   body: text("body").notNull(),
   createdAt: createdAt(),
 }, (t) => [index("accounting_ticket_messages_ticket_idx").on(t.ticketId, t.createdAt)]);
+
+// ---------------------------------------------------------------------------
+// Duas vias (D118): transportadora pede para ser preferida da importadora; coleta fixa; avaliação da coleta.
+// ---------------------------------------------------------------------------
+export const trCarrierPreferences = pgTable("tr_carrier_preferences", {
+  id: id(),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  /** PEDIDO: a transportadora pediu; ACEITA: preferida (aparece primeiro ao chamar coleta); RECUSADA: pode pedir de novo. */
+  status: text("status", { enum: ["PEDIDO", "ACEITA", "RECUSADA"] }).notNull().default("PEDIDO"),
+  message: text("message"),
+  /** Coleta fixa: dias da semana (0 = domingo) e hora "HH:MM" no horário de Brasília. */
+  fixedWeekdays: jsonb("fixed_weekdays").$type<number[]>().notNull().default([]),
+  fixedTime: text("fixed_time"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("tr_carrier_preferences_unique").on(t.importerId, t.carrierId), index("tr_carrier_preferences_carrier_idx").on(t.carrierId)]);
+
+/** Avaliação da coleta pela importadora (uma por coleta): pontualidade e cuidado de 1 a 5. A média é pública. */
+export const trLoadRatings = pgTable("tr_load_ratings", {
+  id: id(),
+  loadId: text("load_id").notNull().unique().references(() => trLoads.id),
+  carrierId: text("carrier_id").notNull().references(() => trCarriers.id),
+  importerId: text("importer_id").notNull().references(() => bdImporters.id),
+  punctuality: integer("punctuality").notNull(),
+  care: integer("care").notNull(),
+  comment: text("comment"),
+  createdAt: createdAt(),
+}, (t) => [index("tr_load_ratings_carrier_idx").on(t.carrierId)]);

@@ -11,6 +11,8 @@ import { CARGAS_DOC_LABEL, CARGAS_OPERATION_LABEL, CARGAS_PLAN_LABEL, CARGAS_VEH
 import { LoadCard } from "@/components/cargas/load-card";
 import { listCarrierReferrals } from "@/lib/domain/club/indicacoes";
 import { DismissReferralButton } from "@/components/frete/frete-forms";
+import { demandMap } from "@/lib/domain/cargas/vias";
+import { RatingBadge } from "@/components/cargas/vias-forms";
 import { CarrierAccessForm, CarrierDocsManager, CarrierForm, CarrierProfileForm, DriverLinkManager, LeadToCarrierButton } from "@/components/cargas/cargas-forms";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +25,8 @@ export default async function TransportadorasMaster() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const [carriers, leads, loads, report, referrals] = await Promise.all([listCarriers(db, session.actor), cargasCarrierLeads(db, session.actor), listAllLoads(db, session.actor), cargasCommissionReport(db, session.actor), listCarrierReferrals(db, session.actor)]);
+  const demanda = await demandMap(db, session.actor);
+  const semRede = demanda.filter((d) => d.carriersInUf === 0 || d.withoutCatalogCarrier > 0).slice(0, 20);
   const convidadas = referrals.filter((r) => r.status === "CONVIDADO");
   const [access, docs, docsQueue] = await Promise.all([
     Promise.all(carriers.map((c) => listCarrierAccess(db, session.actor, c.id))),
@@ -80,11 +84,21 @@ export default async function TransportadorasMaster() {
           ))}</ul>
         </section>
       ) : null}
+      {semRede.length ? (
+        <section aria-labelledby="m-mapa" className="ds-card mb-6 p-4">
+          <h2 id="m-mapa" className="mb-1 text-base font-semibold">Onde falta transportadora (últimos 90 dias)</h2>
+          <p className="mb-3 text-sm text-muted-foreground">Cidades de destino dos pedidos da Brás em que o cliente usou transportadora fora da rede ou o estado não tem nenhuma. É onde convidar transportadora ou abrir rota de ônibus.</p>
+          <div className="overflow-x-auto"><table className="w-full text-left text-sm">
+            <thead><tr className="border-b border-border"><th scope="col" className="py-1.5 pr-3">Destino</th><th scope="col" className="py-1.5 pr-3 text-right">Pedidos</th><th scope="col" className="py-1.5 pr-3 text-right">Caixas</th><th scope="col" className="py-1.5 pr-3 text-right">Fora da rede</th><th scope="col" className="py-1.5 text-right">Na rede no estado</th></tr></thead>
+            <tbody>{semRede.map((d) => <tr key={`${d.city}-${d.uf}`} className="border-b border-border/60"><td className="py-1.5 pr-3">{d.city}/{d.uf}</td><td className="py-1.5 pr-3 text-right tabular-nums">{d.requests}</td><td className="py-1.5 pr-3 text-right tabular-nums">{d.boxes}</td><td className="py-1.5 pr-3 text-right tabular-nums">{d.withoutCatalogCarrier}</td><td className={`py-1.5 text-right tabular-nums ${d.carriersInUf ? "" : "font-semibold text-danger"}`}>{d.carriersInUf || "nenhuma"}</td></tr>)}</tbody>
+          </table></div>
+        </section>
+      ) : null}
       <section aria-labelledby="m-carr" className="ds-card mb-6 p-4">
         <h2 id="m-carr" className="mb-3 text-base font-semibold">Transportadoras ({carriers.length})</h2>
         {carriers.length ? <ul className="space-y-2">{carriers.map((c, i) => (
           <li key={c.id} className="rounded-lg border border-border p-3 text-sm">
-            <p className="flex flex-wrap items-center gap-2 font-semibold">{c.name}<Badge tone="info">{CARGAS_PLAN_LABEL[c.plan]}</Badge><Badge tone="neutral">{CARGAS_OPERATION_LABEL[c.operation]}</Badge>{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}{c.docsOk ? <Badge tone="success">Documentação em dia</Badge> : null}{c.status !== "ATIVA" ? <Badge tone="warning">Pausada</Badge> : null}{c.insurance ? <Badge tone="success">Seguro</Badge> : null}</p>
+            <p className="flex flex-wrap items-center gap-2 font-semibold">{c.name}<Badge tone="info">{CARGAS_PLAN_LABEL[c.plan]}</Badge><Badge tone="neutral">{CARGAS_OPERATION_LABEL[c.operation]}</Badge>{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}{c.docsOk ? <Badge tone="success">Documentação em dia</Badge> : null}{c.status !== "ATIVA" ? <Badge tone="warning">Pausada</Badge> : null}{c.insurance ? <Badge tone="success">Seguro</Badge> : null}<RatingBadge rating={c.rating} /></p>
             <p className="text-muted-foreground">{c.docType} {c.document} · {c.contactName} · {c.phone} · {c.vehicles.map((v) => CARGAS_VEHICLE_LABEL[v as keyof typeof CARGAS_VEHICLE_LABEL] ?? v).join(", ")} · atende {c.ufs.join(", ")}</p>
             <p className="text-muted-foreground">{access[i]!.length ? `Acesso: ${access[i]!.map((a) => `${a.name} (${a.email})`).join(", ")}` : "Sem acesso ao painel ainda"}{c.createdByImporterId ? " · cadastrada por uma importadora" : ""}</p>
             <details className="mt-2"><summary className="cursor-pointer font-semibold text-link">Gerenciar</summary>

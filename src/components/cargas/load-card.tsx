@@ -39,8 +39,8 @@ export function LoadCard({ load: l, who, actions, showEvents = true }: { load: L
         {!codes && who === "transportadora" && l.status === "CHAMADA" ? <p className="mt-2 text-muted-foreground">Os códigos de retirada aparecem depois que você aceitar.</p> : null}
       </details>
       {showEvents && l.events.length ? (
-        <details className="mt-2"><summary className="cursor-pointer text-muted-foreground">Histórico</summary>
-          <ol className="mt-1 space-y-0.5 text-muted-foreground">{l.events.map((e, i) => <li key={i}>{new Date(e.at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })} · {CARGAS_LOAD_STATUS_LABEL[e.kind as keyof typeof CARGAS_LOAD_STATUS_LABEL] ?? e.kind} · {e.actor}{e.note ? ` · ${e.note}` : ""}</li>)}</ol>
+        <details className="mt-2"><summary className="cursor-pointer text-muted-foreground">Histórico e conversa ({l.events.length})</summary>
+          <ol className="mt-1 space-y-0.5 text-muted-foreground">{l.events.map((e, i) => <li key={i}>{new Date(e.at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })} · {e.kind === "MENSAGEM" ? <><b className="text-foreground">{e.actor}:</b> <span className="text-foreground">{e.note}</span></> : <>{CARGAS_LOAD_STATUS_LABEL[e.kind as keyof typeof CARGAS_LOAD_STATUS_LABEL] ?? e.kind} · {e.actor}{e.note ? ` · ${e.note}` : ""}</>}</li>)}</ol>
         </details>
       ) : null}
       {actions}

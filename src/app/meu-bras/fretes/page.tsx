@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { LinkTabs } from "@/components/app/link-tabs";
 import { Badge } from "@/components/ui/badge";
 import { freightCatalogFor, myFreights } from "@/lib/domain/frete/painel";
+import { RatingBadge } from "@/components/cargas/vias-forms";
 import { myReferrals } from "@/lib/domain/club/indicacoes";
 import { lastBrasShipping } from "@/lib/domain/bras/catalogo";
 import { BRAS_UFS } from "@/lib/bras/ufs";
@@ -93,7 +94,7 @@ export default async function Fretes({ searchParams }: { searchParams: Promise<{
           {catalog.length ? <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{catalog.map((c) => (
             <li key={c.id} className={`ds-card p-4 text-sm ${c.ufs.includes(uf) ? "" : "border-dashed"}`}>
               <p className="flex items-center gap-2 text-base font-semibold">{c.operation === "EXCURSAO" ? <Bus className="size-5 text-[var(--brand-primary)]" aria-hidden /> : <Truck className="size-5 text-[var(--brand-primary)]" aria-hidden />}{c.name}</p>
-              <p className="mt-1 flex flex-wrap gap-1">{c.operation === "EXCURSAO" ? <Badge tone="neutral">Ônibus de excursão</Badge> : <Badge tone="neutral">Transportadora</Badge>}{c.docsOk ? <Badge tone="success" icon={<ShieldCheck className="size-3" aria-hidden />}>Documentação em dia</Badge> : null}{c.insurance ? <Badge tone="success">Seguro de carga</Badge> : null}{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}</p>
+              <p className="mt-1 flex flex-wrap gap-1">{c.operation === "EXCURSAO" ? <Badge tone="neutral">Ônibus de excursão</Badge> : <Badge tone="neutral">Transportadora</Badge>}{c.docsOk ? <Badge tone="success" icon={<ShieldCheck className="size-3" aria-hidden />}>Documentação em dia</Badge> : null}{c.insurance ? <Badge tone="success">Seguro de carga</Badge> : null}{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}<RatingBadge rating={c.rating} /></p>
               <p className="mt-2 text-muted-foreground">{c.ufs.includes(uf) ? `Atende ${uf}` : `Não atende ${uf}`} · {c.ufs.join(", ")}</p>
               <p className="text-muted-foreground">{c.rateNotes ? `Frete: ${c.rateNotes}` : "Frete combinado com a transportadora"}</p>
               <a href={wa(c.phone)} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-semibold text-link underline"><MessageCircle className="size-4" aria-hidden />Falar com {c.contactName}</a>

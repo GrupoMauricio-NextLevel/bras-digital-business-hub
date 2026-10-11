@@ -3,8 +3,9 @@ import * as React from "react";
 import { Bus, ShieldCheck, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { RatingBadge } from "@/components/cargas/vias-forms";
 
-export type CatalogCarrier = { id: string; name: string; operation: "CARGA" | "EXCURSAO"; ufs: string[]; vehicles: string[]; insurance: boolean; rateNotes: string | null; groupCompany: boolean; docsOk: boolean };
+export type CatalogCarrier = { id: string; name: string; operation: "CARGA" | "EXCURSAO"; ufs: string[]; vehicles: string[]; insurance: boolean; rateNotes: string | null; groupCompany: boolean; docsOk: boolean; rating?: { count: number; score: number } | null };
 
 /**
  * "Como sua mercadoria vai chegar" (D113): o catálogo da NextLevel Cargas no pedido de qualquer importadora.
@@ -27,6 +28,7 @@ export function CarrierPicker({ carriers, uf, value, other, onChange }: { carrie
             {c.docsOk ? <Badge tone="success" icon={<ShieldCheck className="size-3" aria-hidden />}>Documentação em dia</Badge> : null}
             {c.insurance ? <Badge tone="success">Seguro de carga</Badge> : null}
             {c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}
+            <RatingBadge rating={c.rating} />
           </span>
           <span className="block text-muted-foreground">Atende: {c.ufs.join(", ")}</span>
           <span className="block text-muted-foreground">{c.rateNotes ? `Frete: ${c.rateNotes}` : "Frete combinado com a transportadora"}</span>

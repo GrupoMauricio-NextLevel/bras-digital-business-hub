@@ -177,6 +177,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Hoje", href: "/transportadora", icon: "Home", exact: true, group: "Cargas", bottom: true },
       { label: "Cargas", href: "/transportadora/cargas", icon: "Truck", group: "Cargas", bottom: true },
       { label: "Rotas e viagens", href: "/transportadora/rotas", icon: "Clock", group: "Cargas" },
+      { label: "Importadoras na rede", href: "/transportadora/importadoras", icon: "Store", group: "Cargas" },
       { label: "Indique e ganhe", href: "/transportadora/indicacoes", icon: "Ticket", group: "Conta" },
       { label: "Extrato", href: "/transportadora/extrato", icon: "ReceiptText", group: "Financeiro", bottom: true },
       { label: "Perfil e motorista", href: "/transportadora/perfil", icon: "Settings", group: "Conta" },
