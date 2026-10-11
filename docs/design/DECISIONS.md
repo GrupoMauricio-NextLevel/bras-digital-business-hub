@@ -1210,3 +1210,9 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **E-mails transacionais:** rodapé com a faixa de cores das marcas e a frase do Club, no HTML e no texto; ler a chave nunca impede o envio.
 - **Chaves no Master** (Descoberta → Barra do ecossistema → "Fio do grupo fora dos painéis"): captação, e-mails e páginas públicas, todas desligadas. Gravar uma chave não apaga as outras.
 - **Fica para depois:** quem convidou nos convites `/r/` e `/c/` com o benefício dos dois lados, saldo do Club no e-mail, "Suas marcas" no perfil (depende da conta do grupo, D130) e a comemoração com sugestão de outra marca.
+
+## D133 — Páginas públicas: rodapé da família "Parte do Grupo NextLevel" (P5P, desligado) (2026-10-11)
+- No rodapé de todas as páginas públicas das marcas (casca `(portal)`): fio do grupo, "Parte do Grupo NextLevel", a frase do Club e as outras marcas abertas, cada uma levando à página de ativação (`/ativar?de=<marca>`, D130).
+- **Nunca na vitrine do lojista** (ela não usa a casca do portal) nem na marca branca.
+- Chave "Páginas públicas" no Master (Descoberta → Barra do ecossistema), desligada.
+- **Fica para depois:** páginas do Club, da Excursão e do Nota Fácil (dependem das fotos reais, `docs/prompts/fotos-club-excursao.md`), cruzamento por intenção entre páginas e a medição de velocidade da primeira dobra (fase final, D127).

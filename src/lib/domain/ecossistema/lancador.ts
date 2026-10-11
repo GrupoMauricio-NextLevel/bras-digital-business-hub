@@ -91,3 +91,4 @@ export async function ecosystemBar(db: Database, current: EcoBrand | null, now =
 export function groupSegments(current?: string | null) {
   return ECO_BRANDS.filter((b) => b === current || brandByCode(b).live).map((b) => ({ brand: b, name: brandByCode(b).name, color: paletteOf(b).light.signal, current: b === current }));
 }
+export const isEcoBrandCode = (v: string | null | undefined): v is EcoBrand => !!v && (ECO_BRANDS as readonly string[]).includes(v);
