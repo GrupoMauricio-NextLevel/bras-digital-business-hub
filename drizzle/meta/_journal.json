@@ -435,6 +435,13 @@
       "when": 1791747250780,
       "tag": "0061_porta_entrada",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1791754514325,
+      "tag": "0062_oportunidades_cruzadas",
+      "breakpoints": true
     }
   ]
 }

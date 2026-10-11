@@ -2385,3 +2385,24 @@ export const priceSurveyStatus = pgTable("price_survey_status", {
   status: text("status", { enum: ["RESPONDEU", "DISPENSOU"] }).notNull(),
   month: text("month").notNull(),
 }, (t) => [primaryKey({ columns: [t.userId, t.brand] })]);
+
+/**
+ * Fila de oportunidades cruzadas do Master (D135, fase P5M): cada oportunidade nasce de uma regra (ex.: lojista que
+ * vende bem e ainda não compra na Brás) e ganha dono, situação e anotação. A chave (regra + cliente) não repete.
+ */
+export const CROSS_OPP_STATUSES = ["NOVA", "EM_CONTATO", "ATIVOU", "DESCARTADA"] as const;
+export const crossOpportunities = pgTable("cross_opportunities", {
+  id: id(),
+  key: text("key").notNull().unique(),
+  rule: text("rule").notNull(),
+  fromBrand: text("from_brand").notNull(),
+  toBrand: text("to_brand").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id").notNull(),
+  status: text("status", { enum: CROSS_OPP_STATUSES }).notNull().default("NOVA"),
+  ownerUserId: text("owner_user_id").references(() => users.id),
+  note: text("note"),
+  activatedAt: ts("activated_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("cross_opportunities_status_idx").on(t.status)]);

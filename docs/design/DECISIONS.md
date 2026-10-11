@@ -1223,3 +1223,11 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **Painel da transportadora:** cartão "Sua reputação no grupo" com o que falta para o próximo nível (aparece junto com os benefícios, mesma chave por marca, D128). **Master → Descoberta:** quadro com o nível de cada transportadora ativa (só números, sem cliente).
 - O destaque é sempre rotulado e nunca esconde as outras transportadoras.
 - **Fica para depois:** vantagens por nível (destaque na escolha da transportadora), reputação de importadoras e contadores parceiros, missões e Carteira B2B do parceiro, papel de contador parceiro com acesso só à fila do Meu Contador e a demanda do ecossistema por tipo de parceiro (o mapa de demanda da D118 já cobre rotas).
+
+## D135 — Torre do Ecossistema e fila de oportunidades cruzadas no Master (P5M) (2026-10-11)
+- **Master → Torre do Ecossistema** (`/master/ecossistema`):
+  - **índice do ecossistema:** clientes presentes em 2 ou mais marcas, reconhecidos pelo mesmo CPF/CNPJ (loja, membro da Brás, transportadora). Só conta; nenhuma conta é juntada;
+  - combinações de marcas mais comuns e cadastros vindos de outra marca (origem `grupo-<marca>` da página de ativação);
+  - **fila de oportunidades cruzadas** (tabela `cross_opportunities`, migração 0062): regras v1 = loja que vendeu R$ 1.000+ em 30 dias e não compra na Brás; membro da Brás com pedido pago e sem frete do grupo; loja no plano grátis vendendo R$ 3.000+ (um plano pago já sairia mais barato). Cada uma com situação (nova, em contato, ativou, descartada), dono (quem mexe primeiro) e auditoria;
+  - **placar do mês:** ativações por pessoa (só número e posição).
+- **Fica para depois:** funções de equipe no Master (Comercial, Suporte, Financeiro, Conteúdo) com permissões separadas, regras das oportunidades editáveis no Master, metas e bônus pelo motor de comissões, fila única de suporte e o placar das empresas do grupo (o acerto entre empresas já existe no Club, D120).
