@@ -6,7 +6,7 @@ import { MessageSquareHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/input";
 import { IntField, MoneyField } from "@/components/finance/fields";
-import { answerSurveyAction, dismissSurveyAction, saveSurveySettingsAction } from "@/app/actions/questionario";
+import { answerSurveyAction, dismissSurveyAction, saveBenefitsSettingsAction, saveSurveySettingsAction } from "@/app/actions/questionario";
 
 function useRun() {
   const router = useRouter();
@@ -74,6 +74,21 @@ export function QuestionarioConfig({ value, brands }: { value: { enabled: boolea
       <IntField id="qp-dias" label="Perguntar só depois de" suffix="dias de uso" min={0} value={f.minDaysSinceSignup} onChange={(v) => setF({ ...f, minDaysSinceSignup: v })} />
       <IntField id="qp-min" label="Mostrar o resultado a partir de" suffix="respostas" min={3} value={f.minResponsesToShow} onChange={(v) => setF({ ...f, minResponsesToShow: v })} />
       <Button type="submit" loading={pending} className="sm:justify-self-start">Gravar</Button>
+    </form>
+  );
+}
+
+/** Liga e desliga os benefícios gamificados (carteira, trilha, medidor do teste, simulador) por marca (D128). */
+export function BeneficiosConfig({ value, brands }: { value: Brand[]; brands: { brand: Brand; label: string }[] }) {
+  const { pending, run } = useRun();
+  const [f, setF] = React.useState(value);
+  return (
+    <form className="space-y-3" aria-label="Benefícios nos painéis" onSubmit={(e) => { e.preventDefault(); run(() => saveBenefitsSettingsAction({ brands: f }), "Benefícios atualizados"); }}>
+      <fieldset>
+        <legend className="mb-1 text-sm font-medium">Ligado nos painéis de</legend>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">{brands.map((b) => <label key={b.brand} className="inline-flex items-center gap-2"><input type="checkbox" checked={f.includes(b.brand)} onChange={(e) => setF(e.target.checked ? [...f, b.brand] : f.filter((x) => x !== b.brand))} />{b.label}</label>)}</div>
+      </fieldset>
+      <Button type="submit" loading={pending}>Gravar</Button>
     </form>
   );
 }

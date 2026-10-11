@@ -3,6 +3,8 @@ import { ArrowRight, Boxes, Crown, LifeBuoy, MessageCircle, ShieldCheck, Sparkle
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
+import { benefitsPanel } from "@/lib/domain/beneficios/painel";
+import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
 import { getBrasMemberByUser, touchBrasMemberSeen } from "@/lib/domain/bras/membros";
@@ -35,6 +37,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
     listCatalog(db, { includeUnpublished: true, families: ["BRAS_MEMBER_PLAN"] }),
     pendingSurvey(db, session.actor),
   ]);
+  const benefits = await benefitsPanel(db, session.actor);
   if (member) await touchBrasMemberSeen(db, member.id, member.lastSeenAt);
   const andamento = pedidos.filter((r) => r.status === "NEW" || r.status === "CONFIRMED" || r.status === "PAID").slice(0, 3);
   const company = member?.companyName ?? session.user.name;
@@ -46,6 +49,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
       {novo ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Cadastro criado. Seu acesso de membro já está liberado.</p> : null}
 
       {respostas ? <p role="status" className="mb-6 rounded-lg bg-info-soft px-4 py-3 text-sm"><b>{respostas === 1 ? "1 resposta nova" : `${respostas} respostas novas`}</b> da equipe. <Link href="/meu-bras/suporte#chat" className="font-semibold text-link underline">Abrir o chat</Link></p> : null}
+      {benefits ? <PainelBeneficios data={benefits} /> : null}
       {survey ? <QuestionarioPreco product={survey.product} /> : null}
       {panel ? (
         <section aria-labelledby="mb-agora" className="mb-8">

@@ -17,6 +17,8 @@ import { isCommerceStore } from "@/lib/store-brand";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { CommerceHome } from "@/components/commerce/commerce-home";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
+import { benefitsPanel } from "@/lib/domain/beneficios/painel";
+import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 
 function greeting() {
@@ -29,7 +31,8 @@ export default async function MerchantHome() {
   const store = session.store!;
   const db = await getDb();
   const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), isCommerceStore(db, store), pendingSurvey(db, session.actor)]);
-  const surveyCard = survey ? <QuestionarioPreco product={survey.product} /> : null;
+  const benefits = await benefitsPanel(db, session.actor);
+  const surveyCard = <>{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
   const readiness = commerce ? await getStoreReadiness(db, store.id) : null;

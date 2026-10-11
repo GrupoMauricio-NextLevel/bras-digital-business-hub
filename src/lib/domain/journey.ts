@@ -76,7 +76,7 @@ export async function milestonesFor(db: Database, storeId: string, now = new Dat
   const [delivered] = await db.select({ n: count() }).from(serviceDeliveries).where(and(eq(serviceDeliveries.storeId, storeId), eq(serviceDeliveries.status, "ACCEPTED")));
   const access = storeAccess(s, now).state;
   const activeN = active?.n ?? 0, paidN = paid?.n ?? 0;
-  out.PLAN_ACTIVE = access === "PAID" || access === "TRIAL" || access === "FREE";
+  out.PLAN_ACTIVE = access === "PAID" || access === "TRIAL" || access === "FREE" || access === "GRATIS";
   out.BRAND_IDENTITY = !!(s.logoUrl || s.logoText);
   out.CHECKOUT_READY = s.paymentStatus === "CONNECTED";
   out.SHIPPING_READY = !!s.shippingProvider || !!s.networkId;

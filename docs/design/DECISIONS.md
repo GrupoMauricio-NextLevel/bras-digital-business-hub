@@ -1177,3 +1177,10 @@ Prompt de público e preço, fase P5. **Tudo desligado por padrão**: nada muda 
 Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, faça o grosso"). Exceção registrada à regra "mudança de comportamento sem teste não entra" do `CLAUDE.md`, só para esta rodada do prompt de público e preço (fases P5 a P6):
 - **Em cada fase, antes de publicar:** tipos, estilo, build de produção e um teste de domínio curto das regras novas. Tudo novo continua **desligado por padrão**, então publicar não muda nada para cliente.
 - **Na fase final (antes de ligar qualquer coisa):** bateria completa (`npx vitest run`), e2e de ponta a ponta (`e2e/bras-portal.mjs` e os de painel), capturas em 360/768/1440 e varredura de acessibilidade. A lista do que ficou para essa fase vai no relatório final.
+
+## D128 — Benefícios gamificados nos painéis (P5V, desligado por padrão) (2026-10-11)
+- **Um agregador só** (`src/lib/domain/beneficios/painel.ts`): Carteira do grupo (saldo do Club em pontos e em reais), Trilha de primeiros passos por persona (lojista, membro da Brás, transportadora/ônibus, medida nos dados reais), Medidor do teste reverso (dias restantes, dias ganhos, conquistas) e Simulador "quanto cada plano custaria para você" (vendas reais de 30 dias × planos reais do catálogo e da tabela do SuperDrop, mais o grátis da porta).
+- **Comemoração uma vez por passo por pessoa** (evento com chave única), que também mede a ativação.
+- Componentes em `src/components/beneficios/` (o componente não decide regra). No topo do painel do lojista (SuperDrop e Commerce), do Meu Brás e da transportadora.
+- **Ligado por marca** em Master → Financeiro → Descoberta → Benefícios (`beneficios.painel`); começa desligado em todas.
+- Fica para a fase final: capturas em 360/768/1440 claro e escuro, `axe` e e2e (D127). Fica para depois: trilha editável no Master, vitrine de recompensas e escada de nível no kit.

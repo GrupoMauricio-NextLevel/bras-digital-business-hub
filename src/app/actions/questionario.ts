@@ -5,6 +5,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
+import { saveBenefitsSettings } from "@/lib/domain/beneficios/painel";
 import { answerSurvey, dismissSurvey, saveSurveySettings, type surveyAnswerSchema, type surveySettingsSchema } from "@/lib/domain/precos/questionario";
 
 /** Ações do questionário de preço (D124). */
@@ -23,4 +24,9 @@ export async function dismissSurveyAction() {
 }
 export async function saveSurveySettingsAction(input: z.input<typeof surveySettingsSchema>) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await saveSurveySettings(db, actor, input); refresh(); return r; });
+}
+
+/** Liga os benefícios gamificados por marca (D128). */
+export async function saveBenefitsSettingsAction(input: { brands: string[] }) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await saveBenefitsSettings(db, actor, input as never); refresh(); return r; });
 }

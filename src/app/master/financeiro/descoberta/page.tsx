@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { formatBRL } from "@/lib/money";
 import { brandFunnels, FUNNEL_BRANDS, type BrandFunnel, type FunnelCount } from "@/lib/domain/precos/funil";
 import { surveyResults, type SurveyResult } from "@/lib/domain/precos/questionario";
-import { QuestionarioConfig } from "@/components/descoberta/questionario-preco";
+import { BeneficiosConfig, QuestionarioConfig } from "@/components/descoberta/questionario-preco";
+import { getBenefitsSettings } from "@/lib/domain/beneficios/painel";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
@@ -113,13 +114,18 @@ function Resultado({ r, min }: { r: SurveyResult; min: number }) {
 export default async function DescobertaPage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
-  const [funnels, survey] = await Promise.all([brandFunnels(db, s.actor), surveyResults(db, s.actor)]);
+  const [funnels, survey, benefits] = await Promise.all([brandFunnels(db, s.actor), surveyResults(db, s.actor), getBenefitsSettings(db)]);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Descoberta: funil por marca" description="Quantos se cadastram, quantos ativam, quantos pagam e quanto tempo leva, por marca. Só números somados: nenhum dado pessoal." />
       <FinNav active="descoberta" />
       <nav aria-label="Marcas" className="mb-4 flex flex-wrap gap-2 text-sm">{funnels.map((f) => <a key={f.brand} href={`#${f.brand.toLowerCase()}`} className="ds-pill ds-pill--outline">{f.label}</a>)}<a href="#questionario" className="ds-pill ds-pill--outline">Questionário de preço</a></nav>
       {funnels.map((f) => <Marca key={f.brand} f={f} />)}
+      <section id="beneficios" aria-labelledby="h-b" className="ds-card mb-6 p-4">
+        <h2 id="h-b" className="text-lg font-bold">Benefícios gamificados nos painéis</h2>
+        <p className="mb-4 text-sm text-muted-foreground">Carteira de pontos (em pontos e em reais), trilha de primeiros passos com comemoração, medidor do teste e simulador “quanto cada plano custaria para você”, no topo dos painéis do lojista, do Meu Brás e da transportadora. {benefits.brands.length ? "Ligado em " + benefits.brands.length + " marca(s)." : "Desligado em todas as marcas."}</p>
+        <BeneficiosConfig value={benefits.brands} brands={FUNNEL_BRANDS.map((b) => ({ brand: b.brand, label: b.label }))} />
+      </section>
       <section id="questionario" aria-labelledby="h-q" className="ds-card mb-6 p-4">
         <h2 id="h-q" className="text-lg font-bold">Questionário de preço nos painéis</h2>
         <p className="mb-4 text-sm text-muted-foreground">5 perguntas opcionais e anônimas para lojistas, membros da Brás e transportadoras: quatro sobre o preço (barato demais, pechincha, caro mas pagaria, caro demais) e uma sobre o quanto o produto faria falta. {survey.settings.enabled ? "Está ligado." : "Está desligado: ninguém vê até você ligar."}</p>
