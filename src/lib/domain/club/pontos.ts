@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { bdMembers, bdRequests, clubCodes, clubLedger, clubReferrals, clubVouchers, trParcels, users } from "@/db/schema";
+import { bdMembers, bdRequests, clubCodes, clubLedger, clubReferrals, clubVoucherFunding, clubVouchers, trParcels, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { requireMaster, type Actor } from "../access";
 import { recordAudit } from "../audit";
@@ -20,17 +20,17 @@ const monthKey = (now: Date) => new Date(now.getTime() - 3 * 3600_000).toISOStri
 const addMonths = (d: Date, n: number) => { const x = new Date(d); x.setUTCMonth(x.getUTCMonth() + n); return x; };
 
 /** Crédito idempotente (mesma origem + referência não credita duas vezes). Indicação acima do teto do mês → revisão. */
-export async function creditPoints(db: Tx, input: { userId: string; points: number; source: string; referenceId: string; note?: string | null; actorUserId?: string | null }, rules: ClubRules, now = new Date()) {
+export async function creditPoints(db: Tx, input: { userId: string; points: number; source: string; referenceId: string; note?: string | null; actorUserId?: string | null; funder?: string; review?: boolean }, rules: ClubRules, now = new Date()) {
   if (input.points <= 0) return null;
   const dup = await db.query.clubLedger.findFirst({ where: and(eq(clubLedger.userId, input.userId), eq(clubLedger.source, input.source), eq(clubLedger.referenceId, input.referenceId)), columns: { id: true } });
   if (dup) return null;
-  let status: "DISPONIVEL" | "REVISAO" = "DISPONIVEL";
+  let status: "DISPONIVEL" | "REVISAO" = input.review ? "REVISAO" : "DISPONIVEL";
   if (input.source === "REFERRAL") {
     const [m] = await db.select({ p: sql<number>`coalesce(sum(${clubLedger.points}), 0)` }).from(clubLedger).where(and(eq(clubLedger.userId, input.userId), eq(clubLedger.source, "REFERRAL"), inArray(clubLedger.status, ["DISPONIVEL", "REVISAO"]), gte(clubLedger.createdAt, monthStartBrt(now))));
     if (Number(m?.p ?? 0) + input.points > rules.monthlyCap) status = "REVISAO";
   }
   const id = newId("clg");
-  await db.insert(clubLedger).values({ id, userId: input.userId, points: input.points, kind: "EARN", status, source: input.source, referenceId: input.referenceId, expiresAt: addMonths(now, rules.expiryMonths).toISOString(), note: input.note ?? null, actorUserId: input.actorUserId ?? null });
+  await db.insert(clubLedger).values({ id, userId: input.userId, points: input.points, kind: "EARN", status, source: input.source, referenceId: input.referenceId, funder: input.funder ?? "NEXTLEVEL", expiresAt: addMonths(now, rules.expiryMonths).toISOString(), note: input.note ?? null, actorUserId: input.actorUserId ?? null });
   return { id, status };
 }
 
@@ -210,11 +210,35 @@ export async function redeemVoucher(db: Database, actor: Actor, points: number, 
   await db.transaction(async (tx) => {
     const bal = await clubBalance(tx, actor.userId, now);
     if (bal.available < points) throw new DomainError("BALANCE", `Você tem ${bal.available} pontos disponíveis.`);
+    const funding = await fundingOf(tx, actor.userId, points);
     await tx.insert(clubVouchers).values({ id, userId: actor.userId, code, points, valueCents, expiresAt: new Date(now.getTime() + 30 * 86_400_000).toISOString() });
     await tx.insert(clubLedger).values({ id: newId("clg"), userId: actor.userId, points: -points, kind: "REDEEM", status: "DISPONIVEL", source: "VOUCHER", referenceId: id, note: `Vale ${code}` });
+    for (const [funder, p] of funding) await tx.insert(clubVoucherFunding).values({ id: newId("clvf"), voucherId: id, funder, points: p });
   });
   await recordAudit(db, actor, { action: "CLUB_VOUCHER_CREATED", entityType: "club_voucher", entityId: id, after: { points, valueCents } });
   return { id, code, valueCents };
+}
+
+/**
+ * De quem são os próximos `points` pontos do membro (D120): os lançamentos de ganho na ordem de chegada, pulando o que
+ * já foi consumido (vales, vencimentos, menos o que voltou de vale cancelado). Base do acerto entre empresas.
+ */
+async function fundingOf(db: Tx, userId: string, points: number) {
+  const rows = await db.select({ points: clubLedger.points, kind: clubLedger.kind, funder: clubLedger.funder, createdAt: clubLedger.createdAt }).from(clubLedger).where(and(eq(clubLedger.userId, userId), eq(clubLedger.status, "DISPONIVEL")));
+  const lots = rows.filter((r) => r.kind === "EARN" || (r.kind === "ADJUST" && r.points > 0)).sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+  let skip = -rows.filter((r) => r.kind === "REDEEM" || r.kind === "EXPIRE" || r.kind === "REVERSE").reduce((s, r) => s + r.points, 0);
+  let need = points;
+  const out = new Map<string, number>();
+  for (const l of lots) {
+    let left = l.points;
+    if (skip > 0) { const used = Math.min(skip, left); skip -= used; left -= used; }
+    if (left <= 0 || need <= 0) continue;
+    const take = Math.min(left, need);
+    out.set(l.funder, (out.get(l.funder) ?? 0) + take);
+    need -= take;
+  }
+  if (need > 0) out.set("NEXTLEVEL", (out.get("NEXTLEVEL") ?? 0) + need);
+  return out;
 }
 
 /** Cancelar o vale ainda não usado devolve os pontos. */
@@ -233,14 +257,21 @@ export async function cancelVoucher(db: Database, actor: Actor, voucherId: strin
 /** Master: baixa o vale usado no balcão de uma empresa do grupo (entra no acerto entre empresas). */
 export async function applyVoucher(db: Database, actor: Actor, code: string, company: string, note?: string, now = new Date()) {
   requireMaster(actor);
+  const r = await spendVoucherAt(db, code, company, note, now);
+  await recordAudit(db, actor, { action: "CLUB_VOUCHER_USED", entityType: "club_voucher", entityId: r.voucherId, after: { company, valueCents: r.valueCents } }, { force: true });
+  return { ok: true as const, valueCents: r.valueCents };
+}
+
+/** Baixa do vale numa empresa (Master ou balcão da empresa). Uma vez só (atualização condicional). */
+export async function spendVoucherAt(db: Database, code: string, company: string, note?: string, now = new Date(), opts: { userId?: string } = {}) {
   const v = await db.query.clubVouchers.findFirst({ where: eq(clubVouchers.code, code.trim().toUpperCase()) });
   if (!v) throw new NotFoundError("Vale não encontrado.");
   if (v.status !== "ATIVO") throw new DomainError("STATUS", v.status === "USADO" ? "Esse vale já foi usado." : "Esse vale foi cancelado.");
   if (new Date(v.expiresAt) < now) throw new DomainError("EXPIRED", "Esse vale venceu. O cliente pode cancelar e gerar outro.");
+  if (opts.userId && v.userId !== opts.userId) throw new DomainError("OWNER", "Esse vale é de outra pessoa. Use o vale do dono do cartão.");
   const upd = await db.update(clubVouchers).set({ status: "USADO", usedAt: now.toISOString(), usedBy: company.slice(0, 30), usedNote: note?.slice(0, 200) ?? null }).where(and(eq(clubVouchers.id, v.id), eq(clubVouchers.status, "ATIVO"))).returning({ id: clubVouchers.id });
   if (!upd.length) throw new DomainError("STATUS", "Esse vale já foi usado.");
-  await recordAudit(db, actor, { action: "CLUB_VOUCHER_USED", entityType: "club_voucher", entityId: v.id, after: { company, valueCents: v.valueCents } }, { force: true });
-  return { ok: true as const, valueCents: v.valueCents };
+  return { voucherId: v.id, valueCents: v.valueCents };
 }
 
 /** Master: visão do Club (funil geral, revisão antifraude, vales). */

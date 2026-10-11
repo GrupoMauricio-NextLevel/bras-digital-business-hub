@@ -2158,6 +2158,8 @@ export const clubLedger = pgTable("club_ledger", {
   status: text("status", { enum: ["DISPONIVEL", "REVISAO", "RECUSADO"] }).notNull().default("DISPONIVEL"),
   source: text("source").notNull(),
   referenceId: text("reference_id"),
+  /** Quem paga o desconto destes pontos (D120): chave da empresa do grupo. Indicação e missão = NEXTLEVEL (caixa do Club). */
+  funder: text("funder").notNull().default("NEXTLEVEL"),
   expiresAt: ts("expires_at"),
   note: text("note"),
   actorUserId: text("actor_user_id"),
@@ -2273,3 +2275,58 @@ export const trTrustedClients = pgTable("tr_trusted_clients", {
   clientUserId: text("client_user_id").notNull().references(() => users.id),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("tr_trusted_clients_unique").on(t.carrierId, t.clientUserId)]);
+
+// ---------------------------------------------------------------------------
+// Club E8a (D120): cartão com QR, balcão das empresas do grupo, compra que vira ponto e acerto entre empresas.
+// ---------------------------------------------------------------------------
+/** Cartão do Club: identificador opaco do QR (nunca o documento). Trocar o cartão invalida o anterior. */
+export const clubCards = pgTable("club_cards", {
+  userId: text("user_id").primaryKey().references(() => users.id),
+  token: text("token").notNull().unique(),
+  createdAt: createdAt(),
+});
+
+/** Balcão de uma empresa do grupo (link sem login, padrão D106): só o hash do código fica guardado. */
+export const clubCounters = pgTable("club_counters", {
+  id: id(),
+  company: text("company").notNull(),
+  name: text("name").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  active: boolean("active").notNull().default(true),
+  createdBy: text("created_by"),
+  lastUsedAt: ts("last_used_at"),
+  createdAt: createdAt(),
+}, (t) => [index("club_counters_company_idx").on(t.company)]);
+
+/** Compra registrada no balcão: vira pontos pagos pela empresa onde a compra aconteceu. */
+export const clubPurchases = pgTable("club_purchases", {
+  id: id(),
+  counterId: text("counter_id").notNull().references(() => clubCounters.id),
+  company: text("company").notNull(),
+  userId: text("user_id").notNull().references(() => users.id),
+  valueCents: integer("value_cents").notNull(),
+  points: integer("points").notNull(),
+  /** Número do cupom ou da nota da compra: a mesma compra não pontua duas vezes. */
+  receipt: text("receipt"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("club_purchases_receipt").on(t.company, t.receipt), index("club_purchases_user_idx").on(t.userId, t.createdAt)]);
+
+/** De quem eram os pontos de cada vale (ordem de chegada): base do acerto entre empresas. */
+export const clubVoucherFunding = pgTable("club_voucher_funding", {
+  id: id(),
+  voucherId: text("voucher_id").notNull().references(() => clubVouchers.id),
+  funder: text("funder").notNull(),
+  points: integer("points").notNull(),
+}, (t) => [index("club_voucher_funding_voucher_idx").on(t.voucherId)]);
+
+/** Acerto entre empresas marcado como feito (fora do sistema, por nota ou transferência). O sistema só registra. */
+export const clubSettlements = pgTable("club_settlements", {
+  id: id(),
+  month: text("month").notNull(),
+  debtor: text("debtor").notNull(),
+  creditor: text("creditor").notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  note: text("note"),
+  settledBy: text("settled_by").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("club_settlements_month_idx").on(t.month)]);

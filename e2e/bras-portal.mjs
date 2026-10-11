@@ -1024,6 +1024,68 @@ if (process.env.MP_FAKE) {
   ok("Club E7: Pix do frete na conta do ônibus, conferido e coletado");
 }
 
+// 15. Club E8a (D120): o Master cria o balcão da Mega Tron; a membro mostra o cartão; o balcão (sem login) registra a
+//     compra e os pontos aparecem para ela; o acerto entre empresas mostra o vale do passo 11 e o Master marca acertado.
+{
+  const semToast = async (pg) => { await pg.waitForTimeout(300); await pg.locator("[data-sonner-toast]").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {}); };
+  const m = await page(1440);
+  await m.p.goto(B + "/login", { waitUntil: "networkidle" });
+  await m.p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await m.p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await m.p.goto(B + "/bras/club", { waitUntil: "networkidle" });
+  const cf = m.p.getByRole("form", { name: "Criar balcão do Club" });
+  await cf.getByLabel("Empresa").selectOption("MEGATRON"); await cf.getByLabel("Nome do balcão").fill("Mega Tron · box 12");
+  await cf.getByRole("button", { name: "Criar link" }).click();
+  const link = (await m.p.locator("p.break-all.font-mono").first().innerText({ timeout: 30000 })).trim();
+  const counterPath = new URL(link).pathname;
+  await semToast(m.p);
+
+  const { c, p } = await page(390);
+  await loginMembro(p);
+  await p.goto(BRAS + "/meu-bras/club", { waitUntil: "networkidle" });
+  const card = (await p.locator("#club-card ~ p.font-mono").first().innerText()).trim();
+  if (!/^[A-Z0-9]{10}$/.test(card)) fail(`cartão do Club: código inesperado "${card}"`);
+  const saldo = async () => Number((await p.locator("#cl-saldo + p").first().innerText()).replace(/\D/g, ""));
+  const before = await saldo();
+  await check(p, "meu brás cartão do club", 390);
+  await shot(p, `${OUT}/41-cartao-club-390.png`);
+
+  const k = await page(390);
+  await k.p.goto(BRAS + counterPath, { waitUntil: "networkidle" });
+  if (!(await k.p.getByRole("heading", { name: /Mega Tron/ }).isVisible())) fail("balcão do Club não abriu");
+  const lf = k.p.getByRole("form", { name: "Ler cartão do Club" });
+  await lf.getByLabel("Código do cartão do cliente").fill(`CLUB:${card}`); await lf.getByRole("button", { name: "Ler cartão" }).click();
+  const pf = k.p.getByRole("form", { name: "Registrar compra" });
+  await pf.waitFor({ timeout: 30000 });
+  if (/@|11\.222|utilidades\.teste/.test(await pf.innerText())) fail("balcão: dado pessoal do cliente apareceu");
+  await pf.getByLabel(/Valor da compra/).fill("500,00"); await pf.getByLabel(/Número do cupom/).fill("CF-1001");
+  await pf.getByRole("button", { name: "Registrar compra" }).click();
+  await k.p.getByText(/Compra registrada para/).waitFor({ timeout: 30000 });
+  if (!/1\.000 pontos/.test(await k.p.locator("main").innerText())) fail("balcão: pontos da compra não aparecem");
+  await check(k.p, "balcão do club", 390);
+  await shot(k.p, `${OUT}/42-balcao-club-390.png`);
+  await k.c.close();
+
+  await p.reload({ waitUntil: "networkidle" });
+  const after = await saldo();
+  if (after - before !== 1000) fail(`cartão do Club: esperado +1.000 pontos, veio ${after - before}`);
+  await c.close();
+
+  await m.p.reload({ waitUntil: "networkidle" });
+  const linha = m.p.locator("li").filter({ hasText: /deve à/ }).first();
+  if (!(await linha.count())) fail("acerto: nenhuma linha (vale do passo 11 usado na Mega Tron)");
+  else {
+    m.p.once("dialog", (d) => d.accept("Nota 1"));
+    await linha.getByRole("button", { name: /Marcar acertado/ }).click();
+    await m.p.getByText("Acerto registrado").first().waitFor({ timeout: 30000 });
+  }
+  await semToast(m.p);
+  await check(m.p, "master club com balcão e acerto", 1440);
+  await shot(m.p, `${OUT}/43-master-club-acerto-1440.png`);
+  await m.c.close();
+}
+ok("Club E8a: cartão no balcão, compra vira ponto e acerto entre empresas");
+
 await b.close();
 if (bad.length) { console.log(`\n${bad.length} problema(s)`); process.exit(1); }
 console.log(`\nTudo certo. Capturas em ${OUT}`);

@@ -407,6 +407,13 @@
       "when": 1791680205378,
       "tag": "0057_frete_pix",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1791682376177,
+      "tag": "0058_club_balcao",
+      "breakpoints": true
     }
   ]
 }

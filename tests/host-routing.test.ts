@@ -78,8 +78,8 @@ describe("Master central e produtos em breve", () => {
 describe("Brás Digital aberta (D92): só apresentação, cadastro e painéis", () => {
   const aberta = { BRAND_SIGNUP_BRAS_DIGITAL: "true" };
   it("páginas da Brás e painéis seguem; páginas das outras marcas voltam para o início", () => {
-    for (const p of ["/", "/cadastro", "/termos", "/privacidade", "/d/bdv_abc123def", "/balcao/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/bras", "/bras/videos", "/esqueci-senha", "/api/health", "/r/abc", "/c/ABC123", "/meu-bras/club", "/meu-bras/fretes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "next" });
-    for (const p of ["/balcao/curto", "/d/../planos", "/d/bdv_x/extra", "/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
+    for (const p of ["/", "/cadastro", "/termos", "/privacidade", "/d/bdv_abc123def", "/balcao/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/balcao-club/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/bras", "/bras/videos", "/esqueci-senha", "/api/health", "/r/abc", "/c/ABC123", "/meu-bras/club", "/meu-bras/fretes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "next" });
+    for (const p of ["/balcao/curto", "/balcao-club/curto", "/d/../planos", "/d/bdv_x/extra", "/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
   });
   it("as outras marcas não mudam", () => {
     expect(go("superdrop.com.br", "/planos", aberta)).toEqual({ kind: "next" });

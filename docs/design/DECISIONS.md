@@ -1075,3 +1075,26 @@ O prompt (seções 6.4 e 14) pede o frete pago antes, por Pix, direto na conta d
 - **Taxa da plataforma:** fatura mensal por ônibus no Master (taxa congelada no aceite, frete total e quanto veio por Pix). A cobrança segue desligada (`fee.charging`) até o dono publicar o preço.
 - **Fica para depois** (depende da pergunta "quem paga o desconto dos pontos", seção 7B.6): pontos do Club como desconto no Pix do frete. Hoje o vale do Club continua sendo baixado no balcão das empresas do grupo (D115).
 - Testes: `tests/frete-pix-e7.test.ts`. e2e: passo 14 de `e2e/bras-portal.mjs`, com o Mercado Pago simulado (`MP_FAKE`). O roteiro reaproveita a sessão da membro, por causa do limite de 8 logins por e-mail a cada 15 minutos.
+
+## D120 — Club E8a: cartão do Club no balcão, compra que vira ponto e acerto entre empresas (2026-10-11)
+Prompt, seções 7.4 a 7.7 e 7B.6. O dono deixou as perguntas para depois. Foram usados os padrões da seção 13: quem oferece paga (pergunta 6); vale até 30% da compra (pergunta 16); pontos de indicação pelo caixa do Club (NextLevel).
+- **Cartão do Club** (`club_cards`): código opaco de 10 caracteres com QR no Meu Brás → Club, nunca o documento. "Trocar cartão" invalida o anterior.
+- **Balcão sem login por empresa do grupo** (`club_counters`, padrão D106: só o hash do link; atrás da chave `BRAS_PANELS`; limite de tentativas por link). O Master cria o link em Brás → Club. A página é `/balcao-club/<código>`.
+  - **O que o balcão vê:** só o primeiro nome, o saldo e o valor dos vales ativos. Nada de documento, e-mail, telefone ou código do vale (o cliente mostra o vale no celular dele).
+- **Compra no balcão** (`club_purchases`): vira pontos pela regra `purchase` do Club (padrão: 2 pontos por R$ 1,00, Mega Tron e Starline pontuam), **pagos pela empresa da compra**.
+  - O mesmo cupom não pontua duas vezes.
+  - Compra acima de R$ 5.000 nasce em revisão do Master.
+  - O vale do cliente pode ser usado na mesma tela: tem de ser do dono do cartão e cobrir no máximo 30% da compra. Os pontos são calculados sobre o que ele pagou.
+- **Quem paga cada ponto** (`club_ledger.funder`): a empresa da compra, ou NextLevel (caixa do Club) para indicação e missão. Ao gerar o vale, os pontos são tirados na ordem de chegada e o vale guarda de quem eram (`club_voucher_funding`).
+- **Acerto entre empresas** (Master, Brás → Club, por mês):
+  - quando o vale é usado numa empresa diferente da que pagou os pontos, quem pagou deve a ela;
+  - as dívidas entre duas empresas se compensam;
+  - o acerto é feito fora do sistema (nota ou transferência) e marcado como acertado (`club_settlements`). O sistema só registra, não movimenta dinheiro.
+- O vale continua podendo ser baixado pelo Master (D115), agora pela mesma função do balcão.
+- **Fica para a E8b:**
+  - motor de benefícios com campanhas (`club_benefits`);
+  - benefícios cruzados automáticos (fardo entregue pela Starline → pontos);
+  - guia de excursão;
+  - pontos como desconto no Pix do frete;
+  - Nota Fácil integrado (depende do acesso ao emissor).
+- Testes: `tests/club-balcao-e8.test.ts`. e2e: passo 15 de `e2e/bras-portal.mjs`.

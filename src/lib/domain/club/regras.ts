@@ -22,6 +22,16 @@ export const clubRulesSchema = z.object({
   expiryMonths: z.number().int().min(1).max(60),
   /** Menor vale que dá para gerar, em pontos. */
   minRedeem: pts,
+  /**
+   * Compra no balcão de uma empresa do grupo (D120): pontos por R$ 1,00 gasto, pagos pela empresa da compra. Compra
+   * acima do valor de revisão vai para a revisão do Master. O vale cobre no máximo um percentual da compra.
+   */
+  purchase: z.object({
+    pointsPerReal: z.number().int().min(0).max(100),
+    companies: z.array(z.string().regex(/^[A-Z0-9_]{2,30}$/)).max(20),
+    reviewAboveCents: z.number().int().min(0).max(100_000_000),
+    maxDiscountPct: z.number().int().min(1).max(100),
+  }),
   /** Missões do mês (pontos por meta atingida, nunca por sorteio). */
   missions: z.array(z.object({
     key: z.string().regex(/^[A-Z0-9_]{2,30}$/),
@@ -39,6 +49,7 @@ export const DEFAULT_CLUB_RULES: ClubRules = {
   monthlyCap: 20_000,
   expiryMonths: 12,
   minRedeem: 1_000,
+  purchase: { pointsPerReal: 2, companies: ["MEGATRON", "STARLINE"], reviewAboveCents: 500_000, maxDiscountPct: 30 },
   missions: [
     { key: "TRAGA_TRANSPORTADORA", title: "Traga a sua transportadora ou ônibus", metric: "TRANSPORTADORA_ATIVADA", target: 1, points: 300 },
     { key: "TRES_FRETES", title: "3 fretes no mês pelo painel", metric: "FRETES_MES", target: 3, points: 500 },

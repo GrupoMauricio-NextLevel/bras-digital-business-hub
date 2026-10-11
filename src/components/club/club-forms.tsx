@@ -74,7 +74,7 @@ export function ActivateReferralButton({ id }: { id: string }) {
   return <Button size="sm" variant="secondary" disabled={pending} onClick={() => { if (window.confirm("Confirmar que essa indicação ativou (primeira venda ou entrega real)? Os pontos vão para quem indicou.")) run(() => activateReferralAction(id), "Indicação ativada e pontos creditados"); }}>Marcar como ativada</Button>;
 }
 
-type Rules = { pointsPerReal: number; referral: Record<"CLIENTE" | "IMPORTADORA" | "TRANSPORTADORA" | "ONIBUS" | "LOJA" | "GUIA", number>; monthlyCap: number; expiryMonths: number; minRedeem: number };
+type Rules = { pointsPerReal: number; referral: Record<"CLIENTE" | "IMPORTADORA" | "TRANSPORTADORA" | "ONIBUS" | "LOJA" | "GUIA", number>; monthlyCap: number; expiryMonths: number; minRedeem: number; purchase: { pointsPerReal: number; companies: string[]; reviewAboveCents: number; maxDiscountPct: number } };
 const REF_LABEL = { CLIENTE: "Cliente", IMPORTADORA: "Importadora", TRANSPORTADORA: "Transportadora", ONIBUS: "Ônibus de excursão", LOJA: "Loja (Nota Fácil)", GUIA: "Guia de excursão" } as const;
 export function ClubRulesEditor({ rules }: { rules: Rules }) {
   const { pending, run } = useRun();
@@ -90,6 +90,12 @@ export function ClubRulesEditor({ rules }: { rules: Rules }) {
       <fieldset className="grid gap-3 sm:grid-cols-3">
         <legend className="mb-1 text-sm font-semibold">Pontos por indicação ativada</legend>
         {(Object.keys(REF_LABEL) as (keyof typeof REF_LABEL)[]).map((k) => <IntField key={k} id={`cl-ref-${k}`} label={REF_LABEL[k]} value={r.referral[k]} onChange={(v) => setR({ ...r, referral: { ...r.referral, [k]: v } })} />)}
+      </fieldset>
+      <fieldset className="grid gap-3 sm:grid-cols-3">
+        <legend className="mb-1 text-sm font-semibold">Compra no balcão (pontos pagos pela empresa da compra)</legend>
+        <IntField id="cl-pur-ppr" label="Pontos por R$ 1,00 gasto" value={r.purchase.pointsPerReal} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, pointsPerReal: v } })} />
+        <IntField id="cl-pur-rev" label="Revisão acima de" suffix="R$" value={Math.round(r.purchase.reviewAboveCents / 100)} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, reviewAboveCents: v * 100 } })} />
+        <IntField id="cl-pur-max" label="Vale cobre até" suffix="% da compra" min={1} value={r.purchase.maxDiscountPct} onChange={(v) => setR({ ...r, purchase: { ...r.purchase, maxDiscountPct: Math.min(100, v) } })} />
       </fieldset>
       <Button type="submit" loading={pending}>Gravar regras</Button>
     </form>
