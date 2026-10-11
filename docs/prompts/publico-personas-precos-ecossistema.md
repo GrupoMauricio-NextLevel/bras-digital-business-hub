@@ -1,17 +1,52 @@
-# Prompt de engenheiro mestre: público, personas, preço e porta de entrada de todas as marcas NextLevel
+# Prompt de engenheiro mestre: público, personas, preço, benefícios e o ecossistema NextLevel (arquivo consolidado)
 
 > **Para que serve:** ser a base do próximo grupo de adaptações e melhorias em **todas as marcas**: SuperDrop, NextLevel Commerce, Brás Digital, NextLevel Cargas (com a Excursão), Brás Digital Club, Nota Fácil e Meu Contador, Programa de Parceiros, e depois Hub Creators e China Hub.
-> **Duas partes** (a Parte A inclui, na seção A9, como mostrar os benefícios gamificados nos painéis):
+> **Duas partes.** A Parte A inclui os benefícios gamificados nos painéis (A9), a barra do ecossistema e a página de ativação ao trocar de marca (A10), e o Club como assinatura que abre todas as marcas (A11):
 > - **Parte A** é o racional que o Claude já fez (2026-10-11), lendo o código, os documentos e o mercado.
 > - **Parte B** é o prompt para aprofundar a descoberta de cada usuário com dados reais, entrevistas e testes de preço, e só então mudar planos, telas e ofertas.
 >
-> **Como usar:** leia a Parte A, responda as perguntas da seção A10 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
+> **Como usar:** leia a Parte A, responda as perguntas da seção A13 e peça ao Claude "desenvolva o prompt `publico-personas-precos-ecossistema.md` a partir da fase P0".
 > **Autoridade:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` > `docs/design/DECISIONS.md` > este documento. Nada daqui vale como decisão até virar D-número.
 > **Legenda das afirmações:**
 > - **[fato]**: está no código ou no documento;
 > - **[mercado]**: fonte externa, a conferir na página oficial;
 > - **[inferência]**: conclusão a partir dos fatos;
 > - **[hipótese]**: precisa de teste.
+
+---
+
+## Resumo executivo (uma página para o dono)
+1. **Quem é o cliente:** 12 personas em 6 marcas, da revendedora que começa pelo celular (SuperDrop) à Dona Cida que compra no Brás e manda pelo ônibus (A5). São hipóteses até a Parte B confirmar com dados e entrevistas.
+2. **O problema de hoje:** três regras de teste diferentes, preço do documento divergente do sistema, Commerce caro na entrada e um Club que ainda não é usado como alavanca de venda (A3 e A6).
+3. **A porta de entrada:** "grátis para começar, paga quando cresce". As peças são (A7):
+   - plano grátis com taxa sobre a venda;
+   - teste reverso de 14 dias que cai para o grátis, sem bloquear;
+   - dias ganhos por conquista;
+   - anual "pague 8, leve 12" no Pix;
+   - cashback em pontos do Club.
+4. **Como o cliente enxerga:** a Carteira do Grupo, a trilha de primeiros passos, o medidor do teste, o simulador do plano e a vitrine de recompensas. Tudo didático e sempre em reais (A9).
+5. **Ecossistema:**
+   - o "fio do grupo" no topo, com as cores das marcas, e o lançador para trocar de marca (A10);
+   - ao entrar numa marca que ainda não usa, a pessoa vê uma **página de ativação personalizada**, com um clique para o teste grátis ou para assinar com benefício (A10.10).
+6. **A chave de tudo: o Club como assinatura do ecossistema:**
+   - **Club** (grátis, pontos para todos);
+   - **Club+** (multiplica pontos e dá desconto em todas as marcas);
+   - **Club Total** (entrada paga de todas as marcas numa assinatura só) (A11).
+7. **Como tudo se encaixa** numa jornada de ponta a ponta (A12) e **o que preciso de você** (A13).
+8. **Parte B:** fases P0 a P6 para descobrir, decidir e construir atrás de chaves, com o SuperDrop por último.
+
+## Mapa do documento
+| Seção | Assunto |
+|---|---|
+| A1 a A4 | Método, ecossistema, inventário de preços, mercado |
+| A5 e A6 | Personas e o que barra a entrada |
+| A7 e A8 | Porta de entrada inteligente e preços para testar |
+| A9 | Benefícios gamificados nos painéis (visual e didático) |
+| A10 | Barra do ecossistema e página de ativação ao trocar de marca |
+| A11 | Club como assinatura que abre o ecossistema |
+| A12 | A jornada completa: como tudo se encaixa |
+| A13 | Perguntas para o dono |
+| B0 a B10 | Prompt de execução por fases (P0 a P6) |
 
 ---
 
@@ -228,6 +263,7 @@ As duas ficam para depois, sem domínio até haver código.
 | Importadora | Grátis + comissão | Pro quando passar de N pedidos/mês | Premium | — |
 | Cargas | Grátis 20 cargas | Pro | Premium | Idem |
 | Excursão | Grátis · taxa por fardo | — | — | — |
+| **Club (assinatura do ecossistema, A11)** | Club grátis (pontos) | Club+ cerca de R$ 29,90 (pontos em dobro + 20% nos planos) | Club Total cerca de R$ 247 (entrada de todas as marcas) | Pague 8 leve 12 |
 
 Os números são **pontos de partida para teste**, não decisão. O critério é: o grátis cobre o custo de servir com a taxa; o pago fica abaixo do concorrente equivalente; o upgrade se paga sozinho a partir de um volume claro.
 
@@ -310,7 +346,261 @@ Os números são **pontos de partida para teste**, não decisão. O critério é
   - cada componente tem o link "Como funciona", com 3 passos ilustrados e uma pergunta frequente;
   - o vocabulário é o mesmo em todas as marcas: pontos, vale, nível, missão, conquista.
 
-## A10. Perguntas para o dono (respondem a Parte B mais rápido)
+## A10. A barra do ecossistema: o cliente de uma marca descobre as outras
+> **Pedido do dono:** "algo no topo, como uma aba, para o cliente de uma marca descobrir a outra com facilidade; cada marca com cores equivalentes; dinâmico, sutil, atrativo; todas as marcas do grupo precisam ser esse ecossistema".
+
+### A10.1 Por que vale a pena
+- **O cliente que já confia em uma marca é o mais barato de conquistar para a outra.**
+  - A Carla, que revende no SuperDrop, pode comprar caixa na Brás.
+  - A Dona Cida, que compra na Brás, pode mandar pelo ônibus da Excursão e vender online no SuperDrop.
+  - A Juliana, do Commerce, pode abastecer a loja na Brás.
+- **Hoje não existe esse caminho [fato]:**
+  - cada marca é uma ilha para o cliente;
+  - só o Master vê todas (`BusinessPortal` em `/master`).
+- **É a peça que transforma o Passe do Grupo e a Carteira do Grupo (A7 e A9) em algo que o cliente enxerga:** "estas são as nossas marcas, e os seus pontos valem em todas".
+
+### A10.2 O que já existe e o que limita [fato]
+- **Cores:** todas as marcas já compartilham os mesmos neutros (papel `#F4F1E9`, tinta `#101B34`) e o amarelo do grupo (`#F5BC00`). Cada uma tem a sua **cor de sinal** em `src/lib/brand-palette.ts`:
+  - Commerce: azul `#196BD8`;
+  - SuperDrop: verde `#118728`;
+  - Brás: laranja `#B34D00`;
+  - Cargas: índigo `#4B4FD8`;
+  - Creators: magenta `#BA327B`;
+  - China Hub: petróleo `#008085`;
+  - NextLevel: amarelo `#F5BC00`.
+
+  É a base pronta para "cores equivalentes".
+- **Conta:** **uma pessoa = um papel** (`users.role` único e e-mail único). Hoje a Carla não consegue ser membro da Brás com o mesmo e-mail. Para o "entrar direto em outra marca" funcionar, é preciso a **conta do grupo**: uma pessoa com vários perfis, um por marca, ligados com consentimento. O prompt do Club já previu isso (`club_members` e `club_member_accounts`, seção 7.1 dele).
+- **Endereços:**
+  - as marcas em `*.nextlevelgroup.com.br` podem compartilhar a sessão no mesmo domínio;
+  - `superdrop.com.br` e `nextlevelcommerce.com.br` são domínios diferentes e precisam de uma **passagem por código de uso único** (o cliente clica e entra do outro lado sem digitar a senha de novo).
+
+### A10.3 As opções comparadas
+| Opção | Como é | A favor | Contra |
+|---|---|---|---|
+| Aba ou barra de abas no topo | Uma aba por marca, sempre visível | Muito descobrível | Ocupa espaço no celular, compete com o trabalho e vira "propaganda fixa" |
+| Só um ícone de "apps do grupo" (grade) | Botão que abre a lista | Discreto e conhecido (Google, Microsoft) | Pouca gente clica sem um convite |
+| Cartão dentro do painel | Sugestão no meio da tela | Contextual | Se for fixo, vira banner que ninguém lê |
+| Rodapé "do Grupo NextLevel" | Lista de marcas no fim | Sem incômodo | Quase ninguém vê |
+
+### A10.4 A recomendação: três camadas que se completam
+**Camada 1: o "fio do grupo"** (a assinatura, sempre presente e quase invisível)
+- Uma linha de 3 a 4 px no topo de **todos** os painéis e páginas públicas das marcas, dividida em segmentos com as cores das marcas.
+- **O segmento da marca em uso é mais largo**; os outros são finos.
+- Ao passar o mouse (ou tocar), a linha "acorda": cresce para cerca de 28 px e mostra os nomes das marcas como pílulas. Toque numa pílula para abrir a camada 2 já naquela marca.
+- **Não ocupa espaço de trabalho.** Comunica "você faz parte de algo maior" sem dizer nada.
+
+**Camada 2: o "lançador do grupo"** (o caminho em 1 toque)
+- Um botão com o símbolo do grupo (quatro quadradinhos nas cores das marcas) no cabeçalho, ao lado da Carteira do Grupo (A9). No celular, fica no menu "Mais" da barra de baixo.
+- **Abre uma gaveta** com três grupos, nesta ordem:
+  1. **Suas marcas:** as que a pessoa já usa, com o saldo ou o status de cada uma. Entra direto.
+  2. **Recomendadas para você:** de 1 a 3 marcas escolhidas pela persona e pelo momento, cada uma com **o motivo em uma frase** e **o benefício do Passe do Grupo**. Exemplo: "Compre do Brás em caixa fechada para a sua loja · você ganha 3 meses de Prata por ser assinante Commerce". Botão "Começar grátis" com os dados já preenchidos.
+  3. **Todas as marcas:** a família inteira, com uma linha de "para quem é" cada uma. As que ainda não abriram (Creators, China Hub) aparecem como "em breve · avise-me", se o dono quiser.
+- Um ponto colorido pulsa **uma vez** no botão quando surge um benefício novo para a pessoa (nunca piscando sem parar).
+
+**Camada 3: o "convite no momento certo"** (o dinâmico)
+- Um cartão pequeno e discreto, **dentro do fluxo**, quando a outra marca resolve exatamente o que a pessoa está fazendo. Exemplos:
+  - SuperDrop, a Carla sem opção de frete barato para o interior → "Mande pelo ônibus da Excursão (NextLevel Cargas)".
+  - Brás, a Dona Cida finalizando uma compra de caixa → "Quer vender esse produto online também? Abra sua loja no SuperDrop, grátis".
+  - Commerce, a Juliana com estoque baixo → "Reponha comprando do Brás em caixa fechada".
+  - Cargas, o dono do ônibus → "Seus passageiros ganham pontos no Club: divulgue o cartão".
+  - Importadora → "Venda também em loja própria com o Commerce".
+- **Regras do convite:**
+  - no máximo **1 por sessão** e 1 por semana para o mesmo convite;
+  - sempre com "agora não" e "não mostrar mais";
+  - **nunca no meio de pagamento, checkout, separação de pedido ou tarefa urgente**.
+- As regras (qual convite, para quem, em que tela, com que limite) ficam **no Master**, versionadas e ligadas por marca.
+
+### A10.5 Cores equivalentes (para nenhuma marca "gritar" mais que a outra)
+- As cores de sinal de hoje têm **pesos diferentes**: o amarelo da NextLevel é muito claro e o índigo da Cargas é escuro.
+- Para o fio e o lançador, crie uma **variante "ecossistema"** de cada cor com a **mesma luminosidade e intensidade** (ajuste em OKLCH), conferida com o validador de contraste (`readableOn`, skill `dataviz`).
+- A cor própria e forte de cada marca continua dentro do painel dela. A variante ecossistema só aparece no fio, nos quadradinhos do lançador e nas pílulas.
+- **Símbolo de cada marca:**
+  - um quadrado com a inicial (S, C, B, Cg, Cl…) na cor ecossistema;
+  - o amarelo do grupo é o "guarda-chuva", em pequeno: "Grupo NextLevel".
+- **Modo escuro:** cada variante tem par claro e escuro, como as paletas atuais.
+
+### A10.6 Dinâmico, sutil e atraente (o comportamento)
+- **Movimento:** de 150 a 250 ms, só ao abrir, ao "acordar" o fio e no ponto de benefício novo. Respeita `prefers-reduced-motion` (sem animação para quem pediu).
+- **Ordem inteligente:** "Suas marcas" e "Recomendadas" mudam com a persona (A5), o momento (o que a pessoa acabou de fazer) e o que ela já tem.
+- **Prova e benefício:** cada recomendação diz em reais o que a pessoa ganha ("3 meses de Prata = R$ 291") e o que a marca resolve, em linguagem simples.
+- **Atrativo sem cara de anúncio:**
+  - tipografia e linhas finas da direção "mesa do atacadista";
+  - os quadradinhos coloridos são o único elemento de cor forte;
+  - nada de banner, carrossel ou pop-up que bloqueia a tela.
+
+### A10.7 Esboço
+```
+Computador (cabeçalho do painel)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ← fio (segmento SuperDrop largo)
+ SuperDrop · Painel da loja        💰 R$ 34,50 em pontos   [▪▪/▪▪]  [Carla ▾]
+                                                            ↑ lançador
+Gaveta do lançador
+┌───────────────────────────────────────────────┐
+│ Grupo NextLevel                              ✕│
+│ SUAS MARCAS                                   │
+│ [S] SuperDrop    Loja no ar · 12 pedidos   ▸  │
+│ RECOMENDADAS PARA VOCÊ                        │
+│ [B] Brás Digital                              │
+│     Compre em caixa fechada para revender.    │
+│     Assinante SuperDrop: 1º mês de Prata grátis│
+│     [Começar grátis ▸]                        │
+│ [Cg] Ônibus de excursão (Cargas)              │
+│     Frete barato para o interior, pago no Pix.│
+│ TODAS AS MARCAS                               │
+│ [C] Commerce · loja própria com a sua marca   │
+│ [Cl] Club · seus pontos valem em todas        │
+└───────────────────────────────────────────────┘
+
+Celular: o fio fica no topo; o lançador entra no menu "Mais" da barra de baixo.
+```
+
+### A10.8 Onde NÃO aparece
+- **Na vitrine (loja) do lojista**: a loja é da marca dele, ainda mais na Loja Própria. Lá, no máximo o rodapé "feito com SuperDrop/Commerce" que já existe.
+- No modo expedição (tablet de separação), no link do motorista ou do ajudante, nos balcões sem login, no checkout e nas telas de pagamento.
+- No Master, onde o `BusinessPortal` já faz esse papel.
+
+### A10.9 Regras que não podem quebrar
+- **Um tenant nunca lê dado de outro:** a recomendação usa só os dados da própria pessoa.
+- **Ligar contas entre marcas só com aceite** (conta do grupo). Nenhuma marca passa a ver os dados de outra.
+- **Texto da marca vem de `getBrand()`**, nunca fixo.
+- **A lista de marcas vem do cadastro de marcas** (`brand.ts`): marca nova entra sozinha no fio e no lançador.
+- **Acessibilidade AA:**
+  - o fio é decorativo (`aria-hidden`), e o lançador é o caminho acessível (botão com rótulo, gaveta com foco preso e fechamento com Esc);
+  - nada depende só da cor (cada quadrado tem a inicial e o nome);
+  - sem rolagem horizontal em 360 px.
+- **Medição:**
+  - impressões, aberturas do lançador, cliques por marca e convites vistos, aceitos e dispensados;
+  - **cadastro cruzado e ativação cruzada** (o cliente de A que ativou em B);
+  - "não mostrar mais" acima de um limite é sinal de convite errado.
+
+### A10.10 Ao entrar numa marca que ainda não usa: a página de ativação
+> **Pedido do dono:** "quando o cliente trocar para outra marca, claro que não pode liberar o painel, mas tem que ter uma landing page e botões para ativar e contratar, algo dinâmico e criativo, com uma copy convincente, e ativar com um clique o teste ou pagar de imediato com benefício."
+
+**Comportamento:**
+- Quando a pessoa toca numa marca que ainda não tem (pelo lançador, pelo fio do grupo, por um convite ou digitando o endereço do painel), ela **não vê erro, login nem cadastro do zero**.
+- Ela vê a **página de ativação daquela marca, dentro do próprio ambiente**: com o fio do grupo, a Carteira e o nome dela.
+- O painel da marca **continua fechado** até ativar.
+
+**A página, de cima para baixo:**
+1. **Abertura personalizada (dor → ganho em reais).** Usa só os dados da própria pessoa e nunca promete ganho. Exemplos:
+   - SuperDrop → Brás: "Carla, você vendeu 38 peças este mês. Comprando em caixa fechada no Brás, você repõe o estoque direto das importadoras, sem intermediário."
+   - Brás → Excursão: "Dona Cida, seus 4 fardos deste mês podem ir pelo ônibus que você já usa, com etiqueta e código de retirada."
+   - Commerce → Brás: "Juliana, abasteça sua loja comprando do Brás em caixa fechada, com análise de produto antes de comprar."
+   - Sem dado suficiente, entra a frase da persona, honesta e genérica.
+2. **"Espie o painel".** Uma prévia animada do painel da marca, com **dados de demonstração rotulados como exemplo**. As bordas ficam suaves e há um cadeado com "liberado ao ativar". A pessoa vê o que vai ter antes de ter.
+3. **Três ganhos concretos, cada um com ícone e número real:**
+   - "112 importadoras na rede", "frete pago no Pix", "nota em dia com o Meu Contador";
+   - os números vêm do banco, ao vivo, e **nunca são inventados**. Com pouco número, troca por um ganho sem número.
+4. **Os três botões (o coração da página):**
+   - **[Ativar 14 dias grátis]:**
+     - um clique, sem cartão, com o aceite dos termos na mesma tela (caixa de seleção com o link);
+     - pede só o dado que falta para aquela marca (o CNPJ na Brás, a placa e a rota na Cargas), num campo só;
+     - no fim do teste, cai para o grátis da marca (A7).
+   - **[Assinar agora com benefício]:**
+     - Pix na própria página (QR e copia e cola);
+     - o benefício do Passe do Grupo vem já calculado ("1º mês com 50% de desconto + 2.000 pontos", ou o anual "pague 8, leve 12");
+     - liberação na hora em que o pagamento é conferido.
+   - **[Liberar com o Club Total]:**
+     - aparece quando a pessoa já tem o Club Total (entra direto, sem pagar nada a mais) ou quando ele sai mais barato que a soma das marcas que ela usa ("com a Brás, o Club Total já compensa: você economiza R$ X por mês").
+5. **Risco zero, em uma linha:** "Cancela quando quiser. Seus dados ficam. O teste não cobra nada."
+6. **Três perguntas frequentes** daquela marca, e o contato do suporte.
+
+**Dinâmico e criativo (sem cara de anúncio):**
+- **A copy muda pela combinação "de onde vem → para onde vai"** (persona de origem × marca de destino). A matriz fica no Master, versionada e com teste A/B (tabela abaixo).
+- **Ao ativar:**
+  - uma animação curta de "desbloqueio": o cadeado abre e o fio do grupo ganha o segmento da nova marca;
+  - a pessoa cai **direto na trilha de primeiros passos** da marca nova (A9), com o primeiro marco já sugerido;
+  - a Carteira ganha os pontos de boas-vindas.
+- **A página lembra o meio do caminho:** se a pessoa começou a ativação e parou, o lançador mostra "falta 1 passo para ativar a Brás".
+- **Sem urgência falsa:** contagem regressiva só quando a oferta tem prazo de verdade (por exemplo, o benefício de lançamento cadastrado no Master).
+
+**Fórmula da copy (para todas as combinações):**
+1. **Dor que a pessoa reconhece** (uma frase).
+2. **Ganho em reais ou em tempo** (com o número dela, quando houver).
+3. **Prova real** (número ao vivo da rede ou o que já funciona para ela no grupo).
+4. **Risco zero** (teste, cancelar fácil, dados ficam).
+5. **Um clique.**
+
+É proibido: "lucre R$ X", "garantido", depoimento ou cliente inventado e urgência falsa.
+
+**Matriz de mensagens (exemplos iniciais; o Master edita):**
+| De → Para | Título | Benefício do Passe |
+|---|---|---|
+| SuperDrop → Brás | "Compre do Brás em caixa fechada, sem sair de casa" | 1º mês de Prata grátis |
+| SuperDrop → Cargas (Excursão) | "Frete para o interior pelo ônibus, pago no Pix" | 1º fardo sem taxa |
+| Commerce → Brás | "Abasteça sua loja direto das importadoras" | 2.000 pontos de boas-vindas |
+| Brás → SuperDrop | "Revenda online o que você já compra no Brás" | Plano Começo + 14 dias de Pro |
+| Brás → Excursão | "Seus fardos no ônibus que você já usa" | Pontos em dobro no 1º mês |
+| Importadora → Commerce | "Sua loja própria para vender no varejo" | Migração com desconto |
+| Ônibus → Club | "Seus passageiros ganham pontos: divulgue o cartão" | Selo de ônibus parceiro |
+| Qualquer → Club Total | "Uma assinatura, todas as marcas" | Compare com o que você paga hoje |
+
+## A11. O Club como assinatura que abre o ecossistema
+> **Pedido do dono:** "talvez seja preciso focar no Club neste caso, porque com uma assinatura do Club a pessoa pode acessar todo o ecossistema."
+
+### A11.1 Por que o Club é o lugar certo [inferência]
+- **Ele já é a moeda e a identidade do grupo [fato]:** pontos, cartão com QR, vales, níveis, missões, ranking e acerto entre empresas (D115 a D122).
+- **Uma marca de assinatura acima das outras** resolve o problema de "cada marca é uma ilha". O cliente paga uma vez e circula, e o grupo ganha no **uso cruzado** (taxa sobre as vendas, frete, compras na Mega Tron).
+- **É o modelo de "assinatura que dá vantagem em tudo"** que o consumidor brasileiro já entende (programas de assinatura de marketplace e de delivery). A diferença aqui: a vantagem é **para o negócio** do cliente, não para o consumo.
+
+### A11.2 Os três níveis (hipótese para testar)
+| Nível | Preço (rascunho) | O que dá | Para quem |
+|---|---|---|---|
+| **Club** | Grátis | Pontos, cartão, vales, ranking, missões, porta grátis de cada marca | Todo cliente de qualquer marca, automático |
+| **Club+** | Cerca de R$ 29,90/mês · R$ 239/ano ("pague 8, leve 12") | **Pontos em dobro** em tudo; **20% de desconto em qualquer plano de marca**; teste de 30 dias (em vez de 14) em qualquer marca; frete da Starline com desconto; prioridade no Meu Contador; condições da Mega Tron no balcão | Quem usa uma marca e quer começar outra |
+| **Club Total** | Cerca de R$ 247/mês · anual "pague 8, leve 12" | **O plano de entrada pago de todas as marcas numa assinatura só**: Loja SuperDrop + Commerce Start + Brás Prata + Cargas Pro, e tudo do Club+ | Quem usa duas marcas ou mais |
+
+**A conta do Club Total [inferência]:**
+- a soma da entrada paga das quatro marcas hoje é cerca de R$ 490 (R$ 97 + R$ 149 + R$ 97 + R$ 147);
+- por cerca de R$ 247, sai **quase pela metade**;
+- quem usa só uma marca não tem motivo para trocar, então **a perda de receita fica limitada**;
+- quem usa duas ou mais passa a usar mais, porque a **taxa sobre a venda e os serviços continuam valendo**.
+
+**Guarda-corpos contra canibalizar a receita das marcas:**
+- **a taxa sobre a venda continua em todos os níveis** (o grupo ganha quando o cliente vende);
+- o Club Total inclui só o **plano de entrada** de cada marca. Os planos maiores (Commerce Pro e Scale, Brás Ouro e Platinum, Loja Própria) seguem à parte, com o desconto do Club+;
+- serviços (Loja Pronta, migração, marketing, temas) seguem pagos, com desconto e pontos;
+- os limites de uso do plano de entrada continuam iguais aos da marca.
+
+### A11.3 Como aparece para o cliente
+- **Na Carteira do Grupo (A9):** o selo do nível (Club, Club+, Club Total) ao lado do saldo, com "o que você ganharia com o Club+ este mês" em reais (pontos em dobro + descontos que ele teria usado).
+- **No lançador e no fio do grupo (A10):** com o Club Total, **todas as marcas de entrada aparecem liberadas** (cadeado aberto). Com o Club+, aparecem com o desconto já aplicado.
+- **Na página de ativação (A10.10):** o botão "Liberar com o Club Total" e a comparação honesta "você paga hoje R$ X em planos; com o Club Total pagaria R$ Y".
+- **Comparativo simples** na página do Club: três colunas, os mesmos itens e o "recomendado para você", calculado com o uso real da pessoa.
+
+### A11.4 Regras que não podem quebrar
+- **Ponto não vira dinheiro**, não se saca nem se transfere.
+- **A assinatura é da NextLevel** (fatura própria). Quem dá desconto em empresa do grupo entra no **acerto entre empresas** (D120).
+- **Renovação com aviso e cancelamento simples** (CDC). Ao cancelar o Club Total, cada marca cai para o grátis dela (teste reverso), **sem bloquear e sem perder dados**.
+- **Conta do grupo com aceite:** o Club Total só funciona com os perfis ligados à mesma pessoa (A10.2).
+- **Nenhuma marca vê os dados da outra:** o Club guarda só nível, saldo e benefícios.
+
+## A12. A jornada completa: como tudo se encaixa
+**Exemplo: a Carla, do primeiro dia ao Club Total [hipótese].**
+1. **Dia 1, SuperDrop:**
+   - entra pelo convite do fornecedor (Marcos) no plano **Começo grátis**, com o teste reverso de 14 dias de Pro;
+   - vê a **trilha de primeiros passos** e a **Carteira** (A9).
+2. **Dia 3:** publica a loja (**+7 dias de Pro** e +300 pontos). A trilha comemora uma vez.
+3. **Dia 9:** primeira venda (**+7 dias**). O **simulador** mostra "com as suas vendas, o Pro sai R$ 18 mais barato que o grátis" (A7).
+4. **Dia 20:**
+   - um **convite no momento certo** aparece quando ela procura frete para o interior: "Mande pelo ônibus da Excursão";
+   - ela toca e cai na **página de ativação da Cargas** (A10.10);
+   - ativa o teste em um clique.
+5. **Dia 30:**
+   - o **medidor do teste** mostra o que ela perde ao voltar ao grátis;
+   - ela assina o **anual no Pix** ("pague 8, leve 12") e ganha **1 mês em pontos**.
+6. **Mês 3:**
+   - o fio do grupo e o lançador mostram a **Brás** recomendada;
+   - a página de ativação compara: "você paga R$ X entre SuperDrop e Cargas; com o **Club Total** pagaria R$ Y e ainda ganha a Brás";
+   - ela assina o Club Total, e as três marcas ficam com o cadeado aberto.
+7. **Sempre:**
+   - os pontos de tudo (compra na Mega Tron, fardo da Starline, indicações) vão para **uma Carteira só**;
+   - o **resumo de economia** mostra quanto o grupo devolveu a ela no mês.
+
+O mesmo desenho vale para a Dona Cida (Brás → Excursão → SuperDrop), a Juliana (Commerce → Brás) e o dono do ônibus (Cargas → Club).
+
+## A13. Perguntas para o dono (respondem a Parte B mais rápido)
 1. Pode ter plano grátis permanente no Commerce e no SuperDrop, com taxa maior sobre a venda? (Sugestão: sim.)
 2. Teste reverso de 14 dias que cai para o grátis, em vez de bloquear? (Sugestão: sim.)
 3. Anual "pague 8, leve 12" no Pix + 1 mês em pontos: o caixa aguenta? (Sugestão: testar com 100 clientes.)
@@ -322,13 +612,20 @@ Os números são **pontos de partida para teste**, não decisão. O critério é
 9. A Carteira do Grupo pode ficar fixa no topo de todos os painéis, ou prefere um ícone que abre? (Sugestão: faixa fixa nos primeiros 30 dias, depois um ícone com o saldo.)
 10. Comemoração com animação no marco (1ª venda, nível novo): pode? (Sugestão: sim, leve e uma vez por marco.)
 11. Quais recompensas entram primeiro na vitrine "Onde usar seus pontos"? (Sugestão: tema, Meu Contador, frete da Starline e vale na Mega Tron.)
+12. Barra do ecossistema: o fio colorido aparece também nas páginas públicas das marcas, ou só nos painéis? (Sugestão: nos dois.)
+13. Creators e China Hub aparecem no lançador como "em breve · avise-me", ou ficam escondidas até abrir? (Sugestão: escondidas até haver produto, conforme a direção atual.)
+14. Pode criar a "conta do grupo" (uma pessoa com perfis em várias marcas, ligados com aceite)? Ela é a base do "entrar direto" sem novo cadastro. (Sugestão: sim, começando pelas marcas em `*.nextlevelgroup.com.br`.)
+15. A página de ativação pode usar os números da própria pessoa na abertura (por exemplo, "você vendeu 38 peças este mês")? (Sugestão: sim, só os dados dela e só dentro do ambiente logado.)
+16. Club como assinatura: aprova testar os três níveis (Club grátis, Club+ por cerca de R$ 29,90 e Club Total por cerca de R$ 247)? (Sugestão: testar primeiro o Club+, que tem menos risco, e o Club Total com um grupo pequeno.)
+17. No Club Total, quais planos de entrada entram? (Sugestão: Loja SuperDrop, Commerce Start, Brás Prata e Cargas Pro; os maiores seguem à parte, com desconto.)
+18. Quais benefícios da Mega Tron e da Starline entram no Club+? (Sugestão: condição de atacado no balcão da Mega Tron e desconto no frete da Starline, com o acerto entre empresas.)
 
 ---
 
 # PARTE B: o prompt (cole numa sessão nova)
 
 ## B0. Seu papel e o contrato
-Você é o engenheiro mestre de produto e preço da NextLevel. Sua missão é **descobrir em profundidade quem usa cada marca** e transformar isso em **uma arquitetura única de entrada, preço, benefícios e cashback para o grupo**, implementada no motor que já existe, sem quebrar o SuperDrop em produção.
+Você é o engenheiro mestre de produto e preço da NextLevel. Sua missão é **descobrir em profundidade quem usa cada marca** e transformar isso em **uma arquitetura única de entrada, preço, benefícios, cashback e ecossistema para o grupo, com o Club como a assinatura que liga todas as marcas**, implementada no motor que já existe, sem quebrar o SuperDrop em produção.
 
 **Leia antes:**
 - `CLAUDE.md`, `AGENTS.md` e `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`;
@@ -474,6 +771,95 @@ Construa o kit da seção A9 **evoluindo o que existe** (`src/components/club/cl
   - teste de domínio do agregador (saldo, próximo marco, trilha por persona, simulador com números conhecidos);
   - e2e: o lojista completa um marco e vê a comemoração uma vez; a carteira atualiza; o simulador mostra o cruzamento;
   - tudo atrás de chave, ligado por marca, SuperDrop por último e com teste de regressão.
+
+## B6c. Fase P5E: barra do ecossistema (fio do grupo, lançador e convite no momento certo)
+Siga a seção A10. Ordem de construção:
+1. **Variantes "ecossistema" das cores:** uma por marca, mesma luminosidade, par claro e escuro, em `src/lib/brand-palette.ts`, conferidas pelo validador de contraste. Entram na galeria do design system.
+2. **Fio do grupo:** um componente na casca dos painéis e das páginas públicas, desenhado a partir de `brand.ts` (só marcas ativas, mais as "em breve" se o dono aprovar). Decorativo, com o segmento da marca em uso mais largo e o estado "acordado" ao passar o mouse ou tocar.
+3. **Lançador:**
+   - botão no cabeçalho (no celular, no menu "Mais") e uma gaveta com as três listas (suas marcas, recomendadas, todas);
+   - as recomendações e os benefícios vêm de um domínio só, `src/lib/domain/ecossistema/lancador.ts`, que lê persona, perfis da pessoa, Passe do Grupo e Club. **O componente não decide regra.**
+4. **Conta do grupo e passagem entre marcas:**
+   - perfis por marca ligados à mesma pessoa, com aceite (estender o que o prompt do Club previu em `club_members`, sem duplicar usuários);
+   - sessão compartilhada nos subdomínios de `nextlevelgroup.com.br` e passagem por código de uso único (curto, uma vez, com prazo) para os outros domínios;
+   - sem aceite: abre o cadastro da outra marca com os dados preenchidos, e a pessoa confirma.
+5. **Convites no momento certo:**
+   - regras no Master (tela, persona, condição, texto, benefício, limite por sessão e por semana), versionadas e ligadas por marca;
+   - cada convite visto, aceito ou dispensado vira um evento.
+6. **Onde não aparece:** vitrine do lojista, expedição, motorista, balcões, checkout e pagamento (com teste que garante).
+
+**Aceite:**
+- capturas em 360, 768 e 1440 px, claro e escuro, em cada painel e página pública, mostradas ao dono antes de publicar;
+- `axe` sem violação grave; gaveta com foco preso, Esc fecha, teclado completo; movimento reduzido respeitado;
+- teste de domínio: recomendação por persona; uma marca nunca recebe dado de outra; limite de convites respeitado;
+- passagem entre domínios: código de uso único, com prazo, recusado na segunda vez;
+- e2e: o lojista do SuperDrop abre o lançador, vê a Brás recomendada com o benefício, entra na Brás pelo cadastro preenchido e o perfil fica ligado à mesma pessoa;
+- nada aparece na vitrine do lojista nem na expedição;
+- tudo atrás de chave, marca por marca, SuperDrop por último e com teste de regressão.
+
+## B6d. Fase P5A: página de ativação ao trocar de marca
+Siga a seção A10.10.
+- **Domínio:**
+  - `src/lib/domain/ecossistema/ativacao.ts` monta a página para a pessoa e a marca de destino: abertura personalizada (só dados dela), números reais da rede, benefício do Passe calculado, oferta válida no catálogo do Master e o que falta preencher;
+  - **o componente não decide regra**.
+- **Matriz de mensagens** "de onde vem → para onde vai" no Master: título, frases, benefício, teste A/B, versão e liga/desliga por marca.
+- **Ativar em um clique:**
+  - cria o perfil da marca ligado à mesma pessoa (conta do grupo, com aceite);
+  - aplica a oferta reversa (`OfferRules`, B6);
+  - pede só o dado que falta, num campo único;
+  - registra o aceite dos termos (versão e data);
+  - uma vez por CPF/CNPJ.
+- **Assinar com benefício:** checkout corporativo existente (Pix, conferência no gateway, idempotência), com o benefício do Passe e os pontos.
+- **"Espie o painel":** prévia com dados de demonstração rotulados, nunca dados reais de outra conta.
+- **Retomada:** quem parou no meio vê "falta 1 passo" no lançador.
+- **Aceite:**
+  - capturas em 360, 768 e 1440 px;
+  - `axe` sem violação grave;
+  - teste de domínio:
+    - a copy usa só os dados da própria pessoa;
+    - os números da rede vêm do banco;
+    - um teste por CPF/CNPJ;
+    - a ativação liga o perfil e cai na trilha;
+  - e2e: a revendedora do SuperDrop ativa a Brás em um clique e vê a trilha da Brás; outra ativa pagando no Pix (Mercado Pago simulado) e recebe os pontos;
+  - nenhum texto proibido (promessa de ganho, urgência falsa).
+
+## B6e. Fase P5C: o Club como assinatura do ecossistema (Club+, Club Total)
+Siga a seção A11. Só depois da P4 (arquitetura de preço) aprovada.
+- **Catálogo:**
+  - Club+ e Club Total entram como produtos do catálogo do Master (família nova, preço versionado, mensal e anual);
+  - a concessão de acesso (`entitlements`) libera o plano de entrada de cada marca e os multiplicadores do Club;
+  - **nada de preço fixo no código**.
+- **Regras:**
+  - o multiplicador de pontos e o desconto em planos ficam nas regras do Club (`club.rules`), com versão e auditoria;
+  - o desconto respeita "não acumula com o desconto do parceiro" quando a regra disser.
+- **Cancelamento e inadimplência:** cada marca cai para o grátis dela (teste reverso), sem bloquear e sem perder dados, com a régua de cobrança atual.
+- **Telas:**
+  - comparativo dos três níveis com o "recomendado para você";
+  - selo do nível na Carteira;
+  - cadeados abertos no lançador;
+  - botão "Liberar com o Club Total" na página de ativação.
+- **Simulação antes de publicar:** receita de 12 meses com e sem o Club Total (motor `engine.ts`), mostrando quanto se perde em mensalidade e quanto se ganha em taxa, serviços e uso cruzado.
+- **Aceite:**
+  - teste de domínio:
+    - o Club Total libera o plano de entrada de todas as marcas e mais nada;
+    - a taxa sobre a venda continua;
+    - o cancelamento devolve cada marca ao grátis;
+    - o acerto entre empresas recebe os descontos;
+  - e2e: assinar o Club Total no Pix e ver todas as marcas liberadas;
+  - aprovação do dono por escrito antes de ligar.
+
+## B6f. Ordem recomendada das fases
+| Ordem | Fase | Depende de |
+|---|---|---|
+| 1 | P0 fonte única de preço | — |
+| 2 | P1 dados reais · P2 entrevistas | P0 |
+| 3 | P3 personas validadas | P1, P2 |
+| 4 | P4 arquitetura de preço (inclui os níveis do Club) | P3 |
+| 5 | P5 ofertas no motor (grátis, teste reverso, anual, cashback) | P4 |
+| 6 | P5V benefícios gamificados (Carteira, trilha, medidor, simulador) | P5 |
+| 7 | P5E barra do ecossistema · P5A página de ativação (com a conta do grupo) | P5V |
+| 8 | P5C Club+ e Club Total | P4, P5A |
+| 9 | P6 experimento e leitura | cada fase acima, ao ligar |
 
 ## B7. Fase P6: experimento e leitura
 - Cada peça vira um **experimento** com uma chave no Master:
