@@ -1,6 +1,7 @@
 import type { CatalogAudience, CatalogContent, CatalogFamily, CatalogStatus, CatalogKind, JourneyPhase, OfferRules, PartnerKind, PriceCycle } from "@/db/schema";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 import { BRAS_SEED_PRODUCTS } from "./catalog-seed-bras";
+import { CLUB_SEED_PRODUCTS } from "./catalog-seed-club";
 
 /**
  * Catálogo aprovado pelo dono (D90), versão 1. É só a SEMENTE: depois de gravado no banco, o Master é a fonte da verdade
@@ -200,6 +201,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
     prices: [{ cycle: "ONE_TIME", amountCents: t.priceCents, methods: ["PIX", "CARD"], pixDiscountBps: 1000, cardMaxInstallments: 6, cardMarkupBps: 0 }],
   })),
   ...BRAS_SEED_PRODUCTS,
+  ...CLUB_SEED_PRODUCTS,
 ];
 
 export const ENTRY_OFFER_KEY = "COMMERCE_ENTRADA";

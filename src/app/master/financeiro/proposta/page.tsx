@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/money";
 import { PROPOSAL_BRANDS, proposalReport } from "@/lib/domain/precos/proposta";
 import { PropostaForm } from "@/components/descoberta/proposta-form";
+import { clubTierComparison } from "@/lib/domain/club/assinatura";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,8 @@ const brl0 = (c: number) => formatBRL(Math.round(c / 100) * 100).replace(/,00$/,
  */
 export default async function PropostaPage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
-  const r = await proposalReport(await getDb(), s.actor);
+  const db = await getDb();
+  const [r, club] = await Promise.all([proposalReport(db, s.actor), clubTierComparison(db, s.actor)]);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Proposta de preço" description="“Grátis para começar, paga quando cresce”: a escada sugerida, a conta de cada plano e 12 meses em três cenários, comparados com o modelo de hoje. É rascunho: nenhum preço muda por aqui." />
@@ -78,6 +80,22 @@ export default async function PropostaPage() {
           </div>
         </section>
       ))}
+      <section aria-labelledby="h-club" className="ds-card mb-6 p-4">
+        <div className="mb-1 flex flex-wrap items-center gap-2"><h2 id="h-club" className="text-lg font-bold">O Club como assinatura do ecossistema</h2><Badge tone="warning">Rascunho</Badge></div>
+        <p className="mb-4 text-sm text-muted-foreground">Club+ e Club Total estão no catálogo em rascunho (Financeiro → Catálogo e preços). Nada é cobrado nem aparece para o cliente até a sua aprovação.</p>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="rounded-lg border border-border p-3 text-sm"><b>Club (grátis)</b><p className="text-muted-foreground">Pontos normais em todas as marcas.</p></div>
+          {club.tiers.map((t) => (
+            <div key={t.key} className="rounded-lg border border-border p-3 text-sm">
+              <b>{t.name}</b> <span className="tabular-nums">{t.monthlyCents === null ? "sem preço" : `${formatBRL(t.monthlyCents)}/mês`}</span>{t.annualCents ? <span className="text-muted-foreground"> · anual {formatBRL(t.annualCents)} no Pix</span> : null}
+              <p className="text-muted-foreground">{t.key === "CLUB_PLUS" ? `Pontos ×${club.rules.PLUS.pointsMultiplierPct / 100}, ${pctTxt(club.rules.PLUS.planDiscountBps)} de desconto nos planos.` : `Pontos ×${club.rules.TOTAL.pointsMultiplierPct / 100}${club.rules.TOTAL.unlocksEntryPlans ? ", plano de entrada de todas as marcas liberado" : ""}; a taxa sobre a venda continua.`}</p>
+            </div>
+          ))}
+        </div>
+        <h3 className="mb-2 mt-4 text-sm font-semibold">Quem usa o plano de entrada de todas as marcas</h3>
+        <ul className="text-sm">{club.entry.map((e) => <li key={e.brand} className="flex justify-between gap-2 border-b border-border py-1"><span>{e.brand}: {e.plan}</span><span className="tabular-nums">{formatBRL(e.cents)}</span></li>)}</ul>
+        <p className="mt-2 text-sm">Separado: <b>{formatBRL(club.separateCents)}/mês</b>{club.savingsWithTotalCents !== null ? <> · com o Club Total: <b>{club.savingsWithTotalCents >= 0 ? `${formatBRL(club.savingsWithTotalCents)} a menos por mês` : `${formatBRL(-club.savingsWithTotalCents)} a mais por mês`}</b></> : null}.</p>
+      </section>
       <section aria-labelledby="h-edit" className="ds-card mb-6 p-4">
         <h2 id="h-edit" className="mb-1 text-lg font-bold">Ajustar o rascunho</h2>
         <p className="mb-4 text-sm text-muted-foreground">Mude valores e cenários e grave: a conta acima é refeita. Nada vai para cliente: ligar as peças é a próxima fase, com a sua aprovação.</p>

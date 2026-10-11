@@ -37,6 +37,14 @@ export const clubRulesSchema = z.object({
    * percentual da compra que vira pontos para o guia de excursão que trouxe o passageiro (pago pela empresa da compra).
    */
   cross: z.object({ parcelDeliveredPoints: pts, guidePct: z.number().int().min(0).max(20) }),
+  /**
+   * Níveis pagos do Club (D131, rascunho até o dono aprovar): multiplicador de pontos (100 = normal) e desconto nos planos
+   * das marcas. O Club Total libera o plano de entrada de todas as marcas; a taxa sobre a venda continua.
+   */
+  tiers: z.object({
+    PLUS: z.object({ pointsMultiplierPct: z.number().int().min(100).max(500), planDiscountBps: z.number().int().min(0).max(5_000) }),
+    TOTAL: z.object({ pointsMultiplierPct: z.number().int().min(100).max(500), planDiscountBps: z.number().int().min(0).max(5_000), unlocksEntryPlans: z.boolean() }),
+  }),
   /** Missões do mês (pontos por meta atingida, nunca por sorteio). */
   missions: z.array(z.object({
     key: z.string().regex(/^[A-Z0-9_]{2,30}$/),
@@ -56,6 +64,7 @@ export const DEFAULT_CLUB_RULES: ClubRules = {
   minRedeem: 1_000,
   purchase: { pointsPerReal: 2, companies: ["MEGATRON", "STARLINE"], reviewAboveCents: 500_000, maxDiscountPct: 30 },
   cross: { parcelDeliveredPoints: 100, guidePct: 2 },
+  tiers: { PLUS: { pointsMultiplierPct: 200, planDiscountBps: 2_000 }, TOTAL: { pointsMultiplierPct: 300, planDiscountBps: 0, unlocksEntryPlans: true } },
   missions: [
     { key: "TRAGA_TRANSPORTADORA", title: "Traga a sua transportadora ou ônibus", metric: "TRANSPORTADORA_ATIVADA", target: 1, points: 300 },
     { key: "TRES_FRETES", title: "3 fretes no mês pelo painel", metric: "FRETES_MES", target: 3, points: 500 },

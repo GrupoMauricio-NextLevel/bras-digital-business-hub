@@ -1263,7 +1263,7 @@ export const errorEvents = pgTable("error_events", {
 // Só o Master escreve aqui. Os painéis de fornecedor, membro, loja e parceiro apenas leem o que foi publicado
 // (preço autorizado, checkout, proposta). Valores em centavos; preços versionados e imutáveis.
 // ===========================================================================
-export const CATALOG_FAMILIES = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "TEMA", "MARKETING", "CONSULTORIA", "WHITE_LABEL", "SUPERDROP", "ADDON", "BRAS_MEMBER_PLAN", "BRAS_IMPORTER_PLAN", "CARRIER_PLAN", "BRAS_SERVICE", "ADS"] as const;
+export const CATALOG_FAMILIES = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "TEMA", "MARKETING", "CONSULTORIA", "WHITE_LABEL", "SUPERDROP", "ADDON", "BRAS_MEMBER_PLAN", "BRAS_IMPORTER_PLAN", "CARRIER_PLAN", "BRAS_SERVICE", "ADS", "CLUB_PLAN"] as const;
 /** Quem pode contratar um produto do catálogo. BRAS_MEMBER, IMPORTER e CARRIER: lados da Brás e da NextLevel Cargas (D108). */
 export const CATALOG_AUDIENCES = ["STORE", "SUPPLIER", "PARTNER", "PUBLIC", "BRAS_MEMBER", "IMPORTER", "CARRIER"] as const;
 export type CatalogAudience = (typeof CATALOG_AUDIENCES)[number];

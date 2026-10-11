@@ -1198,3 +1198,9 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - O lançador "Marcas do grupo" (D129) passa a levar para essa página. Liberada nas marcas de lista fechada (Brás e Cargas).
 - Domínio em `src/lib/domain/ecossistema/ativacao.ts` (mensagens padrão por marca e ponte por par de marcas). Nenhum dado pessoal: a página é igual para todos que vêm da mesma marca.
 - **Fica para depois (conta do grupo):** hoje cada e-mail é um usuário de um papel só, então ativar outra marca é um cadastro novo. Ligar perfis da mesma pessoa (com aceite), a passagem entre domínios por código de uso único e o "ativar em 1 clique" sem redigitar dependem dessa conta do grupo. As mensagens editáveis no Master com teste A/B também ficam para depois.
+
+## D131 — O Club como assinatura do ecossistema: Club+ e Club Total em rascunho (P5C) (2026-10-11)
+- **Catálogo do Master** (família nova `CLUB_PLAN`): Club+ (R$ 29,90/mês) e Club Total (R$ 247/mês), anual "pague 8, leve 12" só no Pix, **em RASCUNHO**: fora da vitrine, sem cobrança, até o dono aprovar por escrito e publicar.
+- **Regras dos níveis** nas regras do Club (`club.rules.tiers`, com versão e auditoria): Club+ pontos ×2 e 20% de desconto nos planos; Club Total pontos ×3 e plano de entrada de todas as marcas liberado; **a taxa sobre a venda continua**.
+- **Master → Proposta de preço → "O Club como assinatura"**: os três níveis e a conta "quem usa o plano de entrada de todas as marcas paga X separado; com o Club Total, Y" (preços reais do catálogo e da tabela do SuperDrop).
+- **Fica para depois (depende da aprovação e da conta do grupo, D130):** assinatura por pessoa (não por loja) no checkout corporativo, concessão de acesso em cada marca, multiplicador aplicado nos créditos, queda de cada marca para o grátis no cancelamento e o acerto entre empresas dos descontos.
