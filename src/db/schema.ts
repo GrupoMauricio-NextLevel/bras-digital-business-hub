@@ -170,8 +170,11 @@ export const users = pgTable("users", {
   /** Acesso encerrado (ex.: pessoa saiu da equipe): não entra e sessões antigas deixam de valer. */
   disabledAt: ts("disabled_at"),
   lastLoginAt: ts("last_login_at"),
+  /** Conta do grupo (D141): perfis da mesma pessoa em marcas diferentes, ligados com aceite. Vazio = perfil sozinho. */
+  groupId: text("group_id"),
+  groupLinkedAt: ts("group_linked_at"),
   createdAt: createdAt(),
-});
+}, (t) => [index("users_group_idx").on(t.groupId)]);
 
 // ---------------------------------------------------------------------------
 // Catálogo central
@@ -2438,3 +2441,17 @@ export const experiments = pgTable("experiments", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("experiments_piece_idx").on(t.piece, t.status)]);
+
+/**
+ * Passagem entre marcas da conta do grupo (D141): código de uso único e curto (2 minutos) que abre o perfil da mesma
+ * pessoa no endereço de outra marca, sem novo login. Guarda só o hash do código.
+ */
+export const groupPassCodes = pgTable("group_pass_codes", {
+  id: id(),
+  codeHash: text("code_hash").notNull().unique(),
+  userId: text("user_id").notNull().references(() => users.id),
+  fromUserId: text("from_user_id").notNull().references(() => users.id),
+  expiresAt: ts("expires_at").notNull(),
+  usedAt: ts("used_at"),
+  createdAt: createdAt(),
+});

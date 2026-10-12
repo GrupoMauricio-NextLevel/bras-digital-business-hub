@@ -25,7 +25,7 @@ const ROLE_META = {
 
 const AREA: Record<string, string> = { fornecedor: "painel do fornecedor", loja: "painel da loja", afiliado: "painel do afiliado" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ area?: string; nome?: string; conta?: string; voltar?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ area?: string; nome?: string; conta?: string; voltar?: string; error?: string }> }) {
   const sp = await searchParams;
   const session = await getSession();
   // Retorno só para a vitrine de temas do lojista (endereço fixo, nada de redirecionamento aberto).
@@ -70,6 +70,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <BrandLogo brand={brand} className="h-9" priority />
       <h2 className="mt-8 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight tracking-tight text-foreground">Entre na sua conta</h2>
       {sp.conta === "criada" ? <p role="status" className="mt-3 rounded-lg bg-success-soft px-3 py-2 text-sm text-success">Conta criada! Entre com o e-mail e a senha que você cadastrou.</p> : null}
+      {sp.error === "passagem" ? <p role="alert" className="mt-3 rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning">O link para trocar de marca expirou ou já foi usado. Entre com o seu e-mail e senha.</p> : null}
       {sp.area && AREA[sp.area] ? <p className="mt-3 rounded-lg bg-surface-muted px-3 py-2 text-sm text-foreground">Entrar no {AREA[sp.area]}{sp.nome && /^[a-z0-9-]+$/.test(sp.nome) ? ` · ${sp.nome}` : ""}.</p> : null}
       <p className="mt-2 text-sm text-muted-foreground">Use o e-mail e a senha do seu cadastro ou do convite.</p>
       <div className="mt-6"><LoginForm voltar={voltar} /></div>

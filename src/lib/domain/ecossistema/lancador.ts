@@ -73,17 +73,21 @@ async function benefitOf(db: Database, b: EcoBrand, now: Date): Promise<string |
 const activationOf = (b: EcoBrand, from: EcoBrand) => `${brandByCode(b).baseUrl}/ativar?de=${from}`;
 
 /** Barra da marca atual, ou `null` (desligada nesta marca). */
-export async function ecosystemBar(db: Database, current: EcoBrand | null, now = new Date()): Promise<EcoBar | null> {
+export async function ecosystemBar(db: Database, current: EcoBrand | null, now = new Date(), userId?: string): Promise<EcoBar | null> {
   if (!current || !(await getEcoSettings(db)).brands.includes(current)) return null;
   const live = ECO_BRANDS.filter((b) => b === current || brandByCode(b).live);
   const item = async (b: EcoBrand, reason?: string): Promise<EcoItem> => ({ brand: b, name: brandByCode(b).name, pitch: PITCH[b], color: paletteOf(b).light.signal, href: b === current ? "/" : activationOf(b, current), benefit: b === current ? null : await benefitOf(db, b, now), reason, current: b === current });
-  const recommended = await Promise.all(RECOMMEND[current].filter((r) => live.includes(r.brand)).map((r) => item(r.brand, r.reason)));
+  // Conta do grupo (D141): marcas em que a pessoa já tem perfil ligado vão para "Suas marcas" e levam à troca de perfil.
+  const own = new Set<EcoBrand>();
+  if (userId) { const { groupProfiles } = await import("../conta-grupo"); for (const p of await groupProfiles(db, userId)) if (p.brand !== current && isEcoBrandCode(p.brand) && live.includes(p.brand)) own.add(p.brand); }
+  const ownItem = async (b: EcoBrand): Promise<EcoItem> => ({ ...(await item(b)), href: "/account/marcas", benefit: "Você já tem perfil aqui" });
+  const recommended = await Promise.all(RECOMMEND[current].filter((r) => live.includes(r.brand) && !own.has(r.brand)).map((r) => item(r.brand, r.reason)));
   return {
     current,
     segments: live.map((b) => ({ brand: b, name: brandByCode(b).name, color: paletteOf(b).light.signal, current: b === current })),
-    mine: [await item(current)],
+    mine: [await item(current), ...(await Promise.all([...own].map(ownItem)))],
     recommended,
-    all: await Promise.all(live.filter((b) => b !== current).map((b) => item(b))),
+    all: await Promise.all(live.filter((b) => b !== current && !own.has(b)).map((b) => item(b))),
   };
 }
 

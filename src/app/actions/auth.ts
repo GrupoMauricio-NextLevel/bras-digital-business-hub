@@ -16,6 +16,7 @@ import { requestPasswordReset, resetPassword } from "@/lib/domain/password-reset
 import { getBaseUrl } from "@/lib/base-url";
 import { rateLimit } from "@/lib/rate-limit";
 import { allowLoginAttempt } from "@/lib/security/login-limit";
+import { profileForHost } from "@/lib/domain/conta-grupo";
 
 const loginSchema = z.object({ email: z.string().email("E-mail inválido"), password: z.string().min(1, "Informe a senha") });
 
@@ -35,11 +36,14 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     const h = await headers();
     // Na prévia (/lojas) o endereço não manda; só vale a trava nos endereços oficiais de cada marca.
     const preview = !!(await cookies()).get(BRAND_PREVIEW_COOKIE)?.value;
-    const conflict = accountBrandConflict({ role: user.role, brand: (org?.brand ?? "SUPERDROP") as BrandCode }, preview ? null : brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host")));
-    if (conflict) throw new DomainError("WRONG_BRAND", conflict.message);
-    await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, user.id));
-    await setSessionCookie(user.id);
-    return { redirectTo: user.mustChangePassword ? "/account/password" : homeFor(user.role) };
+    const hostBrand = preview ? null : brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"));
+    const conflict = accountBrandConflict({ role: user.role, brand: (org?.brand ?? "SUPERDROP") as BrandCode }, hostBrand);
+    // Conta do grupo (D141): a senha de um perfil abre o perfil da mesma pessoa que é da marca deste endereço.
+    const target = conflict ? await profileForHost(db, user, hostBrand) : user;
+    if (!target) throw new DomainError("WRONG_BRAND", conflict!.message);
+    await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, target.id));
+    await setSessionCookie(target.id);
+    return { redirectTo: target.mustChangePassword ? "/account/password" : homeFor(target.role) };
   });
 }
 

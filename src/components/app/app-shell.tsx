@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, Search } from "lucide-react";
+import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, Layers, Search } from "lucide-react";
 import { initials } from "@/lib/utils";
 import type { NavItem, NavMode, Panel, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
@@ -42,6 +42,8 @@ export type AppShellProps = {
   onSwitch?: (email: string) => Promise<void>;
   onLogout?: () => Promise<void>;
   passwordHref?: string;
+  /** Conta do grupo (D141): perfis da mesma pessoa em outras marcas. */
+  groupHref?: string;
   notices?: NoticeView[];
   search?: (q: string) => Promise<SearchHit[]>;
   /** Link fixo acima do menu (ex.: "Voltar ao Master"). */
@@ -53,7 +55,7 @@ export type AppShellProps = {
 const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 /** Casca do aplicativo: liga dados e ações de cada painel ao `OperationalShell` do sistema de design (a aparência não é decidida aqui). */
-export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, notices = [], search, sideTop, banner, children }: AppShellProps) {
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, children }: AppShellProps) {
   const [palette, setPalette] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
@@ -133,6 +135,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
           <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge><span className="min-w-0 truncate text-xs text-muted-foreground">{tenantName}</span></div>
           {storefrontHref ? <DropdownMenuItem asChild><a href={storefrontHref} target="_blank" rel="noreferrer"><ExternalLink /> Ver loja virtual</a></DropdownMenuItem> : null}
           <DropdownMenuSeparator />
+          {groupHref ? <DropdownMenuItem asChild><Link href={groupHref}><Layers /> Suas marcas</Link></DropdownMenuItem> : null}
           {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
           <DropdownMenuItem onSelect={() => onLogout?.()}><LogOut /> Sair</DropdownMenuItem>
         </DropdownMenuContent>

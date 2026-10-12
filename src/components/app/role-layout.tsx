@@ -1,3 +1,4 @@
+import { canJoinGroup } from "@/lib/domain/conta-grupo";
 import { AppShell } from "@/components/app/app-shell";
 import { listDemoUsers, loginAs, logout } from "@/app/actions/auth";
 import { globalSearchAction } from "@/app/actions/search";
@@ -41,7 +42,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const supportBar = sup ? <SupportBar clientName={session.user.name} roleLabel={session.store?.name ?? session.supplier?.name ?? nav.label} operatorName={sup.operatorName} reason={sup.reason} act={sup.act} until={new Date(sup.exp).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })} /> : null;
   // Barra do ecossistema (D129): só nos painéis de cliente (lojista, Meu Brás, transportadora, importadora), ligada por marca.
   const ecoBrand: EcoBrand | null = session.user.role === "BRAS_MEMBER" || session.user.role === "BRAS_IMPORTER" ? "BRAS_DIGITAL" : session.user.role === "CARRIER" ? "NEXTLEVEL_CARGAS" : session.user.role === "STORE_OWNER" && session.store ? (session.store.networkId ? "SUPERDROP" : "NEXTLEVEL_COMMERCE") : null;
-  const eco = await ecosystemBar(db, ecoBrand);
+  const eco = await ecosystemBar(db, ecoBrand, new Date(), session.support ? undefined : session.user.id);
   const ecoBar = eco ? <BarraEcossistema bar={eco} /> : null;
   // Equipe do Master (D138): o menu mostra só as telas da função.
   const fn = session.user.role === "NEXTLEVEL_MASTER" ? session.user.masterFunction : null;
@@ -109,6 +110,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         onSwitch={loginAs}
         onLogout={logout}
         passwordHref="/account/password"
+        groupHref={commerceStore && canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined}
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
@@ -124,7 +126,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : "NextLevel");
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" notices={notices} search={globalSearchAction} banner={<>{supportBar}{ecoBar}{banner}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} banner={<>{supportBar}{ecoBar}{banner}</>}>
       {children}
     </AppShell>
   );

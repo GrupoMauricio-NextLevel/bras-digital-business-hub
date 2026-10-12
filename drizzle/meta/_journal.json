@@ -456,6 +456,13 @@
       "when": 1791766220646,
       "tag": "0064_equipe_master",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1791769537733,
+      "tag": "0065_conta_do_grupo",
+      "breakpoints": true
     }
   ]
 }

@@ -1269,3 +1269,11 @@ Respostas 1 e 2 do dono (testar os preços da Proposta como experimento; ordem q
 - **Como testar com parte dos clientes:** ligar a porta com a opção e criar o experimento da porta (Master → Experimentos, 50% no grupo novo).
 - **Roteiro "Ligar em ordem"** no topo de Master → Descoberta: os 5 passos aprovados, cada um com Ligado/Em parte/Desligado, o que está ligado e o link para ligar; marca o próximo passo. Não liga nada sozinho.
 - Testes: `tests/porta-precos-proposta.test.ts`.
+
+## D141 — Conta do grupo: perfis ligados com aceite e passagem entre marcas (2026-10-12)
+Resposta 3 do dono ("autoriza criar a conta do grupo": sim).
+- **O que é:** a mesma pessoa com perfis em marcas diferentes (loja no SuperDrop, loja na Commerce, membro da Brás, transportadora, fornecedor, parceiro) liga os perfis em **Suas marcas** (`/account/marcas`, no menu do usuário). Para ligar: e-mail e senha do outro perfil (prova de que é dela) e o aceite escrito. Coluna `users.group_id` (migração 0065); até 8 perfis; desligar a qualquer momento. Auditoria de ligar, desligar e passagem.
+- **O que muda para a pessoa:** troca de perfil sem novo login (mesmo endereço: troca a sessão; outra marca: **código de uso único de 2 minutos**, tabela `group_pass_codes`, só o hash guardado, que abre o perfil no endereço da outra marca); **login com a conta do grupo**: a senha de um perfil abre o perfil da mesma pessoa que é da marca do endereço; a barra "Marcas do grupo" mostra as marcas em que ela já tem perfil em "Suas marcas".
+- **O que não muda:** cada perfil mantém os próprios dados, e-mail, senha e permissões; nenhum perfil lê dados do outro. Equipe NextLevel (Master), expedição e equipe de loja ficam fora. No modo suporte nada disso aparece nem funciona.
+- **Fica para a próxima etapa:** "ativar em 1 clique" sem novo cadastro (perfil novo com o mesmo e-mail exige trocar a regra de e-mail único por e-mail único por login; hoje o cadastro da outra marca ainda pede um e-mail próprio, e depois a pessoa liga os perfis), Club como assinatura por pessoa (o grupo é a base) e "Suas marcas" no cadastro.
+- Testes: `tests/conta-grupo.test.ts`; e2e em `e2e/precos-ecossistema.mjs` (ligar e trocar de perfil, acessibilidade em 390 e 1440 px).

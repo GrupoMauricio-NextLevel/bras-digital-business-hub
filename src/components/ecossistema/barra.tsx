@@ -36,7 +36,7 @@ export function BarraEcossistema({ bar }: { bar: EcoBar }) {
       </button>
       <Drawer open={open} onOpenChange={setOpen} title="Marcas do Grupo NextLevel" description="Tudo do mesmo grupo, com a mesma conta de pontos do Club.">
         <div className="space-y-5">
-          <section aria-labelledby="eco-mine"><h3 id="eco-mine" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sua marca</h3>{bar.mine.map((i) => <Item key={i.brand} it={i} />)}</section>
+          <section aria-labelledby="eco-mine"><h3 id="eco-mine" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{bar.mine.length > 1 ? "Suas marcas" : "Sua marca"}</h3>{bar.mine.map((i) => <Item key={i.brand} it={i} />)}</section>
           {bar.recommended.length ? <section aria-labelledby="eco-rec"><h3 id="eco-rec" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recomendadas para você</h3>{bar.recommended.map((i) => <Item key={i.brand} it={i} />)}</section> : null}
           <section aria-labelledby="eco-all"><h3 id="eco-all" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Todas as marcas</h3>{bar.all.map((i) => <Item key={i.brand} it={i} />)}</section>
         </div>

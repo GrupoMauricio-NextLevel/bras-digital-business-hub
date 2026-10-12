@@ -9,6 +9,7 @@ import { mkdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 const axeSource = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 const B = process.env.E2E_BASE ?? "http://localhost:3300";
+const ARENA = "dono@arena10.demo"; const PASS = "demo1234";
 const OUT = process.env.E2E_SHOTS ?? "/tmp/precos-shots"; mkdirSync(OUT, { recursive: true });
 const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium" });
 const bad = []; const fail = (m) => { bad.push(m); console.log("✖", m); };
@@ -76,6 +77,29 @@ for (const w of [390, 1440]) {
   await l.c.close();
 }
 ok("lojista: benefícios, barra e lançador");
+
+// 3b. Conta do grupo (D141): o lojista liga outro perfil (com a senha dele e o aceite) e troca sem novo login.
+{
+  const g = await page(1440);
+  await login(g.p, "dono@mantosshop.demo");
+  await g.p.goto(`${B}/account/marcas`, { waitUntil: "networkidle" });
+  await check(g.p, "suas marcas", 1440);
+  await g.p.getByLabel("E-mail do outro perfil").fill(ARENA);
+  await g.p.getByLabel("Senha do outro perfil").fill(PASS);
+  await g.p.getByRole("checkbox").check();
+  await g.p.getByRole("button", { name: "Ligar perfil" }).click();
+  await g.p.getByText("Perfis ligados (2)").waitFor({ timeout: 20000 }).catch(() => fail("conta do grupo: o perfil não foi ligado"));
+  await shot(g.p, "07b-suas-marcas-1440");
+  await g.p.getByRole("button", { name: /^Entrar no perfil/ }).click();
+  await g.p.waitForURL((u) => u.pathname.startsWith("/merchant"), { timeout: 30000 }).catch(() => fail("conta do grupo: a troca de perfil não abriu o painel"));
+  await g.c.close();
+  const n = await page(390);
+  await login(n.p, "dono@mantosshop.demo");
+  await n.p.goto(`${B}/account/marcas`, { waitUntil: "networkidle" });
+  await check(n.p, "suas marcas", 390);
+  await n.c.close();
+}
+ok("conta do grupo: ligar perfil e trocar sem novo login");
 
 // 4. Captação e páginas públicas (sem login): fio do grupo, ativação e rodapé da família.
 for (const w of [390, 1440]) {

@@ -54,7 +54,7 @@
 |---|---|---|---|
 | 1. Testar os preços da Proposta | Opção "Usar os preços da Proposta" na porta de entrada de cada marca; a loja que entra recebe a escada congelada | Master → Ofertas e comissões → Porta de entrada; depois Experimentos | D140 |
 | 2. Ordem de ligar | Cartão "Ligar em ordem" com os 5 passos e o estado de cada um | Topo de Master → Descoberta | D140 |
-| 3. Conta do grupo | Em desenvolvimento | | |
+| 3. Conta do grupo | Perfis da mesma pessoa ligados com aceite; troca de perfil e passagem entre marcas sem novo login; login com a conta do grupo | Menu do usuário → Suas marcas | D141 |
 | 5 e 6. Equipe e contador | Cadastro da equipe com funções (Comercial, Suporte, Financeiro, Conteúdo, Contador parceiro) | Master → Equipe do Master | D138 |
 | 7. Reputação Ouro | Comissão menor no frete e prioridade na lista, com selo; 3 transportadoras fictícias só na demonstração | Master → Descoberta → Reputação | D139 |
 | 8. Fotos | Aguardando (amanhã) | | |
