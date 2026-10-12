@@ -17,6 +17,8 @@ import { brandOfStore } from "@/lib/store-brand";
 import { SupportBar } from "@/components/support/support-bar";
 import { ecosystemBar, type EcoBrand } from "@/lib/domain/ecossistema/lancador";
 import { BarraEcossistema } from "@/components/ecossistema/barra";
+import { masterPathAllowed } from "@/lib/master-equipe";
+import type { NavItem } from "@/lib/nav";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -41,6 +43,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const ecoBrand: EcoBrand | null = session.user.role === "BRAS_MEMBER" || session.user.role === "BRAS_IMPORTER" ? "BRAS_DIGITAL" : session.user.role === "CARRIER" ? "NEXTLEVEL_CARGAS" : session.user.role === "STORE_OWNER" && session.store ? (session.store.networkId ? "SUPERDROP" : "NEXTLEVEL_COMMERCE") : null;
   const eco = await ecosystemBar(db, ecoBrand);
   const ecoBar = eco ? <BarraEcossistema bar={eco} /> : null;
+  // Equipe do Master (D138): o menu mostra só as telas da função.
+  const fn = session.user.role === "NEXTLEVEL_MASTER" ? session.user.masterFunction : null;
+  const byFn = (list: NavItem[]) => (fn ? list.filter((i) => masterPathAllowed(fn, i.href)) : list);
   const store = session.store;
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
@@ -52,7 +57,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Equipe da loja: só o que é operação do dia a dia (o servidor também bloqueia o resto).
   const STAFF_OK = ["/merchant/orders", "/merchant/products", "/merchant/catalogo", "/merchant/customers", "/merchant/labels", "/merchant/after-sales", "/merchant/avaliacoes", "/merchant/avise-me", "/merchant/content"];
   const visible = session.user.role === "STORE_OWNER" && session.user.storeRole === "STAFF" ? navItems.filter((i) => STAFF_OK.some((p) => i.href.startsWith(p))) : navItems;
-  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : nav.items, brand);
+  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : byFn(nav.items), brand);
   const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   if (scope === "bras-admin") {
@@ -62,7 +67,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
       <AppShell
         brand={{ code: bras.code, name: bras.name, logo: bras.logo, wordmark: bras.wordmark, accentColor: bras.accentColor }}
         panel="master"
-        items={BRAS_ADMIN_NAV}
+        items={byFn(BRAS_ADMIN_NAV)}
         navMode="sections"
         quick={[]}
         roleLabel="Estúdio Brás Digital"
@@ -92,7 +97,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
       <AppShell
         brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
         panel={panelFor(session)}
-        items={commerceItems}
+        items={byFn(commerceItems)}
         navMode={commerceStore ? "accordion" : "sections"}
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
         roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}

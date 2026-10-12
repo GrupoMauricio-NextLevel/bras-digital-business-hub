@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { experiments, financeInvoices, orders, organizations, stores, EXPERIMENT_PIECES } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { requireMaster, type Actor } from "./access";
+import { requireMaster, type Actor, requireMasterFn } from "./access";
 import { recordAudit } from "./audit";
 import { DomainError, NotFoundError } from "./errors";
 
@@ -44,7 +44,7 @@ export const experimentSchema = z.object({
 });
 
 export async function createExperiment(db: Database, actor: Actor, raw: z.input<typeof experimentSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const v = experimentSchema.parse(raw);
   const id = newId("exp");
   await db.insert(experiments).values({ id, ...v, readAt: new Date(v.readAt).toISOString(), createdBy: actor.userId });
@@ -54,7 +54,7 @@ export async function createExperiment(db: Database, actor: Actor, raw: z.input<
 
 /** Iniciar (um experimento rodando por peça) ou encerrar (exige leitura escrita e decisão). */
 export async function setExperimentStatus(db: Database, actor: Actor, id: string, action: { start: true } | { end: true; reading: string; decision: string }, now = new Date()) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const e = await db.query.experiments.findFirst({ where: eq(experiments.id, id) });
   if (!e) throw new NotFoundError("Experimento não encontrado.");
   if ("start" in action) {

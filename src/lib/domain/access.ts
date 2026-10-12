@@ -12,10 +12,12 @@ export type Actor = {
   storeId: string | null;
   /** Dentro da loja: ausente ou OWNER = dono; STAFF = equipe com acesso operacional. */
   storeRole?: "OWNER" | "STAFF";
+  /** Equipe do Master (D138): ausente = dono (tudo). */
+  masterFunction?: "COMERCIAL" | "SUPORTE" | "FINANCEIRO" | "CONTEUDO" | "CONTADOR" | null;
 };
 
 export function actorFromUser(user: User): Actor {
-  return { userId: user.id, role: user.role, organizationId: user.organizationId, supplierId: user.supplierId, storeId: user.storeId, storeRole: user.storeRole };
+  return { userId: user.id, role: user.role, organizationId: user.organizationId, supplierId: user.supplierId, storeId: user.storeId, storeRole: user.storeRole, masterFunction: user.masterFunction };
 }
 
 /** Funções de dono (finanças, configurações, equipe, preços e publicação). Equipe da loja não passa. */
@@ -23,8 +25,21 @@ export function assertStoreAdmin(actor: Actor): void {
   if (actor.role === "STORE_OWNER" && actor.storeRole === "STAFF") throw new ForbiddenError("Esta função é só do dono da loja.");
 }
 
+/** Master: o dono e a equipe interna. O contador parceiro (de fora) não conta como Master; usa `requireMasterFn`. */
 export function isMaster(actor: Actor): boolean {
-  return actor.role === "NEXTLEVEL_MASTER";
+  return actor.role === "NEXTLEVEL_MASTER" && actor.masterFunction !== "CONTADOR";
+}
+
+/** Só o dono do Master (sem função de equipe). */
+export const isMasterOwner = (actor: Actor) => actor.role === "NEXTLEVEL_MASTER" && !actor.masterFunction;
+
+/**
+ * Ação sensível do Master (D138): o dono sempre; da equipe, só as funções listadas. Ex.: preço e dinheiro só com
+ * ["FINANCEIRO"]; fila do Meu Contador com ["SUPORTE", "CONTADOR"].
+ */
+export function requireMasterFn(actor: Actor, allowed: NonNullable<Actor["masterFunction"]>[]): void {
+  if (actor.role !== "NEXTLEVEL_MASTER") throw new ForbiddenError("Ação disponível apenas para a NextLevel.");
+  if (actor.masterFunction && !allowed.includes(actor.masterFunction)) throw new ForbiddenError("Esta ação não faz parte da sua função na equipe.");
 }
 
 /** Garante que o ator pode enxergar um registro pertencente a (storeId, supplierId). */

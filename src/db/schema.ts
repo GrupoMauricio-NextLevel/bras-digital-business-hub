@@ -165,6 +165,8 @@ export const users = pgTable("users", {
   mustChangePassword: boolean("must_change_password").notNull().default(false),
   /** Papel dentro da loja: dono (tudo) ou equipe (operação, sem finanças/configurações). Contas existentes são donas. */
   storeRole: text("store_role", { enum: ["OWNER", "STAFF"] }).notNull().default("OWNER"),
+  /** Equipe do Master (D138): vazio = dono (tudo); com função, só as telas e ações daquela função. */
+  masterFunction: text("master_function", { enum: ["COMERCIAL", "SUPORTE", "FINANCEIRO", "CONTEUDO", "CONTADOR"] }),
   /** Acesso encerrado (ex.: pessoa saiu da equipe): não entra e sessões antigas deixam de valer. */
   disabledAt: ts("disabled_at"),
   lastLoginAt: ts("last_login_at"),

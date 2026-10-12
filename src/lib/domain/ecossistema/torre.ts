@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { bdMembers, bdRequests, crossOpportunities, orders, organizations, stores, trCarriers, trParcels, users, CROSS_OPP_STATUSES } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { NotFoundError } from "../errors";
 
@@ -86,7 +86,7 @@ export const OPP_STATUS_LABEL: Record<(typeof CROSS_OPP_STATUSES)[number], strin
 
 /** Torre: índice, fluxo, fila (as regras geram as novas; as que já existem mantêm dono e situação) e placar do mês. */
 export async function ecosystemTower(db: Database, actor: Actor, now = new Date()) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["COMERCIAL"]);
   const presence = await presenceByDocument(db);
   const index = ecosystemIndex(presence);
   const cands = await candidates(db, presence, now);
@@ -111,7 +111,7 @@ export const oppUpdateSchema = z.object({ status: z.enum(CROSS_OPP_STATUSES), no
 
 /** A equipe assume, anota e muda a situação. "Ativou" conta no placar do mês de quem é o dono. */
 export async function updateOpportunity(db: Database, actor: Actor, id: string, raw: z.input<typeof oppUpdateSchema>, now = new Date()) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["COMERCIAL"]);
   const v = oppUpdateSchema.parse(raw);
   const o = await db.query.crossOpportunities.findFirst({ where: eq(crossOpportunities.id, id) });
   if (!o) throw new NotFoundError("Oportunidade não encontrada.");

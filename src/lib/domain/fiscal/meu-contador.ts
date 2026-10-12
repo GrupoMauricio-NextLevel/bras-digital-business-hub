@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { accountingTicketMessages, accountingTickets, platformSettings, trParcelEvents, trParcels, trTrips, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { isValidNfeKey, normalizeNfeKey } from "@/lib/fiscal/nfe";
-import { isMaster, requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, NotFoundError } from "../errors";
 
@@ -14,6 +14,9 @@ import { DomainError, NotFoundError } from "../errors";
  * O sistema não emite nota por quem não é o vendedor: organiza, acelera e registra. Preço e prazo no Master; a
  * cobrança só liga quando o dono decidir (até lá o preço aparece como referência).
  */
+/** Quem atende o Meu Contador (D138): o dono, o Suporte e o contador parceiro. */
+const isAccountingTeam = (a: Actor) => a.role === "NEXTLEVEL_MASTER" && (!a.masterFunction || a.masterFunction === "SUPORTE" || a.masterFunction === "CONTADOR");
+
 export const meuContadorSettingsSchema = z.object({
   priceCents: z.number().int().min(0).max(1_000_000),
   slaHours: z.number().int().min(1).max(72),
@@ -30,7 +33,7 @@ export async function getMeuContadorSettings(db: Database): Promise<MeuContadorS
   return parsed.success ? parsed.data : DEFAULT_MEU_CONTADOR;
 }
 export async function saveMeuContadorSettings(db: Database, actor: Actor, raw: z.input<typeof meuContadorSettingsSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getMeuContadorSettings(db);
   const v = meuContadorSettingsSchema.parse(raw);
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });
@@ -74,7 +77,7 @@ export async function openTicket(db: Database, actor: Actor, raw: z.input<typeof
 
 async function ticketFor(db: Database, actor: Actor, id: string) {
   const t = await db.query.accountingTickets.findFirst({ where: eq(accountingTickets.id, id) });
-  if (!t || (!isMaster(actor) && t.requesterUserId !== actor.userId)) throw new NotFoundError("Chamado não encontrado.");
+  if (!t || (!isAccountingTeam(actor) && t.requesterUserId !== actor.userId)) throw new NotFoundError("Chamado não encontrado.");
   return t;
 }
 
@@ -83,14 +86,14 @@ export async function ticketMessage(db: Database, actor: Actor, id: string, raw:
   const body = raw.trim().slice(0, 1000);
   if (body.length < 2) throw new DomainError("BODY", "Escreva a mensagem.");
   if (t.status === "RESOLVIDO" || t.status === "CANCELADO" || t.status === "SEM_SOLUCAO") throw new DomainError("CLOSED", "Esse chamado já foi encerrado.");
-  await db.insert(accountingTicketMessages).values({ id: newId("atm"), ticketId: t.id, author: isMaster(actor) ? "CONTADOR" : "CLIENTE", authorUserId: actor.userId, body });
-  if (isMaster(actor) && t.status === "ABERTO") await db.update(accountingTickets).set({ status: "EM_ATENDIMENTO", assignedTo: actor.userId, updatedAt: new Date().toISOString() }).where(eq(accountingTickets.id, t.id));
+  await db.insert(accountingTicketMessages).values({ id: newId("atm"), ticketId: t.id, author: isAccountingTeam(actor) ? "CONTADOR" : "CLIENTE", authorUserId: actor.userId, body });
+  if (isAccountingTeam(actor) && t.status === "ABERTO") await db.update(accountingTickets).set({ status: "EM_ATENDIMENTO", assignedTo: actor.userId, updatedAt: new Date().toISOString() }).where(eq(accountingTickets.id, t.id));
   return { ok: true as const };
 }
 
 /** Contador assume o chamado. */
 export async function takeTicket(db: Database, actor: Actor, id: string) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["SUPORTE", "CONTADOR"]);
   const t = await ticketFor(db, actor, id);
   if (t.status !== "ABERTO") throw new DomainError("STATUS", "Esse chamado já está em atendimento ou encerrado.");
   await db.update(accountingTickets).set({ status: "EM_ATENDIMENTO", assignedTo: actor.userId, updatedAt: new Date().toISOString() }).where(and(eq(accountingTickets.id, t.id), eq(accountingTickets.status, "ABERTO")));
@@ -99,7 +102,7 @@ export async function takeTicket(db: Database, actor: Actor, id: string) {
 
 /** Resolvido: a chave da nota (conferida) vai para o fardo. Ou "sem solução", com o motivo (o fardo vai na próxima viagem). */
 export async function closeTicket(db: Database, actor: Actor, id: string, raw: { resolved: true; invoiceKey: string; note?: string } | { resolved: false; note: string }, now = new Date()) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["SUPORTE", "CONTADOR"]);
   const t = await ticketFor(db, actor, id);
   if (t.status !== "ABERTO" && t.status !== "EM_ATENDIMENTO") throw new DomainError("STATUS", "Esse chamado já foi encerrado.");
   if (!raw.resolved) {
@@ -144,7 +147,7 @@ export async function myTickets(db: Database, actor: Actor, now = new Date()) {
 
 /** Fila do contador: abertos e em atendimento por prazo; indicadores do serviço. */
 export async function ticketQueue(db: Database, actor: Actor, now = new Date()) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["SUPORTE", "CONTADOR"]);
   const rows = await db.select({ t: accountingTickets, name: users.name, email: users.email }).from(accountingTickets).innerJoin(users, eq(users.id, accountingTickets.requesterUserId)).orderBy(asc(accountingTickets.deadlineAt)).limit(300);
   const ids = rows.map((r) => r.t.id);
   const msgs = ids.length ? await db.select().from(accountingTicketMessages).where(inArray(accountingTicketMessages.ticketId, ids)).orderBy(asc(accountingTicketMessages.createdAt)) : [];

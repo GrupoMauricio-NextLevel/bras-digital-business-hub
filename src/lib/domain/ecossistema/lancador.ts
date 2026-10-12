@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { platformSettings } from "@/db/schema";
 import { brandByCode } from "@/lib/brand";
 import { paletteOf } from "@/lib/brand-palette";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { activeDoor } from "../precos/porta-entrada";
 
@@ -35,7 +35,7 @@ export async function getEcoSettings(db: Database) {
 }
 /** Grava só o que veio (as outras chaves continuam como estavam). */
 export async function saveEcoSettings(db: Database, actor: Actor, raw: Partial<z.input<typeof ecoSettingsSchema>>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getEcoSettings(db);
   const v = ecoSettingsSchema.parse({ ...before, ...raw });
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

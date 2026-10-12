@@ -5,7 +5,7 @@ import { CATALOG_STATUSES, catalogOffers, catalogPriceVersions, catalogProducts,
 import { newId } from "@/lib/ids";
 import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
-import { isMaster, type Actor } from "./access";
+import { isMaster, requireMasterFn, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { assertReauth, CORPORATE, recordFinancialAudit } from "./fin-audit";
 
@@ -17,7 +17,8 @@ export type CatalogProduct = typeof catalogProducts.$inferSelect;
 export type PriceVersion = typeof catalogPriceVersions.$inferSelect;
 export type CatalogItem = CatalogProduct & { prices: Partial<Record<PriceCycle, PriceVersion>> };
 
-const requireMaster = (actor: Actor) => { if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel administra o catálogo e os preços."); };
+/** Catálogo e preços (D138): o dono e o Financeiro da equipe. */
+const requireMaster = (actor: Actor) => { if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel administra o catálogo e os preços."); requireMasterFn(actor, ["FINANCEIRO"]); };
 
 // ---------------------------------------------------------------------------
 // Semente (idempotente): grava a versão 1 aprovada pelo dono só para o que ainda não existe.

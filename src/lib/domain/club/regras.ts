@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings } from "@/db/schema";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 
 /**
@@ -86,7 +86,7 @@ export async function getClubRules(db: Database): Promise<ClubRules & { version:
 }
 
 export async function saveClubRules(db: Database, actor: Actor, patch: Partial<z.input<typeof clubRulesSchema>>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const { version, ...before } = await getClubRules(db);
   const next = clubRulesSchema.parse({ ...before, ...patch });
   if (new Set(next.missions.map((m) => m.key)).size !== next.missions.length) throw new z.ZodError([{ code: "custom", path: ["missions"], message: "Missões com a mesma chave." }]);

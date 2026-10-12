@@ -23,7 +23,10 @@ export default async function MeuContadorMaster() {
         {q.open.length ? <ul className="grid gap-3 lg:grid-cols-2">{q.open.map((t) => <TicketCard key={t.id} t={t}><TicketDesk id={t.id} status={t.status} /></TicketCard>)}</ul> : <p className="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">Nenhum chamado aberto.</p>}
       </section>
       {q.closed.length ? <details className="mb-6"><summary className="cursor-pointer text-base font-semibold">Encerrados ({q.closed.length})</summary><ul className="mt-3 grid gap-3 lg:grid-cols-2">{q.closed.map((t) => <TicketCard key={t.id} t={t} />)}</ul></details> : null}
-      <section aria-labelledby="mc-reg" className="ds-card p-4"><h2 id="mc-reg" className="mb-3 text-base font-semibold">Regras do serviço (rascunho)</h2><MeuContadorSettingsForm value={settings} /></section>
+      {/* Regras e preço do serviço: só o dono e o Financeiro (D138). */}
+      {!session.user.masterFunction || session.user.masterFunction === "FINANCEIRO" ? (
+        <section aria-labelledby="mc-reg" className="ds-card p-4"><h2 id="mc-reg" className="mb-3 text-base font-semibold">Regras do serviço (rascunho)</h2><MeuContadorSettingsForm value={settings} /></section>
+      ) : null}
     </>
   );
 }

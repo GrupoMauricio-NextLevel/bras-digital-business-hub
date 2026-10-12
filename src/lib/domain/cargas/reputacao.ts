@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings, trCarrierUsers, trCarriers, trLoadRatings, trLoads, trParcels } from "@/db/schema";
-import { requireMaster, type Actor } from "../access";
+import { requireMaster, requireMasterFn, type Actor } from "../access";
 import { recordAudit } from "../audit";
 
 /**
@@ -25,7 +25,7 @@ export async function getReputationRules(db: Database): Promise<ReputationRules>
   return p.success ? p.data : DEFAULT_REPUTATION;
 }
 export async function saveReputationRules(db: Database, actor: Actor, raw: z.input<typeof reputationRulesSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getReputationRules(db);
   const v = reputationRulesSchema.parse(raw);
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

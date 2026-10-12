@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { organizations, platformSettings, priceSurveyResponses, priceSurveyStatus, stores, users, PRICE_SURVEY_BRANDS } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { requireMaster, type Actor } from "../access";
+import { requireMaster, type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError } from "../errors";
 import { FUNNEL_BRANDS, median, type FunnelBrand } from "./funil";
@@ -32,7 +32,7 @@ export async function getSurveySettings(db: Database): Promise<SurveySettings> {
   return parsed.success ? parsed.data : DEFAULT_SURVEY;
 }
 export async function saveSurveySettings(db: Database, actor: Actor, raw: z.input<typeof surveySettingsSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getSurveySettings(db);
   const v = surveySettingsSchema.parse(raw);
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

@@ -8,7 +8,7 @@ import { hashPassword } from "@/lib/security/password";
 import { decryptSecret, encryptSecret } from "@/lib/security/crypto";
 import { commissionOf, DEFAULT_PARTNER_SETTINGS, partnerSettingsSchema, tierFor, type PartnerSettings } from "@/lib/finance/partner-rules";
 import { BRAND_CODES, defaultBrandCode } from "@/lib/brand";
-import { isMaster, type Actor } from "./access";
+import { isMaster, type Actor, requireMasterFn } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 import { periodBounds, periodOf } from "./finance";
@@ -28,7 +28,7 @@ export async function getPartnerSettings(db: Database): Promise<PartnerSettings>
 }
 
 export async function savePartnerSettings(db: Database, actor: Actor, raw: unknown): Promise<PartnerSettings> {
-  if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel altera as regras do programa.");
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const value = partnerSettingsSchema.parse(raw);
   await db.insert(platformSettings).values({ key: SETTINGS_KEY, value, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });
   return value;

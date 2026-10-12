@@ -35,6 +35,9 @@ export function proxy(req: NextRequest) {
   return withAttribution(req, route(req));
 }
 
+/** Repassa o caminho pedido para as páginas (portão da equipe do Master, D138). */
+const withPath = (req: NextRequest) => { const h = new Headers(req.headers); h.set("x-nl-path", req.nextUrl.pathname); return { request: { headers: h } }; };
+
 function route(req: NextRequest) {
   // Prévia da NextLevel Commerce em qualquer endereço: /lojas liga, /lojas/sair desliga (apresentação apenas, não muda permissões).
   const path = req.nextUrl.pathname;
@@ -57,11 +60,11 @@ function route(req: NextRequest) {
     }
     return NextResponse.redirect(route.url, 307);
   }
-  if (route.kind === "rewrite") { const u = req.nextUrl.clone(); u.pathname = route.path; return NextResponse.rewrite(u); }
+  if (route.kind === "rewrite") { const u = req.nextUrl.clone(); u.pathname = route.path; return NextResponse.rewrite(u, withPath(req)); }
   const slug = slugFromHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host"));
-  if (!slug) return NextResponse.next();
+  if (!slug) return NextResponse.next(withPath(req));
   const url = req.nextUrl.clone();
-  if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/")) return NextResponse.next();
+  if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/")) return NextResponse.next(withPath(req));
   url.pathname = `/store/${slug}${url.pathname === "/" ? "" : url.pathname}`;
   return NextResponse.rewrite(url);
 }

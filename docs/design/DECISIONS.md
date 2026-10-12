@@ -1237,3 +1237,19 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **Sorteio fixo por loja** (o mesmo cliente cai sempre no mesmo grupo). Com experimento rodando, só o grupo novo recebe a peça; sem experimento, a peça vale para todos quando ligada. Um experimento rodando por peça.
 - **Leitura:** lojas com 30 dias de casa por grupo, a métrica principal e a de guarda, e a frase em português simples dizendo se a diferença ainda pode ser acaso (teste de duas proporções, 95%). Avisa quando ainda não passou da data ou do tamanho combinados.
 - **Encerrar exige leitura escrita e decisão** (registradas e auditadas): nada vira padrão sem isso.
+
+## D137 — Respostas do dono à rodada de público e preço (2026-10-12)
+1. **Testar os preços da Proposta como experimento:** sim (implementado na D140).
+2. **Ordem de ligar:** questionário → benefícios → porta de entrada como experimento → barra e fio → Club. Sim.
+3. **Conta do grupo:** autorizada (D141).
+4. **Entrevistas:** ainda sem resposta (quem conduz e quais clientes chamar).
+5. **Equipe:** o dono vai cadastrar a equipe no Master (D138).
+6. **Contador parceiro:** o escritório existe; o dono cadastra o usuário no Master (função "Contador parceiro", D138).
+7. **Reputação Ouro:** taxa menor e prioridade na lista, sempre com o selo; criar dados fictícios para demonstração (D139).
+8. **Fotos do Club e da Excursão:** chegam amanhã.
+
+## D138 — Equipe do Master com funções e o contador parceiro (2026-10-12)
+- **Master → Equipe do Master** (`/master/equipe`, só o dono): cadastrar pessoa (nome, e-mail, senha provisória com troca obrigatória), mudar a função, encerrar ou devolver o acesso. Coluna `users.master_function` (migração 0064); vazio = dono.
+- **Funções e telas:** Comercial (Torre, CRM, clientes, lojas, marcas, parceiros), Suporte (clientes e suporte, pedidos, lojas, fornecedores, erros, membros da Brás, Meu Contador), Financeiro (Financeiro NextLevel e SuperDrop, planos, resumo, escritório), Conteúdo (templates, catálogo, descobertas e pauta da Brás) e **Contador parceiro** (só a fila do Meu Contador). O menu mostra só as telas da função e o servidor redireciona quem abre outra (o caminho chega às páginas pelo `proxy`).
+- **Ações sensíveis no servidor** (`requireMasterFn`): preço, catálogo, ofertas, porta de entrada, proposta, experimentos, regras da Brás, da Excursão, do Club e da reputação, parceiros, finanças e **acerto entre empresas** = dono e Financeiro; oportunidades cruzadas = dono e Comercial; atender chamados do Meu Contador = dono, Suporte e contador. O contador parceiro **não** conta como Master em nenhuma outra ação.
+- Testes: `tests/equipe-master.test.ts`.

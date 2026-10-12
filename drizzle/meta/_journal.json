@@ -449,6 +449,13 @@
       "when": 1791754981195,
       "tag": "0063_experimentos",
       "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1791766220646,
+      "tag": "0064_equipe_master",
+      "breakpoints": true
     }
   ]
 }

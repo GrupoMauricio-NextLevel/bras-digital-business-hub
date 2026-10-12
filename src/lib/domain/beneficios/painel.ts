@@ -2,7 +2,7 @@ import { and, count, eq, gte, inArray, ne, sql, sum } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { bdAccessGrants, bdMembers, bdRequests, clubCards, orders, organizations, platformSettings, storeProducts, stores, trCarrierUsers, trCarriers, trLoads, trParcels, trTrips, PRICE_SURVEY_BRANDS } from "@/db/schema";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { emitEvent } from "../events";
 import { getPriceBook } from "../finance";
@@ -30,7 +30,7 @@ export async function getBenefitsSettings(db: Database): Promise<BenefitsSetting
   return p.success ? p.data : { brands: [] };
 }
 export async function saveBenefitsSettings(db: Database, actor: Actor, raw: z.input<typeof benefitsSettingsSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getBenefitsSettings(db);
   const v = benefitsSettingsSchema.parse(raw);
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

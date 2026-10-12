@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings } from "@/db/schema";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 
 /**
@@ -136,7 +136,7 @@ export async function getBrasRules(db: Database): Promise<BrasRules & { version:
 
 /** Grava um ou mais grupos (o resto fica como está), sobe a versão e registra antes/depois na auditoria. */
 export async function saveBrasRules(db: Database, actor: Actor, patch: Partial<BrasRulesInput>): Promise<BrasRules & { version: number }> {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const current = await getBrasRules(db);
   const { version, updatedAt: _u, ...before } = current;
   void _u;

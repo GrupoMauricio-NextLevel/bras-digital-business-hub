@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings } from "@/db/schema";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 
 /**
@@ -59,7 +59,7 @@ export async function getExcursionRules(db: Database): Promise<ExcursionRules & 
 }
 
 export async function saveExcursionRules(db: Database, actor: Actor, patch: Partial<z.input<typeof excursionRulesSchema>>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const { version, ...before } = await getExcursionRules(db);
   const next = excursionRulesSchema.parse({ ...before, ...patch });
   if (!(next.sizes.P.units <= next.sizes.M.units && next.sizes.M.units <= next.sizes.G.units)) throw new z.ZodError([{ code: "custom", path: ["sizes"], message: "O fardo maior precisa ocupar pelo menos o mesmo espaço que o menor." }]);

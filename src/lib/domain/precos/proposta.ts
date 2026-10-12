@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings } from "@/db/schema";
 import { entryChecks, simulateEntry, type EntryModel, type LadderPlan, type Scenario, type SimCosts } from "@/lib/finance/entry-sim";
-import { requireMaster, type Actor } from "../access";
+import { requireMaster, type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { getPriceBook } from "../finance";
 import { listCatalog } from "../nl-catalog";
@@ -80,7 +80,7 @@ export async function getProposal(db: Database): Promise<Proposal> {
 }
 /** Grava o rascunho. Só o Master; aprovar (status APROVADA) não liga nada sozinho: só registra a decisão. */
 export async function saveProposal(db: Database, actor: Actor, raw: z.input<typeof proposalSchema>) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getProposal(db);
   const v = proposalSchema.parse(raw);
   await db.insert(platformSettings).values({ key: KEY, value: v, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: v, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

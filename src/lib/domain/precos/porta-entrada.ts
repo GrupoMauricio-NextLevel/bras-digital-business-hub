@@ -4,7 +4,7 @@ import type { Database } from "@/db/client";
 import { catalogOffers, clubLedger, financeInvoices, stores, trialClaims, users, type OfferRules, type Store } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { activeOffer, listOffers, seededOnce } from "../nl-catalog";
-import { requireMaster, type Actor } from "../access";
+import { type Actor, requireMasterFn } from "../access";
 import { NotFoundError } from "../errors";
 import { assertReauth, CORPORATE, recordFinancialAudit } from "../fin-audit";
 import { emitEvent } from "../events";
@@ -134,7 +134,7 @@ export async function listDoors(db: Database, actor: Actor) {
 }
 
 export async function addDoorVersion(db: Database, actor: Actor, brand: DoorBrand, raw: z.input<typeof doorVersionSchema>, password: string | undefined) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   await assertReauth(db, actor, password);
   const v = doorVersionSchema.parse(raw);
   const key = DOOR_OFFER_KEYS[brand];

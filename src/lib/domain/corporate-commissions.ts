@@ -1,3 +1,4 @@
+import { requireMasterFn } from "./access";
 import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { commissionRules, corporateOrders, partnerCommissions, partnerLeads, partners, platformSettings, stores, users, type CatalogFamily, type PriceCycle } from "@/db/schema";
@@ -28,7 +29,7 @@ export async function getFinanceSettings(db: Database): Promise<FinanceSettings>
 }
 
 export async function saveFinanceSettings(db: Database, actor: Actor, s: FinanceSettings) {
-  if (actor.role !== "NEXTLEVEL_MASTER") throw new ForbiddenError();
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const before = await getFinanceSettings(db);
   await db.insert(platformSettings).values({ key: FIN_KEY, value: s, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value: s, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });
   await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "FINANCE_SETTINGS", entityType: "platform_settings", entityId: FIN_KEY, before, after: s });

@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { clubCards, clubCounters, clubPurchases, clubSettlements, clubVoucherFunding, clubVouchers, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { requireMaster, type Actor } from "../access";
+import { requireMaster, type Actor, requireMasterFn } from "../access";
 import { recordAudit } from "../audit";
 import { DomainError, NotFoundError } from "../errors";
 import { getGroupCompanies } from "../grupo";
@@ -168,7 +168,7 @@ export const monthOf = (d: Date) => new Date(d.getTime() - 3 * 3_600_000).toISOS
  * Se quem concedeu é outra empresa, ela deve à empresa onde o vale foi usado. As dívidas entre duas empresas se compensam.
  */
 export async function settlementReport(db: Database, actor: Actor, month: string) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   if (!/^\d{4}-\d{2}$/.test(month)) throw new DomainError("MONTH", "Mês inválido.");
   const { from, to } = monthRange(month);
   const used = await db.select({ id: clubVouchers.id, points: clubVouchers.points, valueCents: clubVouchers.valueCents, usedBy: clubVouchers.usedBy }).from(clubVouchers).where(and(eq(clubVouchers.status, "USADO"), gte(clubVouchers.usedAt, from), lt(clubVouchers.usedAt, to)));
@@ -202,7 +202,7 @@ export async function settlementReport(db: Database, actor: Actor, month: string
 
 /** Marca o acerto feito fora do sistema (nota ou transferência), pelo valor em aberto da linha. */
 export async function markSettled(db: Database, actor: Actor, month: string, debtor: string, creditor: string, note?: string) {
-  requireMaster(actor);
+  requireMasterFn(actor, ["FINANCEIRO"]);
   const rep = await settlementReport(db, actor, month);
   const line = rep.lines.find((l) => l.debtor === debtor && l.creditor === creditor);
   if (!line || line.openCents <= 0) throw new DomainError("NOTHING", "Nada em aberto entre essas empresas neste mês.");
