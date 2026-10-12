@@ -1,6 +1,6 @@
 # Links do sistema (conferidos em 06/10/2026)
 
-**Guias da família (ambiente de demonstração):** Samuel, explorar e testar o sistema inteiro: `docs/manual/GUIA-DO-EXPLORADOR-SAMUEL.md` (PDF ao lado) · Danielle, gestão financeira: `docs/manual/GUIA-GESTAO-FINANCEIRA-DANIELLE.md` (PDF ao lado). Gerar os PDFs de novo: `bash scripts/manuais/gerar-pdf.sh`
+**Guias da família (ambiente de demonstração):** Samuel, explorar e testar o sistema inteiro: `docs/manual/GUIA-DO-EXPLORADOR-SAMUEL.md` (PDF ao lado) · Danielle, gestão financeira: `docs/manual/GUIA-GESTAO-FINANCEIRA-DANIELLE.md` (PDF ao lado). Os PDFs saem no modo escuro (ler à noite) e numa versão `-claro` (imprimir). Gerar de novo: `bash scripts/manuais/gerar-pdf.sh`
 
 Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de entrada da marca. Cada pessoa vê só o painel do seu papel.
 
