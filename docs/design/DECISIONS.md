@@ -1303,6 +1303,17 @@ Pedido do dono: "um ambiente simulado para gravação de treinamento usando o si
 - **Publicação:** é um serviço separado no Render (não mexe na produção), com `NEXT_PUBLIC_DEMO_MODE=true`, `DEMO_AUTOSEED=true`, `DATABASE_URL=pglite://memory`, `BRAS_PANELS=true` e segredos próprios; depende da aprovação do dono (plano e endereço). Guia em `docs/DEMO.md`.
 - Testes: `tests/demo-gravacao.test.ts`.
 
+## D145 — "Pronto e desligado" na Central de qualidade (2026-10-12)
+Pedido do dono: "pode desenvolver a aba Pronto e desligado; quero ver tudo em funcionamento".
+- **Onde:** Master → Central de qualidade → aba **Pronto e desligado** (só o dono, como a Central).
+- **O que mostra:** tudo o que já está no ar mas desligado de propósito, com o estado de agora (Ligado, Em parte, Desligado) e onde ligar, em quatro grupos:
+  - **Roteiro de ligar em ordem** (o mesmo de D140, com o próximo passo destacado);
+  - **Dinheiro e cobrança:** conta Mercado Pago da NextLevel, Pagar.me, taxa e Pix do frete da Excursão, experimentos rodando, situação da Proposta;
+  - **Marcas e acesso:** chaves do Render (cadastro aberto da Commerce, parceiros na Commerce, Brás aberta ao público, painéis da Brás, endereço só dos painéis);
+  - **Comunicação:** envio real de e-mails e contatos de suporte.
+- **Só leitura:** nada é ligado pela aba. Item de tela leva ao lugar certo do Master; item do Render mostra o nome da chave. Nenhum valor de segredo aparece (só "ligada/desligada").
+- Código: `src/lib/domain/qualidade-desligados.ts` (`readyButOff`), `src/components/master/qualidade/pronto-desligado.tsx`. Testes: `tests/pronto-desligado.test.ts`.
+
 ## D146 — Imagens da auditoria geral ligadas nas páginas, painéis e e-mails (2026-10-12)
 Pedido do dono: integrar as 41 imagens dos lotes A a E (`docs/prompts/imagens-auditoria-geral-gpt.md`), usando os manifestos como fonte da verdade, sem sobrescrever nada e sem mudar textos, conteúdo comercial ou regras. (D145 fica reservada para a aba "Pronto e desligado" da Central de qualidade.)
 - **Pastas e formatos:** fotos em `public/portal/<superdrop|commerce|nextlevel>/v3/` com o PNG original + AVIF (qualidade 55) + WebP (qualidade 82); prévias de link e faixas de e-mail em PNG original + JPG (fundo navy, sem AVIF: redes e e-mail não leem); ilustrações em `public/ilustracoes/v1/` (PNG original + WebP com transparência); feed e story dos parceiros em `docs/marca/` (fora do site). Nenhuma colisão de nome.

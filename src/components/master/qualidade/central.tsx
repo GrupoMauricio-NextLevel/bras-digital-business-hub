@@ -13,11 +13,13 @@ import type { PublicImage } from "@/lib/qualidade/imagens";
 import type { BrandCode } from "@/lib/brand";
 import type { QaCheckResult } from "@/db/schema";
 import { checkDomainsAction, checkPagesAction, markScreenAction, resetScreensAction } from "@/app/actions/qualidade";
+import type { OffGroup } from "@/lib/domain/qualidade-desligados";
+import { ProntoDesligado } from "./pronto-desligado";
 
 type Mark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; needs: Need[]; imageBrief: string | null; updatedAt: string | null; updatedByName: string | null };
 type Screen = { route: string; label: string; areaKey: string; host: BrandCode; params: string[]; mark: Mark; check: QaCheckResult | null };
 type Run = { at: string; ok: number; failed: number; byName: string | null } | null;
-type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; images: PublicImage[]; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null };
+type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; images: PublicImage[]; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null; off: OffGroup[] };
 
 type Filter = "todas" | "pendentes" | "testadas" | "aprovadas" | "concluidas" | "problema" | "falta" | "falhou";
 const FILTERS: { key: Filter; label: string }[] = [
@@ -83,7 +85,7 @@ function StackBar({ marks, label }: { marks: Mark[]; label: string }) {
   );
 }
 
-export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun, openErrors, version }: Props) {
+export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun, openErrors, version, off }: Props) {
   const router = useRouter();
   const [marks, setMarks] = React.useState<Record<string, Mark>>(() => Object.fromEntries(screens.map((s) => [s.route, s.mark])));
   const [area, setArea] = usePref<string>("area", "todas");
@@ -154,6 +156,7 @@ export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun,
           <TabsTrigger value="falta">O que falta</TabsTrigger>
           <TabsTrigger value="dominios">Domínios</TabsTrigger>
           <TabsTrigger value="checagem">Checagem automática</TabsTrigger>
+          <TabsTrigger value="desligado">Pronto e desligado</TabsTrigger>
         </TabsList>
 
         {/* Controles comuns às telas e ao "uma por uma" */}
@@ -191,6 +194,10 @@ export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun,
 
         <TabsContent value="foco">
           <Foco list={list} urlOf={urlOf} onSave={save} />
+        </TabsContent>
+
+        <TabsContent value="desligado">
+          <ProntoDesligado groups={off} />
         </TabsContent>
 
         <TabsContent value="falta">
