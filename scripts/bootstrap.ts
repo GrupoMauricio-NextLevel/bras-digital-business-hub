@@ -15,6 +15,9 @@ async function main() {
   const url = resolveDatabaseUrl();
   if (url.startsWith("pglite://")) mkdirSync("data", { recursive: true });
   console.log(`→ banco: ${url.replace(/:\/\/[^@]+@/, "://***@")}`);
+  // Banco em memória (demonstração): tudo o que se preparasse aqui sumiria ao fim deste processo; o servidor prepara o
+  // dele ao subir (DEMO_AUTOSEED). Pular economiza memória no plano pequeno (D144).
+  if (url === "pglite://memory") { console.log("✔ banco em memória: o servidor prepara ao subir"); return; }
   const handle = await createDatabase(url);
   await runMigrations(handle.db);
   const log = await bootstrapDatabase(handle.db, { seedDemo: process.env.SEED_DEMO === "true", masterEmail: process.env.MASTER_EMAIL, masterPassword: process.env.MASTER_PASSWORD, masterName: process.env.MASTER_NAME });

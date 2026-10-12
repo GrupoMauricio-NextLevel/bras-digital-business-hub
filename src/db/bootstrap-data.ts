@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import type { Database } from "./client";
-import { organizations, themes, users } from "./schema";
+import { organizations, platformSettings, themes, users } from "./schema";
 import { seedDigitalProducts, seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
@@ -14,6 +14,9 @@ import { ensureShowcaseStores } from "@/lib/themes/showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 
+/** Chave da marca de banco de demonstração (D144). */
+export const DEMO_MARKER_KEY = "demo.ambiente";
+
 export type BootstrapOptions = { seedDemo: boolean; masterEmail?: string; masterPassword?: string; masterName?: string };
 
 /**
@@ -26,7 +29,12 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
   const orgCount = Number(((await db.execute(sql`select count(*)::int as n from organizations`)) as { rows: { n: number }[] }).rows[0]?.n ?? 0);
 
   if (opts.seedDemo) {
-    if (orgCount === 0) { await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db); log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)"); }
+    if (orgCount === 0) {
+      await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db);
+      // Marca de banco de demonstração (D144): só um banco com esta marca pode ser apagado pelo "Recomeçar do zero".
+      await db.insert(platformSettings).values({ key: DEMO_MARKER_KEY, value: { createdAt: new Date().toISOString() } }).onConflictDoNothing();
+      log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)");
+    }
     else log.push("banco já populado (demo não reaplicado)");
     if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");

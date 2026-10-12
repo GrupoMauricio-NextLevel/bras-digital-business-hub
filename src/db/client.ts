@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import * as schema from "./schema";
 
@@ -59,17 +60,31 @@ export async function getDb(): Promise<Database> {
 }
 
 /**
- * Recomeça a demonstração (D144): só no banco de demonstração em memória. Fecha o banco atual e cria outro, migrado e
- * populado do zero. Todas as sessões deixam de valer (os usuários são recriados). Em qualquer outro banco, recusa.
+ * Recomeça a demonstração (D144). Só com o modo demonstração ligado e, no Postgres, só num banco que tenha a marca de
+ * demonstração (gravada quando o banco nasceu com os dados fictícios): a produção nunca tem essa marca, então nunca é
+ * apagada. Em memória: troca por um banco novo. No Postgres: apaga as tabelas, migra e popula de novo.
  */
 export async function resetDemoDatabase() {
-  if (process.env.DEMO_AUTOSEED !== "true" || process.env.NEXT_PUBLIC_DEMO_MODE !== "true" || resolveDatabaseUrl() !== "pglite://memory") {
-    throw new Error("Recomeçar só existe no ambiente de demonstração em memória.");
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== "true") throw new Error("Recomeçar só existe no ambiente de demonstração.");
+  const url = resolveDatabaseUrl();
+  if (url === "pglite://memory" && process.env.DEMO_AUTOSEED === "true") {
+    const old = globalForDb.__nlDb;
+    globalForDb.__nlDb = undefined;
+    await getDb();
+    try { await (await old)?.close(); } catch { /* o banco antigo já estava fechado */ }
+    return;
   }
-  const old = globalForDb.__nlDb;
-  globalForDb.__nlDb = undefined;
-  await getDb();
-  try { await (await old)?.close(); } catch { /* o banco antigo já estava fechado */ }
+  if (!url.startsWith("postgres")) throw new Error("Recomeçar não está disponível neste banco.");
+  const db = await getDb();
+  const { DEMO_MARKER_KEY, bootstrapDatabase } = await import("./bootstrap-data");
+  const marked = (await db.execute(sql`select 1 from platform_settings where key = ${DEMO_MARKER_KEY} limit 1`)) as { rows: unknown[] };
+  if (!marked.rows.length) throw new Error("Este banco não é de demonstração: nada foi apagado.");
+  await db.execute(sql`drop schema if exists drizzle cascade`);
+  await db.execute(sql`drop schema public cascade`);
+  await db.execute(sql`create schema public`);
+  const { runMigrations } = await import("./migrate");
+  await runMigrations(db);
+  await bootstrapDatabase(db, { seedDemo: true });
 }
 
 export { schema };
