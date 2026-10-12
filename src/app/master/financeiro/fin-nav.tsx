@@ -14,6 +14,7 @@ const ITEMS = [
   { key: "parceiros", label: "Parceiros", href: "/master/financeiro/parceiros" },
   { key: "gateways", label: "Gateways e conciliação", href: "/master/financeiro/gateways" },
   { key: "superdrop", label: "SuperDrop", href: "/master/financeiro/superdrop" },
+  { key: "operacao", label: "Operação SuperDrop", href: "/master/financeiro/operacao" },
   { key: "jornada", label: "Jornada", href: "/master/financeiro/jornada" },
   { key: "auditoria", label: "Auditoria", href: "/master/financeiro/auditoria" },
 ];

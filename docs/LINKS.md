@@ -6,10 +6,10 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 **Páginas públicas**
 - Início: https://superdrop.com.br/
 - Planos: https://superdrop.com.br/planos
-- Fornecedores: https://superdrop.com.br/fornecedores
 - Seja fornecedor: https://superdrop.com.br/seja-fornecedor
 - Programa de parceiros: https://superdrop.com.br/parceiros
-- Loja NextLevel (temas e serviços): https://superdrop.com.br/loja-nextlevel
+- Loja NextLevel (temas e serviços): https://master.nextlevelgroup.com.br/loja-nextlevel (site do grupo, D149; o endereço antigo no SuperDrop leva para lá)
+- Termos e privacidade: https://superdrop.com.br/termos · https://superdrop.com.br/privacidade
 - Temas: https://superdrop.com.br/temas
 - Como funciona: https://superdrop.com.br/como-funciona
 - Dúvidas: https://superdrop.com.br/faq
@@ -51,18 +51,20 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 - Loja virtual `/merchant/storefront` · Editor do tema `/theme-editor` · Temas `/merchant/templates`
 - Gestão: Análise `/merchant/analytics` · Financeiro `/merchant/finance` · Equipe `/merchant/team` · Auditoria `/merchant/auditoria` · Configurações `/merchant/settings`
 
-**Administração Commerce** (equipe NextLevel; https://lojas.nextlevelgroup.com.br/commerce)
+**Administração Commerce** (equipe NextLevel; só no Master desde D149: https://master.nextlevelgroup.com.br/commerce)
 - Visão geral `/commerce` · Lojas `/commerce/stores` · Pedidos `/commerce/orders` · Catálogo `/commerce/catalog` · Interessados `/commerce/leads` · Planos `/commerce/plans` · Configurações `/commerce/settings`
 
 **Vitrine de cada loja:** `https://lojas.nextlevelgroup.com.br/store/<endereço-da-loja>` (ou o domínio próprio da loja).
 
 ## Master NextLevel — master.nextlevelgroup.com.br (no ar)
+**Site do grupo (D149):** Soluções https://master.nextlevelgroup.com.br/solucoes · Loja NextLevel https://master.nextlevelgroup.com.br/loja-nextlevel · termos /termos · privacidade /privacidade (vão para nextlevelgroup.com.br na Fase 3)
+
 **Entrada:** https://master.nextlevelgroup.com.br/login
 
 **Painel Master** (https://master.nextlevelgroup.com.br/master)
 - **Central de qualidade** `/master/qualidade` (todas as telas, uma por uma, aprovar e testar; domínios e checagem automática) · Dashboard `/master` · **Clientes e suporte** `/master/clientes` (achar qualquer cliente e entrar em modo suporte) · Página de cada marca: SuperDrop `/master/marcas/superdrop` · Commerce `/master/marcas/commerce` · Resumo do dia `/master/summary` · Pedidos `/master/orders` · Erros do sistema `/master/errors` · Integridade dos dados `/master/integridade` · CRM Loja NextLevel `/master/crm`
 - Rede: Fornecedores `/master/suppliers` (novo `/master/suppliers/new`) · Redes `/master/networks` · Lojas `/master/stores` · Catálogo `/master/catalog` · Parceiros `/master/partners`
-- Negócio: Financeiro `/master/finance` · Planos `/master/plans` · Temas `/master/templates` · Escritório virtual `/master/office` · Configurações `/master/settings`
+- Negócio: Financeiro `/master/financeiro` (operação SuperDrop em `/master/financeiro/operacao`; o antigo `/master/finance` leva para lá) · Planos `/master/plans` · Temas `/master/templates` · Escritório virtual `/master/office` · Configurações `/master/settings`
 - Console Commerce: https://master.nextlevelgroup.com.br/commerce
 
 ## Marcas em preparação (página "em breve")
@@ -82,6 +84,6 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 - Relatório da noite: `docs/relatorios/BD-RELATORIO-NOITE-2026-10-09.md`
 - Prompt da noite: `docs/prompts/bras-digital-noite.md` · fotos para o GPT: `docs/prompts/imagens-bras-digital-gpt.md`
 - Público: https://bras.nextlevelgroup.com.br · termos: /termos · privacidade: /privacidade · descoberta: /d/<id>
-- Estúdio (Master): /bras/visao · /bras (pedidos) · /bras/comissoes · /bras/descobertas · /bras/importadoras · /bras/membros · /bras/acesso
+- Estúdio (só no Master, https://master.nextlevelgroup.com.br, D149): /bras/visao · /bras (pedidos) · /bras/comissoes · /bras/descobertas · /bras/importadoras · /bras/membros · /bras/acesso
 - Meu Brás (membro): /meu-bras · /meu-bras/pedidos (comprovante de retirada em cada pedido)
 - Balcão (importadora, só com BRAS_PANELS=true): link gerado em Estúdio > Importadoras

@@ -5,7 +5,7 @@ import { areaOf, labelOf, type QaKind } from "./rotas";
 /**
  * Mapa vivo (D147): a mesma página testada em cada endereço no ar, seguindo os redirecionamentos até o fim, e as regras de
  * "onde cada página deve morar" já decididas pelo dono (12/10/2026). Arquivo puro: serve o servidor, a tela e o script da Fase 1.
- * O que ainda não foi decidido (Fase 2 do prompt docs/prompts/mapa-paginas-dominios-painel.md) fica "a definir", nunca inventado.
+ * Regras de painéis e páginas do grupo: D149 (proposta aceita). O que ainda não foi decidido fica "a definir", nunca inventado.
  */
 export const MAP_HOSTS = ["NEXTLEVEL", "SUPERDROP", "NEXTLEVEL_COMMERCE", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as const;
 export type MapHost = (typeof MAP_HOSTS)[number];
@@ -60,11 +60,30 @@ const GROUP_SITE = ["/solucoes", "/loja-nextlevel"];
 const GROUP_LEGAL = ["/termos", "/privacidade"];
 const under = (r: string, p: string) => r === p || r.startsWith(`${p}/`);
 
+// Painéis (D149, recomendação aceita pelo dono): os da equipe só no Master; os dos clientes no endereço da marca deles (e no Master, para o suporte).
+const TEAM_PANELS = ["/master", "/commerce", "/bras"];
+const CLIENT_PANEL_HOME: { prefix: string; hosts: MapHost[] }[] = [
+  { prefix: "/meu-bras", hosts: ["BRAS_DIGITAL"] }, { prefix: "/importadora", hosts: ["BRAS_DIGITAL"] }, { prefix: "/transportadora", hosts: ["NEXTLEVEL_CARGAS"] },
+  { prefix: "/merchant", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] }, { prefix: "/supplier", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] },
+  { prefix: "/partner", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] }, { prefix: "/theme-editor", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] },
+];
+
+function panelExpect(route: string, host: MapHost): Expect {
+  if (TEAM_PANELS.some((p) => under(route, p))) return host === "NEXTLEVEL"
+    ? { kind: "DEVE_ABRIR", why: "Painel da equipe NextLevel: mora no Master (D149)." }
+    : { kind: "NAO_DEVE", why: "Painel da equipe NextLevel fora do Master: deveria levar ao Master (D149)." };
+  const home = CLIENT_PANEL_HOME.find((x) => under(route, x.prefix));
+  if (!home) return { kind: "DEVE_ABRIR", why: "Entrada e conta: abrem em qualquer endereço." };
+  if (host === "NEXTLEVEL" || home.hosts.includes(host)) return { kind: "DEVE_ABRIR", why: "Painel do cliente no endereço da marca dele (ou no Master, para o suporte) (D149)." };
+  if (home.hosts.length > 1) return { kind: "A_DEFINIR", why: "Painel de lojista no endereço da Brás ou da Cargas: a conta é recusada no login; não há uma marca de destino única." };
+  return { kind: "NAO_DEVE", why: "Painel do cliente no endereço de outra marca: deveria levar ao endereço da marca dele (D149)." };
+}
+
 export function expectedAt(route: string, host: MapHost, kind: QaKind = areaOf(route).kind): Expect {
-  if (kind === "PAINEL") return host === "NEXTLEVEL"
-    ? { kind: "DEVE_ABRIR", why: "Painéis concentrados no Master (decisão de 12/10)." }
-    : { kind: "NAO_DEVE", why: "Painel respondendo fora do Master: por ora todos os painéis ficam no Master (decisão de 12/10)." };
-  if (GROUP_SITE.some((p) => under(route, p))) return { kind: "NAO_DEVE", why: "É da NextLevel Soluções Digitais: vai morar no site do grupo, nextlevelgroup.com.br (decisão de 12/10)." };
+  if (kind === "PAINEL") return panelExpect(route, host);
+  if (GROUP_SITE.some((p) => under(route, p))) return host === "NEXTLEVEL"
+    ? { kind: "DEVE_ABRIR", why: "Site do grupo (NextLevel Soluções Digitais): mora no endereço do grupo; até a Fase 3, no do Master (D149)." }
+    : { kind: "NAO_DEVE", why: "É da NextLevel Soluções Digitais: deveria levar ao site do grupo (D149)." };
   if (GROUP_LEGAL.includes(route)) return { kind: "DEVE_ABRIR", why: "Termos e privacidade: um texto do grupo inteiro, presente em todas as marcas e no endereço do grupo (decisão de 12/10)." };
   if (kind === "DEMO") return { kind: "A_DEFINIR", why: "Só existe no ambiente de demonstração." };
   if (host === "NEXTLEVEL" && route !== "/login" && route !== "/esqueci-senha" && !under(route, "/redefinir-senha")) return { kind: "NAO_DEVE", why: "O Master é só painéis e entrada." };
@@ -74,7 +93,7 @@ export function expectedAt(route: string, host: MapHost, kind: QaKind = areaOf(r
 /** Uma célula está "fora do lugar" quando contraria uma decisão já tomada. */
 export function misplaced(route: string, host: MapHost, state: CellState, kind: QaKind = areaOf(route).kind): string | null {
   const e = expectedAt(route, host, kind);
-  if (e.kind === "DEVE_ABRIR" && (state === "404" || state === "ERRO" || state === "INICIO")) return e.why;
+  if (e.kind === "DEVE_ABRIR" && (state === "404" || state === "ERRO" || state === "INICIO" || (kind === "PAINEL" && state === "OUTRO"))) return e.why;
   if (e.kind === "NAO_DEVE" && (state === "ABRE" || (kind === "PAINEL" && state === "LOGIN"))) return e.why;
   return null;
 }
@@ -107,7 +126,7 @@ export type TreeCounts = { total: number; tested: number; approved: number; prob
 export type TreeNode = { key: string; label: string; depth: number; children: TreeNode[]; pages: TreePage[]; counts: TreeCounts; routes: string[] };
 
 const GROUPS: { kind: QaKind; label: string }[] = [
-  { kind: "PAINEL", label: "Painéis (todos no Master)" }, { kind: "PUBLICA", label: "Páginas públicas e vitrines" },
+  { kind: "PAINEL", label: "Painéis" }, { kind: "PUBLICA", label: "Páginas públicas e vitrines" },
   { kind: "PRIVADA", label: "Links privados" }, { kind: "DEMO", label: "Só na demonstração" },
 ];
 export const pageMisplaced = (p: TreePage) => Object.values(p.cells).some((c) => c?.misplaced);

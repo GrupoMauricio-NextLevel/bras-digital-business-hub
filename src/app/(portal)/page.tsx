@@ -11,7 +11,7 @@ import { listPublicBrasVideos } from "@/lib/domain/bras/videos";
 import { CargasHome } from "@/components/portal/cargas/cargas-home";
 import { getBrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
 import { BrasHome } from "@/components/portal/bras/bras-home";
-import { getBrand } from "@/lib/brand-server";
+import { getBrand, groupLink } from "@/lib/brand-server";
 import { robotsForBrandPortal } from "@/lib/bras/visibility";
 import { CommerceHome } from "@/components/portal/commerce-home";
 import { SoonHome } from "@/components/portal/soon-home";
@@ -58,6 +58,7 @@ export default async function Portal() {
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
+  const solucoes = await groupLink("/solucoes");
   // Marca com página inicial própria (NextLevel Cargas, D108).
   if (brand.landing === "cargas") return <CargasHome brand={brand} />;
   // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
@@ -185,7 +186,7 @@ export default async function Portal() {
               { t: "Parceiro", d: "Indica lojistas e soluções da NextLevel e acompanha só as próprias comissões, com carência e extrato claros.", href: "/parceiros", cta: "Seja parceiro" },
             ].map((x) => <div key={x.t} className="rounded-2xl border border-border bg-surface p-6"><h3 className="text-lg font-bold">{x.t}</h3><p className="mt-2 text-sm text-muted-foreground">{x.d}</p><Link href={x.href} className="mt-4 inline-flex text-sm font-semibold text-link underline">{x.cta} →</Link></div>)}
           </div>
-          <p className="mt-6 text-sm text-muted-foreground">A NextLevel cobra só o que é dela (planos, taxas e serviços), em fatura separada. Precisa de loja montada, migração, temas ou anúncios? Veja as <Link href="/solucoes" className="font-semibold text-link underline">Soluções NextLevel</Link> ou peça um <Link href="/solucoes#diagnostico" className="font-semibold text-link underline">diagnóstico gratuito</Link>.</p>
+          <p className="mt-6 text-sm text-muted-foreground">A NextLevel cobra só o que é dela (planos, taxas e serviços), em fatura separada. Precisa de loja montada, migração, temas ou anúncios? Veja as <Link href={solucoes} className="font-semibold text-link underline">Soluções NextLevel</Link> ou peça um <Link href={`${solucoes}#diagnostico`} className="font-semibold text-link underline">diagnóstico gratuito</Link>.</p>
         </div>
       </section>
 

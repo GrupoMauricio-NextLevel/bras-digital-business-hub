@@ -1,4 +1,4 @@
-import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
+import { HOLDING_CODE, brandByCode, brandOfHostStrict, type BrandCode } from "./brand";
 
 /**
  * Cada marca tem um endereço PÚBLICO (portal, vitrines, lojas dos fornecedores) e, se configurado, um endereço de PAINÉIS
@@ -9,7 +9,29 @@ export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant",
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
 export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
 /** Páginas do grupo que abrem no endereço da holding (D147: vão para nextlevelgroup.com.br quando o site do grupo existir). */
-export const GROUP_PATHS = ["/solucoes", "/termos", "/privacidade"];
+export const GROUP_PATHS = ["/solucoes", "/termos", "/privacidade", "/loja-nextlevel"];
+/** Páginas que são da NextLevel Soluções Digitais (agência): nos endereços das marcas vão para o endereço do grupo (D149). */
+const GROUP_OWNED = ["/solucoes", "/loja-nextlevel"];
+/** Painéis da equipe NextLevel: só no Master (D149; `MASTER_HOST_ONLY=false` desliga). */
+export const TEAM_PANEL_PREFIXES = ["/master", "/commerce", "/bras"];
+/** Painéis de clientes que têm uma marca só: no endereço de outra marca vão para o da marca deles (D149). */
+const PANEL_HOME: { prefix: string; brand: "BRAS_DIGITAL" | "NEXTLEVEL_CARGAS" }[] = [
+  { prefix: "/meu-bras", brand: "BRAS_DIGITAL" }, { prefix: "/importadora", brand: "BRAS_DIGITAL" }, { prefix: "/transportadora", brand: "NEXTLEVEL_CARGAS" },
+];
+/** Páginas públicas do SuperDrop: abertas no endereço da Commerce vão para o SuperDrop (D149). */
+const SUPERDROP_OWNED = ["/seja-fornecedor", "/fornecedores"];
+const under = (p: string, x: string) => p === x || p.startsWith(`${x}/`);
+/** Endereço do site do grupo: `GROUP_SITE_URL` quando nextlevelgroup.com.br estiver ligado (Fase 3); até lá, o da holding. */
+export const groupSiteUrl = (env: Record<string, string | undefined> = process.env) => (env.GROUP_SITE_URL?.replace(/\/$/, "") || brandByCode(HOLDING_CODE, env).baseUrl);
+/** Link para uma página do grupo visto de um endereço: no próprio grupo e em endereço técnico (demonstração, localhost), relativo; nas marcas, direto no site do grupo, sem passar por redirecionamento (D149). */
+export const groupLinkFor = (path: string, hostBrand: BrandCode | null | undefined, env: Record<string, string | undefined> = process.env) =>
+  !hostBrand || hostBrand === HOLDING_CODE ? path : `${groupSiteUrl(env)}${path}`;
+/** Vitrine de uma marca (SuperDrop × Commerce) aberta no endereço da outra: endereço da marca dona, ou null se está no lugar (D149). Demonstrações de tema ficam onde estão. */
+export function storeOwnerBase(hostBrand: BrandCode | null | undefined, storeBrand: BrandCode, showcase: boolean, env: Record<string, string | undefined> = process.env): string | null {
+  const pair: BrandCode[] = ["SUPERDROP", "NEXTLEVEL_COMMERCE"];
+  if (showcase || !hostBrand || hostBrand === storeBrand || !pair.includes(hostBrand) || !pair.includes(storeBrand)) return null;
+  return brandByCode(storeBrand, env).baseUrl;
+}
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string } | { kind: "rewrite"; path: string };
@@ -21,15 +43,26 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const search = input.search ?? "";
   const host = bare(input.host);
   const brand = brandOfHostStrict(host, env);
+  // Arquivos dos buscadores: cada endereço responde o dele (D149).
+  if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
   // Master central (holding): painéis, login e as páginas do grupo (Soluções, termos e privacidade do grupo, D147/D148). O resto vai ao login.
   if (brand?.code === HOLDING_CODE) {
-    if (isPanelPath(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/api/")) return { kind: "next" };
+    // No endereço próprio do site do grupo (GROUP_SITE_URL, Fase 3), a página inicial é a de Soluções (decisão de 12/10).
+    if ((pathname === "/" || pathname === "") && env.GROUP_SITE_URL && bare(new URL(env.GROUP_SITE_URL).host) === host) return { kind: "redirect", url: `/solucoes${search}` };
+    if (isPanelPath(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/") || pathname.startsWith("/api/")) return { kind: "next" };
     return { kind: "redirect", url: "/login" };
   }
-  // Com MASTER_HOST_ONLY=true o Master só abre no endereço central; nos endereços dos produtos vai para lá.
-  if (brand && env.MASTER_HOST_ONLY === "true" && (pathname === "/master" || pathname.startsWith("/master/"))) {
+  // Painéis da equipe NextLevel só no Master (D149): nos endereços dos produtos vão para lá. MASTER_HOST_ONLY=false desliga.
+  if (brand && env.MASTER_HOST_ONLY !== "false" && TEAM_PANEL_PREFIXES.some((x) => under(pathname, x))) {
     return { kind: "redirect", url: `${brandByCode(HOLDING_CODE, env).baseUrl}${pathname}${search}` };
   }
+  // Painel de cliente de uma marca só (Brás, Cargas) aberto no endereço de outra marca: vai para o da marca dele.
+  const home = brand ? PANEL_HOME.find((x) => under(pathname, x.prefix)) : undefined;
+  if (brand && home && brand.code !== home.brand) return { kind: "redirect", url: `${brandByCode(home.brand, env).baseUrl}${pathname}${search}` };
+  // Páginas da agência (Soluções, Loja NextLevel) moram no site do grupo.
+  if (brand && !brand.soon && !brand.closedCommerce && !brand.publicPaths && GROUP_OWNED.some((x) => under(pathname, x))) return { kind: "redirect", url: `${groupSiteUrl(env)}${pathname}${search}` };
+  // Páginas do SuperDrop (fornecedor) abertas na Commerce vão para o SuperDrop.
+  if (brand?.code === "NEXTLEVEL_COMMERCE" && (SUPERDROP_OWNED.includes(pathname) || /^\/f\/[a-z0-9-]+\/?$/.test(pathname))) return { kind: "redirect", url: `${brandByCode("SUPERDROP", env).baseUrl}${pathname}${search}` };
   const officeHost = brand?.officeUrl ? bare(new URL(brand.officeUrl).host) : null;
   const isOffice = !!officeHost && host === officeHost;
   const passthrough = pathname.startsWith("/api/") || pathname === "/api" || pathname.startsWith("/_next/");

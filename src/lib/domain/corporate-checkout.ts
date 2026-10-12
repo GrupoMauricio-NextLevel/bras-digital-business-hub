@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
+import { groupSiteUrl } from "@/lib/host-routing";
 import { corporateOrders, gatewayTransactions, paymentEvents, reconciliationRecords, serviceDeliveries, stores, users, type GatewayCode, type GatewayTxStatus, type PriceSnapshot } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { PricingError, quotePrice } from "@/lib/finance/catalog-pricing";
@@ -204,7 +205,7 @@ async function fulfillOrder(db: Database, order: CorporateOrder, now: Date) {
     const checklist = [...product.content.scope.map((label) => ({ label, done: false })), { label: "Aceite de entrega (go-live) pelo cliente", done: false }];
     await db.insert(serviceDeliveries).values({ id: newId("sdl"), orderId: order.id, productKey: product.key, storeId: order.storeId, supplierId: order.supplierId, dueAt: due, checklist, details: product.family === "MIGRACAO" ? { sources: product.meta.sources ?? [], maxProducts: product.meta.maxProducts ?? null, source: null, scope: product.summary } : product.family === "MARKETING" ? { mediaSpendPaidByClient: true, minTermMonths: product.meta.minTermMonths ?? 3 } : {} }).onConflictDoNothing();
   }
-  await sendEmail(db, { kind: "NL_CORPORATE_PAID", to: order.buyerEmail, dedupeKey: `NL_CORPORATE_PAID:${order.id}`, subject: `Pagamento confirmado: ${product.name}`, text: `Recebemos o pagamento do pedido ${order.code} (${product.name}).\n\nValor: R$ ${(order.totalCents / 100).toFixed(2).replace(".", ",")} · ${order.method === "PIX" ? "Pix" : `cartão em ${order.installments}x`}.\n\n${product.grantsKey?.startsWith("THEME_") ? "O tema já está liberado na sua loja." : "A equipe NextLevel entra em contato para começar a entrega."}`, cta: { label: "Acompanhar", url: `${appUrl()}${order.storeId ? "/merchant/services" : "/solucoes"}` } });
+  await sendEmail(db, { kind: "NL_CORPORATE_PAID", to: order.buyerEmail, dedupeKey: `NL_CORPORATE_PAID:${order.id}`, subject: `Pagamento confirmado: ${product.name}`, text: `Recebemos o pagamento do pedido ${order.code} (${product.name}).\n\nValor: R$ ${(order.totalCents / 100).toFixed(2).replace(".", ",")} · ${order.method === "PIX" ? "Pix" : `cartão em ${order.installments}x`}.\n\n${product.grantsKey?.startsWith("THEME_") ? "O tema já está liberado na sua loja." : "A equipe NextLevel entra em contato para começar a entrega."}`, cta: { label: "Acompanhar", url: order.storeId ? `${appUrl()}/merchant/services` : `${groupSiteUrl()}/solucoes` } });
 }
 
 /** Estorno ou chargeback: revoga o direito, cancela a entrega não iniciada e estorna a comissão (auditado). */

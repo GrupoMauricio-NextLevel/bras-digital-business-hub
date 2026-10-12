@@ -8,6 +8,8 @@ export const BRAND_CODES = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "
 export type BrandCode = (typeof BRAND_CODES)[number];
 /** "NEXTLEVEL" é a holding: só aparece no endereço do Master central. Os demais são produtos que têm contas, lojas e fornecedores. */
 export const HOLDING_CODE: BrandCode = "NEXTLEVEL";
+/** Atalho de prévia `/lojas` (cara da Commerce em qualquer endereço): só na demonstração (D149). */
+export const brandPreviewAllowed = (env: Record<string, string | undefined> = process.env) => env.NEXT_PUBLIC_DEMO_MODE === "true";
 export const PRODUCT_BRANDS = BRAND_CODES.filter((c) => c !== HOLDING_CODE) as Exclude<BrandCode, "NEXTLEVEL">[];
 
 /** Módulos que uma marca liga por padrão (a compra avulsa e os planos refinam por loja). */
@@ -216,8 +218,8 @@ export function accountBrandConflict(account: { role: string; brand: BrandCode }
   if (!hostBrand) return null;
   const masterHost = brandByCode(HOLDING_CODE, env).baseUrl.replace(/^https?:\/\//, "");
   if (account.role === "NEXTLEVEL_MASTER") {
-    // Com MASTER_HOST_ONLY=true a equipe NextLevel entra só pelo endereço do Master central.
-    if (env.MASTER_HOST_ONLY === "true" && hostBrand.code !== HOLDING_CODE) return { message: `A equipe NextLevel entra pelo endereço ${masterHost}.` };
+    // A equipe NextLevel entra só pelo endereço do Master central (D149; MASTER_HOST_ONLY=false desliga).
+    if (env.MASTER_HOST_ONLY !== "false" && hostBrand.code !== HOLDING_CODE) return { message: `A equipe NextLevel entra pelo endereço ${masterHost}.` };
     return null;
   }
   if (account.brand === hostBrand.code) return null;

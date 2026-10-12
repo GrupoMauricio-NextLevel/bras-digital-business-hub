@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { routeHost, isPanelPath, panelUrl } from "@/lib/host-routing";
+import { routeHost, isPanelPath, panelUrl, groupLinkFor, storeOwnerBase } from "@/lib/host-routing";
+import { brandPreviewAllowed } from "@/lib/brand";
 
 const env = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br,office.nextlevelgroup.com.br", BRAND_OFFICE_SUPERDROP: "https://office.superdrop.com.br", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://lojas.nextlevelgroup.com.br" };
 const go = (host: string, pathname: string, e: Record<string, string | undefined> = env, search = "") => routeHost({ host, pathname, search }, e);
@@ -16,11 +17,11 @@ describe("endereço público × endereço dos painéis", () => {
   });
   it("no endereço público, os painéis vão para o escritório da mesma marca, mantendo caminho e busca", () => {
     expect(go("superdrop.com.br", "/login")).toEqual({ kind: "redirect", url: "https://office.superdrop.com.br/login" });
-    expect(go("www.superdrop.com.br", "/master/stores", env, "?q=a")).toEqual({ kind: "redirect", url: "https://office.superdrop.com.br/master/stores?q=a" });
+    expect(go("www.superdrop.com.br", "/merchant/orders", env, "?q=a")).toEqual({ kind: "redirect", url: "https://office.superdrop.com.br/merchant/orders?q=a" });
     expect(go("lojas.nextlevelgroup.com.br", "/merchant")).toEqual({ kind: "redirect", url: "https://office.nextlevelgroup.com.br/merchant" });
   });
   it("as páginas públicas, vitrines, rastreio e API ficam no endereço público", () => {
-    for (const p of ["/", "/planos", "/faq", "/cadastro", "/f/mantos-shop", "/store/mantos-shop", "/r/abc", "/loja-nextlevel"]) expect(go("superdrop.com.br", p)).toEqual({ kind: "next" });
+    for (const p of ["/", "/planos", "/faq", "/cadastro", "/f/mantos-shop", "/store/mantos-shop", "/r/abc"]) expect(go("superdrop.com.br", p)).toEqual({ kind: "next" });
     expect(go("superdrop.com.br", "/api/webhooks/mercadopago")).toEqual({ kind: "next" });
   });
   it("/loja/<nome> é apelido da vitrine no endereço público", () => {
@@ -33,7 +34,7 @@ describe("endereço público × endereço dos painéis", () => {
     expect(go("office.superdrop.com.br", "/f/mantos-shop")).toEqual({ kind: "redirect", url: "/login?area=fornecedor&nome=mantos-shop" });
     expect(go("office.superdrop.com.br", "/loja/arena-10")).toEqual({ kind: "redirect", url: "/login?area=loja&nome=arena-10" });
     expect(go("office.superdrop.com.br", "/afiliado")).toEqual({ kind: "redirect", url: "/login?area=afiliado" });
-    for (const p of ["/login", "/master", "/supplier/orders", "/merchant", "/partner", "/account/password", "/theme-editor", "/esqueci-senha"]) expect(go("office.superdrop.com.br", p)).toEqual({ kind: "next" });
+    for (const p of ["/login", "/supplier/orders", "/merchant", "/partner", "/account/password", "/theme-editor", "/esqueci-senha"]) expect(go("office.superdrop.com.br", p)).toEqual({ kind: "next" });
     expect(go("office.superdrop.com.br", "/api/cron/x")).toEqual({ kind: "next" });
     expect(go("office.superdrop.com.br", "/planos")).toEqual({ kind: "redirect", url: "https://superdrop.com.br/planos" });
     expect(go("office.superdrop.com.br", "/store/arena-10/cart")).toEqual({ kind: "redirect", url: "https://superdrop.com.br/store/arena-10/cart" });
@@ -59,11 +60,11 @@ describe("Master central e produtos em breve", () => {
     expect(go("master.nextlevelgroup.com.br", "/planos", {})).toEqual({ kind: "redirect", url: "/login" });
     expect(go("master.nextlevelgroup.com.br", "/", {})).toEqual({ kind: "redirect", url: "/login" });
   });
-  it("com MASTER_HOST_ONLY o /master dos produtos leva ao endereço central, mantendo o caminho", () => {
-    const e = { MASTER_HOST_ONLY: "true" };
+  it("o /master dos produtos leva ao endereço central, mantendo o caminho (MASTER_HOST_ONLY=false desliga)", () => {
+    const e = {};
     expect(go("superdrop.com.br", "/master/orders", e, "?a=1")).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master/orders?a=1" });
     expect(go("lojas.nextlevelgroup.com.br", "/master", e)).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master" });
-    expect(go("superdrop.com.br", "/master", {})).toEqual({ kind: "next" });
+    expect(go("superdrop.com.br", "/master", { MASTER_HOST_ONLY: "false" })).toEqual({ kind: "next" });
   });
   it("produto em breve mostra só a página inicial e a lista de espera", () => {
     for (const host of ["bras.nextlevelgroup.com.br", "hubcreators.nextlevelgroup.com.br", "chinahubglobal.com.br"]) {
@@ -78,7 +79,7 @@ describe("Master central e produtos em breve", () => {
 describe("Brás Digital aberta (D92): só apresentação, cadastro e painéis", () => {
   const aberta = { BRAND_SIGNUP_BRAS_DIGITAL: "true" };
   it("páginas da Brás e painéis seguem; páginas das outras marcas voltam para o início", () => {
-    for (const p of ["/", "/cadastro", "/termos", "/privacidade", "/d/bdv_abc123def", "/balcao/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/balcao-club/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/login", "/meu-bras", "/meu-bras/videos", "/master/bras", "/bras", "/bras/videos", "/esqueci-senha", "/api/health", "/r/abc", "/c/ABC123", "/meu-bras/club", "/meu-bras/fretes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "next" });
+    for (const p of ["/", "/cadastro", "/termos", "/privacidade", "/d/bdv_abc123def", "/balcao/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/balcao-club/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/login", "/meu-bras", "/meu-bras/videos", "/esqueci-senha", "/api/health", "/r/abc", "/c/ABC123", "/meu-bras/club", "/meu-bras/fretes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "next" });
     for (const p of ["/balcao/curto", "/balcao-club/curto", "/d/../planos", "/d/bdv_x/extra", "/planos", "/temas", "/como-funciona", "/seja-fornecedor", "/f/importadora", "/store/mantos-shop", "/loja/mantos-shop", "/solucoes"]) expect(go("bras.nextlevelgroup.com.br", p, aberta)).toEqual({ kind: "redirect", url: "/" });
   });
   it("as outras marcas não mudam", () => {
@@ -96,5 +97,74 @@ describe("arquivos estáticos fora do proxy (D107)", () => {
     const re = new RegExp(`^${config.matcher[0]!}$`);
     for (const f of ["/portal/bras/v3/bd-corredor-caixas.avif", "/portal/bras/v3/bd-corredor-caixas.webp", "/portal/bras/v3/bd-og-portal.jpg", "/temas/lume-desktop-3.webp", "/brand/x.png"]) expect(re.test(f)).toBe(false);
     for (const p of ["/", "/cadastro", "/bras/visao", "/d/bdv_abc123"]) expect(re.test(p)).toBe(true);
+  });
+});
+
+describe("reorganização dos endereços (D149)", () => {
+  const sd = "superdrop.com.br", cm = "lojas.nextlevelgroup.com.br", bd = "bras.nextlevelgroup.com.br", cg = "cargas.nextlevelgroup.com.br";
+  const master = "https://master.nextlevelgroup.com.br";
+  const e = { BRAND_SIGNUP_BRAS_DIGITAL: "true" };
+  it("painéis da equipe (Master, Admin Commerce, Estúdio Brás) só no Master, mantendo caminho e busca", () => {
+    expect(go(sd, "/commerce/stores", e, "?x=1")).toEqual({ kind: "redirect", url: `${master}/commerce/stores?x=1` });
+    expect(go(bd, "/bras/videos", e)).toEqual({ kind: "redirect", url: `${master}/bras/videos` });
+    expect(go(bd, "/master/bras", e)).toEqual({ kind: "redirect", url: `${master}/master/bras` });
+    expect(go("office.superdrop.com.br", "/master")).toEqual({ kind: "redirect", url: `${master}/master` });
+    expect(go("master.nextlevelgroup.com.br", "/bras", e)).toEqual({ kind: "next" });
+    // localhost e endereços técnicos não mudam
+    expect(go("localhost:3100", "/master", e)).toEqual({ kind: "next" });
+    // não confunde com caminhos parecidos
+    expect(go(sd, "/brasil", e)).toEqual({ kind: "next" });
+  });
+  it("painéis dos clientes ficam no endereço da marca deles; no de outra marca, vão para o certo", () => {
+    for (const p of ["/merchant", "/supplier/orders", "/partner", "/theme-editor"]) { expect(go(sd, p, e)).toEqual({ kind: "next" }); expect(go(cm, p, e)).toEqual({ kind: "next" }); }
+    expect(go(sd, "/meu-bras/club", e, "?a=1")).toEqual({ kind: "redirect", url: "https://bras.nextlevelgroup.com.br/meu-bras/club?a=1" });
+    expect(go(cm, "/importadora", e)).toEqual({ kind: "redirect", url: "https://bras.nextlevelgroup.com.br/importadora" });
+    expect(go(sd, "/transportadora/fretes", e)).toEqual({ kind: "redirect", url: "https://cargas.nextlevelgroup.com.br/transportadora/fretes" });
+    expect(go(bd, "/meu-bras", e)).toEqual({ kind: "next" });
+  });
+  it("Soluções e Loja NextLevel moram no site do grupo (GROUP_SITE_URL quando ligado)", () => {
+    expect(go(sd, "/solucoes", e)).toEqual({ kind: "redirect", url: `${master}/solucoes` });
+    expect(go(cm, "/solucoes/loja-virtual", e)).toEqual({ kind: "redirect", url: `${master}/solucoes/loja-virtual` });
+    expect(go(sd, "/loja-nextlevel/pedido/ABC", e)).toEqual({ kind: "redirect", url: `${master}/loja-nextlevel/pedido/ABC` });
+    expect(go(sd, "/loja-nextlevel", { ...e, GROUP_SITE_URL: "https://nextlevelgroup.com.br/" })).toEqual({ kind: "redirect", url: "https://nextlevelgroup.com.br/loja-nextlevel" });
+    expect(go("master.nextlevelgroup.com.br", "/loja-nextlevel/pedido/ABC", e)).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/solucoes", e)).toEqual({ kind: "next" });
+  });
+  it("páginas do SuperDrop abertas na Commerce vão para o SuperDrop", () => {
+    expect(go(cm, "/f/mantos-shop", {})).toEqual({ kind: "redirect", url: "https://superdrop.com.br/f/mantos-shop" });
+    expect(go(cm, "/seja-fornecedor", {})).toEqual({ kind: "redirect", url: "https://superdrop.com.br/seja-fornecedor" });
+    expect(go(cm, "/fornecedores", {})).toEqual({ kind: "redirect", url: "https://superdrop.com.br/fornecedores" });
+    expect(go(sd, "/f/mantos-shop", {})).toEqual({ kind: "next" });
+    expect(go(sd, "/seja-fornecedor", {})).toEqual({ kind: "next" });
+  });
+  it("termos e privacidade abrem em todas as marcas", () => {
+    for (const h of [sd, cm, cg, "master.nextlevelgroup.com.br"]) for (const p of ["/termos", "/privacidade"]) expect(go(h, p, e)).toEqual({ kind: "next" });
+  });
+});
+
+describe("links e vitrines na marca certa (D149)", () => {
+  it("links para Soluções e Loja NextLevel: diretos no site do grupo a partir das marcas; relativos no grupo e na demonstração", () => {
+    expect(groupLinkFor("/solucoes", "SUPERDROP", {})).toBe("https://master.nextlevelgroup.com.br/solucoes");
+    expect(groupLinkFor("/loja-nextlevel", "NEXTLEVEL_COMMERCE", { GROUP_SITE_URL: "https://nextlevelgroup.com.br" })).toBe("https://nextlevelgroup.com.br/loja-nextlevel");
+    expect(groupLinkFor("/solucoes", "NEXTLEVEL", {})).toBe("/solucoes");
+    expect(groupLinkFor("/solucoes", null, {})).toBe("/solucoes");
+  });
+  it("no endereço próprio do grupo, a página inicial é a de Soluções; no Master, o login", () => {
+    const g = { GROUP_SITE_URL: "https://nextlevelgroup.com.br", BRAND_DOMAINS_NEXTLEVEL: "master.nextlevelgroup.com.br,nextlevelgroup.com.br" };
+    expect(go("nextlevelgroup.com.br", "/", g, "?ref=AB")).toEqual({ kind: "redirect", url: "/solucoes?ref=AB" });
+    expect(go("master.nextlevelgroup.com.br", "/", g)).toEqual({ kind: "redirect", url: "/login" });
+  });
+  it("loja SuperDrop aberta na Commerce (e o contrário) vai para a marca dona; demonstração de tema fica", () => {
+    expect(storeOwnerBase("NEXTLEVEL_COMMERCE", "SUPERDROP", false, {})).toBe("https://superdrop.com.br");
+    expect(storeOwnerBase("SUPERDROP", "NEXTLEVEL_COMMERCE", false, {})).toBe("https://lojas.nextlevelgroup.com.br");
+    expect(storeOwnerBase("SUPERDROP", "SUPERDROP", false, {})).toBeNull();
+    expect(storeOwnerBase("SUPERDROP", "NEXTLEVEL_COMMERCE", true, {})).toBeNull();
+    expect(storeOwnerBase(null, "NEXTLEVEL_COMMERCE", false, {})).toBeNull(); // demonstração, localhost, domínio próprio
+    expect(storeOwnerBase("NEXTLEVEL", "SUPERDROP", false, {})).toBeNull(); // Master (suporte)
+  });
+  it("atalho /lojas só na demonstração; robots e sitemap passam em qualquer endereço", () => {
+    expect(brandPreviewAllowed({ NEXT_PUBLIC_DEMO_MODE: "true" })).toBe(true);
+    expect(brandPreviewAllowed({})).toBe(false);
+    for (const h of ["superdrop.com.br", "master.nextlevelgroup.com.br", "bras.nextlevelgroup.com.br", "cargas.nextlevelgroup.com.br", "hubcreators.nextlevelgroup.com.br"]) for (const p of ["/robots.txt", "/sitemap.xml"]) expect(go(h, p, {})).toEqual({ kind: "next" });
   });
 });

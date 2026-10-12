@@ -1,7 +1,7 @@
 # Fase 2: proposta de reorganização das páginas (12/10/2026)
 
 > Fase 2 do prompt `docs/prompts/mapa-paginas-dominios-painel.md`, sobre a avaliação `docs/mapa/AVALIACAO-LINKS-2026-10.md` e as suas decisões de 12/10 (D147).
-> **Nada aqui muda endereço sozinho.** As três correções já aprovadas estão feitas (seção 1); o resto (seções 2 a 5) espera o seu sim, item por item.
+> **Estado (12/10):** recomendações aceitas pelo dono e aplicadas em D149 (itens 1 a 7 e 9 da seção 4; 8 e 10 ficam como estão). As respostas da seção 5 estão marcadas abaixo.
 > Toda mudança de endereço terá redirecionamento permanente, para nenhum link que cliente já usa quebrar, e um teste provando.
 
 ## 1. Já feito nesta rodada (aprovado em 12/10)
@@ -88,7 +88,7 @@ mindmap
 | 9 | Sem `sitemap.xml` e `robots.txt` por marca | Um de cada por marca, só com as páginas daquela marca | Buscadores encontram cada marca separada | Não |
 | 10 | Nomes de painel em inglês (`/merchant`, `/supplier`, `/partner`) | **Ficam** (recomendação) | Trocar quebra favoritos e links de e-mail sem ganho para o cliente; o que a pessoa vê (menus e títulos) já é português | Não |
 
-**Ordem sugerida (uma marca por vez, começando pelo que não afeta cliente):** 6 → 7 → 5 → 1 e 2 → 3 → 4 → 9.
+**Ordem sugerida (uma marca por vez, começando pelo que não afeta cliente):** 6 → 7 → 5 → 1 e 2 → 3 → 4 → 9. **Aplicada em D149.** Os redirecionamentos ficam temporários (307) até a Fase 3 fixar os domínios; depois viram permanentes (308).
 
 ## 5. Perguntas para você (com a minha recomendação)
 
@@ -103,5 +103,7 @@ mindmap
 3. **Temas:** ficam no SuperDrop **e** na Commerce (os dois vendem temas aos lojistas), como hoje? Recomendo que sim.
 4. **Brás:** unificar o texto legal da Brás com o do grupo agora (os membros terão de aceitar de novo, com o aviso que já existe no Meu Brás) ou depois? Recomendo depois da revisão jurídica do texto do grupo.
 5. **Texto legal do grupo:** está publicado como "versão inicial, em revisão jurídica". Quer que um advogado revise antes de tirarmos esse aviso?
+
+**Respostas do dono (12/10): aceitas as cinco recomendações** (1: só os painéis da equipe exclusivos do Master; 2: início do site do grupo = Soluções; 3: temas nos dois; 4: Brás depois; 5: revisão jurídica). Aplicado em D149.
 
 Com as respostas, aplico os itens da seção 4 na ordem acima. O Mapa vivo passa a mostrar "fora do lugar" pela árvore-alvo completa, e a Fase 3 (domínios) começa por nextlevelgroup.com.br.

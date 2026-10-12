@@ -30,10 +30,22 @@ describe("seguir o endereço até o fim", () => {
 });
 
 describe("decisões do dono de 12/10", () => {
-  it("painéis só no Master; Soluções e Loja NextLevel no site do grupo; termos e privacidade em todas as marcas", () => {
-    expect(misplaced("/merchant", "SUPERDROP", "LOGIN")).toMatch(/Master/);
+  it("painéis da equipe só no Master, dos clientes na marca deles; Soluções e Loja NextLevel no site do grupo; termos em todas", () => {
+    expect(misplaced("/master/stores", "SUPERDROP", "LOGIN")).toMatch(/Master/);
+    expect(misplaced("/bras/videos", "BRAS_DIGITAL", "ABRE")).toMatch(/Master/);
+    expect(misplaced("/master/stores", "SUPERDROP", "OUTRO")).toBeNull(); // levou ao Master
+    expect(misplaced("/master/stores", "NEXTLEVEL", "LOGIN")).toBeNull();
+    expect(misplaced("/merchant", "SUPERDROP", "LOGIN")).toBeNull();
+    expect(misplaced("/merchant", "NEXTLEVEL_COMMERCE", "LOGIN")).toBeNull();
     expect(misplaced("/merchant", "NEXTLEVEL", "LOGIN")).toBeNull();
-    expect(misplaced("/solucoes", "SUPERDROP", "ABRE")).toMatch(/nextlevelgroup\.com\.br/);
+    expect(misplaced("/meu-bras", "SUPERDROP", "LOGIN")).toMatch(/outra marca/);
+    expect(misplaced("/meu-bras", "BRAS_DIGITAL", "LOGIN")).toBeNull();
+    expect(misplaced("/merchant", "SUPERDROP", "OUTRO")).toMatch(/marca dele/);
+    expect(expectedAt("/merchant", "BRAS_DIGITAL").kind).toBe("A_DEFINIR");
+    expect(misplaced("/solucoes", "SUPERDROP", "ABRE")).toMatch(/site do grupo/);
+    expect(misplaced("/solucoes", "SUPERDROP", "OUTRO")).toBeNull(); // levou ao site do grupo
+    expect(misplaced("/solucoes", "NEXTLEVEL", "ABRE")).toBeNull();
+    expect(misplaced("/loja-nextlevel", "NEXTLEVEL", "404")).toMatch(/Site do grupo/);
     expect(misplaced("/loja-nextlevel", "NEXTLEVEL_COMMERCE", "ABRE")).toMatch(/site do grupo/);
     expect(misplaced("/termos", "SUPERDROP", "404")).toMatch(/grupo inteiro/);
     expect(misplaced("/termos", "BRAS_DIGITAL", "ABRE")).toBeNull();
@@ -50,7 +62,7 @@ describe("árvore", () => {
       page("/master/clientes", "PAINEL", "master"),
       page("/termos", "PUBLICA", "publicas", { SUPERDROP: { state: "404", misplaced: "falta", hops: [] } }),
     ]);
-    expect(t.map((n) => n.label)).toEqual(["Painéis (todos no Master)", "Páginas públicas e vitrines"]);
+    expect(t.map((n) => n.label)).toEqual(["Painéis", "Páginas públicas e vitrines"]);
     expect(t[0]!.counts).toMatchObject({ total: 2, approved: 1, misplaced: 1, unchecked: 1 });
     expect(sectionOf("/master/financeiro/precos").section).toBe("Negócio");
     expect(t[0]!.children[0]!.children.map((s) => s.label).sort()).toEqual(["Negócio", "Operação"]);
@@ -66,7 +78,7 @@ describe("checagem por galho", () => {
     expect(r.results).toHaveLength(5);
     const { cells } = await mapCells(ctx.db, ctx.actors.master);
     expect(cells.find((c) => c.host === "NEXTLEVEL")).toMatchObject({ route: "/merchant", state: "LOGIN", misplaced: null });
-    expect(cells.find((c) => c.host === "SUPERDROP")!.misplaced).toMatch(/Master/);
+    expect(cells.find((c) => c.host === "SUPERDROP")!.misplaced).toBeNull(); // painel do lojista no endereço da marca dele (D149)
     await checkMap(ctx.db, ctx.actors.master, ["/merchant"], fake({}));
     expect((await mapCells(ctx.db, ctx.actors.master)).cells.find((c) => c.host === "SUPERDROP")!.state).toBe("ABRE");
     const { id } = await createMasterMember(ctx.db, ctx.actors.master, { name: "Camila", email: "camila@nl.teste", password: "provisoria-1234", masterFunction: "COMERCIAL" });

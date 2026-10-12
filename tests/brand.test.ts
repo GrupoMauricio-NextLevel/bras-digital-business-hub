@@ -90,8 +90,9 @@ describe("conta presa à marca", () => {
     expect(accountBrandConflict({ role: "STORE_OWNER", brand: "NEXTLEVEL_COMMERCE" }, superdrop)?.message).toMatch(/nextlevelgroup\.com\.br/);
     expect(accountBrandConflict({ role: "STORE_OWNER", brand: "SUPERDROP" }, superdrop)).toBeNull();
   });
-  it("a equipe NextLevel (Master) entra em qualquer marca", () => {
-    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, commerce)).toBeNull();
+  it("a equipe NextLevel (Master) entra pelo Master central; com MASTER_HOST_ONLY=false, em qualquer marca (D149)", () => {
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, commerce, {})?.message).toMatch(/master\.nextlevelgroup\.com\.br/);
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, commerce, { MASTER_HOST_ONLY: "false" })).toBeNull();
   });
 });
 
@@ -133,9 +134,10 @@ describe("ecossistema: um domínio para cada produto", () => {
     expect(all.SUPERDROP.soon).toBeNull(); expect(all.NEXTLEVEL_COMMERCE.soon).toBeNull(); expect(all.NEXTLEVEL.signupOpen).toBe(false);
     expect(all.CHINA_HUB.soon?.zh?.headline).toBeTruthy();
   });
-  it("Master só entra pelo endereço central quando MASTER_HOST_ONLY=true; os demais perfis não entram nele", () => {
+  it("Master só entra pelo endereço central (padrão desde D149; MASTER_HOST_ONLY=false desliga); os demais perfis não entram nele", () => {
     const central = brandByCode("NEXTLEVEL", {}); const sd = brandByCode("SUPERDROP", {});
-    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, {})).toBeNull();
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, { MASTER_HOST_ONLY: "false" })).toBeNull();
+    expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, {})?.message).toMatch(/master\.nextlevelgroup\.com\.br/);
     expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, sd, { MASTER_HOST_ONLY: "true" })?.message).toMatch(/master\.nextlevelgroup\.com\.br/);
     expect(accountBrandConflict({ role: "NEXTLEVEL_MASTER", brand: "SUPERDROP" }, central, { MASTER_HOST_ONLY: "true" })).toBeNull();
     expect(accountBrandConflict({ role: "STORE_OWNER", brand: "SUPERDROP" }, central, {})?.message).toMatch(/só da equipe/);

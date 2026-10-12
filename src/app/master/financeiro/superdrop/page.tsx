@@ -31,7 +31,7 @@ export default async function SuperdropRacional() {
   ];
   return (
     <>
-      <PageHeader eyebrow="Financeiro corporativo NextLevel" title="SuperDrop: racional de cobrança" description="O que o SuperDrop cobra, de quem e como chega à conta da NextLevel. Os preços continuam na tabela do SuperDrop (editável só pelo Master, agora com trilha de cada alteração)." actions={<Link href="/master/finance?tab=rules" className="ds-btn ds-btn--secondary">Editar tabela do SuperDrop</Link>} />
+      <PageHeader eyebrow="Financeiro corporativo NextLevel" title="SuperDrop: racional de cobrança" description="O que o SuperDrop cobra, de quem e como chega à conta da NextLevel. Os preços continuam na tabela do SuperDrop (editável só pelo Master, agora com trilha de cada alteração)." actions={<Link href="/master/financeiro/operacao?tab=rules" className="ds-btn ds-btn--secondary">Editar tabela do SuperDrop</Link>} />
       <FinNav active="superdrop" />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card><CardContent className="pt-5">

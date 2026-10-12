@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { organizations } from "@/db/schema";
-import { brandByCode } from "@/lib/brand";
+import { brandByCode, brandOfHostStrict } from "@/lib/brand";
+import { storeOwnerBase } from "@/lib/host-routing";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
@@ -42,6 +44,14 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const { slug } = await params;
   const sf = await getStorefront(slug);
   if (!sf) notFound();
+  const db = await getDb();
+  // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel Commerce…).
+  const org = await db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) });
+  // Loja do SuperDrop aberta no endereço da Commerce (ou o contrário): vai para o endereço da marca dona, mesmo caminho (D149).
+  const h = await headers();
+  const path = h.get("x-nl-path");
+  const owner = path ? storeOwnerBase(brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code, org?.brand ?? "SUPERDROP", !!sf.store.showcaseTheme) : null;
+  if (owner) redirect(`${owner}${path}${h.get("x-nl-search") ?? ""}`);
   const session = await getSession();
   const showcase = sf.store.showcaseTheme ? THEME_BY_KEY[sf.store.showcaseTheme] ?? null : null;
   const previewing = !showcase && (!sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store));
@@ -53,9 +63,6 @@ export default async function StoreLayout({ params, children }: { params: Promis
     );
   }
   const preview = await isPreviewMode(sf.store.id);
-  const db = await getDb();
-  // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel Commerce…).
-  const org = await db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) });
   const productName = brandByCode(org?.brand).name;
   const trial = await tryingTheme(db, sf.store);
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;

@@ -4,7 +4,20 @@
 > com os 5 endereços e rode `npx tsx scripts/mapa-rotas.ts` (gera `docs/mapa/rotas.csv`, uma linha por página, para abrir no Excel ou no Google Planilhas).
 > No Master, a aba **Mapa vivo** da Central de qualidade faz o mesmo teste nos endereços de verdade, galho por galho.
 
-## Resumo em 10 linhas
+## Depois da reorganização (D149, mesmo teste refeito em 12/10)
+
+| | Antes (Fase 1) | Depois (D149) |
+|---|---|---|
+| Páginas "fora do lugar" | 152 | **0** |
+| Links quebrados (404) | 0 | 0 |
+| Links que cruzam de marca ou passam por 2+ saltos | vários (ex.: "Para quem fornece") | **0** |
+| Painéis da equipe nos endereços das marcas | abriam (pediam login) | levam ao Master |
+| Soluções e Loja NextLevel no SuperDrop e na Commerce | abriam | levam ao site do grupo |
+| `robots.txt` e `sitemap.xml` | não existiam | um de cada por marca |
+
+Teste local com os 5 endereços simulados (`sd.test`, `cm.test`, `nl.test`, `bd.test`, `cg.test`); o CSV `docs/mapa/rotas.csv` foi regerado. As 11 páginas "sem link de entrada" são endereços antigos que redirecionam (`/master/finance`, `/master/bras`, `/master/commerce`, `/supplier/shipping`) e telas de detalhe abertas a partir de listas (pedido, impressão, serviço).
+
+## Resumo em 10 linhas (Fase 1, antes das mudanças)
 
 1. O sistema tem **212 telas**, **13 rotas de arquivo** fora da API (links de parceiro e cupom, prévias de link, planilhas, imagens) e **5 atalhos** que mudam o caminho (`/lojas`, `/lojas/sair`, `/loja/<nome>`, subdomínio de loja, convites do escritório).
 2. Testei **cada página nos 5 endereços** (cerca de 1.000 combinações), seguindo cada redirecionamento até o fim.

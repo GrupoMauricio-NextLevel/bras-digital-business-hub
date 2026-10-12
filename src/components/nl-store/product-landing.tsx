@@ -14,9 +14,11 @@ import { FamiliaFoto, temFamiliaFoto } from "./familia-foto";
  * Landing canônica do produto (D90): dados do catálogo Master + conteúdo editorial. Usada no painel (com estado e
  * checkout) e no site público (`/solucoes/<slug>`, com CTA de cadastro/diagnóstico). Sem prova social inventada.
  */
-export function ProductLanding({ product: p, mode, state, reason, base, demo, unlocks, related, signupHref, currentPlan }: {
+export function ProductLanding({ product: p, mode, state, reason, base, demo, unlocks, related, signupHref, loginLinks, currentPlan }: {
   product: CatalogItem; mode: "panel" | "public"; state?: ProductState; reason?: string; base?: string; demo?: boolean;
   unlocks: { name: string; href: string }[]; related: { name: string; href: string; price: string }[]; signupHref?: string; currentPlan?: { productKey: string; cycle: string } | null;
+  /** No site do grupo (D149) o cliente entra pelo endereço da marca dele: um botão por marca. */
+  loginLinks?: { label: string; href: string }[];
 }) {
   const lines = priceLines(p);
   const c = p.content;
@@ -24,7 +26,7 @@ export function ProductLanding({ product: p, mode, state, reason, base, demo, un
   const canBuy = mode === "panel" && (state === "available" || state === "recommended");
   const cta = (() => {
     if (p.kind === "quote_required") return <RequestQuote productKey={p.key} productName={p.name} needsContact={mode === "public"} />;
-    if (mode === "public") return p.family === "COMMERCE_PLAN" ? <Link className="ds-btn" href={signupHref ?? "/cadastro"}>Começar com 3 dias grátis <ArrowRight className="size-4" aria-hidden /></Link> : <Link className="ds-btn" href={signupHref ?? "/login"}>Entrar para contratar <ArrowRight className="size-4" aria-hidden /></Link>;
+    if (mode === "public") return p.family === "COMMERCE_PLAN" ? <Link className="ds-btn" href={signupHref ?? "/cadastro"}>Começar com 3 dias grátis <ArrowRight className="size-4" aria-hidden /></Link> : loginLinks?.length ? <>{loginLinks.map((l, i) => <Link key={l.href} className={i ? "ds-btn ds-btn--secondary" : "ds-btn"} href={l.href}>{l.label} <ArrowRight className="size-4" aria-hidden /></Link>)}</> : <Link className="ds-btn" href={signupHref ?? "/login"}>Entrar para contratar <ArrowRight className="size-4" aria-hidden /></Link>;
     if (!canBuy) return null;
     if (p.family === "COMMERCE_PLAN") return <ChoosePlan productKey={p.key as never} current={currentPlan} />;
     if (price) return <CheckoutDialog productKey={p.key} productName={p.name} price={price} policy={c.policy} returnPath={`${base}/services/solucao/${p.slug}`} demo={!!demo} triggerLabel="Pagar agora" />;

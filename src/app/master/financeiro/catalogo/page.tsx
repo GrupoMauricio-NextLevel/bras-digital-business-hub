@@ -29,7 +29,7 @@ export default async function CatalogoMaster() {
           ]} />
         </section>
       ))}
-      <p className="text-sm text-muted-foreground">Os preços do SuperDrop (fornecedores e lojas de membros) continuam em <Link className="font-semibold text-link underline" href="/master/finance?tab=rules">Financeiro SuperDrop → Regras e preços</Link>, agora com cada alteração gravada na auditoria. Veja <Link className="font-semibold text-link underline" href="/master/financeiro/superdrop">o racional do SuperDrop</Link>.</p>
+      <p className="text-sm text-muted-foreground">Os preços do SuperDrop (fornecedores e lojas de membros) continuam em <Link className="font-semibold text-link underline" href="/master/financeiro/operacao?tab=rules">Financeiro SuperDrop → Regras e preços</Link>, agora com cada alteração gravada na auditoria. Veja <Link className="font-semibold text-link underline" href="/master/financeiro/superdrop">o racional do SuperDrop</Link>.</p>
     </>
   );
 }

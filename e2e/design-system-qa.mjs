@@ -23,7 +23,7 @@ const ACCOUNTS = [
   { id: "superdrop-lojista", host: "superdrop.com.br", email: "loja@mrssports.demo", roots: ["/merchant"], sample: ["/merchant", "/merchant/orders", "/merchant/wallet", "/merchant/products"] },
   { id: "superdrop-fornecedor", host: "superdrop.com.br", email: "megatron@superdrop.demo", roots: ["/supplier"], sample: ["/supplier", "/supplier/orders", "/supplier/products", "/supplier/finance"] },
   { id: "superdrop-expedicao", host: "superdrop.com.br", email: "expedicao@megatron.demo", roots: ["/supplier/dispatch"], sample: ["/supplier/dispatch"] },
-  { id: "master-nextlevel", host: "master.nextlevelgroup.com.br", email: "master@nextlevel.demo", roots: ["/master", "/commerce"], sample: ["/master", "/master/orders", "/master/finance", "/commerce", "/commerce/stores"] },
+  { id: "master-nextlevel", host: "master.nextlevelgroup.com.br", email: "master@nextlevel.demo", roots: ["/master", "/commerce"], sample: ["/master", "/master/orders", "/master/financeiro/operacao", "/commerce", "/commerce/stores"] },
   { id: "parceiro", host: "superdrop.com.br", email: "parceira@demo.superdrop.com.br", roots: ["/partner"], sample: ["/partner", "/partner/finance"] },
 ];
 const SKIP = /logout|sair|\/api\/|\/print|\/etiqueta|pdf|\.csv|exportar|download|\/new$|\/import|\/theme-editor|\/store\//;

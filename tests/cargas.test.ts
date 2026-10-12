@@ -25,7 +25,8 @@ describe("marca NextLevel Cargas", () => {
     expect(r("/solucoes")).toEqual({ kind: "redirect", url: "/" });
     expect(r("/cadastro")).toEqual({ kind: "redirect", url: "/" });
     expect(r("/login")).toEqual({ kind: "next" });
-    expect(r("/master")).toEqual({ kind: "next" });
+    expect(r("/transportadora")).toEqual({ kind: "next" });
+    expect(r("/master")).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master" }); // painel da equipe só no Master (D149)
     expect(r("/api/health")).toEqual({ kind: "next" });
   });
 });

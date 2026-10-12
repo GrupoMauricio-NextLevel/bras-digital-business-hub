@@ -17,7 +17,7 @@ export const MASTER_FUNCTION_HINT: Record<MasterFunction, string> = {
 const PATHS: Record<MasterFunction, string[]> = {
   COMERCIAL: ["/master/ecossistema", "/master/crm", "/master/clientes", "/master/marcas", "/master/stores", "/master/partners", "/commerce/leads", "/commerce/stores"],
   SUPORTE: ["/master/clientes", "/master/orders", "/master/stores", "/master/suppliers", "/master/errors", "/bras/membros", "/bras/meu-contador", "/bras/atendimento", "/commerce/stores", "/commerce/orders"],
-  FINANCEIRO: ["/master/financeiro", "/master/finance", "/master/plans", "/master/summary", "/master/office", "/commerce/plans"],
+  FINANCEIRO: ["/master/financeiro", "/master/financeiro/operacao", "/master/plans", "/master/summary", "/master/office", "/commerce/plans"],
   CONTEUDO: ["/master/templates", "/master/catalog", "/bras/descobertas", "/bras/pauta", "/bras/catalogo"],
   CONTADOR: ["/bras/meu-contador"],
 };

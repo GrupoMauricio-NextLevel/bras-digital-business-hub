@@ -50,7 +50,7 @@ export async function groupPriceTable(db: Database, actor: Actor) {
   const add = (r: Omit<GroupPriceRow, "value"> & { value?: string }) => rows.push({ ...r, value: r.value ?? (r.cents !== null ? formatBRL(r.cents) : r.bps !== null ? pct(r.bps) : "—") });
 
   // SuperDrop: tabela própria (price book).
-  const SD = "/master/finance?tab=rules";
+  const SD = "/master/financeiro/operacao?tab=rules";
   for (const [key, o] of Object.entries(book.offers)) {
     add({ brand: "SuperDrop", item: `${o.name}: mensalidade`, kind: "MENSAL", cents: o.monthlyCents, bps: null, source: `price_book.offers.${key}`, editHref: SD, status: "VALENDO" });
     if (o.setupCents) add({ brand: "SuperDrop", item: `${o.name}: setup`, kind: "SETUP", cents: o.setupCents, bps: null, source: `price_book.offers.${key}`, editHref: SD, status: "VALENDO" });

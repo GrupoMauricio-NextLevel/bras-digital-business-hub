@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { slugFromHost } from "@/lib/store-url";
 import { routeHost } from "@/lib/host-routing";
+import { brandPreviewAllowed } from "@/lib/brand";
 
 /**
  * Subdomínio da loja: `slug.<SUPERDROP_ROOT_DOMAIN>/x` é servido por `/store/slug/x`.
@@ -35,17 +36,18 @@ export function proxy(req: NextRequest) {
   return withAttribution(req, route(req));
 }
 
-/** Repassa o caminho pedido para as páginas (portão da equipe do Master, D138). */
-const withPath = (req: NextRequest) => { const h = new Headers(req.headers); h.set("x-nl-path", req.nextUrl.pathname); return { request: { headers: h } }; };
+/** Repassa o caminho e a busca pedidos para as páginas (portão da equipe do Master, D138; vitrine na marca certa, D149). */
+const withPath = (req: NextRequest) => { const h = new Headers(req.headers); h.set("x-nl-path", req.nextUrl.pathname); h.set("x-nl-search", req.nextUrl.search); return { request: { headers: h } }; };
 
 function route(req: NextRequest) {
   // Prévia da NextLevel Commerce em qualquer endereço: /lojas liga, /lojas/sair desliga (apresentação apenas, não muda permissões).
+  // Só na demonstração (D149): em produção o atalho volta ao início e apaga a prévia que tenha ficado no navegador.
   const path = req.nextUrl.pathname;
   if (path === "/lojas" || path === "/lojas/" || path === "/lojas/sair") {
     const proto = req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
     const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? req.nextUrl.host;
     const res = NextResponse.redirect(new URL("/", `${proto}://${host}`));
-    if (path === "/lojas/sair") res.cookies.delete("nl-brand");
+    if (path === "/lojas/sair" || !brandPreviewAllowed()) res.cookies.delete("nl-brand");
     else res.cookies.set("nl-brand", "NEXTLEVEL_COMMERCE", { path: "/", sameSite: "lax", secure: proto === "https", maxAge: 60 * 60 * 24 * 30 });
     return res;
   }

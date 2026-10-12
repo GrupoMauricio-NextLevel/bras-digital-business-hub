@@ -57,13 +57,13 @@ export function buildAlerts(snap: TowerSnapshot): Alert[] {
   add({ key: "funds-stuck", severity: "danger", count: stuck.length, title: "Pedidos travados por falta de saldo há mais de 24h", detail: stuck.slice(0, 3).map((s) => s.name).join(", ") + (stuck.length > 3 ? "…" : "") + ". Cancelam sozinhos em 72h.", href: "/master/orders" });
 
   const badSuppliers = snap.suppliers.filter((s) => s.status !== "ACTIVE");
-  add({ key: "supplier-access", severity: "danger", count: badSuppliers.length, title: "Fornecedores com acesso restrito por atraso", detail: badSuppliers.map((s) => s.name).join(", "), href: "/master/finance?tab=invoices" });
+  add({ key: "supplier-access", severity: "danger", count: badSuppliers.length, title: "Fornecedores com acesso restrito por atraso", detail: badSuppliers.map((s) => s.name).join(", "), href: "/master/financeiro/operacao?tab=invoices" });
 
   const noWallet = snap.suppliers.filter((s) => !s.walletConnected && s.stores > 0);
   add({ key: "supplier-wallet", severity: "warning", count: noWallet.length, title: "Fornecedores sem Mercado Pago para receber recargas", detail: "Os lojistas não conseguem recarregar: " + noWallet.map((s) => s.name).join(", "), href: "/master/suppliers" });
 
   const pending = snap.stores.filter((s) => s.status === "PENDING_PAYMENT");
-  add({ key: "setup-pending", severity: "warning", count: pending.length, title: "Lojas aguardando o pagamento do setup", detail: pending.map((s) => s.name).join(", "), href: "/master/finance?tab=invoices" });
+  add({ key: "setup-pending", severity: "warning", count: pending.length, title: "Lojas aguardando o pagamento do setup", detail: pending.map((s) => s.name).join(", "), href: "/master/financeiro/operacao?tab=invoices" });
 
   add({ key: "service-quote", severity: "warning", count: snap.serviceOrdersWaiting, title: "Pedidos de serviço aguardando orçamento", detail: "Cada pedido parado é receita adiada na Loja NextLevel.", href: "/master/services" });
 

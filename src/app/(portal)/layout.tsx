@@ -3,7 +3,7 @@ import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { HOLDING_CODE, brandByCode, brandHas, isClosedCommerceBrand } from "@/lib/brand";
-import { getBrand } from "@/lib/brand-server";
+import { getBrand, groupLink } from "@/lib/brand-server";
 import { supportContacts } from "@/lib/support";
 import { PublicShell, type PublicNavItem } from "@/design-system/components/public-shell";
 import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
@@ -18,6 +18,8 @@ export default async function PortalLayout({ children }: { children: React.React
   // Endereço do grupo (hoje o do Master; depois nextlevelgroup.com.br, D147): só as páginas do grupo, e as marcas pelo endereço delas.
   const holding = brand.code === HOLDING_CODE;
   const site = (c: Parameters<typeof brandByCode>[0]) => brandByCode(c).baseUrl;
+  // Soluções e Loja NextLevel são da agência e moram no site do grupo (D149): nas marcas, o link vai direto para lá.
+  const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
     ? [{ href: "/solucoes", label: "Soluções" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "NextLevel Commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "NextLevel Cargas" }]
     : cargas
@@ -25,10 +27,10 @@ export default async function PortalLayout({ children }: { children: React.React
     : closed
     ? [{ href: "/#plataforma", label: "Plataforma" }, { href: "/#videos", label: "Descobertas" }, { href: "/#acesso", label: "Acesso" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
-    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
-      ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: "/solucoes", label: "Soluções" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
-      : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: "/loja-nextlevel", label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
+      ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
+      : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = holding ? { href: "/solucoes#diagnostico", label: "Diagnóstico gratuito" } : cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "a Brás Digital" : "a NextLevel Commerce"}.`)}`) : null;

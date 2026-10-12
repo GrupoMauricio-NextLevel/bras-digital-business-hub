@@ -5,6 +5,7 @@ import { getBaseUrl } from "@/lib/base-url";
 import { PageHeader } from "@/components/app/page-header";
 import { Badge } from "@/components/ui/badge";
 import { FAMILY_LABEL, priceLines } from "@/lib/finance/catalog-labels";
+import { groupLink } from "@/lib/brand-server";
 import { CopyButton } from "../partner-client";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,8 @@ export default async function PartnerCatalogo() {
   const s = await requireRole("AFFILIATE");
   const db = await getDb();
   const items = await partnerCatalog(db, s.actor);
-  const base = await getBaseUrl();
+  // Os links dos produtos levam à página de Soluções, que mora no site do grupo (D149).
+  const base = (await groupLink("")) || (await getBaseUrl());
   return (
     <>
       <PageHeader title="Catálogo comercial" description="Produtos que a NextLevel liberou para você vender, com preço público, desconto permitido, sua comissão e o benefício ao cliente. Valores e regras são definidos pelo Master." />

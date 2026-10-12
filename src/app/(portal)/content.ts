@@ -9,7 +9,7 @@ export const FLOW = [
 
 export const AUDIENCES = [
   { key: "membro", title: "Para quem vende", text: "Loja no ar sem estoque e sem separar pedido. Você cuida da venda; o fornecedor cuida do resto.", bullets: ["Loja pronta, com subdomínio ou domínio próprio", "Carteira por Pix, sem cartão", "Pós-venda e etiquetas no mesmo lugar"], href: "/como-funciona" },
-  { key: "fornecedor", title: "Para quem fornece", text: "Uma operação de expedição ao vivo, com corte, ondas de separação e etiqueta em PDF.", bullets: ["Esteira ao vivo e horário de corte", "Painel de expedição sem valores", "Sua página de vendas para captar membros"], href: "/fornecedores" },
+  { key: "fornecedor", title: "Para quem fornece", text: "Uma operação de expedição ao vivo, com corte, ondas de separação e etiqueta em PDF.", bullets: ["Esteira ao vivo e horário de corte", "Painel de expedição sem valores", "Sua página de vendas para captar membros"], href: "/seja-fornecedor" },
   { key: "whitelabel", title: "Marca própria", text: "A plataforma com a sua identidade, para operar a sua rede de membros.", bullets: ["Sua marca e seu domínio", "Taxa por pedido reduzida", "Implantação acompanhada pela NextLevel"], href: "/seja-fornecedor#white-label" },
 ];
 

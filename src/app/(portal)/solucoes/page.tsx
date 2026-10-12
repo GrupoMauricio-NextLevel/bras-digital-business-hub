@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
+import { groupSiteUrl } from "@/lib/host-routing";
 import { brandByCode } from "@/lib/brand";
 import { ogImageFor } from "@/lib/og-marca";
 import { finFlag } from "@/lib/finance/flags";
@@ -22,10 +23,9 @@ import { FamiliaFoto } from "@/components/nl-store/familia-foto";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const brand = await getBrand();
   const title = "NextLevel Soluções para empresas: loja virtual, migração, temas e marketing";
   const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, SuperDrop, Loja Pronta, Migração, temas, tráfego e White Label.";
-  return { title: { absolute: title }, description, alternates: { canonical: `${brand.baseUrl}/solucoes` }, openGraph: { title, description, url: `${brand.baseUrl}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
+  return { title: { absolute: title }, description, alternates: { canonical: `${groupSiteUrl()}/solucoes` }, openGraph: { title, description, url: `${groupSiteUrl()}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
 }
 
 const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl";
@@ -44,8 +44,8 @@ export default async function SolucoesPage() {
   return (
     <>
       <JsonLd data={[
-        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${brand.baseUrl}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
-        { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${brand.baseUrl}/solucoes/${p.slug}`, name: p.name })) },
+        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
+        { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${groupSiteUrl()}/solucoes/${p.slug}`, name: p.name })) },
       ]} />
       <section className="bg-band px-4 py-16 text-band-foreground md:py-24" aria-labelledby="hero-t">
         <div className={`mx-auto max-w-6xl ${heroFoto ? "grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]" : ""}`}>
@@ -114,7 +114,7 @@ export default async function SolucoesPage() {
             <article className="rounded-xl border border-border bg-surface p-5">
               <h3 className="text-xl font-bold">Cursos e assessorias</h3>
               <p className="mt-1 text-sm text-muted-foreground">Produtos digitais e assessorias com compra em 1 clique, sem precisar de conta.</p>
-              <Link href={withAttribution(`${superdropHref.startsWith("http") ? superdrop.baseUrl : ""}/loja-nextlevel`, attr)} className="mt-4 inline-flex text-sm font-semibold text-link underline">Ver a Loja NextLevel →</Link>
+              <Link href={withAttribution("/loja-nextlevel", attr)} className="mt-4 inline-flex text-sm font-semibold text-link underline">Ver a Loja NextLevel →</Link>
             </article>
           </div>
         </div>

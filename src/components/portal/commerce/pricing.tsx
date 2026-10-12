@@ -18,7 +18,7 @@ const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace("."
  * Planos da NextLevel Commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
  * informado, soma mensalidade e taxa de plataforma e destaca o plano mais em conta. É estimativa, não promessa.
  */
-export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "" }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string }) {
+export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes" }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string }) {
   const [cycle, setCycle] = React.useState<"MONTHLY" | "ANNUAL">("MONTHLY");
   const [faixa, setFaixa] = React.useState(2);
   const venda = FAIXAS[faixa]!;
@@ -83,9 +83,9 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "" }: 
               <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-highlight" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
               <div className="mt-auto pt-6">
                 {p.quote
-                  ? <Link href={`/solucoes/${p.slug}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : "cm-plan-btn--ghost"}`}>Pedir proposta <ArrowRight className="size-4" aria-hidden /></Link>
+                  ? <Link href={`${solucoes}/${p.slug}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : "cm-plan-btn--ghost"}`}>Pedir proposta <ArrowRight className="size-4" aria-hidden /></Link>
                   : <Link href={signupOpen ? `/cadastro?plano=${p.key}&ciclo=${cycle}${extra}` : `${cta}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : ""}`}>{signupOpen ? (offer ? "Começar grátis" : "Criar minha loja") : "Quero minha loja"} <ArrowRight className="size-4" aria-hidden /></Link>}
-                <Link href={`/solucoes/${p.slug}${suffix}`} className={`mt-3 block text-center text-sm font-semibold underline underline-offset-4 ${destaque ? "text-band-foreground" : "text-link"}`}>Ver tudo o que inclui</Link>
+                <Link href={`${solucoes}/${p.slug}${suffix}`} className={`mt-3 block text-center text-sm font-semibold underline underline-offset-4 ${destaque ? "text-band-foreground" : "text-link"}`}>Ver tudo o que inclui</Link>
               </div>
             </li>
           );

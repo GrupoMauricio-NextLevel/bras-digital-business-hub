@@ -69,7 +69,7 @@ export function MapaVivo({ pages, lastAt, hostUrls, pathOf, onSave }: Props) {
     <div className="grid gap-4">
       <p className="max-w-prose text-sm text-muted-foreground">
         Todo o sistema em árvore. Cada página mostra o que acontece em cada endereço no ar ({MAP_HOSTS.map((h) => `${SHORT[h]} = ${MAP_HOST_LABEL[h]}`).join(", ")}).
-        <b className="text-foreground"> Fora do lugar</b> é o que contraria as suas decisões de 12/10 (painéis só no Master; Soluções e Loja NextLevel no site do grupo; termos e privacidade em todas as marcas).
+        <b className="text-foreground"> Fora do lugar</b> é o que contraria as suas decisões de 12/10 (painéis da equipe só no Master e os dos clientes no endereço da marca deles; Soluções e Loja NextLevel no site do grupo; termos e privacidade em todas as marcas).
         Abra um galho e use “Checar este galho” para testar só aquele pedaço.
       </p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Resumo do mapa">

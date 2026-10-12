@@ -93,7 +93,7 @@ if (!(await pubp.content()).includes("indisponível")) fail("vitrine pública de
 await pubc.close();
 step("vitrine pública indisponível antes do pagamento");
 await login("master@teste.com", "Master-Teste-2026");
-await p.goto(B + "/master/finance?tab=invoices", { waitUntil: "networkidle" });
+await p.goto(B + "/master/financeiro/operacao?tab=invoices", { waitUntil: "networkidle" });
 await p.locator("tr").filter({ hasText: "Ativação da loja Loja do Zé" }).getByRole("button", { name: "Confirmar recebimento" }).click();
 await p.getByRole("alertdialog").getByRole("button", { name: "Confirmar", exact: true }).click();
 await p.waitForSelector("text=Recebimento confirmado", { timeout: 15000 });
@@ -283,7 +283,7 @@ step("home do gestor é a esteira ao vivo");
 
 // 7. fechamento do mês
 await login("master@teste.com", "Master-Teste-2026");
-await p.goto(B + "/master/finance?tab=invoices", { waitUntil: "networkidle" });
+await p.goto(B + "/master/financeiro/operacao?tab=invoices", { waitUntil: "networkidle" });
 await p.getByRole("button", { name: "Fechar competência" }).click();
 await p.getByRole("alertdialog").getByRole("button", { name: "Fechar competência" }).click();
 await p.waitForSelector("text=fechamento(s) gerado(s)", { timeout: 20000 });

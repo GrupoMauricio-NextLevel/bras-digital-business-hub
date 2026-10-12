@@ -1,6 +1,6 @@
 /**
  * Brás Digital (D92): página pública, cadastro com CNPJ, Meu Brás e Estúdio no Master.
- * O servidor precisa de BRAND_SIGNUP_BRAS_DIGITAL=true e BRAND_DOMAINS_BRAS_DIGITAL=127.0.0.1 (127.0.0.1 faz o papel do endereço
+ * O servidor precisa de MASTER_HOST_ONLY=false (D149: senão os painéis da equipe vão ao Master central), BRAND_SIGNUP_BRAS_DIGITAL=true e BRAND_DOMAINS_BRAS_DIGITAL=127.0.0.1 (127.0.0.1 faz o papel do endereço
  * da Brás; localhost segue como SuperDrop, onde o Master entra). Reinicie o servidor antes (o teste cria membro e vídeos).
  * Uso: E2E_BASE=http://localhost:3300 node e2e/bras-portal.mjs  (capturas em E2E_SHOTS, padrão /tmp/bras-shots)
  */

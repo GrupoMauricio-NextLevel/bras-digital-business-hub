@@ -62,15 +62,15 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio" },
       { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio" },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },
-      { label: "Financeiro SuperDrop", href: "/master/finance", icon: "Wallet", group: "Negócio" },
+      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
       { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio" },
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio" },
     ],
     quick: [
       { label: "Novo fornecedor", href: "/master/suppliers/new", icon: "Factory" },
-      { label: "Fechar competência", href: "/master/finance?tab=invoices", icon: "Wallet" },
-      { label: "Simulador de ganhos", href: "/master/finance?tab=simulator", icon: "BarChart3" },
+      { label: "Fechar competência", href: "/master/financeiro/operacao?tab=invoices", icon: "Wallet" },
+      { label: "Simulador de ganhos", href: "/master/financeiro/operacao?tab=simulator", icon: "BarChart3" },
     ],
   },
   SUPPLIER_ADMIN: {

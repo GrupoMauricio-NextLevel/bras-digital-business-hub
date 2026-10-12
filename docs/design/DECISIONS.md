@@ -1353,3 +1353,23 @@ Aprovado pelo dono ("tudo aprovado, vamos ao próximo passo") a partir da Fase 1
 - **Fornecedor:** "Categorias" no menu do catálogo (`/supplier/products/categorias` deixa de ser órfã).
 - **Proposta da reorganização:** `docs/mapa/PROPOSTA-REORGANIZACAO-2026-10.md`, com a árvore-alvo, os 10 itens "de → para" e 5 perguntas. Nada além das três correções muda sem o sim do dono.
 - Testes: `tests/legal-grupo.test.tsx`.
+
+## D149 — Reorganização dos endereços: painéis da equipe só no Master, páginas da agência no site do grupo, buscadores por marca (2026-10-12)
+O dono aceitou as recomendações da proposta (`docs/mapa/PROPOSTA-REORGANIZACAO-2026-10.md`, "aceito as recomendações da proposta"):
+painéis da equipe exclusivos do Master; painéis dos clientes no endereço da marca deles; início do site do grupo = Soluções;
+temas no SuperDrop e na Commerce; texto legal da Brás unificado depois; revisão jurídica recomendada. Aplicado na ordem 6 → 7 → 5 → 1/2 → 3 → 4 → 9:
+- **6. Atalho `/lojas`** (cara da Commerce em qualquer endereço): só na demonstração (`NEXT_PUBLIC_DEMO_MODE=true`, `brandPreviewAllowed`). Em produção volta ao início e apaga a prévia guardada; `getBrand()` e o filtro do Master ignoram o cookie.
+- **7. Financeiro:** `/master/finance` virou `/master/financeiro/operacao` ("Operação SuperDrop", aba do financeiro). O endereço antigo redireciona mantendo `?tab=`.
+- **5. "Para quem fornece"** liga direto em `/seja-fornecedor` (acaba a corrente de 2 saltos).
+- **1 e 2. Soluções e Loja NextLevel** (agência): nos endereços do SuperDrop e da Commerce redirecionam para o site do grupo (`groupSiteUrl()`: `GROUP_SITE_URL` quando ligado na Fase 3; até lá, o endereço do Master), mantendo caminho e busca (atribuição de parceiro preservada). Os links dos menus, da página inicial, dos planos, do catálogo do parceiro e do e-mail de pagamento apontam direto para lá (`groupLink`/`groupLinkFor`); na demonstração e no próprio grupo ficam relativos. No site do grupo, "Entrar para contratar" vira dois botões (loja SuperDrop / loja Commerce), porque o login de lojista não existe no Master.
+- **3. Páginas do SuperDrop na Commerce** (`/f/<fornecedor>`, `/seja-fornecedor`, `/fornecedores`) vão para o SuperDrop.
+- **4. Vitrine na marca certa:** loja SuperDrop aberta na Commerce (ou o contrário) vai para o endereço da marca dona, mesmo caminho (`storeOwnerBase`; o proxy passa `x-nl-search`). Demonstrações de tema, domínio próprio, Master e endereços técnicos não mudam.
+- **9. Buscadores:** `src/app/robots.ts` e `src/app/sitemap.ts` (dinâmicos, por endereço, `src/lib/seo-marca.ts`): cada marca lista só as páginas dela; painéis, links privados e a API ficam fora; demonstração, escritório e marca "em breve" não são indexados.
+- **Painéis (pergunta 1):** `MASTER_HOST_ONLY` passa a valer **por padrão** (só `MASTER_HOST_ONLY=false` desliga): `/master`, `/commerce` e `/bras` nos endereços das marcas levam ao Master, e a equipe entra só pelo endereço do Master (`accountBrandConflict`). Painéis de cliente de uma marca só (`/meu-bras`, `/importadora` → Brás; `/transportadora` → Cargas) abertos em outra marca vão para a marca deles. `/merchant`, `/supplier`, `/partner` e `/theme-editor` continuam no SuperDrop e na Commerce.
+- **Site do grupo (pergunta 2):** com `GROUP_SITE_URL` ligado, a raiz daquele endereço abre Soluções; a raiz do Master continua levando ao login.
+- **Mapa vivo:** as regras de "fora do lugar" seguem esta decisão (painel da equipe fora do Master; painel do cliente na marca errada; painel de lojista na Brás/Cargas fica "a definir"). "Pronto e desligado" mostra o site do grupo e o Master exclusivo.
+- **Redirecionamentos temporários (307)** até a Fase 3 fixar os domínios; depois viram permanentes (308), para o navegador não guardar um destino provisório.
+- Item 8 (`/master/bras`, `/master/commerce`, `/supplier/shipping`) fica como está, documentado; item 10 (nomes de painel em inglês) fica.
+- Local: os scripts de demonstração com várias marcas precisam de `MASTER_HOST_ONLY=false` para abrir o Master em `localhost`/127.0.0.x como se fossem as marcas (localhost sozinho não é marca e nunca redireciona).
+- Testes: `tests/host-routing.test.ts`, `tests/brand.test.ts`, `tests/mapa-vivo.test.ts`, `tests/seo-marca.test.ts`, `tests/cargas.test.ts`.
+
