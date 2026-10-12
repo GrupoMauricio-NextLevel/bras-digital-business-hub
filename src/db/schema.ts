@@ -2479,7 +2479,8 @@ export type QaCheckResult = { key: string; url: string; status: number | null; m
 /** Checagens automáticas da central de qualidade (domínios no ar e páginas respondendo), com o resultado de cada item. */
 export const qaRuns = pgTable("qa_runs", {
   id: id(),
-  kind: text("kind", { enum: ["DOMINIOS", "PAGINAS"] }).notNull(),
+  /** MAPA (D147): página × endereço do Mapa vivo; a chave de cada resultado é "rota@marca". */
+  kind: text("kind", { enum: ["DOMINIOS", "PAGINAS", "MAPA"] }).notNull(),
   results: jsonb("results").$type<QaCheckResult[]>().notNull(),
   ok: integer("ok").notNull(),
   failed: integer("failed").notNull(),

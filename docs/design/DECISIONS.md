@@ -1321,3 +1321,22 @@ Pedido do dono: integrar as 41 imagens dos lotes A a E (`docs/prompts/imagens-au
 - **Sem arquivo, nada quebra:** `FotoOpcional` (servidor) não desenha nada; `Ilustracao` e `FotoErro` (navegador) somem se a imagem não carregar e o estado vazio volta ao ícone; e-mail sem arquivo sai como antes.
 - **Acessibilidade:** fotos que contam algo têm `alt` descritivo (passos, aberturas); faixas, cartões de família, login, erro e ilustrações são decorativas (`alt` vazio), porque o texto ao lado já diz tudo.
 - Testes: `tests/imagens-auditoria.test.ts` (formatos, tamanhos 1200×630, 1200×300 e 1024×1024 com transparência, material fora do site, ausência sem quebra, faixa do e-mail) e `tests/login-marca.test.ts`.
+
+## D147 — Mapa do sistema: decisões do dono sobre endereços e o painel "Mapa vivo" (2026-10-12)
+Pedido do dono: um novo racional de páginas, o mapa de tudo e um painel dinâmico para abrir cada hierarquia e testar (prompt `docs/prompts/mapa-paginas-dominios-painel.md`).
+- **Decisões do dono (respostas às perguntas do prompt):**
+  1. A **NextLevel Soluções** (`/solucoes`) mora no site do grupo, **nextlevelgroup.com.br**.
+  2. **Painéis:** por enquanto **todos no Master**. No futuro, cada projeto terá o próprio Master; a reorganização deve deixar esse caminho aberto.
+  3. A **Loja NextLevel** (`/loja-nextlevel`) é da agência **NextLevel Soluções Digitais** e vai junto para o site do grupo.
+  4. **Termos e privacidade:** um texto único para o grupo inteiro, presente em todas as marcas.
+  5. **Domínios agora:** só **nextlevelgroup.com.br** e **superdrop.com.br**. nextlevelcommerce.com.br fica para depois, e a Commerce segue em lojas.nextlevelgroup.com.br.
+- **Fase 1 (avaliação, sem mudar endereço):**
+  - relatório: `docs/mapa/AVALIACAO-LINKS-2026-10.md`;
+  - planilha: `docs/mapa/rotas.csv`;
+  - script: `scripts/mapa-rotas.ts`, que testa cada página nos 5 endereços seguindo os redirecionamentos, lê os links das páginas públicas e lista os órfãos.
+- **Fase 4 (painel "Mapa vivo"):** nova aba da Central de qualidade.
+  - **Árvore:** tipo de página → área → seção do menu → página, com contadores em cada galho e a situação de cada página em cada endereço.
+  - **"Fora do lugar":** marca o que contraria as decisões acima.
+  - **Ações:** checar um galho só (checagens guardadas em `qa_runs` com tipo `MAPA`, sem mudança no banco) e copiar o mapa mental em Mermaid.
+  - O que ainda não foi decidido fica "a definir" até a Fase 2.
+- Código: `src/lib/qualidade/mapa.ts`, `checkMap` e `mapCells` em `src/lib/domain/qualidade.ts`, `src/components/master/qualidade/mapa-vivo.tsx`. Testes: `tests/mapa-vivo.test.ts`.

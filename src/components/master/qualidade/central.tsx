@@ -15,11 +15,14 @@ import type { QaCheckResult } from "@/db/schema";
 import { checkDomainsAction, checkPagesAction, markScreenAction, resetScreensAction } from "@/app/actions/qualidade";
 import type { OffGroup } from "@/lib/domain/qualidade-desligados";
 import { ProntoDesligado } from "./pronto-desligado";
+import { MapaVivo } from "./mapa-vivo";
+import type { MapCell } from "@/lib/domain/qualidade";
+import { MAP_HOSTS, type MapHost, type TreePage } from "@/lib/qualidade/mapa";
 
 type Mark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; needs: Need[]; imageBrief: string | null; updatedAt: string | null; updatedByName: string | null };
 type Screen = { route: string; label: string; areaKey: string; host: BrandCode; params: string[]; mark: Mark; check: QaCheckResult | null };
 type Run = { at: string; ok: number; failed: number; byName: string | null } | null;
-type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; images: PublicImage[]; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null; off: OffGroup[] };
+type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; images: PublicImage[]; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null; off: OffGroup[]; map: { cells: MapCell[]; lastAt: string | null } };
 
 type Filter = "todas" | "pendentes" | "testadas" | "aprovadas" | "concluidas" | "problema" | "falta" | "falhou";
 const FILTERS: { key: Filter; label: string }[] = [
@@ -85,7 +88,7 @@ function StackBar({ marks, label }: { marks: Mark[]; label: string }) {
   );
 }
 
-export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun, openErrors, version, off }: Props) {
+export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun, openErrors, version, off, map }: Props) {
   const router = useRouter();
   const [marks, setMarks] = React.useState<Record<string, Mark>>(() => Object.fromEntries(screens.map((s) => [s.route, s.mark])));
   const [area, setArea] = usePref<string>("area", "todas");
@@ -121,6 +124,11 @@ export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun,
     return true;
   }, []);
 
+  const treePages: TreePage[] = React.useMemo(() => {
+    const byRoute = new Map<string, TreePage["cells"]>();
+    for (const c of map.cells) byRoute.set(c.route, { ...(byRoute.get(c.route) ?? {}), [c.host]: { state: c.state, misplaced: c.misplaced, hops: c.hops } });
+    return all.map((s) => ({ route: s.route, label: s.label, areaKey: s.areaKey, areaLabel: AREA[s.areaKey]?.label ?? s.areaKey, kind: AREA[s.areaKey]?.kind ?? "PUBLICA", tested: s.mark.tested, approved: s.mark.approved, problem: s.mark.problem, cells: byRoute.get(s.route) ?? {} }));
+  }, [all, map.cells]);
   const totalMarks = all.map((s) => s.mark);
   const counts = {
     total: all.length,
@@ -156,6 +164,7 @@ export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun,
           <TabsTrigger value="falta">O que falta</TabsTrigger>
           <TabsTrigger value="dominios">Domínios</TabsTrigger>
           <TabsTrigger value="checagem">Checagem automática</TabsTrigger>
+          <TabsTrigger value="mapa">Mapa vivo</TabsTrigger>
           <TabsTrigger value="desligado">Pronto e desligado</TabsTrigger>
         </TabsList>
 
@@ -194,6 +203,10 @@ export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun,
 
         <TabsContent value="foco">
           <Foco list={list} urlOf={urlOf} onSave={save} />
+        </TabsContent>
+
+        <TabsContent value="mapa">
+          <MapaVivo pages={treePages} lastAt={map.lastAt} hostUrls={Object.fromEntries(MAP_HOSTS.map((h) => [h, hosts[h]])) as Record<MapHost, string>} pathOf={(r) => fillRoute(r, marks[r]?.sample ?? null)} onSave={save} />
         </TabsContent>
 
         <TabsContent value="desligado">

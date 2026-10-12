@@ -8,6 +8,7 @@ import { newId } from "@/lib/ids";
 import { BRAND_CODES, brandByCode, brandsFrom, type BrandCode } from "@/lib/brand";
 import { describeRoutes, fillRoute, judge, routeFromFile, type QaRoute } from "@/lib/qualidade/rotas";
 import { NEEDS, type Need } from "@/lib/qualidade/gpt";
+import { MAP_HOSTS, cellKey, cellState, followChain, misplaced, type MapHost } from "@/lib/qualidade/mapa";
 import { publicImages } from "@/lib/qualidade/imagens";
 import { type Actor, requireMasterFn } from "./access";
 import { recordAudit } from "./audit";
@@ -174,7 +175,7 @@ export async function checkPages(db: Database, actor: Actor, fetcher: Fetcher = 
   return saveRun(db, actor, "PAGINAS", results);
 }
 
-async function saveRun(db: Database, actor: Actor, kind: "DOMINIOS" | "PAGINAS", results: QaCheckResult[]) {
+async function saveRun(db: Database, actor: Actor, kind: "DOMINIOS" | "PAGINAS" | "MAPA", results: QaCheckResult[]) {
   const ok = results.filter((r) => r.ok).length;
   const id = newId("qar");
   await db.insert(qaRuns).values({ id, kind, results, ok, failed: results.length - ok, startedBy: actor.userId });
@@ -185,4 +186,47 @@ async function saveRun(db: Database, actor: Actor, kind: "DOMINIOS" | "PAGINAS",
 export async function runHistory(db: Database, actor: Actor, kind: "DOMINIOS" | "PAGINAS", limit = 10) {
   requireMasterFn(actor, []);
   return db.select({ id: qaRuns.id, at: qaRuns.createdAt, ok: qaRuns.ok, failed: qaRuns.failed }).from(qaRuns).where(and(eq(qaRuns.kind, kind))).orderBy(desc(qaRuns.createdAt)).limit(limit);
+}
+
+// ---- Mapa vivo (D147) ----------------------------------------------------------------------------------------------------
+export type MapCell = { route: string; host: MapHost; url: string; status: number | null; hops: string[]; finalPath: string | null; state: ReturnType<typeof cellState>; at: string; misplaced: string | null };
+
+/** Testa as páginas pedidas em cada endereço no ar (seguindo os redirecionamentos) e guarda como uma checagem "MAPA". */
+export async function checkMap(db: Database, actor: Actor, wanted: string[], fetcher: Fetcher = fetch, routes = listAppRoutes()) {
+  requireMasterFn(actor, []);
+  const known = new Set(routes);
+  const list = [...new Set(wanted)].filter((r) => known.has(r));
+  if (!list.length) throw new DomainError("MAP_EMPTY", "Nenhuma página deste galho para checar.");
+  if (list.length > 260) throw new DomainError("MAP_TOO_MANY", "Galho grande demais: abra um nível e cheque por partes.");
+  const samples = new Map((await db.select({ route: qaScreens.route, sample: qaScreens.sample }).from(qaScreens)).map((r) => [r.route, r.sample]));
+  const brands = brandsFrom();
+  const jobs = list.flatMap((route) => { const path = fillRoute(route, samples.get(route) ?? null); return path ? MAP_HOSTS.map((host) => ({ route, host, path })) : []; });
+  if (!jobs.length) throw new DomainError("MAP_SAMPLE", "Estas páginas precisam de um exemplo no endereço (preencha em Todas as telas).");
+  const results: QaCheckResult[] = await pool(jobs, 6, async (j) => {
+    const url = `${brands[j.host].baseUrl}${j.path}`;
+    const c = await followChain(fetcher, url);
+    const state = cellState(c, j.path);
+    const bad = misplaced(j.route, j.host, state);
+    return { key: cellKey(j.route, j.host), url, status: c.status, ms: c.ms, ok: !bad && state !== "ERRO", expected: state, detail: JSON.stringify({ hops: c.hops, finalPath: c.finalPath, error: c.error }) };
+  });
+  return saveRun(db, actor, "MAPA", results);
+}
+
+/** Último resultado de cada página × endereço (junta as checagens por galho, a mais nova vence). */
+export async function mapCells(db: Database, actor: Actor): Promise<{ cells: MapCell[]; lastAt: string | null }> {
+  requireMasterFn(actor, []);
+  const runs = await db.select().from(qaRuns).where(eq(qaRuns.kind, "MAPA")).orderBy(desc(qaRuns.createdAt)).limit(40);
+  const seen = new Map<string, MapCell>();
+  for (const run of runs) for (const r of run.results) {
+    if (seen.has(r.key)) continue;
+    const at = r.key.lastIndexOf("@");
+    const route = r.key.slice(0, at), host = r.key.slice(at + 1) as MapHost;
+    let extra: { hops?: string[]; finalPath?: string | null } = {};
+    try { extra = JSON.parse(r.detail ?? "{}"); } catch { extra = {}; }
+    const hops = extra.hops ?? [];
+    const path = new URL(r.url).pathname;
+    const state = cellState({ status: r.status, finalPath: extra.finalPath ?? null, hops, error: r.status === null ? "erro" : null }, path);
+    seen.set(r.key, { route, host, url: r.url, status: r.status, hops, finalPath: extra.finalPath ?? null, state, at: run.createdAt, misplaced: misplaced(route, host, state) });
+  }
+  return { cells: [...seen.values()], lastAt: runs[0]?.createdAt ?? null };
 }
