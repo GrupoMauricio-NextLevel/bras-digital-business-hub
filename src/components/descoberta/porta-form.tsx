@@ -7,7 +7,7 @@ import { Input, Select } from "@/components/ui/input";
 import { IntField, PercentField } from "@/components/finance/fields";
 import { addDoorVersionAction } from "@/app/actions/proposta";
 
-export type DoorValue = { status: "ACTIVE" | "PAUSED"; mode: "REVERSE_TRIAL" | "FREE_TIER"; trialDays: number; freeTierFeeBps: number; publishDays: number; firstSaleDays: number; milestoneCapDays: number; annualPaidMonths: number; cashbackBps: number };
+export type DoorValue = { status: "ACTIVE" | "PAUSED"; mode: "REVERSE_TRIAL" | "FREE_TIER"; trialDays: number; freeTierFeeBps: number; publishDays: number; firstSaleDays: number; milestoneCapDays: number; annualPaidMonths: number; cashbackBps: number; useProposalPrices: boolean };
 
 /** Nova versão da porta de entrada de uma marca (D126). Ligar = situação "Ativa"; quem já entrou mantém a condição dele. */
 export function PortaForm({ brand, label, value }: { brand: "NEXTLEVEL_COMMERCE" | "SUPERDROP"; label: string; value: DoorValue }) {
@@ -31,6 +31,10 @@ export function PortaForm({ brand, label, value }: { brand: "NEXTLEVEL_COMMERCE"
       <IntField id={id("cap")} label="Teto do teste" suffix="dias" value={f.milestoneCapDays} onChange={(v) => setF({ ...f, milestoneCapDays: v })} />
       <IntField id={id("annual")} label="Anual no Pix: meses pagos (0 = sem)" suffix="de 12" value={f.annualPaidMonths} onChange={(v) => setF({ ...f, annualPaidMonths: v })} />
       <PercentField id={id("cash")} label="Cashback em pontos" bps={f.cashbackBps} onChange={(v) => setF({ ...f, cashbackBps: v })} />
+      <label className="flex items-start gap-2 text-sm sm:col-span-2 lg:col-span-4" htmlFor={id("prop")}>
+        <input id={id("prop")} type="checkbox" className="mt-1 size-4" checked={f.useProposalPrices} onChange={(e) => setF({ ...f, useProposalPrices: e.target.checked })} />
+        <span><span className="font-medium">Usar os preços da Proposta de preço</span><span className="block text-xs text-muted-foreground">Quem entrar recebe a escada da Proposta (mensalidade e taxa de cada plano; a taxa do grátis vem do plano grátis dela), congelada na loja. Desmarcado: valem os preços de hoje. Para testar com parte dos clientes, crie um experimento desta porta.</span></span>
+      </label>
       <label className="flex flex-col text-sm font-medium sm:col-span-2" htmlFor={id("reason")}>Motivo<Input id={id("reason")} className="mt-1" value={f.reason} onChange={(e) => setF({ ...f, reason: e.target.value })} /></label>
       <label className="flex flex-col text-sm font-medium" htmlFor={id("pass")}>Sua senha<Input id={id("pass")} type="password" autoComplete="current-password" className="mt-1" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></label>
       <div className="flex items-end"><Button type="submit" loading={pending} disabled={f.reason.trim().length < 5 || !f.password}>Criar versão</Button></div>

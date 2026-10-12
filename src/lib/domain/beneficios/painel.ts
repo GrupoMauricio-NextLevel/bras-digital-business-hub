@@ -131,14 +131,15 @@ async function storeSimulator(db: Database, storeId: string, brand: BenefitBrand
   if (snap) plans.push({ name: "Grátis", monthlyCents: 0, feeBps: snap.freeTierFeeBps, current: !!free });
   if (brand === "SUPERDROP") {
     const book = await getPriceBook(db);
-    for (const k of ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] as const) plans.push({ name: book.offers[k].name, monthlyCents: book.offers[k].monthlyCents, feeBps: book.orderFees[k] ?? 0, current: !free && s.offer === k });
+    for (const k of ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] as const) { const dp = snap?.planPrices?.[k]; plans.push({ name: book.offers[k].name, monthlyCents: dp?.monthlyCents ?? book.offers[k].monthlyCents, feeBps: dp?.feeBps ?? book.orderFees[k] ?? 0, current: !free && s.offer === k }); }
   } else {
     const catalog = await listCatalog(db, { families: ["COMMERCE_PLAN"] });
     const sub = await db.query.nlSubscriptions.findFirst({ where: (t, { eq: e }) => e(t.storeId, storeId) });
     for (const p of catalog) {
       const m = p.prices.MONTHLY?.amountCents;
       if (!m) continue;
-      plans.push({ name: p.name, monthlyCents: m, feeBps: (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0, current: !free && sub?.productKey === p.key });
+      const dp = snap?.planPrices?.[p.key];
+      plans.push({ name: p.name, monthlyCents: dp?.monthlyCents ?? m, feeBps: dp?.feeBps ?? (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0, current: !free && sub?.productKey === p.key });
     }
   }
   if (plans.length < 2) return null;

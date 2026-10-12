@@ -1368,6 +1368,8 @@ export type OfferRules = {
   cashbackBps?: number;
   /** Passe do Grupo (fase P5A): acessos concedidos em outras marcas. */
   bundleGrants?: { grantKey: string; months: number }[];
+  /** Experimento de preço (D140): quem entra por esta porta recebe a escada da Proposta de preço, congelada na loja. */
+  priceSource?: "PROPOSTA";
 };
 export const catalogOffers = pgTable("catalog_offers", {
   id: id(),

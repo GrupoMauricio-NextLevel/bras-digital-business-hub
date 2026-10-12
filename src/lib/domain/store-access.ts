@@ -14,7 +14,7 @@ import { getPriceBook } from "./finance";
 import { supplierOfStore } from "./nextlevel-billing";
 import { attributeStore } from "./partners";
 import { isClosedCommerceSupplier } from "./bras/fronteira";
-import { activeDoor, creditPlanCashback, doorFields, type EntrySnapshot } from "./precos/porta-entrada";
+import { activeDoor, creditPlanCashback, doorFields, doorPlanPrice, repriceOpenSetup, type EntrySnapshot } from "./precos/porta-entrada";
 import { inTreatment } from "./experimentos";
 
 /**
@@ -92,6 +92,7 @@ export async function startTrial(db: Database, input: { storeId: string; code: s
     await tx.update(stores).set({ trialEndsAt: ends.toISOString(), couponId: coupon.id, taxId, updatedAt: now.toISOString(), ...(door ? doorFields(door, now) : {}) }).where(eq(stores.id, store.id));
     await tx.update(coupons).set({ redemptions: sql`${coupons.redemptions} + 1` }).where(eq(coupons.id, coupon.id));
   });
+  if (door) await repriceOpenSetup(db, store.id, store.offer, door);
   await emitEvent(db, { type: "TRIAL_STARTED", supplierId: coupon.supplierId, storeId: store.id, payload: { code: coupon.code, endsAt: ends.toISOString() }, dedupeKey: `TRIAL_STARTED:${store.id}` });
   return { trialEndsAt: ends };
 }
@@ -132,7 +133,9 @@ export async function ensurePlanInvoice(db: Database, store: Store, months: Plan
   const offer = book.offers[store.offer];
   // Anual da porta de entrada (D126): "pague N, leve 12" (faturas de plano são só Pix).
   const promo = months === 12 ? (store.entryOffer as EntrySnapshot | null)?.annualPromo : null;
-  const amount = offer.monthlyCents * (promo ? promo.paidMonths : months);
+  // Experimento com os preços da Proposta (D140): a mensalidade congelada na loja vale no lugar da tabela de hoje.
+  const monthly = doorPlanPrice(store.entryOffer, store.offer)?.monthlyCents ?? offer.monthlyCents;
+  const amount = monthly * (promo ? promo.paidMonths : months);
   const dedupeKey = `STORE_PLAN:${store.id}:${store.offer}:${months}:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
   if (existing && existing.status === "OPEN") return { invoiceId: existing.id, amountCents: existing.amountCents, description: existing.description, includesSetup: false };
@@ -245,6 +248,8 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
     const claimed = door ? await db.insert(trialClaims).values({ taxId, storeId: created.storeId }).onConflictDoNothing().returning({ taxId: trialClaims.taxId }) : [];
     if (door && claimed.length) {
       await db.update(stores).set({ trialEndsAt: new Date(now.getTime() + door.trialDays * DAY).toISOString(), ...doorFields(door, now) }).where(eq(stores.id, created.storeId));
+      const st = await db.query.stores.findFirst({ where: eq(stores.id, created.storeId), columns: { offer: true } });
+      if (st) await repriceOpenSetup(db, created.storeId, st.offer, door);
       return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: door.trialDays > 0 };
     }
     // Sem cupom: o acesso já nasce pendente de pagamento e o painel abre direto no checkout Pix.

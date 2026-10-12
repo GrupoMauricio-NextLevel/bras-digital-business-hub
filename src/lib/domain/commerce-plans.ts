@@ -57,12 +57,17 @@ export async function entryOfferFor(db: Database, taxId: string | null, cycle: P
 export async function startCommerceSubscription(db: Database, input: { storeId: string; productKey: string; cycle: PlanCycle; taxId: string | null; actor?: Actor | null; now?: Date; allowOffer?: boolean }) {
   const now = input.now ?? new Date();
   if (await subscriptionOf(db, input.storeId)) throw new DomainError("SUB_EXISTS", "Esta loja já tem assinatura.");
-  const { version, amountCents, feeBps } = await planPrice(db, input.productKey, input.cycle);
+  const price = await planPrice(db, input.productKey, input.cycle);
+  const { version } = price;
   // Porta de entrada da Commerce ligada (D126): teste reverso que cai no grátis, no lugar da oferta de entrada clássica.
   const door = input.allowOffer === false || !(await inTreatment(db, "PORTA_COMMERCE", input.storeId, now)) ? null : await activeDoor(db, "NEXTLEVEL_COMMERCE", now);
   if (door && input.taxId) {
     const claimed = await db.insert(offerRedemptions).values({ id: newId("ofr"), offerKey: door.offerKey, offerVersion: door.version, taxId: input.taxId, storeId: input.storeId }).onConflictDoNothing().returning({ id: offerRedemptions.id });
     if (claimed.length) {
+      // Experimento com os preços da Proposta (D140): mensalidade e taxa do plano vêm da porta, congeladas na assinatura.
+      const dp = door.planPrices?.[input.productKey];
+      const amountCents = dp ? dp.monthlyCents * (input.cycle === "ANNUAL" ? (door.annualPromo?.paidMonths ?? 12) : 1) : price.amountCents;
+      const feeBps = dp?.feeBps ?? price.feeBps;
       const ends = new Date(now.getTime() + door.trialDays * DAY);
       const id = newId("nls");
       await db.insert(nlSubscriptions).values({ id, storeId: input.storeId, productKey: input.productKey, cycle: input.cycle, status: door.trialDays > 0 ? "trial" : "pending_payment", priceVersionId: version.id, amountCents, platformFeeBps: feeBps, offerKey: door.offerKey, offerVersion: door.version, firstPeriodCents: null, trialEndsAt: door.trialDays > 0 ? ends.toISOString() : null, feeHolidayUntil: null });
@@ -72,6 +77,7 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
       return { subscriptionId: id, trial: door.trialDays > 0, trialEndsAt: door.trialDays > 0 ? ends : null, offerApplied: true };
     }
   }
+  const { amountCents, feeBps } = price;
   let offer = input.allowOffer === false ? null : await entryOfferFor(db, input.taxId, input.cycle, now);
   if (offer && input.taxId) {
     // A chave única (oferta, CPF/CNPJ) é a trava real contra duas lojas do mesmo cliente ao mesmo tempo.

@@ -49,6 +49,16 @@
 7. **Reputação:** o Ouro pode ter taxa menor sobre o frete e aparecer antes na escolha da transportadora (sempre com rótulo)?
 8. **Fotos reais** do Club e da Excursão (lista em `docs/prompts/fotos-club-excursao.md`): quando conseguir, monto as páginas.
 
+## 5A. Depois das suas respostas (2026-10-12)
+| Resposta | O que foi feito | Onde | Decisão |
+|---|---|---|---|
+| 1. Testar os preços da Proposta | Opção "Usar os preços da Proposta" na porta de entrada de cada marca; a loja que entra recebe a escada congelada | Master → Ofertas e comissões → Porta de entrada; depois Experimentos | D140 |
+| 2. Ordem de ligar | Cartão "Ligar em ordem" com os 5 passos e o estado de cada um | Topo de Master → Descoberta | D140 |
+| 3. Conta do grupo | Em desenvolvimento | | |
+| 5 e 6. Equipe e contador | Cadastro da equipe com funções (Comercial, Suporte, Financeiro, Conteúdo, Contador parceiro) | Master → Equipe do Master | D138 |
+| 7. Reputação Ouro | Comissão menor no frete e prioridade na lista, com selo; 3 transportadoras fictícias só na demonstração | Master → Descoberta → Reputação | D139 |
+| 8. Fotos | Aguardando (amanhã) | | |
+
 ## 6. Resultado da fase final (2026-10-11)
 - **Bateria completa:** 133 arquivos, **936 testes, todos passando** (inclui a regressão do SuperDrop com tudo desligado).
 - **e2e novo `e2e/precos-ecossistema.mjs`:** passou. O Master abre as 6 telas novas (sem violação grave de acessibilidade em 1440 px e sem rolagem horizontal em 360 px), liga benefícios, barra e fio pelo próprio Master; o lojista vê carteira, trilha e simulador, abre o lançador "Marcas do grupo" (Esc fecha); cadastro, `/ativar` e página inicial mostram o fio e o rodapé da família, em 390 e 1440 px.

@@ -32,13 +32,43 @@ export type EntrySnapshot = {
   milestoneCapDays: number;
   annualPromo: { paidMonths: number; getMonths: number } | null;
   cashbackBps: number;
+  /** Preços da Proposta (D140): mensalidade e taxa por plano, congeladas na loja. Sem isso valem os preços de hoje. */
+  priceSource?: "PROPOSTA";
+  planPrices?: Record<string, PlanPrice>;
 };
+export type PlanPrice = { monthlyCents: number; feeBps: number };
+
+/**
+ * Planos pagos da Proposta, por ordem de preço, ligados às chaves reais de cada marca (D140). O plano grátis da Proposta
+ * vira a taxa do grátis da porta. Plano da Proposta que falta deixa o preço de hoje naquele plano.
+ */
+const PLAN_SLOTS: Record<DoorBrand, string[][]> = {
+  NEXTLEVEL_COMMERCE: [["COMMERCE_START"], ["COMMERCE_PRO"], ["COMMERCE_SCALE"]],
+  SUPERDROP: [["DROP_MANUAL", "STORE_SUBDOMAIN"], ["STORE_OWN"]],
+};
+export function proposalPrices(ladder: { monthlyCents: number; feeBps: number }[], brand: DoorBrand) {
+  const free = ladder.find((p) => p.monthlyCents === 0);
+  const paid = ladder.filter((p) => p.monthlyCents > 0).sort((a, b) => a.monthlyCents - b.monthlyCents);
+  const planPrices: Record<string, PlanPrice> = {};
+  PLAN_SLOTS[brand].forEach((keys, i) => { const p = paid[i]; if (p) for (const k of keys) planPrices[k] = { monthlyCents: p.monthlyCents, feeBps: p.feeBps }; });
+  return { freeTierFeeBps: free ? free.feeBps : null, planPrices };
+}
+
+/** Preço congelado na loja para um plano (porta com os preços da Proposta), ou `null` = vale o preço de hoje. */
+export function doorPlanPrice(entryOffer: unknown, planKey: string): PlanPrice | null {
+  return (entryOffer as EntrySnapshot | null | undefined)?.planPrices?.[planKey] ?? null;
+}
 
 /** Oferta de porta ativa da marca (ou `null` = desligada, comportamento de hoje). */
 export async function activeDoor(db: Database, brand: DoorBrand, now = new Date()): Promise<EntrySnapshot | null> {
   const o = await activeOffer(db, DOOR_OFFER_KEYS[brand], now);
   if (!o) return null;
-  return snapshotOf(o.key, o.version, o.rules);
+  const snap = snapshotOf(o.key, o.version, o.rules);
+  if (!snap || o.rules.priceSource !== "PROPOSTA") return snap;
+  // Experimento com os preços da Proposta (D140): a escada é lida agora e fica congelada na loja que entrar.
+  const { getProposal } = await import("./proposta");
+  const x = proposalPrices((await getProposal(db)).brands[brand].ladder, brand);
+  return { ...snap, priceSource: "PROPOSTA", freeTierFeeBps: x.freeTierFeeBps ?? snap.freeTierFeeBps, planPrices: x.planPrices };
 }
 
 export function snapshotOf(key: string, version: number, r: OfferRules): EntrySnapshot | null {
@@ -76,6 +106,21 @@ export async function applyTrialMilestone(db: Database, storeId: string, event: 
   if (!first) return null;
   await db.update(stores).set({ trialEndsAt: target.toISOString(), updatedAt: now.toISOString() }).where(eq(stores.id, storeId));
   return { event, addedDays: Math.round((target.getTime() - current.getTime()) / DAY), trialEndsAt: target };
+}
+
+/**
+ * Porta com os preços da Proposta (D140): a fatura de ativação ainda em aberto (setup + 1º mês, criada no cadastro com o
+ * preço de hoje) passa a cobrar o 1º mês pelo preço congelado na loja. O setup não muda.
+ */
+export async function repriceOpenSetup(db: Database, storeId: string, offerKey: string, snap: EntrySnapshot) {
+  const price = snap.planPrices?.[offerKey];
+  if (!price) return null;
+  const inv = await db.query.financeInvoices.findFirst({ where: and(eq(financeInvoices.dedupeKey, `STORESETUP:${storeId}`), eq(financeInvoices.status, "OPEN")) });
+  if (!inv) return null;
+  const lines = inv.lines.map((l) => (l.kind === "STORE_FIRST_MONTH" ? { ...l, amountCents: price.monthlyCents } : l));
+  const amountCents = lines.reduce((t, l) => t + l.amountCents, 0);
+  await db.update(financeInvoices).set({ lines, amountCents }).where(eq(financeInvoices.id, inv.id));
+  return { invoiceId: inv.id, amountCents };
 }
 
 /** Grava a porta na loja ao começar o teste (dentro da mesma operação que cria o teste). */
@@ -125,6 +170,8 @@ export const doorVersionSchema = z.object({
   milestoneCapDays: z.number().int().min(0).max(60),
   annualPaidMonths: z.number().int().min(0).max(12),
   cashbackBps: z.number().int().min(0).max(3_000),
+  /** Usar a escada da Proposta de preço (D140) no lugar dos preços de hoje. */
+  useProposalPrices: z.boolean().default(false),
   reason: z.string().trim().min(5).max(300),
 }).refine((v) => v.milestoneCapDays >= v.trialDays, { message: "O teto do teste não pode ser menor que os dias de teste." });
 
@@ -146,6 +193,7 @@ export async function addDoorVersion(db: Database, actor: Actor, brand: DoorBran
     milestoneDays: [{ event: "STORE_PUBLISHED", days: v.publishDays }, { event: "FIRST_SALE", days: v.firstSaleDays }], milestoneCapDays: v.milestoneCapDays,
     annualPromo: v.annualPaidMonths > 0 ? { paidMonths: v.annualPaidMonths, getMonths: 12 } : null, cashbackBps: v.cashbackBps,
   };
+  if (v.useProposalPrices) rules.priceSource = "PROPOSTA"; else delete rules.priceSource;
   const id = newId("cof");
   await db.insert(catalogOffers).values({ id, key, version: last.version + 1, name: last.name, status: v.status, rules, authorUserId: actor.userId, reason: v.reason });
   await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "OFFER_VERSION_CREATED", entityType: "catalog_offer", entityId: id, before: { version: last.version, status: last.status, rules: last.rules }, after: { version: last.version + 1, status: v.status, rules }, reason: v.reason });

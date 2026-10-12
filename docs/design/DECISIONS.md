@@ -1261,3 +1261,11 @@ Resposta 7 do dono ("sim, crie fictício").
 - **Regras editáveis** em Master → Descoberta → Reputação (entregas, nota e recusas de cada nível e o desconto do Ouro), só dono e Financeiro.
 - **Dados fictícios** (`src/db/demo-cargas.ts`): "Rota Ouro Transportes", "Expresso Prata" e "Fretes Começando", todas com "(demonstração)" no nome, cargas e avaliações inventadas; **só no banco de demonstração**, nunca na produção.
 - Testes: `tests/reputacao-ouro.test.ts`.
+
+## D140 — Experimento com os preços da Proposta e o roteiro "ligar em ordem" (2026-10-12)
+Respostas 1 e 2 do dono (testar os preços da Proposta como experimento; ordem questionário → benefícios → porta como experimento → barra/fio → Club).
+- **Opção na porta de entrada** (Master → Ofertas e comissões → Porta de entrada, campo "Usar os preços da Proposta", desmarcado por padrão; regra `priceSource: "PROPOSTA"` na versão da oferta). Ligada, a loja que entra recebe a escada da Proposta **congelada na loja** (`stores.entry_offer.planPrices`): os planos pagos da Proposta, por ordem de preço, viram Start/Pro/Scale na Commerce e Loja (subdomínio e manual)/Própria no SuperDrop; o plano grátis da Proposta vira a taxa do grátis. Plano que falta na Proposta mantém o preço de hoje.
+- **Onde vale:** mensalidade do SuperDrop (`ensurePlanInvoice`, inclusive o anual "pague N, leve 12"), 1º mês da fatura de ativação ainda em aberto (o setup não muda), taxa por pedido do SuperDrop, assinatura da Commerce (mensalidade e taxa congeladas) e o simulador "quanto cada plano custaria" do painel. Quem entrou antes, ou caiu no grupo de controle do experimento, segue com os preços de hoje. A tabela de preços de hoje não muda.
+- **Como testar com parte dos clientes:** ligar a porta com a opção e criar o experimento da porta (Master → Experimentos, 50% no grupo novo).
+- **Roteiro "Ligar em ordem"** no topo de Master → Descoberta: os 5 passos aprovados, cada um com Ligado/Em parte/Desligado, o que está ligado e o link para ligar; marca o próximo passo. Não liga nada sozinho.
+- Testes: `tests/porta-precos-proposta.test.ts`.

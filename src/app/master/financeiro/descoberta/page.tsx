@@ -1,6 +1,7 @@
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
+import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/money";
 import { brandFunnels, FUNNEL_BRANDS, type BrandFunnel, type FunnelCount } from "@/lib/domain/precos/funil";
 import { surveyResults, type SurveyResult } from "@/lib/domain/precos/questionario";
@@ -9,10 +10,13 @@ import { getBenefitsSettings } from "@/lib/domain/beneficios/painel";
 import { getEcoSettings } from "@/lib/domain/ecossistema/lancador";
 import { reputationBoard, TIER_LABEL } from "@/lib/domain/cargas/reputacao";
 import { ReputacaoForm } from "@/components/descoberta/reputacao-form";
+import { launchRoadmap, type RoadmapState } from "@/lib/domain/precos/roteiro";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
 
+const STATE_TXT: Record<RoadmapState, string> = { LIGADO: "Ligado", PARCIAL: "Em parte", DESLIGADO: "Desligado" };
+const STATE_TONE = { LIGADO: "success", PARCIAL: "warning", DESLIGADO: "neutral" } as const;
 const pctTxt = (v: number | null) => (v === null ? "ainda não deu tempo" : `${v}%`);
 const monthLabel = (ym: string) => new Date(`${ym}-15T12:00:00Z`).toLocaleDateString("pt-BR", { month: "short", year: "numeric", timeZone: "UTC" });
 
@@ -120,10 +124,21 @@ export default async function DescobertaPage() {
   const [funnels, survey, benefits] = await Promise.all([brandFunnels(db, s.actor), surveyResults(db, s.actor), getBenefitsSettings(db)]);
   const eco = await getEcoSettings(db);
   const rep = await reputationBoard(db, s.actor);
+  const roadmap = await launchRoadmap(db, s.actor);
   return (
     <>
       <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Descoberta: funil por marca" description="Quantos se cadastram, quantos ativam, quantos pagam e quanto tempo leva, por marca. Só números somados: nenhum dado pessoal." />
       <FinNav active="descoberta" />
+      <section id="roteiro" aria-labelledby="h-roteiro" className="ds-card mb-6 p-4">
+        <h2 id="h-roteiro" className="text-lg font-bold">Ligar em ordem</h2>
+        <p className="mb-3 text-sm text-muted-foreground">A ordem que você aprovou. Cada passo mostra o que já está ligado; nada liga sozinho.</p>
+        <ol className="space-y-2 text-sm">{roadmap.map((r) => (
+          <li key={r.n} className={`rounded-lg border p-3 ${r.next ? "border-primary" : "border-border"}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2"><a href={r.href} className="font-semibold text-link underline">{r.n}. {r.title}</a><Badge tone={STATE_TONE[r.state]}>{STATE_TXT[r.state]}{r.next ? " · próximo passo" : ""}</Badge></div>
+            <p className="mt-1 text-muted-foreground">{r.detail}</p>
+          </li>
+        ))}</ol>
+      </section>
       <nav aria-label="Marcas" className="mb-4 flex flex-wrap gap-2 text-sm">{funnels.map((f) => <a key={f.brand} href={`#${f.brand.toLowerCase()}`} className="ds-pill ds-pill--outline">{f.label}</a>)}<a href="#questionario" className="ds-pill ds-pill--outline">Questionário de preço</a></nav>
       {funnels.map((f) => <Marca key={f.brand} f={f} />)}
       <section id="beneficios" aria-labelledby="h-b" className="ds-card mb-6 p-4">

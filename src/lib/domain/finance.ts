@@ -416,7 +416,9 @@ export async function storeOrderFeeFor(db: Database, storeId: string, period: st
   if (commerceFee) return { feeCents: commerceFee.feeCents, baseCents: commerceFee.baseCents, orders: commerceFee.orders, bps: commerceFee.bps };
   if (store.kind === "SUPPLIER_OWN") return { feeCents: 0, baseCents: 0, orders: 0, bps: 0 };
   const b = book ?? (await getPriceBook(db));
-  const bps = b.orderFees[store.offer] ?? 0;
+  // Experimento com os preços da Proposta (D140): taxa do plano congelada na loja.
+  const door = (store.entryOffer as { planPrices?: Record<string, { feeBps: number }> } | null)?.planPrices?.[store.offer];
+  const bps = door ? door.feeBps : (b.orderFees[store.offer] ?? 0);
   const { start, end } = periodBounds(period);
   const [r] = await db.select({ base: sum(orders.subtotalCents), n: count() }).from(orders).where(and(eq(orders.storeId, storeId), eq(orders.customerPaymentStatus, "PAID"), ne(orders.status, "CANCELED"), ne(orders.paymentProvider, "DEMO"), gte(orders.createdAt, start.toISOString()), lt(orders.createdAt, end.toISOString())));
   const baseCents = Number(r?.base ?? 0);
