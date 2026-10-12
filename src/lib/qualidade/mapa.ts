@@ -56,7 +56,7 @@ export const CELL_LABEL: Record<CellState, string> = { ABRE: "abre", LOGIN: "ped
 
 // ---- Onde cada página deve morar (decisões do dono de 12/10/2026, D147) -------------------------------------------------
 export type Expect = { kind: "DEVE_ABRIR" | "NAO_DEVE" | "A_DEFINIR"; why: string };
-const GROUP_SITE = ["/solucoes", "/loja-nextlevel"];
+const GROUP_SITE = ["/solucoes", "/loja-nextlevel", "/club", "/meu-contador"];
 const GROUP_LEGAL = ["/termos", "/privacidade"];
 const under = (r: string, p: string) => r === p || r.startsWith(`${p}/`);
 

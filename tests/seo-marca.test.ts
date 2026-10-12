@@ -14,7 +14,7 @@ describe("sitemap por marca", () => {
     expect(cm).toEqual(expect.arrayContaining(["/", "/planos", "/temas", "/quero-minha-loja"]));
     for (const x of ["/seja-fornecedor", "/como-funciona", "/parceiros", "/loja-nextlevel"]) expect(cm).not.toContain(x);
     expect(sitemapPaths(brandByCode("NEXTLEVEL_COMMERCE", { BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true" }), opts)).toContain("/cadastro");
-    expect(sitemapPaths(brandByCode("NEXTLEVEL", {}), opts)).toEqual(["/solucoes", "/solucoes/migracao-lite", "/loja-nextlevel", "/termos", "/privacidade"]);
+    expect(sitemapPaths(brandByCode("NEXTLEVEL", {}), opts)).toEqual(["/solucoes", "/solucoes/migracao-lite", "/loja-nextlevel", "/club", "/meu-contador", "/termos", "/privacidade"]);
     expect(sitemapPaths(brandByCode("NEXTLEVEL_CARGAS", {}), opts)).toEqual(["/", "/termos", "/privacidade"]);
     expect(sitemapPaths(brandsFrom({ BRAND_SIGNUP_BRAS_DIGITAL: "true" }).BRAS_DIGITAL, opts)).toEqual(["/", "/cadastro", "/termos", "/privacidade"]);
     expect(sitemapPaths(brandByCode("CREATORS_HUB", {}), opts)).toEqual([]);
@@ -29,6 +29,6 @@ describe("robots por endereço", () => {
     const sd = robotsPlan({ brand: brandByCode("SUPERDROP", {}), office: false });
     expect(sd.index && sd.disallow).toEqual(expect.arrayContaining(["/master", "/merchant", "/api/", "/r/", "/loja-nextlevel/pedido/"]));
     const g = robotsPlan({ brand: brandByCode("NEXTLEVEL", {}), office: false });
-    expect(g).toEqual({ index: true, allow: ["/solucoes", "/loja-nextlevel", "/termos", "/privacidade"], disallow: ["/", "/loja-nextlevel/pedido/"] });
+    expect(g).toEqual({ index: true, allow: ["/solucoes", "/loja-nextlevel", "/club", "/meu-contador", "/termos", "/privacidade"], disallow: ["/", "/loja-nextlevel/pedido/"] });
   });
 });

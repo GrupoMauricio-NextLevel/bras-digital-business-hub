@@ -17,15 +17,16 @@ export type PaletteMode = {
 };
 export type BrandPalette = { light: PaletteMode; dark: PaletteMode; support: string; /** Marca pensada primeiro para o modo escuro (Hub Creators). */ darkFirst: boolean };
 
-/** Sistema de cores v2 (decisão D79): neutros navy/off-white compartilhados; sinal = cor de assinatura da marca; apoio = amarelo do grupo. */
+/** Sistema de cores v2 (decisão D79; cores de assinatura do pacote de marcas, D152): neutros navy/off-white compartilhados; sinal = cor de assinatura da marca; apoio = amarelo do grupo. */
 const NEU = { light: { paper: "#F4F1E9", ink: "#101B34" }, dark: { paper: "#0B1427", ink: "#F4F1E9" } } as const;
 const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): BrandPalette => ({
   light: { ...NEU.light, signal: l[0], signalText: l[1] }, dark: { ...NEU.dark, signal: d[0], signalText: d[1] }, support, darkFirst: false,
 });
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
-  NEXTLEVEL_COMMERCE: pal(["#196BD8", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
-  SUPERDROP: pal(["#118728", "#03721D"], ["#62C268", "#62C268"]),
-  BRAS_DIGITAL: pal(["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
+  NEXTLEVEL_COMMERCE: pal(["#2F81F4", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
+  SUPERDROP: pal(["#2D9E3B", "#03721D"], ["#62C268", "#62C268"]),
+  // Assinatura #D35C00 (D152) ajustada em 1 tom para o texto do botão passar em AA.
+  BRAS_DIGITAL: pal(["#D55E00", "#974000"], ["#FB8342", "#FB8342"]),
   CREATORS_HUB: pal(["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
   CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.

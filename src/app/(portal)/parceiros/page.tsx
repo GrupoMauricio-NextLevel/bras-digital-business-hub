@@ -9,6 +9,7 @@ import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { PartnerCalculator } from "@/components/portal/partner-calculator";
 import { formatBRL } from "@/lib/money";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
+import { FaixaMarca } from "@/components/portal/marca-institucional";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default async function Parceiros() {
   const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   return (
     <>
+      <FaixaMarca slug="parceiros" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-80" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(245,158,11,0.25), transparent 60%)" }} />

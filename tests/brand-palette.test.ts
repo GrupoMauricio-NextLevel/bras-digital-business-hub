@@ -24,7 +24,7 @@ describe("paleta das marcas (direção visual v4)", () => {
   it("gera as variáveis CSS da marca para claro e escuro e cai na holding se o código for desconhecido", () => {
     const css = brandCssVars("SUPERDROP");
     expect(css).toContain("--brand-paper:#F4F1E9");
-    expect(css).toContain("--brand-signal:#118728");
+    expect(css).toContain("--brand-signal:#2D9E3B");
     expect(css).toContain('[data-theme="dark"]');
     expect(css).toContain("--brand-on-signal:");
     expect(paletteOf("qualquer")).toBe(PALETTES.NEXTLEVEL);

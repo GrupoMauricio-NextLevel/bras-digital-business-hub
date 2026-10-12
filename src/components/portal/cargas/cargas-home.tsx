@@ -3,6 +3,7 @@ import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { CargasInterestForm } from "./cargas-form";
 import "./cargas.css";
+import { FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
 
 /**
  * Página pública da NextLevel Cargas (D108). Fala primeiro com o dono da transportadora (o que chamaria a atenção dele,
@@ -114,6 +115,8 @@ export function CargasHome({ brand }: { brand: Brand }) {
         <div className="cg-pista" aria-hidden />
       </section>
 
+      <VitrineMarca slug="nextlevel-cargas" titulo="A operação da transportadora num painel só" />
+
       {/* 2. Faixa de fatos (só o que é verdade na plataforma). */}
       <section aria-label="Em poucas palavras" className="cg-marquee overflow-hidden border-b border-[#e3e0d6] bg-white py-4">
         <div className="cg-marquee-track gap-10 pr-10 text-sm font-semibold">
@@ -218,6 +221,8 @@ export function CargasHome({ brand }: { brand: Brand }) {
           <div className="cg-board p-5 md:p-7"><CargasInterestForm /></div>
         </div>
       </section>
+
+      <FechoMarca slug="nextlevel-cargas" cta={{ href: "/#cadastro", label: "Cadastrar grátis" }} />
 
       {/* 9. Dúvidas. */}
       <section id="duvidas" className={`cg-claro ${section}`} aria-labelledby="cg-faq">

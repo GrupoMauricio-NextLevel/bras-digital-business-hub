@@ -28,6 +28,7 @@ import { formatBRL } from "@/lib/money";
 import { MosaicoEditorial } from "@/components/portal/mosaico-editorial";
 import { ImagemEmCriacao, TexturaDeFundo } from "@/components/portal/imagem-em-criacao";
 import { FAQ } from "./content";
+import { FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
@@ -94,6 +95,8 @@ export default async function Portal() {
         </div>
         <div className="h-16 bg-gradient-to-b from-transparent to-canvas" aria-hidden />
       </section>
+
+      <VitrineMarca slug="superdrop" titulo="Tudo para vender sem estoque" />
 
       {/* 2. Fornecedores do lançamento */}
       <section className="bg-canvas pb-4 pt-6" aria-label="Fornecedores do lançamento">
@@ -189,6 +192,8 @@ export default async function Portal() {
           <p className="mt-6 text-sm text-muted-foreground">A NextLevel cobra só o que é dela (planos, taxas e serviços), em fatura separada. Precisa de loja montada, migração, temas ou anúncios? Veja as <Link href={solucoes} className="font-semibold text-link underline">Soluções NextLevel</Link> ou peça um <Link href={`${solucoes}#diagnostico`} className="font-semibold text-link underline">diagnóstico gratuito</Link>.</p>
         </div>
       </section>
+
+      <FechoMarca slug="superdrop" cta={{ href: "/cadastro", label: "Criar minha loja" }} />
 
       {/* 10. Perguntas frequentes */}
       <section className="bg-canvas py-20">

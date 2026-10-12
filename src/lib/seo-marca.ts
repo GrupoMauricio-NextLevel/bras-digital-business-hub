@@ -12,7 +12,7 @@ export type SeoHost = { brand: Brand | null; office: boolean };
 export function sitemapPaths(brand: Brand, opts: { themes: string[]; solutions: string[]; publicSolutions: boolean }): string[] {
   if (brand.soon) return [];
   const legal = ["/termos", "/privacidade"];
-  if (brand.code === HOLDING_CODE) return [...(opts.publicSolutions ? ["/solucoes", ...opts.solutions.map((s) => `/solucoes/${s}`)] : []), "/loja-nextlevel", ...legal];
+  if (brand.code === HOLDING_CODE) return [...(opts.publicSolutions ? ["/solucoes", ...opts.solutions.map((s) => `/solucoes/${s}`)] : []), "/loja-nextlevel", "/club", "/meu-contador", ...legal];
   if (brand.landing === "cargas") return ["/", ...legal];
   if (brand.closedCommerce) return ["/", ...(brand.signupOpen ? ["/cadastro"] : []), ...legal];
   const dropship = brand.modules.includes("dropship");
@@ -29,6 +29,6 @@ export function robotsPlan({ brand, office }: SeoHost): RobotsPlan {
   if (!brand || office || brand.soon) return { index: false };
   const privados = [...PANEL_PREFIXES, "/api/", "/r/", "/c/", "/loja-nextlevel/pedido/", "/balcao/", "/balcao-club/", "/motorista/", "/ativar", "/demo", "/dev", "/gravacao"];
   // Endereço do grupo (hoje o mesmo do Master): só as páginas do grupo; o resto é painel.
-  if (brand.code === HOLDING_CODE) return { index: true, allow: ["/solucoes", "/loja-nextlevel", "/termos", "/privacidade"], disallow: ["/", "/loja-nextlevel/pedido/"] };
+  if (brand.code === HOLDING_CODE) return { index: true, allow: ["/solucoes", "/loja-nextlevel", "/club", "/meu-contador", "/termos", "/privacidade"], disallow: ["/", "/loja-nextlevel/pedido/"] };
   return { index: true, allow: ["/"], disallow: privados };
 }

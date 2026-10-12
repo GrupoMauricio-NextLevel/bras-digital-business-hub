@@ -17,6 +17,7 @@ import { CommercePlansSection } from "@/components/portal/commerce/plans-section
 import { getDb } from "@/db/client";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
+import { FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
 
 /**
  * Home da NextLevel Commerce (v2, cadastro aberto): prova (lojas de exemplo), como começar sozinho, para quem é, o que a
@@ -38,6 +39,7 @@ export async function CommerceHome({ brand }: { brand: Brand }) {
       ]} />
       <HeroV2 cta={cta} signupOpen={brand.signupOpen} offer={offer} />
       <Marquee />
+      <VitrineMarca slug="nextlevel-commerce" titulo="Tudo o que a sua loja precisa para vender" />
 
       {/* 1. Prova: lojas montadas com os temas que existem hoje. */}
       <section id="exemplos" aria-labelledby="exemplos-t" className={`${section} bg-band`}>
@@ -117,6 +119,7 @@ export async function CommerceHome({ brand }: { brand: Brand }) {
       </section>
 
       <section className="relative overflow-hidden bg-band py-16 md:py-20" aria-label="Chamada final"><TexturaDeFundo marca="commerce" nome="cm-textura-fundo" /><div className="relative"><ClosingCta cta={cta} signupOpen={brand.signupOpen} offer={offer} /></div></section>
+      <FechoMarca slug="nextlevel-commerce" cta={{ href: cta, label: "Criar minha loja" }} />
     </>
   );
 }

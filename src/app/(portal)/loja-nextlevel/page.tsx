@@ -10,6 +10,7 @@ import { supportContacts } from "@/lib/support";
 import { formatBRL } from "@/lib/money";
 import { publicThemes } from "@/lib/themes/gallery";
 import type { DigitalCategory } from "@/db/schema";
+import { FaixaMarca } from "@/components/portal/marca-institucional";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
   const talk = c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Tenho uma dúvida sobre a Loja NextLevel.")}`) : c.email ? `mailto:${c.email}?subject=${encodeURIComponent("Loja NextLevel")}` : null;
   return (
     <>
+      <FaixaMarca slug="loja-nextlevel" />
       <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 15% -10%, rgba(34,197,94,0.22), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-16 md:pt-24">

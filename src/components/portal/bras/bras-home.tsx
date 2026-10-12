@@ -10,6 +10,7 @@ import { brasWhatsappUrl } from "@/lib/bras/contato";
 import { BrasVideoCard } from "./video-card";
 import { DEMO_DISCOVERY, DiscoveryPanel, FeedPhone, RequestForm, RequestsPanel } from "./bras-ui";
 import "./bras.css";
+import { FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
 
 /**
  * Página pública da Brás Digital (D92, refeita na D98 com a home da Commerce como referência): apresenta a plataforma com as telas
@@ -104,6 +105,8 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
           </div>
         </div>
       </section>
+
+      <VitrineMarca slug="bras-digital" titulo="O atacado do Brás, do vídeo à retirada" />
 
       {/* 2. Faixa com as regras do atacado. */}
       <div className="bd-marquee overflow-hidden border-y border-black/10 bg-[var(--bd-laranja-claro)] py-3 text-[var(--bd-navy)]" aria-label="Como funciona o atacado da Brás Digital">
@@ -307,6 +310,8 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
           </div>
         </div>
       </section>
+
+      <FechoMarca slug="bras-digital" cta={{ href: "/cadastro", label: "Cadastrar grátis" }} />
 
       {/* 10. Dúvidas. */}
       <section id="duvidas" aria-labelledby="bd-faq" className={`bd-papel ${section}`}>

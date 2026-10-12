@@ -26,7 +26,25 @@ type Props = {
   priority?: boolean;
 };
 
+/**
+ * Logos do pacote de marcas (D152) para marcas sem SVG oficial. Só a versão clara tem fundo transparente; a escura veio
+ * com fundo sólido, então no tema escuro e sobre fundo escuro a marca aparece em texto (pendência registrada).
+ */
+const PNG_CLARA: Record<string, { src: string; ratio: number }> = {
+  NEXTLEVEL_CARGAS: { src: "/marcas/nextlevel-cargas/logos/logo-clara-640.webp", ratio: 2172 / 724 },
+  BRAS_DIGITAL: { src: "/marcas/bras-digital/logos/logo-clara-640.webp", ratio: 1774 / 887 },
+};
+
 export function BrandLogo({ brand, tone = "auto", variant = "compacta", className, priority = false }: Props) {
+  const png = PNG_CLARA[brand.code ?? ""];
+  if (png && variant !== "monograma") {
+    const texto = (extra: string) => <span className={cn("inline-flex items-center font-[family-name:var(--nl-font-display)] text-lg font-extrabold tracking-tight", tone === "on-dark" ? "text-white" : "text-foreground", extra)}>{brand.name}</span>;
+    // eslint-disable-next-line @next/next/no-img-element -- WebP estático
+    const img = <img src={png.src} width={Math.round(64 * png.ratio)} height={64} alt={brand.name} className={cn("w-auto", className ?? "h-8", tone === "auto" ? "nl-logo-light" : "")} loading={priority ? "eager" : "lazy"} decoding="async" />;
+    if (tone === "on-dark") return texto("");
+    if (tone === "on-light") return img;
+    return <>{img}{texto("nl-logo-dark")}</>;
+  }
   const o = logoOficial(brand.code);
   if (!o) {
     return <span className={cn("inline-flex items-center font-[family-name:var(--nl-font-display)] text-lg font-extrabold tracking-tight", tone === "on-dark" ? "text-white" : "text-foreground")}>{brand.name}</span>;

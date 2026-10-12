@@ -19,6 +19,7 @@ import { formatBRL } from "@/lib/money";
 import { DiagnosticoForm } from "./diagnostico-form";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 import { FamiliaFoto } from "@/components/nl-store/familia-foto";
+import { FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,7 @@ export default async function SolucoesPage() {
           {heroFoto ? <FotoOpcional marca="nextlevel" nome="nl-solucoes-hero" alt="Duas pessoas da equipe trabalhando lado a lado: uma monta a vitrine de uma loja no notebook, a outra organiza fotos de produto." priority className="!rounded-2xl" /> : null}
         </div>
       </section>
+      <VitrineMarca slug="nextlevel" titulo="Uma estrutura, várias frentes" />
 
       <section id="jornada" className="px-4 py-16" aria-labelledby="jor-t">
         <div className="mx-auto max-w-6xl">
@@ -137,6 +139,7 @@ export default async function SolucoesPage() {
           <div className="mt-6"><DiagnosticoForm needs={Object.entries(DIAGNOSTIC_NEEDS)} /></div>
         </div>
       </section>
+      <FechoMarca slug="nextlevel" cta={{ href: "#diagnostico", label: "Fazer diagnóstico gratuito" }} />
     </>
   );
 }
