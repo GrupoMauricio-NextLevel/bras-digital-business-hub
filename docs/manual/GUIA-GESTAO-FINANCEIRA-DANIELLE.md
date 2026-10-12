@@ -8,6 +8,7 @@
 ## Como usar este guia
 
 Este guia é um curso em **6 módulos**. Cada módulo tem:
+
 - **o conceito** (o que é e por que importa, em linguagem simples);
 - **as telas** onde isso aparece, com o link, o que observar e uma pergunta para responder;
 - **um exercício prático** no ambiente de demonstração.
@@ -30,9 +31,13 @@ No fim existe uma **Ficha de Observação** e um modelo de **relatório**. As su
 ## Antes de começar
 
 ### Onde entrar
-- **Endereço do ambiente de demonstração:** https://nextlevel-demo.onrender.com/login (ou, no computador do Mauricio, http://localhost:3100/login).
+
+- **Endereço do ambiente de demonstração:** https://nextlevel-demo.onrender.com/login. **Todo o guia usa só este endereço.**
+
+> 🚫 **ENDEREÇOS REAIS: NÃO ACESSAR.** O sistema de verdade, com clientes e dinheiro reais, mora em `superdrop.com.br`, `lojas.nextlevelgroup.com.br`, `master.nextlevelgroup.com.br`, `bras.nextlevelgroup.com.br` e `cargas.nextlevelgroup.com.br`. Eles são citados só como referência. Alguns links dentro da demonstração apontam para esses endereços (rodapé com as marcas do grupo, botões "Abrir" da Central de qualidade): antes de clicar, confira se o destino é `nextlevel-demo.onrender.com`.
+
 - Na tela de entrada, abra **"Perfis de demonstração"** e clique no perfil desejado: você entra com um clique. **Senha de todos:** `demo1234`.
-- A faixa amarela "Ambiente de demonstração · Mercado Pago e Pix SIMULADOS" e o botão **"Demo"** no topo dos painéis confirmam que você está na demonstração. **Tudo aqui é fictício**: pode apertar qualquer botão.
+- A faixa amarela "Ambiente de demonstração · Mercado Pago e Pix SIMULADOS", o botão **"Demo"** no topo dos painéis e o endereço **nextlevel-demo.onrender.com** na barra do navegador confirmam que você está na demonstração. **Tudo aqui é fictício**: pode apertar qualquer botão (o Samuel também usa este ambiente; anote o que mudar).
 - A primeira página do dia pode demorar até 1 minuto (o ambiente "acorda"). Não é defeito.
 
 ### Os seus perfis
@@ -51,6 +56,7 @@ No fim existe uma **Ficha de Observação** e um modelo de **relatório**. As su
 > Para trocar de perfil sem sair: botão **"Demo"** no topo → escolha o perfil.
 
 ### Três regras do sistema que valem para todo o guia
+
 1. **O dinheiro do cliente final não passa pela NextLevel.** Quando alguém compra numa loja, o pagamento vai **direto** para a conta Mercado Pago do lojista (ou do fornecedor). A NextLevel cobra **só o que é dela** (planos, taxas, serviços), em **fatura separada**.
 2. **Nenhum pagamento vale até ser conferido no Mercado Pago.** O sistema não confia no aviso que chega; ele vai ao Mercado Pago e confirma. E o mesmo pagamento nunca é contado duas vezes.
 3. **Regra de negócio não fica "escondida no código".** Preços, taxas, comissões e prazos ficam em telas de configuração do Master, com **histórico de versões**: dá para saber o que valia em cada data.
@@ -119,6 +125,7 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 > As telas do financeiro têm **abas no topo** (Visão executiva, Preços do grupo, Descoberta, Proposta de preço, Experimentos, Catálogo e preços, Ofertas e comissões, Assinaturas, Pagamentos, Operação SuperDrop…). Role as abas para o lado se não couberem.
 
 ### 2.1 Visão executiva
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro
 - **O que é:** o painel de bordo do dinheiro do grupo: receita, o que está em aberto, tendências.
 - **Por que importa:** é a primeira tela que um gestor deve abrir no dia.
@@ -126,6 +133,7 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 - **Pergunta para anotar:** *que número eu sinto falta nesta tela?*
 
 ### 2.2 Preços do grupo
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/precos
 - **O que é:** a **tabela única de preços** de todas as marcas (fonte única: se o preço muda aqui, muda no sistema inteiro).
 - **Por que importa:** evita que o site diga um preço e a cobrança outro.
@@ -133,43 +141,51 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 - **Exercício:** encontre o plano mais barato e o mais caro de cada marca.
 
 ### 2.3 Descoberta (dados para decidir preço)
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/descoberta
 - **O que é:** questionário e números agregados por marca para embasar decisões de preço (quanto os clientes vendem, quanto pagam, perfis).
 - **Observe:** os dados ajudam a responder "estamos caros ou baratos"?
 
 ### 2.4 Proposta de preço e Propostas
+
 - **Links:** https://nextlevel-demo.onrender.com/master/financeiro/proposta e https://nextlevel-demo.onrender.com/master/financeiro/propostas
 - **O que é:** a proposta de nova tabela de preços (rascunho ou aprovada) e o histórico de propostas.
 - **Importante:** **aprovar registra a decisão; não muda preço sozinho.** O preço só muda na tela de preços ou no catálogo.
 - **Observe:** a proposta mostra o impacto esperado (quanto a receita sobe ou desce)?
 
 ### 2.5 Experimentos de preço
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/experimentos
 - **O que é:** testar um preço diferente com um grupo de clientes antes de mudar para todos.
 - **Exercício:** abra um experimento (ou crie um, é demonstração). Responda: como o sistema decide qual cliente vê qual preço? Quando o experimento termina, como se lê o resultado?
 
 ### 2.6 Catálogo e preços (produtos da NextLevel)
+
 - **Links:** https://nextlevel-demo.onrender.com/master/financeiro/catalogo e um item: `/master/financeiro/catalogo/<chave>`
 - **O que é:** tudo que a NextLevel vende (planos, temas, serviços), com **preço versionado**: cada mudança cria uma versão nova com data.
 - **Exercício:** abra um produto, mude o preço (demonstração) e procure a versão antiga no histórico. Depois confira na **Auditoria** (2.9).
 
 ### 2.7 Ofertas e comissões
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/ofertas
 - **O que é:** ofertas de entrada (teste grátis, primeiro mês com desconto, meses sem taxa) e as regras de comissão.
 - **Observe:** quanto custa ao grupo cada oferta? Há um prazo de fim?
 
 ### 2.8 Jornada
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/jornada
 - **O que é:** o caminho do cliente **dentro do painel** até comprar um serviço (cartões, página, pagamento).
 - **Observe:** em que ponto o cliente pode desistir?
 
 ### 2.9 Auditoria
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/auditoria
 - **O que é:** o registro de **toda** mudança em preço, oferta e comissão: quem, quando, de quanto para quanto. **Não pode ser apagado.**
 - **Por que importa:** é a base de controle interno e de qualquer conferência futura.
 - **Exercício:** ache a mudança de preço que você fez no 2.6.
 
 ### 2.10 Resumo SuperDrop
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/superdrop
 - **O que é:** resumo financeiro da marca SuperDrop.
 
@@ -178,6 +194,7 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 # Módulo 3: Cobrança, pagamentos e conferência
 
 ### 3.1 Operação SuperDrop (o "financeiro operacional")
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/operacao
 - **O que é:** o coração da cobrança do SuperDrop, com abas próprias:
 
@@ -194,32 +211,39 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 - **Exercício:** escolha um fornecedor e responda: quanto ele paga por mês, quanto já pagou, quanto deve e quando vence.
 
 ### 3.2 Assinaturas
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/assinaturas
 - **O que é:** quem assina o quê (plano, ciclo mensal/anual, próxima cobrança, situação).
 - **Observe:** dá para ver quem vai renovar nos próximos 7 dias? Quem está em teste grátis?
 
 ### 3.3 Pagamentos
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/pagamentos
 - **O que é:** pagamentos recebidos (Pix e cartão), com situação (pendente, aprovado, recusado, estornado).
 - **Exercício de conciliação:** escolha 3 pagamentos e verifique se cada um tem: valor, forma, data, cliente e referência do gateway. Se faltar algo para você conferir com o extrato do Mercado Pago, anote.
 
 ### 3.4 Gateways
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/gateways
 - **O que é:** os processadores de pagamento: **Mercado Pago** (padrão) e **Pagar.me** (segundo, desligado até o Mauricio decidir).
 - **Observe:** fica claro qual está ligado? Qual taxa cada um cobra?
 
 ### 3.5 Configurações: a conta Mercado Pago da NextLevel
+
 - **Link:** https://nextlevel-demo.onrender.com/master/settings
 - **O que é:** onde a conta Mercado Pago da NextLevel é conectada. Sem ela, as cobranças da NextLevel (planos, temas, serviços) não geram Pix.
 - **Atenção:** no sistema real, **chaves e tokens nunca aparecem na tela** (ficam criptografados). Na demonstração, **só observe**.
 
 ### 3.6 O que está pronto e desligado (Central de qualidade)
+
 - **Link:** https://nextlevel-demo.onrender.com/master/qualidade → aba **Pronto e desligado** → grupo **Dinheiro e cobrança**
 - **O que é:** a lista de tudo que já funciona mas está **desligado de propósito**, esperando decisão: conta Mercado Pago, Pagar.me, taxa dos ônibus de excursão, Pix do frete do ônibus, experimentos, proposta de preços. Cada item diz o estado e **onde ligar**.
 - **Por que importa:** são decisões de receita pendentes. Ótimo assunto para uma reunião com o Mauricio.
 - **Exercício:** para cada item desligado, escreva: *"Se ligarmos, ganhamos ___ e arriscamos ___."*
+- 🚫 Nesta Central, **não clique em "Abrir"** nem nas siglas dos endereços: elas levam ao sistema real. Navegue pelo menu.
 
 ### 3.7 Pedidos da Loja NextLevel (receita de serviços)
+
 - **Links:** CRM: https://nextlevel-demo.onrender.com/master/crm (um pedido: `/master/crm/<id>`) · Loja por dentro: https://nextlevel-demo.onrender.com/master/services
 - **O que é:** cada venda de tema ou serviço, da cobrança à entrega.
 - **Observe:** há algum pedido pago e não entregue? Algum entregue e não pago?
@@ -229,20 +253,24 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 # Módulo 4: Parceiros, comissões e o ecossistema
 
 ### 4.1 Parceiros (financeiro)
+
 - **Link:** https://nextlevel-demo.onrender.com/master/financeiro/parceiros
 - **O que é:** as comissões de todos os parceiros: **em carência** (aguardando), **liberadas** (a pagar) e **pagas**.
 - **Conceito:** a comissão só é liberada depois da carência; se o cliente pede estorno, a comissão é cancelada.
 - **Exercício:** quanto o grupo deve hoje a parceiros? Quanto disso vence nos próximos 30 dias?
 
 ### 4.2 Programa de Parceiros
+
 - **Links:** https://nextlevel-demo.onrender.com/master/partners (um parceiro: `/master/partners/<id>`)
 - **O que é:** cadastro e tipo de cada parceiro (influenciador, representante, agência, white label) e a regra de comissão aplicada.
 
 ### 4.3 A comissão vista pela parceira
+
 - **Perfil:** `parceira@demo.superdrop.com.br` → https://nextlevel-demo.onrender.com/partner/finance
 - **Observe:** a parceira entende **quanto** vai receber e **quando**? A tela promete ganho (não pode)?
 
 ### 4.4 Torre do Ecossistema
+
 - **Link:** https://nextlevel-demo.onrender.com/master/ecossistema
 - **O que é:** como as marcas se ajudam (benefícios cruzados: quem é cliente de uma ganha vantagem na outra) e o efeito disso.
 - **Pergunta:** quais benefícios custam dinheiro ao grupo e quais trazem receita?
@@ -303,6 +331,7 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 | Transportadora (`danielle.transportadora@familia.demo`) | Extrato | https://nextlevel-demo.onrender.com/transportadora/extrato | Frete a receber e comissão da NextLevel |
 
 ### ✍️ Exercício 5: a recarga que atravessa o sistema
+
 1. Como **lojista**, recarregue R$ 300,00 (Pix simulado).
 2. Como **fornecedor**, encontre essa recarga em Recargas.
 3. Como **Master**, procure o reflexo dela em Financeiro → Operação SuperDrop.
@@ -336,7 +365,7 @@ Use estas rotinas como roteiro. Ao testá-las na demonstração, anote **o que f
 | # | Passo | Onde |
 |---|---|---|
 | 1 | Conferir faturas emitidas × pagas × vencidas | Operação SuperDrop → Faturas e fechamento |
-| 2 | Conciliar pagamentos com o extrato do Mercado Pago | Financeiro → Pagamentos (e o extrato do Mercado Pago, fora do sistema) |
+| 2 | Conciliar pagamentos com o extrato do Mercado Pago | Financeiro → Pagamentos (no dia a dia real, comparado com o extrato da conta Mercado Pago; na demonstração, só observe os campos) |
 | 3 | Revisar inadimplência e bloqueios | Operação SuperDrop → Visão geral; Fornecedor → Faturas |
 | 4 | Aprovar pagamento de comissões liberadas | Financeiro → Parceiros |
 | 5 | Revisar mudanças de preço do mês | Financeiro → Auditoria |
@@ -351,6 +380,7 @@ Faça um **fechamento simulado** do mês na demonstração seguindo os 7 passos.
 ## A visão do funcionário do financeiro
 
 Entre como `danielle.financeiro@familia.demo` (função **Financeiro** da equipe do Master) e percorra o menu.
+
 - O que ele vê e o que fica bloqueado?
 - Ele consegue fazer o fechamento do mês sozinho?
 - Algo que ele vê e **não deveria** ver (ou que não vê e **deveria**)?
@@ -382,6 +412,7 @@ Tela: _______________________   Link: _____________________
 ```
 
 ### Como descrever um problema crítico
+
 1. **Perfil e caminho:** "Entrei como `danielle.lojista@familia.demo`, Saldo e recargas, recarga de R$ 300,00."
 2. **Esperado:** "Saldo passar de R$ 445,00 para R$ 745,00."
 3. **Aconteceu:** "Saldo ficou R$ 445,00 por 10 minutos." + print da tela (`Windows + Shift + S`).
@@ -465,7 +496,7 @@ Período: __/__ a __/__        Telas avaliadas: ___
 | Parceiro | Financeiro | /partner/finance |
 | Transportadora | Extrato | /transportadora/extrato |
 
-Todos os links começam com **https://nextlevel-demo.onrender.com** (ou **http://localhost:3100** no computador do Mauricio).
+Todos os links começam com **https://nextlevel-demo.onrender.com**.
 
 ---
 

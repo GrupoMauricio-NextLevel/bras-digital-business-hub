@@ -18,6 +18,13 @@ text = pathlib.Path(src).read_text(encoding="utf-8")
 # A capa substitui o título e o resumo do topo do arquivo (até o primeiro ---).
 text = text.split("\n---\n", 1)[1] if text.startswith("# ") else text
 body = markdown.markdown(text, extensions=["tables", "fenced_code", "toc", "sane_lists"], extension_configs={"toc": {"slugify": slug}})
+# Só os endereços da demonstração viram link clicável; endereços reais ficam como texto (não devem ser acessados).
+def _link(m):
+    url = m.group(1).rstrip(".")
+    return f'<a href="{url}">{url}</a>' + m.group(1)[len(url):]
+body = re.sub(r'(?<![">/])(https://nextlevel-demo\.onrender\.com[^\s<,;)|]*)', _link, body)
+# Avisos de "NÃO ACESSAR" em vermelho.
+body = body.replace("<blockquote>\n<p>🚫", '<blockquote class="alerta">\n<p>🚫')
 # Seções grandes (# MUNDO, # Módulo) começam em página nova.
 body = re.sub(r"<h1 ", '<h1 class="nova-pagina" ', body)
 
@@ -43,6 +50,8 @@ pre {{ background: var(--soft); border: 1pt solid #d9dee8; border-radius: 8pt; p
 pre code {{ background: none; padding: 0; word-break: normal; }}
 blockquote {{ margin: 8pt 0; padding: 7pt 12pt; background: var(--soft); border-left: 5pt solid var(--accent); border-radius: 6pt; break-inside: avoid; }}
 blockquote p {{ margin: 3pt 0; }}
+blockquote.alerta {{ background: #fdecec; border-left-color: #c62828; color: #5b1010; }}
+blockquote.alerta code {{ background: #f8d4d4; }}
 table {{ width: 100%; border-collapse: collapse; margin: 8pt 0 10pt; font-size: 9pt; }}
 th {{ background: var(--ink); color: #fff; text-align: left; padding: 5pt 6pt; font-family: Jakarta, Inter, sans-serif; }}
 td {{ padding: 4.5pt 6pt; border-bottom: 1pt solid #e2e6ee; vertical-align: top; }}
