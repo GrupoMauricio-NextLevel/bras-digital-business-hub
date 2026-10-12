@@ -5,8 +5,8 @@ import { join } from "node:path";
  * Imagens das páginas públicas (D143): a lista sai do MANIFESTO.md de cada marca (`public/portal/<marca>/v3/`, a fonte da
  * verdade) e a situação, dos arquivos que existem de verdade (arquivo vazio não conta, igual ao `ImagemEmCriacao`).
  */
-export type PublicImage = { brand: "superdrop" | "commerce" | "bras"; name: string; where: string; ratio: string; scene: string | null; formats: string[] };
-const BRANDS = ["superdrop", "commerce", "bras"] as const;
+export type PublicImage = { brand: "superdrop" | "commerce" | "bras" | "nextlevel"; name: string; where: string; ratio: string; scene: string | null; formats: string[] };
+const BRANDS = ["superdrop", "commerce", "bras", "nextlevel"] as const;
 const FORMATS = ["avif", "webp", "png", "jpg"];
 
 const cells = (line: string) => line.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());

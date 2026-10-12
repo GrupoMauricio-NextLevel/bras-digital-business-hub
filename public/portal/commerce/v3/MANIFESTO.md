@@ -14,3 +14,14 @@ Formatos: `.avif`, `.webp`, `.png` com o nome exato abaixo; arquivo vazio é ign
 | cm-dono-gestao | avif, webp, png | "Depois que a loja está no ar" → "Descubra o que vende e para onde" (atrás da análise) | 4:3 |
 | cm-checkout-cartao | avif, webp, png | "Depois que a loja está no ar" → "Receba por Pix e cartão" (atrás da tela de pagamento) | 4:3 |
 | cm-textura-fundo | avif, webp, png | Chamada final "Veja a sua marca numa loja assim" → fundo decorativo (alt vazio) | cobre a seção |
+| cm-login-lateral | avif, webp, png | Tela de entrada da Commerce (lado esquerdo no computador, escurecida sob o texto) | 3:4 |
+| cm-cadastro-lateral | avif, webp, png | `/cadastro` da Commerce → ao lado do formulário no computador (some no celular) | 3:4 |
+
+## Fora da página (prévia de link e e-mail; auditoria geral, 2026-10-12)
+
+Prompt de origem: `docs/prompts/imagens-auditoria-geral-gpt.md` (lotes A e E). Os PNGs são os originais do GPT; os JPGs saem deles (fundo navy `#101B34`, qualidade 84) porque WhatsApp, redes e e-mail não leem AVIF.
+
+| Arquivo | Formatos | Uso | Tamanho |
+|---|---|---|---|
+| cm-og-portal | jpg (usado), png (original) | Prévia do link da Commerce (WhatsApp, Instagram, Facebook) | 1200×630 |
+| cm-email-topo | jpg (usado), png (original) | Faixa no topo dos e-mails da Commerce | 1200×300 |

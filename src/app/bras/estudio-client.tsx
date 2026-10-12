@@ -79,7 +79,7 @@ export function VideosManager({ videos, offers, importers, products = [], stats 
         <Button type="submit" loading={pending} className="w-full"><Plus className="size-4" aria-hidden />Adicionar</Button>
       </form>
       {videos.length === 0 ? (
-        <EmptyState icon={Video} title="Nenhuma descoberta ainda" description="A página pública mostra as descobertas na ordem desta lista. Enquanto estiver vazia, ela avisa que as primeiras estão sendo gravadas." />
+        <EmptyState icon={Video} illustration="ui-vazio-descobertas" title="Nenhuma descoberta ainda" description="A página pública mostra as descobertas na ordem desta lista. Enquanto estiver vazia, ela avisa que as primeiras estão sendo gravadas." />
       ) : (
         <ol className="space-y-3" aria-label="Descobertas na ordem da página">
           {videos.map((v, i) => (

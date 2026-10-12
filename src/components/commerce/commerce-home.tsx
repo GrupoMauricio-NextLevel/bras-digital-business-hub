@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Ilustracao } from "@/components/app/ilustracao";
 import type { LucideIcon } from "lucide-react";
 import { ArrowDownRight, ArrowRight, ArrowUpRight, ExternalLink, Package, Palette, Plus, ShoppingBag, Users, Wallet } from "lucide-react";
 import { OrdersTable } from "@/components/shared/orders-table";
@@ -92,6 +93,8 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   return <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
     <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
             <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
+      {/* Conta nova (ainda sem venda): ilustração de boas-vindas à direita; no celular o texto ocupa a largura toda. */}
+      {firstAccess ? <Ilustracao nome="ui-boas-vindas-loja" priority className="absolute right-6 top-1/2 hidden size-40 -translate-y-1/2 sm:block lg:right-12 lg:size-52" /> : null}
       <div className="relative max-w-[60%] max-sm:max-w-none">
         <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da loja</p>
         <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>

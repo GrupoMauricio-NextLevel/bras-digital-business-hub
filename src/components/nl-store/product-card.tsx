@@ -8,6 +8,7 @@ import type { CatalogItem } from "@/lib/domain/nl-catalog";
 import { toPriceRule } from "@/lib/domain/nl-catalog";
 import { CheckoutDialog, type CheckoutPrice } from "./checkout-dialog";
 import { ChoosePlan, RequestQuote } from "./plan-actions";
+import { FamiliaFoto } from "./familia-foto";
 
 export function checkoutPriceOf(p: CatalogItem): CheckoutPrice | null {
   const v = p.prices.ONE_TIME;
@@ -28,6 +29,7 @@ export function ProductCard({ product: p, state, reason, base, demo, currentPlan
   const canBuy = state === "available" || state === "recommended";
   return (
     <article className={`ds-card flex flex-col p-5 ${state === "recommended" ? "ring-2 ring-accent" : ""}`} aria-labelledby={`pc-${p.key}`}>
+      <FamiliaFoto family={p.family} className="mb-4 !rounded-lg" />
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <Badge tone="outline">{FAMILY_LABEL[p.family]}</Badge>
         <span className="text-xs text-muted-foreground">Fase: {PHASE_LABEL[p.phase]}</span>

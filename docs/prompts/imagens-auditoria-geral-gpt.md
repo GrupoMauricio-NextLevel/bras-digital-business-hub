@@ -195,9 +195,11 @@ Comece pelo lote que eu pedir. Depois de cada imagem, pergunte se pode seguir pa
 
 ## 8. Checklist
 
-- [ ] Lote A (8): sd-og-portal, cm-og-portal, nl-og-solucoes, sd-login-lateral, cm-login-lateral, nl-login-lateral, cm-cadastro-lateral, erro-caixa-vazia
-- [ ] Lote B (8): nl-solucoes-hero e 7 famílias (planos, loja-pronta, migracao, temas, marketing, consultoria, white-label)
-- [ ] Lote C (6): 3 passos do SuperDrop, seja-fornecedor, parceiros, faixa de planos
-- [ ] Lote D (12): 6 estados vazios, boas-vindas, 5 fases da jornada
-- [ ] Lote E (7): feed e story de parceiros (SuperDrop e Commerce), topo de e-mail das 3 marcas
+> **2026-10-12:** lotes A a E recebidos, convertidos e ligados (D146). Onde cada imagem aparece: `MANIFESTO.md` de `public/portal/superdrop/v3/`, `public/portal/commerce/v3/`, `public/portal/nextlevel/v3/`, `public/ilustracoes/v1/` e `docs/marca/README.md`.
+
+- [x] Lote A (8): sd-og-portal, cm-og-portal, nl-og-solucoes, sd-login-lateral, cm-login-lateral, nl-login-lateral, cm-cadastro-lateral, erro-caixa-vazia
+- [x] Lote B (8): nl-solucoes-hero e 7 famílias (planos, loja-pronta, migracao, temas, marketing, consultoria, white-label)
+- [x] Lote C (6): 3 passos do SuperDrop, seja-fornecedor, parceiros, faixa de planos
+- [x] Lote D (12): 6 estados vazios, boas-vindas, 5 fases da jornada
+- [x] Lote E (7): feed e story de parceiros (SuperDrop e Commerce), topo de e-mail das 3 marcas
 - [ ] Brás lote 3 (opcional): bd-shorts-fundo e conceitos de logo (`imagens-bras-digital-gpt.md`)

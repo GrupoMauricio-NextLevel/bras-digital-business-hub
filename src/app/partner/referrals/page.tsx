@@ -19,7 +19,7 @@ export default async function PartnerReferrals() {
   return (
     <>
       <PageHeader title="Indicados" description="Por privacidade, o nome da loja aparece parcialmente e você não vê dados pessoais do cliente." />
-      {rows.length === 0 ? <EmptyState icon={Users} title="Nenhum indicado ainda" description="Divulgue o seu link ou cupom. Quem se cadastrar aparece aqui." /> : (
+      {rows.length === 0 ? <EmptyState icon={Users} illustration="ui-vazio-indicados" title="Nenhum indicado ainda" description="Divulgue o seu link ou cupom. Quem se cadastrar aparece aqui." /> : (
         <Card><Table>
           <THead><TR><TH>Loja</TH><TH>Origem</TH><TH>Etapa</TH><TH>Cadastro</TH><TH className="text-right">Comissão gerada</TH></TR></THead>
           <TBody>{rows.map((r) => (

@@ -1,12 +1,17 @@
 import * as React from "react";
 import { Inbox, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Ilustracao, type IlustracaoNome } from "./ilustracao";
 
-/** Estado vazio do sistema de design: borda tracejada, ícone suave, título, explicação curta e a ação existente. */
-export function EmptyState({ title, description, icon: Icon = Inbox, action, className, compact }: { title: string; description?: string; icon?: LucideIcon; action?: React.ReactNode; className?: string; compact?: boolean }) {
+/**
+ * Estado vazio do sistema de design: borda tracejada, ícone suave, título, explicação curta e a ação existente.
+ * `illustration` troca o ícone por uma ilustração do painel (`public/ilustracoes/v1/`); sem o arquivo, volta o ícone.
+ */
+export function EmptyState({ title, description, icon: Icon = Inbox, illustration, action, className, compact }: { title: string; description?: string; icon?: LucideIcon; illustration?: IlustracaoNome; action?: React.ReactNode; className?: string; compact?: boolean }) {
+  const icon = <span className="ds-empty-icon" aria-hidden><Icon className="size-6" /></span>;
   return (
     <div className={cn("ds-empty", compact && "!py-6", className)}>
-      <span className="ds-empty-icon" aria-hidden><Icon className="size-6" /></span>
+      {illustration ? <Ilustracao nome={illustration} fallback={icon} className={cn("mx-auto", compact ? "size-20" : "size-28 sm:size-32")} /> : icon}
       <h3>{title}</h3>
       {description ? <p>{description}</p> : null}
       {action ? <div className="ds-empty-action">{action}</div> : null}

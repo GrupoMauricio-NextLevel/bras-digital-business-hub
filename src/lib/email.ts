@@ -5,6 +5,8 @@ import { emailOutbox, organizations, partners, users } from "@/db/schema";
 import { brandByCode, type Brand, type BrandCode } from "@/lib/brand";
 import { newId } from "@/lib/ids";
 import { timeoutSignal } from "@/lib/http-timeout";
+import { statSync } from "node:fs";
+import { join } from "node:path";
 
 export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null };
 
@@ -17,12 +19,31 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 /** Rodapé do grupo (D132): faixa estática com a cor de cada marca aberta e a frase do Club. */
 export type GroupFooter = { segments: { name: string; color: string }[] };
 const groupFooterHtml = (g: GroupFooter) => `<tr><td style="padding:14px 24px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${g.segments.map((s) => `<td style="height:6px;background:${s.color}"></td>`).join("")}</tr></table><p style="margin:10px 0 0;font-size:13px;color:#374151">Grupo NextLevel: ${g.segments.map((s) => esc(s.name)).join(" · ")}. Seus pontos do Club valem em todas as marcas do grupo.</p></td></tr>`;
+/**
+ * Faixa no topo do e-mail (lote E da auditoria de imagens, 1200×300 em JPG: e-mail não lê AVIF). Só SuperDrop, Commerce e
+ * NextLevel têm faixa; sem o arquivo no servidor, o e-mail sai como antes (só a barra com o nome da marca).
+ */
+const EMAIL_TOPO: Partial<Record<BrandCode, string>> = {
+  SUPERDROP: "portal/superdrop/v3/sd-email-topo.jpg",
+  NEXTLEVEL_COMMERCE: "portal/commerce/v3/cm-email-topo.jpg",
+  NEXTLEVEL: "portal/nextlevel/v3/nl-email-topo.jpg",
+};
+export function emailTopFor(brand: Pick<Brand, "code" | "baseUrl">): string | null {
+  const file = EMAIL_TOPO[brand.code];
+  if (!file) return null;
+  try { if (statSync(join(process.cwd(), "public", file)).size === 0) return null; } catch { return null; }
+  return `${brand.baseUrl.replace(/\/$/, "")}/${file}`;
+}
+
 export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta">, brand: Brand = brandByCode(undefined), group?: GroupFooter | null): string {
   const BRAND = brand.primaryColor, ACCENT = brand.accentColor;
   const onAccent = onSignal(ACCENT);
   const paras = m.text.split(/\n{2,}/).map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#1f2937">${esc(p).replace(/\n/g, "<br>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:#0b6b34">$1</a>')}</p>`).join("");
   const cta = m.cta ? `<p style="margin:22px 0"><a href="${esc(m.cta.url)}" style="display:inline-block;background:${ACCENT};color:${onAccent};font-weight:700;text-decoration:none;padding:12px 22px;border-radius:8px;font-size:15px">${esc(m.cta.label)}</a></p>` : "";
-  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0"><tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}</td></tr>${group ? groupFooterHtml(group) : ""}<tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
+  const top = emailTopFor(brand);
+  // Decorativa (alt vazio): o nome da marca vem logo abaixo, em texto, mesmo com as imagens bloqueadas no leitor de e-mail.
+  const topRow = top ? `<tr><td style="padding:0;line-height:0;font-size:0"><img src="${esc(top)}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>` : "";
+  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0">${topRow}<tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}</td></tr>${group ? groupFooterHtml(group) : ""}<tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
 }
 
 /**

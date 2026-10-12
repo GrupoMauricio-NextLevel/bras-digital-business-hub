@@ -7,6 +7,7 @@ import { Reveal } from "@/components/portal/reveal";
 import { requireBrandFeature } from "@/lib/brand-server";
 import { supportContacts } from "@/lib/support";
 import { SUPPLIER_PLANS } from "../content";
+import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
 export const metadata: Metadata = {
   title: { absolute: "Seja fornecedor SuperDrop · Transforme seu catálogo em uma rede de lojas" },
@@ -41,11 +42,14 @@ export default async function SejaFornecedor() {
   await requireBrandFeature("dropship");
   const c = supportContacts();
   const contact = c.whatsappUrl ? { href: c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero ser fornecedor SuperDrop.")}`), external: true } : c.email ? { href: `mailto:${c.email}?subject=${encodeURIComponent("Quero ser fornecedor SuperDrop")}`, external: false } : null;
+  const foto = formatosDisponiveis("superdrop", "sd-seja-fornecedor").length > 0;
   return (
     <>
       <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(34,197,94,0.20), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-16 md:pt-24">
+          <div className={foto ? "grid items-center gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]" : ""}>
+          <div>
           <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Para quem produz, importa ou distribui</span>
           <h1 className="nl-display mt-5 max-w-4xl">Transforme o seu catálogo em uma rede de lojas que vende todo dia.</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">A SuperDrop entrega a plataforma completa para você operar como fornecedor: lojas dos seus membros, expedição organizada, carteira por Pix e receita recorrente sobre cada pedido. Você foca no produto; o sistema cuida do resto.</p>
@@ -54,6 +58,9 @@ export default async function SejaFornecedor() {
             <a href="#modelos" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Ver os modelos e valores</a>
           </div>
           <p className="mt-4 text-sm text-band-muted">Fornecedores no lançamento: Alpha Outfit e MantosShop · sem taxa por pedido nos primeiros 15 dias</p>
+          </div>
+          {foto ? <FotoOpcional marca="superdrop" nome="sd-seja-fornecedor" alt="Corredor do estoque de um fornecedor de moda, com peças dobradas nas prateleiras e um carrinho, na luz da manhã." priority className="!rounded-2xl" /> : null}
+          </div>
           <Reveal className="relative mx-auto mt-14 max-w-5xl"><LiveConveyor /></Reveal>
         </div>
       </section>

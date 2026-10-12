@@ -3,6 +3,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ErrorState } from "@/components/app/empty-state";
 import { Button } from "@/components/ui/button";
+import { FotoErro } from "@/components/app/foto-erro";
 
 /** Erro inesperado: mensagem simples ao usuário; o detalhe técnico fica só nos logs do servidor. */
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -12,6 +13,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   }, [error]);
   return (
     <div className="mx-auto max-w-lg p-8">
+      <FotoErro />
       <ErrorState
         title="Não foi possível carregar esta página"
         description={`Tivemos um problema temporário. Tente novamente em instantes. Se continuar, volte ao início${error.digest ? ` e informe o código ${error.digest}` : ""}.`}

@@ -52,7 +52,7 @@ export function ProductsList({ rows, categories, base = "/supplier/products", in
         { key: "stock", label: "Estoque", options: [{ value: "ok", label: "Normal" }, { value: "low", label: "Baixo" }, { value: "out", label: "Zerado" }] },
       ]}
       bulkActions={[{ label: "Ativar", onRun: run("ACTIVE", "ativados") }, { label: "Passar para rascunho", onRun: run("DRAFT", "em rascunho") }, { label: "Arquivar", tone: "danger", onRun: run("ARCHIVED", "arquivados") }]}
-      empty={<EmptyState icon={Package} title="Nenhum produto" description={independent ? "Cadastre o primeiro produto da sua loja." : "Cadastre o primeiro produto para distribuir à rede."} />}
+      empty={<EmptyState icon={Package} illustration="ui-vazio-produtos" title="Nenhum produto" description={independent ? "Cadastre o primeiro produto da sua loja." : "Cadastre o primeiro produto para distribuir à rede."} />}
     />
   );
 }

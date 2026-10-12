@@ -8,6 +8,7 @@ import { getPartnerSettings } from "@/lib/domain/partners";
 import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { PartnerCalculator } from "@/components/portal/partner-calculator";
 import { formatBRL } from "@/lib/money";
+import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default async function Parceiros() {
   const [settings, book] = await Promise.all([getPartnerSettings(db), getPriceBook(db)]);
   const plans = OFFER_KEYS.map((k) => ({ key: k as string, name: book.offers[k].name, setupCents: book.offers[k].setupCents, monthlyCents: book.offers[k].monthlyCents })).filter((p) => p.setupCents > 0 || p.monthlyCents > 0);
   const tiers = [...settings.tiers].sort((a, b) => a.min - b.min);
+  const foto = formatosDisponiveis("superdrop", "pa-parceiros-hero").length > 0;
   const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   return (
     <>
@@ -53,12 +55,17 @@ export default async function Parceiros() {
       <section className="relative overflow-hidden bg-band text-band-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-80" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 85% -10%, rgba(245,158,11,0.25), transparent 60%)" }} />
         <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-16 md:pt-24">
+          <div className={foto ? "grid items-center gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]" : ""}>
+          <div>
           <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-highlight">Programa de Parceiros Oficiais</span>
           <h1 className="nl-display mt-5 max-w-4xl">Tenha um negócio próprio vendendo tecnologia que já funciona.</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">O {brand.name} é um sistema pronto de loja online. Você indica, acompanha tudo no seu escritório virtual e recebe comissão sobre o setup e sobre as mensalidades de cada cliente.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/parceiros/cadastro" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser parceiro</Link>
             <Link href="/login" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Entrar no escritório</Link>
+          </div>
+          </div>
+          {foto ? <FotoOpcional marca="superdrop" nome="pa-parceiros-hero" alt="Parceiro mostra algo no tablet para a dona de uma loja pequena, numa conversa informal no balcão." priority className="!rounded-2xl" /> : null}
           </div>
           <ul className="mt-8 grid gap-3 text-sm text-band-muted sm:grid-cols-3">
             {tiers.map((t) => <li key={t.min} className="rounded-xl border border-band-foreground/15 bg-surface/5 p-4"><span className="block text-3xl font-extrabold text-highlight tabular-nums">{t.bps / 100}%</span>{t.max ? (t.min === t.max ? `com ${t.min} ativação no mês` : `de ${t.min} a ${t.max} ativações no mês`) : `a partir de ${t.min} ativações no mês`}<span className="block text-xs text-band-muted">de comissão sobre o setup</span></li>)}

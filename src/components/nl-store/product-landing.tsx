@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckoutDialog } from "./checkout-dialog";
 import { checkoutPriceOf } from "./product-card";
 import { ChoosePlan, RequestQuote } from "./plan-actions";
+import { FamiliaFoto, temFamiliaFoto } from "./familia-foto";
 
 /**
  * Landing canônica do produto (D90): dados do catálogo Master + conteúdo editorial. Usada no painel (com estado e
@@ -29,14 +30,18 @@ export function ProductLanding({ product: p, mode, state, reason, base, demo, un
     if (price) return <CheckoutDialog productKey={p.key} productName={p.name} price={price} policy={c.policy} returnPath={`${base}/services/solucao/${p.slug}`} demo={!!demo} triggerLabel="Pagar agora" />;
     return null;
   })();
+  const foto = temFamiliaFoto(p.family);
   return (
     <article className="mx-auto max-w-5xl">
-      <header className="rounded-2xl border border-border p-6 md:p-10" style={{ background: "var(--ds-glass)" }}>
+      <header className={`rounded-2xl border border-border p-6 md:p-10 ${foto ? "grid items-center gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]" : ""}`} style={{ background: "var(--ds-glass)" }}>
+        <div>
         <div className="mb-3 flex flex-wrap items-center gap-2"><Badge tone="outline">{FAMILY_LABEL[p.family]}</Badge><span className="text-xs text-muted-foreground">Etapa da jornada: {PHASE_LABEL[p.phase]} · {KIND_LABEL[p.kind]}</span>{state ? <Badge tone={state === "locked" || state === "not_eligible" ? "neutral" : state === "completed" ? "success" : "info"}>{STATE_LABEL[state]}</Badge> : null}</div>
         <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight md:text-5xl">{p.name}</h1>
         <p className="mt-3 max-w-3xl text-lg text-muted-foreground">{p.tagline}</p>
         {reason ? <p className="mt-3 rounded-md bg-surface-muted p-3 text-sm" role="note">{reason}</p> : null}
         <div className="mt-6 flex flex-wrap items-center gap-3">{cta}{mode === "public" ? <Link href="/solucoes#diagnostico" className="ds-btn ds-btn--secondary">Diagnóstico gratuito</Link> : null}</div>
+        </div>
+        {foto ? <FamiliaFoto family={p.family} ratio="4 / 3" priority className="!rounded-xl" /> : null}
       </header>
 
       <div className="mt-10 grid gap-8 md:grid-cols-2">

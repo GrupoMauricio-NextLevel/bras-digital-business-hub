@@ -15,7 +15,7 @@ export function OrdersTable({ rows, basePath, showStore = true, showCost = false
       rows={rows}
       rowKey={(r) => r.order.id}
       rowHref={(r) => `${basePath}/${r.order.id}`}
-      empty={<EmptyState icon={ShoppingCart} title="Nenhum pedido" description="Os pedidos aparecerão aqui assim que forem criados." />}
+      empty={<EmptyState icon={ShoppingCart} illustration="ui-vazio-pedidos" title="Nenhum pedido" description="Os pedidos aparecerão aqui assim que forem criados." />}
       columns={[
         { key: "number", header: "Pedido", primary: true, cell: (r) => <div><div className="font-medium">#{r.order.number}</div><div className="text-xs text-muted-foreground">{r.order.customerName}</div></div> },
         ...(showStore ? [{ key: "store", header: "Loja", cell: (r: OrderRow) => r.storeName }] : []),

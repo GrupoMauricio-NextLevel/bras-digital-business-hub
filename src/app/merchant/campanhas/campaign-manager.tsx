@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Ilustracao } from "@/components/app/ilustracao";
 import { createCampaignAction, deleteCampaignAction } from "@/app/actions/campaigns";
 import { formatDateTime } from "@/lib/utils";
 
@@ -25,7 +26,7 @@ export function CampaignManager({ rows }: { rows: Row[] }) {
         <Button type="submit" loading={pending} disabled={!f.text || !f.startsAt || !f.endsAt}>Agendar campanha</Button>
       </form>
       <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
-        {rows.length === 0 ? <li className="p-4 text-sm text-muted-foreground">Nenhuma campanha ainda.</li> : null}
+        {rows.length === 0 ? <li className="flex items-center gap-3 p-4 text-sm text-muted-foreground"><Ilustracao nome="ui-vazio-campanhas" className="size-16" />Nenhuma campanha ainda.</li> : null}
         {rows.map((c) => (
           <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
             <div><div className="font-medium">{c.text}</div><div className="text-xs text-muted-foreground">{formatDateTime(c.startsAt)} → {formatDateTime(c.endsAt)}</div></div>

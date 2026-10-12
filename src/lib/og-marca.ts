@@ -7,7 +7,9 @@ import type { Brand, BrandCode } from "@/lib/brand";
  * o nome, a frase e a cor da marca (`/og/<marca>.png`). Nunca a arte de outra marca (antes, todo endereço usava a do SuperDrop).
  */
 const ARTE: Partial<Record<BrandCode, string[]>> = {
-  SUPERDROP: ["og/superdrop.png"],
+  SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
+  NEXTLEVEL_COMMERCE: ["portal/commerce/v3/cm-og-portal.jpg", "portal/commerce/v3/cm-og-portal.png"],
+  NEXTLEVEL: ["portal/nextlevel/v3/nl-og-solucoes.jpg", "portal/nextlevel/v3/nl-og-solucoes.png"],
   BRAS_DIGITAL: ["portal/bras/v3/bd-og-portal.jpg", "portal/bras/v3/bd-og-portal.png"],
 };
 

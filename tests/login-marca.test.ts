@@ -6,7 +6,7 @@ import { loginPhotoFor } from "@/components/auth/auth-photo";
 
 /** Tela de entrada por marca (2026-10-09): só foto da própria marca; convite certo para cada endereço. */
 describe("tela de entrada por marca", () => {
-  it("foto só da própria marca (o arquivo existe); Cargas, Master e marcas em breve entram sem foto", () => {
+  it("foto só da própria marca (o arquivo existe); Cargas e marcas em breve entram sem foto", () => {
     for (const c of BRAND_CODES) {
       const p = loginPhotoFor(c);
       if (p) {
@@ -14,10 +14,11 @@ describe("tela de entrada por marca", () => {
         expect(p.src).not.toMatch(/moda-|ace-|casa-/);
       }
     }
-    expect(loginPhotoFor("SUPERDROP")?.src).toContain("/superdrop/");
-    expect(loginPhotoFor("NEXTLEVEL_COMMERCE")?.src).toContain("/commerce/v3/");
+    expect(loginPhotoFor("SUPERDROP")?.src).toBe("/portal/superdrop/v3/sd-login-lateral.webp");
+    expect(loginPhotoFor("NEXTLEVEL_COMMERCE")?.src).toBe("/portal/commerce/v3/cm-login-lateral.webp");
     expect(loginPhotoFor("BRAS_DIGITAL")?.src).toContain("/bras/");
-    for (const c of ["NEXTLEVEL_CARGAS", "NEXTLEVEL", "CREATORS_HUB", "CHINA_HUB"] as const) expect(loginPhotoFor(c)).toBeNull();
+    expect(loginPhotoFor("NEXTLEVEL")?.src).toBe("/portal/nextlevel/v3/nl-login-lateral.webp");
+    for (const c of ["NEXTLEVEL_CARGAS", "CREATORS_HUB", "CHINA_HUB"] as const) expect(loginPhotoFor(c)).toBeNull();
   });
 
   it("convite: Cargas chama a transportadora, Master não convida, Brás cadastra membro, marca em breve leva à lista", () => {
@@ -31,13 +32,15 @@ describe("tela de entrada por marca", () => {
 });
 
 describe("prévia de link por marca", () => {
-  it("SuperDrop e Brás com a arte própria; as outras com o cartão gerado da própria marca (nunca a do SuperDrop)", async () => {
+  it("SuperDrop, Commerce, NextLevel e Brás com a arte própria em JPG (redes não leem AVIF); as outras com o cartão gerado da própria marca", async () => {
     const { ogImageFor } = await import("@/lib/og-marca");
     const all = brandsFrom({});
-    expect(ogImageFor(all.SUPERDROP).url).toBe("/og/superdrop.png");
+    expect(ogImageFor(all.SUPERDROP).url).toBe("/portal/superdrop/v3/sd-og-portal.jpg");
+    expect(ogImageFor(all.NEXTLEVEL).url).toBe("/portal/nextlevel/v3/nl-og-solucoes.jpg");
     expect(ogImageFor(all.BRAS_DIGITAL).url).toMatch(/^\/portal\/bras\/v3\/bd-og-portal\./);
     expect(ogImageFor(all.NEXTLEVEL_CARGAS).url).toBe("/og/nextlevel_cargas.png");
-    expect(ogImageFor(all.NEXTLEVEL_COMMERCE).url).toBe("/og/nextlevel_commerce.png");
+    expect(ogImageFor(all.NEXTLEVEL_COMMERCE).url).toBe("/portal/commerce/v3/cm-og-portal.jpg");
+    expect(ogImageFor(all.CREATORS_HUB).url).toBe("/og/creators_hub.png");
     expect(existsSync(join(process.cwd(), "public/og/superdrop.png"))).toBe(true);
     expect(existsSync(join(process.cwd(), "src/app/opengraph-image.png"))).toBe(false);
   });

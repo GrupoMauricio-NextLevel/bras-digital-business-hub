@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
 import { brandByCode } from "@/lib/brand";
+import { ogImageFor } from "@/lib/og-marca";
 import { finFlag } from "@/lib/finance/flags";
 import { listCatalog } from "@/lib/domain/nl-catalog";
 import { getJourneyConfig } from "@/lib/domain/journey";
@@ -15,6 +16,8 @@ import { currentAttribution, withAttribution } from "@/lib/attribution";
 import { JsonLd } from "@/components/portal/json-ld";
 import { formatBRL } from "@/lib/money";
 import { DiagnosticoForm } from "./diagnostico-form";
+import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
+import { FamiliaFoto } from "@/components/nl-store/familia-foto";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
   const title = "NextLevel Soluções para empresas: loja virtual, migração, temas e marketing";
   const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, SuperDrop, Loja Pronta, Migração, temas, tráfego e White Label.";
-  return { title: { absolute: title }, description, alternates: { canonical: `${brand.baseUrl}/solucoes` }, openGraph: { title, description, url: `${brand.baseUrl}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR" } };
+  return { title: { absolute: title }, description, alternates: { canonical: `${brand.baseUrl}/solucoes` }, openGraph: { title, description, url: `${brand.baseUrl}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
 }
 
 const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl";
@@ -34,6 +37,7 @@ export default async function SolucoesPage() {
   const commerce = brandByCode("NEXTLEVEL_COMMERCE");
   const superdrop = brandByCode("SUPERDROP");
   const pub = items.filter((i) => i.audience.includes("PUBLIC") && i.family !== "TEMA");
+  const heroFoto = formatosDisponiveis("nextlevel", "nl-solucoes-hero").length > 0;
   const families = ["COMMERCE_PLAN", "LOJA_PRONTA", "MIGRACAO", "MARKETING", "CONSULTORIA", "WHITE_LABEL"] as const;
   const commerceHref = withAttribution(`${brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl}/planos`, attr);
   const superdropHref = withAttribution(`${brand.code === "SUPERDROP" ? "" : superdrop.baseUrl}/`, attr);
@@ -44,11 +48,14 @@ export default async function SolucoesPage() {
         { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${brand.baseUrl}/solucoes/${p.slug}`, name: p.name })) },
       ]} />
       <section className="bg-band px-4 py-16 text-band-foreground md:py-24" aria-labelledby="hero-t">
-        <div className="mx-auto max-w-6xl">
+        <div className={`mx-auto max-w-6xl ${heroFoto ? "grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]" : ""}`}>
+          <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-band-muted">NextLevel Soluções para empresas</p>
           <h1 id="hero-t" className="nl-display mt-3 max-w-4xl">Do primeiro produto cadastrado à operação em escala, com um próximo passo claro.</h1>
           <p className="mt-5 max-w-2xl text-lg text-band-muted">Para marcas e lojistas que vendem online no Brasil. Plataforma de loja virtual, revenda sem estoque, loja montada pela equipe, migração, temas e marketing, organizados numa jornada. Comece pelo diagnóstico gratuito.</p>
           <div className="mt-8 flex flex-wrap gap-3"><a href="#diagnostico" className="ds-pub-btn">Fazer diagnóstico gratuito <ArrowRight className="size-4" aria-hidden /></a><a href="#catalogo" className="ds-pub-btn" style={{ background: "transparent", color: "inherit", borderColor: "currentColor", boxShadow: "none" }}>Ver soluções</a></div>
+          </div>
+          {heroFoto ? <FotoOpcional marca="nextlevel" nome="nl-solucoes-hero" alt="Duas pessoas da equipe trabalhando lado a lado: uma monta a vitrine de uma loja no notebook, a outra organiza fotos de produto." priority className="!rounded-2xl" /> : null}
         </div>
       </section>
 
@@ -75,6 +82,7 @@ export default async function SolucoesPage() {
           <p className="mt-3 max-w-3xl text-muted-foreground">Preço claro quando ele é fixo; sob consulta quando depende do seu cenário. Pix com desconto e cartão parcelado onde o produto permite.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <article className="rounded-xl border border-border bg-surface p-5">
+              <FamiliaFoto family="COMMERCE_PLAN" className="mb-4 !rounded-lg" />
               <h3 className="text-xl font-bold">Plataforma NextLevel Commerce</h3>
               <p className="mt-1 text-sm text-muted-foreground">Loja virtual com sua marca, temas, Pix e cartão na sua conta.{plans.offer ? ` Clientes novos: ${plans.offer.trialDays} dias grátis, 1º mês por ${formatBRL(plans.offer.firstPeriodCents ?? 0)} e taxa de plataforma zero por ${plans.offer.feeHolidayMonths} meses.` : ""}</p>
               <ul className="mt-3 space-y-1 text-sm">{plans.plans.map((p) => <li key={p.key}><Link className="font-semibold text-link underline" href={withAttribution(`/solucoes/${p.slug}`, attr)}>{p.name}</Link>: {p.quote ? "sob consulta" : `${formatBRL(p.monthlyCents ?? 0)}/mês ou ${formatBRL(p.annualCents ?? 0)}/ano · taxa ${((p.feeBps ?? 0) / 100).toString().replace(".", ",")}%`}</li>)}</ul>
@@ -90,6 +98,7 @@ export default async function SolucoesPage() {
               if (!list.length) return null;
               return (
                 <article key={f} className="rounded-xl border border-border bg-surface p-5">
+                  <FamiliaFoto family={f} className="mb-4 !rounded-lg" />
                   <h3 className="text-xl font-bold">{FAMILY_LABEL[f]}</h3>
                   <ul className="mt-3 space-y-2 text-sm">{list.map((x) => <li key={x.key}><Link className="font-semibold text-link underline" href={withAttribution(`/solucoes/${x.slug}`, attr)}>{x.name}</Link>: <span className="tabular-nums">{priceLines(x).main}</span><span className="block text-xs text-muted-foreground">{x.tagline}</span></li>)}</ul>
                   {f === "MARKETING" ? <p className="mt-3 text-xs text-muted-foreground">A verba de anúncios é paga por você direto à plataforma (Meta, Google, Mercado Livre) e nunca passa pela NextLevel.</p> : null}
@@ -97,6 +106,7 @@ export default async function SolucoesPage() {
               );
             })}
             <article className="rounded-xl border border-border bg-surface p-5">
+              <FamiliaFoto family="TEMA" className="mb-4 !rounded-lg" />
               <h3 className="text-xl font-bold">Temas</h3>
               <p className="mt-1 text-sm text-muted-foreground">Compra única, sem mensalidade, com loja de demonstração para ver antes.</p>
               <Link href={withAttribution(`${brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl}/temas`, attr)} className="mt-4 inline-flex text-sm font-semibold text-link underline">Ver os temas →</Link>

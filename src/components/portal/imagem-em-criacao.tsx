@@ -4,7 +4,7 @@ import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isDemoMode } from "@/lib/auth";
 
-type Marca = "superdrop" | "commerce" | "bras";
+export type Marca = "superdrop" | "commerce" | "bras" | "nextlevel";
 const FORMATOS = ["avif", "webp", "png"] as const;
 type Formato = (typeof FORMATOS)[number];
 
@@ -50,6 +50,17 @@ export function ImagemEmCriacao({ marca, nome, alt, ratio = "16 / 9", posicao = 
       <span className="ds-img-slot-in"><ImageIcon className="size-6" aria-hidden /><span>Imagem em criação</span>{isDemoMode() ? <code>{nome}</code> : null}</span>
     </figure>
   );
+}
+
+/**
+ * Foto opcional (mesma pasta e mesmo `<picture>` da `ImagemEmCriacao`): sem arquivo válido, não aparece nada. Para lugares
+ * que já funcionam sem imagem (páginas de erro, cartões, aberturas novas), onde o quadro "Imagem em criação" pareceria falha.
+ */
+export function FotoOpcional({ marca, nome, alt, ratio = "16 / 9", posicao = "50% 50%", className, priority = false }: { marca: Marca; nome: string; alt: string; ratio?: string | null; posicao?: string; className?: string; priority?: boolean }) {
+  const formatos = formatosDisponiveis(marca, nome);
+  if (!formatos.length) return null;
+  // ratio null: a proporção vem das classes (ex.: mais baixa no computador que no celular).
+  return <Foto base={`/portal/${marca}/v3/${nome}`} formatos={formatos} alt={alt} priority={priority} posicao={posicao} className={cn("block overflow-hidden rounded-[var(--ds-r-public-card)]", className)} style={ratio ? { aspectRatio: ratio } : undefined} />;
 }
 
 /**

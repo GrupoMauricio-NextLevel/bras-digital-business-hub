@@ -12,6 +12,9 @@ import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "./product-card";
 import { AcceptDelivery } from "./plan-actions";
+import { Ilustracao, type IlustracaoNome } from "@/components/app/ilustracao";
+
+const FASE_ILUSTRACAO: Record<string, IlustracaoNome> = { FUNDACAO: "ui-fase-fundacao", LANCAMENTO: "ui-fase-lancamento", AQUISICAO: "ui-fase-aquisicao", OTIMIZACAO: "ui-fase-otimizacao", ESCALA: "ui-fase-escala" };
 
 const ORDER_LABEL: Record<string, string> = { PENDING_PAYMENT: "Aguardando pagamento", PAID: "Pago", FAILED: "Falhou", EXPIRED: "Expirado", CANCELED: "Cancelado", REFUNDED: "Reembolsado", CHARGEBACK: "Contestado" };
 const DELIVERY_LABEL: Record<string, string> = { WAITING_BRIEFING: "Aguardando seu material", IN_PROGRESS: "Em execução", REVIEW: "Em revisão", DELIVERED: "Entregue: falta seu aceite", ACCEPTED: "Concluída", CANCELED: "Cancelada" };
@@ -51,8 +54,13 @@ export async function StoreJourneyPage({ session, base, pedir }: { session: Sess
             const isCurrent = p.key === j.currentKey; const done = p.done === p.total && p.total > 0;
             return (
               <li key={p.key} aria-current={isCurrent ? "step" : undefined} className={`rounded-lg border p-3 ${isCurrent ? "border-accent bg-accent-soft/40" : "border-border bg-surface"}`}>
-                <p className="text-xs text-muted-foreground">Fase {i + 1}{done ? " · concluída" : isCurrent ? " · você está aqui" : ""}</p>
-                <p className="font-semibold">{p.name}</p>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">Fase {i + 1}{done ? " · concluída" : isCurrent ? " · você está aqui" : ""}</p>
+                    <p className="font-semibold">{p.name}</p>
+                  </div>
+                  {FASE_ILUSTRACAO[p.key] ? <Ilustracao nome={FASE_ILUSTRACAO[p.key]!} className="size-12 md:hidden xl:block" /> : null}
+                </div>
                 <div className="mt-2 h-1.5 rounded-full bg-surface-muted" role="progressbar" aria-label={`Progresso da fase ${p.name}`} aria-valuemin={0} aria-valuemax={p.total} aria-valuenow={p.done}><div className="h-1.5 rounded-full bg-accent" style={{ width: `${p.total ? Math.round((p.done / p.total) * 100) : 0}%` }} /></div>
                 <p className="mt-1 text-xs text-muted-foreground">{p.done} de {p.total} marcos</p>
               </li>
@@ -61,7 +69,7 @@ export async function StoreJourneyPage({ session, base, pedir }: { session: Sess
         </ol>
         {j.phases.filter((p) => p.key === j.currentKey).map((p) => (
           <div key={p.key} className="mt-4 grid gap-3 md:grid-cols-2">
-            <div><p className="text-sm font-semibold">{p.goal}</p><p className="mt-1 text-sm text-muted-foreground">{p.explanation}</p></div>
+            <div className="flex items-start gap-4">{FASE_ILUSTRACAO[p.key] ? <Ilustracao nome={FASE_ILUSTRACAO[p.key]!} className="hidden size-20 sm:block" /> : null}<div><p className="text-sm font-semibold">{p.goal}</p><p className="mt-1 text-sm text-muted-foreground">{p.explanation}</p></div></div>
             <ul className="space-y-1 text-sm">{p.items.map((m) => <li key={m.key} className="flex items-center gap-2">{m.done ? <CheckCircle2 className="size-4 text-success" aria-hidden /> : <Circle className="size-4 text-muted-foreground" aria-hidden />}<span>{m.label}</span><span className="sr-only">{m.done ? "(feito)" : "(pendente)"}</span></li>)}</ul>
           </div>
         ))}

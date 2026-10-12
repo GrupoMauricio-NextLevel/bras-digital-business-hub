@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
 import { brandByCode } from "@/lib/brand";
+import { ogImageFor } from "@/lib/og-marca";
 import { finFlag } from "@/lib/finance/flags";
 import { getCatalogItem } from "@/lib/domain/nl-catalog";
 import { ProductLanding } from "@/components/nl-store/product-landing";
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const brand = await getBrand();
   if (!p || !p.audience.includes("PUBLIC")) return { title: "Solução não encontrada", robots: { index: false } };
   const url = `${brand.baseUrl}/solucoes/${p.slug}`;
-  return { title: `${p.name} · NextLevel Soluções`, description: p.summary, alternates: { canonical: url }, openGraph: { title: p.name, description: p.summary, url, siteName: "NextLevel", type: "website", locale: "pt_BR" } };
+  return { title: `${p.name} · NextLevel Soluções`, description: p.summary, alternates: { canonical: url }, openGraph: { title: p.name, description: p.summary, url, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
 }
 
 /** Landing pública canônica do produto (`/solucoes/<slug>`), alimentada pelo catálogo Master. */
