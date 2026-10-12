@@ -2455,3 +2455,30 @@ export const groupPassCodes = pgTable("group_pass_codes", {
   usedAt: ts("used_at"),
   createdAt: createdAt(),
 });
+
+/**
+ * Central de qualidade (D142): situação de cada tela do sistema, marcada pelo dono (testada, aprovada, com problema) com
+ * anotação e o valor de exemplo para telas com parte variável no endereço (ex.: `/store/[slug]` → `mantos-shop`).
+ */
+export const qaScreens = pgTable("qa_screens", {
+  route: text("route").primaryKey(),
+  tested: boolean("tested").notNull().default(false),
+  approved: boolean("approved").notNull().default(false),
+  problem: boolean("problem").notNull().default(false),
+  note: text("note"),
+  sample: text("sample"),
+  updatedBy: text("updated_by").references(() => users.id),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+export type QaCheckResult = { key: string; url: string; status: number | null; ms: number; ok: boolean; expected: string; detail: string | null };
+/** Checagens automáticas da central de qualidade (domínios no ar e páginas respondendo), com o resultado de cada item. */
+export const qaRuns = pgTable("qa_runs", {
+  id: id(),
+  kind: text("kind", { enum: ["DOMINIOS", "PAGINAS"] }).notNull(),
+  results: jsonb("results").$type<QaCheckResult[]>().notNull(),
+  ok: integer("ok").notNull(),
+  failed: integer("failed").notNull(),
+  startedBy: text("started_by").references(() => users.id),
+  createdAt: createdAt(),
+}, (t) => [index("qa_runs_kind_idx").on(t.kind, t.createdAt)]);

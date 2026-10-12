@@ -54,6 +54,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Resumo do dia", href: "/master/summary", icon: "LayoutDashboard", group: "Operação" },
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
+      { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
       { label: "Brás Digital", href: "/bras", icon: "Boxes", group: "Plataformas" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },

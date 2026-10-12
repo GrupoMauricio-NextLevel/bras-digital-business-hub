@@ -1277,3 +1277,14 @@ Resposta 3 do dono ("autoriza criar a conta do grupo": sim).
 - **O que não muda:** cada perfil mantém os próprios dados, e-mail, senha e permissões; nenhum perfil lê dados do outro. Equipe NextLevel (Master), expedição e equipe de loja ficam fora. No modo suporte nada disso aparece nem funciona.
 - **Fica para a próxima etapa:** "ativar em 1 clique" sem novo cadastro (perfil novo com o mesmo e-mail exige trocar a regra de e-mail único por e-mail único por login; hoje o cadastro da outra marca ainda pede um e-mail próprio, e depois a pessoa liga os perfis), Club como assinatura por pessoa (o grupo é a base) e "Suas marcas" no cadastro.
 - Testes: `tests/conta-grupo.test.ts`; e2e em `e2e/precos-ecossistema.mjs` (ligar e trocar de perfil, acessibilidade em 390 e 1440 px).
+
+## D142 — Central de qualidade no Master: todas as telas, uma por uma, com aprovação, domínios e checagens (2026-10-12)
+Pedido do dono: "um painel onde eu possa acessar todas as páginas do sistema, entrar uma a uma e marcar aprovada e testada; uma super área para checar domínios, testes etc."
+- **Onde:** Master → Operação → **Central de qualidade** (`/master/qualidade`), só o dono (equipe do Master não vê).
+- **Telas:** a lista sai dos próprios arquivos do sistema (`src/app/**/page.tsx`), então **tela nova aparece sozinha**. Cada tela tem área (Master, Fornecedor, Lojista, Brás, públicas, links privados…), nome do menu, como entrar (direto ou modo suporte) e o domínio certo para abrir (painéis no endereço do Master, onde estão a sessão e o modo suporte; páginas públicas no da marca; `/termos` e `/privacidade` só na Brás).
+- **Marcação:** Testada, Aprovada e Com problema (aprovar tira o problema; problema tira a aprovação), anotação e exemplo para telas com parte variável no endereço. Tabela `qa_screens` (migração 0066); cada mudança vai para a auditoria. "Zerar esta lista" começa uma rodada nova.
+- **Uma por uma:** a tela atual em destaque com Abrir, "Testada e aprovada, próxima", e atalhos de teclado (O abrir, T testada, A aprovar e seguir, P problema, setas).
+- **Domínios:** abre `/api/health` de cada domínio configurado das marcas e mostra no ar / fora do ar / não é o sistema, versão publicada e atualização do banco.
+- **Checagem automática:** abre cada tela sem login (pública precisa abrir; painel precisa mandar para a entrada), cerca de 1 minuto; falhas em destaque e o resultado aparece em cada tela. Tabela `qa_runs`. Só endereços configurados das marcas (nunca um endereço digitado).
+- Achado na primeira checagem: `/termos` e `/privacidade` existem só para a Brás Digital; SuperDrop e Commerce não têm página própria de termos e privacidade (fica como pendência para o dono decidir).
+- Testes: `tests/central-qualidade.test.ts`.
