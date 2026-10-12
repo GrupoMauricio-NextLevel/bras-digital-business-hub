@@ -63,7 +63,7 @@ Boa caçada. 🕵️
 - Em todos os links de painel deste guia aparece `https://nextlevel-demo.onrender.com`. **No seu computador, troque por `http://localhost:3100`** (o resto do endereço é igual).
 
 ### O que NÃO entregar ao Samuel
-- **A sua senha do Master de verdade.** No Mundo Real ele não precisa entrar em painel nenhum. Todo painel ele vê no Treino, com os perfis de demonstração (senha `demo1234`).
+- **A sua senha do Master de verdade.** No Mundo Real ele não precisa entrar em painel nenhum. Todo painel ele vê no Treino, com os perfis criados para ele (`samuel.<papel>@familia.demo`, senha `demo1234`, lista na seção 4).
 - Nenhum cartão, chave Pix, token ou documento real.
 
 ### Como receber o trabalho dele
@@ -171,7 +171,24 @@ Uma cópia do sistema com dados inventados. Tudo que você fizer lá é de menti
 - **Ver como Commerce:** no Treino, todas as marcas moram no mesmo endereço. Abra `/lojas` para o site ficar com a cara da NextLevel Commerce, e `/lojas/sair` para voltar ao SuperDrop.
 - **Trocar de personagem:** clique no seu nome no canto de cima (direita) e em **Sair**, depois entre com outro perfil.
 
-### Perfis do Treino (todos com senha `demo1234`)
+### ⭐ Os SEUS perfis (criados para você, senha `demo1234`)
+Cada perfil tem o seu nome e entra na mesma empresa de um perfil de demonstração, então você vê os mesmos dados. Troque de papel pelo botão **"Demo"** no topo.
+
+| Você vira… | E-mail | Use no |
+|---|---|---|
+| 👑 **Samuel · Master** (vê todos os fornecedores, lojas, clientes e pedidos) | `samuel.master@familia.demo` | Mundo 9 |
+| 🏪 **Samuel · Lojista SuperDrop** (loja Arena 10) | `samuel.lojista@familia.demo` | Mundo 3 |
+| 🛍️ **Samuel · Loja Commerce** (loja Casa Aurora) | `samuel.commerce@familia.demo` | Mundo 4 |
+| 🏭 **Samuel · Fornecedor** (Mega Tron) | `samuel.fornecedor@familia.demo` | Mundo 5 |
+| 📦 **Samuel · Expedição** (Mega Tron) | `samuel.expedicao@familia.demo` | Mundo 5 |
+| 🏬 **Samuel · Importadora** | `samuel.importadora@familia.demo` | Mundo 7 |
+| 🚚 **Samuel · Transportadora** | `samuel.transportadora@familia.demo` | Mundo 8 |
+| 🛒 **Cliente final** | não precisa de login: é só abrir uma loja | Mundo 2 |
+
+> Parceiro e membro da Brás não têm perfil com o seu nome (cada um desses cadastros é único por pessoa). Use os perfis de demonstração da tabela abaixo: `parceira@demo.superdrop.com.br` e `membro@bras.demo`.
+> A sua mãe tem um guia próprio, sobre o dinheiro do sistema: `docs/manual/GUIA-GESTAO-FINANCEIRA-DANIELLE.md`. Vocês podem comparar as anotações!
+
+### Outros perfis do Treino (todos com senha `demo1234`)
 | Personagem | E-mail do perfil | Use no |
 |---|---|---|
 | 👑 Dono da NextLevel (Master) | `master@nextlevel.demo` | Mundo 9 |

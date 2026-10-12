@@ -1373,3 +1373,10 @@ temas no SuperDrop e na Commerce; texto legal da Brás unificado depois; revisã
 - Local: os scripts de demonstração com várias marcas precisam de `MASTER_HOST_ONLY=false` para abrir o Master em `localhost`/127.0.0.x como se fossem as marcas (localhost sozinho não é marca e nunca redireciona).
 - Testes: `tests/host-routing.test.ts`, `tests/brand.test.ts`, `tests/mapa-vivo.test.ts`, `tests/seo-marca.test.ts`, `tests/cargas.test.ts`.
 
+## D150 — Perfis da família no ambiente de demonstração e guias em PDF (2026-10-12)
+Pedido do dono: um acesso para o filho (Samuel, 13 anos) e para a esposa (Danielle Terceiro) conhecerem todos os níveis do sistema, com a percepção de fornecedores, lojistas e clientes finais; recomendação aceita: **só no ambiente de demonstração**, nunca acesso total na produção (dados reais de clientes, LGPD, risco de ação errada).
+- `src/db/demo-familia.ts` (`seedDemoFamily`, chamado no bootstrap com dados de demonstração): perfis `samuel.<papel>@familia.demo` e `danielle.<papel>@familia.demo` (Master, Financeiro do Master só para a Danielle, Lojista SuperDrop, Loja Commerce, Fornecedor, Expedição só para o Samuel, Importadora, Transportadora), cada um na mesma empresa de um perfil de demonstração existente (vê os mesmos dados fictícios), senha da demonstração. Importadora e transportadora ganham a ligação com a empresa. Idempotente pelo e-mail; referência ausente é pulada. Nunca roda na produção (o bootstrap de produção não usa dados de demonstração).
+- Parceiro e membro da Brás ficam com os perfis de demonstração existentes: esses cadastros são únicos por pessoa (código, CPF, CNPJ).
+- Guias: `docs/manual/GUIA-DO-EXPLORADOR-SAMUEL.md` (missões, 213 telas) e `docs/manual/GUIA-GESTAO-FINANCEIRA-DANIELLE.md` (6 módulos de gestão financeira), com PDFs gerados por `scripts/manuais/gerar-pdf.sh` (Markdown → HTML → Chromium).
+- Testes: `tests/demo-familia.test.ts`.
+

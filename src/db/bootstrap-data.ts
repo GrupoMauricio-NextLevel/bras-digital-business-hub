@@ -10,6 +10,7 @@ import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { seedDemoCargas } from "./demo-cargas";
 import { seedDemoBras } from "./demo-bras";
+import { seedDemoFamily } from "./demo-familia";
 import { ensureShowcaseStores } from "@/lib/themes/showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -43,6 +44,8 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedDemoCargas(db)) log.push("transportadoras fictícias de demonstração (Ouro, Prata e Bronze) criadas");
     if (await seedDemoBras(db, (m) => log.push(m))) log.push("ambiente de gravação: Brás, transportadora, ônibus, Club, Meu Contador e equipe do Master");
     for (const l of await ensureShowcaseStores(db)) log.push(l);
+    const family = await seedDemoFamily(db);
+    if (family.length) log.push(`perfis da família criados (${family.length}): Samuel e Danielle`);
     return log;
   }
 
