@@ -13,9 +13,11 @@ export type PublicCta = { href: string; label: string };
  * a marca entra como slot (logo), o menu e a chamada como dados, e as cores vêm do tema. Sem condicional por empresa.
  * Menu do celular: botão com aria-expanded, Escape fecha e devolve o foco ao botão.
  */
-export function PublicShell({ brand, brandLabel, nav, cta, secondary, footerBrand, footerNote, floating, children }: {
+export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secondary, footerBrand, footerNote, floating, children }: {
   brand: React.ReactNode;
   brandLabel: string;
+  /** Destino da logo (o endereço do grupo não tem página inicial própria ainda). */
+  homeHref?: string;
   nav: PublicNavItem[];
   cta: PublicCta;
   secondary?: PublicNavItem[];
@@ -40,7 +42,7 @@ export function PublicShell({ brand, brandLabel, nav, cta, secondary, footerBran
       <a href="#conteudo" className="ds-skip">Ir para o conteúdo</a>
       <header className="ds-pub-header">
         <div className="ds-pub-wrap ds-pub-header-in">
-          <Link href="/" className="ds-pub-brand" aria-label={`${brandLabel}, página inicial`}>{brand}</Link>
+          <Link href={homeHref} className="ds-pub-brand" aria-label={`${brandLabel}, página inicial`}>{brand}</Link>
           <nav aria-label="Principal" className="ds-pub-nav">
             {nav.map((n) => <Link key={n.href} href={n.href} aria-current={here(n.href) ? "page" : undefined}>{n.label}</Link>)}
           </nav>

@@ -33,7 +33,7 @@ describe("mapa das telas", () => {
     expect(areaOf("/faq").key).toBe("publicas");
     expect(areaOf("/gravacao").key).toBe("demo");
     expect(labelOf("/master/clientes")).toBe("Clientes e suporte");
-    expect(hostOf("/termos")).toBe("BRAS_DIGITAL");
+    expect(hostOf("/termos")).toBe("SUPERDROP"); // termos do grupo em todas as marcas (D148)
     expect(hostOf("/faq")).toBe("SUPERDROP");
     expect(labelOf("/master/financeiro/precos")).toBe("Preços do grupo");
     expect(fillRoute("/store/[slug]/product/[productSlug]", "mantos-shop/camisa-azul")).toBe("/store/mantos-shop/product/camisa-azul");

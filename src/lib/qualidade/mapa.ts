@@ -65,9 +65,7 @@ export function expectedAt(route: string, host: MapHost, kind: QaKind = areaOf(r
     ? { kind: "DEVE_ABRIR", why: "Painéis concentrados no Master (decisão de 12/10)." }
     : { kind: "NAO_DEVE", why: "Painel respondendo fora do Master: por ora todos os painéis ficam no Master (decisão de 12/10)." };
   if (GROUP_SITE.some((p) => under(route, p))) return { kind: "NAO_DEVE", why: "É da NextLevel Soluções Digitais: vai morar no site do grupo, nextlevelgroup.com.br (decisão de 12/10)." };
-  if (GROUP_LEGAL.includes(route)) return host === "NEXTLEVEL"
-    ? { kind: "A_DEFINIR", why: "Texto único do grupo; endereço no Master a definir na Fase 2." }
-    : { kind: "DEVE_ABRIR", why: "Termos e privacidade: um texto do grupo inteiro, presente em todas as marcas (decisão de 12/10)." };
+  if (GROUP_LEGAL.includes(route)) return { kind: "DEVE_ABRIR", why: "Termos e privacidade: um texto do grupo inteiro, presente em todas as marcas e no endereço do grupo (decisão de 12/10)." };
   if (kind === "DEMO") return { kind: "A_DEFINIR", why: "Só existe no ambiente de demonstração." };
   if (host === "NEXTLEVEL" && route !== "/login" && route !== "/esqueci-senha" && !under(route, "/redefinir-senha")) return { kind: "NAO_DEVE", why: "O Master é só painéis e entrada." };
   return { kind: "A_DEFINIR", why: "Casa definitiva na Fase 2 (reorganização)." };

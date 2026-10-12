@@ -105,7 +105,7 @@ export function labelOf(route: string): string {
 }
 
 /** Telas que só existem numa marca: abrem e são checadas no endereço dela (nas outras respondem 404 de propósito). */
-const ROUTE_HOST: Record<string, BrandCode> = { "/termos": "BRAS_DIGITAL", "/privacidade": "BRAS_DIGITAL" };
+const ROUTE_HOST: Record<string, BrandCode> = {};
 export const hostOf = (route: string): BrandCode => ROUTE_HOST[route] ?? areaOf(route).host;
 
 export type QaRoute = { route: string; label: string; area: QaArea; params: string[]; host: BrandCode };

@@ -8,6 +8,8 @@ import { HOLDING_CODE, brandByCode, brandOfHostStrict } from "./brand";
 export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/transportadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
 export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
+/** Páginas do grupo que abrem no endereço da holding (D147: vão para nextlevelgroup.com.br quando o site do grupo existir). */
+export const GROUP_PATHS = ["/solucoes", "/termos", "/privacidade"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string } | { kind: "rewrite"; path: string };
@@ -19,9 +21,9 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const search = input.search ?? "";
   const host = bare(input.host);
   const brand = brandOfHostStrict(host, env);
-  // Master central (holding): só painéis e login. Qualquer outra página vai ao login.
+  // Master central (holding): painéis, login e as páginas do grupo (Soluções, termos e privacidade do grupo, D147/D148). O resto vai ao login.
   if (brand?.code === HOLDING_CODE) {
-    if (isPanelPath(pathname) || pathname === "/solucoes" || pathname.startsWith("/solucoes/") || pathname.startsWith("/api/")) return { kind: "next" };
+    if (isPanelPath(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/api/")) return { kind: "next" };
     return { kind: "redirect", url: "/login" };
   }
   // Com MASTER_HOST_ONLY=true o Master só abre no endereço central; nos endereços dos produtos vai para lá.

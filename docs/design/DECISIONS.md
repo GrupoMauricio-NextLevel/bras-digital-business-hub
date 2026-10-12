@@ -1340,3 +1340,16 @@ Pedido do dono: um novo racional de páginas, o mapa de tudo e um painel dinâmi
   - **Ações:** checar um galho só (checagens guardadas em `qa_runs` com tipo `MAPA`, sem mudança no banco) e copiar o mapa mental em Mermaid.
   - O que ainda não foi decidido fica "a definir" até a Fase 2.
 - Código: `src/lib/qualidade/mapa.ts`, `checkMap` e `mapCells` em `src/lib/domain/qualidade.ts`, `src/components/master/qualidade/mapa-vivo.tsx`. Testes: `tests/mapa-vivo.test.ts`.
+
+## D148 — Fase 2 do mapa: termos do grupo, menu do endereço do grupo e categorias do fornecedor; proposta de reorganização (2026-10-12)
+Aprovado pelo dono ("tudo aprovado, vamos ao próximo passo") a partir da Fase 1 (D147).
+- **Termos e privacidade do grupo:**
+  - um texto único (`src/components/portal/legal-grupo.tsx`, versão `2026-10-12`, marcado "em revisão jurídica") em `/termos` e `/privacidade` no SuperDrop, na Commerce, na Cargas e no endereço do grupo;
+  - a Brás mantém o texto próprio, com aceite versionado (D99), até a unificação;
+  - o rodapé de todas as marcas abertas mostra os dois links (antes: "serão publicados aqui antes da abertura ao público");
+  - a Cargas passa a abrir as duas páginas;
+  - o endereço da holding abre `GROUP_PATHS` (`/solucoes`, `/termos`, `/privacidade`).
+- **Menu do endereço do grupo:** Soluções e as marcas pelos endereços delas, com o botão "Diagnóstico gratuito"; a logo leva a `/solucoes`. Nenhum link leva à entrada por engano.
+- **Fornecedor:** "Categorias" no menu do catálogo (`/supplier/products/categorias` deixa de ser órfã).
+- **Proposta da reorganização:** `docs/mapa/PROPOSTA-REORGANIZACAO-2026-10.md`, com a árvore-alvo, os 10 itens "de → para" e 5 perguntas. Nada além das três correções muda sem o sim do dono.
+- Testes: `tests/legal-grupo.test.tsx`.
