@@ -11,7 +11,8 @@ Leia `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` antes de decisão estrutur
 Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind v4 · Radix · Drizzle ORM (PGlite local/produção simples, Postgres/Neon externo) · Zod · Vitest · Playwright (via `playwright-core`, scripts em `e2e/`). Deploy: Docker no Render, direto da branch de trabalho; cada push publica.
 
 ## Comandos que você deve usar
-- Tipos: `npx tsc --noEmit` · Lint: `npx eslint src e2e tests` · Testes: `npx vitest run` (leva ~5 min; para um arquivo: `npx vitest run tests/x.test.ts`)
+- Tipos: `npx tsc --noEmit` · Lint: `npx eslint src e2e tests` · Testes: `npx vitest run` (leva ~30 min; para um arquivo: `npx vitest run tests/x.test.ts`)
+- **Testes enxutos (pedido do dono, 2026-10-12):** durante o trabalho rode só tipos, estilo e os testes dos arquivos mexidos; a bateria completa (`npx vitest run`) e `npm run build` ficam para a etapa final de cada rodada, antes da publicação dela. A verificação automática (`.github/workflows/ci.yml`) continua rodando tudo depois do push.
 - Build de produção: `npm run build` (rode antes de publicar; precisa passar sem "Export encountered")
 - Migração: alterou `src/db/schema.ts` → `npx drizzle-kit generate --name <assunto>` e commite `drizzle/`. Nunca edite migração já publicada.
 - Demonstração local: `bash scripts/restart-demo.sh` (porta 3100; `--limpo` apaga `.next`). Depois: `E2E_BASE=http://localhost:3100 node e2e/<arquivo>.mjs`. Reinicie antes de e2e que mudam dados (compras, temas, parceiros) e após migrações.

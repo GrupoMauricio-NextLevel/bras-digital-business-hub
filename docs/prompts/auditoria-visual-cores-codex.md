@@ -8,6 +8,19 @@
 > 3. Cole **todo o bloco da seção 5**. O Codex começa pela Fase 0 (só auditoria, sem mudar nada) e devolve o relatório e as pranchas para você aprovar.
 > 4. Só depois da sua aprovação ele passa às fases seguintes. Nada vai para o ar sem você aprovar (regra do `AGENTS.md`).
 
+## 0. Mensagem curta para colar no Codex (o arquivo já está no repositório)
+
+```
+Puxe a branch claude/wonderful-cannon-5o38v5 e crie a sua branch codex/cores a partir dela.
+Leia por inteiro docs/prompts/auditoria-visual-cores-codex.md e siga o bloco da seção 5 como a sua tarefa.
+Faça SOMENTE a FASE 0 (auditoria, sem mudar nenhuma cor ou tela) e pare para eu aprovar.
+Testes: durante o trabalho só tsc e eslint; a bateria completa fica para a fase final.
+Responda em português simples e me entregue o relatório docs/design/AUDITORIA-CORES-2026-10.md, as pranchas em imagem
+e as perguntas da seção PERGUNTAS com a sua recomendação em cada uma.
+```
+
+Depois que você aprovar a Fase 0, mande: "Aprovado. Siga para a FASE 1 (só proposta e pranchas, sem aplicar)." Depois: "Aprovado. FASE 2, começando pelo SuperDrop." E por fim: "FASE 3: bateria completa e capturas finais."
+
 ---
 
 ## 1. Marcas: o que já foi criado até aqui
@@ -148,7 +161,9 @@ REGRAS DO REPOSITÓRIO (obrigatórias)
 - A marca vem do endereço (getBrand()), nunca fixa em componente. Nenhum "se marca X" dentro de componente: componentes leem só variáveis.
 - O tema das lojas dos lojistas (src/lib/themes/**, vitrines /store/*) é do lojista e FICA FORA deste projeto.
 - Acessibilidade AA: texto ≥ 4,5:1, texto grande e ícones ≥ 3:1, foco visível; sem rolagem horizontal em 360 px; respeitar prefers-reduced-motion.
-- Antes de cada entrega: npx tsc --noEmit, npx eslint src e2e tests, npx vitest run tests/brand-palette.test.ts tests/design-system.test.ts e npm run build.
+- TESTES SÓ NA ETAPA FINAL (pedido do dono). Durante as fases 0, 1 e 2 rode apenas o rápido: npx tsc --noEmit e npx eslint src e2e tests
+  (e, se mexer em cor, npx vitest run tests/brand-palette.test.ts tests/design-system.test.ts, que leva segundos).
+  A bateria completa (npx vitest run, cerca de 30 minutos), npm run build e as varreduras de acessibilidade ficam para a FASE 3.
 - Textos ao dono em português claro, sem jargão.
 
 ONDE A COR VIVE HOJE (ponto de partida; confirme tudo)
@@ -217,7 +232,7 @@ FASE 2 — APLICAR (depois da aprovação da Fase 1), em etapas pequenas, uma ma
 5. Um teste que FALHA se aparecer cor escrita à mão nova fora da fonte única (lista de exceções explícita).
 6. Capturas antes/depois de cada tela da Fase 0, nas mesmas larguras e modos, para o dono aprovar antes de publicar.
 
-FASE 3 — CONFERÊNCIA FINAL
+FASE 3 — CONFERÊNCIA FINAL (a única com a bateria completa de testes)
 - axe sem violações graves nas telas da Fase 0 (e2e/polish-v8.mjs como base), sem rolagem horizontal em 360 px.
 - npm run build sem "Export encountered"; npx vitest run completo verde.
 - Registro da decisão em docs/design/DECISIONS.md (próximo número livre) e atualização de docs/design/DIRECAO-VISUAL-V4.md.
