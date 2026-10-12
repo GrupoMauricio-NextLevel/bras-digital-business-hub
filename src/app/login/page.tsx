@@ -1,3 +1,4 @@
+import { isRecordingMode } from "@/lib/gravacao-server";
 import Link from "next/link";
 import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
 import { redirect } from "next/navigation";
@@ -33,7 +34,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (session) redirect(voltar && session.user.role === "STORE_OWNER" ? voltar : homeFor(session.user.role));
   if (sp.area === "afiliado") redirect("/parceiros/entrar");
   const brand = await getBrand();
-  const demo = isDemoMode();
+  const demo = isDemoMode() && !(await isRecordingMode());
   const users = demo ? await listDemoUsers() : [];
   const invite = loginInviteFor(brand);
 
@@ -62,7 +63,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               );
             })}
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">Vitrines públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
+          <p className="mt-4 text-xs text-muted-foreground">Gravar treinamentos: <Link className="underline" href="/gravacao">Estúdio de gravação</Link> · Vitrines públicas: <Link className="underline" href="/store/mantos-shop">/store/mantos-shop</Link> · <Link className="underline" href="/store/arena-10">/store/arena-10</Link></p>
         </details>
       ) : null}</>}
     >

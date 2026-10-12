@@ -5,6 +5,8 @@ import { qaRuns, users } from "@/db/schema";
 import { actorFromUser } from "@/lib/domain/access";
 import { createMasterMember } from "@/lib/domain/equipe-master";
 import { areaOf, describeRoutes, fillRoute, hostOf, judge, labelOf, routeFromFile } from "@/lib/qualidade/rotas";
+import { fileForScreen, gptImagePrompt } from "@/lib/qualidade/gpt";
+import { parseManifest, publicImages } from "@/lib/qualidade/imagens";
 import { checkDomains, checkPages, domainTargets, listAppRoutes, markScreen, qualityCenter, resetScreens } from "@/lib/domain/qualidade";
 
 /** D142: central de qualidade — inventário automático das telas, marcação, domínios e checagem das páginas. */
@@ -29,6 +31,7 @@ describe("mapa das telas", () => {
     expect(areaOf("/balcao/[token]").key).toBe("privadas");
     expect(areaOf("/store/[slug]/cart").key).toBe("vitrines");
     expect(areaOf("/faq").key).toBe("publicas");
+    expect(areaOf("/gravacao").key).toBe("demo");
     expect(labelOf("/master/clientes")).toBe("Clientes e suporte");
     expect(hostOf("/termos")).toBe("BRAS_DIGITAL");
     expect(hostOf("/faq")).toBe("SUPERDROP");
@@ -106,5 +109,32 @@ describe("checagens", () => {
     const c = await qualityCenter(ctx.db, ctx.actors.master, routes);
     expect(c.pagesRun).toMatchObject({ ok: 2, failed: 0 });
     expect(c.screens.find((s) => s.route === "/master")!.check?.ok).toBe(true);
+  });
+});
+
+describe("o que falta e o pedido para o GPT (D143)", () => {
+  it("marca o que falta numa tela e guarda a descrição da imagem", async () => {
+    await markScreen(ctx.db, ctx.actors.master, "/planos", { needs: ["IMAGEM", "TEXTO", "IMAGEM"], imageBrief: "mãos embalando pedido" });
+    const m = (await qualityCenter(ctx.db, ctx.actors.master)).screens.find((s) => s.route === "/planos")!.mark;
+    expect(m.needs).toEqual(["IMAGEM", "TEXTO"]);
+    expect(m.imageBrief).toBe("mãos embalando pedido");
+    await expect(markScreen(ctx.db, ctx.actors.master, "/planos", { needs: ["QUALQUER" as "TEXTO"] })).rejects.toThrow();
+  });
+
+  it("lê os manifestos de imagens e confere os arquivos de verdade", () => {
+    const rows = parseManifest("| Nome | Proporção | Onde aparece | Cena |\n|---|---|---|---|\n| `bd-x` | 4:3 (1600×1200) | Cartão | Caixas no balcão |\n| texto solto | | | |");
+    expect(rows).toEqual([{ name: "bd-x", ratio: "4:3", where: "Cartão", scene: "Caixas no balcão" }]);
+    const imgs = publicImages();
+    expect(imgs.length).toBeGreaterThan(10);
+    expect(imgs.find((i) => i.name === "sd-etiqueta-impressora")?.formats.length).toBeGreaterThan(0);
+  });
+
+  it("pedido para o GPT: regras de toda imagem, lotes por marca e nome de arquivo por tela", () => {
+    expect(gptImagePrompt([])).toBe("");
+    const p = gptImagePrompt([{ file: fileForScreen("/store/[slug]", "superdrop"), brand: "superdrop", ratio: "16:9", scene: "vitrine", where: "Vitrine" }, { file: "cm-x", brand: "commerce", ratio: "4:3", scene: "ateliê", where: "" }]);
+    expect(p).toContain("Nenhum texto");
+    expect(p).toContain("LOTE SUPERDROP");
+    expect(p).toContain("sd-tela-store-item.png — 16:9 — vitrine (onde aparece: Vitrine)");
+    expect(p).toContain("LOTE NEXTLEVEL COMMERCE");
   });
 });

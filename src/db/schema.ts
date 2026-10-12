@@ -2467,6 +2467,10 @@ export const qaScreens = pgTable("qa_screens", {
   problem: boolean("problem").notNull().default(false),
   note: text("note"),
   sample: text("sample"),
+  /** O que falta na tela (D143): IMAGEM, TEXTO, VIDEO, FUNCAO, DADOS. */
+  needs: jsonb("needs").$type<string[]>().notNull().default([]),
+  /** O que a imagem que falta deve mostrar (vira o pedido para o GPT). */
+  imageBrief: text("image_brief"),
   updatedBy: text("updated_by").references(() => users.id),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });

@@ -34,7 +34,7 @@ const under = (r: string, p: string) => r === p || r.startsWith(`${p}/`);
 
 /** Área de um endereço (o mais específico vence). */
 export function areaOf(route: string): QaArea {
-  if (under(route, "/dev") || under(route, "/demo")) return AREA.demo!;
+  if (under(route, "/dev") || under(route, "/demo") || under(route, "/gravacao")) return AREA.demo!;
   if (PRIVATE.some((re) => re.test(route))) return AREA.privadas!;
   if (under(route, "/master")) return AREA.master!;
   if (under(route, "/commerce")) return AREA["commerce-admin"]!;

@@ -19,6 +19,10 @@ Pedidos fictícios em uma conta real entrariam nas taxas por pedido e nas fatura
 
 Também continuam os perfis da Central Sports (Mantos Shop, Arena 10, Fut Classics).
 
+## Estúdio de gravação (D144)
+Abra `/gravacao` no ambiente de demonstração: entrar como qualquer participante com um clique, roteiro de 17 aulas (cada uma já abre a tela certa com a conta certa), **modo gravação** (esconde os atalhos de demonstração das telas) e **Recomeçar do zero** (como Master; ~1 minuto).
+Participantes além dos acima: Brás (`membro@bras.demo`, `loja2@bras.demo`, `importadora@bras.demo`, `balcao@bras.demo`), Cargas (`transportadora@cargas.demo`, `onibus@cargas.demo`), equipe do Master (`comercial@`, `suporte@`, `financeiro@`, `contador@nextlevel.demo`), Commerce (`completo@commerce.demo`, `lojista@commerce.demo`, `equipe@commerce.demo`), parceira (`parceira@demo.superdrop.com.br`). Senha de todos: `demo1234`.
+
 ## Funções ativas em simulação
 - **Simular venda (demo)** em Pedidos do membro: cria uma venda de cliente final, debita o saldo ou deixa "Aguardando recarga".
 - **Gerar etiqueta de demonstração** ao anexar etiqueta: PDF fictício 10x15 cm.
@@ -28,7 +32,7 @@ Também continuam os perfis da Central Sports (Mantos Shop, Arena 10, Fut Classi
 
 ## Como publicar (Render)
 1. New > Web Service, mesmo repositório e branch, runtime **Docker**, nome `superdrop-demo`.
-2. Variáveis: `NEXT_PUBLIC_DEMO_MODE=true` (lida no build), `DEMO_AUTOSEED=true`, `DATABASE_URL=pglite://memory`, `SESSION_SECRET`, `CRON_SECRET` (valores próprios, diferentes dos de produção).
+2. Variáveis: `NEXT_PUBLIC_DEMO_MODE=true` (lida no build), `DEMO_AUTOSEED=true`, `DATABASE_URL=pglite://memory`, `BRAS_PANELS=true`, `SESSION_SECRET`, `CRON_SECRET` (valores próprios, diferentes dos de produção). Memória: o banco fica na memória do serviço; use um plano com pelo menos 1 GB (o de 512 MB pode reiniciar no meio da gravação).
 3. Não configure `MASTER_EMAIL`, `MASTER_PASSWORD` nem cartão de pagamento.
 4. Domínio opcional: `demo.superdrop.com.br` (CNAME `demo` para o endereço `.onrender.com` do serviço).
 5. Os dados voltam ao estado inicial quando o serviço reinicia ou hiberna, o que é desejável em demonstração. A primeira requisição depois de acordar leva alguns segundos a mais porque o banco é recriado e populado.

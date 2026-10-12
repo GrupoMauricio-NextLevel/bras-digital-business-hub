@@ -2,25 +2,27 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { AlertTriangle, Check, CheckCheck, ChevronLeft, ChevronRight, ExternalLink, Globe, RefreshCw, Search, StickyNote } from "lucide-react";
+import { AlertTriangle, Check, CheckCheck, ChevronLeft, ChevronRight, Copy, ExternalLink, Globe, ImageIcon, RefreshCw, Search, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QA_AREAS, fillRoute, type QaArea } from "@/lib/qualidade/rotas";
+import { NEEDS, NEED_LABEL, fileForScreen, gptImagePrompt, imageBrandOf, type ImageRequest, type Need } from "@/lib/qualidade/gpt";
+import type { PublicImage } from "@/lib/qualidade/imagens";
 import type { BrandCode } from "@/lib/brand";
 import type { QaCheckResult } from "@/db/schema";
 import { checkDomainsAction, checkPagesAction, markScreenAction, resetScreensAction } from "@/app/actions/qualidade";
 
-type Mark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; updatedAt: string | null; updatedByName: string | null };
+type Mark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; needs: Need[]; imageBrief: string | null; updatedAt: string | null; updatedByName: string | null };
 type Screen = { route: string; label: string; areaKey: string; host: BrandCode; params: string[]; mark: Mark; check: QaCheckResult | null };
 type Run = { at: string; ok: number; failed: number; byName: string | null } | null;
-type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null };
+type Props = { screens: Screen[]; hosts: Record<BrandCode, string>; images: PublicImage[]; pagesRun: Run; domainsRun: (NonNullable<Run> & { results: QaCheckResult[] }) | null; openErrors: number; version: string | null };
 
-type Filter = "todas" | "pendentes" | "testadas" | "aprovadas" | "concluidas" | "problema" | "falhou";
+type Filter = "todas" | "pendentes" | "testadas" | "aprovadas" | "concluidas" | "problema" | "falta" | "falhou";
 const FILTERS: { key: Filter; label: string }[] = [
   { key: "todas", label: "Todas" }, { key: "pendentes", label: "Pendentes" }, { key: "testadas", label: "Testadas" }, { key: "aprovadas", label: "Aprovadas" },
-  { key: "concluidas", label: "Testadas e aprovadas" }, { key: "problema", label: "Com problema" }, { key: "falhou", label: "Falhou na checagem" },
+  { key: "concluidas", label: "Testadas e aprovadas" }, { key: "problema", label: "Com problema" }, { key: "falta", label: "Falta algo (imagem, texto…)" }, { key: "falhou", label: "Falhou na checagem" },
 ];
 const HOSTS: { key: "auto" | BrandCode; label: string }[] = [{ key: "auto", label: "Automático (pela área)" }, { key: "NEXTLEVEL", label: "Master" }, { key: "SUPERDROP", label: "SuperDrop" }, { key: "NEXTLEVEL_COMMERCE", label: "Commerce" }];
 const AREA = Object.fromEntries(QA_AREAS.map((a) => [a.key, a])) as Record<string, QaArea>;
@@ -37,6 +39,7 @@ function matches(s: Screen, m: Mark, f: Filter) {
     case "aprovadas": return m.approved;
     case "concluidas": return m.tested && m.approved;
     case "problema": return m.problem;
+    case "falta": return m.needs.length > 0;
     case "falhou": return !!s.check && !s.check.ok;
     default: return true;
   }
@@ -80,7 +83,7 @@ function StackBar({ marks, label }: { marks: Mark[]; label: string }) {
   );
 }
 
-export function CentralQualidade({ screens, hosts, pagesRun, domainsRun, openErrors, version }: Props) {
+export function CentralQualidade({ screens, hosts, images, pagesRun, domainsRun, openErrors, version }: Props) {
   const router = useRouter();
   const [marks, setMarks] = React.useState<Record<string, Mark>>(() => Object.fromEntries(screens.map((s) => [s.route, s.mark])));
   const [area, setArea] = usePref<string>("area", "todas");
@@ -101,7 +104,7 @@ export function CentralQualidade({ screens, hosts, pagesRun, domainsRun, openErr
     return `${hostSel === "auto" ? hosts[s.host] : hosts[hostSel]}${path}`;
   };
 
-  const save = React.useCallback(async (route: string, patch: Partial<Pick<Mark, "tested" | "approved" | "problem" | "note" | "sample">>) => {
+  const save = React.useCallback(async (route: string, patch: Partial<Pick<Mark, "tested" | "approved" | "problem" | "note" | "sample" | "needs" | "imageBrief">>) => {
     let prev: Mark | undefined;
     setMarks((cur) => {
       prev = cur[route];
@@ -148,6 +151,7 @@ export function CentralQualidade({ screens, hosts, pagesRun, domainsRun, openErr
         <TabsList aria-label="Seções da central">
           <TabsTrigger value="telas">Todas as telas</TabsTrigger>
           <TabsTrigger value="foco">Uma por uma</TabsTrigger>
+          <TabsTrigger value="falta">O que falta</TabsTrigger>
           <TabsTrigger value="dominios">Domínios</TabsTrigger>
           <TabsTrigger value="checagem">Checagem automática</TabsTrigger>
         </TabsList>
@@ -187,6 +191,10 @@ export function CentralQualidade({ screens, hosts, pagesRun, domainsRun, openErr
 
         <TabsContent value="foco">
           <Foco list={list} urlOf={urlOf} onSave={save} />
+        </TabsContent>
+
+        <TabsContent value="falta">
+          <Faltas screens={all} images={images} urlOf={urlOf} />
         </TabsContent>
 
         <TabsContent value="dominios">
@@ -254,7 +262,7 @@ function AreaChip({ active, onClick, label, marks }: { active: boolean; onClick:
   );
 }
 
-type SaveFn = (route: string, patch: Partial<Pick<Mark, "tested" | "approved" | "problem" | "note" | "sample">>) => Promise<boolean>;
+type SaveFn = (route: string, patch: Partial<Pick<Mark, "tested" | "approved" | "problem" | "note" | "sample" | "needs" | "imageBrief">>) => Promise<boolean>;
 
 function Toggles({ s, onSave, size = "sm" }: { s: Screen; onSave: SaveFn; size?: "sm" | "md" }) {
   const m = s.mark;
@@ -272,8 +280,19 @@ function NoteAndSample({ s, onSave, autoOpen }: { s: Screen; onSave: SaveFn; aut
   const [note, setNote] = React.useState(s.mark.note ?? "");
   const [sample, setSample] = React.useState(s.mark.sample ?? "");
   const id = s.route.replace(/[^a-z0-9]/gi, "-");
+  const [brief, setBrief] = React.useState(s.mark.imageBrief ?? "");
+  const toggleNeed = (n: Need) => onSave(s.route, { needs: s.mark.needs.includes(n) ? s.mark.needs.filter((x) => x !== n) : [...s.mark.needs, n] });
   return (
     <div className="grid gap-2 sm:grid-cols-2">
+      <div className="flex flex-wrap items-center gap-2 sm:col-span-2" role="group" aria-label="O que falta nesta tela">
+        <span className="text-xs font-medium">O que falta:</span>
+        {NEEDS.map((n) => <button key={n} type="button" aria-pressed={s.mark.needs.includes(n)} onClick={() => toggleNeed(n)} className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${s.mark.needs.includes(n) ? "border-warning bg-warning-soft text-warning" : "border-border bg-surface hover:bg-surface-hover"}`}>{NEED_LABEL[n]}</button>)}
+      </div>
+      {s.mark.needs.includes("IMAGEM") ? (
+        <label className="flex flex-col text-xs font-medium sm:col-span-2" htmlFor={`qa-img-${id}`}>O que a imagem deve mostrar (vira o pedido para o GPT na aba “O que falta”)
+          <Textarea id={`qa-img-${id}`} className="mt-1 min-h-14" placeholder="Ex.: mãos embalando um pedido numa bancada, caixa kraft com fita verde" value={brief} onChange={(e) => setBrief(e.target.value)} onBlur={() => brief !== (s.mark.imageBrief ?? "") && onSave(s.route, { imageBrief: brief || null })} />
+        </label>
+      ) : null}
       {s.params.length ? (
         <label className="flex flex-col text-xs font-medium" htmlFor={`qa-ex-${id}`}>Exemplo para {s.params.map((p) => `[${p}]`).join(" / ")} (ou cole o link inteiro)
           <Input id={`qa-ex-${id}`} className="mt-1" placeholder={s.params.join("/")} value={sample} onChange={(e) => setSample(e.target.value)} onBlur={() => sample !== (s.mark.sample ?? "") && onSave(s.route, { sample: sample || null })} />
@@ -293,7 +312,7 @@ function ScreenRow({ s, showArea, url, onSave }: { s: Screen; showArea: boolean;
     <li className="grid gap-3 p-3 sm:p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="grid min-w-0 gap-1">
-          <span className="flex flex-wrap items-center gap-2 font-semibold">{s.label}<Badge tone={st.tone}>{st.label}</Badge>{showArea ? <Badge tone="outline">{AREA[s.areaKey]?.label}</Badge> : null}{s.check ? <Badge tone={s.check.ok ? "success" : "danger"}>{s.check.ok ? `respondeu em ${s.check.ms} ms` : "falhou na checagem"}</Badge> : null}</span>
+          <span className="flex flex-wrap items-center gap-2 font-semibold">{s.label}<Badge tone={st.tone}>{st.label}</Badge>{showArea ? <Badge tone="outline">{AREA[s.areaKey]?.label}</Badge> : null}{s.check ? <Badge tone={s.check.ok ? "success" : "danger"}>{s.check.ok ? `respondeu em ${s.check.ms} ms` : "falhou na checagem"}</Badge> : null}{s.mark.needs.map((n) => <Badge key={n} tone="warning">Falta {NEED_LABEL[n].split(" (")[0]!.toLowerCase()}</Badge>)}</span>
           <span className="break-all font-mono text-xs text-muted-foreground">{s.route}</span>
           {s.mark.note && !open ? <span className="flex items-start gap-1 text-sm text-muted-foreground"><StickyNote className="mt-0.5 size-3.5 shrink-0" aria-hidden />{s.mark.note}</span> : null}
           {s.mark.updatedAt ? <span className="text-xs text-muted-foreground">Marcada {when(s.mark.updatedAt)}{s.mark.updatedByName ? ` por ${s.mark.updatedByName}` : ""}</span> : null}
@@ -301,7 +320,7 @@ function ScreenRow({ s, showArea, url, onSave }: { s: Screen; showArea: boolean;
         <div className="flex flex-wrap items-center gap-2">
           {url ? <a className="ds-btn ds-btn--sm" href={url} target="_blank" rel="noreferrer" aria-label={`Abrir ${s.label} em nova aba`}><ExternalLink /> Abrir</a> : <span className="text-xs text-muted-foreground">Preencha o exemplo para abrir</span>}
           <Toggles s={s} onSave={onSave} />
-          <Button size="sm" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}><StickyNote /> {s.params.length ? "Exemplo e nota" : "Nota"}</Button>
+          <Button size="sm" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}><StickyNote /> {s.params.length ? "Exemplo, nota e o que falta" : "Nota e o que falta"}</Button>
         </div>
       </div>
       {open || (s.params.length && !s.mark.sample) ? <NoteAndSample key={s.route} s={s} onSave={onSave} /> : null}
@@ -364,10 +383,86 @@ function Foco({ list, urlOf, onSave }: { list: Screen[]; urlOf: (s: Screen, m: M
           <Button size="lg" onClick={async () => { if (await onSave(s.route, { approved: true, tested: true })) go(1); }}><CheckCheck /> Testada e aprovada, próxima</Button>
         </div>
         <Toggles s={s} onSave={onSave} size="md" />
-        {noteOpen || s.params.length || s.mark.note ? <NoteAndSample key={s.route} s={s} onSave={onSave} autoOpen={noteOpen} /> : <div><Button size="sm" variant="ghost" onClick={() => setNoteOpen(true)}><StickyNote /> Escrever anotação</Button></div>}
+        {noteOpen || s.params.length || s.mark.note || s.mark.needs.length ? <NoteAndSample key={s.route} s={s} onSave={onSave} autoOpen={noteOpen} /> : <div><Button size="sm" variant="ghost" onClick={() => setNoteOpen(true)}><StickyNote /> Nota e o que falta</Button></div>}
         {s.mark.updatedAt ? <span className="text-xs text-muted-foreground">Marcada {when(s.mark.updatedAt)}{s.mark.updatedByName ? ` por ${s.mark.updatedByName}` : ""}</span> : null}
       </article>
       <p className="text-xs text-muted-foreground">Atalhos: <kbd>O</kbd> abrir · <kbd>T</kbd> testada · <kbd>A</kbd> aprovar e ir para a próxima · <kbd>P</kbd> problema (abre a anotação) · <kbd>←</kbd> <kbd>→</kbd> navegar.</p>
+    </div>
+  );
+}
+
+/** Texto pronto para copiar (com reserva: se o navegador recusar a cópia, o texto fica selecionado para copiar à mão). */
+function CopyBox({ text, label }: { text: string; label: string }) {
+  const ref = React.useRef<HTMLTextAreaElement>(null);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(text); toast.success("Copiado. Cole no GPT."); }
+    catch { ref.current?.select(); toast.message("Selecionei o texto: copie com Ctrl+C (ou segure e copie no celular)."); }
+  };
+  return (
+    <div className="grid gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2"><b className="text-sm">{label}</b><Button size="sm" onClick={copy}><Copy /> Copiar pedido para o GPT</Button></div>
+      <Textarea ref={ref} readOnly aria-label={label} className="min-h-40 font-mono text-xs" value={text} />
+    </div>
+  );
+}
+
+/** O que falta: imagens das páginas públicas (sozinho, pelos arquivos) e o que você marcou em cada tela, com o pedido para o GPT. */
+function Faltas({ screens, images, urlOf }: { screens: Screen[]; images: PublicImage[]; urlOf: (s: Screen, m: Mark) => string | null }) {
+  const missing = images.filter((i) => !i.formats.length);
+  const marked = screens.filter((s) => s.mark.needs.length);
+  const requests: ImageRequest[] = [
+    ...missing.map((i) => ({ file: i.name, brand: i.brand, ratio: i.ratio || "16:9", scene: i.scene ?? i.where, where: i.where })),
+    ...marked.filter((s) => s.mark.needs.includes("IMAGEM")).map((s) => { const b = imageBrandOf(s.host); return { file: fileForScreen(s.route, b), brand: b, ratio: "16:9", scene: s.mark.imageBrief || `imagem para a tela “${s.label}” (${AREA[s.areaKey]?.label})`, where: `${s.label} (${s.route})` }; }),
+  ];
+  const prompt = gptImagePrompt(requests);
+  return (
+    <div className="grid gap-5">
+      <section className="grid gap-3 rounded-xl border border-border bg-surface p-4" aria-labelledby="qa-gpt">
+        <h2 id="qa-gpt" className="flex items-center gap-2 text-base font-bold"><ImageIcon className="size-4" aria-hidden /> Imagens para gerar no GPT ({requests.length})</h2>
+        {requests.length ? (
+          <>
+            <p className="text-sm text-muted-foreground">Copie o pedido, cole num chat novo do GPT com geração de imagens e salve cada imagem com o nome exato. Depois me mande os arquivos: eu converto, coloco no lugar e a imagem aparece sozinha na página.</p>
+            <CopyBox text={prompt} label="Pedido completo" />
+          </>
+        ) : <p className="text-sm text-success">Nenhuma imagem faltando. Para pedir uma imagem nova, marque “Imagem” na tela e descreva o que ela deve mostrar.</p>}
+      </section>
+
+      <section className="grid gap-2" aria-labelledby="qa-pub">
+        <h2 id="qa-pub" className="text-base font-bold">Imagens das páginas públicas: {images.length - missing.length} de {images.length} no ar</h2>
+        <div className="overflow-x-auto rounded-xl border border-border bg-surface"><table className="w-full text-sm">
+          <caption className="sr-only">Imagens das páginas públicas por marca</caption>
+          <thead><tr className="border-b border-border text-left"><th scope="col" className="p-3">Imagem</th><th scope="col" className="p-3">Marca</th><th scope="col" className="p-3">Onde aparece</th><th scope="col" className="p-3">Situação</th></tr></thead>
+          <tbody>{[...missing, ...images.filter((i) => i.formats.length)].map((i) => (
+            <tr key={`${i.brand}-${i.name}`} className="border-b border-border last:border-0">
+              <th scope="row" className="p-3 text-left font-mono text-xs font-medium">{i.name}</th>
+              <td className="p-3">{i.brand === "superdrop" ? "SuperDrop" : i.brand === "commerce" ? "Commerce" : "Brás Digital"}</td>
+              <td className="p-3 text-muted-foreground">{i.where}</td>
+              <td className="p-3"><Badge tone={i.formats.length ? "success" : "warning"}>{i.formats.length ? `No ar (${i.formats.join(", ")})` : "Falta"}</Badge></td>
+            </tr>
+          ))}</tbody>
+        </table></div>
+      </section>
+
+      <section className="grid gap-3" aria-labelledby="qa-marcadas">
+        <h2 id="qa-marcadas" className="text-base font-bold">O que você marcou nas telas ({marked.length})</h2>
+        {marked.length ? NEEDS.map((n) => {
+          const list = marked.filter((s) => s.mark.needs.includes(n));
+          if (!list.length) return null;
+          return (
+            <div key={n} className="grid gap-1">
+              <h3 className="text-sm font-semibold">{NEED_LABEL[n]} ({list.length})</h3>
+              <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+                {list.map((s) => { const u = urlOf(s, s.mark); return (
+                  <li key={s.route} className="flex flex-wrap items-start justify-between gap-2 p-3 text-sm">
+                    <span className="grid min-w-0 gap-0.5"><b>{s.label}</b><span className="break-all font-mono text-xs text-muted-foreground">{s.route}</span>{n === "IMAGEM" && s.mark.imageBrief ? <span className="text-muted-foreground">Imagem: {s.mark.imageBrief}</span> : null}{s.mark.note ? <span className="text-muted-foreground">Nota: {s.mark.note}</span> : null}</span>
+                    {u ? <a className="ds-btn ds-btn--sm ds-btn--secondary" href={u} target="_blank" rel="noreferrer"><ExternalLink /> Abrir</a> : null}
+                  </li>
+                ); })}
+              </ul>
+            </div>
+          );
+        }) : <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">Nenhuma tela marcada. Em “Todas as telas” ou “Uma por uma”, abra “Nota e o que falta” e marque Imagem, Texto, Vídeo, Função ou Dados.</p>}
+      </section>
     </div>
   );
 }

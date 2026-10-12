@@ -3,6 +3,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { listDemoUsers, loginAs, logout } from "@/app/actions/auth";
 import { globalSearchAction } from "@/app/actions/search";
 import { isDemoMode, type Session } from "@/lib/auth";
+import { isRecordingMode } from "@/lib/gravacao-server";
 import { canUse, type FeatureKey } from "@/lib/features";
 import { storeUrl } from "@/lib/store-url";
 import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navForBrand, type Panel } from "@/lib/nav";
@@ -75,7 +76,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         tenantName="Brás Digital"
         tenantSub="Estúdio · NextLevel Master"
         userName={session.user.name}
-        demoUsers={isDemoMode() ? await listDemoUsers() : undefined}
+        demoUsers={isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined}
         onSwitch={loginAs}
         onLogout={logout}
         passwordHref="/account/password"
@@ -93,7 +94,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
     const commerceItems = commerceStore
       ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
       : COMMERCE_ADMIN_NAV;
-    const demoUsersC = isDemoMode() ? await listDemoUsers() : undefined;
+    const demoUsersC = isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined;
     return (
       <AppShell
         brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
@@ -121,7 +122,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
     );
   }
 
-  const demoUsers = isDemoMode() ? await listDemoUsers() : undefined;
+  const demoUsers = isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined;
   const notices = await recentNotices(session.actor);
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : "NextLevel");
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : "Plataforma";

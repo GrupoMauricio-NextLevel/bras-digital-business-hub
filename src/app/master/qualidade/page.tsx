@@ -18,6 +18,7 @@ export default async function QualidadePage() {
       <CentralQualidade
         screens={c.screens.map((x) => ({ route: x.route, label: x.label, areaKey: x.area.key, host: x.host, params: x.params, mark: x.mark, check: x.check }))}
         hosts={c.hosts}
+        images={c.images}
         pagesRun={c.pagesRun}
         domainsRun={c.domainsRun}
         openErrors={c.openErrors}

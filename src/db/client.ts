@@ -58,4 +58,18 @@ export async function getDb(): Promise<Database> {
   return (await globalForDb.__nlDb).db;
 }
 
+/**
+ * Recomeça a demonstração (D144): só no banco de demonstração em memória. Fecha o banco atual e cria outro, migrado e
+ * populado do zero. Todas as sessões deixam de valer (os usuários são recriados). Em qualquer outro banco, recusa.
+ */
+export async function resetDemoDatabase() {
+  if (process.env.DEMO_AUTOSEED !== "true" || process.env.NEXT_PUBLIC_DEMO_MODE !== "true" || resolveDatabaseUrl() !== "pglite://memory") {
+    throw new Error("Recomeçar só existe no ambiente de demonstração em memória.");
+  }
+  const old = globalForDb.__nlDb;
+  globalForDb.__nlDb = undefined;
+  await getDb();
+  try { await (await old)?.close(); } catch { /* o banco antigo já estava fechado */ }
+}
+
 export { schema };

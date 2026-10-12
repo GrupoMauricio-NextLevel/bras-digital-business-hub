@@ -9,9 +9,9 @@ import { newId } from "@/lib/ids";
  * demonstração (DEMO_AUTOSEED), nunca na produção. Idempotente pelo documento.
  */
 const DEMO = [
-  { doc: "90.000.001/0001-01", name: "Rota Ouro Transportes (demonstração)", ufs: ["MG", "GO"], delivered: 34, punctuality: 5, care: 5, refused: 1 },
-  { doc: "90.000.002/0001-02", name: "Expresso Prata (demonstração)", ufs: ["MG"], delivered: 12, punctuality: 4, care: 5, refused: 2 },
-  { doc: "90.000.003/0001-03", name: "Fretes Começando (demonstração)", ufs: ["MG", "BA"], delivered: 2, punctuality: 4, care: 4, refused: 0 },
+  { doc: "90.000.001/0001-01", contact: "Joana Prado", name: "Rota Ouro Transportes (demonstração)", ufs: ["MG", "GO"], delivered: 34, punctuality: 5, care: 5, refused: 1 },
+  { doc: "90.000.002/0001-02", contact: "Rui Mendes", name: "Expresso Prata (demonstração)", ufs: ["MG"], delivered: 12, punctuality: 4, care: 5, refused: 2 },
+  { doc: "90.000.003/0001-03", contact: "Lia Costa", name: "Fretes Começando (demonstração)", ufs: ["MG", "BA"], delivered: 2, punctuality: 4, care: 4, refused: 0 },
 ];
 
 export async function seedDemoCargas(db: Database): Promise<boolean> {
@@ -24,7 +24,7 @@ export async function seedDemoCargas(db: Database): Promise<boolean> {
   const day = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
   for (const c of DEMO) {
     const carrierId = newId("trc");
-    await db.insert(trCarriers).values({ id: carrierId, name: c.name, docType: "CNPJ", document: c.doc, contactName: "Contato fictício", phone: "11900000000", ufs: c.ufs, vehicles: ["TRUCK"], plan: "GRATIS", status: "ATIVA", operation: "CARGA" });
+    await db.insert(trCarriers).values({ id: carrierId, name: c.name, docType: "CNPJ", document: c.doc, contactName: c.contact, phone: "11900000000", ufs: c.ufs, vehicles: ["TRUCK"], plan: "GRATIS", status: "ATIVA", operation: "CARGA" });
     for (let i = 0; i < c.delivered + c.refused; i++) {
       const loadId = newId("trl");
       const refused = i >= c.delivered;

@@ -1288,3 +1288,17 @@ Pedido do dono: "um painel onde eu possa acessar todas as páginas do sistema, e
 - **Checagem automática:** abre cada tela sem login (pública precisa abrir; painel precisa mandar para a entrada), cerca de 1 minuto; falhas em destaque e o resultado aparece em cada tela. Tabela `qa_runs`. Só endereços configurados das marcas (nunca um endereço digitado).
 - Achado na primeira checagem: `/termos` e `/privacidade` existem só para a Brás Digital; SuperDrop e Commerce não têm página própria de termos e privacidade (fica como pendência para o dono decidir).
 - Testes: `tests/central-qualidade.test.ts`.
+
+## D143 — O que falta em cada tela e o pedido de imagens pronto para o GPT (2026-10-12)
+Pedido do dono: "algumas páginas faltam coisas, tipo gerar imagens no GPT".
+- Na Central de qualidade, cada tela ganha **O que falta**: Imagem (gerar no GPT), Texto, Vídeo, Função ou botão, Dados de exemplo; com Imagem, um campo "o que a imagem deve mostrar". Filtro "Falta algo" e selo em cada tela. Colunas `qa_screens.needs` e `image_brief` (migração 0067).
+- Aba **O que falta**: (1) as imagens das páginas públicas lidas do `MANIFESTO.md` de cada marca, com a situação conferida nos arquivos de verdade (arquivo vazio não conta); (2) o que foi marcado em cada tela, por tipo; (3) **o pedido completo para colar no GPT**, com as regras de imagem que já geraram os lotes no ar (sem texto, sem marca real, sem rosto, paleta e acento de cada marca), lotes por marca e nome de arquivo por tela (`sd-tela-planos`). Botão copiar, com reserva de seleção quando o navegador recusar.
+- Testes: `tests/central-qualidade.test.ts`.
+
+## D144 — Ambiente de demonstração para gravar treinamentos (Estúdio de gravação) (2026-10-12)
+Pedido do dono: "um ambiente simulado para gravação de treinamento usando o sistema inteiro em detalhes; vou gravar muito conteúdo para o YouTube".
+- **Mundo completo na demonstração** (`src/db/demo-bras.ts`, só no banco de demonstração, uma vez, tudo pelas funções do sistema): importadora com dono e balcão, produtos em caixa com estoque, descobertas com oferta, dois membros (um com plano Ouro), pedidos em cada etapa, transportadora Ouro com login, ônibus de excursão com rota, viagem e fardos, compra no balcão que vira pontos do Club, chamado no Meu Contador e equipe do Master (Comercial, Suporte, Financeiro, Contador). Somado ao que já existia (fornecedores, expedição, lojistas SuperDrop, lojas Commerce, parceira). Todas as contas com a senha da demonstração e sem troca obrigatória.
+- **Estúdio de gravação** (`/gravacao`, só existe no modo demonstração): entrar como cada participante com um clique; **roteiro de 17 aulas** em 4 séries (Master, SuperDrop, Commerce, Brás/Cargas), cada uma com "Começar" que já entra com a conta certa e abre a tela; **modo gravação** (cookie neste navegador: some o botão de trocar perfil e a lista de perfis da entrada); **Recomeçar do zero** (só como Master: recria o banco em memória, migrado e populado; ~1 minuto).
+- Pix e Mercado Pago continuam marcados como simulados nas telas de pagamento (é verdade e evita confusão de quem assiste).
+- **Publicação:** é um serviço separado no Render (não mexe na produção), com `NEXT_PUBLIC_DEMO_MODE=true`, `DEMO_AUTOSEED=true`, `DATABASE_URL=pglite://memory`, `BRAS_PANELS=true` e segredos próprios; depende da aprovação do dono (plano e endereço). Guia em `docs/DEMO.md`.
+- Testes: `tests/demo-gravacao.test.ts`.

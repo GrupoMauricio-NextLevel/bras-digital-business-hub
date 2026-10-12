@@ -7,6 +7,8 @@ import { errorEvents, qaRuns, qaScreens, users, type QaCheckResult } from "@/db/
 import { newId } from "@/lib/ids";
 import { BRAND_CODES, brandByCode, brandsFrom, type BrandCode } from "@/lib/brand";
 import { describeRoutes, fillRoute, judge, routeFromFile, type QaRoute } from "@/lib/qualidade/rotas";
+import { NEEDS, type Need } from "@/lib/qualidade/gpt";
+import { publicImages } from "@/lib/qualidade/imagens";
 import { type Actor, requireMasterFn } from "./access";
 import { recordAudit } from "./audit";
 import { DomainError } from "./errors";
@@ -39,10 +41,10 @@ export function listAppRoutes(root = join(process.cwd(), "src", "app")): string[
   return list;
 }
 
-export type ScreenMark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; updatedAt: string | null; updatedByName: string | null };
+export type ScreenMark = { tested: boolean; approved: boolean; problem: boolean; note: string | null; sample: string | null; needs: Need[]; imageBrief: string | null; updatedAt: string | null; updatedByName: string | null };
 export type QaScreen = QaRoute & { mark: ScreenMark; url: string | null; check: QaCheckResult | null };
 
-const EMPTY: ScreenMark = { tested: false, approved: false, problem: false, note: null, sample: null, updatedAt: null, updatedByName: null };
+const EMPTY: ScreenMark = { tested: false, approved: false, problem: false, note: null, sample: null, needs: [], imageBrief: null, updatedAt: null, updatedByName: null };
 
 async function lastRun(db: Database, kind: "DOMINIOS" | "PAGINAS") {
   const [r] = await db.select({ run: qaRuns, by: users.name }).from(qaRuns).leftJoin(users, eq(users.id, qaRuns.startedBy)).where(eq(qaRuns.kind, kind)).orderBy(desc(qaRuns.createdAt)).limit(1);
@@ -54,7 +56,7 @@ export async function qualityCenter(db: Database, actor: Actor, routes = listApp
   requireMasterFn(actor, []);
   const described = describeRoutes(routes);
   const marks = await db.select({ m: qaScreens, by: users.name }).from(qaScreens).leftJoin(users, eq(users.id, qaScreens.updatedBy));
-  const byRoute = new Map(marks.map(({ m, by }) => [m.route, { tested: m.tested, approved: m.approved, problem: m.problem, note: m.note, sample: m.sample, updatedAt: m.updatedAt, updatedByName: by } satisfies ScreenMark]));
+  const byRoute = new Map(marks.map(({ m, by }) => [m.route, { tested: m.tested, approved: m.approved, problem: m.problem, note: m.note, sample: m.sample, needs: (m.needs ?? []).filter((n): n is Need => (NEEDS as readonly string[]).includes(n)), imageBrief: m.imageBrief, updatedAt: m.updatedAt, updatedByName: by } satisfies ScreenMark]));
   const [pages, domains] = await Promise.all([lastRun(db, "PAGINAS"), lastRun(db, "DOMINIOS")]);
   const checkByKey = new Map((pages?.results ?? []).map((r) => [r.key, r]));
   const screens: QaScreen[] = described.map((r) => {
@@ -64,7 +66,7 @@ export async function qualityCenter(db: Database, actor: Actor, routes = listApp
   const [openErrors] = await db.select({ n: count() }).from(errorEvents).where(isNull(errorEvents.resolvedAt));
   const hosts = Object.fromEntries(BRAND_CODES.map((c) => [c, brandByCode(c).baseUrl])) as Record<BrandCode, string>;
   return {
-    screens, hosts,
+    screens, hosts, images: publicImages(),
     pagesRun: pages ? { at: pages.createdAt, ok: pages.ok, failed: pages.failed, byName: pages.byName } : null,
     domainsRun: domains ? { at: domains.createdAt, ok: domains.ok, failed: domains.failed, byName: domains.byName, results: domains.results } : null,
     openErrors: openErrors?.n ?? 0,
@@ -76,6 +78,8 @@ export const markSchema = z.object({
   tested: z.boolean().optional(), approved: z.boolean().optional(), problem: z.boolean().optional(),
   note: z.string().trim().max(1_000).nullable().optional(),
   sample: z.string().trim().max(300).nullable().optional(),
+  needs: z.array(z.enum(NEEDS)).max(NEEDS.length).optional(),
+  imageBrief: z.string().trim().max(600).nullable().optional(),
 });
 
 /** Marca uma tela (só telas que existem). Cada mudança fica no registro de auditoria com quem e quando. */
@@ -87,13 +91,15 @@ export async function markScreen(db: Database, actor: Actor, route: string, raw:
   const next = {
     tested: v.tested ?? before?.tested ?? false, approved: v.approved ?? before?.approved ?? false, problem: v.problem ?? before?.problem ?? false,
     note: v.note === undefined ? (before?.note ?? null) : v.note || null, sample: v.sample === undefined ? (before?.sample ?? null) : v.sample || null,
+    needs: v.needs === undefined ? (before?.needs ?? []) : [...new Set(v.needs)],
+    imageBrief: v.imageBrief === undefined ? (before?.imageBrief ?? null) : v.imageBrief || null,
   };
   // Aprovar resolve o problema marcado; marcar problema tira a aprovação (as duas não convivem).
   if (v.approved === true) next.problem = false;
   if (v.problem === true) next.approved = false;
   await db.insert(qaScreens).values({ route, ...next, updatedBy: actor.userId, updatedAt: now.toISOString() })
     .onConflictDoUpdate({ target: qaScreens.route, set: { ...next, updatedBy: actor.userId, updatedAt: now.toISOString() } });
-  await recordAudit(db, actor, { action: "QA_SCREEN", entityType: "qa_screen", entityId: route, before: before ? { tested: before.tested, approved: before.approved, problem: before.problem, note: before.note } : undefined, after: { tested: next.tested, approved: next.approved, problem: next.problem, note: next.note } });
+  await recordAudit(db, actor, { action: "QA_SCREEN", entityType: "qa_screen", entityId: route, before: before ? { tested: before.tested, approved: before.approved, problem: before.problem, note: before.note } : undefined, after: { tested: next.tested, approved: next.approved, problem: next.problem, note: next.note, needs: next.needs } });
   return next;
 }
 
