@@ -14,9 +14,13 @@ export const REPUTATION_TIERS = ["BRONZE", "PRATA", "OURO"] as const;
 export type ReputationTier = (typeof REPUTATION_TIERS)[number];
 export const TIER_LABEL: Record<ReputationTier, string> = { BRONZE: "Bronze", PRATA: "Prata", OURO: "Ouro" };
 const tierRule = z.object({ minDeliveries: z.number().int().min(0).max(10_000), minRating: z.number().min(0).max(5), maxRefusalPct: z.number().int().min(0).max(100) });
-export const reputationRulesSchema = z.object({ PRATA: tierRule, OURO: tierRule });
+export const reputationRulesSchema = z.object({
+  PRATA: tierRule, OURO: tierRule,
+  /** Vantagem do Ouro (D139): pontos-base a menos na comissão da NextLevel sobre o frete. */
+  ouroCommissionDiscountBps: z.number().int().min(0).max(1_000).default(100),
+});
 export type ReputationRules = z.output<typeof reputationRulesSchema>;
-export const DEFAULT_REPUTATION: ReputationRules = { PRATA: { minDeliveries: 10, minRating: 4, maxRefusalPct: 20 }, OURO: { minDeliveries: 30, minRating: 4.5, maxRefusalPct: 10 } };
+export const DEFAULT_REPUTATION: ReputationRules = { PRATA: { minDeliveries: 10, minRating: 4, maxRefusalPct: 20 }, OURO: { minDeliveries: 30, minRating: 4.5, maxRefusalPct: 10 }, ouroCommissionDiscountBps: 100 };
 const KEY = "parceiros.reputacao";
 
 export async function getReputationRules(db: Database): Promise<ReputationRules> {
@@ -79,3 +83,14 @@ export async function reputationBoard(db: Database, actor: Actor, now = new Date
   const rows = await Promise.all(carriers.map(async (c) => { const s = await reputationSignals(db, c.id, now); return { ...c, signals: s, tier: tierOf(s, rules).tier }; }));
   return { rules, rows: rows.sort((a, b) => REPUTATION_TIERS.indexOf(b.tier) - REPUTATION_TIERS.indexOf(a.tier) || b.signals.deliveries - a.signals.deliveries) };
 }
+
+/** Nível de várias transportadoras de uma vez (catálogo e aceite de carga). */
+export async function tiersOf(db: Database, carrierIds: string[], now = new Date()): Promise<Map<string, ReputationTier>> {
+  const rules = await getReputationRules(db);
+  const out = new Map<string, ReputationTier>();
+  for (const id of carrierIds) out.set(id, tierOf(await reputationSignals(db, id, now), rules).tier);
+  return out;
+}
+
+/** Comissão com a vantagem do nível (D139): Ouro paga menos; nunca abaixo de zero. */
+export const commissionWithTier = (bps: number, tier: ReputationTier, rules: Pick<ReputationRules, "ouroCommissionDiscountBps">) => (tier === "OURO" ? Math.max(0, bps - rules.ouroCommissionDiscountBps) : bps);

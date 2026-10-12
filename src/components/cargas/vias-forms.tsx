@@ -96,6 +96,12 @@ export function RateLoadForm({ loadId, number }: { loadId: string; number: numbe
 }
 
 /** Nota pública (aparece com 3 avaliações ou mais). */
+/** Selo de reputação (D139): só Ouro e Prata aparecem; Bronze é o padrão, sem selo. */
+export function TierBadge({ tier }: { tier?: "BRONZE" | "PRATA" | "OURO" }) {
+  if (tier !== "OURO" && tier !== "PRATA") return null;
+  return <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${tier === "OURO" ? "bg-warning-soft text-warning" : "bg-surface-muted"}`}><Star className="size-3.5" aria-hidden />Reputação {tier === "OURO" ? "Ouro" : "Prata"}</span>;
+}
+
 export function RatingBadge({ rating }: { rating?: { count: number; score: number } | null }) {
   if (!rating || rating.count < 3) return null;
   return <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold"><Star className="size-3.5" aria-hidden />{String(rating.score).replace(".", ",")} <span className="font-normal text-muted-foreground">({rating.count} avaliações)</span></span>;

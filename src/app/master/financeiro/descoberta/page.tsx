@@ -8,6 +8,7 @@ import { BeneficiosConfig, EcoExtrasConfig, QuestionarioConfig } from "@/compone
 import { getBenefitsSettings } from "@/lib/domain/beneficios/painel";
 import { getEcoSettings } from "@/lib/domain/ecossistema/lancador";
 import { reputationBoard, TIER_LABEL } from "@/lib/domain/cargas/reputacao";
+import { ReputacaoForm } from "@/components/descoberta/reputacao-form";
 import { FinNav } from "../fin-nav";
 
 export const dynamic = "force-dynamic";
@@ -146,6 +147,8 @@ export default async function DescobertaPage() {
             <tbody>{rep.rows.map((r) => <tr key={r.id} className="border-b border-border last:border-0"><th scope="row" className="p-2 text-left font-medium">{r.name}</th><td className="p-2">{TIER_LABEL[r.tier]}</td><td className="p-2 text-right tabular-nums">{r.signals.deliveries}</td><td className="p-2 text-right tabular-nums">{r.signals.rating ?? "—"}</td><td className="p-2 text-right tabular-nums">{r.signals.refusalPct}%</td></tr>)}</tbody>
           </table></div>
         ) : <p className="text-sm text-muted-foreground">Nenhuma transportadora ativa ainda.</p>}
+        <p className="mt-3 text-sm">Vantagem do Ouro: aparece primeiro na escolha da transportadora (com o selo) e paga {rep.rules.ouroCommissionDiscountBps / 100} ponto(s) percentual(is) a menos de comissão sobre o frete.</p>
+        <ReputacaoForm value={rep.rules} />
       </section>
       <section id="questionario" aria-labelledby="h-q" className="ds-card mb-6 p-4">
         <h2 id="h-q" className="text-lg font-bold">Questionário de preço nos painéis</h2>

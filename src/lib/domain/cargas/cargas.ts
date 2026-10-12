@@ -1,4 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { commissionWithTier, getReputationRules, REPUTATION_TIERS, tiersOf } from "./reputacao";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
@@ -91,7 +92,12 @@ export async function carrierCatalog(db: Database, opts: { uf?: string; operatio
   ]);
   const grupo = groupDocuments(group);
   const today = cargasToday();
-  return rows.filter((c) => (!opts.uf || c.ufs.includes(opts.uf)) && (!opts.operation || c.operation === opts.operation)).map((c) => ({
+  const visible = rows.filter((c) => (!opts.uf || c.ufs.includes(opts.uf)) && (!opts.operation || c.operation === opts.operation));
+  // Reputação (D139): Ouro e Prata vêm primeiro, sempre com o selo; as outras continuam na lista.
+  const tiers = await tiersOf(db, visible.map((c) => c.id));
+  const rank = (id: string) => REPUTATION_TIERS.indexOf(tiers.get(id) ?? "BRONZE");
+  return visible.sort((a, b) => rank(b.id) - rank(a.id)).map((c) => ({
+    tier: tiers.get(c.id) ?? ("BRONZE" as const),
     id: c.id, name: c.name, contactName: c.contactName, phone: c.phone, ufs: c.ufs, vehicles: c.vehicles, plan: c.plan, status: c.status, operation: c.operation,
     insurance: c.insurance, hasRntrc: !!c.rntrc, rateNotes: c.rateNotes, hasDriverLink: !!c.driverTokenHash,
     groupCompany: grupo.has(c.document), docsOk: cargasDocsSeal(docs.filter((d) => d.carrierId === c.id), today).ok, rating: ratings.get(c.id) ?? null,
@@ -356,7 +362,8 @@ export async function respondLoad(db: Database, actor: Actor, loadId: string, ra
     const [m] = await db.select({ n: sql<number>`count(*)` }).from(trLoads).where(and(eq(trLoads.carrierId, c.id), inArray(trLoads.status, ["ACEITA", "COLETADA", "ENTREGUE"]), sql`${trLoads.acceptedAt} >= ${monthStartBrt(now)}`));
     if (Number(m?.n ?? 0) >= rules.carriers.freeLoadsPerMonth) throw new DomainError("FREE_LIMIT", `O plano grátis vale até ${rules.carriers.freeLoadsPerMonth} cargas por mês. Para aceitar mais, fale com a NextLevel Cargas sobre o plano Pro.`);
   }
-  const bps = rules.carriers.commissionBps[c.plan];
+  // Vantagem do nível Ouro (D139): comissão menor, gravada na carga no momento do aceite.
+  const bps = commissionWithTier(rules.carriers.commissionBps[c.plan], (await tiersOf(db, [c.id], now)).get(c.id) ?? "BRONZE", await getReputationRules(db));
   const upd = await db.update(trLoads).set({ status: "ACEITA", freightCents: raw.freightCents, commissionBps: bps, commissionCents: Math.round((raw.freightCents * bps) / 10_000), acceptedAt: now.toISOString(), updatedAt: now.toISOString() }).where(and(eq(trLoads.id, l.id), eq(trLoads.status, "CHAMADA"))).returning({ id: trLoads.id });
   if (!upd.length) throw new DomainError("STATUS_RACE", "A coleta mudou. Atualize a página.");
   await event(db, l.id, "ACEITA", c.name, `Frete informado: ${(raw.freightCents / 100).toFixed(2).replace(".", ",")}`);
@@ -420,7 +427,7 @@ export async function carrierLoads(db: Database, actor: Actor, now = new Date())
     getBrasRules(db),
     db.select({ n: sql<number>`count(*)` }).from(trLoads).where(and(eq(trLoads.carrierId, c.id), inArray(trLoads.status, ["ACEITA", "COLETADA", "ENTREGUE"]), sql`${trLoads.acceptedAt} >= ${monthStartBrt(now)}`)),
   ]);
-  const usage = { commissionBps: rules.carriers.commissionBps[c.plan], acceptedThisMonth: Number(m?.n ?? 0), freeLimit: c.plan === "GRATIS" ? rules.carriers.freeLoadsPerMonth : null };
+  const usage = { commissionBps: commissionWithTier(rules.carriers.commissionBps[c.plan], (await tiersOf(db, [c.id])).get(c.id) ?? "BRONZE", await getReputationRules(db)), acceptedThisMonth: Number(m?.n ?? 0), freeLimit: c.plan === "GRATIS" ? rules.carriers.freeLoadsPerMonth : null };
   return { carrier: { id: c.id, name: c.name, plan: c.plan, contactName: c.contactName, phone: c.phone, email: c.email, ufs: c.ufs, vehicles: c.vehicles, rntrc: c.rntrc, insurance: c.insurance, rateNotes: c.rateNotes, status: c.status, operation: c.operation, hasDriverLink: !!c.driverTokenHash }, loads, usage };
 }
 

@@ -12,7 +12,7 @@ import { MarkReadyButton, ParcelInvoiceForm } from "@/components/cargas/excursao
 import { importerParcels } from "@/lib/domain/cargas/excursao";
 import { PARCEL_SIZE_LABEL } from "@/lib/domain/cargas/regras-excursao";
 import { LOAD_QUICK_MESSAGES, fixedPickupPlan, importerPreferences, ratedLoadIds } from "@/lib/domain/cargas/vias";
-import { AnswerPreferred, FixedPickupCall, FixedPickupForm, LoadMessageForm, MarkPreferredButton, RateLoadForm, RatingBadge } from "@/components/cargas/vias-forms";
+import { AnswerPreferred, FixedPickupCall, FixedPickupForm, LoadMessageForm, MarkPreferredButton, RateLoadForm, RatingBadge, TierBadge } from "@/components/cargas/vias-forms";
 import { fixedLabel } from "@/lib/cargas/rotulos";
 
 export const dynamic = "force-dynamic";
@@ -96,7 +96,7 @@ export default async function Transportadoras() {
         <h2 id="t-lista" className="mb-3 text-lg font-bold">Transportadoras na NextLevel Cargas ({carriers.length})</h2>
         {carriers.length ? <ul className="grid gap-2 sm:grid-cols-2">{carriers.map((c) => (
           <li key={c.id} className="rounded-lg border border-border p-3 text-sm">
-            <p className="flex flex-wrap items-center gap-2 font-semibold">{c.name}{c.operation === "EXCURSAO" ? <Badge tone="neutral">Ônibus de excursão</Badge> : null}{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}{c.docsOk ? <Badge tone="success">Documentação em dia</Badge> : null}{c.insurance ? <Badge tone="success">Seguro de carga</Badge> : null}{c.hasRntrc ? <Badge tone="info">RNTRC</Badge> : null}{preferidas.has(c.id) ? <Badge tone="success">Preferida</Badge> : null}<RatingBadge rating={c.rating} /></p>
+            <p className="flex flex-wrap items-center gap-2 font-semibold">{c.name}{c.operation === "EXCURSAO" ? <Badge tone="neutral">Ônibus de excursão</Badge> : null}{c.groupCompany ? <Badge tone="brand">Empresa do grupo</Badge> : null}{c.docsOk ? <Badge tone="success">Documentação em dia</Badge> : null}{c.insurance ? <Badge tone="success">Seguro de carga</Badge> : null}{c.hasRntrc ? <Badge tone="info">RNTRC</Badge> : null}{preferidas.has(c.id) ? <Badge tone="success">Preferida</Badge> : null}<TierBadge tier={c.tier} /><RatingBadge rating={c.rating} /></p>
             <p className="text-muted-foreground">{c.contactName} · {c.vehicles.map((v) => CARGAS_VEHICLE_LABEL[v as keyof typeof CARGAS_VEHICLE_LABEL] ?? v).join(", ")}</p>
             <p className="text-muted-foreground">Atende: {c.ufs.join(", ")}</p>
             {c.rateNotes ? <p className="text-muted-foreground">Frete: {c.rateNotes}</p> : null}

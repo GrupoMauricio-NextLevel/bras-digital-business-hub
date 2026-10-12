@@ -8,6 +8,7 @@ import { seedCommerceDemo } from "./commerce-demo";
 import { seedCommerceRichDemo } from "./commerce-demo-rich";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
+import { seedDemoCargas } from "./demo-cargas";
 import { ensureShowcaseStores } from "@/lib/themes/showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -30,6 +31,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
     if (await seedCommerceRichDemo(db)) log.push("loja de teste completa da Commerce criada (completo@commerce.demo)");
     await seedDemoPartner(db);
+    if (await seedDemoCargas(db)) log.push("transportadoras fictícias de demonstração (Ouro, Prata e Bronze) criadas");
     for (const l of await ensureShowcaseStores(db)) log.push(l);
     return log;
   }

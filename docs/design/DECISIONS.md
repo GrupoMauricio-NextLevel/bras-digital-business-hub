@@ -1253,3 +1253,11 @@ Pedido do dono ("vamos reduzir alguns testes e deixar eles para uma fase final, 
 - **Funções e telas:** Comercial (Torre, CRM, clientes, lojas, marcas, parceiros), Suporte (clientes e suporte, pedidos, lojas, fornecedores, erros, membros da Brás, Meu Contador), Financeiro (Financeiro NextLevel e SuperDrop, planos, resumo, escritório), Conteúdo (templates, catálogo, descobertas e pauta da Brás) e **Contador parceiro** (só a fila do Meu Contador). O menu mostra só as telas da função e o servidor redireciona quem abre outra (o caminho chega às páginas pelo `proxy`).
 - **Ações sensíveis no servidor** (`requireMasterFn`): preço, catálogo, ofertas, porta de entrada, proposta, experimentos, regras da Brás, da Excursão, do Club e da reputação, parceiros, finanças e **acerto entre empresas** = dono e Financeiro; oportunidades cruzadas = dono e Comercial; atender chamados do Meu Contador = dono, Suporte e contador. O contador parceiro **não** conta como Master em nenhuma outra ação.
 - Testes: `tests/equipe-master.test.ts`.
+
+## D139 — Reputação Ouro: comissão menor e prioridade na lista, com dados fictícios de demonstração (2026-10-12)
+Resposta 7 do dono ("sim, crie fictício").
+- **Prioridade:** no catálogo de transportadoras (importadora, membro da Brás e painel de frete), Ouro e depois Prata aparecem primeiro, sempre com o selo "Reputação Ouro/Prata". Nenhuma transportadora some da lista.
+- **Comissão menor:** a transportadora Ouro paga menos comissão sobre o frete (padrão 1 ponto percentual, editável no Master). O valor é gravado na carga no aceite e aparece no painel dela.
+- **Regras editáveis** em Master → Descoberta → Reputação (entregas, nota e recusas de cada nível e o desconto do Ouro), só dono e Financeiro.
+- **Dados fictícios** (`src/db/demo-cargas.ts`): "Rota Ouro Transportes", "Expresso Prata" e "Fretes Começando", todas com "(demonstração)" no nome, cargas e avaliações inventadas; **só no banco de demonstração**, nunca na produção.
+- Testes: `tests/reputacao-ouro.test.ts`.
