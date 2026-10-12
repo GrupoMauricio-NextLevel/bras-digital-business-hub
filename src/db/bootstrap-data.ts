@@ -11,6 +11,7 @@ import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { seedDemoCargas } from "./demo-cargas";
 import { seedDemoBras } from "./demo-bras";
 import { seedDemoFamily } from "./demo-familia";
+import { turnEverythingOnInDemo } from "./demo-ligar-tudo";
 import { ensureShowcaseStores } from "@/lib/themes/showcase";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -46,6 +47,8 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     for (const l of await ensureShowcaseStores(db)) log.push(l);
     const family = await seedDemoFamily(db);
     if (family.length) log.push(`perfis da família criados (${family.length}): Samuel e Danielle`);
+    const on = await turnEverythingOnInDemo(db);
+    if (on.length) log.push(`tudo ligado na demonstração: ${on.join("; ")}`);
     return log;
   }
 

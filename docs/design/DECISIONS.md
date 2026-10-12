@@ -1380,3 +1380,11 @@ Pedido do dono: um acesso para o filho (Samuel, 13 anos) e para a esposa (Daniel
 - Guias: `docs/manual/GUIA-DO-EXPLORADOR-SAMUEL.md` (missões, 213 telas) e `docs/manual/GUIA-GESTAO-FINANCEIRA-DANIELLE.md` (6 módulos de gestão financeira), com PDFs gerados por `scripts/manuais/gerar-pdf.sh` (Markdown → HTML → Chromium).
 - Testes: `tests/demo-familia.test.ts`.
 
+## D151 — Demonstração com tudo ligado (2026-10-12)
+Pedido do dono: "na demonstração precisamos ver tudo ativado e funcionando". Só no ambiente de demonstração; a produção não muda.
+- `src/db/demo-ligar-tudo.ts` (`turnEverythingOnInDemo`, no bootstrap com dados de demonstração, uma vez só, marca `demo.tudo-ligado`): liga, pelas mesmas funções das telas do Master e com auditoria, o questionário de preço, os benefícios nos painéis, a porta de entrada do SuperDrop e da Commerce com os preços da Proposta e um experimento rodando em cada uma, a barra do ecossistema (captação, e-mails, páginas públicas), Club+ e Club Total publicados, a Proposta aprovada, a taxa dos fardos do ônibus e o Pix do frete do ônibus.
+- Chaves no serviço de demonstração do Render: `BRAND_SIGNUP_NEXTLEVEL_COMMERCE`, `BRAND_PARTNERS_NEXTLEVEL_COMMERCE`, `BRAND_SIGNUP_BRAS_DIGITAL`, `FIN_PAGARME` (sem chave do Pagar.me continua cobrando pelo simulado) e `NEXT_PUBLIC_SUPPORT_EMAIL` fictício.
+- Ficam desligados de propósito: conta Mercado Pago da NextLevel (exige conta real; a demonstração simula o Pix), envio real de e-mails, endereços próprios (escritório, site do grupo).
+- **Correção que vale também para a produção:** `NEXT_PUBLIC_SUPPORT_WHATSAPP` e `NEXT_PUBLIC_SUPPORT_EMAIL` são gravados pelo Next no build; o `Dockerfile` não os recebia, então o contato de suporte nunca aparecia na imagem do Render mesmo com a chave preenchida. Agora entram como `ARG` no build.
+- Testes: `tests/demo-ligar-tudo.test.ts`.
+

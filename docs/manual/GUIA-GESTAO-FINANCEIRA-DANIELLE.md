@@ -239,7 +239,8 @@ Com as suas palavras, escreva numa folha: **"De onde vem o dinheiro do grupo, em
 - **Link:** https://nextlevel-demo.onrender.com/master/qualidade → aba **Pronto e desligado** → grupo **Dinheiro e cobrança**
 - **O que é:** a lista de tudo que já funciona mas está **desligado de propósito**, esperando decisão: conta Mercado Pago, Pagar.me, taxa dos ônibus de excursão, Pix do frete do ônibus, experimentos, proposta de preços. Cada item diz o estado e **onde ligar**.
 - **Por que importa:** são decisões de receita pendentes. Ótimo assunto para uma reunião com o Mauricio.
-- **Exercício:** para cada item desligado, escreva: *"Se ligarmos, ganhamos ___ e arriscamos ___."*
+- **Na demonstração está tudo ligado de propósito** (para você ver cada função funcionando). Só ficam desligados: a conta Mercado Pago da NextLevel (a demonstração simula o Pix), o envio real de e-mails e os endereços próprios (domínios). **No sistema real, esses itens ainda esperam a decisão do Mauricio.**
+- **Exercício:** para cada item da lista, escreva: *"Se ligarmos no sistema real, ganhamos ___ e arriscamos ___."*
 - 🚫 Nesta Central, **não clique em "Abrir"** nem nas siglas dos endereços: elas levam ao sistema real. Navegue pelo menu.
 
 ### 3.7 Pedidos da Loja NextLevel (receita de serviços)

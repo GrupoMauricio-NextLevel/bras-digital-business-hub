@@ -14,6 +14,11 @@ COPY . .
 # O modo demonstração é lido no BUILD. No Render, defina NEXT_PUBLIC_DEMO_MODE=true no serviço de demonstração.
 ARG NEXT_PUBLIC_DEMO_MODE=false
 ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
+# Contato de suporte nas telas: o Next grava NEXT_PUBLIC_* no build, então o Render precisa repassá-los aqui (D151).
+ARG NEXT_PUBLIC_SUPPORT_WHATSAPP=""
+ARG NEXT_PUBLIC_SUPPORT_EMAIL=""
+ENV NEXT_PUBLIC_SUPPORT_WHATSAPP=$NEXT_PUBLIC_SUPPORT_WHATSAPP
+ENV NEXT_PUBLIC_SUPPORT_EMAIL=$NEXT_PUBLIC_SUPPORT_EMAIL
 # O build não deve tocar em banco algum (páginas com dados são dinâmicas); memória do PGlite isolada por segurança.
 ENV DATABASE_URL=pglite://memory
 RUN npm run build
