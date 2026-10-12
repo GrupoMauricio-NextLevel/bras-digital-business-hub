@@ -307,7 +307,7 @@ export async function callCarrier(db: Database, actor: Actor, raw: z.input<typeo
   const id = newId("trl");
   let number = 0;
   await db.transaction(async (tx) => {
-    const [{ n }] = await tx.select({ n: sql<number>`coalesce(max(${trLoads.number}), 5000) + 1` }).from(trLoads) as [{ n: number }];
+    const [{ n }] = await tx.select({ n: sql<number>`greatest(coalesce(max(${trLoads.number}), 5000), 5000) + 1` }).from(trLoads) as [{ n: number }];
     number = Number(n);
     await tx.insert(trLoads).values({ id, number, importerId: me.importer.id, carrierId: carrier.id, warehouseId: v.warehouseId, pickupDate: v.pickupDate, period: v.period, boxes, volumeLiters: medidos === reqs.length && liters ? Math.round(liters) : null, weightKg: grams ? Math.round(grams / 1000) : null, destinations, notes: v.notes, createdBy: actor.userId });
     for (const r of reqs) await tx.insert(trLoadRequests).values({ id: newId("trlr"), loadId: id, requestId: r.id });

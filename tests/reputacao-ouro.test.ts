@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { freshDb } from "./setup";
 import { seedDemoCargas } from "@/db/demo-cargas";
+import { trLoads } from "@/db/schema";
 import { carrierCatalog } from "@/lib/domain/cargas/cargas";
 import { commissionWithTier, DEFAULT_REPUTATION } from "@/lib/domain/cargas/reputacao";
 
@@ -19,5 +20,8 @@ describe("reputação Ouro", () => {
     const demo = list.filter((c) => c.name.includes("(demonstração)"));
     expect(demo.map((c) => c.tier)).toEqual(["OURO", "PRATA", "BRONZE"]);
     expect(list[0]!.tier).toBe("OURO");
+    // As coletas fictícias ficam abaixo de 5000: a numeração real continua em 5001.
+    const nums = (await ctx.db.select({ n: trLoads.number }).from(trLoads)).map((r) => r.n);
+    expect(nums.every((n) => n < 5000)).toBe(true);
   });
 });

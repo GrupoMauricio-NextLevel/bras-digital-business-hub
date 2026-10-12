@@ -65,3 +65,9 @@
 - **e2e da Brás (regressão de tudo o que veio antes):** passou inteiro.
 - **Corrigido nesta fase:** a Proposta de preço tinha rolagem horizontal no celular (o formulário não encolhia por causa da tabela de cenários).
 - **Não medido ainda:** modo escuro de cada tela nova e a velocidade da primeira dobra das páginas públicas com o rodapé ligado (o rodapé só lê uma chave no servidor).
+
+## 7. Verificação depois das respostas (2026-10-12, D137 a D141)
+- **Bateria completa:** 137 arquivos, **954 testes, todos passando**.
+- **e2e `e2e/precos-ecossistema.mjs`:** passou, agora com a conta do grupo (ligar perfil com aceite e trocar sem novo login, acessibilidade em 390 e 1440 px).
+- **e2e da Brás (regressão):** passou inteiro em 3 execuções seguidas. Corrigido no caminho: (1) as transportadoras fictícias da demonstração (D139) apareciam primeiro na lista e o teste abria a errada; (2) as coletas fictícias usavam números altos e a numeração real da demonstração pulava para 90 mil (agora ficam abaixo de 5000 e a contagem real segue em 5001). Duas execuções anteriores pararam esperando páginas carregarem; investiguei (nenhuma consulta lenta, nenhum travamento do servidor) e as três seguintes passaram inteiras.
+- **Não medido:** modo escuro das telas novas (Suas marcas, Ligar em ordem).

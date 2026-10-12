@@ -19,7 +19,8 @@ export async function seedDemoCargas(db: Database): Promise<boolean> {
   const master = await db.query.users.findFirst({ where: eq(users.role, "NEXTLEVEL_MASTER") });
   const importerId = newId("bdi");
   await db.insert(bdImporters).values({ id: importerId, name: "Importadora de demonstração" });
-  let number = 90_001;
+  // Números abaixo de 5000: a numeração real das coletas (5001 em diante) não pula por causa da demonstração.
+  let number = 1_001;
   const day = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
   for (const c of DEMO) {
     const carrierId = newId("trc");

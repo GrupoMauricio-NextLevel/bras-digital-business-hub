@@ -524,7 +524,9 @@ ok("importadora 360 e painel da importadora");
   await p.getByRole("button", { name: /^Entrar/ }).click();
   await p.waitForURL(/\/importadora/, { timeout: 60000 });
   await p.goto(BRAS + "/importadora/transportadoras", { waitUntil: "networkidle" });
+  // Com transportadoras na lista (as de demonstração, D139) o cadastro vem fechado: abre.
   const cf = p.getByRole("form", { name: "Cadastrar transportadora" });
+  if (!(await cf.isVisible())) await p.getByText("Cadastrar transportadora com quem você já trabalha").click();
   await cf.getByLabel("Nome da transportadora ou do motorista").fill("Rápido Brás Transportes"); await cf.getByLabel("Número").fill("11.444.777/0001-61");
   await cf.getByLabel("Contato").fill("Antônio"); await cf.getByLabel("WhatsApp com DDD").fill("11977776666");
   await cf.getByText("Truck", { exact: true }).click(); await cf.getByText("PR", { exact: true }).click();
@@ -556,8 +558,10 @@ ok("importadora 360 e painel da importadora");
   await p.goto(B + "/bras/transportadoras", { waitUntil: "networkidle" });
   if (!(await p.getByText(/CNPJ 11444777000161/).isVisible())) fail("master transportadoras: cadastro da importadora não aparece");
   if (!/cadastrada por uma importadora/.test(await p.locator("main").innerText())) fail("master transportadoras: origem do cadastro");
-  await p.getByText("Gerenciar").first().click();
-  const ac = p.getByRole("form", { name: "Criar acesso da transportadora" });
+  // A lista tem também as transportadoras de demonstração (D139, Ouro primeiro): abre a da Rápido Brás.
+  const row = p.locator("li").filter({ hasText: "CNPJ 11444777000161" });
+  await row.getByText("Gerenciar").click();
+  const ac = row.getByRole("form", { name: "Criar acesso da transportadora" });
   await ac.getByLabel("Nome").fill("Antônio"); await ac.getByLabel("E-mail").fill("antonio@rapido.teste"); await ac.getByLabel("Senha provisória").fill("provisoria-123");
   await ac.getByRole("button", { name: "Criar acesso" }).click();
   await p.getByText(/antonio@rapido\.teste/).first().waitFor({ timeout: 30000 });
