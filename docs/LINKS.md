@@ -1,5 +1,7 @@
 # Links do sistema (conferidos em 06/10/2026)
 
+**Guia para explorar e testar o sistema inteiro (missões, com todos os links):** `docs/manual/GUIA-DO-EXPLORADOR-SAMUEL.md`
+
 Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de entrada da marca. Cada pessoa vê só o painel do seu papel.
 
 ## SuperDrop — superdrop.com.br (no ar)
