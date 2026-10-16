@@ -27,7 +27,7 @@ export async function MemberPlans({ supplier }: { supplier?: string }) {
             <p className="mt-4 text-4xl font-extrabold tabular-nums">{formatBRL(o.monthlyCents)}<span className="text-base font-medium text-muted-foreground">/mês</span></p>
             <p className="text-sm text-muted-foreground">{o.setupCents > 0 ? `+ setup de ${formatBRL(o.setupCents)}` : "Sem setup"}</p>
             <ul className="mt-4 flex-1 space-y-2 text-sm">{BULLETS[k].map((b) => <li key={b} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-reflection" aria-hidden />{b}</li>)}</ul>
-            <Link href={`/cadastro?plano=${k}${q}`} className="mt-5 inline-flex h-12 items-center justify-center rounded-lg bg-band px-6 font-semibold text-band-foreground hover:bg-band-line">Assinar por Pix</Link>
+            <Link href={`/cadastro?plano=${k}${q}`} className="mt-5 inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary-hover">Assinar por Pix</Link>
             <Link href={`/cadastro?plano=${k}${q}`} className="mt-2 text-center text-sm font-semibold text-link underline">Tenho um cupom de teste de 7 dias</Link>
           </li>
         );

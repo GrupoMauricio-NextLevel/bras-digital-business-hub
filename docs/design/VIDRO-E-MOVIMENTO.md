@@ -43,5 +43,18 @@ Inventário de rotas: 215 páginas (`src/app/**/page.tsx`): portal 20, entrada d
 - Nenhuma cor literal nova nos componentes: tudo pelos papéis `--ds-*`.
 - Nenhuma ação espera animação.
 
-## 5. Verificação
-Registrada no fim da implementação, em `docs/design/DECISIONS.md` (D155) e no relatório ao dono.
+## 5. Verificação feita (16/10/2026, servidor local de produção, Chromium)
+| Amostra | Claro 390 | Escuro 390 | Claro 1440 | Escuro 1440 | 360 sem rolagem lateral |
+|---|---|---|---|---|---|
+| SuperDrop início e planos | ✓ vidro + rolado | ✓ | ✓ | ✓ | ✓ (início) |
+| Commerce início e temas | ✓ | ✓ | ✓ | ✓ | ✓ (início) |
+| Grupo /solucoes | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Entrar (SuperDrop) e recuperar senha (Commerce) | ✓ (cascas próprias, sem cabeçalho público) | ✓ | ✓ | ✓ | — |
+| Parceiros, cadastro | — | — | — | — | ✓ |
+| Painel Master | ✓ barra de vidro | — | — | ✓ | ✓ |
+
+- Console: nenhum erro de página nas 28 combinações públicas e nos 3 acessos ao painel.
+- Teclado (390 px): Tab chega ao botão do menu, Enter abre (`aria-expanded=true`), Tab vai ao primeiro item, Escape fecha e devolve o foco ao botão; contorno de foco visível.
+- Movimento reduzido: menu sem animação; nenhum conteúdo escondido esperando animação na tela.
+- Contraste do vidro: teste automático (texto AA no pior fundo, 8 marcas × 2 modos).
+- **Não verificado** (limite real): navegador sem `backdrop-filter` (o fallback sólido é garantido pelo CSS e pelo teste de contraste, mas não foi aberto num navegador antigo); Safari/WebKit (não há WebKit nesta máquina); métricas de desempenho (LCP, INP, CLS) não medidas.
