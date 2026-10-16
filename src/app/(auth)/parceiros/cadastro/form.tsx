@@ -64,21 +64,25 @@ function InterestForm({ kind }: { kind: Exclude<Kind, "AFFILIATE"> }) {
 }
 
 export function PartnerSignupForm({ termsVersion }: { termsVersion: string }) {
+  // Só o programa de afiliados está aberto: agência e desenvolvedor ficam num link de lista de espera, fora da escolha principal (v4).
   const [kind, setKind] = React.useState<Kind>("AFFILIATE");
-  const current = KINDS.find((k) => k.key === kind)!;
+  const other = KINDS.filter((k) => k.key !== "AFFILIATE");
+  const link = "font-semibold text-foreground underline underline-offset-2 hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-signal-text)]";
+  if (kind !== "AFFILIATE") {
+    return (
+      <div>
+        <p className="text-sm text-muted-foreground"><button type="button" onClick={() => setKind("AFFILIATE")} className={link}>← Voltar para o cadastro de afiliado</button></p>
+        <div className="mt-4"><InterestForm key={kind} kind={kind} /></div>
+      </div>
+    );
+  }
   return (
     <div>
-      <fieldset>
-        <legend className="text-sm font-medium text-foreground">Como você quer participar?</legend>
-        <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Tipo de parceiro">
-          {KINDS.map((k) => (
-            <button key={k.key} type="button" role="radio" aria-checked={kind === k.key} onClick={() => setKind(k.key)}
-              className={`h-11 rounded-xl px-4 text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-signal-text)] ${kind === k.key ? "bg-band text-band-foreground" : "bg-surface-muted text-foreground hover:bg-border"}`}>{k.label}</button>
-          ))}
-        </div>
-        <p className="mt-2 text-sm text-muted-foreground">{current.hint}</p>
-      </fieldset>
-      <div className="mt-6">{kind === "AFFILIATE" ? <AffiliateForm termsVersion={termsVersion} /> : <InterestForm key={kind} kind={kind} />}</div>
+      <p className="rounded-xl bg-surface-muted p-3 text-sm text-body"><b className="text-foreground">Programa de afiliados.</b> {KINDS[0]!.hint}</p>
+      <div className="mt-6"><AffiliateForm termsVersion={termsVersion} /></div>
+      <p className="mt-6 text-sm text-muted-foreground">Agência ou desenvolvedor? Esses programas ainda não abriram:{" "}
+        {other.map((k, n) => <React.Fragment key={k.key}>{n ? " ou " : ""}<button type="button" onClick={() => setKind(k.key)} className={link}>entre na lista como {k.key === "AGENCY" ? "agência" : "desenvolvedor"}</button></React.Fragment>)}.
+      </p>
     </div>
   );
 }

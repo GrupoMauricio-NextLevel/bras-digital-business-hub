@@ -15,7 +15,7 @@ export default async function EntrarParceiro() {
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
   return (
-    <PartnerShell program={`Parceiros ${brand.name}`} title="Entre no escritório do parceiro" intro="Links, cupons e comissões em um só lugar.">
+    <PartnerShell photo={brand.code === "SUPERDROP" ? { src: "/portal/superdrop/v3/pa-parceiros-hero.webp", position: "50% 35%" } : undefined} program={`Parceiros ${brand.name}`} title="Entre no escritório do parceiro" intro="Links, cupons e comissões em um só lugar.">
       <LoginForm />
       <p className="mt-8 text-sm text-body">Ainda não é parceiro? <Link href="/parceiros/cadastro" className="font-semibold text-foreground underline underline-offset-2">Criar conta</Link></p>
     </PartnerShell>

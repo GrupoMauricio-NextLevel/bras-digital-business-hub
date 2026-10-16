@@ -1,18 +1,26 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 /**
  * Tela de parceiros: faixa na cor da marca no topo e folha branca arredondada que sobe sobre ela, com o nome do programa em cor de marca,
  * um título grande e o formulário. A foto é decorativa (alt vazio).
  */
-export function PartnerShell({ program, title, intro, children }: { program: string; title: string; intro?: ReactNode; children: ReactNode }) {
+export function PartnerShell({ program, title, intro, photo, children }: { program: string; title: string; intro?: ReactNode; /** Foto do programa de parceiros da própria marca (sem ela, faixa na cor da marca). */ photo?: { src: string; position?: string }; children: ReactNode }) {
   return (
     <>
     <main className="min-h-dvh bg-surface">
-      {/* Sem foto até existir uma do programa de parceiros (a de loja de demonstração não serve): faixa na cor da marca. */}
+      {photo ? (
+        <div aria-hidden className="relative h-56 w-full overflow-hidden bg-band sm:h-64 lg:h-80">
+          <Image src={photo.src} alt="" fill priority sizes="100vw" className="object-cover" style={{ objectPosition: photo.position ?? "50% 40%" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/25" />
+        </div>
+      ) : (
+      /* Sem foto do programa de parceiros da marca (a de loja de demonstração não serve): faixa na cor da marca. */
       <div aria-hidden className="relative h-36 w-full overflow-hidden bg-band sm:h-44 lg:h-52">
         <div className="absolute -right-32 -top-32 size-[30rem] rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(circle, var(--ds-primary), transparent 65%)" }} />
         <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
       </div>
+      )}
       <div className="relative -mt-8 rounded-t-[32px] bg-surface px-5 pb-16 pt-8 sm:px-8">
         <div className="mx-auto w-full max-w-xl">
           <p className="text-lg font-semibold text-link">{program}</p>
