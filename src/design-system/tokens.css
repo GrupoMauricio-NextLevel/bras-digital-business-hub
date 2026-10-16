@@ -54,11 +54,20 @@
   /* ---- Movimento ---------------------------------------------------------------------------------------------------- */
   --ds-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ds-dur-fast: 120ms; --ds-dur-base: 200ms; --ds-dur-slow: 250ms;
+  /* Escala de movimento (D155, referência NEXTLEVEL): microinteração 160–250 ms, entrada 500 ms, sobe até 14 px,
+     card sobe 3 px e ação 2 px, intervalo entre itens 40 ms (limitado a 8 itens). Só transform e opacity animam. */
+  --ds-dur-micro: 180ms; --ds-dur-enter: 500ms;
+  --ds-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ds-rise: 14px; --ds-lift-card: 3px; --ds-lift-action: 2px; --ds-stagger: 40ms;
+  /* Vidro: desfoque moderado; nunca animado. */
+  --ds-glass-blur: 16px;
 
   /* ---- Sombras: forma fixa, cor vem do tema (--ds-shadow-rgb) ------------------------------------------------------ */
   --ds-shadow-sm: 0 1px 2px rgb(var(--ds-shadow-rgb) / 0.05), 0 6px 18px rgb(var(--ds-shadow-rgb) / 0.06);
   --ds-shadow-md: 0 2px 6px rgb(var(--ds-shadow-rgb) / 0.06), 0 18px 40px rgb(var(--ds-shadow-rgb) / 0.1);
   --ds-shadow-lg: 0 30px 70px rgb(var(--ds-shadow-rgb) / 0.28);
+  /* Elevação do vidro: sombra difusa + reflexo interno no topo (cor do reflexo e da borda vêm do tema). */
+  --ds-glass-shadow: inset 0 1px 0 var(--ds-glass-highlight), 0 1px 2px rgb(var(--ds-shadow-rgb) / 0.04), 0 10px 30px -12px rgb(var(--ds-shadow-rgb) / 0.18);
 }
 
 /* A ponte também vale dentro de pré-visualizações escopadas (galeria), para o tema da seção valer nas classes utilitárias. */

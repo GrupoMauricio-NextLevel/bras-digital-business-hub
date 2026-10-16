@@ -1,4 +1,5 @@
 "use client";
+import { comportamentoDeRolagem } from "@/lib/ui/movimento";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 
@@ -31,7 +32,7 @@ export function PreviewBridge() {
     const onMessage = (e: MessageEvent) => {
       if (e.origin !== window.location.origin || e.source !== window.parent || e.data?.source !== "nl-editor") return;
       if (e.data.type === "refresh") router.refresh();
-      if (e.data.type === "select") { setSelected(e.data.id ?? null); if (e.data.id && e.data.scroll) document.querySelector(sel(e.data.id))?.firstElementChild?.scrollIntoView({ behavior: "smooth", block: "center" }); }
+      if (e.data.type === "select") { setSelected(e.data.id ?? null); if (e.data.id && e.data.scroll) document.querySelector(sel(e.data.id))?.firstElementChild?.scrollIntoView({ behavior: comportamentoDeRolagem(), block: "center" }); }
       if (e.data.type === "hover") setHover(e.data.id ?? null);
     };
     const onClick = (e: MouseEvent) => {

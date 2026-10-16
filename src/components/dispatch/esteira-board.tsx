@@ -1,4 +1,5 @@
 "use client";
+import { comportamentoDeRolagem } from "@/lib/ui/movimento";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -94,7 +95,7 @@ export function EsteiraBoard({ orders, columns, variant }: { orders: EsteiraOrde
     setScan("");
     if (!r.ok) { toast.error(r.error); return scanRef.current?.focus(); }
     setFound(r.data.id);
-    document.getElementById(`ord-${r.data.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    document.getElementById(`ord-${r.data.id}`)?.scrollIntoView({ behavior: comportamentoDeRolagem(), block: "center" });
     toast.success(`Pedido #${r.data.number} localizado`);
     scanRef.current?.focus();
   };

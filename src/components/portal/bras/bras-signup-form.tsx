@@ -1,4 +1,5 @@
 "use client";
+import { comportamentoDeRolagem } from "@/lib/ui/movimento";
 import * as React from "react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -24,7 +25,7 @@ export function BrasSignupForm({ videoId, source }: { videoId?: string; source?:
   const [step, setStep] = React.useState<1 | 2>(1);
   const [perfil, setPerfil] = React.useState<ProfileDraft>(EMPTY_PROFILE);
   const topo = React.useRef<HTMLHeadingElement>(null);
-  const irPara = (n: 1 | 2) => { setStep(n); setError(null); requestAnimationFrame(() => { topo.current?.focus(); topo.current?.scrollIntoView({ block: "start", behavior: "smooth" }); }); };
+  const irPara = (n: 1 | 2) => { setStep(n); setError(null); requestAnimationFrame(() => { topo.current?.focus(); topo.current?.scrollIntoView({ block: "start", behavior: comportamentoDeRolagem() }); }); };
   const [pending, start] = React.useTransition();
   const [error, setError] = React.useState<string | null>(null);
   const set = (patch: Partial<typeof f>) => setF((x) => ({ ...x, ...patch }));

@@ -27,6 +27,16 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
   children: React.ReactNode;
 }) {
   const [open, setOpen] = React.useState(false);
+  // Estado "rolado": a barra de vidro ganha elevação quando há conteúdo passando por baixo (uma leitura por quadro).
+  const [scrolled, setScrolled] = React.useState(false);
+  React.useEffect(() => {
+    let raf = 0;
+    const read = () => { raf = 0; setScrolled(window.scrollY > 8); };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(read); };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
   const btn = React.useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   React.useEffect(() => {
@@ -40,7 +50,7 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
   return (
     <div className="ds-pub">
       <a href="#conteudo" className="ds-skip">Ir para o conteúdo</a>
-      <header className="ds-pub-header">
+      <header className="ds-pub-header" data-scrolled={scrolled || open ? "" : undefined}>
         <div className="ds-pub-wrap ds-pub-header-in">
           <Link href={homeHref} className="ds-pub-brand" aria-label={`${brandLabel}, página inicial`}>{brand}</Link>
           <nav aria-label="Principal" className="ds-pub-nav">

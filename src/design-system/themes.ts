@@ -26,6 +26,8 @@ export type ThemeColors = {
   sideBg: string; sideFg: string; sideMuted: string; sideActiveBg: string; sideActiveFg: string; sideLine: string; sideHover: string;
   /** faixa escura de destaque (rodapé, chamadas): igual nos dois modos, sempre escura */ band: string; bandFg: string; bandMuted: string; bandLine: string;
   glass: string; ring: string;
+  /** Material de vidro (D155): preenchimento sólido para quando não há desfoque, borda fina, reflexo interno e luz ambiente. */
+  glassSolid: string; glassBorder: string; glassHighlight: string; ambient: string;
   /** tripla "r g b" usada para sombras */ shadowRgb: string;
   heroFrom: string; heroTo: string;
 };
@@ -122,7 +124,12 @@ export function deriveColors(mode: ThemeMode, i: ModeInput): ThemeColors {
     ...STATE[mode],
     ...side(dark, i, sideBg, canvas, text, line),
     band: bandBg, bandFg, bandMuted: readableMuted(bandFg, bandBg, [bandBg]), bandLine: mix(bandFg, bandBg, 0.82),
-    glass: rgba(canvas, dark ? 0.82 : 0.86), ring: dark ? mix(i.link, "#FFFFFF", 0.25) : i.link,
+    // Vidro: translúcido só onde há desfoque (o CSS escolhe glassSolid sem backdrop-filter); claro e escuro com parâmetros próprios.
+    glass: rgba(canvas, dark ? 0.74 : 0.78), ring: dark ? mix(i.link, "#FFFFFF", 0.25) : i.link,
+    glassSolid: rgba(canvas, 0.97),
+    glassBorder: dark ? rgba("#FFFFFF", 0.09) : rgba(i.ink, 0.09),
+    glassHighlight: dark ? rgba("#FFFFFF", 0.06) : rgba("#FFFFFF", 0.7),
+    ambient: rgba(i.primary, dark ? 0.16 : 0.09),
     shadowRgb: dark ? "0 0 0" : toRgb(i.ink).join(" "),
     heroFrom: dark ? mix(canvas, i.primary, 0.32) : mix(surface, i.primary, 0.2),
     heroTo: dark ? mix(canvas, i.primary, 0.08) : mix(surface, i.reflection ?? i.primary, 0.12),
