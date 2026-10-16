@@ -155,3 +155,5 @@ body { overflow-x: clip; }
 /* Commerce v3: mesmo mecanismo, no marinho das fotos da Commerce e com o botão azul da marca. */
 :root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header { background: #0B1A36; }
 :root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #2F81F4; color: #fff; }
+/* Sufixo escrito da logo (ex.: "Commerce") fica claro sobre o herói escuro. */
+:root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-brand .text-foreground { color: #fff; }
