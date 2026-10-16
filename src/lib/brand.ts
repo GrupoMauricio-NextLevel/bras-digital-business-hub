@@ -146,7 +146,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       code: "NEXTLEVEL", name: "NextLevel", live: true,
       tagline: "Gestão central do ecossistema NextLevel",
       description: "Painel de gestão da NextLevel Marketing: todos os produtos em um só lugar.",
-      domains: list(env.BRAND_DOMAINS_NEXTLEVEL, ["master.nextlevelgroup.com.br"]),
+      domains: list(env.BRAND_DOMAINS_NEXTLEVEL, ["master.nextlevelgroup.com.br", "nextlevelgroup.com.br", "www.nextlevelgroup.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL ?? "https://master.nextlevelgroup.com.br",
       officeUrl: null,
       primaryColor: PALETTES.NEXTLEVEL.light.ink, accentColor: PALETTES.NEXTLEVEL.light.signal, logo: "nextlevel",

@@ -1421,3 +1421,10 @@ Pedido do dono: executar o prompt mestre da referência técnica NEXTLEVEL (nave
 - **Mantido de propósito:** sem escolha salva o sistema abre no **claro** (decisão anterior do projeto; a referência manda seguir a arquitetura existente).
 - **Testes:** `tests/vidro-contraste.test.ts` (texto AA sobre o vidro com fundo preto e branco, todas as marcas, claro e escuro).
 - Botão "Assinar por Pix" dos planos do SuperDrop passa a usar a cor primária do tema (no escuro ficava quase invisível sobre o cartão).
+
+## D156 — Fase 3: nextlevelgroup.com.br é o site do grupo no sistema (2026-10-16)
+Decisão do dono: o endereço principal do grupo passa a abrir o nosso sistema; o site feito no ChatGPT Sites ("NEXTLEVEL Experiência Estratégica") vai para `experiencia.nextlevelgroup.com.br`.
+- **Rotas** (`routeHost`): com `GROUP_SITE_URL`, `www.` leva ao endereço principal; no endereço do grupo só ficam as páginas do grupo (Soluções como início, Club, Meu Contador, Loja NextLevel, termos, privacidade, `/api`, `/r`, `/c`); login e painéis vão para o Master; o resto vai para Soluções. Sem `GROUP_SITE_URL` nada muda.
+- **Marca:** `nextlevelgroup.com.br` e `www.` entram nos domínios padrão da holding (antes a raiz caía no SuperDrop por ser "fora do sistema").
+- Redirecionamentos seguem temporários (307) para poder voltar atrás.
+- Passo a passo do dono (ChatGPT Sites, Render, Hostinger) em `docs/nextlevel-commerce/fase-3-dominio-do-grupo.md`; a chave `GROUP_SITE_URL` só é ligada depois do domínio verificado no Render.

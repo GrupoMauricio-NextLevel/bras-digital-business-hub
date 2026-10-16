@@ -45,10 +45,18 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const brand = brandOfHostStrict(host, env);
   // Arquivos dos buscadores: cada endereço responde o dele (D149).
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
+  // Site do grupo no endereço próprio (Fase 3, D156): "www" leva ao endereço principal; lá ficam só as páginas do grupo
+  // (Soluções, Club, Meu Contador, Loja NextLevel, termos); login e painéis continuam no Master.
+  const groupHost = env.GROUP_SITE_URL ? bare(new URL(env.GROUP_SITE_URL).host) : null;
+  if (groupHost && host === `www.${groupHost}`) return { kind: "redirect", url: `${groupSiteUrl(env)}${pathname}${search}` };
+  if (groupHost && host === groupHost) {
+    if (pathname === "/" || pathname === "") return { kind: "redirect", url: `/solucoes${search}` };
+    if (pathname.startsWith("/api/") || pathname.startsWith("/r/") || pathname.startsWith("/c/") || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/")) return { kind: "next" };
+    if (isPanelPath(pathname)) return { kind: "redirect", url: `${brandByCode(HOLDING_CODE, env).baseUrl}${pathname}${search}` };
+    return { kind: "redirect", url: `/solucoes${search}` };
+  }
   // Master central (holding): painéis, login e as páginas do grupo (Soluções, termos e privacidade do grupo, D147/D148). O resto vai ao login.
   if (brand?.code === HOLDING_CODE) {
-    // No endereço próprio do site do grupo (GROUP_SITE_URL, Fase 3), a página inicial é a de Soluções (decisão de 12/10).
-    if ((pathname === "/" || pathname === "") && env.GROUP_SITE_URL && bare(new URL(env.GROUP_SITE_URL).host) === host) return { kind: "redirect", url: `/solucoes${search}` };
     if (isPanelPath(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/") || pathname.startsWith("/api/")) return { kind: "next" };
     return { kind: "redirect", url: "/login" };
   }

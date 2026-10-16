@@ -11,7 +11,7 @@ describe("marcas do portfólio", () => {
     expect(brandForHost("localhost:3100", {}).code).toBe("SUPERDROP");
     expect(brandForHost(null, {}).code).toBe("SUPERDROP");
     expect(brandForHost("evilnextlevelgroup.com.br", {}).code).toBe("SUPERDROP");
-    expect(brandForHost("nextlevelgroup.com.br", {}).code).toBe("SUPERDROP"); // a raiz é o site da holding, fora do sistema
+    expect(brandForHost("nextlevelgroup.com.br", {}).code).toBe("NEXTLEVEL"); // Fase 3 (D156): a raiz é o site do grupo, no sistema
   });
   it("domínios e marca padrão vêm de variáveis de ambiente", () => {
     const env = { BRAND_DOMAINS_BRAS_DIGITAL: "brasdigital.com.br, www.brasdigital.com.br", DEFAULT_BRAND: "NEXTLEVEL_COMMERCE" };

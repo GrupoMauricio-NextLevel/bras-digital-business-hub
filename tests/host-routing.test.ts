@@ -154,6 +154,16 @@ describe("links e vitrines na marca certa (D149)", () => {
     expect(go("nextlevelgroup.com.br", "/", g, "?ref=AB")).toEqual({ kind: "redirect", url: "/solucoes?ref=AB" });
     expect(go("master.nextlevelgroup.com.br", "/", g)).toEqual({ kind: "redirect", url: "/login" });
   });
+  it("Fase 3 (D156): www vai ao principal; no site do grupo só as páginas do grupo; login e painéis no Master", () => {
+    const g = { GROUP_SITE_URL: "https://nextlevelgroup.com.br" };
+    expect(go("www.nextlevelgroup.com.br", "/club", g, "?x=1")).toEqual({ kind: "redirect", url: "https://nextlevelgroup.com.br/club?x=1" });
+    for (const p of ["/solucoes", "/solucoes/white-label", "/club", "/meu-contador", "/loja-nextlevel", "/termos", "/privacidade", "/api/health", "/r/ABC"]) expect(go("nextlevelgroup.com.br", p, g), p).toEqual({ kind: "next" });
+    expect(go("nextlevelgroup.com.br", "/login", g)).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/login" });
+    expect(go("nextlevelgroup.com.br", "/master/financeiro", g)).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master/financeiro" });
+    expect(go("nextlevelgroup.com.br", "/qualquer", g)).toEqual({ kind: "redirect", url: "/solucoes" });
+    // Sem GROUP_SITE_URL (antes da Fase 3) nada muda no Master.
+    expect(go("master.nextlevelgroup.com.br", "/club", {})).toEqual({ kind: "next" });
+  });
   it("loja SuperDrop aberta na Commerce (e o contrário) vai para a marca dona; demonstração de tema fica", () => {
     expect(storeOwnerBase("NEXTLEVEL_COMMERCE", "SUPERDROP", false, {})).toBe("https://superdrop.com.br");
     expect(storeOwnerBase("SUPERDROP", "NEXTLEVEL_COMMERCE", false, {})).toBe("https://lojas.nextlevelgroup.com.br");
