@@ -50,9 +50,9 @@ const BASTIDORES = [
 
 /** Lojas de demonstração fotografadas do próprio sistema (public/portal/superdrop/v4). Sem arquivo, a loja não aparece. */
 const LOJAS = [
-  { arquivo: "loja-1", nome: "Linha de Jogo", endereco: "linhadejogo.superdrop.com.br", tema: "Tema esportivo" },
-  { arquivo: "loja-2", nome: "Bela Essência", endereco: "belaessencia.superdrop.com.br", tema: "Tema de beleza" },
-  { arquivo: "loja-3", nome: "Casa em Ordem", endereco: "casaemordem.superdrop.com.br", tema: "Tema de casa" },
+  { arquivo: "loja-1", nome: "Trama Urbana", segmento: "moda", tema: "Atelier" },
+  { arquivo: "loja-2", nome: "Linha de Jogo", segmento: "esporte", tema: "Pódio" },
+  { arquivo: "loja-3", nome: "Casa em Ordem", segmento: "casa", tema: "Varanda" },
 ] as const;
 const existe = (rel: string) => { try { return statSync(join(process.cwd(), "public", rel)).size > 0; } catch { return false; } };
 
@@ -67,13 +67,13 @@ export async function SuperDropHomeV4({ faq, solucoes }: { faq: { q: string; a: 
       <section id="inicio" data-heroi-escuro className="relative isolate overflow-hidden text-white" style={{ background: NAVY }}>
         <div className="relative aspect-[16/10] w-full md:absolute md:inset-0 md:aspect-auto">
           <FotoMarca nome="hero-key-visual" priority sizes="100vw" posicao="72% 45%" alt="Equipe embalando pedidos em caixas com fita verde numa bancada de expedição" />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--sd-navy)] via-transparent to-transparent md:bg-[linear-gradient(90deg,var(--sd-navy)_0%,color-mix(in_srgb,var(--sd-navy)_80%,transparent)_36%,transparent_66%)]" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--sd-navy)] via-transparent to-transparent md:bg-[linear-gradient(90deg,var(--sd-navy)_0%,color-mix(in_srgb,var(--sd-navy)_85%,transparent)_42%,transparent_72%)]" />
           <div aria-hidden className="absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-[var(--sd-navy)] to-transparent md:block" />
         </div>
         <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-2 md:pb-14 md:pt-28 lg:pt-32">
           <div className="max-w-xl">
             <p className={`${eyebrow} inline-flex rounded-full border px-3 py-1`} style={{ color: VERDE_CLARO, borderColor: "rgba(98,194,104,0.4)", background: "rgba(98,194,104,0.08)" }}>Loja online sem estoque</p>
-            <h1 className="nl-display mt-5 text-white">Você vende. <span style={{ color: VERDE_CLARO }}>O fornecedor envia.</span></h1>
+            <h1 className="nl-display mt-5 text-white">Você vende.<br /><span style={{ color: VERDE_CLARO }}>O fornecedor envia.</span></h1>
             <p className="mt-5 text-lg leading-relaxed text-white/85">Monte sua loja com produtos de fornecedores parceiros. Cada pedido pago vai direto para quem separa, embala e despacha para o seu cliente.</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link href="/cadastro" className={btnVerde} style={{ background: VERDE, color: NAVY }}>Criar minha loja <ArrowRight className="size-5" aria-hidden /></Link>
@@ -189,11 +189,11 @@ export async function SuperDropHomeV4({ faq, solucoes }: { faq: { q: string; a: 
             <ul className="mt-12 grid gap-6 md:grid-cols-3">
               {lojas.map((l) => (
                 <li key={l.arquivo}>
-                  <MockWindow title={l.endereco}>
+                  <MockWindow title={`Loja de demonstração · tema ${l.tema}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- captura estática da loja */}
-                    <img src={`/portal/superdrop/v4/${l.arquivo}.webp`} alt={`Página inicial da loja de demonstração ${l.nome}`} width={1440} height={900} loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
+                    <img src={`/portal/superdrop/v4/${l.arquivo}.webp`} alt={`Página inicial da loja de demonstração ${l.nome}`} width={1200} height={662} loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
                   </MockWindow>
-                  <p className="mt-3 font-semibold">{l.nome} <span className="font-normal text-muted-foreground">· {l.tema}</span></p>
+                  <p className="mt-3 font-semibold">{l.nome} <span className="font-normal text-muted-foreground">· {l.segmento}, tema {l.tema}</span></p>
                 </li>
               ))}
             </ul>
@@ -239,6 +239,7 @@ export async function SuperDropHomeV4({ faq, solucoes }: { faq: { q: string; a: 
         <div aria-hidden className="absolute inset-0 -z-10">
           <FotoMarca nome="cta-moment" sizes="100vw" posicao="78% 50%" alt="" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--sd-navy)_0%,color-mix(in_srgb,var(--sd-navy)_80%,transparent)_40%,transparent_75%)]" />
+          <div className="absolute inset-0 bg-[color-mix(in_srgb,var(--sd-navy)_55%,transparent)] md:hidden" />
         </div>
         <div className="mx-auto max-w-6xl px-4 py-24 md:py-32">
           <div className="max-w-lg">

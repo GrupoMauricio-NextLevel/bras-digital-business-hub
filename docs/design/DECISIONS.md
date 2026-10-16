@@ -1396,3 +1396,12 @@ Pedido do dono, com o prompt mestre `PROMPT-CLAUDE-CODE-IMPLEMENTAR-MARCAS-SELEC
 - **Cores:** sinal SuperDrop `#2D9E3B`, Commerce `#2F81F4`, Brás `#D55E00` (assinatura `#D35C00` ajustada 1 tom para o texto do botão passar em AA); NextLevel e Cargas já estavam nas cores do pacote. Painéis e páginas usam as mesmas variáveis `--brand-*`.
 - **Logos:** NextLevel, SuperDrop e Commerce seguem com as oficiais do sistema. Brás e Cargas passam a usar a logo clara do pacote; a **logo escura das duas veio com fundo sólido** (sem transparência), então no tema escuro aparecem em texto até chegar a versão certa. Monogramas e favicons da Brás e da Cargas: pendentes no pacote.
 
+
+## D153 — Home SuperDrop v4: uma história só, foto no herói e cabeçalho na cor do herói (2026-10-16)
+Pedido do dono, depois de ver o pacote D152 no celular ("ficou muito a desejar… no início não houve imagem de hero"). Especificação: `docs/prompts/superdrop-home-v4-analise-e-prompt.md` (título A).
+- **Mensagem:** "Você vende. O fornecedor envia." Sem pílula de cupom e sem três botões no herói; "Área de membros" fica só no cabeçalho.
+- **Estrutura** (`src/components/portal/superdrop/home-v4.tsx`), de 15 para 9 seções: herói com a foto `hero-key-visual` e a esteira ao vivo; faixa de confiança; 4 passos com ícones e fotos do pacote; bastidores (marinho); o dinheiro de cada um com os papéis; lojas de demonstração reais (capturas em `public/portal/superdrop/v4/`); conta e planos; dúvidas; chamada final sobre `cta-moment`. Saíram desta página a `VitrineMarca`, a `FechoMarca` (continuam para outras marcas), os benefícios com ícone em círculo e a prévia cinza de tema.
+- **Cor:** fundo escuro = marinho retirado das fotos (`#0D1B34`); verde `#2D9E3B` só no botão principal (texto marinho, contraste AA) e destaques.
+- **Cabeçalho:** enquanto o herói escuro está sob ele, fica no mesmo marinho (CSS `:has([data-heroi-escuro])` sem piscar + `CabecalhoSobreHeroi` marcando `data-heroi-passou`). Opt-in por página; as outras não mudam.
+- **Parceiros:** foto `pa-parceiros-hero` no topo das telas do SuperDrop; agência e desenvolvedor saíram da escolha principal (programas não abertos) e viraram link "entre na lista", com o mesmo formulário de contato.
+- **Rodapé público:** a frase legal aparecia duas vezes (assinatura + `legalLine`); ficou só a assinatura e o ©.
