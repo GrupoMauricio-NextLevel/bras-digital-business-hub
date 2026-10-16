@@ -41,9 +41,9 @@ for (const w of [360, 768, 1440]) {
     await planos.screenshot({ path: `${OUT}/03-planos-anual-1440.png` });
     // Temas: filtro por segmento e capturas reais.
     const temas = p.locator("#temas");
-    await temas.getByRole("button", { name: "Sport" }).click();
+    await temas.getByRole("button", { name: "Esporte" }).click();
     const nomes = await temas.locator("li p.font-\\[family-name\\:var\\(--nl-font-display\\)\\]").allInnerTexts();
-    if (!nomes.length) fail("temas: filtro Sport vazio");
+    if (!nomes.length) fail("temas: filtro Esporte vazio");
     const quebradas = await temas.locator("img").evaluateAll((imgs) => imgs.filter((i) => i.complete && i.naturalWidth === 0).length);
     if (quebradas) fail(`temas: ${quebradas} imagem(ns) quebrada(s)`);
     await temas.screenshot({ path: `${OUT}/04-temas-1440.png` });

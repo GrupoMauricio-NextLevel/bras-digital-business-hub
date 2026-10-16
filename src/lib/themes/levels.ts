@@ -11,9 +11,9 @@ export type ThemeLevel = (typeof LEVELS)[number];
 
 export const LEVEL_INFO: Record<ThemeLevel, { name: string; short: string; goal: string }> = {
   1: { name: "Grátis", short: "N1", goal: "Loja funcional" },
-  2: { name: "NextLevel Commerce", short: "N2", goal: "Apresentação profissional" },
-  3: { name: "Commerce PRO", short: "N3", goal: "Composição comercial" },
-  4: { name: "Commerce ULTIMATE", short: "N4", goal: "Experiência exclusiva" },
+  2: { name: "Profissional", short: "N2", goal: "Apresentação profissional" },
+  3: { name: "Avançado", short: "N3", goal: "Composição comercial" },
+  4: { name: "Exclusivo", short: "N4", goal: "Experiência exclusiva" },
 };
 
 /** Famílias (identidade + segmento). `base` são os temas genéricos (Starter e Signature). */
@@ -22,10 +22,10 @@ export type ThemeFamily = (typeof FAMILIES)[number];
 export const FAMILY_INFO: Record<ThemeFamily, { name: string; segment: string; demoStore: string | null }> = {
   base: { name: "Base", segment: "Qualquer loja", demoStore: null },
   moda: { name: "Moda", segment: "Confecção, básicos e conjuntos", demoStore: "Trama Urbana" },
-  sport: { name: "Sport", segment: "Camisas genéricas e esportivo", demoStore: "Linha de Jogo" },
+  sport: { name: "Esporte", segment: "Camisas genéricas e esportivo", demoStore: "Linha de Jogo" },
   casa: { name: "Casa", segment: "Utilidades e organização", demoStore: "Casa em Ordem" },
-  beauty: { name: "Beauty", segment: "Acessórios de beleza", demoStore: "Bela Essência" },
-  conecta: { name: "Conecta", segment: "Acessórios de celular e pequenos eletrônicos", demoStore: "Ponto Conecta" },
+  beauty: { name: "Beleza", segment: "Acessórios de beleza", demoStore: "Bela Essência" },
+  conecta: { name: "Celular e acessórios", segment: "Acessórios de celular e pequenos eletrônicos", demoStore: "Ponto Conecta" },
   atacado: { name: "Atacado", segment: "Importadores e atacadistas: venda por caixa fechada", demoStore: "Giro Distribuidora" },
 };
 

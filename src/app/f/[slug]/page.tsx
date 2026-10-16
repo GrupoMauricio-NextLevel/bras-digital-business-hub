@@ -138,7 +138,7 @@ export default async function SupplierLanding({ params }: { params: Promise<{ sl
       <footer className="border-t border-border py-8 text-xs text-muted-foreground">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 text-center">
           <p>© {new Date().getFullYear()} {p.name} · Tecnologia <Logo tone="on-light" className="ml-1 inline h-4 align-middle" /></p>
-          <NextLevelSignature />
+          <NextLevelSignature product="SuperDrop" />
         </div>
       </footer>
     </div>

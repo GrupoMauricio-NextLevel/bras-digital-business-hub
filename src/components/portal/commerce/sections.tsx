@@ -37,7 +37,7 @@ export function Operation() {
       {rows.map((r, n) => (
         <article key={r.id} className="cm-reveal grid items-center gap-8 md:grid-cols-2 md:gap-16">
           <div className={n % 2 ? "md:order-2" : ""}>
-            <p className="text-sm font-semibold text-highlight">{r.situation}</p>
+            <p className="text-sm font-semibold text-[#71AAFF]">{r.situation}</p>
             <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-band-foreground sm:text-4xl">{r.title}</h3>
             <p className="mt-4 max-w-md text-lg leading-relaxed text-band-muted">{r.text}</p>
           </div>
@@ -58,7 +58,7 @@ export type EntryOffer = { trialDays: number; firstPeriodCents: number | null; f
 /** Começar sozinho, sem esperar contato: criar a conta, montar e publicar. */
 export function Steps({ cta, signupOpen, offer }: { cta: string; signupOpen: boolean; offer: EntryOffer }) {
   const steps = [
-    { n: "1", t: "Crie a conta", d: offer ? `Leva 1 minuto. Você escolhe o plano e começa com ${offer.trialDays} dias grátis para montar com calma.` : "Leva 1 minuto. Você escolhe o plano e já entra no painel." },
+    { n: "1", t: "Crie a conta", d: offer ? `Você escolhe o plano e começa com ${offer.trialDays} dias grátis para montar com calma.` : "Leva 1 minuto. Você escolhe o plano e já entra no painel." },
     { n: "2", t: "Monte a loja", d: "Escolha um tema, ajuste cores, logo e textos no editor e cadastre os produtos, um a um ou por planilha. Enquanto não publica, só você vê." },
     { n: "3", t: "Conecte o Mercado Pago e publique", d: "Com a sua conta conectada, a loja recebe Pix e cartão e o dinheiro das vendas cai direto para você." },
   ];
@@ -88,7 +88,7 @@ export function Faq({ plans, offer, themes }: { plans: PlanFaq[]; offer: EntryOf
   const gratis = themes.filter((t) => t.priceCents === 0).length;
   const pagosTemas = themes.filter((t) => t.priceCents > 0).map((t) => t.priceCents);
   const items = [
-    { q: "Como começo?", a: `Crie a conta direto pelo site, em 1 minuto: escolha o plano e já entre no painel.${offer ? ` Clientes novos têm ${offer.trialDays} dias grátis${offer.firstPeriodCents !== null ? `, o 1º mês do plano mensal por ${formatBRL(offer.firstPeriodCents)}` : ""} e taxa zero nos primeiros ${offer.feeHolidayMonths} meses (uma vez por CPF/CNPJ).` : ""}` },
+    { q: "Como começo?", a: `Crie a conta direto pelo site: escolha o plano e já entre no painel.${offer ? ` Clientes novos têm ${offer.trialDays} dias grátis${offer.firstPeriodCents !== null ? `, o 1º mês do plano mensal por ${formatBRL(offer.firstPeriodCents)}` : ""} e taxa zero nos primeiros ${offer.feeHolidayMonths} meses (uma vez por CPF/CNPJ).` : ""}` },
     { q: "Quanto custa?", a: `Os planos vão ${faixa}. No anual há desconto. Operações maiores têm o Enterprise, por proposta.` },
     { q: "Como recebo pelas vendas?", a: "Pela sua própria conta Mercado Pago: 100% das vendas caem direto para você, com Pix e cartão. A NextLevel cobra o plano e a taxa em fatura separada." },
     { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
@@ -114,10 +114,10 @@ export function ClosingCta({ cta, signupOpen, offer }: { cta: string; signupOpen
   return (
     <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4">
       <div>
-        <h2 className={`${H2} max-w-xl text-band-foreground`}>Veja a sua marca numa loja assim.</h2>
-        <p className="mt-3 max-w-lg text-lg text-band-foreground/85">{signupOpen ? (offer ? `Crie a conta agora e use ${offer.trialDays} dias grátis para montar.` : "Crie a sua conta e comece a montar.") : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
+        <h2 className={`${H2} max-w-xl text-white`}>Sua marca merece uma loja à altura.</h2>
+        <p className="mt-3 max-w-lg text-lg text-white/85">{signupOpen ? (offer ? `Teste ${offer.trialDays} dias grátis. Você escolhe o plano no cadastro.` : "Crie a sua conta e comece a montar.") : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
       </div>
-      <Link href={cta} className={CTA}>{signupOpen ? "Criar minha loja" : "Quero minha loja"}</Link>
+      <Link href={cta} className="inline-flex h-14 items-center justify-center rounded-full bg-[#2F81F4] px-8 text-[1.1875rem] font-bold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">{signupOpen ? (offer ? `Começar ${offer.trialDays} dias grátis` : "Criar minha loja") : "Quero minha loja"}</Link>
     </div>
   );
 }

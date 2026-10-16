@@ -8,6 +8,8 @@ export type SectionCtx = {
   /** Endereço base da loja (ex.: /store/minha-loja). Links do tema começam por aqui. */
   base: string;
   store: Store;
+  /** Marca dona da loja (organização). O selo "Tecnologia SuperDrop" do rodapé só aparece em loja do SuperDrop. */
+  brandCode?: string;
   categories: { id: string; name: string; slug: string }[];
   products: PublicProduct[];
   /** Produtos de cada seção de vitrine ou grade, já repartidos (sem repetir). */

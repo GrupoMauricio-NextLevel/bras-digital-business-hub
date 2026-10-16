@@ -85,7 +85,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
       { titulo: "Venda organizada do pedido à entrega", texto: "Pedidos, etiquetas e pós-venda no mesmo painel." },
     ],
     prova: { titulo: "Feita para a operação real", pontos: ["Os pagamentos dos seus clientes vão para a sua conta", "Teste grátis antes de pagar o plano", "Cancele quando quiser, sem multa"] },
-    cta: { titulo: "Crie a sua loja NextLevel Commerce", texto: "Comece pelo teste grátis e escolha o plano depois." },
+    cta: { titulo: "Sua marca merece uma loja à altura.", texto: "Teste grátis. Você escolhe o plano no cadastro." },
   },
   "bras-digital": {
     slug: "bras-digital", nome: "Brás Digital", accent: "#D35C00", logos: { clara: true, ratio: 1774 / 887 }, imagens: true, status: { logos: "partial", imagens: "complete" },

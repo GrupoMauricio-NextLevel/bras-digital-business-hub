@@ -13,7 +13,7 @@ export function Bento() {
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:grid-rows-2">
       <a href="#exemplos" className={`${card} cm-reveal bg-band text-band-foreground lg:row-span-2 lg:min-h-[40rem]`}>
         <div>
-          <p className="text-sm font-bold uppercase tracking-wider text-highlight">Loja online</p>
+          <p className="text-sm font-bold uppercase tracking-wider text-[#71AAFF]">Loja online</p>
           <h3 className="mt-2 max-w-sm font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight sm:text-4xl">Vitrine com a cara da sua marca</h3>
         </div>
         <div className="-mx-2 mt-6 translate-y-6 transition-transform duration-500 group-hover:translate-y-2 sm:mx-6"><Tablet><StoreMock store={casa} /></Tablet></div>
@@ -25,7 +25,7 @@ export function Bento() {
           <p className="text-sm font-bold uppercase tracking-wider text-primary-foreground">Pagamento</p>
           <h3 className="mt-2 max-w-[14rem] font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight">Pix e cartão em até 6x</h3>
         </div>
-        <div className="absolute -bottom-16 right-6 w-[13.5rem] transition-transform duration-500 group-hover:-translate-y-3 sm:right-10"><Phone><PayScreen /></Phone></div>
+        <div className="relative mx-auto -mb-24 mt-6 w-[13.5rem] transition-transform duration-500 group-hover:-translate-y-3 md:absolute md:-bottom-16 md:right-10 md:mx-0 md:mb-0 md:mt-0"><Phone><PayScreen /></Phone></div>
         <ArrowUpRight aria-hidden className="absolute right-6 top-6 size-7 text-primary-foreground/80" />
       </a>
 

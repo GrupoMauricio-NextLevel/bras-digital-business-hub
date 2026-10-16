@@ -10,9 +10,14 @@ export type GalleryThemeRow = { key: string; name: string; priceCents: number; t
  * Vitrine de temas da home (no lugar da lista só com nomes): captura real de cada tema no computador e no celular,
  * filtro por segmento, preço e link para a demonstração. Capturas em public/temas (e2e/temas-miniaturas.mjs).
  */
-export function ThemeGallery({ themes, initial = 6 }: { themes: GalleryThemeRow[]; initial?: number }) {
-  const familias = Array.from(new Map(themes.map((t) => [t.family, t.familyName])).entries());
-  const [familia, setFamilia] = React.useState<string>("todos");
+/** Famílias ainda sem imagens de campanha nas lojas de demonstração (D86): o cartão avisa, em vez de parecer vazio. */
+const SEM_CAMPANHA = new Set(["casa", "beauty", "conecta", "atacado"]);
+/** Ordem dos filtros: primeiro as famílias com demonstração completa. */
+const ORDEM = ["moda", "sport", "base", "casa", "beauty", "conecta", "atacado"];
+
+export function ThemeGallery({ themes, initial = 6, inicial = "moda" }: { themes: GalleryThemeRow[]; initial?: number; /** Filtro aberto ao chegar (Commerce v3: Moda, que tem demonstração completa). */ inicial?: string }) {
+  const familias = Array.from(new Map(themes.map((t) => [t.family, t.familyName])).entries()).sort((a, b) => ORDEM.indexOf(a[0]) - ORDEM.indexOf(b[0]));
+  const [familia, setFamilia] = React.useState<string>(themes.some((t) => t.family === inicial) ? inicial : "todos");
   const [todos, setTodos] = React.useState(false);
   const lista = themes.filter((t) => familia === "todos" || t.family === familia);
   const visiveis = todos ? lista : lista.slice(0, initial);
@@ -42,6 +47,7 @@ export function ThemeGallery({ themes, initial = 6 }: { themes: GalleryThemeRow[
                   <p className="font-[family-name:var(--nl-font-display)] text-xl font-extrabold text-foreground">{t.name}</p>
                   <p className="text-sm text-muted-foreground">{t.niche} · {t.levelName}</p>
                   <p className="mt-1 text-[15px] text-body">{t.tagline}</p>
+                  {SEM_CAMPANHA.has(t.family) ? <p className="mt-1 text-xs text-muted-foreground">Imagens de demonstração deste segmento em produção.</p> : null}
                 </div>
                 <span className="mt-1 inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-link group-hover:underline">Ver demonstração<ArrowUpRight className="size-4" aria-hidden /></span>
               </div>

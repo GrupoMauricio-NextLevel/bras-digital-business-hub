@@ -21,7 +21,7 @@ async function ownStore(db: Database, actor: Actor, storeId: string) {
 }
 const need = async (db: Database, store: Awaited<ReturnType<typeof ownStore>>, cap: "editor.sectionTemplates" | "editor.pageTemplates") => {
   const ctx = await editingContextFor(db, store);
-  if (!ctx.caps.has(cap)) throw new DomainError("THEME_LOCKED", cap === "editor.sectionTemplates" ? `Salvar modelos de seção faz parte dos temas N3 (Commerce PRO). O tema ${ctx.themeName} é N${ctx.level}.` : `Modelos de página e campanha fazem parte dos temas N4 (Commerce ULTIMATE). O tema ${ctx.themeName} é N${ctx.level}.`);
+  if (!ctx.caps.has(cap)) throw new DomainError("THEME_LOCKED", cap === "editor.sectionTemplates" ? `Salvar modelos de seção faz parte dos temas N3 (Avançado). O tema ${ctx.themeName} é N${ctx.level}.` : `Modelos de página e campanha fazem parte dos temas N4 (Exclusivo). O tema ${ctx.themeName} é N${ctx.level}.`);
   return ctx;
 };
 

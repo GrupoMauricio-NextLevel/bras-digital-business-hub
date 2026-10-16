@@ -152,3 +152,6 @@ body { overflow-x: clip; }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-burger { background: transparent; color: #fff; border-color: rgb(255 255 255 / 0.3); }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-switch { background: transparent; border-color: rgb(255 255 255 / 0.3); }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-switch button { color: rgb(255 255 255 / 0.75); }
+/* Commerce v3: mesmo mecanismo, no marinho das fotos da Commerce e com o botão azul da marca. */
+:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header { background: #0B1A36; }
+:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #2F81F4; color: #fff; }

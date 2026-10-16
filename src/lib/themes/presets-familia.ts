@@ -3,9 +3,9 @@
  * e textos) e os ids das imagens do manifesto (`<família>-hero-1`, `<família>-mosaico-3`…). A composição por nível é a
  * mesma em todas as famílias, então o que um nível acrescenta é previsível e comparável:
  *  - N1 (Grátis): composição fixa com 4 posições de imagem (1 destaque, 2 apoios, 1 faixa), categorias e vitrines.
- *  - N2 (NextLevel Commerce): 2 slides, categorias em círculo, compra rápida, abas, FAQ e imagem com texto.
- *  - N3 (Commerce PRO): carrossel de 3, mosaico, galeria de inspiração, banner entre vitrines e na coleção, ordenação.
- *  - N4 (Commerce ULTIMATE): menu grande com busca, carrossel automático com campanha agendada, mosaico 1+4, movimento.
+ *  - N2 (Profissional): 2 slides, categorias em círculo, compra rápida, abas, FAQ e imagem com texto.
+ *  - N3 (Avançado): carrossel de 3, mosaico, galeria de inspiração, banner entre vitrines e na coleção, ordenação.
+ *  - N4 (Exclusivo): menu grande com busca, carrossel automático com campanha agendada, mosaico 1+4, movimento.
  * Textos do sistema ficam fora das fotos; nenhuma promessa de frete, prazo, desconto ou depoimento inventado.
  */
 import type { PresetContext, ThemePreset } from "./presets";
@@ -154,7 +154,7 @@ export const levelTwo = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   };
 };
 
-/** N3 — Commerce PRO. */
+/** N3 — Avançado. */
 export const levelThree = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   const st = style({ quickView: true, ...f.styles[2] });
   const g = f.n3.gallery;
@@ -194,7 +194,7 @@ export const levelThree = (f: FamilySpec) => (c: PresetContext): ThemePreset => 
 /** Data da campanha de exemplo (começa daqui a `days` dias às 9h) no formato do editor (horário de Brasília). */
 const brt = (now: Date, days: number) => { const d = new Date(now.getTime() - 3 * 3600_000); d.setUTCDate(d.getUTCDate() + days); return `${d.toISOString().slice(0, 10)}T09:00`; };
 
-/** N4 — Commerce ULTIMATE. */
+/** N4 — Exclusivo. */
 export const levelFour = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   const st = style({ quickView: true, animations: true, ...f.styles[3] });
   const cats = c.categories?.length ? c.categories : f.fallbackCategories;
