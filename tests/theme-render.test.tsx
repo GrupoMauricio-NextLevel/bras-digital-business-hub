@@ -21,7 +21,7 @@ const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}
 function render(template = templateFromLegacy(legacy), products: PublicProduct[] = Array.from({ length: 9 }, (_, i) => product(i)), region: "content" | "header" | "footer" = "content") {
   const globals = legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy);
   const { lists, hero } = planProducts(template, products);
-  const ctx: SectionCtx = { slug: "mantos", base: "/store/mantos", store, categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals, page: "home" };
+  const ctx: SectionCtx = { slug: "mantos", base: "/store/mantos", store, brandCode: "SUPERDROP", categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals, page: "home" };
   const t = region === "header" ? globals.header : region === "footer" ? globals.footer : template;
   return renderToStaticMarkup(<SectionList template={t} ctx={ctx} />);
 }

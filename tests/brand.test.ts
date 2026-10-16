@@ -57,7 +57,7 @@ describe("marca nos cadastros e nos e-mails", () => {
     const p = await registerPartner(ctx.db, { name: "Parceira Marca", email: "parc@teste.com", password: "senha-forte-1", taxId: "39053344705", phone: "11999990000", acceptTerms: true, brand: "NEXTLEVEL_COMMERCE" });
     expect(p.partnerId).toBeTruthy();
     const html = renderHtml({ subject: "Oi", text: "Texto", cta: { label: "Abrir", url: "https://x.com" } }, brandByCode("NEXTLEVEL_COMMERCE", {}));
-    expect(html).toContain("NextLevel Commerce"); expect(html).toContain("#196BD8"); expect(html).not.toContain("SuperDrop");
+    expect(html).toContain("NextLevel Commerce"); expect(html).toContain("#2F81F4"); expect(html).not.toContain("SuperDrop");
     await sendEmail(ctx.db, { kind: "T", to: "x@y.com", brand: "NEXTLEVEL_COMMERCE", ...emails.welcomePartner("Ana", "https://x/partner") });
     const sent = (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "T")))[0]!;
     expect(sent.subject).toContain("NextLevel Commerce"); expect(sent.subject).not.toContain("{marca}");
