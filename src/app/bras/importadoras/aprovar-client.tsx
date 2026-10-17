@@ -34,7 +34,7 @@ export function AprovarFornecedores({ itens }: { itens: FornecedorPendente[] }) 
               <p className="mt-1 text-sm">Responsável: {f.contato}</p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row lg:w-[26rem]">
-              <Input aria-label={`Motivo da recusa de ${f.name}`} placeholder="Motivo (obrigatório para recusar)" value={motivo[f.id] ?? ""} onChange={(e) => setMotivo((m) => ({ ...m, [f.id]: e.target.value }))} />
+              <Input aria-label={`Motivo da recusa de ${f.name}`} placeholder="Motivo, se recusar" value={motivo[f.id] ?? ""} onChange={(e) => setMotivo((m) => ({ ...m, [f.id]: e.target.value }))} />
               <Button variant="secondary" disabled={pending} onClick={() => decidir(f.id, "RECUSAR")}>Recusar</Button>
               <Button disabled={pending} onClick={() => decidir(f.id, "APROVAR")}>Aprovar</Button>
             </div>
