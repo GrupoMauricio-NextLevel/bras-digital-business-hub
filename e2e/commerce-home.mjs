@@ -24,13 +24,13 @@ for (const [name, vp, reduced] of [["computador", { width: 1440, height: 900 }, 
   // jornada
   const modo = await p.locator("[data-immersive]").getAttribute("data-immersive");
   ok(modo === (reduced ? "off" : "on"), `${name}: jornada ${reduced ? "parada" : "imersiva"} (${modo})`);
-  ok((await p.locator(".eci-jor-passo").count()) === 5, `${name}: cinco passos`);
+  ok((await p.locator(".im-jor-passo").count()) === 5, `${name}: cinco passos`);
   if (!reduced) {
     const j = await p.evaluate(() => { const el = document.querySelector("[data-immersive]"); return { t: el.getBoundingClientRect().top + scrollY, run: el.offsetHeight - innerHeight }; });
     const vistos = [];
     for (let k = 0; k < 5; k++) { await p.evaluate(([y]) => scrollTo({ top: y, behavior: "instant" }), [j.t + (j.run * (k + 0.5)) / 5]); await p.waitForTimeout(500); vistos.push(await p.locator("[data-immersive]").getAttribute("data-step")); }
     ok(vistos.join("") === "01234", `${name}: a rolagem passa pelos cinco passos (${vistos.join("")})`);
-    if (vp.width >= 768) { await p.focus(".eci-jor-regua li:nth-child(2) button"); await p.keyboard.press("Enter"); await p.waitForTimeout(1500); ok((await p.locator("[data-immersive]").getAttribute("data-step")) === "1", `${name}: a régua leva ao passo 2 pelo teclado`); }
+    if (vp.width >= 768) { await p.focus(".im-jor-regua li:nth-child(2) button"); await p.keyboard.press("Enter"); await p.waitForTimeout(1500); ok((await p.locator("[data-immersive]").getAttribute("data-step")) === "1", `${name}: a régua leva ao passo 2 pelo teclado`); }
   }
   // portas
   const portas = await p.$$eval("#portas a", (as) => as.map((a) => a.getAttribute("href")));

@@ -1,0 +1,102 @@
+/* Página imersiva de marca (D162 Soluções, D165 E-commerce): jornada com a foto presa na tela, portas, seções com foto ao
+   lado e entrada suave. Uma peça só para todas as marcas: o CSS lê variáveis neutras `--im-*` e cada marca as preenche com as
+   próprias cores numa classe `.im-tema-<marca>` (nenhum hexadecimal aqui). Movimento só com transform/opacity; menos
+   movimento = tudo parado. */
+.im-tema-ecommerce { --im-fundo: var(--ec-marinho); --im-fundo-2: var(--ec-marinho-2); --im-claro: var(--ec-gelo); --im-suave: var(--ec-texto-suave); --im-destaque: var(--ec-ciano); --im-link-escuro: var(--ec-link-escuro); --im-acao: var(--ec-acao); --im-acao-suave: var(--ec-azul-suave); --im-gradiente: var(--ec-gradiente); }
+.im-tema-bras { --im-fundo: var(--bdc-navy); --im-fundo-2: var(--bdc-navy-2); --im-claro: var(--bdc-off-white); --im-suave: var(--bdc-texto-suave); --im-destaque: var(--bdc-ciano); --im-link-escuro: var(--bdc-ciano); --im-acao: var(--bdc-azul); --im-acao-suave: var(--bdc-painel-claro); --im-gradiente: var(--bdc-gradiente); }
+.im-eyebrow { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; color: var(--im-link-escuro); }
+.im-eyebrow--claro { color: var(--im-acao); }
+.im-h2 { font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -.035em; line-height: 1.04; font-size: clamp(2rem, 4.6vw, 3.5rem); text-wrap: balance; }
+
+/* Aviso de prévia (só nesta rota). */
+.im-aviso { background: var(--im-acao-suave); color: var(--im-fundo); font-size: .875rem; }
+.im-aviso a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Jornada: fora do modo imersivo (sem JS ou menos movimento) os passos ficam em sequência, cada um com a sua foto. */
+.im-jor { background: var(--im-fundo); color: var(--im-claro); }
+.im-jor-scroll[data-immersive="on"] { height: calc(var(--n) * 85svh + 100svh); }
+.im-jor-palco { position: relative; }
+.im-jor-scroll[data-immersive="on"] .im-jor-palco { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.im-jor-quadros { position: absolute; inset: 0; }
+.im-jor-scroll[data-immersive="off"] .im-jor-quadros, .im-jor-scroll[data-immersive="off"] .im-jor-veu, .im-jor-scroll[data-immersive="off"] .im-jor-regua { display: none; }
+.im-jor-quadro { position: absolute; inset: 0; opacity: 0; transition: opacity 700ms ease; }
+.im-jor-quadro img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; transform: scale(calc(1.03 + var(--p, 0) * .04)); }
+.im-jor-scroll[data-step="0"] .im-jor-quadro:nth-child(1), .im-jor-scroll[data-step="1"] .im-jor-quadro:nth-child(2),
+.im-jor-scroll[data-step="2"] .im-jor-quadro:nth-child(3), .im-jor-scroll[data-step="3"] .im-jor-quadro:nth-child(4),
+.im-jor-scroll[data-step="4"] .im-jor-quadro:nth-child(5) { opacity: 1; }
+/* Véu marinho do lado do texto (direita no computador): a foto respira à esquerda. */
+.im-jor-veu { position: absolute; inset: 0; background: linear-gradient(270deg, var(--im-fundo) 0%, color-mix(in srgb, var(--im-fundo) 90%, transparent) 36%, color-mix(in srgb, var(--im-fundo) 25%, transparent) 66%, transparent 100%); }
+.im-jor-conteudo { position: relative; z-index: 1; margin-inline: auto; max-width: 72rem; padding: 4.5rem 1rem 6rem; display: grid; align-content: center; justify-items: end; height: 100%; }
+.im-jor-cabeca, .im-jor-passos { width: min(100%, 32rem); }
+.im-jor-h2 { margin-top: .5rem; font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.6rem, 3vw, 2.25rem); line-height: 1.1; color: #fff; }
+.im-jor-passos { margin-top: 1.75rem; display: grid; }
+.im-jor-scroll[data-immersive="on"] .im-jor-passos > * { grid-area: 1 / 1; opacity: 0; transform: translateY(14px); transition: opacity 500ms ease, transform 500ms ease; pointer-events: none; visibility: hidden; }
+.im-jor-scroll[data-immersive="on"] .im-jor-passo[aria-current="step"] { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
+.im-jor-scroll[data-immersive="off"] .im-jor-conteudo { justify-items: start; padding-block: 4rem; }
+.im-jor-scroll[data-immersive="off"] .im-jor-passos { gap: 3rem; width: 100%; max-width: 40rem; }
+.im-jor-estatica { display: none; }
+.im-jor-scroll[data-immersive="off"] .im-jor-estatica { display: block; margin-bottom: 1.25rem; overflow: hidden; border-radius: 1.25rem; aspect-ratio: 3 / 2; }
+.im-jor-estatica img { width: 100%; height: 100%; object-fit: cover; }
+.im-jor-num { display: flex; align-items: baseline; gap: .6rem; font-weight: 700; color: var(--im-suave); }
+.im-jor-num span { font-family: var(--nl-font-display); color: var(--im-destaque); }
+.im-jor-titulo { margin-top: .5rem; font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -.035em; font-size: clamp(2rem, 4.6vw, 3.5rem); line-height: 1.03; color: #fff; text-wrap: balance; }
+.im-jor-texto { margin-top: .9rem; font-size: 1.125rem; line-height: 1.6; color: var(--im-suave); }
+.im-jor-links { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+.im-jor-links a { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.75rem; padding: .5rem 1rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--im-claro) 30%, transparent); background: color-mix(in srgb, var(--im-fundo-2) 80%, transparent); color: #fff; font-weight: 600; transition: border-color 160ms ease; }
+.im-jor-links a:hover { border-color: var(--im-destaque); }
+.im-jor-links a:focus-visible, .im-jor-regua button:focus-visible { outline: 2px solid var(--im-destaque); outline-offset: 2px; }
+.im-jor-regua { position: absolute; z-index: 2; inset-inline: 0; bottom: 1rem; }
+.im-jor-regua ol { margin-inline: auto; max-width: 72rem; padding-inline: 1rem; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: .5rem; }
+.im-jor-regua button { width: 100%; min-height: 2.75rem; text-align: left; color: var(--im-suave); font-size: .8125rem; font-weight: 600; border-radius: .4rem; }
+.im-jor-traco { display: block; height: 3px; border-radius: 99px; background: color-mix(in srgb, var(--im-claro) 25%, transparent); margin-bottom: .4rem; }
+.im-jor-regua button[aria-current="step"] { color: #fff; }
+.im-jor-regua button[aria-current="step"] .im-jor-traco { background: var(--im-gradiente); }
+@media (max-width: 1023px) {
+  /* Retrato no celular e no tablet em pé: a cena fica embaixo e o texto na área de cima, sobre o véu. */
+  .im-jor-veu { background: linear-gradient(180deg, var(--im-fundo) 0%, color-mix(in srgb, var(--im-fundo) 88%, transparent) 46%, color-mix(in srgb, var(--im-fundo) 15%, transparent) 76%, transparent 100%); }
+  .im-jor-quadro img { object-position: 50% 100%; }
+  .im-jor-scroll[data-immersive="on"] .im-jor-conteudo { align-content: start; justify-items: start; padding-top: 4.5rem; }
+  /* Some da tela, mas continua para o leitor de tela (ordem dos títulos: h2 antes dos h3 dos passos). */
+  .im-jor-scroll[data-immersive="on"] .im-jor-cabeca { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .im-jor-scroll[data-immersive="on"] .im-jor-texto { font-size: 1rem; }
+  .im-jor-rotulo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+@media (min-width: 1024px) {
+  /* Computador: a foto fica emoldurada (3:2, inteira) à esquerda e o texto à direita, sobre o marinho. As fotos atuais têm a
+     pessoa no centro; sem véu por cima, nada da cena fica escondido atrás do texto. */
+  .im-jor-palco { --im-borda: max(1rem, calc((100% - 72rem) / 2 + 1rem)); }
+  .im-jor-cabeca, .im-jor-passos { width: min(100%, 28rem); }
+  .im-jor-quadros { inset: auto; left: var(--im-borda); top: 50%; translate: 0 -55%; width: min(calc(100% - 2 * var(--im-borda) - 28rem - 3rem), 46rem); aspect-ratio: 3 / 2; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 30px 80px -30px rgb(0 0 0 / .6); }
+  .im-jor-quadro img { object-position: 50% 50%; }
+  .im-jor-veu { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .im-jor-quadro, .im-jor-passos > * { transition: none !important; } .im-jor-quadro img { transform: none; } }
+
+/* Portas (cartões 2:3 com o texto embaixo, sobre o véu). */
+.im-portas { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 1024px) { .im-portas { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .im-portas { grid-template-columns: minmax(0, 1fr); } .im-porta { aspect-ratio: 4 / 5; } }
+.im-porta { position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; border-radius: 1.25rem; aspect-ratio: 2 / 3; padding: 1.25rem; color: #fff; isolation: isolate; background: var(--im-fundo); }
+.im-porta picture { position: absolute; inset: 0; z-index: -2; }
+.im-porta img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform 500ms ease; }
+.im-porta::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, color-mix(in srgb, var(--im-fundo) 96%, transparent) 0%, color-mix(in srgb, var(--im-fundo) 72%, transparent) 42%, transparent 72%); }
+.im-porta:hover img { transform: scale(1.03); }
+.im-porta:focus-visible { outline: 3px solid var(--ds-ring); outline-offset: 3px; }
+.im-porta h3 { font-family: var(--nl-font-display); font-weight: 800; font-size: 1.375rem; line-height: 1.15; letter-spacing: -.02em; }
+.im-porta p { margin-top: .4rem; font-size: .9375rem; line-height: 1.5; color: var(--im-suave); }
+.im-porta span[data-cta] { margin-top: .9rem; display: inline-flex; align-items: center; gap: .4rem; font-weight: 700; color: var(--im-link-escuro); }
+@media (prefers-reduced-motion: reduce) { .im-porta img { transition: none; } }
+
+/* Seção com foto ao lado (temas, planos). */
+.im-lado { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 900px) { .im-lado { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); } }
+.im-lado picture { display: block; overflow: hidden; border-radius: 1.5rem; aspect-ratio: 3 / 2; }
+.im-lado img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Entrada suave das seções (só com suporte nativo e sem pedido de menos movimento). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .im-surge { animation: im-surge linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+    @keyframes im-surge { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  }
+}

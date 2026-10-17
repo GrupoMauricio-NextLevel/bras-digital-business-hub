@@ -12,7 +12,13 @@ describe("home imersiva da E-commerce", () => {
       if (!existsSync(arq)) faltando.push(arq);
     }
     expect(faltando).toEqual([]);
-    expect(Object.keys(EC_HOME_FOTOS)).toHaveLength(18);
+    // Toda foto citada na página existe no acervo.
+    const pagina = readFileSync(join(process.cwd(), "src/components/portal/commerce/imersiva/home-imersiva.tsx"), "utf8");
+    const citadas = [...new Set(pagina.match(/"ec-[a-z0-9-]+"/g)!.map((n) => n.slice(1, -1)))];
+    expect(citadas.length).toBeGreaterThan(10);
+    for (const n of citadas) expect(Object.keys(EC_HOME_FOTOS)).toContain(n);
+    // Fotos com a tela do notebook virada para o lado errado (erro de IA) não vão ao ar.
+    for (const fora of ["ec-jornada-2-loja", "ec-jornada-5-rotina", "ec-porta-migrar", "ec-temas"]) expect(Object.keys(EC_HOME_FOTOS)).not.toContain(fora);
     expect(EC_HOME_PROVISORIAS).toBe(false); // fotos definitivas (D165)
   });
 
