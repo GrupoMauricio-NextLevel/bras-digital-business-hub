@@ -1,109 +1,144 @@
-# Kit oficial de cada marca no GPT (igual ao Brás Digital Club)
+# Reformulação completa de cada marca no GPT (logo + sistema visual), como no Brás Digital Club
 
-Objetivo: cada marca recebe o mesmo pacote que o Brás Digital Club recebeu (D158): logos transparentes para fundo claro e
-escuro, com e sem slogan, vertical, monogramas, ícone de app, peças 3D para o topo das páginas, prancha da marca, tokens e
-um `brand.config.json`. Com o pacote em mãos, o Claude aplica no sistema (painel + página pública) do mesmo jeito.
-
-**Regra principal:** as marcas do grupo já têm logo aprovada (família "NextLevel com raio"). O GPT **não redesenha**: completa
-o kit a partir da logo atual, preservando letras, raio, proporção e cores. Só a Brás ganhou identidade nova.
+Decisão do dono (17/10/2026): **reformular tudo**, marca por marca, do mesmo jeito que o Brás Digital Club (D158): logo nova
+e sistema visual completo. O GPT cria; o dono escolhe; o Claude aplica no sistema (painel + página pública), com fonte única,
+tema isolado, claro/escuro, ícones e conferência visual.
 
 ## Ordem
-| # | Marca | Por que nessa ordem | Arquivos para anexar (pasta do ZIP de referências) |
-|---|---|---|---|
-| 1 | NextLevel Commerce | Produto foco; a versão compacta hoje é "NextLevel" sem a palavra Commerce (o sistema completa com texto) | `01-nextlevel-commerce/` |
-| 2 | SuperDrop | Em produção com clientes; só completar o kit, sem mexer na logo | `02-superdrop/` |
-| 3 | NextLevel (grupo) | Vitrine em nextlevelgroup.com.br e Master | `03-nextlevel-grupo/` |
-| 4 | NextLevel Cargas | Maior falta hoje: logo escura veio com fundo sólido; sem monograma e sem favicon | `04-nextlevel-cargas/` |
-| 5 | Club, Loja NextLevel, Meu Contador, Parceiros | Logos já completas; faltam só peças 3D/topo (um pacote para as quatro) | `05` a `08` |
+| # | Marca | Por quê |
+|---|---|---|
+| 1 | **NextLevel (grupo)** | É a marca-mãe: define a família (como as marcas "assinam" o grupo, tipografia de apoio, navy/off-white compartilhados ou não). Vitrine em nextlevelgroup.com.br e no Master. Tudo que vier depois se encaixa nela. |
+| 2 | **NextLevel Commerce** | Produto foco. |
+| 3 | **SuperDrop** | Em produção com clientes: troca de marca com cuidado (aviso aos clientes, e-mails, loja). |
+| 4 | **NextLevel Cargas** | Hoje a mais incompleta (logo escura com fundo sólido, sem monograma). |
+| 5 | **Família do grupo**: NextLevel Club, Loja NextLevel, Meu Contador, Parceiros NextLevel | Submarcas: derivam da marca-mãe nova; uma conversa para as quatro. |
 
-Uma marca por conversa no ChatGPT. Ao terminar, mande o ZIP aqui e diga "aplica a marca X".
+Uma marca por conversa no ChatGPT, em **duas etapas**: A (propostas) → você escolhe → B (kit completo). Mande o ZIP final aqui
+e diga "aplica a marca X". O ZIP `referencias-marcas-gpt.zip` traz as logos atuais (só para contexto) e a prancha do Brás
+Digital Club (referência de **qualidade e formato de entrega**, não de estilo).
 
-## Prompt (copie, troque o bloco "DADOS DA MARCA" e anexe as logos atuais + a prancha do Brás como referência de formato)
+## Paletas já usadas no grupo (cada marca nova precisa ser distinguível destas)
+- Brás Digital Club: navy #0C1830, azul elétrico #315CFF, ciano #00D4FF (símbolo circular "b"/pulso).
+- Marcas ainda não reformuladas usam hoje: NextLevel amarelo #F5BC00, Commerce azul #2F81F4, SuperDrop verde #2D9E3B, Cargas índigo #4B4FD8 (podem mudar).
+- Conforme cada marca for aprovada, acrescente a paleta nova nesta lista antes de começar a próxima.
+
+---
+
+## ETAPA A: propostas (cole primeiro)
 
 ```
-Você é diretor de arte e designer de identidade. Vou anexar a LOGO ATUAL APROVADA da marca abaixo (versões para fundo claro
-e escuro e o monograma) e, como referência de FORMATO de entrega (não de estilo), a prancha do Brás Digital Club.
+Você é diretor de criação e designer de identidade de marca. Vamos REFORMULAR por completo a marca abaixo: logo nova e sistema
+visual completo para um site institucional e um painel de sistema (SaaS) usados todo dia. Em anexo: as logos ATUAIS (só para
+contexto do que existe, não precisa manter) e a prancha do Brás Digital Club, outra marca do grupo já reformulada: use como
+referência do nível de acabamento e do formato de entrega, NÃO copie o estilo, o símbolo nem as cores dela.
 
-Sua tarefa: completar o kit oficial desta marca, PRESERVANDO a logo atual. Não redesenhe, não troque fonte, não mude o raio,
-a inclinação, a proporção nem as cores. Só reproduza com fidelidade em alta resolução e monte as variações pedidas.
-
-DADOS DA MARCA
+BRIEFING
 - Nome exato: {NOME}
-- Slogan exato (usar só onde pedido): "{SLOGAN}"
-- Cores: navy {NAVY} · cor de assinatura {COR} · versão clara da cor (para fundo escuro) {COR_CLARA} · off-white #F4F1E9 · destaque do grupo #F5BC00 (só em detalhe)
-- O que a marca faz (para as peças 3D e a prancha): {DESCRICAO}
+- O que faz: {O_QUE_FAZ}
+- Para quem: {PARA_QUEM}
+- Personalidade: {PERSONALIDADE}
+- Slogan atual (pode propor melhor): "{SLOGAN}"
+- Grupo: faz parte do Grupo NextLevel ({RELACAO_COM_O_GRUPO})
+- Paletas já usadas no grupo, a nova precisa ser claramente diferente: {PALETAS_OCUPADAS}
+- Evitar: visual genérico de IA, gradiente roxo, ícone de carrinho/caixa óbvio, mascote, clichê de foguete; nada de números,
+  selos ou prêmios inventados.
 
-ENTREGA (um arquivo por imagem, PNG, nomes exatamente assim):
-logos/flat/
-  1. logo-clara.png — logo para fundo claro, FUNDO TRANSPARENTE, ~2000 px de largura, margem de respiro de 4% em volta
-  2. logo-escura.png — mesma logo para fundo escuro: lettering off-white #F4F1E9, raio na cor clara, FUNDO TRANSPARENTE (nunca navy embutido)
-  3. logo-clara-com-slogan.png — logo + slogan embaixo, fundo transparente
-  4. logo-escura-com-slogan.png — idem para fundo escuro, fundo transparente
-logos/vertical/
-  5. logo-vertical-clara.png e 6. logo-vertical-escura.png — monograma em cima e nome embaixo, fundo transparente, ~1200×1330
-logos/monogramas/
-  7. monograma-claro.png e 8. monograma-escuro.png — só o símbolo/monograma atual, quadrado 1254×1254, fundo transparente
-logos/app-icons/
-  9. app-icon-master.png — 1254×1254, monograma escuro centralizado sobre navy {NAVY}, cantos retos (o sistema arredonda), sem texto
-3d/ (peças de campanha 1672×941, sem nenhum texto, sem logo escrita, fundo opaco escuro)
-  10. 02-hero-sem-texto.png — o SÍMBOLO da marca em 3D (metal anodizado/vidro), à ESQUERDA do quadro (ocupando ~25% a 55% da largura), lado direito livre e escuro para o texto do site; iluminação na cor de assinatura
-  11. 01-vidro-optico.png — o símbolo em vidro óptico com reflexo no chão, centralizado
-  12. 03-camadas-translucidas.png — o símbolo em camadas translúcidas, luz cinética, centralizado
-referencias/
-  13. brand-board-aprovado.png — prancha 1672×941 com: logo clara e escura, monograma, paleta com os hexadecimais, aplicação clara e escura
-
-Depois das imagens, gere também (texto, sem imagem):
-  tokens/brand-tokens.json — { brand, name, tagline, colors{navy, signature, signatureLight, offWhite}, semantic{light{surface,
-    surfaceMuted, text, textMuted, action, focus}, dark{...}} } com contraste AA (texto 4,5:1) — confira os números
-  integration/brand.config.json — { id, name, shortName, tagline, canonicalUrl: null, theme{...}, assets{ caminhos acima } }
-  docs/INVENTARIO.md — lista de arquivos com dimensões e se o fundo é transparente
-
-REGRAS
-- Fundo TRANSPARENTE de verdade (canal alfa) em todas as logos e monogramas: sem quadriculado desenhado, sem fundo branco ou navy.
-- Nada de sombra, contorno, brilho, filtro ou deformação nas logos. Nas peças 3D, sim, pode ter luz e material.
-- Escreva o nome e o slogan exatamente como estão acima (acentos incluídos). Se não conseguir escrever com perfeição, me avise.
-- Não invente slogan, número, selo, cliente ou prêmio.
-- No final, junte tudo em um ZIP chamado {ARQUIVO}.zip com as pastas acima.
+ENTREGUE AGORA 3 DIREÇÕES DIFERENTES, cada uma numa prancha 1672×941 com:
+- símbolo/monograma + assinatura horizontal (fundo claro e fundo escuro);
+- paleta com 4 cores em hexadecimal (base escura, cor principal de ação, cor de destaque, neutro claro);
+- 1 frase de racional (o que o símbolo representa);
+- 2 propostas de slogan curto (até 7 palavras, sem promessa de ganho).
+O nome deve estar escrito EXATAMENTE como acima, com acentos. Depois das 3 pranchas, diga qual você recomenda e por quê.
 ```
 
-## Dados de cada marca (cole no bloco "DADOS DA MARCA")
+## ETAPA B: kit completo (cole depois de escolher, ex.: "Direção 2, slogan B")
 
-**1. NextLevel Commerce** · ZIP `nextlevel-commerce-kit`
-- Nome: NextLevel Commerce
-- Slogan: "A loja da sua marca, pronta para vender."
-- Cores: navy #0B1A36 · azul #2F81F4 · azul claro #71AAFF
-- Faz: plataforma de loja virtual com a marca do lojista (temas, Pix e cartão, frete) para marcas e lojistas no Brasil.
-- Atenção extra: a versão compacta deve ter "NextLevel" com o raio azul **e** a palavra "COMMERCE" embaixo (como a assinatura completa atual).
+```
+Aprovado: Direção {N}, slogan "{SLOGAN_ESCOLHIDO}". Agora produza o KIT OFICIAL completo, fiel à direção aprovada (mesmo
+símbolo, mesma tipografia, mesmas cores; sem redesenhar entre um arquivo e outro). Um arquivo por imagem, PNG, nomes exatos:
 
-**2. SuperDrop** · ZIP `superdrop-kit`
-- Nome: SuperDrop
-- Slogan: "Você vende. O fornecedor envia."
-- Cores: navy #0D1B34 · verde #2D9E3B · verde claro #62C268
-- Faz: loja online sem estoque; fornecedores parceiros separam e enviam cada pedido.
-- Atenção extra: logo em produção com clientes; reproduzir idêntica (itálico, raio verde entre "Super" e "Drop").
+logos/flat/
+  logo-clara.png — para fundo claro, FUNDO TRANSPARENTE (canal alfa real), ~2000 px de largura, respiro de 4%
+  logo-escura.png — para fundo escuro: lettering off-white, FUNDO TRANSPARENTE (nunca a cor de fundo embutida)
+  logo-clara-com-slogan.png e logo-escura-com-slogan.png — assinatura + slogan, fundo transparente
+logos/vertical/
+  logo-vertical-clara.png e logo-vertical-escura.png — símbolo em cima, nome embaixo, ~1180×1330, fundo transparente
+logos/monogramas/
+  monograma-claro.png e monograma-escuro.png — só o símbolo, 1254×1254, fundo transparente
+logos/favicons/
+  favicon-16.png, favicon-32.png, favicon-48.png e favicon.ico — símbolo simplificado legível em tamanho mínimo
+logos/app-icons/
+  app-icon-master.png (1254×1254, símbolo sobre a cor-base escura, sem texto), apple-touch-icon-180.png, icon-192.png, icon-512.png
+3d/ (peças de campanha 1672×941, fundo opaco escuro, SEM nenhum texto nem logo escrita)
+  00-master-flat.png — o símbolo plano, editorial
+  01-vidro-optico.png — o símbolo em vidro óptico, reflexo no chão, centralizado
+  02-metal-anodizado-sem-texto.png — o símbolo em metal anodizado, à ESQUERDA do quadro (entre 20% e 55% da largura), lado
+    direito livre e escuro para o texto do site (é a imagem do topo da página)
+  03-camadas-translucidas.png — camadas translúcidas, luz na cor de destaque
+  04-arquitetura-de-luz-cinetica.png — luz cinética, para vídeo/movimento
+referencias/
+  brand-board-aprovado.png — prancha 1672×941: logo clara e escura, símbolo, monograma, paleta com hexadecimais, aplicação clara e escura
 
-**3. NextLevel (grupo)** · ZIP `nextlevel-grupo-kit`
-- Nome: NextLevel · linha de apoio da assinatura: "SOLUÇÕES DIGITAIS"
-- Slogan: "Estrutura digital para o seu negócio ir além."
-- Cores: navy #101B34 · amarelo #F5BC00 (é a cor de assinatura do grupo)
-- Faz: grupo que opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas; loja virtual, migração, temas, tráfego e consultoria.
+Arquivos de texto:
+  tokens/brand-tokens.json e tokens/brand-tokens.css — cores da marca e papéis claro/escuro (surface, surfaceMuted,
+    surfaceBrandSoft, border, text, textMuted, action, actionHover, focus) com contraste AA conferido (texto 4,5:1; foco 3:1)
+  integration/brand.config.json — { id, name, shortName, tagline, publicRoute, canonicalUrl: null, theme{...}, assets{caminhos} }
+  docs/RACIONAL-DIRECAO-VISUAL.md — ideia central, papel de cada cor (proporção de uso), uso no site × no painel, regras das logos
+  docs/INVENTARIO.md — todos os arquivos, dimensões e se o fundo é transparente
 
-**4. NextLevel Cargas** · ZIP `nextlevel-cargas-kit`
-- Nome: NextLevel Cargas
-- Slogan: "Movimento que chega com controle."
-- Cores: navy #101B34 · índigo #4B4FD8 · índigo claro #9EA2FF
-- Faz: transportadoras e ônibus de excursão que levam as caixas do Brás para todo o Brasil, com coleta e retirada por código.
-- Atenção extra: a logo escura atual veio com **fundo navy sólido**; a nova tem de ser transparente. Criar o monograma "NL" com o raio índigo, no mesmo desenho dos monogramas do grupo (ver `03-nextlevel-grupo/logo-atual-monograma-*`).
+REGRAS: transparência real em logos/monogramas (sem quadriculado desenhado); nada de sombra, contorno, brilho ou deformação
+nas logos (nas peças 3D pode); nome e slogan escritos exatamente, com acentos (se algum arquivo sair com erro de letra, refaça);
+nada inventado (números, clientes, selos). No final, um ZIP {ARQUIVO}.zip com a pasta {PASTA}/ contendo tudo acima.
+```
 
-**5. Club, Loja NextLevel, Meu Contador e Parceiros** · ZIP `nextlevel-familia-kit`
-- Logos já estão completas: peça **só** as peças 3D (itens 10 a 12) e uma prancha de família, para cada uma:
-  - NextLevel Club · "Quanto mais você avança, mais valor acompanha." · amarelo #F5BC00 · programa de pontos do grupo
-  - Loja NextLevel · "Uma vitrine para quem vive o próximo nível." · amarelo #F5BC00 · temas, serviços e cursos da NextLevel
-  - Meu Contador · "Clareza para decidir. Organização para crescer." · azul #2F81F4 · apoio de contador parceiro para membros do Brás Digital Club
-  - Parceiros NextLevel · "Parcerias que transformam conexão em resultado." · verde #2D9E3B · programa de indicação com comissão
-  - Todas sobre navy #101B34; nomes dos arquivos com o prefixo da marca (ex.: `club-02-hero-sem-texto.png`).
+---
 
-## Depois que o pacote chegar
-O Claude faz para cada marca o mesmo da D158: copia os originais, gera versões leves, liga logo clara/escura e monograma no
-`BrandLogo`, favicons e ícones de app (gerados a partir do `app-icon-master`), prévia de link, topo da página com a peça 3D,
-confere contraste AA, claro/escuro, celular/tablet/computador, e publica.
+## Briefing de cada marca (preencha os campos da Etapa A)
+
+### 1. NextLevel (grupo) · ZIP `nextlevel-grupo-v2` · pasta `nextlevel`
+- NOME: NextLevel (linha de apoio na assinatura: "Grupo NextLevel" ou "Soluções Digitais", proponha)
+- O_QUE_FAZ: grupo de tecnologia e serviços para quem vende online no Brasil: opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas, e vende loja montada, migração, temas, tráfego e consultoria. Também é o painel central (Master) de todas as marcas.
+- PARA_QUEM: lojistas, marcas, importadoras e parceiros; e a própria equipe no painel.
+- PERSONALIDADE: estrutura, confiança, ambição sem exagero, "o próximo nível" com método.
+- SLOGAN: Estrutura digital para o seu negócio ir além.
+- RELACAO_COM_O_GRUPO: é a marca-mãe; proponha também como as outras marcas "assinam" o grupo (ex.: selo "um sistema NextLevel").
+- PALETAS_OCUPADAS: Brás Digital Club navy #0C1830, azul #315CFF, ciano #00D4FF.
+
+### 2. NextLevel Commerce · ZIP `nextlevel-commerce-v2` · pasta `nextlevel-commerce`
+- O_QUE_FAZ: plataforma de loja virtual com a marca do lojista: temas, Pix e cartão na conta do lojista, frete, painel.
+- PARA_QUEM: marcas e lojistas, principalmente moda, que querem loja própria.
+- PERSONALIDADE: elegante, editorial, confiável, "sua marca em primeiro lugar".
+- SLOGAN: A loja da sua marca, pronta para vender.
+- RELACAO_COM_O_GRUPO: produto do Grupo NextLevel (pode carregar "NextLevel" no nome; proponha se o símbolo deriva da marca-mãe nova).
+- PALETAS_OCUPADAS: Brás Digital Club + a paleta aprovada do grupo NextLevel.
+
+### 3. SuperDrop · ZIP `superdrop-v2` · pasta `superdrop`
+- O_QUE_FAZ: loja online sem estoque; fornecedores parceiros separam, embalam e enviam cada pedido; o lojista vende.
+- PARA_QUEM: quem quer começar a vender online sem estoque; fornecedores que querem revendedores.
+- PERSONALIDADE: rápido, prático, otimista, energia de movimento.
+- SLOGAN: Você vende. O fornecedor envia.
+- RELACAO_COM_O_GRUPO: produto do grupo, nome próprio forte (sem "NextLevel" no nome).
+- PALETAS_OCUPADAS: Brás Digital Club + grupo + Commerce aprovados.
+- Atenção: já tem clientes; a marca nova precisa ser reconhecível como evolução (o nome continua).
+
+### 4. NextLevel Cargas · ZIP `nextlevel-cargas-v2` · pasta `nextlevel-cargas`
+- O_QUE_FAZ: transportadoras e ônibus de excursão levando as caixas do Brás para todo o Brasil; coleta, retirada por código, frete combinado.
+- PARA_QUEM: transportadoras, motoristas, importadoras e lojistas que compram no Brás.
+- PERSONALIDADE: robusta, organizada, rota e controle.
+- SLOGAN: Movimento que chega com controle.
+- RELACAO_COM_O_GRUPO: produto do grupo ligado ao Brás Digital Club (logística dele).
+- PALETAS_OCUPADAS: todas as já aprovadas.
+
+### 5. Família: NextLevel Club, Loja NextLevel, Meu Contador, Parceiros NextLevel · ZIP `nextlevel-familia-v2`
+Etapa A única: "proponha um sistema de submarcas derivado da marca-mãe aprovada (anexo), com 2 direções; cada submarca com
+símbolo próprio dentro da mesma família e cor de destaque própria". Etapa B: o kit completo para as quatro, pastas
+`nextlevel-club`, `loja-nextlevel`, `meu-contador`, `parceiros`.
+- NextLevel Club: programa de pontos e vantagens válido em todas as marcas · "Quanto mais você avança, mais valor acompanha."
+- Loja NextLevel: temas, serviços e cursos da NextLevel, compra em 1 clique · "Uma vitrine para quem vive o próximo nível."
+- Meu Contador: apoio de contador parceiro para membros do Brás Digital Club · "Clareza para decidir. Organização para crescer."
+- Parceiros NextLevel: programa de indicação com comissão · "Parcerias que transformam conexão em resultado."
+
+## Depois de cada ZIP
+O Claude aplica como na D158: originais preservados, versões leves, fonte única da marca, tema isolado claro/escuro,
+logo por superfície, monograma na barra recolhida, favicons/app/manifesto, prévia de link, topo com a peça 3D, textos com o
+nome e o slogan novos, testes de contraste AA, capturas em celular/tablet/computador e publicação. Marca antiga arquivada.
