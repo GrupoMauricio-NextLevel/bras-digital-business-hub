@@ -22,7 +22,7 @@ import { NL } from "@/lib/marcas/nextlevel";
 import { FamiliaFoto } from "@/components/nl-store/familia-foto";
 import { FechoMarca } from "@/components/portal/marca-institucional";
 import { HeroiNextLevel } from "@/components/portal/nextlevel/heroi-nextlevel";
-import { VitrineSecoes } from "@/components/portal/solucoes/vitrine-v2";
+import { VitrineSecoes, fotoSolucoes } from "@/components/portal/solucoes/vitrine-v2";
 import { SelecaoProvider } from "@/components/portal/solucoes/selecao";
 import { projetarVitrine } from "@/lib/solucoes/vitrine";
 import { getSession } from "@/lib/auth";
@@ -106,7 +106,7 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
         </div>
       </section>
 
-      {vitrine ? <VitrineSecoes v={vitrine} porta={porta} previa={previa && !finFlag("FIN_SOLUTIONS_V2")} /> : <>
+      {vitrine ? <VitrineSecoes v={vitrine} porta={porta} previa={previa && !finFlag("FIN_SOLUTIONS_V2")} cursosHref={withAttribution("/loja-nextlevel", attr)} /> : <>
       <section id="jornada" className="px-4 py-16" aria-labelledby="jor-t">
         <div className="mx-auto max-w-6xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Método</p>
@@ -206,6 +206,10 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
 
       <section id="diagnostico" className="scroll-mt-20 bg-highlight-soft px-4 py-16" aria-labelledby="diag-t">
         <div className="mx-auto max-w-3xl">
+          {vitrine && fotoSolucoes("sol-campanha-diagnostico") ? (
+            // eslint-disable-next-line @next/next/no-img-element -- foto estática da vitrine (lote 3), decorativa
+            <img src={`${fotoSolucoes("sol-campanha-diagnostico")}-1600.webp`} srcSet={`${fotoSolucoes("sol-campanha-diagnostico")}-800.webp 800w, ${fotoSolucoes("sol-campanha-diagnostico")}-1600.webp 1600w`} sizes="(min-width: 768px) 48rem, 100vw" alt="" width={1600} height={1067} loading="lazy" decoding="async" className="mb-8 aspect-[3/1] w-full rounded-[1.25rem] object-cover object-[60%_45%]" />
+          ) : null}
           <h2 id="diag-t" className={H2}>Diagnóstico gratuito.</h2>
           <p className="mt-3 text-muted-foreground">Conte em que momento está o seu negócio. Respondemos com o próximo passo recomendado, sem compromisso.</p>
           <div className="mt-6"><DiagnosticoForm needs={Object.entries(DIAGNOSTIC_NEEDS)} /></div>

@@ -36,7 +36,7 @@ export function JornadaImersiva({ fases, quadros }: { fases: FaseJornada[]; quad
   );
   return (
     <div ref={ref} className="sol-jor" id="jornada">
-      <ImmersiveScroll steps={n} onStep={(s) => setPasso(s)} aria-label="Jornada em cinco fases" className="sol-jor-scroll" style={{ ["--n" as string]: n }}>
+      <ImmersiveScroll steps={n} onStep={(s) => setPasso(s)} aria-label="Jornada em cinco fases" className="sol-jor-scroll" data-foto={quadros.every((q) => q.foto) ? "sim" : "nao"} style={{ ["--n" as string]: n }}>
         <div className="sol-jor-palco">
           <div className="sol-jor-quadros" aria-hidden>{quadros.map((q, k) => img(q, k, `sol-jor-quadro${q.foto ? "" : " sol-jor-quadro--peca"}`, k === 0))}</div>
           <div className="sol-jor-veu" aria-hidden />

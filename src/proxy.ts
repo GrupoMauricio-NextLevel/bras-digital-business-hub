@@ -71,4 +71,5 @@ function route(req: NextRequest) {
   return NextResponse.rewrite(url);
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\.(?:png|jpg|jpeg|svg|webp|avif|ico|woff2)$).*)"] };
+// `.webmanifest` também é arquivo estático (manifesto dos aplicativos das marcas, D158/D161/D163): sem ele, ia para o login.
+export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\.(?:png|jpg|jpeg|svg|webp|avif|ico|woff2|webmanifest)$).*)"] };

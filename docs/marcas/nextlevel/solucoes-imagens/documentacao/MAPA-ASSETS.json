@@ -1,0 +1,218 @@
+[
+  {
+    "file": "lote-1/sol-jornada-1-fundacao.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-1-fundacao.png",
+    "section": "jornada",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-2-lancamento.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-2-lancamento.png",
+    "section": "jornada",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-3-aquisicao.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-3-aquisicao.png",
+    "section": "jornada",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-4-otimizacao.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-4-otimizacao.png",
+    "section": "jornada",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-5-escala.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-5-escala.png",
+    "section": "jornada",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-1-fundacao-retrato.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-1-fundacao-retrato.png",
+    "section": "jornada",
+    "textZone": "top",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-2-lancamento-retrato.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-2-lancamento-retrato.png",
+    "section": "jornada",
+    "textZone": "top",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-3-aquisicao-retrato.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-3-aquisicao-retrato.png",
+    "section": "jornada",
+    "textZone": "top",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-4-otimizacao-retrato.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-4-otimizacao-retrato.png",
+    "section": "jornada",
+    "textZone": "top",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-1/sol-jornada-5-escala-retrato.png",
+    "publicPath": "/images/solucoes/lote-1/sol-jornada-5-escala-retrato.png",
+    "section": "jornada",
+    "textZone": "top",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-2/sol-porta-comecar.png",
+    "publicPath": "/images/solucoes/lote-2/sol-porta-comecar.png",
+    "section": "portas",
+    "textZone": "bottom",
+    "objectPosition": "50% 45%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-2/sol-porta-migrar.png",
+    "publicPath": "/images/solucoes/lote-2/sol-porta-migrar.png",
+    "section": "portas",
+    "textZone": "bottom",
+    "objectPosition": "50% 45%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-2/sol-porta-vender-mais.png",
+    "publicPath": "/images/solucoes/lote-2/sol-porta-vender-mais.png",
+    "section": "portas",
+    "textZone": "bottom",
+    "objectPosition": "50% 45%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-2/sol-porta-minha-plataforma.png",
+    "publicPath": "/images/solucoes/lote-2/sol-porta-minha-plataforma.png",
+    "section": "portas",
+    "textZone": "bottom",
+    "objectPosition": "50% 45%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-3/sol-campanha-commerce.png",
+    "publicPath": "/images/solucoes/lote-3/sol-campanha-commerce.png",
+    "section": "campanhas",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-3/sol-campanha-temas.png",
+    "publicPath": "/images/solucoes/lote-3/sol-campanha-temas.png",
+    "section": "campanhas",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-3/sol-campanha-diagnostico.png",
+    "publicPath": "/images/solucoes/lote-3/sol-campanha-diagnostico.png",
+    "section": "campanhas",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-3/sol-fecho.png",
+    "publicPath": "/images/solucoes/lote-3/sol-fecho.png",
+    "section": "fecho",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-plataforma.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-plataforma.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-superdrop.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-superdrop.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-loja-pronta.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-loja-pronta.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-migracao.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-migracao.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-temas.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-temas.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-marketing.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-marketing.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-consultoria.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-consultoria.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-white-label.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-white-label.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  },
+  {
+    "file": "lote-4/sol-familia-cursos.png",
+    "publicPath": "/images/solucoes/lote-4/sol-familia-cursos.png",
+    "section": "familias",
+    "textZone": "left",
+    "objectPosition": "50% 50%",
+    "illustrative": true
+  }
+]

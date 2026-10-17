@@ -16,22 +16,26 @@ import "./solucoes.css";
  * e as fotos das famílias. Nenhum preço fixo aqui: tudo vem da projeção do catálogo (`projetarVitrine`).
  */
 export const SOL_FOTOS = "/portal/nextlevel/v4/solucoes";
-const foto = (nome: string) => (existsSync(join(process.cwd(), "public", `${SOL_FOTOS}/${nome}-1600.webp`)) ? `${SOL_FOTOS}/${nome}` : null);
+/** Base do arquivo (sem tamanho e extensão) quando a foto do pacote existe; null quando ainda não chegou. */
+export const fotoSolucoes = (nome: string) => (existsSync(join(process.cwd(), "public", `${SOL_FOTOS}/${nome}-1600.webp`)) ? `${SOL_FOTOS}/${nome}` : null);
 const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl";
+
+const foto = fotoSolucoes;
 
 /** Títulos de cada fase (copy da vitrine); o objetivo vem da configuração da jornada no Master. */
 const TITULO_FASE: Record<string, string> = {
-  FUNDACAO: "Antes da primeira venda, a estrutura.",
-  LANCAMENTO: "Loja no ar, vitrine pronta para vender.",
-  AQUISICAO: "Gente certa chegando todos os dias.",
-  OTIMIZACAO: "Vender mais para quem já conhece você.",
-  ESCALA: "Uma operação que acompanha o crescimento.",
+  // Copy revisada com o pacote de imagens: sem prometer constância de vendas nem resultado.
+  FUNDACAO: "Antes de vender, organize a base.",
+  LANCAMENTO: "Da estrutura à loja no ar.",
+  AQUISICAO: "Aquisição com direção e consistência.",
+  OTIMIZACAO: "Melhore a experiência de quem já conhece você.",
+  ESCALA: "Prepare a operação para novos volumes.",
 };
 const NOME_FOTO_FASE = ["fundacao", "lancamento", "aquisicao", "otimizacao", "escala"];
 const PECAS_RESERVA = [`${NL_PECAS_3D[0]!.replace("01-vidro-optico", "00-master-flat")}`, NL_PECAS_3D[0]!, NL_PECAS_3D[1]!, NL_PECAS_3D[2]!, NL_HEROI.base];
 const FOTO_FAMILIA_V3: Record<string, string> = { COMMERCE_PLAN: "nl-familia-planos", MIGRACAO: "nl-familia-migracao", MARKETING: "nl-familia-marketing", WHITE_LABEL: "nl-familia-white-label", LOJA_PRONTA: "nl-familia-loja-pronta", CONSULTORIA: "nl-familia-consultoria", TEMA: "nl-familia-temas" };
 const PORTA_FOTO: Record<PortaKey, string> = { COMECAR: "sol-porta-comecar", MIGRAR: "sol-porta-migrar", VENDER_MAIS: "sol-porta-vender-mais", PLATAFORMA: "sol-porta-minha-plataforma" };
-const FAMILIA_FOTO: Record<string, string> = { COMMERCE_PLAN: "sol-familia-plataforma", SUPERDROP: "sol-familia-superdrop", LOJA_PRONTA: "sol-familia-loja-pronta", MIGRACAO: "sol-familia-migracao", MARKETING: "sol-familia-marketing", CONSULTORIA: "sol-familia-consultoria", WHITE_LABEL: "sol-familia-white-label" };
+const FAMILIA_FOTO: Record<string, string> = { COMMERCE_PLAN: "sol-familia-plataforma", SUPERDROP: "sol-familia-superdrop", LOJA_PRONTA: "sol-familia-loja-pronta", MIGRACAO: "sol-familia-migracao", MARKETING: "sol-familia-marketing", CONSULTORIA: "sol-familia-consultoria", WHITE_LABEL: "sol-familia-white-label", TEMA: "sol-familia-temas", CURSOS: "sol-familia-cursos" };
 
 function Img({ base, alt = "", className, sizes = "(min-width: 768px) 50vw, 100vw", v3 }: { base: string; alt?: string; className?: string; sizes?: string; v3?: boolean }) {
   // Fotos novas (v4) têm 800/1600 em WebP; as das famílias (v3) têm um arquivo WebP só.
@@ -48,7 +52,7 @@ function FotoFamilia({ familia, className }: { familia: string; className?: stri
   return <Img base={NL_PECAS_3D[1]!} className={className} />;
 }
 
-export function VitrineSecoes({ v, porta, previa = false }: { v: VitrineSolucoes; porta: PortaKey | null; /** Prévia do Master (chave desligada): os filtros mantêm `previa=v2` no endereço. */ previa?: boolean }) {
+export function VitrineSecoes({ v, porta, previa = false, cursosHref }: { v: VitrineSolucoes; porta: PortaKey | null; /** Prévia do Master (chave desligada): os filtros mantêm `previa=v2` no endereço. */ previa?: boolean; /** Loja NextLevel (cursos e assessorias), com atribuição. */ cursosHref: string }) {
   const qp = previa ? "previa=v2&" : "";
   const quadros: QuadroJornada[] = NOME_FOTO_FASE.slice(0, v.fases.length).map((n, k) => {
     const f = foto(`sol-jornada-${k + 1}-${n}`);
@@ -122,6 +126,19 @@ export function VitrineSecoes({ v, porta, previa = false }: { v: VitrineSolucoes
               </section>
             );
           })}
+          {/* Temas e cursos têm páginas próprias: aqui, um cartão que leva até elas (sem repetir o catálogo). */}
+          {!ativa || ativa.familias.includes("TEMA") ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              <a href="#temas" className="group grid overflow-hidden rounded-[1.25rem] border border-border bg-surface sm:grid-cols-[1fr_1.1fr] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-ring)]">
+                <div className="aspect-[3/2] overflow-hidden bg-[var(--nlg-marinho)] sm:aspect-auto"><FotoFamilia familia="TEMA" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" /></div>
+                <div className="p-5"><h3 className="text-xl font-bold">Temas</h3><p className="mt-1 text-muted-foreground">Estilos para cada segmento, com loja de demonstração para navegar antes.</p><span className="mt-3 inline-flex items-center gap-1.5 font-semibold text-link">Ver os temas <ArrowRight className="size-4" aria-hidden /></span></div>
+              </a>
+              <a href={cursosHref} className="group grid overflow-hidden rounded-[1.25rem] border border-border bg-surface sm:grid-cols-[1fr_1.1fr] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-ring)]">
+                <div className="aspect-[3/2] overflow-hidden bg-[var(--nlg-marinho)] sm:aspect-auto"><FotoFamilia familia="CURSOS" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" /></div>
+                <div className="p-5"><h3 className="text-xl font-bold">Cursos e assessorias</h3><p className="mt-1 text-muted-foreground">Produtos digitais e assessorias na Loja NextLevel, com compra sem precisar de conta.</p><span className="mt-3 inline-flex items-center gap-1.5 font-semibold text-link">Ver a Loja NextLevel <ArrowRight className="size-4" aria-hidden /></span></div>
+              </a>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -132,9 +149,10 @@ export function VitrineSecoes({ v, porta, previa = false }: { v: VitrineSolucoes
             {v.campanhas.map((c) => {
               const f = foto("sol-campanha-commerce");
               return (
-                <div key={c.key} className="ds-tema-escuro relative isolate grid min-h-[22rem] items-center overflow-hidden rounded-[1.5rem] bg-[var(--nlg-marinho)] p-8 text-[var(--nlg-gelo)] md:p-12">
-                  <div aria-hidden className="absolute inset-0 -z-10"><Img base={f ?? NL_PECAS_3D[2]!} className="size-full object-cover object-right opacity-90" sizes="100vw" /><div className="absolute inset-0 bg-[linear-gradient(90deg,var(--nlg-marinho)_0%,color-mix(in_srgb,var(--nlg-marinho)_80%,transparent)_45%,transparent_85%)]" /></div>
-                  <div className="max-w-xl">
+                <div key={c.key} className="ds-tema-escuro relative isolate grid overflow-hidden rounded-[1.5rem] bg-[var(--nlg-marinho)] text-[var(--nlg-gelo)] md:min-h-[24rem] md:items-center">
+                  {/* Celular: foto em cima, texto embaixo (sem texto sobre o assunto); computador: texto à esquerda, sobre a parede marinho da foto. */}
+                  <div aria-hidden className="relative aspect-[3/2] md:absolute md:inset-0 md:-z-10 md:aspect-auto"><Img base={f ?? NL_PECAS_3D[2]!} className="size-full object-cover object-[50%_50%] md:object-[70%_50%]" sizes="100vw" /><div className="absolute inset-0 hidden bg-[linear-gradient(90deg,var(--nlg-marinho)_0%,color-mix(in_srgb,var(--nlg-marinho)_75%,transparent)_40%,transparent_75%)] md:block" /></div>
+                  <div className="max-w-xl p-8 md:p-12">
                     <p className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--nlg-luminoso)]"><Sparkles className="size-4" aria-hidden />Condição da vez</p>
                     <h2 id="campanha-t" className="mt-3 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight text-white md:text-4xl">{c.titulo}</h2>
                     <p className="mt-3 text-lg text-[var(--nlg-texto-suave)]">{c.texto}</p>
@@ -150,9 +168,14 @@ export function VitrineSecoes({ v, porta, previa = false }: { v: VitrineSolucoes
       {/* Temas em exposição: compra única, com loja de demonstração. */}
       <section id="temas" aria-labelledby="temas-t" className="scroll-mt-16 bg-surface px-4 py-16 md:py-20">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-link">Temas</p>
-          <h2 id="temas-t" className={`${H2} mt-3 max-w-3xl`}>Temas que vendem pela primeira impressão.</h2>
-          <p className="mt-3 max-w-3xl text-lg text-muted-foreground">Compra única, sem mensalidade. Abra a loja de demonstração e navegue antes de comprar. Esta página usa a mesma tecnologia de movimento do tema Pódio.</p>
+          <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-link">Temas</p>
+              <h2 id="temas-t" className={`${H2} mt-3 max-w-3xl`}>Sua vitrine, com mais personalidade.</h2>
+              <p className="mt-3 max-w-3xl text-lg text-muted-foreground">Compra única, sem mensalidade. Abra a loja de demonstração e navegue antes de comprar. Esta página usa a mesma tecnologia de movimento do tema Pódio.</p>
+            </div>
+            {foto("sol-campanha-temas") ? <div className="aspect-[3/2] overflow-hidden rounded-[1.25rem] bg-[var(--nlg-marinho)]"><Img base={foto("sol-campanha-temas")!} className="size-full object-cover" /></div> : null}
+          </div>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {v.temas.slice(0, 6).map((t) => (
               <li key={t.key} id={`tema-${t.key}`} className="sol-item flex flex-col rounded-[1.25rem] border border-border bg-surface p-5">

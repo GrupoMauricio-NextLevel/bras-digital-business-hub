@@ -8,7 +8,7 @@
 .sol-jor-scroll[data-immersive="on"] .sol-jor-palco { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .sol-jor-quadros { position: absolute; inset: 0; }
 .sol-jor-quadro { position: absolute; inset: 0; opacity: 0; transition: opacity 700ms ease; }
-.sol-jor-quadro img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; transform: scale(calc(1.04 + var(--p, 0) * .05)); }
+.sol-jor-quadro img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: scale(calc(1.04 + var(--p, 0) * .05)); }
 .sol-jor-quadro--peca img { object-position: 85% 50%; }
 .sol-jor-scroll[data-step="0"] .sol-jor-quadro:nth-child(1), .sol-jor-scroll[data-step="1"] .sol-jor-quadro:nth-child(2),
 .sol-jor-scroll[data-step="2"] .sol-jor-quadro:nth-child(3), .sol-jor-scroll[data-step="3"] .sol-jor-quadro:nth-child(4),
@@ -45,8 +45,12 @@
 @media (max-width: 767px) {
   .sol-jor-veu { background: linear-gradient(0deg, var(--nlg-marinho) 0%, color-mix(in srgb, var(--nlg-marinho) 90%, transparent) 48%, color-mix(in srgb, var(--nlg-marinho) 25%, transparent) 75%, transparent 100%); }
   .sol-jor-scroll[data-immersive="on"] .sol-jor-conteudo { align-content: end; padding-bottom: 5rem; }
+  /* Fotos em retrato: o texto fica na área calma de cima e a cena (pessoas, mesa) aparece embaixo. */
+  .sol-jor-scroll[data-foto="sim"][data-immersive="on"] .sol-jor-conteudo { align-content: start; padding-top: 4.5rem; }
+  .sol-jor-scroll[data-foto="sim"] .sol-jor-veu { background: linear-gradient(180deg, var(--nlg-marinho) 0%, color-mix(in srgb, var(--nlg-marinho) 88%, transparent) 42%, color-mix(in srgb, var(--nlg-marinho) 15%, transparent) 72%, transparent 100%); }
+  .sol-jor-scroll[data-foto="sim"] .sol-jor-quadro img { object-position: 50% 100%; }
   .sol-jor-scroll[data-immersive="on"] .sol-jor-cabeca { display: none; }
-  .sol-jor-quadro img, .sol-jor-quadro--peca img { object-position: 50% 30%; }
+  .sol-jor-quadro--peca img { object-position: 50% 30%; }
   .sol-jor-rotulo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .sol-jor-itens li:nth-child(n+4) { display: none; }
 }
