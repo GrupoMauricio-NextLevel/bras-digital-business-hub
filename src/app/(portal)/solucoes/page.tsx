@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowDown, Check } from "lucide-react";
+import { ArrowDown, ArrowRight, Mail, MessageCircle } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
 import { groupSiteUrl } from "@/lib/host-routing";
@@ -18,8 +18,11 @@ import { JsonLd } from "@/components/portal/json-ld";
 import { formatBRL } from "@/lib/money";
 import { DiagnosticoForm } from "./diagnostico-form";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
+import { NL } from "@/lib/marcas/nextlevel";
 import { FamiliaFoto } from "@/components/nl-store/familia-foto";
-import { AberturaMarca, FechoMarca, VitrineMarca } from "@/components/portal/marca-institucional";
+import { FechoMarca } from "@/components/portal/marca-institucional";
+import { HeroiNextLevel } from "@/components/portal/nextlevel/heroi-nextlevel";
+import { supportContacts } from "@/lib/support";
 import { BrandLogo } from "@/components/brand/brand-logo";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +35,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl";
 
+/** Dúvidas reais sobre a contratação, só com o que o sistema e o catálogo já fazem (sem número, prazo ou resultado prometido). */
+const FAQ_SOLUCOES = [
+  { q: "O diagnóstico tem custo?", a: "Não. Você conta o momento do seu negócio no formulário abaixo e recebe o próximo passo recomendado, sem compromisso." },
+  { q: "Como sei o preço de cada solução?", a: "Quando o preço é fixo, ele está publicado na página da solução, com as formas de pagamento. Quando depende do seu cenário, a solução aparece como sob consulta e você recebe uma proposta por escrito." },
+  { q: "Quais formas de pagamento vocês aceitam?", a: "Pix e cartão, conforme cada solução. Onde o produto permite, o Pix tem desconto e o cartão pode ser parcelado." },
+  { q: "A verba de anúncios passa pela NextLevel?", a: "Não. Na gestão de anúncios, a verba é paga por você direto à plataforma (Meta, Google, Mercado Livre). A NextLevel cobra só a gestão." },
+  { q: "Consigo trazer a minha loja de outra plataforma?", a: "Sim, pela Migração. Ela atende lojas de plataformas como Shopify, Nuvemshop, Tray, WooCommerce, Loja Integrada, Yampi e WBuy; o limite de produtos e o que entra em cada pacote estão descritos na página da solução." },
+  { q: "Vocês garantem resultado de vendas?", a: "Não. Entregamos o que está escrito no escopo de cada solução. O resultado depende do seu produto, do preço e da operação." },
+  { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera o SuperDrop, a NextLevel Commerce, o Brás Digital Club e a NextLevel Cargas." },
+];
+
 export default async function SolucoesPage() {
   if (!finFlag("FIN_PUBLIC_SOLUTIONS")) notFound();
   const db = await getDb();
@@ -43,46 +57,51 @@ export default async function SolucoesPage() {
   const commerceHref = withAttribution(`${brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl}/planos`, attr);
   const superdropHref = withAttribution(`${brand.code === "SUPERDROP" ? "" : superdrop.baseUrl}/`, attr);
   const MARCAS_DO_GRUPO = [superdrop, commerce, brandByCode("BRAS_DIGITAL"), brandByCode("NEXTLEVEL_CARGAS")];
+  const contato = supportContacts();
   return (
     <>
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
+        { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ_SOLUCOES.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
         { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${groupSiteUrl()}/solucoes/${p.slug}`, name: p.name })) },
       ]} />
-      <AberturaMarca
-        slug="nextlevel"
-        eyebrow="Soluções para empresas que vendem online"
-        titulo={<>Estrutura digital para o seu negócio <span className="text-[#F5BC00]">ir além.</span></>}
-        texto="Loja virtual, revenda sem estoque, loja montada pela equipe, migração, temas e marketing, do mesmo grupo. Comece pelo diagnóstico gratuito e receba o próximo passo por escrito."
-        foto={{ nome: "hero-key-visual", posicao: "68% 50%", alt: "Equipe da NextLevel reunida numa mesa de trabalho, com o centro de distribuição ao fundo" }}
+      {/* Marca-mãe v2 (D161): herói marinho com a assinatura Prisma Digital e a peça 3D do pacote; textos e botões em HTML. */}
+      <HeroiNextLevel
+        titulo={<>O próximo nível começa com <span className="text-[var(--nlg-luminoso)]">estrutura.</span></>}
+        texto="Tecnologia, serviços e operações conectadas para quem vende online: loja virtual, revenda sem estoque, loja montada pela equipe, migração, temas e marketing, do mesmo grupo. Comece pelo diagnóstico gratuito e receba o próximo passo por escrito."
         ctas={[{ href: "#diagnostico", label: "Fazer diagnóstico gratuito", primary: true }, { href: "#catalogo", label: "Ver soluções e preços" }]}
-      >
-        <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#F4F1E9]/80">
-          {["Diagnóstico sem custo", "Preço publicado ou proposta por escrito", "Sem promessa de faturamento"].map((t) => <li key={t} className="flex items-center gap-2"><Check className="size-4 text-[#F5BC00]" aria-hidden />{t}</li>)}
-        </ul>
-      </AberturaMarca>
+        pontos={["Diagnóstico sem custo", "Preço publicado ou proposta por escrito", "Sem promessa de faturamento"]}
+      />
 
-      <section aria-labelledby="marcas-t" className="border-b border-border bg-canvas">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-10 gap-y-5 px-4 py-8">
-          <h2 id="marcas-t" className="text-sm font-semibold text-muted-foreground">As marcas do grupo:</h2>
-          <ul className="flex flex-wrap items-center gap-x-10 gap-y-5">
+      {/* Ecossistema: cada marca com a própria logo (versão para fundo escuro) e o papel dela; links reais. */}
+      <section aria-labelledby="eco-t" className="ds-tema-escuro bg-[var(--nlg-marinho)] px-4 pb-16 pt-14 text-[var(--nlg-gelo)] md:pb-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--nlg-luminoso)]">Ecossistema</p>
+          <h2 id="eco-t" className={`${H2} mt-3 text-white`}>Um grupo, várias frentes.</h2>
+          <p className="mt-3 max-w-3xl text-lg text-[var(--nlg-texto-suave)]">Quem começa numa marca encontra as outras quando o negócio pede: loja própria, revenda sem estoque, atacado e transporte. Cada produto é {NL.endosso.produto}.</p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {MARCAS_DO_GRUPO.map((m) => (
-              <li key={m.code}><a href={withAttribution(`${m.baseUrl}/`, attr)} className="flex items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-4"><BrandLogo brand={m} className="h-8 md:h-9" /></a></li>
+              <li key={m.code}>
+                <a href={withAttribution(`${m.baseUrl}/`, attr)} className="group flex h-full flex-col rounded-[1.25rem] border border-[var(--nlg-linha-escura)] bg-[var(--nlg-marinho-2)] p-5 transition-colors hover:border-[var(--nlg-luminoso)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--nlg-luminoso)]">
+                  <span className="flex h-12 items-center"><BrandLogo brand={m} tone="on-dark" className="h-8 max-w-full" /></span>
+                  <span className="mt-4 flex-1 text-base text-[var(--nlg-texto-suave)]">{m.tagline}.</span>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white">Conhecer <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden /><span className="sr-only">{m.name}</span></span>
+                </a>
+              </li>
             ))}
           </ul>
         </div>
       </section>
-      <VitrineMarca slug="nextlevel" titulo="Uma estrutura, várias frentes" comFoto={false} />
 
       <section id="jornada" className="px-4 py-16" aria-labelledby="jor-t">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Como trabalhamos</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Método</p>
           <h2 id="jor-t" className={`${H2} mt-3`}>Uma jornada em cinco fases.</h2>
           <p className="mt-3 max-w-3xl text-lg text-muted-foreground">Cada fase tem um objetivo e soluções que ajudam a cumprir. Dentro do painel, a jornada mede o que já está pronto na sua loja e mostra o próximo passo.</p>
           <ol className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             {journey.phases.map((p, i) => (
               <li key={p.key} className="flex flex-col rounded-[1.25rem] border border-border bg-surface p-5">
-                <span aria-hidden className="grid size-11 place-items-center rounded-full bg-[#101B34] font-[family-name:var(--nl-font-display)] text-lg font-extrabold text-[#F5BC00]">{i + 1}</span>
+                <span aria-hidden className="grid size-11 place-items-center rounded-full bg-[var(--nlg-marinho)] font-[family-name:var(--nl-font-display)] text-lg font-extrabold text-[var(--nlg-luminoso)] ring-1 ring-[var(--nlg-linha-escura)]">{i + 1}</span>
                 <h3 className="mt-4 text-xl font-extrabold"><span className="sr-only">Fase {i + 1}: </span>{p.name}</h3>
                 <p className="mt-2 text-base text-body">{p.goal}</p>
                 <ul className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">{pub.filter((x) => x.phase === p.key).slice(0, 4).map((x) => <li key={x.key}><Link href={withAttribution(`/solucoes/${x.slug}`, attr)} className="text-link underline underline-offset-2">{x.name}</Link></li>)}</ul>
@@ -144,12 +163,26 @@ export default async function SolucoesPage() {
           <h2 id="junto-t" className={H2}>Três caminhos. Você escolhe.</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[["Fazer sozinho", "Você configura tudo, no seu tempo. Funciona bem para quem tem conhecimento técnico e tempo livre; o risco é deixar brechas no checkout, no frete e na mensuração."], ["Contratar um produto isolado", "Resolve um ponto específico (um tema, uma migração, uma campanha). Bom quando você já sabe exatamente o que falta."]].map(([t, d]) => <div key={t} className="rounded-[1.25rem] border border-border bg-surface p-6"><h3 className="text-lg font-bold">{t}</h3><p className="mt-2 text-muted-foreground">{d}</p></div>)}
-            <div className="rounded-[1.25rem] bg-[#101B34] p-6 text-[#F4F1E9]">
-              <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#F5BC00]">Recomendado</p>
+            <div className="rounded-[1.25rem] bg-[var(--nlg-marinho)] p-6 text-[var(--nlg-gelo)] ring-1 ring-[var(--nlg-linha-escura)]">
+              <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--nlg-luminoso)]">Recomendado</p>
               <h3 className="mt-2 text-lg font-bold">Evoluir pela jornada NextLevel</h3>
-              <p className="mt-2 text-[#F4F1E9]/85">O diagnóstico aponta a fase em que você está e o próximo passo. Cada solução prepara a seguinte, e um parceiro pode acompanhar você do começo ao fim.</p>
-              <a href="#diagnostico" className="mt-4 inline-flex items-center gap-2 font-semibold text-[#F5BC00] underline underline-offset-4">Começar pelo diagnóstico <ArrowDown className="size-4" aria-hidden /></a>
+              <p className="mt-2 text-[var(--nlg-texto-suave)]">O diagnóstico aponta a fase em que você está e o próximo passo. Cada solução prepara a seguinte, e um parceiro pode acompanhar você do começo ao fim.</p>
+              <a href="#diagnostico" className="mt-4 inline-flex items-center gap-2 font-semibold text-[var(--nlg-link-escuro)] underline underline-offset-4">Começar pelo diagnóstico <ArrowDown className="size-4" aria-hidden /></a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="duvidas" className="px-4 pb-16" aria-labelledby="faq-t">
+        <div className="mx-auto max-w-3xl">
+          <h2 id="faq-t" className={H2}>Dúvidas.</h2>
+          <div className="mt-8 divide-y divide-border rounded-[1.25rem] border border-border bg-surface">
+            {FAQ_SOLUCOES.map((f) => (
+              <details key={f.q} className="group px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-md text-lg font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">{f.q}<span aria-hidden className="text-2xl leading-none text-link transition-transform group-open:rotate-45">+</span></summary>
+                <p className="mt-2 text-muted-foreground">{f.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
@@ -161,6 +194,13 @@ export default async function SolucoesPage() {
           <h2 id="diag-t" className={H2}>Diagnóstico gratuito.</h2>
           <p className="mt-3 text-muted-foreground">Conte em que momento está o seu negócio. Respondemos com o próximo passo recomendado, sem compromisso.</p>
           <div className="mt-6"><DiagnosticoForm needs={Object.entries(DIAGNOSTIC_NEEDS)} /></div>
+          {contato.whatsappUrl || contato.email ? (
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+              <span className="text-muted-foreground">Prefere conversar?</span>
+              {contato.whatsappUrl ? <a href={contato.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero conversar sobre as soluções da NextLevel.")}`)} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 font-semibold text-link underline underline-offset-4"><MessageCircle className="size-4" aria-hidden />WhatsApp</a> : null}
+              {contato.email ? <a href={`mailto:${contato.email}`} className="inline-flex min-h-11 items-center gap-2 font-semibold text-link underline underline-offset-4"><Mail className="size-4" aria-hidden />{contato.email}</a> : null}
+            </div>
+          ) : null}
         </div>
       </section>
     </>

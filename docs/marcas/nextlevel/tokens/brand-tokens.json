@@ -1,0 +1,80 @@
+{
+  "brand": "nextlevel",
+  "name": "NextLevel",
+  "supportLine": "SOLUÇÕES DIGITAIS",
+  "version": "2.0.0",
+  "approvedDirection": "Prisma Digital integral",
+  "palette": {
+    "navy": "#070F22",
+    "royal": "#365BFF",
+    "sky": "#12B8F4",
+    "turquoise": "#2AD7C0",
+    "ice": "#F3F6FC"
+  },
+  "gradients": {
+    "signature": "linear-gradient(135deg, #365BFF 0%, #12B8F4 55%, #2AD7C0 100%)",
+    "accent": "linear-gradient(90deg, #365BFF 0%, #12B8F4 60%, #2AD7C0 100%)"
+  },
+  "themes": {
+    "light": {
+      "surface": "#FFFFFF",
+      "surfaceMuted": "#F3F6FC",
+      "surfaceBrandSoft": "#EAF0FF",
+      "surfaceElevated": "#FFFFFF",
+      "text": "#070F22",
+      "textMuted": "#4A5D78",
+      "border": "#D6E0F1",
+      "borderStrong": "#71839E",
+      "action": "#274BE5",
+      "actionHover": "#1F3DCA",
+      "actionActive": "#1932AD",
+      "textOnAction": "#FFFFFF",
+      "link": "#274BE5",
+      "focus": "#274BE5",
+      "success": "#136B46",
+      "warning": "#8A4B08",
+      "danger": "#B42338",
+      "info": "#2057A6"
+    },
+    "dark": {
+      "surface": "#070F22",
+      "surfaceMuted": "#101E38",
+      "surfaceBrandSoft": "#162C4F",
+      "surfaceElevated": "#162845",
+      "text": "#F3F6FC",
+      "textMuted": "#B2C1D8",
+      "border": "#334966",
+      "borderStrong": "#6C88AD",
+      "action": "#365BFF",
+      "actionHover": "#4265FF",
+      "actionActive": "#274BE5",
+      "textOnAction": "#FFFFFF",
+      "link": "#80B8FF",
+      "focus": "#12B8F4",
+      "success": "#6EE7A8",
+      "warning": "#F5C971",
+      "danger": "#FFA2B0",
+      "info": "#80B8FF"
+    }
+  },
+  "geometry": {
+    "radiusSm": "8px",
+    "radiusMd": "14px",
+    "radiusLg": "24px",
+    "radiusPill": "999px",
+    "spacingUnit": "4px",
+    "controlMinHeight": "44px",
+    "contentMaxWidth": "1280px"
+  },
+  "typography": {
+    "logo": "Lettering autoral Orbital em Avanço; utilizar PNGs fornecidos",
+    "ui": "Inter, Manrope ou fonte sans-serif já instalada no projeto; preferência à família existente",
+    "fallback": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+  },
+  "motion": {
+    "fast": "160ms",
+    "standard": "220ms",
+    "hero": "600ms",
+    "reducedMotion": "Desativar efeitos decorativos quando prefers-reduced-motion: reduce"
+  }
+}

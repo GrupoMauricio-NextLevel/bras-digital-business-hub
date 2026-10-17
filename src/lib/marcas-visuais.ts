@@ -6,6 +6,7 @@
  * Textos sem métrica, depoimento ou promessa de ganho; só o que o sistema faz hoje.
  */
 import { BDC, BDC_LOGOS } from "@/lib/marcas/bras-digital-club";
+import { NL, NL_PECAS_3D } from "@/lib/marcas/nextlevel";
 
 export type AssetStatus = "complete" | "partial" | "pending";
 export type MarcaSlug = "nextlevel" | "superdrop" | "nextlevel-commerce" | "bras-digital" | "nextlevel-cargas" | "nextlevel-club" | "loja-nextlevel" | "meu-contador" | "parceiros";
@@ -20,6 +21,8 @@ export type MarcaVisual = {
   logos: { clara?: boolean; escura?: boolean; monograma?: boolean; ratio: number };
   /** Kit institucional completo (13 arquivos) ou nenhum. */
   imagens: boolean;
+  /** Peça 3D da marca para a chamada final quando não há kit de fotos (NextLevel v2, D161). */
+  peca3d?: string;
   status: { logos: AssetStatus; imagens: AssetStatus };
   headline: string;
   apoio: string;
@@ -33,7 +36,10 @@ export type MarcaVisual = {
 const LOGO = 2172 / 724;
 export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
   nextlevel: {
-    slug: "nextlevel", nome: "NextLevel", accent: "#F5BC00", logos: { ratio: LOGO }, imagens: true, status: { logos: "complete", imagens: "complete" },
+    slug: "nextlevel", nome: NL.name, accent: NL.cores.azulLuminoso, logos: { ratio: LOGO },
+    // Marca v2 (D161): o kit de fotos v1 (linhas e detalhes amarelos) saiu das páginas da marca-mãe; ele fica em
+    // `public/marcas/nextlevel/imagens` só para as páginas da família (Club, Loja NextLevel) até elas ganharem kit próprio.
+    imagens: false, peca3d: NL_PECAS_3D[1], status: { logos: "complete", imagens: "partial" },
     headline: "Estrutura digital para negócios que querem ir além.",
     apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas.",
     icones: [

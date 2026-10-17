@@ -2,7 +2,9 @@
 
 > Página: `nextlevelgroup.com.br/solucoes`. Referência de navegação: o tema **Pódio** (R$ 999,00, nível 4) em
 > `lojas.nextlevelgroup.com.br/demo/podio`. Par técnico deste arquivo: `solucoes-vitrine-imersiva-construcao.md`.
-> Estado: **salvo em 2026-10-17**. O dono gera as imagens no GPT e traz um ZIP por lote; o código é feito em paralelo.
+> Estado: **revisado em 2026-10-17 para a marca NextLevel v2** (NL Orbital, Prisma Digital; D161). A versão anterior
+> usava o navy #101B34 com o amarelo; não use mais.
+> Estado anterior: **salvo em 2026-10-17**. O dono gera as imagens no GPT e traz um ZIP por lote; o código é feito em paralelo.
 
 ---
 
@@ -61,11 +63,14 @@ Isso é verdade sobre o produto (a jornada existe no painel e mede o progresso d
 - **Sem marcas de terceiros** (nada de Shopify, Instagram, Google, Mercado Livre, Apple visíveis).
 - **Pessoas brasileiras reais**, diversidade natural de idade, cor e corpo, roupa de trabalho comum (não terno, não
   figurino de "startup"). Mãos e rostos naturais; ninguém olhando para a câmera com sorriso de propaganda.
-- **Paleta do grupo:** azul-marinho profundo `#101B34`, amarelo NextLevel `#F5BC00` como **um único detalhe** por cena
-  (uma luminária, uma cadeira, a fita de uma caixa), e o off-white `#F4F1E9` em paredes e papéis. Madeira clara e
-  papelão kraft. Nada de neon, roxo ou gradiente de tecnologia.
-- **Luz:** natural, entrando por uma janela grande à esquerda; sombras suaves; aspecto de foto editorial (35 mm,
-  f/2.8, leve granulação). Nunca aparência 3D de plástico.
+- **Paleta da marca v2:** marinho `#070F22` (estrutura, roupas, paredes de destaque), gelo `#F3F6FC` em paredes e papéis,
+  e **um único ponto de luz da marca** por cena: uma luz de LED, uma tela ou um reflexo em degradê royal `#365BFF` →
+  azul luminoso `#12B8F4` → turquesa `#2AD7C0` (uma fita de luz numa prateleira, a luz do estúdio, o brilho de um monitor).
+  Madeira clara e papelão kraft continuam para dar calor humano. Nada de amarelo, verde, roxo ou neon espalhado.
+- **A foto não compete com a logo:** a assinatura Prisma Digital é brilhante; a fotografia fica sóbria e natural, com a
+  luz da marca só como pontuação. Nunca desenhe a logo, o "N" ou o monograma dentro da cena (as peças 3D do kit já existem).
+- **Luz:** natural e fria, entrando por uma janela grande à esquerda, mais o ponto de luz azul-turquesa da marca;
+  sombras suaves; aspecto de foto editorial (35 mm, f/2.8, leve granulação). Nunca aparência 3D de plástico.
 - **Espaço para texto:** nas imagens de topo e de campanha, o terço esquerdo fica mais calmo e escuro (o texto entra ali).
 - **Sem promessa visual de riqueza:** nada de dinheiro, carro, troféu, gráfico explodindo para cima.
 
@@ -80,10 +85,11 @@ fotografada pela mesma equipe, no mesmo lugar, com a mesma luz.
 BÍBLIA VISUAL (vale para todas as imagens, sem exceção):
 - Fotografia editorial realista, 35 mm, f/2.8, luz natural vinda de uma janela grande à ESQUERDA, sombras suaves,
   leve granulação de filme. Nunca render 3D, nunca ilustração, nunca aparência de banco de imagens.
-- Lugar-base: um galpão-escritório brasileiro de pé-direito alto, paredes off-white (#F4F1E9), piso de concreto
+- Lugar-base: um galpão-escritório brasileiro de pé-direito alto, paredes gelo (#F3F6FC), piso de concreto
   claro, mesas de madeira clara, papelão kraft, plantas reais. Ao fundo, a janela grande com caixilho escuro.
-- Paleta: azul-marinho profundo (#101B34) em roupas, cadeiras ou paredes de destaque; UM único detalhe amarelo
-  (#F5BC00) por imagem (uma luminária, uma cadeira, uma fita adesiva). Nada de neon, roxo ou gradientes.
+- Paleta: marinho profundo (#070F22) em roupas, cadeiras ou paredes de destaque; UM único ponto de luz da marca por
+  imagem, em degradê royal (#365BFF) → azul luminoso (#12B8F4) → turquesa (#2AD7C0): uma fita de LED, a luz do
+  estúdio ou o brilho de uma tela. Nada de amarelo, verde, roxo ou neon espalhado. Nunca desenhe logotipo ou letra "N"
 - Pessoas brasileiras reais e diversas (idade, cor, corpo), roupas de trabalho comuns, concentradas no que fazem,
   sem olhar para a câmera, sem pose de propaganda. Mãos anatomicamente corretas.
 - Telas de notebook, celular e monitor mostram interface ABSTRATA: blocos, miniaturas de produtos, gráficos sem
@@ -115,7 +121,7 @@ Pasta de destino no sistema: `public/portal/nextlevel/v4/solucoes/` (eu cuido di
 ```
 Imagem 1 de 5 da série "o negócio que cresce". Câmera fixa a 1,6 m de altura, enquadramento amplo do galpão-escritório
 vazio de manhã cedo. Uma mesa de madeira clara no centro-direita com um notebook aberto (tela com blocos abstratos),
-um caderno com rascunhos sem texto legível, três caixas kraft fechadas no chão e uma luminária de mesa AMARELA.
+um caderno com rascunhos sem texto legível, três caixas kraft fechadas no chão e uma luminária de mesa com luz azul-turquesa suave.
 Duas pessoas (uma mulher negra de 30 anos e um homem de 45 anos) debruçadas sobre o caderno, planejando. O resto do
 espaço está quase vazio: prateleiras de metal desmontadas encostadas na parede do fundo. Luz fria e suave da manhã.
 Terço esquerdo calmo, com a janela e a parede.
@@ -125,7 +131,7 @@ Terço esquerdo calmo, com a janela e a parede.
 ```
 Mesma cena, mesma câmera, mesmo enquadramento da imagem anterior; o tempo passou algumas semanas. A loja virtual está
 no ar: o notebook mostra uma vitrine abstrata com fotos de produtos. A mulher embala o primeiro pedido numa caixa kraft
-com fita AMARELA, o homem confere uma etiqueta sem texto legível. Uma prateleira já montada com poucos produtos.
+com fita marinho, o homem confere uma etiqueta sem texto legível. Uma prateleira já montada com poucos produtos.
 Clima de pequena conquista, sem comemoração exagerada. Luz do fim da manhã.
 ```
 
@@ -133,15 +139,15 @@ Clima de pequena conquista, sem comemoração exagerada. Luz do fim da manhã.
 ```
 Mesma cena, mesma câmera, mesmo enquadramento; mais algumas semanas. Um canto do espaço virou mini estúdio: celular num
 tripé, luz de estúdio redonda, fundo off-white de papel. Um rapaz de 25 anos grava um produto na mão; a mulher acompanha
-o vídeo numa segunda tela com interface abstrata. Duas prateleiras montadas, mais caixas prontas. Um detalhe AMARELO
-(uma cadeira). Luz do meio-dia, mais quente.
+o vídeo numa segunda tela com interface abstrata. Duas prateleiras montadas, mais caixas prontas. O ponto de luz da
+marca é a fita de LED azul-turquesa sob uma prateleira. Luz do meio-dia, mais quente.
 ```
 
 **J4 · `sol-jornada-4-otimizacao.png` · 1536x1024**
 ```
 Mesma cena, mesma câmera, mesmo enquadramento; meses depois. Um monitor grande na parede mostra gráficos abstratos SEM
 números ou letras. Quatro pessoas em pé conversando diante dele, uma delas aponta algo. Ao lado, uma bancada de
-embalagem organizada com pacotes de clientes que voltaram a comprar (caixas kraft com fita AMARELA). Prateleiras
+embalagem organizada com pacotes de clientes que voltaram a comprar (caixas kraft com fita marinho). Prateleiras
 cheias e etiquetadas sem texto legível. Luz de início de tarde.
 ```
 
@@ -149,7 +155,7 @@ cheias e etiquetadas sem texto legível. Luz de início de tarde.
 ```
 Mesma cena, mesma câmera, mesmo enquadramento; um ano depois. O galpão inteiro está em operação: fileiras de
 prateleiras cheias ao fundo, oito pessoas trabalhando em funções diferentes (embalando, conferindo, numa reunião em
-pé, num notebook), carrinhos com caixas kraft. A mesa original continua no mesmo lugar com a luminária AMARELA, agora
+pé, num notebook), carrinhos com caixas kraft. A mesa original continua no mesmo lugar com a luminária de luz azul-turquesa, agora
 cercada pela operação. Luz dourada de fim de tarde entrando pela janela à esquerda. Sensação de organização, não de
 correria.
 ```
@@ -176,7 +182,7 @@ Depois peça **variações retrato** (1024x1536) de J1 a J5, com os nomes `sol-j
 **P1 · `sol-porta-comecar.png`**
 ```
 Retrato vertical. Mãos de uma mulher de 35 anos abrindo a primeira caixa de produtos sobre a mesa de madeira clara do
-galpão-escritório; ao fundo desfocado, o notebook aberto e a luminária AMARELA. Sensação de começo. Terço inferior
+galpão-escritório; ao fundo desfocado, o notebook aberto e a luminária de luz azul-turquesa. Sensação de começo. Terço inferior
 mais escuro para receber texto.
 ```
 
@@ -184,20 +190,20 @@ mais escuro para receber texto.
 ```
 Retrato vertical. Dois notebooks lado a lado na mesa: o da esquerda mostra uma vitrine antiga e apagada, o da direita
 a mesma vitrine renovada e luminosa (ambas abstratas, sem texto). Um homem de 50 anos, de perfil, compara as duas.
-Caixas kraft com fita AMARELA de mudança ao lado. Terço inferior mais escuro.
+Caixas kraft com fita marinho de mudança ao lado. Terço inferior mais escuro.
 ```
 
 **P3 · `sol-porta-vender-mais.png`**
 ```
 Retrato vertical. Uma jovem de 24 anos grava um produto com o celular no tripé, luz de estúdio redonda, fundo de papel
-off-white. Na mesa, um segundo celular mostra um anúncio abstrato. Detalhe AMARELO na luz. Terço inferior mais escuro.
+off-white. Na mesa, um segundo celular mostra um anúncio abstrato. A luz do estúdio tem um leve tom azul-turquesa. Terço inferior mais escuro.
 ```
 
 **P4 · `sol-porta-minha-plataforma.png`**
 ```
 Retrato vertical. Uma agência pequena: três pessoas numa mesa de reunião com notebooks mostrando várias lojas
-diferentes lado a lado (abstratas, cores diferentes, sem texto). Parede azul-marinho (#101B34) ao fundo, cadeira
-AMARELA. Sensação de "nossa própria marca". Terço inferior mais escuro.
+diferentes lado a lado (abstratas, cores diferentes, sem texto). Parede marinho (#070F22) ao fundo com uma fita de
+luz azul-turquesa. Sensação de "nossa própria marca". Terço inferior mais escuro.
 ```
 
 ### Lote 3: o cardápio (uma foto por família, mesma série) — 9 imagens · 1536x1024
@@ -210,9 +216,9 @@ AMARELA. Sensação de "nossa própria marca". Terço inferior mais escuro.
 | `sol-familia-plataforma.png` | Plataforma Commerce | notebook com a vitrine abstrata de uma loja, ao lado um celular com o mesmo checkout abstrato e uma maquininha desligada; mãos ajustando a foto de um produto |
 | `sol-familia-superdrop.png` | SuperDrop | estante de fornecedor com caixas padronizadas e etiquetas sem texto; uma pessoa separando um pedido; no primeiro plano, um celular com a loja do revendedor |
 | `sol-familia-loja-pronta.png` | Loja Pronta | equipe de duas pessoas montando uma loja no monitor grande para um cliente sentado ao lado, que observa; amostras de produtos fotografados sobre a mesa |
-| `sol-familia-migracao.png` | Migração | cabos organizados, dois notebooks, uma planilha abstrata sendo conferida linha a linha com uma régua AMARELA |
+| `sol-familia-migracao.png` | Migração | cabos organizados, dois notebooks, uma planilha abstrata sendo conferida linha a linha com uma régua de metal |
 | `sol-familia-temas.png` | Temas | três telas (notebook, tablet, celular) mostrando a mesma vitrine abstrata em três estilos diferentes; amostras de tecido e papel ao lado |
-| `sol-familia-marketing.png` | Marketing | mesa de planejamento de conteúdo: celular no tripé, fotos impressas de produtos sem texto, post-its AMARELOS em branco |
+| `sol-familia-marketing.png` | Marketing | mesa de planejamento de conteúdo: celular no tripé, fotos impressas de produtos sem texto, post-its em branco |
 | `sol-familia-consultoria.png` | Consultoria | duas pessoas frente a frente com um caderno aberto com diagramas sem texto; monitor com gráfico abstrato ao fundo |
 | `sol-familia-white-label.png` | White Label | parede azul-marinho com várias telas mostrando lojas diferentes; uma pessoa em pé apresentando a um pequeno grupo |
 | `sol-familia-cursos.png` | Cursos e assessorias | uma pessoa assistindo a uma aula num notebook com fone, caderno de anotações sem texto legível, xícara de café, luz da tarde |
@@ -222,7 +228,7 @@ AMARELA. Sensação de "nossa própria marca". Terço inferior mais escuro.
 **C1 · `sol-campanha-commerce.png` · 1536x1024** (faixa larga; o site recorta em 21:9)
 ```
 Mesma série. Plano amplo e baixo: a mesa de madeira com o notebook aberto na vitrine abstrata, luz de manhã, muito
-espaço vazio e calmo à esquerda (metade esquerda quase toda parede off-white e sombra). Detalhe AMARELO na luminária.
+espaço vazio e calmo à esquerda (metade esquerda quase toda parede off-white e sombra). Ponto de luz azul-turquesa na luminária.
 ```
 
 **C2 · `sol-campanha-temas.png` · 1536x1024**
@@ -245,7 +251,7 @@ café, olhar cansado mas concentrado. Luz da tela e de uma luminária.
 
 **K2 · `sol-caminho-produto.png` · 1024x1536**
 ```
-Retrato. Mãos entregando uma única caixa kraft com fita AMARELA para outras mãos, em cima da mesa de madeira. Simboliza
+Retrato. Mãos entregando uma única caixa kraft com fita marinho para outras mãos, em cima da mesa de madeira. Simboliza
 contratar uma solução específica.
 ```
 
@@ -257,17 +263,20 @@ trabalhando. Sensação de caminho percorrido.
 
 **F1 · `sol-fecho.png` · 1536x1024**
 ```
-Mesma série, fim do dia: o galpão em operação com as luzes acesas, a mesa original com a luminária AMARELA em
+Mesma série, fim do dia: o galpão em operação com as luzes acesas, a mesa original com a luminária azul-turquesa em
 primeiro plano à direita, uma cadeira vazia puxada como convite. Metade esquerda escura e calma para o texto final.
 ```
 
-Imagem de compartilhamento (OG): eu recorto a J5 em 1200x630; não precisa gerar.
+Imagem de compartilhamento (OG): a do kit da marca v2 (`og-nextlevel-1200x630`); não precisa gerar.
+
+**Topo da página:** a marca v2 já entregou a peça `3d/02-metal-anodizado-sem-texto` para o topo institucional
+(D161). A jornada que cresce (Lote 1) entra logo abaixo dela, como segunda seção, não no lugar dela.
 
 ## 7. Conferência antes de me mandar (2 minutos por lote)
 
 - [ ] Nenhuma letra, número ou logotipo em lugar nenhum (amplie as telas e as caixas).
-- [ ] As cinco da jornada têm o **mesmo ângulo**: janela à esquerda, mesa no mesmo lugar, luminária amarela visível.
-- [ ] Um só detalhe amarelo por imagem.
+- [ ] As cinco da jornada têm o **mesmo ângulo**: janela à esquerda, mesa no mesmo lugar, luminária azul-turquesa visível.
+- [ ] Um só ponto de luz azul-turquesa da marca por imagem; nenhum amarelo; nenhuma logo ou letra "N" na cena.
 - [ ] Mãos com cinco dedos, rostos naturais, ninguém posando para a câmera.
 - [ ] Terço esquerdo calmo nas imagens de topo, campanha e fecho.
 - [ ] Os recortes (J6 e J7) têm fundo **transparente** de verdade (sem quadriculado desenhado).

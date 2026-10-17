@@ -4,6 +4,7 @@
  * Cada combinação de leitura é conferida em `tests/brand-palette.test.ts` (WCAG AA).
  */
 import { BDC } from "@/lib/marcas/bras-digital-club";
+import { NL } from "@/lib/marcas/nextlevel";
 
 export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
 
@@ -37,7 +38,12 @@ export const PALETTES: Record<PaletteCode, BrandPalette> = {
   CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.
   NEXTLEVEL_CARGAS: pal(["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
-  NEXTLEVEL: pal(["#F5BC00", "#7B4C00"], ["#F5BC00", "#F5BC00"], "#101B34"),
+  // NextLevel v2 (D161): royal de ação como sinal; no escuro, o royal do pacote com o link claro como texto.
+  NEXTLEVEL: {
+    light: { paper: NL.claro.surfaceMuted, ink: NL.cores.marinho, signal: NL.claro.action, signalText: NL.claro.link },
+    dark: { paper: NL.escuro.surface, ink: NL.cores.gelo, signal: NL.escuro.action, signalText: NL.escuro.link },
+    support: NL.cores.turquesa, darkFirst: false,
+  },
 };
 
 const channel = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };

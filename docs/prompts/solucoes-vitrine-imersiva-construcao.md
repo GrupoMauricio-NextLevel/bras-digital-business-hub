@@ -2,7 +2,26 @@
 
 > Página: `/solucoes` no site do grupo (`src/app/(portal)/solucoes/page.tsx`) e `/solucoes/<produto>`.
 > Par visual: `solucoes-vitrine-imersiva-imagens-gpt.md` (racional, bíblia visual e lotes de imagens para o GPT).
-> Estado: **salvo em 2026-10-17, pronto para executar**. Próxima decisão: **D161**.
+> Estado: **revisado em 2026-10-17 para a marca NextLevel v2 (D161)**, pronto para executar. Próxima decisão: **D162**.
+
+## Parte 0. O que muda com a marca NextLevel v2 (D161)
+
+A marca-mãe trocou o navy + amarelo pelo **NL Orbital com acabamento Prisma Digital**: marinho `#070F22`, royal
+`#365BFF` (ação `#274BE5` no claro), azul luminoso `#12B8F4`, turquesa `#2AD7C0` e gelo `#F3F6FC`. A D161 já aplica a
+marca no site do grupo e no Master. Para esta vitrine, isso significa:
+
+- **Cores e logos só da fonte única** `src/lib/marcas/nextlevel.ts` (tema `nextlevel` em `themes.ts`, `BrandLogo` com a
+  marca `NEXTLEVEL`). Nenhum hexadecimal novo nos componentes da vitrine; nenhum amarelo.
+- **O topo de `/solucoes` já é o herói da marca** (peça `3d/02-metal-anodizado-sem-texto`, título e botões em HTML). A
+  **jornada imersiva entra como segunda seção**, logo abaixo dele, e não o substitui: o herói apresenta a marca; a
+  jornada conduz à escolha.
+- **Prisma Digital é da logo, não da interface:** botões sólidos na cor de ação com texto branco; o degradê royal →
+  turquesa só em filetes, a régua da jornada (traço do passo atual) e bordas de destaque. Nunca texto branco sobre a
+  ponta turquesa do degradê.
+- **Fotos sóbrias** (prompt de imagens revisado): o brilho fica na marca; a foto leva só um ponto de luz azul-turquesa.
+- **Reservas de imagem:** enquanto o Lote 1 não chega, o passo da jornada usa as peças 3D do kit em fundo marinho
+  (`3d/01`, `03`, `04`) no lugar de foto, em vez da foto antiga `hero-key-visual` (que era da linguagem amarela).
+
 
 ---
 
@@ -132,7 +151,7 @@ servidor **não muda** (mesmo esquema, mesmo limite de 6 necessidades).
 - Pasta: `public/portal/nextlevel/v4/solucoes/` com AVIF + WebP em 800 e 1600 (conversão com `sharp`, já instalado;
   nomes no padrão que `formatosDisponiveis` procura). Manifesto `MANIFESTO.md` na pasta.
 - Componente: reaproveitar `FotoOpcional`/`formatosDisponiveis` (estender o tipo `Marca` ou aceitar subpasta), com
-  **reserva** automática: jornada sem foto → `hero-key-visual` atual; família sem foto nova → `nl-familia-*` atual;
+  **reserva** automática: jornada sem foto → peças 3D do kit v2 em fundo marinho; família sem foto nova → `nl-familia-*` atual;
   porta sem foto → cor sólida do grupo com o ícone. A página nunca quebra esperando imagem.
 - Primeiro quadro com `fetchPriority="high"` e dimensões reservadas; demais `loading="lazy"`; quadros 2 a 5 só
   carregam depois do primeiro passo (como o `HeroImmersive` faz).
@@ -170,7 +189,8 @@ Regras inegociáveis:
 3. Links de contratação usam só caminhos que já existem (cadastro Commerce, login com voltar para
    /merchant/services/solucao/<slug>, /loja-nextlevel, site da marca, diagnóstico). Toda URL passa por withAttribution.
 4. Sem número, depoimento, cliente ou logo inventado; sem promessa de faturamento.
-5. Imagem ausente nunca quebra: reserva para as fotos atuais (hero-key-visual, nl-familia-*).
+5. Imagem ausente nunca quebra: reserva para as peças 3D do kit v2 e as fotos `nl-familia-*`. Cores e logos só de
+   src/lib/marcas/nextlevel.ts (marca v2, D161): nada de amarelo, botões sólidos, degradê só em filetes.
 6. Acessibilidade AA, teclado completo, prefers-reduced-motion (último quadro parado + lista por fase), sem rolagem
    horizontal em 360 px, carrossel com botão de pausa, um h1 só.
 7. A página nova fica atrás da chave FIN_SOLUTIONS_V2 (src/lib/finance/flags.ts, padrão desligado). Com a chave
@@ -214,7 +234,7 @@ S7 · Imagens. Quando o dono entregar um lote: conferir uma a uma (texto escondi
      da J5. Capturas com as fotos reais.
 
 S8 · Acabamento e liberação. Três rodadas de ajuste comparando com o Pódio lado a lado; Lighthouse contra a S0
-     (LCP ≤ 2,5 s, CLS < 0,05, acessibilidade 100); axe; npm run build; D161 em docs/design/DECISIONS.md; atualizar
+     (LCP ≤ 2,5 s, CLS < 0,05, acessibilidade 100); axe; npm run build; D162 em docs/design/DECISIONS.md; atualizar
      docs/prompts/README.md. Entregue ao dono: link da prévia, capturas, números antes/depois e a pergunta "posso ligar
      a chave FIN_SOLUTIONS_V2?". Só ligue a chave com o OK dele.
 

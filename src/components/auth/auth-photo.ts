@@ -1,6 +1,7 @@
 import { statSync } from "node:fs";
 import { join } from "node:path";
 import type { BrandCode } from "@/lib/brand";
+import { NL_PECAS_3D } from "@/lib/marcas/nextlevel";
 
 /**
  * Foto da tela de entrada: só fotos de direção de arte da PRÓPRIA marca (manifestos em public/portal/<marca>/v3).
@@ -20,7 +21,8 @@ const LOGIN_PHOTOS: Partial<Record<BrandCode, AuthPhoto[]>> = {
     { src: "/portal/commerce/v3/cm-dono-gestao.webp", alt: "", position: "48% 40%" },
   ],
   BRAS_DIGITAL: [{ src: "/portal/bras/v3/bd-cadastro-lateral.webp", alt: "", position: "50% 40%" }],
-  NEXTLEVEL: [{ src: "/portal/nextlevel/v3/nl-login-lateral.webp", alt: "", position: "50% 45%" }],
+  // Marca v2 (D161): a peça 3D "vidro óptico" do pacote (vidro e metal ficam na autenticação e nos momentos institucionais).
+  NEXTLEVEL: [{ src: `${NL_PECAS_3D[0]}-1600.webp`, alt: "", position: "50% 55%" }],
 };
 
 const existe = (src: string) => { try { return statSync(join(process.cwd(), "public", src)).size > 0; } catch { return false; } };

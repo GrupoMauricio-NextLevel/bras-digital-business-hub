@@ -1,0 +1,63 @@
+/* NextLevel v2 — tokens restritos ao contexto da marca. Adaptar ao provider existente. */
+[data-brand="nextlevel"] {
+  --nl-navy: #070F22;
+  --nl-royal: #365BFF;
+  --nl-sky: #12B8F4;
+  --nl-turquoise: #2AD7C0;
+  --nl-ice: #F3F6FC;
+  --nl-gradient: linear-gradient(135deg, #365BFF 0%, #12B8F4 55%, #2AD7C0 100%);
+  --nl-gradient-line: linear-gradient(90deg, #365BFF 0%, #12B8F4 60%, #2AD7C0 100%);
+  --nl-radius-sm: 8px;
+  --nl-radius-md: 14px;
+  --nl-radius-lg: 24px;
+  --nl-radius-pill: 999px;
+  --nl-control-min-height: 44px;
+  --nl-motion-fast: 160ms;
+  --nl-motion-standard: 220ms;
+  --nl-surface: #FFFFFF;
+  --nl-surface-muted: #F3F6FC;
+  --nl-surface-brand-soft: #EAF0FF;
+  --nl-surface-elevated: #FFFFFF;
+  --nl-text: #070F22;
+  --nl-text-muted: #4A5D78;
+  --nl-border: #D6E0F1;
+  --nl-border-strong: #71839E;
+  --nl-action: #274BE5;
+  --nl-action-hover: #1F3DCA;
+  --nl-action-active: #1932AD;
+  --nl-text-on-action: #FFFFFF;
+  --nl-link: #274BE5;
+  --nl-focus: #274BE5;
+  --nl-success: #136B46;
+  --nl-warning: #8A4B08;
+  --nl-danger: #B42338;
+  --nl-info: #2057A6;
+  color-scheme: light;
+}
+
+[data-brand="nextlevel"][data-theme="dark"] {
+  --nl-surface: #070F22;
+  --nl-surface-muted: #101E38;
+  --nl-surface-brand-soft: #162C4F;
+  --nl-surface-elevated: #162845;
+  --nl-text: #F3F6FC;
+  --nl-text-muted: #B2C1D8;
+  --nl-border: #334966;
+  --nl-border-strong: #6C88AD;
+  --nl-action: #365BFF;
+  --nl-action-hover: #4265FF;
+  --nl-action-active: #274BE5;
+  --nl-text-on-action: #FFFFFF;
+  --nl-link: #80B8FF;
+  --nl-focus: #12B8F4;
+  --nl-success: #6EE7A8;
+  --nl-warning: #F5C971;
+  --nl-danger: #FFA2B0;
+  --nl-info: #80B8FF;
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-brand="nextlevel"] { --nl-motion-fast: 0ms; --nl-motion-standard: 0ms; }
+}
+

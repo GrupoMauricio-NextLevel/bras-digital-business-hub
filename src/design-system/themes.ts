@@ -11,6 +11,7 @@
  */
 import { contrastRatio, luminance, onSignal } from "@/lib/brand-palette";
 import { BDC, bdcCssVars } from "@/lib/marcas/bras-digital-club";
+import { NL, nlCssVars } from "@/lib/marcas/nextlevel";
 
 export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play", "cargas"] as const;
 export type ThemeKey = (typeof THEME_KEYS)[number];
@@ -62,11 +63,14 @@ const produto = (label: string, l: [string, string], d: [string, string]): Theme
   dark: { ...N.dark, ...GRUPO.dark, primary: d[0], link: d[1], canvas: mix(N.dark.canvas, d[0], 0.05), surface: mix(N.dark.surface, d[0], 0.06) },
 });
 export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
+  // NextLevel v2 (D161): marca-mãe, Master e site do grupo, cores do pacote oficial (`src/lib/marcas/nextlevel.ts`).
+  // Marinho na estrutura (barra lateral marinho também no claro), área de trabalho gelo/branco, ação royal (o tom mais
+  // escuro do pacote no claro, para texto branco passar AA), azul luminoso como reflexo e foco no escuro, turquesa como
+  // acento decorativo. O amarelo do grupo saiu da marca-mãe; nos produtos (abaixo) ele continua como destaque secundário.
   nextlevel: {
     label: "NextLevel Soluções Digitais (grupo e Master)",
-    // O grupo assina com a barra lateral navy e o amarelo do raio.
-    light: { ...N.light, primary: "#F5BC00", link: "#7B4C00", accent: "#101B34", accentText: "#101B34", accentSoft: "#E6E8EE", sideBg: "#101B34" },
-    dark: { ...N.dark, primary: "#F5BC00", link: "#F5BC00", accent: "#B3B9CA", accentText: "#D6DAE5" },
+    light: { canvas: NL.claro.surfaceMuted, surface: NL.claro.surface, ink: NL.cores.marinho, primary: NL.claro.action, link: NL.claro.link, accent: NL.cores.turquesa, accentText: NL.cores.marinho, accentSoft: NL.claro.surfaceBrandSoft, reflection: NL.cores.azulLuminoso, sideBg: NL.cores.marinho, ring: NL.claro.focus },
+    dark: { canvas: NL.escuro.surface, surface: NL.escuro.surfaceMuted, ink: NL.cores.gelo, primary: NL.escuro.action, link: NL.escuro.link, accent: NL.cores.turquesa, accentText: NL.cores.turquesa, reflection: NL.cores.azulLuminoso, ring: NL.escuro.focus },
   },
   commerce: produto("NextLevel Commerce", ["#196BD8", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
   superdrop: produto("SuperDrop", ["#118728", "#03721D"], ["#62C268", "#62C268"]),
@@ -175,8 +179,8 @@ const decls = (c: ThemeColors) => Object.entries(c).map(([k, v]) => `--ds-${came
  */
 /** Paleta categórica de gráficos (validada): igual em todos os temas, pois distingue séries, não marca. */
 export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"] as const;
-// Junto vão as constantes `--bdc-*` da Brás Digital Club: nomes próprios, lidos só pelos componentes da Brás.
-const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}}`;
+// Junto vão as constantes `--bdc-*` da Brás Digital Club e `--nlg-*` da marca-mãe: nomes próprios, lidos só pelos componentes de cada uma.
+const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}}`;
 
 export function themeCss(key: ThemeKey): string {
   const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));

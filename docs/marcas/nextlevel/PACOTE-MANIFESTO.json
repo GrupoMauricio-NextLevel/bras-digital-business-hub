@@ -1,0 +1,338 @@
+{
+  "brand": "nextlevel",
+  "version": "2.0.0",
+  "pngCount": 46,
+  "entryCount": 66,
+  "entries": [
+    {
+      "path": "COMECE-AQUI-CLAUDE.md",
+      "bytes": 697,
+      "sha256": "82BCE9CAF41914AFB46C59C4EC29C1FE73C39D76E3CA4CADC150C6766DF229C1"
+    },
+    {
+      "path": "LEIA-ME.md",
+      "bytes": 2946,
+      "sha256": "D9194C765BFDF91F8A52200ABE12A7A8B6516D356E5AEB973FFEA4DA477EC86A"
+    },
+    {
+      "path": "3d/00-master-flat.png",
+      "bytes": 1201647,
+      "sha256": "F5A8A59B2AF9AA8910A123B933D364785FC080A870DDB05639CF0A465CC32C6D"
+    },
+    {
+      "path": "3d/01-vidro-optico.png",
+      "bytes": 1401057,
+      "sha256": "DB9C6EF340F587B4FFCA7854F7F5736E8101E2682AA1D1D07EA35DEB1C37899A"
+    },
+    {
+      "path": "3d/02-metal-anodizado-sem-texto.png",
+      "bytes": 1460166,
+      "sha256": "70EF55EE935D2D99CED8413B8ED31D5BD2359E6C4F828CF8016781D2E69B11DD"
+    },
+    {
+      "path": "3d/03-camadas-translucidas.png",
+      "bytes": 1412214,
+      "sha256": "6176820DCDA688A1DC2B0FFB1237B1A4F2EBFC363D737A269F72040AE45F5DE2"
+    },
+    {
+      "path": "3d/04-arquitetura-de-luz-cinetica.png",
+      "bytes": 1358926,
+      "sha256": "B56F6531DFBE741F28D170F6EB419211B1BF4ED8BC83707C17EF007AB6E76D51"
+    },
+    {
+      "path": "docs/ARQUIVOS-IMAGENS.json",
+      "bytes": 18753,
+      "sha256": "55954DC7A4F887986A921CF88882FC894F21A665B464F418C1C63315D55CF78B"
+    },
+    {
+      "path": "docs/CONTRASTE-RESULTADOS.json",
+      "bytes": 4962,
+      "sha256": "0511D43D41FF784060488A4A14B2936A3CB1A509A9198EC0E3F947604C51A852"
+    },
+    {
+      "path": "docs/CONTRASTE.md",
+      "bytes": 2980,
+      "sha256": "AE1D739E32399B1D576C1242942F3BA53CEB61C61AFCB7EAE6BA741989A37A7A"
+    },
+    {
+      "path": "docs/INVENTARIO.md",
+      "bytes": 4771,
+      "sha256": "1FE4901FE2CEEB18744C5F713FA88ECDE2B73AC6567B7835879C1863757088C2"
+    },
+    {
+      "path": "docs/MEMORIA-DECISOES-APROVADAS.md",
+      "bytes": 2720,
+      "sha256": "B6449EB691DBD2BBFA0849A0DBA042934466DB85DE78A0132DC48B936F56F296"
+    },
+    {
+      "path": "docs/PROMPT-ENGENHEIRO-MESTRE-CLAUDE-CODE.md",
+      "bytes": 12102,
+      "sha256": "E96FAF408D00C38C63664C4630B24CEDC4E949142DC4DF636867A7FCBF66C5A5"
+    },
+    {
+      "path": "docs/PROMPTS-DE-GERACAO.md",
+      "bytes": 32003,
+      "sha256": "956663617A6A0EC964B79141C8A34EFD99A3588CF9137E1A5F843E38D0C6BB53"
+    },
+    {
+      "path": "docs/RACIONAL-DIRECAO-VISUAL-PAINEL-E-PAGINAS.md",
+      "bytes": 11829,
+      "sha256": "54523ADB5E95FB35E65C0ABA158E6BCBB10894D49783E4FF0B6607CAB2AF18D3"
+    },
+    {
+      "path": "docs/VERIFICACAO-DE-ENTREGA.md",
+      "bytes": 963,
+      "sha256": "644A3C8D627394D96AB183E04F45070D18C423E44F810A8E06CC6110D2B569A5"
+    },
+    {
+      "path": "integration/assinatura-email.html",
+      "bytes": 862,
+      "sha256": "F5640623268EDDFE87D5B2C7B372FB727F0D3D4ABDAC43E69231CD0357E941DE"
+    },
+    {
+      "path": "integration/brand-assets.ts",
+      "bytes": 1803,
+      "sha256": "37B38871CD70CBCD42AF3CCEEFCBCBBF64F4C1C5D27DDD84AD6D43127D33F470"
+    },
+    {
+      "path": "integration/brand.config.json",
+      "bytes": 2363,
+      "sha256": "D9600716B218E6C27EB468AC54EC821BE032792497677CD76C1638D64A251C6E"
+    },
+    {
+      "path": "integration/head-exemplo.html",
+      "bytes": 1393,
+      "sha256": "225842D9E521FE8DD893A8BFF8D79A9A0BBC4FC988AD77EC757CDC91B3F459A3"
+    },
+    {
+      "path": "integration/ONDE-COLOCAR-E-COMO-USAR.md",
+      "bytes": 2516,
+      "sha256": "6B84349B8ABE7958330D3BB7B51ADF3F6D89F895F0E7A515E1BF552A2BFF3BB0"
+    },
+    {
+      "path": "integration/site.webmanifest",
+      "bytes": 779,
+      "sha256": "E0E9ED89AAD5B376F64A21040EAAE1AAE83299DDCFC1089D16FB19007134E6E2"
+    },
+    {
+      "path": "logos/app-icons/app-icon-master.png",
+      "bytes": 1191697,
+      "sha256": "E365D586DE6719BB631E4FDA3C977175AB43CC0B2CBAA016DA7C71627F8366DB"
+    },
+    {
+      "path": "logos/app-icons/apple-touch-icon-180.png",
+      "bytes": 23781,
+      "sha256": "019C85C65933CDCA79F3F64A3912939D76CC9906488A1BD104D4D451771CD22E"
+    },
+    {
+      "path": "logos/app-icons/icon-192.png",
+      "bytes": 27196,
+      "sha256": "A7267D95EB270B6104288A4DCD6A283F11BEB8052EAAF312DBD65046238DB9E9"
+    },
+    {
+      "path": "logos/app-icons/icon-512.png",
+      "bytes": 220333,
+      "sha256": "E29F66AA8C7871E95F50CB2B7D5F0B65105EB3D790364B527EA749EC18020B02"
+    },
+    {
+      "path": "logos/app-icons/icon-maskable-512.png",
+      "bytes": 176242,
+      "sha256": "64D7C4540FE91151EB4C0EF0B274DBFD4E34AFF8CCE3147A9A8C78D0754A7A50"
+    },
+    {
+      "path": "logos/com-slogan/logo-clara-com-slogan.png",
+      "bytes": 613296,
+      "sha256": "58227EEC400E371F1FB4732B28ED7E3EFE5FA3477C05117A5015CB46FEA63670"
+    },
+    {
+      "path": "logos/com-slogan/logo-escura-com-slogan.png",
+      "bytes": 922983,
+      "sha256": "428ACB0EDFAC6D3BC96A9A52E0054422E27559628AEC977157144CCC1F20347E"
+    },
+    {
+      "path": "logos/favicons/favicon-16.png",
+      "bytes": 466,
+      "sha256": "52EB57055378A483C20649B29B37723E1CF62C3BEEB516A6B502CDBC1C7BB03E"
+    },
+    {
+      "path": "logos/favicons/favicon-32.png",
+      "bytes": 1076,
+      "sha256": "EA6E656209AAA6F155850C271BC54B4EE4A0AC90D9EF6281C17CFDE2565A9C9B"
+    },
+    {
+      "path": "logos/favicons/favicon-48.png",
+      "bytes": 1719,
+      "sha256": "A0029EB5BF5747D5FA482FDC773B08507FD85F3DDD4A4D4BE2801B14F5228B1E"
+    },
+    {
+      "path": "logos/favicons/favicon.ico",
+      "bytes": 3315,
+      "sha256": "224F5E8A17CEAB9D7514688E26E3D9699588F3606AC2AFBC6C4D40FE0D8A642B"
+    },
+    {
+      "path": "logos/flat/logo-clara.png",
+      "bytes": 421535,
+      "sha256": "C91C83E79837D7BAB87D8A096F87B11FDFC467037073F8B1175F40E8050B023A"
+    },
+    {
+      "path": "logos/flat/logo-escura.png",
+      "bytes": 417085,
+      "sha256": "8CC749125E93B5EA6BEF21795AC25EC505C98B383D07E88E9A746CEBAFBD7910"
+    },
+    {
+      "path": "logos/monocromaticas/logo-negativa.png",
+      "bytes": 471311,
+      "sha256": "43F9F31A040BFA4A9C6374B8DFF94DBEBCD0533E6390B6841F945442574A3007"
+    },
+    {
+      "path": "logos/monocromaticas/logo-positiva.png",
+      "bytes": 460886,
+      "sha256": "B898CCC54333DF1926F3E96714BBC4F7845C406C049D6CE2D6371CDF0CD09D84"
+    },
+    {
+      "path": "logos/monocromaticas/monograma-negativo.png",
+      "bytes": 388692,
+      "sha256": "F829251EE82A9D7CFDCE34B269F18A2483296824217645D079D058F0523D17C7"
+    },
+    {
+      "path": "logos/monocromaticas/monograma-positivo.png",
+      "bytes": 388242,
+      "sha256": "EE263A97210888B3D37689B40683A27DFE852C6ED891284283F8C07ECFCEEFE0"
+    },
+    {
+      "path": "logos/monogramas/monograma-claro.png",
+      "bytes": 644232,
+      "sha256": "00A060C4CEEF208F9E1FE6B07E9B42B27F2607160460DB409F47B744063B8976"
+    },
+    {
+      "path": "logos/monogramas/monograma-escuro.png",
+      "bytes": 561740,
+      "sha256": "6C3F631CC5E7B35E6910CC499532166652C11392A09D468143FB6D902649810E"
+    },
+    {
+      "path": "logos/monogramas/monograma-flat.png",
+      "bytes": 439468,
+      "sha256": "A29E44DE3D489D333DAA25AC4D8D8423CEF6763AD80DD5BEAC8171452108980C"
+    },
+    {
+      "path": "logos/prisma/logo-clara.png",
+      "bytes": 544566,
+      "sha256": "524F61409F3575DFC5A5F1E594050B55E6D8F2E823EE9930D915DA10B050BDD6"
+    },
+    {
+      "path": "logos/prisma/logo-escura.png",
+      "bytes": 725219,
+      "sha256": "494ED72D8B136BCFE36723AB57F271417A6187AC47E47079B26AD58036903049"
+    },
+    {
+      "path": "logos/responsive/flat-clara-1024.png",
+      "bytes": 134681,
+      "sha256": "6FD21B6D63B00ADE32FFB12841E244CCF56AC208759063E4851BE522AB0A6C46"
+    },
+    {
+      "path": "logos/responsive/flat-clara-512.png",
+      "bytes": 42228,
+      "sha256": "7EB78916AEA97834EEC8AD13BF789D36ED40F08F7CC85399531DA3D824A0FFCA"
+    },
+    {
+      "path": "logos/responsive/flat-escura-1024.png",
+      "bytes": 137068,
+      "sha256": "E3CA9C0B500121A10AC09B76E4AA1F7C65A3E8A3082401FB5710A3BC75C107C7"
+    },
+    {
+      "path": "logos/responsive/flat-escura-512.png",
+      "bytes": 41707,
+      "sha256": "5EC601DD4CAEA3F2616510DB08C1518B552A1630B1E65BAA4DED0EC833D18F95"
+    },
+    {
+      "path": "logos/responsive/prisma-clara-1024.png",
+      "bytes": 202604,
+      "sha256": "00ABE21FAC81CD6C9D929EB0B68778B4DCF669593CA6EECDF53194DBB0EEC610"
+    },
+    {
+      "path": "logos/responsive/prisma-clara-512.png",
+      "bytes": 60318,
+      "sha256": "EF0F2B344B5DD8F96D5CFF7F7A781B80A40B8C5E5773BACE34AEC8BB1AA30E0A"
+    },
+    {
+      "path": "logos/responsive/prisma-escura-1024.png",
+      "bytes": 214318,
+      "sha256": "9F427748B56A54010796C5F09966453D8497340D92AB422DCF61E664B7FDE44A"
+    },
+    {
+      "path": "logos/responsive/prisma-escura-512.png",
+      "bytes": 61288,
+      "sha256": "08BAA1187C730CC702FFB96B4F35EE0218CC30B1D62818C8334E12A6328EF168"
+    },
+    {
+      "path": "logos/responsive/sem-apoio-clara-1024.png",
+      "bytes": 202172,
+      "sha256": "3E25041906B8EFEF2D303B074BC575086543BD437E66D4BA0C6206CC8AEEF1CF"
+    },
+    {
+      "path": "logos/responsive/sem-apoio-clara-512.png",
+      "bytes": 59402,
+      "sha256": "1C86E4E0DD0068368FEE34558CF2BBE190490B2F47FC5802F75F34DC384B7F95"
+    },
+    {
+      "path": "logos/responsive/sem-apoio-escura-1024.png",
+      "bytes": 224325,
+      "sha256": "C6583DF324AC049310FF0FF874F938E4835B5D6DB27CBF2A97A174C75DA3E04F"
+    },
+    {
+      "path": "logos/responsive/sem-apoio-escura-512.png",
+      "bytes": 63261,
+      "sha256": "4195A9CDE50AAA2AC3789910A32FFA34A35A9C6DF8FF6E4BC4D508BDE7CD64E6"
+    },
+    {
+      "path": "logos/sem-apoio/logo-clara.png",
+      "bytes": 658716,
+      "sha256": "1C979419A0EF761370EDABFB91D2783BE1A2159AE910A9FDF2AFECCD40132CA1"
+    },
+    {
+      "path": "logos/sem-apoio/logo-escura.png",
+      "bytes": 746820,
+      "sha256": "4FF1F69B53D1B867EAD70C6F2F67E170D06E1813797DB8BB65AA420CDDA91249"
+    },
+    {
+      "path": "logos/vertical/logo-vertical-clara.png",
+      "bytes": 558703,
+      "sha256": "458808A98DE3ABD25DF09735314CE8691ED55C5DBA899F31F34340661EC9F846"
+    },
+    {
+      "path": "logos/vertical/logo-vertical-escura.png",
+      "bytes": 740890,
+      "sha256": "F7F165CE8193C1117A519E23BC59C1034FF5FFC80620748044B13E1A5B4A720E"
+    },
+    {
+      "path": "previews/controle-qualidade-logos.png",
+      "bytes": 1940701,
+      "sha256": "62AF0A2254955B59CA5B610B2D473EDF1EC418090DB7245326F4C63734ED5225"
+    },
+    {
+      "path": "referencias/brand-board-aprovado.png",
+      "bytes": 1588798,
+      "sha256": "01FF5B939B67DD2B0C63166D70EAAFEE4F45F33F7CA6C85F171840D061964459"
+    },
+    {
+      "path": "social/og-nextlevel-1200x630.png",
+      "bytes": 1070056,
+      "sha256": "1066EEBD568782CDD6295B1647F9E8765E8A102671C19129A14C45B05DD2E2D2"
+    },
+    {
+      "path": "social/og-nextlevel-master.png",
+      "bytes": 1452329,
+      "sha256": "7DB8CFD78FCDC3DAD564F4ED123FE1AE2822C65E903146F643BA7412073C04FA"
+    },
+    {
+      "path": "tokens/brand-tokens.css",
+      "bytes": 1790,
+      "sha256": "A0A5159852E051538BE8843636928F6FA008AC87C9C8E9764E7A09F8E495D305"
+    },
+    {
+      "path": "tokens/brand-tokens.json",
+      "bytes": 2291,
+      "sha256": "8715BDBE4A087B19D768228A067D0391A44E6EF88101B2F16C0599C9BC0045C6"
+    }
+  ]
+}

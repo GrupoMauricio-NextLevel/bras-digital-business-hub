@@ -17,7 +17,8 @@ describe("tela de entrada por marca", () => {
     expect(loginPhotoFor("SUPERDROP")?.src).toBe("/portal/superdrop/v3/sd-login-lateral.webp");
     expect(loginPhotoFor("NEXTLEVEL_COMMERCE")?.src).toBe("/portal/commerce/v3/cm-login-lateral.webp");
     expect(loginPhotoFor("BRAS_DIGITAL")?.src).toContain("/bras/");
-    expect(loginPhotoFor("NEXTLEVEL")?.src).toBe("/portal/nextlevel/v3/nl-login-lateral.webp");
+    // Master (marca-mãe v2, D161): peça 3D "vidro óptico" do pacote da marca.
+    expect(loginPhotoFor("NEXTLEVEL")?.src).toBe("/marcas/nextlevel/v2/3d/01-vidro-optico-1600.webp");
     for (const c of ["NEXTLEVEL_CARGAS", "CREATORS_HUB", "CHINA_HUB"] as const) expect(loginPhotoFor(c)).toBeNull();
   });
 
@@ -36,8 +37,9 @@ describe("prévia de link por marca", () => {
     const { ogImageFor } = await import("@/lib/og-marca");
     const all = brandsFrom({});
     expect(ogImageFor(all.SUPERDROP).url).toBe("/portal/superdrop/v3/sd-og-portal.jpg");
-    expect(ogImageFor(all.NEXTLEVEL).url).toBe("/portal/nextlevel/v3/nl-og-solucoes.jpg");
-    expect(ogImageFor(all.BRAS_DIGITAL).url).toMatch(/^\/portal\/bras\/v3\/bd-og-portal\./);
+    expect(ogImageFor(all.NEXTLEVEL).url).toBe("/marcas/nextlevel/v2/social/og-nextlevel-1200x630.jpg");
+    // Brás Digital Club (D158): arte do pacote da marca.
+    expect(ogImageFor(all.BRAS_DIGITAL).url).toBe("/marcas/bras-digital-club/og-1200x630.jpg");
     expect(ogImageFor(all.NEXTLEVEL_CARGAS).url).toBe("/og/nextlevel_cargas.png");
     expect(ogImageFor(all.NEXTLEVEL_COMMERCE).url).toBe("/portal/commerce/v3/cm-og-portal.jpg");
     expect(ogImageFor(all.CREATORS_HUB).url).toBe("/og/creators_hub.png");

@@ -68,7 +68,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       ) : null}</>}
     >
       <h1 className="sr-only">{brand.name}</h1>
-      <BrandLogo brand={brand} className="h-9" priority />
+      {/* Master (marca-mãe v2, D161): assinatura Prisma Digital, que o cartão comporta; nas outras marcas, a logo de sempre. */}
+      {brand.code === HOLDING_CODE ? <BrandLogo brand={brand} variant="prisma" className="h-14" priority /> : <BrandLogo brand={brand} className="h-9" priority />}
       <h2 className="mt-8 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight tracking-tight text-foreground">Entre na sua conta</h2>
       {sp.conta === "criada" ? <p role="status" className="mt-3 rounded-lg bg-success-soft px-3 py-2 text-sm text-success">Conta criada! Entre com o e-mail e a senha que você cadastrou.</p> : null}
       {sp.error === "passagem" ? <p role="alert" className="mt-3 rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning">O link para trocar de marca expirou ou já foi usado. Entre com o seu e-mail e senha.</p> : null}

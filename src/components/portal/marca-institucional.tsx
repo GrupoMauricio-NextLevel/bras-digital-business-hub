@@ -10,12 +10,26 @@ import { CabecalhoSobreHeroi } from "@/components/portal/superdrop/cabecalho-sob
  * estrutura em composição de superfícies navy/off-white, tipografia e cor de assinatura, sem imagem inventada.
  * Todo texto fica em HTML; imagens decorativas com alt vazio.
  */
-const acc = (slug: MarcaSlug) => ({ "--mk": MARCAS[slug].accent } as React.CSSProperties);
+/**
+ * Variáveis de cor de cada peça. Páginas do site do grupo (D161) usam o marinho e o gelo da marca-mãe v2 (`--nlg-*`); as
+ * marcas-filhas que reaproveitam estas peças (Cargas, Parceiros nos endereços dos produtos) continuam no navy v2 do sistema.
+ * Na NextLevel o botão é royal com texto branco e o texto de destaque sobre fundo claro usa o link do tema.
+ */
+const SITE_GRUPO = new Set<MarcaSlug>(["nextlevel", "nextlevel-club", "loja-nextlevel", "meu-contador"]);
+const acc = (slug: MarcaSlug) => {
+  const m = MARCAS[slug]; const grupo = SITE_GRUPO.has(slug); const nl = slug === "nextlevel";
+  const navy = grupo ? "var(--nlg-marinho)" : "#101B34";
+  return {
+    "--mk": m.accent, "--mk-navy": navy, "--mk-gelo": grupo ? "var(--nlg-gelo)" : "#F4F1E9",
+    "--mk-btn": nl ? "var(--nlg-royal)" : m.accent, "--mk-btn-fg": nl ? "#FFFFFF" : navy,
+    "--mk-texto": nl ? "var(--ds-link)" : "color-mix(in srgb, var(--mk) 70%, var(--color-foreground, #101B34))",
+  } as React.CSSProperties;
+};
 const btn = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
 function Foto({ slug, nome, alt, ratio, priority = false, className }: { slug: MarcaSlug; nome: string; alt: string; ratio: string; priority?: boolean; className?: string }) {
   return (
-    <picture className={cn("block overflow-hidden rounded-[var(--ds-r-public-card,1.25rem)] bg-[#101B34]", className)} style={{ aspectRatio: ratio }}>
+    <picture className={cn("block overflow-hidden rounded-[var(--ds-r-public-card,1.25rem)] bg-[var(--mk-navy)]", className)} style={{ aspectRatio: ratio }}>
       <source media="(max-width: 767px)" srcSet={imagemMarca(slug, nome, 800)} type="image/webp" />
       <img src={imagemMarca(slug, nome)} alt={alt} width={1600} height={900} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" className="size-full object-cover" />
     </picture>
@@ -41,12 +55,12 @@ export function AberturaMarca({ slug, eyebrow, ctas, titulo, texto, foto, childr
   const m = MARCAS[slug];
   const b = foto ? imagemMarca("nextlevel", foto.nome).replace(/-1600\.webp$/, "") : null;
   return (
-    <section id="inicio" data-heroi-escuro="nextlevel" className="relative isolate overflow-hidden bg-[#101B34] text-[#F4F1E9]" style={acc(slug)}>
+    <section id="inicio" data-heroi-escuro="nextlevel" className="relative isolate overflow-hidden bg-[var(--mk-navy)] text-[var(--mk-gelo)]" style={acc(slug)}>
       {foto && b ? (
         <div className="relative aspect-[16/10] w-full md:absolute md:inset-y-0 md:right-0 md:aspect-auto md:w-[62%]">
           {/* eslint-disable-next-line @next/next/no-img-element -- WebP estático com srcset próprio */}
           <img src={`${b}-1600.webp`} srcSet={`${b}-800.webp 800w, ${b}-1600.webp 1600w`} sizes="(min-width: 768px) 62vw, 100vw" alt={foto.alt} width={1600} height={900} loading="eager" fetchPriority="high" decoding="sync" className="size-full object-cover" style={{ objectPosition: foto.posicao ?? "50% 50%" }} />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#101B34] via-transparent to-transparent md:bg-[linear-gradient(90deg,#101B34_0%,rgba(16,27,52,0.6)_30%,transparent_65%)]" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--mk-navy)] via-transparent to-transparent md:bg-[linear-gradient(90deg,var(--mk-navy)_0%,color-mix(in_srgb,var(--mk-navy)_60%,transparent)_30%,transparent_65%)]" />
         </div>
       ) : (
         <>
@@ -58,21 +72,21 @@ export function AberturaMarca({ slug, eyebrow, ctas, titulo, texto, foto, childr
         <div className={foto ? "max-w-xl" : undefined}>
           {m.logos.escura ? <LogoMarca slug={slug} tom="escura" className="mb-7 h-12 md:h-14" /> : null}
           {eyebrow ? <p className=" text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--mk)" }}>{eyebrow}</p> : null}
-          <h1 className="nl-display mt-3 max-w-3xl text-[#F4F1E9]">{titulo ?? m.headline}</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#F4F1E9]/85">{texto ?? m.apoio}</p>
+          <h1 className="nl-display mt-3 max-w-3xl text-[var(--mk-gelo)]">{titulo ?? m.headline}</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--mk-gelo)]/85">{texto ?? m.apoio}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             {ctas.map((c) => {
-              const cls = cn(btn, c.primary ? "text-[#101B34] hover:brightness-110 focus-visible:outline-[#F4F1E9]" : "border border-[#F4F1E9]/35 hover:bg-[#F4F1E9]/10 focus-visible:outline-[#F4F1E9]");
+              const cls = cn(btn, c.primary ? "hover:brightness-110 focus-visible:outline-[var(--mk-gelo)]" : "border border-[var(--mk-gelo)]/35 hover:bg-[var(--mk-gelo)]/10 focus-visible:outline-[var(--mk-gelo)]");
               const conteudo = <>{c.label}{c.primary ? <ArrowRight className="size-5" aria-hidden /> : null}</>;
               return c.externo || c.href.startsWith("#")
-                ? <a key={c.href + c.label} href={c.href} target={c.externo ? "_blank" : undefined} rel={c.externo ? "noreferrer" : undefined} className={cls} style={c.primary ? { background: "var(--mk)" } : undefined}>{conteudo}</a>
-                : <Link key={c.href + c.label} href={c.href} className={cls} style={c.primary ? { background: "var(--mk)" } : undefined}>{conteudo}</Link>;
+                ? <a key={c.href + c.label} href={c.href} target={c.externo ? "_blank" : undefined} rel={c.externo ? "noreferrer" : undefined} className={cls} style={c.primary ? { background: "var(--mk-btn)", color: "var(--mk-btn-fg)" } : undefined}>{conteudo}</a>
+                : <Link key={c.href + c.label} href={c.href} className={cls} style={c.primary ? { background: "var(--mk-btn)", color: "var(--mk-btn-fg)" } : undefined}>{conteudo}</Link>;
             })}
           </div>
           {children}
         </div>
         {!foto && m.logos.monograma ? (
-          <div aria-hidden className="relative mx-auto hidden aspect-square w-full max-w-xs place-items-center rounded-[2rem] border border-[#F4F1E9]/15 bg-[#F4F1E9]/5 md:grid">
+          <div aria-hidden className="relative mx-auto hidden aspect-square w-full max-w-xs place-items-center rounded-[2rem] border border-[var(--mk-gelo)]/15 bg-[var(--mk-gelo)]/5 md:grid">
             {/* eslint-disable-next-line @next/next/no-img-element -- WebP estático */}
             <img src={monogramaMarca(slug, "escuro")} alt="" width={256} height={256} className="w-2/3 object-contain" decoding="async" />
           </div>
@@ -87,10 +101,10 @@ export function AberturaMarca({ slug, eyebrow, ctas, titulo, texto, foto, childr
 export function FaixaMarca({ slug }: { slug: MarcaSlug }) {
   const m = MARCAS[slug];
   return (
-    <div className="border-b border-border bg-[#101B34]" style={acc(slug)}>
+    <div className="border-b border-border bg-[var(--mk-navy)]" style={acc(slug)}>
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-5">
         <LogoMarca slug={slug} tom="escura" className="h-10" />
-        <p className="text-sm font-semibold text-[#F4F1E9]/85 md:text-base">{m.headline}</p>
+        <p className="text-sm font-semibold text-[var(--mk-gelo)]/85 md:text-base">{m.headline}</p>
       </div>
     </div>
   );
@@ -123,7 +137,7 @@ export function VitrineMarca({ slug, titulo = "O que você encontra aqui", comFo
                 // eslint-disable-next-line @next/next/no-img-element -- ícone decorativo do kit
                 <img src={iconeMarca(slug, it.arquivo)} alt="" width={64} height={64} loading="lazy" decoding="async" className="size-14 shrink-0 object-contain" />
               ) : (
-                <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-xl text-lg font-extrabold text-[#101B34]" style={{ background: "var(--mk)" }}>{n + 1}</span>
+                <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-xl text-lg font-extrabold" style={{ background: "var(--mk)", color: "var(--mk-navy)" }}>{n + 1}</span>
               )}
               <div><h3 className="font-bold">{it.titulo}</h3><p className="mt-1 text-sm text-muted-foreground">{it.texto}</p></div>
             </li>
@@ -135,7 +149,7 @@ export function VitrineMarca({ slug, titulo = "O que você encontra aqui", comFo
               <div key={c.titulo} className={cn("grid items-center gap-8 md:grid-cols-2", i % 2 ? "md:[&>*:first-child]:order-2" : "")}>
                 <Foto slug={slug} nome={`capability-0${i + 1}`} alt={c.titulo} ratio="4 / 3" />
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "color-mix(in srgb, var(--mk) 70%, var(--color-foreground, #101B34))" }}>{m.nome}</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--mk-texto)" }}>{m.nome}</p>
                   <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold tracking-tight md:text-3xl">{c.titulo}</h3>
                   <p className="mt-3 text-lg leading-relaxed text-muted-foreground">{c.texto}</p>
                 </div>
@@ -146,10 +160,10 @@ export function VitrineMarca({ slug, titulo = "O que você encontra aqui", comFo
           // Sem kit de imagens: as duas capacidades em cartões de texto, sem bloco de imagem vazio.
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {m.capacidades.filter((c) => c.texto).map((c, i) => (
-              <div key={c.titulo} className={cn("rounded-[1.25rem] p-6 md:p-8", i === 0 ? "bg-[#101B34] text-[#F4F1E9]" : "border border-border bg-surface")}>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: i === 0 ? "var(--mk)" : "color-mix(in srgb, var(--mk) 70%, var(--color-foreground, #101B34))" }}>{m.nome}</p>
+              <div key={c.titulo} className={cn("rounded-[1.25rem] p-6 md:p-8", i === 0 ? "bg-[var(--mk-navy)] text-[var(--mk-gelo)]" : "border border-border bg-surface")}>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: i === 0 ? "var(--mk)" : "var(--mk-texto)" }}>{m.nome}</p>
                 <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold tracking-tight md:text-3xl">{c.titulo}</h3>
-                <p className={cn("mt-3 text-lg leading-relaxed", i === 0 ? "text-[#F4F1E9]/85" : "text-muted-foreground")}>{c.texto}</p>
+                <p className={cn("mt-3 text-lg leading-relaxed", i === 0 ? "text-[var(--mk-gelo)]/85" : "text-muted-foreground")}>{c.texto}</p>
               </div>
             ))}
           </div>
@@ -174,14 +188,22 @@ export function FechoMarca({ slug, cta }: { slug: MarcaSlug; cta: { href: string
             </div>
           </div>
         ) : null}
-        <div className="relative mt-12 grid items-center gap-8 overflow-hidden rounded-[1.5rem] bg-[#101B34] p-8 text-[#F4F1E9] md:grid-cols-2 md:p-12">
-          {!m.imagens ? <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "repeating-linear-gradient(115deg, transparent 0 46px, color-mix(in srgb, var(--mk) 14%, transparent) 46px 50px)" }} /> : null}
+        <div className="relative mt-12 grid items-center gap-8 overflow-hidden rounded-[1.5rem] bg-[var(--mk-navy)] p-8 text-[var(--mk-gelo)] md:grid-cols-2 md:p-12">
+          {!m.imagens && !m.peca3d ? <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "repeating-linear-gradient(115deg, transparent 0 46px, color-mix(in srgb, var(--mk) 14%, transparent) 46px 50px)" }} /> : null}
           <div className="relative">
             <h2 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight md:text-4xl">{m.cta.titulo}</h2>
-            <p className="mt-3 text-lg text-[#F4F1E9]/80">{m.cta.texto}</p>
-            <Link href={cta.href} className={cn(btn, "mt-6 text-[#101B34] focus-visible:outline-[#F4F1E9]")} style={{ background: "var(--mk)" }}>{cta.label}<ArrowRight className="size-5" aria-hidden /></Link>
+            <p className="mt-3 text-lg text-[var(--mk-gelo)]/80">{m.cta.texto}</p>
+            <Link href={cta.href} className={cn(btn, "mt-6 focus-visible:outline-[var(--mk-gelo)]")} style={{ background: "var(--mk-btn)", color: "var(--mk-btn-fg)" }}>{cta.label}<ArrowRight className="size-5" aria-hidden /></Link>
           </div>
-          {m.imagens ? <Foto slug={slug} nome="cta-moment" alt="" ratio="16 / 9" /> : m.logos.escura ? <div className="relative hidden justify-center md:flex"><LogoMarca slug={slug} tom="escura" alt="" className="h-20" /></div> : null}
+          {m.imagens ? <Foto slug={slug} nome="cta-moment" alt="" ratio="16 / 9" />
+            : m.peca3d ? (
+              <picture className="relative hidden overflow-hidden rounded-[1.25rem] md:block" style={{ aspectRatio: "16 / 9" }}>
+                <source type="image/avif" srcSet={`${m.peca3d}-800.avif 800w, ${m.peca3d}-1600.avif 1600w`} sizes="40vw" />
+                { }
+                <img src={`${m.peca3d}-800.webp`} srcSet={`${m.peca3d}-800.webp 800w, ${m.peca3d}-1600.webp 1600w`} sizes="40vw" alt="" width={1600} height={900} loading="lazy" decoding="async" className="size-full object-cover" />
+              </picture>
+            )
+            : m.logos.escura ? <div className="relative hidden justify-center md:flex"><LogoMarca slug={slug} tom="escura" alt="" className="h-20" /></div> : null}
         </div>
       </div>
     </section>

@@ -1,0 +1,830 @@
+[
+  {
+    "path": "3d/00-master-flat.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1201647,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1573352,
+    "bounds": [
+      0,
+      0,
+      1671,
+      940
+    ],
+    "sha256": "F5A8A59B2AF9AA8910A123B933D364785FC080A870DDB05639CF0A465CC32C6D"
+  },
+  {
+    "path": "3d/01-vidro-optico.png",
+    "width": 1672,
+    "height": 940,
+    "bytes": 1401057,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1571680,
+    "bounds": [
+      0,
+      0,
+      1671,
+      939
+    ],
+    "sha256": "DB9C6EF340F587B4FFCA7854F7F5736E8101E2682AA1D1D07EA35DEB1C37899A"
+  },
+  {
+    "path": "3d/02-metal-anodizado-sem-texto.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1460166,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1573352,
+    "bounds": [
+      0,
+      0,
+      1671,
+      940
+    ],
+    "sha256": "70EF55EE935D2D99CED8413B8ED31D5BD2359E6C4F828CF8016781D2E69B11DD"
+  },
+  {
+    "path": "3d/03-camadas-translucidas.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1412214,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1573352,
+    "bounds": [
+      0,
+      0,
+      1671,
+      940
+    ],
+    "sha256": "6176820DCDA688A1DC2B0FFB1237B1A4F2EBFC363D737A269F72040AE45F5DE2"
+  },
+  {
+    "path": "3d/04-arquitetura-de-luz-cinetica.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1358926,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1573352,
+    "bounds": [
+      0,
+      0,
+      1671,
+      940
+    ],
+    "sha256": "B56F6531DFBE741F28D170F6EB419211B1BF4ED8BC83707C17EF007AB6E76D51"
+  },
+  {
+    "path": "logos/app-icons/app-icon-master.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1191697,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1572516,
+    "bounds": [
+      0,
+      0,
+      1253,
+      1253
+    ],
+    "sha256": "E365D586DE6719BB631E4FDA3C977175AB43CC0B2CBAA016DA7C71627F8366DB"
+  },
+  {
+    "path": "logos/app-icons/apple-touch-icon-180.png",
+    "width": 180,
+    "height": 180,
+    "bytes": 23781,
+    "alphaMin": 219,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 716,
+    "opaquePixels": 31684,
+    "bounds": [
+      0,
+      0,
+      179,
+      179
+    ],
+    "sha256": "019C85C65933CDCA79F3F64A3912939D76CC9906488A1BD104D4D451771CD22E"
+  },
+  {
+    "path": "logos/app-icons/icon-192.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 27196,
+    "alphaMin": 219,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 764,
+    "opaquePixels": 36100,
+    "bounds": [
+      0,
+      0,
+      191,
+      191
+    ],
+    "sha256": "A7267D95EB270B6104288A4DCD6A283F11BEB8052EAAF312DBD65046238DB9E9"
+  },
+  {
+    "path": "logos/app-icons/icon-512.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 220333,
+    "alphaMin": 219,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 2044,
+    "opaquePixels": 260100,
+    "bounds": [
+      0,
+      0,
+      511,
+      511
+    ],
+    "sha256": "E29F66AA8C7871E95F50CB2B7D5F0B65105EB3D790364B527EA749EC18020B02"
+  },
+  {
+    "path": "logos/app-icons/icon-maskable-512.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 176242,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 262144,
+    "bounds": [
+      0,
+      0,
+      511,
+      511
+    ],
+    "sha256": "64D7C4540FE91151EB4C0EF0B274DBFD4E34AFF8CCE3147A9A8C78D0754A7A50"
+  },
+  {
+    "path": "logos/com-slogan/logo-clara-com-slogan.png",
+    "width": 1920,
+    "height": 819,
+    "bytes": 613296,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1209230,
+    "partialPixels": 362851,
+    "opaquePixels": 399,
+    "bounds": [
+      65,
+      271,
+      1869,
+      672
+    ],
+    "sha256": "58227EEC400E371F1FB4732B28ED7E3EFE5FA3477C05117A5015CB46FEA63670"
+  },
+  {
+    "path": "logos/com-slogan/logo-escura-com-slogan.png",
+    "width": 1920,
+    "height": 819,
+    "bytes": 922983,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1049470,
+    "partialPixels": 522350,
+    "opaquePixels": 660,
+    "bounds": [
+      79,
+      212,
+      1856,
+      642
+    ],
+    "sha256": "428ACB0EDFAC6D3BC96A9A52E0054422E27559628AEC977157144CCC1F20347E"
+  },
+  {
+    "path": "logos/favicons/favicon-16.png",
+    "width": 16,
+    "height": 16,
+    "bytes": 466,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 168,
+    "partialPixels": 58,
+    "opaquePixels": 30,
+    "bounds": [
+      1,
+      4,
+      14,
+      11
+    ],
+    "sha256": "52EB57055378A483C20649B29B37723E1CF62C3BEEB516A6B502CDBC1C7BB03E"
+  },
+  {
+    "path": "logos/favicons/favicon-32.png",
+    "width": 32,
+    "height": 32,
+    "bytes": 1076,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 691,
+    "partialPixels": 234,
+    "opaquePixels": 99,
+    "bounds": [
+      1,
+      8,
+      30,
+      23
+    ],
+    "sha256": "EA6E656209AAA6F155850C271BC54B4EE4A0AC90D9EF6281C17CFDE2565A9C9B"
+  },
+  {
+    "path": "logos/favicons/favicon-48.png",
+    "width": 48,
+    "height": 48,
+    "bytes": 1719,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1554,
+    "partialPixels": 576,
+    "opaquePixels": 174,
+    "bounds": [
+      1,
+      11,
+      46,
+      35
+    ],
+    "sha256": "A0029EB5BF5747D5FA482FDC773B08507FD85F3DDD4A4D4BE2801B14F5228B1E"
+  },
+  {
+    "path": "logos/flat/logo-clara.png",
+    "width": 1919,
+    "height": 820,
+    "bytes": 421535,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1271182,
+    "partialPixels": 298623,
+    "opaquePixels": 3775,
+    "bounds": [
+      41,
+      271,
+      1889,
+      596
+    ],
+    "sha256": "C91C83E79837D7BAB87D8A096F87B11FDFC467037073F8B1175F40E8050B023A"
+  },
+  {
+    "path": "logos/flat/logo-escura.png",
+    "width": 1920,
+    "height": 819,
+    "bytes": 417085,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1254525,
+    "partialPixels": 316076,
+    "opaquePixels": 1879,
+    "bounds": [
+      99,
+      272,
+      1835,
+      584
+    ],
+    "sha256": "8CC749125E93B5EA6BEF21795AC25EC505C98B383D07E88E9A746CEBAFBD7910"
+  },
+  {
+    "path": "logos/monocromaticas/logo-negativa.png",
+    "width": 2146,
+    "height": 733,
+    "bytes": 471311,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1128991,
+    "partialPixels": 439361,
+    "opaquePixels": 4666,
+    "bounds": [
+      43,
+      210,
+      2109,
+      567
+    ],
+    "sha256": "43F9F31A040BFA4A9C6374B8DFF94DBEBCD0533E6390B6841F945442574A3007"
+  },
+  {
+    "path": "logos/monocromaticas/logo-positiva.png",
+    "width": 2103,
+    "height": 748,
+    "bytes": 460886,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1213066,
+    "partialPixels": 354387,
+    "opaquePixels": 5591,
+    "bounds": [
+      26,
+      212,
+      2043,
+      577
+    ],
+    "sha256": "B898CCC54333DF1926F3E96714BBC4F7845C406C049D6CE2D6371CDF0CD09D84"
+  },
+  {
+    "path": "logos/monocromaticas/monograma-negativo.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 388692,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1179871,
+    "partialPixels": 390911,
+    "opaquePixels": 1734,
+    "bounds": [
+      82,
+      351,
+      1172,
+      921
+    ],
+    "sha256": "F829251EE82A9D7CFDCE34B269F18A2483296824217645D079D058F0523D17C7"
+  },
+  {
+    "path": "logos/monocromaticas/monograma-positivo.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 388242,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1219107,
+    "partialPixels": 351965,
+    "opaquePixels": 1444,
+    "bounds": [
+      85,
+      352,
+      1168,
+      900
+    ],
+    "sha256": "EE263A97210888B3D37689B40683A27DFE852C6ED891284283F8C07ECFCEEFE0"
+  },
+  {
+    "path": "logos/monogramas/monograma-claro.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 644232,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1114635,
+    "partialPixels": 456569,
+    "opaquePixels": 1312,
+    "bounds": [
+      33,
+      348,
+      1217,
+      975
+    ],
+    "sha256": "00A060C4CEEF208F9E1FE6B07E9B42B27F2607160460DB409F47B744063B8976"
+  },
+  {
+    "path": "logos/monogramas/monograma-escuro.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 561740,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1182697,
+    "partialPixels": 388601,
+    "opaquePixels": 1218,
+    "bounds": [
+      69,
+      388,
+      1157,
+      981
+    ],
+    "sha256": "6C3F631CC5E7B35E6910CC499532166652C11392A09D468143FB6D902649810E"
+  },
+  {
+    "path": "logos/monogramas/monograma-flat.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 439468,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1198738,
+    "partialPixels": 371468,
+    "opaquePixels": 2310,
+    "bounds": [
+      91,
+      339,
+      1162,
+      917
+    ],
+    "sha256": "A29E44DE3D489D333DAA25AC4D8D8423CEF6763AD80DD5BEAC8171452108980C"
+  },
+  {
+    "path": "logos/prisma/logo-clara.png",
+    "width": 1920,
+    "height": 819,
+    "bytes": 544566,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1241045,
+    "partialPixels": 330915,
+    "opaquePixels": 520,
+    "bounds": [
+      66,
+      273,
+      1868,
+      605
+    ],
+    "sha256": "524F61409F3575DFC5A5F1E594050B55E6D8F2E823EE9930D915DA10B050BDD6"
+  },
+  {
+    "path": "logos/prisma/logo-escura.png",
+    "width": 2174,
+    "height": 723,
+    "bytes": 725219,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1165920,
+    "partialPixels": 405428,
+    "opaquePixels": 454,
+    "bounds": [
+      110,
+      204,
+      2070,
+      559
+    ],
+    "sha256": "494ED72D8B136BCFE36723AB57F271417A6187AC47E47079B26AD58036903049"
+  },
+  {
+    "path": "logos/responsive/flat-clara-1024.png",
+    "width": 1024,
+    "height": 438,
+    "bytes": 134681,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 368499,
+    "partialPixels": 75222,
+    "opaquePixels": 4791,
+    "bounds": [
+      21,
+      144,
+      1008,
+      318
+    ],
+    "sha256": "6FD21B6D63B00ADE32FFB12841E244CCF56AC208759063E4851BE522AB0A6C46"
+  },
+  {
+    "path": "logos/responsive/flat-clara-512.png",
+    "width": 512,
+    "height": 219,
+    "bytes": 42228,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 91262,
+    "partialPixels": 18439,
+    "opaquePixels": 2427,
+    "bounds": [
+      10,
+      72,
+      504,
+      159
+    ],
+    "sha256": "7EB78916AEA97834EEC8AD13BF789D36ED40F08F7CC85399531DA3D824A0FFCA"
+  },
+  {
+    "path": "logos/responsive/flat-escura-1024.png",
+    "width": 1024,
+    "height": 437,
+    "bytes": 137068,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 375910,
+    "partialPixels": 66602,
+    "opaquePixels": 4976,
+    "bounds": [
+      52,
+      145,
+      979,
+      311
+    ],
+    "sha256": "E3CA9C0B500121A10AC09B76E4AA1F7C65A3E8A3082401FB5710A3BC75C107C7"
+  },
+  {
+    "path": "logos/responsive/flat-escura-512.png",
+    "width": 512,
+    "height": 218,
+    "bytes": 41707,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 93182,
+    "partialPixels": 16022,
+    "opaquePixels": 2412,
+    "bounds": [
+      26,
+      72,
+      488,
+      155
+    ],
+    "sha256": "5EC601DD4CAEA3F2616510DB08C1518B552A1630B1E65BAA4DED0EC833D18F95"
+  },
+  {
+    "path": "logos/responsive/prisma-clara-1024.png",
+    "width": 1024,
+    "height": 437,
+    "bytes": 202604,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 361973,
+    "partialPixels": 80960,
+    "opaquePixels": 4555,
+    "bounds": [
+      35,
+      146,
+      996,
+      322
+    ],
+    "sha256": "00ABE21FAC81CD6C9D929EB0B68778B4DCF669593CA6EECDF53194DBB0EEC610"
+  },
+  {
+    "path": "logos/responsive/prisma-clara-512.png",
+    "width": 512,
+    "height": 218,
+    "bytes": 60318,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 89847,
+    "partialPixels": 19525,
+    "opaquePixels": 2244,
+    "bounds": [
+      17,
+      72,
+      497,
+      161
+    ],
+    "sha256": "EF0F2B344B5DD8F96D5CFF7F7A781B80A40B8C5E5773BACE34AEC8BB1AA30E0A"
+  },
+  {
+    "path": "logos/responsive/prisma-escura-1024.png",
+    "width": 1024,
+    "height": 341,
+    "bytes": 214318,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 268371,
+    "partialPixels": 76457,
+    "opaquePixels": 4356,
+    "bounds": [
+      52,
+      96,
+      975,
+      263
+    ],
+    "sha256": "9F427748B56A54010796C5F09966453D8497340D92AB422DCF61E664B7FDE44A"
+  },
+  {
+    "path": "logos/responsive/prisma-escura-512.png",
+    "width": 512,
+    "height": 170,
+    "bytes": 61288,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 66568,
+    "partialPixels": 18015,
+    "opaquePixels": 2457,
+    "bounds": [
+      26,
+      48,
+      486,
+      131
+    ],
+    "sha256": "08BAA1187C730CC702FFB96B4F35EE0218CC30B1D62818C8334E12A6328EF168"
+  },
+  {
+    "path": "logos/responsive/sem-apoio-clara-1024.png",
+    "width": 1024,
+    "height": 341,
+    "bytes": 202172,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 268125,
+    "partialPixels": 77423,
+    "opaquePixels": 3636,
+    "bounds": [
+      28,
+      102,
+      999,
+      244
+    ],
+    "sha256": "3E25041906B8EFEF2D303B074BC575086543BD437E66D4BA0C6206CC8AEEF1CF"
+  },
+  {
+    "path": "logos/responsive/sem-apoio-clara-512.png",
+    "width": 512,
+    "height": 171,
+    "bytes": 59402,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 67049,
+    "partialPixels": 18462,
+    "opaquePixels": 2041,
+    "bounds": [
+      14,
+      51,
+      500,
+      122
+    ],
+    "sha256": "1C86E4E0DD0068368FEE34558CF2BBE190490B2F47FC5802F75F34DC384B7F95"
+  },
+  {
+    "path": "logos/responsive/sem-apoio-escura-1024.png",
+    "width": 1024,
+    "height": 341,
+    "bytes": 224325,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 261412,
+    "partialPixels": 84689,
+    "opaquePixels": 3083,
+    "bounds": [
+      23,
+      98,
+      998,
+      239
+    ],
+    "sha256": "C6583DF324AC049310FF0FF874F938E4835B5D6DB27CBF2A97A174C75DA3E04F"
+  },
+  {
+    "path": "logos/responsive/sem-apoio-escura-512.png",
+    "width": 512,
+    "height": 171,
+    "bytes": 63261,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 66151,
+    "partialPixels": 19316,
+    "opaquePixels": 2085,
+    "bounds": [
+      11,
+      49,
+      499,
+      119
+    ],
+    "sha256": "4195A9CDE50AAA2AC3789910A32FFA34A35A9C6DF8FF6E4BC4D508BDE7CD64E6"
+  },
+  {
+    "path": "logos/sem-apoio/logo-clara.png",
+    "width": 2172,
+    "height": 724,
+    "bytes": 658716,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1168996,
+    "partialPixels": 402854,
+    "opaquePixels": 678,
+    "bounds": [
+      60,
+      218,
+      2122,
+      519
+    ],
+    "sha256": "1C979419A0EF761370EDABFB91D2783BE1A2159AE910A9FDF2AFECCD40132CA1"
+  },
+  {
+    "path": "logos/sem-apoio/logo-escura.png",
+    "width": 2172,
+    "height": 724,
+    "bytes": 746820,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1130587,
+    "partialPixels": 441669,
+    "opaquePixels": 272,
+    "bounds": [
+      48,
+      208,
+      2119,
+      507
+    ],
+    "sha256": "4FF1F69B53D1B867EAD70C6F2F67E170D06E1813797DB8BB65AA420CDDA91249"
+  },
+  {
+    "path": "logos/vertical/logo-vertical-clara.png",
+    "width": 1181,
+    "height": 1332,
+    "bytes": 558703,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1233110,
+    "partialPixels": 338060,
+    "opaquePixels": 1922,
+    "bounds": [
+      55,
+      386,
+      1147,
+      1073
+    ],
+    "sha256": "458808A98DE3ABD25DF09735314CE8691ED55C5DBA899F31F34340661EC9F846"
+  },
+  {
+    "path": "logos/vertical/logo-vertical-escura.png",
+    "width": 1181,
+    "height": 1332,
+    "bytes": 740890,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1132591,
+    "partialPixels": 440341,
+    "opaquePixels": 160,
+    "bounds": [
+      59,
+      345,
+      1146,
+      1026
+    ],
+    "sha256": "F7F165CE8193C1117A519E23BC59C1034FF5FFC80620748044B13E1A5B4A720E"
+  },
+  {
+    "path": "previews/controle-qualidade-logos.png",
+    "width": 1800,
+    "height": 2000,
+    "bytes": 1940701,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 3600000,
+    "bounds": [
+      0,
+      0,
+      1799,
+      1999
+    ],
+    "sha256": "62AF0A2254955B59CA5B610B2D473EDF1EC418090DB7245326F4C63734ED5225"
+  },
+  {
+    "path": "referencias/brand-board-aprovado.png",
+    "width": 1499,
+    "height": 1049,
+    "bytes": 1588798,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1572451,
+    "bounds": [
+      0,
+      0,
+      1498,
+      1048
+    ],
+    "sha256": "01FF5B939B67DD2B0C63166D70EAAFEE4F45F33F7CA6C85F171840D061964459"
+  },
+  {
+    "path": "social/og-nextlevel-1200x630.png",
+    "width": 1200,
+    "height": 630,
+    "bytes": 1070056,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 630,
+    "partialPixels": 3654,
+    "opaquePixels": 751716,
+    "bounds": [
+      0,
+      0,
+      1198,
+      629
+    ],
+    "sha256": "1066EEBD568782CDD6295B1647F9E8765E8A102671C19129A14C45B05DD2E2D2"
+  },
+  {
+    "path": "social/og-nextlevel-master.png",
+    "width": 1730,
+    "height": 909,
+    "bytes": 1452329,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "transparentPixels": 0,
+    "partialPixels": 0,
+    "opaquePixels": 1572570,
+    "bounds": [
+      0,
+      0,
+      1729,
+      908
+    ],
+    "sha256": "7DB8CFD78FCDC3DAD564F4ED123FE1AE2822C65E903146F643BA7412073C04FA"
+  }
+]

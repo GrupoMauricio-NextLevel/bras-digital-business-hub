@@ -36,7 +36,8 @@ export default async function PortalLayout({ children }: { children: React.React
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel Commerce"}.`)}`) : null;
   return (
     <PublicShell
-      brand={<BrandLogo brand={brand} tone="auto" className="h-8" priority />}
+      // A assinatura da NextLevel v2 (D161) é mais larga que as das marcas: um pouco mais baixa para caber o menu do grupo.
+      brand={<BrandLogo brand={brand} tone="auto" className={holding ? "h-6" : "h-8"} priority />}
       brandLabel={brand.name}
       homeHref={holding ? "/solucoes" : "/"}
       nav={nav}

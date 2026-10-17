@@ -9,7 +9,8 @@ import type { Brand, BrandCode } from "@/lib/brand";
 const ARTE: Partial<Record<BrandCode, string[]>> = {
   SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
   NEXTLEVEL_COMMERCE: ["portal/commerce/v3/cm-og-portal.jpg", "portal/commerce/v3/cm-og-portal.png"],
-  NEXTLEVEL: ["portal/nextlevel/v3/nl-og-solucoes.jpg", "portal/nextlevel/v3/nl-og-solucoes.png"],
+  // NextLevel v2 (D161): cartão social do pacote da marca (achatado sobre o marinho; o PNG original tem transparência).
+  NEXTLEVEL: ["marcas/nextlevel/v2/social/og-nextlevel-1200x630.jpg"],
   // Brás Digital Club (D158): peça 3D do pacote com a logo escura com slogan (gerada dos arquivos oficiais).
   BRAS_DIGITAL: ["marcas/bras-digital-club/og-1200x630.jpg"],
 };

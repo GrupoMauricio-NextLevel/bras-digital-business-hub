@@ -158,9 +158,9 @@ body { overflow-x: clip; }
 /* Commerce v3: mesmo mecanismo, no marinho das fotos da Commerce e com o botão azul da marca. */
 :root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header { background: #0B1A36; }
 :root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #2F81F4; color: #fff; }
-/* Site do grupo v1 (D157): marinho da NextLevel, botão amarelo com texto escuro; item ativo do menu legível no escuro. */
-:root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header { background: #101B34; }
-:root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #F5BC00; color: #101B34; }
+/* Site do grupo (D157; marca v2, D161): marinho da NextLevel e botão royal de ação com texto branco (cores de `--nlg-*`). */
+:root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header { background: var(--nlg-marinho); }
+:root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: var(--nlg-royal); color: #fff; }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-nav a[aria-current="page"] { background: rgb(255 255 255 / 0.1); color: #fff; }
 /* Brás Digital Club (D158): navy e botão azul elétrico da marca (cores de `--bdc-*`). */
 :root:has([data-heroi-escuro="bras"]):not([data-heroi-passou]) .ds-pub-header { background: var(--bdc-navy); }
