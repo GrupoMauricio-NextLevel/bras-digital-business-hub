@@ -10,7 +10,8 @@ import { supportContacts } from "@/lib/support";
 import { formatBRL } from "@/lib/money";
 import { publicThemes } from "@/lib/themes/gallery";
 import type { DigitalCategory } from "@/db/schema";
-import { FaixaMarca } from "@/components/portal/marca-institucional";
+import { AberturaMarca } from "@/components/portal/marca-institucional";
+import { themeShot } from "@/lib/themes/shots";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -41,34 +42,34 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
   const talk = c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Tenho uma dúvida sobre a Loja NextLevel.")}`) : c.email ? `mailto:${c.email}?subject=${encodeURIComponent("Loja NextLevel")}` : null;
   return (
     <>
-      <FaixaMarca slug="loja-nextlevel" />
-      <section className="relative overflow-hidden bg-band text-band-foreground">
-        <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden style={{ background: "radial-gradient(60rem 30rem at 15% -10%, rgba(34,197,94,0.22), transparent 60%)" }} />
-        <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-16 md:pt-24">
-          <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Loja NextLevel</span>
-          <h1 className="nl-display mt-5 max-w-4xl">O time da NextLevel trabalhando para a sua loja vender mais.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">Assessoria, configuração, criativos e treinamento feitos por quem opera a plataforma {brand.name}. Você escolhe, paga em 1 clique e a equipe começa.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#ofertas" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Ver as ofertas</a>
-            {talk ? <a href={talk} target={c.whatsappUrl ? "_blank" : undefined} rel="noreferrer" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Falar com a equipe</a> : null}
-          </div>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-band-muted">
-            <li className="flex items-center gap-2"><ShieldCheck className="size-4 text-reflection" aria-hidden /> Pagamento seguro pelo Mercado Pago</li>
-            <li className="flex items-center gap-2"><QrCode className="size-4 text-reflection" aria-hidden /> Pix com desconto</li>
-            <li className="flex items-center gap-2"><CreditCard className="size-4 text-reflection" aria-hidden /> Cartão em até 6x</li>
-            <li className="flex items-center gap-2"><BadgeCheck className="size-4 text-reflection" aria-hidden /> Atendimento humano no WhatsApp</li>
-          </ul>
-        </div>
-      </section>
+      <AberturaMarca
+        slug="loja-nextlevel"
+        eyebrow="Serviços e produtos digitais da NextLevel"
+        titulo={<>O time da NextLevel trabalhando para a sua loja <span className="text-[#F5BC00]">vender mais.</span></>}
+        texto={`Assessoria, configuração, criativos, temas e treinamento feitos por quem opera a plataforma ${brand.name}. Você escolhe, paga em 1 clique e a equipe começa.`}
+        foto={{ nome: "capability-01", posicao: "50% 45%", alt: "Equipe da NextLevel planejando uma loja em volta de uma mesa com caixas e amostras de produto" }}
+        ctas={[{ href: "#ofertas", label: "Ver as ofertas", primary: true }, ...(talk ? [{ href: talk, label: "Falar com a equipe", externo: !!c.whatsappUrl }] : [])]}
+      >
+        <ul className="mt-7 grid gap-x-6 gap-y-2 text-sm text-[#F4F1E9]/80 sm:grid-cols-2">
+          <li className="flex items-center gap-2"><ShieldCheck className="size-4 text-[#F5BC00]" aria-hidden /> Pagamento seguro pelo Mercado Pago</li>
+          <li className="flex items-center gap-2"><QrCode className="size-4 text-[#F5BC00]" aria-hidden /> Pix com desconto</li>
+          <li className="flex items-center gap-2"><CreditCard className="size-4 text-[#F5BC00]" aria-hidden /> Cartão em até 6x</li>
+          <li className="flex items-center gap-2"><BadgeCheck className="size-4 text-[#F5BC00]" aria-hidden /> Atendimento humano no WhatsApp</li>
+        </ul>
+      </AberturaMarca>
 
       {paidThemes.length ? (
         <section className="bg-surface py-14" aria-labelledby="temas-loja">
           <div className="mx-auto max-w-6xl px-4">
-            <h2 id="temas-loja" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Temas para a sua loja</h2>
+            <h2 id="temas-loja" className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl">Temas para a sua loja</h2>
             <p className="mt-2 max-w-2xl text-body">Veja cada tema em uma loja de exemplo, antes de comprar. Compra única, instalação em 1 clique.</p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {paidThemes.map((t) => (
-                <li key={t.key}><Link href={`/temas/${t.key}`} className="block rounded-xl border border-border p-4 transition hover:border-border"><span className="block text-lg font-bold">{t.name}</span><span className="block text-sm text-body">{t.niche}</span><span className="mt-2 block font-extrabold tabular-nums">{t.quote ? `${formatBRL(t.quote.pixCents)} no Pix` : formatBRL(t.priceCents)}</span></Link></li>
+                <li key={t.key}><Link href={`/temas/${t.key}`} className="ds-pub-card block overflow-hidden rounded-xl border border-border bg-surface">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- captura estática da loja de demonstração */}
+                  <img src={themeShot(t.key, "desktop")} alt="" width={640} height={400} loading="lazy" decoding="async" className="aspect-[16/10] w-full border-b border-border object-cover object-top" />
+                  <span className="block p-4"><span className="block text-lg font-bold">{t.name}</span><span className="block text-sm text-body">{t.niche}</span><span className="mt-2 block font-extrabold tabular-nums">{t.quote ? `${formatBRL(t.quote.pixCents)} no Pix` : formatBRL(t.priceCents)}</span></span>
+                </Link></li>
               ))}
             </ul>
             <Link href="/temas" className="mt-5 inline-flex font-semibold text-link underline">Ver todos os temas</Link>
@@ -105,7 +106,7 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
             <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((p) => { const Icon = ICONS[p.category]; return (
                 <li key={p.id} className="flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm">
-                  <div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center rounded-lg bg-success-soft text-link"><Icon className="size-5" aria-hidden /></span><span className="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold text-body">{p.badge ?? CAT_LABEL[p.category]}</span></div>
+                  <div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center rounded-lg bg-highlight-soft text-foreground"><Icon className="size-5" aria-hidden /></span><span className="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold text-body">{p.badge ?? CAT_LABEL[p.category]}</span></div>
                   <h3 className="mt-4 text-lg font-bold">{p.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{p.tagline}</p>
                   <ul className="mt-4 space-y-1.5 text-sm text-body">{p.highlights.slice(0, 3).map((h) => <li key={h} className="flex gap-2"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-link" aria-hidden /> {h}</li>)}</ul>

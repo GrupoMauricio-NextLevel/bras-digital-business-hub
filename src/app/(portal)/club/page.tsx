@@ -20,7 +20,7 @@ export default async function ClubPage() {
   const preco = (p: typeof plus) => (p?.prices.MONTHLY?.amountCents != null ? `${formatBRL(p.prices.MONTHLY.amountCents)}/mês` : null);
   return (
     <>
-      <AberturaMarca slug="nextlevel-club" eyebrow="Programa de vantagens do Grupo NextLevel" ctas={[{ href: "/login", label: "Ver meus pontos", primary: true }, { href: "#niveis", label: "Conhecer os níveis" }]} />
+      <AberturaMarca slug="nextlevel-club" eyebrow="Programa de vantagens do Grupo NextLevel" foto={{ nome: "cta-moment", posicao: "62% 50%", alt: "" }} ctas={[{ href: "/login", label: "Ver meus pontos", primary: true }, { href: "#niveis", label: "Conhecer os níveis" }]} />
       <VitrineMarca slug="nextlevel-club" titulo="Como o Club funciona" />
       <section id="niveis" className="bg-canvas pb-16" aria-labelledby="niveis-t">
         <div className="mx-auto max-w-6xl px-4">

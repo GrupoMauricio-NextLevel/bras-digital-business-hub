@@ -1428,3 +1428,12 @@ Decisão do dono: o endereço principal do grupo passa a abrir o nosso sistema; 
 - **Marca:** `nextlevelgroup.com.br` e `www.` entram nos domínios padrão da holding (antes a raiz caía no SuperDrop por ser "fora do sistema").
 - Redirecionamentos seguem temporários (307) para poder voltar atrás.
 - Passo a passo do dono (ChatGPT Sites, Render, Hostinger) em `docs/nextlevel-commerce/fase-3-dominio-do-grupo.md`; a chave `GROUP_SITE_URL` só é ligada depois do domínio verificado no Render.
+
+## D157 — Site do grupo v1: Soluções, Club, Meu Contador e Loja NextLevel na linguagem navy + amarelo (2026-10-17)
+Pedido do dono: com nextlevelgroup.com.br abrindo o nosso sistema (D156), analisar e evoluir as quatro páginas do grupo como foi feito no SuperDrop (D153) e na Commerce (D154). Análise e prompt em `docs/prompts/site-grupo-v1-analise-e-prompt.md`.
+- **Abertura única** (`AberturaMarca`): topo navy `#101B34` ligado ao cabeçalho (`data-heroi-escuro="nextlevel"`, botão amarelo com texto navy), foto opcional do kit do grupo, logo só quando a marca tem logo escura (a holding usa a do cabeçalho).
+- **Soluções:** título "Estrutura digital para o seu negócio ir além." sobre `hero-key-visual`; faixa com as logos das marcas do grupo; jornada legível; imagem em todos os cartões de "Soluções e preços"; caminho recomendado destacado; prova e chamada antes do formulário; removida a nota pública "esta seção fica vazia".
+- **Marcas sem kit de imagens** (Club, Meu Contador): capacidades em cartões de texto, sem bloco navy vazio no lugar da foto. Club usa `cta-moment` do grupo como foto decorativa.
+- **Loja NextLevel:** topo pela abertura única com `capability-01` (sem o brilho verde do SuperDrop); temas com a captura da loja de demonstração; nichos "Beleza/Celular: acessórios de marca própria" (sem ":" duplo).
+- Sem número, depoimento ou cliente inventado; preços e regras sem mudança.
+
