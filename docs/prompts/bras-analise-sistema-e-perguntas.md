@@ -46,6 +46,54 @@ pedido de cotação, resposta, reputação). Congelar o que depende de volume qu
 | **Contador parceiro** | Meu Contador | Atender membros com nota fiscal | Chamados no Meu Brás e fila no Estúdio |
 | **Indicadores** | Membros, importadoras, transportadoras e parceiros | Ganhar por trazer gente | Club: códigos, indicações, pontos, vales, cartão no balcão das empresas do grupo, ranking |
 
+## 2A. Públicos-alvo em detalhe (hipóteses para validar)
+
+O cadastro já pergunta momento, canais, compra mensal, faturamento, experiência com importação, equipe e objetivos (D108).
+Depois do lançamento, esses dados confirmam ou derrubam as hipóteses abaixo; hoje elas vêm do que o sistema foi pensado
+para atender e do que se vê no Brás e no Canindé.
+
+**Compradores (quem compra para revender)**
+
+| Perfil | Como compra hoje | Dor principal | Quanto compra | O que faria pagar | Onde encontrar |
+|---|---|---|---|---|---|
+| **C1. Vendedor de marketplace iniciante** (MEI, vende no Mercado Livre e Shopee) | Vai ao Brás de vez em quando ou compra de quem revende; pouca caixa | Não sabe o que gira; medo de encalhar; pedido mínimo alto | 1 a 5 caixas por mês | Análise de produto, pedido mínimo baixo, frete junto | YouTube, Instagram, grupos de vendedores |
+| **C2. Vendedor de marketplace profissional** (CNPJ, Full do Mercado Livre) | Compra recorrente de 2 a 5 importadoras conhecidas | Repor rápido; achar novidade antes do concorrente; preço por volume | dezenas de caixas por mês | Alertas de reposição, cotação rápida entre vários fornecedores, contêiner dividido | Comunidades de sellers, eventos, indicação |
+| **C3. Lojista físico do interior** (utilidades, presentes, variedades) | Viaja de ônibus de excursão; compra de tudo num dia | Viagem cara e cansativa; não consegue comparar tudo num dia; frete | caixas de vários produtos por viagem | Comprar sem viajar, juntar frete, ver novidade em vídeo | Guias de excursão, ônibus, WhatsApp |
+| **C4. Revendedor informal** (sacoleira, revenda por WhatsApp/Instagram) | Excursão e compra pequena | Pouco capital; muitas vezes sem CNPJ | pouco | Preço e mínimo pequenos | Excursão, redes sociais. *Hoje fica de fora (CNPJ obrigatório).* |
+| **C5. Distribuidor ou atacadista regional** | Compra pallet ou contêiner e revende a lojistas da região | Margem: precisa de preço de importação | alto | Contêiner fechado ou dividido, pré-compra em alto mar, condição de pagamento | Indicação, visita, feiras |
+
+**Fornecedores (quem vende para quem revende)**
+
+| Perfil | Situação | Dor principal | O que faria pagar |
+|---|---|---|---|
+| **F1. Importadora grande** (contêineres, showroom, equipe comercial) | Já vende bem no balcão | Alcançar o Brasil todo sem montar equipe; girar o estoque parado | Destaque, cotações qualificadas, relatório de demanda |
+| **F2. Importadora pequena ou média** | Estoque parado, sem marketing digital | Achar comprador; depender só do balcão | Receber cotações, vitrine, gravação patrocinada |
+| **F3. Distribuidor ou atacadista** (revende de várias importadoras, às vezes no Canindé) | Variedade grande, margem menor | Visibilidade; concorrência com as importadoras | Perfil completo, cotações da categoria |
+| **F4. Fábrica nacional** (em aberto) | Produz e vende para lojistas | Canal de atacado | A decidir se entra |
+
+**Quem leva a mercadoria:** transportadoras e **donos de ônibus de excursão e guias**, que já são o canal de confiança do lojista do interior. São parceiros de distribuição (e de captação de compradores), não só frete.
+
+**Leitura:** C2, C3 e C5 têm volume e dor clara de "comprar sem viajar e comparar"; C1 é o que mais cresce, mas compra pouco; C4 é grande, mas exige decidir sobre o CNPJ. No lado dos fornecedores, F2 é o mais fácil de trazer (tem estoque parado e pouca alternativa) e F1 é o que dá credibilidade à rede.
+
+## 2B. Por que "Club": o sentido do nome
+
+"Club" só faz sentido se ser membro der algo que **sozinho a pessoa não consegue**. Três leituras possíveis:
+
+| Leitura | O que o membro ganha por ser do Club | Já existe no sistema | Força |
+|---|---|---|---|
+| **A. Clube de compra coletiva** | Juntar o volume de muitos compradores pequenos para ter preço, mínimo e frete de comprador grande: contêiner dividido em cotas, cotação coletiva do mesmo produto, frete consolidado na excursão | Contêiner dividido e cotas, cubagem, fardos do ônibus, frete por carga | **A mais forte e mais difícil de copiar**: transforma o pequeno em grande |
+| **B. Rede verificada** | Só empresa com CNPJ conferido compra e só fornecedor aprovado vende: confiança dos dois lados, preço de atacado protegido | Cadastro com CNPJ, bloqueio, fronteira de dados | Necessária, mas sozinha não justifica o nome |
+| **C. Clube de vantagens** | Pontos, vales, cartão no balcão, benefícios do grupo (contador, frete) | Club do grupo (pontos, vales, cartão) | Fraca se for só pontos; todo programa tem |
+
+**Recomendação:** o sentido do Club é **A + B**: *"o clube de quem compra para revender: empresas verificadas que juntam força
+para comprar como grande"*. Os pontos (C) viram detalhe, não a razão. Isso amarra o nome ao que já foi construído
+(contêiner dividido, frete consolidado, excursão) e dá um diferencial que a importadora não oferece sozinha no balcão.
+Também resolve a confusão com o NextLevel Club: o Brás Digital Club é um clube de **compra**, e o NextLevel Club é o
+programa de **pontos** do grupo, que o membro ganha junto.
+
+Consequência prática: no núcleo de cotação (seção 6), uma **cotação coletiva** (vários compradores pedindo o mesmo produto
+viram uma cotação maior) é o recurso que mais expressa o "Club"; deve entrar logo depois da cotação simples.
+
 ## 3. O que cada área faz hoje (inventário)
 
 **Público:** página da marca (nova identidade D158), página de cada descoberta (`/d/…`), cadastro com CNPJ, termos próprios com aceite versionado, rota `/bras-digital-club`.
@@ -180,3 +228,10 @@ do Brás, Canindé e outros polos" deixam a porta aberta para a expansão.
 17. Quantas importadoras e compradores reais você já tem conversando? Alguma piloto para a cotação?
 18. Prioridade: primeiro trazer fornecedores (oferta) ou compradores (demanda)? *Recomendo: fornecedores primeiro, com cotação, porque é o que o comprador procura.*
 19. O domínio `brasdigitalclub.com.br` entra no ar junto com a página nova ou antes, com a página atual?
+
+**F. Públicos e o sentido do Club**
+20. Dos compradores da seção 2A (C1 a C5), qual é o **primeiro** que você quer atender bem? *Recomendo: C3 (lojista do interior) e C2 (marketplace profissional): têm volume e dor clara.*
+21. O revendedor informal sem CNPJ (C4) entra de alguma forma (só com CPF, com limite), ou fica de fora?
+22. Concorda que o "Club" significa **compra coletiva entre empresas verificadas** (seção 2B)? Ou o sentido que você imagina é outro?
+23. Você já conhece donos de ônibus de excursão e guias que topariam ser parceiros (trazer compradores e levar caixas)?
+24. Ticket médio e frequência que você vê hoje nos compradores do Brás e do Canindé (por viagem ou por mês)?
