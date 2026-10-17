@@ -55,8 +55,8 @@ describe("vitrine de Soluções", () => {
     expect(filtrarPorIntencao(v.busca, "x")).toEqual([]);
   });
 
-  it("chave FIN_SOLUTIONS_V2 nasce desligada", () => {
-    expect(finFlag("FIN_SOLUTIONS_V2", {})).toBe(false);
-    expect(finFlag("FIN_SOLUTIONS_V2", { FIN_SOLUTIONS_V2: "true" })).toBe(true);
+  it("chave FIN_SOLUTIONS_V2 ligada por padrão (liberada pelo dono) e desligável por variável", () => {
+    expect(finFlag("FIN_SOLUTIONS_V2", {})).toBe(true);
+    expect(finFlag("FIN_SOLUTIONS_V2", { FIN_SOLUTIONS_V2: "false" })).toBe(false);
   });
 });

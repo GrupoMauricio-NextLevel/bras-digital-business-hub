@@ -3,7 +3,7 @@
  * sem reverter código (ver docs/financeiro-master.md, seção 4).
  */
 export type FinFlag = "FIN_CATALOG_MASTER" | "FIN_COMMERCE_PLANS" | "FIN_PAGARME" | "FIN_PARTNER_COMMISSIONS_V2" | "FIN_PUBLIC_SOLUTIONS" | "FIN_SOLUTIONS_V2";
-const DEFAULT_ON: Record<FinFlag, boolean> = { FIN_CATALOG_MASTER: true, FIN_COMMERCE_PLANS: true, FIN_PAGARME: false, FIN_PARTNER_COMMISSIONS_V2: true, FIN_PUBLIC_SOLUTIONS: true, /** Vitrine imersiva de Soluções (D162): desligada até o dono aprovar; o Master vê em /solucoes?previa=v2. */ FIN_SOLUTIONS_V2: false };
+const DEFAULT_ON: Record<FinFlag, boolean> = { FIN_CATALOG_MASTER: true, FIN_COMMERCE_PLANS: true, FIN_PAGARME: false, FIN_PARTNER_COMMISSIONS_V2: true, FIN_PUBLIC_SOLUTIONS: true, /** Vitrine imersiva de Soluções (D162): liberada pelo dono em 2026-10-17; FIN_SOLUTIONS_V2=false volta à página anterior. */ FIN_SOLUTIONS_V2: true };
 
 export function finFlag(name: FinFlag, env: Record<string, string | undefined> = process.env): boolean {
   const v = env[name]?.trim().toLowerCase();
