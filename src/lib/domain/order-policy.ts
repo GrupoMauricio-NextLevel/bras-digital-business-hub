@@ -8,7 +8,7 @@ import { isBlocked } from "./store-access";
 /**
  * Política de quem opera cada etapa de um pedido (Onda 1). Marca, cookie e flags do navegador NÃO decidem nada aqui:
  * a modalidade vem dos vínculos reais da loja no banco.
- *  - INDEPENDENT: loja independente da NextLevel Commerce (sem fornecedor, D89); o próprio dono separa e envia.
+ *  - INDEPENDENT: loja independente da NextLevel E-commerce (sem fornecedor, D89); o próprio dono separa e envia.
  *  - SUPPLIER_OWN: loja própria de um fornecedor real; quem expede é o fornecedor.
  *  - NETWORK: loja parceira de uma rede (SuperDrop); quem expede é a Central.
  */

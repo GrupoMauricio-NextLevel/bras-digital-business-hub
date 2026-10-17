@@ -43,7 +43,7 @@ export default async function Portal() {
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
   if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} />; }
-  // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio.
+  // Marcas sem dropshipping (NextLevel E-commerce) têm portal próprio.
   if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
   const faq = FAQ.slice(0, 5);
   return (

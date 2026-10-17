@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { groupLinkFor } from "@/lib/host-routing";
 import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
-/** Cookie do modo prévia: `/lojas` liga a NextLevel Commerce num endereço que ainda não é dela. Só na demonstração (D149). */
+/** Cookie do modo prévia: `/lojas` liga a NextLevel E-commerce num endereço que ainda não é dela. Só na demonstração (D149). */
 export const BRAND_PREVIEW_COOKIE = "nl-brand";
 
 /** Link para uma página do grupo (Soluções, Loja NextLevel) visto do endereço atual: relativo no grupo e em endereço técnico; nas marcas, o do site do grupo (D149). */

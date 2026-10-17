@@ -7,7 +7,7 @@ import { getCommerceConsole } from "@/lib/domain/commerce-console";
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 
-describe("console independente da NextLevel Commerce", () => {
+describe("console independente da NextLevel E-commerce", () => {
   it("isola lojas e leads da Commerce e não mistura SuperDrop", async () => {
     await signupMember(ctx.db, {
       storeName: "Commerce One", ownerName: "Ana Commerce", email: "ana.commerce@example.com",

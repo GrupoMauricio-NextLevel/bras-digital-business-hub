@@ -1,0 +1,407 @@
+[
+  {
+    "path": "logos/app-icons/apple-touch-icon-180.png",
+    "width": 180,
+    "height": 180,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      179,
+      179
+    ],
+    "bytes": 8132,
+    "sha256": "A841426DA8951534A2B72CE33B128EE4E1B34E48C4D1CD9FF5B0B45DED85E4D8"
+  },
+  {
+    "path": "logos/app-icons/icon-192.png",
+    "width": 192,
+    "height": 192,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      191,
+      191
+    ],
+    "bytes": 9072,
+    "sha256": "181FDCA897FC673687B1348837BF824F4655F4419AED9701A82BDC87C55C384E"
+  },
+  {
+    "path": "logos/app-icons/icon-512.png",
+    "width": 512,
+    "height": 512,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      511,
+      511
+    ],
+    "bytes": 55881,
+    "sha256": "2F8812B77FAFACE26C189975F1B0018ECA0D9EA1BFB298A19B9FCA6CC779CDAB"
+  },
+  {
+    "path": "logos/app-icons/icon-maskable-512.png",
+    "width": 512,
+    "height": 512,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      511,
+      511
+    ],
+    "bytes": 48791,
+    "sha256": "8924FE9C58CCBC24E4EB25C344724B6DB7B1455F68D81B94CC2A7E072E9943EE"
+  },
+  {
+    "path": "logos/favicons/favicon-16.png",
+    "width": 16,
+    "height": 16,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      1,
+      4,
+      14,
+      10
+    ],
+    "bytes": 479,
+    "sha256": "DFCF6B981BEE7BD5819959A4A46E533B362F7E1071A5001F34676558610BF64C"
+  },
+  {
+    "path": "logos/favicons/favicon-32.png",
+    "width": 32,
+    "height": 32,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      1,
+      8,
+      30,
+      23
+    ],
+    "bytes": 1134,
+    "sha256": "6AE6E871ABD7B69365E88DA9275FAE860D5695B0D9FF60D6ADE1A6DB87CDC3A8"
+  },
+  {
+    "path": "logos/favicons/favicon-48.png",
+    "width": 48,
+    "height": 48,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      1,
+      12,
+      46,
+      35
+    ],
+    "bytes": 1907,
+    "sha256": "9E356464EAFFFD87D9624B5EEBCF4159C2AD1E951B765D28CB50944A371C5713"
+  },
+  {
+    "path": "logos/flat/logo-clara.png",
+    "width": 2103,
+    "height": 748,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      97,
+      191,
+      1995,
+      594
+    ],
+    "bytes": 630211,
+    "sha256": "3D43A8CA6FF37F906D2AABC376D9C34CACDECA8D032C0F219B27B257144AC53A"
+  },
+  {
+    "path": "logos/flat/logo-escura.png",
+    "width": 2048,
+    "height": 768,
+    "alphaMin": 0,
+    "alphaMax": 254,
+    "bounds": [
+      74,
+      206,
+      1973,
+      616
+    ],
+    "bytes": 1225846,
+    "sha256": "B408063F8EFE9C85D188A7B50AC8A41DB5B946CF511A2F13B8A021F45C834607"
+  },
+  {
+    "path": "logos/monocromaticas/logo-negativa.png",
+    "width": 2109,
+    "height": 746,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      77,
+      201,
+      2032,
+      596
+    ],
+    "bytes": 590964,
+    "sha256": "B46BCD4B1E26DA9EC4071EBB9DDF7F5CA96DFDAF2120A9BC6F8029591EB4F552"
+  },
+  {
+    "path": "logos/monocromaticas/logo-positiva.png",
+    "width": 2019,
+    "height": 779,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      81,
+      214,
+      1934,
+      598
+    ],
+    "bytes": 559240,
+    "sha256": "9F41B1E2B4C8B3CC8BF987C0E59CD11215CF56421F1CE2015DD4347960B65A75"
+  },
+  {
+    "path": "logos/monogramas/monograma-flat.png",
+    "width": 1254,
+    "height": 1254,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      40,
+      346,
+      1232,
+      972
+    ],
+    "bytes": 570354,
+    "sha256": "5022546FCC8CCE87F39C832D7FD102870B95046584507FFBF4F295866BD27168"
+  },
+  {
+    "path": "logos/monogramas/monograma-prisma.png",
+    "width": 1254,
+    "height": 1254,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      26,
+      347,
+      1210,
+      966
+    ],
+    "bytes": 669871,
+    "sha256": "AA1D72B58641299006FFC0DE8F2EDD50D304CF7DB3819507E49CE6B0B6235779"
+  },
+  {
+    "path": "logos/prisma/logo-clara.png",
+    "width": 2146,
+    "height": 733,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      71,
+      156,
+      2059,
+      586
+    ],
+    "bytes": 839289,
+    "sha256": "EA690D0AF5D2D4FFA15BA128C2B5DAD914F6DCDE651B499F0AA57665F5945E7B"
+  },
+  {
+    "path": "logos/prisma/logo-escura.png",
+    "width": 2152,
+    "height": 731,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      77,
+      151,
+      2095,
+      601
+    ],
+    "bytes": 1136279,
+    "sha256": "E5837580987628AD6B3988547D6A549250CC1EB38FFB40F1B5792A03A2E42451"
+  },
+  {
+    "path": "logos/responsive/flat-clara-1024.png",
+    "width": 1024,
+    "height": 369,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      20,
+      80,
+      1003,
+      288
+    ],
+    "bytes": 178008,
+    "sha256": "F788A9E89A863EC8AA924E946D47FF63D3BE7244EBC686B919F50CE3C675AA77"
+  },
+  {
+    "path": "logos/responsive/flat-clara-512.png",
+    "width": 512,
+    "height": 184,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      10,
+      39,
+      501,
+      143
+    ],
+    "bytes": 54411,
+    "sha256": "9207464F11A1E6952C5CB161C79A27278BB74C415EC477672695B85F86E4F191"
+  },
+  {
+    "path": "logos/responsive/flat-escura-1024.png",
+    "width": 1024,
+    "height": 369,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      20,
+      78,
+      1003,
+      290
+    ],
+    "bytes": 178652,
+    "sha256": "CD41B84798D7E3173D24FF7750D3C7DE5A82E6B7C46FF1C002B681AF20DC9583"
+  },
+  {
+    "path": "logos/responsive/flat-escura-512.png",
+    "width": 512,
+    "height": 184,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      10,
+      39,
+      501,
+      144
+    ],
+    "bytes": 54584,
+    "sha256": "E7C0E684B0A8B9A08646580F206F20735FBEED7AAF2B7D63220FC98240041DBE"
+  },
+  {
+    "path": "logos/responsive/prisma-clara-1024.png",
+    "width": 1024,
+    "height": 369,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      20,
+      78,
+      1003,
+      290
+    ],
+    "bytes": 272433,
+    "sha256": "506195EDE8756220C5A8AAFB805E32F166339BDB6CF9974BF4C5C0DD4682E20A"
+  },
+  {
+    "path": "logos/responsive/prisma-clara-512.png",
+    "width": 512,
+    "height": 184,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      10,
+      38,
+      501,
+      144
+    ],
+    "bytes": 80750,
+    "sha256": "345C85E8CA72A2A073156E86D7AB71C031C9100684B97CA71E1E6723A4961D41"
+  },
+  {
+    "path": "logos/responsive/prisma-escura-1024.png",
+    "width": 1024,
+    "height": 369,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      20,
+      75,
+      1003,
+      293
+    ],
+    "bytes": 349332,
+    "sha256": "7C70C5C3F9F606BF0EE31436BC9E8A625BC305788D6F220E8CEB5E9028D1E884"
+  },
+  {
+    "path": "logos/responsive/prisma-escura-512.png",
+    "width": 512,
+    "height": 184,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "bounds": [
+      10,
+      37,
+      501,
+      146
+    ],
+    "bytes": 100301,
+    "sha256": "60F1A3DF183578DC9BEC60BAA7DBECABC8621684B923AA5A96F6EE981A196134"
+  },
+  {
+    "path": "logos/vertical/logo-vertical-clara.png",
+    "width": 1536,
+    "height": 1024,
+    "alphaMin": 0,
+    "alphaMax": 254,
+    "bounds": [
+      187,
+      140,
+      1354,
+      952
+    ],
+    "bytes": 1379669,
+    "sha256": "FF80DA90F78DFA1C5BEB329DFCB89F6ED3FDD672EA58BC7C0225C6DD63A5F4C2"
+  },
+  {
+    "path": "logos/vertical/logo-vertical-escura.png",
+    "width": 1536,
+    "height": 1024,
+    "alphaMin": 0,
+    "alphaMax": 254,
+    "bounds": [
+      145,
+      133,
+      1415,
+      948
+    ],
+    "bytes": 1487575,
+    "sha256": "A055BF1CFF15D6EA5EC5795C51E2A04515ACD3B6B3CB1058E1E8F1E37DFE032C"
+  },
+  {
+    "path": "previews/controle-qualidade.png",
+    "width": 1800,
+    "height": 1600,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      1799,
+      1599
+    ],
+    "bytes": 1500829,
+    "sha256": "33629EA41FB1608DB81E202FF872CEF041E165339ECF430A69200ED2D47B2D71"
+  },
+  {
+    "path": "referencias/identidade-consolidada.png",
+    "width": 1672,
+    "height": 941,
+    "alphaMin": 255,
+    "alphaMax": 255,
+    "bounds": [
+      0,
+      0,
+      1671,
+      940
+    ],
+    "bytes": 1444592,
+    "sha256": "C66BD8B8D542CD1E76562F9C9E530BB3326BD80C58E24482D5BE7A33B77A4573"
+  }
+]

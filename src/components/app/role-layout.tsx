@@ -103,7 +103,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         navMode={commerceStore ? "accordion" : "sections"}
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
         roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
-        tenantName={commerceStore ? store!.name : "NextLevel Commerce"}
+        tenantName={commerceStore ? store!.name : "NextLevel E-commerce"}
         tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
         userName={session.user.name}
         storefrontHref={commerceStore ? storefrontHref : undefined}

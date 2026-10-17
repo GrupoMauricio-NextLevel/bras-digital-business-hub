@@ -17,7 +17,7 @@ import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
 import { MockWindow } from "@/components/portal/mock-window";
 
 /**
- * Home da NextLevel Commerce (v2, cadastro aberto): prova (lojas de exemplo), como começar sozinho, para quem é, o que a
+ * Home da NextLevel E-commerce (v2, cadastro aberto): prova (lojas de exemplo), como começar sozinho, para quem é, o que a
  * plataforma faz, temas com imagem real, planos com simulador e dúvidas. Só anuncia o que existe.
  * Decisões: docs/design/HOME-COMMERCE-V1.md e D97.
  */
@@ -100,7 +100,7 @@ export async function CommerceHome({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <section id="operacao" aria-labelledby="op-t" className={section} style={{ background: "#0B1A36" }}>
+      <section id="operacao" aria-labelledby="op-t" className={section} style={{ background: "var(--ec-marinho)" }}>
         <div className="mx-auto max-w-6xl">
           <h2 id="op-t" className={`${H2} mb-10 max-w-3xl text-white sm:text-5xl`}>Depois que a loja está no ar, o painel organiza o resto.</h2>
           <div className="mb-16 overflow-hidden rounded-3xl" style={{ aspectRatio: "21 / 9" }}>
@@ -140,12 +140,12 @@ export async function CommerceHome({ brand }: { brand: Brand }) {
       </section>
 
       {/* Chamada final sobre a foto "momento" do pacote (faixa marinho para o texto). Uma chamada só. */}
-      <section className="relative isolate overflow-hidden py-20 text-white md:py-28" style={{ background: "#0B1A36" }} aria-label="Chamada final">
+      <section className="relative isolate overflow-hidden py-20 text-white md:py-28" style={{ background: "var(--ec-marinho)" }} aria-label="Chamada final">
         <div aria-hidden className="absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element -- foto decorativa do pacote da marca */}
           <img src="/marcas/nextlevel-commerce/imagens/cta-moment-1600.webp" srcSet="/marcas/nextlevel-commerce/imagens/cta-moment-800.webp 800w, /marcas/nextlevel-commerce/imagens/cta-moment-1600.webp 1600w" sizes="100vw" alt="" width={1600} height={600} loading="lazy" decoding="async" className="size-full object-cover" style={{ objectPosition: "78% 50%" }} />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,#0B1A36_0%,rgba(11,26,54,0.8)_40%,transparent_75%)]" />
-          <div className="absolute inset-0 bg-[rgba(11,26,54,0.55)] md:hidden" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--ec-marinho)_0%,rgba(16,26,51,0.8)_40%,transparent_75%)]" />
+          <div className="absolute inset-0 bg-[rgba(16,26,51,0.55)] md:hidden" />
         </div>
         <ClosingCta cta={cta} signupOpen={brand.signupOpen} offer={offer} />
       </section>

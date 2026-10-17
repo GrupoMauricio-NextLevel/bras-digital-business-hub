@@ -41,7 +41,7 @@ describe("prévia de link por marca", () => {
     // Brás Digital Club (D158): arte do pacote da marca.
     expect(ogImageFor(all.BRAS_DIGITAL).url).toBe("/marcas/bras-digital-club/og-1200x630.jpg");
     expect(ogImageFor(all.NEXTLEVEL_CARGAS).url).toBe("/og/nextlevel_cargas.png");
-    expect(ogImageFor(all.NEXTLEVEL_COMMERCE).url).toBe("/portal/commerce/v3/cm-og-portal.jpg");
+    expect(ogImageFor(all.NEXTLEVEL_COMMERCE).url).toBe("/marcas/nextlevel-ecommerce/og-1200x630.jpg");
     expect(ogImageFor(all.CREATORS_HUB).url).toBe("/og/creators_hub.png");
     expect(existsSync(join(process.cwd(), "public/og/superdrop.png"))).toBe(true);
     expect(existsSync(join(process.cwd(), "src/app/opengraph-image.png"))).toBe(false);

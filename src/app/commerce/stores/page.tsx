@@ -14,7 +14,7 @@ export default async function CommerceStoresPage() {
   const data = await getCommerceConsole(await getDb(), session.actor);
   return (
     <>
-      <PageHeader eyebrow="Portfólio" title="Lojas" description="Cada operação digital da NextLevel Commerce, sem fornecedores ou redes do SuperDrop." />
+      <PageHeader eyebrow="Portfólio" title="Lojas" description="Cada operação digital da NextLevel E-commerce, sem fornecedores ou redes do SuperDrop." />
       <DataTable rows={data.stores} rowKey={({ store }) => store.id}
         empty={<EmptyState title="Nenhuma loja Commerce encontrada" description="As lojas aparecem aqui assim que forem criadas." />}
         columns={[

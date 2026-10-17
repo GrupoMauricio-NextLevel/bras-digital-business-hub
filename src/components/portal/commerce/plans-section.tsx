@@ -5,7 +5,7 @@ import { groupLink } from "@/lib/brand-server";
 import { CommercePricing } from "./pricing";
 
 /**
- * Planos NextLevel Commerce vindos do catálogo Master (D90), com a oferta de entrada, mensal/anual e o simulador por
+ * Planos NextLevel E-commerce vindos do catálogo Master (D90), com a oferta de entrada, mensal/anual e o simulador por
  * faturamento. `cta` leva ao cadastro (ou à lista de espera quando o cadastro está fechado), preservando a atribuição.
  */
 export async function CommercePlansSection({ cta, signupOpen, suffix = "" }: { cta: string; signupOpen: boolean; suffix?: string }) {

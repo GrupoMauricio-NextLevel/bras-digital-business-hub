@@ -7,11 +7,11 @@ import { StoreMock } from "./store-mock";
 import { CabecalhoSobreHeroi } from "@/components/portal/superdrop/cabecalho-sobre-heroi";
 
 // Azul cheio com texto branco em 19 px negrito: texto grande, contraste 3,8:1 (AA para texto grande).
-const CTA = "inline-flex h-14 items-center justify-center rounded-full bg-[#2F81F4] px-8 text-[1.1875rem] font-bold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+const CTA = "inline-flex h-14 items-center justify-center rounded-full bg-[var(--ec-acao)] px-8 text-[1.1875rem] font-bold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
 /** Marinho retirado da faixa da foto principal do pacote (hero-key-visual): foto e fundo se emendam sem costura. */
-const NAVY = "#0B1A36";
-const AZUL_CLARO = "#71AAFF";
+const NAVY = "var(--ec-marinho)";
+const AZUL_CLARO = "var(--ec-link-escuro)";
 
 /**
  * Primeira dobra (Commerce v3, docs/prompts/commerce-home-v3-analise-e-prompt.md): a foto do pacote é o fundo e o texto fica
@@ -27,8 +27,8 @@ export function HeroV2({ cta, signupOpen, offer }: { cta: string; signupOpen: bo
       <div className="relative aspect-[16/10] w-full md:absolute md:inset-x-0 md:top-0 md:aspect-auto md:h-[44rem]">
         {/* eslint-disable-next-line @next/next/no-img-element -- WebP estático com srcset próprio */}
         <img src={`${b}-1600.webp`} srcSet={`${b}-800.webp 800w, ${b}-1600.webp 1600w`} sizes="100vw" alt="Equipe de uma marca própria arrumando a vitrine e embalando pedidos" width={1600} height={900} loading="eager" fetchPriority="high" decoding="sync" className="size-full object-cover" style={{ objectPosition: "70% 40%" }} />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1A36] via-transparent to-transparent md:bg-[linear-gradient(90deg,#0B1A36_0%,rgba(11,26,54,0.85)_40%,transparent_72%)]" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 hidden h-48 bg-gradient-to-t from-[#0B1A36] to-transparent md:block" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--ec-marinho)] via-transparent to-transparent md:bg-[linear-gradient(90deg,var(--ec-marinho)_0%,rgba(16,26,51,0.85)_40%,transparent_72%)]" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 hidden h-48 bg-gradient-to-t from-[var(--ec-marinho)] to-transparent md:block" />
       </div>
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-2 md:pb-8 md:pt-32 lg:pt-36">
         <div className="max-w-2xl">

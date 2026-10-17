@@ -35,7 +35,7 @@ const SUSPEITOS = [
   ["tela de erro", /Algo deu errado|Application error|Internal Server Error|This page could not be found/],
   ["inglês solto", /\b(Loading|Submit|Cancel|Save|Delete|Settings|Dashboard|Orders|Products|Customers|Search\.\.\.)\b/],
 ];
-const MARCA_ERRADA = { Commerce: /SuperDrop/, SuperDrop: /NextLevel Commerce/ };
+const MARCA_ERRADA = { Commerce: /SuperDrop/, SuperDrop: /NextLevel E-commerce/ };
 
 const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium" });
 const all = [];

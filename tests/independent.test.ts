@@ -21,7 +21,7 @@ const open = (over: Record<string, unknown> = {}) => signupMember(ctx.db, { stor
 
 const product = (sku: string) => ({ name: `Vestido ${sku}`, sku, categoryName: "Vestidos", costCents: 3000, suggestedPriceCents: 9000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 10 }] });
 
-describe("loja independente da NextLevel Commerce (D89: sem fornecedor, sem rede)", () => {
+describe("loja independente da NextLevel E-commerce (D89: sem fornecedor, sem rede)", () => {
   it("abre sem fornecedor nem rede: loja, usuário dono e fatura do plano paga à NextLevel, sem comissão de canal", async () => {
     const supBefore = (await ctx.db.select().from(suppliers)).length; const netBefore = (await ctx.db.select().from(networks)).length;
     const r = await open();

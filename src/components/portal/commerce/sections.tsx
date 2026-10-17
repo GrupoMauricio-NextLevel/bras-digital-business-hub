@@ -37,7 +37,7 @@ export function Operation() {
       {rows.map((r, n) => (
         <article key={r.id} className="cm-reveal grid items-center gap-8 md:grid-cols-2 md:gap-16">
           <div className={n % 2 ? "md:order-2" : ""}>
-            <p className="text-sm font-semibold text-[#71AAFF]">{r.situation}</p>
+            <p className="text-sm font-semibold text-[var(--ec-link-escuro)]">{r.situation}</p>
             <h3 className="mt-2 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold leading-tight text-band-foreground sm:text-4xl">{r.title}</h3>
             <p className="mt-4 max-w-md text-lg leading-relaxed text-band-muted">{r.text}</p>
           </div>
@@ -117,7 +117,7 @@ export function ClosingCta({ cta, signupOpen, offer }: { cta: string; signupOpen
         <h2 className={`${H2} max-w-xl text-white`}>Sua marca merece uma loja à altura.</h2>
         <p className="mt-3 max-w-lg text-lg text-white/85">{signupOpen ? (offer ? `Teste ${offer.trialDays} dias grátis. Você escolhe o plano no cadastro.` : "Crie a sua conta e comece a montar.") : "Deixe seu contato e a equipe da NextLevel responde com os próximos passos."}</p>
       </div>
-      <Link href={cta} className="inline-flex h-14 items-center justify-center rounded-full bg-[#2F81F4] px-8 text-[1.1875rem] font-bold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">{signupOpen ? (offer ? `Começar ${offer.trialDays} dias grátis` : "Criar minha loja") : "Quero minha loja"}</Link>
+      <Link href={cta} className="inline-flex h-14 items-center justify-center rounded-full bg-[var(--ec-acao)] px-8 text-[1.1875rem] font-bold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">{signupOpen ? (offer ? `Começar ${offer.trialDays} dias grátis` : "Criar minha loja") : "Quero minha loja"}</Link>
     </div>
   );
 }

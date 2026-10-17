@@ -33,7 +33,7 @@ export const proposalSchema = z.object({
 });
 export type Proposal = z.output<typeof proposalSchema>;
 export type ProposalBrand = keyof Proposal["brands"];
-export const PROPOSAL_BRANDS: { brand: ProposalBrand; label: string }[] = [{ brand: "NEXTLEVEL_COMMERCE", label: "NextLevel Commerce" }, { brand: "SUPERDROP", label: "SuperDrop (lojista)" }];
+export const PROPOSAL_BRANDS: { brand: ProposalBrand; label: string }[] = [{ brand: "NEXTLEVEL_COMMERCE", label: "NextLevel E-commerce" }, { brand: "SUPERDROP", label: "SuperDrop (lojista)" }];
 
 const sc = (key: Scenario["key"], v: Omit<Scenario, "key">): Scenario => ({ key, ...v });
 /** Rascunho inicial: escada da seção A8 e cenários como hipótese (a P1 e a P2 trocam pelos números reais). */

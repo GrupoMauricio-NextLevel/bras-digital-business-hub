@@ -27,8 +27,8 @@ describe("marca certa", () => {
   });
 
   it("a assinatura da NextLevel diz o nome da marca recebida", () => {
-    const html = renderToStaticMarkup(<NextLevelSignature product="NextLevel Commerce" />);
-    expect(html).toContain("NextLevel Commerce é um sistema de tecnologia");
+    const html = renderToStaticMarkup(<NextLevelSignature product="NextLevel E-commerce" />);
+    expect(html).toContain("NextLevel E-commerce é um sistema de tecnologia");
     expect(html).not.toContain("SuperDrop");
   });
 

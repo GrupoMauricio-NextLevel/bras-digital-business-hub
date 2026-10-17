@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { BDC, BDC_ICONES, BDC_LOGOS } from "@/lib/marcas/bras-digital-club";
 import { NL, NL_ICONES, NL_LOGOS } from "@/lib/marcas/nextlevel";
+import { EC, EC_ICONES, EC_LOGOS } from "@/lib/marcas/nextlevel-ecommerce";
 
 /**
  * Logos oficiais do kit v1 com a cor de assinatura de cada marca no raio (sistema de cores v2, decisão D79).
@@ -10,8 +11,6 @@ import { NL, NL_ICONES, NL_LOGOS } from "@/lib/marcas/nextlevel";
  * aparecem só com o nome em texto: nenhuma logo é inventada.
  */
 const OFICIAIS: Record<string, { id: string; sufixo?: string; ratio: { compacta: number; "assinatura-completa": number; monograma: number } }> = {
-  // A versão compacta da Commerce é "NextLevel" com o raio azul: o nome do produto vai ao lado em texto.
-  NEXTLEVEL_COMMERCE: { id: "commerce", sufixo: "Commerce", ratio: { compacta: 1315 / 336, "assinatura-completa": 1315 / 381, monograma: 286 / 192 } },
   SUPERDROP: { id: "superdrop", ratio: { compacta: 1495 / 404, "assinatura-completa": 1495 / 404, monograma: 353 / 249 } },
   CREATORS_HUB: { id: "creators", ratio: { compacta: 1200 / 332, "assinatura-completa": 1200 / 381, monograma: 282 / 199 } },
 };
@@ -62,6 +61,14 @@ const PNG_OFICIAIS: Record<string, Partial<Record<Variante, { claro: Arquivo; es
     prisma: { claro: NL_LOGOS.prismaClara, escuro: NL_LOGOS.prismaEscura },
     monograma: { claro: NL_LOGOS.monograma, escuro: NL_LOGOS.monograma },
   },
+  // NextLevel E-commerce (D163): flat no cabeçalho, rodapé e painel; Prisma em destaque; monograma NE (vale nos dois fundos).
+  // O SVG antigo da Commerce (raio azul + "Commerce" em texto, `/brand/v2/commerce/`) fica arquivado.
+  [EC.code]: {
+    compacta: { claro: EC_LOGOS.flatClara, escuro: EC_LOGOS.flatEscura },
+    "assinatura-completa": { claro: EC_LOGOS.flatClara, escuro: EC_LOGOS.flatEscura },
+    prisma: { claro: EC_LOGOS.prismaClara, escuro: EC_LOGOS.prismaEscura },
+    monograma: { claro: EC_LOGOS.monograma, escuro: EC_LOGOS.monograma },
+  },
 };
 export const temLogoPng = (code: string | null | undefined) => !!PNG_OFICIAIS[code ?? ""];
 
@@ -70,7 +77,7 @@ export function BrandLogo({ brand, tone = "auto", variant = "compacta", classNam
   if (oficial) {
     const v = oficial[variant] ?? oficial["assinatura-completa"];
     // Brás: lettering em duas linhas, 44 px de altura mínima. NextLevel: o nome lê bem a partir de 24 px de altura.
-    const minimo = variant === "monograma" || brand.code === NL.code ? "" : "min-h-11";
+    const minimo = variant === "monograma" || brand.code === NL.code || brand.code === EC.code ? "" : "min-h-11";
     const img = (tema: "claro" | "escuro", extra: string, alt: string) => (
       // eslint-disable-next-line @next/next/no-img-element -- WebP estático com proporção do PNG oficial
       <img src={v[tema].src} srcSet={v[tema].src2x ? `${v[tema].src} 1x, ${v[tema].src2x} 2x` : undefined} width={Math.round((64 * v[tema].w) / v[tema].h)} height={64} alt={alt} className={cn("bdc-logo w-auto object-contain", className ?? "h-8", minimo, extra)} loading={priority ? "eager" : "lazy"} decoding="async" />
@@ -114,6 +121,12 @@ export function brandIcons(code: string | null | undefined) {
     return {
       icon: [{ url: BDC_ICONES.ico, sizes: "any" }, ...BDC_ICONES.png.map((p) => ({ ...p, type: "image/png" }))],
       apple: BDC_ICONES.apple,
+    };
+  }
+  if (code === EC.code) {
+    return {
+      icon: [{ url: EC_ICONES.ico, sizes: "any" }, ...EC_ICONES.png.map((p) => ({ ...p, type: "image/png" }))],
+      apple: EC_ICONES.apple,
     };
   }
   const o = logoOficial(code);

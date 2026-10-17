@@ -59,8 +59,8 @@ describe("NextLevel v2: identidade", () => {
     for (const c of [l, d]) for (const [a, b, min] of READABLE_PAIRS) expect(contrastRatio(c[a], c[b]), `${a}/${b}`).toBeGreaterThanOrEqual(min);
     expect(contrastRatio("#FFFFFF", l.primary)).toBeGreaterThanOrEqual(4.5);
     // Produtos seguem com a cor de assinatura e o amarelo do grupo como destaque (não foram recoloridos).
-    expect([themeColors("commerce", "light").primary, themeColors("superdrop", "light").primary, themeColors("cargas", "light").primary]).toEqual(["#196BD8", "#118728", "#4B4FD8"]);
-    expect(themeColors("commerce", "light").accent).toBe("#F5BC00");
+    expect([themeColors("commerce", "light").primary, themeColors("superdrop", "light").primary, themeColors("cargas", "light").primary]).toEqual(["#294CDC", "#118728", "#4B4FD8"]);
+    expect(themeColors("superdrop", "light").accent).toBe("#F5BC00");
     expect(themeColors("bras", "light").primary).toBe("#315CFF");
     for (const k of ["commerce", "superdrop", "bras", "cargas"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(NL.claro.action);
     expect(nlCssVars()).toContain("--nlg-marinho:#070F22");
@@ -75,7 +75,7 @@ describe("NextLevel v2: identidade", () => {
       expect(i.apple).toBe(NL_ICONES.apple);
     }
     expect(JSON.stringify(brandIcons("SUPERDROP"))).toContain("/brand/v2/superdrop/");
-    expect(JSON.stringify(brandIcons("NEXTLEVEL_COMMERCE"))).toContain("/brand/v2/commerce/");
+    expect(JSON.stringify(brandIcons("NEXTLEVEL_COMMERCE"))).toContain("/marcas/nextlevel-ecommerce/");
     expect(JSON.stringify(brandIcons("BRAS_DIGITAL"))).toContain("/marcas/bras-digital-club/");
   });
 

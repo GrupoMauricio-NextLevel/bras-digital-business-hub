@@ -15,7 +15,7 @@ import { activeOffer, getCatalogItem, listCatalog } from "./nl-catalog";
 import { paidCountForSubscription, recordSaleCommission } from "./corporate-commissions";
 
 /**
- * Planos da NextLevel Commerce (D90). A assinatura guarda o preço e a taxa de plataforma CONGELADOS na contratação.
+ * Planos da NextLevel E-commerce (D90). A assinatura guarda o preço e a taxa de plataforma CONGELADOS na contratação.
  * O acesso continua travado por `stores.trial_ends_at` / `paid_until` (regra usada por todas as telas): esta camada
  * só decide quanto cobrar, quando, e aplica a oferta de entrada (3 dias, R$ 9,90 no 1º mês, taxa zero por 3 meses),
  * uma vez por CPF/CNPJ.
@@ -161,7 +161,7 @@ export async function choosePlan(db: Database, actor: Actor, raw: z.input<typeof
   const store = await db.query.stores.findFirst({ where: eq(stores.id, actor.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
   const { isCommerceStore } = await import("@/lib/store-brand");
-  if (!(await isCommerceStore(db, store))) throw new DomainError("NOT_COMMERCE", "Os planos Commerce são para lojas da NextLevel Commerce.");
+  if (!(await isCommerceStore(db, store))) throw new DomainError("NOT_COMMERCE", "Os planos Commerce são para lojas da NextLevel E-commerce.");
   const sub = await subscriptionOf(db, store.id);
   if (!sub) {
     // Loja que já pagou antes (contas antigas) não é cliente novo: sem oferta de entrada.

@@ -1,0 +1,50 @@
+{
+  "brand": "nextlevel-ecommerce",
+  "palette": {
+    "navy": "#101A33",
+    "blue": "#3F65FF",
+    "cyan": "#27C7F2",
+    "ice": "#F3F6FC"
+  },
+  "gradient": "linear-gradient(135deg, #3F65FF 0%, #27C7F2 100%)",
+  "themes": {
+    "light": {
+      "surface": "#FFFFFF",
+      "surfaceMuted": "#F3F6FC",
+      "surfaceElevated": "#FFFFFF",
+      "text": "#101A33",
+      "textMuted": "#4B5D79",
+      "border": "#D6E0F1",
+      "borderStrong": "#71839E",
+      "action": "#294CDC",
+      "actionHover": "#2340BE",
+      "actionActive": "#1B339F",
+      "textOnAction": "#FFFFFF",
+      "link": "#294CDC",
+      "focus": "#294CDC",
+      "success": "#136B46",
+      "warning": "#8A4B08",
+      "danger": "#B42338",
+      "info": "#2057A6"
+    },
+    "dark": {
+      "surface": "#101A33",
+      "surfaceMuted": "#172540",
+      "surfaceElevated": "#1E304F",
+      "text": "#F3F6FC",
+      "textMuted": "#B7C5DC",
+      "border": "#3B5070",
+      "borderStrong": "#7890B4",
+      "action": "#3F65FF",
+      "actionHover": "#4265FF",
+      "actionActive": "#294CDC",
+      "textOnAction": "#FFFFFF",
+      "link": "#8DBAFF",
+      "focus": "#27C7F2",
+      "success": "#6EE7A8",
+      "warning": "#F5C971",
+      "danger": "#FFA2B0",
+      "info": "#8DBAFF"
+    }
+  }
+}

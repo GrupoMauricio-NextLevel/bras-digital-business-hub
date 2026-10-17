@@ -18,7 +18,7 @@ describe("termos e privacidade do grupo", () => {
     expect(t).toContain("NextLevel Marketing Ltda.");
     expect(t).toContain("Não são promessa de venda");
     expect(t).toContain('href="/privacidade"');
-    const p = renderToStaticMarkup(<GroupPrivacy marca="NextLevel Commerce" />);
+    const p = renderToStaticMarkup(<GroupPrivacy marca="NextLevel E-commerce" />);
     expect(p).toContain("controladora");
     expect(p).toContain('href="/termos"');
   });

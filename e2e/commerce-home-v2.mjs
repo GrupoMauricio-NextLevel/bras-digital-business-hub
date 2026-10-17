@@ -1,5 +1,5 @@
 /**
- * Home da NextLevel Commerce v2 (D97): cadastro aberto, planos com mensal/anual e simulador por faturamento, vitrine de
+ * Home da NextLevel E-commerce v2 (D97): cadastro aberto, planos com mensal/anual e simulador por faturamento, vitrine de
  * temas com capturas. Servidor com BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true e BRAND_DOMAINS_NEXTLEVEL_COMMERCE=127.0.0.1.
  * Uso: E2E_BASE=http://127.0.0.1:3400 node e2e/commerce-home-v2.mjs  (capturas em E2E_SHOTS, padrão /tmp/cm-shots)
  */

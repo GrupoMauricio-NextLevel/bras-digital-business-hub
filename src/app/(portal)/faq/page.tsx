@@ -4,7 +4,7 @@ import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
 
 const FAQ_COMMERCE = [
-  { q: "O que é a NextLevel Commerce?", a: "Uma plataforma de lojas virtuais da NextLevel Marketing, feita para quem vende moda no Brasil: temas bonitos, Pix e cartão, pedidos organizados e uma equipe que ajuda na implantação." },
+  { q: "O que é a NextLevel E-commerce?", a: "Uma plataforma de lojas virtuais da NextLevel Marketing, feita para quem vende moda no Brasil: temas bonitos, Pix e cartão, pedidos organizados e uma equipe que ajuda na implantação." },
   { q: "Como abro a minha loja?", a: "Deixe seus dados em \"Quero minha loja\". A equipe fala com você pelo WhatsApp, importa os seus produtos por planilha, escolhe o tema com você e publica a loja." },
   { q: "Como recebo dos clientes?", a: "Pelo Mercado Pago, com Pix como padrão e cartão em até 6x. O pagamento é conferido automaticamente." },
   { q: "Posso ter meu domínio e minha marca?", a: "Sim, no plano de loja própria você usa o seu domínio, sua logo e suas cores." },

@@ -21,7 +21,7 @@ export default async function PortalLayout({ children }: { children: React.React
   // Soluções e Loja NextLevel são da agência e moram no site do grupo (D149): nas marcas, o link vai direto para lá.
   const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
-    ? [{ href: "/solucoes", label: "Soluções" }, { href: "/club", label: "Club" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "NextLevel Commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "NextLevel Cargas" }]
+    ? [{ href: "/solucoes", label: "Soluções" }, { href: "/club", label: "Club" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "E-commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }]
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
@@ -33,11 +33,11 @@ export default async function PortalLayout({ children }: { children: React.React
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = holding ? { href: "/solucoes#diagnostico", label: "Diagnóstico gratuito" } : cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
-  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel Commerce"}.`)}`) : null;
+  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
   return (
     <PublicShell
-      // A assinatura da NextLevel v2 (D161) é mais larga que as das marcas: um pouco mais baixa para caber o menu do grupo.
-      brand={<BrandLogo brand={brand} tone="auto" className={holding ? "h-6" : "h-8"} priority />}
+      // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.
+      brand={<BrandLogo brand={brand} tone="auto" className={holding ? "h-6" : commerce ? "h-10" : "h-8"} priority />}
       brandLabel={brand.name}
       homeHref={holding ? "/solucoes" : "/"}
       nav={nav}

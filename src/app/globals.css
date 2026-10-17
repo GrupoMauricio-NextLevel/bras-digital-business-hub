@@ -155,9 +155,9 @@ body { overflow-x: clip; }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-burger { background: transparent; color: #fff; border-color: rgb(255 255 255 / 0.3); }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-switch { background: transparent; border-color: rgb(255 255 255 / 0.3); }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-switch button { color: rgb(255 255 255 / 0.75); }
-/* Commerce v3: mesmo mecanismo, no marinho das fotos da Commerce e com o botão azul da marca. */
-:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header { background: #0B1A36; }
-:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #2F81F4; color: #fff; }
+/* NextLevel E-commerce (D163): mesmo mecanismo, no marinho e com o botão azul de ação da marca (`--ec-*`). */
+:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header { background: var(--ec-marinho); }
+:root:has([data-heroi-escuro="commerce"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: var(--ec-acao); color: #fff; }
 /* Site do grupo (D157; marca v2, D161): marinho da NextLevel e botão royal de ação com texto branco (cores de `--nlg-*`). */
 :root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header { background: var(--nlg-marinho); }
 :root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: var(--nlg-royal); color: #fff; }

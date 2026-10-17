@@ -31,7 +31,7 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
   const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
   return (
     <>
-      <PageHeader eyebrow={commerce ? "NextLevel Commerce / Vendas" : "SuperDrop / Operação"} title="Pedidos" description="Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo."
+      <PageHeader eyebrow={commerce ? "NextLevel E-commerce / Vendas" : "SuperDrop / Operação"} title="Pedidos" description="Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo."
         actions={<>{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>} />
       <section className="ds-kpis mb-6" aria-label="Resumo dos pedidos">
         <MetricCard label="Ativos" value={activeCount} />

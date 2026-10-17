@@ -16,7 +16,7 @@ export default async function CommerceOrdersPage() {
   const stores = new Map(data.stores.map(({ store }) => [store.id, store.name]));
   return (
     <>
-      <PageHeader eyebrow="Vendas" title="Pedidos das lojas" description="Vendas originadas somente nas lojas NextLevel Commerce. Sem pagamento à Central ou fila de expedição SuperDrop." />
+      <PageHeader eyebrow="Vendas" title="Pedidos das lojas" description="Vendas originadas somente nas lojas NextLevel E-commerce. Sem pagamento à Central ou fila de expedição SuperDrop." />
       <DataTable rows={data.orders} rowKey={(o) => o.id}
         empty={<EmptyState title="Nenhuma venda Commerce encontrada" description="Os pedidos das lojas aparecem aqui." />}
         columns={[

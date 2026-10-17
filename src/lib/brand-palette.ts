@@ -5,6 +5,7 @@
  */
 import { BDC } from "@/lib/marcas/bras-digital-club";
 import { NL } from "@/lib/marcas/nextlevel";
+import { EC } from "@/lib/marcas/nextlevel-ecommerce";
 
 export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
 
@@ -26,7 +27,12 @@ const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): Bra
   light: { ...NEU.light, signal: l[0], signalText: l[1] }, dark: { ...NEU.dark, signal: d[0], signalText: d[1] }, support, darkFirst: false,
 });
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
-  NEXTLEVEL_COMMERCE: pal(["#2F81F4", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
+  // NextLevel E-commerce v1 (D163): azul de ação como sinal; no escuro, o azul do pacote com o link claro como texto.
+  NEXTLEVEL_COMMERCE: {
+    light: { paper: EC.claro.surfaceMuted, ink: EC.cores.marinho, signal: EC.claro.action, signalText: EC.claro.link },
+    dark: { paper: EC.escuro.surface, ink: EC.cores.gelo, signal: EC.escuro.action, signalText: EC.escuro.link },
+    support: EC.cores.ciano, darkFirst: false,
+  },
   SUPERDROP: pal(["#2D9E3B", "#03721D"], ["#62C268", "#62C268"]),
   // Brás Digital Club (D158): azul elétrico como sinal; no escuro, o azul de ação claro do pacote (legível como texto).
   BRAS_DIGITAL: {

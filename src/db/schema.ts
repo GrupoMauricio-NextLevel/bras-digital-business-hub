@@ -1,5 +1,5 @@
 /**
- * NextLevel Commerce Engine — schema multi-tenant.
+ * NextLevel E-commerce Engine — schema multi-tenant.
  *
  * Hierarquia conceitual:
  *   NEXTLEVEL (plataforma) → ORGANIZATION (tenant) → SUPPLIER | STORE
@@ -27,7 +27,7 @@ export const organizations = pgTable("organizations", {
   slug: text("slug").notNull().unique(),
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
   type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
-  /** Marca por onde o cliente entrou (NextLevel Commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
+  /** Marca por onde o cliente entrou (NextLevel E-commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull().default("SUPERDROP"),
   createdAt: createdAt(),
 });
@@ -70,7 +70,7 @@ export const networks = pgTable("networks", {
 export const stores = pgTable("stores", {
   id: id(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
-  /** Rede do fornecedor (SuperDrop). Vazio = loja independente da NextLevel Commerce, dona do próprio catálogo (D89). */
+  /** Rede do fornecedor (SuperDrop). Vazio = loja independente da NextLevel E-commerce, dona do próprio catálogo (D89). */
   networkId: text("network_id").references(() => networks.id),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),

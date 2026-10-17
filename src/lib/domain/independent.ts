@@ -6,7 +6,7 @@ import type { Actor } from "./access";
 import { ForbiddenError, NotFoundError } from "./errors";
 
 /**
- * Loja independente da NextLevel Commerce (D89): não tem fornecedor nem rede. É dona do próprio catálogo
+ * Loja independente da NextLevel E-commerce (D89): não tem fornecedor nem rede. É dona do próprio catálogo
  * (`products.store_id`, `categories.store_id`) e dos próprios pedidos (`orders.supplier_id` vazio).
  * Lojas de membros do SuperDrop continuam numa rede de fornecedor, com o catálogo do fornecedor.
  * Só a tecnologia e os temas são compartilhados entre os dois produtos; não há relação entre os dados.

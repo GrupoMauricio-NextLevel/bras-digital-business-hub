@@ -14,7 +14,7 @@ export default async function CommerceLeadsPage() {
   const data = await getCommerceConsole(await getDb(), session.actor);
   return (
     <>
-      <PageHeader eyebrow="Aquisição" title="Interessados" description="Pessoas e empresas interessadas em abrir uma loja na NextLevel Commerce." />
+      <PageHeader eyebrow="Aquisição" title="Interessados" description="Pessoas e empresas interessadas em abrir uma loja na NextLevel E-commerce." />
       <DataTable rows={data.leads} rowKey={(l) => l.id}
         empty={<EmptyState title="Nenhum interessado Commerce ainda" description="Os cadastros de interesse aparecem aqui." />}
         columns={[

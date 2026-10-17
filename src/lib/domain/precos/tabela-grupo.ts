@@ -35,7 +35,7 @@ export type GroupPriceRow = {
 export type Divergence = { topic: string; detail: string; suggestion: string };
 
 const BRANDS: Record<string, string> = {
-  NEXTLEVEL_COMMERCE: "NextLevel Commerce", SUPERDROP: "SuperDrop", BRAS_DIGITAL: "Brás Digital", NEXTLEVEL_CARGAS: "NextLevel Cargas", NEXTLEVEL: "NextLevel (serviços)",
+  NEXTLEVEL_COMMERCE: "NextLevel E-commerce", SUPERDROP: "SuperDrop", BRAS_DIGITAL: "Brás Digital", NEXTLEVEL_CARGAS: "NextLevel Cargas", NEXTLEVEL: "NextLevel (serviços)",
 };
 const pct = (bps: number) => `${String(bps / 100).replace(".", ",")}%`;
 const CYCLE_KIND: Record<string, PriceKind> = { MONTHLY: "MENSAL", ANNUAL: "ANUAL", ONE_TIME: "AVULSO", QUOTE: "SOB_CONSULTA" };
@@ -81,7 +81,7 @@ export async function groupPriceTable(db: Database, actor: Actor) {
     }
     if (fee) add({ brand, item: `${p.name}: taxa de plataforma`, kind: "TAXA", cents: null, bps: fee, source: `catalog:${p.key}`, editHref: "/master/financeiro/catalogo", status });
   }
-  if (entry) add({ brand: "NextLevel Commerce", item: `Oferta de entrada (v${entry.version})`, kind: "TESTE", cents: entry.rules.firstPeriodCents, bps: null, value: `${entry.rules.trialDays} dias grátis · 1º mês ${entry.rules.firstPeriodCents === null ? "sem preço especial" : formatBRL(entry.rules.firstPeriodCents)} · taxa zero por ${entry.rules.feeHolidayMonths} meses`, source: `offer:${entry.key} v${entry.version}`, editHref: "/master/financeiro/ofertas", status: entry.status === "ACTIVE" ? "VALENDO" : "DESLIGADO" });
+  if (entry) add({ brand: "NextLevel E-commerce", item: `Oferta de entrada (v${entry.version})`, kind: "TESTE", cents: entry.rules.firstPeriodCents, bps: null, value: `${entry.rules.trialDays} dias grátis · 1º mês ${entry.rules.firstPeriodCents === null ? "sem preço especial" : formatBRL(entry.rules.firstPeriodCents)} · taxa zero por ${entry.rules.feeHolidayMonths} meses`, source: `offer:${entry.key} v${entry.version}`, editHref: "/master/financeiro/ofertas", status: entry.status === "ACTIVE" ? "VALENDO" : "DESLIGADO" });
 
   // Brás e Cargas: regras.
   add({ brand: "Brás Digital", item: "Cadastro do membro com CNPJ", kind: "TESTE", cents: 0, bps: null, value: "grátis (compra de caixa sempre grátis)", source: "bras.rules", editHref: "/bras/regras", status: "VALENDO" });

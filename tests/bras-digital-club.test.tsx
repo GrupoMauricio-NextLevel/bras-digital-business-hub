@@ -59,14 +59,14 @@ describe("Brás Digital Club: identidade", () => {
     expect([d.canvas, d.surface, d.ring]).toEqual([BDC.escuro.surface, BDC.escuro.surfaceMuted, BDC.cores.ciano]);
     // Selos e links sobre o fundo suave da marca também passam AA (outras marcas: pendência registrada fora desta mudança).
     for (const c of [l, d]) expect(contrastRatio(c.link, c.soft)).toBeGreaterThanOrEqual(4.5);
-    expect(themeColors("commerce", "light").primary).toBe("#196BD8");
+    expect(themeColors("commerce", "light").primary).toBe("#294CDC"); // NextLevel E-commerce (D163)
     expect(themeColors("superdrop", "light").primary).toBe("#118728");
     // Marca-mãe v2 (D161): royal de ação no lugar do amarelo; mudança própria, não da Brás.
     expect(themeColors("nextlevel", "light").primary).toBe("#274BE5");
     expect(themeCss("commerce")).not.toContain(BDC.cores.azul.toLowerCase());
     expect(bdcCssVars()).toContain("--bdc-azul:#315CFF");
     expect(paletteOf("BRAS_DIGITAL").light.signal).toBe(BDC.cores.azul);
-    expect(paletteOf("NEXTLEVEL_COMMERCE").light.signal).toBe("#2F81F4");
+    expect(paletteOf("NEXTLEVEL_COMMERCE").light.signal).toBe("#294CDC");
   });
 
   it("ícones: favicons, Apple e PWA da Brás; as outras marcas seguem com os delas", () => {

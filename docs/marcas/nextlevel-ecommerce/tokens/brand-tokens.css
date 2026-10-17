@@ -1,0 +1,39 @@
+[data-brand="nextlevel-ecommerce"][data-theme="light"] {
+  --ec-surface: #FFFFFF;
+  --ec-surface-muted: #F3F6FC;
+  --ec-surface-elevated: #FFFFFF;
+  --ec-text: #101A33;
+  --ec-text-muted: #4B5D79;
+  --ec-border: #D6E0F1;
+  --ec-border-strong: #71839E;
+  --ec-action: #294CDC;
+  --ec-action-hover: #2340BE;
+  --ec-action-active: #1B339F;
+  --ec-text-on-action: #FFFFFF;
+  --ec-link: #294CDC;
+  --ec-focus: #294CDC;
+  --ec-success: #136B46;
+  --ec-warning: #8A4B08;
+  --ec-danger: #B42338;
+  --ec-info: #2057A6;
+}
+
+[data-brand="nextlevel-ecommerce"][data-theme="dark"] {
+  --ec-surface: #101A33;
+  --ec-surface-muted: #172540;
+  --ec-surface-elevated: #1E304F;
+  --ec-text: #F3F6FC;
+  --ec-text-muted: #B7C5DC;
+  --ec-border: #3B5070;
+  --ec-border-strong: #7890B4;
+  --ec-action: #3F65FF;
+  --ec-action-hover: #4265FF;
+  --ec-action-active: #294CDC;
+  --ec-text-on-action: #FFFFFF;
+  --ec-link: #8DBAFF;
+  --ec-focus: #27C7F2;
+  --ec-success: #6EE7A8;
+  --ec-warning: #F5C971;
+  --ec-danger: #FFA2B0;
+  --ec-info: #8DBAFF;
+}

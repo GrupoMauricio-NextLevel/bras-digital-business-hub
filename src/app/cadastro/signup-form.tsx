@@ -26,7 +26,7 @@ export function SignupForm({ initialCode, initialRef, initialOffer, initialSuppl
   return (
     <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5 shadow-sm" aria-label="Cadastro">
       {usePlans ? (
-        <fieldset className="space-y-2"><legend className="mb-1 text-sm font-medium">Plano NextLevel Commerce</legend>
+        <fieldset className="space-y-2"><legend className="mb-1 text-sm font-medium">Plano NextLevel E-commerce</legend>
           <div className="ds-seg" role="group" aria-label="Ciclo"><button type="button" aria-pressed={f.cycle === "MONTHLY"} onClick={() => set({ cycle: "MONTHLY" })}>Mensal</button><button type="button" aria-pressed={f.cycle === "ANNUAL"} onClick={() => set({ cycle: "ANNUAL" })}>Anual (25% de desconto)</button></div>
           {plans!.map((p) => (
             <label key={p.key} className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 text-sm ${f.plan === p.key ? "border-accent bg-accent-soft/40" : "border-border"}`}>

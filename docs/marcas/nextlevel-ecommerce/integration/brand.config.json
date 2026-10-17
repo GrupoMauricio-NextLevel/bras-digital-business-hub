@@ -1,0 +1,20 @@
+{
+  "name": "NextLevel E-commerce",
+  "descriptor": "PLATAFORMA DE LOJAS VIRTUAIS",
+  "brandKey": "nextlevel-ecommerce",
+  "legacyKey": "nextlevel-commerce",
+  "canonicalUrl": null,
+  "publicBaseSuggested": "/brands/nextlevel-ecommerce/",
+  "assets": {
+    "light": "logos/flat/logo-clara.png",
+    "dark": "logos/flat/logo-escura.png",
+    "prismaLight": "logos/prisma/logo-clara.png",
+    "prismaDark": "logos/prisma/logo-escura.png",
+    "symbol": "logos/monogramas/monograma-flat.png",
+    "favicon": "logos/favicons/favicon.ico",
+    "apple": "logos/app-icons/apple-touch-icon-180.png",
+    "icon192": "logos/app-icons/icon-192.png",
+    "icon512": "logos/app-icons/icon-512.png",
+    "maskable": "logos/app-icons/icon-maskable-512.png"
+  }
+}

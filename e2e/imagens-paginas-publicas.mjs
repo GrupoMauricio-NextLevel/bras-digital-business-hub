@@ -1,5 +1,5 @@
 /**
- * Fotografias v3 nas páginas públicas (SuperDrop e NextLevel Commerce), em 360, 768 e 1440 px.
+ * Fotografias v3 nas páginas públicas (SuperDrop e NextLevel E-commerce), em 360, 768 e 1440 px.
  * Confere: cada imagem prevista aparece e carrega; nenhuma requisição de imagem falha (404 etc.); só UM formato de
  * cada imagem é baixado; nenhum aviso "Imagem em criação" restante; sem erro de console; sem rolagem lateral;
  * deslocamento de layout (CLS) baixo; nenhuma foto de uma marca na página da outra; texturas com alt="";

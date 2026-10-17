@@ -16,7 +16,7 @@ export function BrowserFrame({ children, label, className = "" }: { children: Re
         <span className="min-w-0 flex-1 truncate rounded bg-white/80 px-3 py-0.5 text-[11px] text-neutral-600">sualoja.com.br</span>
       </div>
       {children}
-      <figcaption className="border-t border-neutral-200 bg-[#f5f1e8] px-3 py-1.5 text-[11px] font-medium text-neutral-700">{label}</figcaption>
+      <figcaption className="border-t border-neutral-200 bg-[var(--ec-gelo)] px-3 py-1.5 text-[11px] font-medium text-neutral-700">{label}</figcaption>
     </figure>
   );
 }

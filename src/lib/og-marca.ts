@@ -8,7 +8,8 @@ import type { Brand, BrandCode } from "@/lib/brand";
  */
 const ARTE: Partial<Record<BrandCode, string[]>> = {
   SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
-  NEXTLEVEL_COMMERCE: ["portal/commerce/v3/cm-og-portal.jpg", "portal/commerce/v3/cm-og-portal.png"],
+  // NextLevel E-commerce (D163): logo Prisma escura do pacote sobre o marinho (a arte v3 tinha a logo antiga).
+  NEXTLEVEL_COMMERCE: ["marcas/nextlevel-ecommerce/og-1200x630.jpg"],
   // NextLevel v2 (D161): cartão social do pacote da marca (achatado sobre o marinho; o PNG original tem transparência).
   NEXTLEVEL: ["marcas/nextlevel/v2/social/og-nextlevel-1200x630.jpg"],
   // Brás Digital Club (D158): peça 3D do pacote com a logo escura com slogan (gerada dos arquivos oficiais).

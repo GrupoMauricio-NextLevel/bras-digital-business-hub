@@ -1479,3 +1479,21 @@ Pedido do dono: aplicar o pacote `nextlevel-grupo-v2-completo.zip` (NL Orbital, 
 - **Ícones e prévia:** favicons 16/32/48 e ICO, Apple 180, PWA 192/512 e maskable com manifesto próprio; cor da barra do navegador marinho; prévia de link `og-nextlevel-1200x630` (achatada sobre o marinho, o PNG original tem transparência). Marcas sem favicon próprio (China Hub, Cargas) passam a usar os da marca-mãe v2.
 - **Arquivado:** o raio amarelo (`public/brand/v2/nextlevel/`) e o kit de fotos v1 do grupo (`public/marcas/nextlevel/imagens`, com linhas amarelas) saíram das páginas da marca-mãe; ficam no repositório, e o kit de fotos segue só nas páginas da família (Club, Loja NextLevel) até elas ganharem kit próprio.
 - Domínio: nenhum endereço novo; o canônico continua o de `groupSiteUrl()` (configuração existente). Testes: `tests/nextlevel-marca.test.tsx`.
+
+## D162 — Vitrine imersiva de Soluções (atrás da chave FIN_SOLUTIONS_V2) (2026-10-17)
+Execução de `docs/prompts/solucoes-vitrine-imersiva-construcao.md`; imagens e copy em `solucoes-vitrine-imersiva-imagens-gpt.md` (v3).
+- **Chave:** `FIN_SOLUTIONS_V2` nasce desligada; com ela desligada `/solucoes` fica como na D161. O Master vê a vitrine em `/solucoes?previa=v2` (sessão `NEXTLEVEL_MASTER`). O dono liga a chave no Render depois de aprovar.
+- **Peças compartilhadas, sem cópia:** `ImmersiveScroll`, `LayerMotion` e o carrossel do tema Pódio foram para `src/components/movimento/`; os arquivos antigos da loja reexportam (as lojas não mudam). `ImmersiveScroll` ganhou `onStep`.
+- **Dados:** `src/lib/solucoes/vitrine.ts` projeta catálogo Master, jornada, oferta de entrada e temas pagos; nenhum preço fixo na tela. Contratação só por caminhos que existem (cadastro da plataforma, página da solução, site do SuperDrop, diagnóstico para itens sob consulta). Busca por intenção com sinônimos em `intencoes.ts` (texto de apoio, não regra) e as plataformas de origem da Migração vindas do catálogo.
+- **Seções:** jornada em cinco fases com quadros que trocam na rolagem e régua clicável (sem JS ou com menos movimento, as fases ficam em sequência); quatro portas por intenção (filtram o cardápio pelo endereço, sem JS); cardápio com barra fixa de famílias, busca e mosaico; campanha da vez só com oferta ativa; temas em exposição com a loja de demonstração; "Sua seleção" (total à vista e por mês só do que tem preço fixo; o resto conta como sob consulta) que preenche o diagnóstico (até 6 necessidades e a lista na mensagem).
+- **Imagens:** enquanto os lotes do GPT não chegam, os quadros usam as peças 3D da marca e os cartões as fotos das famílias (v3). Pasta de destino: `public/portal/nextlevel/v4/solucoes/`.
+- Testes: `tests/solucoes-vitrine.test.ts`.
+
+## D163 — NextLevel E-commerce: novo nome público e identidade da plataforma de lojas (2026-10-17)
+Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `docs/marcas/nextlevel-ecommerce/`; arquivos públicos em `public/marcas/nextlevel-ecommerce/`.
+- **Nome:** NextLevel Commerce passa a se chamar **NextLevel E-commerce** (linha: PLATAFORMA DE LOJAS VIRTUAIS) em telas, e-mails, metadados e textos. O código `NEXTLEVEL_COMMERCE`, o tema interno `commerce`, rotas (`/commerce`), chaves e dados não mudam. **Exceção:** o texto jurídico do grupo (`legal-grupo.tsx`, termos versionados da D148) mantém o nome antigo até o dono decidir (mudar termos pode exigir novo aceite).
+- **Fonte única:** `src/lib/marcas/nextlevel-ecommerce.ts` (EC, logos, ícones, `--ec-*`). Tema `commerce`, paleta, `BrandLogo`, ícones, manifesto e prévia de link leem daqui.
+- **Cores:** marinho `#101A33`, azul `#3F65FF` (ação `#294CDC` no claro, para texto branco passar AA), ciano `#27C7F2` (reflexo e foco no escuro), gelo `#F3F6FC`. O site público da plataforma trocou o navy e o azul escritos à mão pelas variáveis `--ec-*`.
+- **Logos:** flat no cabeçalho, rodapé e painel; Prisma em destaque; monograma NE na barra recolhida e favicons; troca de arquivo, nunca filtro. O SVG antigo (raio azul + "Commerce" em texto, `public/brand/v2/commerce/`) e a prévia de link v3 ficam arquivados.
+- **Isolamento:** NextLevel (Master e grupo), SuperDrop, Brás Digital Club, Cargas e as vitrines dos lojistas não mudam (as lojas têm tema e marca próprios).
+- Testes: `tests/nextlevel-ecommerce.test.tsx`.

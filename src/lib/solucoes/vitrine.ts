@@ -32,7 +32,7 @@ export const ORDEM_FAMILIAS: CatalogFamily[] = ["COMMERCE_PLAN", "SUPERDROP", "L
 
 export const PORTAS: Porta[] = [
   { key: "COMECAR", titulo: "Quero começar a vender", texto: "Loja virtual com a sua marca, loja montada pela equipe ou revenda sem estoque.", familias: ["COMMERCE_PLAN", "LOJA_PRONTA", "SUPERDROP", "TEMA"], foto: "COMMERCE_PLAN" },
-  { key: "MIGRAR", titulo: "Quero trocar de plataforma", texto: "Leve produtos e clientes para a NextLevel Commerce e renove o visual.", familias: ["MIGRACAO", "TEMA", "LOJA_PRONTA"], foto: "MIGRACAO" },
+  { key: "MIGRAR", titulo: "Quero trocar de plataforma", texto: "Leve produtos e clientes para a NextLevel E-commerce e renove o visual.", familias: ["MIGRACAO", "TEMA", "LOJA_PRONTA"], foto: "MIGRACAO" },
   { key: "VENDER_MAIS", titulo: "Quero vender mais", texto: "Anúncios, conteúdo para redes sociais e uma auditoria do que está travando as vendas.", familias: ["MARKETING", "CONSULTORIA", "TEMA"], foto: "MARKETING" },
   { key: "PLATAFORMA", titulo: "Quero a minha própria plataforma", texto: "Para agências e parceiros: a plataforma com a sua marca, sob consulta.", familias: ["WHITE_LABEL", "COMMERCE_PLAN", "CONSULTORIA"], foto: "WHITE_LABEL" },
 ];
@@ -75,7 +75,7 @@ export function projetarVitrine(e: EntradasVitrine) {
   })).filter((f) => f.itens.length || f.key === "TEMA");
   const fases = e.fases.map((f) => ({ key: f.key, nome: f.name, objetivo: f.goal, itens: itens.filter((i) => i.fase === f.key) }));
   const campanhas = e.oferta ? [{
-    key: "ENTRADA_COMMERCE", titulo: "Comece a sua loja na NextLevel Commerce",
+    key: "ENTRADA_COMMERCE", titulo: "Comece a sua loja na NextLevel E-commerce",
     texto: `${e.oferta.trialDays} dias grátis, 1º mês por ${formatBRL(e.oferta.firstPeriodCents ?? 0)} e taxa de plataforma zero por ${e.oferta.feeHolidayMonths} meses para clientes novos.`,
     href: e.link(`${e.commerce.base}/planos`), rotulo: "Ver os planos",
   }] : [];

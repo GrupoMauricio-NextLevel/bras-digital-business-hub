@@ -7,6 +7,7 @@
  */
 import { BDC, BDC_LOGOS } from "@/lib/marcas/bras-digital-club";
 import { NL, NL_PECAS_3D } from "@/lib/marcas/nextlevel";
+import { EC } from "@/lib/marcas/nextlevel-ecommerce";
 
 export type AssetStatus = "complete" | "partial" | "pending";
 export type MarcaSlug = "nextlevel" | "superdrop" | "nextlevel-commerce" | "bras-digital" | "nextlevel-cargas" | "nextlevel-club" | "loja-nextlevel" | "meu-contador" | "parceiros";
@@ -41,7 +42,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
     // `public/marcas/nextlevel/imagens` só para as páginas da família (Club, Loja NextLevel) até elas ganharem kit próprio.
     imagens: false, peca3d: NL_PECAS_3D[1], status: { logos: "complete", imagens: "partial" },
     headline: "Estrutura digital para negócios que querem ir além.",
-    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas.",
+    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel E-commerce, Brás Digital Club e NextLevel Cargas.",
     icones: [
       { arquivo: "strategy", titulo: "Estratégia", texto: "Diagnóstico gratuito antes de qualquer proposta." },
       { arquivo: "integration", titulo: "Integração", texto: "Loja, pagamento, frete e catálogo no mesmo sistema." },
@@ -77,7 +78,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
     cta: { titulo: "Crie a sua loja e comece a vender", texto: "Pix na hora, sem fidelidade." },
   },
   "nextlevel-commerce": {
-    slug: "nextlevel-commerce", nome: "NextLevel Commerce", accent: "#2F81F4", logos: { ratio: LOGO }, imagens: true, status: { logos: "complete", imagens: "complete" },
+    slug: "nextlevel-commerce", nome: EC.name, accent: EC.cores.azul, logos: { ratio: LOGO }, imagens: true, status: { logos: "complete", imagens: "complete" },
     headline: "Sua loja pronta para acompanhar o próximo nível.",
     apoio: "Loja virtual com a sua marca, tema profissional, Pix e cartão na sua conta e um painel completo para vender.",
     icones: [

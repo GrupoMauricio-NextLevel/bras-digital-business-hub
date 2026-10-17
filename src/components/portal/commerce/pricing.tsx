@@ -15,7 +15,7 @@ const PARA_QUEM: Record<string, string> = { COMMERCE_START: "Para quem está com
 const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace(".", ",")}%`;
 
 /**
- * Planos da NextLevel Commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
+ * Planos da NextLevel E-commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
  * informado, soma mensalidade e taxa de plataforma e destaca o plano mais em conta. É estimativa, não promessa.
  */
 export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes" }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string }) {
@@ -33,7 +33,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
   return (
     <div className="cm-pricing">
       {offer ? (
-        <p className="mx-auto mb-8 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full bg-[#DCEBFF] text-[#0B1A36] px-5 py-3 text-center text-sm">
+        <p className="mx-auto mb-8 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full bg-[var(--ec-azul-suave)] text-[var(--ec-marinho)] px-5 py-3 text-center text-sm">
           <Gift className="size-4 text-link" aria-hidden />
           <b>Para começar:</b>
           <span>{offer.trialDays} dias grátis</span><span aria-hidden>·</span>
@@ -80,7 +80,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
                   </p>
                 </>
               )}
-              <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[#71AAFF]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
+              <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[var(--ec-link-escuro)]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
               <div className="mt-auto pt-6">
                 {p.quote
                   ? <Link href={`${solucoes}/${p.slug}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : "cm-plan-btn--ghost"}`}>Pedir proposta <ArrowRight className="size-4" aria-hidden /></Link>

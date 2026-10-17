@@ -15,6 +15,7 @@ export const PRODUCT_BRANDS = BRAND_CODES.filter((c) => c !== HOLDING_CODE) as E
 /** Módulos que uma marca liga por padrão (a compra avulsa e os planos refinam por loja). */
 import { PALETTES } from "@/lib/brand-palette";
 import { BDC } from "@/lib/marcas/bras-digital-club";
+import { EC } from "@/lib/marcas/nextlevel-ecommerce";
 
 export const BRAND_MODULES = ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"] as const;
 export type BrandModule = (typeof BRAND_MODULES)[number];
@@ -75,14 +76,15 @@ const LEGAL = (n: string) => `${n} é um sistema de tecnologia desenvolvido pela
 export function brandsFrom(env: Record<string, string | undefined> = process.env): Record<BrandCode, Brand> {
   return {
     NEXTLEVEL_COMMERCE: {
-      code: "NEXTLEVEL_COMMERCE", name: "NextLevel Commerce", live: true,
+      // NextLevel E-commerce (D163): nome público novo; o código NEXTLEVEL_COMMERCE fica (está no banco).
+      code: "NEXTLEVEL_COMMERCE", name: EC.name, live: true,
       tagline: "A loja virtual feita para quem vende moda no Brasil",
       description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado.",
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["lojas.nextlevelgroup.com.br", "nextlevelcommerce.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),
-      primaryColor: PALETTES.NEXTLEVEL_COMMERCE.light.ink, accentColor: PALETTES.NEXTLEVEL_COMMERCE.light.signal, logo: "nextlevel", wordmark: "Commerce",
-      modules: ["stores", "themes", "partners"], emailFromName: "NextLevel Commerce", legalLine: LEGAL("NextLevel Commerce"),
+      primaryColor: PALETTES.NEXTLEVEL_COMMERCE.light.ink, accentColor: PALETTES.NEXTLEVEL_COMMERCE.light.signal, logo: "nextlevel",
+      modules: ["stores", "themes", "partners"], emailFromName: EC.name, legalLine: LEGAL(EC.name),
       // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
       signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true", soon: null,
     },

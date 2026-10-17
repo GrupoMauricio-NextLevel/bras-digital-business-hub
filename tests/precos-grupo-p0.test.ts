@@ -12,7 +12,7 @@ describe("tabela de preços do grupo", () => {
   it("junta todas as marcas, cada valor com a fonte, e bate com a fonte", async () => {
     const { rows, divergences } = await groupPriceTable(ctx.db, ctx.actors.master);
     const brands = new Set(rows.map((r) => r.brand));
-    for (const b of ["SuperDrop", "NextLevel Commerce", "Brás Digital", "NextLevel Cargas", "Brás Digital Club", "Parceiros"]) expect(brands.has(b)).toBe(true);
+    for (const b of ["SuperDrop", "NextLevel E-commerce", "Brás Digital", "NextLevel Cargas", "Brás Digital Club", "Parceiros"]) expect(brands.has(b)).toBe(true);
     expect(rows.every((r) => r.source && r.editHref.startsWith("/"))).toBe(true);
     const book = await getPriceBook(ctx.db);
     expect(rows.find((r) => r.source === "price_book.offers.STORE_SUBDOMAIN" && r.kind === "MENSAL")!.cents).toBe(book.offers.STORE_SUBDOMAIN.monthlyCents);

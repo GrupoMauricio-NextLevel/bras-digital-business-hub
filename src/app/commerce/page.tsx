@@ -21,7 +21,7 @@ export default async function CommercePage() {
 
   return (
     <>
-      <PageHeader eyebrow="NextLevel Commerce · Administração" title="Lojas digitais, como um negócio" description="Aqui entram somente as operações da Commerce: lojas, assinaturas, vendas, catálogo e aquisição. Distribuição, fornecedores e saldo do SuperDrop não fazem parte deste console." />
+      <PageHeader eyebrow="NextLevel E-commerce · Administração" title="Lojas digitais, como um negócio" description="Aqui entram somente as operações da Commerce: lojas, assinaturas, vendas, catálogo e aquisição. Distribuição, fornecedores e saldo do SuperDrop não fazem parte deste console." />
 
       <section className="ds-kpis mb-6" aria-label="Resumo da Commerce">
         <MetricCard label="Lojas" value={k.stores} hint={`${k.published} publicadas`} />

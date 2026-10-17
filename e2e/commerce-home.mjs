@@ -1,4 +1,4 @@
-// Confere a home da NextLevel Commerce (v1): estrutura, rolagem horizontal, menu, abas, simulação e perguntas.
+// Confere a home da NextLevel E-commerce (v1): estrutura, rolagem horizontal, menu, abas, simulação e perguntas.
 // Uso: E2E_BASE=http://localhost:3100 node e2e/commerce-home.mjs  (SHOTS=/pasta para salvar capturas). Na demonstração local a marca Commerce vem de /lojas.
 import { chromium } from "playwright-core";
 const base = new URL(process.env.E2E_BASE ?? "http://localhost:3100");

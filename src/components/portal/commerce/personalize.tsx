@@ -69,7 +69,7 @@ export function Personalize() {
                     return <div key={sec.id} className="absolute inset-x-0 flex items-center rounded-md border bg-surface px-2 transition-all duration-500" style={{ height: ROW - 6, top: (present ? idx : 2) * ROW, opacity: present ? 1 : 0, borderColor: sec.id === "confianca" && step >= 1 ? "var(--ds-primary)" : "#e5e5e5" }}><span className="mr-1.5 text-muted-foreground">⋮⋮</span>{sec.label}</div>;
                   })}
                 </div>
-                <p className={`mt-3 rounded-md border border-dashed px-2 py-1.5 text-center font-semibold transition-colors ${step === 1 ? "border-[#1f47c9] bg-[#1f47c9]/10 text-link" : "border-border text-muted-foreground"}`}>+ Adicionar seção</p>
+                <p className={`mt-3 rounded-md border border-dashed px-2 py-1.5 text-center font-semibold transition-colors ${step === 1 ? "border-[var(--ec-acao)] bg-[var(--ec-acao)]/10 text-link" : "border-border text-muted-foreground"}`}>+ Adicionar seção</p>
                 {step === 1 ? <ul key="menu" className="cm-pop mt-2 space-y-1 rounded-md border border-border bg-surface p-1.5 shadow-lg"><li className="rounded bg-primary/25 px-2 py-1 font-semibold">Faixa de confiança</li><li className="px-2 py-1 text-muted-foreground">Categorias</li><li className="px-2 py-1 text-muted-foreground">Banners</li></ul> : null}
               </div>
               <div className="min-w-0 p-3 sm:p-4">

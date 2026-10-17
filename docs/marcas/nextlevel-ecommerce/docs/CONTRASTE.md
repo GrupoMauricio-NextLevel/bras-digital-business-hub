@@ -1,0 +1,66 @@
+# Contraste — pares estáticos
+
+Calculado por luminância relativa sRGB. Texto comum ≥4,5:1; foco/borda essencial ≥3:1. As bordas decorativas não são a única indicação de controle. Isto não certifica a acessibilidade da aplicação inteira.
+
+| Tema | Frente | Fundo | Razão | Mínimo | Resultado |
+|---|---|---|---:|---:|---|
+| light | text | surface | 17.25 | 4.5 | OK |
+| light | textMuted | surface | 6.69 | 4.5 | OK |
+| light | link | surface | 6.64 | 4.5 | OK |
+| light | success | surface | 6.52 | 4.5 | OK |
+| light | warning | surface | 6.79 | 4.5 | OK |
+| light | danger | surface | 6.49 | 4.5 | OK |
+| light | info | surface | 7.06 | 4.5 | OK |
+| light | borderStrong | surface | 3.86 | 3 | OK |
+| light | focus | surface | 6.64 | 3 | OK |
+| light | text | surfaceMuted | 15.93 | 4.5 | OK |
+| light | textMuted | surfaceMuted | 6.18 | 4.5 | OK |
+| light | link | surfaceMuted | 6.14 | 4.5 | OK |
+| light | success | surfaceMuted | 6.03 | 4.5 | OK |
+| light | warning | surfaceMuted | 6.28 | 4.5 | OK |
+| light | danger | surfaceMuted | 5.99 | 4.5 | OK |
+| light | info | surfaceMuted | 6.52 | 4.5 | OK |
+| light | borderStrong | surfaceMuted | 3.56 | 3 | OK |
+| light | focus | surfaceMuted | 6.14 | 3 | OK |
+| light | text | surfaceElevated | 17.25 | 4.5 | OK |
+| light | textMuted | surfaceElevated | 6.69 | 4.5 | OK |
+| light | link | surfaceElevated | 6.64 | 4.5 | OK |
+| light | success | surfaceElevated | 6.52 | 4.5 | OK |
+| light | warning | surfaceElevated | 6.79 | 4.5 | OK |
+| light | danger | surfaceElevated | 6.49 | 4.5 | OK |
+| light | info | surfaceElevated | 7.06 | 4.5 | OK |
+| light | borderStrong | surfaceElevated | 3.86 | 3 | OK |
+| light | focus | surfaceElevated | 6.64 | 3 | OK |
+| light | textOnAction | action | 6.64 | 4.5 | OK |
+| light | textOnAction | actionHover | 8.24 | 4.5 | OK |
+| light | textOnAction | actionActive | 10.39 | 4.5 | OK |
+| dark | text | surface | 15.93 | 4.5 | OK |
+| dark | textMuted | surface | 9.88 | 4.5 | OK |
+| dark | link | surface | 8.71 | 4.5 | OK |
+| dark | success | surface | 11.22 | 4.5 | OK |
+| dark | warning | surface | 11.07 | 4.5 | OK |
+| dark | danger | surface | 9.07 | 4.5 | OK |
+| dark | info | surface | 8.71 | 4.5 | OK |
+| dark | borderStrong | surface | 5.29 | 3 | OK |
+| dark | focus | surface | 8.65 | 3 | OK |
+| dark | text | surfaceMuted | 14.11 | 4.5 | OK |
+| dark | textMuted | surfaceMuted | 8.75 | 4.5 | OK |
+| dark | link | surfaceMuted | 7.71 | 4.5 | OK |
+| dark | success | surfaceMuted | 9.93 | 4.5 | OK |
+| dark | warning | surfaceMuted | 9.8 | 4.5 | OK |
+| dark | danger | surfaceMuted | 8.03 | 4.5 | OK |
+| dark | info | surfaceMuted | 7.71 | 4.5 | OK |
+| dark | borderStrong | surfaceMuted | 4.69 | 3 | OK |
+| dark | focus | surfaceMuted | 7.66 | 3 | OK |
+| dark | text | surfaceElevated | 12.19 | 4.5 | OK |
+| dark | textMuted | surfaceElevated | 7.56 | 4.5 | OK |
+| dark | link | surfaceElevated | 6.66 | 4.5 | OK |
+| dark | success | surfaceElevated | 8.59 | 4.5 | OK |
+| dark | warning | surfaceElevated | 8.47 | 4.5 | OK |
+| dark | danger | surfaceElevated | 6.94 | 4.5 | OK |
+| dark | info | surfaceElevated | 6.66 | 4.5 | OK |
+| dark | borderStrong | surfaceElevated | 4.05 | 3 | OK |
+| dark | focus | surfaceElevated | 6.62 | 3 | OK |
+| dark | textOnAction | action | 4.65 | 4.5 | OK |
+| dark | textOnAction | actionHover | 4.63 | 4.5 | OK |
+| dark | textOnAction | actionActive | 6.64 | 4.5 | OK |
