@@ -18,7 +18,7 @@ export default async function CommercePlansPage() {
   const names = new Map(data.stores.map(({ store }) => [store.id, store.name]));
   return (
     <>
-      <PageHeader eyebrow="Receita recorrente" title="Assinaturas" description="Cobranças dos planos das lojas Commerce. Este financeiro é SaaS; não é carteira operacional do SuperDrop." />
+      <PageHeader eyebrow="Receita recorrente" title="Assinaturas" description="Cobranças dos planos das lojas da NextLevel E-commerce: mensalidades, testes e atrasos." />
       <DataTable rows={data.invoices} rowKey={(i) => i.id}
         empty={<EmptyState title="Nenhuma cobrança de plano Commerce encontrada" description="As cobranças dos planos aparecem aqui." />}
         columns={[

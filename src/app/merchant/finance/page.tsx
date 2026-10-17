@@ -21,13 +21,14 @@ import { RationaleList } from "@/components/finance/rationale-list";
 import { isCommerceStore } from "@/lib/store-brand";
 import { CommerceEvolution, FinanceAreas, Opportunities } from "@/components/nl-store/evolution";
 import { finFlag } from "@/lib/finance/flags";
+import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 
 export default async function MerchantFinancePage() {
   const session = await requireStoreAdmin();
   const f = await getMerchantFinance(session.store!.id);
   const db = await getDb();
   // Assinatura Commerce em teste/aguardando/atraso: a fatura do ciclo já fica disponível para pagar aqui (idempotente).
-  const { subscriptionOf, ensureSubscriptionInvoice } = await import("@/lib/domain/commerce-plans");
+  const { subscriptionOf, ensureSubscriptionInvoice, STATUS_LABEL: NL_SUB_STATUS } = await import("@/lib/domain/commerce-plans");
   const nlSub = await subscriptionOf(db, session.store!.id);
   if (nlSub && ["trial", "pending_payment", "past_due", "suspended"].includes(nlSub.status)) await ensureSubscriptionInvoice(db, session.store!);
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
@@ -70,7 +71,16 @@ export default async function MerchantFinancePage() {
         </div>
         <div id="assinatura" className="scroll-mt-24 space-y-4">
           <SectionTitle title="Assinatura NextLevel" description="O que você paga à plataforma, separado do dinheiro das suas vendas." />
-          {f.subscription ? (
+          {commerce && nlSub ? (
+            <Card>
+              <CardHeader><CardTitle>Mensalidade</CardTitle><span className="text-sm font-medium">{NL_SUB_STATUS[nlSub.status]}</span></CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div><div className="text-xs text-muted-foreground">Plano atual</div><div className="text-lg font-semibold">{nomePlanoEc(nlSub.productKey)} · {formatBRL(nlSub.amountCents)}/{nlSub.cycle === "ANNUAL" ? "ano" : "mês"}</div></div>
+                {nlSub.currentPeriodEnd || nlSub.trialEndsAt ? <div><div className="text-xs text-muted-foreground">{nlSub.status === "trial" ? "Teste até" : "Próximo vencimento"}</div><div className="font-medium">{formatDate((nlSub.status === "trial" ? nlSub.trialEndsAt : nlSub.currentPeriodEnd) ?? nlSub.currentPeriodEnd!)}</div></div> : null}
+                <a href="#evolucao" className="inline-block font-medium text-[var(--brand-primary)] underline-offset-2 hover:underline">Ver plano e trocar</a>
+              </CardContent>
+            </Card>
+          ) : !commerce && f.subscription ? (
             <Card>
               <CardHeader><CardTitle>Mensalidade</CardTitle><StatusBadge value={f.subscription.sub.status} dot /></CardHeader>
               <CardContent className="space-y-3 text-sm">
@@ -98,7 +108,7 @@ export default async function MerchantFinancePage() {
         ) : null}
         <section><h2 className="mb-3 text-base font-semibold">Add-ons</h2><AddonCards addons={addons} demo={demo} /></section>
         {finFlag("FIN_CATALOG_MASTER") ? <section aria-labelledby="oportunidades"><h2 id="oportunidades" className="mb-3 scroll-mt-24 text-lg font-semibold">Oportunidades</h2><Opportunities session={session} /></section> : null}
-        <section><h2 className="mb-3 text-base font-semibold">Por que cobramos</h2><RationaleList items={buildRationale(book).filter((r) => r.audience !== "SUPPLIER" && (r.key.startsWith("addon:") || r.key === `offer:${session.store!.offer}`))} /></section>
+        <section><h2 className="mb-3 text-base font-semibold">Por que cobramos</h2><RationaleList items={buildRationale(book).filter((r) => r.audience !== "SUPPLIER" && (r.key.startsWith("addon:") || (!commerce && r.key === `offer:${session.store!.offer}`)))} /></section>
       </div>
     </>
   );

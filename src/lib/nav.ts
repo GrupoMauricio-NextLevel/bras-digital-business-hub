@@ -62,7 +62,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio" },
       { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio" },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },
-      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio" },
+      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship" },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
       { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio" },
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio" },

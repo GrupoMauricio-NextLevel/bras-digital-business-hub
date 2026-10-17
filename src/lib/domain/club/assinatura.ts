@@ -1,4 +1,5 @@
 import type { Database } from "@/db/client";
+import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { requireMaster, type Actor } from "../access";
 import { getPriceBook } from "../finance";
 import { listCatalog } from "../nl-catalog";
@@ -28,7 +29,7 @@ export async function clubTierComparison(db: Database, actor: Actor) {
   // Plano de entrada pago de cada marca (o que o Club Total libera).
   const entry = [
     { brand: "SuperDrop", plan: book.offers.STORE_SUBDOMAIN.name, cents: book.offers.STORE_SUBDOMAIN.monthlyCents },
-    { brand: "NextLevel E-commerce", plan: "Commerce Start", cents: price("COMMERCE_START") },
+    { brand: "NextLevel E-commerce", plan: nomePlanoEc("COMMERCE_START"), cents: price("COMMERCE_START") },
     { brand: "Brás Digital", plan: "Brás Prata", cents: price("BRAS_PRATA") },
     { brand: "NextLevel Cargas", plan: "Cargas Pro", cents: price("CARGAS_PRO") },
   ].filter((e): e is { brand: string; plan: string; cents: number } => e.cents !== null);

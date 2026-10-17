@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getDb } from "@/db/client";
 import type { Session } from "@/lib/auth";
 import { STATUS_LABEL, subscriptionOf } from "@/lib/domain/commerce-plans";
+import { nomePlanoEc, nomeProdutoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { getCatalogItem } from "@/lib/domain/nl-catalog";
 import { storeJourney } from "@/lib/domain/journey";
 import { listOwnCorporateOrders } from "@/lib/domain/corporate-checkout";
@@ -33,7 +34,7 @@ export async function CommerceEvolution({ session }: { session: Session }) {
     <div className="space-y-4">
       {sub ? (
         <Card><CardContent className="pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{product?.name ?? sub.productKey} · {sub.cycle === "ANNUAL" ? "anual" : "mensal"}</h3><Badge tone={sub.status === "active" ? "success" : sub.status === "trial" ? "info" : "warning"}>{STATUS_LABEL[sub.status]}</Badge></div>
+          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{nomePlanoEc(product?.name ?? sub.productKey)} · {sub.cycle === "ANNUAL" ? "anual" : "mensal"}</h3><Badge tone={sub.status === "active" ? "success" : sub.status === "trial" ? "info" : "warning"}>{STATUS_LABEL[sub.status]}</Badge></div>
           <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
             <li><span className="text-muted-foreground">Valor do plano: </span><strong className="tabular-nums">{formatBRL(sub.amountCents)}{sub.cycle === "ANNUAL" ? " por ano" : " por mês"}</strong></li>
             <li><span className="text-muted-foreground">Taxa de plataforma: </span><strong>{holiday ? `zero até ${formatDate(sub.feeHolidayUntil)}` : `${(sub.platformFeeBps / 100).toString().replace(".", ",")}% sobre vendas pagas`}</strong>{holiday ? <span className="text-muted-foreground"> (depois, {(sub.platformFeeBps / 100).toString().replace(".", ",")}%)</span> : null}</li>
@@ -64,7 +65,7 @@ export async function Opportunities({ session }: { session: Session }) {
   if (!picks.length) return <p className="text-sm text-muted-foreground">Nenhuma recomendação agora. Veja todas as soluções na <Link className="underline" href="/merchant/services">Loja NextLevel</Link>.</p>;
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      {picks.map((c) => <Link key={c.product.id} href={`/merchant/services/solucao/${c.product.slug}`} className="ds-card block p-4 hover:bg-surface-hover"><p className="text-xs text-muted-foreground">{c.state === "recommended" ? "Recomendado agora" : c.phase.name}</p><p className="font-semibold">{c.product.name}</p><p className="mt-1 text-sm text-muted-foreground">{c.product.tagline}</p><span className="mt-2 inline-block text-sm font-semibold text-link">Ver solução →</span></Link>)}
+      {picks.map((c) => <Link key={c.product.id} href={`/merchant/services/solucao/${c.product.slug}`} className="ds-card block p-4 hover:bg-surface-hover"><p className="text-xs text-muted-foreground">{c.state === "recommended" ? "Recomendado agora" : c.phase.name}</p><p className="font-semibold">{nomeProdutoEc(c.product.name)}</p><p className="mt-1 text-sm text-muted-foreground">{c.product.tagline}</p><span className="mt-2 inline-block text-sm font-semibold text-link">Ver solução →</span></Link>)}
     </div>
   );
 }

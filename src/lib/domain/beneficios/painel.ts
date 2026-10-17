@@ -1,4 +1,5 @@
 import { and, count, eq, gte, inArray, ne, sql, sum } from "drizzle-orm";
+import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { bdAccessGrants, bdMembers, bdRequests, clubCards, orders, organizations, platformSettings, storeProducts, stores, trCarrierUsers, trCarriers, trLoads, trParcels, trTrips, PRICE_SURVEY_BRANDS } from "@/db/schema";
@@ -139,7 +140,7 @@ async function storeSimulator(db: Database, storeId: string, brand: BenefitBrand
       const m = p.prices.MONTHLY?.amountCents;
       if (!m) continue;
       const dp = snap?.planPrices?.[p.key];
-      plans.push({ name: p.name, monthlyCents: dp?.monthlyCents ?? m, feeBps: dp?.feeBps ?? (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0, current: !free && sub?.productKey === p.key });
+      plans.push({ name: nomePlanoEc(p.name), monthlyCents: dp?.monthlyCents ?? m, feeBps: dp?.feeBps ?? (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0, current: !free && sub?.productKey === p.key });
     }
   }
   if (plans.length < 2) return null;

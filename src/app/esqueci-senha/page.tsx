@@ -16,7 +16,7 @@ export default async function EsqueciSenha() {
       <Link href="/" aria-label={`${brand.name}, página inicial`}><LogoDoEndereco /></Link>
       <h1 className="mt-6 text-center text-2xl font-bold tracking-tight">Recuperar a senha</h1>
       <p className="mt-1 text-center text-sm text-muted-foreground">Informe o e-mail da sua conta. Enviamos um link para criar uma nova senha.</p>
-      <div className="mt-6"><FioCaptacao /></div>
+      <div className="mt-6"><FioCaptacao brandCode={brand.code} /></div>
       <ForgotForm />
       <p className="mt-4 text-center text-sm text-muted-foreground"><Link href="/login" className="font-semibold underline">Voltar ao login</Link></p>
       <NextLevelSignature compact product={brand.name} className="mt-8 justify-center text-center text-muted-foreground" />

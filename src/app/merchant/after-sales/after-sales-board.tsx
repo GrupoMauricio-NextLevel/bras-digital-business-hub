@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { STAGE_LABEL, STAGE_ORDER, type AfterSalesOrder, type AfterSalesStage } from "@/lib/domain/after-sales";
+import type { AfterSalesOrder, AfterSalesStage } from "@/lib/domain/after-sales";
 import { addOrderNoteAction } from "@/app/actions/after-sales";
 import { formatBRL } from "@/lib/money";
 
@@ -56,13 +56,13 @@ function Card({ o }: { o: AfterSalesOrder }) {
   );
 }
 
-export function AfterSalesBoard({ byStage }: { byStage: Record<AfterSalesStage, AfterSalesOrder[]> }) {
+export function AfterSalesBoard({ byStage, stages, labels }: { byStage: Record<AfterSalesStage, AfterSalesOrder[]>; stages: AfterSalesStage[]; labels: Record<AfterSalesStage, { title: string; hint: string }> }) {
   return (
     <div className="flex snap-x gap-3 overflow-x-auto pb-3 [&>section]:w-72 [&>section]:shrink-0 [&>section]:snap-start">
-      {STAGE_ORDER.map((st) => (
-        <section key={st} aria-label={STAGE_LABEL[st].title} className={cn("rounded-lg border border-border border-t-4 bg-surface-muted/50 p-2", TONE[st])}>
-          <header className="mb-2 flex items-baseline justify-between px-1"><h3 className="font-display text-sm font-semibold">{STAGE_LABEL[st].title}</h3><span className="rounded-full bg-surface px-2 py-0.5 text-xs font-semibold tabular-nums">{byStage[st].length}</span></header>
-          {byStage[st].length === 0 ? <p className="px-1 py-3 text-sm text-muted-foreground">{STAGE_LABEL[st].hint}. Nada por aqui.</p> : <div className="space-y-2">{byStage[st].map((o) => <Card key={o.id} o={o} />)}</div>}
+      {stages.map((st) => (
+        <section key={st} aria-label={labels[st].title} className={cn("rounded-lg border border-border border-t-4 bg-surface-muted/50 p-2", TONE[st])}>
+          <header className="mb-2 flex items-baseline justify-between px-1"><h3 className="font-display text-sm font-semibold">{labels[st].title}</h3><span className="rounded-full bg-surface px-2 py-0.5 text-xs font-semibold tabular-nums">{byStage[st].length}</span></header>
+          {byStage[st].length === 0 ? <p className="px-1 py-3 text-sm text-muted-foreground">{labels[st].hint}. Nada por aqui.</p> : <div className="space-y-2">{byStage[st].map((o) => <Card key={o.id} o={o} />)}</div>}
         </section>
       ))}
     </div>

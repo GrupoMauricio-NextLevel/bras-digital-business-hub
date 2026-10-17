@@ -54,3 +54,16 @@ export function ecCssVars(): string {
   const c = EC.cores;
   return `--ec-marinho:${c.marinho};--ec-marinho-2:${EC.escuro.surfaceMuted};--ec-azul:${c.azul};--ec-acao:${EC.claro.action};--ec-acao-hover:${EC.claro.actionHover};--ec-ciano:${c.ciano};--ec-gelo:${c.gelo};--ec-link-escuro:${EC.escuro.link};--ec-texto-suave:${EC.escuro.textMuted};--ec-azul-suave:#E3EAFF;--ec-gradiente:${EC.gradiente};`;
 }
+
+/**
+ * Nome público de um plano da plataforma de lojas. O catálogo guarda "Commerce Start" (nome interno da v1, D90) e a chave
+ * `COMMERCE_START`; para o lojista e nas telas o plano é só "Plano Start" (a marca já está na página). Aceita nome ou chave.
+ */
+export function nomePlanoEc(nomeOuChave: string): string {
+  const base = nomeOuChave.replace(/^COMMERCE_/, "").replace(/^Commerce\s+/i, "").trim();
+  const nome = base === base.toUpperCase() ? base.charAt(0) + base.slice(1).toLowerCase() : base;
+  return `Plano ${nome}`;
+}
+
+/** Nome de um item do catálogo na tela: plano da plataforma vira "Plano X"; qualquer outro produto fica como está. */
+export const nomeProdutoEc = (nome: string) => (/^Commerce (Start|Pro|Scale|Enterprise)$/.test(nome) ? nomePlanoEc(nome) : nome);

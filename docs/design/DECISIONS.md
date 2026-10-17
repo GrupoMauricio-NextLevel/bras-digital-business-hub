@@ -1498,3 +1498,12 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Isolamento:** NextLevel (Master e grupo), SuperDrop, Brás Digital Club, Cargas e as vitrines dos lojistas não mudam (as lojas têm tema e marca próprios).
 - Testes: `tests/nextlevel-ecommerce.test.tsx`.
 - **Imagens entregues (2026-10-17):** os 4 lotes do GPT (27 imagens) estão em `public/portal/nextlevel/v4/solucoes/` (WebP e AVIF 800/1600; originais e documentação do pacote em `docs/marcas/nextlevel/solucoes-imagens/`). Jornada com fotos deitadas no computador e em pé no celular (texto na área calma de cima), portas, campanha, temas, diagnóstico, fecho e as nove famílias (Temas e Cursos com cartões próprios no cardápio). Copy das fases revisada com o pacote, sem prometer constância de vendas nem resultado. O manifesto `.webmanifest` passou a ser arquivo estático no proxy (antes ia para o login no Master e na Brás).
+
+## D164 — Sem vazamento entre marcas: nada de SuperDrop na NextLevel E-commerce (2026-10-17)
+- **Pedido do dono:** "não quero cores fora de lugar, não quero nada de SuperDrop no NextLevel E-commerce"; "agora não podemos ter vazamentos de painéis e marcas de forma inadequada". A mistura inteligente das marcas do grupo (venda cruzada) fica para uma rodada própria.
+- **Fio do grupo, lançador, rodapé da família e selo do Club:** tabela `OCULTAS_EM` em `src/lib/domain/ecossistema/lancador.ts` (E-commerce oculta o SuperDrop). Só a marca atual tem cor no fio; as outras ficam neutras (sem cor de outra marca na tela). O SuperDrop continua vendo as marcas como antes.
+- **Pós-venda da loja independente:** sem a coluna "Aguardando recarga"; "Na Central" vira "Em preparação" (`stagesFor`, `stageLabelsFor`, `attentionFor(…, independent)`).
+- **Financeiro da loja E-commerce:** o cartão de mensalidade mostra a assinatura da E-commerce (`nl_subscriptions`), não o plano antigo "Loja SuperDrop"; o "Por que cobramos" deixa de citar o SuperDrop.
+- **Nome dos planos na tela:** `nomePlanoEc` ("Plano Start/Pro/Scale"). O nome no catálogo do banco ("Commerce Start") troca no Master quando o dono quiser (nova versão, sem mexer no preço).
+- **Master:** descrições do console `/commerce` sem SuperDrop; "Financeiro SuperDrop" só aparece onde há o módulo de distribuição.
+- **Método e prompt para todas as marcas:** `docs/prompts/padrao-nextlevel-todas-marcas.md`; varredura `scripts/auditoria/marca.mjs`. Testes: `tests/ecommerce-sem-superdrop.test.ts`.

@@ -11,7 +11,7 @@ import type { EcoBar, EcoItem } from "@/lib/domain/ecossistema/lancador";
 function Item({ it }: { it: EcoItem }) {
   const body = (
     <>
-      <span className="mt-1 h-8 w-1 shrink-0 rounded-full" style={{ background: it.color }} aria-hidden />
+      <span className={`mt-1 h-8 w-1 shrink-0 rounded-full${it.current ? "" : " bg-border-strong"}`} style={{ background: it.current ? it.color : undefined }} aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-1 font-semibold">{it.name}{it.current ? <span className="text-xs font-normal text-muted-foreground"> · você está aqui</span> : <ArrowUpRight className="size-3.5" aria-hidden />}</span>
         <span className="block text-sm text-muted-foreground">{it.reason ?? it.pitch}</span>
@@ -29,7 +29,7 @@ export function BarraEcossistema({ bar }: { bar: EcoBar }) {
   return (
     <div className="mb-4 flex items-center gap-3" data-ecossistema>
       <div className="flex h-1.5 flex-1 overflow-hidden rounded-full" aria-hidden>
-        {bar.segments.map((s) => <span key={s.brand} className="h-full transition-[flex] duration-300 motion-reduce:transition-none" style={{ background: s.color, flex: s.current ? 4 : 1 }} />)}
+        {bar.segments.map((s) => <span key={s.brand} className={`h-full transition-[flex] duration-300 motion-reduce:transition-none${s.current ? "" : " bg-border"}`} style={{ background: s.current ? s.color : undefined, flex: s.current ? 4 : 1 }} />)}
       </div>
       <button type="button" onClick={() => setOpen(true)} className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-border px-3 text-xs font-semibold hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-[var(--brand-primary)]" aria-haspopup="dialog">
         <LayoutGrid className="size-3.5" aria-hidden />Marcas do grupo

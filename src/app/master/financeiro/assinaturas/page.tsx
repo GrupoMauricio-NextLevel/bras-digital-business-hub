@@ -1,4 +1,5 @@
 import { getDb } from "@/db/client";
+import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { requireRole } from "@/lib/require-session";
 import { listSubscriptions, STATUS_LABEL } from "@/lib/domain/commerce-plans";
 import { PageHeader } from "@/components/app/page-header";
@@ -21,7 +22,7 @@ export default async function AssinaturasMaster() {
       <FinNav active="assinaturas" />
       <OperationalPulse className="mb-6" items={[{ label: "Ativas", value: n("active"), tone: "success" }, { label: "Em teste", value: n("trial"), tone: "info" }, { label: "Aguardando pagamento", value: n("pending_payment"), tone: "warning" }, { label: "Em atraso / suspensas", value: n("past_due") + n("suspended"), tone: n("past_due") + n("suspended") ? "danger" : "neutral" }]} />
       <DataTable rows={rows} rowKey={(r) => r.sub.id} empty={<p className="text-sm text-muted-foreground">Nenhuma assinatura Commerce ainda.</p>} columns={[
-        { key: "l", header: "Loja", primary: true, cell: (r) => <div><div className="font-semibold">{r.storeName}</div><div className="text-xs text-muted-foreground">{r.sub.productKey.replace("COMMERCE_", "Commerce ")} · {r.sub.cycle === "ANNUAL" ? "anual" : "mensal"}</div></div> },
+        { key: "l", header: "Loja", primary: true, cell: (r) => <div><div className="font-semibold">{r.storeName}</div><div className="text-xs text-muted-foreground">{nomePlanoEc(r.sub.productKey)} · {r.sub.cycle === "ANNUAL" ? "anual" : "mensal"}</div></div> },
         { key: "v", header: "Valor congelado", cell: (r) => <div className="tabular-nums"><div>{formatBRL(r.sub.amountCents)}</div><div className="text-xs text-muted-foreground">taxa {r.sub.platformFeeBps / 100}%{r.sub.firstPeriodCents !== null ? ` · 1º mês ${formatBRL(r.sub.firstPeriodCents)}` : ""}</div></div> },
         { key: "o", header: "Oferta", cell: (r) => <span className="text-xs">{r.sub.offerKey ? `${r.sub.offerKey} v${r.sub.offerVersion}` : "sem oferta"}{r.sub.feeHolidayUntil ? ` · sem taxa até ${formatDate(r.sub.feeHolidayUntil)}` : ""}</span> },
         { key: "s", header: "Situação", cell: (r) => <Badge tone={r.sub.status === "active" ? "success" : r.sub.status === "trial" ? "info" : ["past_due", "suspended"].includes(r.sub.status) ? "danger" : "warning"}>{STATUS_LABEL[r.sub.status]}</Badge> },

@@ -43,6 +43,14 @@ export async function saveEcoSettings(db: Database, actor: Actor, raw: Partial<z
   return v;
 }
 
+/**
+ * Marcas que nunca aparecem no contexto de outra (decisão do dono, 2026-10-17, D164): a NextLevel E-commerce não mostra o
+ * SuperDrop em nenhum ponto (fio, lançador, rodapé da família, selo do Club), porque o lojista de loja própria não tem
+ * fornecedor nem saldo e o nome confunde.
+ */
+const OCULTAS_EM: Partial<Record<EcoBrand, EcoBrand[]>> = { NEXTLEVEL_COMMERCE: ["SUPERDROP"] };
+const visivelEm = (b: EcoBrand, current: string | null | undefined) => !(isEcoBrandCode(current) && OCULTAS_EM[current]?.includes(b));
+
 /** O que cada marca resolve, numa frase (texto de descoberta, sem promessa de ganho). */
 const PITCH: Record<EcoBrand, string> = {
   NEXTLEVEL_COMMERCE: "Loja virtual com a sua marca, tema profissional e Pix",
@@ -75,7 +83,7 @@ const activationOf = (b: EcoBrand, from: EcoBrand) => `${brandByCode(b).baseUrl}
 /** Barra da marca atual, ou `null` (desligada nesta marca). */
 export async function ecosystemBar(db: Database, current: EcoBrand | null, now = new Date(), userId?: string): Promise<EcoBar | null> {
   if (!current || !(await getEcoSettings(db)).brands.includes(current)) return null;
-  const live = ECO_BRANDS.filter((b) => b === current || brandByCode(b).live);
+  const live = ECO_BRANDS.filter((b) => b === current || (brandByCode(b).live && visivelEm(b, current)));
   const item = async (b: EcoBrand, reason?: string): Promise<EcoItem> => ({ brand: b, name: brandByCode(b).name, pitch: PITCH[b], color: paletteOf(b).light.signal, href: b === current ? "/" : activationOf(b, current), benefit: b === current ? null : await benefitOf(db, b, now), reason, current: b === current });
   // Conta do grupo (D141): marcas em que a pessoa já tem perfil ligado vão para "Suas marcas" e levam à troca de perfil.
   const own = new Set<EcoBrand>();
@@ -93,6 +101,6 @@ export async function ecosystemBar(db: Database, current: EcoBrand | null, now =
 
 /** Segmentos do fio para páginas sem marca "atual" de painel (captação, e-mail, páginas públicas): só marcas abertas. */
 export function groupSegments(current?: string | null) {
-  return ECO_BRANDS.filter((b) => b === current || brandByCode(b).live).map((b) => ({ brand: b, name: brandByCode(b).name, color: paletteOf(b).light.signal, current: b === current }));
+  return ECO_BRANDS.filter((b) => b === current || (brandByCode(b).live && visivelEm(b, current))).map((b) => ({ brand: b, name: brandByCode(b).name, color: paletteOf(b).light.signal, current: b === current }));
 }
 export const isEcoBrandCode = (v: string | null | undefined): v is EcoBrand => !!v && (ECO_BRANDS as readonly string[]).includes(v);

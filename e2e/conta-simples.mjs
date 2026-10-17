@@ -23,7 +23,7 @@ await p.locator("#store").fill("Moda Brás " + RUN); await p.locator("#owner").f
 await p.locator("#email").fill(`maria-${RUN}@teste.com`); await p.locator("#pass").fill("senha-segura-1"); await p.locator("#tax").fill(makeCpf());
 // D90: plano Commerce com a oferta de entrada (3 dias grátis, 1º mês R$ 9,90).
 const signupText = (await p.locator("form[aria-label=Cadastro]").innerText()).replace(/\u00a0/g, " ");
-for (const t of ["Commerce Start", "Commerce Pro", "Commerce Scale", "R$ 149,00", "3 dias grátis"]) if (!signupText.includes(t)) fail(`cadastro sem "${t}"`);
+for (const t of ["Plano Start", "Plano Pro", "Plano Scale", "R$ 149,00", "3 dias grátis"]) if (!signupText.includes(t)) fail(`cadastro sem "${t}"`);
 await p.getByRole("button", { name: /Criar loja e começar/ }).click();
 await p.waitForURL(/\/merchant/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
 await p.waitForSelector("[data-trial-banner]", { timeout: 30000 }); ok("loja nova entra no teste de 3 dias da oferta de entrada");

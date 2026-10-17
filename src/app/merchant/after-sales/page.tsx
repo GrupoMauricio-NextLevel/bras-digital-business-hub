@@ -25,7 +25,7 @@ export default async function AfterSalesPage() {
         { label: "Entregues · 14 dias", value: d.summary.delivered, icon: PackageCheck, tone: "success", hint: "oportunidade de avaliação" },
       ]} />
       <ActionQueue className="mb-6" items={queue} title="Próximas ações de relacionamento" description="Prioridades do pós-venda para proteger experiência e recompra." emptyMessage="Nenhum acompanhamento prioritário agora." />
-      <section id="pos-venda"><AfterSalesBoard byStage={d.byStage} /></section>
+      <section id="pos-venda"><AfterSalesBoard byStage={d.byStage} stages={d.stages} labels={d.labels} /></section>
     </>
   );
 }

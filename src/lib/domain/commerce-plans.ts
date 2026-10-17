@@ -1,4 +1,5 @@
 import { activeDoor, doorFields } from "./precos/porta-entrada";
+import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { inTreatment } from "./experimentos";
 import { and, count, desc, eq, gte, inArray, lt, ne, sql, sum } from "drizzle-orm";
 import { z } from "zod";
@@ -118,9 +119,9 @@ export async function ensureSubscriptionInvoice(db: Database, store: Pick<Store,
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
   if (existing && existing.status !== "CANCELED") return { invoiceId: existing.id, amountCents: existing.amountCents, description: existing.description, includesSetup: false };
   const key = existing ? `${dedupeKey}:${now.getTime()}` : dedupeKey;
-  const name = p?.name ?? sub.productKey;
+  const name = nomePlanoEc(p?.name ?? sub.productKey);
   const cycleText = sub.cycle === "ANNUAL" ? "anual" : "mensal";
-  const description = `Plano ${name} · ${cycleText}${next.firstPeriodOffer ? " (1º mês da oferta de entrada)" : ""}`;
+  const description = `${name} · ${cycleText}${next.firstPeriodOffer ? " (1º mês da oferta de entrada)" : ""}`;
   const lines: InvoiceLine[] = [{ kind: "STORE_PLAN", description: next.firstPeriodOffer ? `${name} · 1º mês pela oferta de entrada` : `${name} · ${next.months === 12 ? "12 meses" : "1 mês"}`, amountCents: next.amountCents }];
   const id = newId("fin");
   await db.insert(financeInvoices).values({ id, dedupeKey: key, payerType: "STORE", supplierId: null, storeId: store.id, kind: "STORE_PLAN", period: now.toISOString().slice(0, 7), description, amountCents: next.amountCents, lines, status: "OPEN", dueDate: new Date(now.getTime() + 3 * DAY).toISOString() });

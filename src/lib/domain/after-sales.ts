@@ -5,6 +5,7 @@ import { orderEvents, orderItems, orderLabelFiles, orders, stores } from "@/db/s
 import { newId } from "@/lib/ids";
 import { assertCanAccess, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
+import { isIndependentStore } from "./independent";
 
 export type AfterSalesStage = "AWAITING_CUSTOMER" | "AWAITING_FUNDS" | "AWAITING_LABEL" | "IN_DISPATCH" | "IN_TRANSIT" | "DELIVERED";
 export const STAGE_ORDER: AfterSalesStage[] = ["AWAITING_CUSTOMER", "AWAITING_FUNDS", "AWAITING_LABEL", "IN_DISPATCH", "IN_TRANSIT", "DELIVERED"];
@@ -16,6 +17,14 @@ export const STAGE_LABEL: Record<AfterSalesStage, { title: string; hint: string 
   IN_TRANSIT: { title: "A caminho do cliente", hint: "Enviado, acompanhe a entrega" },
   DELIVERED: { title: "Entregues (14 dias)", hint: "Peça uma avaliação" },
 };
+/** Loja independente (sem fornecedor da rede): não há saldo a recarregar nem Central; a própria loja separa e envia. */
+const STAGE_LABEL_OWN: Record<AfterSalesStage, { title: string; hint: string }> = {
+  ...STAGE_LABEL,
+  AWAITING_LABEL: { title: "Falta a etiqueta", hint: "Gere ou anexe a etiqueta de envio" },
+  IN_DISPATCH: { title: "Em preparação", hint: "Separe e embale o pedido" },
+};
+export const stagesFor = (independent: boolean) => independent ? STAGE_ORDER.filter((s) => s !== "AWAITING_FUNDS") : STAGE_ORDER;
+export const stageLabelsFor = (independent: boolean) => independent ? STAGE_LABEL_OWN : STAGE_LABEL;
 
 export type AfterSalesOrder = {
   id: string; number: number; stage: AfterSalesStage; customerName: string; customerPhone: string | null; customerEmail: string; city: string | null; state: string | null;
@@ -36,11 +45,11 @@ export function stageOf(o: { status: string; customerPaymentStatus: string }): A
 }
 
 /** Alerta quando o pedido está parado além do razoável para o estágio. Puro. */
-export function attentionFor(stage: AfterSalesStage, ageHours: number): string | null {
+export function attentionFor(stage: AfterSalesStage, ageHours: number, independent = false): string | null {
   if (stage === "AWAITING_CUSTOMER" && ageHours >= 24) return "Sem pagamento há mais de 24h";
   if (stage === "AWAITING_FUNDS") return ageHours >= 48 ? "Cancela sozinho em breve: recarregue" : "Recarregue para liberar o envio";
   if (stage === "AWAITING_LABEL" && ageHours >= 12) return "Etiqueta pendente há mais de 12h";
-  if (stage === "IN_DISPATCH" && ageHours >= 48) return "Parado na Central há mais de 48h";
+  if (stage === "IN_DISPATCH" && ageHours >= 48) return independent ? "Em preparação há mais de 48h" : "Parado na Central há mais de 48h";
   if (stage === "IN_TRANSIT" && ageHours >= 24 * 7) return "Sem confirmação de entrega há mais de 7 dias";
   return null;
 }
@@ -68,6 +77,7 @@ export async function loadAfterSales(db: Database, actor: Actor, now = new Date(
   if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Área do lojista.");
   const store = await db.query.stores.findFirst({ where: eq(stores.id, actor.storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
+  const independent = await isIndependentStore(db, store.id);
   const since = new Date(now.getTime() - 14 * 86_400_000).toISOString();
   const rows = (await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt)))
     .filter((o) => o.status !== "DELIVERED" || o.updatedAt >= since);
@@ -87,12 +97,12 @@ export async function loadAfterSales(db: Database, actor: Actor, now = new Date(
       id: o.id, number: o.number, stage, customerName: o.customerName, customerPhone: o.customerPhone, customerEmail: o.customerEmail, city: o.shippingCity, state: o.shippingState,
       createdAt: o.createdAt, ageHours, items: items.filter((i) => i.orderId === o.id).map((i) => ({ productName: i.productName, label: i.label, quantity: i.quantity })), totalCents: o.totalCents,
       tracking: o.shippingLabelCode && (stage === "IN_TRANSIT" || stage === "DELIVERED") ? { code: o.shippingLabelCode, carrier: o.shippingCarrier } : null,
-      attention: attentionFor(stage, ageHours), whatsappUrl: whatsappUrl(o.customerPhone, message), message,
+      attention: attentionFor(stage, ageHours, independent), whatsappUrl: whatsappUrl(o.customerPhone, message), message,
       notes: events.filter((e) => e.orderId === o.id).slice(0, 3).map((e) => ({ id: e.id, text: e.message, createdAt: e.createdAt })), labelCount: labels.filter((l) => l.orderId === o.id).length,
     });
   }
   const byStage = Object.fromEntries(STAGE_ORDER.map((s) => [s, list.filter((o) => o.stage === s)])) as Record<AfterSalesStage, AfterSalesOrder[]>;
-  return { store: { name: store.name }, orders: list, byStage, summary: { inProgress: list.filter((o) => o.stage !== "DELIVERED").length, attention: list.filter((o) => o.attention).length, inTransit: byStage.IN_TRANSIT.length, delivered: byStage.DELIVERED.length } };
+  return { store: { name: store.name }, orders: list, byStage, stages: stagesFor(independent), labels: stageLabelsFor(independent), summary: { inProgress: list.filter((o) => o.stage !== "DELIVERED").length, attention: list.filter((o) => o.attention).length, inTransit: byStage.IN_TRANSIT.length, delivered: byStage.DELIVERED.length } };
 }
 
 const noteSchema = z.string().trim().min(2, "Escreva a anotação").max(500, "Máximo de 500 caracteres");
