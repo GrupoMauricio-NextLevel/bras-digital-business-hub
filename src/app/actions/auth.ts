@@ -65,10 +65,15 @@ export async function logout() {
   redirect("/login");
 }
 
+/** Perfis de demonstração do endereço atual (D164): cada marca lista só as próprias contas; sem marca no endereço, todas. */
 export async function listDemoUsers() {
   if (!isDemoMode()) return [];
   const db = await getDb();
-  return db.select({ id: users.id, name: users.name, email: users.email, role: users.role }).from(users);
+  const rows = await db.select({ id: users.id, name: users.name, email: users.email, role: users.role, brand: organizations.brand }).from(users).leftJoin(organizations, eq(organizations.id, users.organizationId));
+  const h = await headers();
+  const preview = !!(await cookies()).get(BRAND_PREVIEW_COOKIE)?.value;
+  const hostBrand = preview ? null : brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"));
+  return rows.filter((u) => !accountBrandConflict({ role: u.role, brand: (u.brand ?? "SUPERDROP") as BrandCode }, hostBrand)).map((u) => ({ id: u.id, name: u.name, email: u.email, role: u.role }));
 }
 
 const passwordSchema = z.object({ current: z.string().optional(), next: z.string().min(8, "A nova senha precisa de pelo menos 8 caracteres") });

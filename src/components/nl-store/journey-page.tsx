@@ -82,7 +82,7 @@ export async function StoreJourneyPage({ session, base, pedir }: { session: Sess
         </section>
       ) : null}
       {j.phases.map((p) => {
-        const cards = j.cards.filter((c) => c.phase.key === p.key && !next.includes(c));
+        const cards = j.visiveis.filter((c) => c.phase.key === p.key && !next.includes(c));
         if (!cards.length) return null;
         return (
           <section key={p.key} className="mb-8" aria-labelledby={`fase-${p.key}`}>

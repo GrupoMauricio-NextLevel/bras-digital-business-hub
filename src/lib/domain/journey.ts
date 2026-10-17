@@ -95,7 +95,8 @@ export async function milestonesFor(db: Database, storeId: string, now = new Dat
 export type ProductState = "available" | "recommended" | "in_progress" | "completed" | "locked" | "not_eligible" | "quote_required";
 export const STATE_LABEL: Record<ProductState, string> = { available: "Disponível", recommended: "Recomendado", in_progress: "Em andamento", completed: "Você já tem", locked: "Bloqueado", not_eligible: "Não disponível para você", quote_required: "Sob consulta" };
 
-export type JourneyCard = { product: CatalogItem; state: ProductState; reason: string; missing: string[]; phase: PhaseConfig };
+/** `outraMarca`: produto de outra marca do grupo (D164). Continua no cálculo (a compra segue bloqueada), mas a tela não mostra. */
+export type JourneyCard = { product: CatalogItem; state: ProductState; reason: string; missing: string[]; phase: PhaseConfig; outraMarca?: boolean };
 
 const prereqLabel = (k: string, catalog: CatalogItem[]) => (k.startsWith("PRODUCT:") ? `Ter ${catalog.find((c) => c.key === k.slice(8))?.name ?? k.slice(8)}` : (MILESTONES as Record<string, string>)[k] ?? k);
 
@@ -129,7 +130,7 @@ export async function storeJourney(db: Database, actor: Actor, storeId: string, 
     const brands = p.meta.brands as string[] | undefined;
     const missing = p.prerequisites.filter((k) => !met(k)).map((k) => prereqLabel(k, catalog));
     const pending = myOrders.some((o) => o.productId === p.id && o.status === "PENDING_PAYMENT") || deliveries.some((d) => d.productKey === p.key && !["ACCEPTED", "CANCELED"].includes(d.status)) || (sub?.productKey === p.key && sub.status === "pending_payment");
-    if (brands && !brands.includes(brand)) return { product: p, state: "not_eligible", reason: brand === "SUPERDROP" ? "Feito para lojas da NextLevel E-commerce. No SuperDrop, o equivalente é o upgrade de oferta da sua loja." : "Não disponível para o seu tipo de conta.", missing: [], phase };
+    if (brands && !brands.includes(brand)) return { product: p, state: "not_eligible", reason: "Não disponível para a sua loja.", missing: [], phase, outraMarca: true };
     if (ownedKeys.has(p.key)) return { product: p, state: "completed", reason: p.family === "COMMERCE_PLAN" ? "É o seu plano atual." : "Já está com você.", missing: [], phase };
     if (pending) return { product: p, state: "in_progress", reason: "Pedido aberto ou entrega em andamento.", missing: [], phase };
     if (p.kind === "quote_required") return { product: p, state: "quote_required", reason: "Precisa de diagnóstico: peça a proposta.", missing, phase };
@@ -137,7 +138,7 @@ export async function storeJourney(db: Database, actor: Actor, storeId: string, 
     const recommended = p.phase === current.key && !missing.length;
     return { product: p, state: recommended ? "recommended" : "available", reason: recommended ? `Próximo passo da fase ${current.name}.` : missing.length ? `Recomendado depois de: ${missing.join(", ")}.` : `Faz parte da fase ${phase.name}.`, missing, phase };
   });
-  return { phases, currentKey: current.key, cards, brand, subscription: sub };
+  return { phases, currentKey: current.key, cards, visiveis: cards.filter((c) => !c.outraMarca), brand, subscription: sub };
 }
 
 /** Painel do fornecedor: produtos da NextLevel para fornecedores (sem jornada de loja). */

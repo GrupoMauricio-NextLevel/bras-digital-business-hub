@@ -1,10 +1,11 @@
-/* NextLevel Cargas (D108): página pública. Navy do grupo + índigo de rota; amarelo de sinalização só em detalhe. */
+/* NextLevel Cargas (D108): página pública. Navy do grupo + índigo de rota. Desde D164 sem o amarelo antigo do grupo:
+   a "placa" (detalhes e botão principal) usa o índigo da marca. */
 .cg-home {
   --cg-navy: #0d1630;
   --cg-navy-2: #16234a;
   --cg-indigo: #4b4fd8;
   --cg-indigo-claro: #9ea2ff;
-  --cg-placa: #f5bc00;
+  --cg-placa: #9ea2ff;
   --cg-papel: #f4f1e9;
   --cg-tinta: #101b34;
   --cg-tinta-clara: #f4f1e9;
@@ -22,8 +23,8 @@
 .cg-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0 1.4rem; border-radius: 999px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: transform 0.15s ease, background 0.15s ease; }
 .cg-btn:hover { transform: translateY(-1px); }
 .cg-btn:focus-visible { outline: 3px solid var(--cg-placa); outline-offset: 3px; }
-.cg-btn--placa { background: var(--cg-placa); color: var(--cg-navy); }
-.cg-btn--placa:hover { background: #ffcb2f; }
+.cg-btn--placa { background: var(--cg-indigo); color: #fff; }
+.cg-btn--placa:hover { background: #3a3dbe; }
 .cg-btn--linha { border: 1.5px solid color-mix(in srgb, var(--cg-tinta-clara) 55%, transparent); color: var(--cg-tinta-clara); }
 .cg-btn--linha:hover { background: color-mix(in srgb, var(--cg-tinta-clara) 10%, transparent); }
 .cg-btn--indigo { background: var(--cg-indigo); color: #fff; }

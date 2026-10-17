@@ -11,12 +11,13 @@ if (!HOST || !CONTA || !SENHA) { console.error("Uso: node scripts/auditoria/marc
 mkdirSync(OUT, { recursive: true });
 
 /** Termos e cores (rgb) que não podem aparecer em cada marca, reconhecida pelo host. */
+const VERDE_SD = [45, 158, 59], AZUL_EC = [63, 101, 255], INDIGO_CG = [75, 79, 216], AMARELO_ANTIGO = [245, 188, 0];
 const REGRAS = [
-  { host: /cm\.|lojas\./, marca: "NextLevel E-commerce", termos: /SuperDrop|\bCentral\b|recarga|Drop manual|Commerce (Start|Pro|Scale)/g, cores: [[45, 158, 59]] },
-  { host: /sd\.|superdrop/, marca: "SuperDrop", termos: /NextLevel E-commerce/g, cores: [[63, 101, 255]] },
-  { host: /bd\.|bras/, marca: "Brás Digital Club", termos: /SuperDrop/g, cores: [[45, 158, 59], [245, 188, 0]] },
-  { host: /cg\.|cargas/, marca: "NextLevel Cargas", termos: /SuperDrop/g, cores: [[45, 158, 59]] },
-  { host: /.*/, marca: "NextLevel", termos: /NextLevel Commerce\b/g, cores: [[245, 188, 0]] },
+  { host: /cm\.|lojas\./, marca: "NextLevel E-commerce", termos: /SuperDrop|\bCentral\b|recarga|Drop manual|Commerce (Start|Pro|Scale)|Brás Digital|Cargas/g, cores: [VERDE_SD, INDIGO_CG, AMARELO_ANTIGO] },
+  { host: /sd\.|superdrop/, marca: "SuperDrop", termos: /E-commerce|NextLevel Commerce|Brás Digital|Cargas/g, cores: [AZUL_EC, INDIGO_CG] },
+  { host: /bd\.|bras/, marca: "Brás Digital Club", termos: /SuperDrop|E-commerce|NextLevel Commerce|Drop manual/g, cores: [VERDE_SD, INDIGO_CG, AMARELO_ANTIGO] },
+  { host: /cg\.|cargas/, marca: "NextLevel Cargas", termos: /SuperDrop|E-commerce|NextLevel Commerce/g, cores: [VERDE_SD, AZUL_EC, AMARELO_ANTIGO] },
+  { host: /.*/, marca: "NextLevel", termos: /NextLevel Commerce\b|Brás Digital\b(?! Club)/g, cores: [AMARELO_ANTIGO] },
 ];
 const regra = REGRAS.find((r) => r.host.test(HOST));
 const PUBLICAS = ["/", "/planos", "/temas", "/faq", "/cadastro", "/login", "/esqueci-senha", "/parceiros"];
@@ -29,6 +30,7 @@ async function ver(p, nome, url) {
     await p.waitForTimeout(600);
     const texto = await p.evaluate(() => document.body.innerText);
     const termos = [...new Set(texto.match(regra.termos) ?? [])];
+    const trechos = [...new Set([...texto.matchAll(new RegExp(`.{0,60}(?:${regra.termos.source}).{0,40}`, "g"))].map((m) => m[0].replace(/\s+/g, " ")))].slice(0, 6);
     const lado = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     const cores = await p.evaluate((proibidas) => {
       const achadas = new Set();
@@ -41,7 +43,7 @@ async function ver(p, nome, url) {
       }
       return [...achadas].slice(0, 8);
     }, regra.cores);
-    rel.push({ nome, url: p.url(), status: r?.status(), termos, cores, lado });
+    rel.push({ nome, url: p.url(), status: r?.status(), termos, trechos, cores, lado });
     await p.screenshot({ path: `${OUT}/${nome}.png` });
   } catch (e) { rel.push({ nome, url, erro: String(e).slice(0, 160) }); }
 }

@@ -15,7 +15,7 @@ export async function FioCaptacao({ brandCode }: { brandCode?: string | null }) 
       <div className="flex h-1.5 overflow-hidden rounded-full" aria-hidden>{segs.map((s) => <span key={s.brand} className={s.current ? "h-full" : "h-full bg-border"} style={{ background: s.current ? s.color : undefined, flex: s.current ? 4 : 1 }} />)}</div>
       <p className="flex items-start gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm">
         <Sparkles className="mt-0.5 size-4 shrink-0 text-[var(--brand-primary)]" aria-hidden />
-        <span>Ao entrar, você já faz parte do <b>Club do Grupo NextLevel</b>: seus pontos valem em todas as marcas do grupo ({segs.map((s) => s.name).join(", ")}).</span>
+        <span>Ao entrar, você já faz parte do <b>Club do Grupo NextLevel</b>: seus pontos valem em todas as marcas do grupo.</span>
       </p>
     </div>
   );

@@ -75,7 +75,7 @@ function Quadro() {
         <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-[#ecebf3]"><div className="cg-fill h-full rounded-full bg-[#4b4fd8]" style={{ width: "72%" }} /></div>
       </div>
       <div className="cg-pop absolute -bottom-7 left-4 right-4 flex items-center gap-3 rounded-2xl bg-[#0d1630] px-4 py-3 text-white shadow-xl sm:left-auto sm:right-[-1rem] sm:w-72">
-        <KeyRound className="size-5 shrink-0 text-[#f5bc00]" aria-hidden />
+        <KeyRound className="size-5 shrink-0 text-[var(--cg-placa)]" aria-hidden />
         <p className="text-sm"><b>Coleta confirmada</b><br /><span className="text-[#c3c8dc]">Código de retirada: BD-7K2M</span></p>
       </div>
     </div>
@@ -94,7 +94,7 @@ export function CargasHome({ brand }: { brand: Brand }) {
       {/* 1. Herói: a promessa para o dono da transportadora e o painel de coletas da rota. */}
       <section className="cg-dark relative overflow-hidden" aria-labelledby="cg-h1">
         <div aria-hidden className="pointer-events-none absolute -right-48 -top-48 size-[40rem] rounded-full opacity-35 blur-3xl" style={{ background: "radial-gradient(circle, #4b4fd8, transparent 65%)" }} />
-        <div aria-hidden className="pointer-events-none absolute -left-40 bottom-0 size-[26rem] rounded-full opacity-20 blur-3xl" style={{ background: "radial-gradient(circle, #f5bc00, transparent 65%)" }} />
+        <div aria-hidden className="pointer-events-none absolute -left-40 bottom-0 size-[26rem] rounded-full opacity-20 blur-3xl" style={{ background: "radial-gradient(circle, #4b4fd8, transparent 65%)" }} />
         <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-14 md:pt-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-sm font-semibold"><Truck className="size-4 text-[var(--cg-placa)]" aria-hidden />Transporte para o atacado do Brás · São Paulo</p>
