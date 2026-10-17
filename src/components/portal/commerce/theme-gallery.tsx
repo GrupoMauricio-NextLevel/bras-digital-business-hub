@@ -34,7 +34,7 @@ export function ThemeGallery({ themes, initial = 6, inicial = "moda" }: { themes
       <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
         {visiveis.map((t) => (
           <li key={t.key} className="cm-theme-card">
-            <Link href={`/temas/${t.key}`} className="group block rounded-[1.25rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" aria-label={`Tema ${t.name}: ver demonstração`}>
+            <Link href={`/temas/${t.key}`} className="group block rounded-[1.25rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
               <div className="cm-theme-shot">
                 {/* eslint-disable-next-line @next/next/no-img-element -- captura estática do tema */}
                 <img className="cm-desk" src={`/temas/${t.key}-desktop-3.webp`} alt="" loading="lazy" decoding="async" width={1280} height={800} />
