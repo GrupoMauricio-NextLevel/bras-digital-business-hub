@@ -1448,3 +1448,12 @@ Pedido do dono: aplicar o pacote `bras-digital-club-upload-sistema-v2` (logos, p
 - **Domínio:** o nome-base é `brasdigitalclub`, mas a extensão não foi confirmada: nenhum canônico, `og:url`, sitemap ou redirecionamento definitivo. A Brás segue em `bras.nextlevelgroup.com.br`.
 - **Kit antigo arquivado:** `public/marcas/bras-digital/` (laranja) fica no repositório, sem uso nas páginas. Textos jurídicos versionados (termos da Brás, D99; termos do grupo, D148; juridico.ts) e os rótulos da tabela de preços do grupo não mudam sem decisão do dono (mudar os termos exige novo aceite dos membros).
 - **Domínio próprio (17/10/2026):** o dono registrou `brasdigitalclub.com.br` (Registro.br). Já reconhecido como da Brás (com `www` e o antigo `bras.nextlevelgroup.com.br`); vira o endereço no ar quando `BRAND_URL_BRAS_DIGITAL=https://brasdigitalclub.com.br` for ligado no Render, depois do DNS verificado. Aí os outros endereços levam a ele (mesmo caminho) e o canônico passa a valer.
+
+## D159 — Brás Digital Club: rede aberta de abastecimento com compra coletiva (2026-10-17)
+Análise completa em `docs/prompts/bras-analise-sistema-e-perguntas.md`. Respostas do dono:
+- **Sentido do "Club":** clube de compra coletiva entre empresas verificadas (juntar volume para comprar como grande: cotação coletiva, contêiner dividido, frete consolidado). Os pontos do grupo (NextLevel Club) são benefício, não a razão do nome.
+- **Modelo:** rede aberta com aprovação. Fornecedores (importadora, distribuidor, atacadista) se cadastram, são aprovados no Estúdio e aparecem pelo nome por categoria; o comprador pede cotação a vários. Substitui o "nome escondido até o pedido" da D95 para o núcleo de cotação (a vitrine curada de descobertas pode continuar).
+- **Públicos iniciais:** lojista do interior, vendedor de marketplace profissional e iniciante, distribuidor regional, todos com CNPJ. Revendedor sem CNPJ em aberto.
+- **Receita:** plano do fornecedor, plano do comprador, frete e serviços e comissão sobre pedido. A comissão exige pagamento pela plataforma com repasse ao fornecedor; isso entra no núcleo, logo depois da cotação.
+- **Roteiro:** F1 página com as duas portas e autocadastro do fornecedor; F2 diretório; F3 cotação; F4 planos; F5 pagamento integrado e cotação coletiva; F6 religar serviços. Perguntas restantes na seção 11 do documento.
+

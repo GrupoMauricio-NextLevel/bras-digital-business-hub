@@ -4,6 +4,12 @@
 > inteiro". Base: código atual (D91 a D158), regras no Master e o novo posicionamento proposto pelo dono. Nada aqui muda o
 > sistema: é diagnóstico, proposta e perguntas. As decisões entram depois, uma a uma, em `docs/design/DECISIONS.md`.
 
+## 0. Decisões do dono (17/10/2026, D159)
+1. **Sentido do Club:** compra coletiva entre empresas verificadas (seção 2B). Pontos são detalhe.
+2. **Modelo:** rede aberta com aprovação: fornecedores se cadastram, são aprovados no Estúdio e aparecem pelo nome, por categoria; o comprador pede cotação a vários.
+3. **Públicos:** os quatro compradores com CNPJ entram desde o início (lojista do interior, marketplace profissional, marketplace iniciante, distribuidor regional). O revendedor sem CNPJ (C4) segue em aberto.
+4. **Receita no começo:** plano do fornecedor, plano do comprador, frete e serviços, e comissão sobre pedido. Como a comissão só não vaza com o pagamento passando pela plataforma, **o pagamento integrado sobe de prioridade** (fase F5 vira parte do núcleo, logo depois da cotação).
+
 ## 1. Resumo em uma página
 
 **O que existe hoje.** Em 10 dias o Brás virou um ecossistema: 47 telas em 6 áreas (Estúdio no Master, Meu Brás, painel
@@ -181,7 +187,7 @@ só depois que o pagamento passar pela plataforma.
 | **F2** | Diretório por categoria e polo, perfil público do fornecedor (o que for liberado) | O comprador encontra fornecedores |
 | **F3** | Pedido de cotação, distribuição, respostas, comparação, mensagens, avaliação | O núcleo da rede funciona |
 | **F4** | Planos do fornecedor e destaque ligados no Financeiro Master; plano de inteligência do comprador | A NextLevel passa a receber |
-| **F5** | Pedido e pagamento pela plataforma (se decidido), frete integrado à cotação | Comissão sem vazamento |
+| **F5** | Pedido e pagamento pela plataforma com repasse ao fornecedor (decidido na D159), frete integrado à cotação, **cotação coletiva** | Comissão sem vazamento e o "Club" em ação |
 | **F6** | Religar serviços congelados conforme o volume (contêiner, alto mar, excursão) | Diferenciais pagos |
 
 ## 10. Texto proposto pelo dono (para a página nova)
