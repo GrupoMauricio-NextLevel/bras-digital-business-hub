@@ -28,6 +28,33 @@ const LOJAS = [
   { arquivo: "loja-3", nome: "Casa em Ordem", segmento: "casa", tema: "varanda", temaNome: "Varanda" },
 ] as const;
 
+/** Prova: lojas de demonstração montadas no próprio sistema (usada na home atual e na prévia da home imersiva). */
+export function LojasExemplo({ cta, className }: { cta: string; className?: string }) {
+  return (
+    <section id="exemplos" aria-labelledby="exemplos-t" className={className}>
+      <div className="mx-auto max-w-6xl">
+        <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Lojas de exemplo</p>
+        <h2 id="exemplos-t" className={`${H2} mt-3 max-w-2xl text-foreground`}>Lojas de verdade, montadas aqui.</h2>
+        <p className="mt-4 max-w-2xl text-lg text-body">Moda, esporte e casa, com temas que você pode usar hoje. Produtos e preços de demonstração.</p>
+        <ul className="mt-10 grid gap-6 md:grid-cols-3">
+          {LOJAS.map((l) => (
+            <li key={l.arquivo}>
+              <Link href={`/temas/${l.tema}`} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+                <MockWindow title={`Loja de demonstração · tema ${l.temaNome}`} className="transition group-hover:-translate-y-1">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- captura estática da loja */}
+                  <img src={`/portal/commerce/v4/${l.arquivo}.webp`} alt={`Página inicial da loja de demonstração ${l.nome}`} width={1200} height={662} loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
+                </MockWindow>
+                <p className="mt-3 font-semibold text-foreground">{l.nome} <span className="font-normal text-muted-foreground">· {l.segmento}, tema {l.temaNome}</span></p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8"><Link href={cta} className="font-semibold text-link underline underline-offset-4">Quero uma loja assim →</Link></p>
+      </div>
+    </section>
+  );
+}
+
 export async function CommerceHome({ brand }: { brand: Brand }) {
   const cta = brand.signupOpen ? "/cadastro" : "/quero-minha-loja";
   const pv = await commercePlansView(await getDb());
@@ -43,28 +70,8 @@ export async function CommerceHome({ brand }: { brand: Brand }) {
       <HeroV2 cta={cta} signupOpen={brand.signupOpen} offer={offer} />
       <Marquee />
 
-      {/* 1. Prova: lojas reais montadas no sistema (capturas em public/portal/commerce/v4), no lugar das lojas com fotos antigas. */}
-      <section id="exemplos" aria-labelledby="exemplos-t" className={`${section} bg-canvas`}>
-        <div className="mx-auto max-w-6xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Lojas de exemplo</p>
-          <h2 id="exemplos-t" className={`${H2} mt-3 max-w-2xl text-foreground`}>Lojas de verdade, montadas aqui.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-body">Moda, esporte e casa, com temas que você pode usar hoje. Produtos e preços de demonstração.</p>
-          <ul className="mt-10 grid gap-6 md:grid-cols-3">
-            {LOJAS.map((l) => (
-              <li key={l.arquivo}>
-                <Link href={`/temas/${l.tema}`} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
-                  <MockWindow title={`Loja de demonstração · tema ${l.temaNome}`} className="transition group-hover:-translate-y-1">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- captura estática da loja */}
-                    <img src={`/portal/commerce/v4/${l.arquivo}.webp`} alt={`Página inicial da loja de demonstração ${l.nome}`} width={1200} height={662} loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
-                  </MockWindow>
-                  <p className="mt-3 font-semibold text-foreground">{l.nome} <span className="font-normal text-muted-foreground">· {l.segmento}, tema {l.temaNome}</span></p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-8"><Link href={cta} className="font-semibold text-link underline underline-offset-4">Quero uma loja assim →</Link></p>
-        </div>
-      </section>
+      {/* 1. Prova: lojas reais montadas no sistema (capturas em public/portal/commerce/v4). */}
+      <LojasExemplo cta={cta} className={`${section} bg-canvas`} />
 
       {/* 2. Como começar, sozinho e na hora. */}
       <section id="comecar" aria-labelledby="com-t" className={`${section} bg-surface`}>
