@@ -22,7 +22,7 @@ export default async function Hoje() {
   const vazio = !t.conferir.length && !t.separar.length && !t.entregar.length;
   const bloco = (id: string, icon: React.ReactNode, title: string, hint: string, items: typeof t.conferir) => items.length ? (
     <section aria-labelledby={id} className="mb-8">
-      <h2 id={id} className="mb-1 flex items-center gap-2 text-xl font-bold">{icon}{title} <span className="rounded-full bg-[var(--bd-laranja)]/15 px-2 text-base tabular-nums">{items.length}</span></h2>
+      <h2 id={id} className="mb-1 flex items-center gap-2 text-xl font-bold">{icon}{title} <span className="rounded-full bg-[var(--bd-acao)]/15 px-2 text-base tabular-nums">{items.length}</span></h2>
       <p className="mb-3 text-sm text-muted-foreground">{hint}</p>
       <ul className="grid gap-3 lg:grid-cols-2">{items.map((r) => <PedidoCard key={r.id} r={r} can={can} showAddress={false} />)}</ul>
     </section>
@@ -38,9 +38,9 @@ export default async function Hoje() {
         </ul>
       ) : null}
       {coletasHoje || aguardando ? <p className="mb-6 flex flex-wrap items-center gap-2 rounded-lg bg-surface-muted px-4 py-3 text-sm"><Truck className="size-4 shrink-0" aria-hidden />{coletasHoje ? `${coletasHoje} coleta(s) da transportadora marcada(s) para hoje.` : ""} {aguardando ? `${aguardando} aguardando a transportadora responder.` : ""} <Link href="/importadora/transportadoras" className="font-semibold text-link underline">Ver coletas</Link></p> : null}
-      {bloco("h-conf", <ClipboardCheck className="size-5 text-[var(--bd-laranja)]" aria-hidden />, "Conferir caixas", "Pedidos novos: confira se as caixas estão no galpão e toque em \"Tenho as caixas\".", t.conferir)}
-      {bloco("h-sep", <PackageCheck className="size-5 text-[var(--bd-laranja)]" aria-hidden />, "Separar", "Confirmados pela equipe da Brás: separe e deixe pronto para a transportadora.", t.separar)}
-      {bloco("h-ent", <Truck className="size-5 text-[var(--bd-laranja)]" aria-hidden />, "Entregar à transportadora", "Pagos: entregue quando o motorista mostrar o código do pedido.", t.entregar)}
+      {bloco("h-conf", <ClipboardCheck className="size-5 text-[var(--bd-acao)]" aria-hidden />, "Conferir caixas", "Pedidos novos: confira se as caixas estão no galpão e toque em \"Tenho as caixas\".", t.conferir)}
+      {bloco("h-sep", <PackageCheck className="size-5 text-[var(--bd-acao)]" aria-hidden />, "Separar", "Confirmados pela equipe da Brás: separe e deixe pronto para a transportadora.", t.separar)}
+      {bloco("h-ent", <Truck className="size-5 text-[var(--bd-acao)]" aria-hidden />, "Entregar à transportadora", "Pagos: entregue quando o motorista mostrar o código do pedido.", t.entregar)}
       {vazio ? <p className="mb-8 rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">Nenhum pedido esperando você agora.</p> : null}
       {t.esgotando.length ? (
         <section aria-labelledby="h-esg" className="mb-8">

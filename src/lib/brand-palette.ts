@@ -3,6 +3,8 @@
  * Vale para portais e painéis; o tema das lojas dos lojistas é do lojista e não passa por aqui.
  * Cada combinação de leitura é conferida em `tests/brand-palette.test.ts` (WCAG AA).
  */
+import { BDC } from "@/lib/marcas/bras-digital-club";
+
 export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
 
 export type PaletteMode = {
@@ -25,8 +27,12 @@ const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): Bra
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
   NEXTLEVEL_COMMERCE: pal(["#2F81F4", "#0E59B9"], ["#71AAFF", "#71AAFF"]),
   SUPERDROP: pal(["#2D9E3B", "#03721D"], ["#62C268", "#62C268"]),
-  // Assinatura #D35C00 (D152) ajustada em 1 tom para o texto do botão passar em AA.
-  BRAS_DIGITAL: pal(["#D55E00", "#974000"], ["#FB8342", "#FB8342"]),
+  // Brás Digital Club (D158): azul elétrico como sinal; no escuro, o azul de ação claro do pacote (legível como texto).
+  BRAS_DIGITAL: {
+    light: { paper: BDC.cores.offWhite, ink: BDC.cores.navy, signal: BDC.claro.action, signalText: BDC.claro.action },
+    dark: { paper: BDC.escuro.surface, ink: BDC.cores.offWhite, signal: BDC.claro.action, signalText: BDC.escuro.actionHover },
+    support: BDC.cores.ciano, darkFirst: false,
+  },
   CREATORS_HUB: pal(["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
   CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.

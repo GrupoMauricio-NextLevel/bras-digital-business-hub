@@ -38,15 +38,15 @@ export default async function Balcao({ params }: { params: Promise<{ token: stri
     <>
       <AreaTheme theme="bras" brand="BRAS_DIGITAL" />
       <main className="bd-home mx-auto min-h-dvh max-w-3xl px-4 py-8">
-        <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-laranja)]">Brás Digital · Balcão</p>
+        <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-acao)]">Brás Digital Club · Balcão</p>
         <h1 className="mt-1 text-2xl font-bold">{q.importer.name}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Pedidos para separar e para entregar à transportadora. Dúvida ou ocorrência: fale com a equipe da Brás Digital.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Pedidos para separar e para entregar à transportadora. Dúvida ou ocorrência: fale com a equipe do Brás Digital Club.</p>
         <section aria-labelledby="ret-t" className="mt-8">
-          <h2 id="ret-t" className="flex items-center gap-2 text-lg font-bold"><PackageCheck className="size-5 text-[var(--bd-laranja)]" aria-hidden />Pagos: entregar à transportadora ({q.retirar.length})</h2>
+          <h2 id="ret-t" className="flex items-center gap-2 text-lg font-bold"><PackageCheck className="size-5 text-[var(--bd-acao)]" aria-hidden />Pagos: entregar à transportadora ({q.retirar.length})</h2>
           {q.retirar.length ? <ul className="mt-3 space-y-3">{q.retirar.map((l) => <Linha key={l.id} l={l} token={token} retirar />)}</ul> : <p className="mt-2 text-sm text-muted-foreground">Nenhum pedido pago esperando retirada.</p>}
         </section>
         <section aria-labelledby="sep-t" className="mt-10">
-          <h2 id="sep-t" className="flex items-center gap-2 text-lg font-bold"><PackageOpen className="size-5 text-[var(--bd-laranja)]" aria-hidden />Confirmados: separar as caixas ({q.separar.length})</h2>
+          <h2 id="sep-t" className="flex items-center gap-2 text-lg font-bold"><PackageOpen className="size-5 text-[var(--bd-acao)]" aria-hidden />Confirmados: separar as caixas ({q.separar.length})</h2>
           <p className="text-sm text-muted-foreground">Ainda sem pagamento: separe e aguarde. A retirada só é liberada quando o pedido aparecer em &quot;Pagos&quot;.</p>
           {q.separar.length ? <ul className="mt-3 space-y-3">{q.separar.map((l) => <Linha key={l.id} l={l} token={token} retirar={false} />)}</ul> : <p className="mt-2 text-sm text-muted-foreground">Nada para separar agora.</p>}
         </section>

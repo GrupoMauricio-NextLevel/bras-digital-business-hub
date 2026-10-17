@@ -33,7 +33,7 @@ export default async function Club() {
           <div className="mt-2"><RenewCardButton /></div>
         </div>
       </section>
-      <ClubPanel data={data} inviteUrl={`${brandByCode("BRAS_DIGITAL").baseUrl}/c/${data.code}`} inviteMessage="Compre do Brás por caixa fechada na Brás Digital. Entre pelo meu convite:" referSlot={<><h3 className="mb-2 text-sm font-semibold">Indicar transportadora, ônibus ou importadora</h3><ReferCarrierForm kinds={["TRANSPORTADORA", "ONIBUS", "IMPORTADORA"]} /></>} />
+      <ClubPanel data={data} inviteUrl={`${brandByCode("BRAS_DIGITAL").baseUrl}/c/${data.code}`} inviteMessage="Compre do Brás por caixa fechada no Brás Digital Club. Entre pelo meu convite:" referSlot={<><h3 className="mb-2 text-sm font-semibold">Indicar transportadora, ônibus ou importadora</h3><ReferCarrierForm kinds={["TRANSPORTADORA", "ONIBUS", "IMPORTADORA"]} /></>} />
       <RankingCard ranking={ranking} />
     </>
   );

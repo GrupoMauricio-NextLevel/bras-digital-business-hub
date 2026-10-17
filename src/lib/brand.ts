@@ -14,6 +14,7 @@ export const PRODUCT_BRANDS = BRAND_CODES.filter((c) => c !== HOLDING_CODE) as E
 
 /** Módulos que uma marca liga por padrão (a compra avulsa e os planos refinam por loja). */
 import { PALETTES } from "@/lib/brand-palette";
+import { BDC } from "@/lib/marcas/bras-digital-club";
 
 export const BRAND_MODULES = ["stores", "themes", "partners", "wholesale", "influencers", "liveShop", "dropship", "marketplace"] as const;
 export type BrandModule = (typeof BRAND_MODULES)[number];
@@ -53,6 +54,8 @@ export type Brand = {
    * Operação comercial fechada: preço, estoque, nome de importadora/fornecedor e vídeo completo só para membro aprovado,
    * nada indexável e nenhuma página pública de fornecedor. Ausente = falso (as marcas abertas não mudam).
    */
+  /** Rodapé público em superfície escura da marca (logo escura com slogan). Brás Digital Club (D158). */
+  rodapeEscuro?: boolean;
   closedCommerce?: boolean;
   /** Página inicial própria da marca (ex.: NextLevel Cargas). Ausente = a página do modelo da marca (loja, dropshipping, fechada). */
   landing?: "cargas";
@@ -95,17 +98,18 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
     },
     BRAS_DIGITAL: {
       // D92: com BRAND_SIGNUP_BRAS_DIGITAL=true abre a página pública e o cadastro grátis com CNPJ; sem ela, segue "em breve".
-      code: "BRAS_DIGITAL", name: "Brás Digital", live: env.BRAND_SIGNUP_BRAS_DIGITAL === "true",
-      tagline: "O atacado do Brás em uma vitrine só",
+      // Brás Digital Club (D158): nome, slogan e marca vêm da fonte única da identidade; o código BRAS_DIGITAL fica (está no banco).
+      code: "BRAS_DIGITAL", name: BDC.name, live: env.BRAND_SIGNUP_BRAS_DIGITAL === "true",
+      tagline: BDC.tagline,
       description: env.BRAND_SIGNUP_BRAS_DIGITAL === "true"
         ? "Atacado em caixa fechada das importadoras do Brás, com vídeos de análise de produto. Cadastro grátis com CNPJ; preço e estoque só para membros."
         : "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
       domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.nextlevelgroup.com.br"]),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
-      primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: "Brás Digital",
-      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: "Brás Digital", legalLine: LEGAL("Brás Digital"), signupOpen: env.BRAND_SIGNUP_BRAS_DIGITAL === "true", partnersOpen: false, closedCommerce: true,
-      soon: env.BRAND_SIGNUP_BRAS_DIGITAL === "true" ? null : { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: "Quero solicitar acesso à Brás Digital" },
+      primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: BDC.name,
+      modules: ["stores", "themes", "partners", "wholesale", "marketplace"], emailFromName: BDC.name, legalLine: LEGAL(BDC.name), signupOpen: env.BRAND_SIGNUP_BRAS_DIGITAL === "true", partnersOpen: false, closedCommerce: true, rodapeEscuro: true,
+      soon: env.BRAND_SIGNUP_BRAS_DIGITAL === "true" ? null : { headline: "O atacado do Brás, em uma vitrine só.", text: "Uma plataforma fechada para membros aprovados comprarem em caixa fechada, com reserva e retirada organizadas.", bullets: ["Acesso por cadastro e aprovação", "Compra em caixa fechada", "Reserva e retirada organizadas"], leadTitle: `Quero solicitar acesso ao ${BDC.name}` },
     },
     CREATORS_HUB: {
       code: "CREATORS_HUB", name: "Hub Creators", live: false,

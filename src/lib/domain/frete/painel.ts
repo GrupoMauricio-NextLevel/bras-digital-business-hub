@@ -28,7 +28,7 @@ export type FreightView = {
 const iso = (v: string | Date | null | undefined) => (v ? new Date(v).toISOString() : null);
 
 export async function myFreights(db: Database, actor: Actor) {
-  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Painel de frete do membro da Brás Digital.");
+  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Painel de frete do membro do Brás Digital Club.");
   const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId) });
   if (!m) throw new ForbiddenError("Cadastro de membro não encontrado.");
   const reqs = await db.select().from(bdRequests).where(eq(bdRequests.memberId, m.id)).orderBy(desc(bdRequests.createdAt)).limit(200);

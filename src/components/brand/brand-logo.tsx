@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
+import { BDC, BDC_ICONES, BDC_LOGOS } from "@/lib/marcas/bras-digital-club";
 
 /**
  * Logos oficiais do kit v1 com a cor de assinatura de cada marca no raio (sistema de cores v2, decisão D79).
  * Arquivos em /public/brand/v2/<marca>/{claro,escuro}/{assinatura-completa,compacta,monograma}.svg.
- * Marcas sem logo oficial (Brás Digital, China Hub) aparecem só com o nome em texto: nenhuma logo é inventada.
+ * Brás Digital Club (D158) usa os PNG oficiais do pacote próprio (`PNG_OFICIAIS`). Marcas sem logo oficial (China Hub)
+ * aparecem só com o nome em texto: nenhuma logo é inventada.
  */
 const OFICIAIS: Record<string, { id: string; sufixo?: string; ratio: { compacta: number; "assinatura-completa": number; monograma: number } }> = {
   NEXTLEVEL: { id: "nextlevel", ratio: { compacta: 1296 / 384, "assinatura-completa": 1296 / 446, monograma: 371 / 253 } },
@@ -32,10 +34,36 @@ type Props = {
  */
 const PNG_CLARA: Record<string, { src: string; ratio: number }> = {
   NEXTLEVEL_CARGAS: { src: "/marcas/nextlevel-cargas/logos/logo-clara-640.webp", ratio: 2172 / 724 },
-  BRAS_DIGITAL: { src: "/marcas/bras-digital/logos/logo-clara-640.webp", ratio: 1774 / 887 },
 };
 
+type Arquivo = { src: string; w: number; h: number };
+/**
+ * Logos oficiais em PNG/WebP com as duas versões transparentes (clara para fundo claro, escura com lettering off-white para
+ * fundo escuro). A troca é de arquivo, nunca filtro de cor. `compacta` = assinatura horizontal; `assinatura-completa` = com slogan.
+ * Altura mínima de leitura (`min-h-9`): abaixo disso use o monograma.
+ */
+const PNG_OFICIAIS: Record<string, Record<Variante, { claro: Arquivo; escuro: Arquivo }>> = {
+  [BDC.code]: {
+    compacta: { claro: BDC_LOGOS.clara, escuro: BDC_LOGOS.escura },
+    "assinatura-completa": { claro: BDC_LOGOS.claraSlogan, escuro: BDC_LOGOS.escuraSlogan },
+    monograma: { claro: BDC_LOGOS.monogramaClaro, escuro: BDC_LOGOS.monogramaEscuro },
+  },
+};
+export const temLogoPng = (code: string | null | undefined) => !!PNG_OFICIAIS[code ?? ""];
+
 export function BrandLogo({ brand, tone = "auto", variant = "compacta", className, priority = false }: Props) {
+  const oficial = PNG_OFICIAIS[brand.code ?? ""];
+  if (oficial) {
+    const v = oficial[variant];
+    const minimo = variant === "monograma" ? "" : "min-h-9";
+    const img = (tema: "claro" | "escuro", extra: string, alt: string) => (
+      // eslint-disable-next-line @next/next/no-img-element -- WebP estático com proporção do PNG oficial
+      <img src={v[tema].src} width={Math.round((64 * v[tema].w) / v[tema].h)} height={64} alt={alt} className={cn("bdc-logo w-auto object-contain", className ?? "h-8", minimo, extra)} loading={priority ? "eager" : "lazy"} decoding="async" />
+    );
+    if (tone === "on-dark") return img("escuro", "", brand.name);
+    if (tone === "on-light") return img("claro", "", brand.name);
+    return <>{img("claro", "nl-logo-light", brand.name)}{img("escuro", "nl-logo-dark", "")}</>;
+  }
   const png = PNG_CLARA[brand.code ?? ""];
   if (png && variant !== "monograma") {
     const texto = (extra: string) => <span className={cn("inline-flex items-center font-[family-name:var(--nl-font-display)] text-lg font-extrabold tracking-tight", tone === "on-dark" ? "text-white" : "text-foreground", extra)}>{brand.name}</span>;
@@ -66,6 +94,12 @@ export function BrandLogo({ brand, tone = "auto", variant = "compacta", classNam
 
 /** Favicons da marca do endereço (marcas sem logo oficial usam os do grupo). */
 export function brandIcons(code: string | null | undefined) {
+  if (code === BDC.code) {
+    return {
+      icon: [{ url: BDC_ICONES.ico, sizes: "any" }, ...BDC_ICONES.png.map((p) => ({ ...p, type: "image/png" }))],
+      apple: BDC_ICONES.apple,
+    };
+  }
   const id = logoOficial(code)?.id ?? "nextlevel";
   // O raio amarelo do grupo some sobre o off-white: a marca do grupo usa o favicon escuro nos dois temas.
   const claro = id === "nextlevel" ? "escuro" : "claro";

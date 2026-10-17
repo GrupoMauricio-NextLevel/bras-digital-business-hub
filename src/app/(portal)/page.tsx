@@ -1,6 +1,5 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import type { Metadata } from "next";
+import { ogImageFor } from "@/lib/og-marca";
 import { redirect } from "next/navigation";
 import { getSession, homeFor } from "@/lib/auth";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
@@ -20,9 +19,15 @@ import { SuperDropHomeV4 } from "@/components/portal/superdrop/home-v4";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
-  // Brás: prévia de link própria quando a imagem existir (D105; redes não leem AVIF, por isso PNG/JPG/WebP).
-  const og = isClosedCommerceBrand(brand) ? (["jpg", "png", "webp"] as const).find((e) => existsSync(join(process.cwd(), "public", "portal", "bras", "v3", `bd-og-portal.${e}`))) : undefined;
-  return { title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description, alternates: { canonical: "/" }, ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}), ...(og ? { openGraph: { title: brand.name, description: brand.description, images: [{ url: `/portal/bras/v3/bd-og-portal.${og}`, width: 1200, height: 630 }] } } : {}) };
+  // Brás Digital Club (D158): prévia de link do pacote da marca (`ogImageFor`) e sem endereço canônico até a extensão do
+  // domínio definitivo ser confirmada (o nome-base é brasdigitalclub). As outras marcas não mudam.
+  const closed = isClosedCommerceBrand(brand);
+  return {
+    title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description,
+    ...(closed ? {} : { alternates: { canonical: "/" } }),
+    ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}),
+    ...(closed ? { openGraph: { title: `${brand.name} · ${brand.tagline}`, description: brand.description, images: [ogImageFor(brand)] }, twitter: { card: "summary_large_image", title: brand.name, description: brand.tagline, images: [ogImageFor(brand).url] } } : {}),
+  };
 }
 
 export default async function Portal() {
@@ -32,7 +37,7 @@ export default async function Portal() {
   const solucoes = await groupLink("/solucoes");
   // Marca com página inicial própria (NextLevel Cargas, D108).
   if (brand.landing === "cargas") return <CargasHome brand={brand} />;
-  // Produto ainda sem sistema (Brás Digital, Hub Creators, China Hub): página "em breve" com lista de espera.
+  // Produto ainda sem sistema (Brás Digital Club fechado, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
   if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} />; }

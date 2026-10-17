@@ -8,4 +8,4 @@ export function brasWhatsappUrl(text: string, env: Record<string, string | undef
 }
 
 /** Mensagem pronta do membro que quer comprar o produto de um vídeo (sem dado pessoal na mensagem). */
-export const brasBuyMessage = (company: string, title: string) => `Olá! Sou da ${company}, membro da Brás Digital. Quero comprar: ${title}.`;
+export const brasBuyMessage = (company: string, title: string) => `Olá! Sou da ${company}, membro do Brás Digital Club. Quero comprar: ${title}.`;

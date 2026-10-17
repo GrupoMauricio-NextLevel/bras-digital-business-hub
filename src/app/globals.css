@@ -114,6 +114,9 @@ body { overflow-x: clip; }
 
 /* ---- Logo: versão clara no tema claro, escura no tema escuro ------------- */
 .nl-logo-dark { display: none; }
+/* Ilha escura da marca (rodapé institucional): a logo para fundo escuro, em qualquer modo. */
+.ds-tema-escuro .nl-logo-light { display: none; }
+.ds-tema-escuro .nl-logo-dark { display: inline-block; }
 :root[data-theme="dark"] .nl-logo-light { display: none; }
 :root[data-theme="dark"] .nl-logo-dark { display: inline-block; }
 @media (prefers-color-scheme: dark) {
@@ -159,5 +162,8 @@ body { overflow-x: clip; }
 :root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header { background: #101B34; }
 :root:has([data-heroi-escuro="nextlevel"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: #F5BC00; color: #101B34; }
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-nav a[aria-current="page"] { background: rgb(255 255 255 / 0.1); color: #fff; }
+/* Brás Digital Club (D158): navy e botão azul elétrico da marca (cores de `--bdc-*`). */
+:root:has([data-heroi-escuro="bras"]):not([data-heroi-passou]) .ds-pub-header { background: var(--bdc-navy); }
+:root:has([data-heroi-escuro="bras"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: var(--bdc-azul); color: #fff; }
 /* Sufixo escrito da logo (ex.: "Commerce") fica claro sobre o herói escuro. */
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-brand .text-foreground { color: #fff; }

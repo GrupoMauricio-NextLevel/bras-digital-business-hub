@@ -41,11 +41,11 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
   if (member) await touchBrasMemberSeen(db, member.id, member.lastSeenAt);
   const andamento = pedidos.filter((r) => r.status === "NEW" || r.status === "CONFIRMED" || r.status === "PAID").slice(0, 3);
   const company = member?.companyName ?? session.user.name;
-  const falar = brasWhatsappUrl(`Olá! Sou da ${company}, membro da Brás Digital. Quero fazer um pedido.`);
+  const falar = brasWhatsappUrl(`Olá! Sou da ${company}, membro do Brás Digital Club. Quero fazer um pedido.`);
   const novo = (await searchParams)["bem-vindo"] === "1";
   return (
     <>
-      <PageHeader eyebrow="Meu Brás" title={novo ? `Bem-vindo, ${session.user.name.split(" ")[0]}!` : `Olá, ${session.user.name.split(" ")[0]}`} description={`${company} · membro da Brás Digital`} />
+      <PageHeader eyebrow="Meu Brás" title={novo ? `Bem-vindo, ${session.user.name.split(" ")[0]}!` : `Olá, ${session.user.name.split(" ")[0]}`} description={`${company} · membro do Brás Digital Club`} />
       {novo ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Cadastro criado. Seu acesso de membro já está liberado.</p> : null}
 
       {respostas ? <p role="status" className="mb-6 rounded-lg bg-info-soft px-4 py-3 text-sm"><b>{respostas === 1 ? "1 resposta nova" : `${respostas} respostas novas`}</b> da equipe. <Link href="/meu-bras/suporte#chat" className="font-semibold text-link underline">Abrir o chat</Link></p> : null}
@@ -59,8 +59,8 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
           </div>
           <ul className="grid gap-3 md:grid-cols-3">
             {panel.cards.map((c, i) => (
-              <li key={c.id} className={`ds-card flex flex-col p-5 ${i === 0 ? "border-2 border-[var(--bd-laranja)]" : ""}`}>
-                <p className="flex items-center gap-2 font-bold">{i === 0 ? <Sparkles className="size-4 text-[var(--bd-laranja)]" aria-hidden /> : null}{c.title}{c.soon ? <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold">Em preparação</span> : null}</p>
+              <li key={c.id} className={`ds-card flex flex-col p-5 ${i === 0 ? "border-2 border-[var(--bd-acao)]" : ""}`}>
+                <p className="flex items-center gap-2 font-bold">{i === 0 ? <Sparkles className="size-4 text-[var(--bd-acao)]" aria-hidden /> : null}{c.title}{c.soon ? <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold">Em preparação</span> : null}</p>
                 <p className="mt-1 flex-1 text-sm text-muted-foreground">{c.text}</p>
                 <Link href={c.href} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-link underline">{c.cta}<ArrowRight className="size-4" aria-hidden /></Link>
               </li>
@@ -68,7 +68,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
           </ul>
         </section>
       ) : null}
-      {novas ? <p role="status" className="mb-6 rounded-lg bg-[var(--bd-laranja)]/10 px-4 py-3 text-sm"><b>{novas === 1 ? "1 descoberta nova" : `${novas} descobertas novas`}</b> desde a sua última visita. <Link href="/meu-bras/videos" className="font-semibold text-link underline">Ver agora</Link></p> : null}
+      {novas ? <p role="status" className="mb-6 rounded-lg bg-[var(--bd-acao)]/10 px-4 py-3 text-sm"><b>{novas === 1 ? "1 descoberta nova" : `${novas} descobertas novas`}</b> desde a sua última visita. <Link href="/meu-bras/videos" className="font-semibold text-link underline">Ver agora</Link></p> : null}
       {andamento.length ? (
         <section aria-labelledby="mb-andamento" className="mb-8">
           <h2 id="mb-andamento" className="mb-3 text-xl font-bold">Seus pedidos em andamento</h2>
@@ -89,10 +89,10 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
         <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <h2 id="mb-comprar" className="bd-display text-3xl text-white">Como comprar agora</h2>
-            <p className="mt-2 max-w-xl text-[var(--bd-tinta-suave)]">Abra a descoberta, veja a análise e o preço da caixa, toque em Quero comprar e informe quantas caixas e para onde enviar. A equipe da Brás Digital confirma o pedido e o pagamento com você. Retirada no Brás pela sua transportadora.</p>
+            <p className="mt-2 max-w-xl text-[var(--bd-tinta-suave)]">Abra a descoberta, veja a análise e o preço da caixa, toque em Quero comprar e informe quantas caixas e para onde enviar. A equipe do Brás Digital Club confirma o pedido e o pagamento com você. Retirada no Brás pela sua transportadora.</p>
           </div>
           {ativo && falar
-            ? <a href={falar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--fogo"><MessageCircle className="size-5" aria-hidden />Falar com a equipe</a>
+            ? <a href={falar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--primario"><MessageCircle className="size-5" aria-hidden />Falar com a equipe</a>
             : <p className="text-sm text-[var(--bd-tinta-suave)]">{ativo ? "O WhatsApp da equipe ainda não foi configurado." : "Disponível quando o cadastro estiver liberado."}</p>}
         </div>
       </section>
@@ -107,7 +107,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
 
       {panel ? (
         <section id="plano" aria-labelledby="mb-plano" className="mb-8 scroll-mt-20">
-          <h2 id="mb-plano" className="mb-1 flex items-center gap-2 text-xl font-bold"><Crown className="size-5 text-[var(--bd-laranja)]" aria-hidden />Seu plano: {BRAS_PLAN_LABEL[panel.plan]}</h2>
+          <h2 id="mb-plano" className="mb-1 flex items-center gap-2 text-xl font-bold"><Crown className="size-5 text-[var(--bd-acao)]" aria-hidden />Seu plano: {BRAS_PLAN_LABEL[panel.plan]}</h2>
           <p className="mb-4 text-sm text-muted-foreground">Comprar caixas é grátis em qualquer plano. Os planos pagos liberam inteligência e atendimento. Nenhum plano garante venda ou lucro.</p>
           <ul className="grid gap-3 md:grid-cols-3">
             {planos.map((p) => {
@@ -115,7 +115,7 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
               const atual = code === panel.plan;
               const acima = brasPlanRank(code) > brasPlanRank(panel.plan);
               return (
-                <li key={p.id} className={`ds-card flex flex-col p-5 ${atual ? "border-2 border-[var(--bd-laranja)]" : ""}`}>
+                <li key={p.id} className={`ds-card flex flex-col p-5 ${atual ? "border-2 border-[var(--bd-acao)]" : ""}`}>
                   <p className="font-bold">{p.name.replace("Brás ", "")}{atual ? <span className="ml-2 rounded-full bg-success-soft px-2 py-0.5 text-xs text-success">Seu plano</span> : null}</p>
                   <p className="text-sm font-semibold tabular-nums">{p.status === "PUBLISHED" ? priceLines(p).main : "Valor na abertura dos planos"}</p>
                   <ul className="mt-2 flex-1 space-y-1 text-sm text-muted-foreground">{p.content.scope.map((x) => <li key={x}>· {x}</li>)}</ul>
@@ -128,9 +128,9 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
       ) : null}
 
       <section aria-label="O que vem a seguir" className="grid gap-4 md:grid-cols-3">
-        <Link href="/meu-bras/suporte" className="ds-card ds-lift block p-5"><LifeBuoy className="size-6 text-[var(--bd-laranja)]" aria-hidden /><h2 className="mt-2 font-bold">Suporte</h2><p className="mt-1 text-sm text-muted-foreground">Perguntas frequentes, chat, WhatsApp e agenda na importadora, conforme o seu plano.</p></Link>
-        <Link href="/meu-bras/pedidos" className="ds-card ds-lift block p-5"><Boxes className="size-6 text-[var(--bd-laranja)]" aria-hidden /><h2 className="mt-2 font-bold">Meus pedidos</h2><p className="mt-1 text-sm text-muted-foreground">Acompanhe cada pedido: recebido, confirmado, pago e retirado.</p></Link>
-        <div className="ds-card p-5"><ShieldCheck className="size-6 text-[var(--bd-laranja)]" aria-hidden /><h2 className="mt-2 font-bold">Seus dados protegidos</h2><p className="mt-1 text-sm text-muted-foreground">A importadora recebe só o endereço de envio de cada pedido. Atendimento, ocorrências e trocas são com a Brás Digital.</p></div>
+        <Link href="/meu-bras/suporte" className="ds-card ds-lift block p-5"><LifeBuoy className="size-6 text-[var(--bd-acao)]" aria-hidden /><h2 className="mt-2 font-bold">Suporte</h2><p className="mt-1 text-sm text-muted-foreground">Perguntas frequentes, chat, WhatsApp e agenda na importadora, conforme o seu plano.</p></Link>
+        <Link href="/meu-bras/pedidos" className="ds-card ds-lift block p-5"><Boxes className="size-6 text-[var(--bd-acao)]" aria-hidden /><h2 className="mt-2 font-bold">Meus pedidos</h2><p className="mt-1 text-sm text-muted-foreground">Acompanhe cada pedido: recebido, confirmado, pago e retirado.</p></Link>
+        <div className="ds-card p-5"><ShieldCheck className="size-6 text-[var(--bd-acao)]" aria-hidden /><h2 className="mt-2 font-bold">Seus dados protegidos</h2><p className="mt-1 text-sm text-muted-foreground">A importadora recebe só o endereço de envio de cada pedido. Atendimento, ocorrências e trocas são com o Brás Digital Club.</p></div>
       </section>
     </>
   );

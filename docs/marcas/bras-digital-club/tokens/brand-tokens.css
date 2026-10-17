@@ -1,0 +1,43 @@
+:root,
+html[data-brand="bras-digital-club"] {
+  --bdc-navy: #0c1830;
+  --bdc-blue: #315cff;
+  --bdc-cyan: #00d4ff;
+  --bdc-off-white: #f4f1e9;
+  --bdc-surface: #ffffff;
+  --bdc-surface-muted: #f7f9fc;
+  --bdc-surface-brand-soft: #edf2ff;
+  --bdc-border: #dbe3f0;
+  --bdc-border-strong: #aebdd3;
+  --bdc-text: #0c1830;
+  --bdc-text-muted: #52627a;
+  --bdc-text-inverse: #f4f1e9;
+  --bdc-action: #315cff;
+  --bdc-action-hover: #2449d8;
+  --bdc-action-active: #1938ad;
+  --bdc-action-soft: #e8edff;
+  --bdc-focus: #00d4ff;
+  --bdc-gradient: linear-gradient(135deg, #315cff 0%, #00d4ff 100%);
+  --bdc-radius-sm: 8px;
+  --bdc-radius-md: 14px;
+  --bdc-radius-lg: 24px;
+  --bdc-shadow-sm: 0 6px 20px rgb(12 24 48 / 8%);
+  --bdc-shadow-lg: 0 24px 64px rgb(12 24 48 / 16%);
+}
+
+html[data-brand="bras-digital-club"][data-theme="dark"] {
+  --bdc-surface: #0c1830;
+  --bdc-surface-muted: #132445;
+  --bdc-surface-brand-soft: #172b52;
+  --bdc-border: #294266;
+  --bdc-border-strong: #42618d;
+  --bdc-text: #f4f1e9;
+  --bdc-text-muted: #b9c5d8;
+  --bdc-text-inverse: #0c1830;
+  --bdc-action: #5274ff;
+  --bdc-action-hover: #6c8aff;
+  --bdc-action-active: #315cff;
+  --bdc-action-soft: #1a3260;
+  --bdc-shadow-sm: 0 8px 24px rgb(0 0 0 / 20%);
+  --bdc-shadow-lg: 0 28px 72px rgb(0 0 0 / 34%);
+}

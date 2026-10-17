@@ -244,6 +244,7 @@
 .ds-pub-head--center .ds-pub-lede { margin-inline: auto; }
 .ds-pub-card { border: 1px solid var(--ds-line); border-radius: var(--ds-r-public-card); background: var(--ds-surface); box-shadow: var(--ds-shadow-sm); padding: clamp(20px, 3vw, 30px); }
 .ds-pub-footer { margin-top: auto; border-top: 1px solid var(--ds-line); background: var(--ds-surface-2); }
+.ds-pub-footer.ds-tema-escuro { background: var(--ds-canvas); color: var(--ds-text); }
 .ds-pub-footer-in { display: grid; gap: 24px; padding: 40px 0; font-size: 0.9rem; color: var(--ds-muted); grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .ds-pub-footer a { color: var(--ds-text); text-decoration: none; }
 .ds-pub-footer a:hover { color: var(--ds-link); text-decoration: underline; }
@@ -321,6 +322,9 @@
 .ds-brand-mark { display: none; place-items: center; width: 40px; height: 40px; border-radius: var(--ds-r-control); background: var(--ds-primary); color: var(--ds-primary-contrast); font-weight: 800; }
 .ds-app--collapsed .ds-brand-full { display: none; }
 .ds-app--collapsed .ds-brand-mark { display: inline-grid; }
+/* Monograma em PNG com cor própria (Brás Digital Club, D158): sem quadrado de cor por trás, no tamanho da caixa. */
+.ds-brand-mark:has(.bdc-logo) { background: transparent; }
+.ds-brand-mark .bdc-logo { height: 2.25rem; }
 .ds-app--collapsed .ds-switcher { display: none; }
 .ds-switcher { padding: 0 20px 8px; }
 .ds-side .ds-switcher button { color: var(--ds-side-fg); }

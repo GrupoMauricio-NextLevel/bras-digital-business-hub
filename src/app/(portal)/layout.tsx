@@ -21,11 +21,11 @@ export default async function PortalLayout({ children }: { children: React.React
   // Soluções e Loja NextLevel são da agência e moram no site do grupo (D149): nas marcas, o link vai direto para lá.
   const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
-    ? [{ href: "/solucoes", label: "Soluções" }, { href: "/club", label: "Club" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "NextLevel Commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "NextLevel Cargas" }]
+    ? [{ href: "/solucoes", label: "Soluções" }, { href: "/club", label: "Club" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "NextLevel Commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "NextLevel Cargas" }]
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
-    ? [{ href: "/#plataforma", label: "Plataforma" }, { href: "/#videos", label: "Descobertas" }, { href: "/#acesso", label: "Acesso" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#proposta", label: "O Club" }, { href: "/#capacidades", label: "Benefícios" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#confianca", label: "Confiança" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
     ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
@@ -33,7 +33,7 @@ export default async function PortalLayout({ children }: { children: React.React
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = holding ? { href: "/solucoes#diagnostico", label: "Diagnóstico gratuito" } : cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
-  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "a Brás Digital" : "a NextLevel Commerce"}.`)}`) : null;
+  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel Commerce"}.`)}`) : null;
   return (
     <PublicShell
       brand={<BrandLogo brand={brand} tone="auto" className="h-8" priority />}
@@ -42,7 +42,11 @@ export default async function PortalLayout({ children }: { children: React.React
       nav={nav}
       cta={cta}
       secondary={dropship && !holding ? [{ href: "/seja-fornecedor", label: "Seja fornecedor" }] : undefined}
-      footerBrand={<><BrandLogo brand={brand} tone="auto" className="h-8" /><p className="mt-2">{brand.tagline}.</p></>}
+      footerEscuro={!!brand.rodapeEscuro}
+      footerBrand={brand.rodapeEscuro
+        // Rodapé escuro (Brás Digital Club, D158): assinatura escura com o slogan; o slogan já está na imagem e vai como texto alternativo.
+        ? <BrandLogo brand={{ ...brand, name: `${brand.name}: ${brand.tagline}` }} tone="on-dark" variant="assinatura-completa" className="h-16" />
+        : <><BrandLogo brand={brand} tone="auto" className="h-8" /><p className="mt-2">{brand.tagline.replace(/\.$/, "")}.</p></>}
       footerNote={<><FamiliaGrupo brandCode={brand.code} /><NextLevelSignature product={brand.name} /><p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. {brand.soon ? "Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público." : <><Link href="/termos" className="underline underline-offset-2">Termos de uso</Link> · <Link href="/privacidade" className="underline underline-offset-2">Política de privacidade</Link></>}</p></>}
       floating={whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}
     >

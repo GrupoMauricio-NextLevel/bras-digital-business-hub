@@ -1,42 +1,49 @@
-/* Página pública da Brás Digital (D92). Prefixo bd- para não afetar nenhuma outra marca. Cores do plano de design da Brás. */
-.bd-home {
-  --bd-navy: #101b34;
-  --bd-navy-2: #18264a;
-  --bd-papel: #f4f1e9;
-  --bd-laranja: #b34d00; /* ação sobre fundo claro (5,3:1 com branco) */
-  --bd-laranja-claro: #fb8342; /* ação e destaque sobre o azul-escuro (6,7:1) */
-  --bd-tinta-clara: #e8ecf5;
-  --bd-tinta-suave: #b9c2d6; /* texto secundário no escuro (8,9:1) */
+/* Páginas e áreas do Brás Digital Club (D92, identidade D158). Prefixo bd- para não afetar nenhuma outra marca.
+   As cores vêm de `--bdc-*` (fonte única: src/lib/marcas/bras-digital-club.ts); aqui só ganham o papel na página.
+   Declaradas também na raiz porque balcão e Estúdio usam algumas fora do `.bd-home` (nomes exclusivos da Brás). */
+:root, .bd-home {
+  --bd-navy: var(--bdc-navy);
+  --bd-navy-2: var(--bdc-navy-2);
+  --bd-navy-3: var(--bdc-navy-3);
+  --bd-papel: var(--bdc-off-white);
+  --bd-acao: var(--bdc-azul); /* ação e destaque sobre fundo claro (5,1:1 com branco) */
+  --bd-acao-hover: var(--bdc-azul-hover);
+  --bd-pulso: var(--bdc-ciano); /* pulso: destaque sobre o navy (10:1); nunca texto pequeno sobre claro */
+  --bd-tinta-clara: var(--bdc-off-white);
+  --bd-tinta-suave: var(--bdc-texto-suave); /* texto secundário no navy */
+  --bd-cinza: var(--bdc-cinza); /* texto secundário nas telas claras de demonstração */
+  --bd-gradiente: var(--bdc-gradiente);
 }
 .bd-dark { background: var(--bd-navy); color: var(--bd-tinta-clara); }
 .bd-papel { background: var(--bd-papel); color: var(--bd-navy); }
-:root[data-theme="dark"] .bd-papel { background: #0b1324; color: var(--bd-tinta-clara); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-papel { background: #0b1324; color: var(--bd-tinta-clara); } }
+:root[data-theme="dark"] .bd-papel { background: var(--bd-navy-2); color: var(--bd-tinta-clara); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-papel { background: var(--bd-navy-2); color: var(--bd-tinta-clara); } }
 
 .bd-display { font-family: var(--nl-font-display), var(--font-display), system-ui, sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
 .bd-h1 { font-size: clamp(2.4rem, 6.4vw, 5rem); }
 .bd-h2 { font-size: clamp(1.9rem, 4.2vw, 3.25rem); }
-.bd-accent { color: var(--bd-laranja-claro); }
-.bd-papel .bd-accent, .bd-claro .bd-accent { color: var(--bd-laranja); }
-:root[data-theme="dark"] :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-laranja-claro); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-laranja-claro); } }
+.bd-accent { color: var(--bd-pulso); }
+.bd-papel .bd-accent, .bd-claro .bd-accent { color: var(--bd-acao); }
+:root[data-theme="dark"] :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-pulso); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.bd-papel, .bd-claro) .bd-accent { color: var(--bd-pulso); } }
 
 .bd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0 1.4rem; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: transform 0.15s ease, background 0.15s ease; text-decoration: none; }
-.bd-btn:focus-visible { outline: 3px solid var(--bd-laranja-claro); outline-offset: 3px; }
+.bd-btn:focus-visible { outline: 3px solid var(--bd-pulso); outline-offset: 3px; }
 .bd-btn:hover { transform: translateY(-1px); }
-.bd-btn--fogo { background: var(--bd-laranja-claro); color: var(--bd-navy); }
-.bd-btn--fogo:hover { background: #ff9a62; }
+.bd-btn--primario { background: var(--bd-acao); color: #fff; }
+.bd-btn--primario:hover { background: var(--bd-acao-hover); }
+.bd-btn:active { transform: translateY(0); }
 .bd-btn--linha { border: 1.5px solid color-mix(in srgb, var(--bd-tinta-clara) 55%, transparent); color: var(--bd-tinta-clara); }
 .bd-btn--linha:hover { background: color-mix(in srgb, var(--bd-tinta-clara) 10%, transparent); }
 .bd-btn--escuro { background: var(--bd-navy); color: #fff; }
-.bd-btn--escuro:focus-visible { outline-color: var(--bd-laranja); }
+.bd-btn--escuro:focus-visible { outline-color: var(--bd-acao); }
 
 /* Grade de caixas ao fundo do herói (só ornamento). */
 .bd-caixas { background-image: linear-gradient(color-mix(in srgb, var(--bd-tinta-clara) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--bd-tinta-clara) 6%, transparent) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 25%, transparent 75%); mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 25%, transparent 75%); }
 
 /* Celular com o vídeo (herói): moldura que mostra a interface real do feed. */
 .bd-phone { position: relative; width: min(100%, 300px); aspect-ratio: 9 / 18.5; border-radius: 42px; padding: 10px; background: #050a16; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), inset 0 0 0 1.5px rgba(255, 255, 255, 0.12); }
-.bd-phone-screen { position: relative; height: 100%; overflow: hidden; border-radius: 33px; background: linear-gradient(180deg, #24345e, #0d1529); }
+.bd-phone-screen { position: relative; height: 100%; overflow: hidden; border-radius: 33px; background: linear-gradient(180deg, var(--bd-navy-3), var(--bd-navy)); }
 
 /* Faixa em loop com as regras do atacado. */
 @keyframes bd-marquee { to { transform: translateX(-50%); } }
@@ -57,15 +64,15 @@
 }
 
 /* Número grande dos passos. */
-.bd-step-n { font-family: var(--nl-font-display), system-ui, sans-serif; font-weight: 800; font-size: 3.5rem; line-height: 1; font-variant-numeric: tabular-nums; color: transparent; -webkit-text-stroke: 1.5px var(--bd-laranja); }
-.bd-dark .bd-step-n { -webkit-text-stroke-color: var(--bd-laranja-claro); }
+.bd-step-n { font-family: var(--nl-font-display), system-ui, sans-serif; font-weight: 800; font-size: 3.5rem; line-height: 1; font-variant-numeric: tabular-nums; color: transparent; -webkit-text-stroke: 1.5px var(--bd-acao); }
+.bd-dark .bd-step-n { -webkit-text-stroke-color: var(--bd-pulso); }
 
 /* Home v2 (D98): botão grande, cartões do mosaico, palco do herói com deriva na rolagem e aviso que aparece. */
 .bd-btn--lg { min-height: 3.5rem; padding: 0 1.8rem; font-size: 1.05rem; }
 .bd-card { position: relative; display: flex; min-height: 24rem; flex-direction: column; justify-content: space-between; overflow: hidden; border-radius: 1.75rem; padding: 1.5rem; text-decoration: none; }
 @media (min-width: 640px) { .bd-card { padding: 2rem; } }
-.bd-card:focus-visible { outline: 3px solid var(--bd-laranja-claro); outline-offset: 3px; }
-.bd-caixas--escuro { background-image: linear-gradient(rgb(16 27 52 / 0.08) 1px, transparent 1px), linear-gradient(90deg, rgb(16 27 52 / 0.08) 1px, transparent 1px); }
+.bd-card:focus-visible { outline: 3px solid var(--bd-pulso); outline-offset: 3px; }
+.bd-caixas--escuro { background-image: linear-gradient(color-mix(in srgb, var(--bd-navy) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--bd-navy) 8%, transparent) 1px, transparent 1px); }
 @keyframes bd-pop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
 .bd-pop { animation: bd-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s both; }
 @keyframes bd-pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); } }
@@ -79,8 +86,8 @@
 @media (max-width: 767px) { .bd-drift, .bd-drift-fast { animation: none !important; } }
 @media (prefers-reduced-motion: reduce) { .bd-pop, .bd-live-dot, .bd-drift, .bd-drift-fast { animation: none !important; } }
 .bd-tile { background: #fff; color: var(--bd-navy); }
-:root[data-theme="dark"] .bd-tile { background: #16213d; color: var(--bd-tinta-clara); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-tile { background: #16213d; color: var(--bd-tinta-clara); } }
+:root[data-theme="dark"] .bd-tile { background: var(--bd-navy-3); color: var(--bd-tinta-clara); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bd-tile { background: var(--bd-navy-3); color: var(--bd-tinta-clara); } }
 
 /* Impressão do comprovante de retirada e do romaneio (D103): só o conteúdo, sem menu, cabeçalho nem botões. */
 @media print {
@@ -88,3 +95,9 @@
   .bd-comprovante { max-width: none; color: #000; }
   .bd-comprovante .ds-card { box-shadow: none; border: 1px solid #999; }
 }
+
+/* Brás Digital Club (D158): pulso. Linha de luz em gradiente só em pontos de energia; anel que expande no herói. */
+.bd-pulso-linha { height: 3px; border-radius: 3px; background: var(--bd-gradiente); }
+@keyframes bd-anel { from { transform: scale(0.85); opacity: 0.55; } to { transform: scale(1.25); opacity: 0; } }
+.bd-anel { position: absolute; inset: 0; border-radius: 9999px; border: 1.5px solid color-mix(in srgb, var(--bd-pulso) 60%, transparent); animation: bd-anel 3.2s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .bd-anel { animation: none; opacity: 0; } }

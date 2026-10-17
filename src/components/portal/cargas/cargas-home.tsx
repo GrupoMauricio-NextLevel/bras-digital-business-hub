@@ -17,7 +17,7 @@ export const CARGAS_FAQ = [
   { q: "Preciso de RNTRC e seguro?", a: "Para a primeira rodada, basta declarar. A equipe confere antes de liberar as coletas. Transportar com documentação em dia é responsabilidade da transportadora." },
   { q: "O motorista precisa instalar aplicativo?", a: "Não. Ele recebe um link no celular com as coletas do dia e confirma cada retirada com o código do pedido." },
   { q: "Quem emite CT-e e MDF-e?", a: "A transportadora, no sistema que já usa. A plataforma só registra o número para o acompanhamento." },
-  { q: "Já está funcionando?", a: "A retirada com código já funciona no Balcão das importadoras da Brás Digital. O painel da transportadora está em preparação: quem se cadastra agora entra na primeira rodada e é chamado pela equipe." },
+  { q: "Já está funcionando?", a: "A retirada com código já funciona no Balcão das importadoras do Brás Digital Club. O painel da transportadora está em preparação: quem se cadastra agora entra na primeira rodada e é chamado pela equipe." },
 ];
 
 const FATOS = ["Coletas do Brás por rota", "Consolidação por região", "Código de retirada em cada pedido", "Motorista sem aplicativo", "Extrato com frete e comissão", "Reputação calculada pelo sistema", "Destaque pago sempre rotulado"];
@@ -169,7 +169,7 @@ export function CargasHome({ brand }: { brand: Brand }) {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {[
-              { i: Warehouse, t: "Balcão com código", d: "A retirada com código já funciona no Balcão das importadoras da Brás Digital." },
+              { i: Warehouse, t: "Balcão com código", d: "A retirada com código já funciona no Balcão das importadoras do Brás Digital Club." },
               { i: ClipboardCheck, t: "Histórico de cada retirada", d: "Quem retirou, quando e de qual pedido, no seu painel." },
               { i: Route, t: "Transportadora da rota", d: "As transportadoras cadastradas aparecem por região atendida." },
               { i: ShieldCheck, t: "Dados protegidos", d: "A transportadora recebe só o que precisa para coletar e entregar." },
@@ -201,7 +201,7 @@ export function CargasHome({ brand }: { brand: Brand }) {
       {/* 7. Hoje × em preparação (verdade). */}
       <section className={`cg-claro ${section} pt-0 md:pt-0`} aria-labelledby="cg-hoje">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
-          <div className="cg-card p-6"><h2 id="cg-hoje" className="flex items-center gap-2 text-lg font-bold"><span className="cg-live" aria-hidden />Já funciona</h2><p className="mt-2 text-sm text-[#4a5168]">Cadastro de interesse da transportadora e da importadora. Retirada com código no Balcão das importadoras da Brás Digital.</p></div>
+          <div className="cg-card p-6"><h2 id="cg-hoje" className="flex items-center gap-2 text-lg font-bold"><span className="cg-live" aria-hidden />Já funciona</h2><p className="mt-2 text-sm text-[#4a5168]">Cadastro de interesse da transportadora e da importadora. Retirada com código no Balcão das importadoras do Brás Digital Club.</p></div>
           <div className="cg-card p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><Boxes className="size-5 text-[var(--cg-indigo)]" aria-hidden />Em preparação</h2><p className="mt-2 text-sm text-[#4a5168]">Painel da transportadora, coletas por rota, link do motorista, consolidação e extrato. Quem se cadastra agora entra na primeira rodada.</p></div>
         </div>
       </section>

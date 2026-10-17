@@ -26,13 +26,13 @@ export default async function Suporte() {
   const [thread, agenda] = await Promise.all([has("CHAT") ? myBrasSupportThread(db, session.actor) : Promise.resolve([]), myBrasAppointments(db, session.actor)]);
   // Importadoras ativas para escolher onde visitar: só o nome (sem contato).
   const importers = has("AGENDA") ? await brasImportersForAgenda(db, session.actor) : [];
-  const wa = has("WHATSAPP") ? brasWhatsappUrl(`Olá! Sou da ${m.companyName}, membro ${BRAS_PLAN_LABEL[view.plan]} da Brás Digital.`) : null;
+  const wa = has("WHATSAPP") ? brasWhatsappUrl(`Olá! Sou da ${m.companyName}, membro ${BRAS_PLAN_LABEL[view.plan]} do Brás Digital Club.`) : null;
   const trancado = (c: BrasSupportChannel) => {
     const p = view.upgradeFor[c];
     return (
       <div className="flex items-start gap-3 rounded-lg border border-dashed border-border p-4 text-sm">
         <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-        <p><b>{BRAS_SUPPORT_LABEL[c]}</b> faz parte do plano {p ? BRAS_PLAN_LABEL[p] : "pago"}. {c === "AGENDA" ? "Um horário pessoal no showroom, com alguém da equipe mostrando o que está saindo." : "Fale direto com a equipe da Brás Digital sobre pedidos, produtos e retirada."} <Link href="/meu-bras#plano" className="font-semibold text-link underline">Ver planos</Link></p>
+        <p><b>{BRAS_SUPPORT_LABEL[c]}</b> faz parte do plano {p ? BRAS_PLAN_LABEL[p] : "pago"}. {c === "AGENDA" ? "Um horário pessoal no showroom, com alguém da equipe mostrando o que está saindo." : "Fale direto com a equipe do Brás Digital Club sobre pedidos, produtos e retirada."} <Link href="/meu-bras#plano" className="font-semibold text-link underline">Ver planos</Link></p>
       </div>
     );
   };
@@ -45,14 +45,14 @@ export default async function Suporte() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section id="chat" aria-labelledby="sp-chat" className="ds-card flex flex-col p-5">
-          <h2 id="sp-chat" className="flex items-center gap-2 text-lg font-bold"><MessagesSquare className="size-5 text-[var(--bd-laranja)]" aria-hidden />Chat com a equipe</h2>
+          <h2 id="sp-chat" className="flex items-center gap-2 text-lg font-bold"><MessagesSquare className="size-5 text-[var(--bd-acao)]" aria-hidden />Chat com a equipe</h2>
           {has("CHAT") ? (
             <>
               <p className="mt-1 text-sm text-muted-foreground">Resposta em até {view.chatReplyHours} horas úteis.</p>
               <ol className="mt-4 max-h-96 flex-1 space-y-2 overflow-y-auto" aria-live="polite">
                 {thread.length ? thread.map((t) => (
-                  <li key={t.id} className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${t.author === "MEMBER" ? "ml-auto bg-[var(--bd-laranja)]/10" : "bg-surface-muted"}`}>
-                    <p className="whitespace-pre-line">{t.body}</p><p className="mt-1 text-[11px] text-muted-foreground">{t.author === "MEMBER" ? "Você" : "Equipe Brás Digital"} · {quando(t.createdAt)}</p>
+                  <li key={t.id} className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${t.author === "MEMBER" ? "ml-auto bg-[var(--bd-acao)]/10" : "bg-surface-muted"}`}>
+                    <p className="whitespace-pre-line">{t.body}</p><p className="mt-1 text-[11px] text-muted-foreground">{t.author === "MEMBER" ? "Você" : "Equipe Brás Digital Club"} · {quando(t.createdAt)}</p>
                   </li>
                 )) : <li className="text-sm text-muted-foreground">Nenhuma mensagem ainda. Escreva abaixo.</li>}
               </ol>
@@ -63,12 +63,12 @@ export default async function Suporte() {
 
         <div className="space-y-6">
           <section aria-labelledby="sp-wa" className="ds-card p-5">
-            <h2 id="sp-wa" className="flex items-center gap-2 text-lg font-bold"><MessageCircle className="size-5 text-[var(--bd-laranja)]" aria-hidden />WhatsApp da equipe</h2>
-            {has("WHATSAPP") ? (wa ? <a href={wa} target="_blank" rel="noreferrer" className="bd-btn bd-btn--fogo mt-3">Abrir conversa no WhatsApp</a> : <p className="mt-2 text-sm text-muted-foreground">O WhatsApp da equipe ainda não foi configurado. Use o chat.</p>) : <div className="mt-3">{trancado("WHATSAPP")}</div>}
+            <h2 id="sp-wa" className="flex items-center gap-2 text-lg font-bold"><MessageCircle className="size-5 text-[var(--bd-acao)]" aria-hidden />WhatsApp da equipe</h2>
+            {has("WHATSAPP") ? (wa ? <a href={wa} target="_blank" rel="noreferrer" className="bd-btn bd-btn--primario mt-3">Abrir conversa no WhatsApp</a> : <p className="mt-2 text-sm text-muted-foreground">O WhatsApp da equipe ainda não foi configurado. Use o chat.</p>) : <div className="mt-3">{trancado("WHATSAPP")}</div>}
           </section>
 
           <section id="agenda" aria-labelledby="sp-ag" className="ds-card scroll-mt-20 p-5">
-            <h2 id="sp-ag" className="flex items-center gap-2 text-lg font-bold"><CalendarDays className="size-5 text-[var(--bd-laranja)]" aria-hidden />Agenda pessoal na importadora</h2>
+            <h2 id="sp-ag" className="flex items-center gap-2 text-lg font-bold"><CalendarDays className="size-5 text-[var(--bd-acao)]" aria-hidden />Agenda pessoal na importadora</h2>
             {has("AGENDA") ? (
               <>
                 <p className="mt-1 text-sm text-muted-foreground">Seu plano tem {view.agenda.perMonth} visita(s) por mês. Pedidas neste mês: {view.agenda.usedThisMonth}.</p>
@@ -92,7 +92,7 @@ export default async function Suporte() {
       </div>
 
       <section id="faq" aria-labelledby="sp-faq" className="mt-8 scroll-mt-20">
-        <h2 id="sp-faq" className="flex items-center gap-2 text-lg font-bold"><HelpCircle className="size-5 text-[var(--bd-laranja)]" aria-hidden />Perguntas frequentes</h2>
+        <h2 id="sp-faq" className="flex items-center gap-2 text-lg font-bold"><HelpCircle className="size-5 text-[var(--bd-acao)]" aria-hidden />Perguntas frequentes</h2>
         <div className="ds-card mt-3 divide-y divide-border">
           {view.faq.map((f) => <details key={f.q} className="p-4"><summary className="cursor-pointer font-semibold">{f.q}</summary><p className="mt-2 text-sm text-muted-foreground">{f.a}</p></details>)}
         </div>

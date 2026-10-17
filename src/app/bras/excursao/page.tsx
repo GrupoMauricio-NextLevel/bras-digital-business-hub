@@ -18,7 +18,7 @@ export default async function Excursao() {
   const [{ version, ...rules }, trips, fees] = await Promise.all([getExcursionRules(db), allTrips(db, session.actor), excursionFeeReport(db, session.actor)]);
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital · NextLevel Cargas" title="Ônibus de excursão" description={`Viagens de todos os ônibus e as regras dos fardos (versão ${version}, valores em rascunho até você decidir).`} />
+      <PageHeader eyebrow="Estúdio Brás Digital Club · NextLevel Cargas" title="Ônibus de excursão" description={`Viagens de todos os ônibus e as regras dos fardos (versão ${version}, valores em rascunho até você decidir).`} />
       <section aria-labelledby="ex-trips" className="ds-card mb-6 p-4">
         <h2 id="ex-trips" className="mb-3 text-base font-semibold">Viagens ({trips.length})</h2>
         {trips.length ? <div className="overflow-x-auto"><table className="w-full text-sm">

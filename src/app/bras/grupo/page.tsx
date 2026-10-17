@@ -22,7 +22,7 @@ export default async function Grupo() {
   const [companies, carriers] = await Promise.all([getGroupCompanies(db), listCarriers(db, session.actor)]);
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital · Club" title="Empresas do grupo" description={'Quem fatura em cada frente. Elas aparecem nas marcas com o selo "empresa do grupo", sem vantagem escondida na busca.'} />
+      <PageHeader eyebrow="Estúdio Brás Digital Club · Pontos" title="Empresas do grupo" description={'Quem fatura em cada frente. Elas aparecem nas marcas com o selo "empresa do grupo", sem vantagem escondida na busca.'} />
       <ul className="mb-6 grid gap-3 lg:grid-cols-3">{companies.map((c) => {
         const carrier = c.cnpj ? carriers.find((x) => "document" in x && x.document === c.cnpj) : undefined;
         return (

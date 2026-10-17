@@ -6,8 +6,8 @@ import { isMaster, type Actor } from "@/lib/domain/access";
  * de acesso da importadora. Regra já decidida: a importadora vê só os dados de envio do pedido, nunca o cadastro do cliente.
  */
 export const BRAS_PANELS = [
-  { key: "estudio", path: "/bras", name: "Estúdio", audience: "Dono da Brás Digital (Master): membros e vídeos", live: true, pending: "Próximas funções: lives, conteúdo das importadoras e alertas de estoque (segunda etapa)." },
-  { key: "balcao", path: "/bras/balcao", name: "Balcão", audience: "Equipe de retirada da importadora", live: false, pending: "Papéis de acesso da importadora e fluxo de pedido. Decidido (D92): a importadora vê só os dados de envio; atendimento, ocorrência e reembolso são da Brás Digital." },
+  { key: "estudio", path: "/bras", name: "Estúdio", audience: "Dono do Brás Digital Club (Master): membros e vídeos", live: true, pending: "Próximas funções: lives, conteúdo das importadoras e alertas de estoque (segunda etapa)." },
+  { key: "balcao", path: "/bras/balcao", name: "Balcão", audience: "Equipe de retirada da importadora", live: false, pending: "Papéis de acesso da importadora e fluxo de pedido. Decidido (D92): a importadora vê só os dados de envio; atendimento, ocorrência e reembolso são do Brás Digital Club." },
   { key: "meu-bras", path: "/meu-bras", name: "Meu Brás", audience: "Membro comprador (lojista com CNPJ)", live: true, pending: "Catálogo com preço e estoque em caixas e pedido pelo sistema, quando as importadoras forem conectadas." },
 ] as const;
 export type BrasPanelKey = (typeof BRAS_PANELS)[number]["key"];

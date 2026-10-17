@@ -32,9 +32,9 @@ const CARGAS_URL = "https://cargas.nextlevelgroup.com.br";
 /** Convite pronto para o WhatsApp do indicado. */
 export function carrierInviteUrl(phone: string, name: string, referrer: string, kind: string = "TRANSPORTADORA") {
   const text = kind === "LOJA"
-    ? `Olá! Sou ${referrer}, cliente de vocês. Meu pedido vai pelo ônibus e precisa da nota para embarcar. Com o Nota Fácil da Brás Digital vocês emitem em poucos minutos, com condição especial para lojista novo: https://bras.nextlevelgroup.com.br`
+    ? `Olá! Sou ${referrer}, cliente de vocês. Meu pedido vai pelo ônibus e precisa da nota para embarcar. Com o Nota Fácil do Brás Digital Club vocês emitem em poucos minutos, com condição especial para lojista novo: https://bras.nextlevelgroup.com.br`
     : kind === "IMPORTADORA"
-    ? `Olá! ${referrer} trabalha com a Brás Digital e indicou a ${name} para vender por caixa fechada para lojistas do Brasil inteiro, com painel próprio e grátis para começar: https://bras.nextlevelgroup.com.br`
+    ? `Olá! ${referrer} trabalha com o Brás Digital Club e indicou a ${name} para vender por caixa fechada para lojistas do Brasil inteiro, com painel próprio e grátis para começar: https://bras.nextlevelgroup.com.br`
     : `Olá! ${referrer} usa a NextLevel Cargas e indicou a ${name} para receber as cargas dele do Brás pelo sistema. É grátis para a transportadora: ${CARGAS_URL}`;
   return `https://wa.me/${phone.startsWith("55") ? phone : `55${phone}`}?text=${encodeURIComponent(text)}`;
 }

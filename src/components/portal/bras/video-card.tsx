@@ -20,7 +20,7 @@ export function BrasVideoCard({ youtubeId, title, summary, buy, tone = "dark", o
 }) {
   const [playing, setPlaying] = React.useState(false);
   const dark = tone === "dark";
-  const btn = "bd-btn bd-btn--fogo w-full !min-h-11 !px-3 !text-sm sm:!min-h-12 sm:!text-base";
+  const btn = "bd-btn bd-btn--primario w-full !min-h-11 !px-3 !text-sm sm:!min-h-12 sm:!text-base";
   return (
     <article className={`flex h-full flex-col overflow-hidden rounded-[18px] sm:rounded-[22px] ${dark ? "bg-[var(--bd-navy-2)] text-[var(--bd-tinta-clara)]" : "border border-border bg-surface text-foreground"}`}>
       <div className="relative aspect-[9/16] w-full bg-black">
@@ -33,12 +33,12 @@ export function BrasVideoCard({ youtubeId, title, summary, buy, tone = "dark", o
             className="absolute inset-0 size-full border-0"
           />
         ) : (
-          <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-[#fb8342]" aria-label={`Assistir a descoberta: ${title}`}>
+          <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-[var(--bd-pulso)]" aria-label={`Assistir a descoberta: ${title}`}>
             {/* eslint-disable-next-line @next/next/no-img-element -- miniatura servida pelo próprio YouTube */}
             <img src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" className="size-full object-cover opacity-90 transition group-hover:opacity-100" />
             <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" />
-            {trendSignal ? <span className="absolute left-2.5 top-2.5 inline-flex max-w-[calc(100%-1.25rem)] items-center gap-1 truncate rounded-full bg-[#fb8342] px-2.5 py-1 text-[11px] font-bold text-[#101b34] sm:text-xs"><Flame className="size-3.5 shrink-0" aria-hidden />{trendSignal}</span> : null}
-            <span aria-hidden className="absolute left-1/2 top-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#fb8342] text-[#101b34] shadow-lg transition group-hover:scale-105 sm:size-16"><Play className="ml-1 size-5 fill-current sm:size-7" /></span>
+            {trendSignal ? <span className="absolute left-2.5 top-2.5 inline-flex max-w-[calc(100%-1.25rem)] items-center gap-1 truncate rounded-full bg-[var(--bd-pulso)] px-2.5 py-1 text-[11px] font-bold text-[var(--bd-navy)] sm:text-xs"><Flame className="size-3.5 shrink-0" aria-hidden />{trendSignal}</span> : null}
+            <span aria-hidden className="absolute left-1/2 top-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--bd-pulso)] text-[var(--bd-navy)] shadow-lg transition group-hover:scale-105 sm:size-16"><Play className="ml-1 size-5 fill-current sm:size-7" /></span>
             <span className="absolute bottom-2.5 left-2.5 right-2.5 text-left text-sm font-bold leading-snug text-white sm:bottom-3 sm:left-3 sm:right-3 sm:text-base">{title}</span>
           </button>
         )}
@@ -47,7 +47,7 @@ export function BrasVideoCard({ youtubeId, title, summary, buy, tone = "dark", o
         {summary ? <p className={`hidden text-sm leading-relaxed sm:block ${dark ? "text-[var(--bd-tinta-suave)]" : "text-muted-foreground"}`}>{summary}</p> : null}
         {verdict || score != null ? (
           <p className="flex items-start gap-1.5 text-xs font-semibold sm:text-sm">
-            {score != null ? <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-[var(--bd-navy)] px-1.5 py-0.5 text-white tabular-nums"><Star className="size-3 fill-current text-[#fb8342]" aria-hidden />{score}/10</span> : null}
+            {score != null ? <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-[var(--bd-navy)] px-1.5 py-0.5 text-white tabular-nums"><Star className="size-3 fill-current text-[var(--bd-pulso)]" aria-hidden />{score}/10</span> : null}
             {verdict ? <span className="line-clamp-2">{verdict}</span> : null}
           </p>
         ) : null}
@@ -78,11 +78,11 @@ export function BrasWidePlayer({ youtubeId, title, label }: { youtubeId: string;
       {playing ? (
         <iframe src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&playsinline=1&rel=0&modestbranding=1`} title={title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen className="absolute inset-0 size-full border-0" />
       ) : (
-        <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-[#fb8342]" aria-label={`${label}: ${title}`}>
+        <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-[var(--bd-pulso)]" aria-label={`${label}: ${title}`}>
           {/* eslint-disable-next-line @next/next/no-img-element -- miniatura servida pelo próprio YouTube */}
           <img src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" className="size-full object-cover opacity-90 transition group-hover:opacity-100" />
           <span aria-hidden className="absolute inset-0 bg-black/30" />
-          <span aria-hidden className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#fb8342] text-[#101b34] shadow-lg transition group-hover:scale-105"><Play className="ml-1 size-7 fill-current" /></span>
+          <span aria-hidden className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--bd-pulso)] text-[var(--bd-navy)] shadow-lg transition group-hover:scale-105"><Play className="ml-1 size-7 fill-current" /></span>
           <span className="absolute bottom-3 left-3 rounded-full bg-black/60 px-3 py-1 text-xs font-bold text-white">{label}</span>
         </button>
       )}

@@ -29,7 +29,7 @@ describe("marcas do portfólio", () => {
     expect(all.NEXTLEVEL_COMMERCE.signupOpen).toBe(false);
     expect(brandsFrom({ BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true" }).NEXTLEVEL_COMMERCE.signupOpen).toBe(true);
     const bras = brandByCode("BRAS_DIGITAL", {});
-    expect(bras.name).toBe("Brás Digital");
+    expect(bras.name).toBe("Brás Digital Club");
     expect(bras.signupOpen).toBe(false);
     expect(bras.description).toMatch(/fechada/i);
     expect(bras.soon?.text).toMatch(/membros aprovados/i);

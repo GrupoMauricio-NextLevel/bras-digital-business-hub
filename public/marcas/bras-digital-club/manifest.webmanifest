@@ -1,0 +1,15 @@
+{
+  "name": "Brás Digital Club",
+  "short_name": "Brás Club",
+  "description": "Conecte seu negócio ao pulso do Brás.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C1830",
+  "theme_color": "#0C1830",
+  "icons": [
+    { "src": "/marcas/bras-digital-club/logos/app-icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/marcas/bras-digital-club/logos/app-icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/marcas/bras-digital-club/logos/app-icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

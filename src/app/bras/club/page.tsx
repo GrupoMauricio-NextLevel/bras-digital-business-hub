@@ -27,7 +27,7 @@ export default async function ClubMaster({ searchParams }: { searchParams: Promi
   const companyName = (k: string) => companies.find((c) => c.key === k)?.tradeName || companies.find((c) => c.key === k)?.legalName || k;
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital" title="Brás Digital Club" description={`Indicações, pontos e vales de toda a rede. Regras versão ${version}, em rascunho até você decidir.`} />
+      <PageHeader eyebrow="Estúdio Brás Digital Club" title="Indicações e pontos" description={`Indicações, pontos e vales de toda a rede. Regras versão ${version}, em rascunho até você decidir.`} />
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <div className="ds-card p-4"><p className="text-sm text-muted-foreground">Pontos emitidos</p><p className="text-2xl font-black tabular-nums">{admin.issuedPoints.toLocaleString("pt-BR")}</p></div>
         <div className="ds-card p-4"><p className="text-sm text-muted-foreground">Pontos em vales</p><p className="text-2xl font-black tabular-nums">{admin.redeemedPoints.toLocaleString("pt-BR")}</p></div>

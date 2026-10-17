@@ -176,7 +176,7 @@ export const BRAS_NEXT_STEP: Record<BrasRequestStatus, string> = {
 };
 
 async function activeMemberOf(db: Database, actor: Actor) {
-  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Pedido disponível só para membros da Brás Digital.");
+  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Pedido disponível só para membros do Brás Digital Club.");
   const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId) });
   if (!m) throw new ForbiddenError("Cadastro de membro não encontrado.");
   return m;
@@ -184,7 +184,7 @@ async function activeMemberOf(db: Database, actor: Actor) {
 
 export async function createBrasRequest(db: Database, actor: Actor, raw: z.input<typeof brasRequestSchema>) {
   const m = await activeMemberOf(db, actor);
-  if (m.status !== "ACTIVE") throw new DomainError("MEMBER_BLOCKED", "Seu cadastro está em análise. Fale com a equipe da Brás Digital.");
+  if (m.status !== "ACTIVE") throw new DomainError("MEMBER_BLOCKED", "Seu cadastro está em análise. Fale com a equipe do Brás Digital Club.");
   const input = brasRequestSchema.parse(raw);
   const [row] = await db.select({ video: bdVideos, offer: bdOffers, importer: bdImporters }).from(bdVideos)
     .innerJoin(bdOffers, eq(bdOffers.videoId, bdVideos.id)).innerJoin(bdImporters, eq(bdImporters.id, bdOffers.importerId))
@@ -211,7 +211,7 @@ export async function createBrasRequest(db: Database, actor: Actor, raw: z.input
       carrier: carrierName, carrierId: input.carrierId ?? null, shipName: input.shipName, shipAddress: input.shipAddress, shipCity: input.shipCity, shipState: input.shipState, shipZip: input.shipZip, notes: input.notes || null,
     });
     // Aviso no sino do Master (sem dado pessoal na mensagem).
-    await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", type: "BRAS_REQUEST", message: `Brás Digital: novo pedido de ${input.boxes} caixa(s) de ${row.video.title}` });
+    await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", type: "BRAS_REQUEST", message: `Brás Digital Club: novo pedido de ${input.boxes} caixa(s) de ${row.video.title}` });
   });
   await notifyBrasRequestCreated(db, id);
   return { id, totalCents };

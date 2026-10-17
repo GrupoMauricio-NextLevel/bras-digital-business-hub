@@ -13,7 +13,7 @@ import "@/components/portal/bras/bras.css";
 export const dynamic = "force-dynamic";
 
 /** Texto de compartilhamento sem nenhum dado comercial (sem preço, importadora, veredito ou análise). */
-const descricao = (summary: string | null) => summary ?? "Descoberta da Brás Digital: veja a análise de mercado e o preço da caixa com o cadastro grátis de empresa.";
+const descricao = (summary: string | null) => summary ?? "Descoberta do Brás Digital Club: veja a análise de mercado e o preço da caixa com o cadastro grátis de empresa.";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const brand = await getBrand();
@@ -48,18 +48,18 @@ export default async function Descoberta({ params }: { params: Promise<{ id: str
         <div className="relative mx-auto grid max-w-5xl items-start gap-10 md:grid-cols-[minmax(0,20rem)_1fr]">
           <div className="mx-auto w-full max-w-[20rem]"><BrasVideoCard youtubeId={v.youtubeId} title={v.title} trendSignal={v.trendSignal} buy={{ href: cadastro, label: "Ver análise e preço" }} /></div>
           <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-laranja-claro)]">Descoberta da Brás Digital</p>
+            <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-pulso)]">Descoberta do Brás Digital Club</p>
             <h1 id="d-t" className="bd-display bd-h2 mt-3 text-white">{v.title}</h1>
-            {v.trendSignal ? <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#fb8342] px-3 py-1 text-sm font-bold text-[#101b34]"><Flame className="size-4" aria-hidden />{v.trendSignal}</p> : null}
+            {v.trendSignal ? <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[var(--bd-pulso)] px-3 py-1 text-sm font-bold text-[var(--bd-navy)]"><Flame className="size-4" aria-hidden />{v.trendSignal}</p> : null}
             {v.summary ? <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--bd-tinta-suave)]">{v.summary}</p> : null}
             <div className="mt-8 rounded-[1.5rem] bg-white/[0.06] p-5 ring-1 ring-white/10">
               <p className="font-bold text-white">Para membros, com o cadastro grátis de empresa:</p>
               <ul className="mt-3 grid gap-2 text-sm text-[var(--bd-tinta-clara)] sm:grid-cols-2">
-                {["Veredito e nota da análise", "Preço da caixa", "Caixas disponíveis", "Análise de mercado"].map((t) => <li key={t} className="flex items-center gap-2"><Lock className="size-4 shrink-0 text-[var(--bd-laranja-claro)]" aria-hidden />{t}</li>)}
+                {["Veredito e nota da análise", "Preço da caixa", "Caixas disponíveis", "Análise de mercado"].map((t) => <li key={t} className="flex items-center gap-2"><Lock className="size-4 shrink-0 text-[var(--bd-pulso)]" aria-hidden />{t}</li>)}
               </ul>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link href={cadastro} className="bd-btn bd-btn--fogo bd-btn--lg">Ver análise e preço <ArrowRight className="size-5" aria-hidden /></Link>
+              <Link href={cadastro} className="bd-btn bd-btn--primario bd-btn--lg">Ver análise e preço <ArrowRight className="size-5" aria-hidden /></Link>
               <Link href={`/meu-bras/descoberta/${v.id}`} className="bd-btn bd-btn--linha bd-btn--lg"><UserRound className="size-5" aria-hidden />Já sou membro</Link>
             </div>
             <div className="mt-6"><ShareButton path={`/d/${v.id}`} title={v.title} /></div>

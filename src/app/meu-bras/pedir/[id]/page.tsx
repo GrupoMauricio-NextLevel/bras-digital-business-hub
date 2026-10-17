@@ -22,7 +22,7 @@ export default async function Pedir({ params }: { params: Promise<{ id: string }
   const [last, carriers] = await Promise.all([lastBrasShipping(db, session.actor), freightCatalogFor(db)]);
   return (
     <>
-      <PageHeader eyebrow="Meu Brás" title="Fazer pedido" backHref={`/meu-bras/descoberta/${id}`} description="Informe quantas caixas e para onde enviar. A equipe da Brás Digital confirma o pedido e o pagamento com você pelo WhatsApp." />
+      <PageHeader eyebrow="Meu Brás" title="Fazer pedido" backHref={`/meu-bras/descoberta/${id}`} description="Informe quantas caixas e para onde enviar. A equipe do Brás Digital Club confirma o pedido e o pagamento com você pelo WhatsApp." />
       <RequestForm videoId={item.id} youtubeId={item.youtubeId} title={item.title} offer={item.offer} ufs={[...BRAS_UFS]} initial={last} carriers={carriers} />
     </>
   );

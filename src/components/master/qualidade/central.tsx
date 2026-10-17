@@ -455,7 +455,7 @@ function Faltas({ screens, images, urlOf }: { screens: Screen[]; images: PublicI
           <tbody>{[...missing, ...images.filter((i) => i.formats.length)].map((i) => (
             <tr key={`${i.brand}-${i.name}`} className="border-b border-border last:border-0">
               <th scope="row" className="p-3 text-left font-mono text-xs font-medium">{i.name}</th>
-              <td className="p-3">{i.brand === "superdrop" ? "SuperDrop" : i.brand === "commerce" ? "Commerce" : "Brás Digital"}</td>
+              <td className="p-3">{i.brand === "superdrop" ? "SuperDrop" : i.brand === "commerce" ? "Commerce" : "Brás Digital Club"}</td>
               <td className="p-3 text-muted-foreground">{i.where}</td>
               <td className="p-3"><Badge tone={i.formats.length ? "success" : "warning"}>{i.formats.length ? `No ar (${i.formats.join(", ")})` : "Falta"}</Badge></td>
             </tr>

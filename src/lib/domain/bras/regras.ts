@@ -85,8 +85,8 @@ export type BrasRulesInput = z.input<typeof brasRulesSchema>;
 
 export const DEFAULT_BRAS_FAQ: BrasRules["support"]["faq"] = [
   { q: "Preciso pagar para comprar?", a: "Não. O cadastro com CNPJ é grátis e comprar caixas é sempre grátis. Os planos pagos liberam inteligência (análises, tendências, contêiner e pré-pedido), nunca a compra." },
-  { q: "Como funciona a compra por caixa?", a: "Você escolhe a descoberta, vê o preço da caixa e quantas unidades vêm nela, pede as caixas e informa o destino. A equipe da Brás Digital confirma o pedido e o pagamento com você; a sua transportadora retira no Brás com o código do pedido." },
-  { q: "Quem fala comigo depois do pedido?", a: "A equipe da Brás Digital. A importadora recebe só o endereço de envio de cada pedido; atendimento, ocorrências e trocas são com a Brás." },
+  { q: "Como funciona a compra por caixa?", a: "Você escolhe a descoberta, vê o preço da caixa e quantas unidades vêm nela, pede as caixas e informa o destino. A equipe do Brás Digital Club confirma o pedido e o pagamento com você; a sua transportadora retira no Brás com o código do pedido." },
+  { q: "Quem fala comigo depois do pedido?", a: "A equipe do Brás Digital Club. A importadora recebe só o endereço de envio de cada pedido; atendimento, ocorrências e trocas são com a Brás." },
   { q: "Posso retirar pessoalmente?", a: "Sim. No comprovante de retirada aparecem o endereço da importadora e o código do pedido. Quem retirar (você ou a transportadora) mostra o código no balcão." },
   { q: "A análise garante que o produto vai vender?", a: "Não. A análise reúne tendência, concorrência, preço praticado e riscos para você decidir melhor. Resultado de venda depende do seu anúncio, preço, frete e mercado." },
   { q: "Como mudo de plano?", a: "Em Meu plano (ou falando com a equipe). O plano vale do dia da confirmação do pagamento e pode ser cancelado quando quiser, sem multa." },

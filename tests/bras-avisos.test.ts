@@ -28,7 +28,7 @@ beforeEach(async () => {
 describe("cadastro", () => {
   it("boas-vindas ao membro e aviso de novo membro à equipe (Master), com a marca da Brás", async () => {
     const [w] = await outbox("BRAS_WELCOME");
-    expect(w).toMatchObject({ toEmail: "ana@utilidades.teste", subject: "Bem-vindo à Brás Digital" });
+    expect(w).toMatchObject({ toEmail: "ana@utilidades.teste", subject: "Bem-vindo ao Brás Digital Club" });
     expect(w!.body).toContain("Ana Utilidades LTDA");
     const masters = (await ctx.db.select({ email: users.email }).from(users).where(eq(users.role, "NEXTLEVEL_MASTER"))).map((u) => u.email.toLowerCase());
     const team = await outbox("BRAS_TEAM_NEW_MEMBER");

@@ -188,7 +188,7 @@ export function MembersTable({ members }: { members: MemberRow[] }) {
       <div role="group" aria-label="Filtrar membros" className="flex flex-wrap gap-2">
         {FILTROS.map(([k, n]) => <button key={k} type="button" aria-pressed={filtro === k} onClick={() => setFiltro(k)} className={`min-h-9 rounded-full border px-3 text-sm font-semibold ${filtro === k ? "border-transparent bg-foreground text-surface" : "border-border bg-surface"}`}>{n}</button>)}
       </div>
-      <p className="text-xs text-muted-foreground">Dados de contato só para a equipe da Brás Digital: nunca são enviados às importadoras (elas recebem só o endereço de envio de cada pedido).</p>
+      <p className="text-xs text-muted-foreground">Dados de contato só para a equipe do Brás Digital Club: nunca são enviados às importadoras (elas recebem só o endereço de envio de cada pedido).</p>
       <div className="ds-card overflow-x-auto">
         <table className="w-full min-w-[52rem] text-sm">
           <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3">Empresa</th><th scope="col" className="p-3">Contato</th><th scope="col" className="p-3">Nível</th><th scope="col" className="p-3">Cadastro</th><th scope="col" className="p-3">Pedidos</th><th scope="col" className="p-3">Situação</th><th scope="col" className="p-3"><span className="sr-only">Ações</span></th></tr></thead>

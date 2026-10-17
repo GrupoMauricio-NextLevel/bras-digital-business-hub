@@ -36,14 +36,14 @@ export function BrasSignupForm({ videoId, source }: { videoId?: string; source?:
   };
   const passo = <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground" aria-live="polite">Passo {step} de 2</p>;
   if (step === 2) return (
-    <form onSubmit={submit} className="space-y-4" aria-label="Cadastro de membro da Brás Digital, passo 2">
+    <form onSubmit={submit} className="space-y-4" aria-label="Cadastro de membro do Brás Digital Club, passo 2">
       {passo}
       <h2 ref={topo} tabIndex={-1} className="text-lg font-bold outline-none">Conte sobre o seu negócio</h2>
       <p className="text-sm text-muted-foreground">Leva 1 minuto. Com isso o seu painel mostra primeiro o que faz sentido para quem está começando ou para quem compra contêiner. Ninguém fora da equipe da Brás vê as respostas.</p>
       <ProfileQuestions value={perfil} onChange={(v) => { setPerfil(v); setError(null); }} idPrefix="cad" />
       <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
-        <input type="checkbox" required checked={aceite} onChange={(e) => setAceite(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-[var(--bd-laranja)]" />
-        <span>Li e aceito os <Link href="/termos" target="_blank" className="font-semibold underline">termos de uso</Link> e a <Link href="/privacidade" target="_blank" className="font-semibold underline">política de privacidade</Link> da Brás Digital.</span>
+        <input type="checkbox" required checked={aceite} onChange={(e) => setAceite(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-[var(--bd-acao)]" />
+        <span>Li e aceito os <Link href="/termos" target="_blank" className="font-semibold underline">termos de uso</Link> e a <Link href="/privacidade" target="_blank" className="font-semibold underline">política de privacidade</Link> do Brás Digital Club.</span>
       </label>
       {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
       <div className="flex flex-col-reverse gap-2 sm:flex-row">
@@ -53,7 +53,7 @@ export function BrasSignupForm({ videoId, source }: { videoId?: string; source?:
     </form>
   );
   return (
-    <form onSubmit={(e) => { e.preventDefault(); irPara(2); }} className="space-y-3" aria-label="Cadastro de membro da Brás Digital, passo 1">
+    <form onSubmit={(e) => { e.preventDefault(); irPara(2); }} className="space-y-3" aria-label="Cadastro de membro do Brás Digital Club, passo 1">
       {passo}
       <h2 ref={topo} tabIndex={-1} className="sr-only">Dados da empresa</h2>
       <FormField label="CNPJ da empresa" htmlFor="cnpj"><Input id="cnpj" required inputMode="numeric" autoComplete="off" placeholder="00.000.000/0000-00" value={f.cnpj} onChange={(e) => set({ cnpj: maskCnpj(e.target.value) })} /></FormField>
@@ -63,7 +63,7 @@ export function BrasSignupForm({ videoId, source }: { videoId?: string; source?:
       <FormField label="E-mail" htmlFor="email"><Input id="email" required type="email" autoComplete="email" value={f.email} onChange={(e) => set({ email: e.target.value })} /></FormField>
       <FormField label="Senha" htmlFor="pass" hint="Mínimo de 8 caracteres"><Input id="pass" required type="password" minLength={8} autoComplete="new-password" value={f.password} onChange={(e) => set({ password: e.target.value })} /></FormField>
       <Button type="submit" size="lg" className="w-full">Continuar</Button>
-      <p className="text-center text-xs text-muted-foreground">Sem taxa. Seus dados ficam com a Brás Digital: a importadora recebe só o endereço de envio de cada pedido.</p>
+      <p className="text-center text-xs text-muted-foreground">Sem taxa. Seus dados ficam com o Brás Digital Club: a importadora recebe só o endereço de envio de cada pedido.</p>
     </form>
   );
 }

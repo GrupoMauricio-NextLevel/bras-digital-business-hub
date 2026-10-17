@@ -30,8 +30,8 @@ export function ProfileQuestions({ value, onChange, idPrefix = "pq" }: { value: 
                   onChange({ ...value, [q.key]: next });
                 };
                 return (
-                  <label key={o.key} htmlFor={`${idPrefix}-${q.key}-${o.key}`} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--bd-laranja)] ${checked ? "border-[var(--bd-laranja)] bg-[var(--bd-laranja)]/10 font-semibold" : "border-border"}`}>
-                    <input id={`${idPrefix}-${q.key}-${o.key}`} type={q.multi ? "checkbox" : "radio"} name={`${idPrefix}-${q.key}`} checked={checked} onChange={toggle} className="size-4 shrink-0 accent-[var(--bd-laranja)]" />
+                  <label key={o.key} htmlFor={`${idPrefix}-${q.key}-${o.key}`} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--bd-acao)] ${checked ? "border-[var(--bd-acao)] bg-[var(--bd-acao)]/10 font-semibold" : "border-border"}`}>
+                    <input id={`${idPrefix}-${q.key}-${o.key}`} type={q.multi ? "checkbox" : "radio"} name={`${idPrefix}-${q.key}`} checked={checked} onChange={toggle} className="size-4 shrink-0 accent-[var(--bd-acao)]" />
                     {o.label}
                   </label>
                 );

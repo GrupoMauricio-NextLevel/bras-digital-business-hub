@@ -26,7 +26,7 @@ export const DEMO_LOGINS: { group: string; items: DemoLogin[] }[] = [
     { email: "lojista@commerce.demo", who: "Loja Commerce simples", shows: "Loja começando, primeiros passos" },
     { email: "equipe@commerce.demo", who: "Equipe da loja", shows: "O que a equipe vê (sem financeiro)" },
   ] },
-  { group: "Brás Digital", items: [
+  { group: "Brás Digital Club", items: [
     { email: DEMO_BRAS_ACCOUNTS.membro, who: "Membro Ana (plano Ouro)", shows: "Descobertas, pedidos de caixas, fretes, Club e Meu Contador" },
     { email: DEMO_BRAS_ACCOUNTS.membro2, who: "Membro Carlos", shows: "Membro novo, sem plano" },
     { email: DEMO_BRAS_ACCOUNTS.importadora, who: "Importadora Aurora (dono)", shows: "Pedidos, produtos em caixa, estoque, chamar transportadora" },
@@ -59,7 +59,7 @@ export const AULAS: { serie: string; aulas: Aula[] }[] = [
     { n: 11, title: "Aparência da loja", email: "completo@commerce.demo", start: "/theme-editor", steps: ["Escolher tema", "Banners e seções", "Publicar"] },
     { n: 12, title: "Pedidos, clientes e financeiro", email: "completo@commerce.demo", start: "/merchant/orders", steps: ["Pedido do pagamento à entrega", "Clientes", "Assinatura e taxa"] },
   ] },
-  { serie: "Brás Digital: comprar do Brás sem viajar", aulas: [
+  { serie: "Brás Digital Club: comprar do Brás sem viajar", aulas: [
     { n: 13, title: "Membro: descobrir e pedir caixas", email: DEMO_BRAS_ACCOUNTS.membro, start: "/meu-bras", steps: ["Descobertas com vídeo", "Pedir caixas com transportadora", "Acompanhar o pedido"] },
     { n: 14, title: "Importadora: do pedido ao balcão", email: DEMO_BRAS_ACCOUNTS.importadora, start: "/importadora", steps: ["Pedidos do dia", "Produtos e estoque em caixas", "Chamar a transportadora"] },
     { n: 15, title: "Transportadora: aceitar e entregar", email: DEMO_BRAS_ACCOUNTS.transportadora, start: "/transportadora", steps: ["Chamadas para responder", "Link do motorista", "Reputação Ouro e extrato"] },

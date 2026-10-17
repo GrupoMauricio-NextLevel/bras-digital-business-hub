@@ -15,7 +15,7 @@ export function EstudioHeader({ title, description, members, videos, requests }:
   const novos = requests.filter((x) => x.r.status === "NEW").length;
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital" title={title} description={description}
+      <PageHeader eyebrow="Estúdio Brás Digital Club" title={title} description={description}
         actions={<a href={brand.baseUrl} target="_blank" rel="noreferrer" className="ds-btn ds-btn--secondary ds-btn--sm"><ExternalLink className="size-4" aria-hidden />Ver página pública</a>} />
       {!brand.signupOpen ? (
         <p role="note" className="mb-6 rounded-lg border border-warning/40 bg-warning-soft/40 p-4 text-sm">

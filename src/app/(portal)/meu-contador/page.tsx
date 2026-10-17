@@ -18,7 +18,7 @@ export default async function MeuContadorPage() {
   const bras = brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host")) ? brandByCode("BRAS_DIGITAL").baseUrl : "";
   return (
     <>
-      <AberturaMarca slug="meu-contador" eyebrow="Serviço para membros da Brás Digital" ctas={[{ href: `${bras}/login`, label: "Entrar no Meu Brás", primary: true }, { href: `${bras}/`, label: "Conhecer a Brás Digital" }]} />
+      <AberturaMarca slug="meu-contador" eyebrow="Serviço para membros do Brás Digital Club" ctas={[{ href: `${bras}/login`, label: "Entrar no Meu Brás", primary: true }, { href: `${bras}/`, label: "Conhecer o Brás Digital Club" }]} />
       <VitrineMarca slug="meu-contador" titulo="Como o Meu Contador ajuda" />
       <FechoMarca slug="meu-contador" cta={{ href: `${bras}/login`, label: "Abrir um chamado" }} />
     </>

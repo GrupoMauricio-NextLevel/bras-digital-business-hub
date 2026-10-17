@@ -9,7 +9,7 @@ import type { SearchHit } from "@/lib/domain/search";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
-import { BrandLogo, logoOficial } from "@/components/brand/brand-logo";
+import { BrandLogo, logoOficial, temLogoPng } from "@/components/brand/brand-logo";
 import { ICONS } from "./icons";
 import { CommandPalette } from "./command-palette";
 import { NotificationsMenu, type NoticeView } from "./notifications-menu";
@@ -77,7 +77,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
   const brandNode = (
     <div className="ds-brand">
       <span className="ds-brand-full">{logo}</span>
-      <span className="ds-brand-mark" aria-hidden>{logoOficial(shellBrand?.code ?? "SUPERDROP") ? <BrandLogo brand={{ code: shellBrand?.code ?? "SUPERDROP", name: "" }} variant="monograma" className="h-6" /> : (shellBrand?.name ?? "S").slice(0, 1)}</span>
+      <span className="ds-brand-mark" aria-hidden>{logoOficial(shellBrand?.code ?? "SUPERDROP") || temLogoPng(shellBrand?.code) ? <BrandLogo brand={{ code: shellBrand?.code ?? "SUPERDROP", name: "" }} variant="monograma" className="h-6" /> : (shellBrand?.name ?? "S").slice(0, 1)}</span>
     </div>
   );
 

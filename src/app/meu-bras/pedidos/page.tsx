@@ -21,12 +21,12 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
   const enviado = (await searchParams).enviado === "1";
   return (
     <>
-      <PageHeader eyebrow="Meu Brás" title="Meus pedidos" description="Acompanhe cada pedido. Dúvida, troca ou problema na retirada: fale com a equipe da Brás Digital." />
-      {enviado ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Pedido enviado. A equipe da Brás Digital vai falar com você pelo WhatsApp para confirmar.</p> : null}
+      <PageHeader eyebrow="Meu Brás" title="Meus pedidos" description="Acompanhe cada pedido. Dúvida, troca ou problema na retirada: fale com a equipe do Brás Digital Club." />
+      {enviado ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Pedido enviado. A equipe do Brás Digital Club vai falar com você pelo WhatsApp para confirmar.</p> : null}
       {rows.length === 0 ? <EmptyState icon={ReceiptText} title="Nenhum pedido ainda" description="Escolha um produto pelo vídeo e toque em Quero comprar." action={<Link href="/meu-bras/videos" className="ds-btn">Ver produtos</Link>} /> : (
         <ul className="space-y-3">
           {rows.map((r) => {
-            const wa = brasWhatsappUrl(`Olá! Sobre o meu pedido ${r.number} na Brás Digital (${r.boxes} caixa(s) de ${r.productTitle}).`);
+            const wa = brasWhatsappUrl(`Olá! Sobre o meu pedido ${r.number} no Brás Digital Club (${r.boxes} caixa(s) de ${r.productTitle}).`);
             return (
               <li key={r.id} className="ds-card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">

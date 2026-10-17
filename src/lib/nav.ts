@@ -56,7 +56,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
       { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Operação" },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
-      { label: "Brás Digital", href: "/bras", icon: "Boxes", group: "Plataformas" },
+      { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas" },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio" },
@@ -144,7 +144,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
   },
   BRAS_MEMBER: {
     base: "/meu-bras",
-    label: "Membro Brás Digital",
+    label: "Membro Brás Digital Club",
     items: [
       { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
       { label: "Descobertas", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
@@ -161,7 +161,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
   // Painel da importadora parceira da Brás (D110): login próprio, só a própria importadora.
   BRAS_IMPORTER: {
     base: "/importadora",
-    label: "Importadora Brás Digital",
+    label: "Importadora Brás Digital Club",
     items: [
       { label: "Hoje", href: "/importadora", icon: "Home", exact: true, group: "Operação", bottom: true },
       { label: "Pedidos", href: "/importadora/pedidos", icon: "Inbox", group: "Operação", bottom: true },
@@ -257,7 +257,7 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
   { label: "Transportadoras (Cargas)", href: "/bras/transportadoras", icon: "Truck", group: "Catálogo" },
   { label: "Ônibus de excursão", href: "/bras/excursao", icon: "Truck", group: "Catálogo" },
   { label: "Empresas do grupo", href: "/bras/grupo", icon: "Landmark", group: "Configuração" },
-  { label: "Brás Digital Club", href: "/bras/club", icon: "Ticket", group: "Pessoas" },
+  { label: "Indicações e pontos", href: "/bras/club", icon: "Ticket", group: "Pessoas" },
   { label: "Meu Contador", href: "/bras/meu-contador", icon: "ReceiptText", group: "Operação" },
   { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
   { label: "Acesso e planos", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },

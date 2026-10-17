@@ -5,6 +5,8 @@
  * as páginas usam composição com HTML e CSS e passam a usar a imagem quando o arquivo entrar aqui, sem refazer a página.
  * Textos sem métrica, depoimento ou promessa de ganho; só o que o sistema faz hoje.
  */
+import { BDC, BDC_LOGOS } from "@/lib/marcas/bras-digital-club";
+
 export type AssetStatus = "complete" | "partial" | "pending";
 export type MarcaSlug = "nextlevel" | "superdrop" | "nextlevel-commerce" | "bras-digital" | "nextlevel-cargas" | "nextlevel-club" | "loja-nextlevel" | "meu-contador" | "parceiros";
 type Item = { titulo: string; texto: string };
@@ -33,7 +35,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
   nextlevel: {
     slug: "nextlevel", nome: "NextLevel", accent: "#F5BC00", logos: { ratio: LOGO }, imagens: true, status: { logos: "complete", imagens: "complete" },
     headline: "Estrutura digital para negócios que querem ir além.",
-    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel Commerce, Brás Digital e NextLevel Cargas.",
+    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas.",
     icones: [
       { arquivo: "strategy", titulo: "Estratégia", texto: "Diagnóstico gratuito antes de qualquer proposta." },
       { arquivo: "integration", titulo: "Integração", texto: "Loja, pagamento, frete e catálogo no mesmo sistema." },
@@ -88,8 +90,10 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
     cta: { titulo: "Sua marca merece uma loja à altura.", texto: "Teste grátis. Você escolhe o plano no cadastro." },
   },
   "bras-digital": {
-    slug: "bras-digital", nome: "Brás Digital", accent: "#D35C00", logos: { clara: true, ratio: 1774 / 887 }, imagens: true, status: { logos: "partial", imagens: "complete" },
-    headline: "O ritmo do Brás, conectado ao digital.",
+    // Brás Digital Club (D158): identidade nova em `src/lib/marcas/bras-digital-club.ts` (logos em `public/marcas/bras-digital-club`).
+    // O kit antigo (`public/marcas/bras-digital`, laranja) fica arquivado, sem uso nas páginas.
+    slug: "bras-digital", nome: BDC.name, accent: BDC.cores.azul, logos: { ratio: BDC_LOGOS.clara.w / BDC_LOGOS.clara.h }, imagens: false, status: { logos: "complete", imagens: "complete" },
+    headline: BDC.tagline,
     apoio: "Clube de compras para empresas com CNPJ: descobertas em vídeo, caixas fechadas direto das importadoras e retirada organizada.",
     icones: [
       { arquivo: "descoberta", titulo: "Descobertas", texto: "Vídeos curtos dos produtos encontrados nas importadoras." },
@@ -103,9 +107,8 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
       { titulo: "Do vídeo ao pedido", texto: "Viu a descoberta, analisou e pediu as caixas pelo Meu Brás." },
       { titulo: "Retirada sem confusão", texto: "Comprovante de retirada e frete combinado no mesmo lugar." },
     ],
-    prova: { titulo: "Só para empresas", pontos: ["Cadastro com CNPJ conferido", "Preço e análise só para membros", "Termos próprios da Brás Digital, com aceite registrado"] },
+    prova: { titulo: "Só para empresas", pontos: ["Cadastro com CNPJ conferido", "Preço e análise só para membros", "Termos próprios, com aceite registrado"] },
     cta: { titulo: "Cadastre a sua empresa", texto: "Cadastro grátis com CNPJ." },
-    pendencias: "Monograma, favicons e logo escura com fundo transparente (a logo escura veio com fundo sólido).",
   },
   "nextlevel-cargas": {
     slug: "nextlevel-cargas", nome: "NextLevel Cargas", accent: "#4B4FD8", logos: { clara: true, ratio: LOGO }, imagens: true, status: { logos: "partial", imagens: "complete" },
@@ -154,7 +157,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
   "meu-contador": {
     slug: "meu-contador", nome: "Meu Contador", accent: "#2F81F4", parent: "nextlevel", logos: { clara: true, escura: true, monograma: true, ratio: LOGO }, imagens: false, status: { logos: "complete", imagens: "pending" },
     headline: "Clareza para decidir. Organização para crescer.",
-    apoio: "Apoio de contador parceiro para os membros da Brás Digital: nota fiscal em dia e chamados resolvidos com prioridade.",
+    apoio: "Apoio de contador parceiro para os membros do Brás Digital Club: nota fiscal em dia e chamados resolvidos com prioridade.",
     icones: [
       { arquivo: "", titulo: "Nota em dia", texto: "Ajuda para emitir e organizar as notas dos seus pedidos." },
       { arquivo: "", titulo: "Chamado urgente", texto: "Precisa de nota para liberar um fardo? Abra um chamado prioritário." },
@@ -162,11 +165,11 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
       { arquivo: "", titulo: "Tudo no painel", texto: "Chamados e respostas no Meu Brás." },
     ],
     capacidades: [
-      { titulo: "Para membros da Brás Digital", texto: "O Meu Contador fica dentro do Meu Brás, ao lado dos seus pedidos." },
+      { titulo: "Para membros do Brás Digital Club", texto: "O Meu Contador fica dentro do Meu Brás, ao lado dos seus pedidos." },
       { titulo: "Sem papelada solta", texto: "Cada chamado fica registrado com a situação e a resposta." },
     ],
     prova: { titulo: "O que esperar", pontos: ["Atendimento por chamado, com histórico", "Orientação de contador parceiro", "Não substitui a contabilidade da sua empresa"] },
-    cta: { titulo: "Já é membro da Brás Digital?", texto: "Entre no Meu Brás e abra um chamado no Meu Contador." },
+    cta: { titulo: "Já é membro do Brás Digital Club?", texto: "Entre no Meu Brás e abra um chamado no Meu Contador." },
   },
   parceiros: {
     slug: "parceiros", nome: "Parceiros NextLevel", accent: "#2D9E3B", parent: "nextlevel", logos: { clara: true, escura: true, monograma: true, ratio: LOGO }, imagens: false, status: { logos: "complete", imagens: "pending" },

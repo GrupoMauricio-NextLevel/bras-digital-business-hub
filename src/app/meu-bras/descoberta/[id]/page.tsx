@@ -26,7 +26,7 @@ function ComoLiberar({ access, company }: { access: BrasAccess; company: string 
   const s = access.settings;
   const falta = s.volumeThresholdCents !== null ? Math.max(0, s.volumeThresholdCents - access.volumeCents) : null;
   const pct = s.volumeThresholdCents ? Math.min(100, Math.round((access.volumeCents / s.volumeThresholdCents) * 100)) : 0;
-  const assinar = brasWhatsappUrl(`Olá! Sou da ${company}, membro da Brás Digital. Quero assinar a Análise Brás.`);
+  const assinar = brasWhatsappUrl(`Olá! Sou da ${company}, membro do Brás Digital Club. Quero assinar a Análise Brás.`);
   return (
     <div className="space-y-3 rounded-2xl border border-dashed border-border p-4">
       <p className="flex items-center gap-2 font-bold"><Lock className="size-4" aria-hidden />Análise completa para assinantes</p>
@@ -40,7 +40,7 @@ function ComoLiberar({ access, company }: { access: BrasAccess; company: string 
         {s.volumeThresholdCents !== null ? (
           <li>
             <b>Ou compre e libere:</b> com <span className="tabular-nums">{formatBRL(s.volumeThresholdCents)}</span> em pedidos pagos nos últimos {s.volumeWindowDays} dias, a análise fica liberada.
-            <span className="mt-2 block h-2 overflow-hidden rounded-full bg-surface-muted" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Quanto falta para liberar pela compra"><span className="block h-full bg-[var(--bd-laranja,#b34d00)]" style={{ width: `${pct}%` }} /></span>
+            <span className="mt-2 block h-2 overflow-hidden rounded-full bg-surface-muted" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Quanto falta para liberar pela compra"><span className="block h-full bg-[var(--bd-laranja,var(--bd-acao))]" style={{ width: `${pct}%` }} /></span>
             <span className="mt-1 block text-xs text-muted-foreground tabular-nums">Você já tem {formatBRL(access.volumeCents)}. {falta ? `Faltam ${formatBRL(falta)}.` : ""}</span>
           </li>
         ) : null}
@@ -60,11 +60,11 @@ export default async function Descoberta({ params }: { params: Promise<{ id: str
   const member = await getBrasMemberByUser(db, session.user.id);
   const company = member?.companyName ?? session.user.name;
   const a = d.analysis;
-  const consultar = brasWhatsappUrl(`Olá! Sou da ${company}, membro da Brás Digital. Quero saber o preço e as caixas de: ${d.title}.`);
+  const consultar = brasWhatsappUrl(`Olá! Sou da ${company}, membro do Brás Digital Club. Quero saber o preço e as caixas de: ${d.title}.`);
   return (
     <>
       <PageHeader eyebrow="Descoberta" title={d.title} backHref="/meu-bras/videos" description={d.summary ?? undefined}
-        badge={d.trendSignal ? <span className="inline-flex items-center gap-1 rounded-full bg-[var(--bd-laranja,#b34d00)] px-2.5 py-1 text-xs font-bold text-white"><Flame className="size-3.5" aria-hidden />{d.trendSignal}</span> : undefined} />
+        badge={d.trendSignal ? <span className="inline-flex items-center gap-1 rounded-full bg-[var(--bd-laranja,var(--bd-acao))] px-2.5 py-1 text-xs font-bold text-white"><Flame className="size-3.5" aria-hidden />{d.trendSignal}</span> : undefined} />
       <div className="grid gap-6 lg:grid-cols-[16rem_1fr_20rem]">
         <div className="mx-auto w-full max-w-[16rem]">
           <BrasVideoCard tone="light" youtubeId={d.youtubeId} title={d.title} trendSignal={d.trendSignal} offer={d.offer} buy={{ href: d.offer && d.offer.boxesAvailable !== 0 ? `/meu-bras/pedir/${d.id}` : "#oferta", label: d.offer && d.offer.boxesAvailable !== 0 ? "Quero comprar" : "Ver oferta", note: "Preço em preparação" }} />
@@ -74,7 +74,7 @@ export default async function Descoberta({ params }: { params: Promise<{ id: str
           <h2 id="ds-analise" className="text-xl font-bold">Análise de mercado</h2>
           {d.member?.verdict || d.member?.score != null ? (
             <div className="ds-card flex items-start gap-3 p-4">
-              {d.member?.score != null ? <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--bd-navy,#101b34)] text-white"><Star className="size-4 fill-current text-[#fb8342]" aria-hidden /><b className="tabular-nums">{d.member.score}/10</b></span> : null}
+              {d.member?.score != null ? <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--bd-navy,var(--bd-navy))] text-white"><Star className="size-4 fill-current text-[var(--bd-pulso)]" aria-hidden /><b className="tabular-nums">{d.member.score}/10</b></span> : null}
               <div><p className="text-xs font-semibold uppercase text-muted-foreground">Veredito</p><p className="text-lg font-bold leading-snug">{d.member?.verdict ?? "Em análise"}</p></div>
             </div>
           ) : <p className="ds-card p-4 text-sm text-muted-foreground">A análise desta descoberta está sendo preparada.</p>}
@@ -114,13 +114,13 @@ export default async function Descoberta({ params }: { params: Promise<{ id: str
               <p className="text-sm text-muted-foreground">{d.offer.unitsPerBox} unidades por caixa · {formatBRL(Math.round(d.offer.priceBoxCents / d.offer.unitsPerBox))} por unidade</p>
               <p className="flex items-center gap-2 text-sm font-semibold"><Package className="size-4" aria-hidden />{d.offer.boxesAvailable == null ? "Caixas: a equipe confirma" : d.offer.boxesAvailable === 0 ? "Sem caixas no momento" : `${d.offer.boxesAvailable} caixa(s) disponíve${d.offer.boxesAvailable === 1 ? "l" : "is"}`}</p>
               <p className="flex items-start gap-2 text-sm"><BadgeCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />Importadora parceira verificada. O nome e o local de retirada aparecem quando o pedido for confirmado.</p>
-              {d.offer.boxesAvailable !== 0 ? <Link href={`/meu-bras/pedir/${d.id}`} className="bd-btn bd-btn--fogo w-full"><ShoppingBag className="size-5" aria-hidden />Quero comprar</Link>
-                : consultar ? <a href={consultar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--fogo w-full">Avise quando chegar</a> : null}
+              {d.offer.boxesAvailable !== 0 ? <Link href={`/meu-bras/pedir/${d.id}`} className="bd-btn bd-btn--primario w-full"><ShoppingBag className="size-5" aria-hidden />Quero comprar</Link>
+                : consultar ? <a href={consultar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--primario w-full">Avise quando chegar</a> : null}
             </>
           ) : (
             <>
               <p className="text-sm text-muted-foreground">O preço da caixa desta descoberta está sendo fechado com a importadora.</p>
-              {consultar ? <a href={consultar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--fogo w-full"><MessageCircle className="size-5" aria-hidden />Consultar a equipe</a> : null}
+              {consultar ? <a href={consultar} target="_blank" rel="noreferrer" className="bd-btn bd-btn--primario w-full"><MessageCircle className="size-5" aria-hidden />Consultar a equipe</a> : null}
             </>
           )}
         </aside>

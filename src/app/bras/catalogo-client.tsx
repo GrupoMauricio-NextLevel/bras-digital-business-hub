@@ -175,7 +175,7 @@ export function RequestsTable({ requests }: { requests: RequestRow[] }) {
     if (x.ok) { toast.success(`Pedido ${r.number}: ${LABEL[s]}`); router.refresh(); } else toast.error(x.error);
   });
   if (!requests.length) return <EmptyState icon={Inbox} title="Nenhum pedido ainda" description="Quando um membro pedir caixas pelo Meu Brás, o pedido aparece aqui para você confirmar preço, caixas e pagamento." />;
-  const wa = (r: RequestRow) => `https://wa.me/${r.whatsapp.startsWith("55") ? r.whatsapp : `55${r.whatsapp}`}?text=${encodeURIComponent(`Olá! Aqui é da Brás Digital, sobre o pedido ${r.number} (${r.boxes} caixa(s) de ${r.productTitle}).`)}`;
+  const wa = (r: RequestRow) => `https://wa.me/${r.whatsapp.startsWith("55") ? r.whatsapp : `55${r.whatsapp}`}?text=${encodeURIComponent(`Olá! Aqui é do Brás Digital Club, sobre o pedido ${r.number} (${r.boxes} caixa(s) de ${r.productTitle}).`)}`;
   return (
     <ul className="space-y-3" aria-label="Pedidos de compra">
       {requests.map((r) => (

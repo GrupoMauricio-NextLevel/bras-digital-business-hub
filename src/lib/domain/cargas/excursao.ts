@@ -194,10 +194,10 @@ export const reserveSchema = z.object({
 const code = () => `EX-${randomBytes(3).toString("hex").toUpperCase()}`;
 
 async function clientOf(db: Database, actor: Actor) {
-  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Reserva de fardo disponível para membros da Brás Digital.");
+  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Reserva de fardo disponível para membros do Brás Digital Club.");
   const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId) });
   if (!m) throw new ForbiddenError("Cadastro de membro não encontrado.");
-  if (m.status !== "ACTIVE") throw new DomainError("MEMBER_BLOCKED", "Seu cadastro está em análise. Fale com a equipe da Brás Digital.");
+  if (m.status !== "ACTIVE") throw new DomainError("MEMBER_BLOCKED", "Seu cadastro está em análise. Fale com a equipe do Brás Digital Club.");
   return m;
 }
 

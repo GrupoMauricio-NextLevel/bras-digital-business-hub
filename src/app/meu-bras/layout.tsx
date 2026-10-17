@@ -14,7 +14,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const banner = member?.status !== "ACTIVE" ? (
     <div role="alert" className="border-b border-danger/40 bg-danger-soft px-4 py-2.5 text-sm text-danger">
       <AlertTriangle className="mr-2 inline size-4 align-text-bottom" aria-hidden />
-      <b>Cadastro em análise pela equipe.</b> Enquanto isso, preço e estoque ficam ocultos. Fale com a Brás Digital para regularizar.
+      <b>Cadastro em análise pela equipe.</b> Enquanto isso, preço e estoque ficam ocultos. Fale com o Brás Digital Club para regularizar.
     </div>
   ) : brasNeedsTermsAcceptance(member) ? <TermsBanner /> : undefined;
   // Cor da Brás em qualquer endereço (o membro só entra pelo da Brás, mas a área não depende disso).

@@ -11,6 +11,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const me = await myImporter(await getDb(), session.actor).catch((e: Error) => ({ error: e.message }));
   const banner = "error" in me
     ? <div role="alert" className="border-b border-danger/40 bg-danger-soft px-4 py-2.5 text-sm text-danger">{me.error}</div>
-    : <div className="border-b border-border bg-surface px-4 py-2 text-sm"><b>{me.importer.name}</b> <span className="text-muted-foreground">· {BRAS_STAFF_LABEL[me.staffRole]} · importadora parceira da Brás Digital</span></div>;
+    : <div className="border-b border-border bg-surface px-4 py-2 text-sm"><b>{me.importer.name}</b> <span className="text-muted-foreground">· {BRAS_STAFF_LABEL[me.staffRole]} · importadora parceira do Brás Digital Club</span></div>;
   return <><AreaTheme theme="bras" brand="BRAS_DIGITAL" /><RoleLayout session={session} banner={banner}><div className="bd-home">{"error" in me ? null : children}</div></RoleLayout></>;
 }

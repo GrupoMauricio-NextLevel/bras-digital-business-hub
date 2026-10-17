@@ -20,7 +20,7 @@ const ACCENT: Record<ImageBrand, string> = {
   bras: "LARANJA (#FB8342), só em detalhes",
   nextlevel: "VERDE-ESCURO discreto (#1F6F3A)",
 };
-const BRAND_NAME: Record<ImageBrand, string> = { superdrop: "SuperDrop", commerce: "NextLevel Commerce", bras: "Brás Digital", nextlevel: "NextLevel (painéis do grupo)" };
+const BRAND_NAME: Record<ImageBrand, string> = { superdrop: "SuperDrop", commerce: "NextLevel Commerce", bras: "Brás Digital Club", nextlevel: "NextLevel (painéis do grupo)" };
 
 /** Nome de arquivo sugerido para a imagem de uma tela (`/master/financeiro/precos` → `tela-master-financeiro-precos`). */
 export function fileForScreen(route: string, brand: ImageBrand) {

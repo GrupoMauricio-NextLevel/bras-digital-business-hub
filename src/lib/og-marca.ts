@@ -10,7 +10,8 @@ const ARTE: Partial<Record<BrandCode, string[]>> = {
   SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
   NEXTLEVEL_COMMERCE: ["portal/commerce/v3/cm-og-portal.jpg", "portal/commerce/v3/cm-og-portal.png"],
   NEXTLEVEL: ["portal/nextlevel/v3/nl-og-solucoes.jpg", "portal/nextlevel/v3/nl-og-solucoes.png"],
-  BRAS_DIGITAL: ["portal/bras/v3/bd-og-portal.jpg", "portal/bras/v3/bd-og-portal.png"],
+  // Brás Digital Club (D158): peça 3D do pacote com a logo escura com slogan (gerada dos arquivos oficiais).
+  BRAS_DIGITAL: ["marcas/bras-digital-club/og-1200x630.jpg"],
 };
 
 export function ogImageFor(brand: Pick<Brand, "code" | "name">): { url: string; width: number; height: number; alt: string } {

@@ -25,7 +25,7 @@ export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand;
         <div className="relative">
           <h2 className="bd-display text-5xl text-white">Cadastre a empresa. <span className="bd-accent">Veja o preço da caixa.</span></h2>
           <ul className="mt-8 space-y-3 text-lg text-[var(--bd-tinta-clara)]">
-            {["Grátis para novos membros", "Só CNPJ, sem papelada", "Preço e estoque liberados na hora", "Seus dados não vão para a importadora"].map((t) => <li key={t} className="flex items-center gap-3"><BadgeCheck className="size-5 text-[var(--bd-laranja-claro)]" aria-hidden />{t}</li>)}
+            {["Grátis para novos membros", "Só CNPJ, sem papelada", "Preço e estoque liberados na hora", "Seus dados não vão para a importadora"].map((t) => <li key={t} className="flex items-center gap-3"><BadgeCheck className="size-5 text-[var(--bd-pulso)]" aria-hidden />{t}</li>)}
           </ul>
         </div>
         <NextLevelSignature compact product={brand.name} className="relative text-[var(--bd-tinta-suave)]" />
@@ -36,7 +36,7 @@ export async function BrasSignupPage({ brand, videoId, source }: { brand: Brand;
         <p className="mt-1 text-sm text-muted-foreground">Para empresas que compram em caixa fechada para revender.</p>
         {video?.active ? (
           <p className="mt-4 flex items-center gap-3 rounded-xl border border-border bg-surface-muted p-3 text-sm">
-            <PlayCircle className="size-5 shrink-0 text-[var(--bd-laranja)]" aria-hidden />
+            <PlayCircle className="size-5 shrink-0 text-[var(--bd-acao)]" aria-hidden />
             <span>Depois do cadastro você vê o preço e as caixas de <b>{video.title}</b>.</span>
           </p>
         ) : null}

@@ -72,8 +72,8 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         items={byFn(BRAS_ADMIN_NAV)}
         navMode="sections"
         quick={[]}
-        roleLabel="Estúdio Brás Digital"
-        tenantName="Brás Digital"
+        roleLabel="Estúdio Brás Digital Club"
+        tenantName="Brás Digital Club"
         tenantSub="Estúdio · NextLevel Master"
         userName={session.user.name}
         demoUsers={isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined}

@@ -41,7 +41,7 @@ export default async function TransportadorasMaster() {
   const comissaoMes = report.reduce((s, c) => s + (c.months.find((m) => m.month === mesAtual)?.commissionCents ?? 0), 0);
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital · NextLevel Cargas" title="Transportadoras" description="Quem leva as caixas do Brás. A importadora chama, a transportadora aceita com o frete e a comissão da NextLevel fica congelada no aceite, pelo plano dela." />
+      <PageHeader eyebrow="Estúdio Brás Digital Club · NextLevel Cargas" title="Transportadoras" description="Quem leva as caixas do Brás. A importadora chama, a transportadora aceita com o frete e a comissão da NextLevel fica congelada no aceite, pelo plano dela." />
       <MetricGrid className="mb-6">
         <MetricCard label="Transportadoras ativas" value={carriers.filter((c) => c.status === "ATIVA").length} icon={Truck} hint={`${carriers.length} cadastradas`} />
         <MetricCard label="Coletas em andamento" value={abertas.length} icon={Truck} tone={abertas.some((l) => l.status === "CHAMADA") ? "warning" : "neutral"} hint={`${abertas.filter((l) => l.status === "CHAMADA").length} aguardando resposta`} />

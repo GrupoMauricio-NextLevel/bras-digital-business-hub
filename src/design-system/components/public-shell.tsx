@@ -13,7 +13,7 @@ export type PublicCta = { href: string; label: string };
  * a marca entra como slot (logo), o menu e a chamada como dados, e as cores vêm do tema. Sem condicional por empresa.
  * Menu do celular: botão com aria-expanded, Escape fecha e devolve o foco ao botão.
  */
-export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secondary, footerBrand, footerNote, floating, children }: {
+export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secondary, footerBrand, footerNote, floating, footerEscuro = false, children }: {
   brand: React.ReactNode;
   brandLabel: string;
   /** Destino da logo (o endereço do grupo não tem página inicial própria ainda). */
@@ -23,6 +23,8 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
   secondary?: PublicNavItem[];
   footerBrand: React.ReactNode;
   footerNote: React.ReactNode;
+  /** Rodapé na superfície escura da marca (`.ds-tema-escuro`). */
+  footerEscuro?: boolean;
   floating?: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -81,7 +83,7 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
         ) : null}
       </header>
       <main id="conteudo" className="flex-1">{children}</main>
-      <footer className="ds-pub-footer">
+      <footer className={footerEscuro ? "ds-pub-footer ds-tema-escuro" : "ds-pub-footer"}>
         <div className="ds-pub-wrap ds-pub-footer-in">
           <div>{footerBrand}</div>
           <nav aria-label="Rodapé" className="flex flex-col gap-1.5">

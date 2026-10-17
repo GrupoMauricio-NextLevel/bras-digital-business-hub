@@ -1,0 +1,40 @@
+{
+  "brand": "bras-digital-club",
+  "name": "Brás Digital Club",
+  "tagline": "Conecte seu negócio ao pulso do Brás.",
+  "colors": {
+    "navy": "#0C1830",
+    "electricBlue": "#315CFF",
+    "cyan": "#00D4FF",
+    "offWhite": "#F4F1E9"
+  },
+  "gradient": "linear-gradient(135deg, #315CFF 0%, #00D4FF 100%)",
+  "semantic": {
+    "light": {
+      "surface": "#FFFFFF",
+      "surfaceMuted": "#F7F9FC",
+      "surfaceBrandSoft": "#EDF2FF",
+      "border": "#DBE3F0",
+      "text": "#0C1830",
+      "textMuted": "#52627A",
+      "action": "#315CFF",
+      "focus": "#00D4FF"
+    },
+    "dark": {
+      "surface": "#0C1830",
+      "surfaceMuted": "#132445",
+      "surfaceBrandSoft": "#172B52",
+      "border": "#294266",
+      "text": "#F4F1E9",
+      "textMuted": "#B9C5D8",
+      "action": "#5274FF",
+      "focus": "#00D4FF"
+    }
+  },
+  "assetPolicy": {
+    "lightSurfaceLogo": "logos/flat/logo-clara.png",
+    "darkSurfaceLogo": "logos/flat/logo-escura.png",
+    "compactLight": "logos/monogramas/monograma-claro.png",
+    "compactDark": "logos/monogramas/monograma-escuro.png"
+  }
+}

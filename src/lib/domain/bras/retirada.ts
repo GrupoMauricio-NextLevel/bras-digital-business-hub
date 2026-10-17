@@ -13,7 +13,7 @@ const COM_RETIRADA: BrasRequestStatus[] = ["CONFIRMED", "PAID", "PICKED_UP"];
 
 /** Comprovante de retirada do próprio pedido. Outro membro, pedido não confirmado ou inexistente: não encontrado. */
 export async function getMyBrasPickup(db: Database, actor: Actor, requestId: string) {
-  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Disponível só para membros da Brás Digital.");
+  if (actor.role !== "BRAS_MEMBER") throw new ForbiddenError("Disponível só para membros do Brás Digital Club.");
   const m = await db.query.bdMembers.findFirst({ where: eq(bdMembers.userId, actor.userId), columns: { id: true, companyName: true } });
   if (!m) throw new NotFoundError("Pedido não encontrado.");
   const [row] = await db.select({ r: bdRequests, address: bdImporters.pickupAddress }).from(bdRequests).innerJoin(bdImporters, eq(bdImporters.id, bdRequests.importerId))
@@ -42,7 +42,7 @@ export async function brasRomaneio(db: Database, actor: Actor, importerId: strin
 /** Texto do romaneio para colar no WhatsApp da importadora (sem nenhum dado do membro além do envio). */
 export function brasRomaneioText(importerName: string, lines: BrasRomaneioLine[], today = new Date()): string {
   const dia = today.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
-  const head = `Romaneio Brás Digital · ${importerName} · ${dia}\n${lines.length} pedido(s) para retirar`;
+  const head = `Romaneio Brás Digital Club · ${importerName} · ${dia}\n${lines.length} pedido(s) para retirar`;
   const body = lines.map((l) => `\nPedido ${l.number} · código ${l.pickupCode ?? "—"}\n${l.boxes} caixa(s) de ${l.productTitle} (${l.unitsPerBox} un. cada)\nTransportadora: ${l.carrier}\nEnviar para: ${l.shipName}, ${l.shipAddress}, ${l.shipCity}/${l.shipState}, CEP ${l.shipZip}`);
   return [head, ...body].join("\n");
 }

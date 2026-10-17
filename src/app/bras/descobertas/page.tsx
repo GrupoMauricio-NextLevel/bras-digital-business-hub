@@ -18,7 +18,7 @@ function Roteiro() {
     <details className="ds-card mb-6 p-4">
       <summary className="cursor-pointer font-semibold">Roteiro de cada descoberta (Shorts, trecho e análise)</summary>
       <div className="mt-3 grid gap-4 text-sm md:grid-cols-3">
-        <div><p className="font-bold">1. Shorts de descoberta (público, 30 a 60 s, vertical)</p><ul className="mt-1 list-disc space-y-1 pl-5"><li>Gancho em 3 segundos: &quot;Achei no Brás um produto que…&quot;</li><li>O que é e para quem serve.</li><li>Um sinal de tendência em palavras, sem números.</li><li>Convite: &quot;análise completa e preço da caixa na Brás Digital&quot;.</li></ul></div>
+        <div><p className="font-bold">1. Shorts de descoberta (público, 30 a 60 s, vertical)</p><ul className="mt-1 list-disc space-y-1 pl-5"><li>Gancho em 3 segundos: &quot;Achei no Brás um produto que…&quot;</li><li>O que é e para quem serve.</li><li>Um sinal de tendência em palavras, sem números.</li><li>Convite: &quot;análise completa e preço da caixa no Brás Digital Club&quot;.</li></ul></div>
         <div><p className="font-bold">2. Trecho (membro grátis, até 60 s)</p><ul className="mt-1 list-disc space-y-1 pl-5"><li>Um pedaço forte da análise: o veredito e um motivo.</li><li>Vídeo separado, não listado no YouTube.</li><li>Termina convidando para a análise completa.</li></ul></div>
         <div><p className="font-bold">3. Análise de mercado (acesso, 5 a 10 min, horizontal)</p><ul className="mt-1 list-disc space-y-1 pl-5"><li>Tendência, concorrência e preço no Mercado Livre.</li><li>Margem estimada a partir do preço da caixa.</li><li>Riscos, como anunciar e o veredito.</li><li>Sem promessa de ganho.</li></ul></div>
       </div>

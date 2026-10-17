@@ -14,7 +14,7 @@ import type { BrasRequestStatus } from "./catalogo";
  */
 const TEAM_KEY = "bras.team_emails";
 const base = () => brandByCode("BRAS_DIGITAL").baseUrl.replace(/\/$/, "");
-const assinatura = "\n\nEquipe Brás Digital";
+const assinatura = "\n\nEquipe Brás Digital Club";
 /** Sem importar `membros` (evita ciclo: o cadastro chama estes avisos). */
 const formatCnpj = (c: string) => c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
 
@@ -38,7 +38,7 @@ export async function notifyBrasSignup(db: Database, memberId: string) {
     const primeiro = m.name.split(" ")[0];
     await sendEmail(db, {
       kind: "BRAS_WELCOME", brand: "BRAS_DIGITAL", to: m.email, dedupeKey: `bras-welcome-${memberId}`,
-      subject: "Bem-vindo à Brás Digital",
+      subject: "Bem-vindo ao Brás Digital Club",
       text: `Olá, ${primeiro}!\n\nO cadastro da ${m.member.companyName} está ativo. Você já vê o preço da caixa, as caixas disponíveis e o veredito de cada descoberta.\n\nPara pedir, abra a descoberta, toque em Quero comprar e informe quantas caixas e para onde enviar. A equipe confirma o pedido e o pagamento com você. Retirada no Brás pela sua transportadora.${assinatura}`,
       cta: { label: "Abrir o Meu Brás", url: `${base()}/meu-bras` },
     });
@@ -55,10 +55,10 @@ export async function notifyBrasSignup(db: Database, memberId: string) {
 }
 
 const TEXTO: Record<Exclude<BrasRequestStatus, "NEW">, (r: typeof bdRequests.$inferSelect) => { subject: string; text: string }> = {
-  CONFIRMED: (r) => ({ subject: `Pedido ${r.number} confirmado`, text: `A equipe confirmou o seu pedido ${r.number}: ${r.boxes} caixa(s) de ${r.productTitle}.\n\nImportadora: ${r.importerName}.\nTotal: ${formatBRL(r.totalCents)}.\n\nO pagamento é combinado com a equipe da Brás Digital.` }),
+  CONFIRMED: (r) => ({ subject: `Pedido ${r.number} confirmado`, text: `A equipe confirmou o seu pedido ${r.number}: ${r.boxes} caixa(s) de ${r.productTitle}.\n\nImportadora: ${r.importerName}.\nTotal: ${formatBRL(r.totalCents)}.\n\nO pagamento é combinado com a equipe do Brás Digital Club.` }),
   PAID: (r) => ({ subject: `Pagamento do pedido ${r.number} registrado`, text: `Registramos o pagamento do pedido ${r.number}.\n\nAgora é com a sua transportadora (${r.carrier}): a retirada é na importadora ${r.importerName}, no Brás.` }),
-  PICKED_UP: (r) => ({ subject: `Pedido ${r.number} retirado`, text: `As ${r.boxes} caixa(s) de ${r.productTitle} do pedido ${r.number} foram retiradas pela sua transportadora.\n\nQualquer ocorrência, fale com a equipe da Brás Digital.` }),
-  CANCELED: (r) => ({ subject: `Pedido ${r.number} cancelado`, text: `O pedido ${r.number} (${r.boxes} caixa(s) de ${r.productTitle}) foi cancelado.\n\nSe você não esperava por isso, fale com a equipe da Brás Digital.` }),
+  PICKED_UP: (r) => ({ subject: `Pedido ${r.number} retirado`, text: `As ${r.boxes} caixa(s) de ${r.productTitle} do pedido ${r.number} foram retiradas pela sua transportadora.\n\nQualquer ocorrência, fale com a equipe do Brás Digital Club.` }),
+  CANCELED: (r) => ({ subject: `Pedido ${r.number} cancelado`, text: `O pedido ${r.number} (${r.boxes} caixa(s) de ${r.productTitle}) foi cancelado.\n\nSe você não esperava por isso, fale com a equipe do Brás Digital Club.` }),
 };
 
 async function emailDoMembro(db: Database, memberId: string) {
@@ -76,7 +76,7 @@ export async function notifyBrasRequestCreated(db: Database, requestId: string) 
       await sendEmail(db, {
         kind: "BRAS_REQUEST_NEW", brand: "BRAS_DIGITAL", to: m.email, dedupeKey: `bras-request-${r.id}-NEW`,
         subject: `Recebemos o seu pedido ${r.number}`,
-        text: `Pedido ${r.number}: ${r.boxes} caixa(s) de ${r.productTitle}.\nTotal estimado: ${formatBRL(r.totalCents)}.\nEnvio: ${r.shipCity}/${r.shipState}, pela ${r.carrier}.\n\nA equipe da Brás Digital confirma com você a disponibilidade, o valor e o pagamento.${assinatura}`,
+        text: `Pedido ${r.number}: ${r.boxes} caixa(s) de ${r.productTitle}.\nTotal estimado: ${formatBRL(r.totalCents)}.\nEnvio: ${r.shipCity}/${r.shipState}, pela ${r.carrier}.\n\nA equipe do Brás Digital Club confirma com você a disponibilidade, o valor e o pagamento.${assinatura}`,
         cta: { label: "Ver meus pedidos", url: `${base()}/meu-bras/pedidos` },
       });
     }

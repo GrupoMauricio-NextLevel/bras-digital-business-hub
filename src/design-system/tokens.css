@@ -71,7 +71,7 @@
 }
 
 /* A ponte também vale dentro de pré-visualizações escopadas (galeria), para o tema da seção valer nas classes utilitárias. */
-:root, [data-ds-preview] {
+:root, [data-ds-preview], .ds-tema-escuro {
   /* ===== Ponte: nomes antigos → papéis do tema (um único lugar de verdade para cor) ====================================== */
   --background: var(--ds-canvas);
   --surface: var(--ds-surface);

@@ -16,7 +16,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
   const can = { disponibilidade: brasStaffCan(me.staffRole, "pedidos_disponibilidade"), balcao: brasStaffCan(me.staffRole, "pedidos_balcao") };
   return (
     <>
-      <PageHeader eyebrow="Importadora" title="Pedidos" description="Pedidos da Brás Digital para a sua importadora. Atendimento e pagamento com o comprador são da equipe da Brás." />
+      <PageHeader eyebrow="Importadora" title="Pedidos" description="Pedidos do Brás Digital Club para a sua importadora. Atendimento e pagamento com o comprador são da equipe da Brás." />
       <LinkTabs label="Filtro" active={ver} items={[{ key: "ABERTOS", label: "Em aberto", href: "/importadora/pedidos" }, { key: "RETIRADOS", label: "Retirados", href: "/importadora/pedidos?ver=retirados" }, { key: "TODOS", label: "Todos", href: "/importadora/pedidos?ver=todos" }]} />
       {rows.length ? <ul className="mt-6 grid gap-3 lg:grid-cols-2">{rows.map((r) => <PedidoCard key={r.id} r={r} can={can} />)}</ul> : <p className="mt-6 rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">Nenhum pedido aqui.</p>}
     </>

@@ -1,0 +1,29 @@
+{
+  "id": "bras-digital-club",
+  "name": "Brás Digital Club",
+  "shortName": "BDC",
+  "tagline": "Conecte seu negócio ao pulso do Brás.",
+  "publicRoute": "/bras-digital-club",
+  "canonicalUrl": null,
+  "theme": {
+    "primary": "#315CFF",
+    "secondary": "#00D4FF",
+    "ink": "#0C1830",
+    "canvas": "#F4F1E9",
+    "gradient": "linear-gradient(135deg, #315CFF 0%, #00D4FF 100%)"
+  },
+  "assets": {
+    "logoLight": "logos/flat/logo-clara.png",
+    "logoDark": "logos/flat/logo-escura.png",
+    "logoLightTagline": "logos/flat/logo-clara-com-slogan.png",
+    "logoDarkTagline": "logos/flat/logo-escura-com-slogan.png",
+    "monogramLight": "logos/monogramas/monograma-claro.png",
+    "monogramDark": "logos/monogramas/monograma-escuro.png",
+    "hero": "3d/02-metal-anodizado-sem-texto.png",
+    "favicon16": "logos/favicons/favicon-16.png",
+    "favicon32": "logos/favicons/favicon-32.png",
+    "appleTouchIcon": "logos/app-icons/apple-touch-icon-180.png",
+    "pwa192": "logos/app-icons/icon-192.png",
+    "pwa512": "logos/app-icons/icon-512.png"
+  }
+}

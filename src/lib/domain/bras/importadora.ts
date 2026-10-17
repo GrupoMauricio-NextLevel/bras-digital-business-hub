@@ -34,10 +34,10 @@ export const brasStaffCan = (role: BrasStaffRole, a: BrasImporterAbility) => CAN
 
 /** Importadora e função do usuário logado. Importadora pausada não entra. */
 export async function myImporter(db: Database, actor: Actor) {
-  if (actor.role !== "BRAS_IMPORTER") throw new ForbiddenError("Área da importadora parceira da Brás Digital.");
+  if (actor.role !== "BRAS_IMPORTER") throw new ForbiddenError("Área da importadora parceira do Brás Digital Club.");
   const [row] = await db.select({ link: bdImporterUsers, importer: bdImporters }).from(bdImporterUsers).innerJoin(bdImporters, eq(bdImporters.id, bdImporterUsers.importerId)).where(eq(bdImporterUsers.userId, actor.userId)).limit(1);
-  if (!row) throw new ForbiddenError("Seu acesso não está ligado a uma importadora. Fale com a equipe da Brás Digital.");
-  if (!row.importer.active) throw new ForbiddenError("A importadora está pausada na Brás Digital. Fale com a equipe.");
+  if (!row) throw new ForbiddenError("Seu acesso não está ligado a uma importadora. Fale com a equipe do Brás Digital Club.");
+  if (!row.importer.active) throw new ForbiddenError("A importadora está pausada no Brás Digital Club. Fale com a equipe.");
   return { importer: row.importer, staffRole: row.link.staffRole };
 }
 

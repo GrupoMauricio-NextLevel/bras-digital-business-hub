@@ -1,4 +1,5 @@
 import { HOLDING_CODE, brandByCode, brandOfHostStrict, type BrandCode } from "./brand";
+import { BDC } from "./marcas/bras-digital-club";
 
 /**
  * Cada marca tem um endereço PÚBLICO (portal, vitrines, lojas dos fornecedores) e, se configurado, um endereço de PAINÉIS
@@ -20,6 +21,8 @@ const PANEL_HOME: { prefix: string; brand: "BRAS_DIGITAL" | "NEXTLEVEL_CARGAS" }
 ];
 /** Páginas públicas do SuperDrop: abertas no endereço da Commerce vão para o SuperDrop (D149). */
 const SUPERDROP_OWNED = ["/seja-fornecedor", "/fornecedores"];
+/** Rota pública da marca Brás Digital Club (`BDC.publicRoute`). */
+export const BRAS_CLUB_ROUTE = BDC.publicRoute;
 const under = (p: string, x: string) => p === x || p.startsWith(`${x}/`);
 /** Endereço do site do grupo: `GROUP_SITE_URL` quando nextlevelgroup.com.br estiver ligado (Fase 3); até lá, o da holding. */
 export const groupSiteUrl = (env: Record<string, string | undefined> = process.env) => (env.GROUP_SITE_URL?.replace(/\/$/, "") || brandByCode(HOLDING_CODE, env).baseUrl);
@@ -45,6 +48,14 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const brand = brandOfHostStrict(host, env);
   // Arquivos dos buscadores: cada endereço responde o dele (D149).
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
+  // Rota pública do Brás Digital Club (D158): no endereço da marca é a página inicial dela; nos endereços das outras marcas e
+  // do grupo leva ao endereço da Brás. Só em endereço técnico (demonstração) a página `/bras-digital-club` abre como está.
+  if (pathname === BRAS_CLUB_ROUTE || pathname === `${BRAS_CLUB_ROUTE}/`) {
+    const groupH = env.GROUP_SITE_URL ? bare(new URL(env.GROUP_SITE_URL).host) : null;
+    if (brand?.code === "BRAS_DIGITAL") return { kind: "redirect", url: `/${search}` };
+    if (brand || (groupH && (host === groupH || host === `www.${groupH}`))) return { kind: "redirect", url: `${brandByCode("BRAS_DIGITAL", env).baseUrl}/${search}` };
+    return { kind: "next" };
+  }
   // Site do grupo no endereço próprio (Fase 3, D156): "www" leva ao endereço principal; lá ficam só as páginas do grupo
   // (Soluções, Club, Meu Contador, Loja NextLevel, termos); login e painéis continuam no Master.
   const groupHost = env.GROUP_SITE_URL ? bare(new URL(env.GROUP_SITE_URL).host) : null;

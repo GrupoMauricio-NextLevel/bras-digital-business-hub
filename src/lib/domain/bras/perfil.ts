@@ -144,7 +144,7 @@ export type BrasPanelCard = { id: string; title: string; text: string; href: str
 const CARDS: Record<string, BrasPanelCard> = {
   perfil: { id: "perfil", title: "Conte sobre a sua empresa", text: "Sete perguntas rápidas. Com elas o seu painel mostra primeiro o que faz sentido para o seu tamanho e o seu momento.", href: "/meu-bras/perfil", cta: "Responder em 1 minuto" },
   primeira_caixa: { id: "primeira_caixa", title: "Comece com uma caixa", text: "Escolha uma descoberta, leia o veredito, veja quantas unidades vêm na caixa e peça só uma para testar.", href: "/meu-bras/videos", cta: "Ver descobertas" },
-  aguardando: { id: "aguardando", title: "Seu pedido está com a equipe", text: "A Brás Digital confirma o pedido e o pagamento com você. Acompanhe cada etapa em Meus pedidos.", href: "/meu-bras/pedidos", cta: "Acompanhar pedido" },
+  aguardando: { id: "aguardando", title: "Seu pedido está com a equipe", text: "O Brás Digital Club confirma o pedido e o pagamento com você. Acompanhe cada etapa em Meus pedidos.", href: "/meu-bras/pedidos", cta: "Acompanhar pedido" },
   repetir: { id: "repetir", title: "Repita o que deu certo", text: "Veja seus pedidos pagos e peça de novo a caixa que girou, antes que acabe na importadora.", href: "/meu-bras/pedidos", cta: "Ver meus pedidos" },
   voltar: { id: "voltar", title: "Chegou coisa nova desde a sua última compra", text: "As descobertas da semana já estão no catálogo, com veredito e preço da caixa.", href: "/meu-bras/videos", cta: "Ver o que chegou" },
   analise: { id: "analise", title: "Análises da semana", text: "Tendência, concorrência, preço praticado e riscos de cada descoberta, para escolher o produto com dado e não no escuro.", href: "/meu-bras/videos", cta: "Abrir análises" },

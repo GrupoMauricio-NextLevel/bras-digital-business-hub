@@ -18,7 +18,7 @@ export default async function Indicacoes() {
   return (
     <>
       <PageHeader eyebrow="NextLevel Cargas · Brás Digital Club" title="Indique e ganhe" description="Traga as importadoras que você já atende e os seus clientes: mais carga para você e pontos que viram desconto." />
-      <ClubPanel data={data} inviteUrl={`${brandByCode("BRAS_DIGITAL").baseUrl}/c/${data.code}`} inviteMessage="Acompanhe sua carga do Brás pelo painel e compre direto das importadoras na Brás Digital. Entre pelo meu convite:" referSlot={<><h3 className="mb-2 text-sm font-semibold">Indicar uma importadora que você já atende</h3><ReferCarrierForm kinds={["IMPORTADORA"]} /></>} />
+      <ClubPanel data={data} inviteUrl={`${brandByCode("BRAS_DIGITAL").baseUrl}/c/${data.code}`} inviteMessage="Acompanhe sua carga do Brás pelo painel e compre direto das importadoras no Brás Digital Club. Entre pelo meu convite:" referSlot={<><h3 className="mb-2 text-sm font-semibold">Indicar uma importadora que você já atende</h3><ReferCarrierForm kinds={["IMPORTADORA"]} /></>} />
       <RankingCard ranking={ranking} />
     </>
   );

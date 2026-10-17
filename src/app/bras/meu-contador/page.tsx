@@ -14,7 +14,7 @@ export default async function MeuContadorMaster() {
   const [q, settings] = await Promise.all([ticketQueue(db, session.actor), getMeuContadorSettings(db)]);
   return (
     <>
-      <PageHeader eyebrow="Estúdio Brás Digital · Nota em dia" title="Meu Contador" description="Chamados urgentes de nota, do mais apertado para o mais folgado. Resolva pelo caminho correto: o sistema não emite nota no lugar do vendedor." />
+      <PageHeader eyebrow="Estúdio Brás Digital Club · Nota em dia" title="Meu Contador" description="Chamados urgentes de nota, do mais apertado para o mais folgado. Resolva pelo caminho correto: o sistema não emite nota no lugar do vendedor." />
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         {[["Abertos", q.stats.open], ["Em atendimento", q.stats.inProgress], ["Resolvidos", q.stats.resolved], ["Antes do prazo", q.stats.onTimePct === null ? "—" : `${q.stats.onTimePct}%`]].map(([l, v]) => <div key={String(l)} className="ds-card p-4"><p className="text-sm text-muted-foreground">{l}</p><p className="text-2xl font-black tabular-nums">{v}</p></div>)}
       </div>

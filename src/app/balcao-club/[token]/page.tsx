@@ -23,7 +23,7 @@ export default async function BalcaoClub({ params }: { params: Promise<{ token: 
     <>
       <AreaTheme theme="bras" brand="BRAS_DIGITAL" />
       <main className="bd-home mx-auto min-h-dvh max-w-xl px-4 py-8">
-        <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-laranja)]">Brás Digital Club · Balcão</p>
+        <p className="text-sm font-bold uppercase tracking-widest text-[var(--bd-acao)]">Brás Digital Club · Balcão</p>
         <h1 className="mt-1 text-2xl font-bold">{counter.companyName}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{counter.name}. Peça o cartão do Club no celular do cliente, registre a compra e, se ele quiser, use o vale dele. Os pontos aparecem na hora no Meu Brás.</p>
         <div className="mt-6"><CounterDesk token={token} companyName={counter.companyName} /></div>

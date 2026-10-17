@@ -10,6 +10,7 @@
  * Puro (sem React/Next): serve servidor, e-mail e testes.
  */
 import { contrastRatio, luminance, onSignal } from "@/lib/brand-palette";
+import { BDC, bdcCssVars } from "@/lib/marcas/bras-digital-club";
 
 export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play", "cargas"] as const;
 export type ThemeKey = (typeof THEME_KEYS)[number];
@@ -32,7 +33,7 @@ export type ThemeColors = {
   heroFrom: string; heroTo: string;
 };
 
-type ModeInput = { canvas: string; ink: string; primary: string; link: string; accent: string; accentText: string; accentSoft?: string; reflection?: string; surface?: string; sideBg?: string };
+type ModeInput = { canvas: string; ink: string; primary: string; link: string; accent: string; accentText: string; accentSoft?: string; reflection?: string; surface?: string; sideBg?: string; /** anel de foco próprio (padrão: derivado do link) */ ring?: string };
 type ThemeInput = { label: string; light: ModeInput; dark: ModeInput };
 
 // ---- utilidades de cor (hex) ----
@@ -72,7 +73,14 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   creators: produto("Creators Hub", ["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
   play: produto("NextLevel Play (planejada)", ["#8B4AC3", "#753CA6"], ["#C588FF", "#C588FF"]),
   china: produto("China Hub (planejada)", ["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
-  bras: produto("Brás Digital", ["#B34D00", "#974000"], ["#FB8342", "#FB8342"]),
+  // Brás Digital Club (D158): cores do pacote oficial (`src/lib/marcas/bras-digital-club.ts`). Navy na estrutura (barra lateral
+  // navy também no claro), área de trabalho clara, azul elétrico nas ações e ciano como pulso (reflexo e foco no escuro).
+  // O foco no claro é azul: o ciano sobre branco não chega a 3:1 (contraste mínimo de indicador de foco).
+  bras: {
+    label: BDC.name,
+    light: { canvas: BDC.claro.surfaceMuted, surface: BDC.claro.surface, ink: BDC.cores.navy, primary: BDC.claro.action, link: BDC.claro.action, accent: BDC.cores.ciano, accentText: BDC.cores.navy, accentSoft: BDC.claro.surfaceBrandSoft, reflection: BDC.cores.ciano, sideBg: BDC.cores.navy, ring: BDC.claro.action },
+    dark: { canvas: BDC.escuro.surface, surface: BDC.escuro.surfaceMuted, ink: BDC.cores.offWhite, primary: BDC.claro.action, link: BDC.escuro.actionHover, accent: BDC.cores.ciano, accentText: BDC.cores.ciano, reflection: BDC.cores.ciano, ring: BDC.escuro.focus },
+  },
   cargas: produto("NextLevel Cargas", ["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
 };
 
@@ -125,7 +133,7 @@ export function deriveColors(mode: ThemeMode, i: ModeInput): ThemeColors {
     ...side(dark, i, sideBg, canvas, text, line),
     band: bandBg, bandFg, bandMuted: readableMuted(bandFg, bandBg, [bandBg]), bandLine: mix(bandFg, bandBg, 0.82),
     // Vidro: translúcido só onde há desfoque (o CSS escolhe glassSolid sem backdrop-filter); claro e escuro com parâmetros próprios.
-    glass: rgba(canvas, dark ? 0.74 : 0.78), ring: dark ? mix(i.link, "#FFFFFF", 0.25) : i.link,
+    glass: rgba(canvas, dark ? 0.74 : 0.78), ring: i.ring ?? (dark ? mix(i.link, "#FFFFFF", 0.25) : i.link),
     glassSolid: rgba(canvas, 0.97),
     glassBorder: dark ? rgba("#FFFFFF", 0.09) : rgba(i.ink, 0.09),
     glassHighlight: dark ? rgba("#FFFFFF", 0.06) : rgba("#FFFFFF", 0.7),
@@ -166,7 +174,8 @@ const decls = (c: ThemeColors) => Object.entries(c).map(([k, v]) => `--ds-${came
  */
 /** Paleta categórica de gráficos (validada): igual em todos os temas, pois distingue séries, não marca. */
 export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"] as const;
-const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}}`;
+// Junto vão as constantes `--bdc-*` da Brás Digital Club: nomes próprios, lidos só pelos componentes da Brás.
+const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}}`;
 
 export function themeCss(key: ThemeKey): string {
   const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));
@@ -174,7 +183,8 @@ export function themeCss(key: ThemeKey): string {
   // Barra lateral escura no modo claro (ex.: navy do Master): o logo dentro dela usa a versão para fundo escuro.
   const sideDarkInLight = luminance(themeColors(key, "light").sideBg) < 0.18;
   const sideLogo = sideDarkInLight ? `${sel} :is(.ds-side,.ds-drawer) .nl-logo-light{display:none}${sel} :is(.ds-side,.ds-drawer) .nl-logo-dark{display:inline-block}` : "";
-  return seriesCss() + sideLogo + `${sel}{color-scheme:light;${light}}` +
+  // Ilha escura (`.ds-tema-escuro`, ex.: rodapé institucional): o modo escuro da mesma marca, em qualquer modo da página.
+  return seriesCss() + sideLogo + `${sel}{color-scheme:light;${light}}` + `${sel} .ds-tema-escuro{color-scheme:dark;${dark}}` +
     `${sel}[data-theme="dark"]{color-scheme:dark;${dark}}` +
     `@media (prefers-color-scheme: dark){${sel}:not([data-theme="light"]){color-scheme:dark;${dark}}}`;
 }
@@ -190,7 +200,7 @@ export function themeAreaCss(key: ThemeKey): string {
   const sel = "html:root:root[data-ds-theme]";
   const sideDarkInLight = luminance(themeColors(key, "light").sideBg) < 0.18;
   const sideLogo = sideDarkInLight ? `${sel} :is(.ds-side,.ds-drawer) .nl-logo-light{display:none}${sel} :is(.ds-side,.ds-drawer) .nl-logo-dark{display:inline-block}` : "";
-  return sideLogo + `${sel}{color-scheme:light;${light}}` +
+  return sideLogo + `${sel}{color-scheme:light;${light}}` + `${sel} .ds-tema-escuro{color-scheme:dark;${dark}}` +
     `${sel}[data-theme="dark"]{color-scheme:dark;${dark}}` +
     `@media (prefers-color-scheme: dark){${sel}:not([data-theme="light"]){color-scheme:dark;${dark}}}`;
 }
