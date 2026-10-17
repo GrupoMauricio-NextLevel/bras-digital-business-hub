@@ -31,6 +31,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | `superdrop-home-v4-analise-e-prompt.md` | **Home SuperDrop v4**: análise profunda (copy, cores, desenho, uso das imagens do pacote D152) a partir das capturas do dono no celular, nova ordem em 9 seções e prompt engenheiro mestre | **Aplicado (D153)** |
 | `commerce-home-v3-analise-e-prompt.md` | **Commerce v3**: análise profunda (marca errada nas telas de senha, cadastro e rodapé das lojas; promessas contraditas; amarelo fora da paleta; fotos não usadas; lojas de exemplo antigas) e prompt engenheiro mestre em 3 etapas | **Aplicado (D154)** |
 | `site-grupo-v1-analise-e-prompt.md` | **Site do grupo v1** (nextlevelgroup.com.br): Soluções, Club, Meu Contador e Loja NextLevel; topo navy ligado ao cabeçalho, marcas do grupo, jornada legível, sem blocos vazios, temas com captura | **Aplicado (D157)** |
+| `kit-marcas-gpt.md` | **Kit oficial de cada marca no GPT** (igual ao Brás Digital Club): ordem Commerce → SuperDrop → grupo → Cargas → família; prompt único com os dados de cada marca, preservando as logos aprovadas | **Aguardando os pacotes do dono** |
 | `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
 | `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
 
