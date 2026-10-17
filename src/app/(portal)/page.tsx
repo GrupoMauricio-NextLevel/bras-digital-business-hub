@@ -11,7 +11,7 @@ import { getBrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
 import { BrasHome } from "@/components/portal/bras/bras-home";
 import { getBrand, groupLink } from "@/lib/brand-server";
 import { robotsForBrandPortal } from "@/lib/bras/visibility";
-import { CommerceHome } from "@/components/portal/commerce-home";
+import { HomeImersivaEc } from "@/components/portal/commerce/imersiva/home-imersiva";
 import { SoonHome } from "@/components/portal/soon-home";
 import { JsonLd } from "@/components/portal/json-ld";
 import { FAQ } from "./content";
@@ -43,8 +43,8 @@ export default async function Portal() {
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
   if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} />; }
-  // Marcas sem dropshipping (NextLevel E-commerce) têm portal próprio.
-  if (!brandHas(brand, "dropship")) return <CommerceHome brand={brand} />;
+  // Marcas sem dropshipping (NextLevel E-commerce) têm portal próprio: a home imersiva (D165).
+  if (!brandHas(brand, "dropship")) return <HomeImersivaEc brand={brand} />;
   const faq = FAQ.slice(0, 5);
   return (
     <>

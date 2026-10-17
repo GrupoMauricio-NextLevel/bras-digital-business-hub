@@ -88,13 +88,15 @@ describe("trocar de perfil e entrar em outra marca", () => {
     expect((await profileForHost(ctx.db, fresh, superdrop()))?.id).toBe(mantos.id);
   });
 
-  it("a barra do ecossistema mostra a marca do outro perfil em 'Suas marcas'", async () => {
+  it("a barra do ecossistema mostra a marca do outro perfil em 'Suas marcas' (nunca o SuperDrop dentro da E-commerce, D164)", async () => {
     const ju = await lojaCommerce();
     await linkProfile(ctx.db, ju.actor, { email: await mantosEmail(), password: DEMO_PASSWORD, consent: true });
     await saveEcoSettings(ctx.db, ctx.actors.master, { brands: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] });
-    const bar = await ecosystemBar(ctx.db, "NEXTLEVEL_COMMERCE", new Date(), ju.user.id);
-    expect(bar?.mine.map((m) => m.brand)).toContain("SUPERDROP");
-    expect(bar?.mine.find((m) => m.brand === "SUPERDROP")?.href).toBe("/account/marcas");
+    const naCommerce = await ecosystemBar(ctx.db, "NEXTLEVEL_COMMERCE", new Date(), ju.user.id);
+    expect(naCommerce?.mine.map((m) => m.brand)).not.toContain("SUPERDROP");
+    const noSuperDrop = await ecosystemBar(ctx.db, "SUPERDROP", new Date(), ctx.actors.mantos.userId);
+    expect(noSuperDrop?.mine.map((m) => m.brand)).toContain("NEXTLEVEL_COMMERCE");
+    expect(noSuperDrop?.mine.find((m) => m.brand === "NEXTLEVEL_COMMERCE")?.href).toBe("/account/marcas");
   });
 });
 

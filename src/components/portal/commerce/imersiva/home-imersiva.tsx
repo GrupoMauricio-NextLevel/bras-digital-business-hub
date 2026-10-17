@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/portal/json-ld";
 import { HeroV2 } from "@/components/portal/commerce/hero-v2";
 import { ClosingCta, Faq, H2 } from "@/components/portal/commerce/sections";
 import { ThemeGallery } from "@/components/portal/commerce/theme-gallery";
+import { Personalize } from "@/components/portal/commerce/personalize";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { LojasExemplo } from "@/components/portal/commerce-home";
 import type { EcFotoNome } from "@/lib/marcas/ecommerce-home-imagens";
@@ -18,11 +19,10 @@ import "../commerce.css";
 import "./imersiva.css";
 
 /**
- * Home imersiva da NextLevel E-commerce (PRÉVIA, branch de revisão; rota /previa-home, ligada só com
- * EC_HOME_IMERSIVA_PREVIA=true). Mesma primeira dobra da home atual (texto e oferta vindos do Master), depois a jornada
- * "a loja que cresce" (cinco passos, foto presa na tela), as quatro portas, a prova (lojas de exemplo), temas, planos,
- * dúvidas e a chamada final. Cada frase corresponde a algo que o sistema já faz (conferido em
- * docs/design/ecommerce-home-imersiva-previa.md). Fotos provisórias: `EC_HOME_PROVISORIAS`.
+ * Home da NextLevel E-commerce, versão imersiva (D165, padrão da Soluções D162). Mesma primeira dobra (texto e oferta vindos
+ * do Master), depois a jornada "a loja que cresce" (cinco passos, foto presa na tela), as quatro portas, a prova (lojas de
+ * exemplo), a personalização interativa, temas, planos (simulador), dúvidas e a chamada final. Cada frase corresponde a algo
+ * que o sistema já faz (conferido em docs/design/ecommerce-home-imersiva-previa.md).
  */
 export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const cta = brand.signupOpen ? "/cadastro" : "/quero-minha-loja";
@@ -78,7 +78,15 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
       <LojasExemplo cta={cta} className={`${section} bg-surface`} />
 
-      <section id="temas" aria-labelledby="temas-t" className={`${section} bg-canvas`}>
+      <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-canvas`}>
+        <div className="mx-auto max-w-6xl">
+          <p className="eci-eyebrow eci-eyebrow--claro">Personalização</p>
+          <h2 id="pers-t" className="eci-h2 mt-3 mb-12 max-w-3xl text-foreground">A cara da sua marca, sem escrever código.</h2>
+          <Personalize />
+        </div>
+      </section>
+
+      <section id="temas" aria-labelledby="temas-t" className={`${section} bg-surface`}>
         <div className="mx-auto max-w-6xl">
           <div className="eci-lado mb-12">
             <div className="eci-surge">
@@ -93,7 +101,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <section id="planos" aria-labelledby="planos-t" className={`${section} bg-surface`}>
+      <section id="planos" aria-labelledby="planos-t" className={`${section} bg-canvas`}>
         <div className="mx-auto max-w-6xl">
           <div className="eci-lado mb-12">
             <FotoEc nome="ec-planos" alt="" sizes="(min-width: 900px) 36rem, 100vw" className="eci-surge" />
@@ -107,7 +115,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-canvas`}>
+      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-surface`}>
         <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas frequentes</h2><Faq plans={pv.plans} offer={offer} themes={released.map((t) => ({ name: t.name, priceCents: t.priceCents }))} /></div>
       </section>
 

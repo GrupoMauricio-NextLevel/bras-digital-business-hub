@@ -15,7 +15,7 @@ describe("tela de entrada por marca", () => {
       }
     }
     expect(loginPhotoFor("SUPERDROP")?.src).toBe("/portal/superdrop/v3/sd-login-lateral.webp");
-    expect(loginPhotoFor("NEXTLEVEL_COMMERCE")?.src).toBe("/portal/commerce/v3/cm-login-lateral.webp");
+    expect(loginPhotoFor("NEXTLEVEL_COMMERCE")?.src).toBe("/portal/nextlevel-ecommerce/v1/home/ec-entrar-1400.webp"); // D165
     expect(loginPhotoFor("BRAS_DIGITAL")?.src).toContain("/bras/");
     // Master (marca-mãe v2, D161): peça 3D "vidro óptico" do pacote da marca.
     expect(loginPhotoFor("NEXTLEVEL")?.src).toBe("/marcas/nextlevel/v2/3d/01-vidro-optico-1600.webp");

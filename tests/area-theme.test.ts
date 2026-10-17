@@ -15,12 +15,15 @@ describe("cor de uma área com marca própria (Estúdio da Brás, Meu Brás)", (
   it("vence o tema do endereço nos modos claro, escuro e sistema", () => {
     const area = seletores(themeAreaCss("bras"));
     const endereco = seletores(themeCss("superdrop"));
-    expect(area).toHaveLength(3);
-    expect(endereco).toHaveLength(3);
-    for (let i = 0; i < 3; i++) expect(maior(spec(area[i]!), spec(endereco[i]!))).toBe(true);
+    // Claro, escuro e sistema (e, desde D158, o bloco "seção escura" `.ds-tema-escuro`): a área tem os mesmos blocos do endereço.
+    expect(area.length).toBeGreaterThanOrEqual(3);
+    expect(area).toHaveLength(endereco.length);
+    for (let i = 0; i < area.length; i++) expect(maior(spec(area[i]!), spec(endereco[i]!))).toBe(true);
   });
   it("traz a cor da Brás, não a do endereço", () => {
-    expect(themeAreaCss("bras")).toContain("--ds-primary:#B34D00");
+    // Brás Digital Club (D158): azul elétrico da marca, não o laranja antigo nem o verde do SuperDrop.
+    expect(themeAreaCss("bras")).toContain("--ds-primary:#315CFF");
+    expect(themeAreaCss("bras")).not.toContain("#B34D00");
     expect(themeAreaCss("bras")).not.toContain("#118728");
   });
 });

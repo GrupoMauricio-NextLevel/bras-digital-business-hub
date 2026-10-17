@@ -16,7 +16,9 @@ const LOGIN_PHOTOS: Partial<Record<BrandCode, AuthPhoto[]>> = {
     { src: "/portal/superdrop/v3/sd-login-lateral.webp", alt: "", position: "50% 45%" },
     { src: "/portal/superdrop/v3/sd-lojista-home-office.webp", alt: "", position: "60% 45%" },
   ],
+  // Home imersiva (D165): o mesmo ateliê da jornada, à noite, com o notebook aceso.
   NEXTLEVEL_COMMERCE: [
+    { src: "/portal/nextlevel-ecommerce/v1/home/ec-entrar-1400.webp", alt: "", position: "62% 50%" },
     { src: "/portal/commerce/v3/cm-login-lateral.webp", alt: "", position: "50% 45%" },
     { src: "/portal/commerce/v3/cm-dono-gestao.webp", alt: "", position: "48% 40%" },
   ],
