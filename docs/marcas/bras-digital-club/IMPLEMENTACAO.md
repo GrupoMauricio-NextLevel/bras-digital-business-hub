@@ -60,7 +60,7 @@ Sem números, clientes, depoimentos ou preços inventados (preço continua só p
 - **Não verificado:** Safari/WebKit; medição de desempenho (Lighthouse); miniaturas do YouTube (sem internet externa nesta máquina).
 
 ## 8. Pendências reais
-- **Extensão do domínio** (`brasdigitalclub.com.br`? `.com`?): sem ela, nada de canônico, `og:url`, sitemap ou redirecionamento definitivos.
+- **Domínio:** `brasdigitalclub.com.br` registrado (17/10/2026). Falta: domínio no Render, DNS no Registro.br e ligar `BRAND_URL_BRAS_DIGITAL`.
 - Termos da Brás com o nome novo (nova versão e novo aceite).
 - Nome do programa de pontos dentro da marca (hoje "Indique e ganhe" / "Indicações e pontos").
 - Versão vetorial das logos para grande formato (o pacote entrega PNG).

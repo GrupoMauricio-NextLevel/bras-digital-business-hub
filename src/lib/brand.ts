@@ -104,7 +104,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       description: env.BRAND_SIGNUP_BRAS_DIGITAL === "true"
         ? "Atacado em caixa fechada das importadoras do Brás, com vídeos de análise de produto. Cadastro grátis com CNPJ; preço e estoque só para membros."
         : "Plataforma fechada de atacado do Brás para membros aprovados. Em breve.",
-      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["bras.nextlevelgroup.com.br"]),
+      domains: list(env.BRAND_DOMAINS_BRAS_DIGITAL, ["brasdigitalclub.com.br", "www.brasdigitalclub.com.br", "bras.nextlevelgroup.com.br"]),
       baseUrl: env.BRAND_URL_BRAS_DIGITAL ?? "https://bras.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_BRAS_DIGITAL),
       primaryColor: PALETTES.BRAS_DIGITAL.light.ink, accentColor: PALETTES.BRAS_DIGITAL.light.signal, logo: "nextlevel", wordmark: BDC.name,

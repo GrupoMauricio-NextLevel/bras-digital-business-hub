@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ogImageFor } from "@/lib/og-marca";
+import { BDC } from "@/lib/marcas/bras-digital-club";
 import { redirect } from "next/navigation";
 import { getSession, homeFor } from "@/lib/auth";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
@@ -24,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const closed = isClosedCommerceBrand(brand);
   return {
     title: { absolute: `${brand.name} · ${brand.tagline}` }, description: brand.description,
-    ...(closed ? {} : { alternates: { canonical: "/" } }),
+    // Brás: canônico só quando o endereço no ar for o domínio próprio (brasdigitalclub.com.br).
+    ...(!closed || brand.baseUrl === BDC.canonicalUrl ? { alternates: { canonical: "/" } } : {}),
     ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}),
     ...(closed ? { openGraph: { title: `${brand.name} · ${brand.tagline}`, description: brand.description, images: [ogImageFor(brand)] }, twitter: { card: "summary_large_image", title: brand.name, description: brand.tagline, images: [ogImageFor(brand).url] } } : {}),
   };

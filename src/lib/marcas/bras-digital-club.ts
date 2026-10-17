@@ -14,8 +14,11 @@ export const BDC = {
   shortName: "BDC",
   tagline: "Conecte seu negócio ao pulso do Brás.",
   publicRoute: "/bras-digital-club",
-  /** Pendente: o nome-base é `brasdigitalclub`, mas a extensão do domínio ainda não foi confirmada. Sem canonical definitivo. */
-  canonicalUrl: null as string | null,
+  /**
+   * Domínio próprio, registrado pelo dono em 17/10/2026 (Registro.br). Vale como endereço canônico só quando for o endereço
+   * da marca no ar (`BRAND_URL_BRAS_DIGITAL`), depois do DNS verificado no Render; até lá a Brás segue em bras.nextlevelgroup.com.br.
+   */
+  canonicalUrl: "https://brasdigitalclub.com.br" as string | null,
   cores: { navy: "#0C1830", azul: "#315CFF", ciano: "#00D4FF", offWhite: "#F4F1E9" },
   gradiente: "linear-gradient(135deg, #315CFF 0%, #00D4FF 100%)",
   /** Papéis do pacote (`brand-tokens.json`). */

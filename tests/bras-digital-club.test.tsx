@@ -19,11 +19,13 @@ describe("Brás Digital Club: identidade", () => {
     expect(BDC.name).toBe("Brás Digital Club");
     expect(BDC.tagline).toBe("Conecte seu negócio ao pulso do Brás.");
     expect(BDC.cores).toEqual({ navy: "#0C1830", azul: "#315CFF", ciano: "#00D4FF", offWhite: "#F4F1E9" });
-    expect(BDC.canonicalUrl).toBeNull();
+    expect(BDC.canonicalUrl).toBe("https://brasdigitalclub.com.br");
     const b = brandByCode("BRAS_DIGITAL");
     expect(b.name).toBe("Brás Digital Club");
     expect(b.tagline).toBe(BDC.tagline);
-    expect(b.baseUrl).not.toMatch(/brasdigitalclub/);
+    // Até o DNS ser verificado, o endereço no ar continua o antigo; o domínio novo já é reconhecido como da Brás.
+    expect(b.baseUrl).toBe("https://bras.nextlevelgroup.com.br");
+    expect(b.domains).toEqual(expect.arrayContaining(["brasdigitalclub.com.br", "www.brasdigitalclub.com.br", "bras.nextlevelgroup.com.br"]));
   });
 
   it("todos os arquivos oficiais e derivados existem", () => {
@@ -71,6 +73,16 @@ describe("Brás Digital Club: identidade", () => {
     expect(JSON.stringify(i)).toContain(BDC_ICONES.ico);
     expect(i.apple).toBe(BDC_ICONES.apple);
     expect(JSON.stringify(brandIcons("SUPERDROP"))).toContain("/brand/v2/superdrop/");
+  });
+
+  it("domínio próprio: endereços secundários levam ao principal, só depois de trocar o endereço no ar", () => {
+    const novo = { BRAND_URL_BRAS_DIGITAL: "https://brasdigitalclub.com.br" };
+    expect(routeHost({ host: "www.brasdigitalclub.com.br", pathname: "/cadastro", search: "?video=1" }, novo)).toEqual({ kind: "redirect", url: "https://brasdigitalclub.com.br/cadastro?video=1" });
+    expect(routeHost({ host: "bras.nextlevelgroup.com.br", pathname: "/" }, novo)).toEqual({ kind: "redirect", url: "https://brasdigitalclub.com.br/" });
+    expect(routeHost({ host: "brasdigitalclub.com.br", pathname: "/" }, novo).kind).not.toBe("redirect");
+    // Hoje (endereço no ar = bras.nextlevelgroup.com.br): o antigo não redireciona; o novo leva ao antigo até a troca.
+    expect(routeHost({ host: "bras.nextlevelgroup.com.br", pathname: "/" }, {}).kind).not.toBe("redirect");
+    expect(routeHost({ host: "brasdigitalclub.com.br", pathname: "/x" }, {})).toEqual({ kind: "redirect", url: "https://bras.nextlevelgroup.com.br/x" });
   });
 
   it("rota /bras-digital-club: página inicial no endereço da Brás, endereço da Brás nas outras marcas, página em endereço técnico", () => {

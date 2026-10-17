@@ -48,6 +48,12 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const brand = brandOfHostStrict(host, env);
   // Arquivos dos buscadores: cada endereço responde o dele (D149).
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
+  // Brás Digital Club com um endereço principal só (D158): os outros endereços da marca (www, o antigo bras.nextlevelgroup.com.br)
+  // levam ao endereço da marca no ar, mesmo caminho. Sem efeito enquanto o endereço no ar for o único que responde.
+  if (brand?.code === "BRAS_DIGITAL") {
+    const principal = bare(new URL(brand.baseUrl).host);
+    if (host !== principal && brand.domains.includes(host) && brand.domains.includes(principal)) return { kind: "redirect", url: `${brand.baseUrl}${pathname}${search}` };
+  }
   // Rota pública do Brás Digital Club (D158): no endereço da marca é a página inicial dela; nos endereços das outras marcas e
   // do grupo leva ao endereço da Brás. Só em endereço técnico (demonstração) a página `/bras-digital-club` abre como está.
   if (pathname === BRAS_CLUB_ROUTE || pathname === `${BRAS_CLUB_ROUTE}/`) {
