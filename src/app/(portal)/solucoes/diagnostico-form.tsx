@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FormField } from "@/components/app/form-field";
 import { requestDiagnosticAction } from "@/app/actions/financeiro";
+import { EVENTO_DIAGNOSTICO } from "@/components/portal/solucoes/selecao";
 
 /** Diagnóstico gratuito: formulário curto, roteamento por necessidade e atribuição de parceiro (pelo cookie do proxy). */
 export function DiagnosticoForm({ needs }: { needs: [string, string][] }) {
@@ -13,6 +14,17 @@ export function DiagnosticoForm({ needs }: { needs: [string, string][] }) {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [routes, setRoutes] = React.useState<{ label: string; href: string }[] | null>(null);
+  // Vitrine de Soluções (D162): "Enviar para o diagnóstico" preenche as necessidades e a mensagem com a seleção.
+  React.useEffect(() => {
+    const ok = new Set(needs.map(([k]) => k));
+    const on = (e: Event) => {
+      const d = (e as CustomEvent<{ needs: string[]; mensagem: string }>).detail;
+      setPicked((p) => [...new Set([...p, ...d.needs.filter((k) => ok.has(k))])].slice(0, 6));
+      if (d.mensagem) setF((x) => ({ ...x, message: x.message ? `${x.message}\n${d.mensagem}` : d.mensagem }));
+    };
+    window.addEventListener(EVENTO_DIAGNOSTICO, on);
+    return () => window.removeEventListener(EVENTO_DIAGNOSTICO, on);
+  }, [needs]);
   if (routes) return (
     <div role="status" className="rounded-xl border border-border bg-surface p-6">
       <p className="text-lg font-semibold">Recebemos seu pedido de diagnóstico.</p>

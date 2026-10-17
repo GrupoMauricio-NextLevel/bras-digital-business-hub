@@ -22,6 +22,10 @@ import { NL } from "@/lib/marcas/nextlevel";
 import { FamiliaFoto } from "@/components/nl-store/familia-foto";
 import { FechoMarca } from "@/components/portal/marca-institucional";
 import { HeroiNextLevel } from "@/components/portal/nextlevel/heroi-nextlevel";
+import { VitrineSecoes } from "@/components/portal/solucoes/vitrine-v2";
+import { SelecaoProvider } from "@/components/portal/solucoes/selecao";
+import { projetarVitrine } from "@/lib/solucoes/vitrine";
+import { getSession } from "@/lib/auth";
 import { supportContacts } from "@/lib/support";
 import { BrandLogo } from "@/components/brand/brand-logo";
 
@@ -46,8 +50,12 @@ const FAQ_SOLUCOES = [
   { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera o SuperDrop, a NextLevel Commerce, o Brás Digital Club e a NextLevel Cargas." },
 ];
 
-export default async function SolucoesPage() {
+export default async function SolucoesPage({ searchParams }: { searchParams: Promise<{ previa?: string; porta?: string }> }) {
   if (!finFlag("FIN_PUBLIC_SOLUTIONS")) notFound();
+  const sp = await searchParams;
+  // Vitrine imersiva (D162): no ar com a chave FIN_SOLUTIONS_V2; antes disso, só o Master vê, em /solucoes?previa=v2.
+  const previa = sp.previa === "v2" && (await getSession())?.user.role === "NEXTLEVEL_MASTER";
+  const v2 = finFlag("FIN_SOLUTIONS_V2") || previa;
   const db = await getDb();
   const [brand, items, journey, plans, attr] = await Promise.all([getBrand(), listCatalog(db), getJourneyConfig(db), commercePlansView(db), currentAttribution()]);
   const commerce = brandByCode("NEXTLEVEL_COMMERCE");
@@ -58,7 +66,12 @@ export default async function SolucoesPage() {
   const superdropHref = withAttribution(`${brand.code === "SUPERDROP" ? "" : superdrop.baseUrl}/`, attr);
   const MARCAS_DO_GRUPO = [superdrop, commerce, brandByCode("BRAS_DIGITAL"), brandByCode("NEXTLEVEL_CARGAS")];
   const contato = supportContacts();
-  return (
+  const vitrine = v2 ? projetarVitrine({
+    itens: items, fases: journey.phases, oferta: plans.offer ? { trialDays: plans.offer.trialDays, firstPeriodCents: plans.offer.firstPeriodCents ?? null, feeHolidayMonths: plans.offer.feeHolidayMonths } : null,
+    link: (path) => withAttribution(path, attr), commerce: { base: brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl, signupOpen: commerce.signupOpen }, superdrop: { base: superdrop.baseUrl, tagline: superdrop.tagline },
+  }) : null;
+  const porta = vitrine?.portas.find((p) => p.key === sp.porta)?.key ?? null;
+  const conteudo = (
     <>
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
@@ -93,6 +106,7 @@ export default async function SolucoesPage() {
         </div>
       </section>
 
+      {vitrine ? <VitrineSecoes v={vitrine} porta={porta} previa={previa && !finFlag("FIN_SOLUTIONS_V2")} /> : <>
       <section id="jornada" className="px-4 py-16" aria-labelledby="jor-t">
         <div className="mx-auto max-w-6xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-link">Método</p>
@@ -157,6 +171,7 @@ export default async function SolucoesPage() {
           </div>
         </div>
       </section>
+      </>}
 
       <section className="px-4 py-16" aria-labelledby="junto-t">
         <div className="mx-auto max-w-6xl">
@@ -205,4 +220,5 @@ export default async function SolucoesPage() {
       </section>
     </>
   );
+  return vitrine ? <SelecaoProvider catalogo={[...vitrine.itens, ...vitrine.familias.filter((f) => f.key === "SUPERDROP").flatMap((f) => f.itens)]}>{conteudo}</SelecaoProvider> : conteudo;
 }
