@@ -1738,8 +1738,21 @@ export const bdImporters = pgTable("bd_importers", {
   stockMode: text("stock_mode", { enum: ["MANUAL", "PLANILHA", "BLING"] }).notNull().default("MANUAL"),
   plan: text("plan", { enum: ["GRATIS", "PRO", "PREMIUM"] }).notNull().default("GRATIS"),
   organizationId: text("organization_id").references(() => organizations.id),
+  /**
+   * Rede aberta (D159/D160): fornecedor de qualquer tipo, em um polo, que se cadastra sozinho e passa pela aprovação no
+   * Estúdio. Os já cadastrados pelo Master ficam como importadora do Brás, aprovados.
+   */
+  supplierType: text("supplier_type", { enum: ["IMPORTADORA", "DISTRIBUIDOR", "ATACADISTA"] }).notNull().default("IMPORTADORA"),
+  polo: text("polo", { enum: ["CANINDE", "BRAS", "BOM_RETIRO", "VINTE_CINCO", "OUTRO"] }).notNull().default("BRAS"),
+  approvalStatus: text("approval_status", { enum: ["PENDENTE", "APROVADO", "RECUSADO"] }).notNull().default("APROVADO"),
+  signupSource: text("signup_source", { enum: ["MASTER", "AUTOCADASTRO"] }).notNull().default("MASTER"),
+  submittedAt: ts("submitted_at"),
+  reviewedAt: ts("reviewed_at"),
+  reviewedBy: text("reviewed_by"),
+  /** Motivo da recusa ou observação da aprovação (o fornecedor vê o motivo da recusa). */
+  reviewNote: text("review_note"),
   createdAt: createdAt(),
-});
+}, (t) => [index("bd_importers_approval_idx").on(t.approvalStatus, t.submittedAt), index("bd_importers_polo_idx").on(t.polo, t.supplierType)]);
 
 /** Pessoas com login no painel da importadora (D110). Função de equipe decide o que cada uma faz. Um usuário, uma importadora. */
 export const BRAS_IMPORTER_STAFF_ROLES = ["DONO", "COMERCIAL", "ESTOQUE", "BALCAO", "FINANCEIRO"] as const;

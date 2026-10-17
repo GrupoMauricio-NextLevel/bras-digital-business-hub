@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, BadgeCheck, Boxes, Building2, Check, Clapperboard, Factory, Headset, Lock, MessageCircle, PackageCheck, ShieldCheck, Sparkles, Store, Truck, UserRound } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BadgeCheck, Boxes, Building2, Check, Clapperboard, Factory, Headset, Lock, MessageCircle, PackageCheck, ShieldCheck, Sparkles, Store, Truck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import type { BrasPublicVideo } from "@/lib/domain/bras/videos";
 import type { BrasAnalysisSettings } from "@/lib/domain/bras/descobertas";
@@ -75,17 +75,18 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
       <section id="inicio" data-heroi-escuro="bras" className="bd-dark relative isolate overflow-hidden" aria-labelledby="bd-h1">
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-10 md:min-h-[40rem] md:content-center md:pb-24 md:pt-20">
           <div className="relative z-10 max-w-xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-sm font-semibold text-[var(--bd-tinta-clara)]"><Boxes className="size-4 text-[var(--bd-pulso)]" aria-hidden />Clube de compras do Brás para empresas com CNPJ</p>
-            <h1 id="bd-h1" className="bd-display bd-h1 mt-6 text-white">Conecte seu negócio ao <span className="bd-accent">pulso do Brás.</span></h1>
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-sm font-semibold text-[var(--bd-tinta-clara)]"><Boxes className="size-4 text-[var(--bd-pulso)]" aria-hidden />{BDC.tagline}</p>
+            <h1 id="bd-h1" className="bd-display bd-h1 mt-6 text-white">A rede de abastecimento de quem <span className="bd-accent">compra para revender.</span></h1>
             <div className="bd-pulso-linha mt-6 w-24" aria-hidden />
-            <p className="mt-6 text-lg leading-relaxed text-[var(--bd-tinta-suave)] md:text-xl">Descobertas das importadoras em vídeo, análise de mercado de cada produto e pedido de caixas fechadas pelo sistema. Para quem vende no Mercado Livre, na loja ou para o Brasil todo.</p>
+            <p className="mt-6 text-lg leading-relaxed text-[var(--bd-tinta-suave)] md:text-xl">Encontre importadoras, distribuidores e atacadistas por categoria. Solicite cotações, compare condições comerciais e descubra oportunidades para abastecer seu negócio.</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link href="/cadastro" className="bd-btn bd-btn--primario bd-btn--lg">Cadastrar minha empresa grátis <ArrowRight className="size-5" aria-hidden /></Link>
-              <Link href="/login" className="bd-btn bd-btn--linha bd-btn--lg"><UserRound className="size-5" aria-hidden />Área do membro</Link>
+              <Link href="/cadastro" className="bd-btn bd-btn--primario bd-btn--lg">Quero comprar no atacado <ArrowRight className="size-5" aria-hidden /></Link>
+              <Link href="/fornecer" className="bd-btn bd-btn--linha bd-btn--lg"><Factory className="size-5" aria-hidden />Quero fornecer</Link>
             </div>
             <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--bd-tinta-suave)]">
-              {["Cadastro com CNPJ", "Sem mensalidade para comprar", "Preço liberado na hora"].map((t) => <li key={t} className="flex items-center gap-1.5"><BadgeCheck className="size-4 text-[var(--bd-pulso)]" aria-hidden />{t}</li>)}
+              {["Compradores com CNPJ conferido", "Fornecedores aprovados pela equipe", "Começando pelo Canindé"].map((t) => <li key={t} className="flex items-center gap-1.5"><BadgeCheck className="size-4 text-[var(--bd-pulso)]" aria-hidden />{t}</li>)}
             </ul>
+            <p className="mt-4 text-sm text-[var(--bd-tinta-suave)]">Já tem cadastro? <Link href="/login" className="font-semibold text-white underline underline-offset-4">Entrar</Link></p>
           </div>
           <picture className="pointer-events-none relative mx-auto block w-full max-w-[22rem] md:absolute md:inset-y-0 md:right-0 md:mx-0 md:w-[58%] md:max-w-none">
             <source media="(min-width: 768px)" srcSet={`${BDC_HEROI.base}-800.webp 800w, ${BDC_HEROI.base}-1600.webp 1600w`} sizes="58vw" />
@@ -102,6 +103,31 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
           {[...FATOS, ...FATOS].map((f, i) => <li key={i} aria-hidden={i >= FATOS.length ? true : undefined} className="flex shrink-0 items-center gap-10 whitespace-nowrap">{f}<span aria-hidden className="text-[var(--bd-pulso)]">✦</span></li>)}
         </ul>
       </div>
+
+      {/* 2b. As duas portas da rede (D160): quem compra e quem fornece. */}
+      <section id="duas-portas" aria-labelledby="bd-portas" className={`bd-papel ${section}`}>
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-bold uppercase tracking-widest bd-accent">O clube de quem abastece o Brasil</p>
+          <h2 id="bd-portas" className="bd-display bd-h2 mt-3 max-w-4xl">Empresas verificadas, <span className="bd-accent">comprando com força de grupo.</span></h2>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed opacity-85">Do lado de quem compra, lojistas e vendedores com CNPJ conferido. Do lado de quem vende, importadoras, distribuidores e atacadistas aprovados pela equipe, começando pelo Canindé.</p>
+          <div className="mt-10 grid gap-4 md:grid-cols-2">
+            <article id="compradores" className="bd-tile flex flex-col rounded-[1.5rem] p-6 ring-1 ring-black/5 md:p-8">
+              <Store className="size-8 text-[var(--bd-acao)]" aria-hidden />
+              <h3 className="bd-display mt-4 text-3xl">Para compradores</h3>
+              <p className="mt-2 text-lg opacity-85">Encontre fornecedores para a sua próxima compra.</p>
+              <ul className="mt-5 space-y-2">{["Fornecedores por categoria e por polo", "Pedido mínimo, pagamento e prazo de cada um", "Cotação pela equipe, sem precisar viajar", "Descobertas com análise de mercado"].map((t) => <li key={t} className="flex gap-2"><Check className="mt-1 size-4 shrink-0 text-[var(--bd-acao)]" aria-hidden />{t}</li>)}</ul>
+              <Link href="/cadastro" className="bd-btn bd-btn--primario mt-auto w-full sm:w-auto" style={{ marginTop: "1.75rem" }}>Quero comprar no atacado <ArrowRight className="size-5" aria-hidden /></Link>
+            </article>
+            <article id="fornecedores" className="bd-dark flex flex-col rounded-[1.5rem] p-6 md:p-8">
+              <Factory className="size-8 text-[var(--bd-pulso)]" aria-hidden />
+              <h3 className="bd-display mt-4 text-3xl text-white">Para fornecedores</h3>
+              <p className="mt-2 text-lg text-[var(--bd-tinta-suave)]">Receba solicitações de quem procura os seus produtos.</p>
+              <ul className="mt-5 space-y-2 text-[var(--bd-tinta-clara)]">{["Importadoras, distribuidores e atacadistas", "Compradores com CNPJ conferido", "Painel com produtos, estoque em caixas e pedidos", "Os dados do comprador ficam protegidos"].map((t) => <li key={t} className="flex gap-2"><Check className="mt-1 size-4 shrink-0 text-[var(--bd-pulso)]" aria-hidden />{t}</li>)}</ul>
+              <Link href="/fornecer" className="bd-btn bd-btn--linha mt-auto w-full sm:w-auto" style={{ marginTop: "1.75rem" }}>Quero fornecer <ArrowRight className="size-5" aria-hidden /></Link>
+            </article>
+          </div>
+        </div>
+      </section>
 
       {/* 3. Proposta de valor (pertencimento e transformação) + mosaico com o que existe hoje. */}
       <section id="proposta" aria-labelledby="bd-plat" className={`bd-papel ${section}`}>

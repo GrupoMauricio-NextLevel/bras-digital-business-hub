@@ -8,7 +8,7 @@ import { BDC } from "./marcas/bras-digital-club";
  */
 export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant", "/partner", "/meu-bras", "/importadora", "/transportadora", "/bras", "/account", "/theme-editor", "/login", "/esqueci-senha", "/redefinir-senha"];
 /** Páginas públicas de uma marca de operação fechada já aberta (D92). */
-export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
+export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/fornecer", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
 /** Páginas do grupo que abrem no endereço da holding (D147: vão para nextlevelgroup.com.br quando o site do grupo existir). */
 export const GROUP_PATHS = ["/solucoes", "/termos", "/privacidade", "/loja-nextlevel", "/club", "/meu-contador"];
 /** Páginas que são da NextLevel Soluções Digitais (agência): nos endereços das marcas vão para o endereço do grupo (D149). */

@@ -10,11 +10,11 @@ import { brasSignupAction } from "@/app/actions/bras";
 import { EMPTY_PROFILE, ProfileQuestions, profileComplete, type ProfileDraft } from "./profile-questions";
 
 /** Máscara visual do CNPJ (00.000.000/0000-00); o servidor guarda só os dígitos e confere os verificadores. */
-const maskCnpj = (v: string) => {
+export const maskCnpj = (v: string) => {
   const d = v.replace(/\D/g, "").slice(0, 14);
   return d.replace(/^(\d{2})(\d)/, "$1.$2").replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3").replace(/\.(\d{3})(\d)/, ".$1/$2").replace(/(\d{4})(\d)/, "$1-$2");
 };
-const maskPhone = (v: string) => {
+export const maskPhone = (v: string) => {
   const d = v.replace(/\D/g, "").slice(0, 11);
   return d.length <= 10 ? d.replace(/^(\d{2})(\d{0,4})(\d{0,4}).*/, (_, a, b, c) => [a && `(${a}`, a.length === 2 ? ") " : "", b, c && `-${c}`].join("")) : d.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
 };

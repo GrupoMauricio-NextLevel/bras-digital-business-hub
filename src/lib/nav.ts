@@ -147,6 +147,8 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "Membro Brás Digital Club",
     items: [
       { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
+      // Rede aberta (D160): importadoras, distribuidores e atacadistas aprovados, por categoria e polo.
+      { label: "Fornecedores", href: "/meu-bras/fornecedores", icon: "Factory", group: "Meu Brás" },
       { label: "Descobertas", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
       { label: "Meus pedidos", href: "/meu-bras/pedidos", icon: "ReceiptText", group: "Meu Brás" },
       { label: "Fretes", href: "/meu-bras/fretes", icon: "Truck", group: "Meu Brás" },

@@ -25,7 +25,7 @@ export default async function PortalLayout({ children }: { children: React.React
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
-    ? [{ href: "/#proposta", label: "O Club" }, { href: "/#capacidades", label: "Benefícios" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#confianca", label: "Confiança" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#compradores", label: "Para compradores" }, { href: "/#fornecedores", label: "Para fornecedores" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
     ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship

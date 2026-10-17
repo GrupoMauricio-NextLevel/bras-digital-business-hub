@@ -183,8 +183,8 @@ só depois que o pagamento passar pela plataforma.
 | Fase | Entrega | Resultado |
 |---|---|---|
 | **F0** | Decisões das perguntas abaixo; D159 | Modelo fechado |
-| **F1** | Nova página pública com as duas portas ("Quero comprar no atacado" e "Quero fornecer"), **autocadastro do fornecedor** com tipo (importadora, distribuidor, atacadista), polo e categorias, aprovação no Estúdio | Os dois lados entram sozinhos |
-| **F2** | Diretório por categoria e polo, perfil público do fornecedor (o que for liberado) | O comprador encontra fornecedores |
+| **F1** ✅ (D160) | Nova página pública com as duas portas ("Quero comprar no atacado" e "Quero fornecer"), **autocadastro do fornecedor** com tipo (importadora, distribuidor, atacadista), polo e categorias, aprovação no Estúdio | Os dois lados entram sozinhos |
+| **F2** ✅ (D160, no Meu Brás) | Diretório por categoria e polo, perfil público do fornecedor (o que for liberado) | O comprador encontra fornecedores |
 | **F3** | Pedido de cotação, distribuição, respostas, comparação, mensagens, avaliação | O núcleo da rede funciona |
 | **F4** | Planos do fornecedor e destaque ligados no Financeiro Master; plano de inteligência do comprador | A NextLevel passa a receber |
 | **F5** | Pedido e pagamento pela plataforma com repasse ao fornecedor (decidido na D159), frete integrado à cotação, **cotação coletiva** | Comissão sem vazamento e o "Club" em ação |
@@ -208,8 +208,8 @@ do Brás, Canindé e outros polos" deixam a porta aberta para a expansão.
 
 **A. Modelo e participantes**
 1. A Brás vira **rede aberta** (fornecedores se cadastram e são encontrados pelo nome) ou continua **curadoria** (a NextLevel escolhe e intermedia, nome escondido até o pedido)? *Recomendo: rede aberta, com aprovação do fornecedor no Estúdio.*
-2. Quem pode ser fornecedor: só importadora, ou também distribuidor e atacadista? Fábrica nacional? *Recomendo: os três primeiros, com o tipo visível.*
-3. Quais polos entram no começo: Brás, Canindé, Bom Retiro, 25 de Março, outros? Fornecedor de fora de São Paulo?
+2. Quem pode ser fornecedor? **Respondido (D160): importadora, distribuidor e atacadista.** Fábrica nacional segue em aberto.
+3. Quais polos entram no começo? **Respondido (D160): o Canindé primeiro.**
 4. O comprador continua só com CNPJ? E MEI? *Recomendo: CNPJ obrigatório, MEI aceito.*
 5. O fornecedor entra na hora ou passa por aprovação (documentos, visita)? *Recomendo: aprovação no Estúdio, com prazo.*
 

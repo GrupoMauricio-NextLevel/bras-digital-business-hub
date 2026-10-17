@@ -13,6 +13,7 @@ import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { setBrasDefaultCommissionBps, settleBrasCommission, undoBrasSettlement, updateBrasImporterDetails, type brasImporterDetailsSchema, type brasSettleSchema } from "@/lib/domain/bras/comissoes";
 import { balcaoConfirmPickup, createBalcaoLink, revokeBalcaoLink } from "@/lib/domain/bras/balcao";
 import { brasPanelsEnabled } from "@/lib/bras/panels";
+import { reviewSupplier, signupSupplier, type SupplierSignupInput } from "@/lib/domain/bras/fornecedores";
 import { referrerByCode, registerClientReferral } from "@/lib/domain/club/pontos";
 import { acceptBrasTerms, getBrasMemberByUser, setBrasMemberStatus, signupBrasMember, type brasSignupSchema } from "@/lib/domain/bras/membros";
 import { addBrasVideo, moveBrasVideo, removeBrasVideo, setBrasVideoActive, setBrasVideoPublishAt, type brasVideoSchema } from "@/lib/domain/bras/videos";
@@ -24,6 +25,26 @@ import { cancelMyBrasAppointment, decideBrasAppointment, replyBrasSupport, reque
 import { deleteBrasContent, saveBrasContent, type brasContentSchema } from "@/lib/domain/bras/pauta";
 import { brasMemberLevel } from "@/lib/domain/bras/painel";
 import { addBrasImporter, createBrasRequest, removeBrasOffer, setBrasImporterActive, setBrasOffer, setBrasRequestStatus, type BrasRequestStatus, type brasImporterSchema, type brasOfferSchema, type brasRequestSchema } from "@/lib/domain/bras/catalogo";
+
+/** Cadastro do fornecedor pelo próprio fornecedor (D160): só no endereço da Brás aberto; entra em análise e já tem login. */
+export async function brasSupplierSignupAction(input: SupplierSignupInput) {
+  const r = await runAction(async () => {
+    const brand = await getBrand();
+    if (!isClosedCommerceBrand(brand) || !brand.signupOpen) throw new DomainError("CLOSED", "O cadastro de fornecedores não está aberto neste endereço.");
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`bras-fornecedor:${ip}`, 5, 15 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
+    const created = await signupSupplier(await getDb(), input);
+    await setSessionCookie(created.userId);
+    return { ok: true as const };
+  });
+  if (r.ok) redirect("/importadora?cadastro=recebido");
+  return r;
+}
+
+/** Aprovação ou recusa do fornecedor no Estúdio (só Master). */
+export async function reviewSupplierAction(importerId: string, input: { decision: "APROVAR" | "RECUSAR"; note?: string }) {
+  return runAction(async () => { const { actor, db } = await master(); const r = await reviewSupplier(db, actor, importerId, input); refresh(); revalidatePath("/importadora", "layout"); return r; });
+}
 
 /** Cadastro grátis do membro comprador da Brás (D92): só no endereço da Brás com o cadastro aberto. Libera na hora. */
 export async function brasSignupAction(input: z.input<typeof brasSignupSchema>) {

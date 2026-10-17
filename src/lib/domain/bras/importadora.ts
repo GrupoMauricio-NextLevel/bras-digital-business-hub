@@ -13,6 +13,7 @@ import { notifyBrasRequestStatus } from "./avisos";
 import { applyStockDelta } from "./estoque";
 import { isValidCnpj, onlyDigits } from "./membros";
 import { getBrasRules } from "./regras";
+import { SUPPLIER_PENDING_MESSAGE, supplierRejectedMessage } from "./fornecedores";
 
 /**
  * Importadora parceira da Brás (D110): painel com login próprio (`BRAS_IMPORTER`) e a ficha 360 no Estúdio.
@@ -37,6 +38,9 @@ export async function myImporter(db: Database, actor: Actor) {
   if (actor.role !== "BRAS_IMPORTER") throw new ForbiddenError("Área da importadora parceira do Brás Digital Club.");
   const [row] = await db.select({ link: bdImporterUsers, importer: bdImporters }).from(bdImporterUsers).innerJoin(bdImporters, eq(bdImporters.id, bdImporterUsers.importerId)).where(eq(bdImporterUsers.userId, actor.userId)).limit(1);
   if (!row) throw new ForbiddenError("Seu acesso não está ligado a uma importadora. Fale com a equipe do Brás Digital Club.");
+  // Rede aberta (D160): fornecedor que se cadastrou sozinho espera a aprovação; recusado vê o motivo.
+  if (row.importer.approvalStatus === "PENDENTE") throw new ForbiddenError(SUPPLIER_PENDING_MESSAGE);
+  if (row.importer.approvalStatus === "RECUSADO") throw new ForbiddenError(supplierRejectedMessage(row.importer.reviewNote));
   if (!row.importer.active) throw new ForbiddenError("A importadora está pausada no Brás Digital Club. Fale com a equipe.");
   return { importer: row.importer, staffRole: row.link.staffRole };
 }
