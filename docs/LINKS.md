@@ -59,7 +59,7 @@ Painéis pedem login: sem sessão, qualquer link de painel leva para a tela de e
 **Vitrine de cada loja:** `https://lojas.nextlevelgroup.com.br/store/<endereço-da-loja>` (ou o domínio próprio da loja).
 
 ## Master NextLevel — master.nextlevelgroup.com.br (no ar)
-**Site do grupo (D149):** Soluções https://master.nextlevelgroup.com.br/solucoes · Loja NextLevel https://master.nextlevelgroup.com.br/loja-nextlevel · termos /termos · privacidade /privacidade (vão para nextlevelgroup.com.br na Fase 3)
+**Site do grupo (D156, no ar desde 17/10/2026):** https://nextlevelgroup.com.br (abre Soluções) · Club https://nextlevelgroup.com.br/club · Meu Contador https://nextlevelgroup.com.br/meu-contador · Loja NextLevel https://nextlevelgroup.com.br/loja-nextlevel · termos /termos · privacidade /privacidade. `www` leva ao principal; "Entrar" vai para o Master. O site antigo do ChatGPT Sites está em https://experiencia.nextlevelgroup.com.br
 
 **Entrada:** https://master.nextlevelgroup.com.br/login
 

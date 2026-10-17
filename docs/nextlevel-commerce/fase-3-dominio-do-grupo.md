@@ -1,6 +1,6 @@
 # Fase 3: nextlevelgroup.com.br no sistema (D156)
 
-Decisão do dono (16/10/2026): o endereço principal **nextlevelgroup.com.br** passa a abrir o site do grupo no nosso sistema (Soluções, Club, Meu Contador, Loja NextLevel, termos). O site atual feito no ChatGPT Sites ("NEXTLEVEL Experiência Estratégica") vai para **experiencia.nextlevelgroup.com.br**.
+**Concluída em 17/10/2026** (DNS na Hostinger, domínios verificados no Render, `GROUP_SITE_URL` ligado). Decisão do dono (16/10/2026): o endereço principal **nextlevelgroup.com.br** passa a abrir o site do grupo no nosso sistema (Soluções, Club, Meu Contador, Loja NextLevel, termos). O site atual feito no ChatGPT Sites ("NEXTLEVEL Experiência Estratégica") vai para **experiencia.nextlevelgroup.com.br**.
 
 ## Como fica
 | Endereço | O que abre |
