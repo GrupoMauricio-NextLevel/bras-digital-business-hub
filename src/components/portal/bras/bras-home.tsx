@@ -89,7 +89,7 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
           </div>
           <picture className="pointer-events-none relative mx-auto block w-full max-w-[22rem] md:absolute md:inset-y-0 md:right-0 md:mx-0 md:w-[58%] md:max-w-none">
             <source media="(min-width: 768px)" srcSet={`${BDC_HEROI.base}-800.webp 800w, ${BDC_HEROI.base}-1600.webp 1600w`} sizes="58vw" />
-            <img src={BDC_HEROI.mobile} alt="" width={800} height={800} fetchPriority="high" decoding="async" className="aspect-square w-full rounded-[2rem] object-cover md:aspect-auto md:h-full md:rounded-none" style={{ objectPosition: "30% 50%" }} />
+            <img src={BDC_HEROI.mobile} alt="" width={800} height={800} fetchPriority="high" decoding="async" className="aspect-square w-full rounded-[2rem] object-cover md:aspect-auto md:h-full md:rounded-none" style={{ objectPosition: "15% 50%" }} />
           </picture>
           <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] bg-[linear-gradient(90deg,var(--bd-navy)_0%,color-mix(in_srgb,var(--bd-navy)_40%,transparent)_30%,transparent_60%)] md:block" />
         </div>

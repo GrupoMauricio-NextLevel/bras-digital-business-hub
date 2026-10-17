@@ -1,4 +1,5 @@
 import type { BrandCode } from "@/lib/brand";
+import { BDC } from "@/lib/marcas/bras-digital-club";
 
 /**
  * O que falta numa tela e o pedido de imagens para o GPT (D143). Arquivo puro (servidor e tela). As regras de imagem são
@@ -17,7 +18,7 @@ export const imageBrandOf = (host: BrandCode): ImageBrand =>
 const ACCENT: Record<ImageBrand, string> = {
   superdrop: "VERDE (#2D9E3B)",
   commerce: "AZUL (#2F81F4)",
-  bras: "LARANJA (#FB8342), só em detalhes",
+  bras: `AZUL ELÉTRICO (${BDC.cores.azul}) com CIANO (${BDC.cores.ciano}) só em detalhes, sobre NAVY (${BDC.cores.navy})`,
   nextlevel: "VERDE-ESCURO discreto (#1F6F3A)",
 };
 const BRAND_NAME: Record<ImageBrand, string> = { superdrop: "SuperDrop", commerce: "NextLevel Commerce", bras: "Brás Digital Club", nextlevel: "NextLevel (painéis do grupo)" };

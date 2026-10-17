@@ -40,7 +40,7 @@ type Arquivo = { src: string; w: number; h: number };
 /**
  * Logos oficiais em PNG/WebP com as duas versões transparentes (clara para fundo claro, escura com lettering off-white para
  * fundo escuro). A troca é de arquivo, nunca filtro de cor. `compacta` = assinatura horizontal; `assinatura-completa` = com slogan.
- * Altura mínima de leitura (`min-h-9`): abaixo disso use o monograma.
+ * Altura mínima de leitura (`min-h-11`, 44 px: o lettering tem duas linhas): abaixo disso use o monograma.
  */
 const PNG_OFICIAIS: Record<string, Record<Variante, { claro: Arquivo; escuro: Arquivo }>> = {
   [BDC.code]: {
@@ -55,7 +55,7 @@ export function BrandLogo({ brand, tone = "auto", variant = "compacta", classNam
   const oficial = PNG_OFICIAIS[brand.code ?? ""];
   if (oficial) {
     const v = oficial[variant];
-    const minimo = variant === "monograma" ? "" : "min-h-9";
+    const minimo = variant === "monograma" ? "" : "min-h-11";
     const img = (tema: "claro" | "escuro", extra: string, alt: string) => (
       // eslint-disable-next-line @next/next/no-img-element -- WebP estático com proporção do PNG oficial
       <img src={v[tema].src} width={Math.round((64 * v[tema].w) / v[tema].h)} height={64} alt={alt} className={cn("bdc-logo w-auto object-contain", className ?? "h-8", minimo, extra)} loading={priority ? "eager" : "lazy"} decoding="async" />
