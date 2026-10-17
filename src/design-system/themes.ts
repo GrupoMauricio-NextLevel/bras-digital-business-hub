@@ -75,11 +75,12 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   china: produto("China Hub (planejada)", ["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   // Brás Digital Club (D158): cores do pacote oficial (`src/lib/marcas/bras-digital-club.ts`). Navy na estrutura (barra lateral
   // navy também no claro), área de trabalho clara, azul elétrico nas ações e ciano como pulso (reflexo e foco no escuro).
-  // O foco no claro é azul: o ciano sobre branco não chega a 3:1 (contraste mínimo de indicador de foco).
+  // O foco no claro é azul: o ciano sobre branco não chega a 3:1 (contraste mínimo de indicador de foco). O link (texto e
+  // selos) é o azul de ação mais escuro no claro e um azul clareado no escuro, para passar AA também sobre o fundo suave.
   bras: {
     label: BDC.name,
-    light: { canvas: BDC.claro.surfaceMuted, surface: BDC.claro.surface, ink: BDC.cores.navy, primary: BDC.claro.action, link: BDC.claro.action, accent: BDC.cores.ciano, accentText: BDC.cores.navy, accentSoft: BDC.claro.surfaceBrandSoft, reflection: BDC.cores.ciano, sideBg: BDC.cores.navy, ring: BDC.claro.action },
-    dark: { canvas: BDC.escuro.surface, surface: BDC.escuro.surfaceMuted, ink: BDC.cores.offWhite, primary: BDC.claro.action, link: BDC.escuro.actionHover, accent: BDC.cores.ciano, accentText: BDC.cores.ciano, reflection: BDC.cores.ciano, ring: BDC.escuro.focus },
+    light: { canvas: BDC.claro.surfaceMuted, surface: BDC.claro.surface, ink: BDC.cores.navy, primary: BDC.claro.action, link: BDC.claro.actionHover, accent: BDC.cores.ciano, accentText: BDC.cores.navy, accentSoft: BDC.claro.surfaceBrandSoft, reflection: BDC.cores.ciano, sideBg: BDC.cores.navy, ring: BDC.claro.action },
+    dark: { canvas: BDC.escuro.surface, surface: BDC.escuro.surfaceMuted, ink: BDC.cores.offWhite, primary: BDC.claro.action, link: mix(BDC.escuro.actionHover, "#FFFFFF", 0.3), accent: BDC.cores.ciano, accentText: BDC.cores.ciano, reflection: BDC.cores.ciano, ring: BDC.escuro.focus },
   },
   cargas: produto("NextLevel Cargas", ["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
 };

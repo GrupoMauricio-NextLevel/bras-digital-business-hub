@@ -18,7 +18,7 @@ Pacote recebido: `bras-digital-club-upload-sistema-v2.zip` (17/10/2026). Os docu
 | Superfície | `#FFFFFF` | `#132445` |
 | Tinta | `#0C1830` | `#F4F1E9` |
 | Ação (botão primário) | `#315CFF`, texto branco 5,1:1 | `#315CFF`, texto branco |
-| Link | `#315CFF` | `#6C8AFF` (4,9:1 sobre `#132445`) |
+| Link e selos | `#2449D8` (azul de ação mais escuro do pacote; 5,8:1 sobre o fundo suave) | `#6C8AFF` clareado 30% (AA sobre superfície e fundo suave) |
 | Barra lateral | navy `#0C1830` | navy derivado |
 | Destaque (pulso) | ciano `#00D4FF` (só detalhe; texto de destaque em navy) | ciano |
 | Foco | azul `#315CFF` (ciano não chega a 3:1 no branco) | ciano `#00D4FF` |
@@ -50,8 +50,18 @@ Sem números, clientes, depoimentos ou preços inventados (preço continua só p
 - Kit antigo laranja em `public/marcas/bras-digital/` (arquivado, sem uso) e fotos de direção de arte em `public/portal/bras/v3/` (continuam em uso: fotos de importadoras e lojistas).
 - Comentários de código que citam decisões antigas ("Brás Digital, D92").
 
-## 7. Pendências reais
+## 7. Verificação feita (17/10/2026, servidor local de produção, Chromium)
+- `npx tsc --noEmit` e `npx eslint` sem erro; build de produção sem erro (duas vezes).
+- Testes: `bras-digital-club` (identidade, arquivos, logos por superfície, tema isolado, ícones, rota), contraste do tema e do vidro, marca, rotas, e 20 arquivos de domínio da Brás (138 testes) passando.
+- Capturas: página pública em 360, 768 e 1440 px, claro e escuro, no topo e em 9 a 16 pontos de rolagem; cadastro e login (360 e 1440, claro e escuro); menu do celular; Estúdio (Master) claro e escuro; Meu Brás 390 e 1440, claro e escuro.
+- Sem rolagem lateral, sem erro de página, sem filtro nas logos; foco por teclado visível (contorno ciano no herói).
+- axe (WCAG A/AA): página pública, cadastro e login sem violações nos dois modos, depois de escurecer o link do modo claro.
+- Isolamento: SuperDrop e Commerce seguem com as próprias cores (`--ds-primary` conferido no navegador).
+- **Não verificado:** Safari/WebKit; medição de desempenho (Lighthouse); miniaturas do YouTube (sem internet externa nesta máquina).
+
+## 8. Pendências reais
 - **Extensão do domínio** (`brasdigitalclub.com.br`? `.com`?): sem ela, nada de canônico, `og:url`, sitemap ou redirecionamento definitivos.
 - Termos da Brás com o nome novo (nova versão e novo aceite).
 - Nome do programa de pontos dentro da marca (hoje "Indique e ganhe" / "Indicações e pontos").
 - Versão vetorial das logos para grande formato (o pacote entrega PNG).
+- Outras marcas (Commerce, Cargas e as planejadas) têm selos com contraste abaixo de AA no modo escuro (link sobre fundo suave); não foi mexido aqui para não alterar outras marcas.

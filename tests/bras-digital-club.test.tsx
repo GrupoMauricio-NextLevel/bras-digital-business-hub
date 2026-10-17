@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { BDC, BDC_HEROI, BDC_ICONES, BDC_LOGOS, bdcCssVars } from "@/lib/marcas/bras-digital-club";
 import { BrandLogo, brandIcons } from "@/components/brand/brand-logo";
 import { brandByCode } from "@/lib/brand";
-import { paletteOf } from "@/lib/brand-palette";
+import { contrastRatio, paletteOf } from "@/lib/brand-palette";
 import { themeColors, themeCss } from "@/design-system/themes";
 import { routeHost } from "@/lib/host-routing";
 
@@ -55,6 +55,8 @@ describe("Brás Digital Club: identidade", () => {
     const l = themeColors("bras", "light"), d = themeColors("bras", "dark");
     expect([l.primary, l.ink, l.sideBg]).toEqual([BDC.cores.azul, BDC.cores.navy, BDC.cores.navy]);
     expect([d.canvas, d.surface, d.ring]).toEqual([BDC.escuro.surface, BDC.escuro.surfaceMuted, BDC.cores.ciano]);
+    // Selos e links sobre o fundo suave da marca também passam AA (outras marcas: pendência registrada fora desta mudança).
+    for (const c of [l, d]) expect(contrastRatio(c.link, c.soft)).toBeGreaterThanOrEqual(4.5);
     expect(themeColors("commerce", "light").primary).toBe("#196BD8");
     expect(themeColors("superdrop", "light").primary).toBe("#118728");
     expect(themeColors("nextlevel", "light").primary).toBe("#F5BC00");
