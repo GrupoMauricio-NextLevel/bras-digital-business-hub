@@ -27,6 +27,12 @@ export const OFFER_FEATURES: Record<OfferKey, Record<FeatureKey, boolean>> = {
 export const canUse = (offer: OfferKey, feature: FeatureKey): boolean => OFFER_FEATURES[offer][feature];
 
 /** Menor oferta que libera o recurso, usada no texto de upgrade. */
+/**
+ * Análise de vendas (D170): a loja da NextLevel E-commerce paga o plano da plataforma (Start, Pro, Scale) e não tem as
+ * ofertas do SuperDrop; a análise vem liberada. No SuperDrop continua pela oferta da loja (Loja própria).
+ */
+export const analiseLiberada = (offer: OfferKey, commerce: boolean) => commerce || canUse(offer, "analytics");
+
 export function minOfferFor(feature: FeatureKey): OfferKey {
   return (["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] as OfferKey[]).find((o) => OFFER_FEATURES[o][feature]) ?? "STORE_OWN";
 }

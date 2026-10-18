@@ -79,12 +79,16 @@
   - pedidos em preparação;
   - tamanhos que voltaram ao estoque com cliente esperando aviso.
 - [x] Seletor da lateral do painel: mostrava "NEXTLEVEL / Commerce" e agora mostra "E-commerce".
+- [x] **Pulso da loja** (D169): vendas de hoje, pedidos parados e situação da loja, em pílulas logo abaixo da saudação.
+- [x] **Análise de vendas liberada** (D170). Antes, o lojista via um cadeado com as ofertas do SuperDrop ("disponível em Loja própria").
+- [x] Master: pedido de loja E-commerce não aparece mais como "SuperDrop / Pedido", nem com "Custo à Central" (D169).
 - [ ] **Uma foto para refazer:** `ec-jornada-2-loja.png` (paisagem). A tela do notebook ficou virada para a câmera.
   - No computador, o passo 2 usa por enquanto a foto do Bruno e da Ana comparando a vitrine.
   - No celular, a versão em pé está correta e já está no ar.
 - [ ] Observação: a Larissa das fotos em pé tem a pele mais clara que a das paisagens. Como o celular só mostra as em pé e o computador só as paisagens, ninguém vê as duas juntas. Ainda assim, vale padronizar na próxima rodada.
 
 ### 3.2 SuperDrop (`superdrop.com.br`, em produção com clientes)
+- [x] Pulso da loja: vendas de hoje, pedidos parados e "Recarga necessária" quando falta saldo (D169).
 - [x] Fila do dia do lojista. Ela mostra, nesta ordem:
   - saldo insuficiente, com o valor que falta;
   - etiquetas pendentes;
@@ -187,8 +191,10 @@
 | D166 | Fila do dia do lojista e fotos v2 da E-commerce |
 | D167 | Jornada imersiva de Brás, Cargas e SuperDrop com o lugar das fotos reservado |
 | D168 | Fila do dia do membro da Brás e da transportadora; convite do parceiro pela marca |
+| D169 | Pulso da loja (vendas de hoje, pedidos parados, situação); pedido de loja E-commerce no Master sem "SuperDrop" |
+| D170 | Análise de vendas liberada na loja da E-commerce (estava com cadeado das ofertas do SuperDrop) |
 
-A próxima decisão será a D170 (D169, pulso da loja, entrou no fechamento).
+A próxima decisão será a D171.
 
 ---
 
@@ -219,6 +225,7 @@ A próxima decisão será a D170 (D169, pulso da loja, entrou no fechamento).
 6. **Termos de uso:** trocar "NextLevel Commerce" por "NextLevel E-commerce" no texto jurídico.
 7. **Kits das marcas da família** (Club, Loja NextLevel, Meu Contador, Parceiros), ainda no amarelo antigo.
 8. **Decisão:** no cadastro da E-commerce, a porta escolhida (começar do zero, Instagram, migrar, loja física) deve vir marcada?
+9. **Confirmar a D170:** a análise de vendas fica liberada para todo lojista da E-commerce, ou só a partir de algum plano (Pro ou Scale)?
 
 ### Comigo (próximos passos, sem depender de você)
 1. Ao chegar cada ZIP de fotos: converter, conferir foto por foto (tela, texto, mãos, personagem), testar e publicar. A jornada entra no ar sozinha.

@@ -1542,3 +1542,8 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - Regra pura `pulsoDaLoja` em `src/lib/domain/fila-do-dia.ts` (testada); componente `src/components/app/pulso-loja.tsx`. A E-commerce nunca vê "recarga" nem "Central".
 - Não substitui a "saúde" da torre de controle do Master (`healthScore`), que segue medindo a infraestrutura comercial de cada loja para a NextLevel.
 - **Vazamento no Master corrigido:** o detalhe de um pedido de loja E-commerce aparecia como "SuperDrop / Pedido", com "Custo à Central" e "Custo debitado do saldo". O Master agora passa a modalidade e a marca da loja ao detalhe do pedido (mesmo componente do lojista e do fornecedor); para loja sem fornecedor, quem prepara aparece como "Loja".
+
+## D170 — Análise de vendas liberada na loja da NextLevel E-commerce (2026-10-18)
+- **Achado:** a loja da E-commerce nasce com a oferta `STORE_SUBDOMAIN` (herança do SuperDrop) e a tela "Análise de vendas" pedia "Loja própria": o lojista da E-commerce via um cadeado com o vocabulário das ofertas do SuperDrop ("disponível em Loja própria", "Ver como liberar"). O pulso da loja (D169) leva justamente a essa tela.
+- **Decisão (a confirmar pelo dono):** na E-commerce a análise vem liberada (`analiseLiberada`, `src/lib/features.ts`); quem paga é o plano da plataforma (Start, Pro, Scale), não as ofertas do SuperDrop. A própria tela já tinha o texto escrito para a E-commerce. No SuperDrop nada muda (continua pela oferta da loja).
+- Se o dono quiser a análise só em planos maiores da E-commerce, o caminho é ligar a regra ao plano de `nl_subscriptions`, nunca à oferta do SuperDrop.

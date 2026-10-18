@@ -12,7 +12,7 @@ import { getDb } from "@/db/client";
 import { orderItems, orders } from "@/db/schema";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
-import { canUse } from "@/lib/features";
+import { analiseLiberada } from "@/lib/features";
 import { formatBRL } from "@/lib/money";
 import { isCommerceStore } from "@/lib/store-brand";
 
@@ -23,9 +23,11 @@ export default async function AnalyticsPage() {
   return (
     <>
       <PageHeader title="Análise de vendas" description={commerce ? "Últimos 30 dias, comparados com os 30 anteriores. Acompanhe vendas, margem, recorrência e comportamento dos clientes." : "Últimos 30 dias, comparados com os 30 anteriores. Margem = venda menos custo da Central."} />
-      <FeatureGate offer={store.offer} feature="analytics">
-        <AnalyticsBody storeId={store.id} allowed={canUse(store.offer, "analytics")} />
-      </FeatureGate>
+      {commerce ? <AnalyticsBody storeId={store.id} allowed={analiseLiberada(store.offer, commerce)} /> : (
+        <FeatureGate offer={store.offer} feature="analytics">
+          <AnalyticsBody storeId={store.id} allowed={analiseLiberada(store.offer, commerce)} />
+        </FeatureGate>
+      )}
     </>
   );
 }

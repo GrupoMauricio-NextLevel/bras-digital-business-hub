@@ -5,6 +5,7 @@ import { freshDb } from "./setup";
 import { ecosystemBar, groupSegments, saveEcoSettings } from "@/lib/domain/ecossistema/lancador";
 import { attentionFor, stageLabelsFor, stagesFor } from "@/lib/domain/after-sales";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
+import { analiseLiberada } from "@/lib/features";
 
 /** D164: nada de SuperDrop na NextLevel E-commerce (fio do grupo, pós-venda da loja independente, nome dos planos). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -35,6 +36,12 @@ describe("E-commerce sem SuperDrop", () => {
     expect(pagina).toMatch(/marca === "NEXTLEVEL_COMMERCE" \? "NextLevel E-commerce" : "SuperDrop"/);
     const detalhe = readFileSync(join(process.cwd(), "src/components/shared/order-detail.tsx"), "utf8");
     expect(detalhe).toMatch(/const quemLoja = role === "STORE_OWNER" \? "Sua loja" : "Loja"/);
+  });
+
+  it("análise de vendas liberada na E-commerce, sem cartão de oferta do SuperDrop (D170)", () => {
+    expect(analiseLiberada("STORE_SUBDOMAIN", true)).toBe(true);
+    expect(analiseLiberada("STORE_SUBDOMAIN", false)).toBe(false);
+    expect(analiseLiberada("STORE_OWN", false)).toBe(true);
   });
 
   it("nome público do plano, sem 'Commerce'", () => {
