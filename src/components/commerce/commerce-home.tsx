@@ -44,10 +44,12 @@ function Ring({ done, total }: { done: number; total: number }) {
 }
 
 /** Início do painel Commerce: só dados reais (nada de número ou pendência inventada). */
-export function CommerceHome({ firstName, greeting, store, o, readiness, attention }: {
+export function CommerceHome({ firstName, greeting, store, o, readiness, attention, pulso }: {
   firstName: string; greeting: string;
   store: { name: string; slug: string; status: string; publishedAt: Date | string | null };
   o: Overview; readiness: StoreReadiness | null; attention: Attention[];
+  /** Pulso da loja (D169): vendas de hoje, pedidos parados e situação, logo abaixo da saudação. */
+  pulso?: React.ReactNode;
 }) {
   const ticket = o.last30Count > 0 ? Math.round(o.sales / o.last30Count) : null;
   const published = !!store.publishedAt;
@@ -103,6 +105,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium">{store.status === "ACTIVE" ? "Conta ativa" : <StatusBadge value={store.status} dot />}</span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium"><span aria-hidden className={`size-1.5 rounded-full ${published ? "bg-success" : "bg-subtle-foreground"}`} />{published ? "Loja publicada" : "Loja ainda não publicada"}</span>
         </div>
+        {pulso}
         <div className="mt-5 flex flex-wrap gap-2">
           <a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a>
           <Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filaDaTransportadora, filaDoLojista, filaDoMembroBras, pedidosParados, type EntradaFila } from "@/lib/domain/fila-do-dia";
+import { filaDaTransportadora, filaDoLojista, filaDoMembroBras, pedidosParados, pulsoDaLoja, type EntradaFila } from "@/lib/domain/fila-do-dia";
 import { textoConvite } from "@/lib/parceiros/convite";
 
 const now = new Date("2026-10-17T12:00:00.000Z");
@@ -74,5 +74,22 @@ describe("convite do parceiro (D168)", () => {
     const cupom = textoConvite(ec, "https://x/r/ana?c=ANA10", "ANA10");
     expect(cupom).toContain("cupom ANA10");
     expect(cupom).not.toMatch(/SuperDrop|7 dias/);
+  });
+});
+
+describe("pulso da loja (D169)", () => {
+  const base = { hoje: { salesCents: 0, orders: 0 }, parados: 0, commerce: true, faltaParaVender: 0, publicada: true, precisaRecarga: false };
+  it("E-commerce: o que falta para vender vem antes de tudo; em dia quando nada falta", () => {
+    expect(pulsoDaLoja({ ...base, faltaParaVender: 2, parados: 3 }).situacao).toEqual({ rotulo: "Faltam 2 itens para vender", tom: "warning" });
+    expect(pulsoDaLoja({ ...base, publicada: false }).situacao.rotulo).toBe("Vitrine não publicada");
+    expect(pulsoDaLoja(base).situacao).toEqual({ rotulo: "Loja em dia", tom: "success" });
+    expect(JSON.stringify(pulsoDaLoja({ ...base, faltaParaVender: 1 }))).not.toMatch(/recarga|Central/i);
+  });
+  it("SuperDrop: recarga é vermelha; vendas de hoje e parados com rótulo certo", () => {
+    const p = pulsoDaLoja({ ...base, commerce: false, precisaRecarga: true, parados: 1, hoje: { salesCents: 12_990, orders: 2 } });
+    expect(p.situacao).toEqual({ rotulo: "Recarga necessária", tom: "danger" });
+    expect(p.hoje).toEqual({ salesCents: 12_990, rotulo: "2 vendas hoje" });
+    expect(p.parados).toEqual({ count: 1, rotulo: "1 pedido parado" });
+    expect(pulsoDaLoja({ ...base, commerce: false }).hoje.rotulo).toBe("Nenhuma venda hoje ainda");
   });
 });

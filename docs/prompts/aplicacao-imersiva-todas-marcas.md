@@ -27,15 +27,20 @@ Cada marca nova entra com **cores + copy + fotos**; o código da jornada, das po
 
 ## 3. Ordem e situação
 
-| # | Marca | Hoje | Falta |
+| # | Marca | Hoje (18/10) | Falta |
 |---|---|---|---|
-| 0 | NextLevel E-commerce | Home imersiva no ar (D165); 5 fotos trocadas por erro de IA | Novo grupo de fotos (v2, personagens diferentes) |
-| 1 | SuperDrop | Produção com clientes; home v4 com fotos; logo SVG antiga; amarelo antigo no tema | Identidade, decisão do dono sobre a logo, fotos, jornada (com cuidado: tem clientes) |
-| 2 | Brás Digital Club | Identidade pronta (D158), tema `.im-tema-bras` pronto | Fotos e jornada |
-| 3 | NextLevel Cargas | Cores no CSS da página, só logo clara, sem foto na entrada | Identidade, logo escura, fotos, jornada |
+| 0 | NextLevel E-commerce | Home imersiva no ar com as fotos v2 (17 de 18, D166) | Refazer `ec-jornada-2-loja.png` (paisagem) |
+| 1 | SuperDrop | Cores num arquivo só (`src/lib/marcas/superdrop.ts`); jornada e portas prontas em prévia (D167) | Decisão do dono sobre a logo; fotos (Parte 4 do pedido) |
+| 2 | Brás Digital Club | Identidade pronta (D158); jornada e portas prontas em prévia (D167) | Fotos (Parte 2 do pedido) |
+| 3 | NextLevel Cargas | Tema `.im-tema-cargas`; jornada e portas prontas em prévia (D167) | Fotos (Parte 3); arquivo de identidade e logo para fundo claro |
 | 4 | Família (Club, Loja NextLevel, Meu Contador, Parceiros) | Kits no amarelo antigo | Kits (`kit-marcas-gpt.md`) |
 
+Pedido de fotos das três marcas: `fotos-imersivas-superdrop-bras-cargas-gpt.md`. Prévia: `/?previa=imersiva` no endereço de cada marca.
+A jornada entra no ar sozinha quando o conversor grava as fotos da marca (`acervoCompleto`).
+
 ## 4. Painéis (fase E), em paralelo e sem depender de fotos
+
+**Feito:** fila do dia no lojista (E-commerce e SuperDrop, D166), no membro da Brás e na transportadora/ônibus (D168); fornecedor, importadora e Master já tinham. **Próximo:** pulso da loja e linha do tempo do pedido.
 
 A primeira tela de cada login responde "o que eu preciso fazer agora?": fila do dia com botão de ação, pulso da
 operação, números com "e daí?". Como os painéis usam a mesma casca, cada melhoria vale para todas as marcas.

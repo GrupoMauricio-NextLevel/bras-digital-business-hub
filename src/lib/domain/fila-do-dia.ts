@@ -101,3 +101,23 @@ export function filaDaTransportadora(e: { chamadas: number; coletar: number; tra
     e.semLinkMotorista ? { key: "motorista", title: "Gere o link do motorista", detail: "Ele vê endereço, horário e códigos no celular, sem instalar aplicativo.", count: 1, href: "/transportadora/perfil", action: "Gerar link", tone: "info" as const } : null,
   ].filter((x): x is FilaItem => Boolean(x));
 }
+
+export type PulsoTom = "success" | "warning" | "danger";
+/**
+ * Pulso da loja (D169): três sinais curtos no topo do painel do lojista. Vendas de hoje (mesma régua da tela de análise),
+ * pedidos parados (mesma régua do pós-venda) e a situação da loja. E-commerce: pronta para vender ou o que falta. SuperDrop:
+ * recarga, pedidos parados ou em dia. Puro.
+ */
+export function pulsoDaLoja(e: { hoje: { salesCents: number; orders: number }; parados: number; commerce: boolean; faltaParaVender: number; publicada: boolean; precisaRecarga: boolean }) {
+  const situacao: { rotulo: string; tom: PulsoTom } = e.commerce
+    ? e.faltaParaVender ? { rotulo: plural(e.faltaParaVender, "Falta 1 item para vender", `Faltam ${e.faltaParaVender} itens para vender`), tom: "warning" }
+      : !e.publicada ? { rotulo: "Vitrine não publicada", tom: "warning" }
+      : e.parados ? { rotulo: "Pedidos pedindo atenção", tom: "warning" } : { rotulo: "Loja em dia", tom: "success" }
+    : e.precisaRecarga ? { rotulo: "Recarga necessária", tom: "danger" }
+      : e.parados ? { rotulo: "Pedidos pedindo atenção", tom: "warning" } : { rotulo: "Operação em dia", tom: "success" };
+  return {
+    hoje: { salesCents: e.hoje.salesCents, rotulo: e.hoje.orders ? plural(e.hoje.orders, "1 venda hoje", `${e.hoje.orders} vendas hoje`) : "Nenhuma venda hoje ainda" },
+    parados: { count: e.parados, rotulo: e.parados ? plural(e.parados, "1 pedido parado", `${e.parados} pedidos parados`) : "Nenhum pedido parado" },
+    situacao,
+  };
+}

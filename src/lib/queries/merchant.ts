@@ -46,7 +46,7 @@ export async function getMerchantOverview(store: Store) {
   const sub = await getSubscription(store.id);
   const independentId = await isIndependentStore(db, store.id);
   const activeProducts = independentId ? (await db.select({ n: count() }).from(storeProducts).where(and(eq(storeProducts.storeId, store.id), eq(storeProducts.active, true))))[0]?.n ?? 0 : 0;
-  return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, inTransit, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store, { independent: !!independentId, activeProducts }), independent: !!independentId, subscription: sub };
+  return { ordersCount: valid.length, sales, margin, daily, salesDelta: pct(sales, prevSales), marginDelta: pct(margin, prevMargin), countDelta: pct(last30.length, prev30.length), last30Count: last30.length, pendingCentral, pendingLabel, pendingCustomer, inProgress, inTransit, today: { salesCents: a.days.at(-1)?.salesCents ?? 0, orders: a.days.at(-1)?.orders ?? 0 }, customers: custCount?.n ?? 0, recentOrders: all.slice(0, 5), recent, onboarding: computeOnboarding(store, { independent: !!independentId, activeProducts }), independent: !!independentId, subscription: sub };
 }
 
 export async function getSubscription(storeId: string) {

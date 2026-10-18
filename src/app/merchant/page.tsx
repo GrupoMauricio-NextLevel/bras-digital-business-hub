@@ -20,7 +20,8 @@ import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
-import { filaDoLojista } from "@/lib/domain/fila-do-dia";
+import { filaDoLojista, pedidosParados, pulsoDaLoja } from "@/lib/domain/fila-do-dia";
+import { PulsoLoja } from "@/components/app/pulso-loja";
 import { stockDemand } from "@/lib/domain/stock-alerts";
 
 const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing };
@@ -49,8 +50,12 @@ export default async function MerchantHome() {
     pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
     balanceCents: balance, stockBack, now: new Date(),
   }).map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
+  const pulso = pulsoDaLoja({
+    hoje: o.today, commerce, publicada: Boolean(store.publishedAt), faltaParaVender: readiness?.missingBlocking.length ?? 0, precisaRecarga: isLite && needsTopUp,
+    parados: pedidosParados({ pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit, independent: o.independent, now: new Date() }),
+  });
 
-  if (commerce) return <>{surveyCard}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} /></>;
+  if (commerce) return <>{surveyCard}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /></>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;
@@ -58,6 +63,7 @@ export default async function MerchantHome() {
     <>
       <PageHeader eyebrow="SuperDrop / Minha operação" title={`${greeting()}, ${first}.`} actions={actions}
         description={<span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1"><span className="font-semibold text-foreground">{store.name}</span><span aria-hidden>·</span><StatusBadge value={store.status} dot /><span aria-hidden>·</span><span>{store.publishedAt ? "Loja publicada" : "Loja não publicada"}</span></span>} />
+      <PulsoLoja pulso={pulso} className="-mt-2 mb-6" />
       {surveyCard}
 
       <section className="ds-kpis mb-6" aria-label="Resumo dos últimos 30 dias">
