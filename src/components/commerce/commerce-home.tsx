@@ -12,7 +12,7 @@ import type { getMerchantOverview } from "@/lib/queries/merchant";
 import type { StoreReadiness } from "@/lib/domain/readiness";
 
 type Overview = Awaited<ReturnType<typeof getMerchantOverview>>;
-export type Attention = { key: string; title: string; detail: string; count: number; href: string; action: string; icon: LucideIcon };
+export type Attention = { key: string; title: string; detail: string; count: number; href: string; action: string; icon: LucideIcon; tone?: "danger" | "warning" | "info" };
 
 const THEMES = [{ key: "arena", name: "Arena" }, { key: "editorial", name: "Editorial" }, { key: "signature", name: "Signature" }];
 /** Pendências de preparo (cobertas pelo próximo passo e pelo checklist) não se repetem na lista de operação. */
@@ -124,15 +124,17 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
 
     {!firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
       {operational.length || next ? <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)} aria-labelledby="cm-att">
-        <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">O que precisa de você</h2>
+        <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
+        <p className="mt-0.5 text-xs text-muted-foreground">O que precisa de você agora, do mais urgente ao menos urgente.</p>
         <ol className="mt-3 divide-y divide-border">{[...(next ? [next] : []), ...operational].map((item) => { const Icon = item.icon; return <li key={item.key}>
           <Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"><Icon className="size-[18px]" aria-hidden /></span>
+            <span className={item.tone === "danger" ? "flex size-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger" : "flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"}><Icon className="size-[18px]" aria-hidden /></span>
             <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
             <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-foreground">{item.count}</span>
+            <span className="hidden text-xs font-bold text-[var(--ds-link)] sm:block">{item.action}</span>
             <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
           </Link></li>; })}</ol>
-      </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">O que precisa de você</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
+      </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">Fila do dia</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
       {status}
     </div> : null}
 

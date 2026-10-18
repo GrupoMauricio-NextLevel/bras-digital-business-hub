@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Plus, Printer, ShoppingCart, Wallet } from "lucide-react";
+import { AlarmClock, ArrowRight, BellRing, ExternalLink, Plus, Printer, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
 import { SalesChart } from "@/components/app/sales-chart";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { ActivityFeed } from "@/components/shared/activity-feed";
@@ -20,6 +20,10 @@ import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
+import { filaDoLojista } from "@/lib/domain/fila-do-dia";
+import { stockDemand } from "@/lib/domain/stock-alerts";
+
+const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing };
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -36,20 +40,15 @@ export default async function MerchantHome() {
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
   const readiness = commerce ? await getStoreReadiness(db, store.id) : null;
-  const firstMissing = readiness?.missingBlocking[0];
-  const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
+    const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
-  const attention = (commerce ? [
-    firstMissing ? { key:"readiness", title:"Sua loja ainda não está pronta para vender", detail:`Falta: ${firstMissing.label.toLowerCase()}. ${firstMissing.detail}`, count:readiness!.missingBlocking.length, href:firstMissing.fixHref, action:"Resolver", icon:ShoppingCart } : null,
-    !store.publishedAt ? { key:"publish", title:"Sua loja ainda não está publicada", detail:"Revise a vitrine e publique quando estiver pronta para receber clientes.", count:1, href:"/merchant/storefront", action:"Revisar loja", icon:ExternalLink } : null,
-    o.onboarding.percent < 100 ? { key:"onboarding", title:"Configuração da loja incompleta", detail:`Seu checklist está em ${o.onboarding.percent}%. Complete os itens para deixar a operação pronta.`, count:o.onboarding.steps.filter((st) => !st.done).length, href:"/merchant/storefront", action:"Continuar", icon:ShoppingCart } : null,
-    o.pendingCustomer.length ? { key:"customer", title:"Vendas aguardando pagamento", detail:"Pedidos iniciados por clientes que ainda não tiveram o pagamento confirmado.", count:o.pendingCustomer.length, href:"/merchant/orders?status=PENDING", action:"Ver vendas", icon:ShoppingCart } : null,
-    o.inProgress.length ? { key:"progress", title:"Pedidos em preparação", detail:"Acompanhe os pedidos pagos que ainda estão no fluxo de atendimento.", count:o.inProgress.length, href:"/merchant/orders", action:"Acompanhar", icon:ShoppingCart } : null,
-  ] : [
-    o.pendingCentral.length ? { key:"funds", title:needsTopUp ? "Saldo insuficiente para liberar pedidos" : "Pedidos aguardando liberação", detail:needsTopUp ? "Faltam " + formatBRL(waitingCents - balance) + " para a operação seguir." : "Seu saldo cobre os pedidos em espera.", count:o.pendingCentral.length, href:"/merchant/wallet", action:needsTopUp ? "Recarregar" : "Ver saldo", icon:Wallet } : null,
-    o.pendingLabel.length ? { key:"labels", title:"Etiquetas pendentes", detail:"A Central só inicia a separação depois do PDF da etiqueta.", count:o.pendingLabel.length, href:"/merchant/labels", action:"Enviar", icon:Printer } : null,
-    o.pendingCustomer.length ? { key:"customer", title:"Clientes não concluíram o pagamento", detail:"Pedidos iniciados que ainda não avançaram para a operação.", count:o.pendingCustomer.length, href:"/merchant/orders?status=PENDING", action:"Ver pedidos", icon:ShoppingCart } : null,
-  ]).filter((x): x is NonNullable<typeof x> => Boolean(x));
+  const stockBack = (await stockDemand(db, store.id)).filter((g) => g.available > 0).length;
+  const attention = filaDoLojista({
+    commerce, independent: o.independent, published: Boolean(store.publishedAt), readinessMissing: readiness?.missingBlocking ?? null,
+    onboarding: { percent: o.onboarding.percent, missing: o.onboarding.steps.filter((st) => !st.done).length },
+    pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
+    balanceCents: balance, stockBack, now: new Date(),
+  }).map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
 
   if (commerce) return <>{surveyCard}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} /></>;
 
@@ -70,7 +69,7 @@ export default async function MerchantHome() {
 
       <div className="ds-grid ds-grid--main mb-6">
         <section className="ds-card" aria-labelledby="att-h">
-          <SectionTitle title="O que precisa de você" />
+          <SectionTitle title="Fila do dia" description="O que precisa de você agora, do mais urgente ao menos urgente." />
           {attention.length ? <ol className="divide-y divide-border">{attention.map((item) => { const Icon = item.icon; return <li key={item.key}><Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3"><span className="ds-kpi-icon !size-10"><Icon className="size-[18px]" aria-hidden /></span><span className="min-w-0 flex-1"><span className="block text-sm font-bold">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span><span className="ds-pill">{item.count}</span><span className="hidden text-xs font-bold text-[var(--ds-link)] sm:block">{item.action}</span><ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" aria-hidden /></Link></li>; })}</ol> : <EmptyState compact title="Operação limpa" description="Nenhuma pendência bloqueando seus pedidos agora." />}
         </section>
         <section className="ds-card" aria-labelledby="loja-h">

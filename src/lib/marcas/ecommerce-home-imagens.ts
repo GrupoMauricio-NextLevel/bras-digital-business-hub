@@ -13,21 +13,23 @@ import type { Acervo, FotoImersiva } from "@/lib/imersiva/acervo";
 
 export type EcFoto = FotoImersiva;
 export const EC_HOME_FOTOS = {
-  "ec-entrar-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#282b39" },
-  "ec-entrar": { larguras: [800, 1400], w: 1400, h: 933, cor: "#1b1c27" },
-  "ec-fecho-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#5f483b" },
-  "ec-fecho": { larguras: [800, 1400], w: 1400, h: 933, cor: "#685040" },
-  "ec-jornada-1-produto-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#534e50" },
-  "ec-jornada-1-produto": { larguras: [800, 1400], w: 1400, h: 933, cor: "#4f4a4a" },
-  "ec-jornada-3-pedido-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#4f4644" },
-  "ec-jornada-3-pedido": { larguras: [800, 1400], w: 1400, h: 933, cor: "#4d4442" },
-  "ec-jornada-4-envio-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#564c48" },
-  "ec-jornada-4-envio": { larguras: [800, 1400], w: 1400, h: 933, cor: "#544844" },
-  "ec-planos-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#523f37" },
-  "ec-planos": { larguras: [800, 1400], w: 1400, h: 933, cor: "#564943" },
-  "ec-porta-fisica": { larguras: [640, 960], w: 960, h: 1440, cor: "#6c5342" },
-  "ec-porta-instagram": { larguras: [640, 960], w: 960, h: 1440, cor: "#67564e" },
-  "ec-porta-zero": { larguras: [640, 960], w: 960, h: 1440, cor: "#6e5a50" },
+  "ec-entrar": { larguras: [800, 1400], w: 1400, h: 933, cor: "#0e1822" },
+  "ec-fecho": { larguras: [800, 1400], w: 1400, h: 933, cor: "#533e2b" },
+  "ec-jornada-1-produto-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#99765d" },
+  "ec-jornada-1-produto": { larguras: [800, 1400], w: 1400, h: 933, cor: "#756b63" },
+  "ec-jornada-2-loja-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#946f54" },
+  "ec-jornada-3-pedido-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#956e52" },
+  "ec-jornada-3-pedido": { larguras: [800, 1400], w: 1400, h: 933, cor: "#807065" },
+  "ec-jornada-4-envio-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#95694b" },
+  "ec-jornada-4-envio": { larguras: [800, 1400], w: 1400, h: 933, cor: "#857164" },
+  "ec-jornada-5-rotina-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#83674c" },
+  "ec-jornada-5-rotina": { larguras: [800, 1400], w: 1400, h: 933, cor: "#926f58" },
+  "ec-planos": { larguras: [800, 1400], w: 1400, h: 933, cor: "#564b3d" },
+  "ec-porta-fisica": { larguras: [640, 960], w: 960, h: 1440, cor: "#8a7b71" },
+  "ec-porta-instagram": { larguras: [640, 960], w: 960, h: 1440, cor: "#655952" },
+  "ec-porta-migrar": { larguras: [640, 960], w: 960, h: 1440, cor: "#746b68" },
+  "ec-porta-zero": { larguras: [640, 960], w: 960, h: 1440, cor: "#897e79" },
+  "ec-temas": { larguras: [800, 1400], w: 1400, h: 933, cor: "#48403a" },
 } as const satisfies Record<string, FotoImersiva>;
 export type EcHomeFotoNome = keyof typeof EC_HOME_FOTOS;
 

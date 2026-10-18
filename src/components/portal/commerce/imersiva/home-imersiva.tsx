@@ -33,15 +33,15 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
   const passos: PassoMarca<EcHomeFotoNome>[] = [
     { key: "produto", nome: "Cadastrar", foto: "ec-jornada-1-produto", retrato: "ec-jornada-1-produto-retrato", titulo: "Cadastre como você vende.", texto: "Produtos com variações de tamanho e cor, estoque e categorias, sem limite de cadastro. Um a um ou por planilha.", links: [{ label: "Ver o que vem nos planos", href: "#planos" }] },
-    { key: "loja", nome: "Montar", foto: "ec-planos", retrato: "ec-planos-retrato", titulo: "Sua vitrine, com a cara da marca.", texto: "Tema gratuito, editor visual com prévia ao vivo e domínio próprio. Enquanto não publica, só você vê.", links: [{ label: "Ver temas", href: "/temas" }, { label: "Lojas de exemplo", href: "#exemplos" }] },
+    { key: "loja", nome: "Montar", foto: "ec-temas", retrato: "ec-jornada-2-loja-retrato", titulo: "Sua vitrine, com a cara da marca.", texto: "Tema gratuito, editor visual com prévia ao vivo e domínio próprio. Enquanto não publica, só você vê.", links: [{ label: "Ver temas", href: "/temas" }, { label: "Lojas de exemplo", href: "#exemplos" }] },
     { key: "pedido", nome: "Vender", foto: "ec-jornada-3-pedido", retrato: "ec-jornada-3-pedido-retrato", titulo: "O pagamento cai na sua conta.", texto: "Pix e cartão pelo Mercado Pago da sua loja: você recebe 100% das vendas, direto na sua conta.", links: [{ label: "Dúvidas sobre pagamento", href: "#duvidas" }] },
     { key: "envio", nome: "Enviar", foto: "ec-jornada-4-envio", retrato: "ec-jornada-4-envio-retrato", titulo: "Pedido organizado até a entrega.", texto: "Frete por regras próprias ou plataforma de envio, código de rastreio e mensagem pronta para o cliente no WhatsApp.", links: [{ label: "Dúvidas sobre frete", href: "#duvidas" }] },
-    { key: "rotina", nome: "Crescer", foto: "ec-fecho", retrato: "ec-fecho-retrato", titulo: "Uma operação que cabe no seu dia.", texto: "Pós-venda, cupons, campanhas, avaliações e equipe com acessos separados, no mesmo painel.", links: [{ label: comecar, href: cta }] },
+    { key: "rotina", nome: "Crescer", foto: "ec-jornada-5-rotina", retrato: "ec-jornada-5-rotina-retrato", titulo: "Uma operação que cabe no seu dia.", texto: "Pós-venda, cupons, campanhas, avaliações e equipe com acessos separados, no mesmo painel.", links: [{ label: comecar, href: cta }] },
   ];
   const portas: { foto: EcHomeFotoNome; titulo: string; texto: string }[] = [
     { foto: "ec-porta-zero", titulo: "Começar do zero", texto: "Tema grátis, editor visual e produtos cadastrados um a um ou por planilha." },
     { foto: "ec-porta-instagram", titulo: "Já vendo pelo Instagram e WhatsApp", texto: "Os pedidos do WhatsApp e do Instagram entram no mesmo painel da loja." },
-    { foto: "ec-entrar-retrato", titulo: "Sair de outra plataforma", texto: "Traga os seus produtos por planilha e mantenha a sua marca." },
+    { foto: "ec-porta-migrar", titulo: "Sair de outra plataforma", texto: "Traga os seus produtos por planilha e mantenha a sua marca." },
     { foto: "ec-porta-fisica", titulo: "Tenho loja física", texto: "A mesma vitrine no site, com Pix e cartão na sua conta Mercado Pago." },
   ];
 
