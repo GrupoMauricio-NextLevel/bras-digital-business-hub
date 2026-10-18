@@ -27,6 +27,8 @@ type Props = {
 };
 
 export function OrderDetail({ role, backHref, order, items, events, store, labels, canFulfil, independent, productLabel = "SuperDrop" }: Props) {
+  // Loja sem fornecedor (E-commerce): quem prepara é a própria loja; o Master a vê como "Loja", o lojista como "Sua loja".
+  const quemLoja = role === "STORE_OWNER" ? "Sua loja" : "Loja";
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },
     ...(independent ? [] : [{ label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" }]),
@@ -41,9 +43,9 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
     if (order.status === "PENDING") return { title: "Aguardando pagamento do cliente", detail: "O estoque permanece reservado enquanto o pagamento é concluído.", owner: "Cliente", tone: "warning" as const, icon: Wallet };
     if (order.status === "AWAITING_CENTRAL_PAYMENT") return { title: "Aguardando saldo do lojista", detail: "O pedido só entra na operação da Central após o débito do custo.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Wallet };
     if (order.status === "AWAITING_LABEL") return { title: "Aguardando etiqueta de envio", detail: "A etiqueta precisa estar pronta antes da separação.", owner: role === "STORE_OWNER" ? "Você" : "Lojista", tone: "warning" as const, icon: Printer };
-    if (order.status === "READY_TO_PICK") return { title: "Pronto para separação", detail: "Pagamento e etiqueta estão confirmados. O pedido pode entrar na preparação.", owner: role === "STORE_OWNER" ? (independent ? "Sua loja" : "Central") : "Expedição", tone: "info" as const, icon: Package };
-    if (order.status === "PICKING") return { title: "Em separação", detail: independent ? "Sua equipe está preparando e conferindo os itens." : "A expedição está preparando e conferindo os itens.", owner: independent ? "Sua loja" : "Expedição", tone: "info" as const, icon: Package };
-    if (order.status === "READY_TO_SHIP") return { title: "Pronto para despachar", detail: independent ? "A preparação terminou e o pedido está pronto para envio." : "A separação terminou e o pedido pode sair da Central.", owner: independent ? "Sua loja" : "Expedição", tone: "success" as const, icon: Truck };
+    if (order.status === "READY_TO_PICK") return { title: "Pronto para separação", detail: "Pagamento e etiqueta estão confirmados. O pedido pode entrar na preparação.", owner: independent ? quemLoja : role === "STORE_OWNER" ? "Central" : "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "PICKING") return { title: "Em separação", detail: independent ? (role === "STORE_OWNER" ? "Sua equipe está preparando e conferindo os itens." : "A equipe da loja está preparando e conferindo os itens.") : "A expedição está preparando e conferindo os itens.", owner: independent ? quemLoja : "Expedição", tone: "info" as const, icon: Package };
+    if (order.status === "READY_TO_SHIP") return { title: "Pronto para despachar", detail: independent ? "A preparação terminou e o pedido está pronto para envio." : "A separação terminou e o pedido pode sair da Central.", owner: independent ? quemLoja : "Expedição", tone: "success" as const, icon: Truck };
     if (order.status === "SHIPPED") return { title: "Pedido enviado", detail: "Acompanhe o transporte até a entrega ao cliente.", owner: "Transportadora", tone: "success" as const, icon: Truck };
     return { title: "Pedido entregue", detail: "Fluxo operacional concluído.", owner: "Concluído", tone: "success" as const, icon: CheckCircle2 };
   })();

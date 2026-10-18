@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { freshDb } from "./setup";
 import { ecosystemBar, groupSegments, saveEcoSettings } from "@/lib/domain/ecossistema/lancador";
@@ -25,6 +27,14 @@ describe("E-commerce sem SuperDrop", () => {
     expect(stagesFor(true).map((s) => stageLabelsFor(true)[s].title).join(" ")).not.toMatch(/Central|recarga/);
     expect(attentionFor("IN_DISPATCH", 50, true)).not.toMatch(/Central/);
     expect(attentionFor("IN_DISPATCH", 50)).toMatch(/Central/);
+  });
+
+  it("Master vê pedido de loja E-commerce com o vocabulário dela (D169)", () => {
+    const pagina = readFileSync(join(process.cwd(), "src/app/master/orders/[id]/page.tsx"), "utf8");
+    expect(pagina).toMatch(/independent=\{modality === "INDEPENDENT"\}/);
+    expect(pagina).toMatch(/marca === "NEXTLEVEL_COMMERCE" \? "NextLevel E-commerce" : "SuperDrop"/);
+    const detalhe = readFileSync(join(process.cwd(), "src/components/shared/order-detail.tsx"), "utf8");
+    expect(detalhe).toMatch(/const quemLoja = role === "STORE_OWNER" \? "Sua loja" : "Loja"/);
   });
 
   it("nome público do plano, sem 'Commerce'", () => {
