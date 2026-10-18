@@ -19,11 +19,12 @@ export function WhatsAppShare({ text }: { text: string }) {
 
 const PLANS = [["", "Todos os planos"], ["DROP_MANUAL", "Drop manual"], ["STORE_SUBDOMAIN", "Loja SuperDrop"], ["STORE_OWN", "Loja própria"]] as const;
 
-export function CreateLinkForm({ disabled }: { disabled: boolean }) {
+/** `planos`: só marcas com os planos do SuperDrop (dropship) oferecem "plano em destaque" no link (D168). */
+export function CreateLinkForm({ disabled, planos = true }: { disabled: boolean; planos?: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = React.useState(false);
   return (
-    <form className="grid gap-3 sm:grid-cols-4" onSubmit={async (e) => {
+    <form className={`grid gap-3 ${planos ? "sm:grid-cols-4" : "sm:grid-cols-3"}`} onSubmit={async (e) => {
       e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget;
       setBusy(true);
       const r = await createLinkAction({ label: String(f.get("label") ?? ""), campaign: String(f.get("campaign") ?? "") || undefined, planKey: (String(f.get("plan") ?? "") || undefined) as "DROP_MANUAL" | undefined });
@@ -32,7 +33,7 @@ export function CreateLinkForm({ disabled }: { disabled: boolean }) {
     }}>
       <FormField label="Nome do link" htmlFor="lk-label"><Input id="lk-label" name="label" required minLength={2} placeholder="Ex.: Instagram bio" disabled={disabled} /></FormField>
       <FormField label="Campanha (opcional)" htmlFor="lk-camp"><Input id="lk-camp" name="campaign" placeholder="Ex.: black-friday" disabled={disabled} /></FormField>
-      <FormField label="Plano em destaque" htmlFor="lk-plan"><Select id="lk-plan" name="plan" disabled={disabled}>{PLANS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</Select></FormField>
+      {planos ? <FormField label="Plano em destaque" htmlFor="lk-plan"><Select id="lk-plan" name="plan" disabled={disabled}>{PLANS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</Select></FormField> : null}
       <div className="flex items-end"><Button type="submit" loading={busy} disabled={disabled}>Criar link</Button></div>
     </form>
   );

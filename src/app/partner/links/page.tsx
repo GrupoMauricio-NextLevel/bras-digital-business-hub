@@ -6,6 +6,7 @@ import { requireRole } from "@/lib/require-session";
 import { listLinks, partnerOfActor } from "@/lib/domain/partners";
 import { getBaseUrl } from "@/lib/base-url";
 import { getBrand } from "@/lib/brand-server";
+import { brandHas } from "@/lib/brand";
 import { textoConvite } from "@/lib/parceiros/convite";
 import { CopyButton, CreateLinkForm, WhatsAppShare } from "../partner-client";
 
@@ -36,7 +37,7 @@ export default async function PartnerLinks() {
         </CardContent></Card>
       ) : null}
       <SectionTitle title="Criar link por campanha" description="Use um link por canal (Instagram, WhatsApp, YouTube…) para saber o que funciona." />
-      <Card className="mb-8"><CardContent className="pt-5"><CreateLinkForm disabled={p.status !== "ACTIVE"} /></CardContent></Card>
+      <Card className="mb-8"><CardContent className="pt-5"><CreateLinkForm disabled={p.status !== "ACTIVE"} planos={brandHas(marca, "dropship")} /></CardContent></Card>
       <SectionTitle title="Seus links" />
       <ul className="space-y-2">{links.map((l) => (
         <li key={l.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
