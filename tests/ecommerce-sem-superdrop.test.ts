@@ -36,6 +36,8 @@ describe("E-commerce sem SuperDrop", () => {
     expect(pagina).toMatch(/marca === "NEXTLEVEL_COMMERCE" \? "NextLevel E-commerce" : "SuperDrop"/);
     const detalhe = readFileSync(join(process.cwd(), "src/components/shared/order-detail.tsx"), "utf8");
     expect(detalhe).toMatch(/const quemLoja = role === "STORE_OWNER" \? "Sua loja" : "Loja"/);
+    // Lista de lojas do Master: loja da E-commerce sem a "oferta" do SuperDrop (vale o plano, na coluna ao lado).
+    expect(readFileSync(join(process.cwd(), "src/app/master/stores/page.tsx"), "utf8")).toMatch(/r\.brand === "NEXTLEVEL_COMMERCE" \? <span[^>]*>—<\/span> : <StatusBadge value=\{r\.store\.offer\} \/>/);
   });
 
   it("análise de vendas liberada na E-commerce, sem cartão de oferta do SuperDrop (D170)", () => {
