@@ -171,7 +171,7 @@
 | e2e da home da E-commerce (computador, tablet, celular, menos movimento) | tudo certo |
 | Fila do dia no navegador (lojista E-commerce, lojista SuperDrop, membro Brás, transportadora, ônibus) | aparece certa em 1440 e 360 px, sem rolagem lateral |
 | axe nas prévias (Brás, Cargas, SuperDrop, E-commerce; 1440 e 360 px) | sem violações graves |
-| Testes automáticos | bateria completa rodada no fechamento (ver seção 9) |
+| Testes automáticos | **1070 de 1070 passando** (158 arquivos), bateria completa no fechamento |
 | Build de produção | passou em todas as publicações |
 
 ---
@@ -244,7 +244,7 @@ A próxima decisão será a D171.
   - `093468d`: filas do membro e da transportadora, e convite do parceiro;
   - `a2d1a40`: nomes "E-commerce" e planos do parceiro.
 - **Conferido no ar:** as fotos novas da E-commerce aparecem em `lojas.nextlevelgroup.com.br` (por exemplo, `ec-jornada-5-rotina` e `ec-porta-migrar`); `/api/health` responde `ok` com a versão `093468d`.
-- **Bateria completa de testes:** rodada no fechamento; resultado anotado no fim deste arquivo.
+- **Bateria completa de testes:** 1070 de 1070 passando (158 arquivos, cerca de 20 minutos).
 
 ---
 
