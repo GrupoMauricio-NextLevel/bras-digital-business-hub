@@ -6,6 +6,8 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { listPartnerCoupons, partnerOfActor } from "@/lib/domain/partners";
 import { getBaseUrl } from "@/lib/base-url";
+import { getBrand } from "@/lib/brand-server";
+import { textoConvite } from "@/lib/parceiros/convite";
 import { CopyButton, CouponToggle, CreateCouponForm, WhatsAppShare } from "../partner-client";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +16,7 @@ export default async function PartnerCoupons() {
   const session = await requireRole("AFFILIATE");
   const db = await getDb();
   const [p, coupons, base] = await Promise.all([partnerOfActor(db, session.actor), listPartnerCoupons(db, session.actor), getBaseUrl()]);
+  const marca = await getBrand();
   const link = (code: string) => `${base}/cadastro?cupom=${code}`;
   return (
     <>
@@ -24,7 +27,7 @@ export default async function PartnerCoupons() {
         <ul className="space-y-2">{coupons.map((c) => (
           <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
             <div className="min-w-0"><p className="font-mono text-sm font-semibold">{c.code} <span className="ml-2 font-sans text-xs font-normal text-muted-foreground">{c.active ? "ativo" : "pausado"}</span></p><p className="text-xs text-muted-foreground">{c.redemptions} uso(s){c.maxRedemptions ? ` de ${c.maxRedemptions}` : ""} · {c.conversions} virou(aram) cliente pagante</p></div>
-            <div className="flex flex-wrap items-center gap-2"><CopyButton text={link(c.code)} label="Copiar link com cupom" /><WhatsAppShare text={`Teste o SuperDrop por 7 dias sem cartão com o meu cupom ${c.code}: ${link(c.code)}`} /><CouponToggle id={c.id} active={c.active} /></div>
+            <div className="flex flex-wrap items-center gap-2"><CopyButton text={link(c.code)} label="Copiar link com cupom" /><WhatsAppShare text={textoConvite(marca, link(c.code), c.code)} /><CouponToggle id={c.id} active={c.active} /></div>
           </li>
         ))}</ul>
       )}

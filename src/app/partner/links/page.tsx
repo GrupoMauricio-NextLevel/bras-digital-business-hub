@@ -5,6 +5,8 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { listLinks, partnerOfActor } from "@/lib/domain/partners";
 import { getBaseUrl } from "@/lib/base-url";
+import { getBrand } from "@/lib/brand-server";
+import { textoConvite } from "@/lib/parceiros/convite";
 import { CopyButton, CreateLinkForm, WhatsAppShare } from "../partner-client";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +16,11 @@ export default async function PartnerLinks() {
   const session = await requireRole("AFFILIATE");
   const db = await getDb();
   const [p, links, base] = await Promise.all([partnerOfActor(db, session.actor), listLinks(db, session.actor), getBaseUrl()]);
+  const marca = await getBrand();
   const main = links.find((l) => l.slug === p.code.toLowerCase()) ?? links[0];
   const url = (slug: string) => `${base}/r/${slug}`;
   const qr = main ? await QRCode.toString(url(main.slug), { type: "svg", margin: 1, width: 176, color: { dark: "#1c1917", light: "#ffffff" } }) : "";
-  const pitch = (u: string) => `Quer ter uma loja online pronta, sem estoque? Conheça o SuperDrop e teste: ${u}`;
+  const pitch = (u: string) => textoConvite(marca, u);
   return (
     <>
       <PageHeader title="Links de divulgação" description="Cada clique fica registrado. Quem se cadastrar por um link seu fica atribuído a você por 30 dias." />

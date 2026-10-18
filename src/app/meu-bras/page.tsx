@@ -7,6 +7,8 @@ import { benefitsPanel } from "@/lib/domain/beneficios/painel";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
+import { ActionQueue } from "@/components/app/action-queue";
+import { filaDoMembroBras } from "@/lib/domain/fila-do-dia";
 import { getBrasMemberByUser, touchBrasMemberSeen } from "@/lib/domain/bras/membros";
 import { countNewBrasDiscoveries } from "@/lib/domain/bras/videos";
 import { brasAccessFor } from "@/lib/domain/bras/descobertas";
@@ -48,7 +50,8 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
       <PageHeader eyebrow="Meu Brás" title={novo ? `Bem-vindo, ${session.user.name.split(" ")[0]}!` : `Olá, ${session.user.name.split(" ")[0]}`} description={`${company} · membro do Brás Digital Club`} />
       {novo ? <p role="status" className="mb-6 rounded-lg bg-success-soft px-4 py-3 text-sm text-success">Cadastro criado. Seu acesso de membro já está liberado.</p> : null}
 
-      {respostas ? <p role="status" className="mb-6 rounded-lg bg-info-soft px-4 py-3 text-sm"><b>{respostas === 1 ? "1 resposta nova" : `${respostas} respostas novas`}</b> da equipe. <Link href="/meu-bras/suporte#chat" className="font-semibold text-link underline">Abrir o chat</Link></p> : null}
+      <ActionQueue className="mb-6" description="O que depende de você agora." emptyMessage="Nada pendente. Veja as descobertas novas abaixo."
+        items={filaDoMembroBras({ ativo, respostas, pedidos, novas }).map((i) => ({ id: i.key, title: i.title, description: i.detail, count: i.count, href: i.href, actionLabel: i.action, tone: i.tone }))} />
       {benefits ? <PainelBeneficios data={benefits} /> : null}
       {survey ? <QuestionarioPreco product={survey.product} /> : null}
       {panel ? (
@@ -68,7 +71,6 @@ export default async function MeuBras({ searchParams }: { searchParams: Promise<
           </ul>
         </section>
       ) : null}
-      {novas ? <p role="status" className="mb-6 rounded-lg bg-[var(--bd-acao)]/10 px-4 py-3 text-sm"><b>{novas === 1 ? "1 descoberta nova" : `${novas} descobertas novas`}</b> desde a sua última visita. <Link href="/meu-bras/videos" className="font-semibold text-link underline">Ver agora</Link></p> : null}
       {andamento.length ? (
         <section aria-labelledby="mb-andamento" className="mb-8">
           <h2 id="mb-andamento" className="mb-3 text-xl font-bold">Seus pedidos em andamento</h2>

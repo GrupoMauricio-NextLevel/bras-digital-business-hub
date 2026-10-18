@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { filaDoLojista, pedidosParados, type EntradaFila } from "@/lib/domain/fila-do-dia";
+import { filaDaTransportadora, filaDoLojista, filaDoMembroBras, pedidosParados, type EntradaFila } from "@/lib/domain/fila-do-dia";
+import { textoConvite } from "@/lib/parceiros/convite";
 
 const now = new Date("2026-10-17T12:00:00.000Z");
 const horasAtras = (h: number) => new Date(now.getTime() - h * 3_600_000).toISOString();
@@ -46,5 +47,32 @@ describe("fila do dia do lojista (D166)", () => {
   it("SuperDrop com saldo suficiente não pede recarga", () => {
     const [funds] = filaDoLojista({ ...base, commerce: false, independent: false, balanceCents: 9_000, pendingCentral: [pedido("AWAITING_CENTRAL_PAYMENT", 3)] });
     expect(funds).toMatchObject({ title: "Pedidos aguardando liberação", action: "Ver saldo", tone: "warning" });
+  });
+});
+
+describe("fila do dia do membro da Brás e da transportadora (D168)", () => {
+  it("membro: pagamento pendente vem antes de retirada e descobertas; cadastro em análise aparece primeiro", () => {
+    const fila = filaDoMembroBras({ ativo: true, respostas: 0, novas: 2, pedidos: [{ status: "PAID" }, { status: "CONFIRMED" }, { status: "CONFIRMED" }, { status: "PICKED_UP" }] });
+    expect(fila.map((i) => i.key)).toEqual(["pagar", "retirar", "novas"]);
+    expect(fila[0]).toMatchObject({ count: 2, tone: "danger", title: "Pedidos confirmados: falta o pagamento" });
+    expect(filaDoMembroBras({ ativo: false, respostas: 1, novas: 0, pedidos: [] }).map((i) => i.key)).toEqual(["cadastro", "respostas"]);
+    expect(filaDoMembroBras({ ativo: true, respostas: 0, novas: 0, pedidos: [{ status: "PICKED_UP" }, { status: "CANCELED" }] })).toEqual([]);
+  });
+
+  it("transportadora: chamadas e Pix a devolver primeiro, cada item leva ao bloco da tela", () => {
+    const fila = filaDaTransportadora({ chamadas: 2, coletar: 1, transito: 3, fixasHoje: 1, pagarNaChegada: 0, devolver: 1, semLinkMotorista: true });
+    expect(fila.map((i) => i.key)).toEqual(["chamadas", "devolver", "fixas", "coletar", "transito", "motorista"]);
+    expect(fila.find((i) => i.key === "chamadas")).toMatchObject({ href: "#t-cham", tone: "danger", title: "Chamadas para responder" });
+    expect(filaDaTransportadora({ chamadas: 0, coletar: 0, transito: 0, fixasHoje: 0, pagarNaChegada: 0, devolver: 0, semLinkMotorista: false })).toEqual([]);
+  });
+});
+
+describe("convite do parceiro (D168)", () => {
+  it("usa a marca do endereço, nunca SuperDrop fixo, e não promete prazo de teste", () => {
+    const ec = { name: "NextLevel E-commerce", tagline: "A loja virtual feita para quem vende moda no Brasil" };
+    expect(textoConvite(ec, "https://x/r/ana")).toBe("Conheça NextLevel E-commerce: A loja virtual feita para quem vende moda no Brasil. Teste aqui: https://x/r/ana");
+    const cupom = textoConvite(ec, "https://x/r/ana?c=ANA10", "ANA10");
+    expect(cupom).toContain("cupom ANA10");
+    expect(cupom).not.toMatch(/SuperDrop|7 dias/);
   });
 });

@@ -8,6 +8,8 @@ import { myReputation, TIER_LABEL } from "@/lib/domain/cargas/reputacao";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
 import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { PageHeader } from "@/components/app/page-header";
+import { ActionQueue } from "@/components/app/action-queue";
+import { filaDaTransportadora } from "@/lib/domain/fila-do-dia";
 import { carrierLoads } from "@/lib/domain/cargas/cargas";
 import { LoadCard } from "@/components/cargas/load-card";
 import { CarrierLoadActions } from "@/components/cargas/cargas-forms";
@@ -48,7 +50,8 @@ export default async function Hoje() {
     <>
       <PageHeader eyebrow="NextLevel Cargas" title={`Olá, ${carrier.contactName}`} description={excursao ? `Fardos do Brás para o ônibus ${carrier.name}: aceite as chamadas, colete pela etiqueta e entregue com o código do cliente.` : `Coletas das importadoras do Brás para a ${carrier.name}. Comissão da NextLevel no seu plano: ${pct(usage.commissionBps)}% do frete.`} />
       {usage.freeLimit !== null && !excursao ? <p role="note" className="mb-6 rounded-lg bg-surface-muted px-4 py-3 text-sm">Plano grátis: <b className="tabular-nums">{usage.acceptedThisMonth} de {usage.freeLimit}</b> cargas aceitas neste mês.</p> : null}
-      {!carrier.hasDriverLink ? <p className="mb-6 rounded-lg bg-warning-soft px-4 py-3 text-sm">Gere o link do motorista para ele ver endereço, horário e códigos no celular. <Link href="/transportadora/perfil" className="font-semibold text-link underline">Gerar link</Link></p> : null}
+      <ActionQueue className="mb-6" description="Do mais urgente ao menos urgente; cada item leva ao bloco da tela." emptyMessage="Nenhuma chamada, coleta ou entrega pendente agora."
+        items={filaDaTransportadora({ chamadas: chamadas.length, coletar: coletar.length, transito: transito.length, fixasHoje: fixasHoje.length, pagarNaChegada: payQueue.onArrival.length, devolver: payQueue.toRefund.length, semLinkMotorista: !carrier.hasDriverLink }).map((i) => ({ id: i.key, title: i.title, description: i.detail, count: i.count, href: i.href, actionLabel: i.action, tone: i.tone }))} />
       {benefits ? <PainelBeneficios data={benefits} /> : null}
       {rep ? (
         <section aria-labelledby="t-rep" className="ds-card mb-6 p-4" data-reputacao>

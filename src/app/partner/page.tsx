@@ -8,6 +8,8 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { partnerDashboard } from "@/lib/domain/partners";
 import { getBaseUrl } from "@/lib/base-url";
+import { getBrand } from "@/lib/brand-server";
+import { textoConvite } from "@/lib/parceiros/convite";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { CopyButton, WhatsAppShare } from "./partner-client";
@@ -18,6 +20,7 @@ export default async function PartnerHome() {
   const session = await requireRole("AFFILIATE");
   const d = await partnerDashboard(await getDb(), session.actor);
   const base = await getBaseUrl();
+  const marca = await getBrand();
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;
   const goal = d.settings.monthlyGoal;
   const pct = Math.min(100, Math.round((d.funnel.activations / Math.max(d.tier.next ? d.funnel.activations + d.tier.next.needed : d.funnel.activations || 1, 1)) * 100));
@@ -48,7 +51,7 @@ export default async function PartnerHome() {
         <Card><CardContent className="space-y-3 pt-5">
           <h2 className="flex items-center gap-2 text-base font-semibold"><Link2 className="size-4" aria-hidden /> Seu link principal</h2>
           <code className="block break-all rounded bg-surface-muted p-2 text-xs" data-testid="partner-main-link">{link}</code>
-          <div className="flex flex-wrap gap-2"><CopyButton text={link} label="Copiar link" /><WhatsAppShare text={`Conheça o SuperDrop: uma loja online pronta, sem estoque. Teste aqui: ${link}`} /></div>
+          <div className="flex flex-wrap gap-2"><CopyButton text={link} label="Copiar link" /><WhatsAppShare text={textoConvite(marca, link)} /></div>
           <Link href="/partner/links" className="text-sm font-medium text-accent-foreground hover:underline">Criar links por campanha e ver o QR code</Link>
         </CardContent></Card>
       </div>

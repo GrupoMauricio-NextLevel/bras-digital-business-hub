@@ -74,3 +74,30 @@ export function filaDoLojista(e: EntradaFila): FilaItem[] {
     stockItem,
   ].filter((x): x is FilaItem => Boolean(x));
 }
+
+/** Fila do dia do membro do Brás Digital Club (D168): respostas da equipe, pedidos que dependem dele e descobertas novas. */
+export function filaDoMembroBras(e: { ativo: boolean; respostas: number; pedidos: { status: string }[]; novas: number }): FilaItem[] {
+  const conta = (s: string) => e.pedidos.filter((p) => p.status === s).length;
+  const pagar = conta("CONFIRMED"), retirar = conta("PAID"), recebidos = conta("NEW");
+  return [
+    !e.ativo ? { key: "cadastro", title: "Cadastro em análise", detail: "A equipe confere o CNPJ e libera o acesso de membro. Você recebe o aviso pelo WhatsApp.", count: 1, href: "/meu-bras/perfil", action: "Ver meu cadastro", tone: "info" as const } : null,
+    e.respostas ? { key: "respostas", title: plural(e.respostas, "Resposta nova da equipe", "Respostas novas da equipe"), detail: "Leia e responda no chat do suporte.", count: e.respostas, href: "/meu-bras/suporte#chat", action: "Abrir o chat", tone: "warning" as const } : null,
+    pagar ? { key: "pagar", title: plural(pagar, "Pedido confirmado: falta o pagamento", "Pedidos confirmados: falta o pagamento"), detail: "Faça o pagamento combinado com a equipe para a importadora liberar as caixas.", count: pagar, href: "/meu-bras/pedidos", action: "Ver pedidos", tone: "danger" as const } : null,
+    retirar ? { key: "retirar", title: plural(retirar, "Pedido pago: mande retirar", "Pedidos pagos: mande retirar"), detail: "Envie a sua transportadora ao Brás com o comprovante de retirada do pedido.", count: retirar, href: "/meu-bras/pedidos", action: "Comprovante", tone: "warning" as const } : null,
+    recebidos ? { key: "recebidos", title: plural(recebidos, "Pedido recebido pela equipe", "Pedidos recebidos pela equipe"), detail: "A equipe vai confirmar as caixas e o pagamento com você pelo WhatsApp.", count: recebidos, href: "/meu-bras/pedidos", action: "Acompanhar", tone: "info" as const } : null,
+    e.novas ? { key: "novas", title: plural(e.novas, "Descoberta nova", "Descobertas novas"), detail: "Desde a sua última visita, com análise de mercado.", count: e.novas, href: "/meu-bras/videos", action: "Ver descobertas", tone: "info" as const } : null,
+  ].filter((x): x is FilaItem => Boolean(x));
+}
+
+/** Fila do dia da transportadora e do ônibus (D168): o resumo do topo leva a cada bloco da tela "Hoje". */
+export function filaDaTransportadora(e: { chamadas: number; coletar: number; transito: number; fixasHoje: number; pagarNaChegada: number; devolver: number; semLinkMotorista: boolean }): FilaItem[] {
+  return [
+    e.chamadas ? { key: "chamadas", title: plural(e.chamadas, "Chamada para responder", "Chamadas para responder"), detail: "Aceite com o frete combinado ou recuse com o motivo; a importadora chama outra.", count: e.chamadas, href: "#t-cham", action: "Responder", tone: "danger" as const } : null,
+    e.devolver ? { key: "devolver", title: plural(e.devolver, "Pix para devolver", "Pix para devolver"), detail: "Fardos pagos que não viajaram. Devolva e registre aqui.", count: e.devolver, href: "#t-pag", action: "Ver pagamentos", tone: "danger" as const } : null,
+    e.fixasHoje ? { key: "fixas", title: plural(e.fixasHoje, "Coleta fixa hoje", "Coletas fixas hoje"), detail: "Combinadas com as importadoras que têm você como preferida.", count: e.fixasHoje, href: "#t-fixa", action: "Ver horários", tone: "warning" as const } : null,
+    e.coletar ? { key: "coletar", title: plural(e.coletar, "Carga para coletar no Brás", "Cargas para coletar no Brás"), detail: "O motorista mostra o código de cada pedido no balcão.", count: e.coletar, href: "#t-col", action: "Ver coletas", tone: "warning" as const } : null,
+    e.pagarNaChegada ? { key: "chegada", title: plural(e.pagarNaChegada, "Frete a receber na chegada", "Fretes a receber na chegada"), detail: "Registre o pagamento quando o cliente pagar.", count: e.pagarNaChegada, href: "#t-pag", action: "Registrar", tone: "info" as const } : null,
+    e.transito ? { key: "transito", title: plural(e.transito, "Carga em trânsito", "Cargas em trânsito"), detail: "Marque a entrega quando deixar a carga no destino.", count: e.transito, href: "#t-tra", action: "Marcar entrega", tone: "info" as const } : null,
+    e.semLinkMotorista ? { key: "motorista", title: "Gere o link do motorista", detail: "Ele vê endereço, horário e códigos no celular, sem instalar aplicativo.", count: 1, href: "/transportadora/perfil", action: "Gerar link", tone: "info" as const } : null,
+  ].filter((x): x is FilaItem => Boolean(x));
+}
