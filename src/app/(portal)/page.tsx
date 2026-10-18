@@ -32,17 +32,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Portal() {
+export default async function Portal({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  // Prévia das jornadas imersivas (D167) enquanto as fotos da marca estão em produção.
+  const previa = (await searchParams).previa === "imersiva";
   const session = await getSession();
   if (session) redirect(homeFor(session.user.role));
   const brand = await getBrand();
   const solucoes = await groupLink("/solucoes");
   // Marca com página inicial própria (NextLevel Cargas, D108).
-  if (brand.landing === "cargas") return <CargasHome brand={brand} />;
+  if (brand.landing === "cargas") return <CargasHome brand={brand} previa={previa} />;
   // Produto ainda sem sistema (Brás Digital Club fechado, Hub Creators, China Hub): página "em breve" com lista de espera.
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
-  if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} />; }
+  if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} previa={previa} />; }
   // Marcas sem dropshipping (NextLevel E-commerce) têm portal próprio: a home imersiva (D165).
   if (!brandHas(brand, "dropship")) return <HomeImersivaEc brand={brand} />;
   const faq = FAQ.slice(0, 5);
@@ -54,7 +56,7 @@ export default async function Portal() {
         { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
       ]} />
 
-      <SuperDropHomeV4 faq={faq} solucoes={solucoes} />
+      <SuperDropHomeV4 faq={faq} solucoes={solucoes} previa={previa} />
     </>
   );
 }

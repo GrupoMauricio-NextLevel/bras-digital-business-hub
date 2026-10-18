@@ -1,4 +1,5 @@
 import { ArrowRight, BadgeCheck, Boxes, ClipboardCheck, Gauge, KeyRound, Link2, MapPinned, Megaphone, Network, Receipt, Route, ShieldCheck, Smartphone, Star, Truck, Warehouse } from "lucide-react";
+import { ImersivaCargas } from "./imersiva";
 import type { Brand } from "@/lib/brand";
 import { JsonLd } from "@/components/portal/json-ld";
 import { CargasInterestForm } from "./cargas-form";
@@ -82,7 +83,7 @@ function Quadro() {
   );
 }
 
-export function CargasHome({ brand }: { brand: Brand }) {
+export function CargasHome({ brand, previa = false }: { brand: Brand; /** Prévia da jornada imersiva (D167) antes das fotos. */ previa?: boolean }) {
   const section = "scroll-mt-16 px-4 py-16 md:py-24";
   return (
     <div className="cg-home">
@@ -114,6 +115,8 @@ export function CargasHome({ brand }: { brand: Brand }) {
         </div>
         <div className="cg-pista" aria-hidden />
       </section>
+
+      <ImersivaCargas previa={previa} />
 
       <VitrineMarca slug="nextlevel-cargas" titulo="A operação da transportadora num painel só" />
 

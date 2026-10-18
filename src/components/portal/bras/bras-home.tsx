@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ImersivaBras } from "./imersiva";
 import { ArrowRight, ArrowUpRight, BadgeCheck, Boxes, Building2, Check, Clapperboard, Factory, Headset, Lock, MessageCircle, PackageCheck, ShieldCheck, Sparkles, Store, Truck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import type { BrasPublicVideo } from "@/lib/domain/bras/videos";
@@ -55,7 +56,7 @@ const FATOS = ["Só caixa fechada", "A partir de 1 caixa", "Análise de mercado 
 /** Foto de direção de arte só quando o arquivo existe (sem quadro "em criação" na página da Brás). */
 const temFoto = (nome: string) => formatosDisponiveis("bras", nome).length > 0;
 
-export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: BrasPublicVideo[]; analysis: Pick<BrasAnalysisSettings, "mode" | "volumeThresholdCents" | "monthlyPriceCents"> }) {
+export function BrasHome({ brand, videos, analysis, previa = false }: { brand: Brand; videos: BrasPublicVideo[]; analysis: Pick<BrasAnalysisSettings, "mode" | "volumeThresholdCents" | "monthlyPriceCents">; /** Prévia da jornada imersiva (D167) antes das fotos. */ previa?: boolean }) {
   const faq = [...brasAnalysisFaq(analysis.mode), ...BRAS_FAQ];
   const destaque = videos[0];
   const section = "scroll-mt-16 px-4 py-16 md:py-24";
@@ -96,6 +97,8 @@ export function BrasHome({ brand, videos, analysis }: { brand: Brand; videos: Br
         </div>
         <CabecalhoSobreHeroi alvo="inicio" />
       </section>
+
+      <ImersivaBras previa={previa} />
 
       {/* 2. Faixa com as regras do atacado. */}
       <div className="bd-marquee overflow-hidden border-y border-[var(--bdc-linha-escura)] bg-[var(--bd-navy-2)] py-3 text-[var(--bd-tinta-clara)]" aria-label="Como funciona o atacado do Brás Digital Club">

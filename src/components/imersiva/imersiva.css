@@ -4,6 +4,14 @@
    movimento = tudo parado. */
 .im-tema-ecommerce { --im-fundo: var(--ec-marinho); --im-fundo-2: var(--ec-marinho-2); --im-claro: var(--ec-gelo); --im-suave: var(--ec-texto-suave); --im-destaque: var(--ec-ciano); --im-link-escuro: var(--ec-link-escuro); --im-acao: var(--ec-acao); --im-acao-suave: var(--ec-azul-suave); --im-gradiente: var(--ec-gradiente); }
 .im-tema-bras { --im-fundo: var(--bdc-navy); --im-fundo-2: var(--bdc-navy-2); --im-claro: var(--bdc-off-white); --im-suave: var(--bdc-texto-suave); --im-destaque: var(--bdc-ciano); --im-link-escuro: var(--bdc-ciano); --im-acao: var(--bdc-azul); --im-acao-suave: var(--bdc-painel-claro); --im-gradiente: var(--bdc-gradiente); }
+.im-tema-cargas { --im-fundo: var(--cg-navy); --im-fundo-2: var(--cg-navy-2); --im-claro: var(--cg-tinta-clara); --im-suave: var(--cg-tinta-suave); --im-destaque: var(--cg-indigo-claro); --im-link-escuro: var(--cg-indigo-claro); --im-acao: var(--cg-indigo); --im-acao-suave: var(--cg-papel); --im-gradiente: linear-gradient(90deg, var(--cg-indigo), var(--cg-indigo-claro)); }
+.im-tema-superdrop { --im-fundo: var(--sd-marinho); --im-fundo-2: var(--sd-marinho-2); --im-claro: var(--sd-claro); --im-suave: var(--sd-suave); --im-destaque: var(--sd-verde-claro); --im-link-escuro: var(--sd-verde-claro); --im-acao: var(--sd-verde-texto); --im-acao-suave: var(--sd-papel); --im-gradiente: linear-gradient(90deg, var(--sd-verde), var(--sd-verde-claro)); }
+
+/* Foto ainda em produção (D167): o lugar fica reservado com a mesma proporção, num campo da cor da marca com a luz do
+   destaque, sem texto nem ícone (decorativo). Some sozinho quando a foto chega. */
+.im-espera { display: block; background: radial-gradient(120% 90% at 22% 18%, color-mix(in srgb, var(--im-destaque) 26%, transparent) 0%, transparent 55%), radial-gradient(90% 80% at 85% 90%, color-mix(in srgb, var(--im-acao) 30%, transparent) 0%, transparent 60%), var(--im-fundo-2); }
+.im-porta .im-espera { position: absolute; inset: 0; z-index: -2; }
+.im-lado .im-espera { overflow: hidden; border-radius: 1.5rem; aspect-ratio: 3 / 2; }
 .im-eyebrow { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; color: var(--im-link-escuro); }
 .im-eyebrow--claro { color: var(--im-acao); }
 .im-h2 { font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -.035em; line-height: 1.04; font-size: clamp(2rem, 4.6vw, 3.5rem); text-wrap: balance; }

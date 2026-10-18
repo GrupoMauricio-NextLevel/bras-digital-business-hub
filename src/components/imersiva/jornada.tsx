@@ -33,7 +33,7 @@ export function JornadaMarca<N extends string>({ acervo, passos, eyebrow, titulo
       <ImmersiveScroll steps={n} onStep={(s) => setPasso(s)} aria-label={rotulo} className="im-jor-scroll" style={{ ["--n" as string]: n }}>
         <div className="im-jor-palco">
           <div className="im-jor-quadros" aria-hidden>
-            {passos.map((p, k) => (
+            {passos.map((p, k) => acervo.fotos[p.foto].espera ? <span key={p.key} className="im-jor-quadro im-espera" data-foto-espera={p.foto} /> : (
               <picture key={p.key} className="im-jor-quadro" style={{ backgroundColor: acervo.fotos[p.foto].cor }}>
                 <source media="(max-width: 1023px)" type="image/avif" srcSet={srcSetDe(acervo, p.retrato, "avif")} sizes="100vw" />
                 <source media="(max-width: 1023px)" type="image/webp" srcSet={srcSetDe(acervo, p.retrato, "webp")} sizes="100vw" />

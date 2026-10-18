@@ -1,4 +1,6 @@
 import { statSync } from "node:fs";
+import { ImersivaSuperDrop } from "./imersiva";
+import { SD } from "@/lib/marcas/superdrop";
 import { join } from "node:path";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, Check } from "lucide-react";
@@ -16,9 +18,9 @@ import { CabecalhoSobreHeroi } from "./cabecalho-sobre-heroi";
  * "Você vende. O fornecedor envia.". O fundo escuro é o azul-marinho retirado das fotos do pacote (#0D1B34), para foto e
  * fundo se emendarem; o verde da marca fica só nos sinais (botão principal, destaques). Textos só com o que existe no sistema.
  */
-const NAVY = "#0D1B34";
-const VERDE = "#2D9E3B";
-const VERDE_CLARO = "#62C268";
+const NAVY = SD.cores.marinho;
+const VERDE = SD.cores.verde;
+const VERDE_CLARO = SD.cores.verdeClaro;
 
 /** Foto do pacote da marca (public/marcas/superdrop/imagens), com as versões 800 e 1600 em WebP. */
 function FotoMarca({ nome, alt, sizes, posicao = "50% 50%", priority = false, className }: { nome: string; alt: string; sizes: string; posicao?: string; priority?: boolean; className?: string }) {
@@ -56,7 +58,7 @@ const LOJAS = [
 ] as const;
 const existe = (rel: string) => { try { return statSync(join(process.cwd(), "public", rel)).size > 0; } catch { return false; } };
 
-export async function SuperDropHomeV4({ faq, solucoes }: { faq: { q: string; a: string }[]; solucoes: string }) {
+export async function SuperDropHomeV4({ faq, solucoes, previa = false }: { faq: { q: string; a: string }[]; solucoes: string; /** Prévia da jornada imersiva (D167) antes das fotos. */ previa?: boolean }) {
   const m = MARCAS.superdrop;
   const lojas = LOJAS.filter((l) => existe(`portal/superdrop/v4/${l.arquivo}.webp`));
   return (
@@ -84,6 +86,8 @@ export async function SuperDropHomeV4({ faq, solucoes }: { faq: { q: string; a: 
           <div className="relative mx-auto mt-12 max-w-5xl md:mt-20"><LiveConveyor /></div>
         </div>
       </section>
+
+      <ImersivaSuperDrop previa={previa} />
 
       {/* 2. Faixa de confiança */}
       <section aria-label="O essencial" className="border-b border-border bg-canvas">
