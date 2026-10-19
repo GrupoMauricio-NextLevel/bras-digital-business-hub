@@ -1,6 +1,7 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { groupLinkFor } from "@/lib/host-routing";
+import { MASTER_MARCA_COOKIE, ehMarcaMaster, type MarcaMaster } from "@/lib/master-marca";
 import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
 /** Cookie do modo prévia: `/lojas` liga a NextLevel E-commerce num endereço que ainda não é dela. Só na demonstração (D149). */
@@ -23,7 +24,8 @@ export async function getBrand(): Promise<Brand> {
 
 /**
  * Marca padrão dos filtros do Master: a do endereço oficial (ou da prévia). Em endereço técnico ou localhost não filtra.
- * `marca=todas` na URL mostra todas; um código de marca mostra só aquela.
+ * `marca=todas` na URL mostra todas; um código de marca mostra só aquela. No Master central, sem nada na URL, vale a marca
+ * escolhida no seletor do topo (R2).
  */
 export async function masterBrandFilter(raw: string | undefined): Promise<BrandCode | undefined> {
   if (raw === "todas") return undefined;
@@ -32,8 +34,15 @@ export async function masterBrandFilter(raw: string | undefined): Promise<BrandC
   const preview = brandPreviewAllowed() ? (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value : undefined;
   if (isBrandCode(preview)) return preview;
   const code = brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code;
-  // No endereço do Master central (holding) a visão padrão é a de todos os produtos.
-  return code === HOLDING_CODE ? undefined : code;
+  // No endereço do Master central (holding) a visão padrão é a do seletor; sem escolha, todos os produtos.
+  if (code === HOLDING_CODE || !code) return (await marcaDoMaster()) ?? undefined;
+  return code;
+}
+
+/** Marca escolhida no seletor do Master (R2), ou nula para "todas". */
+export async function marcaDoMaster(): Promise<MarcaMaster | null> {
+  const v = (await cookies()).get(MASTER_MARCA_COOKIE)?.value;
+  return ehMarcaMaster(v) ? v : null;
 }
 
 /** Leva ao início quando a marca do endereço não tem o recurso (evita páginas de outra marca em domínio errado). */

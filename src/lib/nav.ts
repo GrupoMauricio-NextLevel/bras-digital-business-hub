@@ -28,6 +28,10 @@ export type NavItem = {
   needs?: "dropship" | "partners";
   /** Item exclusivo de uma marca. */
   onlyBrand?: BrandCode;
+  /** Master (R2): marcas a que o item pertence. Sem marcas = comum a todas (aparece em qualquer filtro). */
+  marcas?: BrandCode[];
+  /** Master (R2): ferramenta do grupo inteiro (erros, qualidade, equipe…). Só aparece em "Todas as marcas". */
+  soTodas?: boolean;
 };
 
 /** Como o menu agrupa: "sections" = títulos de seção sempre abertos; "accordion" = grupos que abrem e fecham (aria-expanded). É estrutura do fluxo, não da empresa. */
@@ -43,29 +47,29 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
-      { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE" },
+      { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
-      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship" },
-      { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship" },
-      { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede" },
-      { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede", needs: "dropship" },
-      { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação" },
-      { label: "Resumo do dia", href: "/master/summary", icon: "LayoutDashboard", group: "Operação" },
-      { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação" },
-      { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação" },
-      { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Operação" },
-      { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação" },
-      { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas" },
+      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
+      { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
+      { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
+      { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
+      { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
+      { label: "Resumo do dia", href: "/master/summary", icon: "LayoutDashboard", group: "Operação", soTodas: true },
+      { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação", soTodas: true },
+      { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação", soTodas: true },
+      { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Operação", soTodas: true },
+      { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação", soTodas: true },
+      { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas", marcas: ["BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
-      { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio" },
-      { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio" },
-      { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio" },
+      { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio", soTodas: true },
+      { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio", soTodas: true },
+      { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio", soTodas: true },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },
-      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship" },
-      { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio" },
-      { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio" },
-      { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio" },
+      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship", marcas: ["SUPERDROP"] },
+      { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
+      { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio", marcas: ["SUPERDROP"] },
+      { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio", soTodas: true },
     ],
     quick: [
       { label: "Novo fornecedor", href: "/master/suppliers/new", icon: "Factory" },
@@ -267,6 +271,11 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
 ];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel E-commerce) e o que é de outra marca. */
+/** Menu do Master filtrado pela marca escolhida no seletor (R2). Sem marca = tudo. Itens sem `marcas` são comuns. */
+export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | undefined): NavItem[] {
+  return marca ? items.filter((i) => !i.soTodas && (!i.marcas || i.marcas.includes(marca))) : items;
+}
+
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {
   return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code || brand.code === "NEXTLEVEL"));
 }
