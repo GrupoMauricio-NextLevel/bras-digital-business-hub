@@ -2,8 +2,8 @@
 
 > 19/10/2026. Base: `docs/mapa/MAPA-ECOSSISTEMA-2026-10-18.md` (mapa e análise) e auditoria do código feita com as skills
 > `repo-auditor`, `impact-analysis`, `architecture-drift` e `acceptance-designer`.
-> **Estado: aguardando o OK do dono.** A Parte A é para você ler e aprovar. A Parte B é o prompt que eu (ou outro agente) sigo
-> para construir, fase por fase. Nada de código antes do OK.
+> **Estado: APROVADO pelo dono em 19/10/2026** (respostas na seção A7). A Parte B é o prompt que eu (ou outro agente) sigo para
+> construir, fase por fase, na ordem R0 → R1 → R3 → R2 → R4 → R5.
 
 ---
 
@@ -74,6 +74,18 @@ O sistema cresceu certo na base (um motor, várias marcas), mas três coisas est
 - **R2:** cada marca no seletor mostra no máximo 12 itens no menu; os endereços antigos continuam abrindo.
 - **R3:** zero "Club do Grupo" e zero "pontos do Brás Digital Club" nas telas.
 - **R4 e R5:** documento da primeira revisão e regra escrita no `CLAUDE.md`.
+
+## A7. Respostas do dono (19/10/2026)
+
+| # | Decisão | Efeito no plano |
+|---|---|---|
+| Q1 | **60% E-commerce · 25% SuperDrop · 15% resto** até 10 lojistas pagando na E-commerce | R5 grava a regra |
+| Q2 | **Os pontos são do "Brás Digital Club"** (não "NextLevel Club") | R3.1 muda: a tela de entrada e os painéis das **outras marcas** deixam de falar em Club e pontos; o Club aparece só onde a Brás e a Cargas atuam. A página `/club` do site do grupo ("NextLevel Club", D152) fica como está e vira pergunta para a próxima rodada |
+| Q3 | Home do grupo: **depois** | R3.2 fica fora desta rodada |
+| Q4 | **Master único com seletor de marca** | R2 completa |
+| Q5 | **Tudo liberado nos 3 planos**, tabela editável no Master | R1 como escrito |
+| Q6 | Desligados: **eu sugiro, o dono decide** | R4 como escrito |
+| — | **Executar tudo** | Fase por fase, com relatório ao fim de cada uma |
 
 ---
 
@@ -207,7 +219,11 @@ export function podeUsar(perfil: PerfilLoja, recurso: FeatureKey): boolean;
 
 ## B3. Fase R3: nomes e home do grupo
 
-### R3.1 NextLevel Club em todas as telas (Q2)
+### R3.1 Club só onde ele existe (Q2 respondida: os pontos são do Brás Digital Club)
+
+> **Substitui o texto original abaixo.** Faça: (a) `fio-captacao.tsx` e o selo do Club nas telas de entrada/cadastro **só nas marcas Brás e Cargas**; nas outras, sem menção a Club ou pontos; (b) a "Carteira do grupo" (`beneficios/painel.ts`) só aparece para perfis da Brás e da Cargas; (c) as telas da Brás e da Cargas continuam dizendo "pontos do Brás Digital Club"; (d) teste: nenhuma tela da E-commerce ou do SuperDrop menciona "Club" ou "pontos". O texto original fica como registro.
+
+#### (original, não executar)
 - Criar `src/lib/marcas/nextlevel-club.ts` com `CLUB = { nome: "NextLevel Club", pontos: "pontos do NextLevel Club", url: "/club" }`. Fonte única do nome; nenhum texto fixo.
 - Trocar nas telas:
   - `components/ecossistema/fio-captacao.tsx`: "Club do Grupo NextLevel" → `CLUB.nome`;
