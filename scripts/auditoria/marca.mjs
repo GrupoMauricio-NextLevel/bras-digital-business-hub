@@ -62,7 +62,7 @@ const menu = await p.evaluate(() => [...new Set([...document.querySelectorAll("n
 const EXTRAS = ["/merchant/orders/new", "/merchant/catalogo/new", "/merchant/wallet", "/merchant/labels", "/merchant/analytics", "/merchant/templates", "/merchant/settings", "/merchant/storefront", "/merchant/team"];
 if (menu.some((h) => h.startsWith("/merchant"))) {
   await p.goto(`${HOST}/merchant/orders`).catch(() => {});
-  const pedido = await p.evaluate(() => document.querySelector("a[href^='/merchant/orders/']:not([href$='/new'])")?.getAttribute("href") ?? null);
+  const pedido = await p.evaluate(() => document.body.innerHTML.match(/\/merchant\/orders\/(?!new\b|propostas\b)[\w-]+/)?.[0] ?? null);
   for (const h of [...EXTRAS, ...(pedido ? [pedido] : [])]) if (!menu.includes(h)) menu.push(h);
 }
 let i = 0;
