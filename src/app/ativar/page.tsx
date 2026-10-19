@@ -7,6 +7,7 @@ import { getBrand } from "@/lib/brand-server";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { activationPage, isEcoBrand } from "@/lib/domain/ecossistema/ativacao";
+import { clubNaMarca } from "@/lib/club-marcas";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Ativar", robots: { index: false } };
@@ -33,7 +34,7 @@ export default async function AtivarPage({ searchParams }: { searchParams: Promi
         <Link href={p.ctaHref} className="ds-btn ds-btn--lg">{p.ctaLabel}</Link>
         <Link href="/" className="ds-btn ds-btn--secondary ds-btn--lg">Conhecer a {p.name}</Link>
       </div>
-      <p className="mt-6 text-xs text-muted-foreground">Os pontos do Club valem em todas as marcas do grupo. Sem fidelidade: cancele quando quiser.</p>
+      <p className="mt-6 text-xs text-muted-foreground">{clubNaMarca(to) ? "Os pontos do Brás Digital Club valem nos serviços do Club. " : ""}Sem fidelidade: cancele quando quiser.</p>
       <div className="mt-10"><NextLevelSignature product={p.name} /></div>
     </main>
   );

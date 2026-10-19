@@ -13,6 +13,7 @@ import { getClubRules, pointsToCents } from "../club/regras";
 import { storeAccess } from "../store-access";
 import type { EntrySnapshot } from "../precos/porta-entrada";
 import { inTreatment } from "../experimentos";
+import { clubNaMarca } from "@/lib/club-marcas";
 
 /**
  * Benefícios gamificados nos painéis (D128, fase P5V do prompt de público e preço). **Um agregador só**: carteira do
@@ -43,7 +44,8 @@ export type TrailStep = { key: string; label: string; done: boolean; href: strin
 export type PlanOption = { name: string; monthlyCents: number; feeBps: number; totalCents: number; current: boolean };
 export type BenefitsPanel = {
   brand: BenefitBrand;
-  wallet: { points: number; valueCents: number; expiringSoon: number; href: string | null };
+  /** Pontos do Brás Digital Club: só na Brás e na Cargas (decisão do dono, 19/10). Nulo nas outras marcas. */
+  wallet: { points: number; valueCents: number; expiringSoon: number; href: string | null } | null;
   trail: { title: string; steps: TrailStep[]; done: number; next: TrailStep | null };
   trial: { daysLeft: number; totalDays: number; gainedDays: number; capDays: number; milestones: { label: string; days: number; done: boolean }[] } | null;
   simulator: { salesCents: number; options: PlanOption[]; best: PlanOption; savingsCents: number } | null;
@@ -154,8 +156,11 @@ export async function benefitsPanel(db: Database, actor: Actor, now = new Date()
   if (!brand || !(await getBenefitsSettings(db)).brands.includes(brand)) return null;
   // Experimento (D136): com um rodando, só o grupo novo vê os benefícios.
   if (!(await inTreatment(db, "BENEFICIOS", actor.storeId ?? actor.userId, now))) return null;
-  const [rules, bal] = await Promise.all([getClubRules(db), clubBalance(db, actor.userId, now)]);
-  const wallet = { points: bal.available, valueCents: pointsToCents(bal.available, rules), expiringSoon: bal.expiringSoon, href: brand === "BRAS_DIGITAL" ? "/meu-bras/club" : brand === "NEXTLEVEL_CARGAS" ? "/transportadora/indicacoes" : null };
+  let wallet: BenefitsPanel["wallet"] = null;
+  if (clubNaMarca(brand)) {
+    const [rules, bal] = await Promise.all([getClubRules(db), clubBalance(db, actor.userId, now)]);
+    wallet = { points: bal.available, valueCents: pointsToCents(bal.available, rules), expiringSoon: bal.expiringSoon, href: brand === "BRAS_DIGITAL" ? "/meu-bras/club" : "/transportadora/indicacoes" };
+  }
 
   const steps = actor.role === "STORE_OWNER" && actor.storeId ? await storeTrail(db, actor.storeId) : actor.role === "BRAS_MEMBER" ? await memberTrail(db, actor.userId) : await carrierTrail(db, actor.userId);
   const done = steps.filter((x) => x.done).length;

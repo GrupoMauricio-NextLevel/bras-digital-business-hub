@@ -18,7 +18,7 @@ describe("benefícios nos painéis", () => {
     expect(await benefitsPanel(ctx.db, ctx.actors.mantos)).toBeNull();
     await saveBenefitsSettings(ctx.db, ctx.actors.master, { brands: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] });
     const p = (await benefitsPanel(ctx.db, ctx.actors.mantos))!;
-    expect(p.wallet.points).toBe(0);
+    expect(p.wallet).toBeNull(); // pontos são do Brás Digital Club: não aparecem no SuperDrop nem na E-commerce (R3)
     expect(p.trail.steps.length).toBeGreaterThan(3);
     expect(p.simulator?.options.length).toBeGreaterThan(1);
     const done = p.trail.steps.filter((s) => s.done).length;

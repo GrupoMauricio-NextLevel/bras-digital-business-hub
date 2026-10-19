@@ -4,17 +4,17 @@ import { formatBRL } from "@/lib/money";
 import type { BenefitsPanel } from "@/lib/domain/beneficios/painel";
 
 /**
- * Kit de benefícios dos painéis (D128, fase P5V): Carteira do grupo, Trilha de marcos, Medidor do teste, Simulador do
+ * Kit de benefícios dos painéis (D128, fase P5V): Pontos do Club (só Brás e Cargas), Trilha de marcos, Medidor do teste, Simulador do
  * plano e Comemoração. Só exibe o que o agregador entrega (o componente não decide regra). Todo ponto aparece também
  * em reais; nenhum texto promete ganho.
  */
 const pts = (n: number) => n.toLocaleString("pt-BR");
 const pct = (bps: number) => `${(bps / 100).toLocaleString("pt-BR")}%`;
 
-export function CarteiraGrupo({ w }: { w: BenefitsPanel["wallet"] }) {
+export function CarteiraGrupo({ w }: { w: NonNullable<BenefitsPanel["wallet"]> }) {
   return (
     <section aria-labelledby="bn-cart" className="ds-card p-4">
-      <h2 id="bn-cart" className="mb-1 flex items-center gap-2 text-sm font-semibold"><Wallet className="size-4 text-[var(--brand-primary)]" aria-hidden />Carteira do grupo</h2>
+      <h2 id="bn-cart" className="mb-1 flex items-center gap-2 text-sm font-semibold"><Wallet className="size-4 text-[var(--brand-primary)]" aria-hidden />Pontos do Brás Digital Club</h2>
       <p className="text-2xl font-bold tabular-nums">{pts(w.points)} <span className="text-sm font-medium text-muted-foreground">pontos</span></p>
       <p className="text-sm text-muted-foreground">valem {formatBRL(w.valueCents)} em serviços do grupo{w.expiringSoon ? ` · ${pts(w.expiringSoon)} vencem em breve` : ""}</p>
       {w.href ? <Link href={w.href} className="mt-2 inline-block text-sm font-semibold text-link underline">Ver como usar</Link> : null}
@@ -89,7 +89,7 @@ export function PainelBeneficios({ data }: { data: BenefitsPanel }) {
     <div className="mb-6 space-y-3" data-beneficios>
       <Comemoracao steps={data.celebrate} />
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <CarteiraGrupo w={data.wallet} />
+        {data.wallet ? <CarteiraGrupo w={data.wallet} /> : null}
         <TrilhaMarcos t={data.trail} />
         {data.trial ? <MedidorTeste t={data.trial} /> : null}
         {data.simulator ? <SimuladorPlano s={data.simulator} /> : null}
