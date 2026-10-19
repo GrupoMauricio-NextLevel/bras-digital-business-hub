@@ -9,6 +9,7 @@ import { runAction } from "@/lib/action-result";
 import { requireMaster } from "@/lib/domain/access";
 import { ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import { extendTrial } from "@/lib/domain/store-access";
+import { salvarTabelaRecursos } from "@/lib/domain/perfil-loja";
 
 async function master() {
   const session = await getSession();
@@ -43,5 +44,15 @@ export async function extendCommerceTrialAction(storeId: string, days: number) {
     const result = await extendTrial(db, session.actor, storeId, days);
     revalidatePath("/commerce/stores"); revalidatePath("/commerce");
     return { trialEndsAt: result.trialEndsAt.toISOString() };
+  });
+}
+
+/** Tabela "o que cada plano da E-commerce libera" (D172). Só o Master financeiro altera; fica na auditoria. */
+export async function salvarRecursosPorPlanoAction(tabela: unknown) {
+  return runAction(async () => {
+    const session = await master();
+    await salvarTabelaRecursos(await getDb(), session.actor, tabela);
+    revalidatePath("/commerce/plans");
+    return { salvo: true };
   });
 }

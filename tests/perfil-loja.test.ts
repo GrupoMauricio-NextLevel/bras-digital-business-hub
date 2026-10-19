@@ -48,6 +48,10 @@ describe("perfil da loja", () => {
     await salvarTabelaRecursos(db, actors.master, { ...TABELA_PADRAO, COMMERCE_START: ["catalog"] });
     expect((await tabelaRecursos(db)).COMMERCE_START).toEqual(["catalog"]);
     await expect(salvarTabelaRecursos(db, actors.master, { ...TABELA_PADRAO, COMMERCE_START: ["wallet"] })).rejects.toThrow();
+    // Só o dono do Master ou a função financeira altera; suporte não.
+    await expect(salvarTabelaRecursos(db, { ...actors.master, masterFunction: "SUPORTE" }, TABELA_PADRAO)).rejects.toThrow(/função/);
+    const auditoria = await db.query.auditLog.findMany();
+    expect(auditoria.some((a) => a.action === "ECOMMERCE_RECURSOS_POR_PLANO")).toBe(true);
   });
 
   it("'loja independente' é uma função só e concorda com a modalidade e com o perfil em todas as lojas do seed", async () => {

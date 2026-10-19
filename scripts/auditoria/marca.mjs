@@ -58,8 +58,15 @@ await p.locator("form button[type=submit]").first().click();
 await p.waitForLoadState("networkidle").catch(() => {});
 await p.waitForTimeout(1200);
 const menu = await p.evaluate(() => [...new Set([...document.querySelectorAll("nav a[href^='/'], aside a[href^='/']")].map((a) => a.getAttribute("href")))].filter((h) => h && !h.startsWith("/store") && !h.includes("logout")));
+// Telas do lojista fora do menu (D172): também precisam falar a língua da marca.
+const EXTRAS = ["/merchant/orders/new", "/merchant/catalogo/new", "/merchant/wallet", "/merchant/labels", "/merchant/analytics", "/merchant/templates", "/merchant/settings", "/merchant/storefront", "/merchant/team"];
+if (menu.some((h) => h.startsWith("/merchant"))) {
+  await p.goto(`${HOST}/merchant/orders`).catch(() => {});
+  const pedido = await p.evaluate(() => document.querySelector("a[href^='/merchant/orders/']:not([href$='/new'])")?.getAttribute("href") ?? null);
+  for (const h of [...EXTRAS, ...(pedido ? [pedido] : [])]) if (!menu.includes(h)) menu.push(h);
+}
 let i = 0;
-for (const h of menu.slice(0, 60)) await ver(p, `painel-${String(++i).padStart(2, "0")}${h.replace(/\W+/g, "-").slice(0, 40)}`, HOST + h);
+for (const h of menu.slice(0, 80)) await ver(p, `painel-${String(++i).padStart(2, "0")}${h.replace(/\W+/g, "-").slice(0, 40)}`, HOST + h);
 await b.close();
 
 writeFileSync(`${OUT}/relatorio.json`, JSON.stringify({ marca: regra.marca, host: HOST, conta: CONTA, telas: rel }, null, 1));

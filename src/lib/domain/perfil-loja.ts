@@ -40,6 +40,14 @@ export const RECURSOS_ECOMMERCE = FEATURES.filter((f) => !SO_SUPERDROP.includes(
 export const PLANOS_ECOMMERCE = ["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"] as const;
 export type PlanoEcommerce = (typeof PLANOS_ECOMMERCE)[number];
 
+/** Nome de cada recurso na língua da E-commerce (o `FEATURE_INFO` fala a do SuperDrop: "Catálogo da Central"). */
+export const ROTULO_ECOMMERCE: Record<(typeof RECURSOS_ECOMMERCE)[number], string> = {
+  manualOrders: "Pedidos manuais (WhatsApp, Instagram, balcão)", catalog: "Catálogo de produtos", customers: "Clientes", financeBasic: "Financeiro da loja",
+  services: "Serviços e módulos extras", storefront: "Loja virtual", appearanceBasic: "Aparência (logo, cores, textos)", templatesStarter: "Modelos de loja básicos",
+  templatesPremium: "Modelos de loja premium", appearanceAdvanced: "Editor avançado da loja", customDomain: "Domínio próprio", analytics: "Análise de vendas",
+  team: "Equipe da loja", reportsExport: "Relatórios em planilha (CSV)",
+} as Record<(typeof RECURSOS_ECOMMERCE)[number], string>;
+
 const KEY = "ecommerce.recursos-por-plano";
 const recursoSchema = z.enum(RECURSOS_ECOMMERCE as [FeatureKey, ...FeatureKey[]]);
 export const tabelaSchema = z.object(Object.fromEntries(PLANOS_ECOMMERCE.map((p) => [p, z.array(recursoSchema)])) as Record<PlanoEcommerce, z.ZodArray<typeof recursoSchema>>);
