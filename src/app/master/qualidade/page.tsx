@@ -3,7 +3,7 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { mapCells, qualityCenter } from "@/lib/domain/qualidade";
-import { readyButOff } from "@/lib/domain/qualidade-desligados";
+import { readyButOffComRevisao } from "@/lib/domain/qualidade-desligados";
 import { CentralQualidade } from "@/components/master/qualidade/central";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export default async function QualidadePage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
   if (s.user.masterFunction) redirect("/master");
   const db = await getDb();
-  const [c, off, map] = await Promise.all([qualityCenter(db, s.actor), readyButOff(db, s.actor), mapCells(db, s.actor)]);
+  const [c, off, map] = await Promise.all([qualityCenter(db, s.actor), readyButOffComRevisao(db, s.actor), mapCells(db, s.actor)]);
   return (
     <>
       <PageHeader eyebrow="Grupo NextLevel" title="Central de qualidade" description="Todas as telas do sistema em um lugar: abra uma por uma, marque testada e aprovada, anote o que precisa mudar e confira se os domínios e as páginas estão respondendo e veja o que está pronto e desligado esperando você ligar." />

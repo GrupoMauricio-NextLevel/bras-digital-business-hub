@@ -9,6 +9,7 @@ import { launchRoadmap } from "./precos/roteiro";
 import { getProposal } from "./precos/proposta";
 import { getNextLevelMp } from "./nextlevel-billing";
 import { getExcursionRules } from "./cargas/regras-excursao";
+import { SUGESTOES, revisaoDesligados, type RegistroDecisao, type Sugestao } from "./revisao-desligados";
 
 /**
  * "Pronto e desligado" (D145): tudo o que já está no ar mas desligado de propósito até o dono decidir, com o estado de
@@ -17,7 +18,9 @@ import { getExcursionRules } from "./cargas/regras-excursao";
  */
 export type OffState = "LIGADO" | "PARCIAL" | "DESLIGADO";
 export type OffHow = { kind: "tela"; href: string } | { kind: "render"; vars: string[] };
-export type OffItem = { key: string; title: string; state: OffState; detail: string; how: OffHow; step?: number; next?: boolean };
+export type OffItem = { key: string; title: string; state: OffState; detail: string; how: OffHow; step?: number; next?: boolean;
+  /** Revisão do mês (R4, D174): minha sugestão e a decisão registrada pelo dono. */
+  sugestao?: Sugestao; decisao?: RegistroDecisao };
 export type OffGroup = { key: string; title: string; hint: string; items: OffItem[] };
 
 const on = (b: boolean): OffState => (b ? "LIGADO" : "DESLIGADO");
@@ -75,4 +78,10 @@ export async function readyButOff(db: Database, actor: Actor, env: Record<string
       ],
     },
   ];
+}
+
+/** "Pronto e desligado" com a sugestão e a decisão do mês em cada item (R4). */
+export async function readyButOffComRevisao(db: Database, actor: Actor, env: Record<string, string | undefined> = process.env, now = new Date()): Promise<OffGroup[]> {
+  const [groups, revisao] = await Promise.all([readyButOff(db, actor, env, now), revisaoDesligados(db)]);
+  return groups.map((g) => ({ ...g, items: g.items.map((i) => ({ ...i, sugestao: SUGESTOES[i.key], decisao: revisao[i.key] })) }));
 }
