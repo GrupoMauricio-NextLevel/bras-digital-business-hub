@@ -4,7 +4,8 @@ import { listDemoUsers, loginAs, logout } from "@/app/actions/auth";
 import { globalSearchAction } from "@/app/actions/search";
 import { isDemoMode, type Session } from "@/lib/auth";
 import { isRecordingMode } from "@/lib/gravacao-server";
-import { canUse, type FeatureKey } from "@/lib/features";
+import { type FeatureKey } from "@/lib/features";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
 import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand } from "@/lib/brand-server";
@@ -12,7 +13,6 @@ import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
-import { isIndependentStore } from "@/lib/domain/independent";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
@@ -52,15 +52,17 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
   const brand = store ? await brandOfStore(db, store) : await getBrand();
-  const independent = !!store && store.kind === "SUPPLIER_OWN" && !!(await isIndependentStore(db, store.id));
+  // Perfil da loja (D172): uma resposta só para marca, modalidade e o que a loja pode usar.
+  const perfil = store ? await perfilAtual(store.id) : null;
+  const independent = !!store && store.kind === "SUPPLIER_OWN" && !!perfil?.independente;
   const ownItems = store?.kind === "SUPPLIER_OWN" ? nav.items.filter((i) => i.href !== "/merchant/wallet") : nav.items;
   // Conta simples: "Meus produtos" cadastra o que vende; "Preços e publicação" escolhe o que aparece na loja.
   const navItems = independent ? ownItems.flatMap((i) => i.href === "/merchant/products" ? [{ ...i, label: "Preços e publicação" }, { label: "Meus produtos", href: "/merchant/catalogo", icon: "Package" as const, group: i.group }] : [i]) : ownItems;
   // Equipe da loja: só o que é operação do dia a dia (o servidor também bloqueia o resto).
   const STAFF_OK = ["/merchant/orders", "/merchant/products", "/merchant/catalogo", "/merchant/customers", "/merchant/labels", "/merchant/after-sales", "/merchant/avaliacoes", "/merchant/avise-me", "/merchant/content"];
   const visible = session.user.role === "STORE_OWNER" && session.user.storeRole === "STAFF" ? navItems.filter((i) => STAFF_OK.some((p) => i.href.startsWith(p))) : navItems;
-  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !canUse(store.offer, MERCHANT_GATES[i.href]!) ? { ...i, locked: true } : i)) : byFn(nav.items), brand);
-  const storefrontHref = store && canUse(store.offer, "storefront") ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
+  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : byFn(nav.items), brand);
+  const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   if (scope === "bras-admin") {
     // Estúdio da Brás (D92): só o Master entra; nome, menu e cor da Brás, com volta ao Master.
@@ -102,7 +104,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         items={byFn(commerceItems)}
         navMode={commerceStore ? "accordion" : "sections"}
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
-        roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
+        roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração E-commerce"}
         tenantName={commerceStore ? store!.name : "NextLevel E-commerce"}
         tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
         userName={session.user.name}

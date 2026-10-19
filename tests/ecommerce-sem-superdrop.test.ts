@@ -5,7 +5,7 @@ import { freshDb } from "./setup";
 import { ecosystemBar, groupSegments, saveEcoSettings } from "@/lib/domain/ecossistema/lancador";
 import { attentionFor, stageLabelsFor, stagesFor } from "@/lib/domain/after-sales";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
-import { analiseLiberada } from "@/lib/features";
+import { montarPerfil, TABELA_PADRAO } from "@/lib/domain/perfil-loja";
 
 /** D164: nada de SuperDrop na NextLevel E-commerce (fio do grupo, pós-venda da loja independente, nome dos planos). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -41,9 +41,12 @@ describe("E-commerce sem SuperDrop", () => {
   });
 
   it("análise de vendas liberada na E-commerce, sem cartão de oferta do SuperDrop (D170)", () => {
-    expect(analiseLiberada("STORE_SUBDOMAIN", true)).toBe(true);
-    expect(analiseLiberada("STORE_SUBDOMAIN", false)).toBe(false);
-    expect(analiseLiberada("STORE_OWN", false)).toBe(true);
+    const perfil = (marca: "NEXTLEVEL_COMMERCE" | "SUPERDROP", offer: "STORE_SUBDOMAIN" | "STORE_OWN") => montarPerfil({ store: { id: "s", offer }, marca, modalidade: marca === "SUPERDROP" ? "NETWORK" : "INDEPENDENT", plano: null, tabela: TABELA_PADRAO, direitos: new Set() });
+    expect(perfil("NEXTLEVEL_COMMERCE", "STORE_SUBDOMAIN").pode.analytics).toBe(true);
+    expect(perfil("SUPERDROP", "STORE_SUBDOMAIN").pode.analytics).toBe(false);
+    expect(perfil("SUPERDROP", "STORE_OWN").pode.analytics).toBe(true);
+    // A tela da Análise lê o perfil, não a oferta do SuperDrop (D172).
+    expect(readFileSync(join(process.cwd(), "src/app/merchant/analytics/page.tsx"), "utf8")).toMatch(/perfil\.pode\.analytics/);
   });
 
   it("nome público do plano, sem 'Commerce'", () => {

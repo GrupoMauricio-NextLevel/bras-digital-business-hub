@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:rapido": "vitest run --changed origin/claude/wonderful-cannon-5o38v5",
+    "conferir:producao": "node e2e/conferencia-producao.mjs",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",

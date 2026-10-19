@@ -17,5 +17,10 @@ Sem isto, os testes do GitHub **avisam, mas não impedem** a publicação.
 2. **GitHub → Settings → Branches → regra para `claude/wonderful-cannon-5o38v5` (e `main`) → "Require status checks to pass" → marque `verificar`.** Impede unir ou enviar mudança vermelha por pull request.
 Observação: `render.yaml` não define o gatilho de deploy (`autoDeployTrigger`); a região do Render declarada é **Ohio** (Estados Unidos).
 
+## 3A. Depois de publicar (D171)
+- `npm run conferir:producao` (com `EXPECT_VERSION=<commit curto>` para conferir a versão): cada endereço responde, `/api/health` ok, título presente, sem tela de erro e sem vazamento entre marcas (E-commerce sem SuperDrop, Central ou recarga; SuperDrop sem E-commerce). Leva cerca de 10 segundos. `SITES=` troca a lista de endereços.
+- `npm run test:rapido`: só os testes ligados ao que mudou desde a branch publicada.
+- Testes ~5x a 10x mais rápidos: o banco de teste é montado uma vez por execução (molde em `tests/molde.ts`, `tests/global-setup.ts`) e cada teste carrega a cópia (0,09 s contra 6,8 s por banco).
+
 ## 4. O que ainda não existe
 Monitoramento do site no ar com alerta, rotinas agendadas (medição semanal, cobrança) e backup do banco: próximos passos desta frente.

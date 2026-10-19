@@ -1,4 +1,5 @@
 import { BarChart3, Percent, Receipt, Repeat, TrendingUp } from "lucide-react";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 import { eq, inArray } from "drizzle-orm";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { MetricCard, MetricGrid } from "@/components/app/metric-card";
@@ -12,22 +13,17 @@ import { getDb } from "@/db/client";
 import { orderItems, orders } from "@/db/schema";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
-import { analiseLiberada } from "@/lib/features";
 import { formatBRL } from "@/lib/money";
-import { isCommerceStore } from "@/lib/store-brand";
 
 export default async function AnalyticsPage() {
   const session = await requireStoreAdmin();
   const store = session.store!;
-  const commerce = await isCommerceStore(await getDb(), store);
+  const perfil = await perfilAtual(store.id);
+  const commerce = perfil.ecommerce;
   return (
     <>
       <PageHeader title="Análise de vendas" description={commerce ? "Últimos 30 dias, comparados com os 30 anteriores. Acompanhe vendas, margem, recorrência e comportamento dos clientes." : "Últimos 30 dias, comparados com os 30 anteriores. Margem = venda menos custo da Central."} />
-      {commerce ? <AnalyticsBody storeId={store.id} allowed={analiseLiberada(store.offer, commerce)} /> : (
-        <FeatureGate offer={store.offer} feature="analytics">
-          <AnalyticsBody storeId={store.id} allowed={analiseLiberada(store.offer, commerce)} />
-        </FeatureGate>
-      )}
+      {perfil.pode.analytics ? <AnalyticsBody storeId={store.id} allowed /> : <FeatureGate offer={store.offer} feature="analytics"><AnalyticsBody storeId={store.id} allowed={false} /></FeatureGate>}
     </>
   );
 }
