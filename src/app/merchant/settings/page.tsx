@@ -5,20 +5,18 @@ import { OperationalPulse } from "@/components/app/operational-pulse";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { SettingsForms } from "./settings-forms";
 import { getBaseUrl } from "@/lib/base-url";
-import { getDb } from "@/db/client";
 import { parseShippingConfig } from "@/lib/shipping/quote";
 import { isDemoMode } from "@/lib/auth";
-import { isCommerceStore } from "@/lib/store-brand";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 export const dynamic = "force-dynamic";
 
 export default async function MerchantSettingsPage() {
   const session = await requireStoreAdmin();
   const s = session.store!;
-  const db = await getDb();
-  const commerce = await isCommerceStore(db, s);
+  const commerce = (await perfilAtual(s.id)).ecommerce;
   // Loja independente (D89): a plataforma de envio é da própria loja.
-  const independent = !s.networkId;
+  const independent = (await perfilAtual(s.id)).independente;
   const shippingConfig = parseShippingConfig(s.shippingConfig);
   const connect = independent ? { provider: s.shippingProvider, status: s.shippingStatus, account: s.shippingAccount, originZip: s.shippingOriginZip ?? "", demo: isDemoMode() } : null;
   const paymentConnected = !!s.mpAccessTokenEnc;

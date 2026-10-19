@@ -1,9 +1,8 @@
 import { PageHeader } from "@/components/app/page-header";
 import { requireRole } from "@/lib/require-session";
 import { getMerchantProducts } from "@/lib/queries/merchant";
-import { isIndependentStore } from "@/lib/domain/order-policy";
-import { getDb } from "@/db/client";
 import { NewOrderForm } from "./new-order-form";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 export default async function NewOrderPage() {
   const session = await requireRole("STORE_OWNER");
@@ -19,7 +18,7 @@ export default async function NewOrderPage() {
     variants: c.variants.map((v) => ({ id: v.id, size: v.size, available: v.level.available })),
     packs: c.packs.map((p) => ({ id: p.id, name: p.name, available: p.available, priceCents: c.storeProduct.packPriceCents ?? p.suggestedPriceCents })),
   }));
-  const independent = await isIndependentStore(await getDb(), session.store!.id);
+  const independent = (await perfilAtual(session.store!.id)).independente;
   return (
     <>
       <PageHeader backHref="/merchant/orders" title="Novo pedido" description={independent ? "Venda manual: WhatsApp, Instagram ou balcão. O estoque é reservado no momento da criação." : "Venda manual: WhatsApp, Instagram ou balcão. O estoque é reservado na Central no momento da criação."} />

@@ -11,10 +11,9 @@ import { ORDER_STATUS_LABEL } from "@/lib/domain/order-status";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/app/page-header";
 import { SimulateOrderButton } from "./simulate-order-button";
-import { isIndependentStore } from "@/lib/domain/order-policy";
 import { isDemoMode } from "@/lib/auth";
-import { isCommerceStore } from "@/lib/store-brand";
 import { MetricCard } from "@/components/app/metric-card";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 const COMMERCE_TABS: OrderStatus[] = ["PENDING", "SHIPPED", "DELIVERED"];
 
@@ -25,7 +24,8 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
   const db = await getDb();
   const allRows = await listOrdersForActor(db, session.actor);
   const rows = selectedStatus ? allRows.filter((row) => row.order.status === selectedStatus) : allRows;
-  const [independent, commerce] = await Promise.all([isIndependentStore(db, session.store?.id), isCommerceStore(db, session.store!)]);
+  const perfil = await perfilAtual(session.store!.id);
+  const { independente: independent, ecommerce: commerce } = perfil;
   const statuses = ORDER_STATUSES.filter((s) => !independent || s !== "AWAITING_CENTRAL_PAYMENT");
   const count = (value: OrderStatus) => allRows.filter((row) => row.order.status === value).length;
   const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;

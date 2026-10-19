@@ -3,7 +3,7 @@ import { freshDb } from "./setup";
 import { FEATURES, OFFER_FEATURES } from "@/lib/features";
 import { montarPerfil, perfilDaLoja, recursosDoPlano, salvarTabelaRecursos, tabelaRecursos, TABELA_PADRAO, SO_SUPERDROP } from "@/lib/domain/perfil-loja";
 import { isIndependentStore as independenteA } from "@/lib/domain/independent";
-import { isIndependentStore as independenteB } from "@/lib/domain/order-policy";
+import { storeModality } from "@/lib/domain/order-policy";
 import { stores } from "@/db/schema";
 
 const sem = new Set<string>();
@@ -50,8 +50,12 @@ describe("perfil da loja", () => {
     await expect(salvarTabelaRecursos(db, actors.master, { ...TABELA_PADRAO, COMMERCE_START: ["wallet"] })).rejects.toThrow();
   });
 
-  it("as duas funções antigas de 'loja independente' concordam em todas as lojas do seed", async () => {
+  it("'loja independente' é uma função só e concorda com a modalidade e com o perfil em todas as lojas do seed", async () => {
     const { db } = await freshDb();
-    for (const s of await db.select().from(stores)) expect(await independenteA(db, s.id)).toBe(await independenteB(db, s.id));
+    for (const s of await db.select().from(stores)) {
+      const ind = await independenteA(db, s.id);
+      expect(ind).toBe((await storeModality(db, s.id)) === "INDEPENDENT");
+      expect((await perfilDaLoja(db, s)).independente).toBe(ind);
+    }
   });
 });

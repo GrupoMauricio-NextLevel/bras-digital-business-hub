@@ -14,14 +14,13 @@ import { getDb } from "@/db/client";
 import { addonViewsFor, listInvoicesFor } from "@/lib/domain/nextlevel-billing";
 import { getPriceBook, periodOf, storeOrderFeeFor } from "@/lib/domain/finance";
 import { buildRationale } from "@/lib/finance/rationale";
-import { isIndependentStore } from "@/lib/domain/order-policy";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
-import { isCommerceStore } from "@/lib/store-brand";
 import { CommerceEvolution, FinanceAreas, Opportunities } from "@/components/nl-store/evolution";
 import { finFlag } from "@/lib/finance/flags";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 export default async function MerchantFinancePage() {
   const session = await requireStoreAdmin();
@@ -33,8 +32,7 @@ export default async function MerchantFinancePage() {
   if (nlSub && ["trial", "pending_payment", "past_due", "suspended"].includes(nlSub.status)) await ensureSubscriptionInvoice(db, session.store!);
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
-  const independent = await isIndependentStore(db, session.store!.id);
-  const commerce = await isCommerceStore(db, session.store!);
+  const { independente: independent, ecommerce: commerce } = await perfilAtual(session.store!.id);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");

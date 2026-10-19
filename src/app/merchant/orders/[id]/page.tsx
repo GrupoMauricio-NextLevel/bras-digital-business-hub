@@ -5,7 +5,7 @@ import { getOrderForActor } from "@/lib/domain/orders";
 import { DomainError } from "@/lib/domain/errors";
 import { canFulfilOrder, storeModality } from "@/lib/domain/order-policy";
 import { OrderDetail } from "@/components/shared/order-detail";
-import { isCommerceStore } from "@/lib/store-brand";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 async function loadOrder(actor: Parameters<typeof getOrderForActor>[1], id: string) {
   try {
@@ -24,6 +24,6 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const db = await getDb();
   const modality = await storeModality(db, data.order.storeId);
   const canFulfil = canFulfilOrder(session.actor, data.order, modality);
-  const commerce = await isCommerceStore(db, session.store!);
+  const commerce = (await perfilAtual(session.store!.id)).ecommerce;
   return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} productLabel={commerce ? "NextLevel E-commerce" : "SuperDrop"} />;
 }

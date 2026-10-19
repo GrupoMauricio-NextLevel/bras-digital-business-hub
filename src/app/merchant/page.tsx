@@ -13,7 +13,6 @@ import { getDb } from "@/db/client";
 import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
-import { isCommerceStore } from "@/lib/store-brand";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { CommerceHome } from "@/components/commerce/commerce-home";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
@@ -23,6 +22,7 @@ import { QuestionarioPreco } from "@/components/descoberta/questionario-preco";
 import { filaDoLojista, pedidosParados, pulsoDaLoja } from "@/lib/domain/fila-do-dia";
 import { PulsoLoja } from "@/components/app/pulso-loja";
 import { stockDemand } from "@/lib/domain/stock-alerts";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing };
 
@@ -35,7 +35,7 @@ export default async function MerchantHome() {
   const session = await requireStoreAdmin();
   const store = session.store!;
   const db = await getDb();
-  const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), isCommerceStore(db, store), pendingSurvey(db, session.actor)]);
+  const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), perfilAtual(store.id).then((p) => p.ecommerce), pendingSurvey(db, session.actor)]);
   const benefits = await benefitsPanel(db, session.actor);
   const surveyCard = <>{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";

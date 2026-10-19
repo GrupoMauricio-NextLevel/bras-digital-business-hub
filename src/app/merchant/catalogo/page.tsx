@@ -1,12 +1,11 @@
 import { requireIndependent } from "@/lib/require-independent";
-import { isCommerceStore } from "@/lib/store-brand";
-import { getDb } from "@/db/client";
 import { ProductsBody } from "@/app/supplier/products/page";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 export const dynamic = "force-dynamic";
 
 export default async function MeusProdutos() {
   const { session, owner } = await requireIndependent();
-  const commerce = await isCommerceStore(await getDb(), session.store!);
+  const commerce = (await perfilAtual(session.store!.id)).ecommerce;
   return <ProductsBody supplierId={owner} base="/merchant/catalogo" independent commerce={commerce} />;
 }

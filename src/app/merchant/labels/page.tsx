@@ -6,14 +6,14 @@ import { OrderStatusBadge } from "@/components/app/status-badge";
 import { LabelUploader } from "@/components/shared/label-uploader";
 import { requireRole } from "@/lib/require-session";
 import { getDb } from "@/db/client";
-import { isIndependentStore } from "@/lib/domain/order-policy";
 import { labelQueue } from "@/lib/domain/after-sales";
 import { formatDateTime } from "@/lib/utils";
+import { perfilAtual } from "@/lib/perfil-loja-server";
 
 export default async function LabelsPage() {
   const session = await requireRole("STORE_OWNER");
   const rows = await labelQueue(await getDb(), session.actor);
-  const independent = await isIndependentStore(await getDb(), session.store?.id);
+  const independent = !!session.store && (await perfilAtual(session.store.id)).independente;
   return (
     <>
       <PageHeader title="Etiquetas" description={independent ? "Gere a etiqueta na sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) e anexe o PDF (máx. 3 MB). Com a etiqueta anexada, o pedido fica pronto para você separar e enviar." : "Gere a etiqueta na sua plataforma de envio (SuperFrete, Melhor Envio ou Onlog) e anexe o PDF (máx. 3 MB). Com a etiqueta anexada e o saldo debitado, o pedido entra na fila de expedição da Central."} />

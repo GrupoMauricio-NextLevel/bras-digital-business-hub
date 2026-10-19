@@ -21,8 +21,8 @@ export async function storeModality(db: Database, storeId: string): Promise<Stor
   return store.kind === "SUPPLIER_OWN" ? "SUPPLIER_OWN" : "NETWORK";
 }
 
-/** Verdadeiro se a loja é uma conta simples (independente). */
-export const isIndependentStore = async (db: Database, storeId: string | null | undefined) => !!storeId && (await storeModality(db, storeId)) === "INDEPENDENT";
+/** Verdadeiro se a loja é uma conta simples (independente). Uma função só para isso (D172): a de `./independent`. */
+export { isIndependentStore } from "./independent";
 
 /**
  * Pode separar e enviar este pedido? Regra pura, útil também para a interface.
