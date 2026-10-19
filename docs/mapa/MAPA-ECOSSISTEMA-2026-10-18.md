@@ -237,7 +237,7 @@ A loja da E-commerce é criada com a oferta do SuperDrop ("Loja SuperDrop") e um
 
 A tela de entrada de todas as marcas diz "Club do Grupo NextLevel: seus pontos valem em todas as marcas". Mas "Brás Digital Club" é o nome de uma marca, e os pontos nasceram dentro dela. Para o cliente, não fica claro se o Club é um programa do grupo ou o atacado do Brás.
 
-**Melhoria:** separar os nomes. O programa de pontos do grupo ganha um nome próprio (por exemplo "Pontos NextLevel" ou "Carteira NextLevel"), e "Brás Digital Club" fica só como marca. Isso vale para tela, e-mail e termos.
+**Melhoria:** o programa já tem nome, "NextLevel Club" (D152, página /club do grupo). Usar esse nome nas 21 telas que ainda falam em "pontos do Brás Digital Club" e na tela de entrada. "Brás Digital Club" fica só como marca.
 
 
 #### 4. O site do grupo é, na prática, o site da agência
@@ -291,7 +291,7 @@ Ordenado por impacto dividido pelo esforço. Os itens 1 e 2 dependem só de mim.
 | Pergunta | Minha recomendação |
 |---|---|
 | Qual a divisão de esforço entre as frentes até a E-commerce ter 10 lojistas pagando? | 60% E-commerce · 25% SuperDrop · 15% resto (Brás e Cargas só fotos e correções) |
-| Nome do programa de pontos do grupo (hoje "Club do Grupo NextLevel") | "Pontos NextLevel", com "Brás Digital Club" só como marca |
+| Nome do programa de pontos do grupo (hoje "Club do Grupo NextLevel") | Manter "NextLevel Club", que já existe, em todas as telas; "Brás Digital Club" só como marca |
 | A página inicial de nextlevelgroup.com.br continua sendo a Soluções? | Não: home curta do grupo, com a Soluções como uma das portas |
 | Admin E-commerce e Estúdio Brás viram filtros de um Master só? | Sim, mantendo os endereços antigos funcionando |
 | A Análise de vendas fica liberada para todo lojista da E-commerce (D170)? | Sim no Start; recursos avançados (exportar, coortes) nos planos maiores |
