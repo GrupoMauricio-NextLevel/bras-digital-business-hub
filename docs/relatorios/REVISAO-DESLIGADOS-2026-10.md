@@ -10,7 +10,6 @@ Repetir no começo de cada mês. Quando o mês vira, todo item desligado volta a
 
 Eu não vejo daqui o que já está ligado no ar. Se algum destes já estiver ligado, a aba mostra "Ligado" e ele sai da revisão.
 
-
 | Item | Por quê |
 |---|---|
 | Conta Mercado Pago da NextLevel (produção) | Sem ela a E-commerce não cobra os planos. É o primeiro passo da meta de 10 lojistas pagantes. |
