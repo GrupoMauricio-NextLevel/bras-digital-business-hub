@@ -1,33 +1,28 @@
 /**
- * Fotos da página imersiva do NextLevel Cargas (D167), ainda em produção no GPT: pedido em
- * `docs/prompts/fotos-imersivas-superdrop-bras-cargas-gpt.md`. Enquanto isso o acervo fica "em espera" (a página reserva o
- * lugar de cada foto) e a jornada só aparece na prévia (`/?previa=imersiva`). Quando as fotos chegarem:
- *   python3 -I scripts/imagens/imersiva-converter.py <pasta-png> public/portal/cargas/v1/home src/lib/marcas/cargas-home-imagens.ts CG_HOME "NextLevel Cargas"
- * regrava este arquivo com as fotos reais e a jornada entra no ar sozinha (acervo completo).
+ * Fotos da página imersiva da NextLevel Cargas (gerado por scripts/imagens/imersiva-converter.py; não edite à mão).
+ * AVIF e WebP em duas larguras (paisagem 800/1400, retrato 640/960); `cor`: cor média, fundo enquanto a foto carrega.
  */
+import type { Acervo, FotoImersiva } from "@/lib/imersiva/acervo";
+
 export const CG_HOME_BASE = "/portal/cargas/v1/home";
-
-import { acervoEmEspera, type Acervo } from "@/lib/imersiva/acervo";
-
-const NOMES = [
-  "cg-jornada-1-reserva",
-  "cg-jornada-1-reserva-retrato",
-  "cg-jornada-2-coleta",
-  "cg-jornada-2-coleta-retrato",
-  "cg-jornada-3-estrada",
-  "cg-jornada-3-estrada-retrato",
-  "cg-jornada-4-onibus",
-  "cg-jornada-4-onibus-retrato",
-  "cg-jornada-5-entrega",
-  "cg-jornada-5-entrega-retrato",
-  "cg-porta-onibus",
-  "cg-porta-transportadora",
-  "cg-porta-importadora",
-  "cg-porta-motorista",
-  "cg-entrar",
-  "cg-fecho",
-] as const;
-export const CG_HOME_FOTOS = acervoEmEspera(CG_HOME_BASE, NOMES).fotos;
+export const CG_HOME_FOTOS = {
+  "cg-entrar": { larguras: [800, 1400], w: 1400, h: 933, cor: "#283152" },
+  "cg-fecho": { larguras: [800, 1400], w: 1400, h: 933, cor: "#5c4b44" },
+  "cg-jornada-1-reserva-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#453f43" },
+  "cg-jornada-1-reserva": { larguras: [800, 1400], w: 1400, h: 933, cor: "#504748" },
+  "cg-jornada-2-coleta-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#484143" },
+  "cg-jornada-2-coleta": { larguras: [800, 1400], w: 1400, h: 933, cor: "#665853" },
+  "cg-jornada-3-estrada-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#39302b" },
+  "cg-jornada-3-estrada": { larguras: [800, 1400], w: 1400, h: 933, cor: "#564e49" },
+  "cg-jornada-4-onibus-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#504b4f" },
+  "cg-jornada-4-onibus": { larguras: [800, 1400], w: 1400, h: 933, cor: "#665953" },
+  "cg-jornada-5-entrega-retrato": { larguras: [640, 960], w: 960, h: 1440, cor: "#584c51" },
+  "cg-jornada-5-entrega": { larguras: [800, 1400], w: 1400, h: 933, cor: "#64595c" },
+  "cg-porta-importadora": { larguras: [640, 960], w: 960, h: 1440, cor: "#6f635e" },
+  "cg-porta-motorista": { larguras: [640, 960], w: 960, h: 1440, cor: "#665146" },
+  "cg-porta-onibus": { larguras: [640, 960], w: 960, h: 1440, cor: "#67605e" },
+  "cg-porta-transportadora": { larguras: [640, 960], w: 960, h: 1440, cor: "#746660" },
+} as const satisfies Record<string, FotoImersiva>;
 export type CgHomeFotoNome = keyof typeof CG_HOME_FOTOS;
 
 /** Acervo no formato da peça única `src/components/imersiva`. */

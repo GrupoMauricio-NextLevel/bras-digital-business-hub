@@ -17,9 +17,9 @@ describe("home imersiva da E-commerce", () => {
     const citadas = [...new Set(pagina.match(/"ec-[a-z0-9-]+"/g)!.map((n) => n.slice(1, -1)))];
     expect(citadas.length).toBeGreaterThan(10);
     for (const n of citadas) expect(Object.keys(EC_HOME_FOTOS)).toContain(n);
-    // Fotos v2 (personagens diferentes). A paisagem da jornada 2 (tela do notebook virada para a câmera) não vai ao ar.
-    expect(Object.keys(EC_HOME_FOTOS)).not.toContain("ec-jornada-2-loja");
-    for (const nova of ["ec-jornada-5-rotina", "ec-porta-migrar", "ec-temas", "ec-jornada-2-loja-retrato"]) expect(citadas).toContain(nova);
+    // Fotos v2 (personagens diferentes). A paisagem da jornada 2 foi refeita em 19/10 (antes a tela do notebook aparecia virada para a câmera).
+    expect(Object.keys(EC_HOME_FOTOS)).toContain("ec-jornada-2-loja"); // refeita em 19/10 com a tela virada para a Larissa
+    for (const nova of ["ec-jornada-5-rotina", "ec-porta-migrar", "ec-jornada-2-loja", "ec-jornada-2-loja-retrato"]) expect(citadas).toContain(nova);
     expect(EC_HOME_PROVISORIAS).toBe(false); // fotos definitivas (D165)
   });
 
