@@ -10,11 +10,11 @@ export const ROTULO_SAUDE: Record<NivelSaude, string> = { BEM: "Bem", OBSERVAR: 
  * SVG feito no servidor; cada nó é um link com nome. A tabela da página é a alternativa em texto.
  */
 export function MapaConstelacao({ mapa, destaque }: { mapa: MapaEcossistema; destaque: string | null }) {
-  const W = 760, H = 460, cx = W / 2, cy = H / 2, R = 175;
+  const W = 780, H = 640, cx = W / 2, cy = H / 2 - 10, R = 215;
   const maior = Math.max(1, ...mapa.marcas.map((m) => m.clientes));
   const pos = new Map(mapa.marcas.map((m, i) => {
     const ang = -Math.PI / 2 + (i * 2 * Math.PI) / mapa.marcas.length;
-    return [m.code, { x: cx + R * 1.55 * Math.cos(ang), y: cy + R * Math.sin(ang) }];
+    return [m.code, { x: cx + R * 1.45 * Math.cos(ang), y: cy + R * Math.sin(ang) }];
   }));
   const maiorPar = Math.max(1, ...mapa.pares.map((p) => p.n));
   return (
