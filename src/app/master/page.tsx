@@ -50,7 +50,7 @@ export default async function MasterDashboard() {
       </section>
 
       <section className="mb-6" aria-labelledby="business-title">
-        <SectionTitle title="Seus negócios" description="Cada negócio mantém sua operação e seu contexto." />
+        <SectionTitle title="Seus negócios" description="Cada negócio mantém sua operação e seu contexto." action={<Link href="/master/mapa" className="text-sm font-semibold text-link underline">Ver o mapa do ecossistema</Link>} />
         <div className="grid gap-3">
         <BusinessPortal product={PRODUCT_CONTEXTS.superdrop} attention={alerts.length ? alerts.length + " situação(ões) na operação" : "Operação sem alertas críticos"} metrics={[
           { label: "Vendas pagas", value: formatCompactBRL(sd.gmv) },

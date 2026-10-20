@@ -63,6 +63,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas", marcas: ["BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio", soTodas: true },
+      { label: "Mapa do ecossistema", href: "/master/mapa", icon: "Network", group: "Negócio", soTodas: true },
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio", soTodas: true },
       { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio", soTodas: true },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },

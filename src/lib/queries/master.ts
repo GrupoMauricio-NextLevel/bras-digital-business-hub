@@ -5,8 +5,8 @@ import { supplierContracts } from "@/db/schema";
 import { activities, invoices, networks, orders, organizations, plans, products, serviceLeads, services, stores, subscriptions, suppliers, themes, users } from "@/db/schema";
 
 /** Contrato único de venda no Master (igual ao painel do lojista): pago, não cancelado, subtotal menos desconto, sem frete. */
-const SALE_WHERE = () => and(ne(orders.status, "CANCELED"), eq(orders.customerPaymentStatus, "PAID"));
-const SALE_SUM = () => sql<number>`coalesce(sum(${orders.subtotalCents} - ${orders.discountCents}), 0)`;
+export const SALE_WHERE = () => and(ne(orders.status, "CANCELED"), eq(orders.customerPaymentStatus, "PAID"));
+export const SALE_SUM = () => sql<number>`coalesce(sum(${orders.subtotalCents} - ${orders.discountCents}), 0)`;
 
 export async function getPlatformOverview() {
   const db = (await getDb());

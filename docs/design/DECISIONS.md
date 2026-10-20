@@ -1567,3 +1567,17 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 ## D174 — [Grupo] Revisão mensal dos desligados e regra de foco 60/25/15 (2026-10-19, R4 e R5)
 - **Revisão mensal (R4):** na aba "Pronto e desligado" da Central de qualidade, cada item desligado mostra a minha sugestão (o dono disse "eu sugiro, você decide") e a decisão do mês: ligar, manter desligado ou aposentar, com anotação (`src/lib/domain/revisao-desligados.ts`, `qualidade.revisao-desligados`). Registrar **não liga nada**; só o dono decide; fica na auditoria. Mês novo, revisão nova. Sugestões de outubro em `docs/relatorios/REVISAO-DESLIGADOS-2026-10.md`.
 - **Regra de foco (R5, decisão do dono):** 60% E-commerce, 25% SuperDrop, 15% o resto, até a E-commerce ter 10 lojistas pagantes. Escrita em `CLAUDE.md` e `AGENTS.md`. A partir daqui, título de decisão leva a frente entre colchetes e o relatório do dia traz "Esforço do dia por frente".
+
+## D175 — [Grupo] Mapa do Ecossistema vivo no Master; fotos das páginas imersivas no ar (2026-10-20)
+- **Mapa vivo (decisão do dono: página nova no Master):** `/master/mapa` transforma o mapa estático de 18/10 em página viva. Mostra:
+  - uma constelação de marcas com tamanho por clientes, anel de saúde e linhas de clientes em comum;
+  - um cartão por marca com o motivo da saúde;
+  - os sites com a última conferência, as pessoas por painel e as conexões.
+
+  Só leitura, uma consulta por bloco, reaproveitando a Torre (`presenceByDocument`, `ecosystemIndex`), a regra de venda paga do Dashboard e a conferência dos endereços da Central de qualidade. Não grava oportunidades nem confere endereços. Saúde é regra pura testada (`saudeDaMarca`). Abre para o dono e para a função Comercial; o item fica em "Todas as marcas". Plano completo e próximas fases (M1 a M3) em `docs/prompts/mapa-vivo-master.md`.
+- **Fotos (decisão do dono: as três no ar):** 50 fotos do pacote de 19/10 convertidas. A jornada imersiva entrou no ar em Brás, Cargas e SuperDrop, e a jornada 2 da E-commerce voltou com a foto refeita. Cinco fotos chegaram cortadas dentro do ZIP e foram recortadas da parte intacta até virem inteiras:
+  - `cg-jornada-5-entrega`
+  - `cg-porta-importadora`
+  - `sd-jornada-2-divulga`
+  - `sd-jornada-3-vende`
+  - `sd-porta-central`

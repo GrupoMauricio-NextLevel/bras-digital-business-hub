@@ -19,7 +19,7 @@ const digits = (v: string | null | undefined) => (v ?? "").replace(/\D/g, "");
 const DAY = 86_400_000;
 
 type Presence = Map<string, Set<string>>;
-async function presenceByDocument(db: Database): Promise<Presence> {
+export async function presenceByDocument(db: Database): Promise<Presence> {
   const [st, mem, car] = await Promise.all([
     db.select({ doc: stores.taxId, brand: organizations.brand }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(isNull(stores.showcaseTheme)),
     db.select({ doc: bdMembers.cnpj }).from(bdMembers),
