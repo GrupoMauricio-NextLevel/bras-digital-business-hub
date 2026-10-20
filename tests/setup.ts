@@ -3,7 +3,7 @@ import { runMigrations } from "@/db/migrate";
 import { seedDatabase } from "@/db/seed";
 import type { Actor } from "@/lib/domain/access";
 import { readFileSync } from "node:fs";
-import { inject } from "vitest";
+import { inject, onTestFinished } from "vitest";
 import { desserializar } from "./molde";
 
 type Seed = Awaited<ReturnType<typeof seedDatabase>>;
@@ -17,6 +17,10 @@ async function bancoDoMolde(): Promise<{ db: Database; seed: Seed } | null> {
   const { drizzle } = await import("drizzle-orm/pglite");
   const schema = await import("@/db/schema");
   const pg = new PGlite({ loadDataDir: new Blob([readFileSync(molde.dados)]) });
+  // Fecha o banco quando o teste (ou o beforeEach dele) termina: sem isso cada arquivo acumulava dezenas de bancos abertos
+  // e a bateria passava de 13 GB, com processos mortos por falta de memória. Banco criado em beforeAll segue aberto
+  // (é compartilhado pelos testes do arquivo) e é liberado no fim do arquivo.
+  try { onTestFinished(() => pg.close().catch(() => {})); } catch { /* fora de um teste (beforeAll): fica aberto */ }
   return { db: drizzle(pg, { schema }) as unknown as Database, seed: desserializar<Seed>(readFileSync(molde.seed, "utf8")) };
 }
 

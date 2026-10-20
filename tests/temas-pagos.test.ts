@@ -15,7 +15,10 @@ import { resolveTemplate } from "@/lib/themes/store";
 import { freshDb } from "./setup";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
-beforeAll(async () => { ctx = await freshDb(); await ensureShowcaseStores(ctx.db); }, 120_000);
+// Momento fixo: os modelos põem datas de campanha a partir de "hoje"; com o relógio real, uma bateria que cruza a
+// meia-noite via a segunda chamada como "desatualizada" e o teste de não refazer falhava.
+const AGORA = new Date("2026-10-19T15:00:00Z");
+beforeAll(async () => { ctx = await freshDb(); await ensureShowcaseStores(ctx.db, AGORA); }, 120_000);
 const demoStore = async (key: string) => (await ctx.db.query.stores.findFirst({ where: eq(stores.slug, showcaseSlug(key)) }))!;
 
 describe("lojas de demonstração dos temas", () => {
@@ -33,7 +36,7 @@ describe("lojas de demonstração dos temas", () => {
   });
   it("rodar de novo não duplica nada nem refaz o que já está atual", async () => {
     const before = (await ctx.db.select().from(stores)).length;
-    expect(await ensureShowcaseStores(ctx.db)).toEqual([]);
+    expect(await ensureShowcaseStores(ctx.db, AGORA)).toEqual([]);
     expect((await ctx.db.select().from(stores)).length).toBe(before);
   });
   it("Casa: o destaque usa o banner da própria loja (computador e celular), nunca foto de outro segmento", async () => {
