@@ -120,6 +120,7 @@ await passo(cliente, "7. Cliente compra na loja", async () => {
 });
 
 await passo(cliente, "8. Pagamento do cliente (demonstração)", async () => {
+  if (/Pagamento aprovado|Pagamento confirmado/i.test(await texto(cliente))) return "aprovado na hora (demonstração)";
   const sim = cliente.getByRole("button", { name: /Simular pagamento|Pagar agora|Já paguei/ });
   if (!(await sim.count())) throw new Error("tela depois do pedido sem caminho de pagamento visível");
   await sim.first().click(); await cliente.waitForTimeout(2500);

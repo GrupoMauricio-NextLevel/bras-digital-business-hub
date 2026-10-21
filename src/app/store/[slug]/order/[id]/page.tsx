@@ -43,8 +43,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
         {order.shippingAddress ? <div className="mt-4 border-t border-neutral-200 pt-3 text-sm text-neutral-600"><div className="text-xs font-medium uppercase tracking-wide text-neutral-400">Entrega</div>{order.shippingAddress} · {order.shippingCity}/{order.shippingState} · {order.shippingZip}</div> : null}
       </div>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <Link href={`${base}/catalog`} className="flex h-11 flex-1 items-center justify-center rounded-lg text-sm font-medium" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>Continuar comprando</Link>
-        {sf.store.whatsapp ? <a href={`https://wa.me/${sf.store.whatsapp}?text=${encodeURIComponent(`Olá! Fiz o pedido #${order.number}`)}`} target="_blank" rel="noreferrer" className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-neutral-300 text-sm font-medium"><MessageCircle className="size-4" /> Acompanhar no WhatsApp</a> : null}
+        <Link href={`${base}/catalog`} className="flex min-h-11 items-center justify-center rounded-lg text-sm font-medium sm:flex-1" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}>Continuar comprando</Link>
+        {sf.store.whatsapp ? <a href={`https://wa.me/${sf.store.whatsapp}?text=${encodeURIComponent(`Olá! Fiz o pedido #${order.number}`)}`} target="_blank" rel="noreferrer" className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 text-sm font-medium sm:flex-1"><MessageCircle className="size-4" /> Acompanhar no WhatsApp</a> : null}
       </div>
     </div>
   );
