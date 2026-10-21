@@ -68,7 +68,7 @@ describe("loja independente da NextLevel E-commerce (D89: sem fornecedor, sem re
     expect(p.storeId).toBe(r.storeId); expect(p.supplierId).toBeNull();
     const cat = (await ctx.db.query.categories.findFirst({ where: eq(categories.id, p.categoryId!) }))!;
     expect(cat.storeId).toBe(r.storeId); expect(cat.supplierId).toBeNull();
-    await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false });
+    await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false }).onConflictDoUpdate({ target: [storeProducts.storeId, storeProducts.productId], set: { priceCents: 9000, active: true } });
     expect((await listStoreCatalog(ctx.db, r.storeId)).map((c) => c.product.id)).toEqual([productId]);
     const variant = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!;
     const before = (await getLevel(ctx.db, variant.id)).available;

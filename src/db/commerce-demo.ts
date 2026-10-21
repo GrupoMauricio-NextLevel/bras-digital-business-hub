@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { Database } from "./client";
 import * as s from "./schema";
 import { DEMO_PASSWORD } from "./seed-constants";
@@ -42,7 +42,9 @@ export async function seedCommerceDemo(db: Database): Promise<boolean> {
   const made: { productId: string; variantId: string; price: number }[] = [];
   for (const p of PRODUCTS) {
     const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, categoryName: "Moda", images: [`/portal/commerce/${p.photo}.webp`], costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: [{ size: "M", initialStock: 40 }, { size: "G", initialStock: 40 }] });
-    await db.insert(s.storeProducts).values({ storeId: r.storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: made.length < 4 });
+    await db.insert(s.storeProducts).values({ storeId: r.storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: made.length < 4 })
+      // O produto da própria loja já entra nela ao ser criado (D176): aqui só ajusta preço e destaque.
+      .onConflictDoUpdate({ target: [s.storeProducts.storeId, s.storeProducts.productId], set: { priceCents: sql`excluded.price_cents`, active: sql`excluded.active`, featured: sql`excluded.featured` } });
     const v = (await db.select().from(s.productVariants).where(eq(s.productVariants.productId, productId)))[0]!;
     made.push({ productId, variantId: v.id, price: p.price });
   }

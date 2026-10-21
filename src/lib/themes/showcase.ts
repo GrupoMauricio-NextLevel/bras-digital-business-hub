@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { statSync } from "node:fs";
 import { join } from "node:path";
-import { and, eq, inArray, isNotNull } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { products, storeProducts, stores, themeTemplates, users } from "@/db/schema";
 import { actorFromUser } from "@/lib/domain/access";
@@ -108,7 +108,9 @@ export const productPhotos = (p: DemoProduct) => (p.photos.length ? p.photos : [
 async function addProducts(db: Database, storeId: string, supplierId: OwnerRef, list: DemoProduct[]) {
   for (const p of list) {
     const { productId } = await createProduct(db, supplierId, { name: p.name, sku: p.sku, description: p.description, categoryName: p.category, images: productPhotos(p), costCents: Math.round(p.price * 0.4), suggestedPriceCents: p.price, minimumPriceCents: Math.round(p.price * 0.6), sizes: p.variants.map((v) => ({ size: v, initialStock: p.soldOut ? 0 : 40 })) });
-    await db.insert(storeProducts).values({ storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured });
+    await db.insert(storeProducts).values({ storeId, productId, priceCents: p.price, packPriceCents: null, active: true, featured: !!p.featured })
+      // O produto da própria loja já entra nela ao ser criado (D176): aqui só ajusta preço e destaque.
+      .onConflictDoUpdate({ target: [storeProducts.storeId, storeProducts.productId], set: { priceCents: sql`excluded.price_cents`, active: sql`excluded.active`, featured: sql`excluded.featured` } });
   }
 }
 

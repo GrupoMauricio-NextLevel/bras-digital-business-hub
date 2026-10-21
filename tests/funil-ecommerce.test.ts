@@ -45,4 +45,20 @@ describe("funil de ativação da E-commerce", () => {
     const c = (await db.query.categories.findFirst({ where: eq(categories.id, p.categoryId!) }))!;
     expect(c.name).toBe("Geral");
   });
+
+  it("loja independente: produto ativo já entra à venda na própria loja; rascunho não; fornecedor do SuperDrop não muda", async () => {
+    const { db, seed } = await freshDb();
+    await seedCommerceDemo(db);
+    const { stores: st, storeProducts: sp } = await import("@/db/schema");
+    const { isNull, and: e } = await import("drizzle-orm");
+    const loja = (await db.select().from(st).where(e(isNull(st.networkId), isNull(st.showcaseTheme))))[0]!;
+    const base = { costCents: 5900, suggestedPriceCents: 14990, minimumPriceCents: 11990, sizes: [{ size: "m", initialStock: 3 }], categoryName: "" };
+    const ativo = await createProduct(db, { storeId: loja.id }, { ...base, name: "Blusa à venda", sku: "bl-venda-01" });
+    const rasc = await createProduct(db, { storeId: loja.id }, { ...base, name: "Blusa rascunho", sku: "bl-rasc-01", status: "DRAFT" });
+    const listado = async (id: string) => (await db.select().from(sp).where(eq(sp.productId, id))).filter((r) => r.storeId === loja.id);
+    expect(await listado(ativo.productId)).toMatchObject([{ active: true, priceCents: 14990 }]);
+    expect(await listado(rasc.productId)).toEqual([]);
+    const forn = await createProduct(db, seed.supplierId, { ...base, name: "Manto fornecedor", sku: "mf-01" });
+    expect((await db.select().from(sp).where(eq(sp.productId, forn.productId))).length).toBe(0);
+  });
 });

@@ -28,7 +28,7 @@ async function independent(n = 1) {
   const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
   const supplierId = await catalogOwner(ctx.db, owner);
   const { productId } = await createProduct(ctx.db, supplierId, { name: `Vestido ${n}`, sku: `VST-${n}`, categoryName: "Vestidos", costCents: 3000, suggestedPriceCents: 9000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 10 }] });
-  await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false });
+  await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 9000, packPriceCents: null, active: true, featured: false }).onConflictDoUpdate({ target: [storeProducts.storeId, storeProducts.productId], set: { priceCents: 9000, active: true } });
   const variantId = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!.id;
   return { ...r, owner, supplierId, productId, variantId };
 }

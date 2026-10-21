@@ -18,7 +18,7 @@ async function independent(n = 1) {
   await markInvoicePaid(ctx.db, (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!.id);
   const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
   const { productId } = await createProduct(ctx.db, await catalogOwner(ctx.db, owner), { name: "Vestido", sku: `V-${n}`, categoryName: "Vestidos", costCents: 4000, suggestedPriceCents: 10000, minimumPriceCents: 5000, sizes: [{ size: "M", initialStock: 100 }] });
-  await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 10000, packPriceCents: null, active: true, featured: false });
+  await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 10000, packPriceCents: null, active: true, featured: false }).onConflictDoUpdate({ target: [storeProducts.storeId, storeProducts.productId], set: { priceCents: 10000, active: true } });
   const variantId = (await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)))[0]!.id;
   return { ...r, owner, productId, variantId };
 }

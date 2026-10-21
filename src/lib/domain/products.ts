@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { activities, categories, networks, productPackItems, productPacks, productStoreAccess, productVariants, products, stores } from "@/db/schema";
+import { activities, categories, networks, productPackItems, productPacks, productStoreAccess, productVariants, products, stores, storeProducts } from "@/db/schema";
 import { newId, slugify } from "@/lib/ids";
 import { receiveStock } from "./inventory";
 import { DomainError, ForbiddenError } from "./errors";
@@ -97,6 +97,11 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
     }
     if (selectedStoreIds.length) {
       await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId, storeId })));
+    }
+    // Loja independente (E-commerce, D176): o produto é da própria loja; cadastrado como "Ativo", já entra à venda nela pelo
+    // preço de venda do formulário. Antes ficava só no catálogo e pedia um segundo passo escondido em "Preços e publicação".
+    if (owner.storeId && input.status === "ACTIVE") {
+      await tx.insert(storeProducts).values({ storeId: owner.storeId, productId, priceCents: input.suggestedPriceCents, packPriceCents: input.sellsPack && input.pack ? input.pack.suggestedPriceCents : null, active: true, featured: false }).onConflictDoNothing();
     }
     await tx.insert(activities).values({ id: newId("act"), scope: supplierId ? "SUPPLIER" : "STORE", supplierId, storeId: owner.storeId ?? null, type: "PRODUCT_CREATED", message: `Produto “${input.name.trim()}” cadastrado (${input.sku})` });
   });

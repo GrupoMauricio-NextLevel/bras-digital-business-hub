@@ -85,7 +85,9 @@ export async function seedShowcase(db: Database) {
     const qty = { P: 12, M: 20, G: 20, GG: 12 };
     for (const v of vs) await receiveStock(db, v.id, qty[v.size as keyof typeof qty], { referenceType: "SEED", note: "Entrada inicial de estoque" });
   }
-  await db.insert(s.storeProducts).values(productIds.map((productId, i) => ({ storeId, productId, priceCents: SHOWCASE_PRICE_CENTS, packPriceCents: null, active: true, featured: i < 3 })));
+  await db.insert(s.storeProducts).values(productIds.map((productId, i) => ({ storeId, productId, priceCents: SHOWCASE_PRICE_CENTS, packPriceCents: null, active: true, featured: i < 3 })))
+      // O produto da própria loja já entra nela ao ser criado (D176): aqui só ajusta preço e destaque.
+      .onConflictDoUpdate({ target: [s.storeProducts.storeId, s.storeProducts.productId], set: { priceCents: sql`excluded.price_cents`, active: sql`excluded.active`, featured: sql`excluded.featured` } });
   const starter = await db.query.themes.findFirst({ where: eq(s.themes.key, "starter") });
   const version = starter ? await db.query.themeVersions.findFirst({ where: eq(s.themeVersions.themeId, starter.id) }) : null;
   if (starter && version) await db.insert(s.storeThemes).values({ storeId, themeId: starter.id, themeVersionId: version.id });
