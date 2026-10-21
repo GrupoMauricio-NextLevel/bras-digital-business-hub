@@ -5,6 +5,7 @@ import { expireStaleReservations } from "@/lib/domain/orders";
 import { expireUnfundedOrders } from "@/lib/domain/wallet";
 import { runJob } from "@/lib/domain/job-runs";
 import { sendDailySummary } from "@/lib/domain/daily-summary";
+import { lembretesDeAtivacao } from "@/lib/domain/funil-ecommerce";
 import { reconcilePendingPayments } from "@/lib/payments/service";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,7 @@ export async function GET(req: NextRequest) {
     { name: "reservas", run: () => expireStaleReservations(db), summarize: (x: { expired: number }) => `liberadas ${x.expired}` },
     { name: "sem saldo", run: () => expireUnfundedOrders(db) },
     { name: "resumo", run: () => sendDailySummary(db), summarize: (x: { recipients: number }) => `enviado a ${x.recipients}` },
+    { name: "ativação E-commerce", run: () => lembretesDeAtivacao(db), summarize: (x: { enviados: number }) => `lembretes ${x.enviados}` },
   ]);
   return NextResponse.json({ ok: r.ok, ...r.results, failed: r.failed }, { status: r.ok ? 200 : 207 });
 }

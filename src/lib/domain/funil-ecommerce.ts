@@ -1,6 +1,8 @@
 import { and, count, eq, inArray, isNull, ne } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { nlSubscriptions, orders, organizations, products, storeProducts, stores } from "@/db/schema";
+import { brandByCode } from "@/lib/brand";
+import { notifyTenant } from "@/lib/email";
 import { requireMaster, type Actor } from "./access";
 
 /**
@@ -30,6 +32,10 @@ export function ondeParou(feitos: Record<Degrau, boolean>): Degrau | null {
 
 export async function funilEcommerce(db: Database, actor: Actor, agora = new Date()): Promise<FunilEcommerce> {
   requireMaster(actor);
+  return calcularFunil(db, agora);
+}
+
+async function calcularFunil(db: Database, agora: Date): Promise<FunilEcommerce> {
   const lojas = await db.select({ id: stores.id, nome: stores.name, slug: stores.slug, criadaEm: stores.createdAt, publishedAt: stores.publishedAt, status: stores.status, paymentStatus: stores.paymentStatus })
     .from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId))
     .where(and(eq(organizations.brand, "NEXTLEVEL_COMMERCE"), isNull(stores.showcaseTheme)));
@@ -61,4 +67,32 @@ export async function funilEcommerce(db: Database, actor: Actor, agora = new Dat
   });
   const paradas = todas.filter((l) => l.parouEm).sort((a, b) => DEGRAUS.findIndex((d) => d.key === a.parouEm) - DEGRAUS.findIndex((d) => d.key === b.parouEm) || b.diasParada - a.diasParada);
   return { total, degraus, paradas, pagantes: paga.size };
+}
+
+/** Lembrete por degrau (D176): depois de quantos dias parada a loja recebe o e-mail, e o texto. Assinatura fica com a cobrança. */
+const LEMBRETE: Partial<Record<Degrau, { dias: number; assunto: string; texto: string; botao: string }>> = {
+  PRODUTO: { dias: 2, assunto: "Falta só o primeiro produto para a sua loja começar", texto: "Sua loja já está criada. Cadastre o primeiro produto com foto, preço e estoque: leva poucos minutos e ele já entra à venda na loja.", botao: "Cadastrar produto" },
+  PUBLICOU: { dias: 2, assunto: "Sua loja está pronta para ser publicada", texto: "Você já tem produto cadastrado. Publique a loja para os clientes verem e comprarem: é um clique em Loja virtual.", botao: "Publicar a loja" },
+  PAGAMENTO: { dias: 2, assunto: "Conecte o Mercado Pago para receber das vendas", texto: "Sua loja está no ar. Conecte a conta Mercado Pago da loja para os clientes pagarem por Pix ou cartão, com o dinheiro caindo direto na sua conta.", botao: "Conectar o Mercado Pago" },
+  PRIMEIRA_VENDA: { dias: 7, assunto: "Dicas para a primeira venda da sua loja", texto: "Sua loja está pronta para vender. Compartilhe o link da loja no Instagram e no WhatsApp e coloque-o na bio: é o caminho mais rápido para a primeira venda.", botao: "Ver meus pedidos" },
+};
+
+/**
+ * Rotina diária (cron "finance"): manda UM lembrete por degrau a cada loja parada há tempo suficiente, com o botão para a
+ * tela que resolve. Repetir no mesmo dia ou nos seguintes não reenvia (dedupe por loja e degrau). Sem a chave do Resend o
+ * e-mail fica só registrado, como todos os outros.
+ */
+export async function lembretesDeAtivacao(db: Database, agora = new Date()): Promise<{ enviados: number }> {
+  const f = await calcularFunil(db, agora);
+  const base = brandByCode("NEXTLEVEL_COMMERCE").baseUrl;
+  let enviados = 0;
+  for (const l of f.paradas) {
+    const m = l.parouEm ? LEMBRETE[l.parouEm] : undefined;
+    if (!m || !l.href || l.diasParada < m.dias) continue;
+    enviados += await notifyTenant(db, { storeId: l.storeId }, {
+      kind: "ATIVACAO_LOJA", subject: m.assunto, text: `${m.texto}\n\nLoja: ${l.nome}`, cta: { label: m.botao, url: `${base}${l.href}` },
+      dedupeKey: `ATIVACAO:${l.storeId}:${l.parouEm}`, brand: "NEXTLEVEL_COMMERCE",
+    });
+  }
+  return { enviados };
 }

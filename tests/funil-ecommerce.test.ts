@@ -61,4 +61,24 @@ describe("funil de ativação da E-commerce", () => {
     const forn = await createProduct(db, seed.supplierId, { ...base, name: "Manto fornecedor", sku: "mf-01" });
     expect((await db.select().from(sp).where(eq(sp.productId, forn.productId))).length).toBe(0);
   });
+
+  it("lembrete de ativação: uma vez por degrau, só depois do prazo, com o botão para a tela certa", async () => {
+    const { db, actors } = await freshDb();
+    await seedCommerceDemo(db);
+    const { emailOutbox } = await import("@/db/schema");
+    const { lembretesDeAtivacao } = await import("@/lib/domain/funil-ecommerce");
+    const { like } = await import("drizzle-orm");
+    const parada = (await funilEcommerce(db, actors.master)).paradas[0];
+    expect(parada, "a demonstração tem ao menos uma loja parada num degrau").toBeTruthy();
+    const criada = new Date(parada!.criadaEm);
+    expect((await lembretesDeAtivacao(db, new Date(criada.getTime() + 3_600_000))).enviados).toBe(0); // no mesmo dia, nada
+    const depois = new Date(criada.getTime() + 10 * 86_400_000);
+    await lembretesDeAtivacao(db, depois);
+    const ativacao = () => db.select().from(emailOutbox).where(like(emailOutbox.kind, "ATIVACAO_LOJA"));
+    const emails = await ativacao();
+    expect(emails.length).toBeGreaterThan(0);
+    expect(emails[0]!.body).toMatch(/\/merchant\//);
+    await lembretesDeAtivacao(db, depois); // repetir não reenvia
+    expect((await ativacao()).length).toBe(emails.length);
+  });
 });

@@ -18,7 +18,7 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 /** HTML simples e compatível com clientes de e-mail (tabelas e estilos em linha), com a assinatura da NextLevel. */
 /** Rodapé do grupo (D132): faixa estática com a cor de cada marca aberta e a frase do Club. */
 export type GroupFooter = { segments: { name: string; color: string }[] };
-const groupFooterHtml = (g: GroupFooter) => `<tr><td style="padding:14px 24px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${g.segments.map((s) => `<td style="height:6px;background:${s.color}"></td>`).join("")}</tr></table><p style="margin:10px 0 0;font-size:13px;color:#374151">Grupo NextLevel: ${g.segments.map((s) => esc(s.name)).join(" · ")}. Seus pontos do Club valem em todas as marcas do grupo.</p></td></tr>`;
+const groupFooterHtml = (g: GroupFooter) => `<tr><td style="padding:14px 24px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${g.segments.map((s) => `<td style="height:6px;background:${s.color}"></td>`).join("")}</tr></table><p style="margin:10px 0 0;font-size:13px;color:#374151">Grupo NextLevel: ${g.segments.map((s) => esc(s.name)).join(" · ")}.</p></td></tr>`;
 /**
  * Faixa no topo do e-mail (lote E da auditoria de imagens, 1200×300 em JPG: e-mail não lê AVIF). Só SuperDrop, Commerce e
  * NextLevel têm faixa; sem o arquivo no servidor, o e-mail sai como antes (só a barra com o nome da marca).
@@ -61,7 +61,7 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
     const eco = await import("@/lib/domain/ecossistema/lancador");
     if ((await eco.getEcoSettings(db)).emailFooter) {
       group = { segments: eco.groupSegments(brand.code) };
-      m = { ...m, text: `${m.text}\n\n—\nGrupo NextLevel: ${group.segments.map((x) => x.name).join(" · ")}. Seus pontos do Club valem em todas as marcas do grupo.` };
+      m = { ...m, text: `${m.text}\n\n—\nGrupo NextLevel: ${group.segments.map((x) => x.name).join(" · ")}.` };
     }
   } catch { group = null; }
   try {

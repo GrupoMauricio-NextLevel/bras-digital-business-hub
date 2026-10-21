@@ -16,8 +16,9 @@ describe("captação e e-mails do grupo", () => {
     expect((await last()).body).not.toMatch(/Grupo NextLevel/);
     await saveEcoSettings(ctx.db, ctx.actors.master, { emailFooter: true });
     await sendEmail(ctx.db, { kind: "TESTE", to: "b@x.teste", subject: "Oi", text: "Corpo", brand: "SUPERDROP" });
-    expect((await last()).body).toMatch(/Grupo NextLevel: .*SuperDrop.*pontos do Club/);
-    expect(renderHtml({ subject: "Oi", text: "Corpo" }, undefined, { segments: groupSegments("SUPERDROP") })).toMatch(/Seus pontos do Club valem/);
+    expect((await last()).body).toMatch(/Grupo NextLevel: .*SuperDrop/);
+    expect((await last()).body).not.toMatch(/Club/); // pontos são do Brás Digital Club (D173): fora do rodapé do grupo
+    expect(renderHtml({ subject: "Oi", text: "Corpo" }, undefined, { segments: groupSegments("SUPERDROP") })).not.toMatch(/pontos do Club/);
   });
   it("gravar uma chave não apaga as outras", async () => {
     await saveEcoSettings(ctx.db, ctx.actors.master, { brands: ["SUPERDROP"] });
