@@ -95,18 +95,18 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
           <section>
             <h2 className="mb-3 text-base font-semibold">1. Seus dados</h2>
             <div className="grid gap-3 sm:grid-cols-2">
-              <input className={input} placeholder="Nome completo" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
-              <input className={input} type="email" placeholder="E-mail" required value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
-              <input className={input} placeholder="WhatsApp" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />
+              <input className={input} placeholder="Nome completo" aria-label="Nome completo" autoComplete="name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
+              <input className={input} type="email" placeholder="E-mail" aria-label="E-mail" autoComplete="email" required value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
+              <input className={input} placeholder="WhatsApp" aria-label="WhatsApp" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />
             </div>
           </section>
           <section>
             <h2 className="mb-3 text-base font-semibold">2. Entrega</h2>
             <div className="grid gap-3 sm:grid-cols-3">
-              <input className={input} placeholder="CEP" required value={f.zip} onChange={(e) => setF({ ...f, zip: e.target.value })} />
-              <input className={cn(input, "sm:col-span-2")} placeholder="Endereço e número" required value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} />
-              <input className={cn(input, "sm:col-span-2")} placeholder="Cidade" required value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />
-              <select className={input} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map((s) => <option key={s}>{s}</option>)}</select>
+              <input className={input} placeholder="CEP" aria-label="CEP" autoComplete="postal-code" required value={f.zip} onChange={(e) => setF({ ...f, zip: e.target.value })} />
+              <input className={cn(input, "sm:col-span-2")} placeholder="Endereço e número" aria-label="Endereço e número" autoComplete="street-address" required value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} />
+              <input className={cn(input, "sm:col-span-2")} placeholder="Cidade" aria-label="Cidade" autoComplete="address-level2" required value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />
+              <select className={input} aria-label="Estado (UF)" autoComplete="address-level1" value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}>{["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map((s) => <option key={s}>{s}</option>)}</select>
             </div>
             <div className="mt-4" aria-live="polite" data-shipping-options>
               {quoting ? <p className="text-sm text-neutral-500">Calculando o frete…</p> : null}

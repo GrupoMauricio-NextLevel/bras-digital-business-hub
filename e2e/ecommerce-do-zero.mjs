@@ -12,7 +12,13 @@ const B = process.env.E2E_BASE ?? "http://cm.test:3300";
 const OUT = process.argv[2] ?? "e2e-ecommerce-do-zero";
 mkdirSync(OUT, { recursive: true });
 const sufixo = Date.now().toString(36);
-const loja = { nome: `Ateliê Teste ${sufixo}`, dono: "Larissa Teste", email: `larissa+${sufixo}@teste.dev`, senha: "senha-forte-123", doc: "52998224725" };
+/** CPF válido novo a cada execução: o teste grátis vale uma vez por documento (proteção contra abuso). */
+function cpf() {
+  const d = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+  for (const n of [9, 10]) { const s = d.reduce((acc, x, i) => acc + x * (n + 1 - i), 0); const r = (s * 10) % 11; d.push(r === 10 ? 0 : r); }
+  return d.join("");
+}
+const loja = { nome: `Ateliê Teste ${sufixo}`, dono: "Larissa Teste", email: `larissa+${sufixo}@teste.dev`, senha: "senha-forte-123", doc: cpf() };
 const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium", args: ["--no-proxy-server", "--host-resolver-rules=MAP *.test 127.0.0.1", `--unsafely-treat-insecure-origin-as-secure=${B}`] });
 const log = [];
 const tropecos = [];
@@ -102,12 +108,13 @@ await passo(cliente, "7. Cliente compra na loja", async () => {
   if (await tam.count()) await tam.click().catch(() => {});
   await cliente.getByRole("button", { name: /Adicionar ao carrinho|Comprar/ }).first().click();
   await cliente.goto(`${B}/store/${slug}/checkout`, { waitUntil: "networkidle" });
-  const fill = async (re, v) => { const l = cliente.getByLabel(re); if (await l.count()) await l.first().fill(v); };
+  const texto_ = cliente.locator("input:not([type=checkbox]):not([type=radio]):not([type=hidden]), textarea");
+  const fill = async (re, v) => { const l = cliente.getByLabel(re).and(texto_); if (await l.count()) await l.first().fill(v); };
   await fill(/Nome/i, "Cliente Teste"); await fill(/E-mail/i, "cliente@teste.dev"); await fill(/WhatsApp|Telefone|Celular/i, "11999998888");
   await fill(/CPF/i, "52998224725"); await fill(/CEP/i, "01310-100"); await fill(/Endere|Rua/i, "Avenida Paulista"); await fill(/^Número/i, "1000");
   await fill(/Bairro/i, "Bela Vista"); await fill(/Cidade/i, "São Paulo");
   const uf = cliente.getByLabel(/Estado|UF/i); if (await uf.count()) await uf.first().selectOption("SP").catch(async () => uf.first().fill("SP"));
-  await cliente.getByRole("button", { name: /Finalizar|Pagar|Confirmar pedido|Fazer pedido/ }).first().click();
+  await cliente.getByRole("button", { name: /Ir para o pagamento|Finalizar|Pagar|Confirmar pedido|Fazer pedido/ }).first().click();
   await cliente.waitForTimeout(3000);
   return `cliente em ${new URL(cliente.url()).pathname}`;
 });
