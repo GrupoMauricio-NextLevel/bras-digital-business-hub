@@ -1581,3 +1581,13 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - `sd-jornada-2-divulga`
   - `sd-jornada-3-vende`
   - `sd-porta-central`
+
+## D176 — [E-commerce] Pronta para rodar: funil de ativação e jornada do lojista novo sem travas (2026-10-21)
+- **Funil de ativação** no painel de administração da E-commerce (`/commerce`). Seis degraus, com a régua da prontidão da loja: criou a loja → cadastrou produto → publicou → conectou o Mercado Pago → primeira venda paga → plano pago. Mostra quantas lojas passaram por cada degrau e onde cada uma parou, com o próximo passo (`src/lib/domain/funil-ecommerce.ts`). Uma consulta por degrau, só o Master.
+- **Jornada do lojista novo testada no navegador** (`e2e/ecommerce-do-zero.mjs`, 10 passos: cadastro, produto, publicar, compra do cliente, pedido pago, plano). Ela achou e corrigiu:
+  1. **Categoria obrigatória** travava o primeiro produto (a loja nova não tem categorias e o navegador bloqueava sem mensagem). Em branco, agora vira "Geral".
+  2. **Produto da própria loja não entrava à venda**: exigia um segundo passo escondido em "Preços e publicação", e a loja publicada aparecia vazia. Produto da loja independente cadastrado como Ativo agora já entra nela pelo preço de venda. Rascunho não entra, e o fornecedor do SuperDrop não muda (teste).
+  3. **Campos da finalização da compra sem nome acessível** (só o texto de exemplo dentro da caixa). Agora têm nome e preenchimento automático do navegador.
+  4. Botão **"Continuar comprando" achatado no celular**.
+  5. **SuperDrop no cadastro de produto da E-commerce**: prévia do Google com superdrop.com.br, "visível às lojas" e aviso de estoque mínimo da rede.
+- O teste grátis vale uma vez por documento (CPF/CNPJ): repetir o cadastro com o mesmo documento leva direto ao pagamento. Isso é proteção contra abuso, e o roteiro usa um CPF novo a cada execução.
