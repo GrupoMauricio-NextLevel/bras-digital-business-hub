@@ -15,7 +15,8 @@ export const createProductSchema = z.object({
   name: z.string().min(3, "Nome muito curto"),
   sku: z.string().min(2, "Informe o SKU").transform((s) => s.trim().toUpperCase()),
   description: z.string().default(""),
-  categoryName: z.string().min(2, "Informe a categoria"),
+  // Em branco vira "Geral" (D176): a loja nova ainda não tem categorias e o cadastro do primeiro produto não pode travar.
+  categoryName: z.string().trim().transform((v) => v || "Geral").pipe(z.string().min(2, "Informe a categoria")),
   images: z.array(z.string().min(1)).default([]),
   costCents: money,
   suggestedPriceCents: money,

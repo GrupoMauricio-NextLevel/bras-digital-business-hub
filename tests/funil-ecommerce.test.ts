@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { freshDb } from "./setup";
 import { seedCommerceDemo } from "@/db/commerce-demo";
-import { stores } from "@/db/schema";
+import { categories, products, stores } from "@/db/schema";
+import { createProduct } from "@/lib/domain/products";
 import { DEGRAUS, funilEcommerce, ondeParou, type Degrau } from "@/lib/domain/funil-ecommerce";
 
 const tudo = (v: boolean) => Object.fromEntries(DEGRAUS.map((d) => [d.key, v])) as Record<Degrau, boolean>;
@@ -35,5 +36,13 @@ describe("funil de ativação da E-commerce", () => {
   it("só o Master", async () => {
     const { db, actors } = await freshDb();
     await expect(funilEcommerce(db, actors.arena)).rejects.toThrow();
+  });
+
+  it("primeiro produto sem categoria não trava: entra em \"Geral\" (loja nova ainda não tem categorias)", async () => {
+    const { db, seed } = await freshDb();
+    const { productId } = await createProduct(db, seed.supplierId, { name: "Blusa de linho", sku: "bl-geral-01", categoryName: "  ", costCents: 5900, suggestedPriceCents: 14990, minimumPriceCents: 11990, sizes: [{ size: "m", initialStock: 3 }] });
+    const p = (await db.query.products.findFirst({ where: eq(products.id, productId) }))!;
+    const c = (await db.query.categories.findFirst({ where: eq(categories.id, p.categoryId!) }))!;
+    expect(c.name).toBe("Geral");
   });
 });

@@ -91,7 +91,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
             <CardContent className="grid gap-3 sm:grid-cols-2">
               <FormField label="Nome" htmlFor="name" className="sm:col-span-2"><Input id="name" required value={f.name} onChange={(e) => set({ name: e.target.value })} placeholder="Manto Tricolor Paulista 2025" /></FormField>
               <FormField label="SKU" htmlFor="sku" hint="Código único do modelo"><Input id="sku" required value={f.sku} onChange={(e) => set({ sku: e.target.value.toUpperCase() })} placeholder="CS-TRI-25" /></FormField>
-              <FormField label="Categoria" htmlFor="cat"><Input id="cat" required list="cats" value={f.category} onChange={(e) => set({ category: e.target.value })} /><datalist id="cats">{categories.map((c) => <option key={c} value={c} />)}</datalist></FormField>
+              <FormField label="Categoria" htmlFor="cat" hint="Em branco, entra em “Geral”; dá para mudar depois."><Input id="cat" placeholder="Geral" list="cats" value={f.category} onChange={(e) => set({ category: e.target.value })} /><datalist id="cats">{categories.map((c) => <option key={c} value={c} />)}</datalist></FormField>
               <div className="sm:col-span-2"><RichTextLite id="desc" label="Descrição" value={f.description} onChange={(v) => set({ description: v })} rows={5} hint="Composição, cuidados e detalhes. Aceita negrito, itálico e listas." /></div>
             </CardContent>
           </Card>
@@ -113,7 +113,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
               </div>
               <div className="flex flex-wrap items-end gap-2">
                 <FormField label="Mesmo estoque em todos os tamanhos" htmlFor="allstock"><Input id="allstock" type="number" min={0} className="w-40" placeholder="ex.: 10" onChange={(e) => { const v = e.target.value; setRows(rows.map((r) => ({ ...r, stock: v }))); setDirty(true); }} /></FormField>
-                <p className="pb-2 text-xs text-muted-foreground">As lojas só ativam o produto com pelo menos {minStock} peças por tamanho.</p>
+                {independent ? null : <p className="pb-2 text-xs text-muted-foreground">As lojas só ativam o produto com pelo menos {minStock} peças por tamanho.</p>}
               </div>
               {rows.some((r) => r.size && (Number(r.stock) || 0) < minStock) ? <p role="status" className="flex items-center gap-1.5 text-xs text-warning"><AlertTriangle className="size-3.5" aria-hidden /> Estoque abaixo de {minStock} em {rows.filter((r) => r.size && (Number(r.stock) || 0) < minStock).map((r) => r.size).join(", ")}: as lojas ainda não conseguirão ativar.</p> : null}
               <div className="relative overflow-x-auto"><table className="w-full min-w-[30rem] text-sm">
@@ -150,7 +150,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           <Card>
             <CardHeader><div><CardTitle>Aparência nos buscadores</CardTitle><CardDescription>Como o produto aparece no Google. Em branco, usamos o nome e o começo da descrição.</CardDescription></div></CardHeader>
             <CardContent className="space-y-3">
-              <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`sualoja.superdrop.com.br › produto › ${slug || "nome-do-produto"}`} />
+              <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`${independent ? "sualoja.com.br" : "sualoja.superdrop.com.br"} › produto › ${slug || "nome-do-produto"}`} />
               <FormField label="Título da página" htmlFor="seot"><Input id="seot" maxLength={120} value={f.seoTitle} onChange={(e) => set({ seoTitle: e.target.value })} placeholder={f.name || "Nome do produto"} /></FormField>
               <FormField label="Descrição da página" htmlFor="seod"><Input id="seod" maxLength={320} value={f.seoDescription} onChange={(e) => set({ seoDescription: e.target.value })} /></FormField>
             </CardContent>
@@ -160,7 +160,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           <Card>
             <CardHeader><CardTitle>Status</CardTitle><Badge tone={f.status === "ACTIVE" ? "success" : "neutral"} dot>{f.status === "ACTIVE" ? "Ativo" : "Rascunho"}</Badge></CardHeader>
             <CardContent className="space-y-3">
-              <FormField label="Visibilidade" htmlFor="status"><Select id="status" value={f.status} onChange={(e) => set({ status: e.target.value as Form["status"] })}><option value="ACTIVE">Ativo (visível às lojas)</option><option value="DRAFT">Rascunho</option></Select></FormField>
+              <FormField label="Visibilidade" htmlFor="status"><Select id="status" value={f.status} onChange={(e) => set({ status: e.target.value as Form["status"] })}><option value="ACTIVE">{independent ? "Ativo (aparece na sua loja)" : "Ativo (visível às lojas)"}</option><option value="DRAFT">Rascunho</option></Select></FormField>
               <div className="flex flex-col gap-2">
                 <Button type="submit" size="lg" loading={pending}>{f.status === "DRAFT" ? "Salvar rascunho" : "Cadastrar produto"}</Button>
                 {f.status === "ACTIVE" ? <Button type="button" variant="secondary" onClick={() => submit("DRAFT")()} disabled={pending}>Salvar como rascunho</Button> : null}
