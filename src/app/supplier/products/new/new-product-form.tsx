@@ -89,8 +89,8 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           <Card>
             <CardHeader><CardTitle>Informações</CardTitle></CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-2">
-              <FormField label="Nome" htmlFor="name" className="sm:col-span-2"><Input id="name" required value={f.name} onChange={(e) => set({ name: e.target.value })} placeholder="Manto Tricolor Paulista 2025" /></FormField>
-              <FormField label="SKU" htmlFor="sku" hint="Código único do modelo"><Input id="sku" required value={f.sku} onChange={(e) => set({ sku: e.target.value.toUpperCase() })} placeholder="CS-TRI-25" /></FormField>
+              <FormField label="Nome" htmlFor="name" className="sm:col-span-2"><Input id="name" required value={f.name} onChange={(e) => set({ name: e.target.value })} placeholder={independent ? "Ex.: Blusa de linho off-white" : "Manto Tricolor Paulista 2025"} /></FormField>
+              <FormField label="SKU" htmlFor="sku" hint="Código único do modelo"><Input id="sku" required value={f.sku} onChange={(e) => set({ sku: e.target.value.toUpperCase() })} placeholder={independent ? "Ex.: BL-001" : "CS-TRI-25"} /></FormField>
               <FormField label="Categoria" htmlFor="cat" hint="Em branco, entra em “Geral”; dá para mudar depois."><Input id="cat" placeholder="Geral" list="cats" value={f.category} onChange={(e) => set({ category: e.target.value })} /><datalist id="cats">{categories.map((c) => <option key={c} value={c} />)}</datalist></FormField>
               <div className="sm:col-span-2"><RichTextLite id="desc" label="Descrição" value={f.description} onChange={(v) => set({ description: v })} rows={5} hint="Composição, cuidados e detalhes. Aceita negrito, itálico e listas." /></div>
             </CardContent>

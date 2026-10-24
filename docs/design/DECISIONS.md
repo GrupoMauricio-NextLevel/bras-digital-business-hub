@@ -1591,3 +1591,19 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   4. Botão **"Continuar comprando" achatado no celular**.
   5. **SuperDrop no cadastro de produto da E-commerce**: prévia do Google com superdrop.com.br, "visível às lojas" e aviso de estoque mínimo da rede.
 - O teste grátis vale uma vez por documento (CPF/CNPJ): repetir o cadastro com o mesmo documento leva direto ao pagamento. Isso é proteção contra abuso, e o roteiro usa um CPF novo a cada execução.
+
+## D177 — [E-commerce] A página promete só o que todo lojista novo recebe (2026-10-24)
+- **Achado na revisão da home e dos planos contra o produto:** com a porta de entrada ligada (experimento D140), parte das lojas novas entra pelas regras da porta. Essas lojas não têm "1º mês por R$ 9,90" nem "taxa zero por 3 meses", e os dias de teste mudam. A home, os planos e o cadastro mostravam sempre a oferta clássica.
+- **Decisão:** `ofertaPublica` (em `commerce-plans.ts`) promete só o garantido para todos:
+  - sem porta, vale a oferta clássica;
+  - com a porta para todos, valem os termos dela;
+  - com a porta em experimento, só o que as duas têm em comum (os dias menores, sem 1º mês promocional nem taxa zero).
+
+  Uma fonte só, `commercePlansView`, serve a home, os planos e o cadastro.
+- As demais promessas da home foram conferidas contra o código e conferem:
+  - produtos por planilha;
+  - domínio próprio;
+  - rastreio com mensagem pronta no WhatsApp (Pós-venda);
+  - cupons, campanhas, avaliações, avise-me e equipe;
+  - Mercado Pago da loja.
+- Jornada do lojista novo também no celular (390 px): 10 de 10 passos. Varredura de 31 telas a 360 px sem problema. No cadastro de produto da E-commerce, os exemplos deixam de ser camisa de time ("Ex.: Blusa de linho off-white").
