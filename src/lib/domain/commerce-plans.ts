@@ -238,11 +238,31 @@ export async function platformFeeFor(db: Database, storeId: string, start: Date,
 // ---------------------------------------------------------------------------
 // Vitrine dos planos (pública e no painel)
 // ---------------------------------------------------------------------------
+export type OfertaPublica = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number; version: number };
+
+/**
+ * O que as páginas públicas prometem (D177): só o que TODA loja nova vai receber no cadastro. Sem porta de entrada, vale a
+ * oferta clássica; com a porta ligada para todos, valem os termos da porta (que não tem 1º mês promocional nem taxa zero);
+ * com a porta em experimento (metade das lojas), só o que as duas têm em comum. Nada de prometer 3 dias e entregar 7, ou
+ * prometer R$ 9,90 a quem cai na porta.
+ */
+export function ofertaPublica(classica: OfertaPublica | null, porta: { trialDays: number; version: number } | null, emExperimento: boolean): OfertaPublica | null {
+  const daPorta: OfertaPublica | null = porta ? { trialDays: porta.trialDays, firstPeriodCents: null, feeHolidayMonths: 0, version: porta.version } : null;
+  if (!daPorta) return classica;
+  const r = !emExperimento ? daPorta
+    : { trialDays: Math.min(daPorta.trialDays, classica?.trialDays ?? 0), firstPeriodCents: null, feeHolidayMonths: 0, version: classica?.version ?? daPorta.version };
+  return r.trialDays > 0 || r.firstPeriodCents !== null || r.feeHolidayMonths > 0 ? r : null;
+}
+
 export async function commercePlansView(db: Database, opts: { taxId?: string | null } = {}) {
   const items = await listCatalog(db, { families: ["COMMERCE_PLAN"] });
-  const offer = await activeOffer(db, ENTRY_OFFER_KEY);
+  const [offer, porta, experimento] = await Promise.all([
+    activeOffer(db, ENTRY_OFFER_KEY), activeDoor(db, "NEXTLEVEL_COMMERCE"),
+    db.query.experiments.findFirst({ where: (e, { and: a, eq: q }) => a(q(e.piece, "PORTA_COMMERCE"), q(e.status, "RODANDO")) }),
+  ]);
+  const classica = offer ? { trialDays: offer.rules.trialDays, firstPeriodCents: offer.rules.firstPeriodCents ?? null, feeHolidayMonths: offer.rules.feeHolidayMonths, version: offer.version } : null;
   return {
-    offer: offer ? { trialDays: offer.rules.trialDays, firstPeriodCents: offer.rules.firstPeriodCents, feeHolidayMonths: offer.rules.feeHolidayMonths, version: offer.version } : null,
+    offer: ofertaPublica(classica, porta, !!experimento),
     eligible: opts.taxId !== undefined ? !!(await entryOfferFor(db, opts.taxId ?? null, "MONTHLY")) : null,
     plans: items.map((p) => {
       const m = p.prices.MONTHLY, a = p.prices.ANNUAL;

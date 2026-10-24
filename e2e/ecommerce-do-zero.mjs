@@ -37,7 +37,7 @@ async function passo(p, nome, fn) {
 }
 const texto = (p) => p.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
 
-const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
+const ctx = await b.newContext({ viewport: { width: Number(process.env.LARGURA ?? 1280), height: 900 } });
 const p = await ctx.newPage();
 p.on("pageerror", (e) => erros.push(e.message));
 
