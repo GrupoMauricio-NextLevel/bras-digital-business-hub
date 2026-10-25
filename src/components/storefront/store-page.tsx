@@ -8,6 +8,7 @@ import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
 import { planProducts } from "@/lib/themes/template";
 import { welcomeOffer } from "@/lib/domain/welcome-coupon";
 import type { PageKind } from "@/lib/themes/types";
+import { brandCodeOfStore } from "@/lib/store-brand";
 
 /** Espaçamento externo de cada página (o mesmo que as páginas tinham antes dos modelos). */
 const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:px-6", product: "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10", collection: "mx-auto max-w-6xl px-4 py-8 sm:px-6", cart: "" };
@@ -26,6 +27,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const template = trial ? trial.preset.pages[page] : (await resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey })).template;
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const catalog = await getStorefrontCatalog(sf.store.id);
+  const brandCode = page === "product" ? await brandCodeOfStore(db, sf.store) : undefined;
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
 
@@ -52,7 +54,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const welcome = wc && typeof wc.settings.code === "string" && wc.settings.code ? await welcomeOffer(db, sf.store.id, wc.settings.code) : null;
   return (
     <div className={WRAP[page]}>
-      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId, editing: preview || !!trial, welcome }} />
+      <SectionList animate={globals.style.animations} template={template} ctx={{ slug, base: `/store/${slug}`, store: sf.store, brandCode, categories: sf.categories, products, planned: lists, hero, globals, page, product, related, query, now: new Date(), categoryId, editing: preview || !!trial, welcome }} />
     </div>
   );
 }

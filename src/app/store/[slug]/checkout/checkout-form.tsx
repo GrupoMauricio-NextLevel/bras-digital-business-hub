@@ -10,6 +10,7 @@ import { formatBRL } from "@/lib/money";
 import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction } from "@/app/actions/storefront";
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
+import { MAX_PARCELAS_LOJA } from "@/lib/pagamento-loja";
 
 const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
 
@@ -20,7 +21,8 @@ function fingerprint(text: string): string {
   return h.toString(36);
 }
 
-export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: string; storeName: string; minOrderCents?: number }) {
+/** `aceitaCartao`: loja da E-commerce (Pix e cartão parcelado, D178); sem ele, só Pix (SuperDrop). */
+export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao = false }: { slug: string; storeName: string; minOrderCents?: number; aceitaCartao?: boolean }) {
   const cart = useCart();
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: false });
@@ -78,7 +80,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
         discountCode: applied?.code,
         idempotencyKey: `${attemptId}:${fingerprint(cart.lines.map((l) => `${l.productId}.${l.variantId}.${l.packId ?? ""}.${l.quantity}`).join("|"))}`,
-        notes: payment === "pix" ? "Preferência de pagamento: Pix" : "Preferência de pagamento: Cartão",
+        notes: payment === "card" && aceitaCartao ? "Preferência de pagamento: Cartão" : "Preferência de pagamento: Pix",
       });
       if (!r.ok) { toast.error(r.error); return; }
       cart.clear();
@@ -126,9 +128,9 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
           </section>
           <section>
             <h2 className="mb-3 text-base font-semibold">3. Pagamento</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {([["pix", "Pix", "Aprovação imediata", QrCode], ["card", "Cartão de crédito", "Até 6x sem juros", CreditCard]] as const).map(([k, t, d, Icon]) => (
-                <button type="button" key={k} onClick={() => setPayment(k)} className={cn("flex items-center gap-3 rounded-lg border p-4 text-left", payment === k ? "border-neutral-900 ring-1 ring-neutral-900" : "border-neutral-300")}><Icon className="size-5 text-neutral-500" /><div><div className="text-sm font-medium">{t}</div><div className="text-xs text-neutral-500">{d}</div></div></button>
+            <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Forma de pagamento">
+              {([["pix", "Pix", "Aprovação imediata", QrCode], ...(aceitaCartao ? [["card", "Cartão de crédito", `Em até ${MAX_PARCELAS_LOJA}x no cartão`, CreditCard]] as const : [])] as const).map(([k, t, d, Icon]) => (
+                <button type="button" role="radio" aria-checked={payment === k} key={k} onClick={() => setPayment(k)} className={cn("flex items-center gap-3 rounded-lg border p-4 text-left", payment === k ? "border-neutral-900 ring-1 ring-neutral-900" : "border-neutral-300")}><Icon className="size-5 text-neutral-500" /><div><div className="text-sm font-medium">{t}</div><div className="text-xs text-neutral-500">{d}</div></div></button>
               ))}
             </div>
             <label className="mt-4 flex items-start gap-2 text-xs text-neutral-600"><input type="checkbox" className="mt-0.5" checked={f.marketingOptIn} onChange={(e) => setF({ ...f, marketingOptIn: e.target.checked })} /> Aceito receber novidades e promoções da {storeName} por WhatsApp. Você pode revogar quando quiser.</label>
@@ -146,7 +148,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0 }: { slug: str
           <div className="mt-4 flex gap-2"><input aria-label="Cupom de desconto" placeholder="Cupom de desconto" value={codeInput} onChange={(e) => setCodeInput(e.target.value)} className="h-10 min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 text-sm" /><button type="button" onClick={applyCode} disabled={pending || codeInput.trim().length < 3} className="h-10 rounded-lg border border-neutral-300 px-4 text-sm font-medium disabled:opacity-50">Aplicar</button></div>
           {belowMin ? <p role="alert" className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Pedido mínimo da loja: {formatBRL(minOrderCents)} em produtos. Faltam {formatBRL(minOrderCents - (cart.subtotal - discount))}.</p> : null}
           <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen || belowMin}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
-          <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento (Pix, cartão ou boleto).</p>
+          <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento ({aceitaCartao ? "Pix ou cartão" : "Pix"}).</p>
         </aside>
       </form>
     </div>

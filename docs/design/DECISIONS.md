@@ -140,7 +140,7 @@ Registro de decisões tomadas durante a evolução visual. As decisões D1 a D7 
 - **Tela de bloqueio:** fatura por Pix com QR code aberto sozinho, passo a passo, **suporte nos quatro cantos** (`NEXT_PUBLIC_SUPPORT_WHATSAPP` e `NEXT_PUBLIC_SUPPORT_EMAIL`). O setup em aberto vem primeiro; depois o plano (preço de lista × meses, sem desconto por ciclo). **Pagar libera sozinho** (`fulfillPlanInvoice`).
 - **Cupom** (`coupons`): pertence ao fornecedor (atribuição), 7 dias, limite opcional; **um teste por CPF/CNPJ** válido (`trial_claims`). Fornecedor cria cupons e copia o link `/cadastro?cupom=CODIGO`; Master ou fornecedor **prorrogam** (+3 dias). Migração 0012.
 - **Cadastro público** `/cadastro`: cria a loja na rede do fornecedor do cupom, o dono escolhe a senha, o teste começa e entra direto no painel.
-- **Checkout das lojas somente Pix:** preferência do Mercado Pago exclui cartão, débito, boleto, caixa eletrônico e saldo. Cartão em 1x (+6%) fica para a cobrança dos planos, quando houver cartão.
+- **Checkout das lojas somente Pix:** preferência do Mercado Pago exclui cartão, débito, boleto, caixa eletrônico e saldo. Cartão em 1x (+6%) fica para a cobrança dos planos, quando houver cartão. (Na E-commerce, substituída por D178: Pix e cartão em até 6x.)
 - **Alpha Outfit e MantosShop:** logos, WhatsApp (Thiago e Alex) e cupons `ALPHA7` e `MANTOSSHOP7` aplicados. Em produção, `applyLaunchBranding` aplica a marca, o WhatsApp e o cupom assim que o Master cadastrar os dois fornecedores (slugs `alpha-outfit` e `mantosshop`).
 - **Ainda do P1:** taxa por pedido e fechamento mensal, e-mail transacional e recuperar senha, cobrança automática recorrente, comissão dos fundadores, Academy, termos com aceite versionado.
 
@@ -1607,3 +1607,14 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - cupons, campanhas, avaliações, avise-me e equipe;
   - Mercado Pago da loja.
 - Jornada do lojista novo também no celular (390 px): 10 de 10 passos. Varredura de 31 telas a 360 px sem problema. No cadastro de produto da E-commerce, os exemplos deixam de ser camisa de time ("Ex.: Blusa de linho off-white").
+
+## D178 — [E-commerce] Loja da E-commerce aceita Pix e cartão em até 6x (2026-10-25)
+- **Achado na revisão da vitrine, do produto, do carrinho e do checkout nos 7 temas grátis:**
+  - a página do produto dizia "ou 6x de R$ …" e o checkout oferecia "Cartão de crédito · Até 6x sem juros";
+  - mas a preferência do Mercado Pago era só Pix (D22), então o cartão nunca aparecia na hora de pagar;
+  - a home e os planos da E-commerce prometem "Pix e cartão na sua conta Mercado Pago";
+  - a janela rápida do produto mostrava o aviso fixo "Enviado pela Central Sports", texto do SuperDrop.
+- **Decisão do dono ("Liberar cartão"):** na loja da NextLevel E-commerce, o cliente paga por Pix ou cartão de crédito em até 6x, na conta Mercado Pago do próprio lojista. Tarifas e juros do parcelamento seguem a conta dele, por isso a tela não promete "sem juros" ("Em até 6x no cartão").
+- **SuperDrop continua só Pix** (D22 vale para ele). Lá o checkout deixa de mostrar a opção de cartão, que não funcionava.
+- Regra única em `src/lib/pagamento-loja.ts` (`lojaAceitaCartao`, `parcelasDaLoja`, `MAX_PARCELAS_LOJA = 6`), usada pela ação de compra (preferência com `installments`), pelo checkout e pela caixa de compra. O aviso de envio só aparece quando o lojista escreve um no editor.
+- Varredura `e2e/vitrine-cliente.mjs`: 7 temas a 390 e 1440 px (início, catálogo, produto, carrinho, finalizar), sem achados de acessibilidade, foto quebrada ou rolagem lateral.

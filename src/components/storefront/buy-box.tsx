@@ -11,7 +11,8 @@ import { formatBRL } from "@/lib/money";
 import { variantLabel } from "@/lib/variant-label";
 import { cn } from "@/lib/utils";
 
-export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Sports · etiqueta em até 1 dia útil após confirmação", stickyBar = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean }) {
+/** `parcelas`: só quando a loja aceita cartão (E-commerce, D178); o valor por parcela é indicativo, sem prometer "sem juros". */
+export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number }) {
   const cart = useCart();
   const router = useRouter();
   const [mode, setMode] = React.useState<"unit" | "pack">(product.sellsUnit ? "unit" : "pack");
@@ -46,7 +47,7 @@ export function BuyBox({ product, slug, shippingNote = "Enviado pela Central Spo
     <div className="flex flex-col">
       <div className="text-xs uppercase tracking-wide text-neutral-500">{product.categoryName}</div>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{product.name}</h1>
-      <div className="mt-3 flex items-baseline gap-3"><span className="text-2xl font-semibold">{formatBRL(price)}</span>{mode === "unit" ? <span className="text-sm text-neutral-500">ou 6x de {formatBRL(Math.round(price / 6))}</span> : <span className="text-sm text-neutral-500">{pack ? `${formatBRL(Math.round(price / pack.totalQuantity))} por peça` : null}</span>}</div>
+      <div className="mt-3 flex items-baseline gap-3"><span className="text-2xl font-semibold">{formatBRL(price)}</span>{mode === "unit" ? (parcelas ? <span className="text-sm text-neutral-500">ou em até {parcelas}x no cartão</span> : null) : <span className="text-sm text-neutral-500">{pack ? `${formatBRL(Math.round(price / pack.totalQuantity))} por peça` : null}</span>}</div>
       {tiers.length ? <ul className="mt-2 text-sm text-neutral-600" aria-label="Preço por quantidade">{tiers.map((t) => <li key={t.minQty}>A partir de {t.minQty} peças: <b>{formatBRL(t.priceCents)}</b> cada</li>)}</ul> : null}
       <p className="mt-4 text-sm leading-relaxed text-neutral-600">{product.description}</p>
 

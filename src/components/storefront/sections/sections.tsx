@@ -12,6 +12,8 @@ import { SortSelect } from "@/components/storefront/sort-select";
 import { renderMarkdownLite } from "@/lib/ds/text";
 import { resolveLink } from "@/lib/themes/template";
 import { cn } from "@/lib/utils";
+import type { BrandCode } from "@/lib/brand";
+import { lojaAceitaCartao, MAX_PARCELAS_LOJA } from "@/lib/pagamento-loja";
 import type { SectionProps } from "./types";
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
@@ -157,7 +159,7 @@ export function ProductMain({ settings, ctx }: SectionProps) {
             <div className="grid grid-cols-4 gap-3">{[0, 1, 2, 3].map((i) => <ProductArt key={i} images={product.images} size="md" className="rounded-xl bg-neutral-100 opacity-70" />)}</div>
           </div>
         )}
-        <BuyBox product={product} slug={ctx.slug} shippingNote={str(settings.shippingNote)} stickyBar={settings.stickyBuyBar === true} />
+        <BuyBox product={product} slug={ctx.slug} shippingNote={str(settings.shippingNote)} stickyBar={settings.stickyBuyBar === true} parcelas={lojaAceitaCartao(ctx.brandCode as BrandCode | undefined) ? MAX_PARCELAS_LOJA : undefined} />
       </div>
     </>
   );

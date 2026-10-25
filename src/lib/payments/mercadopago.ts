@@ -66,6 +66,8 @@ export type PreferenceInput = {
   notificationUrl?: string;
   backUrls?: { success: string; failure: string; pending: string };
   expiresAt?: Date;
+  /** Com valor, libera cartão de crédito em até N parcelas além do Pix (E-commerce, D178); sem valor, só Pix. */
+  maxParcelas?: number;
 };
 
 export type Preference = { id: string; checkoutUrl: string };
@@ -80,8 +82,10 @@ export async function createPreference(token: string, input: PreferenceInput, fe
     external_reference: input.orderId,
     statement_descriptor: input.storeName.replace(/[^\w ]/g, "").slice(0, 22) || "LOJA",
     metadata: { order_id: input.orderId, order_number: input.orderNumber },
-    /** Somente Pix: exclui cartão, boleto, caixa eletrônico e saldo em conta. */
-    payment_methods: { excluded_payment_types: ["credit_card", "debit_card", "ticket", "atm", "prepaid_card", "account_money"].map((id) => ({ id })) },
+    /** Sem `maxParcelas`, somente Pix: exclui cartão, boleto, caixa eletrônico e saldo em conta. Com ele, Pix e cartão de crédito parcelado. */
+    payment_methods: input.maxParcelas
+      ? { installments: input.maxParcelas, excluded_payment_types: ["debit_card", "ticket", "atm", "prepaid_card", "account_money"].map((id) => ({ id })) }
+      : { excluded_payment_types: ["credit_card", "debit_card", "ticket", "atm", "prepaid_card", "account_money"].map((id) => ({ id })) },
   };
   if (input.notificationUrl) body.notification_url = input.notificationUrl;
   if (input.backUrls) { body.back_urls = input.backUrls; body.auto_return = "approved"; }

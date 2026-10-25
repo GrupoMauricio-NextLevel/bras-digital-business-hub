@@ -12,6 +12,8 @@ import { createPreference, MercadoPagoError } from "@/lib/payments/mercadopago";
 import { syncOrderPayment } from "@/lib/payments/service";
 import { decryptSecret } from "@/lib/security/crypto";
 import { getBaseUrl, isPublicHttps } from "@/lib/base-url";
+import { parcelasDaLoja } from "@/lib/pagamento-loja";
+import { brandCodeOfStore } from "@/lib/store-brand";
 import { quoteShipping, resolveShipping, type QuoteItem } from "@/lib/shipping/quote";
 
 const RESERVATION_MINUTES_ONLINE = 30;
@@ -92,6 +94,7 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
         notificationUrl: https ? `${url}/api/webhooks/mercadopago?store=${slug}` : undefined,
         backUrls: https ? { success: back, failure: back, pending: back } : undefined,
         expiresAt: new Date(Date.now() + RESERVATION_MINUTES_ONLINE * 60_000),
+        maxParcelas: parcelasDaLoja(await brandCodeOfStore(db, store)),
       });
       await db.update(orders).set({ paymentReference: pref.id, paymentCheckoutUrl: pref.checkoutUrl }).where(eq(orders.id, r.orderId));
       revalidateAll(slug);
