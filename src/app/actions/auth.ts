@@ -17,6 +17,7 @@ import { getBaseUrl } from "@/lib/base-url";
 import { rateLimit } from "@/lib/rate-limit";
 import { allowLoginAttempt } from "@/lib/security/login-limit";
 import { profileForHost } from "@/lib/domain/conta-grupo";
+import { bilheteSegundaEtapa, conferirSegundaEtapa, lerBilheteSegundaEtapa, temDuasEtapas } from "@/lib/domain/seguranca-conta";
 
 const loginSchema = z.object({ email: z.string().email("E-mail inválido"), password: z.string().min(1, "Informe a senha") });
 
@@ -41,9 +42,34 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     // Conta do grupo (D141): a senha de um perfil abre o perfil da mesma pessoa que é da marca deste endereço.
     const target = conflict ? await profileForHost(db, user, hostBrand) : user;
     if (!target) throw new DomainError("WRONG_BRAND", conflict!.message);
-    await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, target.id));
-    await setSessionCookie(target.id);
+    // Duas etapas (D183): a senha certa só gera um bilhete de 5 minutos; a sessão abre depois do código do aplicativo.
+    if (temDuasEtapas(target)) return { segundaEtapa: bilheteSegundaEtapa(target.id), redirectTo: "" };
+    await abrirSessao(db, target, ip);
     return { redirectTo: target.mustChangePassword ? "/account/password" : homeFor(target.role) };
+  });
+}
+
+async function abrirSessao(db: Awaited<ReturnType<typeof getDb>>, user: typeof users.$inferSelect, ip: string) {
+  await db.update(users).set({ lastLoginAt: new Date().toISOString(), lastLoginIp: ip === "0.0.0.0" ? null : ip }).where(eq(users.id, user.id));
+  await setSessionCookie(user.id);
+}
+
+const segundaEtapaSchema = z.object({ bilhete: z.string().min(10), codigo: z.string().min(6, "Digite o código de 6 números").max(20) });
+
+/** Segunda etapa da entrada: código do aplicativo autenticador (ou um código de recuperação). */
+export async function loginSegundaEtapaAction(input: z.input<typeof segundaEtapaSchema>) {
+  return runAction(async () => {
+    const data = segundaEtapaSchema.parse(input);
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    const uid = lerBilheteSegundaEtapa(data.bilhete);
+    if (!uid) throw new DomainError("EXPIRED", "O tempo para digitar o código acabou. Entre de novo com a senha.");
+    if (!allowLoginAttempt(ip, `2fa:${uid}`)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Aguarde alguns minutos e tente de novo.");
+    const db = await getDb();
+    const user = await db.query.users.findFirst({ where: eq(users.id, uid) });
+    if (!user || user.disabledAt) throw new DomainError("INVALID_CREDENTIALS", "Conta indisponível.");
+    if (!(await conferirSegundaEtapa(db, uid, data.codigo))) throw new DomainError("INVALID_CODE", "Código incorreto. Use o código que aparece agora no aplicativo.");
+    await abrirSessao(db, user, ip);
+    return { redirectTo: user.mustChangePassword ? "/account/password" : homeFor(user.role) };
   });
 }
 

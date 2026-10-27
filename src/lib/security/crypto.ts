@@ -31,20 +31,20 @@ export function decryptSecret(payload: string | null | undefined): string | null
 }
 
 /** Token de sessão assinado: base64url(payload).assinatura */
-export function signSession(payload: { uid: string; exp: number; sup?: string }): string {
+export function signSession(payload: { uid: string; exp: number; sup?: string; sv?: number }): string {
   const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const sig = createHmac("sha256", secret()).update(body).digest("base64url");
   return `${body}.${sig}`;
 }
 
-export function verifySession(token: string | undefined): { uid: string; exp: number; sup?: string } | null {
+export function verifySession(token: string | undefined): { uid: string; exp: number; sup?: string; sv?: number } | null {
   if (!token) return null;
   const [body, sig] = token.split(".");
   if (!body || !sig) return null;
   const expected = createHmac("sha256", secret()).update(body).digest("base64url");
   if (expected.length !== sig.length || !timingSafeEq(expected, sig)) return null;
   try {
-    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as { uid: string; exp: number; sup?: string };
+    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as { uid: string; exp: number; sup?: string; sv?: number };
     if (!payload.uid || payload.exp < Date.now()) return null;
     return payload;
   } catch {

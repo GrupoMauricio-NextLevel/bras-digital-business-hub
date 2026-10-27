@@ -221,6 +221,16 @@ export async function runSubscriptionJobs(db: Database, now = new Date(), opts: 
   return { skipped: false, changed, invoices };
 }
 
+/**
+ * Economia de trocar o mensal pelo anual (W0, D183), com os preços do catálogo Master (nunca fixos). Nulo quando o anual
+ * não sai mais barato que 12 mensalidades ou falta um dos preços.
+ */
+export function economiaDoAnual(mensalCents: number | null | undefined, anualCents: number | null | undefined): { anualCents: number; economiaCents: number; porMesCents: number } | null {
+  if (!mensalCents || !anualCents) return null;
+  const economiaCents = mensalCents * 12 - anualCents;
+  return economiaCents > 0 ? { anualCents, economiaCents, porMesCents: Math.round(anualCents / 12) } : null;
+}
+
 // ---------------------------------------------------------------------------
 // Taxa de plataforma (pedidos pagos pelo cliente final; sem frete; carência da oferta)
 // ---------------------------------------------------------------------------

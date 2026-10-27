@@ -1718,3 +1718,30 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - nada copiado da wBuy;
   - cada peça estende o que existe: link de pagamento = propostas; taxa = `platformFeeFor`; módulos = `entitlements`; afiliado da loja = `partners`;
   - o SuperDrop só muda com teste, e a loja de rede não ganha mudança de situação na linha.
+
+## D183 — [E-commerce] W0 Confiança: conta da taxa aberta, economia do anual, segurança da conta e duas etapas no Master (2026-10-27)
+- **O que entrou (primeira onda de D182):**
+  - **"Sua taxa"** no financeiro (`src/lib/domain/taxa-transparente.ts`, `src/components/finance/sua-taxa.tsx`):
+    - mostra a competência, as vendas que contam, os pedidos, a taxa até agora e quando o mês fecha;
+    - mostra a conta escrita (base × percentual), o que entra e o que não entra, e os 6 meses anteriores;
+    - lê a **mesma** função do fechamento (`storeOrderFeeFor`, usada por `closeStoreFees`), então o número da tela é o da fatura (teste);
+    - vale para a E-commerce e para o SuperDrop (só leitura; nada muda na cobrança). Sem taxa e sem histórico, o bloco não aparece.
+  - **Economia do anual em reais** para quem está no mensal (`economiaDoAnual`, com os preços do catálogo Master). "Trocar de plano" já existia.
+  - **Segurança da conta** (`/account/seguranca`, no menu do usuário de todos os painéis):
+    - última entrada com IP;
+    - **"Sair dos outros aparelhos"**: `users.sessionVersion` entra na sessão assinada, e a versão antiga deixa de valer;
+    - o aviso "um acesso por pessoa";
+    - em Equipe, a última entrada de cada pessoa (o IP só para o dono da loja).
+  - **Duas etapas (TOTP) para o Master:**
+    - feitas com `node:crypto`, sem biblioteca nova;
+    - o segredo fica só com `encryptSecret`, e os 8 códigos de recuperação ficam em hash, mostrados uma vez;
+    - a entrada é em duas etapas: a senha certa gera um bilhete de 5 minutos, e a sessão só abre com o código;
+    - o painel do Master mostra o aviso "Ligue a verificação" até ser ligada;
+    - `MASTER_2FA_OBRIGATORIO=1` passa a exigir a ativação antes de abrir o painel. Ligar só depois que o dono ativar, para ninguém ficar trancado para fora;
+    - no modo suporte, nada disso pode ser mudado pela equipe.
+  - **"O que mudou"** (`src/lib/domain/novidades.ts`, `/merchant/novidades`): novidades por marca, escritas à mão, com a mais recente na primeira tela do lojista.
+- **Ficou para depois, com motivo:** a **escolha do dia de vencimento** do plano. Hoje o período da assinatura é contado pela data do pagamento, e a suspensão segue o fim do período. Trocar o dia exige uma regra de cobrança proporcional (pro rata) que o dono precisa aprovar; mudar só a data da fatura deixaria a loja "em atraso" antes do vencimento.
+- **Banco:** migração `0069_w0_confianca` em `users`: `last_login_ip`, `session_version` (padrão 0, então as sessões abertas antes continuam valendo), `totp_secret`, `totp_enabled_at` e `totp_recovery`.
+- **Testes:**
+  - `tests/w0-confianca.test.ts`: a taxa igual ao fechamento, frete e pedido não pago fora, permissões, SuperDrop igual; o anual; a versão da sessão; o vetor oficial do TOTP (RFC 6238), a recuperação de uso único e o bilhete;
+  - `e2e/w0-confianca.mjs`: lojista e Master, com axe e 360 px.

@@ -29,7 +29,7 @@ function ownerStore(actor: Actor): string {
 
 export async function listTeam(db: Database, actor: Actor) {
   const storeId = ownerStore(actor);
-  return db.select({ id: users.id, name: users.name, email: users.email, storeRole: users.storeRole, disabledAt: users.disabledAt, lastLoginAt: users.lastLoginAt }).from(users).where(and(eq(users.storeId, storeId), eq(users.role, "STORE_OWNER"))).orderBy(asc(users.createdAt));
+  return db.select({ id: users.id, name: users.name, email: users.email, storeRole: users.storeRole, disabledAt: users.disabledAt, lastLoginAt: users.lastLoginAt, lastLoginIp: users.lastLoginIp }).from(users).where(and(eq(users.storeId, storeId), eq(users.role, "STORE_OWNER"))).orderBy(asc(users.createdAt));
 }
 
 /** O dono cria o acesso com uma senha provisória (a pessoa troca no primeiro login). Nada é enviado por e-mail. */

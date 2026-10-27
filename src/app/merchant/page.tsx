@@ -28,6 +28,7 @@ import { filaDoLojista, pedidosParados, pulsoDaLoja } from "@/lib/domain/fila-do
 import { PulsoLoja } from "@/components/app/pulso-loja";
 import { stockDemand } from "@/lib/domain/stock-alerts";
 import { perfilAtual } from "@/lib/perfil-loja-server";
+import { novidadesDa } from "@/lib/domain/novidades";
 
 const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing };
 
@@ -46,7 +47,10 @@ export default async function MerchantHome() {
   const temVendaPaga = (await db.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.customerPaymentStatus, "PAID"))).limit(1)).length > 0;
   const boasVindas = mostrarBoasVindas({ criadaEm: store.createdAt, temVendaPaga })
     ? <BoasVindasCeo primeiroNome={session.user.name.split(" ")[0]!} marca={(await brandOfStore(db, store)).name} className="mb-6" /> : null;
-  const surveyCard = <>{boasVindas}{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
+  // "O que mudou" (D183): a novidade mais recente da marca, com link para a lista.
+  const novidade = novidadesDa((await brandOfStore(db, store)).code, 1)[0];
+  const faixaNovidade = novidade ? <p className="mb-4 text-sm"><span className="font-semibold">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null;
+  const surveyCard = <>{faixaNovidade}{boasVindas}{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
   const readiness = commerce ? await getStoreReadiness(db, store.id) : null;

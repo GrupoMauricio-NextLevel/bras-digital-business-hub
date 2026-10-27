@@ -17,6 +17,8 @@ import { buildRationale } from "@/lib/finance/rationale";
 import { InvoicePay } from "@/components/finance/invoice-pay";
 import { AddonCards } from "@/components/finance/addon-cards";
 import { RationaleList } from "@/components/finance/rationale-list";
+import { SuaTaxa } from "@/components/finance/sua-taxa";
+import { taxaDoMes } from "@/lib/domain/taxa-transparente";
 import { CommerceEvolution, FinanceAreas, Opportunities } from "@/components/nl-store/evolution";
 import { finFlag } from "@/lib/finance/flags";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
@@ -32,6 +34,8 @@ export default async function MerchantFinancePage() {
   if (nlSub && ["trial", "pending_payment", "past_due", "suspended"].includes(nlSub.status)) await ensureSubscriptionInvoice(db, session.store!);
   const [addons, invoices, book] = await Promise.all([addonViewsFor(db, session.actor), listInvoicesFor(db, session.actor), getPriceBook(db)]);
   const feeNow = await storeOrderFeeFor(db, session.store!.id, periodOf(new Date()), book);
+  // "Sua taxa" (D183): a mesma conta do fechamento, aberta para o lojista. Sem taxa e sem histórico, o bloco não aparece.
+  const taxa = await taxaDoMes(db, session.actor, session.store!.id);
   const { independente: independent, ecommerce: commerce } = await perfilAtual(session.store!.id);
   const demo = isDemoMode();
   const openInvoices = invoices.filter((i) => (i.status === "OPEN" || i.status === "OVERDUE") && i.amountCents > 0);
@@ -95,6 +99,7 @@ export default async function MerchantFinancePage() {
       </div>
       <div className="mt-8 space-y-6">
         <h2 id="evolucao" className="scroll-mt-24 text-lg font-semibold">Minha evolução com a NextLevel</h2>
+        {taxa.bps > 0 || taxa.historico.length ? <SuaTaxa t={taxa} /> : null}
         {finFlag("FIN_CATALOG_MASTER") ? <CommerceEvolution session={session} /> : null}
         {openInvoices.length ? (
           <section id="faturas">

@@ -170,6 +170,14 @@ export const users = pgTable("users", {
   /** Acesso encerrado (ex.: pessoa saiu da equipe): não entra e sessões antigas deixam de valer. */
   disabledAt: ts("disabled_at"),
   lastLoginAt: ts("last_login_at"),
+  /** IP da última entrada (W0, D183): só para o dono da loja e o Master verem; sem localização. */
+  lastLoginIp: text("last_login_ip"),
+  /** Versão das sessões (W0, D183): "sair dos outros aparelhos" soma 1 e as sessões com a versão antiga deixam de valer. */
+  sessionVersion: integer("session_version").notNull().default(0),
+  /** Verificação em duas etapas (TOTP, W0, D183): segredo só criptografado (`encryptSecret`) e códigos de recuperação em hash. */
+  totpSecret: text("totp_secret"),
+  totpEnabledAt: ts("totp_enabled_at"),
+  totpRecovery: jsonb("totp_recovery").$type<string[]>(),
   /** Conta do grupo (D141): perfis da mesma pessoa em marcas diferentes, ligados com aceite. Vazio = perfil sozinho. */
   groupId: text("group_id"),
   groupLinkedAt: ts("group_linked_at"),

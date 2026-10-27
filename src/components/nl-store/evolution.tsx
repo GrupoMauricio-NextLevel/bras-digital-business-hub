@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/db/client";
 import type { Session } from "@/lib/auth";
-import { STATUS_LABEL, subscriptionOf } from "@/lib/domain/commerce-plans";
+import { economiaDoAnual, STATUS_LABEL, subscriptionOf } from "@/lib/domain/commerce-plans";
 import { nomePlanoEc, nomeProdutoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { getCatalogItem } from "@/lib/domain/nl-catalog";
 import { storeJourney } from "@/lib/domain/journey";
@@ -30,6 +30,7 @@ export async function CommerceEvolution({ session }: { session: Session }) {
   const product = sub ? await getCatalogItem(db, { key: sub.productKey }, { includeUnpublished: true }) : null;
   const now = new Date();
   const holiday = sub?.feeHolidayUntil && new Date(sub.feeHolidayUntil) > now;
+  const anual = sub?.cycle === "MONTHLY" ? economiaDoAnual(product?.prices.MONTHLY?.amountCents, product?.prices.ANNUAL?.amountCents) : null;
   return (
     <div className="space-y-4">
       {sub ? (
@@ -42,6 +43,7 @@ export async function CommerceEvolution({ session }: { session: Session }) {
             {sub.firstPeriodCents !== null && sub.status !== "active" ? <li><span className="text-muted-foreground">Primeiro mês: </span><strong>{formatBRL(sub.firstPeriodCents)}</strong> (oferta de entrada)</li> : null}
             {sub.currentPeriodEnd ? <li><span className="text-muted-foreground">Pago até: </span><strong>{formatDate(sub.currentPeriodEnd)}</strong>{sub.cancelAtPeriodEnd ? " · cancelamento agendado" : ""}</li> : null}
           </ul>
+          {anual ? <p className="mt-3 rounded-lg bg-success-soft px-3 py-2 text-sm">No plano anual você paga {formatBRL(anual.anualCents)} por ano (equivale a {formatBRL(anual.porMesCents)} por mês) e economiza <strong>{formatBRL(anual.economiaCents)}</strong> em relação a 12 mensalidades.</p> : null}
           <p className="mt-3 text-xs text-muted-foreground">O dinheiro das suas vendas é 100% seu e cai na sua conta Mercado Pago. A NextLevel cobra o plano e a taxa em fatura separada, abaixo.</p>
           <div className="mt-3 flex flex-wrap gap-2"><Link href="/merchant/services#fase-FUNDACAO" className="ds-btn ds-btn--secondary ds-btn--sm">Trocar de plano</Link>{!sub.cancelAtPeriodEnd && !["cancelled", "expired"].includes(sub.status) ? <CancelSubscription /> : null}</div>
         </CardContent></Card>

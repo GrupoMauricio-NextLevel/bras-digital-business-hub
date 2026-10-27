@@ -8,6 +8,7 @@ import { NAV } from "@/lib/nav";
 import { signSession, verifySession, verifyToken } from "@/lib/security/crypto";
 import { checkSupport, SUPPORT_TOKEN_PURPOSE, type SupportGrant } from "@/lib/domain/support";
 import { isDemoAccountEmail } from "@/lib/security/demo-accounts";
+import { versaoDaSessaoValida } from "@/lib/domain/seguranca-conta";
 
 export const SESSION_COOKIE = "nl_session";
 /** Permissão de modo suporte (assinada); a sessão do cliente aberta pelo suporte só vale junto com ela. */
@@ -30,6 +31,8 @@ export const getSession = cache(async (): Promise<Session | null> => {
   const db = await getDb();
   const user = await db.query.users.findFirst({ where: eq(users.id, payload.uid) });
   if (!user || user.disabledAt) return null;
+  // "Sair dos outros aparelhos" (D183): sessão com versão antiga deixa de valer. Cookie antigo sem versão conta como 0.
+  if (!versaoDaSessaoValida(payload.sv, user.sessionVersion)) return null;
   // Sessão aberta pelo suporte: só vale com a permissão assinada, no prazo, para este cliente e com o operador ainda Master.
   let support: Session["support"] = null;
   if (payload.sup) {
@@ -48,7 +51,9 @@ export const getSession = cache(async (): Promise<Session | null> => {
 export async function setSessionCookie(userId: string, opts: { ttlMs?: number; sup?: string } = {}) {
   const jar = await cookies();
   const ttl = opts.ttlMs ?? SESSION_TTL_MS;
-  jar.set(SESSION_COOKIE, signSession({ uid: userId, exp: Date.now() + ttl, ...(opts.sup ? { sup: opts.sup } : {}) }), {
+  const db = await getDb();
+  const sv = (await db.query.users.findFirst({ where: eq(users.id, userId), columns: { sessionVersion: true } }))?.sessionVersion ?? 0;
+  jar.set(SESSION_COOKIE, signSession({ uid: userId, exp: Date.now() + ttl, sv, ...(opts.sup ? { sup: opts.sup } : {}) }), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

@@ -484,6 +484,13 @@
       "when": 1792220884512,
       "tag": "0068_bras_rede_fornecedores",
       "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1793106250537,
+      "tag": "0069_w0_confianca",
+      "breakpoints": true
     }
   ]
 }

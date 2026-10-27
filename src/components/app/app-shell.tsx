@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, Layers, Search } from "lucide-react";
+import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, ShieldCheck, Layers, Search } from "lucide-react";
 import { initials } from "@/lib/utils";
 import type { NavItem, NavMode, Panel, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
@@ -137,6 +137,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
           <DropdownMenuSeparator />
           {groupHref ? <DropdownMenuItem asChild><Link href={groupHref}><Layers /> Suas marcas</Link></DropdownMenuItem> : null}
           {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
+          {passwordHref ? <DropdownMenuItem asChild><Link href="/account/seguranca"><ShieldCheck /> Segurança da conta</Link></DropdownMenuItem> : null}
           <DropdownMenuItem onSelect={() => onLogout?.()}><LogOut /> Sair</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
