@@ -125,9 +125,12 @@ describe("verificação em duas etapas", () => {
     expect((await ctx.db.query.users.findFirst({ where: eq(users.id, master.id) }))!.totpEnabledAt).toBeNull();
   });
 
-  it("lojista ainda não liga (fica para a W6) e o bilhete da entrada só vale para a segunda etapa", async () => {
+  it("lojista também liga (W6a, D188), fornecedor ainda não; o bilhete da entrada só vale para a segunda etapa", async () => {
     const l = await lojaComTaxa();
-    await expect(iniciarDuasEtapas(ctx.db, l.user)).rejects.toThrow(/ainda não está disponível/);
+    const { segredo } = await iniciarDuasEtapas(ctx.db, l.user);
+    expect(await confirmarDuasEtapas(ctx.db, l.user, codigoTotp(segredo))).toHaveLength(8);
+    const fornecedor = (await ctx.db.query.users.findFirst({ where: eq(users.id, ctx.actors.supplier.userId) }))!;
+    await expect(iniciarDuasEtapas(ctx.db, fornecedor)).rejects.toThrow(/ainda não está disponível/);
     expect(lerBilheteSegundaEtapa(bilheteSegundaEtapa(l.user.id))).toBe(l.user.id);
     expect(lerBilheteSegundaEtapa(bilheteSegundaEtapa(l.user.id, Date.now() - 10 * 60_000))).toBeNull();
     expect(lerBilheteSegundaEtapa(signSession({ uid: l.user.id, exp: Date.now() + 60_000 }))).toBeNull();

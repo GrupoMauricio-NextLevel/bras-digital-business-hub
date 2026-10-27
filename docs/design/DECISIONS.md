@@ -1835,3 +1835,24 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **SuperDrop:** nada muda. As ações recusam ("Disponível na loja da NextLevel E-commerce"); o feed, o Pixel e o lançamento ficam desligados por padrão.
 - **Banco:** migração `0074_w4_migrar_sem_medo`: `store_redirects`, `store_waitlist` e 3 colunas em `stores`.
 - **Testes:** `tests/w4-migrar.test.ts` (6) e `e2e/w34-vender-e-migrar.mjs` (com a W3).
+
+## D188 — [E-commerce] W5 Ferramentas e central de aplicativos, e W6a duas etapas para o lojista (2026-10-27)
+- **Calculadoras** (`src/lib/ferramentas/calculadoras.ts`, funções puras em centavos e pontos-base; tela em `src/components/ferramentas/calculadoras.tsx`):
+  - preço com margem (recusa quando taxas + margem passam de 100%);
+  - simulador de promoção (o lucro por peça antes e depois, e as vendas necessárias para manter o lucro; nula quando o desconto zera o lucro);
+  - parcelado sem juros, frete grátis a partir de, ponto de equilíbrio, e retorno do anúncio (ROAS e custo por cliente);
+  - todas "calculam com os números que você digitar", sem promessa.
+- **Onde aparecem:** no painel, em `/merchant/ferramentas`; na **página pública** `/ferramentas`, só preço com margem e frete grátis (decisão 5 de D182), com convite "Quero minha loja" e a marca do endereço.
+- **Calendário do varejo:** datas fixas e móveis (Mães, Pais, Black Friday) calculadas por ano, com "preparar a partir de". As próximas 6 aparecem nas ferramentas.
+- **Central de aplicativos** (`/merchant/aplicativos`, `src/lib/domain/aplicativos.ts`):
+  - mostra tudo o que a loja tem, por categoria, com o estado real (ligado ou desligado, lido da loja) e o link para configurar;
+  - o que ainda não existe (Pix direto, receber na entrega, balcão, API, afiliados da loja) aparece como **"Em breve"**, sem link e nunca como disponível;
+  - **ligar e desligar por plano (`entitlements`) fica para depois:** hoje nenhum desses recursos é cobrado à parte, e trancar algo que o lojista já usa mudaria o combinado;
+  - **Pix direto e receber na entrega** ficam para uma rodada própria: mexem no pagamento e na baixa manual, e precisam de teste de dinheiro.
+- **"O que mudou"** ganha as novidades das ondas W1 a W5.
+- **W6a, duas etapas para o lojista:** `podeUsarDuasEtapas` passa a valer também para STORE_OWNER (dono e equipe da loja). É opcional; a mesma tela de Segurança da conta e a mesma entrada em duas etapas da W0. O fornecedor ainda não tem.
+- **Menu:** Gestão ganha "Ferramentas" e "Aplicativos"; Marketing ganhou "Migrar e anunciar" (D187).
+- **Testes:**
+  - `tests/w5-ferramentas.test.ts`: contas, casos impossíveis, datas móveis de 2026 e 2027, central honesta e novidades por marca;
+  - `tests/w0-confianca.test.ts`: o lojista agora liga as duas etapas; o fornecedor, não;
+  - `e2e/w5-ferramentas.mjs` (página pública reagindo ao que se digita, ferramentas, aplicativos, com axe e 360 px) e `e2e/w0-confianca.mjs` atualizado.

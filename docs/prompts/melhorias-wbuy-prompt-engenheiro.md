@@ -313,5 +313,6 @@ FECHAMENTO DE CADA ONDA (obrigatório)
 | W2 Medir a loja | **Feita** (2026-10-27); "visitas hoje" no pulso fica para depois | D185 |
 | W3 Recuperar e vender mais | **Feita em parte** (2026-10-27): carrinho abandonado, compre junto e prazo de produção; encomenda, personalização, presente e desconto do compre junto ficam para uma rodada própria | D186 |
 | W4 Migrar sem medo | **Feita** (2026-10-27); aviso por e-mail à lista de espera fica para depois | D187 |
-| W5 Módulos e ferramentas | **Próxima** | — |
-| W6a a W6e | A fazer, uma por vez | — |
+| W5 Módulos e ferramentas | **Feita em parte** (2026-10-27): calculadoras (painel e públicas), calendário, central de aplicativos; ligar por plano, Pix direto e receber na entrega ficam para depois | D188 |
+| W6a Duas etapas para o lojista | **Feita** (2026-10-27) | D188 |
+| W6b a W6e (balcão, API, afiliados da loja, assistente) | A fazer, uma por vez | — |

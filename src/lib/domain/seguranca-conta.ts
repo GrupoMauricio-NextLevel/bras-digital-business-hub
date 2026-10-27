@@ -20,8 +20,8 @@ export async function sairDosOutrosAparelhos(db: Database, userId: string): Prom
 /** A sessão vale só com a versão atual da conta. Cookie antigo, sem versão, conta como 0. */
 export const versaoDaSessaoValida = (versaoDoCookie: number | undefined, versaoDaConta: number) => (versaoDoCookie ?? 0) === versaoDaConta;
 
-/** Quem pode ligar as duas etapas agora. Na W0, só a equipe do Master. */
-export const podeUsarDuasEtapas = (u: Pick<User, "role">) => u.role === "NEXTLEVEL_MASTER";
+/** Quem pode ligar as duas etapas: a equipe do Master (W0) e, desde a W6a (D188), o lojista e a equipe da loja (opcional). */
+export const podeUsarDuasEtapas = (u: Pick<User, "role">) => u.role === "NEXTLEVEL_MASTER" || u.role === "STORE_OWNER";
 export const temDuasEtapas = (u: Pick<User, "totpEnabledAt">) => !!u.totpEnabledAt;
 
 /** Começa a ativação: gera o segredo (guardado criptografado, ainda desligado) e devolve o endereço para o QR. */

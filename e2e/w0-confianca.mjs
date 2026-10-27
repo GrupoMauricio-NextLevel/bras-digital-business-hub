@@ -83,7 +83,7 @@ await passo(p, "5. Sair dos outros aparelhos derruba a outra sessão e mantém e
   await entrar(q, CM, "lojista@commerce.demo"); await q.waitForURL(/\/merchant/, { timeout: 30000 });
   await p.goto(CM + "/account/seguranca", { waitUntil: "networkidle" });
   await conferirTela(p, "seguranca-lojista");
-  if (/Verificação em duas etapas/.test(await texto(p))) throw new Error("lojista não deveria ver as duas etapas na W0");
+  if (!/Verificação em duas etapas/.test(await texto(p))) throw new Error("lojista deveria poder ligar as duas etapas (W6a, D188)");
   await p.getByRole("button", { name: "Sair dos outros aparelhos" }).click();
   await p.waitForFunction(() => document.body.innerText.includes("desconectados"), null, { timeout: 15000 });
   await q.goto(CM + "/merchant", { waitUntil: "networkidle" });

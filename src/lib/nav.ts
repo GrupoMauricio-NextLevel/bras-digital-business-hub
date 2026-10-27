@@ -235,6 +235,8 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
   { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Gestão" },
   { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: "Gestão", bottom: true },
+  { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Gestão" },
+  { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Gestão" },
   { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Configurações" },
   { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Configurações" },
   { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Configurações" },
