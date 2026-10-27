@@ -12,6 +12,8 @@ import { cancelOrderBySystem, createOrder, expireStaleReservations, type CreateO
 import { MercadoPagoError } from "@/lib/payments/mercadopago";
 import { iniciarPagamentoDaLoja } from "@/lib/payments/checkout-loja";
 import { origemDoPedido } from "@/lib/domain/visitas";
+import { marcarCarrinhoRecuperado, sairDosLembretes, salvarCarrinho } from "@/lib/domain/carrinho-abandonado";
+import { rateLimit } from "@/lib/rate-limit";
 import { syncOrderPayment } from "@/lib/payments/service";
 import { decryptSecret } from "@/lib/security/crypto";
 import { quoteShipping, resolveShipping, type QuoteItem } from "@/lib/shipping/quote";
@@ -51,7 +53,11 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
     const { shippingServiceId, origem, ...rest } = rawInput;
     // Origem da venda (D185): aparelho pelo navegador e campanha guardada na chegada; nada pessoal.
     const ua = (await headers()).get("user-agent");
-    const marcarOrigem = (orderId: string) => db.update(orders).set(origemDoPedido(ua, origem)).where(eq(orders.id, orderId));
+    // O pedido saiu: origem da venda (D185) e o carrinho guardado deste e-mail deixa de receber lembrete (D186).
+    const marcarOrigem = async (orderId: string) => {
+      await db.update(orders).set(origemDoPedido(ua, origem)).where(eq(orders.id, orderId));
+      await marcarCarrinhoRecuperado(db, store.id, rest.customer.email, orderId);
+    };
     if (!shippingServiceId) throw new DomainError("SHIPPING_REQUIRED", "Escolha a forma de entrega.");
     // O frete vem de uma cotação nova feita aqui; o valor enviado pelo navegador é descartado.
     const pick = await resolveShipping(db, { storeId: store.id, toZip: rest.shipping?.zip ?? "", serviceId: shippingServiceId, items: rest.items.map((i) => ({ productId: i.productId, variantId: i.variantId, packId: i.packId, quantity: i.quantity })) });
@@ -157,4 +163,23 @@ export async function claimWelcomeCouponAction(slug: string, input: { email: str
     const { claimWelcomeCoupon } = await import("@/lib/domain/welcome-coupon");
     return claimWelcomeCoupon(db, store.id, code, input as { email: string; consent: true });
   });
+}
+
+// ---------------------------------------------------------------------------
+// Carrinho abandonado (W3, D186)
+// ---------------------------------------------------------------------------
+/** O cliente marcou "pode me lembrar" no checkout: guarda o carrinho (sem preço). Nunca falha para o cliente. */
+export async function salvarCarrinhoAction(slug: string, input: { email: string; name?: string; consent: boolean; items: { productId: string; variantId?: string; packId?: string; quantity: number }[] }) {
+  try {
+    if (!rateLimit(`carrinho:${(await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0"}`, 30, 60 * 60_000)) return { salvo: false };
+    const db = await getDb();
+    const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug), columns: { id: true, publishedAt: true } });
+    if (!store?.publishedAt) return { salvo: false };
+    return await salvarCarrinho(db, store.id, input);
+  } catch { return { salvo: false }; }
+}
+
+export async function sairDosLembretesAction(token: string) {
+  try { await sairDosLembretes(await getDb(), token); } catch { /* resposta igual sempre */ }
+  return { ok: true };
 }

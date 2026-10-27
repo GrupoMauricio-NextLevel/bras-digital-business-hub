@@ -505,6 +505,20 @@
       "when": 1793127870978,
       "tag": "0071_w2_medir_a_loja",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1793129482580,
+      "tag": "0072_w3_carrinho_abandonado",
+      "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1793129794773,
+      "tag": "0073_w3_compre_junto",
+      "breakpoints": true
     }
   ]
 }

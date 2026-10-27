@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { escolherRelacionados } from "@/lib/domain/venda-junto";
 import { SectionList } from "@/components/storefront/sections";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, idsBySkus, toPublicProduct } from "@/lib/queries/storefront";
@@ -35,7 +36,9 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   if (page === "product") {
     product = all.find((p) => p.slug === productSlug);
     if (!product) notFound();
-    related = all.filter((p) => p.id !== product!.id && p.categoryId === product!.categoryId).slice(0, 8);
+    // "Compre junto" (D186): os relacionados escolhidos pela loja primeiro, depois os da mesma categoria.
+    const escolhidos = catalog.find((c) => c.product.id === product!.id)?.storeProduct.relatedIds ?? [];
+    related = escolherRelacionados(all, product, escolhidos, 8);
   }
   if (page === "collection") {
     const cat = sf.categories.find((c) => c.slug === query?.category); categoryId = cat?.id ?? null;

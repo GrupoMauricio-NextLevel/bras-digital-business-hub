@@ -92,6 +92,7 @@ export async function gravarPrevisaoDeEntrega(db: Database, orderId: string, ago
   const o = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
   if (!o || o.expectedDeliveryAt || o.customerPaymentStatus !== "PAID") return;
   if ((await storeModality(db, o.storeId)) !== "INDEPENDENT") return;
-  const p = previsaoDeEntrega(agora, o.shippingDays);
+  const producao = await (await import("./venda-junto")).diasDeProducaoDoPedido(db, o.storeId, o.id);
+  const p = previsaoDeEntrega(agora, o.shippingDays, producao);
   if (p) await db.update(orders).set({ expectedDeliveryAt: p.toISOString() }).where(eq(orders.id, o.id));
 }

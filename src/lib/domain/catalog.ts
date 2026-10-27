@@ -51,7 +51,7 @@ export async function listStoreCatalog(db: Database, storeId: string, opts: { on
       .leftJoin(storeProducts, and(eq(storeProducts.productId, products.id), eq(storeProducts.storeId, storeId)))
       .where(accessible)
       .orderBy(products.name);
-    return hydrate(db, rows.map((r) => ({ product: r.product, storeProduct: r.storeProduct ?? { storeId, productId: r.product.id, priceCents: r.product.suggestedPriceCents, packPriceCents: null, active: false, featured: false } })));
+    return hydrate(db, rows.map((r) => ({ product: r.product, storeProduct: r.storeProduct ?? { storeId, productId: r.product.id, priceCents: r.product.suggestedPriceCents, packPriceCents: null, active: false, featured: false, relatedIds: [], productionDays: 0 } })));
   }
 
   const rows = await db

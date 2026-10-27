@@ -271,6 +271,10 @@ export const storeProducts = pgTable("store_products", {
   packPriceCents: integer("pack_price_cents"),
   active: boolean("active").notNull().default(true),
   featured: boolean("featured").notNull().default(false),
+  /** "Compre junto" (W3, D186): até 4 produtos que a loja escolheu para mostrar junto deste (vazio = mesma categoria). */
+  relatedIds: jsonb("related_ids").$type<string[]>().notNull().default([]),
+  /** Dias de produção somados à previsão de entrega (W3, D186): peça feita sob encomenda, bordado, personalização. */
+  productionDays: integer("production_days").notNull().default(0),
 }, (t) => [primaryKey({ columns: [t.storeId, t.productId] })]);
 
 // ---------------------------------------------------------------------------
@@ -426,6 +430,25 @@ export const storeVisitsDaily = pgTable("store_visits_daily", {
   device: text("device").notNull().default("DESKTOP"),
   views: integer("views").notNull().default(0),
 }, (t) => [primaryKey({ columns: [t.storeId, t.day, t.productId, t.source, t.device] })]);
+
+/**
+ * Carrinho abandonado (W3, D186): só com o consentimento do cliente no checkout. Guarda o que estava no carrinho (sem
+ * preço: ao voltar, vale o preço atual), os dois lembretes por e-mail e se virou pedido. Um carrinho aberto por e-mail e loja.
+ */
+export const abandonedCarts = pgTable("abandoned_carts", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  email: text("email").notNull(),
+  name: text("name"),
+  items: jsonb("items").$type<{ productId: string; variantId?: string; packId?: string; quantity: number }[]>().notNull().default([]),
+  token: text("token").notNull().unique(),
+  remindedAt1: ts("reminded_at_1"),
+  remindedAt2: ts("reminded_at_2"),
+  recoveredOrderId: text("recovered_order_id"),
+  optedOutAt: ts("opted_out_at"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("abandoned_carts_store_idx").on(t.storeId, t.email)]);
 
 export const orderEvents = pgTable("order_events", {
   id: id(),

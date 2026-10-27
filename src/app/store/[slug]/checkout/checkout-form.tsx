@@ -7,7 +7,7 @@ import { Lock, CreditCard, QrCode } from "lucide-react";
 import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
-import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction } from "@/app/actions/storefront";
+import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction, salvarCarrinhoAction } from "@/app/actions/storefront";
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
 import { MAX_PARCELAS_LOJA } from "@/lib/pagamento-loja";
@@ -23,10 +23,16 @@ function fingerprint(text: string): string {
 }
 
 /** `aceitaCartao`: loja da E-commerce (Pix e cartão parcelado, D178); sem ele, só Pix (SuperDrop). */
-export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao = false }: { slug: string; storeName: string; minOrderCents?: number; aceitaCartao?: boolean }) {
+export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao = false, lembrete = false }: { slug: string; storeName: string; minOrderCents?: number; aceitaCartao?: boolean; lembrete?: boolean }) {
   const cart = useCart();
   const router = useRouter();
   const [f, setF] = React.useState({ name: "", email: "", phone: "", zip: "", address: "", city: "", state: "SP", marketingOptIn: false });
+  // Carrinho abandonado (D186): só com o "sim" do cliente; guarda o carrinho quando o e-mail está preenchido.
+  const [lembrar, setLembrar] = React.useState(false);
+  const guardar = (sim: boolean, email: string) => {
+    if (!lembrete || !sim || !/^\S+@\S+\.\S+$/.test(email) || !cart.lines.length) return;
+    void salvarCarrinhoAction(slug, { email, name: f.name || undefined, consent: true, items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })) });
+  };
   const [payment, setPayment] = React.useState<"pix" | "card">("pix");
   const [pending, start] = React.useTransition();
   // Uma chave por tentativa de compra: reenviar a mesma compra devolve o mesmo pedido. Muda se o carrinho mudar.
@@ -100,7 +106,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
             <h2 className="mb-3 text-base font-semibold">1. Seus dados</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               <input className={input} placeholder="Nome completo" aria-label="Nome completo" autoComplete="name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
-              <input className={input} type="email" placeholder="E-mail" aria-label="E-mail" autoComplete="email" required value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
+              <input className={input} type="email" placeholder="E-mail" aria-label="E-mail" autoComplete="email" required value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} onBlur={() => guardar(lembrar, f.email)} />
               <input className={input} placeholder="WhatsApp" aria-label="WhatsApp" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />
             </div>
           </section>
@@ -135,6 +141,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
                 <button type="button" role="radio" aria-checked={payment === k} key={k} onClick={() => setPayment(k)} className={cn("flex items-center gap-3 rounded-lg border p-4 text-left", payment === k ? "border-neutral-900 ring-1 ring-neutral-900" : "border-neutral-300")}><Icon className="size-5 text-neutral-500" /><div><div className="text-sm font-medium">{t}</div><div className="text-xs text-neutral-500">{d}</div></div></button>
               ))}
             </div>
+            {lembrete ? <label className="mt-4 flex items-start gap-2 text-xs text-neutral-600"><input type="checkbox" className="mt-0.5" checked={lembrar} onChange={(e) => { setLembrar(e.target.checked); guardar(e.target.checked, f.email); }} /> Se eu não terminar a compra, pode me lembrar por e-mail (no máximo 2 vezes). Dá para cancelar pelo próprio e-mail.</label> : null}
             <label className="mt-4 flex items-start gap-2 text-xs text-neutral-600"><input type="checkbox" className="mt-0.5" checked={f.marketingOptIn} onChange={(e) => setF({ ...f, marketingOptIn: e.target.checked })} /> Aceito receber novidades e promoções da {storeName} por WhatsApp. Você pode revogar quando quiser.</label>
           </section>
         </div>

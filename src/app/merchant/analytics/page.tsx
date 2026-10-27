@@ -15,6 +15,7 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { computeStoreAnalytics } from "@/lib/domain/analytics";
 import { formatBRL } from "@/lib/money";
 import { conversao, resumoDeVisitas, vendasPorOrigem } from "@/lib/domain/visitas";
+import { resumoCarrinhos } from "@/lib/domain/carrinho-abandonado";
 import { Eye } from "lucide-react";
 
 export default async function AnalyticsPage() {
@@ -40,7 +41,8 @@ async function AnalyticsBody({ storeId, allowed }: { storeId: string; allowed: b
   const v = await resumoDeVisitas(db, storeId, 30);
   const origem = vendasPorOrigem(rows, 30);
   const conv = conversao(origem.pagos, v.total);
-  const blocoVisitas = <VisitasDaLoja v={v} conv={conv} origem={origem} />;
+  const carrinhos = await resumoCarrinhos(db, storeId, 30);
+  const blocoVisitas = <><VisitasDaLoja v={v} conv={conv} origem={origem} />{carrinhos.guardados ? <CarrinhosAbandonados c={carrinhos} /> : null}</>;
   if (a.orders === 0 && a.previousSalesCents === 0) return <div className="space-y-8">{blocoVisitas}<EmptyState icon={BarChart3} title="Ainda não há vendas para analisar" description="Assim que os primeiros pedidos entrarem, os gráficos aparecem aqui." /></div>;
   const change = a.changePercent === null ? "Sem período anterior" : `${a.changePercent >= 0 ? "+" : ""}${a.changePercent}% vs. 30 dias antes`;
   return (
@@ -113,6 +115,20 @@ function VisitasDaLoja({ v, conv, origem }: { v: Awaited<ReturnType<typeof resum
         {lista("Vendas por aparelho", origem.aparelho.map((o) => ({ nome: o.nome, valor: `${o.pedidos} · ${formatBRL(o.vendasCents)}` })), "Sem vendas pagas no período.")}
       </div>
       <p className="text-xs text-muted-foreground">Visitas são páginas abertas na loja publicada (robôs e o editor de tema não contam). Para usar uma campanha, divulgue o link com ?utm_source=nome (por exemplo, ?utm_source=instagram). Baixe tudo em planilha na tela de clientes.</p>
+    </section>
+  );
+}
+
+/** Carrinhos abandonados (D186): guardados com o "sim" do cliente, lembrados por e-mail e os que voltaram como venda paga. */
+function CarrinhosAbandonados({ c }: { c: Awaited<ReturnType<typeof resumoCarrinhos>> }) {
+  return (
+    <section aria-labelledby="carrinhos-t" className="space-y-3">
+      <h2 id="carrinhos-t" className="text-lg font-semibold">Carrinhos abandonados · 30 dias</h2>
+      <MetricGrid>
+        <MetricCard label="Guardados" value={c.guardados} hint="clientes que aceitaram o lembrete" />
+        <MetricCard label="Lembrados por e-mail" value={c.lembrados} />
+        <MetricCard label="Voltaram e pagaram" value={c.voltaram} hint={c.voltaram ? `${formatBRL(c.valorCents)} em vendas` : "ainda nenhum"} />
+      </MetricGrid>
     </section>
   );
 }

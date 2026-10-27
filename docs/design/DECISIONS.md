@@ -1787,3 +1787,23 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **SuperDrop:** as lojas de rede também passam a contar visitas e a ver o bloco na análise (só leitura; nada muda no pedido nem na cobrança).
 - **Banco:** migração `0071_w2_medir_a_loja`: a tabela `store_visits_daily` e 4 colunas em `orders`.
 - **Testes:** `tests/w2-medir-a-loja.test.ts` (robô, aparelho, origem, soma, resumo, outra loja não vê, conversão, vendas por origem, planilha) e `e2e/w2-medir-a-loja.mjs` (visitante pela campanha, robô não conta, análise com axe e 360 px).
+
+## D186 — [E-commerce] W3 Recuperar e vender mais: carrinho abandonado por e-mail, compre junto e prazo de produção (2026-10-27)
+- **Carrinho abandonado** (`src/lib/domain/carrinho-abandonado.ts`, tabela `abandoned_carts`):
+  - no checkout da loja independente aparece a caixinha **"Se eu não terminar a compra, pode me lembrar por e-mail (no máximo 2 vezes)"**, que vem desmarcada. Só com ela marcada e o e-mail preenchido o carrinho é guardado, sem preço;
+  - um carrinho aberto por e-mail e loja;
+  - lembretes **1 h e 24 h** depois da última mexida, pela rotina de 5 a 10 minutos (`/api/cron/expire-reservations`, etapa "carrinhos"). Cada envio é único (`carrinho:{id}:{1|2}`);
+  - os lembretes param quando o cliente compra (o checkout marca o carrinho como recuperado), quando sai da lista (link no e-mail, com um clique de confirmação para leitores de link não descadastrarem ninguém) ou depois do 2º;
+  - o link **"Voltar ao carrinho"** refaz o carrinho com o **preço e o estoque de agora**. O que acabou fica de fora; a quantidade é limitada ao estoque;
+  - o e-mail não tem desconto nem promessa;
+  - a **análise** mostra os carrinhos guardados, lembrados e os que voltaram e pagaram (com o valor);
+  - só e-mail (decisão 3 de D182). O SuperDrop não guarda nem lembra (teste).
+- **Compre junto:** em cada produto da loja independente, a caixa "Compre junto e prazo de produção" escolhe até 4 produtos da própria loja (`store_products.related_ids`). A seção "Produtos relacionados" da página do produto mostra os escolhidos primeiro e completa com os da mesma categoria, como antes. Fica fora do editor de produto compartilhado com o fornecedor do SuperDrop.
+- **Prazo de produção** (`store_products.production_days`, 0 a 60): somado ao prazo do frete na previsão de entrega (D184), pelo item mais demorado do pedido.
+- **Ficou para a próxima rodada, com motivo:**
+  - **vender sem estoque (encomenda):** mexe na reserva e na baixa do estoque, que o SuperDrop também usa;
+  - **personalização (nome e número)** e **embalagem para presente:** mexem no cálculo do preço do pedido e na cobrança do Mercado Pago;
+  - os três pedem uma rodada própria com testes de preço e estoque;
+  - o **desconto automático do "compre junto"** também fica para depois (usa o motor de descontos).
+- **Banco:** migrações `0072_w3_carrinho_abandonado` (tabela) e `0073_w3_compre_junto` (2 colunas em `store_products`).
+- **Testes:** `tests/w3-vender-mais.test.ts` (consentimento, loja de rede, um carrinho por e-mail, 1 h e 24 h, para ao comprar, sair da lista, preço de agora, resumo; compre junto da própria loja, no máximo 4, ordem na página; prazo de produção na previsão).

@@ -153,3 +153,13 @@ export async function ajustarEnderecoAction(orderId: string, endereco: { address
     return undefined;
   });
 }
+
+/** "Compre junto" e dias de produção do produto (W3, D186). */
+export async function salvarVendaJuntoAction(productId: string, input: { relatedIds: string[]; productionDays: number }) {
+  return runAction(async () => {
+    const s = await actor();
+    await (await import("@/lib/domain/venda-junto")).salvarVendaJunto(await getDb(), s.actor, productId, input);
+    revalidatePath(`/merchant/catalogo/${productId}`);
+    return undefined;
+  });
+}

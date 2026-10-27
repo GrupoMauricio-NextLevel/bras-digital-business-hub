@@ -311,7 +311,7 @@ FECHAMENTO DE CADA ONDA (obrigatório)
 | W0 Confiança | **Feita** (2026-10-27); o dia de vencimento ficou para depois (precisa de regra de cobrança proporcional, ver D183) | D183 |
 | W1 Pedido na mesa | **Feita** (2026-10-27); o link cobra os produtos, o frete é combinado | D184 |
 | W2 Medir a loja | **Feita** (2026-10-27); "visitas hoje" no pulso fica para depois | D185 |
-| W3 Recuperar e vender mais | **Próxima** | — |
-| W4 Migrar sem medo | A fazer | — |
+| W3 Recuperar e vender mais | **Feita em parte** (2026-10-27): carrinho abandonado, compre junto e prazo de produção; encomenda, personalização, presente e desconto do compre junto ficam para uma rodada própria | D186 |
+| W4 Migrar sem medo | **Próxima** | — |
 | W5 Módulos e ferramentas | A fazer | — |
 | W6a a W6e | A fazer, uma por vez | — |
