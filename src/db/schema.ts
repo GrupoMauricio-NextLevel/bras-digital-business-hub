@@ -391,6 +391,11 @@ export const orders = pgTable("orders", {
   printedAt: ts("printed_at"),
   fraudFlag: text("fraud_flag"),
   expectedDeliveryAt: ts("expected_delivery_at"),
+  /** Origem da venda (W2, D185): aparelho e campanha (UTM) lidos no checkout da loja; sem dado pessoal. */
+  device: text("device", { enum: ["MOBILE", "DESKTOP", "TABLET"] }),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("orders_store_idx").on(t.storeId), index("orders_supplier_idx").on(t.supplierId), uniqueIndex("orders_store_number").on(t.storeId, t.number), uniqueIndex("orders_store_idempotency").on(t.storeId, t.idempotencyKey)]);
@@ -408,6 +413,19 @@ export const orderItems = pgTable("order_items", {
   unitCostCents: integer("unit_cost_cents").notNull(),
   lineTotalCents: integer("line_total_cents").notNull(),
 }, (t) => [index("order_items_order_idx").on(t.orderId)]);
+
+/**
+ * Visitas da loja por dia (W2, D185): contagem agregada, sem cookie, sem IP e sem dado pessoal. Uma linha por loja, dia
+ * (fuso de Brasília), página de produto (vazio = outras páginas), origem e aparelho; robôs e prévias do editor não contam.
+ */
+export const storeVisitsDaily = pgTable("store_visits_daily", {
+  storeId: text("store_id").notNull().references(() => stores.id),
+  day: text("day").notNull(),
+  productId: text("product_id").notNull().default(""),
+  source: text("source").notNull().default("direto"),
+  device: text("device").notNull().default("DESKTOP"),
+  views: integer("views").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.storeId, t.day, t.productId, t.source, t.device] })]);
 
 export const orderEvents = pgTable("order_events", {
   id: id(),

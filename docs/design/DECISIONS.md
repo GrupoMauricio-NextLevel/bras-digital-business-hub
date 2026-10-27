@@ -1768,3 +1768,22 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **SuperDrop não muda (com teste):** a loja de rede não ganha estrela, passo na linha, atalhos nem suspeita. As ações recusam ("quem avança é a Central") e a previsão não é gravada.
 - **Banco:** migração `0070_w1_pedido_na_mesa` em `orders`: `starred`, `printed_at`, `fraud_flag` e `expected_delivery_at`.
 - **Testes:** `tests/w1-pedido-na-mesa.test.ts` (10) e `e2e/w1-pedido-na-mesa.mjs` (E-commerce e SuperDrop, com axe e 360 px).
+
+## D185 — [E-commerce] W2 Medir a loja: visitas sem cookie, conversão, mais visitados e origem das vendas (2026-10-27)
+- **Visitas** (`src/lib/domain/visitas.ts`, tabela `store_visits_daily`):
+  - a loja publicada avisa cada página aberta por `sendBeacon` depois de carregar (`ContadorDeVisitas` no layout da loja), para `/api/v/[slug]`. A página nunca espera, e a rota sempre responde 204;
+  - **sem cookie, sem IP gravado e sem dado pessoal:** só a contagem por loja, dia (Brasília), produto, origem e aparelho;
+  - não contam: robôs (pelo navegador declarado), o editor de tema (página dentro de outra), a prévia e a vitrine de demonstração. Há limite de 120 avisos por minuto por endereço;
+  - por isso o painel mostra **"visitas"** (páginas abertas), nunca "visitantes únicos" (isso exigiria identificar a pessoa).
+- **Origem:** a campanha (`?utm_source=`) vem primeiro; senão, o site de onde a pessoa veio (Google, Instagram, Facebook, TikTok, WhatsApp…); senão, "direto". A campanha fica guardada na sessão do navegador do cliente e vai para o pedido no checkout. O pedido grava `device`, `utm_source`, `utm_medium` e `utm_campaign`.
+- **Análise de vendas** ganha "Visitas da loja", que aparece mesmo antes da primeira venda:
+  - visitas em 30 dias e hoje;
+  - **conversão** (pedidos pagos ÷ visitas; "—" sem visitas, sem inventar número);
+  - visitas por dia, **produtos mais visitados** e de onde vêm as visitas (origem e aparelho);
+  - **vendas por origem e por aparelho**;
+  - a explicação de como usar `?utm_source=` num link de campanha.
+- **Planilha (anti-duplicação):** a exportação de pedidos já existia (`/api/store/export/pedidos`, em `privacy.ts`). Ganhou no fim as colunas origem, aparelho, rastreio, cidade e UF, sem mudar as anteriores. A cópia que tinha começado foi apagada.
+- **Fica para depois:** "visitas hoje" no pulso da primeira tela (mexe na regra pura do pulso, que tem teste próprio). Por ora fica na análise.
+- **SuperDrop:** as lojas de rede também passam a contar visitas e a ver o bloco na análise (só leitura; nada muda no pedido nem na cobrança).
+- **Banco:** migração `0071_w2_medir_a_loja`: a tabela `store_visits_daily` e 4 colunas em `orders`.
+- **Testes:** `tests/w2-medir-a-loja.test.ts` (robô, aparelho, origem, soma, resumo, outra loja não vê, conversão, vendas por origem, planilha) e `e2e/w2-medir-a-loja.mjs` (visitante pela campanha, robô não conta, análise com axe e 360 px).

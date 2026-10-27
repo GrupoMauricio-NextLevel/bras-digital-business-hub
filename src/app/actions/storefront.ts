@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { orders, stores } from "@/db/schema";
@@ -10,6 +11,7 @@ import { recordError } from "@/lib/domain/error-log";
 import { cancelOrderBySystem, createOrder, expireStaleReservations, type CreateOrderInput } from "@/lib/domain/orders";
 import { MercadoPagoError } from "@/lib/payments/mercadopago";
 import { iniciarPagamentoDaLoja } from "@/lib/payments/checkout-loja";
+import { origemDoPedido } from "@/lib/domain/visitas";
 import { syncOrderPayment } from "@/lib/payments/service";
 import { decryptSecret } from "@/lib/security/crypto";
 import { quoteShipping, resolveShipping, type QuoteItem } from "@/lib/shipping/quote";
@@ -36,7 +38,7 @@ export async function quoteShippingAction(slug: string, input: { zip: string; it
   });
 }
 
-export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<CreateOrderInput, "storeId" | "channel" | "customerPaymentStatus"> & { shippingServiceId?: string }) {
+export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<CreateOrderInput, "storeId" | "channel" | "customerPaymentStatus"> & { shippingServiceId?: string; origem?: { source?: string; medium?: string; campaign?: string } }) {
   return runAction(async (): Promise<PlacedOrder> => {
     const db = await getDb();
     await expireStaleReservations(db);
@@ -46,7 +48,10 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
       const s = await getSession();
       if (!s || (s.store?.id !== store.id && s.user.role !== "NEXTLEVEL_MASTER")) throw new DomainError("STORE_UNPUBLISHED", "Esta loja ainda não está publicada.");
     }
-    const { shippingServiceId, ...rest } = rawInput;
+    const { shippingServiceId, origem, ...rest } = rawInput;
+    // Origem da venda (D185): aparelho pelo navegador e campanha guardada na chegada; nada pessoal.
+    const ua = (await headers()).get("user-agent");
+    const marcarOrigem = (orderId: string) => db.update(orders).set(origemDoPedido(ua, origem)).where(eq(orders.id, orderId));
     if (!shippingServiceId) throw new DomainError("SHIPPING_REQUIRED", "Escolha a forma de entrega.");
     // O frete vem de uma cotação nova feita aqui; o valor enviado pelo navegador é descartado.
     const pick = await resolveShipping(db, { storeId: store.id, toZip: rest.shipping?.zip ?? "", serviceId: shippingServiceId, items: rest.items.map((i) => ({ productId: i.productId, variantId: i.variantId, packId: i.packId, quantity: i.quantity })) });
@@ -63,17 +68,20 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
     if (!token) {
       if (isDemoMode()) {
         const r = await createOrder(db, { ...base, customerPaymentStatus: "PAID" }, { paymentProvider: "DEMO" });
+      await marcarOrigem(r.orderId);
         const again = await replayed(r); if (again) return again;
         revalidateAll(slug);
         return { orderId: r.orderId, number: r.number, checkoutUrl: null, mode: "DEMO" };
       }
       const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MANUAL", reservationMinutes: RESERVATION_MINUTES_MANUAL });
+      await marcarOrigem(r.orderId);
       const again = await replayed(r); if (again) return again;
       revalidateAll(slug);
       return { orderId: r.orderId, number: r.number, checkoutUrl: null, mode: "MANUAL" };
     }
 
     const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MERCADO_PAGO", reservationMinutes: RESERVATION_MINUTES_ONLINE });
+    await marcarOrigem(r.orderId);
     const again = await replayed(r); if (again) return again;
     try {
       const checkoutUrl = await iniciarPagamentoDaLoja(db, store, r.orderId, RESERVATION_MINUTES_ONLINE);

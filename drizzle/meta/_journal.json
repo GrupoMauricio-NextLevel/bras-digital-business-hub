@@ -498,6 +498,13 @@
       "when": 1793125519160,
       "tag": "0070_w1_pedido_na_mesa",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1793127870978,
+      "tag": "0071_w2_medir_a_loja",
+      "breakpoints": true
     }
   ]
 }

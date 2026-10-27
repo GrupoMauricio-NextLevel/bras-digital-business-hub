@@ -26,7 +26,8 @@ export async function exportStoreCsv(db: Database, actor: Actor, kind: "orders" 
   let csv: string;
   if (kind === "orders") {
     const rows = await db.select().from(orders).where(eq(orders.storeId, storeId));
-    csv = toCsv(["numero", "data", "status", "pagamento", "cliente", "email", "telefone", "total_centavos"], rows.map((o) => [String(o.number), o.createdAt, o.status, o.customerPaymentStatus, o.customerName, o.customerEmail, o.customerPhone ?? "", String(o.totalCents)]));
+    // Colunas novas no fim (D185), para não quebrar quem já usa a planilha: origem da venda, aparelho, rastreio e cidade.
+    csv = toCsv(["numero", "data", "status", "pagamento", "cliente", "email", "telefone", "total_centavos", "origem", "aparelho", "rastreio", "cidade", "uf"], rows.map((o) => [String(o.number), o.createdAt, o.status, o.customerPaymentStatus, o.customerName, o.customerEmail, o.customerPhone ?? "", String(o.totalCents), o.utmSource ?? "", o.device ?? "", o.shippingLabelCode ?? "", o.shippingCity ?? "", o.shippingState ?? ""]));
   } else if (kind === "products") {
     const rows = await db.select({ name: products.name, sku: products.sku, price: storeProducts.priceCents, active: storeProducts.active }).from(storeProducts).innerJoin(products, eq(products.id, storeProducts.productId)).where(eq(storeProducts.storeId, storeId));
     csv = toCsv(["nome", "sku", "preco_centavos", "ativo"], rows.map((p) => [p.name, p.sku, String(p.price), p.active ? "sim" : "nao"]));

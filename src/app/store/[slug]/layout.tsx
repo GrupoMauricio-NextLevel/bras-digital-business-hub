@@ -16,6 +16,7 @@ import { SectionList } from "@/components/storefront/sections";
 import { PreviewBridge } from "@/components/storefront/preview-bridge";
 import { exitThemePreviewAction, exitTryThemeAction } from "@/app/actions/theme";
 import { CartProvider } from "@/components/storefront/cart-context";
+import { ContadorDeVisitas } from "@/components/storefront/contador-de-visitas";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
@@ -90,6 +91,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
       ) : null}
       {!previewing && !showcase ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(orgLd) }} /> : null}
       {preview ? <PreviewBridge /> : null}
+      {/* Visitas da loja (D185): nem a prévia do editor nem a vitrine de demonstração contam. */}
+      {!previewing && !preview && !showcase ? <ContadorDeVisitas slug={slug} /> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />
         <main className="flex-1">{children}</main>

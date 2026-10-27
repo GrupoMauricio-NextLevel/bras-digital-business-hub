@@ -28,8 +28,10 @@ async function passo(p, nome, fn) {
 }
 const texto = (p) => p.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
 async function conferirTela(p, rotulo) {
+  // Avisos (toast) em animação ou empilhados atrás têm opacidade parcial: o axe confere o aviso já assentado, na frente.
+  await p.waitForTimeout(1200);
   await p.evaluate(axeSource);
-  const v = await p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] } })).violations.filter((x) => ["serious", "critical"].includes(x.impact)).map((x) => x.id));
+  const v = await p.evaluate(async () => (await window.axe.run({ exclude: [["[data-sonner-toast][data-front='false']"]] }, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] } })).violations.filter((x) => ["serious", "critical"].includes(x.impact)).map((x) => x.id));
   if (v.length) throw new Error(`${rotulo}: axe ${v.join(", ")}`);
   await p.setViewportSize({ width: 360, height: 800 });
   const sobra = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

@@ -11,6 +11,7 @@ import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction 
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
 import { MAX_PARCELAS_LOJA } from "@/lib/pagamento-loja";
+import { utmGuardada } from "@/components/storefront/contador-de-visitas";
 
 const input = "h-11 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-neutral-900";
 
@@ -79,6 +80,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
         items: cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, packId: l.packId, quantity: l.quantity })),
         saleType: cart.lines.some((l) => l.packId) ? "WHOLESALE" : "RETAIL",
         discountCode: applied?.code,
+        origem: utmGuardada(),
         idempotencyKey: `${attemptId}:${fingerprint(cart.lines.map((l) => `${l.productId}.${l.variantId}.${l.packId ?? ""}.${l.quantity}`).join("|"))}`,
         notes: payment === "card" && aceitaCartao ? "Preferência de pagamento: Cartão" : "Preferência de pagamento: Pix",
       });
