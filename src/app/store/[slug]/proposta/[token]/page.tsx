@@ -22,12 +22,12 @@ export default async function ProposalPage({ params }: { params: Promise<{ slug:
           {p.items.map((it, i) => <li key={i} className="flex justify-between gap-3 py-2.5"><span>{it.quantity}× {it.label}</span><span className="tabular-nums">{formatBRL(it.unitPriceCents * it.quantity)}</span></li>)}
         </ul>
         <div className="mt-3 flex justify-between border-t border-neutral-200 pt-3 text-base font-semibold"><span>Produtos</span><span className="tabular-nums">{formatBRL(p.subtotalCents)}</span></div>
-        <p className="mt-2 text-xs text-neutral-500">Frete e forma de pagamento são combinados com a loja depois do aceite.</p>
+        <p className="mt-2 text-xs text-neutral-500">{data.pagaNoLink ? "Ao aceitar, você paga os produtos com Pix ou cartão pelo Mercado Pago. O frete, se houver, é combinado com a loja." : "Frete e forma de pagamento são combinados com a loja depois do aceite."}</p>
       </div>
-      {state === "OPEN" ? <AcceptButton token={token} slug={slug} /> : null}
+      {state === "OPEN" ? <AcceptButton token={token} slug={slug} pagar={data.pagaNoLink} /> : null}
       {state === "EXPIRED" ? <p className="mt-6 rounded-2xl bg-neutral-100 p-4 text-sm">Esta proposta expirou. Peça uma nova à loja.</p> : null}
       {state === "CANCELED" ? <p className="mt-6 rounded-2xl bg-neutral-100 p-4 text-sm">Esta proposta foi cancelada pela loja.</p> : null}
-      {state === "CONVERTED" ? <p className="mt-6 rounded-2xl bg-neutral-100 p-4 text-sm">Proposta aceita. A loja entrará em contato para combinar pagamento e entrega.</p> : null}
+      {state === "CONVERTED" ? <p className="mt-6 rounded-2xl bg-neutral-100 p-4 text-sm">{data.pagaNoLink ? "Proposta aceita. Para acompanhar o pagamento e a entrega, use o link do pedido." : "Proposta aceita. A loja entrará em contato para combinar pagamento e entrega."}</p> : null}
     </div>
   );
 }

@@ -1745,3 +1745,26 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Testes:**
   - `tests/w0-confianca.test.ts`: a taxa igual ao fechamento, frete e pedido não pago fora, permissões, SuperDrop igual; o anual; a versão da sessão; o vetor oficial do TOTP (RFC 6238), a recuperação de uso único e o bilhete;
   - `e2e/w0-confianca.mjs`: lojista e Master, com axe e 360 px.
+
+## D184 — [E-commerce] W1 Pedido na mesa: passo na linha, estrela, impresso, suspeita de fraude, endereço, previsão e link de pagamento (2026-10-27)
+- **Na lista de pedidos da loja independente** (`src/lib/domain/pedido-mesa.ts`, `pedido-mesa-regras.ts`, `src/components/shared/pedido-na-linha.tsx`):
+  - **estrela** para achar o pedido depois;
+  - marca **"impresso"**: abrir a folha de impressão ou imprimir pela gaveta marca a primeira vez;
+  - selo **"suspeita"**;
+  - botão do **próximo passo** na própria linha: iniciar separação, concluir separação, marcar como entregue. O envio continua pela janela que pede o rastreio (D180);
+  - atalhos "Com estrela", "Não impressos" e "Com suspeita". As abas com contador já existiam.
+- **Gaveta do pedido:**
+  - "Suspeita de fraude", com o motivo: **segura o envio** (`advanceOrder` recusa SHIPPED) até a loja retirar a marcação. Fica no histórico;
+  - a previsão de entrega;
+  - "Imprimir" marca impresso.
+- **Página do pedido:** "Ajustar endereço" antes do envio, com o antes e o depois no histórico. Depois de enviado, o endereço não muda.
+- **Previsão de entrega:** data do pagamento + prazo do frete, em dias úteis (fim de semana e feriados nacionais de data fixa ficam fora). É gravada quando o pedido fica pago (`gravarPrevisaoDeEntrega`) e aparece para o lojista e na página do pedido do cliente. Só na loja independente.
+- **Link de pagamento = propostas** (anti-duplicação):
+  - na E-commerce, "Propostas" passa a se chamar **"Links de pagamento"**, com "Copiar link" e "Enviar no WhatsApp";
+  - se a loja tem Mercado Pago, o cliente aceita e vai **direto pagar** (Pix ou cartão). A cobrança é criada por `iniciarPagamentoDaLoja` (`src/lib/payments/checkout-loja.ts`), que agora também serve o checkout da loja (o mesmo código, extraído). O pagamento só vale conferido na API;
+  - se a cobrança falhar, o pedido é cancelado pelo sistema (o estoque volta) e a proposta reabre;
+  - sem Mercado Pago, aparece o aviso para conectar (decisão 2 de D182) e o link vira pedido para combinar o pagamento, como antes;
+  - limite: o link cobra os **produtos**; o frete, se houver, é combinado (a proposta não tem frete).
+- **SuperDrop não muda (com teste):** a loja de rede não ganha estrela, passo na linha, atalhos nem suspeita. As ações recusam ("quem avança é a Central") e a previsão não é gravada.
+- **Banco:** migração `0070_w1_pedido_na_mesa` em `orders`: `starred`, `printed_at`, `fraud_flag` e `expected_delivery_at`.
+- **Testes:** `tests/w1-pedido-na-mesa.test.ts` (10) e `e2e/w1-pedido-na-mesa.mjs` (E-commerce e SuperDrop, com axe e 360 px).

@@ -27,6 +27,8 @@ export type TrackedOrder = {
   carrier: string | null; trackingCode: string | null; paid: boolean; totalCents: number;
   items: { name: string; label: string; quantity: number }[]; city: string; state: string;
   timeline: { at: string; title: string }[];
+  /** Previsão de entrega da loja independente (D184): só enquanto não foi entregue. */
+  expectedDeliveryAt: string | null;
 };
 
 const fold = (s: string) => s.trim().toLowerCase();
@@ -56,5 +58,6 @@ export async function toTracked(db: Database, order: Order): Promise<TrackedOrde
     carrier: order.status === "SHIPPED" || order.status === "DELIVERED" ? order.shippingCarrier : null, trackingCode: order.status === "SHIPPED" || order.status === "DELIVERED" ? order.shippingLabelCode : null,
     paid: order.customerPaymentStatus === "PAID", totalCents: order.totalCents,
     items: items.map((i) => ({ name: i.productName, label: i.label.split(" (")[0]!, quantity: i.quantity })), city: order.shippingCity ?? "", state: order.shippingState ?? "", timeline,
+    expectedDeliveryAt: order.status !== "DELIVERED" && order.status !== "CANCELED" ? order.expectedDeliveryAt : null,
   };
 }

@@ -5,7 +5,7 @@ import { orders, proposals, stores, type ProposalLine } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { DomainError, NotFoundError } from "./errors";
 import { listStoreCatalog } from "./catalog";
-import { createOrder, orderLineSchema } from "./orders";
+import { cancelOrderBySystem, createOrder, orderLineSchema } from "./orders";
 import { z } from "zod";
 import { unitPriceForQty } from "./price-tiers";
 
@@ -60,14 +60,14 @@ export async function getPublicProposal(db: Database, token: string, now = new D
   if (!p) return null;
   const store = await db.query.stores.findFirst({ where: eq(stores.id, p.storeId) });
   const expired = p.status === "OPEN" && new Date(p.expiresAt) <= now;
-  return { proposal: p, storeName: store?.name ?? "", storeSlug: store?.slug ?? "", state: p.status === "OPEN" ? (expired ? ("EXPIRED" as const) : ("OPEN" as const)) : p.status };
+  return { proposal: p, storeName: store?.name ?? "", storeSlug: store?.slug ?? "", pagaNoLink: !!store?.mpAccessTokenEnc, state: p.status === "OPEN" ? (expired ? ("EXPIRED" as const) : ("OPEN" as const)) : p.status };
 }
 
 /**
  * Cliente aceita a proposta: vira UM pedido. Idempotente (clique duplo, duas abas, retomada após erro):
  * a proposta é reservada com atualização condicional antes de criar o pedido e volta a ficar aberta se a criação falhar.
  */
-export async function acceptProposal(db: Database, token: string, now = new Date()): Promise<{ orderId: string; number: number; created: boolean }> {
+export async function acceptProposal(db: Database, token: string, now = new Date(), opts: { pagamento?: "MANUAL" | "MERCADO_PAGO" } = {}): Promise<{ orderId: string; number: number; created: boolean }> {
   const p = await db.query.proposals.findFirst({ where: eq(proposals.token, token) });
   if (!p) throw new NotFoundError("Proposta não encontrada.");
   if (p.status === "CANCELED") throw new DomainError("PROPOSAL_CANCELED", "Esta proposta foi cancelada pela loja.");
@@ -83,7 +83,7 @@ export async function acceptProposal(db: Database, token: string, now = new Date
     throw new DomainError("PROPOSAL_BUSY", "Esta proposta está sendo processada. Atualize a página em instantes.");
   }
   try {
-    const r = await createOrder(db, { storeId: p.storeId, channel: "MANUAL", customer: { name: p.customerName, email: p.customerEmail, phone: p.customerPhone ?? undefined, marketingOptIn: false }, items: p.items.map(({ productId, variantId, packId, quantity }) => ({ productId, variantId, packId, quantity })), customerPaymentStatus: "PENDING", notes: "Origem: proposta comercial" }, { paymentProvider: "MANUAL", reservationMinutes: 60 * 24 });
+    const r = await createOrder(db, { storeId: p.storeId, channel: "MANUAL", customer: { name: p.customerName, email: p.customerEmail, phone: p.customerPhone ?? undefined, marketingOptIn: false }, items: p.items.map(({ productId, variantId, packId, quantity }) => ({ productId, variantId, packId, quantity })), customerPaymentStatus: "PENDING", notes: "Origem: proposta comercial" }, { paymentProvider: opts.pagamento ?? "MANUAL", reservationMinutes: 60 * 24 });
     await db.update(proposals).set({ orderId: r.orderId }).where(eq(proposals.id, p.id));
     return { orderId: r.orderId, number: r.number, created: true };
   } catch (e) {
@@ -96,4 +96,13 @@ async function existing(db: Database, orderId: string | null) {
   const o = orderId ? await db.query.orders.findFirst({ where: eq(orders.id, orderId) }) : null;
   if (!o) throw new DomainError("PROPOSAL_BUSY", "Esta proposta está sendo processada. Atualize a página em instantes.");
   return { orderId: o.id, number: o.number, created: false };
+}
+
+/**
+ * Link de pagamento (D184): se a cobrança no Mercado Pago não pôde ser criada, o pedido é cancelado pelo sistema (o
+ * estoque volta) e a proposta reabre, para o cliente tentar de novo pelo mesmo link.
+ */
+export async function reabrirPropostaAposFalha(db: Database, token: string, orderId: string) {
+  await cancelOrderBySystem(db, orderId, "falha ao iniciar o pagamento do link");
+  await db.update(proposals).set({ status: "OPEN", orderId: null }).where(eq(proposals.token, token));
 }

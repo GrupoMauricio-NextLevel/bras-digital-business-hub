@@ -17,22 +17,29 @@ import { perfilAtual } from "@/lib/perfil-loja-server";
 
 const COMMERCE_TABS: OrderStatus[] = ["PENDING", "SHIPPED", "DELIVERED"];
 
-export default async function MerchantOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+export default async function MerchantOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; ver?: string }> }) {
   const session = await requireRole("STORE_OWNER");
-  const { status } = await searchParams;
+  const { status, ver } = await searchParams;
   const selectedStatus = ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined;
   const db = await getDb();
   const allRows = await listOrdersForActor(db, session.actor);
-  const rows = selectedStatus ? allRows.filter((row) => row.order.status === selectedStatus) : allRows;
   const perfil = await perfilAtual(session.store!.id);
   const { independente: independent, ecommerce: commerce } = perfil;
+  // Pedido na mesa (D184): na loja independente, atalhos para os marcados com estrela, os não impressos e os suspeitos.
+  const VER: Record<string, { rotulo: string; filtro: (o: (typeof allRows)[number]["order"]) => boolean }> = {
+    estrela: { rotulo: "Com estrela", filtro: (o) => o.starred },
+    "nao-impressos": { rotulo: "Não impressos", filtro: (o) => !o.printedAt && o.customerPaymentStatus === "PAID" && !["SHIPPED", "DELIVERED", "CANCELED"].includes(o.status) },
+    suspeita: { rotulo: "Com suspeita", filtro: (o) => !!o.fraudFlag },
+  };
+  const atalho = independent && ver ? VER[ver] : undefined;
+  const rows = allRows.filter((row) => (!selectedStatus || row.order.status === selectedStatus) && (!atalho || atalho.filtro(row.order)));
   const statuses = ORDER_STATUSES.filter((s) => !independent || s !== "AWAITING_CENTRAL_PAYMENT");
   const count = (value: OrderStatus) => allRows.filter((row) => row.order.status === value).length;
   const activeCount = allRows.filter((row) => !["DELIVERED", "CANCELED"].includes(row.order.status)).length;
   return (
     <>
       <PageHeader eyebrow={commerce ? "NextLevel E-commerce / Vendas" : "SuperDrop / Operação"} title="Pedidos" description="Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo."
-        actions={<>{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>Propostas</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>} />
+        actions={<>{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>{commerce ? "Links de pagamento" : "Propostas"}</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>} />
       <section className="ds-kpis mb-6" aria-label="Resumo dos pedidos">
         <MetricCard label="Ativos" value={activeCount} />
         {commerce ? <>
@@ -48,7 +55,15 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
       <Suspense><FilterBar>{commerce
         ? <FilterTabs param="status" primary={COMMERCE_TABS.filter((s) => statuses.includes(s)).map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s], count: count(s) }))} rest={statuses.filter((s) => !COMMERCE_TABS.includes(s)).map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} />
         : <FilterChips param="status" options={statuses.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s] }))} />}</FilterBar></Suspense>
-      <OrdersTable rows={rows} basePath="/merchant/orders" showStore={false} quickView showCentral={!independent} />
+      {independent ? (
+        <nav aria-label="Atalhos dos pedidos" className="mb-3 flex flex-wrap gap-2 text-sm">
+          {Object.entries(VER).map(([k, v]) => {
+            const n = allRows.filter((r) => v.filtro(r.order)).length;
+            return <Link key={k} href={ver === k ? "/merchant/orders" : `/merchant/orders?ver=${k}`} aria-current={ver === k ? "page" : undefined} className={`rounded-full border px-3 py-1 ${ver === k ? "border-foreground font-semibold" : "border-border"}`}>{v.rotulo} ({n})</Link>;
+          })}
+        </nav>
+      ) : null}
+      <OrdersTable rows={rows} basePath="/merchant/orders" showStore={false} quickView showCentral={!independent} mesa={independent ? { independente: true } : undefined} />
     </>
   );
 }

@@ -3,9 +3,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderStatusBadge, StatusBadge } from "@/components/app/status-badge";
 import { formatBRL } from "@/lib/money";
-import { formatDateTime } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/utils";
 import type { Order, OrderItem } from "@/db/schema";
 import { OrderActions } from "./order-actions";
+import { AjustarEndereco } from "./ajustar-endereco";
 import { OrderNoteForm } from "./order-note-form";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, CheckCircle2, Circle, Package, Printer, Truck, Wallet } from "lucide-react";
@@ -159,6 +160,8 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
                   <div>{order.shippingCity}/{order.shippingState} · {order.shippingZip}</div>
                 </div>
               ) : null}
+              {order.expectedDeliveryAt ? <div className="mt-2 text-body">Previsão de entrega: <strong>até {formatDate(order.expectedDeliveryAt)}</strong></div> : null}
+              {role === "STORE_OWNER" && independent && !["SHIPPED", "DELIVERED", "CANCELED"].includes(order.status) ? <AjustarEndereco orderId={order.id} atual={{ address: order.shippingAddress ?? "", city: order.shippingCity ?? "", state: order.shippingState ?? "", zip: order.shippingZip ?? "" }} /> : null}
               {order.notes ? <div className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">{order.notes}</div> : null}
             </CardContent>
           </Card>

@@ -2,18 +2,16 @@
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { orderItems, orders, stores } from "@/db/schema";
+import { orders, stores } from "@/db/schema";
 import { getSession, isDemoMode } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { DomainError, NotFoundError } from "@/lib/domain/errors";
 import { recordError } from "@/lib/domain/error-log";
 import { cancelOrderBySystem, createOrder, expireStaleReservations, type CreateOrderInput } from "@/lib/domain/orders";
-import { createPreference, MercadoPagoError } from "@/lib/payments/mercadopago";
+import { MercadoPagoError } from "@/lib/payments/mercadopago";
+import { iniciarPagamentoDaLoja } from "@/lib/payments/checkout-loja";
 import { syncOrderPayment } from "@/lib/payments/service";
 import { decryptSecret } from "@/lib/security/crypto";
-import { getBaseUrl, isPublicHttps } from "@/lib/base-url";
-import { parcelasDaLoja } from "@/lib/pagamento-loja";
-import { brandCodeOfStore } from "@/lib/store-brand";
 import { quoteShipping, resolveShipping, type QuoteItem } from "@/lib/shipping/quote";
 
 const RESERVATION_MINUTES_ONLINE = 30;
@@ -78,27 +76,9 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
     const r = await createOrder(db, { ...base, customerPaymentStatus: "PENDING" }, { paymentProvider: "MERCADO_PAGO", reservationMinutes: RESERVATION_MINUTES_ONLINE });
     const again = await replayed(r); if (again) return again;
     try {
-      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, r.orderId));
-      const placed = (await db.query.orders.findFirst({ where: eq(orders.id, r.orderId) }))!;
-      const url = await getBaseUrl();
-      const https = isPublicHttps(url);
-      const back = `${url}/store/${slug}/order/${r.orderId}`;
-      const pref = await createPreference(token, {
-        orderId: r.orderId, orderNumber: r.number, storeName: store.name,
-        // Com cupom, um único item com o valor líquido: o Mercado Pago cobra exatamente subtotal − desconto + frete.
-        items: placed.discountCents > 0
-          ? [{ id: placed.id, title: `Pedido #${r.number} (cupom ${placed.discountCode})`, quantity: 1, unitPriceCents: placed.subtotalCents - placed.discountCents }]
-          : items.map((i) => ({ id: i.id, title: `${i.productName} · ${i.label.split(" (")[0]}`, quantity: i.quantity, unitPriceCents: i.unitPriceCents })),
-        shippingCents: input.shipping?.costCents ?? 0,
-        payer: { name: input.customer.name, email: input.customer.email },
-        notificationUrl: https ? `${url}/api/webhooks/mercadopago?store=${slug}` : undefined,
-        backUrls: https ? { success: back, failure: back, pending: back } : undefined,
-        expiresAt: new Date(Date.now() + RESERVATION_MINUTES_ONLINE * 60_000),
-        maxParcelas: parcelasDaLoja(await brandCodeOfStore(db, store)),
-      });
-      await db.update(orders).set({ paymentReference: pref.id, paymentCheckoutUrl: pref.checkoutUrl }).where(eq(orders.id, r.orderId));
+      const checkoutUrl = await iniciarPagamentoDaLoja(db, store, r.orderId, RESERVATION_MINUTES_ONLINE);
       revalidateAll(slug);
-      return { orderId: r.orderId, number: r.number, checkoutUrl: pref.checkoutUrl, mode: "MERCADO_PAGO" };
+      return { orderId: r.orderId, number: r.number, checkoutUrl, mode: "MERCADO_PAGO" };
     } catch (e) {
       await cancelOrderBySystem(db, r.orderId, "falha ao iniciar o pagamento");
       if (e instanceof MercadoPagoError) {

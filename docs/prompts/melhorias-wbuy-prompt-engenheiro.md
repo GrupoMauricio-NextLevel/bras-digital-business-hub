@@ -309,8 +309,8 @@ FECHAMENTO DE CADA ONDA (obrigatório)
 | Onda | Estado | Decisão |
 |---|---|---|
 | W0 Confiança | **Feita** (2026-10-27); o dia de vencimento ficou para depois (precisa de regra de cobrança proporcional, ver D183) | D183 |
-| W1 Pedido na mesa | **Próxima** | — |
-| W2 Medir a loja | A fazer | — |
+| W1 Pedido na mesa | **Feita** (2026-10-27); o link cobra os produtos, o frete é combinado | D184 |
+| W2 Medir a loja | **Próxima** | — |
 | W3 Recuperar e vender mais | A fazer | — |
 | W4 Migrar sem medo | A fazer | — |
 | W5 Módulos e ferramentas | A fazer | — |

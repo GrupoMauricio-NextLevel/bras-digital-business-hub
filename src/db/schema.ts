@@ -386,6 +386,11 @@ export const orders = pgTable("orders", {
   totalCents: integer("total_cents").notNull(),
   costTotalCents: integer("cost_total_cents").notNull(),
   notes: text("notes"),
+  /** Pedido na mesa (W1, D184): estrela do lojista, quando foi impresso, suspeita de fraude (motivo; segura o envio) e previsão de entrega. */
+  starred: boolean("starred").notNull().default(false),
+  printedAt: ts("printed_at"),
+  fraudFlag: text("fraud_flag"),
+  expectedDeliveryAt: ts("expected_delivery_at"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("orders_store_idx").on(t.storeId), index("orders_supplier_idx").on(t.supplierId), uniqueIndex("orders_store_number").on(t.storeId, t.number), uniqueIndex("orders_store_idempotency").on(t.storeId, t.idempotencyKey)]);

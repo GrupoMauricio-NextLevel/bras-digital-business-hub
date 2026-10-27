@@ -1,7 +1,7 @@
 import { Check, PackageCheck, PackageOpen, ReceiptText, Truck, Wallet, type LucideIcon } from "lucide-react";
 import { JOURNEY, JOURNEY_LABEL, type JourneyStep, type TrackedOrder } from "@/lib/domain/tracking";
 import { cn } from "@/lib/utils";
-import { formatDateTime } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/utils";
 
 const ICON: Record<JourneyStep, LucideIcon> = { RECEIVED: ReceiptText, PAID: Wallet, PREPARING: PackageOpen, SHIPPED: Truck, DELIVERED: PackageCheck };
 
@@ -21,6 +21,7 @@ export function OrderJourney({ order }: { order: TrackedOrder }) {
           );
         })}
       </ol>
+      {order.expectedDeliveryAt ? <p className="mt-4 text-sm"><span className="text-neutral-500">Previsão de entrega: </span><b>até {formatDate(order.expectedDeliveryAt)}</b></p> : null}
       {order.trackingCode ? <p className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm"><span className="text-neutral-500">Código de rastreio{order.carrier ? ` (${order.carrier})` : ""}: </span><b className="select-all tabular-nums">{order.trackingCode}</b></p> : null}
       {order.timeline.length ? <ol className="mt-5 space-y-2 border-l border-neutral-200 pl-4 text-sm">{order.timeline.map((t) => <li key={t.title} className="relative"><span className="absolute -left-[21px] top-1.5 size-2.5 rounded-full border-2 border-white" style={{ background: "var(--sf-accent)" }} aria-hidden /><span className="font-medium">{t.title}</span> <span className="text-xs text-neutral-500">{formatDateTime(t.at)}</span></li>)}</ol> : null}
     </div>

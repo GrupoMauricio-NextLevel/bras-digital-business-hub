@@ -491,6 +491,13 @@
       "when": 1793106250537,
       "tag": "0069_w0_confianca",
       "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "7",
+      "when": 1793125519160,
+      "tag": "0070_w1_pedido_na_mesa",
+      "breakpoints": true
     }
   ]
 }

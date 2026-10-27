@@ -87,8 +87,10 @@ export async function orderQuickViewAction(orderId: string) {
   const s = await getSession();
   if (!s) return null;
   try {
-    const { order, items, events } = await getOrderForActor(await getDb(), s.actor, orderId);
-    return { order, items, events: events.slice(0, 12), role: s.user.role };
+    const db = await getDb();
+    const { order, items, events } = await getOrderForActor(db, s.actor, orderId);
+    const independente = (await (await import("@/lib/domain/order-policy")).storeModality(db, order.storeId)) === "INDEPENDENT";
+    return { order, items, events: events.slice(0, 12), role: s.user.role, independente };
   } catch { return null; }
 }
 
@@ -96,6 +98,57 @@ export async function addOrderNoteAction(orderId: string, text: string) {
   return runAction(async () => {
     const s = await actor();
     await addOrderNote(await getDb(), s.actor, orderId, text);
+    revalidateOrders();
+    return undefined;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Pedido na mesa (W1, D184)
+// ---------------------------------------------------------------------------
+export async function mudarSituacaoNaLinhaAction(orderId: string, para: OrderStatus) {
+  return runAction(async () => {
+    const s = await actor();
+    const { mudarSituacaoNaLinha } = await import("@/lib/domain/pedido-mesa");
+    const r = await mudarSituacaoNaLinha(await getDb(), s.actor, orderId, para);
+    revalidateOrders();
+    return { status: r.status };
+  });
+}
+
+export async function marcarEstrelaAction(orderId: string, valor: boolean) {
+  return runAction(async () => {
+    const s = await actor();
+    await (await import("@/lib/domain/pedido-mesa")).marcarEstrela(await getDb(), s.actor, orderId, valor);
+    revalidatePath("/merchant/orders");
+    return undefined;
+  });
+}
+
+export async function marcarImpressoAction(orderId: string) {
+  return runAction(async () => {
+    const s = await actor();
+    await (await import("@/lib/domain/pedido-mesa")).marcarImpresso(await getDb(), s.actor, orderId);
+    revalidatePath("/merchant/orders");
+    return undefined;
+  });
+}
+
+export async function sinalizarFraudeAction(orderId: string, motivo: string | null) {
+  return runAction(async () => {
+    const s = await actor();
+    const m = await import("@/lib/domain/pedido-mesa");
+    if (motivo === null) await m.retirarFraude(await getDb(), s.actor, orderId);
+    else await m.sinalizarFraude(await getDb(), s.actor, orderId, motivo);
+    revalidateOrders();
+    return undefined;
+  });
+}
+
+export async function ajustarEnderecoAction(orderId: string, endereco: { address: string; city: string; state: string; zip: string }) {
+  return runAction(async () => {
+    const s = await actor();
+    await (await import("@/lib/domain/pedido-mesa")).ajustarEnderecoDoPedido(await getDb(), s.actor, orderId, endereco);
     revalidateOrders();
     return undefined;
   });

@@ -152,7 +152,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   for (const r of reservations) merged.set(r.variantId, (merged.get(r.variantId) ?? 0) + r.quantity);
 
   try {
-  return await db.transaction(async (tx) => {
+  const criado = await db.transaction(async (tx) => {
     if (discount) await redeemDiscount(tx, discount.id);
     for (const [variantId, quantity] of merged) {
       await reserveStock(tx, variantId, quantity, { referenceType: "ORDER", referenceId: orderId });
@@ -215,6 +215,9 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
     if (input.customerPaymentStatus === "PAID") await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: store.id, supplierId: supplierId, payload: { orderId, totalCents: total }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     return { orderId, number: nextNumber, status: finalStatus, totalCents: total, replayed: false as boolean };
   });
+  // Pedido que já nasce pago (venda manual, demonstração): previsão de entrega da loja independente (D184).
+  if (input.customerPaymentStatus === "PAID") await (await import("./pedido-mesa")).gravarPrevisaoDeEntrega(db, criado.orderId);
+  return criado;
   } catch (e) {
     // Duas requisições com a mesma chave ao mesmo tempo: o índice único deixa passar uma só; a outra devolve o pedido da primeira.
     if (input.idempotencyKey && /orders_store_idempotency/.test(`${String(e)} ${String((e as { cause?: unknown }).cause ?? "")}`)) {
@@ -314,6 +317,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
   }
   await emailOrderCustomer(db, orderId, "PAID");
   await applyTrialMilestone(db, won.storeId, "FIRST_SALE");
+  await (await import("./pedido-mesa")).gravarPrevisaoDeEntrega(db, orderId);
   return won;
 }
 
@@ -354,6 +358,8 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
   if (next === "CANCELED") return cancelOrder(db, actor, orderId);
   if (order.status === next) return { ...order, status: next }; // repetição: sucesso idempotente, sem efeitos
   if (!canTransition(order.status, next)) throw new DomainError("INVALID_TRANSITION", `Transição ${order.status} → ${next} não permitida.`);
+  // Suspeita de fraude marcada pela loja (D184) segura o envio até ser retirada.
+  if (next === "SHIPPED" && order.fraudFlag) throw new DomainError("FRAUD_HOLD", "Pedido com suspeita de fraude marcada. Retire a marcação antes de enviar.");
   const modality = await assertCanFulfilOrder(db, actor, order);
   if (order.supplierId && (modality !== "INDEPENDENT" || actor.role !== "STORE_OWNER")) {
     const access = await capabilitiesForSupplier(db, order.supplierId);
@@ -550,6 +556,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
   });
   await emailOrderCustomer(db, orderId, "PAID");
   await applyTrialMilestone(db, order.storeId, "FIRST_SALE");
+  await (await import("./pedido-mesa")).gravarPrevisaoDeEntrega(db, orderId);
   return result;
 }
 
