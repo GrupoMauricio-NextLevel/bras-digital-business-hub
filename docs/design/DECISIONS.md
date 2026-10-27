@@ -1884,3 +1884,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **PRECISA VALIDAR com conta real** de cada plataforma: os formatos seguem a documentação pública; as bases podem ser trocadas por `SHIPPING_FRENET_BASE`, `SHIPPING_KANGU_BASE` e `SHIPPING_CORREIOS_BASE`.
 - **Só a E-commerce:** as três aparecem só na loja independente da E-commerce e a ação recusa as outras ("Disponível na loja da NextLevel E-commerce"). O fornecedor do SuperDrop continua vendo só SuperFrete, Melhor Envio e Onlog.
 - **Testes:** `tests/rodada-b-frete.test.ts` (6, com respostas simuladas). Por pedido do dono, sem roteiro de navegador nesta rodada (tela pequena, mesmo componente já conferido).
+
+## D191 — [E-commerce] Rodada C das integrações: ERP leve (Tiny / Olist ERP e Omie) (2026-10-27)
+- **Origem:** a fila `docs/prompts/integracoes-aplicativos-fila.md` (I-16 e I-17).
+- **"Envio de pedido pago para fora" (base para a API da W6c):** não mexemos no fluxo do pedido. O pagamento aprovado já grava o evento interno `PAYMENT_APPROVED` (idempotente); a rotina lê esses eventos das lojas com ERP, desde a hora da conexão, e cria uma linha em `erp_envios` (única por pedido e ERP). A fila manda até 20 por rodada, espera 5, 10, 20 e 40 minutos entre tentativas (até 5) e para na hora se o ERP recusar a credencial. O lojista vê os últimos envios e pode mandar de novo um que deu erro.
+- **Estoque:** a cada 15 minutos lemos os saldos do ERP e, por **SKU igual nos dois lados**, o disponível na loja passa a ser o saldo do ERP (o reservado da loja fica como está; o ajuste fica no histórico de estoque como "Estoque do ERP"). Produto sem SKU igual não muda.
+- **Tiny (API v2):** token; `info.php` para conferir, `pedido.incluir.php` e `lista.atualizacoes.estoque.php` (o Tiny só lista mudanças dos últimos 30 dias).
+- **Omie:** app key e app secret (guardados juntos e criptografados); `ListarEmpresas` para conferir, `UpsertCliente` pelo e-mail e `IncluirPedido` (etapa 10), `ListarPosEstoque` para o estoque.
+- **Onde roda:** etapa "erp" do cron `/api/cron/expire-reservations` (o mesmo dos lembretes de carrinho; precisa estar agendado no Render).
+- **Tela:** `/merchant/erp` (a partir da central de aplicativos, cartões "Tiny" e "Omie").
+- **PRECISA VALIDAR com conta real:** os formatos seguem a documentação pública (bases trocáveis por `ERP_TINY_BASE` e `ERP_OMIE_BASE`). No Omie, conta corrente, categoria e dados fiscais do pedido podem precisar de ajuste por conta.
+- **Só a E-commerce:** as ações recusam outras lojas. O SuperDrop não muda.
+- **Banco:** migração `0076_rodada_c_erp` (tabela `erp_envios` e 5 colunas em `stores`).
+- **Testes:** `tests/rodada-c-erp.test.ts` (4, com Tiny falso). Por pedido do dono, só os testes necessários e sem roteiro de navegador.

@@ -91,7 +91,7 @@
 |---|---|---|
 | A, só configuração | I-01 a I-11 | **Feita** (D189, 2026-10-27) |
 | B, frete | I-12, I-13, I-15 (I-14 se houver pedido) | **Feita** (D190, 2026-10-27); falta conferir com conta real de cada plataforma |
-| C, ERP leve | I-16, I-17 | A fazer (recomendada como próxima) |
-| D, WhatsApp oficial | I-19 | Aguarda a escolha do provedor |
+| C, ERP leve | I-16, I-17 | **Feita** (D191, 2026-10-27); falta conferir com conta real do Tiny e do Omie |
+| D, WhatsApp oficial | I-19 | Aguarda a escolha do provedor (próxima depende de você) |
 | E, OAuth | I-20, I-21, I-22 (depois I-23 a I-25) | A fazer, uma por vez |
 | Nível 4 | I-26 a I-32 | Depende de você |

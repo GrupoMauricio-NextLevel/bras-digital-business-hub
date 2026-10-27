@@ -111,6 +111,12 @@ export const stores = pgTable("stores", {
    * Google Ads, TikTok, Pinterest, chat) e chaves (loja no celular, maioridade). Nada secreto aqui.
    */
   integrations: jsonb("integrations").$type<import("@/lib/domain/integracoes-tipos").IntegracoesLoja>().notNull().default({}),
+  /** ERP da loja (Rodada C, D191): Tiny ou Omie; credencial só criptografada. */
+  erpProvider: text("erp_provider", { enum: ["TINY", "OMIE"] }),
+  erpTokenEnc: text("erp_token_enc"),
+  erpAccount: text("erp_account"),
+  erpConnectedAt: ts("erp_connected_at"),
+  erpStockSyncedAt: ts("erp_stock_synced_at"),
   paymentProvider: text("payment_provider"),
   paymentStatus: text("payment_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   /** Access token do Mercado Pago da loja, criptografado (AES-256-GCM). */
@@ -475,6 +481,24 @@ export const storeWaitlist = pgTable("store_waitlist", {
   email: text("email").notNull(),
   createdAt: createdAt(),
 }, (t) => [primaryKey({ columns: [t.storeId, t.email] })]);
+
+/**
+ * Pedidos pagos a enviar ao ERP da loja (Rodada C, D191). Uma linha por pedido e ERP (idempotência), com tentativas
+ * e o número do pedido lá fora quando deu certo.
+ */
+export const erpEnvios = pgTable("erp_envios", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  orderId: text("order_id").notNull().references(() => orders.id),
+  provider: text("provider", { enum: ["TINY", "OMIE"] }).notNull(),
+  status: text("status", { enum: ["PENDENTE", "ENVIADO", "ERRO"] }).notNull().default("PENDENTE"),
+  tentativas: integer("tentativas").notNull().default(0),
+  proximaTentativa: ts("proxima_tentativa").notNull().defaultNow(),
+  externoId: text("externo_id"),
+  erro: text("erro"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("erp_envios_pedido").on(t.provider, t.orderId), index("erp_envios_loja_idx").on(t.storeId, t.status)]);
 
 export const orderEvents = pgTable("order_events", {
   id: id(),

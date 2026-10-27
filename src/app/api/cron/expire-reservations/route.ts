@@ -5,6 +5,7 @@ import { expireUnfundedOrders } from "@/lib/domain/wallet";
 import { runJob } from "@/lib/domain/job-runs";
 import { lembrarCarrinhos } from "@/lib/domain/carrinho-abandonado";
 import { reconcilePendingPayments } from "@/lib/payments/service";
+import { rodarErp } from "@/lib/domain/erp";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
     { name: "reservas", run: () => expireStaleReservations(db), summarize: (x: { expired: number }) => `liberadas ${x.expired}` },
     { name: "sem saldo", run: () => expireUnfundedOrders(db) },
     { name: "carrinhos", run: () => lembrarCarrinhos(db), summarize: (x: { primeiro: number; segundo: number }) => `1º lembrete ${x.primeiro}, 2º lembrete ${x.segundo}` },
+    { name: "erp", run: () => rodarErp(db), summarize: (x: { novos: number; enviados: number; erros: number; ajustados: number }) => `na fila ${x.novos}, enviados ${x.enviados}, erros ${x.erros}, estoques ajustados ${x.ajustados}` },
   ]);
   return NextResponse.json({ ok: r.ok, ...r.results, failed: r.failed }, { status: r.ok ? 200 : 207 });
 }

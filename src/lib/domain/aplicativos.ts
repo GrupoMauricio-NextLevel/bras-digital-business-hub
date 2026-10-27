@@ -8,7 +8,7 @@ import type { IntegracoesLoja } from "./integracoes-tipos";
 export type EstadoApp = "ligado" | "desligado" | "em-breve";
 export type App = { key: string; nome: string; categoria: "Pagamentos" | "Vendas" | "Marketing" | "Entrega" | "Gestão"; descricao: string; estado: EstadoApp; href?: string };
 
-type Loja = Pick<typeof stores.$inferSelect, "paymentStatus" | "metaPixelId" | "launchMode" | "domainStatus" | "publishedAt" | "shippingProvider"> & { integrations?: IntegracoesLoja | null };
+type Loja = Pick<typeof stores.$inferSelect, "paymentStatus" | "metaPixelId" | "launchMode" | "domainStatus" | "publishedAt" | "shippingProvider"> & { erpProvider?: "TINY" | "OMIE" | null; integrations?: IntegracoesLoja | null };
 
 export function aplicativosDaLoja(s: Loja, extra: { redirecionamentos: number }): App[] {
   const mp = s.paymentStatus === "CONNECTED";
@@ -40,6 +40,8 @@ export function aplicativosDaLoja(s: Loja, extra: { redirecionamentos: number })
     { key: "pix-direto", nome: "Pix direto com baixa manual", categoria: "Pagamentos", descricao: "Chave Pix da loja, sem intermediário.", estado: "em-breve" },
     { key: "na-entrega", nome: "Receber na entrega ou retirada", categoria: "Pagamentos", descricao: "Para entrega local e loja física.", estado: "em-breve" },
     { key: "balcao", nome: "Balcão (ponto de venda)", categoria: "Vendas", descricao: "Caixa para a loja física, com leitor de código de barras.", estado: "em-breve" },
+    { key: "tiny", nome: "Tiny (Olist ERP)", categoria: "Gestão", descricao: "Pedidos pagos vão para o Tiny; o estoque do Tiny volta para a loja.", estado: on(s.erpProvider === "TINY"), href: "/merchant/erp" },
+    { key: "omie", nome: "Omie", categoria: "Gestão", descricao: "Pedidos pagos vão para o Omie; o estoque do Omie volta para a loja.", estado: on(s.erpProvider === "OMIE"), href: "/merchant/erp" },
     { key: "api", nome: "API e avisos para outros sistemas", categoria: "Gestão", descricao: "Integração com ERP e automações.", estado: "em-breve" },
     { key: "afiliados-loja", nome: "Afiliados da loja", categoria: "Marketing", descricao: "Quem indica a sua loja ganha comissão.", estado: "em-breve" },
   ];
