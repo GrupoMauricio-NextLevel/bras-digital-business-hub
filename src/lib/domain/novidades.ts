@@ -7,6 +7,7 @@ import type { BrandCode } from "@/lib/brand";
 export type Novidade = { data: string; marcas: readonly BrandCode[] | "TODAS"; titulo: string; texto: string; href?: string };
 
 export const NOVIDADES: readonly Novidade[] = [
+  { data: "2026-10-27", marcas: ["NEXTLEVEL_COMMERCE"], titulo: "Frete pela Frenet, Kangu ou Correios com contrato", texto: "Em Configurações, Frete e entrega: conecte a Frenet ou a Kangu com o token, ou o seu contrato dos Correios (usuário, código de acesso e cartão de postagem), e o checkout cota por CEP.", href: "/merchant/settings#shipping" },
   { data: "2026-10-27", marcas: ["NEXTLEVEL_COMMERCE"], titulo: "Google, TikTok, Pinterest e chat na loja", texto: "Cole o código do Google Analytics, Tag Manager, Search Console, Google Ads, TikTok, Pinterest ou do chat (Tawk.to ou JivoChat). Também dá para deixar a loja instalável no celular e pedir confirmação de 18 anos.", href: "/merchant/migrar#integracoes" },
   { data: "2026-10-27", marcas: ["NEXTLEVEL_COMMERCE"], titulo: "Aplicativos e calculadoras", texto: "Veja o que está ligado na sua loja e use as calculadoras de preço, promoção, parcelamento e frete grátis.", href: "/merchant/aplicativos" },
   { data: "2026-10-27", marcas: ["NEXTLEVEL_COMMERCE"], titulo: "Migrar e anunciar", texto: "Endereços antigos que levam ao novo, lista de produtos para o Google Shopping, Pixel da Meta e loja em lançamento com lista de espera.", href: "/merchant/migrar" },

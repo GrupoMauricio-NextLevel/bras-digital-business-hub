@@ -15,7 +15,7 @@ import { configureIntegrationAction, updateStoreAction, connectMercadoPagoAction
 
 type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; legalName: string; cnpj: string; contactEmail: string; address: string; slug: string; paymentStatus: string; paymentProvider: string | null; mpConnected: boolean; mpTest: boolean; webhookUrl: string; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
 
-export function SettingsForms({ store, shippingConfig, connect }: { store: StoreData; shippingConfig: ShippingConfig; connect: { provider: string | null; status: "NOT_CONFIGURED" | "DEMO" | "CONNECTED"; account: string | null; originZip: string; demo: boolean } | null }) {
+export function SettingsForms({ store, shippingConfig, connect }: { store: StoreData; shippingConfig: ShippingConfig; connect: { provider: string | null; status: "NOT_CONFIGURED" | "DEMO" | "CONNECTED"; account: string | null; originZip: string; demo: boolean; novas?: boolean } | null }) {
   const router = useRouter();
   const [f, setF] = React.useState(store);
   const [pending, start] = React.useTransition();
@@ -67,7 +67,7 @@ export function SettingsForms({ store, shippingConfig, connect }: { store: Store
       <Card id="shipping" className="lg:col-span-2">
         <CardHeader><div className="flex items-center gap-2"><Truck className="size-4 text-muted-foreground" /><div><CardTitle>Frete e entrega</CardTitle><CardDescription>{connect ? "Conecte sua plataforma de envio para cotar por CEP no checkout e defina as regras da loja." : "O frete é cotado por CEP no checkout. Defina aqui as regras da loja."}</CardDescription></div></div>{connect ? <StatusBadge value={connect.status} /> : null}</CardHeader>
         <CardContent className="space-y-6">
-          {connect ? <ShippingCard provider={connect.provider} status={connect.status} account={connect.account} demo={connect.demo} originZip={connect.originZip} /> : null}
+          {connect ? <ShippingCard provider={connect.provider} status={connect.status} account={connect.account} demo={connect.demo} originZip={connect.originZip} novas={connect.novas} /> : null}
           <ShippingRules config={shippingConfig} />
         </CardContent>
       </Card>

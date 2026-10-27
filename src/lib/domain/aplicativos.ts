@@ -17,7 +17,7 @@ export function aplicativosDaLoja(s: Loja, extra: { redirecionamentos: number })
   return [
     { key: "mercado-pago", nome: "Mercado Pago", categoria: "Pagamentos", descricao: "Pix e cartão em até 6x, conferidos automaticamente.", estado: on(mp), href: "/merchant/settings#payments" },
     { key: "link-pagamento", nome: "Link de pagamento", categoria: "Pagamentos", descricao: "Monte o pedido e mande o link pelo WhatsApp.", estado: on(mp), href: "/merchant/orders/propostas" },
-    { key: "frete", nome: "Frete", categoria: "Entrega", descricao: "Regras próprias ou plataforma de envio, rastreio por e-mail.", estado: on(!!s.shippingProvider), href: "/merchant/settings#shipping" },
+    { key: "frete", nome: "Frete", categoria: "Entrega", descricao: "Regras próprias ou plataforma de envio (Melhor Envio, SuperFrete, Frenet, Kangu, Correios com contrato e outras), rastreio por e-mail.", estado: on(!!s.shippingProvider), href: "/merchant/settings#shipping" },
     { key: "dominio", nome: "Domínio próprio", categoria: "Gestão", descricao: "A loja no endereço da sua marca.", estado: on(s.domainStatus === "CONNECTED"), href: "/merchant/settings#domain" },
     { key: "carrinho", nome: "Carrinho abandonado", categoria: "Vendas", descricao: "Lembrete por e-mail a quem aceitou no checkout.", estado: "ligado", href: "/merchant/analytics#carrinhos-t" },
     { key: "compre-junto", nome: "Compre junto", categoria: "Vendas", descricao: "Produtos relacionados escolhidos por você.", estado: "ligado", href: "/merchant/catalogo" },

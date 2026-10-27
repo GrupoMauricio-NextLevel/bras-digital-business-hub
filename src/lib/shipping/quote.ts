@@ -7,11 +7,11 @@ import { listStoreCatalog } from "@/lib/domain/catalog";
 import { decryptSecret } from "@/lib/security/crypto";
 import type { FetchLike } from "@/lib/payments/mercadopago";
 import { timeoutSignal } from "@/lib/http-timeout";
-import { ONLOG_BASE, ShippingError, type ShippingProviderKey } from "./providers";
+import { CORREIOS_BASE, FRENET_BASE, KANGU_BASE, ONLOG_BASE, ShippingError, lerContratoCorreios, tokenCorreios, type ShippingProviderKey } from "./providers";
 
 /**
  * Cotação de frete (P1). O servidor sempre recalcula o frete: o valor enviado pelo navegador nunca vale.
- * Provedores (SuperFrete, Melhor Envio, Onlog) ficam atrás da mesma interface; sem provedor conectado, ou se ele falhar,
+ * Provedores (SuperFrete, Melhor Envio, Onlog, Frenet, Kangu, Correios com contrato) ficam atrás da mesma interface; sem provedor conectado, ou se ele falhar,
  * vale a tabela da loja (`shippingConfig`), para o cliente nunca ficar sem opção de entrega.
  */
 export type ShippingQuote = { serviceId: string; carrier: string; name: string; priceCents: number; days: number | null; kind: "CARRIER" | "TABLE" | "PICKUP" };
@@ -42,6 +42,8 @@ export const onlyDigits = (s: string | null | undefined) => (s ?? "").replace(/\
 export const isZip = (s: string | null | undefined) => onlyDigits(s).length === 8;
 
 const UA = "NextLevel E-commerce (suporte@nextlevelgroup.com.br)";
+/** Reais no formato brasileiro ("1.025,50") ou com ponto ("25.50"). */
+const reaisBR = (v: unknown) => num(typeof v === "string" && v.includes(",") ? v.replace(/\./g, "") : v);
 const num = (v: unknown) => { const n = typeof v === "string" ? Number(v.replace(",", ".")) : typeof v === "number" ? v : NaN; return Number.isFinite(n) ? n : null; };
 
 /**
@@ -116,6 +118,87 @@ export function onlogProvider(token: string, fetchImpl: FetchLike = fetch, base 
   };
 }
 
+/**
+ * Frenet (Rodada B, D190; PRECISA VALIDAR com token real): POST /shipping/quote com o cabeçalho "token"; resposta
+ * { ShippingSevicesArray: [{ ServiceCode, ServiceDescription, Carrier, ShippingPrice, DeliveryTime, Error }] }
+ * (o nome "Sevices" é da própria Frenet). Peso em kg, medidas em cm, valor em reais.
+ */
+export function frenetProvider(token: string, fetchImpl: FetchLike = fetch, base = FRENET_BASE): ShippingProvider {
+  return {
+    key: "FRENET",
+    async quote(req) {
+      const res = await fetchImpl(`${base}/shipping/quote`, {
+        method: "POST", signal: timeoutSignal(),
+        headers: { token, Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
+        body: JSON.stringify({ SellerCEP: req.fromZip, RecipientCEP: req.toZip, ShipmentInvoiceValue: req.parcel.insuranceCents / 100, RecipientCountry: "BR", ShippingItemArray: [{ Height: req.parcel.heightCm, Length: req.parcel.lengthCm, Width: req.parcel.widthCm, Weight: Math.max(0.01, req.parcel.weightG / 1000), Quantity: 1, SKU: "pedido" }] }),
+      });
+      if (!res.ok) throw new ShippingError(`Frenet respondeu ${res.status}`);
+      const body = (await res.json().catch(() => ({}))) as { ShippingSevicesArray?: { ServiceCode?: string; ServiceDescription?: string; Carrier?: string; ShippingPrice?: unknown; DeliveryTime?: unknown; Error?: boolean }[] };
+      return (Array.isArray(body.ShippingSevicesArray) ? body.ShippingSevicesArray : []).filter((r) => !r.Error && num(r.ShippingPrice) !== null).map((r) => ({
+        serviceId: `FR:${r.ServiceCode ?? r.ServiceDescription}`, carrier: r.Carrier || "Frenet", name: `${r.Carrier ?? ""} ${r.ServiceDescription ?? ""}`.trim() || "Frenet",
+        priceCents: Math.round(num(r.ShippingPrice)! * 100), days: num(r.DeliveryTime),
+      }));
+    },
+  };
+}
+
+/**
+ * Kangu (Rodada B, D190; PRECISA VALIDAR com token real): POST /tms/transporte/simular com o cabeçalho "token";
+ * resposta: lista de { vlrFrete, prazoEnt, transp_nome, descricao, referencia, idSimulacao }.
+ */
+export function kanguProvider(token: string, fetchImpl: FetchLike = fetch, base = KANGU_BASE): ShippingProvider {
+  return {
+    key: "KANGU",
+    async quote(req) {
+      const kg = Math.max(0.01, req.parcel.weightG / 1000), valor = req.parcel.insuranceCents / 100;
+      const res = await fetchImpl(`${base}/tms/transporte/simular`, {
+        method: "POST", signal: timeoutSignal(),
+        headers: { token, Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
+        body: JSON.stringify({ cepOrigem: req.fromZip, cepDestino: req.toZip, vlrMerc: valor, pesoMerc: kg, produtos: [{ peso: kg, altura: req.parcel.heightCm, largura: req.parcel.widthCm, comprimento: req.parcel.lengthCm, quantidade: 1, valor }], servicos: ["E", "X", "M", "R"], ordernar: "preco" }),
+      });
+      if (!res.ok) throw new ShippingError(`Kangu respondeu ${res.status}`);
+      const rows = (await res.json().catch(() => [])) as { vlrFrete?: unknown; prazoEnt?: unknown; transp_nome?: string; descricao?: string; referencia?: string; idSimulacao?: string | number; error?: unknown }[];
+      return (Array.isArray(rows) ? rows : []).filter((r) => !r.error && num(r.vlrFrete) !== null).map((r) => ({
+        serviceId: `KG:${r.referencia ?? r.idSimulacao ?? r.transp_nome}`, carrier: r.transp_nome || "Kangu", name: `${r.transp_nome ?? "Kangu"}${r.descricao ? ` ${r.descricao}` : ""}`.trim(),
+        priceCents: Math.round(num(r.vlrFrete)! * 100), days: num(r.prazoEnt),
+      }));
+    },
+  };
+}
+
+/** Serviços de contrato dos Correios cotados: SEDEX e PAC (códigos de contrato mais comuns). */
+export const SERVICOS_CORREIOS = [{ codigo: "03220", nome: "SEDEX" }, { codigo: "03298", nome: "PAC" }] as const;
+
+/**
+ * Correios com contrato (Rodada B, D190; PRECISA VALIDAR com contrato real): pede o token de uso com o cartão de
+ * postagem, depois o preço (/preco/v1/nacional/{serviço}) e o prazo (/prazo/v1/nacional/{serviço}) de SEDEX e PAC.
+ * Peso em gramas, medidas em cm; o preço vem em reais com vírgula ("25,50"). Serviço sem preço fica de fora.
+ */
+export function correiosProvider(credencial: string, fetchImpl: FetchLike = fetch, base = CORREIOS_BASE): ShippingProvider {
+  return {
+    key: "CORREIOS",
+    async quote(req) {
+      const c = lerContratoCorreios(credencial);
+      if (!c) throw new ShippingError("Contrato dos Correios incompleto.");
+      const { token } = await tokenCorreios(c, fetchImpl);
+      const h = { Authorization: `Bearer ${token}`, Accept: "application/json", "User-Agent": UA };
+      const q = (extra: Record<string, string>) => new URLSearchParams({ cepOrigem: req.fromZip, cepDestino: req.toZip, ...extra }).toString();
+      const out = await Promise.all(SERVICOS_CORREIOS.map(async (sv) => {
+        const [pr, pz] = await Promise.all([
+          fetchImpl(`${base}/preco/v1/nacional/${sv.codigo}?${q({ psObjeto: String(Math.max(1, Math.round(req.parcel.weightG))), tpObjeto: "2", comprimento: String(Math.max(16, req.parcel.lengthCm)), largura: String(Math.max(11, req.parcel.widthCm)), altura: String(Math.max(2, req.parcel.heightCm)) })}`, { headers: h, signal: timeoutSignal() }),
+          fetchImpl(`${base}/prazo/v1/nacional/${sv.codigo}?${q({})}`, { headers: h, signal: timeoutSignal() }),
+        ]);
+        if (!pr.ok) return null;
+        const preco = reaisBR(((await pr.json().catch(() => ({}))) as { pcFinal?: unknown }).pcFinal);
+        if (preco === null) return null;
+        const prazo = pz.ok ? num(((await pz.json().catch(() => ({}))) as { prazoEntrega?: unknown }).prazoEntrega) : null;
+        return { serviceId: `CO:${sv.codigo}`, carrier: "Correios", name: `Correios ${sv.nome}`, priceCents: Math.round(preco * 100), days: prazo };
+      }));
+      return out.filter((x): x is NonNullable<typeof x> => x !== null);
+    },
+  };
+}
+
 /** Uma embalagem por pedido: soma pesos, empilha alturas e usa a maior largura e comprimento (simples e conservador). */
 export function parcelFor(items: { quantity: number; weightG: number; lengthCm: number; widthCm: number; heightCm: number; valueCents: number }[]): QuoteParcel {
   let weightG = 0, lengthCm = 1, widthCm = 1, heightCm = 0, insuranceCents = 0;
@@ -165,7 +248,8 @@ async function providerFor(db: Database, storeId: string, fetchImpl: FetchLike):
   if (!r || r.s !== "CONNECTED" || !r.t) return null;
   const token = decryptSecret(r.t);
   if (!token) return null;
-  return r.p === "MELHOR_ENVIO" ? melhorEnvioProvider(token, fetchImpl) : r.p === "SUPERFRETE" ? superFreteProvider(token, fetchImpl) : r.p === "ONLOG" ? onlogProvider(token, fetchImpl) : null;
+  return r.p === "MELHOR_ENVIO" ? melhorEnvioProvider(token, fetchImpl) : r.p === "SUPERFRETE" ? superFreteProvider(token, fetchImpl) : r.p === "ONLOG" ? onlogProvider(token, fetchImpl)
+    : r.p === "FRENET" ? frenetProvider(token, fetchImpl) : r.p === "KANGU" ? kanguProvider(token, fetchImpl) : r.p === "CORREIOS" ? correiosProvider(token, fetchImpl) : null;
 }
 
 export type QuoteResult = { options: ShippingQuote[]; degraded: boolean; subtotalCents: number; freeApplied: boolean };

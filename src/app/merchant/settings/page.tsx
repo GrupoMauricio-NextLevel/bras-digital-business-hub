@@ -18,7 +18,7 @@ export default async function MerchantSettingsPage() {
   // Loja independente (D89): a plataforma de envio é da própria loja.
   const independent = (await perfilAtual(s.id)).independente;
   const shippingConfig = parseShippingConfig(s.shippingConfig);
-  const connect = independent ? { provider: s.shippingProvider, status: s.shippingStatus, account: s.shippingAccount, originZip: s.shippingOriginZip ?? "", demo: isDemoMode() } : null;
+  const connect = independent ? { provider: s.shippingProvider, status: s.shippingStatus, account: s.shippingAccount, originZip: s.shippingOriginZip ?? "", demo: isDemoMode(), novas: commerce } : null;
   const paymentConnected = !!s.mpAccessTokenEnc;
   const shippingReady = connect ? connect.status === "CONNECTED" : s.shippingStatus === "CONNECTED";
   const domainReady = s.domainStatus === "CONNECTED";

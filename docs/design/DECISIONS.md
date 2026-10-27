@@ -1874,3 +1874,13 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Tela:** "Migrar e anunciar" ganha a seção "Google, TikTok, Pinterest, chat e celular" e o catálogo vira "Google, Instagram e TikTok". A central de aplicativos acende um cartão por integração.
 - **SuperDrop:** nada muda. A ação recusa ("Disponível na loja da NextLevel E-commerce") e a coluna fica vazia.
 - **Testes:** `tests/rodada-a-integracoes.test.ts` (7) e `e2e/rodada-a-integracoes.mjs`.
+
+## D190 — [E-commerce] Rodada B das integrações: frete pela Frenet, Kangu e Correios com contrato (2026-10-27)
+- **Origem:** a fila `docs/prompts/integracoes-aplicativos-fila.md` (I-12, I-13 e I-15). A Jadlog direta (I-14) fica para quando um lojista pedir: a Frenet e a Kangu já cotam a Jadlog.
+- **Mesmo padrão das plataformas que já existiam** (SuperFrete, Melhor Envio, Onlog, `src/lib/shipping/`): o lojista conecta em Configurações → Frete e entrega, a conexão é conferida na própria plataforma e a credencial fica só criptografada (`encryptSecret`). O checkout cota por CEP; se a plataforma falhar, vale a tabela da loja.
+- **Frenet:** cabeçalho `token`; verificação em `/shipping/info`; cotação em `/shipping/quote` (várias transportadoras de uma vez).
+- **Kangu:** cabeçalho `token`; a verificação é uma cotação pequena (a Kangu não tem consulta de conta); cotação em `/tms/transporte/simular`.
+- **Correios com contrato:** usuário do Meu Correios, código de acesso às APIs e cartão de postagem, guardados juntos e criptografados no mesmo campo do token. A cada cotação pedimos o token de uso (`/token/v1/autentica/cartaopostagem`) e cotamos SEDEX (03220) e PAC (03298) de contrato, com preço e prazo. A pré-postagem (etiqueta pelos Correios) fica para depois.
+- **PRECISA VALIDAR com conta real** de cada plataforma: os formatos seguem a documentação pública; as bases podem ser trocadas por `SHIPPING_FRENET_BASE`, `SHIPPING_KANGU_BASE` e `SHIPPING_CORREIOS_BASE`.
+- **Só a E-commerce:** as três aparecem só na loja independente da E-commerce e a ação recusa as outras ("Disponível na loja da NextLevel E-commerce"). O fornecedor do SuperDrop continua vendo só SuperFrete, Melhor Envio e Onlog.
+- **Testes:** `tests/rodada-b-frete.test.ts` (6, com respostas simuladas). Por pedido do dono, sem roteiro de navegador nesta rodada (tela pequena, mesmo componente já conferido).
