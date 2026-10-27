@@ -1618,3 +1618,25 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **SuperDrop continua só Pix** (D22 vale para ele). Lá o checkout deixa de mostrar a opção de cartão, que não funcionava.
 - Regra única em `src/lib/pagamento-loja.ts` (`lojaAceitaCartao`, `parcelasDaLoja`, `MAX_PARCELAS_LOJA = 6`), usada pela ação de compra (preferência com `installments`), pelo checkout e pela caixa de compra. O aviso de envio só aparece quando o lojista escreve um no editor.
 - Varredura `e2e/vitrine-cliente.mjs`: 7 temas a 390 e 1440 px (início, catálogo, produto, carrinho, finalizar), sem achados de acessibilidade, foto quebrada ou rolagem lateral.
+
+## D179 — [Grupo] Equipe real da NextLevel e o CEO como rosto em todas as marcas (2026-10-27)
+- **Respostas do dono:** as fotos foram feitas na sede da NextLevel Marketing, em São Paulo (local real, não montagem). Todas as pessoas que aparecem autorizaram o uso da imagem; as autorizações ficam com a empresa. Maurício Ramos dos Santos Junior, CEO da NextLevel Marketing Ltda., é o rosto de cada marca do grupo.
+- **Acervo:** 17 fotos em `public/portal/nextlevel/equipe/v1/` (AVIF e WebP, conversor das páginas imersivas), avatar do CEO (96/192/384 e JPEG para e-mail) e manifesto `src/lib/marcas/equipe-imagens.ts`.
+  - O texto alternativo de cada foto e o bloco por marca estão em `src/lib/marcas/equipe.ts` (`secaoEquipeDaMarca`).
+  - A foto 06 do ZIP era uma tela de tutorial do Supabase e ficou fora.
+  - A foto do prêmio fica só para telas internas (`SO_INTERNAS`), porque em página pública seria lida como promessa de ganho.
+- **Bloco "Quem está por trás"** (`SecaoEquipe`) antes das dúvidas em cinco páginas: home da E-commerce, home do SuperDrop, home do Brás Digital Club, home da NextLevel Cargas e Soluções (site do grupo).
+  - Cada marca tem foto própria e o mesmo fato dito do seu jeito ("desenvolvida e operada pela NextLevel Marketing, com equipe própria na nossa sede em São Paulo").
+  - O CEO aparece com foto, nome e cargo, sem frase atribuída a ele, número ou promessa.
+  - Na E-commerce o bloco traz as portas de ajuda (Loja Pronta, Migração, diagnóstico gratuito).
+- **E-mail de boas-vindas da loja** assina com nome, cargo e foto do CEO e diz os dias de teste que a loja realmente recebeu (`diasDeTeste`). Antes dizia "7 dias" fixos, enquanto a oferta pública é de 3. O aviso de fim do teste deixou de fixar "7 dias" no assunto.
+- **Regras com teste** (`tests/equipe-fotos.test.ts`):
+  - toda foto existe e tem texto alternativo;
+  - nenhuma marca usa foto interna;
+  - nenhum texto do bloco tem número ou promessa;
+  - nenhuma foto da equipe aparece nas lojas dos lojistas nem nos temas.
+- **Próximas fases** (prompt `docs/prompts/equipe-nextlevel-fotos-vida-marcas.md`):
+  - cartão de apoio na primeira tela do lojista (quando o WhatsApp ou o e-mail de suporte estiver configurado);
+  - login do Master, Equipe (prêmio) e Estúdio de gravação;
+  - palavra do fundador no site do grupo;
+  - prévia de link (OG) com a foto do escritório.

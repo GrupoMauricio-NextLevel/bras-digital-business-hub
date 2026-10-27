@@ -1,3 +1,4 @@
+import { AVATAR_CEO, CEO } from "@/lib/marcas/equipe";
 import { onSignal } from "@/lib/brand-palette";
 import { and, eq, inArray } from "drizzle-orm";
 import type { Database } from "@/db/client";
@@ -8,7 +9,7 @@ import { timeoutSignal } from "@/lib/http-timeout";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 
-export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null };
+export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; /** Assina com nome e foto do CEO (D179). */ ceo?: boolean; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null };
 
 /** Troca {marca} pelo nome da marca (os modelos de texto não trazem nome fixo). */
 const brandize = (t: string, b: Brand) => t.replaceAll("{marca}", b.name);
@@ -35,15 +36,17 @@ export function emailTopFor(brand: Pick<Brand, "code" | "baseUrl">): string | nu
   return `${brand.baseUrl.replace(/\/$/, "")}/${file}`;
 }
 
-export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta">, brand: Brand = brandByCode(undefined), group?: GroupFooter | null): string {
+export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta" | "ceo">, brand: Brand = brandByCode(undefined), group?: GroupFooter | null): string {
   const BRAND = brand.primaryColor, ACCENT = brand.accentColor;
   const onAccent = onSignal(ACCENT);
   const paras = m.text.split(/\n{2,}/).map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#1f2937">${esc(p).replace(/\n/g, "<br>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:#0b6b34">$1</a>')}</p>`).join("");
   const cta = m.cta ? `<p style="margin:22px 0"><a href="${esc(m.cta.url)}" style="display:inline-block;background:${ACCENT};color:${onAccent};font-weight:700;text-decoration:none;padding:12px 22px;border-radius:8px;font-size:15px">${esc(m.cta.label)}</a></p>` : "";
   const top = emailTopFor(brand);
+  // Assinatura do CEO (D179): foto real (JPEG, lido por todo leitor de e-mail) e nome em texto, que aparece mesmo sem imagens.
+  const ceo = m.ceo ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 4px"><tr><td style="padding-right:12px;vertical-align:middle"><img src="${esc(`${brand.baseUrl.replace(/\/$/, "")}${AVATAR_CEO}-192.jpg`)}" width="48" height="48" alt="" style="display:block;width:48px;height:48px;border-radius:50%;border:0"></td><td style="vertical-align:middle;font-size:14px;line-height:1.4;color:#1f2937"><strong>${esc(CEO.nome)}</strong><br><span style="color:#6b7280">${esc(CEO.cargo)}</span></td></tr></table>` : "";
   // Decorativa (alt vazio): o nome da marca vem logo abaixo, em texto, mesmo com as imagens bloqueadas no leitor de e-mail.
   const topRow = top ? `<tr><td style="padding:0;line-height:0;font-size:0"><img src="${esc(top)}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>` : "";
-  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0">${topRow}<tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}</td></tr>${group ? groupFooterHtml(group) : ""}<tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
+  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f6f5;padding:24px 12px;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden" cellpadding="0" cellspacing="0">${topRow}<tr><td style="background:${BRAND};padding:18px 24px;color:#ffffff;font-size:18px;font-weight:700">${esc(brand.name)}</td></tr><tr><td style="padding:24px"><h1 style="margin:0 0 16px;font-size:20px;color:${BRAND}">${esc(m.subject)}</h1>${paras}${cta}${ceo}</td></tr>${group ? groupFooterHtml(group) : ""}<tr><td style="padding:16px 24px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:1.5">${esc(brand.legalLine)}<br>Você recebeu este e-mail porque tem uma conta ou fez uma compra na plataforma.</td></tr></table></td></tr></table></body></html>`;
 }
 
 /**
@@ -113,13 +116,13 @@ const sign = "\n\n— Equipe NextLevel";
 
 export const emails = {
   passwordReset: (link: string) => ({ subject: "Redefinir a sua senha {marca}", text: `Recebemos um pedido para redefinir a sua senha. O link vale por 1 hora.\n\nSe não foi você, ignore este e-mail: a sua senha continua a mesma.${sign}`, cta: { label: "Criar nova senha", url: link } }),
-  welcomeStore: (name: string, url: string, trial: boolean) => ({ subject: "Bem-vindo ao {marca}", text: `Olá! A loja ${name} foi criada.\n\n${trial ? "Você tem 7 dias de teste com todas as funcionalidades." : "Assim que o pagamento por Pix for confirmado, o acesso é liberado sozinho."}${sign}`, cta: { label: "Abrir o meu painel", url } }),
+  welcomeStore: (name: string, url: string, trialDays: number) => ({ ceo: true, subject: "Bem-vindo ao {marca}", text: `Olá! A loja ${name} foi criada.\n\n${trialDays > 0 ? `Você tem ${trialDays} ${trialDays === 1 ? "dia" : "dias"} de teste com todas as funcionalidades.` : "Assim que o pagamento por Pix for confirmado, o acesso é liberado sozinho."}${sign}`, cta: { label: "Abrir o meu painel", url } }),
   welcomePartner: (name: string, url: string) => ({ subject: "Você é parceiro {marca}", text: `Olá, ${name}! Seu cadastro no Programa de Parceiros está ativo.\n\nSeus links, cupons e comissões estão no escritório virtual. Lembrete: ative 1 novo cliente por mês para manter o cadastro gratuito.${sign}`, cta: { label: "Abrir o escritório virtual", url } }),
   nlOrderPaid: (product: string, number: number, url: string) => ({ subject: `Pagamento confirmado · pedido #${number}`, text: `Recebemos o pagamento de "${product}" (pedido #${number}).\n\nA equipe NextLevel vai falar com você pelo WhatsApp.${sign}`, cta: { label: "Acompanhar o pedido", url } }),
   payoutPaid: (amount: string) => ({ subject: "Seu saque foi pago", text: `O saque de ${amount} foi pago por Pix para a chave cadastrada.${sign}` }),
   invoicePaid: (description: string, amountCents: number, path: string) => ({ subject: "Pagamento confirmado", text: `Recebemos o pagamento de ${brl(amountCents)}: ${description}.\n\nObrigado! Seu acesso já está atualizado.${sign}`, cta: { label: "Abrir o painel", url: `${app()}${path}` } }),
   dunning: (message: string, path: string) => ({ subject: "Aviso de pagamento {marca}", text: `${message}\n\nPague por Pix em poucos segundos e o acesso é liberado sozinho.${sign}`, cta: { label: "Pagar agora", url: `${app()}${path}` } }),
-  trialEnding: (days: number, path: string) => ({ subject: days <= 0 ? "Seu teste de 7 dias termina hoje" : `Seu teste termina em ${days} dia${days > 1 ? "s" : ""}`, text: `Para continuar vendendo sem interrupção, assine o seu plano por Pix. O acesso é liberado na hora, sem burocracia.${sign}`, cta: { label: "Assinar por Pix", url: `${app()}${path}` } }),
+  trialEnding: (days: number, path: string) => ({ subject: days <= 0 ? "Seu teste termina hoje" : `Seu teste termina em ${days} dia${days > 1 ? "s" : ""}`, text: `Para continuar vendendo sem interrupção, assine o seu plano por Pix. O acesso é liberado na hora, sem burocracia.${sign}`, cta: { label: "Assinar por Pix", url: `${app()}${path}` } }),
   customerOrderPaid: (store: string, number: number, total: number, trackUrl: string) => ({ subject: `Pagamento confirmado · pedido #${number} da ${store}`, text: `Recebemos o pagamento de ${brl(total)} do seu pedido #${number} na loja ${store}.\n\nAvisaremos quando ele for enviado. Você também pode acompanhar a qualquer momento.`, cta: { label: "Acompanhar o pedido", url: trackUrl } }),
   customerOrderShipped: (store: string, number: number, carrier: string | null, code: string | null, trackUrl: string) => ({ subject: `Seu pedido #${number} foi enviado`, text: `A loja ${store} enviou o seu pedido #${number}.${carrier || code ? `\n\nTransportadora: ${carrier ?? "—"}\nCódigo de rastreio: ${code ?? "—"}` : ""}`, cta: { label: "Acompanhar o pedido", url: trackUrl } }),
   leadReceived: (first: string) => ({ subject: "Recebemos o seu contato", text: `Olá, ${first}! Recebemos o seu interesse na {marca}.\n\nNossa equipe fala com você pelo WhatsApp para entender a sua loja e combinar a implantação. Obrigado!${sign}` }),

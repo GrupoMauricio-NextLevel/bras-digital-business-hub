@@ -1,3 +1,4 @@
+import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -187,6 +188,8 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
           </div>
         </div>
       </section>
+
+      <SecaoEquipe code="NEXTLEVEL" nomeDaMarca="NextLevel" className="text-foreground" />
 
       <section id="duvidas" className="px-4 pb-16" aria-labelledby="faq-t">
         <div className="mx-auto max-w-3xl">

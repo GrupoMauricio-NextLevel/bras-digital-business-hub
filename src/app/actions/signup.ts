@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { setSessionCookie } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
-import { findUsableCoupon, signupMember, type signupSchema } from "@/lib/domain/store-access";
+import { eq } from "drizzle-orm";
+import { stores } from "@/db/schema";
+import { diasDeTeste, findUsableCoupon, signupMember, type signupSchema } from "@/lib/domain/store-access";
 import { emails, sendEmail } from "@/lib/email";
 import { getBaseUrl } from "@/lib/base-url";
 import { getBrand } from "@/lib/brand-server";
@@ -25,7 +27,9 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     const created = await signupMember(await getDb(), { ...input, ref, brand: brand.code, independent: !brandHas(brand, "dropship") });
     await setSessionCookie(created.userId);
     const db = await getDb();
-    const m = emails.welcomeStore(input.storeName, `${await getBaseUrl()}/merchant`, created.trial);
+    // Dias de teste que esta loja realmente recebeu (porta de entrada, cupom ou plano): o e-mail não promete um número fixo.
+    const loja = await db.query.stores.findFirst({ where: eq(stores.id, created.storeId), columns: { trialEndsAt: true } });
+    const m = emails.welcomeStore(input.storeName, `${await getBaseUrl()}/merchant`, created.trial ? diasDeTeste(loja?.trialEndsAt ?? null) : 0);
     await sendEmail(db, { kind: "WELCOME_STORE", to: input.email.toLowerCase(), brand: brand.code, ...m });
     return { ok: true as const };
   });

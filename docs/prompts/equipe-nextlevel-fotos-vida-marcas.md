@@ -1,6 +1,17 @@
 # Fotos do Mauricio e da equipe NextLevel: análise e prompt engenheiro mestre para dar vida às marcas
 
-> **Estado:** PARA AVALIAÇÃO DO DONO (2026-10-27). Nada foi implantado. Este documento analisa as 5 fotos enviadas na conversa, propõe onde cada uma entra (páginas públicas e painéis internos, marca por marca) e traz o prompt em fases para executar **depois** que o dono responder as perguntas da seção 9.
+> **Atualização (2026-10-27, respostas do dono, D179):**
+> - As fotos são da sede real em São Paulo.
+> - Todas as pessoas autorizaram o uso da imagem.
+> - Maurício Ramos dos Santos Junior (CEO da NextLevel Marketing Ltda.) é o rosto de todas as marcas, cada uma individualmente.
+>
+> **Já está no ar:** EQ1 (acervo de 17 fotos, avatar, regras com teste), o bloco "Quem está por trás" nas homes da E-commerce, SuperDrop, Brás, Cargas e na Soluções, e o e-mail de boas-vindas com a assinatura do CEO.
+>
+> **Pendente:** cartão de apoio nos painéis (espera o canal de suporte), login do Master, Equipe, Estúdio, palavra do fundador e prévia de link.
+>
+> As perguntas 9.1 a 9.4 estão respondidas. A 9.5 (canal de suporte) e a 9.6 (texto do fundador) seguem abertas.
+>
+> **Estado original:** PARA AVALIAÇÃO DO DONO (2026-10-27). Nada foi implantado. Este documento analisa as 5 fotos enviadas na conversa, propõe onde cada uma entra (páginas públicas e painéis internos, marca por marca) e traz o prompt em fases para executar **depois** que o dono responder as perguntas da seção 9.
 >
 > **Skills usadas na execução:**
 > - `pagina-de-vendas`: contrato de ativos, verdade, desempenho;

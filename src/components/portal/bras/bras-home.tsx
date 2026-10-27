@@ -1,3 +1,4 @@
+import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import Link from "next/link";
 import { ImersivaBras } from "./imersiva";
 import { ArrowRight, ArrowUpRight, BadgeCheck, Boxes, Building2, Check, Clapperboard, Factory, Headset, Lock, MessageCircle, PackageCheck, ShieldCheck, Sparkles, Store, Truck } from "lucide-react";
@@ -331,6 +332,9 @@ export function BrasHome({ brand, videos, analysis, previa = false }: { brand: B
           </div>
         </div>
       </section>
+
+      {/* 9b. Quem está por trás (D179). */}
+      <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="bd-papel" />
 
       {/* 10. Dúvidas. */}
       <section id="duvidas" aria-labelledby="bd-faq" className={`bd-papel ${section}`}>

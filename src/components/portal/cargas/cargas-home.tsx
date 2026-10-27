@@ -1,3 +1,4 @@
+import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { ArrowRight, BadgeCheck, Boxes, ClipboardCheck, Gauge, KeyRound, Link2, MapPinned, Megaphone, Network, Receipt, Route, ShieldCheck, Smartphone, Star, Truck, Warehouse } from "lucide-react";
 import { ImersivaCargas } from "./imersiva";
 import type { Brand } from "@/lib/brand";
@@ -226,6 +227,9 @@ export function CargasHome({ brand, previa = false }: { brand: Brand; /** Prévi
       </section>
 
       <FechoMarca slug="nextlevel-cargas" cta={{ href: "/#cadastro", label: "Cadastrar grátis" }} />
+
+      {/* 8b. Quem está por trás (D179). */}
+      <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="cg-claro" />
 
       {/* 9. Dúvidas. */}
       <section id="duvidas" className={`cg-claro ${section}`} aria-labelledby="cg-faq">

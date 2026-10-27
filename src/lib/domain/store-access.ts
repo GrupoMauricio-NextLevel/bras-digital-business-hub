@@ -199,6 +199,12 @@ export async function listSignupSuppliers(db: Database) {
   return rows.filter((r) => (r.status === "ACTIVE" || r.status === "WARNING") && !closed.includes(r.brand)).map((r) => ({ slug: r.slug, name: r.name }));
 }
 
+/** Dias inteiros de teste que restam (arredonda para cima; zero quando não há teste ou já acabou). */
+export function diasDeTeste(trialEndsAt: string | null, agora = new Date()): number {
+  if (!trialEndsAt) return 0;
+  return Math.max(0, Math.ceil((new Date(trialEndsAt).getTime() - agora.getTime()) / 86_400_000));
+}
+
 export async function signupMember(db: Database, raw: z.input<typeof signupSchema>, now = new Date()) {
   const input = signupSchema.parse(raw);
   const taxId = normalizeTaxId(input.taxId);

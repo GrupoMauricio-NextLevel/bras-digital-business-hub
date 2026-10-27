@@ -1,3 +1,4 @@
+import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { statSync } from "node:fs";
 import { ImersivaSuperDrop } from "./imersiva";
 import { SD } from "@/lib/marcas/superdrop";
@@ -229,8 +230,13 @@ export async function SuperDropHomeV4({ faq, solucoes, previa = false }: { faq: 
         </div>
       </section>
 
+      {/* 7b. Quem está por trás (D179): equipe real na sede. */}
+      <SecaoEquipe code="SUPERDROP" nomeDaMarca="SuperDrop" className="bg-surface text-foreground">
+        <Link className="text-link underline underline-offset-4" href={solucoes}>Conheça o Grupo NextLevel</Link>
+      </SecaoEquipe>
+
       {/* 8. Perguntas frequentes */}
-      <section aria-labelledby="faq-t" className="bg-surface py-20">
+      <section aria-labelledby="faq-t" className="bg-canvas py-20">
         <div className="mx-auto max-w-3xl px-4">
           <h2 id="faq-t" className={h2}>Perguntas frequentes</h2>
           <div className="mt-8 space-y-3">{faq.map((f) => <details key={f.q} className="group rounded-xl border border-border bg-canvas p-4"><summary className="cursor-pointer font-semibold">{f.q}</summary><p className="mt-2 text-muted-foreground">{f.a}</p></details>)}</div>

@@ -15,6 +15,8 @@ import { LojasExemplo } from "@/components/portal/commerce-home";
 import { EC_HOME_ACERVO, type EcHomeFotoNome } from "@/lib/marcas/ecommerce-home-imagens";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { JornadaMarca, type PassoMarca } from "@/components/imersiva/jornada";
+import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
+import { groupLink } from "@/lib/brand-server";
 import "../commerce.css";
 
 /**
@@ -30,6 +32,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const released = THEME_CATALOG.filter(isReleased);
   const comecar = brand.signupOpen ? (offer ? `Começar ${offer.trialDays} dias grátis` : "Criar minha loja") : "Quero minha loja";
   const section = "scroll-mt-16 px-4 py-16 md:py-24";
+  const solucoes = await groupLink("/solucoes");
+  const link = "underline underline-offset-4 text-link";
 
   const passos: PassoMarca<EcHomeFotoNome>[] = [
     { key: "produto", nome: "Cadastrar", foto: "ec-jornada-1-produto", retrato: "ec-jornada-1-produto-retrato", titulo: "Cadastre como você vende.", texto: "Produtos com variações de tamanho e cor, estoque e categorias, sem limite de cadastro. Um a um ou por planilha.", links: [{ label: "Ver o que vem nos planos", href: "#planos" }] },
@@ -114,7 +118,14 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-surface`}>
+      <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="bg-surface text-foreground">
+        <span className="w-full font-normal opacity-80">Prefere ajuda para começar?</span>
+        <Link className={link} href={`${solucoes}/loja-pronta-essencial`}>Loja Pronta</Link>
+        <Link className={link} href={`${solucoes}/migracao-lite`}>Migração</Link>
+        <Link className={link} href={`${solucoes}#diagnostico`}>Diagnóstico gratuito</Link>
+      </SecaoEquipe>
+
+      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-canvas`}>
         <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas frequentes</h2><Faq plans={pv.plans} offer={offer} themes={released.map((t) => ({ name: t.name, priceCents: t.priceCents }))} /></div>
       </section>
 
