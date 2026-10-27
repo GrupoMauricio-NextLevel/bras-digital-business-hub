@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { usePathname } from "next/navigation";
+import { eventoRedes } from "./integracoes-loja";
 
 type Fbq = ((...args: unknown[]) => void) & { callMethod?: (...a: unknown[]) => void; queue?: unknown[]; loaded?: boolean; version?: string; push?: unknown };
 declare global { interface Window { fbq?: Fbq; _fbq?: Fbq } }
@@ -8,6 +9,8 @@ declare global { interface Window { fbq?: Fbq; _fbq?: Fbq } }
 /** Evento do Pixel da Meta, se a loja tiver pixel (D187). Nunca quebra a loja. */
 export function eventoMeta(nome: "AddToCart" | "Purchase" | "ViewContent" | "InitiateCheckout", dados?: Record<string, unknown>, eventID?: string) {
   try { window.fbq?.("track", nome, dados ?? {}, eventID ? { eventID } : undefined); } catch { /* sem pixel */ }
+  // As outras redes ligadas na loja (Rodada A, D189) recebem o mesmo carrinho.
+  if (nome === "AddToCart") eventoRedes("AddToCart", { currency: "BRL", value: Number(dados?.value ?? 0) });
 }
 
 /** Pixel da Meta da loja (D187): carrega o código oficial da Meta e conta página vista e produto visto. */
@@ -29,11 +32,12 @@ export function PixelMeta({ pixelId }: { pixelId: string }) {
 }
 
 /** Compra confirmada na página do pedido (D187): o mesmo número do pedido vai para o servidor, então a Meta não conta duas vezes. */
-export function CompraMeta({ orderId, valorCents }: { orderId: string; valorCents: number }) {
+export function CompraMeta({ orderId, valorCents, adsSendTo }: { orderId: string; valorCents: number; adsSendTo?: string }) {
   React.useEffect(() => {
     const chave = `nl-meta-compra:${orderId}`;
     try { if (sessionStorage.getItem(chave)) return; sessionStorage.setItem(chave, "1"); } catch { /* segue */ }
     eventoMeta("Purchase", { currency: "BRL", value: valorCents / 100 }, orderId);
-  }, [orderId, valorCents]);
+    eventoRedes("Purchase", { currency: "BRL", value: valorCents / 100, orderId, adsSendTo });
+  }, [orderId, valorCents, adsSendTo]);
   return null;
 }

@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
 import { definirLancamento, importarRedirecionamentos, removerRedirecionamento, salvarPixel } from "@/lib/domain/migrar";
+import { salvarIntegracoes, type EntradaIntegracoes } from "@/lib/domain/integracoes";
 
 async function ator() {
   const s = await getSession();
@@ -24,4 +25,7 @@ export async function salvarPixelAction(input: { pixelId: string; token?: string
 }
 export async function definirLancamentoAction(ligado: boolean) {
   return runAction(async () => { await definirLancamento(await getDb(), await ator(), ligado); atualizar(); return undefined; });
+}
+export async function salvarIntegracoesAction(entrada: EntradaIntegracoes) {
+  return runAction(async () => { await salvarIntegracoes(await getDb(), await ator(), entrada); atualizar(); revalidatePath("/merchant/aplicativos"); return undefined; });
 }

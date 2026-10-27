@@ -89,8 +89,8 @@
 ## Estado
 | Rodada | Itens | Estado |
 |---|---|---|
-| A, só configuração | I-01 a I-11 | A fazer (recomendada como próxima) |
-| B, frete | I-12, I-13, I-15 (I-14 se houver pedido) | A fazer |
+| A, só configuração | I-01 a I-11 | **Feita** (D189, 2026-10-27) |
+| B, frete | I-12, I-13, I-15 (I-14 se houver pedido) | A fazer (recomendada como próxima) |
 | C, ERP leve | I-16, I-17 | A fazer |
 | D, WhatsApp oficial | I-19 | Aguarda a escolha do provedor |
 | E, OAuth | I-20, I-21, I-22 (depois I-23 a I-25) | A fazer, uma por vez |

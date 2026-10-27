@@ -1856,3 +1856,21 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - `tests/w5-ferramentas.test.ts`: contas, casos impossíveis, datas móveis de 2026 e 2027, central honesta e novidades por marca;
   - `tests/w0-confianca.test.ts`: o lojista agora liga as duas etapas; o fornecedor, não;
   - `e2e/w5-ferramentas.mjs` (página pública reagindo ao que se digita, ferramentas, aplicativos, com axe e 360 px) e `e2e/w0-confianca.mjs` atualizado.
+
+## D189 — [E-commerce] Rodada A das integrações: Google, TikTok, Pinterest, catálogos, chat, loja no celular e maioridade (2026-10-27)
+- **Origem:** a fila `docs/prompts/integracoes-aplicativos-fila.md` (I-01 a I-11, nível 1, só configuração).
+- **Regra de segurança:** o lojista **nunca cola script**. Cada serviço tem campo próprio que aceita só o formato do código do parceiro (validado na tela e no servidor, `src/lib/domain/integracoes-regras.ts`); da meta tag do Google e do endereço do Tawk/Jivo tiramos só o código. O script que vai para a loja é o oficial, escrito por nós (`src/components/storefront/integracoes-loja.tsx`).
+- **Onde fica:** coluna `stores.integrations` (jsonb, padrão `{}`), migração `0075_rodada_a_integracoes`. Só códigos públicos; nenhum segredo.
+- **O que entrou:**
+  - **Google Analytics 4, Google Ads e Tag Manager:** gtag.js e GTM na loja publicada; página vista a cada troca de página, produto visto, item no carrinho e compra;
+  - **Google Search Console:** a meta de verificação no `<head>` da loja (só o código);
+  - **Pixel do TikTok e tag do Pinterest:** mesmo padrão do Pixel da Meta (página, produto, carrinho e compra);
+  - **compra:** contada só na página do pedido **pago pelo Mercado Pago**, junto com a da Meta (mesmo número de pedido), e para o Google Ads com o rótulo da conversão quando há;
+  - **catálogos do Instagram/Facebook e do TikTok:** o mesmo `feed.xml` do Google Shopping (o formato é aceito pelos três), com o passo a passo na tela;
+  - **chat ao vivo:** lista fechada (Tawk.to ou JivoChat);
+  - **loja instalável no celular:** `/store/{loja}/manifest.webmanifest` e ícone com as iniciais na cor da loja (`icone.svg`), além do logo quando há; só com a chave ligada;
+  - **confirmação de 18 anos:** janela na primeira visita, resposta guardada só no navegador; quem responde "não" não vê a loja.
+- **Nada carrega** na prévia do editor, na loja de demonstração dos temas, na página de espera do lançamento nem para loja não publicada (mesma regra do Pixel, variável `publico`).
+- **Tela:** "Migrar e anunciar" ganha a seção "Google, TikTok, Pinterest, chat e celular" e o catálogo vira "Google, Instagram e TikTok". A central de aplicativos acende um cartão por integração.
+- **SuperDrop:** nada muda. A ação recusa ("Disponível na loja da NextLevel E-commerce") e a coluna fica vazia.
+- **Testes:** `tests/rodada-a-integracoes.test.ts` (7) e `e2e/rodada-a-integracoes.mjs`.

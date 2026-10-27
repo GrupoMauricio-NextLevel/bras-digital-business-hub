@@ -19,6 +19,8 @@ import { CartProvider } from "@/components/storefront/cart-context";
 import { ContadorDeVisitas } from "@/components/storefront/contador-de-visitas";
 import { PixelMeta } from "@/components/storefront/pixel-meta";
 import { ListaDeEspera } from "@/components/storefront/lista-de-espera";
+import { IntegracoesNaLoja } from "@/components/storefront/integracoes-loja";
+import { Maioridade } from "@/components/storefront/maioridade";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
@@ -40,7 +42,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const origin = await storeOrigin(sf.store);
   const description = shortDescription(sf.settings.heroSubtitle || sf.store.tagline, `Loja virtual ${sf.store.name}.`);
   // Páginas internas definem "title" próprio e herdam o nome da loja pelo modelo.
-  return { title: { default: `${sf.store.name} · ${sf.store.tagline ?? "Loja oficial"}`, template: `%s · ${sf.store.name}` }, description, alternates: { canonical: origin }, openGraph: { siteName: sf.store.name, locale: "pt_BR", type: "website", url: origin } };
+  // Integrações (D189): verificação do Search Console (só o código, nunca HTML colado) e o manifesto da loja instalável.
+  const integ = sf.store.integrations ?? {};
+  return {
+    title: { default: `${sf.store.name} · ${sf.store.tagline ?? "Loja oficial"}`, template: `%s · ${sf.store.name}` }, description, alternates: { canonical: origin }, openGraph: { siteName: sf.store.name, locale: "pt_BR", type: "website", url: origin },
+    ...(integ.googleVerificacao ? { verification: { google: integ.googleVerificacao } } : {}),
+    ...(integ.pwa ? { manifest: `/store/${slug}/manifest.webmanifest`, appleWebApp: { capable: true, title: sf.store.name } } : {}),
+  };
 }
 
 export default async function StoreLayout({ params, children }: { params: Promise<{ slug: string }>; children: React.ReactNode }) {
@@ -100,6 +108,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {/* Visitas da loja (D185): nem a prévia do editor nem a vitrine de demonstração contam. */}
       {publico ? <ContadorDeVisitas slug={slug} /> : null}
       {publico && sf.store.metaPixelId ? <PixelMeta pixelId={sf.store.metaPixelId} /> : null}
+      {publico ? <IntegracoesNaLoja cfg={sf.store.integrations ?? {}} /> : null}
+      {publico && sf.store.integrations?.maioridade ? <Maioridade loja={sf.store.name} /> : null}
       {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />

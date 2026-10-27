@@ -106,6 +106,11 @@ export const stores = pgTable("stores", {
   metaCapiTokenEnc: text("meta_capi_token_enc"),
   /** Loja em lançamento (W4, D187): o público vê "abrimos em breve" com lista de espera; o dono vê a loja normal. */
   launchMode: boolean("launch_mode").notNull().default(false),
+  /**
+   * Integrações só de configuração (Rodada A, D189): números públicos (Google Analytics, Tag Manager, Search Console,
+   * Google Ads, TikTok, Pinterest, chat) e chaves (loja no celular, maioridade). Nada secreto aqui.
+   */
+  integrations: jsonb("integrations").$type<import("@/lib/domain/integracoes-tipos").IntegracoesLoja>().notNull().default({}),
   paymentProvider: text("payment_provider"),
   paymentStatus: text("payment_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   /** Access token do Mercado Pago da loja, criptografado (AES-256-GCM). */

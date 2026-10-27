@@ -2,13 +2,14 @@ import { PageHeader } from "@/components/app/page-header";
 import { requireIndependent } from "@/lib/require-independent";
 import { getDb } from "@/db/client";
 import { listaDeEspera, listarRedirecionamentos } from "@/lib/domain/migrar";
+import { entradaDe } from "@/lib/domain/integracoes";
 import { storeOrigin } from "@/lib/storefront-seo";
 import { formatDateTime } from "@/lib/utils";
-import { CopiarLink, FormLancamento, FormPixel, FormRedirecionamentos, RemoverRedirecionamento } from "./forms";
+import { CopiarLink, FormIntegracoes, FormLancamento, FormPixel, FormRedirecionamentos, RemoverRedirecionamento } from "./forms";
 
 export const dynamic = "force-dynamic";
 
-/** Migrar e anunciar (W4, D187): endereços antigos, lista do Google Shopping, Pixel da Meta e loja em lançamento. */
+/** Migrar e anunciar (W4, D187; integrações D189): endereços antigos, catálogos, pixels, Google, chat, celular e lançamento. */
 export default async function MigrarPage() {
   const { session } = await requireIndependent();
   const db = await getDb();
@@ -18,7 +19,7 @@ export default async function MigrarPage() {
   return (
     <>
       <PageHeader title="Migrar e anunciar" description="Para quem vem de outra plataforma não perder o Google, e para anunciar com a Meta e o Google Shopping." />
-      <nav aria-label="Nesta página" className="ds-seg mb-5">{[["#enderecos", "Endereços antigos"], ["#google", "Google Shopping"], ["#meta", "Pixel da Meta"], ["#lancamento", "Lançamento"]].map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav>
+      <nav aria-label="Nesta página" className="ds-seg mb-5">{[["#enderecos", "Endereços antigos"], ["#google", "Catálogos"], ["#meta", "Pixel da Meta"], ["#integracoes", "Google, TikTok e chat"], ["#lancamento", "Lançamento"]].map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav>
       <div className="space-y-6">
         <section id="enderecos" aria-labelledby="enderecos-t" className={sec}>
           <h2 id="enderecos-t" className="text-lg font-semibold">Endereços antigos (redirecionamento 301)</h2>
@@ -31,14 +32,24 @@ export default async function MigrarPage() {
           ) : <p className="text-sm text-muted-foreground">Nenhum endereço antigo cadastrado.</p>}
         </section>
         <section id="google" aria-labelledby="google-t" className={sec}>
-          <h2 id="google-t" className="text-lg font-semibold">Google Shopping</h2>
-          <p className="text-sm text-body">No Google Merchant Center, adicione este endereço como fonte de produtos (feed programado). Ele se atualiza sozinho com os produtos ativos, preço e estoque.</p>
+          <h2 id="google-t" className="text-lg font-semibold">Catálogo de produtos (Google, Instagram e TikTok)</h2>
+          <p className="text-sm text-body">Um endereço só serve para os três. Ele se atualiza sozinho com os produtos ativos, preço e estoque.</p>
           <CopiarLink url={`${origem}/feed.xml`} />
+          <ul className="list-disc space-y-1 pl-5 text-sm text-body">
+            <li><b>Google Shopping:</b> no Google Merchant Center, adicione o endereço como fonte de produtos (feed programado).</li>
+            <li><b>Instagram e Facebook:</b> no Gerenciador de Comércio da Meta, crie um catálogo e escolha &quot;Feed de dados&quot; com envio programado por endereço.</li>
+            <li><b>TikTok:</b> no Gerenciador de Catálogos do TikTok, adicione produtos por &quot;Feed de dados&quot; e cole o endereço.</li>
+          </ul>
         </section>
         <section id="meta" aria-labelledby="meta-t" className={sec}>
           <h2 id="meta-t" className="text-lg font-semibold">Pixel da Meta (Facebook e Instagram)</h2>
           <p className="text-sm text-body">Conta visitas, produto visto, item no carrinho e compra para os seus anúncios. Com o token da API de conversões, a compra também é avisada pelo servidor, depois do pagamento confirmado (mais precisa, mesmo com bloqueador de anúncios).</p>
           <FormPixel pixelId={s.metaPixelId ?? ""} temToken={!!s.metaCapiTokenEnc} />
+        </section>
+        <section id="integracoes" aria-labelledby="integracoes-t" className={sec}>
+          <h2 id="integracoes-t" className="text-lg font-semibold">Google, TikTok, Pinterest, chat e celular</h2>
+          <p className="text-sm text-body">Cole o código de cada serviço que você usa. Os que ficarem em branco continuam desligados. A compra só é contada depois do pagamento confirmado.</p>
+          <FormIntegracoes inicial={entradaDe(s.integrations ?? {})} />
         </section>
         <section id="lancamento" aria-labelledby="lancamento-t" className={sec}>
           <h2 id="lancamento-t" className="text-lg font-semibold">Loja em lançamento</h2>
