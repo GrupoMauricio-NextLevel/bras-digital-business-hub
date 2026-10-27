@@ -270,3 +270,87 @@
   - ROAS e CAC.
 - **Marketing:** gerador de UTM e calendário comercial (datas do varejo e quando começar a preparar).
 - **Nós hoje:** simulador de plano e calculadoras de parceiro e de venda (`sale-calculator`, `partner-calculator`). **Oportunidade:** ferramentas simples e úteis, que puxam o lojista para dentro do painel (custo baixo, valor percebido alto). Algumas podem ser públicas (atraem visitantes para a página da marca).
+
+## Lote 8: configurações, meu plano e API
+
+### 8.1 Configurações da loja
+- **Topo:** logo e favicon (cada um com "Gravar"), **"Loja em manutenção"** e **"Loja em lançamento"** (página de espera antes de abrir).
+- **Cartões de configuração:**
+  - Geral (página inicial, menu do celular, alertas, janela de aviso);
+  - Carrinho (cores e textos);
+  - Checkout (cores e textos);
+  - Clientes (cadastro, entrada, central do cliente);
+  - Produtos (textos, caixa de compra);
+  - Rodapé (newsletter, copyright, atendimento, ícones de pagamento);
+  - SEO global;
+  - Notificações (quais avisos da plataforma o lojista recebe);
+  - Segurança (verificação anti-robô quando a loja está sob ataque).
+- **Submenu:** formas de pagamento, frete e logística, configurar atacado, configurar e-mails, configurar domínio, **scripts por página**.
+- **Grupo "Geral":** Plataforma, Faturas, Usuários.
+- **Nós hoje:** configurações da loja, domínio próprio, frete, pagamentos, e-mails transacionais. **Falta:**
+  - loja em manutenção ou em lançamento (com lista de espera);
+  - scripts por página (pixel e chat de terceiros);
+  - personalizar textos e cores de carrinho e checkout;
+  - escolher quais notificações receber;
+  - anti-robô sob ataque.
+
+### 8.2 Meu plano
+- **Faixa do plano atual:** nome, mensalidade, "+1% de comissão sem o meio de pagamento próprio", produtos permitidos, dia de vencimento (alterável), forma de pagamento (Pix), hospedagem cobrada à parte.
+- **Ofertas:**
+  - mudar para o anual, com economia em reais, equivalente por mês e parcelado no cartão;
+  - outros planos (mensal ou anual, −20%) com limite de produtos e taxa por pedido menor nos planos maiores, sempre "sem o meio de pagamento próprio" (incentivo a usar o pagamento da plataforma);
+  - "Trocar para este plano".
+- **Links:** "Limite de requisições por IP" e "Rever termos de uso".
+- **Submenu Plataforma:**
+  - chamados (suporte), notificações, **recursos adicionais**, **minhas compras**, atividade recente;
+  - meu plano, dados cadastrais, **bloqueio de IPs**, **API e webhooks**, **novidades**, **sugestões**.
+- **Nós hoje:** planos com régua, taxa sobre vendas, anual com desconto (Master), fatura por Pix e cartão, assinatura. **Falta:**
+  - na tela "Meu plano" do lojista: mudar para o anual com a economia em reais, trocar de plano e escolher o dia de vencimento;
+  - **taxa menor para quem usa o nosso meio de pagamento** (alavanca de receita, se um dia tivermos pagamento próprio);
+  - chamados de suporte;
+  - novidades (o que mudou no sistema) e caixa de sugestões.
+
+### 8.3 API e webhooks
+- **Lista de webhooks:** busca por endereço, estado vazio com ação.
+- **Opções:** integração REST, documentação de webhooks, logs da API, logs do webhook.
+- **Tipos de aviso:** clientes, pedidos, status de pedido, produtos, estoque, preços, **carrinhos abandonados**, trocas e devoluções (com os métodos de cada um).
+- **Nós hoje:** recebemos webhooks (Mercado Pago), eventos internos (`emitEvent`) e integração de envio. **Falta:** uma API pública da loja e webhooks de saída para o lojista (integração com ERP, Bling, automações), com registro de chamadas.
+
+## Lote 9: comissão, usuários, estatísticas e "ver loja"
+
+### 9.1 Comissão (taxa da plataforma sobre as vendas)
+- **Selos:** "Ativo para sua conta" e "Competência: OUTUBRO/2026"; título e explicação "em tempo real, com base nas vendas elegíveis".
+- **Próximo fechamento** com data e hora.
+- **Indicadores:** vendas elegíveis, participação acumulada, percentual aplicado, **economia com o meio de pagamento próprio**.
+- **"Resumo do cálculo":** total em vendas, valor elegível (subtotal menos descontos), percentual do plano, participação, economia, total.
+- **"Como este valor é calculado":**
+  - entra: produtos vendidos e aprovados, descontos, pedidos da competência;
+  - não entra: frete, taxas, juros, embalagem para presente, adicionais.
+- **Nós hoje:** taxa sobre vendas pagas com fechamento mensal (FM3, D90). **Falta:** essa transparência na tela do lojista (o que entra, o que não entra, quanto já deu e quando fecha). Isso gera confiança: copiar a ideia de mostrar o cálculo.
+
+### 9.2 Usuários da loja
+- **Aviso de segurança:** "não compartilhe seus dados; crie um usuário para cada pessoa".
+- **Lista:** nome, e-mail, número; acesso (perfil "Básico" ou "Master", último acesso e **IP**); **2FA** (sim ou não); ativo; editar e apagar.
+- **Nós hoje:** equipe com acessos separados. **Falta:** verificação em duas etapas (2FA), IP e último acesso por usuário, e o aviso de segurança.
+
+### 9.3 Estatísticas
+- **Visitas no mês e no total**, período com "Filtrar" e "Zerar contador", gráfico de visitas por dia e uma recomendação de ligar o Google Analytics.
+- **Relatórios:**
+  - estoque total;
+  - movimentações do estoque;
+  - produtos mais vendidos;
+  - **produtos mais visitados**;
+  - relatório de pedidos;
+  - **vendas por canal** (com gráfico e tabela: pedidos, vendas, ticket, participação);
+  - métricas de clientes;
+  - planilhas.
+- **Registros:** históricos de clientes, logs internos, logs da API, logs do webhook.
+- **Nós hoje:** análise de vendas (D170) e Torre de controle. **Falta:** contador de visitas na loja (por dia e por produto), produtos mais visitados, vendas por canal (loja, WhatsApp, Instagram, balcão: já temos `channel` no pedido!), movimentação de estoque como relatório e exportação em planilha.
+
+### 9.4 "Ver loja"
+- **Janela com dois endereços:**
+  - o oficial (domínio próprio, "cache de 5 minutos");
+  - o de testes (subdomínio da plataforma, "cache de 1 minuto").
+- **Aviso honesto:** "alterações levam de 1 a 5 minutos para aparecer".
+- Botão "Alternar entre lojas".
+- **Nós hoje:** "Ver loja" e domínio próprio. **Ideia:** mostrar os dois endereços e avisar o tempo de atualização, se houver cache.
