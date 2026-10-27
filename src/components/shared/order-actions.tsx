@@ -9,6 +9,8 @@ import { CANCELABLE, NEXT_ACTION, ORDER_STATUS_LABEL } from "@/lib/domain/order-
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { LabelUploader } from "./label-uploader";
+import { EnvioDialog } from "./envio-dialog";
+import { formatBRL } from "@/lib/money";
 import { advanceOrderAction, cancelOrderAction, confirmCustomerPaymentAction, syncOrderPaymentAction } from "@/app/actions/orders";
 import type { ActionResult } from "@/lib/action-result";
 
@@ -29,7 +31,15 @@ export function OrderActions({ role, order, canFulfil = false, independent = fal
 
   const isMerchant = role === "STORE_OWNER";
   const isSupplier = role === "SUPPLIER_ADMIN" || role === "SUPPLIER_DISPATCH";
-  const next = NEXT_ACTION[order.status];
+  // Loja independente (D180): pedido antigo parado em "aguardando etiqueta" pode ser liberado para separação; o envio
+  // pede forma e rastreio. No SuperDrop nada muda.
+  const next = independent && order.status === "AWAITING_LABEL" ? { label: "Liberar para separação", next: "READY_TO_PICK" as const } : NEXT_ACTION[order.status];
+  const envioComRastreio = independent && isMerchant && canFulfil && order.status === "READY_TO_SHIP";
+  const pago = order.customerPaymentStatus === "PAID";
+  const avisoCancelar = !independent || !pago ? "O estoque reservado será liberado para outras vendas. Esta ação não pode ser desfeita."
+    : order.paymentProvider === "MERCADO_PAGO" ? `O valor de ${formatBRL(order.totalCents)} volta para o cliente pelo Mercado Pago (no Pix, para a conta dele; no cartão, como estorno na fatura). O estoque volta para a loja e o cliente recebe um e-mail. Esta ação não pode ser desfeita.`
+    : order.paymentProvider === "DEMO" ? "Pedido de demonstração: a devolução é simulada. O estoque volta para a loja e o cliente recebe um e-mail."
+    : `Este pagamento foi confirmado à mão: devolva ${formatBRL(order.totalCents)} ao cliente pelo mesmo meio. O estoque volta para a loja e o cliente recebe um e-mail.`;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -46,8 +56,9 @@ export function OrderActions({ role, order, canFulfil = false, independent = fal
       {isMerchant && !independent && order.customerPaymentStatus === "PAID" && order.centralPaymentStatus !== "PAID" ? (
         <a href="/merchant/wallet" className="inline-flex h-9 items-center gap-2 rounded-md bg-warning-soft px-3 text-sm font-medium text-warning">Aguardando recarga · recarregar saldo</a>
       ) : null}
-      {isMerchant && order.status !== "SHIPPED" ? <LabelUploader orderId={order.id} hasLabel={order.shippingLabelStatus === "READY"} primary={order.centralPaymentStatus === "PAID"} /> : null}
-      {(isSupplier || (isMerchant && canFulfil)) && next ? (
+      {isMerchant && !independent && order.status !== "SHIPPED" ? <LabelUploader orderId={order.id} hasLabel={order.shippingLabelStatus === "READY"} primary={order.centralPaymentStatus === "PAID"} /> : null}
+      {envioComRastreio ? <EnvioDialog orderId={order.id} transportadoraDoPedido={order.shippingCarrier} /> : null}
+      {(isSupplier || (isMerchant && canFulfil)) && next && !envioComRastreio ? (
         <Button loading={pending} onClick={() => handle(() => advanceOrderAction(order.id, next.next), ORDER_STATUS_LABEL[next.next])}>
           {next.label} <ArrowRight />
         </Button>
@@ -56,12 +67,12 @@ export function OrderActions({ role, order, canFulfil = false, independent = fal
         <ConfirmDialog
           trigger={<Button variant="ghost" className="text-danger hover:bg-danger-soft"><Ban /> Cancelar</Button>}
           title="Cancelar pedido"
-          description="O estoque reservado será liberado para outras vendas. Esta ação não pode ser desfeita."
-          confirmLabel="Cancelar pedido"
+          description={avisoCancelar}
+          confirmLabel={independent && pago && order.paymentProvider === "MERCADO_PAGO" ? "Cancelar e devolver" : "Cancelar pedido"}
           destructive
           onConfirm={async () => {
             const r = await cancelOrderAction(order.id);
-            if (r.ok) { toast.success("Pedido cancelado"); router.refresh(); } else toast.error(r.error);
+            if (r.ok) { toast.success(independent && pago && order.paymentProvider === "MERCADO_PAGO" ? "Pedido cancelado e valor devolvido ao cliente" : "Pedido cancelado"); router.refresh(); } else toast.error(r.error);
           }}
         />
       ) : null}

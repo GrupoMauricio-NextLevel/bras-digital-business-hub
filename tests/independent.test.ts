@@ -77,7 +77,7 @@ describe("loja independente da NextLevel E-commerce (D89: sem fornecedor, sem re
     const row = (await ctx.db.query.orders.findFirst({ where: eq(orders.id, o.orderId) }))!;
     expect(row.supplierId).toBeNull();
     expect(row.centralPaymentStatus).toBe("PAID");
-    expect(row.status).toBe("AWAITING_LABEL");
+    expect(row.status).toBe("READY_TO_PICK"); // D180: a loja independente separa sem esperar etiqueta
   });
 
   it("isolamento: uma loja independente não vê nem vende o catálogo de outra, e membro de fornecedor não mexe no catálogo dela", async () => {

@@ -1640,3 +1640,20 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - login do Master, Equipe (prêmio) e Estúdio de gravação;
   - palavra do fundador no site do grupo;
   - prévia de link (OG) com a foto do escritório.
+
+## D180 — [E-commerce] Depois da venda: separar, enviar com rastreio e cancelar devolvendo o dinheiro (2026-10-27)
+- **Achados do roteiro no navegador** (`e2e/ecommerce-pos-venda.mjs`, lojista novo com dois pedidos pagos):
+  1. O pedido pago da loja independente ficava parado em "aguardando etiqueta". Os botões de separar, enviar e entregar não apareciam; só "Anexar etiqueta (PDF)", com texto do SuperDrop ("a Central imprime").
+  2. Não havia onde digitar o código de rastreio.
+  3. Cancelar um pedido pago não devolvia o dinheiro nem avisava o cliente.
+- **Decisões (só na loja independente da E-commerce; o SuperDrop não muda, com teste):**
+  - **Pagou, já pode separar.** `resolveFulfillmentStatus` ganha `etiquetaAntes`. Na loja independente a etiqueta não trava a separação, porque quem envia é o próprio lojista. Pedido antigo parado em "aguardando etiqueta" ganha o botão "Liberar para separação". O anexo de PDF some do pedido da loja independente.
+  - **Marcar como enviado pede como vai e o rastreio** (`marcarEnviado`, `FORMAS_DE_ENVIO`): Correios, Jadlog, Loggi ou outra transportadora (com código obrigatório), ou entrega própria (sem código). O código é guardado em maiúsculas e sem espaços. O cliente recebe o e-mail com o código e o vê na página do pedido e em "Acompanhar pedido".
+  - **Cancelar pedido pago devolve antes de cancelar:**
+    - Mercado Pago: estorno pela conta da loja, com chave de idempotência por pedido. Se o Mercado Pago recusar, nada é cancelado e a mensagem diz isso.
+    - Demonstração: devolução simulada.
+    - Pagamento confirmado à mão: o pedido registra que o lojista deve devolver pelo mesmo meio.
+
+    O cliente recebe o e-mail de cancelamento dizendo como o dinheiro volta (Pix para a conta, cartão como estorno na fatura). A página do pedido mostra "cancelado e valor devolvido". O diálogo de cancelar diz o valor e o que vai acontecer.
+- **Testes:** `tests/pos-venda-ecommerce.test.ts` (7 casos, incluindo o SuperDrop sem mudança). `tests/independent.test.ts` passa a esperar "pronto para separar".
+- **Fica para depois:** compra de etiqueta pela API da plataforma de envio e rastreio automático até "entregue" (P1b de `promessas-commerce.md`). Devolução ao cliente nos pedidos do SuperDrop (envolve o saldo da Central).

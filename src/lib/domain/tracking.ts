@@ -23,7 +23,7 @@ export function journeyStepOf(o: Pick<Order, "status" | "customerPaymentStatus">
 }
 
 export type TrackedOrder = {
-  id: string; number: number; canceled: boolean; step: JourneyStep; stepIndex: number; createdAt: string;
+  id: string; number: number; canceled: boolean; /** Valor devolvido ao cliente no cancelamento (D180). */ refunded: boolean; step: JourneyStep; stepIndex: number; createdAt: string;
   carrier: string | null; trackingCode: string | null; paid: boolean; totalCents: number;
   items: { name: string; label: string; quantity: number }[]; city: string; state: string;
   timeline: { at: string; title: string }[];
@@ -52,7 +52,7 @@ export async function toTracked(db: Database, order: Order): Promise<TrackedOrde
   const seen = new Set<string>();
   const timeline = events.flatMap((e) => { const t = map[e.type]; if (!t || seen.has(t)) return []; seen.add(t); return [{ at: e.createdAt, title: t }]; });
   return {
-    id: order.id, number: order.number, canceled: order.status === "CANCELED", step, stepIndex: JOURNEY.indexOf(step), createdAt: order.createdAt,
+    id: order.id, number: order.number, canceled: order.status === "CANCELED", refunded: order.customerPaymentStatus === "REFUNDED", step, stepIndex: JOURNEY.indexOf(step), createdAt: order.createdAt,
     carrier: order.status === "SHIPPED" || order.status === "DELIVERED" ? order.shippingCarrier : null, trackingCode: order.status === "SHIPPED" || order.status === "DELIVERED" ? order.shippingLabelCode : null,
     paid: order.customerPaymentStatus === "PAID", totalCents: order.totalCents,
     items: items.map((i) => ({ name: i.productName, label: i.label.split(" (")[0]!, quantity: i.quantity })), city: order.shippingCity ?? "", state: order.shippingState ?? "", timeline,

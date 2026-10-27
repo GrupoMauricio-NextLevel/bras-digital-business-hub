@@ -47,20 +47,22 @@ export const CANCELABLE: OrderStatus[] = ["PENDING", "AWAITING_CENTRAL_PAYMENT",
 
 /**
  * Regra central do MVP: o pedido só fica pronto para separação quando
- * a Central foi paga E a etiqueta está pronta.
+ * a Central foi paga E a etiqueta está pronta. Loja independente da E-commerce (D180): quem envia é o próprio
+ * lojista, que separa antes e informa o rastreio ao marcar como enviado; a etiqueta não trava a separação
+ * (`etiquetaAntes: false`). O SuperDrop continua exigindo a etiqueta, porque a Central imprime na expedição.
  */
 export function resolveFulfillmentStatus(input: {
   status: OrderStatus;
   customerPaymentStatus: "PENDING" | "PAID" | "REFUNDED";
   centralPaymentStatus: "PENDING" | "PAID";
   shippingLabelStatus: "PENDING" | "READY";
-}): OrderStatus {
+}, opts: { etiquetaAntes?: boolean } = {}): OrderStatus {
   const { status } = input;
   const preFulfillment: OrderStatus[] = ["PENDING", "AWAITING_CENTRAL_PAYMENT", "AWAITING_LABEL"];
   if (!preFulfillment.includes(status)) return status;
   if (input.customerPaymentStatus !== "PAID") return "PENDING";
   if (input.centralPaymentStatus !== "PAID") return "AWAITING_CENTRAL_PAYMENT";
-  if (input.shippingLabelStatus !== "READY") return "AWAITING_LABEL";
+  if (input.shippingLabelStatus !== "READY" && opts.etiquetaAntes !== false) return "AWAITING_LABEL";
   return "READY_TO_PICK";
 }
 

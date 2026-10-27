@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
+import { isIndependentStore } from "./independent";
 import { activities, orderEvents, orders, stores, suppliers, walletAccounts, walletEntries, walletRecharges, networks, type WalletEntryType } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { decryptSecret } from "@/lib/security/crypto";
@@ -66,7 +67,7 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
   // Loja própria do fornecedor: o custo é interno, não há saldo a debitar.
   const own = await tx.query.stores.findFirst({ where: eq(stores.id, order.storeId) });
   if (own?.kind === "SUPPLIER_OWN") {
-    const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" });
+    const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
     await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: now, awaitingFundsSince: null, status: next, updatedAt: now }).where(eq(orders.id, orderId));
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Loja própria do fornecedor: custo interno, sem débito de saldo.", actorRole: "SYSTEM" });
     if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: "Fila de expedição atualizada.", actorRole: "SYSTEM" });
@@ -75,7 +76,7 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
   const acc = await lockAccount(tx, order.storeId);
   if (acc.balance < order.costTotalCents) {
     if (!order.awaitingFundsSince || order.status !== "AWAITING_CENTRAL_PAYMENT") {
-      const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PENDING" });
+      const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PENDING" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
       await tx.update(orders).set({ awaitingFundsSince: order.awaitingFundsSince ?? now, status: next, updatedAt: now }).where(eq(orders.id, orderId));
       if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "AWAITING_FUNDS", message: "Aguardando recarga: saldo insuficiente para o custo do pedido.", actorRole: "SYSTEM" });
       await tx.insert(activities).values({ id: newId("act"), scope: "STORE", supplierId: order.supplierId, storeId: order.storeId, type: "AWAITING_FUNDS", message: `Pedido #${order.number} aguarda recarga de saldo` });
@@ -84,7 +85,7 @@ export async function tryDebitOrder(tx: Tx, orderId: string): Promise<"DEBITED" 
     return "AWAITING_FUNDS";
   }
   await post(tx, order.storeId, { type: "ORDER_DEBIT", amountCents: -order.costTotalCents, orderId, note: `Custo do pedido #${order.number}` });
-  const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" });
+  const next = resolveFulfillmentStatus({ ...order, centralPaymentStatus: "PAID" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
   await tx.update(orders).set({ centralPaymentStatus: "PAID", centralPaidAt: now, awaitingFundsSince: null, status: next, updatedAt: now }).where(eq(orders.id, orderId));
   await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CENTRAL_PAID", message: "Custo debitado do saldo.", actorRole: "SYSTEM" });
   if (next !== order.status) await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: `STATUS_${next}`, message: "Fila de expedição atualizada.", actorRole: "SYSTEM" });

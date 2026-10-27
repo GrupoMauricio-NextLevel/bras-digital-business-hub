@@ -4,7 +4,8 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { addOrderNote, advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, type CreateOrderInput } from "@/lib/domain/orders";
+import { addOrderNote, advanceOrder, cancelOrder, confirmCustomerPayment, createOrder, getOrderForActor, marcarEnviado, type CreateOrderInput, type envioSchema } from "@/lib/domain/orders";
+import type { z } from "zod";
 import { syncOrderPayment } from "@/lib/payments/service";
 import type { OrderStatus } from "@/db/schema";
 
@@ -46,6 +47,16 @@ export async function advanceOrderAction(orderId: string, next: OrderStatus) {
   return runAction(async () => {
     const s = await actor();
     const r = await advanceOrder((await getDb()), s.actor, orderId, next);
+    revalidateOrders();
+    return { status: r.status };
+  });
+}
+
+/** Loja independente (D180): marca como enviado com a forma de envio e o código de rastreio. */
+export async function marcarEnviadoAction(orderId: string, input: z.input<typeof envioSchema>) {
+  return runAction(async () => {
+    const s = await actor();
+    const r = await marcarEnviado((await getDb()), s.actor, orderId, input);
     revalidateOrders();
     return { status: r.status };
   });

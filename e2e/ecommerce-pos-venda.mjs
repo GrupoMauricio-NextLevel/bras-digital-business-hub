@@ -78,6 +78,8 @@ async function compra(nome, email) {
   await c.waitForTimeout(1500);
   await c.getByRole("button", { name: /Ir para o pagamento/ }).first().click();
   await c.waitForURL((u) => u.pathname.includes("/order/"), { timeout: 30000 });
+  // A página do pedido termina de carregar depois da navegação: espera o número aparecer.
+  await c.waitForFunction(() => /#\s?\d{3,}/.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
   const numero = (await texto(c)).match(/#\s?(\d{3,})/)?.[1] ?? null;
   return { c, url: c.url(), numero };
 }
@@ -102,37 +104,45 @@ await passo(p, "2. Lojista abre o pedido pago e vê o que fazer", async () => {
   return `situação: ${situacao} · botões: ${await botoes(p)}`;
 });
 
-await passo(p, "3. Lojista informa o código de rastreio sem PDF", async () => {
-  const btn = p.getByRole("button", { name: /rastreio/i });
-  if (!(await btn.count())) throw new Error(`não há onde digitar o código de rastreio (botões: ${await botoes(p)})`);
-  await btn.first().click();
-  await p.getByLabel(/Código de rastreio/i).fill(RASTREIO);
-  const tr = p.getByLabel(/Transportadora|Como vai/i); if (await tr.count()) await tr.first().fill("Correios").catch(async () => tr.first().selectOption({ label: "Correios" }));
-  await p.getByRole("button", { name: /Salvar|Registrar|Confirmar/ }).last().click(); await p.waitForTimeout(1500);
-  if (!(await texto(p)).includes(RASTREIO)) throw new Error("o código não aparece no pedido depois de salvar");
-  return RASTREIO;
-});
-
-for (const [i, re] of [[4, /Iniciar separação/], [5, /Concluir separação/], [6, /Marcar como enviado/], [7, /Marcar como entregue/]]) {
+for (const [i, re] of [[3, /Iniciar separação/], [4, /Concluir separação/]]) {
   await passo(p, `${i}. Lojista: ${re.source}`, async () => {
     const btn = p.getByRole("button", { name: re });
     if (!(await btn.count())) throw new Error(`botão não aparece (botões: ${await botoes(p)})`);
     await btn.first().click(); await p.waitForTimeout(1500);
     return (await texto(p)).match(/Situação atual (.{0,90})/)?.[1] ?? "";
   });
-  if (i === 6) {
-    await passo(pedido1.c, "6b. Cliente vê enviado e o rastreio na página do pedido", async () => {
-      await pedido1.c.goto(pedido1.url, { waitUntil: "networkidle" });
-      const t = await texto(pedido1.c);
-      if (!/enviado/i.test(t)) throw new Error("a página do pedido não mostra que foi enviado");
-      if (!t.includes(RASTREIO)) throw new Error("a página do pedido não mostra o código de rastreio");
-      await pedido1.c.screenshot({ path: `${OUT}/cliente-enviado-390.png`, fullPage: true });
-      return "enviado com rastreio";
-    });
-  }
 }
 
-await passo(pedido1.c, "8. Cliente acha o pedido em Acompanhar pedido (número + e-mail)", async () => {
+await passo(p, "5. Lojista marca como enviado informando o rastreio", async () => {
+  const btn = p.getByRole("button", { name: /Marcar como enviado/ });
+  if (!(await btn.count())) throw new Error(`botão não aparece (botões: ${await botoes(p)})`);
+  await btn.first().click();
+  await p.getByLabel(/Como o pedido vai/i).selectOption("CORREIOS");
+  await p.getByLabel(/Código de rastreio/i).fill(RASTREIO);
+  await p.screenshot({ path: `${OUT}/lojista-envio.png` });
+  await p.getByRole("button", { name: /Confirmar envio/ }).click(); await p.waitForTimeout(2000);
+  const t = await texto(p);
+  if (!t.includes(RASTREIO)) throw new Error("o código não aparece no pedido depois de enviar");
+  return t.match(/Situação atual (.{0,90})/)?.[1] ?? RASTREIO;
+});
+
+await passo(pedido1.c, "5b. Cliente vê enviado e o rastreio na página do pedido", async () => {
+  await pedido1.c.goto(pedido1.url, { waitUntil: "networkidle" });
+  const t = await texto(pedido1.c);
+  if (!/enviado/i.test(t)) throw new Error("a página do pedido não mostra que foi enviado");
+  if (!t.includes(RASTREIO)) throw new Error("a página do pedido não mostra o código de rastreio");
+  await pedido1.c.screenshot({ path: `${OUT}/cliente-enviado-390.png`, fullPage: true });
+  return "enviado com rastreio";
+});
+
+await passo(p, "6. Lojista: Marcar como entregue", async () => {
+  const btn = p.getByRole("button", { name: /Marcar como entregue/ });
+  if (!(await btn.count())) throw new Error(`botão não aparece (botões: ${await botoes(p)})`);
+  await btn.first().click(); await p.waitForTimeout(1500);
+  return (await texto(p)).match(/Situação atual (.{0,90})/)?.[1] ?? "";
+});
+
+await passo(pedido1.c, "7. Cliente acha o pedido em Acompanhar pedido (número + e-mail)", async () => {
   await pedido1.c.goto(`${B}/store/${slug}/acompanhar`, { waitUntil: "networkidle" });
   const c = pedido1.c;
   await c.getByLabel(/Número/i).fill(String(pedido1.numero)); await c.getByLabel(/E-mail/i).fill(`entrega+${sufixo}@teste.dev`);
@@ -142,7 +152,7 @@ await passo(pedido1.c, "8. Cliente acha o pedido em Acompanhar pedido (número +
   return "entregue";
 });
 
-await passo(p, "9. Lojista cancela o segundo pedido (pago)", async () => {
+await passo(p, "8. Lojista cancela o segundo pedido (pago)", async () => {
   await p.goto(B + "/merchant/orders", { waitUntil: "networkidle" });
   await p.getByText("Cliente Cancela").first().click();
   await p.waitForURL((u) => /\/merchant\/orders\/ord_/.test(u.pathname), { timeout: 15000 });
@@ -154,7 +164,7 @@ await passo(p, "9. Lojista cancela o segundo pedido (pago)", async () => {
   return "cancelado com devolução";
 });
 
-await passo(pedido2.c, "10. Cliente do pedido cancelado vê cancelamento e devolução", async () => {
+await passo(pedido2.c, "9. Cliente do pedido cancelado vê cancelamento e devolução", async () => {
   await pedido2.c.goto(pedido2.url, { waitUntil: "networkidle" });
   const t = await texto(pedido2.c);
   if (!/cancelad/i.test(t)) throw new Error("a página do pedido não mostra o cancelamento");
@@ -162,7 +172,7 @@ await passo(pedido2.c, "10. Cliente do pedido cancelado vê cancelamento e devol
   return "cancelado e devolvido";
 });
 
-await passo(p, "11. Pós-venda do lojista sem conceito do SuperDrop", async () => {
+await passo(p, "10. Pós-venda do lojista sem conceito do SuperDrop", async () => {
   await p.goto(B + "/merchant/after-sales", { waitUntil: "networkidle" });
   const t = await texto(p);
   const vaza = t.match(/Central[^.]{0,60}|recarga[^.]{0,40}|saldo da carteira/i);

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { PDFDocument } from "pdf-lib";
 import type { Database } from "@/db/client";
+import { isIndependentStore } from "./independent";
 import { activities, labelPrints, orderEvents, orderItems, orderLabelFiles, orders } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { assertCanAccess, isSupplierSide, type Actor } from "./access";
@@ -42,7 +43,7 @@ export async function addLabelFile(db: Database, actor: Actor, orderId: string, 
     if (existing.length >= MAX_LABEL_FILES) throw new DomainError("TOO_MANY_FILES", `No máximo ${MAX_LABEL_FILES} arquivos por pedido.`);
     const id = newId("lbl");
     await tx.insert(orderLabelFiles).values({ id, orderId, filename: safeName(file.filename), sizeBytes: file.bytes.length, sha256, dataBase64: Buffer.from(file.bytes).toString("base64"), uploadedBy: actor.userId });
-    const next = resolveFulfillmentStatus({ ...order, shippingLabelStatus: "READY" });
+    const next = resolveFulfillmentStatus({ ...order, shippingLabelStatus: "READY" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
     await tx.update(orders).set({ shippingLabelStatus: "READY", status: next, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "LABEL_READY", message: `Etiqueta anexada (${safeName(file.filename)}).`, actorRole: actor.role });
     if (next !== order.status) {

@@ -7,7 +7,7 @@ const ICON: Record<JourneyStep, LucideIcon> = { RECEIVED: ReceiptText, PAID: Wal
 
 /** Jornada do pedido para o cliente final: cinco etapas, a atual em destaque e o rastreio quando existir. */
 export function OrderJourney({ order }: { order: TrackedOrder }) {
-  if (order.canceled) return <p role="status" className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">Este pedido foi cancelado. Se você já pagou, fale com a loja.</p>;
+  if (order.canceled) return <p role="status" className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">{order.refunded ? "Este pedido foi cancelado e o valor foi devolvido no mesmo meio de pagamento: no Pix, para a sua conta; no cartão, como estorno na fatura (o prazo depende do banco)." : "Este pedido foi cancelado. Se você já pagou, fale com a loja."}</p>;
   return (
     <div>
       <ol className="grid gap-3 sm:grid-cols-5" aria-label="Etapas do pedido">

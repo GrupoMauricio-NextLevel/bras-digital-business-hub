@@ -32,7 +32,8 @@ export function OrderDetail({ role, backHref, order, items, events, store, label
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },
     ...(independent ? [] : [{ label: "Custo debitado do saldo", done: order.centralPaymentStatus === "PAID" }]),
-    { label: "Etiqueta de envio", done: order.shippingLabelStatus === "READY" },
+    // Loja independente (D180): o rastreio entra ao marcar como enviado; a etiqueta não é uma etapa.
+    ...(independent ? [] : [{ label: "Etiqueta de envio", done: order.shippingLabelStatus === "READY" }]),
     { label: "Separação", done: ["PICKING", "READY_TO_SHIP", "SHIPPED", "DELIVERED"].includes(order.status) },
     { label: "Enviado", done: ["SHIPPED", "DELIVERED"].includes(order.status) },
     { label: "Entregue", done: order.status === "DELIVERED" },

@@ -17,6 +17,10 @@ import { assertCanFulfilOrder, assertManualPaymentConfirmable, isIndependentStor
 import { tryDebitOrder } from "./wallet";
 import { unitPriceForQty } from "./price-tiers";
 import { priceDiscount, redeemDiscount, releaseDiscount } from "./discounts";
+import { decryptSecret } from "@/lib/security/crypto";
+import { FORMAS_DE_ENVIO, type FormaDeEnvio } from "./formas-envio";
+export { FORMAS_DE_ENVIO, type FormaDeEnvio };
+import { findApprovedPaymentId, refundPayment, type FetchLike } from "@/lib/payments/mercadopago";
 
 export const orderLineSchema = z.object({
   productId: z.string().min(1),
@@ -159,7 +163,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
     const numberRow = await tx.select({ nextNumber: sql<number>`coalesce(max(${orders.number}), 1000) + 1` }).from(orders).where(eq(orders.storeId, store.id));
     const nextNumber = Number(numberRow[0]?.nextNumber ?? 1001);
 
-    const status = resolveFulfillmentStatus({ status: "PENDING", customerPaymentStatus: input.customerPaymentStatus, centralPaymentStatus: "PENDING", shippingLabelStatus: "PENDING" });
+    const status = resolveFulfillmentStatus({ status: "PENDING", customerPaymentStatus: input.customerPaymentStatus, centralPaymentStatus: "PENDING", shippingLabelStatus: "PENDING" }, { etiquetaAntes: !!store.networkId });
 
     await tx.insert(orders).values({
       id: orderId,
@@ -296,7 +300,7 @@ export async function confirmCustomerPayment(db: Database, actor: Actor, orderId
   const won = await db.transaction(async (tx) => {
     const claimed = await tx.update(orders).set({ customerPaymentStatus: "PAID", updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.customerPaymentStatus, "PENDING"), ne(orders.status, "CANCELED"))).returning({ id: orders.id });
     if (claimed.length === 0) return null;
-    const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
+    const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: "Pagamento do cliente confirmado.", actorRole: actor.role });
     await emitEvent(tx as unknown as Database, { type: "PAYMENT_APPROVED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId, totalCents: order.totalCents }, dedupeKey: `PAYMENT_APPROVED:${orderId}` });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actor);
@@ -322,7 +326,7 @@ export async function registerShippingLabel(db: Database, actor: Actor, orderId:
   if (order.status === "CANCELED") throw new DomainError("ORDER_CANCELED", "Pedido cancelado.");
   return db.transaction(async (tx) => {
     await tx.update(orders).set({ shippingLabelStatus: "READY", shippingLabelCode: data.code, shippingCarrier: data.carrier }).where(eq(orders.id, orderId));
-    const next = resolveFulfillmentStatus({ ...order, shippingLabelStatus: "READY" });
+    const next = resolveFulfillmentStatus({ ...order, shippingLabelStatus: "READY" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "LABEL_READY", message: `Etiqueta ${data.code} (${data.carrier}) registrada.`, actorRole: actor.role });
     if (next !== order.status) await applyStatus(tx, order, next, statusMessage(next, await isIndependentStore(tx as unknown as Database, order.storeId)), actor);
     if (next === "READY_TO_PICK") {
@@ -355,8 +359,9 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
     const access = await capabilitiesForSupplier(db, order.supplierId);
     if (!access.caps.canExpedite) throw new DomainError("SUPPLIER_BLOCKED", "Expedição indisponível por pendência financeira com a NextLevel.");
   }
-  if (next === "READY_TO_PICK" && (order.centralPaymentStatus !== "PAID" || order.shippingLabelStatus !== "READY")) {
-    throw new DomainError("NOT_READY", modality === "INDEPENDENT" ? "O pedido só fica pronto para separação com pagamento do cliente e etiqueta." : "Pedido só fica pronto para separação com pagamento à Central e etiqueta.");
+  // Loja independente (D180): basta o pagamento do cliente; a etiqueta vem depois, ao marcar como enviado.
+  if (next === "READY_TO_PICK" && (order.centralPaymentStatus !== "PAID" || order.customerPaymentStatus !== "PAID" || (modality !== "INDEPENDENT" && order.shippingLabelStatus !== "READY"))) {
+    throw new DomainError("NOT_READY", modality === "INDEPENDENT" ? "O pedido só fica pronto para separação depois do pagamento do cliente." : "Pedido só fica pronto para separação com pagamento à Central e etiqueta.");
   }
   const result = await db.transaction(async (tx) => {
     const claimed = await tx.update(orders).set({ status: next, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.status, order.status))).returning({ id: orders.id });
@@ -380,8 +385,53 @@ export async function advanceOrder(db: Database, actor: Actor, orderId: string, 
   return { ...order, status: next };
 }
 
+export const envioSchema = z.object({
+  forma: z.enum(FORMAS_DE_ENVIO.map((f) => f.key) as [FormaDeEnvio, ...FormaDeEnvio[]]),
+  transportadora: z.string().trim().max(60).optional(),
+  codigo: z.string().trim().max(60).optional(),
+}).superRefine((v, c) => {
+  const f = FORMAS_DE_ENVIO.find((x) => x.key === v.forma)!;
+  if (f.rastreio && (v.codigo ?? "").replace(/\s/g, "").length < 6) c.addIssue({ code: "custom", path: ["codigo"], message: "Informe o código de rastreio (pelo menos 6 caracteres)." });
+  if (v.forma === "TRANSPORTADORA" && (v.transportadora ?? "").length < 2) c.addIssue({ code: "custom", path: ["transportadora"], message: "Informe o nome da transportadora." });
+});
+
+/**
+ * Loja independente (D180): o lojista marca o pedido como enviado informando como ele vai e o código de rastreio.
+ * Grava a transportadora e o código no pedido e avança para "enviado", o que baixa o estoque e manda ao cliente o e-mail
+ * com o rastreio. Repetir não faz nada de novo (o avanço é idempotente).
+ */
+export async function marcarEnviado(db: Database, actor: Actor, orderId: string, raw: z.input<typeof envioSchema>) {
+  const v = envioSchema.parse(raw);
+  const order = await loadOwned(db, actor, orderId);
+  if (order.status === "SHIPPED" || order.status === "DELIVERED") return order;
+  if ((await storeModality(db, order.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_INDEPENDENT", "Nesta loja o envio é feito pela Central do fornecedor.");
+  if (order.status !== "READY_TO_SHIP") throw new DomainError("INVALID_TRANSITION", "Conclua a separação antes de marcar como enviado.");
+  const f = FORMAS_DE_ENVIO.find((x) => x.key === v.forma)!;
+  const carrier = v.forma === "TRANSPORTADORA" ? v.transportadora! : f.label;
+  const code = f.rastreio ? v.codigo!.replace(/\s/g, "").toUpperCase() : null;
+  await db.update(orders).set({ shippingCarrier: carrier, shippingLabelCode: code, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.status, "READY_TO_SHIP")));
+  return advanceOrder(db, actor, orderId, "SHIPPED");
+}
+
+export type Devolucao = "MERCADO_PAGO" | "DEMO" | "MANUAL";
+
+/** Devolve ao cliente, pela conta Mercado Pago da loja, o valor de um pedido pago (idempotente pela chave do pedido). */
+async function devolverPeloMercadoPago(db: Database, order: typeof orders.$inferSelect, fetchImpl: FetchLike) {
+  const store = await db.query.stores.findFirst({ where: eq(stores.id, order.storeId) });
+  const token = decryptSecret(store?.mpAccessTokenEnc);
+  if (!token) throw new DomainError("PAYMENT_PROVIDER", "Conecte o Mercado Pago da loja para devolver o valor ao cliente. Nada foi cancelado.");
+  try {
+    const paymentId = order.paymentReference && /^\d+$/.test(order.paymentReference) ? order.paymentReference : await findApprovedPaymentId(token, order.id, fetchImpl);
+    if (!paymentId) throw new DomainError("PAYMENT_PROVIDER", "O Mercado Pago não encontrou o pagamento deste pedido. Nada foi cancelado.");
+    return await refundPayment(token, paymentId, { idempotencyKey: `devolucao-pedido-${order.id}` }, fetchImpl);
+  } catch (e) {
+    if (e instanceof DomainError) throw e;
+    throw new DomainError("PAYMENT_PROVIDER", "O Mercado Pago não confirmou a devolução agora. Nada foi cancelado; tente de novo em instantes.");
+  }
+}
+
 /** Cancela o pedido e libera a reserva uma única vez (repetir o cancelamento não devolve estoque de novo). */
-export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
+export async function cancelOrder(db: Database, actor: Actor, orderId: string, fetchImpl: FetchLike = fetch) {
   if (actor.role === "SUPPLIER_DISPATCH") throw new ForbiddenError("A expedição não cancela pedidos.");
   const order = await loadOwned(db, actor, orderId);
   if (order.status === "CANCELED") return { ...order, status: "CANCELED" as const };
@@ -390,6 +440,14 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     // dono de loja de rede/própria cancelava antes da Onda 1: mantém esse comportamento; só a conta simples passa pela política de plano
     if ((await storeModality(db, order.storeId)) === "INDEPENDENT") throw e;
   });
+  // Loja independente (D180): pedido pago cancelado devolve o dinheiro ao cliente antes de cancelar. Se a devolução
+  // falhar, nada muda. O SuperDrop segue como antes.
+  const independente = (await storeModality(db, order.storeId)) === "INDEPENDENT";
+  let devolucao: Devolucao | null = null;
+  if (independente && order.customerPaymentStatus === "PAID") {
+    if (order.paymentProvider === "MERCADO_PAGO") { await devolverPeloMercadoPago(db, order, fetchImpl); devolucao = "MERCADO_PAGO"; }
+    else devolucao = order.paymentProvider === "DEMO" ? "DEMO" : "MANUAL";
+  }
   const result = await db.transaction(async (tx) => {
     const claimed = await tx.update(orders).set({ status: "CANCELED", reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(and(eq(orders.id, orderId), eq(orders.status, order.status))).returning({ id: orders.id });
     if (claimed.length === 0) return "LOST" as const;
@@ -399,6 +457,12 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     if (order.customerPaymentStatus !== "PAID") await releaseDiscount(tx, order.discountId);
     await emitEvent(tx as unknown as Database, { type: "ORDER_CANCELED", storeId: order.storeId, supplierId: order.supplierId, actorRole: actor.role, payload: { orderId }, dedupeKey: `ORDER_CANCELED:${orderId}` });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "STATUS_CANCELED", message: "Pedido cancelado. Reserva de estoque liberada.", actorRole: actor.role });
+    if (devolucao === "MERCADO_PAGO" || devolucao === "DEMO") {
+      await tx.update(orders).set({ customerPaymentStatus: "REFUNDED" }).where(eq(orders.id, orderId));
+      await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_REFUNDED", message: devolucao === "DEMO" ? "Devolução ao cliente simulada (demonstração)." : "Valor devolvido ao cliente pelo Mercado Pago.", actorRole: actor.role });
+    } else if (devolucao === "MANUAL") {
+      await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "REFUND_MANUAL", message: "Pagamento confirmado à mão: devolva o valor ao cliente pelo mesmo meio do pagamento.", actorRole: actor.role });
+    }
     return "WON" as const;
   });
   if (result === "LOST") {
@@ -406,7 +470,8 @@ export async function cancelOrder(db: Database, actor: Actor, orderId: string) {
     if (fresh?.status === "CANCELED") return fresh;
     throw new DomainError("STATE_CONFLICT", "O pedido mudou de etapa enquanto você agia. Atualize a página e confira.");
   }
-  return { ...order, status: "CANCELED" as const };
+  if (independente) await emailOrderCustomer(db, orderId, "CANCELED", devolucao);
+  return { ...order, status: "CANCELED" as const, customerPaymentStatus: devolucao === "MERCADO_PAGO" || devolucao === "DEMO" ? "REFUNDED" as const : order.customerPaymentStatus };
 }
 
 async function expandReservations(db: Database, items: (typeof orderItems.$inferSelect)[]) {
@@ -468,7 +533,7 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
 
   const result = await db.transaction(async (tx) => {
     await tx.update(orders).set({ customerPaymentStatus: "PAID", paymentProvider: info.provider, paymentReference: info.reference, reservationExpiresAt: null, updatedAt: new Date().toISOString() }).where(eq(orders.id, orderId));
-    const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" });
+    const next = resolveFulfillmentStatus({ ...order, customerPaymentStatus: "PAID" }, { etiquetaAntes: !(await isIndependentStore(tx as unknown as Database, order.storeId)) });
     await tx.insert(orderEvents).values({ id: newId("evt"), orderId, type: "CUSTOMER_PAID", message: `Pagamento do cliente aprovado (${info.provider === "MERCADO_PAGO" ? "Mercado Pago" : "demonstração"} · ${info.reference}).`, actorRole: SYSTEM_ACTOR });
     if (next !== order.status) {
       await tx.update(orders).set({ status: next }).where(eq(orders.id, orderId));
