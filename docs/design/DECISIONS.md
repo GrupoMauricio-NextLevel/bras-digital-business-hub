@@ -1696,3 +1696,25 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - listas vazias do painel: já têm ilustração própria;
   - segunda foto na home da Cargas: seria par quase igual na mesma página.
 - **Testes:** `tests/equipe-usos.test.ts` (regras do mapa, textos do CEO, recado, canal de suporte), `tests/equipe-fotos.test.ts` (a equipe nunca nas lojas nem nos temas, agora cobrindo também os blocos novos) e `tests/login-marca.test.ts` atualizado.
+
+## D182 — [E-commerce] Melhorias a partir do painel wBuy aprovadas: ondas W0 a W6 (2026-10-27)
+- **Contexto:** o dono mostrou o painel wBuy em 9 lotes de capturas (`docs/referencias/wbuy-painel-notas.md`). A avaliação (`docs/prompts/racional-wbuy-ecommerce-superdrop.md`) comparou cada item com o código e ordenou as lacunas por impacto e esforço.
+- **Decisão (dono: "aceito as recomendações"):** executar `docs/prompts/melhorias-wbuy-prompt-engenheiro.md` na ordem:
+  - W0 confiança;
+  - W1 pedido na mesa;
+  - W2 medir a loja;
+  - W3 recuperar e vender mais;
+  - W4 migrar sem medo;
+  - W5 módulos e ferramentas;
+  - W6, uma peça por vez.
+- **Respostas padrão, já aprovadas:**
+  - o link de pagamento só aparece com o Mercado Pago conectado;
+  - o carrinho abandonado começa por e-mail;
+  - Pix direto e "receber na entrega" entram como baixa manual, nunca como pagamento conferido;
+  - as calculadoras públicas são a de preço e margem e a de frete grátis;
+  - o balcão começa com leitor do tipo teclado e sem impressora térmica;
+  - a verificação em duas etapas vale primeiro para o Master (W0), e para o lojista na W6.
+- **Regras:**
+  - nada copiado da wBuy;
+  - cada peça estende o que existe: link de pagamento = propostas; taxa = `platformFeeFor`; módulos = `entitlements`; afiliado da loja = `partners`;
+  - o SuperDrop só muda com teste, e a loja de rede não ganha mudança de situação na linha.

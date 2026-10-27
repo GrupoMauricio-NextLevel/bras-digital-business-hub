@@ -164,7 +164,7 @@ Legenda:
 | Ajustar dados e endereço no pedido | Não | Edição auditada antes do envio | M | M | EC |
 | Previsão de entrega | Prazo do frete existe | Data prevista calculada (pago + prazo) no pedido e no rastreio | M | P | EC SD |
 | Origem do cliente (aparelho, de onde veio) | `channel` só tem 4 valores | Guardar aparelho e UTM no checkout | M | M | EC SD |
-| Link de pagamento | **Não existe** | Pedido manual → link de pagamento do Mercado Pago para mandar no WhatsApp | A | M | EC |
+| Link de pagamento | **Quase existe:** propostas (`proposals.ts`, `/merchant/orders/propostas`) geram um link que vira pedido | Chamar de "Link de pagamento" na E-commerce, copiar e mandar no WhatsApp | A | P | EC |
 | Trocas e devoluções como fluxo | Cancelamento com devolução do dinheiro (D180) | Pedido de troca ou devolução aberto pelo cliente, com etapas | M | G | EC |
 | Aviso no celular a cada pedido | E-mail | Notificação do navegador (PWA do painel) | M | M | EC SD |
 
