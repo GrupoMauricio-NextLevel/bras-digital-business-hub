@@ -50,6 +50,11 @@ export async function placeStorefrontOrderAction(slug: string, rawInput: Omit<Cr
       const s = await getSession();
       if (!s || (s.store?.id !== store.id && s.user.role !== "NEXTLEVEL_MASTER")) throw new DomainError("STORE_UNPUBLISHED", "Esta loja ainda não está publicada.");
     }
+    if (store.launchMode) {
+      // Loja em lançamento (D187): só o dono (testando) compra; o público ainda vê a lista de espera.
+      const s = await getSession();
+      if (s?.store?.id !== store.id) throw new DomainError("STORE_LAUNCHING", "A loja ainda não abriu. Deixe o seu e-mail para ser avisado.");
+    }
     const { shippingServiceId, origem, ...rest } = rawInput;
     // Origem da venda (D185): aparelho pelo navegador e campanha guardada na chegada; nada pessoal.
     const ua = (await headers()).get("user-agent");
@@ -182,4 +187,16 @@ export async function salvarCarrinhoAction(slug: string, input: { email: string;
 export async function sairDosLembretesAction(token: string) {
   try { await sairDosLembretes(await getDb(), token); } catch { /* resposta igual sempre */ }
   return { ok: true };
+}
+
+/** Lista de espera da loja em lançamento (D187). */
+export async function entrarNaListaDeEsperaAction(slug: string, input: { email: string; consent: boolean }) {
+  return runAction(async () => {
+    if (!rateLimit(`espera:${(await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0"}`, 10, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo mais tarde.");
+    const db = await getDb();
+    const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug), columns: { id: true } });
+    if (!store) throw new NotFoundError("Loja não encontrada.");
+    await (await import("@/lib/domain/migrar")).entrarNaListaDeEspera(db, store.id, input);
+    return undefined;
+  });
 }

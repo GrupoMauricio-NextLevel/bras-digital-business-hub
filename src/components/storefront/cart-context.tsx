@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { eventoMeta } from "./pixel-meta";
 
 export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number;
   /** Preço por quantidade do produto (soma das unidades do mesmo produto no carrinho). */
@@ -76,6 +77,7 @@ export function CartProvider({ storeSlug, children }: { storeSlug: string; child
     lines,
     ready,
     add: (line) => {
+      eventoMeta("AddToCart", { currency: "BRL", value: (line.unitPriceCents * line.quantity) / 100 });
       const key = `${line.productId}:${line.variantId ?? ""}:${line.packId ?? ""}`;
       const prev = getStore(storeSlug).lines;
       const existing = prev.find((l) => l.key === key);

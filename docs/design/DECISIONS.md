@@ -1807,3 +1807,31 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - o **desconto automático do "compre junto"** também fica para depois (usa o motor de descontos).
 - **Banco:** migrações `0072_w3_carrinho_abandonado` (tabela) e `0073_w3_compre_junto` (2 colunas em `store_products`).
 - **Testes:** `tests/w3-vender-mais.test.ts` (consentimento, loja de rede, um carrinho por e-mail, 1 h e 24 h, para ao comprar, sair da lista, preço de agora, resumo; compre junto da própria loja, no máximo 4, ordem na página; prazo de produção na previsão).
+
+## D187 — [E-commerce] W4 Migrar sem medo: endereços antigos, Google Shopping, Pixel da Meta e loja em lançamento (2026-10-27)
+- **Nova tela "Migrar e anunciar"** (`/merchant/migrar`, menu Marketing), só na loja independente. A regra fica em `src/lib/domain/migrar.ts`.
+- **Endereços antigos (redirecionamento permanente):**
+  - o lojista cola "endereço antigo;endereço novo" (vírgula, ponto e vírgula ou tabulação; até 5.000 linhas);
+  - o caminho é limpo: sem domínio, sem `?` e sem `#`, em minúsculas;
+  - são recusados: destino em outro site, laço (A→B e B→A) e origem que é página da loja (checkout, carrinho, pedido…);
+  - quem abre um endereço que a loja não tem cai na rota `src/app/store/[slug]/[...resto]`: com redirecionamento cadastrado, vai para o novo com **308** (permanente; o Google trata como 301) e o uso é contado; senão, "não encontrada", como antes;
+  - tabela `store_redirects`.
+- **Google Shopping:**
+  - `/store/[slug]/feed.xml` no formato do Merchant Center (`feedGoogle`, função pura);
+  - traz os produtos ativos, preço em reais, disponível ou esgotado, imagem, link e a marca da loja;
+  - loja não publicada, de demonstração ou em lançamento não lista;
+  - o endereço aparece na tela para copiar.
+- **Pixel da Meta:**
+  - número do pixel (público) e token da API de conversões, **só criptografado** (`encryptSecret`). O token nunca volta para a tela; apagar o número desliga tudo;
+  - na loja publicada: página vista, produto visto, item no carrinho e compra na página do pedido pago, com `eventID` = número do pedido;
+  - no servidor, **só depois do pagamento conferido no Mercado Pago** (`markCustomerPaidBySystem`), `enviarCompraMeta` avisa a compra com o mesmo `event_id` (a Meta junta e não conta duas vezes) e o e-mail só em resumo SHA-256. Nunca lança;
+  - os dados da loja que vão ao navegador continuam sem segredo (as seções recebem só nome, logo e WhatsApp).
+- **Loja em lançamento:**
+  - com a chave ligada (`stores.launch_mode`), o público vê "{loja} abre em breve" com a **lista de espera** (só com a caixinha marcada, sem repetir o e-mail; tabela `store_waitlist`);
+  - o dono e a equipe NextLevel veem a loja normal com o aviso;
+  - o checkout recusa compra do público, e visitas e Pixel não contam a página de espera;
+  - a lista aparece na tela do lojista.
+- **Ficou para depois:** avisar a lista de espera por e-mail quando a loja abrir (envio em massa: precisa da decisão sobre volume e remetente).
+- **SuperDrop:** nada muda. As ações recusam ("Disponível na loja da NextLevel E-commerce"); o feed, o Pixel e o lançamento ficam desligados por padrão.
+- **Banco:** migração `0074_w4_migrar_sem_medo`: `store_redirects`, `store_waitlist` e 3 colunas em `stores`.
+- **Testes:** `tests/w4-migrar.test.ts` (6) e `e2e/w34-vender-e-migrar.mjs` (com a W3).

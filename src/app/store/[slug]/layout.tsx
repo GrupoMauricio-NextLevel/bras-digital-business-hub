@@ -17,6 +17,8 @@ import { PreviewBridge } from "@/components/storefront/preview-bridge";
 import { exitThemePreviewAction, exitTryThemeAction } from "@/app/actions/theme";
 import { CartProvider } from "@/components/storefront/cart-context";
 import { ContadorDeVisitas } from "@/components/storefront/contador-de-visitas";
+import { PixelMeta } from "@/components/storefront/pixel-meta";
+import { ListaDeEspera } from "@/components/storefront/lista-de-espera";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
@@ -64,6 +66,10 @@ export default async function StoreLayout({ params, children }: { params: Promis
     );
   }
   const preview = await isPreviewMode(sf.store.id);
+  // Loja em lançamento (D187): o público vê a página de espera; o dono (e a equipe NextLevel) veem a loja normal.
+  const donoVendo = session?.store?.id === sf.store.id || session?.user.role === "NEXTLEVEL_MASTER";
+  const lancando = sf.store.launchMode && !showcase && !previewing;
+  const publico = !previewing && !preview && !showcase && !(lancando && !donoVendo);
   const productName = brandByCode(org?.brand).name;
   const trial = await tryingTheme(db, sf.store);
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
@@ -92,10 +98,12 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {!previewing && !showcase ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(orgLd) }} /> : null}
       {preview ? <PreviewBridge /> : null}
       {/* Visitas da loja (D185): nem a prévia do editor nem a vitrine de demonstração contam. */}
-      {!previewing && !preview && !showcase ? <ContadorDeVisitas slug={slug} /> : null}
+      {publico ? <ContadorDeVisitas slug={slug} /> : null}
+      {publico && sf.store.metaPixelId ? <PixelMeta pixelId={sf.store.metaPixelId} /> : null}
+      {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">{lancando && !donoVendo ? <ListaDeEspera slug={slug} loja={sf.store.name} /> : children}</main>
       </CartProvider>
       <SectionList template={globals.footer} ctx={ctx} region="footer" />
       {/* Assinatura fixa da NextLevel em todas as lojas geradas pelo sistema (não é editável). */}

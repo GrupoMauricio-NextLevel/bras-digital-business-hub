@@ -101,6 +101,11 @@ export const stores = pgTable("stores", {
   contactEmail: text("contact_email"),
   address: text("address"),
   customDomain: text("custom_domain"),
+  /** Pixel da Meta (W4, D187): o número do pixel é público; o token da API de conversões fica só criptografado. */
+  metaPixelId: text("meta_pixel_id"),
+  metaCapiTokenEnc: text("meta_capi_token_enc"),
+  /** Loja em lançamento (W4, D187): o público vê "abrimos em breve" com lista de espera; o dono vê a loja normal. */
+  launchMode: boolean("launch_mode").notNull().default(false),
   paymentProvider: text("payment_provider"),
   paymentStatus: text("payment_status", { enum: ["NOT_CONFIGURED", "DEMO", "CONNECTED"] }).notNull().default("NOT_CONFIGURED"),
   /** Access token do Mercado Pago da loja, criptografado (AES-256-GCM). */
@@ -449,6 +454,22 @@ export const abandonedCarts = pgTable("abandoned_carts", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("abandoned_carts_store_idx").on(t.storeId, t.email)]);
+
+/** Redirecionamentos de endereço antigo para novo (W4, D187): para quem vem de outra plataforma não perder o Google. */
+export const storeRedirects = pgTable("store_redirects", {
+  storeId: text("store_id").notNull().references(() => stores.id),
+  fromPath: text("from_path").notNull(),
+  toPath: text("to_path").notNull(),
+  hits: integer("hits").notNull().default(0),
+  createdAt: createdAt(),
+}, (t) => [primaryKey({ columns: [t.storeId, t.fromPath] })]);
+
+/** Lista de espera da loja em lançamento (W4, D187): só com o consentimento de quem deixa o e-mail. */
+export const storeWaitlist = pgTable("store_waitlist", {
+  storeId: text("store_id").notNull().references(() => stores.id),
+  email: text("email").notNull(),
+  createdAt: createdAt(),
+}, (t) => [primaryKey({ columns: [t.storeId, t.email] })]);
 
 export const orderEvents = pgTable("order_events", {
   id: id(),

@@ -312,6 +312,6 @@ FECHAMENTO DE CADA ONDA (obrigatório)
 | W1 Pedido na mesa | **Feita** (2026-10-27); o link cobra os produtos, o frete é combinado | D184 |
 | W2 Medir a loja | **Feita** (2026-10-27); "visitas hoje" no pulso fica para depois | D185 |
 | W3 Recuperar e vender mais | **Feita em parte** (2026-10-27): carrinho abandonado, compre junto e prazo de produção; encomenda, personalização, presente e desconto do compre junto ficam para uma rodada própria | D186 |
-| W4 Migrar sem medo | **Próxima** | — |
-| W5 Módulos e ferramentas | A fazer | — |
+| W4 Migrar sem medo | **Feita** (2026-10-27); aviso por e-mail à lista de espera fica para depois | D187 |
+| W5 Módulos e ferramentas | **Próxima** | — |
 | W6a a W6e | A fazer, uma por vez | — |

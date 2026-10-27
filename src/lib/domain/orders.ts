@@ -557,6 +557,8 @@ export async function markCustomerPaidBySystem(db: Database, orderId: string, in
   await emailOrderCustomer(db, orderId, "PAID");
   await applyTrialMilestone(db, order.storeId, "FIRST_SALE");
   await (await import("./pedido-mesa")).gravarPrevisaoDeEntrega(db, orderId);
+  // Compra para a API de conversões da Meta, se a loja configurou (D187). Só pagamento conferido; nunca lança.
+  if (info.provider === "MERCADO_PAGO") await (await import("@/lib/payments/meta-capi")).enviarCompraMeta(db, orderId);
   return result;
 }
 

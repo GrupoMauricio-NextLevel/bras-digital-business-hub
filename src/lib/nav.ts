@@ -229,6 +229,7 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Marketing" },
   { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Marketing" },
   { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Marketing" },
+  { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Marketing" },
   { label: "Visão da loja", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
   { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
   { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
