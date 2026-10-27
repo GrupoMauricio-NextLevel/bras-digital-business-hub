@@ -44,7 +44,7 @@ describe("acervo da equipe", () => {
     const arquivos = (d: string): string[] => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? arquivos(join(d, e.name)) : [join(d, e.name)]);
     for (const f of pastas.flatMap((p) => arquivos(join(process.cwd(), p)))) {
       const t = readFileSync(f, "utf8");
-      expect(/equipe-imagens|marcas\/equipe|secao-equipe|\/equipe\/v1\//.test(t), f).toBe(false);
+      expect(/equipe-imagens|marcas\/equipe|secao-equipe|equipe\/blocos|\/equipe\/v1\//.test(t), f).toBe(false);
     }
   });
 });

@@ -1,3 +1,4 @@
+import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import { requireBrandFeature } from "@/lib/brand-server";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
@@ -15,6 +16,7 @@ const PASSO_FOTO: Record<number, { nome: string; alt: string }> = {
 export default async function ComoFunciona() {
   await requireBrandFeature("dropship");
   return (
+    <>
     <div className="mx-auto max-w-4xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Como funciona</h1>
       <p className="mt-3 text-lg text-muted-foreground">Cada pessoa vê só o que precisa para fazer o seu trabalho.</p>
@@ -28,5 +30,7 @@ export default async function ComoFunciona() {
       <p className="mt-2 text-muted-foreground">Percentual sobre o valor dos produtos, sem o frete. Estorno devolve a taxa; pedidos de teste não pagam.</p>
       <ul className="mt-6 grid gap-4 sm:grid-cols-3">{MEMBER_FEES.map((f) => <li key={f.name} className="rounded-xl border border-border p-5"><p className="text-3xl font-extrabold tabular-nums">{f.fee}</p><h3 className="mt-1 font-semibold">{f.name}</h3><p className="text-sm text-muted-foreground">{f.text}</p></li>)}</ul>
     </div>
+    <BlocoEquipe lugar="como-funciona" className="bg-surface" />
+    </>
   );
 }

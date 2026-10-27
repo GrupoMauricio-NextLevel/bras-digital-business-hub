@@ -1,3 +1,5 @@
+import { CartaFundador, FotoEquipeLeve } from "@/components/portal/equipe/blocos";
+import { USOS_EQUIPE } from "@/lib/marcas/equipe-usos";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -7,7 +9,6 @@ import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
 import { groupSiteUrl } from "@/lib/host-routing";
 import { brandByCode } from "@/lib/brand";
-import { ogImageFor } from "@/lib/og-marca";
 import { finFlag } from "@/lib/finance/flags";
 import { listCatalog } from "@/lib/domain/nl-catalog";
 import { getJourneyConfig } from "@/lib/domain/journey";
@@ -35,7 +36,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "NextLevel Soluções para empresas: loja virtual, migração, temas e marketing";
   const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, SuperDrop, Loja Pronta, Migração, temas, tráfego e White Label.";
-  return { title: { absolute: title }, description, alternates: { canonical: `${groupSiteUrl()}/solucoes` }, openGraph: { title, description, url: `${groupSiteUrl()}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
+  return { title: { absolute: title }, description, alternates: { canonical: `${groupSiteUrl()}/solucoes` }, openGraph: { title, description, url: `${groupSiteUrl()}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [{ url: `${groupSiteUrl()}/portal/nextlevel/equipe/v1/eq-og-escritorio.jpg`, width: 1200, height: 630, alt: "Equipe NextLevel na sede, em São Paulo" }] } };
 }
 
 const H2 = "font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl";
@@ -191,6 +192,8 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
 
       <SecaoEquipe code="NEXTLEVEL" nomeDaMarca="NextLevel" className="text-foreground" />
 
+      <CartaFundador className="bg-surface text-foreground" />
+
       <section id="duvidas" className="px-4 pb-16" aria-labelledby="faq-t">
         <div className="mx-auto max-w-3xl">
           <h2 id="faq-t" className={H2}>Dúvidas.</h2>
@@ -215,6 +218,10 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
           ) : null}
           <h2 id="diag-t" className={H2}>Diagnóstico gratuito.</h2>
           <p className="mt-3 text-muted-foreground">Conte em que momento está o seu negócio. Respondemos com o próximo passo recomendado, sem compromisso.</p>
+          <div className="mt-6 flex items-center gap-4 rounded-2xl bg-surface/70 p-3">
+            <FotoEquipeLeve nome={USOS_EQUIPE["solucoes-diagnostico"].fotos[0]!} className="block h-20 w-28 shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-36" />
+            <p className="text-sm"><b>{USOS_EQUIPE["solucoes-diagnostico"].titulo}.</b> {USOS_EQUIPE["solucoes-diagnostico"].texto}</p>
+          </div>
           <div className="mt-6"><DiagnosticoForm needs={Object.entries(DIAGNOSTIC_NEEDS)} /></div>
           {contato.whatsappUrl || contato.email ? (
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">

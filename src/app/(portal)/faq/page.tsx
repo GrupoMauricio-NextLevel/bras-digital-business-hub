@@ -1,3 +1,4 @@
+import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import { FAQ as FAQ_ALL } from "../content";
 import { brandHas } from "@/lib/brand";
@@ -17,9 +18,12 @@ export default async function Faq() {
   const brand = await getBrand();
   const FAQ = brandHas(brand, "dropship") ? FAQ_ALL : FAQ_COMMERCE;
   return (
+    <>
     <div className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Perguntas frequentes</h1>
       <div className="mt-8 space-y-3">{FAQ.map((f) => <details key={f.q} className="rounded-xl border border-border p-4"><summary className="cursor-pointer font-semibold">{f.q}</summary><p className="mt-2 text-muted-foreground">{f.a}</p></details>)}</div>
     </div>
+    <BlocoEquipe lugar="faq" className="bg-surface" contatos mensagem={`Olá! Tenho uma dúvida sobre a ${brand.name}.`} />
+    </>
   );
 }

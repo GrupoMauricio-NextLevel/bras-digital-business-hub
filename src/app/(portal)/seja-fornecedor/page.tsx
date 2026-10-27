@@ -1,3 +1,4 @@
+import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BarChart3, Boxes, Check, Clock, Coins, Layers, Network, Printer, ShieldCheck, Store, Users, Wallet } from "lucide-react";
@@ -110,6 +111,8 @@ export default async function SejaFornecedor() {
           <ol className="mt-10 grid gap-4 md:grid-cols-3">{STEPS.map((s, n) => <Reveal as="li" key={s.t} delay={n * 80} className="rounded-2xl border border-border p-6"><span className="flex size-10 items-center justify-center rounded-full bg-band font-bold text-reflection">{n + 1}</span><h3 className="mt-4 font-bold">{s.t}</h3><p className="mt-1.5 text-muted-foreground">{s.d}</p></Reveal>)}</ol>
         </div>
       </section>
+
+      <BlocoEquipe lugar="seja-fornecedor" className="bg-canvas" contatos mensagem="Olá! Quero ser fornecedor do SuperDrop." />
 
       <section className="bg-band py-20 text-band-foreground">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 md:flex-row md:items-center md:justify-between">

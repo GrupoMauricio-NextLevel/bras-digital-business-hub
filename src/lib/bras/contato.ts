@@ -1,9 +1,10 @@
+import { SUPORTE_PADRAO } from "@/lib/support";
 /**
  * WhatsApp da equipe da Brás Digital (D92: atendimento e fechamento de pedido são da Brás, não da importadora).
  * BRAS_WHATSAPP (só dígitos, com 55); sem ele, vale o suporte geral (NEXT_PUBLIC_SUPPORT_WHATSAPP). Sem nenhum, null.
  */
 export function brasWhatsappUrl(text: string, env: Record<string, string | undefined> = process.env): string | null {
-  const wa = (env.BRAS_WHATSAPP || env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "").replace(/\D/g, "");
+  const wa = (env.BRAS_WHATSAPP || env.NEXT_PUBLIC_SUPPORT_WHATSAPP || SUPORTE_PADRAO.whatsapp).replace(/\D/g, "");
   return wa ? `https://wa.me/${wa}?text=${encodeURIComponent(text)}` : null;
 }
 

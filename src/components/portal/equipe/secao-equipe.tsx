@@ -3,6 +3,7 @@ import type { BrandCode } from "@/lib/brand";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { EQUIPE_ACERVO } from "@/lib/marcas/equipe-imagens";
 import { AVATAR_CEO, CEO, EQUIPE_ALT, secaoEquipeDaMarca } from "@/lib/marcas/equipe";
+import { fraseDoCeo } from "@/lib/marcas/equipe-usos";
 
 /**
  * "Quem está por trás" (D179): foto real da equipe na sede, o fato dito do jeito da marca e o CEO com rosto e nome.
@@ -21,6 +22,7 @@ export function SecaoEquipe({ code, nomeDaMarca, className = "", children }: { c
           <p className="text-xs font-semibold uppercase tracking-[0.14em] opacity-70">Quem está por trás</p>
           <h2 id="equipe-t" className="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-4xl">{s.titulo}</h2>
           <p className="mt-4 text-lg leading-relaxed opacity-85">{s.texto}</p>
+          <blockquote className="mt-5 border-l-2 border-current/25 pl-4 text-lg italic leading-relaxed opacity-90"><p>“{fraseDoCeo(code)}”</p></blockquote>
           <div className="mt-6 flex items-center gap-4">
             <picture className="shrink-0">
               <source type="image/avif" srcSet={`${AVATAR_CEO}-96.avif 96w, ${AVATAR_CEO}-192.avif 192w`} sizes="56px" />

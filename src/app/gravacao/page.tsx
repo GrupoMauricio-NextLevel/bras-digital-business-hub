@@ -1,3 +1,4 @@
+import { FaixaEquipePainel } from "@/components/portal/equipe/blocos";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { inArray } from "drizzle-orm";
@@ -40,6 +41,7 @@ export default async function GravacaoPage({ searchParams }: { searchParams: Pro
           <p className="max-w-2xl text-muted-foreground">O sistema inteiro com dados fictícios para gravar os treinamentos. Pix e Mercado Pago são simulados: nada é cobrado e nenhum cliente real aparece. Senha de todas as contas: <code className="rounded bg-surface-muted px-1.5 py-0.5 text-sm">{DEMO_PASSWORD}</code>.</p>
           {msg ? <p role={msg.tone === "erro" ? "alert" : "status"} className={`rounded-lg px-3 py-2 text-sm ${msg.tone === "ok" ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>{msg.text}</p> : null}
         </header>
+        <FaixaEquipePainel nome="eq-gravacao" titulo="Gravado aqui, no estúdio da NextLevel" texto="As aulas e os vídeos do sistema são gravados pela equipe na nossa sede em São Paulo." className="!mb-0" />
 
         <section aria-label="Antes de gravar" className="grid gap-3 md:grid-cols-2">
           <form action={setRecordingMode.bind(null, !recording)} className="grid content-start gap-2 rounded-xl border border-border bg-surface p-4">

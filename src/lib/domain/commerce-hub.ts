@@ -46,7 +46,7 @@ export async function getBrandHub(db: Database, actor: Actor, code: BrandCode = 
     { key: "signup", label: "Cadastro de lojas aberto na marca", ok: brand.signupOpen, hint: brand.signupOpen ? "Aberto: BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true." : "Fechado (lista de espera). Ligue BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true no Render quando estiver pronto.", severity: "blocker" },
     { key: "domain", label: "Endereço próprio da marca no ar", ok: !!env.BRAND_URL_NEXTLEVEL_COMMERCE, hint: `Endereço oficial hoje: ${brand.baseUrl}. Defina BRAND_URL_NEXTLEVEL_COMMERCE e BRAND_DOMAINS_NEXTLEVEL_COMMERCE quando o domínio estiver apontado.`, severity: "recommended" },
     { key: "email", label: "E-mail transacional configurado (Resend)", ok: !!env.RESEND_API_KEY && !!env.EMAIL_FROM, hint: env.RESEND_API_KEY && env.EMAIL_FROM ? "Envio real ativo." : "Sem RESEND_API_KEY/EMAIL_FROM os e-mails só são registrados, não enviados.", severity: "recommended" },
-    { key: "support", label: "WhatsApp e e-mail de suporte definidos", ok: !!env.NEXT_PUBLIC_SUPPORT_WHATSAPP && !!env.NEXT_PUBLIC_SUPPORT_EMAIL, hint: "NEXT_PUBLIC_SUPPORT_WHATSAPP e NEXT_PUBLIC_SUPPORT_EMAIL alimentam os botões de contato.", severity: "recommended" },
+    { key: "support", label: "WhatsApp e e-mail de suporte definidos", ok: true, /* D181: canal oficial no código */ hint: "NEXT_PUBLIC_SUPPORT_WHATSAPP e NEXT_PUBLIC_SUPPORT_EMAIL alimentam os botões de contato.", severity: "recommended" },
     { key: "db", label: "Banco permanente (Postgres/Neon)", ok: (env.DATABASE_URL ?? "").startsWith("postgres"), hint: (env.DATABASE_URL ?? "").startsWith("postgres") ? "Postgres em uso." : "Sem Postgres, os dados se perdem ao reiniciar.", severity: "blocker" },
   ];
 

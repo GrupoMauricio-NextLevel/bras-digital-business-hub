@@ -1,3 +1,4 @@
+import { FaixaEquipePainel } from "@/components/portal/equipe/blocos";
 import Link from "next/link";
 import { Coins, Link2, MousePointerClick, Target, Users, Wallet } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
@@ -28,6 +29,7 @@ export default async function PartnerHome() {
   return (
     <>
       <PageHeader title={`Olá, ${d.partner.displayName.split(" ")[0]}`} description={`Seu escritório virtual · competência ${d.period}`} />
+      <FaixaEquipePainel nome="eq-reuniao-criativa" titulo="A equipe NextLevel está com você" texto="Materiais, links e dúvidas do programa: fale com a equipe pelo WhatsApp (11) 94086-2144 ou sac@nextlevelgroup.com.br." />
       <MetricGrid className="lg:grid-cols-5">
         <MetricCard label="Cliques" value={d.funnel.clicks} icon={MousePointerClick} hint="No mês" />
         <MetricCard label="Cadastros" value={d.funnel.signups} icon={Users} hint={`${d.funnel.trials} em teste`} />

@@ -1,3 +1,5 @@
+import { EQUIPE_BASE } from "@/lib/marcas/equipe-imagens";
+import { fotoDoDia } from "@/lib/marcas/equipe-usos";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 import type { BrandCode } from "@/lib/brand";
@@ -29,6 +31,8 @@ const LOGIN_PHOTOS: Partial<Record<BrandCode, AuthPhoto[]>> = {
 
 const existe = (src: string) => { try { return statSync(join(process.cwd(), "public", src)).size > 0; } catch { return false; } };
 
-export function loginPhotoFor(code: BrandCode): AuthPhoto | null {
-  return (LOGIN_PHOTOS[code] ?? []).find((p) => existe(p.src)) ?? null;
+export function loginPhotoFor(code: BrandCode, agora = new Date()): AuthPhoto | null {
+  // Master (holding): a equipe real da NextLevel, uma foto por dia (D181); a peça 3D fica de reserva.
+  const lista = code === "NEXTLEVEL" ? [{ src: `${EQUIPE_BASE}/${fotoDoDia("login-master", agora)}-1400.webp`, alt: "", position: "45% 40%" }, ...(LOGIN_PHOTOS[code] ?? [])] : LOGIN_PHOTOS[code] ?? [];
+  return lista.find((p) => existe(p.src)) ?? null;
 }

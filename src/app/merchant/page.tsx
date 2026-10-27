@@ -1,3 +1,8 @@
+import { and, eq } from "drizzle-orm";
+import { orders } from "@/db/schema";
+import { BoasVindasCeo } from "@/components/portal/equipe/blocos";
+import { mostrarBoasVindas } from "@/lib/marcas/equipe-usos";
+import { brandOfStore } from "@/lib/store-brand";
 import Link from "next/link";
 import { AlarmClock, ArrowRight, BellRing, ExternalLink, Plus, Printer, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
 import { SalesChart } from "@/components/app/sales-chart";
@@ -37,7 +42,11 @@ export default async function MerchantHome() {
   const db = await getDb();
   const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), perfilAtual(store.id).then((p) => p.ecommerce), pendingSurvey(db, session.actor)]);
   const benefits = await benefitsPanel(db, session.actor);
-  const surveyCard = <>{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
+  // Recado do fundador ao lojista novo (D181): 14 primeiros dias, até a primeira venda paga.
+  const temVendaPaga = (await db.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.customerPaymentStatus, "PAID"))).limit(1)).length > 0;
+  const boasVindas = mostrarBoasVindas({ criadaEm: store.createdAt, temVendaPaga })
+    ? <BoasVindasCeo primeiroNome={session.user.name.split(" ")[0]!} marca={(await brandOfStore(db, store)).name} className="mb-6" /> : null;
+  const surveyCard = <>{boasVindas}{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;
   const readiness = commerce ? await getStoreReadiness(db, store.id) : null;

@@ -1657,3 +1657,42 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
     O cliente recebe o e-mail de cancelamento dizendo como o dinheiro volta (Pix para a conta, cartão como estorno na fatura). A página do pedido mostra "cancelado e valor devolvido". O diálogo de cancelar diz o valor e o que vai acontecer.
 - **Testes:** `tests/pos-venda-ecommerce.test.ts` (7 casos, incluindo o SuperDrop sem mudança). `tests/independent.test.ts` passa a esperar "pronto para separar".
 - **Fica para depois:** compra de etiqueta pela API da plataforma de envio e rastreio automático até "entregue" (P1b de `promessas-commerce.md`). Devolução ao cliente nos pedidos do SuperDrop (envolve o saldo da Central).
+
+## D181 — [Grupo] Equipe e CEO em toda parte, com critério (fotos da equipe, onda 2) e canal oficial de suporte (2026-10-27)
+- **Pedido do dono:** usar mais as 17 fotos reais, "explorar de diversas formas o Maurício", um texto inspirador em nome dele e o canal oficial de suporte: WhatsApp (11) 94086-2144 e sac@nextlevelgroup.com.br.
+- **Canal de suporte:** `supportContacts()` usa o que estiver no Render e, sem isso, o canal oficial (`SUPORTE_PADRAO`). Passam a ter o contato todas as telas que já mostravam suporte: bloqueio, rodapés, contato e "quero minha loja". A Central de qualidade deixa de marcar o suporte como desligado.
+- **Mapa único de usos** (`src/lib/marcas/equipe-usos.ts`). Cada lugar diz a foto, o texto e a legenda. Um teste garante:
+  - a foto do prêmio só em telas internas;
+  - legenda em toda foto pública;
+  - um letreiro de parede só por página;
+  - nunca os dois de um par quase igual na mesma página.
+
+  Rodízio diário pela data, no servidor (sem piscar).
+- **Novos lugares nas páginas públicas:**
+  - planos da E-commerce: "Prefere que a gente monte com você?", com Loja Pronta, Migração, diagnóstico e contatos;
+  - perguntas frequentes: "Não achou a sua dúvida?";
+  - "quero minha loja";
+  - cadastro: cartão "Dúvida no cadastro?";
+  - seja fornecedor e como funciona (SuperDrop);
+  - parceiros;
+  - Soluções: diagnóstico com "quem olha o seu diagnóstico";
+  - Loja NextLevel;
+  - prévia de link do grupo e da Soluções com a foto do escritório (1200 × 630).
+- **Painéis:**
+  - tela de entrada do Master com a equipe, em rodízio diário entre 3 fotos;
+  - Master > Equipe com a faixa "Reconhecimento" (prêmio);
+  - Estúdio de gravação;
+  - escritório do parceiro;
+  - **recado do fundador** na primeira tela do lojista novo (E-commerce e SuperDrop), nos 14 primeiros dias e até a primeira venda paga (`mostrarBoasVindas`), com foto, assinatura e contatos.
+
+  Nos painéis entra a versão leve da foto (480 px, de 8 a 12 KB).
+- **O Maurício de várias formas:**
+  - "Palavra do fundador" (texto inspirador em nome dele, sem números nem promessa de ganho e sem história pessoal inventada) na home da E-commerce e na Soluções;
+  - uma frase dele, diferente por marca, no bloco "Quem está por trás" das 5 homes;
+  - retrato e assinatura em todos os blocos, no cadastro, no recado ao lojista e no e-mail de boas-vindas;
+  - presença na tela de entrada do Master.
+- **Ficou de fora, de propósito:**
+  - página "não encontrada": é a mesma das lojas dos lojistas, e a equipe nunca aparece lá;
+  - listas vazias do painel: já têm ilustração própria;
+  - segunda foto na home da Cargas: seria par quase igual na mesma página.
+- **Testes:** `tests/equipe-usos.test.ts` (regras do mapa, textos do CEO, recado, canal de suporte), `tests/equipe-fotos.test.ts` (a equipe nunca nas lojas nem nos temas, agora cobrindo também os blocos novos) e `tests/login-marca.test.ts` atualizado.

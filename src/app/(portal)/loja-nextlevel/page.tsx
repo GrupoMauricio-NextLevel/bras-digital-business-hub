@@ -1,3 +1,4 @@
+import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BadgeCheck, CalendarCheck, CreditCard, GraduationCap, Headphones, Palette, QrCode, Rocket, ShieldCheck, Sparkles, Wrench, type LucideIcon } from "lucide-react";
@@ -121,6 +122,8 @@ export default async function LojaNextLevel({ searchParams }: { searchParams: Pr
           )}
         </div>
       </section>
+
+      <BlocoEquipe lugar="loja-nextlevel" className="bg-surface" />
 
       <section className="bg-canvas py-16" aria-labelledby="como">
         <div className="mx-auto max-w-6xl px-4">

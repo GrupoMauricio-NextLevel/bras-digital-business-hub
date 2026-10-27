@@ -1,3 +1,4 @@
+import { ApoioEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
@@ -49,6 +50,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
       <div className="mt-6"><FioCaptacao brandCode={brand.code} /></div>
       <SignupForm initialRef={(sp.ref ?? "").slice(0, 40) || undefined} initialCode={(sp.cupom ?? "").toUpperCase().slice(0, 24)} initialOffer={plano} initialSupplier={fornecedor} independent={independent} offers={offers} suppliers={suppliers} plans={plans} entry={pv?.offer ?? null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} />
       <p className="mt-4 text-center text-sm text-muted-foreground">Já tem conta? <Link href="/login" className="font-semibold underline">Entrar na área de membros</Link></p>
+      <ApoioEquipe className="mt-6" titulo="Dúvida no cadastro? Fale com a equipe" texto="Gente de verdade responde, na nossa sede em São Paulo." mensagem={`Olá! Tenho uma dúvida no cadastro da ${brand.name}.`} />
       <NextLevelSignature compact product={brand.name} className="mt-8 justify-center text-center text-muted-foreground" />
     </>
   );

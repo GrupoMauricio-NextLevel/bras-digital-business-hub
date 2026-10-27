@@ -1,3 +1,5 @@
+import { FaixaEquipePainel } from "@/components/portal/equipe/blocos";
+import { USOS_EQUIPE } from "@/lib/marcas/equipe-usos";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { redirect } from "next/navigation";
@@ -18,6 +20,7 @@ export default async function EquipePage() {
   return (
     <>
       <PageHeader eyebrow="Grupo NextLevel" title="Equipe do Master" description="Cada pessoa entra com uma função e vê só as telas dela. Preço, ofertas, regras e acerto entre empresas ficam com você e com o Financeiro." />
+      <FaixaEquipePainel nome="eq-premio-equipe" titulo={USOS_EQUIPE["master-equipe"].titulo} texto={USOS_EQUIPE["master-equipe"].texto} />
       <section aria-labelledby="h-nova" className="ds-card mb-6 p-4">
         <h2 id="h-nova" className="mb-3 text-lg font-bold">Cadastrar pessoa</h2>
         <NovaPessoa />

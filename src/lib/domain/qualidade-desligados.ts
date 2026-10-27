@@ -35,7 +35,7 @@ export async function readyButOff(db: Database, actor: Actor, env: Record<string
   const brands = brandsFrom(env);
   const runningN = running?.n ?? 0;
   const emailOn = set(env, "RESEND_API_KEY") && set(env, "EMAIL_FROM");
-  const supportOn = set(env, "NEXT_PUBLIC_SUPPORT_WHATSAPP") || set(env, "NEXT_PUBLIC_SUPPORT_EMAIL");
+  const supportOn = true; // D181: canal oficial no código (WhatsApp e e-mail); o Render pode trocar
   const offices = (["SUPERDROP", "NEXTLEVEL_COMMERCE"] as const).filter((c) => brands[c].officeUrl);
 
   return [

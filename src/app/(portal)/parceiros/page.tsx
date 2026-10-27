@@ -1,3 +1,4 @@
+import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BarChart3, BadgeCheck, Coins, Link2, Repeat, ShieldCheck, Ticket, Wallet } from "lucide-react";
@@ -105,6 +106,8 @@ export default async function Parceiros() {
           </div>
         </div>
       </section>
+
+      <BlocoEquipe lugar="parceiros" className="bg-canvas" />
 
       <section className="bg-surface py-16" aria-labelledby="faq">
         <div className="mx-auto max-w-3xl px-4">

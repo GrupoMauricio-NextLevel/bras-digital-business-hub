@@ -1,3 +1,4 @@
+import { CartaFundador } from "@/components/portal/equipe/blocos";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Brand } from "@/lib/brand";
@@ -118,14 +119,16 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="bg-surface text-foreground">
+      <CartaFundador className="bg-surface text-foreground" />
+
+      <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="bg-canvas text-foreground">
         <span className="w-full font-normal opacity-80">Prefere ajuda para começar?</span>
         <Link className={link} href={`${solucoes}/loja-pronta-essencial`}>Loja Pronta</Link>
         <Link className={link} href={`${solucoes}/migracao-lite`}>Migração</Link>
         <Link className={link} href={`${solucoes}#diagnostico`}>Diagnóstico gratuito</Link>
       </SecaoEquipe>
 
-      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-canvas`}>
+      <section id="duvidas" aria-labelledby="duv-t" className={`${section} bg-surface`}>
         <div className="mx-auto max-w-6xl"><h2 id="duv-t" className={`${H2} mx-auto mb-8 max-w-3xl text-foreground`}>Perguntas frequentes</h2><Faq plans={pv.plans} offer={offer} themes={released.map((t) => ({ name: t.name, priceCents: t.priceCents }))} /></div>
       </section>
 
