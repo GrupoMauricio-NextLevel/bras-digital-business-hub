@@ -1,4 +1,5 @@
 "use client";
+import { BarraDeNavegacao, TransicaoDePagina } from "@/components/transicao-de-pagina";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -165,7 +166,8 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         bottom={bottom}
         overlays={!minimal ? <CommandPalette open={palette} onOpenChange={setPalette} items={items} quick={quick} search={search} /> : null}
       >
-        {children}
+        <BarraDeNavegacao />
+        <TransicaoDePagina>{children}</TransicaoDePagina>
       </OperationalShell>
     </div>
   );

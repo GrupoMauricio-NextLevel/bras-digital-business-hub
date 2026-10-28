@@ -11,5 +11,5 @@ const CORES = {
 } as React.CSSProperties;
 
 export function Toaster() {
-  return <Sonner position="bottom-right" richColors closeButton style={CORES} toastOptions={{ className: "font-sans text-sm" }} />;
+  return <Sonner position="bottom-right" richColors closeButton style={CORES} toastOptions={{ className: "font-sans text-sm", classNames: { success: "nl-toast-ok" } }} />;
 }

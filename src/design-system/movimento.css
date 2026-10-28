@@ -1,0 +1,57 @@
+/*
+ * Assinatura de movimento NextLevel: "Subida" (D193). Um gesto só, repetido em todo lugar, como marca:
+ * as coisas SOBEM um degrau quando chegam (página, imagem enviada, aviso de salvo) e uma linha na cor da marca
+ * corre da esquerda para a direita quando algo está em andamento ou foi confirmado. O carregamento usa três degraus.
+ * Tudo em CSS nativo (View Transitions API e animações), sem biblioteca. Movimento reduzido: nada anima.
+ */
+:root { --nl-sobe: cubic-bezier(.2, .9, .1, 1); --nl-cai: cubic-bezier(.55, 0, .8, .2); --nl-cor-mov: var(--ds-primary, #2155ff); }
+.sf-root { --nl-cor-mov: var(--sf-primary, var(--ds-primary)); }
+
+/* 1. Troca de página: a que sai desfoca e some; a nova sobe um degrau, revelada de baixo para cima. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-old(.pagina-sai) { animation: 150ms var(--nl-cai) both nl-sai; }
+::view-transition-new(.pagina-entra) { animation: 480ms var(--nl-sobe) 70ms both nl-sobe; }
+@keyframes nl-sai { to { opacity: 0; transform: translateY(-10px) scale(.995); filter: blur(6px); } }
+@keyframes nl-sobe {
+  from { opacity: 0; transform: translateY(32px); clip-path: inset(14% 0 0 0 round 28px); filter: blur(5px); }
+  55% { opacity: 1; filter: blur(0); }
+  to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 0); }
+}
+
+/* 2. Linha de navegação no topo: corre enquanto a página nova é preparada e completa quando ela chega. */
+.nl-barra-nav { position: fixed; inset: 0 0 auto 0; z-index: 9999; height: 3px; pointer-events: none; opacity: 0; transform: scaleX(0); transform-origin: left center;
+  background: linear-gradient(90deg, var(--nl-cor-mov) 0%, color-mix(in srgb, var(--nl-cor-mov) 35%, #fff) 50%, var(--nl-cor-mov) 100%); background-size: 200% 100%; box-shadow: 0 0 12px color-mix(in srgb, var(--nl-cor-mov) 60%, transparent); }
+.nl-barra-nav[data-estado="indo"] { opacity: 1; animation: nl-barra-indo 9s var(--nl-sobe) forwards, nl-brilho 900ms linear infinite; }
+.nl-barra-nav[data-estado="chegou"] { animation: nl-barra-fim 420ms var(--nl-sobe) forwards; }
+@keyframes nl-barra-indo { 0% { transform: scaleX(0); } 6% { transform: scaleX(.42); } 100% { transform: scaleX(.94); } }
+@keyframes nl-barra-fim { 0% { opacity: 1; transform: scaleX(.9); } 60% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1); } }
+@keyframes nl-brilho { to { background-position: -200% 0; } }
+
+/* 3. Degraus: o "carregando" da marca (botão salvando, envio de imagem). Três barras que sobem em sequência. */
+.nl-degraus { display: inline-flex; align-items: flex-end; gap: 2px; width: 14px; height: 14px; flex-shrink: 0; }
+.nl-degraus > i { display: block; width: 3px; border-radius: 1px; background: currentColor; animation: nl-degrau 960ms var(--nl-sobe) infinite; }
+.nl-degraus > i:nth-child(1) { height: 38%; }
+.nl-degraus > i:nth-child(2) { height: 68%; animation-delay: 120ms; }
+.nl-degraus > i:nth-child(3) { height: 100%; animation-delay: 240ms; }
+@keyframes nl-degrau { 0%, 100% { transform: translateY(0); opacity: .35; } 35% { transform: translateY(-3px); opacity: 1; } 60% { transform: translateY(0); opacity: 1; } }
+
+/* 4. Entrada de dados: ao focar um campo, a linha da marca corre por baixo dele. */
+.ds-input, .ds-field :is(input, textarea) { background-image: linear-gradient(var(--nl-cor-mov), var(--nl-cor-mov)); background-repeat: no-repeat; background-position: left bottom; background-size: 0% 2px;
+  transition: background-size 420ms var(--nl-sobe), border-color 160ms ease, box-shadow 160ms ease; }
+.ds-input:focus, .ds-field :is(input, textarea):focus { background-size: 100% 2px; }
+
+/* 5. Chegada de conteúdo novo (imagem enviada, linha adicionada): sobe um degrau. */
+.nl-chega { animation: nl-chega 520ms var(--nl-sobe) both; }
+@keyframes nl-chega { from { opacity: 0; transform: translateY(14px) scale(.97); clip-path: inset(20% 0 0 0 round 12px); } to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 0); } }
+
+/* 6. Aviso de salvo: a linha da marca corre na base do aviso. */
+.nl-toast-ok { background-image: linear-gradient(var(--nl-cor-mov), var(--nl-cor-mov)) !important; background-repeat: no-repeat !important; background-position: left bottom !important; background-size: 0% 3px; animation: nl-linha-ok 700ms var(--nl-sobe) 120ms forwards; }
+@keyframes nl-linha-ok { to { background-size: 100% 3px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok { animation: none !important; }
+  .nl-barra-nav[data-estado="indo"] { transform: scaleX(.6); }
+  .nl-toast-ok { background-size: 100% 3px; }
+  .ds-input, .ds-field :is(input, textarea) { transition: none; }
+}

@@ -1,4 +1,5 @@
 "use client";
+import { BarraDeNavegacao, TransicaoDePagina } from "@/components/transicao-de-pagina";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -82,7 +83,8 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
           </div>
         ) : null}
       </header>
-      <main id="conteudo" className="flex-1">{children}</main>
+      <BarraDeNavegacao />
+      <main id="conteudo" className="flex-1"><TransicaoDePagina>{children}</TransicaoDePagina></main>
       <footer className={footerEscuro ? "ds-pub-footer ds-tema-escuro" : "ds-pub-footer"}>
         <div className="ds-pub-wrap ds-pub-footer-in">
           <div>{footerBrand}</div>

@@ -3,8 +3,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Check, CircleAlert, ExternalLink, History, Loader2, Lock, Monitor, Redo2, Smartphone, Tablet, Undo2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Check, CircleAlert, ExternalLink, History, Lock, Monitor, Redo2, Smartphone, Tablet, Undo2 } from "lucide-react";
+import { Button, Degraus } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Banner } from "@/components/ds/banner";
 import { KeyboardHint } from "@/components/ds/fields";
@@ -217,7 +217,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         </div>
         <div role="status" aria-live="polite" className="flex items-center">
           <button type="button" disabled={save !== "error"} onClick={() => void flush()} className={cn("flex items-center gap-1.5 rounded px-2 py-1 text-xs disabled:opacity-100", save === "error" ? "text-danger" : "text-muted-foreground")}>
-            {save === "saving" ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : save === "saved" ? <Check className="size-3.5 text-success" aria-hidden /> : save === "error" ? <CircleAlert className="size-3.5" aria-hidden /> : <span className="size-2 rounded-full bg-warning" aria-hidden />}<span className="sr-only sm:not-sr-only">{saveLabel}</span>
+            {save === "saving" ? <Degraus className="size-3.5" /> : save === "saved" ? <Check className="size-3.5 text-success" aria-hidden /> : save === "error" ? <CircleAlert className="size-3.5" aria-hidden /> : <span className="size-2 rounded-full bg-warning" aria-hidden />}<span className="sr-only sm:not-sr-only">{saveLabel}</span>
           </button>
         </div>
         <Button variant="ghost" size="sm" onClick={() => setVersions(true)}><History aria-hidden /> <span className="sr-only md:not-sr-only">Histórico</span></Button>
@@ -240,7 +240,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
 
         <main className={cn("min-w-0 flex-1 bg-surface-muted p-3 lg:block", mobileTab === "preview" ? "block" : "hidden")}>
           <div className="mx-auto h-full overflow-hidden rounded-lg border border-border bg-white shadow-md transition-[width] duration-200" style={{ width: dev.px ? `${dev.px + 2}px` : "100%", maxWidth: "100%" }}>
-            {ready ? <iframe ref={frameRef} title={`Prévia da loja (${dev.label})`} src={previewPaths[page]} className="h-full w-full bg-white" /> : <div className="flex h-full items-center justify-center text-sm text-muted-foreground"><Loader2 className="mr-2 size-4 animate-spin" aria-hidden /> Preparando a prévia…</div>}
+            {ready ? <iframe ref={frameRef} title={`Prévia da loja (${dev.label})`} src={previewPaths[page]} className="h-full w-full bg-white" /> : <div className="flex h-full items-center justify-center text-sm text-muted-foreground"><Degraus className="mr-2 size-4" /> Preparando a prévia…</div>}
           </div>
         </main>
 

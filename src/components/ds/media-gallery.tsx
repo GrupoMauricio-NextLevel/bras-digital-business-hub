@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { ChevronLeft, ChevronRight, ImagePlus, Star, Trash2, Type } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, Degraus } from "@/components/ui/button";
 import { moveItem } from "@/lib/ds/index-list";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ export function MediaGallery({ items, onChange, max = 8, processFile, onError, a
             className={cn("group relative overflow-hidden rounded-lg border border-border bg-surface", i === 0 && "col-span-2 row-span-2 sm:col-span-2", dragFrom === i && "opacity-40", over === i && dragFrom !== i && "ring-2 ring-accent")}
             onKeyDown={(e) => { if (e.altKey && e.key === "ArrowLeft") { e.preventDefault(); move(i, i - 1); } if (e.altKey && e.key === "ArrowRight") { e.preventDefault(); move(i, i + 1); } }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={it.src} alt={it.alt || `Foto ${i + 1}`} className={cn("w-full cursor-grab object-cover active:cursor-grabbing", i === 0 ? "aspect-square" : "aspect-square")} draggable={false} />
+            <img src={it.src} alt={it.alt || `Foto ${i + 1}`} className={cn("nl-chega w-full cursor-grab object-cover active:cursor-grabbing", i === 0 ? "aspect-square" : "aspect-square")} draggable={false} />
             {i === 0 ? <span className="absolute left-2 top-2 flex items-center gap-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground"><Star className="size-3" aria-hidden /> Capa</span> : null}
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-gradient-to-t from-black/60 to-transparent p-1.5 opacity-100 sm:opacity-0 sm:transition-opacity sm:focus-within:opacity-100 sm:group-hover:opacity-100">
               <div className="flex gap-0.5">
@@ -66,7 +66,7 @@ export function MediaGallery({ items, onChange, max = 8, processFile, onError, a
           </li>
         ))}
         {items.length < max ? (
-          <li><button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-border bg-surface text-sm text-muted-foreground transition-colors hover:border-accent hover:text-foreground disabled:opacity-60"><ImagePlus className="size-6" aria-hidden />{busy ? "Enviando…" : "Adicionar foto"}<span className="text-[11px]">ou solte arquivos aqui</span></button></li>
+          <li><button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-border bg-surface text-sm text-muted-foreground transition-colors hover:border-accent hover:text-foreground disabled:opacity-60">{busy ? <Degraus className="!size-6" /> : <ImagePlus className="size-6" aria-hidden />}{busy ? "Enviando…" : "Adicionar foto"}<span className="text-[11px]">ou solte arquivos aqui</span></button></li>
         ) : null}
       </ul>
       <input ref={fileRef} type="file" accept={accept} multiple hidden onChange={(e) => void add(e.target.files)} />

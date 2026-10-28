@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { Button, Degraus } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /** Avisa o navegador antes de fechar ou recarregar a aba quando há alterações pendentes. */
@@ -32,7 +32,7 @@ export function ContextualSaveBar({ dirty, saving, error, onSave, onDiscard, mes
   return (
     <div role="region" aria-label="Alterações pendentes" className="nl-no-print fixed inset-x-0 top-0 z-40 animate-fade-in border-b border-border bg-primary text-primary-foreground shadow-md">
       <div className="mx-auto flex h-14 max-w-[110rem] items-center justify-between gap-3 px-4 sm:px-6">
-        <p className="flex items-center gap-2 text-sm font-medium" aria-live="polite">{saving ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <span className="size-2 rounded-full bg-warning" aria-hidden />}{error ? <span className="text-danger-soft">{error}</span> : message}</p>
+        <p className="flex items-center gap-2 text-sm font-medium" aria-live="polite">{saving ? <Degraus className="size-4" /> : <span className="size-2 rounded-full bg-warning" aria-hidden />}{error ? <span className="text-danger-soft">{error}</span> : message}</p>
         <div className="flex items-center gap-2">
           <Button type="button" variant="ghost" size="sm" onClick={onDiscard} disabled={saving} className={cn("text-primary-foreground hover:bg-white/10")}>{discardLabel}</Button>
           <Button type="button" variant="brand" size="sm" onClick={onSave} loading={saving}>{saveLabel} <kbd className="ml-1 hidden rounded bg-black/20 px-1 text-[10px] sm:inline">Ctrl S</kbd></Button>

@@ -1,5 +1,5 @@
 /** Faixa em loop com o que a loja já traz hoje. Sem movimento (e sem repetição) para quem prefere movimento reduzido. */
-const ITEMS = ["Temas prontos", "Editor visual", "Pix com confirmação automática", "Cartão em até 6x", "Pedidos da loja, do WhatsApp e do Instagram", "Clientes", "Análise de vendas", "Prévia antes de publicar", "Domínio próprio no plano de loja própria"];
+const ITEMS = ["Temas prontos", "Editor visual", "Pix com confirmação automática", "Cartão em até 6x", "Melhor Envio, Frenet e Correios", "Pixel da Meta, Google e TikTok", "Tiny e Omie", "Pedidos da loja, do WhatsApp e do Instagram", "Clientes", "Análise de vendas", "Prévia antes de publicar", "Domínio próprio no plano de loja própria"];
 
 export function Marquee() {
   const row = (hidden: boolean) => (

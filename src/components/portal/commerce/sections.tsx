@@ -94,7 +94,8 @@ export function Faq({ plans, offer, themes }: { plans: PlanFaq[]; offer: EntryOf
     { q: "Preciso saber programar?", a: "Não. Tema, cores, fontes, logo, textos e a ordem das seções são ajustados em um editor visual, com prévia antes de publicar." },
     { q: "Os temas são pagos?", a: `Há ${gratis} temas grátis para começar.${pagosTemas.length ? ` Os temas pagos custam de ${formatBRL(Math.min(...pagosTemas))} a ${formatBRL(Math.max(...pagosTemas))}, em pagamento único, e são instalados com um clique mantendo o seu conteúdo.` : ""}` },
     { q: "Posso usar o meu domínio e a minha marca?", a: "Sim: logo, cores, fontes e textos são seus, e o domínio próprio (seudominio.com.br) faz parte dos planos." },
-    { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes, cupons, campanhas e análise de vendas. Recuperação de carrinho, marketplace, ERP e API ainda não fazem parte da plataforma." },
+    { q: "O que está disponível hoje?", a: "Vitrine, catálogo, carrinho, checkout com Pix e cartão pelo Mercado Pago, pedidos, clientes, cupons, campanhas, lembrete de carrinho abandonado e análise de vendas. Marketplace e API para outros sistemas ainda não fazem parte da plataforma." },
+    { q: "Com quais serviços a loja se integra?", a: "Mercado Pago; frete pelo Melhor Envio, SuperFrete, Frenet, Kangu, Onlog ou Correios com contrato; Pixel da Meta, Google Analytics, Google Ads, Tag Manager, TikTok e Pinterest; catálogo para Google Shopping, Instagram e TikTok; ERP Tiny ou Omie; chat Tawk.to ou JivoChat. Cada um se liga no painel com a sua própria conta. A lista completa está na página Integrações." },
   ];
   return (
     <div className="mx-auto max-w-3xl divide-y divide-border border-y border-border">

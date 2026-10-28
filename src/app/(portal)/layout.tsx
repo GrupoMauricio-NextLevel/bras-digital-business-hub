@@ -27,7 +27,7 @@ export default async function PortalLayout({ children }: { children: React.React
     : closed
     ? [{ href: "/#compradores", label: "Para compradores" }, { href: "/#fornecedores", label: "Para fornecedores" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
-    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/#personalizar", label: "Personalização" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/integracoes", label: "Integrações" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
       ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];

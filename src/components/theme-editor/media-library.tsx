@@ -1,8 +1,8 @@
 "use client";
 import * as React from "react";
-import { ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, Degraus } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { compressImage } from "@/lib/client-image";
 import { listMediaAction, removeMediaAction, uploadStoreImageAction } from "@/app/actions/assets";
@@ -62,12 +62,12 @@ export function MediaLibraryDialog({ open, minWidth, onClose, onPick }: { open: 
           <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => void upload(e.target.files?.[0])} />
           <p className="text-xs text-muted-foreground">PNG, JPG ou WebP. A imagem é reduzida para até 2400 px antes do envio; o arquivo original no seu computador não muda.</p>
         </div>
-        {items === null ? <p className="flex items-center justify-center py-10 text-sm text-muted-foreground"><Loader2 className="mr-2 size-4 animate-spin" aria-hidden /> Carregando…</p>
+        {items === null ? <p className="flex items-center justify-center py-10 text-sm text-muted-foreground"><Degraus className="mr-2 size-4" /> Carregando…</p>
           : items.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">Nenhuma imagem ainda. Envie a primeira.</p>
           : (
           <ul className="nl-scroll grid max-h-[55vh] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3" aria-label="Imagens da loja">
             {items.map((m) => { const low = !!(minWidth && m.width && m.width < minWidth); return (
-              <li key={m.id} className="overflow-hidden rounded-lg border border-border">
+              <li key={m.id} className="nl-chega overflow-hidden rounded-lg border border-border">
                 <button type="button" onClick={() => onPick(m.url)} className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2" aria-label={`Usar ${m.name ?? "imagem"}${m.width ? ` (${m.width}×${m.height})` : ""}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- miniatura da biblioteca */}
                   <img src={`${m.url}?w=320`} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface-muted object-cover" />
