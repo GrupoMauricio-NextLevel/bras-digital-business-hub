@@ -114,7 +114,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />
-        <BarraDeNavegacao />
+        <BarraDeNavegacao logo={false} />
         <main className="flex-1"><TransicaoDePagina>{lancando && !donoVendo ? <ListaDeEspera slug={slug} loja={sf.store.name} /> : children}</TransicaoDePagina></main>
       </CartProvider>
       <SectionList template={globals.footer} ctx={ctx} region="footer" />

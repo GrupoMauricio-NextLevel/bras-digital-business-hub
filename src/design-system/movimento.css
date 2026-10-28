@@ -27,6 +27,17 @@
 @keyframes nl-barra-fim { 0% { opacity: 1; transform: scaleX(.9); } 60% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1); } }
 @keyframes nl-brilho { to { background-position: -200% 0; } }
 
+/* 2b. Carga demorada: logo da marca no centro, com o arco girando. Só aparece se a página nova passar de 0,45 s. */
+.nl-carga { position: fixed; inset: 0; z-index: 9998; display: grid; place-items: center; pointer-events: none; opacity: 0; visibility: hidden; background: color-mix(in srgb, var(--ds-canvas, #fff) 72%, transparent); backdrop-filter: blur(3px); }
+.nl-carga[data-estado="indo"] { visibility: visible; animation: nl-carga-mostra 260ms ease 450ms forwards; }
+.nl-carga-anel { position: relative; display: grid; place-items: center; width: 112px; height: 112px; border-radius: 50%; color: var(--nl-cor-mov); }
+.nl-carga-anel::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--nl-cor-mov) 16%, transparent); border-top-color: var(--nl-cor-mov); animation: nl-gira 900ms linear infinite; }
+.nl-carga-anel img { width: 44px; height: 44px; object-fit: contain; }
+.nl-carga-anel .nl-degraus { width: 28px; height: 28px; gap: 4px; }
+.nl-carga-anel .nl-degraus > i { width: 6px; }
+@keyframes nl-carga-mostra { to { opacity: 1; } }
+@keyframes nl-gira { to { transform: rotate(360deg); } }
+
 /* 3. Degraus: o "carregando" da marca (botão salvando, envio de imagem). Três barras que sobem em sequência. */
 .nl-degraus { display: inline-flex; align-items: flex-end; gap: 2px; width: 14px; height: 14px; flex-shrink: 0; }
 .nl-degraus > i { display: block; width: 3px; border-radius: 1px; background: currentColor; animation: nl-degrau 960ms var(--nl-sobe) infinite; }
@@ -50,7 +61,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
-  .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok { animation: none !important; }
+  .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok, .nl-carga-anel::before { animation: none !important; }
+  .nl-carga[data-estado="indo"] { animation: nl-carga-mostra 1ms linear 450ms forwards !important; }
   .nl-barra-nav[data-estado="indo"] { transform: scaleX(.6); }
   .nl-toast-ok { background-size: 100% 3px; }
   .ds-input, .ds-field :is(input, textarea) { transition: none; }

@@ -17,9 +17,11 @@ export function TransicaoDePagina({ children }: { children: React.ReactNode }) {
  * Linha de progresso no topo: aparece no clique de um link interno e completa quando a página nova chega. Dá a
  * resposta imediata ao clique, mesmo quando o servidor demora.
  */
-export function BarraDeNavegacao() {
+export function BarraDeNavegacao({ logo = true }: { logo?: boolean }) {
   const caminho = usePathname();
   const [estado, setEstado] = React.useState<"parada" | "indo" | "chegou">("parada");
+  // Ícone da marca do endereço (o mesmo da aba do navegador), lido uma vez.
+  const [icone, setIcone] = React.useState<string | null>(null);
   const anterior = React.useRef(caminho);
   React.useEffect(() => {
     const clique = (e: MouseEvent) => {
@@ -29,10 +31,11 @@ export function BarraDeNavegacao() {
       const url = new URL(a.href, location.href);
       if (url.origin !== location.origin || (url.pathname === location.pathname && url.search === location.search)) return;
       setEstado("indo");
+      if (logo && !icone) setIcone((document.querySelector("link[rel~='icon'][type='image/png'], link[rel~='icon']") as HTMLLinkElement | null)?.href ?? null);
     };
     document.addEventListener("click", clique, true);
     return () => document.removeEventListener("click", clique, true);
-  }, []);
+  }, [logo, icone]);
   React.useEffect(() => {
     if (anterior.current === caminho) return;
     anterior.current = caminho;
@@ -40,5 +43,14 @@ export function BarraDeNavegacao() {
     const t2 = setTimeout(() => setEstado("parada"), 450);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [caminho]);
-  return <div aria-hidden className="nl-barra-nav" data-estado={estado} />;
+  // Carga demorada: depois de 0,45 s sem a página nova, o logo da marca aparece no centro com o arco girando (CSS).
+  return (
+    <>
+      <div aria-hidden className="nl-barra-nav" data-estado={estado} />
+      <div aria-hidden className="nl-carga" data-estado={estado}>
+        <span className="nl-carga-anel">{/* eslint-disable-next-line @next/next/no-img-element -- ícone da aba, já em cache */}
+          {logo && icone ? <img src={icone} alt="" width={44} height={44} /> : <span className="nl-degraus"><i /><i /><i /></span>}</span>
+      </div>
+    </>
+  );
 }
