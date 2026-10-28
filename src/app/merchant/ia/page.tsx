@@ -12,7 +12,7 @@ export default async function MauricioLojaPage() {
   const m = await mauricioDaLoja(await getDb(), session.store!.id);
   return (
     <>
-      <PageHeader title="Maurício, a IA da sua loja" description="Descrições, respostas, análises e tarefas preparadas para você conferir. Em fase Beta." />
+      <PageHeader title="Pede pro Maurício" description="Descrições, respostas, análises e tarefas preparadas para você conferir. Em fase Beta." />
       <CentralIa m={m} upgrade="/merchant/finance#assinatura" />
     </>
   );

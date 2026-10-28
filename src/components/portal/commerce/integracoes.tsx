@@ -72,10 +72,10 @@ export function MauricioFaixa({ cta }: { cta: string }) {
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center">
         <div>
           <p className="im-eyebrow im-eyebrow--claro">Inteligência artificial · Beta</p>
-          <h2 id="mau-t" className="im-h2 mt-3 text-foreground">Maurício, a IA <span style={{ color: "var(--ec-acao)" }}>da sua loja</span>.</h2>
+          <h2 id="mau-t" className="im-h2 mt-3 text-foreground">Conta com o <span style={{ color: "var(--ec-acao)" }}>Maurício</span>.</h2>
           <p className="mt-4 text-lg text-body">Você pede, o Maurício prepara e você confere antes de qualquer mudança. Ferramentas de texto no plano Pro; o Maurício completo no Scale.</p>
           <ul className="mt-6 space-y-3">{itens.map((i) => <li key={i.t} className="flex gap-3"><b className="w-20 shrink-0 text-foreground">{i.t}</b><span className="text-body">{i.d}</span></li>)}</ul>
-          <Link href={cta} className="mt-8 inline-flex h-12 items-center rounded-full bg-primary px-6 font-semibold text-primary-foreground">Quero o Maurício na minha loja</Link>
+          <Link href={cta} className="mt-8 inline-flex h-12 items-center rounded-full bg-primary px-6 font-semibold text-primary-foreground">Pede pro Maurício na sua loja</Link>
         </div>
         <div className="rounded-[28px] border border-border bg-canvas p-5 shadow-[0_20px_60px_rgb(0_0_0/0.08)]" aria-label="Exemplo de conversa com o Maurício">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Exemplo</p>

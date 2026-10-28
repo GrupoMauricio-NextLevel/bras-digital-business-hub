@@ -35,7 +35,7 @@ export function BotaoMauricio({ m, central, upgrade }: { m: MauricioDaLoja; cent
   const sugestoes = m.ferramentas.filter((f) => ["pergunte", "descricao", "resposta", "cadastro"].includes(f.key));
   return (
     <>
-      <button ref={botao} type="button" onClick={() => setAberto(true)} aria-label="Abrir o Maurício (Ctrl+J)" title="Maurício (Ctrl+J)" className="ia-botao nl-chega">
+      <button ref={botao} type="button" onClick={() => setAberto(true)} aria-label="Pede pro Maurício (Ctrl+J)" title="Pede pro Maurício (Ctrl+J)" className="ia-botao nl-chega">
         <Sparkles className="size-6" aria-hidden />
       </button>
       <dialog ref={dlg} className="ia-painel" aria-labelledby="ia-titulo" onClose={() => setAberto(false)} onClick={(e) => { if (e.target === dlg.current) setAberto(false); }}>

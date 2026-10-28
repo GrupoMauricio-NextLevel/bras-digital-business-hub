@@ -1935,3 +1935,4 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **SuperDrop e fornecedor:** sem mudança.
 - **Movimento (D193, ajuste):** a pedido do dono, o logo com o arco aparece em toda troca de página, no mínimo 0,42 s, e some subindo junto com a página nova. A página nova entra na hora, sem quadro vazio.
 - **Testes:** `tests/ia0-mauricio.test.ts` (2).
+- **Nome (decisão do dono, 2026-10-28):** "Pede pro Maurício" no menu e no botão; "Conta com o Maurício" como título da faixa na home; na conversa, "Maurício". Evitar "Mau"/"Mau Mau" ("mau" = ruim) e "Maurício (IA)".

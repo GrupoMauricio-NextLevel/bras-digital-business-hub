@@ -16,7 +16,7 @@ export default async function MauricioMasterPage() {
   const sec = "ds-card space-y-4";
   return (
     <>
-      <PageHeader title="Maurício (IA)" description="Credenciais do GPT, o que fica visível e o que cada plano libera. Sem chave, o Maurício aparece só no visual, sem custo." />
+      <PageHeader title="Pede pro Maurício: ajustes da IA" description="Credenciais do GPT, o que fica visível e o que cada plano libera. Sem chave, o Maurício aparece só no visual, sem custo." />
       <div className="space-y-6">
         <section aria-labelledby="ia-chave" className={sec}>
           <h2 id="ia-chave" className="text-lg font-semibold">Credenciais da OpenAI (GPT)</h2>
