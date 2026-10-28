@@ -1897,3 +1897,24 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Só a E-commerce:** as ações recusam outras lojas. O SuperDrop não muda.
 - **Banco:** migração `0076_rodada_c_erp` (tabela `erp_envios` e 5 colunas em `stores`).
 - **Testes:** `tests/rodada-c-erp.test.ts` (4, com Tiny falso). Por pedido do dono, só os testes necessários e sem roteiro de navegador.
+
+## D192 — [E-commerce] Integrações nas páginas públicas como argumento de venda (2026-10-28)
+- **Fonte única:** `src/lib/marcas/integracoes-publicas.ts` lista só o que já existe (D187 a D191), em 7 grupos (receber, entregar, anunciar e medir, catálogos, gestão, atender, mudar de plataforma). Sem logos de terceiros: o nome do serviço é texto.
+- **Onde aparece:** faixa "Conecta com o que você já usa" na home da E-commerce (depois das lojas de exemplo), página `/integracoes` (o que cada uma faz e o que o lojista precisa para ligar) e item "Integrações" no menu, no lugar de "Personalização" (a personalização continua na home).
+- **Perguntas frequentes:** a resposta "O que está disponível hoje?" estava desatualizada (dizia que carrinho abandonado e ERP não existiam). Agora diz que só marketplace e API ainda não fazem parte, e há uma pergunta nova "Com quais serviços a loja se integra?".
+- **Atenção:** Frenet, Kangu, Correios com contrato, Tiny e Omie ainda não foram conferidos com conta real (D190, D191).
+
+## D193 — [Todas] Assinatura de movimento "Subida" (2026-10-28)
+- **Pedido do dono:** uma transição moderna e própria entre páginas, nos painéis e nas páginas públicas, e também na entrada de dados.
+- **O gesto:** as coisas sobem um degrau quando chegam, e uma linha na cor da marca corre quando algo está em andamento ou foi confirmado. Tudo nativo, em `src/design-system/movimento.css`, mais `src/components/transicao-de-pagina.tsx`, sem biblioteca.
+- **Onde:**
+  - troca de página pela View Transitions API (`<ViewTransition>` do React, com o endereço como chave; atualizar a mesma página não anima) na casca pública, na dos painéis e na loja;
+  - linha de progresso no topo a partir do clique;
+  - "degraus" no lugar da rodinha de carregamento (botões, envio de imagem, editor de tema, barra de salvar);
+  - linha da marca correndo por baixo do campo focado;
+  - imagem enviada que sobe;
+  - aviso de "salvo" com a linha.
+- **Na loja do lojista** a cor do movimento é a da loja (`--sf-primary`).
+- **Movimento reduzido:** nada anima. **Sem suporte do navegador:** a página troca normal.
+
+**Decisões do dono sobre a IA (Maurício v3, `docs/prompts/mauricio-ia-v3-padrao-hostinger.md`):** Maurício completo só no plano Scale; o Pro libera as ferramentas de texto; o nome é "Maurício" em todas as marcas.

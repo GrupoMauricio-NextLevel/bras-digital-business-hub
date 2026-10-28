@@ -61,7 +61,7 @@ Descrição pelo que é público. **Confirmar com os prints do dono** (lista na 
 ### 3.1 Planos de hoje (E-commerce)
 `COMMERCE_START` · `COMMERCE_PRO` · `COMMERCE_SCALE` · `COMMERCE_ENTERPRISE` (por proposta).
 
-### 3.2 Proposta (o dono decide, pergunta 1)
+### 3.2 Decidido pelo dono (2026-10-28): completo só no Scale; o Pro libera as ferramentas de texto; nome "Maurício"
 | Plano | O que o Maurício faz |
 |---|---|
 | Start | **Vê e experimenta:** botão, painel e central aparecem; 3 usos de demonstração por mês nas ferramentas de texto; o resto com cadeado |
