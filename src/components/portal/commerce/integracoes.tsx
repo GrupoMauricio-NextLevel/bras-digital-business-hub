@@ -59,3 +59,31 @@ export function IntegracoesCompleto() {
     </div>
   );
 }
+
+/** Maurício na home (IA0, D194): o que a IA faz, com rótulo honesto de Beta e plano. Exemplo gravado, sem chamada à IA. */
+export function MauricioFaixa({ cta }: { cta: string }) {
+  const itens = [
+    { t: "Escreve", d: "Descrição do produto, título para o Google, tradução e resposta ao cliente." },
+    { t: "Analisa", d: "\"Quanto vendi esta semana?\" respondido com os números da sua loja." },
+    { t: "Prepara", d: "Cadastro por conversa e preço em massa: você confere e confirma." },
+  ];
+  return (
+    <section id="mauricio" aria-labelledby="mau-t" className="scroll-mt-16 bg-surface px-4 py-16 md:py-24">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center">
+        <div>
+          <p className="im-eyebrow im-eyebrow--claro">Inteligência artificial · Beta</p>
+          <h2 id="mau-t" className="im-h2 mt-3 text-foreground">Maurício, a IA <span style={{ color: "var(--ec-acao)" }}>da sua loja</span>.</h2>
+          <p className="mt-4 text-lg text-body">Você pede, o Maurício prepara e você confere antes de qualquer mudança. Ferramentas de texto no plano Pro; o Maurício completo no Scale.</p>
+          <ul className="mt-6 space-y-3">{itens.map((i) => <li key={i.t} className="flex gap-3"><b className="w-20 shrink-0 text-foreground">{i.t}</b><span className="text-body">{i.d}</span></li>)}</ul>
+          <Link href={cta} className="mt-8 inline-flex h-12 items-center rounded-full bg-primary px-6 font-semibold text-primary-foreground">Quero o Maurício na minha loja</Link>
+        </div>
+        <div className="rounded-[28px] border border-border bg-canvas p-5 shadow-[0_20px_60px_rgb(0_0_0/0.08)]" aria-label="Exemplo de conversa com o Maurício">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Exemplo</p>
+          <p className="ml-10 mt-3 rounded-2xl rounded-tr-sm px-4 py-3 text-sm text-foreground" style={{ background: "color-mix(in srgb, var(--ec-acao) 12%, transparent)" }}>Escreve a descrição do vestido midi floral de viscose, com alça regulável.</p>
+          <p className="mt-3 rounded-2xl rounded-tl-sm bg-surface px-4 py-3 text-sm text-body">Leve e fresco para o dia a dia: vestido midi em viscose com estampa floral e alças reguláveis que se ajustam ao seu corpo. Combina com tênis ou sandália.</p>
+          <div className="mt-4 flex items-center gap-2 rounded-full border-[1.5px] px-4 py-2.5 text-sm text-muted-foreground" style={{ borderColor: "color-mix(in srgb, var(--ec-acao) 45%, transparent)" }}>Peça ao Maurício…</div>
+        </div>
+      </div>
+    </section>
+  );
+}

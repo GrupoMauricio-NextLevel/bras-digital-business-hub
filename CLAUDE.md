@@ -26,8 +26,9 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Pagamento só vale depois de conferido na API do Mercado Pago (o corpo do webhook nunca é confiável); idempotência por `dedupeKey`.
 - Regra de negócio configurável vem de `platform_settings` (tabela de preços `getPriceBook`, regras de parceiros `getPartnerSettings`), nunca fixa no código.
 - Acessibilidade AA: `axe` sem violações graves, sem rolagem horizontal em 360 px; use `e2e/polish-v8.mjs` para varrer.
+- **A cada etapa entregue, mande ao dono pelo menos um print da principal implementação** (captura real no navegador, Playwright). É como ele confere visualmente.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D194). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D195). Mudanças de comportamento sem teste não entram.
 
 ## Mapa rápido
 - Domínio: `src/lib/domain/` (finance, store-access, partners, nl-sales, orders, own-store, provisioning…) · Preços: `src/lib/finance/` · Temas: `src/lib/themes/` · E-mail: `src/lib/email.ts`

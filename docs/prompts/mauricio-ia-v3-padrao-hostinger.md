@@ -68,7 +68,7 @@ Descrição pelo que é público. **Confirmar com os prints do dono** (lista na 
 | Pro | **Ferramentas de texto** (seção 4, grupo A) com cota mensal |
 | **Scale (o "Ultimate")** | **Tudo:** ferramentas de texto com cota maior + **assistente que lê a loja e age com confirmação** (grupos B e C) + rotinas |
 | Enterprise | Scale + cota sob medida + vendedor na loja (N5), por proposta |
-| Teste de 7 dias | Liberado como Scale com cota pequena (é a hora do "uau") |
+| Teste de 7 dias | Vale o plano escolhido (decisão do dono: o avançado aparece bloqueado fora do Scale) |
 
 > A pedido do dono, a versão mínima é: **tudo visível e o avançado bloqueado para quem não é Scale**. A tabela acima detalha isso. Se preferir, Pro e Start ficam iguais (só visual) e só Scale usa.
 

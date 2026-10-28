@@ -70,6 +70,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship", marcas: ["SUPERDROP"] },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
       { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio", marcas: ["SUPERDROP"] },
+      { label: "Maurício (IA)", href: "/master/ia", icon: "Sparkles", group: "Negócio", soTodas: true },
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio", soTodas: true },
     ],
     quick: [
@@ -237,6 +238,7 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: "Gestão", bottom: true },
   { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Gestão" },
   { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Gestão" },
+  { label: "Maurício (IA)", href: "/merchant/ia", icon: "Sparkles", group: "Gestão", badge: "Novo" },
   { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Configurações" },
   { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Configurações" },
   { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Configurações" },

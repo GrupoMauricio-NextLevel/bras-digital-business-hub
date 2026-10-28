@@ -13,7 +13,7 @@ import { ThemeGallery } from "@/components/portal/commerce/theme-gallery";
 import { Personalize } from "@/components/portal/commerce/personalize";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { LojasExemplo } from "@/components/portal/commerce-home";
-import { IntegracoesFaixa } from "@/components/portal/commerce/integracoes";
+import { IntegracoesFaixa, MauricioFaixa } from "@/components/portal/commerce/integracoes";
 import { EC_HOME_ACERVO, type EcHomeFotoNome } from "@/lib/marcas/ecommerce-home-imagens";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { JornadaMarca, type PassoMarca } from "@/components/imersiva/jornada";
@@ -84,6 +84,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
       <LojasExemplo cta={cta} className={`${section} bg-surface`} />
 
       <IntegracoesFaixa cta={cta} comecar={comecar} />
+
+      <MauricioFaixa cta={cta} />
 
       <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-canvas`}>
         <div className="mx-auto max-w-6xl">

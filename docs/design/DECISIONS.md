@@ -1918,3 +1918,20 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Movimento reduzido:** nada anima. **Sem suporte do navegador:** a página troca normal.
 
 **Decisões do dono sobre a IA (Maurício v3, `docs/prompts/mauricio-ia-v3-padrao-hostinger.md`):** Maurício completo só no plano Scale; o Pro libera as ferramentas de texto; o nome é "Maurício" em todas as marcas.
+
+## D194 — [E-commerce] Maurício, fase IA0: visual pronto e bloqueado, no padrão de painel da Hostinger (2026-10-28)
+- **Base:** `docs/prompts/mauricio-ia-v3-padrao-hostinger.md`, mais a referência técnica do dono (caderno de prompts e o PDF com os prints REF-001 a REF-026, só para uso interno: tem dados da conta).
+- **Decisões do dono:** Maurício completo só no Scale; o Pro libera as ferramentas de texto; o nome é "Maurício"; tudo visível, com o que o plano não inclui bloqueado.
+- **O que entrou:**
+  - botão flutuante e conversa lateral (`<dialog>`, Ctrl+J, Esc, foco devolvido) na loja independente da E-commerce e para o dono no Master, com sugestões e o exemplo gravado de cada ferramenta;
+  - central `/merchant/ia` com 9 ferramentas em cartões (escrever, analisar, fazer por você), selo do plano mínimo ou "em breve";
+  - Master `/master/ia`:
+    - chave da OpenAI só criptografada (só o final aparece) e "Testar conexão" (lista de modelos, sem custo de uso);
+    - "mostrar" e "uso real" (o uso real só liga com a chave testada);
+    - plano mínimo por grupo, modelos e cotas;
+    - prévia de como as lojas veem;
+  - faixa "Maurício, a IA da sua loja" na home da E-commerce, com rótulo Beta e exemplo gravado.
+- **Nenhuma chamada à IA nesta fase** (só o teste de conexão pedido pelo dono). Configuração em `platform_settings` (chave `ia`).
+- **SuperDrop e fornecedor:** sem mudança.
+- **Movimento (D193, ajuste):** a pedido do dono, o logo com o arco aparece em toda troca de página, no mínimo 0,42 s, e some subindo junto com a página nova. A página nova entra na hora, sem quadro vazio.
+- **Testes:** `tests/ia0-mauricio.test.ts` (2).

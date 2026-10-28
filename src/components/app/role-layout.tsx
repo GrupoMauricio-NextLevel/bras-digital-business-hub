@@ -22,6 +22,8 @@ import { ecosystemBar, type EcoBrand } from "@/lib/domain/ecossistema/lancador";
 import { BarraEcossistema } from "@/components/ecossistema/barra";
 import { masterPathAllowed } from "@/lib/master-equipe";
 import type { NavItem } from "@/lib/nav";
+import { mauricioDaLoja } from "@/lib/domain/ia";
+import { BotaoMauricio } from "@/components/ia/mauricio";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -69,6 +71,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const seletorMarca = isMaster && !sup ? <SeletorMarcaMaster atual={marcaMaster} /> : null;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
+  // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.
+  const mauricio = (commerceStore && independent) || (isMaster && !fn && !sup) ? await mauricioDaLoja(db, isMaster ? null : store!.id, { master: isMaster }) : null;
+  const botaoIa = mauricio ? <BotaoMauricio m={mauricio} central={isMaster ? "/master/ia" : "/merchant/ia"} upgrade={isMaster ? "/master/ia" : "/merchant/finance#assinatura"} /> : null;
   if (scope === "bras-admin") {
     // Estúdio da Brás (D92): só o Master entra; nome, menu e cor da Brás, com volta ao Master.
     const bras = brandByCode("BRAS_DIGITAL");
@@ -122,7 +127,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
-        banner={<>{supportBar}{ecoBar}{banner}</>}
+        banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}
       >
         {children}
       </AppShell>
@@ -136,7 +141,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : brasRole ? brandByCode("BRAS_DIGITAL").name : "NextLevel");
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma";
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} banner={<>{supportBar}{seletorMarca}{ecoBar}{banner}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} banner={<>{supportBar}{seletorMarca}{ecoBar}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
   );

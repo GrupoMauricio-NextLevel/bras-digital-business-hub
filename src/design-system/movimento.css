@@ -9,12 +9,12 @@
 
 /* 1. Troca de página: a que sai desfoca e some; a nova sobe um degrau, revelada de baixo para cima. */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-old(.pagina-sai) { animation: 150ms var(--nl-cai) both nl-sai; }
-::view-transition-new(.pagina-entra) { animation: 480ms var(--nl-sobe) 70ms both nl-sobe; }
+::view-transition-old(.pagina-sai) { animation: 140ms var(--nl-cai) both nl-sai; }
+::view-transition-new(.pagina-entra) { animation: 420ms var(--nl-sobe) both nl-sobe; }
 @keyframes nl-sai { to { opacity: 0; transform: translateY(-10px) scale(.995); filter: blur(6px); } }
 @keyframes nl-sobe {
-  from { opacity: 0; transform: translateY(32px); clip-path: inset(14% 0 0 0 round 28px); filter: blur(5px); }
-  55% { opacity: 1; filter: blur(0); }
+  from { opacity: 0; transform: translateY(28px); clip-path: inset(12% 0 0 0 round 28px); filter: blur(4px); }
+  30% { opacity: 1; filter: blur(0); }
   to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 0); }
 }
 
@@ -27,9 +27,13 @@
 @keyframes nl-barra-fim { 0% { opacity: 1; transform: scaleX(.9); } 60% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1); } }
 @keyframes nl-brilho { to { background-position: -200% 0; } }
 
-/* 2b. Carga demorada: logo da marca no centro, com o arco girando. Só aparece se a página nova passar de 0,45 s. */
-.nl-carga { position: fixed; inset: 0; z-index: 9998; display: grid; place-items: center; pointer-events: none; opacity: 0; visibility: hidden; background: color-mix(in srgb, var(--ds-canvas, #fff) 72%, transparent); backdrop-filter: blur(3px); }
-.nl-carga[data-estado="indo"] { visibility: visible; animation: nl-carga-mostra 260ms ease 450ms forwards; }
+/* 2b. Troca de página: logo da marca no centro com o arco girando, no mínimo 0,42 s, e some subindo junto com a página nova. */
+.nl-carga { position: fixed; inset: 0; z-index: 9998; display: grid; place-items: center; pointer-events: none; opacity: 0; visibility: hidden; background: color-mix(in srgb, var(--ds-canvas, #fff) 55%, transparent); backdrop-filter: blur(2px); }
+.nl-carga[data-estado="indo"] { visibility: visible; animation: nl-carga-mostra 140ms ease forwards; }
+.nl-carga[data-estado="chegou"] { visibility: visible; opacity: 1; animation: nl-carga-some 420ms var(--nl-sobe) forwards; }
+.nl-carga[data-estado="chegou"] .nl-carga-anel { animation: nl-carga-sobe 420ms var(--nl-sobe) forwards; }
+@keyframes nl-carga-some { to { opacity: 0; } }
+@keyframes nl-carga-sobe { to { transform: translateY(-18px) scale(.9); } }
 .nl-carga-anel { position: relative; display: grid; place-items: center; width: 112px; height: 112px; border-radius: 50%; color: var(--nl-cor-mov); }
 .nl-carga-anel::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--nl-cor-mov) 16%, transparent); border-top-color: var(--nl-cor-mov); animation: nl-gira 900ms linear infinite; }
 .nl-carga-anel img { width: 44px; height: 44px; object-fit: contain; }
@@ -62,8 +66,30 @@
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
   .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok, .nl-carga-anel::before { animation: none !important; }
-  .nl-carga[data-estado="indo"] { animation: nl-carga-mostra 1ms linear 450ms forwards !important; }
+  .nl-carga[data-estado="indo"] { animation: nl-carga-mostra 1ms linear forwards !important; }
+  .nl-carga[data-estado="chegou"], .nl-carga[data-estado="chegou"] .nl-carga-anel { animation: none !important; opacity: 0; }
   .nl-barra-nav[data-estado="indo"] { transform: scaleX(.6); }
   .nl-toast-ok { background-size: 100% 3px; }
   .ds-input, .ds-field :is(input, textarea) { transition: none; }
 }
+
+/* Maurício (IA0, D194): botão flutuante, conversa lateral e compositor, no padrão "botão + painel à direita". */
+.ia-botao { position: fixed; right: 24px; bottom: 24px; z-index: 60; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 9999px; color: #fff;
+  background: radial-gradient(120% 120% at 30% 20%, color-mix(in srgb, var(--ds-primary) 70%, #fff) 0%, var(--ds-primary) 55%, color-mix(in srgb, var(--ds-primary) 70%, #000) 100%);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--ds-primary) 40%, transparent), inset 0 0 0 1px rgb(255 255 255 / .25); transition: transform 200ms var(--nl-sobe); }
+.ia-botao:hover { transform: translateY(-2px) scale(1.04); }
+.ia-botao:focus-visible { outline: 3px solid var(--ds-primary); outline-offset: 3px; }
+@media (max-width: 640px) { .ia-botao { right: 16px; bottom: 84px; width: 52px; height: 52px; } }
+.ia-painel { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(420px, 100vw); max-width: 100vw; padding: 0; border: 0; border-left: 1px solid var(--ds-line);
+  background: var(--ds-surface); color: var(--ds-ink); border-radius: 28px 0 0 28px; box-shadow: -20px 0 60px rgb(0 0 0 / .12); }
+.ia-painel[open] { animation: ia-entra 360ms var(--nl-sobe) both; }
+.ia-painel::backdrop { background: rgb(15 18 30 / .18); }
+@keyframes ia-entra { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (max-width: 640px) { .ia-painel { width: 100vw; border-radius: 0; } }
+.ia-simbolo { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 9999px; color: #fff; background: var(--ds-primary); }
+.ia-simbolo--grande { display: grid; width: 56px; height: 56px; }
+.ia-compositor { display: flex; align-items: flex-end; gap: 8px; padding: 6px 6px 6px 16px; border-radius: 24px; background: var(--ds-surface);
+  border: 1.5px solid color-mix(in srgb, var(--ds-primary) 45%, var(--ds-line)); box-shadow: 0 4px 16px color-mix(in srgb, var(--ds-primary) 10%, transparent); }
+.ia-enviar { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 9999px; color: #fff; background: var(--ds-primary); }
+.ia-enviar:disabled { background: var(--ds-surface-2); color: var(--ds-muted); cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) { .ia-painel[open] { animation: none; } .ia-botao { transition: none; } }
