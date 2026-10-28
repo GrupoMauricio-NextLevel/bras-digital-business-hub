@@ -21,7 +21,7 @@ import { PixelMeta } from "@/components/storefront/pixel-meta";
 import { ListaDeEspera } from "@/components/storefront/lista-de-espera";
 import { IntegracoesNaLoja } from "@/components/storefront/integracoes-loja";
 import { Maioridade } from "@/components/storefront/maioridade";
-import { BarraDeNavegacao, TransicaoDePagina } from "@/components/transicao-de-pagina";
+import { BarraDeNavegacao, EntradaDaLoja } from "@/components/transicao-de-pagina";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
 import Link from "next/link";
@@ -115,7 +115,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       <CartProvider storeSlug={slug}>
         <SectionList template={globals.header} ctx={ctx} region="header" />
         <BarraDeNavegacao logo={false} />
-        <main className="flex-1"><TransicaoDePagina>{lancando && !donoVendo ? <ListaDeEspera slug={slug} loja={sf.store.name} /> : children}</TransicaoDePagina></main>
+        <main className="flex-1"><EntradaDaLoja>{lancando && !donoVendo ? <ListaDeEspera slug={slug} loja={sf.store.name} /> : children}</EntradaDaLoja></main>
       </CartProvider>
       <SectionList template={globals.footer} ctx={ctx} region="footer" />
       {/* Assinatura fixa da NextLevel em todas as lojas geradas pelo sistema (não é editável). */}

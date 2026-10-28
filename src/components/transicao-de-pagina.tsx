@@ -13,6 +13,12 @@ export function TransicaoDePagina({ children }: { children: React.ReactNode }) {
   return <ViewTransition key={caminho} enter="pagina-entra" exit="pagina-sai" default="none">{children}</ViewTransition>;
 }
 
+/** Loja do lojista: sem View Transition (nada aparece por cima do carregamento sólido); a página nova sobe por CSS. */
+export function EntradaDaLoja({ children }: { children: React.ReactNode }) {
+  const caminho = usePathname();
+  return <div key={caminho} className="nl-pagina-sobe">{children}</div>;
+}
+
 /**
  * Linha de progresso no topo: aparece no clique de um link interno e completa quando a página nova chega. Dá a
  * resposta imediata ao clique, mesmo quando o servidor demora.

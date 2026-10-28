@@ -33,6 +33,8 @@
 .nl-carga[data-estado="chegou"] { visibility: visible; opacity: 1; animation: nl-carga-some 420ms var(--nl-sobe) forwards; }
 .nl-carga[data-estado="chegou"] .nl-carga-anel { animation: nl-carga-sobe 420ms var(--nl-sobe) forwards; }
 @keyframes nl-carga-some { to { opacity: 0; } }
+/* Na loja do lojista: transparente com desfoque (a loja continua visível por trás), um pouco mais forte que no painel. */
+.sf-root .nl-carga { background: color-mix(in srgb, #fff 62%, transparent); backdrop-filter: blur(6px) saturate(1.1); }
 @keyframes nl-carga-sobe { to { transform: translateY(-18px) scale(.9); } }
 .nl-carga-anel { position: relative; display: grid; place-items: center; width: 112px; height: 112px; border-radius: 50%; color: var(--nl-cor-mov); }
 .nl-carga-anel::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--nl-cor-mov) 16%, transparent); border-top-color: var(--nl-cor-mov); animation: nl-gira 900ms linear infinite; }
@@ -41,6 +43,9 @@
 .nl-carga-anel .nl-degraus > i { width: 6px; }
 @keyframes nl-carga-mostra { to { opacity: 1; } }
 @keyframes nl-gira { to { transform: rotate(360deg); } }
+
+/* Loja do lojista: sem View Transition; a página nova sobe por baixo do carregamento sólido. */
+.nl-pagina-sobe { animation: nl-sobe 420ms var(--nl-sobe) 120ms both; }
 
 /* 3. Degraus: o "carregando" da marca (botão salvando, envio de imagem). Três barras que sobem em sequência. */
 .nl-degraus { display: inline-flex; align-items: flex-end; gap: 2px; width: 14px; height: 14px; flex-shrink: 0; }
@@ -65,7 +70,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
-  .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok, .nl-carga-anel::before { animation: none !important; }
+  .nl-barra-nav, .nl-degraus > i, .nl-chega, .nl-toast-ok, .nl-carga-anel::before, .nl-pagina-sobe { animation: none !important; }
   .nl-carga[data-estado="indo"] { animation: nl-carga-mostra 1ms linear forwards !important; }
   .nl-carga[data-estado="chegou"], .nl-carga[data-estado="chegou"] .nl-carga-anel { animation: none !important; opacity: 0; }
   .nl-barra-nav[data-estado="indo"] { transform: scaleX(.6); }
