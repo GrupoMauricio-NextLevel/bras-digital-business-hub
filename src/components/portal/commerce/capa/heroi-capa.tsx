@@ -26,7 +26,7 @@ export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents }: { cta: s
       </div>
 
       <div className="ecc-heroi-texto">
-        <p className="ecc-selo-topo">NextLevel E-commerce · plataforma de lojas virtuais</p>
+        <p className="ecc-selo-topo">NextLevel E-commerce · do Brás, com foco no atacado</p>
         <h1 id="titulo" className="ecc-titulo">
           Sua loja virtual
           <span className="ecc-titulo-linha">

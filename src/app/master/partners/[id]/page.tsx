@@ -13,6 +13,8 @@ import { NotFoundError } from "@/lib/domain/errors";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { PartnerAdmin } from "../partners-client";
+import { PartnerKindControl } from "@/app/master/financeiro/catalog-admin";
+import { ROTULO_TIPO } from "@/lib/domain/parceiros-ec";
 
 export const dynamic = "force-dynamic";
 const KIND: Record<string, string> = { SETUP: "Setup", MAINTENANCE: "Manutenção", ADJUSTMENT: "Ajuste de faixa", CLAWBACK: "Estorno", PAYOUT: "Saque", PAYOUT_REVERSAL: "Saque devolvido", FEE: "Taxa de reativação", MANUAL: "Ajuste manual" };
@@ -35,6 +37,12 @@ export default async function MasterPartnerPage({ params }: { params: Promise<{ 
         <MetricCard label="Chave Pix" value={p.hasPix ? "Cadastrada" : "Não cadastrada"} tone={p.hasPix ? "success" : "warning"} />
       </MetricGrid>
       <Card className="mb-8"><CardContent className="pt-5"><PartnerAdmin id={p.id} status={p.status} /></CardContent></Card>
+      {/* D220: tipo do parceiro (agência parceira = 30% + 15%) e o pedido feito pelo parceiro no painel. */}
+      <Card className="mb-8"><CardContent className="space-y-3 pt-5">
+        <h2 className="text-base font-semibold">Tipo: {ROTULO_TIPO[p.kind] ?? p.kind}</h2>
+        {p.agencyRequestedAt ? <p className="rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning">Pediu para ser agência parceira em {formatDate(p.agencyRequestedAt)}: {p.agencyInfo ?? "sem detalhes"}</p> : null}
+        <PartnerKindControl partnerId={p.id} kind={p.kind} />
+      </CardContent></Card>
       <SectionTitle title="Meses fechados" />
       <Card className="mb-8"><Table><THead><TR><TH>Mês</TH><TH className="text-right">Ativações</TH><TH className="text-right">Faixa</TH><TH>Meta</TH></TR></THead><TBody>{d.months.length === 0 ? <TR><TD colSpan={4} className="text-muted-foreground">Nenhum mês fechado ainda.</TD></TR> : d.months.map((m) => <TR key={m.period}><TD>{m.period}</TD><TD className="text-right tabular-nums">{m.activations}</TD><TD className="text-right tabular-nums">{m.tierBps / 100}%</TD><TD>{m.metGoal ? "Cumprida" : "Não cumprida"}</TD></TR>)}</TBody></Table></Card>
       <SectionTitle title="Lojas indicadas" />

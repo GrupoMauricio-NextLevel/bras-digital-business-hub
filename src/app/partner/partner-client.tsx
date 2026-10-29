@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { FormField } from "@/components/app/form-field";
 import { InvoicePay } from "@/components/finance/invoice-pay";
-import { createLinkAction, createPartnerCouponAction, reactivateFromBalanceAction, reactivationInvoiceAction, requestPayoutAction, savePartnerProfileAction, togglePartnerCouponAction } from "@/app/actions/partners";
+import { pedirAgenciaAction, createLinkAction, createPartnerCouponAction, reactivateFromBalanceAction, reactivationInvoiceAction, requestPayoutAction, savePartnerProfileAction, togglePartnerCouponAction } from "@/app/actions/partners";
 
 export function CopyButton({ text, label = "Copiar", size = "sm" }: { text: string; label?: string; size?: "sm" | "md" }) {
   return <Button type="button" size={size} variant="secondary" onClick={() => { void navigator.clipboard?.writeText(text); toast.success("Copiado"); }}><Copy /> {label}</Button>;
@@ -108,6 +108,25 @@ export function ProfileForm({ phone, displayName, hasPix }: { phone: string; dis
       <FormField label="WhatsApp" htmlFor="pf-phone"><Input id="pf-phone" name="phone" defaultValue={phone} required inputMode="tel" /></FormField>
       <FormField label="Chave Pix para saque" htmlFor="pf-pix" hint={hasPix ? "Já cadastrada e protegida. Preencha só para trocar." : "Precisa ser do mesmo CPF/CNPJ do cadastro."}><Input id="pf-pix" name="pix" placeholder={hasPix ? "•••••••• (guardada)" : "CPF, e-mail, telefone ou chave aleatória"} autoComplete="off" /></FormField>
       <div><Button type="submit" loading={busy}>Salvar</Button></div>
+    </form>
+  );
+}
+
+/** Pedido para virar agência parceira (D220): 30% + 15% depois da aprovação do Master. */
+export function PedirAgencia() {
+  const router = useRouter();
+  const [info, setInfo] = React.useState("");
+  const [busy, setBusy] = React.useState(false);
+  return (
+    <form className="mt-4 flex flex-col gap-2 sm:flex-row" onSubmit={async (e) => {
+      e.preventDefault(); setBusy(true);
+      const r = await pedirAgenciaAction(info);
+      setBusy(false);
+      if (!r.ok) toast.error(r.error); else { toast.success("Pedido enviado: a equipe NextLevel responde em até 2 dias úteis."); router.refresh(); }
+    }}>
+      <label htmlFor="ag-info" className="sr-only">Site ou Instagram da agência e quantos clientes atende</label>
+      <Input id="ag-info" value={info} onChange={(e) => setInfo(e.target.value)} placeholder="Site ou Instagram da agência e quantos clientes atende" className="flex-1" />
+      <Button type="submit" disabled={busy || info.trim().length < 5}>Quero ser agência parceira</Button>
     </form>
   );
 }

@@ -445,12 +445,12 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
 .ds-faixa-agente { position: relative; display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px 0 12px; border: 2px solid transparent; border-radius: var(--ds-r-pill); color: #fff; font: inherit; font-size: 0.86rem; font-weight: 800; letter-spacing: 0.01em; cursor: pointer;
   /* Agente (D209/D210, referência do dono: botão "Agente" da Hostinger): pílula escura, borda em degradê rosa → roxo → azul
      bem visível, com um brilho que corre devagar pela borda e um halo rosa à esquerda e azul à direita. */
-  background: linear-gradient(#0c0718, #0c0718) padding-box, linear-gradient(90deg, #ff3fd1, #b44cff, #6a5cff, #3d8bff, #6a5cff, #b44cff, #ff3fd1) border-box;
+  background: linear-gradient(var(--agente-fundo), var(--agente-fundo)) padding-box, linear-gradient(90deg, var(--agente-rosa), var(--agente-lilas), var(--agente-violeta), var(--agente-azul), var(--agente-violeta), var(--agente-lilas), var(--agente-rosa)) border-box;
   background-size: 100% 100%, 200% 100%; animation: ds-agente-brilho 5s linear infinite;
   border-color: transparent !important; /* vence o "* { border-color }" global (fora de camada) para o degradê aparecer */
-  box-shadow: -8px 0 18px -10px #ff3fd1, 8px 0 18px -10px #3d8bff, 0 0 0 1px rgb(255 255 255 / 0.04);
+  box-shadow: -8px 0 18px -10px var(--agente-rosa), 8px 0 18px -10px var(--agente-azul), 0 0 0 1px rgb(255 255 255 / 0.04);
   transition: transform var(--ds-dur-fast) var(--ds-ease), box-shadow var(--ds-dur-fast) var(--ds-ease); }
-.ds-faixa-agente:hover { transform: translateY(-1px); box-shadow: -10px 0 22px -8px #ff3fd1, 10px 0 22px -8px #3d8bff, 0 0 0 1px rgb(255 255 255 / 0.06); }
+.ds-faixa-agente:hover { transform: translateY(-1px); box-shadow: -10px 0 22px -8px var(--agente-rosa), 10px 0 22px -8px var(--agente-azul), 0 0 0 1px rgb(255 255 255 / 0.06); }
 .ds-faixa-agente:active { transform: translateY(0) scale(0.98); }
 .ds-agente-icone { display: inline-grid; place-items: center; color: #fff; }
 .ds-agente-icone svg { filter: drop-shadow(0 0 5px rgb(255 63 209 / 0.75)); }
@@ -469,9 +469,9 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
 .ds-faixa .ds-search { height: 38px; border-radius: var(--ds-r-pill); padding: 0 6px 0 14px; color: rgb(255 255 255 / 0.78); }
 .ds-faixa .ds-search kbd { margin-left: auto; padding: 2px 8px; border: 1px solid; border-color: rgb(255 255 255 / 0.2) !important; border-radius: var(--ds-r-pill); background: rgb(255 255 255 / 0.08); color: rgb(255 255 255 / 0.85); font-size: 0.68rem; }
 /* Avisos: número em pílula com degradê e contorno da cor da faixa. */
-.ds-faixa .ds-top-actions > button:is([aria-label="Avisos"], [aria-label$="avisos novos"]) > span[aria-hidden] { top: -5px !important; right: -5px !important; min-width: 18px; height: 18px; padding: 0 5px; line-height: 18px; background: linear-gradient(135deg, #ff3fd1, #ff5a5a); box-shadow: 0 0 0 2px var(--capa-meio); }
+.ds-faixa .ds-top-actions > button:is([aria-label="Avisos"], [aria-label$="avisos novos"]) > span[aria-hidden] { top: -5px !important; right: -5px !important; min-width: 18px; height: 18px; padding: 0 5px; line-height: 18px; background: linear-gradient(135deg, var(--agente-rosa), var(--agente-coral)); box-shadow: 0 0 0 2px var(--capa-meio); }
 /* Conta: avatar com anel em degradê da mesma família do Agente. */
-.ds-faixa .ds-faixa-avatar { border: 2px solid transparent; background: linear-gradient(var(--ds-accent), var(--ds-accent)) padding-box, linear-gradient(135deg, #ff3fd1, #6a5cff, #3d8bff) border-box; border-color: transparent !important; transition: transform var(--ds-dur-fast) var(--ds-ease); }
+.ds-faixa .ds-faixa-avatar { border: 2px solid transparent; background: linear-gradient(var(--ds-accent), var(--ds-accent)) padding-box, linear-gradient(135deg, var(--agente-rosa), var(--agente-violeta), var(--agente-azul)) border-box; border-color: transparent !important; transition: transform var(--ds-dur-fast) var(--ds-ease); }
 .ds-faixa .ds-faixa-avatar:hover { transform: translateY(-1px); }
 @media (prefers-reduced-motion: reduce) { .ds-faixa :is(button, a):hover { transform: none; } }
 @media (max-width: 480px) { .ds-faixa, .ds-faixa .ds-top-actions { gap: 4px; } .ds-faixa .ds-chip { padding: 0 11px; } }

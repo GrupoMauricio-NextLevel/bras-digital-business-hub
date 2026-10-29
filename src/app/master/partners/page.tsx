@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { getDb } from "@/db/client";
+import { agenciasPedindo } from "@/lib/domain/parceiros-ec";
+import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 import { requireRole } from "@/lib/require-session";
 import { fraudQueue, getPartnerSettings, listPartners, payoutQueue } from "@/lib/domain/partners";
 import { periodOf } from "@/lib/domain/finance";
@@ -26,13 +28,14 @@ export default async function MasterPartners({ searchParams }: { searchParams: P
   const { tab: raw, status } = await searchParams;
   const tab = TABS.some((t) => t.key === raw) ? raw! : "parceiros";
   const db = await getDb();
-  const [list, queue, fraud, settings] = await Promise.all([listPartners(db, session.actor), payoutQueue(db, session.actor), fraudQueue(db, session.actor), getPartnerSettings(db)]);
+  const [list, queue, fraud, settings, agencias] = await Promise.all([listPartners(db, session.actor), payoutQueue(db, session.actor), fraudQueue(db, session.actor), getPartnerSettings(db), agenciasPedindo(db, session.actor)]);
   const openPayouts = queue.filter((p) => p.status === "REQUESTED" || p.status === "APPROVED");
   const period = periodOf(new Date());
   const shown = list.filter((p) => !status || p.status === status);
   return (
     <>
-      <PageHeader title="Programa de Parceiros" description="Afiliados que indicam planos NextLevel: cadastros, comissões, saques e antifraude." actions={<a href={`/master/partners/export?period=${period}`} className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline"><Download className="size-4" aria-hidden /> Exportar CSV do mês</a>} />
+      <PageHeader title="Programa de Parceiros" description="Indicadores e agências que trazem lojistas: cadastros, comissões, saques e antifraude." actions={<a href={`/master/partners/export?period=${period}`} className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline"><Download className="size-4" aria-hidden /> Exportar CSV do mês</a>} />
+      <PrecisaDeVoce itens={[...agencias, ...openPayouts.slice(0, 5).map((p) => ({ id: `saque-${p.id}`, titulo: `Saque pedido: ${formatBRL(p.amountCents)}`, detalhe: "Confira e aprove o pagamento por Pix.", tom: "warning" as const, href: "/master/partners?tab=saques", acao: "Ver saques" }))]} vazio="Nenhuma agência ou saque esperando você." descricao="Agências pedindo aprovação (30% + 15%) e saques para pagar." />
       <MetricGrid className="mb-8">
         <MetricCard label="Parceiros" value={list.length} icon={Handshake} hint={`${list.filter((p) => p.status === "ACTIVE").length} ativos · ${list.filter((p) => p.status === "INACTIVE").length} inativos`} />
         <MetricCard label="Ativações no mês" value={list.reduce((t, p) => t + p.activationsMonth, 0)} tone="success" />

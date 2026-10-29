@@ -14,14 +14,25 @@ import { textoConvite } from "@/lib/parceiros/convite";
 import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { CopyButton, WhatsAppShare } from "./partner-client";
+import { PainelParceiroEc } from "./painel-ec";
+import { painelParceiroEc } from "@/lib/domain/parceiros-ec";
+import { commercePlansView } from "@/lib/domain/commerce-plans";
 
 export const dynamic = "force-dynamic";
 
 export default async function PartnerHome() {
   const session = await requireRole("AFFILIATE");
-  const d = await partnerDashboard(await getDb(), session.actor);
   const base = await getBaseUrl();
   const marca = await getBrand();
+  // Parceiro da E-commerce (D220): painel próprio do programa (indicador ou agência), com as regras do catálogo.
+  if (marca.code === "NEXTLEVEL_COMMERCE") {
+    const db = await getDb();
+    const [pe, pv] = await Promise.all([painelParceiroEc(db, session.actor), commercePlansView(db)]);
+    const aPartir = Math.min(...pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => p.monthlyCents!));
+    const linkEc = `${base}/r/${pe.parceiro.code.toLowerCase()}`;
+    return <PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} />;
+  }
+  const d = await partnerDashboard(await getDb(), session.actor);
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;
   const goal = d.settings.monthlyGoal;
   const pct = Math.min(100, Math.round((d.funnel.activations / Math.max(d.tier.next ? d.funnel.activations + d.tier.next.needed : d.funnel.activations || 1, 1)) * 100));

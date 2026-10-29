@@ -106,14 +106,14 @@ select.ds-input { appearance: none; background-image: url("data:image/svg+xml,%3
 .vh-capsula-btn { display: flex; flex: 1; min-width: 0; align-items: center; gap: 10px; padding: 7px 7px 7px 18px; border-radius: 9999px; color: #fff;
   font-size: .9rem; font-weight: 700; text-align: left; border: 2px solid; border-color: transparent !important;
   /* D214: mesmo efeito do botão Agente (D210, referência Hostinger): pílula escura, borda em degradê que corre devagar. */
-  background: linear-gradient(#0c0718, #0c0718) padding-box, linear-gradient(90deg, #ff3fd1, #b44cff, #6a5cff, #3d8bff, #6a5cff, #b44cff, #ff3fd1) border-box;
+  background: linear-gradient(var(--agente-fundo), var(--agente-fundo)) padding-box, linear-gradient(90deg, var(--agente-rosa), var(--agente-lilas), var(--agente-violeta), var(--agente-azul), var(--agente-violeta), var(--agente-lilas), var(--agente-rosa)) border-box;
   background-size: 100% 100%, 200% 100%; animation: vh-brilho 5s linear infinite;
-  box-shadow: -10px 4px 26px -10px #ff3fd1, 10px 4px 26px -10px #3d8bff, 0 14px 34px rgb(15 23 42 / .28); }
+  box-shadow: -10px 4px 26px -10px var(--agente-rosa), 10px 4px 26px -10px var(--agente-azul), 0 14px 34px rgb(15 23 42 / .28); }
 @keyframes vh-brilho { from { background-position: 0 0, 0% 0; } to { background-position: 0 0, 200% 0; } }
 @media (prefers-reduced-motion: reduce) { .vh-capsula-btn { animation: none; } }
 .vh-capsula-btn:focus-visible { outline: 3px solid var(--ds-primary); outline-offset: 3px; }
 .vh-capsula-btn > svg { color: #fff; filter: drop-shadow(0 0 5px rgb(255 63 209 / .75)); }
-.vh-enviar { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; margin-left: auto; border-radius: 9999px; color: #fff; background: linear-gradient(135deg, #ff3fd1, #6a5cff 55%, #3d8bff); }
+.vh-enviar { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; margin-left: auto; border-radius: 9999px; color: #fff; background: linear-gradient(135deg, var(--agente-rosa), var(--agente-violeta) 55%, var(--agente-azul)); }
 .vh-fechar { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 9999px; color: #fff; background: rgb(15 23 42 / .85); }
 .vh-botao { bottom: 84px; }
 /* A entrada da cápsula sem recorte (o recorte do nl-chega cortava o brilho em retângulo). */

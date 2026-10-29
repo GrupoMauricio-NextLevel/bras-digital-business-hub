@@ -187,8 +187,11 @@ const decls = (c: ThemeColors) => Object.entries(c).map(([k, v]) => `--ds-${came
  */
 /** Paleta categórica de gráficos (validada): igual em todos os temas, pois distingue séries, não marca. */
 export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"] as const;
+/** Degradê do botão do Agente (padrão Hostinger, D210): igual em todos os temas, lido como `--agente-*`. */
+export const AGENTE_DEGRADE = { fundo: "#0c0718", rosa: "#ff3fd1", lilas: "#b44cff", violeta: "#6a5cff", azul: "#3d8bff", coral: "#ff5a5a" } as const;
+const agenteCss = () => Object.entries(AGENTE_DEGRADE).map(([k, v]) => `--agente-${k}:${v};`).join("");
 // Junto vão as constantes `--bdc-*` da Brás Digital Club `--nlg-*` da marca-mãe e `--ec-*` do NextLevel E-commerce: nomes próprios, lidos só pelos componentes de cada uma.
-const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}${ecCssVars()}}`;
+const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}${ecCssVars()}${agenteCss()}}`;
 
 export function themeCss(key: ThemeKey): string {
   const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));

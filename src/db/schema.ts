@@ -990,6 +990,10 @@ export const partners = pgTable("partners", {
   feePaidPeriod: text("fee_paid_period"),
   termsVersion: text("terms_version").notNull(),
   termsAcceptedAt: ts("terms_accepted_at").notNull(),
+  /** Pedido para ser agência parceira (D220): 30% + 15%. O Master aprova mudando o `kind` para AGENCY. */
+  agencyRequestedAt: ts("agency_requested_at"),
+  /** Site ou Instagram da agência e quantos clientes atende (texto livre do pedido). */
+  agencyInfo: text("agency_info"),
   createdAt: createdAt(),
 });
 

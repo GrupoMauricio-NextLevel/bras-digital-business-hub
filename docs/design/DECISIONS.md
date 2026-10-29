@@ -2294,3 +2294,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - no Master, todas continuam visíveis no seletor como Pausado, Próximo ou Em breve (bloqueadas, não removidas);
   - no painel do lojista não aparecem (D217);
   - no ecossistema público (menu do site do grupo), só entram as marcas liberadas, as mesmas abertas no Master (`negocioAberto`). As outras são ativadas conforme ficarem prontas.
+
+## D220 — [E-commerce] Taxa zero com o Mercado Pago, preços abaixo da concorrência e Programa de Parceiros (2026-10-29)
+- **Pedido do dono:** racional agressivo: taxa zero para quem usa o checkout do Mercado Pago (parceiro oficial, parceria confirmada), mais barato que a concorrência em todos os planos, inclusive no anual, e um grande programa de parceiros com página própria, agências em destaque e painel motivador.
+- **Preços (revisão `src/lib/finance/revisao-d220.ts`, aplicada por `aplicarRevisaoD220` no seed do catálogo):** Start R$ 57, Pro R$ 147, Scale R$ 347 por mês; no anual, R$ 37, R$ 119 e R$ 297 por mês. Taxa sobre vendas 0% para todos; assinaturas existentes também passam a 0%. Os planos se diferenciam pelas cotas do Maurício IA.
+- **Comissões:** indicador 20% da primeira mensalidade + 10% por 12 meses; agência parceira (e agência elite) 30% + 15% enquanto o cliente ficar (até 120 meses). Regras novas versionadas com motivo "D220".
+- **Comparativo:** preço anual de Nuvemshop e Tray incluído; teste garante que a NextLevel é a mais barata em cada degrau, no mensal e no anual. Rodapé honesto: os concorrentes também zeram a taxa com o pagamento deles; tarifa de processamento fica de fora.
+- **Selo Mercado Pago:** só texto, sem logo, até o dono enviar o material da marca.
+- **Programa de Parceiros (módulo da E-commerce, depois estendido à Soluções):**
+  - página pública `/parceiros` com indicador e agência parceira, simulador, como funciona e dúvidas; "Parceiros" no menu público;
+  - painel do parceiro (`src/app/partner/painel-ec.tsx`, domínio `src/lib/domain/parceiros-ec.ts`): link com cópia e WhatsApp, ganhos do mês, recorrente, saldo, indicados, "Precisa de você agora" e pedido para virar agência;
+  - pedido de agência (`agencyRequestedAt`, `agencyInfo`, migração 0080) aparece no Master em Parceiros; a aprovação é a troca do Tipo na página do parceiro.
+- **Linguagem (pedido do dono):** nunca dizer "mais barato". Falar em mais vantajoso, preço mais competitivo, vencer no preço.
+- **Vivência de rua:** seção nova na home (`vivencia-rua.tsx`), logo depois de "Por que a NextLevel". Fala da presença no Brás, no Canindé e em São Paulo, da experiência com os maiores importadores chineses e brasileiros, do foco no atacado e da proximidade, em oposição a agências de outros estados. O selo do topo diz "do Brás, com foco no atacado".

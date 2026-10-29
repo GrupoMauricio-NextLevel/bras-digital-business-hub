@@ -22,9 +22,9 @@ export function PorQueNextLevel({ degrausNl }: { degrausNl: DegrauNL[] }) {
   const entrada = degrausNl[0];
   const MOTIVOS = [
     { icon: Banknote, titulo: "Taxa zero nas vendas", texto: "Com o checkout do Mercado Pago, nosso parceiro oficial, a NextLevel não cobra nada sobre as suas vendas. Você paga só a mensalidade." },
-    { icon: BadgeCheck, titulo: "Mais barata em todos os planos", texto: `Mensalidade a partir de ${entrada ? reais(entrada.mensalCents) : "—"} (ou ${entrada ? reais(entrada.anualMesCents) : "—"}/mês no anual), abaixo da Nuvemshop e da Tray em cada plano.` },
+    { icon: BadgeCheck, titulo: "Preço mais competitivo em todos os planos", texto: `Mensalidade a partir de ${entrada ? reais(entrada.mensalCents) : "—"} (ou ${entrada ? reais(entrada.anualMesCents) : "—"}/mês no anual). Plano a plano, a NextLevel vence a Nuvemshop e a Tray no preço.` },
     { icon: Sem, titulo: "Sem limite de produtos e pedidos", texto: "Em todos os planos. Você não troca de plano porque cadastrou mais produtos ou vendeu mais." },
-    { icon: UsersRound, titulo: "Gente de verdade com você", texto: "Equipe NextLevel na sede em São Paulo: monta a loja junto, migra de outra plataforma e atende no WhatsApp." },
+    { icon: UsersRound, titulo: "Gente de verdade perto de você", texto: "Equipe NextLevel em São Paulo, na rua do atacado: monta a loja junto, migra de outra plataforma e atende no WhatsApp." },
   ];
   return (
     <section id="por-que" aria-labelledby="porque-t" className="scroll-mt-16 bg-surface px-4 py-16 md:py-24">
@@ -63,7 +63,7 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
     <section id="comparativo" aria-labelledby="comp-t" className="ds-tema-escuro scroll-mt-16 px-4 py-16 md:py-24" style={{ background: "var(--ec-marinho, #101a33)" }}>
       <div className="mx-auto max-w-6xl text-white">
         <p className="im-eyebrow" style={{ color: "#7dd3fc" }}>Comparativo</p>
-        <h2 id="comp-t" className="im-h2 mt-3 max-w-3xl">Mais barata que a Nuvemshop e a Tray em todos os planos.</h2>
+        <h2 id="comp-t" className="im-h2 mt-3 max-w-3xl">Mais vantajosa que a Nuvemshop e a Tray em todos os planos.</h2>
         <p className="mt-4 max-w-2xl text-lg text-white/80">Plano a plano, no mensal e no anual. E sem tarifa da NextLevel sobre as suas vendas com o Mercado Pago.</p>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {linhas.map((l) => {
@@ -79,7 +79,7 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
                 <ul className="mt-3 space-y-2 text-sm">
                   {l.outras.map((o) => <li key={o.key} className="flex items-baseline justify-between gap-3 px-1"><span>{o.nome} <span className="text-xs text-white/60">{o.plano}</span></span><span className="text-right tabular-nums text-white/85">{reais(o.mensalCents)}<span className="block text-[11px] text-white/55">{o.anualMesCents ? `${reais(o.anualMesCents)} no anual` : ""}</span></span></li>)}
                 </ul>
-                <p className="mt-4 text-sm font-semibold text-emerald-300">{reais(prox - n.mensalCents)} a menos por mês que a próxima mais barata</p>
+                <p className="mt-4 text-sm font-semibold text-emerald-300">{reais(prox - n.mensalCents)} por mês de vantagem sobre a próxima opção</p>
               </div>
             );
           })}

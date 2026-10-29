@@ -13,7 +13,9 @@ describe("home imersiva da E-commerce", () => {
     }
     expect(faltando).toEqual([]);
     // Toda foto citada na página existe no acervo.
-    const pagina = readFileSync(join(process.cwd(), "src/components/portal/commerce/imersiva/home-imersiva.tsx"), "utf8");
+    // Desde a D219 parte das fotos foi da home para /recursos e para a capa: as três juntas formam o site.
+    const pagina = ["imersiva/home-imersiva.tsx", "imersiva/recursos-ec.tsx", "capa/heroi-capa.tsx"]
+      .map((f) => readFileSync(join(process.cwd(), "src/components/portal/commerce", f), "utf8")).join("\n");
     const citadas = [...new Set(pagina.match(/"ec-[a-z0-9-]+"/g)!.map((n) => n.slice(1, -1)))];
     expect(citadas.length).toBeGreaterThan(10);
     for (const n of citadas) expect(Object.keys(EC_HOME_FOTOS)).toContain(n);

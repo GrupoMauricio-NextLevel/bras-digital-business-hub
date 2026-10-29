@@ -561,6 +561,13 @@
       "when": 1793244885242,
       "tag": "0079_crm_acompanhamento",
       "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "7",
+      "when": 1793301018362,
+      "tag": "0080_parceiros_agencia",
+      "breakpoints": true
     }
   ]
 }

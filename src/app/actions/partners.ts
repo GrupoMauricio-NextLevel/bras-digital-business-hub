@@ -82,3 +82,14 @@ export async function savePartnerSettingsAction(raw: unknown) {
 export async function reviewAttributionAction(storeId: string, release: boolean) {
   return runAction(async () => { const { session, db } = await ctx(); await reviewAttribution(db, session.actor, storeId, release); refresh(); return undefined; });
 }
+
+/** Parceiro da E-commerce pede para ser agência parceira (D220); o Master aprova. */
+export async function pedirAgenciaAction(info: string) {
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    const { pedirAgencia } = await import("@/lib/domain/parceiros-ec");
+    await pedirAgencia(db, session.actor, { info });
+    refresh();
+    return undefined;
+  });
+}

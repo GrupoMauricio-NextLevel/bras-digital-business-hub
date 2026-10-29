@@ -86,7 +86,7 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
       primaryColor: PALETTES.NEXTLEVEL_COMMERCE.light.ink, accentColor: PALETTES.NEXTLEVEL_COMMERCE.light.signal, logo: "nextlevel",
       modules: ["stores", "themes", "partners"], emailFromName: EC.name, legalLine: LEGAL(EC.name),
       // Conta simples (D34) pronta: o cadastro abre ao ligar BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true (decisão do dono, junto do Mercado Pago da NextLevel).
-      signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE === "true", soon: null,
+      signupOpen: env.BRAND_SIGNUP_NEXTLEVEL_COMMERCE === "true", partnersOpen: env.BRAND_PARTNERS_NEXTLEVEL_COMMERCE !== "false" /* D220: programa de parceiros aberto */, soon: null,
     },
     SUPERDROP: {
       code: "SUPERDROP", name: "SuperDrop", live: true,

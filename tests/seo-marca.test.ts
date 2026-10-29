@@ -11,8 +11,9 @@ describe("sitemap por marca", () => {
     expect(sd).toEqual(expect.arrayContaining(["/", "/como-funciona", "/seja-fornecedor", "/parceiros", "/temas/lume", "/termos", "/privacidade", "/cadastro"]));
     expect(sd).not.toContain("/solucoes");
     const cm = sitemapPaths(brandByCode("NEXTLEVEL_COMMERCE", {}), opts);
-    expect(cm).toEqual(expect.arrayContaining(["/", "/planos", "/temas", "/quero-minha-loja"]));
-    for (const x of ["/seja-fornecedor", "/como-funciona", "/parceiros", "/loja-nextlevel"]) expect(cm).not.toContain(x);
+    expect(cm).toEqual(expect.arrayContaining(["/", "/planos", "/temas", "/quero-minha-loja", "/parceiros"])); // programa de parceiros (D220)
+    for (const x of ["/seja-fornecedor", "/como-funciona", "/loja-nextlevel"]) expect(cm).not.toContain(x);
+    expect(sitemapPaths(brandByCode("NEXTLEVEL_COMMERCE", { BRAND_PARTNERS_NEXTLEVEL_COMMERCE: "false" }), opts)).not.toContain("/parceiros");
     expect(sitemapPaths(brandByCode("NEXTLEVEL_COMMERCE", { BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true" }), opts)).toContain("/cadastro");
     expect(sitemapPaths(brandByCode("NEXTLEVEL", {}), opts)).toEqual(["/solucoes", "/solucoes/migracao-lite", "/loja-nextlevel", "/club", "/meu-contador", "/termos", "/privacidade"]);
     expect(sitemapPaths(brandByCode("NEXTLEVEL_CARGAS", {}), opts)).toEqual(["/", "/termos", "/privacidade"]);

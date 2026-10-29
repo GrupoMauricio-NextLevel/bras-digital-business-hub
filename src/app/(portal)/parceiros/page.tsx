@@ -11,6 +11,7 @@ import { PartnerCalculator } from "@/components/portal/partner-calculator";
 import { formatBRL } from "@/lib/money";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 import { FaixaMarca } from "@/components/portal/marca-institucional";
+import { ParceirosEc } from "@/components/portal/commerce/parceiros/parceiros-ec";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -45,6 +46,8 @@ const FAQ = [
 
 export default async function Parceiros() {
   const brand = await requireBrandFeature("partners");
+  // E-commerce (D220): página própria do programa, com agências em destaque e as regras do catálogo.
+  if (brand.code === "NEXTLEVEL_COMMERCE") return <ParceirosEc brand={brand} />;
   const db = await getDb();
   const [settings, book] = await Promise.all([getPartnerSettings(db), getPriceBook(db)]);
   const plans = OFFER_KEYS.map((k) => ({ key: k as string, name: book.offers[k].name, setupCents: book.offers[k].setupCents, monthlyCents: book.offers[k].monthlyCents })).filter((p) => p.setupCents > 0 || p.monthlyCents > 0);
