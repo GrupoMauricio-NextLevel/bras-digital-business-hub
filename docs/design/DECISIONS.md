@@ -2059,3 +2059,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Uma casca só:** o console `/commerce` deixou de trocar o menu inteiro (o antigo "Voltar ao Master"); usa o mesmo menu do Master.
 - **Nada foi apagado:** as telas antigas continuam no endereço de sempre. Com mais de uma marca aberta, volta o menu anterior.
 - Código: `MASTER_ECOMMERCE_NAV` em `src/lib/nav.ts`, escolha em `role-layout.tsx`.
+
+## D204 — [E-commerce] Receita e Crescimento: telas de resumo (2026-10-29)
+- **Fases F5 e F6.**
+- **Receita (`/master/receita`):**
+  - números: receita mensal (planos ativos, anual ÷ 12), recebido no mês, pagantes, em risco (vencido ou aguardando) e canceladas, todos pela regra única D200;
+  - lista das assinaturas com o que precisa de ação primeiro (situação, plano, valor por mês, vencimento e última cobrança);
+  - atalhos para contratos, "o que cada plano libera", serviços da Loja NextLevel e o financeiro completo.
+- **Crescimento (`/master/crescimento`):** num lugar só, parceiros, ofertas e preços, Maurício vendedor (ajustes), temas e a página pública.
+- **Faixa do topo:** a novidade passou a ser "Atendimento ao vivo: visitantes do site e lojistas numa caixa só".
+- **Funções da equipe** (`master-equipe.ts`):
+  - Comercial e Suporte passam a ver Agora, Atendimento e Comercial;
+  - Comercial também vê Crescimento;
+  - Financeiro vê Receita.
