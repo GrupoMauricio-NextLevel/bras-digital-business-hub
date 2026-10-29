@@ -17,4 +17,4 @@ Leia `docs/prompts/temas-pagos-um-a-um.md` (prompt-mestre, regras e fases) e `do
 6. **Liberação:** capturas + link `/demo/<chave>` + números ao dono; só depois o tema fica disponível.
 
 ## Regras que não mudam
-Tenant isolado (a prévia com produtos só para o dono da própria loja); pagamento só vale depois de conferido; compra idempotente; preço do catálogo, nunca fixo na tela; trocar de tema nunca perde dados; SuperDrop em produção não muda sem teste; sem push de tema "disponível" sem aprovação.
+Tenant isolado (a prévia com produtos só para o dono da própria loja); pagamento só vale depois de conferido; compra idempotente; preço do catálogo, nunca fixo na tela; trocar de tema nunca perde dados; foco atual só na E-commerce, SuperDrop sem clientes (D216); sem push de tema "disponível" sem aprovação.

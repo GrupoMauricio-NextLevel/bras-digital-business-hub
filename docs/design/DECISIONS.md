@@ -2253,3 +2253,9 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
     - Maurício em modo manual ou com a chave salva mas o uso real desligado (azul).
     - Só "ligado/desligado": nenhum valor de chave sai da tela.
 - Código: `src/lib/domain/master-agora.ts`, `src/app/master/receita/page.tsx`, `src/app/commerce/stores/page.tsx`, `src/app/master/crescimento/page.tsx`.
+
+## D216 — [Direção] Fase atual só na NextLevel E-commerce; SuperDrop não está em produção (2026-10-29)
+- **Pedido do dono:** "SuperDrop não está em produção, não existem clientes. Mas nessa fase estamos só no E-commerce. Salva essa info."
+- **Corrige a premissa antiga** (CLAUDE.md, AGENTS.md e skills) de que o SuperDrop estava em produção com clientes.
+- **Regra a partir de agora:** o trabalho é só da E-commerce e do Master. Não deixar de melhorar algo por cautela com o SuperDrop. Quando uma melhoria servir para todas as lojas, pode valer para todas, desde que não quebre o que existe. As outras marcas voltam numa etapa futura.
+- As barreiras "só na E-commerce" de D208 a D213 continuam como estão (não fazem mal). Podem ser abertas para as outras marcas quando elas entrarem na fase.

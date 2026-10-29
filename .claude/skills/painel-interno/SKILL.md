@@ -19,7 +19,7 @@ Ferramenta de trabalho, não vitrine de software. Papel quente e tinta em vez de
 - **Cada papel e cada marca vê só o que existe para ele.** Achado de 2026-10-03: o painel da conta simples da Commerce (`lojista@commerce.demo`) ainda mostra conceitos do SuperDrop (coluna "Central", filtros "Aguardando recarga" e "Aguardando etiqueta", item "Preços e publicação", cor verde). Ao tocar nessas telas, esconda ou renomeie o que não se aplica à conta sem fornecedor (`store.kind === "SUPPLIER_OWN"` independente).
 - Lógica e regras de negócio ficam em `src/lib/domain/*`; componente visual não decide regra. Permissões no servidor. Valores em centavos (`formatBRL`). Página com banco: `export const dynamic = "force-dynamic"`.
 - Acessibilidade AA (`readableOn`), sem rolagem horizontal em 360 px, foco visível, teclado.
-- **SuperDrop está em produção**: não mude o comportamento dele sem teste.
+- **Fase atual só na E-commerce (D216):** o SuperDrop não está em produção nem tem clientes; não trave melhorias por causa dele.
 
 ## Velocidade percebida
 Lista inicial em ≤ 1 consulta por bloco (nada de consulta dentro de laço), paginação, `loading.tsx` com esqueleto, ações com resposta otimista só quando seguro, JS cliente só no que interage. Meça com a skill `desempenho`.

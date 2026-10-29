@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 > **Autoridade máxima do e-commerce:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`. Em conflito, ela vence; registre a exceção em `docs/design/DECISIONS.md`.
 
-Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende SuperDrop (em produção, com clientes), NextLevel Commerce e o Master central. **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
+Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende NextLevel E-commerce, Master central e as outras marcas (SuperDrop, Brás e demais). **Fase atual (D216): só a E-commerce; o SuperDrop não está em produção e não tem clientes.** **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
 
 ## Divisão de trabalho (para dois agentes não colidirem)
 > **Atualização (2026-10-02, dono):** o primeiro teste de design no Codex não deu bom resultado e o dono pausou o visual lá. **Por ora o Claude também faz o visual**, trabalhando em branch própria (`visual/v4`), mostrando capturas de tela ao dono e só publicando na branch de publicação depois da aprovação. O Codex só volta se o dono decidir. As regras abaixo continuam valendo se ele voltar.
@@ -40,7 +40,7 @@ O Render publica **a cada push** da branch de publicação, que hoje é `claude/
 - Página que consulta o banco declara `export const dynamic = "force-dynamic"`.
 - Valores em centavos; textos ao usuário em português claro; sem promessa de ganho; acessibilidade AA (sem rolagem horizontal em 360 px).
 - Um tenant nunca lê dados de outro; permissões no servidor; a marca vem do endereço (`getBrand()`), nunca fixa em componente.
-- **SuperDrop está em produção:** não mude o comportamento dele sem teste.
+- **Fase atual é a E-commerce (D216):** o SuperDrop não está em produção nem tem clientes. Não deixe de melhorar algo por causa dele, mas não quebre o que existe (as outras marcas voltam depois).
 
 ## Orquestrador de engenharia (documentos oficiais)
 O orquestrador completo (matriz tarefa → documentos, protocolo "relatar primeiro", portões de qualidade) está em `docs/constituicao/AGENTS-ORQUESTRADOR.md`. Ele complementa este arquivo; em conflito valem este arquivo e `CLAUDE.md` (Next.js, branch de publicação, modo rápido D64). Exceção registrada em D65: a autorização permanente do dono ("autorizo publicar sempre que for preciso") vale no lugar da regra "sem deploy sem autorização explícita" do orquestrador.
