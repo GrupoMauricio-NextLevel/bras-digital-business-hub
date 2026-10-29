@@ -2123,3 +2123,21 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - a equipe da loja também acessa.
 - **Separação:** conversas com canal LOJA nunca aparecem no Atendimento, no aviso sonoro nem na fila do Master. São do lojista.
 - Código: `src/lib/domain/atendimento-loja.ts`, `src/app/actions/atendimento-loja.ts`, `src/components/storefront/chat-da-loja.tsx`, `src/app/merchant/atendimento/`, `src/components/ia/mauricio.tsx`.
+
+## D207 — [E-commerce] Painel do lojista com o escritório do Master: cor, menu, Agora, CRM próprio e aviso sonoro (2026-10-29)
+- **Pedido do dono:** "aplicar a evolução do sistema do Master no painel do lojista"; menu de acordo com a necessidade dele e ligado ao suporte do Master; IA offline que chama a equipe; "o lojista precisa ter seu próprio CRM"; cores iguais às do Master.
+- **Casca:** o painel da loja E-commerce usa a cor da NextLevel (roxo do Master) e a faixa do topo com a novidade "Atendimento ao vivo" e o agente. A loja do cliente final continua com o tema escolhido pelo lojista (a cor só vale dentro do painel).
+- **Menu em 3 seções** (antes: 6 grupos em sanfona):
+  - **Escritório:** Agora, Atendimento, Clientes, Pedidos, Produtos, Financeiro, Minha loja;
+  - **Crescer:** Cupons, Campanhas, Avaliações, Migrar e anunciar, Análise, Pede pro Maurício;
+  - **Loja e ajustes:** o resto (pós-venda, categorias, aparência, temas, cadastro de clientes, ferramentas, aplicativos, empresa, equipe, assinatura, registro).
+  - Barra do celular: Agora, Atendimento, Clientes, Pedidos.
+- **Agora:** a fila do dia sobe para logo abaixo da capa e ganha "cliente(s) esperando resposta" e "carrinho(s) abandonado(s) nas últimas 48 h". A tela atualiza sozinha (30 s).
+- **Clientes (CRM da loja):** `/merchant/crm` junta numa pessoa só (mesmo e-mail ou WhatsApp) quem perguntou no "Dúvidas?", quem abandonou carrinho (60 dias) e quem comprou.
+  - Etapas que andam sozinhas: Conversou, Carrinho abandonado, Primeira compra, Recorrente, Sumiu (90 dias sem comprar).
+  - WhatsApp com mensagem pronta por etapa; ficha com linha do tempo, próxima ação, prazo e notas (`crm_acompanhamento`, marca `LOJA:<id>`, sem tabela nova).
+  - Só a própria loja vê; a equipe da loja também acessa.
+- **Aviso sonoro do lojista:** o mesmo do Master (`AvisoSonoro loja`), contando as perguntas dos clientes da loja; o aviso abre a conversa certa (`/merchant/atendimento?c=`). Desligado em modo suporte.
+- **Maurício (offline):** guias novos do lojista (Agora, Clientes, Falar com a equipe NextLevel) e caminhos atualizados para o menu novo; o guia de suporte mostra o botão "Chamar a equipe NextLevel", que cai no Atendimento do Master (D201).
+- Testes automáticos ficam para a fase de testes (pedido do dono); conferido por capturas em 1440 e 390 px.
+- Código: `src/lib/domain/crm-loja.ts`, `src/app/actions/crm-loja.ts`, `src/app/merchant/crm/`, `src/lib/nav.ts`, `src/components/app/role-layout.tsx`, `src/components/commerce/commerce-home.tsx`, `src/components/master/aviso-sonoro.tsx`, `src/lib/ia/manual.ts`.

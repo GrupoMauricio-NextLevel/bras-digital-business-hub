@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { pulsoAtendimentoAction } from "@/app/actions/vendedor";
+import { pulsoAtendimentoLojaAction } from "@/app/actions/atendimento-loja";
 
 const CHAVE = "nl-sons-painel";
 
@@ -25,8 +26,9 @@ function tocarSubida() {
 /**
  * Aviso de conversa nova no Master (D205): a cada 15 s confere quantas conversas esperam resposta. Quando aumenta, toca a
  * "Subida" (se o som estiver ligado), mostra um aviso com o atalho e põe o número no título da aba. O botão liga e desliga.
+ * Com `loja` (D207), vale para o painel do lojista: conta as perguntas dos clientes feitas no "Dúvidas?" da loja.
  */
-export function AvisoSonoro() {
+export function AvisoSonoro({ loja = false }: { loja?: boolean }) {
   const router = useRouter();
   const [som, setSom] = React.useState(true);
   const antes = React.useRef<number | null>(null);
@@ -46,7 +48,7 @@ export function AvisoSonoro() {
   React.useEffect(() => {
     let vivo = true;
     const conferir = async () => {
-      const r = await pulsoAtendimentoAction();
+      const r = await (loja ? pulsoAtendimentoLojaAction() : pulsoAtendimentoAction());
       if (!vivo || !r.ok || !r.data) return;
       const { esperando, ultima } = r.data;
       esperandoRef.current = esperando;
@@ -57,8 +59,8 @@ export function AvisoSonoro() {
         try { ligado = localStorage.getItem(CHAVE) !== "0"; } catch { /* padrão: ligado */ }
         if (ligado) tocarSubida();
         router.refresh(); // a fila e os números da tela aberta já mostram a conversa nova
-        toast(ultima.canal === "PAINEL" ? `Lojista pedindo ajuda: ${ultima.nome ?? "loja"}` : `Conversa nova: ${ultima.nome ?? "visitante do site"}`, {
-          description: ultima.texto ?? undefined, duration: 10_000, action: { label: "Responder", onClick: () => router.push(`/master/ia?c=${ultima.id}`) },
+        toast(loja ? `Cliente perguntando: ${ultima.nome ?? "cliente da loja"}` : ultima.canal === "PAINEL" ? `Lojista pedindo ajuda: ${ultima.nome ?? "loja"}` : `Conversa nova: ${ultima.nome ?? "visitante do site"}`, {
+          description: ultima.texto ?? undefined, duration: 10_000, action: { label: "Responder", onClick: () => router.push(loja ? `/merchant/atendimento?c=${ultima.id}` : `/master/ia?c=${ultima.id}`) },
         });
       }
       antes.current = esperando;
@@ -66,7 +68,7 @@ export function AvisoSonoro() {
     void conferir();
     const t = setInterval(() => { if (document.visibilityState === "visible") void conferir(); }, 15_000);
     return () => { vivo = false; clearInterval(t); };
-  }, [router]);
+  }, [router, loja]);
   const alternar = () => setSom((s) => { const n = !s; try { localStorage.setItem(CHAVE, n ? "1" : "0"); } catch { /* ok */ } if (n) tocarSubida(); return n; });
   return (
     <button type="button" onClick={alternar} aria-pressed={som} aria-label={som ? "Desligar o som dos avisos" : "Ligar o som dos avisos"} title={som ? "Som dos avisos ligado" : "Som dos avisos desligado"} className="ds-iconbtn">

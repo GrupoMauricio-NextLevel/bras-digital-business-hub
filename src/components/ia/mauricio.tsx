@@ -102,7 +102,7 @@ export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioD
                       {x.guia.link ? <Link href={x.guia.link.href} className="ds-btn ds-btn--sm mt-3 inline-flex">{x.guia.link.rotulo}<ArrowRight className="size-4" aria-hidden /></Link> : null}
                     </div>
                   ) : null}
-                  {x.semResposta && esfera === "lojista" ? <button type="button" onClick={() => chamarEquipe(ultimaPergunta)} className="ds-btn ds-btn--sm"><LifeBuoy className="size-4" aria-hidden />Chamar a equipe NextLevel</button> : null}
+                  {(x.semResposta || x.guia?.id === "suporte-nextlevel") && esfera === "lojista" ? <button type="button" onClick={() => chamarEquipe(ultimaPergunta)} className="ds-btn ds-btn--sm"><LifeBuoy className="size-4" aria-hidden />Chamar a equipe NextLevel</button> : null}
                   {x.sugestoes?.length ? <div className="flex flex-wrap gap-1.5 pt-1">{x.sugestoes.map((g) => <button key={g.id} type="button" onClick={() => perguntar(g.titulo, g)} className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold hover:border-primary">{g.titulo}</button>)}</div> : null}
                 </div>
               </div>

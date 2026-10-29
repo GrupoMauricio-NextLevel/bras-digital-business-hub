@@ -113,19 +113,8 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
       </div>
     </section>
 
-    {firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">{nextStep}{status}</div> : null}
-
-    <section aria-label="Resumo dos últimos 30 dias">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <Kpi i={1} icon={Wallet} label="Vendas · 30 dias" value={formatBRL(o.sales)} note={o.salesDelta === undefined ? undefined : <Delta value={o.salesDelta} />} />
-        <Kpi i={2} icon={ShoppingBag} label="Pedidos · 30 dias" value={String(o.last30Count)} note={o.countDelta === undefined ? undefined : <Delta value={o.countDelta} />} />
-        <Kpi i={3} icon={Users} label="Clientes" value={String(o.customers)} />
-        <Kpi i={4} icon={Package} label="Ticket médio" value={ticket === null ? "—" : formatBRL(ticket)} />
-      </div>
-      <p className="mt-2 px-1 text-xs text-muted-foreground">{noPrev ? "Variações aparecem quando houver 30 dias anteriores para comparar." : "Variação em relação aos 30 dias anteriores."}{ticket === null ? " O ticket médio aparece após o primeiro pedido." : ""}</p>
-    </section>
-
-    {!firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
+    {/* Fila do dia logo abaixo da capa (D207): a primeira tela do lojista responde "o que faço agora?". */}
+    {!firstAccess || operational.length ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
       {operational.length || next ? <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)} aria-labelledby="cm-att">
         <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">O que precisa de você agora, do mais urgente ao menos urgente.</p>
@@ -138,8 +127,20 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
             <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
           </Link></li>; })}</ol>
       </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">Fila do dia</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
-      {status}
+      {firstAccess ? null : status}
     </div> : null}
+    {firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">{nextStep}{status}</div> : null}
+
+    <section aria-label="Resumo dos últimos 30 dias">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        <Kpi i={1} icon={Wallet} label="Vendas · 30 dias" value={formatBRL(o.sales)} note={o.salesDelta === undefined ? undefined : <Delta value={o.salesDelta} />} />
+        <Kpi i={2} icon={ShoppingBag} label="Pedidos · 30 dias" value={String(o.last30Count)} note={o.countDelta === undefined ? undefined : <Delta value={o.countDelta} />} />
+        <Kpi i={3} icon={Users} label="Clientes" value={String(o.customers)} />
+        <Kpi i={4} icon={Package} label="Ticket médio" value={ticket === null ? "—" : formatBRL(ticket)} />
+      </div>
+      <p className="mt-2 px-1 text-xs text-muted-foreground">{noPrev ? "Variações aparecem quando houver 30 dias anteriores para comparar." : "Variação em relação aos 30 dias anteriores."}{ticket === null ? " O ticket médio aparece após o primeiro pedido." : ""}</p>
+    </section>
+
 
     {firstAccess && readiness ? (
       <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(4)} aria-labelledby="cm-first">

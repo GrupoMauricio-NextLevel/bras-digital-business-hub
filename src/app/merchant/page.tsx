@@ -4,7 +4,9 @@ import { BoasVindasCeo } from "@/components/portal/equipe/blocos";
 import { mostrarBoasVindas } from "@/lib/marcas/equipe-usos";
 import { brandOfStore } from "@/lib/store-brand";
 import Link from "next/link";
-import { AlarmClock, ArrowRight, BellRing, ExternalLink, Plus, Printer, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
+import { AlarmClock, ArrowRight, BellRing, ExternalLink, MessageCircle, Plus, Printer, ShoppingBasket, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
+import { filaExtraDaLoja } from "@/lib/domain/crm-loja";
+import { AoVivo } from "@/components/master/ao-vivo";
 import { SalesChart } from "@/components/app/sales-chart";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { ActivityFeed } from "@/components/shared/activity-feed";
@@ -30,7 +32,7 @@ import { stockDemand } from "@/lib/domain/stock-alerts";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { novidadesDa } from "@/lib/domain/novidades";
 
-const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing };
+const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing, conversas: MessageCircle, carrinhos: ShoppingBasket };
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -57,18 +59,20 @@ export default async function MerchantHome() {
     const waitingCents = o.pendingCentral.reduce((sum, ord) => sum + ord.costTotalCents, 0);
   const needsTopUp = waitingCents > balance;
   const stockBack = (await stockDemand(db, store.id)).filter((g) => g.available > 0).length;
-  const attention = filaDoLojista({
+  // Escritório do lojista (D207): clientes esperando resposta e carrinhos recentes entram no topo da fila.
+  const extra = commerce ? await filaExtraDaLoja(db, store.id) : [];
+  const attention = [...extra, ...filaDoLojista({
     commerce, independent: o.independent, published: Boolean(store.publishedAt), readinessMissing: readiness?.missingBlocking ?? null,
     onboarding: { percent: o.onboarding.percent, missing: o.onboarding.steps.filter((st) => !st.done).length },
     pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
     balanceCents: balance, stockBack, now: new Date(),
-  }).map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
+  })].map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
   const pulso = pulsoDaLoja({
     hoje: o.today, commerce, publicada: Boolean(store.publishedAt), faltaParaVender: readiness?.missingBlocking.length ?? 0, precisaRecarga: isLite && needsTopUp,
     parados: pedidosParados({ pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit, independent: o.independent, now: new Date() }),
   });
 
-  if (commerce) return <>{surveyCard}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /></>;
+  if (commerce) return <>{faixaNovidade}{boasVindas}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;

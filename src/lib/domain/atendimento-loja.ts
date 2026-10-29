@@ -92,3 +92,12 @@ export async function resolverAtendimentoDaLoja(db: Database, actor: Actor, id: 
   await daLoja(db, actor, id);
   await db.update(iaConversas).set({ status: "GANHA", naoLidas: 0, ...(notas !== undefined ? { notas: notas.slice(0, 2000) } : {}) }).where(eq(iaConversas.id, id));
 }
+
+/** Pulso do lojista (D207): quantas conversas da loja esperam resposta e a mais recente, para o aviso sonoro. */
+export async function pulsoAtendimentoDaLoja(db: Database, actor: Actor) {
+  if (actor.role !== "STORE_OWNER" || !actor.storeId) return null;
+  const onde = and(eq(iaConversas.canal, "LOJA"), eq(iaConversas.storeId, actor.storeId), inArray(iaConversas.status, ["NOVA", "IA", "HUMANO"]), sql`${iaConversas.naoLidas} > 0`);
+  const [n] = await db.select({ n: sql<number>`count(*)::int` }).from(iaConversas).where(onde);
+  const [u] = await db.select({ id: iaConversas.id, nome: iaConversas.nome, canal: iaConversas.canal, texto: iaConversas.ultimaMensagem, em: iaConversas.ultimaEm }).from(iaConversas).where(onde).orderBy(desc(iaConversas.ultimaEm)).limit(1);
+  return { esperando: n?.n ?? 0, ultima: u ?? null };
+}

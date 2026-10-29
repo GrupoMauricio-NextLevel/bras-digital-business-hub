@@ -6,7 +6,7 @@ import { runAction } from "@/lib/action-result";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
 import { mensagensDepois } from "@/lib/domain/ia-conversas";
-import { abrirAtendimentoDaLoja, abrirConversaComLoja, enviarParaLoja, listarAtendimentoDaLoja, resolverAtendimentoDaLoja, responderComoLoja } from "@/lib/domain/atendimento-loja";
+import { abrirAtendimentoDaLoja, abrirConversaComLoja, enviarParaLoja, listarAtendimentoDaLoja, pulsoAtendimentoDaLoja, resolverAtendimentoDaLoja, responderComoLoja } from "@/lib/domain/atendimento-loja";
 
 /** Atendimento da loja (D206): cliente final ↔ lojista. */
 async function limite(chave: string, n: number) {
@@ -37,4 +37,7 @@ export async function responderComoLojaAction(id: string, texto: string) {
 }
 export async function resolverAtendimentoDaLojaAction(id: string) {
   return runAction(async () => { await resolverAtendimentoDaLoja(await getDb(), await ator(), id); return undefined; });
+}
+export async function pulsoAtendimentoLojaAction() {
+  return runAction(async () => { const s = await getSession(); return s ? pulsoAtendimentoDaLoja(await getDb(), s.actor) : null; });
 }

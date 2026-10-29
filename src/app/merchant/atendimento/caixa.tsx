@@ -10,10 +10,10 @@ type Aberta = Awaited<ReturnType<typeof abrirAtendimentoDaLoja>>;
 const ha = (iso: string) => { const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000); return m < 1 ? "agora" : m < 60 ? `${m} min` : m < 1440 ? `${Math.round(m / 60)} h` : `${Math.round(m / 1440)} d`; };
 
 /** Caixa de atendimento do lojista (D206): lista ao vivo (5 s), conversa aberta (3 s), responder e resolver. */
-export function CaixaDaLoja({ inicial }: { inicial: Lista }) {
+export function CaixaDaLoja({ inicial, abrirId }: { inicial: Lista; abrirId?: string }) {
   const [filtro, setFiltro] = React.useState<"ABERTAS" | "RESOLVIDAS">("ABERTAS");
   const [dados, setDados] = React.useState(inicial);
-  const [sel, setSel] = React.useState<string | null>(inicial.lista[0]?.id ?? null);
+  const [sel, setSel] = React.useState<string | null>(abrirId ?? inicial.lista[0]?.id ?? null);
   const [aberta, setAberta] = React.useState<Aberta | null>(null);
   const [resposta, setResposta] = React.useState("");
   const [pending, start] = React.useTransition();

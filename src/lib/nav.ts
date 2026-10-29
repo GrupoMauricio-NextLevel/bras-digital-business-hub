@@ -223,32 +223,37 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
 export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Catálogo": "Package", Marketing: "Megaphone", "Loja virtual": "Store", "Gestão": "BarChart3", "Configurações": "Settings" };
 
 /** Painel do lojista Commerce (grupos que abrem). Só rotas que existem. Equipe (STAFF) é filtrada no servidor pelo `STAFF_NAV_PREFIXES`. */
+/**
+ * Painel do lojista da E-commerce (D207): o mesmo racional do escritório do Master. "Escritório" é o dia a dia
+ * (o que fazer agora, clientes esperando, pedidos e dinheiro); "Crescer" traz mais vendas; "Loja e ajustes" é o resto.
+ */
 export const COMMERCE_STORE_NAV: NavItem[] = [
-  { label: "Início", href: "/merchant", icon: "Home", exact: true, bottom: true },
-  { label: "Pedidos", href: "/merchant/orders", icon: "ShoppingBag", group: "Vendas", bottom: true },
-  { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: "Vendas" },
-  { label: "Clientes", href: "/merchant/customers", icon: "Users", group: "Vendas" },
-  { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck", group: "Vendas" },
-  { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Catálogo", bottom: true },
-  { label: "Categorias", href: "/merchant/catalogo/categorias", icon: "Tag", group: "Catálogo" },
-  { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Marketing" },
-  { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Marketing" },
-  { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Marketing" },
-  { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Marketing" },
-  { label: "Visão da loja", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
-  { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
-  { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
-  { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Gestão" },
-  { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: "Gestão", bottom: true },
-  { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Gestão" },
-  { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Gestão" },
-  { label: "Pede pro Maurício", href: "/merchant/ia", icon: "Sparkles", group: "Gestão", badge: "Novo" },
-  { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Configurações" },
-  { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Configurações" },
-  { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Configurações" },
-  { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Configurações" },
+  { label: "Agora", href: "/merchant", icon: "Bell", exact: true, group: "Escritório", bottom: true },
+  { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: "Escritório", bottom: true },
+  { label: "Clientes", href: "/merchant/crm", icon: "UsersRound", group: "Escritório", bottom: true },
+  { label: "Pedidos", href: "/merchant/orders", icon: "ShoppingBag", group: "Escritório", bottom: true },
+  { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Escritório" },
+  { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: "Escritório" },
+  { label: "Minha loja", href: "/merchant/storefront", icon: "Globe", group: "Escritório" },
+  { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Crescer" },
+  { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Crescer" },
+  { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Crescer" },
+  { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Crescer" },
+  { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Crescer" },
+  { label: "Pede pro Maurício", href: "/merchant/ia", icon: "Sparkles", group: "Crescer", badge: "Novo" },
+  { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck", group: "Loja e ajustes" },
+  { label: "Categorias", href: "/merchant/catalogo/categorias", icon: "Tag", group: "Loja e ajustes" },
+  { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja e ajustes" },
+  { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja e ajustes" },
+  { label: "Cadastro de clientes", href: "/merchant/customers", icon: "Users", group: "Loja e ajustes" },
+  { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Loja e ajustes" },
+  { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Loja e ajustes" },
+  { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Loja e ajustes" },
+  { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Loja e ajustes" },
+  { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Loja e ajustes" },
+  { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
-export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento"];
+export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
 /**

@@ -28,6 +28,7 @@ import { BotaoMauricio } from "@/components/ia/mauricio";
 import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
 import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
+import { AreaTheme } from "@/design-system/components/area-theme";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -113,12 +114,16 @@ export async function RoleLayout({ session, children, banner, scope }: { session
       ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
       : COMMERCE_ADMIN_NAV;
     const demoUsersC = isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined;
+    // Painel do lojista com a casca do Master (D207): cor da NextLevel, faixa com a novidade e o agente, menu do escritório.
+    const capaLoja = commerceStore ? { oferta: { texto: "Atendimento ao vivo: responda os clientes da sua loja por aqui", href: "/merchant/atendimento" }, agente: !!botaoIa } : undefined;
     return (
+      <>
+      {commerceStore ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
       <AppShell
         brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
         panel={panelFor(session)}
         items={byFn(commerceItems)}
-        navMode={commerceStore ? "accordion" : "sections"}
+        navMode="sections"
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
         roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração E-commerce"}
         tenantName={commerceStore ? store!.name : "NextLevel E-commerce"}
@@ -134,10 +139,12 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
         banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}
-        extraTop={commerceStore ? <AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /> : undefined}
+        capa={capaLoja}
+        extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
       >
         {children}
       </AppShell>
+      </>
     );
   }
 
