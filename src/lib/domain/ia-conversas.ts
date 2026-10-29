@@ -151,3 +151,16 @@ export async function atualizarConversa(db: Database, actor: Actor, id: string, 
   equipe(actor);
   await db.update(iaConversas).set({ ...(patch.status ? { status: patch.status } : {}), ...(patch.notas !== undefined ? { notas: patch.notas.slice(0, 2000) } : {}) }).where(eq(iaConversas.id, id));
 }
+
+/**
+ * Pulso do atendimento (D205): quantas conversas da marca esperam resposta e qual chegou por último. Leve, para o
+ * aviso sonoro do Master consultar a cada 15 s. Quem não é da equipe recebe nada (sem erro).
+ */
+export async function pulsoAtendimento(db: Database, actor: Actor, brand = "NEXTLEVEL_COMMERCE") {
+  try { equipe(actor); } catch { return null; }
+  const abertas = sql`${iaConversas.status} in ('NOVA','IA','HUMANO')`;
+  const [n] = await db.select({ n: sql<number>`count(*)::int` }).from(iaConversas).where(and(eq(iaConversas.brand, brand), abertas, sql`${iaConversas.naoLidas} > 0`));
+  const [u] = await db.select({ id: iaConversas.id, nome: iaConversas.nome, canal: iaConversas.canal, texto: iaConversas.ultimaMensagem, em: iaConversas.ultimaEm }).from(iaConversas)
+    .where(and(eq(iaConversas.brand, brand), abertas, sql`${iaConversas.naoLidas} > 0`)).orderBy(desc(iaConversas.ultimaEm)).limit(1);
+  return { esperando: n?.n ?? 0, ultima: u ?? null };
+}

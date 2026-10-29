@@ -1,3 +1,4 @@
+import { levarAoEscritorio } from "@/lib/brand-server";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AlertTriangle, ExternalLink, Store, TrendingUp, Wallet } from "lucide-react";
@@ -16,6 +17,7 @@ import { PRODUCT_BRANDS, brandByCode } from "@/lib/brand";
 import { masterBrandFilter } from "@/lib/brand-server";
 
 export default async function StoresPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; offer?: string; marca?: string }> }) {
+  await levarAoEscritorio("/commerce/stores"); // D205: tela antiga → área nova do escritório da E-commerce
   const sp = await searchParams;
   const marca = await masterBrandFilter(sp.marca);
   const [rows, snap] = await Promise.all([listStoresWithPlan({ ...sp, marca }), getDb().then((db) => loadTowerSnapshot(db))]);

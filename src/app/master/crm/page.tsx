@@ -1,3 +1,4 @@
+import { levarAoEscritorio } from "@/lib/brand-server";
 import Link from "next/link";
 import { ExternalLink, Inbox, ShoppingCart, TrendingUp, Users } from "lucide-react";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
@@ -20,6 +21,7 @@ export const dynamic = "force-dynamic";
 export default async function MasterCrmPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const tab = (await searchParams).tab === "interessados" ? "interessados" : "pedidos";
+  if (tab === "interessados") await levarAoEscritorio("/master/comercial"); // D205: interessados agora estão no Comercial
   const db = await getDb();
   const [orders, summary, products] = await Promise.all([listNlOrders(db, session.actor), nlSalesSummary(db, session.actor), listDigitalProducts(db, { all: true })]);
   const canceled = orders.filter((o) => o.status === "CANCELED");

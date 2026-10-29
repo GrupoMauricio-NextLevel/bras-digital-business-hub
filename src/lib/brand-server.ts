@@ -55,3 +55,11 @@ export async function requireBrandFeature(feature: "dropship" | "partners" | "si
   if (!ok) redirect(feature === "signup" ? "/quero-minha-loja" : "/");
   return brand;
 }
+
+/**
+ * Escritório da E-commerce (D205): com só a E-commerce aberta no Master, as telas antigas que viraram duplicadas levam
+ * direto para a área nova. Com mais marcas abertas, cada tela volta a abrir normalmente.
+ */
+export async function levarAoEscritorio(destino: string): Promise<void> {
+  if (marcasAtivasNoMaster().length === 1 && (await marcaDoMaster()) === "NEXTLEVEL_COMMERCE") redirect(destino);
+}

@@ -26,6 +26,7 @@ import type { NavItem } from "@/lib/nav";
 import { mauricioDaLoja } from "@/lib/domain/ia";
 import { BotaoMauricio } from "@/components/ia/mauricio";
 import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
+import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
@@ -150,7 +151,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const pode = (href: string) => !fn || masterPathAllowed(fn, href);
   const capa = isMaster ? { indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa} banner={<>{supportBar}{seletorMarca}{ecoBar}{banner}{botaoIa}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{seletorMarca}{ecoBar}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
   );

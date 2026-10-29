@@ -1,3 +1,4 @@
+import { levarAoEscritorio } from "@/lib/brand-server";
 import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { StatusBadge } from "@/components/app/status-badge";
@@ -9,6 +10,7 @@ import { AlertTriangle, Check, CreditCard, TrendingUp } from "lucide-react";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 
 export default async function PlansPage() {
+  await levarAoEscritorio("/master/receita"); // D205: tela antiga → área nova do escritório da E-commerce
   const { plans, subs, invoices } = await listPlansWithSubs();
   const inv = (s: string) => invoices.find((i) => i.status === s);
   return (

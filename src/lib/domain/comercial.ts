@@ -5,7 +5,8 @@ import { DomainError, NotFoundError } from "./errors";
 import { requireMasterFn, type Actor } from "./access";
 import { funilEcommerce, DEGRAUS } from "./funil-ecommerce";
 import { situacoesComerciais, type SituacaoComercial } from "./situacao-comercial";
-import { linkWhatsapp, MENSAGENS } from "./agora-ecommerce";
+import { linkWhatsapp } from "./agora-ecommerce";
+import { getConfigComercial, mensageiro } from "./comercial-config";
 
 /**
  * Comercial da E-commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com
@@ -48,6 +49,7 @@ export async function funilComercial(db: Database, actor: Actor, agora = new Dat
   const lojas = await db.select({ id: stores.id, nome: stores.name, whatsapp: stores.whatsapp, email: stores.contactEmail, criadaEm: stores.createdAt, paidUntil: stores.paidUntil, trialEndsAt: stores.trialEndsAt, entryOffer: stores.entryOffer })
     .from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(and(eq(organizations.brand, "NEXTLEVEL_COMMERCE"), isNull(stores.showcaseTheme)));
   const ids = lojas.map((l) => l.id);
+  const MSG = mensageiro(await getConfigComercial(db));
   const [donos, sit, funil, leads, conversas, acomp] = await Promise.all([
     ids.length ? db.select({ storeId: users.storeId, nome: users.name, email: users.email }).from(users).where(and(inArray(users.storeId, ids), eq(users.role, "STORE_OWNER"), eq(users.storeRole, "OWNER"))) : Promise.resolve([]),
     situacoesComerciais(db, lojas, agora),
@@ -66,7 +68,7 @@ export async function funilComercial(db: Database, actor: Actor, agora = new Dat
   const comAcomp = (p: Omit<Pessoa, "responsavel" | "proximaAcao" | "prazo" | "whatsappHref">): Pessoa => {
     const a = ac.get(p.chave);
     const etapa: Etapa = a?.perdido ? "perdido" : p.etapa;
-    return { ...p, etapa, responsavel: a?.responsavelNome ?? null, proximaAcao: a?.proximaAcao ?? null, prazo: a?.prazo ?? null, whatsappHref: linkWhatsapp(p.whatsapp, MENSAGENS.interessado(p.nome.split(" ")[0] ?? p.nome)) };
+    return { ...p, etapa, responsavel: a?.responsavelNome ?? null, proximaAcao: a?.proximaAcao ?? null, prazo: a?.prazo ?? null, whatsappHref: linkWhatsapp(p.whatsapp, MSG.interessado(p.nome.split(" ")[0] ?? p.nome)) };
   };
 
   // 1) Lojas (a forma mais avançada da pessoa).

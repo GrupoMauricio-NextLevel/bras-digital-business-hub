@@ -1,3 +1,4 @@
+import { levarAoEscritorio } from "@/lib/brand-server";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { getCommerceConsole } from "@/lib/domain/commerce-console";
@@ -10,6 +11,7 @@ import { EmptyState } from "@/components/app/empty-state";
 export const dynamic = "force-dynamic";
 
 export default async function CommerceLeadsPage() {
+  await levarAoEscritorio("/master/comercial"); // D205: tela antiga → área nova do escritório da E-commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const data = await getCommerceConsole(await getDb(), session.actor);
   return (

@@ -12,7 +12,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { conversar } from "@/lib/ia/provedor";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 import { fatosEmTexto, type FatosVenda } from "@/lib/ia/vendedor-publico";
-import { abrirConversa, assumirConversa, atualizarConversa, devolverAoMauricio, enviarDoCliente, iniciarConversa, listarConversas, mensagensDepois, responderComoEquipe, salvarContato } from "@/lib/domain/ia-conversas";
+import { abrirConversa, assumirConversa, atualizarConversa, devolverAoMauricio, enviarDoCliente, iniciarConversa, listarConversas, mensagensDepois, pulsoAtendimento, responderComoEquipe, salvarContato } from "@/lib/domain/ia-conversas";
 
 /** Chat público do Maurício (D195, D197) e o CRM ao vivo do Master. */
 async function limite(chave: string, n: number) {
@@ -77,4 +77,7 @@ export async function devolverConversaAction(id: string) {
 }
 export async function atualizarConversaAction(id: string, patch: { status?: "GANHA" | "PERDIDA" | "IA" | "HUMANO"; notas?: string }) {
   return runAction(async () => { await atualizarConversa(await getDb(), (await sessao()).actor, id, patch); return undefined; });
+}
+export async function pulsoAtendimentoAction() {
+  return runAction(async () => { const s = await getSession(); return s ? pulsoAtendimento(await getDb(), s.actor) : null; });
 }

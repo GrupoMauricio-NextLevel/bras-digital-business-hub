@@ -1,3 +1,4 @@
+import { levarAoEscritorio } from "@/lib/brand-server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AlertTriangle, ArrowUpRight, LifeBuoy, ShoppingCart, Store, TrendingUp } from "lucide-react";
@@ -23,6 +24,7 @@ const MARCAS = {
 } as const;
 
 export default async function MarcaPage({ params }: { params: Promise<{ marca: string }> }) {
+  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da E-commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const m = MARCAS[(await params).marca as keyof typeof MARCAS];
   if (!m) notFound();

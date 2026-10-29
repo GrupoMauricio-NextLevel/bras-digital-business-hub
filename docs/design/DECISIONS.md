@@ -2072,3 +2072,25 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Comercial e Suporte passam a ver Agora, Atendimento e Comercial;
   - Comercial também vê Crescimento;
   - Financeiro vê Receita.
+
+## D205 — [E-commerce] Aviso sonoro, mensagens editáveis e telas antigas levando às áreas novas (2026-10-29)
+- **Pedido do dono:** "pode continuar" (os três pontos que faltavam no escritório comercial).
+- **Aviso de conversa nova** (`src/components/master/aviso-sonoro.tsx`):
+  - a cada 15 s o Master confere quantas conversas esperam resposta (`pulsoAtendimento`);
+  - quando o número sobe, toca a "Subida" (três notas curtas pelo próprio navegador, sem arquivo), mostra um aviso com "Responder", atualiza a tela e põe o número no título da aba ("(2) NextLevel");
+  - um botão de alto-falante na faixa do topo liga e desliga o som (guardado no navegador de cada pessoa).
+- **Ajustes do Comercial** (`/master/comercial/ajustes`, `src/lib/domain/comercial-config.ts`):
+  - itens editáveis: meta de pagantes, minutos de espera para o amarelo e o vermelho, e as 6 mensagens prontas de WhatsApp com `{nome}`, `{loja}`, `{dias}` e `{passo}`;
+  - ficam em `platform_settings.comercial`, com os textos padrão quando não há ajuste;
+  - só o dono e a função Comercial alteram.
+- **Telas antigas:** com só a E-commerce aberta, elas levam direto para a área nova (`levarAoEscritorio` em `brand-server.ts`):
+
+  | Tela antiga | Leva para |
+  |---|---|
+  | interessados (`/commerce/leads`, CRM aba interessados) | Comercial |
+  | `/master/stores` | Lojistas |
+  | `/master/orders` | pedidos das lojas da E-commerce |
+  | escritório virtual e `/master/plans` | Receita |
+  | mapa, torre e página da marca | Agora |
+
+  Com mais marcas abertas, cada tela volta a abrir normalmente. Nada foi apagado.
