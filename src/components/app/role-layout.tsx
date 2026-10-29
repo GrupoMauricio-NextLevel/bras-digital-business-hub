@@ -29,6 +29,7 @@ import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
 import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
 import { AreaTheme } from "@/design-system/components/area-theme";
+import { PainelTech } from "@/components/app/painel-tech";
 import { negociosAbertos } from "@/lib/negocios";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
@@ -119,6 +120,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
     return (
       <>
       {commerceStore ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
+      {commerceStore ? <PainelTech /> : null}
       <AppShell
         brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
         panel={panelFor(session)}
@@ -169,6 +171,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   return (
     <>
     {parceiroEc ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
+    {parceiroEc || isMaster ? <PainelTech /> : null}
     <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}>
       {children}
     </AppShell>

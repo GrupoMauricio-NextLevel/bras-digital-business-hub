@@ -2373,3 +2373,18 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Correções:**
   - O seletor Mensal/Anual da página Planos estava sem estilo, porque o CSS só era carregado na home. Agora o `pricing.tsx` importa o CSS.
   - "Você recebe 100% das vendas" virou "o dinheiro cai direto para você", também nos bancos já semeados (ajuste no texto exibido).
+
+## D224 — [Painéis] Visual de tecnologia contido no lojista, no Master e no parceiro (2026-10-29)
+- **Pedido do dono:** aplicar nos três painéis, aceitando a recomendação (versão contida para o dia a dia; painel escuro só na abertura). A prévia foi aprovada antes.
+- **`PainelTech`** (`src/components/app/painel-tech.tsx`): um `<style>` que entra e sai junto com a casca, como o `AreaTheme`, e por isso vale também em diálogos e menus. Está ligado:
+  - no lojista da E-commerce;
+  - no Master;
+  - no parceiro da E-commerce.
+- **Fontes:**
+  - Space Grotesk nos títulos;
+  - Geist no texto;
+  - Geist Mono nos números (`.tabular-nums` do conteúdo) e nos rótulos do menu ("// ESCRITÓRIO").
+  - As famílias vêm de `EC_FAMILIAS` (`fontes-ec.ts`).
+- **Cartões:** borda fina em degradê azul, violeta e verde. O bloco de abertura (`.ds-hero`, ex.: "Boa noite, Ana") vira painel escuro com grade e borda brilhante. A faixa roxa do topo e o botão do Agente não mudam.
+- **Parceiro:** o topo usa o mesmo painel escuro da faixa do 0% do site (`ec-painel`), com etiqueta em mono e link em mono.
+- **Fora desta mudança:** fornecedor, expedição e as outras marcas.

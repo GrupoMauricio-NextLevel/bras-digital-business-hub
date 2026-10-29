@@ -9,3 +9,6 @@ const ecMono = localFont({ src: "../../../app/fonts/geist-mono-latin.woff2", var
 
 /** Classe que liga o visual de tecnologia (fontes + `tech.css`) num trecho da página. */
 export const EC_TECH = `ec-tech ${ecTitulo.variable} ${ecTexto.variable} ${ecMono.variable}`;
+
+/** Nomes das famílias (para usar em `:root`, alcançando também diálogos e menus fora da casca). */
+export const EC_FAMILIAS = { titulo: ecTitulo.style.fontFamily, texto: ecTexto.style.fontFamily, mono: ecMono.style.fontFamily };
