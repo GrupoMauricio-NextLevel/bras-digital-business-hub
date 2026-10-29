@@ -5,11 +5,13 @@
  *   SEED_DEMO=true                       dados de demonstração (só em banco vazio)
  *   MASTER_EMAIL / MASTER_PASSWORD       cria o usuário master (mín. 10 caracteres) se não existir
  *   MASTER_NAME                          (opcional)
+ *   RECOMECAR_DO_ZERO=<código>           apaga contas, lojas e vendas fictícias uma vez (D199)
  */
 import { mkdirSync } from "node:fs";
 import { createDatabase, resolveDatabaseUrl } from "../src/db/client";
 import { runMigrations } from "../src/db/migrate";
 import { bootstrapDatabase } from "../src/db/bootstrap-data";
+import { recomecarDoZero } from "../src/db/recomecar";
 
 async function main() {
   const url = resolveDatabaseUrl();
@@ -20,6 +22,8 @@ async function main() {
   if (url === "pglite://memory") { console.log("✔ banco em memória: o servidor prepara ao subir"); return; }
   const handle = await createDatabase(url);
   await runMigrations(handle.db);
+  // Começar do zero (D199): RECOMECAR_DO_ZERO=<código> apaga os dados fictícios uma vez por código, antes do preparo.
+  if (process.env.RECOMECAR_DO_ZERO) for (const l of await recomecarDoZero(handle.db, process.env.RECOMECAR_DO_ZERO)) console.log(`✔ ${l}`);
   const log = await bootstrapDatabase(handle.db, { seedDemo: process.env.SEED_DEMO === "true", masterEmail: process.env.MASTER_EMAIL, masterPassword: process.env.MASTER_PASSWORD, masterName: process.env.MASTER_NAME });
   for (const l of log) console.log(`✔ ${l}`);
   await handle.close();

@@ -1991,3 +1991,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Hoje só o Master usa (`capa` em `role-layout.tsx`). As outras marcas podem ligar depois: a faixa já pega a cor de cada tema.
 - **Home E-commerce (azul da marca):** herói marinho com título enorme centralizado e a oferta num selo inclinado, preço "a partir de" calculado do catálogo (anual ÷ 12), botão branco e garantia; fotos do acervo flutuando com avisos de pedido marcados como demonstração. Logo abaixo, **planos em faixa escura** (mesmo componente e mesmos preços, ilha `.ds-tema-escuro`) e a **galeria de ofertas** (as quatro portas, cartão que se abre no mouse/foco). O restante da página segue.
 - **Correção junto:** "taxa zero por 0 meses" deixava de fazer sentido quando a oferta não tem carência de taxa; agora só aparece com meses > 0. `movimento.css` deixou de ter cores fixas (o teste do núcleo do design system acusava).
+
+## D199 — [Todas] Começar do zero: apagar contas e vendas fictícias da produção (2026-10-29)
+- **Pedido do dono:** "não existem clientes reais em nenhuma das marcas; pode apagar contas e vendas fictícias; vamos começar tudo do zero".
+- **Como:** `src/db/recomecar.ts` (`recomecarDoZero`), chamado pelo boot (`scripts/bootstrap.ts`) quando o Render tem `RECOMECAR_DO_ZERO=<código>`. Roda **uma vez por código** (marca `recomeco.aplicado` em `platform_settings`).
+- **Apaga:** contas, lojas, fornecedores, pedidos, parceiros, conversas, interessados, Brás, Cargas e Club.
+- **Mantém:**
+  - usuários Master reais (sem `.demo`) e a organização deles;
+  - temas, planos, catálogo e preços do Master, ofertas, regras de comissão, experimentos, serviços e produtos digitais;
+  - vídeos da Brás e `platform_settings` (chave da IA, conexões).
+- **Lojas de demonstração dos temas:** voltam no mesmo boot, porque são a vitrine de cada tema.
+- **Trava:** tudo numa transação. Se não houver Master real, ou se algo mantido depender do que vai sair, nada é apagado.
+- **Ensaio:** banco de demonstração com 68 usuários, 32 lojas e 194 pedidos ficou com 1 Master, 0 pedidos e as 26 lojas-vitrine dos temas.
+- **O ambiente de gravação** (`nextlevel-demo`, banco em memória) continua com os dados de demonstração, que é o papel dele.
