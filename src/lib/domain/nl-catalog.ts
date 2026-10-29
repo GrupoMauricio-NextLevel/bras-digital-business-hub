@@ -1,8 +1,9 @@
-import { and, asc, desc, eq, inArray, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, lte } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { CATALOG_STATUSES, catalogOffers, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
+import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
 import { newId } from "@/lib/ids";
+import { COMISSOES_D220, PRECOS_D220, REF_D220, descontoAnualBps } from "@/lib/finance/revisao-d220";
 import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
 import { isMaster, requireMasterFn, type Actor } from "./access";
@@ -49,7 +50,35 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
     if (ruleKeys.has(r.key)) continue;
     await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: 1, family: r.family, productKey: r.productKey ?? null, cycle: r.cycle ?? null, partnerKind: r.partnerKind ?? null, firstBps: r.firstBps, recurringBps: r.recurringBps ?? 0, recurringMonths: r.recurringMonths ?? 0, holdDays: r.holdDays, benefit: r.benefit, effectiveFrom: new Date(0).toISOString(), reason: "Tabela de comissões aprovada pelo dono (D90)" }).onConflictDoNothing();
   }
+  await aplicarRevisaoD220(db);
   return created;
+}
+
+/**
+ * Revisão D220 (taxa zero, mensalidades novas e comissões de parceiros): nova versão de preço e de regra, uma vez por
+ * banco (marcador `approvalRef`/`reason` com "D220"). Assinaturas existentes passam a ter taxa zero (a favor do lojista).
+ */
+async function aplicarRevisaoD220(db: Database) {
+  const agora = new Date().toISOString();
+  // A tabela nova vale como a tabela vigente (sobrepõe a v1 pela versão maior), inclusive para contas com relógio antigo.
+  const vigencia = new Date(0).toISOString();
+  const prods = await db.select({ id: catalogProducts.id, key: catalogProducts.key }).from(catalogProducts).where(inArray(catalogProducts.key, Object.keys(PRECOS_D220)));
+  for (const p of prods) {
+    const novo = PRECOS_D220[p.key]!;
+    const versoes = await db.select().from(catalogPriceVersions).where(eq(catalogPriceVersions.productId, p.id)).orderBy(desc(catalogPriceVersions.version));
+    if (versoes.some((v) => v.approvalRef === REF_D220)) continue;
+    for (const cycle of ["MONTHLY", "ANNUAL"] as const) {
+      const ult = versoes.find((v) => v.cycle === cycle);
+      await db.insert(catalogPriceVersions).values({ id: newId("cpv"), productId: p.id, cycle, version: (ult?.version ?? 0) + 1, amountCents: cycle === "MONTHLY" ? novo.mensal : novo.anual, platformFeeBps: 0, methods: ult?.methods ?? ["PIX", "CARD"], pixDiscountBps: ult?.pixDiscountBps ?? 0, cardMaxInstallments: ult?.cardMaxInstallments ?? 1, cardMarkupBps: ult?.cardMarkupBps ?? 0, annualDiscountBps: cycle === "ANNUAL" ? descontoAnualBps(novo) : null, effectiveFrom: vigencia, reason: "Taxa zero com Mercado Pago e mensalidades abaixo da concorrência (D220)", approvalRef: REF_D220 }).onConflictDoNothing();
+    }
+  }
+  if (prods.length) await db.update(nlSubscriptions).set({ platformFeeBps: 0, updatedAt: agora }).where(gt(nlSubscriptions.platformFeeBps, 0));
+  const regras = await db.select().from(commissionRules).orderBy(desc(commissionRules.version));
+  for (const r of COMISSOES_D220) {
+    const ult = regras.find((x) => x.key === r.key);
+    if (ult?.reason.includes(REF_D220)) continue;
+    await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: ult?.holdDays ?? 14, benefit: r.benefit, effectiveFrom: vigencia, reason: "Programa de parceiros da E-commerce: indicador 20% + 10%, agência 30% + 15% (D220)" }).onConflictDoNothing();
+  }
 }
 
 /** Garante a semente uma vez por banco aberto (leituras do catálogo chamam isto). */
@@ -253,7 +282,7 @@ export async function listCommissionRules(db: Database) {
 }
 
 const ruleSchema = z.object({
-  firstBps: z.number().int().min(0).max(5000), recurringBps: z.number().int().min(0).max(5000), recurringMonths: z.number().int().min(0).max(36),
+  firstBps: z.number().int().min(0).max(5000), recurringBps: z.number().int().min(0).max(5000), recurringMonths: z.number().int().min(0).max(120),
   holdDays: z.number().int().min(0).max(120), benefit: z.string().trim().max(200), active: z.boolean(),
   partnerKind: z.enum(PARTNER_KINDS).nullable().optional(), reason: z.string().trim().min(5).max(300),
 });

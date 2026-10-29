@@ -35,7 +35,7 @@ export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents }: { cta: s
         </h1>
         <p className="ecc-sub">
           {aPartirDeCents ? <>Planos a partir de <b>{formatBRL(aPartirDeCents)}/mês</b> no anual. </> : null}
-          Pix e cartão caem direto na sua conta.
+          <b>Taxa zero</b> nas vendas com o Mercado Pago, nosso parceiro oficial: Pix e cartão caem direto na sua conta.
         </p>
         <Link href={cta} className="ecc-cta">{botao}</Link>
         <p className="ecc-garantia"><ShieldCheck className="size-4" aria-hidden />Sem fidelidade: cancele quando quiser{offer?.firstPeriodCents != null && signupOpen ? <> · 1º mês por {formatBRL(offer.firstPeriodCents)}</> : null}</p>

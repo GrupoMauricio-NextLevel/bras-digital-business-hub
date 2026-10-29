@@ -57,7 +57,9 @@ export function assuntoDe(texto: string): string | null {
 const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace(".", ",")}%`;
 const pagos = (f: FatosVenda) => f.planos.filter((p) => !p.quote && p.monthlyCents !== null);
 const custo = (p: PlanoVenda, vendas: number) => (p.monthlyCents ?? 0) + Math.round((vendas * (p.feeBps ?? 0)) / 10_000);
-const ofertaTxt = (f: FatosVenda) => f.oferta ? ` Para começar: ${f.oferta.trialDays} dias grátis${f.oferta.firstPeriodCents !== null ? `, 1º mês por ${formatBRL(f.oferta.firstPeriodCents)}` : ""}${f.oferta.feeHolidayMonths > 0 ? ` e taxa zero nos primeiros ${f.oferta.feeHolidayMonths} meses` : ""}.` : "";
+const taxaZero = (f: FatosVenda) => pagos(f).length > 0 && pagos(f).every((p) => !p.feeBps);
+const ofertaTxt = (f: FatosVenda) => f.oferta ? ` Para começar: ${f.oferta.trialDays} dias grátis${f.oferta.firstPeriodCents !== null ? `, 1º mês por ${formatBRL(f.oferta.firstPeriodCents)}` : ""}${f.oferta.feeHolidayMonths > 0 && !taxaZero(f) ? ` e taxa zero nos primeiros ${f.oferta.feeHolidayMonths} meses` : ""}.` : "";
+const TAXA_ZERO_TXT = "Taxa zero nas vendas com o checkout do Mercado Pago, nosso parceiro oficial: você paga só a mensalidade.";
 const criar = (f: FatosVenda, plano?: string): Acao => ({ rotulo: plano ? "Criar minha loja com este plano" : "Criar minha loja", href: plano ? `${f.cadastro}?plano=${plano}` : f.cadastro });
 const contato: Acao = { rotulo: "Quero que a equipe me chame", contato: true };
 
@@ -75,22 +77,27 @@ export function responder(f: FatosVenda, assunto: string | null): RespostaVenda 
   if (faixa) {
     const r = recomendarPlano(f, faixa.cents);
     if (!r) return { assunto: "plano", texto: "Os planos estão sendo atualizados agora. A equipe te passa os valores em minutos.", atalhos: [], acoes: [contato] };
+    if (taxaZero(f)) {
+      // D220: com taxa zero, todo plano custa só a mensalidade; o Start atende qualquer volume e os outros somam o Maurício.
+      const linhasZ = r.opcoes.map((o) => `• ${o.plano.name}: ${formatBRL(o.plano.monthlyCents ?? 0)}/mês`).join("\n");
+      return { assunto: "plano", texto: `${TAXA_ZERO_TXT} Então, vendendo quanto for, o custo é o da mensalidade:\n\n${linhasZ}\n\nO **${r.melhor.plano.name}** já tem tudo para vender; os outros somam o Maurício escrevendo e analisando por você. Sem fidelidade.${ofertaTxt(f)}`, atalhos: [{ id: "integracoes", rotulo: "E as integrações?" }, { id: "pagamento", rotulo: "Como recebo as vendas?" }], acoes: [criar(f, r.melhor.plano.key), contato] };
+    }
     const linhas = r.opcoes.map((o) => `• ${o.plano.name}: ${formatBRL(o.totalCents)}/mês (${formatBRL(o.plano.monthlyCents ?? 0)} + ${pct(o.plano.feeBps)} das vendas)`).join("\n");
     const base = faixa.cents === 0 ? "Para quem está começando" : `Vendendo ${faixa.rotulo.charAt(0).toLowerCase()}${faixa.rotulo.slice(1)}`;
     return { assunto: "plano", texto: `${base}, o que sai mais em conta é o **${r.melhor.plano.name}**: cerca de ${formatBRL(r.melhor.totalCents)} por mês, com a taxa incluída.\n\n${linhas}\n\nSem fidelidade: você troca de plano quando quiser.${ofertaTxt(f)}`, atalhos: [{ id: "integracoes", rotulo: "E as integrações?" }, { id: "pagamento", rotulo: "Como recebo as vendas?" }], acoes: [criar(f, r.melhor.plano.key), contato] };
   }
   switch (assunto) {
     case "plano":
-      return { assunto, texto: "Me diz quanto você vende por mês (ou espera vender) que eu calculo o plano que sai mais em conta, com a taxa incluída.", atalhos: FAIXAS_VENDA.map(({ id, rotulo }) => ({ id, rotulo })), acoes: [] };
+      return { assunto, texto: taxaZero(f) ? `${TAXA_ZERO_TXT} Me diz quanto você vende por mês que eu te mostro quanto economiza.` : "Me diz quanto você vende por mês (ou espera vender) que eu calculo o plano que sai mais em conta, com a taxa incluída.", atalhos: FAIXAS_VENDA.map(({ id, rotulo }) => ({ id, rotulo })), acoes: [] };
     case "preco": {
       const ps = pagos(f);
-      const linhas = ps.map((p) => `• ${p.name}: ${formatBRL(p.monthlyCents ?? 0)}/mês + ${pct(p.feeBps)} sobre as vendas pagas`).join("\n");
-      return { assunto, texto: `${linhas || "Os planos estão sendo atualizados."}\n\nQuanto mais você vende, menor a taxa. Operações grandes têm o Enterprise, por proposta.${ofertaTxt(f)}`, atalhos: [{ id: "plano", rotulo: "Qual sai mais em conta para mim?" }, { id: "teste", rotulo: "Tem teste grátis?" }], acoes: [criar(f)] };
+      const linhas = ps.map((p) => taxaZero(f) ? `• ${p.name}: ${formatBRL(p.monthlyCents ?? 0)}/mês` : `• ${p.name}: ${formatBRL(p.monthlyCents ?? 0)}/mês + ${pct(p.feeBps)} sobre as vendas pagas`).join("\n");
+      return { assunto, texto: `${linhas || "Os planos estão sendo atualizados."}\n\n${taxaZero(f) ? TAXA_ZERO_TXT : "Quanto mais você vende, menor a taxa."} Operações grandes têm o Enterprise, por proposta.${ofertaTxt(f)}`, atalhos: [{ id: "plano", rotulo: "Qual sai mais em conta para mim?" }, { id: "teste", rotulo: "Tem teste grátis?" }], acoes: [criar(f)] };
     }
     case "teste":
       return { assunto, texto: `${f.oferta ? `Sim: ${f.oferta.trialDays} dias grátis para montar e testar a loja.${ofertaTxt(f).replace(" Para começar:", "")}` : "Você monta a loja e só publica quando estiver pronta."} Não tem fidelidade: cancela quando quiser, direto no painel.`, atalhos: [{ id: "plano", rotulo: "Qual plano escolher?" }], acoes: [criar(f)] };
     case "pagamento":
-      return { assunto, texto: "Você recebe pela sua própria conta Mercado Pago: Pix com confirmação automática e cartão em até 6x. 100% das vendas caem direto para você; a NextLevel cobra o plano e a taxa em fatura separada. Também dá para mandar link de pagamento pelo WhatsApp.", atalhos: [{ id: "frete", rotulo: "E o frete?" }, { id: "preco", rotulo: "Quanto custa?" }], acoes: [criar(f)] };
+      return { assunto, texto: `Você recebe pela sua própria conta Mercado Pago: Pix com confirmação automática e cartão em até 6x. 100% das vendas caem direto para você${taxaZero(f) ? ", com taxa zero da NextLevel sobre elas (o Mercado Pago é nosso parceiro oficial); você paga só a mensalidade" : "; a NextLevel cobra o plano e a taxa em fatura separada"}. Também dá para mandar link de pagamento pelo WhatsApp.`, atalhos: [{ id: "frete", rotulo: "E o frete?" }, { id: "preco", rotulo: "Quanto custa?" }], acoes: [criar(f)] };
     case "frete": {
       const fr = f.integracoes.find((g) => g.grupo === "frete");
       return { assunto, texto: `O frete é cotado por CEP no checkout${fr ? ` com ${fr.nomes.slice(0, 6).join(", ")}` : ""}. Você também cria regras próprias (frete grátis a partir de um valor, retirada na loja) e o cliente recebe o rastreio.`, atalhos: [{ id: "integracoes", rotulo: "Outras integrações" }], acoes: [{ rotulo: "Ver todas as integrações", href: "/integracoes" }, criar(f)] };

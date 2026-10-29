@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CONCORRENTES, custosPorFaixa, melhorPlano, nextlevelComoPlataforma } from "@/lib/marcas/comparativo-ecommerce";
+import { CONCORRENTES, custosPorFaixa, degraus, melhorPlano, nextlevelComoPlataforma } from "@/lib/marcas/comparativo-ecommerce";
 
 // Preços dos planos da NextLevel em 2026-10-29 (no site vêm do Master).
 const nl = nextlevelComoPlataforma([{ name: "Start", monthlyCents: 14_900, feeBps: 100, quote: false }, { name: "Pro", monthlyCents: 24_900, feeBps: 70, quote: false }, { name: "Scale", monthlyCents: 49_900, feeBps: 40, quote: false }, { name: "Enterprise", monthlyCents: null, feeBps: null, quote: true }]);
@@ -15,12 +15,16 @@ describe("comparativo da E-commerce (D219)", () => {
     expect(melhorPlano(pl("shopify"), 5_000_000)).toBeNull();
     expect(melhorPlano(pl("loja-integrada"), 5_000_000)).toBeNull();
   });
-  it("a partir de R$ 30 mil por mês a NextLevel é a mais barata entre as comparáveis; abaixo disso, não sempre", () => {
-    for (const f of [3_000_000, 5_000_000, 10_000_000, 20_000_000]) {
-      const [linha] = custosPorFaixa(nl, [f]);
-      expect(linha!.outras.every((o) => o.melhor!.totalCents > linha!.nextlevel!.totalCents)).toBe(true);
+  it("com taxa zero (D220), a partir de R$ 3 mil por mês a NextLevel é a mais barata entre as comparáveis", () => {
+    const nl0 = nextlevelComoPlataforma([{ name: "Start", monthlyCents: 5_700, feeBps: 0, quote: false }, { name: "Pro", monthlyCents: 14_700, feeBps: 0, quote: false }, { name: "Scale", monthlyCents: 34_700, feeBps: 0, quote: false }]);
+    for (const f of [300_000, 1_000_000, 5_000_000, 10_000_000]) {
+      const [l] = custosPorFaixa(nl0, [f]);
+      expect(l!.outras.every((o) => o.melhor!.totalCents > l!.nextlevel!.totalCents)).toBe(true);
     }
-    const [dez] = custosPorFaixa(nl, [1_000_000]);
-    expect(dez!.outras.some((o) => o.melhor!.totalCents < dez!.nextlevel!.totalCents)).toBe(true);
+  });
+  it("mais barata em todos os degraus, no mensal e no anual (D220)", () => {
+    for (const d of degraus([{ nome: "Start", mensalCents: 5_700, anualMesCents: 3_700 }, { nome: "Pro", mensalCents: 14_700, anualMesCents: 11_900 }, { nome: "Scale", mensalCents: 34_700, anualMesCents: 29_700 }])) {
+      for (const o of d.outras) { expect(d.nextlevel!.mensalCents).toBeLessThan(o.mensalCents); expect(d.nextlevel!.anualMesCents).toBeLessThan(o.anualMesCents!); }
+    }
   });
 });

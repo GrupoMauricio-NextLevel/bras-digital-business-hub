@@ -57,14 +57,14 @@ describe("catálogo Master: semente, versões imutáveis, publicação e auditor
   it("todos os planos e produtos aprovados com os preços certos", async () => {
     const items = await listCatalog(ctx.db);
     const by = (k: string) => items.find((i) => i.key === k)!;
-    expect(by("COMMERCE_START").prices.MONTHLY?.amountCents).toBe(14_900);
-    expect(by("COMMERCE_START").prices.ANNUAL?.amountCents).toBe(134_100);
-    expect(by("COMMERCE_START").prices.MONTHLY?.platformFeeBps).toBe(100);
-    expect(by("COMMERCE_PRO").prices.ANNUAL?.amountCents).toBe(224_100);
-    expect(by("COMMERCE_PRO").prices.MONTHLY?.platformFeeBps).toBe(70);
-    expect(by("COMMERCE_SCALE").prices.MONTHLY?.amountCents).toBe(49_900);
-    expect(by("COMMERCE_SCALE").prices.ANNUAL?.amountCents).toBe(449_100);
-    expect(by("COMMERCE_SCALE").prices.MONTHLY?.platformFeeBps).toBe(40);
+    expect(by("COMMERCE_START").prices.MONTHLY?.amountCents).toBe(5_700); // D220: taxa zero e mensalidades novas
+    expect(by("COMMERCE_START").prices.ANNUAL?.amountCents).toBe(44_400);
+    expect(by("COMMERCE_START").prices.MONTHLY?.platformFeeBps).toBe(0);
+    expect(by("COMMERCE_PRO").prices.ANNUAL?.amountCents).toBe(142_800);
+    expect(by("COMMERCE_PRO").prices.MONTHLY?.platformFeeBps).toBe(0);
+    expect(by("COMMERCE_SCALE").prices.MONTHLY?.amountCents).toBe(34_700);
+    expect(by("COMMERCE_SCALE").prices.ANNUAL?.amountCents).toBe(356_400);
+    expect(by("COMMERCE_SCALE").prices.MONTHLY?.platformFeeBps).toBe(0);
     expect(by("COMMERCE_ENTERPRISE").kind).toBe("quote_required");
     expect(by("LOJA_PRONTA_ESSENCIAL").prices.ONE_TIME).toMatchObject({ amountCents: 199_700, pixDiscountBps: 1000, cardMarkupBps: 1600, cardMaxInstallments: 10 });
     expect(by("LOJA_PRONTA_PROFISSIONAL").prices.ONE_TIME?.amountCents).toBe(499_700);
@@ -124,30 +124,30 @@ describe("Commerce: oferta de entrada, planos, assinatura e taxa de plataforma",
     expect(new Date(paid.paidUntil!).toISOString()).toBe("2026-11-04T12:00:00.000Z"); // começa no fim do teste (4/out) + 1 mês
     expect((await subscriptionOf(ctx.db, r.storeId))!.status).toBe("active");
     const next = (await ensureSubscriptionInvoice(ctx.db, paid, new Date("2026-11-02T12:00:00Z")))!;
-    expect(next.amountCents).toBe(14_900);
+    expect(next.amountCents).toBe(5_700);
     // Mesmo CPF em outra loja: sem teste e sem R$ 9,90.
     const again = await signup("b@loja.com", "529.982.247-25");
     expect(again.trial).toBe(false);
     const s2 = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, again.storeId) }))!;
-    expect((await ensureSubscriptionInvoice(ctx.db, s2, now))!.amountCents).toBe(14_900);
+    expect((await ensureSubscriptionInvoice(ctx.db, s2, now))!.amountCents).toBe(5_700);
   });
 
-  it("anual com 25%: R$ 1.341 em uma fatura que libera 12 meses", async () => {
+  it("anual: R$ 444 (Start, D220) em uma fatura que libera 12 meses", async () => {
     const r = await signup("c@loja.com", "111.444.777-35", "COMMERCE_START", "ANNUAL");
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
     const inv = (await ensureSubscriptionInvoice(ctx.db, store))!;
-    expect(inv.amountCents).toBe(134_100);
+    expect(inv.amountCents).toBe(44_400);
     await markInvoicePaid(ctx.db, inv.invoiceId, new Date("2026-10-02T12:00:00Z"));
     expect(new Date((await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!.paidUntil!).toISOString()).toBe("2027-10-04T12:00:00.000Z");
   });
 
-  it("taxa zero nos 3 primeiros meses e a taxa do plano depois (Pro 0,7%)", async () => {
+  it("taxa zero sobre as vendas com Mercado Pago, antes e depois da carência (D220)", async () => {
     const r = await signup("d@loja.com", "390.533.447-05", "COMMERCE_PRO");
     const mk = async (createdAt: string, subtotal: number) => ctx.db.insert(orders).values({ id: newId("ord"), number: Math.floor(Math.random() * 1e6), storeId: r.storeId, customerName: "Cli", customerEmail: "cli@x.com", subtotalCents: subtotal, totalCents: subtotal, costTotalCents: 0, customerPaymentStatus: "PAID", paymentProvider: "MERCADO_PAGO", createdAt } as never);
     await mk("2026-12-15T12:00:00Z", 100_000); // dentro da carência (até 1/jan)
     await mk("2027-01-10T12:00:00Z", 100_000);
     expect((await storeOrderFeeFor(ctx.db, r.storeId, "2026-12")).feeCents).toBe(0);
-    expect((await storeOrderFeeFor(ctx.db, r.storeId, "2027-01"))).toMatchObject({ feeCents: 700, bps: 70 });
+    expect((await storeOrderFeeFor(ctx.db, r.storeId, "2027-01"))).toMatchObject({ feeCents: 0, bps: 0 });
   });
 
   it("troca de plano refaz a fatura aberta; ciclo da rotina: teste → aguardando → expirada", async () => {
@@ -158,7 +158,7 @@ describe("Commerce: oferta de entrada, planos, assinatura e taxa de plataforma",
     const first = (await ensureSubscriptionInvoice(ctx.db, store))!;
     await choosePlan(ctx.db, actor, { productKey: "COMMERCE_SCALE", cycle: "ANNUAL" });
     expect((await ctx.db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, first.invoiceId) }))!.status).toBe("CANCELED");
-    expect((await ensureSubscriptionInvoice(ctx.db, store))!.amountCents).toBe(449_100);
+    expect((await ensureSubscriptionInvoice(ctx.db, store))!.amountCents).toBe(356_400);
     await runSubscriptionJobs(ctx.db, new Date("2026-10-05T12:00:00Z"));
     expect((await subscriptionOf(ctx.db, r.storeId))!.status).toBe("pending_payment");
     await expect(choosePlan(ctx.db, ctx.actors.mantos, { productKey: "COMMERCE_PRO", cycle: "MONTHLY" })).rejects.toThrow(/Commerce/); // loja SuperDrop
@@ -311,7 +311,7 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     await expect(ctx.db.insert(partnerLeads).values({ id: newId("pld"), partnerId: a.id, name: "Cliente", email: "cliente@empresa.com" })).rejects.toThrow();
   });
 
-  it("assinatura Commerce comissiona 25% da 1ª e 10% recorrente pela regra, não pela manutenção antiga", async () => {
+  it("assinatura Commerce comissiona 20% da 1ª e 10% recorrente (D220) pela regra, não pela manutenção antiga", async () => {
     const p = await partner("EVA", "52998224725", "eva@parceira.com");
     const r = await signupMember(ctx.db, { storeName: "Loja Eva", ownerName: "Cliente Eva", email: "cli@eva.com", password: "senha-segura-1", taxId: "111.444.777-35", brand: "NEXTLEVEL_COMMERCE", independent: true, plan: "COMMERCE_START", ref: "EVA" });
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
@@ -321,8 +321,11 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     const i2 = (await ensureSubscriptionInvoice(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!))!;
     await markInvoicePaid(ctx.db, i2.invoiceId);
     const rows = await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, p.id));
-    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2500, 248], ["RECURRING", 1000, 1490]]));
+    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2000, 198], ["RECURRING", 1000, 570]]));
     expect(rows.some((x) => x.kind === "MAINTENANCE")).toBe(false);
+    // Agência (D220): 30% na 1ª e 15% recorrente.
+    const { findRule } = await import("@/lib/domain/corporate-commissions");
+    expect(await findRule(ctx.db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AGENCY" })).toMatchObject({ firstBps: 3000, recurringBps: 1500 });
     expect((await ctx.db.select().from(nlSubscriptions)).length).toBe(1);
   });
 });

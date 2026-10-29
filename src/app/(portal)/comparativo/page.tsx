@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "NextLevel E-commerce ou outra plataforma? Comparativo", description: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel E-commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data.", alternates: { canonical: "/comparativo" } };
 
 const pct = (bps: number | null) => (bps === null ? "não divulga" : `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`);
-const FAIXAS = [1_000_000, 2_000_000, 3_000_000, 5_000_000, 10_000_000, 20_000_000];
+const FAIXAS = [300_000, 1_000_000, 3_000_000, 5_000_000, 10_000_000, 20_000_000];
 
 /** Comparativo completo (D219): custo total em seis faixas e os planos de cada plataforma, com fonte e data. */
 export default async function ComparativoPage() {
@@ -34,7 +34,7 @@ export default async function ComparativoPage() {
       </section>
       <section className="mx-auto max-w-6xl px-4 pb-16" aria-labelledby="faixas-t">
         <h2 id="faixas-t" className="text-2xl font-bold text-foreground">Custo da plataforma por mês</h2>
-        <p className="mt-1 text-sm text-body">Mensalidade + tarifa sobre as vendas, no plano mais barato de cada uma para o faturamento.</p>
+        <p className="mt-1 text-sm text-body">Mensalidade + tarifa sobre as vendas usando outro meio de pagamento, no plano mais barato de cada uma para o faturamento. Na NextLevel, com o Mercado Pago, a tarifa é zero.</p>
         <div className="mt-6 overflow-x-auto rounded-3xl border border-border">
           <table className="w-full min-w-[40rem] text-sm">
             <thead><tr className="border-b border-border text-left text-muted-foreground"><th scope="col" className="p-4">Vendendo por mês</th><th scope="col" className="p-4 font-bold text-foreground">NextLevel</th>{comparaveis.map((c) => <th key={c.key} scope="col" className="p-4">{c.nome}</th>)}</tr></thead>
@@ -51,7 +51,7 @@ export default async function ComparativoPage() {
       <section className="mx-auto max-w-6xl px-4 pb-16" aria-labelledby="planos-t">
         <h2 id="planos-t" className="text-2xl font-bold text-foreground">Planos de cada plataforma</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border-2 border-[var(--ds-primary)] bg-surface p-6"><h3 className="text-lg font-bold">NextLevel E-commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-muted-foreground">Sem limite de produtos e pedidos. 100% das vendas na sua conta Mercado Pago.</p></div>
+          <div className="rounded-3xl border-2 border-[var(--ds-primary)] bg-surface p-6"><h3 className="text-lg font-bold">NextLevel E-commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-muted-foreground">Taxa zero com o Mercado Pago, parceiro oficial. Sem limite de produtos e pedidos. 100% das vendas na sua conta.</p></div>
           {CONCORRENTES.map((c) => (
             <div key={c.key} className="rounded-3xl border border-border bg-surface p-6">
               <h3 className="text-lg font-bold">{c.nome}</h3>
@@ -62,7 +62,7 @@ export default async function ComparativoPage() {
         </div>
         <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Dados públicos dos sites oficiais, consultados em {data}, planos mensais. Tarifa da plataforma sobre a venda usando o próprio meio de pagamento; as taxas de cartão e Pix existem em todas e ficam fora da conta. Pedidos estimados com tíquete médio de R$ 150. Preços e regras dessas plataformas podem mudar: confira no site de cada uma. As marcas citadas não têm vínculo com a NextLevel.</p>
       </section>
-      <ComparativoHome nl={nl} cta={cta} comecar={brand.signupOpen ? "Criar minha loja" : "Quero minha loja"} linkCompleto={false} />
+      <ComparativoHome degrausNl={pv.plans.filter((p) => !p.quote && p.monthlyCents && p.annualCents).map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, anualMesCents: Math.round(p.annualCents! / 12) }))} cta={cta} comecar={brand.signupOpen ? "Criar minha loja" : "Quero minha loja"} linkCompleto={false} />
       <div className="mx-auto max-w-6xl px-4 py-10 text-sm"><Link href="/planos" className="font-semibold underline underline-offset-4">Ver os planos da NextLevel</Link></div>
     </div>
   );

@@ -13,7 +13,6 @@ import { CommercePlansSection } from "@/components/portal/commerce/plans-section
 import { LojasExemplo } from "@/components/portal/commerce-home";
 import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
 import { ComparativoHome, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
-import { nextlevelComoPlataforma } from "@/lib/marcas/comparativo-ecommerce";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { groupLink } from "@/lib/brand-server";
@@ -38,7 +37,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
   const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
   const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round(p.annualCents! / 12))) : null;
-  const nl = nextlevelComoPlataforma(pv.plans);
+  // D220: degraus da NextLevel (Start, Pro, Scale) para o comparativo plano a plano.
+  const degrausNl = pagos.map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, anualMesCents: Math.round(p.annualCents! / 12) }));
 
   return (
     <div className="im-tema-ecommerce contents">
@@ -50,7 +50,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}
-      <PorQueNextLevel nl={nl} />
+      <PorQueNextLevel degrausNl={degrausNl} />
 
       <section id="planos" aria-labelledby="planos-t" className="ecc-planos ds-tema-escuro scroll-mt-16">
         <div className="mx-auto max-w-6xl">
@@ -64,7 +64,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <ComparativoHome nl={nl} cta={cta} comecar={comecar} />
+      <ComparativoHome degrausNl={degrausNl} cta={cta} comecar={comecar} />
 
       <LojasExemplo cta={cta} className={`${section} bg-surface`} />
 
