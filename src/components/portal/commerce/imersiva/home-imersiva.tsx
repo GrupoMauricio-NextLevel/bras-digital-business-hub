@@ -1,4 +1,3 @@
-import { CartaFundador } from "@/components/portal/equipe/blocos";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Banknote, ShieldCheck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
@@ -8,24 +7,21 @@ import { isReleased, THEME_CATALOG } from "@/lib/themes/catalog";
 import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
 import { JsonLd } from "@/components/portal/json-ld";
 import { HeroiCapaEc } from "@/components/portal/commerce/capa/heroi-capa";
-import { OfertasCapa } from "@/components/portal/commerce/capa/ofertas";
-import { Marquee } from "@/components/portal/commerce/marquee";
 import { ClosingCta, Faq, H2 } from "@/components/portal/commerce/sections";
 import { ThemeGallery } from "@/components/portal/commerce/theme-gallery";
-import { Personalize } from "@/components/portal/commerce/personalize";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { LojasExemplo } from "@/components/portal/commerce-home";
-import { IntegracoesFaixa, MauricioFaixa } from "@/components/portal/commerce/integracoes";
-import { EC_HOME_ACERVO, type EcHomeFotoNome } from "@/lib/marcas/ecommerce-home-imagens";
+import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
+import { ComparativoHome, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
+import { nextlevelComoPlataforma } from "@/lib/marcas/comparativo-ecommerce";
 import { FotoImersiva } from "@/components/imersiva/foto";
-import { JornadaMarca, type PassoMarca } from "@/components/imersiva/jornada";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { groupLink } from "@/lib/brand-server";
 import "../commerce.css";
 import "../capa/capa.css";
 
 /**
- * Home da NextLevel E-commerce, versão imersiva (D165, padrão da Soluções D162). Mesma primeira dobra (texto e oferta vindos
+ * Home da NextLevel E-commerce, versão imersiva (D165; racional objetivo com comparativo em D219). Mesma primeira dobra (texto e oferta vindos
  * do Master), depois a jornada "a loja que cresce" (cinco passos, foto presa na tela), as quatro portas, a prova (lojas de
  * exemplo), a personalização interativa, temas, planos (simulador), dúvidas e a chamada final. Cada frase corresponde a algo
  * que o sistema já faz (conferido em docs/design/ecommerce-home-imersiva-previa.md).
@@ -40,21 +36,9 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const solucoes = await groupLink("/solucoes");
   const link = "underline underline-offset-4 text-link";
 
-  const passos: PassoMarca<EcHomeFotoNome>[] = [
-    { key: "produto", nome: "Cadastrar", foto: "ec-jornada-1-produto", retrato: "ec-jornada-1-produto-retrato", titulo: "Cadastre como você vende.", texto: "Produtos com variações de tamanho e cor, estoque e categorias, sem limite de cadastro. Um a um ou por planilha.", links: [{ label: "Ver o que vem nos planos", href: "#planos" }] },
-    { key: "loja", nome: "Montar", foto: "ec-jornada-2-loja", retrato: "ec-jornada-2-loja-retrato", titulo: "Sua vitrine, com a cara da marca.", texto: "Tema gratuito, editor visual com prévia ao vivo e domínio próprio. Enquanto não publica, só você vê.", links: [{ label: "Ver temas", href: "/temas" }, { label: "Lojas de exemplo", href: "#exemplos" }] },
-    { key: "pedido", nome: "Vender", foto: "ec-jornada-3-pedido", retrato: "ec-jornada-3-pedido-retrato", titulo: "O pagamento cai na sua conta.", texto: "Pix e cartão pelo Mercado Pago da sua loja: você recebe 100% das vendas, direto na sua conta.", links: [{ label: "Dúvidas sobre pagamento", href: "#duvidas" }] },
-    { key: "envio", nome: "Enviar", foto: "ec-jornada-4-envio", retrato: "ec-jornada-4-envio-retrato", titulo: "Pedido organizado até a entrega.", texto: "Frete por regras próprias ou plataforma de envio (Melhor Envio, Frenet, Correios com contrato e outras), código de rastreio e mensagem pronta para o cliente no WhatsApp.", links: [{ label: "Ver as integrações", href: "#integracoes" }] },
-    { key: "rotina", nome: "Crescer", foto: "ec-jornada-5-rotina", retrato: "ec-jornada-5-rotina-retrato", titulo: "Uma operação que cabe no seu dia.", texto: "Pós-venda, cupons, campanhas, avaliações e equipe com acessos separados, no mesmo painel.", links: [{ label: comecar, href: cta }] },
-  ];
   const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
   const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round(p.annualCents! / 12))) : null;
-  const portas: { foto: EcHomeFotoNome; selo: string; titulo: string; texto: string }[] = [
-    { foto: "ec-porta-zero", selo: "Do zero", titulo: "Começar do zero", texto: "Tema grátis, editor visual e produtos cadastrados um a um ou por planilha." },
-    { foto: "ec-porta-instagram", selo: "Instagram e WhatsApp", titulo: "Já vendo pelo Instagram e WhatsApp", texto: "Os pedidos do WhatsApp e do Instagram entram no mesmo painel da loja." },
-    { foto: "ec-porta-migrar", selo: "Migração", titulo: "Sair de outra plataforma", texto: "Traga os seus produtos por planilha e leve os endereços antigos para não perder o Google." },
-    { foto: "ec-porta-fisica", selo: "Loja física", titulo: "Tenho loja física", texto: "A mesma vitrine no site, com Pix e cartão na sua conta Mercado Pago." },
-  ];
+  const nl = nextlevelComoPlataforma(pv.plans);
 
   return (
     <div className="im-tema-ecommerce contents">
@@ -63,6 +47,10 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} />
+
+      {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
+          Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}
+      <PorQueNextLevel nl={nl} />
 
       <section id="planos" aria-labelledby="planos-t" className="ecc-planos ds-tema-escuro scroll-mt-16">
         <div className="mx-auto max-w-6xl">
@@ -76,25 +64,9 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      <OfertasCapa titulo="Comece do seu jeito" itens={portas.map((p) => ({ foto: p.foto, selo: p.selo, titulo: p.titulo, texto: p.texto, href: cta }))} />
-
-      <Marquee />
-
-      <JornadaMarca acervo={EC_HOME_ACERVO} passos={passos} eyebrow="Como funciona" titulo="Da primeira foto à rotina de pedidos." rotulo="A loja que cresce, em cinco passos" />
+      <ComparativoHome nl={nl} cta={cta} comecar={comecar} />
 
       <LojasExemplo cta={cta} className={`${section} bg-surface`} />
-
-      <IntegracoesFaixa cta={cta} comecar={comecar} />
-
-      <MauricioFaixa cta={cta} />
-
-      <section id="personalizar" aria-labelledby="pers-t" className={`${section} bg-canvas`}>
-        <div className="mx-auto max-w-6xl">
-          <p className="im-eyebrow im-eyebrow--claro">Personalização</p>
-          <h2 id="pers-t" className="im-h2 mt-3 mb-12 max-w-3xl text-foreground">A cara da sua marca, sem escrever código.</h2>
-          <Personalize />
-        </div>
-      </section>
 
       <section id="temas" aria-labelledby="temas-t" className={`${section} bg-surface`}>
         <div className="mx-auto max-w-6xl">
@@ -110,8 +82,6 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
           <ThemeGallery themes={released.map((t) => ({ key: t.key, name: t.name, priceCents: t.priceCents, tagline: t.tagline, family: t.family, familyName: FAMILY_INFO[t.family].name, levelName: LEVEL_INFO[t.level].goal, niche: t.niche }))} />
         </div>
       </section>
-
-      <CartaFundador className="bg-surface text-foreground" />
 
       <SecaoEquipe code={brand.code} nomeDaMarca={brand.name} className="bg-canvas text-foreground">
         <span className="w-full font-normal opacity-80">Prefere ajuda para começar?</span>

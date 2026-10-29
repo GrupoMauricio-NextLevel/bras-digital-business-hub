@@ -1,3 +1,4 @@
+import { negocioAberto } from "@/lib/negocios";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
@@ -24,13 +25,14 @@ export default async function PortalLayout({ children }: { children: React.React
   // Soluções e Loja NextLevel são da agência e moram no site do grupo (D149): nas marcas, o link vai direto para lá.
   const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
-    ? [{ href: "/solucoes", label: "Soluções" }, { href: "/club", label: "Club" }, { href: `${site("SUPERDROP")}/`, label: "SuperDrop" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "E-commerce" }, ...(brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), { href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }]
+    // D219: no ecossistema público só entram as marcas já liberadas (as mesmas abertas no Master); as outras ficam bloqueadas até serem concluídas.
+    ? [{ href: "/solucoes", label: "Soluções" }, ...(negocioAberto("BRAS_DIGITAL") ? [{ href: "/club", label: "Club" }] : []), ...(negocioAberto("SUPERDROP") ? [{ href: `${site("SUPERDROP")}/`, label: "SuperDrop" }] : []), { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "E-commerce" }, ...(negocioAberto("BRAS_DIGITAL") && brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), ...(negocioAberto("NEXTLEVEL_CARGAS") ? [{ href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }] : [])]
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
     ? [{ href: "/#compradores", label: "Para compradores" }, { href: "/#fornecedores", label: "Para fornecedores" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
     : commerce
-    ? [{ href: "/#exemplos", label: "Lojas de exemplo" }, { href: "/integracoes", label: "Integrações" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/#duvidas", label: "Dúvidas" }]
+    ? [{ href: "/recursos", label: "Recursos" }, { href: "/comparativo", label: "Comparativo" }, { href: "/planos", label: "Planos" }, { href: "/temas", label: "Temas" }, { href: "/#duvidas", label: "Dúvidas" }]
     : dropship
       ? [{ href: "/como-funciona", label: "Como funciona" }, { href: "/planos", label: "Planos" }, { href: solucoes, label: "Soluções" }, { href: "/parceiros", label: "Seja parceiro" }, { href: "/faq", label: "Dúvidas" }]
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];

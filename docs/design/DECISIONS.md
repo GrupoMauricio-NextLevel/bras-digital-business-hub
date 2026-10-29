@@ -2280,3 +2280,17 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - rodapé sem "pontos do Club";
   - números do topo com 3 itens em 3 colunas.
 - **Roteiro para abrir a Soluções:** está no relatório (marca própria, `MASTER_MARCAS`, menu do escritório, variável no Render).
+
+## D219 — [E-commerce] Home com racional convincente e comparativo com concorrentes; marcas bloqueadas, não tiradas (2026-10-29)
+- **Pedido do dono:** home objetiva, que convence de cara, com comparativo como o da Nuvemshop; o que não convence vai para páginas institucionais. Marcas: "não quero que tire, só deixa bloqueado; no painel do lojista não aparecem; só no Master; vamos ativando no ecossistema público conforme cada marca fica pronta".
+- **Racional e avaliação da Nuvemshop:** `docs/design/HOME-ECOMMERCE-RACIONAL.md`.
+- **Home nova:** topo → Por que a NextLevel → planos → comparativo (custo total em 30, 50 e 100 mil; tabela de taxas e limites contra Nuvemshop, Tray, Loja Integrada e Shopify; fonte e data) → lojas de exemplo → temas → equipe → dúvidas → chamada final.
+- **Páginas novas:**
+  - `/recursos`: como funciona, portas de entrada, personalização, Maurício, integrações e carta do fundador;
+  - `/comparativo`: as 6 faixas de faturamento e os planos de cada plataforma, com link para a fonte.
+- **Menu público:** Recursos · Comparativo · Planos · Temas · Dúvidas.
+- **Dados do comparativo:** `src/lib/marcas/comparativo-ecommerce.ts` (públicos, com `COLETADO_EM`). A NextLevel entra sempre com os preços do Master. Plataforma em dólar ou que não divulga a tarifa fica fora do custo total. A frase "a partir de R$ 30 mil" é garantida por teste.
+- **Marcas:**
+  - no Master, todas continuam visíveis no seletor como Pausado, Próximo ou Em breve (bloqueadas, não removidas);
+  - no painel do lojista não aparecem (D217);
+  - no ecossistema público (menu do site do grupo), só entram as marcas liberadas, as mesmas abertas no Master (`negocioAberto`). As outras são ativadas conforme ficarem prontas.
