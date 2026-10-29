@@ -2259,3 +2259,10 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Corrige a premissa antiga** (CLAUDE.md, AGENTS.md e skills) de que o SuperDrop estava em produção com clientes.
 - **Regra a partir de agora:** o trabalho é só da E-commerce e do Master. Não deixar de melhorar algo por cautela com o SuperDrop. Quando uma melhoria servir para todas as lojas, pode valer para todas, desde que não quebre o que existe. As outras marcas voltam numa etapa futura.
 - As barreiras "só na E-commerce" de D208 a D213 continuam como estão (não fazem mal). Podem ser abertas para as outras marcas quando elas entrarem na fase.
+
+## D217 — [E-commerce] Lojista sem "Marcas do grupo"; filas antigas e números no mesmo padrão do "Precisa de você" (2026-10-29)
+- **Pedido do dono:** "pode tirar o Marcas do grupo e seguir".
+- **Painel do lojista da E-commerce:** saem o fio colorido do grupo, o botão "Marcas do grupo" e o "Suas marcas" do menu da conta. O painel mostra só a marca do cliente (continua de D209). A barra do ecossistema (D129) segue nas outras marcas, que estão fora da fase atual.
+- **Fila antiga (`ActionQueue`) com o desenho do "Precisa de você agora" (D212)** em todas as telas que a usam (Pós-venda, Configurações, Master, fornecedor…): cartão, bolinha da urgência, o que é, por quê e o botão que resolve. A API não mudou.
+- **Números no topo (`OperationalPulse`)** em duas colunas já no celular (antes, quatro linhas empurravam o que importa para baixo); o ícone some no celular para caber.
+- Código: `src/components/app/role-layout.tsx`, `src/components/app/action-queue.tsx`, `src/components/app/operational-pulse.tsx`.

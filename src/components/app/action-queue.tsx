@@ -1,6 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CheckCircle2, Circle, Info, type LucideIcon } from "lucide-react";
+import { ArrowRight, CheckCircle2, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ActionQueueTone = "neutral" | "info" | "warning" | "danger" | "success";
@@ -16,14 +16,13 @@ export type ActionQueueItem = {
   icon?: LucideIcon;
 };
 
-const TONE: Record<ActionQueueTone, { icon: LucideIcon; rail: string; iconClass: string }> = {
-  neutral: { icon: Circle, rail: "bg-border-strong", iconClass: "text-muted-foreground" },
-  info: { icon: Info, rail: "bg-info", iconClass: "text-info" },
-  warning: { icon: AlertTriangle, rail: "bg-warning", iconClass: "text-warning" },
-  danger: { icon: AlertTriangle, rail: "bg-danger", iconClass: "text-danger" },
-  success: { icon: CheckCircle2, rail: "bg-success", iconClass: "text-success" },
-};
+/** Cor da bolinha de urgência: a mesma do bloco "Precisa de você agora" (D212). */
+const PONTO: Record<ActionQueueTone, string> = { neutral: "bg-border-strong", info: "bg-info", warning: "bg-warning", danger: "bg-danger", success: "bg-success" };
 
+/**
+ * Fila de ações (D217): mesmo desenho do bloco "Precisa de você agora" (cartão, bolinha da urgência, o que é, por quê e o
+ * botão que resolve), para todas as telas do sistema falarem a mesma língua. A API não mudou.
+ */
 export function ActionQueue({ title = "Fila do dia", description, items, emptyMessage = "Nenhuma ação pendente agora.", className }: {
   title?: string;
   description?: React.ReactNode;
@@ -31,48 +30,29 @@ export function ActionQueue({ title = "Fila do dia", description, items, emptyMe
   emptyMessage?: string;
   className?: string;
 }) {
+  const id = React.useId();
   return (
-    <section className={cn("overflow-hidden rounded-lg border border-border bg-surface", className)} aria-labelledby="action-queue-title">
-      <header className="flex items-start justify-between gap-4 border-b border-border px-4 py-3 sm:px-5">
-        <div>
-          <h2 id="action-queue-title" className="text-sm font-semibold">{title}</h2>
-          {description ? <p className="mt-0.5 text-xs text-muted-foreground">{description}</p> : null}
-        </div>
+    <section className={cn("ds-card p-5 sm:p-6", className)} aria-labelledby={id}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div><h2 id={id} className="text-base font-semibold">{title}</h2>{description ? <p className="text-xs text-muted-foreground">{description}</p> : null}</div>
         {items.length ? <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold tabular-nums text-muted-foreground">{items.length}</span> : null}
-      </header>
+      </div>
       {items.length === 0 ? (
-        <div className="flex items-center gap-3 px-4 py-5 text-sm text-muted-foreground sm:px-5">
-          <CheckCircle2 className="size-4 text-success" aria-hidden />
-          {emptyMessage}
-        </div>
+        <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle2 className="size-4 text-success" aria-hidden />{emptyMessage}</p>
       ) : (
-        <ol className="divide-y divide-border">
+        <ol className="mt-3 divide-y divide-border">
           {items.map((item) => {
-            const tone = TONE[item.tone ?? "neutral"];
-            const Icon = item.icon ?? tone.icon;
-            const body = (
-              <>
-                <span className={cn("absolute inset-y-0 left-0 w-1", tone.rail)} aria-hidden />
-                <Icon className={cn("mt-0.5 size-4 shrink-0", tone.iconClass)} aria-hidden />
-                <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="font-medium text-foreground">{item.title}</span>
-                    {item.count !== undefined ? <span className="rounded-full bg-surface-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">{item.count}</span> : null}
-                  </span>
-                  {item.description ? <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.description}</span> : null}
-                </span>
-                {item.href ? <span className="flex shrink-0 items-center gap-1 text-xs font-semibold text-foreground">{item.actionLabel ?? "Resolver"}<ArrowRight className="size-3.5" aria-hidden /></span> : null}
-              </>
+            const texto = (
+              <span className="min-w-0 flex-1 basis-56">
+                <span className="flex flex-wrap items-center gap-2"><span className="text-sm font-semibold text-foreground">{item.title}</span>{item.count !== undefined ? <span className="rounded-full bg-surface-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">{item.count}</span> : null}</span>
+                {item.description ? <span className="block text-xs leading-relaxed text-muted-foreground">{item.description}</span> : null}
+              </span>
             );
             return (
-              <li key={item.id} className="relative">
-                {item.href ? (
-                  <Link href={item.href} className="flex min-h-14 items-start gap-3 px-4 py-3 pl-5 transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring sm:px-5 sm:pl-6">
-                    {body}
-                  </Link>
-                ) : (
-                  <div className="flex min-h-14 items-start gap-3 px-4 py-3 pl-5 sm:px-5 sm:pl-6">{body}</div>
-                )}
+              <li key={item.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+                <span aria-hidden className={cn("size-2.5 shrink-0 rounded-full", PONTO[item.tone ?? "neutral"])} />
+                {item.href ? <Link href={item.href} className="min-w-0 flex-1 basis-56 hover:underline">{texto}</Link> : texto}
+                {item.href ? <Link href={item.href} className="inline-flex items-center gap-1 text-xs font-bold text-[var(--ds-link)]">{item.actionLabel ?? "Resolver"}<ArrowRight className="size-3.5" aria-hidden /></Link> : null}
               </li>
             );
           })}

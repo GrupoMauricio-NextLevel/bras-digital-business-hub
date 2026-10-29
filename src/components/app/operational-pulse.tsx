@@ -26,13 +26,14 @@ const TONE: Record<PulseTone, string> = {
 export function OperationalPulse({ items, label = "Pulso operacional", className }: { items: PulseItem[]; label?: string; className?: string }) {
   return (
     <section className={cn("ds-card ds-card--flush", className)} aria-label={label}>
-      <div className="grid divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4">
+      {/* D217: duas colunas já no celular (antes, quatro linhas empurravam o que importa para baixo); linhas finas pelo vão de 1 px. */}
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[inherit] bg-[var(--ds-line)] xl:grid-cols-4 [&>*]:bg-surface [&>*:last-child:nth-child(odd)]:col-span-2 xl:[&>*:last-child:nth-child(odd)]:col-span-1">
         {items.map((item, index) => {
           const Icon = item.icon;
           const DeltaIcon = item.delta === undefined ? null : item.delta > 0 ? ArrowUpRight : item.delta < 0 ? ArrowDownRight : Minus;
           const content = (
-            <div className="flex min-h-[76px] items-center gap-3 px-4 py-3">
-              {Icon ? <span className="flex size-8 shrink-0 items-center justify-center rounded-[var(--ds-r-control-sm)] bg-[var(--ds-soft)] text-[var(--ds-link)]"><Icon className="size-4" aria-hidden /></span> : null}
+            <div className="flex h-full min-h-[76px] items-center gap-3 px-4 py-3">
+              {Icon ? <span className="flex size-8 shrink-0 max-sm:hidden items-center justify-center rounded-[var(--ds-r-control-sm)] bg-[var(--ds-soft)] text-[var(--ds-link)]"><Icon className="size-4" aria-hidden /></span> : null}
               <div className="min-w-0 flex-1">
                 <div className="text-[length:var(--ds-fs-label)] font-bold text-muted-foreground">{item.label}</div>
                 <div className={cn("mt-0.5 flex min-w-0 items-baseline gap-2", TONE[item.tone ?? "neutral"])}>

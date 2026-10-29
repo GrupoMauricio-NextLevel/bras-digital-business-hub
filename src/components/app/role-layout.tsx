@@ -133,11 +133,12 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         onSwitch={loginAs}
         onLogout={logout}
         passwordHref="/account/password"
-        groupHref={commerceStore && canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined}
+        groupHref={undefined /* D217: lojista da E-commerce sem "Suas marcas" (painel só com a marca do cliente) */}
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
-        banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}
+        // D217: painel do lojista só com a marca do cliente; sem o fio e o botão "Marcas do grupo" da NextLevel.
+        banner={<>{supportBar}{commerceStore ? null : ecoBar}{banner}{botaoIa}</>}
         capa={capaLoja}
         marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : "Painel da loja" } : undefined}
         extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
