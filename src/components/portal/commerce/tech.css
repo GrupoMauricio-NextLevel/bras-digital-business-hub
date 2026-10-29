@@ -74,3 +74,36 @@
   color: #a5f3fc; background: rgb(34 211 238 / .1); box-shadow: 0 0 0 1px rgb(34 211 238 / .3) inset; }
 .ec-tag i { width: .45rem; height: .45rem; border-radius: 9999px; background: var(--ec-verde); box-shadow: 0 0 10px var(--ec-verde); }
 .ec-tag--claro { color: #0b5d73; background: #e6f9fd; box-shadow: 0 0 0 1px rgb(8 145 178 / .25) inset; }
+
+/* Cabeçalho das páginas internas (D223): faixa marinho com grade, brilhos e números em destaque. */
+.ec-cabecalho { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ec-marinho, #101a33); padding: 4.5rem 0 4rem; }
+.ec-cabecalho::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgb(255 255 255 / .05) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .05) 1px, transparent 1px);
+  background-size: 40px 40px; -webkit-mask-image: radial-gradient(ellipse 75% 90% at 70% 0%, #000 25%, transparent 75%); mask-image: radial-gradient(ellipse 75% 90% at 70% 0%, #000 25%, transparent 75%); }
+.ec-cabecalho::after { content: ""; position: absolute; z-index: -1; inset: auto -10% -60% 30%; height: 120%; pointer-events: none;
+  background: radial-gradient(closest-side, rgb(34 211 238 / .22), transparent), radial-gradient(closest-side at 30% 60%, rgb(124 92 255 / .2), transparent); }
+.ec-cabecalho-titulo { margin-top: .9rem; max-width: 52rem; font-family: var(--nl-font-display); font-weight: 700; letter-spacing: -.035em; line-height: 1.02; font-size: clamp(2.4rem, 5.6vw, 4.5rem); text-wrap: balance; }
+.ec-cabecalho-titulo em { font-style: normal; background: linear-gradient(90deg, var(--ec-ciano-vivo), #a78bfa 55%, var(--ec-verde)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ec-dados { margin-top: 2.25rem; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); max-width: 52rem; }
+.ec-dado { border-radius: 1.1rem; padding: .95rem 1.1rem; border: 1px solid transparent !important; background: linear-gradient(rgb(10 18 36 / .9), rgb(10 18 36 / .9)) padding-box, var(--ec-linha) border-box; }
+.ec-dado dt { font-family: var(--ec-mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: #8fa3cc; }
+.ec-dado dd { margin: .3rem 0 0; font-family: var(--nl-font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -.02em; color: #fff; }
+
+/* Perguntas (details): cartão com borda em degradê quando aberto e sinal + / – em mono. */
+.ec-tech details.ec-pergunta, .ec-tech .ec-perguntas details { border-radius: 1.1rem; padding: 1.05rem 1.25rem; border: 1px solid transparent !important;
+  background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, linear-gradient(140deg, rgb(15 23 42 / .13), rgb(15 23 42 / .06)) border-box; transition: background .2s ease; }
+.ec-tech .ec-perguntas details[open] { background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, var(--ec-linha) border-box; box-shadow: 0 20px 40px -30px rgb(34 211 238 / .6); }
+.ec-tech .ec-perguntas summary { list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; cursor: pointer; font-weight: 600; }
+.ec-tech .ec-perguntas summary::-webkit-details-marker { display: none; }
+.ec-tech .ec-perguntas summary::after { content: "+"; font-family: var(--ec-mono); font-size: 1.15rem; color: #0891b2; }
+.ec-tech .ec-perguntas details[open] summary::after { content: "–"; }
+
+/* Chips de filtro e de navegação. */
+.ec-tech .ec-chip { font-family: var(--ec-mono); font-size: .72rem !important; letter-spacing: .08em; text-transform: uppercase; }
+
+/* Cartões de plano (pricing): borda em degradê e brilho no recomendado. */
+.ec-tech .cm-plan { border: 1px solid transparent !important; background: linear-gradient(var(--ds-surface, #f6f8fc), var(--ds-surface, #f6f8fc)) padding-box, linear-gradient(140deg, rgb(15 23 42 / .14), rgb(15 23 42 / .06)) border-box; }
+.ec-tech .ds-tema-escuro .cm-plan:not(.cm-plan--on) { background: linear-gradient(#141f3a, #141f3a) padding-box, linear-gradient(140deg, rgb(255 255 255 / .16), rgb(255 255 255 / .05)) border-box; }
+.ec-tech .cm-plan--on { background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; color: #e8eefc; box-shadow: 0 30px 70px -30px rgb(34 211 238 / .6); }
+.ec-tech .cm-seg-badge { font-family: var(--ec-mono); letter-spacing: .02em; }
+.ec-tech .cm-pricing output { font-family: var(--ec-mono); }

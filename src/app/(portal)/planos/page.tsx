@@ -6,6 +6,10 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { MEMBER_FEES } from "../content";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
+import { getDb } from "@/db/client";
+import { commercePlansView } from "@/lib/domain/commerce-plans";
+import { formatBRL } from "@/lib/money";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { finFlag } from "@/lib/finance/flags";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
@@ -16,17 +20,24 @@ export const metadata: Metadata = { title: "Planos", description: "Planos para q
 export default async function Planos() {
   const brand = await getBrand();
   const solucoes = await groupLink("/solucoes");
+  const ec = brand.code === "NEXTLEVEL_COMMERCE";
+  const pv = ec ? await commercePlansView(await getDb()) : null;
+  const anualMin = pv ? Math.min(...pv.plans.filter((p) => !p.quote && p.annualCents).map((p) => Math.round(p.annualCents! / 12))) : 0;
   if (!brandHas(brand, "dropship") && finFlag("FIN_COMMERCE_PLANS")) return (
+    <>
+    {ec ? <CabecalhoTech rotulo="Planos" titulo={<>Preço claro, <em>sem taxa da plataforma</em> nas vendas.</>} texto="Sem fidelidade. Comece com dias grátis e escolha mensal ou anual. Os planos mudam pelo que entregam, não pelo quanto você vende."
+      dados={[{ rotulo: "Taxa da plataforma", valor: "0%" }, ...(pv?.offer ? [{ rotulo: "Teste grátis", valor: `${pv.offer.trialDays} dias` }] : []), ...(anualMin ? [{ rotulo: "A partir de, no anual", valor: `${formatBRL(anualMin).replace(",00", "")}/mês` }] : []), { rotulo: "Fidelidade", valor: "Nenhuma" }]} /> : null}
     <div className="mx-auto max-w-6xl px-4 py-16">
-      <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos {brand.name}</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Preço claro, sem fidelidade. Comece com dias grátis e escolha mensal ou anual.</p>
-      <div className="mt-10"><CommercePlansSection cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} signupOpen={brand.signupOpen} /></div>
+      {ec ? null : <><h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos {brand.name}</h1>
+      <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Preço claro, sem fidelidade. Comece com dias grátis e escolha mensal ou anual.</p></>}
+      <div className={ec ? "" : "mt-10"}><CommercePlansSection cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} signupOpen={brand.signupOpen} /></div>
       <BlocoEquipe lugar="planos-ajuda" className="mt-12 rounded-3xl bg-surface" contatos mensagem="Olá! Quero ajuda para montar a minha loja.">
         <Link className="underline underline-offset-4 text-link" href={`${solucoes}/loja-pronta-essencial`}>Loja Pronta</Link>
         <Link className="underline underline-offset-4 text-link" href={`${solucoes}/migracao-lite`}>Migração</Link>
         <Link className="underline underline-offset-4 text-link" href={`${solucoes}#diagnostico`}>Diagnóstico gratuito</Link>
       </BlocoEquipe>
     </div>
+    </>
   );
   if (!brandHas(brand, "dropship")) return (
     <div className="mx-auto max-w-3xl px-4 py-16">

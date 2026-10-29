@@ -1,14 +1,15 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 
 /**
  * Tela de parceiros: faixa na cor da marca no topo e folha branca arredondada que sobe sobre ela, com o nome do programa em cor de marca,
  * um título grande e o formulário. A foto é decorativa (alt vazio).
  */
-export function PartnerShell({ program, title, intro, photo, children }: { program: string; title: string; intro?: ReactNode; /** Foto do programa de parceiros da própria marca (sem ela, faixa na cor da marca). */ photo?: { src: string; position?: string }; children: ReactNode }) {
+export function PartnerShell({ program, title, intro, photo, tech = false, children }: { program: string; /** Visual de tecnologia da E-commerce (D223). */ tech?: boolean; title: string; intro?: ReactNode; /** Foto do programa de parceiros da própria marca (sem ela, faixa na cor da marca). */ photo?: { src: string; position?: string }; children: ReactNode }) {
   return (
     <>
-    <main className="min-h-dvh bg-surface">
+    <main className={`min-h-dvh bg-surface ${tech ? EC_TECH : ""}`}>
       {photo ? (
         <div aria-hidden className="relative h-56 w-full overflow-hidden bg-band sm:h-64 lg:h-80">
           <Image src={photo.src} alt="" fill priority sizes="100vw" className="object-cover" style={{ objectPosition: photo.position ?? "50% 40%" }} />
@@ -16,14 +17,14 @@ export function PartnerShell({ program, title, intro, photo, children }: { progr
         </div>
       ) : (
       /* Sem foto do programa de parceiros da marca (a de loja de demonstração não serve): faixa na cor da marca. */
-      <div aria-hidden className="relative h-36 w-full overflow-hidden bg-band sm:h-44 lg:h-52">
+      <div aria-hidden className={`relative h-36 w-full overflow-hidden sm:h-44 lg:h-52 ${tech ? "ec-cabecalho !p-0" : "bg-band"}`}>
         <div className="absolute -right-32 -top-32 size-[30rem] rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(circle, var(--ds-primary), transparent 65%)" }} />
         <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
       </div>
       )}
       <div className="relative -mt-8 rounded-t-[32px] bg-surface px-5 pb-16 pt-8 sm:px-8">
         <div className="mx-auto w-full max-w-xl">
-          <p className="text-lg font-semibold text-link">{program}</p>
+          <p className={tech ? "ec-mono text-link" : "text-lg font-semibold text-link"}>{program}</p>
           <h1 className="mt-5 text-[length:var(--ds-fs-h2)] font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground">{title}</h1>
           {intro ? <div className="mt-3 text-base text-muted-foreground">{intro}</div> : null}
           <div className="mt-8">{children}</div>

@@ -17,7 +17,7 @@ export function SimuladorParceiro({ planos, indicador, agencia }: { planos: { no
     return Math.round(novas + antigas);
   };
   const linha = (t: string, r: typeof indicador, destaque?: boolean) => (
-    <div className={`rounded-3xl p-6 ${destaque ? "bg-[var(--ec-marinho,#101a33)] text-white" : "border border-border bg-surface"}`}>
+    <div className={destaque ? "ec-painel p-6 text-white" : "ec-cartao"}>
       <p className={`text-sm font-semibold ${destaque ? "text-white/70" : "text-muted-foreground"}`}>{t}</p>
       <p className="mt-3 text-sm">No 1º mês</p>
       <p className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tabular-nums">{formatBRL(ganho(r, 1))}</p>
@@ -27,7 +27,7 @@ export function SimuladorParceiro({ planos, indicador, agencia }: { planos: { no
   );
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-start">
-      <div className="space-y-6 rounded-3xl border border-border bg-surface p-6">
+      <div className="ec-cartao space-y-6">
         <div>
           <label htmlFor="sim-lojas" className="flex items-baseline justify-between text-sm font-semibold"><span>Lojas indicadas por mês</span><output htmlFor="sim-lojas" className="text-2xl font-extrabold tabular-nums text-link">{porMes}</output></label>
           <input id="sim-lojas" type="range" min={1} max={30} value={porMes} onChange={(e) => setPorMes(Number(e.target.value))} className="cm-range mt-3 w-full" />

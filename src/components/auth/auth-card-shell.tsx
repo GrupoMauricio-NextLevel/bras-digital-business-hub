@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { loginPhotoFor } from "./auth-photo";
 import type { BrandCode } from "@/lib/brand";
+import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 
 /**
  * Tela de entrada no padrão "foto + cartão": a foto ocupa a tela e o cartão branco arredondado fica por cima
@@ -12,7 +13,7 @@ export function AuthCardShell({ brand, children, below }: { brand: BrandCode; ch
   const photo = loginPhotoFor(brand);
   return (
     <>
-    <main className="relative isolate flex min-h-dvh flex-col bg-band">
+    <main className={`relative isolate flex min-h-dvh flex-col bg-band ${brand === "NEXTLEVEL_COMMERCE" ? EC_TECH : ""}`}>
       {/* Celular: a foto ocupa o alto da tela e some no fundo da marca (rosto inteiro acima do cartão); computador: foto em tela cheia. */}
       {photo ? (
         // Computador: foto na parte esquerda, presa à altura da tela (o cartão fica à direita, sobre a cor da marca).

@@ -6,8 +6,10 @@ import { OfertasCapa } from "@/components/portal/commerce/capa/ofertas";
 import { Marquee } from "@/components/portal/commerce/marquee";
 import { Personalize } from "@/components/portal/commerce/personalize";
 import { IntegracoesFaixa, MauricioFaixa } from "@/components/portal/commerce/integracoes";
+import { totalDeIntegracoes } from "@/lib/marcas/integracoes-publicas";
 import { EC_HOME_ACERVO, type EcHomeFotoNome } from "@/lib/marcas/ecommerce-home-imagens";
 import { JornadaMarca, type PassoMarca } from "@/components/imersiva/jornada";
+import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 import "../commerce.css";
 import "../capa/capa.css";
 
@@ -35,12 +37,8 @@ export async function RecursosEc({ brand }: { brand: Brand }) {
   ];
   return (
     <div className="im-tema-ecommerce contents">
-      <section className="px-4 pb-6 pt-16 md:pt-24" aria-labelledby="rec-t">
-        <div className="mx-auto max-w-6xl">
-          <p className="im-eyebrow im-eyebrow--claro">Recursos</p>
-          <h1 id="rec-t" className="im-h2 mt-3 max-w-3xl text-foreground">Tudo o que a sua loja faz, do primeiro produto à rotina de pedidos.</h1>
-        </div>
-      </section>
+      <CabecalhoTech rotulo="Recursos" titulo={<>Tudo o que a sua loja faz, <em>do primeiro produto à rotina de pedidos.</em></>} texto="Cadastro, vitrine, pagamento, envio, personalização, inteligência artificial e integrações, numa plataforma só."
+        dados={[{ rotulo: "Integrações", valor: String(totalDeIntegracoes()) }, { rotulo: "Taxa da plataforma", valor: "0%" }, { rotulo: "Produtos e pedidos", valor: "Sem limite" }, { rotulo: "Assistente de IA", valor: "Maurício" }]} />
       <JornadaMarca acervo={EC_HOME_ACERVO} passos={passos} eyebrow="Como funciona" titulo="Da primeira foto à rotina de pedidos." rotulo="A loja que cresce, em cinco passos" />
       <OfertasCapa titulo="Comece do seu jeito" itens={portas.map((p) => ({ foto: p.foto, selo: p.selo, titulo: p.titulo, texto: p.texto, href: cta }))} />
       <Marquee />

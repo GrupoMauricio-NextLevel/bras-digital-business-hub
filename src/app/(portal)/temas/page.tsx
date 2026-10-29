@@ -4,6 +4,9 @@ import Link from "next/link";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { getDb } from "@/db/client";
+import { getBrand } from "@/lib/brand-server";
+import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
+
 import { formatBRL } from "@/lib/money";
 import { publicThemes, themeShot } from "@/lib/themes/gallery";
 import { FAMILY_INFO, LEVEL_INFO, LEVELS, type ThemeFamily } from "@/lib/themes/levels";
@@ -13,7 +16,7 @@ export const metadata: Metadata = { title: "Temas para a sua loja", description:
 
 const has = (key: string) => existsSync(join(process.cwd(), "public", themeShot(key, "desktop")));
 
-const chip = (on: boolean) => `inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-medium ${on ? "border-foreground bg-foreground text-background" : "border-border hover:bg-surface-muted"}`;
+const chip = (on: boolean) => `ec-chip inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-medium ${on ? "border-foreground bg-foreground text-background" : "border-border hover:bg-surface-muted"}`;
 
 export default async function Temas({ searchParams }: { searchParams: Promise<{ nivel?: string; familia?: string }> }) {
   const q = await searchParams;
@@ -22,11 +25,16 @@ export default async function Temas({ searchParams }: { searchParams: Promise<{ 
   const themes = all.filter((t) => (!nivel || t.level === nivel) && (!familia || t.family === familia));
   const families = [...new Set(all.map((t) => t.family))];
   const href = (n: number, f: string) => { const sp = new URLSearchParams(); if (n) sp.set("nivel", String(n)); if (f) sp.set("familia", f); const s = sp.toString(); return s ? `/temas?${s}` : "/temas"; };
+  const ec = (await getBrand()).code === "NEXTLEVEL_COMMERCE";
+  const intro = "Veja cada tema funcionando em uma loja de exemplo, no computador e no celular. Quem já tem loja vê o tema com os próprios produtos e instala com 1 clique. Compra única, sem mensalidade.";
   return (
+    <>
+    {ec ? <CabecalhoTech rotulo="Temas" titulo={<>Temas que vendem pela <em>primeira impressão.</em></>} texto={intro}
+      dados={[{ rotulo: "Temas", valor: String(all.length) }, { rotulo: "Grátis", valor: String(all.filter((t) => t.priceCents === 0).length) }, { rotulo: "Segmentos", valor: String(families.length) }, { rotulo: "Instalação", valor: "1 clique" }]} /> : null}
     <div className="mx-auto max-w-6xl px-4 py-14">
-      <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight sm:text-5xl">Temas para a sua loja</h1>
-      <p className="mt-3 max-w-2xl text-lg text-body">Veja cada tema funcionando em uma loja de exemplo, no computador e no celular. Quem já tem loja vê o tema com os próprios produtos e instala com 1 clique. Compra única, sem mensalidade.</p>
-      <nav aria-label="Filtrar temas" className="mt-8 space-y-3">
+      {ec ? null : <><h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight sm:text-5xl">Temas para a sua loja</h1>
+      <p className="mt-3 max-w-2xl text-lg text-body">{intro}</p></>}
+      <nav aria-label="Filtrar temas" className={ec ? "space-y-3" : "mt-8 space-y-3"}>
         <div className="flex flex-wrap items-center gap-2"><span className="mr-1 text-sm font-semibold">Nível</span>
           <Link href={href(0, familia)} className={chip(!nivel)} aria-current={!nivel ? "page" : undefined}>Todos</Link>
           {LEVELS.map((l) => <Link key={l} href={href(l, familia)} className={chip(nivel === l)} aria-current={nivel === l ? "page" : undefined}>{LEVEL_INFO[l].short} · {LEVEL_INFO[l].name}</Link>)}
@@ -59,5 +67,6 @@ export default async function Temas({ searchParams }: { searchParams: Promise<{ 
       </ul>
       <p className="mt-8 text-sm text-muted-foreground">Os produtos das lojas de exemplo são fictícios. Trocar de tema não apaga produtos, clientes nem pedidos.</p>
     </div>
+    </>
   );
 }

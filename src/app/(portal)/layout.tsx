@@ -1,6 +1,5 @@
 import { negocioAberto } from "@/lib/negocios";
-import localFont from "next/font/local";
-import "@/components/portal/commerce/tech.css";
+import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
@@ -14,11 +13,6 @@ import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 import { getDb } from "@/db/client";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 import { VendedorHome } from "@/components/ia/vendedor-home";
-// Tipografia de tecnologia da NextLevel E-commerce (D222, OFL): Space Grotesk nos títulos, Geist no texto, Geist Mono em rótulos e números.
-const ecTitulo = localFont({ src: "../fonts/space-grotesk-latin.woff2", variable: "--ec-font-titulo", display: "swap", weight: "300 700" });
-const ecTexto = localFont({ src: "../fonts/geist-latin.woff2", variable: "--ec-font-texto", display: "swap", weight: "100 900" });
-const ecMono = localFont({ src: "../fonts/geist-mono-latin.woff2", variable: "--ec-font-mono", display: "swap", weight: "100 900" });
-
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
@@ -68,5 +62,5 @@ export default async function PortalLayout({ children }: { children: React.React
       {children}
     </PublicShell>
   );
-  return commerce ? <div className={`ec-tech ${ecTitulo.variable} ${ecTexto.variable} ${ecMono.variable}`}>{casca}</div> : casca;
+  return commerce ? <div className={EC_TECH}>{casca}</div> : casca;
 }

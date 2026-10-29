@@ -2350,3 +2350,26 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - comparativo (cartões de plano e tabela em painel, números em mono);
   - "Feita para o atacado" e "Vivência de rua";
   - selo do Mercado Pago.
+
+## D223 — [E-commerce] Visual de tecnologia em todas as páginas públicas (2026-10-29)
+- **Pedido do dono:** "pode levar esse visual para todas as páginas".
+- **Cabeçalho padrão** (`CabecalhoTech`, `cabecalho-tech.tsx`):
+  - faixa marinho com grade e brilho;
+  - rótulo em mono e título grande, com um trecho em degradê;
+  - números reais em destaque.
+  - Usado em Recursos, Comparativo, Planos, Temas, Dúvidas, Integrações e Quero minha loja.
+  - Em Planos, Temas, Dúvidas e Quero minha loja, que outras marcas também usam, o cabeçalho aparece só na E-commerce.
+- **Parceiros:**
+  - topo no mesmo padrão;
+  - Indicador em cartão claro e Agência parceira em painel escuro;
+  - passos numerados em mono;
+  - perguntas em cartões;
+  - simulador em cartões.
+- **Fontes também nas telas de entrada e cadastro da E-commerce:** login, cadastro, esqueci a senha, entrar e cadastro de parceiro. O módulo único `fontes-ec.ts` (classe `EC_TECH`) carrega as fontes e o `tech.css`.
+- **Estilos no `tech.css`, valendo só dentro de `.ec-tech`:**
+  - perguntas (`.ec-perguntas`) com sinal + / –;
+  - chips em mono (`.ec-chip`);
+  - cartões de plano com borda em degradê e o recomendado em painel escuro.
+- **Correções:**
+  - O seletor Mensal/Anual da página Planos estava sem estilo, porque o CSS só era carregado na home. Agora o `pricing.tsx` importa o CSS.
+  - "Você recebe 100% das vendas" virou "o dinheiro cai direto para você", também nos bancos já semeados (ajuste no texto exibido).

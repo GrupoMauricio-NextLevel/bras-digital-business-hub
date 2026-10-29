@@ -3,7 +3,11 @@ import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Gift, Sparkles } from "lucide-react";
 import { formatBRL } from "@/lib/money";
+import "./commerce.css";
 import { CONCORRENTES, melhorPlano } from "@/lib/marcas/comparativo-ecommerce";
+
+/** Bancos já semeados guardam o texto antigo (D223): a taxa zero é da plataforma; o Mercado Pago cobra as dele. */
+const textoRecurso = (f: string) => f.replace("(você recebe 100% das vendas)", "(o dinheiro cai direto para você)");
 
 export type PricingPlan = { key: string; slug: string; name: string; tagline: string | null; quote: boolean; monthlyCents: number | null; annualCents: number | null; feeBps: number | null; features: string[] };
 export type PricingOffer = { trialDays: number; firstPeriodCents: number | null; feeHolidayMonths: number } | null;
@@ -96,7 +100,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
                   </p>}
                 </>
               )}
-              <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[var(--ec-link-escuro)]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
+              <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => textoRecurso(f)).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[var(--ec-link-escuro)]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
               <div className="mt-auto pt-6">
                 {p.quote
                   ? <Link href={`${solucoes}/${p.slug}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : "cm-plan-btn--ghost"}`}>Pedir proposta <ArrowRight className="size-4" aria-hidden /></Link>
@@ -107,7 +111,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           );
         })}
       </ul>
-      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. Você recebe 100% das vendas na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
     </div>
   );
 }

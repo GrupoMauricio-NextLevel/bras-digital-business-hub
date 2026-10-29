@@ -28,7 +28,7 @@ const MONTHLY_PLAN = { methods: ["PIX", "CARD"] as ("PIX" | "CARD")[], pixDiscou
 const PLAN_FEATURES = [
   "Loja virtual com tema gratuito, editor visual e domínio próprio",
   "Produtos, variações, estoque e categorias sem limite de cadastro",
-  "Checkout com Pix e cartão na sua própria conta Mercado Pago (você recebe 100% das vendas)",
+  "Checkout com Pix e cartão na sua própria conta Mercado Pago (o dinheiro cai direto para você)",
   "Cupons, campanhas, avaliações e avise-me",
   "Equipe com acessos separados",
   "Frete por regras próprias ou plataforma de envio",
