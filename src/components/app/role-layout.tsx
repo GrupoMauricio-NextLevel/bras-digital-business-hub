@@ -79,7 +79,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.
   const mauricio = (commerceStore && independent) || (isMaster && !fn && !sup) ? await mauricioDaLoja(db, isMaster ? null : store!.id, { master: isMaster }) : null;
-  const botaoIa = mauricio ? <BotaoMauricio m={mauricio} central={isMaster ? "/master/ia" : "/merchant/ia"} upgrade={isMaster ? "/master/ia" : "/merchant/finance#assinatura"} /> : null;
+  const botaoIa = mauricio ? <BotaoMauricio m={mauricio} esfera={isMaster ? "master" : "lojista"} central={isMaster ? "/master/ia/ajustes" : "/merchant/ia"} /> : null;
   if (scope === "bras-admin") {
     // Estúdio da Brás (D92): só o Master entra; nome, menu e cor da Brás, com volta ao Master.
     const bras = brandByCode("BRAS_DIGITAL");

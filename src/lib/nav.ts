@@ -226,6 +226,7 @@ export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Ca
 export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Início", href: "/merchant", icon: "Home", exact: true, bottom: true },
   { label: "Pedidos", href: "/merchant/orders", icon: "ShoppingBag", group: "Vendas", bottom: true },
+  { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: "Vendas" },
   { label: "Clientes", href: "/merchant/customers", icon: "Users", group: "Vendas" },
   { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck", group: "Vendas" },
   { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Catálogo", bottom: true },
@@ -247,7 +248,7 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Configurações" },
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Configurações" },
 ];
-export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo"];
+export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
 /**

@@ -1,5 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import { and, asc, desc, eq, gt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { iaConversas, iaMensagens } from "@/db/schema";
@@ -105,18 +105,19 @@ const equipe = (actor: Actor) => requireMasterFn(actor, ["COMERCIAL", "SUPORTE"]
 export async function listarConversas(db: Database, actor: Actor, filtro: { status?: Conversa["status"] | "ABERTAS"; canal?: "HOME" | "PAINEL" } = {}) {
   equipe(actor);
   const porStatus = filtro.status === "ABERTAS" ? sql`${iaConversas.status} in ('NOVA','IA','HUMANO')` : filtro.status ? eq(iaConversas.status, filtro.status) : undefined;
-  const where = filtro.canal ? and(porStatus, eq(iaConversas.canal, filtro.canal)) : porStatus;
+  // Conversas de clientes das lojas (canal LOJA) são do lojista, nunca do Master (D206).
+  const where = and(porStatus, filtro.canal ? eq(iaConversas.canal, filtro.canal) : ne(iaConversas.canal, "LOJA"));
   const lista = await db.select({ id: iaConversas.id, canal: iaConversas.canal, storeId: iaConversas.storeId, status: iaConversas.status, nome: iaConversas.nome, whatsapp: iaConversas.whatsapp, interesse: iaConversas.interesse, faturamento: iaConversas.faturamento, ultimaMensagem: iaConversas.ultimaMensagem, ultimaEm: iaConversas.ultimaEm, naoLidas: iaConversas.naoLidas, responsavelNome: iaConversas.responsavelNome, mensagens: iaConversas.mensagens, createdAt: iaConversas.createdAt })
     .from(iaConversas).where(where).orderBy(desc(iaConversas.ultimaEm)).limit(150);
-  const contagem = await db.select({ status: iaConversas.status, n: sql<number>`count(*)::int` }).from(iaConversas).groupBy(iaConversas.status);
+  const contagem = await db.select({ status: iaConversas.status, n: sql<number>`count(*)::int` }).from(iaConversas).where(ne(iaConversas.canal, "LOJA")).groupBy(iaConversas.status);
   const hoje = new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 10);
-  const [h] = await db.select({ n: sql<number>`count(*)::int`, contatos: sql<number>`count(${iaConversas.whatsapp})::int` }).from(iaConversas).where(sql`${iaConversas.createdAt} >= ${`${hoje}T03:00:00.000Z`}`);
+  const [h] = await db.select({ n: sql<number>`count(*)::int`, contatos: sql<number>`count(${iaConversas.whatsapp})::int` }).from(iaConversas).where(and(ne(iaConversas.canal, "LOJA"), sql`${iaConversas.createdAt} >= ${`${hoje}T03:00:00.000Z`}`));
   return { lista, contagem: Object.fromEntries(contagem.map((x) => [x.status, x.n])) as Record<string, number>, hoje: { conversas: h?.n ?? 0, contatos: h?.contatos ?? 0 } };
 }
 
 export async function abrirConversa(db: Database, actor: Actor, id: string) {
   equipe(actor);
-  const c = (await db.select().from(iaConversas).where(eq(iaConversas.id, id)).limit(1))[0];
+  const c = (await db.select().from(iaConversas).where(and(eq(iaConversas.id, id), ne(iaConversas.canal, "LOJA"))).limit(1))[0];
   if (!c) throw new NotFoundError("Conversa não encontrada.");
   await db.update(iaConversas).set({ naoLidas: 0 }).where(eq(iaConversas.id, id));
   const { tokenHash: _t, ...conversa } = c; // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -158,7 +159,7 @@ export async function atualizarConversa(db: Database, actor: Actor, id: string, 
  */
 export async function pulsoAtendimento(db: Database, actor: Actor, brand = "NEXTLEVEL_COMMERCE") {
   try { equipe(actor); } catch { return null; }
-  const abertas = sql`${iaConversas.status} in ('NOVA','IA','HUMANO')`;
+  const abertas = sql`${iaConversas.status} in ('NOVA','IA','HUMANO') and ${iaConversas.canal} <> 'LOJA'`;
   const [n] = await db.select({ n: sql<number>`count(*)::int` }).from(iaConversas).where(and(eq(iaConversas.brand, brand), abertas, sql`${iaConversas.naoLidas} > 0`));
   const [u] = await db.select({ id: iaConversas.id, nome: iaConversas.nome, canal: iaConversas.canal, texto: iaConversas.ultimaMensagem, em: iaConversas.ultimaEm }).from(iaConversas)
     .where(and(eq(iaConversas.brand, brand), abertas, sql`${iaConversas.naoLidas} > 0`)).orderBy(desc(iaConversas.ultimaEm)).limit(1);

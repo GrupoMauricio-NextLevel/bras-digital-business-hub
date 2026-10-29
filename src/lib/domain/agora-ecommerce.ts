@@ -52,7 +52,7 @@ export async function agoraEcommerce(db: Database, actor: Actor, agora = new Dat
   const [sit, funil, conversas, leads, vendas, cfg] = await Promise.all([
     situacoesComerciais(db, lojas, agora),
     funilEcommerce(db, actor, agora),
-    db.select().from(iaConversas).where(and(eq(iaConversas.brand, "NEXTLEVEL_COMMERCE"), inArray(iaConversas.status, ["NOVA", "IA", "HUMANO"]), ne(iaConversas.naoLidas, 0))).orderBy(iaConversas.ultimaEm).limit(30),
+    db.select().from(iaConversas).where(and(eq(iaConversas.brand, "NEXTLEVEL_COMMERCE"), inArray(iaConversas.status, ["NOVA", "IA", "HUMANO"]), ne(iaConversas.naoLidas, 0), ne(iaConversas.canal, "LOJA"))).orderBy(iaConversas.ultimaEm).limit(30),
     db.select().from(brandLeads).where(and(eq(brandLeads.brand, "NEXTLEVEL_COMMERCE"), eq(brandLeads.status, "NEW"))).orderBy(desc(brandLeads.createdAt)).limit(30),
     ids.length ? db.select({ storeId: orders.storeId, n: count(), primeira: min(orders.createdAt) }).from(orders)
       .where(and(inArray(orders.storeId, ids), eq(orders.customerPaymentStatus, "PAID"), ne(orders.status, "CANCELED"), gte(orders.createdAt, new Date(agora.getTime() - 30 * DIA).toISOString()))).groupBy(orders.storeId) : Promise.resolve([]),

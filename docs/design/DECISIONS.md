@@ -2094,3 +2094,32 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   | mapa, torre e página da marca | Agora |
 
   Com mais marcas abertas, cada tela volta a abrir normalmente. Nada foi apagado.
+
+## D206 — [E-commerce] IA em modo manual nas três esferas e atendimento que cai no CRM certo (2026-10-29)
+- **Pedido do dono:**
+  - "no celular está dando bug o menu e a IA trata como se fosse lojista, mas é o Master";
+  - "a IA precisa funcionar offline como um grande manual vivo do sistema, com passo a passo";
+  - "o racional é diferente entre Master, usuário e cliente do usuário";
+  - "no Master o usuário cai no meu CRM; no usuário o cliente final cai no CRM dele".
+- **Menu do celular:** a gaveta herdava a regra que esconde o menu fixo no celular e abria em branco. Corrigido em `core.css`.
+- **Manual vivo** (`src/lib/ia/manual.ts`):
+  - guias passo a passo por esfera: Master (13), lojista (16) e comprador (6);
+  - busca por palavras, sem acento, ignorando palavras genéricas e reconhecendo a mesma raiz ("recebendo" e "receber");
+  - funciona sem chave de IA. Quando a chave for ligada, estes textos viram a fonte da verdade do modelo.
+- **Maurício no Master** (botão Agente):
+  - responde como operar o escritório (Agora, Atendimento, Comercial, Receita, ligar a IA, equipe, ofertas…), com o botão que leva à tela;
+  - selo "Modo manual"; não fala mais "sua loja".
+- **Maurício no painel do lojista:**
+  - responde o passo a passo da loja (produto, Mercado Pago, frete, publicar, tema, domínio, pedidos, cupons…);
+  - o que o manual não cobre vira "Chamar a equipe NextLevel", que abre a Ajuda já com a pergunta escrita;
+  - a Ajuda cai na caixa de Atendimento do Master (seu CRM).
+- **Cliente final na loja** (botão "Dúvidas?", só nas lojas da E-commerce):
+  - o assistente responde pelo manual do comprador: como comprar, pagamento, frete e prazo, acompanhar pedido, troca, medidas;
+  - "Mandar a pergunta para a loja" pede nome e WhatsApp e cria uma conversa `ia_conversas` com canal LOJA, ligada à loja;
+  - a resposta da loja aparece ali mesmo.
+- **Atendimento do lojista** (`/merchant/atendimento`, menu Vendas):
+  - a caixa dele, com as conversas dos clientes da loja ao vivo;
+  - responder (o cliente vê na loja), WhatsApp e "Resolvida";
+  - a equipe da loja também acessa.
+- **Separação:** conversas com canal LOJA nunca aparecem no Atendimento, no aviso sonoro nem na fila do Master. São do lojista.
+- Código: `src/lib/domain/atendimento-loja.ts`, `src/app/actions/atendimento-loja.ts`, `src/components/storefront/chat-da-loja.tsx`, `src/app/merchant/atendimento/`, `src/components/ia/mauricio.tsx`.

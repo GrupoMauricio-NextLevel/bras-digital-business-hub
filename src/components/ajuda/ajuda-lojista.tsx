@@ -29,6 +29,12 @@ export function AjudaLojista({ whatsappUrl }: { whatsappUrl?: string | null }) {
     return () => { vivo = false; clearInterval(t); };
   }, [aberto, juntar]);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end" }); }, [msgs.length]);
+  // O Maurício (modo manual) passa a pergunta que o manual não resolveu: abre a Ajuda já com o texto (D206).
+  React.useEffect(() => {
+    const abrir = (e: Event) => { const t = (e as CustomEvent<{ texto?: string }>).detail?.texto; setAberto(true); if (t) setTexto(t); };
+    window.addEventListener("nl-ajuda", abrir);
+    return () => window.removeEventListener("nl-ajuda", abrir);
+  }, []);
   React.useEffect(() => {
     if (!aberto) return;
     const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setAberto(false); };

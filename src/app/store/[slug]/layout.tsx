@@ -21,6 +21,7 @@ import { PixelMeta } from "@/components/storefront/pixel-meta";
 import { ListaDeEspera } from "@/components/storefront/lista-de-espera";
 import { IntegracoesNaLoja } from "@/components/storefront/integracoes-loja";
 import { Maioridade } from "@/components/storefront/maioridade";
+import { ChatDaLoja } from "@/components/storefront/chat-da-loja";
 import { BarraDeNavegacao, EntradaDaLoja } from "@/components/transicao-de-pagina";
 import { getSession } from "@/lib/auth";
 import { readableOn } from "@/lib/utils";
@@ -110,6 +111,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {publico ? <ContadorDeVisitas slug={slug} /> : null}
       {publico && sf.store.metaPixelId ? <PixelMeta pixelId={sf.store.metaPixelId} /> : null}
       {publico ? <IntegracoesNaLoja cfg={sf.store.integrations ?? {}} /> : null}
+      {/* Atendimento da loja (D206): só na E-commerce por enquanto; a conversa vai para o painel do lojista. */}
+      {publico && org?.brand === "NEXTLEVEL_COMMERCE" ? <ChatDaLoja slug={slug} loja={sf.store.name} /> : null}
       {publico && sf.store.integrations?.maioridade ? <Maioridade loja={sf.store.name} /> : null}
       {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}
       <CartProvider storeSlug={slug}>
