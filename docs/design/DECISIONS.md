@@ -2141,3 +2141,14 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Maurício (offline):** guias novos do lojista (Agora, Clientes, Falar com a equipe NextLevel) e caminhos atualizados para o menu novo; o guia de suporte mostra o botão "Chamar a equipe NextLevel", que cai no Atendimento do Master (D201).
 - Testes automáticos ficam para a fase de testes (pedido do dono); conferido por capturas em 1440 e 390 px.
 - Código: `src/lib/domain/crm-loja.ts`, `src/app/actions/crm-loja.ts`, `src/app/merchant/crm/`, `src/lib/nav.ts`, `src/components/app/role-layout.tsx`, `src/components/commerce/commerce-home.tsx`, `src/components/master/aviso-sonoro.tsx`, `src/lib/ia/manual.ts`.
+
+## D208 — [E-commerce] Pedidos do lojista: "Precisa de você agora" com mensagem pronta (2026-10-29)
+- **Pedido do dono:** "Vamos lá!" (próximo passo proposto após D207: Pedidos no padrão do escritório).
+- **Topo da tela Pedidos (só E-commerce):** os pedidos parados além do normal, na mesma régua do pós-venda (`attentionFor`), em ordem de urgência:
+  - em preparação há mais de 48 h (vermelho) → "Separar e enviar";
+  - sem pagamento há mais de 24 h (amarelo) → "Lembrar do pagamento";
+  - enviado sem confirmação de entrega há mais de 7 dias (azul) → "Confirmar entrega".
+- Cada linha tem a mensagem pronta para o cliente: WhatsApp quando o pedido tem telefone; senão, "Copiar mensagem".
+- Atalho "Precisa de você (N)" filtra a lista; a tela atualiza sozinha (30 s).
+- O item "Pedidos parados" da tela Agora da E-commerce agora abre essa lista (`/merchant/orders?ver=atencao`). SuperDrop continua indo ao pós-venda.
+- Código: `src/lib/domain/pedidos-agora.ts` (puro, com teste `tests/pedidos-agora.test.ts`), `src/app/merchant/orders/`.

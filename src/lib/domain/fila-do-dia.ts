@@ -57,7 +57,7 @@ export function filaDoLojista(e: EntradaFila): FilaItem[] {
       first ? { key: "readiness", title: "Sua loja ainda não está pronta para vender", detail: `Falta: ${first.label.toLowerCase()}. ${first.detail}`, count: e.readinessMissing!.length, href: first.fixHref, action: "Resolver", tone: "warning" as const } : null,
       !e.published ? { key: "publish", title: "Sua loja ainda não está publicada", detail: "Revise a vitrine e publique quando estiver pronta para receber clientes.", count: 1, href: "/merchant/storefront", action: "Revisar loja", tone: "warning" as const } : null,
       e.onboarding.percent < 100 ? { key: "onboarding", title: "Configuração da loja incompleta", detail: `Seu checklist está em ${e.onboarding.percent}%. Complete os itens para deixar a operação pronta.`, count: e.onboarding.missing, href: "/merchant/storefront", action: "Continuar", tone: "info" as const } : null,
-      lateItem,
+      lateItem ? { ...lateItem, href: "/merchant/orders?ver=atencao", action: "Ver pedidos" } : null, // D208: lista com mensagem pronta
       e.pendingCustomer.length ? { key: "customer", title: "Vendas aguardando pagamento", detail: "Pedidos iniciados por clientes que ainda não tiveram o pagamento confirmado.", count: e.pendingCustomer.length, href: "/merchant/orders?status=PENDING", action: "Ver vendas", tone: "info" as const } : null,
       e.inProgress.length ? { key: "progress", title: "Pedidos em preparação", detail: "Separe, embale e envie. Cada pedido mostra o próximo passo.", count: e.inProgress.length, href: "/merchant/orders", action: "Acompanhar", tone: "info" as const } : null,
       stockItem,

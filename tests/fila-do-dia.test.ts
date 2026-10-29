@@ -28,7 +28,7 @@ describe("fila do dia do lojista (D166)", () => {
     const e = { ...base, pendingCustomer: [pedido("PENDING", 30, { customerPaymentStatus: "PENDING" }), pedido("PENDING", 2, { customerPaymentStatus: "PENDING" })], inProgress: [pedido("PICKING", 60)], inTransit: [pedido("SHIPPED", 24 * 8), pedido("SHIPPED", 24)] };
     expect(pedidosParados(e)).toBe(3);
     const late = filaDoLojista(e).find((i) => i.key === "late")!;
-    expect(late).toMatchObject({ count: 3, tone: "danger", href: "/merchant/after-sales", title: "Pedidos parados além do normal" });
+    expect(late).toMatchObject({ count: 3, tone: "danger", href: "/merchant/orders?ver=atencao", title: "Pedidos parados além do normal" }); // D208: E-commerce abre a lista com mensagem pronta
     expect(late.detail).not.toMatch(/Central/);
   });
 
