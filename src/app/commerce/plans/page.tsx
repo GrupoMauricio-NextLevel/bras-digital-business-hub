@@ -33,7 +33,7 @@ export default async function CommercePlansPage() {
           { key: "status", header: "Situação", cell: (i) => { const s = STATUS[i.status] ?? { label: i.status, tone: "outline" as const }; return <Badge tone={s.tone}>{s.label}</Badge>; } },
         ]} />
       <section className="mt-10" aria-label="O que cada plano libera">
-        <SectionTitle title="O que cada plano libera" description="Marque o que a loja pode usar em cada plano. Vale na hora para todas as lojas da E-commerce; sem plano, vale o Start. Saldo e etiqueta da Central são do SuperDrop e não entram aqui." />
+        <SectionTitle title="O que cada plano libera" description="Marque o que a loja pode usar em cada plano. Vale na hora para todas as lojas da E-commerce; sem plano, vale o Start." />
         <RecursosPorPlano planos={PLANOS_ECOMMERCE.map((k) => ({ key: k, nome: NOME_PLANO[k] }))} recursos={RECURSOS_ECOMMERCE.map((k) => ({ key: k, nome: ROTULO_ECOMMERCE[k as keyof typeof ROTULO_ECOMMERCE] }))} inicial={tabela} podeEditar={!session.actor.masterFunction || session.actor.masterFunction === "FINANCEIRO"} />
       </section>
     </>

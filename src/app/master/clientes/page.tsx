@@ -8,9 +8,10 @@ import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { SupportEnterButton } from "@/components/support/support-enter";
 import { getDb } from "@/db/client";
+import { negocioAberto, negociosAbertos } from "@/lib/negocios";
 import { requireRole } from "@/lib/require-session";
 import { CLIENT_ROLE_LABEL, listClients, listSupportHistory } from "@/lib/domain/support";
-import { PRODUCT_BRANDS, brandByCode, isBrandCode } from "@/lib/brand";
+import { brandByCode, isBrandCode } from "@/lib/brand";
 import { masterBrandFilter } from "@/lib/brand-server";
 import { formatDateTime } from "@/lib/utils";
 
@@ -23,23 +24,24 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
   const sp = await searchParams;
   const marca = await masterBrandFilter(sp.marca);
   const db = await getDb();
+  const abertos = negociosAbertos();
   const [rows, history] = await Promise.all([listClients(db, session.actor, { q: sp.q, brand: marca, role: sp.papel }), listSupportHistory(db, session.actor, 12)]);
   const count = (role: string) => rows.filter((r) => r.role === role).length;
   const back = "/master/clientes" + (sp.q || sp.marca || sp.papel ? "?" + new URLSearchParams(Object.entries(sp).filter(([, v]) => v) as [string, string][]).toString() : "");
   return (
     <>
-      <PageHeader eyebrow="Suporte" title="Clientes" description="Encontre qualquer lojista, fornecedor, expedição ou parceiro de todas as marcas e veja o painel exatamente como ele vê, em modo suporte registrado." />
+      <PageHeader eyebrow="Suporte" title="Clientes" description={`Encontre qualquer cliente ${abertos.length > 1 ? "dos negócios abertos" : `da ${abertos[0]?.nome ?? "plataforma"}`} e veja o painel exatamente como ele vê, em modo suporte registrado.`} />
       <OperationalPulse className="mb-5" items={[
         { label: "Lojistas", value: count("STORE_OWNER"), icon: Store, tone: "neutral", hint: "donos e equipes de loja" },
-        { label: "Fornecedores", value: count("SUPPLIER_ADMIN") + count("SUPPLIER_DISPATCH"), icon: Factory, tone: "neutral", hint: "gestão e expedição" },
+        ...(negocioAberto("SUPERDROP") ? [{ label: "Fornecedores", value: count("SUPPLIER_ADMIN") + count("SUPPLIER_DISPATCH"), icon: Factory, tone: "neutral" as const, hint: "gestão e expedição" }] : []),
         { label: "Parceiros", value: count("AFFILIATE"), icon: UsersRound, tone: "neutral", hint: "programa de parceiros" },
         { label: "Com alerta", value: rows.filter((r) => r.alerts.length).length, icon: LifeBuoy, tone: rows.some((r) => r.alerts.length) ? "warning" : "success", hint: "suspensos, pendentes ou encerrados" },
       ]} />
       <Suspense>
         <FilterBar>
           <SearchInput placeholder="Nome, e-mail, loja ou fornecedor…" />
-          <FilterChips param="marca" allLabel={marca && !sp.marca ? `Só ${brandByCode(marca).name}` : "Todas as marcas"} options={[{ value: "todas", label: "Todas as marcas" }, ...PRODUCT_BRANDS.map((c) => ({ value: c, label: brandByCode(c).name }))]} />
-          <FilterChips param="papel" allLabel="Todos os papéis" options={Object.entries(CLIENT_ROLE_LABEL).map(([value, label]) => ({ value, label }))} />
+          {abertos.length > 1 ? <FilterChips param="marca" allLabel={marca && !sp.marca ? `Só ${brandByCode(marca).name}` : "Todos os negócios"} options={[{ value: "todas", label: "Todos os negócios" }, ...abertos.map((n) => ({ value: n.code, label: n.nome }))]} /> : null}
+          <FilterChips param="papel" allLabel="Todos os papéis" options={Object.entries(CLIENT_ROLE_LABEL).filter(([value]) => negocioAberto("SUPERDROP") || !value.startsWith("SUPPLIER")).map(([value, label]) => ({ value, label }))} />
         </FilterBar>
       </Suspense>
       <DataTable
@@ -49,7 +51,7 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
         columns={[
           { key: "name", header: "Cliente", primary: true, cell: (r) => <div className="min-w-0"><div className="font-semibold">{r.name}</div><div className="truncate text-xs text-muted-foreground">{r.email}</div></div> },
           { key: "tenant", header: "Negócio", cell: (r) => <div className="min-w-0"><div>{r.tenantName ?? "—"}</div><div className="text-xs text-muted-foreground">{CLIENT_ROLE_LABEL[r.role]}{r.role === "STORE_OWNER" && r.storeRole === "STAFF" ? " · equipe" : ""}</div></div> },
-          { key: "brand", header: "Marca", cell: (r) => <span className="text-xs">{isBrandCode(r.brand) ? brandByCode(r.brand).name : r.brand}</span> },
+          ...(abertos.length > 1 ? [{ key: "brand", header: "Negócio", cell: (r: (typeof rows)[number]) => <span className="text-xs">{isBrandCode(r.brand) ? brandByCode(r.brand).name : r.brand}</span> }] : []),
           { key: "alerts", header: "Situação", cell: (r) => r.alerts.length ? <span className="flex flex-wrap gap-1">{r.alerts.map((a) => <Badge key={a} tone="warning">{a}</Badge>)}</span> : <Badge tone="success">Em dia</Badge> },
           { key: "last", header: "Último acesso", mobile: false, cell: (r) => <span className="text-xs text-muted-foreground">{r.lastLoginAt ? formatDateTime(r.lastLoginAt) : "nunca entrou"}</span> },
           { key: "act", header: "", className: "text-right", cell: (r) => r.disabled ? <span className="text-xs text-muted-foreground">sem acesso</span> : <SupportEnterButton userId={r.userId} name={r.name} back={back} /> },

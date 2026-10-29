@@ -1,3 +1,4 @@
+import { marcasAtivasNoMaster } from "@/lib/master-marca";
 import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { corporateOrders, financeInvoices, gatewayTransactions, nlOrders, nlSubscriptions, partners, stores, supplierContracts, suppliers } from "@/db/schema";
@@ -12,7 +13,8 @@ import { getPriceBook } from "./finance";
 const DAY = 86_400_000;
 const KIND_LABEL: Record<string, string> = { SUPPLIER_SETUP: "Setup de fornecedor", SUPPLIER_SUBSCRIPTION: "Mensalidade de fornecedor", SUPPLIER_CLOSING: "Taxa de volume (fechamento)", STORE_SETUP: "Ativação de loja", STORE_PLAN: "Planos de loja", ADDON: "Add-ons e temas", SERVICE: "Serviços", PARTNER_FEE: "Taxa de parceiro", STORE_ORDER_FEES: "Taxa por pedido / plataforma" };
 
-export async function corporateOverview(db: Database, actor: Actor, now = new Date()) {
+/** `abertas` (D218): marcas abertas no Master; a receita recorrente de marca fechada não entra na soma. */
+export async function corporateOverview(db: Database, actor: Actor, now = new Date(), abertas: readonly string[] = marcasAtivasNoMaster()) {
   if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel acessa o financeiro corporativo.");
   const since30 = new Date(now.getTime() - 30 * DAY).toISOString();
   const since365 = new Date(now.getTime() - 365 * DAY).toISOString();
@@ -27,7 +29,8 @@ export async function corporateOverview(db: Database, actor: Actor, now = new Da
   const superdropMrr = paidStores.filter((s) => !subStores.has(s.id)).reduce((t, s) => t + (book.offers[s.offer]?.monthlyCents ?? 0), 0);
   const contracts = await db.select({ fee: supplierContracts.monthlyFeeCents, waived: supplierContracts.monthlyWaivedUntil, status: suppliers.status, hidden: suppliers.hidden }).from(supplierContracts).innerJoin(suppliers, eq(suppliers.id, supplierContracts.supplierId));
   const supplierMrr = contracts.filter((c) => !c.hidden && c.status !== "CLOSED" && (!c.waived || new Date(c.waived) <= now)).reduce((t, c) => t + c.fee, 0);
-  const mrr = commerceMrr + superdropMrr + supplierMrr;
+  const sdAberto = abertas.includes("SUPERDROP");
+  const mrr = commerceMrr + (sdAberto ? superdropMrr + supplierMrr : 0);
 
   // Recebido: faturas pagas + pedidos do catálogo pagos + Loja NextLevel pública paga.
   const invPaid = await db.select({ kind: financeInvoices.kind, amount: financeInvoices.amountCents, paidAt: financeInvoices.paidAt }).from(financeInvoices).where(and(eq(financeInvoices.status, "PAID"), gte(financeInvoices.paidAt, since365)));

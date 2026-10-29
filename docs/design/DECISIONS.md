@@ -2266,3 +2266,17 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Fila antiga (`ActionQueue`) com o desenho do "Precisa de você agora" (D212)** em todas as telas que a usam (Pós-venda, Configurações, Master, fornecedor…): cartão, bolinha da urgência, o que é, por quê e o botão que resolve. A API não mudou.
 - **Números no topo (`OperationalPulse`)** em duas colunas já no celular (antes, quatro linhas empurravam o que importa para baixo); o ícone some no celular para caber.
 - Código: `src/components/app/role-layout.tsx`, `src/components/app/action-queue.tsx`, `src/components/app/operational-pulse.tsx`.
+
+## D218 — [Master] Busca ativa de coisa antiga; Master pronto para receber as marcas do grupo (próxima: NextLevel Soluções) (2026-10-29)
+- **Pedido do dono:** "faz a busca ativa, eu não quero nada antigo, quero tudo novo"; "o Master tem que estar pronto para receber as marcas do grupo; a próxima é a NextLevel Soluções".
+- **Relatório:** `docs/relatorios/AUDITORIA-MODERNIZACAO-2026-10-29.md` (68 telas varridas no computador e no celular).
+- **Cadastro único de negócios** (`src/lib/negocios.ts`): estado de cada negócio (aberto, próximo, pausado, em breve). A Soluções está marcada como próxima (`PROXIMO_NEGOCIO`). O seletor de negócios usa esse cadastro.
+- **Regra:** as telas do Master citam só negócios abertos (`negocioAberto`, `negociosAbertos`). O `masterBrandFilter` prende as listas no único negócio aberto e ignora marca fechada.
+- **Telas ajustadas:**
+  - Clientes, Equipe (`dicaDaFuncao`), Financeiro (MRR e composição só dos abertos), Assinaturas, Planos;
+  - Temas (vitrine real, sem jargão);
+  - canto do menu do Master ("Master do grupo");
+  - "Quero minha loja" em duas colunas;
+  - rodapé sem "pontos do Club";
+  - números do topo com 3 itens em 3 colunas.
+- **Roteiro para abrir a Soluções:** está no relatório (marca própria, `MASTER_MARCAS`, menu do escritório, variável no Render).

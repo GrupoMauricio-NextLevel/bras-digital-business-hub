@@ -7,7 +7,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { listMasterTeam } from "@/lib/domain/equipe-master";
-import { MASTER_FUNCTIONS, MASTER_FUNCTION_HINT, MASTER_FUNCTION_LABEL } from "@/lib/master-equipe";
+import { MASTER_FUNCTION_LABEL, dicaDaFuncao, funcoesDoMaster } from "@/lib/master-equipe";
+import { marcasAtivasNoMaster } from "@/lib/master-marca";
 import { NovaPessoa, PessoaAcoes } from "@/components/master/equipe-forms";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export default async function EquipePage() {
       <section aria-labelledby="h-nova" className="ds-card mb-6 p-4">
         <h2 id="h-nova" className="mb-3 text-lg font-bold">Cadastrar pessoa</h2>
         <NovaPessoa />
-        <ul className="mt-4 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">{MASTER_FUNCTIONS.map((k) => <li key={k}><b className="text-foreground">{MASTER_FUNCTION_LABEL[k]}:</b> {MASTER_FUNCTION_HINT[k]}</li>)}</ul>
+        <ul className="mt-4 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">{funcoesDoMaster(marcasAtivasNoMaster()).map((k) => <li key={k}><b className="text-foreground">{MASTER_FUNCTION_LABEL[k]}:</b> {dicaDaFuncao(k, marcasAtivasNoMaster())}</li>)}</ul>
       </section>
       <section aria-labelledby="h-time" className="ds-card p-4">
         <h2 id="h-time" className="mb-3 text-lg font-bold">Quem tem acesso ({team.length})</h2>

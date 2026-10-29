@@ -34,7 +34,7 @@ export function BarraEcossistema({ bar }: { bar: EcoBar }) {
       <button type="button" onClick={() => setOpen(true)} className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-border px-3 text-xs font-semibold hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-[var(--brand-primary)]" aria-haspopup="dialog">
         <LayoutGrid className="size-3.5" aria-hidden />Marcas do grupo
       </button>
-      <Drawer open={open} onOpenChange={setOpen} title="Marcas do Grupo NextLevel" description="Tudo do mesmo grupo, com a mesma conta de pontos do Club.">
+      <Drawer open={open} onOpenChange={setOpen} title="Marcas do Grupo NextLevel" description="Tecnologia, marketing e soluções do mesmo grupo.">
         <div className="space-y-5">
           <section aria-labelledby="eco-mine"><h3 id="eco-mine" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{bar.mine.length > 1 ? "Suas marcas" : "Sua marca"}</h3>{bar.mine.map((i) => <Item key={i.brand} it={i} />)}</section>
           {bar.recommended.length ? <section aria-labelledby="eco-rec"><h3 id="eco-rec" className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recomendadas para você</h3>{bar.recommended.map((i) => <Item key={i.brand} it={i} />)}</section> : null}

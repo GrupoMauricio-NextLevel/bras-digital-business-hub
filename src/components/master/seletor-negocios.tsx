@@ -5,18 +5,11 @@ import { Check, ChevronDown, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { escolherMarcaMasterAction } from "@/app/actions/master-marca";
-import { PRODUCT_CONTEXTS, type ProductContextKey } from "@/lib/product-context";
+import { PRODUCT_CONTEXTS } from "@/lib/product-context";
+import { NEGOCIOS, estadoDoNegocio } from "@/lib/negocios";
 import type { MarcaMaster } from "@/lib/master-marca";
 
-type Negocio = { code: string; ctx: ProductContextKey; sigla: string };
-const NEGOCIOS: Negocio[] = [
-  { code: "NEXTLEVEL_COMMERCE", ctx: "commerce", sigla: "E" },
-  { code: "SUPERDROP", ctx: "superdrop", sigla: "S" },
-  { code: "BRAS_DIGITAL", ctx: "bras", sigla: "B" },
-  { code: "NEXTLEVEL_CARGAS", ctx: "cargas", sigla: "C" },
-  { code: "CREATORS_HUB", ctx: "creators", sigla: "Cr" },
-  { code: "CHINA_HUB", ctx: "china", sigla: "CH" },
-];
+
 
 /**
  * Seletor de negócios do Master (D209): uma pílula na faixa do topo ("Negócio: E-commerce") que abre os negócios do
@@ -33,7 +26,7 @@ export function SeletorNegocios({ atual, ativas }: { atual: MarcaMaster | null; 
   const varios = ativas.length > 1;
   const aberto = atual ?? (varios ? null : ativas[0] ?? null);
   const atualN = NEGOCIOS.find((n) => n.code === aberto);
-  const rotulo = atualN ? PRODUCT_CONTEXTS[atualN.ctx].shortName : "Todos os negócios";
+  const rotulo = atualN ? atualN.nome : "Todos os negócios";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,17 +47,18 @@ export function SeletorNegocios({ atual, ativas }: { atual: MarcaMaster | null; 
           ) : null}
           {NEGOCIOS.map((n) => {
             const c = PRODUCT_CONTEXTS[n.ctx];
-            const ativa = ativas.includes(n.code as MarcaMaster);
+            const e = estadoDoNegocio(n.code, ativas);
+            const ativa = e === "aberto";
             const corrente = n.code === aberto;
-            const estado = corrente ? "Aberto agora" : ativa ? "Disponível" : c.available ? "Pausado" : "Em breve";
+            const estado = corrente ? "Aberto agora" : { aberto: "Disponível", proximo: "Próximo", pausado: "Pausado", "em-breve": "Em breve" }[e];
             const corpo = <>
               <span className="ds-negocio-sigla" style={{ background: c.accent, color: c.accentContrast }} aria-hidden>{n.sigla}</span>
-              <span className="min-w-0 flex-1"><b>{c.shortName}</b><small>{c.descriptor}</small></span>
-              {corrente ? <Check className="size-4 text-[var(--ds-link)]" aria-hidden /> : <em data-estado={ativa ? "ok" : c.available ? "pausado" : "breve"}>{estado}</em>}
+              <span className="min-w-0 flex-1"><b>{n.nome}</b><small>{n.descritor}</small></span>
+              {corrente ? <Check className="size-4 text-[var(--ds-link)]" aria-hidden /> : <em data-estado={ativa ? "ok" : e}>{estado}</em>}
             </>;
             return <li key={n.code}>{ativa && !corrente
               ? <button type="button" disabled={pending} onClick={() => escolher(n.code)} className="ds-negocio-card">{corpo}</button>
-              : <div className="ds-negocio-card" aria-current={corrente ? "true" : undefined} aria-disabled={!corrente || undefined} title={!ativa ? (c.available ? "Trancado no Master. Para abrir, a equipe técnica inclui a marca em MASTER_MARCAS_ATIVAS." : "Ainda sem sistema desenvolvido.") : undefined}>{corpo}</div>}</li>;
+              : <div className="ds-negocio-card" data-estado={e} aria-current={corrente ? "true" : undefined} aria-disabled={!corrente || undefined} title={!ativa ? { proximo: "Próximo negócio a entrar no Master, depois da E-commerce.", pausado: "Trancado no Master. Para abrir, a equipe técnica inclui a marca em MASTER_MARCAS_ATIVAS.", "em-breve": "Ainda sem sistema desenvolvido.", aberto: undefined }[e] : undefined}>{corpo}</div>}</li>;
           })}
         </ul>
       </DropdownMenuContent>

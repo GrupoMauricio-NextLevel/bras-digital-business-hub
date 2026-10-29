@@ -29,6 +29,7 @@ import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
 import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
 import { AreaTheme } from "@/design-system/components/area-theme";
+import { negociosAbertos } from "@/lib/negocios";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -153,8 +154,10 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const notices = await recentNotices(session.actor);
   // Membro e importadora da Brás (D158): o nome da marca no topo da barra, não "NextLevel".
   const brasRole = session.user.role === "BRAS_MEMBER" || session.user.role === "BRAS_IMPORTER";
-  const tenantName = session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : brasRole ? brandByCode("BRAS_DIGITAL").name : "NextLevel");
-  const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma";
+  // Master (D218): o canto diz o que é (Master do grupo) e quais negócios estão abertos, pronto para receber as marcas.
+  const abertosMaster = isMaster ? negociosAbertos().map((n) => n.nome).join(" · ") : "";
+  const tenantName = isMaster ? "Master do grupo" : session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : brasRole ? brandByCode("BRAS_DIGITAL").name : "NextLevel");
+  const tenantSub = isMaster ? `Grupo NextLevel · ${abertosMaster || "negócios"}` : session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma";
   // Capa do Master (D198): faixa roxa com "Indique e ganhe", a novidade do momento e o agente.
   const pode = (href: string) => !fn || masterPathAllowed(fn, href);
   // Seletor de negócios (D209): pílula na faixa do topo, no lugar do "NextLevel / …" do menu e da faixa "Vendo:".

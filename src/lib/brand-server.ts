@@ -28,8 +28,11 @@ export async function getBrand(): Promise<Brand> {
  * escolhida no seletor do topo (R2).
  */
 export async function masterBrandFilter(raw: string | undefined): Promise<BrandCode | undefined> {
+  // D218: marca fechada no Master nunca aparece. Com um negócio só aberto, toda lista fica presa nele.
+  const abertas = marcasAtivasNoMaster();
+  if (abertas.length === 1 && (await marcaDoMaster()) === abertas[0]) return abertas[0];
   if (raw === "todas") return undefined;
-  if (raw && isBrandCode(raw)) return raw;
+  if (raw && isBrandCode(raw)) return (abertas as readonly string[]).includes(raw) ? raw : ((await marcaDoMaster()) ?? undefined);
   const h = await headers();
   const preview = brandPreviewAllowed() ? (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value : undefined;
   if (isBrandCode(preview)) return preview;

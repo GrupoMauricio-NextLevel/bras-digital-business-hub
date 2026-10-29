@@ -5,6 +5,24 @@
 export const MASTER_FUNCTIONS = ["COMERCIAL", "SUPORTE", "FINANCEIRO", "CONTEUDO", "CONTADOR"] as const;
 export type MasterFunction = (typeof MASTER_FUNCTIONS)[number];
 export const MASTER_FUNCTION_LABEL: Record<MasterFunction, string> = { COMERCIAL: "Comercial", SUPORTE: "Suporte", FINANCEIRO: "Financeiro", CONTEUDO: "Conteúdo", CONTADOR: "Contador parceiro" };
+/**
+ * O que cada função vê, citando só os negócios abertos no Master (D218). `abertas` = marcasAtivasNoMaster().
+ * Com só a E-commerce aberta, nada de SuperDrop, Brás ou Meu Contador no texto; o contador parceiro nem aparece.
+ */
+export function dicaDaFuncao(fn: MasterFunction, abertas: readonly string[]): string {
+  const sd = abertas.includes("SUPERDROP"), bras = abertas.includes("BRAS_DIGITAL");
+  const extra = (s: string, on: boolean) => (on ? s : "");
+  switch (fn) {
+    case "COMERCIAL": return "Agora, Atendimento, Comercial, lojistas, crescimento e parceiros";
+    case "SUPORTE": return `Atendimento, clientes em modo suporte, pedidos das lojas, lojistas e erros${extra(", fornecedores", sd)}${extra(", membros da Brás e Meu Contador", bras)}`;
+    case "FINANCEIRO": return `Receita, financeiro da NextLevel, planos e ofertas${extra(" (inclui o SuperDrop)", sd)}`;
+    case "CONTEUDO": return `Templates e catálogo${extra(", estúdio de vídeos e descobertas da Brás", bras)}`;
+    case "CONTADOR": return "Só a fila do Meu Contador (notas dos fardos)";
+  }
+}
+/** Funções que fazem sentido com os negócios abertos (o contador parceiro é da Brás). */
+export const funcoesDoMaster = (abertas: readonly string[]) => MASTER_FUNCTIONS.filter((f) => f !== "CONTADOR" || abertas.includes("BRAS_DIGITAL"));
+
 export const MASTER_FUNCTION_HINT: Record<MasterFunction, string> = {
   COMERCIAL: "Torre do Ecossistema, oportunidades, CRM, clientes, lojas, marcas e parceiros",
   SUPORTE: "Clientes e suporte, pedidos, lojas, fornecedores, erros, membros da Brás e Meu Contador",

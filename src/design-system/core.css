@@ -496,9 +496,11 @@ button.ds-negocio-card { cursor: pointer; transition: border-color var(--ds-dur-
 button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(--ds-soft); }
 .ds-negocio-card[aria-current="true"] { border-color: var(--ds-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-primary) 18%, transparent); }
 .ds-negocio-card[aria-disabled="true"] { background: var(--ds-surface-2, var(--ds-surface)); }
-.ds-negocio-card[aria-disabled="true"] .ds-negocio-sigla { filter: grayscale(0.7); opacity: 0.6; }
+.ds-negocio-card[aria-disabled="true"]:not([data-estado="proximo"]) .ds-negocio-sigla { filter: grayscale(0.7); opacity: 0.6; }
+.ds-negocio-card[data-estado="proximo"] { border-style: dashed; border-color: color-mix(in srgb, var(--ds-primary) 45%, transparent); background: var(--ds-surface); }
 .ds-negocio-card em { flex: none; padding: 2px 8px; border-radius: var(--ds-r-pill); background: var(--ds-soft); color: var(--ds-muted); font-size: 0.66rem; font-style: normal; font-weight: 800; }
 .ds-negocio-card em[data-estado="ok"] { background: var(--ds-success-soft); color: var(--ds-success); }
+.ds-negocio-card em[data-estado="proximo"] { background: color-mix(in srgb, var(--ds-primary) 14%, transparent); color: var(--ds-link); }
 .ds-negocio-card:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 2px; }
 /* Painel do lojista (D209): a marca do cliente no canto do menu. */
 .ds-brand--cliente { gap: 10px; }
