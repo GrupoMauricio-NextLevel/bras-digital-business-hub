@@ -1092,6 +1092,45 @@ export const passwordResets = pgTable("password_resets", {
 // ---------------------------------------------------------------------------
 // Interessados por marca (lista de espera e implantação assistida)
 // ---------------------------------------------------------------------------
+/**
+ * Conversas do Maurício nas páginas públicas (D197): CRM ao vivo do Master. O visitante é identificado só pelo token da
+ * conversa (sem cookie de rastreio); nome e WhatsApp entram quando ele informa. Equipe pode assumir e responder.
+ */
+export const iaConversas = pgTable("ia_conversas", {
+  id: id(),
+  brand: text("brand").notNull(),
+  canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA"] }).notNull().default("HOME"),
+  tokenHash: text("token_hash").notNull(),
+  status: text("status", { enum: ["NOVA", "IA", "HUMANO", "GANHA", "PERDIDA"] }).notNull().default("NOVA"),
+  nome: text("nome"),
+  whatsapp: text("whatsapp"),
+  email: text("email"),
+  interesse: text("interesse"),
+  faturamento: text("faturamento"),
+  pagina: text("pagina"),
+  origem: jsonb("origem").$type<Record<string, string>>().notNull().default({}),
+  responsavelId: text("responsavel_id"),
+  responsavelNome: text("responsavel_nome"),
+  notas: text("notas"),
+  leadId: text("lead_id"),
+  mensagens: integer("mensagens").notNull().default(0),
+  naoLidas: integer("nao_lidas").notNull().default(0),
+  ultimaMensagem: text("ultima_mensagem"),
+  ultimaEm: ts("ultima_em").notNull().defaultNow(),
+  createdAt: createdAt(),
+}, (t) => [index("ia_conversas_status_idx").on(t.status, t.ultimaEm)]);
+
+export const iaMensagens = pgTable("ia_mensagens", {
+  id: id(),
+  conversaId: text("conversa_id").notNull().references(() => iaConversas.id),
+  autor: text("autor", { enum: ["CLIENTE", "MAURICIO", "HUMANO", "SISTEMA"] }).notNull(),
+  autorNome: text("autor_nome"),
+  texto: text("texto").notNull(),
+  /** Atalhos e botões da resposta guiada (sem dado pessoal). */
+  extra: jsonb("extra").$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: createdAt(),
+}, (t) => [index("ia_mensagens_conversa_idx").on(t.conversaId, t.createdAt)]);
+
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),

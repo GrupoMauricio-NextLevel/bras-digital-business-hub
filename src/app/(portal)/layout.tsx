@@ -10,7 +10,6 @@ import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 
 import { getDb } from "@/db/client";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
-import { getIaConfig } from "@/lib/domain/ia";
 import { VendedorHome } from "@/components/ia/vendedor-home";
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
@@ -39,7 +38,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const c = supportContacts();
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
   // Vendedor 24h (D195): só nas páginas públicas da E-commerce; responde com os dados reais, com ou sem IA ligada.
-  const vendedor = commerce ? await (async () => { const db = await getDb(); const [fatos, ia] = await Promise.all([fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja"), getIaConfig(db)]); return <VendedorHome fatos={fatos} iaLigada={ia.usoReal && !!ia.chaveEnc} />; })() : null;
+  const vendedor = commerce ? await (async () => { const db = await getDb(); const fatos = await fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja"); return <VendedorHome fatos={fatos} whatsappEquipe={supportContacts().whatsappUrl} />; })() : null;
   return (
     <PublicShell
       // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.

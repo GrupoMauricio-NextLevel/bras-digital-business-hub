@@ -1,79 +1,95 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { ArrowUp, ChevronRight, Sparkles, X } from "lucide-react";
-import { ATALHOS_INICIO, responder, responderTexto, type Acao, type Atalho, type FatosVenda } from "@/lib/ia/vendedor-publico";
-import { perguntarAoVendedorAction } from "@/app/actions/vendedor";
-import { submitLeadAction } from "@/app/actions/leads";
+import { ArrowUp, ChevronRight, MessageCircle, Sparkles, X } from "lucide-react";
+import type { Acao, Atalho, FatosVenda } from "@/lib/ia/vendedor-publico";
+import { enviarMensagemAction, iniciarConversaAction, novasMensagensAction, salvarContatoAction } from "@/app/actions/vendedor";
 
 /**
- * Vendedor 24h na home (D195; padrão REF-001 e REF-010 da referência): cápsula "Pede pro Maurício" no rodapé da tela e
- * conversa lateral. Sem IA ligada, responde pelo motor guiado com os dados reais; com IA, a pergunta livre vai ao modelo.
+ * Vendedor 24h (D195 a D197): cápsula "Pede pro Maurício" e coluna integrada ao site. A conversa fica no servidor e
+ * aparece ao vivo no CRM do Master; o Maurício pede nome e WhatsApp logo no começo, a equipe pode assumir e responder
+ * aqui mesmo, e depois de algumas mensagens aparece o atalho para chamar a equipe no WhatsApp.
  */
-type Msg = { id: number; de: "cliente" | "mauricio"; texto: string; atalhos?: Atalho[]; acoes?: Acao[] };
+type Msg = { id: string; autor: "CLIENTE" | "MAURICIO" | "HUMANO" | "SISTEMA"; autorNome: string | null; texto: string; extra: Record<string, unknown>; createdAt: string };
+type Sessao = { id: string; token: string };
+const CHAVE = "nl-vendedor-conversa";
 const negrito = (t: string) => t.split("**").map((p, i) => (i % 2 ? <b key={i}>{p}</b> : <React.Fragment key={i}>{p}</React.Fragment>));
+const lerSessao = (): Sessao | null => { try { return JSON.parse(sessionStorage.getItem(CHAVE) ?? "null"); } catch { return null; } };
 
-export function VendedorHome({ fatos, iaLigada }: { fatos: FatosVenda; iaLigada: boolean }) {
+export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; whatsappEquipe: string | null }) {
   const [aberto, setAberto] = React.useState(false);
   const [capsula, setCapsula] = React.useState(true);
+  const [sessao, setSessao] = React.useState<Sessao | null>(null);
   const [msgs, setMsgs] = React.useState<Msg[]>([]);
+  const [status, setStatus] = React.useState("NOVA");
+  const [temContato, setTemContato] = React.useState(false);
+  const [pedirContato, setPedirContato] = React.useState<"auto" | "agora" | "dispensado">("auto");
   const [texto, setTexto] = React.useState("");
   const [pensando, setPensando] = React.useState(false);
-  const [contato, setContato] = React.useState<null | "form" | "ok">(null);
-  const [lead, setLead] = React.useState({ name: "", phone: "", email: "" });
-  const [erroLead, setErroLead] = React.useState("");
-  const seq = React.useRef(1);
+  const [contato, setContato] = React.useState({ nome: "", whatsapp: "", email: "" });
+  const [erro, setErro] = React.useState("");
   const fim = React.useRef<HTMLDivElement>(null);
-  const assuntos = React.useRef<string[]>([]);
+  const ultimo = msgs.at(-1)?.createdAt ?? null;
+  const doCliente = msgs.filter((m) => m.autor === "CLIENTE").length;
+
+  const aplicar = React.useCallback((r: { status: string; temContato: boolean; mensagens: Msg[] }, trocar = false) => {
+    setStatus(r.status); setTemContato(r.temContato);
+    setMsgs((atual) => { if (trocar) return r.mensagens; const ids = new Set(atual.map((m) => m.id)); return [...atual, ...r.mensagens.filter((m) => !ids.has(m.id))]; });
+  }, []);
 
   React.useEffect(() => { try { if (sessionStorage.getItem("nl-vendedor-fechado")) setCapsula(false); } catch { /* sem armazenamento */ } }, []); // eslint-disable-line react-hooks/set-state-in-effect
-  // Coluna integrada ao site (padrão do painel da referência): a página encolhe ao lado, sem janela por cima. Esc fecha.
   React.useEffect(() => {
     document.documentElement.classList.toggle("ia-dock-aberto", aberto);
     const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setAberto(false); };
     if (aberto) window.addEventListener("keydown", esc);
     return () => { window.removeEventListener("keydown", esc); document.documentElement.classList.remove("ia-dock-aberto"); };
   }, [aberto]);
-  React.useEffect(() => { fim.current?.scrollIntoView({ block: "end", behavior: "smooth" }); }, [msgs, pensando, contato]);
+  React.useEffect(() => { fim.current?.scrollIntoView({ block: "end", behavior: "smooth" }); }, [msgs.length, pensando, pedirContato]);
+  // Ao vivo: enquanto a conversa está aberta, busca as respostas da equipe a cada 4 segundos.
+  React.useEffect(() => {
+    if (!aberto || !sessao) return;
+    const t = setInterval(async () => { const r = await novasMensagensAction({ ...sessao, depoisDe: ultimo }); if (r.ok) aplicar(r.data); }, 4000);
+    return () => clearInterval(t);
+  }, [aberto, sessao, ultimo, aplicar]);
 
-  const mauricio = (r: ReturnType<typeof responder>) => { assuntos.current.push(r.assunto); setMsgs((m) => [...m, { id: seq.current++, de: "mauricio", texto: r.texto, atalhos: r.atalhos, acoes: r.acoes }]); };
-  const abrir = (primeira?: string) => {
+  const abrir = async (primeira?: Atalho) => {
     setAberto(true);
-    if (!msgs.length) mauricio(responder(fatos, null));
-    if (primeira) setTimeout(() => escolher({ id: primeira, rotulo: ATALHOS_INICIO.find((a) => a.id === primeira)?.rotulo ?? primeira }), 50);
-  };
-  const escolher = (a: Atalho) => {
-    setMsgs((m) => [...m, { id: seq.current++, de: "cliente", texto: a.rotulo }]);
-    if (a.id === "pessoa") setContato("form");
-    setTimeout(() => mauricio(responder(fatos, a.id)), 280);
-  };
-  const enviar = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const t = texto.trim(); if (!t || pensando) return;
-    setTexto("");
-    const historico = [...msgs, { id: seq.current++, de: "cliente" as const, texto: t }];
-    setMsgs(historico);
-    if (iaLigada) {
-      setPensando(true);
-      const r = await perguntarAoVendedorAction(historico.map(({ de, texto: x }) => ({ de, texto: x })));
-      setPensando(false);
-      if (r.ok) { setMsgs((m) => [...m, { id: seq.current++, de: "mauricio", texto: r.data.texto, acoes: [{ rotulo: "Criar minha loja", href: fatos.cadastro }, { rotulo: "Quero que a equipe me chame", contato: true }] }]); return; }
+    let s = sessao ?? lerSessao();
+    if (s && !sessao) { const r = await novasMensagensAction({ ...s }); if (r.ok) { setSessao(s); aplicar(r.data, true); } else s = null; }
+    if (!s) {
+      const origem = Object.fromEntries([...new URLSearchParams(location.search)].filter(([k]) => k.startsWith("utm_") || k === "ref"));
+      const r = await iniciarConversaAction({ pagina: location.pathname, origem });
+      if (!r.ok) { setErro(r.error); return; }
+      s = { id: r.data.id, token: r.data.token };
+      try { sessionStorage.setItem(CHAVE, JSON.stringify(s)); } catch { /* sem armazenamento */ }
+      setSessao(s); aplicar(r.data.mensagens, true);
     }
-    setTimeout(() => mauricio(responderTexto(fatos, t)), 280);
+    if (primeira) await mandar(s, { atalho: primeira });
   };
-  const enviarLead = async (e: React.FormEvent) => {
-    e.preventDefault(); setErroLead("");
-    const historia = msgs.filter((m) => m.de === "cliente").map((m) => m.texto).slice(-6).join(" | ");
-    const r = await submitLeadAction({ name: lead.name, phone: lead.phone, email: lead.email, message: `Conversa com o Maurício (vendedor da home): ${historia}`.slice(0, 600), segment: assuntos.current.at(-1) });
-    if (r.ok) setContato("ok"); else setErroLead(r.error);
+  const mandar = async (s: Sessao | null, corpo: { texto?: string; atalho?: Atalho }) => {
+    if (!s) return;
+    setPensando(true); setErro("");
+    const r = await enviarMensagemAction({ ...s, ...corpo, depoisDe: msgs.at(-1)?.createdAt ?? null });
+    setPensando(false);
+    if (r.ok) aplicar(r.data); else setErro(r.error);
+  };
+  const enviar = (e: React.FormEvent) => { e.preventDefault(); const t = texto.trim(); if (!t || pensando) return; setTexto(""); void mandar(sessao, { texto: t }); };
+  const enviarContato = async (e: React.FormEvent) => {
+    e.preventDefault(); if (!sessao) return; setErro("");
+    const r = await salvarContatoAction({ ...sessao, ...contato });
+    if (r.ok) { aplicar(r.data, true); setPedirContato("dispensado"); } else setErro(r.error);
   };
   const fecharCapsula = () => { setCapsula(false); try { sessionStorage.setItem("nl-vendedor-fechado", "1"); } catch { /* sem armazenamento */ } };
+  // Coleta rápida: logo depois da 1ª resposta; se dispensada, volta uma vez depois de 3 mensagens.
+  const mostrarContato = !temContato && (pedirContato === "agora" || (pedirContato === "auto" && msgs.length >= 1) || (pedirContato === "dispensado" && doCliente === 3));
+  const codigo = sessao?.id.slice(-6).toUpperCase();
+  const linkWhats = whatsappEquipe ? whatsappEquipe.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Vim do chat do site (conversa ${codigo}).`)}`) : null;
 
   return (
     <>
       {capsula && !aberto ? (
         <div className="vh-capsula nl-chega" role="region" aria-label="Pede pro Maurício">
-          <button type="button" onClick={() => abrir("plano")} className="vh-capsula-btn">
+          <button type="button" onClick={() => abrir({ id: "plano", rotulo: "Qual plano é ideal para mim?" })} className="vh-capsula-btn">
             <Sparkles className="size-4 shrink-0" aria-hidden /><span className="truncate">Pede pro Maurício: qual plano é o melhor para a minha loja?</span>
             <span className="vh-enviar" aria-hidden><ArrowUp className="size-4" /></span>
           </button>
@@ -87,47 +103,55 @@ export function VendedorHome({ fatos, iaLigada }: { fatos: FatosVenda; iaLigada:
           <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="flex items-center gap-2.5">
               <span className="ia-simbolo" aria-hidden><Sparkles className="size-4" /></span>
-              <div><h2 id="vh-titulo" className="text-base font-bold leading-tight text-foreground">Maurício</h2><p className="text-xs text-muted-foreground"><span className="vh-online" aria-hidden /> Online agora · responde na hora</p></div>
+              <div><h2 id="vh-titulo" className="text-base font-bold leading-tight text-foreground">Maurício</h2><p className="text-xs text-muted-foreground"><span className="vh-online" aria-hidden /> {status === "HUMANO" ? "Você está falando com a nossa equipe" : "Online agora · responde na hora"}</p></div>
             </div>
             <button type="button" onClick={() => setAberto(false)} aria-label="Fechar a conversa" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="size-4" aria-hidden /></button>
           </header>
           <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5" aria-live="polite">
-            {fatos.oferta && msgs.length <= 1 ? (
-              <div className="vh-oferta"><Sparkles className="size-4 shrink-0" aria-hidden /><span><b>{fatos.oferta.trialDays} dias grátis</b> para montar e testar a sua loja. Sem fidelidade.</span></div>
-            ) : null}
-            {msgs.map((m) => (
-              <div key={m.id} className={m.de === "cliente" ? "flex justify-end" : "flex gap-2"}>
-                {m.de === "mauricio" ? <span className="ia-simbolo mt-0.5 shrink-0" aria-hidden><Sparkles className="size-3.5" /></span> : null}
-                <div className={m.de === "cliente" ? "vh-balao-cliente" : "min-w-0 flex-1"}>
-                  <p className="whitespace-pre-line text-sm leading-relaxed">{negrito(m.texto)}</p>
-                  {m.acoes?.length ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {m.acoes.map((a) => "href" in a
-                        ? <Link key={a.rotulo} href={a.href} onClick={() => setAberto(false)} className="ds-btn ds-btn--sm">{a.rotulo}</Link>
-                        : <button key={a.rotulo} type="button" onClick={() => setContato("form")} className="ds-btn ds-btn--secondary ds-btn--sm">{a.rotulo}</button>)}
-                    </div>
-                  ) : null}
-                  {m.atalhos?.length ? (
-                    <ul className="mt-3 divide-y divide-border overflow-hidden rounded-2xl bg-surface-muted">
-                      {m.atalhos.map((a) => <li key={a.id}><button type="button" onClick={() => escolher(a)} className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-medium text-foreground hover:bg-[color-mix(in_srgb,var(--ds-primary)_6%,transparent)]"><span className="flex-1">{a.rotulo}</span><ChevronRight className="size-4 text-muted-foreground" aria-hidden /></button></li>)}
-                    </ul>
-                  ) : null}
+            {fatos.oferta && doCliente === 0 ? <div className="vh-oferta"><Sparkles className="size-4 shrink-0" aria-hidden /><span><b>{fatos.oferta.trialDays} dias grátis</b> para montar e testar a sua loja. Sem fidelidade.</span></div> : null}
+            {msgs.map((m, i) => {
+              if (m.autor === "SISTEMA") return <p key={m.id} className="text-center text-xs text-muted-foreground">{m.texto}</p>;
+              if (m.autor === "CLIENTE") return <div key={m.id} className="flex justify-end"><p className="vh-balao-cliente whitespace-pre-line text-sm leading-relaxed">{m.texto}</p></div>;
+              const humano = m.autor === "HUMANO";
+              const atalhos = (m.extra.atalhos as Atalho[] | undefined) ?? [];
+              const acoes = (m.extra.acoes as Acao[] | undefined) ?? [];
+              const recente = i === msgs.length - 1 || msgs.slice(i + 1).every((x) => x.autor === "SISTEMA");
+              return (
+                <div key={m.id} className="flex gap-2">
+                  <span className={humano ? "vh-avatar-humano mt-0.5 shrink-0" : "ia-simbolo mt-0.5 shrink-0"} aria-hidden>{humano ? (m.autorNome ?? "E").charAt(0) : <Sparkles className="size-3.5" />}</span>
+                  <div className="min-w-0 flex-1">
+                    {humano ? <p className="mb-1 text-xs font-semibold text-foreground">{m.autorNome} · equipe NextLevel</p> : null}
+                    <p className="whitespace-pre-line text-sm leading-relaxed">{negrito(m.texto)}</p>
+                    {acoes.length ? <div className="mt-3 flex flex-wrap gap-2">{acoes.map((a) => "href" in a
+                      ? <Link key={a.rotulo} href={a.href} onClick={() => setAberto(false)} className="ds-btn ds-btn--sm">{a.rotulo}</Link>
+                      : <button key={a.rotulo} type="button" onClick={() => setPedirContato("agora")} className="ds-btn ds-btn--secondary ds-btn--sm">{a.rotulo}</button>)}</div> : null}
+                    {atalhos.length && recente ? (
+                      <ul className="mt-3 divide-y divide-border overflow-hidden rounded-2xl bg-surface-muted">
+                        {atalhos.map((a) => <li key={a.id}><button type="button" disabled={pensando} onClick={() => (a.id === "pessoa" ? (setPedirContato("agora"), mandar(sessao, { atalho: a })) : mandar(sessao, { atalho: a }))} className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-medium text-foreground hover:bg-[color-mix(in_srgb,var(--ds-primary)_6%,transparent)]"><span className="flex-1">{a.rotulo}</span><ChevronRight className="size-4 text-muted-foreground" aria-hidden /></button></li>)}
+                      </ul>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {pensando ? <div className="flex gap-2"><span className="ia-simbolo shrink-0" aria-hidden><Sparkles className="size-3.5" /></span><span className="nl-degraus mt-2 text-muted-foreground"><i /><i /><i /></span></div> : null}
-            {contato === "form" ? (
-              <form onSubmit={enviarLead} className="space-y-2 rounded-2xl border border-border p-4">
-                <p className="text-sm font-semibold text-foreground">A equipe te chama no WhatsApp</p>
-                <input required className="ds-input" placeholder="Seu nome" autoComplete="name" value={lead.name} onChange={(e) => setLead({ ...lead, name: e.target.value })} aria-label="Seu nome" />
-                <input required className="ds-input" placeholder="WhatsApp com DDD" inputMode="tel" autoComplete="tel" value={lead.phone} onChange={(e) => setLead({ ...lead, phone: e.target.value })} aria-label="WhatsApp com DDD" />
-                <input required type="email" className="ds-input" placeholder="E-mail" autoComplete="email" value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} aria-label="E-mail" />
-                {erroLead ? <p role="alert" className="text-sm text-danger">{erroLead}</p> : null}
-                <button type="submit" className="ds-btn w-full">Quero ser chamado</button>
+            {mostrarContato ? (
+              <form onSubmit={enviarContato} className="vh-contato space-y-2 rounded-2xl border border-border p-4">
+                <p className="text-sm font-semibold text-foreground">Pra eu te atender melhor, como te chamo?</p>
+                <p className="text-xs text-muted-foreground">Com o seu WhatsApp, a equipe também pode te ajudar se precisar.</p>
+                <input required className="ds-input" placeholder="Seu nome" autoComplete="given-name" value={contato.nome} onChange={(e) => setContato({ ...contato, nome: e.target.value })} aria-label="Seu nome" />
+                <input required className="ds-input" placeholder="WhatsApp com DDD" inputMode="tel" autoComplete="tel" value={contato.whatsapp} onChange={(e) => setContato({ ...contato, whatsapp: e.target.value })} aria-label="WhatsApp com DDD" />
+                <input type="email" className="ds-input" placeholder="E-mail (opcional)" autoComplete="email" value={contato.email} onChange={(e) => setContato({ ...contato, email: e.target.value })} aria-label="E-mail (opcional)" />
+                <div className="flex items-center gap-3 pt-1"><button type="submit" className="ds-btn ds-btn--sm">Continuar</button><button type="button" onClick={() => setPedirContato("dispensado")} className="text-sm font-semibold text-link underline underline-offset-2">Agora não</button></div>
+                <p className="text-[11px] text-muted-foreground">Usamos só para falar com você sobre a sua loja. <Link href="/privacidade" className="underline">Privacidade</Link></p>
               </form>
-            ) : contato === "ok" ? <p className="rounded-2xl border border-border p-4 text-sm text-body">Pronto! A equipe te chama em breve. Enquanto isso, se quiser, já dá para <Link href={fatos.cadastro} className="font-semibold text-link underline">criar a sua loja</Link>.</p> : null}
+            ) : null}
+            {erro ? <p role="alert" className="text-sm text-danger">{erro}</p> : null}
             <div ref={fim} />
           </div>
+          {doCliente >= 2 && linkWhats ? (
+            <a href={linkWhats} target="_blank" rel="noreferrer" className="vh-whats"><MessageCircle className="size-4 shrink-0" aria-hidden /><span><b>Prefere falar com uma pessoa?</b> Chame a nossa equipe no WhatsApp.</span><ChevronRight className="ml-auto size-4" aria-hidden /></a>
+          ) : null}
           <form className="border-t border-border px-4 pb-3 pt-3" onSubmit={enviar}>
             <label htmlFor="vh-texto" className="sr-only">Pergunte ao Maurício</label>
             <div className="ia-compositor">

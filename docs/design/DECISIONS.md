@@ -1957,3 +1957,25 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Pedido do dono (prints do painel da referência):** a conversa fica ao lado do conteúdo, como parte do site, e não como uma janela por cima.
 - **Como ficou:** no computador (1100 px ou mais), a coluna de 420 px fica à direita e a página encolhe ao lado e continua usável. Não há fundo escuro e Esc fecha. No painel, a coluna continua aberta ao trocar de página (lembrada na sessão). No celular e no tablet, ocupa a tela inteira.
 - Vale para o vendedor da home (D195) e para o Maurício dos painéis (D194).
+
+## D197 — [Todas] Central da IA no Master: conversas ao vivo, coleta de contato e equipe assumindo o chat (2026-10-29)
+- **Pedido do dono:** coletar dados do cliente logo no começo, jogar num CRM nosso para atender rápido pelo nosso chat além da IA, mostrar com o tempo que dá para chamar a equipe no WhatsApp, e um CRM para acompanhar em tempo real.
+- **Conversa no servidor:** tabelas `ia_conversas` e `ia_mensagens` (migração 0077).
+  - O visitante é identificado só por um token aleatório da conversa (guardamos o hash), sem cookie de rastreio.
+  - Ficam registradas a página e a origem (utm).
+  - O interesse e a faixa de faturamento saem das escolhas no chat.
+- **Coleta rápida:**
+  - logo depois da primeira resposta, o Maurício pede nome e WhatsApp (e-mail opcional), com "Agora não";
+  - se a pessoa dispensar, o pedido volta uma vez depois de 3 mensagens;
+  - com e-mail, também vira interessado no CRM da marca (`brand_leads`).
+- **Canto do WhatsApp:** a partir da 2ª mensagem aparece "Prefere falar com uma pessoa? Chame a nossa equipe no WhatsApp", já com o código da conversa.
+- **Central da IA (`/master/ia`):**
+  - números do momento: abertas, com a equipe, conversas e contatos do dia, ganhas;
+  - lista ao vivo (a cada 5 s) com filtros;
+  - conversa aberta atualizando a cada 3 s;
+  - "Assumir conversa": o Maurício pausa e a equipe responde no próprio chat do site, aparecendo como "Nome · equipe NextLevel";
+  - "Devolver ao Maurício";
+  - notas, ganha ou perdida, e WhatsApp a um clique;
+  - os ajustes, a chave e os planos foram para a aba `/master/ia/ajustes`.
+- **Permissão:** dono e funções Comercial e Suporte do Master.
+- **Testes:** `tests/ia-conversas.test.ts`.

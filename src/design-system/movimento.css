@@ -127,3 +127,14 @@
 }
 @media (max-width: 1099px) { .ia-dock { inset: 0; width: auto; border-radius: 0; border: 0; } }
 @media (prefers-reduced-motion: reduce) { .ia-dock, html.ia-dock-aberto body { animation: none; transition: none; } }
+.vh-avatar-humano { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 9999px; font-size: .8rem; font-weight: 800; color: #fff; background: #16a34a; }
+.vh-whats { display: flex; align-items: center; gap: 10px; margin: 0 16px 8px; padding: 10px 14px; border-radius: 16px; font-size: .82rem; color: #0b5c2a; background: #e8f7ee; border: 1px solid #bfe8cf; }
+.vh-whats:hover { background: #dcf3e5; }
+.vh-contato { border-color: color-mix(in srgb, var(--ds-primary) 35%, var(--ds-line)); background: color-mix(in srgb, var(--ds-primary) 4%, var(--ds-surface)); }
+
+/* CRM ao vivo (D197): três colunas (lista, conversa, contato) com rolagem própria. */
+.crm-grade { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+.crm-col { display: flex; min-height: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--ds-line); border-radius: 20px; background: var(--ds-surface); }
+@media (min-width: 900px) { .crm-grade { grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); height: calc(100dvh - 300px); min-height: 520px; } .crm-info { grid-column: 1 / -1; } }
+@media (min-width: 1400px) { .crm-grade { grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 320px); } .crm-info { grid-column: auto; overflow-y: auto; } }
+@media (max-width: 899px) { .crm-col { max-height: 70vh; } }

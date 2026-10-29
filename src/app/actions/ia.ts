@@ -11,7 +11,7 @@ async function ator() {
   if (!s) throw new ForbiddenError("Sessão expirada.");
   return s.actor;
 }
-const atualizar = () => { revalidatePath("/master/ia"); revalidatePath("/merchant", "layout"); };
+const atualizar = () => { revalidatePath("/master/ia/ajustes"); revalidatePath("/merchant", "layout"); };
 
 export async function salvarChaveIaAction(chave: string) {
   return runAction(async () => { await salvarChaveIa(await getDb(), await ator(), chave); atualizar(); return undefined; });
