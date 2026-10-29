@@ -1133,6 +1133,22 @@ export const iaMensagens = pgTable("ia_mensagens", {
   createdAt: createdAt(),
 }, (t) => [index("ia_mensagens_conversa_idx").on(t.conversaId, t.createdAt)]);
 
+/**
+ * Acompanhamento comercial (D202): responsável, próxima ação e prazo de cada pessoa do funil da E-commerce.
+ * `chave` = "loja:<id>" | "interessado:<id>" | "conversa:<id>" (a mesma pessoa vista no funil único).
+ */
+export const crmAcompanhamento = pgTable("crm_acompanhamento", {
+  chave: text("chave").primaryKey(),
+  brand: text("brand").notNull().default("NEXTLEVEL_COMMERCE"),
+  responsavelId: text("responsavel_id"),
+  responsavelNome: text("responsavel_nome"),
+  proximaAcao: text("proxima_acao"),
+  prazo: ts("prazo"),
+  notas: text("notas"),
+  perdido: boolean("perdido").notNull().default(false),
+  updatedAt: updatedAt(),
+});
+
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),

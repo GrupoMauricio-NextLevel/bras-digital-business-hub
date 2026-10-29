@@ -13,7 +13,7 @@ export default async function CommerceStoresPage() {
   const data = await getCommerceConsole(await getDb(), session.actor);
   return (
     <>
-      <PageHeader eyebrow="Portfólio" title="Lojas" description="Cada loja da NextLevel E-commerce, com situação, plano e vendas." />
+      <PageHeader eyebrow="NextLevel E-commerce" title="Lojistas" description="Cada loja da E-commerce com a situação de pagamento (a mesma regra em todo o Master), o plano e o atalho para ver como o lojista vê." />
       <DataTable rows={data.stores} rowKey={({ store }) => store.id}
         empty={<EmptyState title="Nenhuma loja Commerce encontrada" description="As lojas aparecem aqui assim que forem criadas." />}
         columns={[

@@ -7,7 +7,7 @@ import { isRecordingMode } from "@/lib/gravacao-server";
 import { type FeatureKey } from "@/lib/features";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
-import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
+import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
 import { SeletorMarcaMaster } from "@/components/master/seletor-marca";
 import { marcasAtivasNoMaster } from "@/lib/master-marca";
@@ -70,7 +70,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Master único (R2): a marca escolhida no seletor do topo enxuga o menu.
   const isMaster = session.user.role === "NEXTLEVEL_MASTER";
   const marcaMaster = isMaster ? await marcaDoMaster() : null;
-  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
+  // Master trancado só na E-commerce (D203): o menu do escritório em 7 áreas, uma casca só (o console /commerce usa o mesmo menu).
+  const escritorioEc = isMaster && marcaMaster === "NEXTLEVEL_COMMERCE" && marcasAtivasNoMaster().length === 1;
+  const items = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
   const seletorMarca = isMaster && !sup && marcasAtivasNoMaster().length > 1 ? <SeletorMarcaMaster atual={marcaMaster} /> : null;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
@@ -104,7 +106,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
       </AppShell>
     );
   }
-  if (commerceStore || scope === "commerce-admin") {
+  if (commerceStore || (scope === "commerce-admin" && !escritorioEc)) {
     const staff = session.user.storeRole === "STAFF";
     const commerceItems = commerceStore
       ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)

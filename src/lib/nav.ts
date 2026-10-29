@@ -49,6 +49,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       NEXTLEVEL_ITEM("/master"),
       { label: "Agora", href: "/master/agora", icon: "Bell", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"], bottom: true },
       { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Operação", soTodas: true, bottom: true },
+      { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
@@ -249,6 +250,31 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
 export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
+/**
+ * Master trancado na E-commerce (D203): o escritório em 7 áreas e, abaixo, as ferramentas que não são do dia a dia.
+ * As telas antigas continuam existindo; só saíram do primeiro plano.
+ */
+export const MASTER_ECOMMERCE_NAV: NavItem[] = [
+  { label: "Agora", href: "/master/agora", icon: "Bell", group: "Escritório", bottom: true },
+  { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
+  { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
+  { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
+  { label: "Receita", href: "/master/financeiro/assinaturas", icon: "Wallet", group: "Escritório" },
+  { label: "Crescimento", href: "/master/partners", icon: "Megaphone", group: "Escritório" },
+  { label: "Sistema", href: "/master/settings", icon: "Settings", group: "Escritório" },
+  { label: "Ver como cliente (suporte)", href: "/master/clientes", icon: "LifeBuoy", group: "Ferramentas" },
+  { label: "Pedidos das lojas", href: "/commerce/orders", icon: "ShoppingBag", group: "Ferramentas" },
+  { label: "Produtos publicados", href: "/commerce/catalog", icon: "Package", group: "Ferramentas" },
+  { label: "Funil de ativação", href: "/commerce", icon: "LayoutGrid", group: "Ferramentas", exact: true },
+  { label: "Financeiro", href: "/master/financeiro", icon: "Landmark", group: "Ferramentas", exact: true },
+  { label: "Planos e recursos", href: "/commerce/plans", icon: "CreditCard", group: "Ferramentas" },
+  { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Ferramentas" },
+  { label: "Loja NextLevel (serviços)", href: "/master/services", icon: "Sparkles", group: "Ferramentas" },
+  { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Ferramentas" },
+  { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Ferramentas" },
+  { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Ferramentas" },
+];
+
 export const COMMERCE_ADMIN_NAV: NavItem[] = [
   { label: "Visão geral", href: "/commerce", icon: "LayoutGrid", exact: true, group: "Plataforma", bottom: true },
   { label: "Lojas", href: "/commerce/stores", icon: "Store", group: "Operação", bottom: true },

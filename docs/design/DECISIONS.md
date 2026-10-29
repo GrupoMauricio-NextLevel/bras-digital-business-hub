@@ -2036,3 +2036,26 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Na conversa de lojista não aparece "Devolver ao Maurício".
   - Mensagem nova de lojista entra na fila "Agora" como "Conversa esperando", com o relógio de espera.
 - `next.config.ts`: `allowedDevOrigins: ["*.test"]`, só para o modo de desenvolvimento local com os endereços de teste das marcas.
+
+## D202 — [E-commerce] Comercial: funil único do contato ao pagante e ficha 360 (2026-10-29)
+- **Pedido do dono:** "um CRM ao vivo e turbo para trazer muitos clientes rápido" (fase F3).
+- **`/master/comercial`:** junta numa pessoa só, sem duplicar (mesmo e-mail ou WhatsApp), três origens:
+  - interessados do formulário (`brand_leads`);
+  - conversas do site com contato (`ia_conversas`, canal HOME);
+  - lojas criadas.
+- **Etapas que andam sozinhas** pelo que a pessoa faz no sistema: Contato → Conta criada → Ativando → Vendendo → Pagante → Em risco → Perdido. Ficam em quadro por etapa ou em lista com os mais quentes primeiro.
+- **Temperatura** de 1 a 3 chamas, com regra simples e explicável: faturamento informado, etapa avançada e conversa nos últimos 2 dias.
+- **Ficha 360** (`/master/comercial/[chave]`):
+  - contato e situação de pagamento (fonte única D200);
+  - linha do tempo única: conversa com o Maurício, formulário, marcos e pedidos da loja, Ajuda do lojista e notas;
+  - WhatsApp com mensagem pronta, "Abrir conversa" e "Ver como lojista";
+  - responsável ("Assumir este cliente"), próxima ação com prazo, notas e "Marcar como perdido".
+- **Tabela nova:** `crm_acompanhamento` (chave `loja:`/`interessado:`/`conversa:`), migração `0079`. Permissão: dono e funções Comercial e Suporte.
+
+## D203 — [E-commerce] Menu do Master em 7 áreas e uma casca só (2026-10-29)
+- **Fase F1.** Com o Master trancado na E-commerce, o menu passa a ter:
+  - **Escritório:** Agora, Atendimento, Comercial, Lojistas, Receita, Crescimento, Sistema;
+  - **Ferramentas** (o que não é do dia a dia): ver como cliente, pedidos das lojas, produtos publicados, funil de ativação, financeiro, planos e recursos, templates, Loja NextLevel, equipe, erros e qualidade.
+- **Uma casca só:** o console `/commerce` deixou de trocar o menu inteiro (o antigo "Voltar ao Master"); usa o mesmo menu do Master.
+- **Nada foi apagado:** as telas antigas continuam no endereço de sempre. Com mais de uma marca aberta, volta o menu anterior.
+- Código: `MASTER_ECOMMERCE_NAV` em `src/lib/nav.ts`, escolha em `role-layout.tsx`.
