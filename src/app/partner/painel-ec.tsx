@@ -26,7 +26,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold ring-1 ring-white/25"><BadgeCheck className="size-3.5" aria-hidden />{d.parceiro.tipo} NextLevel E-commerce</span>
             <h1 className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight sm:text-4xl">Olá, {primeiro}. Cada loja que você indica vira renda todo mês.</h1>
-            <p className="mt-3 max-w-xl text-white/80">Você ganha <b className="text-white">{ganhoTexto(r.primeiraBps)}</b> da primeira mensalidade e <b className="text-white">{ganhoTexto(r.recorrenteBps)}</b> de cada mensalidade seguinte{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. E é fácil de vender: taxa zero nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
+            <p className="mt-3 max-w-xl text-white/80">Você ganha <b className="text-white">{ganhoTexto(r.primeiraBps)}</b> da primeira mensalidade e <b className="text-white">{ganhoTexto(r.recorrenteBps)}</b> de cada mensalidade seguinte{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
           </div>
           <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/20 backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-wider text-white/70">Seu link</p>
@@ -56,7 +56,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
 
       <section className="ds-card p-5 sm:p-6" aria-labelledby="ind-t">
         <h2 id="ind-t" className="text-base font-semibold">Suas indicações</h2>
-        {d.indicados.length === 0 ? <EmptyState compact icon={Store} title="Nenhuma loja indicada ainda" description="Mande o seu link para quem vende no Instagram e no WhatsApp: taxa zero nas vendas e um preço que vence a concorrência abrem a conversa." /> : (
+        {d.indicados.length === 0 ? <EmptyState compact icon={Store} title="Nenhuma loja indicada ainda" description="Mande o seu link para quem vende no Instagram e no WhatsApp: taxa zero da plataforma e um preço que vence a concorrência abrem a conversa." /> : (
           <ul className="mt-3 divide-y divide-border">
             {d.indicados.map((x) => (
               <li key={x.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 text-sm">

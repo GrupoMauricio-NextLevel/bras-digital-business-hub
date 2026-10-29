@@ -6,7 +6,7 @@ Este arquivo reúne os selos e elementos que podem valorizar as páginas e os pa
 
 ## Regra de ouro
 
-1. **Selo próprio** (criado por nós, com a nossa marca): pode usar à vontade, desde que a frase seja verdadeira. Por exemplo, "Taxa zero no Mercado Pago" só vale enquanto a regra existir no sistema.
+1. **Selo próprio** (criado por nós, com a nossa marca): pode usar à vontade, desde que a frase seja verdadeira. Por exemplo, "Taxa zero da plataforma" só vale enquanto a regra existir no sistema.
 2. **Selo de outra empresa** (Google, Reclame Aqui, Mercado Pago, PCI):
    - **nunca** gerar no ChatGPT;
    - **nunca** redesenhar;
@@ -18,7 +18,7 @@ Este arquivo reúne os selos e elementos que podem valorizar as páginas e os pa
 
 | Selo | Frase no selo | Onde usar | O que precisa ser verdade |
 |---|---|---|---|
-| Taxa zero | "Taxa 0% nas vendas · checkout Mercado Pago" | Topo da home, planos, /parceiros | Regra D220 ativa (assinaturas com taxa 0) |
+| Taxa zero da plataforma | "Taxa 0% da plataforma · checkout Mercado Pago" (nunca "sem taxas": o Mercado Pago cobra as dele) | Topo da home, planos, /parceiros | Regra D220 ativa (assinaturas com taxa 0) |
 | Parceiro oficial (versão nossa, sem o logo deles) | "Parceiro oficial Mercado Pago" (só texto) | Topo, rodapé, checkout | Parceria vigente (confirmada pelo dono). Com o kit oficial em mãos, troque pelo selo deles |
 | Feita para o atacado | "Grade · pacote · preço por quantidade" | Seção "Feita para o atacado", /recursos | Grade, preço por quantidade e pedido mínimo existem (`/merchant/atacado`) |
 | Do Brás para o Brasil | "Equipe no Brás e no Canindé" | Vivência de rua, rodapé, /parceiros | Equipe presente nessas regiões |

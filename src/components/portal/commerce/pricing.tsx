@@ -12,7 +12,7 @@ export type PricingOffer = { trialDays: number; firstPeriodCents: number | null;
 const FAIXAS = [0, 500_000, 1_000_000, 2_500_000, 5_000_000, 10_000_000, 20_000_000, 50_000_000];
 const rotulo = (c: number, i: number) => (c === 0 ? "Começando" : i === FAIXAS.length - 1 ? "R$ 500 mil+" : `R$ ${c / 100_000} mil`);
 /** Para quem é cada plano (o texto do catálogo repete o preço, que já aparece no cartão). */
-const PARA_QUEM: Record<string, string> = { COMMERCE_START: "Tudo para vender online, com taxa zero nas vendas.", COMMERCE_PRO: "Para quem já vende todo mês: o Maurício escreve por você.", COMMERCE_SCALE: "Para operações com volume: o Maurício completo.", COMMERCE_ENTERPRISE: "Para operações grandes, com condições negociadas." };
+const PARA_QUEM: Record<string, string> = { COMMERCE_START: "Tudo para vender online, com taxa zero da plataforma nas vendas.", COMMERCE_PRO: "Para quem já vende todo mês: o Maurício escreve por você.", COMMERCE_SCALE: "Para operações com volume: o Maurício completo.", COMMERCE_ENTERPRISE: "Para operações grandes, com condições negociadas." };
 /** O que cada plano soma ao anterior (D220: com taxa zero, os planos se diferenciam pelo que entregam). Cotas da IA no Master. */
 const A_MAIS: Record<string, string> = { COMMERCE_START: "Loja completa: vitrine, checkout, cupons, campanhas, equipe", COMMERCE_PRO: "+ Maurício escreve descrições, títulos e respostas (200 por mês)", COMMERCE_SCALE: "+ Maurício completo: analisa vendas e cadastra por conversa (1.000 por mês)" };
 const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace(".", ",")}%`;
@@ -46,7 +46,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           <span>{offer.trialDays} dias grátis</span>
           {offer.firstPeriodCents !== null ? <><span aria-hidden>·</span><span>1º mês por {formatBRL(offer.firstPeriodCents)} no mensal</span></> : null}
           {offer.feeHolidayMonths > 0 && !taxaZero ? <><span aria-hidden>·</span><span>taxa zero por {offer.feeHolidayMonths} {offer.feeHolidayMonths === 1 ? "mês" : "meses"}</span></> : null}
-          {taxaZero ? <><span aria-hidden>·</span><span><b>taxa zero</b> nas vendas com Mercado Pago</span></> : null}
+          {taxaZero ? <><span aria-hidden>·</span><span><b>taxa zero</b> da plataforma nas vendas</span></> : null}
         </p>
       ) : null}
 
@@ -64,7 +64,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           <div aria-hidden className="mt-1 hidden justify-between text-[11px] text-muted-foreground sm:flex">{FAIXAS.map((c, i) => <span key={c}>{rotulo(c, i)}</span>)}</div>
           {taxaZero && pagos[0] && venda > 0 && !enterprise ? (
             <p className="mt-4 rounded-2xl bg-surface-muted px-4 py-3 text-sm" aria-live="polite">
-              Vendendo {rotulo(venda, faixa)}, na NextLevel você paga <b className="tabular-nums text-success">{formatBRL(mensal(pagos[0]))}/mês</b> e nada sobre as vendas.
+              Vendendo {rotulo(venda, faixa)}, na NextLevel você paga <b className="tabular-nums text-success">{formatBRL(mensal(pagos[0]))}/mês</b> e nenhuma taxa da plataforma sobre as vendas.
               {concorrencia.length ? <> Nas outras, usando o Mercado Pago: {concorrencia.map((c, i) => <span key={c.nome}>{i ? " · " : " "}{c.nome} <b className="tabular-nums">{formatBRL(c.m!.totalCents)}</b></span>)}.</> : null}
             </p>
           ) : null}
@@ -89,7 +89,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
                   <p className="mt-5 flex items-baseline gap-1"><span className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tabular-nums">{formatBRL(mensal(p))}</span><span className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>/mês</span></p>
                   <p className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>{cycle === "ANNUAL" ? <>{formatBRL(p.annualCents!)} por ano, pagamento único</> : <>ou {formatBRL(Math.round(p.annualCents! / 12))}/mês no anual</>}</p>
                   {taxaZero ? (
-                    <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${destaque ? "bg-white/10" : "bg-surface-muted"}`}><b>Taxa zero</b> nas vendas com Mercado Pago<span className="mt-1 block text-xs opacity-80">{A_MAIS[p.key] ?? "Você paga só a mensalidade"}</span></p>
+                    <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${destaque ? "bg-white/10" : "bg-surface-muted"}`}><b>Taxa zero</b> da plataforma nas vendas<span className="mt-1 block text-xs opacity-80">{A_MAIS[p.key] ?? "Da NextLevel, você paga só a mensalidade"}</span></p>
                   ) : <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${destaque ? "bg-white/10" : "bg-surface-muted"}`}>
                     + <b>{pct(p.feeBps)}</b> sobre as vendas pagas
                     <span className="mt-1 block text-xs opacity-80">{venda === 0 ? "Sem vendas ainda" : `Vendendo ${rotulo(venda, faixa)} por mês`}: <b className="tabular-nums">{formatBRL(total(p))}/mês</b> no total</span>
@@ -107,7 +107,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           );
         })}
       </ul>
-      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da NextLevel nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. Você recebe 100% das vendas direto no Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. Você recebe 100% das vendas na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. Você recebe 100% das vendas na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
     </div>
   );
 }

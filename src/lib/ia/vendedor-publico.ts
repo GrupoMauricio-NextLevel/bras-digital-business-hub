@@ -59,7 +59,7 @@ const pagos = (f: FatosVenda) => f.planos.filter((p) => !p.quote && p.monthlyCen
 const custo = (p: PlanoVenda, vendas: number) => (p.monthlyCents ?? 0) + Math.round((vendas * (p.feeBps ?? 0)) / 10_000);
 const taxaZero = (f: FatosVenda) => pagos(f).length > 0 && pagos(f).every((p) => !p.feeBps);
 const ofertaTxt = (f: FatosVenda) => f.oferta ? ` Para começar: ${f.oferta.trialDays} dias grátis${f.oferta.firstPeriodCents !== null ? `, 1º mês por ${formatBRL(f.oferta.firstPeriodCents)}` : ""}${f.oferta.feeHolidayMonths > 0 && !taxaZero(f) ? ` e taxa zero nos primeiros ${f.oferta.feeHolidayMonths} meses` : ""}.` : "";
-const TAXA_ZERO_TXT = "Taxa zero nas vendas com o checkout do Mercado Pago, nosso parceiro oficial: você paga só a mensalidade.";
+const TAXA_ZERO_TXT = "Taxa zero da plataforma sobre as vendas, com o checkout do Mercado Pago, nosso parceiro oficial: da NextLevel, você paga só a mensalidade. As taxas do Mercado Pago (Pix e cartão) são dele, como em qualquer plataforma.";
 const criar = (f: FatosVenda, plano?: string): Acao => ({ rotulo: plano ? "Criar minha loja com este plano" : "Criar minha loja", href: plano ? `${f.cadastro}?plano=${plano}` : f.cadastro });
 const contato: Acao = { rotulo: "Quero que a equipe me chame", contato: true };
 
@@ -97,7 +97,7 @@ export function responder(f: FatosVenda, assunto: string | null): RespostaVenda 
     case "teste":
       return { assunto, texto: `${f.oferta ? `Sim: ${f.oferta.trialDays} dias grátis para montar e testar a loja.${ofertaTxt(f).replace(" Para começar:", "")}` : "Você monta a loja e só publica quando estiver pronta."} Não tem fidelidade: cancela quando quiser, direto no painel.`, atalhos: [{ id: "plano", rotulo: "Qual plano escolher?" }], acoes: [criar(f)] };
     case "pagamento":
-      return { assunto, texto: `Você recebe pela sua própria conta Mercado Pago: Pix com confirmação automática e cartão em até 6x. 100% das vendas caem direto para você${taxaZero(f) ? ", com taxa zero da NextLevel sobre elas (o Mercado Pago é nosso parceiro oficial); você paga só a mensalidade" : "; a NextLevel cobra o plano e a taxa em fatura separada"}. Também dá para mandar link de pagamento pelo WhatsApp.`, atalhos: [{ id: "frete", rotulo: "E o frete?" }, { id: "preco", rotulo: "Quanto custa?" }], acoes: [criar(f)] };
+      return { assunto, texto: `Você recebe pela sua própria conta Mercado Pago: Pix com confirmação automática e cartão em até 6x. o dinheiro cai direto para você${taxaZero(f) ? ", sem taxa da NextLevel sobre as vendas (o Mercado Pago é nosso parceiro oficial e cobra só as taxas dele de Pix e cartão); da NextLevel, você paga só a mensalidade" : "; a NextLevel cobra o plano e a taxa em fatura separada"}. Também dá para mandar link de pagamento pelo WhatsApp.`, atalhos: [{ id: "frete", rotulo: "E o frete?" }, { id: "preco", rotulo: "Quanto custa?" }], acoes: [criar(f)] };
     case "frete": {
       const fr = f.integracoes.find((g) => g.grupo === "frete");
       return { assunto, texto: `O frete é cotado por CEP no checkout${fr ? ` com ${fr.nomes.slice(0, 6).join(", ")}` : ""}. Você também cria regras próprias (frete grátis a partir de um valor, retirada na loja) e o cliente recebe o rastreio.`, atalhos: [{ id: "integracoes", rotulo: "Outras integrações" }], acoes: [{ rotulo: "Ver todas as integrações", href: "/integracoes" }, criar(f)] };

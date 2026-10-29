@@ -51,7 +51,7 @@ export default async function ComparativoPage() {
       <section className="mx-auto max-w-6xl px-4 pb-16" aria-labelledby="planos-t">
         <h2 id="planos-t" className="text-2xl font-bold text-foreground">Planos de cada plataforma</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border-2 border-[var(--ds-primary)] bg-surface p-6"><h3 className="text-lg font-bold">NextLevel E-commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-muted-foreground">Taxa zero com o Mercado Pago, parceiro oficial. Sem limite de produtos e pedidos. 100% das vendas na sua conta.</p></div>
+          <div className="rounded-3xl border-2 border-[var(--ds-primary)] bg-surface p-6"><h3 className="text-lg font-bold">NextLevel E-commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-muted-foreground">Taxa zero da plataforma com o checkout do Mercado Pago, parceiro oficial (as taxas de Pix e cartão do Mercado Pago são à parte). Sem limite de produtos e pedidos. Dinheiro direto na sua conta.</p></div>
           {CONCORRENTES.map((c) => (
             <div key={c.key} className="rounded-3xl border border-border bg-surface p-6">
               <h3 className="text-lg font-bold">{c.nome}</h3>

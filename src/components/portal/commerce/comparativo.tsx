@@ -22,7 +22,7 @@ export function SeloMercadoPago({ escuro = false }: { escuro?: boolean }) {
 export function PorQueNextLevel({ degrausNl }: { degrausNl: DegrauNL[] }) {
   const entrada = degrausNl[0];
   const MOTIVOS = [
-    { icon: Banknote, titulo: "Taxa zero nas vendas", texto: "Com o checkout do Mercado Pago, nosso parceiro oficial, a NextLevel não cobra nada sobre as suas vendas. Você paga só a mensalidade." },
+    { icon: Banknote, titulo: "Taxa zero da plataforma", texto: "Com o checkout do Mercado Pago, nosso parceiro oficial, a NextLevel não cobra taxa sobre as suas vendas. Da NextLevel, você paga só a mensalidade." },
     { icon: BadgeCheck, titulo: "Preço mais competitivo em todos os planos", texto: `Mensalidade a partir de ${entrada ? reais(entrada.mensalCents) : "—"} (ou ${entrada ? reais(entrada.anualMesCents) : "—"}/mês no anual). No custo total (mensalidade + taxa), vence Nuvemshop, Loja Integrada, WBuy e Tray plano a plano.` },
     { icon: Sem, titulo: "Sem limite de produtos e pedidos", texto: "Em todos os planos. Você não troca de plano porque cadastrou mais produtos ou vendeu mais." },
     { icon: UsersRound, titulo: "Gente de verdade perto de você", texto: "Equipe NextLevel em São Paulo, na rua do atacado: monta a loja junto, migra de outra plataforma e atende no WhatsApp." },
@@ -31,8 +31,8 @@ export function PorQueNextLevel({ degrausNl }: { degrausNl: DegrauNL[] }) {
     <section id="por-que" aria-labelledby="porque-t" className="scroll-mt-16 bg-surface px-4 py-16 md:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-center gap-3"><p className="im-eyebrow im-eyebrow--claro">Por que a NextLevel</p><SeloMercadoPago /></div>
-        <h2 id="porque-t" className="im-h2 mt-4 max-w-4xl text-foreground">Taxa zero nas vendas. Você paga só a mensalidade.</h2>
-        <p className="mt-4 max-w-2xl text-lg text-body">Pix e cartão pelo Mercado Pago, referência em pagamentos na América Latina, com 100% das vendas caindo direto na sua conta.</p>
+        <h2 id="porque-t" className="im-h2 mt-4 max-w-4xl text-foreground">Taxa zero da plataforma nas vendas. Da NextLevel, você paga só a mensalidade.</h2>
+        <p className="mt-4 max-w-2xl text-lg text-body">Pix e cartão pelo Mercado Pago, referência em pagamentos na América Latina, com o dinheiro das vendas caindo direto na sua conta. O Mercado Pago cobra só as taxas dele, de Pix e cartão, como em qualquer plataforma.</p>
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {MOTIVOS.map((m, i) => (
             <li key={m.titulo} className={`rounded-3xl border p-6 ${i === 0 ? "border-transparent bg-[var(--ec-marinho,#101a33)] text-white" : "border-border bg-canvas"}`}>
@@ -55,7 +55,7 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
   const linhas = degraus(degrausNl);
   const sim = <Check className="mx-auto size-5 text-emerald-300" aria-label="Sim" />, nao = <X className="mx-auto size-5 text-rose-300" aria-label="Não" />;
   const tabela: { rotulo: string; nl: React.ReactNode; vals: Record<string, React.ReactNode> }[] = [
-    { rotulo: "Taxa sobre as vendas usando o Mercado Pago", nl: <b className="text-emerald-300">Zero com Mercado Pago</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.some((p) => p.taxaBps !== null) ? c.planos.filter((p) => p.mensalCents > 0).map((p) => pct(p.taxaBps)).join(" · ") : "não divulga"])) },
+    { rotulo: "Taxa da plataforma sobre as vendas, usando o Mercado Pago", nl: <b className="text-emerald-300">Zero com Mercado Pago</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.some((p) => p.taxaBps !== null) ? c.planos.filter((p) => p.mensalCents > 0).map((p) => pct(p.taxaBps)).join(" · ") : "não divulga"])) },
     { rotulo: "Produtos sem limite em todos os planos", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.filter((p) => p.mensalCents > 0).every((p) => p.produtos === null) ? sim : nao])) },
     { rotulo: "Pedidos sem limite por mês", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.every((p) => p.pedidosMes === null) ? sim : nao])) },
     { rotulo: "Cobrança em reais", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.moeda === "BRL" ? sim : nao])) },
@@ -75,7 +75,7 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
                 <p className="text-sm font-semibold text-white/70">Plano {l.degrau.toLowerCase()}</p>
                 <div className="mt-4 rounded-2xl bg-white p-4 text-[#101a33]">
                   <p className="flex items-baseline justify-between gap-2"><b>NextLevel {n.nome}</b><span><b className="text-2xl tabular-nums">{reais(n.mensalCents)}</b><span className="text-xs">/mês</span></span></p>
-                  <p className="mt-1 flex justify-between gap-2 text-xs"><span className="font-bold text-emerald-700">+ 0% de taxa</span><span>ou <b>{reais(n.anualMesCents)}/mês</b> no anual</span></p>
+                  <p className="mt-1 flex justify-between gap-2 text-xs"><span className="font-bold text-emerald-700">+ 0% de taxa da plataforma</span><span>ou <b>{reais(n.anualMesCents)}/mês</b> no anual</span></p>
                 </div>
                 <table className="mt-3 w-full text-sm">
                   <caption className="sr-only">Plano {l.degrau.toLowerCase()} das outras plataformas</caption>
@@ -115,17 +115,17 @@ export function FaixaTaxaZero() {
       <div className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] bg-white p-6 text-[#101a33] shadow-[0_30px_80px_-30px_rgb(0_177_234/0.55)] md:grid-cols-[1.1fr_1fr] md:items-center md:p-10">
         <div>
           <SeloMercadoPago />
-          <p className="mt-5 flex items-end gap-3"><span className="text-7xl font-black leading-none tracking-tight text-[#00a650] md:text-8xl">0%</span><span className="pb-2 text-lg font-bold leading-tight">de taxa<br />nas vendas</span></p>
-          <h2 id="taxa-zero-t" className="mt-4 text-2xl font-bold leading-tight tracking-tight md:text-3xl">A única com taxa zero no checkout do Mercado Pago.</h2>
-          <p className="mt-3 text-base text-[#3b4660]">Nas outras plataformas, vender com o Mercado Pago custa uma taxa sobre cada venda. Na NextLevel, você paga só a mensalidade.</p>
+          <p className="mt-5 flex items-end gap-3"><span className="text-7xl font-black leading-none tracking-tight text-[#00a650] md:text-8xl">0%</span><span className="pb-2 text-lg font-bold leading-tight">de taxa da<br />plataforma</span></p>
+          <h2 id="taxa-zero-t" className="mt-4 text-2xl font-bold leading-tight tracking-tight md:text-3xl">A única plataforma com taxa zero no checkout do Mercado Pago.</h2>
+          <p className="mt-3 text-base text-[#3b4660]">Nas outras plataformas, além da taxa do Mercado Pago, você paga uma taxa da própria plataforma sobre cada venda. Na NextLevel, essa taxa não existe: da plataforma, você paga só a mensalidade.</p>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#3b4660]">Taxa sobre as vendas usando o Mercado Pago</p>
+          <p className="text-sm font-semibold text-[#3b4660]">Taxa da plataforma sobre cada venda, usando o Mercado Pago</p>
           <ul className="mt-3 divide-y divide-[#e3e8f2] rounded-2xl border border-[#e3e8f2]">
             <li className="flex items-center justify-between gap-3 rounded-t-2xl bg-[#e9f9ef] px-4 py-3"><b>NextLevel E-commerce</b><b className="text-xl tabular-nums text-[#00a650]">0%</b></li>
             {outras.map((o) => <li key={o.key} className="flex items-center justify-between gap-3 px-4 py-3"><span>{o.nome}</span><span className="tabular-nums text-[#c0264b]">até <b className="text-lg">{pct(o.maxBps)}</b></span></li>)}
           </ul>
-          <p className="mt-3 text-xs leading-relaxed text-[#5b6680]">Entre as plataformas comparadas. Nelas, a taxa zera só com o meio de pagamento da própria plataforma; taxa de processamento do cartão e do Pix existe em todas. Fontes e data no <Link href="/comparativo" className="underline">comparativo</Link>.</p>
+          <p className="mt-3 text-xs leading-relaxed text-[#5b6680]">Entre as plataformas comparadas. Nelas, a taxa da plataforma zera só com o meio de pagamento delas. As taxas do Mercado Pago (Pix e cartão) são cobradas por ele em todas, inclusive na NextLevel. Fontes e data no <Link href="/comparativo" className="underline">comparativo</Link>.</p>
         </div>
       </div>
     </section>

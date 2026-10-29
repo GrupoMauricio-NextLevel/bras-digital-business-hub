@@ -62,7 +62,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
           <h2 id="planos-t" className="ecc-h2 text-center">Escolha o plano e comece hoje</h2>
           <p className="ecc-garantias">
             <span><ShieldCheck className="size-4" aria-hidden />Sem fidelidade</span>
-            <span><Banknote className="size-4" aria-hidden />100% das vendas na sua conta</span>
+            <span><Banknote className="size-4" aria-hidden />Dinheiro direto na sua conta</span>
             <span><BadgeCheck className="size-4" aria-hidden />Mensal ou anual, você escolhe</span>
           </p>
           <CommercePlansSection cta={cta} signupOpen={brand.signupOpen} />

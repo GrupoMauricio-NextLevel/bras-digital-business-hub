@@ -2329,3 +2329,4 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - propostas e pedidos do balcão.
   - Não afirmamos que os concorrentes não têm esses recursos.
 - **Selos:** `docs/marca/SELOS-E-PROVAS.md`. Selos próprios com prompts para o gerador de imagem; selos de terceiros (Google, Reclame Aqui, Mercado Pago, PCI) só com o material oficial.
+- **Correção do dono (mesmo dia):** a taxa zero é da **plataforma** sobre as vendas. O Mercado Pago cobra as taxas dele (Pix e cartão), que não têm nada a ver com a NextLevel. Os textos agora dizem sempre "taxa zero da plataforma". Ficaram de fora "nada sobre as vendas" e "100% das vendas na sua conta", que davam a entender que não existia nenhuma taxa. A faixa do topo, o FAQ, os planos e o vendedor IA lembram que as taxas do Mercado Pago são à parte.
