@@ -5,6 +5,15 @@ description: Publicar o trabalho no Render com segurança. Use quando o dono ped
 
 # Publicar
 
+## Tamanho da verificação (erro aprendido em 2026-10-28)
+Perdemos horas remontando o site (`npm run build`, 10 a 15 min aqui) a cada ajuste visual pequeno só para tirar print, e testando correção no modo dev (que recarrega a página inteira e não mostra transições). O dono reclamou do tempo e dos tokens.
+- **Ajuste pequeno de visual** (CSS, cor, texto, uma classe): `npx tsc --noEmit` + `npx eslint` do arquivo, commit, push para a branch de publicação e **print do site no ar** (Playwright contra produção com o proxy). Sem build local, sem bateria completa.
+- **Mudança grande** (tela nova, banco, pagamento, regra de negócio): bateria normal (tipos, lint, testes do que mudou, build) antes de publicar.
+- **Uma montagem por rodada:** junte os ajustes antes de montar; nunca monte para cada tentativa.
+- **Antes de corrigir, entenda a causa** (ex.: o que fica por cima numa View Transition), para não gastar uma rodada com correção errada.
+- **Modo dev não serve** para conferir transição entre páginas.
+- **Sempre um print da principal implementação por etapa**, e mensagens curtas.
+
 1. `git status --short` e leia o que mudou. Se houver arquivo estranho (segredos, `.env`, dumps), pare e avise o dono.
 2. Bateria, nesta ordem, parando no primeiro erro e corrigindo a causa (nunca pulando teste):
    - `npx tsc --noEmit`

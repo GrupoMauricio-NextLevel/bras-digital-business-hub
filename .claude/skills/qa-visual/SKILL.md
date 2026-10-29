@@ -5,6 +5,15 @@ description: Conferir telas por capturas reais no navegador (Playwright) em 360,
 
 # QA visual
 
+## Tamanho da verificação (erro aprendido em 2026-10-28)
+Perdemos horas remontando o site (`npm run build`, 10 a 15 min aqui) a cada ajuste visual pequeno só para tirar print, e testando correção no modo dev (que recarrega a página inteira e não mostra transições). O dono reclamou do tempo e dos tokens.
+- **Ajuste pequeno de visual** (CSS, cor, texto, uma classe): `npx tsc --noEmit` + `npx eslint` do arquivo, commit, push para a branch de publicação e **print do site no ar** (Playwright contra produção com o proxy). Sem build local, sem bateria completa.
+- **Mudança grande** (tela nova, banco, pagamento, regra de negócio): bateria normal (tipos, lint, testes do que mudou, build) antes de publicar.
+- **Uma montagem por rodada:** junte os ajustes antes de montar; nunca monte para cada tentativa.
+- **Antes de corrigir, entenda a causa** (ex.: o que fica por cima numa View Transition), para não gastar uma rodada com correção errada.
+- **Modo dev não serve** para conferir transição entre páginas.
+- **Sempre um print da principal implementação por etapa**, e mensagens curtas.
+
 ## Rotina
 1. **Servidor:** `bash scripts/restart-demo.sh` (porta 3100, demonstração, banco em memória). Não rode `npm run build` ao mesmo tempo. Dev server bloqueia origens diferentes de `localhost`; para ver a marca Commerce use `http://localhost:3100/lojas` (cookie `nl-brand`) e `/lojas/sair` para voltar.
 2. **Script descartável** em `e2e/_algo.mjs` (apague depois), com `playwright-core` e `executablePath: "/opt/pw-browsers/chromium"`. Capturas para `/tmp/claude-0/shots/…`.
