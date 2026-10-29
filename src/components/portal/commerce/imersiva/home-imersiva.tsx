@@ -12,7 +12,8 @@ import { ThemeGallery } from "@/components/portal/commerce/theme-gallery";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { LojasExemplo } from "@/components/portal/commerce-home";
 import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
-import { ComparativoHome, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
+import { ComparativoHome, FaixaTaxaZero, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
+import { FeitaParaAtacado } from "@/components/portal/commerce/imersiva/feita-para-atacado";
 import { VivenciaRua } from "@/components/portal/commerce/imersiva/vivencia-rua";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
@@ -48,10 +49,12 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} />
+      <FaixaTaxaZero />
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}
       <PorQueNextLevel degrausNl={degrausNl} />
+      <FeitaParaAtacado />
       <VivenciaRua />
 
       <section id="planos" aria-labelledby="planos-t" className="ecc-planos ds-tema-escuro scroll-mt-16">

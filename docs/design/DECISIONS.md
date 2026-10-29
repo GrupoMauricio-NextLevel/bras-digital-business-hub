@@ -2307,3 +2307,25 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - pedido de agência (`agencyRequestedAt`, `agencyInfo`, migração 0080) aparece no Master em Parceiros; a aprovação é a troca do Tipo na página do parceiro.
 - **Linguagem (pedido do dono):** nunca dizer "mais barato". Falar em mais vantajoso, preço mais competitivo, vencer no preço.
 - **Vivência de rua:** seção nova na home (`vivencia-rua.tsx`), logo depois de "Por que a NextLevel". Fala da presença no Brás, no Canindé e em São Paulo, da experiência com os maiores importadores chineses e brasileiros, do foco no atacado e da proximidade, em oposição a agências de outros estados. O selo do topo diz "do Brás, com foco no atacado".
+
+## D221 — [E-commerce] Faixa "a única com taxa zero no checkout do Mercado Pago", comparativo contra quatro e seção do atacado (2026-10-29)
+- **Pedido do dono:**
+  - faixa logo no topo com a taxa zero e as taxas das outras;
+  - comparativo contra pelo menos quatro (Nuvemshop, Loja Integrada, Shopify, WBuy);
+  - explorar o atacado (grade de 12, pacote) na home;
+  - arquivo de selos com prompts para o gerador de imagem.
+- **Preços:** continuam 57 / 147 / 347 (escolha do dono). Nos planos de entrada a Loja Integrada tem mensalidade menor, e no avançado a WBuy também. A comparação passa a ser pelo custo total (mensalidade + taxa usando o Mercado Pago). Teste: em cada plano, a NextLevel tem o menor custo total para quem vende R$ 30 mil por mês (`FAT_REFERENCIA_CENTS`).
+- **Frase do topo:** "A única com taxa zero no checkout do Mercado Pago" (escolha do dono). Não usamos "a única plataforma com taxa zero", porque Nuvemshop, Loja Integrada e WBuy também zeram com o pagamento próprio delas. A faixa (`FaixaTaxaZero`) lista a taxa máxima de cada concorrente usando o Mercado Pago:
+  - Nuvemshop 2%;
+  - Shopify 2%;
+  - WBuy 1,5%;
+  - Tray 1,25%;
+  - Loja Integrada 0,99%.
+- **Dados (sites oficiais, 29/10/2026):** WBuy entrou (59 / 149 / 299 / 499; comissão de 1,5% a 0,7% com outros gateways). A Loja Integrada agora entra com a tarifa (0,99%, 0,90% e 0,70%). A tabela da home compara com cinco plataformas: Nuvemshop, Loja Integrada, WBuy, Tray e Shopify.
+- **Seção "Feita para o atacado"** (`feita-para-atacado.tsx`), só com o que existe no sistema:
+  - grade fechada e unidade no mesmo produto;
+  - preço por quantidade;
+  - pedido mínimo;
+  - propostas e pedidos do balcão.
+  - Não afirmamos que os concorrentes não têm esses recursos.
+- **Selos:** `docs/marca/SELOS-E-PROVAS.md`. Selos próprios com prompts para o gerador de imagem; selos de terceiros (Google, Reclame Aqui, Mercado Pago, PCI) só com o material oficial.

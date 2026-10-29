@@ -34,9 +34,9 @@ export default async function ComparativoPage() {
       </section>
       <section className="mx-auto max-w-6xl px-4 pb-16" aria-labelledby="faixas-t">
         <h2 id="faixas-t" className="text-2xl font-bold text-foreground">Custo da plataforma por mês</h2>
-        <p className="mt-1 text-sm text-body">Mensalidade + tarifa sobre as vendas usando outro meio de pagamento, no plano de menor valor de cada uma para o faturamento. Na NextLevel, com o Mercado Pago, a tarifa é zero.</p>
+        <p className="mt-1 text-sm text-body">Mensalidade + taxa sobre as vendas usando o Mercado Pago, no plano de menor valor de cada uma para o faturamento. Na NextLevel, com o Mercado Pago, a tarifa é zero.</p>
         <div className="mt-6 overflow-x-auto rounded-3xl border border-border">
-          <table className="w-full min-w-[40rem] text-sm">
+          <table className="w-full min-w-[48rem] text-sm">
             <thead><tr className="border-b border-border text-left text-muted-foreground"><th scope="col" className="p-4">Vendendo por mês</th><th scope="col" className="p-4 font-bold text-foreground">NextLevel</th>{comparaveis.map((c) => <th key={c.key} scope="col" className="p-4">{c.nome}</th>)}</tr></thead>
             <tbody>{FAIXAS.map((f) => {
               const n = melhorPlano(nl, f)!; const outros = comparaveis.map((c) => melhorPlano(c, f));

@@ -15,23 +15,29 @@ export type Plataforma = { key: string; nome: string; fonte: string; moeda: "BRL
 
 const sem = { produtos: null, pedidosMes: null, faturamentoMaxCents: null };
 export const CONCORRENTES: Plataforma[] = [
-  { key: "nuvemshop", nome: "Nuvemshop", fonte: "https://www.nuvemshop.com.br/planos-e-precos", moeda: "BRL", notas: ["Tarifa por venda com outro meio de pagamento: 2%, 2%, 1% e 0,7%. Com o Nuvem Pago a tarifa zera, mas o processamento do pagamento é cobrado."], planos: [
+  { key: "nuvemshop", nome: "Nuvemshop", fonte: "https://www.nuvemshop.com.br/planos-e-precos", moeda: "BRL", notas: ["Tarifa por venda com outro meio de pagamento (inclusive o Mercado Pago): 2%, 2%, 1% e 0,7%. Zera com o Nuvem Pago, o pagamento da própria plataforma."], planos: [
     { nome: "Começo", mensalCents: 0, taxaBps: 200, ...sem },
     { nome: "Essencial", mensalCents: 6_900, anualMesCents: 5_900, taxaBps: 200, ...sem },
     { nome: "Impulso", mensalCents: 16_400, anualMesCents: 13_900, taxaBps: 100, ...sem },
     { nome: "Escala", mensalCents: 44_900, anualMesCents: 38_200, taxaBps: 70, ...sem },
   ] },
-  { key: "tray", nome: "Tray", fonte: "https://www.tray.com.br/planos/", moeda: "BRL", notas: ["Limites de produtos e pedidos por plano; teste grátis não informado. Anual com valor por mês divulgado no site."], planos: [
+  { key: "loja-integrada", nome: "Loja Integrada", fonte: "https://lojaintegrada.com.br/compare/", moeda: "BRL", notas: ["Valores do site no pagamento trimestral. Tarifa com outro meio de pagamento (inclusive o Mercado Pago): 0,99%, 0,90% e 0,70%; zera com o Pagali, o pagamento da própria plataforma. O plano grátis não aceita outro meio de pagamento."], planos: [
+    { nome: "Crescimento", mensalCents: 4_600, taxaBps: 99, produtos: 250, pedidosMes: null, faturamentoMaxCents: null },
+    { nome: "Aceleração", mensalCents: 8_300, taxaBps: 90, produtos: 500, pedidosMes: null, faturamentoMaxCents: null },
+    { nome: "Expansão", mensalCents: 20_000, taxaBps: 70, produtos: null, pedidosMes: null, faturamentoMaxCents: null },
+  ] },
+  { key: "wbuy", nome: "WBuy", fonte: "https://www.wbuy.com.br/planos", moeda: "BRL", notas: ["Comissão com outros gateways (inclusive o Mercado Pago): 1,5%, 1,25%, 1% e 0,7%; zera com o wBuy Pay, o pagamento da própria plataforma. Limite de produtos por plano."], planos: [
+    { nome: "Iniciante", mensalCents: 5_900, anualMesCents: 4_720, taxaBps: 150, produtos: 200, pedidosMes: null, faturamentoMaxCents: null },
+    { nome: "Turbo", mensalCents: 14_900, anualMesCents: 11_920, taxaBps: 125, produtos: 500, pedidosMes: null, faturamentoMaxCents: null },
+    { nome: "Expansão", mensalCents: 29_900, anualMesCents: 23_920, taxaBps: 100, produtos: 1_000, pedidosMes: null, faturamentoMaxCents: null },
+    { nome: "Elite", mensalCents: 49_900, anualMesCents: 39_920, taxaBps: 70, produtos: 5_000, pedidosMes: null, faturamentoMaxCents: null },
+  ] },
+  { key: "tray", nome: "Tray", fonte: "https://www.tray.com.br/planos/", moeda: "BRL", notas: ["Tarifa com outros gateways (inclusive o Mercado Pago): 1,25%, 1% e 0,75%. Limites de produtos e pedidos por plano."], planos: [
     { nome: "Lançamento", mensalCents: 5_900, anualMesCents: 3_900, taxaBps: 125, produtos: 100, pedidosMes: 100, faturamentoMaxCents: 2_000_000 },
     { nome: "Crescimento", mensalCents: 15_900, anualMesCents: 12_900, taxaBps: 100, produtos: 750, pedidosMes: 500, faturamentoMaxCents: 7_500_000 },
     { nome: "Avançado", mensalCents: 44_900, anualMesCents: 35_900, taxaBps: 75, produtos: 1_500, pedidosMes: 1_000, faturamentoMaxCents: 15_000_000 },
   ] },
-  { key: "loja-integrada", nome: "Loja Integrada", fonte: "https://lojaintegrada.com.br/planos/", moeda: "BRL", notas: ["Não divulga o percentual da tarifa com outro meio de pagamento; limites de produtos e visitas por plano."], planos: [
-    { nome: "Crescimento", mensalCents: 4_600, taxaBps: null, produtos: 250, pedidosMes: null, faturamentoMaxCents: null },
-    { nome: "Aceleração", mensalCents: 8_300, taxaBps: null, produtos: 500, pedidosMes: null, faturamentoMaxCents: null },
-    { nome: "Expansão", mensalCents: 20_000, taxaBps: null, produtos: null, pedidosMes: null, faturamentoMaxCents: null },
-  ] },
-  { key: "shopify", nome: "Shopify", fonte: "https://www.shopify.com/br/precos", moeda: "USD", notas: ["Cobrança em dólar (US$ 39, 105 e 399 por mês)."], planos: [
+  { key: "shopify", nome: "Shopify", fonte: "https://www.shopify.com/br/precos", moeda: "USD", notas: ["Cobrança em dólar (US$ 39, 105 e 399 por mês). Tarifa com gateway de terceiros (inclusive o Mercado Pago): 2%, 1% e 0,6%."], planos: [
     { nome: "Basic", mensalCents: 3_900, taxaBps: 200, ...sem },
     { nome: "Grow", mensalCents: 10_500, taxaBps: 100, ...sem },
     { nome: "Advanced", mensalCents: 39_900, taxaBps: 60, ...sem },
@@ -61,19 +67,24 @@ export function custosPorFaixa(nl: Pick<Plataforma, "moeda" | "planos">, faixasC
 }
 
 /**
- * Degraus (D220): o plano de entrada, o intermediário e o avançado de cada plataforma, lado a lado, no mensal e no anual
- * (valor por mês). É a comparação "mais barato em todos os planos" da home. Só plataformas em reais com preço divulgado.
+ * Degraus (D220): o plano de entrada, o intermediário e o avançado de cada plataforma, lado a lado, com a mensalidade, o anual
+ * (valor por mês, quando divulgado) e a tarifa quando o lojista usa o Mercado Pago. O custo total é calculado para quem vende
+ * `FAT_REFERENCIA` por mês. Só plataformas em reais com preço e tarifa divulgados.
  */
 export const DEGRAUS = ["Entrada", "Intermediário", "Avançado"] as const;
-const DEGRAU_DE: Record<string, [string, string, string]> = { nuvemshop: ["Essencial", "Impulso", "Escala"], tray: ["Lançamento", "Crescimento", "Avançado"] };
-export function degraus(nl: { nome: string; mensalCents: number; anualMesCents: number }[]) {
+export const FAT_REFERENCIA_CENTS = 3_000_000; // R$ 30 mil por mês
+const DEGRAU_DE: Record<string, [string, string, string]> = { nuvemshop: ["Essencial", "Impulso", "Escala"], "loja-integrada": ["Crescimento", "Aceleração", "Expansão"], wbuy: ["Iniciante", "Turbo", "Expansão"], tray: ["Lançamento", "Crescimento", "Avançado"] };
+export function degraus(nl: { nome: string; mensalCents: number; anualMesCents: number }[], fatCents = FAT_REFERENCIA_CENTS) {
   return DEGRAUS.map((d, i) => ({
     degrau: d,
-    nextlevel: nl[i] ?? null,
+    nextlevel: nl[i] ? { ...nl[i], totalCents: nl[i].mensalCents } : null,
     outras: Object.entries(DEGRAU_DE).map(([k, nomes]) => {
       const c = CONCORRENTES.find((x) => x.key === k)!;
       const p = c.planos.find((x) => x.nome === nomes[i])!;
-      return { key: k, nome: c.nome, plano: p.nome, mensalCents: p.mensalCents, anualMesCents: p.anualMesCents ?? null };
+      return { key: k, nome: c.nome, plano: p.nome, mensalCents: p.mensalCents, anualMesCents: p.anualMesCents ?? null, taxaBps: p.taxaBps ?? 0, totalCents: custoDoPlano(p, fatCents)! };
     }),
   }));
 }
+
+/** Maior tarifa de cada plataforma quando o lojista usa o Mercado Pago (para a faixa do topo). */
+export const taxasNoMercadoPago = () => CONCORRENTES.map((c) => ({ key: c.key, nome: c.nome, maxBps: Math.max(...c.planos.filter((p) => p.mensalCents > 0).map((p) => p.taxaBps ?? 0)) }));

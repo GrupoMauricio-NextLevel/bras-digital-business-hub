@@ -65,7 +65,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           {taxaZero && pagos[0] && venda > 0 && !enterprise ? (
             <p className="mt-4 rounded-2xl bg-surface-muted px-4 py-3 text-sm" aria-live="polite">
               Vendendo {rotulo(venda, faixa)}, na NextLevel você paga <b className="tabular-nums text-success">{formatBRL(mensal(pagos[0]))}/mês</b> e nada sobre as vendas.
-              {concorrencia.length ? <> Em outras plataformas, com outro meio de pagamento: {concorrencia.map((c, i) => <span key={c.nome}>{i ? " · " : " "}{c.nome} <b className="tabular-nums">{formatBRL(c.m!.totalCents)}</b></span>)}.</> : null}
+              {concorrencia.length ? <> Nas outras, usando o Mercado Pago: {concorrencia.map((c, i) => <span key={c.nome}>{i ? " · " : " "}{c.nome} <b className="tabular-nums">{formatBRL(c.m!.totalCents)}</b></span>)}.</> : null}
             </p>
           ) : null}
         </div>
@@ -107,7 +107,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           );
         })}
       </ul>
-      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da NextLevel nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. Você recebe 100% das vendas direto no Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. Você recebe 100% das vendas na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da NextLevel nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. Você recebe 100% das vendas direto no Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. Você recebe 100% das vendas na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
     </div>
   );
 }
