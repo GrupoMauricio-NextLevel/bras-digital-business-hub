@@ -2214,3 +2214,18 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - Só na E-commerce: o lojista do SuperDrop continua com as telas de antes.
 - Pós-venda já tinha a fila própria; Atendimento e Clientes já nasceram nesse padrão (D206/D207).
 - Código: `src/components/app/precisa-de-voce.tsx`, `src/lib/domain/loja-agora.ts` e as páginas `src/app/merchant/{finance,storefront,descontos,avaliacoes,campanhas,orders}`, `src/components/commerce/produtos-agora.tsx`.
+
+## D213 — [E-commerce] Loja do cliente final: calcular frete, Comprar agora, barra de frete grátis e etapas da compra (2026-10-29)
+- **Pedido do dono:** "pode ir na ordem, um de cada vez". Primeiro, a loja que o cliente final vê.
+- **Página do produto (só lojas da E-commerce):**
+  - **"Comprar agora":** coloca no carrinho e vai direto ao fechamento.
+  - **"Calcular frete":** pelo CEP, com a mesma cotação do fechamento (`quoteShippingAction`, servidor), mostrando opções, prazo e preço.
+  - **Aviso de frete grátis** a partir do valor da regra da loja (`shipping_config.freeFromCents`).
+  - A barra fixa do celular passa a dizer "Comprar agora" e leva direto ao fechamento.
+- **Carrinho (só E-commerce):** barra "Faltam R$ X para ganhar frete grátis", que fica cheia quando o pedido atinge o valor. Usa a mesma regra que a cotação aplica, sem prometer o que o fechamento não cumpre.
+- **Fechamento (todas as lojas):** linha de etapas "1. Carrinho › 2. Seus dados e entrega › 3. Pagamento seguro".
+- **Correções visuais:**
+  - os selos "Compre com segurança" do carrinho escapavam das margens (o carrinho não tinha moldura de página);
+  - no celular, o botão "Dúvidas?" cobria o preço do produto: agora é só um ícone redondo à direita, acima da barra de compra.
+- Lojas do SuperDrop: mesmas telas de antes (sem "Comprar agora", sem calcular frete e sem barra de frete grátis).
+- Código: `src/components/storefront/buy-box.tsx`, `src/components/storefront/calcular-frete.tsx`, `src/app/store/[slug]/cart/cart-view.tsx`, `src/app/store/[slug]/checkout/checkout-form.tsx`, `src/components/storefront/sections/sections.tsx`, `src/components/storefront/store-page.tsx`, `src/components/storefront/chat-da-loja.tsx`.

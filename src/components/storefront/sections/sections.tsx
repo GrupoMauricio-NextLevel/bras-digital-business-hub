@@ -14,6 +14,11 @@ import { resolveLink } from "@/lib/themes/template";
 import { cn } from "@/lib/utils";
 import type { BrandCode } from "@/lib/brand";
 import { lojaAceitaCartao, MAX_PARCELAS_LOJA } from "@/lib/pagamento-loja";
+import { parseShippingConfig } from "@/lib/shipping/quote";
+
+/** Frete grátis a partir de quanto (a mesma regra que a cotação aplica). Sem regra válida, nada é prometido. */
+const ehEcommerce = (ctx: SectionProps["ctx"]) => ctx.brandCode === "NEXTLEVEL_COMMERCE";
+const freteGratisDe = (store: SectionProps["ctx"]["store"]) => { try { return parseShippingConfig(store.shippingConfig).freeFromCents; } catch { return null; } };
 import type { SectionProps } from "./types";
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
@@ -159,7 +164,7 @@ export function ProductMain({ settings, ctx }: SectionProps) {
             <div className="grid grid-cols-4 gap-3">{[0, 1, 2, 3].map((i) => <ProductArt key={i} images={product.images} size="md" className="rounded-xl bg-neutral-100 opacity-70" />)}</div>
           </div>
         )}
-        <BuyBox product={product} slug={ctx.slug} shippingNote={str(settings.shippingNote)} stickyBar={settings.stickyBuyBar === true} parcelas={lojaAceitaCartao(ctx.brandCode as BrandCode | undefined) ? MAX_PARCELAS_LOJA : undefined} />
+        <BuyBox product={product} slug={ctx.slug} shippingNote={str(settings.shippingNote)} stickyBar={settings.stickyBuyBar === true} parcelas={lojaAceitaCartao(ctx.brandCode as BrandCode | undefined) ? MAX_PARCELAS_LOJA : undefined} freeFromCents={ehEcommerce(ctx) ? freteGratisDe(ctx.store) : null} extras={ehEcommerce(ctx)} />
       </div>
     </>
   );
@@ -208,4 +213,4 @@ export function CollectionGrid({ settings, ctx }: SectionProps) {
   return <div className={cn("grid grid-cols-2 gap-4 sm:gap-6", cols)}>{ctx.products.map((p) => <ProductCard key={p.id} product={p} slug={ctx.slug} quickView={ctx.globals.style.quickView} />)}</div>;
 }
 
-export function CartMain({ ctx }: SectionProps) { return <CartView slug={ctx.slug} />; }
+export function CartMain({ ctx }: SectionProps) { return <CartView slug={ctx.slug} freeFromCents={ehEcommerce(ctx) ? freteGratisDe(ctx.store) : null} />; }

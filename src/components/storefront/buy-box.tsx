@@ -10,9 +10,10 @@ import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
 import { variantLabel } from "@/lib/variant-label";
 import { cn } from "@/lib/utils";
+import { CalcularFrete } from "./calcular-frete";
 
 /** `parcelas`: só quando a loja aceita cartão (E-commerce, D178); o valor por parcela é indicativo, sem prometer "sem juros". */
-export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number }) {
+export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas, freeFromCents, extras = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number; freeFromCents?: number | null; /** E-commerce (D213): "Comprar agora" e calcular frete. */ extras?: boolean }) {
   const cart = useCart();
   const router = useRouter();
   const [mode, setMode] = React.useState<"unit" | "pack">(product.sellsUnit ? "unit" : "pack");
@@ -31,12 +32,14 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
   const max = mode === "unit" ? variant?.available ?? 0 : pack?.available ?? 0;
   const price = mode === "unit" ? product.priceCents : pack?.priceCents ?? 0;
 
-  const add = () => {
+  const add = (direto = false) => {
     if (max === 0) return toast.error("Sem estoque disponível.");
     if (mode === "unit" && !variant) return toast.error("Escolha um tamanho.");
     cart.add(mode === "unit"
       ? { productId: product.id, variantId: variant!.id, name: product.name, label: `Tam. ${variant!.size}`, unitPriceCents: price, quantity: qty, images: product.images, max, tiers: product.tiers }
       : { productId: product.id, packId: pack!.id, name: product.name, label: `${pack!.name} (${pack!.items.map((i) => `${i.size}:${i.quantity}`).join(" ")})`, unitPriceCents: price, quantity: qty, images: product.images, max });
+    // Comprar agora (D213): coloca no carrinho e vai direto para o fechamento.
+    if (direto) return router.push(`/store/${slug}/checkout`);
     setAdded(true);
     toast.success("Adicionado ao carrinho", { action: { label: "Ver carrinho", onClick: () => router.push(`/store/${slug}/cart`) } });
     setTimeout(() => setAdded(false), 1500);
@@ -83,13 +86,15 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
           <span className="w-8 text-center text-sm font-medium tabular-nums">{qty}</span>
           <button type="button" className="flex h-full min-w-11 items-center justify-center disabled:opacity-40" onClick={() => setQty(Math.min(max, qty + 1))} disabled={qty >= max} aria-label="Mais"><Plus className="size-4" /></button>
         </div>
-        <SfButton className="h-11 flex-1" onClick={add} disabled={max === 0}>{added ? <><Check className="size-4" /> Adicionado</> : <><ShoppingBag className="size-4" /> {max === 0 ? "Esgotado" : "Adicionar ao carrinho"}</>}</SfButton>
+        <SfButton className="h-11 flex-1" onClick={() => add()} disabled={max === 0}>{added ? <><Check className="size-4" /> Adicionado</> : <><ShoppingBag className="size-4" /> {max === 0 ? "Esgotado" : "Adicionar ao carrinho"}</>}</SfButton>
       </div>
+      {extras && max > 0 ? <SfButton variant="outline" className="mt-3 h-11 w-full" onClick={() => add(true)}>Comprar agora</SfButton> : null}
+      {extras ? <CalcularFrete slug={slug} freeFromCents={freeFromCents} item={max === 0 ? null : mode === "unit" ? (variant ? { productId: product.id, variantId: variant.id, quantity: qty } : null) : pack ? { productId: product.id, packId: pack.id, quantity: qty } : null} /> : null}
       {shippingNote ? <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" aria-hidden /> {shippingNote}</div> : null}
       {stickyBar && !ctaVisible ? (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-neutral-200 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur sm:hidden" data-sticky-buy-bar>
           <div className="min-w-0 flex-1"><div className="truncate text-sm font-medium">{product.name}</div><div className="text-sm font-semibold">{formatBRL(price)}</div></div>
-          <SfButton className="h-11 px-6" onClick={add} disabled={max === 0}>{max === 0 ? "Esgotado" : "Comprar"}</SfButton>
+          <SfButton className="h-11 px-6" onClick={() => add(extras)} disabled={max === 0}>{max === 0 ? "Esgotado" : extras ? "Comprar agora" : "Comprar"}</SfButton>
         </div>
       ) : null}
     </div>

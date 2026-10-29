@@ -109,7 +109,7 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
   );
   return (
     <>
-      {!aberto ? <button type="button" onClick={() => setAberto(true)} className="fixed bottom-3 left-3 z-[70] inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-3 text-sm font-bold text-white shadow-xl" aria-label={`Dúvidas? Fale com a ${loja}`}><MessageCircle className="size-4" aria-hidden />Dúvidas?</button> : null}
+      {!aberto ? <button type="button" onClick={() => setAberto(true)} className="fixed bottom-3 left-3 z-[70] inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-3 text-sm font-bold text-white shadow-xl max-sm:bottom-24 max-sm:left-auto max-sm:right-3 max-sm:px-3" aria-label={`Dúvidas? Fale com a ${loja}`}><MessageCircle className="size-4" aria-hidden /><span className="max-sm:sr-only">Dúvidas?</span></button> : null}
       {aberto ? createPortal(painel, document.body) : null}
     </>
   );

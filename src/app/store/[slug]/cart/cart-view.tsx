@@ -5,7 +5,7 @@ import { useCart } from "@/components/storefront/cart-context";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 
-export function CartView({ slug }: { slug: string }) {
+export function CartView({ slug, freeFromCents }: { slug: string; freeFromCents?: number | null }) {
   const cart = useCart();
   const base = `/store/${slug}`;
   // Espaço reservado enquanto o carrinho do navegador carrega: evita o salto de layout quando o conteúdo aparece.
@@ -21,8 +21,19 @@ export function CartView({ slug }: { slug: string }) {
     );
   }
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="py-8">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Carrinho <span className="text-base font-normal text-neutral-500">({cart.count} {cart.count === 1 ? "item" : "itens"})</span></h1>
+      {freeFromCents ? (() => {
+        // Barra de frete grátis (D213): a mesma regra da cotação (`freeFromCents`), sem prometer o que o fechamento não cumpre.
+        const falta = Math.max(0, freeFromCents - cart.subtotal);
+        const pct = Math.min(100, Math.round((cart.subtotal / freeFromCents) * 100));
+        return (
+          <div className="mb-6 rounded-xl border border-neutral-200 p-4" aria-live="polite">
+            <p className="text-sm">{falta > 0 ? <>Faltam <b className="tabular-nums">{formatBRL(falta)}</b> para ganhar <b>frete grátis</b>.</> : <><b>Frete grátis liberado</b> para este pedido.</>}</p>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-neutral-100" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Caminho até o frete grátis"><div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${pct}%`, background: "var(--sf-accent)" }} /></div>
+          </div>
+        );
+      })() : null}
       <div className="grid gap-8 lg:grid-cols-3">
         <ul className="divide-y divide-neutral-200 lg:col-span-2">
           {cart.lines.map((l) => (

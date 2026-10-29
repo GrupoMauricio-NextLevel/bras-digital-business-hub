@@ -99,6 +99,12 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {/* Etapas da compra (D213): o cliente vê onde está e quanto falta. */}
+      <ol aria-label="Etapas da compra" className="mb-5 flex flex-wrap items-center gap-2 text-xs font-medium text-neutral-500">
+        <li><Link href={`${base}/cart`} className="hover:text-neutral-900">1. Carrinho</Link></li><li aria-hidden>›</li>
+        <li aria-current="step" className="rounded-full px-2.5 py-1" style={{ background: "color-mix(in srgb, var(--sf-primary) 10%, white)", color: "var(--sf-primary)" }}>2. Seus dados e entrega</li><li aria-hidden>›</li>
+        <li>3. Pagamento seguro</li>
+      </ol>
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Finalizar compra</h1>
       <form onSubmit={submit} className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">

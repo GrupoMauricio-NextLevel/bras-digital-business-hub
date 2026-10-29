@@ -12,7 +12,7 @@ import type { PageKind } from "@/lib/themes/types";
 import { brandCodeOfStore } from "@/lib/store-brand";
 
 /** Espaçamento externo de cada página (o mesmo que as páginas tinham antes dos modelos). */
-const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:px-6", product: "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10", collection: "mx-auto max-w-6xl px-4 py-8 sm:px-6", cart: "" };
+const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:px-6", product: "mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10", collection: "mx-auto max-w-6xl px-4 py-8 sm:px-6", cart: "mx-auto max-w-6xl px-4 pb-12 sm:px-6" };
 
 /**
  * Monta uma página da loja a partir do modelo (publicado, ou o rascunho na prévia do dono),
@@ -28,7 +28,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const template = trial ? trial.preset.pages[page] : (await resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey })).template;
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const catalog = await getStorefrontCatalog(sf.store.id);
-  const brandCode = page === "product" ? await brandCodeOfStore(db, sf.store) : undefined;
+  const brandCode = page === "product" || page === "cart" ? await brandCodeOfStore(db, sf.store) : undefined; // carrinho (D213): barra de frete grátis só na E-commerce
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
 
