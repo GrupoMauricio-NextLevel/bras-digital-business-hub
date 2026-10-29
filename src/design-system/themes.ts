@@ -11,7 +11,8 @@
  */
 import { contrastRatio, luminance, onSignal } from "@/lib/brand-palette";
 import { BDC, bdcCssVars } from "@/lib/marcas/bras-digital-club";
-import { NL, nlCssVars } from "@/lib/marcas/nextlevel";
+import { CAPA, NL, nlCssVars } from "@/lib/marcas/nextlevel";
+export { CAPA };
 import { EC, ecCssVars } from "@/lib/marcas/nextlevel-ecommerce";
 
 export const THEME_KEYS = ["nextlevel", "commerce", "superdrop", "bras", "creators", "china", "play", "cargas"] as const;
@@ -64,14 +65,13 @@ const produto = (label: string, l: [string, string], d: [string, string]): Theme
   dark: { ...N.dark, ...GRUPO.dark, primary: d[0], link: d[1], canvas: mix(N.dark.canvas, d[0], 0.05), surface: mix(N.dark.surface, d[0], 0.06) },
 });
 export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
-  // NextLevel v2 (D161): marca-mãe, Master e site do grupo, cores do pacote oficial (`src/lib/marcas/nextlevel.ts`).
-  // Marinho na estrutura (barra lateral marinho também no claro), área de trabalho gelo/branco, ação royal (o tom mais
-  // escuro do pacote no claro, para texto branco passar AA), azul luminoso como reflexo e foco no escuro, turquesa como
-  // acento decorativo. O amarelo do grupo saiu da marca-mãe; nos produtos (abaixo) ele continua como destaque secundário.
+  // NextLevel marca-mãe e Master (D198, "capa" no padrão de painel maduro): roxo de ação, área de trabalho gelo neutra,
+  // menu cinza-claro com item ativo em cápsula branca e superfícies brancas. O roxo é exclusivo da marca-mãe e do Master;
+  // os produtos seguem com a cor de cada um. O turquesa do pacote v2 fica como acento decorativo (o nosso toque).
   nextlevel: {
     label: "NextLevel Soluções Digitais (grupo e Master)",
-    light: { canvas: NL.claro.surfaceMuted, surface: NL.claro.surface, ink: NL.cores.marinho, primary: NL.claro.action, link: NL.claro.link, accent: NL.cores.turquesa, accentText: NL.cores.marinho, accentSoft: NL.claro.surfaceBrandSoft, reflection: NL.cores.azulLuminoso, sideBg: NL.cores.marinho, ring: NL.claro.focus },
-    dark: { canvas: NL.escuro.surface, surface: NL.escuro.surfaceMuted, ink: NL.cores.gelo, primary: NL.escuro.action, link: NL.escuro.link, accent: NL.cores.turquesa, accentText: NL.cores.turquesa, reflection: NL.cores.azulLuminoso, ring: NL.escuro.focus },
+    light: { canvas: CAPA.claro.canvas, surface: "#FFFFFF", ink: CAPA.claro.ink, primary: CAPA.claro.acao, link: CAPA.claro.link, accent: NL.cores.turquesa, accentText: "#0B5E55", accentSoft: "#DDF7F3", reflection: CAPA.escuro.link, sideBg: CAPA.claro.menu, ring: CAPA.claro.acao },
+    dark: { canvas: CAPA.escuro.canvas, surface: CAPA.escuro.surface, ink: "#F4F4F6", primary: CAPA.escuro.acao, link: CAPA.escuro.link, accent: NL.cores.turquesa, accentText: NL.cores.turquesa, reflection: CAPA.escuro.link, sideBg: CAPA.escuro.menu, ring: CAPA.escuro.link },
   },
   // NextLevel E-commerce v1 (D163): cores do pacote oficial (`src/lib/marcas/nextlevel-ecommerce.ts`). Área de trabalho
   // gelo/branca, texto e estrutura marinho, ação azul sólida (o tom mais escuro do pacote no claro, para texto branco passar

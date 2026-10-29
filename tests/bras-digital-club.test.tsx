@@ -62,7 +62,7 @@ describe("Brás Digital Club: identidade", () => {
     expect(themeColors("commerce", "light").primary).toBe("#294CDC"); // NextLevel E-commerce (D163)
     expect(themeColors("superdrop", "light").primary).toBe("#118728");
     // Marca-mãe v2 (D161): royal de ação no lugar do amarelo; mudança própria, não da Brás.
-    expect(themeColors("nextlevel", "light").primary).toBe("#274BE5");
+    expect(themeColors("nextlevel", "light").primary).toBe("#673DE6"); // roxo da capa (D198)
     expect(themeCss("commerce")).not.toContain(BDC.cores.azul.toLowerCase());
     expect(bdcCssVars()).toContain("--bdc-azul:#315CFF");
     expect(paletteOf("BRAS_DIGITAL").light.signal).toBe(BDC.cores.azul);

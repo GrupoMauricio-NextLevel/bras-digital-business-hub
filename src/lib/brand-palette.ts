@@ -4,7 +4,7 @@
  * Cada combinação de leitura é conferida em `tests/brand-palette.test.ts` (WCAG AA).
  */
 import { BDC } from "@/lib/marcas/bras-digital-club";
-import { NL } from "@/lib/marcas/nextlevel";
+import { CAPA, NL } from "@/lib/marcas/nextlevel";
 import { EC } from "@/lib/marcas/nextlevel-ecommerce";
 
 export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
@@ -44,10 +44,10 @@ export const PALETTES: Record<PaletteCode, BrandPalette> = {
   CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
   // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.
   NEXTLEVEL_CARGAS: pal(["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
-  // NextLevel v2 (D161): royal de ação como sinal; no escuro, o royal do pacote com o link claro como texto.
+  // NextLevel marca-mãe e Master (D198): roxo de ação da capa como sinal; o turquesa do pacote v2 segue como apoio.
   NEXTLEVEL: {
-    light: { paper: NL.claro.surfaceMuted, ink: NL.cores.marinho, signal: NL.claro.action, signalText: NL.claro.link },
-    dark: { paper: NL.escuro.surface, ink: NL.cores.gelo, signal: NL.escuro.action, signalText: NL.escuro.link },
+    light: { paper: CAPA.claro.canvas, ink: CAPA.claro.ink, signal: CAPA.claro.acao, signalText: CAPA.claro.link },
+    dark: { paper: CAPA.escuro.canvas, ink: "#F4F4F6", signal: CAPA.escuro.acao, signalText: CAPA.escuro.link },
     support: NL.cores.turquesa, darkFirst: false,
   },
 };

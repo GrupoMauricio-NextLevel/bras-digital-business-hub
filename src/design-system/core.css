@@ -404,3 +404,72 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
     -webkit-backdrop-filter: saturate(1.6) blur(var(--ds-glass-blur)); backdrop-filter: saturate(1.6) blur(var(--ds-glass-blur));
   }
 }
+
+/* ---- Capa (D198): faixa do ecossistema + moldura de cantos amplos (padrão de painel maduro, cores do tema) ----------------
+   A faixa é a barra superior: degradê escuro derivado da cor de ação do tema (no Master, roxo). Abaixo dela, o menu claro e a
+   área de trabalho formam uma moldura com cantos de 28 px sobre o fundo escuro. A página continua rolando no documento;
+   o canto direito da moldura acompanha a faixa (pseudo-elemento), então a moldura parece fixa como na referência. */
+.ds-app--capa {
+  --capa-borda: color-mix(in srgb, var(--ds-primary) 18%, #000);
+  --capa-meio: color-mix(in srgb, var(--ds-primary) 58%, #000);
+  --capa-r: 28px;
+  --ds-side-w: 280px;
+  --ds-r-card: 24px; --ds-r-kpi: 20px; --ds-r-empty: 20px;
+  grid-template-areas: "faixa faixa" "side main"; grid-template-rows: auto minmax(0, 1fr);
+  padding: 0 8px; background: var(--capa-borda);
+}
+.ds-app--capa::before { display: none; }
+.ds-app--capa > .ds-side { grid-area: side; top: var(--ds-top-h); height: calc(100dvh - var(--ds-top-h)); border-right: 0; border-top-left-radius: var(--capa-r); }
+.ds-app--capa > .ds-main { grid-area: main; background: var(--ds-canvas); border-top-right-radius: var(--capa-r); min-height: calc(100dvh - var(--ds-top-h)); }
+.ds-faixa {
+  grid-area: faixa; margin: 0 -8px; padding: 0 16px; gap: 12px; min-height: var(--ds-top-h); border: 0; box-shadow: none; color: #fff;
+  background: linear-gradient(90deg, var(--capa-borda) 0%, var(--capa-meio) 50%, var(--capa-borda) 100%);
+}
+.ds-faixa::after { content: ""; position: absolute; top: 100%; right: 8px; width: var(--capa-r); height: var(--capa-r); pointer-events: none;
+  background: radial-gradient(circle at 0 100%, transparent calc(var(--capa-r) - 0.5px), var(--capa-borda) var(--capa-r)); }
+.ds-faixa-inicio { display: flex; align-items: center; min-width: 0; }
+.ds-faixa-meio { flex: 1; display: flex; justify-content: center; min-width: 0; }
+.ds-faixa .ds-top-actions { margin-left: 0; gap: 6px; }
+.ds-faixa .ds-iconbtn, .ds-faixa .ds-top-actions > button:not(.ds-faixa-agente):not(.ds-faixa-avatar):not(.ds-search):not(.ds-chip) { color: rgb(255 255 255 / 0.88); background: transparent; border-color: transparent; box-shadow: none; border-radius: var(--ds-r-pill); }
+.ds-faixa .ds-iconbtn:hover, .ds-faixa .ds-top-actions > button:not(.ds-faixa-agente):not(.ds-faixa-avatar):not(.ds-search):not(.ds-chip):hover { color: #fff; background: rgb(255 255 255 / 0.1); }
+.ds-faixa .ds-search { width: 15rem; height: 38px; border-color: rgb(255 255 255 / 0.16); background: rgb(255 255 255 / 0.08); color: rgb(255 255 255 / 0.82); }
+.ds-faixa .ds-search:hover { border-color: rgb(255 255 255 / 0.4); color: #fff; }
+.ds-faixa .ds-search kbd { border-color: rgb(255 255 255 / 0.25); }
+.ds-faixa .ds-chip { min-height: 36px; border-color: rgb(255 255 255 / 0.22); background: transparent; color: #fff; box-shadow: none; }
+.ds-faixa-pilula, .ds-faixa-oferta { display: inline-flex; align-items: center; gap: 8px; min-width: 0; height: 36px; border-radius: var(--ds-r-pill); color: #fff; text-decoration: none; font-size: 0.85rem; white-space: nowrap;
+  border: 1px solid rgb(255 255 255 / 0.16); background: rgb(255 255 255 / 0.08); transition: background-color var(--ds-dur-fast) var(--ds-ease), border-color var(--ds-dur-fast) var(--ds-ease); }
+.ds-faixa-pilula { padding: 0 14px; font-weight: 700; }
+.ds-faixa-oferta { max-width: 560px; padding: 0 12px 0 5px; font-weight: 600; }
+.ds-faixa-pilula:hover, .ds-faixa-oferta:hover { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.32); }
+.ds-faixa-novo { flex: none; padding: 3px 10px; border-radius: var(--ds-r-pill); background: var(--ds-accent); color: var(--capa-borda); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.ds-faixa-agente { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 0; border-radius: var(--ds-r-pill); background: #fff; color: var(--capa-meio); font: inherit; font-size: 0.85rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.12); transition: transform var(--ds-dur-fast) var(--ds-ease); }
+.ds-faixa-agente:hover { transform: translateY(-1px); }
+.ds-faixa-avatar { display: inline-grid; place-items: center; width: 38px; height: 38px; margin-left: 4px; border: 2px solid rgb(255 255 255 / 0.3); border-radius: var(--ds-r-pill); background: var(--ds-accent); color: var(--capa-borda); font: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+.ds-faixa :is(a, button):focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Menu: item ativo em cápsula branca, sem filete lateral. */
+.ds-app--capa .ds-item, .ds-app--capa .ds-navgroup { border-radius: var(--ds-r-pill); }
+.ds-app--capa .ds-item:hover, .ds-app--capa .ds-navgroup:hover { background: color-mix(in srgb, var(--ds-surface) 55%, transparent); }
+.ds-app--capa .ds-item[aria-current="page"] { background: var(--ds-surface); color: var(--ds-ink); font-weight: 700; box-shadow: 0 1px 2px rgb(var(--ds-shadow-rgb) / 0.08), 0 4px 14px -6px rgb(var(--ds-shadow-rgb) / 0.18); }
+.ds-app--capa .ds-item[aria-current="page"]::before { display: none; }
+.ds-app--capa .ds-side-foot { border-top: 0; }
+/* Conta em popover (330 px) com o tema dentro. */
+.ds-conta { width: min(330px, calc(100vw - 24px)); padding: 8px; border-radius: 20px; }
+.ds-conta-topo { display: flex; align-items: center; gap: 12px; padding: 10px 10px 12px; }
+.ds-conta-avatar { display: inline-grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: var(--ds-r-pill); background: var(--ds-primary); color: var(--ds-primary-contrast); font-weight: 800; }
+.ds-conta-tema { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 8px 4px 10px; font-size: 0.875rem; font-weight: 600; }
+/* O agente abre pela faixa: sem botão flutuante (que cobria ações no canto da tela) e o painel encaixa abaixo da faixa. */
+.ds-app--capa .ia-botao { display: none; }
+.ds-app--capa .ia-dock { top: calc(var(--ds-top-h) + 8px); }
+@media (max-width: 980px) {
+  .ds-app--capa { grid-template-areas: "faixa" "main"; padding: 0; }
+  .ds-faixa { margin: 0; padding: 0 10px; gap: 8px; }
+  .ds-faixa::after { display: none; }
+  .ds-app--capa > .ds-main { border-radius: 20px 20px 0 0; }
+}
+@media (max-width: 860px) { .ds-faixa-meio { display: none; } .ds-faixa .ds-top-actions { margin-left: auto; } }
+@media (max-width: 640px) { .ds-faixa-pilula span { display: none; } .ds-faixa-pilula { padding: 0 10px; } }
+@media print { .ds-faixa { display: none !important; } .ds-app--capa { padding: 0; background: none; } }
+/* No escuro a cápsula ativa clareia um pouco a superfície (branco puro só no claro). */
+:root[data-theme="dark"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); }
+@media (prefers-color-scheme: dark) { :root[data-theme="system"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); } }

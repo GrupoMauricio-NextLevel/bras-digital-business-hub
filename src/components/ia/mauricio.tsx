@@ -21,8 +21,11 @@ export function BotaoMauricio({ m, central, upgrade }: { m: MauricioDaLoja; cent
   const botao = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     const tecla = (e: KeyboardEvent) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "j") { e.preventDefault(); setAberto((a) => !a); } };
+    // Botão "Agente" da faixa do Master (D198) abre e fecha o mesmo painel.
+    const alternar = () => setAberto((a) => !a);
     window.addEventListener("keydown", tecla);
-    return () => window.removeEventListener("keydown", tecla);
+    window.addEventListener("nl-mauricio", alternar);
+    return () => { window.removeEventListener("keydown", tecla); window.removeEventListener("nl-mauricio", alternar); };
   }, []);
   // Coluna integrada ao painel (padrão da referência): o conteúdo encolhe ao lado e continua usável. Fica aberta entre páginas.
   React.useEffect(() => { try { if (sessionStorage.getItem("nl-mauricio-aberto") === "1") setAberto(true); } catch { /* sem armazenamento */ } }, []); // eslint-disable-line react-hooks/set-state-in-effect

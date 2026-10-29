@@ -1,13 +1,15 @@
 import { CartaFundador } from "@/components/portal/equipe/blocos";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BadgeCheck, Banknote, ShieldCheck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { isReleased, THEME_CATALOG } from "@/lib/themes/catalog";
 import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
 import { JsonLd } from "@/components/portal/json-ld";
-import { HeroV2 } from "@/components/portal/commerce/hero-v2";
+import { HeroiCapaEc } from "@/components/portal/commerce/capa/heroi-capa";
+import { OfertasCapa } from "@/components/portal/commerce/capa/ofertas";
+import { Marquee } from "@/components/portal/commerce/marquee";
 import { ClosingCta, Faq, H2 } from "@/components/portal/commerce/sections";
 import { ThemeGallery } from "@/components/portal/commerce/theme-gallery";
 import { Personalize } from "@/components/portal/commerce/personalize";
@@ -20,6 +22,7 @@ import { JornadaMarca, type PassoMarca } from "@/components/imersiva/jornada";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { groupLink } from "@/lib/brand-server";
 import "../commerce.css";
+import "../capa/capa.css";
 
 /**
  * Home da NextLevel E-commerce, versão imersiva (D165, padrão da Soluções D162). Mesma primeira dobra (texto e oferta vindos
@@ -44,11 +47,13 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
     { key: "envio", nome: "Enviar", foto: "ec-jornada-4-envio", retrato: "ec-jornada-4-envio-retrato", titulo: "Pedido organizado até a entrega.", texto: "Frete por regras próprias ou plataforma de envio (Melhor Envio, Frenet, Correios com contrato e outras), código de rastreio e mensagem pronta para o cliente no WhatsApp.", links: [{ label: "Ver as integrações", href: "#integracoes" }] },
     { key: "rotina", nome: "Crescer", foto: "ec-jornada-5-rotina", retrato: "ec-jornada-5-rotina-retrato", titulo: "Uma operação que cabe no seu dia.", texto: "Pós-venda, cupons, campanhas, avaliações e equipe com acessos separados, no mesmo painel.", links: [{ label: comecar, href: cta }] },
   ];
-  const portas: { foto: EcHomeFotoNome; titulo: string; texto: string }[] = [
-    { foto: "ec-porta-zero", titulo: "Começar do zero", texto: "Tema grátis, editor visual e produtos cadastrados um a um ou por planilha." },
-    { foto: "ec-porta-instagram", titulo: "Já vendo pelo Instagram e WhatsApp", texto: "Os pedidos do WhatsApp e do Instagram entram no mesmo painel da loja." },
-    { foto: "ec-porta-migrar", titulo: "Sair de outra plataforma", texto: "Traga os seus produtos por planilha e leve os endereços antigos para não perder o Google." },
-    { foto: "ec-porta-fisica", titulo: "Tenho loja física", texto: "A mesma vitrine no site, com Pix e cartão na sua conta Mercado Pago." },
+  const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
+  const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round(p.annualCents! / 12))) : null;
+  const portas: { foto: EcHomeFotoNome; selo: string; titulo: string; texto: string }[] = [
+    { foto: "ec-porta-zero", selo: "Do zero", titulo: "Começar do zero", texto: "Tema grátis, editor visual e produtos cadastrados um a um ou por planilha." },
+    { foto: "ec-porta-instagram", selo: "Instagram e WhatsApp", titulo: "Já vendo pelo Instagram e WhatsApp", texto: "Os pedidos do WhatsApp e do Instagram entram no mesmo painel da loja." },
+    { foto: "ec-porta-migrar", selo: "Migração", titulo: "Sair de outra plataforma", texto: "Traga os seus produtos por planilha e leve os endereços antigos para não perder o Google." },
+    { foto: "ec-porta-fisica", selo: "Loja física", titulo: "Tenho loja física", texto: "A mesma vitrine no site, com Pix e cartão na sua conta Mercado Pago." },
   ];
 
   return (
@@ -57,29 +62,25 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.baseUrl, parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda." } },
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
-      <HeroV2 cta={cta} signupOpen={brand.signupOpen} offer={offer} />
+      <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} />
 
-      <JornadaMarca acervo={EC_HOME_ACERVO} passos={passos} eyebrow="Como funciona" titulo="Da primeira foto à rotina de pedidos." rotulo="A loja que cresce, em cinco passos" />
-
-      <section id="portas" aria-labelledby="portas-t" className={`${section} bg-canvas`}>
+      <section id="planos" aria-labelledby="planos-t" className="ecc-planos ds-tema-escuro scroll-mt-16">
         <div className="mx-auto max-w-6xl">
-          <p className="im-eyebrow im-eyebrow--claro">Por onde começar</p>
-          <h2 id="portas-t" className={`im-h2 mt-3 max-w-3xl text-foreground`}>Cada marca chega de um jeito.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-body">Escolha o seu ponto de partida. O cadastro é o mesmo e leva um minuto.</p>
-          <ul className="im-portas mt-10">
-            {portas.map((p) => (
-              <li key={p.foto} className="im-surge">
-                <Link href={cta} className="im-porta">
-                  <FotoImersiva acervo={EC_HOME_ACERVO} nome={p.foto} alt="" sizes="(min-width: 1024px) 18rem, (min-width: 480px) 50vw, 100vw" />
-                  <h3>{p.titulo}</h3>
-                  <p>{p.texto}</p>
-                  <span data-cta>Começar por aqui <ArrowRight className="size-4" aria-hidden /></span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <h2 id="planos-t" className="ecc-h2 text-center">Escolha o plano e comece hoje</h2>
+          <p className="ecc-garantias">
+            <span><ShieldCheck className="size-4" aria-hidden />Sem fidelidade</span>
+            <span><Banknote className="size-4" aria-hidden />100% das vendas na sua conta</span>
+            <span><BadgeCheck className="size-4" aria-hidden />Mensal ou anual, você escolhe</span>
+          </p>
+          <CommercePlansSection cta={cta} signupOpen={brand.signupOpen} />
         </div>
       </section>
+
+      <OfertasCapa titulo="Comece do seu jeito" itens={portas.map((p) => ({ foto: p.foto, selo: p.selo, titulo: p.titulo, texto: p.texto, href: cta }))} />
+
+      <Marquee />
+
+      <JornadaMarca acervo={EC_HOME_ACERVO} passos={passos} eyebrow="Como funciona" titulo="Da primeira foto à rotina de pedidos." rotulo="A loja que cresce, em cinco passos" />
 
       <LojasExemplo cta={cta} className={`${section} bg-surface`} />
 
@@ -107,20 +108,6 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
             <FotoImersiva acervo={EC_HOME_ACERVO} nome="ec-entrar" alt="Notebook aceso sobre a mesa do ateliê mostrando a loja" sizes="(min-width: 900px) 36rem, 100vw" className="im-surge" />
           </div>
           <ThemeGallery themes={released.map((t) => ({ key: t.key, name: t.name, priceCents: t.priceCents, tagline: t.tagline, family: t.family, familyName: FAMILY_INFO[t.family].name, levelName: LEVEL_INFO[t.level].goal, niche: t.niche }))} />
-        </div>
-      </section>
-
-      <section id="planos" aria-labelledby="planos-t" className={`${section} bg-canvas`}>
-        <div className="mx-auto max-w-6xl">
-          <div className="im-lado mb-12">
-            <FotoImersiva acervo={EC_HOME_ACERVO} nome="ec-planos" alt="" sizes="(min-width: 900px) 36rem, 100vw" className="im-surge" />
-            <div className="im-surge">
-              <p className="im-eyebrow im-eyebrow--claro">Planos</p>
-              <h2 id="planos-t" className="im-h2 mt-3 text-foreground">Preço claro, sem fidelidade.</h2>
-              <p className="mt-4 text-lg text-body">{offer ? `Comece com ${offer.trialDays} dias grátis e escolha mensal ou anual.` : "Escolha mensal ou anual."} Mova a régua com o quanto você vende e veja quanto custa cada plano, com a taxa incluída.</p>
-            </div>
-          </div>
-          <CommercePlansSection cta={cta} signupOpen={brand.signupOpen} />
         </div>
       </section>
 

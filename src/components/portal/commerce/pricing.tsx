@@ -36,9 +36,9 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
         <p className="mx-auto mb-8 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full bg-[var(--ec-azul-suave)] text-[var(--ec-marinho)] px-5 py-3 text-center text-sm">
           <Gift className="size-4 text-link" aria-hidden />
           <b>Para começar:</b>
-          <span>{offer.trialDays} dias grátis</span><span aria-hidden>·</span>
-          {offer.firstPeriodCents !== null ? <><span>1º mês por {formatBRL(offer.firstPeriodCents)} no mensal</span><span aria-hidden>·</span></> : null}
-          <span>taxa zero por {offer.feeHolidayMonths} meses</span>
+          <span>{offer.trialDays} dias grátis</span>
+          {offer.firstPeriodCents !== null ? <><span aria-hidden>·</span><span>1º mês por {formatBRL(offer.firstPeriodCents)} no mensal</span></> : null}
+          {offer.feeHolidayMonths > 0 ? <><span aria-hidden>·</span><span>taxa zero por {offer.feeHolidayMonths} {offer.feeHolidayMonths === 1 ? "mês" : "meses"}</span></> : null}
         </p>
       ) : null}
 

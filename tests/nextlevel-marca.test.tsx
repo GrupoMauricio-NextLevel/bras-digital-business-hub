@@ -8,7 +8,7 @@ import { NL, NL_HEROI, NL_ICONES, NL_LOGOS, NL_PECAS_3D, nlCssVars } from "@/lib
 import { BrandLogo, brandIcons } from "@/components/brand/brand-logo";
 import { brandByCode } from "@/lib/brand";
 import { contrastRatio, paletteOf } from "@/lib/brand-palette";
-import { READABLE_PAIRS, themeColors, themeCss } from "@/design-system/themes";
+import { CAPA, READABLE_PAIRS, themeColors, themeCss } from "@/design-system/themes";
 import { FechoMarca } from "@/components/portal/marca-institucional";
 
 /** Marca-mãe NextLevel v2 (D161): fonte única, logo por superfície e tamanho, tema isolado das marcas-filhas, ícones e prévia. */
@@ -54,8 +54,9 @@ describe("NextLevel v2: identidade", () => {
 
   it("tema isolado: o Master e o grupo mudam, as marcas-filhas não", () => {
     const l = themeColors("nextlevel", "light"), d = themeColors("nextlevel", "dark");
-    expect([l.primary, l.ink, l.sideBg, l.ring, l.canvas]).toEqual([NL.claro.action, NL.cores.marinho, NL.cores.marinho, NL.claro.focus, NL.claro.surfaceMuted]);
-    expect([d.primary, d.canvas, d.surface, d.link, d.ring]).toEqual([NL.escuro.action, NL.escuro.surface, NL.escuro.surfaceMuted, NL.escuro.link, NL.escuro.focus]);
+    // Capa D198: roxo exclusivo da marca-mãe e do Master.
+    expect([l.primary, l.ink, l.sideBg, l.ring, l.canvas]).toEqual([CAPA.claro.acao, CAPA.claro.ink, CAPA.claro.menu, CAPA.claro.acao, CAPA.claro.canvas]);
+    expect([d.primary, d.canvas, d.surface, d.link, d.ring]).toEqual([CAPA.escuro.acao, CAPA.escuro.canvas, CAPA.escuro.surface, CAPA.escuro.link, CAPA.escuro.link]);
     for (const c of [l, d]) for (const [a, b, min] of READABLE_PAIRS) expect(contrastRatio(c[a], c[b]), `${a}/${b}`).toBeGreaterThanOrEqual(min);
     expect(contrastRatio("#FFFFFF", l.primary)).toBeGreaterThanOrEqual(4.5);
     // Produtos seguem com a cor de assinatura e o amarelo do grupo como destaque (não foram recoloridos).
@@ -64,7 +65,7 @@ describe("NextLevel v2: identidade", () => {
     expect(themeColors("bras", "light").primary).toBe("#315CFF");
     for (const k of ["commerce", "superdrop", "bras", "cargas"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(NL.claro.action);
     expect(nlCssVars()).toContain("--nlg-marinho:#070F22");
-    expect(paletteOf("NEXTLEVEL").light.signal).toBe(NL.claro.action);
+    expect(paletteOf("NEXTLEVEL").light.signal).toBe(CAPA.claro.acao);
     expect(paletteOf("SUPERDROP").light.signal).toBe("#2D9E3B");
   });
 

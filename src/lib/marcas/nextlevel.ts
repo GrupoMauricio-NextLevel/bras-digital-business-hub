@@ -83,3 +83,9 @@ export function nlCssVars(): string {
   const c = NL.cores;
   return `--nlg-marinho:${c.marinho};--nlg-marinho-2:${NL.escuro.surfaceMuted};--nlg-marinho-3:${NL.escuro.surfaceElevated};--nlg-royal:${c.royal};--nlg-acao:${NL.claro.action};--nlg-acao-hover:${NL.claro.actionHover};--nlg-luminoso:${c.azulLuminoso};--nlg-turquesa:${c.turquesa};--nlg-gelo:${c.gelo};--nlg-link-escuro:${NL.escuro.link};--nlg-texto-suave:${NL.escuro.textMuted};--nlg-linha-escura:${NL.escuro.border};--nlg-gradiente:${NL.gradiente};--nlg-filete:${NL.gradienteFilete};`;
 }
+
+/** Paleta da capa (D198): Master e marca-mãe. Faixa do topo em degradê roxo profundo; ação roxa; neutros frios. */
+export const CAPA = {
+  claro: { canvas: "#F5F5F7", ink: "#1D1D1F", acao: "#673DE6", link: "#5025D1", menu: "#E9E9EC" },
+  escuro: { canvas: "#101011", surface: "#19191B", acao: "#8C85FF", link: "#A69BFF", menu: "#151517" },
+} as const;

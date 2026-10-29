@@ -4,7 +4,7 @@
  * corre da esquerda para a direita quando algo está em andamento ou foi confirmado. O carregamento usa três degraus.
  * Tudo em CSS nativo (View Transitions API e animações), sem biblioteca. Movimento reduzido: nada anima.
  */
-:root { --nl-sobe: cubic-bezier(.2, .9, .1, 1); --nl-cai: cubic-bezier(.55, 0, .8, .2); --nl-cor-mov: var(--ds-primary, #2155ff); }
+:root { --nl-sobe: cubic-bezier(.2, .9, .1, 1); --nl-cai: cubic-bezier(.55, 0, .8, .2); --nl-cor-mov: var(--ds-primary); }
 .sf-root { --nl-cor-mov: var(--sf-primary, var(--ds-primary)); }
 
 /* 1. Troca de página: a que sai desfoca e some; a nova sobe um degrau, revelada de baixo para cima. */
@@ -103,7 +103,7 @@
 .vh-capsula { position: fixed; left: 0; right: 0; margin-inline: auto; bottom: 20px; z-index: 55; display: flex; align-items: center; gap: 8px; width: min(560px, calc(100vw - 32px)); }
 .vh-capsula-btn { display: flex; flex: 1; min-width: 0; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border-radius: 9999px; background: var(--ds-surface, #fff); color: var(--ds-ink);
   font-size: .9rem; font-weight: 600; text-align: left; border: 1.5px solid transparent;
-  background-image: linear-gradient(var(--ds-surface, #fff), var(--ds-surface, #fff)), linear-gradient(90deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 40%, #22d3ee));
+  background-image: linear-gradient(var(--ds-surface, #fff), var(--ds-surface, #fff)), linear-gradient(90deg, var(--ds-primary), var(--ds-reflection));
   background-origin: border-box; background-clip: padding-box, border-box; box-shadow: 0 12px 34px rgb(15 23 42 / .18); }
 .vh-capsula-btn:focus-visible { outline: 3px solid var(--ds-primary); outline-offset: 3px; }
 .vh-capsula-btn > svg { color: var(--ds-primary); }
@@ -113,7 +113,7 @@
 @media (max-width: 640px) { .vh-capsula { bottom: 76px; } .vh-capsula-btn { font-size: .82rem; } }
 .vh-oferta { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; font-size: .875rem; color: #fff; background: linear-gradient(135deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 70%, #000)); }
 .vh-balao-cliente { max-width: 85%; padding: 10px 14px; border-radius: 18px 18px 4px 18px; color: var(--ds-ink); background: color-mix(in srgb, var(--ds-primary) 12%, var(--ds-surface)); }
-.vh-online { display: inline-block; width: 7px; height: 7px; margin-right: 3px; border-radius: 9999px; background: #16a34a; vertical-align: middle; }
+.vh-online { display: inline-block; width: 7px; height: 7px; margin-right: 3px; border-radius: 9999px; background: var(--ds-success); vertical-align: middle; }
 
 /* Coluna integrada do Maurício (D196; padrão do painel da referência): ao lado do conteúdo, que encolhe; sem janela por cima. */
 .ia-dock { position: fixed; z-index: 70; top: 8px; right: 8px; bottom: 8px; width: 420px; display: flex; flex-direction: column; overflow: hidden;
@@ -127,9 +127,9 @@
 }
 @media (max-width: 1099px) { .ia-dock { inset: 0; width: auto; border-radius: 0; border: 0; } }
 @media (prefers-reduced-motion: reduce) { .ia-dock, html.ia-dock-aberto body { animation: none; transition: none; } }
-.vh-avatar-humano { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 9999px; font-size: .8rem; font-weight: 800; color: #fff; background: #16a34a; }
-.vh-whats { display: flex; align-items: center; gap: 10px; margin: 0 16px 8px; padding: 10px 14px; border-radius: 16px; font-size: .82rem; color: #0b5c2a; background: #e8f7ee; border: 1px solid #bfe8cf; }
-.vh-whats:hover { background: #dcf3e5; }
+.vh-avatar-humano { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 9999px; font-size: .8rem; font-weight: 800; color: #fff; background: var(--ds-success); }
+.vh-whats { display: flex; align-items: center; gap: 10px; margin: 0 16px 8px; padding: 10px 14px; border-radius: 16px; font-size: .82rem; color: var(--ds-success); background: var(--ds-success-soft); border: 1px solid color-mix(in srgb, var(--ds-success) 30%, transparent); }
+.vh-whats:hover { background: color-mix(in srgb, var(--ds-success-soft) 80%, var(--ds-success)); }
 .vh-contato { border-color: color-mix(in srgb, var(--ds-primary) 35%, var(--ds-line)); background: color-mix(in srgb, var(--ds-primary) 4%, var(--ds-surface)); }
 
 /* CRM ao vivo (D197): três colunas (lista, conversa, contato) com rolagem própria. */

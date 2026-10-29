@@ -1979,3 +1979,15 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - os ajustes, a chave e os planos foram para a aba `/master/ia/ajustes`.
 - **Permissão:** dono e funções Comercial e Suporte do Master.
 - **Testes:** `tests/ia-conversas.test.ts`.
+
+## D198 — [Master/E-commerce] Capa no padrão de painel maduro (Master) e home da E-commerce no padrão de herói de oferta (2026-10-29)
+- **Pedido do dono:** "o roxo vai só para o Master e para a marca-mãe NextLevel"; "assumo os riscos de cópia"; "os planos continuam os mesmos, só o visual muda". Referências: prints PNL-001 a PNL-014 e REF-001 a REF-009 (uso interno, fora do repositório).
+- **Cor:** o tema `nextlevel` (Master e site da marca-mãe) passa ao roxo da capa (`CAPA` em `src/lib/marcas/nextlevel.ts`): ação `#673DE6`, link `#5025D1`, área gelo `#F5F5F7`, menu `#E9E9EC`; no escuro, `#101011`/`#19191B` com ação `#8C85FF`. A paleta de marca `NEXTLEVEL` acompanha. As marcas-filhas não mudam (teste em `tests/nextlevel-marca.test.tsx`).
+- **Casca (Master):** `OperationalShell` ganhou `faixa` (opcional). Com ela:
+  - a barra superior vira a **faixa do ecossistema** (degradê escuro derivado da cor de ação do tema): "Indique e ganhe" à esquerda, a novidade do momento no centro, busca, botão **Agente** (abre o Maurício), avisos e conta à direita;
+  - menu e área de trabalho formam uma **moldura com cantos de 28 px** sobre o fundo escuro; item ativo em **cápsula branca**;
+  - **conta em popover** (330 px) com o tema claro/escuro/sistema dentro;
+  - o botão flutuante do Maurício some (abria por cima de botões no canto); o painel encaixa abaixo da faixa.
+  - Hoje só o Master usa (`capa` em `role-layout.tsx`). As outras marcas podem ligar depois: a faixa já pega a cor de cada tema.
+- **Home E-commerce (azul da marca):** herói marinho com título enorme centralizado e a oferta num selo inclinado, preço "a partir de" calculado do catálogo (anual ÷ 12), botão branco e garantia; fotos do acervo flutuando com avisos de pedido marcados como demonstração. Logo abaixo, **planos em faixa escura** (mesmo componente e mesmos preços, ilha `.ds-tema-escuro`) e a **galeria de ofertas** (as quatro portas, cartão que se abre no mouse/foco). O restante da página segue.
+- **Correção junto:** "taxa zero por 0 meses" deixava de fazer sentido quando a oferta não tem carência de taxa; agora só aparece com meses > 0. `movimento.css` deixou de ter cores fixas (o teste do núcleo do design system acusava).

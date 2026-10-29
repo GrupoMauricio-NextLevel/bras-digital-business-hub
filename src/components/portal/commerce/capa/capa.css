@@ -1,0 +1,68 @@
+/* Capa da home NextLevel E-commerce (D198). Prefixo ecc- para não afetar nenhuma outra tela. Cores só da marca (--ec-*). */
+.ecc-heroi { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ec-marinho); padding: 9.5rem 1rem 5.5rem; text-align: center; }
+.ecc-heroi-luz { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 50% 108%, color-mix(in srgb, var(--ec-acao) 85%, transparent) 0%, transparent 70%),
+    radial-gradient(40% 35% at 85% 95%, color-mix(in srgb, var(--ec-ciano) 45%, transparent) 0%, transparent 70%),
+    radial-gradient(45% 40% at 10% 0%, color-mix(in srgb, var(--ec-azul) 30%, transparent) 0%, transparent 70%); }
+.ecc-heroi-texto { position: relative; max-width: 58rem; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+.ecc-selo-topo { display: inline-flex; padding: 6px 14px; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.18); background: rgb(255 255 255 / 0.06); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em; color: rgb(255 255 255 / 0.86); }
+.ecc-titulo { margin: 1.4rem 0 0; font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -0.045em; line-height: 0.98; font-size: clamp(2.9rem, 9vw, 7.4rem); }
+.ecc-titulo-linha { display: block; margin-top: 0.12em; }
+.ecc-oferta { position: relative; display: inline-flex; align-items: center; gap: 0.25em; padding: 0.04em 0.32em 0.08em; border-radius: 0.28em; background: var(--ec-acao); color: #fff; transform: rotate(-2.5deg); box-shadow: 0 0.18em 0 color-mix(in srgb, var(--ec-acao) 55%, #000), 0 30px 60px -20px color-mix(in srgb, var(--ec-acao) 80%, transparent); }
+.ecc-oferta small { display: inline-grid; place-items: center; width: 3.6em; height: 3.6em; margin-right: 0.2em; border-radius: 999px; background: #fff; color: var(--ec-marinho); font-size: 0.2em; letter-spacing: 0; transform: rotate(-10deg); }
+.ecc-sub { margin: 2rem 0 0; max-width: 40rem; font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.5; color: rgb(255 255 255 / 0.86); }
+.ecc-sub b { color: #fff; }
+.ecc-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 3.5rem; margin-top: 2rem; padding: 0 2.5rem; border-radius: 999px; background: #fff; color: var(--ec-marinho); font-size: 1.1rem; font-weight: 800; text-decoration: none;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.7); transition: transform 160ms ease, box-shadow 160ms ease; }
+.ecc-cta:hover { transform: translateY(-2px); box-shadow: 0 24px 50px -18px rgb(0 0 0 / 0.75); }
+.ecc-cta:focus-visible, .ecc-ver-planos:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.ecc-garantia { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin: 1.1rem 0 0; font-size: 0.92rem; color: rgb(255 255 255 / 0.8); }
+.ecc-ver-planos { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.6rem; padding: 6px 10px; color: rgb(255 255 255 / 0.85); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+.ecc-ver-planos:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.ecc-nota { position: absolute; left: 1rem; bottom: 0.9rem; margin: 0; font-size: 11px; color: rgb(255 255 255 / 0.55); }
+/* Fotos flutuando nas laterais (decorativas). */
+.ecc-flutua { position: absolute; z-index: 0; width: clamp(11rem, 16vw, 16rem); }
+.ecc-flutua--esq { left: max(1.5rem, calc(50% - 44rem)); top: 11rem; transform: rotate(-7deg); animation: ecc-boia 7s ease-in-out infinite; }
+.ecc-flutua--dir { right: max(1.5rem, calc(50% - 44rem)); top: 16rem; transform: rotate(6deg); animation: ecc-boia 8s ease-in-out -2s infinite; }
+.ecc-foto { display: block; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 1.75rem; border: 4px solid rgb(255 255 255 / 0.9); box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.8); }
+.ecc-aviso { position: absolute; display: grid; gap: 2px; min-width: 13rem; margin: 0; padding: 10px 14px 10px 30px; border-radius: 16px; background: #fff; color: var(--ec-marinho); font-size: 0.78rem; text-align: left; box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6); }
+.ecc-aviso b { font-size: 0.86rem; }
+.ecc-aviso--baixo { left: 1.5rem; bottom: -2rem; transform: rotate(5deg); }
+.ecc-aviso--alto { right: 1rem; bottom: -2rem; transform: rotate(-5deg); padding-left: 14px; }
+.ecc-ponto { position: absolute; left: 12px; top: 15px; width: 9px; height: 9px; border-radius: 999px; background: var(--ds-success); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-success) 25%, transparent); }
+@keyframes ecc-boia { 50% { translate: 0 -14px; } }
+@media (max-width: 1180px) { .ecc-flutua { opacity: 0.35; } .ecc-aviso { display: none; } }
+@media (max-width: 860px) { .ecc-flutua { display: none; } .ecc-heroi { padding: 7.5rem 1rem 4.5rem; } }
+
+/* Planos em faixa escura (a ilha .ds-tema-escuro traz as cores do modo escuro da marca). */
+.ecc-planos { position: relative; background: var(--ec-marinho); color: #fff; padding: 5rem 1rem 5.5rem; }
+.ecc-h2 { margin: 0; font-family: var(--nl-font-display); font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; font-size: clamp(2rem, 4.6vw, 3.6rem); }
+.ecc-planos .cm-plan:not(.cm-plan--on) { background: color-mix(in srgb, var(--ec-marinho) 70%, #fff 6%); border-color: rgb(255 255 255 / 0.12); }
+.ecc-planos .cm-plan--on { background: linear-gradient(180deg, color-mix(in srgb, var(--ec-acao) 34%, var(--ec-marinho)), var(--ec-marinho)); box-shadow: 0 0 0 2px var(--ec-azul), 0 30px 60px -24px color-mix(in srgb, var(--ec-acao) 70%, transparent); }
+.ecc-garantias { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.75rem; margin: 1.5rem 0 2.5rem; font-size: 0.92rem; color: rgb(255 255 255 / 0.82); }
+.ecc-garantias span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Galeria de ofertas: o primeiro cartão aberto; o que recebe o mouse ou o foco se abre. */
+.ecc-ofertas { background: var(--ec-marinho); color: #fff; padding: 1rem 1rem 6rem; }
+.ecc-ofertas-lista { list-style: none; display: flex; gap: 14px; max-width: 76rem; height: 26rem; margin: 2.5rem auto 0; padding: 0; }
+.ecc-oferta-card { flex: 1; min-width: 0; transition: flex-grow 520ms cubic-bezier(0.2, 0.9, 0.1, 1); }
+.ecc-ofertas-lista:not(:hover):not(:focus-within) .ecc-oferta-card:first-child, .ecc-oferta-card:hover, .ecc-oferta-card:focus-within { flex-grow: 2.6; }
+.ecc-oferta-card a { position: relative; display: block; height: 100%; overflow: hidden; border-radius: 1.75rem; color: #fff; text-decoration: none; background: var(--ec-marinho-2); }
+.ecc-oferta-card a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.ecc-oferta-foto { position: absolute; inset: 0; display: block; }
+.ecc-oferta-foto img { transition: transform 700ms cubic-bezier(0.2, 0.9, 0.1, 1); }
+.ecc-oferta-card:hover .ecc-oferta-foto img { transform: scale(1.05); }
+.ecc-oferta-card a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(10 16 32 / 0.05) 30%, rgb(10 16 32 / 0.88) 100%); }
+.ecc-oferta-selo { position: absolute; z-index: 1; left: 16px; top: 16px; padding: 5px 12px; border-radius: 999px; background: rgb(255 255 255 / 0.92); color: var(--ec-marinho); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.ecc-oferta-corpo { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 20px; display: grid; gap: 6px; }
+.ecc-oferta-corpo b { font-family: var(--nl-font-display); font-size: 1.3rem; letter-spacing: -0.02em; line-height: 1.15; }
+.ecc-oferta-corpo span { max-height: 0; overflow: hidden; opacity: 0; font-size: 0.92rem; line-height: 1.45; color: rgb(255 255 255 / 0.86); transition: opacity 300ms ease, max-height 400ms ease; }
+.ecc-ofertas-lista:not(:hover):not(:focus-within) .ecc-oferta-card:first-child .ecc-oferta-corpo span, .ecc-oferta-card:hover .ecc-oferta-corpo span, .ecc-oferta-card:focus-within .ecc-oferta-corpo span { max-height: 6rem; opacity: 1; }
+.ecc-oferta-seta { position: absolute; z-index: 1; right: 16px; top: 16px; padding: 6px; box-sizing: content-box; border-radius: 999px; background: rgb(255 255 255 / 0.16); }
+@media (max-width: 860px) {
+  .ecc-ofertas-lista { height: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+  .ecc-oferta-card { flex: 0 0 78%; height: 24rem; scroll-snap-align: start; }
+  .ecc-oferta-corpo span { max-height: 6rem; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .ecc-flutua { animation: none; } .ecc-oferta-card, .ecc-oferta-foto img, .ecc-cta { transition: none; } }

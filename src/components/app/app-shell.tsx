@@ -3,7 +3,7 @@ import { BarraDeNavegacao, TransicaoDePagina } from "@/components/transicao-de-p
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, ShieldCheck, Layers, Search } from "lucide-react";
+import { LogOut, ExternalLink, ChevronRight, Repeat, KeyRound, ShieldCheck, Layers, Search, Gift, Sparkles, ArrowRight } from "lucide-react";
 import { initials } from "@/lib/utils";
 import type { NavItem, NavMode, Panel, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
@@ -50,13 +50,15 @@ export type AppShellProps = {
   /** Link fixo acima do menu (ex.: "Voltar ao Master"). */
   sideTop?: React.ReactNode;
   banner?: React.ReactNode;
+  /** Capa (D198): faixa do ecossistema no topo, moldura de cantos amplos, conta em popover. Hoje só no Master. */
+  capa?: { indiqueHref?: string; oferta?: { texto: string; href: string }; agente?: boolean };
   children: React.ReactNode;
 };
 
 const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 /** Casca do aplicativo: liga dados e ações de cada painel ao `OperationalShell` do sistema de design (a aparência não é decidida aqui). */
-export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, children }: AppShellProps) {
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, children }: AppShellProps) {
   const [palette, setPalette] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
@@ -122,23 +124,49 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
           </DropdownMenuContent>
         </DropdownMenu>
       ) : null}
-      <ThemeSwitch className="ds-hide-compact" />
+      {capa?.agente ? (
+        <button type="button" className="ds-faixa-agente" onClick={() => window.dispatchEvent(new Event("nl-mauricio"))} aria-label="Abrir o Maurício, agente da NextLevel (Ctrl+J)">
+          <Sparkles className="size-4" aria-hidden /><span className="ds-hide-compact">Agente</span>
+        </button>
+      ) : null}
+      {capa ? null : <ThemeSwitch className="ds-hide-compact" />}
       {!minimal ? <NotificationsMenu notices={notices} /> : null}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button type="button" className="ds-chip !px-1 !pr-3" aria-label="Menu do usuário">
-            <span className="flex size-8 items-center justify-center rounded-full bg-primary text-[11px] font-extrabold text-primary-foreground">{initials(userName)}</span>
-            <span className="ds-hide-compact max-w-[120px] truncate">{userName}</span>
-          </button>
+          {capa ? (
+            <button type="button" className="ds-faixa-avatar" aria-label={`Conta de ${userName}`}>{initials(userName)}</button>
+          ) : (
+            <button type="button" className="ds-chip !px-1 !pr-3" aria-label="Menu do usuário">
+              <span className="flex size-8 items-center justify-center rounded-full bg-primary text-[11px] font-extrabold text-primary-foreground">{initials(userName)}</span>
+              <span className="ds-hide-compact max-w-[120px] truncate">{userName}</span>
+            </button>
+          )}
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>{userName}</DropdownMenuLabel>
-          <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge><span className="min-w-0 truncate text-xs text-muted-foreground">{tenantName}</span></div>
+        <DropdownMenuContent align="end" className={capa ? "ds-conta" : undefined}>
+          {capa ? (
+            <div className="ds-conta-topo">
+              <span className="ds-conta-avatar" aria-hidden>{initials(userName)}</span>
+              <span className="min-w-0"><b className="block truncate">{userName}</b><span className="block truncate text-xs text-muted-foreground">{roleLabel} · {tenantName}</span></span>
+            </div>
+          ) : (
+            <>
+              <DropdownMenuLabel>{userName}</DropdownMenuLabel>
+              <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge><span className="min-w-0 truncate text-xs text-muted-foreground">{tenantName}</span></div>
+            </>
+          )}
           {storefrontHref ? <DropdownMenuItem asChild><a href={storefrontHref} target="_blank" rel="noreferrer"><ExternalLink /> Ver loja virtual</a></DropdownMenuItem> : null}
           <DropdownMenuSeparator />
           {groupHref ? <DropdownMenuItem asChild><Link href={groupHref}><Layers /> Suas marcas</Link></DropdownMenuItem> : null}
           {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
           {passwordHref ? <DropdownMenuItem asChild><Link href="/account/seguranca"><ShieldCheck /> Segurança da conta</Link></DropdownMenuItem> : null}
+          {capa?.indiqueHref ? <DropdownMenuItem asChild><Link href={capa.indiqueHref}><Gift /> Indique e ganhe</Link></DropdownMenuItem> : null}
+          {capa ? (
+            <>
+              <DropdownMenuSeparator />
+              <div className="ds-conta-tema"><span>Tema</span><ThemeSwitch /></div>
+              <DropdownMenuSeparator />
+            </>
+          ) : null}
           <DropdownMenuItem onSelect={() => onLogout?.()}><LogOut /> Sair</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -164,6 +192,10 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         topActions={topActions}
         banner={banner}
         bottom={bottom}
+        faixa={capa ? {
+          inicio: capa.indiqueHref ? <Link href={capa.indiqueHref} className="ds-faixa-pilula"><Gift className="size-4" aria-hidden /><span>Indique e ganhe</span></Link> : null,
+          meio: capa.oferta ? <Link href={capa.oferta.href} className="ds-faixa-oferta"><span className="ds-faixa-novo">Novo</span><span className="truncate">{capa.oferta.texto}</span><ArrowRight className="size-4 shrink-0" aria-hidden /></Link> : null,
+        } : undefined}
         overlays={!minimal ? <CommandPalette open={palette} onOpenChange={setPalette} items={items} quick={quick} search={search} /> : null}
       >
         <BarraDeNavegacao />

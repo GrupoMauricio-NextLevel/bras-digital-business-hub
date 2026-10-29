@@ -13,7 +13,7 @@ export type ShellNavContext = { collapsed: boolean; close?: () => void };
  * retorno do foco, trava de rolagem) e barra de atalhos inferior. NÃO conhece produto, permissão nem empresa: recebe tudo por slots.
  */
 export function OperationalShell({
-  brand, area, renderNav, sideTop, sideFooter, crumb, topActions, banner, bottom, overlays, children, drawerTitle, variant = "full", skipLabel = "Pular para o conteúdo",
+  brand, area, renderNav, sideTop, sideFooter, crumb, topActions, banner, bottom, overlays, children, drawerTitle, variant = "full", skipLabel = "Pular para o conteúdo", faixa,
 }: {
   brand: React.ReactNode;
   area?: React.ReactNode;
@@ -30,6 +30,8 @@ export function OperationalShell({
   /** "bare" = sem menu lateral (ex.: Expedição). */
   variant?: "full" | "bare";
   skipLabel?: string;
+  /** Capa (D198): faixa escura do ecossistema no topo (início, meio) e moldura de cantos amplos; a barra superior vira a faixa. */
+  faixa?: { inicio?: React.ReactNode; meio?: React.ReactNode };
 }) {
   const [collapsed, setCollapsed] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -38,9 +40,19 @@ export function OperationalShell({
   React.useEffect(() => { const id = requestAnimationFrame(() => { try { setCollapsed(localStorage.getItem("nl-sidebar") === "1"); } catch { /* ignore */ } }); return () => cancelAnimationFrame(id); }, []);
   const toggle = () => setCollapsed((c) => { const n = !c; try { localStorage.setItem("nl-sidebar", n ? "1" : "0"); } catch { /* ignore */ } return n; });
 
+  const capa = !!faixa && !bare;
+  const topo = (
+    <header className={cn("ds-top", capa && "ds-faixa")}>
+      {!bare ? <button type="button" className="ds-iconbtn ds-only-compact" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="size-5" aria-hidden /></button> : null}
+      {capa ? <><div className="ds-faixa-inicio">{faixa.inicio}</div><div className="ds-faixa-meio">{faixa.meio}</div></> : <div className="min-w-0">{crumb}</div>}
+      <div className="ds-top-actions">{topActions}</div>
+    </header>
+  );
+
   return (
-    <div className={cn("ds-app", collapsed && !bare && "ds-app--collapsed", bare && "ds-app--bare")}>
+    <div className={cn("ds-app", collapsed && !bare && "ds-app--collapsed", bare && "ds-app--bare", capa && "ds-app--capa")}>
       <a href="#conteudo" className="ds-skip">{skipLabel}</a>
+      {capa ? topo : null}
 
       {!bare ? (
         <aside className="ds-side" aria-label="Menu lateral">
@@ -58,11 +70,7 @@ export function OperationalShell({
       ) : null}
 
       <div className="ds-main">
-        <header className="ds-top">
-          {!bare ? <button type="button" className="ds-iconbtn ds-only-compact" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="size-5" aria-hidden /></button> : null}
-          <div className="min-w-0">{crumb}</div>
-          <div className="ds-top-actions">{topActions}</div>
-        </header>
+        {capa ? null : topo}
         <main id="conteudo" className="ds-content">{banner}{children}</main>
       </div>
 
