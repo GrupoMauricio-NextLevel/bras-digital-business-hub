@@ -103,16 +103,25 @@ select.ds-input { appearance: none; background-image: url("data:image/svg+xml,%3
 
 /* Vendedor 24h da home (D195): cápsula "Pede pro Maurício" no rodapé da tela (padrão REF-001). */
 .vh-capsula { position: fixed; left: 0; right: 0; margin-inline: auto; bottom: 20px; z-index: 55; display: flex; align-items: center; gap: 8px; width: min(560px, calc(100vw - 32px)); }
-.vh-capsula-btn { display: flex; flex: 1; min-width: 0; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border-radius: 9999px; background: var(--ds-surface, #fff); color: var(--ds-ink);
-  font-size: .9rem; font-weight: 600; text-align: left; border: 1.5px solid transparent;
-  background-image: linear-gradient(var(--ds-surface, #fff), var(--ds-surface, #fff)), linear-gradient(90deg, var(--ds-primary), var(--ds-reflection));
-  background-origin: border-box; background-clip: padding-box, border-box; box-shadow: 0 12px 34px rgb(15 23 42 / .18); }
+.vh-capsula-btn { display: flex; flex: 1; min-width: 0; align-items: center; gap: 10px; padding: 7px 7px 7px 18px; border-radius: 9999px; color: #fff;
+  font-size: .9rem; font-weight: 700; text-align: left; border: 2px solid; border-color: transparent !important;
+  /* D214: mesmo efeito do botão Agente (D210, referência Hostinger): pílula escura, borda em degradê que corre devagar. */
+  background: linear-gradient(#0c0718, #0c0718) padding-box, linear-gradient(90deg, #ff3fd1, #b44cff, #6a5cff, #3d8bff, #6a5cff, #b44cff, #ff3fd1) border-box;
+  background-size: 100% 100%, 200% 100%; animation: vh-brilho 5s linear infinite;
+  box-shadow: -10px 4px 26px -10px #ff3fd1, 10px 4px 26px -10px #3d8bff, 0 14px 34px rgb(15 23 42 / .28); }
+@keyframes vh-brilho { from { background-position: 0 0, 0% 0; } to { background-position: 0 0, 200% 0; } }
+@media (prefers-reduced-motion: reduce) { .vh-capsula-btn { animation: none; } }
 .vh-capsula-btn:focus-visible { outline: 3px solid var(--ds-primary); outline-offset: 3px; }
-.vh-capsula-btn > svg { color: var(--ds-primary); }
-.vh-enviar { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; margin-left: auto; border-radius: 9999px; color: #fff; background: var(--ds-primary); }
+.vh-capsula-btn > svg { color: #fff; filter: drop-shadow(0 0 5px rgb(255 63 209 / .75)); }
+.vh-enviar { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; margin-left: auto; border-radius: 9999px; color: #fff; background: linear-gradient(135deg, #ff3fd1, #6a5cff 55%, #3d8bff); }
 .vh-fechar { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 9999px; color: #fff; background: rgb(15 23 42 / .85); }
 .vh-botao { bottom: 84px; }
-@media (max-width: 640px) { .vh-capsula { bottom: 76px; } .vh-capsula-btn { font-size: .82rem; } }
+/* A entrada da cápsula sem recorte (o recorte do nl-chega cortava o brilho em retângulo). */
+.vh-capsula.nl-chega { animation-name: vh-chega; }
+@keyframes vh-chega { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+.vh-capsula-btn .vh-curto { display: none; }
+/* Celular (D214): a cápsula vira uma pílula curta à esquerda, sem cobrir o conteúdo; o WhatsApp fica à direita. */
+@media (max-width: 640px) { .vh-capsula { left: 12px; right: auto; margin: 0; bottom: 14px; width: auto; max-width: calc(100vw - 150px); } .vh-capsula-btn { font-size: .8rem; padding: 5px 5px 5px 12px; gap: 8px; } .vh-capsula-btn .vh-curto { display: inline; } .vh-capsula-btn .vh-longo { display: none; } .vh-enviar { width: 28px; height: 28px; } }
 .vh-oferta { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; font-size: .875rem; color: #fff; background: linear-gradient(135deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 70%, #000)); }
 .vh-balao-cliente { max-width: 85%; padding: 10px 14px; border-radius: 18px 18px 4px 18px; color: var(--ds-ink); background: color-mix(in srgb, var(--ds-primary) 12%, var(--ds-surface)); }
 .vh-online { display: inline-block; width: 7px; height: 7px; margin-right: 3px; border-radius: 9999px; background: var(--ds-success); vertical-align: middle; }

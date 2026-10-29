@@ -31,7 +31,7 @@ export function ThemeGallery({ themes, initial = 6, inicial = "moda" }: { themes
           </button>
         ))}
       </div>
-      <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visiveis.map((t) => (
           <li key={t.key} className="cm-theme-card">
             <Link href={`/temas/${t.key}`} className="group block rounded-[1.25rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">

@@ -90,7 +90,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
       {capsula && !aberto ? (
         <div className="vh-capsula nl-chega" role="region" aria-label="Pede pro Maurício">
           <button type="button" onClick={() => abrir({ id: "plano", rotulo: "Qual plano é ideal para mim?" })} className="vh-capsula-btn">
-            <Sparkles className="size-4 shrink-0" aria-hidden /><span className="truncate">Pede pro Maurício: qual plano é o melhor para a minha loja?</span>
+            <Sparkles className="size-4 shrink-0" aria-hidden /><span className="vh-longo truncate">Pede pro Maurício: qual plano é o melhor para a minha loja?</span><span className="vh-curto truncate">Pede pro Maurício</span>
             <span className="vh-enviar" aria-hidden><ArrowUp className="size-4" /></span>
           </button>
           <button type="button" onClick={fecharCapsula} className="vh-fechar" aria-label="Fechar a sugestão do Maurício"><X className="size-3.5" aria-hidden /></button>

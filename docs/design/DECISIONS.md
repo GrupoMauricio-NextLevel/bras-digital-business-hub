@@ -2229,3 +2229,14 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - no celular, o botão "Dúvidas?" cobria o preço do produto: agora é só um ícone redondo à direita, acima da barra de compra.
 - Lojas do SuperDrop: mesmas telas de antes (sem "Comprar agora", sem calcular frete e sem barra de frete grátis).
 - Código: `src/components/storefront/buy-box.tsx`, `src/components/storefront/calcular-frete.tsx`, `src/app/store/[slug]/cart/cart-view.tsx`, `src/app/store/[slug]/checkout/checkout-form.tsx`, `src/components/storefront/sections/sections.tsx`, `src/components/storefront/store-page.tsx`, `src/components/storefront/chat-da-loja.tsx`.
+
+## D214 — [E-commerce] Página pública: cápsula do Maurício no padrão do Agente, versão curta no celular e grade de temas sem cartão sozinho (2026-10-29)
+- **Pedido do dono:** "pode ir na ordem, um de cada vez" (etapa 2: a página que vende a plataforma).
+- **Conferência por rolagem real:** "Como funciona" e "Personalização" são seções que se desenham conforme a rolagem; no print de página inteira parecem vazias, mas funcionam. Nada a mudar nelas.
+- **Cápsula "Pede pro Maurício":**
+  - mesmo visual do botão Agente (D210): pílula escura, borda em degradê rosa → azul que corre devagar, botão de enviar em degradê;
+  - a borda clara antiga vinha do `* { border-color }` global;
+  - a entrada não recorta mais o brilho (o `nl-chega` deixava um retângulo rosa).
+- **Celular:** a cápsula virava uma barra larga sobre o título dos planos. Agora é uma pílula curta ("Pede pro Maurício") à esquerda, e o WhatsApp fica à direita.
+- **Grade de temas:** 4 colunas em telas largas (com 3 colunas, o 4º tema ficava sozinho na linha).
+- Código: `src/design-system/movimento.css`, `src/components/ia/vendedor-home.tsx`, `src/components/portal/commerce/theme-gallery.tsx`.
