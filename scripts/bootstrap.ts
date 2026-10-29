@@ -23,7 +23,11 @@ async function main() {
   const handle = await createDatabase(url);
   await runMigrations(handle.db);
   // Começar do zero (D199): RECOMECAR_DO_ZERO=<código> apaga os dados fictícios uma vez por código, antes do preparo.
-  if (process.env.RECOMECAR_DO_ZERO) for (const l of await recomecarDoZero(handle.db, process.env.RECOMECAR_DO_ZERO)) console.log(`✔ ${l}`);
+  // Uma falha aqui nunca derruba o site: registra e segue com o boot normal.
+  if (process.env.RECOMECAR_DO_ZERO) {
+    try { for (const l of await recomecarDoZero(handle.db, process.env.RECOMECAR_DO_ZERO)) console.log(`✔ ${l}`); }
+    catch (e) { console.error(`✘ recomeço não aplicado: ${e instanceof Error ? e.message : String(e)}`); }
+  }
   const log = await bootstrapDatabase(handle.db, { seedDemo: process.env.SEED_DEMO === "true", masterEmail: process.env.MASTER_EMAIL, masterPassword: process.env.MASTER_PASSWORD, masterName: process.env.MASTER_NAME });
   for (const l of log) console.log(`✔ ${l}`);
   await handle.close();
