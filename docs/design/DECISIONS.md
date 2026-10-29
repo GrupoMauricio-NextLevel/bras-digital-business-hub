@@ -1936,3 +1936,19 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Movimento (D193, ajuste):** a pedido do dono, o logo com o arco aparece em toda troca de página, no mínimo 0,42 s, e some subindo junto com a página nova. A página nova entra na hora, sem quadro vazio.
 - **Testes:** `tests/ia0-mauricio.test.ts` (2).
 - **Nome (decisão do dono, 2026-10-28):** "Pede pro Maurício" no menu e no botão; "Conta com o Maurício" como título da faixa na home; na conversa, "Maurício". Evitar "Mau"/"Mau Mau" ("mau" = ruim) e "Maurício (IA)".
+
+## D195 — [E-commerce] Vendedor 24h na home: "Pede pro Maurício" (2026-10-29)
+- **Pedido do dono:** a IA como vendedor ativo 24h nas páginas públicas, para converter visitante em cliente. Três frentes com pegadas diferentes (público, painel, loja), em `docs/prompts/mauricio-ia-v3-padrao-hostinger.md` seção 12.
+- **Como é:**
+  - cápsula "Pede pro Maurício: qual plano é o melhor para a minha loja?" no rodapé da tela (padrão REF-001), que se fecha na visita;
+  - conversa lateral (padrão REF-010) com o selo "Online agora", a oferta de entrada, atalhos e campo livre.
+- **Funciona sem IA:** motor guiado com dados reais:
+  - plano recomendado pelo custo (mensalidade + taxa) para a faixa de vendas;
+  - preços e oferta do Master;
+  - integrações da fonte única (D192) e temas;
+  - entende o assunto da pergunta livre e, se não entende, mostra os assuntos e oferece o contato.
+- **Com IA ligada no Master:** a pergunta livre vai ao modelo econômico com os mesmos fatos e regras (sem preço inventado, sem promessa de ganho, máximo 4 frases), com limite de 30 perguntas por hora por endereço.
+- **Conversão:**
+  - "Criar minha loja com este plano" leva ao cadastro com o plano escolhido;
+  - "Quero que a equipe me chame" cria o lead no CRM (`createBrandLead`) com o resumo das perguntas.
+- **Testes:** `tests/vendedor-publico.test.ts` (3).

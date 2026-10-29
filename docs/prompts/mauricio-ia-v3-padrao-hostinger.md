@@ -225,3 +225,16 @@ Cada cartão, no padrão: ícone na cor de sinal da marca, nome, uma frase, selo
    - uma resposta em que o assistente propõe uma ação;
    - o painel no celular.
 5. **Custo:** qual é o teto de gasto mensal com a OpenAI que você aceita para começar? Ele vira o alerta do Master.
+
+---
+
+## 12. As três frentes do Maurício (decisão do dono, 2026-10-29)
+Cada lugar tem uma "pegada" própria, sobre o mesmo núcleo (fatos reais do sistema, regras de honestidade, chave só no Master).
+
+| Frente | Para quem | Papel | Como funciona sem IA | Com IA ligada | Estado |
+|---|---|---|---|---|---|
+| **1. Vendedor 24h nas páginas públicas** | Visitante que pode virar cliente da plataforma | Converte: entende o negócio, recomenda o plano pelo custo real (mensalidade + taxa), tira dúvidas (preço, teste, recebimento, frete, integrações, migração, temas) e leva ao cadastro com o plano escolhido ou captura o contato para a equipe | Motor guiado (`src/lib/ia/vendedor-publico.ts`): atalhos + entende o assunto da pergunta livre; nunca inventa | Pergunta livre vai ao modelo econômico com os mesmos fatos e regras (sem preço inventado, sem promessa) | **Feita** (D195): cápsula "Pede pro Maurício" no rodapé + conversa lateral, contato vira lead no CRM |
+| **2. Assistente nos painéis** | Lojista, fornecedor, Master | Trabalha: escreve, analisa, prepara ações; você confirma | Visual pronto e bloqueado por plano (IA0, D194) | Ferramentas de texto (IA1), perguntas sobre a loja (IA2), ações com confirmação (IA3) | IA0 feita |
+| **3. Vendedor da loja do lojista** | Cliente final da loja do lojista | Ajuda o lojista a vender: acha o produto, tamanho, frete, prazo e leva ao carrinho; passa ao WhatsApp do lojista | Guiado com o catálogo, frete e políticas da própria loja (nunca de outra loja) | Conversa livre com os mesmos dados | A fazer (V3), liberado por plano (decisão do dono pendente: qual plano) |
+
+Regras da frente 1: nada de autoplay de som, cápsula fecha e não volta na mesma visita, contato só com o aceite do formulário, sem guardar a conversa (vai só o resumo das perguntas no lead).

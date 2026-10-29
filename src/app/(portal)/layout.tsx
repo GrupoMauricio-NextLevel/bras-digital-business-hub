@@ -8,6 +8,10 @@ import { supportContacts } from "@/lib/support";
 import { PublicShell, type PublicNavItem } from "@/design-system/components/public-shell";
 import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 
+import { getDb } from "@/db/client";
+import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
+import { getIaConfig } from "@/lib/domain/ia";
+import { VendedorHome } from "@/components/ia/vendedor-home";
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
@@ -34,6 +38,8 @@ export default async function PortalLayout({ children }: { children: React.React
   const cta = holding ? { href: "/solucoes#diagnostico", label: "Diagnóstico gratuito" } : cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
+  // Vendedor 24h (D195): só nas páginas públicas da E-commerce; responde com os dados reais, com ou sem IA ligada.
+  const vendedor = commerce ? await (async () => { const db = await getDb(); const [fatos, ia] = await Promise.all([fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja"), getIaConfig(db)]); return <VendedorHome fatos={fatos} iaLigada={ia.usoReal && !!ia.chaveEnc} />; })() : null;
   return (
     <PublicShell
       // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.
@@ -49,7 +55,7 @@ export default async function PortalLayout({ children }: { children: React.React
         ? <BrandLogo brand={{ ...brand, name: `${brand.name}: ${brand.tagline}` }} tone="on-dark" variant="assinatura-completa" className="h-20" />
         : <><BrandLogo brand={brand} tone="auto" className="h-8" /><p className="mt-2">{brand.tagline.replace(/\.$/, "")}.</p></>}
       footerNote={<><FamiliaGrupo brandCode={brand.code} /><NextLevelSignature product={brand.name} /><p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. {brand.soon ? "Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público." : <><Link href="/termos" className="underline underline-offset-2">Termos de uso</Link> · <Link href="/privacidade" className="underline underline-offset-2">Política de privacidade</Link></>}</p></>}
-      floating={whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}
+      floating={<>{whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}{vendedor}</>}
     >
       {children}
     </PublicShell>

@@ -98,3 +98,19 @@
 .ia-enviar { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 9999px; color: #fff; background: var(--ds-primary); }
 .ia-enviar:disabled { background: var(--ds-surface-2); color: var(--ds-muted); cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) { .ia-painel[open] { animation: none; } .ia-botao { transition: none; } }
+
+/* Vendedor 24h da home (D195): cápsula "Pede pro Maurício" no rodapé da tela (padrão REF-001). */
+.vh-capsula { position: fixed; left: 0; right: 0; margin-inline: auto; bottom: 20px; z-index: 55; display: flex; align-items: center; gap: 8px; width: min(560px, calc(100vw - 32px)); }
+.vh-capsula-btn { display: flex; flex: 1; min-width: 0; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border-radius: 9999px; background: var(--ds-surface, #fff); color: var(--ds-ink);
+  font-size: .9rem; font-weight: 600; text-align: left; border: 1.5px solid transparent;
+  background-image: linear-gradient(var(--ds-surface, #fff), var(--ds-surface, #fff)), linear-gradient(90deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 40%, #22d3ee));
+  background-origin: border-box; background-clip: padding-box, border-box; box-shadow: 0 12px 34px rgb(15 23 42 / .18); }
+.vh-capsula-btn:focus-visible { outline: 3px solid var(--ds-primary); outline-offset: 3px; }
+.vh-capsula-btn > svg { color: var(--ds-primary); }
+.vh-enviar { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; margin-left: auto; border-radius: 9999px; color: #fff; background: var(--ds-primary); }
+.vh-fechar { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 9999px; color: #fff; background: rgb(15 23 42 / .85); }
+.vh-botao { bottom: 84px; }
+@media (max-width: 640px) { .vh-capsula { bottom: 76px; } .vh-capsula-btn { font-size: .82rem; } }
+.vh-oferta { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; font-size: .875rem; color: #fff; background: linear-gradient(135deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 70%, #000)); }
+.vh-balao-cliente { max-width: 85%; padding: 10px 14px; border-radius: 18px 18px 4px 18px; color: var(--ds-ink); background: color-mix(in srgb, var(--ds-primary) 12%, var(--ds-surface)); }
+.vh-online { display: inline-block; width: 7px; height: 7px; margin-right: 3px; border-radius: 9999px; background: #16a34a; vertical-align: middle; }
