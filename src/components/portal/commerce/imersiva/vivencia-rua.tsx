@@ -19,13 +19,13 @@ export function VivenciaRua() {
         <p className="im-eyebrow im-eyebrow--claro">Vivência de rua</p>
         <h2 id="vivencia-t" className="im-h2 mt-4 max-w-4xl text-foreground">Quem entende de atacado está na rua, não em outro estado.</h2>
         <p className="mt-4 max-w-2xl text-lg text-body">A NextLevel vive o atacado de São Paulo todos os dias. Essa proximidade vira loja certa, atendimento rápido e decisões que fazem sentido para o seu negócio.</p>
-        <p aria-hidden className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-1 text-5xl font-black leading-none tracking-tight text-[var(--im-acao,var(--ds-primary))] md:text-7xl">
+        <p aria-hidden className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-1 font-display text-5xl font-bold leading-none tracking-tight text-[var(--im-acao,var(--ds-primary))] md:text-7xl">
           {LUGARES.map((l, i) => <span key={l} className={i === LUGARES.length - 1 ? "opacity-40" : ""}>{l}</span>)}
         </p>
         <ul className="mt-12 grid gap-x-8 gap-y-10 border-t border-border pt-10 sm:grid-cols-2 lg:grid-cols-4">
-          {PILARES.map((p) => (
+          {PILARES.map((p, i) => (
             <li key={p.titulo}>
-              <p.icon className="size-6 text-[var(--im-acao,var(--ds-primary))]" aria-hidden />
+              <div className="flex items-center justify-between"><span className="ec-icone"><p.icon className="size-5" aria-hidden /></span><span className="ec-indice text-foreground">{String(i + 1).padStart(2, "0")}</span></div>
               <h3 className="mt-3 text-lg font-bold text-foreground">{p.titulo}</h3>
               <p className="mt-2 text-sm leading-relaxed text-body">{p.texto}</p>
             </li>

@@ -26,15 +26,15 @@ export function FeitaParaAtacado() {
           <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2">
             {RECURSOS.map((r) => (
               <li key={r.titulo}>
-                <r.icon className="size-6 text-[var(--im-acao,var(--ds-primary))]" aria-hidden />
+                <span className="ec-icone"><r.icon className="size-5" aria-hidden /></span>
                 <h3 className="mt-3 text-lg font-bold text-foreground">{r.titulo}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-body">{r.texto}</p>
               </li>
             ))}
           </ul>
         </div>
-        <figure className="rounded-[2rem] border border-border bg-canvas p-6 shadow-[0_30px_70px_-40px_rgb(16_26_51/0.45)] md:p-8">
-          <figcaption className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Na sua loja · exemplo</figcaption>
+        <figure className="ec-cartao p-6 shadow-[0_30px_70px_-40px_rgb(16_26_51/0.45)] md:p-8">
+          <figcaption className="ec-mono text-muted-foreground">Na sua loja · exemplo</figcaption>
           <p className="mt-3 text-sm text-muted-foreground">Moda feminina</p>
           <p className="text-xl font-semibold text-foreground">Vestido midi canelado</p>
           <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">{formatBRL(41880)} <span className="text-sm font-medium text-muted-foreground">a grade · {formatBRL(3490)} a peça</span></p>

@@ -1,4 +1,6 @@
 import { negocioAberto } from "@/lib/negocios";
+import localFont from "next/font/local";
+import "@/components/portal/commerce/tech.css";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
@@ -12,6 +14,11 @@ import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 import { getDb } from "@/db/client";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 import { VendedorHome } from "@/components/ia/vendedor-home";
+// Tipografia de tecnologia da NextLevel E-commerce (D222, OFL): Space Grotesk nos títulos, Geist no texto, Geist Mono em rótulos e números.
+const ecTitulo = localFont({ src: "../fonts/space-grotesk-latin.woff2", variable: "--ec-font-titulo", display: "swap", weight: "300 700" });
+const ecTexto = localFont({ src: "../fonts/geist-latin.woff2", variable: "--ec-font-texto", display: "swap", weight: "100 900" });
+const ecMono = localFont({ src: "../fonts/geist-mono-latin.woff2", variable: "--ec-font-mono", display: "swap", weight: "100 900" });
+
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
@@ -41,7 +48,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
   // Vendedor 24h (D195): só nas páginas públicas da E-commerce; responde com os dados reais, com ou sem IA ligada.
   const vendedor = commerce ? await (async () => { const db = await getDb(); const fatos = await fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja"); return <VendedorHome fatos={fatos} whatsappEquipe={supportContacts().whatsappUrl} />; })() : null;
-  return (
+  const casca = (
     <PublicShell
       // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.
       brand={<BrandLogo brand={brand} tone="auto" className={holding ? "h-6" : commerce ? "h-10" : "h-8"} priority />}
@@ -61,4 +68,5 @@ export default async function PortalLayout({ children }: { children: React.React
       {children}
     </PublicShell>
   );
+  return commerce ? <div className={`ec-tech ${ecTitulo.variable} ${ecTexto.variable} ${ecMono.variable}`}>{casca}</div> : casca;
 }

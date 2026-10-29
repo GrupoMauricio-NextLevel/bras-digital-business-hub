@@ -2330,3 +2330,23 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Não afirmamos que os concorrentes não têm esses recursos.
 - **Selos:** `docs/marca/SELOS-E-PROVAS.md`. Selos próprios com prompts para o gerador de imagem; selos de terceiros (Google, Reclame Aqui, Mercado Pago, PCI) só com o material oficial.
 - **Correção do dono (mesmo dia):** a taxa zero é da **plataforma** sobre as vendas. O Mercado Pago cobra as taxas dele (Pix e cartão), que não têm nada a ver com a NextLevel. Os textos agora dizem sempre "taxa zero da plataforma". Ficaram de fora "nada sobre as vendas" e "100% das vendas na sua conta", que davam a entender que não existia nenhuma taxa. A faixa do topo, o FAQ, os planos e o vendedor IA lembram que as taxas do Mercado Pago são à parte.
+
+## D222 — [E-commerce] Visual de tecnologia: tipografia nova e blocos de informação redesenhados (2026-10-29)
+- **Pedido do dono:** a fonte não parecia de tecnologia, os blocos de informação estavam sem design e o "0%" estava simples demais. A página precisa refletir que somos uma plataforma de tecnologia.
+- **Tipografia:** só no portal público da E-commerce (`.ec-tech`, no layout do portal). As fontes são locais, com licença OFL:
+  - Space Grotesk nos títulos;
+  - Geist no texto;
+  - Geist Mono em rótulos e números.
+  - As outras marcas não mudam.
+- **Kit visual** (`src/components/portal/commerce/tech.css`):
+  - painel escuro com grade fina, borda em degradê ciano-violeta-verde e brilho;
+  - "0%" gigante em degradê verde-ciano;
+  - barras de dados que crescem na rolagem (com alternativa sem movimento);
+  - cartões com índice em mono (01–04) e ícone em quadrado com degradê;
+  - etiquetas em mono ("// POR QUE A NEXTLEVEL").
+- **Aplicado em:**
+  - faixa da taxa zero (painel e barras com a taxa de cada plataforma);
+  - "Por que a NextLevel" (cartões com o dado em destaque: 0%, R$ 57, ∞, SP);
+  - comparativo (cartões de plano e tabela em painel, números em mono);
+  - "Feita para o atacado" e "Vivência de rua";
+  - selo do Mercado Pago.

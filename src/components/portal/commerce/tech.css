@@ -1,0 +1,76 @@
+/*
+ * Visual de tecnologia da NextLevel E-commerce (D222). Vale só dentro de `.ec-tech` (portal público da E-commerce):
+ * Space Grotesk nos títulos, Geist no texto, Geist Mono em rótulos e números; painéis escuros com grade, borda em degradê
+ * e brilho; barras de dados. As fontes vêm do layout do portal (`--ec-font-*`).
+ */
+.ec-tech {
+  --nl-font-display: var(--ec-font-titulo), "Space Grotesk", system-ui, sans-serif;
+  --ds-font-ui: var(--ec-font-texto), "Geist", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sans: var(--ds-font-ui);
+  --font-display: var(--nl-font-display);
+  --ec-mono: var(--ec-font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --ec-verde: #22e08a;
+  --ec-ciano-vivo: #22d3ee;
+  --ec-violeta: #7c5cff;
+  --ec-linha: linear-gradient(120deg, rgb(34 211 238 / .75), rgb(124 92 255 / .55) 45%, rgb(34 224 138 / .7));
+  font-family: var(--ds-font-ui);
+  font-feature-settings: "ss01", "cv11";
+}
+.ec-tech :is(h1, h2, h3, h4, .font-display, .ecc-titulo, .ecc-h2, .im-h2) { font-family: var(--nl-font-display); }
+.ec-tech :is(.ecc-titulo) { letter-spacing: -0.035em; font-weight: 700; }
+.ec-tech :is(.ecc-h2, .im-h2) { letter-spacing: -0.03em; font-weight: 700; }
+
+/* Rótulos em mono, maiúsculos, com marcador. */
+.ec-tech .im-eyebrow, .ec-mono { font-family: var(--ec-mono); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; font-size: .72rem; }
+.ec-tech .im-eyebrow::before { content: "//"; margin-right: .55em; opacity: .55; }
+.ec-num { font-family: var(--ec-mono); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.ec-tech .ecc-selo-topo { font-family: var(--ec-mono); letter-spacing: .08em; text-transform: uppercase; font-size: .7rem; }
+
+/* Painel escuro: grade fina, brilho e borda em degradê. */
+.ec-painel { position: relative; isolation: isolate; overflow: hidden; color: #e8eefc; border: 1px solid transparent !important;
+  background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; border-radius: 1.75rem;
+  box-shadow: 0 40px 90px -40px rgb(34 211 238 / .45), 0 0 0 1px rgb(255 255 255 / .02) inset; }
+.ec-painel::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgb(255 255 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .045) 1px, transparent 1px);
+  background-size: 32px 32px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 20%, #000 20%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 30% 20%, #000 20%, transparent 80%); }
+.ec-painel::after { content: ""; position: absolute; z-index: -1; width: 38rem; height: 38rem; left: -12rem; top: -18rem; pointer-events: none;
+  background: radial-gradient(circle, rgb(34 224 138 / .22), transparent 60%); }
+
+/* O zero: número gigante com degradê verde-ciano e brilho. */
+.ec-zero { font-family: var(--nl-font-display); font-weight: 700; line-height: .8; letter-spacing: -.06em; font-size: clamp(6rem, 16vw, 11rem);
+  background: linear-gradient(135deg, #b8ffe0 0%, var(--ec-verde) 35%, var(--ec-ciano-vivo) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 28px rgb(34 224 138 / .35)); }
+.ec-zero small { font-size: .5em; letter-spacing: -.04em; }
+
+/* Barras de dados (taxa por plataforma). */
+.ec-barras { display: grid; gap: .65rem; }
+.ec-barra { display: grid; grid-template-columns: 8.5rem 1fr 4.2rem; align-items: center; gap: .85rem; font-size: .9rem; }
+.ec-barra-trilho { height: .6rem; border-radius: 9999px; background: rgb(255 255 255 / .07); overflow: hidden; }
+.ec-barra-cheia { display: block; height: 100%; border-radius: inherit; width: var(--w); background: linear-gradient(90deg, #ff5d8f, #ff9f5a); transform-origin: left; }
+.ec-barra--nl { padding: .7rem .8rem; margin: 0 -.8rem .35rem; border-radius: .9rem; background: rgb(34 224 138 / .09); box-shadow: 0 0 0 1px rgb(34 224 138 / .35) inset; }
+.ec-barra--nl .ec-barra-cheia { width: .6rem; background: var(--ec-verde); box-shadow: 0 0 14px 2px rgb(34 224 138 / .8); }
+.ec-barra-valor { text-align: right; font-family: var(--ec-mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ec-barra-cheia { animation: ec-cresce linear both; animation-timeline: view(); animation-range: entry 10% cover 35%; }
+  }
+}
+@keyframes ec-cresce { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (max-width: 520px) { .ec-barra { grid-template-columns: 6.6rem 1fr 3.8rem; font-size: .82rem; } }
+
+/* Cartão claro com borda em degradê ao passar o mouse e índice em mono. */
+.ec-cartao { position: relative; border-radius: 1.5rem; padding: 1.5rem; border: 1px solid transparent !important;
+  background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, linear-gradient(140deg, rgb(15 23 42 / .12), rgb(15 23 42 / .06)) border-box;
+  transition: background var(--ds-dur-fast, .18s) ease, transform var(--ds-dur-fast, .18s) ease, box-shadow .25s ease; }
+.ec-cartao:hover { background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, var(--ec-linha) border-box; transform: translateY(-2px); box-shadow: 0 24px 50px -30px rgb(34 211 238 / .55); }
+.ec-indice { font-family: var(--ec-mono); font-size: .72rem; letter-spacing: .12em; color: color-mix(in srgb, currentColor 55%, transparent); }
+.ec-icone { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: .9rem; color: #0a1224;
+  background: linear-gradient(135deg, #b8f3ff, #c9bcff 55%, #b8ffe0); box-shadow: 0 8px 20px -10px rgb(124 92 255 / .6); }
+.ec-cartao--escuro { color: #e8eefc; background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; }
+.ec-cartao--escuro:hover { background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; }
+
+/* Etiqueta mono em pílula. */
+.ec-tag { display: inline-flex; align-items: center; gap: .45rem; padding: .32rem .7rem; border-radius: 9999px; font-family: var(--ec-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  color: #a5f3fc; background: rgb(34 211 238 / .1); box-shadow: 0 0 0 1px rgb(34 211 238 / .3) inset; }
+.ec-tag i { width: .45rem; height: .45rem; border-radius: 9999px; background: var(--ec-verde); box-shadow: 0 0 10px var(--ec-verde); }
+.ec-tag--claro { color: #0b5d73; background: #e6f9fd; box-shadow: 0 0 0 1px rgb(8 145 178 / .25) inset; }
