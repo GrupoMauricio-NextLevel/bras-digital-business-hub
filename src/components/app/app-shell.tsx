@@ -52,13 +52,15 @@ export type AppShellProps = {
   banner?: React.ReactNode;
   /** Capa (D198): faixa do ecossistema no topo, moldura de cantos amplos, conta em popover. Hoje só no Master. */
   capa?: { indiqueHref?: string; oferta?: { texto: string; href: string }; agente?: boolean };
+  /** Botões extras na barra do topo (ex.: "Ajuda" do lojista, D201). */
+  extraTop?: React.ReactNode;
   children: React.ReactNode;
 };
 
 const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 /** Casca do aplicativo: liga dados e ações de cada painel ao `OperationalShell` do sistema de design (a aparência não é decidida aqui). */
-export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, children }: AppShellProps) {
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, extraTop, children }: AppShellProps) {
   const [palette, setPalette] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
@@ -129,6 +131,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
           <Sparkles className="size-4" aria-hidden /><span className="ds-hide-compact">Agente</span>
         </button>
       ) : null}
+      {extraTop}
       {capa ? null : <ThemeSwitch className="ds-hide-compact" />}
       {!minimal ? <NotificationsMenu notices={notices} /> : null}
       <DropdownMenu>

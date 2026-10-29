@@ -102,10 +102,11 @@ export async function salvarContato(db: Database, input: { id: string; token: st
 // ---------------------------------------------------------------------------------------------------------------
 const equipe = (actor: Actor) => requireMasterFn(actor, ["COMERCIAL", "SUPORTE"]);
 
-export async function listarConversas(db: Database, actor: Actor, filtro: { status?: Conversa["status"] | "ABERTAS" } = {}) {
+export async function listarConversas(db: Database, actor: Actor, filtro: { status?: Conversa["status"] | "ABERTAS"; canal?: "HOME" | "PAINEL" } = {}) {
   equipe(actor);
-  const where = filtro.status === "ABERTAS" ? sql`${iaConversas.status} in ('NOVA','IA','HUMANO')` : filtro.status ? eq(iaConversas.status, filtro.status) : undefined;
-  const lista = await db.select({ id: iaConversas.id, status: iaConversas.status, nome: iaConversas.nome, whatsapp: iaConversas.whatsapp, interesse: iaConversas.interesse, faturamento: iaConversas.faturamento, ultimaMensagem: iaConversas.ultimaMensagem, ultimaEm: iaConversas.ultimaEm, naoLidas: iaConversas.naoLidas, responsavelNome: iaConversas.responsavelNome, mensagens: iaConversas.mensagens, createdAt: iaConversas.createdAt })
+  const porStatus = filtro.status === "ABERTAS" ? sql`${iaConversas.status} in ('NOVA','IA','HUMANO')` : filtro.status ? eq(iaConversas.status, filtro.status) : undefined;
+  const where = filtro.canal ? and(porStatus, eq(iaConversas.canal, filtro.canal)) : porStatus;
+  const lista = await db.select({ id: iaConversas.id, canal: iaConversas.canal, storeId: iaConversas.storeId, status: iaConversas.status, nome: iaConversas.nome, whatsapp: iaConversas.whatsapp, interesse: iaConversas.interesse, faturamento: iaConversas.faturamento, ultimaMensagem: iaConversas.ultimaMensagem, ultimaEm: iaConversas.ultimaEm, naoLidas: iaConversas.naoLidas, responsavelNome: iaConversas.responsavelNome, mensagens: iaConversas.mensagens, createdAt: iaConversas.createdAt })
     .from(iaConversas).where(where).orderBy(desc(iaConversas.ultimaEm)).limit(150);
   const contagem = await db.select({ status: iaConversas.status, n: sql<number>`count(*)::int` }).from(iaConversas).groupBy(iaConversas.status);
   const hoje = new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 10);

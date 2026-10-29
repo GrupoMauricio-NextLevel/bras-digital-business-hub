@@ -48,6 +48,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     items: [
       NEXTLEVEL_ITEM("/master"),
       { label: "Agora", href: "/master/agora", icon: "Bell", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"], bottom: true },
+      { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Operação", soTodas: true, bottom: true },
       { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
@@ -71,7 +72,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship", marcas: ["SUPERDROP"] },
       { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
       { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio", marcas: ["SUPERDROP"] },
-      { label: "Pede pro Maurício", href: "/master/ia", icon: "Sparkles", group: "Negócio", soTodas: true },
+
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio", soTodas: true },
     ],
     quick: [

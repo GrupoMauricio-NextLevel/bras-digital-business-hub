@@ -1100,6 +1100,8 @@ export const iaConversas = pgTable("ia_conversas", {
   id: id(),
   brand: text("brand").notNull(),
   canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA"] }).notNull().default("HOME"),
+  /** Ajuda do lojista (D201): a conversa pertence a esta loja (canal PAINEL). */
+  storeId: text("store_id").references(() => stores.id),
   tokenHash: text("token_hash").notNull(),
   status: text("status", { enum: ["NOVA", "IA", "HUMANO", "GANHA", "PERDIDA"] }).notNull().default("NOVA"),
   nome: text("nome"),
@@ -1118,7 +1120,7 @@ export const iaConversas = pgTable("ia_conversas", {
   ultimaMensagem: text("ultima_mensagem"),
   ultimaEm: ts("ultima_em").notNull().defaultNow(),
   createdAt: createdAt(),
-}, (t) => [index("ia_conversas_status_idx").on(t.status, t.ultimaEm)]);
+}, (t) => [index("ia_conversas_status_idx").on(t.status, t.ultimaEm), index("ia_conversas_store_idx").on(t.storeId)]);
 
 export const iaMensagens = pgTable("ia_mensagens", {
   id: id(),

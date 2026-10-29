@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Só no modo de desenvolvimento: os endereços de teste das marcas (sd.test, cm.test, nl.test…) podem carregar os recursos do dev.
+  allowedDevOrigins: ["*.test"],
   reactStrictMode: true,
   // allowedOrigins só existe para simular domínios de marca em testes locais (cabeçalho x-forwarded-host); vazio em produção.
   experimental: { serverActions: { bodySizeLimit: "8mb", ...(process.env.SERVER_ACTIONS_ALLOWED_ORIGINS ? { allowedOrigins: process.env.SERVER_ACTIONS_ALLOWED_ORIGINS.split(",") } : {}) } },

@@ -13,7 +13,7 @@ export default async function CentralIaPage({ searchParams }: { searchParams: Pr
   const inicial = await listarConversas(await getDb(), s.actor, { status: "ABERTAS" });
   return (
     <>
-      <PageHeader title="Central da IA" description="Quem está conversando com o Maurício agora, o que perguntou e os dados que deixou. Assuma a conversa quando precisar de uma pessoa." />
+      <PageHeader title="Atendimento" description="Visitantes do site falando com o Maurício e lojistas pedindo ajuda no painel, tudo numa caixa só. Assuma a conversa e responda por aqui." />
       <AbasIa atual="conversas" />
       <CrmAoVivo inicial={JSON.parse(JSON.stringify(inicial))} abrir={(await searchParams).c?.slice(0, 40)} />
     </>

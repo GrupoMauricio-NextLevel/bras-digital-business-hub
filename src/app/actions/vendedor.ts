@@ -60,7 +60,7 @@ export async function salvarContatoAction(input: { id: string; token: string; no
 
 // Master: CRM ao vivo.
 async function sessao() { const s = await getSession(); if (!s) throw new ForbiddenError("Sessão expirada."); return s; }
-export async function listarConversasAction(filtro: { status?: "NOVA" | "IA" | "HUMANO" | "GANHA" | "PERDIDA" | "ABERTAS" }) {
+export async function listarConversasAction(filtro: { status?: "NOVA" | "IA" | "HUMANO" | "GANHA" | "PERDIDA" | "ABERTAS"; canal?: "HOME" | "PAINEL" }) {
   return runAction(async () => listarConversas(await getDb(), (await sessao()).actor, filtro));
 }
 export async function abrirConversaAction(id: string) {

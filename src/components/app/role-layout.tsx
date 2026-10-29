@@ -25,6 +25,8 @@ import { masterPathAllowed } from "@/lib/master-equipe";
 import type { NavItem } from "@/lib/nav";
 import { mauricioDaLoja } from "@/lib/domain/ia";
 import { BotaoMauricio } from "@/components/ia/mauricio";
+import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
+import { supportContacts } from "@/lib/support";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
 export function panelFor(session: Session): Panel {
@@ -129,6 +131,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
         banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}
+        extraTop={commerceStore ? <AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /> : undefined}
       >
         {children}
       </AppShell>

@@ -2021,3 +2021,18 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - **Números e meta:** conversas, novos em 24 h, em teste, pagantes contra a meta (`platform_settings.comercial.metaPagantes`, padrão 10) e receita mensal, mais o funil.
   - **Ao vivo:** a tela atualiza sozinha a cada 15 s.
 - Código: `src/lib/domain/agora-ecommerce.ts`, `src/app/master/agora/page.tsx`, `src/components/master/ao-vivo.tsx`.
+
+## D201 — [E-commerce] Ajuda do lojista dentro do painel e caixa de atendimento única no Master (2026-10-29)
+- **Pedido do dono:** "logo vão aparecer clientes reais: como facilitar esse suporte?" (fase F4 do prompt do escritório comercial).
+- **Lojista:** botão **Ajuda** na barra do topo do painel da E-commerce.
+  - Abre uma coluna de conversa com a equipe e mostra o aviso de horário (seg a sex, 9h–18h).
+  - O "Urgente? WhatsApp" continua como saída.
+  - Atualiza a cada 4 s enquanto está aberta.
+  - O lojista só vê a conversa da própria loja (`src/lib/domain/ajuda-lojista.ts`, `src/app/actions/ajuda.ts`, `src/components/ajuda/ajuda-lojista.tsx`).
+- **Mesma tabela, sem duplicar:** `ia_conversas` com `canal: PAINEL` e o novo `store_id` (migração `0078`). A conversa já nasce com o nome da loja e do lojista, o e-mail e o WhatsApp da loja.
+- **Master:**
+  - "Central da IA" passou a se chamar **Atendimento** e subiu no menu, logo abaixo de "Agora".
+  - Filtros novos: "Visitantes do site" e "Lojistas (Ajuda)"; as conversas de lojista aparecem com o selo "Lojista".
+  - Na conversa de lojista não aparece "Devolver ao Maurício".
+  - Mensagem nova de lojista entra na fila "Agora" como "Conversa esperando", com o relógio de espera.
+- `next.config.ts`: `allowedDevOrigins: ["*.test"]`, só para o modo de desenvolvimento local com os endereços de teste das marcas.

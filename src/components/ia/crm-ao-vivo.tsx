@@ -21,6 +21,7 @@ const codigo = (id: string) => id.slice(-6).toUpperCase();
 
 export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }) {
   const [filtro, setFiltro] = React.useState<Filtro>("ABERTAS");
+  const [canal, setCanal] = React.useState<"HOME" | "PAINEL" | undefined>(undefined);
   const [dados, setDados] = React.useState<Lista>(inicial);
   const [sel, setSel] = React.useState<string | null>(abrir ?? inicial.lista[0]?.id ?? null);
   const [aberta, setAberta] = React.useState<Aberta | null>(null);
@@ -29,7 +30,7 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
   const [pending, start] = React.useTransition();
   const fim = React.useRef<HTMLDivElement>(null);
 
-  const carregarLista = React.useCallback(async () => { const r = await listarConversasAction({ status: filtro }); if (r.ok) setDados(r.data); }, [filtro]);
+  const carregarLista = React.useCallback(async () => { const r = await listarConversasAction({ status: filtro, canal }); if (r.ok) setDados(r.data); }, [filtro, canal]);
   const carregarAberta = React.useCallback(async (id: string, primeira = false) => {
     const r = await abrirConversaAction(id);
     if (r.ok) { setAberta(r.data); if (primeira) setNotas(r.data.conversa.notas ?? ""); }
@@ -57,12 +58,17 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
               <button key={r} type="button" onClick={() => setFiltro(f)} aria-pressed={filtro === f} className={`rounded-full border px-3 py-1 text-xs font-semibold ${filtro === f ? "border-transparent bg-primary text-primary-foreground" : "border-border text-body"}`}>{r}</button>
             ))}
             <span className="ml-auto flex items-center gap-1 text-xs text-muted-foreground"><span className="vh-online" aria-hidden /> ao vivo</span>
+            <span className="flex w-full gap-1.5" role="group" aria-label="Quem está falando">
+              {([[undefined, "Todos"], ["HOME", "Visitantes do site"], ["PAINEL", "Lojistas (Ajuda)"]] as const).map(([v, r]) => (
+                <button key={r} type="button" onClick={() => setCanal(v)} aria-pressed={canal === v} className={`rounded-full border px-3 py-1 text-xs font-semibold ${canal === v ? "border-transparent bg-[var(--ds-ink)] text-[var(--ds-surface)]" : "border-border text-muted-foreground hover:text-foreground"}`}>{r}</button>
+              ))}
+            </span>
           </div>
           <ul className="flex-1 divide-y divide-border overflow-y-auto">
             {dados.lista.length ? dados.lista.map((x) => (
               <li key={x.id}>
                 <button type="button" onClick={() => setSel(x.id)} aria-current={sel === x.id ? "true" : undefined} className={`flex w-full flex-col gap-1 px-4 py-3 text-left ${sel === x.id ? "bg-[color-mix(in_srgb,var(--ds-primary)_8%,transparent)]" : "hover:bg-surface-muted"}`}>
-                  <span className="flex items-center gap-2"><b className="truncate text-sm text-foreground">{x.nome ?? `Visitante ${codigo(x.id)}`}</b>{x.naoLidas > 0 && sel !== x.id ? <span className="rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">{x.naoLidas}</span> : null}<span className="ml-auto shrink-0 text-xs text-muted-foreground">{ha(x.ultimaEm)}</span></span>
+                  <span className="flex items-center gap-2">{x.canal === "PAINEL" ? <span className="rounded-full bg-amber-100 px-1.5 text-[10px] font-bold uppercase text-amber-900">Lojista</span> : null}<b className="truncate text-sm text-foreground">{x.nome ?? `Visitante ${codigo(x.id)}`}</b>{x.naoLidas > 0 && sel !== x.id ? <span className="rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">{x.naoLidas}</span> : null}<span className="ml-auto shrink-0 text-xs text-muted-foreground">{ha(x.ultimaEm)}</span></span>
                   <span className="flex items-center gap-2"><span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS[x.status]!.cls}`}>{STATUS[x.status]!.rotulo}</span>{x.interesse ? <span className="truncate text-xs text-muted-foreground">{x.interesse}</span> : null}</span>
                   {x.ultimaMensagem ? <span className="truncate text-xs text-body">{x.ultimaMensagem}</span> : null}
                 </button>
@@ -76,7 +82,7 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
             <>
               <header className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-3">
                 <div className="min-w-0 flex-1"><p className="truncate font-bold text-foreground">{c.nome ?? `Visitante ${codigo(c.id)}`}</p><p className="text-xs text-muted-foreground">Conversa {codigo(c.id)} · {STATUS[c.status]!.rotulo}{c.responsavelNome ? ` · ${c.responsavelNome}` : ""}</p></div>
-                {c.status === "HUMANO"
+                {c.canal === "PAINEL" && c.status === "HUMANO" ? null : c.status === "HUMANO"
                   ? <button type="button" disabled={pending} onClick={() => agir(() => devolverConversaAction(c.id), "O Maurício voltou a responder")} className="ds-btn ds-btn--secondary ds-btn--sm"><Bot className="size-4" aria-hidden /> Devolver ao Maurício</button>
                   : <button type="button" disabled={pending} onClick={() => agir(() => assumirConversaAction(c.id), "Você assumiu a conversa")} className="ds-btn ds-btn--sm"><UserRound className="size-4" aria-hidden /> Assumir conversa</button>}
               </header>
