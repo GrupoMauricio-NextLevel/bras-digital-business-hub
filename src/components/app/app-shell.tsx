@@ -51,7 +51,9 @@ export type AppShellProps = {
   sideTop?: React.ReactNode;
   banner?: React.ReactNode;
   /** Capa (D198): faixa do ecossistema no topo, moldura de cantos amplos, conta em popover. Hoje só no Master. */
-  capa?: { indiqueHref?: string; oferta?: { texto: string; href: string }; agente?: boolean };
+  capa?: { indiqueHref?: string; oferta?: { texto: string; href: string }; agente?: boolean; negocios?: React.ReactNode };
+  /** Painel do lojista (D209): o canto do menu mostra a marca DO CLIENTE (logo da loja ou iniciais), não a da NextLevel. */
+  marcaCliente?: { nome: string; logoUrl?: string | null; sub: string };
   /** Botões extras na barra do topo (ex.: "Ajuda" do lojista, D201). */
   extraTop?: React.ReactNode;
   children: React.ReactNode;
@@ -60,7 +62,10 @@ export type AppShellProps = {
 const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master", SUPPLIER_ADMIN: "Fornecedor", SUPPLIER_DISPATCH: "Expedição", STORE_OWNER: "Lojista" };
 
 /** Casca do aplicativo: liga dados e ações de cada painel ao `OperationalShell` do sistema de design (a aparência não é decidida aqui). */
-export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, extraTop, children }: AppShellProps) {
+/** "Fio & Linha" → "FL": só letras e números, sem símbolos. */
+const siglaDaLoja = (nome: string) => nome.split(/\s+/).map((p) => p.replace(/[^\p{L}\p{N}]/gu, "")).filter(Boolean).slice(0, 2).map((p) => p[0]!.toUpperCase()).join("") || "L";
+
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, marcaCliente, extraTop, children }: AppShellProps) {
   const [palette, setPalette] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
@@ -79,7 +84,15 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
   const logo = shellBrand && shellBrand.logo !== "superdrop"
     ? <BrandLogo brand={shellBrand} tone="auto" className="h-6" />
     : <Logo tone="auto" className="h-6" />;
-  const brandNode = (
+  const brandNode = marcaCliente ? (
+    <div className="ds-brand ds-brand--cliente">
+      <span className="ds-cliente-logo" aria-hidden>
+        {/* eslint-disable-next-line @next/next/no-img-element -- logo enviada pelo lojista, de qualquer origem */}
+        {marcaCliente.logoUrl ? <img src={marcaCliente.logoUrl} alt="" /> : siglaDaLoja(marcaCliente.nome)}
+      </span>
+      <span className="ds-brand-text min-w-0"><b className="ds-tenant-name" title={marcaCliente.nome}>{marcaCliente.nome}</b><span className="ds-tenant-sub">{marcaCliente.sub}</span></span>
+    </div>
+  ) : (
     <div className="ds-brand">
       <span className="ds-brand-full">{logo}</span>
       <span className="ds-brand-mark" aria-hidden>{logoOficial(shellBrand?.code ?? "SUPERDROP") || temLogoPng(shellBrand?.code) ? <BrandLogo brand={{ code: shellBrand?.code ?? "SUPERDROP", name: "" }} variant="monograma" className="h-6" /> : (shellBrand?.name ?? "S").slice(0, 1)}</span>
@@ -128,7 +141,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
       ) : null}
       {capa?.agente ? (
         <button type="button" className="ds-faixa-agente" onClick={() => window.dispatchEvent(new Event("nl-mauricio"))} aria-label="Abrir o Maurício, agente da NextLevel (Ctrl+J)">
-          <Sparkles className="size-4" aria-hidden /><span className="ds-hide-compact">Agente</span>
+          <span className="ds-agente-icone" aria-hidden><Sparkles className="size-4" /></span><span className="ds-hide-compact">Agente</span>
         </button>
       ) : null}
       {extraTop}
@@ -182,8 +195,8 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         variant={minimal ? "bare" : "full"}
         drawerTitle={`Menu: ${tenantName}`}
         brand={brandNode}
-        area={<><b className="ds-tenant-name" title={tenantName}>{tenantName}</b><span className="ds-tenant-sub">{tenantSub ?? roleLabel}</span></>}
-        sideTop={<>{sideTop}<div className="ds-switcher"><ProductSwitcher current={product} master={panel === "master"} /></div></>}
+        area={marcaCliente ? undefined : <><b className="ds-tenant-name" title={tenantName}>{tenantName}</b><span className="ds-tenant-sub">{tenantSub ?? roleLabel}</span></>}
+        sideTop={<>{sideTop}{capa ? null : <div className="ds-switcher"><ProductSwitcher current={product} master={panel === "master"} /></div>}</>}
         renderNav={({ collapsed, close }) => <SideNav items={items} mode={navMode} collapsed={collapsed} onNavigate={close} />}
         sideFooter={
           <>
@@ -196,7 +209,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         banner={banner}
         bottom={bottom}
         faixa={capa ? {
-          inicio: capa.indiqueHref ? <Link href={capa.indiqueHref} className="ds-faixa-pilula"><Gift className="size-4" aria-hidden /><span>Indique e ganhe</span></Link> : null,
+          inicio: <>{capa.negocios}{capa.indiqueHref ? <Link href={capa.indiqueHref} className="ds-faixa-pilula"><Gift className="size-4" aria-hidden /><span>Indique e ganhe</span></Link> : null}</>,
           meio: capa.oferta ? <Link href={capa.oferta.href} className="ds-faixa-oferta"><span className="ds-faixa-novo">Novo</span><span className="truncate">{capa.oferta.texto}</span><ArrowRight className="size-4 shrink-0" aria-hidden /></Link> : null,
         } : undefined}
         overlays={!minimal ? <CommandPalette open={palette} onOpenChange={setPalette} items={items} quick={quick} search={search} /> : null}

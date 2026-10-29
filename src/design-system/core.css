@@ -442,9 +442,47 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
 .ds-faixa-oferta { max-width: 560px; padding: 0 12px 0 5px; font-weight: 600; }
 .ds-faixa-pilula:hover, .ds-faixa-oferta:hover { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.32); }
 .ds-faixa-novo { flex: none; padding: 3px 10px; border-radius: var(--ds-r-pill); background: var(--ds-accent); color: var(--capa-borda); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
-.ds-faixa-agente { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 0; border-radius: var(--ds-r-pill); background: #fff; color: var(--capa-meio); font: inherit; font-size: 0.85rem; font-weight: 800; cursor: pointer;
-  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.12); transition: transform var(--ds-dur-fast) var(--ds-ease); }
-.ds-faixa-agente:hover { transform: translateY(-1px); }
+.ds-faixa-agente { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px 0 12px; border: 2px solid transparent; border-radius: var(--ds-r-pill); color: #fff; font: inherit; font-size: 0.85rem; font-weight: 800; cursor: pointer;
+  /* Agente (D209, referência do dono: botão "Agente" da Hostinger): pílula escura com borda em degradê que gira devagar e um brilho suave. */
+  background: linear-gradient(#0d0820, #0d0820) padding-box, conic-gradient(from var(--agente-giro), #ff3dcf, #b14dff, #5b6cff, #2f9bff, #5b6cff, #b14dff, #ff3dcf) border-box;
+  box-shadow: 0 0 16px -2px rgb(177 77 255 / 0.55), 0 0 2px rgb(255 61 207 / 0.5); animation: ds-agente-giro 4s linear infinite;
+  transition: transform var(--ds-dur-fast) var(--ds-ease), box-shadow var(--ds-dur-fast) var(--ds-ease); }
+.ds-faixa-agente:hover { transform: translateY(-1px); box-shadow: 0 0 24px 0 rgb(177 77 255 / 0.7), 0 0 3px rgb(255 61 207 / 0.7); }
+.ds-agente-icone { display: inline-grid; place-items: center; color: #fff; filter: drop-shadow(0 0 6px rgb(255 79 216 / 0.7)); }
+@property --agente-giro { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes ds-agente-giro { to { --agente-giro: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .ds-faixa-agente { animation: none; } }
+/* Seletor de negócios do Master (D209): pílula na faixa + cartões no popover. */
+.ds-negocio { display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 12px 0 5px; border: 1px solid rgb(255 255 255 / 0.18); border-radius: var(--ds-r-pill); background: rgb(255 255 255 / 0.1); color: #fff; font: inherit; cursor: pointer; white-space: nowrap;
+  transition: background-color var(--ds-dur-fast) var(--ds-ease), border-color var(--ds-dur-fast) var(--ds-ease); }
+.ds-negocio:hover, .ds-negocio[data-state="open"] { background: rgb(255 255 255 / 0.18); border-color: rgb(255 255 255 / 0.36); }
+.ds-negocio-txt { display: grid; line-height: 1.05; text-align: left; }
+.ds-negocio-txt small { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.72; }
+.ds-negocio-txt b { font-size: 0.86rem; font-weight: 800; }
+.ds-negocio-sigla { display: inline-grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 10px; background: var(--ds-accent); color: var(--capa-borda, #fff); font-size: 0.72rem; font-weight: 900; letter-spacing: -0.02em; }
+.ds-negocios { width: min(560px, calc(100vw - 24px)); padding: 8px; border-radius: 22px; }
+.ds-negocios-topo { display: grid; gap: 2px; padding: 10px 10px 12px; }
+.ds-negocios-topo b { font-size: 1rem; }
+.ds-negocios-topo span { font-size: 0.8rem; color: var(--ds-muted); }
+.ds-negocios-grade { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 480px) { .ds-negocios-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ds-negocio-card { display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; min-height: 58px; padding: 10px; border: 1px solid var(--ds-line); border-radius: 16px; background: var(--ds-surface); color: var(--ds-ink); font: inherit; text-align: left; }
+.ds-negocio-card b { display: block; font-size: 0.86rem; }
+.ds-negocio-card small { display: block; overflow: hidden; font-size: 0.72rem; color: var(--ds-muted); text-overflow: ellipsis; white-space: nowrap; }
+button.ds-negocio-card { cursor: pointer; transition: border-color var(--ds-dur-fast) var(--ds-ease), background-color var(--ds-dur-fast) var(--ds-ease); }
+button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(--ds-soft); }
+.ds-negocio-card[aria-current="true"] { border-color: var(--ds-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-primary) 18%, transparent); }
+.ds-negocio-card[aria-disabled="true"] { background: var(--ds-surface-2, var(--ds-surface)); }
+.ds-negocio-card[aria-disabled="true"] .ds-negocio-sigla { filter: grayscale(0.7); opacity: 0.6; }
+.ds-negocio-card em { flex: none; padding: 2px 8px; border-radius: var(--ds-r-pill); background: var(--ds-soft); color: var(--ds-muted); font-size: 0.66rem; font-style: normal; font-weight: 800; }
+.ds-negocio-card em[data-estado="ok"] { background: var(--ds-success-soft); color: var(--ds-success); }
+.ds-negocio-card:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 2px; }
+/* Painel do lojista (D209): a marca do cliente no canto do menu. */
+.ds-brand--cliente { gap: 10px; }
+.ds-cliente-logo { display: inline-grid; place-items: center; flex: none; width: 42px; height: 42px; overflow: hidden; border-radius: 12px; background: var(--ds-primary); color: var(--ds-primary-contrast); font-size: 0.85rem; font-weight: 900; }
+.ds-cliente-logo:has(img) { background: #fff; border: 1px solid var(--ds-line); }
+.ds-cliente-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+.ds-brand--cliente .ds-brand-text { display: grid; gap: 1px; }
 .ds-faixa-avatar { display: inline-grid; place-items: center; width: 38px; height: 38px; margin-left: 4px; border: 2px solid rgb(255 255 255 / 0.3); border-radius: var(--ds-r-pill); background: var(--ds-accent); color: var(--capa-borda); font: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
 .ds-faixa :is(a, button):focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 /* Menu: item ativo em cápsula branca, sem filete lateral. */
@@ -469,6 +507,9 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
 }
 @media (max-width: 860px) { .ds-faixa-meio { display: none; } .ds-faixa .ds-top-actions { margin-left: auto; } }
 @media (max-width: 640px) { .ds-faixa-pilula span { display: none; } .ds-faixa-pilula { padding: 0 10px; } }
+/* Celular (D209): o seletor de negócios vira só a sigla; "Indique e ganhe" continua no menu da conta. */
+@media (max-width: 860px) { .ds-faixa-inicio { gap: 6px; flex: none; } .ds-negocio-txt { display: none; } .ds-negocio { gap: 4px; height: 38px; padding: 0 6px 0 4px; } }
+@media (max-width: 640px) { .ds-faixa-inicio:has(.ds-negocio) .ds-faixa-pilula { display: none; } }
 @media print { .ds-faixa { display: none !important; } .ds-app--capa { padding: 0; background: none; } }
 /* No escuro a cápsula ativa clareia um pouco a superfície (branco puro só no claro). */
 :root[data-theme="dark"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); }

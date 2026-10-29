@@ -9,7 +9,7 @@ import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
 import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
-import { SeletorMarcaMaster } from "@/components/master/seletor-marca";
+import { SeletorNegocios } from "@/components/master/seletor-negocios";
 import { marcasAtivasNoMaster } from "@/lib/master-marca";
 import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
@@ -75,7 +75,6 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Master trancado só na E-commerce (D203): o menu do escritório em 7 áreas, uma casca só (o console /commerce usa o mesmo menu).
   const escritorioEc = isMaster && marcaMaster === "NEXTLEVEL_COMMERCE" && marcasAtivasNoMaster().length === 1;
   const items = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
-  const seletorMarca = isMaster && !sup && marcasAtivasNoMaster().length > 1 ? <SeletorMarcaMaster atual={marcaMaster} /> : null;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.
@@ -140,6 +139,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
         banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}
         capa={capaLoja}
+        marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : "Painel da loja" } : undefined}
         extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
       >
         {children}
@@ -156,9 +156,11 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const tenantSub = session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma";
   // Capa do Master (D198): faixa roxa com "Indique e ganhe", a novidade do momento e o agente.
   const pode = (href: string) => !fn || masterPathAllowed(fn, href);
-  const capa = isMaster ? { indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
+  // Seletor de negócios (D209): pílula na faixa do topo, no lugar do "NextLevel / …" do menu e da faixa "Vendo:".
+  const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
+  const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{seletorMarca}{ecoBar}{banner}{botaoIa}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
   );

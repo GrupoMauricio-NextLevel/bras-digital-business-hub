@@ -2152,3 +2152,15 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - Atalho "Precisa de você (N)" filtra a lista; a tela atualiza sozinha (30 s).
 - O item "Pedidos parados" da tela Agora da E-commerce agora abre essa lista (`/merchant/orders?ver=atencao`). SuperDrop continua indo ao pós-venda.
 - Código: `src/lib/domain/pedidos-agora.ts` (puro, com teste `tests/pedidos-agora.test.ts`), `src/app/merchant/orders/`.
+
+## D209 — [Painéis] Canto superior refeito: marca do cliente no lojista, seletor de negócios no Master e botão Agente com borda viva (2026-10-29)
+- **Pedido do dono (com capturas):** "precisamos refazer o racional desse canto superior"; "não precisa ter a nossa marca e sim a do cliente no painel do lojista"; "no Master precisa ter um seletor de negócios de outra forma"; "quero esse efeito do agente da Hostinger nos botões do topo do nosso assistente".
+- **Painel do lojista:** o canto do menu mostra a marca da loja: logo enviada pelo lojista (`stores.logo_url`) ou as iniciais sem símbolos ("Fio & Linha" → FL), com o nome e "Painel da loja" (ou "Equipe da loja"). Saem o logo da NextLevel E-commerce e o "NextLevel / E-commerce" do menu.
+- **Master: seletor de negócios na faixa do topo**, no lugar do "NextLevel / …" do menu lateral e da faixa "Vendo:":
+  - pílula "Negócio · E-commerce" com a sigla colorida da marca;
+  - abre "Seus negócios" em cartões: Aberto agora, Disponível (troca na hora), Pausado (trancado em `MASTER_MARCAS_ATIVAS`) e Em breve (sem sistema);
+  - com mais de um negócio aberto, aparece também "Todos" (visão do grupo);
+  - no celular vira só a sigla, e "Indique e ganhe" fica no menu da conta.
+- **Botão Agente:** pílula escura com borda em degradê (rosa, roxo, azul) que gira devagar e um brilho suave, como o da referência. Respeita "reduzir movimento". Vale no Master e no lojista.
+- Os outros painéis (fornecedor, parceiro etc.) continuam com o menu de antes.
+- Código: `src/components/app/app-shell.tsx`, `src/components/master/seletor-negocios.tsx`, `src/components/app/role-layout.tsx`, `src/design-system/core.css`.
