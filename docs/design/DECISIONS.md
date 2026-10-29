@@ -2004,3 +2004,20 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Trava:** tudo numa transação. Se não houver Master real, ou se algo mantido depender do que vai sair, nada é apagado.
 - **Ensaio:** banco de demonstração com 68 usuários, 32 lojas e 194 pedidos ficou com 1 Master, 0 pedidos e as 26 lojas-vitrine dos temas.
 - **O ambiente de gravação** (`nextlevel-demo`, banco em memória) continua com os dados de demonstração, que é o papel dele.
+
+## D200 — [E-commerce] Master trancado na E-commerce, situação comercial única e a tela "Agora" (2026-10-29)
+- **Pedido do dono:** "vamos trancar as marcas e falar só da E-commerce"; ordem F0 → F2 → F4 → F3 → F1 → F5 → F6 do prompt `docs/prompts/master-ecommerce-escritorio-comercial.md`; poucos testes agora.
+- **Marcas trancadas:** `marcasAtivasNoMaster()` (`src/lib/master-marca.ts`).
+  - O padrão é só `NEXTLEVEL_COMMERCE`. Para destravar, coloque `MASTER_MARCAS_ATIVAS=NEXTLEVEL_COMMERCE,SUPERDROP` no Render.
+  - Com uma marca só, o seletor "Vendo:" some e o Master fica nela.
+  - Equipe, configurações, IA e erros continuam no menu. Nada foi apagado e o SuperDrop não muda.
+- **Situação comercial única** (`src/lib/domain/situacao-comercial.ts`):
+  - O contrato (`nl_subscriptions`) manda.
+  - O acesso dado à mão sem contrato aparece como "cortesia" (não conta como pagante).
+  - O console E-commerce passou a usar essa regra: "Pagantes", "Receita mensal" (anual ÷ 12) e a coluna "Situação" das lojas. Isso acaba com o "2 assinantes" contra "0 pagantes".
+- **"Agora"** (`/master/agora`, primeira tela do Master):
+  - **Fila por urgência:** conversa esperando (amarela em 5 min, vermelha em 15) > interessado novo > cadastro novo > teste acabando em até 3 dias > ativação parada há mais de 2 dias > pagamento pendente > primeira venda.
+  - **Ações:** WhatsApp com mensagem pronta (`wa.me`, sem integração) e link para a conversa (`/master/ia?c=`) ou para a loja.
+  - **Números e meta:** conversas, novos em 24 h, em teste, pagantes contra a meta (`platform_settings.comercial.metaPagantes`, padrão 10) e receita mensal, mais o funil.
+  - **Ao vivo:** a tela atualiza sozinha a cada 15 s.
+- Código: `src/lib/domain/agora-ecommerce.ts`, `src/app/master/agora/page.tsx`, `src/components/master/ao-vivo.tsx`.

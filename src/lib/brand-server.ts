@@ -1,7 +1,7 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { groupLinkFor } from "@/lib/host-routing";
-import { MASTER_MARCA_COOKIE, ehMarcaMaster, type MarcaMaster } from "@/lib/master-marca";
+import { MASTER_MARCA_COOKIE, ehMarcaMaster, marcasAtivasNoMaster, type MarcaMaster } from "@/lib/master-marca";
 import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
 /** Cookie do modo prévia: `/lojas` liga a NextLevel E-commerce num endereço que ainda não é dela. Só na demonstração (D149). */
@@ -41,8 +41,11 @@ export async function masterBrandFilter(raw: string | undefined): Promise<BrandC
 
 /** Marca escolhida no seletor do Master (R2), ou nula para "todas". */
 export async function marcaDoMaster(): Promise<MarcaMaster | null> {
+  // Com uma marca só aberta (D200), o Master fica sempre nela, sem seletor.
+  const ativas = marcasAtivasNoMaster();
+  if (ativas.length === 1) return ativas[0]!;
   const v = (await cookies()).get(MASTER_MARCA_COOKIE)?.value;
-  return ehMarcaMaster(v) ? v : null;
+  return ehMarcaMaster(v) && ativas.includes(v) ? v : null;
 }
 
 /** Leva ao início quando a marca do endereço não tem o recurso (evita páginas de outra marca em domínio errado). */

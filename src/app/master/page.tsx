@@ -5,7 +5,7 @@ import { ActivityFeed } from "@/components/shared/activity-feed";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { getPlatformOverview, listStoresWithPlan } from "@/lib/queries/master";
 import { redirect } from "next/navigation";
-import { getBrand } from "@/lib/brand-server";
+import { getBrand, marcaDoMaster } from "@/lib/brand-server";
 import { listOrdersForActor } from "@/lib/domain/orders";
 import { buildAlerts, loadTowerSnapshot } from "@/lib/domain/control-tower";
 import { getDb } from "@/db/client";
@@ -24,6 +24,8 @@ function greeting() {
 export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/commerce");
+  // Master trancado na E-commerce (D200): a primeira tela é a "Agora".
+  if ((await marcaDoMaster()) === "NEXTLEVEL_COMMERCE") redirect("/master/agora");
   const db = await getDb();
   const [overview, orders, snap, sdStores, cmStores] = await Promise.all([
     getPlatformOverview(),

@@ -25,10 +25,10 @@ export default async function CommercePage() {
       <PageHeader eyebrow="NextLevel E-commerce · Administração" title="Lojas digitais, como um negócio" description="Só as operações da NextLevel E-commerce: lojas, assinaturas, vendas, catálogo e aquisição de novos lojistas." />
 
       <section className="ds-kpis mb-6" aria-label="Resumo da E-commerce">
-        <MetricCard label="Lojas" value={k.stores} hint={`${k.published} publicadas`} />
-        <MetricCard label="Assinantes" value={k.paying} hint={`${k.trial} em teste`} />
+        <MetricCard label="Lojas" value={k.stores} hint={`${k.published} publicadas · desde o início`} />
+        <MetricCard label="Pagantes" value={k.paying} hint={`${k.trial} em teste${k.cortesia ? ` · ${k.cortesia} cortesia` : ""}`} />
         <MetricCard label="Vendas · mês" value={formatBRL(k.salesMonthCents)} hint={`${k.ordersMonth} pedidos pagos`} />
-        <MetricCard label="Receita SaaS" value={formatBRL(k.planRevenueMonthCents)} hint="planos pagos no mês" />
+        <MetricCard label="Receita mensal" value={formatBRL(k.mrrCents)} hint={`${formatBRL(k.planRevenueMonthCents)} recebido no mês`} />
         <MetricCard label="Leads" value={k.leadsNew} hint={`${k.leadsTotal} no funil`} />
       </section>
 

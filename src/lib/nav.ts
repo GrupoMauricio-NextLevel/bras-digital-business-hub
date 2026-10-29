@@ -47,6 +47,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "NextLevel Master",
     items: [
       NEXTLEVEL_ITEM("/master"),
+      { label: "Agora", href: "/master/agora", icon: "Bell", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"], bottom: true },
       { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
@@ -278,8 +279,9 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel E-commerce) e o que é de outra marca. */
 /** Menu do Master filtrado pela marca escolhida no seletor (R2). Sem marca = tudo. Itens sem `marcas` são comuns. */
-export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | undefined): NavItem[] {
-  return marca ? items.filter((i) => !i.soTodas && (!i.marcas || i.marcas.includes(marca))) : items;
+export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | undefined, marcaUnica = false): NavItem[] {
+  // Marca única aberta (D200): as ferramentas do grupo (equipe, configurações, IA, erros) continuam no menu.
+  return marca ? items.filter((i) => (marcaUnica || !i.soTodas) && (!i.marcas || i.marcas.includes(marca))) : items;
 }
 
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {

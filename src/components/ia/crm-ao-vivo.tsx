@@ -19,10 +19,10 @@ const STATUS: Record<string, { rotulo: string; cls: string }> = {
 const ha = (iso: string) => { const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000); return m < 1 ? "agora" : m < 60 ? `${m} min` : m < 1440 ? `${Math.round(m / 60)} h` : `${Math.round(m / 1440)} d`; };
 const codigo = (id: string) => id.slice(-6).toUpperCase();
 
-export function CrmAoVivo({ inicial }: { inicial: Lista }) {
+export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }) {
   const [filtro, setFiltro] = React.useState<Filtro>("ABERTAS");
   const [dados, setDados] = React.useState<Lista>(inicial);
-  const [sel, setSel] = React.useState<string | null>(inicial.lista[0]?.id ?? null);
+  const [sel, setSel] = React.useState<string | null>(abrir ?? inicial.lista[0]?.id ?? null);
   const [aberta, setAberta] = React.useState<Aberta | null>(null);
   const [resposta, setResposta] = React.useState("");
   const [notas, setNotas] = React.useState("");

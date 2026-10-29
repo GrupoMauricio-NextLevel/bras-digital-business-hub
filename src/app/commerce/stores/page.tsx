@@ -5,7 +5,6 @@ import { CommerceStoreActions } from "@/components/commerce/commerce-store-actio
 import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { EmptyState } from "@/components/app/empty-state";
-import { StatusBadge } from "@/components/app/status-badge";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +19,7 @@ export default async function CommerceStoresPage() {
         columns={[
           { key: "store", header: "Loja", primary: true, cell: ({ store }) => <div><div className="font-bold">{store.name}</div><div className="text-xs text-muted-foreground">/{store.slug}</div></div> },
           { key: "pub", header: "Publicação", cell: ({ store }) => store.publishedAt ? "Publicada" : "Rascunho" },
-          { key: "access", header: "Acesso", cell: ({ access }) => <span><StatusBadge value={access.state} dot={false} />{access.daysLeft !== null && access.daysLeft > 0 ? <span className="ml-2 text-xs text-muted-foreground">{access.daysLeft} dias</span> : null}</span> },
+          { key: "access", header: "Situação", cell: ({ situacao }) => <span><b>{situacao.rotulo}</b>{situacao.plano ? <span className="ml-1 text-xs text-muted-foreground">· {situacao.plano}</span> : null}{situacao.diasParaVencer !== null && situacao.diasParaVencer > 0 ? <span className="ml-2 text-xs text-muted-foreground">{situacao.diasParaVencer} dia(s)</span> : null}</span> },
           { key: "domain", header: "Domínio", cell: ({ store }) => store.domainStatus === "CONNECTED" ? (store.customDomain ?? "Conectado") : "Sem domínio próprio" },
           { key: "actions", header: "Gestão", className: "text-right", cell: ({ store, access }) => <CommerceStoreActions storeId={store.id} status={store.status} slug={store.slug} canExtendTrial={access.state === "TRIAL" || access.state === "BLOCKED"} /> },
         ]} />

@@ -10,6 +10,7 @@ import { storeUrl } from "@/lib/store-url";
 import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
 import { SeletorMarcaMaster } from "@/components/master/seletor-marca";
+import { marcasAtivasNoMaster } from "@/lib/master-marca";
 import { brandByCode } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
@@ -67,8 +68,8 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Master único (R2): a marca escolhida no seletor do topo enxuga o menu.
   const isMaster = session.user.role === "NEXTLEVEL_MASTER";
   const marcaMaster = isMaster ? await marcaDoMaster() : null;
-  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster), brand);
-  const seletorMarca = isMaster && !sup ? <SeletorMarcaMaster atual={marcaMaster} /> : null;
+  const items = navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
+  const seletorMarca = isMaster && !sup && marcasAtivasNoMaster().length > 1 ? <SeletorMarcaMaster atual={marcaMaster} /> : null;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.

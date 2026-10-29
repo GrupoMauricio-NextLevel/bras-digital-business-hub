@@ -3,6 +3,7 @@ import type { Database } from "@/db/client";
 import { brandLeads, financeInvoices, orders, organizations, products, storeProducts, stores } from "@/db/schema";
 import { requireMaster, type Actor } from "./access";
 import { storeAccess } from "./store-access";
+import { resumoComercial, situacoesComerciais } from "./situacao-comercial";
 
 const BRAND = "NEXTLEVEL_COMMERCE" as const;
 
@@ -30,14 +31,19 @@ export async function getCommerceConsole(db: Database, actor: Actor) {
   const month = now.toISOString().slice(0, 7);
   const monthOrders = paidOrders.filter((o) => o.createdAt.slice(0, 7) === month);
   const monthPlans = invoices.filter((i) => i.status === "PAID" && i.paidAt?.slice(0, 7) === month);
-  const access = rows.map(({ store }) => ({ store, access: storeAccess(store, now) }));
+  // Situação comercial única (D200): o contrato manda; acesso à mão sem contrato é "cortesia".
+  const sit = await situacoesComerciais(db, rows.map((r) => r.store), now);
+  const resumo = resumoComercial(sit.values());
+  const access = rows.map(({ store }) => ({ store, access: storeAccess(store, now), situacao: sit.get(store.id)! }));
 
   return {
     kpis: {
       stores: rows.length,
       published: rows.filter((r) => !!r.store.publishedAt).length,
-      paying: access.filter((r) => r.access.state === "PAID").length,
-      trial: access.filter((r) => r.access.state === "TRIAL").length,
+      paying: resumo.pagantes,
+      trial: resumo.teste,
+      cortesia: resumo.cortesia,
+      mrrCents: resumo.mrrCents,
       blocked: access.filter((r) => r.access.state === "BLOCKED").length,
       salesMonthCents: monthOrders.reduce((sum, o) => sum + o.totalCents, 0),
       ordersMonth: monthOrders.length,
