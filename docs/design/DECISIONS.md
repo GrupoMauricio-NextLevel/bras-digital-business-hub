@@ -2164,3 +2164,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Botão Agente:** pílula escura com borda em degradê (rosa, roxo, azul) que gira devagar e um brilho suave, como o da referência. Respeita "reduzir movimento". Vale no Master e no lojista.
 - Os outros painéis (fornecedor, parceiro etc.) continuam com o menu de antes.
 - Código: `src/components/app/app-shell.tsx`, `src/components/master/seletor-negocios.tsx`, `src/components/app/role-layout.tsx`, `src/design-system/core.css`.
+
+## D210 — [Painéis] Botão Agente com o degradê da Hostinger e topo modernizado (2026-10-29)
+- **Pedido do dono:** "o botão do agente precisa ter aquelas cores degradê igual Hostinger"; "nesses botões do topo, o que pudermos fazer para modernizar, pode fazer".
+- **Causa de a borda aparecer cinza (D209):** a regra global `* { border-color }` (fora de camada) vence as regras do design system (camada `components`). A borda colorida passa a usar `border-color: transparent !important` para o degradê aparecer.
+- **Agente:** pílula escura com borda grossa em degradê rosa → roxo → azul, brilho que corre devagar pela borda, halo rosa à esquerda e azul à direita, ícone com brilho. Parado para quem pede menos movimento.
+- **Topo modernizado (Master e lojista):**
+  - todos os controles em vidro: mesma altura (38 px), borda fina clara, brilho no alto, desfoque e leve subida ao passar o mouse;
+  - busca em pílula com o atalho Ctrl K em cápsula;
+  - botões só de ícone redondos;
+  - número de avisos em pílula com degradê, fora do sino;
+  - avatar com anel no degradê do Agente;
+  - no celular, espaçamento menor para tudo caber em 360 px.
+- Código: `src/design-system/core.css`.
