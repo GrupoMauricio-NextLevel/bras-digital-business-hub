@@ -18,27 +18,30 @@ export function BotaoMauricio({ m, central, upgrade }: { m: MauricioDaLoja; cent
   const [aberto, setAberto] = React.useState(false);
   const [escolhida, setEscolhida] = React.useState<FerramentaComEstado | null>(null);
   const [rascunho, setRascunho] = React.useState("");
-  const dlg = React.useRef<HTMLDialogElement>(null);
   const botao = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     const tecla = (e: KeyboardEvent) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "j") { e.preventDefault(); setAberto((a) => !a); } };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
   }, []);
+  // Coluna integrada ao painel (padrão da referência): o conteúdo encolhe ao lado e continua usável. Fica aberta entre páginas.
+  React.useEffect(() => { try { if (sessionStorage.getItem("nl-mauricio-aberto") === "1") setAberto(true); } catch { /* sem armazenamento */ } }, []); // eslint-disable-line react-hooks/set-state-in-effect
   React.useEffect(() => {
-    const d = dlg.current; if (!d) return;
-    if (aberto && !d.open) d.showModal();
-    if (!aberto && d.open) { d.close(); botao.current?.focus(); }
+    document.documentElement.classList.toggle("ia-dock-aberto", aberto);
+    try { sessionStorage.setItem("nl-mauricio-aberto", aberto ? "1" : "0"); } catch { /* sem armazenamento */ }
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") { setAberto(false); botao.current?.focus(); } };
+    if (aberto) window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
   }, [aberto]);
   if (!m.mostrar) return null;
   const minimo = (f: FerramentaComEstado) => (f.grupo === "TEXTO" ? m.minimoTexto : m.minimoAvancado);
   const sugestoes = m.ferramentas.filter((f) => ["pergunte", "descricao", "resposta", "cadastro"].includes(f.key));
   return (
     <>
-      <button ref={botao} type="button" onClick={() => setAberto(true)} aria-label="Pede pro Maurício (Ctrl+J)" title="Pede pro Maurício (Ctrl+J)" className="ia-botao nl-chega">
+      <button ref={botao} type="button" onClick={() => setAberto((a) => !a)} aria-expanded={aberto} aria-label="Pede pro Maurício (Ctrl+J)" title="Pede pro Maurício (Ctrl+J)" className="ia-botao nl-chega">
         <Sparkles className="size-6" aria-hidden />
       </button>
-      <dialog ref={dlg} className="ia-painel" aria-labelledby="ia-titulo" onClose={() => setAberto(false)} onClick={(e) => { if (e.target === dlg.current) setAberto(false); }}>
+      {aberto ? <aside className="ia-dock" aria-labelledby="ia-titulo">
         <div className="flex h-full flex-col">
           <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="flex items-center gap-2.5">
@@ -95,7 +98,7 @@ export function BotaoMauricio({ m, central, upgrade }: { m: MauricioDaLoja; cent
             <p className="mt-2 text-center text-[11px] text-muted-foreground">O Maurício pode errar. Confira antes de confirmar. {Object.values(GRUPOS_IA).length} tipos de ajuda.</p>
           </form>
         </div>
-      </dialog>
+      </aside> : null}
     </>
   );
 }

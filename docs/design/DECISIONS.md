@@ -1952,3 +1952,8 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - "Criar minha loja com este plano" leva ao cadastro com o plano escolhido;
   - "Quero que a equipe me chame" cria o lead no CRM (`createBrandLead`) com o resumo das perguntas.
 - **Testes:** `tests/vendedor-publico.test.ts` (3).
+
+## D196 — [Todas] Maurício como coluna integrada ao site, não janela por cima (2026-10-29)
+- **Pedido do dono (prints do painel da referência):** a conversa fica ao lado do conteúdo, como parte do site, e não como uma janela por cima.
+- **Como ficou:** no computador (1100 px ou mais), a coluna de 420 px fica à direita e a página encolhe ao lado e continua usável. Não há fundo escuro e Esc fecha. No painel, a coluna continua aberta ao trocar de página (lembrada na sessão). No celular e no tablet, ocupa a tela inteira.
+- Vale para o vendedor da home (D195) e para o Maurício dos painéis (D194).

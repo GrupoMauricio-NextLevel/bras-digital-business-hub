@@ -23,15 +23,16 @@ export function VendedorHome({ fatos, iaLigada }: { fatos: FatosVenda; iaLigada:
   const [lead, setLead] = React.useState({ name: "", phone: "", email: "" });
   const [erroLead, setErroLead] = React.useState("");
   const seq = React.useRef(1);
-  const dlg = React.useRef<HTMLDialogElement>(null);
   const fim = React.useRef<HTMLDivElement>(null);
   const assuntos = React.useRef<string[]>([]);
 
   React.useEffect(() => { try { if (sessionStorage.getItem("nl-vendedor-fechado")) setCapsula(false); } catch { /* sem armazenamento */ } }, []); // eslint-disable-line react-hooks/set-state-in-effect
+  // Coluna integrada ao site (padrão do painel da referência): a página encolhe ao lado, sem janela por cima. Esc fecha.
   React.useEffect(() => {
-    const d = dlg.current; if (!d) return;
-    if (aberto && !d.open) d.showModal();
-    if (!aberto && d.open) d.close();
+    document.documentElement.classList.toggle("ia-dock-aberto", aberto);
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setAberto(false); };
+    if (aberto) window.addEventListener("keydown", esc);
+    return () => { window.removeEventListener("keydown", esc); document.documentElement.classList.remove("ia-dock-aberto"); };
   }, [aberto]);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end", behavior: "smooth" }); }, [msgs, pensando, contato]);
 
@@ -81,7 +82,7 @@ export function VendedorHome({ fatos, iaLigada }: { fatos: FatosVenda; iaLigada:
       ) : null}
       {!capsula && !aberto ? <button type="button" onClick={() => abrir()} className="ia-botao vh-botao" aria-label="Pede pro Maurício"><Sparkles className="size-6" aria-hidden /></button> : null}
 
-      <dialog ref={dlg} className="ia-painel" aria-labelledby="vh-titulo" onClose={() => setAberto(false)} onClick={(e) => { if (e.target === dlg.current) setAberto(false); }}>
+      {aberto ? <aside className="ia-dock" aria-labelledby="vh-titulo">
         <div className="flex h-full flex-col">
           <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="flex items-center gap-2.5">
@@ -136,7 +137,7 @@ export function VendedorHome({ fatos, iaLigada }: { fatos: FatosVenda; iaLigada:
             <p className="mt-2 text-center text-[11px] text-muted-foreground">O Maurício pode errar. Valores e condições confirmados no cadastro.</p>
           </form>
         </div>
-      </dialog>
+      </aside> : null}
     </>
   );
 }
