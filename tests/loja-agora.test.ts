@@ -32,3 +32,29 @@ describe("Precisa de você das telas do lojista (D212)", () => {
     expect(campanhasAgora([{ id: "x", text: "Frete grátis", startsAt: em(-1), endsAt: em(0.5) }], agora).map((x) => x.id)).toEqual(["x"]);
   });
 });
+
+import { crescimentoAgora, lojistasAgora, receitaAgora } from "@/lib/domain/master-agora";
+import type { SituacaoComercial } from "@/lib/domain/situacao-comercial";
+
+const sit = (pagamento: SituacaoComercial["pagamento"], diasParaVencer: number | null): SituacaoComercial => ({ pagamento, rotulo: pagamento, plano: "Start", ciclo: "MONTHLY", valorCents: 14900, venceEm: null, diasParaVencer });
+
+describe("Precisa de você do Master (D215)", () => {
+  it("receita: vencido, aguardando e teste acabando, renovação em azul; pagante longe fica de fora", () => {
+    const r = receitaAgora([{ id: "a", nome: "A", s: sit("pagante", 20) }, { id: "b", nome: "B", s: sit("teste", 2) }, { id: "c", nome: "C", s: sit("vencido", -3) }, { id: "d", nome: "D", s: sit("aguardando", null) }, { id: "e", nome: "E", s: sit("pagante", 2) }]);
+    expect(r.map((x) => [x.id, x.tom])).toEqual([["c", "danger"], ["b", "warning"], ["d", "warning"], ["e", "info"]]);
+    expect(r[0]!.href).toBe("/master/comercial/loja%3Ac");
+  });
+  it("lojistas: rascunho parado e publicada sem Mercado Pago", () => {
+    const r = lojistasAgora([
+      { id: "a", nome: "A", publicada: false, criadaEm: em(-5), pagamentoLoja: "NOT_CONFIGURED", s: sit("teste", 5) },
+      { id: "b", nome: "B", publicada: true, criadaEm: em(-10), pagamentoLoja: "NOT_CONFIGURED", s: sit("pagante", 20) },
+      { id: "c", nome: "C", publicada: false, criadaEm: em(-1), pagamentoLoja: "NOT_CONFIGURED", s: sit("teste", 6) },
+      { id: "d", nome: "D", publicada: true, criadaEm: em(-10), pagamentoLoja: "CONNECTED", s: sit("pagante", 20) },
+    ], agora);
+    expect(r.map((x) => x.id)).toEqual(["a", "b"]);
+  });
+  it("crescimento: Mercado Pago primeiro, depois e-mail e IA", () => {
+    expect(crescimentoAgora({ mp: { connected: false }, emailLigado: false, iaComChave: false, iaUsoReal: false }).map((x) => x.id)).toEqual(["mp", "email", "ia"]);
+    expect(crescimentoAgora({ mp: { connected: true }, emailLigado: true, iaComChave: true, iaUsoReal: true })).toEqual([]);
+  });
+});

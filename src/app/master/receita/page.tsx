@@ -12,6 +12,8 @@ import { MetricCard } from "@/components/app/metric-card";
 import { DataTable } from "@/components/app/data-table";
 import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
+import { receitaAgora } from "@/lib/domain/master-agora";
+import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +41,7 @@ export default async function ReceitaPage() {
   return (
     <>
       <PageHeader eyebrow="NextLevel E-commerce" title="Receita" description="Quanto entra por mês com os planos e o que está em risco. Cada número usa a mesma regra de quem paga do Master inteiro." />
+      <PrecisaDeVoce itens={receitaAgora(linhas)} vazio="Nenhuma cobrança em risco agora." descricao="Planos vencidos, pagamentos pendentes, testes acabando e renovações da semana. Cada um abre a ficha com o WhatsApp pronto." />
       <section className="ds-kpis mb-6" aria-label="Receita">
         <MetricCard label="Receita mensal" value={formatBRL(r.mrrCents)} hint="planos ativos (anual ÷ 12)" />
         <MetricCard label="Recebido no mês" value={formatBRL(recebidoMes)} hint="cobranças de plano pagas" />

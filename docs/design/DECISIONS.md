@@ -2240,3 +2240,16 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Celular:** a cápsula virava uma barra larga sobre o título dos planos. Agora é uma pílula curta ("Pede pro Maurício") à esquerda, e o WhatsApp fica à direita.
 - **Grade de temas:** 4 colunas em telas largas (com 3 colunas, o 4º tema ficava sozinho na linha).
 - Código: `src/design-system/movimento.css`, `src/components/ia/vendedor-home.tsx`, `src/components/portal/commerce/theme-gallery.tsx`.
+
+## D215 — [Master] "Precisa de você agora" em Receita, Lojistas e Crescimento (2026-10-29)
+- **Pedido do dono:** "pode ir na ordem, um de cada vez" (etapa 3: o resto do Master no padrão novo).
+- O mesmo bloco único do lojista (D212). Cada loja abre a ficha do Comercial (`loja:<id>`), com WhatsApp e histórico.
+- **Regras** (puras, `src/lib/domain/master-agora.ts`, testes em `tests/loja-agora.test.ts`):
+  - **Receita:** plano vencido (vermelho, "Cobrar"); pagamento pendente (amarelo); teste terminando em até 3 dias (amarelo); renovação em até 5 dias (azul).
+  - **Lojistas:** acesso vencido (vermelho); loja criada há 3 dias ou mais e não publicada (amarelo, "Ajudar"); loja publicada sem Mercado Pago, que não recebe pagamento real (amarelo).
+  - **Crescimento:**
+    - Mercado Pago da NextLevel desconectado ou em modo teste (vermelho);
+    - e-mails automáticos desligados (amarelo, leva à Central de qualidade, que diz como ligar);
+    - Maurício em modo manual ou com a chave salva mas o uso real desligado (azul).
+    - Só "ligado/desligado": nenhum valor de chave sai da tela.
+- Código: `src/lib/domain/master-agora.ts`, `src/app/master/receita/page.tsx`, `src/app/commerce/stores/page.tsx`, `src/app/master/crescimento/page.tsx`.
