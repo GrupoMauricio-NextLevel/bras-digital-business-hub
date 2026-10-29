@@ -473,3 +473,5 @@ a.ds-pub-card:hover, .ds-pub-card:has(> a:only-child):hover { transform: transla
 /* No escuro a cápsula ativa clareia um pouco a superfície (branco puro só no claro). */
 :root[data-theme="dark"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); }
 @media (prefers-color-scheme: dark) { :root[data-theme="system"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); } }
+/* A gaveta do celular usa a mesma classe do menu lateral; a regra que esconde o menu fixo no celular não vale para ela. */
+.ds-drawer .ds-side.ds-side--drawer { display: flex; }
