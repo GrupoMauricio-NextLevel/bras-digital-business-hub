@@ -23,6 +23,9 @@ import { CommerceEvolution, FinanceAreas, Opportunities } from "@/components/nl-
 import { finFlag } from "@/lib/finance/flags";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { perfilAtual } from "@/lib/perfil-loja-server";
+import { financeiroAgora } from "@/lib/domain/loja-agora";
+import { getStoreReadiness } from "@/lib/domain/readiness";
+import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 
 export default async function MerchantFinancePage() {
   const session = await requireStoreAdmin();
@@ -42,6 +45,13 @@ export default async function MerchantFinancePage() {
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
   const openInvoiceCents = openInvoices.reduce((sum, i) => sum + i.amountCents, 0);
   const overdueCents = overdueInvoices.reduce((sum, i) => sum + i.amountCents, 0);
+  // E-commerce (D212): o que pede atenção no dinheiro, item a item, e quanto entrou hoje, na semana e no mês.
+  const naoPagos = f.rows.filter((o) => o.customerPaymentStatus !== "PAID");
+  const agoraFin = commerce ? financeiroAgora({ faturas: invoices, assinatura: nlSub ? { status: nlSub.status, trialEndsAt: nlSub.trialEndsAt } : null, pagamento: (await getStoreReadiness(db, session.store!.id)).items.find((i) => i.key === "payment"), aReceberCents: naoPagos.reduce((s, o) => s + o.totalCents, 0), aReceberPedidos: naoPagos.length }) : [];
+  const agoraMs = new Date().getTime();
+  const pagosDesde = (dias: number) => { const ini = agoraMs - dias * 86_400_000; return f.rows.filter((o) => o.customerPaymentStatus === "PAID" && new Date(o.createdAt).getTime() >= ini).reduce((s, o) => s + o.totalCents, 0); };
+  const inicioHoje = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }) + "T00:00:00-03:00").getTime();
+  const hoje = f.rows.filter((o) => o.customerPaymentStatus === "PAID" && new Date(o.createdAt).getTime() >= inicioHoje).reduce((s, o) => s + o.totalCents, 0);
   const queue = ([
     overdueInvoices.length > 0 ? { id: "overdue", title: "Faturas vencidas com a NextLevel", description: formatBRL(overdueCents) + " precisam ser regularizados.", count: overdueInvoices.length, tone: "danger", icon: AlertTriangle, href: "#faturas", actionLabel: "Regularizar" } : null,
     f.owedToCentral > 0 && !independent ? { id: "central", title: "Pedidos pagos aguardam saldo", description: formatBRL(f.owedToCentral) + " em custo ainda não foi liberado para a Central.", tone: "warning", icon: Wallet, href: "/merchant/wallet", actionLabel: "Ver saldo" } : null,
@@ -49,14 +59,20 @@ export default async function MerchantFinancePage() {
   return (
     <>
       <PageHeader title={commerce ? "Financeiro da loja" : "Financeiro"} description={commerce ? "Acompanhe o dinheiro que entra pelas vendas, o custo dos produtos e a margem da sua operação." : independent ? "Você recebe do cliente e desconta o custo dos produtos. A diferença é sua margem." : "Você recebe do cliente e o custo dos produtos é debitado do seu saldo. A diferença é sua margem."} actions={<a href="/api/finance/export?tipo=vendas" className="ds-btn ds-btn--secondary">Exportar extrato (CSV)</a>} />
+      {commerce ? <PrecisaDeVoce itens={agoraFin} vazio="Nada pendente no financeiro. Recebimento e plano em dia." /> : null}
       {finFlag("FIN_CATALOG_MASTER") ? <FinanceAreas /> : null}
       <h2 id="operacao" className="mb-3 scroll-mt-24 text-lg font-semibold">Minha operação</h2>
-      <OperationalPulse className="mb-5" items={[
+      {commerce ? <OperationalPulse className="mb-5" items={[
+        { label: "Entrou hoje", value: formatBRL(hoje), icon: TrendingUp, tone: hoje ? "success" : "neutral", hint: "vendas pagas hoje" },
+        { label: "Últimos 7 dias", value: formatBRL(pagosDesde(7)), icon: TrendingUp, tone: "info", hint: "vendas pagas" },
+        { label: "Últimos 30 dias", value: formatBRL(pagosDesde(30)), icon: Wallet, tone: "info", hint: `margem total ${formatBRL(f.margin)}` },
+        { label: "A receber", value: formatBRL(naoPagos.reduce((s, o) => s + o.totalCents, 0)), icon: AlertTriangle, tone: "neutral", hint: "pedidos ainda não pagos" },
+      ]} /> : <OperationalPulse className="mb-5" items={[
         { label: "Recebido de clientes", value: formatBRL(f.received), icon: TrendingUp, tone: "success", hint: "vendas confirmadas" },
         { label: "Margem acumulada", value: formatBRL(f.margin), icon: Wallet, tone: "info", hint: "vendas − custo" },
         { label: commerce ? "Custos dos produtos" : independent ? "Taxa do mês" : "Aguardando saldo", value: commerce ? formatBRL(f.paidToCentral) : independent ? formatBRL(feeNow.feeCents) : formatBRL(f.owedToCentral), icon: ReceiptText, tone: !independent && f.owedToCentral ? "warning" : "neutral", hint: commerce ? "nas vendas processadas" : independent ? "fechamento NextLevel" : "pedidos pagos sem liberação" },
         { label: commerce ? "A receber" : "Faturas em aberto", value: commerce ? formatBRL(f.rows.filter((o) => o.customerPaymentStatus !== "PAID").reduce((s,o)=>s+o.totalCents,0)) : formatBRL(openInvoiceCents), icon: AlertTriangle, tone: commerce ? "neutral" : overdueInvoices.length ? "danger" : openInvoices.length ? "warning" : "success", hint: commerce ? "pedidos ainda não pagos" : openInvoices.length ? openInvoices.length + " pendência(s)" : "nenhuma pendência" },
-      ]} />
+      ]} />}
       {commerce ? null : <ActionQueue className="mb-6" items={queue} title="Atenção financeira" description="Pendências que podem afetar sua operação." emptyMessage="Nenhuma pendência financeira crítica agora." />}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

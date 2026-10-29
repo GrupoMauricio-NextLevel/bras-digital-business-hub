@@ -8,6 +8,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { PublishToggle } from "./publish-toggle";
 import { Badge } from "@/components/ui/badge";
 import { perfilAtual } from "@/lib/perfil-loja-server";
+import { getDb } from "@/db/client";
+import { getStoreReadiness } from "@/lib/domain/readiness";
+import { lojaVirtualAgora } from "@/lib/domain/loja-agora";
+import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
+
+export const dynamic = "force-dynamic";
 
 export default async function StorefrontPage() {
   const session = await requireStoreAdmin();
@@ -16,9 +22,12 @@ export default async function StorefrontPage() {
   const { current } = await getStoreTheme(store.id);
   const onboarding = computeOnboarding(store);
   const url = `/store/${store.slug}`;
+  // D212: o que falta para vender (vermelho) e o que dá confiança ao cliente (amarelo), com o atalho para resolver.
+  const agoraLoja = commerce ? lojaVirtualAgora((await getStoreReadiness(await getDb(), store.id)).items) : [];
   return (
     <>
       <PageHeader title="Loja virtual" description={commerce ? "Controle a vitrine que seus clientes acessam: publicação, endereço, aparência e prontidão da operação." : "Sua storefront white label. Conteúdo, produtos e pedidos são independentes do tema."} actions={<a href={url} target="_blank" rel="noreferrer" className={buttonVariants()}><ExternalLink /> Abrir loja</a>} />
+      {commerce ? <PrecisaDeVoce itens={agoraLoja} vazio="Loja pronta: nada faltando para vender." descricao="O que falta para a loja vender e passar confiança." /> : null}
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2 overflow-hidden">
           <CardHeader><div><CardTitle>{commerce ? "Sua loja para o cliente" : "Pré-visualização"}</CardTitle><CardDescription>{url}</CardDescription></div>{store.publishedAt ? <Badge tone="success" dot>Publicada</Badge> : <Badge tone="warning" dot>Não publicada</Badge>}</CardHeader>

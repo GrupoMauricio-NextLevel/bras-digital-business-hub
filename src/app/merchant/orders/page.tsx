@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ArrowRight, MessageCircle, Plus } from "lucide-react";
+import { MessageCircle, Plus } from "lucide-react";
+import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 import { pedidosQuePrecisamDeVoce } from "@/lib/domain/pedidos-agora";
 import { AoVivo } from "@/components/master/ao-vivo";
 import { formatBRL } from "@/lib/money";
@@ -48,25 +49,9 @@ export default async function MerchantOrdersPage({ searchParams }: { searchParam
       <PageHeader eyebrow={commerce ? "Escritório" : "SuperDrop / Operação"} title="Pedidos" description="Loja virtual, WhatsApp, Instagram e vendas manuais no mesmo fluxo."
         actions={<>{isDemoMode() ? <SimulateOrderButton /> : null}<Link href="/merchant/orders/propostas" className={buttonVariants({ variant: "ghost" })}>{commerce ? "Links de pagamento" : "Propostas"}</Link><Link href="/merchant/orders/new" className={buttonVariants()}><Plus /> Novo pedido</Link></>} />
       {commerce ? (
-        <section aria-labelledby="ped-agora" className="ds-card mb-6 p-5 sm:p-6">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <div><h2 id="ped-agora" className="text-base font-semibold">Precisa de você agora</h2><p className="text-xs text-muted-foreground">Pedidos parados além do normal, do mais urgente ao menos urgente. Avise o cliente com a mensagem pronta.</p></div>
-            <AoVivo segundos={30} />
-          </div>
-          {urgentes.length ? (
-            <ol className="mt-3 divide-y divide-border">
-              {urgentes.slice(0, 6).map((u) => (
-                <li key={u.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
-                  <span aria-hidden className={`size-2.5 shrink-0 rounded-full ${u.tom === "danger" ? "bg-danger" : u.tom === "warning" ? "bg-warning" : "bg-info"}`} />
-                  <Link href={`/merchant/orders/${u.id}`} className="min-w-0 flex-1 basis-56 hover:underline"><span className="block text-sm font-semibold">#{u.numero} · {u.cliente}</span><span className="block text-xs text-muted-foreground">{u.motivo} · {formatBRL(u.totalCents)}</span></Link>
-                  {u.whatsappHref ? <a href={u.whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--ds-link)]"><MessageCircle className="size-3.5" aria-hidden />Avisar no WhatsApp</a> : <CopiarMensagem texto={u.mensagem} />}
-                  <Link href={`/merchant/orders/${u.id}`} className="inline-flex items-center gap-1 text-xs font-bold text-[var(--ds-link)]">{u.acao}<ArrowRight className="size-3.5" aria-hidden /></Link>
-                </li>
-              ))}
-            </ol>
-          ) : <p className="mt-3 text-sm text-muted-foreground">Nenhum pedido parado. Tudo andando no ritmo certo.</p>}
-          {urgentes.length > 6 ? <Link href="/merchant/orders?ver=atencao" className="mt-2 inline-block text-sm font-semibold text-[var(--ds-link)]">Ver os {urgentes.length} pedidos</Link> : null}
-        </section>
+        <PrecisaDeVoce descricao="Pedidos parados além do normal, do mais urgente ao menos urgente. Avise o cliente com a mensagem pronta." vazio="Nenhum pedido parado. Tudo andando no ritmo certo." verTodos="/merchant/orders?ver=atencao" acoes={<AoVivo segundos={30} />}
+          itens={urgentes.map((u) => ({ id: u.id, titulo: `#${u.numero} · ${u.cliente}`, detalhe: `${u.motivo} · ${formatBRL(u.totalCents)}`, tom: u.tom, href: `/merchant/orders/${u.id}`, acao: u.acao,
+            extra: u.whatsappHref ? <a href={u.whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--ds-link)]"><MessageCircle className="size-3.5" aria-hidden />Avisar no WhatsApp</a> : <CopiarMensagem texto={u.mensagem} /> }))} />
       ) : null}
       <section className="ds-kpis mb-6" aria-label="Resumo dos pedidos">
         <MetricCard label="Ativos" value={activeCount} />

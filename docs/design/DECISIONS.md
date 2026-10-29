@@ -2195,3 +2195,22 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Coluna "Sugerido" → "Preço"** na loja independente (o preço é dela; "sugerido" é termo do SuperDrop).
 - **Correção visual em todos os painéis:** a linha animada dos campos (movimento.css) pegava as caixas de seleção e desenhava um bloco colorido no lugar da seta. Agora a seleção tem a seta própria e fica sem a linha.
 - Código: `src/lib/domain/produtos-agora.ts` (puro, teste `tests/produtos-agora.test.ts`), `src/components/commerce/produtos-agora.tsx`, `src/app/supplier/products/page.tsx`, `src/app/merchant/catalogo/page.tsx`, `src/app/merchant/page.tsx`, `src/design-system/movimento.css`.
+
+## D212 — [E-commerce] "Precisa de você agora" em todas as telas do lojista, num bloco único (2026-10-29)
+- **Pedido do dono:** "vamos avançando para implementar em todas as telas necessárias".
+- **Bloco único `PrecisaDeVoce`:** mesmo desenho em todas as telas (bolinha da urgência, o que é, por quê e o botão que resolve). Pedidos (D208) e Produtos (D211) passaram a usar o mesmo bloco.
+- **Regras novas** (puras, em `src/lib/domain/loja-agora.ts`, com teste `tests/loja-agora.test.ts`):
+  - **Financeiro:**
+    - Mercado Pago não conectado (vermelho);
+    - fatura vencida (vermelho) ou em aberto (amarelo) com a NextLevel;
+    - plano em atraso ou suspenso (vermelho);
+    - teste grátis acabando em até 5 dias (amarelo; vermelho em até 2);
+    - valor a receber (azul).
+    - Os números do topo viram: entrou hoje, últimos 7 dias, últimos 30 dias (com a margem) e a receber.
+  - **Minha loja:** o que falta para vender (vermelho) e o que dá confiança ao cliente (amarelo), vindo da prontidão da loja (`getStoreReadiness`).
+  - **Cupons:** esgotado e vencido ainda ligado (amarelo), vencendo em até 7 dias (azul).
+  - **Avaliações:** esperando aprovação, nota baixa (1 ou 2) primeiro, em vermelho.
+  - **Campanhas:** faixa terminando em menos de 24 h (amarelo) e loja sem nenhuma faixa no ar (azul).
+- Só na E-commerce: o lojista do SuperDrop continua com as telas de antes.
+- Pós-venda já tinha a fila própria; Atendimento e Clientes já nasceram nesse padrão (D206/D207).
+- Código: `src/components/app/precisa-de-voce.tsx`, `src/lib/domain/loja-agora.ts` e as páginas `src/app/merchant/{finance,storefront,descontos,avaliacoes,campanhas,orders}`, `src/components/commerce/produtos-agora.tsx`.
