@@ -38,7 +38,7 @@ export function ProductsList({ rows, categories, base = "/supplier/products", in
     { key: "type", header: "Venda", hideBelow: "md", cell: (r) => <div className="flex gap-1">{r.sellsUnit ? <Badge tone="outline">Unitária</Badge> : null}{r.sellsPack ? <Badge tone="info">Grade</Badge> : null}</div> },
     ...(independent ? [] : [{ key: "dist", header: "Distribuição", hideBelow: "lg" as const, cell: (r: ProductRow) => <StatusBadge value={r.distribution} /> }]),
     { key: "cost", header: "Custo", sortKey: "cost", align: "right", cell: (r) => <span className="tabular-nums">{formatBRL(r.costCents)}</span> },
-    { key: "price", header: "Sugerido", sortKey: "price", align: "right", hideBelow: "md", cell: (r) => <span className="tabular-nums">{formatBRL(r.suggestedPriceCents)}</span> },
+    { key: "price", header: independent ? "Preço" : "Sugerido", sortKey: "price", align: "right", hideBelow: "md", cell: (r) => <span className="tabular-nums">{formatBRL(r.suggestedPriceCents)}</span> },
     { key: "stock", header: "Disponível", sortKey: "stock", align: "right", cell: (r) => <span className={cn("font-medium tabular-nums", r.available < 10 && "text-warning")}>{r.available} <span className="text-xs font-normal text-muted-foreground">/ {r.onHand}</span></span> },
     { key: "status", header: "Status", cell: (r) => <StatusBadge value={r.status} dot /> },
   ];

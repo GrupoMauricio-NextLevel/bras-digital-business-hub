@@ -2177,3 +2177,21 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - avatar com anel no degradê do Agente;
   - no celular, espaçamento menor para tudo caber em 360 px.
 - Código: `src/design-system/core.css`.
+
+## D211 — [E-commerce] Produtos do lojista: "Precisa de você agora" produto a produto + filtros sem a barra colorida (2026-10-29)
+- **Pedido do dono:** "vamos avançar para mais painéis e páginas; vamos ao próximo passo" (próximo passo proposto: Produtos no padrão do escritório).
+- **Topo de Produtos (só E-commerce):** lista produto a produto do que atrapalha a venda, do mais grave ao menos, com o botão que resolve:
+  - ativo sem estoque (vermelho, "Repor estoque");
+  - sem preço (vermelho, "Definir preço");
+  - sem foto (amarelo, "Adicionar foto");
+  - estoque abaixo de 10 (amarelo);
+  - rascunho (azul, "Revisar e ativar").
+- Detalhes da lista:
+  - um problema por produto (o mais grave);
+  - arquivados ficam de fora;
+  - "Ver os N produtos" filtra a tabela (`?ver=atencao`).
+- A fila só com contagens continua para o fornecedor do SuperDrop.
+- **Agora:** novo item "N produto(s) travando venda" (só os vermelhos e amarelos), que abre essa lista.
+- **Coluna "Sugerido" → "Preço"** na loja independente (o preço é dela; "sugerido" é termo do SuperDrop).
+- **Correção visual em todos os painéis:** a linha animada dos campos (movimento.css) pegava as caixas de seleção e desenhava um bloco colorido no lugar da seta. Agora a seleção tem a seta própria e fica sem a linha.
+- Código: `src/lib/domain/produtos-agora.ts` (puro, teste `tests/produtos-agora.test.ts`), `src/components/commerce/produtos-agora.tsx`, `src/app/supplier/products/page.tsx`, `src/app/merchant/catalogo/page.tsx`, `src/app/merchant/page.tsx`, `src/design-system/movimento.css`.

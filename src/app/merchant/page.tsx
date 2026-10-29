@@ -4,8 +4,10 @@ import { BoasVindasCeo } from "@/components/portal/equipe/blocos";
 import { mostrarBoasVindas } from "@/lib/marcas/equipe-usos";
 import { brandOfStore } from "@/lib/store-brand";
 import Link from "next/link";
-import { AlarmClock, ArrowRight, BellRing, ExternalLink, MessageCircle, Plus, Printer, ShoppingBasket, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
+import { AlarmClock, ArrowRight, BellRing, ExternalLink, MessageCircle, Plus, Printer, Package, ShoppingBasket, ShoppingCart, Wallet, type LucideIcon } from "lucide-react";
 import { filaExtraDaLoja } from "@/lib/domain/crm-loja";
+import { produtosQuePrecisamDeVoce } from "@/lib/domain/produtos-agora";
+import { getSupplierProducts } from "@/lib/queries/supplier";
 import { AoVivo } from "@/components/master/ao-vivo";
 import { SalesChart } from "@/components/app/sales-chart";
 import { OrdersTable } from "@/components/shared/orders-table";
@@ -32,7 +34,7 @@ import { stockDemand } from "@/lib/domain/stock-alerts";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { novidadesDa } from "@/lib/domain/novidades";
 
-const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing, conversas: MessageCircle, carrinhos: ShoppingBasket };
+const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing, conversas: MessageCircle, carrinhos: ShoppingBasket, produtos: Package };
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hour12: false, timeZone: "America/Sao_Paulo" }).format(new Date()));
@@ -61,6 +63,9 @@ export default async function MerchantHome() {
   const stockBack = (await stockDemand(db, store.id)).filter((g) => g.available > 0).length;
   // Escritório do lojista (D207): clientes esperando resposta e carrinhos recentes entram no topo da fila.
   const extra = commerce ? await filaExtraDaLoja(db, store.id) : [];
+  // D211: produtos que travam venda (sem estoque, sem preço, sem foto) entram na fila e abrem a lista do catálogo.
+  const travando = commerce && o.independent ? produtosQuePrecisamDeVoce((await getSupplierProducts({ storeId: store.id })).items.map((r) => ({ id: r.product.id, name: r.product.name, images: r.product.images, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status, available: r.available }))).filter((p) => p.tom !== "info") : [];
+  if (travando.length) extra.push({ key: "produtos", title: `${travando.length} produto(s) travando venda`, detail: travando.slice(0, 2).map((p) => `${p.nome}: ${p.motivo.toLowerCase()}`).join(" · "), count: travando.length, href: "/merchant/catalogo?ver=atencao", action: "Resolver", tone: travando.some((p) => p.tom === "danger") ? "danger" : "warning" });
   const attention = [...extra, ...filaDoLojista({
     commerce, independent: o.independent, published: Boolean(store.publishedAt), readinessMissing: readiness?.missingBlocking ?? null,
     onboarding: { percent: o.onboarding.percent, missing: o.onboarding.steps.filter((st) => !st.done).length },
