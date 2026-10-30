@@ -2388,3 +2388,14 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Cartões:** borda fina em degradê azul, violeta e verde. O bloco de abertura (`.ds-hero`, ex.: "Boa noite, Ana") vira painel escuro com grade e borda brilhante. A faixa roxa do topo e o botão do Agente não mudam.
 - **Parceiro:** o topo usa o mesmo painel escuro da faixa do 0% do site (`ec-painel`), com etiqueta em mono e link em mono.
 - **Fora desta mudança:** fornecedor, expedição e as outras marcas.
+
+## D225 — [Painéis] Abertura em vidro colorido no lugar do preto (2026-10-30)
+- **Pedido do dono:** "esse preto sólido não ficou bonito; se fosse algo estilo vidro, com uma cor que se comunique com o sistema, tudo bem". Ele viu duas prévias (A: vidro colorido; B: vidro claro) e escolheu a A para os três painéis.
+- **Como ficou o `.ds-hero` (no `PainelTech`):**
+  - vidro translúcido com degradê roxo → violeta → azul, as cores da faixa do topo;
+  - brilho rosa no canto e brilho azul na base;
+  - desfoque do que fica atrás (`backdrop-filter`) e grade branca leve;
+  - borda branca translúcida com reflexo no alto;
+  - texto em branco.
+- **Parceiro:** o topo do painel usa a mesma abertura (`ds-hero`) no lugar do painel escuro.
+- **Lojista e Master:** o lojista usa o mesmo bloco ("Boa noite, …"). No Master, vale para qualquer tela que use o `ds-hero`.

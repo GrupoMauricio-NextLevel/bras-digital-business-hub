@@ -20,15 +20,15 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
   const primeiro = d.parceiro.nome.split(" ")[0];
   return (
     <div className="space-y-6">
-      <section className="ec-painel p-6 text-white sm:p-8">
+      <section className="ds-hero relative p-6 text-white sm:p-8">
         <div className="relative grid gap-6 lg:grid-cols-[1fr_minmax(0,24rem)] lg:items-end">
           <div>
             <span className="ec-tag"><i aria-hidden />{d.parceiro.tipo} NextLevel E-commerce</span>
             <h1 className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Olá, {primeiro}. Cada loja que você indica vira renda todo mês.</h1>
-            <p className="mt-3 max-w-xl text-[#b9c6e4]">Você ganha <b className="text-white">{ganhoTexto(r.primeiraBps)}</b> da primeira mensalidade e <b className="text-white">{ganhoTexto(r.recorrenteBps)}</b> de cada mensalidade seguinte{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
+            <p className="mt-3 max-w-xl text-white/85">Você ganha <b className="text-white">{ganhoTexto(r.primeiraBps)}</b> da primeira mensalidade e <b className="text-white">{ganhoTexto(r.recorrenteBps)}</b> de cada mensalidade seguinte{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
           </div>
-          <div className="rounded-2xl bg-white/[0.05] p-4 ring-1 ring-white/15">
-            <p className="ec-mono text-[#7dd3fc]">Seu link</p>
+          <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/25">
+            <p className="ec-mono text-white/80">Seu link</p>
             <code className="mt-1 block break-all font-[family-name:var(--pn-mono)] text-sm" data-testid="partner-main-link">{link}</code>
             <div className="mt-3 flex flex-wrap gap-2"><CopyButton text={link} label="Copiar link" /><WhatsAppShare text={convite} /></div>
             <Link href="/partner/links" className="mt-2 inline-block text-xs font-semibold text-white/80 underline underline-offset-2">Links por campanha e QR code</Link>
