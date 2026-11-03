@@ -6,6 +6,7 @@ import { MemberPlans } from "@/components/portal/member-plans";
 import { MEMBER_FEES } from "../content";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { PlacarSecao } from "@/components/placar/placar-secao";
 import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 import { getDb } from "@/db/client";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
@@ -31,6 +32,7 @@ export default async function Planos() {
       {ec ? null : <><h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos {brand.name}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Preço claro, sem fidelidade. Comece com dias grátis e escolha mensal ou anual.</p></>}
       <div className={ec ? "" : "mt-10"}><CommercePlansSection cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} signupOpen={brand.signupOpen} /></div>
+      {ec ? <div className="-mx-4 mt-12 overflow-hidden rounded-[2rem]"><PlacarSecao cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} id="placar-planos" /></div> : null}
       <BlocoEquipe lugar="planos-ajuda" className="mt-12 rounded-3xl bg-surface" contatos mensagem="Olá! Quero ajuda para montar a minha loja.">
         <Link className="underline underline-offset-4 text-link" href={`${solucoes}/loja-pronta-essencial`}>Loja Pronta</Link>
         <Link className="underline underline-offset-4 text-link" href={`${solucoes}/migracao-lite`}>Migração</Link>

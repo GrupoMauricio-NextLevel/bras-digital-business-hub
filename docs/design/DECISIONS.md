@@ -2467,3 +2467,18 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - `tests/campanha-black.test.ts` (estado, anual, virada de preço, prorrogação, permissão);
   - os testes de preço passaram a valer antes e depois de 01/12;
   - corrigido o teste de parceiros, que dependia da data real do cadastro.
+
+## D230 — [Black] BF2 no ar: placar da goleada calculado a partir da súmula (2026-11-03)
+- **Placar "O Clássico do E-commerce":**
+  - aparece na home (logo depois da faixa do 0%), em /comparativo e em /planos (`PlacarSecao`, `PlacarGoleada`);
+  - telão de estádio com "AO VIVO" e a data da súmula;
+  - gols contados na tela (sem animação com `prefers-reduced-motion`);
+  - gols da NextLevel em destaque; "gol de honra deles" discreto;
+  - artilheiro do jogo, "Goleada!" (3 gols de diferença ou mais), botão para compartilhar o placar.
+- **Regras** (`src/lib/domain/placar.ts`, testes em `tests/placar.test.ts`):
+  - o placar é calculado; ninguém digita o resultado;
+  - valor vazio = "não divulga" = sem gol para ninguém;
+  - só vai ao ar jogo que é vitória; se virar, sai do ar e o Master é avisado ao salvar.
+  - Na **Seleção dos concorrentes**, o gol conta contra o melhor do grupo. No nosso gol, o texto mostra o ponto mais fraco de um concorrente, com o nome dele; no gol deles, mostra quem de fato venceu.
+- **Súmula inicial** (`placar-seed.ts`, sites oficiais em 03/11): 12 lances × 4 concorrentes × 3 planos. A NextLevel vence os 15 jogos. Exemplos: Tray 7 × 0, WBuy 4 × 0, Loja Integrada 3 × 0, Nuvemshop 3 × 1, Seleção 5 × 1 no plano de entrada.
+- **Master:** `/master/placar` mostra o resultado de cada jogo e o editor da súmula. Aceita número, "sem limite", "sim", "não" ou vazio. Os créditos de IA da Tray ficaram como não comparáveis.

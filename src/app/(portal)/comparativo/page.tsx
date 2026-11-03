@@ -5,6 +5,7 @@ import { getBrand } from "@/lib/brand-server";
 import { getDb } from "@/db/client";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { formatBRL } from "@/lib/money";
+import { PlacarSecao } from "@/components/placar/placar-secao";
 import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 import { CONCORRENTES, COLETADO_EM, melhorPlano, nextlevelComoPlataforma } from "@/lib/marcas/comparativo-ecommerce";
 import { ComparativoHome } from "@/components/portal/commerce/comparativo";
@@ -30,6 +31,7 @@ export default async function ComparativoPage() {
     <div className="im-tema-ecommerce">
       <CabecalhoTech rotulo="Comparativo" titulo={<>NextLevel E-commerce ou <em>outra plataforma?</em></>} texto="Os números públicos, lado a lado. Você vê quanto paga em cada uma conforme o quanto vende, sem letra miúda."
         dados={[{ rotulo: "Plataformas comparadas", valor: String(CONCORRENTES.length) }, { rotulo: "Taxa da plataforma", valor: "0%" }, { rotulo: "Plano de entrada", valor: nl.planos[0] ? formatBRL(nl.planos[0].mensalCents).replace(",00", "") : "—" }, { rotulo: "Dados de", valor: new Date(`${COLETADO_EM}T12:00:00Z`).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" }) }]} />
+      <PlacarSecao cta={cta} />
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-14" aria-labelledby="faixas-t">
         <h2 id="faixas-t" className="text-2xl font-bold text-foreground">Custo da plataforma por mês</h2>
         <p className="mt-1 text-sm text-body">Mensalidade + taxa sobre as vendas usando o Mercado Pago, no plano de menor valor de cada uma para o faturamento. Na NextLevel, com o Mercado Pago, a tarifa é zero.</p>

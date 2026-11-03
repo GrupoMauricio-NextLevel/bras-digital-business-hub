@@ -268,6 +268,7 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório" },
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
+  { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },
   { label: "Sistema", href: "/master/settings", icon: "Settings", group: "Escritório" },
   { label: "Ver como cliente (suporte)", href: "/master/clientes", icon: "LifeBuoy", group: "Ferramentas" },
   { label: "Pedidos das lojas", href: "/commerce/orders", icon: "ShoppingBag", group: "Ferramentas" },

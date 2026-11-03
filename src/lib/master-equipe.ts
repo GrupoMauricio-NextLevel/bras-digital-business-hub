@@ -33,9 +33,9 @@ export const MASTER_FUNCTION_HINT: Record<MasterFunction, string> = {
 
 /** Prefixos de endereço liberados por função (além de "/master", a página inicial, para todos menos o contador). */
 const PATHS: Record<MasterFunction, string[]> = {
-  COMERCIAL: ["/master/black", "/master/agora", "/master/ia", "/master/comercial", "/master/crescimento", "/master/ecossistema", "/master/mapa", "/master/crm", "/master/clientes", "/master/marcas", "/master/stores", "/master/partners", "/commerce/leads", "/commerce/stores"],
+  COMERCIAL: ["/master/black", "/master/placar", "/master/agora", "/master/ia", "/master/comercial", "/master/crescimento", "/master/ecossistema", "/master/mapa", "/master/crm", "/master/clientes", "/master/marcas", "/master/stores", "/master/partners", "/commerce/leads", "/commerce/stores"],
   SUPORTE: ["/master/agora", "/master/ia", "/master/comercial", "/master/clientes", "/master/orders", "/master/stores", "/master/suppliers", "/master/errors", "/bras/membros", "/bras/meu-contador", "/bras/atendimento", "/commerce/stores", "/commerce/orders"],
-  FINANCEIRO: ["/master/black", "/master/receita", "/master/financeiro", "/master/financeiro/operacao", "/master/plans", "/master/summary", "/master/office", "/commerce/plans"],
+  FINANCEIRO: ["/master/black", "/master/placar", "/master/receita", "/master/financeiro", "/master/financeiro/operacao", "/master/plans", "/master/summary", "/master/office", "/commerce/plans"],
   CONTEUDO: ["/master/templates", "/master/catalog", "/bras/descobertas", "/bras/pauta", "/bras/catalogo"],
   CONTADOR: ["/bras/meu-contador"],
 };

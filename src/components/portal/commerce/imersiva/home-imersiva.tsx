@@ -15,6 +15,7 @@ import { LojasExemplo } from "@/components/portal/commerce-home";
 import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
 import { ComparativoHome, FaixaTaxaZero, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
 import { FeitaParaAtacado } from "@/components/portal/commerce/imersiva/feita-para-atacado";
+import { PlacarSecao } from "@/components/placar/placar-secao";
 import { VivenciaRua } from "@/components/portal/commerce/imersiva/vivencia-rua";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
@@ -53,6 +54,7 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
       ]} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} />
       <FaixaTaxaZero />
+      <PlacarSecao cta={cta} />
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}

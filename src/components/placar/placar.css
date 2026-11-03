@@ -1,0 +1,66 @@
+/* Placar da goleada (D230): telão de estádio em preto, números em Space Grotesk, neon verde e ciano. */
+.pl-secao { position: relative; isolation: isolate; overflow: hidden; color: #fff;
+  background: radial-gradient(80% 60% at 50% 0%, rgb(34 224 138 / .14), transparent 70%), linear-gradient(180deg, #05070d 0%, #071a12 100%); }
+.pl-secao::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+  background: repeating-linear-gradient(90deg, rgb(255 255 255 / .025) 0 70px, transparent 70px 140px); }
+.pl-placar { display: grid; gap: 1.25rem; }
+.pl-abas, .pl-rivais { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pl-aba, .pl-chip { min-height: 2.5rem; padding: 0 1rem; border-radius: 9999px; font-weight: 600; font-size: .9rem; color: #cfe; background: rgb(255 255 255 / .06); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); }
+.pl-aba[aria-selected="true"], .pl-chip[aria-pressed="true"] { color: #05070d; background: linear-gradient(90deg, #22e08a, #22d3ee); box-shadow: 0 0 22px -6px rgb(34 224 138 / .9); }
+.pl-chip { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; }
+.pl-aba:focus-visible, .pl-chip:focus-visible, .pl-cta:focus-visible, .pl-share:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.pl-telao { position: relative; border-radius: 1.75rem; padding: 1.25rem 1.25rem 1.5rem; text-align: center; border: 1px solid transparent;
+  background: linear-gradient(#030507, #030507) padding-box, linear-gradient(120deg, #22e08a, #22d3ee 50%, #7c5cff) border-box;
+  box-shadow: 0 0 60px -20px rgb(34 224 138 / .7), inset 0 0 80px rgb(34 224 138 / .06); }
+.pl-telao::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .35;
+  background-image: radial-gradient(rgb(255 255 255 / .12) 1px, transparent 1.4px); background-size: 6px 6px; }
+.pl-ao-vivo { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; letter-spacing: .14em; color: #ff8fae; }
+.pl-ponto { width: .55rem; height: .55rem; border-radius: 9999px; background: #ff3d6e; box-shadow: 0 0 12px #ff3d6e; animation: pl-pisca 1.2s ease-in-out infinite; }
+@keyframes pl-pisca { 50% { opacity: .25; } }
+.pl-linha { margin-top: .75rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; }
+.pl-time { display: grid; gap: .2rem; }
+.pl-time--nos .pl-nome { color: #22e08a; text-shadow: 0 0 18px rgb(34 224 138 / .8); }
+.pl-nome { font-family: var(--nl-font-display); font-weight: 700; font-size: clamp(1rem, 2.6vw, 1.75rem); letter-spacing: .04em; color: #e8eefc; }
+.pl-plano { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #8fa3cc; }
+.pl-gols { display: inline-flex; align-items: center; gap: clamp(.5rem, 2vw, 1.25rem); }
+.pl-num { min-width: 1.2em; font-family: var(--nl-font-display); font-weight: 700; line-height: 1; font-size: clamp(3.5rem, 11vw, 7.5rem); font-variant-numeric: tabular-nums; color: #f3f6ff;
+  padding: .15em .25em; border-radius: .25em; background: linear-gradient(#0a0f18, #0a0f18); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08); }
+.pl-num--nos { color: #22e08a; text-shadow: 0 0 26px rgb(34 224 138 / .85); }
+.pl-x { font-family: var(--nl-font-display); font-size: clamp(1.5rem, 4vw, 2.5rem); color: #8fa3cc; }
+.pl-veredito { margin-top: .9rem; font-family: var(--ec-mono, ui-monospace, monospace); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #05070d; display: inline-block; padding: .35rem .9rem; border-radius: 9999px; background: linear-gradient(90deg, #22e08a, #22d3ee); }
+
+.pl-corpo { display: grid; gap: 1.25rem; }
+@media (min-width: 900px) { .pl-corpo { grid-template-columns: minmax(0, 1fr) 18rem; } }
+.pl-titulo { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: #8ff5c7; }
+.pl-lances { margin-top: .6rem; display: grid; gap: .5rem; }
+.pl-gol { display: grid; grid-template-columns: 2.5rem 1fr auto; align-items: center; gap: .75rem; padding: .7rem .9rem; border-radius: 1rem; background: rgb(34 224 138 / .07); box-shadow: inset 0 0 0 1px rgb(34 224 138 / .25); }
+.pl-min { font-family: var(--ec-mono, ui-monospace, monospace); font-weight: 600; color: #22e08a; }
+.pl-lance { display: grid; gap: .1rem; font-size: .92rem; color: #dbe7ff; }
+.pl-lance b { color: #fff; font-weight: 600; }
+.pl-lance strong { color: #22e08a; }
+.pl-tag { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; font-weight: 700; letter-spacing: .12em; color: #05070d; background: #22e08a; border-radius: .4rem; padding: .2rem .45rem; }
+.pl-deles { margin-top: .8rem; font-size: .78rem; color: #7d8aa6; }
+.pl-nota { margin-top: .5rem; font-size: .72rem; line-height: 1.5; color: #6f7b95; }
+.pl-melhores { display: grid; gap: .75rem; align-content: start; padding: 1.1rem; border-radius: 1.25rem; background: rgb(255 255 255 / .04); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); }
+.pl-melhores p { display: grid; gap: .15rem; }
+.pl-melhores span { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: #8fa3cc; }
+.pl-melhores b { color: #fff; }
+.pl-cta { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 3rem; border-radius: 9999px; font-weight: 700; color: #05070d; background: linear-gradient(90deg, #22e08a, #22d3ee); box-shadow: 0 0 24px -6px rgb(34 224 138 / .9); }
+.pl-share { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 2.75rem; border-radius: 9999px; font-weight: 600; color: #e8eefc; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .25); }
+@media (max-width: 520px) { .pl-linha { gap: .4rem; } .pl-gol { grid-template-columns: 2rem 1fr; } .pl-tag { display: none; } }
+@media (prefers-reduced-motion: reduce) { .pl-ponto { animation: none; } }
+.pl-placar > *, .pl-corpo > * { min-width: 0; }
+.pl-linha { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+.pl-nome { overflow-wrap: anywhere; }
+.pl-abas, .pl-rivais { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.pl-abas > *, .pl-rivais > * { flex: none; }
+.pl-cta { padding: 0 1.25rem; text-align: center; }
+@media (max-width: 520px) {
+  .pl-telao { padding: 1rem .75rem 1.25rem; }
+  .pl-nome { font-size: .85rem; }
+  .pl-plano { font-size: .62rem; }
+  .pl-num { font-size: 3rem; }
+  .pl-veredito { font-size: .7rem; letter-spacing: .08em; }
+  .pl-ao-vivo { font-size: .6rem; letter-spacing: .06em; }
+}
