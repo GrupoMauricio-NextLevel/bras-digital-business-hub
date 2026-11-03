@@ -101,6 +101,55 @@ Seis trilhas. As quatro primeiras usam o tipo `AFFILIATE` / `REPRESENTATIVE` com
 
 ---
 
+### 3.2 Recomendação de valores, baseada nos concorrentes (03/11)
+
+**O que eles pagam:**
+- **Nuvemshop:**
+  - associado escolhe **100% da 2ª mensalidade (uma vez)** **ou** **20% recorrente**;
+  - especialista ou agência ganha **20% recorrente só a partir do nível Silver**, pois o nível inicial não recebe recorrência;
+  - fala em "até 30%";
+  - gerente de sucesso só no nível Platinum.
+- **Hostinger (agências):** 20% na venda nova + 10% em renovações, selo e diretório.
+- Tray, Loja Integrada e WBuy não publicam percentuais.
+
+**Recomendação: vencer cada ponto por pouco.**
+
+| Trilha | 1ª mensalidade | Recorrente | Extra | Contra quem vence |
+|---|---|---|---|---|
+| Cliente indica | **1 mês grátis** na própria loja por indicação que pagar (até 12 por ano) | — | O indicado ganha o cupom do lojista | Igual aos 100% de uma mensalidade da Nuvemshop, em crédito |
+| Criador (nano e micro) | **50%** | **20% enquanto o cliente ficar** | Cupom de 7 dias, kit de conteúdo, página pessoal | A Nuvemshop paga um **ou** outro; aqui são os dois juntos. No Pro, 1º ano = R$ 397 contra R$ 394 do recorrente da Nuvemshop no Impulso (vence por pouco, e com mensalidade menor para o cliente) |
+| Vendedor / representante | **50%** | **20% enquanto ficar** | **Bônus de R$ 30 por loja ativada** (publicada + 1ª venda paga + 30 dias de assinatura); meta de 10 ativações no mês = **+R$ 100** | Ninguém paga bônus por ativação real |
+| Agência parceira | **50%** | **25% enquanto ficar**, **desde o 1º cliente** | Selo, diretório, 30% de desconto nas Soluções para revenda, loja de demonstração | Nuvemshop 20% e só a partir do Silver; Hostinger 10% |
+| Agência Elite (20+ clientes ativos) | **50%** | **32% enquanto ficar** | Gerente de conta, leads do diretório, co-marketing | Nuvemshop "até 30%" |
+
+**Níveis, iguais em todas as trilhas** (contam clientes pagantes ativos):
+- **Inicial:** já recebe recorrência. É uma vantagem sobre a Nuvemshop.
+- **Prata (3+):** +2 pontos na recorrência.
+- **Ouro (10+):** +4 pontos e gerente de sucesso (a Nuvemshop só dá gerente no Platinum).
+- **Diamante (20+):** vira Elite. Na agência, 32%; no criador e no representante, 26%.
+
+**Regras que protegem a margem:**
+- **Teto:** 1ª mensalidade ≤ 50%; recorrente ≤ 32% (Elite). Teste garante.
+- **Comissão só depois de 30 dias de assinatura paga** (garantia, que já existe).
+- O bônus do representante só sai com a 1ª venda paga da loja.
+- **Cookie de atribuição de 60 dias** (Hostinger: 30).
+- **Saque por Pix a partir de R$ 50**, ao mesmo CPF/CNPJ (já existe).
+- **Requalificação:** desce de nível após 2 meses abaixo; o parceiro sem nenhum cliente ativo por 6 meses fica Inativo.
+
+**Conta de margem (Pro, R$ 147/mês):**
+- agência no Inicial: R$ 73,50 no 1º mês + R$ 36,75 por mês;
+- Elite: R$ 47,04 por mês.
+- O cliente custa ao parceiro R$ 0 de taxa da plataforma, e a NextLevel fica com 68% a 75% da mensalidade recorrente.
+
+**Mudança em relação à D220:** a regra hoje é indicador 20% + 10% por 12 meses e agência 30% + 15%. A recomendação vira 50% + 20% (criador e representante) e 50% + 25% (agência), sempre enquanto o cliente ficar. É uma revisão versionada (D226), sem apagar o histórico.
+
+### 3.3 Recomendação para as perguntas dos planos (seção 8)
+- **Escada da seção 8.2:** aprovar como está (300 / 1.000 / 2.000 produtos; 3 / 6 / 12 pessoas; 40 / 350 / 1.200 de IA).
+- **Scale com 2.000 produtos:** só "sem limite" empataria com a Nuvemshop, e o dono não quer ilimitado.
+- **Suporte do Pro:** prometer **até 4 h úteis**, que a equipe cumpre hoje. Empata com a WBuy e vence Nuvemshop e Tray, que não dão prazo. Subir para 2 h quando a equipe crescer.
+- **Gerente de conta no Scale:** sim, a mesma pessoa que cuida dos parceiros Ouro.
+- **Migração:** inclusa no Scale (até 2.000 produtos) e com 50% de desconto no Pro.
+
 ## 4. CRM de parceiros no Master (o "diferenciado")
 
 Hoje o Master vê uma lista. A proposta é um **escritório de parceiros**: uma tela que responde "quem precisa de mim hoje".
