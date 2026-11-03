@@ -2399,3 +2399,27 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - texto em branco.
 - **Parceiro:** o topo do painel usa a mesma abertura (`ds-hero`) no lugar do painel escuro.
 - **Lojista e Master:** o lojista usa o mesmo bloco ("Boa noite, …"). No Master, vale para qualquer tela que use o `ds-hero`.
+
+## D226 — [Parceiros e planos] Valores aprovados; placar da goleada e Black Friday planejados (2026-11-03)
+- **Aprovado pelo dono** (detalhes em `docs/prompts/parceiros-v2-crm-niveis-planos.md`):
+  - **Comissões:**
+    - criador e representante: 50% da 1ª mensalidade + 20% recorrente enquanto o cliente ficar;
+    - agência: 50% + 25% desde o 1º cliente;
+    - Agência Elite (20+ clientes): 50% + 32%;
+    - representante: bônus de R$ 30 por loja ativada e R$ 100 na meta de 10 no mês;
+    - cliente indica: 1 mês grátis por indicação paga;
+    - níveis Prata, Ouro e Diamante;
+    - teto: 50% no 1º mês e 32% recorrente.
+  - **Planos:**
+    - produtos ativos 300 / 1.000 / **sem limite no Scale**;
+    - pessoas 3 / 6 / 12;
+    - Maurício IA 40 / 350 / 1.200;
+    - atacado, propostas e planilha em todos;
+    - tema pago no Pro e no Scale;
+    - suporte do Pro em até 2 h úteis (a confirmar) e gerente de conta no Scale;
+    - migração inclusa no Scale e com 50% de desconto no Pro.
+- **Planejado (pedido do dono):**
+  - **Placar da goleada** ("O Clássico do E-commerce"): calculado a partir da súmula editada no Master, com destaque só para o que vencemos e as derrotas sem destaque; aparece no site e nos painéis.
+  - **Black Friday NextLevel** (27/11/2026): roupa da Black em todos os sites públicos e painéis, contagem regressiva real em todo canto e regras contra a "Black Fraude": fim real, preço depois da Black agendado, "vencemos as Blacks" só com comprovação na súmula.
+- **Ordem:** BF1 a BF3 primeiro (no ar até 10/11), depois as fases PV0 a PV8.
+- **Ainda nada implementado.** As perguntas abertas estão na seção 10 do documento.
