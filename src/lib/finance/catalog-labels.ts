@@ -17,7 +17,7 @@ export function priceLines(p: { kind: CatalogKind; prices: Partial<Record<PriceC
   const m = p.prices.MONTHLY, a = p.prices.ANNUAL, o = p.prices.ONE_TIME;
   if (m && m.amountCents !== null) {
     const details = [`${formatBRL(m.amountCents)} por mês, renovação mensal`];
-    if (a?.amountCents) details.push(`ou ${formatBRL(a.amountCents)} no anual à vista (25% de desconto, pagamento único)`);
+    if (a?.amountCents) { const off = m.amountCents ? Math.round((1 - a.amountCents / (m.amountCents * 12)) * 100) : 0; details.push(`ou ${formatBRL(a.amountCents)} no anual à vista (${off > 0 ? `${off}% de desconto, ` : ""}pagamento único)`); }
     if (m.platformFeeBps) details.push(`taxa de plataforma de ${(m.platformFeeBps / 100).toString().replace(".", ",")}% sobre vendas pagas`);
     return { main: `${formatBRL(m.amountCents)}/mês`, details };
   }

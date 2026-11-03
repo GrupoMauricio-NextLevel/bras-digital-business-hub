@@ -19,7 +19,7 @@ import { anualBlackCents, blackAgora } from "./campanha-black";
 /**
  * Planos da NextLevel E-commerce (D90). A assinatura guarda o preço e a taxa de plataforma CONGELADOS na contratação.
  * O acesso continua travado por `stores.trial_ends_at` / `paid_until` (regra usada por todas as telas): esta camada
- * só decide quanto cobrar, quando, e aplica a oferta de entrada (3 dias, R$ 9,90 no 1º mês, taxa zero por 3 meses),
+ * só decide quanto cobrar, quando, e aplica a oferta de entrada (3 dias grátis; 1º mês especial só se o Master criar, D233),
  * uma vez por CPF/CNPJ.
  */
 export const COMMERCE_PLAN_KEYS = ["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"] as const;
@@ -262,7 +262,7 @@ export type OfertaPublica = { trialDays: number; firstPeriodCents: number | null
  * O que as páginas públicas prometem (D177): só o que TODA loja nova vai receber no cadastro. Sem porta de entrada, vale a
  * oferta clássica; com a porta ligada para todos, valem os termos da porta (que não tem 1º mês promocional nem taxa zero);
  * com a porta em experimento (metade das lojas), só o que as duas têm em comum. Nada de prometer 3 dias e entregar 7, ou
- * prometer R$ 9,90 a quem cai na porta.
+ * prometer 1º mês especial a quem cai na porta.
  */
 export function ofertaPublica(classica: OfertaPublica | null, porta: { trialDays: number; version: number } | null, emExperimento: boolean): OfertaPublica | null {
   const daPorta: OfertaPublica | null = porta ? { trialDays: porta.trialDays, firstPeriodCents: null, feeHolidayMonths: 0, version: porta.version } : null;

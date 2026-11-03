@@ -12,7 +12,7 @@ import { CabecalhoSobreHeroi } from "@/components/portal/superdrop/cabecalho-sob
  * logo abaixo. Nas laterais, duas fotos do acervo flutuando com avisos de pedido (demonstração). Sem número inventado.
  */
 export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents, black = null }: { cta: string; signupOpen: boolean; offer: { trialDays: number; firstPeriodCents: number | null } | null; aPartirDeCents: number | null; black?: { fim: string; restanteMs: number } | null }) {
-  const botao = signupOpen ? "Criar minha loja" : "Quero minha loja";
+  const botao = black ? "Garantir a Black NextLevel" : signupOpen ? "Criar minha loja" : "Quero minha loja";
   return (
     <section id="inicio" data-heroi-escuro="commerce" className="ecc-heroi" aria-labelledby="titulo">
       <CabecalhoSobreHeroi alvo="inicio" />
@@ -27,20 +27,20 @@ export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents, black = nu
       </div>
 
       <div className="ecc-heroi-texto">
-        <p className="ecc-selo-topo">NextLevel E-commerce · do Brás, com foco no atacado</p>
+        {black ? <p className="ecc-black-topo"><span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span></p> : <p className="ecc-selo-topo">NextLevel E-commerce · do Brás, com foco no atacado</p>}
         <h1 id="titulo" className="ecc-titulo">
-          Sua loja virtual
+          {black ? <>Sua loja virtual na Black</> : <>Sua loja virtual</>}
           <span className="ecc-titulo-linha">
-            {offer && signupOpen ? <span className="ecc-oferta"><small>COM</small>{offer.trialDays} dias grátis</span> : <span className="ecc-oferta">no ar hoje</span>}
+            {black ? <span className="ecc-oferta"><small>COM</small>2 meses grátis</span> : offer && signupOpen ? <span className="ecc-oferta"><small>COM</small>{offer.trialDays} dias grátis</span> : <span className="ecc-oferta">no ar hoje</span>}
           </span>
         </h1>
         <p className="ecc-sub">
-          {aPartirDeCents ? <>Planos a partir de <b>{formatBRL(aPartirDeCents)}/mês</b> no anual. </> : null}
+          {black ? <>No plano anual{aPartirDeCents ? <>, a partir de <b>{formatBRL(aPartirDeCents)}/mês</b></> : null}, com o <b>preço travado enquanto você for cliente</b>. </> : aPartirDeCents ? <>Planos a partir de <b>{formatBRL(aPartirDeCents)}/mês</b> no anual. </> : null}
           <b>Taxa zero da plataforma</b> nas vendas com o checkout do Mercado Pago, nosso parceiro oficial: o dinheiro cai direto na sua conta.
         </p>
-        {black ? <div className="ecc-black"><span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span><ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="lg" rotulo="Preço Black termina em" /></div> : null}
+        {black ? <div className="ecc-black"><ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="lg" rotulo="Preço Black termina em" /></div> : null}
         <Link href={cta} className="ecc-cta">{botao}</Link>
-        <p className="ecc-garantia"><ShieldCheck className="size-4" aria-hidden />Sem fidelidade: cancele quando quiser{offer?.firstPeriodCents != null && signupOpen ? <> · 1º mês por {formatBRL(offer.firstPeriodCents)}</> : null}</p>
+        <p className="ecc-garantia"><ShieldCheck className="size-4" aria-hidden />Sem fidelidade no mensal: cancele quando quiser{black ? <> · <a href="#duelo" className="underline underline-offset-2">veja quanto você leva a mais</a></> : null}</p>
         <a href="#planos" className="ecc-ver-planos">Ver planos <ArrowDown className="size-4" aria-hidden /></a>
       </div>
       <p className="ecc-nota">Fotos ilustrativas; avisos de pedido de demonstração.</p>

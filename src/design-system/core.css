@@ -541,3 +541,14 @@ button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(
 @media (prefers-color-scheme: dark) { :root[data-theme="system"] .ds-app--capa .ds-item[aria-current="page"] { background: color-mix(in srgb, var(--ds-surface) 86%, #fff); } }
 /* A gaveta do celular usa a mesma classe do menu lateral; a regra que esconde o menu fixo no celular não vale para ela. */
 .ds-drawer .ds-side.ds-side--drawer { display: flex; }
+
+/* Menu do celular (D233): painel OPACO de tela cheia abaixo do cabeçalho; nada da página aparece por trás.
+   (absolute, não fixed: o cabeçalho com backdrop-filter vira o bloco de referência de quem é fixed.) */
+.ds-pub-mobile { position: absolute; top: 100%; height: calc(100dvh - var(--ds-pub-menu-topo, var(--ds-public-header-h))); max-height: none; background: var(--ds-canvas); -webkit-backdrop-filter: none; backdrop-filter: none; overflow-y: auto; overscroll-behavior: contain; }
+.ds-pub-mobile-in { display: flex; flex-direction: column; min-height: 100%; padding-top: 14px; padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
+.ds-pub-mobile-rotulo { font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ds-ink-3, var(--ds-ink)); opacity: .7; }
+.ds-pub-mobile nav { padding: 6px 0 18px; }
+.ds-pub-mobile nav a { gap: 14px; min-height: 56px; font-size: 1.15rem; }
+.ds-pub-mobile-n { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; font-weight: 600; opacity: .55; min-width: 1.6rem; }
+.ds-pub-mobile-pe { margin-top: auto; display: grid; gap: 10px; }
+.ds-pub-mobile-pe a { border-bottom: 0; justify-content: center; }

@@ -24,7 +24,7 @@ export function ChoosePlan({ productKey, label = "Assinar este plano", current }
   return (
     <div className="flex flex-wrap gap-2">
       <Button size="sm" loading={busy === "MONTHLY"} disabled={isCurrent("MONTHLY")} onClick={() => go("MONTHLY")}>{isCurrent("MONTHLY") ? "Plano atual (mensal)" : `${label} · mensal`}</Button>
-      <Button size="sm" variant="secondary" loading={busy === "ANNUAL"} disabled={isCurrent("ANNUAL")} onClick={() => go("ANNUAL")}>{isCurrent("ANNUAL") ? "Plano atual (anual)" : "Anual com 25%"}</Button>
+      <Button size="sm" variant="secondary" loading={busy === "ANNUAL"} disabled={isCurrent("ANNUAL")} onClick={() => go("ANNUAL")}>{isCurrent("ANNUAL") ? "Plano atual (anual)" : "Mudar para o anual"}</Button>
     </div>
   );
 }

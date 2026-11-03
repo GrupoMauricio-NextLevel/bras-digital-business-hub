@@ -98,10 +98,22 @@ export const sumulaSchema = z.object({
   itens: z.array(z.object({ key: z.string().min(1), lance: z.string().min(3).max(120), minuto: z.number().int().min(1).max(90), regra: z.enum(["maior", "menor"]), unidade: z.string().max(6).optional(), nextlevel: tres, rivais: z.record(z.string(), tres) })).min(1).max(20),
 });
 
+/** Súmula salva antes de um rival ou lance novo do padrão (ex.: Shopify, D233): entra com os valores do padrão. */
+export function completarSumula(s: Sumula): Sumula {
+  const rivais = [...s.rivais, ...SUMULA_PADRAO.rivais.filter((r) => !s.rivais.some((x) => x.key === r.key))];
+  const itens = s.itens.map((i) => {
+    const pad = SUMULA_PADRAO.itens.find((x) => x.key === i.key);
+    const faltam = pad ? Object.fromEntries(Object.entries(pad.rivais).filter(([k]) => !i.rivais[k])) : {};
+    return { ...i, rivais: { ...faltam, ...i.rivais } };
+  });
+  for (const pad of SUMULA_PADRAO.itens) if (!itens.some((i) => i.key === pad.key)) itens.push(pad);
+  return { ...s, rivais, itens };
+}
+
 export async function sumulaAtual(db: Database): Promise<Sumula> {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, CHAVE_SUMULA) });
   const p = sumulaSchema.safeParse(row?.value);
-  return p.success ? p.data : SUMULA_PADRAO;
+  return p.success ? completarSumula(p.data) : SUMULA_PADRAO;
 }
 
 /** O dono atualiza a súmula à mão; o placar se recalcula. Devolve os jogos que deixaram de ser vitória (saem do ar). */

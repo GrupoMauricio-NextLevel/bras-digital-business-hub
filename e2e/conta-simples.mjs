@@ -21,22 +21,22 @@ if (/Drop manual/i.test(await p.locator("body").innerText())) fail("plano de dro
 ok("cadastro da Commerce sem fornecedor e sem plano de dropshipping");
 await p.locator("#store").fill("Moda Brás " + RUN); await p.locator("#owner").fill("Maria Lojista");
 await p.locator("#email").fill(`maria-${RUN}@teste.com`); await p.locator("#pass").fill("senha-segura-1"); await p.locator("#tax").fill(makeCpf());
-// D90: plano Commerce com a oferta de entrada (3 dias grátis, 1º mês R$ 9,90).
+// D90/D233: plano Commerce com a oferta de entrada (3 dias grátis; sem 1º mês de R$ 9,90).
 const signupText = (await p.locator("form[aria-label=Cadastro]").innerText()).replace(/\u00a0/g, " ");
-for (const t of ["Plano Start", "Plano Pro", "Plano Scale", "R$ 149,00", "3 dias grátis"]) if (!signupText.includes(t)) fail(`cadastro sem "${t}"`);
-await p.getByRole("button", { name: /Criar loja e começar/ }).click();
+for (const t of ["Plano Start", "Plano Pro", "Plano Scale", "3 dias grátis"]) if (!signupText.includes(t)) fail(`cadastro sem "${t}"`);
+await p.getByRole("button", { name: /Criar loja e começar|criar minha loja/i }).click();
 await p.waitForURL(/\/merchant/, { timeout: 90000 }); await p.waitForLoadState("networkidle");
 await p.waitForSelector("[data-trial-banner]", { timeout: 30000 }); ok("loja nova entra no teste de 3 dias da oferta de entrada");
 await p.goto(B + "/merchant/finance#evolucao", { waitUntil: "networkidle" });
 const fin = await p.locator("body").innerText();
-if (!/R\$\s?9,90/.test(fin)) fail("financeiro sem a fatura do 1º mês de R$ 9,90");
+if (/R\$\s?9,90/.test(fin)) fail("financeiro ainda mostra o 1º mês de R$ 9,90 (D233)");
 if (!/Minha operação/.test(fin) || !/Minha evolução com a NextLevel/.test(fin) || !/Oportunidades/.test(fin)) fail("financeiro sem as três áreas");
 await p.getByRole("button", { name: /Pagar por Pix/ }).first().click();
 await p.getByRole("button", { name: /Simular pagamento/ }).waitFor({ timeout: 25000 });
 await p.getByRole("button", { name: /Simular pagamento/ }).click();
 await p.waitForSelector("text=Pagamento confirmado", { timeout: 20000 });
 await p.keyboard.press("Escape"); await p.reload({ waitUntil: "networkidle" });
-if (await p.locator("[data-trial-banner]").count()) fail("pagar o 1º mês não ativou a assinatura"); else ok("1º mês de R$ 9,90 pago: assinatura ativa");
+if (await p.locator("[data-trial-banner]").count()) fail("pagar a 1ª fatura não ativou a assinatura"); else ok("1ª fatura do plano paga: assinatura ativa");
 await p.goto(B + "/merchant", { waitUntil: "networkidle" });
 
 const body = await p.locator("body").innerText();

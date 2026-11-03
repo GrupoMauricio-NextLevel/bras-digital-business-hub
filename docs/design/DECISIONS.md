@@ -2515,3 +2515,14 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Para os concorrentes, usa o melhor preço anual que divulgam hoje. As Blacks de 2026 deles ainda não foram anunciadas e entram quando saírem.
   - Aparece na home e em /planos.
 - **Vendedor IA (Maurício):** responde sobre a Black (preço, promoção, desconto) com o mesmo fim da contagem (`blackTxt`).
+
+## D233 — [Black] Rodada de ajustes: sem R$ 9,90, Shopify no clássico, Black no topo e checkout de tecnologia (2026-11-03)
+Pedido do dono depois de ver o BF3 no celular.
+- **Sem 1º mês por R$ 9,90 em lugar nenhum.** A oferta de entrada ganha uma versão nova, uma vez por banco (`aplicarOfertaSemPrimeiroMes`, motivo com "D233"), com `firstPeriodCents: null`; ficam os 3 dias grátis. Quem já usou a oferta antiga mantém o que recebeu. O FAQ gravado nos planos troca as respostas antigas (R$ 9,90 e "25%" no anual). Textos fixos (Soluções, vitrine, regras de comissão, botão do painel) corrigidos.
+- **Shopify entra no comparativo, no duelo do 1º ano e no placar.** Cobra em dólar: convertida por `COTACAO_DOLAR` (R$ 5,00, abaixo do dólar comercial recente; sem IOF), com o valor e a data no código para o dono atualizar. Anual: US$ 29/79/299 por mês. No placar: taxa 2/1/0,6%, pessoas 2/5/15, atacado só no Plus (= não), pedidos de balcão sim; lance novo "Mensalidade em reais, sem câmbio nem IOF". Súmula já salva no Master recebe sozinha os rivais e lances novos do padrão (`completarSumula`). Jogos: 18, todos vitórias.
+- **Home:** o duelo "Black deles × Black NextLevel" vem logo depois do topo; o topo vira Black (selo, "Sua loja virtual na Black · 2 meses grátis", anual a partir de R$ 30,83/mês com preço travado, contagem, botão "Garantir a Black NextLevel").
+- **Comparativo no celular:** um cartão por item com a NextLevel em destaque e uma linha por concorrente (sem rolagem lateral); a tabela fica para telas grandes. Saiu a linha "Produtos sem limite em todos os planos" (contradizia os limites da D226 mostrados no placar).
+- **Placar:** "AO VIVO · dados de 03/11" (só a data); a súmula padrão deixou de ter horário no futuro.
+- **Menu do celular:** painel opaco de tela cheia (nada da página por trás), itens numerados, botão principal e entrar no pé, página travada enquanto aberto; na E-commerce, painel escuro de tecnologia.
+- **Checkout dos planos (`/cadastro` da E-commerce):** página escura de tecnologia sem a foto; plano e ciclo (anual Black −46%), dados da conta e resumo vivo (12 meses, 2 meses grátis, 0% de taxa, total, "hoje você paga R$ 0", economia no ano, contagem e garantias). Recursos por plano com os números da D226.
+- **Simulador de /planos:** a economia aparece grande em neon ("você economiza R$ X/ano") contra a opção de menor custo entre as outras, com barras de custo; no anual, cada cartão mostra a economia do ano.

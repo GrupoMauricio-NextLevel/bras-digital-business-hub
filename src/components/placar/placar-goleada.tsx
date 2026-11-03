@@ -40,7 +40,7 @@ export function PlacarGoleada({ jogos, atualizadoEm, cta, rotuloCta = "Quero jog
   const gols = atual.lances.filter((l) => l.quem === "nextlevel");
   const deles = atual.lances.filter((l) => l.quem === "rival");
   const artilheiro = gols.find((l) => l.key === "taxa") ?? gols[0];
-  const quando = new Date(atualizadoEm).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).replace(",", " às");
+  const quando = new Date(atualizadoEm).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit" });
   const compartilhar = async () => {
     const texto = `NextLevel ${atual.nextlevel} × ${atual.adversario} ${atual.rival} (${DEGRAUS.find((d) => d.key === degrau)!.nome}). Taxa zero da plataforma e mais benefícios.`;
     try { if (navigator.share) await navigator.share({ title: "O Clássico do E-commerce", text: texto, url: window.location.href }); else await navigator.clipboard.writeText(`${texto} ${window.location.href}`); } catch { /* cancelado */ }
@@ -55,7 +55,7 @@ export function PlacarGoleada({ jogos, atualizadoEm, cta, rotuloCta = "Quero jog
       </div>
 
       <div className="pl-telao" aria-live="polite">
-        <p className="pl-ao-vivo"><span aria-hidden className="pl-ponto" />AO VIVO · súmula atualizada em {quando}</p>
+        <p className="pl-ao-vivo"><span aria-hidden className="pl-ponto" />AO VIVO · dados de {quando}</p>
         <div className="pl-linha">
           <div className="pl-time pl-time--nos"><span className="pl-nome">NEXTLEVEL</span><span className="pl-plano">E-commerce</span></div>
           <div className="pl-gols" aria-label={`NextLevel ${atual.nextlevel} a ${atual.adversario} ${atual.rival}`}>

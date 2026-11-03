@@ -3,7 +3,7 @@ import { ContagemRegressiva } from "@/components/black/contagem-regressiva";
 import "@/components/black/black.css";
 import { ArrowRight, BadgeCheck, Banknote, Check, Infinity as Sem, UsersRound, X } from "lucide-react";
 import { formatBRL } from "@/lib/money";
-import { ATACADO_CONCORRENTES, CONCORRENTES, COLETADO_EM, FAT_REFERENCIA_CENTS, degraus, taxasNoMercadoPago } from "@/lib/marcas/comparativo-ecommerce";
+import { ATACADO_CONCORRENTES, CONCORRENTES, COLETADO_EM, COTACAO_DOLAR, FAT_REFERENCIA_CENTS, degraus, taxasNoMercadoPago } from "@/lib/marcas/comparativo-ecommerce";
 
 export type DegrauNL = { nome: string; mensalCents: number; anualMesCents: number };
 const pct = (bps: number | null) => (bps === null ? "não divulga" : bps === 0 ? "0%" : `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`);
@@ -59,7 +59,6 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
   const tabela: { rotulo: string; nl: React.ReactNode; vals: Record<string, React.ReactNode> }[] = [
     { rotulo: "Taxa da plataforma sobre as vendas, usando o Mercado Pago", nl: <b className="ec-num text-[var(--ec-verde)]">0%</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.some((p) => p.taxaBps !== null) ? c.planos.filter((p) => p.mensalCents > 0).map((p) => pct(p.taxaBps)).join(" · ") : "não divulga"])) },
     { rotulo: "Atacado nativo: grade, preço por quantidade, pedido mínimo", nl: <b className="text-[var(--ec-verde,#6ee7b7)]">Em todos os planos</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => { const a = ATACADO_CONCORRENTES[c.key]; return [c.key, !a ? "—" : a.tem === false ? nao : <span className="text-xs">{a.texto}</span>]; })) },
-    { rotulo: "Produtos sem limite em todos os planos", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.filter((p) => p.mensalCents > 0).every((p) => p.produtos === null) ? sim : nao])) },
     { rotulo: "Pedidos sem limite por mês", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.every((p) => p.pedidosMes === null) ? sim : nao])) },
     { rotulo: "Cobrança em reais", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.moeda === "BRL" ? sim : nao])) },
   ];
@@ -68,8 +67,8 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
       <div className="mx-auto max-w-6xl text-white">
         <p className="im-eyebrow" style={{ color: "#7dd3fc" }}>Comparativo</p>
         <h2 id="comp-t" className="im-h2 mt-3 max-w-3xl">Mais vantajosa em todos os planos.</h2>
-        <p className="mt-4 max-w-2xl text-lg text-white/80">Contra Nuvemshop, Loja Integrada, WBuy e Tray, plano a plano: a mensalidade, a taxa que cada uma cobra quando você usa o Mercado Pago e o custo total de quem vende {mil(FAT_REFERENCIA_CENTS)} por mês. Na NextLevel, a taxa é zero.</p>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <p className="mt-4 max-w-2xl text-lg text-white/80">Contra Nuvemshop, Loja Integrada, WBuy, Tray e Shopify, plano a plano: a mensalidade, a taxa que cada uma cobra quando você usa o Mercado Pago e o custo total de quem vende {mil(FAT_REFERENCIA_CENTS)} por mês. Na NextLevel, a taxa é zero.</p>
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {linhas.map((l) => {
             const n = l.nextlevel!;
             const prox = Math.min(...l.outras.map((o) => o.totalCents));
@@ -90,14 +89,26 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
             );
           })}
         </div>
-        <div className="ec-painel mt-10 overflow-x-auto">
-          <table className="w-full min-w-[52rem] text-left text-sm">
+        {/* Celular (D233): um cartão por item, a NextLevel em destaque e os concorrentes em grade; sem rolagem lateral. */}
+        <ul className="mt-10 grid gap-3 md:grid-cols-2 lg:hidden" aria-label="Taxas e limites das plataformas">
+          {tabela.map((l) => (
+            <li key={l.rotulo} className="ec-painel p-4">
+              <p className="text-sm font-semibold text-white">{l.rotulo}</p>
+              <p className="mt-3 flex items-center justify-between gap-3 rounded-xl bg-white/10 px-3 py-2 ring-1 ring-emerald-300/40"><b className="text-white">NextLevel</b><span className="font-semibold [&_svg]:mx-0">{l.nl}</span></p>
+              <dl className="mt-2 grid gap-1 text-sm">
+                {CONCORRENTES.map((c) => <div key={c.key} className="flex min-w-0 items-center justify-between gap-2 rounded-lg bg-white/[.04] px-2.5 py-2"><dt className="shrink-0 text-white/65">{c.nome}</dt><dd className="ec-num text-right text-white/85 [&_svg]:mx-0 [&_svg]:size-4">{l.vals[c.key]}</dd></div>)}
+              </dl>
+            </li>
+          ))}
+        </ul>
+        <div className="ec-painel mt-10 hidden overflow-x-auto lg:block">
+          <table className="w-full text-left text-sm">
             <caption className="sr-only">Taxas e limites das plataformas</caption>
             <thead><tr className="border-b border-white/15 text-white/70"><th scope="col" className="p-4 font-semibold">O que comparar</th><th scope="col" className="bg-white/10 p-4 text-center font-bold text-white">NextLevel</th>{CONCORRENTES.map((c) => <th key={c.key} scope="col" className="p-4 text-center font-semibold">{c.nome}</th>)}</tr></thead>
             <tbody>{tabela.map((l) => <tr key={l.rotulo} className="border-b border-white/10 last:border-0"><th scope="row" className="p-4 font-medium text-white/85">{l.rotulo}</th><td className="bg-white/10 p-4 text-center font-semibold">{l.nl}</td>{CONCORRENTES.map((c) => <td key={c.key} className="p-4 text-center text-white/80">{l.vals[c.key]}</td>)}</tr>)}</tbody>
           </table>
         </div>
-        <p className="mt-4 text-xs leading-relaxed text-white/60">Dados públicos dos sites oficiais, consultados em {data}. Anual = valor por mês divulgado no plano anual. Taxa da plataforma sobre a venda usando o Mercado Pago; nas outras plataformas, ela zera só com o meio de pagamento delas. As taxas do Mercado Pago (Pix e cartão) existem em todas e ficam fora da comparação. Shopify cobra em dólar. As marcas citadas não têm vínculo com a NextLevel.</p>
+        <p className="mt-4 text-xs leading-relaxed text-white/60">Dados públicos dos sites oficiais, consultados em {data}. Anual = valor por mês divulgado no plano anual. Taxa da plataforma sobre a venda usando o Mercado Pago; nas outras plataformas, ela zera só com o meio de pagamento delas. As taxas do Mercado Pago (Pix e cartão) existem em todas e ficam fora da comparação. Shopify cobra em dólar: convertemos a {formatBRL(COTACAO_DOLAR.reais * 100)} por dólar, abaixo do câmbio do dia e sem o IOF. As marcas citadas não têm vínculo com a NextLevel.</p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link href={cta} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-[#101a33]">{comecar}<ArrowRight className="size-4" aria-hidden /></Link>
           {linkCompleto ? <Link href="/comparativo" className="font-semibold text-white underline underline-offset-4">Ver o comparativo completo</Link> : null}

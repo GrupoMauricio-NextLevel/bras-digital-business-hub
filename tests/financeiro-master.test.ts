@@ -109,14 +109,14 @@ describe("Commerce: oferta de entrada, planos, assinatura e taxa de plataforma",
   const signup = (email: string, taxId: string, plan: "COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE" = "COMMERCE_START", cycle: "MONTHLY" | "ANNUAL" = "MONTHLY", now = new Date("2026-10-01T12:00:00Z")) =>
     signupMember(ctx.db, { storeName: `Loja ${email}`, ownerName: "Dona Teste", email, password: "senha-segura-1", taxId, brand: "NEXTLEVEL_COMMERCE", independent: true, plan, cycle }, now);
 
-  it("3 dias grátis, 1º mês R$ 9,90, depois o valor do plano; uma vez por CPF/CNPJ", async () => {
+  it("3 dias grátis e depois o valor do plano, sem 1º mês de R$ 9,90 (D233); uma vez por CPF/CNPJ", async () => {
     const now = new Date("2026-10-01T12:00:00Z");
     const r = await signup("a@loja.com", "529.982.247-25");
     expect(r.trial).toBe(true);
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
     expect(new Date(store.trialEndsAt!).toISOString()).toBe(new Date(now.getTime() + 3 * 86_400_000).toISOString());
     const inv = (await ensureSubscriptionInvoice(ctx.db, store, now))!;
-    expect(inv.amountCents).toBe(990);
+    expect(inv.amountCents).toBe(5_700);
     expect((await ensureSubscriptionInvoice(ctx.db, store, now))!.invoiceId).toBe(inv.invoiceId); // não duplica
     await markInvoicePaid(ctx.db, inv.invoiceId, new Date("2026-10-02T12:00:00Z"));
     await markInvoicePaid(ctx.db, inv.invoiceId, new Date("2026-10-02T12:00:00Z")); // repetido: nada muda
@@ -125,7 +125,7 @@ describe("Commerce: oferta de entrada, planos, assinatura e taxa de plataforma",
     expect((await subscriptionOf(ctx.db, r.storeId))!.status).toBe("active");
     const next = (await ensureSubscriptionInvoice(ctx.db, paid, new Date("2026-11-02T12:00:00Z")))!;
     expect(next.amountCents).toBe(5_700);
-    // Mesmo CPF em outra loja: sem teste e sem R$ 9,90.
+    // Mesmo CPF em outra loja: sem teste.
     const again = await signup("b@loja.com", "529.982.247-25");
     expect(again.trial).toBe(false);
     const s2 = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, again.storeId) }))!;
@@ -322,7 +322,7 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     const i2 = (await ensureSubscriptionInvoice(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!))!;
     await markInvoicePaid(ctx.db, i2.invoiceId);
     const rows = await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, p.id));
-    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2000, 198], ["RECURRING", 1000, 570]]));
+    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2000, 1140], ["RECURRING", 1000, 570]]));
     expect(rows.some((x) => x.kind === "MAINTENANCE")).toBe(false);
     // Agência (D220): 30% na 1ª e 15% recorrente.
     const { findRule } = await import("@/lib/domain/corporate-commissions");

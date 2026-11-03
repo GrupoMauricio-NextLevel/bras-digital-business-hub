@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getDb } from "@/db/client";
 import { anualBlackCents, blackAgora } from "@/lib/domain/campanha-black";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
-import { dueloPrimeiroAno } from "@/lib/marcas/comparativo-ecommerce";
+import { COTACAO_DOLAR, dueloPrimeiroAno } from "@/lib/marcas/comparativo-ecommerce";
 import { formatBRL } from "@/lib/money";
 import { ContagemRegressiva } from "./contagem-regressiva";
 import "./black.css";
@@ -23,7 +23,7 @@ export async function DueloBlack({ cta }: { cta: string }) {
   const maior = Math.max(...d.outras.map((o) => o.totalCents));
   const linhas = [d.nextlevel, ...d.outras];
   return (
-    <section aria-labelledby="duelo-t" className="bk-duelo px-4 py-16 md:py-20">
+    <section id="duelo" aria-labelledby="duelo-t" className="bk-duelo scroll-mt-16 px-4 py-16 md:py-20">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -47,7 +47,7 @@ export async function DueloBlack({ cta }: { cta: string }) {
         </ul>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link href={cta} className="bk-cta bk-cta--lg">Garantir a Black NextLevel</Link>
-          <p className="max-w-xl text-xs leading-relaxed text-[#8193b8]">NextLevel: Start anual na Black (2 meses grátis), preço travado enquanto for cliente. Concorrentes: melhor preço anual que divulgam hoje (Loja Integrada: valor trimestral). As Blacks de 2026 deles ainda não foram anunciadas; quando saírem, atualizamos aqui. As taxas do Mercado Pago existem em todas e ficam fora da conta.</p>
+          <p className="max-w-xl text-xs leading-relaxed text-[#8193b8]">NextLevel: Start anual na Black (2 meses grátis), preço travado enquanto for cliente. Concorrentes: melhor preço anual que divulgam hoje (Loja Integrada: valor trimestral; Shopify: em dólar, convertido a {formatBRL(COTACAO_DOLAR.reais * 100)} por dólar, abaixo do câmbio do dia, sem o IOF). As Blacks de 2026 deles ainda não foram anunciadas; quando saírem, atualizamos aqui. As taxas do Mercado Pago existem em todas e ficam fora da conta.</p>
         </div>
       </div>
     </section>

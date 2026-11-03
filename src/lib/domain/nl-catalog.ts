@@ -5,7 +5,7 @@ import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions,
 import { newId } from "@/lib/ids";
 import { COMISSOES_D220, PRECOS_D220, REF_D220, descontoAnualBps } from "@/lib/finance/revisao-d220";
 import { PRECOS_D228, REF_D228 } from "@/lib/finance/revisao-d228";
-import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
+import { ENTRY_OFFER_KEY, FAQ_ANUAL, FAQ_TESTE, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
 import { isMaster, requireMasterFn, type Actor } from "./access";
 import { campanhaBlack } from "./campanha-black";
@@ -54,7 +54,27 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
   }
   await aplicarRevisaoD220(db);
   await agendarRevisaoD228(db);
+  await aplicarOfertaSemPrimeiroMes(db);
   return created;
+}
+
+/**
+ * D233: a oferta de entrada deixa de ter o 1º mês por R$ 9,90 (mantém o teste grátis e o resto). Nova versão, uma vez por
+ * banco (marcador "D233" no motivo). Quem já usou a oferta antiga mantém as condições que recebeu.
+ */
+async function aplicarOfertaSemPrimeiroMes(db: Database) {
+  // FAQ gravado no conteúdo dos planos: troca as respostas antigas (R$ 9,90 e "25%") pelas atuais.
+  const planos = await db.select({ id: catalogProducts.id, content: catalogProducts.content }).from(catalogProducts).where(eq(catalogProducts.family, "COMMERCE_PLAN"));
+  for (const pl of planos) {
+    const faq = pl.content?.faq ?? [];
+    if (!faq.some((f) => /9,90|25%/.test(f.a))) continue;
+    const novo = faq.map((f) => /9,90/.test(f.a) ? { ...f, a: FAQ_TESTE } : /25%/.test(f.a) && /anual/i.test(f.q) ? { ...f, a: FAQ_ANUAL } : f);
+    await db.update(catalogProducts).set({ content: { ...pl.content, faq: novo } }).where(eq(catalogProducts.id, pl.id));
+  }
+  const versoes = await db.select().from(catalogOffers).where(eq(catalogOffers.key, ENTRY_OFFER_KEY)).orderBy(desc(catalogOffers.version));
+  const ult = versoes[0];
+  if (!ult || versoes.some((v) => v.reason?.includes("D233")) || ult.rules.firstPeriodCents == null) return;
+  await db.insert(catalogOffers).values({ id: newId("cof"), key: ult.key, version: ult.version + 1, name: ult.name, status: ult.status, rules: { ...ult.rules, firstPeriodCents: null }, effectiveFrom: new Date(0).toISOString(), reason: "Sem 1º mês por R$ 9,90; a Black passa a ser a oferta (D233)" }).onConflictDoNothing();
 }
 
 /**

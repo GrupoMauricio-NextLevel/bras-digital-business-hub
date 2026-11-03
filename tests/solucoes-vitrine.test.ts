@@ -32,7 +32,7 @@ describe("vitrine de Soluções", () => {
   it("campanha só com oferta ativa", async () => {
     expect((await vitrine()).v.campanhas).toEqual([]);
     const { v } = await vitrine({ trialDays: 7, firstPeriodCents: 990, feeHolidayMonths: 3 });
-    expect(v.campanhas[0]!.texto).toMatch(/R\$\s9,90/);
+    expect(v.campanhas[0]!.texto).toBe("7 dias grátis e taxa zero da plataforma para clientes novos.");
   });
 
   it("seleção: soma em centavos só o que tem preço fixo; diagnóstico com até 6 necessidades e a lista de itens", async () => {

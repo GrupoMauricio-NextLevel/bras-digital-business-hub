@@ -56,9 +56,9 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} black={bkCont} />
+      <DueloBlack cta={cta} />
       <FaixaTaxaZero black={bkCont} />
       <PlacarSecao cta={cta} />
-      <DueloBlack cta={cta} />
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}

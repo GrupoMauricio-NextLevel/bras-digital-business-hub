@@ -3,7 +3,6 @@ import type { CatalogItem } from "@/lib/domain/nl-catalog";
 import type { DiagnosticNeed } from "@/lib/domain/corporate-sales";
 import { FAMILY_LABEL, PHASE_LABEL, priceLines } from "@/lib/finance/catalog-labels";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
-import { formatBRL } from "@/lib/money";
 import { SINONIMOS } from "./intencoes";
 
 /**
@@ -76,7 +75,7 @@ export function projetarVitrine(e: EntradasVitrine) {
   const fases = e.fases.map((f) => ({ key: f.key, nome: f.name, objetivo: f.goal, itens: itens.filter((i) => i.fase === f.key) }));
   const campanhas = e.oferta ? [{
     key: "ENTRADA_COMMERCE", titulo: "Comece a sua loja na NextLevel E-commerce",
-    texto: `${e.oferta.trialDays} dias grátis, 1º mês por ${formatBRL(e.oferta.firstPeriodCents ?? 0)} e taxa de plataforma zero por ${e.oferta.feeHolidayMonths} meses para clientes novos.`,
+    texto: `${e.oferta.trialDays} dias grátis e taxa zero da plataforma para clientes novos.`,
     href: e.link(`${e.commerce.base}/planos`), rotulo: "Ver os planos",
   }] : [];
   const busca = [

@@ -12,8 +12,8 @@ const RECURSOS = [
   { icon: ShoppingBag, titulo: "Pedido mínimo da loja", texto: "Defina o valor mínimo do pedido para vender só no atacado, ou deixe livre para atender o varejo também." },
   { icon: FileText, titulo: "Propostas e pedidos do balcão", texto: "Monte a proposta para o cliente do WhatsApp ou lance o pedido do balcão: as regras de atacado valem em tudo." },
 ];
-/** Atacado nativo na concorrência (D231: Nuvemshop e Loja Integrada não têm, confirmado pelo dono; WBuy e Tray pelos sites). */
-const ATAQUE: [string, string, boolean][] = [["NextLevel", "Todos os planos, desde R$ 57", true], ["Nuvemshop", "Não tem", false], ["Loja Integrada", "Não tem", false], ["WBuy", "Só a partir de R$ 149", false], ["Tray", "Só no plano de R$ 449", false]];
+/** Atacado nativo na concorrência (D231: Nuvemshop e Loja Integrada não têm, confirmado pelo dono; WBuy, Tray e Shopify pelos sites). */
+const ATAQUE: [string, string, boolean][] = [["NextLevel", "Todos os planos, desde R$ 57", true], ["Nuvemshop", "Não tem", false], ["Loja Integrada", "Não tem", false], ["WBuy", "Só a partir de R$ 149", false], ["Tray", "Só no plano de R$ 449", false], ["Shopify", "Só no plano Plus, em dólar", false]];
 const GRADE = [["P", 2], ["M", 4], ["G", 4], ["GG", 2]] as const;
 const FAIXAS = [[6, 3990], [12, 3490], [36, 2990]] as const;
 

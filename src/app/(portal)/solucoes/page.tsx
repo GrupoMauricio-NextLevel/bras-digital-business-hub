@@ -135,7 +135,7 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
             <article className="rounded-xl border border-border bg-surface p-5">
               <FamiliaFoto family="COMMERCE_PLAN" className="mb-4 !rounded-lg" />
               <h3 className="text-xl font-bold">Plataforma NextLevel E-commerce</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Loja virtual com sua marca, temas, Pix e cartão na sua conta.{plans.offer ? ` Clientes novos: ${plans.offer.trialDays} dias grátis, 1º mês por ${formatBRL(plans.offer.firstPeriodCents ?? 0)} e taxa de plataforma zero por ${plans.offer.feeHolidayMonths} meses.` : ""}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Loja virtual com sua marca, temas, Pix e cartão na sua conta.{plans.offer ? ` Clientes novos: ${plans.offer.trialDays} dias grátis e taxa zero da plataforma.` : ""}</p>
               <ul className="mt-3 space-y-1 text-sm">{plans.plans.map((p) => <li key={p.key}><Link className="font-semibold text-link underline" href={withAttribution(`/solucoes/${p.slug}`, attr)}>{p.name}</Link>: {p.quote ? "sob consulta" : `${formatBRL(p.monthlyCents ?? 0)}/mês ou ${formatBRL(p.annualCents ?? 0)}/ano · taxa ${((p.feeBps ?? 0) / 100).toString().replace(".", ",")}%`}</li>)}</ul>
               <Link href={commerceHref} className="mt-4 inline-flex text-sm font-semibold text-link underline">Conhecer a NextLevel E-commerce →</Link>
             </article>

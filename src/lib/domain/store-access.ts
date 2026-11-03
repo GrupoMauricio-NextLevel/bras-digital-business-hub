@@ -240,7 +240,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));
   await db.update(stores).set({ status: "ACTIVE", taxId }).where(eq(stores.id, created.storeId));
   await attributeStore(db, { storeId: created.storeId, taxId, email: input.email, couponCode: code, refCode: input.ref, now });
-  // Commerce com planos (D90): a assinatura decide o acesso (oferta de entrada: 3 dias grátis, 1º mês R$ 9,90, taxa zero por 3 meses).
+  // Commerce com planos (D90): a assinatura decide o acesso (oferta de entrada: 3 dias grátis, taxa zero da plataforma; sem 1º mês especial desde D233).
   const { finFlag } = await import("@/lib/finance/flags");
   if (independent && finFlag("FIN_COMMERCE_PLANS")) {
     const { startCommerceSubscription } = await import("./commerce-plans");

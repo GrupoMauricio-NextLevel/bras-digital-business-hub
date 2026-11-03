@@ -25,6 +25,10 @@ export type SeedProduct = {
 const HIGH_TICKET = { methods: ["PIX", "CARD"] as ("PIX" | "CARD")[], pixDiscountBps: 1000, cardMaxInstallments: 10, cardMarkupBps: 1600 };
 const MONTHLY_PLAN = { methods: ["PIX", "CARD"] as ("PIX" | "CARD")[], pixDiscountBps: 0, cardMaxInstallments: 1, cardMarkupBps: 0 };
 
+/** Respostas atuais do FAQ dos planos (D233: sem 1º mês por R$ 9,90; o desconto do anual varia por plano e na Black). */
+export const FAQ_TESTE = "Novos clientes têm 3 dias grátis para montar a loja, e a taxa da plataforma é zero. A condição vale uma vez por CPF/CNPJ.";
+export const FAQ_ANUAL = "Sim. O anual é pago de uma vez e sai mais vantajoso que 12 mensalidades; o desconto de cada plano aparece na página de planos. Ele não acumula com desconto percentual de parceiro.";
+
 const PLAN_FEATURES = [
   "Loja virtual com tema gratuito, editor visual e domínio próprio",
   "Produtos, variações, estoque e categorias sem limite de cadastro",
@@ -47,8 +51,8 @@ const plan = (key: string, slug: string, name: string, monthly: number, annual: 
     timeline: "Acesso liberado na hora, depois da confirmação do pagamento (ou durante os 3 dias de teste).",
     limits: ["A taxa de plataforma incide sobre o valor dos produtos dos pedidos pagos, sem o frete", "Verba de anúncios, domínio e taxas do Mercado Pago são pagos por você diretamente a cada empresa"],
     faq: [
-      { q: "Como funciona o teste?", a: "Novos clientes têm 3 dias grátis. Depois, o primeiro mês custa R$ 9,90 e a taxa de plataforma é zero nos 3 primeiros meses. A condição vale uma vez por CPF/CNPJ." },
-      { q: "O anual tem desconto?", a: "Sim, 25% em relação a 12 mensalidades, pago de uma vez. Ele não acumula com desconto percentual de parceiro." },
+      { q: "Como funciona o teste?", a: FAQ_TESTE },
+      { q: "O anual tem desconto?", a: FAQ_ANUAL },
       { q: "Quem recebe o dinheiro das minhas vendas?", a: "Você, 100%, na sua conta Mercado Pago. A NextLevel cobra a assinatura e a taxa de plataforma em fatura separada." },
     ],
     policy: "Cancelamento a qualquer momento: o acesso segue até o fim do ciclo pago. O anual não é reembolsado proporcionalmente após 7 dias da compra.",
@@ -207,7 +211,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
 export const ENTRY_OFFER_KEY = "COMMERCE_ENTRADA";
 export const SEED_OFFER: { key: string; name: string; rules: OfferRules } = {
   key: ENTRY_OFFER_KEY, name: "Oferta de entrada Commerce",
-  rules: { trialDays: 3, firstPeriodCents: 990, feeHolidayMonths: 3, appliesToFamilies: ["COMMERCE_PLAN"], appliesToCycles: ["MONTHLY", "ANNUAL"], oncePer: "TAX_ID" },
+  rules: { trialDays: 3, firstPeriodCents: null, feeHolidayMonths: 3, appliesToFamilies: ["COMMERCE_PLAN"], appliesToCycles: ["MONTHLY", "ANNUAL"], oncePer: "TAX_ID" },
 };
 
 /**
@@ -227,8 +231,8 @@ export const SEED_DOOR_OFFERS: { key: string; name: string; rules: OfferRules }[
 
 export type SeedRule = { key: string; family: CatalogFamily; productKey?: string; cycle?: PriceCycle; partnerKind?: PartnerKind; firstBps: number; recurringBps?: number; recurringMonths?: number; holdDays: number; benefit: string };
 export const SEED_COMMISSION_RULES: SeedRule[] = [
-  { key: "COMMERCE_MENSAL", family: "COMMERCE_PLAN", cycle: "MONTHLY", firstBps: 2500, recurringBps: 1000, recurringMonths: 12, holdDays: 14, benefit: "R$ 9,90 no 1º mês + taxa zero por 3 meses" },
-  { key: "COMMERCE_ANUAL", family: "COMMERCE_PLAN", cycle: "ANNUAL", firstBps: 2000, holdDays: 14, benefit: "25% de desconto no anual (sem desconto extra do parceiro)" },
+  { key: "COMMERCE_MENSAL", family: "COMMERCE_PLAN", cycle: "MONTHLY", firstBps: 2500, recurringBps: 1000, recurringMonths: 12, holdDays: 14, benefit: "3 dias grátis + taxa zero da plataforma" },
+  { key: "COMMERCE_ANUAL", family: "COMMERCE_PLAN", cycle: "ANNUAL", firstBps: 2000, holdDays: 14, benefit: "Anual com desconto (sem desconto extra do parceiro)" },
   { key: "TEMA", family: "TEMA", firstBps: 2000, holdDays: 14, benefit: "Até 10% de desconto, não cumulativo" },
   { key: "LOJA_PRONTA", family: "LOJA_PRONTA", firstBps: 1500, holdDays: 30, benefit: "Até 10% no Pix ou bônus de onboarding" },
   { key: "LOJA_PRONTA_PREMIUM", family: "LOJA_PRONTA", productKey: "LOJA_PRONTA_PREMIUM", firstBps: 1000, holdDays: 30, benefit: "Benefício definido em proposta" },

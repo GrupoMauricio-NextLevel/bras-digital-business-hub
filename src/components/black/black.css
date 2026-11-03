@@ -55,3 +55,7 @@
 .bk-on .ecc-planos .cm-plan--on, .bk-on .cm-plan--on { box-shadow: 0 0 0 2px #22e08a, 0 30px 70px -30px rgb(34 224 138 / .7); }
 .bk-on .im-eyebrow { color: #22c27a; }
 @media (max-width: 640px) { .bk-contagem--lg .bk-bloco b { font-size: 1.5rem; } }
+
+/* D233: o topo da home vira o topo da Black */
+.ecc-black-topo { display: flex; justify-content: center; }
+.ecc-black-topo .bk-selo { font-size: .95rem; padding: .55rem 1.1rem; box-shadow: 0 0 0 1px rgb(214 255 61 / .35), 0 0 32px -6px rgb(214 255 61 / .55); }

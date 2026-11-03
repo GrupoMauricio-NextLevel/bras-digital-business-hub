@@ -27,14 +27,14 @@ export function SignupForm({ initialCode, initialRef, initialOffer, initialSuppl
     <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5 shadow-sm" aria-label="Cadastro">
       {usePlans ? (
         <fieldset className="space-y-2"><legend className="mb-1 text-sm font-medium">Plano NextLevel E-commerce</legend>
-          <div className="ds-seg" role="group" aria-label="Ciclo"><button type="button" aria-pressed={f.cycle === "MONTHLY"} onClick={() => set({ cycle: "MONTHLY" })}>Mensal</button><button type="button" aria-pressed={f.cycle === "ANNUAL"} onClick={() => set({ cycle: "ANNUAL" })}>Anual (25% de desconto)</button></div>
+          <div className="ds-seg" role="group" aria-label="Ciclo"><button type="button" aria-pressed={f.cycle === "MONTHLY"} onClick={() => set({ cycle: "MONTHLY" })}>Mensal</button><button type="button" aria-pressed={f.cycle === "ANNUAL"} onClick={() => set({ cycle: "ANNUAL" })}>Anual</button></div>
           {plans!.map((p) => (
             <label key={p.key} className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 text-sm ${f.plan === p.key ? "border-accent bg-accent-soft/40" : "border-border"}`}>
               <span className="flex items-center gap-2"><input type="radio" name="plan" value={p.key} checked={f.plan === p.key} onChange={() => set({ plan: p.key })} /> <span className="font-semibold">{p.name}</span></span>
-              <span className="text-right tabular-nums"><b>{f.cycle === "ANNUAL" ? formatBRL(p.annualCents) : formatBRL(p.monthlyCents)}</b>{f.cycle === "ANNUAL" ? "/ano" : "/mês"}<span className="block text-xs text-muted-foreground">taxa de {(p.feeBps / 100).toString().replace(".", ",")}% sobre vendas</span></span>
+              <span className="text-right tabular-nums"><b>{f.cycle === "ANNUAL" ? formatBRL(p.annualCents) : formatBRL(p.monthlyCents)}</b>{f.cycle === "ANNUAL" ? "/ano" : "/mês"}<span className="block text-xs text-muted-foreground">{p.feeBps ? `taxa de ${(p.feeBps / 100).toString().replace(".", ",")}% sobre vendas` : "taxa zero da plataforma"}</span></span>
             </label>
           ))}
-          {entry ? <p className="text-xs text-muted-foreground">Clientes novos: {entry.trialDays} dias grátis{entry.firstPeriodCents !== null && f.cycle === "MONTHLY" ? `, 1º mês por ${formatBRL(entry.firstPeriodCents)}` : ""} e taxa de plataforma zero por {entry.feeHolidayMonths} meses. Vale uma vez por CPF/CNPJ.</p> : null}
+          {entry ? <p className="text-xs text-muted-foreground">Clientes novos: {entry.trialDays} dias grátis. Vale uma vez por CPF/CNPJ.</p> : null}
         </fieldset>
       ) : (
       <fieldset className="space-y-2"><legend className="mb-1 text-sm font-medium">Plano</legend>

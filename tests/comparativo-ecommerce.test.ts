@@ -11,8 +11,8 @@ describe("comparativo da E-commerce (D219)", () => {
     expect(melhorPlano(pl("nuvemshop"), 5_000_000)).toEqual({ nome: "Impulso", totalCents: 66_400 });
     expect(melhorPlano(pl("tray"), 5_000_000)).toEqual({ nome: "Crescimento", totalCents: 65_900 });
   });
-  it("dólar fica fora da conta; Loja Integrada e WBuy entram com a tarifa no Mercado Pago", () => {
-    expect(melhorPlano(pl("shopify"), 5_000_000)).toBeNull();
+  it("dólar entra convertido pelo câmbio de referência (D233); Loja Integrada e WBuy entram com a tarifa no Mercado Pago", () => {
+    expect(melhorPlano(pl("shopify"), 5_000_000)).toEqual({ nome: "Grow", totalCents: 102_500 }); // US$ 105 × R$ 5 + 1% de R$ 50 mil
     expect(melhorPlano(pl("loja-integrada"), 5_000_000)).toEqual({ nome: "Aceleração", totalCents: 53_300 });
     expect(melhorPlano(pl("wbuy"), 5_000_000)).toEqual({ nome: "Turbo", totalCents: 77_400 });
   });
@@ -28,11 +28,11 @@ describe("comparativo da E-commerce (D219)", () => {
       expect(l!.outras.every((o) => o.melhor!.totalCents > l!.nextlevel!.totalCents)).toBe(true);
     }
   });
-  it("contra quatro plataformas, plano a plano, o custo total da NextLevel é menor para quem vende R$ 30 mil por mês (D220)", () => {
+  it("contra cinco plataformas (com a Shopify, D233), plano a plano, o custo total da NextLevel é menor para quem vende R$ 30 mil por mês (D220)", () => {
     expect(FAT_REFERENCIA_CENTS).toBe(3_000_000);
     const ds = degraus([{ nome: "Start", mensalCents: 5_700, anualMesCents: 3_700 }, { nome: "Pro", mensalCents: 14_700, anualMesCents: 11_900 }, { nome: "Scale", mensalCents: 34_700, anualMesCents: 29_700 }]);
     for (const d of ds) {
-      expect(d.outras.map((o) => o.nome)).toEqual(["Nuvemshop", "Loja Integrada", "WBuy", "Tray"]);
+      expect(d.outras.map((o) => o.nome)).toEqual(["Nuvemshop", "Loja Integrada", "WBuy", "Tray", "Shopify"]);
       for (const o of d.outras) expect(d.nextlevel!.totalCents).toBeLessThan(o.totalCents);
     }
   });

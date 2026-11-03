@@ -56,3 +56,24 @@
 .cm-theme-card:hover .cm-theme-shot > img.cm-desk { transform: scale(1.04); }
 .cm-theme-shot > img.cm-mob { position: absolute; right: 6%; bottom: -6%; width: 24%; aspect-ratio: 9 / 19; object-fit: cover; object-position: top; border-radius: 0.9rem; border: 4px solid #0b1220; box-shadow: 0 14px 30px -10px rgb(0 0 0 / 0.5); }
 @media (prefers-reduced-motion: reduce) { .cm-theme-shot > img.cm-desk { transition: none; } .cm-theme-card:hover .cm-theme-shot > img.cm-desk { transform: none; } }
+
+/* Economia no simulador (D233): painel escuro de tecnologia com o número em neon e barras de custo. */
+.cm-eco { display: grid; gap: 1.5rem; padding: 1.5rem; border-radius: 1.4rem; color: #fff; background: radial-gradient(90% 120% at 0% 0%, rgb(34 224 138 / .16), transparent 55%), linear-gradient(rgb(255 255 255 / .04) 1px, transparent 1px) 0 0 / 100% 36px, #0a1226; box-shadow: inset 0 0 0 1px rgb(125 211 252 / .18), 0 24px 60px -30px rgb(10 18 38 / .8); }
+@media (min-width: 768px) { .cm-eco { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; padding: 2rem; } }
+.cm-eco-rotulo { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #7dd3fc; }
+.cm-eco-valor { margin-top: .4rem; display: flex; align-items: baseline; gap: .35rem; flex-wrap: wrap; }
+.cm-eco-num { font-family: var(--nl-font-display, inherit); font-size: clamp(2.6rem, 9vw, 4.2rem); font-weight: 700; line-height: 1; letter-spacing: -.03em; color: #22e08a; text-shadow: 0 0 28px rgb(34 224 138 / .55); font-variant-numeric: tabular-nums; }
+.cm-eco-por { font-family: var(--ec-mono, ui-monospace, monospace); color: #b9f5d6; font-size: 1rem; }
+.cm-eco-sub { margin-top: .6rem; font-size: .9rem; line-height: 1.5; color: #b9c6e4; }
+.cm-eco-sub b { color: #fff; }
+.cm-eco-barras { display: grid; gap: .55rem; }
+.cm-eco-barra { display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr) auto; align-items: center; gap: .7rem; font-size: .82rem; color: #c9d4ee; }
+.cm-eco-barra b { font-family: var(--ec-mono, ui-monospace, monospace); font-variant-numeric: tabular-nums; color: #ff8fae; font-weight: 600; }
+.cm-eco-barra > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-eco-trilho { height: .55rem; border-radius: 99px; background: rgb(255 255 255 / .07); overflow: hidden; }
+.cm-eco-trilho span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff5c8a, #ff8fae); transition: width .5s cubic-bezier(.2, .8, .2, 1); }
+.cm-eco-barra--nl { color: #fff; font-weight: 600; }
+.cm-eco-barra--nl b { color: #22e08a; }
+.cm-eco-barra--nl .cm-eco-trilho span { background: #22e08a; box-shadow: 0 0 14px rgb(34 224 138 / .8); }
+.cm-eco-chip { margin-top: .4rem; display: inline-flex; padding: .2rem .6rem; border-radius: 99px; font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; font-weight: 600; color: #04130b; background: #22e08a; box-shadow: 0 0 18px -4px rgb(34 224 138 / .8); }
+@media (prefers-reduced-motion: reduce) { .cm-eco-trilho span { transition: none; } }

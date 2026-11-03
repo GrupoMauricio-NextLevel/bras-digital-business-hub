@@ -1,0 +1,89 @@
+/*
+ * Checkout dos planos da NextLevel E-commerce (D233): página escura de tecnologia, painéis com grade e borda luminosa,
+ * Geist Mono nos rótulos e números, verde neon só no que é vantagem (economia, 0%, botão final).
+ */
+.ck-pagina { min-height: 100dvh; color: #e6ecfb; background: radial-gradient(70% 50% at 85% 0%, rgb(124 92 255 / .22), transparent 60%), radial-gradient(60% 40% at 0% 100%, rgb(34 211 238 / .12), transparent 60%), linear-gradient(rgb(255 255 255 / .03) 1px, transparent 1px) 0 0 / 100% 48px, #070d1d; }
+.ck-topo { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.ck-seguro { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #7dd3fc; }
+.ck-titulo { font-family: var(--nl-font-display, inherit); font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 700; letter-spacing: -.035em; line-height: 1.05; color: #fff; }
+.ck-titulo em { font-style: normal; color: #22e08a; text-shadow: 0 0 24px rgb(34 224 138 / .55); }
+.ck-intro { color: #9fb3d9; max-width: 40rem; }
+.ck-etapas { display: flex; flex-wrap: wrap; gap: .5rem; font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #8193b8; }
+.ck-etapas li { display: inline-flex; align-items: center; gap: .4rem; padding: .3rem .7rem; border-radius: 99px; border: 1px solid rgb(255 255 255 / .1); }
+.ck-etapas li[aria-current] { color: #fff; border-color: rgb(125 211 252 / .5); background: rgb(125 211 252 / .08); }
+
+.ck-grade { display: grid; gap: 1.5rem; align-items: start; }
+@media (min-width: 1024px) { .ck-grade { grid-template-columns: minmax(0, 1fr) 24rem; gap: 2rem; } }
+.ck-coluna { display: grid; gap: 1.25rem; min-width: 0; }
+.ck-painel { position: relative; padding: 1.25rem; border-radius: 1.4rem; background: linear-gradient(180deg, rgb(255 255 255 / .055), rgb(255 255 255 / .02)), #0b1428; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08), 0 30px 60px -40px rgb(0 0 0 / .8); }
+@media (min-width: 640px) { .ck-painel { padding: 1.75rem; } }
+.ck-passo-topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .9rem; }
+.ck-passo { display: flex; align-items: center; gap: .7rem; font-family: var(--nl-font-display, inherit); font-size: 1.25rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+.ck-passo span { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .75rem; color: #7dd3fc; padding: .2rem .45rem; border-radius: .45rem; background: rgb(125 211 252 / .1); box-shadow: inset 0 0 0 1px rgb(125 211 252 / .3); }
+
+.ck-ciclo { display: inline-flex; padding: 4px; border-radius: 99px; background: rgb(255 255 255 / .06); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); }
+.ck-ciclo button { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; padding: 0 1rem; border-radius: 99px; font-weight: 600; font-size: .9rem; color: #b9c6e4; transition: background-color .2s, color .2s; }
+.ck-ciclo button[aria-pressed="true"] { background: #fff; color: #0a1226; }
+.ck-ciclo-selo { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; font-weight: 700; padding: .1rem .4rem; border-radius: 99px; background: #22e08a; color: #04130b; }
+.ck-aviso-black { margin-top: 1rem; display: flex; align-items: center; gap: .5rem; padding: .6rem .9rem; border-radius: .9rem; font-size: .88rem; color: #d7ffe9; background: rgb(34 224 138 / .08); box-shadow: inset 0 0 0 1px rgb(34 224 138 / .35); }
+.ck-aviso-black b { color: #22e08a; }
+
+.ck-planos { margin-top: 1.1rem; display: grid; gap: .75rem; }
+@media (min-width: 768px) { .ck-planos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ck-plano { position: relative; display: flex; flex-direction: column; gap: .3rem; padding: 1.1rem; border-radius: 1.1rem; cursor: pointer; background: rgb(255 255 255 / .03); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); transition: box-shadow .2s, background-color .2s, transform .2s; }
+.ck-plano:hover { background: rgb(255 255 255 / .05); }
+.ck-plano:has(input:focus-visible) { outline: 2px solid #7dd3fc; outline-offset: 3px; }
+.ck-plano--on { background: linear-gradient(160deg, rgb(124 92 255 / .22), rgb(34 211 238 / .08)), #0d1830; box-shadow: inset 0 0 0 1.5px #7dd3fc, 0 0 0 4px rgb(125 211 252 / .12), 0 20px 40px -20px rgb(34 211 238 / .45); }
+.ck-plano-tag { position: absolute; top: -.6rem; right: .9rem; padding: .15rem .55rem; border-radius: 99px; font-family: var(--ec-mono, ui-monospace, monospace); font-size: .65rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #0a1226; background: #7dd3fc; }
+.ck-plano-nome { display: flex; align-items: center; justify-content: space-between; font-family: var(--nl-font-display, inherit); font-size: 1.15rem; font-weight: 700; color: #fff; }
+.ck-radio { display: grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 99px; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / .35); color: #0a1226; }
+.ck-plano--on .ck-radio { background: #7dd3fc; box-shadow: none; }
+.ck-plano-para { font-size: .8rem; color: #8ea2c8; }
+.ck-plano-preco { margin-top: .5rem; font-size: .9rem; color: #b9c6e4; }
+.ck-plano-preco b { font-family: var(--nl-font-display, inherit); font-size: 2rem; font-weight: 700; letter-spacing: -.03em; color: #fff; font-variant-numeric: tabular-nums; }
+.ck-plano-sub { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; color: #22e08a; }
+.ck-plano-recursos { margin-top: .6rem; display: grid; gap: .3rem; font-size: .78rem; color: #b9c6e4; }
+.ck-plano-recursos span { display: flex; gap: .4rem; align-items: flex-start; }
+.ck-plano-recursos svg { margin-top: .15rem; flex-shrink: 0; color: #7dd3fc; }
+
+.ck-campos { margin-top: 1.1rem; display: grid; gap: .9rem; }
+@media (min-width: 640px) { .ck-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ck-campo--largo { grid-column: 1 / -1; } }
+.ck-campo label { display: block; margin-bottom: .35rem; font-size: .82rem; font-weight: 600; color: #c9d4ee; }
+.ck-campo input { width: 100%; min-height: 48px; padding: 0 .95rem; border-radius: .8rem; font-size: 1rem; color: #fff; background: rgb(255 255 255 / .04); border: 1px solid rgb(255 255 255 / .14); transition: border-color .2s, box-shadow .2s, background-color .2s; }
+.ck-campo input:focus { outline: none; border-color: #7dd3fc; background: rgb(125 211 252 / .06); box-shadow: 0 0 0 4px rgb(125 211 252 / .15); }
+.ck-campo input:user-invalid { border-color: #ff8fae; }
+.ck-campo p { margin-top: .3rem; font-size: .72rem; color: #8193b8; }
+
+.ck-enviar { display: flex; align-items: center; justify-content: center; gap: .55rem; width: 100%; min-height: 58px; border-radius: 1rem; font-family: var(--nl-font-display, inherit); font-size: 1.08rem; font-weight: 700; color: #04130b; background: linear-gradient(180deg, #3cf29e, #22e08a); box-shadow: 0 0 0 1px rgb(34 224 138 / .6), 0 18px 40px -14px rgb(34 224 138 / .75); transition: transform .15s, box-shadow .2s, filter .2s; }
+.ck-enviar:hover { filter: brightness(1.06); box-shadow: 0 0 0 1px rgb(34 224 138 / .8), 0 22px 50px -14px rgb(34 224 138 / .9); }
+.ck-enviar:active { transform: translateY(1px); }
+.ck-enviar:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.ck-enviar[disabled] { opacity: .75; cursor: progress; }
+.ck-termos { display: flex; justify-content: center; align-items: center; gap: .35rem; text-align: center; font-size: .75rem; color: #8193b8; }
+.ck-erro { padding: .7rem .9rem; border-radius: .8rem; font-size: .88rem; color: #ffd1dd; background: rgb(255 92 138 / .12); box-shadow: inset 0 0 0 1px rgb(255 92 138 / .4); }
+
+.ck-resumo { padding: 1.4rem; border-radius: 1.4rem; background: linear-gradient(180deg, rgb(124 92 255 / .12), transparent 40%), #0b1428; box-shadow: inset 0 0 0 1px rgb(125 211 252 / .22), 0 30px 60px -40px rgb(0 0 0 / .9); }
+.ck-resumo-lateral { display: none; }
+@media (min-width: 1024px) { .ck-resumo-lateral { display: block; position: sticky; top: 1.5rem; } .ck-resumo-celular { display: none; } }
+.ck-rotulo { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: #7dd3fc; }
+.ck-resumo-plano { margin-top: .5rem; display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; font-family: var(--nl-font-display, inherit); font-size: 1.4rem; font-weight: 700; color: #fff; }
+.ck-resumo-plano span { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; font-weight: 500; color: #9fb3d9; text-transform: uppercase; letter-spacing: .08em; }
+.ck-linhas { margin-top: 1rem; display: grid; gap: .55rem; font-size: .88rem; }
+.ck-linhas div { display: flex; justify-content: space-between; gap: 1rem; color: #b9c6e4; }
+.ck-linhas dd { font-family: var(--ec-mono, ui-monospace, monospace); font-variant-numeric: tabular-nums; color: #fff; }
+.ck-linha-desc dd, .ck-zero { color: #22e08a !important; }
+.ck-linha-total { margin-top: .3rem; padding-top: .75rem; border-top: 1px dashed rgb(255 255 255 / .15); font-weight: 700; }
+.ck-linha-total dt { color: #fff; }
+.ck-linha-total dd { font-size: 1.15rem; }
+.ck-hoje { margin-top: 1rem; display: grid; grid-template-columns: 1fr auto; gap: .2rem .8rem; align-items: baseline; padding: .85rem 1rem; border-radius: 1rem; background: rgb(255 255 255 / .04); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08); }
+.ck-hoje span { font-size: .85rem; color: #c9d4ee; }
+.ck-hoje b { font-family: var(--nl-font-display, inherit); font-size: 1.6rem; color: #fff; }
+.ck-hoje small { grid-column: 1 / -1; font-size: .72rem; color: #8193b8; }
+.ck-economia { margin-top: .9rem; display: flex; gap: .5rem; align-items: flex-start; font-size: .88rem; color: #d7ffe9; }
+.ck-economia svg { margin-top: .15rem; color: #22e08a; flex-shrink: 0; }
+.ck-economia b { color: #22e08a; font-size: 1.05rem; text-shadow: 0 0 18px rgb(34 224 138 / .6); }
+.ck-contagem { margin-top: 1rem; display: flex; justify-content: center; }
+.ck-confianca { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / .08); display: grid; gap: .55rem; font-size: .8rem; color: #9fb3d9; }
+.ck-confianca li { display: flex; gap: .55rem; align-items: flex-start; }
+.ck-confianca svg { margin-top: .1rem; flex-shrink: 0; color: #7dd3fc; }
+@media (prefers-reduced-motion: reduce) { .ck-plano, .ck-enviar, .ck-ciclo button, .ck-campo input { transition: none; } }

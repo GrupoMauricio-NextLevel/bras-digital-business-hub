@@ -18,7 +18,7 @@ describe("placar da goleada", () => {
 
   it("com a súmula de 03/11, a NextLevel vence todos os jogos, em todos os planos", () => {
     const r = rodada(SUMULA_PADRAO);
-    expect(r.jogos).toHaveLength(15);
+    expect(r.jogos).toHaveLength(18);
     expect(r.foraDoAr.map((j) => `${j.rival} ${j.degrau} ${j.nextlevel}x${j.adversario}`)).toEqual([]);
   });
 
@@ -30,9 +30,12 @@ describe("placar da goleada", () => {
     expect(nuvem.lances.find((l) => l.key === "produtos")!.quem).toBe("rival"); // a derrota aparece, sem destaque
     expect(nuvem.lances.find((l) => l.key === "atacado")!.quem).toBe("nextlevel");
     expect(nuvem.lances.find((l) => l.key === "balcao")!.quem).toBe("nd"); // não divulga: não vale gol
+    const shop = jogo(SUMULA_PADRAO, "shopify", "entrada");
+    expect([shop.nextlevel, shop.adversario]).toEqual([4, 1]); // D233: Shopify entra no clássico
+    expect(shop.lances.find((l) => l.key === "reais")!.quem).toBe("nextlevel");
     const sel = selecao(SUMULA_PADRAO, "entrada");
     expect(sel.vitoria).toBe(true);
-    expect(sel.lances.find((l) => l.key === "taxa")).toMatchObject({ quem: "nextlevel", deles: "2%", rival: "Nuvemshop" }); // ponto fraco com nome
+    expect(sel.lances.find((l) => l.key === "taxa")).toMatchObject({ quem: "nextlevel", deles: "2%", rival: "Shopify" }); // ponto fraco com nome
     expect(sel.lances.find((l) => l.key === "produtos")).toMatchObject({ quem: "rival", deles: "sem limite", rival: "Nuvemshop" }); // derrota: quem de fato venceu
   });
 

@@ -41,7 +41,14 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
   // Taxa zero (D220): o destaque é o Pro (mais completo por pouco a mais); com taxa, o mais em conta para o faturamento.
   const melhor = enterprise ? null : taxaZero ? (pagos.find((p) => p.key === "COMMERCE_PRO") ?? pagos[0] ?? null) : pagos.reduce<PricingPlan | null>((b, p) => (!b || total(p) < total(b) ? p : b), null);
   // Simulador (D220): quanto a mesma venda custaria em outras plataformas, usando outro meio de pagamento.
-  const concorrencia = taxaZero ? CONCORRENTES.map((c) => ({ nome: c.nome, m: melhorPlano(c, venda) })).filter((x) => x.m) : [];
+  const concorrencia = taxaZero ? CONCORRENTES.map((c) => ({ nome: c.nome, m: melhorPlano(c, venda) })).filter((x) => x.m).sort((a, b) => a.m!.totalCents - b.m!.totalCents) : [];
+  // Economia (D233): contra a opção de menor custo entre as outras; só aparece quando é real (maior que zero).
+  const eco = (() => {
+    const prox = concorrencia[0], nl = pagos[0] ? mensal(pagos[0]) : 0;
+    if (!prox || !pagos[0] || prox.m!.totalCents <= nl) return null;
+    const mesCents = prox.m!.totalCents - nl;
+    return { nome: prox.nome, mesCents, anoCents: mesCents * 12, maior: Math.max(nl, ...concorrencia.map((c) => c.m!.totalCents)) };
+  })();
   const extra = suffix ? `&${suffix.slice(1)}` : "";
   const desconto = pagos.length ? Math.max(...pagos.map((p) => Math.round((1 - p.annualCents! / (p.monthlyCents! * 12)) * 100))) : 0;
 
@@ -52,8 +59,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           <Gift className="size-4 text-link" aria-hidden />
           <b>Para começar:</b>
           <span>{offer.trialDays} dias grátis</span>
-          {offer.firstPeriodCents !== null ? <><span aria-hidden>·</span><span>1º mês por {formatBRL(offer.firstPeriodCents)} no mensal</span></> : null}
-          {offer.feeHolidayMonths > 0 && !taxaZero ? <><span aria-hidden>·</span><span>taxa zero por {offer.feeHolidayMonths} {offer.feeHolidayMonths === 1 ? "mês" : "meses"}</span></> : null}
+                    {offer.feeHolidayMonths > 0 && !taxaZero ? <><span aria-hidden>·</span><span>taxa zero por {offer.feeHolidayMonths} {offer.feeHolidayMonths === 1 ? "mês" : "meses"}</span></> : null}
           {taxaZero ? <><span aria-hidden>·</span><span><b>taxa zero</b> da plataforma nas vendas</span></> : null}
         </p>
       ) : null}
@@ -77,13 +83,20 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           </label>
           <input id="cm-faixa" type="range" min={0} max={FAIXAS.length - 1} step={1} value={faixa} onChange={(e) => setFaixa(Number(e.target.value))} className="cm-range mt-3 w-full" aria-valuetext={rotulo(venda, faixa)} />
           <div aria-hidden className="mt-1 hidden justify-between text-[11px] text-muted-foreground sm:flex">{FAIXAS.map((c, i) => <span key={c}>{rotulo(c, i)}</span>)}</div>
-          {taxaZero && pagos[0] && venda > 0 && !enterprise ? (
-            <p className="mt-4 rounded-2xl bg-surface-muted px-4 py-3 text-sm" aria-live="polite">
-              Vendendo {rotulo(venda, faixa)}, na NextLevel você paga <b className="tabular-nums text-success">{formatBRL(mensal(pagos[0]))}/mês</b> e nenhuma taxa da plataforma sobre as vendas.
-              {concorrencia.length ? <> Nas outras, usando o Mercado Pago: {concorrencia.map((c, i) => <span key={c.nome}>{i ? " · " : " "}{c.nome} <b className="tabular-nums">{formatBRL(c.m!.totalCents)}</b></span>)}.</> : null}
-            </p>
-          ) : null}
         </div>
+        {taxaZero && pagos[0] && venda > 0 && !enterprise && eco ? (
+          <div className="cm-eco md:col-span-2" aria-live="polite">
+            <div className="cm-eco-texto">
+              <p className="cm-eco-rotulo">Vendendo {rotulo(venda, faixa)} por mês, você economiza</p>
+              <p className="cm-eco-valor"><span className="cm-eco-num">{formatBRL(eco.anoCents).replace(",00", "")}</span><span className="cm-eco-por">/ano</span></p>
+              <p className="cm-eco-sub"><b>{formatBRL(eco.mesCents).replace(",00", "")}/mês</b> a mais no seu bolso contra a opção de menor custo entre as outras ({eco.nome}), usando o Mercado Pago.</p>
+            </div>
+            <ul className="cm-eco-barras" aria-label="Custo por mês da plataforma para esse faturamento">
+              <li className="cm-eco-barra cm-eco-barra--nl"><span>NextLevel {pagos[0].name.replace(/^Commerce /, "")}</span><span className="cm-eco-trilho" aria-hidden><span style={{ width: `${Math.max(3, (mensal(pagos[0]) / eco.maior) * 100)}%` }} /></span><b>{formatBRL(mensal(pagos[0])).replace(",00", "")}</b></li>
+              {concorrencia.map((c) => <li key={c.nome} className="cm-eco-barra"><span>{c.nome}</span><span className="cm-eco-trilho" aria-hidden><span style={{ width: `${(c.m!.totalCents / eco.maior) * 100}%` }} /></span><b>{formatBRL(c.m!.totalCents).replace(",00", "")}</b></li>)}
+            </ul>
+          </div>
+        ) : null}
       </div>
 
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -102,6 +115,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
               ) : (
                 <>
                   <p className="mt-5 flex items-baseline gap-1"><span className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tabular-nums">{formatBRL(mensal(p))}</span><span className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>/mês</span></p>
+                  {cycle === "ANNUAL" ? <p className="cm-eco-chip">Economia de {formatBRL(p.monthlyCents! * 12 - p.annualCents!).replace(",00", "")} no ano</p> : null}
                   {black?.depois[p.key] ? <p className={`text-xs ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>Depois da Black: <s>{formatBRL(cycle === "ANNUAL" ? Math.round(black.depois[p.key]!.anual / 12) : black.depois[p.key]!.mensal)}/mês</s></p> : null}
                   <p className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>{cycle === "ANNUAL" ? <>{formatBRL(p.annualCents!)} por ano, pagamento único</> : <>ou {formatBRL(Math.round(p.annualCents! / 12))}/mês no anual{black ? " Black (2 meses grátis)" : ""}</>}</p>
                   {taxaZero ? (
@@ -123,7 +137,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           );
         })}
       </ul>
-      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy e Tray (veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy, Tray e Shopify (em dólar, convertida pelo câmbio de referência; veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
     </div>
   );
 }

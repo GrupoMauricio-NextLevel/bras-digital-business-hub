@@ -107,3 +107,19 @@
 .ec-tech .cm-plan--on { background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; color: #e8eefc; box-shadow: 0 30px 70px -30px rgb(34 211 238 / .6); }
 .ec-tech .cm-seg-badge { font-family: var(--ec-mono); letter-spacing: .02em; }
 .ec-tech .cm-pricing output { font-family: var(--ec-mono); }
+
+/* Menu do celular na E-commerce (D233): painel escuro de tecnologia, opaco, com grade, números em mono e CTA em destaque. */
+.ec-tech .ds-pub-mobile { background: radial-gradient(120% 60% at 100% 0%, rgb(124 92 255 / .22), transparent 60%), linear-gradient(rgb(255 255 255 / .035) 1px, transparent 1px) 0 0 / 100% 44px, #0a1226; color: #fff; border-top: 1px solid rgb(125 211 252 / .18); }
+.ec-tech .ds-pub-mobile nav a { color: #fff; border-bottom-color: rgb(255 255 255 / .08); font-family: var(--nl-font-display); letter-spacing: -.01em; }
+.ec-tech .ds-pub-mobile nav a[aria-current="page"] { color: #7dd3fc; box-shadow: inset 3px 0 0 var(--ec-ciano-vivo); }
+.ec-tech .ds-pub-mobile-n { color: #7dd3fc; opacity: 1; }
+.ec-tech .ds-pub-mobile-rotulo { font-family: var(--ec-mono); color: #7dd3fc; opacity: 1; }
+.ec-tech .ds-pub-mobile-cta { background: var(--ec-verde); color: #04130b; border-color: transparent; box-shadow: 0 0 28px -6px rgb(34 224 138 / .7); }
+.ec-tech .ds-pub-mobile-pe .ds-pub-btn--ghost { color: #fff; border-color: rgb(255 255 255 / .25); background: transparent; }
+.ec-tech .ds-pub-mobile-pe .text-muted-foreground { color: #9fb3d9; }
+.ec-tech .ds-pub-header:has(#menu-publico) { background: #0a1226; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.ec-tech .ds-pub-header:has(#menu-publico) .ds-pub-header-in .nl-logo-light { display: none; }
+.ec-tech .ds-pub-header:has(#menu-publico) .ds-pub-header-in .nl-logo-dark { display: inline-block; }
+.ec-tech .ds-pub-header:has(#menu-publico) .ds-pub-burger { background: transparent; color: #fff; border-color: rgb(255 255 255 / .3); }
+/* Botões flutuantes (Maurício, WhatsApp) não cobrem o pé do menu. */
+.ec-tech .ds-pub-mobile-in { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }

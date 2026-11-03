@@ -26,7 +26,7 @@ export type QuoteInput = {
   /** Desconto pedido pelo parceiro (bps); limitado pelo teto do produto e por 10%. */
   partnerDiscountBps?: number;
   partnerDiscountMaxBps?: number;
-  /** Valor do primeiro ciclo pela oferta de entrada (ex.: R$ 9,90). */
+  /** Valor do primeiro ciclo pela oferta de entrada (hoje sem preço especial, D233). */
   firstPeriodCents?: number | null;
 };
 

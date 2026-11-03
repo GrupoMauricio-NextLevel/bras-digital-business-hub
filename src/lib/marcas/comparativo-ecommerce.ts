@@ -38,11 +38,20 @@ export const CONCORRENTES: Plataforma[] = [
     { nome: "Avançado", mensalCents: 44_900, anualMesCents: 35_900, taxaBps: 75, produtos: 1_500, pedidosMes: 1_000, faturamentoMaxCents: 15_000_000 },
   ] },
   { key: "shopify", nome: "Shopify", fonte: "https://www.shopify.com/br/precos", moeda: "USD", notas: ["Cobrança em dólar (US$ 39, 105 e 399 por mês). Tarifa com gateway de terceiros (inclusive o Mercado Pago): 2%, 1% e 0,6%."], planos: [
-    { nome: "Basic", mensalCents: 3_900, taxaBps: 200, ...sem },
-    { nome: "Grow", mensalCents: 10_500, taxaBps: 100, ...sem },
-    { nome: "Advanced", mensalCents: 39_900, taxaBps: 60, ...sem },
+    { nome: "Basic", mensalCents: 3_900, anualMesCents: 2_900, taxaBps: 200, ...sem },
+    { nome: "Grow", mensalCents: 10_500, anualMesCents: 7_900, taxaBps: 100, ...sem },
+    { nome: "Advanced", mensalCents: 39_900, anualMesCents: 29_900, taxaBps: 60, ...sem },
   ] },
 ];
+
+/**
+ * Câmbio para comparar a Shopify (cobra em dólar) em reais (D233). Referência CONSERVADORA, abaixo do dólar comercial
+ * recente (R$ 5,15 em 16/09/2026): a conta nunca exagera o custo dela. IOF e spread do cartão ficam de fora.
+ * O dono atualiza aqui (valor e data).
+ */
+export const COTACAO_DOLAR = { reais: 5, data: "2026-11-03" } as const;
+/** Valor em centavos de real (converte quem cobra em dólar pela cotação de referência). */
+export const emReais = (c: Pick<Plataforma, "moeda">, cents: number) => (c.moeda === "USD" ? Math.round(cents * COTACAO_DOLAR.reais) : cents);
 
 /**
  * Atacado nativo (grade fechada, preço por quantidade, pedido mínimo) em cada concorrente (D231): Nuvemshop e Loja
@@ -60,11 +69,14 @@ export const ATACADO_CONCORRENTES: Record<string, { tem: boolean | "parcial"; te
 const cabe = (p: PlanoComparado, fatCents: number) => (p.faturamentoMaxCents === null || fatCents <= p.faturamentoMaxCents) && (p.pedidosMes === null || Math.ceil(fatCents / TICKET_MEDIO_CENTS) <= p.pedidosMes);
 export const custoDoPlano = (p: PlanoComparado, fatCents: number) => (p.taxaBps === null ? null : p.mensalCents + Math.round((fatCents * p.taxaBps) / 10_000));
 
-/** O plano mais barato da plataforma para esse faturamento (null quando não dá para comparar: dólar ou tarifa não divulgada). */
+/** O plano de menor custo da plataforma para esse faturamento (null quando a tarifa não é divulgada). */
 export function melhorPlano(pl: Pick<Plataforma, "moeda" | "planos">, fatCents: number): { nome: string; totalCents: number } | null {
-  if (pl.moeda !== "BRL") return null;
   let melhor: { nome: string; totalCents: number } | null = null;
-  for (const p of pl.planos) { const c = custoDoPlano(p, fatCents); if (c !== null && cabe(p, fatCents) && (!melhor || c < melhor.totalCents)) melhor = { nome: p.nome, totalCents: c }; }
+  for (const p of pl.planos) {
+    // Em dólar (Shopify): mensalidade convertida por `COTACAO_DOLAR` (D233); a taxa já incide sobre a venda em reais.
+    const c = p.taxaBps === null ? null : emReais(pl, p.mensalCents) + Math.round((fatCents * p.taxaBps) / 10_000);
+    if (c !== null && cabe(p, fatCents) && (!melhor || c < melhor.totalCents)) melhor = { nome: p.nome, totalCents: c };
+  }
   return melhor;
 }
 
@@ -81,11 +93,11 @@ export function custosPorFaixa(nl: Pick<Plataforma, "moeda" | "planos">, faixasC
 /**
  * Degraus (D220): o plano de entrada, o intermediário e o avançado de cada plataforma, lado a lado, com a mensalidade, o anual
  * (valor por mês, quando divulgado) e a tarifa quando o lojista usa o Mercado Pago. O custo total é calculado para quem vende
- * `FAT_REFERENCIA` por mês. Só plataformas em reais com preço e tarifa divulgados.
+ * `FAT_REFERENCIA` por mês. Quem cobra em dólar entra convertido por `COTACAO_DOLAR` (D233).
  */
 export const DEGRAUS = ["Entrada", "Intermediário", "Avançado"] as const;
 export const FAT_REFERENCIA_CENTS = 3_000_000; // R$ 30 mil por mês
-const DEGRAU_DE: Record<string, [string, string, string]> = { nuvemshop: ["Essencial", "Impulso", "Escala"], "loja-integrada": ["Crescimento", "Aceleração", "Expansão"], wbuy: ["Iniciante", "Turbo", "Expansão"], tray: ["Lançamento", "Crescimento", "Avançado"] };
+const DEGRAU_DE: Record<string, [string, string, string]> = { nuvemshop: ["Essencial", "Impulso", "Escala"], "loja-integrada": ["Crescimento", "Aceleração", "Expansão"], wbuy: ["Iniciante", "Turbo", "Expansão"], tray: ["Lançamento", "Crescimento", "Avançado"], shopify: ["Basic", "Grow", "Advanced"] };
 export function degraus(nl: { nome: string; mensalCents: number; anualMesCents: number }[], fatCents = FAT_REFERENCIA_CENTS) {
   return DEGRAUS.map((d, i) => ({
     degrau: d,
@@ -93,7 +105,8 @@ export function degraus(nl: { nome: string; mensalCents: number; anualMesCents: 
     outras: Object.entries(DEGRAU_DE).map(([k, nomes]) => {
       const c = CONCORRENTES.find((x) => x.key === k)!;
       const p = c.planos.find((x) => x.nome === nomes[i])!;
-      return { key: k, nome: c.nome, plano: p.nome, mensalCents: p.mensalCents, anualMesCents: p.anualMesCents ?? null, taxaBps: p.taxaBps ?? 0, totalCents: custoDoPlano(p, fatCents)! };
+      const mensalCents = emReais(c, p.mensalCents);
+      return { key: k, nome: c.nome, plano: p.nome, dolar: c.moeda === "USD", mensalCents, anualMesCents: p.anualMesCents == null ? null : emReais(c, p.anualMesCents), taxaBps: p.taxaBps ?? 0, totalCents: mensalCents + Math.round((fatCents * (p.taxaBps ?? 0)) / 10_000) };
     }),
   }));
 }
@@ -111,7 +124,7 @@ export function dueloPrimeiroAno(nlAnualBlackCents: number, fatMesCents: number)
   const outras = Object.entries(DEGRAU_DE).map(([k, nomes]) => {
     const c = CONCORRENTES.find((x) => x.key === k)!;
     const p = c.planos.find((x) => x.nome === nomes[0])!;
-    const mensalidadesCents = (p.anualMesCents ?? p.mensalCents) * 12;
+    const mensalidadesCents = emReais(c, (p.anualMesCents ?? p.mensalCents) * 12);
     const taxaCents = Math.round((fatMesCents * 12 * (p.taxaBps ?? 0)) / 10_000);
     return { key: k, nome: c.nome, plano: p.nome, mensalidadesCents, taxaCents, totalCents: mensalidadesCents + taxaCents };
   }).sort((a, b) => a.totalCents - b.totalCents);

@@ -41,19 +41,28 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
     return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
   }, []);
   const btn = React.useRef<HTMLButtonElement>(null);
+  const cabecalho = React.useRef<HTMLElement>(null);
   const pathname = usePathname();
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { setOpen(false); btn.current?.focus(); } };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    // Menu aberto cobre a tela (D233): a página por baixo não rola, nada de texto sobre texto.
+    const html = document.documentElement, antes = html.style.overflow;
+    html.style.overflow = "hidden";
+    const fundo = cabecalho.current?.getBoundingClientRect().bottom;
+    if (fundo) html.style.setProperty("--ds-pub-menu-topo", `${Math.round(fundo)}px`);
+    return () => { document.removeEventListener("keydown", onKey); html.style.overflow = antes; };
   }, [open]);
+  // Trocar de página fecha o menu.
+  const [rota, setRota] = React.useState(pathname);
+  if (rota !== pathname) { setRota(pathname); setOpen(false); }
   const here = (href: string) => (href.startsWith("/#") ? false : href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/"));
 
   return (
     <div className="ds-pub">
       <a href="#conteudo" className="ds-skip">Ir para o conteúdo</a>
-      <header className="ds-pub-header" data-scrolled={scrolled || open ? "" : undefined}>
+      <header ref={cabecalho} className="ds-pub-header" data-scrolled={scrolled || open ? "" : undefined}>
         <div className="ds-pub-wrap ds-pub-header-in">
           <Link href={homeHref} className="ds-pub-brand" aria-label={`${brandLabel}, página inicial`}>{brand}</Link>
           <nav aria-label="Principal" className="ds-pub-nav">
@@ -71,14 +80,16 @@ export function PublicShell({ brand, brandLabel, homeHref = "/", nav, cta, secon
         </div>
         {open ? (
           <div id="menu-publico" className="ds-pub-mobile">
-            <div className="ds-pub-wrap">
+            <div className="ds-pub-wrap ds-pub-mobile-in">
+              <p className="ds-pub-mobile-rotulo" aria-hidden>Menu</p>
               <nav aria-label="Principal (celular)">
-                {nav.map((n) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)} aria-current={here(n.href) ? "page" : undefined}>{n.label}</Link>)}
-                {(secondary ?? []).map((n) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>{n.label}</Link>)}
-                <Link href="/login" onClick={() => setOpen(false)}>Entrar na minha conta</Link>
+                {[...nav, ...(secondary ?? [])].map((n, i) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)} aria-current={here(n.href) ? "page" : undefined}><span className="ds-pub-mobile-n" aria-hidden>{String(i + 1).padStart(2, "0")}</span>{n.label}</Link>)}
               </nav>
-              <Link href={cta.href} onClick={() => setOpen(false)} className="ds-pub-btn ds-pub-btn--block ds-show-tiny">{cta.label}</Link>
-              <div className="flex items-center justify-between gap-3 py-3"><span className="text-sm font-semibold text-muted-foreground">Tema</span><ThemeSwitch /></div>
+              <div className="ds-pub-mobile-pe">
+                <Link href={cta.href} onClick={() => setOpen(false)} className="ds-pub-btn ds-pub-btn--block ds-pub-mobile-cta">{cta.label}</Link>
+                <Link href="/login" onClick={() => setOpen(false)} className="ds-pub-btn ds-pub-btn--ghost ds-pub-btn--block">Entrar na minha conta</Link>
+                <div className="flex items-center justify-between gap-3 pt-2"><span className="text-sm font-semibold text-muted-foreground">Tema</span><ThemeSwitch /></div>
+              </div>
             </div>
           </div>
         ) : null}

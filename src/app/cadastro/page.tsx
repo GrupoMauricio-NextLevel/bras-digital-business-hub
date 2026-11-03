@@ -6,6 +6,9 @@ import Link from "next/link";
 import { getDb } from "@/db/client";
 import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 import { FaixaBlack } from "@/components/black/faixa-black";
+import { anualBlackCents, blackAgora } from "@/lib/domain/campanha-black";
+import { Lock } from "lucide-react";
+import { CheckoutEc } from "./checkout-ec";
 import { getBrand, requireBrandFeature } from "@/lib/brand-server";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { BrasSignupPage } from "./bras-signup";
@@ -25,6 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: "Criar minha loja", description: "Escolha o plano, pague por Pix e comece a vender. Com o cupom do seu fornecedor, teste 7 dias sem cartão." };
 }
 export const dynamic = "force-dynamic";
+
+/** O que cada plano entrega no checkout (D226, os mesmos números do placar e do comparativo). */
+const RECURSOS_CHECKOUT: Record<string, string[]> = {
+  COMMERCE_START: ["Loja completa com atacado nativo", "300 produtos e 3 pessoas no painel", "Maurício (IA): 40 usos por mês"],
+  COMMERCE_PRO: ["Tudo do Start + tema pago incluso", "1.000 produtos e 6 pessoas", "Maurício: 350 usos · suporte em até 4 h"],
+  COMMERCE_SCALE: ["Tudo do Pro + gerente de conta", "Produtos sem limite e 12 pessoas", "Maurício: 1.200 usos · migração inclusa"],
+};
 
 export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string; utm_source?: string }> }) {
   const brand = await requireBrandFeature("signup");
@@ -57,6 +67,28 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
     </>
   );
   const faixa = brand.code === "NEXTLEVEL_COMMERCE" ? <FaixaBlack lugar="publico" /> : null;
+  // Checkout de tecnologia da E-commerce (D233): planos, dados e resumo vivo; sem foto, sem 1º mês especial.
+  if (brand.code === "NEXTLEVEL_COMMERCE" && pv && plans?.length) {
+    const b = await blackAgora(db);
+    const doCheckout = plans.map((x) => ({ key: x.key, name: x.name, monthlyCents: x.monthlyCents, annualCents: b.ativa ? anualBlackCents(x.annualCents) : x.annualCents, features: RECURSOS_CHECKOUT[x.key] ?? [] }));
+    return (
+      <div className={`${EC_TECH} ck-pagina${b.ativa ? " bk-on" : ""}`}>
+        {faixa}
+        <main className="mx-auto max-w-6xl px-4 py-8 md:py-12 lg:px-8">
+          <div className="ck-topo">
+            <Link href="/" aria-label={`${brand.name}, página inicial`}><BrandLogo brand={brand} tone="on-dark" className="h-8" priority /></Link>
+            <span className="ck-seguro"><Lock className="size-3.5" aria-hidden />Checkout seguro</span>
+          </div>
+          <h1 className="ck-titulo mt-8">{b.ativa ? <>Sua loja no ar com o <em>preço da Black</em>.</> : <>Sua loja no ar <em>hoje</em>.</>}</h1>
+          <p className="ck-intro mt-3">Escolha o plano, crie a conta e entre direto no painel. Taxa zero da plataforma nas vendas com o Mercado Pago.</p>
+          <ol className="ck-etapas mt-5" aria-label="Etapas"><li aria-current="step">01 · Plano</li><li aria-current="step">02 · Seus dados</li><li>03 · Loja no painel</li></ol>
+          <div className="mt-8"><CheckoutEc plans={doCheckout} trialDays={pv.offer?.trialDays ?? 0} black={b.ativa ? { fim: b.fim, restanteMs: b.restanteMs } : null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} initialRef={(sp.ref ?? "").slice(0, 40) || undefined} /></div>
+          <p className="mt-6 text-center text-sm text-[#9fb3d9]">Já tem conta? <Link href="/login" className="font-semibold text-white underline underline-offset-4">Entrar na área de membros</Link></p>
+          <div className="ck-apoio mt-8"><ApoioEquipe titulo="Dúvida no checkout? Fale com a equipe" texto="Gente de verdade responde, na nossa sede em São Paulo." mensagem={`Olá! Tenho uma dúvida no cadastro da ${brand.name}.`} /></div>
+        </main>
+      </div>
+    );
+  }
   if (!foto) return <>{faixa}<main className={`mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-4 py-10 ${brand.code === "NEXTLEVEL_COMMERCE" ? EC_TECH : ""}`}>{content}</main></>;
   return (
     <>{faixa}
