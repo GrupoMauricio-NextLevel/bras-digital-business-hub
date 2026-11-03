@@ -5,6 +5,7 @@ import { FioCaptacao } from "@/components/ecossistema/fio-captacao";
 import Link from "next/link";
 import { getDb } from "@/db/client";
 import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
+import { FaixaBlack } from "@/components/black/faixa-black";
 import { getBrand, requireBrandFeature } from "@/lib/brand-server";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { BrasSignupPage } from "./bras-signup";
@@ -55,11 +56,14 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
       <NextLevelSignature compact product={brand.name} className="mt-8 justify-center text-center text-muted-foreground" />
     </>
   );
-  if (!foto) return <main className={`mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-4 py-10 ${brand.code === "NEXTLEVEL_COMMERCE" ? EC_TECH : ""}`}>{content}</main>;
+  const faixa = brand.code === "NEXTLEVEL_COMMERCE" ? <FaixaBlack lugar="publico" /> : null;
+  if (!foto) return <>{faixa}<main className={`mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-4 py-10 ${brand.code === "NEXTLEVEL_COMMERCE" ? EC_TECH : ""}`}>{content}</main></>;
   return (
+    <>{faixa}
     <main className={`mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:px-8 ${brand.code === "NEXTLEVEL_COMMERCE" ? EC_TECH : ""}`}>
       <div className="hidden lg:sticky lg:top-10 lg:block lg:self-start"><FotoOpcional marca="commerce" nome="cm-cadastro-lateral" alt="" ratio="3 / 4" posicao="50% 45%" className="!rounded-[28px]" /></div>
       <div className="mx-auto flex w-full max-w-lg flex-col justify-center"><FotoOpcional marca="commerce" nome="cm-cadastro-lateral" alt="" ratio={null} posicao="50% 40%" className="mb-6 h-32 w-full !rounded-2xl lg:hidden" />{content}</div>
     </main>
+    </>
   );
 }

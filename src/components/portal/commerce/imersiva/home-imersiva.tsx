@@ -16,6 +16,7 @@ import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
 import { ComparativoHome, FaixaTaxaZero, PorQueNextLevel } from "@/components/portal/commerce/comparativo";
 import { FeitaParaAtacado } from "@/components/portal/commerce/imersiva/feita-para-atacado";
 import { PlacarSecao } from "@/components/placar/placar-secao";
+import { DueloBlack } from "@/components/black/duelo-black";
 import { VivenciaRua } from "@/components/portal/commerce/imersiva/vivencia-rua";
 import { FotoImersiva } from "@/components/imersiva/foto";
 import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
@@ -41,7 +42,9 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
   const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
   // Black NextLevel (D229): durante a campanha, o "a partir de" já é o anual com 2 meses grátis.
-  const black = (await blackAgora(await getDb())).ativa;
+  const bk = await blackAgora(await getDb());
+  const black = bk.ativa;
+  const bkCont = black ? { fim: bk.fim, restanteMs: bk.restanteMs } : null;
   const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round((black ? anualBlackCents(p.annualCents!) : p.annualCents!) / 12))) : null;
   // D220: degraus da NextLevel (Start, Pro, Scale) para o comparativo plano a plano.
   const degrausNl = pagos.map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, anualMesCents: Math.round(p.annualCents! / 12) }));
@@ -52,9 +55,10 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
         { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.baseUrl, parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda." } },
         { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
       ]} />
-      <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} />
-      <FaixaTaxaZero />
+      <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} black={bkCont} />
+      <FaixaTaxaZero black={bkCont} />
       <PlacarSecao cta={cta} />
+      <DueloBlack cta={cta} />
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}

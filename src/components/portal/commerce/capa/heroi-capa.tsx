@@ -3,6 +3,7 @@ import { ArrowDown, ShieldCheck } from "lucide-react";
 import { formatBRL } from "@/lib/money";
 import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
 import { FotoImersiva } from "@/components/imersiva/foto";
+import { ContagemRegressiva } from "@/components/black/contagem-regressiva";
 import { CabecalhoSobreHeroi } from "@/components/portal/superdrop/cabecalho-sobre-heroi";
 
 /**
@@ -10,7 +11,7 @@ import { CabecalhoSobreHeroi } from "@/components/portal/superdrop/cabecalho-sob
  * centralizado com a oferta num selo inclinado, preço de entrada real (do catálogo Master), um botão branco e a garantia
  * logo abaixo. Nas laterais, duas fotos do acervo flutuando com avisos de pedido (demonstração). Sem número inventado.
  */
-export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents }: { cta: string; signupOpen: boolean; offer: { trialDays: number; firstPeriodCents: number | null } | null; aPartirDeCents: number | null }) {
+export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents, black = null }: { cta: string; signupOpen: boolean; offer: { trialDays: number; firstPeriodCents: number | null } | null; aPartirDeCents: number | null; black?: { fim: string; restanteMs: number } | null }) {
   const botao = signupOpen ? "Criar minha loja" : "Quero minha loja";
   return (
     <section id="inicio" data-heroi-escuro="commerce" className="ecc-heroi" aria-labelledby="titulo">
@@ -37,6 +38,7 @@ export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents }: { cta: s
           {aPartirDeCents ? <>Planos a partir de <b>{formatBRL(aPartirDeCents)}/mês</b> no anual. </> : null}
           <b>Taxa zero da plataforma</b> nas vendas com o checkout do Mercado Pago, nosso parceiro oficial: o dinheiro cai direto na sua conta.
         </p>
+        {black ? <div className="ecc-black"><span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span><ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="lg" rotulo="Preço Black termina em" /></div> : null}
         <Link href={cta} className="ecc-cta">{botao}</Link>
         <p className="ecc-garantia"><ShieldCheck className="size-4" aria-hidden />Sem fidelidade: cancele quando quiser{offer?.firstPeriodCents != null && signupOpen ? <> · 1º mês por {formatBRL(offer.firstPeriodCents)}</> : null}</p>
         <a href="#planos" className="ecc-ver-planos">Ver planos <ArrowDown className="size-4" aria-hidden /></a>

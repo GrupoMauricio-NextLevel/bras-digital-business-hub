@@ -63,3 +63,18 @@ describe("Black NextLevel: preço e assinatura", () => {
     await expect(salvarCampanhaBlack(ctx.db, ctx.actors.arena, { ativa: false, fim: novoFim, chamada: "x" })).rejects.toThrow();
   });
 });
+
+describe("Black: vendedor e duelo do 1º ano", () => {
+  it("o vendedor fala da Black com o mesmo fim da contagem", async () => {
+    const { blackTxt } = await import("@/lib/ia/vendedor-publico");
+    expect(blackTxt({ black: { fim: BLACK_PADRAO.fim, chamada: BLACK_PADRAO.chamada } })).toContain("até 30/11 às 23:59");
+    expect(blackTxt({ black: null })).toBe("");
+  });
+  it("no 1º ano, a Black NextLevel vence o melhor anual de cada concorrente", async () => {
+    const { dueloPrimeiroAno } = await import("@/lib/marcas/comparativo-ecommerce");
+    const d = dueloPrimeiroAno(anualBlackCents(44_400), 1_000_000);
+    expect(d.nextlevel.totalCents).toBe(37_000);
+    expect(d.outras.every((o) => o.totalCents > d.nextlevel.totalCents)).toBe(true);
+    expect(d.vantagemCents).toBeGreaterThan(100_000); // mais de R$ 1.000 de vantagem no 1º ano
+  });
+});

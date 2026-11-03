@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ContagemRegressiva } from "@/components/black/contagem-regressiva";
+import "@/components/black/black.css";
 import { ArrowRight, BadgeCheck, Banknote, Check, Infinity as Sem, UsersRound, X } from "lucide-react";
 import { formatBRL } from "@/lib/money";
 import { ATACADO_CONCORRENTES, CONCORRENTES, COLETADO_EM, FAT_REFERENCIA_CENTS, degraus, taxasNoMercadoPago } from "@/lib/marcas/comparativo-ecommerce";
@@ -109,14 +111,14 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
  * Faixa da taxa zero logo abaixo do topo (D220, visual D222): painel escuro com o 0% em destaque e, ao lado, as barras com a
  * taxa da plataforma que cada concorrente cobra quando o lojista usa o Mercado Pago (dados de `CONCORRENTES`).
  */
-export function FaixaTaxaZero() {
+export function FaixaTaxaZero({ black = null }: { black?: { fim: string; restanteMs: number } | null }) {
   const outras = taxasNoMercadoPago().sort((a, b) => b.maxBps - a.maxBps);
   const maior = Math.max(...outras.map((o) => o.maxBps));
   return (
     <section aria-labelledby="taxa-zero-t" className="px-4 pb-16 pt-2" style={{ background: "var(--ec-marinho, #101a33)" }}>
       <div className="ec-painel mx-auto grid max-w-6xl gap-10 p-6 md:grid-cols-[1.05fr_1fr] md:items-center md:p-12">
         <div>
-          <SeloMercadoPago escuro />
+          <div className="flex flex-wrap items-center justify-between gap-3"><SeloMercadoPago escuro />{black ? <ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="sm" rotulo="Black termina em" /> : null}</div>
           <p className="mt-6 flex items-end gap-4" aria-label="0% de taxa da plataforma">
             <span className="ec-zero" aria-hidden>0<small>%</small></span>
             <span className="ec-mono pb-3 leading-relaxed text-[#9fb3d9]" aria-hidden>taxa da<br />plataforma<br />por venda</span>

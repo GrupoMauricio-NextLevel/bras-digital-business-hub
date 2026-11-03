@@ -28,3 +28,30 @@
 @media (max-width: 640px) { .bk-faixa--site .bk-faixa-texto { display: none; } .bk-contagem-rotulo { display: none; } }
 @media (prefers-reduced-motion: reduce) { .bk-faixa::after, .bk-raio { animation: none; } }
 .bk-faixa--painel .bk-faixa-texto { flex: 1 1 18rem; }
+
+/* Black deles × Black NextLevel (D232) */
+.bk-duelo { color: #fff; background: radial-gradient(70% 60% at 85% 0%, rgb(34 211 238 / .14), transparent 70%), radial-gradient(60% 60% at 0% 100%, rgb(34 224 138 / .12), transparent 70%), #05070d; }
+.bk-neon { color: #22e08a; text-shadow: 0 0 24px rgb(34 224 138 / .7); }
+.bk-duelo-linha { display: grid; grid-template-columns: 11rem 1fr 13rem; align-items: center; gap: 1rem; padding: .85rem 1rem; border-radius: 1rem; background: rgb(255 255 255 / .04); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08); }
+.bk-duelo-linha--nos { background: rgb(34 224 138 / .1); box-shadow: inset 0 0 0 1px rgb(34 224 138 / .5), 0 0 30px -12px rgb(34 224 138 / .8); }
+.bk-duelo-nome { display: grid; } .bk-duelo-nome span { font-size: .75rem; color: #8fa3cc; }
+.bk-duelo-trilho { height: .75rem; border-radius: 9999px; background: rgb(255 255 255 / .06); overflow: hidden; }
+.bk-duelo-barra { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff5d8f, #ff9f5a); }
+.bk-duelo-linha--nos .bk-duelo-barra { background: linear-gradient(90deg, #22e08a, #22d3ee); box-shadow: 0 0 14px rgb(34 224 138 / .9); }
+.bk-duelo-valor { display: grid; text-align: right; font-variant-numeric: tabular-nums; } .bk-duelo-valor b { font-family: var(--nl-font-display); font-size: 1.25rem; }
+.bk-duelo-valor span { font-size: .72rem; color: #8fa3cc; }
+.bk-duelo-linha--nos .bk-duelo-valor b { color: #22e08a; }
+.bk-cta--lg { min-height: 3.25rem; padding: 0 1.6rem; font-size: 1rem; }
+@media (max-width: 700px) { .bk-duelo-linha { grid-template-columns: 1fr auto; } .bk-duelo-trilho { grid-column: 1 / -1; order: 3; } }
+
+/* Roupa da Black nos sites públicos (D232): só dentro de .bk-on (ligada pela campanha). */
+.ecc-black { margin-top: 1.6rem; display: grid; justify-items: center; gap: .6rem; }
+.bk-on .ecc-heroi { background: radial-gradient(55% 60% at 15% 85%, rgb(34 224 138 / .2), transparent 70%), radial-gradient(55% 60% at 85% 20%, rgb(34 211 238 / .18), transparent 70%), #05070d; }
+.bk-on .ecc-heroi-luz { opacity: .35; }
+.bk-on .ecc-oferta { background: linear-gradient(90deg, #22e08a, #22d3ee); color: #05070d; box-shadow: 0 0 40px -6px rgb(34 224 138 / .8); }
+.bk-on .ecc-planos, .bk-on .ec-cabecalho { background-color: #05070d; }
+.bk-on .ec-cabecalho::after { background: radial-gradient(closest-side, rgb(34 224 138 / .2), transparent), radial-gradient(closest-side at 30% 60%, rgb(34 211 238 / .18), transparent); }
+.bk-on .ec-cabecalho-titulo em { background: linear-gradient(90deg, #22e08a, #22d3ee); -webkit-background-clip: text; background-clip: text; }
+.bk-on .ecc-planos .cm-plan--on, .bk-on .cm-plan--on { box-shadow: 0 0 0 2px #22e08a, 0 30px 70px -30px rgb(34 224 138 / .7); }
+.bk-on .im-eyebrow { color: #22c27a; }
+@media (max-width: 640px) { .bk-contagem--lg .bk-bloco b { font-size: 1.5rem; } }

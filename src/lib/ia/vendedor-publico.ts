@@ -13,6 +13,14 @@ export type FatosVenda = {
   integracoes: { grupo: string; nomes: string[] }[];
   temasGratis: number;
   cadastro: string;
+  /** Black NextLevel em andamento (D232): fim real e chamada da campanha. */
+  black?: { fim: string; chamada: string } | null;
+};
+/** Frase da Black para o vendedor (mesmo fim da contagem do site). */
+export const blackTxt = (f: Pick<FatosVenda, "black">) => {
+  if (!f.black) return "";
+  const fim = new Date(f.black.fim).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).replace(",", " às");
+  return `\n\n**Black NextLevel até ${fim}:** ${f.black.chamada.charAt(0).toLowerCase()}${f.black.chamada.slice(1)}. Depois disso, o preço sobe.`;
 };
 export type Atalho = { id: string; rotulo: string };
 export type Acao = { rotulo: string; href: string } | { rotulo: string; contato: true };
@@ -38,7 +46,7 @@ export const ATALHOS_INICIO: Atalho[] = [
 const ASSUNTOS: { id: string; palavras: RegExp }[] = [
   { id: "pessoa", palavras: /\b(pessoa|humano|atendente|ligar|liga[çc][aã]o|whats ?app da equipe|falar com algu[eé]m|vendedor de verdade)\b/i },
   { id: "plano", palavras: /\b(qual plano|plano ideal|melhor plano|recomenda|indica|qual escolher)\b/i },
-  { id: "preco", palavras: /\b(pre[çc]o|quanto custa|custa|valor|mensalidade|taxa|caro|barato|planos?)\b/i },
+  { id: "preco", palavras: /\b(pre[çc]o|quanto custa|custa|valor|mensalidade|taxa|caro|barato|planos?|black|promo[çc][aã]o|desconto)\b/i },
   { id: "teste", palavras: /\b(gr[aá]tis|teste|testar|trial|sem pagar|fidelidade|cancelar)\b/i },
   { id: "pagamento", palavras: /\b(pix|cart[aã]o|mercado ?pago|recebo|receber|dinheiro|parcel)/i },
   { id: "frete", palavras: /\b(frete|envio|correios|melhor envio|superfrete|frenet|kangu|entrega|rastreio)\b/i },
@@ -92,7 +100,7 @@ export function responder(f: FatosVenda, assunto: string | null): RespostaVenda 
     case "preco": {
       const ps = pagos(f);
       const linhas = ps.map((p) => taxaZero(f) ? `• ${p.name}: ${formatBRL(p.monthlyCents ?? 0)}/mês` : `• ${p.name}: ${formatBRL(p.monthlyCents ?? 0)}/mês + ${pct(p.feeBps)} sobre as vendas pagas`).join("\n");
-      return { assunto, texto: `${linhas || "Os planos estão sendo atualizados."}\n\n${taxaZero(f) ? TAXA_ZERO_TXT : "Quanto mais você vende, menor a taxa."} Operações grandes têm o Enterprise, por proposta.${ofertaTxt(f)}`, atalhos: [{ id: "plano", rotulo: "Qual sai mais em conta para mim?" }, { id: "teste", rotulo: "Tem teste grátis?" }], acoes: [criar(f)] };
+      return { assunto, texto: `${linhas || "Os planos estão sendo atualizados."}\n\n${taxaZero(f) ? TAXA_ZERO_TXT : "Quanto mais você vende, menor a taxa."} Operações grandes têm o Enterprise, por proposta.${ofertaTxt(f)}${blackTxt(f)}`, atalhos: [{ id: "plano", rotulo: "Qual sai mais em conta para mim?" }, { id: "teste", rotulo: "Tem teste grátis?" }], acoes: [criar(f)] };
     }
     case "teste":
       return { assunto, texto: `${f.oferta ? `Sim: ${f.oferta.trialDays} dias grátis para montar e testar a loja.${ofertaTxt(f).replace(" Para começar:", "")}` : "Você monta a loja e só publica quando estiver pronta."} Não tem fidelidade: cancela quando quiser, direto no painel.`, atalhos: [{ id: "plano", rotulo: "Qual plano escolher?" }], acoes: [criar(f)] };

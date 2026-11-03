@@ -31,6 +31,7 @@ import { supportContacts } from "@/lib/support";
 import { AreaTheme } from "@/design-system/components/area-theme";
 import { PainelTech } from "@/components/app/painel-tech";
 import { FaixaBlack } from "@/components/black/faixa-black";
+import { blackAgora } from "@/lib/domain/campanha-black";
 import { negociosAbertos } from "@/lib/negocios";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
@@ -58,6 +59,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const ecoBar = eco ? <BarraEcossistema bar={eco} /> : null;
   // Equipe do Master (D138): o menu mostra só as telas da função.
   const fn = session.user.role === "NEXTLEVEL_MASTER" ? session.user.masterFunction : null;
+  const black = (await blackAgora(db)).ativa;
   const byFn = (list: NavItem[]) => (fn ? list.filter((i) => masterPathAllowed(fn, i.href)) : list);
   const store = session.store;
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
@@ -121,7 +123,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
     return (
       <>
       {commerceStore ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
-      {commerceStore ? <PainelTech /> : null}
+      {commerceStore ? <PainelTech black={black} /> : null}
       <AppShell
         brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }}
         panel={panelFor(session)}
@@ -172,7 +174,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   return (
     <>
     {parceiroEc ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
-    {parceiroEc || isMaster ? <PainelTech /> : null}
+    {parceiroEc || isMaster ? <PainelTech black={black} /> : null}
     <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
       {children}
     </AppShell>

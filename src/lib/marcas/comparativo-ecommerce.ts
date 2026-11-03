@@ -100,3 +100,21 @@ export function degraus(nl: { nome: string; mensalCents: number; anualMesCents: 
 
 /** Maior tarifa de cada plataforma quando o lojista usa o Mercado Pago (para a faixa do topo). */
 export const taxasNoMercadoPago = () => CONCORRENTES.map((c) => ({ key: c.key, nome: c.nome, maxBps: Math.max(...c.planos.filter((p) => p.mensalCents > 0).map((p) => p.taxaBps ?? 0)) }));
+
+/**
+ * Black deles × Black NextLevel (D232): custo do 1º ano no plano de entrada para quem vende `fatMesCents` por mês.
+ * A NextLevel entra com o anual da Black (2 meses grátis) e taxa zero da plataforma; cada concorrente com o melhor preço
+ * anual que divulga hoje (ou a mensalidade, quando não divulga anual) + a taxa da plataforma usando o Mercado Pago.
+ * As Blacks de 2026 dos concorrentes ainda não foram anunciadas; quando saírem, entram aqui com data e fonte.
+ */
+export function dueloPrimeiroAno(nlAnualBlackCents: number, fatMesCents: number) {
+  const outras = Object.entries(DEGRAU_DE).map(([k, nomes]) => {
+    const c = CONCORRENTES.find((x) => x.key === k)!;
+    const p = c.planos.find((x) => x.nome === nomes[0])!;
+    const mensalidadesCents = (p.anualMesCents ?? p.mensalCents) * 12;
+    const taxaCents = Math.round((fatMesCents * 12 * (p.taxaBps ?? 0)) / 10_000);
+    return { key: k, nome: c.nome, plano: p.nome, mensalidadesCents, taxaCents, totalCents: mensalidadesCents + taxaCents };
+  }).sort((a, b) => a.totalCents - b.totalCents);
+  const nextlevel = { key: "nextlevel", nome: "NextLevel", plano: "Start anual Black", mensalidadesCents: nlAnualBlackCents, taxaCents: 0, totalCents: nlAnualBlackCents };
+  return { nextlevel, outras, vantagemCents: outras[0]!.totalCents - nextlevel.totalCents };
+}

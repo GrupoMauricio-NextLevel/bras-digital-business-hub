@@ -1,6 +1,7 @@
 import { negocioAberto } from "@/lib/negocios";
 import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 import { FaixaBlack } from "@/components/black/faixa-black";
+import { blackAgora } from "@/lib/domain/campanha-black";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
@@ -64,7 +65,9 @@ export default async function PortalLayout({ children }: { children: React.React
     </PublicShell>
   );
   // Black NextLevel (D229): faixa com a contagem no topo dos sites públicos abertos (E-commerce e grupo).
-  if (commerce) return <div className={EC_TECH}><FaixaBlack lugar="publico" />{casca}</div>;
+  // Roupa da Black (D232): a classe bk-on veste o site enquanto a campanha estiver no ar.
+  const bkOn = (commerce || holding) && (await blackAgora(await getDb())).ativa;
+  if (commerce) return <div className={`${EC_TECH}${bkOn ? " bk-on" : ""}`}><FaixaBlack lugar="publico" />{casca}</div>;
   if (holding) return <><FaixaBlack lugar="grupo" hrefGrupo={`${site("NEXTLEVEL_COMMERCE")}/planos`} />{casca}</>;
   return casca;
 }

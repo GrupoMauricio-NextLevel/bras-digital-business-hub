@@ -28,6 +28,9 @@ body{font-family:var(--ds-font-ui)}
 .ds-hero .ec-tag{color:#fff;background:rgb(255 255 255/.14);box-shadow:0 0 0 1px rgb(255 255 255/.3) inset}
 `;
 
-export function PainelTech() {
-  return <style>{CSS}</style>;
+/** Durante a Black (D232), a abertura de vidro ganha contorno neon verde e ciano. */
+const CSS_BLACK = `.ds-hero{box-shadow:0 0 0 1.5px rgb(34 224 138/.75),0 0 40px -8px rgb(34 224 138/.6),inset 0 1px 0 rgb(255 255 255/.45),0 30px 70px -35px rgb(91 72 220/.75)!important}`;
+
+export function PainelTech({ black = false }: { black?: boolean }) {
+  return <style>{black ? CSS + CSS_BLACK : CSS}</style>;
 }

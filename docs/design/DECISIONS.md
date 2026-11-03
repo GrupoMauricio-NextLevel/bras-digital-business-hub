@@ -2497,3 +2497,21 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - título "Grade de 12, pacote e preço por quantidade em todos os planos. Nos outros, não tem ou custa caro.";
   - quadro lado a lado: NextLevel desde R$ 57 × "Não tem" × "Só a partir de R$ 149" × "Só no plano de R$ 449".
 - **Pendente para a fase PV6:** quando o limite de produtos dos planos for implantado, a linha "Produtos sem limite" do comparativo deve mudar junto. Hoje o sistema ainda não limita produtos; só o placar já usa a escada aprovada.
+
+## D232 — [Black] BF3 no ar: roupa da Black, contagem em mais pontos e "Black deles × Black NextLevel" (2026-11-03)
+- **Roupa da Black nos sites públicos** (classe `bk-on`, ligada pela campanha):
+  - topo da home em preto com brilho verde e ciano;
+  - a pílula "no ar hoje" em neon;
+  - cabeçalhos das páginas e faixa de planos em preto;
+  - plano recomendado com contorno neon.
+  - Tudo volta ao normal sozinho quando a campanha acaba.
+- **Contagem regressiva em mais pontos:**
+  - grande no topo da home ("Preço Black termina em");
+  - na faixa do 0%;
+  - no quadro do duelo;
+  - na faixa do cadastro.
+  - Nos três painéis, a faixa continua e a abertura de vidro ganha contorno neon (`PainelTech black`).
+- **"Black deles × Black NextLevel"** (`DueloBlack`, `dueloPrimeiroAno`): custo do 1º ano no plano de entrada para quem vende R$ 10 mil por mês. NextLevel Start anual Black R$ 370; Loja Integrada R$ 1.740; Tray R$ 1.968; WBuy R$ 2.366; Nuvemshop R$ 3.108. "R$ 1.370 a mais no seu bolso" no 1º ano.
+  - Para os concorrentes, usa o melhor preço anual que divulgam hoje. As Blacks de 2026 deles ainda não foram anunciadas e entram quando saírem.
+  - Aparece na home e em /planos.
+- **Vendedor IA (Maurício):** responde sobre a Black (preço, promoção, desconto) com o mesmo fim da contagem (`blackTxt`).
