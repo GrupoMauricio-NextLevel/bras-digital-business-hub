@@ -2423,3 +2423,20 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - **Black Friday NextLevel** (27/11/2026): roupa da Black em todos os sites públicos e painéis, contagem regressiva real em todo canto e regras contra a "Black Fraude": fim real, preço depois da Black agendado, "vencemos as Blacks" só com comprovação na súmula.
 - **Ordem:** BF1 a BF3 primeiro (no ar até 10/11), depois as fases PV0 a PV8.
 - **Ainda nada implementado.** As perguntas abertas estão na seção 10 do documento.
+
+## D227 — [Black e planos] Respostas do dono da 2ª rodada (2026-11-03)
+- **Suporte do Pro:** até 4 h úteis.
+- **Black NextLevel:** vai até **30/11/2026 às 23h59** (Cyber Monday).
+- **A Black se apoia no semestral e no anual:**
+  - quem assina na Black mantém o preço enquanto a assinatura estiver ativa;
+  - anual com **2 meses grátis** (paga 10, leva 12);
+  - parceiros com **1ª mensalidade a 100%** nas lojas indicadas durante a Black;
+  - **kit Black para a loja dos lojistas** (fase BF4).
+- **Placar:**
+  - pode ter a Nuvemshop como rival, mas tem que vencer;
+  - jogo que deixar de ser vitória sai do ar sozinho, com aviso ao Master;
+  - formato extra "Seleção dos concorrentes": cada lance diz de qual concorrente é o ponto fraco, e o placar conta só o que vencemos contra o melhor do grupo.
+- **Página do parceiro:** `/i/anasouza`.
+- **Pendentes:**
+  - A. O "preço normal" depois da Black. A recomendação é manter o mensal em R$ 57 / 147 / 347 e a Black ficar no semestral e no anual; voltar a 149 / 249 / 499 faria o comparativo perder na mensalidade.
+  - B. Criar o ciclo semestral.

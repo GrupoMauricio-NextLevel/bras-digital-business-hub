@@ -12,7 +12,7 @@
 > **Atualização de 03/11 (aprovações e pedidos novos do dono):**
 > - "Aprovo": percentuais, níveis e benefícios recomendados (seções 3.2 e 8.2).
 > - **Scale sem limite de produtos.**
-> - Pro com resposta em até 2 h úteis + gerente de conta no Scale: **sim**.
+> - Suporte do Pro em até **4 h úteis** (confirmado depois) + gerente de conta no Scale: **sim**.
 > - Migração inclusa no Scale e com 50% de desconto no Pro: **sim**.
 > - **Placar de futebol (seção 13):** "aproveitar que no Brasil o futebol é popular" e mostrar, num placar criativo e "em tempo real", como vencemos os concorrentes de goleada. Destaque para o que vencemos; o que perdemos fica sem destaque. O placar pode estar no site e no painel. O dono alimenta à mão as mudanças dos concorrentes. "Show de bola, uma vitória e um placar em destaque."
 > - **Black Friday (seção 14):** "chegamos em novembro e nossa Black Friday chegou; vencemos todas as Blacks dos concorrentes". A roupa da Black veste **todos os sites públicos e painéis**. Comunicação agressiva: os valores atuais são de Black e por tempo limitado, com **contagem regressiva por todo canto**.
@@ -154,7 +154,7 @@ Seis trilhas. As quatro primeiras usam o tipo `AFFILIATE` / `REPRESENTATIVE` com
 ### 3.3 Planos: o que o dono decidiu (03/11)
 - **Escada da seção 8.2:** aprovada (300 / 1.000 produtos no Start e no Pro; 3 / 6 / 12 pessoas; 40 / 350 / 1.200 de IA).
 - **Scale: produtos sem limite** (decisão do dono). Empata com Nuvemshop e Loja Integrada nesse item.
-- **Suporte do Pro: até 2 h úteis** (o dono respondeu "sim" à pergunta sobre 2 h). Antes eu tinha sugerido 4 h; confirmar na pergunta 1 da seção 10.
+- **Suporte do Pro: até 4 h úteis** (confirmado pelo dono). Empata com a WBuy e vence Nuvemshop e Tray, que não dão prazo.
 - **Gerente de conta no Scale:** sim, a mesma pessoa que cuida dos parceiros Ouro.
 - **Migração:** inclusa no Scale (até 2.000 produtos) e com 50% de desconto no Pro.
 
@@ -242,7 +242,7 @@ Subpáginas para anúncio e busca: `/parceiros/criadores`, `/parceiros/vendedore
 
 ## 6. Página do parceiro para captar clientes, de altíssimo nível
 
-**Hoje `/r/[slug]` só redireciona. A proposta é que ele vire uma página:** `/i/[codigo]` (ou `/r/[slug]` mostrando a página no lugar do redirecionamento), uma **home da NextLevel com a assinatura do parceiro**.
+**Hoje `/r/[slug]` só redireciona. A proposta é que ele vire uma página:** **`/i/anasouza`**: o código do parceiro em minúsculas, sem espaço nem hífen (decisão do dono, 03/11). Ela funciona como uma **home da NextLevel com a assinatura do parceiro**. O `/r/[slug]` continua funcionando e passa a levar para `/i/...`.
 
 - **Faixa do parceiro no topo:**
   - "Indicação de **Ana Souza**", com foto, frase pessoal e botão de WhatsApp dela;
@@ -350,7 +350,7 @@ Item não divulgado = "—".
 | Propostas e pedidos do balcão (WhatsApp e loja física) | **Sim** | **Sim** | **Sim** | Ninguém mostra nos planos de entrada |
 | Relatórios em planilha | **Sim** | **Sim** | **Sim** | Tray só a partir do Crescimento |
 | Tema pago incluso | — | **1 tema N2** | **1 tema N3** | Ninguém inclui tema pago |
-| Suporte | **WhatsApp com gente da equipe** (horário comercial) | **WhatsApp prioritário** (resposta em até 2 h úteis) | **Prioritário + telefone + gerente de conta** | Entrada: Nuvemshop e Tray só e-mail. Avançado: igual ao telefone deles + gerente |
+| Suporte | **WhatsApp com gente da equipe** (horário comercial) | **WhatsApp prioritário** (resposta em até 4 h úteis) | **Prioritário + telefone + gerente de conta** | Entrada: Nuvemshop e Tray só e-mail. Avançado: igual ao telefone deles + gerente |
 | Migração assistida | Paga à parte | **50% de desconto** | **Inclusa** | Tray só no Ultra (R$ 999+) |
 | Equipe presencial em São Paulo (Brás) | **Sim** | **Sim** | **Sim** | Diferencial de proximidade (D219/D220) |
 
@@ -407,34 +407,43 @@ Item não divulgado = "—".
 - gerente de conta no Scale;
 - migração inclusa no Scale e com 50% de desconto no Pro.
 
-**Perguntas abertas:**
-1. **Suporte do Pro:** 2 h úteis (a sua resposta) ou 4 h úteis (a minha sugestão inicial, mais segura com a equipe de hoje)?
-2. **Fim da Black:** a contagem termina em **27/11 às 23h59** (sexta da Black) ou estende até a **Cyber Monday, 30/11 às 23h59**?
-3. **Preço depois da Black (o "preço cheio" que a contagem anuncia):** volta a R$ 149 / 249 / 499 (preços anteriores à D220) ou outro valor? Sem um preço cheio real, a Black não pode ser anunciada (seção 14.4).
-4. **Quem assina na Black mantém o preço:** para sempre (enquanto a assinatura estiver ativa), por 12 meses, ou só no 1º ciclo? A minha sugestão: **para sempre enquanto ativa**. É o argumento mais forte e é fácil de cumprir com o preço versionado.
-5. **Anual na Black:** algum extra? Sugestão: **anual Black = 2 meses grátis a mais** (pagar 10 e levar 12 sobre o preço Black).
-6. **Black dos parceiros:** comissão turbinada até o fim da Black? Sugestão: **1ª mensalidade a 100%** (em vez de 50%) para lojas indicadas durante a Black.
-7. **Lojistas:** além da roupa do painel, entregar um **kit Black para a loja deles** (faixa e contagem regressiva na vitrine, cupom de Black, selo "Black Friday")? Se existir hoje, ampliar; se não, é uma fase própria.
-8. **Placar:** o rival padrão em destaque é a **Nuvemshop** (a maior) e o visitante troca para as outras? Nome do placar: **"O Clássico do E-commerce"**?
-9. **Endereço da página do parceiro:** `nextlevel…/i/ana-souza` ou manter `/r/`?
+**Respondidas pelo dono (03/11, 2ª rodada):**
+1. Suporte do Pro: **até 4 h úteis**.
+2. Fim da Black: **30/11 às 23h59** (Cyber Monday).
+3. **O argumento mais forte da Black fica no semestral e no anual.** Depois da Black, os preços voltam ao "preço normal" (ver a pergunta A abaixo).
+4. **Quem assina na Black mantém o preço enquanto a assinatura estiver ativa.**
+5. **Anual na Black: 2 meses grátis** (paga 10, leva 12).
+6. **Black dos parceiros: 1ª mensalidade a 100%** para lojas indicadas durante a Black.
+7. **Kit Black para a loja dos lojistas: sim** (fase BF4).
+8. **Placar:** pode ter a Nuvemshop como rival, **mas temos que ganhar**. Outra opção: um **grupo de concorrentes** ("Seleção dos concorrentes"), mostrando o ponto mais fraco deles contra o nosso mais forte (seção 13.5).
+9. Página do parceiro: **`/i/anasouza`**.
+
+**Perguntas abertas (bloqueiam a BF1):**
+- **A. Qual é o "preço normal" depois da Black?** A resposta foi "sim, volta a R$ 149 / 249 / 499". Atenção ao efeito:
+  - com R$ 149 no mensal, o Start fica **mais caro que todos os concorrentes** (Nuvemshop R$ 69, WBuy e Tray R$ 59) e **o comparativo deixa de vencer na mensalidade** depois de 30/11;
+  - só ganharia no custo total para quem vende muito.
+  - **Recomendação:** o **preço normal continua R$ 57 / 147 / 347 no mensal** (já é o menor que vence por pouco). A Black fica toda no compromisso mais longo (seção 14.6), com anual e semestral muito mais vantajosos, que **voltam ao normal no dia 01/12**.
+  - Assim, a contagem é verdadeira ("depois de 30/11, o anual volta a custar R$ X") e o comparativo continua vencendo o ano todo.
+- **B. Semestral:** o sistema ainda não tem plano semestral (só mensal e anual). Criar o semestral agora para a Black? Sugestão: **sim**, com preço por mês entre o mensal e o anual (seção 14.6).
 
 ---
 
 ## 11. Fases
 
-**Prioridade de calendário:** a Black Friday tem data (27/11/2026). As fases **BF1 a BF3 vêm antes de tudo** e precisam estar no ar até **10/11**, para a campanha ter duas semanas e meia. As fases PV seguem depois, na ordem.
+**Prioridade de calendário:** a Black Friday NextLevel vai até **30/11/2026 às 23h59** (Black em 27/11, Cyber Monday em 30/11). As fases **BF1 a BF3 vêm antes de tudo** e precisam estar no ar até **10/11**, para a campanha ter duas semanas e meia. As fases PV seguem depois, na ordem.
 
 | Fase | Entrega | Pronto quando |
 |---|---|---|
 | **BF1** | **Black: base.** Configuração única da campanha no Master (início, fim, preço Black e preço depois, mensagens, ligada ou desligada), versão de preço agendada para virar sozinha no fim, componente de contagem regressiva, faixa da Black no topo de todos os sites públicos e painéis | Teste: antes, durante e depois do fim; a contagem nunca reinicia; quando acaba, a faixa some e o preço volta sozinho |
 | **BF2** | **Placar da goleada:** súmula no Master (rivais, itens por plano, data e fonte), placar animado na home, /comparativo, /planos, página do parceiro e painel do lojista; versão para compartilhar (imagem de story) | Teste: o placar é calculado dos itens (ninguém digita o resultado); o que perdemos aparece sem destaque; data da última atualização visível |
 | **BF3** | **Roupa da Black em tudo:** tema Black (preto, neon verde e ciano) nos sites públicos, no cadastro e nos 3 painéis; contadores na abertura de cada painel, nos cartões de plano, no cadastro e na página do parceiro; "Black dos concorrentes × Black NextLevel" com o placar | Capturas 1440/390 de todas as telas; sem rolagem lateral; `prefers-reduced-motion` respeitado |
+| **BF4** | **Kit Black para a loja do lojista:** liga no painel do lojista; faixa da Black e contagem regressiva na vitrine dele (até a data que ele escolher), cupom de Black em 1 clique, selo "Black Friday" nos produtos com desconto, campanha pronta | Teste: a contagem da loja usa a data do lojista e some sozinha; capturas da vitrine em 390/1440 |
 | **PV0** | Decisões do dono registradas (DECISIONS) e valores no catálogo e nas regras | Regras novas versionadas com motivo; guarda-corpo com teste |
 | **PV1** | Dados: perfis, funil, atividades, histórico de nível, desafios, `partner_brands` (vazia) | Migração prova que atualiza banco antigo; seeds idempotentes |
 | **PV2** | Níveis: cálculo mensal, subida e descida com carência, nível fixado pelo Master, regra por nível no `findRule` | Testes de domínio para cada caso |
 | **PV3** | **CRM do Master:** quadro do funil, ficha 360 em gaveta, fila ampliada, ranking, segmentos, ações em massa | Capturas 1440/390, uma consulta por bloco, permissões no servidor |
 | **PV4** | **Página de captação** com seletor de perfil, escada de níveis, simulador ampliado e cadastro em etapas → Candidato no funil | Skill `pagina-de-vendas` (3 rodadas de capturas), sem dado inventado |
-| **PV5** | **Página do parceiro** `/i/[codigo]` + personalização no painel + kit (QR, cartão) | Atribuição testada (cookie + cupom), LGPD, velocidade medida |
+| **PV5** | **Página do parceiro** `/i/[codigo] (ex.: /i/anasouza)` + personalização no painel + kit (QR, cartão) | Atribuição testada (cookie + cupom), LGPD, velocidade medida |
 | **PV6** | **Planos:** escada da seção 8.2 com limites editáveis no Master, verificação no domínio, barra de uso, avisos, tabela de benefícios plano a plano com placar no comparativo, textos públicos e IA atualizados | Testes: bloqueio, excedente antigo preservado e "a NextLevel ganha ou empata em mais itens que cada concorrente em cada plano" |
 | **PV7** | **White label (esqueleto):** configuração desligada, cartão bloqueado no painel do parceiro e no Master, "Quero ser avisado" | Teste garante `disponivel: false` com a configuração desligada |
 | **PV8** | Painel do parceiro: nível atual, "quanto falta", desafios do mês, ranking | Capturas e teste do cálculo exibido |
@@ -470,7 +479,7 @@ REGRAS DO PROJETO (obrigatórias):
 - SuperDrop não está em produção (D216); foco: NextLevel E-commerce + Master.
 - Segredos só via encryptSecret; nunca em tela, log ou e-mail.
 
-PRIORIDADE: Black Friday tem data (27/11/2026). Faça BF1, BF2 e BF3 primeiro (no ar até 10/11), depois PV0 a PV8.
+PRIORIDADE: Black Friday NextLevel termina em 30/11/2026 às 23h59. Faça BF1, BF2 e BF3 primeiro (no ar até 10/11), depois PV0 a PV8.
 Regras da Black e do placar (seções 13 e 14 deste documento):
 - Contagem regressiva SEMPRE para a data real do fim, vinda de UMA configuração no Master. Nunca reinicia por visitante,
   nunca é falsa (Código de Defesa do Consumidor e Procon). Quando acaba, a faixa some e a versão de preço agendada entra
@@ -489,7 +498,7 @@ COMO TRABALHAR CADA FASE (BF1..BF3, depois PV0..PV8, uma por vez, na ordem):
 3. Migração com a skill nova-migracao (colunas novas com default ou anuláveis; provar que atualiza banco antigo; seeds
    idempotentes nos dois caminhos: demonstração e produção).
 4. Telas: painel-interno para o Master e o painel do parceiro (fila "precisa de você", uma consulta por bloco, gaveta lateral,
-   ações com resposta clara); pagina-de-vendas para /parceiros e /i/[codigo] (seletor de perfil, escada de níveis, simulador,
+   ações com resposta clara); pagina-de-vendas para /parceiros e /i/[codigo] (ex.: /i/anasouza) (seletor de perfil, escada de níveis, simulador,
    blocos da home reaproveitados, cadastro em etapas; listar ativos de foto que faltam em vez de usar foto genérica).
 5. Conferência visual com qa-visual (1440, 768 e 390 px; interações; antes/depois) e mandar prints ao dono a cada passo.
 6. Rodar: npx tsc --noEmit · npx eslint src e2e tests · testes do que mudou (a bateria completa nas fases com dinheiro) ·
@@ -507,6 +516,8 @@ ENTREGÁVEIS POR FASE (resumo; detalhes nas seções 3 a 8, 13 e 14 do documento
 - BF2: súmula no Master (rivais, planos, itens com valor, ganha/perde calculado, data e fonte), domínio placarDoClassico()
   com teste, componente PlacarGoleada (animação de gols, lances que vencemos em destaque, lances deles discretos), presença
   na home, /comparativo, /planos, página do parceiro e painel do lojista; imagem de compartilhar (story 1080x1920).
+- BF4: kit Black da loja do lojista (faixa e contagem na vitrine, cupom de Black, selo nos produtos, campanha pronta),
+  ligado pelo lojista no painel; reaproveitar cupons e campanhas que já existem.
 - BF3: tema Black (preto, neon verde e ciano sobre o kit de tecnologia) em todos os sites públicos e nos 3 painéis,
   contadores nos pontos da seção 14.3, bloco "Black dos concorrentes × Black NextLevel".
 - PV0: regras de comissão por trilha e nível da seção 3.2 (já aprovadas) versionadas (aprovadas na D226) + guarda-corpo testado.
@@ -515,7 +526,7 @@ ENTREGÁVEIS POR FASE (resumo; detalhes nas seções 3 a 8, 13 e 14 do documento
 - PV3: CRM do Master (funil em colunas, ficha 360 em gaveta, fila ampliada, ranking, segmentos salvos, mensagem em massa,
   desafio do mês, CSV).
 - PV4: /parceiros de altíssimo nível com subpáginas por perfil e cadastro em etapas que cria "Candidato" no funil.
-- PV5: página do parceiro /i/[codigo] (faixa do parceiro, cupom aplicado, blocos da home, personalização revisada pelo
+- PV5: página do parceiro /i/[codigo] (ex.: /i/anasouza) (faixa do parceiro, cupom aplicado, blocos da home, personalização revisada pelo
   Master, atribuição 60 dias, QR e cartão para imprimir).
 - PV6: escada de benefícios da seção 8.2 (produtos ativos 300/1.000/sem limite no Scale, pessoas 3/6/12, IA 40/350/1.200, atacado,
   propostas, planilha, tema pago, suporte, migração), editável no Master; verificação única no domínio; barra de uso;
@@ -596,7 +607,7 @@ A tabela da seção 8.2 tem 12 itens. "12 × 0" significa ganhar ou empatar em t
 
 ## 14. Black Friday NextLevel (novembro de 2026)
 
-**Data da Black Friday 2026: sexta, 27/11.** A Cyber Monday cai em 30/11.
+**Black Friday 2026: sexta, 27/11. A Black NextLevel vai até a Cyber Monday, 30/11 às 23h59** (decisão do dono). Começa assim que a BF1 for ao ar (meta: 10/11).
 
 ### 14.1 Mensagem
 - **"Black Friday NextLevel: taxa zero da plataforma e o preço mais vantajoso do ano. Só até [data]."**
@@ -606,7 +617,7 @@ A tabela da seção 8.2 tem 12 itens. "12 × 0" significa ganhar ou empatar em t
     - Referência de 2025: a Nuvemshop deu cashback em taxas do Nuvem Pago; a Loja Integrada deu 50% no plano Elite (R$ 1.999 → R$ 999).
   - O dono cadastra na súmula cada oferta assim que sair, com data e fonte. O bloco compara o **custo do 1º ano** (mensalidade de Black + taxa da plataforma) para a mesma loja.
   - Com taxa zero e mensalidade menor, **vencemos as Blacks de 2025 em todos os planos**. Para 2026, o teste da súmula confirma ou avisa.
-- **Para quem assina na Black:** "Assinou na Black, o preço é seu enquanto a assinatura estiver ativa" (pergunta 4 da seção 10).
+- **Para quem assina na Black:** "Assinou na Black, o preço é seu enquanto a assinatura estiver ativa" (aprovado pelo dono).
 
 ### 14.2 A roupa da Black (veste tudo)
 - **Tema Black** por cima do kit de tecnologia (D222):
@@ -634,7 +645,7 @@ O mesmo componente, com o mesmo fim e o mesmo relógio, em todos os lugares:
 | Cadastro e checkout do plano | "Seu preço Black vale até…" com contador |
 | Página do parceiro | Contador + cupom do parceiro |
 | Painel do lojista | Faixa no topo: "Black: anual com preço Black até…" (para quem está no teste ou no mensal) |
-| Painel do parceiro | "Black dos parceiros: 1ª mensalidade a 100% até…" (se aprovado, pergunta 6) |
+| Painel do parceiro | "Black dos parceiros: 1ª mensalidade a 100% até…" (aprovado pelo dono) |
 | Master | Faixa com o contador + atalho para a configuração da Black e para a súmula |
 | Vendedor IA (Maurício) | Responde sobre a Black e o prazo com o mesmo fim |
 
@@ -656,4 +667,47 @@ O mesmo componente, com o mesmo fim e o mesmo relógio, em todos os lugares:
   - `textos` (json), `parceirosBonus` (json, opcional).
 - `placar_rivais`, `placar_planos`, `placar_itens`: a súmula, com `fonte`, `coletadoEm`, `atualizadoPor`.
 - `placar_historico`: auditoria das mudanças.
+
+### 14.6 Oferta da Black: o argumento mais forte no semestral e no anual (proposta, a confirmar na pergunta A)
+
+| Plano | Mensal (preço normal, segue igual) | **Semestral Black** (novo) | **Anual Black** |
+|---|---|---|---|
+| Start | R$ 57/mês | **R$ 47/mês** e paga 5, leva 6 → **R$ 39,17/mês** | R$ 37/mês e paga 10, leva 12 → **R$ 30,83/mês** |
+| Pro | R$ 147/mês | **R$ 133/mês** e paga 5, leva 6 → **R$ 110,83/mês** | R$ 119/mês e paga 10, leva 12 → **R$ 99,17/mês** |
+| Scale | R$ 347/mês | **R$ 322/mês** e paga 5, leva 6 → **R$ 268,33/mês** | R$ 297/mês e paga 10, leva 12 → **R$ 247,50/mês** |
+
+- **Mensagem principal:** "**Black NextLevel: Start a R$ 30,83/mês no anual, com o preço travado enquanto você for cliente. Só até 30/11.**"
+- **Depois de 01/12** (preço normal, agendado):
+  - o anual volta para 37 / 119 / 297 por mês, **sem os 2 meses grátis**;
+  - o semestral volta para 47 / 133 / 322 por mês, sem o mês grátis;
+  - quem assinou na Black mantém o preço e as condições.
+- **"De/por" honesto:**
+  - "de R$ 37/mês (anual depois da Black) por R$ 30,83/mês";
+  - "de R$ 57/mês no mensal por R$ 30,83/mês no anual Black".
+- **Contra a concorrência**, no anual e no plano de entrada: Tray R$ 39, WBuy R$ 47,20, Nuvemshop R$ 59. **O anual Black vence todos**, e com taxa zero da plataforma.
+- **Parceiros:** durante a Black, a 1ª mensalidade das lojas indicadas paga 100% de comissão. No anual, vale sobre o valor equivalente a uma mensalidade.
+- **Cuidado de sistema:**
+  - o semestral pede o ciclo novo `SEMIANNUAL` (o enum de ciclos é texto e não precisa de SQL), mais o checkout e a cobrança de 6 meses;
+  - "paga 10, leva 12" e "paga 5, leva 6" viram meses de bônus na assinatura, e não um desconto escondido;
+  - um teste garante o valor cobrado e a data da próxima cobrança.
+
+### 13.5 (complemento) "Seleção dos concorrentes" e a regra para sempre vencer
+
+O dono pediu: ganhar sempre no placar, ou usar um grupo de concorrentes mostrando o ponto mais fraco deles contra o nosso mais forte.
+
+**Proposta:** dois formatos, os dois honestos.
+
+1. **Jogo contra cada rival** (Nuvemshop, Loja Integrada, WBuy, Tray).
+   - Só vai ao ar o jogo que **a súmula calcula como vitória**. Hoje, todos (seção 13.4).
+   - Se um rival mudar e a gente deixar de vencer, aquele jogo sai do ar sozinho e o Master recebe aviso.
+2. **"NextLevel × Seleção dos concorrentes"** (o grupo dos quatro). Cada lance mostra **o nosso ponto forte contra o ponto fraco de um concorrente, com o nome dele**:
+   - "Taxa da plataforma: NextLevel 0% × Nuvemshop até 2%";
+   - "Pedidos: sem limite × Tray até 100 por mês";
+   - "Pessoas no painel: 3 × WBuy 1";
+   - "Atacado: em todos os planos × Tray só no Avançado".
+   - **Regra de honestidade:** cada lance diz **de qual concorrente** é o ponto fraco. Nunca mistura num "eles" genérico um valor que só um deles tem.
+   - O placar da Seleção conta os lances em que vencemos **o melhor da Seleção naquele item**. Assim, "venceu a Seleção" é verdade e não pode ser contestado.
+   - Os lances que destacam um concorrente específico aparecem como **"melhores momentos"**, sem mudar o placar.
+
+O placar da Seleção, com os dados de hoje (plano de entrada), contando só os itens em que vencemos o melhor deles: cerca de **NextLevel 9 × 1**. Eles levam produtos sem limite (Nuvemshop); empates não contam. O item IA depende de como a súmula compara os "usos" da IA com os "créditos" da Tray: se contar como derrota, fica 8 × 2. A súmula confirma o número final.
 
