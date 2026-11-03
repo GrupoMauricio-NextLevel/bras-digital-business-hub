@@ -226,44 +226,108 @@ Objetivo: deixar o terreno pronto com o mínimo de esforço.
 
 ---
 
-## 8. Planos da loja: benefícios por nível e fim do "produtos ilimitados"
+## 8. Planos da loja: benefícios por nível, vencendo os concorrentes por pouco
 
-Hoje os três planos liberam tudo, sem limite de produtos e pedidos. A proposta é uma escada clara, perto do que o mercado faz (WBuy 200/500/1.000/5.000; Loja Integrada 250/500/ilimitado; Tray 100/750/1.500), mas com folga para o atacado.
+Pedido do dono (03/11): "faz uma análise dos concorrentes e vamos vencer eles por pouco, para dizer que temos mais benefícios no comparativo direto". Preços continuam **R$ 57 / 147 / 347** (D221).
 
-| Benefício | **Start** R$ 57 | **Pro** R$ 147 | **Scale** R$ 347 | **Enterprise** |
+### 8.1 O que cada concorrente dá em cada plano
+
+Fonte: sites oficiais consultados em 03/11/2026.
+- Nuvemshop: [planos-e-preços](https://www.nuvemshop.com.br/planos-e-precos)
+- Loja Integrada: [planos](https://lojaintegrada.com.br/planos/) e [compare](https://lojaintegrada.com.br/compare/)
+- WBuy: [planos](https://www.wbuy.com.br/planos)
+- Tray: [planos](https://www.tray.com.br/planos/)
+
+Item não divulgado = "—".
+
+**Plano de entrada**
+
+| Item | Nuvemshop Essencial R$ 69 | Loja Integrada Crescimento R$ 46* | WBuy Iniciante R$ 59 | Tray Lançamento R$ 59 |
 |---|---|---|---|---|
-| Produtos ativos | **500** | **3.000** | **10.000** | Sob consulta |
-| Pedidos por mês | Sem limite | Sem limite | Sem limite | Sem limite |
-| Pessoas na equipe | 2 | 5 | 15 | Sob consulta |
-| Maurício IA (por mês) | 3 | 200 | 1.000 | Sob consulta |
-| Atacado: grade, preço por quantidade, pedido mínimo | Sim | Sim | Sim | Sim |
-| Propostas e pedidos do balcão | 20 por mês | Sem limite | Sem limite | Sem limite |
-| Integrações de ERP (Tiny, Omie) | Não | Sim | Sim | Sim |
-| Relatórios em planilha | Não | Sim | Sim | Sim |
-| Temas pagos inclusos | Não | 1 tema N2 | 1 tema N3 | Sob consulta |
-| Suporte | WhatsApp, horário comercial | Prioritário | Prioritário + gerente | Dedicado |
-| Migração assistida | Paga à parte | Desconto de 50% | Inclusa (até 1.000 produtos) | Inclusa |
+| Taxa da plataforma usando o Mercado Pago | 2% | 0,99% | 1,5% | 1,25% |
+| Produtos | Sem limite | 250 | 200 | 100 |
+| Pedidos por mês | Sem limite | — | — | 100 |
+| Pessoas no painel | — | 2 | 1 | 1 |
+| IA por mês | 30 usos | — | — | 100 créditos |
+| Atacado (grade, preço por quantidade) | — | — | Não (só no Turbo) | Não (só no Avançado) |
+| Suporte | Central + e-mail | — | Chat (resposta em 4 h úteis) | Ticket e e-mail |
+| Temas grátis | +70 | 4 | Loja de temas grátis | — |
 
-**Escolha dos números (para o dono confirmar):**
-- **500 no Start** cobre a grande maioria das lojas de atacado do Brás. O limite conta **produtos ativos, não variações**: um vestido com 6 tamanhos é 1 produto.
-- **Pedidos continuam sem limite** em todos os planos. Limitar pedido pune quem vende, e esse argumento a concorrência não tem.
+**Plano intermediário**
 
-**Regras de implantação:**
-- **Os limites saem da tabela editável do Master** (`ecommerce.recursos-por-plano`), agora com números, não só sim/não. Nada fixo no código.
-- **Quem já tem mais produtos que o novo limite não perde nada:**
+| Item | Nuvemshop Impulso R$ 164 | Loja Integrada Aceleração R$ 83* | WBuy Turbo R$ 149 | Tray Crescimento R$ 159 |
+|---|---|---|---|---|
+| Taxa usando o Mercado Pago | 1% | 0,90% | 1,25% | 1% |
+| Produtos | Sem limite | 500 | 500 | 750 |
+| Pedidos por mês | Sem limite | — | — | 500 |
+| Pessoas no painel | — | 3 | 5 | 5 |
+| IA por mês | 150 usos | — | — | 300 créditos |
+| Atacado | — | — | Sim (varejo e atacado) | Não |
+| Suporte | + WhatsApp | — | Chat (4 h úteis) | + chat e WhatsApp |
+
+**Plano avançado**
+
+| Item | Nuvemshop Escala R$ 449 | Loja Integrada Expansão R$ 200* | WBuy Expansão R$ 299 | Tray Avançado R$ 449 |
+|---|---|---|---|---|
+| Taxa usando o Mercado Pago | 0,7% | 0,70% | 1% | 0,75% |
+| Produtos | Sem limite | Sem limite | 1.000 | 1.500 |
+| Pedidos por mês | Sem limite | — | — | 1.000 |
+| Pessoas no painel | Equipe com permissões | 10 | 10 | 10 |
+| IA por mês | Sem limite | — | — | 1.000 créditos |
+| Atacado | — | — | Sim | Sim (3 tabelas de preço) |
+| Suporte | + telefone | — | Chat (2 h úteis) | + telefone e prazo de atendimento |
+| Migração assistida | — | — | — | Só no Ultra (R$ 999+) |
+
+\* Loja Integrada: valor no pagamento trimestral, o único que o site mostra.
+
+### 8.2 Proposta: escada de benefícios da NextLevel (vence por pouco)
+
+| Benefício | **Start R$ 57** | **Pro R$ 147** | **Scale R$ 347** | Como vence |
+|---|---|---|---|---|
+| Taxa da plataforma usando o Mercado Pago | **0%** | **0%** | **0%** | Todas cobram de 0,7% a 2% |
+| Produtos ativos (variações não contam) | **300** | **1.000** | **2.000** | Start > 250/200/100; Pro > 750/500/500; Scale > 1.500/1.000 |
+| Pedidos por mês | **Sem limite** | **Sem limite** | **Sem limite** | Tray limita 100 / 500 / 1.000 |
+| Pessoas no painel | **3** | **6** | **12** | Start > 2/1/1; Pro > 5/5/3; Scale > 10/10/10 |
+| Maurício IA por mês | **40** | **350** | **1.200** | Start > 30 (Nuvemshop); Pro > 300 e 150; Scale > 1.000 (Tray) |
+| Atacado: grade fechada, preço por quantidade, pedido mínimo | **Sim** | **Sim** | **Sim** | WBuy só a partir do Turbo; Tray só no Avançado |
+| Propostas e pedidos do balcão (WhatsApp e loja física) | **Sim** | **Sim** | **Sim** | Ninguém mostra nos planos de entrada |
+| Relatórios em planilha | **Sim** | **Sim** | **Sim** | Tray só a partir do Crescimento |
+| Tema pago incluso | — | **1 tema N2** | **1 tema N3** | Ninguém inclui tema pago |
+| Suporte | **WhatsApp com gente da equipe** (horário comercial) | **WhatsApp prioritário** (resposta em até 2 h úteis) | **Prioritário + telefone + gerente de conta** | Entrada: Nuvemshop e Tray só e-mail. Avançado: igual ao telefone deles + gerente |
+| Migração assistida | Paga à parte | **50% de desconto** | **Inclusa** (até 2.000 produtos) | Tray só no Ultra (R$ 999+) |
+| Equipe presencial em São Paulo (Brás) | **Sim** | **Sim** | **Sim** | Diferencial de proximidade (D219/D220) |
+
+**Placar no comparativo direto** (itens em que a NextLevel ganha ou empata, sobre os 12 da tabela). Item que o concorrente não divulga conta a nosso favor só quando nós oferecemos e publicamos o nosso valor. Fora da tabela, a Nuvemshop também tem mais temas grátis (+70 contra os nossos 7):
+
+| Plano | contra Nuvemshop | contra Loja Integrada | contra WBuy | contra Tray |
+|---|---|---|---|---|
+| Entrada | **11 de 12** (perde produtos sem limite) | **12 de 12** | **12 de 12** | **12 de 12** |
+| Intermediário | **11 de 12** (perde produtos sem limite) | **12 de 12** | **12 de 12** | **12 de 12** |
+| Avançado | **10 de 12** (perde produtos e IA sem limite) | **11 de 12** (perde produtos sem limite) | **12 de 12** | **12 de 12** |
+
+**A verdade que o dono precisa saber:**
+- **Contra a Nuvemshop, o item "produtos" sempre perde**, porque ela não limita produtos em nenhum plano. A Loja Integrada também não limita no avançado.
+- Limitar produtos (pedido do dono: "não podemos deixar ilimitado") custa esse item. Mesmo assim, o placar fica a nosso favor em todos os planos.
+- **Alternativa:** deixar só o Scale sem limite. Ele ganharia também contra a Loja Integrada e empataria com a Nuvemshop.
+
+### 8.3 Cuidados com os números
+
+- **Vencer por pouco tem que ser verdade em cada linha.** Os números ficam na tabela editável do Master (`ecommerce.recursos-por-plano`, agora com valores) e no arquivo de dados do comparativo, com data e fonte.
+- **Teste novo:** "em cada plano, a NextLevel ganha ou empata em mais itens que cada concorrente". Se um concorrente mudar o plano e o teste quebrar, o site não publica um comparativo falso.
+- **IA por "uso", não por "crédito":** a Tray conta créditos e a Nuvemshop conta usos. Na tabela pública, escrever exatamente a unidade de cada uma.
+- **Custo da IA:** subir o Start de 3 para 40 usos tem custo. A cota fica no Master e pode ser ajustada sem publicar código.
+- **Produtos contam como produtos ativos, não como variações:** um vestido em 6 tamanhos é 1 produto, e isso fica escrito na tabela. Os concorrentes não dizem como contam.
+- **Quem já passou do limite não perde nada:**
   - os produtos continuam no ar;
-  - a loja só não ativa produtos novos até ficar abaixo do limite ou subir de plano;
-  - aviso claro no painel ("Você usa 612 de 500 produtos ativos. Suba para o Pro").
-  - Registrar como decisão.
-- **Verificação em um lugar só, no domínio** (criar, importar por planilha, migrar, ativar), com teste. A mensagem de bloqueio leva ao upgrade.
-- **Barra de uso no painel do lojista** ("Produtos: 412 de 500"), com aviso aos 80%.
-- **Site público:**
-  - a linha "Sem limite de produtos e pedidos" do comparativo e da home vira **"Pedidos sem limite em todos os planos"** e **"Até 10 mil produtos"**;
-  - o cartão "∞" da home troca de mensagem;
-  - atualizar os testes do comparativo.
-- **O vendedor IA e as dúvidas** passam a explicar os limites.
-
----
+  - a loja só não ativa produtos novos;
+  - aviso claro com o caminho para o plano seguinte.
+- **Verificação num lugar só, no domínio:** ao criar, importar, migrar e ativar.
+- **Barra de uso no painel:** "Produtos: 212 de 300", com aviso aos 80%.
+- **Textos que mudam no site:**
+  - "Sem limite de produtos e pedidos" vira **"Pedidos sem limite em todos os planos"**;
+  - o cartão "∞" da home vira **"Mais benefícios em cada plano"**;
+  - o comparativo da home ganha a tabela de benefícios plano a plano com o placar;
+  - atualizar o vendedor IA e as dúvidas.
 
 ## 9. Riscos e cuidados
 
@@ -280,9 +344,9 @@ Hoje os três planos liberam tudo, sem limite de produtos e pedidos. A proposta 
 1. Percentuais por trilha e nível (seção 3): aprova os sugeridos?
 2. Bônus do representante por loja ativada: R$ 30? Meta mensal com prêmio?
 3. Recompensa do "cliente indica": 1 mês grátis por indicação paga?
-4. Limites de produtos: 500 / 3.000 / 10.000?
-5. Equipe por plano: 2 / 5 / 15?
-6. O que mais muda por plano (seção 8)?
+4. Benefícios por plano (seção 8.2): aprova a escada que vence por pouco (produtos 300 / 1.000 / 2.000, pessoas 3 / 6 / 12, IA 40 / 350 / 1.200)? Ou o Scale fica sem limite de produtos para ganhar também esse item?
+5. Suporte por plano: o prazo de 2 h úteis no Pro e o gerente de conta no Scale são viáveis para a equipe hoje?
+6. Migração assistida inclusa no Scale (até 2.000 produtos) e com 50% de desconto no Pro?
 7. Endereço da página do parceiro: `nextlevel…/i/ana-souza` ou manter `/r/`?
 
 ---
@@ -297,7 +361,7 @@ Hoje os três planos liberam tudo, sem limite de produtos e pedidos. A proposta 
 | **PV3** | **CRM do Master:** quadro do funil, ficha 360 em gaveta, fila ampliada, ranking, segmentos, ações em massa | Capturas 1440/390, uma consulta por bloco, permissões no servidor |
 | **PV4** | **Página de captação** com seletor de perfil, escada de níveis, simulador ampliado e cadastro em etapas → Candidato no funil | Skill `pagina-de-vendas` (3 rodadas de capturas), sem dado inventado |
 | **PV5** | **Página do parceiro** `/i/[codigo]` + personalização no painel + kit (QR, cartão) | Atribuição testada (cookie + cupom), LGPD, velocidade medida |
-| **PV6** | **Planos:** limites numéricos editáveis, verificação no domínio, barra de uso, avisos, textos públicos e IA atualizados | Teste de bloqueio e da regra de quem já passou do limite; comparativo atualizado |
+| **PV6** | **Planos:** escada da seção 8.2 com limites editáveis no Master, verificação no domínio, barra de uso, avisos, tabela de benefícios plano a plano com placar no comparativo, textos públicos e IA atualizados | Testes: bloqueio, excedente antigo preservado e "a NextLevel ganha ou empata em mais itens que cada concorrente em cada plano" |
 | **PV7** | **White label (esqueleto):** configuração desligada, cartão bloqueado no painel do parceiro e no Master, "Quero ser avisado" | Teste garante `disponivel: false` com a configuração desligada |
 | **PV8** | Painel do parceiro: nível atual, "quanto falta", desafios do mês, ranking | Capturas e teste do cálculo exibido |
 
@@ -360,8 +424,10 @@ ENTREGÁVEIS POR FASE (resumo; detalhes nas seções 3 a 8 do documento):
 - PV4: /parceiros de altíssimo nível com subpáginas por perfil e cadastro em etapas que cria "Candidato" no funil.
 - PV5: página do parceiro /i/[codigo] (faixa do parceiro, cupom aplicado, blocos da home, personalização revisada pelo
   Master, atribuição 60 dias, QR e cartão para imprimir).
-- PV6: limites por plano editáveis no Master (produtos ativos 500/3.000/10.000 sugeridos, equipe, propostas, ERP, relatórios,
-  temas, suporte), verificação única no domínio, barra de uso, excedente antigo preservado, textos públicos e IA atualizados.
+- PV6: escada de benefícios da seção 8.2 (produtos ativos 300/1.000/2.000, pessoas 3/6/12, IA 40/350/1.200, atacado,
+  propostas, planilha, tema pago, suporte, migração), editável no Master; verificação única no domínio; barra de uso;
+  excedente antigo preservado; dados dos concorrentes por plano em comparativo-ecommerce.ts com data e fonte; tabela de
+  benefícios com placar na home e em /comparativo; teste "ganha ou empata em mais itens em cada plano"; textos e IA.
 - PV7: white label só esqueleto e bloqueado (configuração desligada, cartões "Em breve", "Quero ser avisado").
 - PV8: painel do parceiro mostra nível, quanto falta, desafios e ranking.
 
