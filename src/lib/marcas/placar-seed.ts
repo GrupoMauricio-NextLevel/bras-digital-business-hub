@@ -17,7 +17,7 @@ const t = (entrada: string, intermediario: string, avancado: string): Tres => ({
 const todos = (v: string) => t(v, v, v);
 
 export const SUMULA_PADRAO: Sumula = {
-  atualizadoEm: "2026-11-03T21:00:00.000Z",
+  atualizadoEm: "2026-11-04T00:30:00.000Z",
   rivais: [
     { key: "nuvemshop", nome: "Nuvemshop", planos: t("Essencial", "Impulso", "Escala"), fonte: "https://www.nuvemshop.com.br/planos-e-precos" },
     { key: "loja-integrada", nome: "Loja Integrada", planos: t("Crescimento", "Aceleração", "Expansão"), fonte: "https://lojaintegrada.com.br/compare/" },
@@ -29,7 +29,8 @@ export const SUMULA_PADRAO: Sumula = {
     { key: "pedidos", lance: "Pedidos por mês", minuto: 15, regra: "maior", nextlevel: todos("sem limite"), rivais: { nuvemshop: todos("sem limite"), "loja-integrada": todos(""), wbuy: todos(""), tray: t("100", "500", "1000") } },
     { key: "produtos", lance: "Produtos ativos", minuto: 23, regra: "maior", nextlevel: t("300", "1000", "sem limite"), rivais: { nuvemshop: todos("sem limite"), "loja-integrada": t("250", "500", "sem limite"), wbuy: t("200", "500", "1000"), tray: t("100", "750", "1500") } },
     { key: "pessoas", lance: "Pessoas no painel", minuto: 31, regra: "maior", nextlevel: t("3", "6", "12"), rivais: { nuvemshop: todos(""), "loja-integrada": t("2", "3", "10"), wbuy: t("1", "5", "10"), tray: t("1", "5", "10") } },
-    { key: "atacado", lance: "Atacado: grade, preço por quantidade, pedido mínimo", minuto: 38, regra: "maior", nextlevel: todos("sim"), rivais: { nuvemshop: todos(""), "loja-integrada": todos(""), wbuy: t("não", "sim", "sim"), tray: t("não", "não", "sim") } },
+    // Atacado nativo: Nuvemshop e Loja Integrada não têm (confirmado pelo dono em 03/11/2026, D231).
+    { key: "atacado", lance: "Atacado nativo: grade, preço por quantidade, pedido mínimo", minuto: 38, regra: "maior", nextlevel: todos("sim"), rivais: { nuvemshop: todos("não"), "loja-integrada": todos("não"), wbuy: t("não", "sim", "sim"), tray: t("não", "não", "sim") } },
     { key: "ia", lance: "Inteligência artificial por mês (usos)", minuto: 44, regra: "maior", nextlevel: t("40", "350", "1200"), rivais: { nuvemshop: t("30", "150", "sem limite"), "loja-integrada": todos(""), wbuy: todos(""), tray: todos("") } },
     { key: "suporte", lance: "Suporte (1 e-mail · 2 chat/WhatsApp · 3 prioritário · 4 telefone e gerente)", minuto: 52, regra: "maior", nextlevel: t("2", "3", "4"), rivais: { nuvemshop: t("1", "2", "3"), "loja-integrada": todos(""), wbuy: t("2", "2", "3"), tray: t("1", "2", "3") } },
     { key: "planilha", lance: "Relatórios em planilha", minuto: 60, regra: "maior", nextlevel: todos("sim"), rivais: { nuvemshop: todos(""), "loja-integrada": todos(""), wbuy: todos(""), tray: t("não", "sim", "sim") } },

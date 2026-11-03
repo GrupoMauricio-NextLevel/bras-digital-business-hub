@@ -44,6 +44,18 @@ export const CONCORRENTES: Plataforma[] = [
   ] },
 ];
 
+/**
+ * Atacado nativo (grade fechada, preço por quantidade, pedido mínimo) em cada concorrente (D231): Nuvemshop e Loja
+ * Integrada não têm (confirmado pelo dono em 03/11/2026); WBuy só a partir do Turbo e Tray só no Avançado (sites oficiais).
+ */
+export const ATACADO_CONCORRENTES: Record<string, { tem: boolean | "parcial"; texto: string }> = {
+  nuvemshop: { tem: false, texto: "Não tem" },
+  "loja-integrada": { tem: false, texto: "Não tem" },
+  wbuy: { tem: "parcial", texto: "Só a partir do Turbo (R$ 149)" },
+  tray: { tem: "parcial", texto: "Só no Avançado (R$ 449)" },
+  shopify: { tem: "parcial", texto: "Só no plano Plus (em dólar)" },
+};
+
 /** Plano cabe nesse faturamento? (limite de pedidos pelo ticket médio e faturamento recomendado) */
 const cabe = (p: PlanoComparado, fatCents: number) => (p.faturamentoMaxCents === null || fatCents <= p.faturamentoMaxCents) && (p.pedidosMes === null || Math.ceil(fatCents / TICKET_MEDIO_CENTS) <= p.pedidosMes);
 export const custoDoPlano = (p: PlanoComparado, fatCents: number) => (p.taxaBps === null ? null : p.mensalCents + Math.round((fatCents * p.taxaBps) / 10_000));

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Banknote, Check, Infinity as Sem, UsersRound, X } from "lucide-react";
 import { formatBRL } from "@/lib/money";
-import { CONCORRENTES, COLETADO_EM, FAT_REFERENCIA_CENTS, degraus, taxasNoMercadoPago } from "@/lib/marcas/comparativo-ecommerce";
+import { ATACADO_CONCORRENTES, CONCORRENTES, COLETADO_EM, FAT_REFERENCIA_CENTS, degraus, taxasNoMercadoPago } from "@/lib/marcas/comparativo-ecommerce";
 
 export type DegrauNL = { nome: string; mensalCents: number; anualMesCents: number };
 const pct = (bps: number | null) => (bps === null ? "não divulga" : bps === 0 ? "0%" : `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`);
@@ -56,6 +56,7 @@ export function ComparativoHome({ degrausNl, cta, comecar, linkCompleto = true }
   const sim = <Check className="mx-auto size-5 text-emerald-300" aria-label="Sim" />, nao = <X className="mx-auto size-5 text-rose-300" aria-label="Não" />;
   const tabela: { rotulo: string; nl: React.ReactNode; vals: Record<string, React.ReactNode> }[] = [
     { rotulo: "Taxa da plataforma sobre as vendas, usando o Mercado Pago", nl: <b className="ec-num text-[var(--ec-verde)]">0%</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.some((p) => p.taxaBps !== null) ? c.planos.filter((p) => p.mensalCents > 0).map((p) => pct(p.taxaBps)).join(" · ") : "não divulga"])) },
+    { rotulo: "Atacado nativo: grade, preço por quantidade, pedido mínimo", nl: <b className="text-[var(--ec-verde,#6ee7b7)]">Em todos os planos</b>, vals: Object.fromEntries(CONCORRENTES.map((c) => { const a = ATACADO_CONCORRENTES[c.key]; return [c.key, !a ? "—" : a.tem === false ? nao : <span className="text-xs">{a.texto}</span>]; })) },
     { rotulo: "Produtos sem limite em todos os planos", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.filter((p) => p.mensalCents > 0).every((p) => p.produtos === null) ? sim : nao])) },
     { rotulo: "Pedidos sem limite por mês", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.planos.every((p) => p.pedidosMes === null) ? sim : nao])) },
     { rotulo: "Cobrança em reais", nl: sim, vals: Object.fromEntries(CONCORRENTES.map((c) => [c.key, c.moeda === "BRL" ? sim : nao])) },

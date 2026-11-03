@@ -26,9 +26,10 @@ describe("placar da goleada", () => {
     const tray = jogo(SUMULA_PADRAO, "tray", "entrada");
     expect([tray.nextlevel, tray.adversario, tray.goleada]).toEqual([7, 0, true]);
     const nuvem = jogo(SUMULA_PADRAO, "nuvemshop", "entrada");
-    expect([nuvem.nextlevel, nuvem.adversario]).toEqual([3, 1]);
+    expect([nuvem.nextlevel, nuvem.adversario, nuvem.goleada]).toEqual([4, 1, true]); // atacado nativo confirmado (D231)
     expect(nuvem.lances.find((l) => l.key === "produtos")!.quem).toBe("rival"); // a derrota aparece, sem destaque
-    expect(nuvem.lances.find((l) => l.key === "atacado")!.quem).toBe("nd"); // não divulga: não vale gol
+    expect(nuvem.lances.find((l) => l.key === "atacado")!.quem).toBe("nextlevel");
+    expect(nuvem.lances.find((l) => l.key === "balcao")!.quem).toBe("nd"); // não divulga: não vale gol
     const sel = selecao(SUMULA_PADRAO, "entrada");
     expect(sel.vitoria).toBe(true);
     expect(sel.lances.find((l) => l.key === "taxa")).toMatchObject({ quem: "nextlevel", deles: "2%", rival: "Nuvemshop" }); // ponto fraco com nome

@@ -2482,3 +2482,18 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - Na **Seleção dos concorrentes**, o gol conta contra o melhor do grupo. No nosso gol, o texto mostra o ponto mais fraco de um concorrente, com o nome dele; no gol deles, mostra quem de fato venceu.
 - **Súmula inicial** (`placar-seed.ts`, sites oficiais em 03/11): 12 lances × 4 concorrentes × 3 planos. A NextLevel vence os 15 jogos. Exemplos: Tray 7 × 0, WBuy 4 × 0, Loja Integrada 3 × 0, Nuvemshop 3 × 1, Seleção 5 × 1 no plano de entrada.
 - **Master:** `/master/placar` mostra o resultado de cada jogo e o editor da súmula. Aceita número, "sem limite", "sim", "não" ou vazio. Os créditos de IA da Tray ficaram como não comparáveis.
+
+## D231 — [Black] Ataque no atacado: Nuvemshop e Loja Integrada não têm atacado nativo (2026-11-03)
+- **O dono confirmou** que Nuvemshop e Loja Integrada não têm as funções de atacado (grade fechada, preço por quantidade, pedido mínimo): "Vamos atacar isso!".
+- **Súmula do placar:** o atacado dos dois passou a "não", e o lance virou gol nosso. Agora: Nuvemshop 4 × 1 (goleada) e Loja Integrada 4 × 0 no plano de entrada.
+- **Comparativo da home:** linha nova "Atacado nativo":
+  - NextLevel em todos os planos;
+  - Nuvemshop e Loja Integrada ✗;
+  - WBuy só a partir do Turbo (R$ 149);
+  - Tray só no Avançado (R$ 449);
+  - Shopify só no Plus (em dólar).
+  - Dados em `ATACADO_CONCORRENTES`.
+- **Seção "Feita para o atacado":**
+  - título "Grade de 12, pacote e preço por quantidade em todos os planos. Nos outros, não tem ou custa caro.";
+  - quadro lado a lado: NextLevel desde R$ 57 × "Não tem" × "Só a partir de R$ 149" × "Só no plano de R$ 449".
+- **Pendente para a fase PV6:** quando o limite de produtos dos planos for implantado, a linha "Produtos sem limite" do comparativo deve mudar junto. Hoje o sistema ainda não limita produtos; só o placar já usa a escada aprovada.
