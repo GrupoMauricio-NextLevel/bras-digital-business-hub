@@ -410,7 +410,7 @@ Item não divulgado = "—".
 **Respondidas pelo dono (03/11, 2ª rodada):**
 1. Suporte do Pro: **até 4 h úteis**.
 2. Fim da Black: **30/11 às 23h59** (Cyber Monday).
-3. **O argumento mais forte da Black fica no semestral e no anual.** Depois da Black, os preços voltam ao "preço normal" (ver a pergunta A abaixo).
+3. **O argumento mais forte da Black fica no anual** (semestral abortado na 3ª rodada). Depois da Black, os preços voltam ao "preço normal" (ver a pergunta A abaixo).
 4. **Quem assina na Black mantém o preço enquanto a assinatura estiver ativa.**
 5. **Anual na Black: 2 meses grátis** (paga 10, leva 12).
 6. **Black dos parceiros: 1ª mensalidade a 100%** para lojas indicadas durante a Black.
@@ -418,13 +418,17 @@ Item não divulgado = "—".
 8. **Placar:** pode ter a Nuvemshop como rival, **mas temos que ganhar**. Outra opção: um **grupo de concorrentes** ("Seleção dos concorrentes"), mostrando o ponto mais fraco deles contra o nosso mais forte (seção 13.5).
 9. Página do parceiro: **`/i/anasouza`**.
 
-**Perguntas abertas (bloqueiam a BF1):**
+**3ª rodada (03/11):** semestral abortado; preço depois da Black num meio-termo (seção 14.6, proposta A recomendada).
+
+**Pergunta aberta (bloqueia a BF1):** aprovar a proposta A da seção 14.6 (depois da Black: R$ 67 / 167 / 397 no mensal e 49 / 139 / 339 no anual) ou escolher B ou C.
+
+**Histórico das perguntas anteriores:**
 - **A. Qual é o "preço normal" depois da Black?** A resposta foi "sim, volta a R$ 149 / 249 / 499". Atenção ao efeito:
   - com R$ 149 no mensal, o Start fica **mais caro que todos os concorrentes** (Nuvemshop R$ 69, WBuy e Tray R$ 59) e **o comparativo deixa de vencer na mensalidade** depois de 30/11;
   - só ganharia no custo total para quem vende muito.
   - **Recomendação:** o **preço normal continua R$ 57 / 147 / 347 no mensal** (já é o menor que vence por pouco). A Black fica toda no compromisso mais longo (seção 14.6), com anual e semestral muito mais vantajosos, que **voltam ao normal no dia 01/12**.
   - Assim, a contagem é verdadeira ("depois de 30/11, o anual volta a custar R$ X") e o comparativo continua vencendo o ano todo.
-- **B. Semestral:** o sistema ainda não tem plano semestral (só mensal e anual). Criar o semestral agora para a Black? Sugestão: **sim**, com preço por mês entre o mensal e o anual (seção 14.6).
+- **B. Semestral:** abortado pelo dono (03/11).
 
 ---
 
@@ -668,28 +672,46 @@ O mesmo componente, com o mesmo fim e o mesmo relógio, em todos os lugares:
 - `placar_rivais`, `placar_planos`, `placar_itens`: a súmula, com `fonte`, `coletadoEm`, `atualizadoPor`.
 - `placar_historico`: auditoria das mudanças.
 
-### 14.6 Oferta da Black: o argumento mais forte no semestral e no anual (proposta, a confirmar na pergunta A)
+### 14.6 Oferta da Black e preço depois da Black (decisão de 03/11, 3ª rodada)
 
-| Plano | Mensal (preço normal, segue igual) | **Semestral Black** (novo) | **Anual Black** |
-|---|---|---|---|
-| Start | R$ 57/mês | **R$ 47/mês** e paga 5, leva 6 → **R$ 39,17/mês** | R$ 37/mês e paga 10, leva 12 → **R$ 30,83/mês** |
-| Pro | R$ 147/mês | **R$ 133/mês** e paga 5, leva 6 → **R$ 110,83/mês** | R$ 119/mês e paga 10, leva 12 → **R$ 99,17/mês** |
-| Scale | R$ 347/mês | **R$ 322/mês** e paga 5, leva 6 → **R$ 268,33/mês** | R$ 297/mês e paga 10, leva 12 → **R$ 247,50/mês** |
+**O dono decidiu:**
+- **sem plano semestral** (abortado);
+- depois da Black, um **meio-termo**: "não posso aumentar tanto e não me importo em ficar mais caro numericamente".
 
-- **Mensagem principal:** "**Black NextLevel: Start a R$ 30,83/mês no anual, com o preço travado enquanto você for cliente. Só até 30/11.**"
-- **Depois de 01/12** (preço normal, agendado):
-  - o anual volta para 37 / 119 / 297 por mês, **sem os 2 meses grátis**;
-  - o semestral volta para 47 / 133 / 322 por mês, sem o mês grátis;
-  - quem assinou na Black mantém o preço e as condições.
-- **"De/por" honesto:**
-  - "de R$ 37/mês (anual depois da Black) por R$ 30,83/mês";
-  - "de R$ 57/mês no mensal por R$ 30,83/mês no anual Black".
-- **Contra a concorrência**, no anual e no plano de entrada: Tray R$ 39, WBuy R$ 47,20, Nuvemshop R$ 59. **O anual Black vence todos**, e com taxa zero da plataforma.
-- **Parceiros:** durante a Black, a 1ª mensalidade das lojas indicadas paga 100% de comissão. No anual, vale sobre o valor equivalente a uma mensalidade.
-- **Cuidado de sistema:**
-  - o semestral pede o ciclo novo `SEMIANNUAL` (o enum de ciclos é texto e não precisa de SQL), mais o checkout e a cobrança de 6 meses;
-  - "paga 10, leva 12" e "paga 5, leva 6" viram meses de bônus na assinatura, e não um desconto escondido;
-  - um teste garante o valor cobrado e a data da próxima cobrança.
+**Proposta A (recomendada):** a Black são os preços de hoje. No dia **01/12** entra o preço normal, um pouco acima.
+
+| Plano | **Black: mensal** | **Black: anual** (paga 10, leva 12) | **Depois da Black: mensal** | **Depois da Black: anual (por mês)** |
+|---|---|---|---|---|
+| Start | **R$ 57** | R$ 37/mês → **R$ 30,83/mês** | R$ 67 (+18%) | R$ 49 |
+| Pro | **R$ 147** | R$ 119/mês → **R$ 99,17/mês** | R$ 167 (+14%) | R$ 139 |
+| Scale | **R$ 347** | R$ 297/mês → **R$ 247,50/mês** | R$ 397 (+14%) | R$ 339 |
+
+**Por que esse meio-termo funciona:**
+- **No custo total (mensalidade + taxa da plataforma), continua vencendo todos:**
+  - o Start (R$ 67) vence todos para quem vende **a partir de R$ 2,1 mil por mês**;
+  - o Pro (R$ 167), a partir de R$ 9,3 mil;
+  - o Scale (R$ 397), a partir de R$ 28,1 mil.
+  - Nos R$ 30 mil de referência do comparativo, vence em todos os planos. No Scale vence por pouco: R$ 397 contra R$ 410 da Loja Integrada.
+- O comparativo de "custo por faixa" segue começando em R$ 3 mil sem mudar a mensagem.
+- O **placar de benefícios** não muda: o preço não é um lance.
+- **Numericamente**, o mensal do Start (R$ 67) fica acima de WBuy e Tray (R$ 59) e abaixo da Nuvemshop (R$ 69), como o dono aceitou.
+  - O anual depois da Black (R$ 49) fica acima de Tray (R$ 39) e WBuy (R$ 47,20).
+  - O texto destaca o custo total e a taxa zero, sem "mais barato" (D221).
+
+**A contagem fica verdadeira:**
+- "Até 30/11: Start R$ 57 no mensal ou R$ 30,83/mês no anual, com o preço travado enquanto você for cliente. Depois: R$ 67";
+- "de R$ 67 por R$ 57" e "de R$ 49 por R$ 30,83 no anual".
+
+**Alternativas, se quiser outro degrau:**
+- **B, mais suave:** R$ 62 / 157 / 377, vencendo a partir de R$ 1,6 mil / 8,2 mil / 25,3 mil por mês.
+- **C, mais forte:** R$ 77 / 177 / 397, vencendo a partir de R$ 3,1 mil / 10,4 mil / 28,1 mil; o comparativo por faixa passaria a começar em R$ 5 mil.
+
+**No sistema:**
+- uma versão de preço agendada para `effectiveFrom = 01/12/2026 00h00`, com motivo "D228";
+- os 2 meses grátis do anual só para assinaturas feitas até 30/11 às 23h59;
+- assinatura feita na Black guarda o preço dela (versão congelada na assinatura);
+- testes antes e depois da virada;
+- o comparativo e o placar leem o preço vigente.
 
 ### 13.5 (complemento) "Seleção dos concorrentes" e a regra para sempre vencer
 

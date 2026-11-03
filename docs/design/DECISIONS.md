@@ -2440,3 +2440,11 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
 - **Pendentes:**
   - A. O "preço normal" depois da Black. A recomendação é manter o mensal em R$ 57 / 147 / 347 e a Black ficar no semestral e no anual; voltar a 149 / 249 / 499 faria o comparativo perder na mensalidade.
   - B. Criar o ciclo semestral.
+
+## D228 — [Black] Sem semestral; preço depois da Black em meio-termo (2026-11-03)
+- **Dono:** "vamos abortar o plano semestral"; depois da Black, "um meio-termo; não posso aumentar tanto e não me importo em ficar mais caro numericamente".
+- **Proposta A (recomendada, aguardando o "ok"):**
+  - **na Black:** os preços de hoje (R$ 57 / 147 / 347 no mensal; anual de R$ 37 / 119 / 297 por mês com 2 meses grátis);
+  - **a partir de 01/12:** R$ 67 / 167 / 397 no mensal e R$ 49 / 139 / 339 por mês no anual.
+  - No custo total continua vencendo todos: o Start a partir de R$ 2,1 mil de vendas por mês, o Pro a partir de R$ 9,3 mil e o Scale a partir de R$ 28,1 mil.
+- **Alternativas:** B (62 / 157 / 377) e C (77 / 177 / 397). Detalhes na seção 14.6 do documento dos Parceiros v2.
