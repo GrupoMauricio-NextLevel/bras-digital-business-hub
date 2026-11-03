@@ -30,6 +30,7 @@ import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
 import { AreaTheme } from "@/design-system/components/area-theme";
 import { PainelTech } from "@/components/app/painel-tech";
+import { FaixaBlack } from "@/components/black/faixa-black";
 import { negociosAbertos } from "@/lib/negocios";
 
 /** Painel (clima visual) do usuário: fornecedor e lojista variam por perfil. */
@@ -141,7 +142,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
         // D217: painel do lojista só com a marca do cliente; sem o fio e o botão "Marcas do grupo" da NextLevel.
-        banner={<>{supportBar}{commerceStore ? null : ecoBar}{banner}{botaoIa}</>}
+        banner={<>{supportBar}{commerceStore ? null : ecoBar}{commerceStore ? <FaixaBlack lugar="lojista" /> : null}{banner}{botaoIa}</>}
         capa={capaLoja}
         marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : "Painel da loja" } : undefined}
         extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
@@ -172,7 +173,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
     <>
     {parceiroEc ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
     {parceiroEc || isMaster ? <PainelTech /> : null}
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{banner}{botaoIa}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
     </>

@@ -2448,3 +2448,22 @@ Pedido do dono: aplicar `nextlevel-ecommerce-kit-completo-v1.zip`. Pacote em `do
   - **a partir de 01/12:** R$ 67 / 167 / 397 no mensal e R$ 49 / 139 / 339 por mês no anual.
   - No custo total continua vencendo todos: o Start a partir de R$ 2,1 mil de vendas por mês, o Pro a partir de R$ 9,3 mil e o Scale a partir de R$ 28,1 mil.
 - **Alternativas:** B (62 / 157 / 377) e C (77 / 177 / 397). Detalhes na seção 14.6 do documento dos Parceiros v2.
+
+## D229 — [Black] BF1 no ar: campanha única, contagem verdadeira e preço novo agendado (2026-11-03)
+- **Dono aprovou a proposta A da D228** (depois da Black: R$ 67 / 167 / 397 no mensal e 49 / 139 / 339 por mês no anual) e mandou começar o pacote do `parceiros-v2-crm-niveis-planos.md`.
+- **Campanha** (`src/lib/domain/campanha-black.ts`, configuração `campanha.black-2026`):
+  - de 03/11 até **30/11/2026 às 23h59 de Brasília**;
+  - o Master liga, desliga ou prorroga em `/master/black`, mas nunca encurta o fim anunciado.
+- **Preço:**
+  - versão D228 agendada para o instante seguinte ao fim (`revisao-d228.ts`, `agendarRevisaoD228`);
+  - prorrogar acrescenta versões novas: o preço da Black a partir do fim antigo e a D228 a partir do fim novo, porque as versões de preço são só de inserção.
+- **Anual na Black:** 2 meses grátis (paga 10, leva 12; `anualBlackCents`), congelado na assinatura. Vale na contratação e na troca de plano.
+- **Telas:**
+  - faixa com a contagem regressiva (`FaixaBlack`, `ContagemRegressiva`) no topo dos sites públicos (E-commerce e grupo) e nos três painéis;
+  - nos cartões de plano: "Depois da Black: ~~R$ 67~~" e o anual Black;
+  - "a partir de" do topo da home com o anual Black.
+  - Tudo some sozinho quando a Black acaba.
+- **Testes:**
+  - `tests/campanha-black.test.ts` (estado, anual, virada de preço, prorrogação, permissão);
+  - os testes de preço passaram a valer antes e depois de 01/12;
+  - corrigido o teste de parceiros, que dependia da data real do cadastro.

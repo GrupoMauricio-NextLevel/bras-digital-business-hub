@@ -4,9 +4,11 @@ import type { Database } from "@/db/client";
 import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { COMISSOES_D220, PRECOS_D220, REF_D220, descontoAnualBps } from "@/lib/finance/revisao-d220";
+import { PRECOS_D228, REF_D228 } from "@/lib/finance/revisao-d228";
 import { ENTRY_OFFER_KEY, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
 import { isMaster, requireMasterFn, type Actor } from "./access";
+import { campanhaBlack } from "./campanha-black";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { assertReauth, CORPORATE, recordFinancialAudit } from "./fin-audit";
 
@@ -51,6 +53,7 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
     await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: 1, family: r.family, productKey: r.productKey ?? null, cycle: r.cycle ?? null, partnerKind: r.partnerKind ?? null, firstBps: r.firstBps, recurringBps: r.recurringBps ?? 0, recurringMonths: r.recurringMonths ?? 0, holdDays: r.holdDays, benefit: r.benefit, effectiveFrom: new Date(0).toISOString(), reason: "Tabela de comissões aprovada pelo dono (D90)" }).onConflictDoNothing();
   }
   await aplicarRevisaoD220(db);
+  await agendarRevisaoD228(db);
   return created;
 }
 
@@ -78,6 +81,25 @@ async function aplicarRevisaoD220(db: Database) {
     const ult = regras.find((x) => x.key === r.key);
     if (ult?.reason.includes(REF_D220)) continue;
     await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: ult?.holdDays ?? 14, benefit: r.benefit, effectiveFrom: vigencia, reason: "Programa de parceiros da E-commerce: indicador 20% + 10%, agência 30% + 15% (D220)" }).onConflictDoNothing();
+  }
+}
+
+/**
+ * Preço depois da Black (D228): nova versão agendada para o instante seguinte ao fim da campanha, uma vez por banco.
+ * Até lá vale a D220 (versão menor já vigente); depois, a D228 (versão maior). Ver `campanha-black.ts`.
+ */
+async function agendarRevisaoD228(db: Database) {
+  const fim = (await campanhaBlack(db)).fim;
+  const vigencia = new Date(Date.parse(fim) + 1000).toISOString();
+  const prods = await db.select({ id: catalogProducts.id, key: catalogProducts.key }).from(catalogProducts).where(inArray(catalogProducts.key, Object.keys(PRECOS_D228)));
+  for (const p of prods) {
+    const novo = PRECOS_D228[p.key]!;
+    const versoes = await db.select().from(catalogPriceVersions).where(eq(catalogPriceVersions.productId, p.id)).orderBy(desc(catalogPriceVersions.version));
+    if (versoes.some((v) => v.approvalRef === REF_D228)) continue;
+    for (const cycle of ["MONTHLY", "ANNUAL"] as const) {
+      const ult = versoes.find((v) => v.cycle === cycle);
+      await db.insert(catalogPriceVersions).values({ id: newId("cpv"), productId: p.id, cycle, version: (ult?.version ?? 0) + 1, amountCents: cycle === "MONTHLY" ? novo.mensal : novo.anual, platformFeeBps: 0, methods: ult?.methods ?? ["PIX", "CARD"], pixDiscountBps: ult?.pixDiscountBps ?? 0, cardMaxInstallments: ult?.cardMaxInstallments ?? 1, cardMarkupBps: ult?.cardMarkupBps ?? 0, annualDiscountBps: cycle === "ANNUAL" ? descontoAnualBps(novo) : null, effectiveFrom: vigencia, reason: "Preço depois da Black NextLevel, meio-termo (D228)", approvalRef: REF_D228 }).onConflictDoNothing();
+    }
   }
 }
 

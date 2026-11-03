@@ -1,0 +1,30 @@
+/* Black Friday NextLevel (D229): preto profundo, verde neon e ciano; contagem em Geist Mono. Só aparece durante a campanha. */
+.bk-faixa { position: relative; z-index: 30; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem 1rem; padding: .55rem 1rem; color: #e8fff4;
+  background: radial-gradient(60% 140% at 0% 50%, rgb(34 224 138 / .18), transparent 60%), radial-gradient(60% 140% at 100% 50%, rgb(34 211 238 / .16), transparent 60%), #05070d;
+  font-size: .86rem; line-height: 1.25; }
+.bk-faixa::after { content: ""; position: absolute; inset: auto 0 0 0; height: 2px; background: linear-gradient(90deg, #22e08a, #22d3ee, #7c5cff, #22e08a); background-size: 300% 100%; animation: bk-linha 6s linear infinite; }
+@keyframes bk-linha { to { background-position: 300% 0; } }
+.bk-faixa--painel { border-radius: 1.1rem; margin-bottom: 1rem; justify-content: space-between; padding: .7rem 1rem; }
+.bk-faixa--painel::after { border-radius: 0 0 1.1rem 1.1rem; }
+.bk-selo { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--ec-mono, var(--pn-mono, ui-monospace, monospace)); font-size: .72rem; letter-spacing: .14em; font-weight: 700; color: #22e08a; text-shadow: 0 0 12px rgb(34 224 138 / .7); }
+.bk-selo b { color: #fff; text-shadow: none; font-weight: 700; }
+.bk-raio { width: .5rem; height: .5rem; border-radius: 9999px; background: #22e08a; box-shadow: 0 0 10px #22e08a; animation: bk-pulso 1.6s ease-in-out infinite; }
+@keyframes bk-pulso { 50% { opacity: .35; } }
+.bk-faixa-texto { color: #d6e7ff; }
+.bk-cta { display: inline-flex; align-items: center; min-height: 2.25rem; padding: 0 1rem; border-radius: 9999px; font-weight: 700; font-size: .82rem; color: #05070d; background: linear-gradient(90deg, #22e08a, #22d3ee); box-shadow: 0 0 18px -4px rgb(34 224 138 / .8); }
+.bk-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.bk-contagem { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--ec-mono, var(--pn-mono, ui-monospace, monospace)); color: #e8fff4; }
+.bk-contagem-rotulo { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: #8ff5c7; }
+.bk-contagem-blocos { display: inline-flex; gap: .25rem; }
+.bk-bloco { display: inline-flex; align-items: baseline; gap: .1rem; padding: .18rem .38rem; border-radius: .45rem; background: rgb(255 255 255 / .07); box-shadow: inset 0 0 0 1px rgb(34 224 138 / .35); }
+.bk-bloco b { font-variant-numeric: tabular-nums; font-weight: 600; color: #fff; }
+.bk-bloco i { font-style: normal; font-size: .7em; color: #8ff5c7; }
+.bk-contagem--md .bk-bloco b { font-size: 1.15rem; }
+.bk-contagem--lg .bk-bloco { padding: .45rem .7rem; border-radius: .75rem; }
+.bk-contagem--lg .bk-bloco b { font-size: 2rem; }
+.bk-contagem--ultima .bk-bloco { box-shadow: inset 0 0 0 1px rgb(255 93 143 / .7); }
+.bk-contagem--ultima .bk-contagem-rotulo { color: #ff8fae; }
+@media (max-width: 640px) { .bk-faixa--site .bk-faixa-texto { display: none; } .bk-contagem-rotulo { display: none; } }
+@media (prefers-reduced-motion: reduce) { .bk-faixa::after, .bk-raio { animation: none; } }
+.bk-faixa--painel .bk-faixa-texto { flex: 1 1 18rem; }

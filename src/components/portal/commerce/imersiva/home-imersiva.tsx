@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Banknote, ShieldCheck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import { getDb } from "@/db/client";
+import { anualBlackCents, blackAgora } from "@/lib/domain/campanha-black";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { isReleased, THEME_CATALOG } from "@/lib/themes/catalog";
 import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
@@ -38,7 +39,9 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const link = "underline underline-offset-4 text-link";
 
   const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
-  const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round(p.annualCents! / 12))) : null;
+  // Black NextLevel (D229): durante a campanha, o "a partir de" já é o anual com 2 meses grátis.
+  const black = (await blackAgora(await getDb())).ativa;
+  const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round((black ? anualBlackCents(p.annualCents!) : p.annualCents!) / 12))) : null;
   // D220: degraus da NextLevel (Start, Pro, Scale) para o comparativo plano a plano.
   const degrausNl = pagos.map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, anualMesCents: Math.round(p.annualCents! / 12) }));
 

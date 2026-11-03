@@ -1,3 +1,4 @@
+import { FIM_BLACK_PADRAO } from "@/lib/domain/campanha-black";
 import { beforeEach, describe, expect, it } from "vitest";
 import { freshDb } from "./setup";
 import { groupPriceTable } from "@/lib/domain/precos/tabela-grupo";
@@ -17,7 +18,7 @@ describe("tabela de preços do grupo", () => {
     const book = await getPriceBook(ctx.db);
     expect(rows.find((r) => r.source === "price_book.offers.STORE_SUBDOMAIN" && r.kind === "MENSAL")!.cents).toBe(book.offers.STORE_SUBDOMAIN.monthlyCents);
     const start = rows.find((r) => r.source.startsWith("catalog:COMMERCE_START") && r.kind === "MENSAL")!;
-    expect(start).toMatchObject({ cents: 5_700, status: "VALENDO" }); // revisão D220
+    expect(start).toMatchObject({ cents: Date.now() <= Date.parse(FIM_BLACK_PADRAO) ? 5_700 : 6_700, status: "VALENDO" }); // D220 na Black; D228 depois (D229)
     expect(rows.find((r) => r.source.startsWith("catalog:BRAS_PRATA"))!.status).toBe("RASCUNHO");
     expect(rows.find((r) => r.item === "Excursão: taxa por fardo")!.status).toBe("DESLIGADO");
     expect(divergences.map((d) => d.topic)).toEqual(expect.arrayContaining(["Duas tabelas de preço", "Documento × sistema"]));

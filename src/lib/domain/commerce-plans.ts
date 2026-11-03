@@ -14,6 +14,7 @@ import { emitEvent } from "./events";
 import { CORPORATE, recordFinancialAudit } from "./fin-audit";
 import { activeOffer, getCatalogItem, listCatalog } from "./nl-catalog";
 import { paidCountForSubscription, recordSaleCommission } from "./corporate-commissions";
+import { anualBlackCents, blackAgora } from "./campanha-black";
 
 /**
  * Planos da NextLevel E-commerce (D90). A assinatura guarda o preço e a taxa de plataforma CONGELADOS na contratação.
@@ -34,9 +35,9 @@ export async function subscriptionOf(db: Database, storeId: string) {
   return (await db.query.nlSubscriptions.findFirst({ where: eq(nlSubscriptions.storeId, storeId) })) ?? null;
 }
 
-async function planPrice(db: Database, productKey: string, cycle: PlanCycle) {
+async function planPrice(db: Database, productKey: string, cycle: PlanCycle, now = new Date()) {
   if (!(COMMERCE_PLAN_KEYS as readonly string[]).includes(productKey)) throw new DomainError("PLAN", "Plano inválido. Para o Enterprise, peça uma proposta.");
-  const p = await getCatalogItem(db, { key: productKey });
+  const p = await getCatalogItem(db, { key: productKey }, {}, now);
   if (!p) throw new DomainError("PLAN_UNAVAILABLE", "Este plano não está disponível agora.");
   const v = p.prices[cycle];
   if (!v || v.amountCents === null) throw new DomainError("PLAN_PRICE", "Preço do plano não publicado.");
@@ -58,8 +59,10 @@ export async function entryOfferFor(db: Database, taxId: string | null, cycle: P
 export async function startCommerceSubscription(db: Database, input: { storeId: string; productKey: string; cycle: PlanCycle; taxId: string | null; actor?: Actor | null; now?: Date; allowOffer?: boolean }) {
   const now = input.now ?? new Date();
   if (await subscriptionOf(db, input.storeId)) throw new DomainError("SUB_EXISTS", "Esta loja já tem assinatura.");
-  const price = await planPrice(db, input.productKey, input.cycle);
+  const price = await planPrice(db, input.productKey, input.cycle, now);
   const { version } = price;
+  // Black NextLevel (D229): anual com 2 meses grátis, congelado na assinatura (vale nas renovações enquanto ativa).
+  const black = await blackAgora(db, now);
   // Porta de entrada da Commerce ligada (D126): teste reverso que cai no grátis, no lugar da oferta de entrada clássica.
   const door = input.allowOffer === false || !(await inTreatment(db, "PORTA_COMMERCE", input.storeId, now)) ? null : await activeDoor(db, "NEXTLEVEL_COMMERCE", now);
   if (door && input.taxId) {
@@ -67,7 +70,8 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
     if (claimed.length) {
       // Experimento com os preços da Proposta (D140): mensalidade e taxa do plano vêm da porta, congeladas na assinatura.
       const dp = door.planPrices?.[input.productKey];
-      const amountCents = dp ? dp.monthlyCents * (input.cycle === "ANNUAL" ? (door.annualPromo?.paidMonths ?? 12) : 1) : price.amountCents;
+      const base = dp ? dp.monthlyCents * (input.cycle === "ANNUAL" ? (door.annualPromo?.paidMonths ?? 12) : 1) : price.amountCents;
+      const amountCents = input.cycle === "ANNUAL" && black.ativa ? anualBlackCents(base) : base;
       const feeBps = dp?.feeBps ?? price.feeBps;
       const ends = new Date(now.getTime() + door.trialDays * DAY);
       const id = newId("nls");
@@ -78,7 +82,8 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
       return { subscriptionId: id, trial: door.trialDays > 0, trialEndsAt: door.trialDays > 0 ? ends : null, offerApplied: true };
     }
   }
-  const { amountCents, feeBps } = price;
+  const { feeBps } = price;
+  const amountCents = input.cycle === "ANNUAL" && black.ativa ? anualBlackCents(price.amountCents) : price.amountCents;
   let offer = input.allowOffer === false ? null : await entryOfferFor(db, input.taxId, input.cycle, now);
   if (offer && input.taxId) {
     // A chave única (oferta, CPF/CNPJ) é a trava real contra duas lojas do mesmo cliente ao mesmo tempo.
@@ -169,7 +174,10 @@ export async function choosePlan(db: Database, actor: Actor, raw: z.input<typeof
     return startCommerceSubscription(db, { storeId: store.id, productKey: input.productKey, cycle: input.cycle, taxId: store.taxId ?? null, actor, now, allowOffer: !store.paidUntil && !!store.taxId });
   }
   if (sub.productKey === input.productKey && sub.cycle === input.cycle && !["cancelled", "expired"].includes(sub.status)) return { subscriptionId: sub.id, trial: sub.status === "trial", trialEndsAt: sub.trialEndsAt ? new Date(sub.trialEndsAt) : null, offerApplied: !!sub.offerKey };
-  const { version, amountCents, feeBps } = await planPrice(db, input.productKey, input.cycle);
+  const pp = await planPrice(db, input.productKey, input.cycle, now);
+  const { version, feeBps } = pp;
+  // Trocar para o anual durante a Black também ganha os 2 meses grátis (D229).
+  const amountCents = input.cycle === "ANNUAL" && (await blackAgora(db, now)).ativa ? anualBlackCents(pp.amountCents) : pp.amountCents;
   await db.update(financeInvoices).set({ status: "CANCELED" }).where(and(eq(financeInvoices.storeId, store.id), eq(financeInvoices.status, "OPEN"), sql`${financeInvoices.dedupeKey} like ${`NLSUB:${sub.id}:%`}`));
   const reopened: NlSubscriptionStatus = sub.status === "cancelled" || sub.status === "expired" ? "pending_payment" : sub.status;
   await db.update(nlSubscriptions).set({ productKey: input.productKey, cycle: input.cycle, priceVersionId: version.id, amountCents, platformFeeBps: feeBps, firstPeriodCents: input.cycle === "MONTHLY" ? sub.firstPeriodCents : null, status: reopened, cancelAtPeriodEnd: false, canceledAt: null, updatedAt: now.toISOString() }).where(eq(nlSubscriptions.id, sub.id));

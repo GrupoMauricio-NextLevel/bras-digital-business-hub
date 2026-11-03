@@ -1,3 +1,4 @@
+import { FIM_BLACK_PADRAO } from "@/lib/domain/campanha-black";
 import { beforeEach, describe, expect, it } from "vitest";
 import { freshDb } from "./setup";
 import { breakEvenGmvCents, effectiveMonthly, entryChecks, simulateEntry, type EntryModel, type Scenario } from "@/lib/finance/entry-sim";
@@ -48,8 +49,8 @@ describe("proposta no Master", () => {
     const r = await proposalReport(ctx.db, ctx.actors.master);
     expect(r.proposal.status).toBe("RASCUNHO");
     const commerce = r.brands.find((b) => b.brand === "NEXTLEVEL_COMMERCE")!;
-    expect(commerce.current.ladder.map((p) => p.monthlyCents)).toEqual([5_700, 14_700, 34_700]); // revisão D220
-    expect(commerce.current.annual.paidMonths).toBe(8); // anual de R$ 444 ≈ 8 mensalidades de R$ 57 (D220)
+    expect(commerce.current.ladder.map((p) => p.monthlyCents)).toEqual(Date.now() <= Date.parse(FIM_BLACK_PADRAO) ? [5_700, 14_700, 34_700] : [6_700, 16_700, 39_700]); // D220 na Black; D228 depois (D229)
+    expect(commerce.current.annual.paidMonths).toBe(Date.now() <= Date.parse(FIM_BLACK_PADRAO) ? 8 : 9); // anual ÷ mensal: 444/57 na Black; 588/67 depois
     const sd = r.brands.find((b) => b.brand === "SUPERDROP")!;
     expect(sd.current.ladder.map((p) => [p.monthlyCents, p.feeBps])).toEqual([[4_900, 500], [9_700, 500], [19_700, 300]]);
     for (const b of r.brands) {

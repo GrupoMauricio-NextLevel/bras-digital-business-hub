@@ -24,6 +24,8 @@ void CPFS;
 
 async function newPartner(n = 1, extra: { pixKey?: string } = {}) {
   const r = await registerPartner(ctx.db, { name: `Parceiro Número ${n}`, email: `p${n}@exemplo.com`, password: "senha-forte-1", taxId: validCpf(n + 50), phone: "11999990000", acceptTerms: true, ...extra }, now);
+  // O cadastro acontece no "agora" do teste (10/out), e não na data real do computador (a carência é por mês do cadastro).
+  await ctx.db.update(partners).set({ createdAt: now.toISOString() }).where(eq(partners.userId, r.userId));
   const u = (await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!;
   return { ...r, actor: actorFromUser(u) };
 }

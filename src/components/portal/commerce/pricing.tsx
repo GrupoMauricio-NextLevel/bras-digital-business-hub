@@ -3,6 +3,8 @@ import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Gift, Sparkles } from "lucide-react";
 import { formatBRL } from "@/lib/money";
+import { ContagemRegressiva } from "@/components/black/contagem-regressiva";
+import "@/components/black/black.css";
 import "./commerce.css";
 import { CONCORRENTES, melhorPlano } from "@/lib/marcas/comparativo-ecommerce";
 
@@ -25,7 +27,9 @@ const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace("."
  * Planos da NextLevel E-commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
  * informado, soma mensalidade e taxa de plataforma e destaca o plano mais em conta. É estimativa, não promessa.
  */
-export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes" }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string }) {
+export type PricingBlack = { fim: string; restanteMs: number; depois: Record<string, { mensal: number; anual: number }> } | null;
+
+export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes", black = null }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string; black?: PricingBlack }) {
   const [cycle, setCycle] = React.useState<"MONTHLY" | "ANNUAL">("MONTHLY");
   const [faixa, setFaixa] = React.useState(2);
   const venda = FAIXAS[faixa]!;
@@ -54,6 +58,13 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
         </p>
       ) : null}
 
+      {black ? (
+        <div className="bk-faixa bk-faixa--painel mx-auto mb-6 max-w-4xl" role="note">
+          <span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span>
+          <span className="bk-faixa-texto">Anual com <b>2 meses grátis</b> e preço travado enquanto você for cliente.</span>
+          <ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="sm" />
+        </div>
+      ) : null}
       <div className="mx-auto mb-10 grid max-w-4xl gap-6 rounded-[1.75rem] border border-border bg-surface p-5 shadow-[var(--ds-shadow-sm)] sm:p-7 md:grid-cols-[auto_1fr] md:items-center">
         <div role="group" aria-label="Forma de pagamento" className="cm-seg mx-auto md:mx-0">
           <button type="button" aria-pressed={cycle === "MONTHLY"} onClick={() => setCycle("MONTHLY")}>Mensal</button>
@@ -91,7 +102,8 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
               ) : (
                 <>
                   <p className="mt-5 flex items-baseline gap-1"><span className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tabular-nums">{formatBRL(mensal(p))}</span><span className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>/mês</span></p>
-                  <p className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>{cycle === "ANNUAL" ? <>{formatBRL(p.annualCents!)} por ano, pagamento único</> : <>ou {formatBRL(Math.round(p.annualCents! / 12))}/mês no anual</>}</p>
+                  {black?.depois[p.key] ? <p className={`text-xs ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>Depois da Black: <s>{formatBRL(cycle === "ANNUAL" ? Math.round(black.depois[p.key]!.anual / 12) : black.depois[p.key]!.mensal)}/mês</s></p> : null}
+                  <p className={`text-sm ${destaque ? "text-band-foreground/80" : "text-muted-foreground"}`}>{cycle === "ANNUAL" ? <>{formatBRL(p.annualCents!)} por ano, pagamento único</> : <>ou {formatBRL(Math.round(p.annualCents! / 12))}/mês no anual{black ? " Black (2 meses grátis)" : ""}</>}</p>
                   {taxaZero ? (
                     <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${destaque ? "bg-white/10" : "bg-surface-muted"}`}><b>Taxa zero</b> da plataforma nas vendas<span className="mt-1 block text-xs opacity-80">{A_MAIS[p.key] ?? "Da NextLevel, você paga só a mensalidade"}</span></p>
                   ) : <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${destaque ? "bg-white/10" : "bg-surface-muted"}`}>

@@ -156,7 +156,8 @@ describe("Commerce: oferta de entrada, planos, assinatura e taxa de plataforma",
     const owner = (await ctx.db.query.users.findFirst({ where: eq(users.storeId, r.storeId) }))!;
     const actor = { userId: owner.id, role: "STORE_OWNER" as const, organizationId: owner.organizationId, supplierId: null, storeId: r.storeId };
     const first = (await ensureSubscriptionInvoice(ctx.db, store))!;
-    await choosePlan(ctx.db, actor, { productKey: "COMMERCE_SCALE", cycle: "ANNUAL" });
+    // Fora da Black (D229): na Black o anual sairia com 2 meses grátis (coberto em campanha-black.test.ts).
+    await choosePlan(ctx.db, actor, { productKey: "COMMERCE_SCALE", cycle: "ANNUAL" }, new Date("2026-10-02T12:00:00Z"));
     expect((await ctx.db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, first.invoiceId) }))!.status).toBe("CANCELED");
     expect((await ensureSubscriptionInvoice(ctx.db, store))!.amountCents).toBe(356_400);
     await runSubscriptionJobs(ctx.db, new Date("2026-10-05T12:00:00Z"));
