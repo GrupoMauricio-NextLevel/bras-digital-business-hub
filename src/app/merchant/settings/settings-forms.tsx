@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CreditCard, Truck, Globe, Save } from "lucide-react";
@@ -11,7 +12,7 @@ import { StatusBadge } from "@/components/app/status-badge";
 import { ShippingRules } from "./shipping-rules";
 import { ShippingCard } from "@/app/supplier/settings/shipping-card";
 import type { ShippingConfig } from "@/lib/shipping/quote";
-import { configureIntegrationAction, updateStoreAction, connectMercadoPagoAction, disconnectMercadoPagoAction } from "@/app/actions/merchant";
+import { updateStoreAction, connectMercadoPagoAction, disconnectMercadoPagoAction } from "@/app/actions/merchant";
 
 type StoreData = { name: string; tagline: string; whatsapp: string; instagram: string; legalName: string; cnpj: string; contactEmail: string; address: string; slug: string; paymentStatus: string; paymentProvider: string | null; mpConnected: boolean; mpTest: boolean; webhookUrl: string; shippingStatus: string; shippingProvider: string | null; domainStatus: string; customDomain: string | null };
 
@@ -21,8 +22,6 @@ export function SettingsForms({ store, shippingConfig, connect }: { store: Store
   const [pending, start] = React.useTransition();
   const [mpToken, setMpToken] = React.useState("");
   const [mpKey, setMpKey] = React.useState("");
-  const [domain, setDomain] = React.useState(store.customDomain ?? "");
-  const integrate = (kind: "payments" | "shipping" | "domain", provider: string) => start(async () => { const r = await configureIntegrationAction({ kind, provider }); if (r.ok) { toast.success("Configuração salva (demonstração)"); router.refresh(); } else toast.error(r.error); });
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -72,11 +71,8 @@ export function SettingsForms({ store, shippingConfig, connect }: { store: Store
         </CardContent>
       </Card>
       <Card id="domain" className="lg:col-span-2">
-        <CardHeader><div className="flex items-center gap-2"><Globe className="size-4 text-muted-foreground" /><div><CardTitle>Domínio próprio</CardTitle><CardDescription>Aponte um CNAME para a plataforma. Verificação automática em breve.</CardDescription></div></div><StatusBadge value={store.domainStatus} /></CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          <FormField label="Domínio" htmlFor="domain" className="flex-1"><Input id="domain" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="www.sualoja.com.br" /></FormField>
-          <Button variant="secondary" loading={pending} disabled={!domain} onClick={() => integrate("domain", domain)}>Solicitar conexão</Button>
-        </CardContent>
+        <CardHeader><div className="flex items-center gap-2"><Globe className="size-4 text-muted-foreground" /><div><CardTitle>Domínio próprio</CardTitle><CardDescription>{store.customDomain ?? "Use o domínio da sua marca na loja."}</CardDescription></div></div><StatusBadge value={store.domainStatus} /></CardHeader>
+        <CardContent><Link href="/merchant/storefront#dominio" className="font-semibold text-link underline underline-offset-4">{store.customDomain ? "Ver o DNS e verificar a conexão" : "Conectar meu domínio"}</Link></CardContent>
       </Card>
     </div>
   );

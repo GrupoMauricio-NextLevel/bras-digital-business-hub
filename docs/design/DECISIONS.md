@@ -2526,3 +2526,21 @@ Pedido do dono depois de ver o BF3 no celular.
 - **Menu do celular:** painel opaco de tela cheia (nada da página por trás), itens numerados, botão principal e entrar no pé, página travada enquanto aberto; na E-commerce, painel escuro de tecnologia.
 - **Checkout dos planos (`/cadastro` da E-commerce):** página escura de tecnologia sem a foto; plano e ciclo (anual Black −46%), dados da conta e resumo vivo (12 meses, 2 meses grátis, 0% de taxa, total, "hoje você paga R$ 0", economia no ano, contagem e garantias). Recursos por plano com os números da D226.
 - **Simulador de /planos:** a economia aparece grande em neon ("você economiza R$ X/ano") contra a opção de menor custo entre as outras, com barras de custo; no anual, cada cartão mostra a economia do ano.
+
+## D234 — Domínio próprio liberado para todo lojista da E-commerce, de ponta a ponta (2026-11-03)
+Pedido do dono: "Um cliente novo precisa poder configurar seu domínio próprio, desbloqueia isso agora".
+- **Liberado em todos os planos da E-commerce** (`montarPerfil`: `customDomain` sempre ligado na E-commerce). O SuperDrop não muda.
+- **Fluxo no painel** (Loja virtual → "Endereço e domínio próprio"):
+  - o lojista informa o domínio;
+  - o painel mostra os registros de DNS. Com "www" (ou outro nome antes do domínio) é um CNAME para o host da plataforma. Sem nada antes do domínio, é um registro A para o IP da hospedagem mais o CNAME do "www";
+  - "Verificar agora" confere o DNS e se o endereço já abre a loja com HTTPS (`/api/store/dominio`). Quando os dois dão certo, o domínio fica conectado.
+- **Proxy:** um host que não é da plataforma e está cadastrado abre a vitrine da loja (`lojaPorDominio`, com cache curto).
+- **Endereço da loja:** quando o domínio está conectado, `storeUrl` passa a usá-lo em qualquer plano.
+- **Um domínio só pode estar ligado a uma loja.**
+- **Hospedagem:**
+  - com `RENDER_API_KEY` e `RENDER_SERVICE_ID` no ambiente, o domínio é cadastrado sozinho no Render (o certificado sai automático);
+  - sem eles, o domínio aparece na fila do Master ("Domínios próprios aguardando conexão") para a equipe cadastrar.
+- **Alvo do DNS:** `LOJA_DOMINIO_CNAME` (padrão `nextlevel-demo.onrender.com`) e `LOJA_DOMINIO_IP` (padrão `216.24.57.1`).
+
+## D235 — Proposta: lojas no nível Shopify (temas grátis, banners, chat, central do cliente) (2026-11-03)
+Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-banners-chat-central.md`, fases L1–L6, com perguntas ao dono.

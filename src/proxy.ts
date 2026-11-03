@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { slugFromHost } from "@/lib/store-url";
 import { routeHost } from "@/lib/host-routing";
-import { brandPreviewAllowed } from "@/lib/brand";
+import { brandOfHostStrict, brandPreviewAllowed } from "@/lib/brand";
+
+/** Host que pode ser domínio próprio de uma loja (D234): não é da plataforma, nem técnico (localhost, IP, onrender). */
+export function podeSerDominioDeLoja(host: string | null | undefined): boolean {
+  const h = (host ?? "").split(":")[0]!.toLowerCase();
+  if (!h.includes(".") || /^[\d.]+$/.test(h) || h.endsWith(".onrender.com") || h.endsWith(".test") || h.endsWith(".local")) return false;
+  return !brandOfHostStrict(h) && !slugFromHost(h);
+}
 
 /**
  * Subdomínio da loja: `slug.<SUPERDROP_ROOT_DOMAIN>/x` é servido por `/store/slug/x`.
@@ -32,7 +39,20 @@ function withAttribution(req: NextRequest, res: NextResponse) {
   return res;
 }
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
+  // Domínio próprio da loja (D234): host cadastrado por um lojista abre a vitrine dele (o resto do roteamento não se aplica).
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  if (podeSerDominioDeLoja(host)) {
+    const { getDb } = await import("@/db/client");
+    const { lojaPorDominio } = await import("@/lib/domain/dominio-proprio");
+    const slug = await lojaPorDominio(await getDb(), host!).catch(() => null);
+    if (slug) {
+      const url = req.nextUrl.clone();
+      if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/")) return withAttribution(req, NextResponse.next(withPath(req)));
+      url.pathname = `/store/${slug}${url.pathname === "/" ? "" : url.pathname}`;
+      return withAttribution(req, NextResponse.rewrite(url, withPath(req)));
+    }
+  }
   return withAttribution(req, route(req));
 }
 

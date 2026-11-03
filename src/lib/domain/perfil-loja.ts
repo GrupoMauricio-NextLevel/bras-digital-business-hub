@@ -85,6 +85,8 @@ export function montarPerfil(f: { store: Pick<Store, "id" | "offer">; marca: Bra
   const base = ecommerce ? recursosDoPlano(f.tabela, f.plano?.productKey) : { ...OFFER_FEATURES[f.store.offer] };
   // Direito comprado à parte soma (chave do entitlement = nome do recurso).
   for (const k of FEATURES) if (f.direitos.has(k) && !(ecommerce && SO_SUPERDROP.includes(k))) base[k] = true;
+  // D234: domínio próprio é de todo lojista E-commerce, em qualquer plano (não depende da tabela do Master).
+  if (ecommerce) base.customDomain = true;
   return {
     storeId: f.store.id, marca: f.marca, modalidade: f.modalidade, independente: f.modalidade === "INDEPENDENT", ecommerce,
     oferta: ecommerce ? null : f.store.offer, plano: f.plano, pode: base, vocabulario: ecommerce ? VOC_ECOMMERCE : VOC_SUPERDROP,

@@ -73,8 +73,8 @@ export function buildAlerts(snap: TowerSnapshot): Alert[] {
   const quiet = snap.stores.filter((s) => s.status === "ACTIVE" && s.orders30 === 0 && s.ageDays > 14);
   add({ key: "store-quiet", severity: "info", count: quiet.length, title: "Lojas sem venda em 30 dias (risco de cancelamento)", detail: "Boa hora para oferecer tráfego pago ou conteúdo: " + quiet.slice(0, 3).map((s) => s.name).join(", "), href: "/master/stores" });
 
-  const dom = snap.stores.filter((s) => s.offer === "STORE_OWN" && s.customDomain && s.domainStatus === "PENDING");
-  add({ key: "domain-pending", severity: "info", count: dom.length, title: "Domínios próprios aguardando conexão", detail: dom.map((s) => s.customDomain).join(", "), href: "/master/stores" });
+  const dom = snap.stores.filter((s) => s.customDomain && s.domainStatus === "PENDING"); // D234: de qualquer plano
+  add({ key: "domain-pending", severity: "info", count: dom.length, title: "Domínios próprios aguardando conexão (cadastre na hospedagem se não houver RENDER_API_KEY)", detail: dom.map((s) => s.customDomain).join(", "), href: "/master/stores" });
 
   const rank = { danger: 0, warning: 1, info: 2 } as const;
   return out.sort((a, b) => rank[a.severity] - rank[b.severity] || b.count - a.count);
