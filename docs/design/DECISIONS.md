@@ -2616,3 +2616,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - **N4:** experiência imersiva, menu grande e banners por contexto.
   - Recursos novos de N3/N4, como "compre o look", pacote com desconto e recomendação por IA, ficam para uma rodada própria.
 - **L5, desempenho:** não mexido nesta rodada. O cache da vitrine pede cuidado com preço, estoque e campanhas ao vivo e terá rodada própria, com medição antes e depois.
+
+## D241 — Respostas do dono: trocar o provedor de e-mail e regra da IA por plano (2026-11-04)
+- **E-mail:** sai a Hostinger. Entra um provedor com API completa (domínio e caixas), para nada depender da equipe. Candidatos: Migadu, Purelymail ou Zoho Partner. A escolha final depende de pesquisa de preço e API.
+- **IA:** os planos mais caros absorvem o custo. Nos planos básicos, o lojista pode usar a própria chave de API. A lógica completa será consolidada num documento próprio, com a cota por plano, a chave do lojista guardada com `encryptSecret`, a ordem de consumo, o teto de custo e a volta às respostas por regras quando a IA não estiver disponível.

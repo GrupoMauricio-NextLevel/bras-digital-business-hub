@@ -47,3 +47,7 @@
 - **L4: feito (D240).** Falta: endereços salvos, favoritos e pedido de troca formal.
 - **L5: a fazer.** Cache da vitrine com renovação ao publicar e mudar preço ou estoque; imagens por CDN; medição Lighthouse antes e depois.
 - **L6: textos feitos (D240).** Faltam recursos novos de N3/N4: compre o look, pacote com desconto e recomendação.
+
+## Respostas do dono (04/11), D241
+- E-mail: trocar a Hostinger por um provedor com API completa.
+- IA: os planos mais caros absorvem o custo; nos básicos, o cliente usa a própria chave de API. Falta consolidar a lógica.
