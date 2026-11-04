@@ -2597,3 +2597,22 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - **O resto:** segue para os guias do comprador e, se o cliente quiser, para o lojista (caixa de Atendimento, D206).
 - **Resposta da loja com o chat fechado:** o botão do chat confere a cada 30 s se a loja respondeu e acende um aviso. A conversa continua guardada no aparelho do cliente.
 - **Ainda não feito:** IA generativa no chat. Ela depende de o dono decidir se conta na cota de IA do plano.
+
+## D240 — L4: "Minha conta" do cliente final, sem senha; L6: o que cada nível de tema soma (2026-11-04)
+- **L4, Minha conta** (`/store/<loja>/conta`, ícone de pessoa no cabeçalho de toda loja):
+  - O cliente informa o e-mail, recebe um código de 6 dígitos (vale 10 minutos) e entra.
+  - O código é derivado do segredo da plataforma: não precisou de tabela nova.
+  - A sessão é um cookie assinado por loja, válido por 30 dias.
+  - A resposta é a mesma para e-mail com e sem pedido, para não revelar quem comprou.
+- **Dentro da conta:**
+  - resumo com o total de pedidos e quantos estão a caminho;
+  - a lista de pedidos, com a etapa real, os itens, o código de rastreio, "Ver pedido" e "Comprar de novo";
+  - troca e devolução pelo chat da loja.
+  - Ficam para depois: endereços salvos, favoritos e pedido de troca formal.
+- **L6, temas por preço:** os textos dos níveis passaram a dizer o que cada um soma. A divisão de recursos é a da D237:
+  - **N1:** loja completa, com banners em várias frentes;
+  - **N2:** vídeo, lookbook, depoimentos e compra rápida;
+  - **N3:** campanhas agendadas, carrossel automático e composição livre;
+  - **N4:** experiência imersiva, menu grande e banners por contexto.
+  - Recursos novos de N3/N4, como "compre o look", pacote com desconto e recomendação por IA, ficam para uma rodada própria.
+- **L5, desempenho:** não mexido nesta rodada. O cache da vitrine pede cuidado com preço, estoque e campanhas ao vivo e terá rodada própria, com medição antes e depois.

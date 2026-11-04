@@ -43,7 +43,7 @@
 
 ## Próximas fases (seguir nesta ordem)
 - **L2: feito (D238).**
-- **L3:** chat com IA, usando os dados da loja e do pedido; a resposta do lojista volta ao cliente.
-- **L4:** Minha conta, com entrada por código no e-mail.
-- **L5:** cache da vitrine e imagens por CDN.
-- **L6:** temas por preço (o que cada nível soma).
+- **L3: feito (D239).** Falta a IA generativa no chat; o dono precisa decidir se ela conta na cota do plano.
+- **L4: feito (D240).** Falta: endereços salvos, favoritos e pedido de troca formal.
+- **L5: a fazer.** Cache da vitrine com renovação ao publicar e mudar preço ou estoque; imagens por CDN; medição Lighthouse antes e depois.
+- **L6: textos feitos (D240).** Faltam recursos novos de N3/N4: compre o look, pacote com desconto e recomendação.

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, MessageCircle, Menu, PackageSearch, Search, ShoppingBag, X } from "lucide-react";
+import { ChevronDown, MessageCircle, Menu, PackageSearch, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import * as React from "react";
 import { useCart } from "./cart-context";
 import { formatBRL } from "@/lib/money";
@@ -77,6 +77,7 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
           {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-52 lg:block xl:w-64" /> : null}
           {/* Com busca e menu grande, o atalho vira só o ícone para a barra caber numa linha. */}
           <Link href={`${base}/acompanhar`} aria-label={showSearch ? "Acompanhar pedido" : undefined} title={showSearch ? "Acompanhar pedido" : undefined} className={cn("hidden min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden />{showSearch ? null : " Acompanhar pedido"}</Link>
+          <Link href={`${base}/conta`} aria-label="Minha conta" title="Minha conta" className={cn("inline-flex min-h-11 items-center rounded-md px-2.5 py-2 text-sm", T.hover)}><UserRound className="size-5" aria-hidden /></Link>
           {whatsapp ? <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer" className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm sm:inline-flex", dark ? "text-neutral-300" : "text-neutral-600", T.hover)}><MessageCircle className="size-4" /> WhatsApp</a> : null}
           <Link href={`${base}/cart`} className={cn("relative inline-flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
             <ShoppingBag className="size-5" />

@@ -10,10 +10,11 @@ export const LEVELS = [1, 2, 3, 4] as const;
 export type ThemeLevel = (typeof LEVELS)[number];
 
 export const LEVEL_INFO: Record<ThemeLevel, { name: string; short: string; goal: string }> = {
-  1: { name: "Grátis", short: "N1", goal: "Loja funcional" },
-  2: { name: "Profissional", short: "N2", goal: "Apresentação profissional" },
-  3: { name: "Avançado", short: "N3", goal: "Composição comercial" },
-  4: { name: "Exclusivo", short: "N4", goal: "Experiência exclusiva" },
+  // D240 (L6): o grátis já é uma loja completa; cada nível pago soma o que o nome promete.
+  1: { name: "Grátis", short: "N1", goal: "Loja completa, com banners em várias frentes" },
+  2: { name: "Profissional", short: "N2", goal: "Vídeo, lookbook, depoimentos e compra rápida" },
+  3: { name: "Avançado", short: "N3", goal: "Campanhas agendadas, carrossel automático e composição livre" },
+  4: { name: "Exclusivo", short: "N4", goal: "Experiência imersiva, menu grande e banners por contexto" },
 };
 
 /** Famílias (identidade + segmento). `base` são os temas genéricos (Starter e Signature). */
@@ -67,9 +68,9 @@ export const CAPABILITY_LABEL: Record<Capability, string> = {
   "editor.variants": "Variantes de layout aprovadas", "editor.addApproved": "Espaços extras aprovados",
   "editor.reorder": "Reorganizar seções", "editor.addSections": "Adicionar qualquer seção do nível", "editor.duplicate": "Duplicar seções", "editor.sectionTemplates": "Salvar modelos de seção",
   "editor.pageTemplates": "Modelos de página e campanha", "editor.conditions": "Banners por página ou categoria",
-  "hero.image": "Destaque com imagem própria", "banner.fixedSlots": "4 banners na página inicial",
-  "hero.slides": "Destaque com até 2 slides", "banner.extraSlots": "Banners extras na home e na coleção",
-  "hero.carousel": "Carrossel com até 6 slides", "banner.mosaic": "Mosaico de banners", "banner.betweenShowcases": "Banners entre vitrines", "campaign.sets": "Conjuntos de campanha",
+  "hero.image": "Destaque com imagem própria", "banner.fixedSlots": "Banners em várias frentes da página inicial",
+  "hero.slides": "Destaque com até 3 slides (4 no Profissional)", "banner.extraSlots": "Banners extras na home e na coleção",
+  "hero.carousel": "Carrossel com até 6 slides, automático no Avançado", "banner.mosaic": "Mosaico de banners", "banner.betweenShowcases": "Banners entre vitrines", "campaign.sets": "Conjuntos de campanha",
   "hero.video": "Destaque com vídeo", "banner.schedule": "Agendamento de banners", "banner.conditions": "Banners por contexto",
   "navigation.cards": "Cartões de navegação (novidades, ofertas)", "marketing.welcomeCoupon": "Cupom de boas-vindas",
   "hero.layers": "Destaque em camadas com movimento", "navigation.categoryBanner": "Banner no topo de cada categoria",
