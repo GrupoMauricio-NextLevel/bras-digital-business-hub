@@ -24,9 +24,9 @@ const configSchema = z.object({
   organizacao: z.string().max(80).default(""),
   modeloPadrao: z.string().min(2).max(60).default("gpt-4.1"),
   modeloEconomico: z.string().min(2).max(60).default("gpt-4.1-mini"),
-  planoTexto: z.string().default("COMMERCE_PRO"),
+  planoTexto: z.string().default("COMMERCE_START"),
   planoAvancado: z.string().default("COMMERCE_SCALE"),
-  cotas: z.record(z.string(), z.number().int().nonnegative()).default({ COMMERCE_START: 3, COMMERCE_PRO: 200, COMMERCE_SCALE: 1000, COMMERCE_ENTERPRISE: 3000 }),
+  cotas: z.record(z.string(), z.number().int().nonnegative()).default({ COMMERCE_START: 40, COMMERCE_PRO: 350, COMMERCE_SCALE: 1200, COMMERCE_ENTERPRISE: 3000 }),
   testadoEm: z.string().nullable().default(null),
   testeOk: z.boolean().default(false),
 });
@@ -35,7 +35,14 @@ export type IaConfig = z.infer<typeof configSchema>;
 export async function getIaConfig(db: Database): Promise<IaConfig> {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, KEY) });
   const p = configSchema.safeParse(row?.value ?? {});
-  return p.success ? p.data : configSchema.parse({});
+  const c = p.success ? p.data : configSchema.parse({});
+  // D243: as cotas antigas de fábrica (3/200/1000) viram as aprovadas (40/350/1.200); cota mudada pelo dono fica como está.
+  // Junto, as ferramentas de texto passam a valer desde o Start (que tem 40 usos por mês).
+  if (c.cotas.COMMERCE_START === 3 && c.cotas.COMMERCE_PRO === 200 && c.cotas.COMMERCE_SCALE === 1000) {
+    c.cotas = { ...c.cotas, COMMERCE_START: 40, COMMERCE_PRO: 350, COMMERCE_SCALE: 1200 };
+    if (c.planoTexto === "COMMERCE_PRO") c.planoTexto = "COMMERCE_START";
+  }
+  return c;
 }
 async function gravar(db: Database, actor: Actor, value: IaConfig) {
   await db.insert(platformSettings).values({ key: KEY, value, updatedBy: actor.userId }).onConflictDoUpdate({ target: platformSettings.key, set: { value, updatedBy: actor.userId, updatedAt: new Date().toISOString() } });

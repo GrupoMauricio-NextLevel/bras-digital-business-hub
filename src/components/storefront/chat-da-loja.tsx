@@ -81,6 +81,7 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
       const linha: Linha = d.tipo === "produtos" ? { id: id(), de: "assistente", texto: d.texto, produtos: d.produtos, oferecerLoja: true }
         : d.tipo === "pedido" ? { id: id(), de: "assistente", texto: d.texto, pedido: d }
         : d.tipo === "pedir-pedido" ? { id: id(), de: "assistente", texto: d.texto, oferecerLoja: true }
+        : d.tipo === "ia" ? { id: id(), de: "assistente", texto: d.texto, oferecerLoja: true }
         : porGuia();
       setLinhas((l) => [...l, linha]);
     });

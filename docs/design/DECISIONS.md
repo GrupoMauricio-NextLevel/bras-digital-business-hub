@@ -2643,3 +2643,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - o painel avisa quando a cota passar de 80%;
   - cada loja tem um teto de custo por mês.
 - **Implementação:** próxima fase.
+
+## D244 — IA por plano implementada (D243) (2026-11-04)
+- **`ia-por-plano.ts`:**
+  - `fonteDeIa` escolhe a chave: primeiro a cota do plano (chave da NextLevel, com o uso real ligado no Master), depois a chave do lojista. Sem nenhuma das duas, devolve nulo e o chamador responde por regras.
+  - No chat da loja, o Start só usa a chave do lojista; o Pro e o Scale usam a cota.
+  - `registrarUsoIa` conta 1 uso por mês de Brasília, só quando o uso foi pela cota.
+  - `situacaoIa` alimenta o painel.
+- **Cotas:** as de fábrica antigas (3/200/1000) viram as aprovadas (40/350/1.200), e as ferramentas de texto passam a valer desde o Start. Cotas que o dono mudou no Master ficam como estão.
+- **Painel "Pede pro Maurício":**
+  - cartão "IA do seu plano", com o uso do mês, a barra e o aviso aos 80%, e como o chat da loja está respondendo;
+  - cartão "Use sua chave": a chave da OpenAI do lojista é conferida na hora (lista de modelos, sem custo), guardada com `encryptSecret` e nunca mostrada. Só o dono da loja cadastra.
+- **Chat da loja:** a pergunta que não for de pedido nem achar produto vai à IA, quando a loja tem IA no chat. A IA responde só com os fatos da loja (produtos e preços, Mercado Pago, frete pelo CEP) e nunca inventa. Se falhar, o chat volta aos guias.
+- **Ainda em "Beta · chega em breve":** as ferramentas do painel (descrição, SEO e outras). Quando forem ligadas, já usam `fonteDeIa` e `registrarUsoIa`.
