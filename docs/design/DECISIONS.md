@@ -2574,3 +2574,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - o vídeo agora vale a partir do N2;
   - a agenda de campanha vale a partir do N3;
   - a estrutura (reordenar e acrescentar) segue do N3 em diante. A composição grátis já vem completa, e o SuperDrop não muda.
+
+## D238 — L2: área "Banners" no painel do lojista (2026-11-04)
+- **`/merchant/banners`** (menu "Banners" no Escritório da E-commerce e em "Loja virtual" no SuperDrop) mostra numa tela só:
+  - a barra de aviso;
+  - o destaque do topo;
+  - a dupla de banners e os cartões;
+  - o mosaico e a faixa;
+  - o banner de cada categoria.
+- **Em cada banner, o lojista pode:**
+  - trocar a imagem (computador e celular) pela biblioteca da loja;
+  - mudar o título, o texto, o botão e o link;
+  - agendar o início e o fim (a partir do nível 3; nos níveis abaixo, o campo aparece com cadeado e leva aos temas);
+  - ocultar, remover ou acrescentar, até o limite do nível.
+- **Sem segunda cópia:** a tela lê e grava os mesmos modelos do editor de tema (`pontosDeBanner`), com as mesmas regras de nível no servidor. "Publicar banners" salva os rascunhos e publica.
+- **Prévia:** um celular ao lado mostra a loja publicada.

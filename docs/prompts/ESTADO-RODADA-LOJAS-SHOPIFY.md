@@ -42,7 +42,7 @@
 - A reordenação e o acréscimo de seções continuam do N3 em diante, para não mudar o SuperDrop.
 
 ## Próximas fases (seguir nesta ordem)
-- **L2:** `/merchant/banners`, uma área de banners por ponto da loja, usando os mesmos dados do editor.
+- **L2: feito (D238).**
 - **L3:** chat com IA, usando os dados da loja e do pedido; a resposta do lojista volta ao cliente.
 - **L4:** Minha conta, com entrada por código no e-mail.
 - **L5:** cache da vitrine e imagens por CDN.
