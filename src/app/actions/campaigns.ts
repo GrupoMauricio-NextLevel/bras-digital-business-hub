@@ -37,3 +37,23 @@ export async function deleteCampaignAction(id: string) {
     return undefined;
   });
 }
+
+/** Kit Black da loja (D242): liga ou atualiza com 1 clique (cupom + faixa com contagem + selo). */
+export async function ligarKitBlackAction(input: { percentual: number; fim: string; codigo?: string }) {
+  return runAction(async () => {
+    const { storeId, slug, db } = await ctx();
+    const { ligarKitBlack } = await import("@/lib/domain/kit-black-loja");
+    const r = await ligarKitBlack(db, storeId, { ...input, fim: brt(input.fim) });
+    refresh(slug); revalidatePath("/merchant/descontos");
+    return r;
+  });
+}
+export async function desligarKitBlackAction() {
+  return runAction(async () => {
+    const { storeId, slug, db } = await ctx();
+    const { desligarKitBlack } = await import("@/lib/domain/kit-black-loja");
+    await desligarKitBlack(db, storeId);
+    refresh(slug); revalidatePath("/merchant/descontos");
+    return undefined;
+  });
+}

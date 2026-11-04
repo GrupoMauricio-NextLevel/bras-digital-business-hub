@@ -51,3 +51,10 @@
 ## Respostas do dono (04/11), D241
 - E-mail: trocar a Hostinger por um provedor com API completa.
 - IA: os planos mais caros absorvem o custo; nos básicos, o cliente usa a própria chave de API. Falta consolidar a lógica.
+
+## 04/11: BF4 feito (D242); regra da IA aprovada (D243)
+Próximos passos, nesta ordem:
+1. Implementar a IA por plano (D243): cota, tela "Use sua chave" e IA no chat da loja para Pro e Scale.
+2. Adicional Marca Completa: pesquisar Migadu, Purelymail e Zoho, escolher e implementar a contratação em 1 clique.
+3. L5: medir a velocidade, ligar o cache e medir de novo.
+4. Parceiros: fases PV0–PV8.

@@ -2620,3 +2620,26 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 ## D241 — Respostas do dono: trocar o provedor de e-mail e regra da IA por plano (2026-11-04)
 - **E-mail:** sai a Hostinger. Entra um provedor com API completa (domínio e caixas), para nada depender da equipe. Candidatos: Migadu, Purelymail ou Zoho Partner. A escolha final depende de pesquisa de preço e API.
 - **IA:** os planos mais caros absorvem o custo. Nos planos básicos, o lojista pode usar a própria chave de API. A lógica completa será consolidada num documento próprio, com a cota por plano, a chave do lojista guardada com `encryptSecret`, a ordem de consumo, o teto de custo e a volta às respostas por regras quando a IA não estiver disponível.
+
+## D242 — BF4: kit Black na loja do lojista, em 1 clique (2026-11-04)
+- **Onde liga:** Painel da loja → Campanhas → "Kit Black da sua loja", só na E-commerce. O lojista escolhe o desconto (5 a 70%), o código (padrão BLACK10) e a data de fim (padrão: o fim da Black NextLevel).
+- **O que liga:**
+  - um cupom real em Cupons, com as regras de sempre (nunca abaixo do custo; não vale em loja de rede);
+  - a faixa preta no topo da vitrine, com o cupom para copiar e a contagem regressiva;
+  - o selo "BLACK" nos cartões de produto.
+- **Some sozinho na data de fim.** Desligar desativa o cupom; o histórico fica em Cupons. "Atualizar" ajusta o mesmo cupom, sem duplicar.
+- **Onde fica guardado:** a configuração fica em `platform_settings` (`loja.kit-black.<loja>`), sem tabela nova.
+
+## D243 — Regra da IA por plano (aprovada pelo dono em 04/11)
+| Plano | Painel (Maurício) | Chat da loja com IA | Chave própria do lojista |
+|---|---|---|---|
+| Start | 40 usos/mês (nós pagamos) | Só com a chave do lojista; sem ela, respostas por regras (D239) | Sim, sem limite (o lojista paga) |
+| Pro | 350 usos/mês (nós pagamos) | Incluso, dentro da cota | Opcional, para passar da cota |
+| Scale | 1.200 usos/mês (nós pagamos) | Incluso | Opcional |
+
+- **Ordem de uso:** primeiro a cota do plano, depois a chave do lojista. Sem nenhuma das duas, as respostas voltam a ser por regras e nunca quebram.
+- **Segurança:**
+  - a chave fica guardada com `encryptSecret` e nunca aparece na tela;
+  - o painel avisa quando a cota passar de 80%;
+  - cada loja tem um teto de custo por mês.
+- **Implementação:** próxima fase.

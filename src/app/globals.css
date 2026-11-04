@@ -129,6 +129,7 @@ body { overflow-x: clip; }
 .sf-root { font-family: var(--sf-font-body, var(--font-sans)); }
 .sf-root h1, .sf-root h2 { font-family: var(--sf-font-heading, var(--font-display)); }
 .sf-root[data-buttons="outline"] .sf-on-image .sf-btn { color: #fff !important; border-color: #fff; }
+.sf-root[data-black] .sf-selo-black { display: inline-flex; } /* D242: selo do kit Black nos cartões de produto */
 .sf-root[data-buttons="outline"] .sf-btn { background: transparent !important; color: var(--sf-primary) !important; border: 2px solid var(--sf-primary); }
 
 
