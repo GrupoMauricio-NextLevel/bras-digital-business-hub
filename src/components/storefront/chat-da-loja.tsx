@@ -3,9 +3,12 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { MessageCircle, Send, X } from "lucide-react";
 import { buscarGuia, guias, type Guia } from "@/lib/ia/manual";
-import { abrirConversaComLojaAction, enviarParaLojaAction, mensagensDaLojaAction } from "@/app/actions/atendimento-loja";
+import { abrirConversaComLojaAction, enviarParaLojaAction, mensagensDaLojaAction, perguntarNaLojaAction } from "@/app/actions/atendimento-loja";
 
-type Linha = { id: string; de: "voce" | "assistente" | "loja" | "sistema"; texto: string; guia?: Guia; oferecerLoja?: boolean };
+type Produto = { nome: string; precoCents: number; href: string; imagem: string | null };
+type Pedido = { numero: number; etapa: string; detalhe: string; rastreio: string | null; href: string };
+type Linha = { id: string; de: "voce" | "assistente" | "loja" | "sistema"; texto: string; guia?: Guia; oferecerLoja?: boolean; produtos?: Produto[]; pedido?: Pedido };
+const brl = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 type MsgServidor = { id: string; autor: string; autorNome: string | null; texto: string; createdAt: string };
 
 /**
@@ -40,6 +43,22 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
     const t = setInterval(buscar, 5000);
     return () => { vivo = false; clearInterval(t); };
   }, [aberto, conversa, juntar, chave]);
+  // D239: com o chat fechado, confere a cada 30 s se a loja respondeu e acende o aviso no botão.
+  const [novaResposta, setNovaResposta] = React.useState(false);
+  React.useEffect(() => {
+    if (aberto || !conversa) return;
+    let vivo = true;
+    const ver = async () => {
+      const r = await mensagensDaLojaAction({ ...conversa, depoisDe: ultima.current });
+      if (!vivo || !r.ok) return;
+      const ms = r.data.mensagens as MsgServidor[];
+      if (ms.some((m) => m.autor !== "CLIENTE" && m.autor !== "SISTEMA")) setNovaResposta(true);
+      juntar(ms);
+    };
+    void ver();
+    const t = setInterval(ver, 30_000);
+    return () => { vivo = false; clearInterval(t); };
+  }, [aberto, conversa, juntar]);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end" }); }, [linhas.length, form]);
 
   const seq = React.useRef(0);
@@ -47,10 +66,24 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
   const perguntar = (t: string, g?: Guia) => {
     const q = t.trim(); if (!q) return; setTexto("");
     if (conversa) { start(async () => { const r = await enviarParaLojaAction({ ...conversa, texto: q, depoisDe: ultima.current }); if (r.ok) juntar(r.data.mensagens as MsgServidor[]); else setErro(r.error ?? "Não foi possível enviar."); }); return; }
-    const { guia } = g ? { guia: g } : buscarGuia("comprador", q);
-    setLinhas((l) => [...l, { id: id(), de: "voce", texto: q }, guia
-      ? { id: id(), de: "assistente", texto: "Veja como funciona:", guia, oferecerLoja: true }
-      : { id: id(), de: "assistente", texto: `Essa a própria ${loja} responde melhor. Quer mandar a sua pergunta para a loja?`, oferecerLoja: true }]);
+    const porGuia = () => {
+      const { guia } = g ? { guia: g } : buscarGuia("comprador", q);
+      return guia
+        ? { id: id(), de: "assistente" as const, texto: "Veja como funciona:", guia, oferecerLoja: true }
+        : { id: id(), de: "assistente" as const, texto: `Essa a própria ${loja} responde melhor. Quer mandar a sua pergunta para a loja?`, oferecerLoja: true };
+    };
+    setLinhas((l) => [...l, { id: id(), de: "voce", texto: q }]);
+    if (g) { setLinhas((l) => [...l, porGuia()]); return; }
+    // D239: primeiro os dados da loja (produtos e pedido); sem resultado, os guias do comprador.
+    start(async () => {
+      const r = await perguntarNaLojaAction({ slug, texto: q });
+      const d = r.ok ? r.data : { tipo: "nada" as const };
+      const linha: Linha = d.tipo === "produtos" ? { id: id(), de: "assistente", texto: d.texto, produtos: d.produtos, oferecerLoja: true }
+        : d.tipo === "pedido" ? { id: id(), de: "assistente", texto: d.texto, pedido: d }
+        : d.tipo === "pedir-pedido" ? { id: id(), de: "assistente", texto: d.texto, oferecerLoja: true }
+        : porGuia();
+      setLinhas((l) => [...l, linha]);
+    });
   };
   const ultimaPergunta = [...linhas].reverse().find((l) => l.de === "voce")?.texto ?? "";
   const enviarParaLoja = (e: React.FormEvent) => {
@@ -84,6 +117,23 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
             <div key={l.id} className="mr-6 space-y-2 rounded-2xl rounded-bl-md bg-neutral-100 px-3 py-2.5">
               {l.de === "loja" ? <b className="block text-xs">{loja}</b> : null}
               <p className="whitespace-pre-line">{l.texto}</p>
+              {l.produtos ? (
+                <ul className="grid gap-2">{l.produtos.map((p) => (
+                  <li key={p.href}><a href={p.href} className="flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-neutral-200 hover:ring-neutral-400">
+                    {p.imagem ? <Foto src={/^\/assets\//.test(p.imagem) ? `${p.imagem}?w=160` : p.imagem} /> : <span className="size-12 shrink-0 rounded-lg bg-neutral-200" aria-hidden />}
+                    <span className="min-w-0 flex-1"><b className="line-clamp-2 text-sm">{p.nome}</b><span className="text-sm tabular-nums">{brl(p.precoCents)}</span></span>
+                    <span className="shrink-0 text-xs font-bold underline">Ver</span>
+                  </a></li>
+                ))}</ul>
+              ) : null}
+              {l.pedido ? (
+                <div className="rounded-xl bg-white p-3 ring-1 ring-neutral-200">
+                  <p className="text-xs text-neutral-500">Situação</p><b className="block text-base">{l.pedido.etapa}</b>
+                  <p className="mt-1">{l.pedido.detalhe}</p>
+                  {l.pedido.rastreio ? <p className="mt-1 text-xs">Código de rastreio: <b className="select-all font-mono">{l.pedido.rastreio}</b></p> : null}
+                  <a href={l.pedido.href} className="mt-2 inline-block text-xs font-bold underline">Ver o pedido completo</a>
+                </div>
+              ) : null}
               {l.guia ? <><b className="block">{l.guia.titulo}</b><ol className="list-decimal space-y-1 pl-5">{l.guia.passos.map((p) => <li key={p}>{p}</li>)}</ol></> : null}
               {l.oferecerLoja && !conversa && !form ? <button type="button" onClick={() => setForm({ nome: "", whatsapp: "", texto: ultimaPergunta })} className="rounded-full bg-neutral-900 px-3 py-1.5 text-xs font-bold text-white">Mandar a pergunta para a loja</button> : null}
             </div>
@@ -109,8 +159,11 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
   );
   return (
     <>
-      {!aberto ? <button type="button" onClick={() => setAberto(true)} className="fixed bottom-3 left-3 z-[70] inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-3 text-sm font-bold text-white shadow-xl max-sm:bottom-24 max-sm:left-auto max-sm:right-3 max-sm:px-3" aria-label={`Dúvidas? Fale com a ${loja}`}><MessageCircle className="size-4" aria-hidden /><span className="max-sm:sr-only">Dúvidas?</span></button> : null}
+      {!aberto ? <button type="button" onClick={() => { setAberto(true); setNovaResposta(false); }} className="fixed bottom-3 left-3 z-[70] inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-3 text-sm font-bold text-white shadow-xl max-sm:bottom-24 max-sm:left-auto max-sm:right-3 max-sm:px-3" aria-label={novaResposta ? `Nova resposta da ${loja}` : `Dúvidas? Fale com a ${loja}`}><MessageCircle className="size-4" aria-hidden />{novaResposta ? <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-red-500 ring-2 ring-white" aria-hidden /> : null}<span className="max-sm:sr-only">Dúvidas?</span></button> : null}
       {aberto ? createPortal(painel, document.body) : null}
     </>
   );
 }
+
+// eslint-disable-next-line @next/next/no-img-element -- miniatura do produto no chat (já redimensionada)
+const Foto = ({ src }: { src: string }) => <img src={src} alt="" className="size-12 shrink-0 rounded-lg object-cover" loading="lazy" />;

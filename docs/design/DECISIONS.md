@@ -2589,3 +2589,11 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - ocultar, remover ou acrescentar, até o limite do nível.
 - **Sem segunda cópia:** a tela lê e grava os mesmos modelos do editor de tema (`pontosDeBanner`), com as mesmas regras de nível no servidor. "Publicar banners" salva os rascunhos e publica.
 - **Prévia:** um celular ao lado mostra a loja publicada.
+
+## D239 — L3: o chat da loja atende com os dados reais da loja (2026-11-04)
+- **Assistente da loja** (`responderNaLoja`, sem IA externa, sem custo nem cota):
+  - **Pedido:** quando o cliente pergunta sobre o pedido, o chat pede o número e o e-mail da compra. Com os dois certos, mostra a etapa real, o código de rastreio e o link do pedido.
+  - **Produto:** quando o cliente pergunta por um produto, o chat procura no catálogo ativo e mostra até 4 produtos, com foto, preço e link.
+  - **O resto:** segue para os guias do comprador e, se o cliente quiser, para o lojista (caixa de Atendimento, D206).
+- **Resposta da loja com o chat fechado:** o botão do chat confere a cada 30 s se a loja respondeu e acende um aviso. A conversa continua guardada no aparelho do cliente.
+- **Ainda não feito:** IA generativa no chat. Ela depende de o dono decidir se conta na cota de IA do plano.

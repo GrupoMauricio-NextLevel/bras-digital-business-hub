@@ -6,6 +6,7 @@ import { runAction } from "@/lib/action-result";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
 import { mensagensDepois } from "@/lib/domain/ia-conversas";
+import { responderNaLoja } from "@/lib/domain/assistente-loja";
 import { abrirAtendimentoDaLoja, abrirConversaComLoja, enviarParaLoja, listarAtendimentoDaLoja, pulsoAtendimentoDaLoja, resolverAtendimentoDaLoja, responderComoLoja } from "@/lib/domain/atendimento-loja";
 
 /** Atendimento da loja (D206): cliente final ↔ lojista. */
@@ -24,6 +25,10 @@ export async function enviarParaLojaAction(input: { id: string; token: string; t
 }
 export async function mensagensDaLojaAction(input: { id: string; token: string; depoisDe?: string | null }) {
   return runAction(async () => mensagensDepois(await getDb(), input.id, input.token, input.depoisDe));
+}
+/** Assistente da loja (D239): produtos do catálogo e situação do pedido, com os dados reais da loja. */
+export async function perguntarNaLojaAction(input: { slug: string; texto: string }) {
+  return runAction(async () => { await limite("loja-assistente", 120); return responderNaLoja(await getDb(), String(input.slug).slice(0, 80), String(input.texto)); });
 }
 // Lojista.
 export async function listarAtendimentoDaLojaAction(filtro: "ABERTAS" | "RESOLVIDAS") {
