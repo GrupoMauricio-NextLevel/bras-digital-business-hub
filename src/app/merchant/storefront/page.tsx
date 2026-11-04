@@ -14,6 +14,8 @@ import { lojaVirtualAgora } from "@/lib/domain/loja-agora";
 import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 import { DominioProprio } from "@/components/app/dominio-proprio";
 import { registrosDns } from "@/lib/domain/dominio-proprio";
+import { dominioDoEmail } from "@/lib/domain/email-marca";
+import { EmailDaMarca } from "@/components/app/email-da-marca";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +52,12 @@ export default async function StorefrontPage() {
               {podeDominio ? <DominioProprio dominio={store.customDomain} status={store.domainStatus} registros={store.customDomain ? registrosDns(store.customDomain) : []} enderecoAtual={url} /> : <div className="flex items-center justify-between gap-2"><span className="text-muted-foreground">{store.customDomain ?? "Domínio próprio"}</span><StatusBadge value={store.domainStatus} /></div>}
             </CardContent>
           </Card>
+          {podeDominio && store.customDomain ? (
+            <Card id="email">
+              <CardHeader><div><CardTitle>E-mail com o seu domínio</CardTitle><CardDescription>Passe confiança: responda clientes com @{dominioDoEmail(store.customDomain)}.</CardDescription></div></CardHeader>
+              <CardContent><EmailDaMarca dominioEmail={dominioDoEmail(store.customDomain)} /></CardContent>
+            </Card>
+          ) : null}
           <Card>
             <CardHeader><div><CardTitle>{commerce ? "Aparência ativa" : "Tema ativo"}</CardTitle><CardDescription>{commerce ? "A identidade visual não altera produtos, clientes ou pedidos." : "Troque sem perder dados."}</CardDescription></div></CardHeader>
             <CardContent className="text-sm"><div className="font-medium">{current?.theme.name ?? "Starter"}</div><div className="text-xs text-muted-foreground">Checklist da loja: {onboarding.percent}% concluído</div></CardContent>

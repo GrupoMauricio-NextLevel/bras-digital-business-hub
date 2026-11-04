@@ -46,3 +46,7 @@ export async function removerDominioAction() {
     return undefined;
   });
 }
+
+export async function verificarEmailAction() {
+  return runAction(async () => { const { db, storeId } = await ctx(); const { verificarEmailDaLoja } = await import("@/lib/domain/email-marca"); return verificarEmailDaLoja(db, storeId); });
+}

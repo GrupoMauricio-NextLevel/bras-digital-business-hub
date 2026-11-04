@@ -1,5 +1,5 @@
 /**
- * Pendências do dono (D236): o que só o dono pode fazer para o sistema rodar sozinho. Calculadas do ambiente: somem
+ * Pendências do dono (D236; e-mail saiu em D245: caminho grátis guiado, pago bloqueado): o que só o dono pode fazer para o sistema rodar sozinho. Calculadas do ambiente: somem
  * da lista quando ficam prontas (ninguém marca à mão). Sem segredo na tela: só diz se existe ou não.
  */
 export type PendenciaDono = { key: string; titulo: string; porque: string; passos: string[]; feita: boolean };
@@ -16,16 +16,6 @@ export function pendenciasDoDono(env: Record<string, string | undefined> = proce
         "Em Environment, crie RENDER_API_KEY (a chave) e RENDER_SERVICE_ID (o srv-…) e salve.",
       ],
       feita: !!env.RENDER_API_KEY && !!env.RENDER_SERVICE_ID,
-    },
-    {
-      key: "email-provedor",
-      titulo: "Ligar o provedor de e-mail profissional (adicional Marca Completa)",
-      porque: "Para criar as caixas de e-mail dos lojistas pelo painel, sem ninguém da equipe.",
-      passos: [
-        "Escolha o provedor (ver a decisão D236 no resumo da sessão).",
-        "Crie o token de API do provedor e cadastre em EMAIL_PROVEDOR_TOKEN no Render.",
-      ],
-      feita: !!env.EMAIL_PROVEDOR_TOKEN,
     },
   ];
 }

@@ -58,3 +58,6 @@ Próximos passos, nesta ordem:
 2. Adicional Marca Completa: pesquisar Migadu, Purelymail e Zoho, escolher e implementar a contratação em 1 clique.
 3. L5: medir a velocidade, ligar o cache e medir de novo.
 4. Parceiros: fases PV0–PV8.
+
+## 04/11: IA por plano feita (D244); e-mail grátis guiado e Marca Completa bloqueado (D245)
+Próximos passos: L5 (velocidade da loja) e depois os parceiros (PV0–PV8).

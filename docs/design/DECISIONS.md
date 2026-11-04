@@ -2656,3 +2656,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - cartão "Use sua chave": a chave da OpenAI do lojista é conferida na hora (lista de modelos, sem custo), guardada com `encryptSecret` e nunca mostrada. Só o dono da loja cadastra.
 - **Chat da loja:** a pergunta que não for de pedido nem achar produto vai à IA, quando a loja tem IA no chat. A IA responde só com os fatos da loja (produtos e preços, Mercado Pago, frete pelo CEP) e nunca inventa. Se falhar, o chat volta aos guias.
 - **Ainda em "Beta · chega em breve":** as ferramentas do painel (descrição, SEO e outras). Quando forem ligadas, já usam `fonteDeIa` e `registrarUsoIa`.
+
+## D245 — E-mail com o domínio sem custo para a NextLevel; o "Marca Completa" fica bloqueado (2026-11-04)
+- **Regra do dono:** o e-mail precisa ser sem custo. O que tiver custo fica bloqueado para ativar depois.
+- **Caminho grátis guiado:** em Loja virtual → "E-mail com o seu domínio", o lojista segue 3 passos para criar o e-mail no plano grátis do Zoho Mail, numa conta dele: até 5 caixas, acesso pela web e pelo app, sem IMAP. "Verificar meu e-mail" lê o registro MX do domínio raiz e mostra se está ligado e em qual provedor (Zoho, Google, Microsoft, Hostinger, Cloudflare ou outro). Nada de chave, conta ou custo nosso.
+- **Marca Completa (R$ 19,90 com 3 caixas):** aparece como "em breve", com cadeado e sem compra (`MARCA_COMPLETA.disponivel = false`). Para ligar no futuro, é preciso escolher um provedor com API completa e aprovar o custo.
+- **Pendências do dono:** o e-mail saiu da lista. Fica só a chave de API do Render.
+- **Pesquisa:**
+  - o plano grátis do Zoho segue em 2026, mas depende da região do data center;
+  - o Cloudflare Email Routing é grátis, só encaminha e exige trocar os nameservers do domínio para o Cloudflare;
+  - a Hostinger não liga o domínio pela API (D236).
