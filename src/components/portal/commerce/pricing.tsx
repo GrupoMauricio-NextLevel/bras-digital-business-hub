@@ -20,7 +20,7 @@ const rotulo = (c: number, i: number) => (c === 0 ? "Começando" : i === FAIXAS.
 /** Para quem é cada plano (o texto do catálogo repete o preço, que já aparece no cartão). */
 const PARA_QUEM: Record<string, string> = { COMMERCE_START: "Tudo para vender online, com taxa zero da plataforma nas vendas.", COMMERCE_PRO: "Para quem já vende todo mês: o Maurício escreve por você.", COMMERCE_SCALE: "Para operações com volume: o Maurício completo.", COMMERCE_ENTERPRISE: "Para operações grandes, com condições negociadas." };
 /** O que cada plano soma ao anterior (D220: com taxa zero, os planos se diferenciam pelo que entregam). Cotas da IA no Master. */
-const A_MAIS: Record<string, string> = { COMMERCE_START: "Loja completa: vitrine, checkout, cupons, campanhas, equipe", COMMERCE_PRO: "+ Maurício escreve descrições, títulos e respostas (200 por mês)", COMMERCE_SCALE: "+ Maurício completo: analisa vendas e cadastra por conversa (1.000 por mês)" };
+const A_MAIS: Record<string, string> = { COMMERCE_START: "Loja completa: vitrine, checkout, cupons, campanhas, equipe", COMMERCE_PRO: "+ mais produtos, mais pessoas, tema pago e suporte prioritário", COMMERCE_SCALE: "+ produtos sem limite, gerente de conta e migração inclusa" };
 const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace(".", ",")}%`;
 
 /**
@@ -29,7 +29,20 @@ const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace("."
  */
 export type PricingBlack = { fim: string; restanteMs: number; depois: Record<string, { mensal: number; anual: number }> } | null;
 
-export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes", black = null }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string; black?: PricingBlack }) {
+export type PricingBeneficio = { produtos: number | null; pessoas: number; ia: number; temaPago: boolean; suporte: string; migracao: string };
+const n = (x: number) => x.toLocaleString("pt-BR");
+/** Lista de benefícios do plano (D247): a mesma tabela do Master que trava o painel e alimenta o placar. */
+const listaBeneficios = (b: PricingBeneficio) => [
+  b.produtos === null ? "Produtos sem limite" : `Até ${n(b.produtos)} produtos`,
+  `${n(b.pessoas)} pessoas no painel`,
+  `Maurício (IA): ${n(b.ia)} usos por mês`,
+  "Atacado nativo: grade, preço por quantidade e pedido mínimo",
+  ...(b.temaPago ? ["Tema pago incluso"] : []),
+  `Suporte: ${b.suporte}`,
+  `Migração: ${b.migracao}`,
+];
+
+export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", solucoes = "/solucoes", black = null, beneficios = null }: { plans: PricingPlan[]; offer: PricingOffer; signupOpen: boolean; cta: string; suffix?: string; solucoes?: string; black?: PricingBlack; beneficios?: Record<string, PricingBeneficio> | null }) {
   const [cycle, setCycle] = React.useState<"MONTHLY" | "ANNUAL">("MONTHLY");
   const [faixa, setFaixa] = React.useState(2);
   const venda = FAIXAS[faixa]!;
@@ -126,7 +139,7 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
                   </p>}
                 </>
               )}
-              <ul className="mt-5 space-y-2 text-sm">{p.features.slice(0, 5).map((f) => textoRecurso(f)).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[var(--ec-link-escuro)]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
+              <ul className="mt-5 space-y-2 text-sm">{(beneficios?.[p.key] ? listaBeneficios(beneficios[p.key]!) : p.features.slice(0, 5).map((f) => textoRecurso(f))).map((f) => <li key={f} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${destaque ? "text-[var(--ec-link-escuro)]" : "text-success"}`} aria-hidden />{f}</li>)}</ul>
               <div className="mt-auto pt-6">
                 {p.quote
                   ? <Link href={`${solucoes}/${p.slug}${suffix}`} className={`cm-plan-btn ${destaque ? "cm-plan-btn--on" : "cm-plan-btn--ghost"}`}>Pedir proposta <ArrowRight className="size-4" aria-hidden /></Link>
@@ -137,7 +150,43 @@ export function CommercePricing({ plans, offer, signupOpen, cta, suffix = "", so
           );
         })}
       </ul>
+      {beneficios ? <ComparePlanos planos={pagos.map((p) => ({ key: p.key, nome: p.name.replace(/^Commerce /, "") }))} beneficios={beneficios} /> : null}
       <p className="mt-6 text-center text-xs text-muted-foreground">{taxaZero ? "Taxa zero da plataforma (NextLevel) nas vendas pagas com o checkout do Mercado Pago, nosso parceiro oficial. As tarifas de processamento do Mercado Pago (Pix e cartão) são as da sua conta. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra só a mensalidade, em fatura separada. Comparação com dados públicos de Nuvemshop, Loja Integrada, WBuy, Tray e Shopify (em dólar, convertida pelo câmbio de referência; veja o comparativo)." : "Estimativa de custo da plataforma: mensalidade mais a taxa sobre o valor dos produtos dos pedidos pagos. Não inclui as tarifas do Mercado Pago. O dinheiro das vendas cai direto na sua conta Mercado Pago; a NextLevel cobra o plano e a taxa em fatura separada."}</p>
     </div>
+  );
+}
+
+/** Tabela "Compare os planos" (D247): benefício a benefício, da mesma tabela do Master. Cartões no celular. */
+function ComparePlanos({ planos, beneficios }: { planos: { key: string; nome: string }[]; beneficios: Record<string, PricingBeneficio> }) {
+  const ps = planos.filter((p) => beneficios[p.key]);
+  if (!ps.length) return null;
+  const linhas: { rotulo: string; v: (b: PricingBeneficio) => React.ReactNode }[] = [
+    { rotulo: "Taxa da plataforma nas vendas", v: () => <b className="text-success">0%</b> },
+    { rotulo: "Produtos", v: (b) => (b.produtos === null ? <b>Sem limite</b> : `Até ${n(b.produtos)}`) },
+    { rotulo: "Pessoas no painel", v: (b) => n(b.pessoas) },
+    { rotulo: "Maurício (IA) por mês", v: (b) => `${n(b.ia)} usos` },
+    { rotulo: "Atacado nativo", v: () => <Check className="mx-auto size-4 text-success" aria-label="Sim" /> },
+    { rotulo: "Tema pago incluso", v: (b) => (b.temaPago ? <Check className="mx-auto size-4 text-success" aria-label="Sim" /> : <span className="text-muted-foreground">—</span>) },
+    { rotulo: "Suporte", v: (b) => b.suporte },
+    { rotulo: "Migração da loja", v: (b) => b.migracao },
+  ];
+  return (
+    <section className="mx-auto mt-12 max-w-5xl" aria-labelledby="compare-t">
+      <h3 id="compare-t" className="text-center font-[family-name:var(--nl-font-display)] text-2xl font-extrabold">Compare os planos</h3>
+      <div className="mt-6 hidden overflow-hidden rounded-[1.5rem] border border-border bg-surface md:block">
+        <table className="w-full text-sm">
+          <thead><tr className="border-b border-border"><th scope="col" className="p-4 text-left font-semibold text-muted-foreground">Benefício</th>{ps.map((p) => <th key={p.key} scope="col" className="p-4 text-center text-base font-extrabold">{p.nome}</th>)}</tr></thead>
+          <tbody>{linhas.map((l) => <tr key={l.rotulo} className="border-b border-border last:border-0"><th scope="row" className="p-4 text-left font-medium">{l.rotulo}</th>{ps.map((p) => <td key={p.key} className="p-4 text-center tabular-nums">{l.v(beneficios[p.key]!)}</td>)}</tr>)}</tbody>
+        </table>
+      </div>
+      <div className="mt-6 grid gap-3 md:hidden">
+        {ps.map((p) => (
+          <div key={p.key} className="rounded-2xl border border-border bg-surface p-4">
+            <p className="text-lg font-extrabold">{p.nome}</p>
+            <dl className="mt-2 grid gap-1.5 text-sm">{linhas.map((l) => <div key={l.rotulo} className="flex items-center justify-between gap-3 border-t border-border pt-1.5"><dt className="text-muted-foreground">{l.rotulo}</dt><dd className="text-right font-medium [&_svg]:mx-0">{l.v(beneficios[p.key]!)}</dd></div>)}</dl>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

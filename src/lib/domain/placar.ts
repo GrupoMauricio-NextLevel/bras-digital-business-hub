@@ -113,7 +113,23 @@ export function completarSumula(s: Sumula): Sumula {
 export async function sumulaAtual(db: Database): Promise<Sumula> {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, CHAVE_SUMULA) });
   const p = sumulaSchema.safeParse(row?.value);
-  return p.success ? completarSumula(p.data) : SUMULA_PADRAO;
+  const s = p.success ? completarSumula(p.data) : SUMULA_PADRAO;
+  // D247: os números da NextLevel (produtos, pessoas, IA, tema pago) vêm da tabela única de benefícios: o placar mostra o que vale de verdade.
+  const { beneficiosPorPlano } = await import("./beneficios-plano");
+  return comBeneficios(s, await beneficiosPorPlano(db));
+}
+
+/** Aplica a tabela de benefícios aos valores da NextLevel na súmula (puro). */
+export function comBeneficios(s: Sumula, b: Record<"COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE", { produtos: number | null; pessoas: number; ia: number; temaPago: boolean }>): Sumula {
+  const d = { entrada: b.COMMERCE_START, intermediario: b.COMMERCE_PRO, avancado: b.COMMERCE_SCALE };
+  const v = (f: (x: (typeof d)["entrada"]) => string) => ({ entrada: f(d.entrada), intermediario: f(d.intermediario), avancado: f(d.avancado) });
+  const valores: Record<string, ReturnType<typeof v>> = {
+    produtos: v((x) => (x.produtos === null ? "sem limite" : String(x.produtos))),
+    pessoas: v((x) => String(x.pessoas)),
+    ia: v((x) => String(x.ia)),
+    tema: v((x) => (x.temaPago ? "sim" : "não")),
+  };
+  return { ...s, itens: s.itens.map((i) => (valores[i.key] ? { ...i, nextlevel: valores[i.key]! } : i)) };
 }
 
 /** O dono atualiza a súmula à mão; o placar se recalcula. Devolve os jogos que deixaram de ser vitória (saem do ar). */

@@ -56,6 +56,11 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
   if (supplierId && !(await capabilitiesForSupplier(db, supplierId)).caps.canManageCatalog) throw new DomainError("SUPPLIER_BLOCKED", "Cadastro de produtos indisponível por pendência financeira com a NextLevel.");
   // Loja independente: o produto é só dela, sem distribuição para outras lojas.
   if (owner.storeId) { input.distribution = "ALL_NETWORK"; input.storeIds = []; }
+  // D247 (PV6): limite de produtos do plano da E-commerce (quem já passou do limite continua vendendo; só não cadastra novos).
+  if (owner.storeId) {
+    const { ehLojaEcommerce, exigirVagaDeProduto } = await import("./beneficios-plano");
+    if (await ehLojaEcommerce(db, owner.storeId)) await exigirVagaDeProduto(db, owner.storeId);
+  }
   if (input.minimumPriceCents > input.suggestedPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser maior que o sugerido.");
   if (input.costCents > input.minimumPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser menor que o custo.");
   if (!input.sellsUnit && !input.sellsPack) throw new DomainError("SALE_TYPE", "Escolha venda unitária, grade ou ambas.");

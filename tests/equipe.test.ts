@@ -30,12 +30,12 @@ describe("Equipe da loja", () => {
     await expect(inviteStaff(ctx.db, o.actor, { name: "Dup", email: "joao@moda.com.br", password: "12345678" })).rejects.toThrow(/e-mail/i);
   });
 
-  it("limite de 5; encerrar acesso desativa a pessoa e outra loja não consegue", async () => {
+  it("limite do plano na E-commerce (Start: 3 pessoas com o dono, D247); encerrar acesso libera a vaga e outra loja não consegue", async () => {
     const a = await owner(1);
     const b = await owner(2);
     const ids: string[] = [];
-    for (let i = 0; i < 5; i++) ids.push((await inviteStaff(ctx.db, a.actor, { name: `Pessoa ${i}`, email: `p${i}@x.com`, password: "12345678" })).id);
-    await expect(inviteStaff(ctx.db, a.actor, { name: "Sexta", email: "p6@x.com", password: "12345678" })).rejects.toThrow(/até 5/);
+    for (let i = 0; i < 2; i++) ids.push((await inviteStaff(ctx.db, a.actor, { name: `Pessoa ${i}`, email: `p${i}@x.com`, password: "12345678" })).id);
+    await expect(inviteStaff(ctx.db, a.actor, { name: "Sexta", email: "p6@x.com", password: "12345678" })).rejects.toThrow(/até 3 pessoas/);
     await expect(removeStaff(ctx.db, b.actor, ids[0]!)).rejects.toThrow(/não encontrada/);
     await removeStaff(ctx.db, a.actor, ids[0]!);
     expect((await ctx.db.query.users.findFirst({ where: eq(users.id, ids[0]!) }))!.disabledAt).toBeTruthy();

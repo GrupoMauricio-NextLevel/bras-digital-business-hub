@@ -8,6 +8,8 @@ import { DataTable } from "@/components/app/data-table";
 import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { RecursosPorPlano } from "@/components/commerce/recursos-por-plano";
+import { BeneficiosEditor } from "@/components/commerce/beneficios-editor";
+import { beneficiosPorPlano } from "@/lib/domain/beneficios-plano";
 import { PLANOS_ECOMMERCE, RECURSOS_ECOMMERCE, ROTULO_ECOMMERCE, tabelaRecursos } from "@/lib/domain/perfil-loja";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +21,7 @@ const NOME_PLANO: Record<(typeof PLANOS_ECOMMERCE)[number], string> = { COMMERCE
 export default async function CommercePlansPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
-  const [data, tabela] = await Promise.all([getCommerceConsole(db, session.actor), tabelaRecursos(db)]);
+  const [data, tabela, ben] = await Promise.all([getCommerceConsole(db, session.actor), tabelaRecursos(db), beneficiosPorPlano(db)]);
   const names = new Map(data.stores.map(({ store }) => [store.id, store.name]));
   return (
     <>
@@ -32,6 +34,10 @@ export default async function CommercePlansPage() {
           { key: "amount", header: "Valor", className: "text-right", cell: (i) => <span className="font-bold tabular-nums">{formatBRL(i.amountCents)}</span> },
           { key: "status", header: "Situação", cell: (i) => { const s = STATUS[i.status] ?? { label: i.status, tone: "outline" as const }; return <Badge tone={s.tone}>{s.label}</Badge>; } },
         ]} />
+      <section className="mt-10" aria-label="Benefícios por plano">
+        <SectionTitle title="Benefícios por plano" description="Uma tabela só: vale para a página de planos, o checkout, o placar e as travas do painel (produtos e pessoas). Quem já passou do limite continua vendendo; só não cadastra novos." />
+        <BeneficiosEditor inicial={Object.fromEntries(Object.entries(ben).map(([k, v]) => [k, { produtos: v.produtos, pessoas: v.pessoas, temaPago: v.temaPago, suporte: v.suporte, migracao: v.migracao }])) as never} ia={Object.fromEntries(Object.entries(ben).map(([k, v]) => [k, v.ia]))} />
+      </section>
       <section className="mt-10" aria-label="O que cada plano libera">
         <SectionTitle title="O que cada plano libera" description="Marque o que a loja pode usar em cada plano. Vale na hora para todas as lojas da E-commerce; sem plano, vale o Start." />
         <RecursosPorPlano planos={PLANOS_ECOMMERCE.map((k) => ({ key: k, nome: NOME_PLANO[k] }))} recursos={RECURSOS_ECOMMERCE.map((k) => ({ key: k, nome: ROTULO_ECOMMERCE[k as keyof typeof ROTULO_ECOMMERCE] }))} inicial={tabela} podeEditar={!session.actor.masterFunction || session.actor.masterFunction === "FINANCEIRO"} />

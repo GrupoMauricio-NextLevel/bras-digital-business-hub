@@ -9,6 +9,7 @@ import { FaixaBlack } from "@/components/black/faixa-black";
 import { anualBlackCents, blackAgora } from "@/lib/domain/campanha-black";
 import { Lock } from "lucide-react";
 import { CheckoutEc } from "./checkout-ec";
+import { beneficiosPorPlano, type BeneficioComIa, type PlanoBeneficio } from "@/lib/domain/beneficios-plano";
 import { getBrand, requireBrandFeature } from "@/lib/brand-server";
 import { brandHas, isClosedCommerceBrand } from "@/lib/brand";
 import { BrasSignupPage } from "./bras-signup";
@@ -29,12 +30,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export const dynamic = "force-dynamic";
 
-/** O que cada plano entrega no checkout (D226, os mesmos números do placar e do comparativo). */
-const RECURSOS_CHECKOUT: Record<string, string[]> = {
-  COMMERCE_START: ["Loja completa com atacado nativo", "300 produtos e 3 pessoas no painel", "Maurício (IA): 40 usos por mês"],
-  COMMERCE_PRO: ["Tudo do Start + tema pago incluso", "1.000 produtos e 6 pessoas", "Maurício: 350 usos · suporte em até 4 h"],
-  COMMERCE_SCALE: ["Tudo do Pro + gerente de conta", "Produtos sem limite e 12 pessoas", "Maurício: 1.200 usos · migração inclusa"],
-};
+/** O que cada plano entrega no checkout (D247): da tabela única de benefícios do Master. */
+const recursosDoCheckout = (b: BeneficioComIa) => [
+  b.produtos === null ? "Produtos sem limite" : `Até ${b.produtos.toLocaleString("pt-BR")} produtos`,
+  `${b.pessoas} pessoas no painel · Maurício (IA): ${b.ia.toLocaleString("pt-BR")} usos/mês`,
+  `${b.temaPago ? "Tema pago incluso · " : ""}Suporte: ${b.suporte}`,
+];
 
 export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string; utm_source?: string }> }) {
   const brand = await requireBrandFeature("signup");
@@ -69,8 +70,8 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
   const faixa = brand.code === "NEXTLEVEL_COMMERCE" ? <FaixaBlack lugar="publico" /> : null;
   // Checkout de tecnologia da E-commerce (D233): planos, dados e resumo vivo; sem foto, sem 1º mês especial.
   if (brand.code === "NEXTLEVEL_COMMERCE" && pv && plans?.length) {
-    const b = await blackAgora(db);
-    const doCheckout = plans.map((x) => ({ key: x.key, name: x.name, monthlyCents: x.monthlyCents, annualCents: b.ativa ? anualBlackCents(x.annualCents) : x.annualCents, features: RECURSOS_CHECKOUT[x.key] ?? [] }));
+    const [b, ben] = await Promise.all([blackAgora(db), beneficiosPorPlano(db)]);
+    const doCheckout = plans.map((x) => ({ key: x.key, name: x.name, monthlyCents: x.monthlyCents, annualCents: b.ativa ? anualBlackCents(x.annualCents) : x.annualCents, features: ben[x.key as PlanoBeneficio] ? recursosDoCheckout(ben[x.key as PlanoBeneficio]) : [] }));
     return (
       <div className={`${EC_TECH} ck-pagina${b.ativa ? " bk-on" : ""}`}>
         {faixa}

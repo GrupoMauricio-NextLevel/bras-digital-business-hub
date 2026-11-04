@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/app/page-header";
 import { requireStoreAdmin } from "@/lib/require-session";
+import { UsoDoPlano } from "@/components/app/uso-do-plano";
 import { getDb } from "@/db/client";
 import { listTeam } from "@/lib/domain/store-team";
 import { TeamManager } from "./team-manager";
@@ -16,6 +17,7 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader title="Equipe" description={commerce ? "Dê acesso operacional à sua equipe para cuidar de vendas, produtos, clientes e pós-venda. Financeiro, configurações, preços e cupons continuam restritos ao proprietário." : "Dê acesso a quem trabalha com você. A equipe cuida de pedidos, catálogo, clientes, etiquetas e pós-venda; finanças, configurações, preços e cupons ficam só com você."} />
+      {commerce ? <UsoDoPlano storeId={session.store!.id} recurso="pessoas" /> : null}
       <TeamManager rows={rows.map((m) => ({ id: m.id, name: m.name, email: m.email, owner: m.storeRole === "OWNER", disabled: !!m.disabledAt, ultimoAcesso: m.lastLoginAt ? `${formatDateTime(m.lastLoginAt)}${m.lastLoginIp ? ` · IP ${m.lastLoginIp}` : ""}` : null }))} />
     </>
   );

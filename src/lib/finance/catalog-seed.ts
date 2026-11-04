@@ -31,7 +31,7 @@ export const FAQ_ANUAL = "Sim. O anual é pago de uma vez e sai mais vantajoso q
 
 const PLAN_FEATURES = [
   "Loja virtual com tema gratuito, editor visual e domínio próprio",
-  "Produtos, variações, estoque e categorias sem limite de cadastro",
+  "Produtos, variações, estoque e categorias (limite de produtos por plano)",
   "Checkout com Pix e cartão na sua própria conta Mercado Pago (o dinheiro cai direto para você)",
   "Cupons, campanhas, avaliações e avise-me",
   "Equipe com acessos separados",

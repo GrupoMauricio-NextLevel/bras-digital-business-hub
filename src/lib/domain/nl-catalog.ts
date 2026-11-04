@@ -66,6 +66,12 @@ async function aplicarOfertaSemPrimeiroMes(db: Database) {
   // FAQ gravado no conteúdo dos planos: troca as respostas antigas (R$ 9,90 e "25%") pelas atuais.
   const planos = await db.select({ id: catalogProducts.id, content: catalogProducts.content }).from(catalogProducts).where(eq(catalogProducts.family, "COMMERCE_PLAN"));
   for (const pl of planos) {
+    // D247: "sem limite de cadastro" deixou de valer (limite de produtos por plano).
+    const scope = pl.content?.scope ?? [];
+    if (scope.some((x) => /sem limite de cadastro/.test(x))) {
+      pl.content = { ...pl.content, scope: scope.map((x) => x.replace("sem limite de cadastro", "(limite de produtos por plano)")) };
+      await db.update(catalogProducts).set({ content: pl.content }).where(eq(catalogProducts.id, pl.id));
+    }
     const faq = pl.content?.faq ?? [];
     if (!faq.some((f) => /9,90|25%/.test(f.a))) continue;
     const novo = faq.map((f) => /9,90/.test(f.a) ? { ...f, a: FAQ_TESTE } : /25%/.test(f.a) && /anual/i.test(f.q) ? { ...f, a: FAQ_ANUAL } : f);

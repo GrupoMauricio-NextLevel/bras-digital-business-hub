@@ -56,3 +56,14 @@ export async function salvarRecursosPorPlanoAction(tabela: unknown) {
     return { salvo: true };
   });
 }
+
+/** Benefícios por plano (D247): a tabela única que trava o painel e alimenta /planos, checkout e placar. */
+export async function salvarBeneficiosAction(tabela: unknown) {
+  return runAction(async () => {
+    const session = await master();
+    const { salvarBeneficios } = await import("@/lib/domain/beneficios-plano");
+    await salvarBeneficios(await getDb(), session.actor, tabela);
+    revalidatePath("/commerce/plans"); revalidatePath("/planos"); revalidatePath("/");
+    return { salvo: true };
+  });
+}

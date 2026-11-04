@@ -2692,3 +2692,28 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - cache entre visitas, com renovação ao publicar ou ao mudar preço e estoque;
   - CDN para as imagens.
   - Isso exige cuidado com preço e estoque ao vivo e com o checkout.
+
+## D247 — PV6: benefícios por plano numa tabela única, com travas reais (2026-11-04)
+- **Tabela única** (`beneficios-plano.ts`, `ecommerce.beneficios-plano`), editável em Master → Assinaturas → "Benefícios por plano" (comercial ou financeiro, com auditoria). Valores da D226:
+
+  | | Start | Pro | Scale |
+  |---|---|---|---|
+  | Produtos | 300 | 1.000 | sem limite |
+  | Pessoas no painel | 3 | 6 | 12 |
+  | Tema pago | não | sim | sim |
+  | Suporte | chat e WhatsApp | prioritário em até 4 h | gerente de conta |
+  | Migração | paga à parte | 50% de desconto | inclusa |
+
+  Os usos de IA vêm das cotas do Maurício (D244), para não haver dois números.
+- **Quem lê a tabela:**
+  - /planos: os cartões listam os benefícios e há a tabela "Compare os planos" (cartões no celular);
+  - o checkout;
+  - o placar: os valores da NextLevel em produtos, pessoas, IA e tema vêm da tabela (`comBeneficios`).
+- **Travas, só na E-commerce (o SuperDrop não muda):**
+  - **produtos:** no limite, não cadastra mais (no formulário, na importação por planilha e na duplicação);
+  - **pessoas:** o convite da equipe respeita o limite do plano, contando o dono;
+  - **nada é tirado de ninguém:** quem já passou do limite continua vendendo tudo e só não cadastra novos;
+  - arquivar um produto libera vaga;
+  - sem plano ativo, vale o Start.
+- **No painel:** barra de uso em Produtos e em Equipe, com aviso aos 80% e "Mudar de plano".
+- **Textos corrigidos:** "sem limite de cadastro" saiu do catálogo, das páginas de Soluções (também nos bancos já existentes) e da home.
