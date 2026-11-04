@@ -61,13 +61,12 @@ export default async function StoreLayout({ params, children }: { params: Promis
   if (!sf) notFound();
   const db = await getDb();
   // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel E-commerce…).
-  const org = await db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) });
+  const [org, session] = await Promise.all([db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) }), getSession()]);
   // Loja do SuperDrop aberta no endereço da Commerce (ou o contrário): vai para o endereço da marca dona, mesmo caminho (D149).
   const h = await headers();
   const path = h.get("x-nl-path");
   const owner = path ? storeOwnerBase(brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code, org?.brand ?? "SUPERDROP", !!sf.store.showcaseTheme) : null;
   if (owner) redirect(`${owner}${path}${h.get("x-nl-search") ?? ""}`);
-  const session = await getSession();
   const showcase = sf.store.showcaseTheme ? THEME_BY_KEY[sf.store.showcaseTheme] ?? null : null;
   const previewing = !showcase && (!sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store));
   if (previewing && !session) {
@@ -77,27 +76,26 @@ export default async function StoreLayout({ params, children }: { params: Promis
       </div>
     );
   }
-  const preview = await isPreviewMode(sf.store.id);
+  // L5 (D246): as leituras independentes saem juntas (cada uma é uma ida ao banco; em sequência somavam ~200 ms em produção).
+  const [preview, trial, campaign, kitBlack, origin, catalogo] = await Promise.all([
+    isPreviewMode(sf.store.id), tryingTheme(db, sf.store), currentCampaign(db, sf.store.id), kitBlackDaLoja(db, sf.store.id), storeOrigin(sf.store), getStorefrontCatalog(sf.store.id),
+  ]);
   // Loja em lançamento (D187): o público vê a página de espera; o dono (e a equipe NextLevel) veem a loja normal.
   const donoVendo = session?.store?.id === sf.store.id || session?.user.role === "NEXTLEVEL_MASTER";
   const lancando = sf.store.launchMode && !showcase && !previewing;
   const publico = !previewing && !preview && !showcase && !(lancando && !donoVendo);
   const productName = brandByCode(org?.brand).name;
-  const trial = await tryingTheme(db, sf.store);
   const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
-  const campaign = await currentCampaign(db, sf.store.id);
   // Kit Black da loja (D242): faixa com cupom e contagem, e selo nos produtos (CSS por `data-black`).
-  const kitBlack = await kitBlackDaLoja(db, sf.store.id);
   const black = kitBlack?.noAr ? kitBlack : null;
-  const origin = await storeOrigin(sf.store);
   const orgLd = [
     { "@context": "https://schema.org", "@type": "Organization", name: sf.store.name, url: origin, ...(sf.store.logoUrl ? { logo: sf.store.logoUrl.startsWith("/") ? `${origin.replace(/\/store\/.*$/, "")}${sf.store.logoUrl}` : sf.store.logoUrl } : {}), ...(sf.store.instagram ? { sameAs: [`https://instagram.com/${sf.store.instagram.replace(/^@/, "")}`] } : {}) },
     { "@context": "https://schema.org", "@type": "WebSite", name: sf.store.name, url: origin, potentialAction: { "@type": "SearchAction", target: `${origin}/catalog?q={search_term_string}`, "query-input": "required name=search_term_string" } },
   ];
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
-  const products = (await getStorefrontCatalog(sf.store.id)).map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
+  const products = catalogo.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
   return (
     <div style={vars} data-buttons={st.buttons} data-black={black ? "" : undefined} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">

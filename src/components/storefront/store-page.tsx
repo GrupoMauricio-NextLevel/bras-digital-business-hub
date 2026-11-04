@@ -22,13 +22,15 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const db = await getDb();
-  const preview = await isPreviewMode(sf.store.id);
-  // Teste de tema ("ver com seus produtos"): só o dono vê, nada é gravado.
-  const trial = await tryingTheme(db, sf.store);
-  const template = trial ? trial.preset.pages[page] : (await resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey })).template;
-  const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
-  const catalog = await getStorefrontCatalog(sf.store.id);
-  const brandCode = page === "product" || page === "cart" ? await brandCodeOfStore(db, sf.store) : undefined; // carrinho (D213): barra de frete grátis só na E-commerce
+  // Teste de tema ("ver com seus produtos"): só o dono vê, nada é gravado. L5 (D246): leituras independentes juntas.
+  const [preview, trial, catalog, brandCode] = await Promise.all([
+    isPreviewMode(sf.store.id), tryingTheme(db, sf.store), getStorefrontCatalog(sf.store.id),
+    page === "product" || page === "cart" ? brandCodeOfStore(db, sf.store) : Promise.resolve(undefined), // carrinho (D213): barra de frete grátis só na E-commerce
+  ]);
+  const [template, globals] = trial ? [trial.preset.pages[page], trial.preset.globals] : await Promise.all([
+    resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey }).then((r) => r.template),
+    resolveGlobals(db, sf.store, { draft: preview }).then((r) => r.globals),
+  ]);
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
 

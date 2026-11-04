@@ -51,7 +51,10 @@ export const instalando = new Set<string>();
  * com as fotos de exemplo, uma vez. Devolve true quando instalou. SuperDrop e lojas já personalizadas: nada muda.
  */
 export async function garantirLojaCompleta(db: Database, store: Store, now = new Date()): Promise<boolean> {
-  if (instalando.has(store.id) || emAndamento.has(store.id)) return false;
+  if (instalando.has(store.id)) return false;
+  // Outra leitura da mesma requisição (modelo e estilo saem em paralelo) espera a mesma instalação.
+  const jaIndo = emAndamento.get(store.id);
+  if (jaIndo) return jaIndo;
   if ((await brandCodeOfStore(db, store)) !== "NEXTLEVEL_COMMERCE") return false;
   if (await db.query.themeTemplates.findFirst({ where: eq(themeTemplates.storeId, store.id), columns: { storeId: true } })) return false;
   const ativo = await activeThemeKey(db, store.id).catch(() => "starter");

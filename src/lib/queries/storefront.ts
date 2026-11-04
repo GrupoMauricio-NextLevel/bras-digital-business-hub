@@ -17,9 +17,12 @@ export const getStorefront = cache(async (slug: string): Promise<StorefrontConte
   const db = (await getDb());
   const store = await db.query.stores.findFirst({ where: eq(stores.slug, slug) });
   if (!store || !canUse(store.offer, "storefront")) return null; // Drop manual não tem vitrine pública
-  const settings = await db.query.themeSettings.findFirst({ where: eq(themeSettings.storeId, store.id) });
-  const theme = await db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, store.id)).limit(1);
-  const catalog = await listStoreCatalog(db, store.id);
+  // L5 (D246): leituras independentes juntas; o catálogo é o mesmo da página (cache da requisição, lido uma vez só).
+  const [settings, theme, catalog] = await Promise.all([
+    db.query.themeSettings.findFirst({ where: eq(themeSettings.storeId, store.id) }),
+    db.select({ key: themes.key }).from(storeThemes).innerJoin(themes, eq(themes.id, storeThemes.themeId)).where(eq(storeThemes.storeId, store.id)).limit(1),
+    getStorefrontCatalog(store.id),
+  ]);
   const catIds = [...new Set(catalog.map((c) => c.product.categoryId).filter((x): x is string => !!x))];
   const cats = catIds.length ? await db.select().from(categories).where(inArray(categories.id, catIds)) : [];
   return { store, settings: settings?.settings ?? defaultThemeSettings(), themeKey: theme[0]?.key ?? "starter", categories: cats };
