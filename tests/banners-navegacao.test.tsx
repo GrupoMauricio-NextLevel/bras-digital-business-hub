@@ -20,19 +20,20 @@ const ctxBase = (over: Partial<PresetContext> = {}): PresetContext => ({ storeNa
 const types = (t: Template) => t.order.map((id) => t.sections[id]!.type);
 
 describe("banners de navegação por nível (D88)", () => {
-  it("nível de cada peça: cartões e cupom no N2, camadas e banner de categoria no N3, imersivo no N4", () => {
-    expect(CAPABILITY_LEVEL[sectionSchema("nav-cards")!.requires!]).toBe(2);
-    expect(CAPABILITY_LEVEL[sectionSchema("welcome-coupon")!.requires!]).toBe(2);
+  it("nível de cada peça (D237): cartões, cupom e banner de categoria já no grátis; camadas no N3, imersivo no N4", () => {
+    expect(CAPABILITY_LEVEL[sectionSchema("nav-cards")!.requires!]).toBe(1);
+    expect(CAPABILITY_LEVEL[sectionSchema("welcome-coupon")!.requires!]).toBe(1);
     expect(CAPABILITY_LEVEL[sectionSchema("hero-layers")!.requires!]).toBe(3);
-    expect(CAPABILITY_LEVEL[sectionSchema("category-banner")!.requires!]).toBe(3);
+    expect(CAPABILITY_LEVEL[sectionSchema("category-banner")!.requires!]).toBe(1);
     expect(CAPABILITY_LEVEL[sectionSchema("hero-immersive")!.requires!]).toBe(4);
-    expect(sectionSchema("nav-cards")!.blocks![0]!.maxByLevel).toEqual([0, 2, 4, 4]);
+    expect(sectionSchema("nav-cards")!.blocks![0]!.maxByLevel).toEqual([2, 4, 4, 4]);
   });
 
-  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: N1 simples, N2 com cartões e cupom, N3 com camadas, N4 imersivo", (_f, [n1, n2, n3, n4]) => {
+  it.each([["moda", ["trama", "lume", "editorial", "atelier"]], ["casa", ["lar", "ninho", "varanda", "morada"]], ["beauty", ["petala", "brilho", "aura", "musa"]], ["conecta", ["sinal", "pulso", "circuito", "orbita"]], ["atacado", ["fardo", "lote", "galpao", "porto"]]] as const)("família %s: N1 completo com cartões (D237), N2 com cupom, N3 com camadas, N4 imersivo", (_f, [n1, n2, n3, n4]) => {
     const p = (k: string) => buildPreset(k, ctxBase({ welcomeCode: "BEMVINDO10" }))!;
     const h1 = types(p(n1).pages.home);
-    for (const t of ["nav-cards", "welcome-coupon", "hero-layers", "hero-immersive"]) expect(h1, n1).not.toContain(t);
+    for (const t of ["welcome-coupon", "hero-layers", "hero-immersive"]) expect(h1, n1).not.toContain(t);
+    for (const t of ["hero-banner", "nav-cards", "banner-duo", "banner-mosaic", "banner-strip", "faq"]) expect(h1, n1).toContain(t);
     const two = p(n2).pages.home; const nav2 = Object.values(two.sections).find((s) => s.type === "nav-cards")!;
     expect(nav2.blockOrder).toHaveLength(2); expect(types(two)).toContain("welcome-coupon");
     expect(Object.values(two.sections).find((s) => s.type === "welcome-coupon")!.settings.code).toBe("BEMVINDO10");

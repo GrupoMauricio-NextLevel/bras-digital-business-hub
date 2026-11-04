@@ -2,7 +2,7 @@
  * Quatro níveis de tema para QUALQUER família, sobre o mesmo motor: cada família entra só com a sua identidade (estilos
  * e textos) e os ids das imagens do manifesto (`<família>-hero-1`, `<família>-mosaico-3`…). A composição por nível é a
  * mesma em todas as famílias, então o que um nível acrescenta é previsível e comparável:
- *  - N1 (Grátis): composição fixa com 4 posições de imagem (1 destaque, 2 apoios, 1 faixa), categorias e vitrines.
+ *  - N1 (Grátis, D237): home completa: carrossel de 3, dupla, cartões, mosaico, faixa, sobre e perguntas; banner por categoria.
  *  - N2 (Profissional): 2 slides, categorias em círculo, compra rápida, abas, FAQ e imagem com texto.
  *  - N3 (Avançado): carrossel de 3, mosaico, galeria de inspiração, banner entre vitrines e na coleção, ordenação.
  *  - N4 (Exclusivo): menu grande com busca, carrossel automático com campanha agendada, mosaico 1+4, movimento.
@@ -100,7 +100,7 @@ const categoryBannerItem = (c: PresetContext, f: FamilySpec, lv: 3 | 4): Item | 
 };
 const present = (...items: (Item | null)[]): Item[] => items.filter((x): x is Item => !!x);
 
-/** N1 — Grátis. */
+/** N1 — Grátis. D237 (L1): home completa, com banners em várias frentes (carrossel de 3, dupla, cartões, mosaico, faixa). */
 export const levelOne = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   const st = style(f.styles[0]);
   return {
@@ -108,17 +108,24 @@ export const levelOne = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
     globals: globals(st, [announcement(c, "", "primary"), ["header", { type: "header", settings: { tone: "light", sticky: true } }]], footer(c, "dark")),
     pages: pages(
       [
-        ["hero", { type: "hero-banner", settings: { height: "md", fullWidth: true }, blocks: [{ type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n1.hero), f.heroFocus) }] }],
+        ["hero", { type: "hero-banner", settings: { height: "md", fullWidth: true }, blocks: [
+          { type: "slide", settings: banner(c, `${f.id}-hero-1`, hero(c, f.n1.hero), f.heroFocus) },
+          { type: "slide", settings: banner(c, `${f.id}-hero-2`, f.n2.hero2) },
+          { type: "slide", settings: banner(c, `${f.id}-hero-3`, f.n3.hero3) },
+        ] }],
         ["cats", { type: "category-chips", settings: { heading: f.n1.cats } }],
         ["novidades", { type: "product-showcase", settings: { title: f.n1.latest, subtitle: "", source: "latest", count: 8, columns: 4 } }],
         supportItem(c, f),
+        ...present(navItem(c, f, 2)),
         ["destaques", { type: "product-showcase", settings: { title: f.n1.featured, subtitle: "", source: "featured", count: 4 } }],
+        ["mosaico", { type: "banner-mosaic", settings: { layout: "1-2", heading: f.n3.mosaicHeading }, blocks: f.n3.mosaic.map((sl, i) => ({ type: "banner", settings: banner(c, `${f.id}-mosaico-${i + 1}`, sl) })) }],
         stripItem(c, f),
-        ["about", { type: "rich-text", settings: { heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte a história da sua marca em poucas linhas." } }],
+        ["sobre", { type: "image-with-text", settings: { image: c.media?.[`${f.id}-sobre`]?.image ?? "", heading: `Sobre a ${c.storeName}`, body: c.tagline ?? "Conte a história da sua marca em poucas linhas.", ctaLabel: "Conhecer o catálogo", ratio: "square" } }],
+        ["faq", { type: "faq", blocks: blocksOf("faq") }],
         ["grid", { type: "product-grid" }],
       ],
       [["product", { type: "product-main", settings: { gallery: "thumbs" } }], ["related", { type: "product-related" }]],
-      [["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]],
+      f.banners ? [categoryBannerItem(c, f, 3)!, ["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]] : [["header", { type: "collection-header" }], ["grid", { type: "collection-grid" }]],
       [["cart", { type: "cart-main" }]],
     ),
   };

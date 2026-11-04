@@ -2544,3 +2544,33 @@ Pedido do dono: "Um cliente novo precisa poder configurar seu domínio próprio,
 
 ## D235 — Proposta: lojas no nível Shopify (temas grátis, banners, chat, central do cliente) (2026-11-03)
 Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-banners-chat-central.md`, fases L1–L6, com perguntas ao dono.
+
+## D236 — Respostas do dono sobre domínio e e-mail; "Suas pendências" no Master (2026-11-03)
+- **Adicional Marca Completa aprovado:** R$ 19,90/mês com 3 caixas de e-mail; caixa extra a R$ 6,90/mês. O provedor escolhido é a Hostinger.
+  - A API da Hostinger cria as caixas, mas ligar o domínio do cliente a um pedido de e-mail só se faz no hPanel. Levado ao dono, ainda sem decisão.
+- **O cliente registra o próprio domínio e conecta sozinho.** Ajuda técnica é cobrada à parte, com parceiros oficiais indicados. Nada da configuração do domínio depende da equipe.
+- **A verificação do domínio repete o cadastro na hospedagem** quando o DNS está certo e o HTTPS ainda não saiu.
+- **Master → Agora → "Suas pendências"** (`pendencias-dono.ts`): mostra o que só o dono pode fazer, calculado do ambiente. Hoje: a chave de API do Render e o token do provedor de e-mail.
+- **Serviços de parceiros com comissão:** registrado como pendente, sem executar (`docs/prompts/servicos-parceiros-afiliados.md`).
+
+## D237 — L1: a loja nova já nasce completa e o tema grátis ganha banners em várias frentes (2026-11-03)
+- **Loja E-commerce que nunca salvou um modelo e está no Starter:** na primeira leitura, ganha o tema grátis completo da família (Trama, moda), com as fotos de exemplo dos pacotes (`garantirLojaCompleta`, uma vez por loja). O SuperDrop não muda.
+- **Posições sem foto própria** reaproveitam as fotos existentes da família. Só entra arquivo que existe de verdade.
+- **A home do N1** tem:
+  - carrossel de 3;
+  - categorias e novidades;
+  - dupla de banners e cartões de navegação;
+  - destaques, mosaico e faixa;
+  - "sobre" com imagem;
+  - perguntas, grade e selos;
+  - banner por categoria na coleção.
+- **Capacidades que passaram para o N1:**
+  - slides (até 3);
+  - mosaico (até 3);
+  - banner entre vitrines;
+  - cartões (2), cupom e banner por categoria (4);
+  - perguntas, chamada, contagem regressiva e imagem com texto.
+- **Outras capacidades:**
+  - o vídeo agora vale a partir do N2;
+  - a agenda de campanha vale a partir do N3;
+  - a estrutura (reordenar e acrescentar) segue do N3 em diante. A composição grátis já vem completa, e o SuperDrop não muda.

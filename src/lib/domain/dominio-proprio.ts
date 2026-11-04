@@ -80,6 +80,8 @@ export async function verificarDominio(db: Database, storeId: string, sondas: So
   const [cname, a] = await Promise.all([sondas.cname(d), sondas.a(d)]);
   const dnsOk = cname.some((c) => c.toLowerCase().replace(/\.$/, "") === ALVO_CNAME()) || a.includes(ALVO_A());
   const responde = dnsOk ? (await sondas.ping(d)) === s.slug : false;
+  // DNS certo e ainda sem HTTPS: (re)cadastra na hospedagem; repetir não faz mal (a hospedagem ignora o que já existe).
+  if (dnsOk && !responde && sondas === SONDAS) await cadastrarNaHospedagem(d);
   const conectado = dnsOk && responde;
   const status = conectado ? "CONNECTED" as const : "PENDING" as const;
   if (status !== s.domainStatus) { await db.update(stores).set({ domainStatus: status, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId)); limparCache(); }

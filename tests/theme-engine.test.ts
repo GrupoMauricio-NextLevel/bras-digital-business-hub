@@ -201,8 +201,9 @@ describe("seções por nível e por identidade", () => {
       for (const f of s.families ?? []) expect(FAMILIES, s.type).toContain(f);
     }
   });
-  it("as seções avançadas exigem nível acima do grátis e a base continua no N1", () => {
-    for (const type of ["slideshow", "video-hero", "category-grid", "image-with-text", "testimonials", "faq", "lookbook", "countdown", "cta-banner", "product-tabs", "header-plus", "banner-mosaic"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires!], type).toBeGreaterThan(1);
+  it("as seções avançadas exigem nível acima do grátis e a base (com os banners de D237) continua no N1", () => {
+    for (const type of ["slideshow", "image-with-text", "faq", "countdown", "cta-banner", "banner-mosaic", "nav-cards", "category-banner", "welcome-coupon"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires!], type).toBe(1);
+    for (const type of ["video-hero", "category-grid", "testimonials", "lookbook", "product-tabs", "header-plus"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires!], type).toBeGreaterThan(1);
     for (const type of ["hero", "trust-bar", "product-showcase", "rich-text", "header", "footer", "product-main", "hero-banner", "banner-duo", "banner-strip"]) expect(CAPABILITY_LEVEL[sectionSchema(type)!.requires ?? "content.basic"], type).toBe(1);
   });
   it("cabeçalho simples e cabeçalho com menu grande se excluem", () => {

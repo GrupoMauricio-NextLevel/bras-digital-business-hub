@@ -9,6 +9,7 @@ import { PageHeader, SectionTitle } from "@/components/app/page-header";
 import { MetricCard } from "@/components/app/metric-card";
 import { EmptyState } from "@/components/app/empty-state";
 import { AoVivo } from "@/components/master/ao-vivo";
+import { pendenciasDoDono } from "@/lib/domain/pendencias-dono";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function AgoraPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const agora = new Date();
   const a = await agoraEcommerce(await getDb(), session.actor, agora);
+  const pend = pendenciasDoDono().filter((p) => !p.feita);
   const k = a.contadores;
   const pct = Math.min(100, Math.round((k.pagantes / Math.max(1, k.meta)) * 100));
   return (
@@ -63,6 +65,21 @@ export default async function AgoraPage() {
         </section>
 
         <aside className="grid content-start gap-6">
+          {pend.length ? (
+            <section className="ds-card" aria-labelledby="pend-t">
+              <h2 id="pend-t" className="text-lg font-bold">Suas pendências</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Só você pode fazer. Somem daqui quando ficarem prontas.</p>
+              <ul className="mt-3 grid gap-3">
+                {pend.map((p) => (
+                  <li key={p.key} className="rounded-xl border border-border p-3">
+                    <p className="font-semibold">{p.titulo}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{p.porque}</p>
+                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">{p.passos.map((x) => <li key={x}>{x}</li>)}</ol>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
           <section className="ds-card" aria-labelledby="meta-t">
             <h2 id="meta-t" className="text-lg font-bold">Meta do mês</h2>
             <p className="mt-1 text-sm text-muted-foreground">{k.pagantes} de {k.meta} lojistas pagantes</p>

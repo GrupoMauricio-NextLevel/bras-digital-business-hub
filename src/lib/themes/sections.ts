@@ -30,8 +30,8 @@ export const BANNER_TEXT: SettingDef[] = [
 ];
 /** Campanha (N4): janela em horário de Brasília e condição por categoria. Fora da janela o banner some e o próximo aparece. */
 export const BANNER_CAMPAIGN: SettingDef[] = [
-  { id: "startsAt", type: "datetime", label: "Começa em (horário de Brasília)", default: "", group: "Campanha", minLevel: 4 },
-  { id: "endsAt", type: "datetime", label: "Termina em (horário de Brasília)", default: "", group: "Campanha", minLevel: 4, info: "Depois do fim, o banner some sozinho e a loja mostra o próximo." },
+  { id: "startsAt", type: "datetime", label: "Começa em (horário de Brasília)", default: "", group: "Campanha", minLevel: 3 },
+  { id: "endsAt", type: "datetime", label: "Termina em (horário de Brasília)", default: "", group: "Campanha", minLevel: 3, info: "Depois do fim, o banner some sozinho e a loja mostra o próximo." },
   { id: "onlyCategory", type: "collection", label: "Mostrar só nesta categoria", default: "", group: "Campanha", minLevel: 4, info: "Vale nas páginas de coleção. Vazio = todas." },
 ];
 const BANNER = (extra: SettingDef[] = []): SettingDef[] => [...BANNER_MEDIA, ...BANNER_TEXT, ...extra, ...BANNER_CAMPAIGN];
@@ -160,14 +160,14 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   },
   // ------------------------------------------------------------------ posições de banner com imagem (Central de Banners)
   {
-    type: "hero-banner", name: "Destaque com banners", description: "Destaque principal com imagem do computador e do celular. N1: 1 imagem fixa · N2: até 2 slides · N3: carrossel até 6 · N4: vídeo e agendamento.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "hero.image", maxBlocks: 6,
+    type: "hero-banner", name: "Destaque com banners", description: "Destaque principal com imagem do computador e do celular. N1: até 3 slides · N2: até 4 · N3: carrossel até 6 · N4: vídeo e agendamento.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "hero.image", maxBlocks: 6,
     settings: [
-      { id: "height", type: "select", label: "Altura", options: [{ value: "sm", label: "Baixa" }, { value: "md", label: "Média" }, { value: "lg", label: "Alta" }], default: "md", minLevel: 2 },
+      { id: "height", type: "select", label: "Altura", options: [{ value: "sm", label: "Baixa" }, { value: "md", label: "Média" }, { value: "lg", label: "Alta" }], default: "md", minLevel: 1 },
       { id: "fullWidth", type: "checkbox", label: "Largura total da tela", default: true, minLevel: 2 },
       { id: "autoplay", type: "checkbox", label: "Passar os slides sozinho", default: false, minLevel: 3, info: "Pausa ao passar o mouse, no foco do teclado e para quem pediu menos movimento." },
       { id: "interval", type: "range", label: "Segundos por slide", min: 4, max: 10, step: 1, unit: "s", default: 6, minLevel: 3 },
     ],
-    blocks: [{ type: "slide", name: "Slide", limit: 6, maxByLevel: [1, 2, 6, 6], settings: BANNER([{ id: "video", type: "video", label: "Vídeo (opcional, usa a imagem como capa)", default: "", group: "Imagem", minLevel: 4 }]) }],
+    blocks: [{ type: "slide", name: "Slide", limit: 6, maxByLevel: [3, 4, 6, 6], settings: BANNER([{ id: "video", type: "video", label: "Vídeo (opcional, usa a imagem como capa)", default: "", group: "Imagem", minLevel: 4 }]) }],
     presets: [{ name: "Destaque com banners", blocks: [{ type: "slide", settings: { title: "Coleção nova", subtitle: "Peças escolhidas para a estação.", ctaLabel: "Ver coleção" } }] }],
   },
   {
@@ -185,7 +185,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   {
     type: "banner-mosaic", name: "Mosaico de banners", description: "De 3 a 5 imagens em grade assimétrica, para campanhas e categorias.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "banner.mosaic", maxBlocks: 5,
     settings: [{ id: "layout", type: "select", label: "Composição", options: [{ value: "1-2", label: "Uma grande e duas menores" }, { value: "2-2", label: "Quatro iguais" }, { value: "1-4", label: "Uma grande e quatro menores" }], default: "1-2" }, { id: "heading", type: "text", label: "Título (opcional)", default: "", maxLength: 80 }],
-    blocks: [{ type: "banner", name: "Banner", limit: 5, maxByLevel: [0, 0, 5, 5], settings: BANNER() }],
+    blocks: [{ type: "banner", name: "Banner", limit: 5, maxByLevel: [3, 4, 5, 5], settings: BANNER() }],
     presets: [{ name: "Mosaico de banners", blocks: [{ type: "banner", settings: { title: "Coleção", ctaLabel: "Ver" } }, { type: "banner", settings: { title: "Básicos" } }, { type: "banner", settings: { title: "Acessórios" } }] }],
   },
   // ------------------------------------------------------------------ banners que organizam a navegação (D88)
@@ -216,7 +216,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   {
     type: "nav-cards", name: "Cartões de navegação", description: "Dois a quatro cartões verticais que levam a Novidades, Ofertas, Mais vendidos ou Kits e ensinam o cliente a navegar na loja.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "navigation.cards", maxBlocks: 4,
     settings: [{ id: "heading", type: "text", label: "Título (opcional)", default: "", maxLength: 60 }],
-    blocks: [{ type: "card", name: "Cartão", limit: 4, maxByLevel: [0, 2, 4, 4], settings: [
+    blocks: [{ type: "card", name: "Cartão", limit: 4, maxByLevel: [2, 4, 4, 4], settings: [
       { id: "image", type: "image", label: "Imagem (retrato 4:5)", default: "", group: "Imagem" },
       { id: "alt", type: "text", label: "Descrição da imagem", default: "", maxLength: 140, group: "Imagem" },
       { id: "eyebrow", type: "text", label: "Linha de chamada (opcional)", default: "", maxLength: 30, group: "Texto" },
@@ -230,7 +230,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   {
     type: "category-banner", name: "Banner da categoria", description: "Faixa com imagem e texto no topo da página de cada categoria. Cada banner vale para uma categoria; um sem categoria aparece em “Todos os produtos”.", category: "Destaque", region: "content", pages: ["collection"], requires: "navigation.categoryBanner", maxBlocks: 12, singleton: true,
     settings: [],
-    blocks: [{ type: "banner", name: "Banner de categoria", limit: 12, maxByLevel: [0, 0, 12, 12], settings: [
+    blocks: [{ type: "banner", name: "Banner de categoria", limit: 12, maxByLevel: [4, 8, 12, 12], settings: [
       { id: "category", type: "collection", label: "Categoria", default: "", info: "Vazio = página com todos os produtos." },
       ...BANNER_MEDIA,
       { id: "image", type: "image", label: "Imagem do computador (faixa larga)", default: "", group: "Imagem" },
@@ -288,7 +288,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
   {
     type: "slideshow", name: "Apresentação de slides", description: "Vários destaques que se alternam, com setas e pontos.", category: "Destaque", region: "content", pages: ["home"], requires: "hero.slides", maxBlocks: 6,
     settings: [{ id: "autoplay", type: "checkbox", label: "Passar automaticamente", default: true }, { id: "interval", type: "range", label: "Segundos por slide", min: 3, max: 10, step: 1, unit: "s", default: 6 }, HEIGHT, { id: "showDots", type: "checkbox", label: "Mostrar pontos", default: true }, { id: "showArrows", type: "checkbox", label: "Mostrar setas", default: true }, FULL_WIDTH],
-    blocks: [{ type: "slide", name: "Slide", limit: 6, maxByLevel: [1, 2, 6, 6], settings: [{ id: "image", type: "image", label: "Imagem", default: "" }, { id: "heading", type: "text", label: "Título", default: "Novo slide", maxLength: 100 }, { id: "text", type: "text", label: "Texto", default: "", maxLength: 160 }, { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Ver mais", maxLength: 40 }, { id: "ctaLink", type: "url", label: "Link", default: "/catalog" }, ALIGN, TEXT_TONE] }],
+    blocks: [{ type: "slide", name: "Slide", limit: 6, maxByLevel: [3, 4, 6, 6], settings: [{ id: "image", type: "image", label: "Imagem", default: "" }, { id: "heading", type: "text", label: "Título", default: "Novo slide", maxLength: 100 }, { id: "text", type: "text", label: "Texto", default: "", maxLength: 160 }, { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Ver mais", maxLength: 40 }, { id: "ctaLink", type: "url", label: "Link", default: "/catalog" }, ALIGN, TEXT_TONE] }],
     presets: [{ name: "Apresentação de slides", blocks: [{ type: "slide", settings: { heading: "Coleção 25/26", text: "Os lançamentos chegaram.", ctaLabel: "Ver lançamentos" } }, { type: "slide", settings: { heading: "Ofertas da semana", text: "Aproveite antes que acabe.", ctaLabel: "Ver ofertas", align: "center" } }, { type: "slide", settings: { heading: "Clássicos para vestir", text: "Peças que nunca saem de moda.", ctaLabel: "Ver clássicos", align: "right" } }] }],
   },
   {

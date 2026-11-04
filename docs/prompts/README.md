@@ -49,6 +49,7 @@ Cada arquivo é uma instrução executável por fases, escrita para ser colada n
 | `site-grupo-v1-analise-e-prompt.md` | **Site do grupo v1** (nextlevelgroup.com.br): Soluções, Club, Meu Contador e Loja NextLevel; topo navy ligado ao cabeçalho, marcas do grupo, jornada legível, sem blocos vazios, temas com captura | **Aplicado (D157)** |
 | `kit-marcas-gpt.md` | **Reformulação completa de cada marca no GPT** (logo + sistema visual, como o Brás Digital Club): ordem grupo → Commerce → SuperDrop → Cargas → família; etapa A (3 direções) e etapa B (kit completo) | **Aguardando os pacotes do dono** |
 | `fornecedor-360-master.md` | Cadastro completo de fornecedor, painel de dados e "entrar como" | **A fazer** |
+| `servicos-parceiros-afiliados.md` | **Serviços de parceiros com comissão** (pesquisa, planilha de %, racional + prompt mestre, setor no painel bloqueado) | **Pendente: o dono pediu para não executar agora** |
 | `lojas-nivel-shopify-temas-banners-chat-central.md` | **Lojas no nível Shopify:** temas grátis completos, área de Banners, chat com IA, Minha conta, desempenho e temas por preço (L1–L6). Domínio próprio já feito (D234) | **Aguardando o dono aprovar a ordem** |
 | `evolucao-visual-v1.md`, `novo-nivel-visual-v3.md`, `racional-operacao-v2.md`, `historico-design.md`, `mvp-original-v0.md` | Histórico de design e operação | Referência |
 

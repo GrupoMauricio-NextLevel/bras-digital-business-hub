@@ -34,24 +34,23 @@ export const FAMILY_INFO: Record<ThemeFamily, { name: string; segment: string; d
  * adequação ao celular, catálogo e checkout NÃO são capacidades: valem para todos.
  */
 export const CAPABILITY_LEVEL = {
-  // Edição (todos os níveis editam o conteúdo dos espaços que existem)
+  // Edição (todos os níveis editam o conteúdo dos espaços que existem; a composição do tema grátis já vem completa, D237)
   "editor.content": 1, "editor.hide": 1, "media.library": 1, "media.crop": 1, "media.mobile": 1,
   "editor.variants": 2, "editor.addApproved": 2,
   "editor.reorder": 3, "editor.addSections": 3, "editor.duplicate": 3, "editor.sectionTemplates": 3,
   "editor.pageTemplates": 4, "editor.conditions": 4,
-  // Destaque e banners
-  "hero.image": 1, "banner.fixedSlots": 1,
-  "hero.slides": 2, "banner.extraSlots": 2,
-  "hero.carousel": 3, "banner.mosaic": 3, "banner.betweenShowcases": 3, "campaign.sets": 3,
-  "hero.video": 4, "banner.schedule": 4, "banner.conditions": 4,
-  // Banners que organizam a navegação (D88)
-  "navigation.cards": 2, "marketing.welcomeCoupon": 2,
-  "hero.layers": 3, "navigation.categoryBanner": 3,
+  // Destaque e banners. D237: o grátis tem banners em várias frentes (carrossel de 3, mosaico, entre vitrines, categoria).
+  "hero.image": 1, "banner.fixedSlots": 1, "hero.slides": 1, "banner.extraSlots": 1,
+  "banner.mosaic": 1, "banner.betweenShowcases": 1,
+  "hero.carousel": 2, "campaign.sets": 3,
+  "hero.video": 2, "banner.schedule": 3, "banner.conditions": 4,
+  // Banners que organizam a navegação (D88; D237: cartões, cupom e banner da categoria também no grátis)
+  "navigation.cards": 1, "marketing.welcomeCoupon": 1, "navigation.categoryBanner": 1,
+  "hero.layers": 3,
   "hero.immersive": 4,
-  // Conteúdo
-  "content.basic": 1,
-  "content.imageText": 2, "content.faq": 2, "content.cta": 2,
-  "content.lookbook": 3, "content.testimonials": 3, "content.countdown": 3,
+  // Conteúdo (D237: perguntas, chamada e contagem regressiva no grátis)
+  "content.basic": 1, "content.faq": 1, "content.cta": 1, "content.countdown": 1, "content.imageText": 1,
+  "content.lookbook": 2, "content.testimonials": 2,
   // Produto e navegação
   "product.basic": 1,
   "product.quickView": 2, "product.tabs": 2, "product.stickyBar": 2,

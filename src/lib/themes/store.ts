@@ -13,6 +13,7 @@ import { checkPublishable, checkStyleChange, checkTemplateChange, violationMessa
 import { DEFAULT_STYLE, defaultTemplate, legacyGlobals, normalizeGlobals, normalizeTemplate, sameTemplate } from "./template";
 import type { PageKind, SectionRegion, Template, ThemeGlobals } from "./types";
 import { PAGE_KINDS } from "./types";
+import { garantirLojaCompleta } from "./loja-completa";
 
 const MAX_VERSIONS = 20;
 export type Source = "draft" | "published" | "default";
@@ -36,7 +37,9 @@ export function structureOf(t: Template): string {
 // Leitura (usada pela loja pública e pelo editor)
 // ---------------------------------------------------------------------------
 export async function resolveTemplate(db: Database, store: Store, page: PageKind, opts: { draft?: boolean; themeKey?: string } = {}): Promise<{ template: Template; source: Source; hasDraft: boolean }> {
-  const row = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, page)) });
+  let row = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, page)) });
+  // D237 (L1): loja E-commerce sem nada salvo nasce com o tema grátis completo da família (instalado uma vez).
+  if (!row && !opts.themeKey && (await garantirLojaCompleta(db, store))) row = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, page)) });
   const region: SectionRegion = "content";
   const fallback = async () => normalizeTemplate(defaultTemplate(page, await legacySettings(db, store.id), opts.themeKey), region, page).template;
   if (opts.draft && row?.draft) return { template: normalizeTemplate(row.draft, region, page).template, source: "draft", hasDraft: true };
@@ -45,7 +48,8 @@ export async function resolveTemplate(db: Database, store: Store, page: PageKind
 }
 
 export async function resolveGlobals(db: Database, store: Store, opts: { draft?: boolean } = {}): Promise<{ globals: ThemeGlobals; source: Source; hasDraft: boolean }> {
-  const row = await db.query.themeGlobals.findFirst({ where: eq(themeGlobals.storeId, store.id) });
+  let row = await db.query.themeGlobals.findFirst({ where: eq(themeGlobals.storeId, store.id) });
+  if (!row && (await garantirLojaCompleta(db, store))) row = await db.query.themeGlobals.findFirst({ where: eq(themeGlobals.storeId, store.id) });
   if (opts.draft && row?.draft) return { globals: normalizeGlobals(row.draft).globals, source: "draft", hasDraft: true };
   if (row?.published) return { globals: normalizeGlobals(row.published).globals, source: "published", hasDraft: !!row.draft };
   return { globals: normalizeGlobals(legacyGlobals(store, await legacySettings(db, store.id))).globals, source: "default", hasDraft: !!row?.draft };

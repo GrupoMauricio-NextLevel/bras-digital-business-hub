@@ -11,6 +11,7 @@ import { newId } from "@/lib/ids";
 import { THEME_BY_KEY, themeEntitlementKey } from "./catalog";
 import { hasStorefront, ownedThemeKeys } from "./license";
 import { canInstall, canPurchase } from "./policy";
+import { instalando } from "./loja-completa";
 import { buildPreset, type PresetContext } from "./presets";
 import { resolveGlobals, resolveTemplate, saveSnapshot } from "./store";
 import { normalizeGlobals, normalizeTemplate } from "./template";
@@ -97,6 +98,10 @@ export async function presetContextFor(db: Database, store: typeof stores.$infer
  * e pelas lojas de demonstração. O estado anterior fica no histórico ("Antes de instalar …").
  */
 export async function applyThemeToStore(db: Database, store: typeof stores.$inferSelect, key: string, by: string, now = new Date(), images?: PresetContext["images"], extra?: Partial<Pick<PresetContext, "media" | "categories" | "categoryImages" | "welcomeCode">>) {
+  instalando.add(store.id);
+  try { return await aplicar(db, store, key, by, now, images, extra); } finally { instalando.delete(store.id); }
+}
+async function aplicar(db: Database, store: typeof stores.$inferSelect, key: string, by: string, now: Date, images?: PresetContext["images"], extra?: Partial<Pick<PresetContext, "media" | "categories" | "categoryImages" | "welcomeCode">>) {
   const info = THEME_BY_KEY[key]; const theme = info ? await db.query.themes.findFirst({ where: eq(themes.key, key) }) : null;
   if (!info || !theme) throw new NotFoundError("Tema não encontrado.");
   const { ctx, current } = await presetContextFor(db, store, now);

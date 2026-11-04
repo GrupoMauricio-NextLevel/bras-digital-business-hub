@@ -53,17 +53,17 @@ describe("a licença do tema libera a edição do que foi comprado (sem upgrade 
     const extra = Object.keys(t.sections).find((k) => t.sections[k]!.type === "cta-banner" && !["cta"].includes(k))!;
     await expect(saveTemplateDraft(ctx.db, ctx.actors.arena, id, "home", duplicateSection(t, extra).template)).rejects.toMatchObject({ code: "THEME_LIMIT" });
   });
-  it("N2 não reorganiza a composição do tema e não usa recurso N3 (mosaico)", async () => {
+  it("N2 não reorganiza a composição do tema e não usa recurso N3 (destaque em camadas; o mosaico virou grátis em D237)", async () => {
     const id = ctx.actors.arena.storeId!; const t = await home(id);
     await expect(saveTemplateDraft(ctx.db, ctx.actors.arena, id, "home", moveSection(t, t.order[0]!, 3))).rejects.toMatchObject({ code: "THEME_LOCKED" });
-    await expect(saveTemplateDraft(ctx.db, ctx.actors.arena, id, "home", addSection(t, "banner-mosaic", { region: "content", page: "home" }).template)).rejects.toMatchObject({ code: "THEME_LOCKED" });
+    await expect(saveTemplateDraft(ctx.db, ctx.actors.arena, id, "home", addSection(t, "hero-layers", { region: "content", page: "home" }).template)).rejects.toThrow();
   });
 });
 
 describe("tentativas de contornar os cadeados enviando JSON direto", () => {
   it("loja Loja própria SEM licença não grava seção de tema pago; o que já tinha continua editável", async () => {
     const id = ctx.actors.mantos.storeId!; const t = await home(id);
-    await expect(saveTemplateDraft(ctx.db, ctx.actors.mantos, id, "home", addSection(t, "slideshow", { region: "content", page: "home" }).template)).rejects.toMatchObject({ code: "THEME_LOCKED" });
+    await expect(saveTemplateDraft(ctx.db, ctx.actors.mantos, id, "home", addSection(t, "video-hero", { region: "content", page: "home" }).template)).rejects.toMatchObject({ code: "THEME_LOCKED" });
     // Compatibilidade do plano: a Loja própria continua reorganizando seções da base.
     await saveTemplateDraft(ctx.db, ctx.actors.mantos, id, "home", moveSection(t, t.order[0]!, 2));
     // Direito já existente: um slideshow que já estava publicado (antes da política) segue editável.
@@ -82,12 +82,13 @@ describe("tentativas de contornar os cadeados enviando JSON direto", () => {
     await ctx.db.update(themeTemplates).set({ draft: t }).where(and(eq(themeTemplates.storeId, id), eq(themeTemplates.page, "home")));
     await expect(publishAllDrafts(ctx.db, ctx.actors.mantos, id)).rejects.toMatchObject({ code: "THEME_LOCKED" });
   });
-  it("N1: mais slides do que o nível permite são recusados; ajuste de N2 também", () => {
+  it("N1: mais slides do que o nível permite são recusados (até 3, D237); ajuste de N3 também", () => {
     const n1 = makeEditingContext({ themeKey: "starter", themeName: "Starter", family: "base", level: 1, offer: "STORE_SUBDOMAIN" });
     const a = addSection({ v: 1, sections: {}, order: [] }, "hero-banner", { region: "content", page: "home" });
-    const two = addBlock(a.template, a.id, "slide").template;
-    expect(checkTemplateChange(n1, a.template, two, { region: "content", page: "home" })[0]?.reason).toBe("LIMIT");
-    expect(checkTemplateChange(n1, a.template, setSetting(a.template, a.id, "height", "lg"), { region: "content", page: "home" })[0]?.reason).toBe("CAPABILITY_LOCKED");
+    let quatro = a.template;
+    for (let i = 0; i < 3; i++) quatro = addBlock(quatro, a.id, "slide").template;
+    expect(checkTemplateChange(n1, a.template, quatro, { region: "content", page: "home" })[0]?.reason).toBe("LIMIT");
+    expect(checkTemplateChange(n1, a.template, setSetting(a.template, a.id, "autoplay", true), { region: "content", page: "home" })[0]?.reason).toBe("CAPABILITY_LOCKED");
     // Desligar/voltar ao padrão é sempre permitido
     const on = setSetting(a.template, a.id, "fullWidth", true);
     expect(checkTemplateChange(n1, on, setSetting(on, a.id, "fullWidth", false), { region: "content", page: "home" })).toEqual([]);
@@ -123,11 +124,13 @@ describe("compra, licença e instalação", () => {
     expect((await editingContextFor(ctx.db, await storeOf(id))).themeKey).toBe("lume");
     await publishAllDrafts(ctx.db, ctx.actors.arena, id);
   });
-  it("Editorial mantém o vídeo que vendia antes da classificação (concessão explícita)", () => {
+  it("Editorial mantém o vídeo que vendia antes da classificação; desde D237 o vídeo vale a partir do N2", () => {
     const ed = makeEditingContext({ themeKey: "editorial", themeName: "Editorial", family: "moda", level: 3, grants: THEME_BY_KEY.editorial!.grants, offer: "STORE_SUBDOMAIN" });
     expect(ed.caps.has("hero.video")).toBe(true);
     const arena = makeEditingContext({ themeKey: "arena", themeName: "Arena", family: "sport", level: 3, offer: "STORE_SUBDOMAIN" });
-    expect(arena.caps.has("hero.video")).toBe(false);
+    expect(arena.caps.has("hero.video")).toBe(true);
+    const gratis = makeEditingContext({ themeKey: "trama", themeName: "Trama", family: "moda", level: 1, offer: "STORE_SUBDOMAIN" });
+    expect(gratis.caps.has("hero.video")).toBe(false);
   });
   it("tema comprado que volta para revisão continua instalável por quem já tem a licença", async () => {
     THEME_BY_KEY.lume!.release = "review";

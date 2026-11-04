@@ -28,7 +28,7 @@ export function DominioProprio({ dominio, status, registros, enderecoAtual }: Pr
     start(async () => {
       const r = await salvarDominioAction(valor);
       if (!r.ok) { toast.error(r.error); return; }
-      toast.success(r.data.hospedagem === "automatica" ? "Domínio cadastrado. Agora aponte o DNS." : "Domínio cadastrado. Agora aponte o DNS; a equipe NextLevel ativa o certificado.");
+      toast.success("Domínio cadastrado. Agora aponte o DNS.");
       setValor(""); router.refresh();
     });
   };
@@ -80,7 +80,7 @@ export function DominioProprio({ dominio, status, registros, enderecoAtual }: Pr
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-muted-foreground">A mudança no DNS pode levar de alguns minutos a 24 horas. Depois, o certificado HTTPS sai sozinho.</p>
+          <p className="text-xs text-muted-foreground">A mudança no DNS pode levar de alguns minutos a 24 horas. Depois, o certificado HTTPS sai sozinho. Precisa de ajuda técnica? Indicamos parceiros oficiais (serviço cobrado à parte).</p>
         </>
       )}
       {detalhe ? <p role="status" className="rounded-lg bg-surface-muted px-3 py-2">{detalhe}</p> : null}
