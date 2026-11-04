@@ -81,12 +81,13 @@ export async function listSupplierCatalog(db: Database, owner: OwnerRef) {
 async function hydrate(db: Database, rows: { product: typeof products.$inferSelect; storeProduct: typeof storeProducts.$inferSelect }[]): Promise<StoreCatalogItem[]> {
   const ids = rows.map((r) => r.product.id);
   if (ids.length === 0) return [];
-  const variants = await db.select().from(productVariants).where(inArray(productVariants.productId, ids));
-  const levels = await getLevels(db, variants.map((v) => v.id));
-  const packs = await db.select().from(productPacks).where(inArray(productPacks.productId, ids));
-  const packItems = packs.length ? await db.select().from(productPackItems).where(inArray(productPackItems.packId, packs.map((p) => p.id))) : [];
+  // L5 (D246): três frentes independentes em paralelo (tamanhos→estoque, pacotes→itens, preço por quantidade).
+  const [[variants, levels], [packs, packItems], tierMap] = await Promise.all([
+    db.select().from(productVariants).where(inArray(productVariants.productId, ids)).then(async (vs) => [vs, await getLevels(db, vs.map((v) => v.id))] as const),
+    db.select().from(productPacks).where(inArray(productPacks.productId, ids)).then(async (ps) => [ps, ps.length ? await db.select().from(productPackItems).where(inArray(productPackItems.packId, ps.map((p) => p.id))) : []] as const),
+    loadTiers(db, [...new Set(rows.map((r) => r.storeProduct.storeId))], ids),
+  ]);
   const variantById = new Map(variants.map((v) => [v.id, v]));
-  const tierMap = await loadTiers(db, [...new Set(rows.map((r) => r.storeProduct.storeId))], ids);
 
   return rows.map(({ product, storeProduct }) => {
     const pv = variants.filter((v) => v.productId === product.id).sort((a, b) => a.position - b.position).map((v) => ({ ...v, level: levels.get(v.id)! }));

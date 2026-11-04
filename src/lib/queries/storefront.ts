@@ -1,7 +1,8 @@
 import { eq, inArray } from "drizzle-orm";
 import { cache } from "react";
 import { getDb } from "@/db/client";
-import { categories, storeThemes, stores, themeSettings, themes } from "@/db/schema";
+import { categories, storeThemes, stores, themeSettings, themes, type Store } from "@/db/schema";
+import { resolveGlobals } from "@/lib/themes/store";
 import { listStoreCatalog, type StoreCatalogItem } from "@/lib/domain/catalog";
 import { canUse } from "@/lib/features";
 import { defaultThemeSettings } from "./merchant";
@@ -27,6 +28,9 @@ export const getStorefront = cache(async (slug: string): Promise<StorefrontConte
   const cats = catIds.length ? await db.select().from(categories).where(inArray(categories.id, catIds)) : [];
   return { store, settings: settings?.settings ?? defaultThemeSettings(), themeKey: theme[0]?.key ?? "starter", categories: cats };
 });
+
+/** Estilo e cabeçalho/rodapé da loja, lido uma vez por requisição (layout e página usam o mesmo; L5, D246). */
+export const getStorefrontGlobals = cache(async (store: Store, draft: boolean) => (await resolveGlobals(await getDb(), store, { draft })).globals);
 
 export const getStorefrontCatalog = cache(async (storeId: string): Promise<StoreCatalogItem[]> => {
   return listStoreCatalog((await getDb()), storeId);

@@ -34,7 +34,7 @@ export async function createDatabase(url = resolveDatabaseUrl()): Promise<Databa
   const { drizzle } = await import("drizzle-orm/pglite");
   const path = url.replace(/^pglite:\/\//, "");
   const client = path === "memory" || path === "" ? new PGlite() : new PGlite(path);
-  return { db: drizzle(client, { schema }) as unknown as Database, close: () => client.close() };
+  return { db: drizzle(client, { schema, logger: process.env.LOG_SQL ? { logQuery: (q: string) => console.log("SQL", q.slice(0, 140).replace(/\s+/g, " ")) } : undefined }) as unknown as Database, close: () => client.close() };
 }
 
 const globalForDb = globalThis as unknown as { __nlDb?: Promise<DatabaseHandle> };

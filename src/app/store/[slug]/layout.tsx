@@ -6,10 +6,9 @@ import { organizations } from "@/db/schema";
 import { brandByCode, brandOfHostStrict } from "@/lib/brand";
 import { storeOwnerBase } from "@/lib/host-routing";
 import { getDb } from "@/db/client";
-import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
+import { getStorefront, getStorefrontCatalog, getStorefrontGlobals, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
 import { THEME_BY_KEY } from "@/lib/themes/catalog";
-import { resolveGlobals } from "@/lib/themes/store";
 import { tryingTheme } from "@/lib/themes/try";
 import { fontStack } from "@/lib/ds/fonts";
 import { SectionList } from "@/components/storefront/sections";
@@ -85,7 +84,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const lancando = sf.store.launchMode && !showcase && !previewing;
   const publico = !previewing && !preview && !showcase && !(lancando && !donoVendo);
   const productName = brandByCode(org?.brand).name;
-  const globals = trial ? trial.preset.globals : (await resolveGlobals(db, sf.store, { draft: preview })).globals;
+  const globals = trial ? trial.preset.globals : await getStorefrontGlobals(sf.store, preview);
   const st = globals.style;
   const vars = { "--sf-primary": st.primary, "--sf-accent": st.accent, "--sf-on-primary": readableOn(st.primary), "--sf-on-accent": readableOn(st.accent), "--sf-radius": `${st.radius}px`, "--sf-font-heading": fontStack(st.headingFont), "--sf-font-body": fontStack(st.bodyFont) } as React.CSSProperties;
   // Kit Black da loja (D242): faixa com cupom e contagem, e selo nos produtos (CSS por `data-black`).

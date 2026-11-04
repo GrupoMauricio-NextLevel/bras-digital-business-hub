@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { escolherRelacionados } from "@/lib/domain/venda-junto";
 import { SectionList } from "@/components/storefront/sections";
 import { getDb } from "@/db/client";
-import { getStorefront, getStorefrontCatalog, idsBySkus, toPublicProduct } from "@/lib/queries/storefront";
+import { getStorefront, getStorefrontCatalog, getStorefrontGlobals, idsBySkus, toPublicProduct } from "@/lib/queries/storefront";
 import { isPreviewMode } from "@/lib/themes/preview";
 import { tryingTheme } from "@/lib/themes/try";
-import { resolveGlobals, resolveTemplate } from "@/lib/themes/store";
+import { resolveTemplate } from "@/lib/themes/store";
 import { planProducts } from "@/lib/themes/template";
 import { welcomeOffer } from "@/lib/domain/welcome-coupon";
 import type { PageKind } from "@/lib/themes/types";
@@ -29,7 +29,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   ]);
   const [template, globals] = trial ? [trial.preset.pages[page], trial.preset.globals] : await Promise.all([
     resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey }).then((r) => r.template),
-    resolveGlobals(db, sf.store, { draft: preview }).then((r) => r.globals),
+    getStorefrontGlobals(sf.store, preview),
   ]);
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const all = catalog.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));

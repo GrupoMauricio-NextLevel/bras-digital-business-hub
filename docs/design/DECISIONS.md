@@ -2666,3 +2666,29 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - o plano grátis do Zoho segue em 2026, mas depende da região do data center;
   - o Cloudflare Email Routing é grátis, só encaminha e exige trocar os nameservers do domínio para o Cloudflare;
   - a Hostinger não liga o domínio pela API (D236).
+
+## D246 — L5: velocidade da vitrine (medido antes e depois) (2026-11-04)
+- **Causa:** cada página da loja buscava os dados no banco uma consulta depois da outra. O catálogo era lido duas vezes e o estilo da loja também.
+- **O que mudou:**
+  - o layout e a página buscam juntas as leituras independentes (campanha, kit Black, catálogo, prévia, teste de tema, endereço);
+  - o catálogo é lido uma vez por requisição;
+  - o estilo da loja (`getStorefrontGlobals`) também é lido uma vez por requisição;
+  - os tamanhos com estoque, os pacotes e o preço por quantidade saem em paralelo;
+  - de 16 para 14 consultas por página, em menos rodadas.
+- **Medição local** (servidor de produção, banco em memória), mediana do tempo do servidor:
+
+  | Página | Antes | Depois |
+  |---|---|---|
+  | Início | 63 ms | 31 ms |
+  | Catálogo | 36 ms | 26 ms |
+  | Produto | 38 ms | 28 ms |
+
+- **Celular simulado (CPU 4x, rede 4G):** a maior pintura (LCP) fica em 1,0 a 2,0 s. JavaScript: 212 KB.
+- **Produção** (a partir daqui, com a latência do agente):
+  - catálogo: de 381 para 209 ms (mediana);
+  - início: entre 300 e 460 ms, sem ganho claro. A página tem muitas seções e o tempo vai em montá-las, não no banco.
+- **Ferramenta:** `LOG_SQL=1` no banco local imprime as consultas, para contar por página.
+- **Ainda não feito (fica para depois):**
+  - cache entre visitas, com renovação ao publicar ou ao mudar preço e estoque;
+  - CDN para as imagens.
+  - Isso exige cuidado com preço e estoque ao vivo e com o checkout.
