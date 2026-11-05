@@ -1006,6 +1006,60 @@ export const partners = pgTable("partners", {
   createdAt: createdAt(),
 });
 
+/** Etapas do funil de parceiros no Master (D251, PV3). Sem etapa manual, o sistema calcula. */
+export const PARTNER_STAGES = ["CANDIDATO", "EM_ANALISE", "APROVADO", "ATIVANDO", "PRODUTIVO", "EM_RISCO", "INATIVO", "DESLIGADO"] as const;
+export type PartnerStage = (typeof PARTNER_STAGES)[number];
+
+/** Perfil e funil do parceiro no CRM do Master (D251): região, dono interno, etapa manual e próxima ação. */
+export const partnerProfiles = pgTable("partner_profiles", {
+  partnerId: text("partner_id").primaryKey().references(() => partners.id),
+  region: text("region"),
+  channels: text("channels"),
+  followers: integer("followers"),
+  ownerUserId: text("owner_user_id"),
+  manualStage: text("manual_stage", { enum: PARTNER_STAGES }),
+  nextAction: text("next_action"),
+  nextActionAt: ts("next_action_at"),
+  updatedAt: updatedAt(),
+});
+
+/** Linha do tempo interna do parceiro (D251): notas, ligações, tarefas e mensagens. O parceiro não vê. */
+export const partnerActivities = pgTable("partner_activities", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  kind: text("kind", { enum: ["NOTA", "LIGACAO", "TAREFA", "MENSAGEM"] }).notNull(),
+  text: text("text").notNull(),
+  dueAt: ts("due_at"),
+  doneAt: ts("done_at"),
+  authorUserId: text("author_user_id"),
+  createdAt: createdAt(),
+}, (t) => [index("partner_activities_partner_idx").on(t.partnerId)]);
+
+/** Desafio do mês (D251): meta de ativações no mês para um grupo de parceiros, com bônus pago uma vez. */
+export const partnerChallenges = pgTable("partner_challenges", {
+  id: id(),
+  title: text("title").notNull(),
+  period: text("period").notNull(),
+  target: integer("target").notNull(),
+  bonusCents: integer("bonus_cents").notNull(),
+  /** Tipos de parceiro que participam (vazio = todos). */
+  kinds: jsonb("kinds").$type<string[]>().notNull().default([]),
+  active: boolean("active").notNull().default(true),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+});
+
+/** Aviso do Master para um segmento de parceiros (D251): aparece no painel de cada parceiro escolhido. */
+export const partnerNotices = pgTable("partner_notices", {
+  id: id(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  partnerIds: jsonb("partner_ids").$type<string[]>().notNull().default([]),
+  segment: text("segment"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+});
+
 /** Histórico de níveis do parceiro (D249): toda subida, descida e fixação manual. */
 export const partnerTierHistory = pgTable("partner_tier_history", {
   id: id(),

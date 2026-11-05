@@ -575,6 +575,13 @@
       "when": 1793838671110,
       "tag": "0081_parceiros_niveis",
       "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "7",
+      "when": 1793841961350,
+      "tag": "0082_parceiros_crm",
+      "breakpoints": true
     }
   ]
 }

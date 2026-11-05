@@ -2780,3 +2780,49 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - escada Start/Pro/Scale;
   - fases AT0 a AT8.
   - Ainda não foi desenvolvido.
+
+## D251 — PV1 + PV3: CRM de parceiros no Master (funil, ficha 360, fila, ranking, segmentos, aviso e desafio do mês) (2026-11-05)
+- **Dados (migração 0082):**
+  - `partner_profiles`: região, canais, seguidores, quem cuida, etapa manual, próxima ação e data;
+  - `partner_activities`: nota, ligação, tarefa e mensagem; o parceiro não vê;
+  - `partner_challenges` e `partner_notices`.
+  - `partner_brands` fica para a PV7.
+- **Funil** (aba "Funil", padrão em Master → Parceiros):
+  - Etapas: Candidato → Em análise → Aprovado → Ativando → Produtivo → Em risco → Inativo → Desligado.
+  - **Etapa automática:**
+    - suspenso vira Desligado; inativo vira Inativo;
+    - sem 1ª venda, Ativando;
+    - cliente novo nos últimos 30 dias, Produtivo;
+    - senão, Em risco.
+  - A etapa manual (arrastar o cartão ou "Mover para…", que também funciona no teclado) vale até o cálculo mandar. As etapas iniciais somem com a 1ª venda.
+  - Inativo e Desligado só mudam pela situação do parceiro.
+- **Cartão:**
+  - mostra tipo, nível, região, clientes ativos, receita do mês, comissão a pagar, próxima ação (vermelha quando vence), última atividade, quem cuida e WhatsApp;
+  - traz a **saúde de 0 a 100**: recência 40, conversão 30, retenção 20 e sem antifraude 10.
+- **Ficha 360 em gaveta** (`?p=<id>`):
+  - acompanhamento editável (etapa, quem cuida, região, canais, próxima ação);
+  - registrar nota, ligação ou tarefa com data;
+  - tarefas com "Feita";
+  - indicados com a situação de cada loja;
+  - comissões por mês;
+  - linha do tempo com cadastro, nível, vendas, bônus, saques, links e registros.
+- **Precisa de você** passa a incluir:
+  - ações vencidas;
+  - "Ativando" há mais de 14 dias;
+  - parceiros em risco;
+  - candidatos parados há mais de 48 h.
+- **Ranking do mês por trilha:** clientes novos no mês, depois receita.
+- **Segmentos:**
+  - filtros (nome/código, tipo, nível, região, quem cuida) salvos com nome em `parceiros.segmentos`;
+  - CSV do segmento;
+  - **aviso em massa**, que aparece no painel de cada parceiro do segmento por 45 dias e fica na linha do tempo.
+- **Desafio do mês:**
+  - meta de lojas novas no mês, bônus e tipos de parceiro;
+  - a rotina diária paga o bônus uma vez por desafio e parceiro;
+  - o parceiro vê a barra de progresso no painel.
+- **Permissões no servidor:**
+  - o dono e as funções comercial e financeiro mexem no funil e nos segmentos;
+  - o suporte registra notas;
+  - desafio só para o comercial e o financeiro, com auditoria.
+- **Consultas:** o quadro sai de consultas agrupadas (uma por bloco), sem consulta por parceiro.
+- **Na tela:** no celular o quadro rola dentro dele mesmo, sem rolagem lateral da página.

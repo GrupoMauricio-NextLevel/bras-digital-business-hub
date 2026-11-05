@@ -15,6 +15,8 @@ import { formatBRL } from "@/lib/money";
 import { formatDate } from "@/lib/utils";
 import { CopyButton, WhatsAppShare } from "./partner-client";
 import { PainelParceiroEc } from "./painel-ec";
+import { RecadosDoParceiro } from "./recados";
+import { avisosDoParceiro, desafiosDoParceiro } from "@/lib/domain/crm-parceiros";
 import { painelParceiroEc } from "@/lib/domain/parceiros-ec";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 
@@ -30,7 +32,9 @@ export default async function PartnerHome() {
     const [pe, pv] = await Promise.all([painelParceiroEc(db, session.actor), commercePlansView(db)]);
     const aPartir = Math.min(...pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => p.monthlyCents!));
     const linkEc = `${base}/r/${pe.parceiro.code.toLowerCase()}`;
-    return <PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} />;
+    const [avisos, desafios] = await Promise.all([avisosDoParceiro(db, pe.parceiro.id), desafiosDoParceiro(db, pe.parceiro.id)]);
+    const recados = avisos.length || desafios.length ? <RecadosDoParceiro avisos={avisos} desafios={desafios} /> : null;
+    return <>{recados}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
   }
   const d = await partnerDashboard(await getDb(), session.actor);
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;
