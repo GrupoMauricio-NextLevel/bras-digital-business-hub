@@ -1,4 +1,4 @@
-import { and, eq, isNotNull, isNull, like, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, isNotNull, isNull, like, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { nlSubscriptions, orders, partnerCommissions, partnerTierHistory, partners, stores, type PartnerTier } from "@/db/schema";
 import { newId } from "@/lib/ids";
@@ -75,7 +75,29 @@ export async function rodarNiveis(db: Database, now = new Date()) {
     if ((await recalcularNivel(db, p.id, now)) !== antes) mudaram++;
   }
   const bonus = await bonusDosRepresentantes(db, now);
-  return { mudaram, bonus };
+  const inativados = await inativarSemClientes(db, now);
+  return { mudaram, bonus, inativados };
+}
+
+export const MESES_SEM_CLIENTE = 6;
+/**
+ * Requalificação (D249, ligada pelo dono): parceiro sem nenhum cliente ativo e sem nenhuma comissão de venda nos
+ * últimos 6 meses (e com cadastro de 6 meses ou mais) fica Inativo. Volta a captar pela reativação que já existe.
+ */
+export async function inativarSemClientes(db: Database, now = new Date()) {
+  const corte = new Date(now); corte.setUTCMonth(corte.getUTCMonth() - MESES_SEM_CLIENTE);
+  const lista = await db.select({ id: partners.id, createdAt: partners.createdAt }).from(partners).where(eq(partners.status, "ACTIVE"));
+  let n = 0;
+  for (const p of lista) {
+    if (new Date(p.createdAt) > corte) continue;
+    if ((await clientesAtivos(db, p.id)) > 0) continue;
+    const [v] = await db.select({ n: sql<number>`count(*)::int` }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p.id), inArray(partnerCommissions.kind, ["SALE", "RECURRING", "SETUP", "MAINTENANCE", "BONUS"]), gte(partnerCommissions.createdAt, corte.toISOString())));
+    if (Number(v?.n ?? 0) > 0) continue;
+    await db.update(partners).set({ status: "INACTIVE" }).where(and(eq(partners.id, p.id), eq(partners.status, "ACTIVE")));
+    await recordFinancialAudit(db, null, { domain: CORPORATE, action: "PARTNER_INACTIVATED", entityType: "partner", entityId: p.id, partnerId: p.id, reason: `${MESES_SEM_CLIENTE} meses sem cliente ativo` });
+    n++;
+  }
+  return n;
 }
 
 /** O Master fixa o nível (com motivo) ou solta (tier = null, volta ao cálculo). */

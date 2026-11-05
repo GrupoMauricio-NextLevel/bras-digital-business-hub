@@ -6,7 +6,7 @@ import { newId } from "@/lib/ids";
 import { registerPartner } from "@/lib/domain/partners";
 import { recordSaleCommission } from "@/lib/domain/corporate-commissions";
 import { ensureCatalogSeed } from "@/lib/domain/nl-catalog";
-import { bonusDosRepresentantes, fixarNivel, nivelPorClientes, recalcularNivel, recorrenteDoNivel } from "@/lib/domain/niveis-parceiro";
+import { bonusDosRepresentantes, fixarNivel, inativarSemClientes, nivelPorClientes, recalcularNivel, recorrenteDoNivel } from "@/lib/domain/niveis-parceiro";
 
 /** Níveis dos parceiros (D249, PV2) e bônus do representante (D226). */
 describe("níveis dos parceiros", () => {
@@ -95,5 +95,17 @@ describe("níveis dos parceiros", () => {
     expect(await bonusDosRepresentantes(ctx.db, DEZ)).toBe(2); // a 10ª loja + a meta
     const bonus = await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, partnerId));
     expect(bonus.reduce((t, b) => t + b.amountCents, 0)).toBe(10 * 3_000 + 10_000);
+  });
+
+  it("6 meses sem cliente ativo e sem comissão de venda: fica Inativo; com cliente ou cadastro novo, não", async () => {
+    await ctx.db.update(partners).set({ createdAt: "2026-01-01T00:00:00Z" }).where(eq(partners.id, partnerId));
+    expect(await inativarSemClientes(ctx.db, new Date("2026-05-01T12:00:00Z"))).toBe(0); // cadastro com menos de 6 meses
+    const [loja] = await clientes(1);
+    expect(await inativarSemClientes(ctx.db, DEZ)).toBe(0); // tem cliente ativo
+    await ctx.db.update(nlSubscriptions).set({ status: "cancelled" }).where(eq(nlSubscriptions.storeId, loja!));
+    await ctx.db.insert(partnerCommissions).values({ id: newId("pcm"), partnerId, kind: "RECURRING", amountCents: 100, period: "2026-09", dedupeKey: "rec-set", createdAt: "2026-09-01T00:00:00Z" });
+    expect(await inativarSemClientes(ctx.db, DEZ)).toBe(0); // vendeu nos últimos 6 meses
+    expect(await inativarSemClientes(ctx.db, new Date("2027-04-01T12:00:00Z"))).toBe(1);
+    expect((await tierDe()).status).toBe("INACTIVE");
   });
 });

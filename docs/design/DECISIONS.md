@@ -2763,3 +2763,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - entra como lançamento "Bônus" no extrato.
 - **Rotina:** `runDailyPartnerJobs` recalcula os níveis e paga os bônus todo dia.
 - **Fora desta fase:** o "Inativo após 6 meses sem cliente ativo" não foi ligado, porque o status Inativo hoje cobra taxa de manutenção do cadastro (D-SuperDrop). Fica para decidir com o dono.
+
+## D250 — Parceiro sem cliente por 6 meses fica Inativo; plano do atacado registrado (2026-11-05)
+- **Pedido do dono:** "Pode ligar" a requalificação da D249.
+- **Regra:**
+  - O parceiro fica Inativo quando, ao mesmo tempo:
+    - tem cadastro de 6 meses ou mais;
+    - não tem nenhum cliente ativo;
+    - não teve nenhuma comissão de venda nos últimos 6 meses (venda, recorrência, setup, manutenção ou bônus).
+  - Roda na rotina diária (`inativarSemClientes`) e fica registrado na auditoria financeira.
+  - Volta pela reativação que já existe.
+- **Atacado:** o racional e o prompt engenheiro mestre estão em `docs/prompts/atacado-nextlevel-ecommerce.md`:
+  - modalidades do Brás;
+  - motor único de preço;
+  - box novo;
+  - escada Start/Pro/Scale;
+  - fases AT0 a AT8.
+  - Ainda não foi desenvolvido.
