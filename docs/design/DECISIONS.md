@@ -2932,3 +2932,34 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - Na abertura, "Como comprar" em destaque e os demais assuntos num cartão único com divisórias.
   - Cores neutras, para combinar com qualquer tema de loja.
 - **Fica de fora:** as telas de Atendimento (Master e lojista) são páginas inteiras de conversa, não colunas de chat.
+
+## D257 — AT0 do atacado: dados e motor único de preço (2026-11-05)
+- **Prompt:** `docs/prompts/atacado-nextlevel-ecommerce.md`, fase AT0.
+- **Dados (migração 0083, aditiva):**
+  - `store_products`:
+    - `wholesale_price_cents`: preço de atacado por peça, nulo = sem atacado;
+    - `min_qty_per_model`: padrão 0;
+    - `multiple_of`: padrão 1.
+  - `product_packs`:
+    - `kind`: GRADE_FECHADA ou PACOTE_SORTIDO;
+    - `color_mode`: FIXA, SORTIDA ou POR_COR;
+    - `color` e `position`.
+  - `product_variants.color`: nula = "cor única", que vale para todos os produtos antigos.
+  - Tabela `store_wholesale_rules`: MIX_PECAS, MIX_VALOR ou MIX_CATEGORIA, até 6 por loja, uma por tipo e por coleção.
+  - Provado sobre um banco no formato anterior: as colunas novas entram sem erro.
+- **Motor único** `precoDoCarrinho` (`src/lib/finance/atacado-preco.ts`, puro). Usado:
+  - no **pedido** (`createOrder`);
+  - na **proposta** (`priceLines`);
+  - no **carrinho do navegador** (`priceCartLines`).
+- **Regras do motor:**
+  - grade e pacote têm preço próprio e **contam peças para o mix**;
+  - peça avulsa pega o menor entre varejo, faixa do modelo (D52) e preço de atacado, este quando um gatilho está ativo (mix de peças, mix de valor, mix da coleção ou cliente aprovado);
+  - nunca acima do varejo nem abaixo do piso (custo e mínimo);
+  - o mix por valor usa o subtotal de varejo;
+  - caiu abaixo do mínimo, volta ao varejo.
+- **Garantias (testes):**
+  - sem regra e sem preço de atacado, o resultado é **idêntico** ao preço por quantidade de antes (os testes da D52 continuam passando);
+  - em 500 carrinhos aleatórios, o navegador dá o mesmo total que o motor, e o preço fica entre o piso e o varejo;
+  - pedido e proposta aplicam o mix de 6 peças da loja toda.
+- **SuperDrop (D216):** loja de rede não tem regras nem preço de atacado (recusado no servidor) e o pedido dela não muda.
+- **Fica para a AT1:** a tela do lojista para o preço de atacado e as regras de mix, e os limites por plano. Hoje as regras só podem ser criadas pelo domínio, então nada muda para o cliente até lá.

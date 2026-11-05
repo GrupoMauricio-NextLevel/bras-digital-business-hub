@@ -253,6 +253,8 @@ export const productVariants = pgTable("product_variants", {
   id: id(),
   productId: text("product_id").notNull().references(() => products.id),
   size: text("size").notNull(),
+  /** Cor da variação (AT0, D257). Nula = "cor única" (todos os produtos antigos). */
+  color: text("color"),
   sku: text("sku").notNull(),
   position: integer("position").notNull().default(0),
 }, (t) => [index("variants_product_idx").on(t.productId)]);
@@ -266,6 +268,12 @@ export const productPacks = pgTable("product_packs", {
   costCents: integer("cost_cents").notNull(),
   suggestedPriceCents: integer("suggested_price_cents").notNull(),
   minimumPriceCents: integer("minimum_price_cents").notNull(),
+  /** Atacado (AT0, D257): grade fechada (composição por tamanho) ou pacote sortido (a loja escolhe modelos e cores). */
+  kind: text("kind", { enum: ["GRADE_FECHADA", "PACOTE_SORTIDO"] }).notNull().default("GRADE_FECHADA"),
+  /** Cor da grade: fixa (uma cor), sortida (a loja escolhe) ou por cor (o comprador escolhe a cor). */
+  colorMode: text("color_mode", { enum: ["FIXA", "SORTIDA", "POR_COR"] }).notNull().default("FIXA"),
+  color: text("color"),
+  position: integer("position").notNull().default(0),
 });
 
 export const productPackItems = pgTable("product_pack_items", {
@@ -285,6 +293,11 @@ export const storeProducts = pgTable("store_products", {
   productId: text("product_id").notNull().references(() => products.id),
   priceCents: integer("price_cents").notNull(),
   packPriceCents: integer("pack_price_cents"),
+  /** Preço de atacado por peça (AT0, D257): vale quando o carrinho atinge uma regra de mix da loja. Nulo = sem atacado. */
+  wholesalePriceCents: integer("wholesale_price_cents"),
+  /** Mínimo de peças do modelo (grade livre) e múltiplo de venda (de 6 em 6). 0 e 1 = sem regra. */
+  minQtyPerModel: integer("min_qty_per_model").notNull().default(0),
+  multipleOf: integer("multiple_of").notNull().default(1),
   active: boolean("active").notNull().default(true),
   featured: boolean("featured").notNull().default(false),
   /** "Compre junto" (W3, D186): até 4 produtos que a loja escolheu para mostrar junto deste (vazio = mesma categoria). */
@@ -1439,6 +1452,20 @@ export const storePriceTiers = pgTable("store_price_tiers", {
   minQty: integer("min_qty").notNull(),
   priceCents: integer("price_cents").notNull(),
 }, (t) => [uniqueIndex("store_price_tiers_unique").on(t.storeId, t.productId, t.minQty)]);
+
+/** Regras de atacado da loja (AT0, D257): quando o carrinho passa ao preço de atacado (mix da loja toda, por valor ou por categoria). */
+export const WHOLESALE_RULE_KINDS = ["MIX_PECAS", "MIX_VALOR", "MIX_CATEGORIA"] as const;
+export const storeWholesaleRules = pgTable("store_wholesale_rules", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  kind: text("kind", { enum: WHOLESALE_RULE_KINDS }).notNull(),
+  minPieces: integer("min_pieces"),
+  minCents: integer("min_cents"),
+  categoryId: text("category_id").references(() => categories.id),
+  active: boolean("active").notNull().default(true),
+  position: integer("position").notNull().default(0),
+  createdAt: createdAt(),
+}, (t) => [index("store_wholesale_rules_store_idx").on(t.storeId)]);
 
 // ---------------------------------------------------------------------------
 // Avaliações de produto: só de quem comprou (pedido pago e enviado), com moderação do lojista

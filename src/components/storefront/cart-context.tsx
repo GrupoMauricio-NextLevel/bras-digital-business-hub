@@ -1,22 +1,18 @@
 "use client";
 import * as React from "react";
 import { eventoMeta } from "./pixel-meta";
+import { precoDoCarrinho, type RegraMix } from "@/lib/finance/atacado-preco";
 
 export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number;
   /** Preço por quantidade do produto (soma das unidades do mesmo produto no carrinho). */
-  tiers?: { minQty: number; priceCents: number }[] };
+  tiers?: { minQty: number; priceCents: number }[];
+  /** Atacado (AT0, D257): preço por peça no atacado, coleção, peças da grade e piso. Opcionais (carrinhos antigos seguem valendo). */
+  atacadoCents?: number | null; categoryId?: string | null; pecasPorUnidade?: number; pisoCents?: number };
 
-/** Preço unitário efetivo de cada linha (mesma regra do servidor, que recalcula tudo ao criar o pedido). */
-export function priceCartLines(lines: CartLine[]): CartLine[] {
-  const qty = new Map<string, number>();
-  for (const l of lines) if (!l.packId) qty.set(l.productId, (qty.get(l.productId) ?? 0) + l.quantity);
-  return lines.map((l) => {
-    if (l.packId || !l.tiers?.length) return l;
-    const total = qty.get(l.productId) ?? l.quantity;
-    let best = 0, price = l.unitPriceCents;
-    for (const t of l.tiers) if (total >= t.minQty && t.minQty > best) { best = t.minQty; price = Math.min(l.unitPriceCents, t.priceCents); }
-    return { ...l, unitPriceCents: price };
-  });
+/** Preço efetivo de cada linha pelo motor único do servidor (`precoDoCarrinho`), que recalcula tudo ao criar o pedido. */
+export function priceCartLines(lines: CartLine[], regras: RegraMix[] = []): CartLine[] {
+  const r = precoDoCarrinho(lines.map((l) => ({ key: l.key, productId: l.productId, categoryId: l.categoryId, packId: l.packId, pecasPorUnidade: l.pecasPorUnidade, quantity: l.quantity, varejoCents: l.unitPriceCents, atacadoCents: l.atacadoCents, faixas: l.tiers, pisoCents: l.pisoCents })), regras);
+  return lines.map((l, i) => (r.linhas[i]!.unitCents === l.unitPriceCents ? l : { ...l, unitPriceCents: r.linhas[i]!.unitCents }));
 }
 
 /**

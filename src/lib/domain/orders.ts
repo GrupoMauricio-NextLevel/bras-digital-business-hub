@@ -15,7 +15,8 @@ import { CANCELABLE, canTransition, resolveFulfillmentStatus } from "./order-sta
 import { capabilitiesForSupplier } from "./finance";
 import { assertCanFulfilOrder, assertManualPaymentConfirmable, isIndependentStore, storeModality } from "./order-policy";
 import { tryDebitOrder } from "./wallet";
-import { unitPriceForQty } from "./price-tiers";
+import { linhaDoCatalogo, regrasDeAtacado } from "./atacado";
+import { precoDoCarrinho } from "@/lib/finance/atacado-preco";
 import { priceDiscount, redeemDiscount, releaseDiscount } from "./discounts";
 import { decryptSecret } from "@/lib/security/crypto";
 import { FORMAS_DE_ENVIO, type FormaDeEnvio } from "./formas-envio";
@@ -115,11 +116,17 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
   const lines: (typeof orderItems.$inferInsert)[] = [];
   const reservations: Reservation[] = [];
   const orderId = newId("ord");
-  // Quantidade total por produto (só unidades; grades/packs têm preço próprio) para o preço por quantidade.
-  const unitQtyByProduct = new Map<string, number>();
-  for (const l of input.items) if (!l.packId) unitQtyByProduct.set(l.productId, (unitQtyByProduct.get(l.productId) ?? 0) + l.quantity);
+  // Motor único de preço (AT0, D257): faixa do modelo, preço de atacado e mix da loja; grades com preço próprio contam no mix.
+  const rede = !!store.networkId && store.kind !== "SUPPLIER_OWN";
+  const linhasPreco = input.items.map((l, i) => {
+    const item = byProduct.get(l.productId);
+    if (!item) throw new DomainError("PRODUCT_NOT_AVAILABLE", "Produto não disponível para esta loja.");
+    if (l.packId && !item.packs.some((p) => p.id === l.packId)) throw new DomainError("PACK_NOT_AVAILABLE", "Grade não disponível.");
+    return linhaDoCatalogo(item, l, String(i), rede);
+  });
+  const precos = precoDoCarrinho(linhasPreco, rede ? [] : await regrasDeAtacado(db, store.id)).linhas;
 
-  for (const line of input.items) {
+  for (const [indice, line] of input.items.entries()) {
     const item = byProduct.get(line.productId);
     if (!item) throw new DomainError("PRODUCT_NOT_AVAILABLE", "Produto não disponível para esta loja.");
     if (line.packId) {
@@ -131,7 +138,7 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
     } else {
       const variant = item.variants.find((v) => v.id === line.variantId);
       if (!variant || !item.product.sellsUnit) throw new DomainError("VARIANT_NOT_AVAILABLE", "Tamanho não disponível.");
-      const unitPrice = unitPriceForQty(item.storeProduct.priceCents, item.tiers, unitQtyByProduct.get(item.product.id) ?? line.quantity);
+      const unitPrice = precos[indice]!.unitCents;
       reservations.push({ variantId: variant.id, quantity: line.quantity });
       lines.push({ id: newId("oi"), orderId, productId: item.product.id, variantId: variant.id, productName: item.product.name, label: `Tam. ${variant.size}`, quantity: line.quantity, unitPriceCents: unitPrice, unitCostCents: item.product.costCents, lineTotalCents: unitPrice * line.quantity });
     }

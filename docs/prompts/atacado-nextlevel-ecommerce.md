@@ -1,6 +1,6 @@
 # NextLevel E-commerce de Atacado — racional e prompt engenheiro mestre
 
-> Estado: **PENDENTE (racional aprovado para planejamento; desenvolver por fases AT0 a AT8)**.
+> Estado: **EM ANDAMENTO.** AT0 no ar (D257: dados + motor único de preço). Próxima: AT1 (painel do lojista: preço de atacado, grades e mix, travas por plano).
 > Pedido do dono (05/11/2026): "nossa plataforma vai ser especialista em atacado: NextLevel E-commerce de Atacado. Precisamos aprimorar o box de produtos e o sistema para comportar com perfeição a venda em atacado. No plano básico, o básico; nos planos mais altos, aprofundamos. Grade com 12, atacado de pacote, atacado mesclado com itens de toda a loja: são várias formas de venda de atacado que os empreendedores do Brás têm como realidade."
 
 ---
