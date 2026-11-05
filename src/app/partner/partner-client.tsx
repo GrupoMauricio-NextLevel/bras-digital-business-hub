@@ -112,7 +112,7 @@ export function ProfileForm({ phone, displayName, hasPix }: { phone: string; dis
   );
 }
 
-/** Pedido para virar agência parceira (D220): 30% + 15% depois da aprovação do Master. */
+/** Pedido para virar agência parceira (D220): 50% + 25% (D226) depois da aprovação do Master. */
 export function PedirAgencia() {
   const router = useRouter();
   const [info, setInfo] = React.useState("");

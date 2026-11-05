@@ -169,7 +169,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
   // Parceiro da E-commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
   const parceiroEc = session.user.role === "AFFILIATE" && brand.code === "NEXTLEVEL_COMMERCE";
-  const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 30% + 15% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: false } : undefined;
+  const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: false } : undefined;
   const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
     <>

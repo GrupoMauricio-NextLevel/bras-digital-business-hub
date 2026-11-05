@@ -2717,3 +2717,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - sem plano ativo, vale o Start.
 - **No painel:** barra de uso em Produtos e em Equipe, com aviso aos 80% e "Mudar de plano".
 - **Textos corrigidos:** "sem limite de cadastro" saiu do catálogo, das páginas de Soluções (também nos bancos já existentes) e da home.
+
+## D248 — PV0: comissões de parceiros da D226 no catálogo, com 100% da 1ª mensalidade na Black (2026-11-05)
+- **Novas versões das regras** (`src/lib/finance/revisao-d226.ts`, aplicadas por `ensureCatalogSeed`, sem apagar as antigas):
+
+  | Parceiro | 1ª mensalidade | Recorrente (enquanto o cliente ficar) |
+  |---|---|---|
+  | Criador / cliente que indica | 50% | 20% |
+  | Representante | 50% | 20% |
+  | Agência | 50% | 25% |
+  | Agência Elite | 50% | 32% |
+
+- **Plano anual:** paga o equivalente ao mensal (50% de um mês + recorrente dos outros 11, dividido por 12): 22,5% para quem tem 20%.
+- **Teto:** 1ª até 50% e recorrente até 32% (teste garante).
+- **Carência:** 30 dias antes de liberar o saque.
+- **Na Black (campanha ativa):** a 1ª mensalidade de plano E-commerce paga 100% (no anual, 100% de um mês + recorrente dos outros 11). A recorrência não muda.
+- **Revisa a D220:** agência passou de 30%/15% para 50%/25%.
+- **Fica para a PV2:** bônus do representante (R$ 30 por loja ativada, R$ 100 na meta de 10) e os níveis Prata, Ouro e Diamante.

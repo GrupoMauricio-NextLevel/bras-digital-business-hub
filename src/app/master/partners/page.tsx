@@ -35,7 +35,7 @@ export default async function MasterPartners({ searchParams }: { searchParams: P
   return (
     <>
       <PageHeader title="Programa de Parceiros" description="Indicadores e agências que trazem lojistas: cadastros, comissões, saques e antifraude." actions={<a href={`/master/partners/export?period=${period}`} className="inline-flex items-center gap-1 text-sm font-medium text-accent-foreground hover:underline"><Download className="size-4" aria-hidden /> Exportar CSV do mês</a>} />
-      <PrecisaDeVoce itens={[...agencias, ...openPayouts.slice(0, 5).map((p) => ({ id: `saque-${p.id}`, titulo: `Saque pedido: ${formatBRL(p.amountCents)}`, detalhe: "Confira e aprove o pagamento por Pix.", tom: "warning" as const, href: "/master/partners?tab=saques", acao: "Ver saques" }))]} vazio="Nenhuma agência ou saque esperando você." descricao="Agências pedindo aprovação (30% + 15%) e saques para pagar." />
+      <PrecisaDeVoce itens={[...agencias, ...openPayouts.slice(0, 5).map((p) => ({ id: `saque-${p.id}`, titulo: `Saque pedido: ${formatBRL(p.amountCents)}`, detalhe: "Confira e aprove o pagamento por Pix.", tom: "warning" as const, href: "/master/partners?tab=saques", acao: "Ver saques" }))]} vazio="Nenhuma agência ou saque esperando você." descricao="Agências pedindo aprovação (50% + 25%) e saques para pagar." />
       <MetricGrid className="mb-8">
         <MetricCard label="Parceiros" value={list.length} icon={Handshake} hint={`${list.filter((p) => p.status === "ACTIVE").length} ativos · ${list.filter((p) => p.status === "INACTIVE").length} inativos`} />
         <MetricCard label="Ativações no mês" value={list.reduce((t, p) => t + p.activationsMonth, 0)} tone="success" />

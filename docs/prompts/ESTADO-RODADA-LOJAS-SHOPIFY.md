@@ -60,4 +60,5 @@ Próximos passos, nesta ordem:
 4. Parceiros: fases PV0–PV8.
 
 ## 04/11: IA por plano feita (D244); e-mail grátis guiado e Marca Completa bloqueado (D245)
-Próximos passos: L5 (velocidade da loja) e depois os parceiros (PV0–PV8).
+Feito: L5 (D246), PV6 (D247), PV0 comissões D226 + 100% na Black (D248).
+Próximos passos: PV2 níveis + bônus do representante, PV3 CRM no Master, PV4 captação, PV5 /i/anasouza, PV7, PV8.

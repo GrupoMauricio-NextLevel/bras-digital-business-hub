@@ -12,6 +12,7 @@ import { markInvoicePaid, storeOrderFeeFor } from "@/lib/domain/finance";
 import { connectNextLevelMp } from "@/lib/domain/nextlevel-billing";
 import { commissionBase, partnerStatement, resolveAttribution } from "@/lib/domain/corporate-commissions";
 import { releaseCommissions } from "@/lib/domain/partners";
+import { blackAgora } from "@/lib/domain/campanha-black";
 import { verifyWebhookAuth } from "@/lib/payments/pagarme";
 import { chooseGateway } from "@/lib/payments/gateway";
 import { hashPassword } from "@/lib/security/password";
@@ -312,7 +313,7 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     await expect(ctx.db.insert(partnerLeads).values({ id: newId("pld"), partnerId: a.id, name: "Cliente", email: "cliente@empresa.com" })).rejects.toThrow();
   });
 
-  it("assinatura Commerce comissiona 20% da 1ª e 10% recorrente (D220) pela regra, não pela manutenção antiga", async () => {
+  it("assinatura Commerce comissiona 50% da 1ª (100% na Black) e 20% recorrente (D226) pela regra, não pela manutenção antiga", async () => {
     const p = await partner("EVA", "52998224725", "eva@parceira.com");
     const r = await signupMember(ctx.db, { storeName: "Loja Eva", ownerName: "Cliente Eva", email: "cli@eva.com", password: "senha-segura-1", taxId: "111.444.777-35", brand: "NEXTLEVEL_COMMERCE", independent: true, plan: "COMMERCE_START", ref: "EVA" });
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
@@ -322,11 +323,12 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     const i2 = (await ensureSubscriptionInvoice(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!))!;
     await markInvoicePaid(ctx.db, i2.invoiceId);
     const rows = await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, p.id));
-    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2000, 1140], ["RECURRING", 1000, 570]]));
+    const naBlack = (await blackAgora(ctx.db)).ativa;
+    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([naBlack ? ["SALE", 10000, 5700] : ["SALE", 5000, 2850], ["RECURRING", 2000, 1140]]));
     expect(rows.some((x) => x.kind === "MAINTENANCE")).toBe(false);
-    // Agência (D220): 30% na 1ª e 15% recorrente.
+    // Agência (D226, revisa a D220): 50% na 1ª e 25% recorrente enquanto o cliente ficar.
     const { findRule } = await import("@/lib/domain/corporate-commissions");
-    expect(await findRule(ctx.db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AGENCY" })).toMatchObject({ firstBps: 3000, recurringBps: 1500 });
+    expect(await findRule(ctx.db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AGENCY" })).toMatchObject({ firstBps: 5000, recurringBps: 2500 });
     expect((await ctx.db.select().from(nlSubscriptions)).length).toBe(1);
   });
 });

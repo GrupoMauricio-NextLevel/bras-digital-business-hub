@@ -37,7 +37,7 @@ export default async function MasterPartnerPage({ params }: { params: Promise<{ 
         <MetricCard label="Chave Pix" value={p.hasPix ? "Cadastrada" : "Não cadastrada"} tone={p.hasPix ? "success" : "warning"} />
       </MetricGrid>
       <Card className="mb-8"><CardContent className="pt-5"><PartnerAdmin id={p.id} status={p.status} /></CardContent></Card>
-      {/* D220: tipo do parceiro (agência parceira = 30% + 15%) e o pedido feito pelo parceiro no painel. */}
+      {/* D220: tipo do parceiro (agência parceira = 50% + 25%, D226) e o pedido feito pelo parceiro no painel. */}
       <Card className="mb-8"><CardContent className="space-y-3 pt-5">
         <h2 className="text-base font-semibold">Tipo: {ROTULO_TIPO[p.kind] ?? p.kind}</h2>
         {p.agencyRequestedAt ? <p className="rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning">Pediu para ser agência parceira em {formatDate(p.agencyRequestedAt)}: {p.agencyInfo ?? "sem detalhes"}</p> : null}

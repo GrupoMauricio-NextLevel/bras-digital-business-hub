@@ -4,6 +4,7 @@ import type { Database } from "@/db/client";
 import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { COMISSOES_D220, PRECOS_D220, REF_D220, descontoAnualBps } from "@/lib/finance/revisao-d220";
+import { COMISSOES_D226, REF_D226 } from "@/lib/finance/revisao-d226";
 import { PRECOS_D228, REF_D228 } from "@/lib/finance/revisao-d228";
 import { ENTRY_OFFER_KEY, FAQ_ANUAL, FAQ_TESTE, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
@@ -55,7 +56,18 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
   await aplicarRevisaoD220(db);
   await agendarRevisaoD228(db);
   await aplicarOfertaSemPrimeiroMes(db);
+  await aplicarComissoesD226(db);
   return created;
+}
+
+/** Comissões da D226 (PV0): nova versão de cada regra, uma vez por banco (marcador "D226" no motivo). */
+async function aplicarComissoesD226(db: Database) {
+  const regras = await db.select().from(commissionRules).orderBy(desc(commissionRules.version));
+  for (const r of COMISSOES_D226) {
+    const ult = regras.find((x) => x.key === r.key);
+    if (ult?.reason.includes(REF_D226)) continue;
+    await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: 30, benefit: r.benefit, effectiveFrom: new Date(0).toISOString(), reason: `Programa de parceiros v2: criador e representante 50% + 20%, agência 50% + 25%, Elite 50% + 32%, enquanto o cliente ficar (${REF_D226})` }).onConflictDoNothing();
+  }
 }
 
 /**
