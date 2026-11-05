@@ -12,7 +12,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { conversar } from "@/lib/ia/provedor";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 import { fatosEmTexto, type FatosVenda } from "@/lib/ia/vendedor-publico";
-import { abrirConversa, assumirConversa, atualizarConversa, devolverAoMauricio, enviarDoCliente, iniciarConversa, listarConversas, mensagensDepois, pulsoAtendimento, responderComoEquipe, salvarContato } from "@/lib/domain/ia-conversas";
+import { type MotorConversa, abrirConversa, assumirConversa, atualizarConversa, devolverAoMauricio, enviarDoCliente, iniciarConversa, listarConversas, mensagensDepois, pulsoAtendimento, responderComoEquipe, salvarContato } from "@/lib/domain/ia-conversas";
 
 /** Chat público do Maurício (D195, D197) e o CRM ao vivo do Master. */
 async function limite(chave: string, n: number) {
@@ -20,6 +20,15 @@ async function limite(chave: string, n: number) {
   if (!rateLimit(`${chave}:${ip}`, n, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas mensagens seguidas. Tente de novo daqui a pouco ou deixe o seu WhatsApp.");
 }
 async function fatos() { const brand = await getBrand(); return { brand, f: await fatosDoVendedor(await getDb(), brand.signupOpen ? "/cadastro" : "/quero-minha-loja") }; }
+
+/** Guia do Programa de Parceiros (D253): motor guiado com os números das regras, nas páginas /parceiros da E-commerce. */
+async function motorParceiros(): Promise<MotorConversa | undefined> {
+  const brand = await getBrand();
+  if (brand.code !== "NEXTLEVEL_COMMERCE") return undefined;
+  const [{ fatosDosParceiros }, g] = await Promise.all([import("@/lib/domain/captacao-parceiros"), import("@/lib/ia/guia-parceiros-publico")]);
+  const f = await fatosDosParceiros(await getDb());
+  return { responder: (a) => g.responderParceiro(f, a), responderTexto: (t) => g.responderTextoParceiro(f, t), cadastro: f.cadastro, guiado: true };
+}
 
 /** Com a IA ligada no Master, a pergunta livre vai ao modelo com os fatos; sem ela, devolve null e vale o motor guiado. */
 async function respostaLivre(f: FatosVenda) {
@@ -41,14 +50,15 @@ export async function iniciarConversaAction(input: { pagina?: string; origem?: R
     await limite("conv-ini", 20);
     const { brand, f } = await fatos();
     const origem = Object.fromEntries(Object.entries(input.origem ?? {}).slice(0, 8).map(([k, v]) => [k.slice(0, 30), String(v).slice(0, 120)]));
-    return iniciarConversa(await getDb(), { brand: brand.code, pagina: input.pagina, origem }, f);
+    const parceiros = input.pagina?.startsWith("/parceiros") ? await motorParceiros() : undefined;
+    return iniciarConversa(await getDb(), { brand: brand.code, pagina: input.pagina, origem }, f, parceiros);
   });
 }
 export async function enviarMensagemAction(input: { id: string; token: string; texto?: string; atalho?: { id: string; rotulo: string }; depoisDe?: string | null }) {
   return runAction(async () => {
     await limite("conv-msg", 60);
     const { f } = await fatos();
-    return enviarDoCliente(await getDb(), input, f, await respostaLivre(f));
+    return enviarDoCliente(await getDb(), input, f, await respostaLivre(f), motorParceiros);
   });
 }
 export async function novasMensagensAction(input: { id: string; token: string; depoisDe?: string | null }) {

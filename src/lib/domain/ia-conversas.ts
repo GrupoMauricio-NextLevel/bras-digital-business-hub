@@ -10,6 +10,11 @@ import { createBrandLead } from "./brand-leads";
 import type { BrandCode } from "@/lib/brand";
 import { FAIXAS_VENDA, responder, responderTexto, type FatosVenda, type RespostaVenda } from "@/lib/ia/vendedor-publico";
 
+/** Motor de respostas da conversa: o vendedor da home ou o guia do programa de parceiros (D253, páginas /parceiros). */
+export type MotorConversa = { responder: (assunto: string | null) => RespostaVenda; responderTexto: (texto: string) => RespostaVenda; cadastro: string; guiado?: boolean };
+const motorVenda = (f: FatosVenda): MotorConversa => ({ responder: (a) => responder(f, a), responderTexto: (t) => responderTexto(f, t), cadastro: f.cadastro });
+export const ehPaginaDeParceiros = (pagina: string | null | undefined) => !!pagina && /^\/parceiros(\/|$|\?|#)/.test(pagina);
+
 /**
  * Conversas do Maurício nas páginas públicas e o CRM ao vivo do Master (D197). O visitante só fala com a própria conversa
  * (token aleatório; guardamos só o hash). Dados pessoais entram quando ele informa. Equipe assume, responde e devolve.
@@ -33,11 +38,12 @@ async function gravar(db: Database, conversaId: string, autor: Mensagem["autor"]
 }
 const extraDe = (r: RespostaVenda) => ({ atalhos: r.atalhos, acoes: r.acoes, assunto: r.assunto });
 
-export async function iniciarConversa(db: Database, input: { brand: BrandCode; pagina?: string; origem?: Record<string, string> }, fatos: FatosVenda) {
+export async function iniciarConversa(db: Database, input: { brand: BrandCode; pagina?: string; origem?: Record<string, string> }, fatos: FatosVenda, motorParceiros?: MotorConversa) {
   const token = randomBytes(24).toString("hex");
   const id = newId("iac");
   await db.insert(iaConversas).values({ id, brand: input.brand, tokenHash: hash(token), pagina: input.pagina?.slice(0, 200) ?? null, origem: input.origem ?? {} });
-  const boasVindas = responder(fatos, null);
+  const motor = ehPaginaDeParceiros(input.pagina) && motorParceiros ? motorParceiros : motorVenda(fatos);
+  const boasVindas = motor.responder(null);
   await gravar(db, id, "MAURICIO", boasVindas.texto, extraDe(boasVindas));
   return { id, token, mensagens: await mensagensDepois(db, id, token) };
 }
@@ -49,7 +55,7 @@ export async function mensagensDepois(db: Database, id: string, token: string, d
 }
 
 /** Mensagem do visitante: grava, e o Maurício responde, a menos que a equipe tenha assumido a conversa. */
-export async function enviarDoCliente(db: Database, input: { id: string; token: string; texto?: string; atalho?: { id: string; rotulo: string }; depoisDe?: string | null }, fatos: FatosVenda, responderLivre?: (historico: { de: "cliente" | "mauricio"; texto: string }[]) => Promise<string | null>) {
+export async function enviarDoCliente(db: Database, input: { id: string; token: string; texto?: string; atalho?: { id: string; rotulo: string }; depoisDe?: string | null }, fatos: FatosVenda, responderLivre?: (historico: { de: "cliente" | "mauricio"; texto: string }[]) => Promise<string | null>, motorParceiros?: () => Promise<MotorConversa | undefined>) {
   const c = await conferir(db, input.id, input.token);
   if (["GANHA", "PERDIDA"].includes(c.status)) throw new DomainError("ENCERRADA", "Esta conversa foi encerrada. Abra uma nova.");
   const texto = (input.atalho?.rotulo ?? input.texto ?? "").trim().slice(0, 600);
@@ -59,15 +65,17 @@ export async function enviarDoCliente(db: Database, input: { id: string; token: 
   const faixa = FAIXAS_VENDA.find((f) => f.id === input.atalho?.id);
   let assunto = c.interesse;
   if (c.status !== "HUMANO") {
+    // Nas páginas /parceiros, o guia do programa responde sempre pelo motor guiado (offline, números das regras).
+    const motor = (ehPaginaDeParceiros(c.pagina) && motorParceiros ? await motorParceiros() : undefined) ?? motorVenda(fatos);
     let r: RespostaVenda | null = null;
-    if (input.atalho) r = responder(fatos, input.atalho.id);
-    else if (responderLivre) {
+    if (input.atalho) r = motor.responder(input.atalho.id);
+    else if (responderLivre && motor.guiado !== true) {
       const hist = (await db.select().from(iaMensagens).where(eq(iaMensagens.conversaId, c.id)).orderBy(desc(iaMensagens.createdAt)).limit(8)).reverse()
         .filter((m) => m.autor === "CLIENTE" || m.autor === "MAURICIO").map((m) => ({ de: m.autor === "CLIENTE" ? "cliente" as const : "mauricio" as const, texto: m.texto }));
       const livre = await responderLivre(hist).catch(() => null);
       if (livre) r = { texto: livre, atalhos: [], acoes: [{ rotulo: "Criar minha loja", href: fatos.cadastro }], assunto: "livre" };
     }
-    r ??= responderTexto(fatos, texto);
+    r ??= motor.responderTexto(texto);
     if (r.assunto && !["inicio", "nao-entendi", "livre"].includes(r.assunto)) assunto = r.assunto;
     await gravar(db, c.id, "MAURICIO", r.texto, extraDe(r));
   }

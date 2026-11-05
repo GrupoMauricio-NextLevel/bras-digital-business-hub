@@ -4,7 +4,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import { ArrowRight, ArrowUp, BookOpen, LifeBuoy, Lock, Sparkles, X } from "lucide-react";
 import type { MauricioDaLoja, FerramentaComEstado } from "@/lib/domain/ia";
-import { buscarGuia, guias, type Esfera, type Guia } from "@/lib/ia/manual";
+import { INICIAIS_PARCEIRO, buscarGuia, guias, type Esfera, type Guia } from "@/lib/ia/manual";
 
 /**
  * Maurício no painel (D194; D206: modo manual). Sem a chave da IA ele responde pelo manual vivo da esfera: no Master,
@@ -21,6 +21,7 @@ type Msg = { de: "voce" | "mauricio"; texto: string; guia?: Guia; sugestoes?: Gu
 const BOAS_VINDAS: Record<Exclude<Esfera, "comprador">, { titulo: string; sub: string }> = {
   master: { titulo: "Como posso ajudar no Master?", sub: "Pergunte como fazer qualquer coisa no escritório: atender, acompanhar o funil, ver receita, ligar a IA." },
   lojista: { titulo: "Como posso ajudar na sua loja?", sub: "Pergunte como fazer: cadastrar produto, receber pelo Mercado Pago, configurar frete, publicar a loja." },
+  parceiro: { titulo: "Bora vender mais hoje?", sub: "Sou o seu guia do programa: rotina do dia, o que falar com o lojista, objeções, níveis, saque e regras. Funciona sem internet de IA, a qualquer hora." },
 };
 
 export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioDaLoja; central: string; upgrade?: string; esfera?: Exclude<Esfera, "comprador"> }) {
@@ -84,8 +85,14 @@ export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioD
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Guias passo a passo</p>
               <ul className="flex flex-wrap gap-2">
-                {guias(esfera).map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="rounded-full border border-border bg-surface px-3 py-1.5 text-left text-xs font-semibold hover:border-primary">{g.titulo}</button></li>)}
+                {(esfera === "parceiro" ? guias(esfera).filter((g) => INICIAIS_PARCEIRO.includes(g.id)) : guias(esfera)).map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="rounded-full border border-border bg-surface px-3 py-1.5 text-left text-xs font-semibold hover:border-primary">{g.titulo}</button></li>)}
               </ul>
+              {esfera === "parceiro" ? (
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-xs font-semibold text-link">Todos os guias ({guias(esfera).length})</summary>
+                  <ul className="mt-2 grid gap-1">{guias(esfera).map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="w-full rounded-lg px-2 py-1.5 text-left text-xs hover:bg-surface-muted">{g.titulo}</button></li>)}</ul>
+                </details>
+              ) : null}
             </div>
           ) : null}
           {msgs.map((x, i) => x.de === "voce"
@@ -113,10 +120,10 @@ export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioD
         <form className="border-t border-border px-4 pb-3 pt-3" onSubmit={(e) => { e.preventDefault(); perguntar(rascunho); }}>
           <label htmlFor="ia-texto" className="sr-only">Pergunte ao Maurício</label>
           <div className="ia-compositor">
-            <textarea id="ia-texto" rows={1} value={rascunho} onChange={(e) => setRascunho(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar(rascunho); } }} placeholder={esfera === "master" ? "Ex.: como vejo quem está esperando resposta?" : "Ex.: como conecto o Mercado Pago?"} className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
+            <textarea id="ia-texto" rows={1} value={rascunho} onChange={(e) => setRascunho(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar(rascunho); } }} placeholder={esfera === "master" ? "Ex.: como vejo quem está esperando resposta?" : esfera === "parceiro" ? "Ex.: o que respondo quando o lojista acha caro?" : "Ex.: como conecto o Mercado Pago?"} className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
             <button type="submit" disabled={!rascunho.trim()} aria-label="Perguntar" className="ia-enviar"><ArrowUp className="size-4" aria-hidden /></button>
           </div>
-          <p className="mt-2 text-center text-[11px] text-muted-foreground">Modo manual: respostas do guia do sistema. {esfera === "lojista" ? <Link href={central} className="underline">Ferramentas de IA do seu plano</Link> : <Link href={central} className="underline">Ligar a IA completa</Link>}</p>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">Modo manual: respostas do guia do sistema. {esfera === "lojista" ? <Link href={central} className="underline">Ferramentas de IA do seu plano</Link> : esfera === "parceiro" ? <Link href={central} className="underline">Termos do programa</Link> : <Link href={central} className="underline">Ligar a IA completa</Link>}</p>
         </form>
       </div>
     </aside>

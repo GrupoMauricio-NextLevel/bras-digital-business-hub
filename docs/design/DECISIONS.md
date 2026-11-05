@@ -2849,3 +2849,26 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Memória para as outras marcas:**
   - `docs/design/PADRAO-NEXTLEVEL-PARA-MARCAS.md` mapeia o kit visual, cada módulo (onde está, decisão, se já serve para outra marca) e o roteiro;
   - a skill `levar-para-marca` faz qualquer sessão seguir esse roteiro.
+
+## D253 — Maurício guia do programa nas páginas /parceiros e manual completo do dia a dia no painel do parceiro (offline) (2026-11-05)
+- **Pedido do dono:**
+  - "A IA disponível na página de captação de parceiros tem que ser um guia amplo sobre o programa."
+  - "A IA do painel interno do parceiro precisa guiar o dia a dia dele, ensinando profundamente a extrair o melhor da plataforma, tudo offline e bem completo."
+- **Páginas `/parceiros` (e subpáginas):**
+  - A conversa do Maurício usa o **guia do programa** (`guia-parceiros-publico.ts`), não o vendedor de lojas.
+  - Motor guiado, **sem IA externa**, com os números das regras e da configuração (`fatosDosParceiros`).
+  - Assuntos: como funciona, quanto ganho por perfil, criador × vendedor × agência, níveis com a % de cada perfil, simulação (1, 3, 5 ou 10 lojas por mês, ou "se eu indicar N lojas"), bônus, Black, como e quando recebo (garantia, mínimo e Pix), estorno e cancelamento, custo (grátis, sem meta), atribuição (link, cupom, CRM), argumentos de venda, regras, painel, cadastro e falar com uma pessoa.
+  - Conversa própria (não mistura com a da home); cápsula e campo de texto próprios.
+  - A conversa continua aparecendo no CRM ao vivo do Master.
+- **Painel do parceiro:**
+  - O Maurício passou a existir para o parceiro da E-commerce (botão "Agente" no topo e Ctrl+J).
+  - Ganhou o **manual do parceiro** (`manual-parceiro.ts`): 36 guias passo a passo em modo manual (offline).
+    - Rotina: 20 minutos por dia, primeira semana até a 1ª venda, Início.
+    - Divulgação: link, link por canal, QR code, cupom, mensagem do WhatsApp, plano de conteúdo de 4 semanas, rota de visitas no Brás, clientes da agência.
+    - Venda: argumentos, objeções, plano certo, atacado, migração, demonstração.
+    - CRM: contatos, diagnóstico, proposta, catálogo comercial.
+    - Acompanhamento: indicados, teste acabando, retenção.
+    - Ganhos: comissão, níveis, desafio e avisos, bônus do vendedor, Black, saque, garantia e estorno.
+    - Regras: atribuição, o que não pode, inatividade, selo de agência, perfil.
+  - Na abertura aparecem 8 guias e "Todos os guias". A busca entende o jeito que o parceiro pergunta (teste com frases reais).
+- **Correção:** o cartão "É agência? Ganhe…" do painel mostrava 30% + 15% fixo no código. Agora lê a regra de agência vigente (50% + 25%).

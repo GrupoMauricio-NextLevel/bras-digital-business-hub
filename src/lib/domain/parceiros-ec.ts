@@ -48,12 +48,13 @@ export function agoraDoParceiro(ind: IndicadoEc[], agora = new Date()): ItemAgor
 export async function painelParceiroEc(db: Database, actor: Actor, agora = new Date()) {
   const p = await partnerOfActor(db, actor);
   const lojas = await db.select({ id: stores.id, nome: stores.name, slug: stores.slug, paidUntil: stores.paidUntil, trialEndsAt: stores.trialEndsAt, entryOffer: stores.entryOffer, publishedAt: stores.publishedAt, createdAt: stores.createdAt }).from(stores).where(eq(stores.partnerId, p.id)).orderBy(desc(stores.createdAt));
-  const [sit, ganhos, saldo, regras, porLoja] = await Promise.all([
+  const [sit, ganhos, saldo, regras, porLoja, regrasAgencia] = await Promise.all([
     situacoesComerciais(db, lojas, agora),
     db.select({ s: sql<number>`coalesce(sum(${partnerCommissions.amountCents}), 0)::int` }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p.id), eq(partnerCommissions.period, periodOf(agora)), ne(partnerCommissions.status, "VOID"))),
     balances(db, p.id),
     regrasDoParceiro(db, p.kind),
     lojas.length ? db.select({ storeId: partnerCommissions.storeId, s: sql<number>`coalesce(sum(${partnerCommissions.amountCents}), 0)::int` }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p.id), inArray(partnerCommissions.storeId, lojas.map((l) => l.id)), ne(partnerCommissions.status, "VOID"))).groupBy(partnerCommissions.storeId) : Promise.resolve([]),
+    regrasDoParceiro(db, "AGENCY"),
   ]);
   const ganhoPorLoja = new Map(porLoja.map((r) => [r.storeId, Number(r.s)]));
   const indicados: IndicadoEc[] = lojas.map((l) => ({ id: l.id, nome: l.nome, slug: l.slug, criadaEm: l.createdAt, publicada: !!l.publishedAt, s: sit.get(l.id)!, ganhoCents: ganhoPorLoja.get(l.id) ?? 0 }));
@@ -61,7 +62,7 @@ export async function painelParceiroEc(db: Database, actor: Actor, agora = new D
   const recorrenteMesCents = Math.round(pagantes.reduce((t, x) => t + x.s.valorCents, 0) * regras.recorrenteBps / 10_000);
   return {
     parceiro: { id: p.id, code: p.code, nome: p.displayName, kind: p.kind, tipo: ROTULO_TIPO[p.kind] ?? p.kind, agencia: AGENCIA.has(p.kind), agenciaPedida: !!p.agencyRequestedAt, status: p.status },
-    regras, mesCents: Number(ganhos[0]?.s ?? 0), saldo, recorrenteMesCents,
+    regras, regrasAgencia, mesCents: Number(ganhos[0]?.s ?? 0), saldo, recorrenteMesCents,
     indicados, pagantes: pagantes.length, emTeste: indicados.filter((x) => x.s.pagamento === "teste").length,
     agora: agoraDoParceiro(indicados, agora),
   };

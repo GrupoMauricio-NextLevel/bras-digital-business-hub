@@ -2,11 +2,14 @@
  * Manual vivo do Maurício (D206): funciona SEM chave de IA (modo manual). Cada esfera tem o seu racional:
  *  - master: o dono e a equipe NextLevel operando o escritório da E-commerce;
  *  - lojista: quem usa o painel da loja (passo a passo das tarefas principais);
- *  - comprador: o cliente final na loja do lojista (comprar, pagar, frete, troca).
+ *  - comprador: o cliente final na loja do lojista (comprar, pagar, frete, troca);
+ *  - parceiro: o dia a dia do parceiro da E-commerce (D253, `manual-parceiro.ts`).
  * A busca é por palavras (sem acento, sem maiúscula). Quando a chave da IA for ligada, o modelo usa estes mesmos textos
  * como fonte da verdade. Nada aqui promete prazo, preço ou resultado que o sistema não garante.
  */
-export type Esfera = "master" | "lojista" | "comprador";
+import { GUIAS_PARCEIRO } from "./manual-parceiro";
+
+export type Esfera = "master" | "lojista" | "comprador" | "parceiro";
 export type Guia = { id: string; titulo: string; termos: string[]; passos: string[]; link?: { rotulo: string; href: string } };
 
 const M: Guia[] = [
@@ -56,7 +59,9 @@ const C: Guia[] = [
   { id: "tamanho", titulo: "Medidas e tamanhos", termos: ["medida", "tamanho", "veste", "tabela", "grande", "pequeno"], passos: ["Confira a descrição do produto: as medidas costumam estar lá.", "Na dúvida, pergunte à loja pelo botão abaixo antes de comprar."] },
 ];
 
-const POR_ESFERA: Record<Esfera, Guia[]> = { master: M, lojista: L, comprador: C };
+const POR_ESFERA: Record<Esfera, Guia[]> = { master: M, lojista: L, comprador: C, parceiro: GUIAS_PARCEIRO };
+/** Primeiros guias que o parceiro vê (o resto fica em "Todos os guias"). */
+export const INICIAIS_PARCEIRO = ["rotina", "primeira-semana", "whatsapp", "objecoes", "indicados", "niveis", "saque", "regras"];
 export const guias = (e: Esfera) => POR_ESFERA[e];
 
 const norm = (t: string) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();

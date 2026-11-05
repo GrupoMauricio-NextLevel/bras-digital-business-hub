@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUp, ChevronRight, MessageCircle, Sparkles, X } from "lucide-react";
 import type { Acao, Atalho, FatosVenda } from "@/lib/ia/vendedor-publico";
 import { enviarMensagemAction, iniciarConversaAction, novasMensagensAction, salvarContatoAction } from "@/app/actions/vendedor";
@@ -14,10 +15,14 @@ type Msg = { id: string; autor: "CLIENTE" | "MAURICIO" | "HUMANO" | "SISTEMA"; a
 type Sessao = { id: string; token: string };
 const CHAVE = "nl-vendedor-conversa";
 const negrito = (t: string) => t.split("**").map((p, i) => (i % 2 ? <b key={i}>{p}</b> : <React.Fragment key={i}>{p}</React.Fragment>));
-const lerSessao = (): Sessao | null => { try { return JSON.parse(sessionStorage.getItem(CHAVE) ?? "null"); } catch { return null; } };
+const lerSessao = (chave: string): Sessao | null => { try { return JSON.parse(sessionStorage.getItem(chave) ?? "null"); } catch { return null; } };
 
 export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; whatsappEquipe: string | null }) {
   const [aberto, setAberto] = React.useState(false);
+  // Nas páginas /parceiros (D253) o Maurício é o guia do programa: conversa própria e convite próprio.
+  const parceiros = /^\/parceiros(\/|$)/.test(usePathname() ?? "");
+  const chave = parceiros ? `${CHAVE}-parceiros` : CHAVE;
+  const [sessaoDe, setSessaoDe] = React.useState(chave);
   const [capsula, setCapsula] = React.useState(true);
   const [sessao, setSessao] = React.useState<Sessao | null>(null);
   const [msgs, setMsgs] = React.useState<Msg[]>([]);
@@ -54,14 +59,16 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
 
   const abrir = async (primeira?: Atalho) => {
     setAberto(true);
-    let s = sessao ?? lerSessao();
-    if (s && !sessao) { const r = await novasMensagensAction({ ...s }); if (r.ok) { setSessao(s); aplicar(r.data, true); } else s = null; }
+    const mesma = sessaoDe === chave && !!sessao;
+    let s = mesma ? sessao : lerSessao(chave);
+    if (sessaoDe !== chave) { setSessaoDe(chave); setSessao(null); setMsgs([]); }
+    if (s && !mesma) { const r = await novasMensagensAction({ ...s }); if (r.ok) { setSessao(s); aplicar(r.data, true); } else s = null; }
     if (!s) {
       const origem = Object.fromEntries([...new URLSearchParams(location.search)].filter(([k]) => k.startsWith("utm_") || k === "ref"));
       const r = await iniciarConversaAction({ pagina: location.pathname, origem });
       if (!r.ok) { setErro(r.error); return; }
       s = { id: r.data.id, token: r.data.token };
-      try { sessionStorage.setItem(CHAVE, JSON.stringify(s)); } catch { /* sem armazenamento */ }
+      try { sessionStorage.setItem(chave, JSON.stringify(s)); } catch { /* sem armazenamento */ }
       setSessao(s); aplicar(r.data.mensagens, true);
     }
     if (primeira) await mandar(s, { atalho: primeira });
@@ -89,8 +96,8 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
     <>
       {capsula && !aberto ? (
         <div className="vh-capsula nl-chega" role="region" aria-label="Pede pro Maurício">
-          <button type="button" onClick={() => abrir({ id: "plano", rotulo: "Qual plano é ideal para mim?" })} className="vh-capsula-btn">
-            <Sparkles className="size-4 shrink-0" aria-hidden /><span className="vh-longo truncate">Pede pro Maurício: qual plano é o melhor para a minha loja?</span><span className="vh-curto truncate">Pede pro Maurício</span>
+          <button type="button" onClick={() => abrir(parceiros ? { id: "p-como", rotulo: "Como funciona o programa?" } : { id: "plano", rotulo: "Qual plano é ideal para mim?" })} className="vh-capsula-btn">
+            <Sparkles className="size-4 shrink-0" aria-hidden /><span className="vh-longo truncate">{parceiros ? "Pergunte ao Maurício: como funciona o programa de parceiros?" : "Pede pro Maurício: qual plano é o melhor para a minha loja?"}</span><span className="vh-curto truncate">Pede pro Maurício</span>
             <span className="vh-enviar" aria-hidden><ArrowUp className="size-4" /></span>
           </button>
           <button type="button" onClick={fecharCapsula} className="vh-fechar" aria-label="Fechar a sugestão do Maurício"><X className="size-3.5" aria-hidden /></button>
@@ -143,7 +150,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
                 <input required className="ds-input" placeholder="WhatsApp com DDD" inputMode="tel" autoComplete="tel" value={contato.whatsapp} onChange={(e) => setContato({ ...contato, whatsapp: e.target.value })} aria-label="WhatsApp com DDD" />
                 <input type="email" className="ds-input" placeholder="E-mail (opcional)" autoComplete="email" value={contato.email} onChange={(e) => setContato({ ...contato, email: e.target.value })} aria-label="E-mail (opcional)" />
                 <div className="flex items-center gap-3 pt-1"><button type="submit" className="ds-btn ds-btn--sm">Continuar</button><button type="button" onClick={() => setPedirContato("dispensado")} className="text-sm font-semibold text-link underline underline-offset-2">Agora não</button></div>
-                <p className="text-[11px] text-muted-foreground">Usamos só para falar com você sobre a sua loja. <Link href="/privacidade" className="underline">Privacidade</Link></p>
+                <p className="text-[11px] text-muted-foreground">{parceiros ? "Usamos só para falar com você sobre o programa de parceiros." : "Usamos só para falar com você sobre a sua loja."} <Link href="/privacidade" className="underline">Privacidade</Link></p>
               </form>
             ) : null}
             {erro ? <p role="alert" className="text-sm text-danger">{erro}</p> : null}
@@ -155,7 +162,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
           <form className="border-t border-border px-4 pb-3 pt-3" onSubmit={enviar}>
             <label htmlFor="vh-texto" className="sr-only">Pergunte ao Maurício</label>
             <div className="ia-compositor">
-              <textarea id="vh-texto" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} placeholder="Pergunte sobre planos, frete, integrações…" className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
+              <textarea id="vh-texto" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} placeholder={parceiros ? "Pergunte sobre comissão, níveis, saque…" : "Pergunte sobre planos, frete, integrações…"} className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
               <button type="submit" disabled={!texto.trim() || pensando} aria-label="Enviar" className="ia-enviar"><ArrowUp className="size-4" aria-hidden /></button>
             </div>
             <p className="mt-2 text-center text-[11px] text-muted-foreground">O Maurício pode errar. Valores e condições confirmados no cadastro.</p>

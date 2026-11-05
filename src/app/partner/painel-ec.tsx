@@ -47,7 +47,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
 
       {d.parceiro.agencia ? null : (
         <section className="ds-card p-5 sm:p-6" aria-labelledby="ag-t">
-          <h2 id="ag-t" className="text-base font-semibold">É agência? Ganhe {ganhoTexto(3000)} + {ganhoTexto(1500)} enquanto o cliente ficar</h2>
+          <h2 id="ag-t" className="text-base font-semibold">É agência? Ganhe {ganhoTexto(d.regrasAgencia.primeiraBps)} + {ganhoTexto(d.regrasAgencia.recorrenteBps)} enquanto o cliente ficar</h2>
           <p className="mt-1 text-sm text-muted-foreground">Agências parceiras aprovadas recebem comissão maior, recorrência sem prazo, selo de agência parceira e atendimento prioritário da equipe NextLevel para os clientes delas.</p>
           {d.parceiro.agenciaPedida ? <p className="mt-4 rounded-xl bg-info-soft px-4 py-3 text-sm text-info"><CalendarClock className="mr-1 inline size-4" aria-hidden />Pedido em análise. A equipe responde em até 2 dias úteis.</p> : <PedirAgencia />}
         </section>

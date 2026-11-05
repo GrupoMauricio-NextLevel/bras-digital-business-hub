@@ -84,7 +84,10 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.
   const mauricio = (commerceStore && independent) || (isMaster && !fn && !sup) ? await mauricioDaLoja(db, isMaster ? null : store!.id, { master: isMaster }) : null;
-  const botaoIa = mauricio ? <BotaoMauricio m={mauricio} esfera={isMaster ? "master" : "lojista"} central={isMaster ? "/master/ia/ajustes" : "/merchant/ia"} /> : null;
+  // Parceiro da E-commerce (D253): o Maurício guia o dia a dia pelo manual do parceiro, sem IA externa.
+  const parceiroEc = session.user.role === "AFFILIATE" && brand.code === "NEXTLEVEL_COMMERCE";
+  const botaoIa = mauricio ? <BotaoMauricio m={mauricio} esfera={isMaster ? "master" : "lojista"} central={isMaster ? "/master/ia/ajustes" : "/merchant/ia"} />
+    : parceiroEc ? <BotaoMauricio m={{ mostrar: true, plano: "", ferramentas: [], minimoTexto: "", minimoAvancado: "", emTeste: false }} esfera="parceiro" central="/parceiros/termos" /> : null;
   if (scope === "bras-admin") {
     // Estúdio da Brás (D92): só o Master entra; nome, menu e cor da Brás, com volta ao Master.
     const bras = brandByCode("BRAS_DIGITAL");
@@ -168,8 +171,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Seletor de negócios (D209): pílula na faixa do topo, no lugar do "NextLevel / …" do menu e da faixa "Vendo:".
   const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
   // Parceiro da E-commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
-  const parceiroEc = session.user.role === "AFFILIATE" && brand.code === "NEXTLEVEL_COMMERCE";
-  const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: false } : undefined;
+  const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: true } : undefined;
   const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
     <>

@@ -42,3 +42,11 @@ export async function registrarCandidatura(db: Database, partnerId: string, raw:
   if (c.perfil === "agencia") await db.update(partners).set({ agencyRequestedAt: now.toISOString(), agencyInfo: [c.channels, c.carteira != null ? `${c.carteira} clientes` : null, c.sobre].filter(Boolean).join(" · ") || "Cadastro pela página de agências" }).where(eq(partners.id, partnerId));
   if (c.perfil === "vendedor") await db.insert(partnerActivities).values({ id: newId("pac"), partnerId, kind: "TAREFA", text: "Pediu a trilha de vendedor (representante): conferir e mudar o tipo", dueAt: new Date(now.getTime() + 2 * 86_400_000).toISOString(), createdAt: now.toISOString() });
 }
+
+/** Fatos do guia do programa (Maurício nas páginas /parceiros, D253): números reais das regras e da configuração. */
+export async function fatosDosParceiros(db: Database): Promise<import("@/lib/ia/guia-parceiros-publico").FatosParceiros> {
+  const [{ getPartnerSettings }, { blackAgora }, { findRule }] = await Promise.all([import("./partners"), import("./campanha-black"), import("./corporate-commissions")]);
+  const [d, s, b, regra] = await Promise.all([dadosDaCaptacao(db), getPartnerSettings(db), blackAgora(db), findRule(db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AFFILIATE" })]);
+  const plano = d.planos[Math.min(1, d.planos.length - 1)] ?? null;
+  return { marca: "NextLevel E-commerce", regras: d.regras, plano, bonus: d.bonus, atribuicaoDias: s.attributionDays, saqueMinimoCents: s.minPayoutCents, garantiaDias: regra?.holdDays ?? 30, black: b.ativa ? { fim: b.fim } : null, cadastro: "/parceiros/cadastro" };
+}
