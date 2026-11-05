@@ -570,3 +570,27 @@ button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(
 .ds-pub-mobile-n { font-family: var(--ec-mono, ui-monospace, monospace); font-size: .72rem; font-weight: 600; opacity: .55; min-width: 1.6rem; }
 .ds-pub-mobile-pe { margin-top: auto; display: grid; gap: 10px; }
 .ds-pub-mobile-pe a { border-bottom: 0; justify-content: center; }
+
+/* ---- Capa no celular (D255, padrão da referência) -------------------------------------------------------------------
+   Sem barra de atalhos: o menu e o agente flutuam embaixo (botão redondo + pílula "Pergunte ao Maurício"). O menu abre como
+   gaveta logo abaixo da faixa (a faixa continua à vista), com o canto amplo da moldura; o botão redondo vira o X. */
+.ds-flutua { display: none; }
+@media (max-width: 980px) {
+  .ds-app--capa .ds-faixa > .ds-only-compact, .ds-app--capa .ds-faixa .ds-faixa-agente { display: none; }
+  .ds-flutua { position: fixed; left: 14px; right: 14px; bottom: max(14px, env(safe-area-inset-bottom)); z-index: calc(var(--ds-z-modal) + 2); display: flex; align-items: center; gap: 10px; pointer-events: none; }
+  .ds-flutua > * { pointer-events: auto; }
+  .ds-flutua-menu, .ds-flutua-agente { height: 56px; border: 1px solid var(--ds-line); background: var(--ds-surface); box-shadow: 0 10px 28px -6px rgb(15 23 42 / 0.22), 0 2px 6px rgb(15 23 42 / 0.06); }
+  .ds-flutua-menu { flex: none; display: grid; place-items: center; width: 56px; border-radius: 9999px; color: var(--ds-ink); }
+  .ds-flutua-agente { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 0 8px 0 18px; border-radius: 9999px; color: var(--ds-muted); font-size: 1rem; text-align: left; }
+  .ds-flutua-enviar { margin-left: auto; flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: var(--ds-soft); color: var(--ds-ink); }
+  .ds-flutua-menu:active, .ds-flutua-agente:active { transform: scale(0.97); }
+  .ds-app--capa .ds-content { padding-bottom: 112px; }
+  html.ia-dock-aberto .ds-flutua { display: none; }
+  .ds-scrim--capa { top: var(--ds-top-h); }
+  .ds-drawer--capa { top: var(--ds-top-h); width: min(82vw, 340px); border-top-right-radius: 28px; box-shadow: 12px 0 40px -12px rgb(15 23 42 / 0.25); overflow: hidden; }
+  .ds-drawer--capa .ds-side-head .ds-iconbtn { display: none; }
+  .ds-drawer--capa .ds-side { height: 100%; }
+  .ds-drawer--capa .ds-side-foot { padding-bottom: 92px; }
+  .ds-drawer--capa .ds-item[aria-current="page"] { background: var(--ds-surface); color: var(--ds-ink); font-weight: 700; box-shadow: 0 1px 2px rgb(var(--ds-shadow-rgb) / 0.08), 0 4px 14px -6px rgb(var(--ds-shadow-rgb) / 0.18); }
+  .ds-drawer--capa .ds-item[aria-current="page"]::before { display: none; }
+}

@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { createPortal } from "react-dom";
-import { ArrowRight, ArrowUp, BookOpen, LifeBuoy, Lock, Sparkles, X } from "lucide-react";
+import { ArrowRight, ArrowUp, ArrowUpRight, BookOpen, ChevronDown, ChevronRight, LifeBuoy, Lock, Sparkles, X } from "lucide-react";
 import type { MauricioDaLoja, FerramentaComEstado } from "@/lib/domain/ia";
 import { INICIAIS_PARCEIRO, buscarGuia, guias, type Esfera, type Guia } from "@/lib/ia/manual";
 
@@ -67,41 +67,52 @@ export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioD
   const painel = (
     <aside className="ia-dock" aria-labelledby="ia-titulo">
       <div className="flex h-full flex-col">
-        <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <header className="ia-dock-topo flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-2.5">
             <span className="ia-simbolo" aria-hidden><Sparkles className="size-4" /></span>
             <h2 id="ia-titulo" className="text-base font-bold text-foreground">Maurício</h2>
             <span className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground" title="Sem a chave da IA, o Maurício responde pelo manual do sistema">Modo manual</span>
           </div>
-          <button type="button" onClick={() => setAberto(false)} aria-label="Fechar o Maurício" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="size-4" aria-hidden /></button>
+          <button type="button" onClick={() => setAberto(false)} aria-label="Fechar o Maurício" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="ia-so-largo size-4" aria-hidden /><ChevronDown className="ia-so-celular size-6" aria-hidden /></button>
         </header>
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-6" aria-live="polite">
           <div className="text-center">
             <span className="ia-simbolo ia-simbolo--grande mx-auto" aria-hidden><Sparkles className="size-7" /></span>
-            <p className="mt-4 text-xl font-bold text-foreground">{bv.titulo}</p>
+            <p className="mt-4 text-2xl font-bold tracking-tight text-foreground">{bv.titulo}</p>
             <p className="mt-1 text-sm text-muted-foreground">{bv.sub}</p>
           </div>
-          {msgs.length === 0 ? (
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Guias passo a passo</p>
-              <ul className="flex flex-wrap gap-2">
-                {(esfera === "parceiro" ? guias(esfera).filter((g) => INICIAIS_PARCEIRO.includes(g.id)) : guias(esfera)).map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="rounded-full border border-border bg-surface px-3 py-1.5 text-left text-xs font-semibold hover:border-primary">{g.titulo}</button></li>)}
-              </ul>
-              {esfera === "parceiro" ? (
-                <details className="mt-4">
-                  <summary className="cursor-pointer text-xs font-semibold text-link">Todos os guias ({guias(esfera).length})</summary>
-                  <ul className="mt-2 grid gap-1">{guias(esfera).map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="w-full rounded-lg px-2 py-1.5 text-left text-xs hover:bg-surface-muted">{g.titulo}</button></li>)}</ul>
-                </details>
-              ) : null}
-            </div>
-          ) : null}
+          {msgs.length === 0 ? (() => {
+            // D255 (padrão da referência): um destaque em cor e as demais sugestões num cartão único com divisórias.
+            const todas = guias(esfera);
+            const lista = esfera === "parceiro" ? todas.filter((g) => INICIAIS_PARCEIRO.includes(g.id)) : todas.slice(0, 7);
+            const [primeira, ...resto] = lista;
+            return (
+              <div className="space-y-3">
+                {primeira ? (
+                  <button type="button" onClick={() => perguntar(primeira.titulo, primeira)} className="ia-destaque">
+                    <ArrowUpRight className="mt-0.5 size-5 shrink-0" aria-hidden />
+                    <span><b className="block">{primeira.titulo}</b><span className="mt-1 line-clamp-2 block opacity-85">{primeira.passos[0]}</span></span>
+                  </button>
+                ) : null}
+                <ul className="ia-grupo" aria-label="Guias passo a passo">
+                  {resto.map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="ia-grupo-item"><BookOpen className="size-4 shrink-0 text-[var(--ds-primary)]" aria-hidden /><span>{g.titulo}</span><ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground" aria-hidden /></button></li>)}
+                </ul>
+                {todas.length > lista.length ? (
+                  <details className="ia-todos">
+                    <summary>Todos os guias ({todas.length})</summary>
+                    <ul className="ia-grupo mt-2">{todas.map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="ia-grupo-item"><span>{g.titulo}</span><ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground" aria-hidden /></button></li>)}</ul>
+                  </details>
+                ) : null}
+              </div>
+            );
+          })() : null}
           {msgs.map((x, i) => x.de === "voce"
             ? <div key={i} className="ml-8 rounded-2xl rounded-tr-sm bg-[color-mix(in_srgb,var(--ds-primary)_10%,transparent)] px-4 py-3 text-sm text-foreground">{x.texto}</div>
             : (
               <div key={i} className="flex gap-2">
                 <span className="ia-simbolo mt-0.5 shrink-0" aria-hidden><Sparkles className="size-3.5" /></span>
                 <div className="min-w-0 flex-1 space-y-2 text-sm text-body">
-                  <p>{x.texto}</p>
+                  <p className="ia-balao">{x.texto}</p>
                   {x.guia ? (
                     <div className="rounded-2xl border border-border bg-surface p-4">
                       <p className="flex items-center gap-2 font-bold text-foreground"><BookOpen className="size-4 text-primary" aria-hidden />{x.guia.titulo}</p>
@@ -117,7 +128,7 @@ export function BotaoMauricio({ m, central, esfera = "lojista" }: { m: MauricioD
           {esfera === "lojista" && msgs.length > 0 ? <p className="text-center text-xs text-muted-foreground">Não resolveu? <button type="button" onClick={() => chamarEquipe(ultimaPergunta)} className="font-semibold text-link underline underline-offset-2">Fale com a equipe</button></p> : null}
           <div ref={fim} />
         </div>
-        <form className="border-t border-border px-4 pb-3 pt-3" onSubmit={(e) => { e.preventDefault(); perguntar(rascunho); }}>
+        <form className="ia-dock-base border-t border-border px-4 pb-3 pt-3" onSubmit={(e) => { e.preventDefault(); perguntar(rascunho); }}>
           <label htmlFor="ia-texto" className="sr-only">Pergunte ao Maurício</label>
           <div className="ia-compositor">
             <textarea id="ia-texto" rows={1} value={rascunho} onChange={(e) => setRascunho(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar(rascunho); } }} placeholder={esfera === "master" ? "Ex.: como vejo quem está esperando resposta?" : esfera === "parceiro" ? "Ex.: o que respondo quando o lojista acha caro?" : "Ex.: como conecto o Mercado Pago?"} className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />

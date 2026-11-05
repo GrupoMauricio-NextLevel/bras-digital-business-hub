@@ -2893,3 +2893,24 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - capturas do painel do parceiro e do Master com o Maurício aberto;
   - `/parceiros` com o Maurício, em 390 px e em 1024 px;
   - sem rolagem lateral.
+
+## D255 — Celular no padrão da referência: Maurício em tela cheia e menu flutuante (2026-11-05)
+- **Pedido do dono (com capturas da Hostinger):**
+  - "No mobile quero que o chat abra completo, seguindo as referências."
+  - "O menu fica meio suspenso também e dá uma qualidade diferente."
+- **Painéis com capa (Master, lojista, parceiro), no celular (até 980 px):**
+  - **Sai a barra de atalhos de baixo.**
+  - **Entram, flutuando embaixo,** um botão redondo de menu e, ao lado, a pílula "Pergunte ao Maurício…", que abre o agente.
+    - O botão de menu e o do agente saíram da faixa, que fica mais limpa.
+    - Os flutuantes são renderizados no `<body>`, acima da gaveta.
+  - **O menu abre como gaveta logo abaixo da faixa** (a faixa continua à vista), com o canto amplo da moldura, o item ativo em pílula branca e o fundo escurecido só abaixo da faixa.
+  - **O botão redondo vira o X** para fechar; Esc também fecha.
+- **Maurício (painel e site):**
+  - Em tela cheia no celular: cabeçalho limpo com seta para baixo, sem linhas divisórias, e a pílula de pergunta embaixo.
+  - Na abertura, em todas as telas:
+    - título grande;
+    - **um destaque em cor** (o 1º guia, com o 1º passo);
+    - **as demais sugestões num cartão único com ícones e divisórias**;
+    - "Todos os guias".
+  - As respostas do Maurício vêm em balão cinza.
+- **Roteiros de conferência:** `e2e/commerce-glass-qa.mjs` e `e2e/commerce-motion-video.mjs` usam o novo botão "Abrir menu".

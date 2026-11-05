@@ -2,7 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUp, ChevronRight, MessageCircle, Sparkles, X } from "lucide-react";
+import { ArrowUp, ChevronDown, ChevronRight, MessageCircle, Sparkles, X } from "lucide-react";
 import type { Acao, Atalho, FatosVenda } from "@/lib/ia/vendedor-publico";
 import { enviarMensagemAction, iniciarConversaAction, novasMensagensAction, salvarContatoAction } from "@/app/actions/vendedor";
 
@@ -107,12 +107,12 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
 
       {aberto ? <aside className="ia-dock" aria-labelledby="vh-titulo">
         <div className="flex h-full flex-col">
-          <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+          <header className="ia-dock-topo flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="flex items-center gap-2.5">
               <span className="ia-simbolo" aria-hidden><Sparkles className="size-4" /></span>
               <div><h2 id="vh-titulo" className="text-base font-bold leading-tight text-foreground">Maurício</h2><p className="text-xs text-muted-foreground"><span className="vh-online" aria-hidden /> {status === "HUMANO" ? "Você está falando com a nossa equipe" : "Online agora · responde na hora"}</p></div>
             </div>
-            <button type="button" onClick={() => setAberto(false)} aria-label="Fechar a conversa" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="size-4" aria-hidden /></button>
+            <button type="button" onClick={() => setAberto(false)} aria-label="Fechar a conversa" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="ia-so-largo size-4" aria-hidden /><ChevronDown className="ia-so-celular size-6" aria-hidden /></button>
           </header>
           <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5" aria-live="polite">
             {fatos.oferta && doCliente === 0 ? <div className="vh-oferta"><Sparkles className="size-4 shrink-0" aria-hidden /><span><b>{fatos.oferta.trialDays} dias grátis</b> para montar e testar a sua loja. Sem fidelidade.</span></div> : null}
@@ -128,7 +128,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
                   <span className={humano ? "vh-avatar-humano mt-0.5 shrink-0" : "ia-simbolo mt-0.5 shrink-0"} aria-hidden>{humano ? (m.autorNome ?? "E").charAt(0) : <Sparkles className="size-3.5" />}</span>
                   <div className="min-w-0 flex-1">
                     {humano ? <p className="mb-1 text-xs font-semibold text-foreground">{m.autorNome} · equipe NextLevel</p> : null}
-                    <p className="whitespace-pre-line text-sm leading-relaxed">{negrito(m.texto)}</p>
+                    <p className="ia-balao whitespace-pre-line text-sm leading-relaxed">{negrito(m.texto)}</p>
                     {acoes.length ? <div className="mt-3 flex flex-wrap gap-2">{acoes.map((a) => "href" in a
                       ? <Link key={a.rotulo} href={a.href} onClick={() => setAberto(false)} className="ds-btn ds-btn--sm">{a.rotulo}</Link>
                       : <button key={a.rotulo} type="button" onClick={() => setPedirContato("agora")} className="ds-btn ds-btn--secondary ds-btn--sm">{a.rotulo}</button>)}</div> : null}
@@ -159,7 +159,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
           {doCliente >= 2 && linkWhats ? (
             <a href={linkWhats} target="_blank" rel="noreferrer" className="vh-whats"><MessageCircle className="size-4 shrink-0" aria-hidden /><span><b>Prefere falar com uma pessoa?</b> Chame a nossa equipe no WhatsApp.</span><ChevronRight className="ml-auto size-4" aria-hidden /></a>
           ) : null}
-          <form className="border-t border-border px-4 pb-3 pt-3" onSubmit={enviar}>
+          <form className="ia-dock-base border-t border-border px-4 pb-3 pt-3" onSubmit={enviar}>
             <label htmlFor="vh-texto" className="sr-only">Pergunte ao Maurício</label>
             <div className="ia-compositor">
               <textarea id="vh-texto" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} placeholder={parceiros ? "Pergunte sobre comissão, níveis, saque…" : "Pergunte sobre planos, frete, integrações…"} className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />

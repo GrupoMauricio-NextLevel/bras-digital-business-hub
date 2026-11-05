@@ -69,13 +69,13 @@ const setTheme = (p, t) => p.evaluate((x) => localStorage.setItem("nl-theme", x)
 
   // Menu, gaveta e teclado (390)
   await p.setViewportSize({ width: 390, height: 844 }); await setTheme(p, "light"); await p.goto(B + "/merchant", { waitUntil: "networkidle" }); await hideDevBadge(p);
-  await p.getByRole("button", { name: "Mais" }).click(); await p.waitForTimeout(300);
+  await p.getByRole("button", { name: "Abrir menu" }).click(); await p.waitForTimeout(300);
   if (!(await p.getByRole("dialog").count())) fail("gaveta não abriu");
   await p.screenshot({ path: `${OUT}/gaveta-light-390.png` });
   await p.keyboard.press("Escape"); await p.waitForTimeout(300);
   if (await p.getByRole("dialog").count()) fail("Esc não fechou a gaveta");
-  const focusBack = await p.evaluate(() => document.activeElement?.textContent?.includes("Mais"));
-  if (!focusBack) fail("foco não voltou ao botão Mais");
+  const focusBack = await p.evaluate(() => document.activeElement?.classList.contains("ds-flutua-menu"));
+  if (!focusBack) fail("foco não voltou ao botão de menu");
   ok("gaveta abre, fecha com Esc e devolve o foco");
   // Grupos expansíveis por teclado (1280)
   await p.setViewportSize({ width: 1280, height: 900 }); await p.goto(B + "/merchant", { waitUntil: "networkidle" });

@@ -149,3 +149,25 @@ select.ds-input { appearance: none; background-image: url("data:image/svg+xml,%3
 @media (min-width: 900px) { .crm-grade { grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); height: calc(100dvh - 300px); min-height: 520px; } .crm-info { grid-column: 1 / -1; } }
 @media (min-width: 1400px) { .crm-grade { grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 320px); } .crm-info { grid-column: auto; overflow-y: auto; } }
 @media (max-width: 899px) { .crm-col { max-height: 70vh; } }
+
+/* Maurício no padrão da referência (D255): destaque em cor, sugestões num cartão único com divisórias e respostas em balão.
+   No celular ele abre em tela cheia, com cabeçalho limpo (seta para baixo) e a pílula de pergunta sem linha divisória. */
+.ia-destaque { display: flex; width: 100%; gap: 12px; padding: 16px 18px; border-radius: 22px; text-align: left; font-size: .9rem; line-height: 1.35;
+  color: var(--ds-primary-contrast, #fff); background: linear-gradient(135deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 72%, #000));
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--ds-primary) 70%, transparent); transition: transform 160ms var(--nl-sobe); }
+.ia-destaque:hover { transform: translateY(-1px); }
+.ia-grupo { list-style: none; margin: 0; padding: 4px 0; border-radius: 22px; background: var(--ds-surface-muted, color-mix(in srgb, var(--ds-ink) 4%, var(--ds-surface))); }
+.ia-grupo > li + li .ia-grupo-item { border-top: 1px solid var(--ds-line); }
+.ia-grupo > li { padding: 0 16px; }
+.ia-grupo-item { display: flex; width: 100%; align-items: center; gap: 12px; padding: 13px 2px; text-align: left; font-size: .9rem; font-weight: 600; color: var(--ds-ink); }
+.ia-grupo-item:hover span { color: var(--ds-link); }
+.ia-todos > summary { cursor: pointer; padding: 4px 2px; font-size: .8rem; font-weight: 700; color: var(--ds-link); }
+.ia-balao { display: inline-block; max-width: 100%; padding: 10px 14px; border-radius: 4px 18px 18px 18px; background: var(--ds-surface-muted, color-mix(in srgb, var(--ds-ink) 4%, var(--ds-surface))); color: var(--ds-ink); }
+.ia-so-celular { display: none; }
+@media (max-width: 1099px) {
+  .ia-so-largo { display: none; }
+  .ia-so-celular { display: block; }
+  .ia-dock .ia-dock-topo { border-bottom-color: transparent !important; padding-top: max(14px, env(safe-area-inset-top)); }
+  .ia-dock .ia-dock-topo button[aria-label^="Fechar"] { border-color: transparent !important; background: transparent !important; box-shadow: none !important; }
+  .ia-dock .ia-dock-base { border-top-color: transparent !important; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+}

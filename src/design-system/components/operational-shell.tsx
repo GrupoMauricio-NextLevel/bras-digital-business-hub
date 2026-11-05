@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ArrowUp, Menu, PanelLeftClose, PanelLeftOpen, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ShellBottomItem = { key: string; label: string; icon: React.ReactNode; render: (props: { className?: string }) => React.ReactNode };
@@ -31,11 +32,14 @@ export function OperationalShell({
   variant?: "full" | "bare";
   skipLabel?: string;
   /** Capa (D198): faixa escura do ecossistema no topo (início, meio) e moldura de cantos amplos; a barra superior vira a faixa. */
-  faixa?: { inicio?: React.ReactNode; meio?: React.ReactNode };
+  /** Capa (D198). `agente`: no celular, a pílula "Pergunte ao Maurício" flutua ao lado do botão de menu (D255). */
+  faixa?: { inicio?: React.ReactNode; meio?: React.ReactNode; agente?: boolean };
 }) {
   const [collapsed, setCollapsed] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const bare = variant === "bare";
+  const [noNavegador, setNoNavegador] = React.useState(false);
+  React.useEffect(() => { const id = requestAnimationFrame(() => setNoNavegador(true)); return () => cancelAnimationFrame(id); }, []);
 
   React.useEffect(() => { const id = requestAnimationFrame(() => { try { setCollapsed(localStorage.getItem("nl-sidebar") === "1"); } catch { /* ignore */ } }); return () => cancelAnimationFrame(id); }, []);
   const toggle = () => setCollapsed((c) => { const n = !c; try { localStorage.setItem("nl-sidebar", n ? "1" : "0"); } catch { /* ignore */ } return n; });
@@ -77,8 +81,9 @@ export function OperationalShell({
       {!bare ? (
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Portal>
-            <Dialog.Overlay className="ds-scrim animate-fade-in" />
-            <Dialog.Content className="ds-drawer animate-slide-in-left focus:outline-none" aria-describedby={undefined}>
+            <Dialog.Overlay className={cn("ds-scrim animate-fade-in", capa && "ds-scrim--capa")} />
+            <Dialog.Content className={cn("ds-drawer animate-slide-in-left focus:outline-none", capa && "ds-drawer--capa")} aria-describedby={undefined}
+              onInteractOutside={(e) => { if ((e.target as Element | null)?.closest?.(".ds-flutua-menu")) e.preventDefault(); }}>
               <Dialog.Title className="sr-only">{drawerTitle}</Dialog.Title>
               <div className="ds-side ds-side--drawer">
                 <div className="ds-side-head">{brand}<Dialog.Close className="ds-iconbtn" aria-label="Fechar menu"><X className="size-5" aria-hidden /></Dialog.Close></div>
@@ -92,7 +97,21 @@ export function OperationalShell({
         </Dialog.Root>
       ) : null}
 
-      {!bare && bottom && bottom.length ? (
+      {/* Capa no celular (D255, padrão da referência): menu e agente flutuam embaixo, no lugar da barra de atalhos. */}
+      {capa && noNavegador ? createPortal(
+        <div className="ds-flutua nl-no-print">
+          <button type="button" className="ds-flutua-menu" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? "Fechar menu" : "Abrir menu"}>
+            {open ? <X className="size-6" aria-hidden /> : <Menu className="size-6" aria-hidden />}
+          </button>
+          {faixa.agente && !open ? (
+            <button type="button" className="ds-flutua-agente" onClick={() => window.dispatchEvent(new Event("nl-mauricio"))}>
+              <Sparkles className="size-5 shrink-0 text-[var(--ds-primary)]" aria-hidden /><span className="truncate">Pergunte ao Maurício…</span>
+              <span className="ds-flutua-enviar" aria-hidden><ArrowUp className="size-4" /></span>
+            </button>
+          ) : null}
+        </div>, document.body,
+      ) : null}
+      {!bare && !capa && bottom && bottom.length ? (
         <nav className="ds-bottom nl-no-print" aria-label="Atalhos">
           <ul>
             {bottom.map((b) => <li key={b.key}>{b.render({})}</li>)}

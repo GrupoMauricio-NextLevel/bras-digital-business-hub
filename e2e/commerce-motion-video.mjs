@@ -16,7 +16,7 @@ await p.getByRole("button", { name: /^Vendas$/ }).click(); await p.waitForTimeou
 await p.getByRole("link", { name: "Pedidos", exact: true }).click(); await p.waitForLoadState("networkidle"); await p.waitForTimeout(1200);
 await p.getByRole("radio", { name: "Claro" }).click(); await p.waitForTimeout(1200);
 await p.setViewportSize({ width: 390, height: 760 }); await p.waitForTimeout(600);
-await p.getByRole("button", { name: "Mais" }).click(); await p.waitForTimeout(1200);
+await p.getByRole("button", { name: "Abrir menu" }).click(); await p.waitForTimeout(1200);
 await p.keyboard.press("Escape"); await p.waitForTimeout(700);
 const path = await p.video().path(); await ctx.close(); await b.close();
 renameSync(path, "docs/commerce-visual/v2/demo-motion.webm"); console.log("vídeo salvo");

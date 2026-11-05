@@ -210,6 +210,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         bottom={bottom}
         faixa={capa ? {
           inicio: <>{capa.negocios}{capa.indiqueHref ? <Link href={capa.indiqueHref} className="ds-faixa-pilula"><Gift className="size-4" aria-hidden /><span>Indique e ganhe</span></Link> : null}</>,
+          agente: !!capa.agente,
           meio: capa.oferta ? <Link href={capa.oferta.href} className="ds-faixa-oferta"><span className="ds-faixa-novo">Novo</span><span className="truncate">{capa.oferta.texto}</span><ArrowRight className="size-4 shrink-0" aria-hidden /></Link> : null,
         } : undefined}
         overlays={!minimal ? <CommandPalette open={palette} onOpenChange={setPalette} items={items} quick={quick} search={search} /> : null}
