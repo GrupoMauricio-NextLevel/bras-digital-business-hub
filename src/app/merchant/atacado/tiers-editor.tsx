@@ -12,7 +12,7 @@ type Item = { productId: string; name: string; priceCents: number; floorCents: n
 type Row = { minQty: string; price: string };
 const toRows = (t: Item["tiers"]): Row[] => t.map((x) => ({ minQty: String(x.minQty), price: (x.priceCents / 100).toFixed(2).replace(".", ",") }));
 
-function ProductTiers({ item }: { item: Item }) {
+export function ProductTiers({ item, max = 5, bare = false }: { item: Item; max?: number; bare?: boolean }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   const [rows, setRows] = React.useState<Row[]>(toRows(item.tiers));
@@ -22,8 +22,8 @@ function ProductTiers({ item }: { item: Item }) {
     if (r.ok) { toast.success("Faixas salvas"); router.refresh(); } else toast.error(r.error);
   });
   return (
-    <li className="space-y-2 p-4 text-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{item.name}</span><span className="text-xs text-muted-foreground">Preço atual {formatBRL(item.priceCents)} · não pode ficar abaixo de {formatBRL(item.floorCents)}</span></div>
+    <li className={bare ? "space-y-2 text-sm" : "space-y-2 p-4 text-sm"}>
+      {bare ? null : <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{item.name}</span><span className="text-xs text-muted-foreground">Preço atual {formatBRL(item.priceCents)} · não pode ficar abaixo de {formatBRL(item.floorCents)}</span></div>}
       {rows.map((r, i) => (
         <div key={i} className="flex items-center gap-2">
           <span className="text-muted-foreground">A partir de</span>
@@ -34,7 +34,7 @@ function ProductTiers({ item }: { item: Item }) {
         </div>
       ))}
       <div className="flex gap-2">
-        {rows.length < 5 ? <Button type="button" variant="secondary" onClick={() => setRows([...rows, { minQty: "", price: "" }])}><Plus /> Faixa</Button> : null}
+        {rows.length < max ? <Button type="button" variant="secondary" onClick={() => setRows([...rows, { minQty: "", price: "" }])}><Plus /> Faixa</Button> : null}
         <Button type="button" loading={pending} onClick={save}>Salvar</Button>
       </div>
     </li>

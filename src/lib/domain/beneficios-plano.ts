@@ -54,7 +54,7 @@ export async function salvarBeneficios(db: Database, actor: Actor, raw: unknown)
 }
 
 /** Plano que vale para os limites (sem plano ativo = Start). */
-async function planoDaLoja(db: Database, storeId: string): Promise<PlanoBeneficio> {
+export async function planoDaLoja(db: Database, storeId: string): Promise<PlanoBeneficio> {
   const sub = await subscriptionOf(db, storeId);
   const k = sub && ["active", "trial", "past_due"].includes(sub.status) ? sub.productKey : null;
   return (PLANOS_BENEFICIO as readonly string[]).includes(k ?? "") ? (k as PlanoBeneficio) : "COMMERCE_START";

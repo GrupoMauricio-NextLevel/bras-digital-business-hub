@@ -120,3 +120,60 @@ describe("atacado na loja: pedido, proposta e regras", () => {
     expect(await regrasDeAtacado(ctx.db, rede)).toEqual([]);
   });
 });
+
+describe("AT1: travas por plano e grades (D258)", () => {
+  let ctx: Awaited<ReturnType<typeof freshDb>>;
+  beforeEach(async () => { ctx = await freshDb(); });
+  async function loja() {
+    const r = await signupMember(ctx.db, { storeName: "Grade Brás", ownerName: "Maria Souza", email: "maria@grade.com.br", password: "senha-segura-1", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never);
+    await markInvoicePaid(ctx.db, (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!.id);
+    const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
+    const { productId } = await createProduct(ctx.db, await catalogOwner(ctx.db, owner), { name: "Camiseta", sku: "CAM", categoryName: "Moda", costCents: 2000, suggestedPriceCents: 5000, minimumPriceCents: 2500, sizes: [{ size: "P", initialStock: 100 }, { size: "M", initialStock: 100 }, { size: "G", initialStock: 100 }] });
+    const vs = await ctx.db.select().from(productVariants).where(eq(productVariants.productId, productId)).orderBy(productVariants.position);
+    return { storeId: r.storeId, productId, vs };
+  }
+  const plano = async (storeId: string, key: string) => {
+    const { nlSubscriptions } = await import("@/db/schema");
+    const sub = await ctx.db.query.nlSubscriptions.findFirst({ where: eq(nlSubscriptions.storeId, storeId) });
+    if (sub) await ctx.db.update(nlSubscriptions).set({ productKey: key, status: "active" }).where(eq(nlSubscriptions.storeId, storeId));
+    else {
+      const { catalogPriceVersions } = await import("@/db/schema");
+      const { ensureCatalogSeed } = await import("@/lib/domain/nl-catalog"); await ensureCatalogSeed(ctx.db);
+      const pv = (await ctx.db.select({ id: catalogPriceVersions.id }).from(catalogPriceVersions).limit(1))[0]!.id;
+      await ctx.db.insert(nlSubscriptions).values({ id: `sub-${storeId}`, storeId, productKey: key, cycle: "MONTHLY", status: "active", priceVersionId: pv, amountCents: 5700, platformFeeBps: 0 });
+    }
+  };
+
+  it("Start: 1 regra só de peças, 1 grade por produto, 3 faixas; Pro libera valor, pacote e 4 grades", async () => {
+    const { salvarRegrasDeMix, salvarGrade, limitesDeAtacado } = await import("@/lib/domain/atacado");
+    const { setPriceTiers } = await import("@/lib/domain/price-tiers");
+    const s = await loja();
+    await plano(s.storeId, "COMMERCE_START");
+    expect((await limitesDeAtacado(ctx.db, s.storeId)).plano).toBe("Start");
+    await expect(salvarRegrasDeMix(ctx.db, s.storeId, [{ kind: "MIX_VALOR", minCents: 30_000 }])).rejects.toThrow(/plano Pro/);
+    await expect(salvarRegrasDeMix(ctx.db, s.storeId, [{ kind: "MIX_PECAS", minPieces: 6 }, { kind: "MIX_VALOR", minCents: 30_000 }])).rejects.toThrow(/até 1 regra/);
+    await salvarRegrasDeMix(ctx.db, s.storeId, [{ kind: "MIX_PECAS", minPieces: 6 }]);
+    await expect(setPriceTiers(ctx.db, s.storeId, s.productId, [{ minQty: 3, priceCents: 4800 }, { minQty: 6, priceCents: 4600 }, { minQty: 9, priceCents: 4400 }, { minQty: 12, priceCents: 4200 }])).rejects.toThrow(/até 3 faixas/);
+    const itens = (q: number[]) => s.vs.map((v, i) => ({ variantId: v.id, quantity: q[i]! }));
+    await expect(salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 12", priceCents: 12 * 2000, items: itens([4, 4, 4]) })).rejects.toThrow(/abaixo do custo/);
+    await salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 12", priceCents: 12 * 4000, items: itens([3, 5, 4]) });
+    await expect(salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 6", priceCents: 6 * 4200, items: itens([2, 2, 2]) })).rejects.toThrow(/até 1 grade/);
+    await expect(salvarGrade(ctx.db, s.storeId, s.productId, { name: "Pacote", kind: "PACOTE_SORTIDO", priceCents: 30_000, items: itens([0, 10, 0]) })).rejects.toThrow(/Pro/);
+    await plano(s.storeId, "COMMERCE_PRO");
+    await salvarRegrasDeMix(ctx.db, s.storeId, [{ kind: "MIX_PECAS", minPieces: 6 }, { kind: "MIX_VALOR", minCents: 30_000 }]);
+    await salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 6", colorMode: "SORTIDA", priceCents: 6 * 4200, items: itens([2, 2, 2]) });
+    await expect(salvarRegrasDeMix(ctx.db, s.storeId, [{ kind: "MIX_CATEGORIA", minPieces: 6, categoryId: "x" }])).rejects.toThrow(/Scale/);
+  });
+
+  it("cada grade com o próprio preço no pedido; remover grade vendida é recusado", async () => {
+    const { salvarGrade, removerGrade } = await import("@/lib/domain/atacado");
+    const s = await loja();
+    await plano(s.storeId, "COMMERCE_PRO");
+    const itens = (q: number[]) => s.vs.map((v, i) => ({ variantId: v.id, quantity: q[i]! }));
+    const g12 = await salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 12", priceCents: 48_000, items: itens([3, 5, 4]) });
+    const g6 = await salvarGrade(ctx.db, s.storeId, s.productId, { name: "Grade 6", priceCents: 25_200, items: itens([2, 2, 2]) });
+    const o = await createOrder(ctx.db, { storeId: s.storeId, customer, items: [{ productId: s.productId, packId: g12, quantity: 1 }, { productId: s.productId, packId: g6, quantity: 2 }], customerPaymentStatus: "PENDING" }, { paymentProvider: "MANUAL", reservationMinutes: 30 });
+    expect((await ctx.db.query.orders.findFirst({ where: eq(orders.id, o.orderId) }))!.subtotalCents).toBe(48_000 + 2 * 25_200);
+    await expect(removerGrade(ctx.db, s.storeId, s.productId, g12)).rejects.toThrow(/já foi vendida/);
+  });
+});

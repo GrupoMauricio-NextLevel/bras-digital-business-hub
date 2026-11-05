@@ -32,6 +32,11 @@ const tiersSchema = z.array(z.object({ minQty: z.number().int().min(2, "A quanti
 export async function setPriceTiers(db: Database, storeId: string, productId: string, raw: z.input<typeof tiersSchema>) {
   const tiers = tiersSchema.parse(raw).sort((a, b) => a.minQty - b.minQty);
   if ((await storeModality(db, storeId)) === "NETWORK") throw new DomainError("TIERS_NOT_ALLOWED", "Preço por quantidade não está disponível para lojas de rede.");
+  // AT1 (D258): faixas por plano; quem já tem mais continua, só não aumenta.
+  const { limitesDeAtacado } = await import("./atacado");
+  const lim = await limitesDeAtacado(db, storeId);
+  const atuais = (await db.select({ id: storePriceTiers.id }).from(storePriceTiers).where(and(eq(storePriceTiers.storeId, storeId), eq(storePriceTiers.productId, productId)))).length;
+  if (tiers.length > lim.faixas && tiers.length > atuais) throw new DomainError("LIMITE_PLANO", `No plano ${lim.plano}, até ${lim.faixas} faixas por produto. Mais faixas no plano Pro.`);
   const sp = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, productId)) });
   const product = sp ? await db.query.products.findFirst({ where: eq(products.id, productId) }) : null;
   if (!sp || !product) throw new NotFoundError("Produto não encontrado na sua loja.");

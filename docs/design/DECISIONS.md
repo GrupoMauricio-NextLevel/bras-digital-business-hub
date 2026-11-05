@@ -2963,3 +2963,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - pedido e proposta aplicam o mix de 6 peças da loja toda.
 - **SuperDrop (D216):** loja de rede não tem regras nem preço de atacado (recusado no servidor) e o pedido dela não muda.
 - **Fica para a AT1:** a tela do lojista para o preço de atacado e as regras de mix, e os limites por plano. Hoje as regras só podem ser criadas pelo domínio, então nada muda para o cliente até lá.
+
+## D258 — AT1 do atacado: painel do lojista e travas por plano (2026-11-05)
+- **Prompt:** `docs/prompts/atacado-nextlevel-ecommerce.md`, fase AT1.
+- **Tela `/merchant/atacado`** (reescrita):
+  - chips do plano com o que ele libera e link "Mudar de plano";
+  - **regras do mix** da loja (peças, valor, coleção) com o que falta para cada uma;
+  - pedido mínimo (como antes);
+  - **por produto:** preço de atacado por peça, faixas por quantidade (D52) e **grades** (fechada por cor, sortida ou pacote sortido).
+- **Travas por plano** (`LIMITES_ATACADO`, só lojas Commerce; outras contas não têm trava):
+  - Start: 3 faixas, 1 grade por produto, 1 regra de mix (só peças), sem pacote sortido;
+  - Pro: 5 faixas, 4 grades, 3 regras (peças e valor), com pacote;
+  - Scale: 5 faixas, grades sem limite prático, 6 regras de todos os tipos.
+  - **Quem já tem mais continua:** ao cair de plano nada é apagado; a trava só vale para criar ou aumentar.
+- **Grades:** só em produto de fornecimento próprio; preço do lote nunca abaixo do piso × peças; criar grade liga a venda em grade do produto; grade já vendida não pode ser removida.
+- **Validações no servidor** (ações em `src/app/actions/atacado.ts`): preço de atacado entre o piso e o varejo; regra duplicada é recusada antes do limite do plano.
+- **SuperDrop (D216):** loja de rede continua sem atacado; nada muda nela.
+- **Testes:** `tests/atacado-preco.test.ts` ("AT1: travas por plano e grades").
+- **Fica para a AT2:** box do produto novo na loja e barra do mix no carrinho (as regras passam a ir para o navegador).
