@@ -2914,3 +2914,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
     - "Todos os guias".
   - As respostas do Maurício vêm em balão cinza.
 - **Roteiros de conferência:** `e2e/commerce-glass-qa.mjs` e `e2e/commerce-motion-video.mjs` usam o novo botão "Abrir menu".
+
+## D256 — O padrão do chat vale para todo o sistema (2026-11-05)
+- **Pedido do dono:** "Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros."
+- **Onde vale o padrão (D254 + D255):**
+  - Maurício no Master, no lojista e no parceiro;
+  - vendedor/guia nas páginas públicas;
+  - **Ajuda da equipe NextLevel**, no painel do lojista;
+  - **chat da loja virtual**, para o cliente final.
+- **No computador:**
+  - O encaixe na moldura (borda contínua) passou a valer para **qualquer** coluna lateral (`html:has(.ia-dock)`). Antes, só valia quando o Maurício abria; a Ajuda ficava por cima do conteúdo.
+  - Com uma coluna aberta, os flutuantes do celular somem.
+- **No celular:**
+  - Ajuda e chat da loja abrem em tela cheia, com cabeçalho limpo e seta para baixo, sem linhas divisórias, e a pílula de pergunta embaixo.
+  - Respostas em balão.
+- **Chat da loja virtual:**
+  - Na abertura, "Como comprar" em destaque e os demais assuntos num cartão único com divisórias.
+  - Cores neutras, para combinar com qualquer tema de loja.
+- **Fica de fora:** as telas de Atendimento (Master e lojista) são páginas inteiras de conversa, não colunas de chat.

@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { LifeBuoy, Send, X } from "lucide-react";
+import { ChevronDown, LifeBuoy, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import { enviarAjudaAction, verAjudaAction } from "@/app/actions/ajuda";
 
@@ -61,25 +61,25 @@ export function AjudaLojista({ whatsappUrl }: { whatsappUrl?: string | null }) {
       {aberto ? createPortal(
         <aside className="ia-dock" aria-labelledby="ajuda-t">
           <div className="flex h-full flex-col">
-            <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+            <header className="ia-dock-topo flex items-center justify-between gap-3 border-b border-border px-5 py-4">
               <div>
                 <h2 id="ajuda-t" className="font-bold">Ajuda da equipe NextLevel</h2>
                 <p className="text-xs text-muted-foreground">Pessoas de verdade respondendo aqui, de segunda a sexta, das 9h às 18h.</p>
               </div>
-              <button type="button" onClick={() => setAberto(false)} aria-label="Fechar a ajuda" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="size-4" aria-hidden /></button>
+              <button type="button" onClick={() => setAberto(false)} aria-label="Fechar a ajuda" className="ds-btn ds-btn--quiet ds-btn--icon"><X className="ia-so-largo size-4" aria-hidden /><ChevronDown className="ia-so-celular size-6" aria-hidden /></button>
             </header>
             <div className="nl-scroll flex-1 space-y-3 overflow-y-auto px-5 py-4" aria-live="polite">
               {msgs.length === 0 ? <p className="rounded-2xl bg-surface-muted p-4 text-sm">Conte o que está acontecendo ou o que quer fazer na loja. A equipe vê a sua loja e responde por aqui.</p> : null}
               {msgs.map((m) => m.autor === "SISTEMA"
                 ? <p key={m.id} className="text-center text-xs text-muted-foreground">{m.texto}</p>
-                : <div key={m.id} className={m.autor === "CLIENTE" ? "ml-8 rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-sm text-primary-foreground" : "mr-8 rounded-2xl rounded-bl-md bg-surface-muted px-4 py-2.5 text-sm"}>
+                : <div key={m.id} className={m.autor === "CLIENTE" ? "vh-balao-cliente ml-auto w-fit text-sm" : "ia-balao mr-8 block text-sm"}>
                     {m.autor !== "CLIENTE" ? <b className="mb-0.5 block text-xs">{m.autorNome ?? "Equipe"} · NextLevel</b> : null}
                     <span className="whitespace-pre-line">{m.texto}</span>
                   </div>)}
               <div ref={fim} />
             </div>
             {whatsappUrl ? <a href={whatsappUrl} target="_blank" rel="noreferrer" className="vh-whats">Urgente? Chame a equipe no WhatsApp</a> : null}
-            <form onSubmit={enviar} className="ia-compositor mx-4 mb-4">
+            <form onSubmit={enviar} className="ia-compositor mx-4 mb-4 max-[1099px]:mb-[max(16px,env(safe-area-inset-bottom))]">
               <label htmlFor="ajuda-texto" className="sr-only">Sua mensagem</label>
               <textarea id="ajuda-texto" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} placeholder="Escreva a sua dúvida…" className="max-h-32 min-h-9 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
               <button type="submit" disabled={pending || !texto.trim()} className="ia-enviar" aria-label="Enviar"><Send className="size-4" aria-hidden /></button>

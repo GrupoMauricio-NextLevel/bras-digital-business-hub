@@ -531,10 +531,11 @@ button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(
 .ds-app--capa .ia-botao { display: none; }
 /* Agente aberto na capa (D254): a faixa continua inteira; o Maurício encaixa abaixo dela como a última parte da moldura.
    O conteúdo encolhe, a borda de cima segue contínua do menu ao Maurício e o canto amplo passa para a direita do Maurício.
-   O painel é renderizado no <body> (portal), por isso a regra olha para o documento com :has(). */
+   O painel é renderizado no <body> (portal), por isso a regra olha para o documento com :has(). Vale para qualquer coluna
+   lateral (.ia-dock): Maurício e a Ajuda da equipe (D256). */
 @media (min-width: 1100px) {
-  html.ia-dock-aberto:has(.ds-app--capa) body { padding-right: 0; }
-  html.ia-dock-aberto .ds-app--capa > .ds-main { margin-right: 420px; border-top-right-radius: 0; }
+  html:has(.ia-dock):has(.ds-app--capa) body { padding-right: 0; }
+  html:has(.ia-dock) .ds-app--capa > .ds-main { margin-right: 420px; border-top-right-radius: 0; }
   html:has(.ds-app--capa) .ia-dock {
     top: var(--ds-top-h); right: 8px; bottom: 0; width: 420px; border: 0; border-left: 1px solid var(--ds-line);
     border-radius: 0 28px 0 0; box-shadow: none; animation: ia-encaixa 280ms var(--nl-sobe) both;
@@ -585,7 +586,7 @@ button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(
   .ds-flutua-enviar { margin-left: auto; flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: var(--ds-soft); color: var(--ds-ink); }
   .ds-flutua-menu:active, .ds-flutua-agente:active { transform: scale(0.97); }
   .ds-app--capa .ds-content { padding-bottom: 112px; }
-  html.ia-dock-aberto .ds-flutua { display: none; }
+  html:has(.ia-dock) .ds-flutua { display: none; }
   .ds-scrim--capa { top: var(--ds-top-h); }
   .ds-drawer--capa { top: var(--ds-top-h); width: min(82vw, 340px); border-top-right-radius: 28px; box-shadow: 12px 0 40px -12px rgb(15 23 42 / 0.25); overflow: hidden; }
   .ds-drawer--capa .ds-side-head .ds-iconbtn { display: none; }

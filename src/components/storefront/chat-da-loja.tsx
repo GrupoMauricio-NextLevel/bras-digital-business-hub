@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { MessageCircle, Send, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, ChevronRight, MessageCircle, Send, X } from "lucide-react";
 import { buscarGuia, guias, type Guia } from "@/lib/ia/manual";
 import { abrirConversaComLojaAction, enviarParaLojaAction, mensagensDaLojaAction, perguntarNaLojaAction } from "@/app/actions/atendimento-loja";
 
@@ -100,16 +100,19 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
   const campo = "w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900";
 
   const painel = (
-    <aside aria-labelledby="chat-loja-t" className="fixed bottom-3 left-3 z-[80] flex max-h-[min(36rem,calc(100dvh-1.5rem))] w-[min(23rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white text-neutral-900 shadow-2xl">
-      <header className="flex items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3">
+    <aside aria-labelledby="chat-loja-t" className="fixed bottom-3 left-3 z-[80] flex max-h-[min(36rem,calc(100dvh-1.5rem))] w-[min(23rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white text-neutral-900 shadow-2xl max-sm:inset-0 max-sm:max-h-none max-sm:w-auto max-sm:rounded-none max-sm:border-0 max-sm:shadow-none">
+      <header className="flex items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 max-sm:border-transparent max-sm:pt-[max(14px,env(safe-area-inset-top))]">
         <div><h2 id="chat-loja-t" className="font-bold">Dúvidas? Fale com a {loja}</h2><p className="text-xs text-neutral-500">{conversa ? "Você está falando com a loja" : "Respostas na hora sobre compra, pagamento e entrega"}</p></div>
-        <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="grid size-9 place-items-center rounded-full hover:bg-neutral-100"><X className="size-4" aria-hidden /></button>
+        <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="grid size-9 place-items-center rounded-full hover:bg-neutral-100"><X className="size-4 max-sm:hidden" aria-hidden /><ChevronDown className="size-6 sm:hidden" aria-hidden /></button>
       </header>
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4 text-sm" aria-live="polite">
         {linhas.length === 0 && !conversa ? (
           <>
             <p className="rounded-2xl bg-neutral-100 px-3 py-2.5">Olá! Escolha um assunto ou escreva a sua dúvida.</p>
-            <ul className="flex flex-wrap gap-1.5">{guias("comprador").map((g) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className="rounded-full border border-neutral-300 px-3 py-1 text-xs font-semibold hover:border-neutral-900">{g.titulo}</button></li>)}</ul>
+            {(() => { const [g0, ...gs] = guias("comprador"); return (<>
+              {g0 ? <button type="button" onClick={() => perguntar(g0.titulo, g0)} className="flex w-full gap-3 rounded-2xl bg-neutral-900 px-4 py-3.5 text-left text-white"><ArrowUpRight className="mt-0.5 size-5 shrink-0" aria-hidden /><span><b className="block">{g0.titulo}</b><span className="mt-0.5 line-clamp-2 block text-xs text-white/75">{g0.passos[0]}</span></span></button> : null}
+              <ul className="rounded-2xl bg-neutral-100 px-4" aria-label="Assuntos">{gs.map((g, k) => <li key={g.id}><button type="button" onClick={() => perguntar(g.titulo, g)} className={`flex w-full items-center gap-3 py-3 text-left font-semibold ${k ? "border-t border-neutral-200" : ""}`}><span className="flex-1">{g.titulo}</span><ChevronRight className="size-4 shrink-0 text-neutral-400" aria-hidden /></button></li>)}</ul>
+            </>); })()}
           </>
         ) : null}
         {linhas.map((l) => l.de === "voce" ? <p key={l.id} className="ml-10 rounded-2xl rounded-br-md bg-neutral-900 px-3 py-2 text-white">{l.texto}</p>
@@ -151,7 +154,7 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
         {erro ? <p role="alert" className="text-xs text-red-700">{erro}</p> : null}
         <div ref={fim} />
       </div>
-      <form onSubmit={(e) => { e.preventDefault(); perguntar(texto); }} className="flex items-end gap-2 border-t border-neutral-200 p-3">
+      <form onSubmit={(e) => { e.preventDefault(); perguntar(texto); }} className="m-3 flex items-end gap-2 rounded-[1.6rem] border border-neutral-300 bg-white py-1.5 pl-4 pr-1.5 shadow-sm max-sm:mb-[max(12px,env(safe-area-inset-bottom))]">
         <label htmlFor="cl-pergunta" className="sr-only">Sua dúvida</label>
         <textarea id="cl-pergunta" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar(texto); } }} placeholder={conversa ? "Escreva para a loja…" : "Ex.: qual o prazo de entrega?"} className="max-h-28 min-h-9 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />
         <button type="submit" disabled={pending || !texto.trim()} aria-label="Enviar" className="grid size-9 place-items-center rounded-full bg-neutral-900 text-white disabled:opacity-40"><Send className="size-4" aria-hidden /></button>
