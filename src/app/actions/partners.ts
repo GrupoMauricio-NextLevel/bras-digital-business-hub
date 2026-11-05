@@ -93,3 +93,8 @@ export async function pedirAgenciaAction(info: string) {
     return undefined;
   });
 }
+
+/** D249: o Master fixa (com motivo) ou solta o nível do parceiro. */
+export async function fixarNivelAction(id: string, tier: "INICIAL" | "PRATA" | "OURO" | "DIAMANTE" | null, motivo: string) {
+  return runAction(async () => { const { session, db } = await ctx(); const { fixarNivel } = await import("@/lib/domain/niveis-parceiro"); const r = await fixarNivel(db, session.actor, id, tier, motivo); refresh(); return r; });
+}

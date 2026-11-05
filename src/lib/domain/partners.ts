@@ -2,7 +2,7 @@ import { createHmac, randomBytes } from "node:crypto";
 import { and, count, desc, eq, gte, inArray, lt, lte, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { coupons, financeInvoices, organizations, partnerClicks, partnerCommissions, partnerLinks, partnerMonthStatus, partnerPayouts, partners, platformSettings, stores, users, type InvoiceLine, type PartnerCommissionKind } from "@/db/schema";
+import { coupons, financeInvoices, organizations, partnerClicks, partnerCommissions, partnerLinks, partnerMonthStatus, partnerPayouts, partners, partnerTierHistory, platformSettings, stores, users, type InvoiceLine, type PartnerCommissionKind } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
 import { decryptSecret, encryptSecret } from "@/lib/security/crypto";
@@ -462,7 +462,9 @@ export async function getPartnerForMaster(db: Database, actor: Actor, partnerId:
     db.select().from(partnerMonthStatus).where(eq(partnerMonthStatus.partnerId, p.id)).orderBy(desc(partnerMonthStatus.period)),
   ]);
   const owner = await db.query.users.findFirst({ where: eq(users.id, p.userId) });
-  return { partner: { ...p, pixKeyEnc: undefined, hasPix: !!p.pixKeyEnc, email: owner?.email ?? "" }, entries, payouts, referrals: refs, months, balances: await balances(db, p.id) };
+  const { clientesAtivos } = await import("./niveis-parceiro");
+  const [ativos, historicoNivel] = await Promise.all([clientesAtivos(db, p.id), db.select().from(partnerTierHistory).where(eq(partnerTierHistory.partnerId, p.id)).orderBy(desc(partnerTierHistory.at)).limit(12)]);
+  return { partner: { ...p, pixKeyEnc: undefined, hasPix: !!p.pixKeyEnc, email: owner?.email ?? "" }, entries, payouts, referrals: refs, months, balances: await balances(db, p.id), nivel: { ativos, historico: historicoNivel } };
 }
 
 export async function setPartnerStatus(db: Database, actor: Actor, partnerId: string, status: "ACTIVE" | "INACTIVE" | "SUSPENDED", reason: string) {
@@ -523,5 +525,7 @@ export async function runDailyPartnerJobs(db: Database, now = new Date()) {
   const released = await releaseCommissions(db, now);
   let closed = 0;
   if (now.getUTCDate() === 1) { const prev = periodOf(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))); closed = (await closePartnerMonth(db, prev, now)).closed; }
-  return { released, closed };
+  const { rodarNiveis } = await import("./niveis-parceiro");
+  const niveis = await rodarNiveis(db, now);
+  return { released, closed, niveis };
 }

@@ -10,7 +10,7 @@ export const REF_D226 = "D226";
 export const ENQUANTO_FICAR = 600;
 export const TETO_PRIMEIRA_BPS = 5000;
 export const TETO_RECORRENTE_BPS = 3200;
-const anual = (recorrenteBps: number, primeiraBps = 5000) => Math.round((primeiraBps + 11 * recorrenteBps) / 12);
+export const anual = (recorrenteBps: number, primeiraBps = 5000) => Math.round((primeiraBps + 11 * recorrenteBps) / 12);
 
 export type RegraD226 = { key: string; cycle: "MONTHLY" | "ANNUAL"; partnerKind: PartnerKind | null; firstBps: number; recurringBps: number; recurringMonths: number; benefit: string };
 const par = (sufixo: string, kind: PartnerKind | null, rec: number, benefit: string): RegraD226[] => [
@@ -29,3 +29,8 @@ export const COMISSOES_D226: RegraD226[] = [
  * Mensal: 100%. Anual: 1 mês inteiro + a recorrência dos outros 11, sobre o valor do ano.
  */
 export const bpsPrimeiraNaBlack = (cycle: string, recurringBps: number) => (cycle === "ANNUAL" ? anual(recurringBps, 10_000) : 10_000);
+
+/** Bônus do representante (D226): por loja ativada e pela meta do mês. */
+export const BONUS_ATIVACAO_CENTS = 3_000;
+export const BONUS_META_CENTS = 10_000;
+export const BONUS_META_ATIVACOES = 10;

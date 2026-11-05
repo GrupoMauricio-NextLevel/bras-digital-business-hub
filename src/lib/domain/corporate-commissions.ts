@@ -105,11 +105,20 @@ export async function recordSaleCommission(db: Database, c: CommissionInput) {
   if (!rule) return null;
   const first = c.paymentIndex <= 1;
   if (!first && c.paymentIndex > 1 + rule.recurringMonths) return null;
-  // D226: durante a Black, a 1ª cobrança de plano da E-commerce paga 100% de uma mensalidade ao parceiro.
   let bps = first ? rule.firstBps : rule.recurringBps;
-  if (first && c.family === "COMMERCE_PLAN") {
-    const { blackAgora } = await import("./campanha-black");
-    if ((await blackAgora(db, now)).ativa) { const { bpsPrimeiraNaBlack } = await import("@/lib/finance/revisao-d226"); bps = bpsPrimeiraNaBlack(c.cycle, rule.recurringBps); }
+  if (c.family === "COMMERCE_PLAN") {
+    // D249: nível do parceiro (sobe na hora da venda) soma pontos na recorrência; o anual acompanha.
+    const { recalcularNivel, recorrenteDoNivel } = await import("./niveis-parceiro");
+    const { anual, bpsPrimeiraNaBlack } = await import("@/lib/finance/revisao-d226");
+    const tier = await recalcularNivel(db, p.id, now, { soSobe: true });
+    const rec = recorrenteDoNivel(rule.recurringBps, tier, p.kind);
+    if (!first) bps = rec;
+    else if (c.cycle === "ANNUAL" && rec !== rule.recurringBps) bps = Math.max(rule.firstBps, anual(rec));
+    // D226: durante a Black, a 1ª cobrança de plano da E-commerce paga 100% de uma mensalidade ao parceiro.
+    if (first) {
+      const { blackAgora } = await import("./campanha-black");
+      if ((await blackAgora(db, now)).ativa) bps = bpsPrimeiraNaBlack(c.cycle, rec);
+    }
   }
   if (bps <= 0) return null;
   const { taxBps } = await getFinanceSettings(db);

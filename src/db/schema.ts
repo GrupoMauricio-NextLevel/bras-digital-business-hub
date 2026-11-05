@@ -971,6 +971,8 @@ export const serviceLeads = pgTable("service_leads", {
 export const PARTNER_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED"] as const;
 export type PartnerStatus = (typeof PARTNER_STATUSES)[number];
 /** Tipos de parceiro (D90). AFFILIATE é o influenciador/afiliado original. O tipo só é definido pelo Master. */
+export const PARTNER_TIERS = ["INICIAL", "PRATA", "OURO", "DIAMANTE"] as const;
+export type PartnerTier = (typeof PARTNER_TIERS)[number];
 export const PARTNER_KINDS = ["AFFILIATE", "REPRESENTATIVE", "AGENCY", "AGENCY_ELITE", "WHITE_LABEL"] as const;
 export type PartnerKind = (typeof PARTNER_KINDS)[number];
 
@@ -994,8 +996,29 @@ export const partners = pgTable("partners", {
   agencyRequestedAt: ts("agency_requested_at"),
   /** Site ou Instagram da agência e quantos clientes atende (texto livre do pedido). */
   agencyInfo: text("agency_info"),
+  /** Nível por desempenho (D249): INICIAL, PRATA (3+), OURO (10+), DIAMANTE (20+ clientes pagantes ativos). */
+  tier: text("tier", { enum: PARTNER_TIERS }).notNull().default("INICIAL"),
+  /** Competência (YYYY-MM) em que o parceiro ficou abaixo do nível; desce após 2 meses seguidos. */
+  tierBelowSince: text("tier_below_since"),
+  /** Motivo quando o Master fixou o nível à mão (o cálculo mensal não mexe). */
+  tierLockedReason: text("tier_locked_reason"),
+  tierUpdatedAt: ts("tier_updated_at"),
   createdAt: createdAt(),
 });
+
+/** Histórico de níveis do parceiro (D249): toda subida, descida e fixação manual. */
+export const partnerTierHistory = pgTable("partner_tier_history", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  fromTier: text("from_tier", { enum: PARTNER_TIERS }).notNull(),
+  toTier: text("to_tier", { enum: PARTNER_TIERS }).notNull(),
+  activeClients: integer("active_clients").notNull(),
+  /** AUTO (cálculo) ou MASTER (fixado à mão, com motivo). */
+  source: text("source", { enum: ["AUTO", "MASTER"] }).notNull(),
+  reason: text("reason"),
+  actorUserId: text("actor_user_id"),
+  at: ts("at").notNull().defaultNow(),
+}, (t) => [index("partner_tier_history_partner_idx").on(t.partnerId)]);
 
 export const partnerLinks = pgTable("partner_links", {
   id: id(),
@@ -1017,7 +1040,7 @@ export const partnerClicks = pgTable("partner_clicks", {
   uaHash: text("ua_hash").notNull(),
 });
 
-export const PARTNER_COMMISSION_KINDS = ["SETUP", "MAINTENANCE", "ADJUSTMENT", "CLAWBACK", "PAYOUT", "PAYOUT_REVERSAL", "FEE", "MANUAL", "SALE", "RECURRING"] as const;
+export const PARTNER_COMMISSION_KINDS = ["SETUP", "MAINTENANCE", "ADJUSTMENT", "CLAWBACK", "PAYOUT", "PAYOUT_REVERSAL", "FEE", "MANUAL", "SALE", "RECURRING", "BONUS"] as const;
 export type PartnerCommissionKind = (typeof PARTNER_COMMISSION_KINDS)[number];
 
 /** Livro-razão do parceiro: imutável; correções entram como lançamentos novos. Saldo disponível = soma dos lançamentos AVAILABLE. */

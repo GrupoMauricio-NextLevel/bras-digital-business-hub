@@ -15,7 +15,7 @@ import { PayoutPanel, ReactivatePanel } from "../partner-client";
 import { partnerStatement } from "@/lib/domain/corporate-commissions";
 
 export const dynamic = "force-dynamic";
-const KIND: Record<string, string> = { SALE: "Venda do catálogo NextLevel", RECURRING: "Recorrência", SETUP: "Comissão de setup", MAINTENANCE: "Manutenção (mensalidade)", ADJUSTMENT: "Ajuste de faixa", CLAWBACK: "Estorno", PAYOUT: "Saque", PAYOUT_REVERSAL: "Saque recusado (devolvido)", FEE: "Taxa de reativação", MANUAL: "Ajuste da NextLevel" };
+const KIND: Record<string, string> = { BONUS: "Bônus do representante", SALE: "Venda do catálogo NextLevel", RECURRING: "Recorrência", SETUP: "Comissão de setup", MAINTENANCE: "Manutenção (mensalidade)", ADJUSTMENT: "Ajuste de faixa", CLAWBACK: "Estorno", PAYOUT: "Saque", PAYOUT_REVERSAL: "Saque recusado (devolvido)", FEE: "Taxa de reativação", MANUAL: "Ajuste da NextLevel" };
 const STATUS: Record<string, { label: string; tone: "warning" | "success" | "neutral" | "outline" }> = { PENDING: { label: "Em carência", tone: "warning" }, AVAILABLE: { label: "Liberada", tone: "success" }, PAID: { label: "Paga", tone: "neutral" }, VOID: { label: "Cancelada/estornada", tone: "outline" } };
 const PAYOUT: Record<string, string> = { REQUESTED: "Solicitado", APPROVED: "Aprovado", PAID: "Pago", REJECTED: "Recusado" };
 

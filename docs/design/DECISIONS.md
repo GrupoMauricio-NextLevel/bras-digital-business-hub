@@ -2734,3 +2734,32 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Na Black (campanha ativa):** a 1ª mensalidade de plano E-commerce paga 100% (no anual, 100% de um mês + recorrente dos outros 11). A recorrência não muda.
 - **Revisa a D220:** agência passou de 30%/15% para 50%/25%.
 - **Fica para a PV2:** bônus do representante (R$ 30 por loja ativada, R$ 100 na meta de 10) e os níveis Prata, Ouro e Diamante.
+
+## D249 — PV2: níveis dos parceiros (Prata, Ouro, Diamante) e bônus do representante (2026-11-05)
+- **Conta** clientes pagantes ativos: lojas atribuídas ao parceiro, sem bandeira de revisão, com assinatura E-commerce ativa.
+- **Níveis** (`niveis-parceiro.ts`):
+
+  | Nível | Clientes ativos | Efeito na recorrência |
+  |---|---|---|
+  | Inicial | 0 a 2 | Regra base da trilha |
+  | Prata | 3+ | +2 pontos |
+  | Ouro | 10+ | +4 pontos (e gerente de sucesso) |
+  | Diamante | 20+ | Elite: agência 32%; criador e representante 26% |
+
+  - Nunca passa do teto de 32%.
+  - No plano anual, a 1ª cobrança acompanha o nível.
+  - Na Black, a 1ª mensalidade continua 100%.
+- **Quando muda:**
+  - **sobe na hora** da venda e na rotina diária;
+  - **desce só depois de 2 meses** seguidos abaixo do limite (`tierBelowSince`);
+  - se voltar ao limite antes disso, não desce.
+- **Master:**
+  - na ficha do parceiro, "Fixar nível" com motivo obrigatório (comercial ou financeiro, com auditoria);
+  - enquanto fixado, o cálculo não mexe; "Voltar ao cálculo" solta;
+  - tudo vai para `partner_tier_history`.
+- **Bônus do representante:**
+  - **R$ 30** por loja ativada, uma vez por loja. Ativada = publicada + 1ª venda paga + 30 dias de assinatura ativa;
+  - **+R$ 100** quando chega a 10 ativações no mês;
+  - entra como lançamento "Bônus" no extrato.
+- **Rotina:** `runDailyPartnerJobs` recalcula os níveis e paga os bônus todo dia.
+- **Fora desta fase:** o "Inativo após 6 meses sem cliente ativo" não foi ligado, porque o status Inativo hoje cobra taxa de manutenção do cadastro (D-SuperDrop). Fica para decidir com o dono.

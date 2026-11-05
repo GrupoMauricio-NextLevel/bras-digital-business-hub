@@ -8,6 +8,7 @@ import { Input, Select, Textarea } from "@/components/ui/input";
 import { FormField } from "@/components/app/form-field";
 import { addCommissionRuleVersionAction, addOfferVersionAction, addPriceVersionAction, refundOrderAction, saveFinanceSettingsAction, saveGatewayRuleAction, setCatalogStatusAction, setPartnerKindAction, updateCatalogProductAction, updateDeliveryAction, updateQuoteAction, reconcileAction, saveJourneyConfigAction } from "@/app/actions/financeiro";
 import { parseBRLToCents } from "@/lib/money";
+import { fixarNivelAction } from "@/app/actions/partners";
 
 type R = { ok: true; data?: unknown } | { ok: false; error: string };
 function useRun() {
@@ -220,6 +221,20 @@ export function PartnerKindControl({ partnerId, kind }: { partnerId: string; kin
       <FormField label="Tipo" htmlFor={`pk-${partnerId}`}><Select id={`pk-${partnerId}`} value={k} onChange={(e) => setK(e.target.value)}><option value="AFFILIATE">Influenciador</option><option value="REPRESENTATIVE">Representante</option><option value="AGENCY">Agência</option><option value="AGENCY_ELITE">Agência Elite</option><option value="WHITE_LABEL">White Label</option></Select></FormField>
       <FormField label="Motivo" htmlFor={`pkr-${partnerId}`}><Input id={`pkr-${partnerId}`} value={reason} onChange={(e) => setReason(e.target.value)} /></FormField>
       <Button size="sm" variant="secondary" loading={busy} disabled={k === kind || reason.trim().length < 3} onClick={() => run(() => setPartnerKindAction(partnerId, k as never, reason), "Tipo do parceiro atualizado")}>Aplicar</Button>
+    </div>
+  );
+}
+
+/** D249: fixa o nível do parceiro (com motivo) ou volta ao cálculo mensal. */
+export function PartnerTierControl({ partnerId, tier, travado }: { partnerId: string; tier: string; travado: boolean }) {
+  const { busy, run } = useRun();
+  const [t, setT] = React.useState(tier); const [motivo, setMotivo] = React.useState("");
+  return (
+    <div className="flex flex-wrap items-end gap-2">
+      <FormField label="Nível" htmlFor={`pt-${partnerId}`}><Select id={`pt-${partnerId}`} value={t} onChange={(e) => setT(e.target.value)}><option value="INICIAL">Inicial</option><option value="PRATA">Prata</option><option value="OURO">Ouro</option><option value="DIAMANTE">Diamante</option></Select></FormField>
+      <FormField label="Motivo" htmlFor={`ptr-${partnerId}`}><Input id={`ptr-${partnerId}`} value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: parceira estratégica da Black" /></FormField>
+      <Button size="sm" variant="secondary" loading={busy} disabled={motivo.trim().length < 5} onClick={() => run(() => fixarNivelAction(partnerId, t as never, motivo), "Nível fixado")}>Fixar nível</Button>
+      {travado ? <Button size="sm" variant="ghost" loading={busy} onClick={() => run(() => fixarNivelAction(partnerId, null, ""), "Nível volta ao cálculo mensal")}>Voltar ao cálculo</Button> : null}
     </div>
   );
 }

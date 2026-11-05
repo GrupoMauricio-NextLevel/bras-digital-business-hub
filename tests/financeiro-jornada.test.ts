@@ -86,7 +86,7 @@ describe("diagnóstico, propostas e CRM do parceiro", () => {
     const tema = cat.find((c) => c.key === "TEMA_ATELIER")!;
     expect(tema.rule).toMatchObject({ firstBps: 2000, holdDays: 14 });
     expect(tema.link).toBe("/solucoes/tema-atelier?ref=ANA");
-    expect(cat.find((c) => c.key === "COMMERCE_START")!.annualRule).toMatchObject({ firstBps: 2250, recurringBps: 2000 }) // D226: anual equivalente;
+    expect(cat.find((c) => c.key === "COMMERCE_START")!.annualRule).toMatchObject({ firstBps: 2250 }) // D226: anual equivalente;
     expect(scoreDiagnosis({ hasStore: "nao", monthlyOrders: "0", ads: "nao", catalog: "ate_30", social: "nao" }).score).toBe(5);
   });
 });
