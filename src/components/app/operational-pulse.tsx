@@ -25,9 +25,9 @@ const TONE: Record<PulseTone, string> = {
 
 export function OperationalPulse({ items, label = "Pulso operacional", className }: { items: PulseItem[]; label?: string; className?: string }) {
   return (
-    <section className={cn("ds-card ds-card--flush", className)} aria-label={label}>
+    <section className={cn("ds-card ds-card--flush @container", className)} aria-label={label}>
       {/* D217: duas colunas já no celular (antes, quatro linhas empurravam o que importa para baixo); linhas finas pelo vão de 1 px. */}
-      <div className={cn("grid grid-cols-2 gap-px overflow-hidden rounded-[inherit] bg-[var(--ds-line)] [&>*]:bg-surface [&>*:last-child:nth-child(odd)]:col-span-2 xl:[&>*:last-child:nth-child(odd)]:col-span-1", items.length === 3 ? "xl:grid-cols-3" : "xl:grid-cols-4")}>
+      <div className={cn("grid grid-cols-2 gap-px overflow-hidden rounded-[inherit] bg-[var(--ds-line)] [&>*]:bg-surface [&>*:last-child:nth-child(odd)]:col-span-2 @4xl:[&>*:last-child:nth-child(odd)]:col-span-1", items.length === 3 ? "@4xl:grid-cols-3" : "@4xl:grid-cols-4")}>
         {items.map((item, index) => {
           const Icon = item.icon;
           const DeltaIcon = item.delta === undefined ? null : item.delta > 0 ? ArrowUpRight : item.delta < 0 ? ArrowDownRight : Minus;

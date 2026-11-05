@@ -2872,3 +2872,24 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
     - Regras: atribuição, o que não pode, inatividade, selo de agência, perfil.
   - Na abertura aparecem 8 guias e "Todos os guias". A busca entende o jeito que o parceiro pergunta (teste com frases reais).
 - **Correção:** o cartão "É agência? Ganhe…" do painel mostrava 30% + 15% fixo no código. Agora lê a regra de agência vigente (50% + 25%).
+
+## D254 — Revisão visual: Maurício encaixado na moldura do painel (borda contínua) e alinhamentos (2026-11-05)
+- **Pedido do dono:**
+  - "Os prints revelam alguns erros no alinhamento e falhas no design."
+  - "No painel, o chat precisa preservar a borda superior para dar uma sensação de borda infinita e continuidade."
+- **Maurício nos painéis (capa: Master, lojista, parceiro), em telas de 1100 px ou mais:**
+  - A faixa superior fica inteira.
+  - O Maurício encaixa logo abaixo dela, como a última parte da moldura: a borda de cima corre contínua do menu ao Maurício, e o canto amplo passa para a direita dele.
+  - O conteúdo encolhe ao lado.
+  - Antes, o painel era desenhado fora da moldura (portal no `<body>`), a regra de encaixe nunca valia, e a faixa inteira era espremida. Agora a regra usa `:has()`.
+- **Conteúdo que se adapta ao espaço real (container queries), não à largura da tela:**
+  - abertura do painel do parceiro (link embaixo quando falta espaço);
+  - pulso de números (`OperationalPulse`: 2 colunas quando apertado, 4 quando cabe).
+- **Páginas públicas:**
+  - `.ec-cabecalho` zerava o recuo lateral (`padding: … 0 …`) e anulava o `px-4`. O texto encostava na borda no celular e com o Maurício aberto. Agora só o recuo vertical é do estilo.
+  - Com o Maurício aberto em telas de 1100 a 1599 px, o menu do site vira o compacto, em vez de cortar na direita.
+  - Seletor de perfil de `/parceiros`: abaixo do selo, e no celular os 3 perfis cabem numa linha.
+- **Conferido:**
+  - capturas do painel do parceiro e do Master com o Maurício aberto;
+  - `/parceiros` com o Maurício, em 390 px e em 1024 px;
+  - sem rolagem lateral.

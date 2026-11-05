@@ -76,7 +76,7 @@
 .ec-tag--claro { color: #0b5d73; background: #e6f9fd; box-shadow: 0 0 0 1px rgb(8 145 178 / .25) inset; }
 
 /* Cabeçalho das páginas internas (D223): faixa marinho com grade, brilhos e números em destaque. */
-.ec-cabecalho { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ec-marinho, #101a33); padding: 4.5rem 0 4rem; }
+.ec-cabecalho { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ec-marinho, #101a33); padding-block: 4.5rem 4rem; }
 .ec-cabecalho::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background-image: linear-gradient(rgb(255 255 255 / .05) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .05) 1px, transparent 1px);
   background-size: 40px 40px; -webkit-mask-image: radial-gradient(ellipse 75% 90% at 70% 0%, #000 25%, transparent 75%); mask-image: radial-gradient(ellipse 75% 90% at 70% 0%, #000 25%, transparent 75%); }

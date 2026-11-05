@@ -20,8 +20,8 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
   const primeiro = d.parceiro.nome.split(" ")[0];
   return (
     <div className="space-y-6">
-      <section className="ds-hero relative p-6 text-white sm:p-8">
-        <div className="relative grid gap-6 lg:grid-cols-[1fr_minmax(0,24rem)] lg:items-end">
+      <section className="ds-hero @container relative p-6 text-white sm:p-8">
+        <div className="relative grid gap-6 @3xl:grid-cols-[1fr_minmax(0,22rem)] @3xl:items-end">
           <div>
             <span className="ec-tag"><i aria-hidden />{d.parceiro.tipo} NextLevel E-commerce</span>
             <h1 className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Olá, {primeiro}. Cada loja que você indica vira renda todo mês.</h1>

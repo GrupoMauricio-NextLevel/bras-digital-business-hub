@@ -258,6 +258,12 @@
   .ds-pub-nav a { padding: 0 10px; font-size: 0.9rem; }
   .ds-pub-actions .ds-pub-btn--sm { padding: 0 12px; }
 }
+/* Com o Maurício aberto (coluna de 436 px), o site tem menos largura que a tela: o menu vira o compacto (D254). */
+@media (min-width: 1100px) and (max-width: 1599px) {
+  html.ia-dock-aberto .ds-pub-nav { display: none; }
+  html.ia-dock-aberto .ds-pub-actions { margin-left: auto; }
+  html.ia-dock-aberto .ds-pub-burger { display: grid; }
+}
 @media (max-width: 1120px) {
   .ds-pub-nav { display: none; }
   .ds-pub-actions { margin-left: auto; }
@@ -523,7 +529,19 @@ button.ds-negocio-card:hover { border-color: var(--ds-primary); background: var(
 .ds-conta-tema { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 8px 4px 10px; font-size: 0.875rem; font-weight: 600; }
 /* O agente abre pela faixa: sem botão flutuante (que cobria ações no canto da tela) e o painel encaixa abaixo da faixa. */
 .ds-app--capa .ia-botao { display: none; }
-.ds-app--capa .ia-dock { top: calc(var(--ds-top-h) + 8px); }
+/* Agente aberto na capa (D254): a faixa continua inteira; o Maurício encaixa abaixo dela como a última parte da moldura.
+   O conteúdo encolhe, a borda de cima segue contínua do menu ao Maurício e o canto amplo passa para a direita do Maurício.
+   O painel é renderizado no <body> (portal), por isso a regra olha para o documento com :has(). */
+@media (min-width: 1100px) {
+  html.ia-dock-aberto:has(.ds-app--capa) body { padding-right: 0; }
+  html.ia-dock-aberto .ds-app--capa > .ds-main { margin-right: 420px; border-top-right-radius: 0; }
+  html:has(.ds-app--capa) .ia-dock {
+    top: var(--ds-top-h); right: 8px; bottom: 0; width: 420px; border: 0; border-left: 1px solid var(--ds-line);
+    border-radius: 0 28px 0 0; box-shadow: none; animation: ia-encaixa 280ms var(--nl-sobe) both;
+  }
+}
+@keyframes ia-encaixa { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { html:has(.ds-app--capa) .ia-dock { animation: none; } }
 @media (max-width: 980px) {
   .ds-app--capa { grid-template-areas: "faixa" "main"; padding: 0; }
   .ds-faixa { margin: 0; padding: 0 10px; gap: 8px; }

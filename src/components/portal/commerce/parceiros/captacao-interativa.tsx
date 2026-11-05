@@ -37,9 +37,9 @@ export function CaptacaoInterativa({ inicial, regras, planos, bonus, marca }: Pr
       <section className="ec-cabecalho px-4 !pb-20 md:!pt-20">
         <div className="mx-auto max-w-6xl">
           <p className="ec-tag"><i aria-hidden />Programa de Parceiros {marca}</p>
-          <div className="mt-6 inline-flex flex-wrap gap-1 rounded-full border border-white/15 bg-white/5 p-1" role="group" aria-label="Escolha o seu perfil">
+          <div className="mt-6 grid w-full grid-cols-3 gap-1 rounded-full border border-white/15 bg-white/5 p-1 sm:flex sm:w-fit" role="group" aria-label="Escolha o seu perfil">
             {PERFIL_LISTA.map((k) => { const I = ICONE[k]; return (
-              <button key={k} type="button" aria-pressed={perfil === k} onClick={() => trocar(k)} className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${perfil === k ? "bg-white text-[#12133a]" : "text-white/80 hover:text-white"}`}><I className="size-4" aria-hidden />{PERFIS[k].rotulo}</button>
+              <button key={k} type="button" aria-pressed={perfil === k} onClick={() => trocar(k)} className={`inline-flex min-h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm ${perfil === k ? "bg-white text-[#12133a]" : "text-white/80 hover:text-white"}`}><I className="size-4" aria-hidden />{PERFIS[k].rotulo}</button>
             ); })}
           </div>
           <h1 className="ec-cabecalho-titulo mt-6 max-w-4xl" aria-live="polite">{p.titulo}</h1>
