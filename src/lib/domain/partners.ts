@@ -250,6 +250,9 @@ export async function closePartnerMonth(db: Database, period: string, now = new 
   const s = await getPartnerSettings(db);
   const { start, end } = periodBounds(period);
   const all = await db.select().from(partners).where(ne(partners.status, "SUSPENDED"));
+  // D252: o parceiro da NextLevel E-commerce não tem meta mensal nem taxa de manutenção (participar é grátis); ele só
+  // fica Inativo pela regra dos 6 meses sem cliente (D250). O corte mensal continua igual para o SuperDrop.
+  const ec = new Set((await db.select({ id: partners.id }).from(partners).innerJoin(users, eq(users.id, partners.userId)).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(eq(organizations.brand, "NEXTLEVEL_COMMERCE"))).map((r) => r.id));
   let closed = 0;
   for (const p of all) {
     if (await db.query.partnerMonthStatus.findFirst({ where: and(eq(partnerMonthStatus.partnerId, p.id), eq(partnerMonthStatus.period, period)) })) continue;
@@ -266,7 +269,7 @@ export async function closePartnerMonth(db: Database, period: string, now = new 
     // Cadastro novo só é cobrado a partir do mês seguinte ao do cadastro (carência do mês de entrada).
     const createdInPeriod = new Date(p.createdAt) >= start && new Date(p.createdAt) < end;
     await db.insert(partnerMonthStatus).values({ partnerId: p.id, period, activations: n, tierBps: tier.bps, metGoal: met });
-    if (!createdInPeriod) await db.update(partners).set({ status: met ? "ACTIVE" : "INACTIVE" }).where(eq(partners.id, p.id));
+    if (!createdInPeriod && !ec.has(p.id)) await db.update(partners).set({ status: met ? "ACTIVE" : "INACTIVE" }).where(eq(partners.id, p.id));
     closed++;
   }
   return { closed };

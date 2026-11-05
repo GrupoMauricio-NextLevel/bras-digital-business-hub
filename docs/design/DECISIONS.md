@@ -2826,3 +2826,26 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - desafio só para o comercial e o financeiro, com auditoria.
 - **Consultas:** o quadro sai de consultas agrupadas (uma por bloco), sem consulta por parceiro.
 - **Na tela:** no celular o quadro rola dentro dele mesmo, sem rolagem lateral da página.
+
+## D252 — PV4: página de captação de parceiros; parceiro da E-commerce sem meta mensal; mapa para levar o padrão às marcas (2026-11-05)
+- **Página `/parceiros` da E-commerce:**
+  - **Seletor de perfil** (criador, vendedor, agência) muda o título, a comissão, a escada, o simulador e a chamada, sem sair da página.
+  - Subpáginas `/parceiros/criadores`, `/parceiros/vendedores` e `/parceiros/agencias`: a mesma página com o perfil já escolhido.
+  - **Escada de níveis** com os números das regras vigentes: % e R$ por cliente no plano Pro, em cada nível.
+  - **Simulador**: perfil, lojas por mês e plano dão o ganho no mês 1, 12 e 24. O nível sobe com a carteira; o vendedor soma os bônus; sem cancelamentos; o 100% da Black fica fora; não é promessa.
+  - **"Fácil de vender"**: taxa zero da plataforma, comparativo, atacado e equipe no Brás.
+  - Como funciona e dúvidas, já com níveis, garantia de 30 dias e a regra dos 6 meses.
+- **Cadastro em 4 etapas** (perfil → dados → sobre você → aceite):
+  - a conta nasce na hora, com o link pronto;
+  - a candidatura entra no funil do Master como **Candidato**, com a qualificação (região, canais, seguidores ou carteira) na linha do tempo;
+  - agência vira pedido de agência (aprovação em até 2 dias úteis);
+  - vendedor gera uma tarefa no Master para mudar o tipo.
+  - O cadastro antigo continua para as outras marcas.
+- **Ficaram de fora (honestidade):**
+  - A foto do painel no celular: a captura local mostrava o endereço de teste. A seção só aparece quando existir `public/portal/commerce/parceiros/painel-parceiro-demo.webp`, capturado em produção com dados de demonstração.
+  - O diretório de agências: precisa do consentimento de cada agência para aparecer.
+  - As fotos de pessoas (vendedor no Brás, agência em reunião, criadora gravando): o dono gera; os prompts estão na seção 5 do prompt dos parceiros.
+- **Correção de regra:** o fechamento do mês (meta de 1 ativação, senão Inativo e taxa de manutenção) **não vale para o parceiro da E-commerce**. Ele contradizia a página ("participar não custa nada") e a regra dos 6 meses (D250). O SuperDrop continua igual, com teste.
+- **Memória para as outras marcas:**
+  - `docs/design/PADRAO-NEXTLEVEL-PARA-MARCAS.md` mapeia o kit visual, cada módulo (onde está, decisão, se já serve para outra marca) e o roteiro;
+  - a skill `levar-para-marca` faz qualquer sessão seguir esse roteiro.

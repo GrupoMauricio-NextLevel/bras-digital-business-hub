@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, isNotNull, isNull, like, sql } from "drizzle-orm
 import type { Database } from "@/db/client";
 import { nlSubscriptions, orders, partnerCommissions, partnerTierHistory, partners, stores, type PartnerTier } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { BONUS_ATIVACAO_CENTS, BONUS_META_ATIVACOES, BONUS_META_CENTS, TETO_RECORRENTE_BPS } from "@/lib/finance/revisao-d226";
+import { BONUS_ATIVACAO_CENTS, BONUS_META_ATIVACOES, BONUS_META_CENTS } from "@/lib/finance/revisao-d226";
 import { requireMasterFn, type Actor } from "./access";
 import { DomainError, NotFoundError } from "./errors";
 import { CORPORATE, recordFinancialAudit } from "./fin-audit";
@@ -13,27 +13,10 @@ import { periodOf } from "./finance";
  * com assinatura E-commerce ativa). Sobe na hora; desce só depois de 2 meses seguidos abaixo do limite.
  * O Master pode fixar o nível à mão, com motivo (o cálculo deixa de mexer até ele soltar).
  */
-export const NIVEIS: readonly { tier: PartnerTier; nome: string; minimo: number; efeito: string }[] = [
-  { tier: "INICIAL", nome: "Inicial", minimo: 0, efeito: "Regra base da sua trilha, já com recorrência" },
-  { tier: "PRATA", nome: "Prata", minimo: 3, efeito: "+2 pontos na recorrência" },
-  { tier: "OURO", nome: "Ouro", minimo: 10, efeito: "+4 pontos na recorrência e gerente de sucesso" },
-  { tier: "DIAMANTE", nome: "Diamante", minimo: 20, efeito: "Elite: 32% na agência, 26% no criador e no representante" },
-];
+export { NIVEIS, MESES_PARA_DESCER, nivelPorClientes, recorrenteDoNivel } from "@/lib/finance/niveis-regras";
+import { nivelPorClientes, MESES_PARA_DESCER } from "@/lib/finance/niveis-regras";
 const ORDEM: PartnerTier[] = ["INICIAL", "PRATA", "OURO", "DIAMANTE"];
 const rank = (t: PartnerTier) => ORDEM.indexOf(t);
-export const MESES_PARA_DESCER = 2;
-
-export function nivelPorClientes(ativos: number): PartnerTier {
-  return [...NIVEIS].reverse().find((n) => ativos >= n.minimo)!.tier;
-}
-
-/** Recorrência com o bônus do nível, sem passar do teto (32%). Agência no Diamante = Elite. */
-export function recorrenteDoNivel(baseBps: number, tier: PartnerTier, kind: string): number {
-  if (baseBps <= 0) return baseBps;
-  const agencia = kind === "AGENCY" || kind === "AGENCY_ELITE";
-  const alvo = tier === "PRATA" ? baseBps + 200 : tier === "OURO" ? baseBps + 400 : tier === "DIAMANTE" ? Math.max(baseBps, agencia ? 3200 : 2600) : baseBps;
-  return Math.min(Math.max(alvo, baseBps), Math.max(TETO_RECORRENTE_BPS, baseBps));
-}
 
 /** Meses entre duas competências YYYY-MM. */
 const mesesEntre = (de: string, ate: string) => { const [a, b] = de.split("-").map(Number); const [c, d] = ate.split("-").map(Number); return (c! - a!) * 12 + (d! - b!); };

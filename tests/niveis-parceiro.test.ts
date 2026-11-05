@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { freshDb } from "./setup";
 import { catalogPriceVersions, nlSubscriptions, orders, partnerCommissions, partnerTierHistory, partners, stores } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { registerPartner } from "@/lib/domain/partners";
+import { closePartnerMonth, registerPartner } from "@/lib/domain/partners";
 import { recordSaleCommission } from "@/lib/domain/corporate-commissions";
 import { ensureCatalogSeed } from "@/lib/domain/nl-catalog";
 import { bonusDosRepresentantes, fixarNivel, inativarSemClientes, nivelPorClientes, recalcularNivel, recorrenteDoNivel } from "@/lib/domain/niveis-parceiro";
@@ -107,5 +107,16 @@ describe("níveis dos parceiros", () => {
     expect(await inativarSemClientes(ctx.db, DEZ)).toBe(0); // vendeu nos últimos 6 meses
     expect(await inativarSemClientes(ctx.db, new Date("2027-04-01T12:00:00Z"))).toBe(1);
     expect((await tierDe()).status).toBe("INACTIVE");
+  });
+
+  it("corte mensal (meta de ativação): vale para o SuperDrop, não para o parceiro da E-commerce (D252)", async () => {
+    const r = await registerPartner(ctx.db, { name: "Parceira Commerce", email: "ec@exemplo.com", password: "senha-forte-1", taxId: "11144477735", phone: "11999990000", acceptTerms: true, brand: "NEXTLEVEL_COMMERCE" });
+    const ec = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, r.userId) }))!.id;
+    await ctx.db.update(partners).set({ createdAt: "2026-01-01T00:00:00Z" }).where(eq(partners.id, partnerId));
+    await ctx.db.update(partners).set({ createdAt: "2026-01-01T00:00:00Z" }).where(eq(partners.id, ec));
+    await closePartnerMonth(ctx.db, "2026-10", new Date("2026-11-01T03:00:00Z"));
+    const st = async (id: string) => (await ctx.db.query.partners.findFirst({ where: eq(partners.id, id) }))!.status;
+    expect(await st(ec)).toBe("ACTIVE");
+    expect(await st(partnerId)).toBe("INACTIVE");
   });
 });
