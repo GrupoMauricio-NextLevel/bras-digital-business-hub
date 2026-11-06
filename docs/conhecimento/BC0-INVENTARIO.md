@@ -155,13 +155,17 @@
 - **SuperDrop** (rede, Central, recarga) e **Brás Digital**: decisão 4 do prompt.
 - **Equipe técnica** (Render, chaves, deploy): não é treinamento de funcionário.
 
-## Pontos para o dono confirmar
-1. **Cliente indica = 1 mês grátis:** aprovado na D226, mas não achei no código. Entra como "em breve" até ser ligado?
-2. **Trilhas por função:**
-   - Comercial vê as trilhas 1 a 4;
-   - Suporte, as trilhas 1, 4 e 5;
-   - Financeiro e Contador, as trilhas 1, 3 e 6;
-   - Conteúdo, as trilhas 1 e 7;
-   - o dono vê tudo.
-   Está certo?
-3. Falta alguma regra de algum setor que vocês usam no dia a dia e não está no sistema?
+## Aprovado pelo dono (06/11/2026, D265)
+- **Trilhas por função:**
+
+  | Função | Trilhas |
+  |---|---|
+  | Comercial | 1 a 4 |
+  | Suporte | 1, 4 e 5 |
+  | Financeiro e Contador | 1, 3 e 6 |
+  | Conteúdo | 1 e 7 |
+  | Dono | todas |
+
+  A trilha 1 (Base) é obrigatória para todos.
+- **"Cliente indica = 1 mês grátis":** entra como "em breve" até ser ligado.
+- **Regras faltando:** nenhuma apontada pelo dono nesta revisão.

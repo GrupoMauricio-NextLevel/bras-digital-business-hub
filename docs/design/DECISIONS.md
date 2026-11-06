@@ -3105,3 +3105,14 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Pedido do dono:** "sempre que houver atualizações, alimente a base de conhecimento".
 - **Regra fixa** (registrada no `CLAUDE.md` e na skill `publicar`): toda mudança publicada atualiza a base de conhecimento da equipe (`docs/conhecimento/BC0-INVENTARIO.md`; na BC1, a tela "Aprender" do Master), com a regra, o valor, o estado e a decisão.
 - **Garantia:** o teste `tests/base-conhecimento.test.ts` falha se uma decisão desde a D257 não estiver citada na base.
+
+## D265 — [Grupo] Base de conhecimento: BC0 aprovada e trilhas por função (2026-11-06)
+- **O dono aprovou o inventário** (`docs/conhecimento/BC0-INVENTARIO.md`) e a divisão:
+  - Comercial: trilhas 1 a 4;
+  - Suporte: 1, 4 e 5;
+  - Financeiro e Contador: 1, 3 e 6;
+  - Conteúdo: 1 e 7;
+  - dono: todas;
+  - a trilha 1 é obrigatória para todos.
+- "Cliente indica = 1 mês grátis" entra como "em breve" até ser ligado.
+- **Próxima fase:** BC1, a tela "Aprender" no Master.
