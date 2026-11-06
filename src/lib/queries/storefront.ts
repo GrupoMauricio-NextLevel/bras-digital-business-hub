@@ -36,6 +36,14 @@ export const getStorefrontCatalog = cache(async (storeId: string): Promise<Store
   return listStoreCatalog((await getDb()), storeId);
 });
 
+/** Preço de atacado mostrado na vitrine: o mesmo que o motor cobra (nunca abaixo do piso, sempre abaixo do varejo). */
+function atacadoDaVitrine(item: StoreCatalogItem): number | null {
+  const a = item.storeProduct.wholesalePriceCents;
+  if (a == null || a <= 0) return null;
+  const v = Math.max(a, item.product.costCents, item.product.minimumPriceCents);
+  return v < item.storeProduct.priceCents ? v : null;
+}
+
 /** Item serializável para client components. */
 export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
   const available = item.variants.reduce((s, v) => s + v.level.available, 0);
@@ -52,12 +60,14 @@ export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
     priceCents: item.storeProduct.priceCents,
     packPriceCents: item.storeProduct.packPriceCents,
     tiers: item.tiers,
+    /** Atacado (AT2, D259): preço por peça já com o piso aplicado (o custo nunca vai para o navegador); nulo = sem atacado. */
+    atacadoCents: atacadoDaVitrine(item),
     featured: item.storeProduct.featured,
     sellsUnit: item.product.sellsUnit,
     sellsPack: item.product.sellsPack,
     available,
     variants: item.variants.map((v) => ({ id: v.id, size: v.size, available: v.level.available })),
-    packs: item.packs.map((p) => ({ id: p.id, name: p.name, totalQuantity: p.totalQuantity, available: p.available, priceCents: item.storeProduct.packPriceCents ?? p.suggestedPriceCents, items: p.items })),
+    packs: [...item.packs].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((p) => ({ id: p.id, name: p.name, kind: p.kind ?? "GRADE_FECHADA", colorMode: p.colorMode ?? "FIXA", color: p.color ?? null, totalQuantity: p.totalQuantity, available: p.available, priceCents: item.storeProduct.packPriceCents ?? p.suggestedPriceCents, items: p.items })),
   };
 }
 export type PublicProduct = ReturnType<typeof toPublicProduct>;

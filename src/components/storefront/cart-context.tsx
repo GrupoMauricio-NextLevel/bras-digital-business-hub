@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { eventoMeta } from "./pixel-meta";
-import { precoDoCarrinho, type RegraMix } from "@/lib/finance/atacado-preco";
+import { precoDoCarrinho, type CarrinhoPrecificado, type LinhaPreco, type RegraMix } from "@/lib/finance/atacado-preco";
 
 export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number;
   /** Preço por quantidade do produto (soma das unidades do mesmo produto no carrinho). */
@@ -9,10 +9,32 @@ export type CartLine = { key: string; productId: string; variantId?: string; pac
   /** Atacado (AT0, D257): preço por peça no atacado, coleção, peças da grade e piso. Opcionais (carrinhos antigos seguem valendo). */
   atacadoCents?: number | null; categoryId?: string | null; pecasPorUnidade?: number; pisoCents?: number };
 
+/** Linha do carrinho no formato do motor único. */
+export const linhaDoMotor = (l: CartLine): LinhaPreco => ({ key: l.key, productId: l.productId, categoryId: l.categoryId, packId: l.packId, pecasPorUnidade: l.pecasPorUnidade, quantity: l.quantity, varejoCents: l.unitPriceCents, atacadoCents: l.atacadoCents, faixas: l.tiers, pisoCents: l.pisoCents });
+
 /** Preço efetivo de cada linha pelo motor único do servidor (`precoDoCarrinho`), que recalcula tudo ao criar o pedido. */
 export function priceCartLines(lines: CartLine[], regras: RegraMix[] = []): CartLine[] {
-  const r = precoDoCarrinho(lines.map((l) => ({ key: l.key, productId: l.productId, categoryId: l.categoryId, packId: l.packId, pecasPorUnidade: l.pecasPorUnidade, quantity: l.quantity, varejoCents: l.unitPriceCents, atacadoCents: l.atacadoCents, faixas: l.tiers, pisoCents: l.pisoCents })), regras);
-  return lines.map((l, i) => (r.linhas[i]!.unitCents === l.unitPriceCents ? l : { ...l, unitPriceCents: r.linhas[i]!.unitCents }));
+  return precificarCarrinho(lines, regras).lines;
+}
+
+function precificarCarrinho(lines: CartLine[], regras: RegraMix[]): { lines: CartLine[]; precificado: CarrinhoPrecificado } {
+  const r = precoDoCarrinho(lines.map(linhaDoMotor), regras);
+  return { precificado: r, lines: lines.map((l, i) => (r.linhas[i]!.unitCents === l.unitPriceCents ? l : { ...l, unitPriceCents: r.linhas[i]!.unitCents })) };
+}
+
+/**
+ * Atacado da loja para o carrinho (AT2, D259): regras de mix e, por produto, o preço de atacado e a coleção atuais
+ * (carrinhos salvos antes continuam certos, porque o dado vem da loja e não da linha guardada no navegador).
+ */
+export type AtacadoDaLoja = { regras: RegraMix[]; produtos: Record<string, { atacadoCents: number | null; categoryId: string | null }>; pacotes: Record<string, number> };
+
+function comDadosDaLoja(lines: CartLine[], a: AtacadoDaLoja | undefined): CartLine[] {
+  if (!a) return lines;
+  return lines.map((l) => {
+    const p = a.produtos[l.productId];
+    const pecas = l.packId ? a.pacotes[l.packId] ?? l.pecasPorUnidade : l.pecasPorUnidade;
+    return p || pecas !== l.pecasPorUnidade ? { ...l, atacadoCents: l.packId ? null : p?.atacadoCents ?? null, categoryId: p?.categoryId ?? l.categoryId ?? null, pecasPorUnidade: pecas } : l;
+  });
 }
 
 /**
@@ -55,6 +77,13 @@ function useCartLines(slug: string): { lines: CartLine[]; ready: boolean } {
 
 type Ctx = {
   lines: CartLine[];
+  /** Resultado do motor para o carrinho todo: economia, peças e progresso de cada regra de mix. */
+  precificado: CarrinhoPrecificado;
+  regras: RegraMix[];
+  /** A loja vende no atacado (não é loja de rede): o card e o box mostram grade, pacote e "a partir de". */
+  atacadoLigado: boolean;
+  /** Linhas atuais (preço de varejo) com os dados de atacado da loja, para simular uma adição no box. */
+  linhasBase: CartLine[];
   add: (line: Omit<CartLine, "key">) => void;
   update: (key: string, quantity: number) => void;
   remove: (key: string) => void;
@@ -66,11 +95,17 @@ type Ctx = {
 
 const CartContext = React.createContext<Ctx | null>(null);
 
-export function CartProvider({ storeSlug, children }: { storeSlug: string; children: React.ReactNode }) {
+export function CartProvider({ storeSlug, atacado, children }: { storeSlug: string; atacado?: AtacadoDaLoja; children: React.ReactNode }) {
   const { lines: rawLines, ready } = useCartLines(storeSlug);
-  const lines = React.useMemo(() => priceCartLines(rawLines), [rawLines]);
+  const linhasBase = React.useMemo(() => comDadosDaLoja(rawLines, atacado), [rawLines, atacado]);
+  const regras = React.useMemo(() => atacado?.regras ?? [], [atacado]);
+  const { lines, precificado } = React.useMemo(() => precificarCarrinho(linhasBase, regras), [linhasBase, regras]);
   const value = React.useMemo<Ctx>(() => ({
     lines,
+    precificado,
+    regras,
+    atacadoLigado: !!atacado,
+    linhasBase,
     ready,
     add: (line) => {
       eventoMeta("AddToCart", { currency: "BRL", value: (line.unitPriceCents * line.quantity) / 100 });
@@ -84,8 +119,13 @@ export function CartProvider({ storeSlug, children }: { storeSlug: string; child
     clear: () => setLines(storeSlug, []),
     count: lines.reduce((s, l) => s + l.quantity, 0),
     subtotal: lines.reduce((s, l) => s + l.unitPriceCents * l.quantity, 0),
-  }), [lines, ready, storeSlug]);
+  }), [lines, precificado, regras, atacado, linhasBase, ready, storeSlug]);
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+/** Para componentes que também aparecem fora da loja (card): sem carrinho, sem atacado. */
+export function useCartOptional() {
+  return React.useContext(CartContext);
 }
 
 export function useCart() {

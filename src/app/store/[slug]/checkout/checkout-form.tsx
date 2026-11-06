@@ -7,6 +7,7 @@ import { Lock, CreditCard, QrCode } from "lucide-react";
 import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
+import { BarraDoMix, mixRelevante } from "@/components/storefront/barra-do-mix";
 import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction, salvarCarrinhoAction } from "@/app/actions/storefront";
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
@@ -153,9 +154,11 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
         </div>
         <aside className="h-fit rounded-2xl border border-neutral-200 p-5 lg:sticky lg:top-24">
           <h2 className="text-base font-semibold">Resumo do pedido</h2>
+          {cart.atacadoLigado && cart.linhasBase.some((l) => l.atacadoCents) ? <BarraDoMix className="mt-3" mix={mixRelevante(cart.precificado.mix, cart.linhasBase.map((l) => l.categoryId))} /> : null}
           <ul className="mt-3 min-h-24 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
           <dl className="mt-4 space-y-2 border-t border-neutral-200 pt-3 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
+            {cart.precificado.economiaCents > 0 ? <div className="flex justify-between font-medium" data-economia><dt>Você economizou com o atacado</dt><dd className="tabular-nums">{formatBRL(cart.precificado.economiaCents)}</dd></div> : null}
             {discount > 0 ? <div className="flex justify-between text-green-700"><dt>Cupom {applied?.code}</dt><dd className="tabular-nums">− {formatBRL(discount)}</dd></div> : null}
             <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd className="tabular-nums">{!chosen ? "—" : shipping === 0 ? "Grátis" : formatBRL(shipping)}</dd></div>
             <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatBRL(cart.subtotal - discount + shipping)}</dd></div>

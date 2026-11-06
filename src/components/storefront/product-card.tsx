@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ProductArt } from "@/components/app/product-art";
-import { formatBRL } from "@/lib/money";
 import type { PublicProduct } from "@/lib/queries/storefront";
 import { QuickViewButton } from "./quick-view";
+import { PrecoDoCard, SeloDoCard } from "./atacado-no-card";
 
 export function ProductCard({ product, slug, quickView = false }: { product: PublicProduct; slug: string; quickView?: boolean }) {
   const soldOut = product.available === 0;
@@ -12,12 +12,12 @@ export function ProductCard({ product, slug, quickView = false }: { product: Pub
         <ProductArt images={product.images} size="lg" className="bg-neutral-100 transition-transform duration-500 group-hover:scale-[1.03]" />
         {/* Selo do kit Black (D242): só aparece quando a loja liga o kit (CSS em [data-black]). */}
         {!soldOut ? <span className="sf-selo-black absolute bottom-3 left-3 hidden rounded-md bg-neutral-950 px-2 py-1 text-[10px] font-bold tracking-wider text-[#22e08a]">BLACK</span> : null}
-        {soldOut ? <span className="absolute left-3 top-3 rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-medium text-white">Esgotado</span> : product.available <= 5 ? <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-neutral-950 shadow-sm">Últimas unidades</span> : product.sellsPack ? <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-neutral-900 shadow-sm">Grade 12</span> : null}
+        {soldOut ? <span className="absolute left-3 top-3 rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-medium text-white">Esgotado</span> : product.available <= 5 ? <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-neutral-950 shadow-sm">Últimas unidades</span> : <SeloDoCard product={product} />}
       </div>
       <div className="mt-3 space-y-0.5">
         <div className="text-xs text-neutral-500">{product.categoryName}</div>
         <h3 className="text-sm font-medium leading-snug text-neutral-900 group-hover:underline">{product.name}</h3>
-        <div className="text-sm font-semibold">{formatBRL(product.priceCents)}</div>
+        <PrecoDoCard product={product} />
       </div>
     </Link>
   );

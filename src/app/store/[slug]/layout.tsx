@@ -14,7 +14,8 @@ import { fontStack } from "@/lib/ds/fonts";
 import { SectionList } from "@/components/storefront/sections";
 import { PreviewBridge } from "@/components/storefront/preview-bridge";
 import { exitThemePreviewAction, exitTryThemeAction } from "@/app/actions/theme";
-import { CartProvider } from "@/components/storefront/cart-context";
+import { CartProvider, type AtacadoDaLoja } from "@/components/storefront/cart-context";
+import { regrasDeAtacado } from "@/lib/domain/atacado";
 import { ContadorDeVisitas } from "@/components/storefront/contador-de-visitas";
 import { PixelMeta } from "@/components/storefront/pixel-meta";
 import { ListaDeEspera } from "@/components/storefront/lista-de-espera";
@@ -76,8 +77,8 @@ export default async function StoreLayout({ params, children }: { params: Promis
     );
   }
   // L5 (D246): as leituras independentes saem juntas (cada uma é uma ida ao banco; em sequência somavam ~200 ms em produção).
-  const [preview, trial, campaign, kitBlack, origin, catalogo] = await Promise.all([
-    isPreviewMode(sf.store.id), tryingTheme(db, sf.store), currentCampaign(db, sf.store.id), kitBlackDaLoja(db, sf.store.id), storeOrigin(sf.store), getStorefrontCatalog(sf.store.id),
+  const [preview, trial, campaign, kitBlack, origin, catalogo, regrasMix] = await Promise.all([
+    isPreviewMode(sf.store.id), tryingTheme(db, sf.store), currentCampaign(db, sf.store.id), kitBlackDaLoja(db, sf.store.id), storeOrigin(sf.store), getStorefrontCatalog(sf.store.id), regrasDeAtacado(db, sf.store.id),
   ]);
   // Loja em lançamento (D187): o público vê a página de espera; o dono (e a equipe NextLevel) veem a loja normal.
   const donoVendo = session?.store?.id === sf.store.id || session?.user.role === "NEXTLEVEL_MASTER";
@@ -95,6 +96,13 @@ export default async function StoreLayout({ params, children }: { params: Promis
   ];
   const catName = new Map(sf.categories.map((c) => [c.id, c.name]));
   const products = catalogo.map((c) => toPublicProduct(c, c.product.categoryId ? catName.get(c.product.categoryId) : undefined));
+  // Atacado (AT2, D259): vai para o navegador em toda loja que não é de rede (SuperDrop, D216, segue como antes).
+  const lojaDeRede = !!sf.store.networkId && sf.store.kind !== "SUPPLIER_OWN";
+  const atacado: AtacadoDaLoja | undefined = !lojaDeRede ? {
+    regras: regrasMix,
+    produtos: Object.fromEntries(products.map((p) => [p.id, { atacadoCents: p.atacadoCents, categoryId: p.categoryId ?? null }])),
+    pacotes: Object.fromEntries(products.flatMap((p) => p.packs.map((pk) => [pk.id, pk.totalQuantity]))),
+  } : undefined;
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
   return (
     <div style={vars} data-buttons={st.buttons} data-black={black ? "" : undefined} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
@@ -118,7 +126,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {publico && org?.brand === "NEXTLEVEL_COMMERCE" ? <ChatDaLoja slug={slug} loja={sf.store.name} /> : null}
       {publico && sf.store.integrations?.maioridade ? <Maioridade loja={sf.store.name} /> : null}
       {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}
-      <CartProvider storeSlug={slug}>
+      <CartProvider storeSlug={slug} atacado={atacado}>
         <SectionList template={globals.header} ctx={ctx} region="header" />
         <BarraDeNavegacao logo={false} />
         <main className="flex-1"><EntradaDaLoja>{lancando && !donoVendo ? <ListaDeEspera slug={slug} loja={sf.store.name} /> : children}</EntradaDaLoja></main>

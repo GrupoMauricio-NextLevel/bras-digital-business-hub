@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/storefront/cart-context";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
+import { BarraDoMix, mixRelevante } from "@/components/storefront/barra-do-mix";
 
 export function CartView({ slug, freeFromCents }: { slug: string; freeFromCents?: number | null }) {
   const cart = useCart();
@@ -34,26 +35,28 @@ export function CartView({ slug, freeFromCents }: { slug: string; freeFromCents?
           </div>
         );
       })() : null}
+      {cart.atacadoLigado && cart.linhasBase.some((l) => l.atacadoCents) ? <BarraDoMix className="mb-6" mix={mixRelevante(cart.precificado.mix, cart.linhasBase.map((l) => l.categoryId))} nota="Vale a soma de todos os produtos do carrinho. Se o carrinho ficar abaixo do mínimo, o preço volta ao de varejo." /> : null}
       <div className="grid gap-8 lg:grid-cols-3">
         <ul className="divide-y divide-neutral-200 lg:col-span-2">
-          {cart.lines.map((l) => (
+          {cart.lines.map((l, i) => { const varejo = cart.linhasBase[i]?.unitPriceCents ?? l.unitPriceCents; return (
             <li key={l.key} className="flex gap-4 py-4">
               <ProductArt images={l.images} size="sm" className="size-20 shrink-0 rounded-lg bg-neutral-100" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3"><div><div className="text-sm font-medium">{l.name}</div><div className="text-xs text-neutral-500">{l.label}</div></div><div className="text-sm font-semibold tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</div></div>
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
                   <div className="flex h-11 items-center rounded-lg border border-neutral-300"><button className="flex h-full min-w-11 items-center justify-center" onClick={() => cart.update(l.key, l.quantity - 1)} aria-label="Menos"><Minus className="size-3.5" /></button><span className="w-7 text-center text-sm tabular-nums">{l.quantity}</span><button className="flex h-full min-w-11 items-center justify-center disabled:opacity-40" disabled={l.quantity >= l.max} onClick={() => cart.update(l.key, l.quantity + 1)} aria-label="Mais"><Plus className="size-3.5" /></button></div>
-                  <span className="text-xs text-neutral-500">{formatBRL(l.unitPriceCents)} cada</span>
+                  <span className="text-xs text-neutral-500">{formatBRL(l.unitPriceCents)} cada{varejo > l.unitPriceCents ? <> <s className="text-neutral-400">{formatBRL(varejo)}</s></> : null}</span>
                   <button className="ml-auto inline-flex min-h-11 items-center gap-1 px-1 text-xs text-neutral-600 hover:text-red-700" onClick={() => cart.remove(l.key)}><Trash2 className="size-3.5" /> Remover</button>
                 </div>
               </div>
             </li>
-          ))}
+          ); })}
         </ul>
         <aside className="h-fit rounded-2xl border border-neutral-200 p-5 lg:sticky lg:top-24">
           <h2 className="text-base font-semibold">Resumo</h2>
           <dl className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
+            {cart.precificado.economiaCents > 0 ? <div className="flex justify-between font-medium" data-economia><dt>Você economizou com o atacado</dt><dd className="tabular-nums">{formatBRL(cart.precificado.economiaCents)}</dd></div> : null}
             {/* O frete vem da cotação real pelo CEP no fechamento (nunca de uma regra fixa que o checkout não cumpre). */}
             <div className="flex justify-between text-neutral-600"><dt>Frete</dt><dd>Calculado pelo CEP no fechamento</dd></div>
             <div className="flex justify-between border-t border-neutral-200 pt-3 text-base font-semibold"><dt>Total sem frete</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>

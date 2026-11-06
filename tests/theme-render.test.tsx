@@ -4,7 +4,10 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/store/x", useRouter: () => ({ push() {}, replace() {} }) }));
-vi.mock("@/components/storefront/cart-context", () => ({ useCart: () => ({ count: 0, ready: true, lines: [], add() {}, update() {}, remove() {}, clear() {}, subtotal: 0 }) }));
+vi.mock("@/components/storefront/cart-context", () => {
+  const cart = { count: 0, ready: true, lines: [], linhasBase: [], regras: [], atacadoLigado: false, precificado: { linhas: [], subtotalCents: 0, varejoCents: 0, economiaCents: 0, pecas: 0, mix: [], atacadoGeral: false }, add() {}, update() {}, remove() {}, clear() {}, subtotal: 0 };
+  return { useCart: () => cart, useCartOptional: () => cart, linhaDoMotor: (l: never) => l };
+});
 vi.mock("sonner", () => ({ toast: Object.assign(() => {}, { success() {}, error() {} }) }));
 
 import { SectionList, type SectionCtx } from "@/components/storefront/sections";
@@ -16,7 +19,7 @@ import type { PublicProduct } from "@/lib/queries/storefront";
 
 const legacy: ThemeSettingsData = { heroTitle: "Vista o manto", heroSubtitle: "Camisas oficiais", heroCta: "Ver catálogo", announcement: "Frete grátis", banners: [{ title: "Lançamento", subtitle: "Coleção nova", tone: "accent" }], showCategories: true, footerText: "Mantos Shop" };
 const store = { id: "s1", name: "Mantos Shop", slug: "mantos", tagline: "Os mantos que a torcida ama", whatsapp: "5511999990001", instagram: "mantosshop", logoText: "MS", offer: "STORE_SUBDOMAIN", primaryColor: "#0f172a", accentColor: "#16a34a" } as never;
-const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}`, name: `Camisa ${i}`, description: "", seoTitle: "", seoDescription: "", images: [], categoryId: "c1", categoryName: "Camisas", priceCents: 12000, packPriceCents: null, tiers: [], featured: i < 4, sellsUnit: true, sellsPack: false, available: 5, variants: [], packs: [] });
+const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}`, name: `Camisa ${i}`, description: "", seoTitle: "", seoDescription: "", images: [], categoryId: "c1", categoryName: "Camisas", priceCents: 12000, packPriceCents: null, tiers: [], atacadoCents: null, featured: i < 4, sellsUnit: true, sellsPack: false, available: 5, variants: [], packs: [] });
 
 function render(template = templateFromLegacy(legacy), products: PublicProduct[] = Array.from({ length: 9 }, (_, i) => product(i)), region: "content" | "header" | "footer" = "content") {
   const globals = legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy);

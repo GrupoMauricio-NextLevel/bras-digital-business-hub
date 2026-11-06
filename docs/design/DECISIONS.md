@@ -2981,3 +2981,19 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **SuperDrop (D216):** loja de rede continua sem atacado; nada muda nela.
 - **Testes:** `tests/atacado-preco.test.ts` ("AT1: travas por plano e grades").
 - **Fica para a AT2:** box do produto novo na loja e barra do mix no carrinho (as regras passam a ir para o navegador).
+
+## D259 — AT2 do atacado: box novo, card, carrinho e checkout (2026-11-06)
+- **Prompt:** `docs/prompts/atacado-nextlevel-ecommerce.md`, fase AT2.
+- **Box do produto** (`buy-box.tsx`):
+  - abas por formato (peça avulsa, cada grade e cada pacote), cada uma com o preço por peça;
+  - preço em destaque **por peça**, com o varejo riscado quando o comprador já está no atacado ou na faixa;
+  - **escada de preço** (varejo, faixas do modelo, atacado com o gatilho da loja, grades) com "seu preço" marcado;
+  - **barra do mix** que soma o carrinho e a escolha atual;
+  - grade com a cor, "cores sortidas" ou "modelos e cores sortidos, a critério da loja";
+  - total e economia da escolha antes de adicionar.
+- **Card da vitrine:** selo do formato ("Grade 12", "Pacote 20", "Mix 6 peças", "12+ peças") e "a partir de R$ X a peça no atacado".
+- **Carrinho e checkout:** barra do mix, "Você economizou com o atacado", varejo riscado na linha e nome da grade com a cor.
+- **Mesmo preço do pedido:** o navegador usa o motor único (`precoDoCarrinho`) com as regras da loja e o preço de atacado vindos do servidor a cada página (carrinhos antigos ficam certos). O atacado só aparece quando alguma regra da loja libera. O piso já vem aplicado; o custo nunca vai para o navegador.
+- **SuperDrop (D216):** loja de rede recebe o box, o card e o carrinho de antes (sem escada, sem mix, só a primeira grade).
+- **Testes:** `tests/atacado-vitrine.test.ts` (escada, card, gatilhos e vitrine = pedido cobrado, inclusive com o custo subindo depois). Acessibilidade (axe) sem erro no produto e no catálogo.
+- **Fica para a próxima fase:** o lojista escolher se o card destaca varejo ou atacado; o botão "Adicionar ao pedido" para loja só de atacado; "Pedir pelo WhatsApp" com a grade.
