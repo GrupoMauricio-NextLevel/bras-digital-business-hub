@@ -1,0 +1,282 @@
+[
+ {
+  "numero": 266,
+  "frente": "Grupo",
+  "titulo": "BC1: tela \"Aprender\" no Master, com aulas ao vivo, trilhas por função, busca e Novidades",
+  "data": "2026-11-06",
+  "resumo": "Onde: Master → Aprender (/master/aprender), no menu logo depois de Agora, liberada para toda a equipe (master-equipe.ts)."
+ },
+ {
+  "numero": 265,
+  "frente": "Grupo",
+  "titulo": "Base de conhecimento: BC0 aprovada e trilhas por função",
+  "data": "2026-11-06",
+  "resumo": "O dono aprovou o inventário (docs/conhecimento/BC0-INVENTARIO.md) e a divisão: Comercial: trilhas 1 a 4;"
+ },
+ {
+  "numero": 264,
+  "frente": "Grupo",
+  "titulo": "Base de conhecimento sempre ao vivo: toda atualização a alimenta",
+  "data": "2026-11-06",
+  "resumo": "Pedido do dono: \"sempre que houver atualizações, alimente a base de conhecimento\"."
+ },
+ {
+  "numero": 263,
+  "frente": "E-commerce",
+  "titulo": "Parceiros em duas frentes: Indicações pelo CPF (5 pontos a menos) e Parceiros com CNPJ; agência com benefícios exclusivos; comparação sempre a nosso favor",
+  "data": "2026-11-06",
+  "resumo": "Pedido do dono: quem recebe no CPF entra num Programa de Indicações, uma 4ª frente com 5 pontos a menos em cada nível;"
+ },
+ {
+  "numero": 262,
+  "frente": "E-commerce",
+  "titulo": "Parceiros: comparação contra Shopify (destaque), Nuvemshop, Tray e WBuy, com a virada e o CPF como arma",
+  "data": "2026-11-06",
+  "resumo": "Correção: em alguns cenários a página afirmava algo falso: com 5 lojas por mês em 12 meses, a Nuvemshop Associados soma mais;"
+ },
+ {
+  "numero": 261,
+  "frente": null,
+  "titulo": "Comparação com concorrentes: tom agressivo, sempre com fato (regra fixa do dono) e página de parceiros com mais tecnologia",
+  "data": "2026-11-06",
+  "resumo": "Regra do dono, que vale para sempre: nas comparações, o tom é agressivo, nunca neutro: expor o ponto fraco de cada concorrente e amassar o argumento deles;"
+ },
+ {
+  "numero": 260,
+  "frente": null,
+  "titulo": "Parceiros: regra única 20% / 24% / 28%, sem Black e sem bônus",
+  "data": "2026-11-06",
+  "resumo": "Pedido do dono: simplificar o programa: uma regra só para todo mundo, sem Black nem benefício diferente, com base nos concorrentes e um pouco à frente deles. Não havia parceiro nem venda feitos, então a regra vale para todos."
+ },
+ {
+  "numero": 259,
+  "frente": null,
+  "titulo": "AT2 do atacado: box novo, card, carrinho e checkout",
+  "data": "2026-11-06",
+  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT2."
+ },
+ {
+  "numero": 258,
+  "frente": null,
+  "titulo": "AT1 do atacado: painel do lojista e travas por plano",
+  "data": "2026-11-05",
+  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
+ },
+ {
+  "numero": 257,
+  "frente": null,
+  "titulo": "AT0 do atacado: dados e motor único de preço",
+  "data": "2026-11-05",
+  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
+ },
+ {
+  "numero": 256,
+  "frente": null,
+  "titulo": "O padrão do chat vale para todo o sistema",
+  "data": "2026-11-05",
+  "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
+ },
+ {
+  "numero": 255,
+  "frente": null,
+  "titulo": "Celular no padrão da referência: Maurício em tela cheia e menu flutuante",
+  "data": "2026-11-05",
+  "resumo": "Pedido do dono (com capturas da Hostinger): \"No mobile quero que o chat abra completo, seguindo as referências.\""
+ },
+ {
+  "numero": 254,
+  "frente": null,
+  "titulo": "Revisão visual: Maurício encaixado na moldura do painel (borda contínua) e alinhamentos",
+  "data": "2026-11-05",
+  "resumo": "Pedido do dono: \"Os prints revelam alguns erros no alinhamento e falhas no design.\""
+ },
+ {
+  "numero": 253,
+  "frente": null,
+  "titulo": "Maurício guia do programa nas páginas /parceiros e manual completo do dia a dia no painel do parceiro (offline)",
+  "data": "2026-11-05",
+  "resumo": "Pedido do dono: \"A IA disponível na página de captação de parceiros tem que ser um guia amplo sobre o programa.\""
+ },
+ {
+  "numero": 252,
+  "frente": null,
+  "titulo": "PV4: página de captação de parceiros; parceiro da E-commerce sem meta mensal; mapa para levar o padrão às marcas",
+  "data": "2026-11-05",
+  "resumo": "Página /parceiros da E-commerce: Seletor de perfil (criador, vendedor, agência) muda o título, a comissão, a escada, o simulador e a chamada, sem sair da página."
+ },
+ {
+  "numero": 251,
+  "frente": null,
+  "titulo": "PV1 + PV3: CRM de parceiros no Master (funil, ficha 360, fila, ranking, segmentos, aviso e desafio do mês)",
+  "data": "2026-11-05",
+  "resumo": "Dados (migração 0082): partner_profiles: região, canais, seguidores, quem cuida, etapa manual, próxima ação e data;"
+ },
+ {
+  "numero": 250,
+  "frente": null,
+  "titulo": "Parceiro sem cliente por 6 meses fica Inativo; plano do atacado registrado",
+  "data": "2026-11-05",
+  "resumo": "Pedido do dono: \"Pode ligar\" a requalificação da D249."
+ },
+ {
+  "numero": 249,
+  "frente": null,
+  "titulo": "PV2: níveis dos parceiros (Prata, Ouro, Diamante) e bônus do representante",
+  "data": "2026-11-05",
+  "resumo": "Conta clientes pagantes ativos: lojas atribuídas ao parceiro, sem bandeira de revisão, com assinatura E-commerce ativa."
+ },
+ {
+  "numero": 248,
+  "frente": null,
+  "titulo": "PV0: comissões de parceiros da D226 no catálogo, com 100% da 1ª mensalidade na Black",
+  "data": "2026-11-05",
+  "resumo": "Novas versões das regras (src/lib/finance/revisao-d226.ts, aplicadas por ensureCatalogSeed, sem apagar as antigas): Plano anual: paga o equivalente ao mensal (50% de um mês + recorrente dos outros 11, dividido por 12): 22,5% para quem te…"
+ },
+ {
+  "numero": 247,
+  "frente": null,
+  "titulo": "PV6: benefícios por plano numa tabela única, com travas reais",
+  "data": "2026-11-04",
+  "resumo": "Tabela única (beneficios-plano.ts, ecommerce.beneficios-plano), editável em Master → Assinaturas → \"Benefícios por plano\" (comercial ou financeiro, com auditoria). Valores da D226: Os usos de IA vêm das cotas do Maurício (D244), para não…"
+ },
+ {
+  "numero": 246,
+  "frente": null,
+  "titulo": "L5: velocidade da vitrine (medido antes e depois)",
+  "data": "2026-11-04",
+  "resumo": "Causa: cada página da loja buscava os dados no banco uma consulta depois da outra. O catálogo era lido duas vezes e o estilo da loja também."
+ },
+ {
+  "numero": 245,
+  "frente": null,
+  "titulo": "E-mail com o domínio sem custo para a NextLevel; o \"Marca Completa\" fica bloqueado",
+  "data": "2026-11-04",
+  "resumo": "Regra do dono: o e-mail precisa ser sem custo. O que tiver custo fica bloqueado para ativar depois."
+ },
+ {
+  "numero": 244,
+  "frente": null,
+  "titulo": "IA por plano implementada (D243)",
+  "data": "2026-11-04",
+  "resumo": "ia-por-plano.ts: fonteDeIa escolhe a chave: primeiro a cota do plano (chave da NextLevel, com o uso real ligado no Master), depois a chave do lojista. Sem nenhuma das duas, devolve nulo e o chamador responde por regras."
+ },
+ {
+  "numero": 243,
+  "frente": null,
+  "titulo": "Regra da IA por plano (aprovada pelo dono em 04/11)",
+  "data": null,
+  "resumo": "Ordem de uso: primeiro a cota do plano, depois a chave do lojista. Sem nenhuma das duas, as respostas voltam a ser por regras e nunca quebram."
+ },
+ {
+  "numero": 242,
+  "frente": null,
+  "titulo": "BF4: kit Black na loja do lojista, em 1 clique",
+  "data": "2026-11-04",
+  "resumo": "Onde liga: Painel da loja → Campanhas → \"Kit Black da sua loja\", só na E-commerce. O lojista escolhe o desconto (5 a 70%), o código (padrão BLACK10) e a data de fim (padrão: o fim da Black NextLevel)."
+ },
+ {
+  "numero": 241,
+  "frente": null,
+  "titulo": "Respostas do dono: trocar o provedor de e-mail e regra da IA por plano",
+  "data": "2026-11-04",
+  "resumo": "E-mail: sai a Hostinger. Entra um provedor com API completa (domínio e caixas), para nada depender da equipe. Candidatos: Migadu, Purelymail ou Zoho Partner. A escolha final depende de pesquisa de preço e API."
+ },
+ {
+  "numero": 240,
+  "frente": null,
+  "titulo": "L4: \"Minha conta\" do cliente final, sem senha; L6: o que cada nível de tema soma",
+  "data": "2026-11-04",
+  "resumo": "L4, Minha conta (/store/<loja>/conta, ícone de pessoa no cabeçalho de toda loja): O cliente informa o e-mail, recebe um código de 6 dígitos (vale 10 minutos) e entra."
+ },
+ {
+  "numero": 239,
+  "frente": null,
+  "titulo": "L3: o chat da loja atende com os dados reais da loja",
+  "data": "2026-11-04",
+  "resumo": "Assistente da loja (responderNaLoja, sem IA externa, sem custo nem cota): Pedido: quando o cliente pergunta sobre o pedido, o chat pede o número e o e-mail da compra. Com os dois certos, mostra a etapa real, o código de rastreio e o link…"
+ },
+ {
+  "numero": 238,
+  "frente": null,
+  "titulo": "L2: área \"Banners\" no painel do lojista",
+  "data": "2026-11-04",
+  "resumo": "/merchant/banners (menu \"Banners\" no Escritório da E-commerce e em \"Loja virtual\" no SuperDrop) mostra numa tela só: a barra de aviso;"
+ },
+ {
+  "numero": 237,
+  "frente": null,
+  "titulo": "L1: a loja nova já nasce completa e o tema grátis ganha banners em várias frentes",
+  "data": "2026-11-03",
+  "resumo": "Loja E-commerce que nunca salvou um modelo e está no Starter: na primeira leitura, ganha o tema grátis completo da família (Trama, moda), com as fotos de exemplo dos pacotes (garantirLojaCompleta, uma vez por loja). O SuperDrop não muda."
+ },
+ {
+  "numero": 236,
+  "frente": null,
+  "titulo": "Respostas do dono sobre domínio e e-mail; \"Suas pendências\" no Master",
+  "data": "2026-11-03",
+  "resumo": "Adicional Marca Completa aprovado: R$ 19,90/mês com 3 caixas de e-mail; caixa extra a R$ 6,90/mês. O provedor escolhido é a Hostinger."
+ },
+ {
+  "numero": 235,
+  "frente": null,
+  "titulo": "Proposta: lojas no nível Shopify (temas grátis, banners, chat, central do cliente)",
+  "data": "2026-11-03",
+  "resumo": "Proposta, ainda sem decisão do dono: docs/prompts/lojas-nivel-shopify-temas-banners-chat-central.md, fases L1–L6, com perguntas ao dono."
+ },
+ {
+  "numero": 234,
+  "frente": null,
+  "titulo": "Domínio próprio liberado para todo lojista da E-commerce, de ponta a ponta",
+  "data": "2026-11-03",
+  "resumo": "Pedido do dono: \"Um cliente novo precisa poder configurar seu domínio próprio, desbloqueia isso agora\"."
+ },
+ {
+  "numero": 233,
+  "frente": "Black",
+  "titulo": "Rodada de ajustes: sem R$ 9,90, Shopify no clássico, Black no topo e checkout de tecnologia",
+  "data": "2026-11-03",
+  "resumo": "Pedido do dono depois de ver o BF3 no celular."
+ },
+ {
+  "numero": 232,
+  "frente": "Black",
+  "titulo": "BF3 no ar: roupa da Black, contagem em mais pontos e \"Black deles × Black NextLevel\"",
+  "data": "2026-11-03",
+  "resumo": "Roupa da Black nos sites públicos (classe bk-on, ligada pela campanha): topo da home em preto com brilho verde e ciano;"
+ },
+ {
+  "numero": 231,
+  "frente": "Black",
+  "titulo": "Ataque no atacado: Nuvemshop e Loja Integrada não têm atacado nativo",
+  "data": "2026-11-03",
+  "resumo": "O dono confirmou que Nuvemshop e Loja Integrada não têm as funções de atacado (grade fechada, preço por quantidade, pedido mínimo): \"Vamos atacar isso!\"."
+ },
+ {
+  "numero": 230,
+  "frente": "Black",
+  "titulo": "BF2 no ar: placar da goleada calculado a partir da súmula",
+  "data": "2026-11-03",
+  "resumo": "Placar \"O Clássico do E-commerce\": aparece na home (logo depois da faixa do 0%), em /comparativo e em /planos (PlacarSecao, PlacarGoleada);"
+ },
+ {
+  "numero": 229,
+  "frente": "Black",
+  "titulo": "BF1 no ar: campanha única, contagem verdadeira e preço novo agendado",
+  "data": "2026-11-03",
+  "resumo": "Dono aprovou a proposta A da D228 (depois da Black: R$ 67 / 167 / 397 no mensal e 49 / 139 / 339 por mês no anual) e mandou começar o pacote do parceiros-v2-crm-niveis-planos.md."
+ },
+ {
+  "numero": 228,
+  "frente": "Black",
+  "titulo": "Sem semestral; preço depois da Black em meio-termo",
+  "data": "2026-11-03",
+  "resumo": "Dono: \"vamos abortar o plano semestral\"; depois da Black, \"um meio-termo; não posso aumentar tanto e não me importo em ficar mais caro numericamente\"."
+ },
+ {
+  "numero": 227,
+  "frente": "Black e planos",
+  "titulo": "Respostas do dono da 2ª rodada",
+  "data": "2026-11-03",
+  "resumo": "Suporte do Pro: até 4 h úteis."
+ }
+]

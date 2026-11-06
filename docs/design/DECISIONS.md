@@ -3116,3 +3116,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - a trilha 1 é obrigatória para todos.
 - "Cliente indica = 1 mês grátis" entra como "em breve" até ser ligado.
 - **Próxima fase:** BC1, a tela "Aprender" no Master.
+
+## D266 — [Grupo] BC1: tela "Aprender" no Master, com aulas ao vivo, trilhas por função, busca e Novidades (2026-11-06)
+- **Onde:** Master → **Aprender** (`/master/aprender`), no menu logo depois de Agora, liberada para toda a equipe (`master-equipe.ts`).
+- **Trilhas por função** (D265): cada pessoa vê as trilhas da sua função; o dono vê todas; a trilha 1 é obrigatória.
+- **Aulas ao vivo** (`src/lib/conhecimento/aulas.ts`): 7 trilhas com o que é, a regra, um exemplo, o que dizer e o que nunca dizer, um botão para a tela certa e a decisão de origem.
+  - Todo número vem de `fatosAoVivo`: preços do catálogo, preços depois da Black, benefícios por plano, cotas de IA, teste grátis, régua de parceiros CPF e CNPJ, saque, garantia, link, limites do atacado e barreiras e taxas dos concorrentes.
+  - Teste: as aulas não têm valor em reais nem percentual escrito à mão, e mudam quando os fatos mudam.
+- **Busca:** sem acento, nas aulas das trilhas da pessoa.
+- **Novidades:** as 40 decisões mais recentes, geradas de `DECISIONS.md` por `scripts/gerar-novidades.mjs`, que roda antes do build. Um teste garante que estão em dia.
+- **Fica para a BC2:** perguntas por aula, progresso por pessoa e o painel "quem está pronto".

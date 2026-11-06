@@ -5,7 +5,7 @@ export type NavIcon =
   | "LayoutDashboard" | "Factory" | "Network" | "Store" | "Package" | "ShoppingCart" | "LayoutTemplate" | "Sparkles" | "CreditCard"
   | "Settings" | "Boxes" | "Users" | "Truck" | "Wallet" | "Image" | "Home" | "Palette" | "Globe"
   | "Printer" | "ScanLine" | "BarChart3" | "UsersRound" | "PackageCheck" | "Bell" | "Landmark" | "Plus" | "Lock" | "Clock" | "Inbox" | "Link2" | "Ticket" | "HandCoins"
-  | "ShoppingBag" | "Megaphone" | "ReceiptText" | "Tag" | "LayoutGrid" | "LifeBuoy";
+  | "ShoppingBag" | "Megaphone" | "ReceiptText" | "Tag" | "LayoutGrid" | "LifeBuoy" | "GraduationCap";
 
 export type Panel = "master" | "supplier" | "dispatch" | "lite" | "pro" | "partner";
 
@@ -264,6 +264,8 @@ export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/
  */
 export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Agora", href: "/master/agora", icon: "Bell", group: "Escritório", bottom: true },
+  // BC1 (D266): base de conhecimento da equipe, em destaque logo depois de Agora.
+  { label: "Aprender", href: "/master/aprender", icon: "GraduationCap", group: "Escritório" },
   { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
   { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
   { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
