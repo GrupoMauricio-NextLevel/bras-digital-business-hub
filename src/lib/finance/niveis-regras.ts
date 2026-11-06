@@ -12,15 +12,21 @@ export const NIVEIS: readonly { tier: PartnerTier; nome: string; minimo: number;
 ];
 export const MESES_PARA_DESCER = 2;
 
+/**
+ * D263 (dono): quem recebe no CPF entra no Programa de Indicações, uma frente própria com 5 pontos a menos em cada nível
+ * (15% / 19% / 23%). Quem tem CNPJ (criador, vendedor e agência) fica com 20% / 24% / 28%.
+ */
+export const DESCONTO_CPF_BPS = 500;
+export const ehPessoaFisica = (taxId?: string | null) => (taxId ?? "").replace(/\D/g, "").length === 11;
+
 export function nivelPorClientes(ativos: number): PartnerTier {
   return [...NIVEIS].reverse().find((n) => ativos >= n.minimo)!.tier;
 }
 
 /** Percentual do nível. `baseBps` 0 (sem regra) continua 0; o tipo do parceiro não muda nada (regra única). */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- o tipo continua no contrato (chamadores antigos), mas não muda nada
-export function recorrenteDoNivel(baseBps: number, tier: PartnerTier, _kind?: string): number {
+export function recorrenteDoNivel(baseBps: number, tier: PartnerTier, _kind?: string, pessoaFisica = false): number {
   if (baseBps <= 0) return baseBps;
-  return (NIVEIS.find((n) => n.tier === tier) ?? (tier === "DIAMANTE" ? NIVEIS[2] : NIVEIS[0]))!.bps;
+  return (NIVEIS.find((n) => n.tier === tier) ?? (tier === "DIAMANTE" ? NIVEIS[2] : NIVEIS[0]))!.bps - (pessoaFisica ? DESCONTO_CPF_BPS : 0);
 }
 
 export const nomeDoNivel = (tier: PartnerTier) => (NIVEIS.find((n) => n.tier === tier) ?? NIVEIS[2]!).nome;

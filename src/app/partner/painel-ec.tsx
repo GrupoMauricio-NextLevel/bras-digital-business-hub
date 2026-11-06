@@ -26,7 +26,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
           <div>
             <span className="ec-tag"><i aria-hidden />{d.parceiro.tipo} NextLevel E-commerce</span>
             <h1 className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Olá, {primeiro}. Cada loja que você indica vira renda todo mês.</h1>
-            <p className="mt-3 max-w-xl text-white/85">Você ganha <b className="text-white">{ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "INICIAL"))} de toda mensalidade</b>, desde a primeira{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. Com {NIVEIS[1]!.minimo} clientes ativos, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "PRATA"))}; com {NIVEIS[2]!.minimo}, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "OURO"))} na carteira toda. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
+            <p className="mt-3 max-w-xl text-white/85">{d.parceiro.pessoaFisica ? "Programa de Indicações (CPF): você" : "Parceiro com CNPJ: você"} ganha <b className="text-white">{ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "INICIAL", undefined, d.parceiro.pessoaFisica))} de toda mensalidade</b>, desde a primeira{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. Com {NIVEIS[1]!.minimo} clientes ativos, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "PRATA", undefined, d.parceiro.pessoaFisica))}; com {NIVEIS[2]!.minimo}, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "OURO", undefined, d.parceiro.pessoaFisica))} na carteira toda. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
           </div>
           <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/25">
             <p className="ec-mono text-white/80">Seu link</p>
@@ -49,7 +49,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
       {d.parceiro.agencia ? null : (
         <section className="ds-card p-5 sm:p-6" aria-labelledby="ag-t">
           <h2 id="ag-t" className="text-base font-semibold">É agência? Peça o selo de agência parceira</h2>
-          <p className="mt-1 text-sm text-muted-foreground">A comissão é a mesma para todos os parceiros. O selo mostra aos seus clientes que você é agência parceira oficial da NextLevel.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Agências parceiras (com CNPJ) têm benefícios exclusivos, que a nossa equipe apresenta na aprovação, e o selo de agência parceira oficial da NextLevel.</p>
           {d.parceiro.agenciaPedida ? <p className="mt-4 rounded-xl bg-info-soft px-4 py-3 text-sm text-info"><CalendarClock className="mr-1 inline size-4" aria-hidden />Pedido em análise. A equipe responde em até 2 dias úteis.</p> : <PedirAgencia />}
         </section>
       )}

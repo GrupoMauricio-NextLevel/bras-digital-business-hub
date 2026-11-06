@@ -33,7 +33,7 @@ describe("comissões de parceiros D226", () => {
   });
 
   it("D260: sem Black para o parceiro; 1ª e recorrência pagam o mesmo percentual do nível", async () => {
-    const r = await registerPartner(ctx.db, { name: "Parceira Teste", email: "pv0@exemplo.com", password: "senha-forte-1", taxId: "52998224725", phone: "11999990000", acceptTerms: true }, FORA);
+    const r = await registerPartner(ctx.db, { name: "Parceira Teste", email: "pv0@exemplo.com", password: "senha-forte-1", taxId: "11222333000181", phone: "11999990000", acceptTerms: true }, FORA);
     const p = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, r.userId) }))!;
     await ctx.db.update(partners).set({ kind: "AGENCY", status: "ACTIVE" }).where(eq(partners.id, p.id));
     const lanca = (idx: number, now: Date, k: string, cycle: "MONTHLY" | "ANNUAL" = "MONTHLY", paid = 14_700) => recordSaleCommission(ctx.db, { partnerId: p.id, family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle, paymentIndex: idx, paidCents: paid, feeCents: null, dedupeKey: k, now });
@@ -42,6 +42,11 @@ describe("comissões de parceiros D226", () => {
     expect((await lanca(2, NA_BLACK, "c"))!.bps).toBe(2000);
     const anual = (await lanca(1, FORA, "d", "ANNUAL", 142_800))!;
     expect([anual.bps, anual.amountCents]).toEqual([2000, 28_560]);
+    // D263: o mesmo pagamento para quem se cadastrou com CPF (Programa de Indicações) paga 15%.
+    const cpf = await registerPartner(ctx.db, { name: "Indicadora CPF", email: "cpf@exemplo.com", password: "senha-forte-1", taxId: "52998224725", phone: "11999990001", acceptTerms: true }, FORA);
+    const pc = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, cpf.userId) }))!;
+    const c1 = await recordSaleCommission(ctx.db, { partnerId: pc.id, family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", paymentIndex: 1, paidCents: 14_700, feeCents: null, dedupeKey: "cpf1", now: FORA });
+    expect([c1!.bps, c1!.amountCents]).toEqual([1500, 2205]);
   });
 
   it("revisões aplicadas uma vez só: reiniciar não cria versões novas", async () => {

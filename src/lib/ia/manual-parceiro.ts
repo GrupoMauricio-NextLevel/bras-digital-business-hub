@@ -172,14 +172,15 @@ export const GUIAS_PARCEIRO: Guia[] = [
 
   // ---------------- Ganhos ----------------
   { id: "comissao", titulo: "Como a comissão é calculada", termos: ["bonus", "black", "campanha", "comissao", "quanto ganho", "porcentagem", "percentual", "calculo", "valor", "ganho", "primeira mensalidade", "recorrente"], passos: [
-    "Regra única, igual para criador, vendedor e agência: você ganha a porcentagem do seu nível sobre TODA mensalidade paga, desde a 1ª, enquanto o cliente ficar.",
-    "Até 9 clientes ativos: 20%. Com 10: 24%. Com 25: 28%. O percentual vale para a carteira inteira.",
+    "Você ganha a porcentagem do seu nível sobre TODA mensalidade paga, desde a 1ª, enquanto o cliente ficar.",
+    "Cadastro com CNPJ (parceiro): até 9 clientes ativos 20%, com 10 24%, com 25 28%. Cadastro com CPF (Programa de Indicações): 15%, 19% e 23%. O percentual vale para a carteira inteira.",
+    "Saque por Pix, sem anexar nota fiscal.",
     "No plano anual, você recebe a porcentagem sobre o valor pago no ano, de uma vez.",
     "Não tem bônus avulso nem campanha que muda a conta: o extrato mostra cada lançamento.",
     "A base é o valor pago pelo cliente, descontados os impostos e as taxas de pagamento, conforme a regra do programa. O extrato mostra cada lançamento.",
   ], link: { rotulo: "Abrir o Financeiro", href: "/partner/finance" } },
   { id: "niveis", titulo: "Subir de nível (20%, 24% e 28%)", termos: ["nivel", "niveis", "prata", "ouro", "diamante", "subir", "subo", "elite", "aumentar comissao", "escada"], passos: [
-    "O nível conta os seus clientes pagantes ativos: até 9 = Inicial (20%), 10 = Prata (24%), 25 = Ouro (28%). O percentual vale para toda a carteira.",
+    "O nível conta os seus clientes pagantes ativos: até 9 = Inicial, 10 = Prata, 25 = Ouro. Com CNPJ: 20%, 24% e 28%. Pelo CPF: 15%, 19% e 23%. O percentual vale para toda a carteira.",
     "Sobe na hora, na próxima venda que atingir o mínimo.",
     "Só desce depois de 2 meses seguidos abaixo do mínimo, então uma oscilação não tira o seu nível.",
     "O jeito mais rápido de subir: converter os testes e não deixar cliente cancelar.",
@@ -226,7 +227,7 @@ export const GUIAS_PARCEIRO: Guia[] = [
   { id: "agencia-selo", titulo: "Virar agência parceira", termos: ["virar agencia", "selo", "selo de agencia", "agencia parceira", "aprovacao", "mudar tipo"], passos: [
     "Início → pedido de agência: informe o site ou Instagram da agência e quantos clientes atende.",
     "A equipe avalia em até 2 dias úteis.",
-    "Aprovado, você ganha o selo de agência parceira. A comissão é a mesma de todos os parceiros (regra única).",
+    "Aprovado, você ganha o selo de agência parceira e os benefícios exclusivos para agências, que a equipe apresenta. Agência é só com CNPJ.",
   ], link: { rotulo: "Abrir o Início", href: "/partner" } },
   { id: "perfil", titulo: "Atualizar dados e chave Pix", termos: ["perfil", "dados", "telefone", "chave pix", "nome", "alterar", "atualizar"], passos: [
     "Meu perfil → atualize o nome que aparece, o WhatsApp e a chave Pix.",

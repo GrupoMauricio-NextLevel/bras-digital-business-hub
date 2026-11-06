@@ -5,7 +5,7 @@ import { partnerActivities, partners } from "@/db/schema";
 import { registerPartner } from "@/lib/domain/partners";
 import { cartoesDeParceiros } from "@/lib/domain/crm-parceiros";
 import { dadosDaCaptacao, escadaDoPerfil, ganhoNoMes, registrarCandidatura } from "@/lib/domain/captacao-parceiros";
-import { BARREIRA_CNPJ, comparativoDeParceiros, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES, SHOPIFY_BR_CENTS } from "@/lib/finance/captacao-regras";
+import { BARREIRAS, MESES_DA_DISPUTA, comparativoDeParceiros, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES, SHOPIFY_BR_CENTS } from "@/lib/finance/captacao-regras";
 
 /** Página de captação de parceiros (D252, PV4; regra única da D260). */
 describe("captação de parceiros", () => {
@@ -21,36 +21,28 @@ describe("captação de parceiros", () => {
     expect(ganhoNoMes(r, 30, 14_700, 24).recBps).toBe(2800); // teto 28%
   });
 
-  it("comparativo (D262): Shopify em destaque, Nuvemshop pelo programa que mais paga, Tray a 20%, WBuy; virada", () => {
+  it("comparativo (D263): cada trilha contra o programa equivalente, pela renda do mês; nós na frente nos meses mostrados", () => {
     const r = { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 };
-    const c = comparativoDeParceiros(r, 2, 14_700, 24);
-    const por = (id: string) => c.find((x) => x.id === id)!;
-    expect(c.map((x) => x.id)).toEqual(["nextlevel", "shopify", "nuvemshop", "tray", "wbuy"]);
-    expect(por("nextlevel").total).toBe(2_366_112);
+    expect(comparativoDeParceiros(r, 2, 14_700, 12, "cpf").map((x) => x.id)).toEqual(["nextlevel", "shopify", "nuvem-associados"]);
+    expect(comparativoDeParceiros(r, 2, 14_700, 12, "cnpj").map((x) => x.id)).toEqual(["nextlevel", "nuvem-especialistas", "tray", "wbuy"]);
     expect(SHOPIFY_BR_CENTS).toBe(13_655); // US$ 25 × PTAX 5,4621
-    expect(por("shopify").total).toBe(2 * 24 * 13_655);
-    expect([por("nuvemshop").programa, por("nuvemshop").total]).toEqual(["Especialistas", 1_764_000]);
-    expect(por("tray").total).toBe(1_764_000);
-    expect(por("wbuy").total).toBe(882_000);
-    for (const x of c.slice(1)) expect(por("nextlevel").total).toBeGreaterThan(x.total);
-    // 5 lojas/mês em 12 meses: o Associados (2 mensalidades de uma vez) sai na frente, e a página mostra a virada.
-    const c12 = comparativoDeParceiros(r, 5, 14_700, 12);
-    const nuvem = c12.find((x) => x.id === "nuvemshop")!;
-    expect(nuvem.programa).toBe("Associados");
-    expect(nuvem.total).toBeGreaterThan(c12[0]!.total);
-    expect(nuvem.virada).toBeGreaterThan(12);
-    expect(comparativoDeParceiros(r, 5, 14_700, nuvem.virada!)[0]!.total).toBeGreaterThanOrEqual(comparativoDeParceiros(r, 5, 14_700, nuvem.virada!).find((x) => x.id === "nuvemshop")!.total);
+    // Varre 1 a 30 lojas/mês, os 3 planos e os meses que a página mostra: nunca perdemos.
+    for (const t of ["cpf", "cnpj"] as const) for (const porMes of [1, 2, 3, 5, 10, 20, 30]) for (const mensal of [5_700, 14_700, 34_700]) for (const mes of MESES_DA_DISPUTA) {
+      const c = comparativoDeParceiros(r, porMes, mensal, mes, t);
+      for (const x of c.slice(1)) expect(c[0]!.porMesCents, `${t} ${porMes} ${mensal} ${mes} ${x.id}`).toBeGreaterThan(x.porMesCents);
+    }
+    expect(comparativoDeParceiros(r, 1, 14_700, 12, "cpf")[0]!.porMesCents).toBe(Math.round(12 * 14_700 * 0.19));
     for (const p of PROGRAMAS_CONCORRENTES) expect(p.fonte).toMatch(/^https:\/\//);
     expect(PROGRAMAS_CONCORRENTES.some((p) => /loja integrada/i.test(p.nome))).toBe(false); // fora, por escolha do dono
-    // D261: todo ponto fraco exposto tem fato e fonte oficial; nunca "mais barato".
     for (const g of RAIO_X_CONCORRENTES) { expect(g.fonte).toMatch(/^https:\/\/(www\.|atendimento\.|help\.)?(nuvemshop|wbuy|tray|shopify)\.com(\.br)?\//); expect(g.fato.length).toBeGreaterThan(30); expect(`${g.golpe} ${g.fato} ${g.resposta}`).not.toMatch(/mais barat/i); }
-    for (const b of BARREIRA_CNPJ) expect(b.fonte).toMatch(/^https:\/\//);
+    for (const b of BARREIRAS) expect(b.fonte).toMatch(/^https:\/\//);
   });
 
   it("escada usa a regra única do catálogo, igual para todos os perfis", async () => {
     const d = await dadosDaCaptacao(ctx.db);
-    for (const k of ["criador", "vendedor", "agencia"] as const) expect([d.regras[k].primeiraBps, d.regras[k].recorrenteBps]).toEqual([2000, 2000]);
+    for (const k of ["indicacao", "criador", "vendedor", "agencia"] as const) expect([d.regras[k].primeiraBps, d.regras[k].recorrenteBps]).toEqual([2000, 2000]);
     expect(escadaDoPerfil(d.regras.agencia, 14_700).map((n) => n.recBps)).toEqual([2000, 2400, 2800]);
+    expect(escadaDoPerfil(d.regras.indicacao, 14_700, true).map((n) => n.recBps)).toEqual([1500, 1900, 2300]);
     expect(d.planos.length).toBeGreaterThan(0);
   });
 

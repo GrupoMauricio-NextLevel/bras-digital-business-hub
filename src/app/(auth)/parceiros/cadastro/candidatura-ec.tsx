@@ -1,14 +1,14 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { Building2, Check, Megaphone, Store } from "lucide-react";
+import { Building2, Check, Megaphone, Store, Users } from "lucide-react";
 import { registerPartnerAction } from "@/app/actions/partners";
 import { PERFIS, PERFIL_LISTA, type PerfilCaptacao } from "@/lib/finance/captacao-regras";
 
 const field = "mt-1 h-12 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--brand-signal-text)]";
 const primary = "inline-flex h-12 flex-1 items-center justify-center rounded-full bg-[var(--brand-signal)] px-6 text-base font-semibold text-[var(--brand-on-signal)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-signal-text)] disabled:opacity-60";
 const ghost = "inline-flex h-12 items-center justify-center rounded-full border border-border px-6 text-base font-semibold text-foreground";
-const ICONE = { criador: Megaphone, vendedor: Store, agencia: Building2 } as const;
+const ICONE = { indicacao: Users, criador: Megaphone, vendedor: Store, agencia: Building2 } as const;
 const PASSOS = ["Perfil", "Dados", "Sobre você", "Aceite"] as const;
 const num = (v: string) => (v.trim() === "" ? null : Math.max(0, Math.round(Number(v.replace(/\D/g, "")) || 0)));
 
@@ -96,7 +96,7 @@ export function CandidaturaEc({ termsVersion, inicial }: { termsVersion: string;
             <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Nome</dt><dd className="font-semibold">{v.name}</dd></div>
             <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Região</dt><dd className="font-semibold">{v.region}</dd></div>
           </dl>
-          <p className="text-sm text-body">O seu link sai assim que você entrar, já com a regra de todos os parceiros: 20% de toda mensalidade desde o 1º cliente. {perfil === "agencia" ? "O selo de agência parceira é aprovado pela equipe em até 2 dias úteis." : "A equipe NextLevel entra em contato para te ajudar a começar."}</p>
+          <p className="text-sm text-body">O seu link sai assim que você entrar. A comissão segue o documento do cadastro: com CNPJ, 20% de toda mensalidade desde o 1º cliente; com CPF, você entra no Programa de Indicações, com 15%. {perfil === "agencia" ? "Agência parceira é só com CNPJ e tem benefícios exclusivos, que a equipe apresenta em até 2 dias úteis." : "A equipe NextLevel entra em contato para te ajudar a começar."}</p>
           <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={v.terms} onChange={set("terms")} className="mt-1 size-4" /> <span>Li e aceito os <Link href="/parceiros/termos" target="_blank" className="font-semibold underline underline-offset-2">termos do programa</Link> (versão {termsVersion}).</span></label>
         </div>
       ) : null}

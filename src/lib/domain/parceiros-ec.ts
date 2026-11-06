@@ -61,7 +61,7 @@ export async function painelParceiroEc(db: Database, actor: Actor, agora = new D
   const pagantes = indicados.filter((x) => x.s.pagamento === "pagante");
   const recorrenteMesCents = Math.round(pagantes.reduce((t, x) => t + x.s.valorCents, 0) * regras.recorrenteBps / 10_000);
   return {
-    parceiro: { id: p.id, code: p.code, nome: p.displayName, kind: p.kind, tipo: ROTULO_TIPO[p.kind] ?? p.kind, agencia: AGENCIA.has(p.kind), agenciaPedida: !!p.agencyRequestedAt, status: p.status },
+    parceiro: { id: p.id, code: p.code, nome: p.displayName, kind: p.kind, tipo: ROTULO_TIPO[p.kind] ?? p.kind, agencia: AGENCIA.has(p.kind), agenciaPedida: !!p.agencyRequestedAt, status: p.status, pessoaFisica: (p.taxId ?? "").replace(/\D/g, "").length === 11 },
     regras, regrasAgencia, mesCents: Number(ganhos[0]?.s ?? 0), saldo, recorrenteMesCents,
     indicados, pagantes: pagantes.length, emTeste: indicados.filter((x) => x.s.pagamento === "teste").length,
     agora: agoraDoParceiro(indicados, agora),

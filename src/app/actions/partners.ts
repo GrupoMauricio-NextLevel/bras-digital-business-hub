@@ -1,4 +1,5 @@
 "use server";
+import { ehPessoaFisica } from "@/lib/finance/niveis-regras";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -30,6 +31,8 @@ export async function registerPartnerAction(input: z.input<typeof partnerSignupS
     const brand = await getBrand();
     // D252: a candidatura em etapas valida antes de criar a conta e depois entra no funil do Master como Candidato.
     const cand = candidatura === undefined ? null : candidaturaSchema.parse(candidatura);
+    // D263: agência parceira é só com CNPJ (tem benefícios exclusivos); com CPF, a pessoa entra pelo Programa de Indicações.
+    if (cand?.perfil === "agencia" && ehPessoaFisica(input.taxId)) throw new DomainError("AGENCIA_CNPJ", "Agência parceira precisa de CNPJ. Com CPF, cadastre-se no Programa de Indicações.");
     const created = await registerPartner(db, { ...input, brand: brand.code });
     if (cand) await registrarCandidatura(db, created.partnerId, cand);
     await setSessionCookie(created.userId);

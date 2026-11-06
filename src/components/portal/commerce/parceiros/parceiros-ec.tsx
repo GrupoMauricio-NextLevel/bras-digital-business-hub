@@ -14,9 +14,10 @@ import "@/components/imersiva/imersiva.css";
 const faq = (saqueMinimo: string) => [
   ["Quanto custa participar?", "Nada. O cadastro é gratuito, não tem meta mensal nem taxa de manutenção. Você recebe o seu link na hora."],
   ["Quando eu ganho?", "Em toda mensalidade que a loja indicada pagar, desde a primeira (o teste grátis não conta), enquanto o cliente ficar."],
-  ["Como funcionam os níveis?", "Contamos os seus clientes pagantes ativos: até 9, você ganha 20% de toda mensalidade; com 10, 24%; com 25, 28%, sempre sobre a carteira inteira. O nível sobe na hora e só desce depois de 2 meses abaixo do mínimo."],
-  ["Qual a diferença entre criador, vendedor e agência?", "No ganho, nenhuma: a regra é uma só para todos. O perfil serve para a equipe te apoiar do jeito certo (conteúdo para o criador, roteiro de visita para o vendedor, migração de carteira para a agência)."],
-  ["Como recebo?", `As comissões ficam 30 dias em garantia (para cobrir estornos) e depois ficam disponíveis para saque por Pix a partir de ${saqueMinimo}, para o mesmo CPF ou CNPJ do cadastro. Não precisa de CNPJ para participar.`],
+  ["Como funcionam os níveis?", "Contamos os seus clientes pagantes ativos: até 9, você ganha 20% de toda mensalidade (15% pelo CPF); com 10, 24% (19%); com 25, 28% (23%), sempre sobre a carteira inteira. O nível sobe na hora e só desce depois de 2 meses abaixo do mínimo."],
+  ["Qual a diferença entre CPF e CNPJ?", "São duas frentes. Com CPF, você entra no Programa de Indicações: 15% de toda mensalidade, 19% com 10 clientes e 23% com 25. Com CNPJ, você é parceiro (criador, vendedor ou agência): 20%, 24% e 28%. Nos dois casos, saque por Pix sem anexar nota fiscal."],
+  ["E a agência?", "Agência parceira é só com CNPJ e tem benefícios exclusivos, que a nossa equipe apresenta depois do cadastro."],
+  ["Como recebo?", `As comissões ficam 30 dias em garantia (para cobrir estornos) e depois ficam disponíveis para saque por Pix a partir de ${saqueMinimo}, para o mesmo CPF ou CNPJ do cadastro. Não precisa de CNPJ para participar, e ninguém pede nota fiscal para te pagar.`],
   ["Tem campanha ou bônus?", "Não. A regra é a mesma o ano todo, para todo mundo: transparente e fácil de conferir no extrato."],
   ["Posso indicar a mim mesmo?", "Não. Indicação da própria loja (mesmo CPF/CNPJ ou e-mail) não gera comissão."],
   ["E se eu parar de indicar?", "Você continua recebendo a recorrência dos clientes ativos. O cadastro só fica inativo depois de 6 meses sem nenhum cliente ativo e sem nenhuma venda."],

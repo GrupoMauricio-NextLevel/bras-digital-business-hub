@@ -110,8 +110,10 @@ export async function recordSaleCommission(db: Database, c: CommissionInput) {
     // D260 (regra única): todo pagamento (1º, recorrente, mensal ou anual) paga o percentual do nível do parceiro,
     // que sobe na hora da venda. Sem Black e sem regra diferente por tipo.
     const { recalcularNivel, recorrenteDoNivel } = await import("./niveis-parceiro");
+    const { ehPessoaFisica } = await import("@/lib/finance/niveis-regras");
     const tier = await recalcularNivel(db, p.id, now, { soSobe: true });
-    bps = recorrenteDoNivel(first ? rule.firstBps : rule.recurringBps, tier, p.kind);
+    // D263: CPF = Programa de Indicações, 5 pontos a menos em cada nível.
+    bps = recorrenteDoNivel(first ? rule.firstBps : rule.recurringBps, tier, p.kind, ehPessoaFisica(p.taxId));
   }
   if (bps <= 0) return null;
   const { taxBps } = await getFinanceSettings(db);

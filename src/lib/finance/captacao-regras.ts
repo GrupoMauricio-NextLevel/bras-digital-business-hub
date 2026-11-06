@@ -1,12 +1,17 @@
 import type { PartnerTier } from "@/db/schema";
 import { NIVEIS, nivelPorClientes, recorrenteDoNivel } from "./niveis-regras";
 
+/** D263: CPF = Programa de Indicações (5 pontos a menos); CNPJ = Programa de Parceiros (criador, vendedor, agência). */
+export type Trilha = "cpf" | "cnpj";
+export const trilhaDoPerfil = (k: string): Trilha => (k === "indicacao" ? "cpf" : "cnpj");
+
 /**
  * Perfis, escada e simulador da página de parceiros (D252, refeito na D260). Regra única: o perfil só muda o texto
  * para cada público; o ganho é o mesmo para todos (20% / 24% / 28% de toda mensalidade, pelos clientes ativos).
  * Puro: roda no servidor e no navegador.
  */
 export const PERFIS = {
+  indicacao: { kind: "AFFILIATE", rotulo: "Indico pelo CPF", rota: "/parceiros/indique", titulo: "Indique lojas e ganhe todo mês, só com o seu CPF.", quem: "Qualquer pessoa: quem conhece lojista, vende no Brás, tem amigo com loja ou quer uma renda extra.", chamada: "Quero indicar pelo CPF" },
   criador: { kind: "AFFILIATE", rotulo: "Sou criador", rota: "/parceiros/criadores", titulo: "Transforme a sua audiência em renda que se repete todo mês.", quem: "Criadores de conteúdo, influenciadores de moda e negócios, professores de e-commerce.", chamada: "Quero ser criador parceiro" },
   vendedor: { kind: "REPRESENTATIVE", rotulo: "Sou vendedor", rota: "/parceiros/vendedores", titulo: "Venda a loja virtual que o Brás está usando, de porta em porta.", quem: "Representantes, vendedores de rua, consultores que já visitam lojistas.", chamada: "Quero ser vendedor parceiro" },
   agencia: { kind: "AGENCY", rotulo: "Sou agência", rota: "/parceiros/agencias", titulo: "Coloque os seus clientes na plataforma e ganhe enquanto eles ficarem.", quem: "Agências de marketing, social media, consultorias e quem cuida de várias marcas.", chamada: "Cadastrar minha agência" },
@@ -20,22 +25,24 @@ export type RegraPerfil = { primeiraBps: number; recorrenteBps: number; meses: n
  * Quanto o parceiro ganha no mês N, se trouxer `porMes` lojas todo mês e nenhuma cancelar. Igual ao cálculo real:
  * toda mensalidade paga (inclusive a 1ª) rende o percentual do nível, e o nível sobe na hora da venda.
  */
-export function ganhoNoMes(r: RegraPerfil, porMes: number, mensalCents: number, mes: number) {
+export function ganhoNoMes(r: RegraPerfil, porMes: number, mensalCents: number, mes: number, pessoaFisica = false) {
   const carteira = porMes * mes;
   const tier = nivelPorClientes(carteira);
-  const bps = recorrenteDoNivel(r.recorrenteBps, tier);
+  const bps = recorrenteDoNivel(r.recorrenteBps, tier, undefined, pessoaFisica);
   return { cents: Math.round((carteira * mensalCents * bps) / 10_000), carteira, tier, recBps: bps };
 }
 
 /** Escada de níveis: percentual e ganho por cliente por mês em cada nível. Puro. */
-export function escadaDoPerfil(r: RegraPerfil, mensalCents: number) {
-  return NIVEIS.map((n) => { const rec = recorrenteDoNivel(r.recorrenteBps, n.tier); return { tier: n.tier as PartnerTier, nome: n.nome, minimo: n.minimo, efeito: n.efeito, recBps: rec, porClienteCents: Math.round((mensalCents * rec) / 10_000) }; });
+export function escadaDoPerfil(r: RegraPerfil, mensalCents: number, pessoaFisica = false) {
+  return NIVEIS.map((n) => { const rec = recorrenteDoNivel(r.recorrenteBps, n.tier, undefined, pessoaFisica); return { tier: n.tier as PartnerTier, nome: n.nome, minimo: n.minimo, efeito: n.efeito, recBps: rec, porClienteCents: Math.round((mensalCents * rec) / 10_000) }; });
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Comparativo com os programas dos concorrentes (D260, refeito na D262). Só regras publicadas nos sites oficiais, com
-// data e link. Para ser justo, a conta usa a MESMA mensalidade para todos e nenhum cancelamento. Escolha do dono: a
-// Loja Integrada fica fora; a Shopify entra em destaque; a Tray entra com 20% (o teto publicado na página Tray Partners).
+// Comparativo com os concorrentes (D260, D262, refeito na D263). Só regras publicadas nos sites oficiais, com data e
+// link. Cada trilha enfrenta o programa equivalente: CPF (indicação) contra os programas de indicação/afiliados deles;
+// CNPJ (parceiro profissional) contra os programas de parceiros deles. A métrica é a renda que entra POR MÊS no mês
+// escolhido (a renda que se repete), com a MESMA mensalidade para todos e nenhum cancelamento. Loja Integrada fica fora
+// (escolha do dono); Tray com 20% (teto publicado).
 // ---------------------------------------------------------------------------------------------------------------------
 export const CONSULTA_CONCORRENTES = "06/11/2026";
 /** Câmbio oficial (PTAX de venda do Banco Central) usado para converter o valor em dólar da Shopify. */
@@ -43,15 +50,27 @@ export const CAMBIO_USD = { centavosPorDolar: 546.21, data: "05/11/2026", fonte:
 export const SHOPIFY_BR_USD = 25;
 export const SHOPIFY_BR_CENTS = Math.round(SHOPIFY_BR_USD * CAMBIO_USD.centavosPorDolar);
 
-export type ProgramaConcorrente = { id: string; nome: string; regra: string; fonte: string; ressalva?: string; destaque?: boolean };
+const FONTE = {
+  shopify: "https://help.shopify.com/en/affiliates/earnings",
+  nuvemEsp: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/comissoes-vigentes-no-programa-de-parceiros-especialistas-da-nuvemshop",
+  nuvemAss: "https://www.nuvemshop.com.br/parceiros/associados",
+  nuvemResgate: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/como-solicitar-resgate-de-comissao-para-parceiros-comerciais",
+  tray: "https://tray.com.br/partners",
+  trayCadastro: "https://tray.com.br/quero-ser-parceiro",
+  wbuy: "https://www.wbuy.com.br/afiliados/",
+  wbuyIndicar: "https://www.wbuy.com.br/indicar/",
+};
+
+export type ProgramaConcorrente = { id: string; trilha: Trilha; nome: string; regra: string; barreira: string; fonte: string; destaque?: boolean };
 export const PROGRAMAS_CONCORRENTES: ProgramaConcorrente[] = [
-  { id: "shopify", nome: "Shopify", destaque: true, regra: `US$ ${SHOPIFY_BR_USD} por loja do Brasil, uma vez só`, fonte: "https://help.shopify.com/en/affiliates/earnings", ressalva: `Convertido pelo dólar oficial de ${CAMBIO_USD.data} (R$ ${(CAMBIO_USD.centavosPorDolar / 100).toFixed(4).replace(".", ",")}). Os US$ 150 do anúncio valem para EUA, Europa e outros países.` },
-  { id: "nuvemshop", nome: "Nuvemshop", regra: "o programa que mais paga no prazo: Especialistas (20% a partir do nível Silver) ou Associados (as 2 primeiras mensalidades, depois nada)", fonte: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/comissoes-vigentes-no-programa-de-parceiros-especialistas-da-nuvemshop", ressalva: "No Especialistas, o nível de entrada (Member) não recebe recorrência; a conta usa o melhor caso." },
-  { id: "tray", nome: "Tray", regra: "até 20% recorrente, conforme o nível (a conta usa 20% desde o início, o melhor caso)", fonte: "https://tray.com.br/partners", ressalva: "Os critérios de cada nível não têm números publicados." },
-  { id: "wbuy", nome: "WBuy", regra: "10% até 49 indicações, 15% de 50 a 99 e 20% a partir de 100", fonte: "https://www.wbuy.com.br/afiliados/", ressalva: "Exige CNPJ e nota fiscal." },
+  { id: "shopify", trilha: "cpf", destaque: true, nome: "Shopify Afiliados", regra: `US$ ${SHOPIFY_BR_USD} por loja do Brasil, uma vez só`, barreira: "Paga em dólar, uma única vez por loja", fonte: FONTE.shopify },
+  { id: "nuvem-associados", trilha: "cpf", nome: "Nuvemshop Associados", regra: "as 2 primeiras mensalidades de cada loja; depois, nada", barreira: "Sem CNPJ, só recebe por RPA, com retenção de INSS, IRRF e ISS", fonte: FONTE.nuvemAss },
+  { id: "nuvem-especialistas", trilha: "cnpj", nome: "Nuvemshop Especialistas", regra: "20% a partir do nível Silver; 0% no nível de entrada", barreira: "Exige nota fiscal (NFS-e) para pagar a comissão", fonte: FONTE.nuvemEsp },
+  { id: "tray", trilha: "cnpj", nome: "Tray Partners", regra: "até 20%, conforme o nível (a conta usa 20%)", barreira: "O cadastro de parceiro pede CNPJ", fonte: FONTE.tray },
+  { id: "wbuy", trilha: "cnpj", nome: "WBuy Parceiros", regra: "10% até 49 indicações, 15% de 50 a 99, 20% a partir de 100", barreira: "Exige CNPJ e nota fiscal em cada saque", fonte: FONTE.wbuy },
 ];
 
-/** Ganho de um programa concorrente no mês N (mesmas premissas do nosso simulador). Puro. */
+/** Renda de um programa concorrente no mês N (mesmas premissas do nosso simulador). Puro. */
 export function ganhoConcorrenteNoMes(id: string, porMes: number, mensalCents: number, mes: number): number {
   const carteira = porMes * mes;
   if (id === "shopify") return porMes * SHOPIFY_BR_CENTS; // valor único por loja nova
@@ -61,39 +80,22 @@ export function ganhoConcorrenteNoMes(id: string, porMes: number, mensalCents: n
   return 0;
 }
 
-const somaAte = (f: (m: number) => number, meses: number) => Array.from({ length: meses }, (_, i) => f(i + 1)).reduce((a, b) => a + b, 0);
+/** Meses que a disputa mostra (o teste garante que, em todos eles, a nossa renda do mês é a maior). */
+export const MESES_DA_DISPUTA = [18, 24, 36] as const;
 
-/** Primeiro mês em que o nosso acumulado passa o deles (até 10 anos); nulo se já estamos na frente desde o 1º mês. */
-function viradaAcumulada(nos: (m: number) => number, eles: (m: number) => number): number | null {
-  let a = 0, b = 0, atras = false;
-  for (let m = 1; m <= 120; m++) { a += nos(m); b += eles(m); if (a < b) atras = true; else if (atras) return m; }
-  return null;
+/** Renda por mês no mês N: nós (na trilha) e os programas equivalentes dos concorrentes. */
+export function comparativoDeParceiros(r: RegraPerfil, porMes: number, mensalCents: number, mes: number, trilha: Trilha = "cnpj") {
+  const nos = ganhoNoMes(r, porMes, mensalCents, mes, trilha === "cpf");
+  const outros = PROGRAMAS_CONCORRENTES.filter((p) => p.trilha === trilha).map((p) => ({ id: p.id, nome: p.nome, porMesCents: ganhoConcorrenteNoMes(p.id, porMes, mensalCents, mes) }));
+  return [{ id: "nextlevel", nome: "NextLevel", porMesCents: nos.cents }, ...outros];
 }
 
-/** Total em N meses, ganho do último mês e o mês da virada: nós e cada concorrente (a Nuvemshop pelo programa que mais paga). */
-export function comparativoDeParceiros(r: RegraPerfil, porMes: number, mensalCents: number, meses: number) {
-  const nosMes = (m: number) => ganhoNoMes(r, porMes, mensalCents, m).cents;
-  const nos = { id: "nextlevel", nome: "NextLevel", programa: null as string | null, total: somaAte(nosMes, meses), ultimo: nosMes(meses), virada: null as number | null };
-  const outros = PROGRAMAS_CONCORRENTES.map((p) => {
-    let id = p.id, programa: string | null = null;
-    if (p.id === "nuvemshop") {
-      const esp = somaAte((m) => ganhoConcorrenteNoMes("nuvem-especialistas", porMes, mensalCents, m), meses);
-      const ass = somaAte((m) => ganhoConcorrenteNoMes("nuvem-associados", porMes, mensalCents, m), meses);
-      id = ass > esp ? "nuvem-associados" : "nuvem-especialistas"; programa = ass > esp ? "Associados" : "Especialistas";
-    }
-    const f = (m: number) => ganhoConcorrenteNoMes(id, porMes, mensalCents, m);
-    return { id: p.id, nome: p.nome, programa, total: somaAte(f, meses), ultimo: f(meses), virada: viradaAcumulada(nosMes, f) };
-  });
-  return [nos, ...outros];
-}
-
-/**
- * Barreira de entrada (D262, pedido do dono): o nosso parceiro recebe no CPF, por Pix, sem abrir empresa. Só entra aqui
- * o que o concorrente publica sobre CNPJ e nota fiscal; quem não publica fica de fora.
- */
-export const BARREIRA_CNPJ: { nome: string; exige: string; fonte: string }[] = [
-  { nome: "WBuy", exige: "Exige CNPJ e nota fiscal para pagar a comissão", fonte: "https://www.wbuy.com.br/afiliados/" },
-  { nome: "Nuvemshop Associados", exige: "Recomenda CNPJ ou MEI para emitir a nota da comissão", fonte: "https://atendimento.nuvemshop.com.br/pt_BR/programadeassociados/perguntas-frequentes-sobre-o-programa-de-parceiros-associados" },
+/** As maiores barreiras de entrada de cada concorrente (D263): fatos publicados, com link. */
+export const BARREIRAS: { nome: string; barreira: string; fonte: string }[] = [
+  { nome: "WBuy", barreira: "Só paga com CNPJ: exige nota fiscal (NFS-e) anexada em cada pedido de saque.", fonte: FONTE.wbuyIndicar },
+  { nome: "Nuvemshop", barreira: "Exige nota fiscal (NFS-e) para pagar a comissão. Sem CNPJ, só por RPA, com retenção de INSS, IRRF e ISS sobre o que você ganhou.", fonte: FONTE.nuvemResgate },
+  { nome: "Tray", barreira: "O cadastro de parceiro pede o CNPJ do parceiro.", fonte: FONTE.trayCadastro },
+  { nome: "Shopify", barreira: `Paga em dólar e uma vez só: US$ ${SHOPIFY_BR_USD} por loja do Brasil.`, fonte: FONTE.shopify },
 ];
 
 /**
@@ -102,8 +104,8 @@ export const BARREIRA_CNPJ: { nome: string; exige: string; fonte: string }[] = [
  */
 export type GolpeConcorrente = { id: string; nome: string; golpe: string; fato: string; resposta: string; fonte: string; destaque?: boolean };
 export const RAIO_X_CONCORRENTES: GolpeConcorrente[] = [
-  { id: "shopify", nome: "Shopify", destaque: true, golpe: `A mais famosa paga US$ ${SHOPIFY_BR_USD} por loja do Brasil. Uma vez. E acabou.`, fato: `Pela tabela oficial do programa de afiliados, loja indicada no Brasil rende US$ ${SHOPIFY_BR_USD} (cerca de R$ ${Math.round(SHOPIFY_BR_CENTS / 100)}) uma única vez. Os "até US$ 150" do anúncio são para EUA, Europa e outros países.`, resposta: "Aqui: 20% de toda mensalidade, todo mês, enquanto a loja ficar.", fonte: "https://help.shopify.com/en/affiliates/earnings" },
-  { id: "nuvemshop", nome: "Nuvemshop", golpe: "Ou 0% de recorrência no começo, ou 2 mensalidades e tchau.", fato: "No programa Especialistas, o nível de entrada (Member) não recebe recorrência: ela só começa no Silver. No Associados, o parceiro recebe as 2 primeiras mensalidades da loja e depois mais nada.", resposta: "Aqui: 20% desde o 1º cliente, até 28%, enquanto o cliente ficar.", fonte: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/comissoes-vigentes-no-programa-de-parceiros-especialistas-da-nuvemshop" },
-  { id: "wbuy", nome: "WBuy", golpe: "10% para começar, 20% só depois de 100 lojas. E só com CNPJ.", fato: "10% de 1 a 49 indicações, 15% de 50 a 99 e 20% a partir de 100. Para receber, exige CNPJ e nota fiscal.", resposta: "Aqui: 20% no 1º cliente, 28% com 25. Recebe no CPF.", fonte: "https://www.wbuy.com.br/afiliados/" },
-  { id: "tray", nome: "Tray", golpe: "Promete \"até 20%\" e esconde a régua.", fato: "Os níveis dependem de MRR, volume de indicações, conversão e NPS, sem nenhum número publicado para cada nível.", resposta: "Aqui: régua pública. 10 clientes = 24%, 25 = 28%.", fonte: "https://tray.com.br/partners" },
+  { id: "shopify", nome: "Shopify", destaque: true, golpe: `A mais famosa paga US$ ${SHOPIFY_BR_USD} por loja do Brasil. Uma vez. E acabou.`, fato: `Pela tabela oficial do programa de afiliados, loja indicada no Brasil rende US$ ${SHOPIFY_BR_USD} (cerca de R$ ${Math.round(SHOPIFY_BR_CENTS / 100)}) uma única vez, pago em dólar. Os "até US$ 150" do anúncio são para EUA, Europa e outros países.`, resposta: "Aqui: comissão em real, todo mês, enquanto a loja ficar.", fonte: FONTE.shopify },
+  { id: "nuvemshop", nome: "Nuvemshop", golpe: "Sem nota fiscal, não paga. Sem CNPJ, desconta imposto.", fato: "Para resgatar a comissão, a Nuvemshop exige nota fiscal (NFS-e). Quem não tem CNPJ só recebe por RPA, com retenção de INSS, IRRF e ISS. E no programa Especialistas, o nível de entrada não recebe recorrência.", resposta: "Aqui: Pix pelo painel, sem anexar nota. CPF ou CNPJ.", fonte: FONTE.nuvemResgate },
+  { id: "wbuy", nome: "WBuy", golpe: "Sem CNPJ e nota fiscal, você não recebe um centavo.", fato: "\"O único requisito é ter um CNPJ para emitir a nota fiscal\": cada saque exige anexar a NFS-e. E a comissão começa em 10%, chegando a 20% só depois de 100 indicações.", resposta: "Aqui: recebe no CPF ou no CNPJ, sem nota, desde o 1º cliente.", fonte: FONTE.wbuyIndicar },
+  { id: "tray", nome: "Tray", golpe: "Pede CNPJ no cadastro e esconde a régua.", fato: "O formulário de parceiro pede o CNPJ. Os níveis dependem de MRR, volume, conversão e NPS, sem número publicado para cada nível.", resposta: "Aqui: régua pública e cadastro com CPF ou CNPJ.", fonte: FONTE.trayCadastro },
 ];

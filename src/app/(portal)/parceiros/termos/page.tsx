@@ -3,7 +3,7 @@ import { getDb } from "@/db/client";
 import { requireBrandFeature } from "@/lib/brand-server";
 import { getPartnerSettings } from "@/lib/domain/partners";
 import { formatBRL } from "@/lib/money";
-import { MESES_PARA_DESCER, NIVEIS } from "@/lib/finance/niveis-regras";
+import { DESCONTO_CPF_BPS, MESES_PARA_DESCER, NIVEIS } from "@/lib/finance/niveis-regras";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Termos do Programa de Parceiros", robots: { index: false } };
@@ -38,6 +38,7 @@ export default async function TermosParceiros() {
 /** Termos da E-commerce (D260, regra única). Os números de saque, garantia e link vêm da configuração do Master. */
 function TermosEcommerce({ s }: { s: Awaited<ReturnType<typeof getPartnerSettings>> }) {
   const niveis = NIVEIS.map((n) => `${n.bps / 100}% ${n.minimo ? `com ${n.minimo} ou mais clientes ativos` : "desde o 1º cliente"}`).join("; ");
+  const niveisCpf = NIVEIS.map((n) => `${(n.bps - DESCONTO_CPF_BPS) / 100}%`).join(", ");
   return (
     <article className="mx-auto max-w-3xl space-y-5 px-4 py-14 text-foreground">
       <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Termos do Programa de Parceiros</h1>
@@ -45,7 +46,7 @@ function TermosEcommerce({ s }: { s: Awaited<ReturnType<typeof getPartnerSetting
       <h2 className="text-xl font-bold">1. O programa</h2>
       <p>O parceiro indica lojistas para assinar os planos da NextLevel E-commerce e recebe comissão sobre as mensalidades efetivamente pagas por esses clientes. Participar é grátis: não há mensalidade, meta mensal nem taxa de manutenção. Pessoas físicas (CPF) e empresas (CNPJ) podem participar.</p>
       <h2 className="text-xl font-bold">2. Comissão (regra única)</h2>
-      <p>A regra é a mesma para todos os parceiros (criador, vendedor ou agência): {niveis}, sobre toda mensalidade paga, desde a primeira, enquanto o cliente pagar. Clientes ativos são as lojas indicadas com assinatura paga em dia. O nível sobe na hora em que o mínimo é atingido e só desce depois de {MESES_PARA_DESCER} meses seguidos abaixo dele. No plano anual, o percentual vale sobre o valor pago no ano. A base é o valor pago pelo cliente, descontados os impostos configurados. Não há bônus avulso nem campanha que altere a regra.</p>
+      <p>Parceiros cadastrados com CNPJ (criador, vendedor ou agência) recebem {niveis}. Cadastros com CPF participam do Programa de Indicações, com {niveisCpf} nos mesmos níveis. Agências parceiras (só com CNPJ) têm benefícios exclusivos, apresentados pela NextLevel na aprovação. Os percentuais valem sobre toda mensalidade paga, desde a primeira, enquanto o cliente pagar. Clientes ativos são as lojas indicadas com assinatura paga em dia. O nível sobe na hora em que o mínimo é atingido e só desce depois de {MESES_PARA_DESCER} meses seguidos abaixo dele. No plano anual, o percentual vale sobre o valor pago no ano. A base é o valor pago pelo cliente, descontados os impostos configurados. Não há bônus avulso nem campanha que altere a regra. O saque não exige nota fiscal.</p>
       <h2 className="text-xl font-bold">3. Garantia, estorno e saque</h2>
       <p>Toda comissão fica em garantia por 30 dias antes de ficar disponível. Estorno ou cancelamento do pagamento do cliente devolve a comissão correspondente, inclusive por débito no saldo se já tiver sido sacada. O saque mínimo é {formatBRL(s.minPayoutCents)}, por Pix para chave do mesmo CPF ou CNPJ do cadastro.</p>
       <h2 className="text-xl font-bold">4. Atribuição</h2>

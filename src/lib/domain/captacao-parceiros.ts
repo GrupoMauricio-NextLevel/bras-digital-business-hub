@@ -17,14 +17,14 @@ import { PERFIS, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/cap
 export async function dadosDaCaptacao(db: Database) {
   const [criador, vendedor, agencia, pv] = await Promise.all([regrasDoParceiro(db, "AFFILIATE"), regrasDoParceiro(db, "REPRESENTATIVE"), regrasDoParceiro(db, "AGENCY"), commercePlansView(db)]);
   const planos = pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents! }));
-  return { regras: { criador, vendedor, agencia } as Record<PerfilCaptacao, RegraPerfil & { anualBps: number }>, planos };
+  return { regras: { indicacao: criador, criador, vendedor, agencia } as Record<PerfilCaptacao, RegraPerfil & { anualBps: number }>, planos };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Candidatura (cadastro em etapas): entra no funil do Master como Candidato
 // ---------------------------------------------------------------------------------------------------------------------
 export const candidaturaSchema = z.object({
-  perfil: z.enum(["criador", "vendedor", "agencia"]),
+  perfil: z.enum(["indicacao", "criador", "vendedor", "agencia"]),
   region: z.string().trim().min(2, "Informe a sua cidade ou região").max(60),
   channels: z.string().trim().max(200).optional(),
   followers: z.number().int().min(0).max(1_000_000_000).nullable().optional(),

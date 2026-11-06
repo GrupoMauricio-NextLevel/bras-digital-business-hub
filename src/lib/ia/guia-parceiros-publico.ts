@@ -4,7 +4,7 @@
  * Puro: mesmo formato de resposta do vendedor da home, para usar a mesma conversa e o mesmo CRM ao vivo do Master.
  */
 import { formatBRL } from "@/lib/money";
-import { CONSULTA_CONCORRENTES, ganhoNoMes, PERFIS, PROGRAMAS_CONCORRENTES, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/captacao-regras";
+import { BARREIRAS, CONSULTA_CONCORRENTES, ganhoNoMes, PERFIS, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/captacao-regras";
 import { NIVEIS, recorrenteDoNivel } from "@/lib/finance/niveis-regras";
 import type { Acao, Atalho, RespostaVenda } from "./vendedor-publico";
 
@@ -19,7 +19,7 @@ export type FatosParceiros = {
 };
 
 const pct = (bps: number) => `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
-const NOME: Record<PerfilCaptacao, string> = { criador: "Criador", vendedor: "Vendedor", agencia: "Agência" };
+const NOME: Record<PerfilCaptacao, string> = { indicacao: "Indicador", criador: "Criador", vendedor: "Vendedor", agencia: "Agência" };
 const cadastrar = (f: FatosParceiros, perfil?: PerfilCaptacao): Acao => ({ rotulo: perfil ? `Quero ser ${NOME[perfil].toLowerCase()} parceiro` : "Quero ser parceiro", href: perfil ? `${f.cadastro}?perfil=${perfil}` : f.cadastro });
 const contato: Acao = { rotulo: "Quero que a equipe me chame", contato: true };
 
@@ -80,11 +80,11 @@ export function responderParceiro(f: FatosParceiros, assunto: string | null): Re
     case "p-como":
       return { assunto, texto: `É simples:\n\n1. Você se cadastra grátis e recebe o seu link, cupom e QR code na hora.\n2. Indica a ${f.marca} para lojistas: no Instagram, no WhatsApp, na rua ou para os clientes da sua agência.\n3. Você ganha uma parte de **toda mensalidade que a loja pagar, desde a 1ª, enquanto o cliente ficar**.\n4. O dinheiro fica ${f.garantiaDias} dias em garantia e depois você saca por Pix.\n\nQuanto mais clientes ativos, maior o seu nível e a sua porcentagem.`, atalhos: [{ id: "p-ganho", rotulo: "Quanto eu ganho?" }, { id: "p-perfil", rotulo: "Qual perfil é o meu?" }, { id: "p-simular", rotulo: "Simular meus ganhos" }], acoes: [cadastrar(f)] };
     case "p-ganho":
-      return { assunto, texto: `Uma regra só, igual para criador, vendedor e agência:\n\n${NIVEIS.map((n) => `• **${pct(recorrenteDoNivel(c.recorrenteBps, n.tier))}** de toda mensalidade ${n.minimo ? `com ${n.minimo}+ clientes ativos` : "desde o 1º cliente"}`).join("\n")}\n\nVale para **toda mensalidade paga, desde a 1ª, enquanto o cliente ficar**. ${exemplo(f)}`, atalhos: [{ id: "p-simular", rotulo: "Simular meus ganhos" }, { id: "p-concorrentes", rotulo: "Comparado com outros programas?" }], acoes: [cadastrar(f)] };
+      return { assunto, texto: `São duas frentes:\n\n• **Parceiro com CNPJ** (criador, vendedor, agência): ${NIVEIS.map((n) => `${pct(recorrenteDoNivel(c.recorrenteBps, n.tier))}${n.minimo ? ` com ${n.minimo}+` : " desde o 1º cliente"}`).join(", ")}\n• **Indicação pelo CPF** (qualquer pessoa): ${NIVEIS.map((n) => `${pct(recorrenteDoNivel(c.recorrenteBps, n.tier, undefined, true))}${n.minimo ? ` com ${n.minimo}+` : " desde o 1º cliente"}`).join(", ")}\n\nSobre **toda mensalidade paga, desde a 1ª, enquanto o cliente ficar**. Saque por Pix, sem anexar nota fiscal. ${exemplo(f)}`, atalhos: [{ id: "p-simular", rotulo: "Simular meus ganhos" }, { id: "p-concorrentes", rotulo: "Comparado com outros programas?" }], acoes: [cadastrar(f)] };
     case "p-perfil":
-      return { assunto, texto: `O ganho é o mesmo para todos. O perfil só ajuda a gente a te apoiar do jeito certo:\n\n• **Criador:** ${PERFIS.criador.quem}\n• **Vendedor:** ${PERFIS.vendedor.quem}\n• **Agência:** ${PERFIS.agencia.quem}`, atalhos: [{ id: "p-criador", rotulo: "Sou criador" }, { id: "p-vendedor", rotulo: "Sou vendedor" }, { id: "p-agencia", rotulo: "Sou agência" }], acoes: [] };
+      return { assunto, texto: `Escolha pelo seu documento e pelo jeito que você trabalha:\n\n• **Indicação pelo CPF:** ${PERFIS.indicacao.quem}\n• **Criador (CNPJ):** ${PERFIS.criador.quem}\n• **Vendedor (CNPJ):** ${PERFIS.vendedor.quem}\n• **Agência (CNPJ):** ${PERFIS.agencia.quem} Agências têm benefícios exclusivos, apresentados pela equipe.`, atalhos: [{ id: "p-criador", rotulo: "Sou criador" }, { id: "p-vendedor", rotulo: "Sou vendedor" }, { id: "p-agencia", rotulo: "Sou agência" }], acoes: [] };
     case "p-niveis": {
-      const linhas = NIVEIS.map((n) => `• **${n.nome}** (${n.minimo ? `${n.minimo}+ clientes ativos` : "desde o 1º cliente"}): ${pct(recorrenteDoNivel(c.recorrenteBps, n.tier))} de toda mensalidade`).join("\n");
+      const linhas = NIVEIS.map((n) => `• **${n.nome}** (${n.minimo ? `${n.minimo}+ clientes ativos` : "desde o 1º cliente"}): ${pct(recorrenteDoNivel(c.recorrenteBps, n.tier))} com CNPJ, ${pct(recorrenteDoNivel(c.recorrenteBps, n.tier, undefined, true))} pelo CPF`).join("\n");
       return { assunto, texto: `O nível conta os seus clientes pagantes ativos:\n\n${linhas}\n\nO nível sobe na hora e vale para toda a carteira. Só desce depois de 2 meses seguidos abaixo do mínimo.`, atalhos: [{ id: "p-simular", rotulo: "Simular meus ganhos" }], acoes: [{ rotulo: "Ver a escada de níveis", href: "/parceiros#escada-t" }, cadastrar(f)] };
     }
     case "p-simular":
@@ -94,7 +94,7 @@ export function responderParceiro(f: FatosParceiros, assunto: string | null): Re
     case "p-black":
       return { assunto, texto: "A regra do parceiro é a mesma o ano todo, sem campanha que muda a conta: o percentual do seu nível sobre toda mensalidade, enquanto o cliente ficar. A Black NextLevel é para os lojistas (e ajuda você a fechar mais lojas).", atalhos: [{ id: "p-ganho", rotulo: "Quanto eu ganho?" }], acoes: [cadastrar(f)] };
     case "p-concorrentes":
-      return { assunto, texto: `Comparando com os programas publicados nos sites oficiais (consulta em ${CONSULTA_CONCORRENTES}):\n\n${PROGRAMAS_CONCORRENTES.map((p) => `• **${p.nome}:** ${p.regra}`).join("\n")}\n• **NextLevel:** 20% de toda mensalidade desde o 1º cliente, 24% com 10 e 28% com 25 clientes ativos.\n\nNa página tem a calculadora lado a lado, com o link de cada fonte.`, atalhos: [{ id: "p-simular", rotulo: "Simular meus ganhos" }], acoes: [{ rotulo: "Abrir a comparação", href: "/parceiros#comparar" }, cadastrar(f)] };
+      return { assunto, texto: `O que os outros programas exigem (sites oficiais, ${CONSULTA_CONCORRENTES}):\n\n${BARREIRAS.map((b) => `• **${b.nome}:** ${b.barreira}`).join("\n")}\n\nAqui: CPF ou CNPJ, saque por Pix sem anexar nota, e comissão de toda mensalidade enquanto o cliente ficar.`, atalhos: [{ id: "p-simular", rotulo: "Simular meus ganhos" }], acoes: [{ rotulo: "Abrir a comparação", href: "/parceiros#comparar" }, cadastrar(f)] };
     case "p-receber":
       return { assunto, texto: `Cada comissão fica **${f.garantiaDias} dias em garantia** (para cobrir estornos) e depois vai para o saldo disponível. Você pede o saque no painel a partir de ${formatBRL(f.saqueMinimoCents)}, e a equipe paga por **Pix**, sempre para o mesmo CPF ou CNPJ do cadastro. O extrato mostra cada lançamento.`, atalhos: [{ id: "p-garantia", rotulo: "E se o cliente cancelar?" }, { id: "p-custo", rotulo: "Tem algum custo?" }], acoes: [cadastrar(f)] };
     case "p-garantia":
@@ -104,7 +104,7 @@ export function responderParceiro(f: FatosParceiros, assunto: string | null): Re
     case "p-atribuicao":
       return { assunto, texto: `A loja fica ligada a você de três jeitos:\n\n• **Link:** quem se cadastra em até ${f.atribuicaoDias} dias depois de clicar.\n• **Cupom de 7 dias:** vale mais que qualquer link; o cliente testa sem cartão.\n• **CRM:** contato que você registrou no seu painel.\n\nDepois de criada, a loja não muda de parceiro.`, atalhos: [{ id: "p-painel", rotulo: "O que tem no painel?" }, { id: "p-regras", rotulo: "O que não pode?" }], acoes: [cadastrar(f)] };
     case "p-agencia":
-      return { assunto, texto: `Agência ganha como todo parceiro: **${pct(a.recorrenteBps)} de toda mensalidade desde o 1º cliente**, 24% com 10 e 28% com 25 clientes ativos. Traga a sua carteira: a migração já vem com desconto no Pro e inclusa no Scale, e você pode cobrar a implantação dos seus clientes por conta própria.`, atalhos: [{ id: "p-vender", rotulo: "Como convenço meus clientes?" }, { id: "p-niveis", rotulo: "E os níveis?" }], acoes: [cadastrar(f, "agencia")] };
+      return { assunto, texto: `Agência é parceira com CNPJ: **${pct(a.recorrenteBps)} de toda mensalidade desde o 1º cliente**, 24% com 10 e 28% com 25 clientes ativos, e **benefícios exclusivos para agências**, que a nossa equipe apresenta depois do cadastro. Traga a sua carteira: a migração já vem com desconto no Pro e inclusa no Scale.`, atalhos: [{ id: "p-vender", rotulo: "Como convenço meus clientes?" }, { id: "p-niveis", rotulo: "E os níveis?" }], acoes: [cadastrar(f, "agencia")] };
     case "p-vendedor":
       return { assunto, texto: `Vendedor ganha como todo parceiro: **${pct(v.recorrenteBps)} de toda mensalidade desde o 1º cliente**, 24% com 10 e 28% com 25 clientes ativos. Dá para criar a conta do lojista na hora da visita, pelo QR code ou pelo seu cupom: a loja já nasce ligada a você. O painel tem CRM para anotar cada visita.`, atalhos: [{ id: "p-vender", rotulo: "O que eu falo para o lojista?" }], acoes: [cadastrar(f, "vendedor")] };
     case "p-criador":

@@ -3072,3 +3072,31 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - Nuvemshop Associados recomenda CNPJ ou MEI para a nota.
   - O topo também fala do CPF.
 - **Teste:** `captacao-parceiros` cobre a ordem, os valores, o programa da Nuvemshop, a virada, as fontes e a ausência da Loja Integrada.
+
+## D263 — [E-commerce] Parceiros em duas frentes: Indicações pelo CPF (5 pontos a menos) e Parceiros com CNPJ; agência com benefícios exclusivos; comparação sempre a nosso favor (2026-11-06)
+- **Pedido do dono:**
+  - quem recebe no CPF entra num **Programa de Indicações**, uma 4ª frente com **5 pontos a menos em cada nível**;
+  - as agências têm vantagens: "benefícios exclusivos", sem dizer quais;
+  - falar abertamente das barreiras dos concorrentes (nota fiscal para pagar comissão; o advogado do dono foi consultado);
+  - mudar a perspectiva para a NextLevel sempre aparecer vencendo.
+- **Regra (`niveis-regras.ts`, `corporate-commissions.ts`):** a comissão segue o documento do cadastro.
+  - **CPF:** 15% / 19% / 23% (`DESCONTO_CPF_BPS` = 500);
+  - **CNPJ** (criador, vendedor, agência): 20% / 24% / 28%.
+  - Agência parceira só com CNPJ: o cadastro recusa agência com CPF e indica o Programa de Indicações.
+- **Página:**
+  - 4 perfis: Indico pelo CPF, criador, vendedor e agência;
+  - página nova `/parceiros/indique`;
+  - console com a regra da frente, incluindo "nota fiscal p/ receber: não precisa";
+  - a agência aparece com "benefícios exclusivos", sem detalhar;
+  - seção **"Eles exigem nota fiscal para te pagar. Aqui, não."**;
+  - escada com as duas frentes.
+- **Barreiras dos concorrentes (fontes oficiais, 06/11/2026):**
+  - WBuy: só com CNPJ, com nota fiscal (NFS-e) anexada em cada saque;
+  - Nuvemshop: nota fiscal para resgatar; sem CNPJ, só por RPA com retenção de INSS, IRRF e ISS;
+  - Tray: o cadastro pede CNPJ;
+  - Shopify: paga em dólar, US$ 25 uma vez.
+- **Nova perspectiva da comparação:**
+  - cada frente contra o programa equivalente: indicação (CPF) contra Shopify Afiliados e Nuvemshop Associados; parceiro (CNPJ) contra Nuvemshop Especialistas, Tray e WBuy;
+  - a métrica é a **renda que entra por mês** no 18º, 24º ou 36º mês, a renda que se repete;
+  - teste: em todos os cenários mostrados (1 a 30 lojas por mês, os 3 planos, as duas frentes), a NextLevel paga mais por mês.
+- **Também:** Maurício (guia e manual), FAQ, termos da E-commerce e painel do parceiro, que mostra o percentual da frente dele.

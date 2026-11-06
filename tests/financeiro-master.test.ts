@@ -312,7 +312,7 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     await expect(ctx.db.insert(partnerLeads).values({ id: newId("pld"), partnerId: a.id, name: "Cliente", email: "cliente@empresa.com" })).rejects.toThrow();
   });
 
-  it("assinatura Commerce comissiona 20% de toda mensalidade (D260), sem Black, pela regra e não pela manutenção antiga", async () => {
+  it("assinatura Commerce comissiona o percentual do nível em toda mensalidade (D260; 15% no CPF, D263), sem Black, pela regra e não pela manutenção antiga", async () => {
     const p = await partner("EVA", "52998224725", "eva@parceira.com");
     const r = await signupMember(ctx.db, { storeName: "Loja Eva", ownerName: "Cliente Eva", email: "cli@eva.com", password: "senha-segura-1", taxId: "111.444.777-35", brand: "NEXTLEVEL_COMMERCE", independent: true, plan: "COMMERCE_START", ref: "EVA" });
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
@@ -322,7 +322,8 @@ describe("parceiros: atribuição, autoindicação, carência, estorno e extrato
     const i2 = (await ensureSubscriptionInvoice(ctx.db, (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!))!;
     await markInvoicePaid(ctx.db, i2.invoiceId);
     const rows = await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, p.id));
-    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 2000, 1140], ["RECURRING", 2000, 1140]]));
+    // EVA se cadastrou com CPF: Programa de Indicações (D263), 15% de toda mensalidade.
+    expect(rows.map((x) => [x.kind, x.rateBps, x.amountCents])).toEqual(expect.arrayContaining([["SALE", 1500, 855], ["RECURRING", 1500, 855]]));
     expect(rows.some((x) => x.kind === "MAINTENANCE")).toBe(false);
     // Agência (D260): a mesma regra de todos.
     const { findRule } = await import("@/lib/domain/corporate-commissions");

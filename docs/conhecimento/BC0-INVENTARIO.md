@@ -79,8 +79,9 @@
 
 | Regra | Valor hoje | Estado | Fonte |
 |---|---|---|---|
-| Perfis | Criador, Vendedor e Agência servem só para a comunicação; a regra é a mesma para todos | No ar | `captacao-regras.ts` |
-| Comissão | 20% de toda mensalidade paga, desde a 1ª, enquanto o cliente ficar | No ar | `revisao-d260.ts` |
+| Perfis | Indico pelo CPF, Criador, Vendedor e Agência; a comissão segue o documento (CPF ou CNPJ) | No ar | `captacao-regras.ts` (D263) |
+| Comissão | Toda mensalidade paga, desde a 1ª, enquanto o cliente ficar. CNPJ (criador, vendedor, agência): 20% / 24% / 28%. CPF (Programa de Indicações): 15% / 19% / 23% | No ar | `revisao-d260.ts`, `DESCONTO_CPF_BPS` (D263) |
+| Agência | Só com CNPJ; tem benefícios exclusivos (a página não detalha) | No ar | D263 |
 | Níveis | 20% (até 9 clientes ativos), 24% (10+), 28% (25+), sobre a carteira inteira | No ar | `niveis-regras.ts` |
 | Sobe e desce | Sobe na hora; desce só depois de 2 meses seguidos abaixo do mínimo | No ar | `MESES_PARA_DESCER` |
 | Plano anual | O percentual sobre o valor pago no ano | No ar | D260 |

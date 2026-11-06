@@ -14,7 +14,7 @@ describe("níveis dos parceiros", () => {
   let partnerId: string;
   beforeEach(async () => {
     ctx = await freshDb();
-    const r = await registerPartner(ctx.db, { name: "Parceira Nível", email: "nivel@exemplo.com", password: "senha-forte-1", taxId: "52998224725", phone: "11999990000", acceptTerms: true });
+    const r = await registerPartner(ctx.db, { name: "Parceira Nível", email: "nivel@exemplo.com", password: "senha-forte-1", taxId: "11222333000181", phone: "11999990000", acceptTerms: true });
     partnerId = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, r.userId) }))!.id;
   });
   const DEZ = new Date("2026-12-10T12:00:00Z"); // fora da Black
@@ -43,6 +43,8 @@ describe("níveis dos parceiros", () => {
     }
     expect(recorrenteDoNivel(2000, "DIAMANTE")).toBe(2800); // nível antigo vira o teto
     expect(recorrenteDoNivel(0, "OURO")).toBe(0); // sem regra, sem comissão
+    // D263: CPF (Programa de Indicações) = 5 pontos a menos em cada nível.
+    expect([recorrenteDoNivel(2000, "INICIAL", "AFFILIATE", true), recorrenteDoNivel(2000, "PRATA", "AFFILIATE", true), recorrenteDoNivel(2000, "OURO", "AFFILIATE", true)]).toEqual([1500, 1900, 2300]);
   });
 
   it("sobe na hora e desce só depois de 2 meses abaixo", async () => {
