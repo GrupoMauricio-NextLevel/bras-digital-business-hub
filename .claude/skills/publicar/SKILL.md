@@ -21,7 +21,7 @@ Perdemos horas remontando o site (`npm run build`, 10 a 15 min aqui) a cada ajus
    - `npx vitest run`
    - `npm run build` (não pode aparecer "Export encountered" nem "Aborted"; se aparecer, a página está consultando o banco no build: use `export const dynamic = "force-dynamic"`)
 3. Se houve migração nova, confirme que `drizzle/` está no commit e rode `bash scripts/restart-demo.sh --limpo` seguido de `node e2e/smoke-demo.mjs` com `E2E_BASE=http://localhost:3100`.
-4. Registre decisões novas em `docs/design/DECISIONS.md`.
+4. Registre decisões novas em `docs/design/DECISIONS.md`. **E alimente a base de conhecimento** (`docs/conhecimento/BC0-INVENTARIO.md`): a regra nova, o valor, o estado (No ar / Aprovado / Em breve) e a decisão (Dxxx). O teste `base-conhecimento` falha se faltar.
 5. Commit com mensagem em português e os trailers de atribuição exigidos pela sessão; `git push -u origin <branch designada>`.
 6. Confira o site no ar (D171): espere a versão nova subir (3 a 6 min) e rode `EXPECT_VERSION=<commit curto> npm run conferir:producao` (atrás de proxy: `NODE_USE_ENV_PROXY=1`). Confere cada endereço, a versão no ar, título, tela de erro e vazamento entre marcas, em segundos. Falhou: corrija antes de qualquer outra coisa. Se a versão não mudar em ~10 min, peça ao dono o log do deploy (aba Logs no Render) e não declare sucesso.
 7. Reporte ao dono em português, sem jargão: o que foi publicado, o que foi verificado e o que ficou pendente (inclusive variáveis do Render).

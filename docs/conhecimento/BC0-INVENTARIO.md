@@ -4,6 +4,8 @@
 > - só a equipe do Master vê;
 > - o nome no menu é "Aprender".
 >
+> **Base ao vivo (D264):** toda atualização publicada entra aqui (regra, valor, estado e decisão); um teste impede publicar decisão nova sem registro.
+>
 > **Para o dono revisar:** marque o que está errado, o que falta e o que não deve entrar.
 >
 > **Legenda:**

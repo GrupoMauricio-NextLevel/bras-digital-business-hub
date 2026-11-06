@@ -3100,3 +3100,8 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - a métrica é a **renda que entra por mês** no 18º, 24º ou 36º mês, a renda que se repete;
   - teste: em todos os cenários mostrados (1 a 30 lojas por mês, os 3 planos, as duas frentes), a NextLevel paga mais por mês.
 - **Também:** Maurício (guia e manual), FAQ, termos da E-commerce e painel do parceiro, que mostra o percentual da frente dele.
+
+## D264 — [Grupo] Base de conhecimento sempre ao vivo: toda atualização a alimenta (2026-11-06)
+- **Pedido do dono:** "sempre que houver atualizações, alimente a base de conhecimento".
+- **Regra fixa** (registrada no `CLAUDE.md` e na skill `publicar`): toda mudança publicada atualiza a base de conhecimento da equipe (`docs/conhecimento/BC0-INVENTARIO.md`; na BC1, a tela "Aprender" do Master), com a regra, o valor, o estado e a decisão.
+- **Garantia:** o teste `tests/base-conhecimento.test.ts` falha se uma decisão desde a D257 não estiver citada na base.
