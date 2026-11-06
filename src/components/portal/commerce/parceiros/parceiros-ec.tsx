@@ -37,7 +37,7 @@ export async function ParceirosEc({ brand, perfil = "criador" }: { brand: Brand;
   return (
     <div className="im-tema-ecommerce">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CaptacaoInterativa inicial={perfil} regras={d.regras} planos={d.planos} marca={brand.name} />
+      <CaptacaoInterativa inicial={perfil} regras={d.regras} planos={d.planos} marca={brand.name} saqueMinimoCents={ajustes.minPayoutCents} atribuicaoDias={ajustes.attributionDays} />
 
       <section className="bg-surface px-4 py-16 md:py-24" aria-labelledby="facil-t">
         <div className="mx-auto max-w-6xl">

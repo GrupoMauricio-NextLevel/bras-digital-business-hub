@@ -5,7 +5,7 @@ import { partnerActivities, partners } from "@/db/schema";
 import { registerPartner } from "@/lib/domain/partners";
 import { cartoesDeParceiros } from "@/lib/domain/crm-parceiros";
 import { dadosDaCaptacao, escadaDoPerfil, ganhoNoMes, registrarCandidatura } from "@/lib/domain/captacao-parceiros";
-import { comparativoDeParceiros, PROGRAMAS_CONCORRENTES } from "@/lib/finance/captacao-regras";
+import { comparativoDeParceiros, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES } from "@/lib/finance/captacao-regras";
 
 /** Página de captação de parceiros (D252, PV4; regra única da D260). */
 describe("captação de parceiros", () => {
@@ -32,6 +32,8 @@ describe("captação de parceiros", () => {
     expect(por("nextlevel").ultimo).toBe(197_568);
     for (const x of c.slice(1)) expect(por("nextlevel").total).toBeGreaterThan(x.total);
     for (const p of PROGRAMAS_CONCORRENTES) expect(p.fonte).toMatch(/^https:\/\//);
+    // D261: todo ponto fraco exposto tem fato e fonte oficial; nunca "mais barato".
+    for (const g of RAIO_X_CONCORRENTES) { expect(g.fonte).toMatch(/^https:\/\/(www\.|atendimento\.)?(nuvemshop|wbuy|tray)\.com\.br\//); expect(g.fato.length).toBeGreaterThan(30); expect(`${g.golpe} ${g.fato} ${g.resposta}`).not.toMatch(/mais barat/i); }
   });
 
   it("escada usa a regra única do catálogo, igual para todos os perfis", async () => {

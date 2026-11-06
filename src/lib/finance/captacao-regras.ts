@@ -60,3 +60,15 @@ export function comparativoDeParceiros(r: RegraPerfil, porMes: number, mensalCen
   const outros = PROGRAMAS_CONCORRENTES.map((p) => ({ id: p.id, nome: p.nome, total: soma((m) => ganhoConcorrenteNoMes(p.id, porMes, mensalCents, m)), ultimo: ganhoConcorrenteNoMes(p.id, porMes, mensalCents, meses) }));
   return [nos, ...outros];
 }
+
+/**
+ * Raio-x dos programas concorrentes (D261, pedido do dono: tom agressivo, expondo o ponto fraco de cada um).
+ * Regra fixa: todo "golpe" se apoia num fato publicado no site oficial do concorrente, com link e data. Nada inventado.
+ */
+export type GolpeConcorrente = { id: string; nome: string; golpe: string; fato: string; resposta: string; fonte: string };
+export const RAIO_X_CONCORRENTES: GolpeConcorrente[] = [
+  { id: "nuvem-especialistas", nome: "Nuvemshop Especialistas", golpe: "Começou? 0% de recorrência.", fato: "No nível de entrada (Member) não há comissão recorrente: ela só começa no Silver. Nos planos comuns, 20% é o teto em qualquer nível.", resposta: "Aqui: 20% desde o 1º cliente, até 28%.", fonte: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/comissoes-vigentes-no-programa-de-parceiros-especialistas-da-nuvemshop" },
+  { id: "nuvem-associados", nome: "Nuvemshop Associados", golpe: "Paga 2 mensalidades e esquece de você.", fato: "O associado recebe o valor das 2 primeiras mensalidades da loja indicada. O cliente fica anos; o parceiro não recebe mais nada.", resposta: "Aqui: você ganha enquanto o cliente ficar.", fonte: "https://www.nuvemshop.com.br/parceiros/associados" },
+  { id: "wbuy", nome: "WBuy", golpe: "10% para começar. 20% só depois de 100 lojas.", fato: "10% de 1 a 49 indicações, 15% de 50 a 99 e 20% a partir de 100. Exige CNPJ e nota fiscal.", resposta: "Aqui: 20% no 1º cliente, 28% com 25. Aceita CPF.", fonte: "https://www.wbuy.com.br/afiliados/" },
+  { id: "tray", nome: "Tray", golpe: "Promete \"até 20%\" e esconde a régua.", fato: "Os níveis dependem de MRR, volume de indicações, conversão e NPS, sem nenhum número publicado para cada nível.", resposta: "Aqui: régua pública. 10 clientes = 24%, 25 = 28%.", fonte: "https://tray.com.br/partners" },
+];

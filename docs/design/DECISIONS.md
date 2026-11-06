@@ -3036,3 +3036,19 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - `niveis-parceiro`: 20%, 24% e 28%, e a rotina sem bônus;
   - `captacao-parceiros`: simulador e comparativo;
   - `guia-parceiros`.
+
+## D261 — Comparação com concorrentes: tom agressivo, sempre com fato (regra fixa do dono) e página de parceiros com mais tecnologia (2026-11-06)
+- **Regra do dono, que vale para sempre:**
+  - nas comparações, o tom é **agressivo**, nunca neutro: expor o ponto fraco de cada concorrente e amassar o argumento deles;
+  - todo golpe se apoia num fato publicado no site oficial do concorrente, com o link e a data;
+  - sem ofensa pessoal, sem inventar e sem "mais barato".
+  - Registrada na skill `pagina-de-vendas` (passo 5).
+- **Página de parceiros** (`captacao-interativa.tsx`, `arena.css`):
+  - topo com o "console" da regra (20%, depois 24% e 28%, nenhum nível para começar, saque a partir de R$ 50, link de 90 dias, CPF ou CNPJ);
+  - **raio-x dos concorrentes**, com ponto fraco, fato, "ver a regra deles" e a resposta NextLevel:
+    - Nuvemshop Especialistas: 0% de recorrência no nível de entrada;
+    - Nuvemshop Associados: paga 2 mensalidades e acabou;
+    - WBuy: 10% para começar e 20% só com 100 lojas;
+    - Tray: "até 20%" sem a régua publicada.
+  - escada em degraus, simulador escuro e a disputa "Só um paga de verdade", com o valor "a mais que o 2º colocado".
+- **Teste:** cada ponto fraco tem fonte oficial e fato, e nenhum texto diz "mais barato".
