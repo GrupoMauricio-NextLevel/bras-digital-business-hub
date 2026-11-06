@@ -89,7 +89,9 @@
 | Saque | Por Pix, mínimo de R$ 50, com CPF ou CNPJ | No ar | configuração do Master |
 | Link | Vale por 90 dias; o cupom tem prioridade | No ar | configuração do Master |
 | Inativo | 6 meses de cadastro, sem cliente ativo e sem comissão | No ar | D250 |
-| Comparativo com os concorrentes | Nuvemshop, WBuy (fontes oficiais, 06/11/2026) | No ar | `PROGRAMAS_CONCORRENTES` |
+| Comparativo com os concorrentes | Shopify (destaque: US$ 25 uma vez por loja do Brasil), Nuvemshop, Tray (20%), WBuy; Loja Integrada fora por escolha do dono | No ar | `PROGRAMAS_CONCORRENTES` (D262) |
+| Argumento do CPF | Recebe no CPF, por Pix, sem abrir empresa; WBuy exige CNPJ e nota | No ar | `BARREIRA_CNPJ` (D262) |
+| Tom das comparações | Agressivo, sempre com fato, fonte e data | Regra fixa | D261 |
 | Fixar nível | Master, com motivo obrigatório e auditoria | No ar | D249 |
 | CRM de parceiros | Funil, ficha, fila, ranking, segmentos, avisos e desafio do mês | No ar | D251 |
 | Página própria do parceiro (/i/nome) | — | Em breve (PV5) | D227 |

@@ -58,3 +58,10 @@
 .pa-chip[aria-pressed="true"] { color: #060a16; background: #22e08a; box-shadow: 0 0 20px rgb(34 224 138 / .45); }
 .pa-chip:focus-visible { outline: 2px solid #22d3ee; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .pa-cheia { transition: none; } }
+
+/* D262: Shopify em destaque no raio-x e na disputa; barreira do CNPJ. */
+@media (min-width: 900px) { .pa-golpe--destaque { grid-column: 1 / -1; } }
+.pa-golpe--destaque { box-shadow: 0 0 0 1px rgb(255 93 143 / .55) inset, 0 30px 70px -35px rgb(255 93 143 / .55); background: linear-gradient(135deg, rgb(255 93 143 / .1), rgb(255 255 255 / .02)); }
+.pa-golpe--destaque h3 { font-size: clamp(1.5rem, 3.4vw, 2.3rem); }
+.pa-disputa li.pa-rival { box-shadow: 0 0 0 1px rgb(255 93 143 / .45) inset; }
+.pa-barreira { display: flex; gap: .55rem; align-items: flex-start; padding: .7rem .85rem; border-radius: .9rem; color: #ffd1dd; background: rgb(255 93 143 / .08); box-shadow: 0 0 0 1px rgb(255 93 143 / .35) inset; font-size: .92rem; }

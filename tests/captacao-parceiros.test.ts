@@ -5,7 +5,7 @@ import { partnerActivities, partners } from "@/db/schema";
 import { registerPartner } from "@/lib/domain/partners";
 import { cartoesDeParceiros } from "@/lib/domain/crm-parceiros";
 import { dadosDaCaptacao, escadaDoPerfil, ganhoNoMes, registrarCandidatura } from "@/lib/domain/captacao-parceiros";
-import { comparativoDeParceiros, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES } from "@/lib/finance/captacao-regras";
+import { BARREIRA_CNPJ, comparativoDeParceiros, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES, SHOPIFY_BR_CENTS } from "@/lib/finance/captacao-regras";
 
 /** Página de captação de parceiros (D252, PV4; regra única da D260). */
 describe("captação de parceiros", () => {
@@ -21,19 +21,30 @@ describe("captação de parceiros", () => {
     expect(ganhoNoMes(r, 30, 14_700, 24).recBps).toBe(2800); // teto 28%
   });
 
-  it("comparativo com os concorrentes: mesma mensalidade, regras publicadas; 2 lojas/mês em 24 meses", () => {
+  it("comparativo (D262): Shopify em destaque, Nuvemshop pelo programa que mais paga, Tray a 20%, WBuy; virada", () => {
     const r = { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 };
     const c = comparativoDeParceiros(r, 2, 14_700, 24);
     const por = (id: string) => c.find((x) => x.id === id)!;
+    expect(c.map((x) => x.id)).toEqual(["nextlevel", "shopify", "nuvemshop", "tray", "wbuy"]);
     expect(por("nextlevel").total).toBe(2_366_112);
-    expect(por("nuvem-especialistas").total).toBe(1_764_000);
-    expect(por("nuvem-associados").total).toBe(1_381_800); // a última leva ainda só pagou a 1ª mensalidade
+    expect(SHOPIFY_BR_CENTS).toBe(13_655); // US$ 25 × PTAX 5,4621
+    expect(por("shopify").total).toBe(2 * 24 * 13_655);
+    expect([por("nuvemshop").programa, por("nuvemshop").total]).toEqual(["Especialistas", 1_764_000]);
+    expect(por("tray").total).toBe(1_764_000);
     expect(por("wbuy").total).toBe(882_000);
-    expect(por("nextlevel").ultimo).toBe(197_568);
     for (const x of c.slice(1)) expect(por("nextlevel").total).toBeGreaterThan(x.total);
+    // 5 lojas/mês em 12 meses: o Associados (2 mensalidades de uma vez) sai na frente, e a página mostra a virada.
+    const c12 = comparativoDeParceiros(r, 5, 14_700, 12);
+    const nuvem = c12.find((x) => x.id === "nuvemshop")!;
+    expect(nuvem.programa).toBe("Associados");
+    expect(nuvem.total).toBeGreaterThan(c12[0]!.total);
+    expect(nuvem.virada).toBeGreaterThan(12);
+    expect(comparativoDeParceiros(r, 5, 14_700, nuvem.virada!)[0]!.total).toBeGreaterThanOrEqual(comparativoDeParceiros(r, 5, 14_700, nuvem.virada!).find((x) => x.id === "nuvemshop")!.total);
     for (const p of PROGRAMAS_CONCORRENTES) expect(p.fonte).toMatch(/^https:\/\//);
+    expect(PROGRAMAS_CONCORRENTES.some((p) => /loja integrada/i.test(p.nome))).toBe(false); // fora, por escolha do dono
     // D261: todo ponto fraco exposto tem fato e fonte oficial; nunca "mais barato".
-    for (const g of RAIO_X_CONCORRENTES) { expect(g.fonte).toMatch(/^https:\/\/(www\.|atendimento\.)?(nuvemshop|wbuy|tray)\.com\.br\//); expect(g.fato.length).toBeGreaterThan(30); expect(`${g.golpe} ${g.fato} ${g.resposta}`).not.toMatch(/mais barat/i); }
+    for (const g of RAIO_X_CONCORRENTES) { expect(g.fonte).toMatch(/^https:\/\/(www\.|atendimento\.|help\.)?(nuvemshop|wbuy|tray|shopify)\.com(\.br)?\//); expect(g.fato.length).toBeGreaterThan(30); expect(`${g.golpe} ${g.fato} ${g.resposta}`).not.toMatch(/mais barat/i); }
+    for (const b of BARREIRA_CNPJ) expect(b.fonte).toMatch(/^https:\/\//);
   });
 
   it("escada usa a regra única do catálogo, igual para todos os perfis", async () => {

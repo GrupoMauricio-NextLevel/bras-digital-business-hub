@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Building2, Check, Megaphone, Store, Swords } from "lucide-react";
+import { ArrowRight, Building2, Check, IdCard, Megaphone, Store, Swords, X } from "lucide-react";
 import { formatBRL } from "@/lib/money";
-import { CONSULTA_CONCORRENTES, PERFIS, PERFIL_LISTA, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES, comparativoDeParceiros, escadaDoPerfil, ganhoNoMes, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/captacao-regras";
+import { BARREIRA_CNPJ, CAMBIO_USD, CONSULTA_CONCORRENTES, PERFIS, SHOPIFY_BR_CENTS, SHOPIFY_BR_USD, PERFIL_LISTA, PROGRAMAS_CONCORRENTES, RAIO_X_CONCORRENTES, comparativoDeParceiros, escadaDoPerfil, ganhoNoMes, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/captacao-regras";
 import "./arena.css";
 
 type Props = {
@@ -52,7 +52,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
               ); })}
             </div>
             <h1 className="ec-cabecalho-titulo mt-6 max-w-4xl" aria-live="polite">{p.titulo}</h1>
-            <p className="mt-5 max-w-2xl text-lg text-white/80">Na Nuvemshop, na WBuy e na Tray o parceiro começa ganhando pouco, ganha tarde ou ganha uma vez só. Aqui é <b className="text-white">{escada[0] ? pct(escada[0].recBps) : "—"} de toda mensalidade desde o 1º cliente</b>, enquanto ele ficar, chegando a <b className="text-white">{escada[2] ? pct(escada[2].recBps) : "—"}</b> na carteira toda.</p>
+            <p className="mt-5 max-w-2xl text-lg text-white/80">A Shopify paga US$ {SHOPIFY_BR_USD} uma vez por loja do Brasil. Na Nuvemshop, na WBuy e na Tray, o parceiro começa ganhando pouco ou ganha tarde. Aqui é <b className="text-white">{escada[0] ? pct(escada[0].recBps) : "—"} de toda mensalidade desde o 1º cliente</b>, enquanto ele ficar, chegando a <b className="text-white">{escada[2] ? pct(escada[2].recBps) : "—"}</b> na carteira toda. E você recebe <b className="text-white">no seu CPF</b>, sem abrir empresa.</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-[#12133a]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link>
               <a href="#raio-x" className="font-semibold underline underline-offset-4">Ver o raio-x dos concorrentes</a>
@@ -81,7 +81,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
           <p className="pa-sub mt-4 max-w-2xl">Cada ponto abaixo vem da página oficial do programa, com o link. Confira você mesmo.</p>
           <ul className="pa-golpes mt-10">
             {RAIO_X_CONCORRENTES.map((g) => (
-              <li key={g.id} className="pa-golpe">
+              <li key={g.id} className={`pa-golpe ${g.destaque ? "pa-golpe--destaque" : ""}`}>
                 <div className="flex flex-wrap items-center justify-between gap-2"><span className="pa-fraco"><Swords className="size-3.5" aria-hidden />Ponto fraco</span><span className="text-sm font-semibold text-white/80">{g.nome}</span></div>
                 <h3>{g.golpe}</h3>
                 <p className="pa-fato">{g.fato} <a href={g.fonte} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap underline underline-offset-2">Ver a regra deles</a></p>
@@ -90,6 +90,22 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
             ))}
           </ul>
           <p className="mt-6 text-xs text-white/50">Regras conforme os sites oficiais, consultados em {CONSULTA_CONCORRENTES}. Se mudarem, atualizamos aqui.</p>
+        </div>
+      </section>
+
+      <section className="pa-escuro px-4 py-16 md:py-24" aria-labelledby="cpf-t">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-center">
+          <div>
+            <p className="im-eyebrow">Sem barreira de entrada</p>
+            <h2 id="cpf-t" className="im-h2 mt-3 max-w-3xl">Recebe no CPF. Sem abrir empresa, sem MEI.</h2>
+            <p className="pa-sub mt-4 max-w-2xl">Criador, vendedor de rua ou quem está começando: cadastre-se com o seu CPF e receba por Pix, a partir de {formatBRL(saqueMinimoCents)}. Tem empresa? Cadastre com o CNPJ, do mesmo jeito.</p>
+          </div>
+          <ul className="space-y-3">
+            <li className="pa-aqui !items-start"><IdCard className="mt-0.5 size-5 shrink-0" aria-hidden /><span><b>{marca}:</b> CPF ou CNPJ, Pix a partir de {formatBRL(saqueMinimoCents)}.</span></li>
+            {BARREIRA_CNPJ.map((b) => (
+              <li key={b.nome} className="pa-barreira"><X className="mt-0.5 size-5 shrink-0" aria-hidden /><span><b>{b.nome}:</b> {b.exige}. <a href={b.fonte} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Ver a regra deles</a></span></li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -143,7 +159,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
       <section id="comparar" className="pa-escuro scroll-mt-16 px-4 py-16 md:py-24" aria-labelledby="cmp-t">
         <div className="mx-auto max-w-6xl">
           <p className="im-eyebrow">Compare o seu programa</p>
-          <h2 id="cmp-t" className="im-h2 mt-3 max-w-4xl">{nos.total >= (segundo?.total ?? 0) ? "A mesma carteira em quatro programas. Aqui rende mais." : "Quem paga uma vez só sai na frente no começo. Veja quem paga todo mês."}</h2>
+          <h2 id="cmp-t" className="im-h2 mt-3 max-w-4xl">{nos.total >= (segundo?.total ?? 0) ? "A mesma carteira contra Shopify, Nuvemshop, Tray e WBuy. Aqui rende mais." : `Quem paga tudo no começo sai na frente. No ${segundo?.virada ?? "—"}º mês, a gente passa e não para mais.`}</h2>
           <p className="pa-sub mt-3 max-w-2xl">Com {porMes} loja{porMes === 1 ? "" : "s"} por mês no plano {planos[plano]?.nome ?? "—"} (mude no simulador acima). Para não ter desculpa: a <b className="text-white">mesma mensalidade</b> para todos e nenhum cancelamento.</p>
           <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div className="flex flex-wrap gap-2" role="group" aria-label="Prazo da comparação">
@@ -156,18 +172,18 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
               const eNos = c.id === "nextlevel";
               const fonte = PROGRAMAS_CONCORRENTES.find((x) => x.id === c.id);
               return (
-                <li key={c.id} className={eNos ? "pa-nos" : undefined}>
+                <li key={c.id} className={eNos ? "pa-nos" : fonte?.destaque ? "pa-rival" : undefined}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <p className="font-bold text-white">{eNos ? marca : c.nome}</p>
+                    <p className="font-bold text-white">{eNos ? marca : c.nome}{c.programa ? <span className="ml-2 text-xs font-normal text-white/60">programa {c.programa}</span> : null}</p>
                     <p className="ec-num"><b className={`text-2xl font-bold ${eNos ? "text-[#22e08a]" : "text-white"}`}>{formatBRL(c.total)}</b> <span className="text-sm text-white/60">em {prazo} meses</span></p>
                   </div>
                   <div className="pa-trilho mt-3" aria-hidden><span className="pa-cheia" style={{ "--w": `${Math.max(2, Math.round((c.total / maior) * 100))}%` } as React.CSSProperties} /></div>
-                  <p className="mt-2 text-xs text-white/65">No {prazo}º mês: <b className="ec-num text-white">{formatBRL(c.ultimo)}</b> por mês · {eNos ? "20% desde o 1º cliente, 24% com 10 e 28% com 25 clientes ativos" : fonte?.regra}{fonte?.ressalva ? ` · ${fonte.ressalva}` : ""}{fonte ? <> · <a href={fonte.fonte} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">fonte</a></> : null}</p>
+                  <p className="mt-2 text-xs text-white/65">No {prazo}º mês: <b className="ec-num text-white">{formatBRL(c.ultimo)}</b> por mês · {eNos ? "20% desde o 1º cliente, 24% com 10 e 28% com 25 clientes ativos" : fonte?.regra}{fonte?.ressalva ? ` · ${fonte.ressalva}` : ""}{!eNos && c.virada && c.total > nos.total ? <> · <b className="text-[#22e08a]">você passa na frente no {c.virada}º mês</b></> : null}{fonte ? <> · <a href={fonte.fonte} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">fonte</a></> : null}</p>
                 </li>
               );
             })}
           </ol>
-          <p className="mt-4 text-xs text-white/50">Regras dos concorrentes conforme os sites oficiais, consultados em {CONSULTA_CONCORRENTES}. Cada plataforma tem a sua mensalidade; aqui usamos a mesma para comparar só a regra de comissão. Simulação, não promessa de ganho.</p>
+          <p className="mt-4 text-xs text-white/50">Regras dos concorrentes conforme os sites oficiais, consultados em {CONSULTA_CONCORRENTES}. Cada plataforma tem a sua mensalidade; aqui usamos a mesma para comparar só a regra de comissão. Shopify convertida pelo dólar oficial (PTAX) de {CAMBIO_USD.data}: US$ {SHOPIFY_BR_USD} ≈ {formatBRL(SHOPIFY_BR_CENTS)}. Simulação, não promessa de ganho.</p>
           <div className="mt-8"><Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#22e08a] px-6 font-bold text-[#060a16]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link></div>
         </div>
       </section>

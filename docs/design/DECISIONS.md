@@ -3052,3 +3052,23 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
     - Tray: "até 20%" sem a régua publicada.
   - escada em degraus, simulador escuro e a disputa "Só um paga de verdade", com o valor "a mais que o 2º colocado".
 - **Teste:** cada ponto fraco tem fonte oficial e fato, e nenhum texto diz "mais barato".
+
+## D262 — [E-commerce] Parceiros: comparação contra Shopify (destaque), Nuvemshop, Tray e WBuy, com a virada e o CPF como arma (2026-11-06)
+- **Correção:**
+  - em alguns cenários a página afirmava algo falso: com 5 lojas por mês em 12 meses, a Nuvemshop Associados soma mais;
+  - o título e o "a mais que o 2º colocado" agora seguem a conta;
+  - quando quem paga tudo no começo está na frente, a página mostra **o mês da virada** ("No 13º mês, a gente passa e não para mais").
+- **Escolhas do dono:**
+  - **Loja Integrada fica fora** (paga 35% vitalício + R$ 125, com CNPJ);
+  - **Shopify em destaque**;
+  - Tray com 20%, o teto da página Tray Partners.
+- **Concorrentes** (`captacao-regras.ts`, sites oficiais em 06/11/2026):
+  - **Shopify:** US$ 25 por loja do Brasil, uma vez só (tabela oficial do programa de afiliados; os US$ 150 do anúncio são para outros países). Convertido pelo PTAX de venda do Banco Central de 05/11/2026 (R$ 5,4621).
+  - **Nuvemshop:** um cartão só, com o programa que mais paga no prazo (Especialistas ou Associados).
+  - **Tray:** 20%.
+  - **WBuy:** 10% / 15% / 20%.
+- **CPF como diferencial:** seção "Recebe no CPF. Sem abrir empresa, sem MEI.", com o que os concorrentes publicam:
+  - WBuy exige CNPJ e nota fiscal;
+  - Nuvemshop Associados recomenda CNPJ ou MEI para a nota.
+  - O topo também fala do CPF.
+- **Teste:** `captacao-parceiros` cobre a ordem, os valores, o programa da Nuvemshop, a virada, as fontes e a ausência da Loja Integrada.
