@@ -75,31 +75,24 @@
 
 ---
 
-## Trilha 3: Comercial, parceiros
+## Trilha 3: Comercial, parceiros (regra única, D260)
 
 | Regra | Valor hoje | Estado | Fonte |
 |---|---|---|---|
-| Perfis | Criador (audiência), Vendedor/representante (porta em porta), Agência (vários clientes) | No ar | `captacao-regras.ts` |
-| Criador | 50% da 1ª mensalidade + 20% enquanto o cliente ficar | No ar | `revisao-d226.ts` |
-| Representante | 50% + 20% + bônus | No ar | idem |
-| Agência | 50% + 25% desde o 1º cliente | No ar | idem |
-| Agência Elite | 50% + 32% | No ar | idem |
-| Plano anual | 50% de um mês + a recorrência dos outros 11, dividido por 12 (ex.: 22,5% para quem tem 20%) | No ar | `anual()` |
-| Teto | 1ª mensalidade até 50%; recorrente até 32% | No ar (teste garante) | idem |
-| Na Black | a 1ª mensalidade paga **100%**; a recorrência não muda | No ar | `bpsPrimeiraNaBlack` |
-| Carência | 30 dias antes de liberar o saque | No ar | D248 |
-| Bônus do representante | R$ 30 por loja ativada (publicada + 1ª venda paga + 30 dias de assinatura) e +R$ 100 ao chegar a 10 no mês | No ar | `BONUS_*` |
-| Níveis | Inicial (0 a 2 clientes), Prata (3+: +2 pontos), Ouro (10+: +4 pontos e gerente de sucesso), Diamante (20+: agência 32%, criador e representante 26%) | No ar | `niveis-regras.ts` |
-| Sobe e desce | sobe na hora; desce só depois de 2 meses seguidos abaixo do limite | No ar | `MESES_PARA_DESCER` |
+| Perfis | Criador, Vendedor e Agência servem só para a comunicação; a regra é a mesma para todos | No ar | `captacao-regras.ts` |
+| Comissão | 20% de toda mensalidade paga, desde a 1ª, enquanto o cliente ficar | No ar | `revisao-d260.ts` |
+| Níveis | 20% (até 9 clientes ativos), 24% (10+), 28% (25+), sobre a carteira inteira | No ar | `niveis-regras.ts` |
+| Sobe e desce | Sobe na hora; desce só depois de 2 meses seguidos abaixo do mínimo | No ar | `MESES_PARA_DESCER` |
+| Plano anual | O percentual sobre o valor pago no ano | No ar | D260 |
+| Sem Black, sem bônus | Nenhuma campanha muda a regra; o desafio do mês é só reconhecimento | No ar | D260 |
+| Garantia | 30 dias antes de liberar o saque | No ar | regra de comissão |
+| Saque | Por Pix, mínimo de R$ 50, com CPF ou CNPJ | No ar | configuração do Master |
+| Link | Vale por 90 dias; o cupom tem prioridade | No ar | configuração do Master |
+| Inativo | 6 meses de cadastro, sem cliente ativo e sem comissão | No ar | D250 |
+| Comparativo com os concorrentes | Nuvemshop, WBuy (fontes oficiais, 06/11/2026) | No ar | `PROGRAMAS_CONCORRENTES` |
 | Fixar nível | Master, com motivo obrigatório e auditoria | No ar | D249 |
-| Inativo | 6 meses de cadastro + nenhum cliente ativo + nenhuma comissão em 6 meses. Volta pela reativação | No ar | D250 |
-| Parceiro da E-commerce não tem meta mensal | — | No ar | D252 |
-| CRM de parceiros | funil, ficha 360, fila do dia, ranking, segmentos, avisos e desafio do mês | No ar | D251 |
-| Pedido para virar agência: aprovado trocando o Tipo na ficha | — | No ar | D220 |
-| Antifraude: aba com possíveis autoindicações | — | No ar | manual do Master |
-| Página pública | /parceiros, com /criadores, /vendedores e /agencias; cadastro em 4 passos | No ar | D252 |
-| Página própria do parceiro (/i/anasouza) | — | Em breve (PV5) | D227 |
-| Programa de afiliados de serviços parceiros | — | Guardado, não executar | pedido do dono |
+| CRM de parceiros | Funil, ficha, fila, ranking, segmentos, avisos e desafio do mês | No ar | D251 |
+| Página própria do parceiro (/i/nome) | — | Em breve (PV5) | D227 |
 
 ---
 

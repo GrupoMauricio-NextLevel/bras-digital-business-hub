@@ -49,7 +49,7 @@ export async function recalcularNivel(db: Database, partnerId: string, now = new
   return p.tier;
 }
 
-/** Rotina diária: recalcula todos os parceiros e paga os bônus do representante. */
+/** Rotina diária: recalcula o nível de todos os parceiros e inativa quem ficou 6 meses sem cliente. Sem bônus (D260). */
 export async function rodarNiveis(db: Database, now = new Date()) {
   const lista = await db.select({ id: partners.id }).from(partners).where(eq(partners.status, "ACTIVE"));
   let mudaram = 0;
@@ -57,9 +57,8 @@ export async function rodarNiveis(db: Database, now = new Date()) {
     const antes = (await db.query.partners.findFirst({ where: eq(partners.id, p.id), columns: { tier: true } }))!.tier;
     if ((await recalcularNivel(db, p.id, now)) !== antes) mudaram++;
   }
-  const bonus = await bonusDosRepresentantes(db, now);
   const inativados = await inativarSemClientes(db, now);
-  return { mudaram, bonus, inativados };
+  return { mudaram, bonus: 0, inativados };
 }
 
 export const MESES_SEM_CLIENTE = 6;
@@ -102,6 +101,7 @@ export async function fixarNivel(db: Database, actor: Actor, partnerId: string, 
 }
 
 /**
+ * @deprecated D260: a regra única não tem bônus; a rotina diária não chama mais esta função (fica para o histórico).
  * Bônus do representante (D226): R$ 30 por loja ativada (publicada, com 1ª venda paga e 30 dias de assinatura ativa)
  * e +R$ 100 quando chega a 10 ativações no mês. Cada loja paga uma vez só.
  */

@@ -1,8 +1,11 @@
 import type { PartnerTier } from "@/db/schema";
-import { BONUS_ATIVACAO_CENTS, BONUS_META_ATIVACOES, BONUS_META_CENTS } from "./revisao-d226";
 import { NIVEIS, nivelPorClientes, recorrenteDoNivel } from "./niveis-regras";
 
-/** Perfis, escada e simulador da página de captação de parceiros (D252, PV4). Puro: roda no servidor e no navegador. */
+/**
+ * Perfis, escada e simulador da página de parceiros (D252, refeito na D260). Regra única: o perfil só muda o texto
+ * para cada público; o ganho é o mesmo para todos (20% / 24% / 28% de toda mensalidade, pelos clientes ativos).
+ * Puro: roda no servidor e no navegador.
+ */
 export const PERFIS = {
   criador: { kind: "AFFILIATE", rotulo: "Sou criador", rota: "/parceiros/criadores", titulo: "Transforme a sua audiência em renda que se repete todo mês.", quem: "Criadores de conteúdo, influenciadores de moda e negócios, professores de e-commerce.", chamada: "Quero ser criador parceiro" },
   vendedor: { kind: "REPRESENTATIVE", rotulo: "Sou vendedor", rota: "/parceiros/vendedores", titulo: "Venda a loja virtual que o Brás está usando, de porta em porta.", quem: "Representantes, vendedores de rua, consultores que já visitam lojistas.", chamada: "Quero ser vendedor parceiro" },
@@ -13,19 +16,47 @@ export const PERFIL_LISTA = Object.keys(PERFIS) as PerfilCaptacao[];
 
 export type RegraPerfil = { primeiraBps: number; recorrenteBps: number; meses: number };
 
-/** Quanto o parceiro ganha no mês N, se indicar `porMes` lojas todo mês e nenhuma cancelar (o nível sobe com a carteira). Puro. */
-export function ganhoNoMes(r: RegraPerfil, kind: string, porMes: number, mensalCents: number, mes: number) {
-  const carteira = porMes * Math.min(mes - 1, r.meses);
-  const tier = nivelPorClientes(porMes * (mes - 1));
-  const rec = recorrenteDoNivel(r.recorrenteBps, tier, kind);
-  const primeira = (porMes * mensalCents * r.primeiraBps) / 10_000;
-  const recorrente = (carteira * mensalCents * rec) / 10_000;
-  const bonus = kind === "REPRESENTATIVE" ? porMes * BONUS_ATIVACAO_CENTS + (porMes >= BONUS_META_ATIVACOES ? BONUS_META_CENTS : 0) : 0;
-  return { cents: Math.round(primeira + recorrente + bonus), tier, recBps: rec, bonusCents: bonus };
+/**
+ * Quanto o parceiro ganha no mês N, se trouxer `porMes` lojas todo mês e nenhuma cancelar. Igual ao cálculo real:
+ * toda mensalidade paga (inclusive a 1ª) rende o percentual do nível, e o nível sobe na hora da venda.
+ */
+export function ganhoNoMes(r: RegraPerfil, porMes: number, mensalCents: number, mes: number) {
+  const carteira = porMes * mes;
+  const tier = nivelPorClientes(carteira);
+  const bps = recorrenteDoNivel(r.recorrenteBps, tier);
+  return { cents: Math.round((carteira * mensalCents * bps) / 10_000), carteira, tier, recBps: bps };
 }
 
-/** Escada de níveis do perfil: recorrência e ganho por cliente por mês em cada nível. Puro. */
-export function escadaDoPerfil(r: RegraPerfil, kind: string, mensalCents: number) {
-  return NIVEIS.map((n) => { const rec = recorrenteDoNivel(r.recorrenteBps, n.tier, kind); return { tier: n.tier as PartnerTier, nome: n.nome, minimo: n.minimo, efeito: n.efeito, recBps: rec, porClienteCents: Math.round((mensalCents * rec) / 10_000) }; });
+/** Escada de níveis: percentual e ganho por cliente por mês em cada nível. Puro. */
+export function escadaDoPerfil(r: RegraPerfil, mensalCents: number) {
+  return NIVEIS.map((n) => { const rec = recorrenteDoNivel(r.recorrenteBps, n.tier); return { tier: n.tier as PartnerTier, nome: n.nome, minimo: n.minimo, efeito: n.efeito, recBps: rec, porClienteCents: Math.round((mensalCents * rec) / 10_000) }; });
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Comparativo com os programas dos concorrentes (D260). Só regras publicadas nos sites oficiais, com data e link.
+// Para ser justo, a conta usa a MESMA mensalidade para todos e nenhum cancelamento.
+// ---------------------------------------------------------------------------------------------------------------------
+export const CONSULTA_CONCORRENTES = "06/11/2026";
+export type ProgramaConcorrente = { id: string; nome: string; regra: string; fonte: string; ressalva?: string };
+export const PROGRAMAS_CONCORRENTES: ProgramaConcorrente[] = [
+  { id: "nuvem-especialistas", nome: "Nuvemshop Especialistas", regra: "20% da mensalidade líquida, a partir do nível Silver", fonte: "https://atendimento.nuvemshop.com.br/pt_BR/comissionamento/comissoes-vigentes-no-programa-de-parceiros-especialistas-da-nuvemshop", ressalva: "No nível de entrada (Member) não há recorrência; a conta usa o melhor caso (20% desde o início)." },
+  { id: "nuvem-associados", nome: "Nuvemshop Associados", regra: "O valor das 2 primeiras mensalidades de cada loja; depois, nada", fonte: "https://www.nuvemshop.com.br/parceiros/associados" },
+  { id: "wbuy", nome: "WBuy Parceiros", regra: "10% até 49 indicações, 15% de 50 a 99 e 20% a partir de 100", fonte: "https://www.wbuy.com.br/afiliados/", ressalva: "Exige CNPJ e nota fiscal." },
+];
+
+/** Ganho de um programa concorrente no mês N (mesmas premissas do nosso simulador). Puro. */
+export function ganhoConcorrenteNoMes(id: string, porMes: number, mensalCents: number, mes: number): number {
+  const carteira = porMes * mes;
+  if (id === "nuvem-especialistas") return Math.round((carteira * mensalCents * 2000) / 10_000);
+  if (id === "nuvem-associados") return (mes === 1 ? porMes : porMes * 2) * mensalCents; // a 1ª e a 2ª mensalidade das lojas novas
+  if (id === "wbuy") { const bps = carteira >= 100 ? 2000 : carteira >= 50 ? 1500 : 1000; return Math.round((carteira * mensalCents * bps) / 10_000); }
+  return 0;
+}
+
+/** Total acumulado em N meses e o ganho do último mês: nós e cada concorrente. */
+export function comparativoDeParceiros(r: RegraPerfil, porMes: number, mensalCents: number, meses: number) {
+  const soma = (f: (m: number) => number) => Array.from({ length: meses }, (_, i) => f(i + 1)).reduce((a, b) => a + b, 0);
+  const nos = { id: "nextlevel", nome: "NextLevel", total: soma((m) => ganhoNoMes(r, porMes, mensalCents, m).cents), ultimo: ganhoNoMes(r, porMes, mensalCents, meses).cents };
+  const outros = PROGRAMAS_CONCORRENTES.map((p) => ({ id: p.id, nome: p.nome, total: soma((m) => ganhoConcorrenteNoMes(p.id, porMes, mensalCents, m)), ultimo: ganhoConcorrenteNoMes(p.id, porMes, mensalCents, meses) }));
+  return [nos, ...outros];
+}

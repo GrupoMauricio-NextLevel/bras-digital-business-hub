@@ -1,6 +1,6 @@
 # Parceiros: regra única para todos (proposta)
 
-> Estado: **PROPOSTA**, aguardando o dono (06/11/2026).
+> Estado: **NO AR (D260).** O dono escolheu os níveis 20%, 24% e 28% (10 e 25 clientes ativos), o saque mínimo de R$ 50 e o link de 90 dias. Não havia parceiros nem vendas, então não houve transição.
 > Pedido do dono: "simplificar todo esse racional de parceiros: uma regra só para todo mundo; sem Black, sem benefício diferente; ter como base os programas dos concorrentes e pagar nesse mesmo sentido."
 > Revisa a D226, a D248 e a D249 (comissões por tipo, níveis, bônus, 100% na Black).
 

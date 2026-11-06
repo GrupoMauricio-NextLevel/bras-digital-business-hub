@@ -5,28 +5,39 @@ import { partnerActivities, partners } from "@/db/schema";
 import { registerPartner } from "@/lib/domain/partners";
 import { cartoesDeParceiros } from "@/lib/domain/crm-parceiros";
 import { dadosDaCaptacao, escadaDoPerfil, ganhoNoMes, registrarCandidatura } from "@/lib/domain/captacao-parceiros";
+import { comparativoDeParceiros, PROGRAMAS_CONCORRENTES } from "@/lib/finance/captacao-regras";
 
-/** Página de captação de parceiros (D252, PV4). */
+/** Página de captação de parceiros (D252, PV4; regra única da D260). */
 describe("captação de parceiros", () => {
   let ctx: Awaited<ReturnType<typeof freshDb>>;
   beforeEach(async () => { ctx = await freshDb(); });
-  const r = { primeiraBps: 5000, recorrenteBps: 2000, meses: 600 };
 
-  it("simulador: 1ª mensalidade + carteira acumulada com o nível subindo; bônus do vendedor", () => {
-    expect(ganhoNoMes(r, "AFFILIATE", 3, 14_700, 1)).toMatchObject({ cents: 22_050, tier: "INICIAL" });
-    // mês 12: 3 novas (50%) + 33 na carteira, nível Diamante (20+) = 26% para criador
-    const m12 = ganhoNoMes(r, "AFFILIATE", 3, 14_700, 12);
-    expect([m12.tier, m12.recBps]).toEqual(["DIAMANTE", 2600]);
-    expect(m12.cents).toBe(22_050 + Math.round(33 * 14_700 * 0.26));
-    expect(ganhoNoMes({ ...r, recorrenteBps: 2500 }, "AGENCY", 1, 14_700, 21).recBps).toBe(3200);
-    expect(ganhoNoMes(r, "REPRESENTATIVE", 10, 14_700, 1).bonusCents).toBe(10 * 3_000 + 10_000);
-    expect(ganhoNoMes(r, "AFFILIATE", 10, 14_700, 1).bonusCents).toBe(0);
+  it("simulador (D260): toda mensalidade paga o % do nível; o nível sobe com a carteira; sem bônus", () => {
+    const r = { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 };
+    expect(ganhoNoMes(r, 3, 14_700, 1)).toMatchObject({ cents: Math.round(3 * 14_700 * 0.2), tier: "INICIAL", carteira: 3 });
+    // mês 4: 12 clientes = Prata (24%) na carteira toda; mês 9: 27 clientes = Ouro (28%)
+    expect(ganhoNoMes(r, 3, 14_700, 4)).toMatchObject({ cents: Math.round(12 * 14_700 * 0.24), tier: "PRATA", recBps: 2400 });
+    expect(ganhoNoMes(r, 3, 14_700, 9)).toMatchObject({ cents: Math.round(27 * 14_700 * 0.28), tier: "OURO", recBps: 2800 });
+    expect(ganhoNoMes(r, 30, 14_700, 24).recBps).toBe(2800); // teto 28%
   });
 
-  it("escada usa as regras reais do catálogo para cada perfil", async () => {
+  it("comparativo com os concorrentes: mesma mensalidade, regras publicadas; 2 lojas/mês em 24 meses", () => {
+    const r = { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 };
+    const c = comparativoDeParceiros(r, 2, 14_700, 24);
+    const por = (id: string) => c.find((x) => x.id === id)!;
+    expect(por("nextlevel").total).toBe(2_366_112);
+    expect(por("nuvem-especialistas").total).toBe(1_764_000);
+    expect(por("nuvem-associados").total).toBe(1_381_800); // a última leva ainda só pagou a 1ª mensalidade
+    expect(por("wbuy").total).toBe(882_000);
+    expect(por("nextlevel").ultimo).toBe(197_568);
+    for (const x of c.slice(1)) expect(por("nextlevel").total).toBeGreaterThan(x.total);
+    for (const p of PROGRAMAS_CONCORRENTES) expect(p.fonte).toMatch(/^https:\/\//);
+  });
+
+  it("escada usa a regra única do catálogo, igual para todos os perfis", async () => {
     const d = await dadosDaCaptacao(ctx.db);
-    expect([d.regras.criador.primeiraBps, d.regras.criador.recorrenteBps, d.regras.agencia.recorrenteBps]).toEqual([5000, 2000, 2500]);
-    expect(escadaDoPerfil(d.regras.agencia, "AGENCY", 14_700).map((n) => n.recBps)).toEqual([2500, 2700, 2900, 3200]);
+    for (const k of ["criador", "vendedor", "agencia"] as const) expect([d.regras[k].primeiraBps, d.regras[k].recorrenteBps]).toEqual([2000, 2000]);
+    expect(escadaDoPerfil(d.regras.agencia, 14_700).map((n) => n.recBps)).toEqual([2000, 2400, 2800]);
     expect(d.planos.length).toBeGreaterThan(0);
   });
 

@@ -67,10 +67,10 @@ describe("cadastro e configurações", () => {
     await expect(registerPartner(ctx.db, { name: "Outro Nome", email: "y@exemplo.com", password: "senha-forte-1", taxId: validCpf(91), phone: "11999990000", acceptTerms: false as unknown as true })).rejects.toThrow();
   });
   it("só o Master altera as regras e o padrão vem da decisão do dono", async () => {
-    expect(await getPartnerSettings(ctx.db)).toMatchObject({ maintenanceBps: 500, inactiveFeeCents: 10_000, minPayoutCents: 10_000 });
+    expect(await getPartnerSettings(ctx.db)).toMatchObject({ maintenanceBps: 500, inactiveFeeCents: 10_000, minPayoutCents: 5_000, attributionDays: 90 }); // D260
     await expect(savePartnerSettings(ctx.db, ctx.actors.mantos, S)).rejects.toThrow(/NextLevel/);
-    await savePartnerSettings(ctx.db, ctx.actors.master, { ...S, minPayoutCents: 5_000 });
-    expect((await getPartnerSettings(ctx.db)).minPayoutCents).toBe(5_000);
+    await savePartnerSettings(ctx.db, ctx.actors.master, { ...S, minPayoutCents: 7_000 });
+    expect((await getPartnerSettings(ctx.db)).minPayoutCents).toBe(7_000);
   });
   it("parceiro só enxerga o que é dele; lojista não acessa a área", async () => {
     await expect(partnerOfActor(ctx.db, ctx.actors.mantos)).rejects.toThrow(/parceiros/);
@@ -235,9 +235,9 @@ describe("reativação, saque e Master", () => {
     expect((await balances(ctx.db, a.partnerId)).availableCents).toBe(5_000);
   });
   it("saque: mínimo, 1 por semana, chave do titular; Master aprova, paga com comprovante ou recusa e devolve o saldo", async () => {
-    const a = await inactivePartnerWithBalance(5_000);
+    const a = await inactivePartnerWithBalance(4_000); // abaixo do mínimo de R$ 50 (D260)
     await expect(requestPayout(ctx.db, a.actor, { ownerConfirmed: true }, now)).rejects.toThrow(/mínimo/);
-    await adjustCommission(ctx.db, ctx.actors.master, a.partnerId, 20_000, "Bônus", now);
+    await adjustCommission(ctx.db, ctx.actors.master, a.partnerId, 21_000, "Bônus", now);
     await expect(requestPayout(ctx.db, a.actor, { ownerConfirmed: false }, now)).rejects.toThrow(/mesmo CPF/);
     const { id } = await requestPayout(ctx.db, a.actor, { ownerConfirmed: true }, now);
     expect((await balances(ctx.db, a.partnerId)).availableCents).toBe(0);

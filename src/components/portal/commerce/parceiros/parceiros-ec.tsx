@@ -11,12 +11,13 @@ import { SeloMercadoPago } from "@/components/portal/commerce/comparativo";
 import { CaptacaoInterativa } from "./captacao-interativa";
 import "@/components/imersiva/imersiva.css";
 
-const FAQ = [
+const faq = (saqueMinimo: string) => [
   ["Quanto custa participar?", "Nada. O cadastro é gratuito, não tem meta mensal nem taxa de manutenção. Você recebe o seu link na hora."],
-  ["Quando eu ganho?", "Quando a loja que você indicou paga a primeira mensalidade (o teste grátis não conta). Depois, a cada mensalidade paga, enquanto o cliente ficar."],
-  ["Como funcionam os níveis?", "Contamos os seus clientes pagantes ativos. Com 3 você vira Prata, com 10 Ouro e com 20 Diamante. O nível sobe na hora e só desce depois de 2 meses abaixo do mínimo."],
-  ["Qual a diferença entre criador, vendedor e agência?", "Criador indica para a sua audiência. Vendedor visita lojistas e ganha também um bônus por loja ativada. Agência cuida de várias marcas e tem a maior recorrência. A equipe confere o perfil no cadastro."],
-  ["Como recebo?", "As comissões ficam 30 dias em garantia (para cobrir estornos) e depois ficam disponíveis para saque por Pix, para o mesmo CPF ou CNPJ do cadastro."],
+  ["Quando eu ganho?", "Em toda mensalidade que a loja indicada pagar, desde a primeira (o teste grátis não conta), enquanto o cliente ficar."],
+  ["Como funcionam os níveis?", "Contamos os seus clientes pagantes ativos: até 9, você ganha 20% de toda mensalidade; com 10, 24%; com 25, 28%, sempre sobre a carteira inteira. O nível sobe na hora e só desce depois de 2 meses abaixo do mínimo."],
+  ["Qual a diferença entre criador, vendedor e agência?", "No ganho, nenhuma: a regra é uma só para todos. O perfil serve para a equipe te apoiar do jeito certo (conteúdo para o criador, roteiro de visita para o vendedor, migração de carteira para a agência)."],
+  ["Como recebo?", `As comissões ficam 30 dias em garantia (para cobrir estornos) e depois ficam disponíveis para saque por Pix a partir de ${saqueMinimo}, para o mesmo CPF ou CNPJ do cadastro. Não precisa de CNPJ para participar.`],
+  ["Tem campanha ou bônus?", "Não. A regra é a mesma o ano todo, para todo mundo: transparente e fácil de conferir no extrato."],
   ["Posso indicar a mim mesmo?", "Não. Indicação da própria loja (mesmo CPF/CNPJ ou e-mail) não gera comissão."],
   ["E se eu parar de indicar?", "Você continua recebendo a recorrência dos clientes ativos. O cadastro só fica inativo depois de 6 meses sem nenhum cliente ativo e sem nenhuma venda."],
   ["Tem garantia de ganhos?", "Não. A renda depende das lojas que você indica e de elas continuarem assinando. O simulador mostra só as regras."],
@@ -28,13 +29,15 @@ const PAINEL = "/portal/commerce/parceiros/painel-parceiro-demo.webp";
  * (/parceiros, /parceiros/criadores, /parceiros/vendedores, /parceiros/agencias). Números das regras vigentes do catálogo.
  */
 export async function ParceirosEc({ brand, perfil = "criador" }: { brand: Brand; perfil?: PerfilCaptacao }) {
-  const d = await dadosDaCaptacao(await getDb());
+  const db = await getDb();
+  const [d, ajustes] = await Promise.all([dadosDaCaptacao(db), (await import("@/lib/domain/partners")).getPartnerSettings(db)]);
+  const FAQ = faq(formatBRL(ajustes.minPayoutCents));
   const temPainel = existsSync(path.join(process.cwd(), "public", PAINEL));
   const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   return (
     <div className="im-tema-ecommerce">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CaptacaoInterativa inicial={perfil} regras={d.regras} planos={d.planos} bonus={d.bonus} marca={brand.name} />
+      <CaptacaoInterativa inicial={perfil} regras={d.regras} planos={d.planos} marca={brand.name} />
 
       <section className="bg-surface px-4 py-16 md:py-24" aria-labelledby="facil-t">
         <div className="mx-auto max-w-6xl">

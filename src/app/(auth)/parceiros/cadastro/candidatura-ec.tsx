@@ -96,7 +96,7 @@ export function CandidaturaEc({ termsVersion, inicial }: { termsVersion: string;
             <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Nome</dt><dd className="font-semibold">{v.name}</dd></div>
             <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Região</dt><dd className="font-semibold">{v.region}</dd></div>
           </dl>
-          <p className="text-sm text-body">O seu link sai assim que você entrar. {perfil === "agencia" ? "O selo de agência (50% + 25%) é aprovado pela equipe em até 2 dias úteis." : perfil === "vendedor" ? "A equipe confere a trilha de vendedor em até 2 dias úteis." : "A equipe NextLevel entra em contato para te ajudar a começar."}</p>
+          <p className="text-sm text-body">O seu link sai assim que você entrar, já com a regra de todos os parceiros: 20% de toda mensalidade desde o 1º cliente. {perfil === "agencia" ? "O selo de agência parceira é aprovado pela equipe em até 2 dias úteis." : "A equipe NextLevel entra em contato para te ajudar a começar."}</p>
           <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={v.terms} onChange={set("terms")} className="mt-1 size-4" /> <span>Li e aceito os <Link href="/parceiros/termos" target="_blank" className="font-semibold underline underline-offset-2">termos do programa</Link> (versão {termsVersion}).</span></label>
         </div>
       ) : null}

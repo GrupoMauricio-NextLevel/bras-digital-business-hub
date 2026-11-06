@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { Megaphone, Save, Trophy, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
-import { MoneyInput } from "@/components/ui/money-input";
 import { FormField } from "@/components/app/form-field";
 import type { Filtro } from "@/lib/domain/crm-parceiros";
 import { avisarSegmentoAction, criarDesafioAction, encerrarDesafioAction, removerSegmentoAction, salvarSegmentoAction } from "@/app/actions/crm-parceiros";
@@ -52,16 +51,15 @@ export function RemoverSegmento({ id, nome }: { id: string; nome: string }) {
 /** Criar desafio do mês. */
 export function NovoDesafio({ periodo }: { periodo: string }) {
   const router = useRouter();
-  const [v, setV] = React.useState({ title: "", target: 3, bonusCents: 10_000, period: periodo, kinds: [] as string[] });
+  const [v, setV] = React.useState({ title: "", target: 3, bonusCents: 0, period: periodo, kinds: [] as string[] });
   const [busy, setBusy] = React.useState(false);
   const KINDS = [["AFFILIATE", "Criadores"], ["REPRESENTATIVE", "Representantes"], ["AGENCY", "Agências"], ["AGENCY_ELITE", "Agências Elite"]] as const;
   const criar = async () => { setBusy(true); const r = await criarDesafioAction(v); setBusy(false); if (r.ok) { toast.success("Desafio criado"); setV({ ...v, title: "" }); router.refresh(); } else toast.error(r.error); };
   return (
     <div className="grid gap-3">
       <div className="grid gap-3 sm:grid-cols-4">
-        <FormField label="Nome do desafio" htmlFor="de-t" className="sm:col-span-2"><Input id="de-t" value={v.title} onChange={(e) => setV({ ...v, title: e.target.value })} placeholder="Ex.: 3 lojas na Black" /></FormField>
+        <FormField label="Nome do desafio" htmlFor="de-t" className="sm:col-span-2"><Input id="de-t" value={v.title} onChange={(e) => setV({ ...v, title: e.target.value })} placeholder="Ex.: 3 lojas novas em novembro" /></FormField>
         <FormField label="Meta (lojas novas no mês)" htmlFor="de-m"><Input id="de-m" type="number" min={1} value={v.target} onChange={(e) => setV({ ...v, target: Number(e.target.value) })} /></FormField>
-        <MoneyInput label="Bônus" id="de-b" valueCents={v.bonusCents} onChange={(c: number) => setV({ ...v, bonusCents: c })} />
         <FormField label="Mês" htmlFor="de-p"><Input id="de-p" type="month" value={v.period} onChange={(e) => setV({ ...v, period: e.target.value })} /></FormField>
       </div>
       <fieldset className="flex flex-wrap gap-3 text-sm"><legend className="mb-1 text-sm font-medium">Quem participa (nenhum marcado = todos)</legend>

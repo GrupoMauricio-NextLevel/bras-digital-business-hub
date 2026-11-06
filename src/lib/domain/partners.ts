@@ -530,6 +530,6 @@ export async function runDailyPartnerJobs(db: Database, now = new Date()) {
   if (now.getUTCDate() === 1) { const prev = periodOf(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))); closed = (await closePartnerMonth(db, prev, now)).closed; }
   const { rodarNiveis } = await import("./niveis-parceiro");
   const niveis = await rodarNiveis(db, now);
-  const desafios = await (await import("./crm-parceiros")).pagarDesafios(db, now);
-  return { released, closed, niveis, desafios };
+  // D260: o desafio do mês é reconhecimento (destaque e selo), sem dinheiro; nada é pago pela rotina.
+  return { released, closed, niveis, desafios: 0 };
 }

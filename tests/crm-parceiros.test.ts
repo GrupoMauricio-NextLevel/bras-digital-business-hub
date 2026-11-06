@@ -6,7 +6,7 @@ import { newId } from "@/lib/ids";
 import { registerPartner } from "@/lib/domain/partners";
 import {
   avisarSegmento, avisosDoParceiro, cartoesDeParceiros, concluirTarefa, criarDesafio, csvDoSegmento, desafiosDoParceiro, etapaDe, fichaDoParceiro,
-  filaDoCrm, filtrar, moverEtapa, pagarDesafios, ranking, registrarAtividade, saudeDe, salvarPerfilParceiro, salvarSegmento, segmentos,
+  filaDoCrm, filtrar, moverEtapa, ranking, registrarAtividade, saudeDe, salvarPerfilParceiro, salvarSegmento, segmentos,
 } from "@/lib/domain/crm-parceiros";
 
 /** CRM de parceiros do Master (D251, PV3). */
@@ -68,18 +68,17 @@ describe("CRM de parceiros", () => {
     await expect(moverEtapa(ctx.db, ctx.actors.mantos, b, "APROVADO")).rejects.toThrow();
   });
 
-  it("aviso em massa chega só ao segmento; desafio do mês paga uma vez a quem bateu", async () => {
+  it("aviso em massa chega só ao segmento; desafio do mês marca quem bateu (reconhecimento, sem dinheiro: D260)", async () => {
     await salvarPerfilParceiro(ctx.db, ctx.actors.master, a, { region: "Brás" });
     const r = await avisarSegmento(ctx.db, ctx.actors.master, { region: "brás" }, "Semana da Black", "Use o cupom de 7 dias com seus clientes.", NOW);
     expect(r.enviados).toBe(1);
     expect((await avisosDoParceiro(ctx.db, a, NOW)).map((x) => x.title)).toEqual(["Semana da Black"]);
     expect(await avisosDoParceiro(ctx.db, b, NOW)).toEqual([]);
-    await criarDesafio(ctx.db, ctx.actors.master, { title: "3 lojas na Black", period: "2026-11", target: 3, bonusCents: 10_000, kinds: [] });
+    await criarDesafio(ctx.db, ctx.actors.master, { title: "3 lojas em novembro", period: "2026-11", target: 3, kinds: [] });
+    await expect(criarDesafio(ctx.db, ctx.actors.master, { title: "Desafio com prêmio", period: "2026-11", target: 3, bonusCents: 10_000, kinds: [] })).rejects.toThrow();
     await venda(a, "2026-11-02T00:00:00Z", "d1"); await venda(a, "2026-11-03T00:00:00Z", "d2");
     expect((await desafiosDoParceiro(ctx.db, a, NOW))[0]).toMatchObject({ feitos: 2, batido: false });
-    expect(await pagarDesafios(ctx.db, NOW)).toBe(0);
     await venda(a, "2026-11-04T00:00:00Z", "d3");
-    expect(await pagarDesafios(ctx.db, NOW)).toBe(1);
-    expect(await pagarDesafios(ctx.db, NOW)).toBe(0);
+    expect((await desafiosDoParceiro(ctx.db, a, NOW))[0]).toMatchObject({ feitos: 3, batido: true, bonusCents: 0 });
   });
 });

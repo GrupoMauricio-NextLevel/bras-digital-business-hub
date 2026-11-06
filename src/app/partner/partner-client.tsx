@@ -112,7 +112,7 @@ export function ProfileForm({ phone, displayName, hasPix }: { phone: string; dis
   );
 }
 
-/** Pedido para virar agência parceira (D220): 50% + 25% (D226) depois da aprovação do Master. */
+/** Pedido do selo de agência parceira (a comissão é a mesma de todos, D260). */
 export function PedirAgencia() {
   const router = useRouter();
   const [info, setInfo] = React.useState("");

@@ -1,10 +1,11 @@
 import { and, asc, desc, eq, gt, inArray, lte } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions, catalogProducts, commissionRules, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
+import { CATALOG_STATUSES, catalogOffers, nlSubscriptions, catalogPriceVersions, catalogProducts, commissionRules, platformSettings, GATEWAYS, JOURNEY_PHASES, PARTNER_KINDS, PRICE_CYCLES, type CatalogContent, type CatalogStatus, type OfferRules, type PriceCycle } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { COMISSOES_D220, PRECOS_D220, REF_D220, descontoAnualBps } from "@/lib/finance/revisao-d220";
 import { COMISSOES_D226, REF_D226 } from "@/lib/finance/revisao-d226";
+import { COMISSOES_D260, REF_D260 } from "@/lib/finance/revisao-d260";
 import { PRECOS_D228, REF_D228 } from "@/lib/finance/revisao-d228";
 import { ENTRY_OFFER_KEY, FAQ_ANUAL, FAQ_TESTE, SEED_COMMISSION_RULES, SEED_DOOR_OFFERS, SEED_OFFER, SEED_PRODUCTS } from "@/lib/finance/catalog-seed";
 import type { PriceRule } from "@/lib/finance/catalog-pricing";
@@ -57,6 +58,8 @@ export async function ensureCatalogSeed(db: Database): Promise<number> {
   await agendarRevisaoD228(db);
   await aplicarOfertaSemPrimeiroMes(db);
   await aplicarComissoesD226(db);
+  await aplicarComissoesD260(db);
+  await aplicarAjustesParceirosD260(db);
   return created;
 }
 
@@ -65,8 +68,27 @@ async function aplicarComissoesD226(db: Database) {
   const regras = await db.select().from(commissionRules).orderBy(desc(commissionRules.version));
   for (const r of COMISSOES_D226) {
     const ult = regras.find((x) => x.key === r.key);
-    if (ult?.reason.includes(REF_D226)) continue;
+    if (regras.some((x) => x.key === r.key && x.reason.includes(REF_D226))) continue;
     await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: 30, benefit: r.benefit, effectiveFrom: new Date(0).toISOString(), reason: `Programa de parceiros v2: criador e representante 50% + 20%, agência 50% + 25%, Elite 50% + 32%, enquanto o cliente ficar (${REF_D226})` }).onConflictDoNothing();
+  }
+}
+
+/** D260: saque mínimo de R$ 50 e link válido por 90 dias, uma vez por banco (depois o Master ajusta como quiser). */
+async function aplicarAjustesParceirosD260(db: Database) {
+  const marca = "partner_settings.d260";
+  if (await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, marca) })) return;
+  const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, "partner_settings") });
+  if (row) await db.update(platformSettings).set({ value: { ...(row.value as object), minPayoutCents: 5_000, attributionDays: 90 }, updatedAt: new Date().toISOString() }).where(eq(platformSettings.key, "partner_settings"));
+  await db.insert(platformSettings).values({ key: marca, value: { aplicado: true } }).onConflictDoNothing();
+}
+
+/** Regra única dos parceiros (D260): nova versão de cada regra, uma vez por banco, igual para todos os tipos. */
+async function aplicarComissoesD260(db: Database) {
+  const regras = await db.select().from(commissionRules).orderBy(desc(commissionRules.version));
+  for (const r of COMISSOES_D260) {
+    if (regras.some((x) => x.key === r.key && x.reason.includes(REF_D260))) continue;
+    const ult = regras.find((x) => x.key === r.key);
+    await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: 30, benefit: r.benefit, effectiveFrom: new Date(0).toISOString(), reason: `Regra única dos parceiros: 20% de toda mensalidade, 24% com 10 clientes e 28% com 25, sem Black nem bônus (${REF_D260})` }).onConflictDoNothing();
   }
 }
 
@@ -117,7 +139,9 @@ async function aplicarRevisaoD220(db: Database) {
   const regras = await db.select().from(commissionRules).orderBy(desc(commissionRules.version));
   for (const r of COMISSOES_D220) {
     const ult = regras.find((x) => x.key === r.key);
-    if (ult?.reason.includes(REF_D220)) continue;
+    // Uma vez por banco: se a revisão já existe em qualquer versão, não volta (antes só olhava a última versão e
+    // reaplicava a D220 em cima da D226 a cada inicialização).
+    if (regras.some((x) => x.key === r.key && x.reason.includes(REF_D220))) continue;
     await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: ult?.holdDays ?? 14, benefit: r.benefit, effectiveFrom: vigencia, reason: "Programa de parceiros da E-commerce: indicador 20% + 10%, agência 30% + 15% (D220)" }).onConflictDoNothing();
   }
 }

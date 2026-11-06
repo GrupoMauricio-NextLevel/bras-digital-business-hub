@@ -281,7 +281,8 @@ export async function avisosDoParceiro(db: Database, partnerId: string, now = ne
 // ---------------------------------------------------------------------------------------------------------------------
 const desafioSchema = z.object({
   title: z.string().trim().min(5).max(80), period: z.string().regex(/^\d{4}-\d{2}$/), target: z.number().int().min(1).max(500),
-  bonusCents: z.number().int().min(100).max(1_000_000), kinds: z.array(z.string()).max(5).default([]),
+  /** D260: o desafio é reconhecimento (ranking e destaque), sem dinheiro. */
+  bonusCents: z.number().int().min(0).max(0).default(0), kinds: z.array(z.string()).max(5).default([]),
 });
 export async function criarDesafio(db: Database, actor: Actor, raw: unknown) {
   requireMasterFn(actor, ["FINANCEIRO", "COMERCIAL"]);

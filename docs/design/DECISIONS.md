@@ -2997,3 +2997,42 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **SuperDrop (D216):** loja de rede recebe o box, o card e o carrinho de antes (sem escada, sem mix, só a primeira grade).
 - **Testes:** `tests/atacado-vitrine.test.ts` (escada, card, gatilhos e vitrine = pedido cobrado, inclusive com o custo subindo depois). Acessibilidade (axe) sem erro no produto e no catálogo.
 - **Fica para a próxima fase:** o lojista escolher se o card destaca varejo ou atacado; o botão "Adicionar ao pedido" para loja só de atacado; "Pedir pelo WhatsApp" com a grade.
+
+## D260 — Parceiros: regra única 20% / 24% / 28%, sem Black e sem bônus (2026-11-06)
+- **Pedido do dono:** simplificar o programa: uma regra só para todo mundo, sem Black nem benefício diferente, com base nos concorrentes e um pouco à frente deles. Não havia parceiro nem venda feitos, então a regra vale para todos.
+- **Regra (`revisao-d260.ts`, `niveis-regras.ts`):**
+  - o mesmo percentual para criador, vendedor e agência, sobre **toda mensalidade paga, desde a 1ª**, enquanto o cliente ficar;
+  - **20%** até 9 clientes ativos, **24%** com 10 e **28%** com 25, sobre a carteira inteira;
+  - o nível sobe na hora e só desce depois de 2 meses abaixo do mínimo (como na D249);
+  - no plano anual, o percentual vale sobre o valor pago no ano.
+- **Saem:**
+  - os 50% da 1ª mensalidade;
+  - as regras por tipo e a Agência Elite;
+  - o Diamante (quem estivesse nele recebe 28%);
+  - o bônus do representante (R$ 30 e R$ 100);
+  - os 100% na Black;
+  - o dinheiro do desafio do mês, que vira só reconhecimento (ranking e destaque).
+  - O histórico das regras antigas fica guardado.
+- **Mais fácil que os concorrentes:**
+  - saque mínimo de R$ 50;
+  - link válido por 90 dias;
+  - aplicado uma vez nos bancos que já tinham a configuração (o Master continua podendo mudar).
+- **Concorrentes (sites oficiais, 06/11/2026):**
+  - Nuvemshop Especialistas: 20% a partir do Silver, e 0% no nível de entrada;
+  - Nuvemshop Associados: as 2 primeiras mensalidades;
+  - WBuy: 10%, 15% e 20% por volume (100+ indicações), exige CNPJ;
+  - Tray: até 20%, sem critério publicado.
+- **Página de parceiros:**
+  - frase única, escada de 3 níveis e simulador igual ao cálculo real;
+  - calculadora **"Compare o seu programa"**, com a mesma mensalidade para todos, link de cada fonte e data;
+  - com 2 lojas por mês em 24 meses: NextLevel R$ 23.661, Nuvemshop Especialistas até R$ 17.640, Associados R$ 13.818 e WBuy R$ 8.820.
+- **Também:**
+  - FAQ, Maurício (guia público e manual do painel), painel do parceiro, cadastro e CRM do Master;
+  - termos próprios da E-commerce: antes a página mostrava os termos do SuperDrop, com meta mensal e taxa;
+  - o vendedor já entra como representante, porque o tipo só organiza o CRM.
+- **Correção junto:** as revisões de comissão (D220 e D226) eram reaplicadas a cada inicialização, porque olhavam só a última versão. Agora cada revisão entra uma vez só, e um teste garante isso.
+- **Testes:**
+  - `comissoes-d226`: regra vigente igual para todos, sem Black, anual e idempotência;
+  - `niveis-parceiro`: 20%, 24% e 28%, e a rotina sem bônus;
+  - `captacao-parceiros`: simulador e comparativo;
+  - `guia-parceiros`.

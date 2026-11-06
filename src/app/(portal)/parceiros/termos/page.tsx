@@ -3,13 +3,15 @@ import { getDb } from "@/db/client";
 import { requireBrandFeature } from "@/lib/brand-server";
 import { getPartnerSettings } from "@/lib/domain/partners";
 import { formatBRL } from "@/lib/money";
+import { MESES_PARA_DESCER, NIVEIS } from "@/lib/finance/niveis-regras";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Termos do Programa de Parceiros", robots: { index: false } };
 
 export default async function TermosParceiros() {
-  await requireBrandFeature("partners");
+  const brand = await requireBrandFeature("partners");
   const s = await getPartnerSettings(await getDb());
+  if (brand.code === "NEXTLEVEL_COMMERCE") return <TermosEcommerce s={s} />;
   const tiers = [...s.tiers].sort((a, b) => a.min - b.min).map((t) => `${t.bps / 100}% (${t.max ? `${t.min}${t.max !== t.min ? ` a ${t.max}` : ""}` : `${t.min} ou mais`} ativações no mês)`).join(", ");
   return (
     <article className="mx-auto max-w-3xl space-y-5 px-4 py-14 text-foreground">
@@ -25,6 +27,31 @@ export default async function TermosParceiros() {
       <p>Toda comissão fica em garantia por {s.guaranteeDays} dias antes de ficar disponível. Estorno ou cancelamento do pagamento do cliente devolve a comissão correspondente, inclusive por débito no saldo se já tiver sido sacada. O saque mínimo é {formatBRL(s.minPayoutCents)}, limitado a {s.payoutsPerWeek} pedido(s) por semana, por Pix para chave do mesmo CPF/CNPJ do cadastro.</p>
       <h2 className="text-xl font-bold">5. Atribuição</h2>
       <p>O cupom do parceiro tem prioridade; na falta dele vale o último link clicado em até {s.attributionDays} dias. A atribuição é gravada no cadastro da loja e não muda. Indicação da própria pessoa (mesmo CPF/CNPJ ou e-mail) não gera comissão.</p>
+      <h2 className="text-xl font-bold">6. Conduta e ganhos</h2>
+      <p>É proibido prometer ganhos, usar spam, se passar pela NextLevel ou usar a marca fora das regras. Os ganhos dependem das vendas de cada parceiro e não são garantidos. A NextLevel pode suspender cadastros por fraude ou descumprimento destes termos.</p>
+      <h2 className="text-xl font-bold">7. Dados pessoais</h2>
+      <p>O parceiro não recebe dados pessoais dos clientes indicados além do necessário para acompanhar comissões (nome da loja parcial, etapa e valores). Cliques são guardados apenas como registros com hash, sem IP ou agente de usuário em texto.</p>
+    </article>
+  );
+}
+
+/** Termos da E-commerce (D260, regra única). Os números de saque, garantia e link vêm da configuração do Master. */
+function TermosEcommerce({ s }: { s: Awaited<ReturnType<typeof getPartnerSettings>> }) {
+  const niveis = NIVEIS.map((n) => `${n.bps / 100}% ${n.minimo ? `com ${n.minimo} ou mais clientes ativos` : "desde o 1º cliente"}`).join("; ");
+  return (
+    <article className="mx-auto max-w-3xl space-y-5 px-4 py-14 text-foreground">
+      <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Termos do Programa de Parceiros</h1>
+      <p className="text-sm text-muted-foreground">Versão {s.termsVersion}. Programa da NextLevel E-commerce, operado pela NextLevel Marketing Ltda. Este texto é um modelo de partida e deve passar por revisão jurídica e contábil antes do lançamento público.</p>
+      <h2 className="text-xl font-bold">1. O programa</h2>
+      <p>O parceiro indica lojistas para assinar os planos da NextLevel E-commerce e recebe comissão sobre as mensalidades efetivamente pagas por esses clientes. Participar é grátis: não há mensalidade, meta mensal nem taxa de manutenção. Pessoas físicas (CPF) e empresas (CNPJ) podem participar.</p>
+      <h2 className="text-xl font-bold">2. Comissão (regra única)</h2>
+      <p>A regra é a mesma para todos os parceiros (criador, vendedor ou agência): {niveis}, sobre toda mensalidade paga, desde a primeira, enquanto o cliente pagar. Clientes ativos são as lojas indicadas com assinatura paga em dia. O nível sobe na hora em que o mínimo é atingido e só desce depois de {MESES_PARA_DESCER} meses seguidos abaixo dele. No plano anual, o percentual vale sobre o valor pago no ano. A base é o valor pago pelo cliente, descontados os impostos configurados. Não há bônus avulso nem campanha que altere a regra.</p>
+      <h2 className="text-xl font-bold">3. Garantia, estorno e saque</h2>
+      <p>Toda comissão fica em garantia por 30 dias antes de ficar disponível. Estorno ou cancelamento do pagamento do cliente devolve a comissão correspondente, inclusive por débito no saldo se já tiver sido sacada. O saque mínimo é {formatBRL(s.minPayoutCents)}, por Pix para chave do mesmo CPF ou CNPJ do cadastro.</p>
+      <h2 className="text-xl font-bold">4. Atribuição</h2>
+      <p>O cupom do parceiro tem prioridade; na falta dele vale o último link clicado em até {s.attributionDays} dias. A atribuição é gravada no cadastro da loja e não muda. Indicação da própria pessoa (mesmo CPF/CNPJ ou e-mail) não gera comissão.</p>
+      <h2 className="text-xl font-bold">5. Inatividade</h2>
+      <p>O cadastro fica inativo depois de 6 meses sem nenhum cliente ativo e sem nenhuma comissão. Enquanto houver cliente pagando, o parceiro continua ativo e recebendo.</p>
       <h2 className="text-xl font-bold">6. Conduta e ganhos</h2>
       <p>É proibido prometer ganhos, usar spam, se passar pela NextLevel ou usar a marca fora das regras. Os ganhos dependem das vendas de cada parceiro e não são garantidos. A NextLevel pode suspender cadastros por fraude ou descumprimento destes termos.</p>
       <h2 className="text-xl font-bold">7. Dados pessoais</h2>

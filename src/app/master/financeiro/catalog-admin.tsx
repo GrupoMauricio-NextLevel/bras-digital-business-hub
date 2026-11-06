@@ -231,8 +231,8 @@ export function PartnerTierControl({ partnerId, tier, travado }: { partnerId: st
   const [t, setT] = React.useState(tier); const [motivo, setMotivo] = React.useState("");
   return (
     <div className="flex flex-wrap items-end gap-2">
-      <FormField label="Nível" htmlFor={`pt-${partnerId}`}><Select id={`pt-${partnerId}`} value={t} onChange={(e) => setT(e.target.value)}><option value="INICIAL">Inicial</option><option value="PRATA">Prata</option><option value="OURO">Ouro</option><option value="DIAMANTE">Diamante</option></Select></FormField>
-      <FormField label="Motivo" htmlFor={`ptr-${partnerId}`}><Input id={`ptr-${partnerId}`} value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: parceira estratégica da Black" /></FormField>
+      <FormField label="Nível" htmlFor={`pt-${partnerId}`}><Select id={`pt-${partnerId}`} value={t} onChange={(e) => setT(e.target.value)}><option value="INICIAL">Inicial</option><option value="PRATA">Prata</option><option value="OURO">Ouro</option></Select></FormField>
+      <FormField label="Motivo" htmlFor={`ptr-${partnerId}`}><Input id={`ptr-${partnerId}`} value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: acordo comercial aprovado pelo dono" /></FormField>
       <Button size="sm" variant="secondary" loading={busy} disabled={motivo.trim().length < 5} onClick={() => run(() => fixarNivelAction(partnerId, t as never, motivo), "Nível fixado")}>Fixar nível</Button>
       {travado ? <Button size="sm" variant="ghost" loading={busy} onClick={() => run(() => fixarNivelAction(partnerId, null, ""), "Nível volta ao cálculo mensal")}>Voltar ao cálculo</Button> : null}
     </div>

@@ -107,18 +107,11 @@ export async function recordSaleCommission(db: Database, c: CommissionInput) {
   if (!first && c.paymentIndex > 1 + rule.recurringMonths) return null;
   let bps = first ? rule.firstBps : rule.recurringBps;
   if (c.family === "COMMERCE_PLAN") {
-    // D249: nível do parceiro (sobe na hora da venda) soma pontos na recorrência; o anual acompanha.
+    // D260 (regra única): todo pagamento (1º, recorrente, mensal ou anual) paga o percentual do nível do parceiro,
+    // que sobe na hora da venda. Sem Black e sem regra diferente por tipo.
     const { recalcularNivel, recorrenteDoNivel } = await import("./niveis-parceiro");
-    const { anual, bpsPrimeiraNaBlack } = await import("@/lib/finance/revisao-d226");
     const tier = await recalcularNivel(db, p.id, now, { soSobe: true });
-    const rec = recorrenteDoNivel(rule.recurringBps, tier, p.kind);
-    if (!first) bps = rec;
-    else if (c.cycle === "ANNUAL" && rec !== rule.recurringBps) bps = Math.max(rule.firstBps, anual(rec));
-    // D226: durante a Black, a 1ª cobrança de plano da E-commerce paga 100% de uma mensalidade ao parceiro.
-    if (first) {
-      const { blackAgora } = await import("./campanha-black");
-      if ((await blackAgora(db, now)).ativa) bps = bpsPrimeiraNaBlack(c.cycle, rec);
-    }
+    bps = recorrenteDoNivel(first ? rule.firstBps : rule.recurringBps, tier, p.kind);
   }
   if (bps <= 0) return null;
   const { taxBps } = await getFinanceSettings(db);

@@ -76,13 +76,12 @@ export const GUIAS_PARCEIRO: Guia[] = [
     "Mostre a loja de demonstração no celular e o pedido de atacado (grade e peça avulsa no mesmo produto).",
     "Quem topar: crie a conta na hora pelo QR code ou com o seu cupom.",
     "Anote cada visita no CRM de clientes, com a próxima ação (ex.: voltar quinta para cadastrar os produtos).",
-    "Loja ativada (publicada, com a 1ª venda paga e 30 dias de assinatura) rende o bônus de vendedor, além da comissão.",
   ] },
   { id: "agencia-clientes", titulo: "Levar os clientes da sua agência", termos: ["agencia", "meus clientes", "carteira", "marcas que atendo", "social media", "consultoria", "levar clientes"], passos: [
     "Separe os clientes por momento: quem ainda não tem loja, quem paga taxa sobre venda em outra plataforma e quem está insatisfeito.",
     "Para quem paga taxa: monte a conta do custo total (mensalidade + taxa) com a página Comparativo. É o argumento mais forte.",
     "Ofereça a implantação como serviço seu (você cobra do cliente) e a migração pela NextLevel quando ele precisar.",
-    "Crie a conta de cada cliente com o seu link ou cupom: a recorrência de agência é a maior do programa.",
+    "Crie a conta de cada cliente com o seu link ou cupom: cada um soma para o seu nível (24% com 10 clientes ativos, 28% com 25), sobre toda a carteira.",
     "Peça o selo de agência parceira no Início, se ainda não tem.",
   ] },
 
@@ -172,35 +171,25 @@ export const GUIAS_PARCEIRO: Guia[] = [
   ] },
 
   // ---------------- Ganhos ----------------
-  { id: "comissao", titulo: "Como a comissão é calculada", termos: ["comissao", "quanto ganho", "porcentagem", "percentual", "calculo", "valor", "ganho", "primeira mensalidade", "recorrente"], passos: [
-    "Você ganha uma porcentagem da 1ª mensalidade e uma porcentagem de cada mensalidade seguinte, enquanto o cliente ficar.",
-    "As porcentagens de cada tipo (criador, vendedor, agência) estão no Início e na página de parceiros.",
-    "No plano anual, você recebe de uma vez o equivalente ao mensal do ano.",
+  { id: "comissao", titulo: "Como a comissão é calculada", termos: ["bonus", "black", "campanha", "comissao", "quanto ganho", "porcentagem", "percentual", "calculo", "valor", "ganho", "primeira mensalidade", "recorrente"], passos: [
+    "Regra única, igual para criador, vendedor e agência: você ganha a porcentagem do seu nível sobre TODA mensalidade paga, desde a 1ª, enquanto o cliente ficar.",
+    "Até 9 clientes ativos: 20%. Com 10: 24%. Com 25: 28%. O percentual vale para a carteira inteira.",
+    "No plano anual, você recebe a porcentagem sobre o valor pago no ano, de uma vez.",
+    "Não tem bônus avulso nem campanha que muda a conta: o extrato mostra cada lançamento.",
     "A base é o valor pago pelo cliente, descontados os impostos e as taxas de pagamento, conforme a regra do programa. O extrato mostra cada lançamento.",
   ], link: { rotulo: "Abrir o Financeiro", href: "/partner/finance" } },
-  { id: "niveis", titulo: "Subir de nível (Prata, Ouro, Diamante)", termos: ["nivel", "niveis", "prata", "ouro", "diamante", "subir", "subo", "elite", "aumentar comissao", "escada"], passos: [
-    "O nível conta os seus clientes pagantes ativos: 3 = Prata (+2 pontos na recorrência), 10 = Ouro (+4 pontos e gerente de sucesso), 20 = Diamante (Elite: 32% na agência, 26% no criador e no vendedor).",
+  { id: "niveis", titulo: "Subir de nível (20%, 24% e 28%)", termos: ["nivel", "niveis", "prata", "ouro", "diamante", "subir", "subo", "elite", "aumentar comissao", "escada"], passos: [
+    "O nível conta os seus clientes pagantes ativos: até 9 = Inicial (20%), 10 = Prata (24%), 25 = Ouro (28%). O percentual vale para toda a carteira.",
     "Sobe na hora, na próxima venda que atingir o mínimo.",
     "Só desce depois de 2 meses seguidos abaixo do mínimo, então uma oscilação não tira o seu nível.",
     "O jeito mais rápido de subir: converter os testes e não deixar cliente cancelar.",
   ] },
-  { id: "desafio", titulo: "Desafio do mês e avisos", termos: ["desafio", "meta", "bonus do mes", "aviso", "recado", "campanha do mes"], passos: [
+  { id: "desafio", titulo: "Desafio do mês e avisos", termos: ["desafio", "meta", "aviso", "recado", "campanha do mes", "ranking"], passos: [
     "Quando houver desafio, ele aparece no Início com a barra de progresso (ex.: 3 lojas novas no mês).",
     "Conta cada loja nova que pagou a 1ª mensalidade no mês.",
-    "Bateu a meta: o bônus entra sozinho no seu extrato, uma vez por desafio.",
+    "Bateu a meta: você ganha destaque no ranking do mês. O desafio é reconhecimento, não muda a comissão.",
     "Os avisos da NextLevel também aparecem no Início, por 45 dias.",
   ], link: { rotulo: "Abrir o Início", href: "/partner" } },
-  { id: "bonus-vendedor", titulo: "Bônus do vendedor por loja ativada", termos: ["bonus", "ativacao", "loja ativada", "vendedor bonus", "30 reais", "100 reais", "meta de 10"], passos: [
-    "Vale para quem é vendedor (representante).",
-    "Loja ativada = publicada, com a 1ª venda paga da loja e 30 dias de assinatura ativa.",
-    "Cada loja ativada rende um bônus fixo, uma vez só. Chegando a 10 no mês, entra mais um bônus de meta.",
-    "Os bônus aparecem no Financeiro como \"Bônus do representante\".",
-  ], link: { rotulo: "Abrir o Financeiro", href: "/partner/finance" } },
-  { id: "black", titulo: "Black Friday: 100% da 1ª mensalidade", termos: ["black", "black friday", "100", "cyber monday", "campanha", "promocao"], passos: [
-    "Durante a Black NextLevel, a 1ª mensalidade de plano que o seu indicado pagar rende 100% para você (no anual, o equivalente).",
-    "A recorrência continua igual depois.",
-    "A contagem regressiva da Black aparece no topo do painel: use-a na sua divulgação (\"termina em…\").",
-  ] },
   { id: "saque", titulo: "Sacar por Pix", termos: ["saque", "sacar", "saco", "dinheiro", "meu dinheiro", "receber", "recebo", "pix", "receber dinheiro", "retirar", "pagamento", "quando recebo", "transferencia"], passos: [
     "Financeiro → Solicitar saque. Você vê o saldo em garantia, o disponível e o já recebido.",
     "Só o saldo disponível pode ser sacado, a partir do valor mínimo mostrado na tela.",
@@ -237,7 +226,7 @@ export const GUIAS_PARCEIRO: Guia[] = [
   { id: "agencia-selo", titulo: "Virar agência parceira", termos: ["virar agencia", "selo", "selo de agencia", "agencia parceira", "aprovacao", "mudar tipo"], passos: [
     "Início → pedido de agência: informe o site ou Instagram da agência e quantos clientes atende.",
     "A equipe avalia em até 2 dias úteis.",
-    "Aprovado, você passa a ganhar a recorrência de agência, com selo e atendimento prioritário para os seus clientes.",
+    "Aprovado, você ganha o selo de agência parceira. A comissão é a mesma de todos os parceiros (regra única).",
   ], link: { rotulo: "Abrir o Início", href: "/partner" } },
   { id: "perfil", titulo: "Atualizar dados e chave Pix", termos: ["perfil", "dados", "telefone", "chave pix", "nome", "alterar", "atualizar"], passos: [
     "Meu perfil → atualize o nome que aparece, o WhatsApp e a chave Pix.",

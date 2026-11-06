@@ -16,7 +16,7 @@ import { concluirTarefaAction, fichaAction, moverEtapaAction, registrarAtividade
 type Etapa = { key: PartnerStage; nome: string; dica: string };
 type Ficha = Extract<Awaited<ReturnType<typeof fichaAction>>, { ok: true }>["data"];
 const TIPO: Record<string, string> = { AFFILIATE: "Criador", REPRESENTATIVE: "Representante", AGENCY: "Agência", AGENCY_ELITE: "Agência Elite", WHITE_LABEL: "White label" };
-const NIVEL: Record<string, string> = { INICIAL: "Inicial", PRATA: "Prata", OURO: "Ouro", DIAMANTE: "Diamante" };
+const NIVEL: Record<string, string> = { INICIAL: "Inicial", PRATA: "Prata", OURO: "Ouro", DIAMANTE: "Ouro" };
 const MOVIVEIS: PartnerStage[] = ["CANDIDATO", "EM_ANALISE", "APROVADO", "ATIVANDO", "PRODUTIVO", "EM_RISCO"];
 const data = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }) : "—");
 const whats = (tel: string) => `https://wa.me/55${tel.replace(/\D/g, "").replace(/^55/, "")}`;

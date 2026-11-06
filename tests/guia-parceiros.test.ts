@@ -10,19 +10,23 @@ import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 describe("guias do parceiro (offline)", () => {
   const F: FatosParceiros = {
     marca: "NextLevel E-commerce", plano: { nome: "Pro", mensalCents: 14_700 },
-    regras: { criador: { primeiraBps: 5000, recorrenteBps: 2000, meses: 600 }, vendedor: { primeiraBps: 5000, recorrenteBps: 2000, meses: 600 }, agencia: { primeiraBps: 5000, recorrenteBps: 2500, meses: 600 } },
-    bonus: { ativacaoCents: 3_000, metaCents: 10_000, metaAtivacoes: 10 }, atribuicaoDias: 30, saqueMinimoCents: 10_000, garantiaDias: 30, black: null, cadastro: "/parceiros/cadastro",
+    regras: { criador: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 }, vendedor: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 }, agencia: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 } },
+    atribuicaoDias: 90, saqueMinimoCents: 5_000, garantiaDias: 30, cadastro: "/parceiros/cadastro",
   };
 
   it("guia público: cada atalho tem resposta própria, com números das regras e sem promessa", () => {
     for (const a of ATALHOS_PARCEIROS) expect(responderParceiro(F, a.id).assunto).toBe(a.id);
-    expect(responderParceiro(F, "p-ganho").texto).toContain("50% da 1ª mensalidade + 20% todo mês");
-    expect(responderParceiro(F, "p-niveis").texto).toContain("agência 32%");
-    expect(responderParceiro(F, "p-receber").texto.replace(/\s/g, " ")).toContain("R$ 100,00");
+    const ganho = responderParceiro(F, "p-ganho").texto;
+    expect(ganho).toContain("**20%** de toda mensalidade desde o 1º cliente");
+    expect(ganho).toContain("**28%** de toda mensalidade com 25+ clientes ativos");
+    expect(ganho).not.toMatch(/50%|b[oô]nus/);
+    expect(responderParceiro(F, "p-niveis").texto).toContain("Ouro** (25+ clientes ativos): 28%");
+    expect(responderParceiro(F, "p-receber").texto.replace(/\s/g, " ")).toContain("R$ 50,00");
     const sim = responderParceiro(F, "sim-3").texto.replace(/\s/g, " ");
-    expect(sim).toContain("R$ 220,50 no 1º mês"); // 3 × 147 × 50%
+    expect(sim).toContain("**1º mês:** R$ 88,20"); // 3 × 147 × 20%
     expect(sim).toContain("não uma promessa");
-    expect(responderParceiro({ ...F, black: { fim: "2026-11-30T23:59:00-03:00" } }, "p-black").texto).toContain("100% para você");
+    expect(responderParceiro(F, "p-black").texto).not.toContain("100%");
+    expect(responderParceiro(F, "p-concorrentes").texto).toContain("Nuvemshop");
   });
 
   it("guia público: entende a pergunta livre e números de lojas", () => {

@@ -6,7 +6,7 @@ import { registerPartner } from "@/lib/domain/partners";
 import { findRule, recordSaleCommission } from "@/lib/domain/corporate-commissions";
 import { COMISSOES_D226, TETO_PRIMEIRA_BPS, TETO_RECORRENTE_BPS, bpsPrimeiraNaBlack } from "@/lib/finance/revisao-d226";
 
-/** Comissões da D226 (PV0): valores, teto, anual equivalente e 100% da 1ª na Black. */
+/** Comissões: a D226 (histórico) e a regra única da D260, que é a vigente. */
 describe("comissões de parceiros D226", () => {
   let ctx: Awaited<ReturnType<typeof freshDb>>;
   beforeEach(async () => { ctx = await freshDb(); });
@@ -23,22 +23,35 @@ describe("comissões de parceiros D226", () => {
     expect(bpsPrimeiraNaBlack("ANNUAL", 2000)).toBe(2667);
   });
 
-  it("cada tipo de parceiro acha a sua regra (criador, representante, agência, Elite)", async () => {
+  it("D260: a regra vigente é a mesma para todos os tipos e ciclos (20% na 1ª e na recorrência)", async () => {
     const r = async (kind: string, cycle: "MONTHLY" | "ANNUAL" = "MONTHLY") => (await findRule(ctx.db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle, partnerKind: kind, at: FORA }))!;
-    expect([(await r("AFFILIATE")).firstBps, (await r("AFFILIATE")).recurringBps]).toEqual([5000, 2000]);
-    expect((await r("REPRESENTATIVE")).recurringBps).toBe(2000);
-    expect((await r("AGENCY")).recurringBps).toBe(2500);
-    expect((await r("AGENCY_ELITE")).recurringBps).toBe(3200);
-    expect((await r("AGENCY")).recurringMonths).toBe(600);
+    for (const k of ["AFFILIATE", "REPRESENTATIVE", "AGENCY", "AGENCY_ELITE"]) for (const c of ["MONTHLY", "ANNUAL"] as const) {
+      const x = await r(k, c);
+      expect([x.firstBps, x.recurringBps, x.recurringMonths, x.holdDays]).toEqual([2000, 2000, 600, 30]);
+      expect(x.reason).toContain("D260");
+    }
   });
 
-  it("na Black a 1ª paga 100%; fora dela, 50%; a recorrência não muda", async () => {
+  it("D260: sem Black para o parceiro; 1ª e recorrência pagam o mesmo percentual do nível", async () => {
     const r = await registerPartner(ctx.db, { name: "Parceira Teste", email: "pv0@exemplo.com", password: "senha-forte-1", taxId: "52998224725", phone: "11999990000", acceptTerms: true }, FORA);
     const p = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, r.userId) }))!;
-    await ctx.db.update(partners).set({ kind: "AFFILIATE", status: "ACTIVE" }).where(eq(partners.id, p.id));
-    const lanca = (idx: number, now: Date, k: string) => recordSaleCommission(ctx.db, { partnerId: p.id, family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", paymentIndex: idx, paidCents: 14_700, feeCents: null, dedupeKey: k, now });
-    expect((await lanca(1, NA_BLACK, "a"))!.bps).toBe(10000);
-    expect((await lanca(1, FORA, "b"))!.bps).toBe(5000);
+    await ctx.db.update(partners).set({ kind: "AGENCY", status: "ACTIVE" }).where(eq(partners.id, p.id));
+    const lanca = (idx: number, now: Date, k: string, cycle: "MONTHLY" | "ANNUAL" = "MONTHLY", paid = 14_700) => recordSaleCommission(ctx.db, { partnerId: p.id, family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle, paymentIndex: idx, paidCents: paid, feeCents: null, dedupeKey: k, now });
+    expect((await lanca(1, NA_BLACK, "a"))!.bps).toBe(2000);
+    expect((await lanca(1, FORA, "b"))!.bps).toBe(2000);
     expect((await lanca(2, NA_BLACK, "c"))!.bps).toBe(2000);
+    const anual = (await lanca(1, FORA, "d", "ANNUAL", 142_800))!;
+    expect([anual.bps, anual.amountCents]).toEqual([2000, 28_560]);
+  });
+
+  it("revisões aplicadas uma vez só: reiniciar não cria versões novas", async () => {
+    const { ensureCatalogSeed } = await import("@/lib/domain/nl-catalog");
+    const { commissionRules } = await import("@/db/schema");
+    await ensureCatalogSeed(ctx.db);
+    const antes = (await ctx.db.select().from(commissionRules)).length;
+    expect(antes).toBeGreaterThan(0);
+    await ensureCatalogSeed(ctx.db);
+    await ensureCatalogSeed(ctx.db);
+    expect((await ctx.db.select().from(commissionRules)).length).toBe(antes);
   });
 });

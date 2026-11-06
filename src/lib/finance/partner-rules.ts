@@ -23,9 +23,9 @@ export const DEFAULT_PARTNER_SETTINGS: PartnerSettings = {
   // "acima de 10 é 25%": 10 entra na faixa de 25% para não deixar buraco entre 9 e 11.
   tiers: [{ min: 1, max: 4, bps: 1500 }, { min: 5, max: 9, bps: 2000 }, { min: 10, bps: 2500 }],
   maintenanceBps: 500,
-  attributionDays: 30,
+  attributionDays: 90, // D260: o lojista do Brás demora a decidir; os concorrentes dão 30 dias
   guaranteeDays: 7,
-  minPayoutCents: 10_000,
+  minPayoutCents: 5_000, // D260: saque a partir de R$ 50
   payoutsPerWeek: 1,
   inactiveFeeCents: 10_000,
   monthlyGoal: 1,

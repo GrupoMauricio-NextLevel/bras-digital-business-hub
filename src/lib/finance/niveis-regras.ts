@@ -1,12 +1,14 @@
 import type { PartnerTier } from "@/db/schema";
-import { TETO_RECORRENTE_BPS } from "./revisao-d226";
 
-/** Regras puras dos níveis de parceiro (D249): usadas no servidor e nas páginas (simulador). */
-export const NIVEIS: readonly { tier: PartnerTier; nome: string; minimo: number; efeito: string }[] = [
-  { tier: "INICIAL", nome: "Inicial", minimo: 0, efeito: "Regra base da sua trilha, já com recorrência" },
-  { tier: "PRATA", nome: "Prata", minimo: 3, efeito: "+2 pontos na recorrência" },
-  { tier: "OURO", nome: "Ouro", minimo: 10, efeito: "+4 pontos na recorrência e gerente de sucesso" },
-  { tier: "DIAMANTE", nome: "Diamante", minimo: 20, efeito: "Elite: 32% na agência, 26% no criador e no representante" },
+/**
+ * Níveis dos parceiros (D260, regra única): o percentual de toda mensalidade depende só dos clientes ativos.
+ * Puro: usado no servidor (comissão) e nas páginas (escada e simulador). O nível DIAMANTE da D249 deixou de existir;
+ * quem estivesse nele recebe o mesmo que o Ouro (28%).
+ */
+export const NIVEIS: readonly { tier: PartnerTier; nome: string; minimo: number; bps: number; efeito: string }[] = [
+  { tier: "INICIAL", nome: "Inicial", minimo: 0, bps: 2000, efeito: "20% de toda mensalidade, desde o 1º cliente" },
+  { tier: "PRATA", nome: "Prata", minimo: 10, bps: 2400, efeito: "24% de toda mensalidade" },
+  { tier: "OURO", nome: "Ouro", minimo: 25, bps: 2800, efeito: "28% de toda mensalidade" },
 ];
 export const MESES_PARA_DESCER = 2;
 
@@ -14,11 +16,11 @@ export function nivelPorClientes(ativos: number): PartnerTier {
   return [...NIVEIS].reverse().find((n) => ativos >= n.minimo)!.tier;
 }
 
-/** Recorrência com o bônus do nível, sem passar do teto (32%). Agência no Diamante = Elite. */
-export function recorrenteDoNivel(baseBps: number, tier: PartnerTier, kind: string): number {
+/** Percentual do nível. `baseBps` 0 (sem regra) continua 0; o tipo do parceiro não muda nada (regra única). */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- o tipo continua no contrato (chamadores antigos), mas não muda nada
+export function recorrenteDoNivel(baseBps: number, tier: PartnerTier, _kind?: string): number {
   if (baseBps <= 0) return baseBps;
-  const agencia = kind === "AGENCY" || kind === "AGENCY_ELITE";
-  const alvo = tier === "PRATA" ? baseBps + 200 : tier === "OURO" ? baseBps + 400 : tier === "DIAMANTE" ? Math.max(baseBps, agencia ? 3200 : 2600) : baseBps;
-  return Math.min(Math.max(alvo, baseBps), Math.max(TETO_RECORRENTE_BPS, baseBps));
+  return (NIVEIS.find((n) => n.tier === tier) ?? (tier === "DIAMANTE" ? NIVEIS[2] : NIVEIS[0]))!.bps;
 }
 
+export const nomeDoNivel = (tier: PartnerTier) => (NIVEIS.find((n) => n.tier === tier) ?? NIVEIS[2]!).nome;
