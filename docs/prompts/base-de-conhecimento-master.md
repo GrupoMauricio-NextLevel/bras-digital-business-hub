@@ -1,6 +1,6 @@
 # Base de conhecimento ao vivo no Master (treinamento da equipe)
 
-> Estado: **PROPOSTA.** Aguardando o "pode" do dono para a fase BC0.
+> Estado: **EM ANDAMENTO.** Dono aprovou em 06/11: só a equipe do Master vê; nome no menu "Aprender". BC0 feita (`docs/conhecimento/BC0-INVENTARIO.md`), aguardando a revisão do dono. Próxima: BC1.
 > Pedido do dono (06/11/2026): "precisamos criar dentro do Master uma base de conhecimento ao vivo, porque tem novas pessoas chegando para trabalhar na plataforma. Todo o arcabouço que desenvolvemos nas últimas semanas, todas as regras de todos os setores: comercial dos parceiros, venda direta ao cliente final… em destaque, com treinamento para novos funcionários assimilarem de maneira clara."
 
 ---

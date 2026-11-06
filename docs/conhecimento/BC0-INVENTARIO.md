@@ -1,0 +1,169 @@
+# BC0: inventário das regras para a base de conhecimento
+
+> Fase BC0 de `docs/prompts/base-de-conhecimento-master.md` (06/11/2026). Decisões do dono:
+> - só a equipe do Master vê;
+> - o nome no menu é "Aprender".
+>
+> **Para o dono revisar:** marque o que está errado, o que falta e o que não deve entrar.
+>
+> **Legenda:**
+> - **No ar**: funciona hoje no sistema.
+> - **Aprovado**: o dono aprovou, mas falta conferir ou construir.
+> - **Em breve**: planejado.
+>
+> **Fonte:** onde a base vai ler o número ao vivo (BC1). Os valores abaixo são os de hoje (06/11/2026).
+
+---
+
+## Trilha 1: Base (para todos)
+
+### 1.1 O que é a NextLevel
+| Regra | Estado | Fonte |
+|---|---|---|
+| A NextLevel é um grupo de marcas. O Master hoje está focado na **NextLevel E-commerce** (as outras marcas não foram apagadas, só estão fechadas no Master) | No ar | `MASTER_MARCAS_ATIVAS`, manual do Maurício |
+| Posicionamento: "do Brás, com foco no atacado". Presença no Brás, no Canindé e em São Paulo; experiência com grandes importadores | No ar | D220 (seção "Vivência de rua") |
+| A plataforma vai ser especialista em atacado: "NextLevel E-commerce de Atacado" | Em andamento (AT0 a AT2 no ar) | D257 a D259 |
+
+### 1.2 Planos da E-commerce
+| Regra | Valor hoje | Estado | Fonte |
+|---|---|---|---|
+| Mensal | Start R$ 57 · Pro R$ 147 · Scale R$ 347 | No ar | versão de preço do catálogo (D220) |
+| Anual (por mês) | R$ 37 · R$ 119 · R$ 297 | No ar | idem |
+| Depois da Black (a partir de 01/12/2026) | mensal R$ 67 / 167 / 397; anual R$ 49 / 139 / 339 por mês | No ar (agendado) | `revisao-d228.ts` (D229) |
+| Quem assina na Black mantém o preço enquanto a assinatura estiver ativa | — | No ar | D227, D229 |
+| Produtos ativos | 300 / 1.000 / sem limite | No ar | `beneficios-plano.ts` (editável no Master) |
+| Pessoas no painel (contando o dono) | 3 / 6 / 12 | No ar | idem |
+| Tema pago | não / sim / sim | No ar | idem |
+| Suporte | chat e WhatsApp / prioritário em até 4 h / gerente de conta | No ar | idem |
+| Migração | paga à parte / 50% de desconto / inclusa | No ar | idem |
+| Maurício IA por mês | 40 / 350 / 1.200 usos | No ar | cotas da IA (D244) |
+| Chat da loja com IA | Start só com a chave do próprio lojista; Pro e Scale inclusos na cota | No ar | D243, D244 |
+| Ao cair de plano, ninguém perde nada: só não cadastra coisas novas acima do limite | — | No ar | D247, D258 |
+| Sem plano ativo, vale o Start | — | No ar | `planoDaLoja` |
+| Sem fidelidade; mensal ou anual | — | No ar | manual do lojista |
+| Oferta de entrada: 3 dias grátis; o 1º mês especial só existe se o Master criar | — | No ar | `commerce-plans.ts` (D233) |
+| Preço novo vale para quem assinar depois; quem já assinou mantém o contratado | — | No ar | manual do Master |
+
+### 1.3 Taxa zero e as palavras certas
+| Regra | Estado | Fonte |
+|---|---|---|
+| **Taxa zero da plataforma** sobre as vendas, em todos os planos | No ar | D220, D221 |
+| As taxas do Mercado Pago (Pix e cartão) são à parte e não têm nada a ver com a NextLevel. Sempre lembrar isso | No ar | D221 |
+| Frase do topo: "A única com taxa zero no checkout do Mercado Pago" | No ar | D221 |
+| Nunca: "a única plataforma com taxa zero", "nada sobre as vendas", "100% das vendas na sua conta" | Regra | D221 |
+| Nunca "mais barato". Usar "mais vantajoso", "preço mais competitivo", "vencer no preço" | Regra | D220 |
+| Nunca inventar dado, cliente, depoimento ou número. Só anunciar o que existe no sistema; o que não existe é "em breve" | Regra | D221, skill `pagina-de-vendas` |
+
+---
+
+## Trilha 2: Comercial, venda direta (lojista)
+
+| Regra | Valor hoje | Estado | Fonte |
+|---|---|---|---|
+| Funil comercial: cada pessoa aparece uma vez, do contato ao pagante; as etapas andam sozinhas | — | No ar | Master → Comercial |
+| Meta de pagantes e mensagens prontas editáveis (vale na hora para a equipe) | — | No ar | Comercial → Meta e mensagens |
+| Comparativo: taxa máxima dos concorrentes usando o Mercado Pago | Nuvemshop 2%, Shopify 2%, WBuy 1,5%, Tray 1,25%, Loja Integrada 0,99% | No ar (sites oficiais, 29/10/2026) | D221 |
+| Comparamos o **custo total** (mensalidade + taxa). Nos planos de entrada a Loja Integrada (e a WBuy no avançado) tem mensalidade menor: não dizer que somos menores na mensalidade | — | Regra | D221 |
+| Os concorrentes também zeram a taxa com o pagamento deles: dizer isso com honestidade | — | Regra | D220 |
+| Placar da goleada: só mostra o que vencemos; o jogo que deixa de ser vitória sai do ar sozinho | — | No ar | D226, D230 |
+| **Black NextLevel:** até 30/11/2026 às 23h59 (Brasília). O Master pode prorrogar, nunca encurtar | — | No ar | D229 |
+| Anual na Black: paga 10, leva 12 (2 meses grátis) | — | No ar | D229 |
+| Kit Black para a loja do lojista, em 1 clique | — | No ar | D242 |
+| Domínio próprio liberado em todos os planos, com passo a passo e verificação | — | No ar | D234 |
+| E-mail com o domínio: caminho grátis guiado (Zoho Mail, conta do lojista). "Marca Completa" pago fica bloqueado | — | No ar | D245 |
+| Cliente que indica ganha 1 mês grátis por indicação paga | — | **Aprovado (D226): conferir se está no ar** | D226 |
+
+---
+
+## Trilha 3: Comercial, parceiros
+
+| Regra | Valor hoje | Estado | Fonte |
+|---|---|---|---|
+| Perfis | Criador (audiência), Vendedor/representante (porta em porta), Agência (vários clientes) | No ar | `captacao-regras.ts` |
+| Criador | 50% da 1ª mensalidade + 20% enquanto o cliente ficar | No ar | `revisao-d226.ts` |
+| Representante | 50% + 20% + bônus | No ar | idem |
+| Agência | 50% + 25% desde o 1º cliente | No ar | idem |
+| Agência Elite | 50% + 32% | No ar | idem |
+| Plano anual | 50% de um mês + a recorrência dos outros 11, dividido por 12 (ex.: 22,5% para quem tem 20%) | No ar | `anual()` |
+| Teto | 1ª mensalidade até 50%; recorrente até 32% | No ar (teste garante) | idem |
+| Na Black | a 1ª mensalidade paga **100%**; a recorrência não muda | No ar | `bpsPrimeiraNaBlack` |
+| Carência | 30 dias antes de liberar o saque | No ar | D248 |
+| Bônus do representante | R$ 30 por loja ativada (publicada + 1ª venda paga + 30 dias de assinatura) e +R$ 100 ao chegar a 10 no mês | No ar | `BONUS_*` |
+| Níveis | Inicial (0 a 2 clientes), Prata (3+: +2 pontos), Ouro (10+: +4 pontos e gerente de sucesso), Diamante (20+: agência 32%, criador e representante 26%) | No ar | `niveis-regras.ts` |
+| Sobe e desce | sobe na hora; desce só depois de 2 meses seguidos abaixo do limite | No ar | `MESES_PARA_DESCER` |
+| Fixar nível | Master, com motivo obrigatório e auditoria | No ar | D249 |
+| Inativo | 6 meses de cadastro + nenhum cliente ativo + nenhuma comissão em 6 meses. Volta pela reativação | No ar | D250 |
+| Parceiro da E-commerce não tem meta mensal | — | No ar | D252 |
+| CRM de parceiros | funil, ficha 360, fila do dia, ranking, segmentos, avisos e desafio do mês | No ar | D251 |
+| Pedido para virar agência: aprovado trocando o Tipo na ficha | — | No ar | D220 |
+| Antifraude: aba com possíveis autoindicações | — | No ar | manual do Master |
+| Página pública | /parceiros, com /criadores, /vendedores e /agencias; cadastro em 4 passos | No ar | D252 |
+| Página própria do parceiro (/i/anasouza) | — | Em breve (PV5) | D227 |
+| Programa de afiliados de serviços parceiros | — | Guardado, não executar | pedido do dono |
+
+---
+
+## Trilha 4: Atacado
+
+| Regra | Valor hoje | Estado | Fonte |
+|---|---|---|---|
+| Modalidades do Brás | grade fechada, pacote sortido, mix da loja toda, peça avulsa, pedido do balcão e WhatsApp | Racional | prompt do atacado |
+| Motor único de preço | o mesmo cálculo na loja, no carrinho, no pedido, na proposta e no balcão; o servidor sempre recalcula | No ar | D257 |
+| Peça avulsa | menor entre varejo, faixa do modelo e preço de atacado (quando o mix libera); nunca abaixo do custo ou do mínimo | No ar | `atacado-preco.ts` |
+| As peças das grades contam para o mix; caiu abaixo do mínimo, volta ao varejo | — | No ar | D257 |
+| Start | 3 faixas, 1 grade por produto, 1 regra de mix (por peças), sem pacote | No ar | `LIMITES_ATACADO` |
+| Pro | 5 faixas, 4 grades, 3 regras (peças e valor), com pacote | No ar | idem |
+| Scale | 5 faixas, grades sem limite, 6 regras (todos os tipos) | No ar | idem |
+| Box do produto | escada de preço, barra do mix, "a partir de… a peça" no card, economia no carrinho | No ar | D259 |
+| SuperDrop (loja de rede) | sem atacado; nada muda | No ar | D216 |
+| Grade livre, mínimo por modelo, múltiplos, excursão, tabelas por cliente, catálogo fechado | — | Em breve (AT3 a AT8, pausado) | prompt do atacado |
+
+---
+
+## Trilha 5: Suporte ao lojista
+
+| Regra | Estado | Fonte |
+|---|---|---|
+| Ver o painel como o lojista: informar o motivo (fica registrado); começa só olhando; "Agir em nome do cliente" é um passo a mais | No ar | manual do Master |
+| Os 19 passos do manual do lojista (produto, planilha, variações, publicar, Mercado Pago, frete, tema, domínio, pedido, cupom, equipe, integrações…) | No ar | `manual.ts` (esfera lojista) |
+| Responder conversas: ao responder, você assume; no fim marque Ganha ou Perdida | No ar | manual do Master |
+| Domínio que não conecta sozinho cai na fila "Domínios próprios aguardando conexão" | No ar | D234 |
+| Chave de IA do lojista: guardada criptografada, nunca aparece na tela; aviso aos 80% da cota | No ar | D243, D244 |
+| Direito de arrependimento do comprador: 7 dias após receber | No ar | manual do comprador |
+
+## Trilha 6: Financeiro
+
+| Regra | Estado | Fonte |
+|---|---|---|
+| Receita mensal soma os planos ativos (o anual dividido por 12) | No ar | Master → Receita |
+| Cortesia é acesso dado à mão, sem contrato: não conta como pagante | No ar | manual do Master |
+| Vencidas e aguardando pagamento aparecem primeiro; chamar pelo WhatsApp na tela Agora | No ar | manual do Master |
+| Comissões: em garantia, disponíveis (depois de 30 dias) e saques | No ar | D248 |
+| Recebimento dos planos: precisa do Mercado Pago da NextLevel conectado | No ar | manual do Master |
+| Benefícios por plano: só comercial e financeiro editam, com auditoria | No ar | D247 |
+
+## Trilha 7: Conteúdo
+
+| Regra | Estado | Fonte |
+|---|---|---|
+| Todas as regras de texto da Trilha 1.3 | Regra | D220, D221 |
+| Fotos reais da equipe NextLevel; nunca foto genérica para tapar buraco | Regra | skill `pagina-de-vendas` |
+| Selos próprios com prompt de imagem; selos de terceiros (Google, Reclame Aqui, Mercado Pago) só com o material oficial | Regra | D221, `SELOS-E-PROVAS.md` |
+| Anúncio só do que existe no código; diferenciar "disponível", "demonstração" e "em breve" | Regra | skill `pagina-de-vendas` |
+
+---
+
+## Fora da primeira versão (entram depois, como trilhas próprias)
+- **SuperDrop** (rede, Central, recarga) e **Brás Digital**: decisão 4 do prompt.
+- **Equipe técnica** (Render, chaves, deploy): não é treinamento de funcionário.
+
+## Pontos para o dono confirmar
+1. **Cliente indica = 1 mês grátis:** aprovado na D226, mas não achei no código. Entra como "em breve" até ser ligado?
+2. **Trilhas por função:**
+   - Comercial vê as trilhas 1 a 4;
+   - Suporte, as trilhas 1, 4 e 5;
+   - Financeiro e Contador, as trilhas 1, 3 e 6;
+   - Conteúdo, as trilhas 1 e 7;
+   - o dono vê tudo.
+   Está certo?
+3. Falta alguma regra de algum setor que vocês usam no dia a dia e não está no sistema?
