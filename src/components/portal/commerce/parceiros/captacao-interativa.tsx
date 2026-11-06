@@ -52,7 +52,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
               ); })}
             </div>
             <h1 className="ec-cabecalho-titulo mt-6 max-w-4xl" aria-live="polite">{p.titulo}</h1>
-            <p className="mt-5 max-w-2xl text-lg text-white/80">Os outros programas pagam pouco, pagam tarde ou pagam uma vez só. Aqui é <b className="text-white">{escada[0] ? pct(escada[0].recBps) : "—"} de toda mensalidade desde o 1º cliente</b>, enquanto ele ficar, chegando a <b className="text-white">{escada[2] ? pct(escada[2].recBps) : "—"}</b> na carteira toda.</p>
+            <p className="mt-5 max-w-2xl text-lg text-white/80">Na Nuvemshop, na WBuy e na Tray o parceiro começa ganhando pouco, ganha tarde ou ganha uma vez só. Aqui é <b className="text-white">{escada[0] ? pct(escada[0].recBps) : "—"} de toda mensalidade desde o 1º cliente</b>, enquanto ele ficar, chegando a <b className="text-white">{escada[2] ? pct(escada[2].recBps) : "—"}</b> na carteira toda.</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-[#12133a]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link>
               <a href="#raio-x" className="font-semibold underline underline-offset-4">Ver o raio-x dos concorrentes</a>
@@ -143,13 +143,13 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
       <section id="comparar" className="pa-escuro scroll-mt-16 px-4 py-16 md:py-24" aria-labelledby="cmp-t">
         <div className="mx-auto max-w-6xl">
           <p className="im-eyebrow">Compare o seu programa</p>
-          <h2 id="cmp-t" className="im-h2 mt-3 max-w-4xl">A mesma carteira em quatro programas. Só um paga de verdade.</h2>
+          <h2 id="cmp-t" className="im-h2 mt-3 max-w-4xl">{nos.total >= (segundo?.total ?? 0) ? "A mesma carteira em quatro programas. Aqui rende mais." : "Quem paga uma vez só sai na frente no começo. Veja quem paga todo mês."}</h2>
           <p className="pa-sub mt-3 max-w-2xl">Com {porMes} loja{porMes === 1 ? "" : "s"} por mês no plano {planos[plano]?.nome ?? "—"} (mude no simulador acima). Para não ter desculpa: a <b className="text-white">mesma mensalidade</b> para todos e nenhum cancelamento.</p>
           <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div className="flex flex-wrap gap-2" role="group" aria-label="Prazo da comparação">
               {[12, 24, 36].map((m) => <button key={m} type="button" aria-pressed={prazo === m} onClick={() => setPrazo(m)} className="pa-chip">{m} meses</button>)}
             </div>
-            {segundo ? <div className="lg:text-right"><p className="ec-mono text-white/60">a mais que o 2º colocado</p><p className="pa-vantagem ec-num mt-1">+{formatBRL(Math.max(0, nos.total - segundo.total))}</p></div> : null}
+            {segundo && nos.total > segundo.total ? <div className="lg:text-right"><p className="ec-mono text-white/60">a mais que o 2º colocado</p><p className="pa-vantagem ec-num mt-1">+{formatBRL(Math.max(0, nos.total - segundo.total))}</p></div> : null}
           </div>
           <ol className="pa-disputa mt-8 space-y-3" aria-live="polite">
             {comparacao.map((c) => {
