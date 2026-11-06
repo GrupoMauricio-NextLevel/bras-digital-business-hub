@@ -1,6 +1,6 @@
 # NextLevel E-commerce de Atacado — racional e prompt engenheiro mestre
 
-> Estado: **EM ANDAMENTO.** No ar: AT0 (D257, dados + motor único), AT1 (D258, painel do lojista e travas por plano) e AT2 (D259, box novo, card "a partir de", barra do mix e economia no carrinho e no checkout). Próxima: AT3 (grade livre cor×tamanho, mínimo por modelo, múltiplos, pacote sortido).
+> Estado: **EM ANDAMENTO.** No ar: AT0 (D257, dados + motor único), AT1 (D258, painel do lojista e travas por plano) e AT2 (D259, box novo, card "a partir de", barra do mix e economia no carrinho e no checkout). **Pausado a pedido do dono em 06/11**; retomar pela AT3 (grade livre cor×tamanho, mínimo por modelo, múltiplos, pacote sortido).
 > Pedido do dono (05/11/2026): "nossa plataforma vai ser especialista em atacado: NextLevel E-commerce de Atacado. Precisamos aprimorar o box de produtos e o sistema para comportar com perfeição a venda em atacado. No plano básico, o básico; nos planos mais altos, aprofundamos. Grade com 12, atacado de pacote, atacado mesclado com itens de toda a loja: são várias formas de venda de atacado que os empreendedores do Brás têm como realidade."
 
 ---
