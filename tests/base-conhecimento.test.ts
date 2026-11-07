@@ -86,3 +86,91 @@ describe("Aprender (BC1): aulas ao vivo", () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// BC2 (D267): perguntas por aula, progresso por pessoa e o painel do dono ("quem está pronto").
+// ---------------------------------------------------------------------------------------------------------------------
+import { corrigir, perguntasDa } from "@/lib/conhecimento/perguntas";
+import { painelDaEquipe, pendenteDoAprender, progressoDe, responderAula } from "@/lib/domain/aprender";
+import { createMasterMember } from "@/lib/domain/equipe-master";
+
+describe("Aprender (BC2): perguntas e progresso", () => {
+  it("nenhum valor em reais ou percentual escrito à mão nas perguntas", () => {
+    const src = readFileSync("src/lib/conhecimento/perguntas.ts", "utf8");
+    expect(src.match(/\d+(?:,\d+)?\s?%|R\$\s?\d/g) ?? []).toEqual([]);
+  });
+
+  it("toda aula tem 3 perguntas, com a certa válida, sem opção repetida e com os números dos fatos", () => {
+    const f = fatosFalsos();
+    for (const a of aulas(f)) {
+      const ps = perguntasDa(a.id, f);
+      expect(ps, a.id).toHaveLength(3);
+      for (const p of ps) {
+        expect(p.opcoes.length, `${a.id}: ${p.pergunta}`).toBeGreaterThanOrEqual(2);
+        expect(new Set(p.opcoes).size, `${a.id}: ${p.pergunta}`).toBe(p.opcoes.length);
+        expect(p.certa).toBeGreaterThanOrEqual(0);
+        expect(p.certa).toBeLessThan(p.opcoes.length);
+        expect(p.opcoes.join(" ")).not.toMatch(/undefined|NaN/);
+      }
+    }
+    const certaDoPro = (k: number) => { const p = perguntasDa("planos", fatosFalsos(k))[0]!; return p.opcoes[p.certa]!.replace(/ /g, " "); };
+    expect(certaDoPro(1)).toBe("R$ 22,22");
+    expect(certaDoPro(2)).toBe("R$ 44,44");
+  });
+
+  it("corrige: concluída só com todas certas", () => {
+    const ps = perguntasDa("taxa-zero", fatosFalsos());
+    expect(corrigir(ps, ps.map((p) => p.certa))).toMatchObject({ acertos: 3, total: 3, concluida: true });
+    expect(corrigir(ps, [ps[0]!.certa, (ps[1]!.certa + 1) % ps[1]!.opcoes.length, ps[2]!.certa])).toMatchObject({ acertos: 2, concluida: false, certas: [true, false, true] });
+    expect(corrigir(ps, [])).toMatchObject({ acertos: 0, concluida: false });
+  });
+
+  describe("no banco", () => {
+    let ctx: Awaited<ReturnType<typeof freshDb>>;
+    beforeEach(async () => { ctx = await freshDb(); });
+    const f = fatosFalsos();
+    async function pessoa(fn: "SUPORTE" | "CONTEUDO", email: string) {
+      const { id } = await createMasterMember(ctx.db, ctx.actors.master, { name: `Pessoa ${fn}`, email, password: "provisoria-123", masterFunction: fn });
+      return { ...ctx.actors.master, userId: id, masterFunction: fn };
+    }
+
+    it("grava o progresso, conta tentativas e não desfaz a conclusão", async () => {
+      const sup = await pessoa("SUPORTE", "sup@nl.teste");
+      const ps = perguntasDa("o-que-e", f);
+      const errado = await responderAula(ctx.db, sup, { aulaId: "o-que-e", respostas: ps.map((p) => (p.certa + 1) % p.opcoes.length) }, f);
+      expect(errado.concluida).toBe(false);
+      expect((await progressoDe(ctx.db, sup.userId)).has("o-que-e")).toBe(false);
+      expect((await responderAula(ctx.db, sup, { aulaId: "o-que-e", respostas: ps.map((p) => p.certa) }, f)).concluida).toBe(true);
+      const quando = (await progressoDe(ctx.db, sup.userId)).get("o-que-e");
+      expect(quando).toBeTruthy();
+      await responderAula(ctx.db, sup, { aulaId: "o-que-e", respostas: [0, 0, 0] }, f);
+      expect((await progressoDe(ctx.db, sup.userId)).get("o-que-e")).toBe(quando);
+      const { aprenderProgresso } = await import("@/db/schema");
+      const rows = await ctx.db.select().from(aprenderProgresso);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ tentativas: 3, acertos: 3, trilha: "base" });
+    });
+
+    it("aula fora das trilhas da função não pode ser respondida; quem não é do Master também não", async () => {
+      const cont = await pessoa("CONTEUDO", "cont@nl.teste");
+      await expect(responderAula(ctx.db, cont, { aulaId: "comissoes", respostas: [0, 0, 0] }, f)).rejects.toThrow(/não encontrada/);
+      await expect(responderAula(ctx.db, ctx.actors.mantos, { aulaId: "o-que-e", respostas: [0, 0, 0] }, f)).rejects.toThrow();
+    });
+
+    it("painel do dono: só o dono vê; pronto quando todas as aulas das trilhas da função estão feitas", async () => {
+      const cont = await pessoa("CONTEUDO", "cont@nl.teste");
+      await expect(painelDaEquipe(ctx.db, cont, f)).rejects.toThrow(/dono/);
+      let painel = await painelDaEquipe(ctx.db, ctx.actors.master, f);
+      expect(painel.map((p) => [p.funcao, p.pronto, p.feitas])).toEqual([["CONTEUDO", false, 0]]);
+      expect(await pendenteDoAprender(ctx.db, cont, f)).toEqual({ feitas: 0, total: painel[0]!.total });
+      for (const a of aulas(f).filter((x) => trilhasDa("CONTEUDO").includes(x.trilha))) {
+        await responderAula(ctx.db, cont, { aulaId: a.id, respostas: perguntasDa(a.id, f).map((p) => p.certa) }, f);
+      }
+      painel = await painelDaEquipe(ctx.db, ctx.actors.master, f);
+      expect(painel[0]).toMatchObject({ pronto: true });
+      expect(painel[0]!.trilhas.map((t) => t.trilha)).toEqual(["base", "conteudo"]);
+      expect(await pendenteDoAprender(ctx.db, cont, f)).toBeNull();
+      expect(await pendenteDoAprender(ctx.db, ctx.actors.master, f)).toBeNull();
+    });
+  });
+});

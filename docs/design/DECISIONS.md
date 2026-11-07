@@ -3126,3 +3126,12 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Busca:** sem acento, nas aulas das trilhas da pessoa.
 - **Novidades:** as 40 decisões mais recentes, geradas de `DECISIONS.md` por `scripts/gerar-novidades.mjs`, que roda antes do build. Um teste garante que estão em dia.
 - **Fica para a BC2:** perguntas por aula, progresso por pessoa e o painel "quem está pronto".
+
+## D267 — [Grupo] BC2: perguntas por aula, progresso por pessoa e painel "quem está pronto" no Aprender (2026-11-07)
+- **Perguntas:** cada uma das aulas tem 3 perguntas rápidas no fim (`src/lib/conhecimento/perguntas.ts`), montadas dos mesmos `fatosAoVivo`: se o preço ou a comissão muda, a resposta certa muda junto. Teste: nenhum valor em reais ou percentual escrito à mão nas perguntas.
+- **Correção no servidor:** a resposta certa não vai para o navegador. A aula fica **concluída** quando a pessoa acerta as 3; errar depois não desfaz. Cada tentativa é contada.
+- **Progresso por pessoa:** tabela nova `aprender_progresso` (migração 0084). Na tela, cada trilha mostra "x de y aulas", uma barra e um sinal de feito em cada aula; no topo, o progresso total e o selo "Pronto".
+- **Painel do dono:** aba **Equipe** no Aprender, só para o dono. Mostra cada pessoa ativa, a função, as trilhas dela com a barra e "Pronto" quando terminou todas.
+- **Trilha atribuída no convite:** a trilha vem da função escolhida ao cadastrar a pessoa; a tela Equipe agora mostra quais trilhas cada função recebe.
+- **Em destaque:** quem tem aula pendente vê um card na tela Agora ("Sua trilha no Aprender: x de y aulas").
+- **Fica para a BC3:** o Maurício da equipe respondendo pela base e o aviso "mudou" quando uma decisão nova mexe numa aula.

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 267,
+  "frente": "Grupo",
+  "titulo": "BC2: perguntas por aula, progresso por pessoa e painel \"quem está pronto\" no Aprender",
+  "data": "2026-11-07",
+  "resumo": "Perguntas: cada uma das aulas tem 3 perguntas rápidas no fim (src/lib/conhecimento/perguntas.ts), montadas dos mesmos fatosAoVivo: se o preço ou a comissão muda, a resposta certa muda junto. Teste: nenhum valor em reais ou percentual esc…"
+ },
+ {
   "numero": 266,
   "frente": "Grupo",
   "titulo": "BC1: tela \"Aprender\" no Master, com aulas ao vivo, trilhas por função, busca e Novidades",
@@ -271,12 +278,5 @@
   "titulo": "Sem semestral; preço depois da Black em meio-termo",
   "data": "2026-11-03",
   "resumo": "Dono: \"vamos abortar o plano semestral\"; depois da Black, \"um meio-termo; não posso aumentar tanto e não me importo em ficar mais caro numericamente\"."
- },
- {
-  "numero": 227,
-  "frente": "Black e planos",
-  "titulo": "Respostas do dono da 2ª rodada",
-  "data": "2026-11-03",
-  "resumo": "Suporte do Pro: até 4 h úteis."
  }
 ]

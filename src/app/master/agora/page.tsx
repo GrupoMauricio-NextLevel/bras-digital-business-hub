@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, GraduationCap, MessageCircle, Sparkles } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { agoraEcommerce, rotuloTipoAgora, type ItemAgora } from "@/lib/domain/agora-ecommerce";
@@ -10,6 +10,7 @@ import { MetricCard } from "@/components/app/metric-card";
 import { EmptyState } from "@/components/app/empty-state";
 import { AoVivo } from "@/components/master/ao-vivo";
 import { pendenciasDoDono } from "@/lib/domain/pendencias-dono";
+import { pendenteDoAprender } from "@/lib/domain/aprender";
 
 export const dynamic = "force-dynamic";
 
@@ -23,13 +24,22 @@ const ha = (iso: string, agora: Date) => {
 export default async function AgoraPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const agora = new Date();
-  const a = await agoraEcommerce(await getDb(), session.actor, agora);
+  const db = await getDb();
+  const [a, aprender] = await Promise.all([agoraEcommerce(db, session.actor, agora), pendenteDoAprender(db, session.actor)]);
   const pend = pendenciasDoDono().filter((p) => !p.feita);
   const k = a.contadores;
   const pct = Math.min(100, Math.round((k.pagantes / Math.max(1, k.meta)) * 100));
   return (
     <>
       <PageHeader eyebrow="NextLevel E-commerce" title="Agora" description="Quem atender primeiro, quem está perto de pagar e quem travou. Atualiza sozinho." actions={<AoVivo />} />
+
+      {aprender ? (
+        <Link href="/master/aprender" className="ds-card mb-6 flex flex-wrap items-center gap-3 p-4 hover:border-foreground/30">
+          <GraduationCap className="size-6 shrink-0" aria-hidden />
+          <span className="min-w-0 flex-1"><span className="block font-semibold">Sua trilha no Aprender: {aprender.feitas} de {aprender.total} aulas</span><span className="block text-sm text-muted-foreground">Termine as aulas da sua função para atender com as regras de agora.</span></span>
+          <span className="inline-flex items-center gap-1 text-sm font-semibold">Continuar <ArrowRight className="size-4" aria-hidden /></span>
+        </Link>
+      ) : null}
 
       <section className="ds-kpis mb-6" aria-label="Números de agora">
         <MetricCard label="Conversas esperando" value={k.conversas} hint={k.conversas ? "responda primeiro" : "ninguém esperando"} tone={k.conversas ? "danger" : "neutral"} />

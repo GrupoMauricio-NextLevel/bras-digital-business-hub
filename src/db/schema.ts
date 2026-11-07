@@ -2769,3 +2769,20 @@ export const qaRuns = pgTable("qa_runs", {
   startedBy: text("started_by").references(() => users.id),
   createdAt: createdAt(),
 }, (t) => [index("qa_runs_kind_idx").on(t.kind, t.createdAt)]);
+
+/**
+ * Progresso na base de conhecimento (BC2, D267): uma linha por pessoa da equipe do Master e aula. A aula fica concluída
+ * quando a pessoa acerta todas as perguntas (conferidas no servidor com os números do sistema de agora).
+ */
+export const aprenderProgresso = pgTable("aprender_progresso", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  aulaId: text("aula_id").notNull(),
+  trilha: text("trilha").notNull(),
+  acertos: integer("acertos").notNull().default(0),
+  total: integer("total").notNull().default(0),
+  tentativas: integer("tentativas").notNull().default(0),
+  concluidaAt: ts("concluida_at"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at"),
+}, (t) => [uniqueIndex("aprender_progresso_usuario_aula").on(t.userId, t.aulaId), index("aprender_progresso_usuario_idx").on(t.userId)]);

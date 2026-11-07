@@ -1,6 +1,6 @@
 # Base de conhecimento ao vivo no Master (treinamento da equipe)
 
-> Estado: **EM ANDAMENTO.** BC0 aprovada (D265). BC1 no ar (D266): tela "Aprender" no Master. Próxima: BC2 (perguntas, progresso por pessoa, painel do dono).
+> Estado: **EM ANDAMENTO.** BC0 aprovada (D265). BC1 no ar (D266): tela "Aprender" no Master. BC2 no ar (D267): perguntas por aula, progresso por pessoa, painel "quem está pronto" e card na Agora. Próxima: BC3 (Maurício da equipe respondendo pela base e aviso "mudou").
 > Pedido do dono (06/11/2026): "precisamos criar dentro do Master uma base de conhecimento ao vivo, porque tem novas pessoas chegando para trabalhar na plataforma. Todo o arcabouço que desenvolvemos nas últimas semanas, todas as regras de todos os setores: comercial dos parceiros, venda direta ao cliente final… em destaque, com treinamento para novos funcionários assimilarem de maneira clara."
 
 ---

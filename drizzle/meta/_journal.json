@@ -589,6 +589,13 @@
       "when": 1793892895888,
       "tag": "0083_atacado_base",
       "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "7",
+      "when": 1794012308849,
+      "tag": "0084_aprender_progresso",
+      "breakpoints": true
     }
   ]
 }
