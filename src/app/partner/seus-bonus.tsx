@@ -44,7 +44,7 @@ export function SeusBonus({ b, agora = new Date() }: { b: BonusDoParceiro; agora
                 {c.faixas.map((f) => <li key={f.pontos} className={`rounded-full px-2 py-0.5 tabular-nums ${c.pontos >= f.pontos * 100 ? "bg-emerald-400 font-semibold text-emerald-950" : "bg-white/10"}`}>{f.pontos} pts · {formatBRL(f.valorCents)}</li>)}
               </ol>
               <p className="mt-3 text-sm" aria-live="polite">
-                {c.proxima ? <>{quase ? <Flame className="mr-1 inline size-4 text-amber-300" aria-hidden /> : null}<b>Falta {pts(c.faltaCent)} ponto{c.faltaCent === 100 ? "" : "s"}</b> para {formatBRL(c.proxima.valorCents)}{c.atingida ? <> · você já garantiu a faixa de {formatBRL(c.atingida.valorCents)}</> : null}.</> : <b className="text-emerald-300">Faixa máxima: {formatBRL(c.atingida!.valorCents)}!</b>}
+                {c.proxima ? <>{quase ? <Flame className="mr-1 inline size-4 text-amber-300" aria-hidden /> : null}<b>{c.faltaCent > 100 ? "Faltam" : "Falta"} {pts(c.faltaCent)} ponto{c.faltaCent > 100 ? "s" : ""}</b> para {formatBRL(c.proxima.valorCents)}{c.atingida ? <> · você já garantiu a faixa de {formatBRL(c.atingida.valorCents)}</> : null}.</> : <b className="text-emerald-300">Faixa máxima: {formatBRL(c.atingida!.valorCents)}!</b>}
               </p>
               {c.emGarantia ? <p className="mt-1 flex items-center gap-1 text-xs text-white/70"><ShieldCheck className="size-3.5" aria-hidden />{pts(c.emGarantia)} ponto{c.emGarantia === 100 ? "" : "s"} em garantia: contam se a loja seguir paga por 30 dias.</p> : null}
             </article>

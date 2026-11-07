@@ -44,7 +44,7 @@ export async function ComissoesEc() {
       <section className="ec-cabecalho px-4 pb-16 pt-24 md:pb-24 md:pt-32" aria-labelledby="com-t">
         <div className="mx-auto max-w-6xl">
           <p className="ec-tag"><i aria-hidden />Programa de parceiros</p>
-          <h1 id="com-t" className="im-h1 mt-4 max-w-3xl text-white">Comissões e bônus por produção, sem letra miúda.</h1>
+          <h1 id="com-t" className="ec-cabecalho-titulo mt-6 max-w-4xl">Comissões e bônus por produção, sem letra miúda.</h1>
           <p className="mt-5 max-w-2xl text-lg text-white/80">Você ganha uma parte de <b className="text-white">toda mensalidade</b> de cada lojista que trouxer, enquanto ele pagar. E, quando produz mais na semana e no mês, soma bônus. Abaixo, a regra inteira, com os números de hoje.</p>
           <div className="mt-8 flex flex-wrap gap-3"><Link href="/parceiros/cadastro" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-neutral-950">Quero ser parceiro <ArrowRight className="size-4" aria-hidden /></Link><Link href="/parceiros" className="inline-flex min-h-12 items-center rounded-full border border-white/30 px-6 font-semibold text-white">Voltar ao programa</Link></div>
         </div>
