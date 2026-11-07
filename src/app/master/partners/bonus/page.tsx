@@ -33,7 +33,7 @@ export default async function BonusPage() {
         <MetricCard label="Em jogo agora" value={formatBRL(d.campanhas.reduce((t, c) => t + c.potencialAtualCents, 0))} hint="se as vendas do período passarem da garantia" />
       </section>
 
-      <p className="mb-6 flex items-start gap-2 rounded-xl border border-border bg-surface p-3 text-sm"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />Sua margem fica protegida por 4 travas: só a 1ª venda de cada loja, só depois da garantia, teto de custo por loja somando as campanhas e orçamento por período. O racional completo está em <code className="text-xs">docs/prompts/bonus-gamificado-parceiros-executivos.md</code>.</p>
+      <p className="mb-6 flex items-start gap-2 rounded-xl border border-border bg-surface p-3 text-sm"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />Sua margem fica protegida por 4 travas: só a 1ª venda de cada loja, só depois da garantia, teto de custo por loja somando as campanhas e orçamento por período. Somando tudo, comissão e bônus ficam abaixo de 35% da receita do 1º ano de cada loja.</p>
 
       {(["RUA", "ONLINE"] as const).map((pub) => (
         <section key={pub} className="mb-8" aria-labelledby={`pub-${pub}`}>
