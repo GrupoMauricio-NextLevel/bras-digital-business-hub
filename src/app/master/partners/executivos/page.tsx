@@ -1,3 +1,4 @@
+import { diaDoPrazo } from "@/lib/finance/executivo-regras";
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
 import { getDb } from "@/db/client";
@@ -44,7 +45,7 @@ export default async function ExecutivosPage() {
                   <p className="font-semibold">{p.executivo} · {p.loja}</p>
                   <p className="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-muted-foreground">
                     <Badge tone={p.meio === "DINHEIRO" ? "warning" : "info"}>{p.meio === "DINHEIRO" ? "Dinheiro com o executivo" : "Maquininha do vendedor"}</Badge>
-                    <span className="font-mono">{p.codigo}</span> · vendido {quando(p.recebidoEm)} · prazo {quando(p.prazoAte)}
+                    <span className="font-mono">{p.codigo}</span> · vendido {quando(p.recebidoEm)} · entregar até {diaDoPrazo(p.prazoAte)}
                     {p.atrasado ? <Badge tone="danger"><AlertTriangle className="size-3" aria-hidden /> atrasado</Badge> : null}
                   </p>
                 </div>

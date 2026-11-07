@@ -6,7 +6,7 @@ import { actorFromUser } from "@/lib/domain/access";
 import { signupMember } from "@/lib/domain/store-access";
 import { abrirCaixa, caixaDoDia } from "@/lib/domain/caixa";
 import { cadastrarExecutivo, estornarVendaDeRua, painelDoExecutivo, painelDosExecutivos, pendenciasDosExecutivos, receberDoExecutivo, registrarVendaDeRua } from "@/lib/domain/executivos";
-import { atrasado, codigoDeRecibo, linkDoRecibo, prazoDeEntrega, textoDoRecibo } from "@/lib/finance/executivo-regras";
+import { atrasado, codigoDeRecibo, diaDoPrazo, linkDoRecibo, prazoDeEntrega, textoDoRecibo } from "@/lib/finance/executivo-regras";
 import { subscriptionOf } from "@/lib/domain/commerce-plans";
 
 describe("executivos (puro, D273)", () => {
@@ -14,6 +14,7 @@ describe("executivos (puro, D273)", () => {
     expect(prazoDeEntrega(new Date("2026-12-11T15:00:00Z")).toISOString()).toBe("2026-12-16T03:00:00.000Z"); // sex → fim de ter
     expect(prazoDeEntrega(new Date("2026-12-10T15:00:00Z")).toISOString()).toBe("2026-12-15T03:00:00.000Z"); // qui → fim de seg
     expect(atrasado("2026-12-15T03:00:00.000Z", new Date("2026-12-15T04:00:00Z"))).toBe(true);
+    expect(diaDoPrazo("2026-12-15T03:00:00.000Z")).toMatch(/14\/12/); // prazo vence à meia-noite: último dia é segunda 14/12
   });
   it("recibo: código, texto e link do WhatsApp com o número da loja", () => {
     expect(codigoDeRecibo(() => 0)).toBe("REC-AAAAAA");

@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { diaDoPrazo } from "@/lib/finance/executivo-regras";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AlertTriangle, Banknote, CreditCard, MessageCircle, Receipt } from "lucide-react";
@@ -8,7 +9,6 @@ import type { PainelDoExecutivo } from "@/lib/domain/executivos";
 import { registrarVendaDeRuaAction } from "@/app/actions/executivos";
 
 type Plano = { key: string; name: string; monthlyCents: number | null; annualCents: number | null };
-const quando = (iso: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(new Date(iso));
 
 /**
  * Venda na rua (CX3, D273): o executivo escolhe a loja, o plano e como recebeu. A loja é liberada na hora e sai o recibo
@@ -65,7 +65,7 @@ export function VendaNaRua({ d, planos }: { d: PainelDoExecutivo; planos: Plano[
         <h2 className="flex items-center gap-2 text-lg font-bold"><Banknote className="size-5 text-amber-500" aria-hidden />Dinheiro com você</h2>
         <p className="mt-1 text-3xl font-bold tabular-nums">{formatBRL(d.totalComigoCents)}</p>
         <p className="text-sm text-muted-foreground">Entregue à NextLevel em até 2 dias úteis de cada venda.</p>
-        {d.comigo.length ? <ul className="mt-3 grid gap-2">{d.comigo.map((r) => <li key={r.id} className={`flex flex-wrap justify-between gap-2 rounded-xl border px-3 py-2 text-sm ${r.atrasado ? "border-red-300 bg-red-50 dark:bg-red-950/30" : "border-border"}`}><span><b>{r.loja}</b> · <span className="font-mono text-xs">{r.codigo}</span><span className="block text-xs text-muted-foreground">{r.atrasado ? "prazo vencido" : `entregar até ${quando(r.prazoAte)}`}</span></span><b className="tabular-nums">{formatBRL(r.valorCents)}</b></li>)}</ul> : <p className="mt-3 text-sm text-emerald-700 dark:text-emerald-300">Tudo entregue. Bom trabalho!</p>}
+        {d.comigo.length ? <ul className="mt-3 grid gap-2">{d.comigo.map((r) => <li key={r.id} className={`flex flex-wrap justify-between gap-2 rounded-xl border px-3 py-2 text-sm ${r.atrasado ? "border-red-300 bg-red-50 dark:bg-red-950/30" : "border-border"}`}><span><b>{r.loja}</b> · <span className="font-mono text-xs">{r.codigo}</span><span className="block text-xs text-muted-foreground">{r.atrasado ? "prazo vencido" : `entregar até ${diaDoPrazo(r.prazoAte)}`}</span></span><b className="tabular-nums">{formatBRL(r.valorCents)}</b></li>)}</ul> : <p className="mt-3 text-sm text-emerald-700 dark:text-emerald-300">Tudo entregue. Bom trabalho!</p>}
       </article>
     </section>
   );

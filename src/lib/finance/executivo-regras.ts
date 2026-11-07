@@ -46,3 +46,9 @@ export function linkDoRecibo(texto: string, whatsapp: string | null | undefined)
   const numero = d ? (d.length <= 11 ? `55${d}` : d) : "";
   return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
 }
+
+/** Prazo legível: o último dia para entregar ("ter., 15/12"), já que o prazo vence à meia-noite do dia seguinte. */
+export function diaDoPrazo(prazoAte: string | Date) {
+  const ultimo = new Date(new Date(prazoAte).getTime() - 60_000);
+  return new Intl.DateTimeFormat("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "America/Sao_Paulo" }).format(ultimo);
+}
