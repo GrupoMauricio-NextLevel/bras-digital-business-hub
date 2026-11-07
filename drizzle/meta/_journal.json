@@ -610,6 +610,13 @@
       "when": 1794082464755,
       "tag": "0086_caixa_destino",
       "breakpoints": true
+    },
+    {
+      "idx": 87,
+      "version": "7",
+      "when": 1794085545953,
+      "tag": "0087_bonus_gamificado",
+      "breakpoints": true
     }
   ]
 }

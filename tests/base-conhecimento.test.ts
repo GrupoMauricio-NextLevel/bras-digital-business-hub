@@ -32,6 +32,7 @@ const fatosFalsos = (mult = 1): Fatos => ({
   planos: ["Start", "Pro", "Scale"].map((nome, i) => ({ key: `K${i}`, nome, mensalCents: 1_111 * (i + 1) * mult, anualMesCents: 999 * (i + 1) * mult, depoisDaBlackMensalCents: 1_313 * (i + 1), depoisDaBlackAnualMesCents: 1_212 * (i + 1), produtos: i === 2 ? null : 123 * (i + 1), pessoas: 7 + i, temaPago: i > 0, suporte: "Suporte X", migracao: "Migração Y", ia: 77 * (i + 1), atacado: { plano: nome, faixas: 3 + i, gradesPorProduto: i === 2 ? 99 : 2 + i, regrasMix: 1 + i, tiposMix: ["MIX_PECAS"], pacote: i > 0, gradeLivre: i > 0 } })),
   diasDeTeste: 9, black: { ativa: true, fim: "2026-12-01T02:59:59.000Z", mesesGratisAnual: 4 },
   parceiros: { niveis: [{ nome: "Inicial", minimo: 0, cnpjBps: 2_100 * mult, cpfBps: 1_600 }, { nome: "Prata", minimo: 11, cnpjBps: 2_500, cpfBps: 2_000 }, { nome: "Ouro", minimo: 27, cnpjBps: 2_900, cpfBps: 2_400 }], mesesParaDescer: 3, saqueMinimoCents: 4_321, atribuicaoDias: 77, garantiaDias: 31, inativoMeses: 8 },
+  bonus: { campanhas: [{ nome: "Campanha X", publico: "RUA", periodo: "SEMANA", faixas: [{ pontos: 3, valorCents: 4_321 * mult }] }], tetoBps: { ONLINE: 5_100, RUA: 7_700 } },
   concorrentes: { consulta: "01/01/2030", programas: [], barreiras: [{ nome: "Rival", barreira: "Exige carimbo." }], shopifyUsd: 31, taxas: [{ nome: "Rival", maxBps: 333 }] },
 });
 

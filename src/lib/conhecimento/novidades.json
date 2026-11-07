@@ -1,5 +1,12 @@
 [
  {
+  "numero": 271,
+  "frente": "E-commerce",
+  "titulo": "BG1: bônus gamificado para parceiros online e executivos de rua, com teto de margem",
+  "data": "2026-11-07",
+  "resumo": "Pedido do dono (07/11): bônus semanais e mensais que não prejudiquem a margem;"
+ },
+ {
   "numero": 270,
   "frente": "E-commerce",
   "titulo": "CX2: receber assinatura à mão, formas de pagamento da NextLevel e painel de assinaturas",
@@ -271,12 +278,5 @@
   "titulo": "BF3 no ar: roupa da Black, contagem em mais pontos e \"Black deles × Black NextLevel\"",
   "data": "2026-11-03",
   "resumo": "Roupa da Black nos sites públicos (classe bk-on, ligada pela campanha): topo da home em preto com brilho verde e ciano;"
- },
- {
-  "numero": 231,
-  "frente": "Black",
-  "titulo": "Ataque no atacado: Nuvemshop e Loja Integrada não têm atacado nativo",
-  "data": "2026-11-03",
-  "resumo": "O dono confirmou que Nuvemshop e Loja Integrada não têm as funções de atacado (grade fechada, preço por quantidade, pedido mínimo): \"Vamos atacar isso!\"."
  }
 ]

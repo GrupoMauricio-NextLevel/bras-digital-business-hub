@@ -1,4 +1,7 @@
 import type { Database } from "@/db/client";
+import { asc, eq } from "drizzle-orm";
+import { bonusCampanhas } from "@/db/schema";
+import { TETO_POR_PONTO_BPS } from "@/lib/finance/bonus-regras";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { beneficiosPorPlano, NOME_PLANO_BENEFICIO, PLANOS_BENEFICIO } from "@/lib/domain/beneficios-plano";
 import { getPartnerSettings } from "@/lib/domain/partners";
@@ -22,10 +25,15 @@ export type Fatos = {
   diasDeTeste: number;
   black: { ativa: boolean; fim: string; mesesGratisAnual: number };
   parceiros: { niveis: { nome: string; minimo: number; cnpjBps: number; cpfBps: number }[]; mesesParaDescer: number; saqueMinimoCents: number; atribuicaoDias: number; garantiaDias: number; inativoMeses: number };
+  /** Bônus gamificado (D271): campanhas ativas e o teto de custo por loja de cada público (bps de uma mensalidade). */
+  bonus: { campanhas: { nome: string; publico: "ONLINE" | "RUA"; periodo: "SEMANA" | "MES"; faixas: { pontos: number; valorCents: number }[] }[]; tetoBps: { ONLINE: number; RUA: number } };
   concorrentes: { consulta: string; programas: { nome: string; regra: string; barreira: string }[]; barreiras: { nome: string; barreira: string }[]; shopifyUsd: number; taxas: { nome: string; maxBps: number }[] };
 };
 
 export async function fatosAoVivo(db: Database): Promise<Fatos> {
+  const { garantirCampanhasPadrao } = await import("@/lib/domain/bonus");
+  await garantirCampanhasPadrao(db);
+  const campanhas = await db.select().from(bonusCampanhas).where(eq(bonusCampanhas.ativa, true)).orderBy(asc(bonusCampanhas.publico), asc(bonusCampanhas.periodo));
   const [pv, beneficios, ajustes, black, regra] = await Promise.all([commercePlansView(db), beneficiosPorPlano(db), getPartnerSettings(db), campanhaBlack(db), findRule(db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AFFILIATE" })]);
   const planos: PlanoFato[] = PLANOS_BENEFICIO.map((key) => {
     const p = pv.plans.find((x) => x.key === key);
@@ -46,6 +54,7 @@ export async function fatosAoVivo(db: Database): Promise<Fatos> {
       niveis: NIVEIS.map((n) => ({ nome: n.nome, minimo: n.minimo, cnpjBps: n.bps, cpfBps: n.bps - DESCONTO_CPF_BPS })),
       mesesParaDescer: MESES_PARA_DESCER, saqueMinimoCents: ajustes.minPayoutCents, atribuicaoDias: ajustes.attributionDays, garantiaDias: regra?.holdDays ?? 0, inativoMeses: MESES_SEM_CLIENTE,
     },
+    bonus: { campanhas: campanhas.map((c) => ({ nome: c.nome, publico: c.publico, periodo: c.periodo, faixas: c.faixas })), tetoBps: TETO_POR_PONTO_BPS },
     concorrentes: {
       consulta: CONSULTA_CONCORRENTES, shopifyUsd: SHOPIFY_BR_USD,
       programas: PROGRAMAS_CONCORRENTES.map((p) => ({ nome: p.nome, regra: p.regra, barreira: p.barreira })),

@@ -2852,3 +2852,37 @@ export const caixaHistorico = pgTable("caixa_historico", {
   userId: text("user_id").notNull().references(() => users.id),
   createdAt: createdAt(),
 }, (t) => [index("caixa_historico_lancamento_idx").on(t.lancamentoId), index("caixa_historico_dia_idx").on(t.diaId)]);
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Bônus gamificado (BG1, D271): campanhas ligadas pelo dono, por público (online × rua) e período (semana × mês).
+// ---------------------------------------------------------------------------------------------------------------------
+export type FaixaDeBonus = { pontos: number; valorCents: number };
+export const bonusCampanhas = pgTable("bonus_campanhas", {
+  id: id(),
+  chave: text("chave").notNull(),
+  nome: text("nome").notNull(),
+  publico: text("publico", { enum: ["ONLINE", "RUA"] }).notNull(),
+  periodo: text("periodo", { enum: ["SEMANA", "MES"] }).notNull(),
+  faixas: jsonb("faixas").$type<FaixaDeBonus[]>().notNull(),
+  orcamentoCents: integer("orcamento_cents").notNull(),
+  ativa: boolean("ativa").notNull().default(false),
+  versao: integer("versao").notNull().default(1),
+  atualizadoPor: text("atualizado_por").references(() => users.id),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at"),
+}, (t) => [uniqueIndex("bonus_campanhas_chave").on(t.chave)]);
+
+/** Prêmio apurado (um por campanha, parceiro e período). Valor 0 com motivo quando o orçamento acabou. */
+export const bonusPremios = pgTable("bonus_premios", {
+  id: id(),
+  campanhaId: text("campanha_id").notNull().references(() => bonusCampanhas.id),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  periodo: text("periodo").notNull(),
+  pontos: integer("pontos_centesimos").notNull(),
+  faixaPontos: integer("faixa_pontos").notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  status: text("status", { enum: ["PAGO", "SEM_ORCAMENTO"] }).notNull(),
+  comissaoId: text("comissao_id"),
+  versaoCampanha: integer("versao_campanha").notNull(),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("bonus_premios_unico").on(t.campanhaId, t.partnerId, t.periodo), index("bonus_premios_partner_idx").on(t.partnerId)]);

@@ -3213,3 +3213,36 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - a troca de plano do lojista e a do Master usam a mesma função (`trocarPlanoDaAssinatura`).
 - **Testes:** `tests/caixa.test.ts` (dinheiro no balcão com comissão do executivo, desconto, Pix e anual, estorno completo, painel e ações).
 - **Próxima fase:** CX3 (executivos de venda: venda em dinheiro na rua, recibo, dinheiro com o executivo e prestação de contas).
+
+## D271 — [E-commerce] BG1: bônus gamificado para parceiros online e executivos de rua, com teto de margem (2026-11-07)
+- **Pedido do dono (07/11):**
+  - bônus semanais e mensais que não prejudiquem a margem;
+  - mais benefício para quem se envolve mais;
+  - bonificação diferente para parceiros online e de rua;
+  - ativar já.
+- **Muda a D260:** o bônus em dinheiro volta, mas só por **campanhas ligadas pelo dono**.
+- **Racional e prompt mestre:** `docs/prompts/bonus-gamificado-parceiros-executivos.md`:
+  - margem por plano com comissão de 20% e de 28%;
+  - prova de que comissão + bônus ficam abaixo de 35% da receita do 1º ano;
+  - gatilhos de engajamento;
+  - fases BG1 a BG4.
+- **Regras** (`src/lib/finance/bonus-regras.ts`, `src/lib/domain/bonus.ts`):
+  1. conta só a 1ª venda de cada loja (linha SALE da comissão); renovação nunca dá bônus;
+  2. apuração só **depois da garantia** das vendas do período; estornada ou cancelada na garantia não conta; venda para o próprio CPF/CNPJ não conta;
+  3. pontos pelo valor pago (1 ponto = 1 mensalidade do Start pela tabela de hoje; Pro e Scale proporcionais; anual × 1,2); desconto reduz os pontos;
+  4. **teto de custo por loja** somando as campanhas ativas do público: online 50% e rua 75% de uma mensalidade, recusado ao salvar;
+  5. **orçamento por período**: quem fez mais pontos é apurado primeiro; o excedente fica registrado como "sem orçamento", sem pagamento.
+- **Pagamento:**
+  - o bônus entra como lançamento "Bônus" no saldo do parceiro, liberado;
+  - é idempotente (um prêmio por campanha, parceiro e período);
+  - é apurado na rotina diária dos parceiros.
+- **Campanhas padrão ativas**, que cabem no teto também na Black (Start a R$ 57):
+  - online: "Sprint da semana" (2 → R$ 15, 4 → R$ 34) e "Produção do mês" (3 → R$ 30, 6 → R$ 75, 12 → R$ 190, 25 → R$ 450);
+  - rua: "Ritmo da semana" (3 → R$ 40, 5 → R$ 80, 8 → R$ 140) e "Meta do mês" (10 → R$ 190, 20 → R$ 440, 35 → R$ 850);
+  - custo máximo por loja Start: online 40% e rua 62% de R$ 67 (46% e 73% de R$ 57).
+- **Telas:**
+  - Master → **Bônus e metas** (`/master/partners/bonus`): campanhas por público, faixas, custo por loja contra o teto, orçamento, pago até hoje, "em jogo agora" e quem está no jogo; editar e pausar só o dono e o Financeiro;
+  - painel do parceiro: cartão **"Seus bônus"** com pontos, barra com as faixas, "falta X para R$ Y", destaque de quase lá, contagem regressiva e pontos em garantia.
+- **Dados:** migração 0087 (`bonus_campanhas`, `bonus_premios`).
+- **Testes:** `tests/bonus.test.ts` (pontos, faixas, teto inclusive na Black, períodos, garantia, rua × online, próprio CNPJ, orçamento, idempotência, permissões, progresso).
+- **Próximas fases:** BG2 (missões e selos sem dinheiro, sequência e ranking), BG3 (com a CX4, painel do executivo e registro de visitas), BG4 (relatório de retorno).

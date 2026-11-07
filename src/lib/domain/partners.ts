@@ -530,6 +530,9 @@ export async function runDailyPartnerJobs(db: Database, now = new Date()) {
   if (now.getUTCDate() === 1) { const prev = periodOf(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))); closed = (await closePartnerMonth(db, prev, now)).closed; }
   const { rodarNiveis } = await import("./niveis-parceiro");
   const niveis = await rodarNiveis(db, now);
-  // D260: o desafio do mês é reconhecimento (destaque e selo), sem dinheiro; nada é pago pela rotina.
-  return { released, closed, niveis, desafios: 0 };
+  // D260: o desafio do mês é reconhecimento (destaque e selo), sem dinheiro.
+  // D271: bônus só pelas campanhas ligadas pelo dono, apurados depois da garantia, com teto e orçamento.
+  const { apurarBonus } = await import("./bonus");
+  const bonus = await apurarBonus(db, now);
+  return { released, closed, niveis, desafios: 0, bonus };
 }
