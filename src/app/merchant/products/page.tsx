@@ -22,7 +22,7 @@ export default async function MerchantProductsPage() {
     costCents: c.product.costCents, suggestedPriceCents: c.product.suggestedPriceCents, minimumPriceCents: c.product.minimumPriceCents,
     sellsPack: c.product.sellsPack, packSuggested: c.packs[0]?.suggestedPriceCents ?? null, packMinimum: c.packs[0]?.minimumPriceCents ?? null,
     active: c.storeProduct.active, priceCents: c.storeProduct.priceCents, packPriceCents: c.storeProduct.packPriceCents,
-    available: c.variants.reduce((s, v) => s + v.level.available, 0), sizes: c.variants.map((v) => `${v.size}:${v.level.available}`).join(" "),
+    available: c.variants.reduce((s, v) => s + v.level.available, 0), sizes: c.variants.map((v) => `${v.color ? `${v.color} ` : ""}${v.size}:${v.level.available}`).join(" "),
   }));
   const active = items.filter((i) => i.active).length;
   const inactive = items.length - active;

@@ -15,7 +15,7 @@ export default async function NewOrderPage() {
     packPriceCents: c.storeProduct.packPriceCents,
     sellsUnit: c.product.sellsUnit,
     sellsPack: c.product.sellsPack,
-    variants: c.variants.map((v) => ({ id: v.id, size: v.size, available: v.level.available })),
+    variants: c.variants.map((v) => ({ id: v.id, size: v.color ? `${v.color} · ${v.size}` : v.size, available: v.level.available })),
     packs: c.packs.map((p) => ({ id: p.id, name: p.name, available: p.available, priceCents: c.storeProduct.packPriceCents ?? p.suggestedPriceCents })),
   }));
   const independent = (await perfilAtual(session.store!.id)).independente;

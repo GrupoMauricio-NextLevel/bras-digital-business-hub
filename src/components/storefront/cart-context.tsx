@@ -2,6 +2,7 @@
 import * as React from "react";
 import { eventoMeta } from "./pixel-meta";
 import { precoDoCarrinho, type CarrinhoPrecificado, type LinhaPreco, type RegraMix } from "@/lib/finance/atacado-preco";
+import { pendenciasDoCarrinho, type RegraDoModelo } from "@/lib/finance/atacado-modelo";
 
 export type CartLine = { key: string; productId: string; variantId?: string; packId?: string; name: string; label: string; unitPriceCents: number; quantity: number; images: string[]; max: number;
   /** Preço por quantidade do produto (soma das unidades do mesmo produto no carrinho). */
@@ -26,7 +27,7 @@ function precificarCarrinho(lines: CartLine[], regras: RegraMix[]): { lines: Car
  * Atacado da loja para o carrinho (AT2, D259): regras de mix e, por produto, o preço de atacado e a coleção atuais
  * (carrinhos salvos antes continuam certos, porque o dado vem da loja e não da linha guardada no navegador).
  */
-export type AtacadoDaLoja = { regras: RegraMix[]; produtos: Record<string, { atacadoCents: number | null; categoryId: string | null }>; pacotes: Record<string, number> };
+export type AtacadoDaLoja = { regras: RegraMix[]; produtos: Record<string, { atacadoCents: number | null; categoryId: string | null }>; pacotes: Record<string, number>; /** Grade livre (AT3, D268): mínimo e múltiplo por modelo. */ modelos?: Record<string, RegraDoModelo> };
 
 function comDadosDaLoja(lines: CartLine[], a: AtacadoDaLoja | undefined): CartLine[] {
   if (!a) return lines;
@@ -84,6 +85,11 @@ type Ctx = {
   atacadoLigado: boolean;
   /** Linhas atuais (preço de varejo) com os dados de atacado da loja, para simular uma adição no box. */
   linhasBase: CartLine[];
+  /** Modelos com mínimo ou múltiplo que ainda não fecham (o pedido é recusado até fechar). */
+  pendencias: ReturnType<typeof pendenciasDoCarrinho>;
+  modelos: Record<string, RegraDoModelo>;
+  /** Adiciona várias linhas de uma vez (matriz cor × tamanho). */
+  addMany: (lines: Omit<CartLine, "key">[]) => void;
   add: (line: Omit<CartLine, "key">) => void;
   update: (key: string, quantity: number) => void;
   remove: (key: string) => void;
@@ -95,11 +101,19 @@ type Ctx = {
 
 const CartContext = React.createContext<Ctx | null>(null);
 
+function juntar(prev: CartLine[], line: Omit<CartLine, "key">): CartLine[] {
+  const key = `${line.productId}:${line.variantId ?? ""}:${line.packId ?? ""}`;
+  const existing = prev.find((l) => l.key === key);
+  return existing ? prev.map((l) => (l.key === key ? { ...l, quantity: Math.min(l.max, l.quantity + line.quantity) } : l)) : [...prev, { ...line, key }];
+}
+
 export function CartProvider({ storeSlug, atacado, children }: { storeSlug: string; atacado?: AtacadoDaLoja; children: React.ReactNode }) {
   const { lines: rawLines, ready } = useCartLines(storeSlug);
   const linhasBase = React.useMemo(() => comDadosDaLoja(rawLines, atacado), [rawLines, atacado]);
   const regras = React.useMemo(() => atacado?.regras ?? [], [atacado]);
   const { lines, precificado } = React.useMemo(() => precificarCarrinho(linhasBase, regras), [linhasBase, regras]);
+  const modelos = React.useMemo(() => atacado?.modelos ?? {}, [atacado]);
+  const pendencias = React.useMemo(() => pendenciasDoCarrinho(rawLines, modelos), [rawLines, modelos]);
   const value = React.useMemo<Ctx>(() => ({
     lines,
     precificado,
@@ -107,19 +121,23 @@ export function CartProvider({ storeSlug, atacado, children }: { storeSlug: stri
     atacadoLigado: !!atacado,
     linhasBase,
     ready,
+    pendencias,
+    modelos,
+    addMany: (novas) => {
+      if (!novas.length) return;
+      eventoMeta("AddToCart", { currency: "BRL", value: novas.reduce((t, l) => t + l.unitPriceCents * l.quantity, 0) / 100 });
+      setLines(storeSlug, novas.reduce(juntar, getStore(storeSlug).lines));
+    },
     add: (line) => {
       eventoMeta("AddToCart", { currency: "BRL", value: (line.unitPriceCents * line.quantity) / 100 });
-      const key = `${line.productId}:${line.variantId ?? ""}:${line.packId ?? ""}`;
-      const prev = getStore(storeSlug).lines;
-      const existing = prev.find((l) => l.key === key);
-      setLines(storeSlug, existing ? prev.map((l) => (l.key === key ? { ...l, quantity: Math.min(l.max, l.quantity + line.quantity) } : l)) : [...prev, { ...line, key }]);
+      setLines(storeSlug, juntar(getStore(storeSlug).lines, line));
     },
     update: (key, quantity) => setLines(storeSlug, getStore(storeSlug).lines.map((l) => (l.key === key ? { ...l, quantity: Math.max(1, Math.min(l.max, quantity)) } : l))),
     remove: (key) => setLines(storeSlug, getStore(storeSlug).lines.filter((l) => l.key !== key)),
     clear: () => setLines(storeSlug, []),
     count: lines.reduce((s, l) => s + l.quantity, 0),
     subtotal: lines.reduce((s, l) => s + l.unitPriceCents * l.quantity, 0),
-  }), [lines, precificado, regras, atacado, linhasBase, ready, storeSlug]);
+  }), [lines, precificado, regras, atacado, linhasBase, ready, storeSlug, pendencias, modelos]);
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 

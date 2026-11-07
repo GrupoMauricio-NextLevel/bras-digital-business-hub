@@ -1,5 +1,12 @@
 [
  {
+  "numero": 268,
+  "frente": "E-commerce",
+  "titulo": "AT3 do atacado: grade livre (cor × tamanho), mínimo por modelo e múltiplos",
+  "data": "2026-11-07",
+  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT3 (retomada a pedido do dono em 07/11)."
+ },
+ {
   "numero": 267,
   "frente": "Grupo",
   "titulo": "BC2: perguntas por aula, progresso por pessoa e painel \"quem está pronto\" no Aprender",
@@ -271,12 +278,5 @@
   "titulo": "BF1 no ar: campanha única, contagem verdadeira e preço novo agendado",
   "data": "2026-11-03",
   "resumo": "Dono aprovou a proposta A da D228 (depois da Black: R$ 67 / 167 / 397 no mensal e 49 / 139 / 339 por mês no anual) e mandou começar o pacote do parceiros-v2-crm-niveis-planos.md."
- },
- {
-  "numero": 228,
-  "frente": "Black",
-  "titulo": "Sem semestral; preço depois da Black em meio-termo",
-  "data": "2026-11-03",
-  "resumo": "Dono: \"vamos abortar o plano semestral\"; depois da Black, \"um meio-termo; não posso aumentar tanto e não me importo em ficar mais caro numericamente\"."
  }
 ]

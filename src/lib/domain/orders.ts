@@ -1,4 +1,5 @@
 import { emailOrderCustomer } from "./order-emails";
+import { pendenciasDoCarrinho, rotuloDaVariacao } from "@/lib/finance/atacado-modelo";
 import { applyTrialMilestone } from "./precos/porta-entrada";
 import { isBlocked } from "./store-access";
 import { and, desc, eq, lt, ne, sql } from "drizzle-orm";
@@ -140,10 +141,15 @@ export async function createOrder(db: Database, rawInput: CreateOrderInput, opti
       if (!variant || !item.product.sellsUnit) throw new DomainError("VARIANT_NOT_AVAILABLE", "Tamanho não disponível.");
       const unitPrice = precos[indice]!.unitCents;
       reservations.push({ variantId: variant.id, quantity: line.quantity });
-      lines.push({ id: newId("oi"), orderId, productId: item.product.id, variantId: variant.id, productName: item.product.name, label: `Tam. ${variant.size}`, quantity: line.quantity, unitPriceCents: unitPrice, unitCostCents: item.product.costCents, lineTotalCents: unitPrice * line.quantity });
+      lines.push({ id: newId("oi"), orderId, productId: item.product.id, variantId: variant.id, productName: item.product.name, label: rotuloDaVariacao(variant), quantity: line.quantity, unitPriceCents: unitPrice, unitCostCents: item.product.costCents, lineTotalCents: unitPrice * line.quantity });
     }
   }
 
+  // Grade livre (AT3, D268): mínimo de peças por modelo e múltiplos, só na compra pela loja virtual (como o pedido mínimo).
+  if (input.channel === "ONLINE_STORE" && !rede) {
+    const pend = pendenciasDoCarrinho(input.items, Object.fromEntries(catalog.map((c) => [c.product.id, { minimo: c.storeProduct.minQtyPerModel, multiplo: c.storeProduct.multipleOf }])));
+    if (pend.length) throw new DomainError("GRADE_LIVRE", `${byProduct.get(pend[0]!.productId)!.product.name}: ${pend[0]!.mensagem}.`);
+  }
   const subtotal = lines.reduce((s, l) => s + l.lineTotalCents, 0);
   const costTotal = lines.reduce((s, l) => s + l.unitCostCents * l.quantity, 0);
   const discount = input.discountCode ? await priceDiscount(db, store.id, input.discountCode, subtotal, costTotal) : null;

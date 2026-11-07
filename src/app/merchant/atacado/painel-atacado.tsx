@@ -3,12 +3,12 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Boxes, Layers, Lock, Plus, Tag, Trash2 } from "lucide-react";
+import { Boxes, Grid3x3, Layers, Lock, Palette, Plus, Tag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { formatBRL } from "@/lib/money";
 import type { PainelDeAtacado } from "@/lib/domain/atacado";
-import { removerGradeAction, salvarGradeAction, salvarPrecoAtacadoAction, salvarRegrasDeMixAction } from "@/app/actions/atacado";
+import { removerGradeAction, salvarCoresAction, salvarGradeAction, salvarPrecoAtacadoAction, salvarRegraDoModeloAction, salvarRegrasDeMixAction } from "@/app/actions/atacado";
 import { ProductTiers } from "./tiers-editor";
 
 type P = PainelDeAtacado;
@@ -100,13 +100,49 @@ function EditorDeGrade({ p, g, limites, onClose }: { p: Produto; g?: Grade; limi
         {v.colorMode === "FIXA" ? <label className="grid gap-1 text-xs font-medium">Qual cor (opcional)<Input className="h-10 w-36" value={v.color} onChange={(e) => setV({ ...v, color: e.target.value })} placeholder="Ex.: Preto" /></label> : null}
       </div>
       <fieldset><legend className="mb-1 text-xs font-medium">Quantas peças de cada tamanho</legend>
-        <div className="flex flex-wrap gap-2">{p.variantes.map((x) => <label key={x.id} className="grid w-16 gap-1 text-center text-xs font-semibold">{x.size}<Input className="h-10 text-center" inputMode="numeric" aria-label={`Peças do tamanho ${x.size}`} value={v.qtd[x.id] ?? ""} onChange={(e) => setV({ ...v, qtd: { ...v.qtd, [x.id]: e.target.value } })} /></label>)}</div>
+        <div className="flex flex-wrap gap-2">{p.variantes.map((x) => <label key={x.id} className="grid w-20 gap-1 text-center text-xs font-semibold"><span className="truncate">{x.color ? `${x.color} ${x.size}` : x.size}</span><Input className="h-10 text-center" inputMode="numeric" aria-label={`Peças do tamanho ${x.size}${x.color ? ` na cor ${x.color}` : ""}`} value={v.qtd[x.id] ?? ""} onChange={(e) => setV({ ...v, qtd: { ...v.qtd, [x.id]: e.target.value } })} /></label>)}</div>
       </fieldset>
       <div className="flex flex-wrap items-end gap-2">
         <label className="grid gap-1 text-xs font-medium">Preço da grade (R$)<Input className="h-10 w-36" inputMode="decimal" value={v.preco} onChange={(e) => setV({ ...v, preco: e.target.value })} /></label>
         <span className="pb-2 text-xs text-muted-foreground">{pecas} peça{pecas === 1 ? "" : "s"}{pecas && v.preco ? ` · ${formatBRL(Math.round(cents(v.preco) / pecas))} a peça` : ""} · mínimo {formatBRL(p.floorCents * pecas)}</span>
         <Button type="button" size="sm" loading={pending} onClick={salvar}>Salvar grade</Button>
         <Button type="button" size="sm" variant="ghost" onClick={onClose}>Cancelar</Button>
+      </div>
+    </div>
+  );
+}
+
+/** Grade livre (AT3, D268): mínimo de peças do modelo (qualquer tamanho e cor) e venda em múltiplos. Pro+. */
+function GradeLivre({ p, limites }: { p: Produto; limites: P["limites"] }) {
+  const [v, setV] = React.useState({ minimo: p.minimo > 1 ? String(p.minimo) : "", multiplo: p.multiplo > 1 ? String(p.multiplo) : "" });
+  const { pending, run } = useSalvar();
+  const travado = !limites.gradeLivre && p.minimo <= 1 && p.multiplo <= 1;
+  if (travado) return <p className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Lock className="size-3.5" aria-hidden />Mínimo por modelo e venda de 6 em 6 vêm no plano Pro. <Link href="/merchant/finance#assinatura" className="font-semibold text-link underline">Mudar de plano</Link></p>;
+  return (
+    <div className="flex flex-wrap items-end gap-2">
+      <label className="grid gap-1 text-xs font-medium">Mínimo de peças do modelo<Input className="h-10 w-32" inputMode="numeric" value={v.minimo} onChange={(e) => setV({ ...v, minimo: e.target.value })} placeholder="sem mínimo" /></label>
+      <label className="grid gap-1 text-xs font-medium">Vender de quantas em quantas<Input className="h-10 w-32" inputMode="numeric" value={v.multiplo} onChange={(e) => setV({ ...v, multiplo: e.target.value })} placeholder="1 em 1" /></label>
+      <Button type="button" size="sm" loading={pending} onClick={() => run(() => salvarRegraDoModeloAction(p.productId, { minimo: Number(v.minimo) || 0, multiplo: Number(v.multiplo) || 1 }), "Grade livre salva")}>Salvar</Button>
+      <span className="pb-2 text-xs text-muted-foreground">O cliente monta a grade em qualquer tamanho e cor. Conta só a peça avulsa.</span>
+    </div>
+  );
+}
+
+/** Cores do produto (matriz cor × tamanho). Cada cor nova entra com os mesmos tamanhos e estoque zero. */
+function Cores({ p }: { p: Produto }) {
+  const semCor = p.variantes.some((x) => !x.color);
+  const [corAtual, setCorAtual] = React.useState("");
+  const [nova, setNova] = React.useState("");
+  const { pending, run } = useSalvar();
+  if (!p.propria) return <p className="text-xs text-muted-foreground">As cores deste produto vêm do fornecedor.</p>;
+  const salvar = () => run(() => salvarCoresAction(p.productId, { corAtual: semCor ? corAtual || undefined : undefined, novas: nova.split(",").map((x) => x.trim()).filter(Boolean) }), "Cores salvas. Lance o estoque das cores novas em Estoque.", () => { setNova(""); setCorAtual(""); });
+  return (
+    <div className="grid gap-2">
+      {p.cores.length ? <p className="flex flex-wrap gap-1.5 text-xs">{p.cores.map((c) => <span key={c} className="rounded-full border border-border px-2.5 py-0.5 font-medium">{c}</span>)}</p> : <p className="text-xs text-muted-foreground">Sem cor cadastrada: o produto aparece com os tamanhos só.</p>}
+      <div className="flex flex-wrap items-end gap-2">
+        {semCor ? <label className="grid gap-1 text-xs font-medium">Cor das peças que você já tem<Input className="h-10 w-40" value={corAtual} onChange={(e) => setCorAtual(e.target.value)} placeholder="Ex.: Preto" /></label> : null}
+        <label className="grid gap-1 text-xs font-medium">Cores novas (separe por vírgula)<Input className="h-10 w-56" value={nova} onChange={(e) => setNova(e.target.value)} placeholder="Ex.: Azul, Vermelho" /></label>
+        <Button type="button" size="sm" loading={pending} disabled={!corAtual.trim() && !nova.trim()} onClick={salvar}>Salvar cores</Button>
       </div>
     </div>
   );
@@ -150,6 +186,14 @@ export function ProdutosDoAtacado({ produtos, limites }: Pick<P, "produtos" | "l
             <details className="mt-3 group">
               <summary className="cursor-pointer text-sm font-semibold text-link"><Boxes className="mr-1 inline size-4" aria-hidden />Grades e pacotes</summary>
               <div className="mt-2"><Grades p={p} limites={limites} /></div>
+            </details>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-sm font-semibold text-link"><Grid3x3 className="mr-1 inline size-4" aria-hidden />Grade livre (mínimo e múltiplos){p.minimo > 1 || p.multiplo > 1 ? ` · ${[p.minimo > 1 ? `mín. ${p.minimo}` : "", p.multiplo > 1 ? `de ${p.multiplo} em ${p.multiplo}` : ""].filter(Boolean).join(", ")}` : ""}</summary>
+              <div className="mt-2"><GradeLivre p={p} limites={limites} /></div>
+            </details>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-sm font-semibold text-link"><Palette className="mr-1 inline size-4" aria-hidden />Cores{p.cores.length ? ` · ${p.cores.length}` : ""}</summary>
+              <div className="mt-2"><Cores p={p} /></div>
             </details>
             <details className="mt-2">
               <summary className="cursor-pointer text-sm font-semibold text-link">Preço por quantidade do modelo (até {limites.faixas} faixas)</summary>

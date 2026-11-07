@@ -117,7 +117,8 @@
 | Scale | 5 faixas, grades sem limite, 6 regras (todos os tipos) | No ar | idem |
 | Box do produto | escada de preço, barra do mix, "a partir de… a peça" no card, economia no carrinho | No ar | D259 |
 | SuperDrop (loja de rede) | sem atacado; nada muda | No ar | D216 |
-| Grade livre, mínimo por modelo, múltiplos, excursão, tabelas por cliente, catálogo fechado | — | Em breve (AT3 a AT8, pausado) | prompt do atacado |
+| Grade livre (matriz cor × tamanho), cores do produto, mínimo por modelo e múltiplos (Pro e Scale; cores em todos) | `atacado-modelo.ts`, `salvarRegraDoModelo`, `salvarCoresDoProduto` | No ar (D268) | prompt do atacado |
+| Excursão e retirada, romaneio, recompra, tabelas por cliente, catálogo fechado | — | Em breve (AT4 a AT8) | prompt do atacado |
 
 ---
 

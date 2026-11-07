@@ -14,6 +14,8 @@ import { formatBRL } from "@/lib/money";
 import { variantLabel } from "@/lib/variant-label";
 import { cn } from "@/lib/utils";
 import { CalcularFrete } from "./calcular-frete";
+import { MatrizDoModelo } from "./matriz-do-modelo";
+import { temRegraDoModelo, textoDaRegra, rotuloDaVariacao } from "@/lib/finance/atacado-modelo";
 
 /** `parcelas`: só quando a loja aceita cartão (E-commerce, D178); o valor por parcela é indicativo, sem prometer "sem juros". */
 export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas, freeFromCents, extras = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number; freeFromCents?: number | null; /** E-commerce (D213): "Comprar agora" e calcular frete. */ extras?: boolean }) {
@@ -55,12 +57,15 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
   const mixDoProduto = mixRelevante(simulado.mix, [product.categoryId]).filter((m) => gatilhosDoProduto(product, cart.regras).includes(m.regra));
   const mostraMix = !legado && (atacadoAtivo(product, cart.regras) || packs.length > 0) && mixDoProduto.length > 0;
   const noCarrinho = cart.precificado.pecas;
+  // Grade livre (AT3, D268): produto com cores ou com mínimo/múltiplo usa a matriz cor × tamanho na peça avulsa.
+  const regraModelo = { minimo: product.minimoModelo ?? 0, multiplo: product.multiploModelo ?? 1 };
+  const matriz = !legado && mode === "unit" && (product.variants.some((v) => v.color) || temRegraDoModelo(regraModelo));
 
   const add = (direto = false) => {
     if (max === 0) return toast.error("Sem estoque disponível.");
     if (mode === "unit" && !variant) return toast.error("Escolha um tamanho.");
     cart.add(mode === "unit"
-      ? { productId: product.id, variantId: variant!.id, name: product.name, label: `Tam. ${variant!.size}`, unitPriceCents: price, quantity: qty, images: product.images, max, tiers: product.tiers, atacadoCents: product.atacadoCents, categoryId: product.categoryId }
+      ? { productId: product.id, variantId: variant!.id, name: product.name, label: rotuloDaVariacao(variant!), unitPriceCents: price, quantity: qty, images: product.images, max, tiers: product.tiers, atacadoCents: product.atacadoCents, categoryId: product.categoryId }
       : { productId: product.id, packId: pack!.id, name: product.name, label: `${nomeDoPacote(pack!)}${corDaGrade ? ` · ${corDaGrade}` : ""} (${pack!.items.map((i) => `${i.size}:${i.quantity}`).join(" ")})`, unitPriceCents: price, quantity: qty, images: product.images, max, categoryId: product.categoryId, pecasPorUnidade: pecasDoLote });
     // Comprar agora (D213): coloca no carrinho e vai direto para o fechamento.
     if (direto) return router.push(`/store/${slug}/checkout`);
@@ -96,6 +101,7 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
           })}
         </ol>
       ) : null}
+      {!legado && temRegraDoModelo(regraModelo) && product.sellsUnit ? <p className="mt-3 rounded-lg border border-neutral-200 px-3 py-2 text-sm" data-regra-modelo><b>Grade livre:</b> {textoDaRegra(regraModelo)}.</p> : null}
       {mostraMix ? <BarraDoMix className="mt-3" mix={mixDoProduto} nota={noCarrinho > 0 ? `Conta o que já está no carrinho (${noCarrinho} peça${noCarrinho === 1 ? "" : "s"}) e esta escolha. Vale qualquer produto da loja.` : "Conta esta escolha e tudo o que você colocar no carrinho, de qualquer produto da loja."} /> : null}
       <p className="mt-4 text-sm leading-relaxed text-neutral-600">{product.description}</p>
 
@@ -109,7 +115,7 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
         </div>
       ) : null}
 
-      {mode === "unit" ? (
+      {matriz ? <div ref={ctaRef}><MatrizDoModelo product={product} slug={slug} atacadoCents={atacadoCents} comprarAgora={extras} /></div> : mode === "unit" ? (
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between text-sm"><span className="font-medium">{variantLabel(product.variants.map((v) => v.size))}</span>{variant ? <span className="text-neutral-500">{variant.available > 0 ? `${variant.available} disponíveis` : "esgotado"}</span> : null}</div>
           <div className="flex flex-wrap gap-2">
@@ -129,6 +135,7 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
 
       {mode === "unit" ? <StockAlertForm slug={slug} productId={product.id} soldOut={product.variants.filter((v) => v.available === 0).map((v) => ({ id: v.id, size: v.size }))} /> : null}
 
+      {matriz ? null : <>
       {!legado && max > 0 && (qty > 1 || mode !== "unit") ? <p className="mt-6 text-sm text-neutral-600" aria-live="polite" data-total-box>Total desta escolha: <b className="tabular-nums text-neutral-900">{formatBRL(simulado.linha.totalCents)}</b>{simulado.linha.economiaCents > 0 ? <> · economia de <b className="tabular-nums">{formatBRL(simulado.linha.economiaCents)}</b></> : null}</p> : null}
       <div ref={ctaRef} className={cn("flex items-center gap-3", !legado && max > 0 && (qty > 1 || mode !== "unit") ? "mt-3" : "mt-6")}>
         <div className="flex h-11 items-center rounded-lg border border-neutral-300">
@@ -140,11 +147,12 @@ export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcela
       </div>
       {extras && max > 0 ? <SfButton variant="outline" className="mt-3 h-11 w-full" onClick={() => add(true)}>Comprar agora</SfButton> : null}
       {extras ? <CalcularFrete slug={slug} freeFromCents={freeFromCents} item={max === 0 ? null : mode === "unit" ? (variant ? { productId: product.id, variantId: variant.id, quantity: qty } : null) : pack ? { productId: product.id, packId: pack.id, quantity: qty } : null} /> : null}
+      </>}
       {shippingNote ? <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500"><Truck className="size-4" aria-hidden /> {shippingNote}</div> : null}
       {stickyBar && !ctaVisible ? (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-neutral-200 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur sm:hidden" data-sticky-buy-bar>
           <div className="min-w-0 flex-1"><div className="truncate text-sm font-medium">{product.name}</div><div className="text-sm font-semibold tabular-nums">{legado ? formatBRL(price) : <>{formatBRL(porPeca)} <span className="font-normal text-neutral-500">a peça</span></>}</div></div>
-          <SfButton className="h-11 px-6" onClick={() => add(extras)} disabled={max === 0}>{max === 0 ? "Esgotado" : extras ? "Comprar agora" : "Comprar"}</SfButton>
+          <SfButton className="h-11 px-6" onClick={() => (matriz ? ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }) : add(extras))} disabled={max === 0 && !matriz}>{max === 0 ? "Esgotado" : extras ? "Comprar agora" : "Comprar"}</SfButton>
         </div>
       ) : null}
     </div>

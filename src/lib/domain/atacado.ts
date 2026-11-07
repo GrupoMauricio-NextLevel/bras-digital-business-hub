@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { categories, orderItems, productPackItems, productPacks, productVariants, products, storeProducts, storeWholesaleRules } from "@/db/schema";
@@ -77,12 +77,12 @@ export function linhaDoCatalogo(item: StoreCatalogItem, line: { productId: strin
 // ---------------------------------------------------------------------------------------------------------------------
 // AT1 (D258): limites por plano e grades
 // ---------------------------------------------------------------------------------------------------------------------
-export type LimitesAtacado = { plano: string; faixas: number; gradesPorProduto: number; regrasMix: number; tiposMix: RegraMix["kind"][]; pacote: boolean };
+export type LimitesAtacado = { plano: string; faixas: number; gradesPorProduto: number; regrasMix: number; tiposMix: RegraMix["kind"][]; pacote: boolean; /** AT3 (D268): mínimo por modelo e múltiplos (grade livre). */ gradeLivre: boolean };
 /** Escada do atacado por plano (docs/prompts/atacado-nextlevel-ecommerce.md, seção 6). Fora da E-commerce: sem limite. */
 export const LIMITES_ATACADO: Record<"COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE", LimitesAtacado> = {
-  COMMERCE_START: { plano: "Start", faixas: 3, gradesPorProduto: 1, regrasMix: 1, tiposMix: ["MIX_PECAS"], pacote: false },
-  COMMERCE_PRO: { plano: "Pro", faixas: 5, gradesPorProduto: 4, regrasMix: 3, tiposMix: ["MIX_PECAS", "MIX_VALOR"], pacote: true },
-  COMMERCE_SCALE: { plano: "Scale", faixas: 5, gradesPorProduto: 99, regrasMix: MAX_REGRAS_MIX, tiposMix: ["MIX_PECAS", "MIX_VALOR", "MIX_CATEGORIA"], pacote: true },
+  COMMERCE_START: { plano: "Start", faixas: 3, gradesPorProduto: 1, regrasMix: 1, tiposMix: ["MIX_PECAS"], pacote: false, gradeLivre: false },
+  COMMERCE_PRO: { plano: "Pro", faixas: 5, gradesPorProduto: 4, regrasMix: 3, tiposMix: ["MIX_PECAS", "MIX_VALOR"], pacote: true, gradeLivre: true },
+  COMMERCE_SCALE: { plano: "Scale", faixas: 5, gradesPorProduto: 99, regrasMix: MAX_REGRAS_MIX, tiposMix: ["MIX_PECAS", "MIX_VALOR", "MIX_CATEGORIA"], pacote: true, gradeLivre: true },
 };
 export async function limitesDeAtacado(db: Database, storeId: string): Promise<LimitesAtacado> {
   const { ehLojaEcommerce, planoDaLoja } = await import("./beneficios-plano");
@@ -164,18 +164,78 @@ export async function painelDeAtacado(db: Database, storeId: string) {
     regrasDeAtacado(db, storeId),
     db.select({ id: categories.id, name: categories.name }).from(categories).where(eq(categories.storeId, storeId)).orderBy(asc(categories.name)),
     listStoreCatalog(db, storeId),
-    db.select({ id: productVariants.id, productId: productVariants.productId, size: productVariants.size, position: productVariants.position }).from(productVariants).innerJoin(products, eq(products.id, productVariants.productId)).where(eq(products.storeId, storeId)).orderBy(asc(productVariants.position)),
+    db.select({ id: productVariants.id, productId: productVariants.productId, size: productVariants.size, color: productVariants.color, position: productVariants.position }).from(productVariants).innerJoin(products, eq(products.id, productVariants.productId)).where(eq(products.storeId, storeId)).orderBy(asc(productVariants.position)),
   ]);
-  const porProduto = new Map<string, { id: string; size: string }[]>();
-  for (const v of variantes) porProduto.set(v.productId, [...(porProduto.get(v.productId) ?? []), { id: v.id, size: v.size }]);
+  const porProduto = new Map<string, { id: string; size: string; color: string | null }[]>();
+  for (const v of variantes) porProduto.set(v.productId, [...(porProduto.get(v.productId) ?? []), { id: v.id, size: v.size, color: v.color }]);
   return {
     limites, regras, categorias: cats,
     produtos: catalogo.map((c) => ({
       productId: c.product.id, name: c.product.name, categoryId: c.product.categoryId, propria: c.product.storeId === storeId,
       priceCents: c.storeProduct.priceCents, wholesalePriceCents: c.storeProduct.wholesalePriceCents, floorCents: Math.max(c.product.costCents, c.product.minimumPriceCents), tiers: c.tiers,
       variantes: porProduto.get(c.product.id) ?? [],
+      cores: [...new Set((porProduto.get(c.product.id) ?? []).map((v) => v.color).filter((x): x is string => !!x))],
+      minimo: c.storeProduct.minQtyPerModel, multiplo: c.storeProduct.multipleOf,
       grades: c.packs.map((p) => ({ id: p.id, name: p.name, kind: p.kind, colorMode: p.colorMode, color: p.color, pecas: p.totalQuantity, priceCents: c.storeProduct.packPriceCents ?? p.suggestedPriceCents, items: p.items.map((i) => ({ variantId: i.variantId, size: i.size, quantity: i.quantity })) })),
     })),
   };
 }
 export type PainelDeAtacado = Awaited<ReturnType<typeof painelDeAtacado>>;
+
+// ---------------------------------------------------------------------------------------------------------------------
+// AT3 (D268): grade livre (mínimo por modelo e múltiplos) e cores do produto (matriz cor × tamanho)
+// ---------------------------------------------------------------------------------------------------------------------
+const regraDoModeloSchema = z.object({ minimo: z.number().int().min(0).max(999), multiplo: z.number().int().min(1, "O múltiplo começa em 1").max(100) });
+
+/** Mínimo de peças do modelo e múltiplo de venda (Pro+). Quem já tem continua; a trava só vale para ligar ou aumentar. */
+export async function salvarRegraDoModelo(db: Database, storeId: string, productId: string, raw: z.input<typeof regraDoModeloSchema>) {
+  if ((await storeModality(db, storeId)) === "NETWORK") throw new DomainError("ATACADO_REDE", "Loja de rede não tem regras de atacado próprias.");
+  const v = regraDoModeloSchema.parse(raw);
+  const sp = await db.query.storeProducts.findFirst({ where: and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, productId)) });
+  if (!sp) throw new NotFoundError("Produto não encontrado na sua loja.");
+  if (v.minimo > 1 && v.multiplo > 1 && v.minimo % v.multiplo) throw new DomainError("GRADE_LIVRE", `O mínimo precisa fechar no múltiplo: use ${Math.ceil(v.minimo / v.multiplo) * v.multiplo} peças.`);
+  const l = await limitesDeAtacado(db, storeId);
+  const liga = (v.minimo > 1 && v.minimo > sp.minQtyPerModel) || (v.multiplo > 1 && v.multiplo !== sp.multipleOf);
+  if (liga && !l.gradeLivre) throw new DomainError("LIMITE_PLANO", "Mínimo por modelo e venda em múltiplos (grade livre) vêm no plano Pro.");
+  await db.update(storeProducts).set({ minQtyPerModel: v.minimo > 1 ? v.minimo : 0, multipleOf: v.multiplo }).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, productId)));
+  return { minimo: v.minimo > 1 ? v.minimo : 0, multiplo: v.multiplo };
+}
+
+const nomeDaCor = (c: string) => { const t = c.trim().replace(/\s+/g, " "); return t ? t[0]!.toUpperCase() + t.slice(1) : t; };
+const coresSchema = z.object({ corAtual: z.string().trim().max(24).optional(), novas: z.array(z.string().trim().min(2, "Nome da cor com pelo menos 2 letras").max(24)).max(12) });
+export const MAX_CORES = 12;
+
+/**
+ * Cores do produto da própria loja (matriz cor × tamanho). As peças de hoje (sem cor) recebem o nome da cor atual; cada cor
+ * nova cria os mesmos tamanhos com estoque zero (o lojista lança o estoque depois). Nunca apaga uma cor que já existe.
+ */
+export async function salvarCoresDoProduto(db: Database, storeId: string, productId: string, raw: z.input<typeof coresSchema>) {
+  if ((await storeModality(db, storeId)) !== "INDEPENDENT") throw new DomainError("ATACADO_REDE", "Cores próprias só na loja independente.");
+  const v = coresSchema.parse(raw);
+  const p = await db.query.products.findFirst({ where: and(eq(products.id, productId), eq(products.storeId, storeId)) });
+  if (!p) throw new NotFoundError("Produto não encontrado na sua loja.");
+  const atuais = await db.select().from(productVariants).where(eq(productVariants.productId, productId)).orderBy(asc(productVariants.position));
+  const semCor = atuais.filter((x) => !x.color);
+  const corAtual = v.corAtual ? nomeDaCor(v.corAtual) : "";
+  if (semCor.length && v.novas.length && !corAtual) throw new DomainError("CORES", "Diga primeiro a cor das peças que você já tem (ex.: Preto).");
+  const existentes = new Set(atuais.map((x) => x.color?.toLowerCase()).filter(Boolean));
+  if (corAtual) existentes.add(corAtual.toLowerCase());
+  const novas = [...new Map(v.novas.map(nomeDaCor).map((c) => [c.toLowerCase(), c])).values()].filter((c) => !existentes.has(c.toLowerCase()));
+  if (existentes.size + novas.length > MAX_CORES) throw new DomainError("CORES", `Até ${MAX_CORES} cores por produto.`);
+  const tamanhos = [...new Map(atuais.map((x) => [x.size, x])).values()].map((x) => x.size);
+  if (!tamanhos.length) throw new DomainError("CORES", "Cadastre os tamanhos do produto primeiro.");
+  const skus = new Set(atuais.map((x) => x.sku));
+  const sufixo = (c: string) => c.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "").toUpperCase().slice(0, 8) || "COR";
+  let pos = atuais.reduce((m, x) => Math.max(m, x.position), -1) + 1;
+  const criar = novas.flatMap((cor) => tamanhos.map((size) => {
+    let sku = `${p.sku}-${size}-${sufixo(cor)}`, n = 2;
+    while (skus.has(sku)) sku = `${p.sku}-${size}-${sufixo(cor)}${n++}`;
+    skus.add(sku);
+    return { id: newId("var"), productId, size, color: cor, sku, position: pos++ };
+  }));
+  await db.transaction(async (tx) => {
+    if (semCor.length && corAtual) await tx.update(productVariants).set({ color: corAtual }).where(and(eq(productVariants.productId, productId), isNull(productVariants.color)));
+    if (criar.length) await tx.insert(productVariants).values(criar);
+  });
+  return { criadas: criar.length, cores: [...new Set([...atuais.map((x) => x.color ?? corAtual).filter(Boolean), ...novas])] };
+}

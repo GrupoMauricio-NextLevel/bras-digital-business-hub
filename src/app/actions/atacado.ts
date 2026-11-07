@@ -5,7 +5,7 @@ import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { assertStoreAdmin, requireStoreId } from "@/lib/domain/access";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { removerGrade, salvarGrade, salvarPrecoAtacado, salvarRegrasDeMix } from "@/lib/domain/atacado";
+import { removerGrade, salvarCoresDoProduto, salvarGrade, salvarPrecoAtacado, salvarRegraDoModelo, salvarRegrasDeMix } from "@/lib/domain/atacado";
 
 /** Atacado do lojista (AT1, D258). Só o dono da loja; regras e travas no domínio. */
 async function ctx() {
@@ -27,4 +27,10 @@ export async function salvarGradeAction(productId: string, grade: unknown) {
 }
 export async function removerGradeAction(productId: string, packId: string) {
   return runAction(async () => { const { s, db, storeId } = await ctx(); await removerGrade(db, storeId, productId, packId); refresh(s.store?.slug); return undefined; });
+}
+export async function salvarRegraDoModeloAction(productId: string, regra: { minimo: number; multiplo: number }) {
+  return runAction(async () => { const { s, db, storeId } = await ctx(); const r = await salvarRegraDoModelo(db, storeId, productId, regra); refresh(s.store?.slug); return r; });
+}
+export async function salvarCoresAction(productId: string, cores: { corAtual?: string; novas: string[] }) {
+  return runAction(async () => { const { s, db, storeId } = await ctx(); const r = await salvarCoresDoProduto(db, storeId, productId, cores); refresh(s.store?.slug); revalidatePath("/merchant/products"); return r; });
 }

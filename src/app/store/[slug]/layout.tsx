@@ -102,6 +102,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
     regras: regrasMix,
     produtos: Object.fromEntries(products.map((p) => [p.id, { atacadoCents: p.atacadoCents, categoryId: p.categoryId ?? null }])),
     pacotes: Object.fromEntries(products.flatMap((p) => p.packs.map((pk) => [pk.id, pk.totalQuantity]))),
+    modelos: Object.fromEntries(products.filter((p) => p.minimoModelo > 1 || p.multiploModelo > 1).map((p) => [p.id, { minimo: p.minimoModelo, multiplo: p.multiploModelo }])),
   } : undefined;
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
   return (

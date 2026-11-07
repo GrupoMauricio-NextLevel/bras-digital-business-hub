@@ -52,7 +52,7 @@ export function NewOrderForm({ items, independent = false }: { items: CatalogIte
     if (mode === "unit") {
       const v = product.variants.find((x) => x.id === choice)!;
       if (v.available < qty) return toast.error(`Apenas ${v.available} disponíveis no tamanho ${v.size}.`);
-      setLines([...lines, { key: crypto.randomUUID(), productId: product.productId, variantId: v.id, quantity: qty, label: `${product.name} · Tam. ${v.size}`, unitPrice: product.priceCents }]);
+      setLines([...lines, { key: crypto.randomUUID(), productId: product.productId, variantId: v.id, quantity: qty, label: `${product.name} · ${v.size}`, unitPrice: product.priceCents }]);
     } else {
       const p = product.packs.find((x) => x.id === choice)!;
       if (p.available < qty) return toast.error(`Apenas ${p.available} grade(s) disponíveis.`);

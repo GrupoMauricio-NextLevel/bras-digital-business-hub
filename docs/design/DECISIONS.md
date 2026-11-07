@@ -3135,3 +3135,15 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Trilha atribuída no convite:** a trilha vem da função escolhida ao cadastrar a pessoa; a tela Equipe agora mostra quais trilhas cada função recebe.
 - **Em destaque:** quem tem aula pendente vê um card na tela Agora ("Sua trilha no Aprender: x de y aulas").
 - **Fica para a BC3:** o Maurício da equipe respondendo pela base e o aviso "mudou" quando uma decisão nova mexe numa aula.
+
+## D268 — [E-commerce] AT3 do atacado: grade livre (cor × tamanho), mínimo por modelo e múltiplos (2026-11-07)
+- **Prompt:** `docs/prompts/atacado-nextlevel-ecommerce.md`, fase AT3 (retomada a pedido do dono em 07/11).
+- **Cores do produto** (Atacado → produto → Cores): o lojista dá nome à cor das peças que já tem e cadastra cores novas. Cada cor nova entra com os mesmos tamanhos e estoque zero (o estoque é lançado depois). Nenhuma cor existente é apagada. Até 12 cores por produto, em todos os planos.
+- **Grade livre** (Atacado → produto → Grade livre): mínimo de peças do modelo e venda em múltiplos (ex.: mínimo 12, de 6 em 6). O mínimo precisa fechar no múltiplo. Plano **Pro e Scale**; quem já tem e cai de plano continua com a regra, só não aumenta (D247).
+- **Na loja:** produto com cores ou com grade livre mostra a **matriz cor × tamanho** no lugar do seletor de tamanho. O contador soma o que já está no carrinho e mostra quanto falta para o mínimo ou para fechar o múltiplo; o botão só libera com a grade completa. O preço vem do mesmo motor do pedido.
+- **Carrinho e checkout:** aviso "Complete a grade para fechar o pedido" e o botão de pagamento travado enquanto faltar.
+- **Pedido:** o servidor recusa pedido da loja virtual com a grade incompleta (pedido do balcão não é barrado, como o pedido mínimo). A linha do pedido grava cor e tamanho ("Preto · Tam. M"); estoque, lista de produtos e pedido do balcão mostram a cor.
+- **Pacote sortido** já estava no ar desde a AT1 (D258, plano Pro).
+- **SuperDrop (D216):** loja de rede não tem grade livre nem cores próprias; nada muda nela.
+- **Testes:** `tests/atacado-preco.test.ts` (conta do que falta para qualquer quantidade, travas por plano, cores, pedido recusado e aceito).
+- **Próxima fase:** AT4 (entrega por excursão e retirada, romaneio por grade, recompra rápida).

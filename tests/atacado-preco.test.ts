@@ -177,3 +177,96 @@ describe("AT1: travas por plano e grades (D258)", () => {
     await expect(removerGrade(ctx.db, s.storeId, s.productId, g12)).rejects.toThrow(/já foi vendida/);
   });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// AT3 (D268): grade livre (mínimo por modelo e múltiplos) e cores (matriz cor × tamanho)
+// ---------------------------------------------------------------------------------------------------------------------
+import { conferirModelo, pendenciasDoCarrinho, rotuloDaVariacao, temRegraDoModelo, textoDaRegra } from "@/lib/finance/atacado-modelo";
+
+describe("AT3: grade livre (puro)", () => {
+  it("mínimo do modelo e múltiplos: quanto falta para fechar", () => {
+    expect(conferirModelo({ minimo: 12, multiplo: 1 }, 0)).toMatchObject({ ok: true, falta: 0 });
+    expect(conferirModelo({ minimo: 12, multiplo: 1 }, 8)).toMatchObject({ ok: false, falta: 4, mensagem: "Mínimo de 12 peças deste modelo: faltam 4 peças" });
+    expect(conferirModelo({ minimo: 12, multiplo: 1 }, 13)).toMatchObject({ ok: true });
+    expect(conferirModelo({ minimo: 0, multiplo: 6 }, 7)).toMatchObject({ ok: false, falta: 5, mensagem: "Vendido de 6 em 6: faltam 5 peças para fechar" });
+    expect(conferirModelo({ minimo: 12, multiplo: 6 }, 6)).toMatchObject({ ok: false, falta: 6 });
+    expect(conferirModelo({ minimo: 12, multiplo: 6 }, 18)).toMatchObject({ ok: true });
+    expect(conferirModelo({ minimo: 12, multiplo: 6 }, 19)).toMatchObject({ ok: false, falta: 5 });
+    for (let n = 1; n < 60; n++) { const c = conferirModelo({ minimo: 12, multiplo: 6 }, n); expect((n + c.falta) % 6).toBe(0); expect(n + c.falta).toBeGreaterThanOrEqual(12); }
+    expect(temRegraDoModelo({ minimo: 0, multiplo: 1 })).toBe(false);
+    expect(textoDaRegra({ minimo: 12, multiplo: 6 })).toBe("Mínimo de 12 peças por modelo, em qualquer tamanho e cor, vendido de 6 em 6");
+    expect(rotuloDaVariacao({ size: "M", color: "Azul" })).toBe("Azul · Tam. M");
+    expect(rotuloDaVariacao({ size: "M", color: null })).toBe("Tam. M");
+  });
+
+  it("carrinho: soma tamanhos e cores do mesmo modelo; grades não contam", () => {
+    const regras = { A: { minimo: 12, multiplo: 1 } };
+    expect(pendenciasDoCarrinho([{ productId: "A", quantity: 5 }, { productId: "A", quantity: 7 }], regras)).toEqual([]);
+    expect(pendenciasDoCarrinho([{ productId: "A", quantity: 5 }, { productId: "A", packId: "g", quantity: 3 }, { productId: "B", quantity: 1 }], regras).map((p) => [p.productId, p.falta])).toEqual([["A", 7]]);
+  });
+});
+
+describe("AT3: grade livre e cores na loja (D268)", () => {
+  let ctx: Awaited<ReturnType<typeof freshDb>>;
+  beforeEach(async () => { ctx = await freshDb(); });
+  async function loja(key: string) {
+    const r = await signupMember(ctx.db, { storeName: "Livre Brás", ownerName: "Maria Souza", email: "maria@livre.com.br", password: "senha-segura-1", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never);
+    await markInvoicePaid(ctx.db, (await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId)))[0]!.id);
+    const owner = actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!);
+    const { productId } = await createProduct(ctx.db, await catalogOwner(ctx.db, owner), { name: "Camiseta", sku: "CAM", categoryName: "Moda", costCents: 2000, suggestedPriceCents: 5000, minimumPriceCents: 2500, sizes: [{ size: "P", initialStock: 50 }, { size: "M", initialStock: 50 }] });
+    await ctx.db.insert(storeProducts).values({ storeId: r.storeId, productId, priceCents: 5000, active: true, featured: false }).onConflictDoUpdate({ target: [storeProducts.storeId, storeProducts.productId], set: { priceCents: 5000, active: true } });
+    const { nlSubscriptions, catalogPriceVersions } = await import("@/db/schema");
+    const sub = await ctx.db.query.nlSubscriptions.findFirst({ where: eq(nlSubscriptions.storeId, r.storeId) });
+    if (sub) await ctx.db.update(nlSubscriptions).set({ productKey: key, status: "active" }).where(eq(nlSubscriptions.storeId, r.storeId));
+    else {
+      const { ensureCatalogSeed } = await import("@/lib/domain/nl-catalog"); await ensureCatalogSeed(ctx.db);
+      const pv = (await ctx.db.select({ id: catalogPriceVersions.id }).from(catalogPriceVersions).limit(1))[0]!.id;
+      await ctx.db.insert(nlSubscriptions).values({ id: `sub-${r.storeId}`, storeId: r.storeId, productKey: key, cycle: "MONTHLY", status: "active", priceVersionId: pv, amountCents: 5700, platformFeeBps: 0 });
+    }
+    return { storeId: r.storeId, productId };
+  }
+  const pedir = (storeId: string, items: { productId: string; variantId: string; quantity: number }[], channel?: "MANUAL") => createOrder(ctx.db, { storeId, customer, items, customerPaymentStatus: "PENDING", channel }, { paymentProvider: "MANUAL", reservationMinutes: 30 });
+
+  it("Start não liga a grade livre; Pro liga; mínimo precisa fechar no múltiplo", async () => {
+    const { salvarRegraDoModelo } = await import("@/lib/domain/atacado");
+    const s = await loja("COMMERCE_START");
+    await expect(salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 12, multiplo: 1 })).rejects.toThrow(/plano Pro/);
+    await salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 0, multiplo: 1 }); // desligar sempre pode
+    const { nlSubscriptions } = await import("@/db/schema");
+    await ctx.db.update(nlSubscriptions).set({ productKey: "COMMERCE_PRO" }).where(eq(nlSubscriptions.storeId, s.storeId));
+    await expect(salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 10, multiplo: 6 })).rejects.toThrow(/use 12 peças/);
+    expect(await salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 12, multiplo: 6 })).toEqual({ minimo: 12, multiplo: 6 });
+    // Caiu para o Start: quem já tem continua (não perde a regra), só não aumenta.
+    await ctx.db.update(nlSubscriptions).set({ productKey: "COMMERCE_START" }).where(eq(nlSubscriptions.storeId, s.storeId));
+    await salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 12, multiplo: 6 });
+    await expect(salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 24, multiplo: 6 })).rejects.toThrow(/plano Pro/);
+  });
+
+  it("cores: nomeia as peças de hoje, cria os tamanhos da cor nova e o pedido grava cor e tamanho", async () => {
+    const { salvarCoresDoProduto } = await import("@/lib/domain/atacado");
+    const s = await loja("COMMERCE_START");
+    await expect(salvarCoresDoProduto(ctx.db, s.storeId, s.productId, { novas: ["Azul"] })).rejects.toThrow(/cor das peças que você já tem/);
+    const r = await salvarCoresDoProduto(ctx.db, s.storeId, s.productId, { corAtual: "preto", novas: ["Azul", "azul", "Preto"] });
+    expect(r.criadas).toBe(2);
+    expect(r.cores).toEqual(["Preto", "Azul"]);
+    const vs = await ctx.db.select().from(productVariants).where(eq(productVariants.productId, s.productId)).orderBy(productVariants.position);
+    expect(vs.map((v) => `${v.color}:${v.size}`)).toEqual(["Preto:P", "Preto:M", "Azul:P", "Azul:M"]);
+    expect(new Set(vs.map((v) => v.sku)).size).toBe(4);
+    const o = await pedir(s.storeId, [{ productId: s.productId, variantId: vs[1]!.id, quantity: 1 }]);
+    const { orderItems } = await import("@/db/schema");
+    expect((await ctx.db.select().from(orderItems).where(eq(orderItems.orderId, o.orderId)))[0]!.label).toBe("Preto · Tam. M");
+    await expect(salvarCoresDoProduto(ctx.db, ctx.seed.stores.mantos.id, ctx.seed.productIds[11]!, { novas: ["Azul"] })).rejects.toThrow(/independente/);
+  });
+
+  it("pedido da loja virtual só sai com a grade fechada (soma tamanhos e cores); balcão não é barrado", async () => {
+    const { salvarRegraDoModelo } = await import("@/lib/domain/atacado");
+    const s = await loja("COMMERCE_PRO");
+    await salvarRegraDoModelo(ctx.db, s.storeId, s.productId, { minimo: 12, multiplo: 6 });
+    const vs = await ctx.db.select().from(productVariants).where(eq(productVariants.productId, s.productId)).orderBy(productVariants.position);
+    await expect(pedir(s.storeId, [{ productId: s.productId, variantId: vs[0]!.id, quantity: 4 }, { productId: s.productId, variantId: vs[1]!.id, quantity: 4 }])).rejects.toThrow(/Camiseta: Mínimo de 12 peças deste modelo: faltam 4 peças/);
+    await expect(pedir(s.storeId, [{ productId: s.productId, variantId: vs[0]!.id, quantity: 7 }, { productId: s.productId, variantId: vs[1]!.id, quantity: 6 }])).rejects.toThrow(/de 6 em 6/);
+    const ok = await pedir(s.storeId, [{ productId: s.productId, variantId: vs[0]!.id, quantity: 7 }, { productId: s.productId, variantId: vs[1]!.id, quantity: 5 }]);
+    expect(ok.orderId).toBeTruthy();
+    expect((await pedir(s.storeId, [{ productId: s.productId, variantId: vs[0]!.id, quantity: 1 }], "MANUAL")).orderId).toBeTruthy();
+  });
+});

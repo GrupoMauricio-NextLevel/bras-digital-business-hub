@@ -36,13 +36,13 @@ export async function ProductBody({ supplierId, id, base = "/supplier/products",
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>{commerce ? "Disponível = físico − reservado. As vendas reservam e baixam o estoque da sua loja." : "Disponível = físico − reservado. Pedidos reservam; a expedição baixa."}</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.size }))} /></CardHeader>
+            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>{commerce ? "Disponível = físico − reservado. As vendas reservam e baixam o estoque da sua loja." : "Disponível = físico − reservado. Pedidos reservam; a expedição baixa."}</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.color ? `${v.color} · ${v.size}` : v.size }))} /></CardHeader>
             <CardContent className="px-0 pb-0">
               <Table>
                 <THead><TR className="hover:bg-transparent"><TH>Tamanho</TH><TH>SKU</TH><TH className="text-right">Físico</TH><TH className="text-right">Reservado</TH><TH className="text-right">Disponível</TH></TR></THead>
                 <TBody>
                   {variants.map((v) => (
-                    <TR key={v.id}><TD className="font-medium">{v.size}</TD><TD className="text-muted-foreground">{v.sku}</TD><TD className="text-right tabular-nums">{v.onHand}</TD><TD className="text-right tabular-nums text-warning">{v.reserved}</TD><TD className="text-right font-medium tabular-nums">{v.available}</TD></TR>
+                    <TR key={v.id}><TD className="font-medium">{v.color ? `${v.color} · ${v.size}` : v.size}</TD><TD className="text-muted-foreground">{v.sku}</TD><TD className="text-right tabular-nums">{v.onHand}</TD><TD className="text-right tabular-nums text-warning">{v.reserved}</TD><TD className="text-right font-medium tabular-nums">{v.available}</TD></TR>
                   ))}
                   <TR className="bg-surface-muted/50 font-medium hover:bg-surface-muted/50"><TD>Total</TD><TD /><TD className="text-right tabular-nums">{onHand}</TD><TD className="text-right tabular-nums">{reserved}</TD><TD className="text-right tabular-nums">{Math.max(0, onHand - reserved)}</TD></TR>
                 </TBody>

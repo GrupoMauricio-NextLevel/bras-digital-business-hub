@@ -5,6 +5,7 @@ import { useCart } from "@/components/storefront/cart-context";
 import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import { BarraDoMix, mixRelevante } from "@/components/storefront/barra-do-mix";
+import { AvisoGradeLivre } from "@/components/storefront/matriz-do-modelo";
 
 export function CartView({ slug, freeFromCents }: { slug: string; freeFromCents?: number | null }) {
   const cart = useCart();
@@ -36,6 +37,7 @@ export function CartView({ slug, freeFromCents }: { slug: string; freeFromCents?
         );
       })() : null}
       {cart.atacadoLigado && cart.linhasBase.some((l) => l.atacadoCents) ? <BarraDoMix className="mb-6" mix={mixRelevante(cart.precificado.mix, cart.linhasBase.map((l) => l.categoryId))} nota="Vale a soma de todos os produtos do carrinho. Se o carrinho ficar abaixo do mínimo, o preço volta ao de varejo." /> : null}
+      <AvisoGradeLivre className="mb-6" />
       <div className="grid gap-8 lg:grid-cols-3">
         <ul className="divide-y divide-neutral-200 lg:col-span-2">
           {cart.lines.map((l, i) => { const varejo = cart.linhasBase[i]?.unitPriceCents ?? l.unitPriceCents; return (

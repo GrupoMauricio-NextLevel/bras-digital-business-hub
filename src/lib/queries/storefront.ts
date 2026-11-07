@@ -66,7 +66,10 @@ export function toPublicProduct(item: StoreCatalogItem, categoryName?: string) {
     sellsUnit: item.product.sellsUnit,
     sellsPack: item.product.sellsPack,
     available,
-    variants: item.variants.map((v) => ({ id: v.id, size: v.size, available: v.level.available })),
+    variants: item.variants.map((v) => ({ id: v.id, size: v.size, color: v.color ?? null, available: v.level.available })),
+    /** Grade livre (AT3, D268): mínimo de peças do modelo e múltiplo de venda (1 = sem múltiplo). */
+    minimoModelo: item.storeProduct.minQtyPerModel ?? 0,
+    multiploModelo: item.storeProduct.multipleOf ?? 1,
     packs: [...item.packs].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((p) => ({ id: p.id, name: p.name, kind: p.kind ?? "GRADE_FECHADA", colorMode: p.colorMode ?? "FIXA", color: p.color ?? null, totalQuantity: p.totalQuantity, available: p.available, priceCents: item.storeProduct.packPriceCents ?? p.suggestedPriceCents, items: p.items })),
   };
 }

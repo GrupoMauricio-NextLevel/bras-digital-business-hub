@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/store/x", useRouter: () => ({ push() {}, replace() {} }) }));
 vi.mock("@/components/storefront/cart-context", () => {
-  const cart = { count: 0, ready: true, lines: [], linhasBase: [], regras: [], atacadoLigado: false, precificado: { linhas: [], subtotalCents: 0, varejoCents: 0, economiaCents: 0, pecas: 0, mix: [], atacadoGeral: false }, add() {}, update() {}, remove() {}, clear() {}, subtotal: 0 };
+  const cart = { count: 0, ready: true, lines: [], linhasBase: [], regras: [], atacadoLigado: false, precificado: { linhas: [], subtotalCents: 0, varejoCents: 0, economiaCents: 0, pecas: 0, mix: [], atacadoGeral: false }, add() {}, addMany() {}, pendencias: [], modelos: {}, update() {}, remove() {}, clear() {}, subtotal: 0 };
   return { useCart: () => cart, useCartOptional: () => cart, linhaDoMotor: (l: never) => l };
 });
 vi.mock("sonner", () => ({ toast: Object.assign(() => {}, { success() {}, error() {} }) }));
@@ -19,7 +19,7 @@ import type { PublicProduct } from "@/lib/queries/storefront";
 
 const legacy: ThemeSettingsData = { heroTitle: "Vista o manto", heroSubtitle: "Camisas oficiais", heroCta: "Ver catálogo", announcement: "Frete grátis", banners: [{ title: "Lançamento", subtitle: "Coleção nova", tone: "accent" }], showCategories: true, footerText: "Mantos Shop" };
 const store = { id: "s1", name: "Mantos Shop", slug: "mantos", tagline: "Os mantos que a torcida ama", whatsapp: "5511999990001", instagram: "mantosshop", logoText: "MS", offer: "STORE_SUBDOMAIN", primaryColor: "#0f172a", accentColor: "#16a34a" } as never;
-const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}`, name: `Camisa ${i}`, description: "", seoTitle: "", seoDescription: "", images: [], categoryId: "c1", categoryName: "Camisas", priceCents: 12000, packPriceCents: null, tiers: [], atacadoCents: null, featured: i < 4, sellsUnit: true, sellsPack: false, available: 5, variants: [], packs: [] });
+const product = (i: number): PublicProduct => ({ id: `p${i}`, slug: `camisa-${i}`, name: `Camisa ${i}`, description: "", seoTitle: "", seoDescription: "", images: [], categoryId: "c1", categoryName: "Camisas", priceCents: 12000, packPriceCents: null, tiers: [], atacadoCents: null, featured: i < 4, sellsUnit: true, sellsPack: false, available: 5, variants: [], packs: [], minimoModelo: 0, multiploModelo: 1 });
 
 function render(template = templateFromLegacy(legacy), products: PublicProduct[] = Array.from({ length: 9 }, (_, i) => product(i)), region: "content" | "header" | "footer" = "content") {
   const globals = legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy);
@@ -76,7 +76,7 @@ describe("páginas de produto, catálogo e carrinho", () => {
     return renderToStaticMarkup(<SectionList template={t} ctx={{ slug: "mantos", base: "/store/mantos", store, categories: [{ id: "c1", name: "Camisas", slug: "camisas" }], products, planned: lists, hero, globals, page: kind, ...extra }} />);
   };
   it("produto: caminho, título, tamanhos, botão de compra e relacionados", () => {
-    const html = page("product", { product: { ...products[0]!, variants: [{ id: "v1", size: "M", available: 3 }] }, related: products.slice(1, 4) });
+    const html = page("product", { product: { ...products[0]!, variants: [{ id: "v1", size: "M", color: null, available: 3 }] }, related: products.slice(1, 4) });
     for (const t of ["Camisa 0", "Adicionar ao carrinho", "Tamanho", "Você também pode gostar", "Catálogo"]) expect(html).toContain(t);
     expect(html).not.toContain("Central Sports"); expect(html).not.toContain("1 dia útil");
   });

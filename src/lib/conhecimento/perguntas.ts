@@ -103,8 +103,13 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q("A barra do mix soma…", "O carrinho e a escolha atual", ["Só o produto aberto", "As vendas do mês", "As visitas da loja"]),
       q("O carrinho mostra…", "Quanto o cliente economizou com o atacado", ["O custo do lojista", "A comissão do parceiro", "Nada de atacado"]),
     ],
+    "grade-livre": () => [
+      q(`O ${start?.nome} pode exigir mínimo de peças por modelo?`, start?.atacado.gradeLivre ? "Sim" : `Não; vem no ${pro?.nome}`, [start?.atacado.gradeLivre ? `Não; vem no ${pro?.nome}` : "Sim", "Só na Black", "Só com CNPJ"]),
+      q("O que conta para o mínimo do modelo?", "Peças avulsas do modelo, em qualquer tamanho e cor", ["Só peças do mesmo tamanho", "Também as grades fechadas", "Qualquer produto da loja"]),
+      q("Vendido de 6 em 6, o cliente escolheu 13. O que acontece?", "O box avisa que faltam 5 para fechar", ["Fecha o pedido assim mesmo", "Arredonda para 12 sozinho", "Cobra multa"]),
+    ],
     "atacado-proximo": () => [
-      q("Grade livre (cor × tamanho) já está no ar?", "Ainda não: em breve", ["Sim, em todos os planos", "Sim, só no Scale", "Foi cancelada"]),
+      q("Excursão e retirada já estão no ar?", "Ainda não: em breve", ["Sim, em todos os planos", "Sim, só no Scale", "Foram canceladas"]),
       q("Como falar de um recurso em breve?", "\"Está no nosso plano; aviso quando chegar\"", ["\"Já funciona\"", "\"Chega amanhã\"", "Não responder"]),
       q("Quem decidiu pausar as próximas fases do atacado?", "O dono", ["O suporte", "Um parceiro", "O Mercado Pago"]),
     ],

@@ -8,6 +8,7 @@ import { useCart } from "@/components/storefront/cart-context";
 import { SfButton } from "@/components/storefront/sf-button";
 import { formatBRL } from "@/lib/money";
 import { BarraDoMix, mixRelevante } from "@/components/storefront/barra-do-mix";
+import { AvisoGradeLivre } from "@/components/storefront/matriz-do-modelo";
 import { placeStorefrontOrderAction, quoteShippingAction, previewDiscountAction, salvarCarrinhoAction } from "@/app/actions/storefront";
 import type { ShippingQuote } from "@/lib/shipping/quote";
 import { cn } from "@/lib/utils";
@@ -155,6 +156,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
         <aside className="h-fit rounded-2xl border border-neutral-200 p-5 lg:sticky lg:top-24">
           <h2 className="text-base font-semibold">Resumo do pedido</h2>
           {cart.atacadoLigado && cart.linhasBase.some((l) => l.atacadoCents) ? <BarraDoMix className="mt-3" mix={mixRelevante(cart.precificado.mix, cart.linhasBase.map((l) => l.categoryId))} /> : null}
+          <AvisoGradeLivre className="mt-3" />
           <ul className="mt-3 min-h-24 space-y-2 text-sm">{cart.lines.map((l) => <li key={l.key} className="flex justify-between gap-3"><span className="text-neutral-600">{l.quantity}× {l.name} <span className="text-neutral-400">({l.label.split(" (")[0]})</span></span><span className="tabular-nums">{formatBRL(l.unitPriceCents * l.quantity)}</span></li>)}</ul>
           <dl className="mt-4 space-y-2 border-t border-neutral-200 pt-3 text-sm">
             <div className="flex justify-between text-neutral-600"><dt>Subtotal</dt><dd className="tabular-nums">{formatBRL(cart.subtotal)}</dd></div>
@@ -165,7 +167,7 @@ export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao 
           </dl>
           <div className="mt-4 flex gap-2"><input aria-label="Cupom de desconto" placeholder="Cupom de desconto" value={codeInput} onChange={(e) => setCodeInput(e.target.value)} className="h-10 min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 text-sm" /><button type="button" onClick={applyCode} disabled={pending || codeInput.trim().length < 3} className="h-10 rounded-lg border border-neutral-300 px-4 text-sm font-medium disabled:opacity-50">Aplicar</button></div>
           {belowMin ? <p role="alert" className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Pedido mínimo da loja: {formatBRL(minOrderCents)} em produtos. Faltam {formatBRL(minOrderCents - (cart.subtotal - discount))}.</p> : null}
-          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen || belowMin}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
+          <SfButton type="submit" className="mt-5 h-12 w-full" disabled={pending || !cart.ready || !chosen || belowMin || cart.pendencias.length > 0}><Lock className="size-4" /> {pending ? "Processando…" : "Ir para o pagamento"}</SfButton>
           <p className="mt-3 text-center text-[11px] text-neutral-500">Você será levado ao ambiente seguro do Mercado Pago para concluir o pagamento ({aceitaCartao ? "Pix ou cartão" : "Pix"}).</p>
         </aside>
       </form>
