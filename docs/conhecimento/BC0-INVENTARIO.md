@@ -5,6 +5,8 @@
 > - o nome no menu é "Aprender".
 >
 > **Tela no Master (D266):** a base já está em Master → Aprender, com as trilhas por função, as aulas usando os números do sistema, a busca e as Novidades.
+> **Contas de destino e vínculo (D270):** todo lançamento diz para qual conta foi (dinheiro com o Mauricio, Mercado Pago Mega Tron, Pix Itaú CNPJ, Pix Nubank CPF) e toda entrada é ligada a assinatura, template, serviço ou outros com descrição.
+> **Receber assinatura e formas de pagamento (D270):** checkout online, maquininha do Mauricio, maquininha com vendedor, Pix na chave do CNPJ e dinheiro; receber à mão renova, libera, comissiona e lança no caixa; aba Assinaturas com vencimentos e ações; aula "Receber assinatura" na trilha Financeiro.
 > **Caixa do Master (D269):** o caixa abre e fecha por dia (dono e Financeiro), cada lançamento guarda meio e origem, edição e estorno sempre com motivo, Mercado Pago entra sozinho; aula "Caixa do dia" na trilha Financeiro.
 > **Perguntas e progresso (D267):** cada aula termina com 3 perguntas (números ao vivo, correção no servidor); a pessoa vê o próprio progresso por trilha, o dono vê "quem está pronto" na aba Equipe e quem tem aula pendente recebe um card na tela Agora.
 >

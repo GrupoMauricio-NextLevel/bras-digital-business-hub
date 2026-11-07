@@ -29,3 +29,21 @@ export async function fecharCaixaAction(input: { data?: string; contadoCents: nu
 export async function reabrirCaixaAction(data: string, motivo: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await reabrirCaixa(db, actor, data, motivo); refresh(); return undefined; });
 }
+
+// CX2 (D270): assinaturas e recebimentos manuais.
+import { cancelarPeloMaster, estenderVencimento, estornarRecebimento, receberAssinatura, trocarPlanoPeloMaster, type recebimentoSchema } from "@/lib/domain/assinaturas-master";
+export async function receberAssinaturaAction(input: z.input<typeof recebimentoSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await receberAssinatura(db, actor, input); refresh(); return r; });
+}
+export async function estornarRecebimentoAction(lancamentoId: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await estornarRecebimento(db, actor, lancamentoId, motivo); refresh(); return undefined; });
+}
+export async function estenderVencimentoAction(storeId: string, dias: number, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await estenderVencimento(db, actor, storeId, dias, motivo); refresh(); return r; });
+}
+export async function trocarPlanoAction(storeId: string, input: { productKey: "COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE"; cycle: "MONTHLY" | "ANNUAL" }, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await trocarPlanoPeloMaster(db, actor, storeId, input, motivo); refresh(); return undefined; });
+}
+export async function cancelarAssinaturaAction(storeId: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await cancelarPeloMaster(db, actor, storeId, motivo); refresh(); return undefined; });
+}

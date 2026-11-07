@@ -3166,3 +3166,50 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Travas:** dia fechado não recebe nem muda lançamento; só o dono mexe, e o dia volta a abrir com motivo registrado. Diferença no fechamento exige motivo.
 - **Testes:** `tests/caixa.test.ts` (fuso, semana, resumo, permissões, abrir/lançar/fechar/reabrir, edição e estorno com histórico, semana e filtros, Mercado Pago automático).
 - **Próxima fase:** CX2 (receber manualmente renovando a assinatura e liberando a loja; painel de assinaturas).
+
+## D270 — [E-commerce] CX2: receber assinatura à mão, formas de pagamento da NextLevel e painel de assinaturas (2026-11-07)
+- **Prompt:** `docs/prompts/caixa-balcao-executivos-de-venda.md`, fase CX2.
+- **Formas de pagamento da NextLevel** (dono, 07/11):
+  - checkout online, que entra sozinho no caixa;
+  - maquininha do Mercado Pago com o Mauricio;
+  - maquininha com os vendedores;
+  - Pix na chave do CNPJ da NextLevel Marketing Ltda;
+  - dinheiro: com o Mauricio vai para a gaveta; com o vendedor fica com ele até a prestação de contas (CX3).
+  - Os meios antigos (cartão, transferência, boleto, outro) ficam só para leitura.
+- **Conta de destino** (dono, 07/11), obrigatória em todo lançamento e escolhida numa lista:
+  - dinheiro em espécie com o Mauricio;
+  - conta Mercado Pago do checkout online (CNPJ Mega Tron);
+  - Pix na conta CNPJ da NextLevel no Itaú;
+  - Pix na conta CPF do Mauricio Ramos no Nubank.
+  - A forma de pagamento sugere a conta e limita as opções: dinheiro só vai para a gaveta do Mauricio; maquininha e checkout online caem no Mercado Pago; o Pix escolhe Itaú, Nubank ou Mercado Pago.
+  - O dia e a semana mostram o total por conta.
+- **Toda entrada é ligada ao que foi pago** (dono, 07/11):
+  - **assinatura:** só pelo "Receber assinatura", ligada à fatura da loja;
+  - **template:** escolhido do catálogo, com a loja; o template é liberado na loja na hora;
+  - **serviço adicional:** escolhido do catálogo (loja pronta, migração, marketing, consultoria, adicionais, anúncios);
+  - **outros:** com a descrição obrigatória.
+  - Um recebimento de assinatura não vira outro tipo na edição (estorna e lança de novo).
+- **Correção:** editar um lançamento sem mexer na descrição não apaga mais a descrição.
+- **Receber assinatura** (Caixa → Hoje), só para o dono e o Financeiro, com o caixa de hoje aberto. O pagamento manual usa o mesmo caminho do online:
+  1. troca o plano ou o ciclo, se pedido;
+  2. gera a fatura da assinatura e a paga;
+  3. renova o período e libera a loja;
+  4. gera a comissão pela regra D260;
+  5. lança no caixa com a forma de pagamento.
+- **Regras do recebimento:**
+  - vazio = valor da tabela; menor = desconto, sempre com motivo; maior que a tabela é recusado;
+  - quem vendeu vira a indicação da loja se ela ainda não tiver (via "EXECUTIVO"); a indicação de outro parceiro é respeitada.
+- **Estornar recebimento:**
+  - o lançamento sai das contas;
+  - a fatura é cancelada;
+  - a comissão em garantia é anulada; a já liberada vira débito no saldo;
+  - o período pago volta.
+- **Aba Assinaturas:**
+  - filtros: todas, vencem em 7 dias, vencidas, em teste, pagas à mão e sem plano;
+  - ações por loja: estender vencimento (até 90 dias), trocar plano ou ciclo, cancelar no fim do período, sempre com motivo e na auditoria financeira;
+  - histórico da loja com cada pagamento (forma, quem recebeu, quem vendeu) e estorno.
+- **Código:**
+  - `src/lib/domain/assinaturas-master.ts`;
+  - a troca de plano do lojista e a do Master usam a mesma função (`trocarPlanoDaAssinatura`).
+- **Testes:** `tests/caixa.test.ts` (dinheiro no balcão com comissão do executivo, desconto, Pix e anual, estorno completo, painel e ações).
+- **Próxima fase:** CX3 (executivos de venda: venda em dinheiro na rua, recibo, dinheiro com o executivo e prestação de contas).

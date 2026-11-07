@@ -78,7 +78,7 @@ export const stores = pgTable("stores", {
   /** MEMBER = loja de membro; SUPPLIER_OWN = loja do próprio fornecedor para vender direto ao público. */
   /** Parceiro que indicou a loja (definido no cadastro e nunca mais alterado) e por qual caminho. */
   partnerId: text("partner_id"),
-  attributedVia: text("attributed_via", { enum: ["LINK", "COUPON"] }),
+  attributedVia: text("attributed_via", { enum: ["LINK", "COUPON", "EXECUTIVO"] }),
   attributedAt: ts("attributed_at"),
   attributionFlag: text("attribution_flag", { enum: ["FRAUD_REVIEW"] }),
   kind: text("kind", { enum: ["MEMBER", "SUPPLIER_OWN"] }).notNull().default("MEMBER"),
@@ -2792,8 +2792,10 @@ export const aprenderProgresso = pgTable("aprender_progresso", {
 // ---------------------------------------------------------------------------------------------------------------------
 // Caixa do Master (CX0, D269): abre e fecha por dia, lançamentos com meio e origem, histórico de toda edição.
 // ---------------------------------------------------------------------------------------------------------------------
-export const CAIXA_MEIOS = ["DINHEIRO", "PIX", "CARTAO", "TRANSFERENCIA", "MERCADO_PAGO", "BOLETO", "OUTRO"] as const;
-export const CAIXA_ORIGENS = ["ASSINATURA", "SERVICO", "PRESTACAO_EXECUTIVO", "SANGRIA", "REFORCO", "COMISSAO_PAGA", "AJUSTE", "OUTRO"] as const;
+export const CAIXA_MEIOS = ["DINHEIRO", "PIX", "MAQUININHA", "MAQUININHA_VENDEDOR", "MERCADO_PAGO", "CARTAO", "TRANSFERENCIA", "BOLETO", "OUTRO"] as const;
+/** Para onde o dinheiro foi (D270, dono 07/11): dinheiro com o Mauricio, Mercado Pago (CNPJ Mega Tron), Pix Itaú (CNPJ NextLevel), Pix Nubank (CPF Mauricio). */
+export const CAIXA_DESTINOS = ["DINHEIRO_MAURICIO", "MP_MEGATRON", "PIX_ITAU_NEXTLEVEL", "PIX_NUBANK_MAURICIO"] as const;
+export const CAIXA_ORIGENS = ["ASSINATURA", "TEMPLATE", "SERVICO", "PRESTACAO_EXECUTIVO", "SANGRIA", "REFORCO", "COMISSAO_PAGA", "AJUSTE", "OUTRO"] as const;
 
 /** Um dia de caixa (data no fuso de São Paulo). Fechado, fica travado; só o dono reabre. */
 export const caixaDias = pgTable("caixa_dias", {
@@ -2826,6 +2828,10 @@ export const caixaLancamentos = pgTable("caixa_lancamentos", {
   storeId: text("store_id").references(() => stores.id),
   partnerId: text("partner_id").references(() => partners.id),
   invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  /** Conta onde o dinheiro entrou ou de onde saiu (D270). Nulo só nos lançamentos antigos. */
+  destino: text("destino", { enum: CAIXA_DESTINOS }),
+  /** Template ou serviço do catálogo pago neste lançamento (D270). */
+  produtoKey: text("produto_key"),
   descricao: text("descricao").notNull().default(""),
   criadoPor: text("criado_por").notNull().references(() => users.id),
   estornadoEm: ts("estornado_em"),

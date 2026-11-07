@@ -1,6 +1,6 @@
 # Caixa do Master, recebimentos manuais e executivos de venda (equipe de rua)
 
-> Estado: **EM ANDAMENTO.** Decisões aprovadas pelo dono (07/11). CX0 e CX1 no ar (D269): o caixa do Master. Próxima: CX2 (receber manualmente e assinaturas).
+> Estado: **EM ANDAMENTO.** Decisões aprovadas pelo dono (07/11). CX0 e CX1 no ar (D269): o caixa do Master. CX2 no ar (D270): receber assinatura à mão e painel de assinaturas, com as 5 formas de pagamento da NextLevel. Próxima: CX3 (executivos de venda).
 > Pedido do dono (07/11/2026):
 > - "Uma função no Master para ser o balcão do caixa, com opções avançadas de gerenciar as assinaturas e recebimentos, inclusive pagamentos manuais em dinheiro."
 > - "Controle do caixa com abas semanais e diárias; todo dia abrir e fechar o caixa e poder editar e controlar de qual meio o pagamento veio."
@@ -181,6 +181,49 @@ Pensado para a rua: uma mão, letra grande, poucos toques, funciona com sinal fr
 | **CX3** | **Executivos no Master:** cadastro, aba em Parceiros, venda em dinheiro registrada pelo executivo, recibo, dinheiro com o executivo, prestação de contas que lança no caixa, alertas e travas | e2e: executivo vende em dinheiro, loja liberada, dono recebe a prestação, caixa e comissão batem |
 | **CX4** | **Painel do executivo** no celular: meta, botões grandes, agenda, comissões, ranking, conquistas, argumentos de bolso | Capturas no celular; axe sem erro; tudo a no máximo 2 toques |
 | **CX5** | Relatórios: semana e mês por meio, por executivo e por plano; exportação para o contador; aulas novas na base de conhecimento | Totais do relatório = caixa = faturas |
+
+## 8A. Gamificação e bônus por produção (pedido do dono, 07/11/2026: PROPOSTA, aguarda aprovação)
+
+> "Tanto no painel de parceiros quanto nos vendedores externos precisamos gamificar o visual, e quero no Master poder ativar bônus por produção e metas atingidas."
+
+**Muda uma decisão anterior:** a D260 tirou bônus e desafios com dinheiro. A proposta é voltar com bônus, mas só **ligado pelo dono**, com regras claras, teto de gasto e pago pelo mesmo caminho da comissão.
+
+**Campanhas de bônus no Master** (Parceiros → Bônus e metas):
+- **Tipos:**
+  - **Por produção:** a cada N lojas pagas no período, R$ X ou + Y pontos percentuais. Exemplo: 5 lojas no mês, +R$ 100.
+  - **Meta atingida:** bateu a meta da semana ou do mês e ganha o prêmio.
+  - **Desafio relâmpago:** uma semana, um plano. Exemplo: "3 Pro até sexta".
+  - **Primeira venda:** bônus de boas-vindas.
+- **Configuração de cada campanha:**
+  - quem participa: executivos, parceiros CNPJ, parceiros CPF ou todos;
+  - período de início e fim;
+  - o que conta: só loja **paga e mantida após a garantia de 30 dias**, para não premiar venda que cancela;
+  - prêmio;
+  - **teto de gasto** da campanha;
+  - limite por pessoa.
+- **Ligar e desligar:** só o dono. Fica uma versão de cada mudança, e a campanha encerrada não muda.
+- **Pagamento:** o bônus vira lançamento "Bônus" no extrato, com a mesma garantia e o mesmo saque da comissão. Sai no caixa como "Pagamento de comissão".
+- **Painel do Master:**
+  - quanto cada campanha já custou e quanto ainda pode custar;
+  - quem está perto do prêmio;
+  - retorno: lojas pagas na campanha × gasto.
+
+**Gamificação do visual** (painel do parceiro e do executivo):
+- **Níveis já existentes:** Inicial, Prata e Ouro, com um anel de progresso até o próximo.
+- **Missões da semana:** 3 a 5 tarefas simples (visitar 10 lojas, 2 demonstrações, 1 venda), com barra e selo ao completar.
+- **Sequência ("streak"):** semanas seguidas com pelo menos uma venda.
+- **Conquistas (selos):** primeira venda, 5 lojas no mês, 10 lojas ativas, um mês sem atraso na prestação de contas, cliente com 6 meses.
+- **Ranking:** da semana e do mês, separado entre executivos e parceiros online. Mostra a posição e o primeiro nome; quem está atrás vê "faltam 2 lojas para passar".
+- **Campanhas ativas** em destaque no topo, com contagem regressiva e progresso pessoal.
+- **Celebração:** confete e mensagem ao bater meta ou conquista. Respeita "reduzir movimento".
+
+**Cuidados:**
+- nada de promessa de ganho;
+- prêmio só por venda **paga e mantida**;
+- teto de gasto sempre;
+- CPF e CNPJ seguem a regra de comissão de cada um.
+
+**Fase sugerida: CX6**, depois do painel do executivo (CX4), porque reaproveita as metas e o ranking dele. Missões e conquistas, que não custam dinheiro, podem entrar já na CX4.
 
 ## 9. Cuidados
 

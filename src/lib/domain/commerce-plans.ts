@@ -173,6 +173,15 @@ export async function choosePlan(db: Database, actor: Actor, raw: z.input<typeof
     // Loja que já pagou antes (contas antigas) não é cliente novo: sem oferta de entrada.
     return startCommerceSubscription(db, { storeId: store.id, productKey: input.productKey, cycle: input.cycle, taxId: store.taxId ?? null, actor, now, allowOffer: !store.paidUntil && !!store.taxId });
   }
+  return trocarPlanoDaAssinatura(db, actor, store.id, sub, input, now);
+}
+
+/**
+ * Troca plano e ciclo de uma assinatura existente (lojista em `choosePlan` ou o Master na CX2, D270). O novo preço vale
+ * a partir da próxima fatura; a fatura em aberto é cancelada e refeita.
+ */
+export async function trocarPlanoDaAssinatura(db: Database, actor: Actor | null, storeId: string, sub: NlSubscription, input: { productKey: (typeof COMMERCE_PLAN_KEYS)[number]; cycle: PlanCycle }, now = new Date()) {
+  const store = { id: storeId };
   if (sub.productKey === input.productKey && sub.cycle === input.cycle && !["cancelled", "expired"].includes(sub.status)) return { subscriptionId: sub.id, trial: sub.status === "trial", trialEndsAt: sub.trialEndsAt ? new Date(sub.trialEndsAt) : null, offerApplied: !!sub.offerKey };
   const pp = await planPrice(db, input.productKey, input.cycle, now);
   const { version, feeBps } = pp;

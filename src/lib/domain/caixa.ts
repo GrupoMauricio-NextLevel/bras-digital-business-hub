@@ -3,9 +3,11 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { caixaDias, caixaHistorico, caixaLancamentos, catalogProducts, corporateOrders, financeInvoices, gatewayTransactions, nextlevelPayments, partners, stores, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { MEIOS, MEIO_FIXO, ORIGENS, TIPO_FIXO, dataSP, diferencaDoFechamento, ehData, limitesDoDia, resumoDoDia, semanaDe, somarDias, type Meio, type Origem, type Tipo } from "@/lib/finance/caixa-regras";
+import { DESTINOS, DESTINOS_DO_MEIO, FAMILIAS_SERVICO, FAMILIAS_TEMPLATE, NOME_DO_DESTINO, NOME_DO_MEIO, destinoPadrao, type Destino, MEIOS, MEIOS_MANUAIS, MEIO_FIXO, ORIGENS, TIPO_FIXO, dataSP, diferencaDoFechamento, ehData, limitesDoDia, resumoDoDia, resumoPorDestino, semanaDe, somarDias, type Meio, type Origem, type Tipo } from "@/lib/finance/caixa-regras";
 import { isMasterOwner, requireMasterFn, type Actor } from "./access";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
+import { getCatalogItem, listCatalog } from "./nl-catalog";
+import { grantEntitlement } from "./entitlements";
 
 /**
  * Caixa do Master (CX0 e CX1, D269): o dia abre e fecha; cada entrada ou saída guarda o meio e a origem; nada se apaga
@@ -51,23 +53,44 @@ export const lancamentoSchema = z.object({
   valorCents: z.number().int().positive("Informe o valor").max(100_000_000),
   storeId: z.string().nullish(),
   partnerId: z.string().nullish(),
+  /** Fatura paga por este lançamento (recebimento de assinatura, CX2). */
+  invoiceId: z.string().nullish(),
+  /** Conta de destino (vazio = a sugerida para a forma de pagamento). */
+  destino: z.enum(DESTINOS).nullish(),
+  /** Template ou serviço do catálogo (obrigatório nessas origens). */
+  produtoKey: z.string().nullish(),
   descricao: z.string().trim().max(300).default(""),
   ocorridoEm: z.string().datetime({ offset: true }).optional(),
 });
-type DadosDoLancamento = { tipo: Tipo; meio: Meio; origem: Origem; valorCents: number; storeId: string | null; partnerId: string | null; descricao: string };
+type DadosDoLancamento = { tipo: Tipo; meio: Meio; origem: Origem; valorCents: number; storeId: string | null; partnerId: string | null; destino: Destino; produtoKey: string | null; descricao: string };
 
 /** Ajusta tipo e meio fixos da origem (sangria sai em dinheiro, reforço entra em dinheiro…) e confere loja e parceiro. */
-async function normalizar(db: Database, v: { tipo?: Tipo; meio: Meio; origem: Origem; valorCents: number; storeId?: string | null; partnerId?: string | null; descricao: string }): Promise<DadosDoLancamento> {
+async function normalizar(db: Database, v: { tipo?: Tipo; meio: Meio; origem: Origem; valorCents: number; storeId?: string | null; partnerId?: string | null; destino?: Destino | null; produtoKey?: string | null; invoiceId?: string | null; descricao: string }): Promise<DadosDoLancamento> {
   const tipo = TIPO_FIXO[v.origem] ?? v.tipo;
   if (!tipo) throw new DomainError("CAIXA_TIPO", "Diga se é entrada ou saída.");
   if (v.tipo && TIPO_FIXO[v.origem] && v.tipo !== TIPO_FIXO[v.origem]) throw new DomainError("CAIXA_TIPO", "Esta origem só pode ser " + (TIPO_FIXO[v.origem] === "ENTRADA" ? "entrada." : "saída."));
   const meio = MEIO_FIXO[v.origem] ?? v.meio;
   if (MEIO_FIXO[v.origem] && v.meio !== MEIO_FIXO[v.origem]) throw new DomainError("CAIXA_MEIO", "Sangria e reforço são sempre em dinheiro.");
-  if (meio === "MERCADO_PAGO") throw new DomainError("CAIXA_MEIO", "Pagamento pelo Mercado Pago entra sozinho no caixa. Lance à mão só o que veio por outro meio.");
+  if (meio === "MERCADO_PAGO") throw new DomainError("CAIXA_MEIO", "Pagamento pelo checkout online entra sozinho no caixa. Lance à mão só o que veio por outro meio.");
+  if (!(MEIOS_MANUAIS as readonly string[]).includes(meio)) throw new DomainError("CAIXA_MEIO", "Escolha uma das formas de pagamento da NextLevel.");
   if (v.origem === "PRESTACAO_EXECUTIVO" && !v.partnerId) throw new DomainError("CAIXA_EXECUTIVO", "Escolha o executivo que prestou contas.");
+  const destino = v.destino ?? destinoPadrao(meio);
+  if (!DESTINOS_DO_MEIO[meio].includes(destino)) throw new DomainError("CAIXA_DESTINO", `${NOME_DO_MEIO[meio]} não vai para ${NOME_DO_DESTINO[destino]}.`);
+  // D270 (dono): toda entrada fica ligada a uma assinatura, a um template, a um serviço adicional ou a "outros" descrito.
+  if (v.origem === "ASSINATURA" && !v.invoiceId) throw new DomainError("CAIXA_VINCULO", "Assinatura se recebe em \"Receber assinatura\": ela fica ligada à assinatura da loja e libera a loja.");
+  let produtoKey: string | null = null;
+  if (v.origem === "TEMPLATE" || v.origem === "SERVICO") {
+    if (!v.produtoKey) throw new DomainError("CAIXA_VINCULO", v.origem === "TEMPLATE" ? "Escolha o template que foi pago." : "Escolha o serviço adicional que foi pago.");
+    const item = await getCatalogItem(db, { key: v.produtoKey }, { includeUnpublished: true });
+    const familias: readonly string[] = v.origem === "TEMPLATE" ? FAMILIAS_TEMPLATE : FAMILIAS_SERVICO;
+    if (!item || !familias.includes(item.family)) throw new NotFoundError(v.origem === "TEMPLATE" ? "Template não encontrado." : "Serviço não encontrado.");
+    if (v.origem === "TEMPLATE" && !v.storeId) throw new DomainError("CAIXA_VINCULO", "Escolha a loja que comprou o template.");
+    produtoKey = item.key;
+  }
+  if (v.origem === "OUTRO" && v.descricao.trim().length < 3) throw new DomainError("CAIXA_VINCULO", "Em \"Outros\", escreva o que foi pago.");
   if (v.storeId && !(await db.query.stores.findFirst({ where: eq(stores.id, v.storeId), columns: { id: true } }))) throw new NotFoundError("Loja não encontrada.");
   if (v.partnerId && !(await db.query.partners.findFirst({ where: eq(partners.id, v.partnerId), columns: { id: true } }))) throw new NotFoundError("Parceiro não encontrado.");
-  return { tipo, meio, origem: v.origem, valorCents: v.valorCents, storeId: v.storeId ?? null, partnerId: v.partnerId ?? null, descricao: v.descricao };
+  return { tipo, meio, origem: v.origem, valorCents: v.valorCents, storeId: v.storeId ?? null, partnerId: v.partnerId ?? null, destino, produtoKey, descricao: v.descricao };
 }
 
 /** Dia precisa estar aberto para receber ou mudar lançamento. Dia fechado: só o dono, e o dia volta a abrir (fica no histórico). */
@@ -93,12 +116,17 @@ export async function lancar(db: Database, actor: Actor, raw: z.input<typeof lan
   await garantirAberto(db, actor, data, null);
   const d = await normalizar(db, v);
   const id = newId("cxl");
-  await db.insert(caixaLancamentos).values({ id, data, ocorridoEm: v.ocorridoEm ?? now.toISOString(), ...d, criadoPor: actor.userId });
+  await db.insert(caixaLancamentos).values({ id, data, ocorridoEm: v.ocorridoEm ?? now.toISOString(), ...d, invoiceId: v.invoiceId ?? null, criadoPor: actor.userId });
   await db.insert(caixaHistorico).values({ id: newId("cxh"), lancamentoId: id, acao: "LANCAR", depois: { data, ...d }, userId: actor.userId });
+  // Template pago à mão: libera o template na loja (como a compra online).
+  if (d.origem === "TEMPLATE" && d.storeId && d.produtoKey) {
+    const item = await getCatalogItem(db, { key: d.produtoKey }, { includeUnpublished: true });
+    if (item?.grantsKey) await grantEntitlement(db, { type: "STORE", storeId: d.storeId }, { key: item.grantsKey, source: "ADD_ON", note: `Pago no caixa (${id})`, now });
+  }
   return { id };
 }
 
-const edicaoSchema = lancamentoSchema.partial().extend({ motivo: z.string().trim().min(3, "Diga o motivo da mudança (pelo menos 3 letras)").max(300) });
+const edicaoSchema = lancamentoSchema.partial().extend({ descricao: z.string().trim().max(300).optional(), motivo: z.string().trim().min(3, "Diga o motivo da mudança (pelo menos 3 letras)").max(300) });
 
 /** Edita meio, valor, data, origem, loja, executivo ou descrição. Guarda o antes e o depois. */
 export async function editarLancamento(db: Database, actor: Actor, id: string, raw: z.input<typeof edicaoSchema>) {
@@ -110,9 +138,11 @@ export async function editarLancamento(db: Database, actor: Actor, id: string, r
   const novaData = v.data ?? l.data;
   await garantirAberto(db, actor, l.data, v.motivo);
   if (novaData !== l.data) await garantirAberto(db, actor, novaData, v.motivo);
-  const d = await normalizar(db, { tipo: v.tipo ?? (v.origem && TIPO_FIXO[v.origem] ? undefined : l.tipo), meio: v.meio ?? l.meio, origem: v.origem ?? l.origem, valorCents: v.valorCents ?? l.valorCents, storeId: v.storeId === undefined ? l.storeId : v.storeId, partnerId: v.partnerId === undefined ? l.partnerId : v.partnerId, descricao: v.descricao ?? l.descricao });
+  if (v.origem && (v.origem === "ASSINATURA") !== (l.origem === "ASSINATURA")) throw new DomainError("CAIXA_VINCULO", "Recebimento de assinatura não vira outro tipo (nem o contrário). Estorne e lance de novo.");
+  const meioNovo = v.meio ?? l.meio;
+  const d = await normalizar(db, { tipo: v.tipo ?? (v.origem && TIPO_FIXO[v.origem] ? undefined : l.tipo), meio: meioNovo, origem: v.origem ?? l.origem, valorCents: v.valorCents ?? l.valorCents, storeId: v.storeId === undefined ? l.storeId : v.storeId, partnerId: v.partnerId === undefined ? l.partnerId : v.partnerId, destino: v.destino ?? (v.meio && !(l.destino && DESTINOS_DO_MEIO[meioNovo].includes(l.destino)) ? null : l.destino), produtoKey: v.produtoKey === undefined ? l.produtoKey : v.produtoKey, invoiceId: l.invoiceId, descricao: v.descricao ?? l.descricao });
   const depois = { data: novaData, ocorridoEm: v.ocorridoEm ?? l.ocorridoEm, ...d };
-  const antes = { data: l.data, ocorridoEm: l.ocorridoEm, tipo: l.tipo, meio: l.meio, origem: l.origem, valorCents: l.valorCents, storeId: l.storeId, partnerId: l.partnerId, descricao: l.descricao };
+  const antes = { data: l.data, ocorridoEm: l.ocorridoEm, tipo: l.tipo, meio: l.meio, origem: l.origem, valorCents: l.valorCents, storeId: l.storeId, partnerId: l.partnerId, destino: l.destino, produtoKey: l.produtoKey, descricao: l.descricao };
   await db.update(caixaLancamentos).set({ ...depois, updatedAt: new Date().toISOString() }).where(eq(caixaLancamentos.id, id));
   await db.insert(caixaHistorico).values({ id: newId("cxh"), lancamentoId: id, acao: "EDITAR", antes, depois, motivo: v.motivo, userId: actor.userId });
   return { id };
@@ -163,6 +193,7 @@ export async function reabrirCaixa(db: Database, actor: Actor, data: string, mot
 // Leitura: dia, semana e lista de lançamentos (com os pagamentos do Mercado Pago, que entram sozinhos)
 // ---------------------------------------------------------------------------------------------------------------------
 export type LinhaDoCaixa = {
+  destino: Destino | null; produtoKey: string | null;
   id: string; data: string; ocorridoEm: string; tipo: Tipo; meio: Meio; origem: Origem; valorCents: number; descricao: string;
   loja: string | null; storeId: string | null; parceiro: string | null; partnerId: string | null; quem: string | null;
   estornado: boolean; estornoMotivo: string | null; editado: boolean; automatico: boolean;
@@ -179,7 +210,7 @@ async function automaticos(db: Database, de: string, ate: string): Promise<Linha
       .from(nextlevelPayments).innerJoin(financeInvoices, eq(financeInvoices.id, nextlevelPayments.invoiceId)).leftJoin(stores, eq(stores.id, financeInvoices.storeId))
       .where(and(eq(nextlevelPayments.status, "PAID"), gte(nextlevelPayments.paidAt, inicio), lt(nextlevelPayments.paidAt, fim))),
   ]);
-  const linha = (id: string, paidAt: string, valor: number, descricao: string, storeId: string | null, loja: string | null, origem: Origem): LinhaDoCaixa => ({ id: `mp:${id}`, data: dataSP(new Date(paidAt)), ocorridoEm: paidAt, tipo: "ENTRADA", meio: "MERCADO_PAGO", origem, valorCents: valor, descricao, loja, storeId, parceiro: null, partnerId: null, quem: null, estornado: false, estornoMotivo: null, editado: false, automatico: true });
+  const linha = (id: string, paidAt: string, valor: number, descricao: string, storeId: string | null, loja: string | null, origem: Origem): LinhaDoCaixa => ({ id: `mp:${id}`, data: dataSP(new Date(paidAt)), ocorridoEm: paidAt, tipo: "ENTRADA", meio: "MERCADO_PAGO", origem, valorCents: valor, destino: "MP_MEGATRON", produtoKey: null, descricao, loja, storeId, parceiro: null, partnerId: null, quem: null, estornado: false, estornoMotivo: null, editado: false, automatico: true });
   return [
     ...gt.filter((x) => x.paidAt).map((x) => linha(x.id, x.paidAt!, x.valor, `${x.produto ?? "Pedido"} · ${x.method === "PIX" ? "Pix" : "cartão"} · ${x.comprador}`, x.storeId, x.loja, "ASSINATURA")),
     ...nl.filter((x) => x.paidAt).map((x) => linha(x.id, x.paidAt!, x.valor, `${x.descricao} · ${x.method === "PIX" ? "Pix" : "cartão"}`, x.storeId, x.loja, x.kind === "STORE_PLAN" ? "ASSINATURA" : "SERVICO")),
@@ -192,7 +223,7 @@ async function manuais(db: Database, datas: string[]): Promise<LinhaDoCaixa[]> {
     .from(caixaLancamentos).leftJoin(stores, eq(stores.id, caixaLancamentos.storeId)).leftJoin(partners, eq(partners.id, caixaLancamentos.partnerId)).leftJoin(users, eq(users.id, caixaLancamentos.criadoPor))
     .where(inArray(caixaLancamentos.data, datas)).orderBy(asc(caixaLancamentos.ocorridoEm));
   const editados = new Set((rows.length ? await db.select({ id: caixaHistorico.lancamentoId }).from(caixaHistorico).where(and(eq(caixaHistorico.acao, "EDITAR"), inArray(caixaHistorico.lancamentoId, rows.map((r) => r.l.id)))) : []).map((r) => r.id));
-  return rows.map(({ l, loja, parceiro, quem }) => ({ id: l.id, data: l.data, ocorridoEm: l.ocorridoEm, tipo: l.tipo, meio: l.meio, origem: l.origem, valorCents: l.valorCents, descricao: l.descricao, loja, storeId: l.storeId, parceiro, partnerId: l.partnerId, quem, estornado: !!l.estornadoEm, estornoMotivo: l.estornoMotivo, editado: editados.has(l.id), automatico: false }));
+  return rows.map(({ l, loja, parceiro, quem }) => ({ id: l.id, data: l.data, ocorridoEm: l.ocorridoEm, tipo: l.tipo, meio: l.meio, origem: l.origem, valorCents: l.valorCents, destino: l.destino, produtoKey: l.produtoKey, descricao: l.descricao, loja, storeId: l.storeId, parceiro, partnerId: l.partnerId, quem, estornado: !!l.estornadoEm, estornoMotivo: l.estornoMotivo, editado: editados.has(l.id), automatico: false }));
 }
 
 export async function caixaDoDia(db: Database, actor: Actor, data: string = dataSP()) {
@@ -202,7 +233,7 @@ export async function caixaDoDia(db: Database, actor: Actor, data: string = data
   const linhas = [...man, ...auto].sort((a, b) => a.ocorridoEm.localeCompare(b.ocorridoEm));
   const resumo = resumoDoDia(linhas.map((l) => ({ ...l })), dia?.saldoInicialCents ?? 0);
   const historico = dia ? await db.select({ h: caixaHistorico, quem: users.name }).from(caixaHistorico).leftJoin(users, eq(users.id, caixaHistorico.userId)).where(eq(caixaHistorico.diaId, dia.id)).orderBy(asc(caixaHistorico.createdAt)) : [];
-  return { data, hoje: dataSP(), dia: dia ?? null, linhas, resumo, sugestaoCents: sugestao, historico: historico.map(({ h, quem }) => ({ acao: h.acao, motivo: h.motivo, quando: h.createdAt, quem })), dono: isMasterOwner(actor) };
+  return { data, hoje: dataSP(), dia: dia ?? null, linhas, resumo, porDestino: resumoPorDestino(linhas), sugestaoCents: sugestao, historico: historico.map(({ h, quem }) => ({ acao: h.acao, motivo: h.motivo, quando: h.createdAt, quem })), dono: isMasterOwner(actor) };
 }
 
 export async function caixaDaSemana(db: Database, actor: Actor, dataRef: string = dataSP()) {
@@ -214,7 +245,7 @@ export async function caixaDaSemana(db: Database, actor: Actor, dataRef: string 
     const dia = dias.find((d) => d.data === data) ?? null;
     return { data, dia, resumo: resumoDoDia(todas.filter((l) => l.data === data), dia?.saldoInicialCents ?? 0) };
   });
-  return { datas, porDia, total: resumoDoDia(todas), hoje: dataSP() };
+  return { datas, porDia, total: resumoDoDia(todas), porDestino: resumoPorDestino(todas), hoje: dataSP() };
 }
 
 export const filtrosSchema = z.object({ de: z.string().refine(ehData).optional(), ate: z.string().refine(ehData).optional(), meio: z.enum(MEIOS).optional(), origem: z.enum(ORIGENS).optional() });
@@ -241,10 +272,16 @@ export async function historicoDoLancamento(db: Database, actor: Actor, id: stri
 /** Opções dos campos (lojas e executivos/parceiros) para os formulários do caixa. */
 export async function opcoesDoCaixa(db: Database, actor: Actor) {
   exigir(actor);
-  const [lojas, parc] = await Promise.all([
+  const [lojas, parc, catalogo] = await Promise.all([
     db.select({ id: stores.id, nome: stores.name }).from(stores).orderBy(asc(stores.name)).limit(500),
     db.select({ id: partners.id, nome: partners.displayName, executivo: partners.executivo }).from(partners).orderBy(desc(partners.executivo), asc(partners.displayName)).limit(500),
+    listCatalog(db, { families: [...FAMILIAS_TEMPLATE, ...FAMILIAS_SERVICO] }),
   ]);
-  return { lojas, parceiros: parc };
+  const preco = (p: (typeof catalogo)[number]) => p.prices.ONE_TIME?.amountCents ?? p.prices.MONTHLY?.amountCents ?? null;
+  return {
+    lojas, parceiros: parc,
+    templates: catalogo.filter((p) => (FAMILIAS_TEMPLATE as readonly string[]).includes(p.family)).map((p) => ({ key: p.key, nome: p.name, precoCents: preco(p) })),
+    servicos: catalogo.filter((p) => (FAMILIAS_SERVICO as readonly string[]).includes(p.family)).map((p) => ({ key: p.key, nome: p.name, precoCents: preco(p) })),
+  };
 }
 

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 270,
+  "frente": "E-commerce",
+  "titulo": "CX2: receber assinatura à mão, formas de pagamento da NextLevel e painel de assinaturas",
+  "data": "2026-11-07",
+  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX2."
+ },
+ {
   "numero": 269,
   "frente": "E-commerce",
   "titulo": "CX0 e CX1: caixa do Master com abas Hoje, Semana e Lançamentos",
@@ -271,12 +278,5 @@
   "titulo": "Ataque no atacado: Nuvemshop e Loja Integrada não têm atacado nativo",
   "data": "2026-11-03",
   "resumo": "O dono confirmou que Nuvemshop e Loja Integrada não têm as funções de atacado (grade fechada, preço por quantidade, pedido mínimo): \"Vamos atacar isso!\"."
- },
- {
-  "numero": 230,
-  "frente": "Black",
-  "titulo": "BF2 no ar: placar da goleada calculado a partir da súmula",
-  "data": "2026-11-03",
-  "resumo": "Placar \"O Clássico do E-commerce\": aparece na home (logo depois da faixa do 0%), em /comparativo e em /planos (PlacarSecao, PlacarGoleada);"
  }
 ]

@@ -138,6 +138,11 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q("O cliente pediu estorno. E a comissão?", "Volta, inclusive por débito no saldo", ["Fica com o parceiro", "Dobra", "Some sem registro"]),
       q("Pagar comissão fora do sistema pode?", "Não", ["Sim", "Só em dinheiro", "Só para agências"]),
     ],
+    "receber-assinatura": () => [
+      q("O cliente pagou no Pix da chave da NextLevel. Como liberar a loja?", "Caixa → Receber assinatura, com Pix na chave", ["Esperar o checkout online", "Mudar a data na mão sem registrar", "Pedir para o cliente pagar de novo"]),
+      q("Recebi menos que a tabela. O que acontece?", "É desconto e precisa de motivo", ["É recusado sempre", "Vira dívida do cliente", "Nada, passa direto"]),
+      q("Estornar um recebimento faz o quê?", "Tira do caixa, cancela a fatura, desfaz a comissão e volta o período", ["Só apaga o lançamento", "Só avisa o cliente", "Nada"]),
+    ],
     caixa: () => [
       q("Quem reabre um dia de caixa já fechado?", "Só o dono, com motivo", ["Qualquer pessoa da equipe", "O Financeiro, sem motivo", "Ninguém, nunca"]),
       q("Um plano foi pago pelo Mercado Pago. O que fazer no caixa?", "Nada: ele entra sozinho", ["Lançar à mão como dinheiro", "Lançar à mão como Pix", "Fazer uma sangria"]),

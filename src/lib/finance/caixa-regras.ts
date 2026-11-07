@@ -2,16 +2,24 @@
  * Caixa do Master (CX0, D269). Puro: rótulos, data no fuso de São Paulo, semana, resumo do dia por meio e o dinheiro
  * esperado na gaveta. O banco e as permissões ficam em `src/lib/domain/caixa.ts`.
  */
-export const MEIOS = ["DINHEIRO", "PIX", "CARTAO", "TRANSFERENCIA", "MERCADO_PAGO", "BOLETO", "OUTRO"] as const;
+/**
+ * Formas de pagamento da NextLevel (dono, 07/11/2026, D270): checkout online (Mercado Pago, entra sozinho), maquininha do
+ * Mercado Pago com o Mauricio, maquininha com os vendedores, Pix na chave do CNPJ da NextLevel Marketing Ltda e dinheiro
+ * (com o Mauricio vai para a gaveta; com o vendedor fica com ele até a prestação de contas, CX3).
+ * CARTAO, TRANSFERENCIA, BOLETO e OUTRO ficam só para ler lançamentos antigos; não aparecem para escolher.
+ */
+export const MEIOS = ["DINHEIRO", "PIX", "MAQUININHA", "MAQUININHA_VENDEDOR", "MERCADO_PAGO", "CARTAO", "TRANSFERENCIA", "BOLETO", "OUTRO"] as const;
 export type Meio = (typeof MEIOS)[number];
-export const ORIGENS = ["ASSINATURA", "SERVICO", "PRESTACAO_EXECUTIVO", "SANGRIA", "REFORCO", "COMISSAO_PAGA", "AJUSTE", "OUTRO"] as const;
+/** O que a equipe escolhe ao lançar à mão (o checkout online entra sozinho). */
+export const MEIOS_MANUAIS = ["DINHEIRO", "PIX", "MAQUININHA", "MAQUININHA_VENDEDOR"] as const satisfies readonly Meio[];
+export const ORIGENS = ["ASSINATURA", "TEMPLATE", "SERVICO", "PRESTACAO_EXECUTIVO", "SANGRIA", "REFORCO", "COMISSAO_PAGA", "AJUSTE", "OUTRO"] as const;
 export type Origem = (typeof ORIGENS)[number];
 export type Tipo = "ENTRADA" | "SAIDA";
 
-export const NOME_DO_MEIO: Record<Meio, string> = { DINHEIRO: "Dinheiro", PIX: "Pix", CARTAO: "Cartão na maquininha", TRANSFERENCIA: "Transferência", MERCADO_PAGO: "Mercado Pago", BOLETO: "Boleto", OUTRO: "Outro" };
-export const NOME_DA_ORIGEM: Record<Origem, string> = { ASSINATURA: "Assinatura", SERVICO: "Serviço", PRESTACAO_EXECUTIVO: "Prestação de contas de executivo", SANGRIA: "Sangria (retirada)", REFORCO: "Reforço de troco", COMISSAO_PAGA: "Pagamento de comissão", AJUSTE: "Ajuste", OUTRO: "Outro" };
+export const NOME_DO_MEIO: Record<Meio, string> = { DINHEIRO: "Dinheiro", PIX: "Pix", MAQUININHA: "Maquininha do Mercado Pago (Mauricio)", MAQUININHA_VENDEDOR: "Maquininha com vendedor", MERCADO_PAGO: "Checkout online", CARTAO: "Cartão (antigo)", TRANSFERENCIA: "Transferência (antigo)", BOLETO: "Boleto (antigo)", OUTRO: "Outro (antigo)" };
+export const NOME_DA_ORIGEM: Record<Origem, string> = { ASSINATURA: "Assinatura", TEMPLATE: "Template", SERVICO: "Serviço adicional", PRESTACAO_EXECUTIVO: "Prestação de contas de executivo", SANGRIA: "Sangria (retirada)", REFORCO: "Reforço de troco", COMISSAO_PAGA: "Pagamento de comissão", AJUSTE: "Ajuste", OUTRO: "Outros" };
 /** Origens que só existem num sentido: sangria e comissão paga saem; reforço e prestação de contas entram. */
-export const TIPO_FIXO: Partial<Record<Origem, Tipo>> = { SANGRIA: "SAIDA", COMISSAO_PAGA: "SAIDA", REFORCO: "ENTRADA", PRESTACAO_EXECUTIVO: "ENTRADA", ASSINATURA: "ENTRADA", SERVICO: "ENTRADA" };
+export const TIPO_FIXO: Partial<Record<Origem, Tipo>> = { SANGRIA: "SAIDA", COMISSAO_PAGA: "SAIDA", REFORCO: "ENTRADA", PRESTACAO_EXECUTIVO: "ENTRADA", ASSINATURA: "ENTRADA", TEMPLATE: "ENTRADA", SERVICO: "ENTRADA" };
 /** Sangria e reforço mexem na gaveta: são sempre em dinheiro. */
 export const MEIO_FIXO: Partial<Record<Origem, Meio>> = { SANGRIA: "DINHEIRO", REFORCO: "DINHEIRO" };
 
@@ -69,3 +77,35 @@ export function resumoDoDia(lancamentos: LancamentoResumo[], saldoInicialCents =
 
 /** Diferença do fechamento: positiva = sobrou dinheiro; negativa = faltou. */
 export const diferencaDoFechamento = (esperadoCents: number, contadoCents: number) => contadoCents - esperadoCents;
+
+/** Contas de destino do dinheiro (dono, 07/11/2026, D270). */
+export const DESTINOS = ["DINHEIRO_MAURICIO", "MP_MEGATRON", "PIX_ITAU_NEXTLEVEL", "PIX_NUBANK_MAURICIO"] as const;
+export type Destino = (typeof DESTINOS)[number];
+export const NOME_DO_DESTINO: Record<Destino, string> = {
+  DINHEIRO_MAURICIO: "Dinheiro em espécie com o Mauricio",
+  MP_MEGATRON: "Conta Mercado Pago do checkout online (CNPJ Mega Tron)",
+  PIX_ITAU_NEXTLEVEL: "Pix · conta CNPJ NextLevel (Itaú)",
+  PIX_NUBANK_MAURICIO: "Pix · conta CPF Mauricio Ramos (Nubank)",
+};
+/** Contas que cada forma de pagamento pode usar; a primeira é a sugerida. Dinheiro só vai para a gaveta do Mauricio. */
+export const DESTINOS_DO_MEIO: Record<Meio, Destino[]> = {
+  DINHEIRO: ["DINHEIRO_MAURICIO"],
+  PIX: ["PIX_ITAU_NEXTLEVEL", "PIX_NUBANK_MAURICIO", "MP_MEGATRON"],
+  MAQUININHA: ["MP_MEGATRON"],
+  MAQUININHA_VENDEDOR: ["MP_MEGATRON"],
+  MERCADO_PAGO: ["MP_MEGATRON"],
+  CARTAO: [...DESTINOS], TRANSFERENCIA: [...DESTINOS], BOLETO: [...DESTINOS], OUTRO: [...DESTINOS],
+};
+export const destinoPadrao = (m: Meio): Destino => DESTINOS_DO_MEIO[m][0]!;
+
+/** Famílias do catálogo que contam como "Template" e como "Serviço adicional" no caixa. */
+export const FAMILIAS_TEMPLATE = ["TEMA"] as const;
+export const FAMILIAS_SERVICO = ["LOJA_PRONTA", "MIGRACAO", "MARKETING", "CONSULTORIA", "ADDON", "ADS"] as const;
+
+/** Soma por conta de destino (estornados fora). */
+export function resumoPorDestino(l: { tipo: Tipo; valorCents: number; destino?: Destino | null; estornado?: boolean }[]) {
+  return DESTINOS.map((destino) => {
+    const d = l.filter((x) => !x.estornado && x.destino === destino);
+    return { destino, entradasCents: d.filter((x) => x.tipo === "ENTRADA").reduce((t, x) => t + x.valorCents, 0), saidasCents: d.filter((x) => x.tipo === "SAIDA").reduce((t, x) => t + x.valorCents, 0) };
+  }).filter((x) => x.entradasCents || x.saidasCents);
+}
