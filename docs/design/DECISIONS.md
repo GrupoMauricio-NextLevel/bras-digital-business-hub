@@ -3274,3 +3274,26 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - As campanhas dos executivos de rua não aparecem em público.
 - **Testes:** `tests/engajamento.test.ts` (missões, sequência e recorde, ranking, online com cliques, cadastro e venda, rua com anual e Scale, rankings separados).
 - **Próxima fase:** BG3, junto da CX4 (painel do executivo no celular, com registro de visitas alimentando missões e ranking de esforço).
+
+## D273 — [E-commerce] CX3: executivos de venda, venda na rua com recibo e prestação de contas no caixa (2026-11-07)
+- **Prompt:** `docs/prompts/caixa-balcao-executivos-de-venda.md`, fase CX3 (decisões aprovadas pelo dono em 07/11).
+- **Executivo:**
+  - parceiro do tipo vendedor marcado como executivo (`partners.executivo`), cadastrado **só pelo dono**;
+  - mesma comissão do programa; bônus pelas campanhas da rua (D271).
+- **Venda na rua** (painel do executivo, no topo):
+  - ele escolhe a loja do cliente (indicada por ele ou ainda sem indicação), o plano, o ciclo e a forma (dinheiro ou maquininha);
+  - o pagamento usa o mesmo caminho do online e do caixa (`pagarAssinaturaManual`): renova, **libera a loja na hora** e gera a comissão;
+  - sai um **recibo** (código REC-XXXXXX) pronto para o WhatsApp do lojista;
+  - loja indicada por outro parceiro é recusada.
+- **Dinheiro com o executivo** (tabela `executivo_recebimentos`, migração 0088):
+  - prazo de **2 dias úteis**; vencido, o executivo fica travado para nova venda em dinheiro (a maquininha continua liberada; a loja do cliente nunca é bloqueada);
+  - a maquininha do vendedor cai no Mercado Pago e fica "a conferir".
+- **Master → Executivos de venda** (`/master/partners/executivos`):
+  - números: dinheiro na rua, atrasados, maquininha a conferir;
+  - **prestações de contas**: "Receber agora" lança no caixa de hoje (dinheiro como prestação de contas na gaveta do Mauricio; maquininha como assinatura no Mercado Pago); estorno da venda ainda pendente;
+  - a equipe: vendas da semana e do mês, comissão do mês, dinheiro com cada um, última prestação;
+  - cadastro de executivo.
+- **Caixa:** aviso no topo com o que está com os executivos e o link para receber.
+- **Refatoração:** recebimento manual e estorno do caixa e da rua usam as mesmas funções (`pagarAssinaturaManual`, `desfazerPagamento`).
+- **Testes:** `tests/executivos.test.ts` (prazo em dias úteis, recibo, cadastro só pelo dono, venda em dinheiro até o caixa, trava por atraso, maquininha, loja de outro parceiro, estorno).
+- **Próxima fase:** CX4 (painel do executivo no celular, mais completo e motivador) com a BG3 (registro de visitas nas missões).

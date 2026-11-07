@@ -1,5 +1,12 @@
 [
  {
+  "numero": 273,
+  "frente": "E-commerce",
+  "titulo": "CX3: executivos de venda, venda na rua com recibo e prestação de contas no caixa",
+  "data": "2026-11-07",
+  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX3 (decisões aprovadas pelo dono em 07/11)."
+ },
+ {
   "numero": 272,
   "frente": "E-commerce",
   "titulo": "BG2: missões da semana, sequência, selos e ranking (engajamento sem dinheiro)",
@@ -271,12 +278,5 @@
   "titulo": "Domínio próprio liberado para todo lojista da E-commerce, de ponta a ponta",
   "data": "2026-11-03",
   "resumo": "Pedido do dono: \"Um cliente novo precisa poder configurar seu domínio próprio, desbloqueia isso agora\"."
- },
- {
-  "numero": 233,
-  "frente": "Black",
-  "titulo": "Rodada de ajustes: sem R$ 9,90, Shopify no clássico, Black no topo e checkout de tecnologia",
-  "data": "2026-11-03",
-  "resumo": "Pedido do dono depois de ver o BF3 no celular."
  }
 ]

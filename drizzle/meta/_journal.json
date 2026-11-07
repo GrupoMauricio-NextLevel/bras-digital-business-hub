@@ -617,6 +617,13 @@
       "when": 1794085545953,
       "tag": "0087_bonus_gamificado",
       "breakpoints": true
+    },
+    {
+      "idx": 88,
+      "version": "7",
+      "when": 1794090683678,
+      "tag": "0088_executivos_recebimentos",
+      "breakpoints": true
     }
   ]
 }

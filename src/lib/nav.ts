@@ -274,6 +274,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Caixa", href: "/master/receita/caixa", icon: "Landmark", group: "Escritório" },
   // BG1 (D271): bônus gamificado de parceiros e executivos (campanhas com teto e orçamento).
   { label: "Bônus e metas", href: "/master/partners/bonus", icon: "Sparkles", group: "Escritório" },
+  // CX3 (D273): executivos de venda (equipe de rua) e prestação de contas.
+  { label: "Executivos de venda", href: "/master/partners/executivos", icon: "UsersRound", group: "Escritório" },
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
   { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },

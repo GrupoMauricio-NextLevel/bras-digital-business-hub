@@ -21,6 +21,8 @@ import { painelParceiroEc } from "@/lib/domain/parceiros-ec";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { bonusDoParceiro } from "@/lib/domain/bonus";
 import { SeusBonus } from "./seus-bonus";
+import { VendaNaRua } from "./venda-na-rua";
+import { painelDoExecutivo } from "@/lib/domain/executivos";
 import { SuaSemana } from "./sua-semana";
 import { engajamentoDoParceiro } from "@/lib/domain/engajamento";
 
@@ -38,7 +40,10 @@ export default async function PartnerHome() {
     const linkEc = `${base}/r/${pe.parceiro.code.toLowerCase()}`;
     const [avisos, desafios, bonus, engajamento] = await Promise.all([avisosDoParceiro(db, pe.parceiro.id), desafiosDoParceiro(db, pe.parceiro.id), bonusDoParceiro(db, pe.parceiro.id), engajamentoDoParceiro(db, pe.parceiro.id)]);
     const recados = avisos.length || desafios.length ? <RecadosDoParceiro avisos={avisos} desafios={desafios} /> : null;
-    return <>{recados}{bonus ? <SeusBonus b={bonus} /> : null}{engajamento ? <SuaSemana e={engajamento} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
+    // CX3 (D273): o executivo de venda vê primeiro a venda na rua e o dinheiro que está com ele.
+    const rua = bonus?.publico === "RUA" ? await painelDoExecutivo(db, session.actor) : null;
+    const planosRua = pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => ({ key: p.key, name: p.name, monthlyCents: p.monthlyCents, annualCents: p.annualCents }));
+    return <>{recados}{rua ? <VendaNaRua d={rua} planos={planosRua} /> : null}{bonus ? <SeusBonus b={bonus} /> : null}{engajamento ? <SuaSemana e={engajamento} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
   }
   const d = await partnerDashboard(await getDb(), session.actor);
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;

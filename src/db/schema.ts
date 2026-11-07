@@ -2886,3 +2886,26 @@ export const bonusPremios = pgTable("bonus_premios", {
   versaoCampanha: integer("versao_campanha").notNull(),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("bonus_premios_unico").on(t.campanhaId, t.partnerId, t.periodo), index("bonus_premios_partner_idx").on(t.partnerId)]);
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Executivos de venda (CX3, D273): venda na rua. Dinheiro fica com o executivo até a prestação de contas; maquininha do
+// vendedor cai na conta do Mercado Pago e o Master só confere. Entregue/conferido, entra no caixa do dia.
+// ---------------------------------------------------------------------------------------------------------------------
+export const executivoRecebimentos = pgTable("executivo_recebimentos", {
+  id: id(),
+  codigo: text("codigo").notNull(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  invoiceId: text("invoice_id").notNull().references(() => financeInvoices.id),
+  meio: text("meio", { enum: ["DINHEIRO", "MAQUININHA_VENDEDOR"] }).notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  status: text("status", { enum: ["COM_EXECUTIVO", "ENTREGUE", "ESTORNADO"] }).notNull().default("COM_EXECUTIVO"),
+  recebidoEm: ts("recebido_em").notNull(),
+  prazoAte: ts("prazo_ate").notNull(),
+  entregueEm: ts("entregue_em"),
+  recebidoPor: text("recebido_por").references(() => users.id),
+  lancamentoId: text("lancamento_id").references(() => caixaLancamentos.id),
+  observacao: text("observacao"),
+  motivoEstorno: text("motivo_estorno"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("executivo_recebimentos_codigo").on(t.codigo), index("executivo_recebimentos_partner_idx").on(t.partnerId, t.status)]);

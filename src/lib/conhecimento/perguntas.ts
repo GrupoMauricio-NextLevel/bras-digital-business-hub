@@ -143,6 +143,11 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q("Recebi menos que a tabela. O que acontece?", "É desconto e precisa de motivo", ["É recusado sempre", "Vira dívida do cliente", "Nada, passa direto"]),
       q("Estornar um recebimento faz o quê?", "Tira do caixa, cancela a fatura, desfaz a comissão e volta o período", ["Só apaga o lançamento", "Só avisa o cliente", "Nada"]),
     ],
+    executivos: () => [
+      q("O executivo recebeu em dinheiro. Quando a loja do cliente é liberada?", "Na hora da venda", ["Quando o dinheiro chega ao caixa", "Em 2 dias úteis", "Só no fim do mês"]),
+      q("Qual o prazo para o executivo entregar o dinheiro?", "2 dias úteis", ["30 dias", "No mesmo dia, sempre", "Quando quiser"]),
+      q("O que acontece se o executivo atrasar a entrega?", "Ele não registra nova venda em dinheiro até entregar", ["A loja do cliente é bloqueada", "Perde a comissão", "Nada"]),
+    ],
     missoes: () => [
       q("Missão cumprida paga dinheiro?", "Não: dá selo e reconhecimento", ["Sim, sempre", "Só no fim do mês", "Só para a rua"]),
       q("Quando a sequência de semanas quebra?", "Quando uma semana termina sem venda", ["Na segunda-feira sem venda", "Quando muda o mês", "Nunca"]),

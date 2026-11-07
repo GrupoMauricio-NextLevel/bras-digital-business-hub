@@ -1,6 +1,6 @@
 # Caixa do Master, recebimentos manuais e executivos de venda (equipe de rua)
 
-> Estado: **EM ANDAMENTO.** Decisões aprovadas pelo dono (07/11). CX0 e CX1 no ar (D269): o caixa do Master. CX2 no ar (D270): receber assinatura à mão e painel de assinaturas, com as 5 formas de pagamento da NextLevel. Próxima: CX3 (executivos de venda).
+> Estado: **EM ANDAMENTO.** Decisões aprovadas pelo dono (07/11). CX0 e CX1 no ar (D269): o caixa do Master. CX2 no ar (D270): receber assinatura à mão e painel de assinaturas, com as 5 formas de pagamento da NextLevel. CX3 no ar (D273): executivos de venda, venda na rua com recibo e prestação de contas no caixa. Próxima: CX4 (painel do executivo no celular).
 > Pedido do dono (07/11/2026):
 > - "Uma função no Master para ser o balcão do caixa, com opções avançadas de gerenciar as assinaturas e recebimentos, inclusive pagamentos manuais em dinheiro."
 > - "Controle do caixa com abas semanais e diárias; todo dia abrir e fechar o caixa e poder editar e controlar de qual meio o pagamento veio."

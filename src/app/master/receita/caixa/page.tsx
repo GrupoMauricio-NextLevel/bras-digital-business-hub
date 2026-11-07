@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { AbrirCaixa, AcoesDaAssinatura, AcoesDoLancamento, EstornarRecebimento, FecharCaixa, NovoLancamento, ReabrirCaixa, ReceberAssinatura } from "./caixa-forms";
 import { FILTROS_ASSINATURA, NOME_DO_FILTRO, historicoDaLoja, painelDeAssinaturas, type FiltroAssinatura } from "@/lib/domain/assinaturas-master";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
+import { pendenciasDosExecutivos } from "@/lib/domain/executivos";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Caixa" };
@@ -31,7 +32,7 @@ export default async function CaixaPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const db = await getDb();
   const aba = sp.aba === "semana" ? "semana" : sp.aba === "lancamentos" ? "lancamentos" : sp.aba === "assinaturas" ? "assinaturas" : "hoje";
-  const [opcoes, painel, vitrine] = await Promise.all([opcoesDoCaixa(db, session.actor), painelDeAssinaturas(db, session.actor), commercePlansView(db)]);
+  const [opcoes, painel, vitrine, naRua] = await Promise.all([opcoesDoCaixa(db, session.actor), painelDeAssinaturas(db, session.actor), commercePlansView(db), pendenciasDosExecutivos(db, session.actor)]);
   const planos = vitrine.plans.filter((p) => !p.quote).map((p) => ({ key: p.key, name: p.name, monthlyCents: p.monthlyCents, annualCents: p.annualCents }));
   const lojas = painel.linhas.map((l) => ({ id: l.storeId, nome: l.loja, productKey: l.productKey, ciclo: l.ciclo })).sort((a, b) => a.nome.localeCompare(b.nome));
   const dia = await caixaDoDia(db, session.actor, sp.data && ehData(sp.data) ? sp.data : undefined);
@@ -41,6 +42,12 @@ export default async function CaixaPage({ searchParams }: { searchParams: Promis
     <>
       <PageHeader eyebrow="Receita" title="Caixa" description="Abra o caixa de manhã, lance o que entrou e saiu com o meio certo e feche contando a gaveta. O Mercado Pago entra sozinho." />
       <LinkTabs label="Caixa" active={aba} items={[{ key: "hoje", label: dia.data === dia.hoje ? "Hoje" : `Dia ${dataBR(dia.data)}`, href: url({ data: sp.data }) }, { key: "semana", label: "Semana", href: url({ aba: "semana", data: sp.data }) }, { key: "assinaturas", label: `Assinaturas${painel.contagem.vencidas + painel.contagem.vencendo ? ` · ${painel.contagem.vencidas + painel.contagem.vencendo}` : ""}`, href: url({ aba: "assinaturas" }) }, { key: "lancamentos", label: "Lançamentos", href: url({ aba: "lancamentos" }) }]} />
+      {naRua.length ? (
+        <Link href="/master/partners/executivos" className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
+          <span><b>Com os executivos:</b> {formatBRL(naRua.filter((x) => x.meio === "DINHEIRO").reduce((t, x) => t + x.valorCents, 0))} em dinheiro a receber{naRua.some((x) => x.meio === "MAQUININHA_VENDEDOR") ? ` · ${naRua.filter((x) => x.meio === "MAQUININHA_VENDEDOR").length} maquininha(s) a conferir` : ""}{naRua.some((x) => x.atrasado) ? ` · ${naRua.filter((x) => x.atrasado).length} atrasado(s)` : ""}</span>
+          <span className="font-semibold underline">Receber prestação de contas</span>
+        </Link>
+      ) : null}
       {aba === "hoje" ? <Dia dia={dia} opcoes={opcoes} url={url} receber={<ReceberAssinatura lojas={lojas} planos={planos} parceiros={opcoes.parceiros} lojaInicial={sp.loja} />} /> : aba === "assinaturas" ? <Assinaturas painel={painel} planos={planos} filtro={(FILTROS_ASSINATURA as readonly string[]).includes(sp.filtro ?? "") ? (sp.filtro as FiltroAssinatura) : "todas"} historico={sp.loja ? await historicoDaLoja(db, session.actor, sp.loja) : null} url={url} /> : aba === "semana" ? <Semana d={await caixaDaSemana(db, session.actor, dia.data)} url={url} /> : <Lancamentos l={await listaDeLancamentos(db, session.actor, { de: ehData(sp.de ?? "") ? sp.de : undefined, ate: ehData(sp.ate ?? "") ? sp.ate : undefined, meio: (MEIOS as readonly string[]).includes(sp.meio ?? "") ? (sp.meio as Meio) : undefined, origem: (ORIGENS as readonly string[]).includes(sp.origem ?? "") ? (sp.origem as Origem) : undefined })} sp={sp} />}
     </>
   );

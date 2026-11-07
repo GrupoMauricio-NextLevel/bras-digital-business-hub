@@ -52,6 +52,20 @@ export async function receberAssinatura(db: Database, actor: Actor, raw: z.input
   const dia = await db.query.caixaDias.findFirst({ where: (t, { eq: e }) => e(t.data, hoje) });
   if (!dia || dia.status !== "ABERTO") throw new DomainError("CAIXA_FECHADO", "Abra o caixa de hoje antes de receber.");
   if (v.destino && !DESTINOS_DO_MEIO[v.meio].includes(v.destino)) throw new DomainError("CAIXA_DESTINO", "Esta conta não combina com a forma de pagamento.");
+  const pg = await pagarAssinaturaManual(db, actor, store, v, now);
+  const { fatura, paga, tabela, valor, desconto, aviso } = pg;
+  const descricao = `${fatura.description} · ${store.name}${desconto ? ` · desconto ${reais(desconto)} (${v.motivoDesconto})` : ""}${v.observacao ? ` · ${v.observacao}` : ""}`.slice(0, 300);
+  const l = await lancar(db, actor, { data: hoje, meio: v.meio, destino: v.destino ?? null, origem: "ASSINATURA", valorCents: valor, storeId: store.id, partnerId: v.partnerId ?? null, invoiceId: paga.id, descricao }, now);
+  await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "SUBSCRIPTION_PAID_MANUAL", entityType: "finance_invoice", entityId: paga.id, storeId: store.id, after: { meio: v.meio, valorCents: valor, tabelaCents: tabela, descontoCents: desconto, lancamentoId: l.id, partnerId: v.partnerId ?? null } });
+  const loja = (await db.query.stores.findFirst({ where: eq(stores.id, store.id) }))!;
+  return { invoiceId: paga.id, lancamentoId: l.id, valorCents: valor, descontoCents: desconto, pagoAte: loja.paidUntil, aviso };
+}
+
+/**
+ * Núcleo do pagamento manual (CX2 e CX3): indicação de quem vendeu, plano e ciclo, fatura, desconto com motivo e a fatura
+ * paga pelo mesmo caminho do online (renova, libera, comissiona). Não mexe no caixa: quem chama decide.
+ */
+export async function pagarAssinaturaManual(db: Database, actor: Actor | null, store: typeof stores.$inferSelect, v: { productKey?: (typeof COMMERCE_PLAN_KEYS)[number]; cycle?: PlanCycle; valorCents?: number; motivoDesconto?: string; partnerId?: string | null }, now = new Date()) {
   let aviso: string | null = null;
   if (v.partnerId) {
     const p = await db.query.partners.findFirst({ where: eq(partners.id, v.partnerId) });
@@ -80,11 +94,7 @@ export async function receberAssinatura(db: Database, actor: Actor, raw: z.input
   }
   await markInvoicePaid(db, fatura.invoiceId, now);
   const paga = (await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, fatura.invoiceId) }))!;
-  const descricao = `${fatura.description} · ${store.name}${desconto ? ` · desconto ${reais(desconto)} (${v.motivoDesconto})` : ""}${v.observacao ? ` · ${v.observacao}` : ""}`.slice(0, 300);
-  const l = await lancar(db, actor, { data: hoje, meio: v.meio, destino: v.destino ?? null, origem: "ASSINATURA", valorCents: valor, storeId: store.id, partnerId: v.partnerId ?? null, invoiceId: paga.id, descricao }, now);
-  await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "SUBSCRIPTION_PAID_MANUAL", entityType: "finance_invoice", entityId: paga.id, storeId: store.id, after: { meio: v.meio, valorCents: valor, tabelaCents: tabela, descontoCents: desconto, lancamentoId: l.id, partnerId: v.partnerId ?? null } });
-  const loja = (await db.query.stores.findFirst({ where: eq(stores.id, store.id) }))!;
-  return { invoiceId: paga.id, lancamentoId: l.id, valorCents: valor, descontoCents: desconto, pagoAte: loja.paidUntil, aviso };
+  return { fatura, paga, tabela, valor, desconto, aviso };
 }
 
 /**
@@ -100,6 +110,14 @@ export async function estornarRecebimento(db: Database, actor: Actor, lancamento
   const inv = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, l.invoiceId) });
   if (!inv?.storeId) throw new NotFoundError("Fatura não encontrada.");
   await estornarLancamento(db, actor, l.id, m);
+  const comissoes = await desfazerPagamento(db, inv, m, now);
+  await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "SUBSCRIPTION_PAYMENT_REVERSED", entityType: "finance_invoice", entityId: inv.id, storeId: inv.storeId, after: { lancamentoId: l.id, comissoes }, reason: m });
+  return { ok: true };
+}
+
+/** Desfaz um pagamento manual: fatura cancelada, comissão desfeita (anulada ou débito) e o período pago volta. */
+export async function desfazerPagamento(db: Database, inv: typeof financeInvoices.$inferSelect, m: string, now = new Date()) {
+  if (!inv.storeId) return 0;
   await db.update(financeInvoices).set({ status: "CANCELED" }).where(eq(financeInvoices.id, inv.id));
   const comissoes = await db.select().from(partnerCommissions).where(and(eq(partnerCommissions.invoiceId, inv.id), inArray(partnerCommissions.kind, ["SALE", "RECURRING"]), ne(partnerCommissions.status, "VOID")));
   for (const c of comissoes) {
@@ -114,8 +132,7 @@ export async function estornarRecebimento(db: Database, actor: Actor, lancamento
     await db.update(stores).set({ paidUntil: fim.toISOString(), updatedAt: now.toISOString() }).where(eq(stores.id, loja.id));
     await db.update(nlSubscriptions).set({ currentPeriodEnd: fim.toISOString(), status: fim < now ? "past_due" : sub.status, updatedAt: now.toISOString() }).where(eq(nlSubscriptions.id, sub.id));
   }
-  await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "SUBSCRIPTION_PAYMENT_REVERSED", entityType: "finance_invoice", entityId: inv.id, storeId: inv.storeId, after: { lancamentoId: l.id, comissoes: comissoes.length }, reason: m });
-  return { ok: true };
+  return comissoes.length;
 }
 
 const motivo = z.string().trim().min(3, "Diga o motivo").max(300);
