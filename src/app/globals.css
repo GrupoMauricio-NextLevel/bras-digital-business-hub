@@ -169,3 +169,16 @@ body { overflow-x: clip; }
 :root:has([data-heroi-escuro="bras"]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-btn:not(.ds-pub-btn--ghost) { background: var(--bdc-azul); color: #fff; }
 /* Sufixo escrito da logo (ex.: "Commerce") fica claro sobre o herói escuro. */
 :root:has([data-heroi-escuro]):not([data-heroi-passou]) .ds-pub-header-in .ds-pub-brand .text-foreground { color: #fff; }
+
+/* BG2 (D272): celebração da semana completa (confete leve, sem JavaScript; some com "reduzir movimento"). */
+.nl-confete {
+  background-image:
+    radial-gradient(circle, #10b981 2px, transparent 2.5px), radial-gradient(circle, #f59e0b 2px, transparent 2.5px),
+    radial-gradient(circle, #6366f1 2px, transparent 2.5px), radial-gradient(circle, #ec4899 2px, transparent 2.5px);
+  background-size: 90px 90px, 120px 120px, 70px 70px, 110px 110px;
+  background-position: 0 0, 30px 50px, 60px 20px, 15px 80px;
+  opacity: 0.35;
+  animation: nl-confete-cai 3s linear 1;
+}
+@keyframes nl-confete-cai { from { background-position: 0 -200px, 30px -150px, 60px -180px, 15px -120px; opacity: 0.9; } to { background-position: 0 0, 30px 50px, 60px 20px, 15px 80px; opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .nl-confete { animation: none; } }

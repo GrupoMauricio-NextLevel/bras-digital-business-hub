@@ -1,12 +1,12 @@
 # Bônus gamificado: parceiros online e executivos de rua (racional + prompt mestre)
 
-> Estado: **BG1 NO AR (D271)**:
+> Estado: **BG1 (D271) e BG2 (D272) NO AR**. BG2: missões da semana, sequência, selos e ranking no painel do parceiro. BG1:
 > - motor de bônus;
 > - campanhas padrão **ativas**;
 > - tela "Bônus e metas" no Master;
 > - cartão de progresso no painel do parceiro.
 >
-> Próximas: BG2 (missões e selos sem dinheiro), BG3 (painel do executivo, junto da CX4) e BG4 (relatório de retorno).
+> Próximas: BG3 (painel do executivo, junto da CX4) e BG4 (relatório de retorno).
 
 **Pedido do dono (07/11/2026):**
 - "Estou preocupado somente com minha margem. Bônus podem existir, mas não podem ser valores que me prejudiquem."

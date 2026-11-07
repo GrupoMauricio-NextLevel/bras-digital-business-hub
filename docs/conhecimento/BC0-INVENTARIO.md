@@ -5,6 +5,8 @@
 > - o nome no menu é "Aprender".
 >
 > **Tela no Master (D266):** a base já está em Master → Aprender, com as trilhas por função, as aulas usando os números do sistema, a busca e as Novidades.
+> **Página pública de comissões e bônus (D272):** /parceiros/comissoes explica toda a regra com os números de hoje; use-a para responder parceiro com dúvida.
+> **Missões, sequência, selos e ranking (D272):** cartão "Sua semana" no painel do parceiro, sem dinheiro; missões por público (online e rua), sequência de semanas com venda, 9 selos e ranking separado por público; aula "Missões, sequência, selos e ranking" na trilha Parceiros.
 > **Bônus gamificado (D271):** campanhas semanais e mensais ligadas pelo dono, diferentes para online e rua; só a 1ª venda de cada loja, depois da garantia; pontos pelo valor pago; teto de custo por loja e orçamento por período; aula "Bônus gamificado" na trilha Parceiros.
 > **Contas de destino e vínculo (D270):** todo lançamento diz para qual conta foi (dinheiro com o Mauricio, Mercado Pago Mega Tron, Pix Itaú CNPJ, Pix Nubank CPF) e toda entrada é ligada a assinatura, template, serviço ou outros com descrição.
 > **Receber assinatura e formas de pagamento (D270):** checkout online, maquininha do Mauricio, maquininha com vendedor, Pix na chave do CNPJ e dinheiro; receber à mão renova, libera, comissiona e lança no caixa; aba Assinaturas com vencimentos e ações; aula "Receber assinatura" na trilha Financeiro.

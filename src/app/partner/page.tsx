@@ -21,6 +21,8 @@ import { painelParceiroEc } from "@/lib/domain/parceiros-ec";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { bonusDoParceiro } from "@/lib/domain/bonus";
 import { SeusBonus } from "./seus-bonus";
+import { SuaSemana } from "./sua-semana";
+import { engajamentoDoParceiro } from "@/lib/domain/engajamento";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +36,9 @@ export default async function PartnerHome() {
     const [pe, pv] = await Promise.all([painelParceiroEc(db, session.actor), commercePlansView(db)]);
     const aPartir = Math.min(...pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => p.monthlyCents!));
     const linkEc = `${base}/r/${pe.parceiro.code.toLowerCase()}`;
-    const [avisos, desafios, bonus] = await Promise.all([avisosDoParceiro(db, pe.parceiro.id), desafiosDoParceiro(db, pe.parceiro.id), bonusDoParceiro(db, pe.parceiro.id)]);
+    const [avisos, desafios, bonus, engajamento] = await Promise.all([avisosDoParceiro(db, pe.parceiro.id), desafiosDoParceiro(db, pe.parceiro.id), bonusDoParceiro(db, pe.parceiro.id), engajamentoDoParceiro(db, pe.parceiro.id)]);
     const recados = avisos.length || desafios.length ? <RecadosDoParceiro avisos={avisos} desafios={desafios} /> : null;
-    return <>{recados}{bonus ? <SeusBonus b={bonus} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
+    return <>{recados}{bonus ? <SeusBonus b={bonus} /> : null}{engajamento ? <SuaSemana e={engajamento} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
   }
   const d = await partnerDashboard(await getDb(), session.actor);
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;

@@ -143,6 +143,11 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q("Recebi menos que a tabela. O que acontece?", "É desconto e precisa de motivo", ["É recusado sempre", "Vira dívida do cliente", "Nada, passa direto"]),
       q("Estornar um recebimento faz o quê?", "Tira do caixa, cancela a fatura, desfaz a comissão e volta o período", ["Só apaga o lançamento", "Só avisa o cliente", "Nada"]),
     ],
+    missoes: () => [
+      q("Missão cumprida paga dinheiro?", "Não: dá selo e reconhecimento", ["Sim, sempre", "Só no fim do mês", "Só para a rua"]),
+      q("Quando a sequência de semanas quebra?", "Quando uma semana termina sem venda", ["Na segunda-feira sem venda", "Quando muda o mês", "Nunca"]),
+      q("O ranking mistura parceiros online e executivos de rua?", "Não: cada público tem o seu", ["Sim, é um só", "Só no mês", "Só na Black"]),
+    ],
     bonus: () => [
       q("O que conta pontos no bônus?", "A 1ª venda de cada loja, depois da garantia", ["Toda renovação", "Loja em teste grátis", "Cadastro sem pagamento"]),
       q("Um Pro vale quantos pontos perto de um Start?", "Mais, proporcional ao valor pago", ["O mesmo ponto", "Menos", "Nenhum"]),

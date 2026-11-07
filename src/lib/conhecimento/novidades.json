@@ -1,5 +1,12 @@
 [
  {
+  "numero": 272,
+  "frente": "E-commerce",
+  "titulo": "BG2: missões da semana, sequência, selos e ranking (engajamento sem dinheiro)",
+  "data": "2026-11-07",
+  "resumo": "Prompt: docs/prompts/bonus-gamificado-parceiros-executivos.md, fase BG2. O dono pediu as fases \"um de cada vez\" (07/11)."
+ },
+ {
   "numero": 271,
   "frente": "E-commerce",
   "titulo": "BG1: bônus gamificado para parceiros online e executivos de rua, com teto de margem",
@@ -271,12 +278,5 @@
   "titulo": "Rodada de ajustes: sem R$ 9,90, Shopify no clássico, Black no topo e checkout de tecnologia",
   "data": "2026-11-03",
   "resumo": "Pedido do dono depois de ver o BF3 no celular."
- },
- {
-  "numero": 232,
-  "frente": "Black",
-  "titulo": "BF3 no ar: roupa da Black, contagem em mais pontos e \"Black deles × Black NextLevel\"",
-  "data": "2026-11-03",
-  "resumo": "Roupa da Black nos sites públicos (classe bk-on, ligada pela campanha): topo da home em preto com brilho verde e ciano;"
  }
 ]

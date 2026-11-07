@@ -3246,3 +3246,31 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Dados:** migração 0087 (`bonus_campanhas`, `bonus_premios`).
 - **Testes:** `tests/bonus.test.ts` (pontos, faixas, teto inclusive na Black, períodos, garantia, rua × online, próprio CNPJ, orçamento, idempotência, permissões, progresso).
 - **Próximas fases:** BG2 (missões e selos sem dinheiro, sequência e ranking), BG3 (com a CX4, painel do executivo e registro de visitas), BG4 (relatório de retorno).
+
+## D272 — [E-commerce] BG2: missões da semana, sequência, selos e ranking (engajamento sem dinheiro) (2026-11-07)
+- **Prompt:** `docs/prompts/bonus-gamificado-parceiros-executivos.md`, fase BG2. O dono pediu as fases "um de cada vez" (07/11).
+- **Regras** (`src/lib/finance/engajamento-regras.ts`, puras) **e cálculo** (`src/lib/domain/engajamento.ts`), tudo com o que já existe (cliques no link, cadastros indicados e 1ª venda de cada loja), sem tabela nova:
+  - **missões da semana por público:**
+    - online: 10 cliques no link, 1 cadastro, 1 venda, 1 Pro ou Scale;
+    - rua: 3 cadastros, 3 vendas, 1 Pro ou Scale, 1 anual;
+    - as missões de visita da rua entram na BG3;
+  - **sequência:** semanas seguidas (segunda a domingo) com pelo menos uma venda, mais o recorde; a semana atual vazia não quebra a sequência até acabar ("em risco");
+  - **9 selos:** primeira venda, 5 no mês, primeiro Scale, fechou anual, 4 semanas seguidas, semana completa, cliente fiel (6 pagamentos), Prata e Ouro;
+  - **ranking:** da semana e do mês por público (online e rua separados), pelos pontos do bônus (inclui os em garantia), com a posição, os 5 primeiros (primeiro nome) e quanto falta para passar quem está acima.
+- **Tela:** painel do parceiro → cartão **"Sua semana"**, abaixo de "Seus bônus":
+  - missões com barra e dica;
+  - "Semana completa!" com confete leve (some com "reduzir movimento");
+  - sequência, ranking e grade de selos.
+- **Sem dinheiro:** missão, selo e ranking são reconhecimento; o dinheiro continua só nas campanhas de bônus (D271), dentro do teto de margem.
+- **Página pública "Comissões e bônus por produção"** (`/parceiros/comissoes`, pedido do dono em 07/11), com números lidos do sistema:
+  - níveis CNPJ e CPF;
+  - comissão estimada por plano e nível;
+  - link, garantia e saque;
+  - campanhas de bônus online ativas com as faixas;
+  - pontos por plano (mensal e anual) e um exemplo;
+  - as 6 regras do bônus;
+  - as missões do painel.
+  - Ligada a partir da captação e do programa. O FAQ "Tem bônus?" foi atualizado (antes dizia que não havia).
+  - As campanhas dos executivos de rua não aparecem em público.
+- **Testes:** `tests/engajamento.test.ts` (missões, sequência e recorde, ranking, online com cliques, cadastro e venda, rua com anual e Scale, rankings separados).
+- **Próxima fase:** BG3, junto da CX4 (painel do executivo no celular, com registro de visitas alimentando missões e ranking de esforço).

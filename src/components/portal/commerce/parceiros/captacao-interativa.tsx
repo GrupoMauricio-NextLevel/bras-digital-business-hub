@@ -66,6 +66,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-[#12133a]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link>
               <a href="#raio-x" className="font-semibold underline underline-offset-4">Ver o raio-x dos concorrentes</a>
+              <Link href="/parceiros/comissoes" className="font-semibold underline underline-offset-4">Comissões e bônus por produção</Link>
             </div>
           </div>
           <div className="pa-console" aria-label="Resumo da regra">
@@ -200,7 +201,7 @@ export function CaptacaoInterativa({ inicial, regras, planos, marca, saqueMinimo
             })}
           </ol>
           <p className="mt-4 text-xs text-white/50">Regras dos concorrentes conforme os sites oficiais, consultados em {CONSULTA_CONCORRENTES}. Cada plataforma tem a sua mensalidade; aqui usamos a mesma para comparar só a regra de comissão. Shopify convertida pelo dólar oficial (PTAX) de {CAMBIO_USD.data}: US$ {SHOPIFY_BR_USD} ≈ {formatBRL(SHOPIFY_BR_CENTS)}. Simulação, não promessa de ganho.</p>
-          <div className="mt-8"><Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#22e08a] px-6 font-bold text-[#060a16]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link></div>
+          <div className="mt-8 flex flex-wrap items-center gap-4"><Link href={cadastro} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#22e08a] px-6 font-bold text-[#060a16]">{p.chamada} <ArrowRight className="size-4" aria-hidden /></Link><Link href="/parceiros/comissoes" className="font-semibold text-white underline underline-offset-4">Ver comissões e bônus em detalhe</Link></div>
         </div>
       </section>
     </>
