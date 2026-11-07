@@ -3147,3 +3147,22 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **SuperDrop (D216):** loja de rede não tem grade livre nem cores próprias; nada muda nela.
 - **Testes:** `tests/atacado-preco.test.ts` (conta do que falta para qualquer quantidade, travas por plano, cores, pedido recusado e aceito).
 - **Próxima fase:** AT4 (entrega por excursão e retirada, romaneio por grade, recompra rápida).
+
+## D269 — [E-commerce] CX0 e CX1: caixa do Master com abas Hoje, Semana e Lançamentos (2026-11-07)
+- **Prompt:** `docs/prompts/caixa-balcao-executivos-de-venda.md`, fases CX0 e CX1. Todas as decisões do prompt foram aprovadas pelo dono em 07/11 ("tudo aprovado").
+- **Dados (migração 0085, aditiva):**
+  - `caixa_dias`: um por data de São Paulo, com saldo inicial, contado, esperado, diferença e motivo;
+  - `caixa_lancamentos`: entrada ou saída, meio, origem, loja, executivo ou parceiro, descrição; estorno com motivo;
+  - `caixa_historico`: abrir, fechar, reabrir, lançar, editar e estornar, com o antes, o depois e o motivo;
+  - `partners.executivo`: marca o executivo de venda (usado na CX3).
+- **Meios:** dinheiro, Pix, cartão na maquininha, transferência, boleto, outro e Mercado Pago.
+- **Origens:** assinatura, serviço, prestação de contas de executivo, sangria, reforço de troco, pagamento de comissão, ajuste e outro. Sangria e reforço são sempre em dinheiro; cada origem tem o seu sentido (entrada ou saída).
+- **Regras** (`src/lib/finance/caixa-regras.ts`, puras): data e semana no fuso de São Paulo (segunda a domingo); resumo por meio sem os estornados; dinheiro esperado na gaveta = saldo inicial + entradas em dinheiro − saídas em dinheiro.
+- **Tela Master → Caixa** (`/master/receita/caixa`), só para o dono e a função Financeiro:
+  - **Hoje:** abrir com o troco (sugere o contado do último fechamento), números do dia, total por meio, novo lançamento, editar e estornar cada um, fechar contando a gaveta, histórico do dia; navegar por dias;
+  - **Semana:** os 7 dias com saldo, meios e diferenças; total da semana por meio;
+  - **Lançamentos:** período com filtros por meio e origem.
+- **Mercado Pago entra sozinho:** as cobranças pagas (planos e faturas) aparecem no dia como "Mercado Pago", sem mexer na gaveta e sem poder ser lançadas à mão (evita contar em dobro).
+- **Travas:** dia fechado não recebe nem muda lançamento; só o dono mexe, e o dia volta a abrir com motivo registrado. Diferença no fechamento exige motivo.
+- **Testes:** `tests/caixa.test.ts` (fuso, semana, resumo, permissões, abrir/lançar/fechar/reabrir, edição e estorno com histórico, semana e filtros, Mercado Pago automático).
+- **Próxima fase:** CX2 (receber manualmente renovando a assinatura e liberando a loja; painel de assinaturas).

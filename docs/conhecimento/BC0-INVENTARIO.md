@@ -5,6 +5,7 @@
 > - o nome no menu é "Aprender".
 >
 > **Tela no Master (D266):** a base já está em Master → Aprender, com as trilhas por função, as aulas usando os números do sistema, a busca e as Novidades.
+> **Caixa do Master (D269):** o caixa abre e fecha por dia (dono e Financeiro), cada lançamento guarda meio e origem, edição e estorno sempre com motivo, Mercado Pago entra sozinho; aula "Caixa do dia" na trilha Financeiro.
 > **Perguntas e progresso (D267):** cada aula termina com 3 perguntas (números ao vivo, correção no servidor); a pessoa vê o próprio progresso por trilha, o dono vê "quem está pronto" na aba Equipe e quem tem aula pendente recebe um card na tela Agora.
 >
 > **Base ao vivo (D264):** toda atualização publicada entra aqui (regra, valor, estado e decisão); um teste impede publicar decisão nova sem registro.

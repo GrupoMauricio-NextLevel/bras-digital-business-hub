@@ -1,5 +1,12 @@
 [
  {
+  "numero": 269,
+  "frente": "E-commerce",
+  "titulo": "CX0 e CX1: caixa do Master com abas Hoje, Semana e Lançamentos",
+  "data": "2026-11-07",
+  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fases CX0 e CX1. Todas as decisões do prompt foram aprovadas pelo dono em 07/11 (\"tudo aprovado\")."
+ },
+ {
   "numero": 268,
   "frente": "E-commerce",
   "titulo": "AT3 do atacado: grade livre (cor × tamanho), mínimo por modelo e múltiplos",
@@ -271,12 +278,5 @@
   "titulo": "BF2 no ar: placar da goleada calculado a partir da súmula",
   "data": "2026-11-03",
   "resumo": "Placar \"O Clássico do E-commerce\": aparece na home (logo depois da faixa do 0%), em /comparativo e em /planos (PlacarSecao, PlacarGoleada);"
- },
- {
-  "numero": 229,
-  "frente": "Black",
-  "titulo": "BF1 no ar: campanha única, contagem verdadeira e preço novo agendado",
-  "data": "2026-11-03",
-  "resumo": "Dono aprovou a proposta A da D228 (depois da Black: R$ 67 / 167 / 397 no mensal e 49 / 139 / 339 por mês no anual) e mandou começar o pacote do parceiros-v2-crm-niveis-planos.md."
  }
 ]

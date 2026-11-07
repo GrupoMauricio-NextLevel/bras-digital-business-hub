@@ -269,7 +269,9 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
   { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
   { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
-  { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório" },
+  { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório", exact: true },
+  // CX1 (D269): caixa do dia (dono e Financeiro).
+  { label: "Caixa", href: "/master/receita/caixa", icon: "Landmark", group: "Escritório" },
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
   { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },

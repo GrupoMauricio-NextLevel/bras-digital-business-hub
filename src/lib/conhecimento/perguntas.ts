@@ -138,6 +138,11 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q("O cliente pediu estorno. E a comissão?", "Volta, inclusive por débito no saldo", ["Fica com o parceiro", "Dobra", "Some sem registro"]),
       q("Pagar comissão fora do sistema pode?", "Não", ["Sim", "Só em dinheiro", "Só para agências"]),
     ],
+    caixa: () => [
+      q("Quem reabre um dia de caixa já fechado?", "Só o dono, com motivo", ["Qualquer pessoa da equipe", "O Financeiro, sem motivo", "Ninguém, nunca"]),
+      q("Um plano foi pago pelo Mercado Pago. O que fazer no caixa?", "Nada: ele entra sozinho", ["Lançar à mão como dinheiro", "Lançar à mão como Pix", "Fazer uma sangria"]),
+      q("No fechamento faltou dinheiro na gaveta. E agora?", "Fecha informando o motivo da diferença", ["Apaga um lançamento", "Não fecha nunca", "Lança uma entrada falsa"]),
+    ],
     "beneficios-plano": () => [
       q("Quem pode editar os benefícios por plano?", "Comercial e Financeiro, com registro", ["Qualquer pessoa", "Só o lojista", "Ninguém"]),
       q("Mudou a tabela de benefícios. A página de planos…", "Muda junto", ["Precisa ser editada à mão", "Não muda", "Sai do ar"]),

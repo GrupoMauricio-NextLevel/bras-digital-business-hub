@@ -1,6 +1,6 @@
 # Caixa do Master, recebimentos manuais e executivos de venda (equipe de rua)
 
-> Estado: **PROPOSTA.** Aguarda o dono aprovar as decisões da seção 7.
+> Estado: **EM ANDAMENTO.** Decisões aprovadas pelo dono (07/11). CX0 e CX1 no ar (D269): o caixa do Master. Próxima: CX2 (receber manualmente e assinaturas).
 > Pedido do dono (07/11/2026):
 > - "Uma função no Master para ser o balcão do caixa, com opções avançadas de gerenciar as assinaturas e recebimentos, inclusive pagamentos manuais em dinheiro."
 > - "Controle do caixa com abas semanais e diárias; todo dia abrir e fechar o caixa e poder editar e controlar de qual meio o pagamento veio."

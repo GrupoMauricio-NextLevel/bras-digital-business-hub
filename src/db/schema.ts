@@ -1001,6 +1001,8 @@ export const partners = pgTable("partners", {
   /** Chave Pix criptografada (a mesma proteção dos tokens); o saque é para o mesmo CPF/CNPJ. */
   pixKeyEnc: text("pix_key_enc"),
   status: text("status", { enum: PARTNER_STATUSES }).notNull().default("ACTIVE"),
+  /** Executivo de venda da NextLevel (equipe de rua, CX0/D269): cadastrado pelo dono, vende e presta contas do dinheiro. */
+  executivo: boolean("executivo").notNull().default(false),
   /** Última competência (YYYY-MM) coberta pela taxa de manutenção do cadastro inativo. */
   feePaidPeriod: text("fee_paid_period"),
   termsVersion: text("terms_version").notNull(),
@@ -2786,3 +2788,61 @@ export const aprenderProgresso = pgTable("aprender_progresso", {
   createdAt: createdAt(),
   updatedAt: ts("updated_at"),
 }, (t) => [uniqueIndex("aprender_progresso_usuario_aula").on(t.userId, t.aulaId), index("aprender_progresso_usuario_idx").on(t.userId)]);
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Caixa do Master (CX0, D269): abre e fecha por dia, lançamentos com meio e origem, histórico de toda edição.
+// ---------------------------------------------------------------------------------------------------------------------
+export const CAIXA_MEIOS = ["DINHEIRO", "PIX", "CARTAO", "TRANSFERENCIA", "MERCADO_PAGO", "BOLETO", "OUTRO"] as const;
+export const CAIXA_ORIGENS = ["ASSINATURA", "SERVICO", "PRESTACAO_EXECUTIVO", "SANGRIA", "REFORCO", "COMISSAO_PAGA", "AJUSTE", "OUTRO"] as const;
+
+/** Um dia de caixa (data no fuso de São Paulo). Fechado, fica travado; só o dono reabre. */
+export const caixaDias = pgTable("caixa_dias", {
+  id: id(),
+  data: text("data").notNull(),
+  status: text("status", { enum: ["ABERTO", "FECHADO"] }).notNull().default("ABERTO"),
+  saldoInicialCents: integer("saldo_inicial_cents").notNull().default(0),
+  abertoEm: ts("aberto_em").notNull(),
+  abertoPor: text("aberto_por").notNull().references(() => users.id),
+  fechadoEm: ts("fechado_em"),
+  fechadoPor: text("fechado_por").references(() => users.id),
+  /** Dinheiro contado na gaveta no fechamento. */
+  contadoCents: integer("contado_cents"),
+  esperadoCents: integer("esperado_cents"),
+  diferencaCents: integer("diferenca_cents"),
+  motivoDiferenca: text("motivo_diferenca"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at"),
+}, (t) => [uniqueIndex("caixa_dias_data").on(t.data)]);
+
+/** Entrada ou saída do caixa. Nunca se apaga: errou, estorna ou edita com motivo. */
+export const caixaLancamentos = pgTable("caixa_lancamentos", {
+  id: id(),
+  data: text("data").notNull(),
+  ocorridoEm: ts("ocorrido_em").notNull(),
+  tipo: text("tipo", { enum: ["ENTRADA", "SAIDA"] }).notNull(),
+  meio: text("meio", { enum: CAIXA_MEIOS }).notNull(),
+  origem: text("origem", { enum: CAIXA_ORIGENS }).notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  storeId: text("store_id").references(() => stores.id),
+  partnerId: text("partner_id").references(() => partners.id),
+  invoiceId: text("invoice_id").references(() => financeInvoices.id),
+  descricao: text("descricao").notNull().default(""),
+  criadoPor: text("criado_por").notNull().references(() => users.id),
+  estornadoEm: ts("estornado_em"),
+  estornoMotivo: text("estorno_motivo"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at"),
+}, (t) => [index("caixa_lancamentos_data_idx").on(t.data), index("caixa_lancamentos_partner_idx").on(t.partnerId), check("caixa_lancamentos_valor_pos", sql`${t.valorCents} > 0`)]);
+
+/** Histórico do caixa: abrir, fechar, reabrir, lançar, editar e estornar, com o antes, o depois e o motivo. */
+export const caixaHistorico = pgTable("caixa_historico", {
+  id: id(),
+  diaId: text("dia_id").references(() => caixaDias.id),
+  lancamentoId: text("lancamento_id").references(() => caixaLancamentos.id),
+  acao: text("acao", { enum: ["ABRIR", "FECHAR", "REABRIR", "LANCAR", "EDITAR", "ESTORNAR"] }).notNull(),
+  antes: jsonb("antes").$type<Record<string, unknown>>(),
+  depois: jsonb("depois").$type<Record<string, unknown>>(),
+  motivo: text("motivo"),
+  userId: text("user_id").notNull().references(() => users.id),
+  createdAt: createdAt(),
+}, (t) => [index("caixa_historico_lancamento_idx").on(t.lancamentoId), index("caixa_historico_dia_idx").on(t.diaId)]);
