@@ -83,7 +83,7 @@ export default async function ExecutivosPage() {
       </section>
 
       {lista.length ? (
-        <div className="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div className="mb-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <section className="ds-card p-5" aria-labelledby="rank-t">
             <h2 id="rank-t" className="text-base font-semibold">Ranking da semana</h2>
             <p className="text-sm text-muted-foreground">Vendas e, no empate, visitas. Reconhecimento; dinheiro só pelas campanhas de bônus.</p>
