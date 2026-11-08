@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { and, eq } from "drizzle-orm";
 import { freshDb } from "./setup";
 import { bonusCampanhas, bonusPremios, commissionRules, partnerCommissions, partners, stores } from "@/db/schema";
-import { CAMPANHAS_PADRAO, conferirTeto, faixaDe, periodoDe, periodosParaApurar, pontosDaVenda, validarFaixas } from "@/lib/finance/bonus-regras";
-import { apurarBonus, bonusDoParceiro, garantirCampanhasPadrao, painelDeBonus, salvarCampanha } from "@/lib/domain/bonus";
+import { CAMPANHAS_PADRAO, conferirTeto, faixaDe, periodoDe, periodosParaApurar, pontosDaVenda, resumoDoRetorno, sugestaoDaCampanha, validarFaixas } from "@/lib/finance/bonus-regras";
+import { apurarBonus, bonusDoParceiro, garantirCampanhasPadrao, painelDeBonus, retornoDasCampanhas, salvarCampanha } from "@/lib/domain/bonus";
 import { registerPartner } from "@/lib/domain/partners";
 import { createMasterMember } from "@/lib/domain/equipe-master";
 
@@ -34,6 +34,17 @@ describe("bônus gamificado (puro, D271)", () => {
     const ruaB = conferirTeto("RUA", CAMPANHAS_PADRAO.filter((c) => c.publico === "RUA"), 5_700);
     expect([onB.cabe, onB.percentual, ruaB.cabe, ruaB.percentual]).toEqual([true, 46, true, 73]);
     expect(conferirTeto("ONLINE", [...CAMPANHAS_PADRAO.filter((c) => c.publico === "ONLINE"), { faixas: [{ pontos: 1, valorCents: 1_000 }] }], 6_700).cabe).toBe(false);
+  });
+
+  it("retorno (BG4): custo por loja, custo por ponto, tempo de retorno sobre a margem e sugestão automática", () => {
+    const per = (o: Partial<Parameters<typeof resumoDoRetorno>[0][number]> = {}) => ({ chave: "x", rotulo: "x", lojasNovas: 4, lojasDosPremiados: 4, receitaNovaMensalCents: 22_800, custoCents: 3_400, premiados: 1, semOrcamento: 0, pontosPremiados: 400, ...o });
+    const r = resumoDoRetorno([per(), per()]);
+    expect(r).toMatchObject({ periodos: 2, lojasNovas: 8, custoCents: 6_800, custoPorLojaCents: 850, custoPorPontoCents: 850, margemNovaMensalCents: 32_832, paybackMeses: 0.2 });
+    expect(sugestaoDaCampanha(resumoDoRetorno([]), 50_000, 0).texto).toMatch(/Ainda sem período/);
+    expect(sugestaoDaCampanha(resumoDoRetorno([per({ semOrcamento: 2 })]), 50_000, 1).texto).toMatch(/orçamento acabou/);
+    expect(sugestaoDaCampanha(resumoDoRetorno([per({ receitaNovaMensalCents: 1_000, custoCents: 20_000 })]), 50_000, 1)).toMatchObject({ tom: "danger" });
+    expect(sugestaoDaCampanha(resumoDoRetorno([1, 2, 3, 4].map(() => per({ premiados: 0, custoCents: 0, lojasDosPremiados: 0, receitaNovaMensalCents: 0, pontosPremiados: 0 }))), 50_000, 0).texto).toMatch(/1ª faixa/);
+    expect(sugestaoDaCampanha(r, 50_000, 2).texto).toMatch(/subir/);
   });
 
   it("semana de segunda a domingo e mês no fuso de São Paulo; só apura depois da garantia", () => {
@@ -79,6 +90,14 @@ describe("bônus gamificado no banco (BG1)", () => {
     expect((await ctx.db.select().from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p), eq(partnerCommissions.kind, "BONUS"))))[0]!.status).toBe("AVAILABLE");
     await apurarBonus(ctx.db, APURA);
     expect(await bonus(p)).toEqual([3_000, 3_400]);
+    // BG4: o retorno da semana mostra as lojas e o custo, e os prêmios batem com o extrato.
+    const ret = await retornoDasCampanhas(ctx.db, ctx.actors.master, APURA);
+    const sprint = ret.campanhas.find((c) => c.nome === "Sprint da semana")!;
+    const semana = sprint.periodos.find((x) => x.custoCents > 0)!;
+    expect(semana).toMatchObject({ lojasNovas: 5, lojasDosPremiados: 5, premiados: 1, custoCents: 3_400, receitaNovaMensalCents: 33_500 });
+    expect(sprint.resumo.paybackMeses).toBe(0.1);
+    expect(ret.conferencia).toEqual({ premiosPagosCents: 6_400, extratoCents: 6_400, batem: true });
+    await expect(retornoDasCampanhas(ctx.db, { ...ctx.actors.master, role: "AFFILIATE" } as never, APURA)).rejects.toThrow();
   });
 
   it("antes da garantia acabar não paga; executivo cai nas campanhas da rua; venda para o próprio CNPJ não conta", async () => {

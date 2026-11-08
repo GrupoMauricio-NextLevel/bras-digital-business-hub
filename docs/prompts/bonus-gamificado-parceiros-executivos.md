@@ -6,7 +6,7 @@
 > - tela "Bônus e metas" no Master;
 > - cartão de progresso no painel do parceiro.
 >
-> BG3 no ar (D274): visitas e demonstrações registradas no painel do executivo contam nas missões da rua e no ranking de esforço. Próxima: BG4 (relatório de retorno).
+> BG3 no ar (D274): visitas e demonstrações registradas no painel do executivo contam nas missões da rua e no ranking de esforço. BG4 no ar (D275): relatório de retorno por campanha com sugestão automática de ajuste e conferência com o extrato. Plano do bônus concluído (BG1 a BG4).
 
 **Pedido do dono (07/11/2026):**
 - "Estou preocupado somente com minha margem. Bônus podem existir, mas não podem ser valores que me prejudiquem."

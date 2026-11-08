@@ -3314,3 +3314,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - **ranking da semana** (vendas, depois visitas) e **"O que a equipe fez"**: visitas, demonstrações e vendas mais recentes.
 - **Testes:** `tests/executivos.test.ts` (saudação, meta, agenda, argumentos, visita com retorno, conclusão, missões, ranking, feed, meta só pelo dono) e `tests/engajamento.test.ts` (missões novas da rua).
 - **Próximas fases:** BG4 (relatório de retorno do bônus) e CX5.
+
+## D275 — [E-commerce] BG4: relatório de retorno do bônus, com sugestão automática de ajuste (2026-11-08)
+- **Prompt:** `docs/prompts/bonus-gamificado-parceiros-executivos.md`, fase BG4. Autorizado pelo dono ("pode seguir nos próximos passos").
+- **Onde:** Master → Parceiros → Bônus e metas → **Retorno das campanhas**, um cartão por campanha.
+- **O que mostra** (só períodos já apurados: 8 semanas ou 3 meses):
+  - lojas novas do público e lojas trazidas por quem ganhou o bônus;
+  - receita recorrente nova dessas lojas por mês (anual dividido por 12);
+  - custo do bônus, custo por loja e por ponto;
+  - **em quantos meses a margem nova paga o bônus**, medida depois da comissão mais alta (28%, nível Ouro), para ser conservador;
+  - tabela por período (lojas, premiados, custo, sem orçamento).
+- **Sugestão automática** (o dono decide; o teto por loja continua valendo): sem período apurado → esperar; orçamento acabou → aumentar orçamento ou reduzir valores; retorno acima de 2 meses → reduzir as faixas em cerca de 20%; vendas sem ninguém na 1ª faixa por 4 períodos → baixar a meta da 1ª faixa; retorno até 1 mês com orçamento folgado → dá para subir a faixa de cima; senão, manter.
+- **Conferência:** a soma dos prêmios pagos é comparada com as linhas de bônus do extrato dos parceiros; se não baterem, a tela avisa.
+- **Refatoração:** as vendas que contam pontos e as do relatório saem da mesma consulta (`vendasDoPublico`).
+- **Testes:** `tests/bonus.test.ts` (resumo, tempo de retorno, cada sugestão, relatório no banco e conferência com o extrato).
+- **Próxima fase:** CX5 (caixa e executivos).

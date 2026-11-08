@@ -91,3 +91,38 @@ export function periodosParaApurar(periodo: PeriodoBonus, agora: Date, garantiaD
   return out.reverse();
 }
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Retorno das campanhas (BG4, D275)
+// ---------------------------------------------------------------------------------------------------------------------
+/** Comissão recorrente mais alta (nível Ouro, CNPJ): o payback é medido sobre o que sobra depois dela (conservador). */
+export const COMISSAO_MAXIMA_BPS = 2_800;
+
+export type RetornoDoPeriodo = { chave: string; rotulo: string; lojasNovas: number; lojasDosPremiados: number; receitaNovaMensalCents: number; custoCents: number; premiados: number; semOrcamento: number; pontosPremiados: number };
+
+/** Soma dos períodos de uma campanha: custo por loja, custo por ponto e em quantos meses a margem nova paga o bônus. */
+export function resumoDoRetorno(periodos: RetornoDoPeriodo[]) {
+  const t = periodos.reduce((a, p) => ({ lojasNovas: a.lojasNovas + p.lojasNovas, lojasDosPremiados: a.lojasDosPremiados + p.lojasDosPremiados, receita: a.receita + p.receitaNovaMensalCents, custo: a.custo + p.custoCents, premiados: a.premiados + p.premiados, semOrcamento: a.semOrcamento + p.semOrcamento, pontos: a.pontos + p.pontosPremiados }), { lojasNovas: 0, lojasDosPremiados: 0, receita: 0, custo: 0, premiados: 0, semOrcamento: 0, pontos: 0 });
+  const margemMensal = Math.round(t.receita * (10_000 - COMISSAO_MAXIMA_BPS) / 10_000);
+  return {
+    periodos: periodos.length, lojasNovas: t.lojasNovas, lojasDosPremiados: t.lojasDosPremiados, receitaNovaMensalCents: t.receita, margemNovaMensalCents: margemMensal,
+    custoCents: t.custo, premiados: t.premiados, semOrcamento: t.semOrcamento,
+    custoPorLojaCents: t.lojasDosPremiados ? Math.round(t.custo / t.lojasDosPremiados) : null,
+    custoPorPontoCents: t.pontos ? Math.round(t.custo / (t.pontos / 100)) : null,
+    paybackMeses: t.custo === 0 ? 0 : margemMensal ? Math.round((t.custo / margemMensal) * 10) / 10 : null,
+  };
+}
+export type ResumoDoRetorno = ReturnType<typeof resumoDoRetorno>;
+
+/**
+ * Sugestão automática (o dono decide; o teto continua valendo). Ordem: falta de dados, orçamento curto, retorno lento,
+ * meta difícil demais, folga para subir, manter.
+ */
+export function sugestaoDaCampanha(r: ResumoDoRetorno, orcamentoCents: number, periodosComGasto: number): { tom: "info" | "warning" | "danger" | "success"; texto: string } {
+  if (r.periodos === 0) return { tom: "info", texto: "Ainda sem período apurado (cada período espera a garantia das vendas). Volte a olhar depois das primeiras semanas." };
+  if (r.semOrcamento > 0) return { tom: "warning", texto: `O orçamento acabou: ${r.semOrcamento} prêmio(s) ficaram sem pagamento. Aumente o orçamento por período ou reduza os valores das faixas.` };
+  if (r.paybackMeses !== null && r.paybackMeses > 2) return { tom: "danger", texto: `Retorno lento: a margem das lojas novas leva ${r.paybackMeses.toLocaleString("pt-BR")} meses para pagar o bônus. Reduza os valores das faixas em cerca de 20%.` };
+  if (r.premiados === 0 && r.lojasNovas > 0 && r.periodos >= 4) return { tom: "warning", texto: "Houve vendas, mas ninguém chegou à 1ª faixa em 4 ou mais períodos. Baixe a meta da 1ª faixa para o bônus voltar a motivar." };
+  if (r.premiados > 0 && r.paybackMeses !== null && r.paybackMeses <= 1 && r.custoCents < orcamentoCents * Math.max(1, periodosComGasto) * 0.3) return { tom: "success", texto: "Retorno rápido (até 1 mês) e orçamento folgado. Dá para subir o valor da faixa de cima, sempre dentro do teto por loja." };
+  return { tom: "success", texto: "Equilibrada: mantenha como está e reveja no próximo mês." };
+}

@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Database } from "@/db/client";
 import { bonusCampanhas, bonusPremios, commissionRules, partnerCommissions, partners, stores } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { CAMPANHAS_PADRAO, conferirTeto, custoMaxPorPonto, faixaDe, periodoDe, periodosParaApurar, pontosDaVenda, validarFaixas, type Faixa, type Publico } from "@/lib/finance/bonus-regras";
+import { CAMPANHAS_PADRAO, conferirTeto, custoMaxPorPonto, faixaDe, periodoDe, periodosParaApurar, pontosDaVenda, resumoDoRetorno, sugestaoDaCampanha, validarFaixas, type Faixa, type Publico, type RetornoDoPeriodo } from "@/lib/finance/bonus-regras";
 import { requireMasterFn, type Actor } from "./access";
 import { commissionBase, getFinanceSettings } from "./corporate-commissions";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
@@ -46,18 +46,22 @@ const doPublico = (publico: Publico) => eq(partners.executivo, publico === "RUA"
  * sem venda para o próprio CPF/CNPJ. `garantidos` = já passou da garantia; `emGarantia` = ainda pode cair.
  */
 export async function pontosDoPublico(db: Database, publico: Publico, inicio: Date, fim: Date, refCents: number, soParceiro?: string) {
-  const rows = await db.select({ partnerId: partnerCommissions.partnerId, base: partnerCommissions.baseCents, status: partnerCommissions.status, ciclo: commissionRules.cycle, lojaDoc: stores.taxId, parceiroDoc: partners.taxId })
-    .from(partnerCommissions).innerJoin(partners, eq(partners.id, partnerCommissions.partnerId)).leftJoin(commissionRules, eq(commissionRules.id, partnerCommissions.ruleId)).leftJoin(stores, eq(stores.id, partnerCommissions.storeId))
-    .where(and(eq(partnerCommissions.kind, "SALE"), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, inicio.toISOString()), lt(partnerCommissions.createdAt, fim.toISOString()), doPublico(publico), ...(soParceiro ? [eq(partnerCommissions.partnerId, soParceiro)] : [])));
   const out = new Map<string, { garantidos: number; emGarantia: number }>();
-  for (const r of rows) {
-    if (r.lojaDoc && digitos(r.lojaDoc) === digitos(r.parceiroDoc)) continue;
+  for (const r of await vendasDoPublico(db, publico, inicio, fim, soParceiro)) {
     const pts = pontosDaVenda(r.base, r.ciclo, refCents);
     const cur = out.get(r.partnerId) ?? { garantidos: 0, emGarantia: 0 };
     if (r.status === "PENDING") cur.emGarantia += pts; else cur.garantidos += pts;
     out.set(r.partnerId, cur);
   }
   return out;
+}
+
+/** 1ª venda de cada loja (linha SALE) do público no intervalo, sem estornadas e sem venda para o próprio CPF/CNPJ. */
+async function vendasDoPublico(db: Database, publico: Publico, inicio: Date, fim: Date, soParceiro?: string) {
+  const rows = await db.select({ partnerId: partnerCommissions.partnerId, base: partnerCommissions.baseCents, status: partnerCommissions.status, ciclo: commissionRules.cycle, lojaDoc: stores.taxId, parceiroDoc: partners.taxId })
+    .from(partnerCommissions).innerJoin(partners, eq(partners.id, partnerCommissions.partnerId)).leftJoin(commissionRules, eq(commissionRules.id, partnerCommissions.ruleId)).leftJoin(stores, eq(stores.id, partnerCommissions.storeId))
+    .where(and(eq(partnerCommissions.kind, "SALE"), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, inicio.toISOString()), lt(partnerCommissions.createdAt, fim.toISOString()), doPublico(publico), ...(soParceiro ? [eq(partnerCommissions.partnerId, soParceiro)] : [])));
+  return rows.filter((r) => !(r.lojaDoc && digitos(r.lojaDoc) === digitos(r.parceiroDoc)));
 }
 
 /** Rotina diária: apura os períodos encerrados há mais que a garantia. Idempotente (um prêmio por campanha, parceiro e período). */
@@ -141,6 +145,44 @@ export async function painelDeBonus(db: Database, actor: Actor, now = new Date()
   }
   return { campanhas: lista, referencia: ref, garantiaDias: dias, teto: { ONLINE: porPublico("ONLINE"), RUA: porPublico("RUA") } };
 }
+
+/**
+ * Retorno das campanhas (BG4, D275): para cada período já apurado, lojas novas do público, lojas trazidas por quem foi
+ * premiado, receita recorrente nova dessas lojas, custo do bônus e prêmios sem orçamento. A soma dos prêmios pagos é
+ * conferida com o extrato (linhas BONUS das comissões).
+ */
+export async function retornoDasCampanhas(db: Database, actor: Actor, now = new Date()) {
+  if (actor.role !== "NEXTLEVEL_MASTER") throw new ForbiddenError();
+  await garantirCampanhasPadrao(db);
+  const [campanhas, dias] = await Promise.all([db.select().from(bonusCampanhas).orderBy(asc(bonusCampanhas.publico), asc(bonusCampanhas.periodo)), garantiaDias(db)]);
+  const lista = [];
+  for (const c of campanhas) {
+    const premios = await db.select().from(bonusPremios).where(eq(bonusPremios.campanhaId, c.id));
+    const periodos: RetornoDoPeriodo[] = [];
+    for (const per of periodosParaApurar(c.periodo, now, dias, new Date(c.createdAt), c.periodo === "SEMANA" ? 8 : 3)) {
+      const vendas = await vendasDoPublico(db, c.publico, per.inicio, per.fim);
+      const doPeriodo = premios.filter((p) => p.periodo === per.chave);
+      const pagos = doPeriodo.filter((p) => p.status === "PAGO");
+      const premiados = new Set(pagos.map((p) => p.partnerId));
+      const deles = vendas.filter((v) => premiados.has(v.partnerId));
+      periodos.push({
+        chave: per.chave, rotulo: per.rotulo, lojasNovas: vendas.length, lojasDosPremiados: deles.length,
+        receitaNovaMensalCents: deles.reduce((t, v) => t + (v.ciclo === "ANNUAL" ? Math.round(v.base / 12) : v.base), 0),
+        custoCents: pagos.reduce((t, p) => t + p.valorCents, 0), premiados: pagos.length,
+        semOrcamento: doPeriodo.filter((p) => p.status === "SEM_ORCAMENTO").length, pontosPremiados: pagos.reduce((t, p) => t + p.pontos, 0),
+      });
+    }
+    const resumo = resumoDoRetorno(periodos);
+    lista.push({ id: c.id, nome: c.nome, publico: c.publico, periodo: c.periodo, ativa: c.ativa, orcamentoCents: c.orcamentoCents, periodos: periodos.reverse(), resumo, sugestao: sugestaoDaCampanha(resumo, c.orcamentoCents, periodos.filter((p) => p.custoCents > 0).length) });
+  }
+  const [premiosPagos, extrato] = await Promise.all([
+    db.select({ t: sum(bonusPremios.valorCents) }).from(bonusPremios).where(eq(bonusPremios.status, "PAGO")),
+    db.select({ t: sum(partnerCommissions.amountCents) }).from(partnerCommissions).where(and(eq(partnerCommissions.kind, "BONUS"), ne(partnerCommissions.status, "VOID"))),
+  ]);
+  const pagosCents = Number(premiosPagos[0]?.t ?? 0), extratoCents = Number(extrato[0]?.t ?? 0);
+  return { campanhas: lista, conferencia: { premiosPagosCents: pagosCents, extratoCents, batem: pagosCents === extratoCents } };
+}
+export type RetornoDasCampanhas = Awaited<ReturnType<typeof retornoDasCampanhas>>;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Parceiro: o cartão "Seus bônus"

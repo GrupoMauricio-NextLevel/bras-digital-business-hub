@@ -1,7 +1,7 @@
-import { ShieldCheck, Trophy } from "lucide-react";
+import { CheckCircle2, ShieldCheck, TrendingUp, Trophy } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
-import { painelDeBonus } from "@/lib/domain/bonus";
+import { painelDeBonus, retornoDasCampanhas } from "@/lib/domain/bonus";
 import { formatBRL } from "@/lib/money";
 import { PageHeader } from "@/components/app/page-header";
 import { MetricCard } from "@/components/app/metric-card";
@@ -18,7 +18,8 @@ const NOME_PUBLICO = { ONLINE: "Parceiros online", RUA: "Executivos de rua" } as
 /** Bônus gamificado (BG1, D271): campanhas por público e período, com teto de custo por loja e orçamento. */
 export default async function BonusPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
-  const d = await painelDeBonus(await getDb(), session.actor);
+  const db = await getDb();
+  const [d, ret] = await Promise.all([painelDeBonus(db, session.actor), retornoDasCampanhas(db, session.actor)]);
   const ref = d.referencia;
   const total = d.campanhas.reduce((t, c) => t + c.pagoTotalCents, 0);
   return (
@@ -68,6 +69,34 @@ export default async function BonusPage() {
           </div>
         </section>
       ))}
+
+      <section className="mb-8" aria-labelledby="retorno-t">
+        <h2 id="retorno-t" className="flex items-center gap-2 text-lg font-semibold"><TrendingUp className="size-5" aria-hidden />Retorno das campanhas</h2>
+        <p className="mb-3 text-sm text-muted-foreground">Só períodos já apurados (8 semanas ou 3 meses). Receita nova = mensalidade das lojas trazidas por quem ganhou o bônus (anual dividido por 12). O tempo de retorno usa a margem depois da comissão mais alta (28%).</p>
+        <p className={`mb-4 flex items-start gap-2 rounded-xl border p-3 text-sm ${ret.conferencia.batem ? "border-success/40 bg-success-soft" : "border-danger/40 bg-danger-soft"}`}><CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />{ret.conferencia.batem ? `Conferido: os prêmios pagos (${formatBRL(ret.conferencia.premiosPagosCents)}) batem com as linhas de bônus do extrato dos parceiros.` : `Atenção: prêmios pagos ${formatBRL(ret.conferencia.premiosPagosCents)} e extrato ${formatBRL(ret.conferencia.extratoCents)} não batem. Avise o suporte técnico.`}</p>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {ret.campanhas.map((c) => (
+            <article key={c.id} className="ds-card p-4" aria-label={`Retorno de ${c.nome}`}>
+              <div className="flex flex-wrap items-start justify-between gap-2"><div><p className="font-semibold">{c.nome}</p><p className="text-xs text-muted-foreground">{NOME_PUBLICO[c.publico]} · {c.periodo === "SEMANA" ? "semanal" : "mensal"} · {c.resumo.periodos} período(s) apurado(s)</p></div><Badge tone={c.ativa ? "success" : "outline"}>{c.ativa ? "Ativa" : "Pausada"}</Badge></div>
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3">
+                <div><dt className="text-xs text-muted-foreground">Lojas novas do público</dt><dd className="font-bold tabular-nums">{c.resumo.lojasNovas}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Lojas de quem ganhou</dt><dd className="font-bold tabular-nums">{c.resumo.lojasDosPremiados}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Receita nova por mês</dt><dd className="font-bold tabular-nums">{formatBRL(c.resumo.receitaNovaMensalCents)}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Custo do bônus</dt><dd className="font-bold tabular-nums">{formatBRL(c.resumo.custoCents)}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Custo por loja · por ponto</dt><dd className="font-bold tabular-nums">{c.resumo.custoPorLojaCents === null ? "—" : formatBRL(c.resumo.custoPorLojaCents)} · {c.resumo.custoPorPontoCents === null ? "—" : formatBRL(c.resumo.custoPorPontoCents)}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Se paga em</dt><dd className="font-bold tabular-nums">{c.resumo.paybackMeses === null ? "—" : c.resumo.custoCents === 0 ? "sem custo" : `${c.resumo.paybackMeses.toLocaleString("pt-BR")} mês(es)`}</dd></div>
+              </dl>
+              <p className={`mt-3 rounded-lg border p-2 text-sm ${c.sugestao.tom === "danger" ? "border-danger/40 bg-danger-soft" : c.sugestao.tom === "warning" ? "border-warning/40 bg-warning-soft" : c.sugestao.tom === "success" ? "border-success/40 bg-success-soft" : "border-border bg-surface-muted"}`}><b>Sugestão:</b> {c.sugestao.texto}</p>
+              {c.periodos.length ? (
+                <div className="mt-3 overflow-x-auto"><table className="w-full text-xs tabular-nums"><caption className="sr-only">Períodos de {c.nome}</caption>
+                  <thead><tr className="text-left text-muted-foreground"><th className="py-1 pr-2 font-medium">Período</th><th className="pr-2 font-medium">Lojas</th><th className="pr-2 font-medium">Premiados</th><th className="pr-2 font-medium">Custo</th><th className="font-medium">Sem orçamento</th></tr></thead>
+                  <tbody>{c.periodos.map((p) => <tr key={p.chave} className="border-t border-border"><td className="py-1 pr-2">{p.rotulo}</td><td className="pr-2">{p.lojasNovas}</td><td className="pr-2">{p.premiados}</td><td className="pr-2">{formatBRL(p.custoCents)}</td><td>{p.semOrcamento || "—"}</td></tr>)}</tbody>
+                </table></div>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

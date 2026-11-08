@@ -155,7 +155,7 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
     ],
     bonus: () => [
       q("O que conta pontos no bônus?", "A 1ª venda de cada loja, depois da garantia", ["Toda renovação", "Loja em teste grátis", "Cadastro sem pagamento"]),
-      q("Um Pro vale quantos pontos perto de um Start?", "Mais, proporcional ao valor pago", ["O mesmo ponto", "Menos", "Nenhum"]),
+      q("O retorno de uma campanha passou de 2 meses. O que o sistema sugere?", "Reduzir os valores das faixas", ["Dobrar o orçamento", "Desligar o teto", "Nada"]),
       q("Quando o bônus entra no saldo?", "Depois da garantia das vendas do período", ["Na hora da venda", "No fim do ano", "Só no saque"]),
     ],
     caixa: () => [

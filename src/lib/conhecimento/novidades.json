@@ -1,5 +1,12 @@
 [
  {
+  "numero": 275,
+  "frente": "E-commerce",
+  "titulo": "BG4: relatório de retorno do bônus, com sugestão automática de ajuste",
+  "data": "2026-11-08",
+  "resumo": "Prompt: docs/prompts/bonus-gamificado-parceiros-executivos.md, fase BG4. Autorizado pelo dono (\"pode seguir nos próximos passos\")."
+ },
+ {
   "numero": 274,
   "frente": "E-commerce",
   "titulo": "CX4 + BG3: painel do executivo no celular, registro de visitas, agenda, metas e feed da equipe",
@@ -271,12 +278,5 @@
   "titulo": "Respostas do dono sobre domínio e e-mail; \"Suas pendências\" no Master",
   "data": "2026-11-03",
   "resumo": "Adicional Marca Completa aprovado: R$ 19,90/mês com 3 caixas de e-mail; caixa extra a R$ 6,90/mês. O provedor escolhido é a Hostinger."
- },
- {
-  "numero": 235,
-  "frente": null,
-  "titulo": "Proposta: lojas no nível Shopify (temas grátis, banners, chat, central do cliente)",
-  "data": "2026-11-03",
-  "resumo": "Proposta, ainda sem decisão do dono: docs/prompts/lojas-nivel-shopify-temas-banners-chat-central.md, fases L1–L6, com perguntas ao dono."
  }
 ]

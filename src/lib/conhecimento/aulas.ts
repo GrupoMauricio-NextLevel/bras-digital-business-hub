@@ -104,7 +104,7 @@ export function aulas(f: Fatos): Aula[] {
       oQue: "O nível conta os clientes pagantes ativos do parceiro.",
       regra: [...n.map((x) => `${x.nome}: ${x.minimo ? `${x.minimo}+ clientes` : "desde o 1º"} (CNPJ ${pct(x.cnpjBps)}, CPF ${pct(x.cpfBps)}).`), "Sobe na hora da venda.", `Só desce depois de ${f.parceiros.mesesParaDescer} meses seguidos abaixo do mínimo.`, "O Master pode fixar um nível, com motivo obrigatório."],
       dizer: ["\"Cada cliente novo aumenta o seu percentual em toda a carteira.\""], nunca: ["Falar em Diamante ou Agência Elite (não existem mais)."] },
-    { id: "bonus", trilha: "parceiros", titulo: "Bônus gamificado: semana e mês, online e rua", estado: "no-ar", decisoes: ["D271"],
+    { id: "bonus", trilha: "parceiros", titulo: "Bônus gamificado: semana e mês, online e rua", estado: "no-ar", decisoes: ["D271", "D275"],
       oQue: "Além da comissão, campanhas de bônus ligadas pelo dono premiam quem traz lojas novas na semana e no mês. Online e executivos de rua têm campanhas diferentes.",
       regra: [
         "Conta só a 1ª venda de cada loja (renovação já paga comissão) e só depois da garantia: loja estornada ou cancelada na garantia não conta.",
@@ -112,6 +112,7 @@ export function aulas(f: Fatos): Aula[] {
         `Teto por loja, somando as campanhas: online ${pct(f.bonus.tetoBps.ONLINE)} e rua ${pct(f.bonus.tetoBps.RUA)} de uma mensalidade; cada campanha tem orçamento por período.`,
         ...f.bonus.campanhas.map((c) => `${c.publico === "RUA" ? "Rua" : "Online"} · ${c.nome} (${c.periodo === "SEMANA" ? "semana" : "mês"}): ${c.faixas.map((x) => `${x.pontos} pts → ${brl(x.valorCents)}`).join(" · ")}.`),
         "Vale a faixa mais alta atingida no período (não soma faixas); o bônus entra no saldo do parceiro e segue para saque.",
+        "Retorno das campanhas (Master): lojas novas, receita nova por mês, custo, custo por loja e em quantos meses a margem paga o bônus, com uma sugestão de ajuste. Acima de 2 meses, o sistema sugere reduzir as faixas.",
       ],
       dizer: ["\"Ao atingir a faixa, o bônus entra no seu saldo depois da garantia das vendas.\"", "\"A regra completa está na página Comissões e bônus do site.\""], nunca: ["Prometer valor fixo por mês.", "Dizer que renovação ou loja em teste conta pontos."], link: { rotulo: "Abrir Bônus e metas", href: "/master/partners/bonus" } },
     { id: "missoes", trilha: "parceiros", titulo: "Missões, sequência, selos e ranking", estado: "no-ar", decisoes: ["D272"],
