@@ -2,10 +2,10 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HandCoins, Undo2, UserPlus } from "lucide-react";
+import { HandCoins, Target, Undo2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cadastrarExecutivoAction, estornarVendaDeRuaAction, receberDoExecutivoAction } from "@/app/actions/executivos";
+import { cadastrarExecutivoAction, definirMetaSemanalAction, estornarVendaDeRuaAction, receberDoExecutivoAction } from "@/app/actions/executivos";
 
 function useAcao() {
   const router = useRouter();
@@ -46,6 +46,19 @@ export function NovoExecutivo() {
       {campo("telefone", "WhatsApp com DDD")}
       {campo("senha", "Senha provisória", { minLength: 8 })}
       <div className="sm:col-span-2 lg:col-span-5"><Button type="submit" loading={pending}><UserPlus /> Cadastrar executivo</Button></div>
+    </form>
+  );
+}
+
+/** Meta semanal de lojas pagas do executivo (CX4, D274). Vazio volta ao padrão da campanha da rua. Só o dono. */
+export function MetaSemanal({ partnerId, meta, padrao }: { partnerId: string; meta: number | null; padrao: number }) {
+  const { pending, run } = useAcao();
+  const [v, setV] = React.useState(meta ? String(meta) : "");
+  const id = React.useId();
+  return (
+    <form className="mt-3 flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); run(() => definirMetaSemanalAction(partnerId, v.trim() ? Number(v) : null), "Meta da semana salva"); }}>
+      <label htmlFor={id} className="grid gap-1 text-xs font-medium">Meta da semana (lojas)<Input id={id} className="w-28" inputMode="numeric" value={v} placeholder={`${padrao} (padrão)`} onChange={(e) => setV(e.target.value.replace(/\D/g, ""))} /></label>
+      <Button size="sm" variant="secondary" loading={pending}><Target /> Salvar meta</Button>
     </form>
   );
 }

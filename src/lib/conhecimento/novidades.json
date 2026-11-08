@@ -1,5 +1,12 @@
 [
  {
+  "numero": 274,
+  "frente": "E-commerce",
+  "titulo": "CX4 + BG3: painel do executivo no celular, registro de visitas, agenda, metas e feed da equipe",
+  "data": "2026-11-08",
+  "resumo": "Prompts: docs/prompts/caixa-balcao-executivos-de-venda.md (CX4) e docs/prompts/bonus-gamificado-parceiros-executivos.md (BG3). Autorizado pelo dono (\"pode seguir\")."
+ },
+ {
   "numero": 273,
   "frente": "E-commerce",
   "titulo": "CX3: executivos de venda, venda na rua com recibo e prestação de contas no caixa",
@@ -271,12 +278,5 @@
   "titulo": "Proposta: lojas no nível Shopify (temas grátis, banners, chat, central do cliente)",
   "data": "2026-11-03",
   "resumo": "Proposta, ainda sem decisão do dono: docs/prompts/lojas-nivel-shopify-temas-banners-chat-central.md, fases L1–L6, com perguntas ao dono."
- },
- {
-  "numero": 234,
-  "frente": null,
-  "titulo": "Domínio próprio liberado para todo lojista da E-commerce, de ponta a ponta",
-  "data": "2026-11-03",
-  "resumo": "Pedido do dono: \"Um cliente novo precisa poder configurar seu domínio próprio, desbloqueia isso agora\"."
  }
 ]

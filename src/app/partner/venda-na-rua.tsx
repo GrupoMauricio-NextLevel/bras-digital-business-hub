@@ -27,7 +27,7 @@ export function VendaNaRua({ d, planos }: { d: PainelDoExecutivo; planos: Plano[
   });
   const sel = "h-12 w-full rounded-xl border border-border bg-surface px-3 text-base";
   return (
-    <section className="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]" aria-label="Venda na rua" data-venda-na-rua>
+    <section id="venda-na-rua" className="mb-6 grid scroll-mt-24 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]" aria-label="Venda na rua" data-venda-na-rua>
       <article className="rounded-2xl border border-border bg-surface p-5">
         <h2 className="flex items-center gap-2 text-lg font-bold"><Receipt className="size-5 text-[var(--ds-primary)]" aria-hidden />Nova venda na rua</h2>
         {d.travado ? <p className="mt-2 flex items-start gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200" role="alert"><AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />Você tem dinheiro com prazo vencido. Entregue à NextLevel para voltar a vender em dinheiro; a maquininha continua liberada.</p> : null}

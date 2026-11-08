@@ -1,9 +1,9 @@
 import { and, eq, gte, inArray, ne } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { commissionRules, partnerClicks, partnerCommissions, partnerLinks, partners, stores } from "@/db/schema";
+import { commissionRules, executivoVisitas, partnerClicks, partnerCommissions, partnerLinks, partners, stores } from "@/db/schema";
 import { dataSP, semanaDe } from "@/lib/finance/caixa-regras";
 import { periodoDe, pontosDaVenda, type Publico } from "@/lib/finance/bonus-regras";
-import { SELOS, melhorSequencia, missoesDaSemana, posicaoNoRanking, sequenciaDeSemanas, type IndicadoresDaSemana } from "@/lib/finance/engajamento-regras";
+import { INDICADORES_ZERADOS, SELOS, melhorSequencia, missoesDaSemana, posicaoNoRanking, sequenciaDeSemanas, type IndicadoresDaSemana } from "@/lib/finance/engajamento-regras";
 import { pontosDoPublico, referenciaDoPonto } from "./bonus";
 
 /**
@@ -18,19 +18,22 @@ export async function engajamentoDoParceiro(db: Database, partnerId: string, now
   if (!p) return null;
   const publico: Publico = p.executivo ? "RUA" : "ONLINE";
   const desde = new Date(now.getTime() - JANELA_SEMANAS * 7 * 86_400_000).toISOString();
-  const [{ refCents }, vendas, todasComissoes, cliques, cadastros] = await Promise.all([
+  const [{ refCents }, vendas, todasComissoes, cliques, cadastros, visitas] = await Promise.all([
     referenciaDoPonto(db, now),
     db.select({ criadoEm: partnerCommissions.createdAt, base: partnerCommissions.baseCents, ciclo: commissionRules.cycle }).from(partnerCommissions).leftJoin(commissionRules, eq(commissionRules.id, partnerCommissions.ruleId)).where(and(eq(partnerCommissions.partnerId, partnerId), eq(partnerCommissions.kind, "SALE"), ne(partnerCommissions.status, "VOID"))),
     db.select({ storeId: partnerCommissions.storeId }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, partnerId), inArray(partnerCommissions.kind, ["SALE", "RECURRING"]), ne(partnerCommissions.status, "VOID"))),
     db.select({ at: partnerClicks.at }).from(partnerClicks).innerJoin(partnerLinks, eq(partnerLinks.id, partnerClicks.linkId)).where(and(eq(partnerLinks.partnerId, partnerId), gte(partnerClicks.at, desde))),
     db.select({ em: stores.attributedAt, criada: stores.createdAt }).from(stores).where(eq(stores.partnerId, partnerId)),
+    publico === "RUA" ? db.select({ em: executivoVisitas.createdAt, tipo: executivoVisitas.tipo }).from(executivoVisitas).where(and(eq(executivoVisitas.partnerId, partnerId), gte(executivoVisitas.createdAt, desde))) : Promise.resolve([]),
   ]);
 
   // Indicadores por semana (para as missões de agora e as "semanas completas" do histórico).
   const porSemana = new Map<string, IndicadoresDaSemana>();
-  const ind = (k: string) => { let x = porSemana.get(k); if (!x) { x = { cliques: 0, cadastros: 0, vendas: 0, vendasPlanoMaior: 0, vendasAnuais: 0 }; porSemana.set(k, x); } return x; };
+  const ind = (k: string) => { let x = porSemana.get(k); if (!x) { x = { ...INDICADORES_ZERADOS }; porSemana.set(k, x); } return x; };
   for (const c of cliques) ind(semanaDoInstante(c.at)).cliques++;
   for (const c of cadastros) ind(semanaDoInstante(c.em ?? c.criada)).cadastros++;
+  // Demonstração também é visita (o lojista foi visitado); a missão de demonstrações conta só as demonstrações.
+  for (const v of visitas) { const i = ind(semanaDoInstante(v.em)); i.visitas++; if (v.tipo === "DEMONSTRACAO") i.demonstracoes++; }
   const porMes = new Map<string, number>();
   let temScale = false, temAnual = false;
   for (const v of vendas) {
@@ -44,7 +47,7 @@ export async function engajamentoDoParceiro(db: Database, partnerId: string, now
     porMes.set(mes, (porMes.get(mes) ?? 0) + 1);
   }
   const semanaAtual = semanaDoInstante(now);
-  const missoes = missoesDaSemana(publico, porSemana.get(semanaAtual) ?? { cliques: 0, cadastros: 0, vendas: 0, vendasPlanoMaior: 0, vendasAnuais: 0 });
+  const missoes = missoesDaSemana(publico, porSemana.get(semanaAtual) ?? INDICADORES_ZERADOS);
   const semanasComVenda = new Set([...porSemana.entries()].filter(([, x]) => x.vendas > 0).map(([k]) => k));
   const sequencia = sequenciaDeSemanas(semanasComVenda, semanaAtual);
   const semanasCompletas = [...porSemana.values()].filter((x) => missoesDaSemana(publico, x).completa).length;

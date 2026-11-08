@@ -5,10 +5,11 @@
 import { somarDias } from "./caixa-regras";
 import type { Publico } from "./bonus-regras";
 
-export type IndicadoresDaSemana = { cliques: number; cadastros: number; vendas: number; vendasPlanoMaior: number; vendasAnuais: number };
+export type IndicadoresDaSemana = { cliques: number; cadastros: number; vendas: number; vendasPlanoMaior: number; vendasAnuais: number; visitas: number; demonstracoes: number };
+export const INDICADORES_ZERADOS: IndicadoresDaSemana = { cliques: 0, cadastros: 0, vendas: 0, vendasPlanoMaior: 0, vendasAnuais: 0, visitas: 0, demonstracoes: 0 };
 export type Missao = { id: string; titulo: string; dica: string; meta: number; indicador: keyof IndicadoresDaSemana };
 
-/** Missões por público. A rua ganha missões de visita na BG3 (registro de visitas). */
+/** Missões por público. A rua conta visitas e demonstrações registradas no painel (BG3, D274). */
 export const MISSOES: Record<Publico, Missao[]> = {
   ONLINE: [
     { id: "cliques", titulo: "Leve 10 pessoas ao seu link", dica: "Poste o link no status, num grupo ou no story.", meta: 10, indicador: "cliques" },
@@ -17,7 +18,8 @@ export const MISSOES: Record<Publico, Missao[]> = {
     { id: "plano-maior", titulo: "Venda um Pro ou Scale", dica: "Mostre o que o Pro libera para quem tem muitos produtos.", meta: 1, indicador: "vendasPlanoMaior" },
   ],
   RUA: [
-    { id: "cadastros", titulo: "Faça 3 cadastros", dica: "Cadastre na hora, no celular, durante a visita.", meta: 3, indicador: "cadastros" },
+    { id: "visitas", titulo: "Faça 10 visitas", dica: "Registre cada loja visitada, mesmo quem disse não.", meta: 10, indicador: "visitas" },
+    { id: "demonstracoes", titulo: "Mostre a demonstração 5 vezes", dica: "Abra os temas no celular e deixe o lojista mexer.", meta: 5, indicador: "demonstracoes" },
     { id: "vendas", titulo: "Feche 3 vendas", dica: "Volte em quem pediu para pensar.", meta: 3, indicador: "vendas" },
     { id: "plano-maior", titulo: "Venda um Pro ou Scale", dica: "Lojista com mais de 300 produtos já precisa do Pro.", meta: 1, indicador: "vendasPlanoMaior" },
     { id: "anual", titulo: "Feche 1 plano anual", dica: "No anual o cliente economiza e você soma mais pontos.", meta: 1, indicador: "vendasAnuais" },

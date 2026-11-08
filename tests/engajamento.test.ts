@@ -8,10 +8,10 @@ import { registerPartner } from "@/lib/domain/partners";
 
 describe("engajamento sem dinheiro (puro, D272)", () => {
   it("missões por público e semana completa", () => {
-    const vazio = { cliques: 0, cadastros: 0, vendas: 0, vendasPlanoMaior: 0, vendasAnuais: 0 };
+    const vazio = { cliques: 0, cadastros: 0, vendas: 0, vendasPlanoMaior: 0, vendasAnuais: 0, visitas: 0, demonstracoes: 0 };
     expect(missoesDaSemana("ONLINE", vazio)).toMatchObject({ feitas: 0, total: 4, completa: false });
-    expect(missoesDaSemana("ONLINE", { cliques: 12, cadastros: 1, vendas: 1, vendasPlanoMaior: 1, vendasAnuais: 0 }).completa).toBe(true);
-    expect(missoesDaSemana("RUA", { cliques: 0, cadastros: 3, vendas: 2, vendasPlanoMaior: 1, vendasAnuais: 1 })).toMatchObject({ feitas: 3, completa: false });
+    expect(missoesDaSemana("ONLINE", { ...vazio, cliques: 12, cadastros: 1, vendas: 1, vendasPlanoMaior: 1 }).completa).toBe(true);
+    expect(missoesDaSemana("RUA", { ...vazio, visitas: 10, demonstracoes: 4, vendas: 3, vendasPlanoMaior: 1, vendasAnuais: 1 })).toMatchObject({ feitas: 4, total: 5, completa: false });
     expect(MISSOES.RUA.map((m) => m.id)).not.toContain("cliques");
   });
 

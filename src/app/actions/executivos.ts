@@ -5,7 +5,7 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { cadastrarExecutivo, estornarVendaDeRua, receberDoExecutivo, registrarVendaDeRua, type executivoSchema, type vendaDeRuaSchema } from "@/lib/domain/executivos";
+import { cadastrarExecutivo, concluirRetorno, definirMetaSemanal, estornarVendaDeRua, receberDoExecutivo, registrarVendaDeRua, registrarVisita, type executivoSchema, type vendaDeRuaSchema, type visitaSchema } from "@/lib/domain/executivos";
 
 /** Executivos de venda (CX3, D273). Permissões e regras no domínio. */
 async function ctx() { const s = await getSession(); if (!s) throw new ForbiddenError("Sessão expirada."); return { actor: s.actor, db: await getDb() }; }
@@ -22,4 +22,13 @@ export async function estornarVendaDeRuaAction(id: string, motivo: string) {
 }
 export async function registrarVendaDeRuaAction(input: z.input<typeof vendaDeRuaSchema>) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await registrarVendaDeRua(db, actor, input); refresh(); return r; });
+}
+export async function registrarVisitaAction(input: z.input<typeof visitaSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await registrarVisita(db, actor, input); refresh(); return r; });
+}
+export async function concluirRetornoAction(visitaId: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await concluirRetorno(db, actor, visitaId); refresh(); return undefined; });
+}
+export async function definirMetaSemanalAction(partnerId: string, meta: number | null) {
+  return runAction(async () => { const { actor, db } = await ctx(); await definirMetaSemanal(db, actor, partnerId, meta); refresh(); return undefined; });
 }

@@ -3297,3 +3297,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Refatoração:** recebimento manual e estorno do caixa e da rua usam as mesmas funções (`pagarAssinaturaManual`, `desfazerPagamento`).
 - **Testes:** `tests/executivos.test.ts` (prazo em dias úteis, recibo, cadastro só pelo dono, venda em dinheiro até o caixa, trava por atraso, maquininha, loja de outro parceiro, estorno).
 - **Próxima fase:** CX4 (painel do executivo no celular, mais completo e motivador) com a BG3 (registro de visitas nas missões).
+
+## D274 — [E-commerce] CX4 + BG3: painel do executivo no celular, registro de visitas, agenda, metas e feed da equipe (2026-11-08)
+- **Prompts:** `docs/prompts/caixa-balcao-executivos-de-venda.md` (CX4) e `docs/prompts/bonus-gamificado-parceiros-executivos.md` (BG3). Autorizado pelo dono ("pode seguir").
+- **Painel do executivo** (topo do painel de parceiro, só para executivo):
+  - "Bom dia, Ana" (hora de São Paulo), **meta da semana** em barra (lojas pagas), comissão do mês e nível com quanto falta para o próximo (clientes ativos, D260);
+  - **4 botões grandes:** Nova venda (vai à venda na rua), Registrar visita, Meu link (compartilhar ou copiar) e Mostrar a demonstração (galeria de temas);
+  - **Minha agenda:** retornos combinados (vencidos em vermelho, WhatsApp e "feito" com 1 toque) e testes das lojas dele que acabam em até 7 dias;
+  - **Visitas da semana:** ranking de esforço da equipe (só o primeiro nome, sem dinheiro);
+  - **Argumentos de bolso:** taxa zero, preço a partir da tabela, loja pronta, atacado e as objeções "vou pensar", "já vendo no Instagram" e "é caro" (só o que é verdade no produto).
+- **Registro de visita** (tabela `executivo_visitas`, migração 0089): loja, contato, WhatsApp, visita ou demonstração, resultado (gostou, pediu para pensar, não quis, cadastrou, fechou) e dia da volta. "Pediu para pensar" exige o dia da volta; loja de outro executivo é recusada; até 60 registros por dia.
+- **Missões da rua (BG3):** saem "3 cadastros" e entram "10 visitas" e "5 demonstrações" (demonstração também conta como visita). Seguem as de vendas, plano maior e anual. Nada disso paga dinheiro (D272).
+- **Master → Executivos de venda:**
+  - **meta semanal** por executivo (só o dono; vazia = 1ª faixa da campanha semanal da rua, hoje 3);
+  - visitas da semana no cartão de cada um;
+  - **ranking da semana** (vendas, depois visitas) e **"O que a equipe fez"**: visitas, demonstrações e vendas mais recentes.
+- **Testes:** `tests/executivos.test.ts` (saudação, meta, agenda, argumentos, visita com retorno, conclusão, missões, ranking, feed, meta só pelo dono) e `tests/engajamento.test.ts` (missões novas da rua).
+- **Próximas fases:** BG4 (relatório de retorno do bônus) e CX5.

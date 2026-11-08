@@ -22,6 +22,8 @@ import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { bonusDoParceiro } from "@/lib/domain/bonus";
 import { SeusBonus } from "./seus-bonus";
 import { VendaNaRua } from "./venda-na-rua";
+import { PainelDaRua } from "./painel-da-rua";
+import { argumentosDeBolso, saudacao } from "@/lib/finance/executivo-regras";
 import { painelDoExecutivo } from "@/lib/domain/executivos";
 import { SuaSemana } from "./sua-semana";
 import { engajamentoDoParceiro } from "@/lib/domain/engajamento";
@@ -40,10 +42,10 @@ export default async function PartnerHome() {
     const linkEc = `${base}/r/${pe.parceiro.code.toLowerCase()}`;
     const [avisos, desafios, bonus, engajamento] = await Promise.all([avisosDoParceiro(db, pe.parceiro.id), desafiosDoParceiro(db, pe.parceiro.id), bonusDoParceiro(db, pe.parceiro.id), engajamentoDoParceiro(db, pe.parceiro.id)]);
     const recados = avisos.length || desafios.length ? <RecadosDoParceiro avisos={avisos} desafios={desafios} /> : null;
-    // CX3 (D273): o executivo de venda vê primeiro a venda na rua e o dinheiro que está com ele.
+    // CX3/CX4 (D273, D274): o executivo de venda vê primeiro o painel da rua (meta, botões, agenda), a venda e o dinheiro com ele.
     const rua = bonus?.publico === "RUA" ? await painelDoExecutivo(db, session.actor) : null;
     const planosRua = pv.plans.filter((p) => !p.quote && p.monthlyCents).map((p) => ({ key: p.key, name: p.name, monthlyCents: p.monthlyCents, annualCents: p.annualCents }));
-    return <>{recados}{rua ? <VendaNaRua d={rua} planos={planosRua} /> : null}{bonus ? <SeusBonus b={bonus} /> : null}{engajamento ? <SuaSemana e={engajamento} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
+    return <>{recados}{rua ? <><PainelDaRua d={rua} saudacao={saudacao()} link={linkEc} argumentos={argumentosDeBolso(aPartir, formatBRL)} /><VendaNaRua d={rua} planos={planosRua} /></> : null}{bonus ? <SeusBonus b={bonus} /> : null}{engajamento ? <SuaSemana e={engajamento} /> : null}<PainelParceiroEc d={pe} link={linkEc} convite={`Conheça a ${marca.name}: loja virtual com taxa zero da plataforma nas vendas pelo Mercado Pago e mensalidade a partir de ${formatBRL(aPartir)}. Teste aqui: ${linkEc}`} /></>;
   }
   const d = await partnerDashboard(await getDb(), session.actor);
   const link = `${base}/r/${d.partner.code.toLowerCase()}`;

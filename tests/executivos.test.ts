@@ -5,9 +5,10 @@ import { executivoRecebimentos, financeInvoices, partnerCommissions, partners, s
 import { actorFromUser } from "@/lib/domain/access";
 import { signupMember } from "@/lib/domain/store-access";
 import { abrirCaixa, caixaDoDia } from "@/lib/domain/caixa";
-import { cadastrarExecutivo, estornarVendaDeRua, painelDoExecutivo, painelDosExecutivos, pendenciasDosExecutivos, receberDoExecutivo, registrarVendaDeRua } from "@/lib/domain/executivos";
-import { atrasado, codigoDeRecibo, diaDoPrazo, linkDoRecibo, prazoDeEntrega, textoDoRecibo } from "@/lib/finance/executivo-regras";
+import { cadastrarExecutivo, concluirRetorno, definirMetaSemanal, estornarVendaDeRua, feedDaEquipe, painelDoExecutivo, registrarVisita, painelDosExecutivos, pendenciasDosExecutivos, receberDoExecutivo, registrarVendaDeRua } from "@/lib/domain/executivos";
+import { argumentosDeBolso, metaDaSemana, montarAgenda, saudacao, atrasado, codigoDeRecibo, diaDoPrazo, linkDoRecibo, prazoDeEntrega, textoDoRecibo } from "@/lib/finance/executivo-regras";
 import { subscriptionOf } from "@/lib/domain/commerce-plans";
+import { engajamentoDoParceiro } from "@/lib/domain/engajamento";
 
 describe("executivos (puro, D273)", () => {
   it("prazo de 2 dias úteis: sexta vence terça; quinta vence segunda", () => {
@@ -24,6 +25,22 @@ describe("executivos (puro, D273)", () => {
     expect(t).toContain("liberada até 10/01/2027");
     expect(linkDoRecibo("oi", "(11) 98888-7777")).toBe("https://wa.me/5511988887777?text=oi");
     expect(linkDoRecibo("oi", null)).toBe("https://wa.me/?text=oi");
+  });
+});
+
+describe("painel da rua (puro, D274)", () => {
+  it("saudação pela hora de SP, meta da semana e agenda", () => {
+    expect(saudacao(new Date("2026-12-10T12:00:00Z"))).toBe("Bom dia"); // 9h em SP
+    expect(saudacao(new Date("2026-12-10T18:00:00Z"))).toBe("Boa tarde");
+    expect(saudacao(new Date("2026-12-10T23:00:00Z"))).toBe("Boa noite");
+    expect(metaDaSemana(null, 3, 2)).toMatchObject({ meta: 3, falta: 1, pct: 67, batida: false });
+    expect(metaDaSemana(5, 3, 6)).toMatchObject({ meta: 5, falta: 0, pct: 100, batida: true });
+    expect(metaDaSemana(null, null, 0).meta).toBe(3);
+    const ag = montarAgenda("2026-12-10",
+      [{ id: "v1", loja: "Box 12", contato: "Rita", whatsapp: "11999990000", retornoEm: "2026-12-12", resultado: "PENSAR" }, { id: "v2", loja: "Box 3", contato: null, whatsapp: null, retornoEm: "2026-12-08", resultado: "INTERESSADO" }],
+      [{ loja: "Moda A", testeAte: "2026-12-14T15:00:00Z", pagoAte: null }, { loja: "Moda B", testeAte: "2026-12-30T15:00:00Z", pagoAte: null }, { loja: "Paga", testeAte: "2026-12-11T15:00:00Z", pagoAte: "2027-01-01T00:00:00Z" }]);
+    expect(ag.map((a) => [a.tipo, a.quando, a.atrasado])).toEqual([["RETORNO", "2026-12-08", true], ["RETORNO", "2026-12-12", false], ["TESTE_ACABANDO", "2026-12-14", false]]);
+    expect(argumentosDeBolso(5700, (c) => `R$ ${c / 100}`)[1]!.titulo).toContain("R$ 57");
   });
 });
 
@@ -105,5 +122,44 @@ describe("executivos no banco (CX3)", () => {
     expect(rec.status).toBe("ESTORNADO");
     expect((await ctx.db.query.financeInvoices.findFirst({ where: eq(financeInvoices.id, rec.invoiceId) }))!.status).toBe("CANCELED");
     expect((await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, ex.partnerId)))[0]!.status).toBe("VOID");
+  });
+
+  it("visita: retorno obrigatório para quem pediu para pensar, agenda, conclusão, missões, ranking e feed (CX4/BG3)", async () => {
+    const ex = await executivo();
+    const outro = await executivo("bia@nl.com", "11444777000161");
+    const deOutro = await loja(outro.partnerId);
+    await expect(registrarVisita(ctx.db, ex.actor, { loja: "Box 12", tipo: "VISITA", resultado: "PENSAR" }, AGORA)).rejects.toThrow(/dia para você voltar/);
+    await expect(registrarVisita(ctx.db, ex.actor, { loja: "Box 12", tipo: "VISITA", resultado: "PENSAR", retornoEm: "2026-12-01" }, AGORA)).rejects.toThrow(/hoje ou depois/);
+    await expect(registrarVisita(ctx.db, ex.actor, { loja: "Moda Rua", storeId: deOutro, tipo: "VISITA", resultado: "INTERESSADO" }, AGORA)).rejects.toThrow(/não é sua/);
+    const { id } = await registrarVisita(ctx.db, ex.actor, { loja: "Box 12", contato: "Rita", whatsapp: "(11) 99999-0000", tipo: "DEMONSTRACAO", resultado: "PENSAR", retornoEm: "2026-12-12" }, AGORA);
+    await registrarVisita(ctx.db, ex.actor, { loja: "Box 13", tipo: "VISITA", resultado: "NAO_QUIS" }, AGORA);
+    let painel = await painelDoExecutivo(ctx.db, ex.actor, AGORA);
+    expect(painel.agenda).toMatchObject([{ tipo: "RETORNO", quando: "2026-12-12", visitaId: id, whatsapp: "11999990000" }]);
+    expect(painel.visitasSemana).toBe(2);
+    expect(painel.esforco[0]).toMatchObject({ nome: "Você", visitas: 2, voce: true });
+    expect(painel.meta).toMatchObject({ meta: 3, feitas: 0 });
+    expect(painel.executivo.primeiroNome).toBe("Ana");
+    await concluirRetorno(ctx.db, ex.actor, id, AGORA);
+    await expect(concluirRetorno(ctx.db, outro.actor, id, AGORA)).rejects.toThrow(/não encontrada/);
+    painel = await painelDoExecutivo(ctx.db, ex.actor, AGORA);
+    expect(painel.agenda).toEqual([]);
+    // As missões da rua contam visitas e demonstrações da semana real (o engajamento usa a hora do banco).
+    await registrarVisita(ctx.db, ex.actor, { loja: "Box 20", tipo: "DEMONSTRACAO", resultado: "INTERESSADO" });
+    const e = (await engajamentoDoParceiro(ctx.db, ex.partnerId))!;
+    const m = Object.fromEntries(e.missoes.lista.map((x) => [x.id, x.atual]));
+    expect(m.visitas).toBeGreaterThanOrEqual(1);
+    expect(m.demonstracoes).toBeGreaterThanOrEqual(1);
+    expect((await feedDaEquipe(ctx.db, ctx.actors.master)).map((f) => f.tipo)).toContain("Demonstração");
+  });
+
+  it("meta semanal: só o dono define; vazia volta ao padrão", async () => {
+    const ex = await executivo();
+    const { createMasterMember } = await import("@/lib/domain/equipe-master");
+    const { id } = await createMasterMember(ctx.db, ctx.actors.master, { name: "Pessoa Fin", email: "fin@nl.teste", password: "provisoria-123", masterFunction: "FINANCEIRO" });
+    await expect(definirMetaSemanal(ctx.db, { ...ctx.actors.master, userId: id, masterFunction: "FINANCEIRO" }, ex.partnerId, 5)).rejects.toThrow(/dono/);
+    await definirMetaSemanal(ctx.db, ctx.actors.master, ex.partnerId, 5);
+    expect((await painelDoExecutivo(ctx.db, ex.actor, AGORA)).meta.meta).toBe(5);
+    await definirMetaSemanal(ctx.db, ctx.actors.master, ex.partnerId, null);
+    expect((await painelDoExecutivo(ctx.db, ex.actor, AGORA)).meta.meta).toBe(3);
   });
 });

@@ -624,6 +624,13 @@
       "when": 1794090683678,
       "tag": "0088_executivos_recebimentos",
       "breakpoints": true
+    },
+    {
+      "idx": 89,
+      "version": "7",
+      "when": 1794096568586,
+      "tag": "0089_executivos_visitas",
+      "breakpoints": true
     }
   ]
 }

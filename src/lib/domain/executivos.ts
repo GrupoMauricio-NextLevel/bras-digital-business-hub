@@ -1,12 +1,13 @@
-import { and, asc, desc, eq, gte, inArray, ne } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, isNotNull, lte, ne } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { executivoRecebimentos, financeInvoices, organizations, partnerCommissions, partners, stores, users } from "@/db/schema";
+import { bonusCampanhas, executivoRecebimentos, executivoVisitas, financeInvoices, organizations, partnerCommissions, partners, stores, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
 import { formatBRL } from "@/lib/money";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { periodoDe } from "@/lib/finance/bonus-regras";
-import { atrasado, codigoDeRecibo, linkDoRecibo, prazoDeEntrega, textoDoRecibo } from "@/lib/finance/executivo-regras";
+import { RESULTADOS_DA_VISITA, atrasado, codigoDeRecibo, linkDoRecibo, metaDaSemana, montarAgenda, prazoDeEntrega, textoDoRecibo, type ResultadoDaVisita } from "@/lib/finance/executivo-regras";
+import { dataSP, somarDias } from "@/lib/finance/caixa-regras";
 import { isMasterOwner, type Actor } from "./access";
 import { desfazerPagamento, pagarAssinaturaManual } from "./assinaturas-master";
 import { lancar, podeOperarCaixa } from "./caixa";
@@ -14,6 +15,8 @@ import { COMMERCE_PLAN_KEYS, subscriptionOf } from "./commerce-plans";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { CORPORATE, recordFinancialAudit } from "./fin-audit";
 import { partnerOfActor, registerPartner } from "./partners";
+import { clientesAtivos } from "./niveis-parceiro";
+import { NIVEIS, nomeDoNivel } from "@/lib/finance/niveis-regras";
 
 /**
  * Executivos de venda (CX3, D273): a equipe de rua da NextLevel. É um parceiro do tipo vendedor marcado como executivo,
@@ -51,11 +54,12 @@ export async function painelDosExecutivos(db: Database, actor: Actor, now = new 
   const lista = await db.select({ p: partners, email: users.email }).from(partners).innerJoin(users, eq(users.id, partners.userId)).where(eq(partners.executivo, true)).orderBy(asc(partners.displayName));
   const ids = lista.map((x) => x.p.id);
   const sem = periodoDe("SEMANA", now), mes = periodoDe("MES", now);
-  const [vendas, comissoes, recebimentos] = ids.length ? await Promise.all([
+  const [vendas, comissoes, recebimentos, visitas] = ids.length ? await Promise.all([
     db.select({ partnerId: partnerCommissions.partnerId, criado: partnerCommissions.createdAt }).from(partnerCommissions).where(and(inArray(partnerCommissions.partnerId, ids), eq(partnerCommissions.kind, "SALE"), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, mes.inicio.toISOString()))),
     db.select({ partnerId: partnerCommissions.partnerId, valor: partnerCommissions.amountCents }).from(partnerCommissions).where(and(inArray(partnerCommissions.partnerId, ids), inArray(partnerCommissions.kind, ["SALE", "RECURRING", "BONUS", "CLAWBACK"]), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, mes.inicio.toISOString()))),
     db.select().from(executivoRecebimentos).where(inArray(executivoRecebimentos.partnerId, ids)),
-  ]) : [[], [], []];
+    db.select({ partnerId: executivoVisitas.partnerId }).from(executivoVisitas).where(and(inArray(executivoVisitas.partnerId, ids), gte(executivoVisitas.createdAt, sem.inicio.toISOString()))),
+  ]) : [[], [], [], []];
   return lista.map(({ p, email }) => {
     const minhas = recebimentos.filter((r) => r.partnerId === p.id);
     const comigo = minhas.filter((r) => r.status === "COM_EXECUTIVO" && r.meio === "DINHEIRO");
@@ -69,6 +73,8 @@ export async function painelDosExecutivos(db: Database, actor: Actor, now = new 
       atrasados: comigo.filter((r) => atrasado(r.prazoAte, now)).length,
       maquininhaAConferir: minhas.filter((r) => r.status === "COM_EXECUTIVO" && r.meio === "MAQUININHA_VENDEDOR").length,
       ultimaPrestacao: entregas.at(-1) ?? null,
+      metaSemanal: p.metaSemanal,
+      visitasSemana: visitas.filter((v) => v.partnerId === p.id).length,
     };
   });
 }
@@ -149,20 +155,110 @@ export async function registrarVendaDeRua(db: Database, actor: Actor, raw: z.inp
   return { id, codigo, valorCents: pg.valor, pagoAte: s.paidUntil, recibo: texto, whatsapp: linkDoRecibo(texto, s.whatsapp) };
 }
 
-/** O que o executivo vê: lojas que pode cobrar, dinheiro com ele (com prazo) e os últimos recibos. */
+/** Primeira faixa da campanha semanal da rua (meta padrão quando o dono não definiu uma). */
+export async function primeiraFaixaDaRua(db: Database) {
+  const c = await db.query.bonusCampanhas.findFirst({ where: and(eq(bonusCampanhas.publico, "RUA"), eq(bonusCampanhas.periodo, "SEMANA"), eq(bonusCampanhas.ativa, true)) });
+  return c?.faixas.length ? Math.min(...c.faixas.map((f) => f.pontos)) : null;
+}
+
+/** O que o executivo vê: meta, comissão, nível, agenda, lojas que pode cobrar, dinheiro com ele e os últimos recibos. */
 export async function painelDoExecutivo(db: Database, actor: Actor, now = new Date()) {
   const p = await executivoDoActor(db, actor);
-  const [lojas, recs] = await Promise.all([
+  const hoje = dataSP(now);
+  const sem = periodoDe("SEMANA", now), mes = periodoDe("MES", now);
+  const [lojas, recs, vendasSemana, comissoesMes, retornos, faixa, ativos, visitasSemana, ultimas] = await Promise.all([
     db.select({ id: stores.id, nome: stores.name, pagoAte: stores.paidUntil, testeAte: stores.trialEndsAt }).from(stores).where(eq(stores.partnerId, p.id)).orderBy(asc(stores.name)),
     db.select({ r: executivoRecebimentos, loja: stores.name }).from(executivoRecebimentos).innerJoin(stores, eq(stores.id, executivoRecebimentos.storeId)).where(eq(executivoRecebimentos.partnerId, p.id)).orderBy(desc(executivoRecebimentos.recebidoEm)).limit(30),
+    db.select({ id: partnerCommissions.id }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p.id), eq(partnerCommissions.kind, "SALE"), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, sem.inicio.toISOString()))),
+    db.select({ valor: partnerCommissions.amountCents }).from(partnerCommissions).where(and(eq(partnerCommissions.partnerId, p.id), inArray(partnerCommissions.kind, ["SALE", "RECURRING", "BONUS", "CLAWBACK"]), ne(partnerCommissions.status, "VOID"), gte(partnerCommissions.createdAt, mes.inicio.toISOString()))),
+    db.select().from(executivoVisitas).where(and(eq(executivoVisitas.partnerId, p.id), isNotNull(executivoVisitas.retornoEm), isNull(executivoVisitas.retornoFeitoEm), lte(executivoVisitas.retornoEm, somarDias(hoje, 7)))),
+    primeiraFaixaDaRua(db),
+    clientesAtivos(db, p.id),
+    db.select({ partnerId: executivoVisitas.partnerId, tipo: executivoVisitas.tipo }).from(executivoVisitas).where(gte(executivoVisitas.createdAt, sem.inicio.toISOString())),
+    db.select().from(executivoVisitas).where(eq(executivoVisitas.partnerId, p.id)).orderBy(desc(executivoVisitas.createdAt)).limit(8),
   ]);
   const planos = await Promise.all(lojas.map(async (l) => ({ ...l, assinatura: await subscriptionOf(db, l.id) })));
   const comigo = recs.filter((x) => x.r.status === "COM_EXECUTIVO" && x.r.meio === "DINHEIRO").map((x) => ({ ...x.r, loja: x.loja, atrasado: atrasado(x.r.prazoAte, now) }));
+  const proximo = NIVEIS.find((n) => n.minimo > ativos) ?? null;
+  // Ranking de esforço da semana: visitas registradas (demonstração conta como visita), só primeiro nome dos colegas.
+  const porExec = new Map<string, number>();
+  for (const v of visitasSemana) porExec.set(v.partnerId, (porExec.get(v.partnerId) ?? 0) + 1);
+  if (!porExec.has(p.id)) porExec.set(p.id, 0);
+  const nomes = new Map((await db.select({ id: partners.id, nome: partners.displayName }).from(partners).where(and(eq(partners.executivo, true), inArray(partners.id, [...porExec.keys()])))).map((x) => [x.id, x.nome]));
+  const esforco = [...porExec.entries()].filter(([id]) => nomes.has(id)).sort((a, b) => b[1] - a[1]).map(([id, n], i) => ({ posicao: i + 1, nome: id === p.id ? "Você" : nomes.get(id)!.split(" ")[0]!, visitas: n, voce: id === p.id }));
   return {
-    executivo: { id: p.id, nome: p.displayName },
+    executivo: { id: p.id, nome: p.displayName, primeiroNome: p.displayName.split(" ")[0]!, code: p.code },
+    meta: metaDaSemana(p.metaSemanal, faixa, vendasSemana.length),
+    comissaoMesCents: comissoesMes.reduce((t, c) => t + c.valor, 0),
+    nivel: { atual: nomeDoNivel(p.tier), ativos, proximo: proximo ? { nome: proximo.nome, falta: proximo.minimo - ativos } : null },
+    agenda: montarAgenda(hoje, retornos.map((r) => ({ id: r.id, loja: r.loja, contato: r.contato, whatsapp: r.whatsapp, retornoEm: r.retornoEm!, resultado: r.resultado })), planos.map((l) => ({ loja: l.nome, testeAte: l.testeAte, pagoAte: l.pagoAte }))),
+    visitasSemana: porExec.get(p.id) ?? 0,
+    esforco: esforco.slice(0, 5).concat(esforco.slice(5).filter((x) => x.voce)),
+    ultimasVisitas: ultimas.map((v) => ({ id: v.id, loja: v.loja, tipo: v.tipo, resultado: v.resultado, em: v.createdAt })),
     lojas: planos.map((l) => ({ id: l.id, nome: l.nome, pagoAte: l.pagoAte, testeAte: l.testeAte, productKey: l.assinatura?.productKey ?? null, ciclo: l.assinatura?.cycle ?? null })),
     comigo, totalComigoCents: comigo.reduce((t, r) => t + r.valorCents, 0), travado: comigo.some((r) => r.atrasado),
     recibos: recs.map((x) => ({ id: x.r.id, codigo: x.r.codigo, loja: x.loja, valorCents: x.r.valorCents, meio: x.r.meio, status: x.r.status, recebidoEm: x.r.recebidoEm })),
   };
 }
 export type PainelDoExecutivo = Awaited<ReturnType<typeof painelDoExecutivo>>;
+
+export const visitaSchema = z.object({
+  loja: z.string().trim().min(2, "Nome da loja").max(120),
+  storeId: z.string().optional(),
+  contato: z.string().trim().max(80).optional(),
+  whatsapp: z.string().trim().max(20).optional(),
+  tipo: z.enum(["VISITA", "DEMONSTRACAO"]),
+  resultado: z.enum(Object.keys(RESULTADOS_DA_VISITA) as [ResultadoDaVisita, ...ResultadoDaVisita[]]),
+  retornoEm: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data do retorno").optional().or(z.literal("")),
+  observacao: z.string().trim().max(300).optional(),
+});
+
+/** Registra uma visita ou demonstração (BG3): conta nas missões e no ranking de esforço; o retorno entra na agenda. */
+export async function registrarVisita(db: Database, actor: Actor, raw: z.input<typeof visitaSchema>, now = new Date()) {
+  const p = await executivoDoActor(db, actor);
+  const v = visitaSchema.parse(raw);
+  if (v.retornoEm && v.retornoEm < dataSP(now)) throw new DomainError("VISITA_RETORNO", "O retorno precisa ser hoje ou depois.");
+  if (v.resultado === "PENSAR" && !v.retornoEm) throw new DomainError("VISITA_RETORNO", "Quem pediu para pensar precisa de um dia para você voltar.");
+  if (v.storeId) {
+    const s = await db.query.stores.findFirst({ where: eq(stores.id, v.storeId), columns: { partnerId: true } });
+    if (!s || s.partnerId !== p.id) throw new ForbiddenError("Esta loja não é sua.");
+  }
+  // Limite simples contra registro em massa: até 60 registros por dia.
+  const hojeInicio = new Date(`${dataSP(now)}T00:00:00-03:00`).toISOString();
+  const doDia = await db.select({ id: executivoVisitas.id }).from(executivoVisitas).where(and(eq(executivoVisitas.partnerId, p.id), gte(executivoVisitas.createdAt, hojeInicio)));
+  if (doDia.length >= 60) throw new DomainError("VISITA_LIMITE", "Limite de 60 registros por dia.");
+  const id = newId("vis");
+  await db.insert(executivoVisitas).values({ id, partnerId: p.id, storeId: v.storeId || null, loja: v.loja, contato: v.contato || null, whatsapp: v.whatsapp?.replace(/\D/g, "") || null, tipo: v.tipo, resultado: v.resultado, retornoEm: v.retornoEm || null, observacao: v.observacao || null, createdAt: now.toISOString() });
+  return { id };
+}
+
+/** O executivo marca o retorno como feito (sai da agenda). */
+export async function concluirRetorno(db: Database, actor: Actor, visitaId: string, now = new Date()) {
+  const p = await executivoDoActor(db, actor);
+  const v = await db.query.executivoVisitas.findFirst({ where: eq(executivoVisitas.id, visitaId) });
+  if (!v || v.partnerId !== p.id) throw new NotFoundError("Visita não encontrada.");
+  await db.update(executivoVisitas).set({ retornoFeitoEm: now.toISOString() }).where(eq(executivoVisitas.id, visitaId));
+}
+
+/** Master: meta semanal de lojas pagas de um executivo (vazia volta ao padrão da campanha). Só o dono. */
+export async function definirMetaSemanal(db: Database, actor: Actor, partnerId: string, meta: number | null) {
+  if (!isMasterOwner(actor)) throw new ForbiddenError("Só o dono define as metas dos executivos.");
+  const m = meta === null ? null : z.number().int().min(1, "Meta de pelo menos 1 loja").max(100).parse(meta);
+  const p = await db.query.partners.findFirst({ where: eq(partners.id, partnerId) });
+  if (!p?.executivo) throw new NotFoundError("Executivo não encontrado.");
+  await db.update(partners).set({ metaSemanal: m }).where(eq(partners.id, partnerId));
+}
+
+/** Master: o que a equipe fez (visitas, demonstrações e vendas), mais recente primeiro. */
+export async function feedDaEquipe(db: Database, actor: Actor, limite = 40) {
+  if (actor.role !== "NEXTLEVEL_MASTER") throw new ForbiddenError();
+  const [vis, ven] = await Promise.all([
+    db.select({ v: executivoVisitas, nome: partners.displayName }).from(executivoVisitas).innerJoin(partners, eq(partners.id, executivoVisitas.partnerId)).orderBy(desc(executivoVisitas.createdAt)).limit(limite),
+    db.select({ r: executivoRecebimentos, nome: partners.displayName, loja: stores.name }).from(executivoRecebimentos).innerJoin(partners, eq(partners.id, executivoRecebimentos.partnerId)).innerJoin(stores, eq(stores.id, executivoRecebimentos.storeId)).orderBy(desc(executivoRecebimentos.recebidoEm)).limit(limite),
+  ]);
+  const itens = [
+    ...vis.map(({ v, nome }) => ({ id: v.id, em: v.createdAt, executivo: nome, tipo: v.tipo === "DEMONSTRACAO" ? "Demonstração" : "Visita", texto: `${v.loja}: ${RESULTADOS_DA_VISITA[v.resultado].toLowerCase()}${v.retornoEm ? ` · volta ${v.retornoEm.split("-").reverse().slice(0, 2).join("/")}` : ""}` })),
+    ...ven.map(({ r, nome, loja }) => ({ id: r.id, em: r.recebidoEm, executivo: nome, tipo: r.status === "ESTORNADO" ? "Venda estornada" : "Venda", texto: `${loja} · ${formatBRL(r.valorCents)} ${r.meio === "DINHEIRO" ? "em dinheiro" : "na maquininha"} · ${r.codigo}` })),
+  ];
+  return itens.sort((a, b) => b.em.localeCompare(a.em)).slice(0, limite);
+}

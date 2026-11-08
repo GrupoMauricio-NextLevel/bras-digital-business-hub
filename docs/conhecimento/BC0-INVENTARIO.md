@@ -5,6 +5,7 @@
 > - o nome no menu é "Aprender".
 >
 > **Tela no Master (D266):** a base já está em Master → Aprender, com as trilhas por função, as aulas usando os números do sistema, a busca e as Novidades.
+> **Painel do executivo no celular (D274):** meta da semana, comissão e nível no topo; botões Nova venda, Registrar visita, Meu link e Mostrar a demonstração; agenda de retornos e testes acabando; ranking de visitas; argumentos de bolso. Missões da rua contam visitas e demonstrações; o dono define a meta semanal de cada executivo e vê o feed da equipe.
 > **Executivos de venda (D273):** equipe de rua cadastrada pelo dono; venda em dinheiro ou maquininha libera a loja na hora com recibo no WhatsApp; dinheiro entregue em 2 dias úteis (atraso trava novas vendas em dinheiro); prestação de contas no Master lança no caixa; aula "Executivos de venda" na trilha Parceiros.
 > **Página pública de comissões e bônus (D272):** /parceiros/comissoes explica toda a regra com os números de hoje; use-a para responder parceiro com dúvida.
 > **Missões, sequência, selos e ranking (D272):** cartão "Sua semana" no painel do parceiro, sem dinheiro; missões por público (online e rua), sequência de semanas com venda, 9 selos e ranking separado por público; aula "Missões, sequência, selos e ranking" na trilha Parceiros.

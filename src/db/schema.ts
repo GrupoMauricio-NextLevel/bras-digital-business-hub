@@ -1003,6 +1003,8 @@ export const partners = pgTable("partners", {
   status: text("status", { enum: PARTNER_STATUSES }).notNull().default("ACTIVE"),
   /** Executivo de venda da NextLevel (equipe de rua, CX0/D269): cadastrado pelo dono, vende e presta contas do dinheiro. */
   executivo: boolean("executivo").notNull().default(false),
+  /** Meta semanal de lojas pagas do executivo (CX4, D274); vazia = a 1ª faixa da campanha da rua. */
+  metaSemanal: integer("meta_semanal"),
   /** Última competência (YYYY-MM) coberta pela taxa de manutenção do cadastro inativo. */
   feePaidPeriod: text("fee_paid_period"),
   termsVersion: text("terms_version").notNull(),
@@ -2909,3 +2911,22 @@ export const executivoRecebimentos = pgTable("executivo_recebimentos", {
   motivoEstorno: text("motivo_estorno"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("executivo_recebimentos_codigo").on(t.codigo), index("executivo_recebimentos_partner_idx").on(t.partnerId, t.status)]);
+
+/**
+ * Visitas e demonstrações do executivo na rua (CX4 + BG3, D274): alimentam as missões, o ranking de esforço e a agenda
+ * de retornos. Nada aqui paga nada.
+ */
+export const executivoVisitas = pgTable("executivo_visitas", {
+  id: id(),
+  partnerId: text("partner_id").notNull().references(() => partners.id),
+  storeId: text("store_id").references(() => stores.id),
+  loja: text("loja").notNull(),
+  contato: text("contato"),
+  whatsapp: text("whatsapp"),
+  tipo: text("tipo", { enum: ["VISITA", "DEMONSTRACAO"] }).notNull(),
+  resultado: text("resultado", { enum: ["INTERESSADO", "PENSAR", "NAO_QUIS", "CADASTROU", "VENDEU"] }).notNull(),
+  retornoEm: text("retorno_em"),
+  retornoFeitoEm: ts("retorno_feito_em"),
+  observacao: text("observacao"),
+  createdAt: createdAt(),
+}, (t) => [index("executivo_visitas_partner_idx").on(t.partnerId, t.createdAt)]);

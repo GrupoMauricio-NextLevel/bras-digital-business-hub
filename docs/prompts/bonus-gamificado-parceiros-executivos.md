@@ -6,7 +6,7 @@
 > - tela "Bônus e metas" no Master;
 > - cartão de progresso no painel do parceiro.
 >
-> Próximas: BG3 (painel do executivo, junto da CX4) e BG4 (relatório de retorno).
+> BG3 no ar (D274): visitas e demonstrações registradas no painel do executivo contam nas missões da rua e no ranking de esforço. Próxima: BG4 (relatório de retorno).
 
 **Pedido do dono (07/11/2026):**
 - "Estou preocupado somente com minha margem. Bônus podem existir, mas não podem ser valores que me prejudiquem."

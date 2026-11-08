@@ -124,7 +124,7 @@ export function aulas(f: Fatos): Aula[] {
         "Ranking da semana e do mês, separado entre online e rua, mostra a posição e quanto falta para passar quem está logo acima.",
       ],
       dizer: ["\"Olha quanto falta para você passar o próximo do ranking.\""], nunca: ["Prometer dinheiro por missão ou selo."] },
-    { id: "executivos", trilha: "parceiros", titulo: "Executivos de venda: venda na rua e prestação de contas", estado: "no-ar", decisoes: ["D273"],
+    { id: "executivos", trilha: "parceiros", titulo: "Executivos de venda: venda na rua e prestação de contas", estado: "no-ar", decisoes: ["D273", "D274"],
       oQue: "Os executivos são a equipe de rua da NextLevel: cadastrados só pelo dono, vendem em dinheiro ou na maquininha, liberam a loja na hora e prestam contas do dinheiro.",
       regra: [
         "Comissão igual à dos parceiros (nível e CPF ou CNPJ); bônus pelas campanhas da rua.",
@@ -133,6 +133,9 @@ export function aulas(f: Fatos): Aula[] {
         "Maquininha do vendedor cai na conta do Mercado Pago: o Master confere e lança.",
         "Prestação de contas: Master → Executivos de venda → Receber agora, que lança no caixa de hoje (dinheiro na gaveta do Mauricio; maquininha no Mercado Pago).",
         "Venda ainda com o executivo pode ser estornada: a fatura é cancelada, a comissão é desfeita e o período volta.",
+        "Painel no celular: meta da semana, comissão do mês e nível no topo; botões Nova venda, Registrar visita, Meu link e Mostrar a demonstração.",
+        "Registrar visita: loja, contato, como foi e o dia da volta (obrigatório para quem pediu para pensar). O retorno entra na agenda, junto dos testes que acabam em 7 dias.",
+        "Visitas e demonstrações contam nas missões da rua e no ranking de esforço (sem dinheiro). O dono define a meta semanal de cada executivo no Master.",
       ],
       dizer: ["\"Pode pagar em dinheiro comigo: sua loja já fica liberada e o recibo chega no seu WhatsApp.\""], nunca: ["Dar desconto na rua (só o dono e o Financeiro).", "Ficar com o dinheiro além do prazo."], link: { rotulo: "Abrir Executivos de venda", href: "/master/partners/executivos" } },
     { id: "saque", trilha: "parceiros", titulo: "Saque, garantia e link", estado: "no-ar", decisoes: ["D248", "D260"],

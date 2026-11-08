@@ -145,8 +145,8 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
     ],
     executivos: () => [
       q("O executivo recebeu em dinheiro. Quando a loja do cliente é liberada?", "Na hora da venda", ["Quando o dinheiro chega ao caixa", "Em 2 dias úteis", "Só no fim do mês"]),
-      q("Qual o prazo para o executivo entregar o dinheiro?", "2 dias úteis", ["30 dias", "No mesmo dia, sempre", "Quando quiser"]),
-      q("O que acontece se o executivo atrasar a entrega?", "Ele não registra nova venda em dinheiro até entregar", ["A loja do cliente é bloqueada", "Perde a comissão", "Nada"]),
+      q("O executivo passou dos 2 dias úteis sem entregar o dinheiro. E agora?", "Ele não registra nova venda em dinheiro até entregar", ["A loja do cliente é bloqueada", "Perde a comissão", "Nada"]),
+      q("O lojista pediu para pensar. O que o executivo registra?", "A visita com o dia da volta, que entra na agenda", ["Nada", "Uma venda", "Um estorno"]),
     ],
     missoes: () => [
       q("Missão cumprida paga dinheiro?", "Não: dá selo e reconhecimento", ["Sim, sempre", "Só no fim do mês", "Só para a rua"]),
