@@ -123,6 +123,6 @@ export function sugestaoDaCampanha(r: ResumoDoRetorno, orcamentoCents: number, p
   if (r.semOrcamento > 0) return { tom: "warning", texto: `O orçamento acabou: ${r.semOrcamento} prêmio(s) ficaram sem pagamento. Aumente o orçamento por período ou reduza os valores das faixas.` };
   if (r.paybackMeses !== null && r.paybackMeses > 2) return { tom: "danger", texto: `Retorno lento: a margem das lojas novas leva ${r.paybackMeses.toLocaleString("pt-BR")} meses para pagar o bônus. Reduza os valores das faixas em cerca de 20%.` };
   if (r.premiados === 0 && r.lojasNovas > 0 && r.periodos >= 4) return { tom: "warning", texto: "Houve vendas, mas ninguém chegou à 1ª faixa em 4 ou mais períodos. Baixe a meta da 1ª faixa para o bônus voltar a motivar." };
-  if (r.premiados > 0 && r.paybackMeses !== null && r.paybackMeses <= 1 && r.custoCents < orcamentoCents * Math.max(1, periodosComGasto) * 0.3) return { tom: "success", texto: "Retorno rápido (até 1 mês) e orçamento folgado. Dá para subir o valor da faixa de cima, sempre dentro do teto por loja." };
+  if (r.premiados > 0 && r.paybackMeses !== null && r.paybackMeses <= 1 && r.custoCents < orcamentoCents * Math.max(1, periodosComGasto) * 0.3) return { tom: "success", texto: "Retorno rápido (até 1 mês) e orçamento folgado. Se quiser motivar mais, dá para subir o valor da faixa de cima; o teto por loja continua protegendo a margem." };
   return { tom: "success", texto: "Equilibrada: mantenha como está e reveja no próximo mês." };
 }

@@ -84,7 +84,7 @@ export default async function BonusPage() {
                 <div><dt className="text-xs text-muted-foreground">Receita nova por mês</dt><dd className="font-bold tabular-nums">{formatBRL(c.resumo.receitaNovaMensalCents)}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">Custo do bônus</dt><dd className="font-bold tabular-nums">{formatBRL(c.resumo.custoCents)}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">Custo por loja · por ponto</dt><dd className="font-bold tabular-nums">{c.resumo.custoPorLojaCents === null ? "—" : formatBRL(c.resumo.custoPorLojaCents)} · {c.resumo.custoPorPontoCents === null ? "—" : formatBRL(c.resumo.custoPorPontoCents)}</dd></div>
-                <div><dt className="text-xs text-muted-foreground">Se paga em</dt><dd className="font-bold tabular-nums">{c.resumo.paybackMeses === null ? "—" : c.resumo.custoCents === 0 ? "sem custo" : `${c.resumo.paybackMeses.toLocaleString("pt-BR")} mês(es)`}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Se paga em</dt><dd className="font-bold tabular-nums">{c.resumo.paybackMeses === null ? "—" : c.resumo.custoCents === 0 ? "sem custo" : c.resumo.paybackMeses < 1 ? `${Math.max(1, Math.round(c.resumo.paybackMeses * 30))} dias` : `${c.resumo.paybackMeses.toLocaleString("pt-BR")} meses`}</dd></div>
               </dl>
               <p className={`mt-3 rounded-lg border p-2 text-sm ${c.sugestao.tom === "danger" ? "border-danger/40 bg-danger-soft" : c.sugestao.tom === "warning" ? "border-warning/40 bg-warning-soft" : c.sugestao.tom === "success" ? "border-success/40 bg-success-soft" : "border-border bg-surface-muted"}`}><b>Sugestão:</b> {c.sugestao.texto}</p>
               {c.periodos.length ? (
