@@ -1,35 +1,26 @@
 # Série de apresentações comerciais para o YouTube (NextLevel E-commerce)
 
-> Estado: **PLANO PRONTO, AGUARDANDO O DONO** (08/11/2026). Nenhum PDF da série foi gerado ainda.
-> Base aproveitada: o guia de migração Nuvemshop → NextLevel feito para uma cliente (19 páginas), com o mesmo design, as mesmas regras de fonte e as correções de exibição no iPhone.
-> Pedido do dono: uma apresentação comercial de ponta a ponta, dividida em materiais individuais. Cada PDF guia a gravação de um vídeo do YouTube e conecta com o público-alvo.
-> Ordem normativa: Constituição > `docs/design/DECISIONS.md` > este documento. Regras que não mudam: textos em português claro, sem promessa de ganho, comparação agressiva só com fonte e data, preços de serviço só em reunião de orçamento.
+> Estado: **PLANO SIMPLIFICADO, AGUARDANDO O DONO** (09/11/2026). Nenhum PDF da série foi gerado ainda.
+> Revisão do dono (09/11): **menos PDFs, capítulos unidos no mesmo vídeo**; a história da NextLevel entra curta (a trajetória do fundador no Brás); **todo vídeo termina com um gancho para a Black Friday**.
+> Base aproveitada: o guia de migração Nuvemshop → NextLevel (mesmo design, mesmas regras de fonte e as correções de exibição no iPhone).
+> Ordem normativa: Constituição > `docs/design/DECISIONS.md` > este documento. Regras que não mudam: português claro, sem promessa de ganho, comparação agressiva só com fonte e data, preço de serviço só em reunião de orçamento.
 
 ---
 
 ## 1. Resposta curta
 
-- **16 PDFs**, divididos em **6 temporadas**. Cada PDF vira um vídeo longo de 8 a 15 minutos e rende de 3 a 6 cortes curtos (Shorts e Reels).
-- **Grave primeiro estes 6**, porque aproximam o 10º lojista pagante (regra 60/25/15, D174):
-  - 01 Por que ter loja virtual;
-  - 07 Diferenciais;
-  - 09 Lupa nos concorrentes;
-  - 10 Custo de verdade;
-  - 11 Migração;
-  - 14 Programa de parceiros.
-- **Dez temas que estavam de fora** e entraram na lista (seção 4):
-  - história e manifesto da NextLevel;
-  - loja própria × só Instagram × marketplace;
-  - custo total de verdade;
-  - tour pela plataforma;
-  - design e temas;
-  - marketing, WhatsApp e estúdio;
-  - segurança e pagamento;
-  - como ganhar como parceiro, executivos de rua;
-  - primeiros passos e objeções;
-  - atacado do Brás como nicho próprio.
-
----
+- **6 PDFs, um por vídeo**, em vez de 16. Cada vídeo junta capítulos que antes eram PDFs separados.
+- **Tamanho:** cada vídeo tem de 15 a 20 minutos, com capítulos marcados na descrição, e cada PDF tem de 18 a 24 slides.
+- **Cortes:** cada vídeo rende de 5 a 8 cortes curtos (Shorts e Reels), um por capítulo forte.
+- **Final de todo vídeo:** um gancho para a Black Friday, com o anual de 2 meses grátis e o preço travado enquanto for cliente, válido até 30/11. Depois de 30/11, esse slide é trocado pela chamada permanente (seção 6).
+- **História da NextLevel:** entra curta, num slide do vídeo 1 (seção 5). O fundador tem trajetória no Brás internacionalizando empresas chinesas no Brasil e digitalizando importadoras chinesas, e foi assim que tudo começou.
+- **Ordem de gravação, para publicar tudo antes de 30/11:**
+  1. vídeo 4 (concorrência e migração);
+  2. vídeo 1 (por que vender online);
+  3. vídeo 3 (NextLevel por dentro);
+  4. vídeo 6 (parceiros);
+  5. vídeo 2 (nichos);
+  6. vídeo 5 (crescer).
 
 ## 2. Objetivo da série
 
@@ -37,7 +28,7 @@
    - criar a loja (3 dias grátis);
    - pedir o diagnóstico gratuito;
    - migrar.
-2. **Atrair parceiros:** quem indica pelo CPF, criadores, vendedores e agências, mostrando que o nosso programa é o maior e o mais simples de receber.
+2. **Atrair parceiros:** quem indica pelo CPF, criadores, vendedores e agências, mostrando, com a regra publicada de cada concorrente, que o nosso programa paga todo mês e é o mais simples de receber.
 3. **Formar a equipe comercial e os executivos de rua.** Os mesmos PDFs servem de roteiro de venda e de treino; a base de conhecimento (D264) aponta para eles.
 4. **Construir autoridade:** a NextLevel como especialista, com tecnologia própria, design, marketing e estúdio no mesmo time.
 
@@ -74,79 +65,63 @@ Cada vídeo tem um link próprio com UTM para medir.
 
 ---
 
-## 4. O que estava de fora (e entrou)
+## 4. Como os 16 temas viraram 6 vídeos
 
-| # | Tema que faltava | Por que importa |
-|---|---|---|
-| 1 | **Quem somos: história e manifesto** (Mauricio, a equipe, o estúdio, o Brás) | Conexão: as pessoas compram de pessoas. Abre a série e dá rosto à marca |
-| 2 | **Loja própria × só Instagram × marketplace** | É a objeção nº 1 de quem nunca teve loja: "já vendo no Instagram" |
-| 3 | **Quanto custa de verdade** (calculadora de custo total: mensalidade, tarifa, apps, suporte) | Transforma "taxa zero" em reais por ano, que é o que convence |
-| 4 | **Tour pela plataforma** (painel, editor, pagamento, frete, IA) | Mostra o produto funcionando: tira o medo do "é difícil" |
-| 5 | **Design e temas: a vitrine que vende** | O que o lojista vê primeiro; os temas e o projeto exclusivo |
-| 6 | **Marketing que vende** (WhatsApp, Instagram, anúncios e estúdio) | A loja sem tráfego não vende; mostra a bagagem de agência |
-| 7 | **Segurança e pagamento** (dinheiro direto na conta, pagamento conferido, dados) | Confiança: o lojista tem medo de golpe e de perder dinheiro |
-| 8 | **Como ganhar como parceiro** (perfis, níveis, bônus, executivos de rua) | Complementa o comparativo de programas com o "como fazer" |
-| 9 | **Primeiros passos + perguntas frequentes e objeções** | Fecha a série e serve de vídeo de "fundo de funil" |
-| 10 | **Atacado do Brás** como nicho próprio | É a nossa vantagem mais clara: Nuvemshop e Loja Integrada não têm atacado nativo |
+| Vídeo | Capítulos que ele junta (antigos PDFs) |
+|---|---|
+| 1 · Por que vender online | 01 Por que ter loja virtual · 02 Loja própria × Instagram × marketplace · a trajetória do fundador (do 16) |
+| 2 · Uma loja para cada nicho | 03 Mapa dos nichos · 04 Moda · 05 Atacado do Brás · 06 Beleza, casa, celular e esporte |
+| 3 · A NextLevel por dentro | 07 Diferenciais · 08 Tour pela plataforma · 12 Design e temas · segurança e pagamento (do 16) |
+| 4 · Concorrência e migração | 09 Lupa nos concorrentes · 10 Quanto custa de verdade · 11 Migração sem dor |
+| 5 · Crescer e começar | 13 Marketing, WhatsApp, Instagram, anúncios e estúdio · primeiros passos e objeções (do 16) |
+| 6 · Parceiros | 14 Nosso programa × o dos concorrentes · 15 Como ganhar como parceiro (com os executivos de rua) |
 
-Também ficam de fora da série, mas registrados:
-- **Casos de clientes e depoimentos.** Só entram quando existirem de verdade e com autorização; nunca inventar.
-- **Episódio sazonal da Black Friday.** Só se for gravado e publicado antes de 30/11.
+Nada do plano anterior se perdeu: só foi agrupado. Casos e depoimentos continuam só reais e autorizados.
 
----
+## 5. A série: 6 vídeos
 
-## 5. A série: 16 PDFs em 6 temporadas
+| Vídeo | Título de trabalho | Público principal | Capítulos (cada um vira um corte curto) |
+|---|---|---|---|
+| **1** | Por que a sua loja precisa estar na internet (e por que com a NextLevel) | Todo lojista | A internet não fecha · A viagem de uma compra · Instagram × marketplace × loja própria · Os 5 benefícios · De onde viemos · Começar é simples |
+| **2** | Uma loja para cada nicho: moda, atacado, beleza, casa, celular e esporte | Lojistas por nicho | Cada nicho compra de um jeito · Moda · Atacado do Brás · Beleza · Casa · Celular · Esporte |
+| **3** | A NextLevel por dentro: diferenciais, plataforma e design | Quem está escolhendo | 10 diferenciais · Tour da primeira foto ao pedido · Temas e projeto exclusivo · Segurança e pagamento |
+| **4** | Nuvemshop, Loja Integrada, Tray, WBuy ou Shopify? A lupa, a conta e a migração | Quem está em outra plataforma | Placar geral · A lupa em cada concorrente · Quanto custa de verdade · Migração sem parar de vender |
+| **5** | Como fazer a loja vender: WhatsApp, Instagram, anúncios e conteúdo | Lojas publicadas e quem vai começar | O funil simples · Automação de WhatsApp · Automação de Instagram · Anúncios · Estúdio de conteúdo · Primeiros passos e objeções |
+| **6** | O maior programa de parceiros do e-commerce brasileiro (com fonte) | Parceiros: CPF, criadores, vendedores, agências | Como funciona · Nossa régua · Raio-x dos concorrentes · Disputa de renda · Bônus e missões · Como começar |
 
-Cada linha vira um PDF próprio, com o roteiro detalhado na seção 9.
+> **Atenção ao título do vídeo 6:** "o maior" só pode ir ao ar se a comparação da seção 8.4 sustentar isso. Hoje ela sustenta para a renda que se repete todo mês (simulador nos meses 18, 24 e 36), não para todos os critérios. Alternativa segura: "O programa de parceiros que paga todo mês, sem nota fiscal".
 
-| PDF | Temporada | Título de trabalho | Público principal | Prioridade |
-|---|---|---|---|---|
-| 01 | A · Por que vender online | Por que a sua loja precisa estar na internet agora | Todos os lojistas | **1ª onda** |
-| 02 | A | Loja própria × só Instagram × marketplace | Lojista do Instagram | 2ª onda |
-| 03 | B · Nichos | Mapa dos nichos que mais vendem online e como a NextLevel se molda a cada um | Todos | 2ª onda |
-| 04 | B | Moda: varejo, marca própria e lookbook | Moda | 2ª onda |
-| 05 | B | Atacado do Brás: caixa fechada, grade e revenda pelo Brasil | Atacadista | 2ª onda |
-| 06 | B | Beleza, casa, celular e esporte: soluções por nicho | Esses nichos | 3ª onda |
-| 07 | C · NextLevel por dentro | Nossos diferenciais e as soluções que trazemos na bagagem | Todos | **1ª onda** |
-| 08 | C | Tour pela plataforma: da primeira foto ao pedido entregue | Quem vai começar | 2ª onda |
-| 09 | D · Concorrência | A lupa nos concorrentes: Nuvemshop, Loja Integrada, Tray, WBuy e Shopify | Quem está em outra plataforma | **1ª onda** |
-| 10 | D | Quanto custa de verdade: a conta que as plataformas não mostram | Quem está em outra plataforma | **1ª onda** |
-| 11 | D | Migração sem dor: troque de plataforma sem parar de vender | Quem está em outra plataforma | **1ª onda** |
-| 12 | E · Crescer | Design, temas e o projeto exclusivo: a vitrine que vende | Marca própria | 2ª onda |
-| 13 | E | Marketing que vende: WhatsApp, Instagram, anúncios e estúdio de conteúdo | Lojas publicadas | 2ª onda |
-| 14 | F · Parceiros | O maior programa de parceiros × os programas dos concorrentes | Parceiros | **1ª onda** |
-| 15 | F | Como ganhar como parceiro: CPF, criador, vendedor, agência e executivo de rua | Parceiros | 2ª onda |
-| 16 | G · Confiança e começo | Quem somos, segurança e primeiros passos (com as objeções respondidas) | Todos | 2ª onda |
-
-**Ordem de gravação sugerida:**
-1. **Primeira onda (6 vídeos):** 01, 07, 09, 10, 11, 14.
-2. **Segunda onda (8 vídeos):** 16, 02, 08, 05, 04, 12, 13, 15.
-3. **Terceira onda:** 03, 06 e as atualizações (preços, fontes, temas novos).
-
-> **Por que 16 e não menos:** cada vídeo do YouTube precisa de uma promessa só. Juntar temas deixa o vídeo longo e o título fraco. Com 16, cada um responde a uma busca real ("vale a pena sair da Nuvemshop", "como vender atacado online", "programa de afiliados que paga todo mês") e os cortes curtos alimentam o Instagram por meses.
-
----
-
-## 6. Anatomia padrão de cada PDF (12 a 16 slides)
+## 6. Anatomia padrão de cada PDF (18 a 24 slides)
 
 | Bloco | Slides | O que faz |
 |---|---|---|
-| 1. Capa | 1 | Título-promessa, nome da série e número do episódio, foto da equipe ou do produto |
-| 2. Gancho | 1 | Uma dor + um número com fonte. É o que segura os primeiros 15 segundos |
-| 3. Contexto | 2 a 3 | Por que isso importa agora, na linguagem do público |
-| 4. Lupa / dados | 2 a 4 | Os números, sempre com fonte e data no rodapé; gráficos validados (seção 7.3) |
-| 5. A solução NextLevel | 2 a 4 | Como resolvemos, com print real do produto ou foto real da equipe |
-| 6. Prova | 1 a 2 | Demonstração (loja de demonstração, painel), garantias, transparência ("justiça seja feita") |
-| 7. Chamada final | 1 | Uma ação só: criar a loja, pedir diagnóstico ou virar parceiro. QR code e link curto |
-| 8. Ponte | 1 | "No próximo episódio…" para manter a pessoa na série |
+| 1. Capa | 1 | Título-promessa, número do vídeo na série, foto da equipe ou do produto |
+| 2. Gancho | 1 | Uma dor + um número com fonte (segura os primeiros 15 segundos) |
+| 3. Mapa do vídeo | 1 | Os capítulos, que são os mesmos da descrição do YouTube |
+| 4. Capítulos | 3 a 5 por capítulo | Para cada capítulo: abertura (a dor), dados com fonte, a solução NextLevel com print ou foto real, e uma frase-resumo que vira corte curto |
+| 5. Resumo | 1 | Os pontos do vídeo numa tela |
+| 6. Chamada | 1 | Uma ação só: criar a loja, pedir diagnóstico ou virar parceiro. QR code e link curto |
+| 7. **Gancho Black Friday** | 1 | Sempre o penúltimo slide (veja abaixo) |
+| 8. Ponte | 1 | "No próximo vídeo…" |
+
+**O slide da Black Friday, igual em todos os vídeos (só o texto de abertura muda conforme o tema):**
+- **Título:** "Black Friday NextLevel: anual com 2 meses grátis e preço travado enquanto você for cliente."
+- **Contagem:** "Válido até 30/11", com a data escrita. Nada de relógio animado: o PDF é estático.
+- **Ligação com o vídeo:**
+  - vídeo 1: "comece agora";
+  - vídeo 2: "monte a loja do seu nicho";
+  - vídeo 3: "teste a plataforma";
+  - vídeo 4: "migre na Black e trave o preço";
+  - vídeo 5: "chegue em dezembro vendendo";
+  - vídeo 6: "a Black é a melhor época para indicar".
+- **Para parceiros (vídeo 6):** a chamada é indicar na Black. Nunca prometer comissão extra se não houver campanha de bônus ativa naquele período.
+- **Regra de validade:** antes de gravar, conferir no Master se a campanha da Black continua com as mesmas condições. **Depois de 30/11**, trocar pelo slide permanente: "3 dias grátis e diagnóstico gratuito". O gerador deve ter as duas versões e escolher pela data.
 
 **Regras de roteiro:**
 - uma ideia por slide;
-- no máximo 25 palavras de texto visível por slide (o resto vai na fala);
-- todo número tem fonte e data;
-- todo vídeo termina com uma chamada só.
-
----
+- no máximo 25 palavras visíveis por slide;
+- todo número com fonte e data;
+- uma chamada só por vídeo, mais o gancho da Black.
 
 ## 7. Sistema visual (vale para todos os PDFs)
 
@@ -318,301 +293,130 @@ A Loja Integrada fica fora do comparativo de parceiros, por decisão do dono.
 - esporte (camisas, treino, marca própria);
 - atacado (caixa fechada, importadores, importadora de marca própria).
 
-> **Falta fonte:** dados de demanda por nicho no Brasil (quais categorias mais vendem online). Antes do PDF 03, buscar e citar fonte oficial com data. Candidatas: relatório Webshoppers (NielsenIQ Ebit), ABComm, Conversion (relatório de setores) e Google Trends. Sem fonte, o PDF fala dos nichos pelos nossos temas e soluções, sem ranking de mercado.
+> **Falta fonte:** dados de demanda por nicho no Brasil (quais categorias mais vendem online). Antes do vídeo 2, buscar e citar fonte oficial com data. Candidatas: relatório Webshoppers (NielsenIQ Ebit), ABComm, Conversion (relatório de setores) e Google Trends. Sem fonte, o PDF fala dos nichos pelos nossos temas e soluções, sem ranking de mercado.
 
 ---
 
-## 9. Briefing de cada PDF
+## 9. Briefing de cada vídeo
 
-Formato de cada briefing: promessa, gancho, estrutura slide a slide, dados, visuais, chamada final, título e capa do vídeo.
+### Vídeo 1 · Por que a sua loja precisa estar na internet (e por que com a NextLevel)
 
-### PDF 01 · Por que a sua loja precisa estar na internet agora
-
-- **Promessa:** entender em 10 minutos por que vender online deixou de ser opcional e o que muda no dia a dia.
+- **Promessa:** em 15 minutos, entender por que vender online deixou de ser opcional, qual canal usar e como começar sem complicação.
 - **Gancho:** "Sua loja fecha às 18h. A internet não fecha." Mostrar a loja aberta de madrugada recebendo um pedido.
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Loja de rua × loja na internet (horário, alcance, custo do ponto).
-  4. A viagem de uma compra: vitrine, carrinho, checkout, entrega.
-  5. Quem já compra online. Dado de mercado só com fonte; se não houver, usar o argumento do comportamento sem números.
-  6. Os 5 benefícios:
-     - aberta 24 horas;
-     - Brasil inteiro;
-     - dinheiro na conta;
-     - organização;
-     - a marca valorizada.
-  7. O que você precisa para começar (fotos, produtos, Pix): menos do que imagina.
-  8. Como é com a NextLevel: loja pronta no mesmo dia, tema grátis.
-  9. Taxa zero da plataforma: a margem fica com você.
-  10. Medo comum: "é difícil" → tour rápido do editor.
-  11. Chamada: 3 dias grátis.
-  12. Ponte para o PDF 02.
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa do vídeo.
+  2. **A internet não fecha:** loja de rua × loja na internet (horário, alcance, custo do ponto).
+  3. **A viagem de uma compra:** vitrine, carrinho, checkout, entrega. "Checkout" explicado como o caixa.
+  4. **Instagram × marketplace × loja própria:**
+     - os três lado a lado (alcance, custo, quem é dono do cliente, dependência do algoritmo);
+     - só o Instagram e o WhatsApp: pedido no caderno e venda perdida à noite;
+     - marketplace: comissão citada só com fonte;
+     - o melhor dos três: loja própria com os pedidos do Instagram e do WhatsApp no mesmo painel.
+  5. **Os 5 benefícios:** aberta 24 horas, Brasil inteiro, dinheiro na conta, organização, marca valorizada.
+  6. **De onde viemos (1 slide):** "O fundador da NextLevel construiu a trajetória no Brás, internacionalizando empresas chinesas no Brasil e digitalizando importadoras chinesas. Foi assim que tudo começou: levando quem vende no Brás para a internet." Foto do Mauricio no escritório.
+  7. **Começar é simples:** loja pronta no mesmo dia, tema grátis, taxa zero da plataforma, 3 dias grátis.
+  8. Resumo · Chamada (criar a loja) · **Gancho Black** ("comece agora com 2 meses grátis no anual") · Ponte para o vídeo 2.
 - **Visuais:**
   - comparativo loja de rua × internet (ícones);
   - linha do tempo da compra;
-  - loja de demonstração no celular.
-- **Título:** "Por que a sua loja precisa estar na internet (e como começar sem complicação)".
-- **Capa do vídeo:** Mauricio + celular com loja aberta + "ABERTA 24H".
+  - tabela das três colunas;
+  - celular com a loja de demonstração;
+  - foto do fundador.
+- **Título do vídeo:** "Por que a sua loja precisa estar na internet (e como começar sem complicação)".
 
-### PDF 02 · Loja própria × só Instagram × marketplace
+### Vídeo 2 · Uma loja para cada nicho
 
-- **Promessa:** saber quando cada canal faz sentido e por que a loja própria é a base de todos.
-- **Gancho:** "O Instagram pode mudar o algoritmo amanhã. A sua loja é sua."
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Os três caminhos lado a lado (alcance, custo, controle do cliente, dependência).
-  4. Só Instagram e WhatsApp: pedido no caderno, venda perdida à noite.
-  5. Marketplace: alcance alto, comissão e regras de quem manda. Citar a comissão com fonte, se for usar número.
-  6. Loja própria: o cliente é seu, a marca é sua.
-  7. O melhor dos três: loja + Instagram + WhatsApp no mesmo painel (pedidos do WhatsApp e do Instagram entram na NextLevel).
-  8. Exemplo de rotina de um lojista (manhã, tarde, noite).
-  9. Chamada.
-  10. Ponte.
+- **Promessa:** ver o que o seu nicho precisa ter na loja para vender e como a NextLevel já vem pronta para ele.
+- **Gancho:** "Loja de moda não pode ser igual à de celular. Cada nicho compra de um jeito."
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa.
+  2. **Cada nicho compra de um jeito:** mapa dos 6 nichos. Dado de mercado só com fonte (seção 8.5); sem fonte, sem ranking.
+  3. **Moda:** tamanho, foto, troca e marca genérica → grade e variações, lookbook (Atelier, Trama, Editorial, Signature), banners, estúdio de conteúdo.
+  4. **Atacado do Brás:** grade fechada, preço por quantidade, pedido mínimo, varejo e atacado na mesma loja, revenda pelo Brasil. Comparativo de atacado nativo por plataforma, com fonte (Nuvemshop e Loja Integrada não têm). Temas Lote, Galpão, Porto e Fardo.
+  5. **Beleza:** confiança, fotos de textura, kits (Aura, Musa, Brilho, Pétala).
+  6. **Casa:** fotos de ambiente, medidas, entrega (Morada, Varanda, Lar, Ninho).
+  7. **Celular e acessórios:** compatibilidade, garantia, giro rápido (Órbita, Circuito, Pulso, Sinal).
+  8. **Esporte:** coleção, personalização, camisas (Pódio, Arena, Lance, Torcida).
+  9. Resumo · Chamada (diagnóstico gratuito do seu nicho) · **Gancho Black** ("monte a loja do seu nicho na Black") · Ponte.
 - **Visuais:**
-  - tabela de três colunas com ícones;
-  - mockup do celular com o pedido entrando no painel.
+  - mosaico das lojas de demonstração ao vivo por nicho;
+  - um slide-padrão por nicho: a dor à esquerda, a loja à direita;
+  - print da matriz de grade no capítulo do atacado.
 
-### PDF 03 · Mapa dos nichos que mais vendem online
+### Vídeo 3 · A NextLevel por dentro
 
-- **Promessa:** ver onde o seu nicho está e o que ele precisa ter na loja para vender.
-- **Gancho:** "Cada nicho compra de um jeito. Loja de moda não pode ser igual à de celular."
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Mapa dos 6 nichos.
-  4. Dado de demanda com fonte (seção 8.5).
-  5. Do que cada nicho precisa: grade e lookbook (moda), confiança e avaliações (beleza), fotos de ambiente (casa), compatibilidade e garantia (celular), personalização e coleção (esporte), grade fechada e pedido mínimo (atacado).
-  6. Como a NextLevel se molda: temas por nicho e recursos ligados ao nicho.
-  7. Galeria de temas por nicho.
-  8. Chamada: diagnóstico gratuito do seu nicho.
-  9. Ponte para o PDF 04 ou 05.
-- **Visuais:** mosaico dos temas, uma cor de destaque por nicho (sem arco-íris; ícones e rótulos fazem a identidade).
-
-### PDF 04 · Moda: varejo, marca própria e lookbook
-
-- **Promessa:** como montar uma loja de moda que vende e valoriza a marca.
-- **Estrutura:**
-  1. Capa.
-  2. Gancho ("foto boa vende, grade certa entrega").
-  3. As 4 dores da moda online: tamanho errado, foto ruim, troca, marca que parece genérica.
-  4. Grade e variações (cor e tamanho).
-  5. Lookbook e coleção nos temas Atelier, Trama, Editorial e Signature.
-  6. Banners de campanha e Black.
-  7. Pós-venda e troca.
-  8. Estúdio de conteúdo (reels e criativos).
-  9. Design exclusivo.
-  10. Chamada.
-- **Visuais:** lojas de demonstração de moda, fotos do estúdio.
-
-### PDF 05 · Atacado do Brás: caixa fechada, grade e revenda
-
-- **Promessa:** vender atacado online sem planilha e sem grade errada.
-- **Gancho:** "Nuvemshop e Loja Integrada não têm atacado nativo. Aqui é de fábrica." (fonte: seção 8.2)
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. A rotina do atacadista hoje (WhatsApp, planilha, grade errada).
-  4. Grade fechada e matriz por modelo.
-  5. Preço por quantidade e pedido mínimo.
-  6. Varejo e atacado na mesma loja.
-  7. Revendedores de todo o Brasil: frete e rastreio.
-  8. Comparativo de atacado nativo por plataforma (tabela da seção 8.2).
-  9. Executivos de rua da NextLevel no Brás.
-  10. Chamada.
-- **Visuais:**
-  - temas Lote, Galpão, Porto e Fardo;
-  - print da matriz de grade;
-  - tabela com marcação de quem tem e quem não tem.
-
-### PDF 06 · Beleza, casa, celular e esporte
-
-- **Promessa:** a solução certa para cada um desses nichos, em um vídeo.
-- **Estrutura:**
-  1. Capa.
-  2. Um bloco de 2 slides por nicho: dor do nicho + como a loja resolve, com o tema do nicho:
-     - Aura, Musa, Brilho e Pétala (beleza);
-     - Morada, Varanda, Lar e Ninho (casa);
-     - Órbita, Circuito, Pulso e Sinal (celular);
-     - Pódio, Arena, Lance e Torcida (esporte).
-  3. Chamada.
-- **Observação:** pode virar 4 vídeos curtos de 4 minutos, se o canal preferir.
-
-### PDF 07 · Nossos diferenciais e as soluções que trazemos na bagagem
-
-- **Promessa:** o que a NextLevel faz que as outras não fazem, em 10 pontos.
+- **Promessa:** conhecer os diferenciais, ver a plataforma funcionando e entender por que é seguro.
 - **Gancho:** "Plataforma de loja todo mundo tem. Um time inteiro do seu lado, não."
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Taxa zero da plataforma.
-  4. Atacado nativo.
-  5. Suporte humano por WhatsApp desde o 1º plano.
-  6. Tecnologia própria (não revendemos sistema).
-  7. Estúdio de design: temas e projeto exclusivo.
-  8. Marketing e anúncios.
-  9. Estúdio de gravação e conteúdo.
-  10. Inteligência artificial.
-  11. Migração feita pela equipe.
-  12. Programa de parceiros e executivos de rua (presença no Brás).
-  13. Resumo em uma tela.
-  14. Chamada.
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa.
+  2. **Os 10 diferenciais:**
+     - taxa zero;
+     - atacado nativo;
+     - suporte humano por WhatsApp desde o 1º plano;
+     - tecnologia própria;
+     - estúdio de design;
+     - marketing e anúncios;
+     - estúdio de gravação;
+     - inteligência artificial;
+     - migração feita pela equipe;
+     - presença no Brás com executivos de rua.
+     Mais uma faixa de números de destaque (0%, 1 time, 26 temas, 3 dias grátis).
+  3. **Tour da primeira foto ao pedido:** cadastro, tema, editor visual, produtos (um a um ou planilha), pagamento, frete, publicar, primeiro pedido, painel com a fila do dia, IA na descrição. Este capítulo combina com gravação de tela ao vivo.
+  4. **Temas e projeto exclusivo:** temas grátis e premium; celular primeiro; o projeto exclusivo (direção de arte, seções sob medida, banners, duas rodadas de ajuste).
+  5. **Segurança e pagamento:** o dinheiro cai direto na conta do lojista no Mercado Pago; o pagamento é conferido antes de valer; acessos separados por pessoa da equipe.
+  6. Resumo · Chamada (testar 3 dias grátis) · **Gancho Black** ("teste agora e garanta o anual da Black") · Ponte.
 - **Visuais:**
-  - faixa de números de destaque (0%, 1 time, 26 temas, 3 dias grátis);
-  - fotos da equipe;
-  - ícones SVG.
+  - fotos da equipe e do estúdio;
+  - painel do lojista em moldura de notebook (sem sombra);
+  - lojas de demonstração no computador e no celular.
 
-### PDF 08 · Tour pela plataforma
+### Vídeo 4 · Concorrência e migração: a lupa, a conta e a mudança
 
-- **Promessa:** ver a loja nascer e o pedido chegar, sem complicação.
-- **Estrutura:**
-  1. Capa.
-  2. Cadastro.
-  3. Escolher o tema.
-  4. Editor visual.
-  5. Cadastrar produto (um a um ou planilha).
-  6. Pagamento (Mercado Pago da loja).
-  7. Frete.
-  8. Publicar.
-  9. Primeiro pedido.
-  10. Painel: fila do dia, pedidos, clientes.
-  11. IA ajudando na descrição.
-  12. Chamada.
-- **Visuais:** prints reais do painel em moldura de notebook, sem sombra; celular com a loja.
-- **Nota de gravação:** este vídeo combina o PDF com gravação de tela ao vivo.
-
-### PDF 09 · A lupa nos concorrentes
-
-- **Promessa:** os pontos fracos de cada grande plataforma, com fonte, frente aos nossos pontos fortes.
-- **Gancho:** "Todas dizem que são as melhores. Vamos abrir a tabela de preço delas."
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Placar geral (tarifa, atacado, suporte, IA, pessoas no painel).
-  4. Nuvemshop com lupa (pedágio, Nuvem Pago, suporte em escada, chat pago, IA racionada).
-  5. Loja Integrada (tarifa com o Mercado Pago; plano grátis não aceita outro meio de pagamento; sem atacado).
-  6. Tray (limites de produtos, pedidos e faturamento; atacado só no Avançado).
-  7. WBuy (limite de produtos; atacado só a partir do Turbo).
-  8. Shopify (em dólar; tarifa com gateway de terceiros).
-  9. Justiça seja feita: o que cada um faz bem.
-  10. Onde a NextLevel ganha de todos.
-  11. Chamada: diagnóstico gratuito.
-  12. Ponte para o PDF 10.
+- **Promessa:** ver com fonte os pontos fracos das grandes plataformas, fazer a conta do que você paga e saber como migrar sem parar de vender.
+- **Gancho:** "Vendendo R$ 30 mil por mês na Nuvemshop pelo Mercado Pago, você paga R$ 3.600 por ano só de tarifa." (Impulso 1%, seção 8.2)
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa.
+  2. **Placar geral:** tarifa com o Mercado Pago, atacado, suporte, IA e pessoas no painel, das 5 plataformas × NextLevel.
+  3. **A lupa:**
+     - Nuvemshop: pedágio, Nuvem Pago, suporte em escada, chat pago, IA racionada;
+     - Loja Integrada: tarifa com o Mercado Pago, sem atacado;
+     - Tray: limites de produtos, pedidos e faturamento; atacado só no Avançado;
+     - WBuy: limite de produtos; atacado só a partir do Turbo;
+     - Shopify: em dólar, tarifa com gateway de terceiros.
+     Um slide "Lá × Aqui" por concorrente, mais um slide "justiça seja feita" com o que cada um faz bem.
+  4. **Quanto custa de verdade:**
+     - do que é feito o custo;
+     - calculadora em branco;
+     - pedágio por ano nas faixas de R$ 10, 30 e 60 mil;
+     - custo mensal do concorrente × NextLevel Pro;
+     - a escada do suporte.
+  5. **Migração sem parar de vender:**
+     - os 3 medos e as 3 respostas;
+     - os 5 passos;
+     - o que migramos;
+     - as garantias;
+     - diagnóstico gratuito;
+     - os 5 caminhos, do template novo à operação completa com estúdio, sem preço.
+  6. Resumo · Chamada (diagnóstico gratuito pelo WhatsApp) · **Gancho Black** ("migre na Black e trave o preço do anual") · Ponte.
 - **Visuais:**
-  - tabela "Lá × Aqui" com X vermelho e check verde;
-  - barras horizontais da tarifa máxima de cada plataforma com o Mercado Pago (paleta validada para várias séries);
-  - rodapé com fonte e data em todas as páginas.
+  - tabela "Lá × Aqui";
+  - barras do pedágio e colunas de custo (paleta validada; com 5 concorrentes no mesmo gráfico, validar a paleta de novo);
+  - linha do tempo da migração;
+  - rodapé com fonte e data em todo slide de concorrente.
+- **Base pronta:** o guia de migração da Nuvemshop (19 páginas), adaptado para 16:9 e para as 5 plataformas.
 
-### PDF 10 · Quanto custa de verdade
+### Vídeo 5 · Como fazer a loja vender
 
-- **Promessa:** fazer a conta do custo anual da sua plataforma e ver quanto fica com você.
-- **Gancho:** "Vendendo R$ 30 mil por mês na Nuvemshop pelo Mercado Pago, você paga R$ 3.600 por ano só de tarifa." (Impulso 1%, fonte na seção 8.2)
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Do que é feito o custo: mensalidade, tarifa, meio de pagamento, aplicativos, chat, suporte.
-  4. Calculadora em branco para o espectador preencher.
-  5. Pedágio por ano em 3 faixas (R$ 10, 30 e 60 mil), por plataforma.
-  6. Custo mensal: concorrente × NextLevel Pro.
-  7. O preço do suporte (escada).
-  8. Atenção: as taxas do Mercado Pago existem em todas.
-  9. Resumo: quanto fica no caixa em 12 meses.
-  10. Chamada: "mande a sua conta no WhatsApp que a gente refaz com você".
-- **Visuais:** colunas agrupadas e barras horizontais (paleta validada), número de destaque.
-
-### PDF 11 · Migração sem dor
-
-- **Promessa:** trocar de plataforma sem perder vendas, clientes e o Google.
-- **Base:** guia de migração da Nuvemshop, generalizado para todas as plataformas.
-- **Estrutura:**
-  1. Capa.
-  2. Gancho ("o medo de trocar é perder o Google e os clientes").
-  3. Os 3 medos e as 3 respostas.
-  4. Os 5 passos: diagnóstico, exportação, design, homologação, virada.
-  5. O que migramos.
-  6. Garantias (loja antiga no ar até a virada, endereços redirecionados, aceite, acompanhamento).
-  7. Diagnóstico gratuito: o que analisamos.
-  8. Os 5 caminhos, do template novo à operação completa com estúdio (sem preço).
-  9. Chamada.
-- **Visuais:** linha do tempo dos 5 passos, checklist, os 5 cartões.
-
-### PDF 12 · Design, temas e o projeto exclusivo
-
-- **Promessa:** como o design aumenta o valor percebido e quando vale ter um exclusivo.
-- **Estrutura:**
-  1. Capa.
-  2. Gancho ("sua loja parece com a do vizinho?").
-  3. O que o cliente vê nos primeiros segundos.
-  4. Os temas: grátis e premium, por nicho.
-  5. Celular primeiro.
-  6. Projeto exclusivo: direção de arte, seções sob medida, banners, duas rodadas de ajuste.
-  7. Antes e depois (com autorização de um cliente; se não houver, um exemplo com a loja de demonstração).
-  8. Chamada.
-- **Visuais:** galeria de lojas de demonstração ao vivo, desktop e celular em moldura.
-
-### PDF 13 · Marketing que vende
-
-- **Promessa:** como trazer gente para a loja e transformar visita em pedido.
-- **Estrutura:**
-  1. Capa.
-  2. Gancho ("loja sem visita é vitrine no deserto").
-  3. O funil simples: atrair, converter, fazer voltar.
-  4. Automação de WhatsApp (confirmação, rastreio, carrinho abandonado), com a conversa no celular.
-  5. Automação de Instagram (comentário e direct com link do produto).
-  6. Gestão de anúncios (Meta e Google, pixels, relatório mensal; a verba é do lojista).
-  7. Estúdio de conteúdo, com os planos Essencial, Crescimento e Escala (quantidades, sem preço).
-  8. Sem promessa de resultado: método e números abertos.
-  9. Chamada.
-- **Visuais:** mockup de conversa, fotos do estúdio, cartões dos 3 planos.
-
-### PDF 14 · O maior programa de parceiros × os programas dos concorrentes
-
-- **Promessa:** ver, com a regra publicada de cada um, por que o nosso programa paga mais e é mais simples de receber.
-- **Gancho:** "A Shopify paga US$ 25 por loja do Brasil, uma vez só. Aqui, você recebe todo mês enquanto a loja ficar."
-- **Estrutura:**
-  1. Capa.
-  2. Gancho.
-  3. Como funciona um programa de parceiros.
-  4. Nossa régua: 20/24/28% CNPJ e 15/19/23% CPF, Inicial, Prata e Ouro.
-  5. Raio-x de cada concorrente (Shopify, Nuvemshop Associados e Especialistas, Tray, WBuy), com a regra e a barreira.
-  6. Disputa de renda no mês 18, 24 e 36 (o simulador da página de parceiros, mesmas premissas).
-  7. Barreiras: nota fiscal, CNPJ, dólar, uma vez só.
-  8. Bônus por produção (sem promessa de valor fixo).
-  9. Chamada: cadastro de parceiro.
-- **Visuais:**
-  - colunas da renda por mês (NextLevel × cada programa, paleta validada);
-  - escada dos níveis;
-  - cartões do raio-x com fonte.
-- **Fonte:** `src/lib/finance/captacao-regras.ts` (consulta 06/11/2026).
-
-### PDF 15 · Como ganhar como parceiro
-
-- **Promessa:** escolher o seu perfil e saber o passo a passo para a primeira comissão.
-- **Estrutura:**
-  1. Capa.
-  2. Os 4 perfis (CPF, criador, vendedor, agência), mais os executivos de rua.
-  3. Como funciona o link (90 dias) e o cupom.
-  4. Garantia de 30 dias e saque por Pix a partir de R$ 50.
-  5. Níveis por clientes ativos.
-  6. Bônus da semana e do mês (online e rua).
-  7. Missões, selos e ranking (sem dinheiro).
-  8. O painel do parceiro e o do executivo no celular.
-  9. Dicas de divulgação sem spam.
-  10. Chamada.
-- **Regra:** nunca prometer renda. Usar "exemplo" e "simulação" com as premissas visíveis.
-
-### PDF 16 · Quem somos, segurança e primeiros passos
-
-- **Promessa:** conhecer quem está do outro lado, entender por que é seguro e começar hoje.
-- **Estrutura:**
-  1. Capa.
-  2. A história (Mauricio, NextLevel Marketing, o Brás).
-  3. A equipe e o estúdio (fotos reais).
-  4. O que fazemos (tecnologia, design, marketing, gravação).
-  5. Segurança: o dinheiro cai direto na conta do lojista no Mercado Pago, o pagamento é conferido antes de valer e o acesso é separado por pessoa.
-  6. Primeiros passos em 4 etapas.
-  7. As 8 objeções e as respostas:
+- **Promessa:** como levar gente para a loja, transformar visita em pedido e começar hoje sem travar nas dúvidas.
+- **Gancho:** "Loja sem visita é vitrine no deserto."
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa.
+  2. **O funil simples:** atrair, converter, fazer voltar.
+  3. **Automação de WhatsApp:** confirmação de pedido, rastreio e carrinho abandonado, com a conversa no celular.
+  4. **Automação de Instagram:** resposta a comentário e mensagem; link do produto no direct; catálogo ligado.
+  5. **Anúncios:** Meta e Google, pixels, relatório mensal; a verba é do lojista, paga direto à plataforma.
+  6. **Estúdio de conteúdo:** os planos Essencial, Crescimento e Escala, com as quantidades e sem preço.
+  7. **Primeiros passos e objeções:** os 4 passos para começar e as 8 objeções com resposta:
      - é difícil;
      - já vendo no Instagram;
      - e se eu quiser sair;
@@ -621,59 +425,80 @@ Formato de cada briefing: promessa, gancho, estrutura slide a slide, dados, visu
      - preciso de CNPJ;
      - tenho poucos produtos;
      - é caro.
-  8. Chamada final da série.
-- **Visuais:** fotos da equipe, linha do tempo da história (datas confirmadas com o dono).
+  8. Resumo · Chamada (falar com a equipe) · **Gancho Black** ("chegue em dezembro com a loja vendendo") · Ponte.
+- **Regra:** sem promessa de resultado. Método e números abertos.
 
----
+### Vídeo 6 · O programa de parceiros que paga todo mês
+
+- **Promessa:** ver com a regra publicada de cada um por que o nosso programa paga mais ao longo do tempo e é mais simples de receber, e como começar.
+- **Gancho:** "A Shopify paga US$ 25 por loja do Brasil, uma vez só. Aqui, você recebe todo mês enquanto a loja ficar."
+- **Capítulos e slides:**
+  1. Capa · Gancho · Mapa.
+  2. **Como funciona** um programa de parceiros.
+  3. **Nossa régua:** 20/24/28% (CNPJ) e 15/19/23% (CPF); níveis Inicial, Prata (10 clientes ativos) e Ouro (25); Pix sem nota fiscal; saque a partir de R$ 50; garantia de 30 dias; link de 90 dias.
+  4. **Raio-x dos concorrentes:** Shopify, Nuvemshop Associados e Especialistas, Tray e WBuy, cada um com a regra e a barreira (nota fiscal, CNPJ, dólar, uma vez só).
+  5. **Disputa de renda** nos meses 18, 24 e 36, com as mesmas premissas do simulador da página de parceiros e as premissas visíveis.
+  6. **Bônus e missões:** bônus da semana e do mês (online e rua), missões, selos e ranking sem dinheiro. Nunca prometer valor fixo.
+  7. **Como começar:** escolher o perfil (CPF, criador, vendedor, agência; executivo de rua por convite), o painel do parceiro e do executivo, dicas de divulgação sem spam.
+  8. Resumo · Chamada (cadastro de parceiro) · **Gancho Black** ("a Black é a melhor época para indicar: lojista quer começar com desconto") · Ponte.
+- **Visuais:**
+  - colunas de renda por mês (paleta validada com vários programas);
+  - escada dos níveis;
+  - cartões do raio-x com fonte;
+  - painel do executivo no celular.
+- **Fonte:** `src/lib/finance/captacao-regras.ts` (consulta 06/11/2026). Revalidar antes de gravar.
 
 ## 10. Prompt mestre (colar numa sessão para gerar cada PDF)
 
 ```
-Você vai criar o PDF nº [NN] da série "Apresentações comerciais NextLevel E-commerce para o YouTube".
-Leia antes: CLAUDE.md, docs/prompts/serie-youtube-apresentacoes-comerciais.md (este plano inteiro, em especial as
-seções 6, 7, 8 e o briefing do PDF [NN] na seção 9) e as fontes de dados citadas na seção 8.
+Você vai criar o PDF do VÍDEO [N] (de 6) da série "Apresentações comerciais NextLevel E-commerce para o YouTube".
+Leia antes: CLAUDE.md e docs/prompts/serie-youtube-apresentacoes-comerciais.md inteiro, em especial as seções 6
+(anatomia e gancho Black Friday), 7 (sistema visual), 8 (fatos com fonte) e o briefing do vídeo [N] na seção 9.
 
 OBJETIVO
-- Gerar um PDF 16:9 (338,67 × 190,5 mm), de 12 a 16 slides, que guia a gravação de um vídeo de 8 a 15 minutos.
-- Seguir o briefing do PDF [NN]: promessa, gancho, estrutura slide a slide, visuais e chamada final.
+- Um PDF 16:9 (338,67 × 190,5 mm), de 18 a 24 slides, que guia a gravação de um vídeo de 15 a 20 minutos dividido
+  em capítulos (os mesmos da descrição do YouTube). Cada capítulo termina numa frase-resumo que vira corte curto.
 
 PÚBLICO E TOM
-- Lojista brasileiro (ou parceiro, no caso dos PDFs 14 e 15), linguagem de balcão, frases curtas, sem jargão.
-- No máximo 25 palavras visíveis por slide; o resto vai para as notas de fala.
+- Lojista brasileiro (no vídeo 6, parceiros), linguagem de balcão, frases curtas, sem jargão; no máximo
+  25 palavras visíveis por slide (o resto vai para as notas de fala).
 - Nunca prometer faturamento ou renda. Comparação agressiva só com fato publicado, link e data.
-- Sem preço de serviço (migração, template, automação, anúncios, estúdio): "orçamento na reunião".
-  Mensalidades dos planos podem aparecer.
+- Sem preço de serviço (migração, template, automação, anúncios, estúdio). Mensalidades dos planos podem aparecer.
+- História: só o slide do vídeo 1 (o fundador no Brás, internacionalizando empresas chinesas e digitalizando
+  importadoras chinesas). Não inventar datas, números ou nomes de clientes.
+
+BLACK FRIDAY (obrigatório em todos)
+- Penúltimo slide: "Black Friday NextLevel: anual com 2 meses grátis e preço travado enquanto você for cliente. Válido
+  até 30/11", ligado ao tema do vídeo (seção 6). Conferir no Master se a campanha continua igual antes de gerar.
+- Gerar também a versão permanente desse slide ("3 dias grátis e diagnóstico gratuito") para depois de 30/11.
 
 DADOS
-- Use somente os fatos da seção 8 (e os arquivos de código citados lá). Revalide no site oficial qualquer número de
-  concorrente e atualize a data da consulta. Se um dado não tiver fonte, não use número: diga isso no relatório.
-- Rodapé de fonte e data em todo slide que cita concorrente.
+- Use só os fatos da seção 8 e os arquivos citados lá; revalide no site oficial qualquer número de concorrente e
+  atualize a data. Sem fonte, sem número. Rodapé de fonte e data em todo slide que cita concorrente.
 
 DESIGN (obrigatório, aprendido com erro)
-- Cores, fonte Inter TTF estática, ícones SVG lucide, fotos reais da equipe e lojas de demonstração ao vivo.
+- Cores, fonte Inter TTF estática, ícones SVG lucide, fotos reais da equipe, lojas de demonstração ao vivo.
 - Proibido: texto em degradê, box-shadow, opacity, transparência em elementos pequenos, campos de formulário,
-  símbolos de texto como ícone, fonte variável/OTF.
-- Gráficos pela skill dataviz: escolha a forma, valide a paleta com scripts/validate_palette.js no fundo usado
-  (claro e escuro), legenda e valor em cada barra, um eixo só.
-- Legibilidade no celular: título ≥ 64 px, texto ≥ 28 px, rodapé ≥ 18 px; área segura do slide final.
-- Alternar páginas escuras e claras; nenhuma página com metade vazia.
+  símbolos de texto como ícone, fonte variável ou OTF.
+- Gráficos pela skill dataviz: forma certa, paleta validada com scripts/validate_palette.js no fundo usado, legenda
+  e valor em cada barra, um eixo só.
+- Legível no celular: título ≥ 64 px, texto ≥ 28 px, rodapé ≥ 18 px; área segura no slide final; páginas escuras e
+  claras alternadas; nenhuma página com metade vazia.
 
 ENTREGA
-1. Gerar o HTML pelo gerador (scripts/apresentacoes/), imprimir o PDF com Playwright e salvar a prévia de cada slide.
-2. Rodar o checklist da seção 7.4 (grep de CSS proibido = 0; pdffonts só CID TrueType; revisar cada prévia).
-3. Escrever as NOTAS DE FALA de cada slide num .md ao lado (roteiro do apresentador: 3 a 6 frases por slide,
-   com o gancho dos primeiros 15 segundos e a chamada final).
-4. Sugerir: título do vídeo (até 60 caracteres), descrição com capítulos, 3 ideias de capa, 3 a 6 cortes curtos
-   (minuto inicial e final + legenda) e o link com UTM.
-5. Enviar ao dono só o PDF (e o .md de notas), sem imagens soltas. Em português, sem jargão.
+1. Gerar pelo gerador (scripts/apresentacoes/), imprimir com Playwright, conferir a prévia de cada slide.
+2. Checklist da seção 7.4: grep de CSS proibido = 0; pdffonts só CID TrueType; nada cortado ou sobreposto.
+3. NOTAS DE FALA num .md ao lado: 3 a 6 frases por slide, o gancho dos primeiros 15 segundos, as viradas de
+   capítulo e o fechamento com a Black.
+4. Sugerir: título (até 60 caracteres), descrição com capítulos e minutos, 3 ideias de capa, 5 a 8 cortes curtos
+   (início, fim, legenda) e o link com UTM.
+5. Enviar ao dono só o PDF e o .md de notas (sem imagens soltas), em português, sem jargão.
 ```
-
----
 
 ## 11. Do PDF ao vídeo (produção)
 
 - **Gravação:** o slide em tela cheia e a câmera do apresentador num canto (lado esquerdo, para não brigar com a tela final do YouTube).
-- **Capítulos:** um por bloco da anatomia (seção 6), na descrição do vídeo.
+- **Capítulos:** os mesmos do mapa do vídeo (seção 6), com o minuto de início de cada um na descrição.
 - **Cortes curtos:** cada slide de número de destaque ou de "Lá × Aqui" vira um corte vertical de 30 a 60 segundos.
 - **Descrição padrão:**
   - link com UTM;
@@ -684,16 +509,18 @@ ENTREGA
 - **Base de conhecimento (D264):** cada vídeo publicado entra na tela Aprender, com o link do vídeo e o PDF, para treinar a equipe e os executivos.
 
 ---
+- **Depois de 30/11:** trocar o slide da Black pela versão permanente, regerar o PDF e, nos vídeos já publicados, fixar um comentário com a chamada atual (o vídeo não muda).
 
-## 12. Decisões do dono (com o padrão recomendado)
+## 12. Decisões do dono
 
-| # | Decisão | Padrão recomendado |
+| # | Decisão | Situação |
 |---|---|---|
-| 1 | Quantidade de PDFs | 16 em 6 temporadas, gravando primeiro 01, 07, 09, 10, 11 e 14 |
-| 2 | Formato | 16:9 para vídeo (o A4 paisagem fica só para propostas a clientes) |
-| 3 | Quem apresenta | Mauricio nos episódios de abertura, diferenciais e parceiros; equipe nos de produto e nichos |
-| 4 | Loja Integrada | Entra nas comparações de plataforma; fica fora do comparativo de parceiros (decisão já tomada) |
-| 5 | Dados de mercado por nicho | Só com fonte oficial e data; sem fonte, falar dos nichos sem ranking |
-| 6 | Casos e depoimentos | Só reais e autorizados; enquanto não houver, usar demonstração, garantias e transparência |
-| 7 | Black Friday | Episódio próprio só se publicado até 30/11; depois, retirar menções |
-| 8 | Notas de fala | Um .md por PDF, ao lado, com o roteiro de cada slide |
+| 1 | Quantidade | **6 vídeos (6 PDFs)**, capítulos unidos (dono, 09/11) |
+| 2 | História da NextLevel | **Curta, um slide no vídeo 1:** trajetória do fundador no Brás, internacionalizando empresas chinesas no Brasil e digitalizando importadoras chinesas (dono, 09/11) |
+| 3 | Black Friday | **Gancho no final de todo vídeo** (dono, 09/11); versão permanente depois de 30/11 |
+| 4 | Formato | 16:9 para vídeo (padrão recomendado) |
+| 5 | Quem apresenta | Padrão recomendado: Mauricio nos vídeos 1, 4 e 6; equipe nos vídeos 2, 3 e 5 |
+| 6 | Loja Integrada | Entra nas comparações de plataforma; fora do comparativo de parceiros (decisão já tomada) |
+| 7 | Dados de mercado por nicho | Só com fonte oficial e data; sem fonte, sem ranking |
+| 8 | Casos e depoimentos | Só reais e autorizados |
+| 9 | Título do vídeo 6 | "O maior programa…" só se a seção 8.4 sustentar; alternativa segura: "O programa de parceiros que paga todo mês, sem nota fiscal" |
