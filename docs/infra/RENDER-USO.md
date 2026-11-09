@@ -1,7 +1,7 @@
 # Plano de uso do Render (custos, publicação e manutenção)
 
 > Pedido do dono em 09/11/2026: "documentos não precisam ir para o Render; crie um plano estruturado de utilização do Render e salve na memória". Regra curta em `CLAUDE.md` ("Custo de montagem no Render").
-> Toda sessão (Claude, Codex, pessoas) segue este plano antes de dar push na branch de publicação.
+> Toda sessão (Claude, Codex, pessoas) segue este plano antes de dar push na branch de publicação. Hierarquia e nomes (conta, projetos, ambientes): `docs/infra/RENDER-ORGANIZACAO.md`.
 
 ---
 
