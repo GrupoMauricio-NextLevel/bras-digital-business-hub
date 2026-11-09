@@ -1,6 +1,6 @@
 # Série de apresentações comerciais para o YouTube (NextLevel E-commerce)
 
-> Estado: **EM PRODUÇÃO** (09/11/2026). Prontos: vídeo 4 (23 slides), vídeo 1 (16 slides) vídeo 3 (18 slides) e vídeo 6 (19 slides), cada um com versão Black e versão para depois de 30/11, e notas de fala em `docs/apresentacoes/youtube/`. Próximo: vídeo 2.
+> Estado: **EM PRODUÇÃO** (09/11/2026). Prontos: vídeo 4 (23 slides), vídeo 1 (16 slides), vídeo 3 (18 slides) e vídeo 6 (19 slides), cada um com versão Black e versão para depois de 30/11, e notas de fala em `docs/apresentacoes/youtube/`. Próximo: vídeo 2.
 > Revisão do dono (09/11): **menos PDFs, capítulos unidos no mesmo vídeo**; a história da NextLevel entra curta (a trajetória do fundador no Brás); **todo vídeo termina com um gancho para a Black Friday**.
 > Base aproveitada: o guia de migração Nuvemshop → NextLevel (mesmo design, mesmas regras de fonte e as correções de exibição no iPhone).
 > Ordem normativa: Constituição > `docs/design/DECISIONS.md` > este documento. Regras que não mudam: português claro, sem promessa de ganho, comparação agressiva só com fonte e data, preço de serviço só em reunião de orçamento.
