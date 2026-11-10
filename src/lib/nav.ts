@@ -253,6 +253,8 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Empresa e loja", href: "/merchant/settings", icon: "Settings", group: "Loja e ajustes" },
   { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Loja e ajustes" },
   { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Loja e ajustes" },
+  // CT1+CT2 (D276): contratos com a NextLevel, aceite no painel.
+  { label: "Contratos", href: "/merchant/contratos", icon: "ReceiptText", group: "Loja e ajustes" },
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
 export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
@@ -268,6 +270,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Aprender", href: "/master/aprender", icon: "GraduationCap", group: "Escritório" },
   { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
   { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
+  // CT1+CT2 (D276): contratos assinados no painel.
+  { label: "Contratos", href: "/master/contratos", icon: "ReceiptText", group: "Escritório" },
   { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
   { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório", exact: true },
   // CX1 (D269): caixa do dia (dono e Financeiro).

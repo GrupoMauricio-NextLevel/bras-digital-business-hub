@@ -2930,3 +2930,36 @@ export const executivoVisitas = pgTable("executivo_visitas", {
   observacao: text("observacao"),
   createdAt: createdAt(),
 }, (t) => [index("executivo_visitas_partner_idx").on(t.partnerId, t.createdAt)]);
+
+/**
+ * Contratos com aceite no painel (CT1+CT2, D276). O Master cria a partir de um modelo, a NextLevel assina ao enviar e o
+ * dono da loja dá o aceite no próprio painel. O conteúdo fica congelado (JSON) com impressão digital SHA-256; o aceite
+ * guarda a prova (usuário, data do servidor, IP e aparelho). Mudança depois de aceito só por aditivo (contrato novo).
+ */
+export const CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO"] as const;
+export const contratos = pgTable("contratos", {
+  id: id(),
+  /** Número legível, ex.: LPX-20261110-01. */
+  numero: text("numero").notNull().unique(),
+  modelo: text("modelo").notNull(),
+  versaoModelo: integer("versao_modelo").notNull(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  titulo: text("titulo").notNull(),
+  /** Campos preenchidos (cliente, valores, datas) e o texto final congelado. */
+  dados: jsonb("dados").$type<Record<string, unknown>>().notNull(),
+  conteudo: jsonb("conteudo").$type<{ secoes: { titulo: string; resumo?: string; paragrafos?: string[]; itens?: string[] }[] }>().notNull(),
+  hash: text("hash").notNull(),
+  status: text("status", { enum: CONTRATO_STATUS }).notNull().default("ENVIADO"),
+  /** Assinatura da contratada: quem enviou pelo Master. */
+  enviadoPor: text("enviado_por").notNull(),
+  enviadoEm: ts("enviado_em").notNull(),
+  aceitoPor: text("aceito_por"),
+  aceitoNome: text("aceito_nome"),
+  aceitoEm: ts("aceito_em"),
+  aceitoIp: text("aceito_ip"),
+  aceitoAparelho: text("aceito_aparelho"),
+  /** Impressão digital do texto que o cliente viu ao aceitar (tem de ser igual a `hash`). */
+  aceitoHash: text("aceito_hash"),
+  canceladoEm: ts("cancelado_em"),
+  createdAt: createdAt(),
+}, (t) => [index("contratos_store_idx").on(t.storeId, t.status)]);

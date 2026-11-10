@@ -4,3 +4,10 @@ data
 .git
 *.zip
 .env*.local
+# Plano de uso do Render (2026-11-09): documentos, testes e capturas não entram na montagem (o sistema não lê nada disso).
+docs
+e2e
+tests
+research_notes
+.claude
+*.pdf

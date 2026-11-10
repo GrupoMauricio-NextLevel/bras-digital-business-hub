@@ -631,6 +631,13 @@
       "when": 1794096568586,
       "tag": "0089_executivos_visitas",
       "breakpoints": true
+    },
+    {
+      "idx": 90,
+      "version": "7",
+      "when": 1794334413266,
+      "tag": "0090_contratos",
+      "breakpoints": true
     }
   ]
 }

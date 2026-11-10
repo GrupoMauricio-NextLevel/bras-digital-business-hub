@@ -3329,3 +3329,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Refatoração:** as vendas que contam pontos e as do relatório saem da mesma consulta (`vendasDoPublico`).
 - **Testes:** `tests/bonus.test.ts` (resumo, tempo de retorno, cada sugestão, relatório no banco e conferência com o extrato).
 - **Próxima fase:** CX5 (caixa e executivos).
+
+## D276 — [E-commerce] Contratos com aceite no painel (CT1+CT2): o Master envia, o lojista aceita, a cópia assinada vai aos dois (2026-11-10)
+- **Pedido do dono:** contrato da Loja Virtual Pronta Express aceito dentro do sistema, sem burocracia, com a cópia indo para o e-mail de ambos quando estiver tudo assinado. Plano: `docs/prompts/contratos-assinatura-no-painel.md`; modelo: `docs/contratos/loja-pronta-express/`.
+- **Master → Contratos:** o dono ou o Financeiro escolhe a loja, preenche o cliente, os valores, as datas, os produtos (padrão 40), o prazo (padrão 5 dias corridos) e os meses de cortesia, e aperta "Assinar e enviar". O envio é a assinatura da contratada.
+  - O texto fica **congelado** (JSON) com **impressão digital SHA-256** em JSON estável (o banco reordena o jsonb).
+  - O número sai como `LPX-AAAAMMDD-NN`.
+  - Com cortesia, o acesso da loja é estendido na hora, em blocos de 90 dias, pela mesma regra do Caixa (D270), com motivo e auditoria.
+  - O cliente recebe **só um e-mail de aviso**: entrar com o login dele e aceitar.
+- **Painel do lojista:**
+  - aviso no topo da tela inicial;
+  - menu Loja e ajustes → **Contratos**;
+  - o contrato na tela (resumo, Pix em destaque, cláusulas com "Em resumo");
+  - "Li e concordo", o nome completo e **"Aceitar contrato"**. Só o dono da loja; a equipe não vê.
+- **Prova do aceite:** usuário, data e hora do servidor, IP, aparelho e a impressão digital do texto visto. Se o texto mudou, o aceite é recusado. Aceite uma vez só.
+- **Cópia assinada:** no aceite, o sistema gera o **PDF** no servidor (pdf-lib, sem navegador), com o registro de assinatura e aceite no fim, e envia **anexado ao e-mail das duas partes**. O PDF também pode ser baixado no Master e no painel (`/…/contratos/[id]/pdf`). `sendEmail` passou a aceitar anexos (Resend); o anexo não fica no registro de e-mails.
+- **Contratada provisória:** NextLevel Marketing Ltda (CNPJ 51.392.006/0001-92, Pix no Itaú), em `CONTRATADA_PADRAO`, e gravada em cada contrato; vira configuração quando a NextLevel Soluções existir. Os contratos assinados não mudam.
+- **Fora desta fase:** pagamento com "Já fiz o Pix" e conferência no Master (CT3), aditivos e outros modelos (CT4).
+- **Testes:** `tests/contratos.test.ts` (conta e datas, texto, cortesia, impressão digital estável, permissões, isolamento entre lojas, equipe sem acesso, aceite único, texto mudado, e-mails e PDF).

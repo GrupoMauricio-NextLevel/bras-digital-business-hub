@@ -1,5 +1,12 @@
 [
  {
+  "numero": 276,
+  "frente": "E-commerce",
+  "titulo": "Contratos com aceite no painel (CT1+CT2): o Master envia, o lojista aceita, a cópia assinada vai aos dois",
+  "data": "2026-11-10",
+  "resumo": "Pedido do dono: contrato da Loja Virtual Pronta Express aceito dentro do sistema, sem burocracia, com a cópia indo para o e-mail de ambos quando estiver tudo assinado. Plano: docs/prompts/contratos-assinatura-no-painel.md; modelo: docs/c…"
+ },
+ {
   "numero": 275,
   "frente": "E-commerce",
   "titulo": "BG4: relatório de retorno do bônus, com sugestão automática de ajuste",
@@ -271,12 +278,5 @@
   "titulo": "L1: a loja nova já nasce completa e o tema grátis ganha banners em várias frentes",
   "data": "2026-11-03",
   "resumo": "Loja E-commerce que nunca salvou um modelo e está no Starter: na primeira leitura, ganha o tema grátis completo da família (Trama, moda), com as fotos de exemplo dos pacotes (garantirLojaCompleta, uma vez por loja). O SuperDrop não muda."
- },
- {
-  "numero": 236,
-  "frente": null,
-  "titulo": "Respostas do dono sobre domínio e e-mail; \"Suas pendências\" no Master",
-  "data": "2026-11-03",
-  "resumo": "Adicional Marca Completa aprovado: R$ 19,90/mês com 3 caixas de e-mail; caixa extra a R$ 6,90/mês. O provedor escolhido é a Hostinger."
  }
 ]

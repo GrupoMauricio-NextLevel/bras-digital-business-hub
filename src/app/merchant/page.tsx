@@ -18,6 +18,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
 import { requireStoreAdmin } from "@/lib/require-session";
+import { contratosPendentes } from "@/lib/domain/contratos";
 import { getDb } from "@/db/client";
 import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
@@ -53,7 +54,10 @@ export default async function MerchantHome() {
     ? <BoasVindasCeo primeiroNome={session.user.name.split(" ")[0]!} marca={(await brandOfStore(db, store)).name} className="mb-6" /> : null;
   // "O que mudou" (D183): a novidade mais recente da marca, com link para a lista.
   const novidade = novidadesDa((await brandOfStore(db, store)).code, 1)[0];
-  const faixaNovidade = novidade ? <p className="mb-4 text-sm"><span className="font-semibold">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null;
+  // Contrato esperando o aceite (D276): aviso no topo, antes de tudo.
+  const pendentes = await contratosPendentes(db, session.actor);
+  const faixaContrato = pendentes.length ? <div role="status" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-[#294cdc] bg-[#eef3ff] px-4 py-3 text-sm text-[#101a33]"><span><span className="font-semibold">Você tem {pendentes.length === 1 ? "um contrato" : `${pendentes.length} contratos`} da NextLevel para aceitar.</span> Leia com calma e dê o aceite aqui no painel.</span><Link href={pendentes.length === 1 ? `/merchant/contratos/${pendentes[0]!.id}` : "/merchant/contratos"} className="rounded-md bg-[#294cdc] px-3 py-2 font-semibold text-white">Ler e aceitar</Link></div> : null;
+  const faixaNovidade = <>{faixaContrato}{novidade ? <p className="mb-4 text-sm"><span className="font-semibold">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null}</>;
   const surveyCard = <>{faixaNovidade}{boasVindas}{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;

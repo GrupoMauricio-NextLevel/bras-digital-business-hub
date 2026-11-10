@@ -9,7 +9,7 @@ import { timeoutSignal } from "@/lib/http-timeout";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 
-export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; /** Assina com nome e foto do CEO (D179). */ ceo?: boolean; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null };
+export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; /** Assina com nome e foto do CEO (D179). */ ceo?: boolean; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null; /** Anexos (D276: cópia do contrato aceito). O conteúdo vai em base64 e não é guardado no registro de e-mails. */ attachments?: { filename: string; contentBase64: string }[] };
 
 /** Troca {marca} pelo nome da marca (os modelos de texto não trazem nome fixo). */
 const brandize = (t: string, b: Brand) => t.replaceAll("{marca}", b.name);
@@ -78,7 +78,7 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
   let status: "SENT" | "FAILED" = "SENT"; let error: string | null = null;
   try {
     const replyTo = process.env.EMAIL_REPLY_TO;
-    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand, group), ...(replyTo ? { reply_to: replyTo } : {}) }) });
+    const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand, group), ...(replyTo ? { reply_to: replyTo } : {}), ...(m.attachments?.length ? { attachments: m.attachments.map((a) => ({ filename: a.filename, content: a.contentBase64 })) } : {}) }) });
     if (!res.ok) { status = "FAILED"; error = `HTTP ${res.status}`; }
   } catch (e) { status = "FAILED"; error = e instanceof Error ? e.message.slice(0, 200) : "erro"; }
   try { await db.update(emailOutbox).set({ status, error }).where(eq(emailOutbox.id, id)); } catch (e) { console.error("[email outbox]", e); }
