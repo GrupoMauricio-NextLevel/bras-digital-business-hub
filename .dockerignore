@@ -5,7 +5,9 @@ data
 *.zip
 .env*.local
 # Plano de uso do Render (2026-11-09): documentos, testes e capturas não entram na montagem (o sistema não lê nada disso).
-docs
+docs/**
+# o prebuild (gerar-novidades.mjs) lê as decisões para gerar as Novidades; só este arquivo da pasta entra.
+!docs/design/DECISIONS.md
 e2e
 tests
 research_notes
