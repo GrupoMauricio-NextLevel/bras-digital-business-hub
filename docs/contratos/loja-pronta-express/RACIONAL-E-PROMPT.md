@@ -7,6 +7,18 @@
 
 > **Provisório (dono, 10/11/2026):** a cobrança sai em nome da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92, Pix no Itaú) porque a **NextLevel Soluções** (a agência) ainda não está pronta. Por isso a "contratada", o CNPJ, o banco e a chave Pix **não ficam fixos no modelo nem no código**: vêm de uma configuração do Master (cadastro das empresas do grupo e dados de recebimento). Quando a NextLevel Soluções estiver pronta, troca-se a configuração e os contratos novos já saem no nome dela; os assinados antes continuam como foram (texto congelado).
 
+> **Versão aprovada pelo dono (10/11/2026), que prevalece sobre as recomendações abaixo:** contrato **simples e provisório**, sem os pontos polêmicos (sem devolução em dobro, sem cláusula dos 7 dias de desistência, sem cláusulas de LGPD, propriedade, ajustes e divulgação). Ficam:
+> - objeto só dentro da plataforma; mensalidade e domínio à parte;
+> - **cadastro inicial de 40 produtos** mais treinamento para o cliente cadastrar o resto;
+> - R$ 1.500 no Pix (sinal de R$ 500 e saldo de R$ 1.000);
+> - **entrega em até 5 dias corridos** depois do pagamento total **e** do recebimento de todo o material, o que acontecer por último; entrega final condicionada ao saldo;
+> - sinal retido como multa se o cliente não continuar, por qualquer motivo;
+> - **comunicação só por e-mail** (o sistema não tem integração com WhatsApp);
+> - **aceite simples:** assinatura no PDF ou resposta ao e-mail "Li e aceito o contrato nº…", sem gov.br;
+> - foro São Paulo/SP.
+>
+> 3 páginas A4. Gerador do primeiro contrato fora do repositório (dados pessoais), na pasta temporária da sessão.
+
 ---
 
 ## 1. O que o dono pediu (resumo fiel)
