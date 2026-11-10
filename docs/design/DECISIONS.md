@@ -3357,3 +3357,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Fora desta etapa (simples, como o dono pediu):** trava automática da entrega, lembretes automáticos e rescisão automática. O prazo de entrega continua contando pelo texto do contrato.
 - Testes: `tests/contratos.test.ts` (aviso não paga; outra loja e a equipe não avisam; lojista não confirma; "não encontrei"; caixa fechado e depois aberto; nenhum lançamento duplo; quitação).
 
+## D278 — [E-commerce] Cortesia dada durante o teste aparece como "Cortesia" e não vira cobrança no fim do teste (2026-11-10)
+- **Achado do dono:** depois de estender 90 dias a Vestiário das Lendas (Caixa → Assinaturas → Estender), o Master continuou mostrando "Em teste · 3 dias" e o painel do cliente mostrava "Teste grátis até 13/11" junto com "Pago até 11/02". Pior: no fim do teste a rotina diária passaria a assinatura para "aguardando pagamento".
+- **Regra:** acesso estendido à mão durante o teste é **cortesia** até a data estendida.
+  - A situação comercial (D200) mostra "Cortesia" com os dias até o fim. Não conta como pagante e não entra no faturamento mensal.
+  - O painel do cliente mostra uma linha só: "Grátis (cortesia da NextLevel) até…".
+  - "Estender" com a assinatura em teste leva junto o fim do teste.
+  - A rotina diária: um teste que acaba com acesso dado à mão continua em teste até o fim desse acesso; só depois pede pagamento. Isso corrige sozinho os casos estendidos antes desta mudança.
+- Ajuste junto: a linha "taxa zero até…" some quando a taxa do plano já é 0%.
+- Teste: `tests/caixa.test.ts` (D278).
+

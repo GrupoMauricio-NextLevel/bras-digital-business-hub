@@ -147,7 +147,8 @@ export async function estenderVencimento(db: Database, actor: Actor, storeId: st
   const fim = new Date(base + n * DAY).toISOString();
   await db.update(stores).set({ paidUntil: fim, status: loja.status === "PENDING_PAYMENT" ? "ACTIVE" : loja.status, updatedAt: now.toISOString() }).where(eq(stores.id, storeId));
   const sub = await subscriptionOf(db, storeId);
-  if (sub) await db.update(nlSubscriptions).set({ currentPeriodEnd: fim, status: ["past_due", "suspended", "pending_payment"].includes(sub.status) ? "active" : sub.status, updatedAt: now.toISOString() }).where(eq(nlSubscriptions.id, sub.id));
+  // Em teste (D278): o teste vai junto até o fim do acesso, para não virar "aguardando pagamento" antes da hora.
+  if (sub) await db.update(nlSubscriptions).set({ currentPeriodEnd: fim, status: ["past_due", "suspended", "pending_payment"].includes(sub.status) ? "active" : sub.status, ...(sub.status === "trial" ? { trialEndsAt: fim } : {}), updatedAt: now.toISOString() }).where(eq(nlSubscriptions.id, sub.id));
   await recordFinancialAudit(db, actor, { domain: CORPORATE, action: "SUBSCRIPTION_EXTENDED", entityType: "store", entityId: storeId, storeId, before: { paidUntil: loja.paidUntil }, after: { paidUntil: fim, dias: n }, reason: m });
   return { pagoAte: fim };
 }

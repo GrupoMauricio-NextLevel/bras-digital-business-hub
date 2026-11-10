@@ -222,7 +222,12 @@ export async function runSubscriptionJobs(db: Database, now = new Date(), opts: 
         if (r.length) { changed++; await recordFinancialAudit(db, null, { domain: CORPORATE, action: "SUBSCRIPTION_STATUS", entityType: "nl_subscription", entityId: s.id, storeId: s.storeId, before: { status: s.status }, after: { status } }); }
       };
       const end = s.currentPeriodEnd ? new Date(s.currentPeriodEnd) : null;
-      if (s.status === "trial" && s.trialEndsAt && new Date(s.trialEndsAt) <= now) await set("pending_payment");
+      if (s.status === "trial" && s.trialEndsAt && new Date(s.trialEndsAt) <= now) {
+        // D278: acesso estendido à mão pelo Master (cortesia) vale; o teste acompanha o fim desse acesso.
+        const loja = await db.query.stores.findFirst({ where: eq(stores.id, s.storeId), columns: { paidUntil: true } });
+        if (loja?.paidUntil && new Date(loja.paidUntil) > now) await db.update(nlSubscriptions).set({ trialEndsAt: loja.paidUntil, currentPeriodEnd: loja.paidUntil, updatedAt: now.toISOString() }).where(and(eq(nlSubscriptions.id, s.id), eq(nlSubscriptions.status, "trial")));
+        else await set("pending_payment");
+      }
       else if (s.status === "pending_payment" && now.getTime() - new Date(s.updatedAt).getTime() > expireAfter * DAY) await set("expired");
       else if (s.status === "active" && end) {
         if (end <= now) await (s.cancelAtPeriodEnd ? set("cancelled", { canceledAt: now.toISOString() }) : set("past_due"));

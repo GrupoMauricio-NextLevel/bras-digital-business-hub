@@ -1,5 +1,12 @@
 [
  {
+  "numero": 278,
+  "frente": "E-commerce",
+  "titulo": "Cortesia dada durante o teste aparece como \"Cortesia\" e não vira cobrança no fim do teste",
+  "data": "2026-11-10",
+  "resumo": "Achado do dono: depois de estender 90 dias a Vestiário das Lendas (Caixa → Assinaturas → Estender), o Master continuou mostrando \"Em teste · 3 dias\" e o painel do cliente mostrava \"Teste grátis até 13/11\" junto com \"Pago até 11/02\". Pior…"
+ },
+ {
   "numero": 277,
   "frente": "E-commerce",
   "titulo": "Contratos CT3: \"Já fiz o Pix\" no painel do cliente e conferência manual no Master",
@@ -271,12 +278,5 @@
   "titulo": "L3: o chat da loja atende com os dados reais da loja",
   "data": "2026-11-04",
   "resumo": "Assistente da loja (responderNaLoja, sem IA externa, sem custo nem cota): Pedido: quando o cliente pergunta sobre o pedido, o chat pede o número e o e-mail da compra. Com os dois certos, mostra a etapa real, o código de rastreio e o link…"
- },
- {
-  "numero": 238,
-  "frente": null,
-  "titulo": "L2: área \"Banners\" no painel do lojista",
-  "data": "2026-11-04",
-  "resumo": "/merchant/banners (menu \"Banners\" no Escritório da E-commerce e em \"Loja virtual\" no SuperDrop) mostra numa tela só: a barra de aviso;"
  }
 ]

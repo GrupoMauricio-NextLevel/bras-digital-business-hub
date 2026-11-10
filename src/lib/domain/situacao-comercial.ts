@@ -31,6 +31,9 @@ export function situacaoComercial(loja: Loja, contrato: Contrato | null | undefi
       : contrato.status === "pending_payment" ? "aguardando"
       : contrato.status === "past_due" || contrato.status === "suspended" ? "vencido"
       : "cancelado";
+    // Teste estendido à mão pelo Master (D278): é cortesia até o fim do acesso dado, não "teste de 3 dias".
+    const estendido = p === "teste" && !!loja.paidUntil && new Date(loja.paidUntil) > agora && (!contrato.trialEndsAt || loja.paidUntil >= contrato.trialEndsAt);
+    if (estendido) return { pagamento: "cortesia", rotulo: ROTULO_PAGAMENTO.cortesia, plano: nomePlano(contrato.productKey), ciclo: contrato.cycle, valorCents: 0, ...fim(loja.paidUntil) };
     const prazo = p === "teste" ? fim(contrato.trialEndsAt) : fim(contrato.currentPeriodEnd);
     const mensal = contrato.cycle === "ANNUAL" ? Math.round(contrato.amountCents / 12) : contrato.amountCents;
     return { pagamento: p, rotulo: ROTULO_PAGAMENTO[p], plano: nomePlano(contrato.productKey), ciclo: contrato.cycle, valorCents: p === "pagante" ? mensal : 0, ...prazo };

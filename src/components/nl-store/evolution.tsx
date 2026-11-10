@@ -29,19 +29,22 @@ export async function CommerceEvolution({ session }: { session: Session }) {
   const orders = await listOwnCorporateOrders(db, session.actor);
   const product = sub ? await getCatalogItem(db, { key: sub.productKey }, { includeUnpublished: true }) : null;
   const now = new Date();
-  const holiday = sub?.feeHolidayUntil && new Date(sub.feeHolidayUntil) > now;
+  const holiday = sub?.feeHolidayUntil && new Date(sub.feeHolidayUntil) > now && sub.platformFeeBps > 0;
+  // Acesso estendido pelo Master durante o teste (cortesia, D278): mostra uma data só, sem "teste" nem "pago".
+  const cortesia = !!sub && sub.status === "trial" && !!sub.currentPeriodEnd && new Date(sub.currentPeriodEnd) > now && (!sub.trialEndsAt || sub.currentPeriodEnd >= sub.trialEndsAt);
   const anual = sub?.cycle === "MONTHLY" ? economiaDoAnual(product?.prices.MONTHLY?.amountCents, product?.prices.ANNUAL?.amountCents) : null;
   return (
     <div className="space-y-4">
       {sub ? (
         <Card><CardContent className="pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{nomePlanoEc(product?.name ?? sub.productKey)} · {sub.cycle === "ANNUAL" ? "anual" : "mensal"}</h3><Badge tone={sub.status === "active" ? "success" : sub.status === "trial" ? "info" : "warning"}>{STATUS_LABEL[sub.status]}</Badge></div>
+          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{nomePlanoEc(product?.name ?? sub.productKey)} · {sub.cycle === "ANNUAL" ? "anual" : "mensal"}</h3><Badge tone={sub.status === "active" || cortesia ? "success" : sub.status === "trial" ? "info" : "warning"}>{cortesia ? "Cortesia" : STATUS_LABEL[sub.status]}</Badge></div>
           <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
             <li><span className="text-muted-foreground">Valor do plano: </span><strong className="tabular-nums">{formatBRL(sub.amountCents)}{sub.cycle === "ANNUAL" ? " por ano" : " por mês"}</strong></li>
             <li><span className="text-muted-foreground">Taxa de plataforma: </span><strong>{holiday ? `zero até ${formatDate(sub.feeHolidayUntil)}` : `${(sub.platformFeeBps / 100).toString().replace(".", ",")}% sobre vendas pagas`}</strong>{holiday ? <span className="text-muted-foreground"> (depois, {(sub.platformFeeBps / 100).toString().replace(".", ",")}%)</span> : null}</li>
-            {sub.status === "trial" && sub.trialEndsAt ? <li><span className="text-muted-foreground">Teste grátis até: </span><strong>{formatDate(sub.trialEndsAt)}</strong></li> : null}
+            {cortesia ? <li><span className="text-muted-foreground">Grátis (cortesia da NextLevel) até: </span><strong>{formatDate(sub.currentPeriodEnd)}</strong></li> : null}
+            {sub.status === "trial" && sub.trialEndsAt && !cortesia ? <li><span className="text-muted-foreground">Teste grátis até: </span><strong>{formatDate(sub.trialEndsAt)}</strong></li> : null}
             {sub.firstPeriodCents !== null && sub.status !== "active" ? <li><span className="text-muted-foreground">Primeiro mês: </span><strong>{formatBRL(sub.firstPeriodCents)}</strong> (oferta de entrada)</li> : null}
-            {sub.currentPeriodEnd ? <li><span className="text-muted-foreground">Pago até: </span><strong>{formatDate(sub.currentPeriodEnd)}</strong>{sub.cancelAtPeriodEnd ? " · cancelamento agendado" : ""}</li> : null}
+            {sub.currentPeriodEnd && !cortesia ? <li><span className="text-muted-foreground">Pago até: </span><strong>{formatDate(sub.currentPeriodEnd)}</strong>{sub.cancelAtPeriodEnd ? " · cancelamento agendado" : ""}</li> : null}
           </ul>
           {anual ? <p className="mt-3 rounded-lg bg-success-soft px-3 py-2 text-sm">No plano anual você paga {formatBRL(anual.anualCents)} por ano (equivale a {formatBRL(anual.porMesCents)} por mês) e economiza <strong>{formatBRL(anual.economiaCents)}</strong> em relação a 12 mensalidades.</p> : null}
           <p className="mt-3 text-xs text-muted-foreground">O dinheiro das suas vendas é 100% seu e cai na sua conta Mercado Pago. A NextLevel cobra o plano e a taxa em fatura separada, abaixo.</p>

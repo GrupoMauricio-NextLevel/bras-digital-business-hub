@@ -139,7 +139,8 @@ import { partnerCommissions, partners, stores } from "@/db/schema";
 import { signupMember } from "@/lib/domain/store-access";
 import { registerPartner } from "@/lib/domain/partners";
 import { cancelarPeloMaster, estenderVencimento, estornarRecebimento, historicoDaLoja, painelDeAssinaturas, receberAssinatura, trocarPlanoPeloMaster } from "@/lib/domain/assinaturas-master";
-import { subscriptionOf } from "@/lib/domain/commerce-plans";
+import { runSubscriptionJobs, subscriptionOf } from "@/lib/domain/commerce-plans";
+import { situacoesComerciais } from "@/lib/domain/situacao-comercial";
 
 describe("CX2: recebimentos manuais de assinatura", () => {
   let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -244,5 +245,33 @@ describe("D270: template e serviço pagos no caixa", () => {
     await lancar(ctx.db, ctx.actors.master, { data: "2026-12-10", meio: "MAQUININHA", origem: "SERVICO", produtoKey: op.servicos[0]!.key, valorCents: 50_000 }, hoje);
     const dia = await caixaDoDia(ctx.db, ctx.actors.master, "2026-12-10");
     expect(dia.linhas.map((l) => [l.origem, l.destino])).toEqual([["TEMPLATE", "PIX_ITAU_NEXTLEVEL"], ["SERVICO", "MP_MEGATRON"]]);
+  });
+
+  it("D278: estender durante o teste vira cortesia e não cai em \"aguardando pagamento\" no fim do teste", async () => {
+    const DIA = 86_400_000, AGORA = new Date("2026-12-10T15:00:00Z");
+    const storeId = (await signupMember(ctx.db, { storeName: "Moda Rua", ownerName: "Joana Lima", email: "joana@moda.com.br", password: "senha-segura-1", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never)).storeId;
+    const antes = (await subscriptionOf(ctx.db, storeId))!;
+    expect(antes.status).toBe("trial");
+    // caso já em produção: acesso estendido antes desta correção (só a loja e o fim do período mudaram)
+    const pagoAte = new Date(AGORA.getTime() + 93 * DIA).toISOString();
+    await ctx.db.update(stores).set({ paidUntil: pagoAte }).where(eq(stores.id, storeId));
+    const s = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, storeId) }))!;
+    const sit = (await situacoesComerciais(ctx.db, [s], AGORA)).get(storeId)!;
+    expect(sit).toMatchObject({ pagamento: "cortesia", rotulo: "Cortesia", diasParaVencer: 93 });
+    // o fim do teste passa: a assinatura continua em teste até o fim da cortesia (não pede pagamento)
+    const depoisDoTeste = new Date(new Date(antes.trialEndsAt!).getTime() + DIA);
+    await runSubscriptionJobs(ctx.db, depoisDoTeste);
+    const sub = (await subscriptionOf(ctx.db, storeId))!;
+    expect(sub.status).toBe("trial");
+    expect(new Date(sub.trialEndsAt!).getTime()).toBe(new Date(pagoAte).getTime());
+    // acabou a cortesia: agora sim, aguardando pagamento
+    await runSubscriptionJobs(ctx.db, new Date(new Date(pagoAte).getTime() + DIA));
+    expect((await subscriptionOf(ctx.db, storeId))!.status).toBe("pending_payment");
+
+    // caminho novo: estender em teste já leva o fim do teste junto
+    const outra = (await signupMember(ctx.db, { storeName: "Outra Rua", ownerName: "Rita Souza", email: "rita@rua.com.br", password: "senha-segura-1", taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true } as never)).storeId;
+    const e = await estenderVencimento(ctx.db, ctx.actors.master, outra, 90, "Cortesia de 3 meses do contrato", AGORA);
+    const sub2 = (await subscriptionOf(ctx.db, outra))!;
+    expect([sub2.status, new Date(sub2.trialEndsAt!).getTime()]).toEqual(["trial", new Date(e.pagoAte).getTime()]);
   });
 });
