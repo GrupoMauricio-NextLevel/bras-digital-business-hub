@@ -4,6 +4,9 @@ import { requireStoreAdmin } from "@/lib/require-session";
 import { redirect } from "next/navigation";
 import { isBlocked } from "@/lib/domain/store-access";
 import { SupportBar } from "@/components/support/support-bar";
+import { getDb } from "@/db/client";
+import { isDemoMode } from "@/lib/auth";
+import { precisaAceitarTermos } from "@/lib/domain/termos-plataforma";
 
 export const metadata: Metadata = { title: "Editor do tema", robots: { index: false } };
 
@@ -11,6 +14,8 @@ export const metadata: Metadata = { title: "Editor do tema", robots: { index: fa
 export default async function ThemeEditorLayout({ children }: { children: React.ReactNode }) {
   const session = await requireStoreAdmin();
   if (session.store && isBlocked(session.store)) redirect("/merchant");
+  // Termos de uso (D279): sem aceite, volta ao painel, que pede o aceite.
+  if (!session.support && (await precisaAceitarTermos(await getDb(), session.actor, { contaDemo: isDemoMode() && session.user.email.endsWith(".demo") }))) redirect("/merchant");
   const sup = session.support;
   if (!sup) return <div data-panel={panelFor(session)} className="h-dvh overflow-hidden bg-background text-foreground">{children}</div>;
   // Em modo suporte, a faixa fica visível também no editor em tela cheia.

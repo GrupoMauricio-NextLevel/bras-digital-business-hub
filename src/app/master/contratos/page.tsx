@@ -8,6 +8,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { CancelarContrato, NovoContrato } from "./forms";
+import { aceitesDoMaster } from "@/lib/domain/termos-plataforma";
+import { VERSAO_TERMOS } from "@/lib/contratos/termos-plataforma";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Contratos" };
@@ -20,7 +22,7 @@ export default async function ContratosPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const pode = podeOperarCaixa(session.actor);
-  const [lista, lojas, conferir] = await Promise.all([contratosDoMaster(db, session.actor), pode ? lojasParaContrato(db, session.actor) : Promise.resolve([]), pode ? pixParaConferir(db, session.actor) : Promise.resolve([])]);
+  const [lista, lojas, conferir, aceites] = await Promise.all([contratosDoMaster(db, session.actor), pode ? lojasParaContrato(db, session.actor) : Promise.resolve([]), pode ? pixParaConferir(db, session.actor) : Promise.resolve([]), aceitesDoMaster(db, session.actor)]);
   const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
   return (
     <>
@@ -56,6 +58,20 @@ export default async function ContratosPage() {
                 </span>
               </li>
             ); })}
+          </ul>
+        )}
+      </section>
+      <section className="ds-card mt-6 p-5" aria-labelledby="termos-t">
+        <h2 id="termos-t" className="text-base font-semibold">Termos de uso da plataforma · versão de {VERSAO_TERMOS.split("-").reverse().join("/")}</h2>
+        <p className="mb-3 text-sm text-muted-foreground">Todo dono de loja aceita no painel antes de usar; sem o aceite, o painel não abre. {aceites.filter((a) => a.aceite).length} de {aceites.length} já aceitaram. <Link className="underline" href="/termos" target="_blank">Ler os termos</Link></p>
+        {aceites.length === 0 ? <p className="text-sm text-muted-foreground">Nenhuma loja ainda.</p> : (
+          <ul className="divide-y text-sm">
+            {aceites.map((a) => (
+              <li key={a.userId} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span className="min-w-0"><span className="font-medium">{a.loja}</span> · {a.nome}</span>
+                {a.aceite ? <span className="text-xs text-muted-foreground"><Badge tone="success">Aceito</Badge> {quando(a.aceite.aceitoEm)} · {a.aceite.ip ?? "IP não informado"}</span> : <Badge tone="warning">Ainda não aceitou</Badge>}
+              </li>
+            ))}
           </ul>
         )}
       </section>

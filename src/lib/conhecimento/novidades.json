@@ -1,5 +1,12 @@
 [
  {
+  "numero": 279,
+  "frente": "E-commerce",
+  "titulo": "Termos de uso da plataforma com aceite obrigatório antes de usar o painel",
+  "data": "2026-11-10",
+  "resumo": "Pedido do dono: um contrato padrão para todos os usuários novos, aceito logo no começo; sem passar por ele, o painel não abre. O contrato da Loja Pronta (D276) é outro assunto (serviço avulso)."
+ },
+ {
   "numero": 278,
   "frente": "E-commerce",
   "titulo": "Cortesia dada durante o teste aparece como \"Cortesia\" e não vira cobrança no fim do teste",
@@ -271,12 +278,5 @@
   "titulo": "L4: \"Minha conta\" do cliente final, sem senha; L6: o que cada nível de tema soma",
   "data": "2026-11-04",
   "resumo": "L4, Minha conta (/store/<loja>/conta, ícone de pessoa no cabeçalho de toda loja): O cliente informa o e-mail, recebe um código de 6 dígitos (vale 10 minutos) e entra."
- },
- {
-  "numero": 239,
-  "frente": null,
-  "titulo": "L3: o chat da loja atende com os dados reais da loja",
-  "data": "2026-11-04",
-  "resumo": "Assistente da loja (responderNaLoja, sem IA externa, sem custo nem cota): Pedido: quando o cliente pergunta sobre o pedido, o chat pede o número e o e-mail da compra. Com os dois certos, mostra a etapa real, o código de rastreio e o link…"
  }
 ]

@@ -41,3 +41,16 @@ export async function pixNaoEncontradoAction(parcelaId: string) {
 export async function lancarParcelaNoCaixaAction(parcelaId: string) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await lancarParcelaNoCaixa(db, actor, parcelaId); refrescar(); revalidatePath("/master/caixa"); return r; });
 }
+
+/* Termos de uso da plataforma (D279): o aceite que libera o painel. */
+export async function aceitarTermosAction(input: { concordo: boolean; hashVisto: string; nome: string }) {
+  return runAction(async () => {
+    const { actor, db } = await ctx();
+    const h = await headers();
+    const ip = (h.get("x-forwarded-for") ?? "").split(",")[0]!.trim() || h.get("x-real-ip");
+    const { aceitarTermos } = await import("@/lib/domain/termos-plataforma");
+    const r = await aceitarTermos(db, actor, { ...input, concordo: input.concordo as true }, { ip: ip || null, aparelho: h.get("user-agent") });
+    revalidatePath("/merchant", "layout");
+    return r;
+  });
+}

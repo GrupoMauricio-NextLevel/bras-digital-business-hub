@@ -3367,3 +3367,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - Ajuste junto: a linha "taxa zero até…" some quando a taxa do plano já é 0%.
 - Teste: `tests/caixa.test.ts` (D278).
 
+## D279 — [E-commerce] Termos de uso da plataforma com aceite obrigatório antes de usar o painel (2026-11-10)
+- **Pedido do dono:** um contrato padrão para todos os usuários novos, aceito logo no começo; sem passar por ele, o painel não abre. O contrato da Loja Pronta (D276) é outro assunto (serviço avulso).
+- **Texto:** `src/lib/contratos/termos-plataforma.ts`, versão `2026-11-10`, 14 cláusulas curtas com "Em resumo". Sem pontos polêmicos e sem preços (vêm da página de planos e da tela de pagamento).
+  - Partes: NextLevel Marketing Ltda - ME (provisória, como no D276) e o LOJISTA.
+  - O dinheiro das vendas cai direto na conta de pagamento do lojista. Responsabilidades de cada lado e o que não é permitido.
+  - LGPD: o lojista controla os dados dos clientes; a NextLevel trata em nome da loja.
+  - Cancelamento sem multa. Aviso de 30 dias antes de mudar preço. Termos novos pedem aceite novo.
+  - Aceite eletrônico com prova. Foro de São Paulo, ressalvado o do consumidor.
+  - Impressão digital SHA-256 do texto: qualquer letra mudada exige trocar a versão.
+- **Trava:** no painel do lojista (`/merchant`) e no editor do tema, o dono de loja da E-commerce que não aceitou a versão atual vê só a tela do termo ("Li e concordo", nome completo, "Aceitar e continuar", ou "Agora não, sair"). Vale para os novos e para os que já têm conta (aceitam no próximo acesso).
+  - A equipe da loja não aceita: quem contrata é o dono.
+  - No modo suporte, o Master vê uma faixa de aviso em vez da trava.
+  - As contas de demonstração (`*.demo` no modo demonstração) não travam.
+- **Prova** (`aceites_termos`): usuário, loja, versão, impressão digital, nome, data e hora, IP e aparelho. Um aceite por versão. O e-mail de confirmação leva o link de `/termos`.
+- **Onde ler:** `/termos` da E-commerce mostra o mesmo texto. O cadastro avisa que os termos são aceitos antes de usar o painel, com link. Master → Contratos mostra quem já aceitou e quem falta.
+- Teste: `tests/termos-plataforma.test.ts`.
+

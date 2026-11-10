@@ -14,10 +14,32 @@ import { logout } from "@/app/actions/auth";
 import { TrialDemoButton } from "./trial-demo-button";
 import { leaveOwnStoreAction } from "@/app/actions/own-store";
 import { Store as StoreIcon } from "lucide-react";
+import { precisaAceitarTermos } from "@/lib/domain/termos-plataforma";
+import { HASH_TERMOS } from "@/lib/contratos/termos-plataforma";
+import { TermosView } from "@/components/contratos/termos-view";
+import { AceiteTermos } from "@/components/contratos/aceite-termos";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await requireRole("STORE_OWNER");
   let banner: React.ReactNode = null;
+  // Termos de uso (D279): antes de qualquer tela, o dono da loja aceita a versão atual. Sem aceite, o painel não abre.
+  const contaDemo = isDemoMode() && session.user.email.endsWith(".demo");
+  if (await precisaAceitarTermos(await getDb(), session.actor, { contaDemo })) {
+    if (!session.support) return (
+      <main className="min-h-dvh bg-background px-4 py-8 text-foreground">
+        <div className="mx-auto grid max-w-3xl gap-5">
+          <div>
+            <p className="text-sm font-semibold text-[#294cdc]">NextLevel E-commerce</p>
+            <h1 className="mt-1 text-2xl font-bold">Antes de começar, leia e aceite os termos de uso</h1>
+            <p className="mt-1 text-sm text-muted-foreground">É o contrato de uso da plataforma. Seu painel abre logo depois do aceite.</p>
+          </div>
+          <div className="ds-card max-h-[60dvh] overflow-y-auto p-5" tabIndex={0} aria-label="Texto dos termos de uso"><TermosView compacto /></div>
+          <AceiteTermos hash={HASH_TERMOS} nomeSugerido={session.user.name} logout={logout} />
+        </div>
+      </main>
+    );
+    banner = <div className="mb-6 rounded-lg border border-warning/40 bg-warning-soft/50 p-4 text-sm" data-termos-pendentes><span className="font-semibold">Modo suporte:</span> o dono desta loja ainda não aceitou os termos de uso. Quando ele entrar, o painel pede o aceite antes de abrir.</div>;
+  }
   const access = session.store ? storeAccess(session.store) : null;
   if (session.store && access?.state === "BLOCKED") {
     const inv = await ensurePlanInvoice(await getDb(), session.store, 1);

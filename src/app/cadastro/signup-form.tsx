@@ -57,7 +57,7 @@ export function SignupForm({ initialCode, initialRef, initialOffer, initialSuppl
       {usePlans ? null : <FormField label="Cupom de teste (opcional)" htmlFor="code" hint="Com cupom: dias grátis, sem cartão. Sem cupom: você paga por Pix e o acesso é liberado na hora."><Input id="code" value={f.code} onChange={(e) => set({ code: e.target.value.toUpperCase() })} placeholder="Ex.: LANCAMENTO7" autoComplete="off" /></FormField>}
       {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
       <Button type="submit" size="lg" className="w-full" loading={pending}>{usePlans ? (entry ? `Criar loja e começar ${entry.trialDays} dias grátis` : "Criar loja") : trial ? "Começar meu teste de 7 dias" : `Criar loja e pagar ${formatBRL(offer.monthlyCents + offer.setupCents)} por Pix`}</Button>
-      <p className="text-center text-xs text-muted-foreground">Ao criar a conta você aceita os termos de uso e a política de privacidade.</p>
+      <p className="text-center text-xs text-muted-foreground">Antes de usar o painel, você lê e aceita os <a href="/termos" target="_blank" className="underline">termos de uso</a>; veja também a <a href="/privacidade" target="_blank" className="underline">política de privacidade</a>.</p>
     </form>
   );
 }

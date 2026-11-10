@@ -112,7 +112,7 @@ export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle,
         <button type="submit" className="ck-enviar" disabled={pending} aria-busy={pending}>
           <Lock className="size-4" aria-hidden />{pending ? "Criando a sua loja…" : black && anual ? "Garantir a Black e criar minha loja" : trialDays > 0 ? `Criar loja e começar ${trialDays} dias grátis` : "Criar minha loja"}
         </button>
-        <p className="ck-termos"><BadgeCheck className="size-3.5" aria-hidden />Vale uma vez por CPF/CNPJ. Ao criar a conta você aceita os termos de uso e a política de privacidade.</p>
+        <p className="ck-termos"><BadgeCheck className="size-3.5" aria-hidden />Vale uma vez por CPF/CNPJ. Antes de usar o painel, você lê e aceita os <a href="/termos" target="_blank" className="underline">termos de uso</a>; veja também a <a href="/privacidade" target="_blank" className="underline">política de privacidade</a>.</p>
       </div>
       <div className="ck-resumo-lateral">{resumo}</div>
     </form>

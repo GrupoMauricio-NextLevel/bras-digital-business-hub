@@ -2987,3 +2987,18 @@ export const contratoParcelas = pgTable("contrato_parcelas", {
   caixaLancamentoId: text("caixa_lancamento_id"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("contrato_parcelas_ordem_uq").on(t.contratoId, t.ordem), index("contrato_parcelas_store_idx").on(t.storeId, t.status)]);
+
+/** Aceite dos termos de uso da plataforma (D279): um por dono de loja e por versão, com a prova do aceite. */
+export const aceitesTermos = pgTable("aceites_termos", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id),
+  storeId: text("store_id").references(() => stores.id),
+  versao: text("versao").notNull(),
+  /** Impressão digital do texto aceito (SHA-256). */
+  hash: text("hash").notNull(),
+  nome: text("nome").notNull(),
+  aceitoEm: ts("aceito_em").notNull(),
+  ip: text("ip"),
+  aparelho: text("aparelho"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("aceites_termos_user_versao_uq").on(t.userId, t.versao), index("aceites_termos_store_idx").on(t.storeId)]);
