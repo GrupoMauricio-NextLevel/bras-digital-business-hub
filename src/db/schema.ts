@@ -2963,3 +2963,27 @@ export const contratos = pgTable("contratos", {
   canceladoEm: ts("cancelado_em"),
   createdAt: createdAt(),
 }, (t) => [index("contratos_store_idx").on(t.storeId, t.status)]);
+
+/** Parcelas do contrato (CT3, D277): o cliente avisa "Já fiz o Pix"; só o Master confirma, depois de conferir no banco. */
+export const PARCELA_STATUS = ["ABERTA", "AVISADA", "PAGA"] as const;
+export const contratoParcelas = pgTable("contrato_parcelas", {
+  id: id(),
+  contratoId: text("contrato_id").notNull().references(() => contratos.id),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  /** 1 = sinal, 2 = restante. */
+  ordem: integer("ordem").notNull(),
+  descricao: text("descricao").notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  vencimento: text("vencimento").notNull(),
+  status: text("status", { enum: PARCELA_STATUS }).notNull().default("ABERTA"),
+  avisadoEm: ts("avisado_em"),
+  avisadoPor: text("avisado_por"),
+  avisoNota: text("aviso_nota"),
+  confirmadoEm: ts("confirmado_em"),
+  confirmadoPor: text("confirmado_por"),
+  /** Última vez que o Master não achou o Pix no extrato (a parcela volta a ficar aberta). */
+  naoEncontradoEm: ts("nao_encontrado_em"),
+  /** Lançamento do caixa feito com a confirmação (vazio se o caixa do dia estava fechado). */
+  caixaLancamentoId: text("caixa_lancamento_id"),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("contrato_parcelas_ordem_uq").on(t.contratoId, t.ordem), index("contrato_parcelas_store_idx").on(t.storeId, t.status)]);

@@ -638,6 +638,13 @@
       "when": 1794334413266,
       "tag": "0090_contratos",
       "breakpoints": true
+    },
+    {
+      "idx": 91,
+      "version": "7",
+      "when": 1794336693552,
+      "tag": "0091_contrato_parcelas",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
-import { and, desc, eq, inArray, like } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, like, lte, ne } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { contratos, organizations, stores } from "@/db/schema";
+import { contratoParcelas, contratos, organizations, stores } from "@/db/schema";
 import { brandByCode } from "@/lib/brand";
 import { CONTRATADA_PADRAO, MODELO_LOJA_PRONTA, VERSAO_LOJA_PRONTA, conferirDados, formatar, impressaoDigital, montarSecoes, type DadosLojaPronta } from "@/lib/contratos/loja-pronta-express";
 import { gerarPdfContrato } from "@/lib/contratos/pdf";
@@ -9,7 +9,8 @@ import { sendEmail } from "@/lib/email";
 import { newId } from "@/lib/ids";
 import { assertCanAccess, assertStoreAdmin, requireStoreId, type Actor } from "./access";
 import { estenderVencimento } from "./assinaturas-master";
-import { podeOperarCaixa } from "./caixa";
+import { lancar, podeOperarCaixa } from "./caixa";
+import { dataSP, somarDias } from "@/lib/finance/caixa-regras";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { emitEvent } from "./events";
 
@@ -139,4 +140,130 @@ export async function cancelarContrato(db: Database, actor: Actor, id: string, n
 export async function lojasParaContrato(db: Database, actor: Actor) {
   exigirMaster(actor);
   return db.select({ id: stores.id, nome: stores.name, slug: stores.slug, email: stores.contactEmail }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(eq(organizations.brand, "NEXTLEVEL_COMMERCE")).orderBy(stores.name).limit(500);
+}
+
+/* ───────────────────────── CT3 · Parcelas e "Já fiz o Pix" (D277) ───────────────────────── */
+
+type Contrato = typeof contratos.$inferSelect;
+type Parcela = typeof contratoParcelas.$inferSelect;
+const linkBase = () => brandByCode("NEXTLEVEL_COMMERCE").baseUrl.replace(/\/$/, "");
+
+/** Cria as parcelas (sinal e restante) a partir dos dados congelados, se ainda não existem. Vale para contrato antigo. */
+async function garantirParcelas(db: Database, c: Contrato) {
+  if (c.status === "CANCELADO") return;
+  const d = c.dados as unknown as DadosLojaPronta;
+  const linhas = [
+    { ordem: 1, descricao: "Sinal", valorCents: d.sinalCents, vencimento: d.dataSinal },
+    ...(d.restanteCents > 0 ? [{ ordem: 2, descricao: "Restante", valorCents: d.restanteCents, vencimento: d.dataRestante }] : []),
+  ];
+  await db.insert(contratoParcelas).values(linhas.map((l) => ({ id: newId("ctp"), contratoId: c.id, storeId: c.storeId, ...l }))).onConflictDoNothing();
+}
+
+/** Parcelas de um contrato, para o Master ou para o dono da loja dele. */
+export async function parcelasDoContrato(db: Database, actor: Actor, contratoId: string): Promise<Parcela[]> {
+  const c = await verContrato(db, actor, contratoId);
+  await garantirParcelas(db, c);
+  return db.select().from(contratoParcelas).where(eq(contratoParcelas.contratoId, c.id)).orderBy(asc(contratoParcelas.ordem));
+}
+
+async function parcelaComContrato(db: Database, parcelaId: string) {
+  const r = (await db.select({ p: contratoParcelas, c: contratos }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(eq(contratoParcelas.id, parcelaId)).limit(1))[0];
+  if (!r || r.c.status === "CANCELADO") throw new NotFoundError("Parcela não encontrada.");
+  return { ...r, d: r.c.dados as unknown as DadosLojaPronta };
+}
+
+export const avisoPixSchema = z.object({ nota: z.string().trim().max(300).optional() });
+
+/** O cliente avisa que fez o Pix. Não marca como pago: só avisa o Master para conferir no banco. */
+export async function avisarPixFeito(db: Database, actor: Actor, parcelaId: string, raw: z.input<typeof avisoPixSchema> = {}, now = new Date()) {
+  const storeId = requireStoreId(actor);
+  assertStoreAdmin(actor);
+  const { nota } = avisoPixSchema.parse(raw);
+  const { p, c, d } = await parcelaComContrato(db, parcelaId);
+  if (p.storeId !== storeId) throw new NotFoundError("Parcela não encontrada.");
+  if (p.status === "PAGA") throw new DomainError("PARCELA_PAGA", "Esta parcela já foi confirmada pela NextLevel.");
+  if (p.status === "AVISADA") throw new DomainError("PARCELA_AVISADA", "Você já avisou este Pix. A NextLevel está conferindo no banco.");
+  const r = await db.update(contratoParcelas).set({ status: "AVISADA", avisadoEm: now.toISOString(), avisadoPor: actor.userId, avisoNota: nota || null }).where(and(eq(contratoParcelas.id, p.id), eq(contratoParcelas.status, "ABERTA"))).returning({ id: contratoParcelas.id });
+  if (!r.length) throw new DomainError("PARCELA_AVISADA", "Você já avisou este Pix. A NextLevel está conferindo no banco.");
+  await sendEmail(db, {
+    kind: "CONTRATO_PIX_AVISADO", to: d.contratada.emailRepresentante, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `parcela:${p.id}:aviso:${now.toISOString()}`,
+    subject: `Confira no ${d.contratada.banco}: Pix de ${formatar.brl(p.valorCents)} do contrato ${c.numero}`,
+    text: `${d.cliente.nome} (${d.loja.nome}) avisou que fez o Pix da parcela "${p.descricao}" de ${formatar.brl(p.valorCents)} do contrato ${c.numero}.${nota ? `\n\nRecado do cliente: ${nota}` : ""}\n\nConfira no extrato do ${d.contratada.banco} e confirme (ou diga que não encontrou) no Master.`,
+    cta: { label: "Conferir no Master", url: `${linkBase()}/master/contratos/${c.id}` },
+  });
+  await emitEvent(db, { type: "CONTRATO_PIX_AVISADO", storeId, actorRole: actor.role, payload: { contratoId: c.id, parcelaId: p.id, valorCents: p.valorCents } });
+}
+
+/** Lança a parcela paga no caixa do dia (Pix no Itaú da NextLevel). Uma vez só: a reserva da coluna impede o lançamento duplo. */
+async function lancarNoCaixa(db: Database, actor: Actor, p: Parcela, numero: string, cliente: string, now: Date): Promise<string | null> {
+  const reservada = await db.update(contratoParcelas).set({ caixaLancamentoId: "RESERVANDO" }).where(and(eq(contratoParcelas.id, p.id), eq(contratoParcelas.status, "PAGA"), isNull(contratoParcelas.caixaLancamentoId))).returning({ id: contratoParcelas.id });
+  if (!reservada.length) return null;
+  try {
+    const { id } = await lancar(db, actor, { tipo: "ENTRADA", meio: "PIX", origem: "OUTRO", destino: "PIX_ITAU_NEXTLEVEL", valorCents: p.valorCents, storeId: p.storeId, descricao: `Contrato ${numero} · ${p.descricao} · ${cliente}`.slice(0, 300) }, now);
+    await db.update(contratoParcelas).set({ caixaLancamentoId: id }).where(eq(contratoParcelas.id, p.id));
+    return id;
+  } catch (e) {
+    await db.update(contratoParcelas).set({ caixaLancamentoId: null }).where(eq(contratoParcelas.id, p.id));
+    // Caixa do dia não aberto ou já fechado: a confirmação vale; o lançamento fica para depois.
+    if (e instanceof DomainError && ["CAIXA_FECHADO", "CAIXA_MOTIVO"].includes(e.code)) return null;
+    throw e;
+  }
+}
+
+/** O Master conferiu no banco e confirma. Lança no caixa se o dia estiver aberto; senão fica para "Lançar no caixa". */
+export async function confirmarRecebimento(db: Database, actor: Actor, parcelaId: string, now = new Date()) {
+  exigirMaster(actor);
+  const { p, c, d } = await parcelaComContrato(db, parcelaId);
+  const r = await db.update(contratoParcelas).set({ status: "PAGA", confirmadoEm: now.toISOString(), confirmadoPor: actor.userId }).where(and(eq(contratoParcelas.id, p.id), ne(contratoParcelas.status, "PAGA"))).returning();
+  if (!r.length) throw new DomainError("PARCELA_PAGA", "Esta parcela já foi confirmada.");
+  const lancamentoId = await lancarNoCaixa(db, actor, r[0]!, c.numero, d.cliente.nome, now);
+  const resto = (await db.select({ status: contratoParcelas.status }).from(contratoParcelas).where(eq(contratoParcelas.contratoId, c.id))).filter((x) => x.status !== "PAGA").length;
+  await sendEmail(db, {
+    kind: "CONTRATO_PIX_CONFIRMADO", to: d.cliente.email, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `parcela:${p.id}:confirmada`,
+    subject: `Recebemos o seu Pix de ${formatar.brl(p.valorCents)}`,
+    text: `Olá, ${d.cliente.nome.split(" ")[0]}!\n\nConfirmamos o recebimento da parcela "${p.descricao}" (${formatar.brl(p.valorCents)}) do contrato ${c.numero}. Obrigado!${resto ? "" : "\n\nCom isso, o contrato está todo pago. O prazo de entrega começa a contar quando recebermos todo o material da loja."}`,
+    cta: { label: "Ver no painel", url: `${linkBase()}/merchant/contratos/${c.id}` },
+  });
+  await emitEvent(db, { type: "CONTRATO_PIX_CONFIRMADO", storeId: c.storeId, actorRole: actor.role, payload: { contratoId: c.id, parcelaId: p.id, valorCents: p.valorCents, lancamentoId } });
+  return { lancamentoId, quitado: resto === 0 };
+}
+
+/** O Master não achou o Pix no extrato: a parcela volta a ficar aberta e o cliente é avisado. */
+export async function pixNaoEncontrado(db: Database, actor: Actor, parcelaId: string, now = new Date()) {
+  exigirMaster(actor);
+  const { p, c, d } = await parcelaComContrato(db, parcelaId);
+  const r = await db.update(contratoParcelas).set({ status: "ABERTA", naoEncontradoEm: now.toISOString() }).where(and(eq(contratoParcelas.id, p.id), eq(contratoParcelas.status, "AVISADA"))).returning({ id: contratoParcelas.id });
+  if (!r.length) throw new DomainError("PARCELA_ESTADO", "Só dá para marcar \"não encontrei\" num Pix que o cliente avisou e ainda não foi confirmado.");
+  await sendEmail(db, {
+    kind: "CONTRATO_PIX_NAO_ENCONTRADO", to: d.cliente.email, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `parcela:${p.id}:nao:${now.toISOString()}`,
+    subject: `Ainda não encontramos o seu Pix de ${formatar.brl(p.valorCents)}`,
+    text: `Olá, ${d.cliente.nome.split(" ")[0]}!\n\nConferimos o extrato e ainda não encontramos o Pix da parcela "${p.descricao}" (${formatar.brl(p.valorCents)}) do contrato ${c.numero}.\n\nConfira se ele foi para a chave ${d.contratada.chavePix} (${d.contratada.banco}, favorecido ${d.contratada.favorecido}). Se já pagou, responda este e-mail com o comprovante ou mande para ${d.contratada.emailRepresentante} e avise de novo no painel.`,
+    cta: { label: "Abrir o contrato", url: `${linkBase()}/merchant/contratos/${c.id}` },
+  });
+  await emitEvent(db, { type: "CONTRATO_PIX_NAO_ENCONTRADO", storeId: c.storeId, actorRole: actor.role, payload: { contratoId: c.id, parcelaId: p.id } });
+}
+
+/** Parcela confirmada com o caixa do dia fechado: lança depois, uma vez só. */
+export async function lancarParcelaNoCaixa(db: Database, actor: Actor, parcelaId: string, now = new Date()) {
+  exigirMaster(actor);
+  const { p, c, d } = await parcelaComContrato(db, parcelaId);
+  if (p.status !== "PAGA") throw new DomainError("PARCELA_ESTADO", "Confirme o recebimento antes de lançar no caixa.");
+  if (p.caixaLancamentoId) throw new DomainError("PARCELA_NO_CAIXA", "Esta parcela já está no caixa.");
+  const id = await lancarNoCaixa(db, actor, p, c.numero, d.cliente.nome, now);
+  if (!id) throw new DomainError("CAIXA_FECHADO", "O caixa de hoje não está aberto (ou já foi fechado). Abra o caixa do dia e tente de novo.");
+  return { id };
+}
+
+/** Pix que os clientes avisaram e o Master ainda não conferiu (topo da tela de Contratos). */
+export async function pixParaConferir(db: Database, actor: Actor) {
+  exigirMaster(actor);
+  return db.select({ id: contratoParcelas.id, contratoId: contratos.id, numero: contratos.numero, titulo: contratos.titulo, descricao: contratoParcelas.descricao, valorCents: contratoParcelas.valorCents, avisadoEm: contratoParcelas.avisadoEm }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "AVISADA"), ne(contratos.status, "CANCELADO"))).orderBy(asc(contratoParcelas.avisadoEm));
+}
+
+/** Parcelas abertas da loja que vencem em até 3 dias (ou já venceram): faixa na tela inicial do dono. */
+export async function parcelasAPagar(db: Database, actor: Actor, now = new Date()) {
+  if (actor.role !== "STORE_OWNER" || !actor.storeId || actor.storeRole === "STAFF") return [];
+  const ativos = await db.select().from(contratos).where(and(eq(contratos.storeId, actor.storeId), ne(contratos.status, "CANCELADO")));
+  for (const c of ativos) await garantirParcelas(db, c);
+  return db.select({ id: contratoParcelas.id, contratoId: contratoParcelas.contratoId, descricao: contratoParcelas.descricao, valorCents: contratoParcelas.valorCents, vencimento: contratoParcelas.vencimento }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.storeId, actor.storeId), eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), lte(contratoParcelas.vencimento, somarDias(dataSP(now), 3)))).orderBy(asc(contratoParcelas.vencimento));
 }

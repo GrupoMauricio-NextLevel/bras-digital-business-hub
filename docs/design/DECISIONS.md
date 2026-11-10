@@ -3347,3 +3347,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Contratada provisória:** NextLevel Marketing Ltda (CNPJ 51.392.006/0001-92, Pix no Itaú), em `CONTRATADA_PADRAO`, e gravada em cada contrato; vira configuração quando a NextLevel Soluções existir. Os contratos assinados não mudam.
 - **Fora desta fase:** pagamento com "Já fiz o Pix" e conferência no Master (CT3), aditivos e outros modelos (CT4).
 - **Testes:** `tests/contratos.test.ts` (conta e datas, texto, cortesia, impressão digital estável, permissões, isolamento entre lojas, equipe sem acesso, aceite único, texto mudado, e-mails e PDF).
+
+## D277 — [E-commerce] Contratos CT3: "Já fiz o Pix" no painel do cliente e conferência manual no Master (2026-11-10)
+- **Pedido do dono:** o cliente só sinaliza que fez o Pix no CNPJ (Itaú) apertando um botão; o dono confere a conta do Itaú à mão.
+- **Parcelas** (`contrato_parcelas`): sinal e restante saem dos dados congelados do contrato. São criadas sozinhas na primeira leitura, o que vale também para contrato enviado antes desta mudança.
+- **Cliente** (Contratos → o contrato): bloco "Pagamentos" com a chave Pix, o botão "Copiar chave" e **"Já fiz o Pix"** em cada parcela, com recado opcional. O aviso **não marca como pago**: vai um e-mail ao representante da contratada para conferir. A tela inicial mostra uma faixa quando uma parcela vence em até 3 dias e ainda não foi avisada.
+- **Master** (Contratos): faixa "Pix para conferir no banco" no topo. No contrato: **"Confirmar recebimento"** (também sem aviso do cliente) ou **"Não encontrei"** (a parcela volta a aberta e o cliente recebe um e-mail para conferir a chave e mandar o comprovante). Só o dono e o Financeiro.
+- **Caixa (D269/D270):** a confirmação lança uma entrada Pix → Itaú NextLevel, origem "Outros" descrita com o número do contrato, ligada à loja. Se o caixa do dia não estiver aberto, a confirmação vale e aparece o botão "Lançar no caixa". O lançamento acontece uma vez só (reserva da coluna antes de lançar).
+- **Fora desta etapa (simples, como o dono pediu):** trava automática da entrega, lembretes automáticos e rescisão automática. O prazo de entrega continua contando pelo texto do contrato.
+- Testes: `tests/contratos.test.ts` (aviso não paga; outra loja e a equipe não avisam; lojista não confirma; "não encontrei"; caixa fechado e depois aberto; nenhum lançamento duplo; quitação).
+

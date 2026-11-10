@@ -18,7 +18,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
 import { requireStoreAdmin } from "@/lib/require-session";
-import { contratosPendentes } from "@/lib/domain/contratos";
+import { contratosPendentes, parcelasAPagar } from "@/lib/domain/contratos";
 import { getDb } from "@/db/client";
 import { getBalanceCents } from "@/lib/domain/wallet";
 import { getMerchantOverview } from "@/lib/queries/merchant";
@@ -56,8 +56,11 @@ export default async function MerchantHome() {
   const novidade = novidadesDa((await brandOfStore(db, store)).code, 1)[0];
   // Contrato esperando o aceite (D276): aviso no topo, antes de tudo.
   const pendentes = await contratosPendentes(db, session.actor);
+  // CT3 (D277): parcela do contrato vencendo em até 3 dias (ou vencida) e ainda sem aviso de Pix.
+  const aPagar = pendentes.length ? [] : await parcelasAPagar(db, session.actor);
   const faixaContrato = pendentes.length ? <div role="status" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-[#294cdc] bg-[#eef3ff] px-4 py-3 text-sm text-[#101a33]"><span><span className="font-semibold">Você tem {pendentes.length === 1 ? "um contrato" : `${pendentes.length} contratos`} da NextLevel para aceitar.</span> Leia com calma e dê o aceite aqui no painel.</span><Link href={pendentes.length === 1 ? `/merchant/contratos/${pendentes[0]!.id}` : "/merchant/contratos"} className="rounded-md bg-[#294cdc] px-3 py-2 font-semibold text-white">Ler e aceitar</Link></div> : null;
-  const faixaNovidade = <>{faixaContrato}{novidade ? <p className="mb-4 text-sm"><span className="font-semibold">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null}</>;
+  const faixaPix = aPagar.length ? <div role="status" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-[#294cdc] bg-[#eef3ff] px-4 py-3 text-sm text-[#101a33]"><span><span className="font-semibold">Pagamento do contrato: {aPagar[0]!.descricao.toLowerCase()} de {(aPagar[0]!.valorCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span> {((v, h) => (v < h ? `venceu em ${v.split("-").reverse().join("/")}` : v === h ? "é para hoje" : `até ${v.split("-").reverse().join("/")}`))(aPagar[0]!.vencimento, new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date()))}. Já pagou? Avise com um clique.</span><Link href={`/merchant/contratos/${aPagar[0]!.contratoId}`} className="rounded-md bg-[#294cdc] px-3 py-2 font-semibold text-white">Pagar ou avisar o Pix</Link></div> : null;
+  const faixaNovidade = <>{faixaContrato}{faixaPix}{novidade ? <p className="mb-4 text-sm"><span className="font-semibold">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null}</>;
   const surveyCard = <>{faixaNovidade}{boasVindas}{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</>;
   const isLite = !commerce && store.offer !== "STORE_OWN" && store.kind !== "SUPPLIER_OWN";
   const balance = isLite ? await getBalanceCents(db, store.id) : 0;

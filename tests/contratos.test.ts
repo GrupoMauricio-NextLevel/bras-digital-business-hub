@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { freshDb } from "./setup";
-import { contratos, emailOutbox, stores, users } from "@/db/schema";
+import { caixaLancamentos, contratos, emailOutbox, stores, users } from "@/db/schema";
 import type { Actor } from "@/lib/domain/access";
 import { signupMember } from "@/lib/domain/store-access";
 import { createMasterMember } from "@/lib/domain/equipe-master";
-import { aceitarContrato, cancelarContrato, contratosDaLoja, contratosPendentes, enviarContratoLojaPronta, verContrato } from "@/lib/domain/contratos";
+import { aceitarContrato, avisarPixFeito, cancelarContrato, confirmarRecebimento, contratosDaLoja, contratosPendentes, enviarContratoLojaPronta, lancarParcelaNoCaixa, parcelasAPagar, parcelasDoContrato, pixNaoEncontrado, pixParaConferir, verContrato } from "@/lib/domain/contratos";
+import { abrirCaixa } from "@/lib/domain/caixa";
 import { gerarPdfContrato } from "@/lib/contratos/pdf";
 import { conferirDados, impressaoDigital, jsonEstavel, montarSecoes, type DadosLojaPronta } from "@/lib/contratos/loja-pronta-express";
 
@@ -98,5 +99,53 @@ describe("contrato no banco (CT1+CT2)", () => {
 
     // cancelar: só o que não foi aceito
     await expect(cancelarContrato(ctx.db, ctx.actors.master, env.id, AGORA)).rejects.toThrow(/não foi aceito/);
+  });
+
+  it("CT3: o cliente avisa o Pix, só o Master confirma, e o caixa recebe uma vez só", async () => {
+    const a = await loja("Vestiário Teste", "a@loja.teste", "529.982.247-25");
+    const b = await loja("Outra Loja", "b@loja.teste", "111.444.777-35");
+    const env = await enviarContratoLojaPronta(ctx.db, ctx.actors.master, entrada(a.storeId), AGORA);
+    const [sinal, resto] = await parcelasDoContrato(ctx.db, a.dono, env.id);
+    expect([sinal, resto].map((p) => [p!.descricao, p!.valorCents, p!.status])).toEqual([["Sinal", 50_000, "ABERTA"], ["Restante", 100_000, "ABERTA"]]);
+    expect((await parcelasAPagar(ctx.db, a.dono, AGORA)).map((p) => p.descricao)).toEqual(["Sinal"]);
+
+    // outra loja e a equipe da loja não avisam; o dono da loja não confirma
+    await expect(avisarPixFeito(ctx.db, b.dono, sinal!.id, {}, AGORA)).rejects.toThrow(/não encontrada/);
+    await expect(avisarPixFeito(ctx.db, { ...a.dono, storeRole: "STAFF" }, sinal!.id, {}, AGORA)).rejects.toThrow();
+    await expect(confirmarRecebimento(ctx.db, a.dono, sinal!.id, AGORA)).rejects.toThrow();
+
+    // aviso não marca como pago
+    await avisarPixFeito(ctx.db, a.dono, sinal!.id, { nota: "Paguei às 15h" }, AGORA);
+    await expect(avisarPixFeito(ctx.db, a.dono, sinal!.id, {}, AGORA)).rejects.toThrow(/já avisou/);
+    expect((await parcelasDoContrato(ctx.db, a.dono, env.id))[0]!.status).toBe("AVISADA");
+    expect((await pixParaConferir(ctx.db, ctx.actors.master)).map((p) => p.numero)).toEqual([env.numero]);
+    const aviso = (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "CONTRATO_PIX_AVISADO")))[0]!;
+    expect(aviso.toEmail).toBe("agencianextlevelbr@gmail.com");
+    expect(aviso.body).toMatch(/Paguei às 15h/);
+
+    // não encontrei: volta a aberta e avisa o cliente; depois ele avisa de novo
+    await pixNaoEncontrado(ctx.db, ctx.actors.master, sinal!.id, AGORA);
+    await expect(pixNaoEncontrado(ctx.db, ctx.actors.master, sinal!.id, AGORA)).rejects.toThrow(/não encontrei/);
+    expect((await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "CONTRATO_PIX_NAO_ENCONTRADO")))[0]!.toEmail).toBe(BASE.cliente.email);
+    await avisarPixFeito(ctx.db, a.dono, sinal!.id, {}, new Date(AGORA.getTime() + 60_000));
+
+    // confirmação com o caixa fechado: vale, e o lançamento fica para depois (uma vez só)
+    const r1 = await confirmarRecebimento(ctx.db, ctx.actors.master, sinal!.id, AGORA);
+    expect(r1).toEqual({ lancamentoId: null, quitado: false });
+    await expect(confirmarRecebimento(ctx.db, ctx.actors.master, sinal!.id, AGORA)).rejects.toThrow(/já foi confirmada/);
+    await expect(lancarParcelaNoCaixa(ctx.db, ctx.actors.master, sinal!.id, AGORA)).rejects.toThrow(/caixa/);
+    await abrirCaixa(ctx.db, ctx.actors.master, {}, AGORA);
+    await lancarParcelaNoCaixa(ctx.db, ctx.actors.master, sinal!.id, AGORA);
+    await expect(lancarParcelaNoCaixa(ctx.db, ctx.actors.master, sinal!.id, AGORA)).rejects.toThrow(/já está no caixa/);
+
+    // o restante, com o caixa aberto, entra direto; o contrato fica quitado
+    const r2 = await confirmarRecebimento(ctx.db, ctx.actors.master, resto!.id, AGORA);
+    expect(r2.quitado).toBe(true);
+    expect(r2.lancamentoId).toBeTruthy();
+    const lancs = await ctx.db.select().from(caixaLancamentos).where(eq(caixaLancamentos.storeId, a.storeId));
+    expect(lancs.map((l) => [l.valorCents, l.meio, l.destino, l.tipo]).sort()).toEqual([[100_000, "PIX", "PIX_ITAU_NEXTLEVEL", "ENTRADA"], [50_000, "PIX", "PIX_ITAU_NEXTLEVEL", "ENTRADA"]]);
+    expect((await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "CONTRATO_PIX_CONFIRMADO"))).length).toBe(2);
+    expect(await parcelasAPagar(ctx.db, a.dono, AGORA)).toEqual([]);
+    expect(await pixParaConferir(ctx.db, ctx.actors.master)).toEqual([]);
   });
 });

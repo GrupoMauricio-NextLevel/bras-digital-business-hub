@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FileText } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
-import { contratosDoMaster, lojasParaContrato } from "@/lib/domain/contratos";
+import { contratosDoMaster, lojasParaContrato, pixParaConferir } from "@/lib/domain/contratos";
 import { podeOperarCaixa } from "@/lib/domain/caixa";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
@@ -20,11 +20,19 @@ export default async function ContratosPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const pode = podeOperarCaixa(session.actor);
-  const [lista, lojas] = await Promise.all([contratosDoMaster(db, session.actor), pode ? lojasParaContrato(db, session.actor) : Promise.resolve([])]);
+  const [lista, lojas, conferir] = await Promise.all([contratosDoMaster(db, session.actor), pode ? lojasParaContrato(db, session.actor) : Promise.resolve([]), pode ? pixParaConferir(db, session.actor) : Promise.resolve([])]);
   const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
   return (
     <>
       <PageHeader eyebrow="Comercial" title="Contratos" description="Crie o contrato da Loja Pronta Express, assine e envie. O cliente recebe um e-mail, entra com o login dele e aceita no painel. Com o aceite, a cópia assinada em PDF vai para os dois e-mails." />
+      {conferir.length > 0 && (
+        <section role="status" className="mb-6 rounded-xl border-2 border-[#b45309] bg-[#fff7ed] p-4 text-sm text-[#431407]" aria-labelledby="conferir-t">
+          <h2 id="conferir-t" className="mb-2 font-semibold">{conferir.length === 1 ? "1 Pix para conferir no banco" : `${conferir.length} Pix para conferir no banco`}</h2>
+          <ul className="grid gap-1">
+            {conferir.map((p) => <li key={p.id}><Link className="font-medium underline underline-offset-2" href={`/master/contratos/${p.contratoId}`}>{p.numero}</Link> · {p.descricao} de {(p.valorCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} · avisado em {quando(p.avisadoEm)}</li>)}
+          </ul>
+        </section>
+      )}
       {pode && (
         <section className="ds-card mb-6 p-5" aria-labelledby="novo-t">
           <h2 id="novo-t" className="mb-3 text-base font-semibold">Novo contrato · Loja Virtual Pronta Express</h2>
