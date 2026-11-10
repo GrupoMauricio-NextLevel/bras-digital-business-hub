@@ -4,6 +4,8 @@
 > Primeiro modelo: `docs/contratos/loja-pronta-express/RACIONAL-E-PROMPT.md` (Loja Virtual Pronta Express).
 > Não é parecer jurídico; a forma de assinatura segue a assinatura eletrônica simples aceita entre partes privadas (MP 2.200-2/2001, art. 10, § 2º, e Lei 14.063/2020). Um advogado deve validar o modelo e o "manifesto" de assinatura antes do uso em escala.
 
+> **Provisório (dono, 10/11/2026):** a cobrança sai em nome da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92, Pix no Itaú) porque a **NextLevel Soluções** (a agência) ainda não está pronta. Por isso a "contratada", o CNPJ, o banco e a chave Pix **não ficam fixos no modelo nem no código**: vêm de uma configuração do Master (cadastro das empresas do grupo e dados de recebimento). Quando a NextLevel Soluções estiver pronta, troca-se a configuração e os contratos novos já saem no nome dela; os assinados antes continuam como foram (texto congelado).
+
 ---
 
 ## 1. O fluxo, do jeito que o dono pediu
@@ -145,6 +147,8 @@ REGRAS
 - Contrato assinado é imutável: texto congelado e impressão digital SHA-256; mudança só por aditivo.
 - Prova da assinatura: usuário, data e hora do servidor, IP, aparelho, impressão digital, versão do modelo, "Li e
   concordo"; no link seguro, CPF parcial e código de 6 números com validade de 10 minutos e limite de tentativas.
+- Contratada e dados de recebimento (razão social, CNPJ, banco, chave Pix) vêm da configuração do Master, por modelo
+  (hoje NextLevel Marketing; depois NextLevel Soluções); o contrato congela o que estava valendo na assinatura.
 - Valores em centavos; datas ISO; textos em português claro; sem promessa de ganho; dados pessoais só para as partes.
 - Pagamento (decisão do dono): Pix no CNPJ do Itaú. O cliente aperta "Já fiz o Pix" (comprovante opcional, guardado
   com acesso só das partes) e a parcela fica "Aguardando conferência"; só o Master, depois de conferir o extrato,

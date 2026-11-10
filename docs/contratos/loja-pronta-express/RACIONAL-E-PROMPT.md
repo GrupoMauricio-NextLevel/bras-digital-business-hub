@@ -5,6 +5,8 @@
 > **Os dados pessoais de cada cliente não entram no repositório** (LGPD): o modelo usa campos `{{...}}`, e cada contrato preenchido fica fora do Git (pasta temporária da sessão e o arquivo final enviado ao dono).
 > Este documento não é parecer jurídico. Antes de usar o modelo em escala, um advogado revisa (pendência do dono já registrada: "revisão jurídica dos termos").
 
+> **Provisório (dono, 10/11/2026):** a cobrança sai em nome da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92, Pix no Itaú) porque a **NextLevel Soluções** (a agência) ainda não está pronta. Por isso a "contratada", o CNPJ, o banco e a chave Pix **não ficam fixos no modelo nem no código**: vêm de uma configuração do Master (cadastro das empresas do grupo e dados de recebimento). Quando a NextLevel Soluções estiver pronta, troca-se a configuração e os contratos novos já saem no nome dela; os assinados antes continuam como foram (texto congelado).
+
 ---
 
 ## 1. O que o dono pediu (resumo fiel)
@@ -221,8 +223,8 @@ ENTRADA (peça ao dono só o que faltar)
 - Decisões da seção 5 (usar as recomendações quando o dono não disser outra coisa, e listar as que usou).
 
 REGRAS
-- Os dados fixos da empresa vêm deste documento: NextLevel Marketing Ltda - ME, CNPJ 51.392.006/0001-92, chave Pix
-  = CNPJ no Itaú.
+- Os dados da contratada e do recebimento vêm da configuração (hoje, provisoriamente, NextLevel Marketing Ltda - ME,
+  CNPJ 51.392.006/0001-92, chave Pix = CNPJ no Itaú; depois, a NextLevel Soluções). Nunca fixos no modelo.
 - O contrato preenchido NÃO entra no repositório: gere na pasta temporária da sessão e entregue o PDF ao dono.
 - O modelo e o gerador (sem dados de cliente) ficam em docs/contratos/loja-pronta-express/.
 - Conta: sinal + restante = valor promocional; datas futuras; dia da semana certo; número do contrato
