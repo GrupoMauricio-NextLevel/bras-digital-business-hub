@@ -3344,7 +3344,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - "Li e concordo", o nome completo e **"Aceitar contrato"**. Só o dono da loja; a equipe não vê.
 - **Prova do aceite:** usuário, data e hora do servidor, IP, aparelho e a impressão digital do texto visto. Se o texto mudou, o aceite é recusado. Aceite uma vez só.
 - **Cópia assinada:** no aceite, o sistema gera o **PDF** no servidor (pdf-lib, sem navegador), com o registro de assinatura e aceite no fim, e envia **anexado ao e-mail das duas partes**. O PDF também pode ser baixado no Master e no painel (`/…/contratos/[id]/pdf`). `sendEmail` passou a aceitar anexos (Resend); o anexo não fica no registro de e-mails.
-- **Contratada provisória:** NextLevel Marketing Ltda (CNPJ 51.392.006/0001-92, Pix no Itaú), em `CONTRATADA_PADRAO`, e gravada em cada contrato; vira configuração quando a NextLevel Soluções existir. Os contratos assinados não mudam.
+- **Contratada:** NextLevel Marketing Ltda (CNPJ 51.392.006/0001-92, Pix no Itaú), em `CONTRATADA_PADRAO`, e gravada em cada contrato. *Correção do dono (D279): não é provisória; esse CNPJ responde por todo o grupo.*
 - **Fora desta fase:** pagamento com "Já fiz o Pix" e conferência no Master (CT3), aditivos e outros modelos (CT4).
 - **Testes:** `tests/contratos.test.ts` (conta e datas, texto, cortesia, impressão digital estável, permissões, isolamento entre lojas, equipe sem acesso, aceite único, texto mudado, e-mails e PDF).
 
@@ -3370,7 +3370,8 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 ## D279 — [E-commerce] Termos de uso da plataforma com aceite obrigatório antes de usar o painel (2026-11-10)
 - **Pedido do dono:** um contrato padrão para todos os usuários novos, aceito logo no começo; sem passar por ele, o painel não abre. O contrato da Loja Pronta (D276) é outro assunto (serviço avulso).
 - **Texto:** `src/lib/contratos/termos-plataforma.ts`, versão `2026-11-10`, 14 cláusulas curtas com "Em resumo". Sem pontos polêmicos e sem preços (vêm da página de planos e da tela de pagamento).
-  - Partes: NextLevel Marketing Ltda - ME (provisória, como no D276) e o LOJISTA.
+  - Partes: NextLevel Marketing Ltda - ME e o LOJISTA.
+  - **Empresa do grupo (correção do dono, 10/11/2026):** a NextLevel Marketing Ltda é e continua sendo a empresa de todo o grupo. O CNPJ responde por NextLevel E-commerce, NextLevel Soluções Digitais, SuperDrop e qualquer marca ou submarca de tecnologia. "NextLevel Soluções" é o nome dos serviços de marketing online da agência, não uma empresa nova. Não existe contratada "provisória".
   - O dinheiro das vendas cai direto na conta de pagamento do lojista. Responsabilidades de cada lado e o que não é permitido.
   - LGPD: o lojista controla os dados dos clientes; a NextLevel trata em nome da loja.
   - Cancelamento sem multa. Aviso de 30 dias antes de mudar preço. Termos novos pedem aceite novo.
@@ -3383,4 +3384,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Prova** (`aceites_termos`): usuário, loja, versão, impressão digital, nome, data e hora, IP e aparelho. Um aceite por versão. O e-mail de confirmação leva o link de `/termos`.
 - **Onde ler:** `/termos` da E-commerce mostra o mesmo texto. O cadastro avisa que os termos são aceitos antes de usar o painel, com link. Master → Contratos mostra quem já aceitou e quem falta.
 - Teste: `tests/termos-plataforma.test.ts`.
+
+## D280 — [E-commerce] Janela de resgate na saída: nas páginas públicas e, por escolha do lojista, na loja (2026-11-10)
+- **Pedido do dono:** quando alguém vai sair das páginas públicas, uma janela para resgatar o visitante (referência: janela de saída com e-mail, caixa de concordância e botão verde). Os lojistas também precisam desse recurso.
+- **Páginas públicas da E-commerce** (`src/components/portal/resgate-saida.tsx`):
+  - **Quando abre:** no computador, quando o mouse sai pelo topo da página; no celular, quando o visitante sobe a página rápido depois de ter descido 40% dela. Só depois de 5 segundos na página.
+  - **Frequência:** uma vez a cada 7 dias por navegador. Nunca no cadastro, no login nem nos textos legais.
+  - **O que mostra:** só fatos reais, os mesmos do vendedor 24h (D195): dias de teste, temas grátis, taxa zero quando todos os planos têm 0% e o selo da Black quando ela está no ar.
+  - **Formulário:** e-mail e caixa de concordância obrigatória, com links para a privacidade e os termos.
+- **O que acontece com o e-mail:** vira um interessado do tipo `SAIDA` no CRM do Master, com a página de origem e o momento do consentimento (o mesmo e-mail não duplica), e recebe por e-mail o caminho para criar a loja, sem preço fixo. A tela confirma e oferece "Criar minha loja agora". Limite de 6 envios por hora por endereço de rede.
+- **Loja do lojista:** a janela do cupom de boas-vindas (D88) ganha a opção **"Quando abrir"**: depois do tempo ou quando o cliente for sair (padrão, como já era), só ao sair, ou só depois do tempo. A saída no celular segue a mesma regra das páginas públicas.
+- Teste: `tests/resgate-saida.test.ts`.
+- **Empresa:** a NextLevel Marketing Ltda é a empresa de todo o grupo (correção registrada no D279 e no `CLAUDE.md`).
 

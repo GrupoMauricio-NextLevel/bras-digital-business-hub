@@ -1,5 +1,12 @@
 [
  {
+  "numero": 280,
+  "frente": "E-commerce",
+  "titulo": "Janela de resgate na saída: nas páginas públicas e, por escolha do lojista, na loja",
+  "data": "2026-11-10",
+  "resumo": "Pedido do dono: quando alguém vai sair das páginas públicas, uma janela para resgatar o visitante (referência: janela de saída com e-mail, caixa de concordância e botão verde). Os lojistas também precisam desse recurso."
+ },
+ {
   "numero": 279,
   "frente": "E-commerce",
   "titulo": "Termos de uso da plataforma com aceite obrigatório antes de usar o painel",
@@ -271,12 +278,5 @@
   "titulo": "Respostas do dono: trocar o provedor de e-mail e regra da IA por plano",
   "data": "2026-11-04",
   "resumo": "E-mail: sai a Hostinger. Entra um provedor com API completa (domínio e caixas), para nada depender da equipe. Candidatos: Migadu, Purelymail ou Zoho Partner. A escolha final depende de pesquisa de preço e API."
- },
- {
-  "numero": 240,
-  "frente": null,
-  "titulo": "L4: \"Minha conta\" do cliente final, sem senha; L6: o que cada nível de tema soma",
-  "data": "2026-11-04",
-  "resumo": "L4, Minha conta (/store/<loja>/conta, ícone de pessoa no cabeçalho de toda loja): O cliente informa o e-mail, recebe um código de 6 dígitos (vale 10 minutos) e entra."
  }
 ]

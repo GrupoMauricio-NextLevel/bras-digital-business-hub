@@ -253,6 +253,7 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
       { id: "subtitle", type: "text", label: "Texto", default: "Deixe seu e-mail e receba o cupom na hora.", maxLength: 140, group: "Texto" },
       { id: "ctaLabel", type: "text", label: "Texto do botão", default: "Receber cupom", maxLength: 30, group: "Texto" },
       { id: "note", type: "text", label: "Microtexto", default: "Sem spam. Cancele quando quiser.", maxLength: 80, group: "Texto" },
+      { id: "trigger", type: "select", label: "Quando abrir", options: [{ value: "ambos", label: "Depois do tempo ou quando o cliente for sair" }, { value: "saida", label: "Só quando o cliente for sair da loja" }, { value: "tempo", label: "Só depois do tempo" }], default: "ambos", info: "\"Ao sair\": no computador, quando o mouse vai para fechar a aba; no celular, quando o cliente sobe a página rápido depois de rolar." },
       { id: "delay", type: "range", label: "Aparecer depois de", min: 3, max: 30, step: 1, unit: "s", default: 8 },
     ],
     presets: [{ name: "Cupom de boas-vindas" }],

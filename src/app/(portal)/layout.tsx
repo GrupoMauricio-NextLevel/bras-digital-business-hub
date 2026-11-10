@@ -15,6 +15,7 @@ import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 import { getDb } from "@/db/client";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 import { VendedorHome } from "@/components/ia/vendedor-home";
+import { ResgateSaida } from "@/components/portal/resgate-saida";
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
@@ -43,7 +44,13 @@ export default async function PortalLayout({ children }: { children: React.React
   const c = supportContacts();
   const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
   // Vendedor 24h (D195): só nas páginas públicas da E-commerce; responde com os dados reais, com ou sem IA ligada.
-  const vendedor = commerce ? await (async () => { const db = await getDb(); const fatos = await fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja"); return <VendedorHome fatos={fatos} whatsappEquipe={supportContacts().whatsappUrl} />; })() : null;
+  const vendedor = commerce ? await (async () => {
+    const db = await getDb(); const fatos = await fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja");
+    // Janela de resgate na saída (D280): com os mesmos dados reais do vendedor (teste, temas grátis, taxa, Black).
+    const pagos = fatos.planos.filter((x) => !x.quote);
+    const resgate = <ResgateSaida trialDays={fatos.oferta?.trialDays || null} temasGratis={fatos.temasGratis} taxaZero={pagos.length > 0 && pagos.every((x) => x.feeBps === 0)} black={fatos.black ? "Black NextLevel" : null} cadastro={fatos.cadastro} />;
+    return <><VendedorHome fatos={fatos} whatsappEquipe={supportContacts().whatsappUrl} />{resgate}</>;
+  })() : null;
   const casca = (
     <PublicShell
       // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.

@@ -34,3 +34,18 @@ export async function updateLeadAction(id: string, patch: { status?: "NEW" | "CO
     return undefined;
   });
 }
+
+/** Janela de resgate na saída (D280): só e-mail e consentimento. */
+export async function capturarLeadSaidaAction(input: { email: string; consent: boolean; pagina: string }) {
+  return runAction(async () => {
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`lead-saida:${ip}`, 6, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
+    const brand = await getBrand();
+    const ref = (await cookies()).get("nl-ref")?.value;
+    const cadastro = `${brand.baseUrl.replace(/\/$/, "")}${brand.signupOpen ? "/cadastro" : "/quero-minha-loja"}`;
+    const { capturarLeadSaida } = await import("@/lib/domain/brand-leads");
+    await capturarLeadSaida(await getDb(), { brand: brand.code, email: input.email, consent: input.consent as true, pagina: input.pagina, affiliateRef: ref }, cadastro);
+    revalidatePath("/master/crm");
+    return undefined;
+  });
+}

@@ -208,7 +208,7 @@ export function WelcomeCoupon({ settings: s, ctx }: SectionProps) {
   if (!ctx.welcome && !ctx.editing) return null;
   const offer = ctx.welcome ?? { label: "Cupom não encontrado ou fora do prazo", minText: "Escolha um cupom ativo em Marketing › Cupons para a janela aparecer na loja." };
   return (
-    <WelcomeCouponDialog slug={ctx.slug} storeId={ctx.store.id} preview={!!ctx.editing} delay={num(s.delay, 8)}
+    <WelcomeCouponDialog slug={ctx.slug} storeId={ctx.store.id} preview={!!ctx.editing} delay={num(s.delay, 8)} trigger={str(s.trigger) === "saida" || str(s.trigger) === "tempo" ? (str(s.trigger) as "saida" | "tempo") : "ambos"}
       image={str(s.image)} imageAvif={avifOf(str(s.image)) ?? ""} alt={str(s.alt)} eyebrow={str(s.eyebrow)} title={str(s.title)} subtitle={str(s.subtitle)} ctaLabel={str(s.ctaLabel) || "Receber cupom"} note={str(s.note)} offer={offer} />
   );
 }

@@ -1257,8 +1257,8 @@ export const brandLeads = pgTable("brand_leads", {
   segment: text("segment"),
   message: text("message"),
   affiliateRef: text("affiliate_ref"),
-  /** LEAD (lista de espera/implantação) ou DIAGNOSTIC (diagnóstico gratuito da Nextlevel Soluções, D90). */
-  kind: text("kind", { enum: ["LEAD", "DIAGNOSTIC"] }).notNull().default("LEAD"),
+  /** LEAD (lista de espera/implantação), DIAGNOSTIC (diagnóstico gratuito da Nextlevel Soluções, D90) ou SAIDA (janela de resgate na saída da página, só e-mail, D280). */
+  kind: text("kind", { enum: ["LEAD", "DIAGNOSTIC", "SAIDA"] }).notNull().default("LEAD"),
   /** Necessidades marcadas no diagnóstico e origem (utm, página, intenção). Sem dado sensível. */
   needs: jsonb("needs").$type<string[]>().notNull().default([]),
   attribution: jsonb("attribution").$type<Record<string, string>>().notNull().default({}),

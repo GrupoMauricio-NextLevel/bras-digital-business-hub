@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   slug: string; storeId: string; preview: boolean; delay: number;
+  /** Quando abrir (D280): depois do tempo, ao sair da loja, ou o que vier primeiro. */
+  trigger?: "ambos" | "saida" | "tempo";
   image: string; imageAvif: string; alt: string; eyebrow: string; title: string; subtitle: string; ctaLabel: string; note: string;
   offer: { label: string; minText: string | null };
 };
@@ -16,7 +18,7 @@ const emph = (t: string) => t.split(/\*([^*]+)\*/g).map((p, k) => (k % 2 ? <em k
 
 /**
  * Janela do cupom de boas-vindas: aparece uma vez por visitante (lembrada no navegador), depois de alguns segundos ou
- * quando o mouse sai da janela. Fechar também conta como visto. No editor, é um cartão fixo na página.
+ * quando o visitante vai sair da loja (o lojista escolhe, D280). Fechar também conta como visto. No editor, é um cartão fixo na página.
  */
 /** Variáveis do tema que a janela precisa (ela abre fora da página, então copia as cores da loja). */
 const THEME_VARS = ["--sf-primary", "--sf-on-primary", "--sf-accent", "--sf-on-accent", "--sf-radius", "--sf-font-heading", "--sf-font-body"];
@@ -34,11 +36,21 @@ export function WelcomeCouponDialog(p: Props) {
     if (p.preview) return;
     try { if (localStorage.getItem(seenKey(p.storeId))) return; } catch { /* sem armazenamento: mostra mesmo assim */ }
     const show = () => setOpen(true);
-    const t = window.setTimeout(show, p.delay * 1000);
+    const quando = p.trigger ?? "ambos";
+    const t = quando !== "saida" ? window.setTimeout(show, p.delay * 1000) : undefined;
+    // Saída (D280): no computador, o mouse sai pelo topo; no celular, subida rápida depois de ter descido 40% da página.
+    const saida = quando !== "tempo";
     const out = (e: MouseEvent) => { if (!e.relatedTarget && e.clientY <= 0) show(); };
-    document.addEventListener("mouseout", out);
-    return () => { window.clearTimeout(t); document.removeEventListener("mouseout", out); };
-  }, [p.preview, p.storeId, p.delay]);
+    let ultimoY = window.scrollY, ultimoT = performance.now(), fundo = 0;
+    const rolagem = () => {
+      const y = window.scrollY, agora = performance.now();
+      fundo = Math.max(fundo, y / Math.max(1, document.documentElement.scrollHeight - window.innerHeight));
+      if (window.matchMedia("(pointer: coarse)").matches && fundo > 0.4 && ultimoY - y > 120 && agora - ultimoT < 250) show();
+      ultimoY = y; ultimoT = agora;
+    };
+    if (saida) { document.addEventListener("mouseout", out); window.addEventListener("scroll", rolagem, { passive: true }); }
+    return () => { if (t) window.clearTimeout(t); document.removeEventListener("mouseout", out); window.removeEventListener("scroll", rolagem); };
+  }, [p.preview, p.storeId, p.delay, p.trigger]);
   const change = (o: boolean) => { setOpen(o); if (!o) { try { localStorage.setItem(seenKey(p.storeId), "1"); } catch { /* ignora */ } } };
 
   if (p.preview) {

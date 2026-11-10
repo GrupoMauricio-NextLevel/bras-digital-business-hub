@@ -33,6 +33,37 @@ export async function createBrandLead(db: Database, raw: z.input<typeof leadSche
   return { id, created: true };
 }
 
+export const leadSaidaSchema = z.object({
+  brand: z.enum(BRAND_CODES),
+  email: z.string().trim().toLowerCase().email("E-mail inválido").max(160),
+  consent: z.literal(true, { error: "Marque a caixa para concordar em receber comunicações." }),
+  pagina: z.string().trim().max(200).default("/"),
+  affiliateRef: z.string().trim().max(60).optional(),
+});
+
+/**
+ * Janela de resgate na saída (D280): o visitante que ia embora deixa só o e-mail, com o consentimento marcado. Vira um
+ * interessado (tipo SAIDA) no CRM do Master e recebe por e-mail o caminho para criar a loja. O mesmo e-mail não duplica.
+ */
+export async function capturarLeadSaida(db: Database, raw: z.input<typeof leadSaidaSchema>, cadastroUrl: string, now = new Date()) {
+  const input = leadSaidaSchema.parse(raw);
+  const existing = await db.query.brandLeads.findFirst({ where: and(eq(brandLeads.brand, input.brand), eq(brandLeads.email, input.email)) });
+  const attribution = { origem: "janela-saida", pagina: input.pagina, consentimento: now.toISOString() };
+  if (existing) {
+    await db.update(brandLeads).set({ attribution: { ...existing.attribution, ...attribution }, updatedAt: now.toISOString() }).where(eq(brandLeads.id, existing.id));
+    return { id: existing.id, created: false };
+  }
+  const id = newId("bld");
+  await db.insert(brandLeads).values({ id, brand: input.brand, kind: "SAIDA", name: "Visitante do site", email: input.email, phone: "", affiliateRef: input.affiliateRef || null, attribution });
+  await sendEmail(db, {
+    kind: "LEAD_SAIDA", to: input.email, brand: input.brand, dedupeKey: `LEAD_SAIDA:${id}`,
+    subject: "Sua loja virtual pode ficar pronta hoje",
+    text: "Olá! Você passou pelo site da {marca} e pediu para receber o caminho para criar a sua loja.\n\nÉ simples: crie a conta, escolha um tema, cadastre os produtos e conecte o Mercado Pago para receber as vendas direto na sua conta. Os preços e as condições de cada plano aparecem antes de qualquer pagamento.\n\nSe preferir ajuda, responda este e-mail que a equipe NextLevel fala com você.\n\n— Equipe NextLevel",
+    cta: { label: "Criar minha loja", url: cadastroUrl },
+  });
+  return { id, created: true };
+}
+
 const need = (actor: Actor) => { if (!isMaster(actor)) throw new ForbiddenError("Apenas a NextLevel."); };
 
 export async function listBrandLeads(db: Database, actor: Actor, opts: { brand?: BrandCode } = {}) {

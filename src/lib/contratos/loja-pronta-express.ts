@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 export const MODELO_LOJA_PRONTA = "LOJA_PRONTA_EXPRESS";
 export const VERSAO_LOJA_PRONTA = 1;
 
-/** Contratada e recebimento: provisoriamente a NextLevel Marketing (Itaú); vira configuração quando a NextLevel Soluções existir. */
+/** Contratada e recebimento: a NextLevel Marketing Ltda (Itaú), o CNPJ que responde por todo o grupo e por todas as marcas (D279). */
 export const CONTRATADA_PADRAO = {
   razao: "NextLevel Marketing Ltda - ME",
   cnpj: "51.392.006/0001-92",
