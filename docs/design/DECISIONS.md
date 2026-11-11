@@ -3397,3 +3397,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - Teste: `tests/resgate-saida.test.ts`.
 - **Empresa:** a NextLevel Marketing Ltda é a empresa de todo o grupo (correção registrada no D279 e no `CLAUDE.md`).
 
+## D281 — [E-commerce] Domínio novo nextlevelcommerce.com.br pronto para virar o endereço principal (2026-11-11)
+- **Pedido do dono:** conectar logo o domínio novo.
+- **Código:**
+  - `www.nextlevelcommerce.com.br` entra nos endereços padrão da marca (o `nextlevelcommerce.com.br` já estava).
+  - Nova regra no roteamento por endereço: com a chave `EC_DOMINIO_PRINCIPAL=1`, os outros endereços da E-commerce (o antigo `lojas.nextlevelgroup.com.br` e o `www`) levam ao endereço principal (`BRAND_URL_NEXTLEVEL_COMMERCE`) com redirecionamento **permanente (301)**, mesmo caminho e busca.
+  - Fora da regra: o `/api/*` (avisos do Mercado Pago e rotinas), os envios de formulário e o endereço dos painéis (escritório) ficam como estão.
+- **Por que a chave:** sem ela, nada redireciona. Assim o domínio novo pode ser ligado no Render e no DNS antes da troca, sem o navegador guardar um redirecionamento permanente na direção errada.
+- **Passo a passo:** `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`. Teste: `tests/host-routing.test.ts` (D281).
+- **Fila do dono:** `docs/fila/FILA-DO-DONO.md` reúne o que o dono pediu para não esquecer.
+

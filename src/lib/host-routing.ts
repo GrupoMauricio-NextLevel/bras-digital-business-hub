@@ -37,11 +37,11 @@ export function storeOwnerBase(hostBrand: BrandCode | null | undefined, storeBra
 }
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
-export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string } | { kind: "rewrite"; path: string };
+export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string; permanente?: boolean } | { kind: "rewrite"; path: string };
 
 const bare = (host: string | null | undefined) => (host ?? "").split(":")[0]!.toLowerCase();
 
-export function routeHost(input: { host: string | null | undefined; pathname: string; search?: string }, env: Record<string, string | undefined> = process.env): HostRoute {
+export function routeHost(input: { host: string | null | undefined; pathname: string; search?: string; method?: string }, env: Record<string, string | undefined> = process.env): HostRoute {
   const { pathname } = input;
   const search = input.search ?? "";
   const host = bare(input.host);
@@ -50,6 +50,17 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
   // Brás Digital Club com um endereço principal só (D158): os outros endereços da marca (www, o antigo bras.nextlevelgroup.com.br)
   // levam ao endereço da marca no ar, mesmo caminho. Sem efeito enquanto o endereço no ar for o único que responde.
+  // NextLevel E-commerce com um endereço principal só (D281): com BRAND_URL_NEXTLEVEL_COMMERCE apontando para o domínio novo,
+  // os outros endereços da marca (o antigo lojas.nextlevelgroup.com.br, o www) levam ao novo, mesmo caminho, redirecionamento
+  // permanente (bom para o Google). Só páginas abertas com GET: /api/* (avisos do Mercado Pago, rotinas) e formulários
+  // continuam respondendo no endereço em que chegaram.
+  // Só com a chave EC_DOMINIO_PRINCIPAL=1 (ligada na hora da troca): antes disso, nenhum endereço da marca redireciona,
+  // para o navegador não guardar um redirecionamento permanente na direção errada.
+  if (brand?.code === "NEXTLEVEL_COMMERCE" && env.EC_DOMINIO_PRINCIPAL === "1" && !pathname.startsWith("/api/") && (input.method ?? "GET").toUpperCase() === "GET") {
+    const principal = bare(new URL(brand.baseUrl).host);
+    const escritorio = brand.officeUrl ? bare(new URL(brand.officeUrl).host) : null; // endereço dos painéis fica como está
+    if (host !== principal && host !== escritorio && brand.domains.includes(host) && brand.domains.includes(principal)) return { kind: "redirect", url: `${brand.baseUrl.replace(/\/$/, "")}${pathname}${search}`, permanente: true };
+  }
   if (brand?.code === "BRAS_DIGITAL") {
     const principal = bare(new URL(brand.baseUrl).host);
     if (host !== principal && brand.domains.includes(host) && brand.domains.includes(principal)) return { kind: "redirect", url: `${brand.baseUrl}${pathname}${search}` };

@@ -178,3 +178,24 @@ describe("links e vitrines na marca certa (D149)", () => {
     for (const h of ["superdrop.com.br", "master.nextlevelgroup.com.br", "bras.nextlevelgroup.com.br", "cargas.nextlevelgroup.com.br", "hubcreators.nextlevelgroup.com.br"]) for (const p of ["/robots.txt", "/sitemap.xml"]) expect(go(h, p, {})).toEqual({ kind: "next" });
   });
 });
+
+describe("domínio principal da E-commerce (D281)", () => {
+  const novo = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br,nextlevelcommerce.com.br,www.nextlevelcommerce.com.br,office.nextlevelgroup.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://nextlevelcommerce.com.br", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br", EC_DOMINIO_PRINCIPAL: "1" };
+  it("endereço antigo e www levam ao novo, mesmo caminho, de forma permanente", () => {
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/planos", search: "?ref=abc" }, novo)).toEqual({ kind: "redirect", url: "https://nextlevelcommerce.com.br/planos?ref=abc", permanente: true });
+    expect(routeHost({ host: "www.nextlevelcommerce.com.br", pathname: "/" }, novo)).toEqual({ kind: "redirect", url: "https://nextlevelcommerce.com.br/", permanente: true });
+  });
+  it("avisos do Mercado Pago, formulários e o endereço dos painéis não são redirecionados", () => {
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/api/webhooks/mercadopago", method: "POST" }, novo)).not.toMatchObject({ permanente: true });
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/api/qualquer" }, novo)).not.toMatchObject({ permanente: true });
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/cadastro", method: "POST" }, novo)).not.toMatchObject({ permanente: true });
+    expect(routeHost({ host: "office.nextlevelgroup.com.br", pathname: "/merchant" }, novo)).not.toMatchObject({ permanente: true });
+    expect(routeHost({ host: "nextlevelcommerce.com.br", pathname: "/planos" }, novo)).toEqual({ kind: "next" });
+  });
+  it("sem a chave ligada nenhum endereço redireciona (nem o novo para o antigo)", () => {
+    const hoje = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br,nextlevelcommerce.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://lojas.nextlevelgroup.com.br" };
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/planos" }, hoje)).toEqual({ kind: "next" });
+    expect(routeHost({ host: "nextlevelcommerce.com.br", pathname: "/planos" }, hoje)).toEqual({ kind: "next" });
+    expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/planos" }, { ...novo, EC_DOMINIO_PRINCIPAL: undefined })).toEqual({ kind: "next" });
+  });
+});
