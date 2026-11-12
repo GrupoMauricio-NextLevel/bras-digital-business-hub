@@ -86,3 +86,4 @@ Decisão do dono: **só entram no ar (domínio + DNS) quando já houver código 
 
 - `codex-avaliacao-profunda.md`: prompt para o Codex fazer uma avaliação profunda, só leitura, do Commerce e entregar relatório.
 - `temas-para-nuvemshop-pagina.md`: página "NextLevel Temas para Nuvemshop" (lojas criadas com racional, botão para visitar cada uma, semijoias em destaque, temas NextLevel no fim) e prompt mestre. Estado: plano pronto (12/11/2026); faltam os prints de 3 lojas, as autorizações dos clientes e a confirmação dos resumos.
+- `pagina-nossos-clientes.md`: página "Nossos clientes" (100% NextLevel E-commerce, as 5 marcas atendidas, aprendizados ligados a recursos que existem e os melhores templates no fim). Estado: racional pronto (12/11/2026), aguarda o dono aprovar o enquadramento honesto.
