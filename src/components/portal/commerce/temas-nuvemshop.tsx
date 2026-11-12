@@ -53,9 +53,9 @@ const DUVIDAS = [
 ] as const;
 
 const tema = (k: string) => THEME_CATALOG.find((t) => t.key === k && isReleased(t));
-const Foto = ({ i, className, priority, sizes }: { i: Imagem; className?: string; priority?: boolean; sizes?: string }) => <Image src={i.src} width={i.w} height={i.h} alt={i.alt} className={className} priority={priority} sizes={sizes ?? "(max-width: 768px) 100vw, 900px"} />;
+export const Foto = ({ i, className, priority, sizes }: { i: Imagem; className?: string; priority?: boolean; sizes?: string }) => <Image src={i.src} width={i.w} height={i.h} alt={i.alt} className={className} priority={priority} sizes={sizes ?? "(max-width: 768px) 100vw, 900px"} />;
 
-function BotaoVisitar({ c, grande }: { c: CaseLoja; grande?: boolean }) {
+export function BotaoVisitar({ c, grande }: { c: CaseLoja; grande?: boolean }) {
   return (
     <a href={c.url} target="_blank" rel="noopener" className={`inline-flex items-center gap-2 rounded-full font-bold text-[#06122b] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${grande ? "h-14 px-7 text-base" : "h-12 px-6 text-sm"}`} style={{ background: c.cor }}>
       <span>{c.rotuloBotao}<span className="hidden sm:inline">: {c.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span><span className="sr-only sm:hidden"> {c.nome}</span></span><ArrowUpRight className="size-5" aria-hidden />
@@ -100,7 +100,7 @@ function BlocoCase({ c, n }: { c: CaseLoja; n: number }) {
   );
 }
 
-function CartaoTema({ k, destaque }: { k: string; destaque?: boolean }) {
+export function CartaoTema({ k, destaque }: { k: string; destaque?: boolean }) {
   const t = tema(k);
   if (!t) return null;
   return (

@@ -13,13 +13,16 @@ export type CaseLoja = {
   computador?: Imagem; celular?: Imagem;
   /** Cor de destaque da identidade da loja (só para o detalhe do bloco). */
   cor: string; autorizado: boolean;
+  /** Página "Nossos clientes" (D283): o negócio em uma frase, a cidade (quando o dono confirmou) e se a loja já roda na
+   * NextLevel E-commerce (só então ganha o selo; hoje nenhuma roda). */
+  negocio: string; cidade?: string; naPlataforma: boolean;
 };
 
 const img = (nome: string, w: number, h: number, alt: string): Imagem => ({ src: `/portal/temas-nuvemshop/${nome}.webp`, w, h, alt });
 
 export const CASES_TEMAS: CaseLoja[] = [
   {
-    chave: "irest", nome: "iRest", segmento: "Importador de poltronas de massagem, com entrega para todo o Brasil", url: "https://www.irest.com.br/", rotuloBotao: "Visitar a loja", cor: "#f26b1d", autorizado: true,
+    chave: "irest", negocio: "Importa poltronas de massagem e vende para todo o Brasil, do showroom à internet.", naPlataforma: false, nome: "iRest", segmento: "Importador de poltronas de massagem, com entrega para todo o Brasil", url: "https://www.irest.com.br/", rotuloBotao: "Visitar a loja", cor: "#f26b1d", autorizado: true,
     ajuda: "Um importador que vende para o Brasil todo precisa parecer tão sólido online quanto no showroom. A loja organiza o catálogo por linha de produto, deixa garantias e parcelamento à vista e põe as campanhas no ar com data marcada, para vender produto de alto valor a quem nunca visitou a loja física.",
     desafio: "Produto importado de alto valor, vendido para quem está longe. O cliente precisa confiar antes de comprar.",
     computador: img("irest-computador", 1200, 750, "Página inicial da iRest no computador"), celular: img("irest-celular", 420, 715, "Página inicial da iRest no celular"),
@@ -30,7 +33,7 @@ export const CASES_TEMAS: CaseLoja[] = [
     ],
   },
   {
-    chave: "capistrano", nome: "Capistrano Modas", segmento: "Atacado no circuito de compras da Feira da Madrugada", url: "https://www.capistranomodas.com.br/", rotuloBotao: "Visitar a loja", cor: "#d4a640", autorizado: true,
+    chave: "capistrano", negocio: "Atacadista de moda do circuito de compras da Feira da Madrugada, com varejo na mesma loja.", cidade: "São Paulo · Feira da Madrugada", naPlataforma: false, nome: "Capistrano Modas", segmento: "Atacado no circuito de compras da Feira da Madrugada", url: "https://www.capistranomodas.com.br/", rotuloBotao: "Visitar a loja", cor: "#d4a640", autorizado: true,
     ajuda: "Leva a banca da Feira da Madrugada para o Brasil todo. O revendedor compra o atacado pelo celular, misturando tamanhos e modelos, e o cliente final compra a peça avulsa na mesma loja.",
     desafio: "Vender para o revendedor de longe e para o cliente final na mesma vitrine, sem confundir os dois.",
     computador: img("capistrano-computador", 1200, 750, "Página inicial da Capistrano Modas no computador"),
@@ -41,7 +44,7 @@ export const CASES_TEMAS: CaseLoja[] = [
     ],
   },
   {
-    chave: "luis", nome: "Luis Fornecedor", segmento: "Distribuidor de produtos eletrônicos no Brás, em São Paulo", url: "https://www.luisfornecedor.com.br/", rotuloBotao: "Visitar a loja", cor: "#1d5bff", autorizado: true,
+    chave: "luis", negocio: "Distribuidor do Brás que abastece lojistas com eletrônicos, perfumes e cosméticos.", cidade: "São Paulo · Brás", naPlataforma: false, nome: "Luis Fornecedor", segmento: "Distribuidor de produtos eletrônicos no Brás, em São Paulo", url: "https://www.luisfornecedor.com.br/", rotuloBotao: "Visitar a loja", cor: "#1d5bff", autorizado: true,
     ajuda: "Leva o atendimento próximo do balcão do Brás para o celular do lojista do Brasil todo: ele vê quem atende, acha o produto pela busca ou pela categoria e fecha o pedido no carrinho ou pelo WhatsApp.",
     desafio: "O lojista compra de um distribuidor sem ver o balcão: precisa confiar e achar rápido num catálogo que vai de eletrônicos a cosméticos e perfumes.",
     computador: img("luis-computador", 1200, 750, "Página inicial da Luis Fornecedor no computador, com os sócios"), celular: img("luis-celular", 420, 909, "Página de produto da Luis Fornecedor no celular"),
@@ -53,7 +56,7 @@ export const CASES_TEMAS: CaseLoja[] = [
     ],
   },
   {
-    chave: "futcollection", nome: "Futcollection", segmento: "Loja de camisas de futebol, varejo e atacado", url: "https://www.futcollectionoficial.com.br/", rotuloBotao: "Visitar a loja", cor: "#f4b400", autorizado: true,
+    chave: "futcollection", negocio: "Camisas de futebol no varejo e no atacado, com envio nacional e retirada no Brás.", cidade: "São Paulo · Brás", naPlataforma: false, nome: "Futcollection", segmento: "Loja de camisas de futebol, varejo e atacado", url: "https://www.futcollectionoficial.com.br/", rotuloBotao: "Visitar a loja", cor: "#f4b400", autorizado: true,
     ajuda: "Atende na mesma vitrine o torcedor que quer uma camisa e o revendedor que quer seis ou mais. Personalização e tamanho certo ficam resolvidos antes do carrinho, e quem está em São Paulo ainda retira no Brás.",
     desafio: "Varejo e atacado juntos, com personalização (nome e número) e os tamanhos certos de adulto e criança.",
     computador: img("fut-computador", 1200, 750, "Página inicial da Futcollection no computador"),
@@ -66,7 +69,7 @@ export const CASES_TEMAS: CaseLoja[] = [
     ],
   },
   {
-    chave: "ccv", nome: "CCV Vidros", segmento: "Site institucional, especialista em envidraçamento e persianas", url: "https://ccvidros.com.br/", rotuloBotao: "Visitar o site", cor: "#2f8cff", autorizado: true,
+    chave: "ccv", negocio: "Envidraçamento de sacadas e persianas sob medida, com avaliação técnica antes do orçamento.", naPlataforma: false, nome: "CCV Vidros", segmento: "Site institucional, especialista em envidraçamento e persianas", url: "https://ccvidros.com.br/", rotuloBotao: "Visitar o site", cor: "#2f8cff", autorizado: true,
     ajuda: "Em vez de um site-cartão, a CCV tem um site que conduz o visitante até o pedido de orçamento já com as informações do projeto: a equipe recebe contatos mais prontos para virar visita técnica.",
     desafio: "Serviço sob medida não se vende com carrinho: o site precisa virar um pedido de orçamento qualificado.",
     computador: img("ccv-computador", 1200, 750, "Página inicial da CCV Vidros no computador"), celular: img("ccv-celular", 420, 715, "Página inicial da CCV Vidros no celular"),
@@ -84,3 +87,5 @@ export const casesPublicos = () => CASES_TEMAS.filter((c) => c.autorizado);
 /** Temas da NextLevel em destaque na página (semijoias primeiro, D282). */
 export const TEMAS_SEMIJOIAS = ["musa", "aura", "brilho", "petala"] as const;
 export const TEMAS_VITRINE = ["musa", "aura", "atelier", "editorial", "brilho", "signature", "arena", "porto", "morada"] as const;
+/** Melhores templates para a página "Nossos clientes" (D283). */
+export const TEMAS_MELHORES = ["signature", "atelier", "musa", "podio", "porto", "morada"] as const;

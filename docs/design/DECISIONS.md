@@ -3429,3 +3429,17 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Imagens:** em `public/portal/temas-nuvemshop/`. iRest e CCV foram capturadas pela NextLevel; Capistrano, pelos prints do dono. Luis Fornecedor e Futcollection: pelos prints que o dono reenviou como arquivo. As imagens dos temas são capturas novas das demonstrações no ar.
 - **Arquivos:** dados em `src/lib/portal/cases-temas.ts`, plano em `docs/prompts/temas-para-nuvemshop-pagina.md`, teste em `tests/temas-nuvemshop.test.ts`.
 
+## D283 — [E-commerce] Página "Nossos clientes": marcas que a NextLevel atende, 100% NextLevel (2026-11-12)
+- **Pedido do dono:** uma página com os clientes reais e os melhores templates no fim, sem falar de nenhuma outra plataforma.
+- **Enquadramento aprovado pelo dono:** "Marcas que a NextLevel atende". As 5 lojas são da equipe NextLevel, mas hoje não rodam na NextLevel E-commerce, e a página nunca diz que rodam. A ponte é "o que aprendemos com elas, você já tem na NextLevel E-commerce", que lista só recursos que existem no código: atacado com mix (D257), grades de tamanho, vista rápida, WhatsApp, parcelamento e temas com editor. O selo "Na NextLevel E-commerce" aparece só quando o campo `naPlataforma` do case for verdadeiro (hoje, nenhum).
+- **Onde:** `/clientes`, só na E-commerce, e "Clientes" no menu público (pedido do dono). Mesma fonte de dados da D282 (`src/lib/portal/cases-temas.ts`, com os campos novos `negocio`, `cidade` e `naPlataforma`).
+- **Seções:**
+  - Topo com 3 números verdadeiros.
+  - Uma vitrine por marca, com o botão "Visitar a loja".
+  - Aprendizados → recursos.
+  - Quatro segmentos com o tema indicado.
+  - Melhores templates: Signature, Atelier, Musa, Pódio, Porto e Morada.
+  - Chamada final com "Criar minha loja", "Quero a loja montada pela equipe" e o WhatsApp.
+- **Fora, de propósito:** personalização com nome e número na camisa (a plataforma ainda não tem), número de venda e depoimento.
+- Plano em `docs/prompts/pagina-nossos-clientes.md`, teste em `tests/clientes-pagina.test.ts`.
+
