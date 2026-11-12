@@ -135,15 +135,24 @@ Regra: **nada de plataforma**. Falar da loja, do cliente dela e das decisões.
 - **Como o nosso trabalho ajuda (rascunho, o dono confirma):** leva a banca da Feira da Madrugada para o Brasil todo. O revendedor compra o atacado pelo celular, de madrugada ou não, misturando tamanhos e modelos, e o cliente final compra a peça avulsa na mesma loja.
 - **Cuidado na página:** a faixa do topo da loja traz "Tailandesa 1:1 - fabricação própria", e os prints mostram escudos e marcas de clubes e fornecedores esportivos. Na nossa página, **recortar os prints no layout** (faixa de benefícios, banner do atacado, cartões, regra do mínimo) e evitar dar destaque a escudos e logotipos de terceiros. O dono decide se a frase da faixa aparece.
 
-### 3. Luis Fornecedor (distribuidor de eletrônicos no Brás) · prints do dono, 12/11/2026 (celular)
+### 3. Luis Fornecedor (distribuidor de eletrônicos no Brás) · prints do dono, 12/11/2026
 - **Desafio:** o lojista compra de um distribuidor do Brás sem ver o balcão. Precisa confiar em quem está do outro lado e achar rápido um catálogo que vai de eletrônicos a cosméticos e perfumes.
 - **Decisões que aparecem no print:**
-  1. **A equipe de verdade no topo:** banner "Nossa equipe, nossa força · Atendimento próximo, confiança de verdade", com as pessoas da loja. Para quem compra de longe, rosto gera confiança.
+  1. **Os donos e a equipe de verdade no topo:**
+     - no computador, "Seja bem-vindo à Luís Fornecedor", com os sócios-proprietários Luís e Andreza na foto e a frase "Aqui, cada cliente é recebido com atenção, confiança e compromisso";
+     - no celular, "Nossa equipe, nossa força · Atendimento próximo, confiança de verdade", com a equipe.
+
+     Para quem compra de longe, rosto e nome geram confiança.
+  1b. **Faixa de 4 garantias logo abaixo:** produtos de qualidade (curadoria para uso e revenda), preços competitivos (condições para girar estoque), entrega nacional e atendimento especialista (equipe real pronta para ajudar). Fala com o lojista que revende.
   2. **Busca grande, logo abaixo do logotipo:** "Buscar produtos, marcas e categorias". Em catálogo amplo, a busca é o caminho principal.
   3. **Categorias claras e honestas:** o produto do print (Perfume Sublime Badee Al Oud) fica em "Perfumes 1 Linha Árabe", e o nome traz "(1 Linha)". O cliente sabe exatamente o que está comprando.
-  4. **Cartão direto ao ponto:** preço grande, preço no PIX e dois botões grandes, "Olhar" (vista rápida) e "Comprar".
+  4. **Cartão direto ao ponto:** preço grande, preço no PIX, código do produto (o lojista pede pelo código) e o atalho da categoria ("+ Skincare", "+ Perfumes"). No celular, os botões "Olhar" (vista rápida) e "Comprar".
+  4b. **Atalhos para os produtos que mais giram:** a barra de categorias mostra "Perfumes 1 Linha Árabe", "Creme Livence", "Miniaturas Livence 25 ml", "Perfumes Árabes 30 ml" e "Relógio Chinês". O que o cliente mais pede fica a um clique.
+  4c. **Produto com dois caminhos de compra:** quantidade (+ e −), "Adicionar ao carrinho" e "Comprar pelo WhatsApp", o cálculo de frete pelo CEP e os selos "Envio para todo o Brasil · Compra segura · Pronta entrega".
   5. **Celular feito para comprar:** barra fixa com Início, Categorias e Carrinho, e o botão "Fale agora por WhatsApp" sempre à mão.
-- **Prints:** `luisfornecedor_celular_1_topo` (equipe), `_2_meio` (cartões), `_3_produto` (perfume). Os de computador não chegaram e não são necessários.
+- **Prints:**
+  - computador: `luisfornecedor_computador_1_topo` (sócios e garantias), `_2_meio` (cartões com código), `_3_produto` (carrinho e WhatsApp);
+  - celular: `luisfornecedor_celular_1_topo` (equipe), `_2_meio`, `_3_produto`.
 - **Botão:** "Visitar a loja" → https://www.luisfornecedor.com.br/
 - **Como o nosso trabalho ajuda (rascunho, o dono confirma):** leva o atendimento próximo do balcão do Brás para o celular do lojista do Brasil todo. Ele vê quem atende, acha o produto pela busca ou pela categoria e fecha o pedido ou chama no WhatsApp em um toque.
 
