@@ -118,17 +118,54 @@ Regra: **nada de plataforma**. Falar da loja, do cliente dela e das decisões.
 - **Botão:** "Visitar o site" → https://ccvidros.com.br/
 - **Como o nosso trabalho ajuda (rascunho, o dono confirma):** em vez de um site-cartão, a CCV tem um site que conduz o visitante até o pedido de orçamento já com as informações do projeto. A equipe recebe contatos mais prontos para virar visita técnica.
 
-### 2, 3 e 4. Capistrano Modas, Luis Fornecedor e Futcollection · **prints pendentes**
-- Os três sites usam uma verificação anti-robô que bloqueia capturas automáticas (a NextLevel não tenta furar essa proteção). **O dono manda os prints:** computador e celular; topo, meio da página inicial e uma página de produto.
-- Racional a montar com os prints, no mesmo formato acima. Pontos a confirmar nos prints:
-  - **2. Capistrano Modas (atacado no circuito da Feira da Madrugada):** levar a experiência da feira para o online. Compra por grade ou quantidade, pedido mínimo claro, novidades da semana e condições para quem revende.
-  - **3. Luis Fornecedor (distribuidor de eletrônicos no Brás):** catálogo grande e técnico. Busca e filtros por categoria e marca, preço por quantidade, garantia e procedência, e atendimento rápido para lojistas.
-  - **4. Futcollection (camisas de futebol):** navegação por time, liga e seleção, tabela de medidas, versão torcedor ou jogador, e personalização com nome e número quando houver.
-- **Botões:** "Visitar a loja" → https://www.capistranomodas.com.br/ · https://www.luisfornecedor.com.br/ · https://www.futcollectionoficial.com.br/
-- **Como o nosso trabalho ajuda (rascunhos, o dono confirma):**
-  - **Capistrano:** leva a venda da feira para o online. O revendedor de longe compra o atacado sem ir até a Feira da Madrugada.
-  - **Luis Fornecedor:** um catálogo de eletrônicos organizado, para o lojista achar e pedir rápido, como se estivesse no balcão do Brás.
-  - **Futcollection:** a camisa do time certo em poucos toques no celular, com as informações de tamanho que evitam troca.
+### 2. Capistrano Modas (atacado no circuito da Feira da Madrugada) · prints do dono, 12/11/2026
+- **Desafio:** quem compra na feira precisa estar lá de madrugada. A loja precisa vender para o revendedor do Brasil todo e, na mesma vitrine, para o cliente final, sem confundir os dois.
+- **Decisões que aparecem no print:**
+  1. **Faixa no topo com as 3 respostas de quem compra de longe:** envio para todo o Brasil, frete grátis acima de R$ 500 e o canal de atendimento.
+  2. **Banner que fala direto com o revendedor:** "Quer comprar para revender?", com 4 vantagens (mais opções de peças, compra em quantidade, organização para revenda, facilidade para o negócio) e o botão "Conheça o atacado".
+  3. **Dois preços no mesmo cartão:** o preço da peça e, logo abaixo, "ATACADO R$ 80,00". O mesmo catálogo serve o varejo e o atacado, sem duas lojas.
+  4. **Cartão que já responde tudo:** tamanhos (P a 2XL) e tipo (Torcedor, Jogador, Retrô, Seleções) à vista, além de "Olhar" (vista rápida) e "Comprar".
+  5. **Regra do atacado explicada na hora da decisão:** na página do produto, "Misture tamanhos e modelos para atingir o mínimo do atacado". Mais a economia em reais e em porcentagem, a oferta com prazo e "Últimas 5 unidades".
+  6. **No celular, o atacado no centro:** barra fixa embaixo com o botão "Atacado" em destaque entre Início, Categorias, Buscar e Carrinho, e a busca "por time, seleção, jogador ou produto".
+  7. **Identidade premium:** preto e dourado com o leão da marca. A loja de feira passa a parecer marca.
+- **Prints:**
+  - computador: `capistrano_computador_1_topo` (faixa e banner do atacado), `_2_meio` (cartões com dois preços), `_3_produto` (regra do mínimo);
+  - celular: `capistrano_celular_2_meio`, `_3_produto`. O topo no celular ficou faltando, mas não é necessário.
+- **Botão:** "Visitar a loja" → https://www.capistranomodas.com.br/
+- **Como o nosso trabalho ajuda (rascunho, o dono confirma):** leva a banca da Feira da Madrugada para o Brasil todo. O revendedor compra o atacado pelo celular, de madrugada ou não, misturando tamanhos e modelos, e o cliente final compra a peça avulsa na mesma loja.
+- **Cuidado na página:** a faixa do topo da loja traz "Tailandesa 1:1 - fabricação própria", e os prints mostram escudos e marcas de clubes e fornecedores esportivos. Na nossa página, **recortar os prints no layout** (faixa de benefícios, banner do atacado, cartões, regra do mínimo) e evitar dar destaque a escudos e logotipos de terceiros. O dono decide se a frase da faixa aparece.
+
+### 3. Luis Fornecedor (distribuidor de eletrônicos no Brás) · prints do dono, 12/11/2026 (celular)
+- **Desafio:** o lojista compra de um distribuidor do Brás sem ver o balcão. Precisa confiar em quem está do outro lado e achar rápido um catálogo que vai de eletrônicos a cosméticos e perfumes.
+- **Decisões que aparecem no print:**
+  1. **A equipe de verdade no topo:** banner "Nossa equipe, nossa força · Atendimento próximo, confiança de verdade", com as pessoas da loja. Para quem compra de longe, rosto gera confiança.
+  2. **Busca grande, logo abaixo do logotipo:** "Buscar produtos, marcas e categorias". Em catálogo amplo, a busca é o caminho principal.
+  3. **Categorias claras e honestas:** o produto do print (Perfume Sublime Badee Al Oud) fica em "Perfumes 1 Linha Árabe", e o nome traz "(1 Linha)". O cliente sabe exatamente o que está comprando.
+  4. **Cartão direto ao ponto:** preço grande, preço no PIX e dois botões grandes, "Olhar" (vista rápida) e "Comprar".
+  5. **Celular feito para comprar:** barra fixa com Início, Categorias e Carrinho, e o botão "Fale agora por WhatsApp" sempre à mão.
+- **Prints:** `luisfornecedor_celular_1_topo` (equipe), `_2_meio` (cartões), `_3_produto` (perfume). Os de computador não chegaram e não são necessários.
+- **Botão:** "Visitar a loja" → https://www.luisfornecedor.com.br/
+- **Como o nosso trabalho ajuda (rascunho, o dono confirma):** leva o atendimento próximo do balcão do Brás para o celular do lojista do Brasil todo. Ele vê quem atende, acha o produto pela busca ou pela categoria e fecha o pedido ou chama no WhatsApp em um toque.
+
+### 4. Futcollection (camisas de futebol) · prints do dono, 12/11/2026
+- **Desafio:** vender camisa no varejo e no atacado, direto do Brás para todo o Brasil, com a personalização (nome e número) e os tamanhos certos para adulto e criança.
+- **Decisões que aparecem no print:**
+  1. **Faixa no topo que junta online e loja física:** frete para todo o Brasil, "a partir de 6 peças elegíveis" (o atacado), PIX à vista e "Retire no Brás (Feira da Madrugada)".
+  2. **Promessa clara no topo:** "A camisa do seu time, com qualidade premium", com o subtítulo "Clubes, seleções, retrô e NBA · varejo e atacado, direto do Brás pra todo o Brasil" e 4 garantias marcadas. Os botões "Ver coleção" e "Fale conosco".
+  3. **Navegação em pílulas pelo jeito que o torcedor procura:** Conjuntos Infantil, NBA, Seleções, Retrô, Jogador e Torcedor. Vitrines por tema, como "Times Europeus".
+  4. **Cartão que separa varejo e atacado:** selo "VAREJO" ou "ATACADO", o preço de atacado logo abaixo, os tamanhos, o tipo (Jogador ou Torcedor) e o selo "Personalizável".
+  5. **Tamanho infantil por idade:** "18 (4 a 5 anos)", "20 (5 a 6 anos)"… Os pais acertam o tamanho e as trocas diminuem.
+  6. **Produto com a escolha no lugar certo:** preço e "Atacado R$ 100,00 cada un.", "Últimas 5 unidades", tamanhos, os botões "Sem personalização" e "Personalizar", e o cálculo de frete pelo CEP na própria página.
+- **Prints:**
+  - computador: `futcollection_computador_1_topo`, `_2_meio` (Times Europeus), `_3_produto`;
+  - celular: `futcollection_celular_1_topo`, `_2_meio` (infantil por idade), `_3_produto`.
+- **Botão:** "Visitar a loja" → https://www.futcollectionoficial.com.br/
+- **Como o nosso trabalho ajuda (rascunho, o dono confirma):** a loja atende o torcedor que quer uma camisa e o revendedor que quer seis ou mais na mesma vitrine. A personalização e o tamanho certo ficam resolvidos antes do carrinho, e quem está em São Paulo ainda pode retirar no Brás.
+- **Cuidado na página:** como na Capistrano, recortar no layout (faixa, pílulas, cartões, tamanhos por idade, botões de personalização) e não destacar escudos, patrocinadores e marcas esportivas de terceiros.
+
+### O que as lojas 2, 3 e 4 mostram juntas
+Capistrano, Luis Fornecedor e Futcollection usam **a mesma base de gestão, testada no dia a dia do Brás**: cartão com "Olhar" e "Comprar", varejo e atacado na mesma vitrine, barra fixa no celular e WhatsApp sempre à mão. Cada uma tem **uma identidade própria**: preto e dourado com leão, azul tecnológico e o amarelo esportivo. Na página isso vira um argumento: "uma base que já vende, com a cara da sua marca".
+
 - **A CCV Vidros entra por último** e mostra que a NextLevel também faz site institucional que gera orçamento, não só loja.
 
 ## 6. Para lojas de semijoias (o cliente de hoje)
