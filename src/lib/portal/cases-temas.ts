@@ -56,12 +56,13 @@ export const CASES_TEMAS: CaseLoja[] = [
     chave: "futcollection", nome: "Futcollection", segmento: "Loja de camisas de futebol, varejo e atacado", url: "https://www.futcollectionoficial.com.br/", rotuloBotao: "Visitar a loja", cor: "#f4b400", autorizado: true,
     ajuda: "Atende na mesma vitrine o torcedor que quer uma camisa e o revendedor que quer seis ou mais. Personalização e tamanho certo ficam resolvidos antes do carrinho, e quem está em São Paulo ainda retira no Brás.",
     desafio: "Varejo e atacado juntos, com personalização (nome e número) e os tamanhos certos de adulto e criança.",
+    computador: img("fut-computador", 1200, 750, "Página inicial da Futcollection no computador"),
     pontos: [
-      { titulo: "Online e loja física na mesma faixa", texto: "Frete para todo o Brasil, atacado a partir de 6 peças, PIX à vista e retirada no Brás, logo no topo." },
-      { titulo: "Navegação do jeito que o torcedor procura", texto: "Pílulas para Infantil, NBA, Seleções, Retrô, Jogador e Torcedor, e vitrines por tema." },
-      { titulo: "Varejo e atacado no mesmo cartão", texto: "Selo de varejo ou de atacado, o preço de atacado logo abaixo, os tamanhos e o tipo de camisa à vista." },
-      { titulo: "Tamanho infantil pela idade", texto: "\"20 (5 a 6 anos)\": os pais acertam o tamanho e as trocas diminuem." },
-      { titulo: "Personalizar ou não, antes do carrinho", texto: "Botões \"Sem personalização\" e \"Personalizar\", aviso de últimas unidades e frete pelo CEP na própria página." },
+      { titulo: "Online e loja física na mesma faixa", texto: "Frete para todo o Brasil, atacado a partir de 6 peças, PIX à vista e retirada no Brás, logo no topo.", imagem: img("fut-faixa", 780, 38, "Faixa do topo da Futcollection") },
+      { titulo: "Navegação do jeito que o torcedor procura", texto: "Pílulas para Infantil, NBA, Seleções, Retrô, Jogador e Torcedor, e vitrines por tema.", imagem: img("fut-pilulas", 900, 59, "Navegação em pílulas da Futcollection") },
+      { titulo: "Varejo e atacado no mesmo cartão", texto: "Selo de varejo ou de atacado, o preço de atacado logo abaixo, os tamanhos e o tipo de camisa à vista.", imagem: img("fut-cartoes", 1000, 201, "Cartões com preço de varejo e de atacado") },
+      { titulo: "Tamanho infantil pela idade", texto: "\"20 (5 a 6 anos)\": os pais acertam o tamanho e as trocas diminuem.", imagem: img("fut-infantil", 220, 200, "Tamanhos infantis por idade") },
+      { titulo: "Personalizar ou não, antes do carrinho", texto: "Botões \"Sem personalização\" e \"Personalizar\", aviso de últimas unidades e frete pelo CEP na própria página.", imagem: img("fut-produto", 560, 450, "Preço de atacado, tamanhos e botões de personalização") },
     ],
   },
   {

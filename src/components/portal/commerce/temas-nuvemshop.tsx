@@ -58,7 +58,7 @@ const Foto = ({ i, className, priority, sizes }: { i: Imagem; className?: string
 function BotaoVisitar({ c, grande }: { c: CaseLoja; grande?: boolean }) {
   return (
     <a href={c.url} target="_blank" rel="noopener" className={`inline-flex items-center gap-2 rounded-full font-bold text-[#06122b] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${grande ? "h-14 px-7 text-base" : "h-12 px-6 text-sm"}`} style={{ background: c.cor }}>
-      {c.rotuloBotao}<span className="hidden sm:inline">: {c.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span><span className="sr-only sm:hidden"> {c.nome}</span> <ArrowUpRight className="size-5" aria-hidden />
+      <span>{c.rotuloBotao}<span className="hidden sm:inline">: {c.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span><span className="sr-only sm:hidden"> {c.nome}</span></span><ArrowUpRight className="size-5" aria-hidden />
     </a>
   );
 }

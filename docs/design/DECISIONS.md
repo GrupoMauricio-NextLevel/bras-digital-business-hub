@@ -3426,6 +3426,6 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - Recortes no layout, sem destacar escudos e marcas de terceiros.
   - Todos os clientes autorizaram aparecer.
   - Aviso de que a NextLevel não tem vínculo com a Nuvemshop.
-- **Imagens:** em `public/portal/temas-nuvemshop/`. iRest e CCV foram capturadas pela NextLevel; Capistrano, pelos prints do dono. Luis Fornecedor e Futcollection aparecem só com texto até o dono reenviar os prints como arquivo. As imagens dos temas são capturas novas das demonstrações no ar.
+- **Imagens:** em `public/portal/temas-nuvemshop/`. iRest e CCV foram capturadas pela NextLevel; Capistrano, pelos prints do dono. Luis Fornecedor e Futcollection: pelos prints que o dono reenviou como arquivo. As imagens dos temas são capturas novas das demonstrações no ar.
 - **Arquivos:** dados em `src/lib/portal/cases-temas.ts`, plano em `docs/prompts/temas-para-nuvemshop-pagina.md`, teste em `tests/temas-nuvemshop.test.ts`.
 
