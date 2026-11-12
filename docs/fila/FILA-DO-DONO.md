@@ -8,15 +8,22 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **Lembrete das parcelas do contrato** (sugerido em 11/11/2026): e-mail ao cliente 2 dias antes e no dia; aviso ao dono quando vencer sem "Já fiz o Pix". O restante do Anderson vence em 16/11.
 - [ ] **Endereço padrão do domínio próprio dos lojistas** (pendência antiga): o código ainda cai no serviço de Treino se a configuração do Render sumir (`src/lib/domain/dominio-proprio.ts`).
 - [ ] **E-mail de verdade (Resend)**: o dono adiciona o domínio no Resend e manda o print do DNS; depois `RESEND_API_KEY` (o dono cola no Render), `EMAIL_FROM` e `EMAIL_REPLY_TO`.
-- [ ] **Ler o texto dos termos de uso (D279)** antes da publicação: todos os lojistas vão aceitar esse texto.
+- [ ] **Ler o texto dos termos de uso (D279):** já está no ar desde 12/11; se mudar algo, sai uma versão nova e todos aceitam de novo.
 - [ ] **Isca da janela de saída (D280)**: se o dono tiver um material (por exemplo, um guia "Como montar sua loja em 1 dia"), trocar a oferta da janela por ele.
 
-- [ ] **Página "NextLevel Temas para Nuvemshop"** (12/11/2026): plano em `docs/prompts/temas-para-nuvemshop-pagina.md`. O dono manda:
-  - os prints de Capistrano, Luis Fornecedor e Futcollection;
-  - as autorizações dos 5 clientes;
-  - a confirmação dos resumos "Como o nosso trabalho ajuda";
-  - a prévia com semijoias (prompts no arquivo).
+- [ ] **Temas para Nuvemshop e Nossos clientes (D282, D283), no ar:** o que falta é opcional. O dono manda:
+  - a prévia com semijoias;
+  - a cidade da iRest e da CCV;
+  - os logotipos dos clientes;
+  - um depoimento real.
+
+  Quando um cliente migrar para a plataforma, ligar o selo "Na NextLevel E-commerce".
+- [ ] **Personalização com nome e número na camisa** (ideia vinda da Futcollection, 12/11/2026): a plataforma ainda não tem esse recurso; avaliar.
+- [ ] **CT4 dos contratos:** aditivos e outros modelos (migração, marketing).
+- [ ] **Série do YouTube:** vídeo 5 (o último).
+- [ ] **Render:** filtros de montagem (`docs/**`, `**/*.md`); apagar os domínios `hubcreators` e `brasdigitalclub` e o banco do Treino depois de conferir.
 
 ## Feito
 
+- [x] Páginas Temas para Nuvemshop (D282) e Nossos clientes (D283), no ar em 12/11/2026.
 - [x] Contratos no painel, Pix manual, cortesia, termos de uso e janela de saída (D276 a D280), salvos para a publicação de 11/11/2026.
