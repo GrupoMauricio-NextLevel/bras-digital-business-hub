@@ -1,3 +1,4 @@
+import { negocioAberto } from "@/lib/negocios";
 import { AVATAR_CEO, CEO } from "@/lib/marcas/equipe";
 import { onSignal } from "@/lib/brand-palette";
 import { and, eq, inArray } from "drizzle-orm";
@@ -56,7 +57,10 @@ export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta" | "ceo
  */
 export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof fetch = fetch): Promise<"SENT" | "FAILED" | "LOGGED" | "SKIPPED"> {
   const id = newId("eml");
-  const brand = brandByCode(m.brand);
+  // D285: marca fechada (hoje, tudo que não é a E-commerce nem o grupo) não assina e-mail; quem estava sem marca ou numa
+  // marca em pausa recebe pela NextLevel E-commerce, a frente aberta (D216/D218).
+  const pedida = brandByCode(m.brand);
+  const brand = pedida.code === "NEXTLEVEL" || negocioAberto(pedida.code) ? pedida : brandByCode("NEXTLEVEL_COMMERCE");
   m = { ...m, subject: brandize(m.subject, brand), text: brandize(m.text, brand), cta: m.cta ? { ...m.cta, label: brandize(m.cta.label, brand) } : undefined };
   // Rodapé do grupo (D132), só com a chave ligada no Master; falha ao ler a chave nunca impede o e-mail.
   let group: GroupFooter | null = null;
@@ -98,7 +102,9 @@ export async function recipientsOf(db: Database, t: { storeId?: string | null; s
 
 /** Marca da organização de um usuário (para e-mails que não vêm de um cadastro na hora). */
 export async function brandOfUser(db: Database, userId: string): Promise<BrandCode> {
-  const r = await db.select({ brand: organizations.brand }).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(eq(users.id, userId)).limit(1);
+  const r = await db.select({ brand: organizations.brand, role: users.role }).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(eq(users.id, userId)).limit(1);
+  // Equipe do Master assina como o grupo (D285).
+  if (r[0]?.role === "NEXTLEVEL_MASTER") return "NEXTLEVEL";
   return r[0]?.brand ?? brandByCode(undefined).code;
 }
 

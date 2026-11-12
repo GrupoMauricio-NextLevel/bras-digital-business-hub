@@ -1,5 +1,12 @@
 [
  {
+  "numero": 285,
+  "frente": "E-commerce",
+  "titulo": "E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta",
+  "data": "2026-11-12",
+  "resumo": "E-mail real no ar: domínio nextlevelcommerce.com.br verificado no Resend, região São Paulo, com DNS na Hostinger (DKIM, SPF via send/rsend e DMARC p=none);"
+ },
+ {
   "numero": 284,
   "frente": "E-commerce",
   "titulo": "Lembretes automáticos das parcelas do contrato e endereço padrão do domínio próprio",
@@ -271,12 +278,5 @@
   "titulo": "L5: velocidade da vitrine (medido antes e depois)",
   "data": "2026-11-04",
   "resumo": "Causa: cada página da loja buscava os dados no banco uma consulta depois da outra. O catálogo era lido duas vezes e o estilo da loja também."
- },
- {
-  "numero": 245,
-  "frente": null,
-  "titulo": "E-mail com o domínio sem custo para a NextLevel; o \"Marca Completa\" fica bloqueado",
-  "data": "2026-11-04",
-  "resumo": "Regra do dono: o e-mail precisa ser sem custo. O que tiver custo fica bloqueado para ativar depois."
  }
 ]

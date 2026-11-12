@@ -3452,3 +3452,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Domínio próprio dos lojistas:** sem a variável `LOJA_DOMINIO_CNAME`, o endereço padrão passa a ser o da produção (`superdrop.onrender.com`), não mais o do serviço de Treino.
 - Teste: `tests/contratos.test.ts` (D284).
 
+## D285 — [E-commerce] E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta (2026-11-12)
+- **E-mail real no ar:**
+  - domínio `nextlevelcommerce.com.br` verificado no Resend, região São Paulo, com DNS na Hostinger (DKIM, SPF via `send`/`rsend` e DMARC `p=none`);
+  - `RESEND_API_KEY` colada pelo dono no Render;
+  - `EMAIL_FROM=contato@nextlevelcommerce.com.br`;
+  - `EMAIL_REPLY_TO`, por enquanto, o Gmail da agência.
+- **Achado do dono:** a redefinição de senha da conta Master chegou assinada "SuperDrop" (a organização antiga do Master é a do SuperDrop, e o SuperDrop está em pausa, D216).
+- **Regra:**
+  - marca em pausa (fora de `MASTER_MARCAS_ATIVAS`) ou e-mail sem marca assina pela NextLevel E-commerce; o grupo (NEXTLEVEL) continua assinando como NextLevel;
+  - a equipe do Master recebe e-mails como "NextLevel".
+  - Quando o SuperDrop voltar a abrir, os e-mails dele voltam a sair com o nome dele, sem mudar código.
+- Teste: `tests/captacao-p5u.test.ts` (D285).
+

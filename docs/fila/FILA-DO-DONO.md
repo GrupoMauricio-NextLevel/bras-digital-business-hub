@@ -7,7 +7,7 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **Domínio novo `nextlevelcommerce.com.br`** (11/11/2026): ligar no Render e no registro.br, depois trocar o endereço principal da E-commerce (passo a passo em `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`, código pronto no D281).
 - [x] **Lembrete das parcelas do contrato** (D284) (sugerido em 11/11/2026): e-mail ao cliente 2 dias antes e no dia; aviso ao dono quando vencer sem "Já fiz o Pix". O restante do Anderson vence em 16/11.
 - [x] **Endereço padrão do domínio próprio dos lojistas** (D284) (pendência antiga): o código ainda cai no serviço de Treino se a configuração do Render sumir (`src/lib/domain/dominio-proprio.ts`).
-- [ ] **E-mail de verdade (Resend)**: o dono adiciona o domínio no Resend e manda o print do DNS; depois `RESEND_API_KEY` (o dono cola no Render), `EMAIL_FROM` e `EMAIL_REPLY_TO`.
+- [x] **E-mail de verdade (Resend)** (D285, no ar em 12/11): o dono adiciona o domínio no Resend e manda o print do DNS; depois `RESEND_API_KEY` (o dono cola no Render), `EMAIL_FROM` e `EMAIL_REPLY_TO`.
 - [ ] **Ler o texto dos termos de uso (D279):** já está no ar desde 12/11; se mudar algo, sai uma versão nova e todos aceitam de novo.
 - [ ] **Isca da janela de saída (D280)**: se o dono tiver um material (por exemplo, um guia "Como montar sua loja em 1 dia"), trocar a oferta da janela por ele.
 
