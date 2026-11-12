@@ -44,11 +44,12 @@ export const CASES_TEMAS: CaseLoja[] = [
     chave: "luis", nome: "Luis Fornecedor", segmento: "Distribuidor de produtos eletrônicos no Brás, em São Paulo", url: "https://www.luisfornecedor.com.br/", rotuloBotao: "Visitar a loja", cor: "#1d5bff", autorizado: true,
     ajuda: "Leva o atendimento próximo do balcão do Brás para o celular do lojista do Brasil todo: ele vê quem atende, acha o produto pela busca ou pela categoria e fecha o pedido no carrinho ou pelo WhatsApp.",
     desafio: "O lojista compra de um distribuidor sem ver o balcão: precisa confiar e achar rápido num catálogo que vai de eletrônicos a cosméticos e perfumes.",
+    computador: img("luis-computador", 1200, 750, "Página inicial da Luis Fornecedor no computador, com os sócios"), celular: img("luis-celular", 420, 909, "Página de produto da Luis Fornecedor no celular"),
     pontos: [
       { titulo: "Os donos e a equipe no topo", texto: "Os sócios Luís e Andreza dão as boas-vindas no computador e a equipe aparece no celular. Para quem compra de longe, rosto e nome geram confiança." },
-      { titulo: "Quatro garantias para quem revende", texto: "Curadoria para uso e revenda, preços para girar estoque, entrega nacional e atendimento especialista, logo abaixo do banner." },
-      { titulo: "Atalhos para o que mais gira", texto: "A barra de categorias leva direto aos produtos mais pedidos, e cada cartão mostra o código para o lojista pedir pelo código." },
-      { titulo: "Dois caminhos de compra", texto: "Na página do produto, quantidade, \"Adicionar ao carrinho\" e \"Comprar pelo WhatsApp\", com frete pelo CEP e os selos de envio, compra segura e pronta entrega." },
+      { titulo: "Quatro garantias para quem revende", texto: "Curadoria para uso e revenda, preços para girar estoque, entrega nacional e atendimento especialista, logo abaixo do banner.", imagem: img("luis-garantias", 1000, 63, "Faixa de garantias da Luis Fornecedor") },
+      { titulo: "Atalhos para o que mais gira", texto: "A barra de categorias leva direto aos produtos mais pedidos, e cada cartão mostra o código para o lojista pedir pelo código.", imagem: img("luis-atalhos", 1000, 435, "Barra de categorias e cartões com código na Luis Fornecedor") },
+      { titulo: "Dois caminhos de compra", texto: "Na página do produto, quantidade, \"Adicionar ao carrinho\" e \"Comprar pelo WhatsApp\", com frete pelo CEP e os selos de envio, compra segura e pronta entrega.", imagem: img("luis-compra", 560, 450, "Botões de carrinho e WhatsApp na página do produto") },
     ],
   },
   {
