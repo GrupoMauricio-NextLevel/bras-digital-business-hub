@@ -1,5 +1,12 @@
 [
  {
+  "numero": 282,
+  "frente": "E-commerce",
+  "titulo": "Página \"NextLevel Temas para Nuvemshop\"",
+  "data": "2026-11-12",
+  "resumo": "Pedido do dono: uma página com as lojas que a NextLevel criou, o racional de cada uma, botões em destaque para os sites reais, o resumo de como o trabalho ajuda cada negócio, os temas da NextLevel no fim e destaque para semijoias. O pont…"
+ },
+ {
   "numero": 281,
   "frente": "E-commerce",
   "titulo": "Domínio novo nextlevelcommerce.com.br pronto para virar o endereço principal",
@@ -271,12 +278,5 @@
   "titulo": "Regra da IA por plano (aprovada pelo dono em 04/11)",
   "data": null,
   "resumo": "Ordem de uso: primeiro a cota do plano, depois a chave do lojista. Sem nenhuma das duas, as respostas voltam a ser por regras e nunca quebram."
- },
- {
-  "numero": 242,
-  "frente": null,
-  "titulo": "BF4: kit Black na loja do lojista, em 1 clique",
-  "data": "2026-11-04",
-  "resumo": "Onde liga: Painel da loja → Campanhas → \"Kit Black da sua loja\", só na E-commerce. O lojista escolhe o desconto (5 a 70%), o código (padrão BLACK10) e a data de fim (padrão: o fim da Black NextLevel)."
  }
 ]

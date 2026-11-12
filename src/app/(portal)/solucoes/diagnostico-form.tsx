@@ -8,9 +8,9 @@ import { requestDiagnosticAction } from "@/app/actions/financeiro";
 import { EVENTO_DIAGNOSTICO } from "@/components/portal/solucoes/selecao";
 
 /** Diagnóstico gratuito: formulário curto, roteamento por necessidade e atribuição de parceiro (pelo cookie do proxy). */
-export function DiagnosticoForm({ needs }: { needs: [string, string][] }) {
-  const [f, setF] = React.useState({ name: "", email: "", phone: "", company: "", stage: "COMECANDO", message: "", consent: false });
-  const [picked, setPicked] = React.useState<string[]>([]);
+export function DiagnosticoForm({ needs, inicial = [], mensagemInicial = "" }: { needs: [string, string][]; inicial?: string[]; mensagemInicial?: string }) {
+  const [f, setF] = React.useState({ name: "", email: "", phone: "", company: "", stage: "COMECANDO", message: mensagemInicial, consent: false });
+  const [picked, setPicked] = React.useState<string[]>(inicial);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [routes, setRoutes] = React.useState<{ label: string; href: string }[] | null>(null);

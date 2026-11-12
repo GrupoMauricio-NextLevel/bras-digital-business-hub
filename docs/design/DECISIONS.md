@@ -3407,3 +3407,25 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Passo a passo:** `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`. Teste: `tests/host-routing.test.ts` (D281).
 - **Fila do dono:** `docs/fila/FILA-DO-DONO.md` reúne o que o dono pediu para não esquecer.
 
+## D282 — [E-commerce] Página "NextLevel Temas para Nuvemshop" (2026-11-12)
+- **Pedido do dono:** uma página com as lojas que a NextLevel criou, o racional de cada uma, botões em destaque para os sites reais, o resumo de como o trabalho ajuda cada negócio, os temas da NextLevel no fim e destaque para semijoias. O ponto de partida é uma cliente de semijoias que vende na Nuvemshop e quer um layout melhor.
+- **Onde:** `/temas-nuvemshop`, só no site da E-commerce (404 nas outras marcas). Vai para Soluções depois, com 301, porque tema personalizado é serviço da agência (NextLevel Marketing Ltda).
+- **Seções:**
+  - Topo.
+  - "Conhecemos o seu layout por dentro": 6 fatos da central de ajuda da Nuvemshop, com fonte e data, cada um com o que a NextLevel faz a respeito.
+  - As 5 lojas na ordem do dono (iRest, Capistrano Modas, Luis Fornecedor, Futcollection, CCV Vidros). Cada uma tem o botão "Visitar a loja", o resumo "Como o nosso trabalho ajuda", o desafio e de 3 a 5 pontos com recortes do layout.
+  - Semijoias, com Musa, Aura, Brilho e Pétala.
+  - Seis etapas de trabalho.
+  - Vitrine dos temas NextLevel.
+  - Dúvidas.
+  - Diagnóstico gratuito (o formulário de Soluções, já marcado em "Melhorar o visual da loja") e o WhatsApp.
+- **Regras:**
+  - Nenhum case cita a plataforma em que a loja roda.
+  - Sem número de venda.
+  - Sem preço de serviço.
+  - Recortes no layout, sem destacar escudos e marcas de terceiros.
+  - Todos os clientes autorizaram aparecer.
+  - Aviso de que a NextLevel não tem vínculo com a Nuvemshop.
+- **Imagens:** em `public/portal/temas-nuvemshop/`. iRest e CCV foram capturadas pela NextLevel; Capistrano, pelos prints do dono. Luis Fornecedor e Futcollection aparecem só com texto até o dono reenviar os prints como arquivo. As imagens dos temas são capturas novas das demonstrações no ar.
+- **Arquivos:** dados em `src/lib/portal/cases-temas.ts`, plano em `docs/prompts/temas-para-nuvemshop-pagina.md`, teste em `tests/temas-nuvemshop.test.ts`.
+
