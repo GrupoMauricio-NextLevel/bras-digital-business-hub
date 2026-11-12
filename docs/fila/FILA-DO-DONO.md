@@ -11,6 +11,12 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **Ler o texto dos termos de uso (D279)** antes da publicação: todos os lojistas vão aceitar esse texto.
 - [ ] **Isca da janela de saída (D280)**: se o dono tiver um material (por exemplo, um guia "Como montar sua loja em 1 dia"), trocar a oferta da janela por ele.
 
+- [ ] **Página "NextLevel Temas para Nuvemshop"** (12/11/2026): plano em `docs/prompts/temas-para-nuvemshop-pagina.md`. O dono manda:
+  - os prints de Capistrano, Luis Fornecedor e Futcollection;
+  - as autorizações dos 5 clientes;
+  - a confirmação dos resumos "Como o nosso trabalho ajuda";
+  - a prévia com semijoias (prompts no arquivo).
+
 ## Feito
 
 - [x] Contratos no painel, Pix manual, cortesia, termos de uso e janela de saída (D276 a D280), salvos para a publicação de 11/11/2026.
