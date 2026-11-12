@@ -3443,3 +3443,12 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Fora, de propósito:** personalização com nome e número na camisa (a plataforma ainda não tem), número de venda e depoimento.
 - Plano em `docs/prompts/pagina-nossos-clientes.md`, teste em `tests/clientes-pagina.test.ts`.
 
+## D284 — [E-commerce] Lembretes automáticos das parcelas do contrato e endereço padrão do domínio próprio (2026-11-12)
+- **Lembretes** (`lembretesDeParcelas`, na rotina diária `runDailyFinanceJobs`):
+  - ao cliente, 2 dias antes e no dia do vencimento, com a chave Pix e o caminho para "Já fiz o Pix";
+  - à contratada, quando a parcela vence sem aviso de Pix.
+  - Cada aviso sai uma vez só (dedupeKey). Parcela avisada ou paga não recebe lembrete. Falha nos lembretes não derruba o resto da rotina.
+  - Os e-mails só saem de verdade com o Resend configurado (pendência do dono).
+- **Domínio próprio dos lojistas:** sem a variável `LOJA_DOMINIO_CNAME`, o endereço padrão passa a ser o da produção (`superdrop.onrender.com`), não mais o do serviço de Treino.
+- Teste: `tests/contratos.test.ts` (D284).
+

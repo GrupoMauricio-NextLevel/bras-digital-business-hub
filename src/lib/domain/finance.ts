@@ -454,6 +454,8 @@ export async function runDailyFinanceJobs(db: Database, now = new Date()) {
   await (await import("./store-access")).runTrialReminders(db, now);
   await (await import("./partners")).runDailyPartnerJobs(db, now);
   await (await import("./commerce-plans")).runSubscriptionJobs(db, now, { suspendAfterDays: (await getPriceBook(db)).dunning.suspendedDays });
+  // Lembretes das parcelas dos contratos (D284); falha aqui não derruba o resto da rotina.
+  try { await (await import("./contratos")).lembretesDeParcelas(db, now); } catch (e) { console.error("[lembretes de parcelas]", e); }
   return result;
 }
 

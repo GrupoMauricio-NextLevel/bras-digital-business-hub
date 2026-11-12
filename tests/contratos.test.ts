@@ -5,7 +5,7 @@ import { caixaLancamentos, contratos, emailOutbox, stores, users } from "@/db/sc
 import type { Actor } from "@/lib/domain/access";
 import { signupMember } from "@/lib/domain/store-access";
 import { createMasterMember } from "@/lib/domain/equipe-master";
-import { aceitarContrato, avisarPixFeito, cancelarContrato, confirmarRecebimento, contratosDaLoja, contratosPendentes, enviarContratoLojaPronta, lancarParcelaNoCaixa, parcelasAPagar, parcelasDoContrato, pixNaoEncontrado, pixParaConferir, verContrato } from "@/lib/domain/contratos";
+import { lembretesDeParcelas, aceitarContrato, avisarPixFeito, cancelarContrato, confirmarRecebimento, contratosDaLoja, contratosPendentes, enviarContratoLojaPronta, lancarParcelaNoCaixa, parcelasAPagar, parcelasDoContrato, pixNaoEncontrado, pixParaConferir, verContrato } from "@/lib/domain/contratos";
 import { abrirCaixa } from "@/lib/domain/caixa";
 import { gerarPdfContrato } from "@/lib/contratos/pdf";
 import { conferirDados, impressaoDigital, jsonEstavel, montarSecoes, type DadosLojaPronta } from "@/lib/contratos/loja-pronta-express";
@@ -147,5 +147,22 @@ describe("contrato no banco (CT1+CT2)", () => {
     expect((await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "CONTRATO_PIX_CONFIRMADO"))).length).toBe(2);
     expect(await parcelasAPagar(ctx.db, a.dono, AGORA)).toEqual([]);
     expect(await pixParaConferir(ctx.db, ctx.actors.master)).toEqual([]);
+  });
+
+  it("D284: lembretes da parcela ao cliente (2 dias antes e no dia) e aviso à contratada quando vence sem Pix, uma vez cada", async () => {
+    const a = await loja("Vestiário Teste", "a@loja.teste", "529.982.247-25");
+    const env = await enviarContratoLojaPronta(ctx.db, ctx.actors.master, entrada(a.storeId), AGORA); // sinal 10/11, restante 16/11
+    const kinds = async (k: string) => (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, k))).map((e) => e.toEmail);
+    await lembretesDeParcelas(ctx.db, new Date("2026-11-14T15:00:00Z")); // 2 dias antes do restante; sinal já vencido
+    expect(await kinds("CONTRATO_PARCELA_LEMBRETE")).toEqual([BASE.cliente.email]);
+    expect(await kinds("CONTRATO_PARCELA_VENCIDA")).toEqual(["agencianextlevelbr@gmail.com"]);
+    await lembretesDeParcelas(ctx.db, new Date("2026-11-14T20:00:00Z")); // rodar de novo no mesmo dia não repete
+    expect((await kinds("CONTRATO_PARCELA_LEMBRETE")).length).toBe(1);
+    expect((await kinds("CONTRATO_PARCELA_VENCIDA")).length).toBe(1);
+    // o cliente avisa o Pix do restante: no dia do vencimento não recebe lembrete
+    const [, resto] = await parcelasDoContrato(ctx.db, a.dono, env.id);
+    await avisarPixFeito(ctx.db, a.dono, resto!.id, {}, new Date("2026-11-15T12:00:00Z"));
+    await lembretesDeParcelas(ctx.db, new Date("2026-11-16T15:00:00Z"));
+    expect((await kinds("CONTRATO_PARCELA_LEMBRETE")).length).toBe(1);
   });
 });

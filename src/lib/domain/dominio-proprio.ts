@@ -11,7 +11,7 @@ import { DomainError } from "./errors";
  * o domínio é cadastrado sozinho na hospedagem (certificado HTTPS automático); sem eles, fica na fila do Master.
  * O proxy (`src/proxy.ts`) serve a vitrine em qualquer host cadastrado aqui (`lojaPorDominio`).
  */
-export const ALVO_CNAME = () => (process.env.LOJA_DOMINIO_CNAME || "nextlevel-demo.onrender.com").toLowerCase();
+export const ALVO_CNAME = () => (process.env.LOJA_DOMINIO_CNAME || "superdrop.onrender.com").toLowerCase();
 /** IP de entrada da hospedagem para domínio sem "www" (registro A). */
 export const ALVO_A = () => process.env.LOJA_DOMINIO_IP || "216.24.57.1";
 

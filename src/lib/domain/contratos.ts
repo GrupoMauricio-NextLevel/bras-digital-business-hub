@@ -267,3 +267,40 @@ export async function parcelasAPagar(db: Database, actor: Actor, now = new Date(
   for (const c of ativos) await garantirParcelas(db, c);
   return db.select({ id: contratoParcelas.id, contratoId: contratoParcelas.contratoId, descricao: contratoParcelas.descricao, valorCents: contratoParcelas.valorCents, vencimento: contratoParcelas.vencimento }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.storeId, actor.storeId), eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), lte(contratoParcelas.vencimento, somarDias(dataSP(now), 3)))).orderBy(asc(contratoParcelas.vencimento));
 }
+
+/**
+ * Lembretes das parcelas (D284), na rotina diária: ao cliente 2 dias antes e no dia do vencimento; à contratada quando
+ * a parcela vence sem o "Já fiz o Pix". Cada aviso sai uma vez só (dedupeKey). Parcela avisada ou paga não recebe lembrete.
+ */
+export async function lembretesDeParcelas(db: Database, now = new Date()) {
+  const ativos = await db.select().from(contratos).where(ne(contratos.status, "CANCELADO"));
+  for (const c of ativos) await garantirParcelas(db, c);
+  const hoje = dataSP(now);
+  const abertas = await db.select({ p: contratoParcelas, c: contratos }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), lte(contratoParcelas.vencimento, somarDias(hoje, 2))));
+  let enviados = 0;
+  for (const { p, c } of abertas) {
+    const d = c.dados as unknown as DadosLojaPronta;
+    const venc = p.vencimento.slice(0, 10);
+    const link = `${linkBase()}/merchant/contratos/${c.id}`;
+    const pix = `Pix na chave ${d.contratada.chavePix} (${d.contratada.banco}, favorecido ${d.contratada.favorecido}).`;
+    if (venc === somarDias(hoje, 2) || venc === hoje) {
+      const noDia = venc === hoje;
+      const r = await sendEmail(db, {
+        kind: "CONTRATO_PARCELA_LEMBRETE", to: d.cliente.email, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `parcela:${p.id}:lembrete:${noDia ? "dia" : "2dias"}`,
+        subject: noDia ? `Hoje vence a parcela de ${formatar.brl(p.valorCents)} do seu contrato` : `Em 2 dias vence a parcela de ${formatar.brl(p.valorCents)} do seu contrato`,
+        text: `Olá, ${d.cliente.nome.split(" ")[0]}!\n\nA parcela "${p.descricao}" de ${formatar.brl(p.valorCents)} do contrato ${c.numero} vence ${noDia ? "hoje" : `em ${formatar.data(venc)}`}.\n\n${pix}\n\nDepois de pagar, aperte "Já fiz o Pix" no painel, em Contratos, para a NextLevel conferir. Se já pagou, desconsidere este lembrete.`,
+        cta: { label: "Abrir o contrato", url: link },
+      });
+      if (r !== "SKIPPED") enviados++;
+    } else if (venc < hoje) {
+      const r = await sendEmail(db, {
+        kind: "CONTRATO_PARCELA_VENCIDA", to: d.contratada.emailRepresentante, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `parcela:${p.id}:vencida`,
+        subject: `Parcela vencida sem aviso de Pix: ${c.numero}`,
+        text: `A parcela "${p.descricao}" de ${formatar.brl(p.valorCents)} do contrato ${c.numero} (${d.cliente.nome}, ${d.loja.nome}) venceu em ${formatar.data(venc)} e o cliente ainda não avisou o Pix.\n\nConfira no extrato do ${d.contratada.banco}: se o dinheiro entrou, confirme no Master; se não, fale com o cliente.`,
+        cta: { label: "Abrir no Master", url: `${linkBase()}/master/contratos/${c.id}` },
+      });
+      if (r !== "SKIPPED") enviados++;
+    }
+  }
+  return { enviados };
+}
