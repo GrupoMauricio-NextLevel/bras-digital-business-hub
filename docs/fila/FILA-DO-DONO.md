@@ -2,7 +2,34 @@
 
 Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, com a data. Ao concluir, marque `[x]` e cite a decisão (Dnnn).
 
-## Para fazer
+## Checklist do dono (só você consegue fazer)
+
+> Pedido do dono (13/11/2026): tudo o que depende dele fica aqui, em ordem de prioridade, e o Claude manda este checklist todo dia de manhã. Ao fazer, avise na conversa; o Claude confere e marca `[x]`.
+
+**Urgente (destrava o que já está no ar)**
+- [ ] **Token da caixa de e-mail (D296):** na Hostinger, E-mails → Correio Agêntico → Acesso à API → criar token; colar no Render como `HOSTINGER_MAIL_TOKEN` (nunca no chat). Liga a Caixa de entrada do Master.
+- [ ] **Limite de US$ 0 no GitHub:** empresa nextlevelgroup → Faturamento e licenciamento → Budgets → US$ 0 para Actions (nada cobrado por fora).
+- [ ] **Parcela do Anderson (16/11):** quando ele avisar "Já fiz o Pix", conferir no banco e confirmar em Master → Contratos.
+
+**Com data**
+- [ ] **Até 12/12/2026: teste do GitHub Enterprise** termina. Decidir: cancelar (recomendado, se os alertas de segurança já tiverem sido tratados) ou pagar.
+- [ ] **Até 12/12/2026: teste do e-mail da Hostinger** termina. Renovar o plano (as 5 caixas e apelidos dependem dele).
+- [ ] **A partir de 27/11: DMARC mais rígido** (D289): na Hostinger, DNS, `_dmarc` de `p=none` para `p=quarantine`.
+
+**Quando puder**
+- [ ] **Google Search Console e Bing:** cadastrar `nextlevelcommerce.com.br` (registro TXT na Hostinger) e pedir a mudança de endereço.
+- [ ] **Logos da NextLevel Commerce** (D288): gerar no GPT com os prompts de `docs/marcas/nextlevel-commerce-logo-racional.md` e mandar aqui.
+- [ ] **Código de segurança pelo aplicativo:** ligar o aplicativo autenticador na sua conta e na da equipe; depois o Claude liga `MASTER_2FA_OBRIGATORIO=1`.
+- [ ] **Ler o texto dos termos de uso** (D279), no ar desde 12/11.
+- [ ] **Render:** remover `superdrop.com.br` (D287) e os domínios `hubcreators` e `brasdigitalclub`; apagar o DNS de `bras` e `cargas`.
+- [ ] **Materiais para as páginas:** prévia com semijoias, cidade da iRest e da CCV, logotipos dos clientes, um depoimento real (D282, D283); isca da janela de saída (D280); materiais e QR codes com o domínio novo.
+
+## Fila do Claude (o Claude faz, sem depender do dono)
+
+- [ ] **Alertas de segurança das dependências:** o GitHub achou 23 (2 críticos, 5 altos) na organização nova; tratar numa rodada própria.
+- [ ] **Busca e IA:** seguir o plano depois da S0 (D293).
+
+## Ideias e pendências antigas
 
 - [x] **Domínio novo `nextlevelcommerce.com.br`** (D287, no ar em 13/11) (11/11/2026): ligar no Render e no registro.br, depois trocar o endereço principal da E-commerce (passo a passo em `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`, código pronto no D281).
 - [x] **Lembrete das parcelas do contrato** (D284) (sugerido em 11/11/2026): e-mail ao cliente 2 dias antes e no dia; aviso ao dono quando vencer sem "Já fiz o Pix". O restante do Anderson vence em 16/11.
@@ -30,7 +57,7 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **Logos da NextLevel Commerce** (D288): gerar no GPT com os prompts de `docs/marcas/nextlevel-commerce-logo-racional.md` e mandar aqui.
 
 - [ ] **DMARC mais rígido** (D289): em 2 a 4 semanas, passar `_dmarc` de `p=none` para `p=quarantine`.
-- [ ] **Correio Agêntico** (D289): e-mails de suporte@ viram atendimento no Master (webhook da Hostinger).
+- [ ] **Correio Agêntico** (D289): a caixa de entrada no Master já está pronta (D296); falta o passo seguinte: e-mails de suporte@ virarem atendimento (webhook da Hostinger).
 
 ## Feito
 
