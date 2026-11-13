@@ -1,10 +1,11 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBrand } from "@/lib/brand-server";
 import { RecursosEc } from "@/components/portal/commerce/imersiva/recursos-ec";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Recursos", description: "Como funciona a loja virtual da NextLevel Commerce: cadastro, vitrine, pagamento, envio, personalização, IA e integrações.", alternates: { canonical: "/recursos" } };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/recursos", { title: "Recursos", description: "Como funciona a loja virtual da NextLevel Commerce: cadastro, vitrine, pagamento, envio, personalização, IA e integrações.", alternates: { canonical: "/recursos" } });
 
 /** Recursos (D219): o que saiu da home para ela ficar objetiva. Só na Commerce. */
 export default async function RecursosPage() {

@@ -51,7 +51,7 @@ export function origemDaEntrada(busca: string | null | undefined, referrer: stri
   return { ...utm, clickIds, refHost: refHost || null, canal };
 }
 
-/** Código curto da visita (TR3, D293): 5 letras e números sem os que se confundem (0/O, 1/I/L). */
+/** Código curto da visita (TR3, D294): 5 letras e números sem os que se confundem (0/O, 1/I/L). */
 const ALFABETO_CODIGO = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 export const novoCodigoVisita = () => Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => ALFABETO_CODIGO[b % ALFABETO_CODIGO.length]).join("");
 export const CODIGO_VISITA = /^[A-HJ-NP-Z2-9]{5}$/;

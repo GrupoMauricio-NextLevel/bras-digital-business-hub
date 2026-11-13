@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBrand } from "@/lib/brand-server";
@@ -7,7 +8,7 @@ import { GroupTerms } from "@/components/portal/legal-grupo";
 import { TermosView } from "@/components/contratos/termos-view";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Termos de uso" };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/termos", { title: "Termos de uso" });
 
 /**
  * Termos de uso (D148): um texto único do Grupo NextLevel em todas as marcas. A Brás Digital segue com o texto próprio (aceite

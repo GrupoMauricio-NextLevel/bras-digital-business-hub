@@ -1,3 +1,5 @@
+import { entidadeCommerce, perfisOficiais } from "@/lib/seo/entidade";
+import { supportContacts } from "@/lib/support";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Banknote, ShieldCheck } from "lucide-react";
 import type { Brand } from "@/lib/brand";
@@ -39,6 +41,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const section = "scroll-mt-16 px-4 py-16 md:py-24";
   const solucoes = await groupLink("/solucoes");
   const link = "underline underline-offset-4 text-link";
+  const contatos = supportContacts();
+  const suporte = { whatsapp: contatos.whatsappUrl ? contatos.whatsappUrl.replace(/^https:\/\/wa\.me\/(\d+).*$/, "$1") : null, email: contatos.email };
 
   const pagos = pv.plans.filter((p) => !p.quote && p.annualCents);
   // Black NextLevel (D229): durante a campanha, o "a partir de" já é o anual com 2 meses grátis.
@@ -51,10 +55,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
   return (
     <div className="im-tema-ecommerce contents">
-      <JsonLd data={[
-        { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.baseUrl, parentOrganization: { "@type": "Organization", name: "NextLevel Marketing Ltda." } },
-        { "@context": "https://schema.org", "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", description: brand.description },
-      ]} />
+      {/* Entidade para buscadores e IAs (D293): empresa, contato, site e planos em reais, do sistema. */}
+      <JsonLd data={entidadeCommerce({ baseUrl: brand.baseUrl, whatsapp: suporte.whatsapp, email: suporte.email, perfis: perfisOficiais(process.env.PERFIS_COMMERCE), planos: pv.plans.filter((p) => !p.quote).map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents })) })} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} black={bkCont} />
       <DueloBlack cta={cta} />
       <FaixaTaxaZero black={bkCont} />

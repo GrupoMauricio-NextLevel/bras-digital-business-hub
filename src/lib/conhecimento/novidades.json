@@ -1,10 +1,17 @@
 [
  {
-  "numero": 293,
+  "numero": 294,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
   "data": "2026-11-13",
   "resumo": "Origem de cada contato: quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova origens_contato, ligada à mesma chave do Comercial: canal, campanha, peça,…"
+ },
+ {
+  "numero": 293,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: começar o plano v3 de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos."
  },
  {
   "numero": 292,
@@ -271,12 +278,5 @@
   "titulo": "Celular no padrão da referência: Maurício em tela cheia e menu flutuante",
   "data": "2026-11-05",
   "resumo": "Pedido do dono (com capturas da Hostinger): \"No mobile quero que o chat abra completo, seguindo as referências.\""
- },
- {
-  "numero": 254,
-  "frente": null,
-  "titulo": "Revisão visual: Maurício encaixado na moldura do painel (borda contínua) e alinhamentos",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Os prints revelam alguns erros no alinhamento e falhas no design.\""
  }
 ]

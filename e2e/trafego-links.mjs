@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) e origem no Comercial (TR3, D293): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) e origem no Comercial (TR3, D294): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */

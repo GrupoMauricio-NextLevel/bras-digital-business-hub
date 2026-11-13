@@ -78,8 +78,9 @@ export function brandsFrom(env: Record<string, string | undefined> = process.env
     NEXTLEVEL_COMMERCE: {
       // NextLevel Commerce (D163): nome público novo; o código NEXTLEVEL_COMMERCE fica (está no banco).
       code: "NEXTLEVEL_COMMERCE", name: EC.name, live: true,
-      tagline: "A loja virtual feita para quem vende moda no Brasil",
-      description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado.",
+      tagline: "Loja virtual para varejo e atacado",
+      // D293: o atacado existe em todos os planos e atendemos vários nichos (antes: "feita para quem vende moda" e "em breve, atacado").
+      description: "Plataforma de lojas virtuais da NextLevel com atacado em todos os planos, Pix e cartão, 0% de tarifa da plataforma com Mercado Pago e temas por nicho.",
       domains: list(env.BRAND_DOMAINS_NEXTLEVEL_COMMERCE, ["lojas.nextlevelgroup.com.br", "nextlevelcommerce.com.br", "www.nextlevelcommerce.com.br"]),
       baseUrl: env.BRAND_URL_NEXTLEVEL_COMMERCE ?? "https://lojas.nextlevelgroup.com.br",
       officeUrl: url(env.BRAND_OFFICE_NEXTLEVEL_COMMERCE),

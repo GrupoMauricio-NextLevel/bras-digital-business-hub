@@ -40,7 +40,7 @@ async function detalhes(): Promise<Record<string, string | number>> {
 }
 
 /**
- * Código da visita na mensagem pronta do WhatsApp (TR3, D293): a equipe cola o código no Comercial e o contato herda a
+ * Código da visita na mensagem pronta do WhatsApp (TR3, D294): a equipe cola o código no Comercial e o contato herda a
  * origem (anúncio, campanha, cidade). Só se a medição foi permitida; não muda links que já têm o código.
  */
 function comCodigo(a: HTMLAnchorElement, u: URL) {

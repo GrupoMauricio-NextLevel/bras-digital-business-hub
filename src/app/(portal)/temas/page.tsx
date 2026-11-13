@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +13,7 @@ import { publicThemes, themeShot } from "@/lib/themes/gallery";
 import { FAMILY_INFO, LEVEL_INFO, LEVELS, type ThemeFamily } from "@/lib/themes/levels";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Temas para a sua loja", description: "Escolha o visual da sua loja virtual. Veja cada tema funcionando em uma loja de exemplo antes de comprar e instale com 1 clique.", alternates: { canonical: "/temas" } };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/temas", { title: "Temas para a sua loja", description: "Escolha o visual da sua loja virtual. Veja cada tema funcionando em uma loja de exemplo antes de comprar e instale com 1 clique.", alternates: { canonical: "/temas" } });
 
 const has = (key: string) => existsSync(join(process.cwd(), "public", themeShot(key, "desktop")));
 

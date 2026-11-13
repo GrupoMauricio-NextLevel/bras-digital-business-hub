@@ -9,7 +9,7 @@ const json = (v: string | undefined): Record<string, string> => {
 
 /**
  * Depois que um contato é aceito (formulário, janela de saída, diagnóstico, cadastro da loja): guarda de onde a pessoa veio
- * para o Comercial e marca a visita como lead (TR2/TR3, D291/D293). Lê só cookies próprios. Nunca lança.
+ * para o Comercial e marca a visita como lead (TR2/TR3, D291/D294). Lê só cookies próprios. Nunca lança.
  */
 export async function registrarOrigemDaVisita(db: Database, d: { chave: string; brand: string; via: Via; pagina?: string }): Promise<void> {
   try {

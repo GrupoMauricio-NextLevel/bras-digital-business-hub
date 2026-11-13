@@ -7,7 +7,7 @@ import { MoneyInput } from "@/components/ui/money-input";
 
 const campo = "mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2";
 
-/** Próxima ação, prazo, notas, "assumir" (D202), e "Fechou"/"Perdeu" com valor e motivo (TR3, D293). */
+/** Próxima ação, prazo, notas, "assumir" (D202), e "Fechou"/"Perdeu" com valor e motivo (TR3, D294). */
 export function FormAcompanhamento(p: { chave: string; proximaAcao: string; prazo: string; notas: string; perdido: boolean; temResponsavel: boolean; motivos: readonly string[]; motivoPerda: string | null; fechou: { valorCents: number; descricao: string | null } | null }) {
   const router = useRouter();
   const [proximaAcao, setProx] = React.useState(p.proximaAcao);
@@ -78,7 +78,7 @@ export function FormAcompanhamento(p: { chave: string; proximaAcao: string; praz
   );
 }
 
-/** Código da visita que veio na mensagem do WhatsApp (TR3, D293). */
+/** Código da visita que veio na mensagem do WhatsApp (TR3, D294). */
 export function VincularCodigo({ chave }: { chave: string }) {
   const router = useRouter();
   const [codigo, setCodigo] = React.useState("");

@@ -30,7 +30,7 @@ export async function salvarConfigComercialAction(entrada: unknown) {
   });
 }
 
-/** Código da visita que veio na mensagem do WhatsApp (TR3, D293): liga a pessoa à origem daquela visita. */
+/** Código da visita que veio na mensagem do WhatsApp (TR3, D294): liga a pessoa à origem daquela visita. */
 export async function vincularCodigoVisitaAction(chave: string, codigo: string) {
   return runAction(async () => {
     const s = await getSession();

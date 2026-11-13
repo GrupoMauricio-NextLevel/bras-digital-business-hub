@@ -30,14 +30,14 @@ export type Pessoa = {
   etapa: Etapa; desde: string; origem: string; temperatura: 1 | 2 | 3; detalhe: string;
   storeId: string | null; leadId: string | null; conversaId: string | null;
   situacao: SituacaoComercial | null; responsavel: string | null; proximaAcao: string | null; prazo: string | null; whatsappHref: string | null;
-  /** De onde veio (TR3, D293): canal, campanha, peça, cidade, aparelho, clique de anúncio. */
+  /** De onde veio (TR3, D294): canal, campanha, peça, cidade, aparelho, clique de anúncio. */
   fonte: OrigemResumo | null;
-  /** Venda fechada à mão (TR3, D293). */
+  /** Venda fechada à mão (TR3, D294). */
   fechou: { em: string; valorCents: number; descricao: string | null } | null;
   motivoPerda: string | null;
 };
 
-/** Motivos de perda (TR3, D293): servem para entender onde o funil vaza. */
+/** Motivos de perda (TR3, D294): servem para entender onde o funil vaza. */
 export const MOTIVOS_PERDA = ["Achou caro", "Escolheu outra plataforma", "Não respondeu mais", "Ainda não é a hora", "Ainda não tem produto ou empresa", "Não era o público", "Outro"] as const;
 
 const soDigitos = (t: string | null | undefined) => { const d = (t ?? "").replace(/\D/g, ""); return d.length >= 10 ? d.replace(/^55(?=\d{10,11}$)/, "") : null; };
@@ -112,7 +112,7 @@ export async function funilComercial(db: Database, actor: Actor, agora = new Dat
       detalhe: [l.segment, l.message?.slice(0, 90)].filter(Boolean).join(" · "), storeId: null, leadId: l.id, conversaId: null, situacao: null });
     pessoas.push(p); indexar(p);
   }
-  // TR3 (D293): a origem da pessoa é a da forma mais antiga que ela deixou (formulário ou conversa) ou do cadastro da loja.
+  // TR3 (D294): a origem da pessoa é a da forma mais antiga que ela deixou (formulário ou conversa) ou do cadastro da loja.
   const origens = await origensDe(db, pessoas.flatMap((p) => [p.chave, p.leadId ? `interessado:${p.leadId}` : "", p.conversaId ? `conversa:${p.conversaId}` : ""]).filter(Boolean));
   for (const p of pessoas) {
     const f = [origens.get(p.leadId ? `interessado:${p.leadId}` : ""), origens.get(p.conversaId ? `conversa:${p.conversaId}` : ""), origens.get(p.chave)]

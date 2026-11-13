@@ -1244,9 +1244,9 @@ export const crmAcompanhamento = pgTable("crm_acompanhamento", {
   prazo: ts("prazo"),
   notas: text("notas"),
   perdido: boolean("perdido").notNull().default(false),
-  /** Motivo da perda (TR3, D293). */
+  /** Motivo da perda (TR3, D294). */
   motivoPerda: text("motivo_perda"),
-  /** Venda fechada à mão (contrato, serviço, plano combinado): quando, quanto (centavos) e o quê (TR3, D293). */
+  /** Venda fechada à mão (contrato, serviço, plano combinado): quando, quanto (centavos) e o quê (TR3, D294). */
   fechouEm: ts("fechou_em"),
   valorFechadoCents: integer("valor_fechado_cents"),
   fechouDescricao: text("fechou_descricao"),
@@ -1254,7 +1254,7 @@ export const crmAcompanhamento = pgTable("crm_acompanhamento", {
 });
 
 /**
- * Origem de cada contato do Comercial (TR3, D293): de onde veio a pessoa no momento em que deixou o contato, criou a loja
+ * Origem de cada contato do Comercial (TR3, D294): de onde veio a pessoa no momento em que deixou o contato, criou a loja
  * ou mandou o código da visita no WhatsApp. Chave = a mesma do Comercial ("interessado:…", "loja:…", "conversa:…").
  * A primeira origem fica; o código da visita, digitado pela equipe, pode corrigir. Base para devolver o resultado à
  * Meta e ao Google (TR5): guarda os cliques do anúncio, nunca o IP.
@@ -1348,7 +1348,7 @@ export const trafegoSessoes = pgTable("trafego_sessoes", {
   tela: text("tela"),
   idioma: text("idioma"),
   rede: text("rede"),
-  /** Código curto da visita (TR3, D293): vai na mensagem do WhatsApp para a equipe ligar a conversa à origem. */
+  /** Código curto da visita (TR3, D294): vai na mensagem do WhatsApp para a equipe ligar a conversa à origem. */
   codigo: text("codigo"),
   paginas: integer("paginas").notNull().default(1),
   whatsapp: boolean("whatsapp").notNull().default(false),

@@ -42,7 +42,7 @@ export default async function ComercialPage({ searchParams }: { searchParams: Pr
   const sp = await searchParams;
   const ver = sp.ver === "lista" ? "lista" : "quadro";
   const todas = await funilComercial(await getDb(), s.actor);
-  // Filtro por canal (TR3, D293): "sem" = origem ainda não registrada.
+  // Filtro por canal (TR3, D294): "sem" = origem ainda não registrada.
   const canal = sp.canal && (sp.canal === "sem" || sp.canal in ROTULO_CANAL) ? sp.canal : null;
   const pessoas = canal ? todas.filter((p) => (canal === "sem" ? !p.fonte : p.fonte?.canal === canal)) : todas;
   const contagem = new Map<string, number>();

@@ -7,7 +7,7 @@ import { CODIGO_VISITA, novoCodigoVisita, registrarSinal, type Sinal } from "@/l
 import { registrarOrigemDoContato, vincularCodigoVisita } from "@/lib/domain/trafego/origem-contato";
 import { fichaCliente, funilComercial, salvarAcompanhamento } from "@/lib/domain/comercial";
 
-/** TR3 (D293): origem completa de cada contato, código da visita no WhatsApp, Fechou/Perdeu no Comercial. */
+/** TR3 (D294): origem completa de cada contato, código da visita no WhatsApp, Fechou/Perdeu no Comercial. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 

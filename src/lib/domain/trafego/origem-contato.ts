@@ -8,7 +8,7 @@ import { DomainError } from "../errors";
 import { CODIGO_VISITA, SESSAO_MIN } from "./coletor";
 
 /**
- * Origem de cada contato (TR3, D293). Quando alguém deixa o contato ou cria a loja, o sistema guarda de onde veio: a
+ * Origem de cada contato (TR3, D294). Quando alguém deixa o contato ou cria a loja, o sistema guarda de onde veio: a
  * visita em andamento (canal, campanha, peça, cidade, aparelho, clique do anúncio) e, se não houver, o último toque
  * (cookie de 30 dias, D90) e o primeiro (D290). Quem chega pelo WhatsApp manda o código da visita, que a equipe cola.
  */
