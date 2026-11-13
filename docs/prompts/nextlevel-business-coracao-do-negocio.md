@@ -1,0 +1,493 @@
+# NextLevel Business, o coração do negócio: racional técnico e prompt engenheiro mestre
+
+> **Status: PROPOSTA (13/11/2026).** Nenhuma fase iniciada. Próxima: **NB0** (diagnóstico curto, decisão D295 e linha de base).
+> **O que o dono pediu (13/11/2026):** a NextLevel deixa de ser "só plataforma de loja virtual" e vira **o coração do negócio do cliente**. Quem entra escolhe entre duas portas: **Soluções para sua empresa** (site institucional, página de campanha para a Meta em poucos cliques, captação paga e orgânica, contatos e orçamentos, painel do dia a dia, frente de caixa instalada no computador do negócio) e **Lojas virtuais** (o que já existe, com os planos atuais). "O que já temos na NextLevel Commerce é 80% do caminho; vale uma adaptação para elevar o nosso nível de segmento." Uma marca-mãe só (NextLevel, da NextLevel Marketing Ltda, D279), sem multiplicar marcas.
+> **Origem:** documento "NextLevel Business — racional de produto e prompt mestre" (13/11/2026, enviado pelo dono), relido e ajustado ao código real e à visão acima. O que foi mantido, mudado ou retirado do original está na Parte 3.
+> **Como usar:** as Partes 1 a 10 são o contrato técnico (o que existe, o que construir, regras e aceite). A **Parte 11** é o prompt para colar numa sessão de trabalho; ele manda executar **uma fase por vez** (NB0 a NB10) com a skill `desenvolver-prompt`.
+> **Marcação:** **[fato]** = conferido no código em 13/11/2026 (caminho citado); **[decisão]** = padrão recomendado, vale se o dono não disser outra coisa (registrar em `DECISIONS.md`); **[hipótese]** = estimativa a medir; **[plataforma]** = regra de terceiros (Meta, Google, navegadores), conferir na documentação vigente no dia.
+
+---
+
+## Parte 1. Resposta curta
+
+1. **Não é um sistema novo nem uma marca nova.** É o mesmo motor (mesmo repositório, banco, deploy e Master), com o "negócio" do cliente como centro. A entidade `stores` já é, na prática, o negócio: empresa, equipe, domínio próprio, marca, WhatsApp, Pixel, integrações, plano e cobrança [fato, `src/db/schema.ts` `stores`]. Não se cria tabela `companies`.
+2. **Duas portas na entrada, um painel só.** Na home e no cadastro da NextLevel Commerce a pessoa escolhe "Soluções para sua empresa" ou "Lojas virtuais". As duas criam o mesmo tipo de conta; o que muda é o **formato** inicial (site ou loja) e os **módulos** ligados. Ligar a loja depois, ou o site depois, não troca conta, domínio nem dados.
+3. **Os módulos do negócio:** Site, Captação (páginas de campanha, origem dos contatos, Pixel), Contatos e orçamentos, Painel do dia, Caixa (frente de caixa), Loja virtual (o que existe) e, depois, Portal do cliente e Resultados da Meta. A liberação usa o que já existe: recursos por oferta (`src/lib/features.ts`) e direitos por negócio (`src/lib/domain/entitlements.ts`, `grantEntitlement`/`requireEntitlement`) [fato].
+4. **Os 80% prontos:** conta e equipe, domínio próprio, editor de temas com rascunho/prévia/histórico, seções, mídia, CRM do lojista, propostas com link público, Pixel e API de conversões por loja, regra única de canal, links rastreados, origem do contato, aviso de cookies, venda manual, caixa do Master (padrão de abertura e fechamento), login do cliente final por código, fila do dia, IA do painel, catálogo de planos no Master.
+5. **Os 20% que dão a cara do Business:** (a) **páginas livres** no editor (Sobre, Serviços, Contato, página de campanha), porque hoje o editor só tem `home`, `product`, `collection` e `cart` [fato, `src/lib/themes/types.ts` `PAGE_KINDS`]; (b) **formulário de orçamento** e **caixa de contatos** do negócio; (c) **montador de página de campanha** em poucos cliques, já com link rastreado e Pixel; (d) **frente de caixa de verdade** (o "Balcão (ponto de venda)" está como **"em breve"** em `src/lib/domain/aplicativos.ts` [fato]; hoje só existe o "Novo pedido" manual); (e) **painel instalável no computador**.
+6. **Fica para depois, com gatilho claro:** portal do cliente (academia e reservas) só com piloto real; ler resultados da Meta só depois da aprovação do aplicativo pela Meta (e reaproveitando a fase TR6/TR9 de `trafego-campanhas-meta-google-reels.md`, sem duplicar); criar/pausar campanhas, várias unidades e delegação para agência fora da oferta.
+7. **Ordem:** NB0 diagnóstico → NB1 porta dupla e formato "site" → NB2 páginas do site → NB3 contatos e orçamentos → NB4 captação paga (página de campanha) → NB5 captação orgânica → NB6 painel do dia → NB7 caixa e painel instalável → NB8 planos e upgrade → NB9 resultados da Meta → NB10 portal do cliente. Cada fase entrega valor sozinha e não toca checkout, pagamentos ou pedidos das lojas atuais.
+
+---
+
+## Parte 2. A tese: o coração do negócio
+
+### 2.1 Do "plataforma de loja" para "sistema do negócio"
+| Hoje | Depois |
+|---|---|
+| Quem entra só vê planos de loja virtual | Quem entra escolhe a porta pelo que o negócio precisa |
+| Uma vidraçaria, academia, clínica, escritório ou prestador não tem lugar | Esses negócios entram por "Soluções para sua empresa" |
+| Captação (links, origem, tempo real) só existe para a própria NextLevel | A mesma captação passa a servir o negócio do cliente |
+| Venda no balcão = "Novo pedido" manual | Frente de caixa com abertura, fechamento, formas de pagamento e recibo, instalável no computador |
+| O lojista só vê o que é da loja | O dono vê o dia do negócio: contatos, orçamentos, caixa, vendas, visitas |
+
+### 2.2 As duas portas
+- **Soluções para sua empresa:** "Site profissional, páginas para seus anúncios e todos os seus contatos num painel só. Com caixa para o balcão, se você precisar."
+- **Lojas virtuais:** os planos de hoje (Start, Pro, Scale; preços do catálogo do Master, nunca fixos no texto).
+- As duas levam ao mesmo cadastro (`/cadastro`), com o parâmetro `para=empresa|loja`. A escolha define o formato inicial e a página de boas-vindas; não fecha caminho nenhum.
+
+### 2.3 Módulos (o que cada negócio liga)
+| Módulo | Para quem | Entrega | Base existente |
+|---|---|---|---|
+| Site | Todos | Páginas institucionais, serviços, contato, domínio próprio | Editor de temas, `customDomain`, `storefront-seo.ts`, `sitemap.xml` da loja |
+| Captação | Todos | Página de campanha em poucos cliques, links rastreados, Pixel e conversões, origem do contato, WhatsApp com código | `src/lib/trafego/*`, `links_rastreados`, `origens_contato`, `pixel-meta.tsx`, `src/lib/payments/meta-capi.ts` |
+| Contatos e orçamentos | Todos | Caixa de contatos com responsável, situação, primeira resposta, orçamento enviado, fechou/perdeu | `crm-loja.ts`, `crm_acompanhamento` (marca `LOJA:<storeId>`), `proposals.ts` |
+| Painel do dia | Todos | "Agora" do negócio: o que precisa de você, números de hoje | `fila-do-dia.ts`, `loja-agora.ts`, `visitas.ts` |
+| Caixa | Quem tem balcão | Abrir/fechar caixa, venda rápida, formas de pagamento, sangria/suprimento, recibo, leitor de código de barras | `orders` (canal `MANUAL`), `createOrder`, padrão do caixa do Master `src/lib/domain/caixa.ts` |
+| Loja virtual | Quem vende online | O que existe hoje | Todo o Commerce |
+| Resultados da Meta | Quem anuncia | Gasto, resultados e custo por contato real | Fase TR6/TR9 do prompt de tráfego |
+| Portal do cliente | Academia e afins | Login do cliente, grade, reserva, cancelamento | `conta-cliente.ts` (login por código por loja) |
+
+---
+
+## Parte 3. Leitura do racional original: o que fica, o que muda, o que sai
+
+| Ponto do documento original | Decisão | Motivo |
+|---|---|---|
+| Duas ofertas sobre uma base comum (site + painel; site + painel + portal) | **Muda:** vira "duas portas" e módulos; o portal é um módulo entre outros | Visão do dono: o negócio escolhe o que precisa |
+| Vidraçaria como primeiro piloto | **Fica** | Jornada mais simples: página, orçamento, retorno |
+| Academia com portal de reservas | **Adiada (NB10)**, especificação guardada no Anexo A | Mais cara e arriscada (novo tipo de acesso, vagas concorrentes); só com cliente real |
+| "Acompanhe" e não "gerencie" anúncios enquanto só houver leitura | **Fica** como regra de texto | Não prometer o que não existe |
+| Separar formulário, clique no WhatsApp e conversa confirmada | **Fica**, e usa o código da visita (TR3, D294) | Já resolvido para a NextLevel; vai para o negócio |
+| Atribuição no envio do formulário, "sem atribuição" quando faltar | **Fica**, com a regra das lojas sem cookie (D185) | Ver 5.6 |
+| Custo por contato só com campanha, moeda, período e janela compatíveis e ao menos um contato | **Fica** | Credibilidade |
+| Estados explícitos ("nenhum contato", "conta desconectada", "dados desatualizados"…) | **Fica** e vira critério de aceite de toda tela nova | |
+| Tempo até a primeira resposta e % respondidos | **Fica** e ganha destaque no painel do dia | Indicador simples e vendável |
+| "O cliente encontra, assume e responde sem chamar a NextLevel" | **Fica** e vira indicador no Master | É o que segura a mensalidade |
+| Entrada autônoma ou assistida, setup avulso, gestão de tráfego e verba separadas | **Fica**; a gestão de tráfego é serviço da agência (`nextlevelgroup.com.br`, D287) | O Business alimenta as duas frentes |
+| Diagnóstico grande ("verificar se existe editor, permissões…") | **Muda:** o diagnóstico já foi feito aqui (Parte 4); a NB0 só confirma e mede a linha de base | Eficiência |
+| Comparar "módulo" com "aplicação irmã" | **Decidido: módulo** | Regra anti-duplicação (CLAUDE.md) e um Render só |
+| Escrita na Meta, várias unidades, delegação para agência | **Sai da oferta** (fica só como visão) | Sem validação nem demanda ainda |
+| Domínio e registro de marca | **Sai deste plano** (pedido do dono) | Foco no desenvolvimento |
+| **Novo (dono):** frente de caixa instalada no computador | **Entra (NB7)** | |
+| **Novo (dono):** página de campanha da Meta "em poucos cliques" | **Entra (NB4)** | |
+| **Novo (dono):** captação orgânica | **Entra (NB5)** | |
+| **Novo (dono):** porta dupla na entrada | **Entra (NB1)** | |
+
+---
+
+## Parte 4. Inventário: o que já existe (estenda, não duplique)
+
+| Peça | Onde [fato] | Uso no Business | Ação |
+|---|---|---|---|
+| Negócio (tenant) | `stores` (`organizationId`, `slug`, `customDomain`, `logoUrl`, `primaryColor`, `accentColor`, `whatsapp`, `instagram`, `legalName`, `cnpj`, `address`, `contactEmail`, `metaPixelId`, `metaCapiTokenEnc`, `integrations`, `launchMode`) | É o negócio | Reusar; somar coluna `formato` (5.1) |
+| Criação da conta | `src/lib/domain/provisioning.ts` (`createStore`, `createStoreSchema`); `src/app/cadastro/*` (`signup-form.tsx`, `checkout-ec.tsx`) | Cadastro das duas portas | Adaptar |
+| Recursos por oferta | `src/lib/features.ts` (`FEATURES`, `OFFER_FEATURES`, `canUse`, `minOfferFor`, "bloqueado aparece com cadeado") | Liberar menus | Estender com chaves do Business |
+| Direitos por negócio | `src/lib/domain/entitlements.ts` (`tenantOf`, `activeEntitlementKeys`, `hasEntitlement`, `requireEntitlement`, `grantEntitlement` com `source: ADD_ON/COURTESY/PLAN`) | Ligar módulo por plano, adicional ou cortesia | Reusar como fonte dos módulos |
+| Planos da Commerce | `src/lib/domain/commerce-plans.ts` (`COMMERCE_PLAN_KEYS`, `nl_subscriptions`, preço congelado), `src/lib/domain/nl-catalog.ts` (catálogo do Master) | Planos do Business | Somar itens de catálogo |
+| Menu do lojista | `src/lib/nav.ts` (menu "Escritório/Crescer/Loja e ajustes" a partir da linha ~232) | Menu por módulo | Adaptar |
+| Painel inicial | `src/app/merchant/page.tsx` (cabeçalho mostra **"SuperDrop / Minha operação"** na linha ~93, vazamento de marca); `src/lib/domain/fila-do-dia.ts` (`filaDoLojista`, `pulsoDaLoja`); `src/lib/domain/loja-agora.ts` | Painel do dia | Adaptar e corrigir rótulo |
+| Editor de temas | `src/lib/themes/types.ts` (`PAGE_KINDS = home, product, collection, cart`; `Template = { v, sections, order }`; `LIMITS`); `theme_templates` (PK `storeId+page`, `draft`/`published`/`revision`); `theme_template_versions`; `theme_saved_templates` (`kind: section/page`); `src/components/theme-editor/*`; `src/app/actions/theme.ts`; `src/lib/themes/template.ts`, `store.ts`, `policy.ts`, `license.ts` | Páginas do site e de campanha | Estender para páginas livres |
+| Seções existentes | `src/lib/themes/sections.ts` (hero, image-with-text, rich-text, faq, testimonials, steps, cta-banner, video, store-about, trust-bar, whatsapp-float, countdown, slideshow, banners…) | Montar páginas institucionais | Reusar; somar 4 seções (5.3) |
+| Renderização da loja | `src/components/storefront/store-page.tsx`, `src/components/storefront/sections/*`, `src/app/store/[slug]/*` | Mostrar páginas | Estender |
+| Endereço desconhecido | `src/app/store/[slug]/[...resto]/page.tsx` (redireciona endereço antigo, D187; senão 404) | Encaixe das páginas livres | Consultar páginas antes de redirecionar |
+| SEO da loja | `src/lib/storefront-seo.ts`, `src/app/store/[slug]/sitemap.xml`, `robots.txt` | SEO local | Estender |
+| CRM do lojista | `src/lib/domain/crm-loja.ts` (`ETAPAS_LOJA`, `clientesDaLoja`, `fichaClienteLoja`, `salvarAcompanhamentoLoja`, `marcaDaLoja = LOJA:<storeId>`, `filaExtraDaLoja`); `src/app/merchant/crm/*`; `src/app/actions/crm-loja.ts` | Contatos do negócio | Estender (compradores + contatos) |
+| Acompanhamento e origem | `crm_acompanhamento` (responsável, próxima ação, prazo, perdido/motivo, fechou/valor), `origens_contato` (canal, UTMs, click ids, primeiro toque, cidade, aparelho, código da visita; coluna `brand`) | Responsável, fechou/perdeu, origem | Reusar com `brand = LOJA:<storeId>` |
+| Propostas | `src/lib/domain/proposals.ts` (`createProposal`, `getPublicProposal`, `acceptProposal`); `src/app/merchant/orders/propostas`; `src/app/store/[slug]/proposta` | "Orçamento enviado" | Reusar; somar item avulso (serviço sem produto) |
+| Canal e consentimento | `src/lib/trafego/canal.ts` (`canalDe`, `CANAIS`, `CLICK_IDS`, `ehCanalPago`, `ehRobo`), `consentimento.ts` (`nl-consent`, `podeMedir`, `podeAnunciar`), `lead-na-sessao.ts` (`registrarOrigemDaVisita`), `dispositivo.ts`, `geo.ts` | Origem do contato do negócio | Reusar funções puras; não gravar cookie nas lojas (D185) |
+| Links rastreados | `links_rastreados`, `links_cliques_diarios`, rota `/l/<codigo>` (D290) | Link da campanha do negócio | Estender com `storeId` |
+| Visitas das lojas | `src/lib/domain/visitas.ts` (`registrarVisita`, `resumoDeVisitas`, `origemDe`, `aparelhoDe`; sem cookie) | Visitas do site | Reusar |
+| Pixel e conversões | `stores.metaPixelId`, `metaCapiTokenEnc`; `src/components/storefront/pixel-meta.tsx`, `integracoes-loja.tsx`; `src/lib/payments/meta-capi.ts` (Purchase com `event_id`) | Evento `Lead` | Estender para `Lead`/`Contact` |
+| Venda manual | `orders.channel` (`ONLINE_STORE`, `WHATSAPP`, `INSTAGRAM`, `MANUAL`); `src/app/merchant/orders/new` ("Venda manual: WhatsApp, Instagram ou balcão") | Base do caixa | Somar canal `BALCAO` |
+| Caixa do Master | `src/lib/domain/caixa.ts` (`abrirCaixa`, `lancar`, `editarLancamento`, `estornarLancamento`, `fecharCaixa`, `reabrirCaixa`, `caixaDoDia`; só Master, `podeOperarCaixa`) | Padrão de regras do caixa do negócio | Copiar o padrão de regras, **não** a tabela (é do caixa da NextLevel) |
+| Login do cliente final | `src/lib/domain/conta-cliente.ts` (cookie `nl-cliente`, código por e-mail, sessão por loja); `src/app/store/[slug]/conta` | Portal (NB10) | Reusar depois |
+| Central de aplicativos | `src/lib/domain/aplicativos.ts` (balcão "em breve") | Mostrar o Caixa como disponível | Atualizar estado |
+| IA do painel | `src/app/merchant/ia`, `src/lib/domain/ia.ts`, `ia-por-plano.ts` | Sugerir texto da página de campanha | Reusar (respeitando o plano) |
+| Instalação | `src/app/layout.tsx` (manifesto só para EC e Club, na página pública) | Painel instalável | Somar manifesto do painel |
+| Nome e marca | `src/lib/brand.ts` (`NEXTLEVEL_COMMERCE`), `src/lib/marcas/nextlevel-ecommerce.ts` (`EC`) | Textos | Nunca fixar nome; ver 5.10 |
+| Fiscal | `src/lib/domain/fiscal/meu-contador.ts` (só o Meu Contador) | **Não há NFC-e** | Fora da v1 do caixa |
+| Código de barras | Nenhum campo `gtin`/`ean`/`barcode` em produtos [fato, grep em `schema.ts`] | Leitor no caixa | Somar coluna (NB7) |
+
+---
+
+## Parte 5. Arquitetura alvo
+
+### 5.1 Formato do negócio [decisão]
+- Coluna nova `stores.formato text enum ["LOJA","SITE"] not null default "LOJA"`. Migração aditiva: todas as contas atuais ficam `LOJA` e nada muda para elas.
+- `formato` decide **só a vitrine pública e a primeira tela**: `SITE` → a raiz do domínio mostra a página inicial do site; rotas de catálogo, carrinho e checkout (`catalog`, `cart`, `carrinho`, `checkout`, `product`, `feed.xml`) respondem 404 enquanto o módulo Loja estiver desligado. `LOJA` → como hoje.
+- **Módulos ≠ formato.** Um negócio `SITE` pode ligar a Loja depois (vira `LOJA` com as páginas do site preservadas); um negócio `LOJA` pode usar páginas livres, formulário e caixa.
+- Função única `src/lib/business/modulos.ts`:
+  - `MODULOS = ["site","captacao","contatos","painel","caixa","loja","meta","portal"] as const`;
+  - `modulosDoNegocio(db, storeId, agora)`, que junta o plano (`nl_subscriptions`/oferta), os direitos (`activeEntitlementKeys`) e o formato;
+  - `requireModulo(db, actor, modulo)` no servidor (lança `ForbiddenError` com texto de upgrade);
+  - `podeVerModulo` para o menu. Telas e ações consultam **só** daqui.
+- Ligar e desligar módulo é reversível e auditado (`recordFinancialAudit`/`audit.ts`, conforme o padrão do item).
+
+### 5.2 Páginas livres do site [decisão]
+- `theme_templates` tem chave `storeId+page` com `page` fixa, por isso **não serve** para N páginas. Tabela nova `paginas_site`:
+  - `id`, `storeId` (FK), `slug` (único por loja; regex do projeto; reservados: `catalog`, `cart`, `carrinho`, `checkout`, `product`, `conta`, `order`, `acompanhar`, `proposta`, `p`, `l`, `api`);
+  - `tipo enum ["INSTITUCIONAL","SERVICO","CONTATO","CAMPANHA","LIVRE"]`, `titulo`;
+  - `draft jsonb Template|null`, `published jsonb Template|null`, `revision int`;
+  - `seoTitulo`, `seoDescricao`, `indexar bool` (padrão: `true`; `CAMPANHA` padrão `false`);
+  - `objetivo enum ["ORCAMENTO","WHATSAPP","CADASTRO","PRODUTO"]|null`, `servicoId|null`;
+  - `publicadaEm`, `arquivadaEm`, `createdBy`, `createdAt`, `updatedAt`;
+  - índice `(storeId, slug)` único.
+- Histórico em `theme_template_versions` com `page = "pagina:<id>"` (a coluna já é texto livre) [fato]. Modelos salvos em `theme_saved_templates` (`kind: "page"`) [fato].
+- **Editor:** generalizar o alvo de edição de `PageKind` para `AlvoEdicao = { tipo: "fixa"; page: PageKind } | { tipo: "livre"; paginaId: string }` em `src/lib/themes/editor-state.ts`, `src/app/actions/theme.ts` e `src/components/theme-editor/*`. Mesmo rascunho, mesma prévia, mesma publicação, mesmo controle de revisão (duas abas não se sobrescrevem).
+- **Rotas públicas:** `/store/[slug]/p/[pagina]` e, no domínio próprio, `/<pagina>` resolvido em `[...resto]/page.tsx`, nesta ordem:
+  1. página publicada com esse slug;
+  2. redirecionamento antigo (D187);
+  3. 404.
+
+  Nunca sobrepor uma rota existente. Página com `force-dynamic` (consulta o banco).
+- **Menu do site:** os grupos globais (`theme_globals`, cabeçalho e rodapé) ganham itens que apontam para páginas livres (seletor de página no editor de menu).
+
+### 5.3 Seções novas (mínimo necessário)
+| Seção | Uso | Regras |
+|---|---|---|
+| `lead-form` (Formulário de orçamento) | Contato, serviço, campanha | Campos configuráveis dentro de uma lista fechada (nome, WhatsApp, e-mail, serviço, cidade/bairro, mensagem, melhor horário); obrigatórios mínimos: nome + (WhatsApp ou e-mail); aviso de privacidade com link; envia para a ação do servidor (5.4) |
+| `services-grid` (Serviços) | Lista de serviços do negócio | Lê `servicos_negocio`; cada cartão leva à página do serviço ou ao formulário com o serviço já escolhido |
+| `contact-info` (Endereço, horário e mapa) | Contato e SEO local | Endereço da loja, horário por dia, link de rota (sem incorporar mapa de terceiros sem consentimento; link externo simples) |
+| `before-after` (Antes e depois / galeria de trabalhos) | Prova de serviço | Imagens da mídia da loja (`store_assets`), texto alternativo obrigatório |
+
+Reaproveitar `faq`, `testimonials` (só depoimento real, regra D283), `steps`, `cta-banner`, `whatsapp-float`, `hero*`, `image-with-text`, `rich-text`, `video`.
+
+### 5.4 Serviços, contatos e orçamentos [decisão]
+- **Serviços:** tabela nova `servicos_negocio`:
+  - `id`, `storeId`, `nome`, `slug`, `resumo`, `descricao`, `imagemUrl`;
+  - `precoAPartirCents|null` (null = "sob orçamento"), `ativo`, `ordem`.
+  - Não usar `products`: produto carrega estoque, frete, checkout, feed do Google e catálogo da Central. Não usar `services`: é o catálogo de serviços **da NextLevel** [fato, `schema.ts` ~938].
+- **Pedido de contato:** tabela nova `contatos_negocio`:
+  - `id`, `storeId`;
+  - `nome`, `whatsapp`, `email` (dados pessoais; nunca em log), `servicoId|null`, `mensagem`, `campos jsonb`;
+  - `paginaId|null`, `via enum ["FORMULARIO","WHATSAPP_CONFIRMADO","MANUAL","CAIXA"]`;
+  - `situacao enum ["NOVO","EM_ATENDIMENTO","ORCAMENTO_ENVIADO","GANHO","PERDIDO"]`;
+  - `responsavelId|null`, `primeiraRespostaEm|null`, `propostaId|null`, `chaveEnvio` (idempotência), `consentimentoVersao`, `criadoEm`, `atualizadoEm`;
+  - índice único `(storeId, chaveEnvio)`; índices `(storeId, situacao, criadoEm)`.
+- **Reuso obrigatório:**
+  - responsável, próxima ação, prazo, notas, perdido/motivo e fechou/valor ficam em `crm_acompanhamento` com `chave = "contato:<id>"` e `brand = marcaDaLoja(storeId)` [fato: o CRM do lojista já usa `LOJA:<storeId>`];
+  - a origem fica em `origens_contato` com a mesma chave e `brand = LOJA:<storeId>`;
+  - a lista "Clientes" do lojista (`clientesDaLoja`) passa a juntar compradores e contatos, com filtro por tipo.
+- **Envio do formulário** (`src/lib/domain/business/contatos.ts` → `registrarContato`, chamado por ação em `src/app/actions/business-contatos.ts` via `runAction`):
+  1. Zod no servidor. Loja resolvida pelo **host/slug no servidor**, nunca por id vindo do navegador.
+  2. Idempotência: `chaveEnvio` gerada no navegador ao montar o formulário (uuid), reenviada em repetição técnica. Mesma chave = mesmo contato (devolve o existente). Envio legítimo novo = chave nova.
+  3. Antiabuso proporcional: campo-isca escondido, tempo mínimo de preenchimento (≥ 3 s), limite por loja + impressão do endereço em memória (ex.: 5 envios/10 min, sem guardar IP), tamanho máximo dos campos, sem links na mensagem acima de N.
+  4. Origem (5.6) gravada com `registrarOrigemDaVisita` (adaptado para receber os dados do envio, sem sessão de cookie).
+  5. Aviso ao negócio: e-mail (`src/lib/email.ts`, marca da loja), item na fila do dia e notificação no painel. Nunca enviar o conteúdo do contato para terceiros.
+  6. Evento `Lead` para a Meta (5.7) só com consentimento.
+- **Situação e primeira resposta:** a primeira mudança de `NOVO` para outra situação, ou o primeiro clique em "Responder no WhatsApp" pela ficha, grava `primeiraRespostaEm` (uma vez).
+- **Orçamento:** "Enviar orçamento" na ficha cria proposta (`createProposal`) com **item avulso** (descrição + valor em centavos, sem produto). Isso exige estender `proposals.ts`/`priceLines` com linha avulsa validada no servidor, sem afetar as propostas de produto existentes (teste de regressão). A situação passa a `ORCAMENTO_ENVIADO`; aceitar a proposta marca `GANHO` com o valor.
+
+### 5.5 Caixa de contatos (tela)
+- `src/app/merchant/contatos` (lista com filtros por situação, serviço, origem/canal, responsável e período; contagem por situação no topo) e `src/app/merchant/contatos/[id]` (ficha com dados, origem "De onde veio", linha do tempo, responsável, situação, orçamento, WhatsApp com mensagem pronta, fechou/perdeu com motivo).
+- Estados vazios com próxima ação: "Nenhum contato ainda → publique o formulário na sua página" (atalho para o editor).
+- Quem vê: dono e equipe da loja com permissão (`store-team.ts`); o cliente final nunca.
+- Exportar CSV só da própria loja, com registro em auditoria.
+
+### 5.6 Origem e atribuição no site do negócio
+- **Regra D185 continua:** o site/loja do lojista **não grava cookie de medição da NextLevel**. A origem do contato vem do que existe **no momento do envio**:
+  - os parâmetros da página atual (`utm_*`, `fbclid`, `gclid`, `gbraid`, `wbraid`, `ttclid`);
+  - o `document.referrer`;
+  - a página do formulário.
+
+  Tudo é enviado junto com o formulário e classificado no servidor por `canalDe` [fato].
+- Se o visitante navegou antes de enviar, os parâmetros da entrada são guardados em `sessionStorage` **só** quando o aviso de cookies da loja permitir medição (5.7). Sem permissão, vale só o que está na página atual. Faltou informação → canal `direto`/"sem atribuição". Nunca inventar campanha.
+- Testes obrigatórios de atribuição:
+  - acesso direto;
+  - campanha completa (`utm_source=facebook&utm_medium=paid&utm_campaign=x&fbclid=…`);
+  - UTM incompleta;
+  - reenvio idempotente;
+  - navegação entre páginas com e sem consentimento;
+  - link rastreado do negócio.
+- **WhatsApp com código:**
+  - o botão do site (seção `whatsapp-float` e CTAs) gera um código de 5 caracteres (mesmo alfabeto da TR3, sem 0/O/1/I/L) e grava `cliques_whatsapp_negocio` (`storeId`, `codigo`, `pagina`, canal e UTMs da página, `criadoEm`; sem dado pessoal; guarda 90 dias);
+  - a mensagem pronta leva "(código XXXXX)";
+  - na caixa de contatos, "Registrar conversa do WhatsApp" pede nome, telefone e código e cria `contatos_negocio` com `via = WHATSAPP_CONFIRMADO` e a origem do clique;
+  - o clique sozinho conta só como **intenção** (número no painel), nunca como contato.
+
+### 5.7 Captação paga: página de campanha em poucos cliques
+- **Assistente** `src/app/merchant/captacao/nova` em 4 passos:
+  1. **Objetivo:** receber orçamento, chamar no WhatsApp, cadastro (lista de espera) ou vender produto (só com módulo Loja).
+  2. **O que anunciar:** um serviço de `servicos_negocio` ou um produto.
+  3. **Conteúdo pronto:** o sistema monta a página a partir de um modelo por objetivo (`src/lib/business/modelos-campanha.ts`, `Template` com seções 5.3), preenchido com logo, cores, nome, serviço, endereço, WhatsApp, fotos da mídia e perguntas frequentes. Botão opcional "Sugerir textos com a IA" (`ia-por-plano.ts`; sem promessa de ganho; o dono revisa).
+  4. **Publicar e levar ao anúncio:** a página nasce `CAMPANHA`, `indexar=false`. O sistema entrega:
+     - o **link rastreado** do negócio: `links_rastreados` com `storeId` nullable novo, código próprio, destino só dentro do próprio site, UTMs no padrão de nomes da D290 e, para a Meta, a sugestão de parâmetros de URL dinâmicos [plataforma: conferir os parâmetros vigentes no Gerenciador];
+     - o QR code;
+     - o botão "Copiar para o Gerenciador de Anúncios".
+- **Meta:**
+  - Pixel do negócio (`stores.metaPixelId`) com `PageView` e `Lead` (no envio aceito, `event_id = contato:<id>`) e `Contact` (clique no WhatsApp, `event_id = codigo`);
+  - API de conversões: estender `src/lib/payments/meta-capi.ts` com `enviarLeadMeta` (mesmo padrão: SHA-256 de e-mail/telefone, `timeoutSignal`, nunca lança, sem dado em log), usando o `event_id` do navegador para não contar duas vezes;
+  - **tudo só com "anúncios = sim" no aviso de cookies da loja.**
+- **Aviso de cookies no site do negócio:** reaproveitar o componente do aviso da NextLevel (D290) com o nome e a política da loja, exibido **somente** quando o negócio liga Pixel/medição de anúncios. Sem Pixel, não há aviso nem cookie (D185).
+- Lista "Minhas campanhas" (`src/app/merchant/captacao`): páginas de campanha, link, cliques (de `links_cliques_diarios`), contatos por página e por campanha, % de contato, situação dos contatos. **Custo por contato só na NB9**, com os critérios da Parte 3.
+
+### 5.8 Captação orgânica
+- SEO local por negócio em `storefront-seo.ts`:
+  - `LocalBusiness` (ou subtipo escolhido numa lista fechada) com nome, endereço, telefone, horário, área atendida, serviços (`Service`), `sameAs` com Instagram e perfil do Google quando informados;
+  - `FAQPage` igual ao texto visível da seção `faq`;
+  - título e descrição por página (`paginas_site.seo*`), canonical e prévia de link.
+- `sitemap.xml` da loja inclui as páginas livres indexáveis com data real de publicação; páginas `CAMPANHA` ficam fora.
+- **Lista de tarefas orgânicas** no painel ("Seja encontrado"):
+  - perfil da empresa no Google com o link do site (campo `integrations.perfilGoogle`);
+  - Search Console (o ID de verificação já é configuração da Rodada A, D189);
+  - uma página por serviço;
+  - perguntas frequentes;
+  - fotos com texto alternativo;
+  - avaliações reais;
+  - link na bio do Instagram (link rastreado `bio`).
+
+  Cada item marca feito pelos dados reais, nunca por clique do usuário.
+- Avisar mecanismos de busca (IndexNow) ao publicar página do domínio próprio só se a chave por domínio for viável [hipótese; conferir na NB5]; senão, fica fora.
+
+### 5.9 Painel do dia do negócio
+- `filaDoNegocio` em `src/lib/domain/fila-do-dia.ts` (função pura e testada), somada à fila atual (`filaDoLojista`) conforme os módulos:
+  - contatos novos sem resposta (mais antigo primeiro);
+  - orçamentos enviados sem retorno há X dias (configurável em `platform_settings`);
+  - caixa aberto de ontem sem fechamento;
+  - pedidos parados (se Loja);
+  - página de campanha sem contato em 7 dias com cliques.
+- **Números de hoje e 7 dias:**
+  - contatos (por canal);
+  - tempo mediano até a primeira resposta;
+  - % respondidos em até 1 h;
+  - orçamentos enviados e ganhos (valor em centavos);
+  - vendas do caixa (por forma de pagamento);
+  - visitas do site (`resumoDeVisitas`);
+  - cliques no WhatsApp (intenção).
+- Cabeçalho do painel sem "SuperDrop": o rótulo vem do formato e da marca (`getBrand()`), por exemplo "Meu negócio" ou "Minha loja". **Corrige o vazamento de marca em `src/app/merchant/page.tsx`.**
+- Master: indicador "negócios que responderam sozinhos" (contato com `primeiraRespostaEm` registrado por usuário da loja, sem atendimento NextLevel no período) e "tempo até publicar" (criação da conta → primeira página publicada).
+
+### 5.10 Nome e textos [decisão]
+- O nome do topo ("NextLevel Commerce" ou "NextLevel Business") **não é fixado em componente**:
+  - constantes `NOME_PLATAFORMA` e `NOME_SOLUCOES_EMPRESA` em `src/lib/marcas/nextlevel-ecommerce.ts`, lidas via `getBrand()`;
+  - trocar o nome = mudar uma linha e os testes de texto.
+- Até o dono decidir, o padrão é: plataforma "NextLevel Commerce" e porta "Soluções para sua empresa".
+- Rota pública das soluções: **`/empresas`**, porque `/solucoes` já é a página da NextLevel Soluções (agência, D90) [fato, `src/app/(portal)/solucoes`]. Subpáginas:
+  - `/empresas/site-institucional`;
+  - `/empresas/pagina-de-campanha`;
+  - `/empresas/contatos-e-orcamentos`;
+  - `/empresas/caixa`.
+
+  Cada uma com linha em `src/lib/seo/paginas.ts` (D293) e no sitemap.
+
+### 5.11 Frente de caixa e painel instalável
+- **Modelo:**
+  - tabela `caixas_negocio`: sessão com `id`, `storeId`, `abertoPor`, `abertoEm`, `valorAberturaCents`, `fechadoPor`, `fechadoEm`, `contadoCents jsonb` por forma, `diferencaCents`, `observacao`; índice único "um caixa aberto por loja" (índice parcial onde `fechadoEm is null`);
+  - tabela `movimentos_caixa`: `id`, `caixaId`, `tipo enum ["VENDA","SANGRIA","SUPRIMENTO","ESTORNO"]`, `formaPagamento enum ["DINHEIRO","PIX","CARTAO_CREDITO","CARTAO_DEBITO","OUTRO"]`, `valorCents`, `orderId|null`, `motivo`, `por`, `em`, `chave` (idempotência, único por caixa).
+- **Venda no balcão = pedido.**
+  - Usa `createOrder` com `channel = "BALCAO"` (somar ao enum; migração aditiva), preço sempre do catálogo no servidor, mais linha avulsa para serviço/valor livre (mesma extensão da 5.4).
+  - Estoque: só para lojas com catálogo próprio, reservado como hoje.
+  - Troco calculado na tela; o servidor confere a soma.
+- **Formas de pagamento na v1:**
+  - registro manual (dinheiro, maquininha, Pix conferido pela equipe);
+  - Pix por QR do Mercado Pago só se a loja já tiver a integração ligada, conferido na API (regra do projeto: o webhook nunca é confiável);
+  - **sem integração com maquininha (TEF)** e **sem NFC-e** na v1 (não há base fiscal no sistema). Na tela, o recibo diz "não é documento fiscal".
+- **Recibo:** página de impressão 80 mm (CSS `@media print`) e envio por WhatsApp com mensagem pronta.
+- **Leitor de código de barras:** coluna nova `gtin` em produtos (aditiva, validação de dígito). O leitor funciona como teclado: campo de busca focado, Enter adiciona o item.
+- **Regras copiadas do caixa do Master** (`caixa.ts`): edição só com motivo e histórico, estorno em vez de apagar, reabrir só com motivo e permissão do dono, fechamento com contagem por forma e diferença registrada.
+- **Permissões:** papel de operador de caixa na equipe da loja (`store-team.ts`), que vende e fecha o próprio caixa e não vê financeiro nem configurações; o dono vê tudo.
+- **Tela:** `src/app/merchant/caixa` em modo foco (sem menu lateral, tela cheia, botões grandes, atalhos de teclado F2 buscar, F4 pagar, F8 sangria, Esc cancelar), funcionando em 1366×768 e em tablet; acessível (rótulos, foco visível).
+- **Instalável no computador:**
+  - manifesto do painel (rota de manifesto do App Router; ler `node_modules/next/dist/docs/` antes) com `start_url` `/merchant/caixa` ou `/merchant` (escolha no próprio painel), `display: standalone`, ícones e nome da marca via `getBrand()`, escopo `/merchant`;
+  - botão "Instalar no computador" que usa o evento de instalação do navegador quando disponível e, senão, mostra o passo a passo (Chrome/Edge: ícone na barra de endereço) [plataforma: conferir os critérios de instalação vigentes do Chrome e do Edge].
+- **Sem internet na v1:** a tela mostra "sem conexão" e bloqueia finalizar venda (nada se perde: o carrinho fica na memória da aba). Venda sem internet com fila e idempotência é fase própria futura, não prometer.
+
+### 5.12 Planos e upgrade [decisão]
+- Itens novos no catálogo do Master (`nl-catalog.ts`), com preços **definidos no Master**, nunca no código:
+  - `BUSINESS_PRESENCA` (Site + Contatos + Painel);
+  - `BUSINESS_CAPTACAO` (Presença + Captação);
+  - adicional `CAIXA`;
+  - adicional `PORTAL` (oculto até a NB10).
+
+  Os planos Commerce (`COMMERCE_START/PRO/SCALE`) passam a incluir Site + Contatos + Painel (Captação conforme o plano; decidir na NB8).
+- Oferta de entrada, teste e uma vez por CPF/CNPJ: mesma regra dos planos Commerce (`commerce-plans.ts`, `offerRedemptions`).
+- **Upgrade e downgrade:** `SITE` → ligar Loja mantém páginas, domínio, contatos e equipe; Loja → desligar volta ao `SITE` sem apagar produtos (ficam ocultos). Testes cobrindo os dois sentidos.
+- Piloto antes do preço: liberar por **cortesia** (`grantEntitlement source: COURTESY`) para o negócio piloto, com data de fim.
+
+### 5.13 Matriz de acesso (servidor)
+| Recurso | Visitante | Equipe do negócio | Operador de caixa | Cliente final (NB10) | Outro negócio | Master |
+|---|---|---|---|---|---|---|
+| Páginas publicadas | Lê | Lê | Lê | Lê | Lê (é público) | Lê |
+| Rascunho e editor | Não | Edita (com módulo Site) | Não | Não | Não | Lê para suporte, conforme regra atual |
+| Enviar formulário | Sim (com antiabuso) | Sim | Sim | Sim | Sim | Sim |
+| Contatos e fichas | Não | Lê/edita os seus | Não | Não | **Nunca** | Conforme regra atual de suporte |
+| Caixa | Não | Dono: tudo; equipe: conforme papel | O próprio caixa | Não | **Nunca** | Lê para suporte |
+| Configurar Pixel/links | Não | Dono | Não | Não | Nunca | Conforme regra atual |
+
+Cada linha "Nunca" vira teste de servidor (ação e rota direta), não só de tela.
+
+---
+
+## Parte 6. Fases de desenvolvimento
+
+Cada fase segue a skill `desenvolver-prompt`:
+- domínio com testes Vitest;
+- telas no design system atual (skills `painel-interno` e `qa-visual`);
+- e2e em `e2e/`, `axe` sem violação grave, 360 px sem rolagem lateral;
+- estados vazios e de erro com próxima ação;
+- textos em português claro;
+- decisão nova em `DECISIONS.md` com citação na base de conhecimento (D264);
+- print ao dono.
+
+| Fase | Entrega | Banco | Aceite principal | Dono precisa |
+|---|---|---|---|---|
+| **NB0** | Confirmar o inventário da Parte 4 (só onde algo mudou), linha de base (tipos, lint, testes dos arquivos citados, e2e de cadastro, editor, checkout e painel do lojista), registrar **D295** com as decisões da Parte 10, criar a etiqueta de frente das decisões (padrão: `[E-commerce]`) | — | Linha de base registrada; nenhum código de produto alterado | Responder a Parte 10 (ou aceitar os padrões) |
+| **NB1** | Porta dupla na home e no cadastro (`para=empresa\|loja`), páginas `/empresas*` (atrás da chave `BUSINESS_V1`; sem ela, a porta não aparece), `stores.formato`, `modulos.ts` com `requireModulo`, menu por módulo, vitrine `SITE` com 404 nas rotas de loja, boas-vindas por formato, rótulo do painel sem "SuperDrop" | `stores.formato` | Negócio `SITE` criado pelo cadastro abre o painel certo; loja atual idêntica (e2e de regressão) | Ligar `BUSINESS_V1` quando aprovar |
+| **NB2** | Páginas livres (`paginas_site`), editor generalizado, seções `services-grid`, `contact-info`, `before-after`, `servicos_negocio` com tela de cadastro, rotas `/p/` e domínio próprio, menu do site, modelo "Institucional de serviços" (Início, Sobre, Serviços, Contato) instalável com 1 clique | `paginas_site`, `servicos_negocio` | Criar, pré-visualizar, publicar e restaurar versão de uma página; slug reservado recusado; histórico preservado | — |
+| **NB3** | Seção `lead-form`, `registrarContato` (idempotente, antiabuso, origem), caixa de contatos e ficha, primeira resposta, orçamento por proposta com item avulso, WhatsApp com código e "registrar conversa", aviso por e-mail e na fila, CRM do lojista unificado | `contatos_negocio`, `cliques_whatsapp_negocio`; linha avulsa em propostas | Envio no celular cria contato na loja certa; repetição técnica não duplica; outro negócio não lê nem por URL nem por ação; proposta de produto continua igual | Textos do aviso de privacidade (padrão pronto) |
+| **NB4** | Assistente de página de campanha, modelos por objetivo, IA opcional, links rastreados por negócio, QR, Pixel `Lead`/`Contact` e CAPI `Lead` com `event_id`, aviso de cookies no site do negócio quando houver Pixel, lista "Minhas campanhas" | `links_rastreados.store_id` | Do zero à página publicada com link em ≤ 5 minutos (medir); evento chega no "Testar eventos" sem duplicar (com conta de teste) | Pixel de teste de um negócio piloto |
+| **NB5** | SEO local (`LocalBusiness`, `Service`, `FAQPage`), sitemap das páginas, campos de perfil do Google, lista "Seja encontrado" com marcação por dados reais | `integrations` (JSON, sem coluna) | Validador de dados estruturados sem erro; página de campanha fora do sitemap | — |
+| **NB6** | Painel do dia do negócio (`filaDoNegocio`, números de hoje e 7 dias), indicadores no Master (responderam sozinhos, tempo até publicar) | — | Números batem com os dados de teste; estados vazios orientam | — |
+| **NB7** | Caixa: sessões, movimentos, venda `BALCAO`, linha avulsa, formas de pagamento, recibo 80 mm, `gtin` e leitor, papel de operador, modo foco com atalhos, manifesto do painel e botão de instalar, estado "sem conexão" | `caixas_negocio`, `movimentos_caixa`, `orders.channel += BALCAO`, `products.gtin` | Abrir, vender (dinheiro com troco, Pix, cartão), sangria, fechar com diferença; dois cliques em "finalizar" geram uma venda só; operador não vê financeiro; instalação conferida no Chrome e no Edge | Escolher se o Caixa é adicional ou incluso |
+| **NB8** | Itens de catálogo Business, adicional Caixa, cortesia para piloto, upgrade `SITE`↔Loja nos dois sentidos, vitrine na Loja NextLevel (`/merchant/services`), páginas `/empresas` com planos do catálogo | itens de catálogo (dados) | Upgrade preserva páginas, domínio, contatos e equipe; downgrade não apaga produtos | Preços no Master |
+| **NB9** | Resultados da Meta por negócio: é a **TR6 + TR9** de `trafego-campanhas-meta-google-reels.md` aplicada ao negócio (mesmo motor), com custo por contato só nos critérios da Parte 3 | conforme TR6 | Estados "conta desconectada", "sem acesso", "dados desatualizados"; leitura apenas | Aplicativo da Meta aprovado e empresa verificada |
+| **NB10** | Portal do cliente (Anexo A) | conforme Anexo A | Critérios do Anexo A | Academia piloto confirmada |
+
+**Ordem e paralelismo:** NB1 → NB2 → NB3 é o caminho crítico (a vidraçaria já pode usar depois da NB3 com cortesia). NB4 e NB5 podem trocar de ordem. NB7 independe de NB4/NB5 e pode vir antes se aparecer cliente com balcão. **Pedido de aprovação do aplicativo da Meta começa já na NB0, fora do código** (é o que mais demora).
+
+---
+
+## Parte 7. Regras transversais (não podem quebrar)
+
+- **Uma conta, um tenant:** toda consulta nova filtra por `storeId` vindo da sessão (`requireRole`, `assertCanAccess`, `tenantOf`), nunca de parâmetro do navegador. Teste de isolamento por ação e por rota direta em cada fase.
+- **Commerce intacto:**
+  - checkout, pagamentos, pedidos online, temas e editor das páginas fixas continuam com os mesmos contratos;
+  - cada fase roda o e2e de regressão da linha de base (cadastro de loja, editor/publicação de tema, compra de teste, painel do lojista).
+- **Migrações só aditivas** (`npx drizzle-kit generate --name <assunto>`; nunca editar migração publicada). Enums ganham valor, não perdem. Reversão: desligar `BUSINESS_V1` e os módulos; os dados ficam.
+- `export const dynamic = "force-dynamic"` em toda página que consulta o banco.
+- Valores em centavos; datas ISO; horário de Brasília para "hoje" (`diaDeBrasilia`/`dataSP`).
+- Toda ação passa por `src/lib/domain/*` e `runAction`.
+- Segredos só com `encryptSecret`; dados pessoais de contato nunca em log, URL ou evento sem hash.
+- Regras configuráveis em `platform_settings`: prazos da fila, limites antiabuso, dias de guarda dos cliques.
+- Texto de marca sempre por `getBrand()`; nenhum "SuperDrop" na experiência da Commerce (varredura `scripts/auditoria/marca.mjs`).
+- Sem promessa de ganho nos modelos e nos textos sugeridos pela IA; depoimento só real (D283).
+- Acessibilidade AA: `axe` sem violações graves; 360 px sem rolagem lateral (`e2e/polish-v8.mjs`).
+- **Custo de montagem no Render (pedido do dono, 09/11/2026, `docs/infra/RENDER-USO.md`):** uma publicação de código por fase sempre que der, no máximo 3 por dia; commits só de documentos com `[skip render]`.
+- **Testes enxutos:** durante a fase, só tipos, lint e os testes dos arquivos mexidos; a bateria completa (`npx vitest run`) e `npm run build` no fim da fase, antes de publicar.
+- Base de conhecimento ao vivo (D264): decisão nova citada em `docs/conhecimento/BC0-INVENTARIO.md` e `node scripts/gerar-novidades.mjs`.
+- Print real (Playwright) da principal tela de cada fase para o dono.
+
+---
+
+## Parte 8. Critérios de aceite do conjunto
+
+1. Na home e no cadastro, com `BUSINESS_V1` ligada, a pessoa vê as duas portas. Sem a chave, tudo como hoje.
+2. Um negócio criado por "Soluções para sua empresa" monta Início, Sobre, Serviços e Contato com o modelo, pré-visualiza e publica no subdomínio de prévia, e depois no domínio próprio pelo fluxo atual.
+3. Um visitante no celular (360 px) envia o formulário. O contato aparece na loja certa com página, serviço e origem. A repetição técnica é idempotente; envios distintos ficam todos registrados.
+4. A equipe atribui responsável, muda a situação, envia orçamento (proposta com item avulso), marca ganho com valor ou perdido com motivo. O painel do dia e o tempo até a primeira resposta refletem isso.
+5. O clique no WhatsApp conta como intenção. A conversa só vira contato quando registrada, com o código levando a origem do clique.
+6. A página de campanha sai do assistente com link rastreado, QR e Pixel. Com consentimento, `Lead` chega pelo navegador e pelo servidor sem duplicar; sem consentimento, nada vai para a Meta.
+7. O caixa abre, vende (com troco), faz sangria e fecha com diferença registrada. Repetir "finalizar" não duplica venda. O operador não vê financeiro. O painel instala no Chrome e no Edge.
+8. Um usuário de outro negócio não lê nem altera páginas em rascunho, contatos, caixa ou links, nem por URL direta nem por ação do servidor (testes).
+9. Os fluxos Commerce da linha de base continuam passando (cadastro de loja, editor, publicação de tema, compra de teste, painel do lojista).
+10. O negócio `SITE` liga a Loja e mantém páginas, domínio, equipe e contatos. Desligar a Loja não apaga produtos.
+11. Tudo pode ser desligado de forma reversível (`BUSINESS_V1`, módulos), com instruções no relatório da fase.
+12. Integração ainda não validada com conta real (Meta) aparece com esse estado na tela e no relatório.
+
+---
+
+## Parte 9. Riscos e como evitar dano
+
+| Risco | Como evitar |
+|---|---|
+| Quebrar loja existente ao generalizar o editor | Alvo `fixa \| livre` com as páginas fixas intocadas; e2e do editor na linha de base e a cada fase |
+| Páginas livres sombrearem rotas da loja ou redirecionamentos (D187) | Lista de slugs reservados, ordem de resolução fixa em `[...resto]`, teste para cada rota existente |
+| Vazamento entre negócios nos contatos | Filtro por `storeId` da sessão, testes de servidor, exportação auditada |
+| Spam no formulário | Campo-isca, tempo mínimo, limite por loja, tamanho máximo; sem guardar IP |
+| Cookie/medição sem base legal no site do lojista | D185 mantida; aviso de cookies só quando houver Pixel; origem só do envio |
+| Contato duplicado por clique duplo ou rede ruim | `chaveEnvio` única por loja |
+| Venda duplicada no caixa | `chave` única por movimento e um caixa aberto por loja (índice parcial) |
+| Prometer nota fiscal, maquininha integrada ou caixa sem internet | Fora da v1, dito na tela e na página `/empresas/caixa` |
+| Prometer "gerenciar anúncios" | Texto "acompanhe" até existir escrita; leitura só na NB9 |
+| Confundir com a NextLevel Soluções (`/solucoes`, agência) | Rota `/empresas`; a agência continua sendo o serviço de implantação e tráfego |
+| Muitas publicações no Render | Uma publicação de código por fase; documentos com `[skip render]` |
+| Tirar o foco das 10 lojas pagantes (D174) | NB2/NB3/NB5/NB7 também servem aos lojistas atuais (páginas Sobre/Contato, formulário de atacado/encomenda, SEO local, caixa); ordem pensada para isso |
+
+---
+
+## Parte 10. Decisões do dono (com o padrão que vale se ele não disser outra coisa)
+
+| # | Pergunta | Padrão recomendado |
+|---|---|---|
+| 1 | Nome do topo: "NextLevel Business" com "Lojas virtuais" como módulo, ou "NextLevel Commerce" com a porta "Soluções para sua empresa"? | Código preparado para os dois (5.10). Fica "NextLevel Commerce" + "Soluções para sua empresa" até o dono decidir |
+| 2 | Primeiro piloto (vidraçaria ou outro serviço)? | Negócio de demonstração "Vidraçaria Modelo" no ambiente de demonstração; piloto real por cortesia quando houver |
+| 3 | O Caixa é adicional ou incluso? | Adicional, com preço no Master; cortesia no piloto |
+| 4 | Captação entra em todos os planos Commerce? | Pro e Scale; Start com página de campanha limitada a 1 |
+| 5 | Etiqueta das decisões | `[E-commerce]` (mesma plataforma) |
+| 6 | Portal do cliente | Só com academia piloto confirmada (NB10) |
+| 7 | Pedir aprovação do aplicativo da Meta já | Sim, em paralelo (fora do código) |
+
+---
+
+## Parte 11. Prompt engenheiro mestre (colar numa sessão de trabalho)
+
+```
+FUNÇÃO
+Você é engenheiro full-stack sênior do sistema NextLevel (Next.js 16 App Router, React 19, TypeScript estrito, Tailwind v4, Radix, Drizzle com PGlite/Neon, Zod, Vitest, Playwright via playwright-core, deploy Docker no Render). O dono, Mauricio, não é técnico: fale com ele em português claro, sem jargão. Código, nomes de arquivos e commits em português, como o projeto já faz.
+
+OBJETIVO
+Transformar a NextLevel Commerce no "coração do negócio" do cliente, sem criar sistema nem marca nova: duas portas na entrada ("Soluções para sua empresa" e "Lojas virtuais"), um painel só com módulos (Site, Captação, Contatos e orçamentos, Painel do dia, Caixa, Loja virtual; depois Resultados da Meta e Portal do cliente). Reaproveitar os 80% que já existem e construir só o que falta: páginas livres no editor, formulário e caixa de contatos, página de campanha em poucos cliques com link rastreado e Pixel, SEO local, painel do dia do negócio, frente de caixa instalável no computador, planos e upgrade. Nada pode quebrar o Commerce atual.
+
+LEITURA OBRIGATÓRIA (nesta ordem)
+AGENTS.md; CLAUDE.md; docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md (dados, permissões, temas, fronteiras); docs/prompts/nextlevel-business-coracao-do-negocio.md (este documento inteiro; as Partes 4, 5, 6, 7 e 8 são o contrato); docs/design/DECISIONS.md (D90 atribuição e /solucoes, D174 foco, D185 lojas sem cookie, D187 Pixel/CAPI e redirecionamentos da loja, D189 integrações por ID, D216 fase atual, D264 base de conhecimento, D279 empresa, D283 depoimentos reais, D287 frentes e domínios, D288 nome, D290 a D294 tráfego e busca, e a D295 quando existir); docs/prompts/trafego-campanhas-meta-google-reels.md (TR4 a TR9: não duplicar o motor); docs/infra/RENDER-USO.md; as skills desenvolver-prompt, painel-interno, qa-visual, nova-migracao, e2e-demo e publicar. Antes de mexer em rotas, manifesto, proxy ou cookies, leia o guia correspondente em node_modules/next/dist/docs/.
+
+CÓDIGO QUE JÁ EXISTE (estenda, não duplique; detalhes na Parte 4)
+- Negócio = stores (formato novo em stores.formato). Criação: src/lib/domain/provisioning.ts (createStore); cadastro: src/app/cadastro/*.
+- Liberação: src/lib/features.ts (canUse, cadeado com caminho de upgrade) e src/lib/domain/entitlements.ts (grantEntitlement, requireEntitlement). Planos: src/lib/domain/commerce-plans.ts e nl-catalog.ts.
+- Menu: src/lib/nav.ts. Painel: src/app/merchant/page.tsx (corrigir "SuperDrop / Minha operação"), src/lib/domain/fila-do-dia.ts, loja-agora.ts.
+- Editor: src/lib/themes/types.ts (PAGE_KINDS fixo), template.ts, editor-state.ts, store.ts, sections.ts; src/app/actions/theme.ts; src/components/theme-editor/*; tabelas theme_templates, theme_template_versions (page é texto livre), theme_saved_templates, theme_globals. Renderização: src/components/storefront/store-page.tsx e sections/*; rotas src/app/store/[slug]/* e [...resto]/page.tsx (redirecionamento D187).
+- Contatos: src/lib/domain/crm-loja.ts (marcaDaLoja = LOJA:<storeId>), crm_acompanhamento, origens_contato, src/lib/domain/proposals.ts (createProposal, acceptProposal), src/app/merchant/crm/*.
+- Captação: src/lib/trafego/canal.ts (canalDe, CLICK_IDS), consentimento.ts, lead-na-sessao.ts (registrarOrigemDaVisita), links_rastreados e a rota /l/; src/lib/domain/visitas.ts (sem cookie); stores.metaPixelId/metaCapiTokenEnc; src/components/storefront/pixel-meta.tsx; src/lib/payments/meta-capi.ts.
+- Caixa: orders.channel (MANUAL) e createOrder; padrão de regras em src/lib/domain/caixa.ts (caixa do Master, não reutilizar a tabela); src/lib/domain/aplicativos.ts (balcão "em breve").
+- Cliente final: src/lib/domain/conta-cliente.ts (só para a NB10).
+- SEO: src/lib/storefront-seo.ts, sitemap.xml/robots.txt da loja, src/lib/seo/paginas.ts (páginas públicas da marca).
+- Infra: runAction, requireRole, assertCanAccess, tenantOf, emitEvent, encryptSecret, platform_settings, src/lib/email.ts, getBrand().
+
+COMO TRABALHAR
+1. Execute UMA fase por vez (NB0 a NB10, Parte 6), na ordem, salvo pedido do dono. Comece pela NB0 se ela não estiver marcada como feita em docs/prompts/README.md.
+2. Antes de escrever, leia o código que a fase toca e confirme a Parte 4 só onde algo mudou desde 13/11/2026. Se um fato estiver errado, corrija o documento e siga o padrão mais próximo do que o código já faz.
+3. Decisões abertas: use o padrão da Parte 10 e registre em DECISIONS.md (próximo número livre; etiqueta [E-commerce], salvo decisão do dono). Não pare para perguntar o que já tem padrão.
+4. Banco: só migrações aditivas (skill nova-migracao). Enums ganham valor, nunca perdem. Contas antigas continuam com o comportamento de hoje (formato LOJA).
+5. Domínio primeiro: funções puras e testáveis em src/lib/domain/business/* ou src/lib/business/*, com Vitest (casos felizes, limites, idempotência, isolamento entre negócios, permissões por papel). Depois as ações (runAction) e as telas.
+6. Telas: design system atual, skill painel-interno; estados vazios e de erro com a próxima ação; 360 px sem rolagem lateral; axe sem violações graves; textos em português claro, sem promessa de ganho, marca por getBrand().
+7. E2E em e2e/ (skill e2e-demo): a jornada da fase e a regressão do Commerce (cadastro de loja, editor e publicação de tema, compra de teste, painel do lojista).
+8. Segurança: storeId sempre da sessão; dados pessoais nunca em log, URL ou evento sem hash; segredos com encryptSecret; antiabuso proporcional no formulário; nada de cookie de medição no site do negócio sem aviso (D185 e 5.6/5.7).
+9. Durante a fase rode só tipos (npx tsc --noEmit), estilo (npx eslint src e2e tests) e os testes dos arquivos mexidos. No fim da fase: npx vitest run, npm run build (sem "Export encountered"), e2e da fase e de regressão.
+10. Feche com a skill publicar: uma publicação de código por fase (no máximo 3 por dia); commits só de documentos com [skip render]; decisão citada em docs/conhecimento/BC0-INVENTARIO.md e node scripts/gerar-novidades.mjs; atualize o estado em docs/prompts/README.md e neste documento.
+11. Mande ao dono pelo menos um print real (Playwright) da tela principal da fase e um relatório curto: o que ficou pronto, o que foi reaproveitado, como ligar e como desligar, o que depende dele, "Esforço do dia por frente" e a próxima fase.
+
+LIMITES
+- Não criar tabela de empresas, aplicação separada ou marca nova. Não usar /solucoes (é a agência); as páginas públicas do Business ficam em /empresas.
+- Não alterar contratos de checkout, pagamentos, pedidos online, frete e temas das páginas fixas, exceto as extensões aditivas descritas (linha avulsa em propostas e pedidos, canal BALCAO, gtin).
+- Não prometer nota fiscal, integração com maquininha, caixa sem internet, "gerenciar anúncios" ou portal antes das fases correspondentes.
+- Resultados da Meta (NB9) usam o motor da TR6/TR9 do prompt de tráfego; não duplicar. Teste com conta real só com acesso autorizado; sem acesso, a tela mostra "conexão pendente".
+- Portal do cliente (NB10) só com piloto confirmado pelo dono; siga o Anexo A.
+- Credenciais, contas reais, publicação em produção e operações de mídia exigem acesso e autorização. Quando um item depender do dono, continue com as partes independentes e liste a pendência.
+
+CRITÉRIOS DE ACEITE
+Os da Parte 8 deste documento, mais o aceite da linha da fase na Parte 6.
+```
+
+---
+
+## Anexo A. Portal do cliente (NB10), especificação guardada do racional original
+
+- **Escopo da primeira versão (academia):**
+  - a equipe cria aulas com horário (fuso do negócio), capacidade e instrutor, e vê inscritos e ocupação;
+  - o aluno convidado ou cadastrado entra (reaproveitar o login por código de `conta-cliente.ts`, por negócio), consulta a grade, reserva, vê as próprias reservas e cancela conforme a política.
+- **Fora:** mensalidade do aluno, treino, avaliação física, prontuário, controle de acesso, cobrança do aluno e **qualquer dado de saúde**.
+- **Regras:**
+  - lotação garantida de forma atômica (operação condicional no banco com contagem sob trava, ou restrição única por vaga numerada);
+  - idempotência por chave de reserva;
+  - duas reservas simultâneas na última vaga: uma entra, a outra recebe "turma cheia";
+  - cancelamento libera a vaga até o prazo configurado;
+  - aula encerrada não aceita reserva.
+- **Acesso:** o aluno vê só o seu negócio e as suas reservas; a equipe vê a grade e os inscritos; outro negócio, nunca (testes de servidor e rota direta).
+- **Escolha de contexto:** uma pessoa com vínculo em mais de um negócio escolhe o contexto explicitamente.
+- **Módulo:**
+  - ligar o portal não muda site, domínio, equipe nem contatos;
+  - desligar esconde as rotas (404) e não apaga dados;
+  - negócio sem portal nunca expõe as rotas.
+- **Medir:** alunos ativos, reservas concluídas, conflitos de capacidade, cancelamentos e uso pela equipe.
+- **Extensão futura:** acompanhamento de serviço (status de instalação ou obra para o cliente da vidraçaria) como outra função do mesmo módulo. Não criar abstração genérica antes do segundo caso real.
