@@ -30,7 +30,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - **Eficiência (erro de 2026-10-28):** ajuste visual pequeno = tipos + lint, publica e mostra o print do site no ar, **sem `npm run build` local**; build e bateria completa só em mudança grande; uma montagem por rodada; modo dev não serve para transições. Detalhes nas skills `publicar` e `qa-visual`.
 - **A cada etapa entregue, mande ao dono pelo menos um print da principal implementação** (captura real no navegador, Playwright). É como ele confere visualmente.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D295). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D296). Mudanças de comportamento sem teste não entram.
 - **Base de conhecimento sempre ao vivo (pedido do dono, 06/11/2026, D264):** toda atualização publicada alimenta a base de conhecimento da equipe (`docs/conhecimento/BC0-INVENTARIO.md`; depois, a tela "Aprender" do Master). Decisão nova a partir da D257 sem citação na base faz o teste `tests/base-conhecimento.test.ts` falhar; depois de registrar uma decisão, rode `node scripts/gerar-novidades.mjs` (Novidades da tela Aprender).
 
 ## Mapa rápido
@@ -42,7 +42,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - Skills do projeto (`.claude/skills/`, uso: `/publicar`, `/e2e-demo`, `/nova-migracao`, `/desenvolver-prompt`): `publicar`, `e2e-demo`, `nova-migracao`, `desenvolver-prompt`. Kit de análise (só quando reduz uma incerteza real; guia em `docs/SKILLS-KIT-README.md`): `repo-auditor`, `root-cause`, `impact-analysis`, `acceptance-designer`, `ux-flow-auditor`, `security-guardian`, `release-gate`, `architecture-drift`
 
 ## Direção do produto (atual)
-**Duas frentes (dono, 13/11/2026, D287):** `nextlevelcommerce.com.br` (plataforma de lojas virtuais, páginas e painéis) e `nextlevelgroup.com.br` (agência, sistemas sob medida, white label e soluções para empresas; Master em `master.nextlevelgroup.com.br`). Cargas, Brás e SuperDrop em pausa.
+**Duas frentes (dono, 13/11/2026, D287):** `nextlevelcommerce.com.br` (plataforma de lojas virtuais, páginas e painéis) e `nextlevelgroup.com.br` (agência, sistemas sob medida, white label e soluções para empresas; Master em `master.nextlevelgroup.com.br`). Cargas, Brás e SuperDrop em pausa. **Organização (D295):** a plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e, dentro do painel, o gerenciador do negócio "NextLevel Business"; plano em `docs/prompts/nextlevel-business-coracao-do-negocio.md` (NB0 a NB10).
 
 **Regra de foco 60/25/15 (decisão do dono, 19/10/2026, D174):** até a NextLevel Commerce ter **10 lojistas pagantes**, o esforço vai **60% para a E-commerce, 25% para o SuperDrop e 15% para o resto** (Brás, Cargas, grupo). Todo título de decisão nova em `DECISIONS.md` leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`) e todo relatório do dia traz a linha "Esforço do dia por frente". Na dúvida sobre o que fazer primeiro, vence o que aproxima a E-commerce do 10º lojista pagante.
 

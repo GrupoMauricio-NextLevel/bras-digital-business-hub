@@ -3579,3 +3579,15 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco:** migração 0096 (tabela `origens_contato`; colunas `motivo_perda`, `fechou_em`, `valor_fechado_cents` e `fechou_descricao` em `crm_acompanhamento`; `codigo` em `trafego_sessoes`).
 - **Acessibilidade:** as chamas de temperatura do Comercial ganharam papel de imagem (o axe apontava rótulo em elemento sem papel).
 - **Próxima fase:** TR4 (Pixel da Meta e tag do Google no site da NextLevel, só com consentimento).
+
+## D295 — [E-commerce] A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio "NextLevel Business" dentro do painel (2026-11-13)
+- **Pedido do dono:** a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): `docs/prompts/nextlevel-business-coracao-do-negocio.md`.
+- **Nome:** a plataforma **continua "NextLevel Commerce"** (D288 vale como está: domínio, e-mails, termos e contratos não mudam).
+- **Entrada:** na home e no cadastro, a pessoa escolhe o caminho **Site** (site institucional, páginas de campanha, contatos e orçamentos) ou **Loja virtual** (o que existe hoje). Os dois criam o mesmo tipo de conta; ligar o outro caminho depois não troca conta, domínio nem dados.
+- **Dentro do painel:**
+  - **NextLevel Business** é o gerenciador do negócio. É o nome de uma área do painel, não uma marca, domínio ou cadastro à parte. Agrupa o que é do negócio em si, seja qual for o caminho: Agora, Contatos e orçamentos, Atendimento, Clientes, Vendas, Caixa, Financeiro, Captação, Seja encontrado, Análise, Resultados da Meta e a IA;
+  - ao lado dele ficam as áreas **Site** e **Loja virtual**, conforme o que o negócio usa, e **Ajustes**;
+  - nenhum endereço atual muda, só o agrupamento do menu (prompt, Parte 5.14).
+- **Só na Commerce:** as outras marcas não mostram o NextLevel Business (em pausa, D287).
+- **Fica para a NB0:** os demais padrões da Parte 10 do prompt (piloto, caixa como adicional, captação por plano, portal adiado, pedido de aprovação do aplicativo da Meta em paralelo), salvo nova orientação do dono.
+- **Nada no código ainda:** decisão e plano. A primeira entrega de código é a NB1.

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 295,
+  "frente": "E-commerce",
+  "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
+  "data": "2026-11-13",
+  "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
+ },
+ {
   "numero": 294,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
@@ -271,12 +278,5 @@
   "titulo": "O padrão do chat vale para todo o sistema",
   "data": "2026-11-05",
   "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
- },
- {
-  "numero": 255,
-  "frente": null,
-  "titulo": "Celular no padrão da referência: Maurício em tela cheia e menu flutuante",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono (com capturas da Hostinger): \"No mobile quero que o chat abra completo, seguindo as referências.\""
  }
 ]
