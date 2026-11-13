@@ -1,3 +1,4 @@
+import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { users, type User } from "@/db/schema";
@@ -75,3 +76,22 @@ export const lerBilheteSegundaEtapa = (t: string | undefined) => verifyToken<{ u
 
 /** Duas etapas obrigatórias para o Master (variável MASTER_2FA_OBRIGATORIO=1, ligada depois que o dono ativar). */
 export const duasEtapasObrigatorias = (u: Pick<User, "role" | "totpEnabledAt">) => process.env.MASTER_2FA_OBRIGATORIO === "1" && podeUsarDuasEtapas(u) && !temDuasEtapas(u);
+
+/**
+ * Código de segurança por e-mail a cada entrada (D286): para quem não ligou o aplicativo autenticador. São 6 números,
+ * válidos por 10 minutos. O bilhete leva só a assinatura HMAC do código (com o segredo do servidor), nunca o código;
+ * sem o segredo não dá para descobrir o código pelo bilhete. Tentativas limitadas na entrada (allowLoginAttempt).
+ */
+const BILHETE_EMAIL = "login-codigo-email";
+const assinaturaCodigo = (userId: string, codigo: string) => createHmac("sha256", process.env.SESSION_SECRET ?? "nextlevel-dev").update(`${BILHETE_EMAIL}:${userId}:${codigo}`).digest("base64url");
+export const novoCodigoEmail = () => String(randomInt(0, 1_000_000)).padStart(6, "0");
+export const bilheteCodigoEmail = (userId: string, codigo: string, agora = Date.now()) => signToken(BILHETE_EMAIL, { uid: userId, ch: assinaturaCodigo(userId, codigo), exp: agora + 10 * 60_000 });
+export function conferirCodigoEmail(bilhete: string | undefined, codigo: string): string | null {
+  const t = verifyToken<{ uid: string; ch: string; exp: number }>(BILHETE_EMAIL, bilhete);
+  if (!t) return null;
+  const esperado = Buffer.from(t.ch), recebido = Buffer.from(assinaturaCodigo(t.uid, codigo.replace(/\D/g, "")));
+  return esperado.length === recebido.length && timingSafeEqual(esperado, recebido) ? t.uid : null;
+}
+export const lerBilheteCodigoEmail = (bilhete: string | undefined) => verifyToken<{ uid: string; exp: number }>(BILHETE_EMAIL, bilhete)?.uid ?? null;
+/** Liga por padrão; LOGIN_CODIGO_EMAIL=0 desliga (emergência, por exemplo e-mail fora do ar). Demonstração não pede. */
+export const codigoEmailLigado = (demo: boolean) => !demo && process.env.LOGIN_CODIGO_EMAIL !== "0";

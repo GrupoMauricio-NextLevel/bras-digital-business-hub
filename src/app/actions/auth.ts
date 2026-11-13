@@ -17,7 +17,8 @@ import { getBaseUrl } from "@/lib/base-url";
 import { rateLimit } from "@/lib/rate-limit";
 import { allowLoginAttempt } from "@/lib/security/login-limit";
 import { profileForHost } from "@/lib/domain/conta-grupo";
-import { bilheteSegundaEtapa, conferirSegundaEtapa, lerBilheteSegundaEtapa, temDuasEtapas } from "@/lib/domain/seguranca-conta";
+import { bilheteCodigoEmail, bilheteSegundaEtapa, codigoEmailLigado, conferirCodigoEmail, conferirSegundaEtapa, lerBilheteCodigoEmail, lerBilheteSegundaEtapa, novoCodigoEmail, temDuasEtapas } from "@/lib/domain/seguranca-conta";
+import { brandOfUser, sendEmail } from "@/lib/email";
 
 const loginSchema = z.object({ email: z.string().email("E-mail inválido"), password: z.string().min(1, "Informe a senha") });
 
@@ -43,10 +44,30 @@ export async function loginAction(input: z.input<typeof loginSchema>) {
     const target = conflict ? await profileForHost(db, user, hostBrand) : user;
     if (!target) throw new DomainError("WRONG_BRAND", conflict!.message);
     // Duas etapas (D183): a senha certa só gera um bilhete de 5 minutos; a sessão abre depois do código do aplicativo.
-    if (temDuasEtapas(target)) return { segundaEtapa: bilheteSegundaEtapa(target.id), redirectTo: "" };
+    if (temDuasEtapas(target)) return { segundaEtapa: bilheteSegundaEtapa(target.id), via: "app" as const, redirectTo: "" };
+    // Código por e-mail a cada entrada (D286) para quem não tem o aplicativo. Se o e-mail não sair, entra só com a senha
+    // (ninguém fica trancado para fora por falha do provedor de e-mail); a falha fica registrada.
+    if (codigoEmailLigado(isDemoMode())) {
+      const enviado = await enviarCodigoEmail(db, target);
+      if (enviado) return { segundaEtapa: enviado, via: "email" as const, emailMascarado: mascarar(target.email), redirectTo: "" };
+      console.error("[código por e-mail] não enviado; entrada só com a senha", target.id);
+    }
     await abrirSessao(db, target, ip);
     return { redirectTo: target.mustChangePassword ? "/account/password" : homeFor(target.role) };
   });
+}
+
+const mascarar = (e: string) => { const [u, d] = e.split("@"); return `${u!.slice(0, 2)}${"•".repeat(Math.max(2, u!.length - 2))}@${d}`; };
+
+/** Gera e manda o código por e-mail; devolve o bilhete, ou null se o e-mail não saiu. */
+async function enviarCodigoEmail(db: Awaited<ReturnType<typeof getDb>>, user: typeof users.$inferSelect): Promise<string | null> {
+  const codigo = novoCodigoEmail();
+  const status = await sendEmail(db, {
+    kind: "LOGIN_CODIGO", to: user.email, brand: await brandOfUser(db, user.id),
+    subject: `${codigo} é o seu código de acesso {marca}`,
+    text: `Use o código ${codigo} para entrar na sua conta. Ele vale por 10 minutos.\n\nSe não foi você que tentou entrar, troque a sua senha agora: alguém sabe a sua senha atual.`,
+  });
+  return status === "SENT" ? bilheteCodigoEmail(user.id, codigo) : null;
 }
 
 async function abrirSessao(db: Awaited<ReturnType<typeof getDb>>, user: typeof users.$inferSelect, ip: string) {
@@ -61,15 +82,33 @@ export async function loginSegundaEtapaAction(input: z.input<typeof segundaEtapa
   return runAction(async () => {
     const data = segundaEtapaSchema.parse(input);
     const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
-    const uid = lerBilheteSegundaEtapa(data.bilhete);
+    const porEmail = lerBilheteCodigoEmail(data.bilhete);
+    const uid = porEmail ?? lerBilheteSegundaEtapa(data.bilhete);
     if (!uid) throw new DomainError("EXPIRED", "O tempo para digitar o código acabou. Entre de novo com a senha.");
     if (!allowLoginAttempt(ip, `2fa:${uid}`)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Aguarde alguns minutos e tente de novo.");
     const db = await getDb();
     const user = await db.query.users.findFirst({ where: eq(users.id, uid) });
     if (!user || user.disabledAt) throw new DomainError("INVALID_CREDENTIALS", "Conta indisponível.");
-    if (!(await conferirSegundaEtapa(db, uid, data.codigo))) throw new DomainError("INVALID_CODE", "Código incorreto. Use o código que aparece agora no aplicativo.");
+    if (porEmail) { if (conferirCodigoEmail(data.bilhete, data.codigo) !== uid) throw new DomainError("INVALID_CODE", "Código incorreto. Confira o último e-mail que enviamos."); }
+    else if (!(await conferirSegundaEtapa(db, uid, data.codigo))) throw new DomainError("INVALID_CODE", "Código incorreto. Use o código que aparece agora no aplicativo.");
     await abrirSessao(db, user, ip);
     return { redirectTo: user.mustChangePassword ? "/account/password" : homeFor(user.role) };
+  });
+}
+
+/** Reenvia o código por e-mail (D286): um bilhete válido de código por e-mail gera um código novo. */
+export async function reenviarCodigoAction(bilhete: string) {
+  return runAction(async () => {
+    const uid = lerBilheteCodigoEmail(bilhete);
+    if (!uid) throw new DomainError("EXPIRED", "O tempo acabou. Entre de novo com a senha.");
+    const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
+    if (!rateLimit(`reenvio:${uid}:${ip}`, 3, 10 * 60_000)) throw new DomainError("RATE_LIMIT", "Já enviamos alguns códigos. Aguarde alguns minutos.");
+    const db = await getDb();
+    const user = await db.query.users.findFirst({ where: eq(users.id, uid) });
+    if (!user || user.disabledAt) throw new DomainError("INVALID_CREDENTIALS", "Conta indisponível.");
+    const novo = await enviarCodigoEmail(db, user);
+    if (!novo) throw new DomainError("EMAIL", "Não conseguimos enviar o e-mail agora. Tente de novo em instantes.");
+    return { bilhete: novo };
   });
 }
 

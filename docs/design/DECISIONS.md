@@ -3465,3 +3465,22 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - Quando o SuperDrop voltar a abrir, os e-mails dele voltam a sair com o nome dele, sem mudar código.
 - Teste: `tests/captacao-p5u.test.ts` (D285).
 
+## D286 — [Grupo] Código de segurança a cada entrada em todos os painéis (2026-11-13)
+- **Pedido do dono:** um código de segurança em cada acesso a todos os painéis internos. Modelo de referência: o código do aplicativo autenticador ou, para quem não tem, por e-mail.
+- **Regra:** em toda entrada com e-mail e senha, em todos os papéis (Master, lojista e equipe, parceiro, fornecedor, Brás):
+  - quem ligou o aplicativo autenticador (D183, D188) digita o código do aplicativo, ou um de recuperação;
+  - quem não ligou recebe por e-mail um código de 6 números, válido por 10 minutos, com "Enviar outro código" (até 3 a cada 10 minutos).
+  - A sessão aberta continua valendo até 7 dias naquele aparelho.
+- **Segurança:**
+  - o bilhete entre a senha e o código leva só a assinatura HMAC do código, com o segredo do servidor, nunca o código;
+  - tentativas limitadas (`allowLoginAttempt`);
+  - o bilhete do e-mail não serve como bilhete do aplicativo;
+  - o e-mail avisa para trocar a senha se não foi a pessoa.
+- **Para ninguém ficar trancado:**
+  - se o e-mail não sair (provedor fora do ar), a entrada segue só com a senha e a falha fica no registro;
+  - `LOGIN_CODIGO_EMAIL=0` no Render desliga o código por e-mail numa emergência;
+  - a demonstração não pede código.
+- **Não pedem código:** o cadastro novo (a pessoa acabou de criar a senha), a troca de perfil da conta do grupo e o modo suporte (o Master já passou pelo código).
+- **Master:** `MASTER_2FA_OBRIGATORIO=1` (D183) continua disponível para exigir o aplicativo da equipe, ligado depois que todos ativarem.
+- Teste: `tests/codigo-email-login.test.ts`.
+

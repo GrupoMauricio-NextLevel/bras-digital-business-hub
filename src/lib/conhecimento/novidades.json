@@ -1,5 +1,12 @@
 [
  {
+  "numero": 286,
+  "frente": "Grupo",
+  "titulo": "Código de segurança a cada entrada em todos os painéis",
+  "data": "2026-11-13",
+  "resumo": "Pedido do dono: um código de segurança em cada acesso a todos os painéis internos. Modelo de referência: o código do aplicativo autenticador ou, para quem não tem, por e-mail."
+ },
+ {
   "numero": 285,
   "frente": "E-commerce",
   "titulo": "E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta",
@@ -271,12 +278,5 @@
   "titulo": "PV6: benefícios por plano numa tabela única, com travas reais",
   "data": "2026-11-04",
   "resumo": "Tabela única (beneficios-plano.ts, ecommerce.beneficios-plano), editável em Master → Assinaturas → \"Benefícios por plano\" (comercial ou financeiro, com auditoria). Valores da D226: Os usos de IA vêm das cotas do Maurício (D244), para não…"
- },
- {
-  "numero": 246,
-  "frente": null,
-  "titulo": "L5: velocidade da vitrine (medido antes e depois)",
-  "data": "2026-11-04",
-  "resumo": "Causa: cada página da loja buscava os dados no banco uma consulta depois da outra. O catálogo era lido duas vezes e o estilo da loja também."
  }
 ]
