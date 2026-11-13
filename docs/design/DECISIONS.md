@@ -3586,3 +3586,17 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Eventos:** página vista (inclusive navegando dentro do site); **Contato** ao clicar no WhatsApp; **Lead** quando o contato é aceito (lista de espera, janela de saída, diagnóstico), com o identificador do contato (`interessado:<id>`) como `eventID` da Meta e `transaction_id` do Google. É o mesmo identificador que o servidor vai mandar na TR5, para não contar duas vezes. Cadastro da loja e pagante vão pelo servidor na TR5 (a página de cadastro fica fora das páginas públicas).
 - **Depende do dono:** colar os números no Master. Até lá, nada carrega.
 - **Próxima fase:** TR5 (devolver para a Meta e o Google, pelo servidor, quem virou contato, conta e pagante, com valor; públicos de clientes).
+# D296 — [E-commerce] Caixa de entrada no Master, e-mails por assunto e ligação com o Comercial (2026-11-13)
+- **Pedido do dono:** usar a caixa da Hostinger dentro do Master e deixar CRM, e-mail e comercial bem ligados, para produtividade.
+- **Caixa de entrada (`/master/caixa-de-entrada`, menu Escritório):**
+  - lê a caixa da Hostinger pela API do Correio Agêntico (token `HOSTINGER_MAIL_TOKEN`, colado pelo dono no Render, nunca em tela ou log);
+  - pastas, busca, leitura em texto (HTML só em quadro isolado, sem scripts), anexos, responder na mesma conversa, escrever, mover e marcar como não lida;
+  - só o dono abre (a caixa tem dados de todos os clientes); a equipe do Master não.
+- **Quem é o remetente:** cada e-mail mostra se é lojista, equipe de loja, parceiro ou interessado, com link para a ficha no Comercial (`/master/comercial/loja:…` ou `interessado:…`).
+- **Ligação com o Comercial:**
+  - remetente que ainda não está no sistema vira interessado com o botão "Salvar no CRM" (sem e-mail automático para ele);
+  - responder ou escrever para um interessado novo muda a situação dele para "contatado";
+  - a ficha do cliente no Comercial ganha "Ver e-mails", que abre a caixa já filtrada pelo e-mail dele.
+- **E-mails por assunto (`src/lib/contatos.ts`, fonte única):** os e-mails automáticos do sistema saem com "responder para" conforme o assunto: financeiro@ (contrato, fatura, assinatura, Pix), parceiros@ (comissão, indicação), comercial@ (interessados, propostas), suporte@ (senha, login, loja, pedidos), contato@ (o resto). Os e-mails das lojas para os clientes delas continuam com o endereço da loja.
+- **Nas telas:** o rodapé das páginas públicas da Commerce mostra os endereços por assunto; a Ajuda do lojista mostra suporte@ e financeiro@.
+- **Depois:** contador de não lidas no menu e atendimento automático a partir de suporte@ (webhook do Correio Agêntico).

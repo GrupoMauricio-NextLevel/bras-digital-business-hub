@@ -2,7 +2,7 @@
  * Contato do suporte nas telas. Vale o que estiver no Render (NEXT_PUBLIC_SUPPORT_WHATSAPP, só dígitos com 55, e
  * NEXT_PUBLIC_SUPPORT_EMAIL); sem eles, o canal oficial informado pelo dono em 2026-10-27 (D181).
  */
-export const SUPORTE_PADRAO = { whatsapp: "5511940862144", email: "sac@nextlevelgroup.com.br" } as const;
+export const SUPORTE_PADRAO = { whatsapp: "5511940862144", email: "contato@nextlevelcommerce.com.br" } as const; // D296
 
 export function supportContacts(mensagem = "Olá! Preciso de ajuda.") {
   const wa = (process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || SUPORTE_PADRAO.whatsapp).replace(/\D/g, "");

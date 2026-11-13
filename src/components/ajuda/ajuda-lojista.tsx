@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { ChevronDown, LifeBuoy, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import { enviarAjudaAction, verAjudaAction } from "@/app/actions/ajuda";
+import { CONTATOS } from "@/lib/contatos";
 
 type Msg = { id: string; autor: string; autorNome: string | null; texto: string; createdAt: string };
 
@@ -79,6 +80,7 @@ export function AjudaLojista({ whatsappUrl }: { whatsappUrl?: string | null }) {
               <div ref={fim} />
             </div>
             {whatsappUrl ? <a href={whatsappUrl} target="_blank" rel="noreferrer" className="vh-whats">Urgente? Chame a equipe no WhatsApp</a> : null}
+            <p className="mx-4 mb-2 text-xs text-muted-foreground">Por e-mail: <a className="underline" href={`mailto:${CONTATOS.suporte}`}>{CONTATOS.suporte}</a> · faturas e contrato: <a className="underline" href={`mailto:${CONTATOS.financeiro}`}>{CONTATOS.financeiro}</a></p>
             <form onSubmit={enviar} className="ia-compositor mx-4 mb-4 max-[1099px]:mb-[max(16px,env(safe-area-inset-bottom))]">
               <label htmlFor="ajuda-texto" className="sr-only">Sua mensagem</label>
               <textarea id="ajuda-texto" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} placeholder="Escreva a sua dúvida…" className="max-h-32 min-h-9 flex-1 resize-none bg-transparent py-2 text-sm outline-none" />

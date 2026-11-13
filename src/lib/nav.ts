@@ -271,6 +271,7 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
   { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
   // CT1+CT2 (D276): contratos assinados no painel.
+  { label: "Caixa de entrada", href: "/master/caixa-de-entrada", icon: "Inbox", group: "Escritório" },
   { label: "Contratos", href: "/master/contratos", icon: "ReceiptText", group: "Escritório" },
   { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
   { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório", exact: true },
