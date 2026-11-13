@@ -18,7 +18,7 @@ import { ErpError, type ErpCliente, type ErpKey, type PedidoParaErp } from "@/li
  *    erp_envios, uma só por pedido e ERP;
  * 2. a fila manda os pedidos com tentativas espaçadas (até 5) e guarda o número lá fora;
  * 3. o estoque volta do ERP a cada 15 minutos, por SKU: o disponível na loja passa a ser o saldo do ERP.
- * Credencial só criptografada; nunca em tela, log ou e-mail. Só na loja independente da E-commerce.
+ * Credencial só criptografada; nunca em tela, log ou e-mail. Só na loja independente da Commerce.
  */
 export const ERPS: Record<ErpKey, { nome: string }> = { TINY: { nome: "Tiny (Olist ERP)" }, OMIE: { nome: "Omie" } };
 const MAX_TENTATIVAS = 5;
@@ -31,7 +31,7 @@ export function clienteErp(provider: ErpKey, credencial: string, fetchImpl: Fetc
 async function lojaDoDono(db: Database, actor: Actor) {
   if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Só o dono da loja.");
   assertStoreAdmin(actor);
-  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel E-commerce.");
+  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel Commerce.");
   return actor.storeId;
 }
 

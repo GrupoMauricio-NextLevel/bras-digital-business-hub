@@ -72,7 +72,7 @@ describe("Correios com contrato", () => {
 });
 
 describe("verificação de Frenet e Kangu e regra de uso", () => {
-  it("token aceito conecta; recusado avisa; as três são só da E-commerce", async () => {
+  it("token aceito conecta; recusado avisa; as três são só da Commerce", async () => {
     expect(await verifyShippingToken("FRENET", "tok", espiao(() => json([])).f)).toEqual({ account: "token Frenet conferido" });
     const k = espiao(() => json([]));
     expect(await verifyShippingToken("KANGU", "tok", k.f)).toEqual({ account: "token Kangu conferido" });

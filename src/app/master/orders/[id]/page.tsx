@@ -23,9 +23,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const data = await loadOrder(session.actor, id);
   if (!data) notFound();
-  // O Master vê o pedido com o vocabulário da loja dele (D169): pedido de loja E-commerce sem "Central" nem "saldo".
+  // O Master vê o pedido com o vocabulário da loja dele (D169): pedido de loja Commerce sem "Central" nem "saldo".
   const db = await getDb();
   const loja = await db.query.stores.findFirst({ where: eq(stores.id, data.order.storeId) });
   const [modality, marca] = await Promise.all([storeModality(db, data.order.storeId), loja ? brandCodeOfStore(db, loja) : Promise.resolve(null)]);
-  return <OrderDetail role={session.user.role} backHref="/master/orders" {...data} independent={modality === "INDEPENDENT"} productLabel={marca === "NEXTLEVEL_COMMERCE" ? "NextLevel E-commerce" : "SuperDrop"} />;
+  return <OrderDetail role={session.user.role} backHref="/master/orders" {...data} independent={modality === "INDEPENDENT"} productLabel={marca === "NEXTLEVEL_COMMERCE" ? "NextLevel Commerce" : "SuperDrop"} />;
 }

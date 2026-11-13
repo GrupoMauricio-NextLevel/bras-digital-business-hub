@@ -13,7 +13,7 @@ import { storeModality } from "./order-policy";
  * - o carrinho só é guardado com o "sim" do cliente no checkout (consentimento explícito);
  * - lembretes 1 h e 24 h depois da última mexida; param quando vira pedido, quando o cliente sai da lista ou no 2º;
  * - o link refaz o carrinho com o preço e o estoque de AGORA (nunca o preço guardado);
- * - só na loja independente da E-commerce (o SuperDrop não muda).
+ * - só na loja independente da Commerce (o SuperDrop não muda).
  */
 export const LEMBRETE_1_MIN = 60;
 export const LEMBRETE_2_MIN = 24 * 60;

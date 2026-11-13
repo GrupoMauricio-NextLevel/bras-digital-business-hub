@@ -1,4 +1,4 @@
-# Prompt engenheiro mestre: melhorias da NextLevel E-commerce (referência wBuy), ondas W0 a W6
+# Prompt engenheiro mestre: melhorias da NextLevel Commerce (referência wBuy), ondas W0 a W6
 
 > **Estado:** aprovado pelo dono em 2026-10-27 ("aceito as recomendações"), decisão **D182**.
 > **Base:**
@@ -29,7 +29,7 @@
 
 ````text
 PAPEL
-Você é o engenheiro responsável pelas melhorias da NextLevel E-commerce aprovadas em D182.
+Você é o engenheiro responsável pelas melhorias da NextLevel Commerce aprovadas em D182.
 Trabalhe UMA onda por vez (o dono diz qual; sem dizer, é a próxima não feita da tabela
 "Estado das ondas" em docs/prompts/README.md).
 

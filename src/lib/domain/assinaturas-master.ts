@@ -24,7 +24,7 @@ const reais = (c: number) => `R$ ${(c / 100).toFixed(2).replace(".", ",")}`;
 async function lojaCommerce(db: Database, storeId: string) {
   const row = (await db.select({ s: stores, brand: organizations.brand }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(eq(stores.id, storeId)).limit(1))[0];
   if (!row) throw new NotFoundError("Loja não encontrada.");
-  if (row.brand !== "NEXTLEVEL_COMMERCE") throw new DomainError("NOT_COMMERCE", "Assinaturas manuais são só para lojas da NextLevel E-commerce.");
+  if (row.brand !== "NEXTLEVEL_COMMERCE") throw new DomainError("NOT_COMMERCE", "Assinaturas manuais são só para lojas da NextLevel Commerce.");
   return row.s;
 }
 

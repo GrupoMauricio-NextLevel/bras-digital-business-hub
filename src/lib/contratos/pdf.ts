@@ -53,7 +53,7 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
   page.drawRectangle({ x: 0, y: A4.h - 92, width: A4.w, height: 92, color: NAVY });
   page.drawRectangle({ x: 0, y: A4.h - 95, width: A4.w, height: 3, color: CIANO });
   page.drawText("NextLevel", { x: M, y: A4.h - 50, size: 20, font: B, color: rgb(1, 1, 1) });
-  page.drawText("E-commerce", { x: M, y: A4.h - 68, size: 12, font: B, color: CIANO });
+  page.drawText("Commerce", { x: M, y: A4.h - 68, size: 12, font: B, color: CIANO });
   const t1 = "Contrato de Prestação de Serviços";
   page.drawText(limpo(t1), { x: A4.w - M - B.widthOfTextAtSize(limpo(t1), 15), y: A4.h - 50, size: 15, font: B, color: rgb(1, 1, 1) });
   const t2 = limpo(`Loja Virtual Pronta Express · nº ${c.numero} · ${formatar.data(c.enviadoEm)}`);
@@ -67,7 +67,7 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
     ["Contratada", `${d.contratada.razao} · CNPJ ${d.contratada.cnpj} · representada por ${d.contratada.representante}${d.contratada.cpfRepresentante ? ` · CPF ${d.contratada.cpfRepresentante}` : ""} · ${d.contratada.emailRepresentante}`],
     ["Contratante", `${d.cliente.nome} · CPF/CNPJ ${d.cliente.documento} · ${d.cliente.email}`],
     ["Loja", `${d.loja.nome} (/${d.loja.slug})`],
-    ["Serviço", "Loja Virtual Pronta Express, desenvolvida exclusivamente dentro da plataforma NextLevel E-commerce"],
+    ["Serviço", "Loja Virtual Pronta Express, desenvolvida exclusivamente dentro da plataforma NextLevel Commerce"],
     ["Produtos", `Cadastro inicial de ${d.produtos} produtos e treinamento para o CONTRATANTE cadastrar os demais`],
     ["Valor", `De ${formatar.brl(d.valorCheioCents)} por ${formatar.brl(d.valorCents)} (valor promocional, pagamento único)`],
     ["Pagamento", `Pix · ${formatar.brl(d.sinalCents)} de sinal em ${formatar.data(d.dataSinal)} · ${formatar.brl(d.restanteCents)} até ${formatar.data(d.dataRestante)}`],

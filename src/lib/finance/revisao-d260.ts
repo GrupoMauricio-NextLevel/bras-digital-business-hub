@@ -1,7 +1,7 @@
 import { COMISSOES_D226 } from "./revisao-d226";
 
 /**
- * Regra única dos parceiros da E-commerce (D260, aprovada pelo dono em 06/11/2026). Substitui a D226 sem apagar o
+ * Regra única dos parceiros da Commerce (D260, aprovada pelo dono em 06/11/2026). Substitui a D226 sem apagar o
  * histórico: todos os parceiros (criador, vendedor, agência) recebem o mesmo percentual de TODA mensalidade paga,
  * desde a 1ª, enquanto o cliente ficar. O percentual depende só dos clientes ativos (níveis em `niveis-regras.ts`):
  * 20% (1 a 9), 24% (10 a 24) e 28% (25 ou mais). Sem Black, sem bônus e sem regra diferente por tipo.

@@ -4,7 +4,7 @@ import type { ProductContextKey } from "@/lib/product-context";
 
 /**
  * Cadastro único dos negócios do grupo no Master (D218). Toda tela que precisa saber "quais marcas aparecem" pergunta
- * aqui, em vez de citar SuperDrop, Brás ou fornecedores fixos no texto. Hoje só a E-commerce está aberta; a próxima é a
+ * aqui, em vez de citar SuperDrop, Brás ou fornecedores fixos no texto. Hoje só a Commerce está aberta; a próxima é a
  * NextLevel Soluções (agência de marketing e soluções). Para abrir um negócio:
  *  1) ele precisa ter código no sistema (marca em `brand.ts` e área no Master);
  *  2) entra em `MASTER_MARCAS` (master-marca.ts) e em `MASTER_MARCAS_ATIVAS` no Render.
@@ -14,7 +14,7 @@ export type EstadoNegocio = "aberto" | "proximo" | "pausado" | "em-breve";
 export type Negocio = { code: BrandCode; nome: string; sigla: string; descritor: string; ctx: ProductContextKey; /** já tem área no Master (pode ser aberto por variável) */ temArea: boolean };
 
 export const NEGOCIOS: Negocio[] = [
-  { code: "NEXTLEVEL_COMMERCE", nome: "E-commerce", sigla: "E", descritor: "Lojas virtuais", ctx: "commerce", temArea: true },
+  { code: "NEXTLEVEL_COMMERCE", nome: "Commerce", sigla: "E", descritor: "Lojas virtuais", ctx: "commerce", temArea: true },
   { code: "NEXTLEVEL", nome: "Soluções", sigla: "So", descritor: "Agência de marketing e soluções", ctx: "master", temArea: false },
   { code: "SUPERDROP", nome: "SuperDrop", sigla: "S", descritor: "Distribuição e dropshipping", ctx: "superdrop", temArea: true },
   { code: "BRAS_DIGITAL", nome: "Brás Digital Club", sigla: "B", descritor: "Atacado B2B", ctx: "bras", temArea: true },

@@ -9,7 +9,7 @@ import { ClientesEc } from "@/components/portal/commerce/clientes-ec";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Clientes NextLevel | Marcas que a nossa equipe atende",
-  description: "Marcas reais que a equipe NextLevel atende, do Brás para o Brasil, e os melhores templates da NextLevel E-commerce.",
+  description: "Marcas reais que a equipe NextLevel atende, do Brás para o Brasil, e os melhores templates da NextLevel Commerce.",
   alternates: { canonical: "/clientes" },
 };
 

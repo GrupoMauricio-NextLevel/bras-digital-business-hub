@@ -42,7 +42,7 @@ export const MARCAS: Record<MarcaSlug, MarcaVisual> = {
     // `public/marcas/nextlevel/imagens` só para as páginas da família (Club, Loja NextLevel) até elas ganharem kit próprio.
     imagens: false, peca3d: "/portal/nextlevel/v4/solucoes/sol-fecho", status: { logos: "complete", imagens: "partial" },
     headline: "Estrutura digital para negócios que querem ir além.",
-    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel E-commerce, Brás Digital Club e NextLevel Cargas.",
+    apoio: "Loja virtual, migração, temas, tráfego e consultoria do mesmo grupo que opera SuperDrop, NextLevel Commerce, Brás Digital Club e NextLevel Cargas.",
     icones: [
       { arquivo: "strategy", titulo: "Estratégia", texto: "Diagnóstico gratuito antes de qualquer proposta." },
       { arquivo: "integration", titulo: "Integração", texto: "Loja, pagamento, frete e catálogo no mesmo sistema." },

@@ -4,7 +4,7 @@ import { attentionFor, stageOf } from "./after-sales";
 /**
  * Fila do dia do lojista (D166): a primeira tela responde "o que eu preciso fazer agora?".
  * Pura: a página junta os dados e esta função decide o que entra, em que ordem e com que texto.
- * Loja da NextLevel E-commerce (sem fornecedor) nunca vê saldo, Central ou etiqueta da Central.
+ * Loja da NextLevel Commerce (sem fornecedor) nunca vê saldo, Central ou etiqueta da Central.
  */
 export type FilaTom = "danger" | "warning" | "info";
 export type FilaItem = { key: string; title: string; detail: string; count: number; href: string; action: string; tone: FilaTom };
@@ -105,7 +105,7 @@ export function filaDaTransportadora(e: { chamadas: number; coletar: number; tra
 export type PulsoTom = "success" | "warning" | "danger";
 /**
  * Pulso da loja (D169): três sinais curtos no topo do painel do lojista. Vendas de hoje (mesma régua da tela de análise),
- * pedidos parados (mesma régua do pós-venda) e a situação da loja. E-commerce: pronta para vender ou o que falta. SuperDrop:
+ * pedidos parados (mesma régua do pós-venda) e a situação da loja. Commerce: pronta para vender ou o que falta. SuperDrop:
  * recarga, pedidos parados ou em dia. Puro.
  */
 export function pulsoDaLoja(e: { hoje: { salesCents: number; orders: number }; parados: number; commerce: boolean; faltaParaVender: number; publicada: boolean; precisaRecarga: boolean }) {

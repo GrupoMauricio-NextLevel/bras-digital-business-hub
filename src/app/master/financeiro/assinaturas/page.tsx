@@ -18,7 +18,7 @@ export default async function AssinaturasMaster() {
   const n = (st: string) => rows.filter((r) => r.sub.status === st).length;
   return (
     <>
-      <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Assinaturas da E-commerce" description="Ciclo: em teste → aguardando pagamento → ativa → em atraso → suspensa → cancelada/expirada. Preço e taxa ficam congelados na contratação; a cobrança é a fatura da loja (Pix ou cartão na conta da NextLevel)." />
+      <PageHeader eyebrow="Financeiro corporativo NextLevel" title="Assinaturas da Commerce" description="Ciclo: em teste → aguardando pagamento → ativa → em atraso → suspensa → cancelada/expirada. Preço e taxa ficam congelados na contratação; a cobrança é a fatura da loja (Pix ou cartão na conta da NextLevel)." />
       <FinNav active="assinaturas" />
       <OperationalPulse className="mb-6" items={[{ label: "Ativas", value: n("active"), tone: "success" }, { label: "Em teste", value: n("trial"), tone: "info" }, { label: "Aguardando pagamento", value: n("pending_payment"), tone: "warning" }, { label: "Em atraso / suspensas", value: n("past_due") + n("suspended"), tone: n("past_due") + n("suspended") ? "danger" : "neutral" }]} />
       <DataTable rows={rows} rowKey={(r) => r.sub.id} empty={<p className="text-sm text-muted-foreground">Nenhuma assinatura Commerce ainda.</p>} columns={[

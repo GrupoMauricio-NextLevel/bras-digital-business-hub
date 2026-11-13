@@ -44,7 +44,7 @@ export async function saveEcoSettings(db: Database, actor: Actor, raw: Partial<z
 }
 
 /**
- * Marcas que nunca aparecem no contexto de outra (decisão do dono, 2026-10-17, D164): a NextLevel E-commerce não mostra o
+ * Marcas que nunca aparecem no contexto de outra (decisão do dono, 2026-10-17, D164): a NextLevel Commerce não mostra o
  * SuperDrop em nenhum ponto (fio, lançador, rodapé da família, selo do Club), porque o lojista de loja própria não tem
  * fornecedor nem saldo e o nome confunde.
  */

@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     { name: "reservas", run: () => expireStaleReservations(db), summarize: (x: { expired: number }) => `liberadas ${x.expired}` },
     { name: "sem saldo", run: () => expireUnfundedOrders(db) },
     { name: "resumo", run: () => sendDailySummary(db), summarize: (x: { recipients: number }) => `enviado a ${x.recipients}` },
-    { name: "ativação E-commerce", run: () => lembretesDeAtivacao(db), summarize: (x: { enviados: number }) => `lembretes ${x.enviados}` },
+    { name: "ativação Commerce", run: () => lembretesDeAtivacao(db), summarize: (x: { enviados: number }) => `lembretes ${x.enviados}` },
   ]);
   return NextResponse.json({ ok: r.ok, ...r.results, failed: r.failed }, { status: r.ok ? 200 : 207 });
 }

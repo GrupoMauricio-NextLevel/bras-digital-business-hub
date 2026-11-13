@@ -10,15 +10,15 @@ import { contrastRatio, paletteOf } from "@/lib/brand-palette";
 import { READABLE_PAIRS, themeColors, themeCss } from "@/design-system/themes";
 import { ogImageFor } from "@/lib/og-marca";
 
-/** NextLevel E-commerce v1 (D163): nome público novo sobre o código NEXTLEVEL_COMMERCE, logos por superfície, tema isolado. */
+/** NextLevel Commerce v1 (D163): nome público novo sobre o código NEXTLEVEL_COMMERCE, logos por superfície, tema isolado. */
 const pub = (u: string) => join(__dirname, "..", "public", u);
 const brand = { code: "NEXTLEVEL_COMMERCE", name: EC.name };
 
-describe("NextLevel E-commerce", () => {
+describe("NextLevel Commerce", () => {
   it("nome público novo, código técnico igual, cores exatas do pacote", () => {
     const b = brandByCode("NEXTLEVEL_COMMERCE");
-    expect([b.code, b.name, b.emailFromName]).toEqual(["NEXTLEVEL_COMMERCE", "NextLevel E-commerce", "NextLevel E-commerce"]);
-    expect(b.legalLine).toContain("NextLevel E-commerce");
+    expect([b.code, b.name, b.emailFromName]).toEqual(["NEXTLEVEL_COMMERCE", "NextLevel Commerce", "NextLevel Commerce"]);
+    expect(b.legalLine).toContain("NextLevel Commerce");
     expect(EC.descriptor).toBe("PLATAFORMA DE LOJAS VIRTUAIS");
     expect(EC.cores).toEqual({ marinho: "#101A33", azul: "#3F65FF", ciano: "#27C7F2", gelo: "#F3F6FC" });
   });

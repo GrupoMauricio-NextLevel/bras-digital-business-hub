@@ -13,7 +13,7 @@ import "@/components/portal/commerce/commerce.css";
 import "@/components/imersiva/imersiva.css";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "NextLevel E-commerce ou outra plataforma? Comparativo", description: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel E-commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data.", alternates: { canonical: "/comparativo" } };
+export const metadata: Metadata = { title: "NextLevel Commerce ou outra plataforma? Comparativo", description: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel Commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data.", alternates: { canonical: "/comparativo" } };
 
 const pct = (bps: number | null) => (bps === null ? "não divulga" : `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`);
 const FAIXAS = [300_000, 1_000_000, 3_000_000, 5_000_000, 10_000_000, 20_000_000];
@@ -29,7 +29,7 @@ export default async function ComparativoPage() {
   const data = new Date(`${COLETADO_EM}T12:00:00Z`).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
   return (
     <div className="im-tema-ecommerce">
-      <CabecalhoTech rotulo="Comparativo" titulo={<>NextLevel E-commerce ou <em>outra plataforma?</em></>} texto="Os números públicos, lado a lado. Você vê quanto paga em cada uma conforme o quanto vende, sem letra miúda."
+      <CabecalhoTech rotulo="Comparativo" titulo={<>NextLevel Commerce ou <em>outra plataforma?</em></>} texto="Os números públicos, lado a lado. Você vê quanto paga em cada uma conforme o quanto vende, sem letra miúda."
         dados={[{ rotulo: "Plataformas comparadas", valor: String(CONCORRENTES.length) }, { rotulo: "Taxa da plataforma", valor: "0%" }, { rotulo: "Plano de entrada", valor: nl.planos[0] ? formatBRL(nl.planos[0].mensalCents).replace(",00", "") : "—" }, { rotulo: "Dados de", valor: new Date(`${COLETADO_EM}T12:00:00Z`).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" }) }]} />
       <PlacarSecao cta={cta} />
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-14" aria-labelledby="faixas-t">
@@ -51,7 +51,7 @@ export default async function ComparativoPage() {
       <section className="mx-auto max-w-6xl px-4 pb-16" aria-labelledby="planos-t">
         <h2 id="planos-t" className="text-2xl font-bold text-foreground">Planos de cada plataforma</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="ec-painel p-6"><h3 className="text-lg font-bold text-white">NextLevel E-commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-[#b9c6e4]">Taxa zero da plataforma com o checkout do Mercado Pago, parceiro oficial (as taxas de Pix e cartão do Mercado Pago são à parte). Sem limite de produtos e pedidos. Dinheiro direto na sua conta.</p></div>
+          <div className="ec-painel p-6"><h3 className="text-lg font-bold text-white">NextLevel Commerce</h3><ul className="mt-3 space-y-1.5 text-sm">{nl.planos.map((p) => <li key={p.nome} className="flex justify-between gap-3"><span>{p.nome}</span><span className="tabular-nums">{formatBRL(p.mensalCents)}/mês + {pct(p.taxaBps)}</span></li>)}</ul><p className="mt-3 text-xs text-[#b9c6e4]">Taxa zero da plataforma com o checkout do Mercado Pago, parceiro oficial (as taxas de Pix e cartão do Mercado Pago são à parte). Sem limite de produtos e pedidos. Dinheiro direto na sua conta.</p></div>
           {CONCORRENTES.map((c) => (
             <div key={c.key} className="ec-cartao">
               <h3 className="text-lg font-bold">{c.nome}</h3>

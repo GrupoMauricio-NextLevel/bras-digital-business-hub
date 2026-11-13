@@ -27,7 +27,7 @@ export function HeroiCapaEc({ cta, signupOpen, offer, aPartirDeCents, black = nu
       </div>
 
       <div className="ecc-heroi-texto">
-        {black ? <p className="ecc-black-topo"><span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span></p> : <p className="ecc-selo-topo">NextLevel E-commerce · do Brás, com foco no atacado</p>}
+        {black ? <p className="ecc-black-topo"><span className="bk-selo"><span aria-hidden className="bk-raio" />BLACK FRIDAY<b>NEXTLEVEL</b></span></p> : <p className="ecc-selo-topo">NextLevel Commerce · do Brás, com foco no atacado</p>}
         <h1 id="titulo" className="ecc-titulo">
           {black ? <>Sua loja virtual na Black</> : <>Sua loja virtual</>}
           <span className="ecc-titulo-linha">

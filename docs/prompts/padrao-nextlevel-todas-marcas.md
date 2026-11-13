@@ -25,7 +25,7 @@ O site do grupo (`nextlevelgroup.com.br/solucoes`) é hoje a página mais madura
 
 ---
 
-## 2. Auditoria da NextLevel E-commerce (2026-10-17)
+## 2. Auditoria da NextLevel Commerce (2026-10-17)
 
 Conta usada: `lojista@commerce.demo` (conta simples, loja independente), `master@nextlevel.demo`. 33 telas capturadas em 1440 px (públicas, 18 do painel do lojista, console E-commerce no Master). Script: `scripts/auditoria/marca.mjs` (seção 4). Depois das correções: 26 telas, só a lista de perfis de demonstração do login ainda cita o SuperDrop (aceito, só existe no modo demonstração).
 
@@ -69,7 +69,7 @@ Conta usada: `lojista@commerce.demo` (conta simples, loja independente), `master
 ## 3. Regras que valem para todas as marcas (não negociáveis)
 
 1. **Cada marca só mostra a si mesma e ao grupo.** Nenhuma tela de uma marca exibe nome, logo, cor, plano, termo de operação ou link de outra, exceto: a assinatura "um sistema NextLevel" e o lançador "Marcas do grupo" (que segue a tabela de ocultação `OCULTAS_EM` em `lancador.ts`).
-2. **Nada de SuperDrop na NextLevel E-commerce**: nem nome, nem verde, nem conceitos de distribuição (Central, recarga, saldo do fornecedor, rede, "Preços e publicação" do fornecedor).
+2. **Nada de SuperDrop na NextLevel Commerce**: nem nome, nem verde, nem conceitos de distribuição (Central, recarga, saldo do fornecedor, rede, "Preços e publicação" do fornecedor).
 3. **Cor fora do lugar = defeito.** Em cada marca só aparecem: as cores da própria marca (variáveis `--nlg-*`, `--ec-*`, `--bdc-*`, `--brand-*`), neutros do tema e as cores de estado (sucesso, alerta, erro, informação). Hexadecimal escrito à mão em componente é proibido; vai para `src/lib/marcas/<marca>.ts`.
 4. **Conceito fora do papel = defeito.** A loja independente (`store.kind === "SUPPLIER_OWN"` e `isIndependentStore`) não vê nada de fornecedor; o fornecedor não vê nada de plano de loja; o parceiro não vê operação.
 5. **A decisão fica no domínio** (`src/lib/domain/*`), a tela só desenha. Ex.: `stagesFor(independent)` no pós-venda e `visivelEm` no fio do grupo.
@@ -105,8 +105,8 @@ npm run build
 
 | Marca | Não pode aparecer |
 |---|---|
-| NextLevel E-commerce | SuperDrop, Central, recarga, saldo do fornecedor, rede, verde `#2D9E3B`, "Commerce Start/Pro/Scale" |
-| SuperDrop | NextLevel E-commerce como produto dele, azul `#3F65FF` da E-commerce |
+| NextLevel Commerce | SuperDrop, Central, recarga, saldo do fornecedor, rede, verde `#2D9E3B`, "Commerce Start/Pro/Scale" |
+| SuperDrop | NextLevel Commerce como produto dele, azul `#3F65FF` da E-commerce |
 | Brás Digital Club | SuperDrop, E-commerce como produto dele, amarelo antigo do GRUPO |
 | NextLevel Cargas | SuperDrop, cores de outra marca |
 | NextLevel (grupo, Master) | amarelo antigo `#F5BC00` nas telas da marca-mãe; nomes antigos das marcas |
@@ -119,7 +119,7 @@ npm run build
 |---|---|---|---|
 | **NextLevel (grupo)** `nextlevelgroup.com.br` | `/solucoes`, contato, legais | — | — |
 | **Master** `master.nextlevelgroup.com.br` | login | Master completo; equipe por função (financeiro, suporte, comercial…); console da E-commerce (`/commerce`); console do Brás (`/bras`); modo suporte dentro do cliente | `master@nextlevel.demo` |
-| **NextLevel E-commerce** `lojas.nextlevelgroup.com.br` | home, planos, temas, FAQ, cadastro, entrar, esqueci a senha, parceiros, demos | lojista dono (conta simples independente), equipe da loja, editor de tema, vitrine da loja (`/store/[slug]`) | `lojista@commerce.demo` |
+| **NextLevel Commerce** `lojas.nextlevelgroup.com.br` | home, planos, temas, FAQ, cadastro, entrar, esqueci a senha, parceiros, demos | lojista dono (conta simples independente), equipe da loja, editor de tema, vitrine da loja (`/store/[slug]`) | `lojista@commerce.demo` |
 | **SuperDrop** `superdrop.com.br` | home v4, planos, fornecedores | lojista (lite e pro), fornecedor (admin, expedição), parceiro, página do fornecedor (`/f/[slug]`) | `dono@arena10.demo`, `central@centralsports.demo` |
 | **Brás Digital Club** | página pública, rede, diretório | membro (Meu Brás), importadora, balcão, excursão | contas do seed do Brás |
 | **NextLevel Cargas** | página pública | transportadora, motorista | contas do seed de Cargas |
@@ -139,7 +139,7 @@ seções 1 a 5) e as decisões D161 a D164 em docs/design/DECISIONS.md. Fale com
 
 REGRA ZERO: nenhuma marca mostra nome, cor, logo, plano, termo de operação ou link de outra marca fora do
 lançador "Marcas do grupo" (que obedece OCULTAS_EM em src/lib/domain/ecossistema/lancador.ts). Nada de SuperDrop
-na NextLevel E-commerce. Cor de marca só por variável vinda de src/lib/marcas/<marca>.ts. A mistura inteligente
+na NextLevel Commerce. Cor de marca só por variável vinda de src/lib/marcas/<marca>.ts. A mistura inteligente
 das marcas do grupo (venda cruzada) é uma rodada FUTURA, com decisão própria do dono: não faça agora.
 
 FASE A — Varredura (relatar primeiro, sem mudar código)

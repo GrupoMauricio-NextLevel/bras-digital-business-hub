@@ -15,7 +15,7 @@ import { DOOR_OFFER_KEYS, type DoorBrand } from "./porta-entrada";
 export type RoadmapState = "LIGADO" | "PARCIAL" | "DESLIGADO";
 export type RoadmapStep = { n: number; title: string; state: RoadmapState; detail: string; href: string; next: boolean };
 
-const DOOR_LABEL: Record<DoorBrand, string> = { SUPERDROP: "SuperDrop", NEXTLEVEL_COMMERCE: "E-commerce" };
+const DOOR_LABEL: Record<DoorBrand, string> = { SUPERDROP: "SuperDrop", NEXTLEVEL_COMMERCE: "Commerce" };
 
 export async function launchRoadmap(db: Database, actor: Actor, now = new Date()): Promise<RoadmapStep[]> {
   requireMaster(actor);

@@ -11,7 +11,7 @@ import { brandCodeOfStore } from "@/lib/store-brand";
 import { stores } from "@/db/schema";
 
 /**
- * Benefícios por plano da NextLevel E-commerce (D247, PV6): UMA tabela, editável no Master, que alimenta a página de
+ * Benefícios por plano da NextLevel Commerce (D247, PV6): UMA tabela, editável no Master, que alimenta a página de
  * planos, o checkout, o placar e as travas. Valores aprovados na D226. `produtos: null` = sem limite.
  * Trava sem tirar nada de ninguém: quem já tem mais do que o limite continua vendendo tudo; só não cadastra novos.
  * Os usos de IA vêm das cotas do Maurício (D243/D244), para não haver dois números.
@@ -73,7 +73,7 @@ export async function usoDoPlano(db: Database, storeId: string): Promise<UsoDoPl
   return { plano, nome: NOME_PLANO_BENEFICIO[plano], produtos: { usados: Number(prod), limite: b.produtos }, pessoas: { usadas: Number(gente), limite: b.pessoas } };
 }
 
-/** Trava do cadastro de produto (só lojas da E-commerce; quem chama decide). */
+/** Trava do cadastro de produto (só lojas da Commerce; quem chama decide). */
 export async function exigirVagaDeProduto(db: Database, storeId: string, novos = 1) {
   const u = await usoDoPlano(db, storeId);
   if (u.produtos.limite !== null && u.produtos.usados + novos > u.produtos.limite) {
@@ -86,7 +86,7 @@ export async function exigirVagaDePessoa(db: Database, storeId: string) {
   if (u.pessoas.usadas + 1 > u.pessoas.limite) throw new DomainError("PLAN_LIMIT_PEOPLE", `O plano ${u.nome} tem até ${u.pessoas.limite} pessoas no painel (contando você). Mude de plano para convidar mais.`);
 }
 
-/** A trava só vale para lojas da NextLevel E-commerce (o SuperDrop segue as regras dele). */
+/** A trava só vale para lojas da NextLevel Commerce (o SuperDrop segue as regras dele). */
 export async function ehLojaEcommerce(db: Database, storeId: string): Promise<boolean> {
   const s = await db.query.stores.findFirst({ where: eq(stores.id, storeId), columns: { organizationId: true } });
   return !!s && (await brandCodeOfStore(db, s)) === "NEXTLEVEL_COMMERCE";

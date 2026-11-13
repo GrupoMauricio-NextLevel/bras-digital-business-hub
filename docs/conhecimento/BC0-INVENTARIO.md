@@ -12,11 +12,12 @@
 > **Janela de saída (D280):** quem vai sair do site da E-commerce vê uma janela para deixar o e-mail (com concordância); o contato aparece no CRM do Master como interessado da janela de saída. Na loja, o lojista escolhe em Aparência → Cupom de boas-vindas → "Quando abrir" se a janela abre depois do tempo, ao sair ou nos dois casos.
 > **Domínio novo (D281):** a E-commerce vai passar para nextlevelcommerce.com.br. O endereço antigo continua funcionando e leva ao novo; quem já tem conta entra de novo com o mesmo e-mail e senha.
 > **Temas para Nuvemshop (D282):** a página /temas-nuvemshop do site da E-commerce mostra as lojas que a NextLevel criou, com o racional de cada uma e o botão para visitar, a direção para semijoias e o pedido de diagnóstico gratuito. Use-a para o cliente da Nuvemshop que quer um layout melhor.
-> **Nossos clientes (D283):** a página /clientes (menu "Clientes") mostra as marcas que a equipe NextLevel atende e os melhores templates. Ela não diz que essas lojas rodam na plataforma; quando um cliente migrar, ganha o selo "Na NextLevel E-commerce".
+> **Nossos clientes (D283):** a página /clientes (menu "Clientes") mostra as marcas que a equipe NextLevel atende e os melhores templates. Ela não diz que essas lojas rodam na plataforma; quando um cliente migrar, ganha o selo "Na NextLevel Commerce".
 > **Lembrete de parcela (D284):** o sistema avisa o cliente por e-mail 2 dias antes e no dia do vencimento de cada parcela do contrato, e avisa a NextLevel quando uma parcela vence sem \"Já fiz o Pix\".
-> **E-mails (D285):** os e-mails do sistema saem de contato@nextlevelcommerce.com.br, com o nome NextLevel E-commerce (a equipe do Master recebe como NextLevel). As respostas dos clientes caem no e-mail da agência.
+> **E-mails (D285):** os e-mails do sistema saem de contato@nextlevelcommerce.com.br, com o nome NextLevel Commerce (a equipe do Master recebe como NextLevel). As respostas dos clientes caem no e-mail da agência.
 > **Código de segurança (D286):** toda entrada em qualquer painel pede um código: o do aplicativo autenticador, para quem ligou em Segurança da conta, ou um código de 6 números enviado ao e-mail da conta (vale 10 minutos; dá para pedir outro).
 > **Endereços (D287):** a plataforma de lojas está em nextlevelcommerce.com.br; o endereço antigo lojas.nextlevelgroup.com.br leva para lá. A agência e o Master ficam em nextlevelgroup.com.br. Cargas, Brás e SuperDrop estão em pausa.
+> **Nome da marca (D288):** a plataforma de lojas se chama NextLevel Commerce (antes, NextLevel E-commerce). Use sempre o nome novo com clientes e parceiros.
 > **Retorno do bônus (D275):** em Bônus e metas, cada campanha mostra lojas novas, receita nova por mês, custo, custo por loja e em quantos meses a margem paga o bônus (depois da comissão de 28%), com sugestão automática de ajuste e conferência com o extrato.
 > **Painel do executivo no celular (D274):** meta da semana, comissão e nível no topo; botões Nova venda, Registrar visita, Meu link e Mostrar a demonstração; agenda de retornos e testes acabando; ranking de visitas; argumentos de bolso. Missões da rua contam visitas e demonstrações; o dono define a meta semanal de cada executivo e vê o feed da equipe.
 > **Executivos de venda (D273):** equipe de rua cadastrada pelo dono; venda em dinheiro ou maquininha libera a loja na hora com recibo no WhatsApp; dinheiro entregue em 2 dias úteis (atraso trava novas vendas em dinheiro); prestação de contas no Master lança no caixa; aula "Executivos de venda" na trilha Parceiros.
@@ -46,9 +47,9 @@
 ### 1.1 O que é a NextLevel
 | Regra | Estado | Fonte |
 |---|---|---|
-| A NextLevel é um grupo de marcas. O Master hoje está focado na **NextLevel E-commerce** (as outras marcas não foram apagadas, só estão fechadas no Master) | No ar | `MASTER_MARCAS_ATIVAS`, manual do Maurício |
+| A NextLevel é um grupo de marcas. O Master hoje está focado na **NextLevel Commerce** (as outras marcas não foram apagadas, só estão fechadas no Master) | No ar | `MASTER_MARCAS_ATIVAS`, manual do Maurício |
 | Posicionamento: "do Brás, com foco no atacado". Presença no Brás, no Canindé e em São Paulo; experiência com grandes importadores | No ar | D220 (seção "Vivência de rua") |
-| A plataforma vai ser especialista em atacado: "NextLevel E-commerce de Atacado" | Em andamento (AT0 a AT2 no ar) | D257 a D259 |
+| A plataforma vai ser especialista em atacado: "NextLevel Commerce de Atacado" | Em andamento (AT0 a AT2 no ar) | D257 a D259 |
 
 ### 1.2 Planos da E-commerce
 | Regra | Valor hoje | Estado | Fonte |

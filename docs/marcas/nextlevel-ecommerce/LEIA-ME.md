@@ -1,8 +1,8 @@
-# NextLevel E-commerce — kit de identidade v1
+# NextLevel Commerce — kit de identidade v1
 
 ## Decisão consolidada
 
-Nome: **NextLevel E-commerce**. Linha de apoio: **PLATAFORMA DE LOJAS VIRTUAIS**. Tipografia e acabamento da opção 03 Prisma Commerce com o símbolo arredondado da opção 04 Conexão Coral, recolorido em azul/ciano. Não alterar novamente o desenho da marca.
+Nome: **NextLevel Commerce**. Linha de apoio: **PLATAFORMA DE LOJAS VIRTUAIS**. Tipografia e acabamento da opção 03 Prisma Commerce com o símbolo arredondado da opção 04 Conexão Coral, recolorido em azul/ciano. Não alterar novamente o desenho da marca.
 
 Este pacote contém PNGs rasterizados, exportações técnicas, tokens e instruções. Não contém vetores editáveis, fonte instalável, modelos 3D, vídeos nem uma implementação do sistema. Os originais foram gerados no GPT integrado com a skill imagegen; derivados pequenos são exportações técnicas. Não há alegação de registro de marca.
 

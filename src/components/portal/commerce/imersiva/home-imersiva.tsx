@@ -25,7 +25,7 @@ import "../commerce.css";
 import "../capa/capa.css";
 
 /**
- * Home da NextLevel E-commerce, versão imersiva (D165; racional objetivo com comparativo em D219). Mesma primeira dobra (texto e oferta vindos
+ * Home da NextLevel Commerce, versão imersiva (D165; racional objetivo com comparativo em D219). Mesma primeira dobra (texto e oferta vindos
  * do Master), depois a jornada "a loja que cresce" (cinco passos, foto presa na tela), as quatro portas, a prova (lojas de
  * exemplo), a personalização interativa, temas, planos (simulador), dúvidas e a chamada final. Cada frase corresponde a algo
  * que o sistema já faz (conferido em docs/design/ecommerce-home-imersiva-previa.md).

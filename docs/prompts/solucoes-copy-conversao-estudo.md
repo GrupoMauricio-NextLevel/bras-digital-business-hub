@@ -15,7 +15,7 @@ CRM do Master com o momento do negócio e as necessidades marcadas.
 
 | Ação | Para onde vai | Quem faz |
 |---|---|---|
-| Assinar um plano da NextLevel E-commerce | cadastro da plataforma | quem já sabe que quer loja própria |
+| Assinar um plano da NextLevel Commerce | cadastro da plataforma | quem já sabe que quer loja própria |
 | "Ver e contratar" uma solução | página da solução (compra ou proposta) | quem já sabe o que falta |
 | Abrir a loja de demonstração de um tema | demonstração do tema | quem já tem loja e quer visual |
 | Montar "Sua seleção" e enviar ao diagnóstico | formulário preenchido | quem quer várias coisas |
@@ -43,11 +43,11 @@ ecossistema e da jornada (3ª seção). Hipótese forte de melhoria: subir as po
 | # | Seção | Copy atual | Ação |
 |---|---|---|---|
 | 1 | **Topo** | **O próximo nível começa com estrutura.** · Tecnologia, serviços e operações conectadas para quem vende online: loja virtual, revenda sem estoque, loja montada pela equipe, migração, temas e marketing, do mesmo grupo. Comece pelo diagnóstico gratuito e receba o próximo passo por escrito. · Selos: Diagnóstico sem custo · Preço publicado ou proposta por escrito · Sem promessa de faturamento | *Fazer diagnóstico gratuito* · *Ver soluções e preços* |
-| 2 | **Ecossistema** | **Um grupo, várias frentes.** · Quem começa numa marca encontra as outras quando o negócio pede: loja própria, revenda sem estoque, atacado e transporte. Cada produto é um sistema NextLevel. · Cartões: SuperDrop, NextLevel E-commerce, Brás Digital Club, NextLevel Cargas (frase de cada marca) | *Conhecer* (site de cada marca) |
+| 2 | **Ecossistema** | **Um grupo, várias frentes.** · Quem começa numa marca encontra as outras quando o negócio pede: loja própria, revenda sem estoque, atacado e transporte. Cada produto é um sistema NextLevel. · Cartões: SuperDrop, NextLevel Commerce, Brás Digital Club, NextLevel Cargas (frase de cada marca) | *Conhecer* (site de cada marca) |
 | 3 | **Jornada imersiva** | **Seu negócio, fase por fase.** · Fundação: *Antes de vender, organize a base.* · Lançamento: *Da estrutura à loja no ar.* · Aquisição: *Aquisição com direção e consistência.* · Otimização: *Melhore a experiência de quem já conhece você.* · Escala: *Prepare a operação para novos volumes.* · Abaixo de cada título, o objetivo da fase (vem do Master) e até 4 soluções com preço | soluções da fase (vão ao cardápio) |
 | 4 | **Portas** | **Por onde você quer começar?** · Quero começar a vender · Quero trocar de plataforma · Quero vender mais · Quero a minha própria plataforma (com uma frase cada) | filtra o cardápio |
 | 5 | **Cardápio** | **O cardápio completo, com o preço na mesa.** · Preço publicado quando é fixo; proposta por escrito quando depende do seu cenário. Pix com desconto e cartão parcelado onde o produto permite. · Busca: *O que você precisa? Ex.: sair da Nuvemshop, anúncios no Instagram* · Famílias com mosaico, preço e botões | *Assinar* · *Ver e contratar* · *Pedir proposta* · *Adicionar à seleção* |
-| 6 | **Condição da vez** | **Comece a sua loja na NextLevel E-commerce** · X dias grátis, 1º mês por R$ X e taxa de plataforma zero por X meses para clientes novos (números vêm da oferta ativa no Master) | *Ver os planos* |
+| 6 | **Condição da vez** | **Comece a sua loja na NextLevel Commerce** · X dias grátis, 1º mês por R$ X e taxa de plataforma zero por X meses para clientes novos (números vêm da oferta ativa no Master) | *Ver os planos* |
 | 7 | **Temas** | **Sua vitrine, com mais personalidade.** · Compra única, sem mensalidade. Abra a loja de demonstração e navegue antes de comprar. | *Ver a loja de demonstração* |
 | 8 | **Três caminhos** | **Três caminhos. Você escolhe.** · Fazer sozinho · Contratar um produto isolado · **Recomendado:** Evoluir pela jornada NextLevel | *Começar pelo diagnóstico* |
 | 9 | **Dúvidas** | 7 perguntas: custo do diagnóstico, preço, pagamento, verba de anúncios, migração, garantia de resultado, quem é a NextLevel | — |
@@ -165,5 +165,5 @@ ecossistema e da jornada (3ª seção). Hipótese forte de melhoria: subir as po
 - [ ] Depoimento e caso têm autorização por escrito.
 - [ ] Nenhuma promessa de faturamento, de vendas "todos os dias" ou de resultado garantido.
 - [ ] Preço sempre do catálogo do Master; oferta só enquanto estiver ativa.
-- [ ] Nome público certo: NextLevel E-commerce (não "Commerce").
+- [ ] Nome público certo: NextLevel Commerce (não "Commerce").
 - [ ] Acessibilidade: contraste, botões com texto claro, leitura sem animação.

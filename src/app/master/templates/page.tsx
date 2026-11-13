@@ -26,7 +26,7 @@ export default async function TemplatesPage() {
   const nome = (k: string) => THEME_CATALOG.find((t) => t.key === k)?.name ?? k;
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Temas" description="Os temas que o lojista escolhe para a loja. Trocar de tema nunca apaga produtos, clientes nem pedidos."
+      <PageHeader eyebrow="NextLevel Commerce" title="Temas" description="Os temas que o lojista escolhe para a loja. Trocar de tema nunca apaga produtos, clientes nem pedidos."
         actions={<Link href="/temas" target="_blank" className="ds-btn ds-btn--secondary">Ver como o visitante vê <ArrowUpRight className="size-4" aria-hidden /></Link>} />
       <OperationalPulse className="mb-6" items={[
         { label: "Temas à venda", value: lancados.length, icon: LayoutTemplate, tone: "neutral", hint: `${THEME_CATALOG.length - lancados.length} em preparação` },

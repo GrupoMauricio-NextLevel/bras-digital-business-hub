@@ -10,7 +10,7 @@ import { removerDominio, salvarDominio, verificarDominio } from "@/lib/domain/do
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { requireFeature } from "@/lib/features";
 
-/** Quem pode ligar o domínio: todo lojista E-commerce (D234); no SuperDrop, a oferta decide (sem mudança). */
+/** Quem pode ligar o domínio: todo lojista Commerce (D234); no SuperDrop, a oferta decide (sem mudança). */
 async function ctx() {
   const session = await getSession();
   if (!session) throw new ForbiddenError("Sessão expirada.");

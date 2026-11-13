@@ -7,7 +7,7 @@ import "./imersiva.css";
 
 export type PortaMarca<N extends string = string> = { foto: N; titulo: string; texto: string; href: string; cta?: string };
 
-/** Quatro portas de entrada (cartões 2:3 com foto e texto embaixo). Mesma peça da home da E-commerce (D165). */
+/** Quatro portas de entrada (cartões 2:3 com foto e texto embaixo). Mesma peça da home da Commerce (D165). */
 export function PortasMarca<N extends string>({ acervo, portas, eyebrow, titulo, texto, className }: { acervo: Acervo<N>; portas: PortaMarca<N>[]; eyebrow: string; titulo: string; texto: string; className?: string }) {
   return (
     <section id="portas" aria-labelledby="portas-t" className={`scroll-mt-16 px-4 py-16 md:py-24 ${className ?? ""}`}>

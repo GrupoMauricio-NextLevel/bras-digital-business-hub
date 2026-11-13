@@ -29,7 +29,7 @@ Cada marca nova entra com **cores + copy + fotos**; o código da jornada, das po
 
 | # | Marca | Hoje (18/10) | Falta |
 |---|---|---|---|
-| 0 | NextLevel E-commerce | Home imersiva no ar com as fotos v2 (17 de 18, D166) | Refazer `ec-jornada-2-loja.png` (paisagem) |
+| 0 | NextLevel Commerce | Home imersiva no ar com as fotos v2 (17 de 18, D166) | Refazer `ec-jornada-2-loja.png` (paisagem) |
 | 1 | SuperDrop | Cores num arquivo só (`src/lib/marcas/superdrop.ts`); jornada e portas prontas em prévia (D167) | Decisão do dono sobre a logo; fotos (Parte 4 do pedido) |
 | 2 | Brás Digital Club | Identidade pronta (D158); jornada e portas prontas em prévia (D167) | Fotos (Parte 2 do pedido) |
 | 3 | NextLevel Cargas | Tema `.im-tema-cargas`; jornada e portas prontas em prévia (D167) | Fotos (Parte 3); arquivo de identidade e logo para fundo claro |

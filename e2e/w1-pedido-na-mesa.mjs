@@ -1,5 +1,5 @@
 /**
- * W1 das melhorias (D184): na E-commerce, o lojista resolve o pedido na lista (estrela, próximo passo, atalhos), abre a
+ * W1 das melhorias (D184): na Commerce, o lojista resolve o pedido na lista (estrela, próximo passo, atalhos), abre a
  * gaveta com impressão e suspeita de fraude, ajusta o endereço na página do pedido e vê "Links de pagamento". O lojista
  * do SuperDrop não ganha o seletor de situação. Cada tela passa pelo axe e pela checagem de 360 px.
  * Uso: E2E_CM=http://cm.test:3300 E2E_SD=http://sd.test:3300 node e2e/w1-pedido-na-mesa.mjs [pasta-de-saida]
@@ -49,7 +49,7 @@ async function entrar(p, base, email) {
 const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
 const p = await ctx.newPage();
 p.on("dialog", (d) => d.type() === "prompt" ? d.accept("Endereço não bate com o CPF") : d.accept());
-await passo(p, "1. Lojista da E-commerce entra e abre os pedidos", async () => {
+await passo(p, "1. Lojista da Commerce entra e abre os pedidos", async () => {
   await entrar(p, CM, "lojista@commerce.demo");
   await p.goto(CM + "/merchant/orders", { waitUntil: "networkidle" });
   const t = await texto(p);
@@ -111,7 +111,7 @@ await passo(s, "7. SuperDrop: sem seletor de situação, sem estrela e sem atalh
   await entrar(s, SD, "dono@arena10.demo");
   await s.goto(SD + "/merchant/orders", { waitUntil: "networkidle" });
   const t = await texto(s);
-  if (/Próximo passo|Com estrela|Links de pagamento/.test(t)) throw new Error("o SuperDrop ganhou peça da E-commerce");
+  if (/Próximo passo|Com estrela|Links de pagamento/.test(t)) throw new Error("o SuperDrop ganhou peça da Commerce");
   if (await s.getByRole("button", { name: /com estrela/ }).count()) throw new Error("estrela apareceu no SuperDrop");
 });
 

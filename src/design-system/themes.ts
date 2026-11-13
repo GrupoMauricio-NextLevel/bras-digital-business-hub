@@ -73,7 +73,7 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
     light: { canvas: CAPA.claro.canvas, surface: "#FFFFFF", ink: CAPA.claro.ink, primary: CAPA.claro.acao, link: CAPA.claro.link, accent: NL.cores.turquesa, accentText: "#0B5E55", accentSoft: "#DDF7F3", reflection: CAPA.escuro.link, sideBg: CAPA.claro.menu, ring: CAPA.claro.acao },
     dark: { canvas: CAPA.escuro.canvas, surface: CAPA.escuro.surface, ink: "#F4F4F6", primary: CAPA.escuro.acao, link: CAPA.escuro.link, accent: NL.cores.turquesa, accentText: NL.cores.turquesa, reflection: CAPA.escuro.link, sideBg: CAPA.escuro.menu, ring: CAPA.escuro.link },
   },
-  // NextLevel E-commerce v1 (D163): cores do pacote oficial (`src/lib/marcas/nextlevel-ecommerce.ts`). Área de trabalho
+  // NextLevel Commerce v1 (D163): cores do pacote oficial (`src/lib/marcas/nextlevel-ecommerce.ts`). Área de trabalho
   // gelo/branca, texto e estrutura marinho, ação azul sólida (o tom mais escuro do pacote no claro, para texto branco passar
   // AA), ciano como reflexo e foco no escuro. A barra lateral fica clara no claro (painel de uso diário, pouca fadiga).
   commerce: {
@@ -190,7 +190,7 @@ export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87
 /** Degradê do botão do Agente (padrão Hostinger, D210): igual em todos os temas, lido como `--agente-*`. */
 export const AGENTE_DEGRADE = { fundo: "#0c0718", rosa: "#ff3fd1", lilas: "#b44cff", violeta: "#6a5cff", azul: "#3d8bff", coral: "#ff5a5a" } as const;
 const agenteCss = () => Object.entries(AGENTE_DEGRADE).map(([k, v]) => `--agente-${k}:${v};`).join("");
-// Junto vão as constantes `--bdc-*` da Brás Digital Club `--nlg-*` da marca-mãe e `--ec-*` do NextLevel E-commerce: nomes próprios, lidos só pelos componentes de cada uma.
+// Junto vão as constantes `--bdc-*` da Brás Digital Club `--nlg-*` da marca-mãe e `--ec-*` do NextLevel Commerce: nomes próprios, lidos só pelos componentes de cada uma.
 const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}${ecCssVars()}${agenteCss()}}`;
 
 export function themeCss(key: ThemeKey): string {

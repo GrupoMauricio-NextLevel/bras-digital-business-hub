@@ -14,7 +14,7 @@ export default async function PlacarMasterPage() {
   const { jogos } = rodada(s);
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Placar (súmula)" description="Você atualiza os dados dos concorrentes; o placar do site e dos painéis se recalcula. Jogo que deixar de ser vitória sai do ar sozinho." />
+      <PageHeader eyebrow="NextLevel Commerce" title="Placar (súmula)" description="Você atualiza os dados dos concorrentes; o placar do site e dos painéis se recalcula. Jogo que deixar de ser vitória sai do ar sozinho." />
       <div className="ds-card mb-6 overflow-x-auto p-0">
         <table className="w-full min-w-[36rem] text-sm">
           <caption className="sr-only">Resultado dos jogos</caption>

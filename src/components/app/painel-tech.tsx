@@ -4,7 +4,7 @@ import { EC_FAMILIAS } from "@/components/portal/commerce/fontes-ec";
  * Visual de tecnologia nos painéis (D224), versão contida para o trabalho do dia a dia: Space Grotesk nos títulos, Geist no
  * texto, Geist Mono nos números e rótulos do menu, cartões com borda fina em degradê. O bloco de abertura (`.ds-hero`) vira vidro
  * colorido nas cores do topo (roxo, violeta e azul), com grade leve (D225; antes era painel escuro). Entra e sai junto com a casca (como o `AreaTheme`), então vale também para diálogos e menus.
- * Ligado no painel do lojista da E-commerce, no Master e no painel do parceiro da E-commerce.
+ * Ligado no painel do lojista da Commerce, no Master e no painel do parceiro da Commerce.
  */
 const f = EC_FAMILIAS;
 const CSS = `

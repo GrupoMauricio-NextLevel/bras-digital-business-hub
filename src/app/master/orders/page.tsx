@@ -26,7 +26,7 @@ const num = "text-right tabular-nums";
 const periods = () => { const d = new Date(); return Array.from({ length: 6 }, (_, i) => periodOf(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - i, 1)))); };
 
 export default async function MasterOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; tab?: string; period?: string }> }) {
-  await levarAoEscritorio("/commerce/orders"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/commerce/orders"); // D205: tela antiga → área nova do escritório da Commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const { status, tab: rawTab, period: rawPeriod } = await searchParams;
   const tab = rawTab === "fornecedores" ? "fornecedores" : "lojas";

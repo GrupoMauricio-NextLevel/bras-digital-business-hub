@@ -17,7 +17,7 @@ const LABEL = { OPEN: "Aberta", CONVERTED: "Aceita (virou pedido)", CANCELED: "C
 export default async function ProposalsPage() {
   const session = await requireRole("STORE_OWNER");
   const rows = await listProposals(await getDb(), session.store!.id);
-  // E-commerce (D184): a proposta vira "link de pagamento" quando a loja tem o Mercado Pago conectado.
+  // Commerce (D184): a proposta vira "link de pagamento" quando a loja tem o Mercado Pago conectado.
   const commerce = (await perfilAtual(session.store!.id)).ecommerce;
   const comMp = !!session.store!.mpAccessTokenEnc;
   return (

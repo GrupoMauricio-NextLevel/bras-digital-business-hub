@@ -1,6 +1,6 @@
 # Notas de referência: painel wBuy (conta de parceiro oficial do dono)
 
-> **Para que serve:** juntar, lote a lote, o que o dono mostra do painel wBuy (plataforma de lojas virtuais da qual ele é parceiro oficial). No fim, vira um arquivo de racional e um prompt mestre para a NextLevel E-commerce (e talvez o SuperDrop).
+> **Para que serve:** juntar, lote a lote, o que o dono mostra do painel wBuy (plataforma de lojas virtuais da qual ele é parceiro oficial). No fim, vira um arquivo de racional e um prompt mestre para a NextLevel Commerce (e talvez o SuperDrop).
 >
 > **Regras:**
 > - Anotar padrões e funções, nunca copiar texto, marca, imagem ou código da wBuy.

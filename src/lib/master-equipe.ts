@@ -7,7 +7,7 @@ export type MasterFunction = (typeof MASTER_FUNCTIONS)[number];
 export const MASTER_FUNCTION_LABEL: Record<MasterFunction, string> = { COMERCIAL: "Comercial", SUPORTE: "Suporte", FINANCEIRO: "Financeiro", CONTEUDO: "Conteúdo", CONTADOR: "Contador parceiro" };
 /**
  * O que cada função vê, citando só os negócios abertos no Master (D218). `abertas` = marcasAtivasNoMaster().
- * Com só a E-commerce aberta, nada de SuperDrop, Brás ou Meu Contador no texto; o contador parceiro nem aparece.
+ * Com só a Commerce aberta, nada de SuperDrop, Brás ou Meu Contador no texto; o contador parceiro nem aparece.
  */
 export function dicaDaFuncao(fn: MasterFunction, abertas: readonly string[]): string {
   const sd = abertas.includes("SUPERDROP"), bras = abertas.includes("BRAS_DIGITAL");

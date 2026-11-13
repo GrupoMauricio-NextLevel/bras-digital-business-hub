@@ -20,7 +20,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
   if (sf.store.showcaseTheme) return <DemoCheckout slug={slug} themeKey={sf.store.showcaseTheme} themeName={THEME_BY_KEY[sf.store.showcaseTheme]?.name ?? "do tema"} />;
   const db = await getDb();
   const aceitaCartao = lojaAceitaCartao(await brandCodeOfStore(db, sf.store));
-  // Carrinho abandonado (D186): o pedido de lembrete só aparece na loja independente da E-commerce.
+  // Carrinho abandonado (D186): o pedido de lembrete só aparece na loja independente da Commerce.
   const lembrete = (await storeModality(db, sf.store.id)) === "INDEPENDENT";
   return <CheckoutForm slug={slug} storeName={sf.store.name} minOrderCents={sf.store.minOrderCents} aceitaCartao={aceitaCartao} lembrete={lembrete} />;
 }

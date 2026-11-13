@@ -49,7 +49,7 @@ describe("ERP da loja", () => {
     const s = (await ctx.db.select().from(stores).where(eq(stores.id, l.storeId)))[0]!;
     expect(s.erpTokenEnc).not.toContain(TOKEN);
     expect(decryptSecret(s.erpTokenEnc)).toBe(TOKEN);
-    await expect(conectarErp(ctx.db, ctx.actors.arena, { provider: "TINY", token: TOKEN }, t.f)).rejects.toThrow(/E-commerce/);
+    await expect(conectarErp(ctx.db, ctx.actors.arena, { provider: "TINY", token: TOKEN }, t.f)).rejects.toThrow(/Commerce/);
   });
 
   it("pedido pago vai uma vez só, com SKU, valores em reais e o número do Tiny", async () => {

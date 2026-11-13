@@ -25,14 +25,14 @@ usa o aparelho**. Se a pessoa está atrás do notebook olhando para a câmera, a
 
 ---
 
-## Pacote 0. NextLevel E-commerce: refazer 1 foto (`ecommerce-fotos-v2-correcao.zip`)
+## Pacote 0. NextLevel Commerce: refazer 1 foto (`ecommerce-fotos-v2-correcao.zip`)
 
 A paisagem da jornada 2 saiu com a tela do notebook virada para a câmera. As outras 17 fotos v2 já estão no ar e **não** precisam ser refeitas.
 
 ### Instrução de execução (cole primeiro)
 
 ```
-Você vai gerar um pacote de 1 imagens PNG para a página de vendas da NextLevel E-commerce (plataforma de lojas virtuais).
+Você vai gerar um pacote de 1 imagens PNG para a página de vendas da NextLevel Commerce (plataforma de lojas virtuais).
 Siga integralmente o prompt mestre e cada pedido que eu colar a seguir.
 
 Regras essenciais:
@@ -57,7 +57,7 @@ Responda apenas "Pronto para o prompt mestre".
 
 ```
 Você é diretor de fotografia, diretor de elenco e diretor de arte de uma campanha publicitária brasileira de alto nível
-para a NextLevel E-commerce, plataforma de lojas virtuais para pequenas e médias marcas brasileiras (moda, fitness,
+para a NextLevel Commerce, plataforma de lojas virtuais para pequenas e médias marcas brasileiras (moda, fitness,
 infantil, camisa de time, acessórios, beleza). Vamos produzir uma série de fotografias para a página principal do site.
 Cada pedido gera UMA imagem, nunca grade, colagem, storyboard ou várias cenas numa imagem.
 

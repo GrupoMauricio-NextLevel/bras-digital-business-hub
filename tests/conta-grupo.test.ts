@@ -88,7 +88,7 @@ describe("trocar de perfil e entrar em outra marca", () => {
     expect((await profileForHost(ctx.db, fresh, superdrop()))?.id).toBe(mantos.id);
   });
 
-  it("a barra do ecossistema mostra a marca do outro perfil em 'Suas marcas' (nunca o SuperDrop dentro da E-commerce, D164)", async () => {
+  it("a barra do ecossistema mostra a marca do outro perfil em 'Suas marcas' (nunca o SuperDrop dentro da Commerce, D164)", async () => {
     const ju = await lojaCommerce();
     await linkProfile(ctx.db, ju.actor, { email: await mantosEmail(), password: DEMO_PASSWORD, consent: true });
     await saveEcoSettings(ctx.db, ctx.actors.master, { brands: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] });

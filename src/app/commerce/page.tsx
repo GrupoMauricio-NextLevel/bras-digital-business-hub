@@ -22,9 +22,9 @@ export default async function CommercePage() {
 
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce · Administração" title="Lojas digitais, como um negócio" description="Só as operações da NextLevel E-commerce: lojas, assinaturas, vendas, catálogo e aquisição de novos lojistas." />
+      <PageHeader eyebrow="NextLevel Commerce · Administração" title="Lojas digitais, como um negócio" description="Só as operações da NextLevel Commerce: lojas, assinaturas, vendas, catálogo e aquisição de novos lojistas." />
 
-      <section className="ds-kpis mb-6" aria-label="Resumo da E-commerce">
+      <section className="ds-kpis mb-6" aria-label="Resumo da Commerce">
         <MetricCard label="Lojas" value={k.stores} hint={`${k.published} publicadas · desde o início`} />
         <MetricCard label="Pagantes" value={k.paying} hint={`${k.trial} em teste${k.cortesia ? ` · ${k.cortesia} cortesia` : ""}`} />
         <MetricCard label="Vendas · mês" value={formatBRL(k.salesMonthCents)} hint={`${k.ordersMonth} pedidos pagos`} />

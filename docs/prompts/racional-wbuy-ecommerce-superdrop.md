@@ -1,4 +1,4 @@
-# Racional e prompt mestre: o que melhorar na NextLevel E-commerce (e no SuperDrop), a partir do painel wBuy
+# Racional e prompt mestre: o que melhorar na NextLevel Commerce (e no SuperDrop), a partir do painel wBuy
 
 > **Origem:** 9 lotes de capturas do painel wBuy que o dono enviou em 2026-10-27, tiradas da conta de parceiro oficial dele. As notas brutas estão em `docs/referencias/wbuy-painel-notas.md`.
 > **Método (skills):**
@@ -274,7 +274,7 @@ A ordem segue "confiança antes de recurso": primeiro o lojista entende o que pa
 ## Parte 5. Prompt mestre (cole numa sessão de trabalho)
 
 ```text
-Você vai desenvolver, por ondas, as melhorias da NextLevel E-commerce (e o que couber ao SuperDrop)
+Você vai desenvolver, por ondas, as melhorias da NextLevel Commerce (e o que couber ao SuperDrop)
 descritas em docs/prompts/racional-wbuy-ecommerce-superdrop.md.
 
 ANTES DE COMEÇAR

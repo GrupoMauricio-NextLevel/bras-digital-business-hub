@@ -57,7 +57,7 @@ export function PlacarGoleada({ jogos, atualizadoEm, cta, rotuloCta = "Quero jog
       <div className="pl-telao" aria-live="polite">
         <p className="pl-ao-vivo"><span aria-hidden className="pl-ponto" />AO VIVO · dados de {quando}</p>
         <div className="pl-linha">
-          <div className="pl-time pl-time--nos"><span className="pl-nome">NEXTLEVEL</span><span className="pl-plano">E-commerce</span></div>
+          <div className="pl-time pl-time--nos"><span className="pl-nome">NEXTLEVEL</span><span className="pl-plano">Commerce</span></div>
           <div className="pl-gols" aria-label={`NextLevel ${atual.nextlevel} a ${atual.adversario} ${atual.rival}`}>
             <b className="pl-num pl-num--nos">{n}</b><span aria-hidden className="pl-x">×</span><b className="pl-num">{atual.adversario}</b>
           </div>

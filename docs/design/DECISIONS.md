@@ -3499,3 +3499,13 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - `lojas.nextlevelgroup.com.br` fica alguns meses só redirecionando, porque há links já enviados (US$ 0,25 por mês).
 - **Custo:** cada domínio além dos 2 do plano custa US$ 0,25 por mês no Render.
 
+## D288 — [E-commerce] O nome da marca passa a ser "NextLevel Commerce" (2026-11-13)
+- **Decisão do dono:** parar de usar "NextLevel E-commerce" e usar "NextLevel Commerce" em todo o sistema. O nome casa com o domínio `nextlevelcommerce.com.br` (D287).
+- **Feito no código:**
+  - "NextLevel E-commerce" vira "NextLevel Commerce" em todo `src/`, nos testes e nos documentos vivos (o histórico em DECISIONS e nos relatórios fica como foi escrito);
+  - o nome curto "E-commerce" vira "Commerce": menu, seletor do Master, rótulos e "Administração Commerce".
+  - Ficam como estão: a expressão de mercado "O Clássico do E-commerce", a palavra e-commerce em minúsculas e a etiqueta `[E-commerce]` dos títulos de decisão (convenção interna da frente).
+- **Termos de uso:** o título passa a "Termos de uso da plataforma NextLevel Commerce", na versão `2026-11-13`. Pela regra da D279, cada dono de loja aceita de novo no próximo acesso.
+- **Contratos:** os já enviados ficam como foram (texto congelado); os novos saem com o nome novo.
+- **Pendente (arte):** os logos ainda mostram "E-commerce". O racional e os prompts para o gerador de imagens estão em `docs/marcas/nextlevel-commerce-logo-racional.md`, e o dono gera as imagens.
+

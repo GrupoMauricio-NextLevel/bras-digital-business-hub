@@ -2,7 +2,7 @@
 
 ## 1. Papel da marca
 
-NextLevel E-commerce é a plataforma de lojas virtuais, não a marca-mãe nem uma agência genérica. Deve transmitir estrutura, movimento e clareza operacional. O parentesco com NextLevel vem da tipografia avançada e do universo azul. A distinção vem do símbolo NE arredondado, do nome completo e da organização do produto.
+NextLevel Commerce é a plataforma de lojas virtuais, não a marca-mãe nem uma agência genérica. Deve transmitir estrutura, movimento e clareza operacional. O parentesco com NextLevel vem da tipografia avançada e do universo azul. A distinção vem do símbolo NE arredondado, do nome completo e da organização do produto.
 
 O símbolo combina um N de fita contínua com três barras que sugerem E. A continuidade remete à passagem entre etapas da operação; as barras sugerem módulos conectados, não três funcionalidades específicas. Não afirmar que representa recursos certificados, inteligência artificial própria ou capacidades não verificadas.
 

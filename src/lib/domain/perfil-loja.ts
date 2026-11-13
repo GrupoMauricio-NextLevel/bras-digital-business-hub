@@ -14,9 +14,9 @@ import { storeModality, type StoreModality } from "./order-policy";
 
 /**
  * Perfil da loja (D172): UMA resposta para "que loja é esta e o que ela pode usar", calculada uma vez por requisição e lida
- * por todas as telas. Fim das decisões soltas "é E-commerce?" espalhadas pelas telas, origem dos vazamentos do SuperDrop.
+ * por todas as telas. Fim das decisões soltas "é Commerce?" espalhadas pelas telas, origem dos vazamentos do SuperDrop.
  * - SuperDrop: o que a loja pode usar continua vindo da oferta dela (`OFFER_FEATURES`), sem mudança nenhuma.
- * - NextLevel E-commerce: não tem ofertas do SuperDrop. O que pode usar vem do PLANO (Start, Pro, Scale), numa tabela editável
+ * - NextLevel Commerce: não tem ofertas do SuperDrop. O que pode usar vem do PLANO (Start, Pro, Scale), numa tabela editável
  *   no Master (`ecommerce.recursos-por-plano`); padrão aprovado pelo dono em 19/10: tudo liberado nos três planos.
  * Direitos comprados à parte (entitlements) somam, nunca tiram.
  */
@@ -26,7 +26,7 @@ export type PerfilLoja = {
   modalidade: StoreModality;
   independente: boolean;
   ecommerce: boolean;
-  /** Oferta do SuperDrop. Nula na E-commerce (lá vale o plano). */
+  /** Oferta do SuperDrop. Nula na Commerce (lá vale o plano). */
   oferta: OfferKey | null;
   plano: { productKey: string; status: string } | null;
   pode: Record<FeatureKey, boolean>;
@@ -34,13 +34,13 @@ export type PerfilLoja = {
 };
 export type Vocabulario = { produto: string; quemPrepara: string; custo: string; custoDebitado: string | null };
 
-/** Recursos que só existem no SuperDrop (saldo para a Central e etiqueta da Central): nunca na E-commerce. */
+/** Recursos que só existem no SuperDrop (saldo para a Central e etiqueta da Central): nunca na Commerce. */
 export const SO_SUPERDROP: readonly FeatureKey[] = ["wallet", "labels"];
 export const RECURSOS_ECOMMERCE = FEATURES.filter((f) => !SO_SUPERDROP.includes(f));
 export const PLANOS_ECOMMERCE = ["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"] as const;
 export type PlanoEcommerce = (typeof PLANOS_ECOMMERCE)[number];
 
-/** Nome de cada recurso na língua da E-commerce (o `FEATURE_INFO` fala a do SuperDrop: "Catálogo da Central"). */
+/** Nome de cada recurso na língua da Commerce (o `FEATURE_INFO` fala a do SuperDrop: "Catálogo da Central"). */
 export const ROTULO_ECOMMERCE: Record<(typeof RECURSOS_ECOMMERCE)[number], string> = {
   manualOrders: "Pedidos manuais (WhatsApp, Instagram, balcão)", catalog: "Catálogo de produtos", customers: "Clientes", financeBasic: "Financeiro da loja",
   services: "Serviços e módulos extras", storefront: "Loja virtual", appearanceBasic: "Aparência (logo, cores, textos)", templatesStarter: "Modelos de loja básicos",
@@ -52,7 +52,7 @@ const KEY = "ecommerce.recursos-por-plano";
 const recursoSchema = z.enum(RECURSOS_ECOMMERCE as [FeatureKey, ...FeatureKey[]]);
 export const tabelaSchema = z.object(Object.fromEntries(PLANOS_ECOMMERCE.map((p) => [p, z.array(recursoSchema)])) as Record<PlanoEcommerce, z.ZodArray<typeof recursoSchema>>);
 export type TabelaRecursos = z.infer<typeof tabelaSchema>;
-/** Padrão (dono, 19/10/2026): os três planos liberam tudo o que existe na E-commerce. */
+/** Padrão (dono, 19/10/2026): os três planos liberam tudo o que existe na Commerce. */
 export const TABELA_PADRAO: TabelaRecursos = Object.fromEntries(PLANOS_ECOMMERCE.map((p) => [p, [...RECURSOS_ECOMMERCE]])) as TabelaRecursos;
 
 export async function tabelaRecursos(db: Database): Promise<TabelaRecursos> {
@@ -70,9 +70,9 @@ export async function salvarTabelaRecursos(db: Database, actor: Actor, raw: unkn
 }
 
 const VOC_SUPERDROP: Vocabulario = { produto: "SuperDrop", quemPrepara: "Central", custo: "Custo à Central", custoDebitado: "Custo debitado do saldo" };
-const VOC_ECOMMERCE: Vocabulario = { produto: "NextLevel E-commerce", quemPrepara: "Sua loja", custo: "Custo dos produtos", custoDebitado: null };
+const VOC_ECOMMERCE: Vocabulario = { produto: "NextLevel Commerce", quemPrepara: "Sua loja", custo: "Custo dos produtos", custoDebitado: null };
 
-/** Mapa de recursos da loja da E-commerce para um plano (sem plano = Start). Puro. */
+/** Mapa de recursos da loja da Commerce para um plano (sem plano = Start). Puro. */
 export function recursosDoPlano(tabela: TabelaRecursos, productKey: string | null | undefined): Record<FeatureKey, boolean> {
   const plano = (PLANOS_ECOMMERCE as readonly string[]).includes(productKey ?? "") ? (productKey as PlanoEcommerce) : "COMMERCE_START";
   const on = new Set(tabela[plano]);
@@ -85,7 +85,7 @@ export function montarPerfil(f: { store: Pick<Store, "id" | "offer">; marca: Bra
   const base = ecommerce ? recursosDoPlano(f.tabela, f.plano?.productKey) : { ...OFFER_FEATURES[f.store.offer] };
   // Direito comprado à parte soma (chave do entitlement = nome do recurso).
   for (const k of FEATURES) if (f.direitos.has(k) && !(ecommerce && SO_SUPERDROP.includes(k))) base[k] = true;
-  // D234: domínio próprio é de todo lojista E-commerce, em qualquer plano (não depende da tabela do Master).
+  // D234: domínio próprio é de todo lojista Commerce, em qualquer plano (não depende da tabela do Master).
   if (ecommerce) base.customDomain = true;
   return {
     storeId: f.store.id, marca: f.marca, modalidade: f.modalidade, independente: f.modalidade === "INDEPENDENT", ecommerce,

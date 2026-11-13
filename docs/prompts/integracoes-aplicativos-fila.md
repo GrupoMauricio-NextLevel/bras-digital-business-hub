@@ -1,4 +1,4 @@
-# Fila de integrações (aplicativos) da NextLevel E-commerce, da mais fácil para a mais difícil
+# Fila de integrações (aplicativos) da NextLevel Commerce, da mais fácil para a mais difícil
 
 > **Origem:** a área de aplicativos do painel wBuy (lotes 5 a 7, em `docs/referencias/wbuy-painel-notas.md`), comparada com o que já existe no código em 2026-10-27.
 > **Uso:** cada item é uma tarefa pronta para programar. Diga "faça a integração I-xx" numa sessão e siga as regras do fim.

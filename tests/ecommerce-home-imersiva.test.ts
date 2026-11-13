@@ -3,8 +3,8 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EC_HOME_BASE, EC_HOME_FOTOS, EC_HOME_PROVISORIAS } from "@/lib/marcas/ecommerce-home-imagens";
 
-/** Home imersiva da E-commerce (D165): imagens do manifesto existem e a home e a entrada usam as fotos novas. */
-describe("home imersiva da E-commerce", () => {
+/** Home imersiva da Commerce (D165): imagens do manifesto existem e a home e a entrada usam as fotos novas. */
+describe("home imersiva da Commerce", () => {
   it("cada foto do manifesto tem AVIF e WebP nas duas larguras", () => {
     const faltando: string[] = [];
     for (const [nome, f] of Object.entries(EC_HOME_FOTOS)) for (const w of f.larguras) for (const ext of ["avif", "webp"]) {
@@ -25,7 +25,7 @@ describe("home imersiva da E-commerce", () => {
     expect(EC_HOME_PROVISORIAS).toBe(false); // fotos definitivas (D165)
   });
 
-  it("a home da E-commerce é a imersiva e a foto da entrada é a do mesmo ateliê", async () => {
+  it("a home da Commerce é a imersiva e a foto da entrada é a do mesmo ateliê", async () => {
     const portal = readFileSync(join(process.cwd(), "src/app/(portal)/page.tsx"), "utf8");
     expect(portal).toMatch(/<HomeImersivaEc brand=\{brand\} \/>/);
     const { loginPhotoFor } = await import("@/components/auth/auth-photo");

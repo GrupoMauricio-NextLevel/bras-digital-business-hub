@@ -24,7 +24,7 @@ export async function ProductsBody({ supplierId, base = "/supplier/products", in
   const draft = rows.filter((r) => r.status === "DRAFT").length;
   const low = rows.filter((r) => r.available > 0 && r.available < 10).length;
   const out = rows.filter((r) => r.available === 0).length;
-  // E-commerce (D211): lista produto a produto com o botão que resolve, no lugar da fila só com contagens.
+  // Commerce (D211): lista produto a produto com o botão que resolve, no lugar da fila só com contagens.
   const urgentes = commerce ? produtosQuePrecisamDeVoce(rows) : [];
   const filtrando = commerce && ver === "atencao";
   const lista = filtrando ? rows.filter((r) => urgentes.some((u) => u.id === r.id)) : rows;

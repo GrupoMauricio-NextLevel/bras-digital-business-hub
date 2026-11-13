@@ -4,7 +4,7 @@ import { groupLinkFor } from "@/lib/host-routing";
 import { MASTER_MARCA_COOKIE, ehMarcaMaster, marcasAtivasNoMaster, type MarcaMaster } from "@/lib/master-marca";
 import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
-/** Cookie do modo prévia: `/lojas` liga a NextLevel E-commerce num endereço que ainda não é dela. Só na demonstração (D149). */
+/** Cookie do modo prévia: `/lojas` liga a NextLevel Commerce num endereço que ainda não é dela. Só na demonstração (D149). */
 export const BRAND_PREVIEW_COOKIE = "nl-brand";
 
 /** Link para uma página do grupo (Soluções, Loja NextLevel) visto do endereço atual: relativo no grupo e em endereço técnico; nas marcas, o do site do grupo (D149). */
@@ -60,7 +60,7 @@ export async function requireBrandFeature(feature: "dropship" | "partners" | "si
 }
 
 /**
- * Escritório da E-commerce (D205): com só a E-commerce aberta no Master, as telas antigas que viraram duplicadas levam
+ * Escritório da Commerce (D205): com só a Commerce aberta no Master, as telas antigas que viraram duplicadas levam
  * direto para a área nova. Com mais marcas abertas, cada tela volta a abrir normalmente.
  */
 export async function levarAoEscritorio(destino: string): Promise<void> {

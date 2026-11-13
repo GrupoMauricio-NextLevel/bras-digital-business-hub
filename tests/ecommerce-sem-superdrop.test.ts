@@ -7,12 +7,12 @@ import { attentionFor, stageLabelsFor, stagesFor } from "@/lib/domain/after-sale
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
 import { montarPerfil, TABELA_PADRAO } from "@/lib/domain/perfil-loja";
 
-/** D164: nada de SuperDrop na NextLevel E-commerce (fio do grupo, pós-venda da loja independente, nome dos planos). */
+/** D164: nada de SuperDrop na NextLevel Commerce (fio do grupo, pós-venda da loja independente, nome dos planos). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 
-describe("E-commerce sem SuperDrop", () => {
-  it("fio e lançador da E-commerce não listam o SuperDrop; o do SuperDrop continua igual", async () => {
+describe("Commerce sem SuperDrop", () => {
+  it("fio e lançador da Commerce não listam o SuperDrop; o do SuperDrop continua igual", async () => {
     await saveEcoSettings(ctx.db, ctx.actors.master, { brands: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] });
     const ec = (await ecosystemBar(ctx.db, "NEXTLEVEL_COMMERCE"))!;
     const marcas = [...ec.segments.map((s) => s.brand), ...ec.all.map((i) => i.brand), ...ec.recommended.map((i) => i.brand)];
@@ -30,17 +30,17 @@ describe("E-commerce sem SuperDrop", () => {
     expect(attentionFor("IN_DISPATCH", 50)).toMatch(/Central/);
   });
 
-  it("Master vê pedido de loja E-commerce com o vocabulário dela (D169)", () => {
+  it("Master vê pedido de loja Commerce com o vocabulário dela (D169)", () => {
     const pagina = readFileSync(join(process.cwd(), "src/app/master/orders/[id]/page.tsx"), "utf8");
     expect(pagina).toMatch(/independent=\{modality === "INDEPENDENT"\}/);
-    expect(pagina).toMatch(/marca === "NEXTLEVEL_COMMERCE" \? "NextLevel E-commerce" : "SuperDrop"/);
+    expect(pagina).toMatch(/marca === "NEXTLEVEL_COMMERCE" \? "NextLevel Commerce" : "SuperDrop"/);
     const detalhe = readFileSync(join(process.cwd(), "src/components/shared/order-detail.tsx"), "utf8");
     expect(detalhe).toMatch(/const quemLoja = role === "STORE_OWNER" \? "Sua loja" : "Loja"/);
-    // Lista de lojas do Master: loja da E-commerce sem a "oferta" do SuperDrop (vale o plano, na coluna ao lado).
+    // Lista de lojas do Master: loja da Commerce sem a "oferta" do SuperDrop (vale o plano, na coluna ao lado).
     expect(readFileSync(join(process.cwd(), "src/app/master/stores/page.tsx"), "utf8")).toMatch(/r\.brand === "NEXTLEVEL_COMMERCE" \? <span[^>]*>—<\/span> : <StatusBadge value=\{r\.store\.offer\} \/>/);
   });
 
-  it("análise de vendas liberada na E-commerce, sem cartão de oferta do SuperDrop (D170)", () => {
+  it("análise de vendas liberada na Commerce, sem cartão de oferta do SuperDrop (D170)", () => {
     const perfil = (marca: "NEXTLEVEL_COMMERCE" | "SUPERDROP", offer: "STORE_SUBDOMAIN" | "STORE_OWN") => montarPerfil({ store: { id: "s", offer }, marca, modalidade: marca === "SUPERDROP" ? "NETWORK" : "INDEPENDENT", plano: null, tabela: TABELA_PADRAO, direitos: new Set() });
     expect(perfil("NEXTLEVEL_COMMERCE", "STORE_SUBDOMAIN").pode.analytics).toBe(true);
     expect(perfil("SUPERDROP", "STORE_SUBDOMAIN").pode.analytics).toBe(false);

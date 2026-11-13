@@ -4,7 +4,7 @@ import { usoDoPlano } from "@/lib/domain/beneficios-plano";
 
 /**
  * Barra de uso do plano (D247): produtos ou pessoas, com aviso aos 80% e o caminho para mudar de plano.
- * Só na E-commerce (quem chama decide). Sem limite = mostra só o número.
+ * Só na Commerce (quem chama decide). Sem limite = mostra só o número.
  */
 export async function UsoDoPlano({ storeId, recurso }: { storeId: string; recurso: "produtos" | "pessoas" }) {
   const u = await usoDoPlano(await getDb(), storeId);

@@ -1,5 +1,5 @@
 /**
- * Integrações da NextLevel E-commerce para as páginas públicas (D192). Fonte única do que pode ser anunciado: só entra
+ * Integrações da NextLevel Commerce para as páginas públicas (D192). Fonte única do que pode ser anunciado: só entra
  * aqui o que já existe no código (D187 a D191). Em construção não entra. O nome de cada serviço é só texto (sem logo de
  * terceiros) e o "como liga" diz o que o lojista faz, para não parecer mais fácil do que é.
  */

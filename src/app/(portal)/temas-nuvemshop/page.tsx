@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: { title: "NextLevel Temas para Nuvemshop", description: "A sua loja com cara de marca, sem trocar de plataforma." },
 };
 
-/** NextLevel Temas para Nuvemshop (D282): serviço da agência; hoje só no site da E-commerce, depois em Soluções. */
+/** NextLevel Temas para Nuvemshop (D282): serviço da agência; hoje só no site da Commerce, depois em Soluções. */
 export default async function TemasNuvemshopPage() {
   const brand = await getBrand();
   if (brand.code !== "NEXTLEVEL_COMMERCE" || brand.soon) notFound();

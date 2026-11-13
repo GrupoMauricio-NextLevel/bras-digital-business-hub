@@ -90,7 +90,7 @@ export async function reviewAttributionAction(storeId: string, release: boolean)
   return runAction(async () => { const { session, db } = await ctx(); await reviewAttribution(db, session.actor, storeId, release); refresh(); return undefined; });
 }
 
-/** Parceiro da E-commerce pede para ser agência parceira (D220); o Master aprova. */
+/** Parceiro da Commerce pede para ser agência parceira (D220); o Master aprova. */
 export async function pedirAgenciaAction(info: string) {
   return runAction(async () => {
     const { session, db } = await ctx();

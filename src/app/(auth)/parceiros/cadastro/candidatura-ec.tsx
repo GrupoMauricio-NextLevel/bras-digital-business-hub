@@ -13,7 +13,7 @@ const PASSOS = ["Perfil", "Dados", "Sobre você", "Aceite"] as const;
 const num = (v: string) => (v.trim() === "" ? null : Math.max(0, Math.round(Number(v.replace(/\D/g, "")) || 0)));
 
 /**
- * Cadastro em etapas do parceiro da E-commerce (D252, PV4): perfil → dados → qualificação → aceite. A conta nasce na hora
+ * Cadastro em etapas do parceiro da Commerce (D252, PV4): perfil → dados → qualificação → aceite. A conta nasce na hora
  * (link pronto) e a candidatura entra no funil do Master como Candidato, com a qualificação na linha do tempo.
  */
 export function CandidaturaEc({ termsVersion, inicial }: { termsVersion: string; inicial: PerfilCaptacao }) {

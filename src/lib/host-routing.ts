@@ -50,7 +50,7 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
   // Brás Digital Club com um endereço principal só (D158): os outros endereços da marca (www, o antigo bras.nextlevelgroup.com.br)
   // levam ao endereço da marca no ar, mesmo caminho. Sem efeito enquanto o endereço no ar for o único que responde.
-  // NextLevel E-commerce com um endereço principal só (D281): com BRAND_URL_NEXTLEVEL_COMMERCE apontando para o domínio novo,
+  // NextLevel Commerce com um endereço principal só (D281): com BRAND_URL_NEXTLEVEL_COMMERCE apontando para o domínio novo,
   // os outros endereços da marca (o antigo lojas.nextlevelgroup.com.br, o www) levam ao novo, mesmo caminho, redirecionamento
   // permanente (bom para o Google). Só páginas abertas com GET: /api/* (avisos do Mercado Pago, rotinas) e formulários
   // continuam respondendo no endereço em que chegaram.

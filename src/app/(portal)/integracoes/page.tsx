@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Mercado Pago, Melhor Envio, Frenet, Correios com contrato, Google, Meta, TikTok, Tiny, Omie e mais: o que a loja conecta hoje e o que você precisa para ligar.",
 };
 
-/** Integrações da NextLevel E-commerce (D192): só o que já existe, com o que o lojista faz para ligar. */
+/** Integrações da NextLevel Commerce (D192): só o que já existe, com o que o lojista faz para ligar. */
 export default async function IntegracoesPage() {
   const brand = await getBrand();
   if (brand.code !== "NEXTLEVEL_COMMERCE" || brand.soon) notFound();

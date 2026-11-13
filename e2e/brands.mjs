@@ -1,5 +1,5 @@
 /**
- * N0: marcas por domínio. O mesmo servidor responde como NextLevel E-commerce (nextlevelgroup.com.br) ou SuperDrop (padrão).
+ * N0: marcas por domínio. O mesmo servidor responde como NextLevel Commerce (nextlevelgroup.com.br) ou SuperDrop (padrão).
  * Simula o domínio com o cabeçalho x-forwarded-host. Uso: E2E_BASE=http://localhost:3100 node e2e/brands.mjs
  */
 import { chromium } from "playwright-core";
@@ -12,20 +12,20 @@ const bad = []; const fail = (m) => bad.push(m); const ok = (m) => console.log("
 const axe = async (p) => { await p.emulateMedia({ reducedMotion: "reduce" }); await p.evaluate(axeSource); return p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] } })).violations.filter((x) => ["serious", "critical"].includes(x.impact)).map((x) => x.id + ":" + (x.nodes[0]?.html ?? "").slice(0, 90))); };
 const ctxFor = (host, w = 1280) => b.newContext({ viewport: { width: w, height: 900 }, extraHTTPHeaders: host ? { "x-forwarded-host": host } : {} });
 
-// NextLevel E-commerce (domínio da holding usado para lojas virtuais)
+// NextLevel Commerce (domínio da holding usado para lojas virtuais)
 for (const w of [390, 1280]) {
   const c = await ctxFor("lojas.nextlevelgroup.com.br", w); const p = await c.newPage();
   p.on("pageerror", (e) => fail("pageerror commerce: " + e.message));
   await p.goto(B + "/", { waitUntil: "networkidle" }); await p.waitForTimeout(1000);
   const h1 = await p.getByRole("heading", { level: 1 }).innerText();
   if (!/loja virtual/i.test(h1)) fail(`@${w}: h1 da marca errado: ${h1}`);
-  if (/SuperDrop/.test(await p.locator("body").innerText())) fail(`@${w}: SuperDrop apareceu no portal da NextLevel E-commerce`);
+  if (/SuperDrop/.test(await p.locator("body").innerText())) fail(`@${w}: SuperDrop apareceu no portal da NextLevel Commerce`);
   if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) fail(`@${w}: rolagem horizontal`);
-  if (!(await p.title()).includes("NextLevel E-commerce")) fail(`@${w}: título sem a marca: ${await p.title()}`);
+  if (!(await p.title()).includes("NextLevel Commerce")) fail(`@${w}: título sem a marca: ${await p.title()}`);
   const v = await axe(p); if (v.length) fail(`@${w}: axe ${v.join(" | ")}`);
   await c.close();
 }
-ok("portal NextLevel E-commerce (390 e 1280): título, texto, sem SuperDrop, sem rolagem, axe limpo");
+ok("portal NextLevel Commerce (390 e 1280): título, texto, sem SuperDrop, sem rolagem, axe limpo");
 
 const c = await ctxFor("lojas.nextlevelgroup.com.br"); const p = await c.newPage();
 p.on("pageerror", (e) => fail("pageerror: " + e.message));
@@ -35,28 +35,28 @@ for (const [path, expect] of [["/cadastro", "/quero-minha-loja"], ["/seja-fornec
 }
 ok("páginas de outra marca redirecionam (cadastro fechado, fornecedor e parceiros)");
 await p.goto(B + "/planos", { waitUntil: "networkidle" });
-if (!(await p.getByText("Os planos da NextLevel E-commerce").count())) fail("planos sem a variante da marca");
+if (!(await p.getByText("Os planos da NextLevel Commerce").count())) fail("planos sem a variante da marca");
 await p.goto(B + "/faq", { waitUntil: "networkidle" });
-if (!(await p.getByText("O que é a NextLevel E-commerce?").count())) fail("faq sem a variante da marca");
+if (!(await p.getByText("O que é a NextLevel Commerce?").count())) fail("faq sem a variante da marca");
 
-// Prévia por caminho: superdrop.com.br/lojas mostra a NextLevel E-commerce; /lojas/sair volta ao SuperDrop
+// Prévia por caminho: superdrop.com.br/lojas mostra a NextLevel Commerce; /lojas/sair volta ao SuperDrop
 const pv = await ctxFor(null); const pp = await pv.newPage();
 await pp.goto(B + "/lojas", { waitUntil: "networkidle" });
 if (new URL(pp.url()).pathname !== "/") fail("/lojas deveria levar ao início: " + pp.url());
-if (!/loja virtual/i.test(await pp.getByRole("heading", { level: 1 }).innerText())) fail("/lojas não mostrou a NextLevel E-commerce");
+if (!/loja virtual/i.test(await pp.getByRole("heading", { level: 1 }).innerText())) fail("/lojas não mostrou a NextLevel Commerce");
 await pp.goto(B + "/planos", { waitUntil: "networkidle" });
-if (!(await pp.getByText("Os planos da NextLevel E-commerce").count())) fail("prévia não vale nas outras páginas");
+if (!(await pp.getByText("Os planos da NextLevel Commerce").count())) fail("prévia não vale nas outras páginas");
 await pp.goto(B + "/lojas/sair", { waitUntil: "networkidle" });
 if (!/sem estoque/i.test(await pp.getByRole("heading", { level: 1 }).innerText())) fail("/lojas/sair não voltou ao SuperDrop");
 await pv.close();
-ok("prévia por caminho: /lojas liga a NextLevel E-commerce e /lojas/sair volta ao SuperDrop");
+ok("prévia por caminho: /lojas liga a NextLevel Commerce e /lojas/sair volta ao SuperDrop");
 
 // Cada marca é uma casa: conta presa à marca, painel com a cara da marca, menu sem o que a marca não usa
 const lc = await ctxFor("lojas.nextlevelgroup.com.br"); const lp = await lc.newPage();
 lp.on("pageerror", (e) => fail("pageerror login commerce: " + e.message));
 const tryLogin = async (pg, email) => { await pg.goto(B + "/login", { waitUntil: "networkidle" }); await pg.getByLabel("E-mail").fill(email); await pg.getByLabel("Senha").fill("demo1234"); await pg.getByRole("button", { name: /Entrar/ }).click(); };
 await lp.goto(B + "/login", { waitUntil: "networkidle" });
-if (!(await lp.getByRole("img", { name: /NextLevel E-commerce/ }).count())) fail("login da Commerce sem a logo da marca");
+if (!(await lp.getByRole("img", { name: /NextLevel Commerce/ }).count())) fail("login da Commerce sem a logo da marca");
 if (/SuperDrop/.test(await lp.locator("body").innerText())) fail("login da Commerce mostra SuperDrop");
 await tryLogin(lp, "dono@mantosshop.demo");
 await lp.waitForSelector("text=Sua conta é da SuperDrop", { timeout: 30000 }); ok("lojista do SuperDrop não entra pelo endereço da Commerce e vê o endereço certo");
@@ -64,7 +64,7 @@ await tryLogin(lp, "master@nextlevel.demo");
 await lp.waitForURL(/\/master\/commerce/, { timeout: 60000 }); await lp.waitForLoadState("networkidle");
 const menu = await lp.locator("aside").first().innerText();
 for (const t of ["Fornecedores", "Redes"]) if (menu.includes(t)) fail(`menu do Master na Commerce mostra "${t}"`);
-if (!menu.includes("NextLevel E-commerce")) fail("menu do Master na Commerce sem a área da marca");
+if (!menu.includes("NextLevel Commerce")) fail("menu do Master na Commerce sem a área da marca");
 ok("Master na Commerce abre na área da marca e o menu não tem fornecedores nem redes");
 await lc.close();
 const sc = await ctxFor("superdrop.com.br"); const sdp = await sc.newPage();
@@ -72,7 +72,7 @@ await tryLogin(sdp, "master@nextlevel.demo");
 await sdp.waitForURL((u) => u.pathname === "/master", { timeout: 60000 }); await sdp.waitForLoadState("networkidle");
 const menu2 = await sdp.locator("aside").first().innerText();
 for (const t of ["Fornecedores", "Redes"]) if (!menu2.includes(t)) fail(`menu do Master no SuperDrop sem "${t}"`);
-if (menu2.includes("NextLevel E-commerce")) fail("menu do SuperDrop mostra a área da Commerce");
+if (menu2.includes("NextLevel Commerce")) fail("menu do SuperDrop mostra a área da Commerce");
 ok("Master no SuperDrop mantém fornecedores e redes e não mistura a Commerce");
 await sc.close();
 
@@ -101,7 +101,7 @@ await mhp.waitForSelector("text=só da equipe NextLevel", { timeout: 30000 });
 await mhp.getByLabel("E-mail").fill("master@nextlevel.demo"); await mhp.getByRole("button", { name: /Entrar/ }).click();
 await mhp.waitForURL((u) => u.pathname === "/master", { timeout: 60000 }); await mhp.waitForLoadState("networkidle");
 const menu3 = await mhp.locator("aside").first().innerText();
-for (const t of ["Fornecedores", "NextLevel E-commerce", "Lojas"]) if (!menu3.includes(t)) fail(`Master central sem "${t}" no menu`);
+for (const t of ["Fornecedores", "NextLevel Commerce", "Lojas"]) if (!menu3.includes(t)) fail(`Master central sem "${t}" no menu`);
 ok("Master central: só a equipe entra, e o menu mostra todos os produtos");
 await mhc.close();
 

@@ -14,7 +14,7 @@ export type CaseLoja = {
   /** Cor de destaque da identidade da loja (só para o detalhe do bloco). */
   cor: string; autorizado: boolean;
   /** Página "Nossos clientes" (D283): o negócio em uma frase, a cidade (quando o dono confirmou) e se a loja já roda na
-   * NextLevel E-commerce (só então ganha o selo; hoje nenhuma roda). */
+   * NextLevel Commerce (só então ganha o selo; hoje nenhuma roda). */
   negocio: string; cidade?: string; naPlataforma: boolean;
 };
 

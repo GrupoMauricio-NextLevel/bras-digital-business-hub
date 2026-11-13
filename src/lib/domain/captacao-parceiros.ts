@@ -7,7 +7,7 @@ import { regrasDoParceiro } from "./parceiros-ec";
 import { commercePlansView } from "./commerce-plans";
 
 /**
- * Página de captação de parceiros da E-commerce (D252, fase PV4): perfis (criador, vendedor, agência), escada de níveis
+ * Página de captação de parceiros da Commerce (D252, fase PV4): perfis (criador, vendedor, agência), escada de níveis
  * com os números das regras vigentes, simulador e candidatura que entra no funil do Master como Candidato.
  */
 export { PERFIS, PERFIL_LISTA, ganhoNoMes, escadaDoPerfil, type PerfilCaptacao, type RegraPerfil } from "@/lib/finance/captacao-regras";
@@ -49,5 +49,5 @@ export async function fatosDosParceiros(db: Database): Promise<import("@/lib/ia/
   const [{ getPartnerSettings }, { findRule }] = await Promise.all([import("./partners"), import("./corporate-commissions")]);
   const [d, s, regra] = await Promise.all([dadosDaCaptacao(db), getPartnerSettings(db), findRule(db, { family: "COMMERCE_PLAN", productKey: "COMMERCE_PRO", cycle: "MONTHLY", partnerKind: "AFFILIATE" })]);
   const plano = d.planos[Math.min(1, d.planos.length - 1)] ?? null;
-  return { marca: "NextLevel E-commerce", regras: d.regras, plano, atribuicaoDias: s.attributionDays, saqueMinimoCents: s.minPayoutCents, garantiaDias: regra?.holdDays ?? 30, cadastro: "/parceiros/cadastro" };
+  return { marca: "NextLevel Commerce", regras: d.regras, plano, atribuicaoDias: s.attributionDays, saqueMinimoCents: s.minPayoutCents, garantiaDias: regra?.holdDays ?? 30, cadastro: "/parceiros/cadastro" };
 }

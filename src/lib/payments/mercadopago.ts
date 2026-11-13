@@ -66,7 +66,7 @@ export type PreferenceInput = {
   notificationUrl?: string;
   backUrls?: { success: string; failure: string; pending: string };
   expiresAt?: Date;
-  /** Com valor, libera cartão de crédito em até N parcelas além do Pix (E-commerce, D178); sem valor, só Pix. */
+  /** Com valor, libera cartão de crédito em até N parcelas além do Pix (Commerce, D178); sem valor, só Pix. */
   maxParcelas?: number;
 };
 

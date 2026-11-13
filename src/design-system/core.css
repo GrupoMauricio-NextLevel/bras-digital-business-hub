@@ -252,7 +252,7 @@
 .ds-skip:focus { top: 10px; }
 
 /* ---- Responsividade (breakpoints por família: shell 980/640, público 1120/480) -------------------------------------- */
-/* Entre 1121 e 1279 px o menu completo aperta um pouco (antes passava da tela em 1024–1100 px na E-commerce, D164). */
+/* Entre 1121 e 1279 px o menu completo aperta um pouco (antes passava da tela em 1024–1100 px na Commerce, D164). */
 @media (max-width: 1279px) {
   .ds-pub-header-in { gap: 10px; }
   .ds-pub-nav a { padding: 0 10px; font-size: 0.9rem; }

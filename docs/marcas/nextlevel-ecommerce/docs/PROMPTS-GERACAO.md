@@ -6,7 +6,7 @@ Gerador integrado GPT com skill imagegen. Referência: identidade-consolidada.pn
 
 ## Instrução comum
 
-Use case: logo-brand. Production asset for approved NextLevel E-commerce identity. Reference board is the EXACT identity target, not inspiration. Preserve the rounded ribbon NE symbol: curved vertical left stem, diagonal ribbon sweeping into right baseline and THREE rounded horizontal E bars. Preserve bold forward-italic custom NextLevel lettering and E-commerce second line. Exact spelling and case "NextLevel" / "E-commerce", support when requested "PLATAFORMA DE LOJAS VIRTUAIS". Blue palette #101A33 #3F65FF #27C7F2 #F3F6FC. No coral, no alternate icon, no frame, no board, no sample labels, no watermark. SINGLE centered asset with safe margin, sharp clean contours. True transparent alpha background, no simulated checkerboard, no ground plane or cast shadow outside logo.
+Use case: logo-brand. Production asset for approved NextLevel Commerce identity. Reference board is the EXACT identity target, not inspiration. Preserve the rounded ribbon NE symbol: curved vertical left stem, diagonal ribbon sweeping into right baseline and THREE rounded horizontal E bars. Preserve bold forward-italic custom NextLevel lettering and E-commerce second line. Exact spelling and case "NextLevel" / "E-commerce", support when requested "PLATAFORMA DE LOJAS VIRTUAIS". Blue palette #101A33 #3F65FF #27C7F2 #F3F6FC. No coral, no alternate icon, no frame, no board, no sample labels, no watermark. SINGLE centered asset with safe margin, sharp clean contours. True transparent alpha background, no simulated checkerboard, no ground plane or cast shadow outside logo.
 
 ## logos/prisma/logo-clara.png
 

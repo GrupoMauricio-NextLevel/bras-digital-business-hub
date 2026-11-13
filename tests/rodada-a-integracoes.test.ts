@@ -8,7 +8,7 @@ import { markInvoicePaid } from "@/lib/domain/finance";
 import { entradaDe, extrairCodigo, iconeDaLoja, manifestoDaLoja, salvarIntegracoes, temAlgumaMedicao, validarIntegracoes } from "@/lib/domain/integracoes";
 import { aplicativosDaLoja } from "@/lib/domain/aplicativos";
 
-/** Rodada A das integrações (D189, I-01 a I-11): só códigos validados, nunca script colado; só na loja da E-commerce. */
+/** Rodada A das integrações (D189, I-01 a I-11): só códigos validados, nunca script colado; só na loja da Commerce. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 
@@ -50,7 +50,7 @@ describe("validação", () => {
 });
 
 describe("gravar na loja", () => {
-  it("o dono da loja da E-commerce salva; a central de aplicativos acende os cartões", async () => {
+  it("o dono da loja da Commerce salva; a central de aplicativos acende os cartões", async () => {
     const l = await lojaEcommerce();
     await salvarIntegracoes(ctx.db, l.owner, { ga4: "G-ABC123XYZ", maioridade: true, pwa: true });
     const loja = (await ctx.db.select().from(stores).where(eq(stores.id, l.storeId)))[0]!;
@@ -68,7 +68,7 @@ describe("gravar na loja", () => {
     const l = await lojaEcommerce();
     await expect(salvarIntegracoes(ctx.db, l.owner, { ga4: "<script>" })).rejects.toThrow(/formato inválido/);
     expect((await ctx.db.select().from(stores).where(eq(stores.id, l.storeId)))[0]!.integrations).toEqual({});
-    await expect(salvarIntegracoes(ctx.db, ctx.actors.arena, { ga4: "G-ABC123XYZ" })).rejects.toThrow(/E-commerce/);
+    await expect(salvarIntegracoes(ctx.db, ctx.actors.arena, { ga4: "G-ABC123XYZ" })).rejects.toThrow(/Commerce/);
     expect((await ctx.db.select().from(stores).where(eq(stores.id, ctx.seed.stores.arena.id)))[0]!.integrations).toEqual({});
   });
 });

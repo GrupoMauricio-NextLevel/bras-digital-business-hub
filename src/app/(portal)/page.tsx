@@ -45,7 +45,7 @@ export default async function Portal({ searchParams }: { searchParams: Promise<R
   if (brand.soon) return <SoonHome brand={brand} />;
   // Operação fechada já aberta (Brás Digital, D92): apresentação, vídeos de análise e cadastro; nunca preço.
   if (isClosedCommerceBrand(brand)) { const db = await getDb(); return <BrasHome brand={brand} videos={await listPublicBrasVideos(db)} analysis={await getBrasAnalysisSettings(db)} previa={previa} />; }
-  // Marcas sem dropshipping (NextLevel E-commerce) têm portal próprio: a home imersiva (D165).
+  // Marcas sem dropshipping (NextLevel Commerce) têm portal próprio: a home imersiva (D165).
   if (!brandHas(brand, "dropship")) return <HomeImersivaEc brand={brand} />;
   const faq = FAQ.slice(0, 5);
   return (

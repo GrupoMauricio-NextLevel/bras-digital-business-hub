@@ -10,7 +10,7 @@ import { periodOf } from "./finance";
 
 /**
  * Níveis por desempenho dos parceiros (D249, fase PV2). Conta clientes pagantes ativos (lojas atribuídas ao parceiro
- * com assinatura E-commerce ativa). Sobe na hora; desce só depois de 2 meses seguidos abaixo do limite.
+ * com assinatura Commerce ativa). Sobe na hora; desce só depois de 2 meses seguidos abaixo do limite.
  * O Master pode fixar o nível à mão, com motivo (o cálculo deixa de mexer até ele soltar).
  */
 export { NIVEIS, MESES_PARA_DESCER, nivelPorClientes, recorrenteDoNivel } from "@/lib/finance/niveis-regras";

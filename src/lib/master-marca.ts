@@ -6,7 +6,7 @@ import type { BrandCode } from "@/lib/brand";
  */
 export const MASTER_MARCA_COOKIE = "nl-master-marca";
 export const MASTER_MARCAS = [
-  { code: "NEXTLEVEL_COMMERCE", nome: "E-commerce" },
+  { code: "NEXTLEVEL_COMMERCE", nome: "Commerce" },
   { code: "SUPERDROP", nome: "SuperDrop" },
   { code: "BRAS_DIGITAL", nome: "Brás Digital Club" },
   { code: "NEXTLEVEL_CARGAS", nome: "Cargas" },
@@ -15,7 +15,7 @@ export type MarcaMaster = (typeof MASTER_MARCAS)[number]["code"];
 export const ehMarcaMaster = (v: unknown): v is MarcaMaster => MASTER_MARCAS.some((m) => m.code === v);
 
 /**
- * Marcas abertas no Master (D200, dono: "vamos trancar as marcas e falar só da E-commerce"). Padrão: só a E-commerce.
+ * Marcas abertas no Master (D200, dono: "vamos trancar as marcas e falar só da Commerce"). Padrão: só a Commerce.
  * Para destravar, o Render recebe `MASTER_MARCAS_ATIVAS=NEXTLEVEL_COMMERCE,SUPERDROP` (nada é apagado ao trancar).
  */
 export function marcasAtivasNoMaster(env: Record<string, string | undefined> = process.env): MarcaMaster[] {

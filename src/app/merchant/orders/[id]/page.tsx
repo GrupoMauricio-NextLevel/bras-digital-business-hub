@@ -25,5 +25,5 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const modality = await storeModality(db, data.order.storeId);
   const canFulfil = canFulfilOrder(session.actor, data.order, modality);
   const commerce = (await perfilAtual(session.store!.id)).ecommerce;
-  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} productLabel={commerce ? "NextLevel E-commerce" : "SuperDrop"} />;
+  return <OrderDetail role={session.user.role} backHref="/merchant/orders" {...data} canFulfil={canFulfil} independent={modality === "INDEPENDENT"} productLabel={commerce ? "NextLevel Commerce" : "SuperDrop"} />;
 }

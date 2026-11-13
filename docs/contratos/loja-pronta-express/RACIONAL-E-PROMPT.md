@@ -30,7 +30,7 @@
 | Forma | **Pix**: R$ 500 hoje (sinal) e R$ 1.000 no dia 16 (segunda-feira seguinte) |
 | Entrega | A entrega final depende do pagamento do restante |
 | Desistência | Se o cliente não continuar, por qualquer motivo, **o sinal fica como multa** |
-| Escopo | Só o **desenvolvimento da loja dentro da plataforma NextLevel E-commerce** |
+| Escopo | Só o **desenvolvimento da loja dentro da plataforma NextLevel Commerce** |
 | Fora | Mensalidade da plataforma e domínio são à parte |
 | Destaque | Dados do pagamento e **chave Pix do Itaú** (CNPJ) |
 | Quem assina pela empresa | Mauricio Ramos dos Santos Junior, pela NextLevel Marketing Ltda; contato `agencianextlevelbr@gmail.com` |
@@ -95,7 +95,7 @@ O nome promete rapidez, então o contrato precisa ter **prazo escrito**. Recomen
 | Representante | `{{rep_nome}}` · CPF `{{rep_cpf}}` · `{{rep_email}}` |
 | Contratante | `{{cli_nome}}` · CPF/CNPJ `{{cli_doc}}` · `{{cli_email}}` · WhatsApp `{{cli_whats}}` |
 | Loja | `{{loja_nome}}` |
-| Serviço | Loja Virtual Pronta Express na plataforma NextLevel E-commerce |
+| Serviço | Loja Virtual Pronta Express na plataforma NextLevel Commerce |
 | Valor | De ~~R$ `{{valor_cheio}}`~~ por **R$ `{{valor_promo}}`** (pagamento único) |
 | Pagamento | Pix · sinal R$ `{{sinal}}` em `{{data_sinal}}` · restante R$ `{{restante}}` até `{{data_restante}}` |
 | Prazo | até `{{prazo_dias}}` dias úteis depois do sinal e do material completo |
@@ -111,7 +111,7 @@ O nome promete rapidez, então o contrato precisa ter **prazo escrito**. Recomen
 - Frase: "Confira o nome do favorecido antes de pagar e envie o comprovante pelo WhatsApp."
 
 **Cláusulas:**
-1. **Objeto:** desenvolvimento da loja **exclusivamente** dentro da plataforma NextLevel E-commerce. Não inclui a mensalidade da plataforma nem o domínio, que o cliente contrata à parte.
+1. **Objeto:** desenvolvimento da loja **exclusivamente** dentro da plataforma NextLevel Commerce. Não inclui a mensalidade da plataforma nem o domínio, que o cliente contrata à parte.
 2. **Como vamos trabalhar juntos:** o quadro do dono, em duas colunas, "A NextLevel cuida de" e "A loja fica responsável por", com o texto dele, mais a frase final ("O nosso trabalho é preparar a tecnologia. O seu é cuidar das vendas e da operação diária da loja").
 3. **Detalhe do que está incluído:**
    - criação e configuração da loja (tema grátis do nicho, cores e logotipo enviados pelo cliente);
@@ -166,7 +166,7 @@ O nome promete rapidez, então o contrato precisa ter **prazo escrito**. Recomen
 - azul-escuro `#0b1328` no topo;
 - texto `#101a33`;
 - fundo branco;
-- logotipo da NextLevel E-commerce no topo da primeira página e pequeno no rodapé das outras.
+- logotipo da NextLevel Commerce no topo da primeira página e pequeno no rodapé das outras.
 
 **Hierarquia visual:**
 1. **Capa-resumo** (página 1):

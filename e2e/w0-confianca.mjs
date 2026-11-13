@@ -54,7 +54,7 @@ function totp(segredo, quando = Date.now()) {
   return String((((h[o] & 127) << 24) | (h[o + 1] << 16) | (h[o + 2] << 8) | h[o + 3]) % 1_000_000).padStart(6, "0");
 }
 
-// Lojista da E-commerce.
+// Lojista da Commerce.
 const ctxA = await b.newContext({ viewport: { width: 1280, height: 900 } });
 const p = await ctxA.newPage();
 p.on("dialog", (d) => d.accept());

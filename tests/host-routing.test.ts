@@ -179,7 +179,7 @@ describe("links e vitrines na marca certa (D149)", () => {
   });
 });
 
-describe("domínio principal da E-commerce (D281)", () => {
+describe("domínio principal da Commerce (D281)", () => {
   const novo = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br,nextlevelcommerce.com.br,www.nextlevelcommerce.com.br,office.nextlevelgroup.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://nextlevelcommerce.com.br", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br", EC_DOMINIO_PRINCIPAL: "1" };
   it("endereço antigo e www levam ao novo, mesmo caminho, de forma permanente", () => {
     expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/planos", search: "?ref=abc" }, novo)).toEqual({ kind: "redirect", url: "https://nextlevelcommerce.com.br/planos?ref=abc", permanente: true });

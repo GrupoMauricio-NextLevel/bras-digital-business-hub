@@ -24,7 +24,7 @@ export default async function StorefrontPage() {
   const store = session.store!;
   const perfil = await perfilAtual(store.id);
   const commerce = perfil.ecommerce;
-  // D234: domínio próprio liberado para todo lojista E-commerce; no SuperDrop, a oferta decide.
+  // D234: domínio próprio liberado para todo lojista Commerce; no SuperDrop, a oferta decide.
   const podeDominio = perfil.pode.customDomain;
   const { current } = await getStoreTheme(store.id);
   const onboarding = computeOnboarding(store);

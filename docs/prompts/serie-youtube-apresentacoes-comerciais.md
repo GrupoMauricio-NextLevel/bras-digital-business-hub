@@ -1,4 +1,4 @@
-# Série de apresentações comerciais para o YouTube (NextLevel E-commerce)
+# Série de apresentações comerciais para o YouTube (NextLevel Commerce)
 
 > Estado: **EM PRODUÇÃO** (09/11/2026). Prontos: vídeo 4 (23 slides), vídeo 1 (16 slides), vídeo 3 (18 slides), vídeo 6 (19 slides) e vídeo 2 (18 slides), cada um com versão Black e versão para depois de 30/11, e notas de fala em `docs/apresentacoes/youtube/`. Próximo: vídeo 5 (o último).
 > Revisão do dono (09/11): **menos PDFs, capítulos unidos no mesmo vídeo**; a história da NextLevel entra curta (a trajetória do fundador no Brás); **todo vídeo termina com um gancho para a Black Friday**.
@@ -137,7 +137,7 @@ Nada do plano anterior se perdeu: só foi agrupado. Casos e depoimentos continua
 
 ### 7.2 Identidade
 
-- **Cores da NextLevel E-commerce:**
+- **Cores da NextLevel Commerce:**
   - marinho `#0b1328` e `#121d3a`;
   - azul de ação `#294cdc` e `#3f65ff`;
   - ciano `#27c7f2`;
@@ -200,7 +200,7 @@ Nada do plano anterior se perdeu: só foi agrupado. Casos e depoimentos continua
 
 > **Revalidar antes de gravar.** Preços e regras de concorrentes mudam. Cada PDF imprime no rodapé a data da consulta. Fonte oficial no repositório: `src/lib/marcas/comparativo-ecommerce.ts`, `src/lib/marcas/placar-seed.ts` e `src/lib/finance/captacao-regras.ts`.
 
-### 8.1 NextLevel E-commerce (hoje)
+### 8.1 NextLevel Commerce (hoje)
 
 - **Planos:**
   - Start R$ 57/mês;
@@ -451,7 +451,7 @@ A Loja Integrada fica fora do comparativo de parceiros, por decisão do dono.
 ## 10. Prompt mestre (colar numa sessão para gerar cada PDF)
 
 ```
-Você vai criar o PDF do VÍDEO [N] (de 6) da série "Apresentações comerciais NextLevel E-commerce para o YouTube".
+Você vai criar o PDF do VÍDEO [N] (de 6) da série "Apresentações comerciais NextLevel Commerce para o YouTube".
 Leia antes: CLAUDE.md e docs/prompts/serie-youtube-apresentacoes-comerciais.md inteiro, em especial as seções 6
 (anatomia e gancho Black Friday), 7 (sistema visual), 8 (fatos com fonte) e o briefing do vídeo [N] na seção 9.
 

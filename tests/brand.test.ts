@@ -57,10 +57,10 @@ describe("marca nos cadastros e nos e-mails", () => {
     const p = await registerPartner(ctx.db, { name: "Parceira Marca", email: "parc@teste.com", password: "senha-forte-1", taxId: "39053344705", phone: "11999990000", acceptTerms: true, brand: "NEXTLEVEL_COMMERCE" });
     expect(p.partnerId).toBeTruthy();
     const html = renderHtml({ subject: "Oi", text: "Texto", cta: { label: "Abrir", url: "https://x.com" } }, brandByCode("NEXTLEVEL_COMMERCE", {}));
-    expect(html).toContain("NextLevel E-commerce"); expect(html).toContain("#294CDC"); expect(html).not.toContain("SuperDrop");
+    expect(html).toContain("NextLevel Commerce"); expect(html).toContain("#294CDC"); expect(html).not.toContain("SuperDrop");
     await sendEmail(ctx.db, { kind: "T", to: "x@y.com", brand: "NEXTLEVEL_COMMERCE", ...emails.welcomePartner("Ana", "https://x/partner") });
     const sent = (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "T")))[0]!;
-    expect(sent.subject).toContain("NextLevel E-commerce"); expect(sent.subject).not.toContain("{marca}");
+    expect(sent.subject).toContain("NextLevel Commerce"); expect(sent.subject).not.toContain("{marca}");
     // notifyTenant usa a marca da organização do destinatário
     await notifyTenant(ctx.db, { storeId: r.storeId }, { kind: "MARCA_TESTE", ...emails.trialEnding(2, "/merchant") });
     expect((await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "MARCA_TESTE"))).length).toBe(1);
@@ -103,13 +103,13 @@ describe("menu do Master por marca", () => {
   };
   it("na Commerce não há fornecedores, redes nem catálogo da rede, e há a área da marca", () => {
     const l = labels("NEXTLEVEL_COMMERCE");
-    expect(l).toContain("NextLevel E-commerce"); expect(l).toContain("Lojas");
+    expect(l).toContain("NextLevel Commerce"); expect(l).toContain("Lojas");
     for (const x of ["Fornecedores", "Redes", "Catálogo"]) expect(l).not.toContain(x);
   });
   it("no SuperDrop mantém tudo e não mostra a área da Commerce", () => {
     const l = labels("SUPERDROP");
     for (const x of ["Fornecedores", "Redes", "Catálogo", "Parceiros"]) expect(l).toContain(x);
-    expect(l).not.toContain("NextLevel E-commerce");
+    expect(l).not.toContain("NextLevel Commerce");
   });
 });
 

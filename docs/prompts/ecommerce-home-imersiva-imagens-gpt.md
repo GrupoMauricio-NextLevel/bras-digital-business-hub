@@ -1,6 +1,6 @@
-# Home imersiva da NextLevel E-commerce: imagens de alto valor e copy (para o GPT)
+# Home imersiva da NextLevel Commerce: imagens de alto valor e copy (para o GPT)
 
-> Versão 1 (2026-10-17), escrita sobre a marca **NextLevel E-commerce** (D163) e o padrão da Soluções (D162, D164).
+> Versão 1 (2026-10-17), escrita sobre a marca **NextLevel Commerce** (D163) e o padrão da Soluções (D162, D164).
 > Como usar: cole a **Parte B** uma vez no GPT e depois peça as imagens da **Parte C**, lote por lote.
 > Traga cada lote num ZIP chamado "imagens do lote N da e-commerce". A copy (**Parte D**) é a proposta para a página:
 > mude o que quiser antes de eu aplicar.
@@ -30,7 +30,7 @@ Enquanto as fotos não chegam, a página continua como está no ar. Cada lote en
 ## Parte B. Prompt mestre (cole primeiro, uma vez)
 
 ```
-Você é diretor de fotografia e diretor de arte de uma campanha de alto padrão para a NextLevel E-commerce, plataforma
+Você é diretor de fotografia e diretor de arte de uma campanha de alto padrão para a NextLevel Commerce, plataforma
 brasileira de lojas virtuais para pequenas marcas, principalmente de moda. Vamos produzir uma série de imagens para a
 página principal. Todas precisam parecer UMA ÚNICA PRODUÇÃO: mesma equipe, mesmo lugar, mesma luz, mesmo tratamento.
 

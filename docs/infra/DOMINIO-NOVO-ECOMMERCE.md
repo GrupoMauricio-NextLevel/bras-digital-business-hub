@@ -1,4 +1,4 @@
-# Domínio novo da NextLevel E-commerce: nextlevelcommerce.com.br
+# Domínio novo da NextLevel Commerce: nextlevelcommerce.com.br
 
 Ordem segura (nada quebra para quem já usa o endereço antigo).
 

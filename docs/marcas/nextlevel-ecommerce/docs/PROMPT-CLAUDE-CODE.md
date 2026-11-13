@@ -1,6 +1,6 @@
-# Prompt mestre — implementar NextLevel E-commerce
+# Prompt mestre — implementar NextLevel Commerce
 
-Você atuará como líder de design de produto, engenheiro frontend sênior e responsável por acessibilidade. Implemente o kit anexado no projeto existente: site institucional da plataforma e painel administrativo do produto NextLevel E-commerce. Não crie outro sistema do zero se o projeto já existe.
+Você atuará como líder de design de produto, engenheiro frontend sênior e responsável por acessibilidade. Implemente o kit anexado no projeto existente: site institucional da plataforma e painel administrativo do produto NextLevel Commerce. Não crie outro sistema do zero se o projeto já existe.
 
 ## 1. Antes de editar
 
@@ -12,7 +12,7 @@ Descubra as skills REALMENTE instaladas e use as adequadas a frontend/design sys
 
 ## 2. Decisões imutáveis
 
-- Nome público: NextLevel E-commerce. Linha de apoio: PLATAFORMA DE LOJAS VIRTUAIS.
+- Nome público: NextLevel Commerce. Linha de apoio: PLATAFORMA DE LOJAS VIRTUAIS.
 - Identidade: opção 03 Prisma + símbolo arredondado da opção 04, conforme referencias/identidade-consolidada.png.
 - Cores: #101A33, #3F65FF, #27C7F2, #F3F6FC.
 - Não redesenhar o logo, substituí-lo por fonte comum ou gerar outra marca.
@@ -55,4 +55,4 @@ Não declare testes concluídos sem execução. Se ambiente ou dados impedirem v
 
 Implemente, não fique apenas no planejamento. Entregue lista dos arquivos alterados, telas abrangidas, decisões de mapeamento, testes executados e pendências reais. Atualize documentação do projeto. Não faça deploy, DNS, compra de domínio, mudança de segredos ou publicação externa sem autorização específica.
 
-Critério final: site e painel coerentes, rápidos, legíveis e reconhecíveis como NextLevel E-commerce; outras marcas e lojas de clientes intactas.
+Critério final: site e painel coerentes, rápidos, legíveis e reconhecíveis como NextLevel Commerce; outras marcas e lojas de clientes intactas.

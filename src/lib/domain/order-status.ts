@@ -47,7 +47,7 @@ export const CANCELABLE: OrderStatus[] = ["PENDING", "AWAITING_CENTRAL_PAYMENT",
 
 /**
  * Regra central do MVP: o pedido só fica pronto para separação quando
- * a Central foi paga E a etiqueta está pronta. Loja independente da E-commerce (D180): quem envia é o próprio
+ * a Central foi paga E a etiqueta está pronta. Loja independente da Commerce (D180): quem envia é o próprio
  * lojista, que separa antes e informa o rastreio ao marcar como enviado; a etiqueta não trava a separação
  * (`etiquetaAntes: false`). O SuperDrop continua exigindo a etiqueta, porque a Central imprime na expedição.
  */

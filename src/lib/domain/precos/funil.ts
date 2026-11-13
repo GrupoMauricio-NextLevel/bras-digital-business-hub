@@ -14,7 +14,7 @@ import { requireMaster, type Actor } from "../access";
 
 export type FunnelBrand = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "NEXTLEVEL_CARGAS";
 export const FUNNEL_BRANDS: { brand: FunnelBrand; label: string; unit: string; revenueLabel: string; activity: string }[] = [
-  { brand: "NEXTLEVEL_COMMERCE", label: "NextLevel E-commerce", unit: "lojas", revenueLabel: "Pago à NextLevel por loja", activity: "teve venda paga a partir do dia" },
+  { brand: "NEXTLEVEL_COMMERCE", label: "NextLevel Commerce", unit: "lojas", revenueLabel: "Pago à NextLevel por loja", activity: "teve venda paga a partir do dia" },
   { brand: "SUPERDROP", label: "SuperDrop", unit: "lojas", revenueLabel: "Pago à NextLevel por loja", activity: "teve venda paga a partir do dia" },
   { brand: "BRAS_DIGITAL", label: "Brás Digital", unit: "membros", revenueLabel: "Comissão da Brás por membro", activity: "fez pedido a partir do dia" },
   { brand: "NEXTLEVEL_CARGAS", label: "NextLevel Cargas", unit: "transportadoras", revenueLabel: "Comissão da Cargas por transportadora", activity: "teve carga ou viagem a partir do dia" },

@@ -3,7 +3,7 @@ export const ROOT_DOMAIN = process.env.SUPERDROP_ROOT_DOMAIN?.toLowerCase() || "
 
 /** Endereço público da loja: subdomínio quando configurado; senão o caminho /store/[slug]. */
 export function storeUrl(slug: string, offer?: string, customDomain?: string | null, domainStatus?: string): string {
-  // Domínio próprio conectado vale em qualquer plano (D234: liberado para todo lojista E-commerce; no SuperDrop, só quem pode cadastrar).
+  // Domínio próprio conectado vale em qualquer plano (D234: liberado para todo lojista Commerce; no SuperDrop, só quem pode cadastrar).
   if (customDomain && domainStatus === "CONNECTED") return `https://${customDomain}`;
   if (ROOT_DOMAIN && offer !== "DROP_MANUAL") return `https://${slug}.${ROOT_DOMAIN}`;
   return `/store/${slug}`;

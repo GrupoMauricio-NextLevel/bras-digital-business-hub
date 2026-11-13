@@ -9,7 +9,7 @@ import "./imersiva.css";
 export type PassoMarca<N extends string = string> = { key: string; nome: string; titulo: string; texto: string; links: { label: string; href: string }[]; foto: N; retrato: N };
 
 /**
- * Jornada imersiva de marca (D162 Soluções, D165 E-commerce; peça única para todas as marcas): o mesmo lugar em cinco
+ * Jornada imersiva de marca (D162 Soluções, D165 Commerce; peça única para todas as marcas): o mesmo lugar em cinco
  * momentos. A seção fica presa na tela e a rolagem troca a foto e o texto (`ImmersiveScroll`). Computador: foto emoldurada à
  * esquerda e texto à direita; celular e tablet em pé: foto em pé ao fundo e texto em cima. Régua com os passos (botões; o
  * leitor de tela ouve o passo só quando a pessoa usa a régua). Sem JavaScript ou com menos movimento: passos em sequência,

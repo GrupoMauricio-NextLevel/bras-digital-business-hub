@@ -1,7 +1,7 @@
 import type { Guia } from "./manual";
 
 /**
- * Manual do parceiro (D253): o Maurício no painel do parceiro da E-commerce guia o dia a dia sem IA (offline), com o
+ * Manual do parceiro (D253): o Maurício no painel do parceiro da Commerce guia o dia a dia sem IA (offline), com o
  * passo a passo de cada tela, rotinas, roteiros de venda, respostas a objeções e as regras que protegem a comissão.
  * Os números editáveis pelo Master (valor mínimo do saque, dias de atribuição) não ficam aqui: o guia diz onde vê-los.
  * Nada aqui promete ganho.
@@ -219,7 +219,7 @@ export const GUIAS_PARCEIRO: Guia[] = [
     "Repetir essas práticas leva à suspensão do cadastro. Os termos completos estão na página do programa.",
   ], link: { rotulo: "Ler os termos", href: "/parceiros/termos" } },
   { id: "inativo", titulo: "Cadastro inativo: como evitar e voltar", termos: ["inativo", "inatividade", "desativado", "pausado", "reativar", "6 meses"], passos: [
-    "Na E-commerce não tem meta mensal nem taxa de manutenção.",
+    "Na Commerce não tem meta mensal nem taxa de manutenção.",
     "O cadastro só fica inativo depois de 6 meses sem nenhum cliente ativo e sem nenhuma venda.",
     "Enquanto você tem cliente pagando, continua ativo e recebendo.",
     "Ficou inativo? A tela de reativação aparece no painel.",

@@ -4,7 +4,7 @@
 
 Produção realizada no gerador integrado GPT com a skill imagegen, uma imagem por chamada. Fotografia sintética editorial, com pessoas fictícias. Não são fotos das instalações, funcionários, clientes ou resultados reais da NextLevel.
 
-Paleta da MARCA-MÃE: #070F22, #365BFF, #12B8F4, #2AD7C0, #F3F6FC. Este briefing é da vitrine de soluções NextLevel; não substitui o kit NextLevel E-commerce nem outras marcas.
+Paleta da MARCA-MÃE: #070F22, #365BFF, #12B8F4, #2AD7C0, #F3F6FC. Este briefing é da vitrine de soluções NextLevel; não substitui o kit NextLevel Commerce nem outras marcas.
 
 ## Arquivos e uso
 

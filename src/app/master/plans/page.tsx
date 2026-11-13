@@ -10,7 +10,7 @@ import { AlertTriangle, Check, CreditCard, TrendingUp } from "lucide-react";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 
 export default async function PlansPage() {
-  await levarAoEscritorio("/master/receita"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/receita"); // D205: tela antiga → área nova do escritório da Commerce
   const { plans, subs, invoices } = await listPlansWithSubs();
   const inv = (s: string) => invoices.find((i) => i.status === s);
   return (

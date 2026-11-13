@@ -8,7 +8,7 @@ import { assertStoreAdmin, type Actor } from "./access";
 import { storeModality } from "./order-policy";
 
 /**
- * Migrar sem medo (W4, D187), só na loja independente da E-commerce:
+ * Migrar sem medo (W4, D187), só na loja independente da Commerce:
  * - redirecionamentos de endereço antigo (de outra plataforma) para o novo, sem perder o Google;
  * - Pixel da Meta (número público) e token da API de conversões (só criptografado);
  * - loja em lançamento com lista de espera.
@@ -16,7 +16,7 @@ import { storeModality } from "./order-policy";
 async function lojaIndependente(db: Database, actor: Actor): Promise<string> {
   if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Só o dono da loja.");
   assertStoreAdmin(actor);
-  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel E-commerce.");
+  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel Commerce.");
   return actor.storeId;
 }
 

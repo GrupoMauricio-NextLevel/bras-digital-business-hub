@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 > **Autoridade máxima do e-commerce:** `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`. Em conflito, ela vence; registre a exceção em `docs/design/DECISIONS.md`.
 
-Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende NextLevel E-commerce, Master central e as outras marcas (SuperDrop, Brás e demais). **Fase atual (D216): só a E-commerce; o SuperDrop não está em produção e não tem clientes.** **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
+Este repositório é **um sistema só** (Next.js 16, TypeScript estrito, Drizzle, Neon) que atende NextLevel Commerce, Master central e as outras marcas (SuperDrop, Brás e demais). **Fase atual (D216): só a E-commerce; o SuperDrop não está em produção e não tem clientes.** **Leia `CLAUDE.md` antes de mudar qualquer coisa**: pilha, comandos, regras e a direção do produto. O dono fala português, sem jargão; código, arquivos e commits em português, como o projeto já faz.
 
 ## Divisão de trabalho (para dois agentes não colidirem)
 > **Atualização (2026-10-02, dono):** o primeiro teste de design no Codex não deu bom resultado e o dono pausou o visual lá. **Por ora o Claude também faz o visual**, trabalhando em branch própria (`visual/v4`), mostrando capturas de tela ao dono e só publicando na branch de publicação depois da aprovação. O Codex só volta se o dono decidir. As regras abaixo continuam valendo se ele voltar.
@@ -34,7 +34,7 @@ O Render publica **a cada push** da branch de publicação, que hoje é `claude/
 6. Segredos: nunca no código. Tokens só criptografados (`encryptSecret`); nada em log, tela ou e-mail.
 
 ## Foco
-**Regra de foco 60/25/15 (decisão do dono, 19/10/2026, D174):** até a NextLevel E-commerce ter **10 lojistas pagantes**, o esforço vai **60% para a E-commerce, 25% para o SuperDrop e 15% para o resto** (Brás, Cargas, grupo). Todo título de decisão nova em `DECISIONS.md` leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`) e todo relatório do dia traz a linha "Esforço do dia por frente". Na dúvida sobre o que fazer primeiro, vence o que aproxima a E-commerce do 10º lojista pagante.
+**Regra de foco 60/25/15 (decisão do dono, 19/10/2026, D174):** até a NextLevel Commerce ter **10 lojistas pagantes**, o esforço vai **60% para a E-commerce, 25% para o SuperDrop e 15% para o resto** (Brás, Cargas, grupo). Todo título de decisão nova em `DECISIONS.md` leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`) e todo relatório do dia traz a linha "Esforço do dia por frente". Na dúvida sobre o que fazer primeiro, vence o que aproxima a E-commerce do 10º lojista pagante.
 
 ## Regras que não podem quebrar
 - Página que consulta o banco declara `export const dynamic = "force-dynamic"`.

@@ -45,9 +45,9 @@ export function aulas(f: Fatos): Aula[] {
   const taxas = f.concorrentes.taxas.map((t) => `${t.nome} ${pct(t.maxBps)}`).join(", ");
   return [
     // ------------------------------------------------------------------ 1. Base
-    { id: "o-que-e", trilha: "base", titulo: "O que é a NextLevel E-commerce", estado: "no-ar", decisoes: ["D216", "D220", "D257"],
+    { id: "o-que-e", trilha: "base", titulo: "O que é a NextLevel Commerce", estado: "no-ar", decisoes: ["D216", "D220", "D257"],
       oQue: "A plataforma de lojas virtuais da NextLevel, feita no Brás e com foco no atacado. É a nossa frente principal hoje.",
-      regra: ["O lojista monta a loja, vende no varejo e no atacado (grade, pacote, mix) e recebe pelo Mercado Pago dele.", "O Master está focado na E-commerce; as outras marcas do grupo voltam depois.", "A meta do momento é chegar aos primeiros lojistas pagantes."],
+      regra: ["O lojista monta a loja, vende no varejo e no atacado (grade, pacote, mix) e recebe pelo Mercado Pago dele.", "O Master está focado na Commerce; as outras marcas do grupo voltam depois.", "A meta do momento é chegar aos primeiros lojistas pagantes."],
       dizer: ["\"A loja virtual que vende como o Brás vende.\"", "\"Equipe no Brás e no Canindé, perto de você.\""], nunca: ["Prometer faturamento ou prazo de resultado.", "Falar de marcas que ainda não estão abertas como se estivessem."] },
     { id: "planos", trilha: "base", titulo: "Planos e preços", estado: "no-ar", decisoes: ["D220", "D229", "D247"],
       oQue: "Três planos, mensal ou anual, sem fidelidade. Os valores abaixo são os do sistema agora.",
@@ -90,7 +90,7 @@ export function aulas(f: Fatos): Aula[] {
       ],
       dizer: ["\"Quem assina agora trava o preço.\""], nunca: ["Contagem falsa ou \"últimas vagas\" que não existem."], link: { rotulo: "Abrir Black", href: "/master/black" } },
     { id: "dominio-email", trilha: "venda", titulo: "Domínio próprio e e-mail", estado: "no-ar", decisoes: ["D234", "D245"],
-      oQue: "Todo lojista da E-commerce pode usar o próprio domínio, com passo a passo e verificação.",
+      oQue: "Todo lojista da Commerce pode usar o próprio domínio, com passo a passo e verificação.",
       regra: ["O painel mostra os registros de DNS e confere sozinho.", "E-mail com o domínio: caminho grátis guiado (Zoho Mail, na conta do lojista).", "O pacote pago de e-mail está bloqueado até termos um provedor sem custo para nós."],
       dizer: ["\"Seu domínio, sua marca, sem custo extra.\""], nunca: ["Vender e-mail pago."] },
 

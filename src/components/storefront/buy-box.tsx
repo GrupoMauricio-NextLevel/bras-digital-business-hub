@@ -17,8 +17,8 @@ import { CalcularFrete } from "./calcular-frete";
 import { MatrizDoModelo } from "./matriz-do-modelo";
 import { temRegraDoModelo, textoDaRegra, rotuloDaVariacao } from "@/lib/finance/atacado-modelo";
 
-/** `parcelas`: só quando a loja aceita cartão (E-commerce, D178); o valor por parcela é indicativo, sem prometer "sem juros". */
-export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas, freeFromCents, extras = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number; freeFromCents?: number | null; /** E-commerce (D213): "Comprar agora" e calcular frete. */ extras?: boolean }) {
+/** `parcelas`: só quando a loja aceita cartão (Commerce, D178); o valor por parcela é indicativo, sem prometer "sem juros". */
+export function BuyBox({ product, slug, shippingNote, stickyBar = false, parcelas, freeFromCents, extras = false }: { product: PublicProduct; slug: string; shippingNote?: string; stickyBar?: boolean; parcelas?: number; freeFromCents?: number | null; /** Commerce (D213): "Comprar agora" e calcular frete. */ extras?: boolean }) {
   const cart = useCart();
   const router = useRouter();
   // Formato escolhido (AT2, D259): "unit" = peça avulsa; senão, o id da grade ou do pacote.

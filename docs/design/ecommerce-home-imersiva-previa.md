@@ -1,4 +1,4 @@
-# Home imersiva da NextLevel E-commerce: prévia, auditoria e pendências
+# Home imersiva da NextLevel Commerce: prévia, auditoria e pendências
 
 > Branch de revisão: `revisao/ecommerce-home-imersiva` (não é a branch de publicação; nada foi publicado).
 > Data: 2026-10-17. Pacote de origem: `nextlevel-ecommerce-pacote-claude-code.zip` (status do manifesto:

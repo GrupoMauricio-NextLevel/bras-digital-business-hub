@@ -13,7 +13,7 @@ import { situacoesComerciais, type SituacaoComercial } from "./situacao-comercia
 import { ordenar, type ItemAgora } from "./loja-agora";
 
 /**
- * Programa de Parceiros da NextLevel E-commerce (D220), módulo próprio (depois estendido à Soluções). Indicador:
+ * Programa de Parceiros da NextLevel Commerce (D220), módulo próprio (depois estendido à Soluções). Indicador:
  * 20% da 1ª mensalidade + 10% recorrente por 12 meses. Agência parceira (aprovada pelo Master): 30% + 15% enquanto o
  * cliente ficar. As porcentagens vêm das regras de comissão do catálogo (editáveis no Master), nunca fixas aqui.
  */

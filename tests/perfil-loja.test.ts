@@ -18,24 +18,24 @@ describe("perfil da loja", () => {
     }
   });
 
-  it("E-commerce: sem oferta do SuperDrop; com o padrão do dono, tudo liberado menos saldo e etiqueta da Central", () => {
+  it("Commerce: sem oferta do SuperDrop; com o padrão do dono, tudo liberado menos saldo e etiqueta da Central", () => {
     for (const plano of [null, { productKey: "COMMERCE_START", status: "trial" }, { productKey: "COMMERCE_SCALE", status: "active" }]) {
       const p = montarPerfil({ store: { id: "s", offer: "STORE_SUBDOMAIN" }, marca: "NEXTLEVEL_COMMERCE", modalidade: "INDEPENDENT", plano, tabela: TABELA_PADRAO, direitos: sem });
       expect(p.oferta).toBeNull();
       for (const f of FEATURES) expect(p.pode[f]).toBe(!SO_SUPERDROP.includes(f));
-      expect(p.vocabulario).toMatchObject({ produto: "NextLevel E-commerce", quemPrepara: "Sua loja", custoDebitado: null });
+      expect(p.vocabulario).toMatchObject({ produto: "NextLevel Commerce", quemPrepara: "Sua loja", custoDebitado: null });
       expect(JSON.stringify(p.vocabulario)).not.toMatch(/SuperDrop|Central|saldo/);
     }
   });
 
-  it("E-commerce: a tabela do Master manda; sem plano vale o Start; direito comprado soma", () => {
+  it("Commerce: a tabela do Master manda; sem plano vale o Start; direito comprado soma", () => {
     const tabela = { ...TABELA_PADRAO, COMMERCE_START: ["catalog", "storefront"] as never[] };
     expect(recursosDoPlano(tabela, null).analytics).toBe(false);
     expect(recursosDoPlano(tabela, "COMMERCE_START").storefront).toBe(true);
     expect(recursosDoPlano(tabela, "COMMERCE_PRO").analytics).toBe(true);
     const comDireito = montarPerfil({ store: { id: "s", offer: "STORE_SUBDOMAIN" }, marca: "NEXTLEVEL_COMMERCE", modalidade: "INDEPENDENT", plano: null, tabela, direitos: new Set(["analytics", "wallet"]) });
     expect(comDireito.pode.analytics).toBe(true);
-    expect(comDireito.pode.wallet).toBe(false); // recurso do SuperDrop nunca entra na E-commerce
+    expect(comDireito.pode.wallet).toBe(false); // recurso do SuperDrop nunca entra na Commerce
   });
 
   it("no banco: lojas do SuperDrop do seed seguem a oferta; a tabela salva no Master vale e fica auditada", async () => {

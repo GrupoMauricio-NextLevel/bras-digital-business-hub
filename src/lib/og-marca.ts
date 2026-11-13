@@ -8,7 +8,7 @@ import type { Brand, BrandCode } from "@/lib/brand";
  */
 const ARTE: Partial<Record<BrandCode, string[]>> = {
   SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
-  // NextLevel E-commerce (D163): logo Prisma escura do pacote sobre o marinho (a arte v3 tinha a logo antiga).
+  // NextLevel Commerce (D163): logo Prisma escura do pacote sobre o marinho (a arte v3 tinha a logo antiga).
   NEXTLEVEL_COMMERCE: ["marcas/nextlevel-ecommerce/og-1200x630.jpg"],
   // NextLevel v2 (D161): cartão social do pacote da marca (achatado sobre o marinho; o PNG original tem transparência).
   NEXTLEVEL: ["marcas/nextlevel/v2/social/og-nextlevel-1200x630.jpg"],

@@ -38,7 +38,7 @@ export function structureOf(t: Template): string {
 // ---------------------------------------------------------------------------
 export async function resolveTemplate(db: Database, store: Store, page: PageKind, opts: { draft?: boolean; themeKey?: string } = {}): Promise<{ template: Template; source: Source; hasDraft: boolean }> {
   let row = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, page)) });
-  // D237 (L1): loja E-commerce sem nada salvo nasce com o tema grátis completo da família (instalado uma vez).
+  // D237 (L1): loja Commerce sem nada salvo nasce com o tema grátis completo da família (instalado uma vez).
   if (!row && !opts.themeKey && (await garantirLojaCompleta(db, store))) row = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, store.id), eq(themeTemplates.page, page)) });
   const region: SectionRegion = "content";
   const fallback = async () => normalizeTemplate(defaultTemplate(page, await legacySettings(db, store.id), opts.themeKey), region, page).template;

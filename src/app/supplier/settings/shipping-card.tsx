@@ -11,7 +11,7 @@ import { NOVAS_PLATAFORMAS_DE_ENVIO, SHIPPING_PROVIDERS, type ShippingProviderKe
 
 /**
  * Plataforma de envio do fornecedor (SuperFrete, Melhor Envio ou Onlog), usada nas etiquetas dos pedidos da loja própria.
- * Na loja da E-commerce (`novas`) aparecem também Frenet, Kangu e Correios com contrato (Rodada B, D190).
+ * Na loja da Commerce (`novas`) aparecem também Frenet, Kangu e Correios com contrato (Rodada B, D190).
  */
 export function ShippingCard({ provider, status, account, demo, originZip, novas = false }: { provider: string | null; status: "NOT_CONFIGURED" | "DEMO" | "CONNECTED"; account: string | null; demo: boolean; originZip?: string | null; novas?: boolean }) {
   const opcoes = (Object.keys(SHIPPING_PROVIDERS) as ShippingProviderKey[]).filter((k) => novas || !NOVAS_PLATAFORMAS_DE_ENVIO.includes(k));

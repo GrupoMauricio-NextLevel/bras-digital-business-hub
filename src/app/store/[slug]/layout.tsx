@@ -60,7 +60,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   const db = await getDb();
-  // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel E-commerce…).
+  // A frase legal do rodapé cita a marca pela qual a loja entrou (SuperDrop, NextLevel Commerce…).
   const [org, session] = await Promise.all([db.query.organizations.findFirst({ where: eq(organizations.id, sf.store.organizationId) }), getSession()]);
   // Loja do SuperDrop aberta no endereço da Commerce (ou o contrário): vai para o endereço da marca dona, mesmo caminho (D149).
   const h = await headers();
@@ -123,7 +123,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
       {publico ? <ContadorDeVisitas slug={slug} /> : null}
       {publico && sf.store.metaPixelId ? <PixelMeta pixelId={sf.store.metaPixelId} /> : null}
       {publico ? <IntegracoesNaLoja cfg={sf.store.integrations ?? {}} /> : null}
-      {/* Atendimento da loja (D206): só na E-commerce por enquanto; a conversa vai para o painel do lojista. */}
+      {/* Atendimento da loja (D206): só na Commerce por enquanto; a conversa vai para o painel do lojista. */}
       {publico && org?.brand === "NEXTLEVEL_COMMERCE" ? <ChatDaLoja slug={slug} loja={sf.store.name} /> : null}
       {publico && sf.store.integrations?.maioridade ? <Maioridade loja={sf.store.name} /> : null}
       {lancando && donoVendo ? <div className="bg-sky-100 px-4 py-1.5 text-center text-xs text-sky-900" data-launch-banner>Loja em lançamento: o público vê a página &quot;abrimos em breve&quot; com a lista de espera. Só você vê a loja. <Link href="/merchant/migrar#lancamento" className="underline">Abrir a loja</Link></div> : null}

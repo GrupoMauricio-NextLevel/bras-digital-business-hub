@@ -11,7 +11,7 @@ import "./commerce.css";
 /**
  * NextLevel Temas para Nuvemshop (D282): as lojas que a NextLevel criou, com o racional de cada uma, os temas da NextLevel
  * no fim como prova da tecnologia e destaque para semijoias. Serviço da agência (NextLevel Marketing Ltda); hoje no site
- * da E-commerce, depois em Soluções. Nenhum case cita plataforma; nenhum número de venda inventado.
+ * da Commerce, depois em Soluções. Nenhum case cita plataforma; nenhum número de venda inventado.
  */
 const FATOS: { fato: string; fazemos: string }[] = [
   { fato: "A loja de temas da Nuvemshop tem mais de 70 temas grátis, em todos os planos.", fazemos: "Partimos do tema que mais combina com o seu catálogo, em vez de recomeçar do zero." },
@@ -49,7 +49,7 @@ const DUVIDAS = [
   ["E se eu trocar de tema depois?", "Entregamos os arquivos e o CSS guardados fora da loja, para reaplicar."],
   ["Funciona no celular?", "O layout é desenhado primeiro para o celular e conferido página por página."],
   ["Quanto custa?", "Depende do que a sua loja precisa. O diagnóstico é gratuito e o orçamento vem depois dele."],
-  ["Vocês só trabalham com Nuvemshop?", "Não. A NextLevel também tem a própria plataforma, a NextLevel E-commerce, com os temas que você vê no fim desta página."],
+  ["Vocês só trabalham com Nuvemshop?", "Não. A NextLevel também tem a própria plataforma, a NextLevel Commerce, com os temas que você vê no fim desta página."],
 ] as const;
 
 const tema = (k: string) => THEME_CATALOG.find((t) => t.key === k && isReleased(t));
@@ -182,7 +182,7 @@ export function TemasNuvemshop({ whatsapp }: { whatsapp: string | null }) {
       <section aria-labelledby="tec-t" className="bg-canvas px-4 py-16 md:py-24">
         <div className="mx-auto max-w-6xl">
           <p className="im-eyebrow im-eyebrow--claro">Nossa tecnologia</p>
-          <h2 id="tec-t" className="text-[clamp(1.9rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight mt-3 max-w-3xl text-foreground">Também criamos a nossa plataforma: temas NextLevel E-commerce.</h2>
+          <h2 id="tec-t" className="text-[clamp(1.9rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight mt-3 max-w-3xl text-foreground">Também criamos a nossa plataforma: temas NextLevel Commerce.</h2>
           <p className="mt-4 max-w-2xl text-muted-foreground">O mesmo cuidado de desenho, em temas prontos. Abra a demonstração e navegue como cliente.</p>
           <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{TEMAS_VITRINE.map((k) => <CartaoTema key={k} k={k} />)}</ul>
         </div>

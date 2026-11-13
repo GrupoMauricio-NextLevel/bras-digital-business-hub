@@ -13,7 +13,7 @@ mkdirSync(OUT, { recursive: true });
 /** Termos e cores (rgb) que não podem aparecer em cada marca, reconhecida pelo host. */
 const VERDE_SD = [45, 158, 59], AZUL_EC = [63, 101, 255], INDIGO_CG = [75, 79, 216], AMARELO_ANTIGO = [245, 188, 0];
 const REGRAS = [
-  { host: /cm\.|lojas\./, marca: "NextLevel E-commerce", termos: /SuperDrop|\bCentral\b|recarga|Drop manual|Commerce (Start|Pro|Scale)|Brás Digital|Cargas/g, cores: [VERDE_SD, INDIGO_CG, AMARELO_ANTIGO] },
+  { host: /cm\.|lojas\./, marca: "NextLevel Commerce", termos: /SuperDrop|\bCentral\b|recarga|Drop manual|Commerce (Start|Pro|Scale)|Brás Digital|Cargas/g, cores: [VERDE_SD, INDIGO_CG, AMARELO_ANTIGO] },
   { host: /sd\.|superdrop/, marca: "SuperDrop", termos: /E-commerce|NextLevel Commerce|Brás Digital|Cargas/g, cores: [AZUL_EC, INDIGO_CG] },
   { host: /bd\.|bras/, marca: "Brás Digital Club", termos: /SuperDrop|E-commerce|NextLevel Commerce|Drop manual/g, cores: [VERDE_SD, INDIGO_CG, AMARELO_ANTIGO] },
   { host: /cg\.|cargas/, marca: "NextLevel Cargas", termos: /SuperDrop|E-commerce|NextLevel Commerce/g, cores: [VERDE_SD, AZUL_EC, AMARELO_ANTIGO] },

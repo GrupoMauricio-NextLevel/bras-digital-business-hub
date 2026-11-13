@@ -1,5 +1,5 @@
 /**
- * Depois da venda na NextLevel E-commerce (D179): lojista novo com um pedido pago leva o pedido até a entrega
+ * Depois da venda na NextLevel Commerce (D179): lojista novo com um pedido pago leva o pedido até a entrega
  * (rastreio, separação, envio, entregue) e cancela um segundo pedido pago; o cliente acompanha pela página do pedido e
  * por "Acompanhar pedido". Cada passo anota o que aconteceu; o que travar vira um "tropeço" com captura de tela.
  * Uso: E2E_BASE=http://cm.test:3300 node e2e/ecommerce-pos-venda.mjs [pasta-de-saida]

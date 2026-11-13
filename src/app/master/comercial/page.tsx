@@ -39,7 +39,7 @@ export default async function ComercialPage({ searchParams }: { searchParams: Pr
   const pessoas = await funilComercial(await getDb(), s.actor);
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Comercial" description="Todo mundo que pode virar cliente, numa fila só: quem conversou, quem deixou contato e quem criou a loja. A etapa anda sozinha com o que a pessoa faz no sistema." actions={<AoVivo segundos={30} />} />
+      <PageHeader eyebrow="NextLevel Commerce" title="Comercial" description="Todo mundo que pode virar cliente, numa fila só: quem conversou, quem deixou contato e quem criou a loja. A etapa anda sozinha com o que a pessoa faz no sistema." actions={<AoVivo segundos={30} />} />
       <LinkTabs label="Ver como" active={ver} items={[{ key: "quadro", label: "Quadro por etapa", href: "/master/comercial" }, { key: "lista", label: "Lista (mais quentes primeiro)", href: "/master/comercial?ver=lista" }, { key: "ajustes", label: "Meta e mensagens", href: "/master/comercial/ajustes" }]} />
       {pessoas.length === 0 ? <EmptyState title="Ninguém no funil ainda" description="Quem conversar com o Maurício e deixar o WhatsApp, preencher o formulário ou criar uma loja aparece aqui." /> : ver === "quadro" ? (
         <div className="mt-4 grid gap-3 overflow-x-auto pb-2 [grid-template-columns:repeat(7,minmax(15rem,1fr))]">

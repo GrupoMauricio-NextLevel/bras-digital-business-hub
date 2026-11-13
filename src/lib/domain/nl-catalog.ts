@@ -142,7 +142,7 @@ async function aplicarRevisaoD220(db: Database) {
     // Uma vez por banco: se a revisão já existe em qualquer versão, não volta (antes só olhava a última versão e
     // reaplicava a D220 em cima da D226 a cada inicialização).
     if (regras.some((x) => x.key === r.key && x.reason.includes(REF_D220))) continue;
-    await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: ult?.holdDays ?? 14, benefit: r.benefit, effectiveFrom: vigencia, reason: "Programa de parceiros da E-commerce: indicador 20% + 10%, agência 30% + 15% (D220)" }).onConflictDoNothing();
+    await db.insert(commissionRules).values({ id: newId("crl"), key: r.key, version: (ult?.version ?? 0) + 1, family: "COMMERCE_PLAN", productKey: null, cycle: r.cycle, partnerKind: r.partnerKind, firstBps: r.firstBps, recurringBps: r.recurringBps, recurringMonths: r.recurringMonths, holdDays: ult?.holdDays ?? 14, benefit: r.benefit, effectiveFrom: vigencia, reason: "Programa de parceiros da Commerce: indicador 20% + 10%, agência 30% + 15% (D220)" }).onConflictDoNothing();
   }
 }
 

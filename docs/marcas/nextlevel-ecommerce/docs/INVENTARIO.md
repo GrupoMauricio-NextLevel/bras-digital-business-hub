@@ -1,4 +1,4 @@
-# Inventário de imagens — NextLevel E-commerce v1
+# Inventário de imagens — NextLevel Commerce v1
 
 Dimensões e transparência verificadas nos arquivos. Clara e escura indicam a superfície de aplicação, não o fundo do arquivo.
 

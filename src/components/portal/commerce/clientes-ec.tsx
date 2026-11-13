@@ -7,8 +7,8 @@ import "./commerce.css";
 
 /**
  * Nossos clientes (D283): as marcas que a equipe NextLevel atende, 100% NextLevel (nenhuma outra plataforma citada).
- * Honestidade (decisão do dono): as lojas são da equipe NextLevel, mas hoje não rodam na NextLevel E-commerce; a página
- * nunca diz que rodam. O selo "Na NextLevel E-commerce" só aparece quando `naPlataforma` for verdade.
+ * Honestidade (decisão do dono): as lojas são da equipe NextLevel, mas hoje não rodam na NextLevel Commerce; a página
+ * nunca diz que rodam. O selo "Na NextLevel Commerce" só aparece quando `naPlataforma` for verdade.
  */
 const APRENDIZADOS: [string, string][] = [
   ["Varejo e atacado na mesma vitrine, com mínimo por mix", "Atacado da loja: preço de atacado por produto e regras de mix."],
@@ -31,7 +31,7 @@ function Marca({ c, n }: { c: CaseLoja; n: number }) {
       <div>
         <p className="ec-mono text-sm" style={{ color: c.cor }}>{String(n).padStart(2, "0")}{c.cidade ? ` · ${c.cidade}` : ""}</p>
         <h3 id={`cli-${c.chave}`} className="mt-2 text-[clamp(2rem,5vw,3rem)] font-extrabold leading-none tracking-tight text-white">{c.nome}</h3>
-        {c.naPlataforma ? <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#21d97a]/15 px-3 py-1 text-sm font-semibold text-[#7ff5bd]"><BadgeCheck className="size-4" aria-hidden />Na NextLevel E-commerce</p> : null}
+        {c.naPlataforma ? <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#21d97a]/15 px-3 py-1 text-sm font-semibold text-[#7ff5bd]"><BadgeCheck className="size-4" aria-hidden />Na NextLevel Commerce</p> : null}
         <p className="mt-4 text-lg leading-relaxed text-[#e6edff]">{c.negocio}</p>
         <div className="mt-5 rounded-2xl border-l-4 bg-white/[0.06] p-5" style={{ borderColor: c.cor }}>
           <p className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: c.cor }}>Como o nosso trabalho ajuda</p>
@@ -56,7 +56,7 @@ export function ClientesEc({ cadastro, comecar, lojaPronta, whatsapp }: { cadast
   return (
     <div className="im-tema-ecommerce contents">
       <CabecalhoTech rotulo="Clientes" titulo={<>Marcas que a NextLevel <em>atende.</em></>}
-        texto="Lojas criadas e acompanhadas pela equipe que construiu a NextLevel E-commerce. O que aprendemos com elas está na plataforma que você usa para abrir a sua."
+        texto="Lojas criadas e acompanhadas pela equipe que construiu a NextLevel Commerce. O que aprendemos com elas está na plataforma que você usa para abrir a sua."
         dados={[{ rotulo: "Marcas", valor: String(marcas.length) }, { rotulo: "Segmentos", valor: String(SEGMENTOS.length) }, { rotulo: "Vendem para", valor: "O Brasil todo" }]}>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href={cadastro} className="inline-flex h-14 items-center gap-2 rounded-full bg-[#21d97a] px-7 text-base font-extrabold text-[#05210f] hover:bg-[#3ae88c]">{comecar} <ArrowRight className="size-5" aria-hidden /></Link>
@@ -76,7 +76,7 @@ export function ClientesEc({ cadastro, comecar, lojaPronta, whatsapp }: { cadast
       <section aria-labelledby="aprend-t" className="bg-canvas px-4 py-16 md:py-24">
         <div className="mx-auto max-w-6xl">
           <p className="im-eyebrow im-eyebrow--claro">Da loja do cliente para a sua</p>
-          <h2 id="aprend-t" className="mt-3 max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-foreground">O que aprendemos com elas, você já tem na NextLevel E-commerce.</h2>
+          <h2 id="aprend-t" className="mt-3 max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-foreground">O que aprendemos com elas, você já tem na NextLevel Commerce.</h2>
           <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {APRENDIZADOS.map(([a, r]) => <li key={a} className="rounded-2xl border border-border bg-surface p-6"><p className="text-sm text-muted-foreground">{a}</p><p className="mt-2 flex gap-2 font-semibold leading-snug"><BadgeCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" aria-hidden />{r}</p></li>)}
           </ul>
@@ -105,7 +105,7 @@ export function ClientesEc({ cadastro, comecar, lojaPronta, whatsapp }: { cadast
       <section aria-labelledby="final-t" className="bg-[#060c1d] px-4 py-16 text-white md:py-24">
         <div className="mx-auto max-w-4xl text-center">
           <h2 id="final-t" className="text-[clamp(2rem,5vw,3.25rem)] font-extrabold leading-[1.05] tracking-tight">A mesma equipe, a sua loja.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#b9c6e4]">Abra a sua loja na NextLevel E-commerce, ou deixe a nossa equipe montar para você.</p>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#b9c6e4]">Abra a sua loja na NextLevel Commerce, ou deixe a nossa equipe montar para você.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href={cadastro} className="inline-flex h-14 items-center gap-2 rounded-full bg-[#21d97a] px-7 text-base font-extrabold text-[#05210f] hover:bg-[#3ae88c]">{comecar} <ArrowRight className="size-5" aria-hidden /></Link>
             <Link href={lojaPronta} className="inline-flex h-14 items-center rounded-full border border-white/30 px-7 text-base font-bold hover:bg-white/10">Quero a loja montada pela equipe</Link>

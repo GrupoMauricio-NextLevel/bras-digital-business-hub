@@ -25,7 +25,7 @@ export function RecursosPorPlano({ planos, recursos, inicial, podeEditar }: { pl
     <div>
       <div className="overflow-x-auto border border-border">
         <table className="w-full min-w-[520px] text-sm">
-          <caption className="sr-only">Recursos liberados em cada plano da NextLevel E-commerce</caption>
+          <caption className="sr-only">Recursos liberados em cada plano da NextLevel Commerce</caption>
           <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th scope="col" className="p-3 font-medium">Recurso</th>{planos.map((p) => <th key={p.key} scope="col" className="p-3 text-center font-medium">{p.nome}</th>)}</tr></thead>
           <tbody>
             {recursos.map((r) => (

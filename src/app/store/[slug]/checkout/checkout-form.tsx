@@ -24,7 +24,7 @@ function fingerprint(text: string): string {
   return h.toString(36);
 }
 
-/** `aceitaCartao`: loja da E-commerce (Pix e cartão parcelado, D178); sem ele, só Pix (SuperDrop). */
+/** `aceitaCartao`: loja da Commerce (Pix e cartão parcelado, D178); sem ele, só Pix (SuperDrop). */
 export function CheckoutForm({ slug, storeName, minOrderCents = 0, aceitaCartao = false, lembrete = false }: { slug: string; storeName: string; minOrderCents?: number; aceitaCartao?: boolean; lembrete?: boolean }) {
   const cart = useCart();
   const router = useRouter();

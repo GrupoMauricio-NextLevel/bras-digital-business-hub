@@ -77,14 +77,14 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   // Master único (R2): a marca escolhida no seletor do topo enxuga o menu.
   const isMaster = session.user.role === "NEXTLEVEL_MASTER";
   const marcaMaster = isMaster ? await marcaDoMaster() : null;
-  // Master trancado só na E-commerce (D203): o menu do escritório em 7 áreas, uma casca só (o console /commerce usa o mesmo menu).
+  // Master trancado só na Commerce (D203): o menu do escritório em 7 áreas, uma casca só (o console /commerce usa o mesmo menu).
   const escritorioEc = isMaster && marcaMaster === "NEXTLEVEL_COMMERCE" && marcasAtivasNoMaster().length === 1;
   const items = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
-  // Maurício (IA0, D194): na loja independente da E-commerce e para o dono no Master. Visível; o plano decide o que destrava.
+  // Maurício (IA0, D194): na loja independente da Commerce e para o dono no Master. Visível; o plano decide o que destrava.
   const mauricio = (commerceStore && independent) || (isMaster && !fn && !sup) ? await mauricioDaLoja(db, isMaster ? null : store!.id, { master: isMaster }) : null;
-  // Parceiro da E-commerce (D253): o Maurício guia o dia a dia pelo manual do parceiro, sem IA externa.
+  // Parceiro da Commerce (D253): o Maurício guia o dia a dia pelo manual do parceiro, sem IA externa.
   const parceiroEc = session.user.role === "AFFILIATE" && brand.code === "NEXTLEVEL_COMMERCE";
   const botaoIa = mauricio ? <BotaoMauricio m={mauricio} esfera={isMaster ? "master" : "lojista"} central={isMaster ? "/master/ia/ajustes" : "/merchant/ia"} />
     : parceiroEc ? <BotaoMauricio m={{ mostrar: true, plano: "", ferramentas: [], minimoTexto: "", minimoAvancado: "", emTeste: false }} esfera="parceiro" central="/parceiros/termos" /> : null;
@@ -133,8 +133,8 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         items={byFn(commerceItems)}
         navMode="sections"
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
-        roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração E-commerce"}
-        tenantName={commerceStore ? store!.name : "NextLevel E-commerce"}
+        roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
+        tenantName={commerceStore ? store!.name : "NextLevel Commerce"}
         tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
         userName={session.user.name}
         storefrontHref={commerceStore ? storefrontHref : undefined}
@@ -142,7 +142,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         onSwitch={loginAs}
         onLogout={logout}
         passwordHref="/account/password"
-        groupHref={undefined /* D217: lojista da E-commerce sem "Suas marcas" (painel só com a marca do cliente) */}
+        groupHref={undefined /* D217: lojista da Commerce sem "Suas marcas" (painel só com a marca do cliente) */}
         notices={commerceStore ? await recentNotices(session.actor) : []}
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
@@ -170,7 +170,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const pode = (href: string) => !fn || masterPathAllowed(fn, href);
   // Seletor de negócios (D209): pílula na faixa do topo, no lugar do "NextLevel / …" do menu e da faixa "Vendo:".
   const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
-  // Parceiro da E-commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
+  // Parceiro da Commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
   const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: true } : undefined;
   const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (

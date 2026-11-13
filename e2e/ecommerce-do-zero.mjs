@@ -1,5 +1,5 @@
 /**
- * Lojista novo da NextLevel E-commerce, do zero até a primeira venda e o plano (D176): cadastro → primeiro produto →
+ * Lojista novo da NextLevel Commerce, do zero até a primeira venda e o plano (D176): cadastro → primeiro produto →
  * publicar → cliente compra → pedido pago aparece → assinatura do plano. Cada passo anota o que aconteceu; o que travar
  * vira um "tropeço" com captura de tela. Não para no primeiro problema: o objetivo é listar tudo o que atrapalha.
  * Uso: E2E_BASE=http://cm.test:3300 node e2e/ecommerce-do-zero.mjs [pasta-de-saida]

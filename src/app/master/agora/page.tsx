@@ -20,7 +20,7 @@ const ha = (iso: string, agora: Date) => {
   return m < 1 ? "agora" : m < 60 ? `há ${m} min` : m < 1440 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dia(s)`;
 };
 
-/** Agora (D200): o escritório comercial da E-commerce ao vivo. O que fazer primeiro, com a ação a um clique. */
+/** Agora (D200): o escritório comercial da Commerce ao vivo. O que fazer primeiro, com a ação a um clique. */
 export default async function AgoraPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const agora = new Date();
@@ -31,7 +31,7 @@ export default async function AgoraPage() {
   const pct = Math.min(100, Math.round((k.pagantes / Math.max(1, k.meta)) * 100));
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Agora" description="Quem atender primeiro, quem está perto de pagar e quem travou. Atualiza sozinho." actions={<AoVivo />} />
+      <PageHeader eyebrow="NextLevel Commerce" title="Agora" description="Quem atender primeiro, quem está perto de pagar e quem travou. Atualiza sozinho." actions={<AoVivo />} />
 
       {aprender ? (
         <Link href="/master/aprender" className="ds-card mb-6 flex flex-wrap items-center gap-3 p-4 hover:border-foreground/30">

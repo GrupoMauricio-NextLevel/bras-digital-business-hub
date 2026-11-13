@@ -45,7 +45,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
   const sp = await searchParams;
   const db = await getDb();
   const [suppliers, book] = await Promise.all([independent ? Promise.resolve([]) : listSignupSuppliers(db), getPriceBook(db)]);
-  // Sem dropshipping (NextLevel E-commerce) não existe "Drop manual": só loja com endereço da marca ou com domínio próprio.
+  // Sem dropshipping (NextLevel Commerce) não existe "Drop manual": só loja com endereço da marca ou com domínio próprio.
   const offers = OFFER_KEYS.filter((k) => !independent || k !== "DROP_MANUAL").map((k) => ({ key: k, name: book.offers[k].name, monthlyCents: book.offers[k].monthlyCents, setupCents: book.offers[k].setupCents }));
   const plano = (OFFER_KEYS as readonly string[]).includes(sp.plano ?? "") ? (sp.plano as (typeof OFFER_KEYS)[number]) : "STORE_SUBDOMAIN";
   // Commerce com planos (D90): Start, Pro e Scale com a oferta de entrada; Enterprise é por proposta.
@@ -68,7 +68,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
     </>
   );
   const faixa = brand.code === "NEXTLEVEL_COMMERCE" ? <FaixaBlack lugar="publico" /> : null;
-  // Checkout de tecnologia da E-commerce (D233): planos, dados e resumo vivo; sem foto, sem 1º mês especial.
+  // Checkout de tecnologia da Commerce (D233): planos, dados e resumo vivo; sem foto, sem 1º mês especial.
   if (brand.code === "NEXTLEVEL_COMMERCE" && pv && plans?.length) {
     const [b, ben] = await Promise.all([blackAgora(db), beneficiosPorPlano(db)]);
     const doCheckout = plans.map((x) => ({ key: x.key, name: x.name, monthlyCents: x.monthlyCents, annualCents: b.ativa ? anualBlackCents(x.annualCents) : x.annualCents, features: ben[x.key as PlanoBeneficio] ? recursosDoCheckout(ben[x.key as PlanoBeneficio]) : [] }));

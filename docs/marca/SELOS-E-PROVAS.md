@@ -1,4 +1,4 @@
-# Selos e provas de confiança (NextLevel E-commerce)
+# Selos e provas de confiança (NextLevel Commerce)
 
 Data: 2026-10-29 · Decisão: D220 · Para: home, /parceiros, /comparativo, checkout das lojas e painéis.
 

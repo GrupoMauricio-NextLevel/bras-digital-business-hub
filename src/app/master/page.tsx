@@ -24,7 +24,7 @@ function greeting() {
 export default async function MasterDashboard() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   if ((await getBrand()).code === "NEXTLEVEL_COMMERCE") redirect("/commerce");
-  // Master trancado na E-commerce (D200): a primeira tela é a "Agora".
+  // Master trancado na Commerce (D200): a primeira tela é a "Agora".
   if ((await marcaDoMaster()) === "NEXTLEVEL_COMMERCE") redirect("/master/agora");
   const db = await getDb();
   const [overview, orders, snap, sdStores, cmStores] = await Promise.all([

@@ -1,5 +1,5 @@
 // Conferência do site no ar depois de cada publicação (D171). Só leitura, sem login e sem navegador: cada endereço responde,
-// a versão é a esperada, a home tem título e não mostra erro, e a E-commerce não vaza o SuperDrop (e vice-versa).
+// a versão é a esperada, a home tem título e não mostra erro, e a Commerce não vaza o SuperDrop (e vice-versa).
 // Uso: npm run conferir:producao   (EXPECT_VERSION=<commit curto> confere a versão; SITES=url1,url2 troca a lista;
 //      atrás de proxy, NODE_USE_ENV_PROXY=1). Termina com código 1 se algo falhar.
 const SITES = (process.env.SITES ?? "https://lojas.nextlevelgroup.com.br,https://superdrop.com.br,https://bras.nextlevelgroup.com.br,https://cargas.nextlevelgroup.com.br,https://nextlevelgroup.com.br/solucoes,https://master.nextlevelgroup.com.br/login").split(",").map((s) => s.trim()).filter(Boolean);
@@ -7,7 +7,7 @@ const EXPECT = process.env.EXPECT_VERSION?.trim();
 // Palavras que não podem aparecer no texto de cada marca (o que é de outra marca).
 const PROIBIDO = {
   "lojas.nextlevelgroup.com.br": [/SuperDrop/i, /\bCentral\b/, /recarga/i, /Loja SuperDrop/i, /Drop manual/i],
-  "superdrop.com.br": [/NextLevel E-commerce/i],
+  "superdrop.com.br": [/NextLevel Commerce/i],
 };
 let falhas = 0;
 const ok = (c, m) => { console.log(`${c ? "OK  " : "FALHA"} ${m}`); if (!c) falhas++; };

@@ -27,7 +27,7 @@ const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): Bra
   light: { ...NEU.light, signal: l[0], signalText: l[1] }, dark: { ...NEU.dark, signal: d[0], signalText: d[1] }, support, darkFirst: false,
 });
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
-  // NextLevel E-commerce v1 (D163): azul de ação como sinal; no escuro, o azul do pacote com o link claro como texto.
+  // NextLevel Commerce v1 (D163): azul de ação como sinal; no escuro, o azul do pacote com o link claro como texto.
   NEXTLEVEL_COMMERCE: {
     light: { paper: EC.claro.surfaceMuted, ink: EC.cores.marinho, signal: EC.claro.action, signalText: EC.claro.link },
     dark: { paper: EC.escuro.surface, ink: EC.cores.gelo, signal: EC.escuro.action, signalText: EC.escuro.link },

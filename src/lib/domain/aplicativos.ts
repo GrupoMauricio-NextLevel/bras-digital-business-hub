@@ -2,7 +2,7 @@ import type { stores } from "@/db/schema";
 import type { IntegracoesLoja } from "./integracoes-tipos";
 
 /**
- * Central de aplicativos (W5, D188): o que a loja da E-commerce tem, o estado de cada um e onde configurar. Só mostra o
+ * Central de aplicativos (W5, D188): o que a loja da Commerce tem, o estado de cada um e onde configurar. Só mostra o
  * que existe de verdade; o que ainda não foi construído aparece como "em breve", nunca como disponível.
  */
 export type EstadoApp = "ligado" | "desligado" | "em-breve";

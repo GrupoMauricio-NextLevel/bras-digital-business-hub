@@ -37,7 +37,7 @@ export async function inviteStaff(db: Database, actor: Actor, raw: z.input<typeo
   const storeId = ownerStore(actor);
   const d = inviteSchema.parse(raw);
   const team = await listTeam(db, actor);
-  // D247 (PV6): na E-commerce vale o limite de pessoas do plano (contando o dono); nas outras marcas, o limite fixo de sempre.
+  // D247 (PV6): na Commerce vale o limite de pessoas do plano (contando o dono); nas outras marcas, o limite fixo de sempre.
   const { ehLojaEcommerce, exigirVagaDePessoa } = await import("./beneficios-plano");
   if (await ehLojaEcommerce(db, storeId)) await exigirVagaDePessoa(db, storeId);
   else if (team.filter((m) => m.storeRole === "STAFF" && !m.disabledAt).length >= MAX_STAFF) throw new DomainError("TEAM_FULL", `A equipe pode ter até ${MAX_STAFF} pessoas.`);

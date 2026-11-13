@@ -1,5 +1,5 @@
 /**
- * P0: conta simples. Na NextLevel E-commerce o lojista abre a loja sem fornecedor, começa o teste do plano (D90), paga o 1º mês por Pix, cadastra o
+ * P0: conta simples. Na NextLevel Commerce o lojista abre a loja sem fornecedor, começa o teste do plano (D90), paga o 1º mês por Pix, cadastra o
  * primeiro produto, publica e recebe um pedido de teste, sem ver Central, carteira nem fornecedor.
  * Uso: BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/conta-simples.mjs
  */

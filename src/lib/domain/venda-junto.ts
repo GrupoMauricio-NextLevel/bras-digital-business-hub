@@ -19,7 +19,7 @@ const schema = z.object({
 export async function salvarVendaJunto(db: Database, actor: Actor, productId: string, raw: z.input<typeof schema>) {
   if (actor.role !== "STORE_OWNER" || !actor.storeId) throw new ForbiddenError("Só a loja ajusta os próprios produtos.");
   assertStoreAdmin(actor);
-  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel E-commerce.");
+  if ((await storeModality(db, actor.storeId)) !== "INDEPENDENT") throw new DomainError("NOT_ALLOWED", "Disponível na loja da NextLevel Commerce.");
   const v = schema.parse(raw);
   const ids = [...new Set(v.relatedIds.filter((x) => x !== productId))];
   const daLoja = await db.select({ productId: storeProducts.productId }).from(storeProducts).where(and(eq(storeProducts.storeId, actor.storeId), inArray(storeProducts.productId, [productId, ...ids])));

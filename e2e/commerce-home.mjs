@@ -1,4 +1,4 @@
-// Confere a home imersiva da NextLevel E-commerce (D165): título, rolagem lateral, imagens, jornada em cinco passos (rolagem e
+// Confere a home imersiva da NextLevel Commerce (D165): título, rolagem lateral, imagens, jornada em cinco passos (rolagem e
 // régua por teclado), portas, personalização, dúvidas, links e console. Também com "menos movimento" (tudo parado e legível).
 // Uso: E2E_BASE=http://localhost:3100 node e2e/commerce-home.mjs  (SHOTS=/pasta para capturas; E2E_HOME=endereço da home; PW_ARGS=opções do Chromium separadas por |).
 import { chromium } from "playwright-core";

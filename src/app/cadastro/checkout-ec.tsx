@@ -22,7 +22,7 @@ const reais = (c: number) => formatBRL(c).replace(",00", "");
 const PARA: Record<string, string> = { COMMERCE_START: "Para começar a vender", COMMERCE_PRO: "Para quem já vende todo mês", COMMERCE_SCALE: "Para operações com volume" };
 
 /**
- * Checkout dos planos da NextLevel E-commerce (D233): escolha do plano e do ciclo, dados da conta e um resumo vivo ao lado
+ * Checkout dos planos da NextLevel Commerce (D233): escolha do plano e do ciclo, dados da conta e um resumo vivo ao lado
  * (no celular, acima do botão). Os valores vêm do catálogo do Master; na Black, o anual já chega com 2 meses grátis e é o
  * mesmo valor que a assinatura congela (`startCommerceSubscription`). Sem "1º mês" especial (D233).
  */

@@ -22,7 +22,7 @@ const BRIDGE: Partial<Record<`${EcoBrand}>${EcoBrand}`, string>> = {
   "SUPERDROP>BRAS_DIGITAL": "Você já vende pelo SuperDrop. No Brás Digital Club você compra estoque pelo preço do Brás quando quiser ter produto próprio.",
   "NEXTLEVEL_COMMERCE>BRAS_DIGITAL": "Você já tem a sua loja. No Brás Digital Club você abastece o estoque direto das importadoras, em caixa fechada.",
   "BRAS_DIGITAL>NEXTLEVEL_CARGAS": "Você já compra no Brás. Com a NextLevel Cargas o fardo chega na sua cidade sem você viajar.",
-  "BRAS_DIGITAL>NEXTLEVEL_COMMERCE": "Você já compra no Brás. Com a NextLevel E-commerce você vende online o que comprou, com a sua marca.",
+  "BRAS_DIGITAL>NEXTLEVEL_COMMERCE": "Você já compra no Brás. Com a NextLevel Commerce você vende online o que comprou, com a sua marca.",
   "SUPERDROP>NEXTLEVEL_CARGAS": "Você já vende pelo SuperDrop. Com a NextLevel Cargas você recebe e envia fardos do Brás.",
   "NEXTLEVEL_COMMERCE>NEXTLEVEL_CARGAS": "Você já tem a sua loja. Com a NextLevel Cargas a mercadoria do Brás chega até você.",
   "NEXTLEVEL_CARGAS>BRAS_DIGITAL": "Você já transporta. No Brás Digital Club estão as importadoras que chamam coleta.",

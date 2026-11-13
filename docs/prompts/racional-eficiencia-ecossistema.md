@@ -170,7 +170,7 @@ export type PerfilLoja = {
   oferta: OfferKey | null;                  // SÓ no SuperDrop; null na E-commerce
   plano: { productKey: string; nome: string; status: string } | null; // E-commerce: nl_subscriptions
   pode: Record<FeatureKey, boolean>;        // decisão final por recurso
-  vocabulario: { produto: string; quemPrepara: string; custo: string }; // "NextLevel E-commerce"/"Sua loja"/"Custo dos produtos" × "SuperDrop"/"Central"/"Custo à Central"
+  vocabulario: { produto: string; quemPrepara: string; custo: string }; // "NextLevel Commerce"/"Sua loja"/"Custo dos produtos" × "SuperDrop"/"Central"/"Custo à Central"
 };
 export async function perfilDaLoja(db: Database, store: Store): Promise<PerfilLoja>;
 export function podeUsar(perfil: PerfilLoja, recurso: FeatureKey): boolean;

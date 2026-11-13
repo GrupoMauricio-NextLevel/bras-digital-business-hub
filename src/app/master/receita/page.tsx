@@ -40,7 +40,7 @@ export default async function ReceitaPage() {
   const linhas = lojas.map((l) => ({ ...l, s: sit.get(l.id)!, f: ultima.get(l.id) ?? null })).sort((a, b) => ["vencido", "aguardando", "teste", "pagante", "cortesia", "sem_plano", "cancelado"].indexOf(a.s.pagamento) - ["vencido", "aguardando", "teste", "pagante", "cortesia", "sem_plano", "cancelado"].indexOf(b.s.pagamento));
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Receita" description="Quanto entra por mês com os planos e o que está em risco. Cada número usa a mesma regra de quem paga do Master inteiro." />
+      <PageHeader eyebrow="NextLevel Commerce" title="Receita" description="Quanto entra por mês com os planos e o que está em risco. Cada número usa a mesma regra de quem paga do Master inteiro." />
       <PrecisaDeVoce itens={receitaAgora(linhas)} vazio="Nenhuma cobrança em risco agora." descricao="Planos vencidos, pagamentos pendentes, testes acabando e renovações da semana. Cada um abre a ficha com o WhatsApp pronto." />
       <section className="ds-kpis mb-6" aria-label="Receita">
         <MetricCard label="Receita mensal" value={formatBRL(r.mrrCents)} hint="planos ativos (anual ÷ 12)" />

@@ -29,7 +29,7 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "todas", label: "Todas" }, { key: "pendentes", label: "Pendentes" }, { key: "testadas", label: "Testadas" }, { key: "aprovadas", label: "Aprovadas" },
   { key: "concluidas", label: "Testadas e aprovadas" }, { key: "problema", label: "Com problema" }, { key: "falta", label: "Falta algo (imagem, texto…)" }, { key: "falhou", label: "Falhou na checagem" },
 ];
-const HOSTS: { key: "auto" | BrandCode; label: string }[] = [{ key: "auto", label: "Automático (pela área)" }, { key: "NEXTLEVEL", label: "Master" }, { key: "SUPERDROP", label: "SuperDrop" }, { key: "NEXTLEVEL_COMMERCE", label: "E-commerce" }];
+const HOSTS: { key: "auto" | BrandCode; label: string }[] = [{ key: "auto", label: "Automático (pela área)" }, { key: "NEXTLEVEL", label: "Master" }, { key: "SUPERDROP", label: "SuperDrop" }, { key: "NEXTLEVEL_COMMERCE", label: "Commerce" }];
 const AREA = Object.fromEntries(QA_AREAS.map((a) => [a.key, a])) as Record<string, QaArea>;
 const KPI = "grid min-w-0 content-start gap-1 rounded-xl border border-border bg-surface p-2.5 sm:p-3";
 /** Legenda dos números: some no celular para a área de trabalho aparecer logo. */
@@ -455,7 +455,7 @@ function Faltas({ screens, images, urlOf }: { screens: Screen[]; images: PublicI
           <tbody>{[...missing, ...images.filter((i) => i.formats.length)].map((i) => (
             <tr key={`${i.brand}-${i.name}`} className="border-b border-border last:border-0">
               <th scope="row" className="p-3 text-left font-mono text-xs font-medium">{i.name}</th>
-              <td className="p-3">{i.brand === "superdrop" ? "SuperDrop" : i.brand === "commerce" ? "E-commerce" : "Brás Digital Club"}</td>
+              <td className="p-3">{i.brand === "superdrop" ? "SuperDrop" : i.brand === "commerce" ? "Commerce" : "Brás Digital Club"}</td>
               <td className="p-3 text-muted-foreground">{i.where}</td>
               <td className="p-3"><Badge tone={i.formats.length ? "success" : "warning"}>{i.formats.length ? `No ar (${i.formats.join(", ")})` : "Falta"}</Badge></td>
             </tr>

@@ -17,7 +17,7 @@ const TONE = { NOVA: "info", EM_CONTATO: "warning", ATIVOU: "success", DESCARTAD
  * marcas, a fila de oportunidades cruzadas (com dono e situação) e o placar do mês da equipe.
  */
 export default async function TorrePage() {
-  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da Commerce
   const s = await requireRole("NEXTLEVEL_MASTER");
   const t = await ecosystemTower(await getDb(), s.actor);
   return (

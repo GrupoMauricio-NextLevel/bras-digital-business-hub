@@ -24,7 +24,7 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
   const m = (v: number, k: number) => Math.round(v * k);
   const P: Record<string, () => Pergunta[]> = {
     "o-que-e": () => [
-      q("Qual é o foco da NextLevel E-commerce?", "Lojas virtuais com foco no atacado do Brás", ["Só marketplace", "Só lojas de importados", "Revenda sem estoque apenas"]),
+      q("Qual é o foco da NextLevel Commerce?", "Lojas virtuais com foco no atacado do Brás", ["Só marketplace", "Só lojas de importados", "Revenda sem estoque apenas"]),
       q("Por onde o lojista recebe as vendas?", "Pelo Mercado Pago dele", ["Pela conta da NextLevel", "Por boleto da NextLevel", "Só em dinheiro"]),
       q("O que podemos prometer a um lojista?", "Nada de faturamento ou prazo de resultado", ["Dobrar as vendas em 30 dias", "Faturamento mínimo garantido", "Primeira venda na primeira semana"]),
     ],
@@ -59,7 +59,7 @@ export function perguntasDa(aulaId: string, f: Fatos): Pergunta[] {
       q(`Depois da Black, o ${pro?.nome} mensal passa a…`, brl(pro?.depoisDaBlackMensalCents ?? 0), [brl(pro?.mensalCents ?? 0), brl(scale?.depoisDaBlackMensalCents ?? 0), brl(m(pro?.depoisDaBlackMensalCents ?? 0, 1.5))]),
     ],
     "dominio-email": () => [
-      q("Quem pode usar domínio próprio?", "Todo lojista da E-commerce", ["Só o Scale", "Só o Pro e o Scale", "Ninguém ainda"]),
+      q("Quem pode usar domínio próprio?", "Todo lojista da Commerce", ["Só o Scale", "Só o Pro e o Scale", "Ninguém ainda"]),
       q("Qual o caminho do e-mail com o domínio?", "Grátis guiado, na conta do lojista (Zoho Mail)", ["Pacote pago da NextLevel", "Não existe", "Só com Google pago"]),
       q("O domínio não conectou sozinho. E aí?", "Cai na fila do Master para a equipe cadastrar", ["O lojista desiste", "Cobra taxa extra", "Precisa trocar de plano"]),
     ],

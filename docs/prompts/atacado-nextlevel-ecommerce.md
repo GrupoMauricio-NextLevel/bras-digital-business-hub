@@ -1,7 +1,7 @@
-# NextLevel E-commerce de Atacado — racional e prompt engenheiro mestre
+# NextLevel Commerce de Atacado — racional e prompt engenheiro mestre
 
 > Estado: **EM ANDAMENTO.** No ar: AT0 (D257, dados + motor único), AT1 (D258, painel do lojista e travas por plano) e AT2 (D259, box novo, card "a partir de", barra do mix e economia no carrinho e no checkout). AT3 (D268, grade livre cor×tamanho, cores do produto, mínimo por modelo e múltiplos; o pacote sortido já vinha da AT1). Próxima: AT4 (excursão e retirada, romaneio por grade, recompra rápida).
-> Pedido do dono (05/11/2026): "nossa plataforma vai ser especialista em atacado: NextLevel E-commerce de Atacado. Precisamos aprimorar o box de produtos e o sistema para comportar com perfeição a venda em atacado. No plano básico, o básico; nos planos mais altos, aprofundamos. Grade com 12, atacado de pacote, atacado mesclado com itens de toda a loja: são várias formas de venda de atacado que os empreendedores do Brás têm como realidade."
+> Pedido do dono (05/11/2026): "nossa plataforma vai ser especialista em atacado: NextLevel Commerce de Atacado. Precisamos aprimorar o box de produtos e o sistema para comportar com perfeição a venda em atacado. No plano básico, o básico; nos planos mais altos, aprofundamos. Grade com 12, atacado de pacote, atacado mesclado com itens de toda a loja: são várias formas de venda de atacado que os empreendedores do Brás têm como realidade."
 
 ---
 
@@ -14,9 +14,9 @@
 - peça avulsa;
 - pedido do balcão e do WhatsApp.
 
-Hoje as plataformas grandes tratam isso com aplicativos de terceiros e tabelas limitadas por plano. A NextLevel E-commerce passa a ser **a plataforma feita para esse jeito de vender**: a regra de atacado nasce no produto, aparece igual na vitrine, no carrinho, na proposta e no balcão, e o servidor sempre recalcula.
+Hoje as plataformas grandes tratam isso com aplicativos de terceiros e tabelas limitadas por plano. A NextLevel Commerce passa a ser **a plataforma feita para esse jeito de vender**: a regra de atacado nasce no produto, aparece igual na vitrine, no carrinho, na proposta e no balcão, e o servidor sempre recalcula.
 
-**Posicionamento:** "NextLevel E-commerce de Atacado: a loja virtual que vende como o Brás vende." Grade, pacote, mix e varejo na mesma loja, com taxa zero da plataforma.
+**Posicionamento:** "NextLevel Commerce de Atacado: a loja virtual que vende como o Brás vende." Grade, pacote, mix e varejo na mesma loja, com taxa zero da plataforma.
 
 ---
 
@@ -291,7 +291,7 @@ Colunas novas anuláveis ou com valor padrão, sem quebrar o SuperDrop (skill `n
 | # | Decisão | Padrão recomendado |
 |---|---|---|
 | 1 | Escada por plano | A tabela da seção 6 |
-| 2 | Nome público | "NextLevel E-commerce de Atacado" no título e no posicionamento; a marca segue "NextLevel E-commerce" |
+| 2 | Nome público | "NextLevel Commerce de Atacado" no título e no posicionamento; a marca segue "NextLevel Commerce" |
 | 3 | O mix vale para quê | As peças das grades e dos pacotes contam para o mix |
 | 4 | O mix caiu abaixo no carrinho | Volta ao varejo na hora, com aviso |
 | 5 | Card da vitrine | Destaca o atacado quando a loja tem mix ou grade; o lojista pode trocar |
@@ -317,8 +317,8 @@ Colunas novas anuláveis ou com valor padrão, sem quebrar o SuperDrop (skill `n
 ## 12. Prompt engenheiro mestre
 
 ```
-Você é o engenheiro responsável por transformar a NextLevel E-commerce na plataforma especialista em atacado
-("NextLevel E-commerce de Atacado"). Leia antes: este arquivo inteiro, docs/design/DECISIONS.md (D52, D56, D85, D91,
+Você é o engenheiro responsável por transformar a NextLevel Commerce na plataforma especialista em atacado
+("NextLevel Commerce de Atacado"). Leia antes: este arquivo inteiro, docs/design/DECISIONS.md (D52, D56, D85, D91,
 D186, D221, D240, D247 e as decisões novas do atacado), AGENTS.md (Next.js desta versão), e o código citado na seção 3.
 Use as skills do projeto: desenvolver-prompt, nova-migracao, painel-interno, pagina-de-vendas, desempenho, qa-visual, publicar.
 

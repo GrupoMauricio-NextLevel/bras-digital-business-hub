@@ -15,7 +15,7 @@ export default async function CommerceCatalogPage() {
   const names = new Map(data.stores.map(({ store }) => [store.id, store.name]));
   return (
     <>
-      <PageHeader eyebrow="Catálogos" title="Produtos publicados" description="Os catálogos próprios de cada loja da NextLevel E-commerce, num lugar só." />
+      <PageHeader eyebrow="Catálogos" title="Produtos publicados" description="Os catálogos próprios de cada loja da NextLevel Commerce, num lugar só." />
       <DataTable rows={data.catalog} rowKey={(p) => `${p.storeId}:${p.productId}`}
         empty={<EmptyState title="Nenhum produto Commerce encontrado" description="Os produtos das lojas aparecem aqui." />}
         columns={[

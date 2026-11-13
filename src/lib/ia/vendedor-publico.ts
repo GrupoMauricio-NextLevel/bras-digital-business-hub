@@ -1,5 +1,5 @@
 /**
- * Vendedor 24h da home da E-commerce (D195). Motor guiado, sem IA: entende o assunto pela pergunta e responde com
+ * Vendedor 24h da home da Commerce (D195). Motor guiado, sem IA: entende o assunto pela pergunta e responde com
  * dados reais do sistema (planos, oferta, integrações). Quando a IA estiver ligada no Master, a pergunta livre vai para
  * o modelo com os mesmos fatos. Nunca inventa preço, prazo ou resultado. Arquivo puro (servidor e tela).
  */

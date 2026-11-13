@@ -34,7 +34,7 @@ export default async function PartnerHome() {
   const session = await requireRole("AFFILIATE");
   const base = await getBaseUrl();
   const marca = await getBrand();
-  // Parceiro da E-commerce (D220): painel próprio do programa (indicador ou agência), com as regras do catálogo.
+  // Parceiro da Commerce (D220): painel próprio do programa (indicador ou agência), com as regras do catálogo.
   if (marca.code === "NEXTLEVEL_COMMERCE") {
     const db = await getDb();
     const [pe, pv] = await Promise.all([painelParceiroEc(db, session.actor), commercePlansView(db)]);

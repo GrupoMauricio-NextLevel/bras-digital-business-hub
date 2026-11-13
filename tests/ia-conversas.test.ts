@@ -9,7 +9,7 @@ import type { FatosVenda } from "@/lib/ia/vendedor-publico";
 /** Conversas do Maurício e CRM ao vivo (D197). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
-const fatos: FatosVenda = { marca: "NextLevel E-commerce", cadastro: "/cadastro", temasGratis: 4, oferta: null, integracoes: [], planos: [{ key: "COMMERCE_START", name: "Start", monthlyCents: 14900, feeBps: 100, quote: false }] };
+const fatos: FatosVenda = { marca: "NextLevel Commerce", cadastro: "/cadastro", temasGratis: 4, oferta: null, integracoes: [], planos: [{ key: "COMMERCE_START", name: "Start", monthlyCents: 14900, feeBps: 100, quote: false }] };
 
 describe("conversa do visitante e CRM", () => {
   it("visitante conversa, deixa contato, equipe assume e responde; o Maurício para e volta", async () => {

@@ -30,7 +30,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
     // D219: no ecossistema público só entram as marcas já liberadas (as mesmas abertas no Master); as outras ficam bloqueadas até serem concluídas.
-    ? [{ href: "/solucoes", label: "Soluções" }, ...(negocioAberto("BRAS_DIGITAL") ? [{ href: "/club", label: "Club" }] : []), ...(negocioAberto("SUPERDROP") ? [{ href: `${site("SUPERDROP")}/`, label: "SuperDrop" }] : []), { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "E-commerce" }, ...(negocioAberto("BRAS_DIGITAL") && brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), ...(negocioAberto("NEXTLEVEL_CARGAS") ? [{ href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }] : [])]
+    ? [{ href: "/solucoes", label: "Soluções" }, ...(negocioAberto("BRAS_DIGITAL") ? [{ href: "/club", label: "Club" }] : []), ...(negocioAberto("SUPERDROP") ? [{ href: `${site("SUPERDROP")}/`, label: "SuperDrop" }] : []), { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "Commerce" }, ...(negocioAberto("BRAS_DIGITAL") && brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), ...(negocioAberto("NEXTLEVEL_CARGAS") ? [{ href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }] : [])]
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
@@ -42,8 +42,8 @@ export default async function PortalLayout({ children }: { children: React.React
       : [{ href: "/#temas", label: "Temas" }, { href: "/planos", label: "Planos" }, { href: lojaNl, label: "Loja NextLevel" }, { href: "/faq", label: "Dúvidas" }];
   const cta = holding ? { href: "/solucoes#diagnostico", label: "Diagnóstico gratuito" } : cargas ? { href: "/#cadastro", label: "Cadastrar grátis" } : closed ? { href: "/cadastro", label: "Cadastrar grátis" } : brand.signupOpen ? { href: "/cadastro", label: "Criar minha loja" } : brand.soon ? { href: "/quero-minha-loja", label: "Entrar na lista de espera" } : { href: "/quero-minha-loja", label: "Quero minha loja" };
   const c = supportContacts();
-  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel E-commerce"}.`)}`) : null;
-  // Vendedor 24h (D195): só nas páginas públicas da E-commerce; responde com os dados reais, com ou sem IA ligada.
+  const whatsapp = (commerce || closed) && c.whatsappUrl ? c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent(`Olá! Quero saber mais sobre ${closed ? "o Brás Digital Club" : "a NextLevel Commerce"}.`)}`) : null;
+  // Vendedor 24h (D195): só nas páginas públicas da Commerce; responde com os dados reais, com ou sem IA ligada.
   const vendedor = commerce ? await (async () => {
     const db = await getDb(); const fatos = await fatosDoVendedor(db, brand.signupOpen ? "/cadastro" : "/quero-minha-loja");
     // Janela de resgate na saída (D280): com os mesmos dados reais do vendedor (teste, temas grátis, taxa, Black).
@@ -53,7 +53,7 @@ export default async function PortalLayout({ children }: { children: React.React
   })() : null;
   const casca = (
     <PublicShell
-      // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel E-commerce (D163): três linhas, um pouco mais alta.
+      // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel Commerce (D163): três linhas, um pouco mais alta.
       brand={<BrandLogo brand={brand} tone="auto" className={holding ? "h-6" : commerce ? "h-10" : "h-8"} priority />}
       brandLabel={brand.name}
       homeHref={holding ? "/solucoes" : "/"}
@@ -71,7 +71,7 @@ export default async function PortalLayout({ children }: { children: React.React
       {children}
     </PublicShell>
   );
-  // Black NextLevel (D229): faixa com a contagem no topo dos sites públicos abertos (E-commerce e grupo).
+  // Black NextLevel (D229): faixa com a contagem no topo dos sites públicos abertos (Commerce e grupo).
   // Roupa da Black (D232): a classe bk-on veste o site enquanto a campanha estiver no ar.
   const bkOn = (commerce || holding) && (await blackAgora(await getDb())).ativa;
   if (commerce) return <div className={`${EC_TECH}${bkOn ? " bk-on" : ""}`}><FaixaBlack lugar="publico" />{casca}</div>;

@@ -1,5 +1,5 @@
 /**
- * Rodada A das integrações (D189) na E-commerce: o lojista cola os códigos em "Migrar e anunciar" (o formato errado é
+ * Rodada A das integrações (D189) na Commerce: o lojista cola os códigos em "Migrar e anunciar" (o formato errado é
  * recusado na hora), a loja publicada carrega os scripts oficiais, o manifesto do celular e a janela de 18 anos, e a
  * central de aplicativos acende os cartões. No fim tudo é desligado de novo. Telas com axe e checagem de 360 px.
  * Os endereços dos parceiros (Google, TikTok, chat) são bloqueados: o teste confere só que a loja pediu o script certo.

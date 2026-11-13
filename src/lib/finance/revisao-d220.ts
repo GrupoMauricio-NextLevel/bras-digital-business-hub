@@ -1,7 +1,7 @@
 import type { PartnerKind } from "@/db/schema";
 
 /**
- * Revisão de preços e comissões da NextLevel E-commerce (D220, decisão do dono em 2026-10-29):
+ * Revisão de preços e comissões da NextLevel Commerce (D220, decisão do dono em 2026-10-29):
  *  - TAXA ZERO sobre as vendas em todos os planos (checkout Mercado Pago, parceiro oficial). A NextLevel fica com a
  *    mensalidade, temas, serviços e parceiros.
  *  - mensalidades abaixo de Nuvemshop e Tray em cada degrau, no mensal e no anual (comparativo em

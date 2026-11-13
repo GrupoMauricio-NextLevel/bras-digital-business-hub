@@ -8,7 +8,7 @@ import { resumoComercial, situacoesComerciais } from "./situacao-comercial";
 import { getConfigComercial, mensageiro, PADRAO } from "./comercial-config";
 
 /**
- * "Agora" do Master da E-commerce (D200): o que fazer nos próximos minutos, em ordem de urgência, com a ação a um clique.
+ * "Agora" do Master da Commerce (D200): o que fazer nos próximos minutos, em ordem de urgência, com a ação a um clique.
  * Ordem: conversa esperando > interessado novo > cadastro novo > teste vencendo > ativação parada > cobrança vencida >
  * primeira venda. Cada item diz há quanto tempo está ali. `agora` sempre injetado.
  */

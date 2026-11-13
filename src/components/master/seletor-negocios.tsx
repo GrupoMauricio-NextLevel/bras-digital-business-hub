@@ -12,7 +12,7 @@ import type { MarcaMaster } from "@/lib/master-marca";
 
 
 /**
- * Seletor de negócios do Master (D209): uma pílula na faixa do topo ("Negócio: E-commerce") que abre os negócios do
+ * Seletor de negócios do Master (D209): uma pílula na faixa do topo ("Negócio: Commerce") que abre os negócios do
  * grupo em cartões. Aberto = dá para trocar; Pausado = trancado no Master (MASTER_MARCAS_ATIVAS); Em breve = sem código.
  * Substitui o "NextLevel / …" do menu lateral e a faixa "Vendo:".
  */
@@ -58,7 +58,7 @@ export function SeletorNegocios({ atual, ativas }: { atual: MarcaMaster | null; 
             </>;
             return <li key={n.code}>{ativa && !corrente
               ? <button type="button" disabled={pending} onClick={() => escolher(n.code)} className="ds-negocio-card">{corpo}</button>
-              : <div className="ds-negocio-card" data-estado={e} aria-current={corrente ? "true" : undefined} aria-disabled={!corrente || undefined} title={!ativa ? { proximo: "Próximo negócio a entrar no Master, depois da E-commerce.", pausado: "Trancado no Master. Para abrir, a equipe técnica inclui a marca em MASTER_MARCAS_ATIVAS.", "em-breve": "Ainda sem sistema desenvolvido.", aberto: undefined }[e] : undefined}>{corpo}</div>}</li>;
+              : <div className="ds-negocio-card" data-estado={e} aria-current={corrente ? "true" : undefined} aria-disabled={!corrente || undefined} title={!ativa ? { proximo: "Próximo negócio a entrar no Master, depois da Commerce.", pausado: "Trancado no Master. Para abrir, a equipe técnica inclui a marca em MASTER_MARCAS_ATIVAS.", "em-breve": "Ainda sem sistema desenvolvido.", aberto: undefined }[e] : undefined}>{corpo}</div>}</li>;
           })}
         </ul>
       </DropdownMenuContent>

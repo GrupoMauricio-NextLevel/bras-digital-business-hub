@@ -6,7 +6,7 @@ import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
  * Tela de parceiros: faixa na cor da marca no topo e folha branca arredondada que sobe sobre ela, com o nome do programa em cor de marca,
  * um título grande e o formulário. A foto é decorativa (alt vazio).
  */
-export function PartnerShell({ program, title, intro, photo, tech = false, children }: { program: string; /** Visual de tecnologia da E-commerce (D223). */ tech?: boolean; title: string; intro?: ReactNode; /** Foto do programa de parceiros da própria marca (sem ela, faixa na cor da marca). */ photo?: { src: string; position?: string }; children: ReactNode }) {
+export function PartnerShell({ program, title, intro, photo, tech = false, children }: { program: string; /** Visual de tecnologia da Commerce (D223). */ tech?: boolean; title: string; intro?: ReactNode; /** Foto do programa de parceiros da própria marca (sem ela, faixa na cor da marca). */ photo?: { src: string; position?: string }; children: ReactNode }) {
   return (
     <>
     <main className={`min-h-dvh bg-surface ${tech ? EC_TECH : ""}`}>

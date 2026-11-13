@@ -29,7 +29,7 @@ const CHANNELS = ["ONLINE_STORE", "WHATSAPP", "ONLINE_STORE", "INSTAGRAM", "ONLI
 const daysAgo = (n: number, hour = 11) => { const d = new Date(); d.setDate(d.getDate() - n); d.setHours(hour, 0, 0, 0); return d.toISOString(); };
 
 /**
- * Conta de demonstração da NextLevel E-commerce (conta simples, sem fornecedor): "Fio & Linha", com produtos e pedidos fictícios
+ * Conta de demonstração da NextLevel Commerce (conta simples, sem fornecedor): "Fio & Linha", com produtos e pedidos fictícios
  * em canais e situações variados. Serve para capturar telas reais do painel da Commerce. Só roda na demonstração; idempotente.
  * Login: lojista@commerce.demo (senha de demonstração).
  */

@@ -28,7 +28,7 @@ type Props = {
 };
 
 export function OrderDetail({ role, backHref, order, items, events, store, labels, canFulfil, independent, productLabel = "SuperDrop" }: Props) {
-  // Loja sem fornecedor (E-commerce): quem prepara é a própria loja; o Master a vê como "Loja", o lojista como "Sua loja".
+  // Loja sem fornecedor (Commerce): quem prepara é a própria loja; o Master a vê como "Loja", o lojista como "Sua loja".
   const quemLoja = role === "STORE_OWNER" ? "Sua loja" : "Loja";
   const steps: { label: string; done: boolean }[] = [
     { label: "Pagamento do cliente", done: order.customerPaymentStatus === "PAID" },

@@ -48,7 +48,7 @@ await m.p.setViewportSize({ width: 1440, height: 900 });
 await m.p.goto(`${B}/master/financeiro/descoberta`, { waitUntil: "networkidle" });
 for (const formName of ["Benefícios nos painéis", "Barra do ecossistema"]) {
   const f = m.p.getByRole("form", { name: formName });
-  for (const label of ["SuperDrop", "NextLevel E-commerce"]) { const cb = f.getByLabel(label, { exact: true }); if (!(await cb.isChecked())) await cb.check(); }
+  for (const label of ["SuperDrop", "NextLevel Commerce"]) { const cb = f.getByLabel(label, { exact: true }); if (!(await cb.isChecked())) await cb.check(); }
   await f.getByRole("button", { name: "Gravar" }).click();
   await m.p.getByText(/atualizad/).first().waitFor({ timeout: 30000 });
   await m.p.waitForTimeout(500);

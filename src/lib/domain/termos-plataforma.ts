@@ -11,7 +11,7 @@ import { DomainError, ForbiddenError } from "./errors";
 import { emitEvent } from "./events";
 
 /**
- * Termos de uso da plataforma (D279): todo dono de loja da NextLevel E-commerce aceita a versão atual no painel, com o
+ * Termos de uso da plataforma (D279): todo dono de loja da NextLevel Commerce aceita a versão atual no painel, com o
  * próprio login, antes de usar. A equipe da loja não aceita (quem contrata é o dono). Versão nova = aceite novo.
  */
 const ehDono = (actor: Actor) => actor.role === "STORE_OWNER" && !!actor.storeId && actor.storeRole !== "STAFF";
@@ -47,7 +47,7 @@ export async function aceitarTermos(db: Database, actor: Actor, raw: z.input<typ
   const quando = now.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
   if (u) await sendEmail(db, {
     kind: "TERMOS_ACEITOS", to: u.email, brand: "NEXTLEVEL_COMMERCE", dedupeKey: `termos:${actor.userId}:${VERSAO_TERMOS}`,
-    subject: "Você aceitou os termos de uso da NextLevel E-commerce",
+    subject: "Você aceitou os termos de uso da NextLevel Commerce",
     text: `Olá, ${input.nome.split(" ")[0]}!\n\nRegistramos o seu aceite dos ${TITULO_TERMOS} (versão de ${VERSAO_TERMOS.split("-").reverse().join("/")}) em ${quando}.\n\nO texto completo fica sempre disponível no link abaixo.\n\nImpressão digital do texto aceito: ${HASH_TERMOS}`,
     cta: { label: "Ler os termos de uso", url: `${base}/termos` },
   });
@@ -55,7 +55,7 @@ export async function aceitarTermos(db: Database, actor: Actor, raw: z.input<typ
   return { jaAceito: false };
 }
 
-/** Master: cada dono de loja da E-commerce e se já aceitou a versão atual. */
+/** Master: cada dono de loja da Commerce e se já aceitou a versão atual. */
 export async function aceitesDoMaster(db: Database, actor: Actor) {
   if (actor.role !== "NEXTLEVEL_MASTER" || actor.masterFunction === "CONTADOR") throw new ForbiddenError();
   const donos = await db.select({ userId: users.id, nome: users.name, storeId: stores.id, loja: stores.name, criadaEm: stores.createdAt }).from(users).innerJoin(stores, eq(stores.id, users.storeId)).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(and(eq(users.role, "STORE_OWNER"), eq(users.storeRole, "OWNER"), eq(organizations.brand, "NEXTLEVEL_COMMERCE"))).orderBy(desc(stores.createdAt)).limit(500);

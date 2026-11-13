@@ -20,7 +20,7 @@ describe("termos de uso da plataforma (D279)", () => {
   }
 
   it("texto estável: a impressão digital confere com o texto e não tem promessa de ganho", () => {
-    expect(impressaoDigital({ versao: VERSAO_TERMOS, titulo: "Termos de uso da plataforma NextLevel E-commerce" }, SECOES_TERMOS)).toBe(HASH_TERMOS);
+    expect(impressaoDigital({ versao: VERSAO_TERMOS, titulo: "Termos de uso da plataforma NextLevel Commerce" }, SECOES_TERMOS)).toBe(HASH_TERMOS);
     const texto = JSON.stringify(SECOES_TERMOS);
     expect(texto).toMatch(/não são promessa de vendas/);
     expect(texto).toMatch(/sem multa/);

@@ -26,7 +26,7 @@ const faq = (saqueMinimo: string) => [
 const PAINEL = "/portal/commerce/parceiros/painel-parceiro-demo.webp";
 
 /**
- * Página de captação de parceiros da NextLevel E-commerce (D252, PV4; base D220). Perfil inicial pela rota
+ * Página de captação de parceiros da NextLevel Commerce (D252, PV4; base D220). Perfil inicial pela rota
  * (/parceiros, /parceiros/criadores, /parceiros/vendedores, /parceiros/agencias). Números das regras vigentes do catálogo.
  */
 export async function ParceirosEc({ brand, perfil = "criador" }: { brand: Brand; perfil?: PerfilCaptacao }) {

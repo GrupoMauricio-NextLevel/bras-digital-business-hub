@@ -1,5 +1,5 @@
 /**
- * W3 e W4 das melhorias (D186, D187) na E-commerce:
+ * W3 e W4 das melhorias (D186, D187) na Commerce:
  * - checkout com o pedido de lembrete de carrinho (desmarcado);
  * - "Compre junto" no produto do lojista;
  * - "Migrar e anunciar": endereço antigo que redireciona, lista do Google Shopping, Pixel e loja em lançamento com

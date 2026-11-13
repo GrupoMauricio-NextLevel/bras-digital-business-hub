@@ -5,7 +5,7 @@ import { stores } from "@/db/schema";
 import { DomainError } from "./errors";
 
 /**
- * Domínio próprio da loja (D234): liberado para todo lojista da NextLevel E-commerce, em todos os planos.
+ * Domínio próprio da loja (D234): liberado para todo lojista da NextLevel Commerce, em todos os planos.
  * Fluxo: o lojista informa o domínio → recebe os registros de DNS → "Verificar" confere o DNS e, quando o endereço já
  * responde pela plataforma, a loja passa a abrir nele (CONNECTED). Com `RENDER_API_KEY` e `RENDER_SERVICE_ID` no ambiente,
  * o domínio é cadastrado sozinho na hospedagem (certificado HTTPS automático); sem eles, fica na fila do Master.

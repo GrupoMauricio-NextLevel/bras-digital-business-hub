@@ -30,7 +30,7 @@ describe("Equipe da loja", () => {
     await expect(inviteStaff(ctx.db, o.actor, { name: "Dup", email: "joao@moda.com.br", password: "12345678" })).rejects.toThrow(/e-mail/i);
   });
 
-  it("limite do plano na E-commerce (Start: 3 pessoas com o dono, D247); encerrar acesso libera a vaga e outra loja não consegue", async () => {
+  it("limite do plano na Commerce (Start: 3 pessoas com o dono, D247); encerrar acesso libera a vaga e outra loja não consegue", async () => {
     const a = await owner(1);
     const b = await owner(2);
     const ids: string[] = [];

@@ -122,7 +122,7 @@ describe("níveis dos parceiros", () => {
     expect((await tierDe()).status).toBe("INACTIVE");
   });
 
-  it("corte mensal (meta de ativação): vale para o SuperDrop, não para o parceiro da E-commerce (D252)", async () => {
+  it("corte mensal (meta de ativação): vale para o SuperDrop, não para o parceiro da Commerce (D252)", async () => {
     const r = await registerPartner(ctx.db, { name: "Parceira Commerce", email: "ec@exemplo.com", password: "senha-forte-1", taxId: "11144477735", phone: "11999990000", acceptTerms: true, brand: "NEXTLEVEL_COMMERCE" });
     const ec = (await ctx.db.query.partners.findFirst({ where: eq(partners.userId, r.userId) }))!.id;
     await ctx.db.update(partners).set({ createdAt: "2026-01-01T00:00:00Z" }).where(eq(partners.id, partnerId));

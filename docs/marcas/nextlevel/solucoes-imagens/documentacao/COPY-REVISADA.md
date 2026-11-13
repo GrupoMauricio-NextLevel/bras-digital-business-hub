@@ -24,4 +24,4 @@ Não foi inspecionado o código que o briefing diz já conter a copy. Este docum
 - “Temas que vendem” pode sugerir resultado garantido; preferir apresentação e experiência.
 - “Diagnóstico gratuito”, “receba por escrito” e “compra única, sem mensalidade” dependem de políticas comerciais confirmadas.
 - Os cinco momentos não constituem cronograma garantido de evolução nem case de uma empresa real.
-- Usar NextLevel E-commerce ao citar o nome público atual da plataforma, sem renomear IDs técnicos antigos.
+- Usar NextLevel Commerce ao citar o nome público atual da plataforma, sem renomear IDs técnicos antigos.

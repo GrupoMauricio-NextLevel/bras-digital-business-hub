@@ -17,7 +17,7 @@ import { PRODUCT_BRANDS, brandByCode } from "@/lib/brand";
 import { masterBrandFilter } from "@/lib/brand-server";
 
 export default async function StoresPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; offer?: string; marca?: string }> }) {
-  await levarAoEscritorio("/commerce/stores"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/commerce/stores"); // D205: tela antiga → área nova do escritório da Commerce
   const sp = await searchParams;
   const marca = await masterBrandFilter(sp.marca);
   const [rows, snap] = await Promise.all([listStoresWithPlan({ ...sp, marca }), getDb().then((db) => loadTowerSnapshot(db))]);
@@ -48,7 +48,7 @@ export default async function StoresPage({ searchParams }: { searchParams: Promi
         rowKey={(r) => r.store.id}
         columns={[
           { key: "name", header: "Loja", primary: true, cell: (r) => <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded text-[10px] font-bold text-white" style={{ background: r.store.primaryColor }}>{r.store.logoText}</span><div><Link href={`/master/stores/${r.store.slug}`} className="font-medium underline-offset-2 hover:underline">{r.store.name}</Link><div className="text-xs text-muted-foreground">{r.networkName}</div></div></div> },
-          { key: "offer", header: "Oferta", cell: (r) => r.brand === "NEXTLEVEL_COMMERCE" ? <span className="text-xs text-muted-foreground" title="Loja da E-commerce: vale o plano da plataforma">—</span> : <StatusBadge value={r.store.offer} />, mobile: false },
+          { key: "offer", header: "Oferta", cell: (r) => r.brand === "NEXTLEVEL_COMMERCE" ? <span className="text-xs text-muted-foreground" title="Loja da Commerce: vale o plano da plataforma">—</span> : <StatusBadge value={r.store.offer} />, mobile: false },
           { key: "brand", header: "Marca", cell: (r) => <span className="text-xs">{brandByCode(r.brand).name}</span>, mobile: false },
           { key: "opp", header: "Oportunidade", cell: (r) => { const sg = signal.get(r.store.id); const o = sg ? opportunities(sg) : []; return o.length ? <span title={o.join(" · ")} className="text-xs text-muted-foreground">Vendas baixas</span> : <span className="text-xs text-subtle-foreground">—</span>; } },
           { key: "health", header: "Saúde", cell: (r) => { const sg = signal.get(r.store.id); if (!sg) return null; const h = healthScore(sg); return <span title={h.reasons.join(" · ") || "Sem pendências"} className={h.band === "HEALTHY" ? "text-success" : h.band === "ATTENTION" ? "text-warning" : "text-danger"}>{BAND_LABEL[h.band]} · {h.score}</span>; } },

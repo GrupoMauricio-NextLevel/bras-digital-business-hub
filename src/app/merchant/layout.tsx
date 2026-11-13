@@ -29,7 +29,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <main className="min-h-dvh bg-background px-4 py-8 text-foreground">
         <div className="mx-auto grid max-w-3xl gap-5">
           <div>
-            <p className="text-sm font-semibold text-[#294cdc]">NextLevel E-commerce</p>
+            <p className="text-sm font-semibold text-[#294cdc]">NextLevel Commerce</p>
             <h1 className="mt-1 text-2xl font-bold">Antes de começar, leia e aceite os termos de uso</h1>
             <p className="mt-1 text-sm text-muted-foreground">É o contrato de uso da plataforma. Seu painel abre logo depois do aceite.</p>
           </div>

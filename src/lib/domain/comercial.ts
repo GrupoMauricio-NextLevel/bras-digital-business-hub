@@ -9,7 +9,7 @@ import { linkWhatsapp } from "./agora-ecommerce";
 import { getConfigComercial, mensageiro } from "./comercial-config";
 
 /**
- * Comercial da E-commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com
+ * Comercial da Commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com
  * contato e lojas criadas na mesma pessoa (e-mail ou WhatsApp iguais), sem duplicar. A etapa vem dos fatos do sistema
  * (ninguém digita); responsável, próxima ação e prazo ficam em `crm_acompanhamento`.
  */

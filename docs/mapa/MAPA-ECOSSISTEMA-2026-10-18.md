@@ -32,7 +32,7 @@ flowchart TB
   AG --> AG2["Loja NextLevel (serviços dentro dos painéis)"]
   AG --> AG3["Club (pontos do grupo)"]
   AG --> AG4["Meu Contador (fiscal)"]
-  P --> EC["NextLevel E-commerce<br/>lojas virtuais de marca própria"]
+  P --> EC["NextLevel Commerce<br/>lojas virtuais de marca própria"]
   P --> SD["SuperDrop<br/>loja sem estoque + fornecedor"]
   P --> BD["Brás Digital Club<br/>atacado B2B do Brás"]
   P --> CG["NextLevel Cargas<br/>transportadoras e ônibus"]
@@ -48,7 +48,7 @@ flowchart TB
 
 | Marca | Endereço | Para quem | Quem paga o quê | Estado |
 |---|---|---|---|---|
-| NextLevel E-commerce | lojas.nextlevelgroup.com.br | Marca própria que vende no Instagram e quer loja (Juliana, Rodrigo) | Plano Start/Pro/Scale + taxa de plataforma; o cliente final paga direto na conta Mercado Pago da loja | no ar home imersiva nova |
+| NextLevel Commerce | lojas.nextlevelgroup.com.br | Marca própria que vende no Instagram e quer loja (Juliana, Rodrigo) | Plano Start/Pro/Scale + taxa de plataforma; o cliente final paga direto na conta Mercado Pago da loja | no ar home imersiva nova |
 | SuperDrop | superdrop.com.br | Revendedora sem estoque (Carla) e fornecedor com estoque (Marcos) | Lojista: plano + taxa por pedido + recarga de saldo; fornecedor: setup + mensalidade | em produção, com clientes |
 | Brás Digital Club | brasdigitalclub.com.br | Lojista do interior (Dona Cida), vendedor de marketplace, importadoras do Brás | Comprar é grátis; análise paga (Prata/Ouro/Platinum); importadora paga comissão | no ar fora do foco declarado |
 | NextLevel Cargas | cargas.nextlevelgroup.com.br | Transportadora pequena, autônomo, dono de ônibus de excursão | Grátis com limite; Pro/Premium; comissão por carga ou fardo | no ar 1ª rodada de cadastro |

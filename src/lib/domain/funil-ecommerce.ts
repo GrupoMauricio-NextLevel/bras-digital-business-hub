@@ -6,7 +6,7 @@ import { notifyTenant } from "@/lib/email";
 import { requireMaster, type Actor } from "./access";
 
 /**
- * Funil de ativação da NextLevel E-commerce (D176): do cadastro ao lojista pagante, com a mesma régua da prontidão da
+ * Funil de ativação da NextLevel Commerce (D176): do cadastro ao lojista pagante, com a mesma régua da prontidão da
  * loja (`readiness.ts`). Para cada loja, o primeiro degrau que falta é onde ela parou, com o próximo passo e há quantos
  * dias está ali. Uma consulta por degrau para todas as lojas (nada de consulta por loja). Só o Master.
  */

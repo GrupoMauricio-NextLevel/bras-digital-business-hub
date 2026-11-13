@@ -76,7 +76,7 @@ As fotos chegaram **só pela conversa, comprimidas**: 1672 × 941 px nas paisage
 2. **A foto mostra só o que existe.** Se a legenda diz "a equipe monta sua loja", a Loja Pronta precisa existir no catálogo do Master e estar à venda. Se diz "fale com a gente", o canal (WhatsApp ou e-mail) precisa estar configurado. **Sem o canal, o cartão não aparece** (regra de código, não de texto).
 3. **Autorização antes da publicação.** Cada pessoa identificável tem uma autorização de uso de imagem assinada, guardada fora do repositório. O manifesto das fotos registra só "autorizado em AAAA-MM-DD". **Foto com alguém sem autorização não é exibida**: o lugar fica reservado na cor da marca (o mesmo mecanismo `espera` de `FotoImersiva`).
 4. **Sem promessa de ganho.** A foto do prêmio (1) não entra perto de planos, parceiros ou preços.
-5. **Marca certa em cada endereço.** No SuperDrop a faixa fala "a equipe que faz o SuperDrop"; na E-commerce, "a equipe da NextLevel E-commerce". O nome vem de `getBrand()`, nunca fixo. O logo NEXTLEVEL MARKETING na parede é a empresa real (NextLevel Marketing Ltda), o que é verdade em todas as marcas do grupo.
+5. **Marca certa em cada endereço.** No SuperDrop a faixa fala "a equipe que faz o SuperDrop"; na E-commerce, "a equipe da NextLevel Commerce". O nome vem de `getBrand()`, nunca fixo. O logo NEXTLEVEL MARKETING na parede é a empresa real (NextLevel Marketing Ltda), o que é verdade em todas as marcas do grupo.
 6. **Personagens e equipe não se misturam na mesma cena.** Na jornada imersiva (personagens), a equipe só entra como **apoio** ("se travar, a gente ajuda"), num bloco à parte, nunca como "passo 3 da Juliana".
 7. **Painel é ferramenta** (`painel-interno`). Foto em painel só onde acalma ou orienta: apoio, bloqueio, boas-vindas, login, estado vazio do primeiro dia. Nunca em tabela, fila ou formulário.
 
@@ -90,7 +90,7 @@ Legenda: P = página pública, I = painel interno, E = e-mail. A prioridade segu
 |---|---|---|---|---|
 | 1 | **E-commerce** (`lojas.nextlevelgroup.com.br`) · P | Faixa "Prefere ajuda para começar? Loja Pronta, Migração ou diagnóstico gratuito" (`src/components/portal/commerce/plans-section.tsx`). Vira um bloco com foto e três portas | 2 (recorte do estúdio e dos editores) | Gente de verdade monta a sua loja se você não quiser fazer sozinho |
 | 1 | E-commerce · P | Plano Enterprise, "Pedir proposta" (mesma seção dos planos) | 4 | Atendimento próximo para operações maiores |
-| 1 | E-commerce · P | Bloco novo "Quem faz a NextLevel E-commerce", antes das perguntas frequentes da home imersiva (`src/components/portal/commerce/imersiva/home-imersiva.tsx`) | 2 + 5 (avatar) | Empresa real, em São Paulo, com equipe |
+| 1 | E-commerce · P | Bloco novo "Quem faz a NextLevel Commerce", antes das perguntas frequentes da home imersiva (`src/components/portal/commerce/imersiva/home-imersiva.tsx`) | 2 + 5 (avatar) | Empresa real, em São Paulo, com equipe |
 | 1 | E-commerce · I | Primeira tela do lojista (`/merchant`): cartão "Sua equipe de apoio", **só nos primeiros 14 dias ou até a primeira venda**, abaixo da fila do dia | 5 (avatar redondo) ou rosto do atendente | Não está sozinho; botão para o canal de suporte |
 | 1 | E-commerce · E | E-mail de boas-vindas da loja (`welcomeStore` em `src/lib/email.ts`): assinatura "Mauricio, fundador" com foto de 96 px | 5 (recorte 1:1) | Tom pessoal; quem assina responde? (decisão 9.3) |
 | 2 | **SuperDrop** (`superdrop.com.br`) · P | Faixa de suporte da home (componentes em `src/components/portal/superdrop/`): "Gente de verdade do outro lado" | 2 ou 4 | Confiança para quem começa a vender sem estoque |
@@ -110,7 +110,7 @@ Legenda: P = página pública, I = painel interno, E = e-mail. A prioridade segu
 
 ## 4. Detalhe por marca
 
-### 4.1 NextLevel E-commerce (60%)
+### 4.1 NextLevel Commerce (60%)
 - **Problema que a foto resolve:** quem chega à página de planos vê preço, taxa e "3 dias grátis", mas não sabe se tem empresa por trás. A frase "Prefere ajuda para começar?" é só uma linha cinza; hoje a oferta de serviço é invisível.
 - **Proposta: bloco "Prefere que a gente monte?"**
   - foto 2 em recorte 4:5 à esquerda (estúdio e editores);
@@ -235,7 +235,7 @@ Legenda: P = página pública, I = painel interno, E = e-mail. A prioridade segu
 
 ### EQ2: E-commerce (60%)
 1. Bloco "Prefere que a gente monte?" no lugar da linha de ajuda em `plans-section.tsx`, com as três portas e o preço do catálogo do Master. Some a porta que não estiver à venda.
-2. Bloco "Quem faz a NextLevel E-commerce" na home imersiva, antes das perguntas frequentes.
+2. Bloco "Quem faz a NextLevel Commerce" na home imersiva, antes das perguntas frequentes.
 3. Cartão de apoio na primeira tela do lojista (fila do dia), com a regra dos 14 dias ou da primeira venda **no domínio** (`fila-do-dia.ts`), testada.
 4. E-mail de boas-vindas: assinatura com foto (imagem absoluta via `APP_URL`, 96 px, texto alternativo) e dias de teste vindos de `ofertaPublica` (corrige o "7 dias").
 - **Conferência:**

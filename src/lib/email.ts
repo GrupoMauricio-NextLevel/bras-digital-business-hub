@@ -57,8 +57,8 @@ export function renderHtml(m: Pick<EmailInput, "subject" | "text" | "cta" | "ceo
  */
 export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof fetch = fetch): Promise<"SENT" | "FAILED" | "LOGGED" | "SKIPPED"> {
   const id = newId("eml");
-  // D285: marca fechada (hoje, tudo que não é a E-commerce nem o grupo) não assina e-mail; quem estava sem marca ou numa
-  // marca em pausa recebe pela NextLevel E-commerce, a frente aberta (D216/D218).
+  // D285: marca fechada (hoje, tudo que não é a Commerce nem o grupo) não assina e-mail; quem estava sem marca ou numa
+  // marca em pausa recebe pela NextLevel Commerce, a frente aberta (D216/D218).
   const pedida = brandByCode(m.brand);
   const brand = pedida.code === "NEXTLEVEL" || negocioAberto(pedida.code) ? pedida : brandByCode("NEXTLEVEL_COMMERCE");
   m = { ...m, subject: brandize(m.subject, brand), text: brandize(m.text, brand), cta: m.cta ? { ...m.cta, label: brandize(m.cta.label, brand) } : undefined };

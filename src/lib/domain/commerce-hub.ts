@@ -10,7 +10,7 @@ import { storeAccess } from "./store-access";
 
 export type LaunchCheck = { key: string; label: string; ok: boolean; hint: string; href?: string; severity: "blocker" | "recommended" };
 
-/** Visão do Master sobre uma marca (hoje NextLevel E-commerce): lojas, funil, receita e o que falta para lançar. */
+/** Visão do Master sobre uma marca (hoje NextLevel Commerce): lojas, funil, receita e o que falta para lançar. */
 export async function getBrandHub(db: Database, actor: Actor, code: BrandCode = "NEXTLEVEL_COMMERCE", env: Record<string, string | undefined> = process.env, now = new Date()) {
   requireMaster(actor);
   const brand = brandByCode(code, env);

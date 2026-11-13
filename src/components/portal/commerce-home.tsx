@@ -3,7 +3,7 @@ import { H2 } from "@/components/portal/commerce/sections";
 import { MockWindow } from "@/components/portal/mock-window";
 
 /**
- * Bloco de prova da home da NextLevel E-commerce: lojas de demonstração montadas no próprio sistema. A home em si é a
+ * Bloco de prova da home da NextLevel Commerce: lojas de demonstração montadas no próprio sistema. A home em si é a
  * imersiva (`commerce/imersiva/home-imersiva.tsx`, D165); a home anterior (v2) saiu do código e fica no histórico do git.
  */
 /** Lojas de demonstração fotografadas do próprio sistema (mesmas capturas da home SuperDrop v4). */

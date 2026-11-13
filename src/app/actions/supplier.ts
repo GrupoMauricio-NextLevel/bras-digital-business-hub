@@ -210,8 +210,8 @@ export async function connectShippingAction(input: z.input<typeof shippingSchema
   return runAction(async () => {
     const { owner } = await supplierCtx();
     const data = shippingSchema.parse(input);
-    // Frenet, Kangu e Correios com contrato (D190): só a loja independente da E-commerce, por enquanto.
-    if (NOVAS_PLATAFORMAS_DE_ENVIO.includes(data.provider) && (!owner.storeId || (await storeModality(await getDb(), owner.storeId)) !== "INDEPENDENT")) throw new ForbiddenError("Disponível na loja da NextLevel E-commerce.");
+    // Frenet, Kangu e Correios com contrato (D190): só a loja independente da Commerce, por enquanto.
+    if (NOVAS_PLATAFORMAS_DE_ENVIO.includes(data.provider) && (!owner.storeId || (await storeModality(await getDb(), owner.storeId)) !== "INDEPENDENT")) throw new ForbiddenError("Disponível na loja da NextLevel Commerce.");
     if (!data.token) {
       if (!isDemoMode()) throw new ForbiddenError("Cole o token da plataforma de envio.");
       await setShipping(owner, { shippingProvider: data.provider, shippingStatus: "DEMO", shippingAccount: "conta de demonstração", shippingTokenEnc: null });

@@ -1,5 +1,5 @@
 /**
- * NextLevel E-commerce v1 (D163): fonte única da identidade da plataforma de lojas virtuais, antes "NextLevel Commerce".
+ * NextLevel Commerce (D163, nome revisto no D288): fonte única da identidade da plataforma de lojas virtuais.
  * O código de sistema continua `NEXTLEVEL_COMMERCE` (gravado no banco em lojas, assinaturas e pedidos) e o tema interno
  * continua `commerce`: muda só o nome público e o visual. Adaptada de `docs/marcas/nextlevel-ecommerce/integration/
  * brand.config.json` e `tokens/brand-tokens.json` (pacote aprovado pelo dono). Arquivos oficiais em
@@ -10,7 +10,7 @@ export const EC_BASE = "/marcas/nextlevel-ecommerce";
 
 export const EC = {
   code: "NEXTLEVEL_COMMERCE",
-  name: "NextLevel E-commerce",
+  name: "NextLevel Commerce",
   descriptor: "PLATAFORMA DE LOJAS VIRTUAIS",
   /** Endosso recomendado pelo pacote (texto, nunca selo). */
   endosso: "uma plataforma do Grupo NextLevel",

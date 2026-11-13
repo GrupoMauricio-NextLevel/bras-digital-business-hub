@@ -25,7 +25,7 @@ export async function StorePage({ slug, page, productSlug, query }: { slug: stri
   // Teste de tema ("ver com seus produtos"): só o dono vê, nada é gravado. L5 (D246): leituras independentes juntas.
   const [preview, trial, catalog, brandCode] = await Promise.all([
     isPreviewMode(sf.store.id), tryingTheme(db, sf.store), getStorefrontCatalog(sf.store.id),
-    page === "product" || page === "cart" ? brandCodeOfStore(db, sf.store) : Promise.resolve(undefined), // carrinho (D213): barra de frete grátis só na E-commerce
+    page === "product" || page === "cart" ? brandCodeOfStore(db, sf.store) : Promise.resolve(undefined), // carrinho (D213): barra de frete grátis só na Commerce
   ]);
   const [template, globals] = trial ? [trial.preset.pages[page], trial.preset.globals] : await Promise.all([
     resolveTemplate(db, sf.store, page, { draft: preview, themeKey: sf.themeKey }).then((r) => r.template),

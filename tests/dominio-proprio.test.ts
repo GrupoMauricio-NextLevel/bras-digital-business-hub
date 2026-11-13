@@ -7,7 +7,7 @@ import { montarPerfil, TABELA_PADRAO } from "@/lib/domain/perfil-loja";
 import { storeUrl } from "@/lib/store-url";
 import { podeSerDominioDeLoja } from "@/proxy";
 
-/** Domínio próprio para todo lojista E-commerce (D234). */
+/** Domínio próprio para todo lojista Commerce (D234). */
 describe("domínio próprio: regras puras", () => {
   it("normaliza, recusa o que não é domínio e os endereços da plataforma", () => {
     expect(normalizarDominio(" https://WWW.MinhaLoja.com.br/produtos ")).toBe("www.minhaloja.com.br");
@@ -30,7 +30,7 @@ describe("domínio próprio: regras puras", () => {
     expect(podeSerDominioDeLoja("nextlevel-demo.onrender.com")).toBe(false);
     expect(podeSerDominioDeLoja("10.0.0.1")).toBe(false);
   });
-  it("E-commerce libera em todos os planos, mesmo se a tabela do Master tirar", () => {
+  it("Commerce libera em todos os planos, mesmo se a tabela do Master tirar", () => {
     const tabela = { ...TABELA_PADRAO, COMMERCE_START: TABELA_PADRAO.COMMERCE_START.filter((f) => f !== "customDomain") };
     const p = montarPerfil({ store: { id: "s", offer: "STORE_SUBDOMAIN" }, marca: "NEXTLEVEL_COMMERCE", modalidade: "INDEPENDENT", plano: { productKey: "COMMERCE_START", status: "active" }, tabela, direitos: new Set() });
     expect(p.pode.customDomain).toBe(true);

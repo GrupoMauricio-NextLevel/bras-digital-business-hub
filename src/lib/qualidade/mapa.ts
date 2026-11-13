@@ -9,7 +9,7 @@ import { areaOf, labelOf, type QaKind } from "./rotas";
  */
 export const MAP_HOSTS = ["NEXTLEVEL", "SUPERDROP", "NEXTLEVEL_COMMERCE", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as const;
 export type MapHost = (typeof MAP_HOSTS)[number];
-export const MAP_HOST_LABEL: Record<MapHost, string> = { NEXTLEVEL: "Master", SUPERDROP: "SuperDrop", NEXTLEVEL_COMMERCE: "E-commerce", BRAS_DIGITAL: "Brás", NEXTLEVEL_CARGAS: "Cargas" };
+export const MAP_HOST_LABEL: Record<MapHost, string> = { NEXTLEVEL: "Master", SUPERDROP: "SuperDrop", NEXTLEVEL_COMMERCE: "Commerce", BRAS_DIGITAL: "Brás", NEXTLEVEL_CARGAS: "Cargas" };
 export const cellKey = (route: string, host: string) => `${route}@${host}`;
 
 // ---- Seguir um endereço até o fim -------------------------------------------------------------------------------------

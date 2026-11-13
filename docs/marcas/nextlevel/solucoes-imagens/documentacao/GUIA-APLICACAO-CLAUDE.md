@@ -1,6 +1,6 @@
 # Prompt mestre — aplicar a vitrine de soluções
 
-Aplique os lotes de imagens anexados à página de soluções da NextLevel MARCA-MÃE no projeto existente. Não é um novo rebrand de NextLevel E-commerce e não autoriza alteração global do sistema.
+Aplique os lotes de imagens anexados à página de soluções da NextLevel MARCA-MÃE no projeto existente. Não é um novo rebrand de NextLevel Commerce e não autoriza alteração global do sistema.
 
 ## Inspeção e skills
 

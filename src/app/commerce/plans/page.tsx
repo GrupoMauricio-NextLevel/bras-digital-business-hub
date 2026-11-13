@@ -25,7 +25,7 @@ export default async function CommercePlansPage() {
   const names = new Map(data.stores.map(({ store }) => [store.id, store.name]));
   return (
     <>
-      <PageHeader eyebrow="Receita recorrente" title="Assinaturas" description="Cobranças dos planos das lojas da NextLevel E-commerce: mensalidades, testes e atrasos." />
+      <PageHeader eyebrow="Receita recorrente" title="Assinaturas" description="Cobranças dos planos das lojas da NextLevel Commerce: mensalidades, testes e atrasos." />
       <DataTable rows={data.invoices} rowKey={(i) => i.id}
         empty={<EmptyState title="Nenhuma cobrança de plano Commerce encontrada" description="As cobranças dos planos aparecem aqui." />}
         columns={[
@@ -39,7 +39,7 @@ export default async function CommercePlansPage() {
         <BeneficiosEditor inicial={Object.fromEntries(Object.entries(ben).map(([k, v]) => [k, { produtos: v.produtos, pessoas: v.pessoas, temaPago: v.temaPago, suporte: v.suporte, migracao: v.migracao }])) as never} ia={Object.fromEntries(Object.entries(ben).map(([k, v]) => [k, v.ia]))} />
       </section>
       <section className="mt-10" aria-label="O que cada plano libera">
-        <SectionTitle title="O que cada plano libera" description="Marque o que a loja pode usar em cada plano. Vale na hora para todas as lojas da E-commerce; sem plano, vale o Start." />
+        <SectionTitle title="O que cada plano libera" description="Marque o que a loja pode usar em cada plano. Vale na hora para todas as lojas da Commerce; sem plano, vale o Start." />
         <RecursosPorPlano planos={PLANOS_ECOMMERCE.map((k) => ({ key: k, nome: NOME_PLANO[k] }))} recursos={RECURSOS_ECOMMERCE.map((k) => ({ key: k, nome: ROTULO_ECOMMERCE[k as keyof typeof ROTULO_ECOMMERCE] }))} inicial={tabela} podeEditar={!session.actor.masterFunction || session.actor.masterFunction === "FINANCEIRO"} />
       </section>
     </>

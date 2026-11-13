@@ -61,7 +61,7 @@ const PNG_OFICIAIS: Record<string, Partial<Record<Variante, { claro: Arquivo; es
     prisma: { claro: NL_LOGOS.prismaClara, escuro: NL_LOGOS.prismaEscura },
     monograma: { claro: NL_LOGOS.monograma, escuro: NL_LOGOS.monograma },
   },
-  // NextLevel E-commerce (D163): flat no cabeçalho, rodapé e painel; Prisma em destaque; monograma NE (vale nos dois fundos).
+  // NextLevel Commerce (D163): flat no cabeçalho, rodapé e painel; Prisma em destaque; monograma NE (vale nos dois fundos).
   // O SVG antigo da Commerce (raio azul + "Commerce" em texto, `/brand/v2/commerce/`) fica arquivado.
   [EC.code]: {
     compacta: { claro: EC_LOGOS.flatClara, escuro: EC_LOGOS.flatEscura },

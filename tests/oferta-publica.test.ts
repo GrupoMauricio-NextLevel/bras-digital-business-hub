@@ -7,7 +7,7 @@ import { turnEverythingOnInDemo } from "@/db/demo-ligar-tudo";
 const classica = { trialDays: 3, firstPeriodCents: 990, feeHolidayMonths: 3, version: 1 };
 
 /** O que a página promete é o que toda loja nova recebe no cadastro (D177). */
-describe("oferta pública da E-commerce", () => {
+describe("oferta pública da Commerce", () => {
   it("sem porta: oferta clássica; porta para todos: termos da porta; porta em experimento: só o que é comum", () => {
     expect(ofertaPublica(classica, null, false)).toEqual(classica);
     expect(ofertaPublica(classica, { trialDays: 7, version: 2 }, false)).toEqual({ trialDays: 7, firstPeriodCents: null, feeHolidayMonths: 0, version: 2 });

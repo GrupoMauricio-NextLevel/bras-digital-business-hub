@@ -17,7 +17,7 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
   - os logotipos dos clientes;
   - um depoimento real.
 
-  Quando um cliente migrar para a plataforma, ligar o selo "Na NextLevel E-commerce".
+  Quando um cliente migrar para a plataforma, ligar o selo "Na NextLevel Commerce".
 - [ ] **Personalização com nome e número na camisa** (ideia vinda da Futcollection, 12/11/2026): a plataforma ainda não tem esse recurso; avaliar.
 - [ ] **CT4 dos contratos:** aditivos e outros modelos (migração, marketing).
 - [ ] **Série do YouTube:** vídeo 5 (o último).
@@ -26,6 +26,8 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **Remover `superdrop.com.br` do Render** depois de uns dias sem uso (D287), e apagar o DNS de `bras` e `cargas`.
 - [ ] **Google Search Console:** cadastrar `nextlevelcommerce.com.br` e pedir a mudança de endereço (plano de busca S0).
 - [ ] **Materiais e QR codes** (série do YouTube, PDFs) com o domínio novo.
+
+- [ ] **Logos da NextLevel Commerce** (D288): gerar no GPT com os prompts de `docs/marcas/nextlevel-commerce-logo-racional.md` e mandar aqui.
 
 ## Feito
 

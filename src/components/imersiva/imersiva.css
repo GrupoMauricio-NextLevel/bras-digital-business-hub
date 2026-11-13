@@ -1,4 +1,4 @@
-/* Página imersiva de marca (D162 Soluções, D165 E-commerce): jornada com a foto presa na tela, portas, seções com foto ao
+/* Página imersiva de marca (D162 Soluções, D165 Commerce): jornada com a foto presa na tela, portas, seções com foto ao
    lado e entrada suave. Uma peça só para todas as marcas: o CSS lê variáveis neutras `--im-*` e cada marca as preenche com as
    próprias cores numa classe `.im-tema-<marca>` (nenhum hexadecimal aqui). Movimento só com transform/opacity; menos
    movimento = tudo parado. */

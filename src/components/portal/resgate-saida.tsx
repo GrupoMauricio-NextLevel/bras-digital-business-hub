@@ -87,7 +87,7 @@ function Cartao(p: Props & { pathname: string; fechar: () => void }) {
             Espera! Sua loja virtual <span className="text-[#ffd25a]">pode estar no ar hoje.</span>
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="mt-3 text-[15px] leading-relaxed text-[#d7e3ff]">
-            Deixe o seu e-mail e receba o caminho para criar a sua loja na NextLevel E-commerce, sem complicação.
+            Deixe o seu e-mail e receba o caminho para criar a sua loja na NextLevel Commerce, sem complicação.
           </DialogPrimitive.Description>
         </div>
         {p.trialDays ? (

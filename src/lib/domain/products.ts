@@ -56,7 +56,7 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
   if (supplierId && !(await capabilitiesForSupplier(db, supplierId)).caps.canManageCatalog) throw new DomainError("SUPPLIER_BLOCKED", "Cadastro de produtos indisponível por pendência financeira com a NextLevel.");
   // Loja independente: o produto é só dela, sem distribuição para outras lojas.
   if (owner.storeId) { input.distribution = "ALL_NETWORK"; input.storeIds = []; }
-  // D247 (PV6): limite de produtos do plano da E-commerce (quem já passou do limite continua vendendo; só não cadastra novos).
+  // D247 (PV6): limite de produtos do plano da Commerce (quem já passou do limite continua vendendo; só não cadastra novos).
   if (owner.storeId) {
     const { ehLojaEcommerce, exigirVagaDeProduto } = await import("./beneficios-plano");
     if (await ehLojaEcommerce(db, owner.storeId)) await exigirVagaDeProduto(db, owner.storeId);
@@ -103,7 +103,7 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
     if (selectedStoreIds.length) {
       await tx.insert(productStoreAccess).values(selectedStoreIds.map((storeId) => ({ productId, storeId })));
     }
-    // Loja independente (E-commerce, D176): o produto é da própria loja; cadastrado como "Ativo", já entra à venda nela pelo
+    // Loja independente (Commerce, D176): o produto é da própria loja; cadastrado como "Ativo", já entra à venda nela pelo
     // preço de venda do formulário. Antes ficava só no catálogo e pedia um segundo passo escondido em "Preços e publicação".
     if (owner.storeId && input.status === "ACTIVE") {
       await tx.insert(storeProducts).values({ storeId: owner.storeId, productId, priceCents: input.suggestedPriceCents, packPriceCents: input.sellsPack && input.pack ? input.pack.suggestedPriceCents : null, active: true, featured: false }).onConflictDoNothing();

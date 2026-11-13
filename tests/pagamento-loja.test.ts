@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createPreference, type FetchLike } from "@/lib/payments/mercadopago";
 import { lojaAceitaCartao, MAX_PARCELAS_LOJA, parcelasDaLoja } from "@/lib/pagamento-loja";
 
-/** D178: a loja da E-commerce aceita Pix e cartão em até 6x; o SuperDrop continua só Pix (D22). */
+/** D178: a loja da Commerce aceita Pix e cartão em até 6x; o SuperDrop continua só Pix (D22). */
 async function corpoEnviado(maxParcelas?: number) {
   let sent: { payment_methods: { installments?: number; excluded_payment_types: { id: string }[] } } | null = null;
   const fetchImpl: FetchLike = async (_url, init) => { sent = JSON.parse(String(init?.body)); return new Response(JSON.stringify({ id: "p", init_point: "https://mp.test/p" }), { status: 200 }); };
@@ -12,7 +12,7 @@ async function corpoEnviado(maxParcelas?: number) {
 }
 
 describe("formas de pagamento da loja (D178)", () => {
-  it("só a E-commerce aceita cartão, em até 6x", () => {
+  it("só a Commerce aceita cartão, em até 6x", () => {
     expect(lojaAceitaCartao("NEXTLEVEL_COMMERCE")).toBe(true);
     expect(lojaAceitaCartao("SUPERDROP")).toBe(false);
     expect(lojaAceitaCartao(null)).toBe(false);
@@ -21,7 +21,7 @@ describe("formas de pagamento da loja (D178)", () => {
     expect(MAX_PARCELAS_LOJA).toBe(6);
   });
 
-  it("E-commerce: a preferência libera cartão de crédito com 6 parcelas e continua sem débito, boleto ou saldo", async () => {
+  it("Commerce: a preferência libera cartão de crédito com 6 parcelas e continua sem débito, boleto ou saldo", async () => {
     const r = await corpoEnviado(parcelasDaLoja("NEXTLEVEL_COMMERCE"));
     expect(r.excluidos).not.toContain("credit_card");
     expect(r.excluidos).toEqual(expect.arrayContaining(["debit_card", "ticket", "atm", "prepaid_card", "account_money"]));

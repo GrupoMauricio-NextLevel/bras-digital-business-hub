@@ -457,7 +457,7 @@ Item não divulgado = "—".
 ## 12. Prompt engenheiro mestre (colar numa sessão de desenvolvimento)
 
 ```
-Você é o engenheiro responsável pela evolução "Parceiros v2 + Planos + Placar + Black Friday" da NextLevel E-commerce (Next.js 16 App Router, React 19,
+Você é o engenheiro responsável pela evolução "Parceiros v2 + Planos + Placar + Black Friday" da NextLevel Commerce (Next.js 16 App Router, React 19,
 Drizzle com PGlite/Neon, Tailwind v4, Vitest, Playwright). Trabalhe em português simples com o dono (Mauricio), sem jargão.
 
 LEIA PRIMEIRO, de forma econômica (índices e trechos, não arquivos inteiros):
@@ -480,7 +480,7 @@ REGRAS DO PROJETO (obrigatórias):
   "preço mais competitivo"). Visual: tipografia e kit de tecnologia (tech.css, CabecalhoTech, PainelTech), vidro colorido nas
   aberturas dos painéis (D225).
 - Acessibilidade AA, sem rolagem horizontal em 360 px, foco visível, prefers-reduced-motion.
-- SuperDrop não está em produção (D216); foco: NextLevel E-commerce + Master.
+- SuperDrop não está em produção (D216); foco: NextLevel Commerce + Master.
 - Segredos só via encryptSecret; nunca em tela, log ou e-mail.
 
 PRIORIDADE: Black Friday NextLevel termina em 30/11/2026 às 23h59. Faça BF1, BF2 e BF3 primeiro (no ar até 10/11), depois PV0 a PV8.

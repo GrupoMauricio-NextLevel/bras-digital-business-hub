@@ -8,8 +8,8 @@ import { DEGRAUS, funilEcommerce, ondeParou, type Degrau } from "@/lib/domain/fu
 
 const tudo = (v: boolean) => Object.fromEntries(DEGRAUS.map((d) => [d.key, v])) as Record<Degrau, boolean>;
 
-/** Funil de ativação da E-commerce (D176). */
-describe("funil de ativação da E-commerce", () => {
+/** Funil de ativação da Commerce (D176). */
+describe("funil de ativação da Commerce", () => {
   it("onde a loja parou: o primeiro degrau que falta, na ordem", () => {
     expect(ondeParou({ ...tudo(true) })).toBeNull();
     expect(ondeParou({ ...tudo(false), CADASTRO: true })).toBe("PRODUTO");
@@ -17,7 +17,7 @@ describe("funil de ativação da E-commerce", () => {
     expect(ondeParou({ ...tudo(true), ASSINANTE: false })).toBe("ASSINANTE");
   });
 
-  it("no banco: só lojas da E-commerce, funil cumulativo que nunca cresce, cada parada com o próximo passo", async () => {
+  it("no banco: só lojas da Commerce, funil cumulativo que nunca cresce, cada parada com o próximo passo", async () => {
     const { db, actors } = await freshDb();
     await seedCommerceDemo(db);
     const f = await funilEcommerce(db, actors.master);

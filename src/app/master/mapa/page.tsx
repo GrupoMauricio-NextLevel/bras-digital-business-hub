@@ -21,7 +21,7 @@ const TOM: Record<NivelSaude, "success" | "warning" | "danger" | "neutral"> = { 
  * A marca escolhida no seletor do Master (D173) destaca o nó dela e filtra as tabelas.
  */
 export default async function MapaPage() {
-  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da Commerce
   const s = await requireRole("NEXTLEVEL_MASTER");
   const [mapa, marca] = await Promise.all([mapaDoEcossistema(await getDb(), s.actor), marcaDoMaster()]);
   const visiveis = marca ? mapa.marcas.filter((m) => m.code === marca) : mapa.marcas;

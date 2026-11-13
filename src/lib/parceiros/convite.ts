@@ -1,6 +1,6 @@
 /**
  * Texto pronto que o parceiro manda no WhatsApp (D168). Vem da marca do endereço (`getBrand()`): o parceiro da NextLevel
- * E-commerce não convida para o SuperDrop. Sem prazo de teste fixo no texto (o prazo vem do Master e muda por oferta).
+ * Commerce não convida para o SuperDrop. Sem prazo de teste fixo no texto (o prazo vem do Master e muda por oferta).
  */
 export function textoConvite(marca: { name: string; tagline: string }, link: string, cupom?: string): string {
   const frase = marca.tagline.replace(/[.\s]+$/, "");

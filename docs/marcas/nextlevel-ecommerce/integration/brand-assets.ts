@@ -1,7 +1,7 @@
 // Adapte o prefixo à estrutura pública real do projeto.
 const base = '/brands/nextlevel-ecommerce/';
 export const ecommerceBrandAssets = {
-  name: 'NextLevel E-commerce',
+  name: 'NextLevel Commerce',
   logoLight: base + 'logos/flat/logo-clara.png',
   logoDark: base + 'logos/flat/logo-escura.png',
   prismaLight: base + 'logos/prisma/logo-clara.png',

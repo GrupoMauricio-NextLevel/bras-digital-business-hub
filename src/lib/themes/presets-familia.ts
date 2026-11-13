@@ -131,7 +131,7 @@ export const levelOne = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   };
 };
 
-/** N2 — NextLevel E-commerce. */
+/** N2 — NextLevel Commerce. */
 export const levelTwo = (f: FamilySpec) => (c: PresetContext): ThemePreset => {
   const st = style({ quickView: true, ...f.styles[1] });
   return {

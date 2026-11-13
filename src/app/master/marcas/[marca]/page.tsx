@@ -24,7 +24,7 @@ const MARCAS = {
 } as const;
 
 export default async function MarcaPage({ params }: { params: Promise<{ marca: string }> }) {
-  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/agora"); // D205: tela antiga → área nova do escritório da Commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const m = MARCAS[(await params).marca as keyof typeof MARCAS];
   if (!m) notFound();

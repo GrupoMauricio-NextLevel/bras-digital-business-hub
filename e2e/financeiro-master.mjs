@@ -109,7 +109,7 @@ const login = async (p, name) => { await p.goto(B + "/login", { waitUntil: "netw
   if (!(await p.getByRole("heading", { level: 1 }).count())) fail("/solucoes sem título");
   const canon = await p.locator("link[rel=canonical]").getAttribute("href");
   if (!canon?.endsWith("/solucoes")) fail("canonical da super landing errado: " + canon);
-  const commerceLink = await p.getByRole("link", { name: /Conhecer a NextLevel E-commerce/ }).getAttribute("href");
+  const commerceLink = await p.getByRole("link", { name: /Conhecer a NextLevel Commerce/ }).getAttribute("href");
   if (!commerceLink?.includes("utm_source=instagram")) fail("link para a Commerce perdeu a origem: " + commerceLink); else ok("origem (utm) preservada no link para a Commerce");
   await noScroll(p, "/solucoes (360)");
   const a = await axe(p); if (a.length) fail("axe /solucoes: " + a.join(" | ")); else ok("axe sem violações graves (/solucoes)");

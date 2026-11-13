@@ -33,7 +33,7 @@ export const FERRAMENTAS_IA: readonly FerramentaIa[] = [
     exemplo: { pedido: "Aumenta 10% a coleção inverno.", resposta: "18 produtos da coleção inverno: de R$ 129,90 para R$ 142,89 (e os demais na mesma proporção). Ver a lista e confirmar?" } },
 ];
 
-/** Ordem dos planos da E-commerce: quem tem um plano tem os de baixo. */
+/** Ordem dos planos da Commerce: quem tem um plano tem os de baixo. */
 export const ORDEM_PLANOS = ["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE", "COMMERCE_ENTERPRISE"] as const;
 export const NOME_PLANO: Record<string, string> = { COMMERCE_START: "Start", COMMERCE_PRO: "Pro", COMMERCE_SCALE: "Scale", COMMERCE_ENTERPRISE: "Enterprise" };
 const nivel = (k: string | null | undefined) => (k ? ORDEM_PLANOS.indexOf(k as (typeof ORDEM_PLANOS)[number]) : -1);

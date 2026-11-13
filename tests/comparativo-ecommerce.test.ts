@@ -5,7 +5,7 @@ import { CONCORRENTES, FAT_REFERENCIA_CENTS, custosPorFaixa, degraus, melhorPlan
 const nl = nextlevelComoPlataforma([{ name: "Start", monthlyCents: 14_900, feeBps: 100, quote: false }, { name: "Pro", monthlyCents: 24_900, feeBps: 70, quote: false }, { name: "Scale", monthlyCents: 49_900, feeBps: 40, quote: false }, { name: "Enterprise", monthlyCents: null, feeBps: null, quote: true }]);
 const pl = (k: string) => CONCORRENTES.find((c) => c.key === k)!;
 
-describe("comparativo da E-commerce (D219)", () => {
+describe("comparativo da Commerce (D219)", () => {
   it("escolhe o plano mais barato que comporta o faturamento", () => {
     expect(melhorPlano(nl, 5_000_000)).toEqual({ nome: "Pro", totalCents: 59_900 });
     expect(melhorPlano(pl("nuvemshop"), 5_000_000)).toEqual({ nome: "Impulso", totalCents: 66_400 });

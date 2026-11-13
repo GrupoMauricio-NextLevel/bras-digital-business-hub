@@ -14,7 +14,7 @@ import "../commerce.css";
 import "../capa/capa.css";
 
 /**
- * Recursos da NextLevel E-commerce (D219): o "como funciona" completo, que saiu da home para ela ficar só com o que
+ * Recursos da NextLevel Commerce (D219): o "como funciona" completo, que saiu da home para ela ficar só com o que
  * convence (motivos, comparativo, planos, prova). Mesmas seções e textos de antes (cada frase confere com o sistema).
  */
 export async function RecursosEc({ brand }: { brand: Brand }) {

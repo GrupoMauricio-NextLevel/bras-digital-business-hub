@@ -9,22 +9,22 @@ import { DECISOES, mesDe, type RegistroDecisao, type Sugestao } from "@/lib/revi
 /**
  * Revisão mensal do "Pronto e desligado" (R4, D174). Cada item desligado tem uma sugestão (o dono disse "eu sugiro, você
  * decide") e a decisão do mês: ligar, manter desligado ou aposentar. Decidir aqui NÃO liga nada: só registra a escolha,
- * que fica na auditoria. A sugestão segue a regra de foco 60/25/15 (E-commerce primeiro, até 10 lojistas pagantes).
+ * que fica na auditoria. A sugestão segue a regra de foco 60/25/15 (Commerce primeiro, até 10 lojistas pagantes).
  */
 export { DECISOES, ROTULO_DECISAO, mesDe, type Decisao, type RegistroDecisao, type Sugestao } from "@/lib/revisao-desligados-base";
 /** Minhas sugestões de outubro/2026. Chave = `key` do item em `readyButOff`. */
 export const SUGESTOES: Record<string, Sugestao> = {
-  "roteiro-1": { decisao: "LIGAR", porque: "Custa nada e mostra quanto o lojista da E-commerce aceita pagar. Ligue só na E-commerce." },
-  "roteiro-2": { decisao: "LIGAR", porque: "Na E-commerce a trilha de primeiros passos ajuda a loja a publicar e vender (sem pontos, que são do Club da Brás)." },
+  "roteiro-1": { decisao: "LIGAR", porque: "Custa nada e mostra quanto o lojista da Commerce aceita pagar. Ligue só na Commerce." },
+  "roteiro-2": { decisao: "LIGAR", porque: "Na Commerce a trilha de primeiros passos ajuda a loja a publicar e vender (sem pontos, que são do Club da Brás)." },
   "roteiro-3": { decisao: "MANTER", porque: "Experimento de preço precisa de visitas; com poucas lojas novas por semana a resposta não sai." },
   "roteiro-4": { decisao: "MANTER", porque: "A barra do ecossistema só faz sentido quando duas marcas estiverem abertas para o mesmo público." },
   "roteiro-5": { decisao: "MANTER", porque: "O Club é do Brás Digital, que fica para outra etapa." },
-  "mp-nextlevel": { decisao: "LIGAR", porque: "Sem a conta de produção a E-commerce não cobra os planos: é o primeiro passo da meta de 10 lojistas pagantes." },
+  "mp-nextlevel": { decisao: "LIGAR", porque: "Sem a conta de produção a Commerce não cobra os planos: é o primeiro passo da meta de 10 lojistas pagantes." },
   pagarme: { decisao: "MANTER", porque: "Um gateway basta até haver volume; dois dobram conferência e suporte." },
   "excursao-taxa": { decisao: "MANTER", porque: "Brás e Cargas estão nos 15% do esforço; cobrar antes de ter ônibus ativos afasta quem está chegando." },
   "excursao-pix": { decisao: "MANTER", porque: "Mesmo motivo da taxa: ligar quando houver ônibus usando toda semana." },
   experimentos: { decisao: "MANTER", porque: "Sem tráfego, experimento não dá resposta confiável." },
-  proposta: { decisao: "MANTER", porque: "Aprovar quando os preços da E-commerce estiverem fechados com as entrevistas do questionário." },
+  proposta: { decisao: "MANTER", porque: "Aprovar quando os preços da Commerce estiverem fechados com as entrevistas do questionário." },
   "cadastro-commerce": { decisao: "LIGAR", porque: "É a porta da meta de 10 lojistas pagantes: sem cadastro aberto, cada loja depende de contato manual." },
   "parceiros-commerce": { decisao: "MANTER", porque: "Abrir parceiros depois dos primeiros 5 lojistas pagantes, com o produto já provado." },
   "bras-publico": { decisao: "MANTER", porque: "Brás fica para outra etapa (decisão de foco)." },

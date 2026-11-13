@@ -1,4 +1,4 @@
-# NextLevel E-commerce: novo grupo de fotos com personagens reais e diferentes (para o GPT Imagens)
+# NextLevel Commerce: novo grupo de fotos com personagens reais e diferentes (para o GPT Imagens)
 
 > Versão 2 (2026-10-17). Substitui as fotos atuais da home imersiva (`lojas.nextlevelgroup.com.br`).
 > Como usar: cole a **Parte B** (prompt mestre) uma vez no GPT; depois peça cada imagem da **Parte C**, **uma por vez**,
@@ -32,7 +32,7 @@ As fotos precisam fazer a pessoa pensar **"essa pessoa sou eu"**: Brasil real, g
 
 ```
 Você é diretor de fotografia, diretor de elenco e diretor de arte de uma campanha publicitária brasileira de alto nível
-para a NextLevel E-commerce, plataforma de lojas virtuais para pequenas e médias marcas brasileiras (moda, fitness,
+para a NextLevel Commerce, plataforma de lojas virtuais para pequenas e médias marcas brasileiras (moda, fitness,
 infantil, camisa de time, acessórios, beleza). Vamos produzir uma série de fotografias para a página principal do site.
 Cada pedido gera UMA imagem, nunca grade, colagem, storyboard ou várias cenas numa imagem.
 

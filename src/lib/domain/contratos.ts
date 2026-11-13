@@ -41,7 +41,7 @@ const dia = (now: Date) => now.toISOString().slice(0, 10).replaceAll("-", "");
 async function lojaEcommerce(db: Database, storeId: string) {
   const row = (await db.select({ id: stores.id, nome: stores.name, slug: stores.slug, brand: organizations.brand }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(eq(stores.id, storeId)).limit(1))[0];
   if (!row) throw new NotFoundError("Loja não encontrada.");
-  if (row.brand !== "NEXTLEVEL_COMMERCE") throw new DomainError("NOT_COMMERCE", "Contratos são só para lojas da NextLevel E-commerce.");
+  if (row.brand !== "NEXTLEVEL_COMMERCE") throw new DomainError("NOT_COMMERCE", "Contratos são só para lojas da NextLevel Commerce.");
   return row;
 }
 
@@ -136,7 +136,7 @@ export async function cancelarContrato(db: Database, actor: Actor, id: string, n
   if (!r.length) throw new DomainError("NAO_CANCELA", "Só dá para cancelar contrato que ainda não foi aceito.");
 }
 
-/** Lojas da E-commerce para escolher no formulário do Master. */
+/** Lojas da Commerce para escolher no formulário do Master. */
 export async function lojasParaContrato(db: Database, actor: Actor) {
   exigirMaster(actor);
   return db.select({ id: stores.id, nome: stores.name, slug: stores.slug, email: stores.contactEmail }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(eq(organizations.brand, "NEXTLEVEL_COMMERCE")).orderBy(stores.name).limit(500);

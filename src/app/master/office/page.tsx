@@ -24,7 +24,7 @@ const TABS = [{ key: "assinaturas", label: "Assinaturas" }, { key: "ativacoes", 
 const SVC_LABEL: Record<string, string> = { REQUESTED: "Novo", IN_ANALYSIS: "Em análise", QUOTED: "Orçado", IN_PROGRESS: "Em execução", DELIVERED: "Entregue", CANCELED: "Cancelado" };
 
 export default async function MasterOfficePage({ searchParams }: { searchParams: Promise<{ tab?: string; marca?: string }> }) {
-  await levarAoEscritorio("/master/receita"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/receita"); // D205: tela antiga → área nova do escritório da Commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const { tab: raw, marca: rawMarca } = await searchParams;
   const marca = await masterBrandFilter(rawMarca);

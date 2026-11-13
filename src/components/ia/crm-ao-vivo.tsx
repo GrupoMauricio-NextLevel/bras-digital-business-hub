@@ -116,7 +116,7 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
                     <div key={k} className="flex gap-2"><dt className="w-24 shrink-0 text-muted-foreground">{k}</dt><dd className="min-w-0 break-words font-medium text-foreground">{v ?? <span className="font-normal text-muted-foreground">ainda não informou</span>}</dd></div>
                   ))}
                 </dl>
-                {c.whatsapp ? <a href={`https://wa.me/${c.whatsapp.length <= 11 ? `55${c.whatsapp}` : c.whatsapp}?text=${encodeURIComponent(`Olá, ${c.nome?.split(" ")[0] ?? ""}! Aqui é da NextLevel E-commerce, sobre a sua conversa no site.`)}`} target="_blank" rel="noreferrer" className="vh-whats mx-0 mt-3"><MessageCircle className="size-4" aria-hidden /> Chamar no WhatsApp</a> : null}
+                {c.whatsapp ? <a href={`https://wa.me/${c.whatsapp.length <= 11 ? `55${c.whatsapp}` : c.whatsapp}?text=${encodeURIComponent(`Olá, ${c.nome?.split(" ")[0] ?? ""}! Aqui é da NextLevel Commerce, sobre a sua conversa no site.`)}`} target="_blank" rel="noreferrer" className="vh-whats mx-0 mt-3"><MessageCircle className="size-4" aria-hidden /> Chamar no WhatsApp</a> : null}
               </div>
               <div>
                 <label htmlFor="crm-notas" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Notas da equipe</label>

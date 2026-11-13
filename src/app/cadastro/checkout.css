@@ -1,5 +1,5 @@
 /*
- * Checkout dos planos da NextLevel E-commerce (D233): página escura de tecnologia, painéis com grade e borda luminosa,
+ * Checkout dos planos da NextLevel Commerce (D233): página escura de tecnologia, painéis com grade e borda luminosa,
  * Geist Mono nos rótulos e números, verde neon só no que é vantagem (economia, 0%, botão final).
  */
 .ck-pagina { min-height: 100dvh; color: #e6ecfb; background: radial-gradient(70% 50% at 85% 0%, rgb(124 92 255 / .22), transparent 60%), radial-gradient(60% 40% at 0% 100%, rgb(34 211 238 / .12), transparent 60%), linear-gradient(rgb(255 255 255 / .03) 1px, transparent 1px) 0 0 / 100% 48px, #070d1d; }

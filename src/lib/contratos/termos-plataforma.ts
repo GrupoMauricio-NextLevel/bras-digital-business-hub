@@ -1,19 +1,19 @@
 import { CONTRATADA_PADRAO, impressaoDigital, type Secao } from "./loja-pronta-express";
 
 /**
- * Termos de uso da plataforma NextLevel E-commerce (D279): o contrato padrão que todo dono de loja aceita no painel,
+ * Termos de uso da plataforma NextLevel Commerce (D279): o contrato padrão que todo dono de loja aceita no painel,
  * com o próprio login, antes de usar. Texto simples, sem pontos polêmicos (pedido do dono, 10/11/2026); preços e taxas
  * não ficam aqui (vêm da página de planos e da tela de pagamento). Versão nova = todos aceitam de novo.
  * Arquivo puro: a impressão digital sai do texto, então qualquer letra mudada exige trocar a versão.
  */
-export const VERSAO_TERMOS = "2026-11-10";
-export const TITULO_TERMOS = "Termos de uso da plataforma NextLevel E-commerce";
+export const VERSAO_TERMOS = "2026-11-13";
+export const TITULO_TERMOS = "Termos de uso da plataforma NextLevel Commerce";
 
 const c = CONTRATADA_PADRAO;
 
 export const SECOES_TERMOS: Secao[] = [
   { titulo: "1. Quem são as partes", resumo: "Em resumo: a NextLevel fornece a tecnologia; a loja e as vendas são suas.", paragrafos: [
-    `De um lado, a ${c.razao}, CNPJ ${c.cnpj} ("NextLevel"), que opera a plataforma NextLevel E-commerce. Do outro, a pessoa ou empresa que cria a conta e a loja na plataforma ("LOJISTA").`,
+    `De um lado, a ${c.razao}, CNPJ ${c.cnpj} ("NextLevel"), que opera a plataforma NextLevel Commerce. Do outro, a pessoa ou empresa que cria a conta e a loja na plataforma ("LOJISTA").`,
     "Ao aceitar estes termos no painel, o LOJISTA contrata o uso da plataforma nas condições abaixo.",
   ] },
   { titulo: "2. O que a plataforma oferece", paragrafos: [

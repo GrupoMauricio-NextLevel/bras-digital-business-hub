@@ -29,7 +29,7 @@ export type MapaEcossistema = {
   motor: { errosAbertos: number; ultimaConferencia: string | null };
 };
 
-/** Ordem do foco 60/25/15 (D174): E-commerce, SuperDrop, Brás, Cargas; depois as que estão em preparação. */
+/** Ordem do foco 60/25/15 (D174): Commerce, SuperDrop, Brás, Cargas; depois as que estão em preparação. */
 export const ORDEM_MARCAS = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS", "CREATORS_HUB", "CHINA_HUB"] as const satisfies readonly BrandCode[];
 const ROTULO_PAPEL: Record<string, string> = {
   STORE_OWNER: "Lojistas e equipe", SUPPLIER_ADMIN: "Fornecedores", SUPPLIER_DISPATCH: "Expedição", AFFILIATE: "Parceiros",

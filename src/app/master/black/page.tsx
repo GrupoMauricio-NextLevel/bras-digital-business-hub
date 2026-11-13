@@ -21,7 +21,7 @@ export default async function BlackPage() {
   const e = estadoBlack(c);
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Black Friday" description="Uma configuração para o site, os painéis e a cobrança. A contagem é a mesma em todo canto e, no fim, o preço novo entra sozinho." />
+      <PageHeader eyebrow="NextLevel Commerce" title="Black Friday" description="Uma configuração para o site, os painéis e a cobrança. A contagem é a mesma em todo canto e, no fim, o preço novo entra sozinho." />
       <section className="bk-faixa bk-faixa--painel" aria-label="Situação da Black">
         <span className="bk-selo"><span aria-hidden className="bk-raio" />{e.ativa ? "NO AR" : "FORA DO AR"}<b>{e.prorrogada ? "PRORROGADA" : "BLACK 2026"}</b></span>
         <span className="bk-faixa-texto">De {quando(c.inicio)} até {quando(c.fim)}</span>

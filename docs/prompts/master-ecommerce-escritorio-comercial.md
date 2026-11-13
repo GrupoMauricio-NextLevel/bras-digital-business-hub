@@ -1,6 +1,6 @@
-# Master da NextLevel E-commerce: auditoria profunda e prompt engenheiro mestre
+# Master da NextLevel Commerce: auditoria profunda e prompt engenheiro mestre
 
-> **Pedido do dono (2026-10-29):** "o Master está muito confuso, é muita coisa. Se coloca no meu lugar: o que eu preciso ver, o que torna a gestão mais produtiva, o que merece atenção em tempo real. Como se fosse o meu departamento comercial: um CRM ao vivo e turbo para trazer muitos clientes rápido. Logo vão aparecer clientes reais: como facilitar o suporte? Parece haver coisas duplicadas. Vamos trancar as outras marcas e falar só do painel da NextLevel E-commerce. Deixe preparado para aplicar depois nos painéis de clientes e nas outras marcas."
+> **Pedido do dono (2026-10-29):** "o Master está muito confuso, é muita coisa. Se coloca no meu lugar: o que eu preciso ver, o que torna a gestão mais produtiva, o que merece atenção em tempo real. Como se fosse o meu departamento comercial: um CRM ao vivo e turbo para trazer muitos clientes rápido. Logo vão aparecer clientes reais: como facilitar o suporte? Parece haver coisas duplicadas. Vamos trancar as outras marcas e falar só do painel da NextLevel Commerce. Deixe preparado para aplicar depois nos painéis de clientes e nas outras marcas."
 >
 > **Método:** skills `repo-auditor` (o que existe de fato) e `ux-flow-auditor` (a jornada do dono). As 57 telas do Master e do console E-commerce foram percorridas no navegador com `master@nextlevel.demo` e o filtro "E-commerce", e o código de cada uma foi lido. Neste documento:
 > - **Fato** é o que foi visto na tela ou no código;
@@ -18,7 +18,7 @@
 |---|---|
 | Telas no Master + console E-commerce | **57** (50 em `/master`, 7 em `/commerce`) |
 | Itens no menu "Todas as marcas" | **26** |
-| Itens no menu com o filtro "E-commerce" | 9. Ao clicar em "NextLevel E-commerce", o menu inteiro troca por **outro menu de 7 itens** (console E-commerce, com "Voltar ao Master") |
+| Itens no menu com o filtro "E-commerce" | 9. Ao clicar em "NextLevel Commerce", o menu inteiro troca por **outro menu de 7 itens** (console E-commerce, com "Voltar ao Master") |
 | Abas no Financeiro NextLevel | **16** |
 | Lugares que mostram "interessados" | **3**: `/commerce/leads`, `/master/crm?tab=interessados` e `/master/ia` (conversas) |
 | Lugares que mostram "assinaturas" | **3**: `/commerce/plans`, `/master/financeiro/assinaturas` e `/master/plans` (sistema antigo do SuperDrop) |
@@ -260,7 +260,7 @@ As rotas antigas **redirecionam** para a área nova durante um ciclo e só depoi
   - `nova-migracao` se a fase mexer no banco.
 
 ## Objetivo
-Transformar o Master, no modo NextLevel E-commerce, num **escritório comercial ao vivo**:
+Transformar o Master, no modo NextLevel Commerce, num **escritório comercial ao vivo**:
 - **7 áreas:** Agora, Comercial, Atendimento, Lojistas, Receita, Crescimento, Sistema;
 - **um funil único** do visitante ao pagante;
 - **uma ficha 360** por cliente;

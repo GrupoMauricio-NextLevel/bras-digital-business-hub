@@ -47,7 +47,7 @@ export async function extendCommerceTrialAction(storeId: string, days: number) {
   });
 }
 
-/** Tabela "o que cada plano da E-commerce libera" (D172). Só o Master financeiro altera; fica na auditoria. */
+/** Tabela "o que cada plano da Commerce libera" (D172). Só o Master financeiro altera; fica na auditoria. */
 export async function salvarRecursosPorPlanoAction(tabela: unknown) {
   return runAction(async () => {
     const session = await master();

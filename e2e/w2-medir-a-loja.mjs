@@ -1,5 +1,5 @@
 /**
- * W2 das melhorias (D185): um visitante abre a loja publicada da E-commerce vindo de uma campanha (utm_source) e vê um
+ * W2 das melhorias (D185): um visitante abre a loja publicada da Commerce vindo de uma campanha (utm_source) e vê um
  * produto; a análise do lojista mostra as visitas, a origem e o produto mais visitado. Um navegador-robô não conta.
  * Uso: E2E_CM=http://cm.test:3300 node e2e/w2-medir-a-loja.mjs [pasta-de-saida]
  */

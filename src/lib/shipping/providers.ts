@@ -14,12 +14,12 @@ export const SHIPPING_PROVIDERS = {
   SUPERFRETE: { name: "SuperFrete", url: "https://api.superfrete.com/api/v0/user", method: "GET", tokenLabel: "Token de acesso", help: "No SuperFrete: Integrações, Desenvolvedores, gerar token." },
   MELHOR_ENVIO: { name: "Melhor Envio", url: "https://melhorenvio.com.br/api/v2/me", method: "GET", tokenLabel: "Token de acesso", help: "No Melhor Envio: Configurações, Tokens, gerar novo token (com permissão de envios)." },
   ONLOG: { name: "Onlog", url: `${ONLOG_BASE}/frete/disponibilidade`, method: "POST", tokenLabel: "Credencial de integração Onlog (API)", help: "Na Onlog: copie a credencial de integração (API) da sua conta e cole aqui." },
-  // Rodada B das integrações (D190): só na loja da NextLevel E-commerce no começo (NOVAS_PLATAFORMAS_DE_ENVIO).
+  // Rodada B das integrações (D190): só na loja da NextLevel Commerce no começo (NOVAS_PLATAFORMAS_DE_ENVIO).
   FRENET: { name: "Frenet", url: `${FRENET_BASE}/shipping/info`, method: "GET", tokenLabel: "Token da API Frenet", help: "Na Frenet: Painel, Dados da conta, Configurações de API, copie o token." },
   KANGU: { name: "Kangu", url: `${KANGU_BASE}/tms/transporte/simular`, method: "POST", tokenLabel: "Token da Kangu", help: "Na Kangu: Configurações, Integrações, gerar token de API." },
   CORREIOS: { name: "Correios com contrato", url: `${CORREIOS_BASE}/token/v1/autentica/cartaopostagem`, method: "POST", tokenLabel: "Dados do contrato", help: "No portal Meu Correios (CWS): o usuário (CPF ou CNPJ do Meu Correios), o código de acesso às APIs e o número do cartão de postagem." },
 } as const;
-/** Plataformas da Rodada B: aparecem e conectam só na loja independente da E-commerce (o SuperDrop não muda). */
+/** Plataformas da Rodada B: aparecem e conectam só na loja independente da Commerce (o SuperDrop não muda). */
 export const NOVAS_PLATAFORMAS_DE_ENVIO: readonly ShippingProviderKey[] = ["FRENET", "KANGU", "CORREIOS"];
 export type ShippingProviderKey = keyof typeof SHIPPING_PROVIDERS;
 export const SHIPPING_PROVIDER_KEYS = Object.keys(SHIPPING_PROVIDERS) as ShippingProviderKey[];

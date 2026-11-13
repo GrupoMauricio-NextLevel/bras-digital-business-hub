@@ -16,7 +16,7 @@ describe("fila do dia do lojista (D166)", () => {
     expect(filaDoLojista(base)).toEqual([]);
   });
 
-  it("E-commerce: configuração vem antes da operação e nunca fala de saldo, Central ou etiqueta da Central", () => {
+  it("Commerce: configuração vem antes da operação e nunca fala de saldo, Central ou etiqueta da Central", () => {
     const fila = filaDoLojista({ ...base, published: false, readinessMissing: [{ label: "Forma de pagamento", detail: "Conecte o Mercado Pago.", fixHref: "/merchant/settings" }],
       inProgress: [pedido("READY_TO_PICK", 2)], pendingCustomer: [pedido("PENDING", 1, { customerPaymentStatus: "PENDING" })] });
     expect(fila.map((i) => i.key)).toEqual(["readiness", "publish", "customer", "progress"]);
@@ -28,7 +28,7 @@ describe("fila do dia do lojista (D166)", () => {
     const e = { ...base, pendingCustomer: [pedido("PENDING", 30, { customerPaymentStatus: "PENDING" }), pedido("PENDING", 2, { customerPaymentStatus: "PENDING" })], inProgress: [pedido("PICKING", 60)], inTransit: [pedido("SHIPPED", 24 * 8), pedido("SHIPPED", 24)] };
     expect(pedidosParados(e)).toBe(3);
     const late = filaDoLojista(e).find((i) => i.key === "late")!;
-    expect(late).toMatchObject({ count: 3, tone: "danger", href: "/merchant/orders?ver=atencao", title: "Pedidos parados além do normal" }); // D208: E-commerce abre a lista com mensagem pronta
+    expect(late).toMatchObject({ count: 3, tone: "danger", href: "/merchant/orders?ver=atencao", title: "Pedidos parados além do normal" }); // D208: Commerce abre a lista com mensagem pronta
     expect(late.detail).not.toMatch(/Central/);
   });
 
@@ -69,8 +69,8 @@ describe("fila do dia do membro da Brás e da transportadora (D168)", () => {
 
 describe("convite do parceiro (D168)", () => {
   it("usa a marca do endereço, nunca SuperDrop fixo, e não promete prazo de teste", () => {
-    const ec = { name: "NextLevel E-commerce", tagline: "A loja virtual feita para quem vende moda no Brasil" };
-    expect(textoConvite(ec, "https://x/r/ana")).toBe("Conheça NextLevel E-commerce: A loja virtual feita para quem vende moda no Brasil. Teste aqui: https://x/r/ana");
+    const ec = { name: "NextLevel Commerce", tagline: "A loja virtual feita para quem vende moda no Brasil" };
+    expect(textoConvite(ec, "https://x/r/ana")).toBe("Conheça NextLevel Commerce: A loja virtual feita para quem vende moda no Brasil. Teste aqui: https://x/r/ana");
     const cupom = textoConvite(ec, "https://x/r/ana?c=ANA10", "ANA10");
     expect(cupom).toContain("cupom ANA10");
     expect(cupom).not.toMatch(/SuperDrop|7 dias/);
@@ -79,7 +79,7 @@ describe("convite do parceiro (D168)", () => {
 
 describe("pulso da loja (D169)", () => {
   const base = { hoje: { salesCents: 0, orders: 0 }, parados: 0, commerce: true, faltaParaVender: 0, publicada: true, precisaRecarga: false };
-  it("E-commerce: o que falta para vender vem antes de tudo; em dia quando nada falta", () => {
+  it("Commerce: o que falta para vender vem antes de tudo; em dia quando nada falta", () => {
     expect(pulsoDaLoja({ ...base, faltaParaVender: 2, parados: 3 }).situacao).toEqual({ rotulo: "Faltam 2 itens para vender", tom: "warning" });
     expect(pulsoDaLoja({ ...base, publicada: false }).situacao.rotulo).toBe("Vitrine não publicada");
     expect(pulsoDaLoja(base).situacao).toEqual({ rotulo: "Loja em dia", tom: "success" });

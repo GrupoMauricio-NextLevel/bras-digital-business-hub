@@ -1,5 +1,5 @@
 /**
- * Lojas de demonstração da home da NextLevel E-commerce. Tudo aqui é fictício: nomes, produtos e preços
+ * Lojas de demonstração da home da NextLevel Commerce. Tudo aqui é fictício: nomes, produtos e preços
  * (em centavos). As fotos são de uso livre (Unsplash License), sem marca de terceiros visível; ver `docs/design/HOME-COMMERCE-V1.md`.
  * Os preços aqui NÃO alimentam cobrança nem permissões: servem só para ilustrar.
  */

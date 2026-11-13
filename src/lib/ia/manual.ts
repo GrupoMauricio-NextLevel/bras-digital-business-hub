@@ -1,9 +1,9 @@
 /**
  * Manual vivo do Maurício (D206): funciona SEM chave de IA (modo manual). Cada esfera tem o seu racional:
- *  - master: o dono e a equipe NextLevel operando o escritório da E-commerce;
+ *  - master: o dono e a equipe NextLevel operando o escritório da Commerce;
  *  - lojista: quem usa o painel da loja (passo a passo das tarefas principais);
  *  - comprador: o cliente final na loja do lojista (comprar, pagar, frete, troca);
- *  - parceiro: o dia a dia do parceiro da E-commerce (D253, `manual-parceiro.ts`).
+ *  - parceiro: o dia a dia do parceiro da Commerce (D253, `manual-parceiro.ts`).
  * A busca é por palavras (sem acento, sem maiúscula). Quando a chave da IA for ligada, o modelo usa estes mesmos textos
  * como fonte da verdade. Nada aqui promete prazo, preço ou resultado que o sistema não garante.
  */
@@ -24,7 +24,7 @@ const M: Guia[] = [
   { id: "equipe", titulo: "Dar acesso à equipe", termos: ["equipe", "funcionario", "acesso", "permissao", "funcao", "usuario"], passos: ["Ferramentas → Equipe do Master.", "Convide a pessoa e escolha a função: Comercial, Suporte, Financeiro ou Conteúdo.", "Cada função vê só as telas dela; o dono vê tudo."], link: { rotulo: "Abrir Equipe", href: "/master/equipe" } },
   { id: "ofertas", titulo: "Mudar oferta de entrada e preços", termos: ["oferta", "dias gratis", "teste gratis", "preco", "plano", "desconto", "primeiro mes"], passos: ["Crescimento → Ofertas e preços.", "A oferta de entrada define os dias grátis e o valor do 1º mês.", "Preço novo vale para quem assinar depois; quem já assinou mantém o valor contratado."], link: { rotulo: "Abrir Crescimento", href: "/master/crescimento" } },
   { id: "parceiros", titulo: "Parceiros e indicações", termos: ["parceiro", "afiliado", "indicacao", "indique", "comissao", "saque"], passos: ["Crescimento → Parceiros e indicações.", "Veja quem indicou, as comissões em garantia, as disponíveis e os saques.", "A aba Antifraude mostra possíveis autoindicações."], link: { rotulo: "Abrir Parceiros", href: "/master/partners" } },
-  { id: "marcas", titulo: "Abrir outra marca no Master", termos: ["superdrop", "bras", "cargas", "outra marca", "destravar", "marcas"], passos: ["Hoje o Master está trancado na E-commerce (nada foi apagado).", "Para abrir outra marca, a configuração MASTER_MARCAS_ATIVAS do Render recebe a marca (ex.: NEXTLEVEL_COMMERCE,SUPERDROP).", "Peça à equipe técnica; o seletor Vendo: volta a aparecer."] },
+  { id: "marcas", titulo: "Abrir outra marca no Master", termos: ["superdrop", "bras", "cargas", "outra marca", "destravar", "marcas"], passos: ["Hoje o Master está trancado na Commerce (nada foi apagado).", "Para abrir outra marca, a configuração MASTER_MARCAS_ATIVAS do Render recebe a marca (ex.: NEXTLEVEL_COMMERCE,SUPERDROP).", "Peça à equipe técnica; o seletor Vendo: volta a aparecer."] },
   { id: "email", titulo: "Ligar os e-mails automáticos", termos: ["email", "e-mail", "resend", "nao chega", "notificacao"], passos: ["Os e-mails ficam registrados, mas só saem com o provedor configurado.", "No Render: RESEND_API_KEY e EMAIL_FROM.", "Sistema → Configurações mostra se está pendente."], link: { rotulo: "Abrir Sistema", href: "/master/settings" } },
 ];
 

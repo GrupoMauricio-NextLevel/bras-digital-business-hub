@@ -11,12 +11,12 @@ import { EmptyState } from "@/components/app/empty-state";
 export const dynamic = "force-dynamic";
 
 export default async function CommerceLeadsPage() {
-  await levarAoEscritorio("/master/comercial"); // D205: tela antiga → área nova do escritório da E-commerce
+  await levarAoEscritorio("/master/comercial"); // D205: tela antiga → área nova do escritório da Commerce
   const session = await requireRole("NEXTLEVEL_MASTER");
   const data = await getCommerceConsole(await getDb(), session.actor);
   return (
     <>
-      <PageHeader eyebrow="Aquisição" title="Interessados" description="Pessoas e empresas interessadas em abrir uma loja na NextLevel E-commerce." />
+      <PageHeader eyebrow="Aquisição" title="Interessados" description="Pessoas e empresas interessadas em abrir uma loja na NextLevel Commerce." />
       <DataTable rows={data.leads} rowKey={(l) => l.id}
         empty={<EmptyState title="Nenhum interessado Commerce ainda" description="Os cadastros de interesse aparecem aqui." />}
         columns={[

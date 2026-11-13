@@ -13,7 +13,7 @@ export default async function AjustesComercialPage() {
   const cfg = await getConfigComercial(await getDb());
   return (
     <>
-      <PageHeader eyebrow="NextLevel E-commerce" title="Comercial" description="Meta do mês, quanto tempo de espera acende o alerta e as mensagens prontas de WhatsApp." />
+      <PageHeader eyebrow="NextLevel Commerce" title="Comercial" description="Meta do mês, quanto tempo de espera acende o alerta e as mensagens prontas de WhatsApp." />
       <LinkTabs label="Comercial" active="ajustes" items={[{ key: "quadro", label: "Funil", href: "/master/comercial" }, { key: "ajustes", label: "Meta e mensagens", href: "/master/comercial/ajustes" }]} />
       <FormAjustesComercial inicial={cfg} rotulos={CHAVES_MENSAGEM.map((k) => [k, ROTULO_MENSAGEM[k]] as const)} />
     </>

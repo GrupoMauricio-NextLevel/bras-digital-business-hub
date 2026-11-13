@@ -1,10 +1,10 @@
 # Página "NextLevel Temas para Nuvemshop"
 
-> **Pedido do dono (12/11/2026).** Uma página pública que mostra as lojas que a NextLevel já criou e, no fim, os temas prontos da NextLevel E-commerce como prova da tecnologia.
+> **Pedido do dono (12/11/2026).** Uma página pública que mostra as lojas que a NextLevel já criou e, no fim, os temas prontos da NextLevel Commerce como prova da tecnologia.
 > - Ponto de partida: um cliente que vende na Nuvemshop quer um layout melhor (loja de semijoias). Por isso o título é "NextLevel Temas para Nuvemshop".
 > - Não são meros prints: cada loja mostra o racional e os diferenciais dos pontos mais importantes.
 > - O destaque é o **gerenciamento e o racional** de cada loja. As plataformas em que essas lojas rodam **não aparecem**.
-> - **Onde mora:** hoje no site da NextLevel E-commerce; em breve, na página de Soluções do grupo. Desenvolver tema personalizado é serviço da **NextLevel Marketing Ltda** (a agência).
+> - **Onde mora:** hoje no site da NextLevel Commerce; em breve, na página de Soluções do grupo. Desenvolver tema personalizado é serviço da **NextLevel Marketing Ltda** (a agência).
 > - Temas da NextLevel ligados a semijoias ganham destaque.
 > - Mesmo sem ser especialista em Nuvemshop, a página precisa mostrar que a NextLevel conhece bem os temas deles. Faz isso com fatos verificados e citados, nunca com afirmação inventada.
 
@@ -20,12 +20,12 @@
 | Quem compara agências | "Vão só trocar as cores?" | Processo em etapas, racional por loja e entrega com treino |
 
 **Ação principal:** "Quero um layout melhor" (diagnóstico gratuito pelo WhatsApp ou formulário; o pedido entra no CRM do Master como interessado de Soluções).
-**Ação secundária, discreta:** "Conheça os temas da NextLevel E-commerce" (vitrine no fim).
+**Ação secundária, discreta:** "Conheça os temas da NextLevel Commerce" (vitrine no fim).
 **Sem preço do serviço na página:** a regra do projeto não mostra preço de serviço; o orçamento sai depois do diagnóstico.
 
 ## 2. Endereço e título
 
-- **Hoje:** `/temas-nuvemshop` no site da NextLevel E-commerce.
+- **Hoje:** `/temas-nuvemshop` no site da NextLevel Commerce.
 - **Depois:** `/solucoes/temas-nuvemshop` no site do grupo, com redirecionamento permanente (301) do endereço antigo.
 - **Título da página (SEO):** "NextLevel Temas para Nuvemshop | Layout personalizado para a sua loja".
 - **H1:** "NextLevel Temas para Nuvemshop".
@@ -50,7 +50,7 @@
    - Aplicação no layout com cópia de segurança antes de mexer.
    - Testes no celular e no computador.
    - Entrega com treino.
-6. **"Nossa tecnologia: temas NextLevel E-commerce"**: vitrine dos temas prontos, com os de semijoias primeiro (seção 7). Cada tema tem o botão "Ver demonstração" (`/demo/<tema>`).
+6. **"Nossa tecnologia: temas NextLevel Commerce"**: vitrine dos temas prontos, com os de semijoias primeiro (seção 7). Cada tema tem o botão "Ver demonstração" (`/demo/<tema>`).
 7. **Dúvidas** (seção 8).
 8. **Chamada final** com o mesmo botão do topo e o WhatsApp.
 
@@ -194,7 +194,7 @@ Capistrano, Luis Fornecedor e Futcollection usam **a mesma base de gestão, test
 - Prova social: fotos de clientes usando, quando o cliente autorizar.
 - Selo "hipoalergênico / níquel free" **só se o fornecedor comprovar**.
 
-**Temas da NextLevel E-commerce mais próximos** (prints das demonstrações feitos em 12/11/2026):
+**Temas da NextLevel Commerce mais próximos** (prints das demonstrações feitos em 12/11/2026):
 1. **Musa** (Beleza, nível 4) e **Aura** (Beleza, nível 3).
    - O clima já é de joalheria: tons rosé e dourado, mármore, títulos serifados com uma palavra em itálico.
    - É a base recomendada para semijoias.
@@ -209,7 +209,7 @@ Capistrano, Luis Fornecedor e Futcollection usam **a mesma base de gestão, test
 
 ## 7. Vitrine final: "Nossa tecnologia"
 
-- Título: "Também criamos a nossa plataforma: temas NextLevel E-commerce".
+- Título: "Também criamos a nossa plataforma: temas NextLevel Commerce".
 - Ordem: Musa, Aura, Atelier, Editorial, Brilho, Signature. Depois, os de outros segmentos (Arena, Porto, Morada).
 - Cada cartão: imagem real da demonstração, nome, para quem é e "Ver demonstração". O preço do tema aparece só se a página de temas também mostrar (os temas são produto, não serviço).
 - Os dados vêm do catálogo (`THEME_CATALOG`), nunca fixos na página.
@@ -221,7 +221,7 @@ Capistrano, Luis Fornecedor e Futcollection usam **a mesma base de gestão, test
 - **E se eu trocar de tema depois?** Entregamos os arquivos e o CSS guardados fora da loja, para reaplicar.
 - **Funciona no celular?** O layout é desenhado primeiro para o celular, onde está a maior parte das compras. Sem número de mercado sem fonte.
 - **Quanto custa?** Depende do que a loja precisa. O diagnóstico é gratuito e o orçamento vem depois.
-- **Vocês só trabalham com Nuvemshop?** Não. A NextLevel também tem a própria plataforma, a NextLevel E-commerce.
+- **Vocês só trabalham com Nuvemshop?** Não. A NextLevel também tem a própria plataforma, a NextLevel Commerce.
 
 ## 9. Ativos (contrato)
 

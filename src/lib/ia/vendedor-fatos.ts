@@ -9,7 +9,7 @@ import type { FatosVenda } from "./vendedor-publico";
 export async function fatosDoVendedor(db: Database, cadastro = "/cadastro"): Promise<FatosVenda> {
   const [pv, b] = await Promise.all([commercePlansView(db), blackAgora(db)]);
   return {
-    marca: "NextLevel E-commerce", cadastro,
+    marca: "NextLevel Commerce", cadastro,
     planos: pv.plans.map((p) => ({ key: p.key, name: p.name, monthlyCents: p.monthlyCents, feeBps: p.feeBps, quote: p.quote })),
     oferta: pv.offer ? { trialDays: pv.offer.trialDays, firstPeriodCents: pv.offer.firstPeriodCents ?? null, feeHolidayMonths: pv.offer.feeHolidayMonths } : null,
     integracoes: INTEGRACOES_PUBLICAS.map((g) => ({ grupo: g.key, nomes: g.itens.map((i) => i.nome) })),

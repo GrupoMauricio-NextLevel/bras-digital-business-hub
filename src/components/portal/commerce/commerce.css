@@ -1,4 +1,4 @@
-/* Movimento e composição da home da NextLevel E-commerce. Prefixo cm- para não afetar nenhuma outra tela. */
+/* Movimento e composição da home da NextLevel Commerce. Prefixo cm- para não afetar nenhuma outra tela. */
 .cm-grid-bg {
   background-image: linear-gradient(color-mix(in srgb, var(--ds-band-fg) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--ds-band-fg) 7%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;

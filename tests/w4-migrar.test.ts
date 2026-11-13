@@ -59,7 +59,7 @@ describe("endereços antigos (redirecionamento)", () => {
     expect(await destinoDoRedirecionamento(ctx.db, l.storeId, "/Produto/Vestido-Azul?utm_source=google")).toBe("/product/vestido-azul");
     expect(await destinoDoRedirecionamento(ctx.db, l.storeId, "/nao-existe")).toBeNull();
     expect(await destinoDoRedirecionamento(ctx.db, ctx.seed.stores.arena.id, "/produto/vestido-azul")).toBeNull();
-    await expect(importarRedirecionamentos(ctx.db, ctx.actors.arena, "/a;/b")).rejects.toThrow(/E-commerce/);
+    await expect(importarRedirecionamentos(ctx.db, ctx.actors.arena, "/a;/b")).rejects.toThrow(/Commerce/);
   });
 });
 
@@ -119,6 +119,6 @@ describe("loja em lançamento", () => {
     await entrarNaListaDeEspera(ctx.db, l.storeId, { email: "Ana@X.com", consent: true });
     await entrarNaListaDeEspera(ctx.db, l.storeId, { email: "ana@x.com", consent: true });
     expect(await ctx.db.select().from(storeWaitlist).where(eq(storeWaitlist.storeId, l.storeId))).toHaveLength(1);
-    await expect(definirLancamento(ctx.db, ctx.actors.arena, true)).rejects.toThrow(/E-commerce/);
+    await expect(definirLancamento(ctx.db, ctx.actors.arena, true)).rejects.toThrow(/Commerce/);
   });
 });

@@ -13,7 +13,7 @@ import {
 } from "@/lib/domain/pedido-mesa";
 import { acceptProposal, createProposal, reabrirPropostaAposFalha } from "@/lib/domain/proposals";
 
-/** W1 das melhorias (D184): pedido na mesa e link de pagamento na E-commerce; o SuperDrop não muda. */
+/** W1 das melhorias (D184): pedido na mesa e link de pagamento na Commerce; o SuperDrop não muda. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 

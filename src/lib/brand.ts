@@ -76,7 +76,7 @@ const LEGAL = (n: string) => `${n} é um sistema de tecnologia desenvolvido pela
 export function brandsFrom(env: Record<string, string | undefined> = process.env): Record<BrandCode, Brand> {
   return {
     NEXTLEVEL_COMMERCE: {
-      // NextLevel E-commerce (D163): nome público novo; o código NEXTLEVEL_COMMERCE fica (está no banco).
+      // NextLevel Commerce (D163): nome público novo; o código NEXTLEVEL_COMMERCE fica (está no banco).
       code: "NEXTLEVEL_COMMERCE", name: EC.name, live: true,
       tagline: "A loja virtual feita para quem vende moda no Brasil",
       description: "Plataforma de lojas virtuais da NextLevel: temas de alto nível, Pix e cartão, programa de parceiros e, em breve, atacado.",

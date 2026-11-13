@@ -31,7 +31,7 @@ describe("jornada da Loja NextLevel: estados reais, bloqueio educativo e elegibi
     expect(st("LOJA_PRONTA_ESSENCIAL").state).toBe("not_eligible");
     // D164: produto de outra marca continua bloqueado no cálculo, mas não aparece na tela da loja SuperDrop.
     expect(j.visiveis.some((c) => c.product.key === "COMMERCE_PRO")).toBe(false);
-    expect(st("COMMERCE_PRO").reason).not.toMatch(/E-commerce/);
+    expect(st("COMMERCE_PRO").reason).not.toMatch(/Commerce/);
     expect(st("MKT_META_ADS").state).toBe("quote_required"); // sob consulta sempre vira proposta
     expect(st("TEMA_ATELIER")).toBeTruthy();
     expect(j.phases).toHaveLength(5);

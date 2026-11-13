@@ -23,8 +23,8 @@ export const PADRAO = {
   esperaAmarelaMin: 5,
   esperaVermelhaMin: 15,
   mensagens: {
-    interessado: "Oi {nome}! Aqui é da NextLevel E-commerce. Recebi o seu contato. Quer que eu te mostre como a sua loja fica no ar ainda hoje?",
-    cadastro: "Oi {nome}! Aqui é da NextLevel E-commerce. Vi que você criou a loja {loja}. Posso te ajudar a deixar tudo pronto para vender hoje?",
+    interessado: "Oi {nome}! Aqui é da NextLevel Commerce. Recebi o seu contato. Quer que eu te mostre como a sua loja fica no ar ainda hoje?",
+    cadastro: "Oi {nome}! Aqui é da NextLevel Commerce. Vi que você criou a loja {loja}. Posso te ajudar a deixar tudo pronto para vender hoje?",
     teste: "Oi {nome}! O teste da loja {loja} termina em {dias} dia(s). Quer ajuda para escolher o plano e não perder nada do que já montou?",
     parada: "Oi {nome}! Vi que falta só um passo na sua loja: {passo}. Posso te ajudar agora?",
     cobranca: "Oi {nome}! O pagamento do plano da loja {loja} ficou pendente. Quer que eu te envie o link de novo?",

@@ -21,7 +21,7 @@ export const DEMO_LOGINS: { group: string; items: DemoLogin[] }[] = [
     { email: "dono@mantosshop.demo", who: "Lojista Mantos Shop", shows: "Outra loja da rede, para comparar" },
     { email: "parceira@demo.superdrop.com.br", who: "Parceira Camila", shows: "Links, cupons, indicados e comissões" },
   ] },
-  { group: "NextLevel E-commerce", items: [
+  { group: "NextLevel Commerce", items: [
     { email: "completo@commerce.demo", who: "Loja Commerce completa", shows: "Catálogo, pedidos, cupons, campanhas, equipe e assinatura" },
     { email: "lojista@commerce.demo", who: "Loja Commerce simples", shows: "Loja começando, primeiros passos" },
     { email: "equipe@commerce.demo", who: "Equipe da loja", shows: "O que a equipe vê (sem financeiro)" },
@@ -54,7 +54,7 @@ export const AULAS: { serie: string; aulas: Aula[] }[] = [
     { n: 8, title: "Lojista: loja bonita sem programar", email: "loja@mrssports.demo", start: "/merchant/storefront", steps: ["Editor do tema", "Campanhas e cupons", "Ver a vitrine"] },
     { n: 9, title: "Parceiro: indicar e ganhar", email: "parceira@demo.superdrop.com.br", start: "/partner", steps: ["Criar link e cupom", "Indicados e comissões"] },
   ] },
-  { serie: "NextLevel E-commerce: a sua loja virtual", aulas: [
+  { serie: "NextLevel Commerce: a sua loja virtual", aulas: [
     { n: 10, title: "Catálogo e categorias", email: "completo@commerce.demo", start: "/merchant/catalogo", steps: ["Cadastrar produto com variações", "Categorias", "Importar por planilha"] },
     { n: 11, title: "Aparência da loja", email: "completo@commerce.demo", start: "/theme-editor", steps: ["Escolher tema", "Banners e seções", "Publicar"] },
     { n: 12, title: "Pedidos, clientes e financeiro", email: "completo@commerce.demo", start: "/merchant/orders", steps: ["Pedido do pagamento à entrega", "Clientes", "Assinatura e taxa"] },

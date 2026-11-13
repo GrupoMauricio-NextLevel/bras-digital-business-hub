@@ -1,5 +1,5 @@
 /**
- * Comparativo da NextLevel E-commerce com outras plataformas (D219). Dados PÚBLICOS dos sites oficiais, com a data da
+ * Comparativo da NextLevel Commerce com outras plataformas (D219). Dados PÚBLICOS dos sites oficiais, com a data da
  * coleta: o que muda lá precisa ser atualizado aqui (e a data também). A NextLevel entra sempre com os preços reais do
  * Master (`commercePlansView`). Regras para ser justo:
  *  - conta só mensalidade + tarifa da plataforma sobre a venda, usando o PRÓPRIO meio de pagamento do lojista (no nosso

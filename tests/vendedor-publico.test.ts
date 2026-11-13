@@ -3,7 +3,7 @@ import { assuntoDe, recomendarPlano, responder, responderTexto, type FatosVenda 
 
 /** Vendedor 24h (D195): recomenda pelo custo real (mensalidade + taxa), usa só os fatos e entende o assunto. */
 const fatos: FatosVenda = {
-  marca: "NextLevel E-commerce", cadastro: "/cadastro", temasGratis: 4,
+  marca: "NextLevel Commerce", cadastro: "/cadastro", temasGratis: 4,
   planos: [
     { key: "COMMERCE_START", name: "Start", monthlyCents: 14900, feeBps: 100, quote: false },
     { key: "COMMERCE_PRO", name: "Pro", monthlyCents: 24900, feeBps: 70, quote: false },

@@ -13,7 +13,7 @@ type Painel = Awaited<ReturnType<typeof painelParceiroEc>>;
 const TOM_SIT: Record<string, string> = { pagante: "bg-success-soft text-success", teste: "bg-info-soft text-info", aguardando: "bg-warning-soft text-warning", vencido: "bg-danger-soft text-danger" };
 
 /**
- * Painel do parceiro da NextLevel E-commerce (D220): o que ele ganha, quanto já é recorrente, o que fazer agora para
+ * Painel do parceiro da NextLevel Commerce (D220): o que ele ganha, quanto já é recorrente, o que fazer agora para
  * converter os indicados e como subir para agência parceira. Porcentagens das regras vigentes do catálogo.
  */
 export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string; convite: string }) {
@@ -24,7 +24,7 @@ export function PainelParceiroEc({ d, link, convite }: { d: Painel; link: string
       <section className="ds-hero @container relative p-6 text-white sm:p-8">
         <div className="relative grid gap-6 @3xl:grid-cols-[1fr_minmax(0,22rem)] @3xl:items-end">
           <div>
-            <span className="ec-tag"><i aria-hidden />{d.parceiro.tipo} NextLevel E-commerce</span>
+            <span className="ec-tag"><i aria-hidden />{d.parceiro.tipo} NextLevel Commerce</span>
             <h1 className="mt-4 font-[family-name:var(--nl-font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Olá, {primeiro}. Cada loja que você indica vira renda todo mês.</h1>
             <p className="mt-3 max-w-xl text-white/85">{d.parceiro.pessoaFisica ? "Programa de Indicações (CPF): você" : "Parceiro com CNPJ: você"} ganha <b className="text-white">{ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "INICIAL", undefined, d.parceiro.pessoaFisica))} de toda mensalidade</b>, desde a primeira{r.meses >= 120 ? ", enquanto o cliente ficar" : ` por ${r.meses} meses`}. Com {NIVEIS[1]!.minimo} clientes ativos, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "PRATA", undefined, d.parceiro.pessoaFisica))}; com {NIVEIS[2]!.minimo}, {ganhoTexto(recorrenteDoNivel(r.recorrenteBps, "OURO", undefined, d.parceiro.pessoaFisica))} na carteira toda. E é fácil de vender: taxa zero da plataforma nas vendas com o Mercado Pago e um preço que vence a concorrência.</p>
           </div>

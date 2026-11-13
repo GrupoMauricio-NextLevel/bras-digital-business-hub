@@ -85,7 +85,7 @@ export type StoreCreated = { storeId: string; slug: string; credentials: Credent
 
 /**
  * Cria a loja. Com `supplierId`: loja de membro na rede do fornecedor (SuperDrop). Com `null`: loja independente da
- * NextLevel E-commerce (D89), sem fornecedor, sem rede e dona do próprio catálogo.
+ * NextLevel Commerce (D89), sem fornecedor, sem rede e dona do próprio catálogo.
  */
 export async function createStore(db: Database, supplierId: string | null, raw: z.input<typeof createStoreSchema>): Promise<StoreCreated> {
   const input = createStoreSchema.parse(raw);
@@ -124,7 +124,7 @@ export async function createStore(db: Database, supplierId: string | null, raw: 
       { id: newId("act"), scope: "SUPPLIER", supplierId, storeId, type: "STORE_CREATED", message: `Loja ${input.name} criada e lojista convidado` },
       { id: newId("act"), scope: "PLATFORM", supplierId, storeId, type: "STORE_CREATED", message: `Loja ${input.name} criada na rede ${network.name}` },
     ]);
-    else await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId, type: "STORE_CREATED", message: `Loja independente ${input.name} criada (NextLevel E-commerce)` });
+    else await tx.insert(activities).values({ id: newId("act"), scope: "PLATFORM", storeId, type: "STORE_CREATED", message: `Loja independente ${input.name} criada (NextLevel Commerce)` });
   });
   return { storeId, slug, credentials: { email, temporaryPassword }, offer: input.offer, ...acquisition };
 }

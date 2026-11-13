@@ -41,7 +41,7 @@ export const parseShippingConfig = (raw: unknown): ShippingConfig => shippingCon
 export const onlyDigits = (s: string | null | undefined) => (s ?? "").replace(/\D/g, "");
 export const isZip = (s: string | null | undefined) => onlyDigits(s).length === 8;
 
-const UA = "NextLevel E-commerce (suporte@nextlevelgroup.com.br)";
+const UA = "NextLevel Commerce (suporte@nextlevelgroup.com.br)";
 /** Reais no formato brasileiro ("1.025,50") ou com ponto ("25.50"). */
 const reaisBR = (v: unknown) => num(typeof v === "string" && v.includes(",") ? v.replace(/\./g, "") : v);
 const num = (v: unknown) => { const n = typeof v === "string" ? Number(v.replace(",", ".")) : typeof v === "number" ? v : NaN; return Number.isFinite(n) ? n : null; };

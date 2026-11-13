@@ -1,5 +1,12 @@
 [
  {
+  "numero": 288,
+  "frente": "E-commerce",
+  "titulo": "O nome da marca passa a ser \"NextLevel Commerce\"",
+  "data": "2026-11-13",
+  "resumo": "Decisão do dono: parar de usar \"NextLevel E-commerce\" e usar \"NextLevel Commerce\" em todo o sistema. O nome casa com o domínio nextlevelcommerce.com.br (D287)."
+ },
+ {
   "numero": 287,
   "frente": "Grupo",
   "titulo": "Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br",
@@ -271,12 +278,5 @@
   "titulo": "PV2: níveis dos parceiros (Prata, Ouro, Diamante) e bônus do representante",
   "data": "2026-11-05",
   "resumo": "Conta clientes pagantes ativos: lojas atribuídas ao parceiro, sem bandeira de revisão, com assinatura E-commerce ativa."
- },
- {
-  "numero": 248,
-  "frente": null,
-  "titulo": "PV0: comissões de parceiros da D226 no catálogo, com 100% da 1ª mensalidade na Black",
-  "data": "2026-11-05",
-  "resumo": "Novas versões das regras (src/lib/finance/revisao-d226.ts, aplicadas por ensureCatalogSeed, sem apagar as antigas): Plano anual: paga o equivalente ao mensal (50% de um mês + recorrente dos outros 11, dividido por 12): 22,5% para quem te…"
  }
 ]

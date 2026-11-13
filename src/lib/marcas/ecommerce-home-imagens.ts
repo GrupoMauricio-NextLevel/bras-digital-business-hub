@@ -1,5 +1,5 @@
 /**
- * Imagens da home imersiva da NextLevel E-commerce (D165): fotografias individuais geradas para o briefing
+ * Imagens da home imersiva da NextLevel Commerce (D165): fotografias individuais geradas para o briefing
  * (docs/prompts/ecommerce-home-imersiva-imagens-gpt.md); as 5 com a tela do notebook virada para o lado errado ficaram de fora
  * (e a ec-temas, pelo mesmo motivo); o passo 2 usa a ec-jornada-2-loja refeita em 19/10 (tela virada para a Larissa), o passo 5 ec-fecho, a porta "migrar" e os temas ec-entrar, até a
  * nova geração de fotos (docs/prompts/ecommerce-fotos-v2-personagens-gpt.md). AVIF e WebP em duas

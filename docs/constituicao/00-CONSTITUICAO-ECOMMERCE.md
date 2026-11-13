@@ -42,7 +42,7 @@ Antes de uma decisão estrutural, este documento deve permitir responder:
 
 ## 2. DEFINIÇÃO EXATA DO PRODUTO
 
-**NextLevel E-commerce** significa:
+**NextLevel Commerce** significa:
 
 > **a plataforma própria da NextLevel para criar, configurar, publicar, operar, administrar, personalizar e evoluir lojas virtuais.**
 

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { INTEGRACOES_PUBLICAS, totalDeIntegracoes } from "@/lib/marcas/integracoes-publicas";
 
 /**
- * Integrações nas páginas públicas da E-commerce (D192). Sem logos de terceiros e sem cartões repetidos: cada grupo é uma
+ * Integrações nas páginas públicas da Commerce (D192). Sem logos de terceiros e sem cartões repetidos: cada grupo é uma
  * linha editorial (o que resolve, à esquerda; os serviços, à direita). Dados de `integracoes-publicas.ts`.
  */
 export function IntegracoesFaixa({ cta, comecar }: { cta: string; comecar: string }) {

@@ -41,7 +41,7 @@ const PLAN_FEATURES = [
 const plan = (key: string, slug: string, name: string, monthly: number, annual: number, feeBps: number, sortOrder: number, extra: Partial<CatalogContent> = {}): SeedProduct => ({
   key, slug, name, family: "COMMERCE_PLAN", kind: "subscription", phase: "FUNDACAO", audience: ["STORE", "PUBLIC", "PARTNER"],
   tagline: `Plano ${name.replace("Commerce ", "")}: R$ ${(monthly / 100).toLocaleString("pt-BR")}/mês ou R$ ${(annual / 100).toLocaleString("pt-BR")}/ano`,
-  summary: `Assinatura da plataforma NextLevel E-commerce com taxa de plataforma de ${(feeBps / 100).toString().replace(".", ",")}% sobre as vendas depois dos 3 primeiros meses.`,
+  summary: `Assinatura da plataforma NextLevel Commerce com taxa de plataforma de ${(feeBps / 100).toString().replace(".", ",")}% sobre as vendas depois dos 3 primeiros meses.`,
   content: {
     forWho: ["Marcas e lojistas que querem uma loja virtual própria, com a sua identidade", "Quem já vende em rede social ou marketplace e quer um canal próprio"],
     notFor: ["Quem procura revender produtos de um fornecedor sem estoque (para isso existe o SuperDrop)"],

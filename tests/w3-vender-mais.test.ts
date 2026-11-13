@@ -93,7 +93,7 @@ describe("compre junto e prazo de produção", () => {
     expect(sp.productionDays).toBe(3);
     await expect(salvarVendaJunto(ctx.db, l.owner, l.a.productId, { relatedIds: [ctx.seed.productIds[0]!], productionDays: 0 })).rejects.toThrow(/só produtos da sua loja/);
     await expect(salvarVendaJunto(ctx.db, l.owner, l.a.productId, { relatedIds: ["a", "b", "c", "d", "e"], productionDays: 0 })).rejects.toThrow(/no máximo 4/);
-    await expect(salvarVendaJunto(ctx.db, ctx.actors.arena, ctx.seed.productIds[0]!, { relatedIds: [], productionDays: 1 })).rejects.toThrow(/E-commerce/);
+    await expect(salvarVendaJunto(ctx.db, ctx.actors.arena, ctx.seed.productIds[0]!, { relatedIds: [], productionDays: 1 })).rejects.toThrow(/Commerce/);
     const todos = [{ id: "1", categoryId: "x" }, { id: "2", categoryId: "x" }, { id: "3", categoryId: "y" }, { id: "4", categoryId: "x" }];
     expect(escolherRelacionados(todos, todos[0]!, ["3"]).map((p) => p.id)).toEqual(["3", "2", "4"]);
   });

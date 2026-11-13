@@ -3,7 +3,7 @@ import { ordenar, type ItemAgora } from "./loja-agora";
 import type { SituacaoComercial } from "./situacao-comercial";
 
 /**
- * "Precisa de você agora" das telas do Master da E-commerce (D215): Receita, Lojistas e Crescimento, no mesmo bloco
+ * "Precisa de você agora" das telas do Master da Commerce (D215): Receita, Lojistas e Crescimento, no mesmo bloco
  * único do lojista (D212). Puras. Cada loja abre a ficha do Comercial (`loja:<id>`), onde estão WhatsApp e histórico.
  */
 const ficha = (id: string) => `/master/comercial/${encodeURIComponent(`loja:${id}`)}`;

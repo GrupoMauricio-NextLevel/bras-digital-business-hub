@@ -1,5 +1,5 @@
 /*
- * Visual de tecnologia da NextLevel E-commerce (D222). Vale só dentro de `.ec-tech` (portal público da E-commerce):
+ * Visual de tecnologia da NextLevel Commerce (D222). Vale só dentro de `.ec-tech` (portal público da Commerce):
  * Space Grotesk nos títulos, Geist no texto, Geist Mono em rótulos e números; painéis escuros com grade, borda em degradê
  * e brilho; barras de dados. As fontes vêm do layout do portal (`--ec-font-*`).
  */
@@ -108,7 +108,7 @@
 .ec-tech .cm-seg-badge { font-family: var(--ec-mono); letter-spacing: .02em; }
 .ec-tech .cm-pricing output { font-family: var(--ec-mono); }
 
-/* Menu do celular na E-commerce (D233): painel escuro de tecnologia, opaco, com grade, números em mono e CTA em destaque. */
+/* Menu do celular na Commerce (D233): painel escuro de tecnologia, opaco, com grade, números em mono e CTA em destaque. */
 .ec-tech .ds-pub-mobile { background: radial-gradient(120% 60% at 100% 0%, rgb(124 92 255 / .22), transparent 60%), linear-gradient(rgb(255 255 255 / .035) 1px, transparent 1px) 0 0 / 100% 44px, #0a1226; color: #fff; border-top: 1px solid rgb(125 211 252 / .18); }
 .ec-tech .ds-pub-mobile nav a { color: #fff; border-bottom-color: rgb(255 255 255 / .08); font-family: var(--nl-font-display); letter-spacing: -.01em; }
 .ec-tech .ds-pub-mobile nav a[aria-current="page"] { color: #7dd3fc; box-shadow: inset 3px 0 0 var(--ec-ciano-vivo); }

@@ -12,7 +12,7 @@ import { previsaoDeEntrega, proximaNaLinha } from "./pedido-mesa-regras";
 export { PASSOS_NA_LINHA, previsaoDeEntrega, proximaNaLinha } from "./pedido-mesa-regras";
 
 /**
- * Pedido na mesa (W1, D184): o lojista da E-commerce resolve o pedido na própria lista. Mudar a situação na linha só
+ * Pedido na mesa (W1, D184): o lojista da Commerce resolve o pedido na própria lista. Mudar a situação na linha só
  * vale para loja independente e só para os passos que não pedem dados (o envio pede o rastreio e vai pela janela de
  * envio). Loja de rede do SuperDrop não muda situação pela lista: quem avança é a Central.
  */

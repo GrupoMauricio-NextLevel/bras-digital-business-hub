@@ -49,7 +49,7 @@ const FAQ_SOLUCOES = [
   { q: "A verba de anúncios passa pela NextLevel?", a: "Não. Na gestão de anúncios, a verba é paga por você direto à plataforma (Meta, Google, Mercado Livre). A NextLevel cobra só a gestão." },
   { q: "Consigo trazer a minha loja de outra plataforma?", a: "Sim, pela Migração. Ela atende lojas de plataformas como Shopify, Nuvemshop, Tray, WooCommerce, Loja Integrada, Yampi e WBuy; o limite de produtos e o que entra em cada pacote estão descritos na página da solução." },
   { q: "Vocês garantem resultado de vendas?", a: "Não. Entregamos o que está escrito no escopo de cada solução. O resultado depende do seu produto, do preço e da operação." },
-  { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera o SuperDrop, a NextLevel E-commerce, o Brás Digital Club e a NextLevel Cargas." },
+  { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera o SuperDrop, a NextLevel Commerce, o Brás Digital Club e a NextLevel Cargas." },
 ];
 
 export default async function SolucoesPage({ searchParams }: { searchParams: Promise<{ previa?: string; porta?: string }> }) {
@@ -76,7 +76,7 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
   const conteudo = (
     <>
       <JsonLd data={[
-        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel E-commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
+        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
         { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ_SOLUCOES.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
         { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${groupSiteUrl()}/solucoes/${p.slug}`, name: p.name })) },
       ]} />
@@ -134,10 +134,10 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <article className="rounded-xl border border-border bg-surface p-5">
               <FamiliaFoto family="COMMERCE_PLAN" className="mb-4 !rounded-lg" />
-              <h3 className="text-xl font-bold">Plataforma NextLevel E-commerce</h3>
+              <h3 className="text-xl font-bold">Plataforma NextLevel Commerce</h3>
               <p className="mt-1 text-sm text-muted-foreground">Loja virtual com sua marca, temas, Pix e cartão na sua conta.{plans.offer ? ` Clientes novos: ${plans.offer.trialDays} dias grátis e taxa zero da plataforma.` : ""}</p>
               <ul className="mt-3 space-y-1 text-sm">{plans.plans.map((p) => <li key={p.key}><Link className="font-semibold text-link underline" href={withAttribution(`/solucoes/${p.slug}`, attr)}>{p.name}</Link>: {p.quote ? "sob consulta" : `${formatBRL(p.monthlyCents ?? 0)}/mês ou ${formatBRL(p.annualCents ?? 0)}/ano · taxa ${((p.feeBps ?? 0) / 100).toString().replace(".", ",")}%`}</li>)}</ul>
-              <Link href={commerceHref} className="mt-4 inline-flex text-sm font-semibold text-link underline">Conhecer a NextLevel E-commerce →</Link>
+              <Link href={commerceHref} className="mt-4 inline-flex text-sm font-semibold text-link underline">Conhecer a NextLevel Commerce →</Link>
             </article>
             <article id="superdrop" className="rounded-xl border border-border bg-surface p-5">
               {/* eslint-disable-next-line @next/next/no-img-element -- WebP estático do kit SuperDrop */}

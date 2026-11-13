@@ -60,7 +60,7 @@ export async function proxy(req: NextRequest) {
 const withPath = (req: NextRequest) => { const h = new Headers(req.headers); h.set("x-nl-path", req.nextUrl.pathname); h.set("x-nl-search", req.nextUrl.search); return { request: { headers: h } }; };
 
 function route(req: NextRequest) {
-  // Prévia da NextLevel E-commerce em qualquer endereço: /lojas liga, /lojas/sair desliga (apresentação apenas, não muda permissões).
+  // Prévia da NextLevel Commerce em qualquer endereço: /lojas liga, /lojas/sair desliga (apresentação apenas, não muda permissões).
   // Só na demonstração (D149): em produção o atalho volta ao início e apaga a prévia que tenha ficado no navegador.
   const path = req.nextUrl.pathname;
   if (path === "/lojas" || path === "/lojas/" || path === "/lojas/sair") {

@@ -46,7 +46,7 @@ const FAQ = [
 
 export default async function Parceiros() {
   const brand = await requireBrandFeature("partners");
-  // E-commerce (D220): página própria do programa, com agências em destaque e as regras do catálogo.
+  // Commerce (D220): página própria do programa, com agências em destaque e as regras do catálogo.
   if (brand.code === "NEXTLEVEL_COMMERCE") return <ParceirosEc brand={brand} />;
   const db = await getDb();
   const [settings, book] = await Promise.all([getPartnerSettings(db), getPriceBook(db)]);

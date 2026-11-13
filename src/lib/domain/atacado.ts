@@ -78,7 +78,7 @@ export function linhaDoCatalogo(item: StoreCatalogItem, line: { productId: strin
 // AT1 (D258): limites por plano e grades
 // ---------------------------------------------------------------------------------------------------------------------
 export type LimitesAtacado = { plano: string; faixas: number; gradesPorProduto: number; regrasMix: number; tiposMix: RegraMix["kind"][]; pacote: boolean; /** AT3 (D268): mínimo por modelo e múltiplos (grade livre). */ gradeLivre: boolean };
-/** Escada do atacado por plano (docs/prompts/atacado-nextlevel-ecommerce.md, seção 6). Fora da E-commerce: sem limite. */
+/** Escada do atacado por plano (docs/prompts/atacado-nextlevel-ecommerce.md, seção 6). Fora da Commerce: sem limite. */
 export const LIMITES_ATACADO: Record<"COMMERCE_START" | "COMMERCE_PRO" | "COMMERCE_SCALE", LimitesAtacado> = {
   COMMERCE_START: { plano: "Start", faixas: 3, gradesPorProduto: 1, regrasMix: 1, tiposMix: ["MIX_PECAS"], pacote: false, gradeLivre: false },
   COMMERCE_PRO: { plano: "Pro", faixas: 5, gradesPorProduto: 4, regrasMix: 3, tiposMix: ["MIX_PECAS", "MIX_VALOR"], pacote: true, gradeLivre: true },
@@ -110,7 +110,7 @@ const gradeSchema = z.object({
   items: z.array(z.object({ variantId: z.string(), quantity: z.number().int().min(0).max(999) })).min(1),
 });
 
-/** Cria ou edita uma grade do produto da própria loja (E-commerce). O preço é por grade; nunca abaixo do piso × peças. */
+/** Cria ou edita uma grade do produto da própria loja (Commerce). O preço é por grade; nunca abaixo do piso × peças. */
 export async function salvarGrade(db: Database, storeId: string, productId: string, raw: unknown) {
   const g = gradeSchema.parse(raw);
   if ((await storeModality(db, storeId)) !== "INDEPENDENT") throw new DomainError("ATACADO_REDE", "Grades próprias só na loja independente.");

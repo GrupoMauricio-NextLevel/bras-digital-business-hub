@@ -24,7 +24,7 @@ const A_MAIS: Record<string, string> = { COMMERCE_START: "Loja completa: vitrine
 const pct = (bps: number | null) => `${((bps ?? 0) / 100).toString().replace(".", ",")}%`;
 
 /**
- * Planos da NextLevel E-commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
+ * Planos da NextLevel Commerce (D90, dados do catálogo Master). Mensal ou anual, e um simulador: para o faturamento
  * informado, soma mensalidade e taxa de plataforma e destaca o plano mais em conta. É estimativa, não promessa.
  */
 export type PricingBlack = { fim: string; restanteMs: number; depois: Record<string, { mensal: number; anual: number }> } | null;

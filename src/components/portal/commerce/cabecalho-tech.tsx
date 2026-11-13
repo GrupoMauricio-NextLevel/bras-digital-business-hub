@@ -1,5 +1,5 @@
 /**
- * Cabeçalho das páginas internas da NextLevel E-commerce (D223): faixa marinho com grade e brilho, rótulo em mono, título
+ * Cabeçalho das páginas internas da NextLevel Commerce (D223): faixa marinho com grade e brilho, rótulo em mono, título
  * grande (trecho em `<em>` ganha degradê) e, opcionalmente, números reais em destaque. Estilos em `tech.css`.
  */
 export function CabecalhoTech({ rotulo, titulo, texto, dados, children }: { rotulo: string; titulo: React.ReactNode; texto?: React.ReactNode; dados?: { rotulo: string; valor: string }[]; children?: React.ReactNode }) {

@@ -50,7 +50,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Agora", href: "/master/agora", icon: "Bell", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"], bottom: true },
       { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Operação", soTodas: true, bottom: true },
       { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"] },
-      { label: "NextLevel E-commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
+      { label: "NextLevel Commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
       { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
@@ -225,7 +225,7 @@ export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Ca
 
 /** Painel do lojista Commerce (grupos que abrem). Só rotas que existem. Equipe (STAFF) é filtrada no servidor pelo `STAFF_NAV_PREFIXES`. */
 /**
- * Painel do lojista da E-commerce (D207): o mesmo racional do escritório do Master. "Escritório" é o dia a dia
+ * Painel do lojista da Commerce (D207): o mesmo racional do escritório do Master. "Escritório" é o dia a dia
  * (o que fazer agora, clientes esperando, pedidos e dinheiro); "Crescer" traz mais vendas; "Loja e ajustes" é o resto.
  */
 export const COMMERCE_STORE_NAV: NavItem[] = [
@@ -261,7 +261,7 @@ export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
 /**
- * Master trancado na E-commerce (D203): o escritório em 7 áreas e, abaixo, as ferramentas que não são do dia a dia.
+ * Master trancado na Commerce (D203): o escritório em 7 áreas e, abaixo, as ferramentas que não são do dia a dia.
  * As telas antigas continuam existindo; só saíram do primeiro plano.
  */
 export const MASTER_ECOMMERCE_NAV: NavItem[] = [
@@ -326,7 +326,7 @@ export const BRAS_ADMIN_NAV: NavItem[] = [
   { label: "Planos e regras", href: "/bras/regras", icon: "Settings", group: "Configuração" },
 ];
 
-/** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel E-commerce) e o que é de outra marca. */
+/** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
 /** Menu do Master filtrado pela marca escolhida no seletor (R2). Sem marca = tudo. Itens sem `marcas` são comuns. */
 export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | undefined, marcaUnica = false): NavItem[] {
   // Marca única aberta (D200): as ferramentas do grupo (equipe, configurações, IA, erros) continuam no menu.

@@ -12,7 +12,7 @@ import { categoryImages, slotImage } from "./pacotes";
 import type { PresetContext } from "./presets";
 
 /**
- * Loja que já nasce completa (D237, fase L1): enquanto a loja da NextLevel E-commerce não salvou nenhum modelo, a vitrine
+ * Loja que já nasce completa (D237, fase L1): enquanto a loja da NextLevel Commerce não salvou nenhum modelo, a vitrine
  * mostra o tema GRÁTIS completo da família (slideshow, categorias, vitrines, dupla de banners, faixa, sobre, selos), com as
  * fotos de exemplo da família ("troque pela sua" no editor). Nada é gravado: o lojista edita e, ao salvar, vira dele.
  * O SuperDrop continua com o modelo de sempre.
@@ -47,7 +47,7 @@ const emAndamento = new Map<string, Promise<boolean>>();
 export const instalando = new Set<string>();
 
 /**
- * Loja E-commerce que nunca salvou um modelo e está no Starter (ou sem tema): instala o tema grátis completo da família,
+ * Loja Commerce que nunca salvou um modelo e está no Starter (ou sem tema): instala o tema grátis completo da família,
  * com as fotos de exemplo, uma vez. Devolve true quando instalou. SuperDrop e lojas já personalizadas: nada muda.
  */
 export async function garantirLojaCompleta(db: Database, store: Store, now = new Date()): Promise<boolean> {

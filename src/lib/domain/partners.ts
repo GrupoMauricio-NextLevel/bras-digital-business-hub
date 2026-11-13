@@ -250,7 +250,7 @@ export async function closePartnerMonth(db: Database, period: string, now = new 
   const s = await getPartnerSettings(db);
   const { start, end } = periodBounds(period);
   const all = await db.select().from(partners).where(ne(partners.status, "SUSPENDED"));
-  // D252: o parceiro da NextLevel E-commerce não tem meta mensal nem taxa de manutenção (participar é grátis); ele só
+  // D252: o parceiro da NextLevel Commerce não tem meta mensal nem taxa de manutenção (participar é grátis); ele só
   // fica Inativo pela regra dos 6 meses sem cliente (D250). O corte mensal continua igual para o SuperDrop.
   const ec = new Set((await db.select({ id: partners.id }).from(partners).innerJoin(users, eq(users.id, partners.userId)).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(eq(organizations.brand, "NEXTLEVEL_COMMERCE"))).map((r) => r.id));
   let closed = 0;

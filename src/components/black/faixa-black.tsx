@@ -11,7 +11,7 @@ import "./black.css";
 type Lugar = "publico" | "grupo" | "lojista" | "master" | "parceiro";
 const DESTINO: Record<Lugar, { texto: string; href: string; botao: string }> = {
   publico: { texto: "", href: "/planos", botao: "Garantir meu preço" },
-  grupo: { texto: "Black NextLevel E-commerce: anual com 2 meses grátis e taxa zero da plataforma", href: "", botao: "Ver a Black" },
+  grupo: { texto: "Black NextLevel Commerce: anual com 2 meses grátis e taxa zero da plataforma", href: "", botao: "Ver a Black" },
   lojista: { texto: "Mude para o anual na Black: 2 meses grátis e preço travado enquanto for cliente", href: "/merchant/finance", botao: "Ver meu plano" },
   master: { texto: "Black no ar: anual com 2 meses grátis; o preço novo entra sozinho no fim", href: "/master/black", botao: "Configurar" },
   parceiro: { texto: "Seus indicados ganham anual com 2 meses grátis e preço travado: hora de indicar", href: "/partner/links", botao: "Pegar meu link" },

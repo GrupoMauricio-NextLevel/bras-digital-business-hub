@@ -45,7 +45,7 @@ export default async function MerchantFinancePage() {
   const overdueInvoices = openInvoices.filter((i) => i.status === "OVERDUE");
   const openInvoiceCents = openInvoices.reduce((sum, i) => sum + i.amountCents, 0);
   const overdueCents = overdueInvoices.reduce((sum, i) => sum + i.amountCents, 0);
-  // E-commerce (D212): o que pede atenção no dinheiro, item a item, e quanto entrou hoje, na semana e no mês.
+  // Commerce (D212): o que pede atenção no dinheiro, item a item, e quanto entrou hoje, na semana e no mês.
   const naoPagos = f.rows.filter((o) => o.customerPaymentStatus !== "PAID");
   const agoraFin = commerce ? financeiroAgora({ faturas: invoices, assinatura: nlSub ? { status: nlSub.status, trialEndsAt: nlSub.trialEndsAt } : null, pagamento: (await getStoreReadiness(db, session.store!.id)).items.find((i) => i.key === "payment"), aReceberCents: naoPagos.reduce((s, o) => s + o.totalCents, 0), aReceberPedidos: naoPagos.length }) : [];
   const agoraMs = new Date().getTime();

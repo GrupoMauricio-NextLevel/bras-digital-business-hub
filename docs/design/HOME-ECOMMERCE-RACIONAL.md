@@ -1,4 +1,4 @@
-# Racional da home da NextLevel E-commerce (D219, 2026-10-29)
+# Racional da home da NextLevel Commerce (D219, 2026-10-29)
 
 **Pedido do dono:** "a pessoa entra e já se convence de que somos a melhor opção; como a Nuvemshop faz, comparando com outras marcas; o que não convence vai para páginas institucionais."
 

@@ -1,4 +1,4 @@
-/* Capa da home NextLevel E-commerce (D198). Prefixo ecc- para não afetar nenhuma outra tela. Cores só da marca (--ec-*). */
+/* Capa da home NextLevel Commerce (D198). Prefixo ecc- para não afetar nenhuma outra tela. Cores só da marca (--ec-*). */
 .ecc-heroi { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ec-marinho); padding: 9.5rem 1rem 5.5rem; text-align: center; }
 .ecc-heroi-luz { position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:

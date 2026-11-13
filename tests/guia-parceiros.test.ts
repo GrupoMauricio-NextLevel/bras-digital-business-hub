@@ -9,7 +9,7 @@ import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
 /** Maurício como guia do programa (páginas /parceiros) e como manual do dia a dia do parceiro (painel), D253. */
 describe("guias do parceiro (offline)", () => {
   const F: FatosParceiros = {
-    marca: "NextLevel E-commerce", plano: { nome: "Pro", mensalCents: 14_700 },
+    marca: "NextLevel Commerce", plano: { nome: "Pro", mensalCents: 14_700 },
     regras: { indicacao: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 }, criador: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 }, vendedor: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 }, agencia: { primeiraBps: 2000, recorrenteBps: 2000, meses: 600 } },
     atribuicaoDias: 90, saqueMinimoCents: 5_000, garantiaDias: 30, cadastro: "/parceiros/cadastro",
   };

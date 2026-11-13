@@ -13,7 +13,7 @@ import { toTracked } from "@/lib/domain/tracking";
 import { encryptSecret } from "@/lib/security/crypto";
 import type { FetchLike } from "@/lib/payments/mercadopago";
 
-/** D180: depois da venda na loja independente da NextLevel E-commerce (separar, enviar com rastreio, cancelar devolvendo). */
+/** D180: depois da venda na loja independente da NextLevel Commerce (separar, enviar com rastreio, cancelar devolvendo). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 
