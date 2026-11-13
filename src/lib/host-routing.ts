@@ -24,6 +24,8 @@ const SUPERDROP_OWNED = ["/seja-fornecedor", "/fornecedores"];
 /** Rota pública da marca Brás Digital Club (`BDC.publicRoute`). */
 export const BRAS_CLUB_ROUTE = BDC.publicRoute;
 const under = (p: string, x: string) => p === x || p.startsWith(`${x}/`);
+/** Atalhos públicos que valem em qualquer endereço de marca: link do parceiro (/r/), cupom (/c/) e link rastreado (/l/, D290). */
+const atalho = (p: string) => p.startsWith("/r/") || p.startsWith("/c/") || p.startsWith("/l/");
 /** Endereço do site do grupo: `GROUP_SITE_URL` quando nextlevelgroup.com.br estiver ligado (Fase 3); até lá, o da holding. */
 export const groupSiteUrl = (env: Record<string, string | undefined> = process.env) => (env.GROUP_SITE_URL?.replace(/\/$/, "") || brandByCode(HOLDING_CODE, env).baseUrl);
 /** Link para uma página do grupo visto de um endereço: no próprio grupo e em endereço técnico (demonstração, localhost), relativo; nas marcas, direto no site do grupo, sem passar por redirecionamento (D149). */
@@ -79,7 +81,7 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   if (groupHost && host === `www.${groupHost}`) return { kind: "redirect", url: `${groupSiteUrl(env)}${pathname}${search}` };
   if (groupHost && host === groupHost) {
     if (pathname === "/" || pathname === "") return { kind: "redirect", url: `/solucoes${search}` };
-    if (pathname.startsWith("/api/") || pathname.startsWith("/r/") || pathname.startsWith("/c/") || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/")) return { kind: "next" };
+    if (pathname.startsWith("/api/") || atalho(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/")) return { kind: "next" };
     if (isPanelPath(pathname)) return { kind: "redirect", url: `${brandByCode(HOLDING_CODE, env).baseUrl}${pathname}${search}` };
     return { kind: "redirect", url: `/solucoes${search}` };
   }
@@ -118,11 +120,11 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   }
 
   // Produto sem sistema ainda ("em breve"): só a página inicial, a lista de espera e os painéis; o resto volta para a página inicial.
-  if (brand?.soon && !isPanelPath(pathname) && pathname !== "/" && pathname !== "/quero-minha-loja" && !pathname.startsWith("/r/") && !pathname.startsWith("/c/")) return { kind: "redirect", url: "/" };
+  if (brand?.soon && !isPanelPath(pathname) && pathname !== "/" && pathname !== "/quero-minha-loja" && !atalho(pathname)) return { kind: "redirect", url: "/" };
   // Operação fechada aberta (Brás Digital, D92): no endereço público só a apresentação, o cadastro e os painéis. As páginas das outras marcas não existem aqui.
-  if (brand?.closedCommerce && !brand.soon && !isPanelPath(pathname) && !CLOSED_PUBLIC_PATHS.includes(pathname) && !pathname.startsWith("/r/") && !pathname.startsWith("/c/") && !/^\/d\/[a-z0-9_]+$/.test(pathname) && !/^\/balcao\/[A-Za-z0-9_-]{32,64}$/.test(pathname) && !/^\/balcao-club\/[A-Za-z0-9_-]{32,64}$/.test(pathname)) return { kind: "redirect", url: "/" };
+  if (brand?.closedCommerce && !brand.soon && !isPanelPath(pathname) && !CLOSED_PUBLIC_PATHS.includes(pathname) && !atalho(pathname) && !/^\/d\/[a-z0-9_]+$/.test(pathname) && !/^\/balcao\/[A-Za-z0-9_-]{32,64}$/.test(pathname) && !/^\/balcao-club\/[A-Za-z0-9_-]{32,64}$/.test(pathname)) return { kind: "redirect", url: "/" };
   // Marca com lista fechada de páginas públicas (NextLevel Cargas, D108): o resto volta para a página inicial.
-  if (brand?.publicPaths && !isPanelPath(pathname) && !brand.publicPaths.includes(pathname) && !pathname.startsWith("/r/") && !pathname.startsWith("/c/") && !(brand.publicPatterns ?? []).some((re) => new RegExp(re).test(pathname))) return { kind: "redirect", url: "/" };
+  if (brand?.publicPaths && !isPanelPath(pathname) && !brand.publicPaths.includes(pathname) && !atalho(pathname) && !(brand.publicPatterns ?? []).some((re) => new RegExp(re).test(pathname))) return { kind: "redirect", url: "/" };
   if (brand?.officeUrl && isPanelPath(pathname)) return { kind: "redirect", url: `${brand.officeUrl}${pathname}${search}` };
 
   // `/loja/<nome>` é o endereço bonito da vitrine do vendedor (a rota interna continua `/store/<nome>`).

@@ -1,0 +1,31 @@
+"use server";
+import { revalidatePath } from "next/cache";
+import type { z } from "zod";
+import { getDb } from "@/db/client";
+import { getSession } from "@/lib/auth";
+import { runAction } from "@/lib/action-result";
+import { ForbiddenError } from "@/lib/domain/errors";
+import { alterarLink, criarLink, type linkSchema } from "@/lib/domain/trafego/links";
+
+async function ator() {
+  const s = await getSession();
+  if (!s) throw new ForbiddenError("Sessão expirada.");
+  return s.actor;
+}
+
+/** Links rastreados (TR1, D290). */
+export async function criarLinkAction(input: z.input<typeof linkSchema>) {
+  return runAction(async () => {
+    const r = await criarLink(await getDb(), await ator(), input);
+    revalidatePath("/master/trafego");
+    return r;
+  });
+}
+
+export async function alterarLinkAction(id: string, patch: { ativo?: boolean; destino?: string; nota?: string | null }) {
+  return runAction(async () => {
+    await alterarLink(await getDb(), await ator(), id, patch);
+    revalidatePath("/master/trafego");
+    return undefined;
+  });
+}

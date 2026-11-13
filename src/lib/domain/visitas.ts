@@ -1,15 +1,15 @@
 import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { products, storeProducts, storeVisitsDaily } from "@/db/schema";
+import { ehRobo } from "@/lib/trafego/canal";
+
+export { ehRobo };
 
 /**
  * Visitas da loja (W2, D185): contagem agregada por dia, sem cookie, sem IP e sem dado pessoal. Por isso o painel mostra
  * "visitas" (páginas abertas), nunca "visitantes únicos". Robôs ficam fora pelo navegador que dizem ser; prévias do
  * editor nem chegam a enviar.
  */
-const ROBO = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp\/|preview|headless|lighthouse|pagespeed|curl|wget|python|axios|node-fetch|go-http|monitor|uptime/i;
-export const ehRobo = (ua: string | null | undefined) => !ua || ROBO.test(ua);
-
 export type Aparelho = "MOBILE" | "DESKTOP" | "TABLET";
 export function aparelhoDe(ua: string | null | undefined): Aparelho {
   const u = ua ?? "";

@@ -1247,6 +1247,37 @@ export const crmAcompanhamento = pgTable("crm_acompanhamento", {
   updatedAt: updatedAt(),
 });
 
+/**
+ * Links rastreados (TR1, D290): encurtador próprio `/l/<codigo>` para anúncio, bio, story, direct, WhatsApp, e-mail e
+ * parceiro. O destino é sempre um caminho da própria marca (nunca um site externo: evita redirecionamento aberto).
+ */
+export const linksRastreados = pgTable("links_rastreados", {
+  id: id(),
+  codigo: text("codigo").notNull().unique(),
+  brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),
+  /** Caminho de destino na marca, com busca e âncora opcionais (ex.: "/planos?x=1#teste"). */
+  destino: text("destino").notNull(),
+  utmSource: text("utm_source").notNull(),
+  utmMedium: text("utm_medium").notNull(),
+  utmCampaign: text("utm_campaign").notNull(),
+  utmContent: text("utm_content"),
+  utmTerm: text("utm_term"),
+  /** Nota interna (onde o link foi usado). */
+  nota: text("nota"),
+  ativo: boolean("ativo").notNull().default(true),
+  criadoPor: text("criado_por"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+/** Cliques por dia de cada link rastreado: só contagem, sem IP nem navegador (LGPD). Robôs contados à parte. */
+export const linksCliquesDiarios = pgTable("links_cliques_diarios", {
+  linkId: text("link_id").notNull().references(() => linksRastreados.id),
+  dia: text("dia").notNull(),
+  cliques: integer("cliques").notNull().default(0),
+  robos: integer("robos").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.linkId, t.dia] })]);
+
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),

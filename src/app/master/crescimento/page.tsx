@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgePercent, Bot, Globe, LayoutTemplate, UsersRound } from "lucide-react";
+import { ArrowRight, BadgePercent, Bot, Globe, LayoutTemplate, LineChart, UsersRound } from "lucide-react";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { getDb } from "@/db/client";
@@ -11,6 +11,7 @@ import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 export const dynamic = "force-dynamic";
 
 const ITENS = [
+  { icon: LineChart, titulo: "Tráfego e campanhas", texto: "Links rastreados para anúncio, bio, story e WhatsApp; de onde vem cada visita (D290).", href: "/master/trafego" },
   { icon: UsersRound, titulo: "Parceiros e indicações", texto: "Quem indica lojistas, comissões, saques e antifraude.", href: "/master/partners" },
   { icon: BadgePercent, titulo: "Ofertas e preços", texto: "Oferta de entrada (dias grátis, 1º mês), preços dos planos e regras de comissão.", href: "/master/financeiro/ofertas" },
   { icon: Bot, titulo: "Maurício vendedor", texto: "A IA que atende a home 24 h: chave, limites e o que ela pode fazer em cada plano.", href: "/master/ia/ajustes" },

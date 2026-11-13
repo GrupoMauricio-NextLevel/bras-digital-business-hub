@@ -281,6 +281,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   // CX3 (D273): executivos de venda (equipe de rua) e prestação de contas.
   { label: "Executivos de venda", href: "/master/partners/executivos", icon: "UsersRound", group: "Escritório" },
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
+  // TR1 (D290): links rastreados e, por fases, tráfego em tempo real, campanhas e Reels.
+  { label: "Tráfego e campanhas", href: "/master/trafego", icon: "BarChart3", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
   { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },
   { label: "Sistema", href: "/master/settings", icon: "Settings", group: "Escritório" },

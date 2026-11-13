@@ -2,6 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { slugFromHost } from "@/lib/store-url";
 import { routeHost } from "@/lib/host-routing";
 import { brandOfHostStrict, brandPreviewAllowed } from "@/lib/brand";
+import { isPanelPath } from "@/lib/host-routing";
+import { CLICK_IDS, canalDe, ehRobo } from "@/lib/trafego/canal";
+import { CONSENT_COOKIE, lerConsentimento, podeMedir } from "@/lib/trafego/consentimento";
 
 /** Host que pode ser domínio próprio de uma loja (D234): não é da plataforma, nem técnico (localhost, IP, onrender). */
 export function podeSerDominioDeLoja(host: string | null | undefined): boolean {
@@ -17,25 +20,61 @@ export function podeSerDominioDeLoja(host: string | null | undefined): boolean {
 /**
  * Atribuição (D90): visita com `ref` (código do parceiro) ou `utm_*` grava o ÚLTIMO TOQUE NÃO DIRETO em cookie primário
  * (`nl-attr`, 30 dias; `nl-ref` com o código). Visita direta não apaga nada. Só campos curtos e sem dado pessoal.
+ * TR1 (D290): guarda também o identificador do clique do anúncio (`fbclid`, `gclid`, `gbraid`, `wbraid`, `ttclid`) e o
+ * momento do clique (`ts`), que servem depois para devolver a venda à Meta e ao Google; e o canal calculado.
  */
 const ATTR = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+const limpaClique = (v: string) => v.replace(/[^A-Za-z0-9_\-.]/g, "").slice(0, 120);
 export function attributionFrom(url: URL): Record<string, string> | null {
   const ref = url.searchParams.get("ref");
   const out: Record<string, string> = {};
   if (ref && /^[A-Za-z0-9_-]{3,24}$/.test(ref)) out.ref = ref.toUpperCase();
   for (const k of ATTR) { const v = url.searchParams.get(k); if (v) out[k] = v.replace(/[^\w\-. ]/g, "").slice(0, 60); }
+  for (const k of CLICK_IDS) { const v = url.searchParams.get(k); const c = v ? limpaClique(v) : ""; if (c) out[k] = c; }
   if (!Object.keys(out).length) return null;
+  if (CLICK_IDS.some((k) => out[k])) out.ts = String(Date.now());
+  out.canal = canalDe(out);
   out.page = url.pathname.slice(0, 80);
   out.at = new Date().toISOString().slice(0, 10);
   return out;
 }
-function withAttribution(req: NextRequest, res: NextResponse) {
+
+/**
+ * Primeiro toque (TR1, D290): a PRIMEIRA vez que a pessoa abre o site, de onde veio (etiqueta, clique do anúncio ou site
+ * de origem) e em qual página entrou. Nunca é sobrescrito (90 dias). Só nas páginas públicas das marcas: nunca nas lojas
+ * dos lojistas (lá a contagem é sem cookie, D185), nos painéis, na API, em pré-carregamento ou para robôs; e não grava se a
+ * pessoa recusou a medição no aviso de cookies.
+ */
+export function primeiroToqueFrom(input: { url: URL; referrer: string | null; host: string | null; ua: string | null }): Record<string, string> {
+  const a = attributionFrom(input.url) ?? {};
+  let refHost = "";
+  try { refHost = input.referrer ? new URL(input.referrer).hostname.replace(/^www\./, "").toLowerCase().slice(0, 60) : ""; } catch { refHost = ""; }
+  const hostProprio = (input.host ?? "").split(":")[0]!.replace(/^www\./, "").toLowerCase();
+  if (refHost === hostProprio) refHost = "";
+  const out: Record<string, string> = { ...a, canal: canalDe({ ...a, referrer: refHost, hostProprio }), page: input.url.pathname.slice(0, 80), at: new Date().toISOString().slice(0, 10) };
+  if (refHost) out.ref_host = refHost;
+  return out;
+}
+
+const ehLoja = (path: string, host: string | null) => path.startsWith("/store/") || path.startsWith("/loja/") || !!slugFromHost(host);
+function withAttribution(req: NextRequest, res: NextResponse, opts: { loja?: boolean } = {}) {
   if (req.method !== "GET" || req.nextUrl.pathname.startsWith("/api/")) return res;
-  const a = attributionFrom(req.nextUrl);
-  if (!a) return res;
   const secure = (req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "")) === "https";
-  res.cookies.set("nl-attr", encodeURIComponent(JSON.stringify(a)), { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
-  if (a.ref) res.cookies.set("nl-ref", a.ref, { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
+  const a = attributionFrom(req.nextUrl);
+  if (a) {
+    res.cookies.set("nl-attr", encodeURIComponent(JSON.stringify(a)), { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
+    if (a.ref) res.cookies.set("nl-ref", a.ref, { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 30 * 86_400 });
+  }
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const path = req.nextUrl.pathname;
+  const prefetch = req.headers.get("next-router-prefetch") || req.headers.get("purpose") === "prefetch" || req.headers.get("sec-purpose")?.includes("prefetch");
+  const consent = lerConsentimento(req.cookies.get(CONSENT_COOKIE)?.value);
+  if (!podeMedir(consent)) { if (req.cookies.get("nl-first")) res.cookies.delete("nl-first"); return res; }
+  if (!opts.loja && !req.cookies.get("nl-first") && !prefetch && !ehLoja(path, host) && !isPanelPath(path) && !path.startsWith("/l/") && !path.startsWith("/r/") && !ehRobo(req.headers.get("user-agent"))
+    && (req.headers.get("accept") ?? "").includes("text/html")) {
+    const f = primeiroToqueFrom({ url: req.nextUrl, referrer: req.headers.get("referer"), host, ua: req.headers.get("user-agent") });
+    res.cookies.set("nl-first", encodeURIComponent(JSON.stringify(f)), { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 90 * 86_400 });
+  }
   return res;
 }
 
@@ -48,9 +87,9 @@ export async function proxy(req: NextRequest) {
     const slug = await lojaPorDominio(await getDb(), host!).catch(() => null);
     if (slug) {
       const url = req.nextUrl.clone();
-      if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/")) return withAttribution(req, NextResponse.next(withPath(req)));
+      if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/")) return withAttribution(req, NextResponse.next(withPath(req)), { loja: true });
       url.pathname = `/store/${slug}${url.pathname === "/" ? "" : url.pathname}`;
-      return withAttribution(req, NextResponse.rewrite(url, withPath(req)));
+      return withAttribution(req, NextResponse.rewrite(url, withPath(req)), { loja: true });
     }
   }
   return withAttribution(req, route(req));

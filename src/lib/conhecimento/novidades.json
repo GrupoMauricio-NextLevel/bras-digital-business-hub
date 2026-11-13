@@ -1,5 +1,12 @@
 [
  {
+  "numero": 290,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fases TR0 e TR1: aviso de cookies, origem completa e links rastreados",
+  "data": "2026-11-13",
+  "resumo": "Pedido do dono: saber de onde vem cada visita e cada lead (anúncio da Meta, do Google, orgânico), com links rastreados em tudo, como base para a campanha de teste e para devolver vendas à Meta e ao Google. Plano completo: docs/prompts/tr…"
+ },
+ {
   "numero": 289,
   "frente": "Grupo",
   "titulo": "Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo",
@@ -271,12 +278,5 @@
   "titulo": "PV1 + PV3: CRM de parceiros no Master (funil, ficha 360, fila, ranking, segmentos, aviso e desafio do mês)",
   "data": "2026-11-05",
   "resumo": "Dados (migração 0082): partner_profiles: região, canais, seguidores, quem cuida, etapa manual, próxima ação e data;"
- },
- {
-  "numero": 250,
-  "frente": null,
-  "titulo": "Parceiro sem cliente por 6 meses fica Inativo; plano do atacado registrado",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Pode ligar\" a requalificação da D249."
  }
 ]

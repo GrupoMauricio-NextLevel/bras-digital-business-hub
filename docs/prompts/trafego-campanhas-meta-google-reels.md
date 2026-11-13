@@ -1,6 +1,6 @@
 # Tráfego, campanhas (Meta e Google), Reels e retorno de vendas: racional, campanha de teste e prompt mestre
 
-> **Status: SALVO, NÃO IMPLEMENTADO** (pedido do dono, 13/11/2026). Frente: **[E-commerce]** (é o motor comercial que traz o 10º lojista pagante; regra 60/25/15, D174).
+> **Status: EM ANDAMENTO.** TR0 e TR1 **feitas** (D290, 13/11/2026): aviso de cookies, política revista, clique do anúncio e primeiro toque guardados, regra única de canal, links rastreados `/l/` em Master → Tráfego e campanhas. **Próxima: TR2** (coletor próprio e "Agora no site"). Pedido do dono: 13/11/2026. Frente: **[E-commerce]** (é o motor comercial que traz o 10º lojista pagante; regra 60/25/15, D174).
 > **O que o dono pediu:** seguir os passos do Reportei dentro do Master; saber de onde vem cada acesso (anúncio da Meta, Google, orgânico); tráfego do site em tempo real; preparar o site para tráfego pago e orgânico; confirmar se o lead fechou ou não e devolver isso para a Meta e o Google acharem gente parecida; integração de gestão de campanhas; automatizar Reels do Instagram; todos os links rastreados.
 > **Como usar:** leia as partes 1 a 9 (racional, em português sem jargão). A parte 10 é a campanha de teste para rodar **depois** de desenvolvido. A parte 12 é o prompt para colar numa sessão de trabalho e desenvolver por fases.
 > **Marcação:** **[fato]** = conferido no código hoje; **[plataforma]** = regra da Meta/Google como está documentada (confira no dia, elas mudam); **[hipótese]** = estimativa para testar.
@@ -351,8 +351,8 @@ Quem **já vende pelo Instagram e WhatsApp** e quer loja própria (moda feminina
 
 | Fase | Entrega | Dono precisa |
 |---|---|---|
-| **TR0** | Diagnóstico curto, decisão registrada (D-número), aviso de cookies e política (texto para revisão) | Aprovar textos |
-| **TR1** | Encurtador `/l/`, padrão de nomes validado, cliques; proxy guarda `fbclid/gclid/gbraid/wbraid/ttclid`, primeiro toque e página de entrada; função única de canal | — |
+| **TR0** ✅ D290 | Diagnóstico curto, decisão registrada (D-número), aviso de cookies e política (texto para revisão) | Aprovar textos (revisão jurídica pendente) |
+| **TR1** ✅ D290 | Encurtador `/l/`, padrão de nomes validado, cliques; proxy guarda `fbclid/gclid/gbraid/wbraid/ttclid`, primeiro toque e página de entrada; função única de canal | — |
 | **TR2** | Coletor próprio (sessões e eventos), **Agora no site** em tempo real, origens por canal, limpeza e resumo diário | — |
 | **TR3** | Lead com origem completa; CRM mostra canal, campanha e peça; botões "Fechou/Perdeu (motivo)"; código da visita no botão de WhatsApp | — |
 | **TR4** | Pixel da Meta e tag do Google no site público da NextLevel, só com consentimento; eventos de navegador (`PageView`, `Contact`, `Lead`, `StartTrial`) com `event_id` | IDs do Pixel e do Google Ads |

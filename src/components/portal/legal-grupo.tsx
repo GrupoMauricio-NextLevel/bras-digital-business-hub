@@ -7,14 +7,17 @@ import { supportContacts } from "@/lib/support";
  * unificação com novo aceite. Versão inicial, para revisão jurídica: o aviso fica visível no topo.
  */
 export const GROUP_LEGAL_VERSION = "2026-10-12";
-const data = GROUP_LEGAL_VERSION.split("-").reverse().join("/");
+/** Política de privacidade revista para cookies e medição de campanhas (TR0, D290); os termos de uso seguem na versão acima. */
+export const GROUP_PRIVACY_VERSION = "2026-11-13";
+const dataBr = (v: string) => v.split("-").reverse().join("/");
 
 function Contato() {
   const c = supportContacts();
   return c.email ? <a href={`mailto:${c.email}`} className="font-semibold text-link underline">{c.email}</a> : <span>o canal de atendimento informado no seu painel</span>;
 }
 
-function Moldura({ titulo, outro, marca, children }: { titulo: string; outro: { href: string; label: string }; marca: string; children: React.ReactNode }) {
+function Moldura({ titulo, outro, marca, versao = GROUP_LEGAL_VERSION, children }: { titulo: string; outro: { href: string; label: string }; marca: string; versao?: string; children: React.ReactNode }) {
+  const data = dataBr(versao);
   return (
     <article className="mx-auto max-w-3xl px-4 py-14">
       <p className="text-sm font-bold uppercase tracking-widest text-link">Grupo NextLevel · {marca}</p>
@@ -26,7 +29,7 @@ function Moldura({ titulo, outro, marca, children }: { titulo: string; outro: { 
   );
 }
 
-const H2 = ({ children }: { children: React.ReactNode }) => <h2 className="pt-4 text-xl font-bold">{children}</h2>;
+const H2 = ({ children, id }: { children: React.ReactNode; id?: string }) => <h2 id={id} className="scroll-mt-24 pt-4 text-xl font-bold">{children}</h2>;
 
 export function GroupTerms({ marca }: { marca: string }) {
   return (
@@ -61,7 +64,7 @@ export function GroupTerms({ marca }: { marca: string }) {
 
 export function GroupPrivacy({ marca }: { marca: string }) {
   return (
-    <Moldura titulo="Política de privacidade" marca={marca} outro={{ href: "/termos", label: "Termos de uso" }}>
+    <Moldura titulo="Política de privacidade" marca={marca} versao={GROUP_PRIVACY_VERSION} outro={{ href: "/termos", label: "Termos de uso" }}>
       <H2>1. Quem trata os seus dados</H2>
       <p>A NextLevel Marketing Ltda., que opera as plataformas do Grupo NextLevel, é a controladora dos dados das contas (lojistas, fornecedores, parceiros, membros, importadoras e transportadoras). Nos pedidos feitos nas lojas, o dono de cada loja é o responsável pelos dados dos clientes dele, e a NextLevel trata esses dados em nome da loja para a venda funcionar. Contato para assuntos de privacidade: <Contato />.</p>
       <H2>2. Quais dados guardamos</H2>
@@ -75,13 +78,21 @@ export function GroupPrivacy({ marca }: { marca: string }) {
       <p>Para criar e manter a sua conta, processar pedidos e entregas, cobrar planos e repassar valores, pagar comissões de parceiros, dar suporte, prevenir fraude e cumprir obrigações legais. Não vendemos os seus dados.</p>
       <H2>4. Com quem compartilhamos</H2>
       <p>Com quem precisa para o pedido acontecer: o fornecedor ou a importadora recebe os dados de envio do pedido; a transportadora recebe o necessário para a entrega. Com prestadores que operam as plataformas: hospedagem, banco de dados, envio de e-mail e o Mercado Pago. Com autoridades, quando a lei exigir.</p>
-      <H2>5. Cookies</H2>
-      <p>Usamos um cookie de sessão para manter você conectado e, quando você chega por um link de parceiro, de indicação ou de campanha, cookies que guardam essa origem por até 30 dias para registrar a indicação corretamente. Guardamos também no seu navegador o carrinho das lojas e preferências da tela (como o modo claro ou escuro). Não usamos cookies de publicidade de terceiros.</p>
-      <H2>6. Por quanto tempo</H2>
+      <H2 id="cookies">5. Cookies e medição do site</H2>
+      <p>Ao abrir o site você vê um aviso de cookies e escolhe: aceitar todos, só os necessários ou escolher um por um. Você muda a escolha quando quiser em &quot;Preferências de cookies&quot;, no rodapé.</p>
+      <ul className="list-disc space-y-2 pl-6">
+        <li><b>Necessários (sempre ligados):</b> o cookie de sessão que mantém você conectado, os de segurança, o carrinho das lojas, as preferências da tela e os que guardam por até 30 dias de onde você chegou (link de parceiro, de indicação ou de campanha, com o código do anúncio quando houver), para registrar a indicação corretamente.</li>
+        <li><b>Medição do site:</b> guarda por até 90 dias o primeiro canal pelo qual você chegou (por exemplo, busca do Google, Instagram ou um anúncio) e a página de entrada, para sabermos quais canais trazem visitas e clientes. Não guarda o seu nome nem o seu IP. Se você escolher &quot;só os necessários&quot;, essa medição não é feita.</li>
+        <li><b>Anúncios:</b> ferramentas da Meta (Instagram e Facebook) e do Google que medem os resultados das nossas campanhas e ajudam a mostrar anúncios para pessoas com interesse parecido. Só são carregadas se você aceitar.</li>
+      </ul>
+      <p>Os links das nossas campanhas e redes sociais passam pelo endereço /l/ do próprio site: contamos o clique (sem IP) e levamos você à página com a identificação da campanha.</p>
+      <H2>6. Campanhas e resultados de anúncios</H2>
+      <p>Quando você deixa seu contato ou cria uma conta depois de clicar num anúncio, podemos informar à Meta e ao Google que aquele anúncio gerou um contato, uma conta ou uma contratação, para medir as campanhas e encontrar pessoas parecidas. Nesse envio, o e-mail e o telefone vão transformados em um código irreversível (resumo criptográfico), nunca abertos. Você pode pedir que isso não seja feito, ou a exclusão, pelo contato acima.</p>
+      <H2>7. Por quanto tempo</H2>
       <p>Enquanto a sua conta estiver ativa e, depois, pelo prazo necessário para cumprir obrigações legais e fiscais e resolver pendências de pedidos e pagamentos.</p>
-      <H2>7. Seus direitos</H2>
+      <H2>8. Seus direitos</H2>
       <p>Você pode pedir acesso, correção, portabilidade ou exclusão dos seus dados, e saber com quem eles foram compartilhados, pelo contato acima. Alguns dados de pedidos e pagamentos podem ser mantidos quando a lei exigir.</p>
-      <H2>8. Segurança</H2>
+      <H2>9. Segurança</H2>
       <p>Acesso aos dados só por pessoas autorizadas, cada loja vê só os próprios dados, senhas guardadas como código irreversível, segredos de pagamento criptografados e conexão criptografada. Nenhum sistema é infalível; se houver incidente que afete você, avisamos.</p>
     </Moldura>
   );
