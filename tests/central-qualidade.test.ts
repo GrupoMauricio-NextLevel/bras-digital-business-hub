@@ -135,6 +135,6 @@ describe("o que falta e o pedido para o GPT (D143)", () => {
     expect(p).toContain("Nenhum texto");
     expect(p).toContain("LOTE SUPERDROP");
     expect(p).toContain("sd-tela-store-item.png — 16:9 — vitrine (onde aparece: Vitrine)");
-    expect(p).toContain("LOTE NEXTLEVEL E-COMMERCE"); // nome público desde D163
+    expect(p).toContain("LOTE NEXTLEVEL COMMERCE"); // nome público desde D163
   });
 });
