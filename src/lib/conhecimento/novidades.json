@@ -1,5 +1,12 @@
 [
  {
+  "numero": 293,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
+  "data": "2026-11-13",
+  "resumo": "Origem de cada contato: quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova origens_contato, ligada à mesma chave do Comercial: canal, campanha, peça,…"
+ },
+ {
   "numero": 292,
   "frente": "E-commerce",
   "titulo": "Tráfego: cidade e aparelho de cada visita e notificações em tempo real",
@@ -271,12 +278,5 @@
   "titulo": "Revisão visual: Maurício encaixado na moldura do painel (borda contínua) e alinhamentos",
   "data": "2026-11-05",
   "resumo": "Pedido do dono: \"Os prints revelam alguns erros no alinhamento e falhas no design.\""
- },
- {
-  "numero": 253,
-  "frente": null,
-  "titulo": "Maurício guia do programa nas páginas /parceiros e manual completo do dia a dia no painel do parceiro (offline)",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"A IA disponível na página de captação de parceiros tem que ser um guia amplo sobre o programa.\""
  }
 ]

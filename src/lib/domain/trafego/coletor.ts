@@ -51,18 +51,23 @@ export function origemDaEntrada(busca: string | null | undefined, referrer: stri
   return { ...utm, clickIds, refHost: refHost || null, canal };
 }
 
+/** Código curto da visita (TR3, D293): 5 letras e números sem os que se confundem (0/O, 1/I/L). */
+const ALFABETO_CODIGO = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+export const novoCodigoVisita = () => Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => ALFABETO_CODIGO[b % ALFABETO_CODIGO.length]).join("");
+export const CODIGO_VISITA = /^[A-HJ-NP-Z2-9]{5}$/;
+
 function detalheDoAparelho(s: Sinal) {
   const x = limparExtras(s.extras);
   return { sistema: sistemaDe(s.ua, x.versaoSistema), navegador: navegadorDe(s.ua), modelo: modeloDe(s.ua, x.modelo), tela: x.tela, idioma: x.idioma, rede: x.rede };
 }
 
 /** Registra um sinal. Devolve a sessão (nova ou a mesma) ou null quando não há o que fazer (sinal de presença sem sessão viva). */
-export async function registrarSinal(db: Database, s: Sinal, agora = new Date()): Promise<{ sessaoId: string; nova: boolean } | null> {
+export async function registrarSinal(db: Database, s: Sinal, agora = new Date()): Promise<{ sessaoId: string; nova: boolean; codigo: string | null } | null> {
   const caminho = limpaCaminho(s.caminho);
   const agoraIso = agora.toISOString();
   const viva = s.sessaoId ? await db.query.trafegoSessoes.findFirst({
     where: and(eq(trafegoSessoes.id, s.sessaoId), eq(trafegoSessoes.visitanteId, s.visitanteId), gte(trafegoSessoes.ultimoSinalEm, minutosAtras(agora, SESSAO_MIN))),
-    columns: { id: true, canal: true, utmSource: true, utmCampaign: true, utmContent: true, clickIds: true },
+    columns: { id: true, canal: true, utmSource: true, utmCampaign: true, utmContent: true, clickIds: true, codigo: true },
   }) : null;
   // Entrada nova com outra origem (etiqueta, clique de anúncio, indicação ou outro site) abre outra sessão, como no Google Analytics.
   const origem = s.tipo === "PAGE_VIEW" ? origemDaEntrada(s.busca, s.referrer, s.hostProprio) : null;
@@ -73,26 +78,27 @@ export async function registrarSinal(db: Database, s: Sinal, agora = new Date())
     || JSON.stringify(origem!.clickIds) !== JSON.stringify(viva.clickIds));
   if (viva && !trocaOrigem) {
     const id = viva.id;
-    if (s.tipo === "PING") { await db.update(trafegoSessoes).set({ ultimoSinalEm: agoraIso, paginaAtual: caminho }).where(eq(trafegoSessoes.id, id)); return { sessaoId: id, nova: false }; }
+    if (s.tipo === "PING") { await db.update(trafegoSessoes).set({ ultimoSinalEm: agoraIso, paginaAtual: caminho }).where(eq(trafegoSessoes.id, id)); return { sessaoId: id, nova: false, codigo: viva.codigo }; }
     const set: Partial<typeof trafegoSessoes.$inferInsert> = { ultimoSinalEm: agoraIso };
     if (s.tipo === "PAGE_VIEW") { set.paginaAtual = caminho; set.paginas = sql`${trafegoSessoes.paginas} + 1` as never; }
     if (s.tipo === "CLIQUE_WHATSAPP") set.whatsapp = true;
     if (s.tipo === "INICIO_CADASTRO") set.cadastro = true;
     await db.update(trafegoSessoes).set(set).where(eq(trafegoSessoes.id, id));
     await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: id, tipo: s.tipo, caminho, criadoEm: agoraIso });
-    return { sessaoId: id, nova: false };
+    return { sessaoId: id, nova: false, codigo: viva.codigo };
   }
   if (s.tipo !== "PAGE_VIEW") return null;
   const o = origem!;
   const id = newId("tss");
+  const codigo = novoCodigoVisita();
   await db.insert(trafegoSessoes).values({
-    id, visitanteId: s.visitanteId, brand: s.brand, iniciadaEm: agoraIso, ultimoSinalEm: agoraIso, paginaEntrada: caminho, paginaAtual: caminho,
+    id, codigo, visitanteId: s.visitanteId, brand: s.brand, iniciadaEm: agoraIso, ultimoSinalEm: agoraIso, paginaEntrada: caminho, paginaAtual: caminho,
     canal: o.canal, utmSource: o.utmSource, utmMedium: o.utmMedium, utmCampaign: o.utmCampaign, utmContent: o.utmContent, utmTerm: o.utmTerm,
     refHost: o.refHost, clickIds: o.clickIds, aparelho: aparelhoDe(s.ua),
     ...detalheDoAparelho(s), cidade: s.local?.cidade ?? null, uf: s.local?.uf ?? null, pais: s.local?.pais ?? null,
   });
   await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: id, tipo: "PAGE_VIEW", caminho, criadoEm: agoraIso });
-  return { sessaoId: id, nova: true };
+  return { sessaoId: id, nova: true, codigo };
 }
 
 /** Lead aceito pelo servidor (formulário, janela de saída, diagnóstico): marca a sessão viva. Nunca lança. */
@@ -132,7 +138,7 @@ export type AgoraNoSite = {
   agora: number;
   porCanal: Contagem<Canal>; porPagina: Contagem<string>; porAparelho: Contagem<string>; porMarca: Contagem<string>; porCidade: Contagem<string>;
   entradas: { id: string; quando: string; canal: Canal; campanha: string | null; peca: string | null; entrada: string; atual: string; paginas: number; aparelho: string; brand: string; ativa: boolean; whatsapp: boolean; cadastro: boolean; lead: boolean;
-    cidade: string | null; uf: string | null; pais: string | null; sistema: string | null; navegador: string | null; modelo: string | null; tela: string | null; rede: string | null }[];
+    codigo: string | null; cidade: string | null; uf: string | null; pais: string | null; sistema: string | null; navegador: string | null; modelo: string | null; tela: string | null; rede: string | null }[];
   marcos: { quando: string; tipo: "CLIQUE_WHATSAPP" | "INICIO_CADASTRO" | "LEAD"; caminho: string; canal: Canal; campanha: string | null }[];
   hoje: { sessoes: number; whatsapp: number; cadastros: number; leads: number };
 };
@@ -161,7 +167,7 @@ export async function agoraNoSite(db: Database, actor: Actor, agora = new Date()
     porAparelho: contar(vivas.map((v) => v.aparelho)),
     porMarca: contar(vivas.map((v) => v.brand)),
     porCidade: contar(vivas.map((v) => nomeDoLocal(v))).slice(0, 8),
-    entradas: entradas.map((e) => ({ id: e.id, quando: new Date(e.iniciadaEm).toISOString(), canal: e.canal as Canal, campanha: e.utmCampaign, peca: e.utmContent, entrada: e.paginaEntrada, atual: e.paginaAtual, paginas: e.paginas, aparelho: e.aparelho, brand: e.brand, ativa: new Date(e.ultimoSinalEm).getTime() >= new Date(limiteAgora).getTime(), whatsapp: e.whatsapp, cadastro: e.cadastro, lead: e.lead, cidade: e.cidade, uf: e.uf, pais: e.pais, sistema: e.sistema, navegador: e.navegador, modelo: e.modelo, tela: e.tela, rede: e.rede })),
+    entradas: entradas.map((e) => ({ id: e.id, quando: new Date(e.iniciadaEm).toISOString(), canal: e.canal as Canal, campanha: e.utmCampaign, peca: e.utmContent, entrada: e.paginaEntrada, atual: e.paginaAtual, paginas: e.paginas, aparelho: e.aparelho, brand: e.brand, ativa: new Date(e.ultimoSinalEm).getTime() >= new Date(limiteAgora).getTime(), whatsapp: e.whatsapp, cadastro: e.cadastro, lead: e.lead, codigo: e.codigo, cidade: e.cidade, uf: e.uf, pais: e.pais, sistema: e.sistema, navegador: e.navegador, modelo: e.modelo, tela: e.tela, rede: e.rede })),
     marcos: marcos.map((m) => ({ quando: new Date(m.quando).toISOString(), tipo: m.tipo as AgoraNoSite["marcos"][number]["tipo"], caminho: m.caminho, canal: m.canal as Canal, campanha: m.campanha })),
     hoje: { sessoes: Number(hoje?.sessoes ?? 0), whatsapp: Number(hoje?.whatsapp ?? 0), cadastros: Number(hoje?.cadastros ?? 0), leads: Number(hoje?.leads ?? 0) },
   };

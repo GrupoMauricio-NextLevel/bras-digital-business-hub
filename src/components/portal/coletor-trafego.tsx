@@ -39,6 +39,20 @@ async function detalhes(): Promise<Record<string, string | number>> {
   return { w: screen.width, h: screen.height, l: navigator.language, ...(rede ? { rede } : {}), ...(await dicas) };
 }
 
+/**
+ * Código da visita na mensagem pronta do WhatsApp (TR3, D293): a equipe cola o código no Comercial e o contato herda a
+ * origem (anúncio, campanha, cidade). Só se a medição foi permitida; não muda links que já têm o código.
+ */
+function comCodigo(a: HTMLAnchorElement, u: URL) {
+  if (!permitido()) return;
+  const cv = document.cookie.split("; ").find((c) => c.startsWith("nl-cv="))?.slice(6);
+  if (!cv || !/^[A-HJ-NP-Z2-9]{5}$/.test(cv)) return;
+  const texto = u.searchParams.get("text") ?? "Olá!";
+  if (/c[óo]digo [A-Z0-9]{5}/i.test(texto)) return;
+  u.searchParams.set("text", `${texto} (código ${cv})`);
+  a.href = u.toString();
+}
+
 const CADASTRO = /^\/(cadastro|quero-minha-loja|ativar|fornecer)(\/|$)/;
 
 /**
@@ -68,7 +82,7 @@ export function ColetorTrafego() {
       const a = (e.target as Element | null)?.closest?.("a");
       if (!a?.href) return;
       let u: URL; try { u = new URL(a.href, location.href); } catch { return; }
-      if (/(^|\.)(wa\.me|whatsapp\.com)$/.test(u.hostname)) enviar("CLIQUE_WHATSAPP");
+      if (/(^|\.)(wa\.me|whatsapp\.com)$/.test(u.hostname)) { comCodigo(a, u); enviar("CLIQUE_WHATSAPP"); }
       else if (CADASTRO.test(u.pathname)) enviar("INICIO_CADASTRO");
     };
     document.addEventListener("click", clique, { capture: true });

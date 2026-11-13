@@ -194,6 +194,7 @@ export function AgoraAoVivo({ inicial }: { inicial: AgoraNoSite }) {
                   <p className="mt-1 break-words text-muted-foreground">
                     {MARCA[e.brand] ?? e.brand} · entrou em <span className="font-medium text-foreground">{e.entrada}</span>{e.atual !== e.entrada ? <> · agora em <span className="font-medium text-foreground">{e.atual}</span></> : null} · {e.paginas} {e.paginas === 1 ? "página" : "páginas"}
                     {e.campanha ? <> · campanha <span className="font-medium text-foreground">{e.campanha}</span>{e.peca ? ` / ${e.peca}` : ""}</> : null}
+                    {e.codigo ? <> · código da visita <span className="font-mono font-medium text-foreground">{e.codigo}</span></> : null}
                   </p>
                 </li>
               ))}

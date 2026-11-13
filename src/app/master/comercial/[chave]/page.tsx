@@ -2,10 +2,13 @@ import Link from "next/link";
 import { ExternalLink, MessageCircle } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
-import { ETAPAS, fichaCliente } from "@/lib/domain/comercial";
+import { ETAPAS, fichaCliente, MOTIVOS_PERDA } from "@/lib/domain/comercial";
+import { ROTULO_CANAL } from "@/lib/trafego/canal";
+import { ROTULO_VIA } from "@/lib/domain/trafego/origem-contato";
+import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/app/page-header";
 import { formatDateTime } from "@/lib/utils";
-import { FormAcompanhamento } from "./form";
+import { FormAcompanhamento, VincularCodigo } from "./form";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +49,21 @@ export default async function FichaPage({ params }: { params: Promise<{ chave: s
               {p.storeId ? <Link href={`/master/clientes?q=${encodeURIComponent(p.email ?? p.empresa ?? "")}`} className="ds-btn ds-btn--sm ds-btn--secondary"><ExternalLink className="size-4" aria-hidden />Ver como lojista</Link> : null}
             </div>
           </section>
-          <FormAcompanhamento chave={p.chave} proximaAcao={p.proximaAcao ?? ""} prazo={p.prazo?.slice(0, 10) ?? ""} notas={notas} perdido={p.etapa === "perdido"} temResponsavel={!!p.responsavel} />
+          <section className="ds-card text-sm" aria-labelledby="origem-t">
+            <h2 id="origem-t" className="mb-2 text-lg font-bold">De onde veio</h2>
+            {p.fonte ? (
+              <>
+                <div className="flex flex-wrap items-center gap-2"><Badge tone={p.fonte.canal.endsWith("-pago") ? "info" : "neutral"} className="max-w-full whitespace-normal text-left">{p.fonte.rotulo}</Badge>{p.fonte.anuncio ? <Badge tone="outline">Clique de anúncio {p.fonte.anuncio}</Badge> : null}</div>
+                <dl className="mt-3 space-y-1.5">
+                  {([["Como chegou", ROTULO_VIA[p.fonte.via]], ["Campanha", p.fonte.campanha], ["Peça", p.fonte.peca], ["Público", p.fonte.publico], ["Conheceu por", p.fonte.primeiroCanal && p.fonte.primeiroCanal !== p.fonte.canal ? ROTULO_CANAL[p.fonte.primeiroCanal] : null],
+                    ["Cidade", p.fonte.pais && p.fonte.pais !== "BR" ? `Exterior (${p.fonte.pais})` : p.fonte.cidade ? `${p.fonte.cidade}${p.fonte.uf ? `/${p.fonte.uf}` : ""}` : null], ["Aparelho", p.fonte.aparelho], ["Código da visita", p.fonte.codigo], ["Quando", formatDateTime(p.fonte.em)]] as const)
+                    .filter(([, v]) => v).map(([k, v]) => <div key={k} className="flex gap-2"><dt className="w-28 shrink-0 text-muted-foreground">{k}</dt><dd className="min-w-0 break-words font-medium">{v}</dd></div>)}
+                </dl>
+              </>
+            ) : <p className="text-muted-foreground">Origem ainda não registrada. Se a pessoa chegou pelo WhatsApp, cole abaixo o código que veio na mensagem.</p>}
+            <VincularCodigo chave={p.chave} />
+          </section>
+          <FormAcompanhamento chave={p.chave} proximaAcao={p.proximaAcao ?? ""} prazo={p.prazo?.slice(0, 10) ?? ""} notas={notas} perdido={p.etapa === "perdido"} temResponsavel={!!p.responsavel} motivos={MOTIVOS_PERDA} motivoPerda={p.motivoPerda} fechou={p.fechou} />
         </aside>
       </div>
     </>

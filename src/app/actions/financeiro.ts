@@ -143,8 +143,8 @@ export async function requestDiagnosticAction(input: Parameters<typeof requestDi
     if (!rateLimit(`diag:${ip}`, 5, 60_000)) throw new ForbiddenError("Muitos envios seguidos. Tente de novo em um minuto.");
     const db = await getDb();
     const r = await requestDiagnostic(db, input, await attribution());
-    const { marcarLeadDaVisita } = await import("@/lib/trafego/lead-na-sessao");
-    await marcarLeadDaVisita(db);
+    const { registrarOrigemDaVisita } = await import("@/lib/trafego/lead-na-sessao");
+    await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: "NEXTLEVEL", via: "DIAGNOSTICO" });
     return r;
   });
 }

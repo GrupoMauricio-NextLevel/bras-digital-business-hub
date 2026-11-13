@@ -673,6 +673,13 @@
       "when": 1794549591478,
       "tag": "0095_trafego_local_aparelho",
       "breakpoints": true
+    },
+    {
+      "idx": 96,
+      "version": "7",
+      "when": 1794600626133,
+      "tag": "0096_origens_contato",
+      "breakpoints": true
     }
   ]
 }

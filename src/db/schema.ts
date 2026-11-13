@@ -1244,7 +1244,42 @@ export const crmAcompanhamento = pgTable("crm_acompanhamento", {
   prazo: ts("prazo"),
   notas: text("notas"),
   perdido: boolean("perdido").notNull().default(false),
+  /** Motivo da perda (TR3, D293). */
+  motivoPerda: text("motivo_perda"),
+  /** Venda fechada à mão (contrato, serviço, plano combinado): quando, quanto (centavos) e o quê (TR3, D293). */
+  fechouEm: ts("fechou_em"),
+  valorFechadoCents: integer("valor_fechado_cents"),
+  fechouDescricao: text("fechou_descricao"),
   updatedAt: updatedAt(),
+});
+
+/**
+ * Origem de cada contato do Comercial (TR3, D293): de onde veio a pessoa no momento em que deixou o contato, criou a loja
+ * ou mandou o código da visita no WhatsApp. Chave = a mesma do Comercial ("interessado:…", "loja:…", "conversa:…").
+ * A primeira origem fica; o código da visita, digitado pela equipe, pode corrigir. Base para devolver o resultado à
+ * Meta e ao Google (TR5): guarda os cliques do anúncio, nunca o IP.
+ */
+export const origensContato = pgTable("origens_contato", {
+  chave: text("chave").primaryKey(),
+  brand: text("brand").notNull(),
+  via: text("via", { enum: ["FORMULARIO", "SAIDA", "DIAGNOSTICO", "CADASTRO", "CODIGO_WHATSAPP"] }).notNull(),
+  canal: text("canal").notNull(),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"),
+  utmTerm: text("utm_term"),
+  clickIds: jsonb("click_ids").$type<Record<string, string>>().notNull().default({}),
+  /** Primeiro canal pelo qual a pessoa conheceu o site (cookie de primeiro toque, D290). */
+  primeiroCanal: text("primeiro_canal"),
+  primeiraPagina: text("primeira_pagina"),
+  sessaoId: text("sessao_id"),
+  codigoVisita: text("codigo_visita"),
+  cidade: text("cidade"),
+  uf: text("uf"),
+  pais: text("pais"),
+  aparelho: text("aparelho"),
+  capturadaEm: ts("capturada_em").notNull().defaultNow(),
 });
 
 /**
@@ -1313,11 +1348,13 @@ export const trafegoSessoes = pgTable("trafego_sessoes", {
   tela: text("tela"),
   idioma: text("idioma"),
   rede: text("rede"),
+  /** Código curto da visita (TR3, D293): vai na mensagem do WhatsApp para a equipe ligar a conversa à origem. */
+  codigo: text("codigo"),
   paginas: integer("paginas").notNull().default(1),
   whatsapp: boolean("whatsapp").notNull().default(false),
   cadastro: boolean("cadastro").notNull().default(false),
   lead: boolean("lead").notNull().default(false),
-}, (t) => [index("trafego_sessoes_sinal_idx").on(t.ultimoSinalEm), index("trafego_sessoes_inicio_idx").on(t.iniciadaEm), index("trafego_sessoes_visitante_idx").on(t.visitanteId)]);
+}, (t) => [index("trafego_sessoes_codigo_idx").on(t.codigo), index("trafego_sessoes_sinal_idx").on(t.ultimoSinalEm), index("trafego_sessoes_inicio_idx").on(t.iniciadaEm), index("trafego_sessoes_visitante_idx").on(t.visitanteId)]);
 
 /** Marcos da sessão: página aberta, clique no WhatsApp, início de cadastro, lead. O sinal "ainda aqui" não vira linha. */
 export const trafegoEventos = pgTable("trafego_eventos", {

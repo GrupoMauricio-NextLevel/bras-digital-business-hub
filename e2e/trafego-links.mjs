@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290), TR2 (D291) e cidade/aparelho com notificações (D292): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) e origem no Comercial (TR3, D293): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */
@@ -145,6 +145,54 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
   await p.goto(B + "/master/trafego/origens", { waitUntil: "networkidle" });
   await noScroll(p, "origens 360");
   for (const [c] of visitantes) await c.close();
+  await m.close();
+}
+
+// 4) TR3: visita de anúncio → código da visita no WhatsApp → lista de espera → Comercial mostra a origem; Fechou com valor.
+{
+  const c = await b.newContext({ viewport: { width: 390, height: 844 }, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 320.0.0.0", extraHTTPHeaders: { "x-forwarded-for": "200.147.67.142" } });
+  const v = await c.newPage();
+  await v.goto(`${B}/lojas`, { waitUntil: "networkidle" });
+  await v.goto(`${B}/quero-minha-loja?utm_source=meta&utm_medium=pago&utm_campaign=2026-12-tr3&utm_content=video-tr3&fbclid=IwTR3`, { waitUntil: "networkidle" });
+  await v.waitForTimeout(1200);
+  const zap = v.locator('a[aria-label="Falar no WhatsApp"]');
+  if (await zap.count()) {
+    await v.evaluate(() => { const a = document.querySelector('a[aria-label="Falar no WhatsApp"]'); a?.addEventListener("click", (e) => e.preventDefault(), { once: true }); a?.click(); });
+    const href = decodeURIComponent(((await zap.getAttribute("href")) ?? "").replaceAll("+", " "));
+    if (/\(código [A-HJ-NP-Z2-9]{5}\)/.test(href)) ok("mensagem do WhatsApp leva o código da visita"); else fail(`WhatsApp sem código: ${href.slice(0, 160)}`);
+  } else ok("(sem botão de WhatsApp nesta demonstração: código não conferido)");
+  const email = `tr3-${Date.now()}@loja.teste`;
+  await v.getByLabel("Seu nome").fill("Cliente TR3");
+  await v.getByLabel("E-mail").fill(email);
+  await v.getByLabel("WhatsApp com DDD").fill("85999990000");
+  await v.getByRole("button", { name: "Enviar" }).click();
+  await v.waitForTimeout(2500);
+  await c.close();
+
+  const m = await b.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/comercial?canal=meta-pago", { waitUntil: "networkidle" });
+  const cartao = p.locator("li", { hasText: "Cliente TR3" }).first();
+  if (await cartao.count() && /2026-12-tr3/.test(await cartao.textContent()) && /Fortaleza\/CE/.test(await cartao.textContent())) ok("Comercial (filtro Anúncio Meta) mostra o lead com campanha e cidade"); else fail("lead não apareceu com a origem no Comercial");
+  await shot(p, "08-comercial-filtro-canal");
+  const v1 = await axe(p); if (v1.length) fail(`axe comercial: ${v1.join(" | ")}`); else ok("axe sem violações graves no Comercial");
+  await cartao.getByRole("link", { name: "Cliente TR3" }).click();
+  await p.getByRole("heading", { name: "De onde veio" }).waitFor({ timeout: 20000 });
+  const ficha = await p.locator("main").textContent();
+  if (/De onde veio/.test(ficha) && /video-tr3/.test(ficha) && /Clique de anúncio Meta/.test(ficha) && /iPhone · App do Instagram/.test(ficha)) ok("ficha: De onde veio com peça, clique do anúncio e aparelho"); else fail("ficha sem a origem completa");
+  await p.getByRole("button", { name: "Fechou negócio" }).click();
+  await p.getByLabel("Valor fechado").fill("1997,00");
+  await p.getByLabel("O que foi vendido").fill("Loja Pronta");
+  await p.getByRole("button", { name: "Confirmar fechamento" }).click();
+  await p.getByText(/Negócio fechado:/).first().waitFor({ timeout: 15000 }).then(() => ok("Fechou negócio com valor"), () => fail("Fechou negócio não gravou"));
+  await shot(p, "09-ficha-de-onde-veio");
+  const v2 = await axe(p); if (v2.length) fail(`axe ficha: ${v2.join(" | ")}`); else ok("axe sem violações graves na ficha");
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload({ waitUntil: "networkidle" });
+  await noScroll(p, "ficha 360");
   await m.close();
 }
 await b.close();
