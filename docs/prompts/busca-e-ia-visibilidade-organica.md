@@ -1,5 +1,6 @@
 # Busca e IA: ser encontrado do Google ao ChatGPT (plano ampliado e prompt mestre)
 
+> **Substituído pela v3 (13/11/2026): `docs/prompts/busca-ia-academy-funil-organico.md`** (Academy, funil orgânico, rastreamento, nichos, compra dentro das IAs). Este arquivo fica como histórico e detalhe técnico citado pela v3.
 > Estado: **PLANO AMPLIADO (v2), NADA DESENVOLVIDO** (09/11/2026, pedido do dono). Frente: **[E-commerce]** (regra 60/25/15: aproxima a E-commerce do 10º lojista pagante).
 > Objetivo do dono, nas palavras dele: "quando alguém procurar pelas nossas soluções precisamos ser encontrados com facilidade do Google ao GPT; quando alguém perguntar qual a melhor plataforma, precisamos destacar nossos pontos fortes frente a todos os concorrentes; se necessário, criar páginas públicas e dados para serem indexados em todas as plataformas". Na v2 ele pediu: "pense em pontos que ficaram de fora, amplie o racional, crie o máximo de situações para ampliar o alcance, principalmente nas plataformas de IA".
 > **Domínio:** o dono está comprando `nextlevelcommerce.com.br` (09/11/2026). O endereço público hoje é `https://lojas.nextlevelgroup.com.br`. A troca é a fase S0 (seção 4).
