@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, MessageCircle } from "lucide-react";
+import { ExternalLink, Mail, MessageCircle } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { ETAPAS, fichaCliente } from "@/lib/domain/comercial";
@@ -43,6 +43,7 @@ export default async function FichaPage({ params }: { params: Promise<{ chave: s
             <div className="mt-4 flex flex-wrap gap-2">
               {p.whatsappHref ? <a href={p.whatsappHref} target="_blank" rel="noreferrer" className="ds-btn ds-btn--sm"><MessageCircle className="size-4" aria-hidden />WhatsApp</a> : null}
               {p.conversaId ? <Link href={`/master/ia?c=${p.conversaId}`} className="ds-btn ds-btn--sm ds-btn--secondary">Abrir conversa</Link> : null}
+              {p.email ? <Link href={`/master/caixa-de-entrada?q=${encodeURIComponent(p.email)}`} className="ds-btn ds-btn--sm ds-btn--secondary"><Mail className="size-4" aria-hidden />Ver e-mails</Link> : null}
               {p.storeId ? <Link href={`/master/clientes?q=${encodeURIComponent(p.email ?? p.empresa ?? "")}`} className="ds-btn ds-btn--sm ds-btn--secondary"><ExternalLink className="size-4" aria-hidden />Ver como lojista</Link> : null}
             </div>
           </section>

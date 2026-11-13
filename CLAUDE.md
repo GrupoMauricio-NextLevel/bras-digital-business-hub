@@ -30,7 +30,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - **Eficiência (erro de 2026-10-28):** ajuste visual pequeno = tipos + lint, publica e mostra o print do site no ar, **sem `npm run build` local**; build e bateria completa só em mudança grande; uma montagem por rodada; modo dev não serve para transições. Detalhes nas skills `publicar` e `qa-visual`.
 - **A cada etapa entregue, mande ao dono pelo menos um print da principal implementação** (captura real no navegador, Playwright). É como ele confere visualmente.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D290). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D291). Mudanças de comportamento sem teste não entram.
 - **Base de conhecimento sempre ao vivo (pedido do dono, 06/11/2026, D264):** toda atualização publicada alimenta a base de conhecimento da equipe (`docs/conhecimento/BC0-INVENTARIO.md`; depois, a tela "Aprender" do Master). Decisão nova a partir da D257 sem citação na base faz o teste `tests/base-conhecimento.test.ts` falhar; depois de registrar uma decisão, rode `node scripts/gerar-novidades.mjs` (Novidades da tela Aprender).
 
 ## Mapa rápido

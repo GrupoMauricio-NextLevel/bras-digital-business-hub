@@ -3524,3 +3524,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **DNS:** os MX e o SPF da raiz são da Hostinger, e o envio do Resend fica no subdomínio `send`, sem conflito. O DMARC fica em `p=none` por 2 a 4 semanas, depois sobe para `quarantine`.
 - **Depois:** um webhook do "Correio Agêntico" da Hostinger transforma e-mails de `suporte@` em atendimentos no Master.
 
+
+# D290 — [E-commerce] Caixa de entrada no Master, e-mails por assunto e ligação com o Comercial (2026-11-13)
+- **Pedido do dono:** usar a caixa da Hostinger dentro do Master e deixar CRM, e-mail e comercial bem ligados, para produtividade.
+- **Caixa de entrada (`/master/caixa-de-entrada`, menu Escritório):**
+  - lê a caixa da Hostinger pela API do Correio Agêntico (token `HOSTINGER_MAIL_TOKEN`, colado pelo dono no Render, nunca em tela ou log);
+  - pastas, busca, leitura em texto (HTML só em quadro isolado, sem scripts), anexos, responder na mesma conversa, escrever, mover e marcar como não lida;
+  - só o dono abre (a caixa tem dados de todos os clientes); a equipe do Master não.
+- **Quem é o remetente:** cada e-mail mostra se é lojista, equipe de loja, parceiro ou interessado, com link para a ficha no Comercial (`/master/comercial/loja:…` ou `interessado:…`).
+- **Ligação com o Comercial:**
+  - remetente que ainda não está no sistema vira interessado com o botão "Salvar no CRM" (sem e-mail automático para ele);
+  - responder ou escrever para um interessado novo muda a situação dele para "contatado";
+  - a ficha do cliente no Comercial ganha "Ver e-mails", que abre a caixa já filtrada pelo e-mail dele.
+- **E-mails por assunto (`src/lib/contatos.ts`, fonte única):** os e-mails automáticos do sistema saem com "responder para" conforme o assunto: financeiro@ (contrato, fatura, assinatura, Pix), parceiros@ (comissão, indicação), comercial@ (interessados, propostas), suporte@ (senha, login, loja, pedidos), contato@ (o resto). Os e-mails das lojas para os clientes delas continuam com o endereço da loja.
+- **Nas telas:** o rodapé das páginas públicas da Commerce mostra os endereços por assunto; a Ajuda do lojista mostra suporte@ e financeiro@.
+- **Depois:** contador de não lidas no menu e atendimento automático a partir de suporte@ (webhook do Correio Agêntico).

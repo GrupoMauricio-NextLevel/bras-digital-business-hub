@@ -1,4 +1,5 @@
 import { negocioAberto } from "@/lib/negocios";
+import { responderPara } from "@/lib/contatos";
 import { AVATAR_CEO, CEO } from "@/lib/marcas/equipe";
 import { onSignal } from "@/lib/brand-palette";
 import { and, eq, inArray } from "drizzle-orm";
@@ -81,7 +82,10 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
   const from = fromAddr.includes("<") ? fromAddr : `${brand.emailFromName} <${fromAddr}>`;
   let status: "SENT" | "FAILED" = "SENT"; let error: string | null = null;
   try {
-    const replyTo = process.env.EMAIL_REPLY_TO;
+    // D290: resposta no endereço do assunto (financeiro@, parceiros@, comercial@, suporte@); e-mails das lojas aos
+    // clientes delas (CUSTOMER_*, carrinho) seguem o padrão do ambiente.
+    const daLoja = /^(CUSTOMER|ABANDONED|CARRINHO|STORE_CUSTOMER|CLIENTE)/i.test(m.kind);
+    const replyTo = daLoja ? process.env.EMAIL_REPLY_TO : responderPara(m.kind);
     const res = await fetchImpl("https://api.resend.com/emails", { method: "POST", signal: timeoutSignal(), headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ from, to: [m.to], subject: m.subject, text: m.text + (m.cta ? `\n\n${m.cta.label}: ${m.cta.url}` : ""), html: renderHtml(m, brand, group), ...(replyTo ? { reply_to: replyTo } : {}), ...(m.attachments?.length ? { attachments: m.attachments.map((a) => ({ filename: a.filename, content: a.contentBase64 })) } : {}) }) });
     if (!res.ok) { status = "FAILED"; error = `HTTP ${res.status}`; }
   } catch (e) { status = "FAILED"; error = e instanceof Error ? e.message.slice(0, 200) : "erro"; }
