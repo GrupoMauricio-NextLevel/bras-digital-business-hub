@@ -3524,3 +3524,9 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **DNS:** os MX e o SPF da raiz são da Hostinger, e o envio do Resend fica no subdomínio `send`, sem conflito. O DMARC fica em `p=none` por 2 a 4 semanas, depois sobe para `quarantine`.
 - **Depois:** um webhook do "Correio Agêntico" da Hostinger transforma e-mails de `suporte@` em atendimentos no Master.
 
+
+## D290 — [E-commerce] Plano mestre: comercial em primeiro lugar e notas de todos os departamentos (2026-11-13)
+- **Fatos do dono:** a NextLevel Commerce tem **2 lojistas pagantes reais** (Anderson e Bazar Prime Outlet) e **1 parceira afiliada** (Ingrid, micro influenciadora). Placar da meta D174: 2 de 10.
+- **Avaliação geral:** nota 7,0. O ponto mais fraco é o Comercial (5,0): o sistema já tem as ferramentas (D200 a D205, D251, D260, D271 a D277); falta rotina, prova social e funil medido.
+- **Plano (proposta, aguarda o "ok"):** `docs/prompts/plano-mestre-comercial-e-notas.md`, com etapas CM0 a CM10 (comercial) e ações por departamento (EN, QA, SG, PG, PR, VI, FG, DO, OP), metas de nota em 30 e 90 dias, decisões pendentes com recomendação e um prompt engenheiro mestre para executar uma etapa por vez.
+- **Primeiro:** CM0 (placar real no Master), CM1 com PR1 ("Sua loja está pronta para vender?", Constituição art. 30) e CM4 (Black até 30/11).
