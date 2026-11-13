@@ -1,5 +1,12 @@
 [
  {
+  "numero": 287,
+  "frente": "Grupo",
+  "titulo": "Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br",
+  "data": "2026-11-13",
+  "resumo": "Decisão do dono: por enquanto só duas frentes concretas."
+ },
+ {
   "numero": 286,
   "frente": "Grupo",
   "titulo": "Código de segurança a cada entrada em todos os painéis",
@@ -271,12 +278,5 @@
   "titulo": "PV0: comissões de parceiros da D226 no catálogo, com 100% da 1ª mensalidade na Black",
   "data": "2026-11-05",
   "resumo": "Novas versões das regras (src/lib/finance/revisao-d226.ts, aplicadas por ensureCatalogSeed, sem apagar as antigas): Plano anual: paga o equivalente ao mensal (50% de um mês + recorrente dos outros 11, dividido por 12): 22,5% para quem te…"
- },
- {
-  "numero": 247,
-  "frente": null,
-  "titulo": "PV6: benefícios por plano numa tabela única, com travas reais",
-  "data": "2026-11-04",
-  "resumo": "Tabela única (beneficios-plano.ts, ecommerce.beneficios-plano), editável em Master → Assinaturas → \"Benefícios por plano\" (comercial ou financeiro, com auditoria). Valores da D226: Os usos de IA vêm das cotas do Maurício (D244), para não…"
  }
 ]

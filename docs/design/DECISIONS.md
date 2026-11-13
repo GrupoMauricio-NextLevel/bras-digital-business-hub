@@ -3484,3 +3484,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Master:** `MASTER_2FA_OBRIGATORIO=1` (D183) continua disponível para exigir o aplicativo da equipe, ligado depois que todos ativarem.
 - Teste: `tests/codigo-email-login.test.ts`.
 
+## D287 — [Grupo] Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br (2026-11-13)
+- **Decisão do dono:** por enquanto só duas frentes concretas.
+  1. **`nextlevelcommerce.com.br`:** a plataforma de lojas virtuais, com as páginas públicas e os painéis (lojista e parceiro).
+  2. **`nextlevelgroup.com.br`:** a agência, sistemas sob medida, white label e outras soluções para empresas, com as páginas e os painéis internos (Master em `master.nextlevelgroup.com.br`).
+- **Ficam de fora por enquanto:** Cargas, Brás e SuperDrop.
+  - Domínios removidos do Render pelo dono: `bras.` e `cargas.nextlevelgroup.com.br`, e `app.` e `office.superdrop.com.br`.
+  - `superdrop.com.br` e o `www` ligado a ele saem depois de confirmar que nada mais usa o endereço (`APP_URL` já trocado).
+  - O endereço técnico `superdrop.onrender.com` **fica ligado**: é o alvo do domínio próprio dos lojistas.
+- **Domínio novo no ar (13/11/2026):**
+  - DNS na Hostinger: A `@` → `216.24.57.1`; CNAME `www` → `superdrop.onrender.com`.
+  - No Render: verificado, com certificado, e o `www` leva ao principal.
+  - Variáveis: `BRAND_URL_NEXTLEVEL_COMMERCE=https://nextlevelcommerce.com.br`, `EC_DOMINIO_PRINCIPAL=1` (D281: `lojas.nextlevelgroup.com.br` leva ao novo com 301, menos `/api/*` e formulários) e `APP_URL=https://nextlevelcommerce.com.br` (links dos e-mails e avisos do Mercado Pago).
+  - `lojas.nextlevelgroup.com.br` fica alguns meses só redirecionando, porque há links já enviados (US$ 0,25 por mês).
+- **Custo:** cada domínio além dos 2 do plano custa US$ 0,25 por mês no Render.
+

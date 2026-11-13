@@ -4,7 +4,7 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 
 ## Para fazer
 
-- [ ] **Domínio novo `nextlevelcommerce.com.br`** (11/11/2026): ligar no Render e no registro.br, depois trocar o endereço principal da E-commerce (passo a passo em `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`, código pronto no D281).
+- [x] **Domínio novo `nextlevelcommerce.com.br`** (D287, no ar em 13/11) (11/11/2026): ligar no Render e no registro.br, depois trocar o endereço principal da E-commerce (passo a passo em `docs/infra/DOMINIO-NOVO-ECOMMERCE.md`, código pronto no D281).
 - [x] **Lembrete das parcelas do contrato** (D284) (sugerido em 11/11/2026): e-mail ao cliente 2 dias antes e no dia; aviso ao dono quando vencer sem "Já fiz o Pix". O restante do Anderson vence em 16/11.
 - [x] **Endereço padrão do domínio próprio dos lojistas** (D284) (pendência antiga): o código ainda cai no serviço de Treino se a configuração do Render sumir (`src/lib/domain/dominio-proprio.ts`).
 - [x] **E-mail de verdade (Resend)** (D285, no ar em 12/11): o dono adiciona o domínio no Resend e manda o print do DNS; depois `RESEND_API_KEY` (o dono cola no Render), `EMAIL_FROM` e `EMAIL_REPLY_TO`.
@@ -22,6 +22,10 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 - [ ] **CT4 dos contratos:** aditivos e outros modelos (migração, marketing).
 - [ ] **Série do YouTube:** vídeo 5 (o último).
 - [ ] **Render:** filtros de montagem (`docs/**`, `**/*.md`); apagar os domínios `hubcreators` e `brasdigitalclub` e o banco do Treino depois de conferir.
+
+- [ ] **Remover `superdrop.com.br` do Render** depois de uns dias sem uso (D287), e apagar o DNS de `bras` e `cargas`.
+- [ ] **Google Search Console:** cadastrar `nextlevelcommerce.com.br` e pedir a mudança de endereço (plano de busca S0).
+- [ ] **Materiais e QR codes** (série do YouTube, PDFs) com o domínio novo.
 
 ## Feito
 
