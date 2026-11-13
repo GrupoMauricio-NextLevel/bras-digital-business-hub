@@ -3600,3 +3600,9 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **E-mails por assunto (`src/lib/contatos.ts`, fonte única):** os e-mails automáticos do sistema saem com "responder para" conforme o assunto: financeiro@ (contrato, fatura, assinatura, Pix), parceiros@ (comissão, indicação), comercial@ (interessados, propostas), suporte@ (senha, login, loja, pedidos), contato@ (o resto). Os e-mails das lojas para os clientes delas continuam com o endereço da loja.
 - **Nas telas:** o rodapé das páginas públicas da Commerce mostra os endereços por assunto; a Ajuda do lojista mostra suporte@ e financeiro@.
 - **Depois:** contador de não lidas no menu e atendimento automático a partir de suporte@ (webhook do Correio Agêntico).
+
+# D297 — [E-commerce] Caixa de entrada: número de não lidos no menu e respostas prontas (2026-11-13)
+- **Pedido do dono:** CRM, e-mail e comercial bem ligados para a produtividade; seguir com as sugestões 1 (contador) e 3 (respostas prontas).
+- **Não lidos no menu:** o item "Caixa de entrada" do Master mostra quantos e-mails da Entrada estão sem ler (até "99+"). Só o dono vê (a equipe do Master não abre a caixa). O número é guardado por 1 minuto e a consulta desiste em 1,5 s: o menu nunca espera a Hostinger. Ler, mover ou marcar como não lida atualiza o número.
+- **Respostas prontas:** ao responder, "Resposta pronta" preenche a mensagem (o dono ajusta antes de enviar): recebemos, planos e teste grátis, domínio próprio, comprovante de Pix e quero ser parceiro. Saudação com o primeiro nome do remetente. Sem preço (aponta para /planos, porque o valor vem da tabela de preços) e sem promessa de ganho.
+- **Depois:** respostas prontas editáveis pelo Master, se o dono quiser mudar os textos sem programação.

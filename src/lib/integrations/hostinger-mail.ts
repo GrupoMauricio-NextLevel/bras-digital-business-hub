@@ -98,3 +98,20 @@ export async function enviar(e: Envio) {
   const { id } = await minhaCaixa();
   return chamar(`/mailboxes/${id}/send`, { method: "POST", body: JSON.stringify({ to: e.to, cc: e.cc?.length ? e.cc : undefined, subject: e.subject, text: e.text, html: e.html, displayName: e.displayName ?? "NextLevel Commerce", inReplyTo: e.resposta }) });
 }
+
+let naoLidasCache: { n: number | null; em: number } | null = null;
+/**
+ * Não lidos da Entrada para o número no menu do Master (D297). Guarda por 1 minuto e desiste em 1,5 s: o menu nunca
+ * espera a Hostinger. Sem token ou com erro, devolve null (o menu fica sem número).
+ */
+export async function naoLidasDaEntrada(agora = Date.now()): Promise<number | null> {
+  if (!caixaConfigurada()) return null;
+  if (naoLidasCache && agora - naoLidasCache.em < 60_000) return naoLidasCache.n;
+  const n = await Promise.race([
+    pastas().then((l) => l.find((p) => p.path === "INBOX")?.unreadCount ?? 0).catch(() => null),
+    new Promise<null>((r) => setTimeout(() => r(null), 1500)),
+  ]);
+  naoLidasCache = { n, em: agora };
+  return n;
+}
+export const limparNaoLidasCache = () => { naoLidasCache = null; };

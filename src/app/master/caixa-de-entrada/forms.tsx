@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { salvarInteressadoAction, escreverAction, marcarAction, moverAction, responderAction } from "@/app/actions/caixa-entrada";
 
+import { RESPOSTAS_PRONTAS, primeiroNome } from "@/lib/respostas-prontas";
+
 const lista = (s: string) => s.split(/[,;\s]+/).map((x) => x.trim()).filter(Boolean);
 
 export function AcoesMensagem({ pasta, uid, destinos }: { pasta: string; uid: number; destinos: { path: string; nome: string }[] }) {
@@ -25,7 +27,7 @@ export function AcoesMensagem({ pasta, uid, destinos }: { pasta: string; uid: nu
   );
 }
 
-export function RespostaForm({ pasta, uid, para, assunto, saindoDe }: { pasta: string; uid: number; para: string[]; assunto: string; saindoDe: string }) {
+export function RespostaForm({ pasta, uid, para, assunto, saindoDe, nome }: { pasta: string; uid: number; para: string[]; assunto: string; saindoDe: string; nome?: string | null }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   const [v, setV] = React.useState({ para: para.join(", "), cc: "", assunto, texto: "" });
@@ -35,6 +37,12 @@ export function RespostaForm({ pasta, uid, para, assunto, saindoDe }: { pasta: s
       if (r.ok) { toast.success("Resposta enviada."); setV({ ...v, texto: "" }); router.refresh(); } else toast.error(r.error ?? "Não foi possível enviar.");
     }); }}>
       <h3 className="text-sm font-semibold">Responder</h3>
+      <label className="grid gap-1 text-xs font-medium">Resposta pronta (opcional)
+        <Select value="" onChange={(e) => { const r = RESPOSTAS_PRONTAS.find((x) => x.id === e.target.value); if (r) setV((o) => ({ ...o, texto: r.texto(primeiroNome(nome)) })); }} className="h-9">
+          <option value="">Escolha para preencher a mensagem</option>
+          {RESPOSTAS_PRONTAS.map((r) => <option key={r.id} value={r.id}>{r.titulo}</option>)}
+        </Select>
+      </label>
       <label className="grid gap-1 text-xs font-medium">Para<Input value={v.para} onChange={(e) => setV({ ...v, para: e.target.value })} /></label>
       <label className="grid gap-1 text-xs font-medium">Cópia (opcional)<Input value={v.cc} onChange={(e) => setV({ ...v, cc: e.target.value })} placeholder="separe por vírgula" /></label>
       <label className="grid gap-1 text-xs font-medium">Assunto<Input value={v.assunto} onChange={(e) => setV({ ...v, assunto: e.target.value })} /></label>

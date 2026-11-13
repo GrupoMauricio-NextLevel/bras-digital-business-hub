@@ -3,7 +3,9 @@ import { eq } from "drizzle-orm";
 import { brandLeads, users } from "@/db/schema";
 import { CONTATOS, responderPara } from "@/lib/contatos";
 import { caixa, enderecoDeDestino, podeUsarCaixa, quemSao, responder, salvarComoInteressado } from "@/lib/domain/caixa-entrada";
-import { normalizar } from "@/lib/integrations/hostinger-mail";
+import { limparNaoLidasCache, naoLidasDaEntrada, normalizar } from "@/lib/integrations/hostinger-mail";
+import { comNaoLidas, type NavItem } from "@/lib/nav";
+import { RESPOSTAS_PRONTAS, primeiroNome } from "@/lib/respostas-prontas";
 import { freshDb } from "./setup";
 
 const end = (address: string) => ({ name: "", address });
@@ -78,5 +80,40 @@ describe("endereços por assunto e caixa de entrada do Master (D296)", () => {
     expect(m.cc).toEqual([]);
     expect(m.attachments).toEqual([]);
     expect(enderecoDeDestino(m)).toBe("suporte");
+  });
+
+  it("número de não lidos no menu: só com token, guardado por 1 minuto e sem travar o menu (D297)", async () => {
+    limparNaoLidasCache();
+    expect(await naoLidasDaEntrada()).toBeNull(); // sem token
+    process.env.HOSTINGER_MAIL_TOKEN = "tok_teste";
+    let chamadas = 0;
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => { chamadas++; return new Response(JSON.stringify(url.endsWith("/me") ? { data: { mailboxes: [{ resourceId: "AC1", address: "m@x.com" }] } } : { data: [{ path: "INBOX", name: "INBOX", specialUse: null, messageCount: 9, unreadCount: 3 }] }), { status: 200 }); }));
+    expect(await naoLidasDaEntrada(1_000_000)).toBe(3);
+    const antes = chamadas;
+    expect(await naoLidasDaEntrada(1_030_000)).toBe(3); // dentro de 1 minuto: não consulta de novo
+    expect(chamadas).toBe(antes);
+    limparNaoLidasCache();
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {}))); // Hostinger parada
+    const t = Date.now();
+    expect(await naoLidasDaEntrada(2_000_000)).toBeNull();
+    expect(Date.now() - t).toBeLessThan(3000);
+    limparNaoLidasCache();
+    const itens: NavItem[] = [{ label: "Caixa de entrada", href: "/master/caixa-de-entrada", icon: "Inbox" }, { label: "Agora", href: "/master/agora", icon: "Bell" }];
+    expect(comNaoLidas(itens, 3)[0]!.badge).toBe("3");
+    expect(comNaoLidas(itens, 150)[0]!.badge).toBe("99+");
+    expect(comNaoLidas(itens, 3)[1]!.badge).toBeUndefined();
+    expect(comNaoLidas(itens, 0)).toBe(itens);
+  });
+
+  it("respostas prontas: saudação com o primeiro nome, sem preço e sem promessa de ganho (D297)", () => {
+    expect(primeiroNome("ana souza")).toBe("Ana");
+    expect(primeiroNome("x@y.com")).toBeNull();
+    expect(primeiroNome(null)).toBeNull();
+    for (const r of RESPOSTAS_PRONTAS) {
+      const t = r.texto("Ana");
+      expect(t.startsWith("Olá, Ana!")).toBe(true);
+      expect(t).not.toMatch(/R\$|garant|lucro|fature/i);
+      expect(r.texto(null).startsWith("Olá! Tudo bem?")).toBe(true);
+    }
   });
 });

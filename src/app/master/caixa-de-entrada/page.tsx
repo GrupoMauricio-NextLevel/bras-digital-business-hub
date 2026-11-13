@@ -93,7 +93,7 @@ export default async function CaixaPage({ searchParams }: { searchParams: Promis
               <div className="mt-4 max-h-[60vh] overflow-y-auto whitespace-pre-wrap break-words rounded-lg bg-surface-muted p-4 text-sm leading-relaxed">{aberta.corpo.text?.trim() || "(Mensagem só com conteúdo formatado; veja abaixo.)"}</div>
               {!aberta.corpo.text?.trim() && aberta.corpo.html ? <iframe title="Mensagem formatada" sandbox="" srcDoc={aberta.corpo.html} className="mt-3 h-[60vh] w-full rounded-lg border bg-white" /> : null}
               {aberta.m.attachments.filter((a) => !a.inline).length ? <ul className="mt-3 flex flex-wrap gap-2">{aberta.m.attachments.filter((a) => !a.inline).map((a) => <li key={a.id}><a className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm hover:bg-surface-muted" href={`/master/caixa-de-entrada/anexo?pasta=${encodeURIComponent(pasta)}&uid=${aberta!.m.uid}&id=${encodeURIComponent(a.id)}&nome=${encodeURIComponent(a.filename ?? "anexo")}`}><Paperclip className="size-4" aria-hidden />{a.filename ?? "anexo"} <span className="text-xs text-muted-foreground">({Math.ceil(a.sizeBytes / 1024)} KB)</span></a></li>)}</ul> : null}
-              <RespostaForm pasta={pasta} uid={aberta.m.uid} para={aberta.m.from.map((a) => a.address)} assunto={/^re:/i.test(aberta.m.subject ?? "") ? aberta.m.subject! : `Re: ${aberta.m.subject ?? ""}`} saindoDe={CONTATOS.contato} />
+              <RespostaForm pasta={pasta} uid={aberta.m.uid} para={aberta.m.from.map((a) => a.address)} assunto={/^re:/i.test(aberta.m.subject ?? "") ? aberta.m.subject! : `Re: ${aberta.m.subject ?? ""}`} saindoDe={CONTATOS.contato} nome={aberta.m.from[0]?.name || null} />
             </article>
           ) : null}
         </div>
