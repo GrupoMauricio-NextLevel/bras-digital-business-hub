@@ -3591,3 +3591,27 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Só na Commerce:** as outras marcas não mostram o NextLevel Business (em pausa, D287).
 - **Fica para a NB0:** os demais padrões da Parte 10 do prompt (piloto, caixa como adicional, captação por plano, portal adiado, pedido de aprovação do aplicativo da Meta em paralelo), salvo nova orientação do dono.
 - **Nada no código ainda:** decisão e plano. A primeira entrega de código é a NB1.
+
+## D296 — [E-commerce] NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada (2026-11-13)
+- **Pedido do dono:** "pode seguir com a NB0". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa.
+- **Linha de base** (`docs/relatorios/NB0-LINHA-DE-BASE-2026-11-13.md`):
+  - tipos e estilo passaram;
+  - 231 de 231 testes dos pontos que o plano vai mexer passaram;
+  - no navegador passaram `smoke-demo`, `storefront-journey` e `theme-editor`;
+  - `checkout-flow` (fluxo antigo do SuperDrop, em pausa) já falhava antes: fica registrado como falha preexistente, não regressão.
+- **Padrões da Parte 10 aceitos:**
+  - Vidraçaria Modelo na demonstração;
+  - Caixa como adicional com preço no Master;
+  - Captação no Pro e no Scale, e uma página de campanha no Start;
+  - etiqueta `[E-commerce]`;
+  - pedir já a aprovação do aplicativo da Meta (tarefa do dono, em paralelo).
+- **Academia:** o portal do cliente sai da gaveta. O detalhamento entra em `docs/prompts/portal-academia-piloto.md` (estrutura, 23 perguntas e padrões sugeridos prontos). Com ele preenchido, a NB10 pode vir logo depois da NB3. As fases NB1 a NB3 já deixam as bases (plano, Parte 5.16):
+  - chave `portal` nos módulos (desligada);
+  - endereço `/portal` reservado;
+  - `stores.fuso`;
+  - aluno = `customers` + `store_customers` com o login sem senha por loja (`conta-cliente.ts`);
+  - modelo de site "Academia".
+- **Correções do diagnóstico:**
+  - a Commerce não mostra "SuperDrop" no topo do painel (usa `commerce-home.tsx`; a NB1 troca para "NextLevel Business · Visão geral do negócio");
+  - com o cadastro fechado (`BRAND_SIGNUP_NEXTLEVEL_COMMERCE` desligada), a entrada é `/quero-minha-loja`, que também passa a perguntar Site ou Loja virtual (Parte 5.15).
+- **Nada no código de produto.** Próxima fase: NB1.

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 296,
+  "frente": "E-commerce",
+  "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
+  "data": "2026-11-13",
+  "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
+ },
+ {
   "numero": 295,
   "frente": "E-commerce",
   "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
@@ -271,12 +278,5 @@
   "titulo": "AT0 do atacado: dados e motor único de preço",
   "data": "2026-11-05",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
- },
- {
-  "numero": 256,
-  "frente": null,
-  "titulo": "O padrão do chat vale para todo o sistema",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
  }
 ]
