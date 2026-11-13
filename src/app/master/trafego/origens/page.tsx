@@ -73,7 +73,21 @@ export default async function OrigensPage({ searchParams }: { searchParams: Prom
           </ul>
         )}
       </section>
-      <p className="mt-4 text-xs text-muted-foreground">Visitas de quem recusou a medição no aviso de cookies e de robôs não entram. O detalhe fica 90 dias; depois, só o resumo por dia.</p>
+      <section className="ds-card mt-6 min-w-0 text-sm" aria-labelledby="cidades-t">
+        <h2 id="cidades-t" className="text-lg font-bold">De quais cidades</h2>
+        <p className="mt-1 text-muted-foreground">Cidade aproximada pela conexão de internet. No celular, às vezes aparece a cidade da central da operadora.</p>
+        {o.cidades.length === 0 ? <p className="mt-4 text-muted-foreground">Ainda não há visitas medidas neste período.</p> : (
+          <ul className="mt-3 grid gap-x-6 sm:grid-cols-2">
+            {o.cidades.map((c) => (
+              <li key={c.local} className="flex items-baseline justify-between gap-3 border-b border-border py-2">
+                <span className="min-w-0 break-words">{c.local}</span>
+                <span className="shrink-0 tabular-nums text-muted-foreground"><b className="text-foreground">{c.sessoes}</b> {c.sessoes === 1 ? "visita" : "visitas"} · {c.leads} {c.leads === 1 ? "contato" : "contatos"}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <p className="mt-4 text-xs text-muted-foreground">Localização por IP: <a href="https://db-ip.com" className="underline" target="_blank" rel="noreferrer">DB-IP</a> (licença CC BY 4.0); o IP não é guardado. Visitas de quem recusou a medição no aviso de cookies e de robôs não entram. O detalhe fica 90 dias; depois, só o resumo por dia.</p>
     </>
   );
 }

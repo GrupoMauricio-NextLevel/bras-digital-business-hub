@@ -13,9 +13,10 @@ export default async function TrafegoAgoraPage() {
   const inicial = await agoraNoSite(await getDb(), s.actor);
   return (
     <>
-      <PageHeader eyebrow="Crescimento" title="Tráfego e campanhas" description="Quem está nos sites da NextLevel agora, de qual canal veio e o que fez. Só conta quem não recusou a medição no aviso de cookies; robôs ficam fora." />
+      <PageHeader eyebrow="Crescimento" title="Tráfego e campanhas" description="Quem está nos sites da NextLevel agora, de qual cidade, com qual aparelho, de qual canal veio e o que fez. Só conta quem não recusou a medição no aviso de cookies; robôs ficam fora." />
       <AbasTrafego ativa="agora" />
       <AgoraAoVivo inicial={inicial} />
+      <p className="mt-6 text-xs text-muted-foreground">Cidade aproximada pela conexão de internet (no celular, às vezes aparece a cidade da central da operadora). Localização por IP: <a href="https://db-ip.com" className="underline" target="_blank" rel="noreferrer">DB-IP</a> (licença CC BY 4.0); o IP não é guardado. Modelo do aparelho só quando o próprio celular informa.</p>
     </>
   );
 }

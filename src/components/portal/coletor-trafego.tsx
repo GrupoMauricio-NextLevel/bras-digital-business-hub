@@ -12,13 +12,31 @@ function permitido(): boolean {
   } catch { return false; }
 }
 
-function enviar(t: Tipo, extra: { s?: string; r?: string } = {}) {
+function enviar(t: Tipo, extra: { s?: string; r?: string; d?: Record<string, string | number> } = {}) {
   if (!permitido()) return;
   const corpo = JSON.stringify({ t, p: location.pathname, ...extra });
   try {
     if (navigator.sendBeacon?.(new URL("/api/t", location.origin), new Blob([corpo], { type: "text/plain" }))) return;
   } catch { /* segue para o fetch */ }
   void fetch("/api/t", { method: "POST", body: corpo, keepalive: true, headers: { "content-type": "text/plain" } }).catch(() => undefined);
+}
+
+type NavegadorComDicas = Navigator & {
+  userAgentData?: { getHighEntropyValues?: (k: string[]) => Promise<{ model?: string; platformVersion?: string }> };
+  connection?: { effectiveType?: string; type?: string };
+};
+let dicas: Promise<{ m?: string; pv?: string }> | null = null;
+/** Tela, idioma, rede e, no Android com Chrome, o modelo e a versão real do sistema (dicas do próprio navegador). */
+async function detalhes(): Promise<Record<string, string | number>> {
+  const n = navigator as NavegadorComDicas;
+  dicas ??= (async () => {
+    try {
+      const v = await Promise.race([n.userAgentData?.getHighEntropyValues?.(["model", "platformVersion"]), new Promise<undefined>((r) => setTimeout(() => r(undefined), 300))]);
+      return { ...(v?.model ? { m: v.model } : {}), ...(v?.platformVersion ? { pv: v.platformVersion } : {}) };
+    } catch { return {}; }
+  })();
+  const rede = n.connection?.type === "wifi" ? "wifi" : n.connection?.effectiveType;
+  return { w: screen.width, h: screen.height, l: navigator.language, ...(rede ? { rede } : {}), ...(await dicas) };
 }
 
 const CADASTRO = /^\/(cadastro|quero-minha-loja|ativar|fornecer)(\/|$)/;
@@ -39,8 +57,9 @@ export function ColetorTrafego() {
     if (ultimo.current.chave === chave && Date.now() - ultimo.current.em < 2000) return;
     ultimo.current = { chave, em: Date.now() };
     // Na primeira página manda o site de origem; nas seguintes a navegação é interna.
-    enviar("PAGE_VIEW", { s: location.search, r: primeira.current ? document.referrer : undefined });
+    const r = primeira.current ? document.referrer : undefined;
     primeira.current = false;
+    void detalhes().then((d) => enviar("PAGE_VIEW", { s: location.search, r, d }));
   }, [caminho]);
 
   React.useEffect(() => {

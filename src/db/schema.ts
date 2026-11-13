@@ -1302,6 +1302,17 @@ export const trafegoSessoes = pgTable("trafego_sessoes", {
   /** Identificadores de clique do anúncio (fbclid, gclid, gbraid, wbraid, ttclid). */
   clickIds: jsonb("click_ids").$type<Record<string, string>>().notNull().default({}),
   aparelho: text("aparelho", { enum: ["MOBILE", "DESKTOP", "TABLET"] }).notNull(),
+  /** Local aproximado pelo IP (D292): o IP em si nunca é gravado. */
+  cidade: text("cidade"),
+  uf: text("uf"),
+  pais: text("pais"),
+  /** Aparelho em detalhe (D292): sistema e versão, navegador (ou app de onde veio), modelo, tela, idioma e rede. */
+  sistema: text("sistema"),
+  navegador: text("navegador"),
+  modelo: text("modelo"),
+  tela: text("tela"),
+  idioma: text("idioma"),
+  rede: text("rede"),
   paginas: integer("paginas").notNull().default(1),
   whatsapp: boolean("whatsapp").notNull().default(false),
   cadastro: boolean("cadastro").notNull().default(false),

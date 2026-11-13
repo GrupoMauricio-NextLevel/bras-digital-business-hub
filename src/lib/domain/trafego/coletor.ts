@@ -4,6 +4,8 @@ import { trafegoDiario, trafegoEventos, trafegoSessoes } from "@/db/schema";
 import type { BrandCode } from "@/lib/brand";
 import { newId } from "@/lib/ids";
 import { CLICK_IDS, canalDe, type Canal } from "@/lib/trafego/canal";
+import { limparExtras, modeloDe, navegadorDe, sistemaDe } from "@/lib/trafego/dispositivo";
+import type { Local } from "@/lib/trafego/geo";
 import { type Actor, requireMasterFn } from "../access";
 import { aparelhoDe, diaDeBrasilia } from "../visitas";
 
@@ -27,6 +29,10 @@ export type Sinal = {
   brand: BrandCode; visitanteId: string; sessaoId: string | null; tipo: TipoSinal; caminho: string;
   /** Busca do endereço da página (`?utm_source=...`), só na abertura de página. */
   busca?: string | null; referrer?: string | null; hostProprio?: string | null; ua?: string | null;
+  /** Local aproximado já calculado pelo IP (o IP não chega aqui). */
+  local?: Local | null;
+  /** Tela, idioma, modelo e versão informados pelo navegador. */
+  extras?: unknown;
 };
 
 /** Origem da sessão a partir do endereço de entrada e do site de onde veio. */
@@ -43,6 +49,11 @@ export function origemDaEntrada(busca: string | null | undefined, referrer: stri
   const utm = { utmSource: etiqueta(get("utm_source")), utmMedium: etiqueta(get("utm_medium")), utmCampaign: etiqueta(get("utm_campaign")), utmContent: etiqueta(get("utm_content")), utmTerm: etiqueta(get("utm_term")) };
   const canal = canalDe({ utm_source: utm.utmSource, utm_medium: utm.utmMedium, ref: ref && /^[A-Za-z0-9_-]{3,24}$/.test(ref) ? ref : null, ...clickIds, referrer: refHost, hostProprio: proprio });
   return { ...utm, clickIds, refHost: refHost || null, canal };
+}
+
+function detalheDoAparelho(s: Sinal) {
+  const x = limparExtras(s.extras);
+  return { sistema: sistemaDe(s.ua, x.versaoSistema), navegador: navegadorDe(s.ua), modelo: modeloDe(s.ua, x.modelo), tela: x.tela, idioma: x.idioma, rede: x.rede };
 }
 
 /** Registra um sinal. Devolve a sessão (nova ou a mesma) ou null quando não há o que fazer (sinal de presença sem sessão viva). */
@@ -78,6 +89,7 @@ export async function registrarSinal(db: Database, s: Sinal, agora = new Date())
     id, visitanteId: s.visitanteId, brand: s.brand, iniciadaEm: agoraIso, ultimoSinalEm: agoraIso, paginaEntrada: caminho, paginaAtual: caminho,
     canal: o.canal, utmSource: o.utmSource, utmMedium: o.utmMedium, utmCampaign: o.utmCampaign, utmContent: o.utmContent, utmTerm: o.utmTerm,
     refHost: o.refHost, clickIds: o.clickIds, aparelho: aparelhoDe(s.ua),
+    ...detalheDoAparelho(s), cidade: s.local?.cidade ?? null, uf: s.local?.uf ?? null, pais: s.local?.pais ?? null,
   });
   await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: id, tipo: "PAGE_VIEW", caminho, criadoEm: agoraIso });
   return { sessaoId: id, nova: true };
@@ -104,14 +116,23 @@ const contar = <K extends string>(itens: K[]): Contagem<K> => {
   for (const k of itens) m.set(k, (m.get(k) ?? 0) + 1);
   return [...m].map(([chave, total]) => ({ chave, total })).sort((a, b) => b.total - a.total);
 };
+/** "Campinas/SP", "Brasil", "Exterior (US)" ou "Não identificado". */
+export function nomeDoLocal(l: { cidade: string | null; uf: string | null; pais: string | null }): string {
+  if (l.pais && l.pais !== "BR") return `Exterior (${l.pais})`;
+  if (l.cidade) return l.uf ? `${l.cidade}/${l.uf}` : l.cidade;
+  if (l.uf) return `${l.uf} (cidade não identificada)`;
+  return l.pais === "BR" ? "Brasil (cidade não identificada)" : "Não identificado";
+}
+
 /** Começo do dia de Brasília em UTC. */
 const inicioDoDia = (agora: Date) => new Date(`${diaDeBrasilia(agora)}T03:00:00.000Z`).toISOString();
 
 export type AgoraNoSite = {
   em: string;
   agora: number;
-  porCanal: Contagem<Canal>; porPagina: Contagem<string>; porAparelho: Contagem<string>; porMarca: Contagem<string>;
-  entradas: { id: string; quando: string; canal: Canal; campanha: string | null; peca: string | null; entrada: string; atual: string; paginas: number; aparelho: string; brand: string; ativa: boolean; whatsapp: boolean; cadastro: boolean; lead: boolean }[];
+  porCanal: Contagem<Canal>; porPagina: Contagem<string>; porAparelho: Contagem<string>; porMarca: Contagem<string>; porCidade: Contagem<string>;
+  entradas: { id: string; quando: string; canal: Canal; campanha: string | null; peca: string | null; entrada: string; atual: string; paginas: number; aparelho: string; brand: string; ativa: boolean; whatsapp: boolean; cadastro: boolean; lead: boolean;
+    cidade: string | null; uf: string | null; pais: string | null; sistema: string | null; navegador: string | null; modelo: string | null; tela: string | null; rede: string | null }[];
   marcos: { quando: string; tipo: "CLIQUE_WHATSAPP" | "INICIO_CADASTRO" | "LEAD"; caminho: string; canal: Canal; campanha: string | null }[];
   hoje: { sessoes: number; whatsapp: number; cadastros: number; leads: number };
 };
@@ -121,7 +142,7 @@ export async function agoraNoSite(db: Database, actor: Actor, agora = new Date()
   const limiteAgora = minutosAtras(agora, AGORA_MIN);
   const umaHora = minutosAtras(agora, 60);
   const [vivas, entradas, marcos, [hoje]] = await Promise.all([
-    db.select({ canal: trafegoSessoes.canal, pagina: trafegoSessoes.paginaAtual, aparelho: trafegoSessoes.aparelho, brand: trafegoSessoes.brand })
+    db.select({ canal: trafegoSessoes.canal, pagina: trafegoSessoes.paginaAtual, aparelho: trafegoSessoes.aparelho, brand: trafegoSessoes.brand, cidade: trafegoSessoes.cidade, uf: trafegoSessoes.uf, pais: trafegoSessoes.pais })
       .from(trafegoSessoes).where(gte(trafegoSessoes.ultimoSinalEm, limiteAgora)).limit(5000),
     db.select().from(trafegoSessoes).where(gte(trafegoSessoes.iniciadaEm, umaHora)).orderBy(desc(trafegoSessoes.iniciadaEm)).limit(20),
     db.select({ quando: trafegoEventos.criadoEm, tipo: trafegoEventos.tipo, caminho: trafegoEventos.caminho, canal: trafegoSessoes.canal, campanha: trafegoSessoes.utmCampaign })
@@ -139,14 +160,15 @@ export async function agoraNoSite(db: Database, actor: Actor, agora = new Date()
     porPagina: contar(vivas.map((v) => v.pagina)).slice(0, 8),
     porAparelho: contar(vivas.map((v) => v.aparelho)),
     porMarca: contar(vivas.map((v) => v.brand)),
-    entradas: entradas.map((e) => ({ id: e.id, quando: new Date(e.iniciadaEm).toISOString(), canal: e.canal as Canal, campanha: e.utmCampaign, peca: e.utmContent, entrada: e.paginaEntrada, atual: e.paginaAtual, paginas: e.paginas, aparelho: e.aparelho, brand: e.brand, ativa: new Date(e.ultimoSinalEm).getTime() >= new Date(limiteAgora).getTime(), whatsapp: e.whatsapp, cadastro: e.cadastro, lead: e.lead })),
+    porCidade: contar(vivas.map((v) => nomeDoLocal(v))).slice(0, 8),
+    entradas: entradas.map((e) => ({ id: e.id, quando: new Date(e.iniciadaEm).toISOString(), canal: e.canal as Canal, campanha: e.utmCampaign, peca: e.utmContent, entrada: e.paginaEntrada, atual: e.paginaAtual, paginas: e.paginas, aparelho: e.aparelho, brand: e.brand, ativa: new Date(e.ultimoSinalEm).getTime() >= new Date(limiteAgora).getTime(), whatsapp: e.whatsapp, cadastro: e.cadastro, lead: e.lead, cidade: e.cidade, uf: e.uf, pais: e.pais, sistema: e.sistema, navegador: e.navegador, modelo: e.modelo, tela: e.tela, rede: e.rede })),
     marcos: marcos.map((m) => ({ quando: new Date(m.quando).toISOString(), tipo: m.tipo as AgoraNoSite["marcos"][number]["tipo"], caminho: m.caminho, canal: m.canal as Canal, campanha: m.campanha })),
     hoje: { sessoes: Number(hoje?.sessoes ?? 0), whatsapp: Number(hoje?.whatsapp ?? 0), cadastros: Number(hoje?.cadastros ?? 0), leads: Number(hoje?.leads ?? 0) },
   };
 }
 
 export type LinhaOrigem = { canal: Canal; sessoes: number; anteriores: number; paginas: number; whatsapp: number; cadastros: number; leads: number };
-export type Origens = { dias: number; desde: string; linhas: LinhaOrigem[]; campanhas: { canal: Canal; campanha: string; sessoes: number; whatsapp: number; cadastros: number; leads: number }[]; total: Omit<LinhaOrigem, "canal"> };
+export type Origens = { dias: number; desde: string; linhas: LinhaOrigem[]; cidades: { local: string; sessoes: number; leads: number }[]; campanhas: { canal: Canal; campanha: string; sessoes: number; whatsapp: number; cadastros: number; leads: number }[]; total: Omit<LinhaOrigem, "canal"> };
 
 /** Origens por canal no período (7, 30 ou 90 dias), com o período anterior para comparar e as campanhas que mais trouxeram. */
 export async function origensPorCanal(db: Database, actor: Actor, dias: 7 | 30 | 90, agora = new Date(), filtro: { brand?: BrandCode } = {}): Promise<Origens> {
@@ -159,12 +181,14 @@ export async function origensPorCanal(db: Database, actor: Actor, dias: 7 | 30 |
     whatsapp: sql<number>`count(*) filter (where ${trafegoSessoes.whatsapp})`, cadastros: sql<number>`count(*) filter (where ${trafegoSessoes.cadastro})`,
     leads: sql<number>`count(*) filter (where ${trafegoSessoes.lead})`,
   };
-  const [atual, anterior, campanhas] = await Promise.all([
+  const [atual, anterior, campanhas, cidades] = await Promise.all([
     db.select({ canal: trafegoSessoes.canal, ...somas }).from(trafegoSessoes).where(and(gte(trafegoSessoes.iniciadaEm, desde), marca)).groupBy(trafegoSessoes.canal),
     db.select({ canal: trafegoSessoes.canal, sessoes: sql<number>`count(*)` }).from(trafegoSessoes).where(and(gte(trafegoSessoes.iniciadaEm, antes), lt(trafegoSessoes.iniciadaEm, desde), marca)).groupBy(trafegoSessoes.canal),
     db.select({ canal: trafegoSessoes.canal, campanha: trafegoSessoes.utmCampaign, ...somas }).from(trafegoSessoes)
       .where(and(gte(trafegoSessoes.iniciadaEm, desde), sql`${trafegoSessoes.utmCampaign} is not null`, marca)).groupBy(trafegoSessoes.canal, trafegoSessoes.utmCampaign)
       .orderBy(desc(sql`count(*)`)).limit(15),
+    db.select({ cidade: trafegoSessoes.cidade, uf: trafegoSessoes.uf, pais: trafegoSessoes.pais, sessoes: somas.sessoes, leads: somas.leads }).from(trafegoSessoes)
+      .where(and(gte(trafegoSessoes.iniciadaEm, desde), marca)).groupBy(trafegoSessoes.cidade, trafegoSessoes.uf, trafegoSessoes.pais).orderBy(desc(sql`count(*)`)).limit(15),
   ]);
   const prev = new Map(anterior.map((a) => [a.canal, Number(a.sessoes)]));
   const canais = new Set([...atual.map((a) => a.canal), ...prev.keys()]);
@@ -173,7 +197,7 @@ export async function origensPorCanal(db: Database, actor: Actor, dias: 7 | 30 |
     return { canal: c as Canal, sessoes: Number(a?.sessoes ?? 0), anteriores: prev.get(c) ?? 0, paginas: Number(a?.paginas ?? 0), whatsapp: Number(a?.whatsapp ?? 0), cadastros: Number(a?.cadastros ?? 0), leads: Number(a?.leads ?? 0) };
   }).sort((x, y) => y.sessoes - x.sessoes || y.anteriores - x.anteriores);
   const total = linhas.reduce((t, l) => ({ sessoes: t.sessoes + l.sessoes, anteriores: t.anteriores + l.anteriores, paginas: t.paginas + l.paginas, whatsapp: t.whatsapp + l.whatsapp, cadastros: t.cadastros + l.cadastros, leads: t.leads + l.leads }), { sessoes: 0, anteriores: 0, paginas: 0, whatsapp: 0, cadastros: 0, leads: 0 });
-  return { dias, desde, linhas, total, campanhas: campanhas.map((c) => ({ canal: c.canal as Canal, campanha: c.campanha!, sessoes: Number(c.sessoes), whatsapp: Number(c.whatsapp), cadastros: Number(c.cadastros), leads: Number(c.leads) })) };
+  return { dias, desde, linhas, total, cidades: cidades.map((c) => ({ local: nomeDoLocal(c), sessoes: Number(c.sessoes), leads: Number(c.leads) })), campanhas: campanhas.map((c) => ({ canal: c.canal as Canal, campanha: c.campanha!, sessoes: Number(c.sessoes), whatsapp: Number(c.whatsapp), cadastros: Number(c.cadastros), leads: Number(c.leads) })) };
 }
 
 /**

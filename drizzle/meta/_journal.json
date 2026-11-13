@@ -666,6 +666,13 @@
       "when": 1794548511980,
       "tag": "0094_trafego_sessoes",
       "breakpoints": true
+    },
+    {
+      "idx": 95,
+      "version": "7",
+      "when": 1794549591478,
+      "tag": "0095_trafego_local_aparelho",
+      "breakpoints": true
     }
   ]
 }
