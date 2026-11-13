@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,10 +8,10 @@ import { IntegracoesCompleto } from "@/components/portal/commerce/integracoes";
 import { totalDeIntegracoes } from "@/lib/marcas/integracoes-publicas";
 import "@/components/portal/commerce/commerce.css";
 
-export const metadata: Metadata = {
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/integracoes", {
   title: "Integrações",
   description: "Mercado Pago, Melhor Envio, Frenet, Correios com contrato, Google, Meta, TikTok, Tiny, Omie e mais: o que a loja conecta hoje e o que você precisa para ligar.",
-};
+});
 
 /** Integrações da NextLevel Commerce (D192): só o que já existe, com o que o lojista faz para ligar. */
 export default async function IntegracoesPage() {

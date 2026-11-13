@@ -1,26 +1,43 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import { FAQ as FAQ_ALL } from "../content";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
+import { getDb } from "@/db/client";
+import { commercePlansView } from "@/lib/domain/commerce-plans";
+import { beneficiosPorPlano, NOME_PLANO_BENEFICIO, PLANOS_BENEFICIO } from "@/lib/domain/beneficios-plano";
+import { LIMITES_ATACADO } from "@/lib/domain/atacado";
+import { faqCommerce, faqJsonLd } from "@/lib/seo/faq-commerce";
+import { JsonLd } from "@/components/portal/json-ld";
 
-const FAQ_COMMERCE = [
-  { q: "O que é a NextLevel Commerce?", a: "Uma plataforma de lojas virtuais da NextLevel Marketing, feita para quem vende moda no Brasil: temas bonitos, Pix e cartão, pedidos organizados e uma equipe que ajuda na implantação." },
-  { q: "Como abro a minha loja?", a: "Deixe seus dados em \"Quero minha loja\". A equipe fala com você pelo WhatsApp, importa os seus produtos por planilha, escolhe o tema com você e publica a loja." },
-  { q: "Como recebo dos clientes?", a: "Pelo Mercado Pago, com Pix como padrão e cartão em até 6x. O pagamento é conferido automaticamente." },
-  { q: "Posso ter meu domínio e minha marca?", a: "Sim, no plano de loja própria você usa o seu domínio, sua logo e suas cores." },
-  { q: "E o atacado?", a: "Está em construção e chega em etapas. Quem entra agora acompanha a evolução e ajuda a priorizar." },
-];
+export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "Perguntas frequentes" };
+/** Fatos do sistema para as perguntas da Commerce (D293): planos e oferta do Master, benefícios e limites do atacado. */
+async function perguntasCommerce() {
+  const db = await getDb();
+  const [pv, beneficios] = await Promise.all([commercePlansView(db), beneficiosPorPlano(db)]);
+  return faqCommerce({
+    diasDeTeste: pv.offer?.trialDays ?? null,
+    planos: PLANOS_BENEFICIO.map((key) => {
+      const p = pv.plans.find((x) => x.key === key);
+      const b = beneficios[key];
+      return { nome: NOME_PLANO_BENEFICIO[key], mensalCents: p?.monthlyCents ?? null, taxaBps: p?.feeBps ?? null, suporte: b.suporte, migracao: b.migracao, faixasAtacado: LIMITES_ATACADO[key].faixas, produtos: b.produtos };
+    }),
+  });
+}
+
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/faq", { title: "Perguntas frequentes" });
 
 export default async function Faq() {
   const brand = await getBrand();
-  const FAQ = brandHas(brand, "dropship") ? FAQ_ALL : FAQ_COMMERCE;
+  const commerce = brand.code === "NEXTLEVEL_COMMERCE";
+  const FAQ = commerce ? await perguntasCommerce() : brandHas(brand, "dropship") ? FAQ_ALL : [];
   return (
     <>
-    {brand.code === "NEXTLEVEL_COMMERCE" ? <CabecalhoTech rotulo="Dúvidas" titulo={<>Perguntas <em>frequentes</em></>} texto="As respostas diretas sobre loja, pagamento, planos e atendimento. Não achou? A equipe responde no WhatsApp." /> : null}
+    {commerce ? <JsonLd data={faqJsonLd(FAQ)} /> : null}
+    {commerce ? <CabecalhoTech rotulo="Dúvidas" titulo={<>Perguntas <em>frequentes</em></>} texto="As respostas diretas sobre loja, pagamento, planos e atendimento. Não achou? A equipe responde no WhatsApp." /> : null}
     <div className="mx-auto max-w-3xl px-4 py-16">
       {brand.code === "NEXTLEVEL_COMMERCE" ? null : <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Perguntas frequentes</h1>}
       <div className="ec-perguntas mt-8 space-y-3">{FAQ.map((f) => <details key={f.q} className="rounded-xl border border-border p-4"><summary className="cursor-pointer font-semibold">{f.q}</summary><p className="mt-2 text-muted-foreground">{f.a}</p></details>)}</div>

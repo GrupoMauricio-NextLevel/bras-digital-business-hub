@@ -1,9 +1,10 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getBrand } from "@/lib/brand-server";
 import { CalcFreteGratis, CalcPreco } from "@/components/ferramentas/calculadoras";
 
-export const metadata: Metadata = { title: "Calculadoras para quem vende online", description: "Calcule o preço com margem e a partir de qual valor oferecer frete grátis. Grátis, sem cadastro." };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/ferramentas", { title: "Calculadoras para quem vende online", description: "Calcule o preço com margem e a partir de qual valor oferecer frete grátis. Grátis, sem cadastro." });
 
 /** Calculadoras públicas (W5, D188, decisão 5 de D182): preço com margem e frete grátis. Sem cadastro e sem promessa. */
 export default async function FerramentasPublicas() {

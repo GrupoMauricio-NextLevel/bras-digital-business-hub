@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -13,7 +14,7 @@ import "@/components/portal/commerce/commerce.css";
 import "@/components/imersiva/imersiva.css";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "NextLevel Commerce ou outra plataforma? Comparativo", description: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel Commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data.", alternates: { canonical: "/comparativo" } };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/comparativo", { title: "NextLevel Commerce ou outra plataforma? Comparativo", description: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel Commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data.", alternates: { canonical: "/comparativo" } });
 
 const pct = (bps: number | null) => (bps === null ? "não divulga" : `${(bps / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`);
 const FAIXAS = [300_000, 1_000_000, 3_000_000, 5_000_000, 10_000_000, 20_000_000];

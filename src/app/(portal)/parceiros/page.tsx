@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -14,11 +15,11 @@ import { FaixaMarca } from "@/components/portal/marca-institucional";
 import { ParceirosEc } from "@/components/portal/commerce/parceiros/parceiros-ec";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/parceiros", {
   title: { absolute: "Programa de Parceiros · Tenha um negócio próprio vendendo tecnologia" },
   description: "Indique lojas e receba comissão sobre o setup e sobre as mensalidades. Cadastro gratuito, links rastreáveis, cupons de 7 dias e painel financeiro com saque.",
   alternates: { canonical: "/parceiros" },
-};
+});
 const btn = "inline-flex h-12 items-center justify-center gap-2 rounded-lg px-6 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2";
 
 const STEPS = [

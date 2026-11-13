@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
+  if (brand.code === "NEXTLEVEL_COMMERCE") return metadadosDaPagina("/quero-minha-loja");
   return { title: "Quero minha loja", description: `Deixe seus dados e a equipe da ${brand.name} ajuda você a abrir a sua loja virtual.` };
 }
 

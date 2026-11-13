@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import { ogImageFor } from "@/lib/og-marca";
 import { BDC } from "@/lib/marcas/bras-digital-club";
@@ -20,6 +21,7 @@ import { SuperDropHomeV4 } from "@/components/portal/superdrop/home-v4";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
+  if (brand.code === "NEXTLEVEL_COMMERCE") return metadadosDaPagina("/");
   // Brás Digital Club (D158): prévia de link do pacote da marca (`ogImageFor`) e sem endereço canônico até a extensão do
   // domínio definitivo ser confirmada (o nome-base é brasdigitalclub). As outras marcas não mudam.
   const closed = isClosedCommerceBrand(brand);
