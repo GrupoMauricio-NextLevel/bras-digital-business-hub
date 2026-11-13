@@ -3524,3 +3524,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **DNS:** os MX e o SPF da raiz são da Hostinger, e o envio do Resend fica no subdomínio `send`, sem conflito. O DMARC fica em `p=none` por 2 a 4 semanas, depois sobe para `quarantine`.
 - **Depois:** um webhook do "Correio Agêntico" da Hostinger transforma e-mails de `suporte@` em atendimentos no Master.
 
+
+## D290 — [E-commerce] Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow (2026-11-14)
+- **Pedido do dono:** começar o plano v3 de busca, IA e Academy (`docs/prompts/busca-ia-academy-funil-organico.md`). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos.
+- **Tabela central** (`src/lib/seo/paginas.ts`): título, descrição, canonical, prévia de link (Open Graph e cartão do X), prioridade e data de revisão de cada uma das 20 páginas públicas da Commerce. As páginas usam `metadadosDaPagina` (`src/lib/seo/metadados.ts`); nas outras marcas fica o que já havia.
+- **Textos vencidos corrigidos:**
+  - a frase da marca dizia "em breve, atacado" e "feita para quem vende moda"; agora é "Loja virtual para varejo e atacado", com o atacado em todos os planos;
+  - `/planos` e `/cadastro` falavam em "teste 7 dias com cupom", e `/parceiros` em "comissão sobre o setup" e "cupons de 7 dias";
+  - `/faq`, `/termos` e `/privacidade` repetiam a descrição da home e não tinham canonical.
+- **Perguntas frequentes** (`src/lib/seo/faq-commerce.ts`): 12 perguntas montadas com os fatos do sistema (planos e oferta do Master, benefícios por plano, faixas do atacado), com `FAQPage` igual ao texto visível. Uma resposta só aparece quando o fato vale (sem taxa zero, sem teste ou sem preço, a pergunta some). Saiu "o atacado está em construção".
+- **Sitemap:** todas as páginas da tabela (antes faltavam comparativo, recursos, integrações, ferramentas, clientes, perguntas e as subpáginas de parceiros), com a data da última revisão real; temas sem data, para não inventar.
+- **robots.txt:** os robôs de busca e de IA aparecem por nome (Google, Bing, ChatGPT, Perplexity, Claude, Apple, Meta, Mistral, DuckDuckGo), todos liberados nas páginas públicas, inclusive para treino; os painéis seguem bloqueados.
+- **Entidade na home** (`src/lib/seo/entidade.ts`): organização com a empresa (NextLevel Marketing Ltda e CNPJ), logo, contato (WhatsApp e e-mail do suporte), cidade, site e os planos em reais vindos do catálogo. Os perfis oficiais (`sameAs`) entram quando o dono informar a variável `PERFIS_COMMERCE` (endereços https separados por vírgula).
+- **IndexNow:** chave pública em `public/<chave>.txt` e `node scripts/indexnow.mjs` depois de cada publicação que mude páginas públicas (avisa Bing, Yandex e outros; o Bing alimenta o Copilot).
+- **Fica com o dono:** verificar `nextlevelcommerce.com.br` no Google Search Console (propriedade de domínio, registro TXT na Hostinger) e no Bing Webmaster (importa do Google), enviar o sitemap e pedir a mudança de endereço a partir de `lojas.nextlevelgroup.com.br`.
+- **Teste:** `tests/seo-paginas.test.ts` (títulos e descrições únicos, no tamanho certo e sem texto vencido; toda página com linha na tabela; sitemap; robôs; chave do IndexNow; perguntas só com fatos válidos; entidade).

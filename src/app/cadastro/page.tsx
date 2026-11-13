@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import { ApoioEquipe } from "@/components/portal/equipe/blocos";
 import type { Metadata } from "next";
 import { nomePlanoEc } from "@/lib/marcas/nextlevel-ecommerce";
@@ -26,6 +27,7 @@ import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getBrand();
   if (isClosedCommerceBrand(brand)) return { title: "Cadastro grátis de lojista", description: "Cadastre a sua empresa com CNPJ e veja preço e estoque em caixa fechada das importadoras do Brás." };
+  if (brand.code === "NEXTLEVEL_COMMERCE") return metadadosDaPagina("/cadastro");
   return { title: "Criar minha loja", description: "Escolha o plano, pague por Pix e comece a vender. Com o cupom do seu fornecedor, teste 7 dias sem cartão." };
 }
 export const dynamic = "force-dynamic";

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 290,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: começar o plano v3 de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos."
+ },
+ {
   "numero": 289,
   "frente": "Grupo",
   "titulo": "Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo",
@@ -271,12 +278,5 @@
   "titulo": "PV1 + PV3: CRM de parceiros no Master (funil, ficha 360, fila, ranking, segmentos, aviso e desafio do mês)",
   "data": "2026-11-05",
   "resumo": "Dados (migração 0082): partner_profiles: região, canais, seguidores, quem cuida, etapa manual, próxima ação e data;"
- },
- {
-  "numero": 250,
-  "frente": null,
-  "titulo": "Parceiro sem cliente por 6 meses fica Inativo; plano do atacado registrado",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Pode ligar\" a requalificação da D249."
  }
 ]

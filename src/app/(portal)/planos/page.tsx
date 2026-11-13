@@ -1,3 +1,4 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import { BlocoEquipe } from "@/components/portal/equipe/blocos";
 import { groupLink } from "@/lib/brand-server";
 import type { Metadata } from "next";
@@ -17,7 +18,7 @@ import { finFlag } from "@/lib/finance/flags";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Planos", description: "Planos para quem vende: assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom." };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/planos", { title: "Planos", description: "Planos para quem vende: assine por Pix, acesso liberado na hora, ou teste 7 dias com cupom." });
 
 export default async function Planos() {
   const brand = await getBrand();

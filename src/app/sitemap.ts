@@ -6,6 +6,7 @@ import { finFlag } from "@/lib/finance/flags";
 import { listCatalog } from "@/lib/domain/nl-catalog";
 import { groupSiteUrl } from "@/lib/host-routing";
 import { robotsPlan, sitemapPaths } from "@/lib/seo-marca";
+import { paginaCommerce } from "@/lib/seo/paginas";
 import { THEME_CATALOG } from "@/lib/themes/catalog";
 
 export const dynamic = "force-dynamic";
@@ -23,5 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const solutions = holding && publicSolutions ? await listCatalog(await getDb()).then((l) => l.filter((i) => i.audience.includes("PUBLIC") && i.family !== "TEMA").map((i) => i.slug)).catch(() => []) : [];
   const themes = THEME_CATALOG.filter((t) => t.release === "released").map((t) => t.key);
   const base = holding ? groupSiteUrl() : brand.baseUrl;
-  return sitemapPaths(brand, { themes, solutions, publicSolutions }).map((p) => ({ url: `${base}${p === "/" ? "" : p}`, changeFrequency: "weekly", priority: p === "/" || p === "/solucoes" ? 1 : 0.6 }));
+  const commerce = brand.code === "NEXTLEVEL_COMMERCE";
+  return sitemapPaths(brand, { themes, solutions, publicSolutions }).map((p) => {
+    // Commerce (D290): prioridade e data da última revisão real vêm da tabela central; temas ficam sem data (sem data falsa).
+    const linha = commerce ? paginaCommerce(p) : undefined;
+    return { url: `${base}${p === "/" ? "" : p}`, changeFrequency: "weekly", priority: linha?.prioridade ?? (p === "/" || p === "/solucoes" ? 1 : 0.6), ...(linha ? { lastModified: linha.revisadoEm } : {}) };
+  });
 }

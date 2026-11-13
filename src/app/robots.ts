@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 import { HOLDING_CODE, brandOfHostStrict } from "@/lib/brand";
 import { groupSiteUrl } from "@/lib/host-routing";
-import { robotsPlan } from "@/lib/seo-marca";
+import { ROBOS_DE_IA, robotsPlan } from "@/lib/seo-marca";
 
 export const dynamic = "force-dynamic";
 
@@ -15,5 +15,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const plan = robotsPlan({ brand, office });
   if (!plan.index || !brand) return { rules: { userAgent: "*", disallow: "/" } };
   const base = brand.code === HOLDING_CODE ? groupSiteUrl() : brand.baseUrl;
-  return { rules: { userAgent: "*", allow: plan.allow, disallow: plan.disallow }, sitemap: `${base}/sitemap.xml` };
+  // Os robôs de busca e de IA aparecem por nome (D290), com as mesmas regras: deixa explícito que as páginas públicas estão liberadas.
+  return { rules: [{ userAgent: "*", allow: plan.allow, disallow: plan.disallow }, { userAgent: [...ROBOS_DE_IA], allow: plan.allow, disallow: plan.disallow }], sitemap: `${base}/sitemap.xml` };
 }

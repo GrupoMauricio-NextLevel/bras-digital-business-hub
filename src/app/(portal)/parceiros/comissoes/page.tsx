@@ -1,10 +1,11 @@
+import { metadadosDaPagina } from "@/lib/seo/metadados";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireBrandFeature } from "@/lib/brand-server";
 import { ComissoesEc } from "@/components/portal/commerce/parceiros/comissoes-ec";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: { absolute: "Comissões e bônus por produção: Programa de Parceiros da NextLevel Commerce" }, description: "Comissão em toda mensalidade enquanto o lojista pagar, bônus por produção na semana e no mês, garantia, saque por Pix sem nota fiscal: a regra completa, com os números de hoje.", alternates: { canonical: "/parceiros/comissoes" } };
+export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/parceiros/comissoes", { title: { absolute: "Comissões e bônus por produção: Programa de Parceiros da NextLevel Commerce" }, description: "Comissão em toda mensalidade enquanto o lojista pagar, bônus por produção na semana e no mês, garantia, saque por Pix sem nota fiscal: a regra completa, com os números de hoje.", alternates: { canonical: "/parceiros/comissoes" } });
 
 /** Página pública de comissões e bônus (D272, pedido do dono). Só na Commerce. */
 export default async function Page() {
