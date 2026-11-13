@@ -1278,6 +1278,59 @@ export const linksCliquesDiarios = pgTable("links_cliques_diarios", {
   robos: integer("robos").notNull().default(0),
 }, (t) => [primaryKey({ columns: [t.linkId, t.dia] })]);
 
+/**
+ * Medição própria do site (TR2, D291): uma sessão por visita (30 min sem sinal encerra), com canal e origem calculados na
+ * entrada. Sem IP, sem nome: o visitante é um código aleatório em cookie próprio. Só páginas públicas das marcas (nunca as
+ * lojas dos lojistas, D185) e só com a medição permitida no aviso de cookies (D290). Detalhe por 90 dias; depois, resumo.
+ */
+const BRAND_ENUM = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] as const;
+export const trafegoSessoes = pgTable("trafego_sessoes", {
+  id: id(),
+  visitanteId: text("visitante_id").notNull(),
+  brand: text("brand", { enum: BRAND_ENUM }).notNull(),
+  iniciadaEm: ts("iniciada_em").notNull().defaultNow(),
+  ultimoSinalEm: ts("ultimo_sinal_em").notNull().defaultNow(),
+  paginaEntrada: text("pagina_entrada").notNull(),
+  paginaAtual: text("pagina_atual").notNull(),
+  canal: text("canal").notNull(),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"),
+  utmTerm: text("utm_term"),
+  refHost: text("ref_host"),
+  /** Identificadores de clique do anúncio (fbclid, gclid, gbraid, wbraid, ttclid). */
+  clickIds: jsonb("click_ids").$type<Record<string, string>>().notNull().default({}),
+  aparelho: text("aparelho", { enum: ["MOBILE", "DESKTOP", "TABLET"] }).notNull(),
+  paginas: integer("paginas").notNull().default(1),
+  whatsapp: boolean("whatsapp").notNull().default(false),
+  cadastro: boolean("cadastro").notNull().default(false),
+  lead: boolean("lead").notNull().default(false),
+}, (t) => [index("trafego_sessoes_sinal_idx").on(t.ultimoSinalEm), index("trafego_sessoes_inicio_idx").on(t.iniciadaEm), index("trafego_sessoes_visitante_idx").on(t.visitanteId)]);
+
+/** Marcos da sessão: página aberta, clique no WhatsApp, início de cadastro, lead. O sinal "ainda aqui" não vira linha. */
+export const trafegoEventos = pgTable("trafego_eventos", {
+  id: id(),
+  sessaoId: text("sessao_id").notNull().references(() => trafegoSessoes.id, { onDelete: "cascade" }),
+  tipo: text("tipo", { enum: ["PAGE_VIEW", "CLIQUE_WHATSAPP", "INICIO_CADASTRO", "LEAD"] }).notNull(),
+  caminho: text("caminho").notNull(),
+  criadoEm: ts("criado_em").notNull().defaultNow(),
+}, (t) => [index("trafego_eventos_sessao_idx").on(t.sessaoId), index("trafego_eventos_criado_idx").on(t.criadoEm)]);
+
+/** Resumo por dia (13 meses), gerado antes de apagar o detalhe de 90 dias. */
+export const trafegoDiario = pgTable("trafego_diario", {
+  dia: text("dia").notNull(),
+  brand: text("brand", { enum: BRAND_ENUM }).notNull(),
+  canal: text("canal").notNull(),
+  campanha: text("campanha").notNull().default(""),
+  aparelho: text("aparelho").notNull(),
+  sessoes: integer("sessoes").notNull().default(0),
+  paginas: integer("paginas").notNull().default(0),
+  whatsapp: integer("whatsapp").notNull().default(0),
+  cadastros: integer("cadastros").notNull().default(0),
+  leads: integer("leads").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.brand, t.canal, t.campanha, t.aparelho] })]);
+
 export const brandLeads = pgTable("brand_leads", {
   id: id(),
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull(),

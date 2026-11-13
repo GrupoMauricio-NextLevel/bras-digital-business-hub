@@ -17,7 +17,7 @@ async function ator() {
 export async function criarLinkAction(input: z.input<typeof linkSchema>) {
   return runAction(async () => {
     const r = await criarLink(await getDb(), await ator(), input);
-    revalidatePath("/master/trafego");
+    revalidatePath("/master/trafego/links");
     return r;
   });
 }
@@ -25,7 +25,15 @@ export async function criarLinkAction(input: z.input<typeof linkSchema>) {
 export async function alterarLinkAction(id: string, patch: { ativo?: boolean; destino?: string; nota?: string | null }) {
   return runAction(async () => {
     await alterarLink(await getDb(), await ator(), id, patch);
-    revalidatePath("/master/trafego");
+    revalidatePath("/master/trafego/links");
     return undefined;
+  });
+}
+
+/** "Agora no site" (TR2, D291): a tela pede de novo a cada 10 s enquanto está aberta. */
+export async function agoraNoSiteAction() {
+  return runAction(async () => {
+    const { agoraNoSite } = await import("@/lib/domain/trafego/coletor");
+    return agoraNoSite(await getDb(), await ator());
   });
 }

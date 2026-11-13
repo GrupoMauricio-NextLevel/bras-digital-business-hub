@@ -141,7 +141,11 @@ export async function requestDiagnosticAction(input: Parameters<typeof requestDi
     const { headers } = await import("next/headers");
     const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
     if (!rateLimit(`diag:${ip}`, 5, 60_000)) throw new ForbiddenError("Muitos envios seguidos. Tente de novo em um minuto.");
-    return requestDiagnostic(await getDb(), input, await attribution());
+    const db = await getDb();
+    const r = await requestDiagnostic(db, input, await attribution());
+    const { marcarLeadDaVisita } = await import("@/lib/trafego/lead-na-sessao");
+    await marcarLeadDaVisita(db);
+    return r;
   });
 }
 

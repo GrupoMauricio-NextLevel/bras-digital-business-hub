@@ -1,5 +1,12 @@
 [
  {
+  "numero": 291,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR2: medição própria do site e \"Agora no site\" em tempo real",
+  "data": "2026-11-13",
+  "resumo": "Coletor próprio: as páginas públicas das marcas (nunca as lojas dos lojistas, D185, nem os painéis) mandam um sinal ao abrir cada página, um \"ainda aqui\" a cada 30 s com a aba visível, e marcam clique no WhatsApp e ida ao cadastro (/api/…"
+ },
+ {
   "numero": 290,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fases TR0 e TR1: aviso de cookies, origem completa e links rastreados",
@@ -271,12 +278,5 @@
   "titulo": "PV4: página de captação de parceiros; parceiro da E-commerce sem meta mensal; mapa para levar o padrão às marcas",
   "data": "2026-11-05",
   "resumo": "Página /parceiros da E-commerce: Seletor de perfil (criador, vendedor, agência) muda o título, a comissão, a escada, o simulador e a chamada, sem sair da página."
- },
- {
-  "numero": 251,
-  "frente": null,
-  "titulo": "PV1 + PV3: CRM de parceiros no Master (funil, ficha 360, fila, ranking, segmentos, aviso e desafio do mês)",
-  "data": "2026-11-05",
-  "resumo": "Dados (migração 0082): partner_profiles: região, canais, seguidores, quem cuida, etapa manual, próxima ação e data;"
  }
 ]

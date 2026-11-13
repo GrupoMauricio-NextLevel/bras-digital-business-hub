@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { resumirELimparTrafego } from "@/lib/domain/trafego/coletor";
 import { getDb } from "@/db/client";
 import { runDailyFinanceJobs } from "@/lib/domain/finance";
 import { expireStaleReservations } from "@/lib/domain/orders";
@@ -26,6 +27,8 @@ export async function GET(req: NextRequest) {
     { name: "sem saldo", run: () => expireUnfundedOrders(db) },
     { name: "resumo", run: () => sendDailySummary(db), summarize: (x: { recipients: number }) => `enviado a ${x.recipients}` },
     { name: "ativação Commerce", run: () => lembretesDeAtivacao(db), summarize: (x: { enviados: number }) => `lembretes ${x.enviados}` },
+    // TR2 (D291): visitas com mais de 90 dias viram resumo diário; o detalhe sai.
+    { name: "tráfego", run: () => resumirELimparTrafego(db), summarize: (x: { resumidas: number; diasApagados: number }) => `resumidas ${x.resumidas}, resumos antigos apagados ${x.diasApagados}` },
   ]);
   return NextResponse.json({ ok: r.ok, ...r.results, failed: r.failed }, { status: r.ok ? 200 : 207 });
 }

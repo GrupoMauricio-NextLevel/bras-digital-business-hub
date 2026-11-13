@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290) e TR2 (D291): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */
@@ -63,7 +63,7 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
   await p.goto(B + "/login", { waitUntil: "networkidle" });
   await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
   await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
-  await p.goto(B + "/master/trafego", { waitUntil: "networkidle" });
+  await p.goto(B + "/master/trafego/links", { waitUntil: "networkidle" });
   const cod = `bio-${Date.now().toString(36).slice(-4)}`;
   await p.getByLabel("Página de destino").fill("/planos");
   await p.getByLabel("Origem (utm_source)").fill("instagram");
@@ -90,6 +90,54 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
   await noScroll(p, "master trafego 360");
   await shot(p, "04-master-trafego-celular");
   await ctx.close();
+}
+
+// 3) TR2: visitas de canais diferentes aparecem em "Agora no site" sem recarregar; WhatsApp e lead viram marcos.
+{
+  const m = await b.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/trafego", { waitUntil: "networkidle" });
+  const antes = Number((await p.getByLabel("Pessoas no site agora").locator("p.text-5xl").textContent())?.match(/\d+/)?.[0] ?? 0);
+  const visitantes = [];
+  for (const [url, ref, vp] of [
+    [`${B}/?utm_source=meta&utm_medium=pago&utm_campaign=2026-12-cadastro-teste3dias&utm_content=video-dor-direct-v1&fbclid=IwAR9`, undefined, { width: 390, height: 844 }],
+    [`${B}/planos`, "https://www.google.com/", { width: 1280, height: 800 }],
+    [`${B}/temas?utm_source=instagram&utm_medium=reels&utm_campaign=2026-12-organico&utm_content=reel-1`, undefined, { width: 390, height: 844 }],
+  ]) {
+    const c = await b.newContext({ viewport: vp, userAgent: vp.width < 500 ? UA : UA.replace("Linux; Android 14", "Windows NT 10.0; Win64; x64").replace(" Mobile", "") });
+    const v = await c.newPage();
+    await v.goto(`${B}/lojas`, { waitUntil: "networkidle" });
+    await v.goto(url, { waitUntil: "networkidle", referer: ref });
+    await v.waitForTimeout(800);
+    visitantes.push([c, v]);
+  }
+  // O primeiro visitante (anúncio da Meta) clica no WhatsApp.
+  const [, v1] = visitantes[0];
+  const zap = v1.getByRole("link", { name: "Falar no WhatsApp" });
+  if (await zap.count()) { await v1.evaluate(() => { const a = document.querySelector('a[aria-label="Falar no WhatsApp"]'); a?.addEventListener("click", (e) => e.preventDefault(), { once: true }); a?.click(); }); await v1.waitForTimeout(800); }
+  await p.waitForFunction((n) => Number(document.querySelector('[aria-label="Pessoas no site agora"] p.text-5xl')?.textContent?.match(/\d+/)?.[0] ?? 0) >= n + 3, antes, { timeout: 25000 }).then(() => ok("3 visitas novas apareceram em Agora sem recarregar"), () => fail("Agora no site não atualizou sozinho"));
+  const espera = (re, msg) => p.waitForFunction((src) => new RegExp(src).test(document.querySelector("main")?.textContent ?? ""), re.source, { timeout: 25000 }).then(() => ok(msg), () => fail(`não apareceu: ${msg}`));
+  await espera(/Anúncio Meta/, "canal Anúncio Meta");
+  await espera(/Busca do Google/, "canal Busca do Google (chegou do Google no meio da visita)");
+  await espera(/Instagram \(orgânico\)/, "canal Instagram (orgânico)");
+  await espera(/2026-12-cadastro-teste3dias/, "campanha do anúncio na entrada");
+  if (await zap.count()) await espera(/Clicou no WhatsApp/, "clique no WhatsApp virou momento importante");
+  await shot(p, "05-master-agora-no-site");
+  const v = await axe(p); if (v.length) fail(`axe agora: ${v.join(" | ")}`); else ok("axe sem violações graves em Agora no site");
+  await p.goto(B + "/master/trafego/origens?dias=7", { waitUntil: "networkidle" });
+  if (/2026-12-cadastro-teste3dias/.test(await p.locator("main").textContent())) ok("Origens mostra a campanha"); else fail("Origens sem a campanha");
+  await shot(p, "06-master-origens");
+  const v2 = await axe(p); if (v2.length) fail(`axe origens: ${v2.join(" | ")}`); else ok("axe sem violações graves em Origens");
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.goto(B + "/master/trafego", { waitUntil: "networkidle" });
+  await noScroll(p, "agora 360");
+  await p.goto(B + "/master/trafego/origens", { waitUntil: "networkidle" });
+  await noScroll(p, "origens 360");
+  for (const [c] of visitantes) await c.close();
+  await m.close();
 }
 await b.close();
 if (bad.length) { console.error("FALHAS:\n- " + bad.join("\n- ")); process.exit(1); }

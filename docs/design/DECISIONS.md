@@ -3534,3 +3534,15 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Links rastreados:** `/l/<código>` em qualquer endereço de marca (como `/r/` e `/c/`). Master → Tráfego e campanhas (menu do Escritório e cartão em Crescimento): criar com destino, origem, meio, campanha, peça e público no padrão de nomes (minúsculo, sem acento; avisos quando foge da lista), código próprio ou automático, prévia do endereço final, copiar, QR code, ligar/desligar e cliques de 7 e 30 dias e desde o início. Destino só dentro do próprio site (nunca site externo). Clique contado por dia sem IP; robôs à parte. Quem clicou chega com as etiquetas e com o `fbclid`/`gclid` que a Meta/Google puseram no link. Quem usa: dono, Comercial e Conteúdo.
 - **Banco:** tabelas `links_rastreados` e `links_cliques_diarios` (migração 0093).
 - **Próxima fase:** TR2 (coletor próprio e "Agora no site" em tempo real).
+
+## D291 — [E-commerce] Tráfego e campanhas, fase TR2: medição própria do site e "Agora no site" em tempo real (2026-11-13)
+- **Coletor próprio:** as páginas públicas das marcas (nunca as lojas dos lojistas, D185, nem os painéis) mandam um sinal ao abrir cada página, um "ainda aqui" a cada 30 s com a aba visível, e marcam clique no WhatsApp e ida ao cadastro (`/api/t`, sempre responde 204). O lead é marcado pelo servidor quando o formulário é aceito (lista de espera, janela de saída e diagnóstico).
+- **Privacidade:** sem IP e sem nome. O visitante é um código aleatório em cookie próprio (`nl-vid`, 13 meses) e a visita em `nl-sid` (30 min). Nada é gravado se a pessoa recusou a medição no aviso de cookies (D290), para robôs ou acima de 90 sinais por minuto do mesmo endereço.
+- **Visita (sessão):** 30 min sem sinal encerra. O canal é calculado uma vez, na entrada (regra única `canalDe`, D290). Chegar com outra etiqueta, outro clique de anúncio, código de parceiro ou vindo de outro site abre uma visita nova (como o Google Analytics); recarregar a mesma página de entrada continua a mesma. A mesma página duas vezes em menos de 2 s conta uma vez.
+- **Master → Tráfego e campanhas** agora tem três abas:
+  - **Agora no site:** pessoas nos últimos 5 min, por canal, página, aparelho e site; números de hoje (visitas, cliques no WhatsApp, idas ao cadastro, contatos); entradas da última hora com canal, campanha e peça; momentos importantes das últimas 24 h. Atualiza sozinha a cada 10 s só com a aba aberta.
+  - **Origens:** 7, 30 ou 90 dias por canal (visitas, comparação com o período anterior, páginas por visita, WhatsApp, cadastro, contatos e % de contato) e as campanhas que mais trouxeram visitas.
+  - **Links rastreados** (D290).
+- **Guarda:** detalhe por 90 dias; depois, a rotina diária (a mesma do financeiro) resume por dia, marca, canal, campanha e aparelho (13 meses) e apaga o detalhe. Banco: tabelas `trafego_sessoes`, `trafego_eventos` e `trafego_diario` (migração 0094).
+- **Quem vê:** dono, Comercial e Conteúdo.
+- **Próxima fase:** TR3 (lead com origem completa no Comercial, "Fechou/Perdeu" e o código da visita no WhatsApp).
