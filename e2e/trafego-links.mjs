@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) e origem no Comercial (TR3, D294): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) origem no Comercial (TR3, D294) e Pixel/Google com consentimento (TR4, D295): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */
@@ -194,6 +194,49 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
   await p.reload({ waitUntil: "networkidle" });
   await noScroll(p, "ficha 360");
   await m.close();
+}
+
+// 5) TR4: números no Master; tags só carregam com "Aceitar todos"; Lead sai com o identificador do contato.
+{
+  const m = await b.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/trafego/conexoes", { waitUntil: "networkidle" });
+  await p.getByLabel("Google Ads: código da conta de conversão").fill("1234");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.getByText(/começa com AW-/).first().waitFor({ timeout: 10000 }).then(() => ok("número errado recusado com explicação"), () => fail("número errado não foi recusado"));
+  await p.getByLabel("Pixel da Meta (número do conjunto de dados)").fill("123456789012345");
+  await p.getByLabel("Google Ads: código da conta de conversão").fill("AW-1234567890");
+  await p.getByLabel('Google Ads: rótulo da conversão "Contato"').fill("AbC-dEfGhIj");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.getByText("Ligado").first().waitFor({ timeout: 10000 }).then(() => ok("Pixel e Google ligados no Master"), () => fail("tags não ficaram ligadas"));
+  await shot(p, "10-master-pixel-google");
+  const va = await axe(p); if (va.length) fail(`axe conexões: ${va.join(" | ")}`); else ok("axe sem violações graves em Pixel e Google");
+  await m.close();
+
+  for (const escolha of ["Só os necessários", "Aceitar todos"]) {
+    const c = await b.newContext({ viewport: { width: 390, height: 844 }, userAgent: UA });
+    await c.route(/connect\.facebook\.net|googletagmanager\.com/, (r) => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
+    const v = await c.newPage();
+    await v.goto(`${B}/lojas`, { waitUntil: "networkidle" });
+    await v.goto(`${B}/quero-minha-loja`, { waitUntil: "networkidle" });
+    await v.getByRole("region", { name: "Cookies e privacidade" }).getByRole("button", { name: escolha }).click();
+    await v.waitForTimeout(800);
+    const tem = await v.evaluate(() => ({ fb: !!document.getElementById("nl-fbq"), g: !!document.getElementById("nl-gtag") }));
+    if (escolha === "Só os necessários") { if (!tem.fb && !tem.g) ok("sem aceite: Pixel e Google não carregam"); else fail("tags carregaram sem aceite"); await c.close(); continue; }
+    if (tem.fb && tem.g) ok("com aceite: Pixel e Google carregam"); else fail(`tags não carregaram com aceite: ${JSON.stringify(tem)}`);
+    await v.getByLabel("Seu nome").fill("Cliente TR4");
+    await v.getByLabel("E-mail").fill(`tr4-${Date.now()}@loja.teste`);
+    await v.getByLabel("WhatsApp com DDD").fill("11999990000");
+    await v.getByRole("button", { name: "Enviar" }).click();
+    await v.waitForTimeout(2500);
+    const filas = await v.evaluate(() => ({ fb: JSON.stringify((window).fbq?.queue ?? []), g: JSON.stringify((window).dataLayer ?? []) }));
+    if (/"track","Lead",\{\},\{"eventID":"interessado:bld_/.test(filas.fb)) ok("Pixel recebeu o Lead com o identificador do contato"); else fail(`Lead não chegou ao Pixel: ${filas.fb.slice(0, 300)}`);
+    if (/"conversion".*"send_to":"AW-1234567890\/AbC-dEfGhIj".*"transaction_id":"interessado:bld_/.test(filas.g)) ok("Google Ads recebeu a conversão de contato"); else fail(`conversão não chegou ao Google: ${filas.g.slice(0, 300)}`);
+    await c.close();
+  }
 }
 await b.close();
 if (bad.length) { console.error("FALHAS:\n- " + bad.join("\n- ")); process.exit(1); }

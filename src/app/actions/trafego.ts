@@ -37,3 +37,13 @@ export async function agoraNoSiteAction() {
     return agoraNoSite(await getDb(), await ator());
   });
 }
+
+/** Números do Pixel da Meta e do Google no site da NextLevel (TR4, D295). */
+export async function salvarTagsAnuncioAction(input: unknown) {
+  return runAction(async () => {
+    const { salvarTagsAnuncio } = await import("@/lib/domain/trafego/tags");
+    const r = await salvarTagsAnuncio(await getDb(), await ator(), input as never);
+    revalidatePath("/", "layout");
+    return r;
+  });
+}

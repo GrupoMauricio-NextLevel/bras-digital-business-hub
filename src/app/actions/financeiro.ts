@@ -145,7 +145,7 @@ export async function requestDiagnosticAction(input: Parameters<typeof requestDi
     const r = await requestDiagnostic(db, input, await attribution());
     const { registrarOrigemDaVisita } = await import("@/lib/trafego/lead-na-sessao");
     await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: "NEXTLEVEL", via: "DIAGNOSTICO" });
-    return r;
+    return { ...r, eventoId: `interessado:${r.id}` };
   });
 }
 

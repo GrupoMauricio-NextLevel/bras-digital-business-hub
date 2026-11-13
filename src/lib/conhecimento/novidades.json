@@ -1,5 +1,12 @@
 [
  {
+  "numero": 295,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
+  "data": "2026-11-14",
+  "resumo": "Onde configurar: Master → Tráfego e campanhas → Pixel e Google. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão \"Contato\") e, opcional, Google Analytics 4 (G-…)…"
+ },
+ {
   "numero": 294,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
@@ -271,12 +278,5 @@
   "titulo": "O padrão do chat vale para todo o sistema",
   "data": "2026-11-05",
   "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
- },
- {
-  "numero": 255,
-  "frente": null,
-  "titulo": "Celular no padrão da referência: Maurício em tela cheia e menu flutuante",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono (com capturas da Hostinger): \"No mobile quero que o chat abra completo, seguindo as referências.\""
  }
 ]

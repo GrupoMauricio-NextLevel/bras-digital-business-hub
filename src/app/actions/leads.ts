@@ -22,7 +22,7 @@ export async function submitLeadAction(input: Omit<z.input<typeof leadSchema>, "
     const r = await createBrandLead(db, { ...input, brand: brand.code, affiliateRef: ref });
     await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "FORMULARIO" });
     revalidatePath("/master/crm");
-    return { created: r.created };
+    return { created: r.created, eventoId: `interessado:${r.id}` };
   });
 }
 
@@ -51,6 +51,6 @@ export async function capturarLeadSaidaAction(input: { email: string; consent: b
     const r = await capturarLeadSaida(db, { brand: brand.code, email: input.email, consent: input.consent as true, pagina: input.pagina, affiliateRef: ref }, cadastro);
     await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "SAIDA", pagina: input.pagina });
     revalidatePath("/master/crm");
-    return undefined;
+    return { eventoId: `interessado:${r.id}` };
   });
 }

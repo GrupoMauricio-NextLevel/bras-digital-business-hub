@@ -18,6 +18,8 @@ import { VendedorHome } from "@/components/ia/vendedor-home";
 import { ResgateSaida } from "@/components/portal/resgate-saida";
 import { AvisoCookies, PreferenciasCookies } from "@/components/portal/aviso-cookies";
 import { ColetorTrafego } from "@/components/portal/coletor-trafego";
+import { TagsAnuncio } from "@/components/portal/tags-anuncio";
+import { configNavegador, getTagsAnuncio } from "@/lib/domain/trafego/tags";
 /** Estrutura do portal público: UMA casca (PublicShell) para todas as marcas. Menu, logo e rodapé vêm da marca do endereço; as cores, do tema. */
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const brand = await getBrand();
@@ -53,6 +55,8 @@ export default async function PortalLayout({ children }: { children: React.React
     const resgate = <ResgateSaida trialDays={fatos.oferta?.trialDays || null} temasGratis={fatos.temasGratis} taxaZero={pagos.length > 0 && pagos.every((x) => x.feeBps === 0)} black={fatos.black ? "Black NextLevel" : null} cadastro={fatos.cadastro} />;
     return <><VendedorHome fatos={fatos} whatsappEquipe={supportContacts().whatsappUrl} />{resgate}</>;
   })() : null;
+  // TR4 (D295): Pixel da Meta e tags do Google, só com o "sim" de Anúncios no aviso de cookies.
+  const tags = brand.soon ? null : configNavegador(await getTagsAnuncio(await getDb()));
   const casca = (
     <PublicShell
       // NextLevel v2 (D161): assinatura larga, um pouco mais baixa; NextLevel Commerce (D163): três linhas, um pouco mais alta.
@@ -68,7 +72,7 @@ export default async function PortalLayout({ children }: { children: React.React
         ? <BrandLogo brand={{ ...brand, name: `${brand.name}: ${brand.tagline}` }} tone="on-dark" variant="assinatura-completa" className="h-20" />
         : <><BrandLogo brand={brand} tone="auto" className="h-8" /><p className="mt-2">{brand.tagline.replace(/\.$/, "")}.</p></>}
       footerNote={<><FamiliaGrupo brandCode={brand.code} /><NextLevelSignature product={brand.name} /><p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. {brand.soon ? "Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público." : <><Link href="/termos" className="underline underline-offset-2">Termos de uso</Link> · <Link href="/privacidade" className="underline underline-offset-2">Política de privacidade</Link> · <PreferenciasCookies /></>}</p></>}
-      floating={<>{whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}{vendedor}<AvisoCookies /><ColetorTrafego /></>}
+      floating={<>{whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}{vendedor}<AvisoCookies /><ColetorTrafego />{tags ? <TagsAnuncio cfg={tags} /> : null}</>}
     >
       {children}
     </PublicShell>
