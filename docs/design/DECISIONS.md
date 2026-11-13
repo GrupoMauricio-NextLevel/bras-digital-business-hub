@@ -3509,3 +3509,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Contratos:** os já enviados ficam como foram (texto congelado); os novos saem com o nome novo.
 - **Pendente (arte):** os logos ainda mostram "E-commerce". O racional e os prompts para o gerador de imagens estão em `docs/marcas/nextlevel-commerce-logo-racional.md`, e o dono gera as imagens.
 
+## D289 — [Grupo] Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo (2026-11-13)
+- **Plano do dono:** e-mail da Hostinger (teste de 30 dias) com a caixa `mauricio@nextlevelcommerce.com.br`. Limites: 5 GB, 1.000 envios por dia, 5 apelidos e 5 encaminhamentos. O conector Hostinger Mail está ligado no Claude.
+- **Divisão de papéis:**
+  - o **Resend** continua enviando os e-mails automáticos do sistema (D285), sem gastar o limite diário da Hostinger;
+  - a **Hostinger** recebe e é onde o dono responde.
+- **Apelidos que entregam na caixa `mauricio@`:** `contato@` (o remetente do sistema, que antes não existia como caixa, e por isso as respostas voltavam), `suporte@`, `financeiro@`, `comercial@` e `parceiros@`.
+- **Pastas criadas na caixa:** Clientes, Financeiro - Comprovantes, Parceiros, Fornecedores e Sistema.
+- **Sistema:**
+  - `EMAIL_REPLY_TO=contato@nextlevelcommerce.com.br`, em vez do Gmail;
+  - `NEXT_PUBLIC_SUPPORT_EMAIL=contato@nextlevelcommerce.com.br`;
+  - os contratos novos usam `financeiro@nextlevelcommerce.com.br` como e-mail da contratada, para avisos de Pix e parcelas vencidas;
+  - os contratos já enviados ficam como foram.
+- **DNS:** os MX e o SPF da raiz são da Hostinger, e o envio do Resend fica no subdomínio `send`, sem conflito. O DMARC fica em `p=none` por 2 a 4 semanas, depois sobe para `quarantine`.
+- **Depois:** um webhook do "Correio Agêntico" da Hostinger transforma e-mails de `suporte@` em atendimentos no Master.
+

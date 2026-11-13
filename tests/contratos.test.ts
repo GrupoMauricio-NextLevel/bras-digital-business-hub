@@ -120,7 +120,7 @@ describe("contrato no banco (CT1+CT2)", () => {
     expect((await parcelasDoContrato(ctx.db, a.dono, env.id))[0]!.status).toBe("AVISADA");
     expect((await pixParaConferir(ctx.db, ctx.actors.master)).map((p) => p.numero)).toEqual([env.numero]);
     const aviso = (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, "CONTRATO_PIX_AVISADO")))[0]!;
-    expect(aviso.toEmail).toBe("agencianextlevelbr@gmail.com");
+    expect(aviso.toEmail).toBe("financeiro@nextlevelcommerce.com.br");
     expect(aviso.body).toMatch(/Paguei às 15h/);
 
     // não encontrei: volta a aberta e avisa o cliente; depois ele avisa de novo
@@ -155,7 +155,7 @@ describe("contrato no banco (CT1+CT2)", () => {
     const kinds = async (k: string) => (await ctx.db.select().from(emailOutbox).where(eq(emailOutbox.kind, k))).map((e) => e.toEmail);
     await lembretesDeParcelas(ctx.db, new Date("2026-11-14T15:00:00Z")); // 2 dias antes do restante; sinal já vencido
     expect(await kinds("CONTRATO_PARCELA_LEMBRETE")).toEqual([BASE.cliente.email]);
-    expect(await kinds("CONTRATO_PARCELA_VENCIDA")).toEqual(["agencianextlevelbr@gmail.com"]);
+    expect(await kinds("CONTRATO_PARCELA_VENCIDA")).toEqual(["financeiro@nextlevelcommerce.com.br"]);
     await lembretesDeParcelas(ctx.db, new Date("2026-11-14T20:00:00Z")); // rodar de novo no mesmo dia não repete
     expect((await kinds("CONTRATO_PARCELA_LEMBRETE")).length).toBe(1);
     expect((await kinds("CONTRATO_PARCELA_VENCIDA")).length).toBe(1);

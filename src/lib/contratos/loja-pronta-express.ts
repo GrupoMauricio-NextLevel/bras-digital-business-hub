@@ -16,7 +16,7 @@ export const CONTRATADA_PADRAO = {
   chavePix: "51.392.006/0001-92",
   favorecido: "NextLevel Marketing Ltda",
   representante: "Mauricio Ramos dos Santos Junior",
-  emailRepresentante: "agencianextlevelbr@gmail.com",
+  emailRepresentante: "financeiro@nextlevelcommerce.com.br",
 } as const;
 
 export type DadosLojaPronta = {

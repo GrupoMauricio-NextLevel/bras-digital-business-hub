@@ -1,5 +1,12 @@
 [
  {
+  "numero": 289,
+  "frente": "Grupo",
+  "titulo": "Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo",
+  "data": "2026-11-13",
+  "resumo": "Plano do dono: e-mail da Hostinger (teste de 30 dias) com a caixa mauricio@nextlevelcommerce.com.br. Limites: 5 GB, 1.000 envios por dia, 5 apelidos e 5 encaminhamentos. O conector Hostinger Mail está ligado no Claude."
+ },
+ {
   "numero": 288,
   "frente": "E-commerce",
   "titulo": "O nome da marca passa a ser \"NextLevel Commerce\"",
@@ -271,12 +278,5 @@
   "titulo": "Parceiro sem cliente por 6 meses fica Inativo; plano do atacado registrado",
   "data": "2026-11-05",
   "resumo": "Pedido do dono: \"Pode ligar\" a requalificação da D249."
- },
- {
-  "numero": 249,
-  "frente": null,
-  "titulo": "PV2: níveis dos parceiros (Prata, Ouro, Diamante) e bônus do representante",
-  "data": "2026-11-05",
-  "resumo": "Conta clientes pagantes ativos: lojas atribuídas ao parceiro, sem bandeira de revisão, com assinatura E-commerce ativa."
  }
 ]

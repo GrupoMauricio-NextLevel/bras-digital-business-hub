@@ -29,6 +29,9 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 
 - [ ] **Logos da NextLevel Commerce** (D288): gerar no GPT com os prompts de `docs/marcas/nextlevel-commerce-logo-racional.md` e mandar aqui.
 
+- [ ] **DMARC mais rígido** (D289): em 2 a 4 semanas, passar `_dmarc` de `p=none` para `p=quarantine`.
+- [ ] **Correio Agêntico** (D289): e-mails de suporte@ viram atendimento no Master (webhook da Hostinger).
+
 ## Feito
 
 - [x] Páginas Temas para Nuvemshop (D282) e Nossos clientes (D283), no ar em 12/11/2026.
