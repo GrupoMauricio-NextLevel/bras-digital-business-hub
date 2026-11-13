@@ -1,5 +1,12 @@
 [
  {
+  "numero": 297,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
+  "data": "2026-11-14",
+  "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
+ },
+ {
   "numero": 295,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
@@ -271,12 +278,5 @@
   "titulo": "AT0 do atacado: dados e motor único de preço",
   "data": "2026-11-05",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
- },
- {
-  "numero": 256,
-  "frente": null,
-  "titulo": "O padrão do chat vale para todo o sistema",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
  }
 ]

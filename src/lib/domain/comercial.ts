@@ -8,6 +8,7 @@ import { situacoesComerciais, type SituacaoComercial } from "./situacao-comercia
 import { linkWhatsapp } from "./agora-ecommerce";
 import { getConfigComercial, mensageiro } from "./comercial-config";
 import { origensDe, ROTULO_VIA, type OrigemResumo } from "./trafego/origem-contato";
+import { enfileirarConversao } from "./trafego/retorno";
 
 /**
  * Comercial da Commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com
@@ -177,5 +178,7 @@ export async function salvarAcompanhamento(db: Database, actor: Actor, chave: st
     updatedAt: agoraIso(),
   };
   await db.insert(crmAcompanhamento).values({ chave, ...valores }).onConflictDoUpdate({ target: crmAcompanhamento.chave, set: valores });
+  // TR5 (D296): negócio fechado à mão volta para a Meta e o Google como venda, com o valor.
+  if (d.fechou) await enfileirarConversao(db, { evento: "VENDA", chave, valorCents: d.fechou.valorCents });
 }
 const agoraIso = () => new Date().toISOString();

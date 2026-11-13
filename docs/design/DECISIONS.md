@@ -3600,3 +3600,22 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **E-mails por assunto (`src/lib/contatos.ts`, fonte única):** os e-mails automáticos do sistema saem com "responder para" conforme o assunto: financeiro@ (contrato, fatura, assinatura, Pix), parceiros@ (comissão, indicação), comercial@ (interessados, propostas), suporte@ (senha, login, loja, pedidos), contato@ (o resto). Os e-mails das lojas para os clientes delas continuam com o endereço da loja.
 - **Nas telas:** o rodapé das páginas públicas da Commerce mostra os endereços por assunto; a Ajuda do lojista mostra suporte@ e financeiro@.
 - **Depois:** contador de não lidas no menu e atendimento automático a partir de suporte@ (webhook do Correio Agêntico).
+
+## D297 — [E-commerce] Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda) (2026-11-14)
+- **O que volta para as plataformas:**
+
+  | Resultado no sistema | Meta (API de conversões) | Google Ads (conversão importada por clique) | Valor |
+  |---|---|---|---|
+  | Deixou contato (lista de espera, janela de saída, diagnóstico, código do WhatsApp) | Lead | ação "Contato" | sem |
+  | Criou a loja | CompleteRegistration | ação "Conta criada" | sem |
+  | Virou pagante (assinatura ativa, pagamento conferido) | Subscribe | ação "Pagante" | mensalidade |
+  | Negócio fechado à mão no Comercial | Purchase | ação "Pagante" | valor fechado |
+
+- **Fila** (`conversoes_envio`, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 minutos (`/api/cron/expire-reservations`) põe os pagantes novos na fila e envia. Prazos: 7 dias na Meta e 90 no Google; passou, fica "fora do prazo". Novas tentativas em 10 min, 1 h, 6 h e 1 dia (até 5); erro de dado (400 da Meta, recusa do Google) não insiste.
+- **Sem configuração, a fila espera** sem gastar tentativa: quando o dono ligar, o que estiver no prazo é enviado.
+- **Privacidade:** e-mail e telefone só vão como resumo SHA-256, montados na hora do envio e nunca gravados na fila. Quem escolheu "não" para anúncios no aviso de cookies fica "Recusou anúncios" e nada é enviado. O Google só recebe quem veio de clique de anúncio do Google (gclid, gbraid ou wbraid). A origem do contato passa a guardar o navegador, a escolha no aviso de cookies e os cookies da Meta (`_fbp`, `_fbc`).
+- **Evento de site × de sistema:** contato e conta vão como evento do site (com o navegador e o endereço); pagante e venda, como evento do sistema.
+- **Configuração** em Master → Tráfego e campanhas → **Retorno às plataformas**, **só o dono**: token da API de conversões da Meta e código de teste opcional; para o Google, conta, conta de administrador, token de desenvolvedor, acesso OAuth (ID, chave secreta e token de atualização) e os números das três ações de conversão. Segredos ficam criptografados, nunca voltam para a tela nem para a trilha de auditoria; deixar vazio mantém, "-" apaga. A tela mostra Ligado/Desligado, a contagem (entregue, na fila, falhou, recusou anúncios) e os últimos resultados com o nome da pessoa e o motivo de cada falha, com "Tentar de novo".
+- **Versões das APIs:** Meta Graph `v23.0` e Google Ads `v22`, trocáveis por `META_GRAPH_VERSION` e `GOOGLE_ADS_API_VERSION` sem mexer no código. A compra das lojas na Meta (D187) passou a usar a mesma versão (antes `v19.0`, já fora do prazo da Meta).
+- **Depende do dono:** gerar o token da Meta e colar no Master; conta de administrador e token de desenvolvedor do Google aprovados. Conferir que a rotina `/api/cron/expire-reservations` está agendada no Render (a cada 5 a 10 min).
+- **Fica para depois (TR5b):** públicos de clientes (pagantes para "semelhantes" e para excluir das campanhas de aquisição).

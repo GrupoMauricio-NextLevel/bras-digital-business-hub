@@ -1279,8 +1279,33 @@ export const origensContato = pgTable("origens_contato", {
   uf: text("uf"),
   pais: text("pais"),
   aparelho: text("aparelho"),
+  /** Navegador informado (para a API de conversões da Meta, que exige em evento do site) e o aviso de cookies na hora (TR5, D296). */
+  ua: text("ua"),
+  consentimento: text("consentimento", { enum: ["SIM", "NAO", "SEM_ESCOLHA"] }),
   capturadaEm: ts("capturada_em").notNull().defaultNow(),
 });
+
+/**
+ * Fila de retorno às plataformas (TR5, D296): cada linha é um resultado (contato, conta criada, pagante, venda fechada)
+ * a avisar à Meta ou ao Google. Uma vez por plataforma, evento e contato (dedupe). A rotina manda, tenta de novo e guarda
+ * o resultado em português; nunca guarda e-mail, telefone ou token.
+ */
+export const conversoesEnvio = pgTable("conversoes_envio", {
+  id: id(),
+  plataforma: text("plataforma", { enum: ["META", "GOOGLE"] }).notNull(),
+  evento: text("evento", { enum: ["LEAD", "CONTA", "PAGANTE", "VENDA"] }).notNull(),
+  chave: text("chave").notNull(),
+  eventoId: text("evento_id").notNull(),
+  valorCents: integer("valor_cents"),
+  ocorreuEm: ts("ocorreu_em").notNull(),
+  status: text("status", { enum: ["PENDENTE", "ENVIADO", "FALHOU", "IGNORADO", "BLOQUEADO"] }).notNull().default("PENDENTE"),
+  motivo: text("motivo"),
+  tentativas: integer("tentativas").notNull().default(0),
+  proximaTentativaEm: ts("proxima_tentativa_em"),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  criadoEm: createdAt(),
+  enviadoEm: ts("enviado_em"),
+}, (t) => [index("conversoes_envio_status_idx").on(t.status, t.proximaTentativaEm)]);
 
 /**
  * Links rastreados (TR1, D290): encurtador próprio `/l/<codigo>` para anúncio, bio, story, direct, WhatsApp, e-mail e

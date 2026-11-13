@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) origem no Comercial (TR3, D294) e Pixel/Google com consentimento (TR4, D295): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) origem no Comercial (TR3, D294), Pixel/Google com consentimento (TR4, D295) e retorno às plataformas (TR5, D296): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */
@@ -237,6 +237,30 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
     if (/"conversion".*"send_to":"AW-1234567890\/AbC-dEfGhIj".*"transaction_id":"interessado:bld_/.test(filas.g)) ok("Google Ads recebeu a conversão de contato"); else fail(`conversão não chegou ao Google: ${filas.g.slice(0, 300)}`);
     await c.close();
   }
+}
+
+// 6) TR5: a tela de retorno mostra a fila (contatos dos passos anteriores) e guarda o token sem mostrar.
+{
+  const m = await b.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/trafego/retorno", { waitUntil: "networkidle" });
+  if (/Deixou contato/.test(await p.locator("main").textContent())) ok("fila de retorno mostra os contatos deixados"); else fail("fila de retorno vazia");
+  await p.getByLabel(/Token de acesso da API de conversões/).fill("EAAteste-e2e-segredo");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.waitForTimeout(2500);
+  await p.reload({ waitUntil: "networkidle" });
+  const html = await p.content();
+  if (!/EAAteste-e2e-segredo/.test(html) && /guardado; deixe vazio/.test(html)) ok("token guardado e nunca mostrado de volta"); else fail("token apareceu na tela ou não foi guardado");
+  if (/Ligado/.test(await p.getByRole("region", { name: "Situação por plataforma" }).textContent())) ok("Meta ligada (Pixel + token)"); else fail("Meta não ficou ligada");
+  await shot(p, "11-master-retorno");
+  const v = await axe(p); if (v.length) fail(`axe retorno: ${v.join(" | ")}`); else ok("axe sem violações graves em Retorno às plataformas");
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload({ waitUntil: "networkidle" });
+  await noScroll(p, "retorno 360");
+  await m.close();
 }
 await b.close();
 if (bad.length) { console.error("FALHAS:\n- " + bad.join("\n- ")); process.exit(1); }
