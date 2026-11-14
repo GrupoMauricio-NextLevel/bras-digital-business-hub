@@ -1,5 +1,7 @@
 # Pendências que dependem do dono (deixadas para o final)
 
+> **Arquivo antigo (14/11/2026).** A lista única e atualizada do que só o dono faz é o **checklist de `docs/fila/FILA-DO-DONO.md`** (o Claude manda todo dia às 8h31). Os itens abaixo que ainda valem foram levados para lá; o tema Ninho já está à venda. Fica aqui só como histórico.
+
 Atualizado em 2026-10-04. Nada aqui bloqueia o trabalho em andamento.
 
 ## Precisam de uma ação sua

@@ -103,6 +103,8 @@
 
 ## 7. Pendências do dono no Render (09/11/2026)
 
+> **14/11/2026:** conferido no Render: itens 2 (Starter) e 3 (treino sem montagem automática) feitos, e os serviços já se chamam `nextlevel-plataforma` e `nextlevel-treino`. O que sobrou está no checklist de `docs/fila/FILA-DO-DONO.md` (lista única do dono).
+
 1. Atualizar o cartão e pagar a fatura de outubro (US$ 6,50).
 2. Passar o `superdrop` para **Starter** (Settings → Instance Type).
 3. Desligar o **Auto-Deploy** do `nextlevel-demo` (Settings → Build & Deploy).
