@@ -13,10 +13,17 @@ import { FormAcompanhamento, VincularCodigo } from "./form";
 export const dynamic = "force-dynamic";
 
 /** Ficha 360 do cliente (D202): quem é, em que etapa está, o que aconteceu e o que fazer a seguir. */
-export default async function FichaPage({ params }: { params: Promise<{ chave: string }> }) {
+// D301: filtros da linha do tempo (os pedidos da loja não escondem e-mails e dinheiro).
+const FILTROS = [["tudo", "Tudo"], ["conversas", "Conversas e e-mails"], ["financeiro", "Financeiro"], ["loja", "Loja"]] as const;
+const GRUPO: Record<string, string> = { conversa: "conversas", email: "conversas", nota: "conversas", dinheiro: "financeiro", loja: "loja", sistema: "conversas" };
+
+export default async function FichaPage({ params, searchParams }: { params: Promise<{ chave: string }>; searchParams: Promise<{ ver?: string }> }) {
   const s = await requireRole("NEXTLEVEL_MASTER");
   const chave = decodeURIComponent((await params).chave);
-  const { pessoa: p, linha, notas } = await fichaCliente(await getDb(), s.actor, chave);
+  const { pessoa: p, linha: todaLinha, notas } = await fichaCliente(await getDb(), s.actor, chave);
+  const pedido = (await searchParams).ver;
+  const ver = FILTROS.some(([k]) => k === pedido) ? pedido! : "tudo";
+  const linha = ver === "tudo" ? todaLinha : todaLinha.filter((e) => GRUPO[e.tipo] === ver);
   const etapa = ETAPAS.find((e) => e.key === p.etapa)!;
   return (
     <>
@@ -24,16 +31,19 @@ export default async function FichaPage({ params }: { params: Promise<{ chave: s
       <div className="ds-grid ds-grid--main">
         <section className="ds-card" aria-labelledby="linha-t">
           <h2 id="linha-t" className="mb-3 text-lg font-bold">Linha do tempo</h2>
+          <nav aria-label="Filtrar a linha do tempo" className="mb-3 flex flex-wrap gap-2 text-xs">
+            {FILTROS.map(([k, r]) => { const n = k === "tudo" ? todaLinha.length : todaLinha.filter((e) => GRUPO[e.tipo] === k).length; return <Link key={k} href={k === "tudo" ? "?" : `?ver=${k}`} scroll={false} aria-current={ver === k ? "page" : undefined} className={`rounded-full border px-3 py-1 ${ver === k ? "border-[var(--ds-primary)] bg-[var(--ds-soft)] font-semibold" : "border-border"}`}>{r} ({n})</Link>; })}
+          </nav>
           {linha.length ? (
             <ol className="space-y-3">
               {linha.map((e, i) => (
                 <li key={i} className="border-l-2 border-border pl-3 text-sm">
-                  <p className="text-xs text-muted-foreground">{formatDateTime(e.em)} · {e.tipo === "conversa" ? e.autor : e.tipo === "loja" ? "Loja" : e.tipo === "nota" ? `Nota${e.autor ? ` de ${e.autor}` : ""}` : "Sistema"}</p>
+                  <p className="text-xs text-muted-foreground">{formatDateTime(e.em)} · {e.tipo === "conversa" || e.tipo === "email" ? e.autor : e.tipo === "dinheiro" ? "Financeiro" : e.tipo === "loja" ? "Loja" : e.tipo === "nota" ? `Nota${e.autor ? ` de ${e.autor}` : ""}` : "Sistema"}</p>
                   <p className="whitespace-pre-line">{e.texto}</p>
                 </li>
               ))}
             </ol>
-          ) : <p className="text-sm text-muted-foreground">Ainda não há histórico.</p>}
+          ) : <p className="text-sm text-muted-foreground">{ver === "tudo" ? "Ainda não há histórico." : "Nada neste filtro ainda."}</p>}
         </section>
         <aside className="grid content-start gap-4">
           <section className="ds-card text-sm" aria-labelledby="contato-t">

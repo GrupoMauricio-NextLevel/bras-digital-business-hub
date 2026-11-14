@@ -3662,3 +3662,12 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Segurança:** o aviso da Hostinger (`/api/webhooks/hostinger-mail`) só é aceito com o segredo `HOSTINGER_MAIL_WEBHOOK_SECRET` (o dono cola no Render); o corpo do aviso é ignorado: o sistema lê a própria caixa e cada e-mail entra uma vez só.
 - **Reserva:** ao abrir o Atendimento, o sistema também busca os e-mails novos (no máximo 3 s de espera), para funcionar mesmo antes do aviso estar ligado.
 - **Depende do dono:** o token da caixa (`HOSTINGER_MAIL_TOKEN`, D296) e, para chegar na hora, criar o aviso na Hostinger com o endereço `https://nextlevelcommerce.com.br/api/webhooks/hostinger-mail` e colar o segredo dele no Render.
+
+# D301 — [E-commerce] Linha do tempo do cliente no Comercial com e-mails, contrato e faturas (2026-11-14)
+- **Pedido do dono:** CRM, e-mail e comercial ligados, para ver tudo de um cliente num lugar só.
+- **O que entrou na ficha (Master → Comercial → cliente):** além de conversas do site, Ajuda, formulário, atividades da loja, origem e notas, a linha do tempo agora mostra:
+  - os e-mails trocados por suporte@ (D300), com quem escreveu;
+  - o contrato (enviado, aceito) e cada parcela (avisou o Pix, confirmado, Pix não encontrado);
+  - as faturas do plano (criada, situação e pagamento), com o valor.
+- **Rótulos:** "Financeiro" para contrato, parcelas e faturas; o nome da pessoa com "(e-mail)" para os e-mails.
+- **Filtros:** Tudo, Conversas e e-mails, Financeiro e Loja, com a contagem de cada um (os pedidos da loja não escondem mais o resto).
