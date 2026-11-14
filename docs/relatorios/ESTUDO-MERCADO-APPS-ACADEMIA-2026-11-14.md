@@ -1,6 +1,6 @@
 # Estudo de mercado: academias, captação de alunos, app do aluno e comunidade (versão 2)
 
-> **Pedido do dono, 1ª rodada (14/11/2026):** investigar os melhores apps de gestão de academias e de gestão dos alunos, com funções diferenciadas que a NextLevel consiga lançar com facilidade, para criar um produto novo. Cliente em potencial: **uma unidade da rede Runner** (São Paulo). Estender a **comunidade de clientes** para todos os clientes da NextLevel. Comparar (A) parceria, com app grátis para o aluno, que paga só os adicionais, e (B) white label vendido à academia, com a NextLevel ficando com uma taxa de serviço e hospedagem.
+> **Pedido do dono, 1ª rodada (14/11/2026):** investigar os melhores apps de gestão de academias e de gestão dos alunos, com funções diferenciadas que a NextLevel consiga lançar com facilidade, para criar um produto novo. Cliente em potencial: **uma unidade de uma rede de academias** de São Paulo (o nome do cliente fica fora deste racional, que vale para qualquer academia ou empresa). Estender a **comunidade de clientes** para todos os clientes da NextLevel. Comparar (A) parceria, com app grátis para o aluno, que paga só os adicionais, e (B) white label vendido à academia, com a NextLevel ficando com uma taxa de serviço e hospedagem.
 >
 > **Pedido do dono, 2ª rodada (14/11/2026):** aprofundar e reanalisar. **O primeiro cliente é uma academia de rede que abre as portas em 10 dias.** A dor dela talvez seja **captar novos alunos (leads)**; um produto que resolva isso pode trazer muitos clientes. **Não desfazer a proposta anterior: melhorar e ter mais diferenciais.**
 >
@@ -15,7 +15,7 @@
 | Versão 1 | Versão 2 (esta) |
 |---|---|
 | Foco na **retenção**: app do aluno, clube, loja, pontos, comunidade | **Captação vira a porta de entrada.** Retenção e clube continuam, como a segunda metade do mesmo ciclo |
-| Cliente era "uma unidade da Runner" | Cliente é uma **unidade de rede que inaugura em 10 dias**: urgência, pré-venda, evento de inauguração e os 90 dias seguintes |
+| Cliente era "uma unidade de rede" | Cliente é uma **unidade de rede que inaugura em 10 dias**: urgência, pré-venda, evento de inauguração e os 90 dias seguintes |
 | Modelo: piloto em parceria → white label com mensalidade + % das vendas | **Mantido**, com duas peças novas: **pacote de inauguração** (cobrança única) e **parte variável por matrícula** gerada pelo sistema |
 | 14 funções de retenção | **+17 funções de captação** (seção 6) e um **plano de 10 dias** (seção 9) |
 | Não olhava o que falta no sistema para captação | Seção 13: o que já existe, o que falta e em que ordem |
@@ -31,7 +31,7 @@
 5. **Diferencial número 2:** **pré-venda com vaga de fundador paga por Pix** (reserva abatida da primeira mensalidade) e **indicação do fundador** com ranking, usando a loja e o Club que já existem.
 6. **Diferencial número 3:** o aluno captado **entra direto no clube/app** (proposta da versão 1) e vira o próximo canal de indicação. Ninguém no mercado brasileiro fecha esse ciclo num produto só.
 7. **10 dias é pouco para pré-venda completa** (o mercado recomenda de 6 a 8 semanas). Mas a inauguração e os **90 dias seguintes** são o pico de captação, e isso dá tempo.
-8. **No sistema, o funil de contatos hoje serve ao comercial da própria NextLevel, não a cada loja.** Nos 10 dias, parte do serviço será operada pela equipe; o funil por loja fica pronto para o pós-abertura (seções 9 e 13).
+8. **No sistema, cada loja já tem um CRM próprio (D207), mas a origem de cada contato, os links rastreados e o retorno à Meta/Google servem hoje só ao comercial da própria NextLevel.** Nos 10 dias, parte do serviço será operada pela equipe; o funil por loja fica pronto para o pós-abertura (seções 9 e 13).
 9. **Modelo recomendado (versão 1 mantida e ampliada):** pacote de inauguração → mensalidade por unidade (captação, ou captação + clube) → % sobre vendas no app → valor por matrícula gerada (opcional). Preços na seção 11.
 10. **Escala:** só três redes (Smart Fit, Gaviões 24h e Selfit) preveem centenas de aberturas em 2026. Toda unidade nova precisa de captação. E o mesmo motor serve estúdios, clínicas, escolas e outros negócios locais.
 11. **Referência de modelo:** o GoHighLevel, nos EUA, é exatamente isso: agência que revende, com a própria marca, um sistema de captação para negócios locais (US$ 297 a US$ 497/mês para a agência). A NextLevel é agência e plataforma ao mesmo tempo.
@@ -74,10 +74,10 @@
 | **Aberturas previstas em 2026** | **Smart Fit: 330 a 350**; **Gaviões 24h: 300** até o fim do ano; **Selfit: 33** só até março | Imprensa de negócios 2025/2026 (boa) |
 | Agregadores | Wellhub com 3 milhões de usuários; TotalPass forte no varejo | Imprensa 2025/2026 |
 
-**Leitura nova:** **inaugurar academia virou rotina.** Só três redes somam mais de 600 aberturas previstas para 2026, fora as redes médias (Panobianco com mais de 400 unidades, Bodytech, Runner) e as independentes. **Cada inauguração é uma compra de captação com prazo fixo e verba separada.** É um mercado recorrente para um "pacote de inauguração".
+**Leitura nova:** **inaugurar academia virou rotina.** Só três redes somam mais de 600 aberturas previstas para 2026, fora as redes médias (Panobianco com mais de 400 unidades, Bodytech e outras) e as independentes. **Cada inauguração é uma compra de captação com prazo fixo e verba separada.** É um mercado recorrente para um "pacote de inauguração".
 
-### Sobre a Runner
-Rede de São Paulo. Unidades encontradas em páginas públicas: **Cursino** (Av. do Cursino, 4172), **Freguesia do Ó** (R. Chicó de Paula, 365) e **Top Center** (Av. Paulista). Está no **Wellhub** (plano Silver) e no **TotalPass** (a partir do TP2+), com nota 4,77 em 364 avaliações na unidade Cursino. Não achei app próprio da rede nem o sistema de gestão que ela usa. **A unidade que abre em 10 dias é uma das novas.** Perguntas obrigatórias (seção 15): quem faz o marketing (a rede ou a unidade), se a pré-venda já começou e com qual sistema.
+### Sobre o primeiro cliente
+Unidade nova de uma rede de academias de São Paulo, que já trabalha com Wellhub e TotalPass. **O nome fica fora deste racional**, que vale para qualquer academia. Perguntas obrigatórias (seção 15): quem faz o marketing (a rede ou a unidade), se a pré-venda já começou e com qual sistema.
 
 ---
 
@@ -138,7 +138,7 @@ Rede de São Paulo. Unidades encontradas em páginas públicas: **Cursino** (Av.
 | **Skool** | **9** (com 10% de taxa nas vendas) / **99** (2,9%) | Não tem |
 
 ### 4.6 Apps de treino e corrida (concorrem pela atenção do aluno)
-Strava (clubes e desafios de corrida), apps de relógio (Apple Saúde, Google Fit, Garmin) e apps de treino com IA. **Não brigue com eles: integre.** Uma rede chamada **Runner** tem afinidade natural com corrida: grupo de corrida da unidade, desafio de quilômetros e ranking custam pouco e viram **conteúdo de captação** ("treino de corrida aberto ao bairro no sábado").
+Strava (clubes e desafios de corrida), apps de relógio (Apple Saúde, Google Fit, Garmin) e apps de treino com IA. **Não brigue com eles: integre.** Para academias com público de corrida: grupo de corrida da unidade, desafio de quilômetros e ranking custam pouco e viram **conteúdo de captação** ("treino de corrida aberto ao bairro no sábado").
 
 ---
 
@@ -275,7 +275,7 @@ Contatos por dia e por origem · tempo de primeira resposta · reservas de funda
 | **Valor por matrícula** | Pequeno valor fixo por matrícula cuja origem o sistema registrou primeiro (regra escrita: contato nos últimos 30 dias, antes de qualquer outro registro) | O dono de academia detesta pagar por clique e por contato; **pagar por matrícula é o argumento mais forte de venda** |
 | **Gestão de anúncios** | Serviço da agência (NextLevel Soluções), pelo fluxo da D299; verba sempre no cartão da academia | Receita de serviço com margem; a plataforma mede o resultado |
 
-### Simulação (todos os números são hipóteses para conferir com a Runner)
+### Simulação (todos os números são hipóteses para conferir com o primeiro cliente)
 
 **Captação na abertura e nos 90 dias:** verba de anúncio de **R$ 3.000/mês** da academia; custo por contato de **R$ 15** (meio da faixa brasileira) → **200 contatos/mês**; 50% marcam visita, 70% comparecem, 50% matriculam → **cerca de 35 matrículas/mês pelo anúncio**, mais indicações e QR codes. Custo de anúncio por matrícula: **cerca de R$ 85**.
 
@@ -302,7 +302,7 @@ Com **10 unidades** (uma rede média), seriam de R$ 24 mil a R$ 39 mil por mês.
 
 **Continua valendo:** nem parceria pura, nem white label puro. Começa como piloto em parceria e vira white label com mensalidade baixa + participação nas vendas. **O que muda:** a porta de entrada é a captação, e a parte variável passa a incluir a matrícula.
 
-### Etapa 1: Runner como **cliente fundador** (inauguração + 90 dias)
+### Etapa 1: a primeira academia como **cliente fundador** (inauguração + 90 dias)
 - **Pacote de inauguração sem custo** (ou a preço de custo) e **90 dias sem mensalidade**. A academia paga só a verba dos anúncios (direto à Meta) e, se quiser, a gestão de anúncios.
 - **A NextLevel fica com 10% das vendas no app** (reservas, loja, adicionais). As reservas de fundador são da academia; os 10% cobrem pagamento e hospedagem.
 - **Em troca, por escrito:** acesso aos números (contatos, matrículas, evasão), uso do caso como vitrine, depoimento em vídeo e **apresentação à franqueadora** ao fim dos 90 dias.
@@ -322,7 +322,7 @@ Com **10 unidades** (uma rede média), seriam de R$ 24 mil a R$ 39 mil por mês.
 Referências de preço: RD Station Light (de R$ 50 a R$ 75, só marketing genérico); Tecnofit (cerca de R$ 3,38 por aluno, só gestão); GoHighLevel (US$ 297 a US$ 497 **para a agência**, antes da revenda); Gymdesk (US$ 39 só pelo app de marca). **R$ 397 a R$ 797 com captação + clube + loja fica abaixo de qualquer combinação equivalente.**
 
 ### Etapa 3: rede, outros segmentos e clube
-- Com o relatório de 90 dias, propor à **franqueadora da Runner** o plano Rede e o **pacote de inauguração para cada unidade nova**.
+- Com o relatório de 90 dias, propor à **franqueadora** o plano Rede e o **pacote de inauguração para cada unidade nova**.
 - Oferecer o **pacote de inauguração a outras redes em expansão** (Gaviões, Selfit, redes médias): cada inauguração é uma venda com prazo.
 - Abrir o **Clube NextLevel** entre academias e lojas da plataforma.
 
@@ -359,9 +359,10 @@ Isso segue a regra anti-duplicação: **um motor, vários pacotes**, com a marca
 | Anúncios na Meta pelo painel do lojista (D299) | **Pronto por loja** | Nada para começar |
 | Lista de espera da loja (`store_waitlist`) | Por loja, só e-mail | Telefone/WhatsApp e consentimento (ou usar o funil abaixo) |
 | Origem de cada contato, código da visita, links rastreados (D290 a D294) | **Só para o comercial da NextLevel** (por marca) | **Passar a servir cada loja**, isolando os dados de cada uma |
-| Funil Comercial com Fechou/Perdeu (D294) | Só para a NextLevel | Mesma coisa + etapas de visita/aula + cronômetro de resposta |
+| CRM do lojista (D207) | **Pronto por loja**: junta quem conversou, abandonou carrinho, comprou, voltou e sumiu; próxima ação e notas | Etapas de visita/aula e contato que ainda não comprou nada (formulário, quiz) |
+| Funil Comercial com Fechou/Perdeu (D294) | Só para a NextLevel | Motivo de perda e cronômetro de resposta no CRM do lojista |
 | Retorno à Meta/Google pelo servidor (D298) | Só para a NextLevel | Por loja, com a conta/pixel da própria loja |
-| Club (pontos, indicações, vales, carteirinha, ranking, balcão) | Nasceu para a Brás | Tirar a amarra de marca |
+| Club (pontos, indicações, vales, carteirinha, ranking, balcão) | Nasceu para a Brás; **decisão do dono de 19/10/2026 limita o Club à Brás e à Cargas** (`src/lib/club-marcas.ts`) | Nova decisão do dono para abrir o Club às outras marcas + tirar a amarra de marca |
 | IA de conversa | Existe | Base de respostas por loja e marcação de visita |
 | Agendamento de visita/aula | Só na Brás (`bd_appointments`) | Versão para qualquer loja |
 | WhatsApp oficial (mensagem automática) | Hoje só mensagem pronta com clique | Integração oficial (custo por mensagem cobrado pela Meta) |
@@ -443,10 +444,7 @@ Isso segue a regra anti-duplicação: **um motor, vários pacotes**, com a marca
 - Bodytech e o BTFIT: https://mundodomarketing.com.br/bodytech-reposiciona-marca-e-planeja-dobrar-rede-de-academias-em-cinco-anos
 - Gamificação personalizada com dados da Pacto (SBC): https://sol.sbc.org.br/index.php/erigo/article/download/39535/39307
 
-**Runner e agregadores**
-- Wellhub, Runner Cursino: https://wellhub.com/pt-br/search/partners/runner-cursino-vila-moraes-sao-paulo
-- Wellhub, Runner Freguesia do Ó: https://wellhub.com/pt-br/search/partners/runner-freguesia-do-o-freguesia-do-o-sao-paulo
-- TotalPass, Runner: https://totalpass.com/br/academias/runner/
+**Agregadores**
 - Quanto a academia recebe por check-in: https://www.remessaonline.com.br/blog/quanto-academia-recebe-por-check-in/
 - Wellhub e TotalPass para academias (Seu Dinheiro): https://www.seudinheiro.com/2026/seu-negocio/wellhub-e-totalpass-vale-a-pena-para-as-academias-estar-nos-aplicativos/
 - Academias de bairro saindo das plataformas (Correio): https://www.correio24horas.com.br/salvador/fim-do-gympass-academias-de-bairro-rompem-com-plataformas-e-tendencia-cresce-no-pais-0226
@@ -491,4 +489,4 @@ Isso segue a regra anti-duplicação: **um motor, vários pacotes**, com a marca
 - Mighty Networks, alternativas e preços: https://www.choicely.com/blog/mighty-networks-alternatives
 - Skool x Circle x Mighty: https://app.unilink.us/blog/skool-vs-circle-vs-mighty-networks-2026
 
-> Preços de fornecedores mudam e muitos são sob consulta. Valores de blogs de concorrentes e de agências estão marcados como estimativa. Os números de conversão da seção 10 são hipóteses: o relatório de 90 dias do piloto vai trocá-los por números reais da Runner.
+> Preços de fornecedores mudam e muitos são sob consulta. Valores de blogs de concorrentes e de agências estão marcados como estimativa. Os números de conversão da seção 10 são hipóteses: o relatório de 90 dias do piloto vai trocá-los por números reais do primeiro cliente.
