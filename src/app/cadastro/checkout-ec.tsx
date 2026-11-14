@@ -26,7 +26,7 @@ const PARA: Record<string, string> = { COMMERCE_START: "Para começar a vender",
  * (no celular, acima do botão). Os valores vêm do catálogo do Master; na Black, o anual já chega com 2 meses grátis e é o
  * mesmo valor que a assinatura congela (`startCommerceSubscription`). Sem "1º mês" especial (D233).
  */
-export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle, initialRef }: Props) {
+export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle, initialRef, formato }: Props & { formato?: "SITE" | "LOJA" }) {
   const [plan, setPlan] = React.useState<PlanoCheckout["key"]>(initialPlan ?? "COMMERCE_PRO");
   const [cycle, setCycle] = React.useState<"MONTHLY" | "ANNUAL">(black ? (initialCycle === "MONTHLY" && initialPlan ? "MONTHLY" : "ANNUAL") : initialCycle);
   const [f, setF] = React.useState({ storeName: "", ownerName: "", email: "", password: "", taxId: "" });
@@ -41,7 +41,7 @@ export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle,
   const set = (patch: Partial<typeof f>) => setF((x) => ({ ...x, ...patch }));
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setError(null);
-    start(async () => { const r = await signupAction({ ...f, ref: initialRef, plan, cycle }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
+    start(async () => { const r = await signupAction({ ...f, ref: initialRef, plan, cycle, formato }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
   };
 
   const resumo = (

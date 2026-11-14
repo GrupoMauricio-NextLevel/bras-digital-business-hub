@@ -22,6 +22,8 @@ import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { SignupForm } from "./signup-form";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { finFlag } from "@/lib/finance/flags";
+import { businessLigado } from "@/lib/business/modulos";
+import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,12 +41,14 @@ const recursosDoCheckout = (b: BeneficioComIa) => [
   `${b.temaPago ? "Tema pago incluso · " : ""}Suporte: ${b.suporte}`,
 ];
 
-export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string; utm_source?: string }> }) {
+export default async function CadastroPage({ searchParams }: { searchParams: Promise<{ cupom?: string; plano?: string; fornecedor?: string; ref?: string; ciclo?: string; video?: string; utm_source?: string; para?: string }> }) {
   const brand = await requireBrandFeature("signup");
   // Brás Digital (D92): cadastro grátis de membro com CNPJ, sem plano, loja ou fornecedor.
   if (isClosedCommerceBrand(brand)) { const q = await searchParams; return <BrasSignupPage brand={brand} videoId={q.video} source={q.utm_source} />; }
   const independent = !brandHas(brand, "dropship");
   const sp = await searchParams;
+  // NB1 (D297): caminho Site (site para a empresa) só com o NextLevel Business ligado; o servidor confere de novo.
+  const site = brand.code === "NEXTLEVEL_COMMERCE" && businessLigado() && sp.para === "site";
   const db = await getDb();
   const [suppliers, book] = await Promise.all([independent ? Promise.resolve([]) : listSignupSuppliers(db), getPriceBook(db)]);
   // Sem dropshipping (NextLevel Commerce) não existe "Drop manual": só loja com endereço da marca ou com domínio próprio.
@@ -82,10 +86,10 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
             <Link href="/" aria-label={`${brand.name}, página inicial`}><BrandLogo brand={brand} tone="on-dark" className="h-8" priority /></Link>
             <span className="ck-seguro"><Lock className="size-3.5" aria-hidden />Checkout seguro</span>
           </div>
-          <h1 className="ck-titulo mt-8">{b.ativa ? <>Sua loja no ar com o <em>preço da Black</em>.</> : <>Sua loja no ar <em>hoje</em>.</>}</h1>
-          <p className="ck-intro mt-3">Escolha o plano, crie a conta e entre direto no painel. Taxa zero da plataforma nas vendas com o Mercado Pago.</p>
-          <ol className="ck-etapas mt-5" aria-label="Etapas"><li aria-current="step">01 · Plano</li><li aria-current="step">02 · Seus dados</li><li>03 · Loja no painel</li></ol>
-          <div className="mt-8"><CheckoutEc plans={doCheckout} trialDays={pv.offer?.trialDays ?? 0} black={b.ativa ? { fim: b.fim, restanteMs: b.restanteMs } : null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} initialRef={(sp.ref ?? "").slice(0, 40) || undefined} /></div>
+          <h1 className="ck-titulo mt-8">{site ? <>Seu site no ar <em>hoje</em>.</> : b.ativa ? <>Sua loja no ar com o <em>preço da Black</em>.</> : <>Sua loja no ar <em>hoje</em>.</>}</h1>
+          <p className="ck-intro mt-3">{site ? `Escolha o plano, crie a conta e entre direto no painel: site da empresa, contatos e o ${NOME_GERENCIADOR.nome} para cuidar do negócio.` : "Escolha o plano, crie a conta e entre direto no painel. Taxa zero da plataforma nas vendas com o Mercado Pago."}</p>
+          <ol className="ck-etapas mt-5" aria-label="Etapas"><li aria-current="step">01 · Plano</li><li aria-current="step">02 · Seus dados</li><li>{site ? "03 · Site no painel" : "03 · Loja no painel"}</li></ol>
+          <div className="mt-8"><CheckoutEc formato={site ? "SITE" : "LOJA"} plans={doCheckout} trialDays={pv.offer?.trialDays ?? 0} black={b.ativa ? { fim: b.fim, restanteMs: b.restanteMs } : null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} initialRef={(sp.ref ?? "").slice(0, 40) || undefined} /></div>
           <p className="mt-6 text-center text-sm text-[#9fb3d9]">Já tem conta? <Link href="/login" className="font-semibold text-white underline underline-offset-4">Entrar na área de membros</Link></p>
           <div className="ck-apoio mt-8"><ApoioEquipe titulo="Dúvida no checkout? Fale com a equipe" texto="Gente de verdade responde, na nossa sede em São Paulo." mensagem={`Olá! Tenho uma dúvida no cadastro da ${brand.name}.`} /></div>
         </main>

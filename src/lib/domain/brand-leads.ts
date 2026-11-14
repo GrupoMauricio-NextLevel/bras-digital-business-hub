@@ -17,18 +17,32 @@ export const leadSchema = z.object({
   segment: z.string().trim().max(60).optional(),
   message: z.string().trim().max(600).optional(),
   affiliateRef: z.string().trim().max(60).optional(),
+  /** Caminho escolhido na entrada (NB1, D297): site da empresa, loja virtual ou ainda não sabe. Vai para `needs` como "caminho:<valor>". */
+  caminho: z.enum(["site", "loja", "indeciso"]).optional(),
 });
+
+/** Marca o caminho nas necessidades do interessado, trocando a escolha anterior (um caminho só). */
+export function comCaminho(needs: string[], caminho: "site" | "loja" | "indeciso" | undefined): string[] {
+  if (!caminho) return needs;
+  return [...needs.filter((n) => !n.startsWith("caminho:")), `caminho:${caminho}`];
+}
+
+/** Caminho que o interessado escolheu (para o Comercial e para criar a conta no formato certo). */
+export const caminhoDoInteressado = (needs: readonly string[]): "site" | "loja" | "indeciso" | null => {
+  const v = needs.find((n) => n.startsWith("caminho:"))?.slice(8);
+  return v === "site" || v === "loja" || v === "indeciso" ? v : null;
+};
 
 /** Interessado numa marca (lista de espera e implantação assistida). Repetir o mesmo e-mail na marca atualiza o pedido em vez de duplicar. */
 export async function createBrandLead(db: Database, raw: z.input<typeof leadSchema>) {
   const input = leadSchema.parse(raw);
   const existing = await db.query.brandLeads.findFirst({ where: and(eq(brandLeads.brand, input.brand), eq(brandLeads.email, input.email)) });
   if (existing) {
-    await db.update(brandLeads).set({ name: input.name, phone: input.phone, storeName: input.storeName ?? existing.storeName, segment: input.segment ?? existing.segment, message: input.message ?? existing.message, updatedAt: new Date().toISOString() }).where(eq(brandLeads.id, existing.id));
+    await db.update(brandLeads).set({ name: input.name, phone: input.phone, storeName: input.storeName ?? existing.storeName, segment: input.segment ?? existing.segment, message: input.message ?? existing.message, needs: comCaminho(existing.needs, input.caminho), updatedAt: new Date().toISOString() }).where(eq(brandLeads.id, existing.id));
     return { id: existing.id, created: false };
   }
   const id = newId("bld");
-  await db.insert(brandLeads).values({ id, brand: input.brand, name: input.name, email: input.email, phone: input.phone, storeName: input.storeName || null, segment: input.segment || null, message: input.message || null, affiliateRef: input.affiliateRef || null });
+  await db.insert(brandLeads).values({ id, brand: input.brand, name: input.name, email: input.email, phone: input.phone, storeName: input.storeName || null, segment: input.segment || null, message: input.message || null, affiliateRef: input.affiliateRef || null, needs: comCaminho([], input.caminho) });
   await sendEmail(db, { kind: "LEAD_RECEIVED", to: input.email, brand: input.brand, dedupeKey: `LEAD:${id}`, ...emails.leadReceived(input.name.split(" ")[0]!) });
   return { id, created: true };
 }

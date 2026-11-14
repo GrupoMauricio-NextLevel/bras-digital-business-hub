@@ -24,7 +24,10 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     // Sem ?ref= na URL, vale o último link do parceiro guardado no cookie (30 dias).
     const ref = input.ref || (await cookies()).get("nl-ref")?.value;
     const brand = await getBrand();
-    const created = await signupMember(await getDb(), { ...input, ref, brand: brand.code, independent: !brandHas(brand, "dropship") });
+    // NB1 (D297): o caminho Site só vale com o NextLevel Business ligado e na Commerce; senão, loja como sempre.
+    const { businessLigado } = await import("@/lib/business/modulos");
+    const formato = input.formato === "SITE" && businessLigado() && brand.code === "NEXTLEVEL_COMMERCE" ? "SITE" as const : "LOJA" as const;
+    const created = await signupMember(await getDb(), { ...input, formato, ref, brand: brand.code, independent: !brandHas(brand, "dropship") });
     await setSessionCookie(created.userId);
     const db = await getDb();
     // TR3 (D294): de onde veio quem criou a loja (anúncio, Instagram, Google…), para o Comercial e o retorno às plataformas.

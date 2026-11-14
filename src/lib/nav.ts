@@ -257,6 +257,59 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Contratos", href: "/merchant/contratos", icon: "ReceiptText", group: "Loja e ajustes" },
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
+/**
+ * Menu do lojista com o NextLevel Business (NB1, D295/D297): quatro grupos e nenhum endereço novo ou perdido.
+ * - "NextLevel Business" (o gerenciador do negócio): o dia a dia, igual para todo caminho;
+ * - "Site" e "Loja virtual": as funções de cada caminho, conforme os módulos do negócio;
+ * - "Ajustes": empresa, equipe, assinatura e registros.
+ * Só vale com a chave BUSINESS_V1 ligada; sem ela, o painel usa `COMMERCE_STORE_NAV` como antes.
+ * As telas novas (Contatos, Páginas, Serviços, Captação, Caixa) entram no menu nas fases em que ficarem prontas.
+ */
+export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador: string): NavItem[] {
+  const B = nomeGerenciador;
+  const site = m.ativos.has("site");
+  const loja = m.ativos.has("loja");
+  const itens: NavItem[] = [
+    { label: "Agora", href: "/merchant", icon: "Bell", exact: true, group: B, bottom: true },
+    { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: B, bottom: true },
+    { label: "Clientes", href: "/merchant/crm", icon: "UsersRound", group: B, bottom: true },
+    { label: "Pedidos e vendas", href: "/merchant/orders", icon: "ShoppingBag", group: B, bottom: true },
+    { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: B },
+    { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: B },
+    { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: B },
+    { label: "Pede pro Maurício", href: "/merchant/ia", icon: "Sparkles", group: B, badge: "Novo" },
+  ];
+  if (site) itens.push(
+    ...(loja ? [] : [{ label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Site" } as NavItem]),
+    { label: "Domínio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Site" },
+  );
+  if (loja) itens.push(
+    { label: "Minha loja", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
+    { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Loja virtual" },
+    { label: "Categorias", href: "/merchant/catalogo/categorias", icon: "Tag", group: "Loja virtual" },
+    { label: "Banners", href: "/merchant/banners", icon: "Image", group: "Loja virtual", badge: "Novo" },
+    { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Loja virtual" },
+    { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Loja virtual" },
+    { label: "Pós-venda", href: "/merchant/after-sales", icon: "PackageCheck", group: "Loja virtual" },
+    { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Loja virtual" },
+    { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
+    { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
+    { label: "Cadastro de clientes", href: "/merchant/customers", icon: "Users", group: "Loja virtual" },
+  );
+  // Caminho não usado: um cartão só, com o caminho de upgrade (sem dez itens com cadeado).
+  else itens.push({ label: "Ligar loja virtual", href: "/merchant/services", icon: "Store", group: "Loja virtual", locked: true });
+  itens.push(
+    { label: "Empresa", href: "/merchant/settings", icon: "Settings", group: "Ajustes" },
+    { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Ajustes" },
+    { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Ajustes" },
+    { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Ajustes" },
+    { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Ajustes" },
+    { label: "Contratos", href: "/merchant/contratos", icon: "ReceiptText", group: "Ajustes" },
+    { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Ajustes" },
+  );
+  return itens;
+}
+
 export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */

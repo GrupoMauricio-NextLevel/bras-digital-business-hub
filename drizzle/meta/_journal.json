@@ -680,6 +680,13 @@
       "when": 1794600626133,
       "tag": "0096_origens_contato",
       "breakpoints": true
+    },
+    {
+      "idx": 97,
+      "version": "7",
+      "when": 1794614970539,
+      "tag": "0097_negocio_formato_fuso",
+      "breakpoints": true
     }
   ]
 }

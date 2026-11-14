@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
+import { caminhoDoInteressado } from "./brand-leads";
 import { activities, brandLeads, crmAcompanhamento, iaConversas, iaMensagens, organizations, stores, users } from "@/db/schema";
 import { DomainError, NotFoundError } from "./errors";
 import { requireMasterFn, type Actor } from "./access";
@@ -8,6 +9,9 @@ import { situacoesComerciais, type SituacaoComercial } from "./situacao-comercia
 import { linkWhatsapp } from "./agora-ecommerce";
 import { getConfigComercial, mensageiro } from "./comercial-config";
 import { origensDe, ROTULO_VIA, type OrigemResumo } from "./trafego/origem-contato";
+
+/** Caminho escolhido na entrada (NB1, D297), mostrado no detalhe do cartão do Comercial. */
+const ROTULO_CAMINHO: Record<string, string> = { site: "Quer: site para a empresa", loja: "Quer: loja virtual", indeciso: "Ainda não sabe: site ou loja" };
 
 /**
  * Comercial da Commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com
@@ -109,7 +113,7 @@ export async function funilComercial(db: Database, actor: Actor, agora = new Dat
     if (ja) { ja.leadId ??= l.id; continue; }
     const p = comAcomp({ chave: `interessado:${l.id}`, nome: l.name, empresa: l.storeName, email: l.email, whatsapp: l.phone, etapa: l.status === "LOST" ? "perdido" : "contato", desde: l.createdAt,
       origem: `Formulário${l.attribution?.utm_source ? ` · ${l.attribution.utm_source}` : l.affiliateRef ? " · parceiro" : ""}`, temperatura: temperatura({ etapa: "contato", ultima: l.createdAt }, agora),
-      detalhe: [l.segment, l.message?.slice(0, 90)].filter(Boolean).join(" · "), storeId: null, leadId: l.id, conversaId: null, situacao: null });
+      detalhe: [ROTULO_CAMINHO[caminhoDoInteressado(l.needs) ?? ""], l.segment, l.message?.slice(0, 90)].filter(Boolean).join(" · "), storeId: null, leadId: l.id, conversaId: null, situacao: null });
     pessoas.push(p); indexar(p);
   }
   // TR3 (D294): a origem da pessoa é a da forma mais antiga que ela deixou (formulário ou conversa) ou do cadastro da loja.

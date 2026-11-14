@@ -44,12 +44,14 @@ function Ring({ done, total }: { done: number; total: number }) {
 }
 
 /** Início do painel Commerce: só dados reais (nada de número ou pendência inventada). */
-export function CommerceHome({ firstName, greeting, store, o, readiness, attention, pulso }: {
+export function CommerceHome({ firstName, greeting, store, o, readiness, attention, pulso, negocio }: {
   firstName: string; greeting: string;
   store: { name: string; slug: string; status: string; publishedAt: Date | string | null };
   o: Overview; readiness: StoreReadiness | null; attention: Attention[];
   /** Pulso da loja (D169): vendas de hoje, pedidos parados e situação, logo abaixo da saudação. */
   pulso?: React.ReactNode;
+  /** NextLevel Business (NB1, D297): nome do gerenciador e se o negócio é site (sem vitrine de loja). Ausente = como antes. */
+  negocio?: { nome: string; site: boolean };
 }) {
   const ticket = o.last30Count > 0 ? Math.round(o.sales / o.last30Count) : null;
   const published = !!store.publishedAt;
@@ -98,17 +100,17 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
       {/* Conta nova (ainda sem venda): ilustração de boas-vindas à direita; no celular o texto ocupa a largura toda. */}
       {firstAccess ? <Ilustracao nome="ui-boas-vindas-loja" priority className="absolute right-6 top-1/2 hidden size-40 -translate-y-1/2 sm:block lg:right-12 lg:size-52" /> : null}
       <div className="relative max-w-[60%] max-sm:max-w-none">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da loja</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral do negócio` : "Visão geral da loja"}</p>
         <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>
         <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{store.name}</span></p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium">{store.status === "ACTIVE" ? "Conta ativa" : <StatusBadge value={store.status} dot />}</span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium"><span aria-hidden className={`size-1.5 rounded-full ${published ? "bg-success" : "bg-subtle-foreground"}`} />{published ? "Loja publicada" : "Loja ainda não publicada"}</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium"><span aria-hidden className={`size-1.5 rounded-full ${published ? "bg-success" : "bg-subtle-foreground"}`} />{negocio?.site ? (published ? "Site publicado" : "Site ainda não publicado") : published ? "Loja publicada" : "Loja ainda não publicada"}</span>
         </div>
         {pulso}
         <div className="mt-5 flex flex-wrap gap-2">
-          <a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a>
-          <Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link>
+          <a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />{negocio?.site ? "Ver site" : "Ver loja"}</a>
+          {negocio?.site ? <Link href="/theme-editor" className={buttonVariants()}>Editar o site</Link> : <Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link>}
         </div>
       </div>
     </section>

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 297,
+  "frente": "E-commerce",
+  "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D296)."
+ },
+ {
   "numero": 296,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
@@ -271,12 +278,5 @@
   "titulo": "AT1 do atacado: painel do lojista e travas por plano",
   "data": "2026-11-05",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
- },
- {
-  "numero": 257,
-  "frente": null,
-  "titulo": "AT0 do atacado: dados e motor único de preço",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
  }
 ]

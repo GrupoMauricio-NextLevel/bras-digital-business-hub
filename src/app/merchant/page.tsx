@@ -25,6 +25,8 @@ import { getMerchantOverview } from "@/lib/queries/merchant";
 import { formatBRL } from "@/lib/money";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { CommerceHome } from "@/components/commerce/commerce-home";
+import { modulosDoNegocio, temLoja } from "@/lib/business/modulos";
+import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
@@ -79,12 +81,17 @@ export default async function MerchantHome() {
     pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
     balanceCents: balance, stockBack, now: new Date(),
   })].map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
+  // NextLevel Business (NB1, D297): com a chave ligada, o topo diz "NextLevel Business · Visão geral do negócio"; num SITE,
+  // a fila mostra só o que é do negócio (clientes esperando, atendimento), sem as pendências de montar uma loja.
+  const negocio = commerce ? await modulosDoNegocio(db, store.id) : null;
+  const ehSite = !!negocio?.business && !temLoja(negocio);
   const pulso = pulsoDaLoja({
-    hoje: o.today, commerce, publicada: Boolean(store.publishedAt), faltaParaVender: readiness?.missingBlocking.length ?? 0, precisaRecarga: isLite && needsTopUp,
+    hoje: o.today, commerce, publicada: Boolean(store.publishedAt), faltaParaVender: ehSite ? 0 : readiness?.missingBlocking.length ?? 0, precisaRecarga: isLite && needsTopUp,
     parados: pedidosParados({ pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit, independent: o.independent, now: new Date() }),
   });
 
-  if (commerce) return <>{faixaNovidade}{boasVindas}<CommerceHome firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={readiness} attention={attention} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
+  const filaFinal = ehSite ? attention.filter((a) => extra.some((e) => e.key === a.key) && a.key !== "produtos") : attention;
+  if (commerce) return <>{faixaNovidade}{boasVindas}<CommerceHome negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;

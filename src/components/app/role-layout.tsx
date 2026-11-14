@@ -7,7 +7,9 @@ import { isRecordingMode } from "@/lib/gravacao-server";
 import { type FeatureKey } from "@/lib/features";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
-import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
+import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navDoNegocio, navForBrand, type Panel } from "@/lib/nav";
+import { modulosDoNegocio } from "@/lib/business/modulos";
+import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
 import { SeletorNegocios } from "@/components/master/seletor-negocios";
 import { marcasAtivasNoMaster } from "@/lib/master-marca";
@@ -117,9 +119,13 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   }
   if (commerceStore || (scope === "commerce-admin" && !escritorioEc)) {
     const staff = session.user.storeRole === "STAFF";
+    // NextLevel Business (NB1, D297): com a chave BUSINESS_V1, o menu vira os quatro grupos do gerenciador do negócio.
+    const negocio = commerceStore ? await modulosDoNegocio(db, store!.id) : null;
+    const menuLoja = negocio?.business ? navDoNegocio(negocio, NOME_GERENCIADOR.nome) : COMMERCE_STORE_NAV;
     const commerceItems = commerceStore
-      ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
+      ? (staff ? menuLoja.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : menuLoja)
       : COMMERCE_ADMIN_NAV;
+    const subPainel = negocio?.business ? "Painel do negócio" : "Painel da loja";
     const demoUsersC = isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined;
     // Painel do lojista com a casca do Master (D207): cor da NextLevel, faixa com a novidade e o agente, menu do escritório.
     const capaLoja = commerceStore ? { oferta: { texto: "Atendimento ao vivo: responda os clientes da sua loja por aqui", href: "/merchant/atendimento" }, agente: !!botaoIa } : undefined;
@@ -135,9 +141,10 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
         roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
         tenantName={commerceStore ? store!.name : "NextLevel Commerce"}
-        tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
+        tenantSub={commerceStore ? subPainel : "Administração da plataforma"}
         userName={session.user.name}
         storefrontHref={commerceStore ? storefrontHref : undefined}
+        storefrontLabel={negocio?.business && !negocio.ativos.has("loja") ? "Ver site" : undefined}
         demoUsers={demoUsersC}
         onSwitch={loginAs}
         onLogout={logout}
@@ -149,7 +156,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         // D217: painel do lojista só com a marca do cliente; sem o fio e o botão "Marcas do grupo" da NextLevel.
         banner={<>{supportBar}{commerceStore ? null : ecoBar}{commerceStore ? <FaixaBlack lugar="lojista" /> : null}{banner}{botaoIa}</>}
         capa={capaLoja}
-        marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : "Painel da loja" } : undefined}
+        marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : subPainel } : undefined}
         extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
       >
         {children}

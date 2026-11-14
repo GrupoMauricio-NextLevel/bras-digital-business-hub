@@ -189,6 +189,8 @@ export const signupSchema = z.object({
   /** Plano Commerce escolhido no cadastro (D90). Só para loja independente com os planos novos ligados. */
   plan: z.enum(["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"]).optional(),
   cycle: z.enum(["MONTHLY", "ANNUAL"]).default("MONTHLY"),
+  /** Caminho escolhido na entrada (NB1, D297): site da empresa ou loja virtual. Só vale para loja independente da Commerce. */
+  formato: z.enum(["LOJA", "SITE"]).default("LOJA"),
 });
 
 /** Fornecedores que aceitam novos membros (página pública ativa). Importadoras de marca fechada (Brás Digital) nunca entram na lista pública. */
@@ -233,7 +235,7 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   if (!independent && (await isClosedCommerceSupplier(db, supplierId))) throw new DomainError("SUPPLIER", "Escolha o fornecedor que vai abastecer a sua loja.");
   if (independent && (await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) }))) throw new DomainError("EMAIL_TAKEN", "Já existe um usuário com este e-mail.");
   // Loja independente da NextLevel Commerce (D89): sem fornecedor e sem rede.
-  const created = await createStore(db, independent ? null : supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand });
+  const created = await createStore(db, independent ? null : supplierId, { name: input.storeName, offer: input.offer, ownerName: input.ownerName, ownerEmail: input.email, brand: input.brand, formato: independent ? input.formato : "LOJA" });
   if (independent) await db.update(stores).set({ kind: "SUPPLIER_OWN" }).where(eq(stores.id, created.storeId));
   const user = await db.query.users.findFirst({ where: eq(users.email, input.email.toLowerCase()) });
   if (!user) throw new NotFoundError("Usuário não encontrado.");

@@ -3615,3 +3615,51 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - a Commerce não mostra "SuperDrop" no topo do painel (usa `commerce-home.tsx`; a NB1 troca para "NextLevel Business · Visão geral do negócio");
   - com o cadastro fechado (`BRAND_SIGNUP_NEXTLEVEL_COMMERCE` desligada), a entrada é `/quero-minha-loja`, que também passa a perguntar Site ou Loja virtual (Parte 5.15).
 - **Nada no código de produto.** Próxima fase: NB1.
+
+## D297 — [E-commerce] NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site (2026-11-14)
+- **Pedido do dono:** "prossiga" (NB1 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md`, depois da NB0, D296).
+- **Tudo atrás da chave `BUSINESS_V1`** (no Render, `true` liga; ausente ou outro valor, o sistema fica exatamente como antes). **Recomendação:** ligar em produção só depois da NB3, quando o site já tiver páginas e o formulário de orçamento; até lá, conferir pela demonstração.
+- **Banco (migração 0097, só acrescenta):**
+  - `stores.formato` (`LOJA` para todas as contas antigas, ou `SITE`);
+  - `stores.fuso` (padrão `America/Sao_Paulo`, base do portal da academia).
+- **Regra única de módulos** (`src/lib/business/modulos.ts`):
+  - com a chave e na marca Commerce, todo negócio tem Visão geral e Contatos;
+  - Site vem do formato `SITE` ou do direito `modulo:site`;
+  - Loja vem do formato `LOJA` ou do direito `modulo:loja`;
+  - Captação, Caixa, Meta e Portal só com direito (`entitlements`, chave `modulo:<nome>`);
+  - `requireModulo` barra no servidor;
+  - sem a chave, todo negócio volta a ser loja (reversão segura).
+- **Nomes** em `src/lib/marcas/nextlevel-ecommerce.ts`: `NOME_GERENCIADOR` ("NextLevel Business", "Gerenciador do seu negócio") e `CAMINHOS` (Site para minha empresa · Loja virtual).
+- **Entrada:**
+  - **home:** seção "O que o seu negócio precisa agora?" com os dois caminhos;
+  - **cadastro aberto:** `/cadastro?para=site` ("Seu site no ar hoje") cria a conta `SITE`. O servidor só aceita `SITE` com a chave ligada e na Commerce;
+  - **formulário assistido** `/quero-minha-loja`: pergunta "O que você quer?" (Site para minha empresa · Loja virtual · Ainda não sei). A resposta vai para o Comercial do Master no detalhe do cartão ("Quer: site para a empresa"), guardada em `brand_leads.needs` como `caminho:<valor>`; a segunda escolha substitui a primeira;
+  - **atalho** `/quero-meu-site` para anúncios: mantém as etiquetas da campanha.
+- **Painel:**
+  - o menu do lojista vira quatro grupos (`navDoNegocio` em `src/lib/nav.ts`):
+    - **NextLevel Business:** Agora, Atendimento, Clientes, Pedidos e vendas, Financeiro, Campanhas, Análise, Pede pro Maurício;
+    - **Site:** Aparência, Domínio;
+    - **Loja virtual:** Minha loja, Produtos, Categorias, Banners, Cupons, Avaliações, Pós-venda, Migrar e anunciar, Aparência, Temas, Cadastro de clientes;
+    - **Ajustes:** Empresa, Equipe, Aplicativos, Ferramentas, Minha assinatura, Contratos, Registro de ações;
+  - nenhum endereço some (teste);
+  - quem é só Site vê um cartão "Ligar loja virtual" no lugar dos itens de loja;
+  - a visão geral mostra "NextLevel Business · Visão geral do negócio" e "Painel do negócio";
+  - num `SITE`: selo "Site publicado", botões "Ver site" e "Editar o site", e a fila sem as pendências de montar loja.
+- **Vitrine do caminho Site** (sem o módulo Loja): catálogo, produto, carrinho e checkout mostram "Página não encontrada" (como toda página inexistente da vitrine, que carrega em etapas); `feed.xml` responde 404; o `sitemap.xml` lista só o início.
+- **Ficou para as próximas fases:**
+  - a página pública `/empresas` (sai na NB3, quando houver formulário e contatos para mostrar de verdade);
+  - criar a conta no formato certo pelo Master, que hoje não cria conta Commerce à mão (NB2);
+  - esconder o carrinho e os blocos de produto do tema na página inicial de um `SITE` (NB2, com o modelo institucional).
+  - textos de loja que ainda aparecem para um `SITE` (NB2):
+    - "Status da loja" e o recado do fundador ("Sua loja já existe") na visão geral;
+    - o botão "Publicar loja" em Minha loja;
+    - os termos de uso, que descrevem a plataforma como loja virtual (revisar com o texto jurídico na NB8).
+- **Conferido no navegador** (demonstração com a chave ligada; relatório `docs/relatorios/NB1-2026-11-14.md`):
+  - home com os dois caminhos;
+  - `/quero-meu-site` com site marcado e a etiqueta da campanha mantida, sem rolagem lateral em 360 px;
+  - cadastro "Seu site no ar hoje" → aceite dos termos → painel do negócio com Site, sem Produtos e com "Ligar loja virtual";
+  - site publicado pelo painel: catálogo, carrinho e checkout com "não encontrada", e `feed.xml` com 404;
+  - lojista com loja: menu em quatro grupos;
+  - axe sem violações graves no formulário, na home (na seção nova) e no painel;
+  - regressão `smoke-demo`, `storefront-journey` e `theme-editor` passando.
+- **Testes:** `tests/business-modulos.test.ts` (regra dos módulos, cadastro com o caminho, direitos, `requireModulo`, caminho do interessado) e `tests/nav-business.test.ts` (grupos, nenhum endereço perdido, cartão de upgrade, barra do celular).

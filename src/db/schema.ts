@@ -84,6 +84,13 @@ export const stores = pgTable("stores", {
   kind: text("kind", { enum: ["MEMBER", "SUPPLIER_OWN"] }).notNull().default("MEMBER"),
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
+  /**
+   * Caminho do negócio (NB1, D295/D297): LOJA = loja virtual (todas as contas antigas); SITE = site da empresa, sem
+   * catálogo, carrinho e checkout na vitrine até ligar a loja. Fonte única de leitura: `src/lib/business/modulos.ts`.
+   */
+  formato: text("formato", { enum: ["LOJA", "SITE"] }).notNull().default("LOJA"),
+  /** Fuso do negócio (NB1): horários de contatos, caixa e aulas do portal. */
+  fuso: text("fuso").notNull().default("America/Sao_Paulo"),
   tagline: text("tagline"),
   /** Loja de demonstração pública de um tema (chave do tema). Nunca recebe pedido real e não é indexada. */
   showcaseTheme: text("showcase_theme"),
