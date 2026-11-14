@@ -1197,7 +1197,7 @@ export const passwordResets = pgTable("password_resets", {
 export const iaConversas = pgTable("ia_conversas", {
   id: id(),
   brand: text("brand").notNull(),
-  canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA"] }).notNull().default("HOME"),
+  canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA", "EMAIL"] }).notNull().default("HOME"),
   /** Ajuda do lojista (D201): a conversa pertence a esta loja (canal PAINEL). */
   storeId: text("store_id").references(() => stores.id),
   tokenHash: text("token_hash").notNull(),

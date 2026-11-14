@@ -3654,3 +3654,11 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Quem pode:** só o dono da loja (funcionário não); na mesa, o dono do Master, o Comercial e o Conteúdo.
 - **Banco:** tabelas `anuncios_loja`, `anuncios_eventos` e `anuncios_resultados` (migração 0098).
 - **Depois:** ligação com a API de Marketing da Meta para os números virem sozinhos (TR6) e criação de campanha pela API quando fizer sentido.
+
+# D300 — [E-commerce] E-mail para suporte@ vira atendimento no Master (2026-11-14)
+- **Pedido do dono:** e-mail, atendimento e CRM ligados; quem escreve para suporte@ deve aparecer junto com o WhatsApp e o chat do site.
+- **Como funciona:** e-mail para `suporte@nextlevelcommerce.com.br` entra em Master → Atendimento como conversa com a etiqueta "E-mail" (uma conversa aberta por pessoa; respostas novas entram na mesma). A parte citada da resposta é tirada; o assunto aparece no começo.
+- **Responder:** a resposta da equipe no Atendimento sai por e-mail pela caixa da Hostinger, na mesma conversa do cliente. Se o envio falhar, nada fica registrado como respondido.
+- **Segurança:** o aviso da Hostinger (`/api/webhooks/hostinger-mail`) só é aceito com o segredo `HOSTINGER_MAIL_WEBHOOK_SECRET` (o dono cola no Render); o corpo do aviso é ignorado: o sistema lê a própria caixa e cada e-mail entra uma vez só.
+- **Reserva:** ao abrir o Atendimento, o sistema também busca os e-mails novos (no máximo 3 s de espera), para funcionar mesmo antes do aviso estar ligado.
+- **Depende do dono:** o token da caixa (`HOSTINGER_MAIL_TOKEN`, D296) e, para chegar na hora, criar o aviso na Hostinger com o endereço `https://nextlevelcommerce.com.br/api/webhooks/hostinger-mail` e colar o segredo dele no Render.

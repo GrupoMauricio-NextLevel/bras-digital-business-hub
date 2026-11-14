@@ -8,6 +8,7 @@ Pontos que o dono pediu para não esquecer. Cada item entra assim que ele fala, 
 
 **Urgente (destrava o que já está no ar)**
 - [ ] **Token da caixa de e-mail (D296):** na Hostinger, E-mails → Correio Agêntico → Acesso à API → criar token; colar no Render como `HOSTINGER_MAIL_TOKEN` (nunca no chat). Liga a Caixa de entrada do Master.
+- [ ] **Aviso de e-mail novo (D300), depois do token:** na Hostinger, Correio Agêntico → Webhooks → criar com o endereço `https://nextlevelcommerce.com.br/api/webhooks/hostinger-mail` e o evento "message.received"; colar o segredo que ela mostrar no Render como `HOSTINGER_MAIL_WEBHOOK_SECRET`. (Sem isso, os e-mails entram no Atendimento quando você abre a tela.)
 - [ ] **Limite de US$ 0 no GitHub:** empresa nextlevelgroup → Faturamento e licenciamento → Budgets → US$ 0 para Actions (nada cobrado por fora).
 - [ ] **Parcela do Anderson (16/11):** quando ele avisar "Já fiz o Pix", conferir no banco e confirmar em Master → Contratos.
 
