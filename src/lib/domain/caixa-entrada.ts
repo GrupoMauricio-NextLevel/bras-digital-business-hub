@@ -53,7 +53,7 @@ export async function caixa(db: Database, actor: Actor, pasta: string, page: num
 export async function lerMensagem(db: Database, actor: Actor, pasta: string, uid: number) {
   exigir(actor);
   const [m, corpo] = await Promise.all([hm.mensagem(pasta, uid), hm.textoDaMensagem(pasta, uid)]);
-  if (m.unseen) await hm.marcar(pasta, uid, true).catch(() => undefined);
+  if (m.unseen) { await hm.marcar(pasta, uid, true).catch(() => undefined); hm.limparNaoLidasCache(); }
   const remetentes = await quemSao(db, m.from.map((a) => a.address));
   return { m, corpo, remetentes, destino: enderecoDeDestino(m) };
 }
@@ -86,11 +86,13 @@ export async function moverMensagem(actor: Actor, pasta: string, uid: number, de
   exigir(actor);
   if (pasta === destino) throw new DomainError("CAIXA_MESMA_PASTA", "A mensagem já está nessa pasta.");
   await hm.mover(pasta, uid, destino);
+  hm.limparNaoLidasCache();
 }
 
 export async function marcarMensagem(actor: Actor, pasta: string, uid: number, lida: boolean) {
   exigir(actor);
   await hm.marcar(pasta, uid, lida);
+  hm.limparNaoLidasCache();
 }
 
 /** Respondeu ou escreveu para um interessado novo: ele passa a "contatado" no CRM, sem trabalho manual. */

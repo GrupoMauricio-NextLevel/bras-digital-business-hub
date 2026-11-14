@@ -339,3 +339,9 @@ export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | 
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {
   return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code || brand.code === "NEXTLEVEL"));
 }
+
+/** Número de não lidos no item "Caixa de entrada" do Master (D297); 0 ou null tira o número. */
+export function comNaoLidas(items: NavItem[], n: number | null): NavItem[] {
+  if (!n) return items;
+  return items.map((i) => (i.href === "/master/caixa-de-entrada" ? { ...i, badge: n > 99 ? "99+" : String(n) } : i));
+}
