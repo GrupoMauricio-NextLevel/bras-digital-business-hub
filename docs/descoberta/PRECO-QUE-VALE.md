@@ -1,6 +1,7 @@
 # Preço que vale hoje (fase P0)
 
 > **Fonte única para consulta:** Master → Financeiro NextLevel → **Preços do grupo** (`/master/financeiro/precos`).
+> - **Calendário, comparação com a concorrência e rotina de monitoramento:** `docs/precos/MAPA-DE-PRECOS.md` (documento vivo).
 > - A tela lê as fontes reais e mostra, para cada valor, de onde vem e onde se edita.
 > - Este documento registra **as fontes e as divergências**; os números do dia estão na tela, porque o Master pode editá-los.
 
