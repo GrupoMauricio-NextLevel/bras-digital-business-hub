@@ -3625,3 +3625,32 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Versões das APIs:** Meta Graph `v23.0` e Google Ads `v22`, trocáveis por `META_GRAPH_VERSION` e `GOOGLE_ADS_API_VERSION` sem mexer no código. A compra das lojas na Meta (D187) passou a usar a mesma versão (antes `v19.0`, já fora do prazo da Meta).
 - **Depende do dono:** gerar o token da Meta e colar no Master; conta de administrador e token de desenvolvedor do Google aprovados. Conferir que a rotina `/api/cron/expire-reservations` está agendada no Render (a cada 5 a 10 min).
 - **Fica para depois (TR5b):** públicos de clientes (pagantes para "semelhantes" e para excluir das campanhas de aquisição).
+
+## D299 — [E-commerce] Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha (2026-11-14)
+- **Pedido do dono:** dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andamento.
+- **Decisões do dono (14/11/2026):**
+  - diagnóstico grátis, depois proposta com valor, aceita no painel (reaproveita o pedido de orçamento do serviço "Gestão de Meta Ads" do catálogo);
+  - a campanha roda na **conta de anúncios do lojista**, com a verba no cartão dele (a NextLevel recebe acesso de parceiro e nunca toca na verba);
+  - a equipe lança os números da campanha nesta primeira entrega; a leitura automática pela API fica para a TR6.
+- **Lojista, painel → Anúncios na Meta** (menu "Crescer"; não confundir com "Campanhas", que é a faixa de aviso da loja):
+  - **Diagnóstico** em formato de conversa com a equipe, uma pergunta por vez (8 passos): objetivo, o que anunciar (produtos da loja com foto, até 10, ou a loja toda), público (gênero, idade, interesses), onde (Brasil, estados ou cidade e raio), verba por dia e duração (com o total do período e o aviso de que a verba vai direto para a Meta e de que resultado não é garantido), Instagram, conta de anúncios e materiais, oferta e diferencial, revisão.
+  - **Prévia do anúncio** ao lado, em formato de post do Instagram, montada na hora com o nome da loja, a foto do produto escolhido, o texto da oferta e o botão do objetivo; é ilustrativa.
+  - O rascunho salva sozinho; enviar leva à **sala da campanha**.
+- **Sala da campanha** (a mesma para o lojista e para a equipe):
+  - **Etapas:** Diagnóstico → Na mesa da equipe → Análise → Proposta → Preparação → Montagem → Revisão da Meta → No ar (mais Pausada, Encerrada e Cancelada). Cada etapa tem o que está acontecendo e com quem está (você, a equipe ou a Meta).
+  - **O que falta:** passos do lojista (criar a conta de anúncios, dar acesso de parceiro, forma de pagamento na Meta, materiais, ligar o Instagram), criados a partir das respostas; e passos da equipe. O lojista marca os dele; a equipe marca todos e inclui novos.
+  - **Proposta** com itens e total, e o botão "Aceitar proposta". Ao aceitar, a campanha vai para Preparação; o pagamento a equipe combina, como já faz no caixa.
+  - **Números:** investido na Meta, pessoas alcançadas, cliques e conversas, lançados pela equipe por período, com comentário. As **vendas na loja** com a etiqueta da campanha (`nl-meta-…`) são contadas sozinhas (pedidos pagos).
+  - **Conversa** entre lojista e equipe; mudanças de etapa, passos, proposta e números aparecem na mesma linha do tempo.
+  - O lojista pode cancelar antes de ir ao ar.
+- **Master → Mesa de anúncios:** quadro por etapa com loja, verba por dia, passos em aberto de cada lado e o selo "Lojista escreveu" quando falta resposta. No detalhe:
+  - a mesma sala;
+  - mover de etapa com recado opcional;
+  - assumir;
+  - criar a proposta, que segue para Propostas para preencher e enviar; "Proposta" só abre depois de enviada;
+  - lançar números e incluir passos;
+  - o link pronto para os anúncios (a loja com a etiqueta da campanha).
+- **E-mails ao lojista:** diagnóstico recebido, mudança de etapa (com o recado), mensagem da equipe e números novos.
+- **Quem pode:** só o dono da loja (funcionário não); na mesa, o dono do Master, o Comercial e o Conteúdo.
+- **Banco:** tabelas `anuncios_loja`, `anuncios_eventos` e `anuncios_resultados` (migração 0098).
+- **Depois:** ligação com a API de Marketing da Meta para os números virem sozinhos (TR6) e criação de campanha pela API quando fizer sentido.

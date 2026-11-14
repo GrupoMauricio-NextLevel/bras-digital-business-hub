@@ -19,7 +19,7 @@ export const ROTULO_VIA: Record<Via, string> = {
 };
 export type VisitaAtual = {
   ultimo: Record<string, string>; primeiro: Record<string, string>; sessaoId: string | null;
-  /** Navegador, escolha no aviso de cookies e os cookies da Meta (_fbp, _fbc), para o retorno às plataformas (TR5, D296). */
+  /** Navegador, escolha no aviso de cookies e os cookies da Meta (_fbp, _fbc), para o retorno às plataformas (TR5, D298). */
   ua?: string | null; consentimento?: "SIM" | "NAO" | "SEM_ESCOLHA"; fbp?: string | null; fbc?: string | null;
 };
 
@@ -67,7 +67,7 @@ export async function registrarOrigemDoContato(db: Database, chave: string, bran
       await db.update(trafegoSessoes).set({ lead: true, ultimoSinalEm: agora.toISOString() }).where(eq(trafegoSessoes.id, sessao.id));
       await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: sessao.id, tipo: "LEAD", caminho: pagina.slice(0, 120) || "/", criadoEm: agora.toISOString() });
     }
-    // TR5 (D296): o contato ou a conta entram na fila de retorno à Meta e ao Google (o mesmo número do navegador, D295).
+    // TR5 (D298): o contato ou a conta entram na fila de retorno à Meta e ao Google (o mesmo número do navegador, D295).
     if (r.length) await enfileirarConversao(db, { evento: via === "CADASTRO" ? "CONTA" : "LEAD", chave, ocorreuEm: agora });
     return r.length > 0;
   } catch (e) { console.error("[origem] contato", e); return false; }

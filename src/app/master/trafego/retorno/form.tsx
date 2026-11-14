@@ -22,7 +22,7 @@ function Campos({ campos, v, set }: { campos: Campo[]; v: Record<string, string>
   );
 }
 
-/** Tokens e números da Meta e do Google (TR5, D296). Segredos nunca voltam para a tela. */
+/** Tokens e números da Meta e do Google (TR5, D298). Segredos nunca voltam para a tela. */
 export function FormRetorno({ cfg, podeEditar }: { cfg: ConfigRetornoTela; podeEditar: boolean }) {
   const router = useRouter();
   const [v, setV] = React.useState<Record<string, string>>({

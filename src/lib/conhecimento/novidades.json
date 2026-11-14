@@ -1,6 +1,13 @@
 [
  {
-  "numero": 297,
+  "numero": 299,
+  "frente": "E-commerce",
+  "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
+ },
+ {
+  "numero": 298,
   "frente": "E-commerce",
   "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
   "data": "2026-11-14",
@@ -271,12 +278,5 @@
   "titulo": "AT1 do atacado: painel do lojista e travas por plano",
   "data": "2026-11-05",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
- },
- {
-  "numero": 257,
-  "frente": null,
-  "titulo": "AT0 do atacado: dados e motor único de preço",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
  }
 ]

@@ -136,6 +136,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Banners", href: "/merchant/banners", icon: "Image", group: "Loja virtual" },
       { label: "Templates", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
       { label: "Campanhas", href: "/merchant/campanhas", icon: "Image", group: "Loja virtual" },
+      { label: "Anúncios na Meta", href: "/merchant/anuncios", icon: "Megaphone", group: "Loja virtual" },
       { label: "Cupons", href: "/merchant/descontos", icon: "Sparkles", group: "Loja virtual" },
       { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Loja virtual" },
       { label: "Avise-me", href: "/merchant/avise-me", icon: "Users", group: "Loja virtual" },
@@ -239,6 +240,8 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Banners", href: "/merchant/banners", icon: "Image", group: "Escritório", badge: "Novo" },
   { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Crescer" },
   { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Crescer" },
+  // D299: campanhas na Meta com a equipe NextLevel (diagnóstico, proposta, sala da campanha).
+  { label: "Anúncios na Meta", href: "/merchant/anuncios", icon: "Megaphone", group: "Crescer", badge: "Novo" },
   { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Crescer" },
   { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Crescer" },
   { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Crescer" },
@@ -284,6 +287,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   // TR1 (D290): links rastreados e, por fases, tráfego em tempo real, campanhas e Reels.
   { label: "Tráfego e campanhas", href: "/master/trafego", icon: "BarChart3", group: "Escritório" },
+  // D299: pedidos de campanha na Meta dos lojistas.
+  { label: "Mesa de anúncios", href: "/master/anuncios", icon: "Megaphone", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
   { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },
   { label: "Sistema", href: "/master/settings", icon: "Settings", group: "Escritório" },

@@ -11,7 +11,7 @@ import { salvarAcompanhamento } from "@/lib/domain/comercial";
 import { newId } from "@/lib/ids";
 import { ensureCatalogSeed } from "@/lib/domain/nl-catalog";
 
-/** TR5 (D296): fila de retorno à Meta e ao Google; nada sai sem configuração; dados pessoais só em resumo; token nunca exposto. */
+/** TR5 (D298): fila de retorno à Meta e ao Google; nada sai sem configuração; dados pessoais só em resumo; token nunca exposto. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); _esquecerAcessoGoogle(); });
 

@@ -687,6 +687,13 @@
       "when": 1794612830887,
       "tag": "0097_conversoes_envio",
       "breakpoints": true
+    },
+    {
+      "idx": 98,
+      "version": "7",
+      "when": 1794621903180,
+      "tag": "0098_anuncios_loja",
+      "breakpoints": true
     }
   ]
 }

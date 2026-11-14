@@ -14,7 +14,7 @@ import { situacoesComerciais } from "../situacao-comercial";
 import { getTagsAnuncio } from "./tags";
 
 /**
- * Retorno às plataformas (TR5, D296): o que aconteceu de verdade no sistema volta para a Meta (API de conversões) e para o
+ * Retorno às plataformas (TR5, D298): o que aconteceu de verdade no sistema volta para a Meta (API de conversões) e para o
  * Google Ads (importação de conversões por clique), para as campanhas aprenderem quem vira cliente.
  * - LEAD: deixou o contato (mesmo número do navegador, D295) · CONTA: criou a loja · PAGANTE: primeira mensalidade
  *   conferida (a situação "pagante" vem do pagamento conferido no Mercado Pago) · VENDA: negócio fechado à mão no Comercial.

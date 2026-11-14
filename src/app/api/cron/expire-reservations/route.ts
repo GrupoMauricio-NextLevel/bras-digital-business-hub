@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     { name: "reservas", run: () => expireStaleReservations(db), summarize: (x: { expired: number }) => `liberadas ${x.expired}` },
     { name: "sem saldo", run: () => expireUnfundedOrders(db) },
     { name: "carrinhos", run: () => lembrarCarrinhos(db), summarize: (x: { primeiro: number; segundo: number }) => `1º lembrete ${x.primeiro}, 2º lembrete ${x.segundo}` },
-    // TR5 (D296): quem virou pagante entra na fila; a fila vai para a Meta e o Google.
+    // TR5 (D298): quem virou pagante entra na fila; a fila vai para a Meta e o Google.
     { name: "retorno às plataformas", run: async () => ({ pagantes: await enfileirarPagantes(db), ...(await enviarConversoes(db)) }), summarize: (x: { pagantes: number; enviados: number; falhas: number; ignorados: number }) => `pagantes novos ${x.pagantes}, enviados ${x.enviados}, falhas ${x.falhas}, fora da janela ${x.ignorados}` },
     { name: "erp", run: () => rodarErp(db), summarize: (x: { novos: number; enviados: number; erros: number; ajustados: number }) => `na fila ${x.novos}, enviados ${x.enviados}, erros ${x.erros}, estoques ajustados ${x.ajustados}` },
   ]);

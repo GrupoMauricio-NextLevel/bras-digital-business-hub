@@ -48,7 +48,7 @@ export async function salvarTagsAnuncioAction(input: unknown) {
   });
 }
 
-/** Retorno às plataformas (TR5, D296): tokens e números da Meta e do Google (só o dono). */
+/** Retorno às plataformas (TR5, D298): tokens e números da Meta e do Google (só o dono). */
 export async function salvarConfigRetornoAction(input: unknown) {
   return runAction(async () => {
     const { salvarConfigRetorno } = await import("@/lib/domain/trafego/retorno");

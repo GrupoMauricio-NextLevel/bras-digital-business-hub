@@ -14,7 +14,7 @@ const STATUS: Record<string, { rotulo: string; tom: "success" | "warning" | "dan
   IGNORADO: { rotulo: "Não se aplica", tom: "neutral" }, BLOQUEADO: { rotulo: "Recusou anúncios", tom: "warning" },
 };
 
-/** Tráfego e campanhas → Retorno às plataformas (TR5, D296). */
+/** Tráfego e campanhas → Retorno às plataformas (TR5, D298). */
 export default async function RetornoPage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
