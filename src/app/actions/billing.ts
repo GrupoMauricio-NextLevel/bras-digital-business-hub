@@ -49,7 +49,12 @@ export async function simulatePaymentAction(paymentId: string) {
 }
 
 export async function buyAddonAction(key: string, cycle: "MONTHLY" | "ANNUAL") {
-  return runAction(async () => { const { session, db } = await ctx(); const r = await buyAddon(db, session.actor, key, cycle); refresh(); return r; });
+  return runAction(async () => {
+    const { session, db } = await ctx();
+    // Módulos do NextLevel Business (NB8, D310): passam pelas regras do plano (não comprar o caminho que já vem incluso).
+    const r = key.startsWith("MODULO_") ? await (await import("@/lib/business/planos")).contratarModulo(db, session.actor, key, cycle) : await buyAddon(db, session.actor, key, cycle);
+    refresh(); return r;
+  });
 }
 
 /** Troca a fatura do tema entre Pix (com desconto) e cartão (valor cheio, em até 6x). */

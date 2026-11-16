@@ -23,7 +23,7 @@ export type PaginaPublica = {
   /** Nome curto na trilha de navegação (Início › Parceiros › Indique); sem ele, vale o título curto. */
   nome?: string;
   /** Só entra no sitemap quando a marca atende à condição. */
-  quando?: "cadastroAberto" | "cadastroFechado" | "parceiros" | "temas";
+  quando?: "cadastroAberto" | "cadastroFechado" | "parceiros" | "temas" | "business";
 };
 
 export const SUFIXO_TITULO = " · NextLevel Commerce";
@@ -35,6 +35,8 @@ export const PAGINAS_COMMERCE: PaginaPublica[] = [
     descricao: "Compare os planos Start, Pro e Scale da NextLevel Commerce: atacado em todos, Pix e cartão, 0% de tarifa da plataforma com Mercado Pago e teste grátis." },
   { caminho: "/cadastro", titulo: "Criar minha loja", nucleo: "planos", revisadoEm: "2026-11-13", prioridade: 0.8, quando: "cadastroAberto",
     descricao: "Crie sua loja virtual na NextLevel Commerce: escolha o plano, teste grátis e comece a vender no varejo e no atacado, com Pix e cartão." },
+  { caminho: "/empresas", nome: "Para empresas", titulo: "Site para empresas e gerenciador do negócio", nucleo: "planos", revisadoEm: "2026-11-16", prioridade: 0.8, quando: "business",
+    descricao: "Site da empresa com páginas de serviço, formulário de orçamento e a origem de cada pedido, no mesmo painel do NextLevel Business. Loja virtual quando quiser." },
   { caminho: "/quero-minha-loja", titulo: "Quero minha loja", nucleo: "planos", revisadoEm: "2026-11-13", prioridade: 0.7,
     descricao: "Deixe seu contato e a equipe da NextLevel Commerce ajuda a montar sua loja virtual: produtos, tema, pagamento e frete, com atendimento pelo WhatsApp." },
   { caminho: "/comparativo", nome: "Comparativo", titulo: "Comparativo de plataformas de loja virtual", nucleo: "comparar", revisadoEm: "2026-11-13", prioridade: 0.8,
@@ -83,6 +85,8 @@ export function caminhosCommerce(brand: Pick<Brand, "signupOpen" | "partnersOpen
     if (p.quando === "cadastroFechado") return !brand.signupOpen;
     if (p.quando === "parceiros") return brand.partnersOpen;
     if (p.quando === "temas") return brand.modules.includes("themes");
+    // NextLevel Business (NB8, D310): a página das empresas só entra no sitemap com a chave ligada.
+    if (p.quando === "business") return ["true", "1"].includes((process.env.BUSINESS_V1 ?? "").trim().toLowerCase());
     return true;
   };
   return PAGINAS_COMMERCE.filter(vale).map((p) => p.caminho);

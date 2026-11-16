@@ -3864,3 +3864,28 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - orçamento por proposta com item avulso (link de aceite) e código da visita no WhatsApp;
   - evento `Lead` no Pixel do negócio (NB4);
   - a página pública `/empresas`, que vai junto com a fase de planos e pacotes (NB8, D308).
+
+## D310 — [E-commerce] NextLevel Business, fase NB8: plano do negócio, Site e Loja virtual como adicionais e a página "Site para empresas" (2026-11-16)
+- **Pedido do dono:** "pode seguir" com planos e pacotes (D308).
+- **Como os pacotes funcionam no sistema:**
+  - o plano da conta (Start, Pro, Scale, com os preços do catálogo do Master) já inclui o NextLevel Business e o **primeiro caminho** escolhido na entrada (site ou loja);
+  - o **segundo caminho** é um adicional mensal ou anual da tabela de preços (`MODULO_SITE`, `MODULO_LOJA`), contratado no painel;
+  - pago (fatura conferida como os outros adicionais), o direito liga o módulo na mesma conta, sem trocar domínio, páginas, contatos ou equipe;
+  - os lojistas de hoje ficam "Business + Loja", sem mudança.
+- **Preços provisórios dos adicionais:** Site R$ 29/mês ou R$ 290/ano; Loja virtual R$ 49/mês ou R$ 490/ano. **O dono define o valor final** em Master → Financeiro → Tabela de preços.
+- **Proteção da tabela salva:** uma tabela de preços gravada antes dos adicionais novos continua valendo (os novos entram com o valor padrão). Antes, a falta de um adicional faria o sistema voltar **todos** os preços ao padrão. Teste em `tests/business-modulos.test.ts`.
+- **Painel:**
+  - **Ajustes → Plano do negócio:** mostra o pacote de hoje ("NextLevel Business + Site"), o que está incluído ou contratado (com a validade) e o cartão para ligar o outro caminho (mensal ou anual, que gera a fatura com Pix ou cartão);
+  - "Ligar loja virtual" e "Ligar site" no menu levam para lá;
+  - comprar o caminho que já vem no plano é recusado, e só o dono contrata.
+- **Página pública `/empresas` ("Site para empresas e gerenciador do negócio"):**
+  - o que vem no caminho Site (só o que já funciona) e os dois pacotes;
+  - preços lidos do sistema: o menor plano mensal do catálogo e os adicionais da tabela;
+  - leva ao cadastro do caminho Site ou ao formulário assistido;
+  - só existe com a chave `BUSINESS_V1` e só entra no sitemap com ela;
+  - a seção dos dois caminhos da home ganhou "Como funciona e preços".
+- **Conferido no navegador** (relatório `docs/relatorios/NB8-2026-11-16.md`): plano com o pacote, contratar gera a fatura, `/empresas` com preços, axe sem violações graves e 360 px sem rolagem lateral.
+- **Ficou para depois:**
+  - conta só com o Business (sem site nem loja), quando houver procura;
+  - Caixa e Captação como adicionais quando as fases existirem;
+  - texto dos termos de uso citando o site (revisão jurídica).

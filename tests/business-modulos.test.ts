@@ -8,6 +8,9 @@ import { signupMember } from "@/lib/domain/store-access";
 import { grantEntitlement } from "@/lib/domain/entitlements";
 import { caminhoDoInteressado, comCaminho, createBrandLead } from "@/lib/domain/brand-leads";
 import { brandLeads } from "@/db/schema";
+import { DEFAULT_PRICE_BOOK, priceBookSchema } from "@/lib/finance/price-book";
+import { contratarModulo, pacoteDe, PACOTE_ROTULO } from "@/lib/business/planos";
+import { markInvoicePaid } from "@/lib/domain/finance";
 
 const base = { marca: "NEXTLEVEL_COMMERCE", direitos: new Set<string>(), ligado: true };
 
@@ -72,7 +75,7 @@ describe("cadastro com o caminho escolhido (NB1)", () => {
     expect([...(await modulosDoNegocio(ctx.db, r.storeId, new Date(), {})).ativos]).toEqual(["loja"]);
     const m = await modulosDoNegocio(ctx.db, r.storeId, new Date(), ligado);
     expect(m.ativos.has("site") && !m.ativos.has("loja")).toBe(true);
-    await grantEntitlement(ctx.db, { type: "STORE", storeId: r.storeId }, { key: "modulo:loja", source: "COURTESY" });
+    await grantEntitlement(ctx.db, { type: "STORE", storeId: r.storeId }, { key: chaveDoModulo("loja"), source: "COURTESY" });
     expect((await modulosDoNegocio(ctx.db, r.storeId, new Date(), ligado)).ativos.has("loja")).toBe(true);
     const ator = { userId: r.userId, role: "STORE_OWNER" as const, organizationId: "x", supplierId: null, storeId: r.storeId };
     await expect(requireModulo(ctx.db, ator, "caixa")).rejects.toThrow(/Caixa não está ligado/);
@@ -97,5 +100,44 @@ describe("caminho escolhido no formulário de entrada (NB1)", () => {
     await createBrandLead(ctx.db, { ...lead, caminho: "loja" });
     row = await ctx.db.query.brandLeads.findFirst({ where: eq(brandLeads.id, r.id) });
     expect(row!.needs.filter((n) => n.startsWith("caminho:"))).toEqual(["caminho:loja"]);
+  });
+});
+
+describe("tabela de preços com os módulos (NB8, D310)", () => {
+  it("tabela salva antes dos módulos continua valendo; os módulos entram com o valor padrão", () => {
+    const antiga = structuredClone(DEFAULT_PRICE_BOOK) as unknown as { addons: Record<string, unknown> };
+    delete antiga.addons.MODULO_SITE; delete antiga.addons.MODULO_LOJA;
+    (antiga.addons.PREMIUM_SUPPORT as { monthlyCents: number }).monthlyCents = 12_345;
+    const r = priceBookSchema.safeParse(antiga);
+    expect(r.success).toBe(true);
+    expect(r.data!.addons.PREMIUM_SUPPORT.monthlyCents).toBe(12_345);
+    expect(r.data!.addons.MODULO_SITE.name).toBe("Site para a empresa");
+    expect(r.data!.addons.MODULO_LOJA.audience).toBe("STORE");
+  });
+});
+
+describe("pacotes do negócio (NB8, D308/D310)", () => {
+  it("nome do pacote pelos módulos ligados", () => {
+    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "LOJA" }))]).toBe("NextLevel Business + Loja virtual");
+    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "SITE", direitos: new Set([chaveDoModulo("loja")]) }))]).toBe("NextLevel Business + Site + Loja virtual");
+  });
+  it("contratar: só o dono, só com o Business ligado e nunca o caminho que já vem no plano", async () => {
+    const ctx = await freshDb();
+    const r = await signupMember(ctx.db, { storeName: "Vidraçaria Plano", ownerName: "Rita Lima", email: "rita@plano.com.br", password: "senha-segura-1", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true, formato: "SITE" });
+    const ator = { userId: r.userId, role: "STORE_OWNER" as const, organizationId: "x", supplierId: null, storeId: r.storeId };
+    await expect(contratarModulo(ctx.db, ator, "MODULO_LOJA", "MONTHLY")).rejects.toThrow(/ainda não está aberta/);
+    await expect(contratarModulo(ctx.db, { ...ator, storeRole: "STAFF" as const }, "MODULO_LOJA", "MONTHLY")).rejects.toThrow(/Só o dono/);
+    await expect(contratarModulo(ctx.db, ator, "MODULO_CAIXA", "MONTHLY")).rejects.toThrow(/não encontrado/);
+    process.env.BUSINESS_V1 = "true";
+    try {
+      await expect(contratarModulo(ctx.db, ator, "MODULO_SITE", "MONTHLY")).rejects.toThrow(/já vem no seu plano/);
+      const f = await contratarModulo(ctx.db, ator, "MODULO_LOJA", "MONTHLY");
+      expect(f.amountCents).toBe(DEFAULT_PRICE_BOOK.addons.MODULO_LOJA.monthlyCents);
+      // Pago: o módulo Loja liga na mesma conta, o site continua.
+      expect((await modulosDoNegocio(ctx.db, r.storeId)).ativos.has("loja")).toBe(false);
+      await markInvoicePaid(ctx.db, f.invoiceId);
+      const m = await modulosDoNegocio(ctx.db, r.storeId);
+      expect(m.ativos.has("loja") && m.ativos.has("site")).toBe(true);
+    } finally { delete process.env.BUSINESS_V1; }
   });
 });

@@ -21,7 +21,7 @@ export default async function ServicosDoSite() {
     return (
       <>
         <PageHeader eyebrow={`${NOME_GERENCIADOR.nome} · Site`} title="Serviços" />
-        <EmptyState icon={Globe} title="O site ainda não está ligado no seu plano" description="Com o site, os seus serviços aparecem nas páginas da empresa com o botão de pedir orçamento." action={<Link href="/merchant/services" className={buttonVariants()}>Ver como ligar</Link>} />
+        <EmptyState icon={Globe} title="O site ainda não está ligado no seu plano" description="Com o site, os seus serviços aparecem nas páginas da empresa com o botão de pedir orçamento." action={<Link href="/merchant/negocio/plano" className={buttonVariants()}>Ver como ligar</Link>} />
       </>
     );
   }

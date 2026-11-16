@@ -1,5 +1,12 @@
 [
  {
+  "numero": 310,
+  "frente": "E-commerce",
+  "titulo": "NextLevel Business, fase NB8: plano do negócio, Site e Loja virtual como adicionais e a página \"Site para empresas\"",
+  "data": "2026-11-16",
+  "resumo": "Pedido do dono: \"pode seguir\" com planos e pacotes (D308)."
+ },
+ {
   "numero": 309,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB3: formulário de orçamento no site e Contatos e orçamentos no painel",
@@ -271,12 +278,5 @@
   "titulo": "BC2: perguntas por aula, progresso por pessoa e painel \"quem está pronto\" no Aprender",
   "data": "2026-11-07",
   "resumo": "Perguntas: cada uma das aulas tem 3 perguntas rápidas no fim (src/lib/conhecimento/perguntas.ts), montadas dos mesmos fatosAoVivo: se o preço ou a comissão muda, a resposta certa muda junto. Teste: nenhum valor em reais ou percentual esc…"
- },
- {
-  "numero": 266,
-  "frente": "Grupo",
-  "titulo": "BC1: tela \"Aprender\" no Master, com aulas ao vivo, trilhas por função, busca e Novidades",
-  "data": "2026-11-06",
-  "resumo": "Onde: Master → Aprender (/master/aprender), no menu logo depois de Agora, liberada para toda a equipe (master-equipe.ts)."
  }
 ]

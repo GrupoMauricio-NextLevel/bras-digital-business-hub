@@ -11,10 +11,10 @@ describe("menu do lojista com o NextLevel Business (NB1, D306)", () => {
     const hrefs = new Set(nav("painel", "contatos", "loja").map((i) => i.href));
     for (const i of COMMERCE_STORE_NAV) expect(hrefs, `${i.label} (${i.href})`).toContain(i.href);
   });
-  it("loja: grupos NextLevel Business, Loja virtual e Ajustes, sem endereço repetido", () => {
+  it("loja: grupos NextLevel Business, Site (só o cartão de ligar), Loja virtual e Ajustes", () => {
     const itens = nav("painel", "contatos", "loja");
-    expect(grupos(itens)).toEqual([B, "Loja virtual", "Ajustes"]);
-    expect(new Set(itens.map((i) => i.href)).size).toBe(itens.length);
+    expect(grupos(itens)).toEqual([B, "Site", "Loja virtual", "Ajustes"]);
+    expect(itens.filter((i) => i.group === "Site")).toEqual([expect.objectContaining({ label: "Ligar site", locked: true, href: "/merchant/negocio/plano" })]);
   });
   it("site: grupo Site com Páginas, Serviços, Aparência e Domínio, e um cartão só para ligar a loja", () => {
     const itens = nav("painel", "contatos", "site");

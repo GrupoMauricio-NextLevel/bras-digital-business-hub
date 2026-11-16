@@ -21,8 +21,8 @@ export const MODULO_LABEL: Record<Modulo, string> = {
   captacao: "Captação", caixa: "Caixa", meta: "Resultados da Meta", portal: "Portal do cliente",
 };
 
-/** Chave do direito que liga um módulo extra. */
-export const chaveDoModulo = (m: Modulo) => `modulo:${m}`;
+/** Chave do direito que liga um módulo extra (a mesma do adicional da tabela de preços: MODULO_SITE, MODULO_LOJA…). */
+export const chaveDoModulo = (m: Modulo) => `MODULO_${m.toUpperCase()}`;
 
 /** A chave geral do NextLevel Business. Sem ela, nada muda para ninguém. */
 export const businessLigado = (env: Record<string, string | undefined> = process.env) => ["true", "1"].includes((env.BUSINESS_V1 ?? "").trim().toLowerCase());

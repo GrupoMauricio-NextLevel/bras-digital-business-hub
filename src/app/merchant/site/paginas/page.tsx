@@ -24,7 +24,7 @@ export default async function PaginasDoSite() {
     return (
       <>
         <PageHeader eyebrow={`${NOME_GERENCIADOR.nome} · Site`} title="Páginas do site" />
-        <EmptyState icon={Globe} title="O site ainda não está ligado no seu plano" description="Com o site, você cria as páginas da empresa (Sobre, Serviços, Contato) e recebe pedidos de orçamento no painel." action={<Link href="/merchant/services" className={buttonVariants()}>Ver como ligar</Link>} />
+        <EmptyState icon={Globe} title="O site ainda não está ligado no seu plano" description="Com o site, você cria as páginas da empresa (Sobre, Serviços, Contato) e recebe pedidos de orçamento no painel." action={<Link href="/merchant/negocio/plano" className={buttonVariants()}>Ver como ligar</Link>} />
       </>
     );
   }

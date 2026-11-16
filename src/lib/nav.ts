@@ -290,6 +290,8 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
     ...(loja ? [] : [{ label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Site" } as NavItem]),
     { label: "Domínio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Site" },
   );
+  // Sem site (NB8, D310): um cartão só para ligar, no lugar dos itens do site.
+  else itens.push({ label: "Ligar site", href: "/merchant/negocio/plano", icon: "Globe", group: "Site", locked: true });
   if (loja) itens.push(
     { label: "Minha loja", href: "/merchant/storefront", icon: "Globe", group: "Loja virtual" },
     { label: "Produtos", href: "/merchant/catalogo", icon: "Package", group: "Loja virtual" },
@@ -304,8 +306,9 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
     { label: "Cadastro de clientes", href: "/merchant/customers", icon: "Users", group: "Loja virtual" },
   );
   // Caminho não usado: um cartão só, com o caminho de upgrade (sem dez itens com cadeado).
-  else itens.push({ label: "Ligar loja virtual", href: "/merchant/services", icon: "Store", group: "Loja virtual", locked: true });
+  else itens.push({ label: "Ligar loja virtual", href: "/merchant/negocio/plano", icon: "Store", group: "Loja virtual", locked: true });
   itens.push(
+    { label: "Plano do negócio", href: "/merchant/negocio/plano", icon: "LayoutGrid", group: "Ajustes" },
     { label: "Empresa", href: "/merchant/settings", icon: "Settings", group: "Ajustes" },
     { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Ajustes" },
     { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Ajustes" },

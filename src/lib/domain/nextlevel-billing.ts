@@ -184,7 +184,8 @@ export async function checkPayment(db: Database, actor: Actor, paymentRowId: str
 }
 
 /** Add-ons oferecidos ao ator, com estado (ativo até quando, fatura em aberto). */
-export async function addonViewsFor(db: Database, actor: Actor) {
+/** Adicionais do perfil. Os módulos do NextLevel Business (MODULO_*) ficam na tela própria do plano (NB8, D310). */
+export async function addonViewsFor(db: Database, actor: Actor, opts: { modulos?: boolean } = {}) {
   const t = tenantOf(actor);
   if (!t) return [];
   const book = await getPriceBook(db);
@@ -192,7 +193,7 @@ export async function addonViewsFor(db: Database, actor: Actor) {
   const ents = await db.select().from(entitlements).where(t.type === "STORE" ? eq(entitlements.storeId, t.storeId) : eq(entitlements.supplierId, t.supplierId));
   const now = new Date();
   const invoices = await listInvoicesFor(db, actor);
-  return (Object.keys(book.addons) as AddonKey[]).filter((k) => { const a = book.addons[k].audience; return a === "BOTH" || a === t.type; }).map((k) => {
+  return (Object.keys(book.addons) as AddonKey[]).filter((k) => k.startsWith("MODULO_") === !!opts.modulos).filter((k) => { const a = book.addons[k].audience; return a === "BOTH" || a === t.type; }).map((k) => {
     const a = book.addons[k];
     const active = ents.filter((e) => e.key === k && (e.endsAt === null || new Date(e.endsAt) > now)).sort((x, y) => (x.endsAt ?? "9").localeCompare(y.endsAt ?? "9")).pop();
     const open = invoices.find((i) => i.kind === "ADDON" && i.status === "OPEN" && i.dedupeKey.split(":")[2] === k);

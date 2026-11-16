@@ -10,7 +10,8 @@ export const TIER_KEYS = ["START", "GROWTH", "SCALE"] as const;
 export type TierKey = (typeof TIER_KEYS)[number];
 export type SupplierModel = "SUPERDROP" | "WHITE_LABEL";
 
-export const ADDON_KEYS = ["ACADEMY_STORE", "PREMIUM_SUPPORT", "ADVANCED_REPORTS", "EXTRA_DISPATCH_SEAT"] as const;
+/** MODULO_SITE e MODULO_LOJA (NextLevel Business, NB8, D310): o segundo caminho do negócio, contratado à parte (o plano já traz o primeiro). */
+export const ADDON_KEYS = ["ACADEMY_STORE", "PREMIUM_SUPPORT", "ADVANCED_REPORTS", "EXTRA_DISPATCH_SEAT", "MODULO_SITE", "MODULO_LOJA"] as const;
 export type AddonKey = (typeof ADDON_KEYS)[number];
 
 export type AddonDef = { name: string; description: string; audience: "STORE" | "SUPPLIER" | "BOTH"; monthlyCents: number; annualCents: number };
@@ -18,6 +19,9 @@ const DEFAULT_ADDONS: Record<AddonKey, AddonDef> = {
   ACADEMY_STORE: { name: "Academy do lojista", description: "Trilha completa do zero ao faturamento: catálogo, preço com margem, Pix, primeira venda, tráfego e recompra.", audience: "STORE", monthlyCents: 4_700, annualCents: 39_700 },
   PREMIUM_SUPPORT: { name: "Suporte Premium", description: "Chat com prioridade e resposta em até 2h úteis com especialista dedicado.", audience: "BOTH", monthlyCents: 9_700, annualCents: 97_000 },
   ADVANCED_REPORTS: { name: "Relatórios avançados", description: "Margem por produto, recompra e exportação para planilha.", audience: "STORE", monthlyCents: 2_900, annualCents: 29_000 },
+  // Preço provisório (D310): o dono define o valor em Master → Financeiro → Tabela de preços.
+  MODULO_SITE: { name: "Site para a empresa", description: "Páginas da empresa (Sobre, Serviços, Contato, campanha), serviços e o formulário de orçamento com a origem de cada pedido.", audience: "STORE", monthlyCents: 2_900, annualCents: 29_000 },
+  MODULO_LOJA: { name: "Loja virtual", description: "Catálogo, carrinho, Pix e cartão, temas e atacado, no mesmo painel e no mesmo endereço do site.", audience: "STORE", monthlyCents: 4_900, annualCents: 49_000 },
   EXTRA_DISPATCH_SEAT: { name: "Assento extra de expedição", description: "Mais um funcionário usando a esteira de separação.", audience: "SUPPLIER", monthlyCents: 1_900, annualCents: 19_000 },
 };
 
@@ -39,7 +43,9 @@ export const priceBookSchema = z.object({
   dunning: z.object({ warningDays: days, partialBlockDays: days, suspendedDays: days, closedDays: days }),
   costs: z.object({ collectionFeeBps: bps, infraPerStoreCents: cents, supportPerSupplierCents: cents }),
   /** Add-ons mensais/anuais liberados por entitlement. audience: quem pode comprar. */
-  addons: z.record(z.enum(ADDON_KEYS), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS)),
+  addons: z.partialRecord(z.enum(ADDON_KEYS), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS))
+    // Tabela salva antes de um adicional novo existir continua válida: o que faltar entra com o valor padrão (D310).
+    .transform((v) => ({ ...structuredClone(DEFAULT_ADDONS), ...v }) as Record<AddonKey, AddonDef>),
 });
 export type PriceBook = z.infer<typeof priceBookSchema>;
 

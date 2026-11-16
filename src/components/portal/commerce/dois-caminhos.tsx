@@ -25,9 +25,12 @@ export function DoisCaminhos({ signupOpen, className = "" }: { signupOpen: boole
               <h3 className="mt-4 text-xl font-semibold">{CAMINHOS[c].titulo}</h3>
               <p className="mt-1 text-sm text-body">{CAMINHOS[c].descricao}</p>
               <ul className="mt-4 space-y-1.5 text-sm">{itens.map((i) => <li key={i} className="flex gap-2"><span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-[var(--ds-link)]" />{i}</li>)}</ul>
-              <Link href={destino(c)} className="mt-6 inline-flex items-center gap-2 font-semibold text-link underline underline-offset-4">
-                {c === "site" ? "Quero um site para minha empresa" : "Quero minha loja virtual"}<ArrowRight className="size-4" aria-hidden />
-              </Link>
+              <span className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <Link href={destino(c)} className="inline-flex items-center gap-2 font-semibold text-link underline underline-offset-4">
+                  {c === "site" ? "Quero um site para minha empresa" : "Quero minha loja virtual"}<ArrowRight className="size-4" aria-hidden />
+                </Link>
+                <Link href={c === "site" ? "/empresas" : "/planos"} className="text-sm text-link underline underline-offset-4">{c === "site" ? "Como funciona e preços" : "Ver os planos"}</Link>
+              </span>
             </li>
           ))}
         </ul>
