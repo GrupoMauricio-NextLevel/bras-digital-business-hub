@@ -1,5 +1,12 @@
 [
  {
+  "numero": 308,
+  "frente": "E-commerce",
+  "titulo": "Três produtos sobre a mesma conta: NextLevel Business (base), Site e Loja virtual, vendidos em pacotes",
+  "data": "2026-11-16",
+  "resumo": "Decisão do dono (16/11/2026): aprovada a proposta da Parte 0.2 do plano (docs/prompts/nextlevel-business-coracao-do-negocio.md). Também autorizou publicar e seguir para a NB3, com testes só no necessário para andar rápido."
+ },
+ {
   "numero": 307,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
@@ -271,12 +278,5 @@
   "titulo": "Base de conhecimento: BC0 aprovada e trilhas por função",
   "data": "2026-11-06",
   "resumo": "O dono aprovou o inventário (docs/conhecimento/BC0-INVENTARIO.md) e a divisão: Comercial: trilhas 1 a 4;"
- },
- {
-  "numero": 264,
-  "frente": "Grupo",
-  "titulo": "Base de conhecimento sempre ao vivo: toda atualização a alimenta",
-  "data": "2026-11-06",
-  "resumo": "Pedido do dono: \"sempre que houver atualizações, alimente a base de conhecimento\"."
  }
 ]

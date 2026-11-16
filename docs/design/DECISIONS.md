@@ -3815,3 +3815,22 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Conferido no navegador** (relatório `docs/relatorios/NB2-2026-11-16.md`): 20 passos da jornada do site, axe sem violações graves nas telas novas e no site, 360 px sem rolagem lateral; regressão do editor de temas, da loja e do roteiro geral passando.
 - **Testes:** `tests/business-site.test.ts` (endereços, rascunho e publicação, duas abas, histórico, isolamento, serviços, modelos, conta Site pronta, conta de loja sem páginas), mais `nav-business` e `editor-state`.
 - **Próxima fase:** NB3 (formulário de orçamento com origem, caixa de contatos, orçamento por proposta, WhatsApp com código) e a página pública `/empresas`.
+
+## D308 — [E-commerce] Três produtos sobre a mesma conta: NextLevel Business (base), Site e Loja virtual, vendidos em pacotes (2026-11-16)
+- **Decisão do dono (16/11/2026):** aprovada a proposta da Parte 0.2 do plano (`docs/prompts/nextlevel-business-coracao-do-negocio.md`). Também autorizou publicar e seguir para a NB3, com testes só no necessário para andar rápido.
+- **Produtos:**
+  - **NextLevel Business** é a base: painel do negócio (visão geral, clientes, atendimento, contatos e orçamentos, pedidos e vendas, financeiro, Maurício). Todo cliente começa aqui;
+  - **Site** e **Loja virtual** são contratações sobre a mesma conta;
+  - Caixa, Captação, Resultados da Meta e Portal do cliente são adicionais sobre qualquer combinação.
+- **Venda em pacotes:** Business; Business + Site; Business + Loja (= plano Commerce de hoje); Business + Site + Loja. Preços sempre na tabela do Master.
+- **Lojistas atuais:** ficam como "Business + Loja", sem mudança de preço, função ou aceite.
+- **Base:** teste grátis de poucos dias (como a loja), não grátis para sempre (meta dos 10 pagantes, D174).
+- **Ajusta a D304:** "NextLevel Business" passa a ser também nome de produto vendido, não só da área do painel. A plataforma e a marca-mãe continuam NextLevel Commerce e NextLevel.
+- **No código (fase de planos, NB8, que sobe para logo depois da NB3):**
+  - a assinatura principal (uma por conta, `nl_subscriptions_store_unique`) é o Business;
+  - Site e Loja entram como adicionais (`entitlements` `modulo:site` e `modulo:loja`), que a regra `modulosDe` já entende;
+  - `formato` vira só o primeiro passo sugerido;
+  - conta só com o Business ganha página pública simples;
+  - o menu ganha "Ligar site";
+  - a entrada vira "Comece pelo seu negócio" e, depois, "Quer um site? Quer uma loja?".
+- **Até a NB8:** nada muda no que está no ar (chave `BUSINESS_V1` desligada).

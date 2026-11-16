@@ -25,7 +25,7 @@
 | 14/11 | **Pergunta em aberto:** "E se Business, sites e lojas virtuais forem 3 funções distintas, como produtos? Funções iniciais básicas e depois a contratação dessas três possibilidades?" | 0.2 abaixo (**aguarda a resposta do dono**) |
 | 16/11 | "O que fizemos nessa seção não pode se perder de forma alguma." Pediu a análise das outras conversas e uma forma de manter o racional | Esta Parte 0 e a junção descrita em 0.3 |
 
-### 0.2 Proposta em aberto: três produtos (resposta dada ao dono em 14/11; decisão pendente, será a próxima livre, hoje D307)
+### 0.2 Três produtos: **aprovado pelo dono em 16/11/2026 (D308)**
 - **NextLevel Business (base):** painel do negócio (visão geral, clientes, atendimento, contatos e orçamentos, pedidos e vendas, financeiro, Maurício). Todo cliente começa aqui.
 - **Site (contratação):** site da empresa, páginas de serviço e de campanha, domínio, formulário de orçamento.
 - **Loja virtual (contratação):** catálogo, carrinho, Pix e cartão, temas, atacado.
@@ -43,7 +43,7 @@
   - a entrada vira "Comece pelo seu negócio" e, depois, "Quer um site? Quer uma loja?" (pode pular);
   - a NB8 (planos e contratação no painel) sobe para logo depois da NB3;
   - "NextLevel Business" passa a ser nome de produto vendido, e não só de área (ajusta a D304).
-- **Enquanto o dono não responder:** NB2 e NB3 seguem iguais, porque servem aos dois modelos.
+- **Ordem depois da aprovação:** NB3 (contatos e orçamentos) e, logo em seguida, NB8 (planos, pacotes e contratação de Site e Loja no painel).
 
 ### 0.3 Encaixe com o trabalho das outras conversas (junção de 16/11/2026)
 As outras sessões publicaram na branch `claude/wonderful-cannon-5o38v5`, em paralelo, D295 a D303 e as migrações 0097 a 0100. As decisões desta conversa, que nasceram com os mesmos números, foram **renumeradas em duas junções**: primeiro para D302 a D304 e, como D302 (TR6) e D303 (Busca e IA) também foram usadas, para os números finais **D304 (nome e organização), D305 (NB0) e D306 (NB1)**. A migração `formato`/`fuso` ficou **0101**. Nada se perdeu dos dois lados.
