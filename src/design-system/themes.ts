@@ -69,7 +69,7 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
   // menu cinza-claro com item ativo em cápsula branca e superfícies brancas. O roxo é exclusivo da marca-mãe e do Master;
   // os produtos seguem com a cor de cada um. O turquesa do pacote v2 fica como acento decorativo (o nosso toque).
   nextlevel: {
-    label: "NextLevel Soluções Digitais (grupo e Master)",
+    label: "NextLevel Business (grupo e Master)",
     light: { canvas: CAPA.claro.canvas, surface: "#FFFFFF", ink: CAPA.claro.ink, primary: CAPA.claro.acao, link: CAPA.claro.link, accent: NL.cores.turquesa, accentText: "#0B5E55", accentSoft: "#DDF7F3", reflection: CAPA.escuro.link, sideBg: CAPA.claro.menu, ring: CAPA.claro.acao },
     dark: { canvas: CAPA.escuro.canvas, surface: CAPA.escuro.surface, ink: "#F4F4F6", primary: CAPA.escuro.acao, link: CAPA.escuro.link, accent: NL.cores.turquesa, accentText: NL.cores.turquesa, reflection: CAPA.escuro.link, sideBg: CAPA.escuro.menu, ring: CAPA.escuro.link },
   },

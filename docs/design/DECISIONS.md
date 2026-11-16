@@ -3671,3 +3671,12 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - as faturas do plano (criada, situação e pagamento), com o valor.
 - **Rótulos:** "Financeiro" para contrato, parcelas e faturas; o nome da pessoa com "(e-mail)" para os e-mails.
 - **Filtros:** Tudo, Conversas e e-mails, Financeiro e Loja, com a contagem de cada um (os pedidos da loja não escondem mais o resto).
+
+# D302 — [Grupo] Marcas por empresa, NextLevel Business e contas do Instagram como funis (2026-11-16)
+- **Pedido do dono:** reorganizar as contas do Instagram em funis de venda de todas as marcas, com a marca pessoal dele como criador de conteúdo fazendo collab com todas.
+- **Empresas (confirmado pelo dono):**
+  - **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92): NextLevel Commerce, NextLevel Business, Brás Digital (atacado e importadores) e China Hub (importação).
+  - **Mega Tron Comércio Eletrônico Ltda:** Megatron, varejo vendido com parceiros criadores.
+- **NextLevel Business** passa a ser o nome da frente de agência, sistemas sob medida e soluções para empresas (antes "NextLevel Soluções" / "NextLevel Soluções Digitais"). O endereço continua `nextlevelgroup.com.br` e a página `/solucoes`; mudaram os textos do site, dos termos e da privacidade.
+- **Marca pessoal:** Mauricio Ramos dos Santos Junior, criador de conteúdo, no maior perfil (a atual @brasdigitalapp vira @mauriciors.jr); cada vídeo sai em collab com a marca do assunto.
+- **Plano das contas:** `docs/marketing/instagram-contas-funis.md` (troca dos @, papel de cada conta no funil, ordem segura da troca, ritmo de produção). As bios ficam para depois.

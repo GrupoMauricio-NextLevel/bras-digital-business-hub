@@ -5,7 +5,7 @@ import type { ProductContextKey } from "@/lib/product-context";
 /**
  * Cadastro único dos negócios do grupo no Master (D218). Toda tela que precisa saber "quais marcas aparecem" pergunta
  * aqui, em vez de citar SuperDrop, Brás ou fornecedores fixos no texto. Hoje só a Commerce está aberta; a próxima é a
- * NextLevel Soluções (agência de marketing e soluções). Para abrir um negócio:
+ * NextLevel Business (agência de marketing e soluções). Para abrir um negócio:
  *  1) ele precisa ter código no sistema (marca em `brand.ts` e área no Master);
  *  2) entra em `MASTER_MARCAS` (master-marca.ts) e em `MASTER_MARCAS_ATIVAS` no Render.
  * Nada é apagado ao fechar: os dados só deixam de aparecer.
@@ -23,7 +23,7 @@ export const NEGOCIOS: Negocio[] = [
   { code: "CHINA_HUB", nome: "China Hub", sigla: "CH", descritor: "Brasil e China", ctx: "china", temArea: false },
 ];
 
-/** O próximo negócio a entrar no Master (decisão do dono, 2026-10-29): a NextLevel Soluções. */
+/** O próximo negócio a entrar no Master (decisão do dono, 2026-10-29): a NextLevel Business. */
 export const PROXIMO_NEGOCIO: BrandCode = "NEXTLEVEL";
 
 export function estadoDoNegocio(code: BrandCode, abertas: readonly string[] = marcasAtivasNoMaster()): EstadoNegocio {

@@ -34,7 +34,7 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "NextLevel Soluções para empresas: loja virtual, migração, temas e marketing";
+  const title = "NextLevel Business: soluções para empresas, loja virtual, migração, temas e marketing";
   const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, SuperDrop, Loja Pronta, Migração, temas, tráfego e White Label.";
   return { title: { absolute: title }, description, alternates: { canonical: `${groupSiteUrl()}/solucoes` }, openGraph: { title, description, url: `${groupSiteUrl()}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [{ url: `${groupSiteUrl()}/portal/nextlevel/equipe/v1/eq-og-escritorio.jpg`, width: 1200, height: 630, alt: "Equipe NextLevel na sede, em São Paulo" }] } };
 }

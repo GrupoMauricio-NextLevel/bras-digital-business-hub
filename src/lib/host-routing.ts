@@ -11,7 +11,7 @@ export const PANEL_PREFIXES = ["/master", "/commerce", "/supplier", "/merchant",
 export const CLOSED_PUBLIC_PATHS = ["/", "", "/cadastro", "/fornecer", "/ativar", "/quero-minha-loja", "/termos", "/privacidade"];
 /** Páginas do grupo que abrem no endereço da holding (D147: vão para nextlevelgroup.com.br quando o site do grupo existir). */
 export const GROUP_PATHS = ["/solucoes", "/termos", "/privacidade", "/loja-nextlevel", "/club", "/meu-contador"];
-/** Páginas que são da NextLevel Soluções Digitais (agência): nos endereços das marcas vão para o endereço do grupo (D149). */
+/** Páginas que são da NextLevel Business (agência): nos endereços das marcas vão para o endereço do grupo (D149). */
 const GROUP_OWNED = ["/solucoes", "/loja-nextlevel", "/club", "/meu-contador"];
 /** Painéis da equipe NextLevel: só no Master (D149; `MASTER_HOST_ONLY=false` desliga). */
 export const TEAM_PANEL_PREFIXES = ["/master", "/commerce", "/bras"];
