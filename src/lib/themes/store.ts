@@ -18,7 +18,7 @@ import { garantirLojaCompleta } from "./loja-completa";
 const MAX_VERSIONS = 20;
 export type Source = "draft" | "published" | "default";
 
-async function loadStore(db: Database, storeId: string): Promise<Store> {
+export async function loadStore(db: Database, storeId: string): Promise<Store> {
   const store = await db.query.stores.findFirst({ where: eq(stores.id, storeId) });
   if (!store) throw new NotFoundError("Loja não encontrada.");
   return store;
@@ -58,7 +58,7 @@ export async function resolveGlobals(db: Database, store: Store, opts: { draft?:
 // ---------------------------------------------------------------------------
 // Escrita (só o dono da loja). Regras: política de temas (policy.ts) com o tema ATIVO e a licença dele.
 // ---------------------------------------------------------------------------
-function assertEditor(actor: Actor, store: Store) {
+export function assertEditor(actor: Actor, store: Store) {
   assertCanAccess(actor, { storeId: store.id });
   if (actor.role !== "STORE_OWNER" && actor.role !== "NEXTLEVEL_MASTER") throw new ForbiddenError();
   requireFeature(store.offer, "appearanceBasic");
@@ -72,14 +72,14 @@ export function throwViolations(v: Violation[]): void {
 }
 
 /** Dado inválido (seção que não existe ou não cabe na página) não vira sucesso silencioso: é recusado com o motivo. */
-function assertNothingDropped(raw: unknown, t: Template, issues: string[]) {
+export function assertNothingDropped(raw: unknown, t: Template, issues: string[]) {
   const r = raw as { sections?: Record<string, unknown> } | null;
   const n = r && typeof r === "object" && r.sections && typeof r.sections === "object" ? Object.keys(r.sections).length : 0;
   if (n > t.order.length) throw new DomainError("THEME_INVALID", issues.filter((i) => /removid|não pertence|não é permitida|Só pode haver|Limite/.test(i)).join(" ") || "O modelo enviado tem seções inválidas.");
 }
 
 export class DraftConflictError extends DomainError {}
-function assertRevision(current: number, base: number | undefined) {
+export function assertRevision(current: number, base: number | undefined) {
   if (base !== undefined && base !== current) throw new DraftConflictError("DRAFT_CONFLICT", "Este rascunho foi alterado em outra aba ou aparelho. Recarregue para ver a versão mais nova (suas mudanças desta aba ficam no histórico do editor até você sair).");
 }
 
@@ -206,7 +206,7 @@ export async function discardDraft(db: Database, actor: Actor, storeId: string, 
   else { const r = await db.query.themeTemplates.findFirst({ where: and(eq(themeTemplates.storeId, storeId), eq(themeTemplates.page, page)) }); if (r) await db.update(themeTemplates).set({ draft: null, revision: r.revision + 1, updatedAt: now }).where(and(eq(themeTemplates.storeId, storeId), eq(themeTemplates.page, page))); }
 }
 
-export async function listVersions(db: Database, actor: Actor, storeId: string, page: PageKind | "globals") {
+export async function listVersions(db: Database, actor: Actor, storeId: string, page: PageKind | "globals" | `pagina:${string}`) {
   const store = await loadStore(db, storeId); assertEditor(actor, store);
   return db.select().from(themeTemplateVersions).where(and(eq(themeTemplateVersions.storeId, storeId), eq(themeTemplateVersions.page, page))).orderBy(desc(themeTemplateVersions.createdAt), desc(themeTemplateVersions.id));
 }
@@ -219,6 +219,12 @@ export async function restoreVersion(db: Database, actor: Actor, storeId: string
   const store = await loadStore(db, storeId); assertEditor(actor, store);
   const v = await db.query.themeTemplateVersions.findFirst({ where: and(eq(themeTemplateVersions.id, versionId), eq(themeTemplateVersions.storeId, storeId)) });
   if (!v) throw new NotFoundError("Versão não encontrada.");
+  // Página livre do site (NB2, D307): volta ao rascunho da própria página, sem troca de tema.
+  if (v.page.startsWith("pagina:")) {
+    const { salvarRascunhoDaPagina } = await import("@/lib/business/paginas");
+    await salvarRascunhoDaPagina(db, actor, storeId, v.page.slice(7), v.snapshot, { skipPolicy: true });
+    return { page: v.page as `pagina:${string}`, switchedTo: null };
+  }
   if (v.page !== "globals" && !isPage(v.page)) throw new DomainError("INVALID", "Versão inválida.");
   let switched: string | null = null;
   if (v.themeKey && v.themeKey !== (await activeThemeKey(db, storeId))) {
@@ -230,7 +236,7 @@ export async function restoreVersion(db: Database, actor: Actor, storeId: string
   else {
     await saveTemplateDraft(db, actor, storeId, v.page as PageKind, v.snapshot, { skipPolicy: true });
   }
-  return { page: v.page as PageKind | "globals", switchedTo: switched };
+  return { page: v.page as PageKind | "globals" | `pagina:${string}`, switchedTo: switched };
 }
 
 /** Troca o tema ativo da loja (sem mexer nos modelos). Usado na restauração de versões de outro tema. */

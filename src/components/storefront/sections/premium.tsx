@@ -237,6 +237,8 @@ export function parseMenuChildren(text: string): { label: string; href: string }
 
 export function HeaderPlus({ settings, blocks, ctx }: SectionProps) {
   const menu: MenuItem[] = blocks.map((b) => ({ label: str(b.settings.label), href: resolveLink(ctx.base, str(b.settings.link)), children: parseMenuChildren(str(b.settings.children)) }));
+  // Site sem loja (NB2, D307): as páginas do site entram depois do menu do tema; sem carrinho.
+  if (ctx.semLoja) for (const m of ctx.menuSite ?? []) if (!menu.some((x) => x.href === m.href)) menu.push({ ...m, children: [] });
   const products = ctx.products.slice(0, 200).map((p) => ({ name: p.name, slug: p.slug, category: p.categoryName, priceCents: p.priceCents }));
-  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} logoUrl={ctx.store.logoUrl} logoHeight={Number(settings.logoHeight) || 36} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} menu={menu} searchProducts={products} showSearch={settings.showSearch !== false} />;
+  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} logoUrl={ctx.store.logoUrl} logoHeight={Number(settings.logoHeight) || 36} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} menu={menu} searchProducts={products} showSearch={!ctx.semLoja && settings.showSearch !== false} semLoja={ctx.semLoja} />;
 }

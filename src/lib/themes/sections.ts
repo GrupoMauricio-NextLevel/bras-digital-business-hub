@@ -364,6 +364,35 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     settings: [{ id: "heading", type: "text", label: "Título", default: "Quem somos", maxLength: 80 }, { id: "body", type: "richtext", label: "Texto", default: "Conte a história da sua loja e o que você promete a quem compra." }, { id: "showContact", type: "checkbox", label: "Mostrar contato e dados da empresa", default: true }],
     presets: [{ name: "Sobre a loja e contato" }],
   },
+  // NextLevel Business (NB2, D307): seções do site da empresa. Sem requisito de tema: valem em todos os níveis.
+  {
+    type: "services-grid", name: "Serviços", description: "Os serviços cadastrados em Site → Serviços, em cartões, com o botão para pedir orçamento.", category: "Conteúdo", region: "content", pages: ["home"],
+    settings: [
+      { id: "heading", type: "text", label: "Título", default: "Nossos serviços", maxLength: 80 },
+      { id: "text", type: "textarea", label: "Texto de apoio (opcional)", default: "", maxLength: 240 },
+      { id: "columns", type: "select", label: "Colunas no computador", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }], default: "3" },
+      { id: "showPrice", type: "checkbox", label: "Mostrar \"a partir de\" quando houver preço", default: true },
+      { id: "ctaLabel", type: "text", label: "Botão de cada serviço", default: "Pedir orçamento", maxLength: 40 },
+    ],
+    presets: [{ name: "Serviços" }],
+  },
+  {
+    type: "contact-info", name: "Contato, endereço e horário", description: "WhatsApp, e-mail, endereço com link para a rota e o horário de atendimento.", category: "Confiança", region: "content", pages: ["home"],
+    settings: [
+      { id: "heading", type: "text", label: "Título", default: "Fale com a gente", maxLength: 80 },
+      { id: "text", type: "textarea", label: "Texto (opcional)", default: "", maxLength: 300 },
+      { id: "showMapLink", type: "checkbox", label: "Mostrar o link \"Como chegar\" (abre o mapa)", default: true },
+      { id: "hours", type: "textarea", label: "Horário de atendimento (uma linha por dia ou faixa)", default: "Segunda a sexta: 8h às 18h\nSábado: 8h às 12h", maxLength: 300 },
+      { id: "area", type: "text", label: "Região atendida (opcional)", default: "", maxLength: 120 },
+    ],
+    presets: [{ name: "Contato, endereço e horário" }],
+  },
+  {
+    type: "work-gallery", name: "Trabalhos realizados", description: "Fotos de trabalhos feitos, com legenda. Use fotos reais do seu negócio.", category: "Conteúdo", region: "content", pages: ["home"], maxBlocks: 12,
+    settings: [{ id: "heading", type: "text", label: "Título", default: "Trabalhos realizados", maxLength: 80 }, { id: "columns", type: "select", label: "Colunas no computador", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }], default: "3" }],
+    blocks: [{ type: "work", name: "Foto", limit: 12, settings: [{ id: "image", type: "image", label: "Foto" }, { id: "caption", type: "text", label: "Legenda", default: "", maxLength: 100 }] }],
+    presets: [{ name: "Trabalhos realizados", blocks: [{ type: "work" }, { type: "work" }, { type: "work" }] }],
+  },
   {
     type: "whatsapp-float", name: "Botão flutuante do WhatsApp", description: "Botão fixo no canto da tela para o cliente chamar no WhatsApp.", category: "Confiança", region: "footer", pages: ["home", "product", "collection", "cart"], singleton: true,
     settings: [{ id: "message", type: "text", label: "Mensagem inicial", default: "Olá! Vim pela loja e gostaria de ajuda.", maxLength: 140 }, { id: "position", type: "select", label: "Posição", options: [{ value: "right", label: "Direita" }, { value: "left", label: "Esquerda" }], default: "right" }],

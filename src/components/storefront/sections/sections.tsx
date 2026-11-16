@@ -36,7 +36,9 @@ export function AnnouncementBar({ settings, ctx }: SectionProps) {
 
 /** O cabeçalho é um componente de cliente (carrinho e menu); as configurações chegam por propriedades. */
 export function HeaderSection({ settings, ctx }: SectionProps) {
-  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} logoUrl={ctx.store.logoUrl} logoHeight={Number(settings.logoHeight) || 36} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} />;
+  // Site sem loja (NB2, D307): menu com as páginas publicadas e sem carrinho.
+  const menu = ctx.semLoja ? [{ label: "Início", href: ctx.base, children: [] }, ...(ctx.menuSite ?? []).map((m) => ({ ...m, children: [] }))] : undefined;
+  return <StoreHeader slug={ctx.slug} name={ctx.store.name} logoText={ctx.store.logoText} logoUrl={ctx.store.logoUrl} logoHeight={Number(settings.logoHeight) || 36} whatsapp={ctx.store.whatsapp} sticky={settings.sticky !== false} showWhatsapp={settings.showWhatsapp !== false} tone={settings.tone === "dark" ? "dark" : "light"} menu={menu} semLoja={ctx.semLoja} />;
 }
 
 export function Hero({ settings, ctx }: SectionProps) {

@@ -763,6 +763,58 @@ export const themeSavedTemplates = pgTable("theme_saved_templates", {
   createdAt: createdAt(),
 }, (t) => [index("theme_saved_templates_store_idx").on(t.storeId)]);
 
+/**
+ * Páginas livres do site do negócio (NextLevel Business, NB2, D307): Sobre, Serviços, Contato, campanha e página livre.
+ * Mesmo formato de modelo das páginas da loja (`Template`), com rascunho, publicação e revisão; o histórico usa
+ * `theme_template_versions` com `page = "pagina:<id>"`. O endereço público é `/<slug>` (domínio próprio) ou
+ * `/store/<loja>/<slug>`; slugs das rotas da loja são reservados (`src/lib/business/paginas.ts`).
+ */
+export const PAGINA_TIPOS = ["INSTITUCIONAL", "SERVICO", "CONTATO", "CAMPANHA", "LIVRE"] as const;
+export type PaginaTipo = (typeof PAGINA_TIPOS)[number];
+export const paginasSite = pgTable("paginas_site", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  slug: text("slug").notNull(),
+  tipo: text("tipo", { enum: PAGINA_TIPOS }).notNull().default("LIVRE"),
+  titulo: text("titulo").notNull(),
+  draft: jsonb("draft").$type<import("@/lib/themes/types").Template | null>(),
+  published: jsonb("published").$type<import("@/lib/themes/types").Template | null>(),
+  revision: integer("revision").notNull().default(0),
+  seoTitulo: text("seo_titulo"),
+  seoDescricao: text("seo_descricao"),
+  /** Entra no sitemap e pode ser indexada (campanha nasce fora). */
+  indexar: boolean("indexar").notNull().default(true),
+  /** Aparece no menu do cabeçalho do site, na ordem abaixo. */
+  noMenu: boolean("no_menu").notNull().default(true),
+  ordem: integer("ordem").notNull().default(0),
+  publicadaEm: ts("publicada_em"),
+  arquivadaEm: ts("arquivada_em"),
+  createdBy: text("created_by"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("paginas_site_slug_unique").on(t.storeId, t.slug)]);
+
+/**
+ * Serviços da empresa (NB2, D307): o que o negócio oferece, mostrado no site (seção "Serviços") e, na NB3, escolhido
+ * no formulário de orçamento. Não usa `products` (estoque, frete, checkout) nem `services` (catálogo da NextLevel).
+ * Sem preço = "sob orçamento". Na academia, cada modalidade é um serviço (a grade de aulas é da NB10).
+ */
+export const servicosNegocio = pgTable("servicos_negocio", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  nome: text("nome").notNull(),
+  slug: text("slug").notNull(),
+  resumo: text("resumo"),
+  descricao: text("descricao"),
+  imagemUrl: text("imagem_url"),
+  /** Preço "a partir de", em centavos; vazio = sob orçamento. */
+  precoAPartirCents: integer("preco_a_partir_cents"),
+  ativo: boolean("ativo").notNull().default(true),
+  ordem: integer("ordem").notNull().default(0),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("servicos_negocio_slug_unique").on(t.storeId, t.slug), index("servicos_negocio_store_idx").on(t.storeId, t.ativo)]);
+
 // ---------------------------------------------------------------------------
 // Planos / Assinaturas
 // ---------------------------------------------------------------------------

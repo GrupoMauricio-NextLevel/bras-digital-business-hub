@@ -39,7 +39,7 @@ function SearchBox({ base, products, dark, className }: { base: string; products
   );
 }
 
-export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, whatsapp: whatsappNumber, sticky = true, showWhatsapp = true, tone = "light", menu, searchProducts, showSearch = false }: { slug: string; name: string; logoUrl?: string | null; logoHeight?: number; logoText: string | null; whatsapp: string | null; sticky?: boolean; showWhatsapp?: boolean; tone?: "light" | "dark"; menu?: MenuItem[]; searchProducts?: SearchProduct[]; showSearch?: boolean }) {
+export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, whatsapp: whatsappNumber, sticky = true, showWhatsapp = true, tone = "light", menu, searchProducts, showSearch = false, semLoja = false }: { slug: string; name: string; logoUrl?: string | null; logoHeight?: number; logoText: string | null; whatsapp: string | null; sticky?: boolean; showWhatsapp?: boolean; tone?: "light" | "dark"; menu?: MenuItem[]; searchProducts?: SearchProduct[]; showSearch?: boolean; /** Site sem loja (NB2, D307): sem carrinho, conta e acompanhar pedido. */ semLoja?: boolean }) {
   const whatsapp = showWhatsapp ? whatsappNumber : null;
   const { count, ready } = useCart();
   const pathname = usePathname();
@@ -47,7 +47,7 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
   const [mega, setMega] = React.useState<number | null>(null);
   const base = `/store/${slug}`;
   const dark = tone === "dark";
-  const links: MenuItem[] = menu && menu.length ? menu : [{ label: "Início", href: base, children: [] }, { label: "Catálogo", href: `${base}/catalog`, children: [] }];
+  const links: MenuItem[] = menu && menu.length ? menu : semLoja ? [{ label: "Início", href: base, children: [] }] : [{ label: "Início", href: base, children: [] }, { label: "Catálogo", href: `${base}/catalog`, children: [] }];
   const T = { bar: dark ? "border-white/10 bg-neutral-950/95 text-white" : "border-black/5 bg-white/95", link: dark ? "text-neutral-300 hover:text-white" : "text-neutral-600 hover:text-neutral-900", active: dark ? "font-medium text-white" : "font-medium text-neutral-900", hover: dark ? "hover:bg-white/10" : "hover:bg-neutral-100", divider: dark ? "border-white/10" : "border-black/5" };
   return (
     <header className={cn("top-0 z-30 border-b backdrop-blur", T.bar, sticky && "sticky")} onMouseLeave={() => setMega(null)}>
@@ -76,14 +76,14 @@ export function StoreHeader({ slug, name, logoText, logoUrl, logoHeight = 36, wh
         <div className="ml-auto flex items-center gap-2">
           {showSearch && searchProducts ? <SearchBox base={base} products={searchProducts} dark={dark} className="hidden w-52 lg:block xl:w-64" /> : null}
           {/* Com busca e menu grande, o atalho vira só o ícone para a barra caber numa linha. */}
-          <Link href={`${base}/acompanhar`} aria-label={showSearch ? "Acompanhar pedido" : undefined} title={showSearch ? "Acompanhar pedido" : undefined} className={cn("hidden min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden />{showSearch ? null : " Acompanhar pedido"}</Link>
-          <Link href={`${base}/conta`} aria-label="Minha conta" title="Minha conta" className={cn("inline-flex min-h-11 items-center rounded-md px-2.5 py-2 text-sm", T.hover)}><UserRound className="size-5" aria-hidden /></Link>
+          {semLoja ? null : <><Link href={`${base}/acompanhar`} aria-label={showSearch ? "Acompanhar pedido" : undefined} title={showSearch ? "Acompanhar pedido" : undefined} className={cn("hidden min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm lg:inline-flex", T.hover)}><PackageSearch className="size-4" aria-hidden />{showSearch ? null : " Acompanhar pedido"}</Link>
+          <Link href={`${base}/conta`} aria-label="Minha conta" title="Minha conta" className={cn("inline-flex min-h-11 items-center rounded-md px-2.5 py-2 text-sm", T.hover)}><UserRound className="size-5" aria-hidden /></Link></>}
           {whatsapp ? <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer" className={cn("hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm sm:inline-flex", dark ? "text-neutral-300" : "text-neutral-600", T.hover)}><MessageCircle className="size-4" /> WhatsApp</a> : null}
-          <Link href={`${base}/cart`} className={cn("relative inline-flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
+          {semLoja ? null : (<Link href={`${base}/cart`} className={cn("relative inline-flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium", T.hover)} aria-label="Carrinho">
             <ShoppingBag className="size-5" />
             <span className="hidden sm:inline">Carrinho</span>
             {ready && count > 0 ? <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full text-[10px] font-semibold sm:static sm:size-auto sm:rounded-full sm:px-2 sm:py-0.5" style={{ background: "var(--sf-accent)", color: "var(--sf-on-accent)" }}>{count}</span> : null}
-          </Link>
+          </Link>)}
         </div>
       </div>
       {mega !== null && links[mega]?.children.length ? (

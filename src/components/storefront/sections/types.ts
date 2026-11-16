@@ -31,6 +31,12 @@ export type SectionCtx = {
   welcome?: { label: string; minText: string | null } | null;
   /** Id da primeira seção visível de conteúdo (recebe o título principal da página). */
   firstId?: string;
+  /** NextLevel Business (NB2, D307): serviços ativos do negócio (seção "Serviços"). */
+  servicos?: import("@/lib/business/servicos").ServicoPublico[];
+  /** Negócio sem loja virtual (caminho Site): o cabeçalho troca carrinho e catálogo pelas páginas do site. */
+  semLoja?: boolean;
+  /** Páginas publicadas que vão no menu do site (já com o endereço completo). */
+  menuSite?: { label: string; href: string }[];
 };
 
 export type SectionProps = {

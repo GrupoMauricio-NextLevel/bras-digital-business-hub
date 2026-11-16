@@ -28,6 +28,8 @@ import { readableOn } from "@/lib/utils";
 import Link from "next/link";
 import { NextLevelSignature } from "@/components/brand/nextlevel-signature";
 import { isBlocked } from "@/lib/domain/store-access";
+import { lojaFechadaNaVitrine } from "@/lib/business/vitrine";
+import { menuDoSite } from "@/lib/business/paginas";
 import { currentCampaign, isSafeLink } from "@/lib/domain/campaigns";
 import { kitBlackDaLoja } from "@/lib/domain/kit-black-loja";
 import { FaixaBlackLoja } from "@/components/storefront/faixa-black-loja";
@@ -104,7 +106,10 @@ export default async function StoreLayout({ params, children }: { params: Promis
     pacotes: Object.fromEntries(products.flatMap((p) => p.packs.map((pk) => [pk.id, pk.totalQuantity]))),
     modelos: Object.fromEntries(products.filter((p) => p.minimoModelo > 1 || p.multiploModelo > 1).map((p) => [p.id, { minimo: p.minimoModelo, multiplo: p.multiploModelo }])),
   } : undefined;
-  const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const };
+  // Site sem loja (NB2, D307): cabeçalho sem carrinho e com as páginas publicadas no menu.
+  const semLoja = await lojaFechadaNaVitrine(sf.store.id);
+  const menuSite = semLoja ? (await menuDoSite(await getDb(), sf.store.id)).map((m) => ({ label: m.label, href: `/store/${slug}/${m.slug}` })) : undefined;
+  const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const, semLoja, menuSite };
   return (
     <div style={vars} data-buttons={st.buttons} data-black={black ? "" : undefined} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {showcase ? <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-neutral-900 px-4 py-2 text-center text-xs text-white" data-showcase-banner><span>Loja de demonstração do tema <b>{showcase.name}</b> · produtos de exemplo, nada aqui é vendido.</span><a href={`/temas/${showcase.key}`} target="_top" className="rounded bg-white px-2.5 py-1 font-semibold text-neutral-900">{showcase.release !== "released" ? "Ver detalhes do tema" : "Quero este tema"}</a></div> : null}
