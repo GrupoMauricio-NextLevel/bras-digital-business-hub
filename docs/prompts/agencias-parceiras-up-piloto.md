@@ -5,6 +5,8 @@
 > 2. fazer um **piloto com a UP** e virar o **sistema operacional da agência**, indo além das soluções da NextLevel;
 > 3. oferecer as **soluções da NextLevel como adicional** para os clientes da UP.
 >
+> **Versão 2 (16/11/2026):** a UP quer também **receber pagamentos e cobrar os clientes automaticamente**, e o piloto passa a ser **exclusivo para a UP como Agência Fundadora de um produto para grandes agências**. A **Parte 8** traz o sistema operacional completo, a cobrança automática e a análise da escada de preços (Business R$ 3 mil + 10%, white label R$ 15 mil + 3%, código próprio R$ 30 mil + 0%), e **prevalece** sobre as Partes 1 a 7 onde houver conflito.
+>
 > **Estado deste documento:** proposta para o dono decidir. Nada aqui está aprovado nem no código. Quando aprovado, vira a decisão **D312** em `docs/design/DECISIONS.md` (frente `[E-commerce]`, porque traz lojistas e contas pagantes para a NextLevel Commerce) e é citado na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`).
 >
 > **Documentos que este plano respeita:** Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`), regra anti-duplicação (`CLAUDE.md`), NextLevel Business (`docs/prompts/nextlevel-business-coracao-do-negocio.md`, D304 a D311), Programa de Parceiros (D220; regra única de comissão D260; duas frentes, CPF e CNPJ, D263), público e personas (`docs/prompts/publico-personas-precos-ecossistema.md`, persona P12 "o parceiro").
@@ -52,6 +54,7 @@
 - **Parte 5. O piloto com a UP** (cronograma de 90 dias, metas, rotina, riscos)
 - **Parte 6. Perguntas para o dono e para a UP**
 - **Parte 7. Números do piloto** (simulação, sem promessa de ganho)
+- **Parte 8. Versão 2: sistema operacional exclusivo para a UP, cobrança automática e monetização** (prevalece)
 
 ---
 
@@ -218,6 +221,8 @@ Pauta → Roteiro → Gravação agendada → Gravado → Em edição → Para a
 - **Quem vende:** a agência (recomendado no piloto). Opção: a agência marca "quero que a NextLevel apresente", e a equipe comercial NextLevel faz a apresentação com a agência junto; a comissão continua da agência.
 
 ### M10. Financeiro da agência
+
+> **Versão 2:** a cobrança automática deixou de ser "depois do piloto" e virou o centro do sistema. Ver 8.2 a 8.4.
 Dividido em duas partes bem separadas:
 - **O que a NextLevel paga à agência:** comissões (livro-razão do parceiro que já existe: `partner_commissions`, saques via Pix para o mesmo CNPJ, carência, saque mínimo de R$ 50, níveis 20%/24%/28% pela carteira ativa).
 - **O que os clientes pagam à agência** (opcional, pergunta 6.3):
@@ -356,7 +361,7 @@ Provar, em 90 dias, que:
 
 ## 5.2 Escopo fechado do piloto
 **Dentro:** carteira, produção, agenda, aprovação, portal do cliente, biblioteca por link, relatório mensal, vitrine de adicionais com comissão, controle simples dos contratos da agência.
-**Fora (vai para a fila e o dono decide depois):** cobrança dos clientes da agência pela plataforma, nota fiscal, armazenamento próprio de vídeo, folha da equipe, CRM de prospecção da agência, app instalado, white label completo.
+**Fora (vai para a fila e o dono decide depois):** ~~cobrança dos clientes da agência pela plataforma~~ (entrou no escopo na versão 2, ver 8.8), nota fiscal, armazenamento próprio de vídeo, folha da equipe, CRM de prospecção da agência, app instalado, white label completo.
 
 ## 5.3 Cronograma (sugestão)
 
@@ -435,6 +440,8 @@ Provar, em 90 dias, que:
 
 # Parte 7. Números do piloto (simulação, sem promessa de ganho)
 
+> **Substituída na versão 2:** o preço do painel agora segue a escada da seção 8.5 (implantação + percentual ou manutenção). A comissão dos adicionais abaixo continua valendo.
+
 > **Atenção:** os números abaixo são uma **simulação para ajudar a decidir o preço**, não uma previsão nem promessa. Os preços reais vêm sempre da tabela do Master. Valores de referência: planos da loja virtual Start R$ 57, Pro R$ 147, Scale R$ 347 por mês (D220); adicional Site para quem já é lojista R$ 29/mês (provisório, D311); comissão de parceiro com CNPJ 20% de toda mensalidade paga até 9 clientes ativos (D260).
 
 **Cenário de referência (só para entender a ordem de grandeza):** dos 30 clientes da UP, 8 assinam um plano Start pelo caminho Site em 90 dias.
@@ -466,3 +473,210 @@ Provar, em 90 dias, que:
 4. **O que vocês ganham além do sistema:** comissão em tudo o que os clientes contratarem na NextLevel, enquanto o cliente ficar.
 5. **O que não fazemos:** não gravamos, não editamos, não abordamos os clientes de vocês por fora.
 6. **Próximo passo:** planilha dos clientes, equipe e um responsável; em duas semanas vocês planejam dezembro dentro do sistema.
+
+---
+
+# Parte 8. Versão 2 (16/11/2026): sistema operacional exclusivo para a UP, cobrança automática e como monetizar
+
+> **O que mudou (dono, 16/11/2026):** a UP quer ajuda para **controlar os clientes, inclusive receber pagamentos e cobrar automaticamente**. A conversa deixa de ser sobre agência que só divulga e passa a ser sobre um **sistema exclusivo para a UP**, que é o **piloto para grandes agências**. O dono propôs três degraus de preço:
+>
+> | Degrau | Proposta do dono |
+> |---|---|
+> | 1. NextLevel Business (validação) | Implantação de R$ 3.000 + **10%** sobre as transações dos clientes da agência |
+> | 2. White label | R$ 15.000 + **3%** |
+> | 3. Código próprio | R$ 30.000 + **0%** |
+>
+> **Esta Parte 8 prevalece** sobre as Partes 1 a 7 onde houver conflito: a cobrança entra no escopo do piloto (antes estava fora, 5.2), o financeiro (M10) vira módulo central e o preço do painel da Parte 7 é substituído pela escada abaixo.
+
+## 8.1 A mudança de posição: de "parceiro que indica" para "sistema operacional da agência"
+
+| | Antes (Partes 1 a 7) | Agora (Parte 8) |
+|---|---|---|
+| O que a UP compra | Um painel de produção, grátis no piloto | **O sistema que roda a agência**: clientes, contratos, cobrança, produção, portal, resultados |
+| Como a NextLevel ganha | Comissão indireta (adicionais vendidos aos clientes da UP) | **Receita direta da agência** (implantação + percentual ou mensalidade) **e** os adicionais |
+| Para quem é | Agências de conteúdo em geral | **Grandes agências**, com a UP como **Agência Fundadora** |
+| Dinheiro | Fora do sistema | **Passa pelo sistema** (sem a NextLevel guardar o dinheiro da agência, ver 8.4) |
+
+A frase para vender: **"A UP cuida do conteúdo; o sistema cuida de cliente, contrato, cobrança e resultado."**
+
+## 8.2 Os oito pilares do sistema operacional da agência
+
+1. **Clientes e contratos:** carteira, contrato recorrente por cliente (valor, dia de vencimento, o que está incluso no mês, reajuste anual), serviços avulsos (gravação extra, diária, criativo extra), assinatura do contrato no painel (reaproveita `contratos-assinatura-no-painel.md`).
+2. **Cobrança automática** (o centro da versão 2, detalhado em 8.3).
+3. **Financeiro da agência:** recebido x previsto, inadimplência, receita recorrente do mês, cancelamentos, ticket médio, **margem por cliente** (receita menos custo de produção: diárias, freelancers, horas).
+4. **Produção:** pauta → roteiro → gravação → edição → aprovação → entrega (módulos M3 a M6).
+5. **Portal do cliente** com a marca da agência: aprovar peças, ver agenda, **pagar faturas, ver 2ª via e histórico**, baixar arquivos, ver relatório.
+6. **Resultados:** relatório mensal com produção e, quando o cliente usa a NextLevel, contatos, origem, vendas e Meta (M7).
+7. **Ecossistema:** vitrine de adicionais NextLevel com comissão para a agência (M9).
+8. **Gestão e escala:** equipe com funções, permissões finas, registro de tudo, exportação para o contador, e, nos degraus maiores, marca própria, várias unidades, integração por API e suporte com prazo garantido.
+
+## 8.3 Cobrança automática (o que o sistema faz sozinho)
+
+| Função | Como funciona | Fase |
+|---|---|---|
+| **Fatura recorrente** | Todo mês, no dia combinado, o sistema gera a fatura de cada cliente a partir do contrato (mensalidade + avulsos do mês) | Piloto |
+| **Meios de pagamento** | Pix (QR e copia-e-cola) e cartão, inclusive cartão salvo para cobrança recorrente; boleto quando a integração existir | Pix e cartão no piloto; boleto depois |
+| **Régua de cobrança** | Mensagens automáticas configuráveis pela agência: 3 dias antes, no dia, 1, 5 e 10 dias depois do vencimento; por e-mail e com mensagem pronta de WhatsApp (botão "Enviar" para a equipe). WhatsApp automático pela API oficial fica para depois (tem custo por conversa) | E-mail + WhatsApp assistido no piloto |
+| **Baixa automática** | Pagamento só vale depois de conferido na API do meio de pagamento (regra da casa); a fatura vira "paga" sozinha, sem conferência manual; um aviso repetido nunca dá baixa duas vezes (`dedupeKey`) | Piloto |
+| **Multa, juros e desconto** | Multa e juros por atraso e desconto por pagar em dia, configuráveis pela agência dentro dos limites legais | Piloto |
+| **Inadimplência** | Painel de quem está atrasado, há quantos dias e quanto; regra opcional da agência: "pausar gravações depois de X dias de atraso" (avisada no contrato) | Piloto |
+| **Reajuste anual** | Aviso 30 dias antes e reajuste no aniversário do contrato, pelo percentual que a agência definir | Depois |
+| **Avulsos com link** | Gravação extra ou diária vira cobrança com link na hora | Piloto |
+| **Nota fiscal de serviço** | Emissão automática da nota da agência quando a fatura é paga, por integração com emissor de NFS-e | Depois (grande pedido de agências; custo por nota) |
+| **Exportação para o contador** | Planilha mensal de recebimentos, taxas e notas | Piloto (planilha) |
+| **Previsão de caixa** | Quanto entra nos próximos 30, 60 e 90 dias pelos contratos ativos | Depois |
+
+**O que já existe e é reaproveitado:** camada de meios de pagamento com Mercado Pago e Pagar.me (`src/lib/payments/gateway.ts`), Pix e cartão parcelado, tokens criptografados (`encryptSecret`), conferência do pagamento na API e idempotência, motor de faturas da própria NextLevel (`finance_invoices`, `nextlevel-billing.ts`), e-mails transacionais e assinatura de contrato no painel.
+**O que falta:** contrato recorrente por cliente da agência, fatura gerada a partir do contrato, cartão salvo para recorrência, régua de cobrança, multa e juros, painel de inadimplência, boleto e nota fiscal.
+
+## 8.4 Regra de ouro do dinheiro: a NextLevel não guarda o dinheiro da agência
+
+- O cliente da UP paga **direto na conta de pagamento da própria UP** (Mercado Pago ou Pagar.me da UP, conectado no painel, como o lojista conecta o dele hoje). O dinheiro **nunca passa pela conta da NextLevel**.
+- Motivo: receber o dinheiro de terceiros e repassar depois é atividade regulada pelo Banco Central (instituição de pagamento). Ficar fora disso protege a NextLevel e simplifica a parte fiscal.
+- **Como a NextLevel cobra o percentual dela**, duas formas:
+  1. **Fatura mensal da NextLevel para a agência** sobre o volume conferido no mês (recomendado no piloto: usa o motor de faturas que já existe, com cartão salvo ou Pix, e nota fiscal da NextLevel para a agência);
+  2. **Divisão automática no pagamento** (o meio de pagamento separa a parte da NextLevel na hora). O Pagar.me tem divisão nativa; no Mercado Pago, conferir na documentação oficial se vale para cobrança recorrente. Fica para depois do piloto.
+- A comissão de 20% que a NextLevel paga à UP pelos adicionais (D260) pode ser **abatida** dessa fatura mensal, se o dono quiser.
+
+## 8.5 A escada de preços do dono, com números
+
+**Base de cálculo:** "transações dos clientes" = o que os clientes da agência pagam à agência **pelo sistema** no mês (chamado aqui de **volume**). A UP tem 30 clientes; o valor médio por cliente ainda não sabemos (pergunta 6.2). Cenários:
+
+| Cenário | Clientes × valor médio | Volume por mês |
+|---|---|---|
+| A | 30 × R$ 1.500 | R$ 45.000 |
+| B | 30 × R$ 2.500 | R$ 75.000 |
+| C | 40 × R$ 3.000 | R$ 120.000 |
+| D (grande agência) | 80 × R$ 3.125 | R$ 250.000 |
+
+**Quanto a agência pagaria no 1º ano com a proposta do dono:**
+
+| Volume/mês | Business (R$ 3 mil + 10%) | White label (R$ 15 mil + 3%) | Código próprio (R$ 30 mil + 0%) |
+|---|---|---|---|
+| R$ 45 mil | R$ 57.000 | R$ 31.200 | R$ 30.000 |
+| R$ 75 mil | R$ 93.000 | R$ 42.000 | R$ 30.000 |
+| R$ 120 mil | R$ 147.000 | R$ 58.200 | R$ 30.000 |
+| R$ 250 mil | R$ 303.000 | R$ 105.000 | R$ 30.000 |
+
+**No 2º ano** (sem implantação): Business R$ 54 mil a R$ 300 mil; white label R$ 16 mil a R$ 90 mil; código próprio **R$ 0**.
+
+### Os três problemas da escada como está
+
+1. **O degrau 3 engole os outros.** No cenário B, a UP paga R$ 7.500 por mês no degrau 1. Pular direto para o código próprio (R$ 30 mil) se paga em **4 meses**; no cenário A, em menos de 7 meses. Qualquer agência que fizer a conta vai para o código próprio no primeiro ano. Resultado para a NextLevel: **R$ 30 mil uma vez, e depois zero para sempre**, mais o suporte e as dúvidas, que continuam.
+2. **"Código próprio" é entregar o motor do grupo.** O repositório é **um sistema só** para NextLevel Commerce, Master, SuperDrop, Brás e as próximas marcas (regra anti-duplicação). Entregar o código é entregar anos de trabalho e permitir que a agência (ou quem comprar dela) **vire concorrente**, por R$ 30 mil. Separar só a parte da agência dá muito trabalho e cria um segundo sistema para manter, sem atualizações, segurança nem correções dali em diante.
+3. **10% do faturamento é pesado para uma agência e convida a cobrar por fora.** Agência de conteúdo costuma ter margem apertada (hipótese a confirmar com a UP: algo entre 20% e 35% do faturamento). 10% do faturamento pode ser **um terço do lucro dela**. Plataformas de cobrança recorrente cobram, em geral, só alguns pontos percentuais por transação (conferir nas páginas oficiais antes de fechar), e sistemas de gestão de agência cobram mensalidade fixa. Com 10%, a tendência é a UP **passar só parte dos clientes pelo sistema** e cobrar os outros por fora, e aí o percentual não entra e o sistema perde valor.
+
+### Escada recomendada (mantém a estrutura do dono e corrige os três problemas)
+
+Princípio: **todo degrau tem uma parte que se repete todo mês**, e cada degrau fica mais vantajoso **conforme a agência cresce**, não logo no começo.
+
+| Degrau | Nome sugerido | Implantação | Todo mês | Para quem |
+|---|---|---|---|---|
+| **1** | **NextLevel Business para Agências** | R$ 3.000 (como o dono propôs) | **5%** do volume, com **mínimo de R$ 990** | Agência até ~R$ 100 mil/mês, validando |
+| **2** | **White label** | R$ 15.000 (como o dono propôs) | **3%** do volume (como o dono propôs), com **mínimo de R$ 1.990** | Agência que quer a própria marca e domínio, e oferecer o sistema aos clientes como produto dela |
+| **3** | **Licença dedicada** (no lugar de "código próprio") | R$ 30.000 (como o dono propôs) | **Manutenção fixa de R$ 3.900**, **0%** sobre o volume | Agência grande, acima de ~R$ 200 mil/mês |
+
+- **Licença dedicada** = servidor e banco só da agência, com a marca dela, sem percentual, **com atualizações, segurança e suporte incluídos na manutenção**. O código continua da NextLevel (a agência tem direito de uso, não a propriedade). É o que grandes empresas de software fazem com clientes grandes.
+- **Cessão do código-fonte** (a agência ser dona do código): **não recomendada**. Se um dia fizer sentido, só de uma parte separada do sistema, com cláusula de não concorrência e preço de outra ordem de grandeza, sob orçamento.
+- **Subir de degrau:** o que a agência pagou de implantação no degrau anterior vira **desconto** na implantação do próximo, se a troca for em até 12 meses. Isso dá motivo para começar no degrau 1 em vez de esperar.
+- **Se o dono quiser manter os 10% no degrau 1:** colocar um **teto mensal** (por exemplo R$ 4.900) e incluir mais coisas no preço (implantação assistida, importação dos clientes, treinamento da equipe, régua de cobrança com WhatsApp). Sem teto, o problema 3 continua.
+- Todos os valores ficam na **tabela de preços do Master** (`platform_settings`), nunca fixos no código. As tarifas do meio de pagamento (Pix, cartão) são da conta da agência, à parte.
+
+**Quanto a agência pagaria no 1º ano com a escada recomendada:**
+
+| Volume/mês | Degrau 1 (R$ 3 mil + 5%, mín. R$ 990) | Degrau 2 (R$ 15 mil + 3%, mín. R$ 1.990) | Degrau 3 (R$ 30 mil + R$ 3.900/mês) | Mais barato para a agência |
+|---|---|---|---|---|
+| R$ 45 mil | R$ 30.000 | R$ 38.880 | R$ 76.800 | Degrau 1 |
+| R$ 75 mil | R$ 48.000 | R$ 42.000 | R$ 76.800 | Degraus 1 e 2 próximos (escolhe pela marca própria) |
+| R$ 120 mil | R$ 75.000 | R$ 58.200 | R$ 76.800 | Degrau 2 |
+| R$ 250 mil | R$ 153.000 | R$ 105.000 | R$ 76.800 | Degrau 3 |
+
+**No 2º ano** (sem implantação), a NextLevel continua recebendo em todos os casos: degrau 1 de R$ 27 mil a R$ 150 mil; degrau 2 de R$ 23,9 mil a R$ 90 mil; degrau 3 R$ 46,8 mil.
+
+**Comparação para a NextLevel, cenário B (UP com R$ 75 mil/mês), em 3 anos:**
+
+| Caminho | Ano 1 | Ano 2 | Ano 3 | Total |
+|---|---|---|---|---|
+| Proposta do dono, UP pula para o código próprio no mês 4 (provável) | R$ 3.000 + 3 × R$ 7.500 + R$ 30.000 = R$ 55.500 | R$ 0 | R$ 0 | **R$ 55.500**, e a UP com o código |
+| Escada recomendada, UP fica no degrau 1 | R$ 48.000 | R$ 45.000 | R$ 45.000 | **R$ 138.000** |
+| Escada recomendada, UP sobe para o white label no mês 6 | R$ 3.000 + 5 × R$ 3.750 + R$ 12.000 (R$ 15 mil menos o desconto) + 7 × R$ 2.250 = R$ 49.500 | R$ 27.000 | R$ 27.000 | **R$ 103.500**, com a UP presa à marca própria dentro do sistema |
+
+> Simulação para decidir preço, **não previsão nem promessa de ganho**. O volume real da UP muda tudo; por isso a primeira pergunta à UP é o faturamento mensal com os clientes.
+
+## 8.6 "Exclusivo para a UP" sem perder o produto: Agência Fundadora
+
+O dono quer algo **exclusivo para a UP** e, ao mesmo tempo, um **piloto para grandes agências**. As duas coisas cabem juntas assim:
+
+**O que é exclusivo da UP (Agência Fundadora):**
+- **preço de fundador travado por 12 meses** (o degrau 1 nas condições do piloto, mesmo que a tabela suba);
+- **implantação feita pela NextLevel** (importação dos 30 clientes, contratos, régua de cobrança, treinamento da equipe);
+- **prioridade no que é construído**: os pedidos da UP entram na frente da fila, sempre com aprovação do dono;
+- **linha direta** com a NextLevel durante o piloto (conversa semanal);
+- selo "Agência Fundadora" no portal e no diretório de agências (com o consentimento da UP).
+
+**O que a UP dá em troca:**
+- prazo mínimo de 6 meses após o piloto;
+- usar o sistema de verdade (todos os clientes e cobranças passando por ele);
+- retorno semanal e depoimento/caso ao final, se o resultado for bom.
+
+**O que não é exclusivo (e precisa ficar escrito no contrato):**
+- **o produto é da NextLevel** e será vendido a outras agências; o que é construído para a UP vira padrão do produto, configurável por agência;
+- se o dono quiser oferecer mais, a exclusividade possível é de **condição** (nenhuma outra agência de conteúdo da mesma cidade com preço de fundador por 12 meses), nunca do produto.
+
+## 8.7 O que muda nas fases (substitui a ordem da Parte 4)
+
+A cobrança sobe para o começo, porque é o que a UP pediu e o que sustenta a receita da NextLevel.
+
+| Ordem | Fase | Entrega |
+|---|---|---|
+| 1 | AG0 | Diagnóstico e modelo de dados, agora com contratos, faturas da agência, régua e meio de pagamento da agência |
+| 2 | AG1 | Agência, equipe e funções |
+| 3 | AG2 | Carteira de clientes **com contrato recorrente** (valor, vencimento, incluso no mês, avulsos), importação dos 30 |
+| 4 | **AGF1 (nova)** | **Cobrança:** conectar o meio de pagamento da agência; fatura recorrente gerada pelo contrato; Pix e cartão; baixa automática conferida na API; avulsos com link |
+| 5 | **AGF2 (nova)** | **Régua e inadimplência:** mensagens antes e depois do vencimento (e-mail + WhatsApp assistido), multa, juros e desconto, painel de atrasados, regra de pausar produção |
+| 6 | AG5 | Portal do cliente com a marca da agência, **com faturas, 2ª via e histórico**, e aprovação de peças |
+| 7 | AG3 + AG4 | Produção do mês e agenda de gravação |
+| 8 | **AGF3 (nova)** | **Financeiro da agência:** recebido x previsto, receita recorrente, cancelamentos, margem por cliente, exportação para o contador; **fatura mensal da NextLevel para a agência** (o percentual do degrau 1) |
+| 9 | AG6, AG7, AG8 | Biblioteca e "usar no site", relatório mensal, vitrine de adicionais |
+| 10 | AG9 | Acesso assistido à conta do cliente |
+| Depois | | Boleto, nota fiscal automática, WhatsApp pela API oficial, reajuste anual, previsão de caixa, divisão automática no pagamento, degraus 2 e 3 (marca própria, domínio, instância dedicada, API) |
+
+**Critérios de aceite novos (além dos da Parte 4):**
+- a fatura só vira "paga" com o pagamento conferido na API do meio de pagamento, e um aviso repetido não dá baixa duas vezes (teste);
+- o token do meio de pagamento da agência fica criptografado e nunca aparece em tela, log ou e-mail;
+- a agência A nunca vê fatura, cliente ou recebimento da agência B (teste no servidor);
+- a equipe da agência sem função financeira não vê valores (teste);
+- a régua respeita o horário comercial e para de mandar quando a fatura é paga;
+- o percentual da NextLevel é calculado só sobre o que foi conferido como pago, menos estornos, e aparece de forma transparente para a agência (extrato do mês).
+
+## 8.8 O que muda no piloto
+
+- **Entra no escopo** (sai da lista "Fora" da 5.2): cobrança recorrente pelo sistema com o meio de pagamento da própria UP, régua de cobrança, inadimplência e financeiro da agência.
+- **Continua fora:** nota fiscal automática, boleto, WhatsApp pela API oficial, armazenamento próprio de vídeo, white label e licença dedicada (os degraus 2 e 3 só depois do piloto dar certo).
+- **Cobrança da NextLevel no piloto:** implantação de R$ 3.000 na assinatura do termo de Agência Fundadora; o percentual do degrau 1 começa a contar quando a primeira cobrança automática da UP for paga pelo sistema.
+- **Metas novas do piloto** (somam às da 5.4):
+
+| Indicador | Meta (90 dias) |
+|---|---|
+| Clientes da UP cobrados pelo sistema | 25 de 30 |
+| Faturas pagas até o vencimento | Acima do que a UP tem hoje (medir a linha de base na semana 0) |
+| Dias médios de atraso | Menor que hoje |
+| Tempo da equipe da UP gasto cobrando | Menor que hoje (perguntar na semana 0 e no dia 90) |
+
+## 8.9 Perguntas novas
+
+**Para o dono:**
+1. Aceita trocar o degrau 3 de "código próprio" para **licença dedicada com manutenção mensal**? Se quiser mesmo vender o código, qual o valor mínimo e com que limites?
+2. Degrau 1: **5% com mínimo de R$ 990** (recomendado) ou **10% com teto mensal**? Qual teto?
+3. Coloca **mínimo mensal** nos degraus 1 e 2?
+4. A implantação do degrau anterior vira desconto no próximo?
+5. A comissão de 20% dos adicionais é abatida da fatura da UP ou paga à parte?
+6. Exclusividade de condição por cidade para a UP: sim ou não?
+
+**Para a UP:**
+1. Quanto vocês faturam por mês com os 30 clientes (para escolher o degrau certo)?
+2. Como cobram hoje (Pix, boleto, cartão, transferência)? Usam alguma plataforma? Quanto pagam de tarifa?
+3. Quantos clientes atrasam por mês e quanto tempo a equipe gasta cobrando?
+4. Emitem nota fiscal de serviço em todo pagamento? Por qual sistema?
+5. Têm conta no Mercado Pago ou no Pagar.me?
+6. Querem que o portal do cliente apareça só com a marca UP?
