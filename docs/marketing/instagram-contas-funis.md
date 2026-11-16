@@ -5,6 +5,30 @@
 > Regra de foco (D174/D287): o que aproxima a E-commerce do 10º lojista pagante vem primeiro.
 > Nada aqui vale como decisão até virar D-número em `docs/design/DECISIONS.md`.
 
+## 0. Atualização de 16/11/2026 (prevalece sobre as seções 3.2 e 3.3)
+
+**Empresas e marcas informadas pelo dono:**
+| Empresa (CNPJ) | Marcas fantasia |
+|---|---|
+| NextLevel Marketing Ltda | NextLevel Commerce · NextLevel Business · Brás Digital (atacado e importadores) · China Hub (importação) |
+| Mega Tron Comércio Eletrônico Ltda | Megatron (varejo vendido com parceiros criadores) |
+
+(A divisão das marcas entre os dois CNPJs é suposição a confirmar. "NextLevel Business" parece ser o nome novo da frente de agência e soluções, antes chamada NextLevel Group/Soluções; registrar como decisão quando o dono confirmar.)
+
+**Marca pessoal:** Mauricio Ramos dos Santos Junior quer virar criador de conteúdo e fazer collab com todas as marcas, usando o maior perfil.
+
+**Troca de perfis (recomendada):**
+| Conta hoje | Seguidores | Vira |
+|---|---|---|
+| @brasdigitalapp | 6.646 | **@mauriciors.jr**: perfil pessoal de criador (a foto já é a sua, e o público já segue você) |
+| @mauriciors.jr | 896 | **@brasdigital**: Brás Digital, atacado e importadores (os vídeos de produto no Brás já combinam). Arquivar os posts de família |
+| @brasdigital.sp | 1.348 | **@nextlevelcommerce** (igual à seção 3.1) |
+| (nova) | 0 | **@nextlevelbusiness**: reservar agora, publicar pouco |
+| @chinahubplataforma | 68 | **@chinahub** (igual à seção 3.4) |
+| Loja Megatron | 55 | **@megatronbrasil**: os vídeos de produto (caixa de som, ferramentas, câmeras) viram Collab Mauricio + Megatron com link para comprar |
+
+**Ordem da troca:** (1) @mauriciors.jr → @brasdigital (libera o @); (2) logo em seguida, @brasdigitalapp → @mauriciors.jr; (3) as demais. Se o Instagram segurar o @ liberado, usar @mauriciojr ou @mauricio.rsjr. Tipo de conta do pessoal: **Criador de conteúdo**; as marcas ficam como **Empresa**.
+
 ## 1. Diagnóstico (o que os prints mostram)
 
 | Conta | Seguidores | Posts | Problema |
