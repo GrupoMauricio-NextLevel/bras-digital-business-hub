@@ -1282,8 +1282,22 @@ export const origensContato = pgTable("origens_contato", {
   /** Navegador informado (para a API de conversões da Meta, que exige em evento do site) e o aviso de cookies na hora (TR5, D298). */
   ua: text("ua"),
   consentimento: text("consentimento", { enum: ["SIM", "NAO", "SEM_ESCOLHA"] }),
+  /** Resposta da pessoa a "Como você conheceu a NextLevel?" (D302; chaves em `src/lib/trafego/conheceu.ts`). */
+  conheceuPor: text("conheceu_por"),
   capturadaEm: ts("capturada_em").notNull().defaultNow(),
 });
+
+/**
+ * Visitas de robôs de busca e de IA às páginas públicas (plano de busca v3, seção 16.3): só a contagem por dia, marca,
+ * robô e caminho. O proxy soma em memória e grava em lote (nunca uma escrita por visita); nada de IP nem navegador.
+ */
+export const robosVisitasDiarias = pgTable("robos_visitas_diarias", {
+  dia: text("dia").notNull(),
+  brand: text("brand").notNull(),
+  robo: text("robo").notNull(),
+  caminho: text("caminho").notNull(),
+  visitas: integer("visitas").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.brand, t.robo, t.caminho] })]);
 
 /**
  * Fila de retorno às plataformas (TR5, D298): cada linha é um resultado (contato, conta criada, pagante, venda fechada)

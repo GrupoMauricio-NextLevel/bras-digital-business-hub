@@ -17,6 +17,8 @@ export const leadSchema = z.object({
   segment: z.string().trim().max(60).optional(),
   message: z.string().trim().max(600).optional(),
   affiliateRef: z.string().trim().max(60).optional(),
+  /** "Como você conheceu a NextLevel?" (D302): opcional; guardado na origem do contato, não no pedido. */
+  conheceuPor: z.string().max(20).optional(),
 });
 
 /** Interessado numa marca (lista de espera e implantação assistida). Repetir o mesmo e-mail na marca atualiza o pedido em vez de duplicar. */

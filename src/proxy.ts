@@ -1,6 +1,7 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { slugFromHost } from "@/lib/store-url";
-import { routeHost } from "@/lib/host-routing";
+import { PANEL_PREFIXES, routeHost } from "@/lib/host-routing";
+import { contarRobo, roboDe } from "@/lib/trafego/robos";
 import { brandOfHostStrict, brandPreviewAllowed } from "@/lib/brand";
 import { isPanelPath } from "@/lib/host-routing";
 import { CLICK_IDS, canalDe, ehRobo } from "@/lib/trafego/canal";
@@ -78,9 +79,10 @@ function withAttribution(req: NextRequest, res: NextResponse, opts: { loja?: boo
   return res;
 }
 
-export async function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest, event?: NextFetchEvent) {
   // Domínio próprio da loja (D234): host cadastrado por um lojista abre a vitrine dele (o resto do roteamento não se aplica).
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  contarVisitaDeRobo(req, host, event);
   if (podeSerDominioDeLoja(host)) {
     const { getDb } = await import("@/db/client");
     const { lojaPorDominio } = await import("@/lib/domain/dominio-proprio");
@@ -93,6 +95,28 @@ export async function proxy(req: NextRequest) {
     }
   }
   return withAttribution(req, route(req));
+}
+
+/**
+ * Robôs de busca e de IA nas páginas públicas das marcas (D302): só conta (em memória) e grava em lote em segundo plano.
+ * Painéis, API e arquivos internos ficam fora; as lojas dos lojistas também (não são páginas da marca). Nunca atrasa nem
+ * derruba a resposta.
+ */
+function contarVisitaDeRobo(req: NextRequest, host: string | null, event?: NextFetchEvent) {
+  try {
+    if (req.method !== "GET") return;
+    const robo = roboDe(req.headers.get("user-agent"));
+    if (!robo) return;
+    const brand = brandOfHostStrict((host ?? "").split(":")[0]!.toLowerCase());
+    const path = req.nextUrl.pathname;
+    if (!brand || path.startsWith("/api/") || path.startsWith("/_next") || PANEL_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`))) return;
+    if (contarRobo(brand.code, robo, path) && event) {
+      event.waitUntil((async () => {
+        const [{ getDb }, { gravarRobos }] = await Promise.all([import("@/db/client"), import("@/lib/trafego/robos")]);
+        await gravarRobos(await getDb());
+      })().catch(() => undefined));
+    }
+  } catch { /* medir nunca derruba a página */ }
 }
 
 /** Repassa o caminho e a busca pedidos para as páginas (portão da equipe do Master, D138; vitrine na marca certa, D149). */

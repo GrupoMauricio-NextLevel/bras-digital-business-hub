@@ -20,7 +20,7 @@ export async function submitLeadAction(input: Omit<z.input<typeof leadSchema>, "
     const ref = (await cookies()).get("nl-ref")?.value;
     const db = await getDb();
     const r = await createBrandLead(db, { ...input, brand: brand.code, affiliateRef: ref });
-    await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "FORMULARIO" });
+    await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "FORMULARIO", conheceuPor: input.conheceuPor });
     revalidatePath("/master/crm");
     return { created: r.created, eventoId: `interessado:${r.id}` };
   });

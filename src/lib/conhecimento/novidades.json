@@ -1,5 +1,12 @@
 [
  {
+  "numero": 302,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
+  "data": "2026-11-16",
+  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298);…"
+ },
+ {
   "numero": 299,
   "frente": "E-commerce",
   "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
@@ -271,12 +278,5 @@
   "titulo": "AT2 do atacado: box novo, card, carrinho e checkout",
   "data": "2026-11-06",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT2."
- },
- {
-  "numero": 258,
-  "frente": null,
-  "titulo": "AT1 do atacado: painel do lojista e travas por plano",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
  }
 ]

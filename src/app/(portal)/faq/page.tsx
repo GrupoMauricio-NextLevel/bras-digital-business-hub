@@ -6,27 +6,14 @@ import { FAQ as FAQ_ALL } from "../content";
 import { brandHas } from "@/lib/brand";
 import { getBrand } from "@/lib/brand-server";
 import { getDb } from "@/db/client";
-import { commercePlansView } from "@/lib/domain/commerce-plans";
-import { beneficiosPorPlano, NOME_PLANO_BENEFICIO, PLANOS_BENEFICIO } from "@/lib/domain/beneficios-plano";
-import { LIMITES_ATACADO } from "@/lib/domain/atacado";
 import { faqCommerce, faqJsonLd } from "@/lib/seo/faq-commerce";
+import { fatosPublicos } from "@/lib/seo/fatos-publicos";
 import { JsonLd } from "@/components/portal/json-ld";
 
 export const dynamic = "force-dynamic";
 
-/** Fatos do sistema para as perguntas da Commerce (D293): planos e oferta do Master, benefícios e limites do atacado. */
-async function perguntasCommerce() {
-  const db = await getDb();
-  const [pv, beneficios] = await Promise.all([commercePlansView(db), beneficiosPorPlano(db)]);
-  return faqCommerce({
-    diasDeTeste: pv.offer?.trialDays ?? null,
-    planos: PLANOS_BENEFICIO.map((key) => {
-      const p = pv.plans.find((x) => x.key === key);
-      const b = beneficios[key];
-      return { nome: NOME_PLANO_BENEFICIO[key], mensalCents: p?.monthlyCents ?? null, taxaBps: p?.feeBps ?? null, suporte: b.suporte, migracao: b.migracao, faixasAtacado: LIMITES_ATACADO[key].faixas, produtos: b.produtos };
-    }),
-  });
-}
+/** Perguntas da Commerce com os fatos do sistema (D293): a mesma fonte do llms.txt (D302). */
+const perguntasCommerce = async () => faqCommerce(await fatosPublicos(await getDb()));
 
 export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/faq", { title: "Perguntas frequentes" });
 
