@@ -3779,3 +3779,39 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - axe sem violações graves no formulário, na home (na seção nova) e no painel;
   - regressão `smoke-demo`, `storefront-journey` e `theme-editor` passando.
 - **Testes:** `tests/business-modulos.test.ts` (regra dos módulos, cadastro com o caminho, direitos, `requireModulo`, caminho do interessado) e `tests/nav-business.test.ts` (grupos, nenhum endereço perdido, cartão de upgrade, barra do celular).
+
+## D307 — [E-commerce] NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia) (2026-11-16)
+- **Pedido do dono:** "vamos desenvolver" (depois da junção com as outras conversas, D304 a D306). Plano: `docs/prompts/nextlevel-business-coracao-do-negocio.md`, NB2.
+- **Banco (migração 0102, só acrescenta):**
+  - `paginas_site`: páginas livres com rascunho, publicado, revisão, endereço, tipo (Sobre, Serviços, Contato, Campanha, Livre), menu, SEO e arquivar;
+  - `servicos_negocio`: o que a empresa oferece, com "a partir de" opcional (sem preço = "sob orçamento").
+- **Regras** (`src/lib/business/paginas.ts`, `servicos.ts`, `modelos-site.ts`):
+  - endereço só com letras minúsculas, números e hífens;
+  - endereços da loja e do portal reservados (`cart`, `checkout`, `catalog`, `portal`…);
+  - rascunho com controle de revisão (duas abas não se sobrescrevem);
+  - publicar guarda a versão no histórico (`pagina:<id>`), que pode ser restaurada;
+  - arquivar tira do ar sem apagar;
+  - outro negócio não lê nem altera (testado no servidor).
+- **Editor:** as páginas livres aparecem no seletor de páginas ("Sobre (/sobre)"). Salvar, publicar, descartar e o histórico valem para elas, com a mesma regra de nível do tema. Num site sem loja, Produto, Coleção e Carrinho somem do seletor.
+- **Página nova nunca nasce vazia:** nos temas básicos não dá para acrescentar seções (regra dos níveis), então cada tipo traz um conteúdo inicial editável.
+- **Seções novas** (valem em todos os temas):
+  - "Serviços": cartões com o botão "Pedir orçamento" pelo WhatsApp, até a NB3 trazer o formulário;
+  - "Contato, endereço e horário": com "Como chegar";
+  - "Trabalhos realizados": fotos com legenda.
+- **Vitrine:**
+  - `/<endereço>` abre a página publicada antes do redirecionamento de endereço antigo (D187);
+  - o sitemap lista as páginas, e a de campanha fica fora;
+  - num site sem loja, o cabeçalho mostra Início e as páginas no menu, sem carrinho, conta ou "acompanhar pedido", e o rodapé sem "Pagamento seguro · Envio para todo o Brasil".
+- **Modelos prontos:**
+  - "Institucional de serviços": Início, Sobre, Serviços, Contato;
+  - "Academia e estúdio": Início, Sobre, Modalidades, Grade de aulas, Contato. A grade é texto até o portal do aluno (NB10).
+  - A conta criada no caminho Site **já nasce com o institucional publicado**. Em Site → Páginas, "Usar este modelo" aplica em rascunho: a página inicial anterior vai para o histórico e as páginas que já existem não são tocadas.
+- **Painel:**
+  - **Site → Páginas:** lista com situação, "Editar conteúdo", "Ver no site", menu, arquivar, página nova e modelos;
+  - **Site → Serviços:** cadastro, editar, esconder do site e aviso quando falta o WhatsApp;
+  - as ações só rodam com o módulo Site (conferido no servidor).
+- **Textos de site:** "Status do site", recado do fundador ("Seu site já existe…"), "Publicar site", "Ver site" e "este site não está publicado".
+- **Criar conta Site pelo Master:** não se aplica. O Master não cria conta Commerce à mão; a equipe usa o cadastro (`/cadastro?para=site`) ou o formulário assistido.
+- **Conferido no navegador** (relatório `docs/relatorios/NB2-2026-11-16.md`): 20 passos da jornada do site, axe sem violações graves nas telas novas e no site, 360 px sem rolagem lateral; regressão do editor de temas, da loja e do roteiro geral passando.
+- **Testes:** `tests/business-site.test.ts` (endereços, rascunho e publicação, duas abas, histórico, isolamento, serviços, modelos, conta Site pronta, conta de loja sem páginas), mais `nav-business` e `editor-state`.
+- **Próxima fase:** NB3 (formulário de orçamento com origem, caixa de contatos, orçamento por proposta, WhatsApp com código) e a página pública `/empresas`.

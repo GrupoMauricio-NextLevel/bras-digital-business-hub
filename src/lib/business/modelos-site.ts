@@ -84,3 +84,21 @@ export async function aplicarModeloDoSite(db: Database, actor: Actor, storeId: s
   await recordAudit(db, actor, { action: "MODELO_SITE_APLICADO", entityType: "store", entityId: storeId, storeId, after: { modelo, criadas, publicado: !!opts.publicar } });
   return { criadas };
 }
+
+/**
+ * Conteúdo inicial de uma página nova, conforme o tipo (NB2, D307). Nos temas básicos não dá para acrescentar seções
+ * (regra dos níveis de tema), então a página nunca nasce vazia: o dono troca os textos e oculta o que não quiser.
+ */
+export function modeloInicialDaPagina(tipo: PaginaTipo, titulo: string, nome: string): Template {
+  const contato: [string, SectionSpec] = ["contato", { type: "contact-info", settings: { heading: "Fale com a gente", text: "Chame no WhatsApp: a equipe responde." } }];
+  if (tipo === "INSTITUCIONAL") return t([["sobre", { type: "store-about", settings: { heading: titulo, body: `Conte a história da ${nome}.` } }]]);
+  if (tipo === "SERVICO") return t([["servicos", { type: "services-grid", settings: { heading: titulo } }], contato]);
+  if (tipo === "CONTATO") return t([["contato", { type: "contact-info", settings: { heading: titulo } }]]);
+  if (tipo === "CAMPANHA") return t([
+    ["destaque", { type: "hero", settings: { title: titulo, subtitle: "Escreva aqui a oferta do anúncio em uma frase.", ctaLabel: "Pedir orçamento", ctaLink: "/contato", layout: "centered", showProduct: false, showWhatsapp: true } }],
+    ["servicos", { type: "services-grid", settings: { heading: "O que fazemos" } }],
+    ["texto", { type: "rich-text", settings: { heading: "Por que nós", body: "Explique o diferencial em poucas linhas, sem promessas que não dependem de você." } }],
+    contato,
+  ]);
+  return t([["texto", { type: "rich-text", settings: { heading: titulo, body: "Escreva aqui o conteúdo da página." } }], contato]);
+}

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 307,
+  "frente": "E-commerce",
+  "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
+  "data": "2026-11-16",
+  "resumo": "Pedido do dono: \"vamos desenvolver\" (depois da junção com as outras conversas, D304 a D306). Plano: docs/prompts/nextlevel-business-coracao-do-negocio.md, NB2."
+ },
+ {
   "numero": 306,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
@@ -271,12 +278,5 @@
   "titulo": "Base de conhecimento sempre ao vivo: toda atualização a alimenta",
   "data": "2026-11-06",
   "resumo": "Pedido do dono: \"sempre que houver atualizações, alimente a base de conhecimento\"."
- },
- {
-  "numero": 263,
-  "frente": "E-commerce",
-  "titulo": "Parceiros em duas frentes: Indicações pelo CPF (5 pontos a menos) e Parceiros com CNPJ; agência com benefícios exclusivos; comparação sempre a nosso favor",
-  "data": "2026-11-06",
-  "resumo": "Pedido do dono: quem recebe no CPF entra num Programa de Indicações, uma 4ª frente com 5 pontos a menos em cada nível;"
  }
 ]

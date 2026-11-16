@@ -9,7 +9,7 @@ import { ForbiddenError } from "@/lib/domain/errors";
 import { requireModulo } from "@/lib/business/modulos";
 import { arquivarPagina, criarPagina, editarPagina, editarPaginaSchema, novaPaginaSchema } from "@/lib/business/paginas";
 import { criarServico, editarServico, servicoSchema } from "@/lib/business/servicos";
-import { aplicarModeloDoSite, MODELOS_SITE, modeloDoSite, type ModeloSite } from "@/lib/business/modelos-site";
+import { aplicarModeloDoSite, MODELOS_SITE, modeloDoSite, modeloInicialDaPagina, type ModeloSite } from "@/lib/business/modelos-site";
 
 /**
  * Ações do site da empresa (NextLevel Business, NB2, D307). Só o dono do negócio, só com o módulo Site ligado
@@ -34,8 +34,10 @@ export async function criarPaginaAction(input: z.input<typeof novaPaginaSchema> 
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
     const m = input.modelo ? modelo.parse(input.modelo) : null;
-    const base = m ? modeloDoSite(m, session.store?.name ?? "").paginas.find((p) => p.slug === input.base)?.modelo : undefined;
-    const r = await criarPagina(db, session.actor, storeId, { titulo: input.titulo, slug: input.slug, tipo: input.tipo, noMenu: input.noMenu }, base);
+    const dados = novaPaginaSchema.parse({ titulo: input.titulo, slug: input.slug, tipo: input.tipo, noMenu: input.noMenu });
+    // Nunca nasce vazia (nos temas básicos não dá para acrescentar seções): modelo do tipo, ou a página de um modelo pronto.
+    const base = (m ? modeloDoSite(m, session.store?.name ?? "").paginas.find((p) => p.slug === input.base)?.modelo : undefined) ?? modeloInicialDaPagina(dados.tipo, dados.titulo, session.store?.name ?? "");
+    const r = await criarPagina(db, session.actor, storeId, dados, base);
     refrescar(session.store?.slug);
     return r;
   });

@@ -6,7 +6,7 @@ import { actorFromUser, type Actor } from "@/lib/domain/access";
 import { signupMember } from "@/lib/domain/store-access";
 import { arquivarPagina, criarPagina, editarPagina, listarPaginas, menuDoSite, paginaPublica, publicarPaginas, salvarRascunhoDaPagina, SLUGS_RESERVADOS } from "@/lib/business/paginas";
 import { criarServico, editarServico, listarServicos, servicosPublicos } from "@/lib/business/servicos";
-import { aplicarModeloDoSite, modeloDoSite } from "@/lib/business/modelos-site";
+import { aplicarModeloDoSite, modeloDoSite, modeloInicialDaPagina } from "@/lib/business/modelos-site";
 import { listVersions, resolveTemplate, restoreVersion } from "@/lib/themes/store";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -31,6 +31,13 @@ describe("modelos de site (NB2, D307)", () => {
     }
     expect(modeloDoSite("academia", "Academia Forte").paginas.map((p) => p.slug)).toEqual(["sobre", "modalidades", "grade", "contato"]);
     expect(modeloDoSite("institucional", "X").paginas.map((p) => p.slug)).toEqual(["sobre", "servicos", "contato"]);
+  });
+  it("página nova nunca nasce vazia: cada tipo tem conteúdo inicial editável em qualquer tema", () => {
+    for (const tipo of ["INSTITUCIONAL", "SERVICO", "CONTATO", "CAMPANHA", "LIVRE"] as const) {
+      const m = modeloInicialDaPagina(tipo, "Minha página", "Vidraçaria Modelo");
+      expect(m.order.length, tipo).toBeGreaterThan(0);
+    }
+    expect(Object.values(modeloInicialDaPagina("CAMPANHA", "Box em 7 dias", "X").sections).map((x) => x.type)).toEqual(["hero", "services-grid", "rich-text", "contact-info"]);
   });
 });
 

@@ -229,7 +229,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         </div>
         <Button variant="ghost" size="sm" onClick={() => setVersions(true)}><History aria-hidden /> <span className="sr-only md:not-sr-only">Histórico</span></Button>
         {ctx.caps.has("editor.pageTemplates") ? <Button variant="ghost" size="sm" onClick={() => setPageModels(true)}><LayoutTemplate aria-hidden /> <span className="sr-only md:not-sr-only">Modelos</span></Button> : null}
-        <a href={`/store/${slug}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-surface-muted hover:text-foreground"><ExternalLink className="size-4" aria-hidden /> <span className="sr-only lg:not-sr-only">Ver loja</span></a>
+        <a href={`/store/${slug}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-surface-muted hover:text-foreground"><ExternalLink className="size-4" aria-hidden /> <span className="sr-only lg:not-sr-only">{labels.product ? "Ver loja" : "Ver site"}</span></a>
         {dirtyPublish ? <Button variant="ghost" size="sm" onClick={discard}>Descartar</Button> : null}
         <Button size="sm" onClick={publish} loading={publishing} disabled={!dirtyPublish}>Publicar</Button>
       </header>

@@ -139,7 +139,7 @@ export function Footer({ settings, ctx }: SectionProps) {
         <div>{str(settings.text) || store.name}{settings.showLegal !== false && (store.legalName || store.cnpj || store.contactEmail || store.address) ? <div className="mt-1 text-xs opacity-80">{[store.legalName, store.cnpj ? `${store.cnpj.length === 11 ? "CPF" : "CNPJ"} ${store.cnpj}` : "", store.address, store.contactEmail].filter(Boolean).join(" · ")}</div> : null}</div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
           {settings.showInstagram !== false && store.instagram ? <span>@{store.instagram.replace("@", "")}</span> : null}
-          {settings.showBadges !== false ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}
+          {settings.showBadges !== false && !ctx.semLoja ? <><span>Pagamento seguro</span><span>Envio para todo o Brasil</span></> : null}
           {store.offer !== "STORE_OWN" && ctx.brandCode === "SUPERDROP" ? <span className={cn("flex items-center gap-1.5", dark ? "text-neutral-400" : "text-neutral-600")}>Tecnologia <Logo tone={dark ? "on-dark" : "on-light"} className="h-4" /></span> : null}
         </div>
       </div>
