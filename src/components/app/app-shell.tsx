@@ -39,6 +39,8 @@ export type AppShellProps = {
   tenantSub?: string;
   userName: string;
   storefrontHref?: string;
+  /** Texto do atalho para a página pública (padrão "Ver loja virtual"; academia: "Ver página da academia"). */
+  storefrontLabel?: string;
   demoUsers?: DemoUser[];
   onSwitch?: (email: string) => Promise<void>;
   onLogout?: () => Promise<void>;
@@ -65,7 +67,7 @@ const ROLE_LABEL: Record<string, string> = { NEXTLEVEL_MASTER: "NextLevel Master
 /** "Fio & Linha" → "FL": só letras e números, sem símbolos. */
 const siglaDaLoja = (nome: string) => nome.split(/\s+/).map((p) => p.replace(/[^\p{L}\p{N}]/gu, "")).filter(Boolean).slice(0, 2).map((p) => p[0]!.toUpperCase()).join("") || "L";
 
-export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, marcaCliente, extraTop, children }: AppShellProps) {
+export function AppShell({ brand: shellBrand, panel, variant = "full", items, navMode = "sections", quick = [], roleLabel, tenantName, tenantSub, userName, storefrontHref, storefrontLabel = "Ver loja virtual", demoUsers, onSwitch, onLogout, passwordHref, groupHref, notices = [], search, sideTop, banner, capa, marcaCliente, extraTop, children }: AppShellProps) {
   const [palette, setPalette] = React.useState(false);
   const pathname = usePathname();
   const minimal = variant === "minimal";
@@ -170,7 +172,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
               <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5"><Badge tone="outline">{roleLabel}</Badge><span className="min-w-0 truncate text-xs text-muted-foreground">{tenantName}</span></div>
             </>
           )}
-          {storefrontHref ? <DropdownMenuItem asChild><a href={storefrontHref} target="_blank" rel="noreferrer"><ExternalLink /> Ver loja virtual</a></DropdownMenuItem> : null}
+          {storefrontHref ? <DropdownMenuItem asChild><a href={storefrontHref} target="_blank" rel="noreferrer"><ExternalLink /> {storefrontLabel}</a></DropdownMenuItem> : null}
           <DropdownMenuSeparator />
           {groupHref ? <DropdownMenuItem asChild><Link href={groupHref}><Layers /> Suas marcas</Link></DropdownMenuItem> : null}
           {passwordHref ? <DropdownMenuItem asChild><Link href={passwordHref}><KeyRound /> Alterar senha</Link></DropdownMenuItem> : null}
@@ -200,7 +202,7 @@ export function AppShell({ brand: shellBrand, panel, variant = "full", items, na
         renderNav={({ collapsed, close }) => <SideNav items={items} mode={navMode} collapsed={collapsed} onNavigate={close} />}
         sideFooter={
           <>
-            {storefrontHref ? <a href={storefrontHref} target="_blank" rel="noreferrer" className="ds-item"><ExternalLink className="size-[18px]" aria-hidden /><span className="ds-item-label">Ver loja virtual</span></a> : null}
+            {storefrontHref ? <a href={storefrontHref} target="_blank" rel="noreferrer" className="ds-item"><ExternalLink className="size-[18px]" aria-hidden /><span className="ds-item-label">{storefrontLabel}</span></a> : null}
             <ThemeSwitch className="ds-only-compact" />
           </>
         }

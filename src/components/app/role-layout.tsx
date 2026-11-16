@@ -7,7 +7,7 @@ import { isRecordingMode } from "@/lib/gravacao-server";
 import { type FeatureKey } from "@/lib/features";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
-import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, comNaoLidas, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
+import { ACADEMIA_NAV, ACADEMIA_STAFF_PREFIXES, BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, comNaoLidas, navDoMasterPorMarca, navForBrand, type Panel } from "@/lib/nav";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
 import { SeletorNegocios } from "@/components/master/seletor-negocios";
 import { marcasAtivasNoMaster } from "@/lib/master-marca";
@@ -120,12 +120,17 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   }
   if (commerceStore || (scope === "commerce-admin" && !escritorioEc)) {
     const staff = session.user.storeRole === "STAFF";
-    const commerceItems = commerceStore
+    // Conta da NextLevel Business (academia, D307): mesma casca, menu só da academia.
+    const academia = commerceStore && (await import("@/lib/domain/business/academia").then((m) => m.ehAcademia(db, store!.id)));
+    const commerceItems = academia
+      ? (staff ? ACADEMIA_NAV.filter((i) => ACADEMIA_STAFF_PREFIXES.some((p) => i.href.startsWith(p)) && !i.href.endsWith("/pagina")) : ACADEMIA_NAV)
+      : commerceStore
       ? (staff ? COMMERCE_STORE_NAV.filter((i) => STAFF_NAV_PREFIXES.some((p) => i.href.startsWith(p))) : COMMERCE_STORE_NAV)
       : COMMERCE_ADMIN_NAV;
     const demoUsersC = isDemoMode() && !(await isRecordingMode()) ? await listDemoUsers() : undefined;
     // Painel do lojista com a casca do Master (D207): cor da NextLevel, faixa com a novidade e o agente, menu do escritório.
-    const capaLoja = commerceStore ? { oferta: { texto: "Atendimento ao vivo: responda os clientes da sua loja por aqui", href: "/merchant/atendimento" }, agente: !!botaoIa } : undefined;
+    const capaLoja = academia ? { oferta: { texto: "Divulgue a página da academia: cada aula experimental chega aqui com a origem", href: "/merchant/academia" }, agente: false }
+      : commerceStore ? { oferta: { texto: "Atendimento ao vivo: responda os clientes da sua loja por aqui", href: "/merchant/atendimento" }, agente: !!botaoIa } : undefined;
     return (
       <>
       {commerceStore ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
@@ -135,12 +140,13 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         panel={panelFor(session)}
         items={byFn(commerceItems)}
         navMode="sections"
-        quick={commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
+        quick={academia ? [] : commerceStore ? [{ label: "Novo produto", href: "/merchant/catalogo/new", icon: "Plus" }, { label: "Novo pedido", href: "/merchant/orders/new", icon: "Plus" }] : []}
         roleLabel={commerceStore ? (staff ? "Equipe da loja" : "Administrador da loja") : "Administração Commerce"}
         tenantName={commerceStore ? store!.name : "NextLevel Commerce"}
-        tenantSub={commerceStore ? "Painel da loja" : "Administração da plataforma"}
+        tenantSub={academia ? "Academia · NextLevel Business" : commerceStore ? "Painel da loja" : "Administração da plataforma"}
         userName={session.user.name}
-        storefrontHref={commerceStore ? storefrontHref : undefined}
+        storefrontHref={academia ? `/academia/${store!.slug}` : commerceStore ? storefrontHref : undefined}
+        storefrontLabel={academia ? "Ver página da academia" : undefined}
         demoUsers={demoUsersC}
         onSwitch={loginAs}
         onLogout={logout}
@@ -150,9 +156,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
         search={globalSearchAction}
         sideTop={commerceStore ? undefined : <div className="px-3 pb-2"><Link href="/master" className="ds-item"><ArrowLeft className="size-[18px]" aria-hidden /><span className="ds-item-label">Voltar ao Master</span></Link></div>}
         // D217: painel do lojista só com a marca do cliente; sem o fio e o botão "Marcas do grupo" da NextLevel.
-        banner={<>{supportBar}{commerceStore ? null : ecoBar}{commerceStore ? <FaixaBlack lugar="lojista" /> : null}{banner}{botaoIa}</>}
+        banner={<>{supportBar}{commerceStore ? null : ecoBar}{commerceStore && !academia ? <FaixaBlack lugar="lojista" /> : null}{banner}{academia ? null : botaoIa}</>}
         capa={capaLoja}
-        marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: staff ? "Equipe da loja" : "Painel da loja" } : undefined}
+        marcaCliente={commerceStore ? { nome: store!.name, logoUrl: store!.logoUrl, sub: academia ? "Academia" : staff ? "Equipe da loja" : "Painel da loja" } : undefined}
         extraTop={commerceStore ? <>{!session.support ? <AvisoSonoro loja /> : null}<AjudaLojista whatsappUrl={supportContacts("Oi! Preciso de ajuda com a minha loja.").whatsappUrl} /></> : undefined}
       >
         {children}

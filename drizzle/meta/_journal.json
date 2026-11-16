@@ -694,6 +694,13 @@
       "when": 1794621903180,
       "tag": "0098_anuncios_loja",
       "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "7",
+      "when": 1794795551800,
+      "tag": "0099_business_academia",
+      "breakpoints": true
     }
   ]
 }

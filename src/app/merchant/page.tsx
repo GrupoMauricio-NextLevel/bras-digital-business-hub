@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { orders } from "@/db/schema";
 import { BoasVindasCeo } from "@/components/portal/equipe/blocos";
@@ -17,7 +18,8 @@ import { MetricCard } from "@/components/app/metric-card";
 import { EmptyState } from "@/components/app/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/app/status-badge";
-import { requireStoreAdmin } from "@/lib/require-session";
+import { requireRole, requireStoreAdmin } from "@/lib/require-session";
+import { ehAcademia } from "@/lib/domain/business/academia";
 import { contratosPendentes, parcelasAPagar } from "@/lib/domain/contratos";
 import { getDb } from "@/db/client";
 import { getBalanceCents } from "@/lib/domain/wallet";
@@ -43,6 +45,9 @@ function greeting() {
 }
 
 export default async function MerchantHome() {
+  // Conta da NextLevel Business (academia, D307): a tela inicial é a captação.
+  const s0 = await requireRole("STORE_OWNER");
+  if (await ehAcademia(await getDb(), s0.actor.storeId)) redirect("/merchant/academia");
   const session = await requireStoreAdmin();
   const store = session.store!;
   const db = await getDb();

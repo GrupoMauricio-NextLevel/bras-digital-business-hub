@@ -5,6 +5,7 @@ import { seedDigitalProducts, seedReferenceData } from "./base-data";
 import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
 import { seedCommerceDemo } from "./commerce-demo";
+import { seedAcademiaRenner } from "./business-demo";
 import { seedCommerceRichDemo } from "./commerce-demo-rich";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
@@ -41,6 +42,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedDigitalProducts(db)) log.push("vitrine da Loja NextLevel criada");
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
     if (await seedCommerceRichDemo(db)) log.push("loja de teste completa da Commerce criada (completo@commerce.demo)");
+    if (await seedAcademiaRenner(db)) log.push("conta teste da NextLevel Business criada: Academia Renner, Guacuri (academia@renner.demo)");
     await seedDemoPartner(db);
     if (await seedDemoCargas(db)) log.push("transportadoras fictícias de demonstração (Ouro, Prata e Bronze) criadas");
     if (await seedDemoBras(db, (m) => log.push(m))) log.push("ambiente de gravação: Brás, transportadora, ônibus, Club, Meu Contador e equipe do Master");

@@ -260,6 +260,18 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Contratos", href: "/merchant/contratos", icon: "ReceiptText", group: "Loja e ajustes" },
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
+/**
+ * Painel da academia (NextLevel Business, A1, D307): só o que a academia usa. Sem pedidos, produtos nem cobrança
+ * (isso fica no sistema que ela já tem, D306). A equipe vê a captação; página, empresa e equipe são do dono.
+ */
+export const ACADEMIA_NAV: NavItem[] = [
+  { label: "Captação", href: "/merchant/academia", icon: "Users", exact: true, group: "Academia", bottom: true },
+  { label: "Página da academia", href: "/merchant/academia/pagina", icon: "Globe", group: "Academia", bottom: true },
+  { label: "Empresa e contatos", href: "/merchant/settings", icon: "Settings", group: "Ajustes" },
+  { label: "Equipe", href: "/merchant/team", icon: "UsersRound", group: "Ajustes" },
+  { label: "Minha assinatura", href: "/merchant/finance#assinatura", icon: "CreditCard", group: "Ajustes" },
+];
+export const ACADEMIA_STAFF_PREFIXES = ["/merchant/academia"];
 export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */

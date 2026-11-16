@@ -3213,3 +3213,51 @@ export const aceitesTermos = pgTable("aceites_termos", {
   aparelho: text("aparelho"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("aceites_termos_user_versao_uq").on(t.userId, t.versao), index("aceites_termos_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// NextLevel Business (D304, D306, D307): gestão e captação que o cliente usa sozinho, por cima do sistema que ele já
+// tem. A conta Business é um tenant do mesmo tipo da loja (login, equipe, isolamento); o que é do segmento fica aqui,
+// fora do motor de lojas (Constituição, seções 4 e 28). Primeiro segmento: academia.
+// ---------------------------------------------------------------------------
+export const BUSINESS_SEGMENTOS = ["ACADEMIA"] as const;
+export type BusinessSegmento = (typeof BUSINESS_SEGMENTOS)[number];
+
+/** Conta Business: liga a loja-tenant a um segmento e guarda a configuração da página de captação (validada por zod). */
+export const businessContas = pgTable("business_contas", {
+  storeId: text("store_id").primaryKey().references(() => stores.id),
+  segmento: text("segmento", { enum: BUSINESS_SEGMENTOS }).notNull(),
+  config: jsonb("config").$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+/**
+ * Interessados da academia (fase A1, D307): quem pediu aula experimental na página. A etapa vem dos fatos (datas abaixo);
+ * a recepção só confirma "veio", "não veio", "matriculou" ou "perdeu" com um toque. Sem cobrança e sem catraca (D306).
+ */
+export const businessContatos = pgTable("business_contatos", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  nome: text("nome").notNull(),
+  whatsapp: text("whatsapp").notNull(),
+  email: text("email"),
+  interesse: text("interesse"),
+  turno: text("turno", { enum: ["MANHA", "TARDE", "NOITE"] }),
+  /** Dia combinado para a aula experimental (data, sem hora). */
+  experimentalDia: text("experimental_dia"),
+  origem: text("origem").notNull().default("direto"),
+  campanha: text("campanha"),
+  /** Código de quem indicou (parceiro ou aluno), para a fase A2. */
+  indicacao: text("indicacao"),
+  aparelho: text("aparelho"),
+  /** Aceitou receber mensagens da academia (LGPD). */
+  consentimento: boolean("consentimento").notNull().default(false),
+  veioEm: ts("veio_em"),
+  naoVeioEm: ts("nao_veio_em"),
+  matriculouEm: ts("matriculou_em"),
+  perdidoEm: ts("perdido_em"),
+  motivoPerda: text("motivo_perda"),
+  notas: text("notas"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("business_contatos_store_idx").on(t.storeId, t.createdAt), index("business_contatos_whats_idx").on(t.storeId, t.whatsapp)]);

@@ -2,6 +2,7 @@
 
 > Pedido do dono (16/11/2026, D306): "Não quero concorrer com sistemas que eles já têm, como catraca e pagamentos. O NextLevel Business precisa se adequar a isso. Lembra que falamos sobre o Club: precisamos de uma comunidade de usuários com diversos benefícios. E precisamos do mesmo sistema de parceiros que temos no Master, para a academia captar clientes com parceiros."
 > **Substitui o escopo** de `docs/prompts/business-piloto-academia.md` (D305): saem cobrança, check-in de controle e catraca. Ficam a jornada de captação, a farmácia como próximo segmento e as perguntas da P0.
+> **Andamento:** A1 (captação) feita na demonstração com a conta teste Academia Renner, Guacuri (D307). Próxima: A2 (parceiros).
 > Autoridade: Constituição > `DECISIONS.md` > este documento. Nada daqui vale como regra até virar D-número.
 > Legenda: **[fato]** está no código; **[mercado]** a conferir na fonte; **[inferência]** conclusão; **[hipótese]** o piloto confirma ou derruba.
 
