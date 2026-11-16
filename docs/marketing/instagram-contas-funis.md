@@ -13,7 +13,7 @@
 | NextLevel Marketing Ltda | NextLevel Commerce · NextLevel Business · Brás Digital (atacado e importadores) · China Hub (importação) |
 | Mega Tron Comércio Eletrônico Ltda | Megatron (varejo vendido com parceiros criadores) |
 
-(A divisão das marcas entre os dois CNPJs é suposição a confirmar. "NextLevel Business" parece ser o nome novo da frente de agência e soluções, antes chamada NextLevel Group/Soluções; registrar como decisão quando o dono confirmar.)
+(A divisão das marcas entre os dois CNPJs é suposição a confirmar. NextLevel Business é a tecnologia de gestão do negócio e captação de clientes (D303).)
 
 **Marca pessoal:** Mauricio Ramos dos Santos Junior quer virar criador de conteúdo e fazer collab com todas as marcas, usando o maior perfil.
 
@@ -23,7 +23,7 @@
 | @brasdigitalapp | 6.646 | **@mauriciors.jr**: perfil pessoal de criador (a foto já é a sua, e o público já segue você) |
 | @mauriciors.jr | 896 | **@brasdigital**: Brás Digital, atacado e importadores (os vídeos de produto no Brás já combinam). Arquivar os posts de família |
 | @brasdigital.sp | 1.348 | **@nextlevelcommerce** (igual à seção 3.1) |
-| (nova) | 0 | **@nextlevelbusiness**: reservar agora, publicar pouco |
+| (nova) | 0 | **@nextlevelbusiness**: reservar agora; o conteúdo começa quando o produto tiver piloto (D303) |
 | @chinahubplataforma | 68 | **@chinahub** (igual à seção 3.4) |
 | Loja Megatron | 55 | **@megatronbrasil**: os vídeos de produto (caixa de som, ferramentas, câmeras) viram Collab Mauricio + Megatron com link para comprar |
 

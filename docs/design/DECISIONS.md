@@ -3680,3 +3680,10 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **NextLevel Business** passa a ser o nome da frente de agência, sistemas sob medida e soluções para empresas (antes "NextLevel Soluções" / "NextLevel Soluções Digitais"). O endereço continua `nextlevelgroup.com.br` e a página `/solucoes`; mudaram os textos do site, dos termos e da privacidade.
 - **Marca pessoal:** Mauricio Ramos dos Santos Junior, criador de conteúdo, no maior perfil (a atual @brasdigitalapp vira @mauriciors.jr); cada vídeo sai em collab com a marca do assunto.
 - **Plano das contas:** `docs/marketing/instagram-contas-funis.md` (troca dos @, papel de cada conta no funil, ordem segura da troca, ritmo de produção). As bios ficam para depois.
+
+# D303 — [Grupo] NextLevel Business é tecnologia de gestão do negócio e captação de clientes (2026-11-16)
+- **Pedido do dono:** "NextLevel Business, quero que seja uma tecnologia de gestão de negócio e captação para nossos clientes."
+- **Corrige o D302:** a NextLevel Business deixa de ser descrita como agência. Passa a ser um **produto**: as ferramentas que o Master já tem (captação e origem dos contatos, anúncios, CRM, atendimento por WhatsApp, chat e e-mail, propostas e contratos, financeiro, metas da equipe, base de conhecimento) abertas para empresas clientes, cada uma vendo só os próprios dados.
+- **Sem sistema novo:** mesmo motor, mesmo banco e mesmo Master, com a empresa cliente como tenant (regra anti-duplicação).
+- **No Master:** o cadastro de negócios mostra "Business · Gestão do negócio e captação de clientes" como o próximo negócio (`src/lib/negocios.ts`).
+- **Plano e fases B0 a B5:** `docs/prompts/nextlevel-business-gestao-captacao.md`. Piloto sugerido: Megatron. Prioridade frente à Commerce (regra 60/25/15) a decidir pelo dono.
