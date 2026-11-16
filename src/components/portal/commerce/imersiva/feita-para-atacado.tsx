@@ -13,18 +13,20 @@ const RECURSOS = [
   { icon: FileText, titulo: "Propostas e pedidos do balcão", texto: "Monte a proposta para o cliente do WhatsApp ou lance o pedido do balcão: as regras de atacado valem em tudo." },
 ];
 /** Atacado nativo na concorrência (D231: Nuvemshop e Loja Integrada não têm, confirmado pelo dono; WBuy, Tray e Shopify pelos sites). */
-const ATAQUE: [string, string, boolean][] = [["NextLevel", "Todos os planos, desde R$ 57", true], ["Nuvemshop", "Não tem", false], ["Loja Integrada", "Não tem", false], ["WBuy", "Só a partir de R$ 149", false], ["Tray", "Só no plano de R$ 449", false], ["Shopify", "Só no plano Plus, em dólar", false]];
+const OUTRAS: [string, string, boolean][] = [["Nuvemshop", "Não tem", false], ["Loja Integrada", "Não tem", false], ["WBuy", "Só a partir de R$ 149", false], ["Tray", "Só no plano de R$ 449", false], ["Shopify", "Só no plano Plus, em dólar", false]];
 const GRADE = [["P", 2], ["M", 4], ["G", 4], ["GG", 2]] as const;
 const FAIXAS = [[6, 3990], [12, 3490], [36, 2990]] as const;
 
-export function FeitaParaAtacado() {
+/** O preço de entrada vem do catálogo do Master (muda na virada da Black): nunca escrito à mão. */
+export function FeitaParaAtacado({ entradaMensalCents }: { entradaMensalCents: number | null }) {
+  const ATAQUE: [string, string, boolean][] = [["NextLevel", entradaMensalCents ? `Todos os planos, desde ${formatBRL(entradaMensalCents).replace(",00", "")}` : "Todos os planos", true], ...OUTRAS];
   return (
     <section id="atacado" aria-labelledby="atacado-t" className="scroll-mt-16 bg-surface px-4 py-16 md:py-24">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
         <div>
           <p className="im-eyebrow im-eyebrow--claro">Feita para o atacado</p>
-          <h2 id="atacado-t" className="im-h2 mt-4 text-foreground">Grade de 12, pacote e preço por quantidade em todos os planos. Nos outros, não tem ou custa caro.</h2>
-          <p className="mt-4 max-w-2xl text-lg text-body">A loja entende as formas do atacado desde o primeiro dia, em todos os planos, sem aplicativo extra.</p>
+          <h2 id="atacado-t" className="im-h2 mt-4 text-foreground">Grade de 12 e preço por quantidade em todos os planos. Nos outros, não tem ou custa caro.</h2>
+          <p className="mt-4 max-w-2xl text-lg text-body">A loja entende as formas do atacado desde o primeiro dia, em todos os planos, sem aplicativo extra. Pacote sortido e grade livre a partir do Pro.</p>
           <ul className="mt-6 grid gap-2 text-sm sm:grid-cols-2" aria-label="Atacado nativo na concorrência">
             {ATAQUE.map(([nome, texto, nosso]) => (
               <li key={nome} className={`flex items-center justify-between gap-3 rounded-xl px-4 py-2.5 ${nosso ? "bg-[var(--im-acao,var(--ds-primary))] font-semibold text-white" : "bg-canvas text-body ring-1 ring-border"}`}><span>{nome}</span><span className={nosso ? "ec-mono" : "ec-mono text-muted-foreground"}>{texto}</span></li>

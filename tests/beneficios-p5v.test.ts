@@ -14,6 +14,19 @@ describe("benefícios nos painéis", () => {
     expect(r.savingsCents).toBe(22_100);
   });
 
+  it("Commerce: o simulador usa a taxa da versão de preço em vigor, não a do cadastro antigo do plano (auditoria 13/11/2026)", async () => {
+    const { signupMember } = await import("@/lib/domain/store-access");
+    const { commercePlansView } = await import("@/lib/domain/commerce-plans");
+    const r = await signupMember(ctx.db, { storeName: "Loja Taxa", ownerName: "Bia Souza", email: "bia@taxa.com", password: "senha-segura-1", taxId: "529.982.247-25", brand: "NEXTLEVEL_COMMERCE", independent: true, plan: "COMMERCE_START", cycle: "MONTHLY" });
+    const user = (await ctx.db.query.users.findFirst({ where: (t, { eq }) => eq(t.id, r.userId) }))!;
+    await saveBenefitsSettings(ctx.db, ctx.actors.master, { brands: ["NEXTLEVEL_COMMERCE"] });
+    const p = (await benefitsPanel(ctx.db, { userId: r.userId, role: "STORE_OWNER", organizationId: user.organizationId, supplierId: null, storeId: r.storeId }))!;
+    const vigente = new Map((await commercePlansView(ctx.db)).plans.filter((x) => !x.quote).map((x) => [x.monthlyCents, x.feeBps ?? 0]));
+    const pagos = p.simulator!.options.filter((o) => o.monthlyCents > 0);
+    expect(pagos.length).toBeGreaterThan(1);
+    for (const o of pagos) expect(o.feeBps).toBe(vigente.get(o.monthlyCents));
+  });
+
   it("desligado por padrão; ligado mostra carteira, trilha e simulador; comemora cada passo uma vez", async () => {
     expect(await benefitsPanel(ctx.db, ctx.actors.mantos)).toBeNull();
     await saveBenefitsSettings(ctx.db, ctx.actors.master, { brands: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] });

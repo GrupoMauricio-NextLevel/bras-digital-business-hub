@@ -80,7 +80,7 @@ export function melhorPlano(pl: Pick<Plataforma, "moeda" | "planos">, fatCents: 
   return melhor;
 }
 
-/** A NextLevel no mesmo formato, a partir dos planos do Master (mensal + taxa; sem limite de produtos e pedidos). */
+/** A NextLevel no mesmo formato, a partir dos planos do Master (mensal + taxa; pedidos sem limite; produtos conforme o plano, D247). */
 export const nextlevelComoPlataforma = (planos: { name: string; monthlyCents: number | null; feeBps: number | null; quote: boolean }[]): Pick<Plataforma, "moeda" | "planos"> => ({
   moeda: "BRL", planos: planos.filter((p) => !p.quote && p.monthlyCents !== null && p.feeBps !== null).map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, taxaBps: p.feeBps!, ...sem })),
 });

@@ -17,12 +17,14 @@ export function SeloMercadoPago({ escuro = false }: { escuro?: boolean }) {
 }
 
 /** Por que a NextLevel (D219/D220, visual D222): a taxa zero da plataforma na frente, depois preço, limites e equipe. */
-export function PorQueNextLevel({ degrausNl }: { degrausNl: DegrauNL[] }) {
+export function PorQueNextLevel({ degrausNl, produtos }: { degrausNl: DegrauNL[]; produtos: { nome: string; limite: number | null }[] }) {
   const entrada = degrausNl[0];
+  // Produtos por plano vêm da tabela de benefícios do Master (D247); pedidos não têm limite em nenhum plano.
+  const listaProdutos = produtos.map((p) => `${p.limite === null ? "sem limite" : `até ${p.limite.toLocaleString("pt-BR")}`} no ${p.nome}`).join(", ");
   const MOTIVOS = [
     { icon: Banknote, titulo: "Taxa zero da plataforma", texto: "Com o checkout do Mercado Pago, nosso parceiro oficial, a NextLevel não cobra taxa sobre as suas vendas. Da NextLevel, você paga só a mensalidade.", dado: "0%" },
     { icon: BadgeCheck, titulo: "Preço mais competitivo", texto: `No custo total (mensalidade + taxa), vence Nuvemshop, Loja Integrada, WBuy e Tray plano a plano. Anual a partir de ${entrada ? reais(entrada.anualMesCents) : "—"}/mês.`, dado: entrada ? reais(entrada.mensalCents) : "—" },
-    { icon: Sem, titulo: "Sem limite de produtos e pedidos", texto: "Em todos os planos. Você não troca de plano porque cadastrou mais produtos ou vendeu mais.", dado: "∞" },
+    { icon: Sem, titulo: "Pedidos sem limite", texto: `Em todos os planos: você não paga por pedido nem troca de plano porque vendeu mais. Produtos: ${listaProdutos}.`, dado: "∞" },
     { icon: UsersRound, titulo: "Gente de verdade perto de você", texto: "Equipe NextLevel em São Paulo, na rua do atacado: monta a loja junto, migra de outra plataforma e atende no WhatsApp.", dado: "SP" },
   ];
   return (
@@ -134,7 +136,7 @@ export function FaixaTaxaZero({ black = null }: { black?: { fim: string; restant
             <span className="ec-zero" aria-hidden>0<small>%</small></span>
             <span className="ec-mono pb-3 leading-relaxed text-[#9fb3d9]" aria-hidden>taxa da<br />plataforma<br />por venda</span>
           </p>
-          <h2 id="taxa-zero-t" className="mt-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl">A única plataforma com taxa zero no checkout do Mercado Pago.</h2>
+          <h2 id="taxa-zero-t" className="mt-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl">Entre as grandes, a única com taxa zero no checkout do Mercado Pago.</h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-[#b9c6e4]">Nas outras, além da taxa do Mercado Pago, você paga uma taxa da própria plataforma sobre cada venda. Na NextLevel, essa taxa não existe: da plataforma, você paga só a mensalidade.</p>
         </div>
         <div>

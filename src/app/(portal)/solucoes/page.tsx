@@ -28,6 +28,7 @@ import { VitrineSecoes, fotoSolucoes } from "@/components/portal/solucoes/vitrin
 import { SelecaoProvider } from "@/components/portal/solucoes/selecao";
 import { projetarVitrine } from "@/lib/solucoes/vitrine";
 import { getSession } from "@/lib/auth";
+import { negocioAberto } from "@/lib/negocios";
 import { supportContacts } from "@/lib/support";
 import { BrandLogo } from "@/components/brand/brand-logo";
 
@@ -139,13 +140,14 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
               <ul className="mt-3 space-y-1 text-sm">{plans.plans.map((p) => <li key={p.key}><Link className="font-semibold text-link underline" href={withAttribution(`/solucoes/${p.slug}`, attr)}>{p.name}</Link>: {p.quote ? "sob consulta" : `${formatBRL(p.monthlyCents ?? 0)}/mês ou ${formatBRL(p.annualCents ?? 0)}/ano · taxa ${((p.feeBps ?? 0) / 100).toString().replace(".", ",")}%`}</li>)}</ul>
               <Link href={commerceHref} className="mt-4 inline-flex text-sm font-semibold text-link underline">Conhecer a NextLevel Commerce →</Link>
             </article>
-            <article id="superdrop" className="rounded-xl border border-border bg-surface p-5">
+            {/* SuperDrop em pausa (D287): o cartão só volta quando a marca for reaberta no Master. */}
+            {negocioAberto("SUPERDROP") ? <article id="superdrop" className="rounded-xl border border-border bg-surface p-5">
               {/* eslint-disable-next-line @next/next/no-img-element -- WebP estático do kit SuperDrop */}
               <img src="/marcas/superdrop/imagens/hero-key-visual-800.webp" alt="" width={800} height={450} loading="lazy" decoding="async" className="mb-4 aspect-video w-full rounded-lg object-cover" style={{ objectPosition: "72% 45%" }} />
               <h3 className="text-xl font-bold">SuperDrop</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Revenda sem estoque: fornecedores parceiros separam e enviam; o lojista vende com a própria loja e fica com 100% das vendas. Fornecedores recebem as recargas direto na conta deles.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Revenda sem estoque: fornecedores parceiros separam e enviam; o lojista vende com a própria loja e o dinheiro das vendas cai direto para ele. Fornecedores recebem as recargas direto na conta deles.</p>
               <Link href={superdropHref} className="mt-4 inline-flex text-sm font-semibold text-link underline">Conhecer o SuperDrop →</Link>
-            </article>
+            </article> : null}
             {families.filter((f) => f !== "COMMERCE_PLAN").map((f) => {
               const list = pub.filter((x) => x.family === f);
               if (!list.length) return null;

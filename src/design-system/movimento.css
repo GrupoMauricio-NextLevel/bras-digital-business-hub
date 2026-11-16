@@ -120,6 +120,9 @@ select.ds-input { appearance: none; background-image: url("data:image/svg+xml,%3
 .vh-capsula.nl-chega { animation-name: vh-chega; }
 @keyframes vh-chega { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 .vh-capsula-btn .vh-curto { display: none; }
+/* Celular: flutuantes do site (cápsula do Maurício e WhatsApp) entram só depois da primeira rolagem (auditoria 13/11/2026). */
+@media (max-width: 640px) { html:not([data-rolou]) .vh-capsula, html:not([data-rolou]) .nl-flutua-depois { opacity: 0; pointer-events: none; transform: translateY(16px); animation: none; }
+  .vh-capsula, .nl-flutua-depois { transition: opacity .25s ease, transform .25s ease; } }
 /* Celular (D214): a cápsula vira uma pílula curta à esquerda, sem cobrir o conteúdo; o WhatsApp fica à direita. */
 @media (max-width: 640px) { .vh-capsula { left: 12px; right: auto; margin: 0; bottom: 14px; width: auto; max-width: calc(100vw - 150px); } .vh-capsula-btn { font-size: .8rem; padding: 5px 5px 5px 12px; gap: 8px; } .vh-capsula-btn .vh-curto { display: inline; } .vh-capsula-btn .vh-longo { display: none; } .vh-enviar { width: 28px; height: 28px; } }
 .vh-oferta { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; font-size: .875rem; color: #fff; background: linear-gradient(135deg, var(--ds-primary), color-mix(in srgb, var(--ds-primary) 70%, #000)); }

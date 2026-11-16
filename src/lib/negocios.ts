@@ -14,7 +14,7 @@ export type EstadoNegocio = "aberto" | "proximo" | "pausado" | "em-breve";
 export type Negocio = { code: BrandCode; nome: string; sigla: string; descritor: string; ctx: ProductContextKey; /** já tem área no Master (pode ser aberto por variável) */ temArea: boolean };
 
 export const NEGOCIOS: Negocio[] = [
-  { code: "NEXTLEVEL_COMMERCE", nome: "Commerce", sigla: "E", descritor: "Lojas virtuais", ctx: "commerce", temArea: true },
+  { code: "NEXTLEVEL_COMMERCE", nome: "Commerce", sigla: "Co", descritor: "Lojas virtuais", ctx: "commerce", temArea: true },
   { code: "NEXTLEVEL", nome: "Soluções", sigla: "So", descritor: "Agência de marketing e soluções", ctx: "master", temArea: false },
   { code: "SUPERDROP", nome: "SuperDrop", sigla: "S", descritor: "Distribuição e dropshipping", ctx: "superdrop", temArea: true },
   { code: "BRAS_DIGITAL", nome: "Brás Digital Club", sigla: "B", descritor: "Atacado B2B", ctx: "bras", temArea: true },

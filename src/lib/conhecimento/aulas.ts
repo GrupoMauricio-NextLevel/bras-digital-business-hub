@@ -65,7 +65,7 @@ export function aulas(f: Fatos): Aula[] {
     { id: "taxa-zero", trilha: "base", titulo: "Taxa zero da plataforma", estado: "no-ar", decisoes: ["D220", "D221"],
       oQue: "A NextLevel não cobra taxa sobre as vendas do lojista: ele paga só a mensalidade.",
       regra: ["Sempre falar \"taxa zero da plataforma\".", "As taxas do Mercado Pago (Pix e cartão) são do Mercado Pago, à parte, e precisam ser lembradas.", `Taxa máxima dos concorrentes usando o Mercado Pago: ${taxas}.`],
-      dizer: ["\"A única com taxa zero no checkout do Mercado Pago.\"", "\"Mais vantajosa no custo total.\""], nunca: ["\"Mais barato\" (use \"mais vantajoso\").", "\"A única plataforma com taxa zero\" ou \"cem por cento das vendas na sua conta\"."] },
+      dizer: ["\"Entre as grandes, a única com taxa zero no checkout do Mercado Pago.\"", "\"Mais vantajosa no custo total.\""], nunca: ["\"Mais barato\" (use \"mais vantajoso\").", "\"A única plataforma com taxa zero\" ou \"cem por cento das vendas na sua conta\"."] },
     { id: "palavras", trilha: "base", titulo: "As palavras certas (e as proibidas)", estado: "no-ar", decisoes: ["D220", "D221", "D261"],
       oQue: "Como a NextLevel fala com lojistas, parceiros e no site.",
       regra: ["Nunca inventar dado, cliente, depoimento ou número.", "Só anunciar o que existe no sistema; o resto é \"em breve\".", "Comparação com concorrente: tom agressivo, sempre com fato, fonte e data."],

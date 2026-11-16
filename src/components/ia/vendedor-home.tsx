@@ -49,6 +49,14 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
     if (aberto) window.addEventListener("keydown", esc);
     return () => { window.removeEventListener("keydown", esc); document.documentElement.classList.remove("ia-dock-aberto"); };
   }, [aberto]);
+  // Celular (auditoria do dono, 13/11/2026): a cápsula e o WhatsApp só entram depois da primeira rolagem, para não
+  // cobrirem o botão principal da primeira tela. Marca `data-rolou` no <html>; o CSS esconde até lá (só até 640 px).
+  React.useEffect(() => {
+    const html = document.documentElement;
+    const ver = () => { if (window.scrollY > window.innerHeight * 0.5) { html.dataset.rolou = "1"; window.removeEventListener("scroll", ver); } };
+    ver(); window.addEventListener("scroll", ver, { passive: true });
+    return () => window.removeEventListener("scroll", ver);
+  }, []);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end", behavior: "smooth" }); }, [msgs.length, pensando, pedirContato]);
   // Ao vivo: enquanto a conversa está aberta, busca as respostas da equipe a cada 4 segundos.
   React.useEffect(() => {

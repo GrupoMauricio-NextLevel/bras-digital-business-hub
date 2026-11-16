@@ -142,7 +142,10 @@ async function storeSimulator(db: Database, storeId: string, brand: BenefitBrand
       const m = p.prices.MONTHLY?.amountCents;
       if (!m) continue;
       const dp = snap?.planPrices?.[p.key];
-      plans.push({ name: nomePlanoEc(p.name), monthlyCents: dp?.monthlyCents ?? m, feeBps: dp?.feeBps ?? (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0, current: !free && sub?.productKey === p.key });
+      // A taxa vem da versão de preço em vigor (a mesma da cobrança e das páginas públicas); o `meta` do produto guarda a
+      // taxa do cadastro original (1% / 0,7% / 0,4%) e ficou velho com a taxa zero (D220). Auditoria do dono, 13/11/2026.
+      const taxaVigente = p.prices.MONTHLY?.platformFeeBps ?? (p.meta as { platformFeeBps?: number } | null)?.platformFeeBps ?? 0;
+      plans.push({ name: nomePlanoEc(p.name), monthlyCents: dp?.monthlyCents ?? m, feeBps: dp?.feeBps ?? taxaVigente, current: !free && sub?.productKey === p.key });
     }
   }
   if (plans.length < 2) return null;

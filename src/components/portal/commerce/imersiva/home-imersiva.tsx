@@ -4,6 +4,7 @@ import type { Brand } from "@/lib/brand";
 import { getDb } from "@/db/client";
 import { anualBlackCents, blackAgora } from "@/lib/domain/campanha-black";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
+import { beneficiosPorPlano, NOME_PLANO_BENEFICIO, PLANOS_BENEFICIO } from "@/lib/domain/beneficios-plano";
 import { isReleased, THEME_CATALOG } from "@/lib/themes/catalog";
 import { FAMILY_INFO, LEVEL_INFO } from "@/lib/themes/levels";
 import { JsonLd } from "@/components/portal/json-ld";
@@ -48,6 +49,10 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
   const aPartirDe = pagos.length ? Math.min(...pagos.map((p) => Math.round((black ? anualBlackCents(p.annualCents!) : p.annualCents!) / 12))) : null;
   // D220: degraus da NextLevel (Start, Pro, Scale) para o comparativo plano a plano.
   const degrausNl = pagos.map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents!, anualMesCents: Math.round(p.annualCents! / 12) }));
+  // Limites e preço de entrada sempre do sistema (auditoria do dono, 13/11/2026): nada de número escrito à mão no texto.
+  const beneficios = await beneficiosPorPlano(await getDb());
+  const produtos = PLANOS_BENEFICIO.map((k) => ({ nome: NOME_PLANO_BENEFICIO[k], limite: beneficios[k].produtos }));
+  const entradaMensal = pagos.length ? Math.min(...pagos.map((p) => p.monthlyCents!)) : null;
 
   return (
     <div className="im-tema-ecommerce contents">
@@ -62,8 +67,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
 
       {/* D219: a home ficou só com o que convence (motivos, planos, comparativo, prova, temas, equipe, dúvidas).
           Como funciona, portas de entrada, personalização, Maurício e integrações foram para /recursos. */}
-      <PorQueNextLevel degrausNl={degrausNl} />
-      <FeitaParaAtacado />
+      <PorQueNextLevel degrausNl={degrausNl} produtos={produtos} />
+      <FeitaParaAtacado entradaMensalCents={entradaMensal} />
       <VivenciaRua />
 
       <section id="planos" aria-labelledby="planos-t" className="ecc-planos ds-tema-escuro scroll-mt-16">
