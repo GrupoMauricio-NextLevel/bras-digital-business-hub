@@ -1,7 +1,7 @@
 # NextLevel Business: gestão do negócio e captação de clientes, em autoatendimento
 
 > Pedido do dono (16/11/2026, D303 e D304). Autoridade: `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` > `docs/design/DECISIONS.md` > este documento.
-> **Situação:** direção aprovada; etapa começa agora (D304). Piloto: Megatron.
+> **Situação:** direção aprovada; etapa começa agora (D304). **Piloto: academia** (D305); depois farmácia. Plano do piloto: `docs/prompts/business-piloto-academia.md`. A Megatron é cliente da Commerce e não entra no piloto.
 
 ## 1. As três linhas (não misturar)
 | Linha | O que é | Quem faz o trabalho |
@@ -13,7 +13,7 @@
 **Regra de ouro do Business:** se uma tela ou passo precisa de alguém da equipe para funcionar, ela não é Business; ou vira automática, ou vai para a Soluções como serviço opcional.
 
 ## 2. Para quem
-Para todos (D304): lojistas da Commerce (mesmo login, ativa dentro do painel), empresas de serviço (clínica, escola, imobiliária, agência, prestadores), atacadistas e importadores. Piloto: **Megatron** (Mega Tron Comércio Eletrônico Ltda).
+Para todos (D304): lojistas da Commerce (mesmo login, ativa dentro do painel), empresas de serviço (clínica, escola, imobiliária, agência, prestadores), atacadistas e importadores. Piloto: **academia** (D305); próximo segmento: farmácia.
 
 ## 3. O que já existe e vira produto (regra anti-duplicação)
 | Peça do Business | Onde já existe hoje (uso interno da NextLevel) | Decisões | O que falta para rodar sozinho |
@@ -36,7 +36,7 @@ Para todos (D304): lojistas da Commerce (mesmo login, ativa dentro do painel), e
 
 ## 5. Fases
 - **B0, desenho (agora):** este documento; lista exata das tabelas e telas a ganhar a organização; o que sai por depender de equipe.
-- **B1, piloto Megatron:** código de marca da Business; organização da Megatron com **Captação + CRM** (contatos do site e de links rastreados, funil, ficha); teste automático provando que uma organização nunca vê a outra.
+- **B1, piloto academia (D305):** ver `business-piloto-academia.md`; código de marca da Business; conta da academia com **Captação + CRM** (contatos do site e de links rastreados, funil, ficha); teste automático provando que uma organização nunca vê a outra.
 - **B2, painel do cliente:** casca própria do Business (a mesma do Master, sem nada interno da NextLevel), convite da equipe do cliente, funções e permissões, cadastro e primeiros passos sozinho.
 - **B3, atendimento:** WhatsApp, chat do site e e-mail do próprio cliente no mesmo lugar.
 - **B4, anúncios, propostas e cobrança:** Pixel/Google do cliente com retorno automático; propostas e contratos com Pix do cliente.

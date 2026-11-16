@@ -3698,3 +3698,11 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Foco:** a etapa do Business começa agora, ao lado da Commerce (exceção registrada à regra 60/25/15 do D174, a pedido do dono).
 - **Base técnica encontrada:** as telas do Master (Comercial, origem dos contatos, tráfego, atendimento) guardam dados por **marca da NextLevel** (`brand`), não por empresa cliente; a empresa cliente do sistema já existe como **organização** (`organizations`, dona das lojas). A Business usa a organização como dono dos dados, sem tabelas paralelas.
 - **Plano:** `docs/prompts/nextlevel-business-gestao-captacao.md` (fases B0 a B5, piloto Megatron).
+
+# D305 — [Grupo] Piloto da NextLevel Business em academia; farmácia depois (2026-11-16)
+- **Pedido do dono:** "O Megatron é usuário da NextLevel Commerce. Precisamos de um piloto bem estruturado para academia e, mais para frente, farmácia."
+- **Corrige o D304:** a Megatron sai do piloto da Business (já é cliente da Commerce e não provaria o produto sozinho).
+- **Piloto:** academia, com a jornada completa sem equipe: captação com origem e aula experimental, funil automático, alunos e planos, matrícula com termo, mensalidades por Pix e link de cartão com lembretes e baixa automática, check-in por QR code ou CPF, aluno sumido e painel do dono. Fases P0 a P5 e metas em `docs/prompts/business-piloto-academia.md`.
+- **Arquitetura proposta:** a academia é um tenant do mesmo tipo da loja (herda login, equipe, isolamento, CRM, atendimento, origem e Mercado Pago próprio), com página de captação no lugar da vitrine; o que é só de academia fica num módulo da Business fora do motor de lojas (Constituição, seções 4 e 28), ligado por "segmento". Confirmar na P1 antes da primeira migração.
+- **Farmácia:** só desenho (recompra de uso contínuo, fidelidade, pedido por WhatsApp); antes de construir, levantar as regras da Anvisa e da LGPD para dado de saúde.
+- **Depende do dono:** escolher a academia piloto e as respostas da P0.
