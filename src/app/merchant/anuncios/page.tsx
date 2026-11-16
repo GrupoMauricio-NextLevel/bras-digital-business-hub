@@ -9,6 +9,7 @@ import { novoAnuncioAction } from "@/app/actions/anuncios";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Anúncios na Meta" };
 
 const COMO = [
   { I: ClipboardList, t: "Diagnóstico", d: "Você responde umas perguntas sobre a loja, o público e a verba. Leva uns 5 minutos." },

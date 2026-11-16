@@ -189,8 +189,10 @@ export const signupSchema = z.object({
   /** Plano Commerce escolhido no cadastro (D90). Só para loja independente com os planos novos ligados. */
   plan: z.enum(["COMMERCE_START", "COMMERCE_PRO", "COMMERCE_SCALE"]).optional(),
   cycle: z.enum(["MONTHLY", "ANNUAL"]).default("MONTHLY"),
-  /** Caminho escolhido na entrada (NB1, D304): site da empresa ou loja virtual. Só vale para loja independente da Commerce. */
+  /** Caminho escolhido na entrada (NB1, D306): site da empresa ou loja virtual. Só vale para loja independente da Commerce. */
   formato: z.enum(["LOJA", "SITE"]).default("LOJA"),
+  /** "Como você conheceu a NextLevel?" (D303): opcional; vai só para a origem do contato, nunca para a loja. */
+  conheceuPor: z.string().max(20).optional(),
 });
 
 /** Fornecedores que aceitam novos membros (página pública ativa). Importadoras de marca fechada (Brás Digital) nunca entram na lista pública. */

@@ -1,6 +1,6 @@
 # NB0 do NextLevel Business: diagnóstico curto e linha de base (13/11/2026)
 
-> Plano: `docs/prompts/nextlevel-business-coracao-do-negocio.md`. Decisões: D302 (nome e organização) e D303 (esta fase).
+> Plano: `docs/prompts/nextlevel-business-coracao-do-negocio.md`. Decisões: D304 (nome e organização) e D305 (esta fase).
 > Commit de partida: `bee6a2c` (branch `ccr-ecbeafd1-sh4iy2`). Nenhum código de produto foi alterado nesta fase.
 
 ## 1. Verificações automáticas (antes de qualquer mudança)
@@ -40,7 +40,7 @@
 - `docs/relatorios/nb0/antes-quero-minha-loja.png`: entrada assistida de hoje, só para loja virtual.
 
 ## 5. Esforço do dia por frente
-E-commerce 100% (plano do NextLevel Business, D302 e D303).
+E-commerce 100% (plano do NextLevel Business, D304 e D305).
 
 ## 6. Próxima fase
 **NB1:**

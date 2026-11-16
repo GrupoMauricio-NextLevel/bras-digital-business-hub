@@ -11,7 +11,7 @@ import { getConfigComercial, mensageiro } from "./comercial-config";
 import { origensDe, ROTULO_VIA, type OrigemResumo } from "./trafego/origem-contato";
 import { enfileirarConversao } from "./trafego/retorno";
 
-/** Caminho escolhido na entrada (NB1, D304), mostrado no detalhe do cartão do Comercial. */
+/** Caminho escolhido na entrada (NB1, D306), mostrado no detalhe do cartão do Comercial. */
 const ROTULO_CAMINHO: Record<string, string> = { site: "Quer: site para a empresa", loja: "Quer: loja virtual", indeciso: "Ainda não sabe: site ou loja" };
 
 /**

@@ -20,6 +20,8 @@ export type PaginaPublica = {
   /** Data (AAAA-MM-DD) da última revisão real do conteúdo. */
   revisadoEm: string;
   prioridade: number;
+  /** Nome curto na trilha de navegação (Início › Parceiros › Indique); sem ele, vale o título curto. */
+  nome?: string;
   /** Só entra no sitemap quando a marca atende à condição. */
   quando?: "cadastroAberto" | "cadastroFechado" | "parceiros" | "temas";
 };
@@ -27,7 +29,7 @@ export type PaginaPublica = {
 export const SUFIXO_TITULO = " · NextLevel Commerce";
 
 export const PAGINAS_COMMERCE: PaginaPublica[] = [
-  { caminho: "/", titulo: { absoluto: "NextLevel Commerce · Loja virtual para varejo e atacado" }, nucleo: "inicio", revisadoEm: "2026-11-13", prioridade: 1,
+  { caminho: "/", nome: "Início", titulo: { absoluto: "NextLevel Commerce · Loja virtual para varejo e atacado" }, nucleo: "inicio", revisadoEm: "2026-11-13", prioridade: 1,
     descricao: "Crie sua loja virtual com atacado em todos os planos: grade, preço por quantidade e pedido mínimo. Pix e cartão, 0% de tarifa da plataforma com Mercado Pago." },
   { caminho: "/planos", titulo: "Planos e preços", nucleo: "planos", revisadoEm: "2026-11-13", prioridade: 0.9,
     descricao: "Compare os planos Start, Pro e Scale da NextLevel Commerce: atacado em todos, Pix e cartão, 0% de tarifa da plataforma com Mercado Pago e teste grátis." },
@@ -35,33 +37,33 @@ export const PAGINAS_COMMERCE: PaginaPublica[] = [
     descricao: "Crie sua loja virtual na NextLevel Commerce: escolha o plano, teste grátis e comece a vender no varejo e no atacado, com Pix e cartão." },
   { caminho: "/quero-minha-loja", titulo: "Quero minha loja", nucleo: "planos", revisadoEm: "2026-11-13", prioridade: 0.7,
     descricao: "Deixe seu contato e a equipe da NextLevel Commerce ajuda a montar sua loja virtual: produtos, tema, pagamento e frete, com atendimento pelo WhatsApp." },
-  { caminho: "/comparativo", titulo: "Comparativo de plataformas de loja virtual", nucleo: "comparar", revisadoEm: "2026-11-13", prioridade: 0.8,
+  { caminho: "/comparativo", nome: "Comparativo", titulo: "Comparativo de plataformas de loja virtual", nucleo: "comparar", revisadoEm: "2026-11-13", prioridade: 0.8,
     descricao: "Compare mensalidade, tarifa sobre as vendas e limites da NextLevel Commerce com Nuvemshop, Tray, Loja Integrada e Shopify. Dados públicos com fonte e data." },
-  { caminho: "/recursos", titulo: "Recursos da loja virtual", nucleo: "recursos", revisadoEm: "2026-11-13", prioridade: 0.7,
+  { caminho: "/recursos", nome: "Recursos", titulo: "Recursos da loja virtual", nucleo: "recursos", revisadoEm: "2026-11-13", prioridade: 0.7,
     descricao: "Tudo o que a loja virtual da NextLevel Commerce faz: atacado, vitrine, Pix e cartão, frete, temas, domínio próprio, inteligência artificial e integrações." },
   { caminho: "/integracoes", titulo: "Integrações", nucleo: "recursos", revisadoEm: "2026-11-13", prioridade: 0.6,
     descricao: "Mercado Pago, Melhor Envio, Frenet, Correios com contrato, Google, Meta, TikTok, Tiny, Omie e mais: o que a loja conecta hoje e o que você precisa para ligar." },
-  { caminho: "/ferramentas", titulo: "Calculadoras grátis para quem vende online", nucleo: "ferramentas", revisadoEm: "2026-11-13", prioridade: 0.6,
+  { caminho: "/ferramentas", nome: "Calculadoras", titulo: "Calculadoras grátis para quem vende online", nucleo: "ferramentas", revisadoEm: "2026-11-13", prioridade: 0.6,
     descricao: "Calcule o preço de venda com margem e a partir de qual valor vale oferecer frete grátis. Ferramentas grátis da NextLevel Commerce, sem cadastro." },
-  { caminho: "/temas", titulo: "Temas de loja virtual por nicho", nucleo: "temas", revisadoEm: "2026-11-13", prioridade: 0.7, quando: "temas",
+  { caminho: "/temas", nome: "Temas", titulo: "Temas de loja virtual por nicho", nucleo: "temas", revisadoEm: "2026-11-13", prioridade: 0.7, quando: "temas",
     descricao: "Temas de loja virtual para moda, beleza, casa, celular, esporte e atacado. Veja cada tema funcionando numa loja de exemplo e instale com 1 clique." },
-  { caminho: "/temas-nuvemshop", titulo: "Temas e layout personalizado para Nuvemshop", nucleo: "temas", revisadoEm: "2026-11-13", prioridade: 0.5,
+  { caminho: "/temas-nuvemshop", nome: "Temas para Nuvemshop", titulo: "Temas e layout personalizado para Nuvemshop", nucleo: "temas", revisadoEm: "2026-11-13", prioridade: 0.5,
     descricao: "Layout personalizado para a sua loja Nuvemshop, sem trocar de plataforma: lojas que a NextLevel criou, direção visual por nicho e diagnóstico gratuito." },
-  { caminho: "/clientes", titulo: "Clientes e lojas que a NextLevel atende", nucleo: "empresa", revisadoEm: "2026-11-13", prioridade: 0.5,
+  { caminho: "/clientes", nome: "Clientes", titulo: "Clientes e lojas que a NextLevel atende", nucleo: "empresa", revisadoEm: "2026-11-13", prioridade: 0.5,
     descricao: "Marcas reais que a equipe NextLevel atende, do Brás para o Brasil, e os temas da NextLevel Commerce que elas usam nas lojas virtuais." },
   { caminho: "/faq", titulo: "Perguntas frequentes", nucleo: "ajuda", revisadoEm: "2026-11-13", prioridade: 0.7,
     descricao: "Respostas diretas sobre a NextLevel Commerce: planos, teste grátis, atacado, pagamento com Mercado Pago, frete, domínio próprio, migração e suporte." },
-  { caminho: "/parceiros", titulo: { absoluto: "Programa de Parceiros NextLevel Commerce: comissão todo mês" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.7, quando: "parceiros",
+  { caminho: "/parceiros", nome: "Parceiros", titulo: { absoluto: "Programa de Parceiros NextLevel Commerce: comissão todo mês" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.7, quando: "parceiros",
     descricao: "Indique lojas virtuais e receba comissão sobre toda mensalidade enquanto o lojista pagar, pelo CPF ou pelo CNPJ, com saque por Pix e sem nota fiscal." },
-  { caminho: "/parceiros/indique", titulo: { absoluto: "Indique e ganhe pelo CPF: Programa de Indicações NextLevel" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.6, quando: "parceiros",
+  { caminho: "/parceiros/indique", nome: "Indique pelo CPF", titulo: { absoluto: "Indique e ganhe pelo CPF: Programa de Indicações NextLevel" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.6, quando: "parceiros",
     descricao: "Indique lojas para a NextLevel Commerce só com o seu CPF e receba comissão todo mês sobre as mensalidades, com saque por Pix e sem precisar de nota fiscal." },
-  { caminho: "/parceiros/criadores", titulo: { absoluto: "Parceiros criadores: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
+  { caminho: "/parceiros/criadores", nome: "Criadores", titulo: { absoluto: "Parceiros criadores: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
     descricao: "Para criadores de conteúdo de moda, negócios e e-commerce: transforme a sua audiência em comissão que se repete todo mês indicando a NextLevel Commerce." },
-  { caminho: "/parceiros/vendedores", titulo: { absoluto: "Parceiros vendedores: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
+  { caminho: "/parceiros/vendedores", nome: "Vendedores", titulo: { absoluto: "Parceiros vendedores: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
     descricao: "Para representantes e vendedores que já visitam lojistas: venda a loja virtual da NextLevel Commerce de porta em porta e receba comissão todo mês." },
-  { caminho: "/parceiros/agencias", titulo: { absoluto: "Parceiros agências: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
+  { caminho: "/parceiros/agencias", nome: "Agências", titulo: { absoluto: "Parceiros agências: ganhe indicando a NextLevel Commerce" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
     descricao: "Para agências de marketing e consultorias: coloque seus clientes na NextLevel Commerce, receba comissão enquanto eles ficarem e conte com benefícios exclusivos." },
-  { caminho: "/parceiros/comissoes", titulo: { absoluto: "Comissões e bônus do Programa de Parceiros NextLevel" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
+  { caminho: "/parceiros/comissoes", nome: "Comissões e bônus", titulo: { absoluto: "Comissões e bônus do Programa de Parceiros NextLevel" }, nucleo: "parceiros", revisadoEm: "2026-11-13", prioridade: 0.5, quando: "parceiros",
     descricao: "Comissão em toda mensalidade enquanto o lojista pagar, bônus por produção na semana e no mês, garantia e saque por Pix sem nota fiscal: a regra completa." },
   { caminho: "/termos", titulo: "Termos de uso", nucleo: "legal", revisadoEm: "2026-11-13", prioridade: 0.3,
     descricao: "Termos de uso da plataforma NextLevel Commerce: conta, planos, pagamentos e responsabilidades do lojista e da NextLevel Marketing Ltda." },
@@ -102,3 +104,32 @@ export function metadadosCommerce(caminho: string, imagem: { url: string; width:
     twitter: { card: "summary_large_image", title: titulo, description: p.descricao, images: [imagem.url] },
   };
 }
+
+export type ElosTrilha = { nome: string; caminho: string }[];
+const nomeDa = (p: PaginaPublica) => p.nome ?? (typeof p.titulo === "string" ? p.titulo : p.titulo.absoluto);
+
+/**
+ * Trilha de navegação de uma página pública (D303): Início, as páginas-mãe que existem na tabela e a própria página.
+ * `nomeFinal` serve às páginas fora da tabela (ex.: /temas/trama → "Tema Trama"). A home e páginas desconhecidas não têm trilha.
+ */
+export function trilhaCommerce(caminho: string, nomeFinal?: string): ElosTrilha {
+  if (caminho === "/" || !caminho.startsWith("/")) return [];
+  const partes = caminho.split("/").filter(Boolean);
+  const elos: ElosTrilha = [{ nome: "Início", caminho: "/" }];
+  for (let i = 1; i <= partes.length; i++) {
+    const c = `/${partes.slice(0, i).join("/")}`;
+    const p = paginaCommerce(c);
+    if (i === partes.length) {
+      if (p) elos.push({ nome: nomeDa(p), caminho: c });
+      else if (nomeFinal) elos.push({ nome: nomeFinal, caminho: c });
+      else return [];
+    } else if (p) elos.push({ nome: nomeDa(p), caminho: c });
+  }
+  return elos;
+}
+
+/** `BreadcrumbList` com endereços completos: o mesmo texto da trilha visível. */
+export const trilhaJsonLd = (baseUrl: string, elos: ElosTrilha) => ({
+  "@context": "https://schema.org", "@type": "BreadcrumbList",
+  itemListElement: elos.map((e, i) => ({ "@type": "ListItem", position: i + 1, name: e.nome, item: `${baseUrl}${e.caminho === "/" ? "" : e.caminho}` })),
+});

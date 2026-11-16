@@ -12,7 +12,7 @@ const json = (v: string | undefined): Record<string, string> => {
  * Depois que um contato é aceito (formulário, janela de saída, diagnóstico, cadastro da loja): guarda de onde a pessoa veio
  * para o Comercial e marca a visita como lead (TR2/TR3, D291/D294). Lê só cookies próprios. Nunca lança.
  */
-export async function registrarOrigemDaVisita(db: Database, d: { chave: string; brand: string; via: Via; pagina?: string }): Promise<void> {
+export async function registrarOrigemDaVisita(db: Database, d: { chave: string; brand: string; via: Via; pagina?: string; conheceuPor?: string | null }): Promise<void> {
   try {
     const c = await cookies();
     const pagina = d.pagina ?? (await headers()).get("x-nl-path") ?? "/";
@@ -20,7 +20,7 @@ export async function registrarOrigemDaVisita(db: Database, d: { chave: string; 
     const consent = lerConsentimento(c.get(CONSENT_COOKIE)?.value);
     await registrarOrigemDoContato(db, d.chave, d.brand, d.via, {
       ultimo: json(c.get("nl-attr")?.value), primeiro: json(c.get("nl-first")?.value), sessaoId: c.get("nl-sid")?.value ?? null,
-      ua: h.get("user-agent"), consentimento: consent ? (consent.anuncios ? "SIM" : "NAO") : "SEM_ESCOLHA", fbp: c.get("_fbp")?.value ?? null, fbc: c.get("_fbc")?.value ?? null,
+      ua: h.get("user-agent"), consentimento: consent ? (consent.anuncios ? "SIM" : "NAO") : "SEM_ESCOLHA", fbp: c.get("_fbp")?.value ?? null, fbc: c.get("_fbc")?.value ?? null, conheceuPor: d.conheceuPor ?? null,
     }, pagina);
   } catch { /* medição nunca derruba o formulário */ }
 }

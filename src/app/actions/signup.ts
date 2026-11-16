@@ -24,7 +24,7 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     // Sem ?ref= na URL, vale o último link do parceiro guardado no cookie (30 dias).
     const ref = input.ref || (await cookies()).get("nl-ref")?.value;
     const brand = await getBrand();
-    // NB1 (D304): o caminho Site só vale com o NextLevel Business ligado e na Commerce; senão, loja como sempre.
+    // NB1 (D306): o caminho Site só vale com o NextLevel Business ligado e na Commerce; senão, loja como sempre.
     const { businessLigado } = await import("@/lib/business/modulos");
     const formato = input.formato === "SITE" && businessLigado() && brand.code === "NEXTLEVEL_COMMERCE" ? "SITE" as const : "LOJA" as const;
     const created = await signupMember(await getDb(), { ...input, formato, ref, brand: brand.code, independent: !brandHas(brand, "dropship") });
@@ -32,7 +32,7 @@ export async function signupAction(input: z.input<typeof signupSchema>) {
     const db = await getDb();
     // TR3 (D294): de onde veio quem criou a loja (anúncio, Instagram, Google…), para o Comercial e o retorno às plataformas.
     const { registrarOrigemDaVisita } = await import("@/lib/trafego/lead-na-sessao");
-    await registrarOrigemDaVisita(db, { chave: `loja:${created.storeId}`, brand: brand.code, via: "CADASTRO", pagina: "/cadastro" });
+    await registrarOrigemDaVisita(db, { chave: `loja:${created.storeId}`, brand: brand.code, via: "CADASTRO", pagina: "/cadastro", conheceuPor: input.conheceuPor });
     // Dias de teste que esta loja realmente recebeu (porta de entrada, cupom ou plano): o e-mail não promete um número fixo.
     const loja = await db.query.stores.findFirst({ where: eq(stores.id, created.storeId), columns: { trialEndsAt: true } });
     const m = emails.welcomeStore(input.storeName, `${await getBaseUrl()}/merchant`, created.trial ? diasDeTeste(loja?.trialEndsAt ?? null) : 0);

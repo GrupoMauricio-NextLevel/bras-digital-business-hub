@@ -59,3 +59,20 @@ export async function lancarResultadoAction(id: string, r: unknown) {
 export async function novaPendenciaAction(id: string, p: { rotulo: string; dica?: string; quem: "LOJISTA" | "EQUIPE" }) {
   return runAction(async () => { const s = await sessao(); await A.novaPendencia(await getDb(), s.actor, id, p, s.user.name); atualizar(id); return undefined; });
 }
+
+/** TR6 (D302): liga a sala à conta de anúncios e às campanhas do lojista na Meta. */
+export async function campanhasDaContaAction(conta: string) {
+  return runAction(async () => { const s = await sessao(); const { campanhasDaConta } = await import("@/lib/domain/trafego/meta-leitura"); return campanhasDaConta(await getDb(), s.actor, conta); });
+}
+export async function ligarSalaAMetaAction(id: string, conta: string, campanhas: string[]) {
+  return runAction(async () => {
+    const s = await sessao();
+    const { ligarSalaAMeta, sincronizarMeta } = await import("@/lib/domain/trafego/meta-leitura");
+    const db = await getDb();
+    await ligarSalaAMeta(db, s.actor, id, conta, campanhas);
+    // Lê na hora para a sala já mostrar os números.
+    if (conta.trim() && campanhas.length) await sincronizarMeta(db, fetch, new Date(), { forcar: true });
+    atualizar(id);
+    return undefined;
+  });
+}

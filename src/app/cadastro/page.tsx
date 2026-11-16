@@ -47,7 +47,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
   if (isClosedCommerceBrand(brand)) { const q = await searchParams; return <BrasSignupPage brand={brand} videoId={q.video} source={q.utm_source} />; }
   const independent = !brandHas(brand, "dropship");
   const sp = await searchParams;
-  // NB1 (D304): caminho Site (site para a empresa) só com o NextLevel Business ligado; o servidor confere de novo.
+  // NB1 (D306): caminho Site (site para a empresa) só com o NextLevel Business ligado; o servidor confere de novo.
   const site = brand.code === "NEXTLEVEL_COMMERCE" && businessLigado() && sp.para === "site";
   const db = await getDb();
   const [suppliers, book] = await Promise.all([independent ? Promise.resolve([]) : listSignupSuppliers(db), getPriceBook(db)]);

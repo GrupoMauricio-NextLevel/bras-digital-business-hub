@@ -10,6 +10,7 @@ import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { getCatalogItem } from "./nl-catalog";
 import { storeUrl } from "@/lib/store-url";
 import { brandByCode } from "@/lib/brand";
+import { numerosDaSala } from "./trafego/meta-leitura";
 
 /**
  * Anúncios da loja na Meta (D299). O lojista faz um diagnóstico no painel; a equipe da NextLevel recebe na "mesa de
@@ -186,12 +187,13 @@ async function vendasDaCampanha(db: Database, storeId: string, utm: string) {
 }
 
 async function montarSala(db: Database, a: typeof anunciosLoja.$inferSelect) {
-  const [eventos, resultados, quote, loja, vendas] = await Promise.all([
+  const [eventos, resultados, quote, loja, vendas, metaAuto] = await Promise.all([
     db.select().from(anunciosEventos).where(eq(anunciosEventos.anuncioId, a.id)).orderBy(asc(anunciosEventos.criadoEm)),
     db.select().from(anunciosResultados).where(eq(anunciosResultados.anuncioId, a.id)).orderBy(desc(anunciosResultados.ate)),
     a.quoteId ? db.query.corporateQuotes.findFirst({ where: eq(corporateQuotes.id, a.quoteId) }) : Promise.resolve(null),
     db.query.stores.findFirst({ where: eq(stores.id, a.storeId), columns: { name: true, slug: true, customDomain: true, domainStatus: true } }),
     vendasDaCampanha(db, a.storeId, a.utmCampaign),
+    numerosDaSala(db, a.metaContaId, a.metaCampanhas),
   ]);
   const proposta = quote && ["SENT", "ACCEPTED", "CONVERTED"].includes(quote.status)
     ? { status: quote.status, itens: quote.items, descontoCents: quote.discountCents, totalCents: quote.totalCents ?? 0, termos: quote.terms, validaAte: quote.validUntil, aceitaEm: quote.acceptedAt } : null;
@@ -200,7 +202,7 @@ async function montarSala(db: Database, a: typeof anunciosLoja.$inferSelect) {
   const endereco = loja ? storeUrl(loja.slug, undefined, loja.customDomain, loja.domainStatus) : null;
   const absoluto = endereco ? (endereco.startsWith("/") ? `${brandByCode("NEXTLEVEL_COMMERCE").baseUrl.replace(/\/$/, "")}${endereco}` : endereco) : null;
   const linkAnuncio = absoluto ? `${absoluto}?utm_source=meta&utm_medium=pago&utm_campaign=${a.utmCampaign}&utm_content={{ad.name}}` : null;
-  return { anuncio: a, eventos, resultados, totais, proposta, vendas, loja: loja ?? null, linkAnuncio, rotuloStatus: ROTULO_STATUS[a.status] };
+  return { anuncio: a, eventos, resultados, totais, proposta, vendas, metaAuto, loja: loja ?? null, linkAnuncio, rotuloStatus: ROTULO_STATUS[a.status] };
 }
 
 export async function salaDaCampanha(db: Database, actor: Actor, id: string) {

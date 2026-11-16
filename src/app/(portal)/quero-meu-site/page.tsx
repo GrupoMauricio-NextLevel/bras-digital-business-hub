@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 /**
- * Atalho do caminho Site (NB1, D304) para anúncios e links: leva ao formulário de entrada já com "site para a empresa"
+ * Atalho do caminho Site (NB1, D306) para anúncios e links: leva ao formulário de entrada já com "site para a empresa"
  * marcado, mantendo as etiquetas da campanha (utm_*, fbclid…) do endereço.
  */
 export default async function QueroMeuSite({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {

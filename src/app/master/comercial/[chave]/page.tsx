@@ -66,7 +66,7 @@ export default async function FichaPage({ params, searchParams }: { params: Prom
               <>
                 <div className="flex flex-wrap items-center gap-2"><Badge tone={p.fonte.canal.endsWith("-pago") ? "info" : "neutral"} className="max-w-full whitespace-normal text-left">{p.fonte.rotulo}</Badge>{p.fonte.anuncio ? <Badge tone="outline">Clique de anúncio {p.fonte.anuncio}</Badge> : null}</div>
                 <dl className="mt-3 space-y-1.5">
-                  {([["Como chegou", ROTULO_VIA[p.fonte.via]], ["Campanha", p.fonte.campanha], ["Peça", p.fonte.peca], ["Público", p.fonte.publico], ["Conheceu por", p.fonte.primeiroCanal && p.fonte.primeiroCanal !== p.fonte.canal ? ROTULO_CANAL[p.fonte.primeiroCanal] : null],
+                  {([["Como chegou", ROTULO_VIA[p.fonte.via]], ["Campanha", p.fonte.campanha], ["Peça", p.fonte.peca], ["Público", p.fonte.publico], ["Primeiro canal", p.fonte.primeiroCanal && p.fonte.primeiroCanal !== p.fonte.canal ? ROTULO_CANAL[p.fonte.primeiroCanal] : null], ["Disse que conheceu por", p.fonte.conheceuPor],
                     ["Cidade", p.fonte.pais && p.fonte.pais !== "BR" ? `Exterior (${p.fonte.pais})` : p.fonte.cidade ? `${p.fonte.cidade}${p.fonte.uf ? `/${p.fonte.uf}` : ""}` : null], ["Aparelho", p.fonte.aparelho], ["Código da visita", p.fonte.codigo], ["Quando", formatDateTime(p.fonte.em)]] as const)
                     .filter(([, v]) => v).map(([k, v]) => <div key={k} className="flex gap-2"><dt className="w-28 shrink-0 text-muted-foreground">{k}</dt><dd className="min-w-0 break-words font-medium">{v}</dd></div>)}
                 </dl>

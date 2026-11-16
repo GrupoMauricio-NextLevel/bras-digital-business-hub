@@ -50,7 +50,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   o: Overview; readiness: StoreReadiness | null; attention: Attention[];
   /** Pulso da loja (D169): vendas de hoje, pedidos parados e situação, logo abaixo da saudação. */
   pulso?: React.ReactNode;
-  /** NextLevel Business (NB1, D304): nome do gerenciador e se o negócio é site (sem vitrine de loja). Ausente = como antes. */
+  /** NextLevel Business (NB1, D306): nome do gerenciador e se o negócio é site (sem vitrine de loja). Ausente = como antes. */
   negocio?: { nome: string; site: boolean };
 }) {
   const ticket = o.last30Count > 0 ? Math.round(o.sales / o.last30Count) : null;

@@ -1,4 +1,5 @@
-import { and, eq, gte, inArray } from "drizzle-orm";
+import { and, eq, gte, inArray, isNull } from "drizzle-orm";
+import { conheceuValido, rotuloConheceu } from "@/lib/trafego/conheceu";
 import type { Database } from "@/db/client";
 import { origensContato, trafegoEventos, trafegoSessoes } from "@/db/schema";
 import { newId } from "@/lib/ids";
@@ -21,6 +22,8 @@ export type VisitaAtual = {
   ultimo: Record<string, string>; primeiro: Record<string, string>; sessaoId: string | null;
   /** Navegador, escolha no aviso de cookies e os cookies da Meta (_fbp, _fbc), para o retorno às plataformas (TR5, D298). */
   ua?: string | null; consentimento?: "SIM" | "NAO" | "SEM_ESCOLHA"; fbp?: string | null; fbc?: string | null;
+  /** Resposta a "Como você conheceu a NextLevel?" (D303); só chaves da lista de `src/lib/trafego/conheceu.ts`. */
+  conheceuPor?: string | null;
 };
 
 const APARELHO: Record<string, string> = { MOBILE: "Celular", DESKTOP: "Computador", TABLET: "Tablet" };
@@ -61,8 +64,11 @@ export async function registrarOrigemDoContato(db: Database, chave: string, bran
     const primeiroCanal = v.primeiro.canal && v.primeiro.canal in ROTULO_CANAL ? v.primeiro.canal : null;
     const metaCookies = { ...(v.fbp && /^fb\.\d\.\d+\.\d+$/.test(v.fbp) ? { fbp: v.fbp } : {}), ...(v.fbc && /^fb\.\d\.\d+\.[\w.-]{1,200}$/.test(v.fbc) ? { fbc: v.fbc } : {}) };
     base.clickIds = { ...(base.clickIds ?? {}), ...metaCookies };
-    const r = await db.insert(origensContato).values({ chave, brand, via, ...base, primeiroCanal, ua: v.ua?.slice(0, 400) ?? null, consentimento: v.consentimento ?? "SEM_ESCOLHA", primeiraPagina: v.primeiro.page ? v.primeiro.page.replace(/[^\w\-./~%]/g, "").slice(0, 80) || null : null, capturadaEm: agora.toISOString() })
+    const conheceuPor = conheceuValido(v.conheceuPor);
+    const r = await db.insert(origensContato).values({ chave, brand, via, ...base, primeiroCanal, conheceuPor, ua: v.ua?.slice(0, 400) ?? null, consentimento: v.consentimento ?? "SEM_ESCOLHA", primeiraPagina: v.primeiro.page ? v.primeiro.page.replace(/[^\w\-./~%]/g, "").slice(0, 80) || null : null, capturadaEm: agora.toISOString() })
       .onConflictDoNothing().returning({ chave: origensContato.chave });
+    // A origem medida fica a primeira; a resposta da pessoa entra mesmo se o contato já existia (e não apaga uma anterior).
+    if (!r.length && conheceuPor) await db.update(origensContato).set({ conheceuPor }).where(and(eq(origensContato.chave, chave), isNull(origensContato.conheceuPor)));
     if (sessao) {
       await db.update(trafegoSessoes).set({ lead: true, ultimoSinalEm: agora.toISOString() }).where(eq(trafegoSessoes.id, sessao.id));
       await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: sessao.id, tipo: "LEAD", caminho: pagina.slice(0, 120) || "/", criadoEm: agora.toISOString() });
@@ -90,7 +96,7 @@ export async function vincularCodigoVisita(db: Database, actor: Actor, chave: st
 
 export type OrigemResumo = {
   via: Via; canal: Canal; rotulo: string; campanha: string | null; peca: string | null; publico: string | null; anuncio: "Meta" | "Google" | "TikTok" | null;
-  primeiroCanal: Canal | null; cidade: string | null; uf: string | null; pais: string | null; aparelho: string | null; codigo: string | null; em: string;
+  primeiroCanal: Canal | null; conheceuPor: string | null; cidade: string | null; uf: string | null; pais: string | null; aparelho: string | null; codigo: string | null; em: string;
 };
 
 export function resumir(o: typeof origensContato.$inferSelect): OrigemResumo {
@@ -98,7 +104,7 @@ export function resumir(o: typeof origensContato.$inferSelect): OrigemResumo {
   return {
     via: o.via, canal: o.canal as Canal, rotulo: ROTULO_CANAL[o.canal as Canal] ?? o.canal, campanha: o.utmCampaign, peca: o.utmContent, publico: o.utmTerm,
     anuncio: c.fbclid ? "Meta" : c.gclid || c.gbraid || c.wbraid ? "Google" : c.ttclid ? "TikTok" : null,
-    primeiroCanal: (o.primeiroCanal as Canal | null) ?? null, cidade: o.cidade, uf: o.uf, pais: o.pais, aparelho: o.aparelho, codigo: o.codigoVisita, em: new Date(o.capturadaEm).toISOString(),
+    primeiroCanal: (o.primeiroCanal as Canal | null) ?? null, conheceuPor: rotuloConheceu(o.conheceuPor), cidade: o.cidade, uf: o.uf, pais: o.pais, aparelho: o.aparelho, codigo: o.codigoVisita, em: new Date(o.capturadaEm).toISOString(),
   };
 }
 

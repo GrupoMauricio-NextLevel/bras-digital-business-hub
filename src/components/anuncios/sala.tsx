@@ -45,7 +45,12 @@ export function SalaDaCampanha({ s, lado, nomesProdutos = [] }: { s: Sala; lado:
   const a = s.anuncio;
   const etapa = ETAPAS_ANUNCIO.find((e) => e.status === a.status);
   const abertas = a.pendencias.filter((p) => !p.feitoEm);
-  const temNumeros = s.resultados.length > 0 || a.status === "NO_AR" || s.vendas.pedidos > 0;
+  const temNumeros = s.resultados.length > 0 || a.status === "NO_AR" || s.vendas.pedidos > 0 || !!s.metaAuto?.dias;
+  // Com a sala ligada à conta do lojista (TR6, D302), os números vêm sozinhos da Meta; senão, os lançados pela equipe.
+  const auto = s.metaAuto && s.metaAuto.dias > 0 ? s.metaAuto : null;
+  const blocos = auto
+    ? ([[Wallet, "Investido na Meta", brl(auto.gastoCents)], [Eye, "Vezes que o anúncio apareceu", num(auto.impressoes)], [MousePointerClick, "Cliques no link", num(auto.cliques)], [MessageCircle, "Conversas", num(auto.conversas)], [ShoppingBag, "Vendas na loja", `${s.vendas.pedidos} · ${brl(s.vendas.totalCents)}`]] as const)
+    : ([[Wallet, "Investido na Meta", brl(s.totais.gastoCents)], [Users, "Pessoas alcançadas", num(s.totais.alcance)], [MousePointerClick, "Cliques", num(s.totais.cliques)], [MessageCircle, "Conversas", num(s.totais.conversas)], [ShoppingBag, "Vendas na loja", `${s.vendas.pedidos} · ${brl(s.vendas.totalCents)}`]] as const);
   const podeCancelar = lado === "LOJISTA" && !["NO_AR", "PAUSADA", "ENCERRADA", "CANCELADA"].includes(a.status);
   return (
     <div className="grid gap-6">
@@ -81,16 +86,16 @@ export function SalaDaCampanha({ s, lado, nomesProdutos = [] }: { s: Sala; lado:
             <section className="ds-card" aria-labelledby="num-t">
               <h2 id="num-t" className="text-lg font-bold">Números da campanha</h2>
               <dl className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-5">
-                {([[Wallet, "Investido na Meta", brl(s.totais.gastoCents)], [Users, "Pessoas alcançadas", num(s.totais.alcance)], [MousePointerClick, "Cliques", num(s.totais.cliques)], [MessageCircle, "Conversas", num(s.totais.conversas)], [ShoppingBag, "Vendas na loja", `${s.vendas.pedidos} · ${brl(s.vendas.totalCents)}`]] as const).map(([I, t, v]) => (
+                {blocos.map(([I, t, v]) => (
                   <div key={t} className="rounded-xl bg-surface-muted p-3"><dt className="flex items-center gap-1 text-xs text-muted-foreground"><I className="size-3.5" aria-hidden />{t}</dt><dd className="mt-1 text-lg font-bold tabular-nums">{v}</dd></div>
                 ))}
               </dl>
-              <p className="mt-2 text-xs text-muted-foreground">Investido, alcance, cliques e conversas: números do Gerenciador de Anúncios, lançados pela equipe. Vendas na loja: pedidos pagos com a etiqueta desta campanha, contados sozinhos.</p>
+              <p className="mt-2 text-xs text-muted-foreground">{auto ? <>Números lidos direto da sua conta de anúncios na Meta ({auto.dias} {auto.dias === 1 ? "dia" : "dias"}){auto.em ? `, atualizados em ${formatDateTime(auto.em)}` : ""}; a Meta ainda ajusta os últimos dias.</> : "Investido, alcance, cliques e conversas: números do Gerenciador de Anúncios, lançados pela equipe."} Vendas na loja: pedidos pagos com a etiqueta desta campanha, contados sozinhos.</p>
               {s.resultados.length ? (
                 <ul className="mt-4 divide-y divide-border text-sm">
                   {s.resultados.map((r) => <li key={r.id} className="py-2"><b>{data(r.de)} a {data(r.ate)}</b>: {brl(r.gastoCents)} · {num(r.alcance)} pessoas · {num(r.cliques)} cliques{r.conversas ? ` · ${num(r.conversas)} conversas` : ""}{r.comentario ? <span className="block text-muted-foreground">{r.comentario}</span> : null}</li>)}
                 </ul>
-              ) : <p className="mt-3 text-sm text-muted-foreground">Os primeiros números chegam depois dos primeiros dias no ar.</p>}
+              ) : auto ? null : <p className="mt-3 text-sm text-muted-foreground">Os primeiros números chegam depois dos primeiros dias no ar.</p>}
             </section>
           ) : null}
 

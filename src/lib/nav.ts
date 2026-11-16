@@ -261,7 +261,7 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
 /**
- * Menu do lojista com o NextLevel Business (NB1, D302/D304): quatro grupos e nenhum endereço novo ou perdido.
+ * Menu do lojista com o NextLevel Business (NB1, D306/D306): quatro grupos e nenhum endereço novo ou perdido.
  * - "NextLevel Business" (o gerenciador do negócio): o dia a dia, igual para todo caminho;
  * - "Site" e "Loja virtual": as funções de cada caminho, conforme os módulos do negócio;
  * - "Ajustes": empresa, equipe, assinatura e registros.

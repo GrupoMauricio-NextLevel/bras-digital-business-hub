@@ -1,24 +1,38 @@
 [
  {
-  "numero": 304,
+  "numero": 306,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
   "data": "2026-11-14",
-  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D303)."
+  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D305)."
  },
  {
-  "numero": 303,
+  "numero": 305,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
  },
  {
-  "numero": 302,
+  "numero": 304,
   "frente": "E-commerce",
   "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
+ },
+ {
+  "numero": 303,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
+  "data": "2026-11-16",
+  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
+ },
+ {
+  "numero": 302,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
+  "data": "2026-11-16",
+  "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
  },
  {
   "numero": 299,
@@ -264,19 +278,5 @@
   "titulo": "Parceiros em duas frentes: Indicações pelo CPF (5 pontos a menos) e Parceiros com CNPJ; agência com benefícios exclusivos; comparação sempre a nosso favor",
   "data": "2026-11-06",
   "resumo": "Pedido do dono: quem recebe no CPF entra num Programa de Indicações, uma 4ª frente com 5 pontos a menos em cada nível;"
- },
- {
-  "numero": 262,
-  "frente": "E-commerce",
-  "titulo": "Parceiros: comparação contra Shopify (destaque), Nuvemshop, Tray e WBuy, com a virada e o CPF como arma",
-  "data": "2026-11-06",
-  "resumo": "Correção: em alguns cenários a página afirmava algo falso: com 5 lojas por mês em 12 meses, a Nuvemshop Associados soma mais;"
- },
- {
-  "numero": 261,
-  "frente": null,
-  "titulo": "Comparação com concorrentes: tom agressivo, sempre com fato (regra fixa do dono) e página de parceiros com mais tecnologia",
-  "data": "2026-11-06",
-  "resumo": "Regra do dono, que vale para sempre: nas comparações, o tom é agressivo, nunca neutro: expor o ponto fraco de cada concorrente e amassar o argumento deles;"
  }
 ]

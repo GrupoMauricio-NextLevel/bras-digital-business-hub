@@ -8,6 +8,7 @@ import { ETAPAS_ANUNCIO, mesaDeAnuncios } from "@/lib/domain/anuncios";
 import { formatDateTime } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Mesa de anúncios" };
 
 const brl = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 

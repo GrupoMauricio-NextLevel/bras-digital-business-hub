@@ -3,7 +3,7 @@ import * as React from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { assumirAnuncioAction, criarPropostaAnuncioAction, lancarResultadoAction, mudarEtapaAction, novaPendenciaAction } from "@/app/actions/anuncios";
+import { assumirAnuncioAction, campanhasDaContaAction, criarPropostaAnuncioAction, lancarResultadoAction, ligarSalaAMetaAction, mudarEtapaAction, novaPendenciaAction } from "@/app/actions/anuncios";
 import { MoneyInput } from "@/components/ui/money-input";
 import type { AnuncioStatus } from "@/db/schema";
 
@@ -11,7 +11,7 @@ const campo = "mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2"
 type Res = { ok: true } | { ok: false; error: string };
 
 /** Controles da equipe na mesa de anúncios (D299). */
-export function Controles({ id, status, etapas, temProposta, propostaEnviada, temResponsavel }: { id: string; status: AnuncioStatus; etapas: { status: AnuncioStatus; rotulo: string }[]; temProposta: boolean; propostaEnviada: boolean; temResponsavel: boolean }) {
+export function Controles({ id, status, etapas, temProposta, propostaEnviada, temResponsavel, metaConta, metaCampanhas }: { id: string; status: AnuncioStatus; etapas: { status: AnuncioStatus; rotulo: string }[]; temProposta: boolean; propostaEnviada: boolean; temResponsavel: boolean; metaConta: string | null; metaCampanhas: string[] }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   const rodar = (f: () => Promise<Res>, ok: string, depois?: () => void) => start(async () => { const r = await f(); if (r.ok) { toast.success(ok); depois?.(); router.refresh(); } else toast.error(r.error); });
@@ -20,6 +20,10 @@ export function Controles({ id, status, etapas, temProposta, propostaEnviada, te
   const hoje = new Date().toISOString().slice(0, 10);
   const [r, setR] = React.useState({ de: hoje, ate: hoje, gastoCents: 0, alcance: "", cliques: "", conversas: "", comentario: "" });
   const [p, setP] = React.useState({ rotulo: "", dica: "", quem: "LOJISTA" as "LOJISTA" | "EQUIPE" });
+  const [conta, setConta] = React.useState(metaConta?.replace(/^act_/, "") ?? "");
+  const [lista, setLista] = React.useState<{ id: string; nome: string; status: string }[] | null>(null);
+  const [marcadas, setMarcadas] = React.useState<string[]>(metaCampanhas);
+  const buscar = () => start(async () => { const r = await campanhasDaContaAction(conta); if (r.ok) { setLista(r.data.campanhas); if (!r.data.campanhas.length) toast.message("Nenhuma campanha nesta conta ainda."); } else toast.error(r.error); });
   const n = (v: string) => Math.max(0, Math.round(Number(v.replace(/\./g, "").replace(",", ".")) || 0));
   return (
     <div className="grid gap-4 text-sm">
@@ -50,6 +54,22 @@ export function Controles({ id, status, etapas, temProposta, propostaEnviada, te
             <Link href="/master/financeiro/propostas" className="ds-btn ds-btn--sm ds-btn--secondary mt-3">Abrir propostas</Link>
           </>
         )}
+      </section>
+
+      <section className="ds-card" aria-labelledby="meta-t">
+        <h2 id="meta-t" className="text-lg font-bold">Conta da Meta do lojista</h2>
+        <p className="mt-1 text-muted-foreground">{metaCampanhas.length ? `Ligada a ${metaCampanhas.length} campanha(s): os números chegam sozinhos na sala, de hora em hora.` : "Com o acesso de parceiro dado pelo lojista, ligue as campanhas desta sala: os números passam a vir sozinhos da Meta."}</p>
+        <label className="mt-3 block font-semibold" htmlFor="meta-conta">Número da conta de anúncios do lojista</label>
+        <div className="mt-1 flex gap-2"><input id="meta-conta" inputMode="numeric" className="w-full min-w-0 rounded-xl border border-border bg-surface px-3 py-2 font-mono" value={conta} onChange={(e) => setConta(e.target.value)} placeholder="123456789012345" /><button type="button" disabled={pending || conta.trim().length < 5} className="ds-btn ds-btn--sm ds-btn--secondary shrink-0" onClick={buscar}>Buscar campanhas</button></div>
+        {lista?.length ? (
+          <fieldset className="mt-3"><legend className="font-semibold">Campanhas desta sala</legend>
+            <ul className="mt-2 space-y-2">{lista.map((c) => { const on = marcadas.includes(c.id); return <li key={c.id}><label className="flex items-start gap-2"><input type="checkbox" className="mt-1 size-4" checked={on} onChange={() => setMarcadas(on ? marcadas.filter((x) => x !== c.id) : [...marcadas, c.id])} /><span className="min-w-0 break-words">{c.nome} <span className="text-xs text-muted-foreground">({c.status === "ACTIVE" ? "ativa" : c.status === "PAUSED" ? "pausada" : c.status.toLowerCase()})</span></span></label></li>; })}</ul>
+          </fieldset>
+        ) : null}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button type="button" disabled={pending || (!!lista && !marcadas.length)} className="ds-btn ds-btn--sm" onClick={() => rodar(() => ligarSalaAMetaAction(id, conta, marcadas), "Sala ligada à Meta; números atualizados")}>Salvar ligação</button>
+          {metaConta ? <button type="button" disabled={pending} className="ds-btn ds-btn--sm ds-btn--quiet" onClick={() => rodar(() => ligarSalaAMetaAction(id, "", []), "Ligação desfeita", () => { setConta(""); setMarcadas([]); setLista(null); })}>Desligar</button> : null}
+        </div>
       </section>
 
       <form className="ds-card" aria-labelledby="res-t" onSubmit={(e) => { e.preventDefault(); rodar(() => lancarResultadoAction(id, { de: r.de, ate: r.ate, gastoCents: r.gastoCents, alcance: n(r.alcance), cliques: n(r.cliques), conversas: n(r.conversas), comentario: r.comentario }), "Números lançados; o lojista recebe por e-mail", () => setR({ ...r, gastoCents: 0, alcance: "", cliques: "", conversas: "", comentario: "" })); }}>

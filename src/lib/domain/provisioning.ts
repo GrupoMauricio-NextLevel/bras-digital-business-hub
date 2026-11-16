@@ -33,7 +33,7 @@ export const createStoreSchema = z.object({
   ownerEmail: z.string().email("E-mail inválido"),
   /** Marca por onde a loja entrou; sem ela, herda a do fornecedor. */
   brand: z.enum(BRAND_CODES).optional(),
-  /** Caminho do negócio (NB1, D304): LOJA (padrão, como sempre foi) ou SITE. */
+  /** Caminho do negócio (NB1, D306): LOJA (padrão, como sempre foi) ou SITE. */
   formato: z.enum(["LOJA", "SITE"]).default("LOJA"),
 });
 

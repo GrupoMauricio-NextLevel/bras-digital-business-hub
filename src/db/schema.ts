@@ -85,7 +85,7 @@ export const stores = pgTable("stores", {
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
   /**
-   * Caminho do negócio (NB1, D302/D304): LOJA = loja virtual (todas as contas antigas); SITE = site da empresa, sem
+   * Caminho do negócio (NB1, D306/D306): LOJA = loja virtual (todas as contas antigas); SITE = site da empresa, sem
    * catálogo, carrinho e checkout na vitrine até ligar a loja. Fonte única de leitura: `src/lib/business/modulos.ts`.
    */
   formato: text("formato", { enum: ["LOJA", "SITE"] }).notNull().default("LOJA"),
@@ -1289,8 +1289,22 @@ export const origensContato = pgTable("origens_contato", {
   /** Navegador informado (para a API de conversões da Meta, que exige em evento do site) e o aviso de cookies na hora (TR5, D298). */
   ua: text("ua"),
   consentimento: text("consentimento", { enum: ["SIM", "NAO", "SEM_ESCOLHA"] }),
+  /** Resposta da pessoa a "Como você conheceu a NextLevel?" (D303; chaves em `src/lib/trafego/conheceu.ts`). */
+  conheceuPor: text("conheceu_por"),
   capturadaEm: ts("capturada_em").notNull().defaultNow(),
 });
+
+/**
+ * Visitas de robôs de busca e de IA às páginas públicas (plano de busca v3, seção 16.3): só a contagem por dia, marca,
+ * robô e caminho. O proxy soma em memória e grava em lote (nunca uma escrita por visita); nada de IP nem navegador.
+ */
+export const robosVisitasDiarias = pgTable("robos_visitas_diarias", {
+  dia: text("dia").notNull(),
+  brand: text("brand").notNull(),
+  robo: text("robo").notNull(),
+  caminho: text("caminho").notNull(),
+  visitas: integer("visitas").notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.dia, t.brand, t.robo, t.caminho] })]);
 
 /**
  * Fila de retorno às plataformas (TR5, D298): cada linha é um resultado (contato, conta criada, pagante, venda fechada)
@@ -1433,6 +1447,9 @@ export const anunciosLoja = pgTable("anuncios_loja", {
   utmCampaign: text("utm_campaign").notNull(),
   responsavelId: text("responsavel_id"),
   responsavelNome: text("responsavel_nome"),
+  /** Conta de anúncios do lojista (act_…) e campanhas da Meta desta sala: os números passam a vir sozinhos (TR6, D302). */
+  metaContaId: text("meta_conta_id"),
+  metaCampanhas: jsonb("meta_campanhas").$type<string[]>().notNull().default([]),
   enviadaEm: ts("enviada_em"),
   noArEm: ts("no_ar_em"),
   createdAt: createdAt(),
@@ -1464,6 +1481,26 @@ export const anunciosResultados = pgTable("anuncios_resultados", {
   criadoPor: text("criado_por"),
   criadoEm: createdAt(),
 }, (t) => [index("anuncios_resultados_anuncio_idx").on(t.anuncioId)]);
+
+/**
+ * Números por dia de cada campanha, lidos da API de Marketing da Meta (TR6, D302): da conta de anúncios da NextLevel e
+ * das contas dos lojistas que deram acesso de parceiro. Valores em centavos; reescritos a cada leitura (a Meta ajusta os
+ * últimos dias).
+ */
+export const adsMetricasDiarias = pgTable("ads_metricas_diarias", {
+  plataforma: text("plataforma", { enum: ["META", "GOOGLE"] }).notNull(),
+  contaId: text("conta_id").notNull(),
+  campanhaId: text("campanha_id").notNull(),
+  dia: text("dia").notNull(),
+  campanhaNome: text("campanha_nome").notNull(),
+  gastoCents: integer("gasto_cents").notNull().default(0),
+  impressoes: integer("impressoes").notNull().default(0),
+  alcance: integer("alcance").notNull().default(0),
+  cliques: integer("cliques").notNull().default(0),
+  conversas: integer("conversas").notNull().default(0),
+  leads: integer("leads").notNull().default(0),
+  atualizadoEm: updatedAt(),
+}, (t) => [primaryKey({ columns: [t.plataforma, t.contaId, t.campanhaId, t.dia] }), index("ads_metricas_conta_dia_idx").on(t.contaId, t.dia)]);
 
 export const brandLeads = pgTable("brand_leads", {
   id: id(),

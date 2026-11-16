@@ -3672,7 +3672,30 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Rótulos:** "Financeiro" para contrato, parcelas e faturas; o nome da pessoa com "(e-mail)" para os e-mails.
 - **Filtros:** Tudo, Conversas e e-mails, Financeiro e Loja, com a contagem de cada um (os pedidos da loja não escondem mais o resto).
 
-## D302 — [E-commerce] A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio "NextLevel Business" dentro do painel (2026-11-13)
+## D302 — [E-commerce] Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista (2026-11-16)
+- **Leitura pela API de Marketing da Meta** (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela `ads_metricas_diarias` (migração 0099). A rotina de 5 a 10 minutos lê **no máximo uma vez por hora** os últimos 7 dias, porque a Meta ajusta os últimos dias; uma leitura que falhou tenta de novo na volta seguinte. "Atualizar agora" força a leitura.
+- **Duas origens:**
+  - **a conta de anúncios da NextLevel**: o número é informado em Retorno às plataformas;
+  - **as contas dos lojistas**: na Mesa de anúncios, a equipe informa o número da conta de anúncios do lojista (que deu acesso de parceiro), aperta "Buscar campanhas", marca as campanhas da sala e salva. Os números da sala passam a vir sozinhos: investido, vezes que o anúncio apareceu, cliques no link e conversas, com a hora da última leitura. Na primeira leitura a sala vem desde que foi ao ar, até 90 dias. Conta sem acesso dá a explicação "o lojista precisa dar acesso de parceiro". Os números lançados à mão continuam como notas da equipe.
+- **Master → Tráfego e campanhas → Campanhas** (7, 30 ou 90 dias): cada campanha da NextLevel com investido e cliques (da Meta) ao lado de visitas, contatos, lojas criadas, pagantes e receita (do nosso sistema), mais **custo por contato, custo por pagante e retorno** (receita ÷ investido). A campanha é ligada pelo nome: o link do anúncio leva `utm_campaign={{campaign.name}}`, e a comparação ignora acento, maiúsculas e espaços. Quando a Meta conta mais leads que nós, aparece "Meta diz N", e vale o nosso número. Receita = primeira mensalidade dos pagantes e negócios fechados no Comercial (D294/D298).
+- **Erros** (token inválido, conta sem acesso) ficam guardados em português, sem o token, e aparecem ao lado da hora da última leitura.
+- **Quem vê:** o painel Campanhas, o dono e o Comercial; ligar a sala à conta do lojista, o dono, o Comercial e o Conteúdo.
+- **Acessibilidade:** tabelas largas com rolagem lateral podem receber o foco do teclado; páginas novas do tráfego e dos anúncios com título próprio na aba.
+- **Depende do dono:** o token da Meta precisa da permissão de leitura de anúncios (`ads_read`), e a conta de anúncios da NextLevel precisa estar informada. Para cada lojista, o acesso de parceiro com permissão de anúncios.
+- **Próximas:** TR5b (públicos de clientes), pagamento da proposta de anúncios no painel, TR7 (Reels, depois da aprovação do aplicativo pela Meta).
+
+## D303 — [E-commerce] Busca e IA: "Como nos conheceu?", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação (2026-11-16)
+- **Pedido do dono:** fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (`docs/prompts/busca-ia-academy-funil-organico.md`), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e D302); nada foi duplicado.
+- **1. "Como você conheceu a NextLevel?":** pergunta opcional no cadastro da loja e no "Quero minha loja", com as inteligências artificiais separadas (ChatGPT, Gemini, Perplexity, Copilot, Claude, Meta AI, outra), além de Google, redes sociais, parceiro, vendedor e amigo. A resposta fica na origem do contato (`origens_contato.conheceu_por`), aparece na ficha do cliente no Comercial ("Disse que conheceu por") e num quadro em Tráfego e campanhas → Origens. É a única forma de medir quem chega por uma IA sem deixar rastro. Só aceita as opções da lista; a resposta não apaga uma anterior. O que antes se chamava "Conheceu por" na ficha (o primeiro canal medido) passou a "Primeiro canal".
+- **2. Páginas que trouxeram clientes** (Origens): para cada contato ou loja criada no período, a página por onde a pessoa entrou no site da primeira vez (primeiro toque, D290; sem ele, a entrada da visita), com contatos, lojas criadas, pagantes de hoje, a soma das mensalidades e o valor fechado à mão no Comercial. Ordenado pelo dinheiro trazido. Quem recusou a medição aparece como "página não registrada".
+- **3. Robôs de busca e de IA:** o proxy reconhece 19 robôs (Google, Bing e Copilot, ChatGPT, Claude, Perplexity, Gemini, Meta AI, Apple e outros), soma as visitas em memória e grava em lote a cada 5 minutos ou 300 linhas (nunca uma escrita por visita), só por dia, marca, robô e página, sem IP. Painéis, API e lojas dos lojistas ficam fora. Se o servidor reiniciar, perde no máximo os últimos minutos. Quadro novo em Origens com as páginas que cada robô mais leu.
+- **4. Arquivos para as IAs lerem:** `/llms.txt` (resumo, fatos do dia e mapa das páginas), `/llms-full.txt` (tudo junto) e as versões em texto `/planos.md` e `/faq.md`, só na Commerce, montados da tabela de páginas e dos fatos do sistema (`src/lib/seo/fatos-publicos.ts`, a mesma fonte das perguntas frequentes). Nenhuma grande IA garante que lê `llms.txt`; o custo é baixo.
+- **5. Trilha de navegação:** "Você está em: Início › Parceiros › Indique pelo CPF" no rodapé das páginas públicas da Commerce (menos a home) e a mesma trilha em `BreadcrumbList` para o Google. Vale para as páginas da tabela e para cada tema.
+- **Banco:** migração 0100 (coluna `conheceu_por` em `origens_contato`; tabela `robos_visitas_diarias`).
+- **Teste:** `tests/busca-s2-conheceu-robos.test.ts` (lista de respostas, resposta guardada sem sobrescrever, soma por página, permissão da equipe, reconhecimento dos robôs, gravação em lote somando, formato do `llms.txt`, versões em texto e trilha).
+- **Fica para depois:** versão em texto do comparativo, sitemaps separados por núcleo e dados estruturados de artigo e de curso (entram com a Academy, fases S3 e S4).
+
+## D304 — [E-commerce] A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio "NextLevel Business" dentro do painel (2026-11-13)
 - **Pedido do dono:** a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): `docs/prompts/nextlevel-business-coracao-do-negocio.md`.
 - **Nome:** a plataforma **continua "NextLevel Commerce"** (D288 vale como está: domínio, e-mails, termos e contratos não mudam).
 - **Entrada:** na home e no cadastro, a pessoa escolhe o caminho **Site** (site institucional, páginas de campanha, contatos e orçamentos) ou **Loja virtual** (o que existe hoje). Os dois criam o mesmo tipo de conta; ligar o outro caminho depois não troca conta, domínio nem dados.
@@ -3684,7 +3707,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Fica para a NB0:** os demais padrões da Parte 10 do prompt (piloto, caixa como adicional, captação por plano, portal adiado, pedido de aprovação do aplicativo da Meta em paralelo), salvo nova orientação do dono.
 - **Nada no código ainda:** decisão e plano. A primeira entrega de código é a NB1.
 
-## D303 — [E-commerce] NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada (2026-11-13)
+## D305 — [E-commerce] NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada (2026-11-13)
 - **Pedido do dono:** "pode seguir com a NB0". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa.
 - **Linha de base** (`docs/relatorios/NB0-LINHA-DE-BASE-2026-11-13.md`):
   - tipos e estilo passaram;
@@ -3708,10 +3731,10 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - com o cadastro fechado (`BRAND_SIGNUP_NEXTLEVEL_COMMERCE` desligada), a entrada é `/quero-minha-loja`, que também passa a perguntar Site ou Loja virtual (Parte 5.15).
 - **Nada no código de produto.** Próxima fase: NB1.
 
-## D304 — [E-commerce] NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site (2026-11-14)
-- **Pedido do dono:** "prossiga" (NB1 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md`, depois da NB0, D303).
+## D306 — [E-commerce] NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site (2026-11-14)
+- **Pedido do dono:** "prossiga" (NB1 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md`, depois da NB0, D305).
 - **Tudo atrás da chave `BUSINESS_V1`** (no Render, `true` liga; ausente ou outro valor, o sistema fica exatamente como antes). **Recomendação:** ligar em produção só depois da NB3, quando o site já tiver páginas e o formulário de orçamento; até lá, conferir pela demonstração.
-- **Banco (migração 0099, só acrescenta):**
+- **Banco (migração 0101, só acrescenta):**
   - `stores.formato` (`LOJA` para todas as contas antigas, ou `SITE`);
   - `stores.fuso` (padrão `America/Sao_Paulo`, base do portal da academia).
 - **Regra única de módulos** (`src/lib/business/modulos.ts`):
@@ -3737,7 +3760,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - quem é só Site vê um cartão "Ligar loja virtual" no lugar dos itens de loja;
   - a visão geral mostra "NextLevel Business · Visão geral do negócio" e "Painel do negócio";
   - num `SITE`: selo "Site publicado", botões "Ver site" e "Editar o site", e a fila sem as pendências de montar loja.
-- **Junção com as outras conversas (16/11/2026):** esta decisão nasceu como D297 e foi renumerada (D302 nome, D303 NB0, D304 NB1; migração 0097 → 0099) porque D295 a D301 já tinham sido usadas em paralelo. O item "Anúncios na Meta" (D299) entrou no grupo NextLevel Business do menu. Encaixe completo no plano, Parte 0.3.
+- **Junção com as outras conversas (16/11/2026):** esta conversa trabalhou em paralelo a outras que numeraram decisões e migrações ao mesmo tempo. Na primeira junção estas decisões saíram de D295 a D297 para D302 a D304; na segunda, como D302 (TR6) e D303 (Busca e IA) também tinham sido usadas, ficaram **D304 (nome e organização), D305 (NB0) e D306 (NB1)**, e a migração `formato`/`fuso` ficou **0101**. O item "Anúncios na Meta" (D299) entrou no grupo NextLevel Business do menu. Encaixe completo no plano, Parte 0.3.
 - **Vitrine do caminho Site** (sem o módulo Loja): catálogo, produto, carrinho e checkout mostram "Página não encontrada" (como toda página inexistente da vitrine, que carrega em etapas); `feed.xml` responde 404; o `sitemap.xml` lista só o início.
 - **Ficou para as próximas fases:**
   - a página pública `/empresas` (sai na NB3, quando houver formulário e contatos para mostrar de verdade);

@@ -6,7 +6,7 @@ import { ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import type { Actor } from "@/lib/domain/access";
 
 /**
- * Módulos do negócio (NextLevel Business, NB1, D302/D304): fonte única para menu, telas e ações.
+ * Módulos do negócio (NextLevel Business, NB1, D306/D306): fonte única para menu, telas e ações.
  * - A plataforma continua NextLevel Commerce; "NextLevel Business" é o gerenciador do negócio dentro do painel.
  * - Tudo atrás da chave `BUSINESS_V1` (desligada = painel e vitrine exatamente como antes) e só na marca Commerce.
  * - O formato (LOJA ou SITE) decide a vitrine; módulos extras vêm de direitos (`entitlements`, chave `modulo:<nome>`),

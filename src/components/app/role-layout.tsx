@@ -122,7 +122,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   }
   if (commerceStore || (scope === "commerce-admin" && !escritorioEc)) {
     const staff = session.user.storeRole === "STAFF";
-    // NextLevel Business (NB1, D304): com a chave BUSINESS_V1, o menu vira os quatro grupos do gerenciador do negócio.
+    // NextLevel Business (NB1, D306): com a chave BUSINESS_V1, o menu vira os quatro grupos do gerenciador do negócio.
     const negocio = commerceStore ? await modulosDoNegocio(db, store!.id) : null;
     const menuLoja = negocio?.business ? navDoNegocio(negocio, NOME_GERENCIADOR.nome) : COMMERCE_STORE_NAV;
     const commerceItems = commerceStore

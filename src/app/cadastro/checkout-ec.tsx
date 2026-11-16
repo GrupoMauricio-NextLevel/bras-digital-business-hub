@@ -2,6 +2,7 @@
 import * as React from "react";
 import { toast } from "sonner";
 import { BadgeCheck, Check, Headset, Lock, ShieldCheck, Sparkles, Wallet } from "lucide-react";
+import { OpcoesConheceu } from "@/components/portal/trafego/conheceu-select";
 import { signupAction } from "@/app/actions/signup";
 import { ContagemRegressiva } from "@/components/black/contagem-regressiva";
 import { formatBRL } from "@/lib/money";
@@ -30,6 +31,7 @@ export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle,
   const [plan, setPlan] = React.useState<PlanoCheckout["key"]>(initialPlan ?? "COMMERCE_PRO");
   const [cycle, setCycle] = React.useState<"MONTHLY" | "ANNUAL">(black ? (initialCycle === "MONTHLY" && initialPlan ? "MONTHLY" : "ANNUAL") : initialCycle);
   const [f, setF] = React.useState({ storeName: "", ownerName: "", email: "", password: "", taxId: "" });
+  const [conheceuPor, setConheceuPor] = React.useState("");
   const [pending, start] = React.useTransition();
   const [error, setError] = React.useState<string | null>(null);
   const p = plans.find((x) => x.key === plan) ?? plans[0]!;
@@ -41,7 +43,7 @@ export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle,
   const set = (patch: Partial<typeof f>) => setF((x) => ({ ...x, ...patch }));
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setError(null);
-    start(async () => { const r = await signupAction({ ...f, ref: initialRef, plan, cycle, formato }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
+    start(async () => { const r = await signupAction({ ...f, ref: initialRef, plan, cycle, formato, conheceuPor: conheceuPor || undefined }); if (r && !r.ok) { setError(r.error); toast.error(r.error); } });
   };
 
   const resumo = (
@@ -103,6 +105,10 @@ export function CheckoutEc({ plans, trialDays, black, initialPlan, initialCycle,
             <Campo id="email" rotulo="E-mail" type="email" value={f.email} onChange={(v) => set({ email: v })} autoComplete="email" />
             <Campo id="tax" rotulo="CPF ou CNPJ" value={f.taxId} onChange={(v) => set({ taxId: v })} inputMode="numeric" />
             <Campo id="pass" rotulo="Senha" dica="Mínimo de 8 caracteres" type="password" value={f.password} onChange={(v) => set({ password: v })} autoComplete="new-password" minLength={8} largo />
+            <div className="ck-campo ck-campo--largo">
+              <label htmlFor="conheceu">Como você conheceu a NextLevel? (opcional)</label>
+              <select id="conheceu" value={conheceuPor} onChange={(e) => setConheceuPor(e.target.value)}><OpcoesConheceu /></select>
+            </div>
           </div>
         </section>
 

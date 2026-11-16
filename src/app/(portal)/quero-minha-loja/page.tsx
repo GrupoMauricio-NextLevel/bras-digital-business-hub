@@ -29,7 +29,7 @@ export default async function QueroMinhaLoja({ searchParams }: { searchParams: P
     ["Sua loja no ar", "Você monta sozinho com o editor ou a equipe monta com você."],
   ];
   const ec = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
-  // NextLevel Business (NB1, D304): com a chave ligada, a entrada pergunta o caminho (site para a empresa ou loja virtual).
+  // NextLevel Business (NB1, D306): com a chave ligada, a entrada pergunta o caminho (site para a empresa ou loja virtual).
   const doisCaminhos = ec && businessLigado();
   const site = doisCaminhos && para === "site";
   if (doisCaminhos) PASSOS.splice(2, 1, [site ? "Seu site no ar" : "Seu site ou sua loja no ar", `Você monta sozinho com o editor ou a equipe monta com você. Em qualquer caminho, você cuida do negócio no ${NOME_GERENCIADOR.nome}.`]);
