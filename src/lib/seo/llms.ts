@@ -5,7 +5,7 @@ import { FRASE_ENTIDADE, EMPRESA } from "./entidade";
 import { PAGINAS_COMMERCE, tituloCompleto } from "./paginas";
 
 /**
- * Arquivos em texto para as IAs lerem rápido (D302, plano de busca v3, seção 8.4): `/llms.txt` (resumo e mapa do site),
+ * Arquivos em texto para as IAs lerem rápido (D303, plano de busca v3, seção 8.4): `/llms.txt` (resumo e mapa do site),
  * `/llms-full.txt` (resumo, planos e perguntas completas) e as versões `.md` das páginas de planos e de perguntas.
  * Tudo montado das mesmas fontes do site (tabela de páginas e fatos do sistema), nunca escrito à mão.
  * Honestidade: nenhuma grande IA garante que lê `llms.txt`; o custo é baixo e o texto limpo ajuda quem lê.

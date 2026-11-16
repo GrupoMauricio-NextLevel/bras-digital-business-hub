@@ -17,7 +17,7 @@ export const leadSchema = z.object({
   segment: z.string().trim().max(60).optional(),
   message: z.string().trim().max(600).optional(),
   affiliateRef: z.string().trim().max(60).optional(),
-  /** "Como você conheceu a NextLevel?" (D302): opcional; guardado na origem do contato, não no pedido. */
+  /** "Como você conheceu a NextLevel?" (D303): opcional; guardado na origem do contato, não no pedido. */
   conheceuPor: z.string().max(20).optional(),
 });
 

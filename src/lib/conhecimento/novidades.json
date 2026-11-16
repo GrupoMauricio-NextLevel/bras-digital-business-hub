@@ -1,10 +1,17 @@
 [
  {
-  "numero": 302,
+  "numero": 303,
   "frente": "E-commerce",
   "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
   "data": "2026-11-16",
-  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298);…"
+  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
+ },
+ {
+  "numero": 302,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
+  "data": "2026-11-16",
+  "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
  },
  {
   "numero": 299,
@@ -271,12 +278,5 @@
   "titulo": "Parceiros: regra única 20% / 24% / 28%, sem Black e sem bônus",
   "data": "2026-11-06",
   "resumo": "Pedido do dono: simplificar o programa: uma regra só para todo mundo, sem Black nem benefício diferente, com base nos concorrentes e um pouco à frente deles. Não havia parceiro nem venda feitos, então a regra vale para todos."
- },
- {
-  "numero": 259,
-  "frente": null,
-  "titulo": "AT2 do atacado: box novo, card, carrinho e checkout",
-  "data": "2026-11-06",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT2."
  }
 ]

@@ -1,7 +1,7 @@
 import type { Database } from "@/db/client";
 
 /**
- * Robôs de busca e de IA lendo as páginas públicas (D302, plano de busca v3, seção 16.3). O proxy soma as visitas em
+ * Robôs de busca e de IA lendo as páginas públicas (D303, plano de busca v3, seção 16.3). O proxy soma as visitas em
  * memória e grava em lote (a cada 5 minutos ou 300 linhas), nunca uma escrita por visita. Só contagem por dia, marca,
  * robô e caminho: nada de IP nem navegador. Se o servidor reiniciar, perde no máximo os últimos minutos (aceitável:
  * é um termômetro, não cobrança).

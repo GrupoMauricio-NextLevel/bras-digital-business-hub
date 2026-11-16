@@ -3,7 +3,7 @@ import { getBrand } from "@/lib/brand-server";
 import { fatosPublicos, type FatosPublicos } from "./fatos-publicos";
 
 /**
- * Resposta em texto puro para as rotas `/llms.txt`, `/llms-full.txt`, `/planos.md` e `/faq.md` (D302). Só na NextLevel
+ * Resposta em texto puro para as rotas `/llms.txt`, `/llms-full.txt`, `/planos.md` e `/faq.md` (D303). Só na NextLevel
  * Commerce; nas outras marcas, "não encontrado". Cache curto no navegador e na rede (os preços vêm do sistema).
  */
 export async function respostaTexto(montar: (baseUrl: string, f: FatosPublicos) => string, tipo: "text/plain" | "text/markdown"): Promise<Response> {

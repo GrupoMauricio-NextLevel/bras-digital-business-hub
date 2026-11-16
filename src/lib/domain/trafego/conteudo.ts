@@ -6,7 +6,7 @@ import { type Actor, requireMasterFn } from "../access";
 import { situacoesComerciais } from "../situacao-comercial";
 
 /**
- * O que cada página trouxe de cliente (D302, plano de busca v3, seção 13.6). Para cada contato (formulário, diagnóstico,
+ * O que cada página trouxe de cliente (D303, plano de busca v3, seção 13.6). Para cada contato (formulário, diagnóstico,
  * janela de saída, cadastro da loja) vale a página por onde a pessoa ENTROU no site da primeira vez (primeiro toque, D290;
  * sem ele, a página de entrada da visita). Daí: quantos contatos, quantas lojas criadas, quantas pagantes hoje, quanto
  * isso soma de mensalidade e quanto a equipe fechou à mão no Comercial. Também o resumo do "Como nos conheceu?".

@@ -1,5 +1,5 @@
 /**
- * "Como você conheceu a NextLevel?" (D302, plano de busca v3, seção 13.5). É a única forma de medir quem chega por uma IA
+ * "Como você conheceu a NextLevel?" (D303, plano de busca v3, seção 13.5). É a única forma de medir quem chega por uma IA
  * sem deixar rastro (copiou o link, o aplicativo não informa de onde veio). Resposta opcional no cadastro e no "Quero
  * minha loja"; fica em `origens_contato.conheceu_por`. Arquivo puro (tela e servidor).
  */

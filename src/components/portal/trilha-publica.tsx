@@ -6,7 +6,7 @@ import { trilhaCommerce, trilhaJsonLd } from "@/lib/seo/paginas";
 import { JsonLd } from "./json-ld";
 
 /**
- * Trilha de navegação das páginas públicas da Commerce (D302): visível no rodapé ("Você está em: Início › Parceiros ›
+ * Trilha de navegação das páginas públicas da Commerce (D303): visível no rodapé ("Você está em: Início › Parceiros ›
  * Indique pelo CPF") e a mesma trilha em `BreadcrumbList` para o Google. A home e páginas fora da tabela não mostram nada.
  */
 export async function TrilhaPublica({ brand }: { brand: Pick<Brand, "code" | "baseUrl" | "soon"> }) {

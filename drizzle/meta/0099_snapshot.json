@@ -1,5 +1,5 @@
 {
-  "id": "6530b3f6-9ae0-48f5-bf81-d3fffc44b4e4",
+  "id": "a9ed2061-6885-4670-b59d-24e8f54f8ac8",
   "prevId": "fd8a730b-2910-4d81-b340-b355a6a1dd9c",
   "version": "7",
   "dialect": "postgresql",
@@ -668,6 +668,130 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.ads_metricas_diarias": {
+      "name": "ads_metricas_diarias",
+      "schema": "",
+      "columns": {
+        "plataforma": {
+          "name": "plataforma",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conta_id": {
+          "name": "conta_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "campanha_id": {
+          "name": "campanha_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dia": {
+          "name": "dia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "campanha_nome": {
+          "name": "campanha_nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gasto_cents": {
+          "name": "gasto_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "impressoes": {
+          "name": "impressoes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "alcance": {
+          "name": "alcance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cliques": {
+          "name": "cliques",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "conversas": {
+          "name": "conversas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "leads": {
+          "name": "leads",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "ads_metricas_conta_dia_idx": {
+          "name": "ads_metricas_conta_dia_idx",
+          "columns": [
+            {
+              "expression": "conta_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dia",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "ads_metricas_diarias_plataforma_conta_id_campanha_id_dia_pk": {
+          "name": "ads_metricas_diarias_plataforma_conta_id_campanha_id_dia_pk",
+          "columns": [
+            "plataforma",
+            "conta_id",
+            "campanha_id",
+            "dia"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.anuncios_eventos": {
       "name": "anuncios_eventos",
       "schema": "",
@@ -820,6 +944,19 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "meta_conta_id": {
+          "name": "meta_conta_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "meta_campanhas": {
+          "name": "meta_campanhas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
         },
         "enviada_em": {
           "name": "enviada_em",
@@ -12052,12 +12189,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "conheceu_por": {
-          "name": "conheceu_por",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "capturada_em": {
           "name": "capturada_em",
           "type": "timestamp with time zone",
@@ -15071,60 +15202,6 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.robos_visitas_diarias": {
-      "name": "robos_visitas_diarias",
-      "schema": "",
-      "columns": {
-        "dia": {
-          "name": "dia",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "brand": {
-          "name": "brand",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "robo": {
-          "name": "robo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "caminho": {
-          "name": "caminho",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "visitas": {
-          "name": "visitas",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "robos_visitas_diarias_dia_brand_robo_caminho_pk": {
-          "name": "robos_visitas_diarias_dia_brand_robo_caminho_pk",
-          "columns": [
-            "dia",
-            "brand",
-            "robo",
-            "caminho"
-          ]
-        }
-      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},

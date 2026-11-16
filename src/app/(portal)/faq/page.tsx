@@ -12,7 +12,7 @@ import { JsonLd } from "@/components/portal/json-ld";
 
 export const dynamic = "force-dynamic";
 
-/** Perguntas da Commerce com os fatos do sistema (D293): a mesma fonte do llms.txt (D302). */
+/** Perguntas da Commerce com os fatos do sistema (D293): a mesma fonte do llms.txt (D303). */
 const perguntasCommerce = async () => faqCommerce(await fatosPublicos(await getDb()));
 
 export const generateMetadata = (): Promise<Metadata> => metadadosDaPagina("/faq", { title: "Perguntas frequentes" });

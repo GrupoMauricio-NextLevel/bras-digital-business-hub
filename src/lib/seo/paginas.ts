@@ -109,7 +109,7 @@ export type ElosTrilha = { nome: string; caminho: string }[];
 const nomeDa = (p: PaginaPublica) => p.nome ?? (typeof p.titulo === "string" ? p.titulo : p.titulo.absoluto);
 
 /**
- * Trilha de navegação de uma página pública (D302): Início, as páginas-mãe que existem na tabela e a própria página.
+ * Trilha de navegação de uma página pública (D303): Início, as páginas-mãe que existem na tabela e a própria página.
  * `nomeFinal` serve às páginas fora da tabela (ex.: /temas/trama → "Tema Trama"). A home e páginas desconhecidas não têm trilha.
  */
 export function trilhaCommerce(caminho: string, nomeFinal?: string): ElosTrilha {

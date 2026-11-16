@@ -36,18 +36,18 @@ export const ROTULO_EVENTO: Record<Evento, string> = { LEAD: "Deixou contato", C
 // ---------------------------------------------------------------------------------------------------------------------
 const KEY = "trafego.retorno";
 type Guardado = {
-  metaTokenEnc?: string | null; metaTesteCodigo?: string | null;
+  metaTokenEnc?: string | null; metaTesteCodigo?: string | null; metaContaAnuncios?: string | null;
   googleClienteId?: string | null; googleGerenteId?: string | null; googleDevTokenEnc?: string | null; googleOauthClientId?: string | null;
   googleOauthSecretEnc?: string | null; googleRefreshTokenEnc?: string | null; googleAcaoLead?: string | null; googleAcaoConta?: string | null; googleAcaoPagante?: string | null;
 };
-async function lerGuardado(db: Database): Promise<Guardado> {
+export async function lerGuardado(db: Database): Promise<Guardado> {
   const row = await db.query.platformSettings.findFirst({ where: eq(platformSettings.key, KEY) });
   return (row?.value && typeof row.value === "object" ? row.value : {}) as Guardado;
 }
 
 /** O que a tela pode ver: só se cada segredo existe, nunca o valor. */
 export type ConfigRetornoTela = {
-  meta: { pixel: string | null; temToken: boolean; testeCodigo: string | null; pronto: boolean };
+  meta: { pixel: string | null; temToken: boolean; testeCodigo: string | null; pronto: boolean; contaAnuncios: string | null };
   google: { clienteId: string | null; gerenteId: string | null; temDevToken: boolean; oauthClientId: string | null; temOauthSecret: boolean; temRefresh: boolean; acaoLead: string | null; acaoConta: string | null; acaoPagante: string | null; pronto: boolean };
 };
 export async function configRetorno(db: Database): Promise<ConfigRetornoTela> {
@@ -55,7 +55,7 @@ export async function configRetorno(db: Database): Promise<ConfigRetornoTela> {
   const pixel = (await getTagsAnuncio(db)).metaPixelId;
   const googlePronto = !!(g.googleClienteId && g.googleDevTokenEnc && g.googleOauthClientId && g.googleOauthSecretEnc && g.googleRefreshTokenEnc && (g.googleAcaoLead || g.googleAcaoConta || g.googleAcaoPagante));
   return {
-    meta: { pixel, temToken: !!g.metaTokenEnc, testeCodigo: g.metaTesteCodigo ?? null, pronto: !!(pixel && g.metaTokenEnc) },
+    meta: { pixel, temToken: !!g.metaTokenEnc, testeCodigo: g.metaTesteCodigo ?? null, pronto: !!(pixel && g.metaTokenEnc), contaAnuncios: g.metaContaAnuncios ?? null },
     google: { clienteId: g.googleClienteId ?? null, gerenteId: g.googleGerenteId ?? null, temDevToken: !!g.googleDevTokenEnc, oauthClientId: g.googleOauthClientId ?? null, temOauthSecret: !!g.googleOauthSecretEnc, temRefresh: !!g.googleRefreshTokenEnc, acaoLead: g.googleAcaoLead ?? null, acaoConta: g.googleAcaoConta ?? null, acaoPagante: g.googleAcaoPagante ?? null, pronto: googlePronto },
   };
 }
@@ -65,6 +65,7 @@ const idAcao = z.string().trim().refine((v) => v === "" || /^\d{4,20}$/.test(v),
 /** Campo de segredo: vazio = manter o que já existe; "-" = apagar; outro = trocar (criptografado). */
 const segredo = z.string().max(4000).optional();
 export const retornoSchema = z.object({
+  metaContaAnuncios: z.string().trim().max(40).optional().transform((v) => (v === undefined ? undefined : v.replace(/\s/g, "").replace(/^(act_)?/, "") ? `act_${v.replace(/\s/g, "").replace(/^act_/, "")}` : "")).refine((v) => v === undefined || v === "" || /^act_\d{5,20}$/.test(v), "O número da conta de anúncios tem só algarismos (aparece no Gerenciador de Anúncios, ao lado do nome da conta)."),
   metaToken: segredo, metaTesteCodigo: z.string().trim().max(30).optional().refine((v) => !v || /^TEST\w{2,26}$/.test(v), "O código de teste da Meta começa com TEST (Gerenciador de Eventos → Testar eventos)."),
   googleClienteId: idConta.optional(), googleGerenteId: idConta.optional(), googleDevToken: segredo, googleOauthClientId: z.string().trim().max(200).optional(),
   googleOauthSecret: segredo, googleRefresh: segredo, googleAcaoLead: idAcao.optional(), googleAcaoConta: idAcao.optional(), googleAcaoPagante: idAcao.optional(),
@@ -77,7 +78,7 @@ export async function salvarConfigRetorno(db: Database, actor: Actor, raw: z.inp
   const sec = (novo: string | undefined, velho: string | null | undefined) => (novo === undefined || novo.trim() === "" ? velho ?? null : novo.trim() === "-" ? null : encryptSecret(novo.trim()));
   const txt = (novo: string | undefined, velho: string | null | undefined) => (novo === undefined ? velho ?? null : novo || null);
   const v: Guardado = {
-    metaTokenEnc: sec(i.metaToken, atual.metaTokenEnc), metaTesteCodigo: txt(i.metaTesteCodigo, atual.metaTesteCodigo),
+    metaTokenEnc: sec(i.metaToken, atual.metaTokenEnc), metaTesteCodigo: txt(i.metaTesteCodigo, atual.metaTesteCodigo), metaContaAnuncios: txt(i.metaContaAnuncios, atual.metaContaAnuncios),
     googleClienteId: txt(i.googleClienteId, atual.googleClienteId), googleGerenteId: txt(i.googleGerenteId, atual.googleGerenteId), googleDevTokenEnc: sec(i.googleDevToken, atual.googleDevTokenEnc),
     googleOauthClientId: txt(i.googleOauthClientId, atual.googleOauthClientId), googleOauthSecretEnc: sec(i.googleOauthSecret, atual.googleOauthSecretEnc), googleRefreshTokenEnc: sec(i.googleRefresh, atual.googleRefreshTokenEnc),
     googleAcaoLead: txt(i.googleAcaoLead, atual.googleAcaoLead), googleAcaoConta: txt(i.googleAcaoConta, atual.googleAcaoConta), googleAcaoPagante: txt(i.googleAcaoPagante, atual.googleAcaoPagante),

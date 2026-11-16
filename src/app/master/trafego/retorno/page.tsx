@@ -8,6 +8,7 @@ import { AbasTrafego } from "../abas";
 import { FormRetorno, Reenviar } from "./form";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Retorno às plataformas · Tráfego" };
 
 const STATUS: Record<string, { rotulo: string; tom: "success" | "warning" | "danger" | "neutral" | "info" }> = {
   PENDENTE: { rotulo: "Na fila", tom: "info" }, ENVIADO: { rotulo: "Entregue", tom: "success" }, FALHOU: { rotulo: "Falhou", tom: "danger" },

@@ -9,6 +9,7 @@ import { SalaDaCampanha } from "@/components/anuncios/sala";
 import { Diagnostico } from "./diagnostico";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Campanha · Anúncios na Meta" };
 
 /** Campanha da loja (D299): diagnóstico enquanto é rascunho; depois, a sala da campanha. */
 export default async function AnuncioPage({ params }: { params: Promise<{ id: string }> }) {

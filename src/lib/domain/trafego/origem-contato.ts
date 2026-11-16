@@ -22,7 +22,7 @@ export type VisitaAtual = {
   ultimo: Record<string, string>; primeiro: Record<string, string>; sessaoId: string | null;
   /** Navegador, escolha no aviso de cookies e os cookies da Meta (_fbp, _fbc), para o retorno às plataformas (TR5, D298). */
   ua?: string | null; consentimento?: "SIM" | "NAO" | "SEM_ESCOLHA"; fbp?: string | null; fbc?: string | null;
-  /** Resposta a "Como você conheceu a NextLevel?" (D302); só chaves da lista de `src/lib/trafego/conheceu.ts`. */
+  /** Resposta a "Como você conheceu a NextLevel?" (D303); só chaves da lista de `src/lib/trafego/conheceu.ts`. */
   conheceuPor?: string | null;
 };
 

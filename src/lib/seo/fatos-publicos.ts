@@ -5,7 +5,7 @@ import { LIMITES_ATACADO } from "@/lib/domain/atacado";
 import type { FatosFaq } from "./faq-commerce";
 
 /**
- * Fatos públicos da NextLevel Commerce lidos do sistema (D293, D302): planos e oferta do Master, benefícios por plano e
+ * Fatos públicos da NextLevel Commerce lidos do sistema (D293, D303): planos e oferta do Master, benefícios por plano e
  * limites do atacado. Uma fonte só para as perguntas frequentes, o `llms.txt` e as versões em texto das páginas.
  */
 export type FatosPublicos = FatosFaq & { planosAnuais: { nome: string; anualCents: number | null }[] };

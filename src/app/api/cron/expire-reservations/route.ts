@@ -7,6 +7,7 @@ import { lembrarCarrinhos } from "@/lib/domain/carrinho-abandonado";
 import { reconcilePendingPayments } from "@/lib/payments/service";
 import { rodarErp } from "@/lib/domain/erp";
 import { enfileirarPagantes, enviarConversoes } from "@/lib/domain/trafego/retorno";
+import { sincronizarMeta } from "@/lib/domain/trafego/meta-leitura";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,8 @@ export async function GET(req: NextRequest) {
     { name: "carrinhos", run: () => lembrarCarrinhos(db), summarize: (x: { primeiro: number; segundo: number }) => `1º lembrete ${x.primeiro}, 2º lembrete ${x.segundo}` },
     // TR5 (D298): quem virou pagante entra na fila; a fila vai para a Meta e o Google.
     { name: "retorno às plataformas", run: async () => ({ pagantes: await enfileirarPagantes(db), ...(await enviarConversoes(db)) }), summarize: (x: { pagantes: number; enviados: number; falhas: number; ignorados: number }) => `pagantes novos ${x.pagantes}, enviados ${x.enviados}, falhas ${x.falhas}, fora da janela ${x.ignorados}` },
+    // TR6 (D302): números das campanhas na Meta (no máximo uma leitura por hora).
+    { name: "leitura da Meta", run: () => sincronizarMeta(db), summarize: (x: { pulou?: boolean; contas: number; linhas: number; ok: boolean }) => x.pulou ? "lida há menos de 1 hora" : `${x.contas} conta(s), ${x.linhas} linha(s)${x.ok ? "" : ", com aviso"}` },
     { name: "erp", run: () => rodarErp(db), summarize: (x: { novos: number; enviados: number; erros: number; ajustados: number }) => `na fila ${x.novos}, enviados ${x.enviados}, erros ${x.erros}, estoques ajustados ${x.ajustados}` },
   ]);
   return NextResponse.json({ ok: r.ok, ...r.results, failed: r.failed }, { status: r.ok ? 200 : 207 });

@@ -26,13 +26,14 @@ function Campos({ campos, v, set }: { campos: Campo[]; v: Record<string, string>
 export function FormRetorno({ cfg, podeEditar }: { cfg: ConfigRetornoTela; podeEditar: boolean }) {
   const router = useRouter();
   const [v, setV] = React.useState<Record<string, string>>({
-    metaTesteCodigo: cfg.meta.testeCodigo ?? "", googleClienteId: cfg.google.clienteId ?? "", googleGerenteId: cfg.google.gerenteId ?? "", googleOauthClientId: cfg.google.oauthClientId ?? "",
+    metaTesteCodigo: cfg.meta.testeCodigo ?? "", metaContaAnuncios: cfg.meta.contaAnuncios?.replace(/^act_/, "") ?? "", googleClienteId: cfg.google.clienteId ?? "", googleGerenteId: cfg.google.gerenteId ?? "", googleOauthClientId: cfg.google.oauthClientId ?? "",
     googleAcaoLead: cfg.google.acaoLead ?? "", googleAcaoConta: cfg.google.acaoConta ?? "", googleAcaoPagante: cfg.google.acaoPagante ?? "",
   });
   const [pending, start] = React.useTransition();
   const set = (k: string, x: string) => setV({ ...v, [k]: x });
   const meta: Campo[] = [
     { k: "metaToken", rotulo: "Token de acesso da API de conversões", secreto: true, tem: cfg.meta.temToken, onde: "Meta: Gerenciador de Eventos → o Pixel → Configurações → API de Conversões → \"Gerar token de acesso\" (ou um usuário do sistema do Gerenciador de Negócios com acesso ao Pixel)." },
+    { k: "metaContaAnuncios", rotulo: "Número da conta de anúncios da NextLevel", exemplo: "123456789012345", onde: "Gerenciador de Anúncios: o número ao lado do nome da conta (ou act=… no endereço). Com ele e o token (com permissão de leitura de anúncios), o gasto de cada campanha aparece na aba Campanhas." },
     { k: "metaTesteCodigo", rotulo: "Código de teste (opcional, só para conferir)", exemplo: "TEST12345", onde: "Gerenciador de Eventos → Testar eventos. Com ele, os envios aparecem lá na hora e não contam nas campanhas. Apague depois de conferir." },
   ];
   const google: Campo[] = [

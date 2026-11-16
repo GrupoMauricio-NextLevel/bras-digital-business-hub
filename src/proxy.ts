@@ -98,7 +98,7 @@ export async function proxy(req: NextRequest, event?: NextFetchEvent) {
 }
 
 /**
- * Robôs de busca e de IA nas páginas públicas das marcas (D302): só conta (em memória) e grava em lote em segundo plano.
+ * Robôs de busca e de IA nas páginas públicas das marcas (D303): só conta (em memória) e grava em lote em segundo plano.
  * Painéis, API e arquivos internos ficam fora; as lojas dos lojistas também (não são páginas da marca). Nunca atrasa nem
  * derruba a resposta.
  */

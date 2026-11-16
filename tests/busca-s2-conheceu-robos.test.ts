@@ -10,7 +10,7 @@ import { faqMd, llmsFullTxt, llmsTxt, planosMd } from "@/lib/seo/llms";
 import type { FatosPublicos } from "@/lib/seo/fatos-publicos";
 import { PAGINAS_COMMERCE, trilhaCommerce, trilhaJsonLd } from "@/lib/seo/paginas";
 
-/** D302: "Como nos conheceu?", receita por página, robôs de IA, llms.txt e trilha de navegação. */
+/** D303: "Como nos conheceu?", receita por página, robôs de IA, llms.txt e trilha de navegação. */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 const AGORA = new Date("2026-11-16T15:00:00Z");
 beforeEach(async () => { ctx = await freshDb(); _zerarRobos(AGORA.getTime()); });
