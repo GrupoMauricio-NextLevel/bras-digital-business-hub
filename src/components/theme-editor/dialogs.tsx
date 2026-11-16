@@ -67,7 +67,7 @@ export function AddSectionDialog({ open, onOpenChange, region, page, current, ct
 
 type Version = { id: string; label: string; createdAt: string; page: string };
 /** Histórico de publicações: restaurar coloca a versão no rascunho; o dono revisa e publica. */
-export function VersionsDialog({ open, onOpenChange, page }: { open: boolean; onOpenChange: (o: boolean) => void; page: PageKind }) {
+export function VersionsDialog({ open, onOpenChange, page }: { open: boolean; onOpenChange: (o: boolean) => void; /** Página fixa ou livre do site (`p:<id>`, NB2). */ page: string }) {
   const [rows, setRows] = React.useState<Version[] | null>(null);
   const [busy, setBusy] = React.useState<string | null>(null);
   React.useEffect(() => {

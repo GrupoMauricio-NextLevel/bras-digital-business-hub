@@ -284,6 +284,8 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
     { label: "Pede pro Maurício", href: "/merchant/ia", icon: "Sparkles", group: B, badge: "Novo" },
   ];
   if (site) itens.push(
+    { label: "Páginas", href: "/merchant/site/paginas", icon: "LayoutTemplate", group: "Site" },
+    { label: "Serviços", href: "/merchant/site/servicos", icon: "Boxes", group: "Site" },
     ...(loja ? [] : [{ label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Site" } as NavItem]),
     { label: "Domínio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Site" },
   );

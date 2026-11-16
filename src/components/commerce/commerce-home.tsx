@@ -70,7 +70,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   ];
 
   const status = <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(3)} aria-labelledby="cm-status">
-    <h2 id="cm-status" className="text-base font-semibold tracking-[-.01em]">Status da loja</h2>
+    <h2 id="cm-status" className="text-base font-semibold tracking-[-.01em]">{negocio?.site ? "Status do site" : "Status da loja"}</h2>
     <div className="mt-4 flex items-center gap-5">
       {readiness ? <Ring done={reqDone} total={reqTotal} /> : null}
       <dl className="min-w-0 flex-1 space-y-2 text-sm">

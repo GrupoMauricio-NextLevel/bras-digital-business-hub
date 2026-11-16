@@ -243,6 +243,18 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   if (!user) throw new NotFoundError("Usuário não encontrado.");
   await db.update(users).set({ passwordHash: hashPassword(input.password), mustChangePassword: false }).where(eq(users.id, user.id));
   await db.update(stores).set({ status: "ACTIVE", taxId }).where(eq(stores.id, created.storeId));
+  // Site da empresa (NB2, D307): a conta no caminho Site já nasce com o modelo institucional (Início, Sobre, Serviços,
+  // Contato) publicado, para o dono só trocar os textos. Falhar aqui nunca impede o cadastro: o modelo pode ser aplicado
+  // depois em Site → Páginas.
+  if (independent && input.formato === "SITE") {
+    try {
+      const { aplicarModeloDoSite } = await import("@/lib/business/modelos-site");
+      const { actorFromUser } = await import("./access");
+      await aplicarModeloDoSite(db, actorFromUser({ ...user, mustChangePassword: false }), created.storeId, "institucional", input.storeName, { publicar: true });
+    } catch (e) {
+      console.error("[site] modelo inicial não aplicado", created.storeId, e instanceof Error ? e.message : e);
+    }
+  }
   await attributeStore(db, { storeId: created.storeId, taxId, email: input.email, couponCode: code, refCode: input.ref, now });
   // Commerce com planos (D90): a assinatura decide o acesso (oferta de entrada: 3 dias grátis, taxa zero da plataforma; sem 1º mês especial desde D233).
   const { finFlag } = await import("@/lib/finance/flags");

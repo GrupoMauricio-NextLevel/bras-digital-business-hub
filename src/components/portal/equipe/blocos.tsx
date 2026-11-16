@@ -123,7 +123,7 @@ export function ApoioEquipe({ titulo, texto, mensagem, className = "" }: { titul
  * Boas-vindas do CEO na primeira tela do lojista novo (D181): nos 14 primeiros dias, até a primeira venda paga
  * (`mostrarBoasVindas`). Foto leve da equipe, recado curto em nome do Maurício e os contatos da equipe.
  */
-export function BoasVindasCeo({ primeiroNome, marca, className = "" }: { primeiroNome: string; marca: string; className?: string }) {
+export function BoasVindasCeo({ primeiroNome, marca, className = "", site = false }: { primeiroNome: string; marca: string; className?: string; /** Negócio no caminho Site (NB2, D307). */ site?: boolean }) {
   return (
     <section aria-labelledby="boas-vindas-ceo" className={`ds-card overflow-hidden !p-0 ${className}`}>
       <div className="grid md:grid-cols-[minmax(0,15rem)_1fr]">
@@ -131,7 +131,7 @@ export function BoasVindasCeo({ primeiroNome, marca, className = "" }: { primeir
         <div className="p-5 md:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Recado do fundador</p>
           <h2 id="boas-vindas-ceo" className="mt-2 text-xl font-semibold tracking-tight">{primeiroNome}, que bom ter você na {marca}.</h2>
-          <p className="mt-2 text-body">Sua loja já existe. Agora é seguir a fila do dia, um passo de cada vez, até a primeira venda. Se travar em qualquer ponto, chame a nossa equipe: quem responde é gente de verdade, na nossa sede em São Paulo.</p>
+          <p className="mt-2 text-body">{site ? "Seu site já existe. Agora é cadastrar os serviços, ajustar as páginas e publicar, um passo de cada vez." : "Sua loja já existe. Agora é seguir a fila do dia, um passo de cada vez, até a primeira venda."} Se travar em qualquer ponto, chame a nossa equipe: quem responde é gente de verdade, na nossa sede em São Paulo.</p>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
             <AssinaturaCeo />
             <ContatosEquipe mensagem={`Olá! Sou ${primeiroNome}, lojista da ${marca}, e preciso de ajuda.`} />

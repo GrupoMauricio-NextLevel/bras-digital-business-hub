@@ -11,10 +11,10 @@ import { listVersions, resolveTemplate, restoreVersion } from "@/lib/themes/stor
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 let n = 0;
-async function negocio(nome = "Vidraçaria Modelo") {
+async function negocio(nome = "Vidraçaria Modelo", formato: "LOJA" | "SITE" = "LOJA") {
   n += 1;
   const cpf = ["529.982.247-25", "111.444.777-35", "390.533.447-05", "123.456.789-09"][n % 4]!;
-  const r = await signupMember(ctx.db, { storeName: nome, ownerName: "Rita Lima", email: `rita${n}@site.com.br`, password: "senha-segura-1", taxId: cpf, offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true, formato: "SITE" });
+  const r = await signupMember(ctx.db, { storeName: nome, ownerName: "Rita Lima", email: `rita${n}@site.com.br`, password: "senha-segura-1", taxId: cpf, offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true, formato });
   const user = await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) });
   return { storeId: r.storeId, slug: r.slug, actor: actorFromUser(user!) as Actor };
 }
@@ -142,5 +142,21 @@ describe("aplicar o modelo de site (NB2, D307)", () => {
     expect((await menuDoSite(ctx.db, a.storeId)).map((m) => m.slug)).toEqual(["sobre", "servicos", "contato"]);
     const de2 = await aplicarModeloDoSite(ctx.db, a.actor, a.storeId, "academia", "Vidraçaria Modelo");
     expect(de2.criadas).toEqual(["modalidades", "grade"]);
+  });
+});
+
+describe("conta nova no caminho Site (NB2, D307)", () => {
+  beforeEach(async () => { ctx = await freshDb(); });
+  it("nasce com o modelo institucional publicado: início com serviços e contato, e Sobre, Serviços e Contato no menu", async () => {
+    const a = await negocio("Vidraçaria Cristal", "SITE");
+    expect((await menuDoSite(ctx.db, a.storeId)).map((m) => m.label)).toEqual(["Sobre", "Serviços", "Contato"]);
+    const store = await ctx.db.query.stores.findFirst({ where: (s, { eq: e }) => e(s.id, a.storeId) });
+    const inicio = (await resolveTemplate(ctx.db, store!, "home")).template;
+    expect(inicio.sections.destaque?.settings.title).toBe("Vidraçaria Cristal");
+    expect(await paginaPublica(ctx.db, a.storeId, "contato")).not.toBeNull();
+  });
+  it("conta de loja continua sem páginas novas", async () => {
+    const a = await negocio("Moda Bela", "LOJA");
+    expect(await listarPaginas(ctx.db, a.storeId)).toEqual([]);
   });
 });

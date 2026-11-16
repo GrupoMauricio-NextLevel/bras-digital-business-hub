@@ -4,7 +4,7 @@ import { emptyTemplate, legacyGlobals, removeSection, setSetting, templateFromLe
 
 const legacy = { heroTitle: "A", heroSubtitle: "B", heroCta: "C", announcement: "", banners: [], showCategories: true, footerText: "" };
 const doc = (): Doc => ({ pages: { home: templateFromLegacy(legacy), product: emptyTemplate(), collection: emptyTemplate(), cart: emptyTemplate() }, globals: legacyGlobals({ primaryColor: "#0f172a", accentColor: "#16a34a" }, legacy) });
-const title = (d: Doc) => d.pages.home.sections.hero!.settings.title;
+const title = (d: Doc) => d.pages.home!.sections.hero!.settings.title;
 const edit = (d: Doc, t: string) => setTemplate(d, "content", "home", setSetting(getTemplate(d, "content", "home"), "hero", "title", t));
 
 describe("histórico do editor", () => {
@@ -39,7 +39,7 @@ describe("seleção e alterações", () => {
   it("a seleção some quando o item é removido; bloco removido volta para a seção", () => {
     const d = doc(); const sel = { kind: "section", region: "content", id: "hero" } as const;
     expect(reconcileSelection(d, sel, "home")).toEqual(sel);
-    expect(reconcileSelection(setTemplate(d, "content", "home", removeSection(d.pages.home, "hero")), sel, "home")).toBeNull();
+    expect(reconcileSelection(setTemplate(d, "content", "home", removeSection(d.pages.home!, "hero")), sel, "home")).toBeNull();
     const bsel = { kind: "block", region: "content", sectionId: "trust", blockId: "nao-existe" } as const;
     expect(reconcileSelection(d, bsel, "home")).toEqual({ kind: "section", region: "content", id: "trust" });
     expect(reconcileSelection(d, { kind: "style" }, "home")).toEqual({ kind: "style" });

@@ -15,6 +15,7 @@ import { buyTheme, installTheme } from "@/lib/themes/install";
 import { discardDraft, draftRevisions, listVersions, publishAllDrafts, restoreVersion, saveGlobalsDraft, saveTemplateDraft } from "@/lib/themes/store";
 import { PAGE_KINDS } from "@/lib/themes/types";
 import { deleteSavedTemplate, listSavedTemplates, savePageTemplate, saveSectionTemplate } from "@/lib/themes/saved-templates";
+import { descartarRascunhosDasPaginas, ehChavePagina, idDaChave, publicarPaginas, revisoesDasPaginas, salvarRascunhoDaPagina } from "@/lib/business/paginas";
 
 async function ctx() {
   const session = await getSession();
@@ -36,34 +37,41 @@ export async function exitThemePreviewAction() {
 const rev = z.number().int().min(0).optional();
 /** Salva o rascunho; `baseRevision` é a revisão que o editor conhece (outra aba mudou → conflito, nada é sobrescrito). */
 export async function saveTemplateDraftAction(p: string, template: unknown, baseRevision?: number) {
-  return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveTemplateDraft(db, session.actor, storeId, page.parse(p), template, { baseRevision: rev.parse(baseRevision) }); return { issues: r.issues, revision: r.revision }; });
+  return runAction(async () => {
+    const { session, storeId, db } = await ctx();
+    // Página livre do site (NB2, D307): chave `p:<id>`; o resto é igual às páginas da loja.
+    const r = ehChavePagina(p) ? await salvarRascunhoDaPagina(db, session.actor, storeId, idDaChave(p), template, { baseRevision: rev.parse(baseRevision) }) : await saveTemplateDraft(db, session.actor, storeId, page.parse(p), template, { baseRevision: rev.parse(baseRevision) });
+    return { issues: r.issues, revision: r.revision }; });
 }
 export async function saveGlobalsDraftAction(globals: unknown, baseRevision?: number) {
   return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await saveGlobalsDraft(db, session.actor, storeId, globals, { baseRevision: rev.parse(baseRevision) }); return { issues: r.issues, revision: r.revision }; });
 }
 
 /** Publica todas as páginas com rascunho e o estilo global. */
-const revisionsSchema = z.object({ home: rev, product: rev, collection: rev, cart: rev, globals: rev }).partial().optional();
+const revisionsSchema = z.record(z.string().max(40), rev).optional();
 export async function publishThemeAction(label?: string, expected?: Partial<Record<string, number>>) {
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
-    const r = await publishAllDrafts(db, session.actor, storeId, z.string().max(80).optional().parse(label) ?? "Publicação", { expected: revisionsSchema.parse(expected) });
+    const nome = z.string().max(80).optional().parse(label) ?? "Publicação";
+    const esperado = revisionsSchema.parse(expected) ?? {};
+    const r = await publishAllDrafts(db, session.actor, storeId, nome, { expected: { home: esperado.home, product: esperado.product, collection: esperado.collection, cart: esperado.cart, globals: esperado.globals } });
+    const livres = await publicarPaginas(db, session.actor, storeId, nome, { expected: esperado });
     refresh(session.store?.slug); revalidatePath("/merchant", "layout");
-    return { pages: r.pages, globals: r.globals, revisions: await draftRevisions(db, storeId) };
+    return { pages: r.pages, globals: r.globals, paginas: livres.publicadas, revisions: { ...(await draftRevisions(db, storeId)), ...(await revisoesDasPaginas(db, storeId)) } };
   });
 }
 export async function discardThemeDraftAction() {
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
     for (const p of PAGE_KINDS) await discardDraft(db, session.actor, storeId, p);
-    await discardDraft(db, session.actor, storeId, "globals"); refresh(session.store?.slug);
+    await discardDraft(db, session.actor, storeId, "globals"); await descartarRascunhosDasPaginas(db, session.actor, storeId); refresh(session.store?.slug);
     return undefined;
   });
 }
 export async function listThemeVersionsAction(p: string) {
   return runAction(async () => {
     const { session, storeId, db } = await ctx();
-    const v = await listVersions(db, session.actor, storeId, p === "globals" ? "globals" : page.parse(p));
+    const v = await listVersions(db, session.actor, storeId, p === "globals" ? "globals" : ehChavePagina(p) ? `pagina:${idDaChave(p)}` : page.parse(p));
     return v.map((x) => ({ id: x.id, label: x.label, createdAt: x.createdAt, page: x.page }));
   });
 }

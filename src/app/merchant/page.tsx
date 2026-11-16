@@ -50,10 +50,14 @@ export default async function MerchantHome() {
   const db = await getDb();
   const [o, commerce, survey] = await Promise.all([getMerchantOverview(store), perfilAtual(store.id).then((p) => p.ecommerce), pendingSurvey(db, session.actor)]);
   const benefits = await benefitsPanel(db, session.actor);
+  // NextLevel Business (NB1, D306): com a chave ligada, o topo diz "NextLevel Business · Visão geral do negócio"; num SITE,
+  // a fila mostra só o que é do negócio (clientes esperando, atendimento), sem as pendências de montar uma loja.
+  const negocio = commerce ? await modulosDoNegocio(db, store.id) : null;
+  const ehSite = !!negocio?.business && !temLoja(negocio);
   // Recado do fundador ao lojista novo (D181): 14 primeiros dias, até a primeira venda paga.
   const temVendaPaga = (await db.select({ id: orders.id }).from(orders).where(and(eq(orders.storeId, store.id), eq(orders.customerPaymentStatus, "PAID"))).limit(1)).length > 0;
   const boasVindas = mostrarBoasVindas({ criadaEm: store.createdAt, temVendaPaga })
-    ? <BoasVindasCeo primeiroNome={session.user.name.split(" ")[0]!} marca={(await brandOfStore(db, store)).name} className="mb-6" /> : null;
+    ? <BoasVindasCeo primeiroNome={session.user.name.split(" ")[0]!} marca={(await brandOfStore(db, store)).name} className="mb-6" site={ehSite} /> : null;
   // "O que mudou" (D183): a novidade mais recente da marca, com link para a lista.
   const novidade = novidadesDa((await brandOfStore(db, store)).code, 1)[0];
   // Contrato esperando o aceite (D276): aviso no topo, antes de tudo.
@@ -81,10 +85,6 @@ export default async function MerchantHome() {
     pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
     balanceCents: balance, stockBack, now: new Date(),
   })].map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
-  // NextLevel Business (NB1, D306): com a chave ligada, o topo diz "NextLevel Business · Visão geral do negócio"; num SITE,
-  // a fila mostra só o que é do negócio (clientes esperando, atendimento), sem as pendências de montar uma loja.
-  const negocio = commerce ? await modulosDoNegocio(db, store.id) : null;
-  const ehSite = !!negocio?.business && !temLoja(negocio);
   const pulso = pulsoDaLoja({
     hoje: o.today, commerce, publicada: Boolean(store.publishedAt), faltaParaVender: ehSite ? 0 : readiness?.missingBlocking.length ?? 0, precisaRecarga: isLite && needsTopUp,
     parados: pedidosParados({ pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit, independent: o.independent, now: new Date() }),

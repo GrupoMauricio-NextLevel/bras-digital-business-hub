@@ -9,6 +9,7 @@ import { PublishToggle } from "./publish-toggle";
 import { Badge } from "@/components/ui/badge";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { getDb } from "@/db/client";
+import { modulosDoNegocio, temLoja } from "@/lib/business/modulos";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { lojaVirtualAgora } from "@/lib/domain/loja-agora";
 import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
@@ -24,6 +25,8 @@ export default async function StorefrontPage() {
   const store = session.store!;
   const perfil = await perfilAtual(store.id);
   const commerce = perfil.ecommerce;
+  // NB2 (D307): negócio no caminho Site fala de "site", não de "loja".
+  const site = !temLoja(await modulosDoNegocio(await getDb(), store.id));
   // D234: domínio próprio liberado para todo lojista Commerce; no SuperDrop, a oferta decide.
   const podeDominio = perfil.pode.customDomain;
   const { current } = await getStoreTheme(store.id);
@@ -43,7 +46,7 @@ export default async function StorefrontPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader><div><CardTitle>Publicação</CardTitle><CardDescription>{commerce ? "Quando publicada, sua vitrine fica disponível para receber clientes e pedidos." : "Controle se a loja está visível para clientes."}</CardDescription></div></CardHeader>
-            <CardContent><PublishToggle published={!!store.publishedAt} /></CardContent>
+            <CardContent><PublishToggle published={!!store.publishedAt} site={site} /></CardContent>
           </Card>
           <Card id="dominio">
             <CardHeader><div><CardTitle>Endereço e domínio próprio</CardTitle><CardDescription>{podeDominio ? "Use o domínio da sua marca, em qualquer plano." : "Domínio próprio disponível nos planos superiores."}</CardDescription></div></CardHeader>

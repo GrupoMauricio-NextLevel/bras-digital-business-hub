@@ -9,14 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Banner } from "@/components/ds/banner";
 import { KeyboardHint } from "@/components/ds/fields";
 import { discardThemeDraftAction, enterThemePreviewAction, exitThemePreviewAction, publishThemeAction, saveGlobalsDraftAction, saveTemplateDraftAction } from "@/app/actions/theme";
-import { canRedo, canUndo, changedParts, getTemplate, newHistory, pushHistory, reconcileSelection, redo, setTemplate, undo, type Doc, type Region, type Selection } from "@/lib/themes/editor-state";
+import { canRedo, canUndo, changedParts, getTemplate, kindOf, newHistory, pushHistory, reconcileSelection, redo, setTemplate, undo, type Doc, type Region, type Selection } from "@/lib/themes/editor-state";
 import { sectionSchema } from "@/lib/themes/sections";
 import { addBlock, addSection, DEFAULT_STYLE, duplicateSection, moveBlock, moveSection, removeBlock, removeSection, setBlockSetting, setSectionHidden, setSetting, STYLE_DEFS, TemplateOpError } from "@/lib/themes/template";
 import { checkStyleChange, checkTemplateChange, hydrateContext, settingAllowed, STYLE_MIN_LEVEL, structureRights, violationMessage, type SerializedContext, type Violation } from "@/lib/themes/policy";
 import { LEVEL_INFO } from "@/lib/themes/levels";
 import { ImageUploadButton } from "./image-upload";
 import { setStoreLogoAction } from "@/app/actions/assets";
-import { PAGE_LABEL, type PageKind, type SettingValue, type Template, type ThemeStyle } from "@/lib/themes/types";
+import { PAGE_LABEL, type SettingValue, type Template, type ThemeStyle } from "@/lib/themes/types";
 import { cn } from "@/lib/utils";
 import { AddSectionDialog, PageTemplatesDialog, VersionsDialog } from "./dialogs";
 import { saveSectionTemplateAction } from "@/app/actions/theme";
@@ -28,16 +28,23 @@ import { scheduleIssues } from "@/lib/themes/banners";
 import { SettingField, type PickerData } from "./settings-panel";
 import { SectionTree, type TreeActions } from "./tree";
 
-export type EditorProps = { logoUrl: string | null; storeName: string; slug: string; offerName: string; initial: Doc; published: Doc; policy: SerializedContext; revisions: Record<PageKind | "globals", number>; upgradeHref: string; picker: PickerData; previewPaths: Record<PageKind, string> };
+export type EditorProps = { logoUrl: string | null; storeName: string; slug: string; offerName: string; initial: Doc; published: Doc; policy: SerializedContext; revisions: Record<string, number>; upgradeHref: string; picker: PickerData; previewPaths: Record<string, string>;
+  /** Nome de cada página no seletor (as fixas da loja e as páginas livres do site, NB2). Sem ele, só as fixas. */
+  pageLabels?: Record<string, string>;
+  /** Página aberta ao entrar (ex.: `p:<id>` vindo de Site → Páginas). */
+  initialPage?: string };
 type Device = "desktop" | "tablet" | "mobile";
 type Save = "saved" | "dirty" | "saving" | "error";
 const DEVICES = [{ key: "desktop", label: "Computador", icon: Monitor, px: null }, { key: "tablet", label: "Tablet", icon: Tablet, px: 768 }, { key: "mobile", label: "Celular", icon: Smartphone, px: 390 }] as const;
 const sig = (d: Doc) => JSON.stringify(d);
 const editable = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
 
-export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerName, initial, published: publishedInitial, policy, revisions, upgradeHref, picker, previewPaths }: EditorProps) {
+export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerName, initial, published: publishedInitial, policy, revisions, upgradeHref, picker, previewPaths, pageLabels, initialPage }: EditorProps) {
   const router = useRouter();
-  const [page, setPage] = React.useState<PageKind>("home");
+  const labels: Record<string, string> = pageLabels ?? PAGE_LABEL;
+  const [page, setPage] = React.useState<string>(initialPage && initial.pages[initialPage] ? initialPage : "home");
+  // Página livre do site (NB2, D307) segue as regras da página inicial.
+  const kind = kindOf(page);
   const [logo, setLogo] = React.useState<string | null>(logoUrlInitial);
   const [hist, setHist] = React.useState(() => newHistory(initial));
   const doc = hist.present;
@@ -120,7 +127,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const mutate = (region: Region, fn: (t: Template) => Template, key?: string): boolean => {
     try {
       const cur = getTemplate(doc, region, page); const next = fn(cur);
-      const v = checkTemplateChange(ctx, cur, next, { region, page: region === "content" ? page : undefined });
+      const v = checkTemplateChange(ctx, cur, next, { region, page: region === "content" ? kind : undefined });
       if (v.length) { blocked(v); return false; }
       commit(setTemplate(doc, region, page, next), key); return true;
     } catch (e) { if (e instanceof TemplateOpError) { toast.error(e.message); return false; } throw e; }
@@ -136,7 +143,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
       if (e.origin !== window.location.origin || e.data?.source !== "nl-preview") return;
       if (e.data.type === "ready") post({ type: "select", id: sectionIdOf(sel) });
       if (e.data.type === "select" && typeof e.data.id === "string") {
-        const d = docRef.current; const region: Region | null = d.globals.header.sections[e.data.id] ? "header" : d.globals.footer.sections[e.data.id] ? "footer" : d.pages[page].sections[e.data.id] ? "content" : null;
+        const d = docRef.current; const region: Region | null = d.globals.header.sections[e.data.id] ? "header" : d.globals.footer.sections[e.data.id] ? "footer" : d.pages[page]!.sections[e.data.id] ? "content" : null;
         if (region) select({ kind: "section", region, id: e.data.id });
       }
     };
@@ -162,7 +169,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
   const pickSection = (type: string) => {
     if (!adding) return; const region = adding; let nid = "";
     const t = getTemplate(doc, region, page); const curId = sectionIdOf(sel); const at = sel && sel.kind !== "style" && sel.region === region && curId ? t.order.indexOf(curId) + 1 : undefined;
-    if (mutate(region, (cur) => { const r = addSection(cur, type, { region, page: page, index: at || undefined }); nid = r.id; return r.template; })) select({ kind: "section", region, id: nid });
+    if (mutate(region, (cur) => { const r = addSection(cur, type, { region, page: kind, index: at || undefined }); nid = r.id; return r.template; })) select({ kind: "section", region, id: nid });
   };
 
   // ---- Publicação e atalhos -------------------------------------------------
@@ -207,7 +214,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         <Button variant="ghost" size="sm" onClick={leave}><ArrowLeft aria-hidden /> Painel</Button>
         <div className="mr-2 hidden min-w-0 sm:block"><p className="truncate text-sm font-semibold leading-tight">{storeName}</p><p className="text-[11px] text-muted-foreground">Editor do tema</p></div>
         <label className="sr-only" htmlFor="page-select">Página</label>
-        <select id="page-select" value={page} onChange={(e) => { setPage(e.target.value as PageKind); setSel(null); }} className="h-8 rounded-md border border-border bg-surface px-2 text-sm">{(Object.keys(PAGE_LABEL) as PageKind[]).map((p) => <option key={p} value={p}>{PAGE_LABEL[p]}</option>)}</select>
+        <select id="page-select" value={page} onChange={(e) => { setPage(e.target.value); setSel(null); }} className="h-8 rounded-md border border-border bg-surface px-2 text-sm">{Object.keys(labels).filter((p) => doc.pages[p]).map((p) => <option key={p} value={p}>{labels[p]}</option>)}</select>
         <div role="radiogroup" aria-label="Tamanho da prévia" className="mx-auto flex gap-0.5 rounded-lg bg-surface-muted p-0.5">
           {DEVICES.map((d) => { const Icon = d.icon; return <button key={d.key} type="button" role="radio" aria-checked={device === d.key} onClick={() => setDevice(d.key)} className={cn("flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium", device === d.key ? "bg-surface shadow-sm" : "text-muted-foreground hover:text-foreground")}><Icon className="size-4" aria-hidden /><span className="sr-only md:not-sr-only">{d.label}</span></button>; })}
         </div>
@@ -235,7 +242,7 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         <aside aria-label="Seções da página" className={cn("nl-scroll w-full shrink-0 overflow-y-auto border-r border-border bg-surface lg:block lg:w-72", mobileTab === "tree" ? "block" : "hidden")}>
           {conflict ? <div className="p-3 pb-0"><Banner tone="warning" title="Outra aba mudou este rascunho">Para não apagar o trabalho de ninguém, nada desta aba foi gravado por cima. <button type="button" className="font-medium underline" onClick={() => window.location.reload()}>Recarregar a versão mais nova</button></Banner></div> : null}
           <div className="p-3 pb-0"><LevelCard ctx={ctx} rights={rights} levelLabel={levelLabel} upgradeHref={upgradeHref} /></div>
-          <SectionTree header={doc.globals.header} content={doc.pages[page]} footer={doc.globals.footer} pageLabel={PAGE_LABEL[page]} sel={sel} ctx={ctx} page={page} actions={actions} lockHint={lockHint} />
+          <SectionTree header={doc.globals.header} content={doc.pages[page]!} footer={doc.globals.footer} pageLabel={labels[page] ?? "Página"} sel={sel} ctx={ctx} page={kind} actions={actions} lockHint={lockHint} />
         </aside>
 
         <main className={cn("min-w-0 flex-1 bg-surface-muted p-3 lg:block", mobileTab === "preview" ? "block" : "hidden")}>
@@ -289,8 +296,8 @@ export function ThemeEditor({ logoUrl: logoUrlInitial, storeName, slug, offerNam
         </aside>
       </div>
 
-      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={page} current={getTemplate(doc, adding ?? "content", page)} ctx={ctx} upgradeHref={upgradeHref} onPick={pickSection} onPickSaved={insertSaved} />
-      <PageTemplatesDialog open={pageModels} onOpenChange={setPageModels} page={page} current={doc.pages[page]} onApply={(t) => mutate("content", () => t)} />
+      <AddSectionDialog open={adding !== null} onOpenChange={(o) => { if (!o) setAdding(null); }} region={adding ?? "content"} page={kind} current={getTemplate(doc, adding ?? "content", page)} ctx={ctx} upgradeHref={upgradeHref} onPick={pickSection} onPickSaved={insertSaved} />
+      <PageTemplatesDialog open={pageModels} onOpenChange={setPageModels} page={kind} current={doc.pages[page]!} onApply={(t) => mutate("content", () => t)} />
       <VersionsDialog open={versions} onOpenChange={setVersions} page={page} />
     </div>
     </MediaLibraryProvider>
