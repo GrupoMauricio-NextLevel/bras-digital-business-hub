@@ -82,8 +82,8 @@ function panelExpect(route: string, host: MapHost): Expect {
 export function expectedAt(route: string, host: MapHost, kind: QaKind = areaOf(route).kind): Expect {
   if (kind === "PAINEL") return panelExpect(route, host);
   if (GROUP_SITE.some((p) => under(route, p))) return host === "NEXTLEVEL"
-    ? { kind: "DEVE_ABRIR", why: "Site do grupo (NextLevel Business): mora no endereço do grupo; até a Fase 3, no do Master (D149)." }
-    : { kind: "NAO_DEVE", why: "É da NextLevel Business: deveria levar ao site do grupo (D149)." };
+    ? { kind: "DEVE_ABRIR", why: "Site do grupo (NextLevel Soluções Digitais): mora no endereço do grupo; até a Fase 3, no do Master (D149)." }
+    : { kind: "NAO_DEVE", why: "É da NextLevel Soluções Digitais: deveria levar ao site do grupo (D149)." };
   if (GROUP_LEGAL.includes(route)) return { kind: "DEVE_ABRIR", why: "Termos e privacidade: um texto do grupo inteiro, presente em todas as marcas e no endereço do grupo (decisão de 12/10)." };
   if (kind === "DEMO") return { kind: "A_DEFINIR", why: "Só existe no ambiente de demonstração." };
   if (host === "NEXTLEVEL" && route !== "/login" && route !== "/esqueci-senha" && !under(route, "/redefinir-senha")) return { kind: "NAO_DEVE", why: "O Master é só painéis e entrada." };
@@ -104,7 +104,7 @@ const MENU_ITEMS = MENUS.flatMap((m) => m.items).map((i) => ({ href: i.href.spli
 /** Nome das seções fora dos menus (primeira parte do endereço). */
 const SECTION_NAME: Record<string, string> = {
   f: "Páginas de fornecedor", store: "Vitrines", d: "Descobertas compartilhadas", balcao: "Balcão", "balcao-club": "Balcão do Club", motorista: "Motorista",
-  "redefinir-senha": "Recuperar senha", "loja-nextlevel": "Loja NextLevel", solucoes: "NextLevel Business", parceiros: "Programa de Parceiros", temas: "Temas",
+  "redefinir-senha": "Recuperar senha", "loja-nextlevel": "Loja NextLevel", solucoes: "NextLevel Soluções", parceiros: "Programa de Parceiros", temas: "Temas",
   dev: "Ferramentas de design", demo: "Demonstrações", gravacao: "Estúdio de gravação",
 };
 /** Grupo do menu que leva à página (o endereço de menu mais longo que contém a página); sem menu, a primeira parte do endereço. */

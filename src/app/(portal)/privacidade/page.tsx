@@ -17,5 +17,5 @@ export default async function Page() {
   const brand = await getBrand();
   if (brand.soon) notFound();
   if (isClosedCommerceBrand(brand)) return <BrasPrivacy />;
-  return <GroupPrivacy marca={brand.code === "NEXTLEVEL" ? "NextLevel Business" : brand.name} />;
+  return <GroupPrivacy marca={brand.code === "NEXTLEVEL" ? "NextLevel Soluções Digitais" : brand.name} />;
 }

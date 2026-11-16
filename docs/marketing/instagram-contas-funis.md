@@ -13,7 +13,7 @@
 | NextLevel Marketing Ltda | NextLevel Commerce · NextLevel Business · Brás Digital (atacado e importadores) · China Hub (importação) |
 | Mega Tron Comércio Eletrônico Ltda | Megatron (varejo vendido com parceiros criadores) |
 
-(A divisão das marcas entre os dois CNPJs é suposição a confirmar. NextLevel Business é a tecnologia de gestão do negócio e captação de clientes (D303).)
+(Divisão confirmada pelo dono. NextLevel Business é a gestão e captação que o cliente usa sozinho; os serviços com equipe são a NextLevel Soluções (D304).)
 
 **Marca pessoal:** Mauricio Ramos dos Santos Junior quer virar criador de conteúdo e fazer collab com todas as marcas, usando o maior perfil.
 

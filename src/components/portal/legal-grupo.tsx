@@ -35,7 +35,7 @@ export function GroupTerms({ marca }: { marca: string }) {
   return (
     <Moldura titulo="Termos de uso" marca={marca} outro={{ href: "/privacidade", label: "Política de privacidade" }}>
       <H2>1. Quem somos</H2>
-      <p>As plataformas SuperDrop, NextLevel Commerce, Brás Digital, NextLevel Cargas e os serviços da NextLevel Business são operados pela NextLevel Marketing Ltda. (“NextLevel”). Estes termos valem para todas elas. Quando uma plataforma tiver regra própria, ela aparece na seção 8 ou na tela onde a regra se aplica.</p>
+      <p>As plataformas SuperDrop, NextLevel Commerce, Brás Digital, NextLevel Cargas e os serviços da NextLevel Soluções Digitais são operados pela NextLevel Marketing Ltda. (“NextLevel”). Estes termos valem para todas elas. Quando uma plataforma tiver regra própria, ela aparece na seção 8 ou na tela onde a regra se aplica.</p>
       <H2>2. Conta e acesso</H2>
       <p>Para usar os painéis você cria uma conta com dados verdadeiros e mantém a senha em sigilo; ela é pessoal. Você responde pelo que for feito com a sua conta e pela equipe que convidar. A NextLevel pode suspender ou bloquear contas em caso de dado falso, fraude, tentativa de acesso indevido, uso que prejudique outros clientes ou desrespeito a estes termos.</p>
       <H2>3. Planos, pagamentos e cancelamento</H2>

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const brand = await getBrand();
   if (!p || !p.audience.includes("PUBLIC")) return { title: "Solução não encontrada", robots: { index: false } };
   const url = `${brand.code === HOLDING_CODE ? groupSiteUrl() : brand.baseUrl}/solucoes/${p.slug}`;
-  return { title: `${p.name} · NextLevel Business`, description: p.summary, alternates: { canonical: url }, openGraph: { title: p.name, description: p.summary, url, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
+  return { title: `${p.name} · NextLevel Soluções`, description: p.summary, alternates: { canonical: url }, openGraph: { title: p.name, description: p.summary, url, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [ogImageFor(brandByCode("NEXTLEVEL"))] } };
 }
 
 /** Landing pública canônica do produto (`/solucoes/<slug>`), alimentada pelo catálogo Master. */

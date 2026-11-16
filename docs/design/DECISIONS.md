@@ -3687,3 +3687,14 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Sem sistema novo:** mesmo motor, mesmo banco e mesmo Master, com a empresa cliente como tenant (regra anti-duplicação).
 - **No Master:** o cadastro de negócios mostra "Business · Gestão do negócio e captação de clientes" como o próximo negócio (`src/lib/negocios.ts`).
 - **Plano e fases B0 a B5:** `docs/prompts/nextlevel-business-gestao-captacao.md`. Piloto sugerido: Megatron. Prioridade frente à Commerce (regra 60/25/15) a decidir pelo dono.
+
+# D304 — [Grupo] Três linhas separadas: Commerce, Business (sozinho, sem equipe) e Soluções (serviços com equipe); Business começa agora (2026-11-16)
+- **Pedido do dono:** "Business é uma função especial do sistema, que roda sozinha sem participação da equipe. Portfólio de serviços é outra praia, que envolve equipe. Lojas do Commerce é outra coisa." Vender para todos (lojistas da Commerce, empresas de serviço etc.); Megatron pode ser o piloto; a Commerce está cerca de 90% pronta e os clientes dela já contratam serviços, então começa a nova etapa.
+- **As três linhas:**
+  - **NextLevel Commerce:** lojas virtuais (`nextlevelcommerce.com.br`).
+  - **NextLevel Business:** gestão do negócio e captação de clientes **em autoatendimento**: o cliente cadastra, conecta e usa sozinho; nada depende de alguém da NextLevel.
+  - **NextLevel Soluções:** portfólio de serviços feitos pela equipe (site, migração, temas, anúncios, conteúdo) em `/solucoes`.
+- **Corrige o D302:** os textos do site, dos termos e da privacidade voltam a dizer "NextLevel Soluções"; o cadastro de negócios do Master mostra "Soluções · Portfólio de serviços feitos pela equipe". A Business ainda não tem código de marca; entra na fase B1.
+- **Foco:** a etapa do Business começa agora, ao lado da Commerce (exceção registrada à regra 60/25/15 do D174, a pedido do dono).
+- **Base técnica encontrada:** as telas do Master (Comercial, origem dos contatos, tráfego, atendimento) guardam dados por **marca da NextLevel** (`brand`), não por empresa cliente; a empresa cliente do sistema já existe como **organização** (`organizations`, dona das lojas). A Business usa a organização como dono dos dados, sem tabelas paralelas.
+- **Plano:** `docs/prompts/nextlevel-business-gestao-captacao.md` (fases B0 a B5, piloto Megatron).
