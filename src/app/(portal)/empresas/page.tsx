@@ -41,7 +41,7 @@ export default async function ParaEmpresas() {
     <>
       <CabecalhoTech rotulo={brand.name} titulo={<>Site para a sua empresa, com o <em>{NOME_GERENCIADOR.nome}</em></>}
         texto="Páginas da empresa, pedidos de orçamento com a origem de cada contato e o painel do negócio num lugar só. Quando quiser vender online, liga a loja virtual na mesma conta."
-        dados={[{ rotulo: "Para começar", valor: aPartirDe ? `${formatBRL(aPartirDe)}/mês` : "Plano do site" }, { rotulo: "Loja virtual depois", valor: `+ ${formatBRL(book.addons.MODULO_LOJA.monthlyCents)}/mês` }, { rotulo: "Fidelidade", valor: "Nenhuma" }]} />
+        dados={[{ rotulo: "Para começar", valor: aPartirDe ? `${formatBRL(aPartirDe)}/mês` : "Plano do site" }, { rotulo: "Loja virtual", valor: "Já no plano" }, { rotulo: "Fidelidade", valor: "Nenhuma" }]} />
       <section aria-labelledby="vem-t" className="px-4 py-14 md:py-20">
         <div className="mx-auto max-w-6xl">
           <h2 id="vem-t" className="text-3xl font-semibold tracking-tight">O que vem no caminho Site</h2>
@@ -53,12 +53,12 @@ export default async function ParaEmpresas() {
       <section aria-labelledby="pacotes-t" className="bg-surface px-4 py-14 md:py-20">
         <div className="mx-auto max-w-6xl">
           <h2 id="pacotes-t" className="text-3xl font-semibold tracking-tight">Pacotes</h2>
-          <p className="mt-3 max-w-2xl text-body">O plano traz o {NOME_GERENCIADOR.nome} e o primeiro caminho que você escolher. O segundo caminho é um adicional, mensal ou anual, ligado no painel quando você quiser.</p>
+          <p className="mt-3 max-w-2xl text-body">Os planos são os mesmos da loja virtual (Start, Pro e Scale) e trazem o {NOME_GERENCIADOR.nome}. Quem começa pelo site liga a loja quando quiser, sem cobrança nova. Quem já tem a loja pode contratar o site da empresa.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="ec-cartao !p-6">
               <p className="text-sm text-muted-foreground">Para quem vende por orçamento</p>
               <h3 className="mt-1 text-xl font-semibold">{NOME_GERENCIADOR.nome} + Site</h3>
-              <p className="mt-2 text-sm text-body">{aPartirDe ? <>Plano a partir de <b>{formatBRL(aPartirDe)}/mês</b>.</> : "Plano conforme a tabela de planos."} Loja virtual depois: <b>+ {formatBRL(book.addons.MODULO_LOJA.monthlyCents)}/mês</b>.</p>
+              <p className="mt-2 text-sm text-body">{aPartirDe ? <>Plano a partir de <b>{formatBRL(aPartirDe)}/mês</b>.</> : "Plano conforme a tabela de planos."} A loja virtual já vem no plano: é só ligar quando quiser.</p>
               <Link href={entrar} className="mt-5 inline-flex font-semibold text-link underline underline-offset-4">Quero um site para minha empresa</Link>
             </div>
             <div className="ec-cartao !p-6">

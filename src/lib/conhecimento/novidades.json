@@ -1,5 +1,12 @@
 [
  {
+  "numero": 311,
+  "frente": "E-commerce",
+  "titulo": "Correção da D310: os planos da loja virtual ficam intactos; o único adicional novo é o Site",
+  "data": "2026-11-16",
+  "resumo": "Dono: \"Por que está sugerindo preços de planos pra loja virtual? Isso precisa ficar intacto no sistema.\""
+ },
+ {
   "numero": 310,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB8: plano do negócio, Site e Loja virtual como adicionais e a página \"Site para empresas\"",
@@ -271,12 +278,5 @@
   "titulo": "AT3 do atacado: grade livre (cor × tamanho), mínimo por modelo e múltiplos",
   "data": "2026-11-07",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT3 (retomada a pedido do dono em 07/11)."
- },
- {
-  "numero": 267,
-  "frente": "Grupo",
-  "titulo": "BC2: perguntas por aula, progresso por pessoa e painel \"quem está pronto\" no Aprender",
-  "data": "2026-11-07",
-  "resumo": "Perguntas: cada uma das aulas tem 3 perguntas rápidas no fim (src/lib/conhecimento/perguntas.ts), montadas dos mesmos fatosAoVivo: se o preço ou a comissão muda, a resposta certa muda junto. Teste: nenhum valor em reais ou percentual esc…"
  }
 ]

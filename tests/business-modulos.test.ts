@@ -9,7 +9,7 @@ import { grantEntitlement } from "@/lib/domain/entitlements";
 import { caminhoDoInteressado, comCaminho, createBrandLead } from "@/lib/domain/brand-leads";
 import { brandLeads } from "@/db/schema";
 import { DEFAULT_PRICE_BOOK, priceBookSchema } from "@/lib/finance/price-book";
-import { contratarModulo, pacoteDe, PACOTE_ROTULO } from "@/lib/business/planos";
+import { contratarModulo, ligarLojaVirtual, pacoteDe, PACOTE_ROTULO } from "@/lib/business/planos";
 import { markInvoicePaid } from "@/lib/domain/finance";
 
 const base = { marca: "NEXTLEVEL_COMMERCE", direitos: new Set<string>(), ligado: true };
@@ -106,13 +106,13 @@ describe("caminho escolhido no formulário de entrada (NB1)", () => {
 describe("tabela de preços com os módulos (NB8, D310)", () => {
   it("tabela salva antes dos módulos continua valendo; os módulos entram com o valor padrão", () => {
     const antiga = structuredClone(DEFAULT_PRICE_BOOK) as unknown as { addons: Record<string, unknown> };
-    delete antiga.addons.MODULO_SITE; delete antiga.addons.MODULO_LOJA;
+    delete antiga.addons.MODULO_SITE; antiga.addons.MODULO_LOJA = { name: "Chave antiga", description: "x", audience: "STORE", monthlyCents: 1, annualCents: 1 };
     (antiga.addons.PREMIUM_SUPPORT as { monthlyCents: number }).monthlyCents = 12_345;
     const r = priceBookSchema.safeParse(antiga);
     expect(r.success).toBe(true);
     expect(r.data!.addons.PREMIUM_SUPPORT.monthlyCents).toBe(12_345);
     expect(r.data!.addons.MODULO_SITE.name).toBe("Site para a empresa");
-    expect(r.data!.addons.MODULO_LOJA.audience).toBe("STORE");
+    expect("MODULO_LOJA" in r.data!.addons).toBe(false);
   });
 });
 
@@ -121,23 +121,27 @@ describe("pacotes do negócio (NB8, D308/D310)", () => {
     expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "LOJA" }))]).toBe("NextLevel Business + Loja virtual");
     expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "SITE", direitos: new Set([chaveDoModulo("loja")]) }))]).toBe("NextLevel Business + Site + Loja virtual");
   });
-  it("contratar: só o dono, só com o Business ligado e nunca o caminho que já vem no plano", async () => {
+  it("planos de loja intactos: o site é o único adicional; a loja liga sem cobrança para quem entrou pelo site", async () => {
     const ctx = await freshDb();
     const r = await signupMember(ctx.db, { storeName: "Vidraçaria Plano", ownerName: "Rita Lima", email: "rita@plano.com.br", password: "senha-segura-1", taxId: "529.982.247-25", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true, formato: "SITE" });
     const ator = { userId: r.userId, role: "STORE_OWNER" as const, organizationId: "x", supplierId: null, storeId: r.storeId };
-    await expect(contratarModulo(ctx.db, ator, "MODULO_LOJA", "MONTHLY")).rejects.toThrow(/ainda não está aberta/);
-    await expect(contratarModulo(ctx.db, { ...ator, storeRole: "STAFF" as const }, "MODULO_LOJA", "MONTHLY")).rejects.toThrow(/Só o dono/);
-    await expect(contratarModulo(ctx.db, ator, "MODULO_CAIXA", "MONTHLY")).rejects.toThrow(/não encontrado/);
+    await expect(contratarModulo(ctx.db, ator, "MODULO_LOJA", "MONTHLY")).rejects.toThrow(/não encontrado/);
+    await expect(ligarLojaVirtual(ctx.db, ator)).rejects.toThrow(/Ainda não está aberto/);
     process.env.BUSINESS_V1 = "true";
     try {
       await expect(contratarModulo(ctx.db, ator, "MODULO_SITE", "MONTHLY")).rejects.toThrow(/já vem no seu plano/);
-      const f = await contratarModulo(ctx.db, ator, "MODULO_LOJA", "MONTHLY");
-      expect(f.amountCents).toBe(DEFAULT_PRICE_BOOK.addons.MODULO_LOJA.monthlyCents);
-      // Pago: o módulo Loja liga na mesma conta, o site continua.
-      expect((await modulosDoNegocio(ctx.db, r.storeId)).ativos.has("loja")).toBe(false);
-      await markInvoicePaid(ctx.db, f.invoiceId);
+      await expect(ligarLojaVirtual(ctx.db, { ...ator, storeRole: "STAFF" as const })).rejects.toThrow(/Só o dono/);
+      expect((await ligarLojaVirtual(ctx.db, ator)).nova).toBe(true);
       const m = await modulosDoNegocio(ctx.db, r.storeId);
       expect(m.ativos.has("loja") && m.ativos.has("site")).toBe(true);
+      expect((await ligarLojaVirtual(ctx.db, ator)).nova).toBe(false);
+      // Lojista contrata o site: fatura com o preço da tabela; paga, o site liga.
+      const l = await signupMember(ctx.db, { storeName: "Moda Plano", ownerName: "Ana Lima", email: "ana@plano.com.br", password: "senha-segura-1", taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true });
+      const lojista = { userId: l.userId, role: "STORE_OWNER" as const, organizationId: "x", supplierId: null, storeId: l.storeId };
+      const f = await contratarModulo(ctx.db, lojista, "MODULO_SITE", "MONTHLY");
+      expect(f.amountCents).toBe(DEFAULT_PRICE_BOOK.addons.MODULO_SITE.monthlyCents);
+      await markInvoicePaid(ctx.db, f.invoiceId);
+      expect((await modulosDoNegocio(ctx.db, l.storeId)).ativos.has("site")).toBe(true);
     } finally { delete process.env.BUSINESS_V1; }
   });
 });

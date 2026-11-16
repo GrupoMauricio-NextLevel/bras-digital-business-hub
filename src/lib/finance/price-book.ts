@@ -10,8 +10,11 @@ export const TIER_KEYS = ["START", "GROWTH", "SCALE"] as const;
 export type TierKey = (typeof TIER_KEYS)[number];
 export type SupplierModel = "SUPERDROP" | "WHITE_LABEL";
 
-/** MODULO_SITE e MODULO_LOJA (NextLevel Business, NB8, D310): o segundo caminho do negócio, contratado à parte (o plano já traz o primeiro). */
-export const ADDON_KEYS = ["ACADEMY_STORE", "PREMIUM_SUPPORT", "ADVANCED_REPORTS", "EXTRA_DISPATCH_SEAT", "MODULO_SITE", "MODULO_LOJA"] as const;
+/**
+ * MODULO_SITE (NextLevel Business, D310/D311): o site da empresa para quem já é lojista. Não existe adicional de loja: a loja
+ * virtual são os planos Start, Pro e Scale, intactos (quem entrou pelo caminho Site já assina um deles).
+ */
+export const ADDON_KEYS = ["ACADEMY_STORE", "PREMIUM_SUPPORT", "ADVANCED_REPORTS", "EXTRA_DISPATCH_SEAT", "MODULO_SITE"] as const;
 export type AddonKey = (typeof ADDON_KEYS)[number];
 
 export type AddonDef = { name: string; description: string; audience: "STORE" | "SUPPLIER" | "BOTH"; monthlyCents: number; annualCents: number };
@@ -21,7 +24,6 @@ const DEFAULT_ADDONS: Record<AddonKey, AddonDef> = {
   ADVANCED_REPORTS: { name: "Relatórios avançados", description: "Margem por produto, recompra e exportação para planilha.", audience: "STORE", monthlyCents: 2_900, annualCents: 29_000 },
   // Preço provisório (D310): o dono define o valor em Master → Financeiro → Tabela de preços.
   MODULO_SITE: { name: "Site para a empresa", description: "Páginas da empresa (Sobre, Serviços, Contato, campanha), serviços e o formulário de orçamento com a origem de cada pedido.", audience: "STORE", monthlyCents: 2_900, annualCents: 29_000 },
-  MODULO_LOJA: { name: "Loja virtual", description: "Catálogo, carrinho, Pix e cartão, temas e atacado, no mesmo painel e no mesmo endereço do site.", audience: "STORE", monthlyCents: 4_900, annualCents: 49_000 },
   EXTRA_DISPATCH_SEAT: { name: "Assento extra de expedição", description: "Mais um funcionário usando a esteira de separação.", audience: "SUPPLIER", monthlyCents: 1_900, annualCents: 19_000 },
 };
 
@@ -43,9 +45,10 @@ export const priceBookSchema = z.object({
   dunning: z.object({ warningDays: days, partialBlockDays: days, suspendedDays: days, closedDays: days }),
   costs: z.object({ collectionFeeBps: bps, infraPerStoreCents: cents, supportPerSupplierCents: cents }),
   /** Add-ons mensais/anuais liberados por entitlement. audience: quem pode comprar. */
-  addons: z.partialRecord(z.enum(ADDON_KEYS), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS))
-    // Tabela salva antes de um adicional novo existir continua válida: o que faltar entra com o valor padrão (D310).
-    .transform((v) => ({ ...structuredClone(DEFAULT_ADDONS), ...v }) as Record<AddonKey, AddonDef>),
+  addons: z.record(z.string(), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS))
+    // Tabela salva antes ou depois de um adicional mudar continua válida (D310/D311): o que faltar entra com o valor padrão
+    // e chave que não existe mais é ignorada (nunca derruba a tabela inteira de volta ao padrão).
+    .transform((v) => ({ ...structuredClone(DEFAULT_ADDONS), ...Object.fromEntries(Object.entries(v).filter(([k]) => (ADDON_KEYS as readonly string[]).includes(k))) }) as Record<AddonKey, AddonDef>),
 });
 export type PriceBook = z.infer<typeof priceBookSchema>;
 

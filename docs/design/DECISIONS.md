@@ -3889,3 +3889,19 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - conta só com o Business (sem site nem loja), quando houver procura;
   - Caixa e Captação como adicionais quando as fases existirem;
   - texto dos termos de uso citando o site (revisão jurídica).
+
+## D311 — [E-commerce] Correção da D310: os planos da loja virtual ficam intactos; o único adicional novo é o Site (2026-11-16)
+- **Dono:** "Por que está sugerindo preços de planos pra loja virtual? Isso precisa ficar intacto no sistema."
+- **Correção:**
+  - sai o adicional "Loja virtual" (`MODULO_LOJA`, R$ 49/mês) da D310, que criava outro preço de loja;
+  - **a loja virtual são os planos Start, Pro e Scale, intactos** (preço, funções e telas; nenhuma linha de `commerce-plans`, catálogo, `/planos` ou tabela de planos foi alterada).
+- **Como fica:**
+  - quem entra pelo caminho Site assina um desses mesmos planos, então a loja virtual já está paga. Em Ajustes → Plano do negócio, "Ligar a loja virtual" só liga a loja (direito `MODULO_LOJA` com origem "plano"), **sem cobrança nova**; só o dono liga;
+  - o único adicional novo é o **Site para a empresa** (`MODULO_SITE`), para quem já é lojista, com preço provisório de R$ 29/mês ou R$ 290/ano até o dono definir na tabela de preços do Master.
+- **Tabela de preços:** chave de adicional que deixou de existir é ignorada, e a que falta entra com o valor padrão. Uma tabela salva nunca volta inteira ao padrão por causa disso.
+- **`/empresas`:** sem preço de loja inventado; diz que os planos são os mesmos da loja virtual e que a loja já vem no plano para quem começa pelo site.
+- **Teste:** `tests/business-modulos.test.ts`:
+  - `MODULO_LOJA` não é vendido;
+  - a loja liga sem fatura para quem entrou pelo site;
+  - o lojista contrata o site pelo preço da tabela, e o site liga quando a fatura é paga;
+  - a tabela antiga com a chave removida continua válida.
