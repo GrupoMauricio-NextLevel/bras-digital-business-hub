@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
     const secure = (req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "")) === "https";
     vazio.cookies.set("nl-vid", visitanteId, { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: 395 * 86_400 });
     vazio.cookies.set("nl-sid", r.sessaoId, { path: "/", sameSite: "lax", secure, httpOnly: true, maxAge: SESSAO_MIN * 60 });
+    // Código da visita (TR3, D294): legível pela página só para entrar na mensagem do WhatsApp; não identifica ninguém.
+    if (r.codigo) vazio.cookies.set("nl-cv", r.codigo, { path: "/", sameSite: "lax", secure, httpOnly: false, maxAge: SESSAO_MIN * 60 });
   } catch (e) { console.error("[trafego] sinal", e); }
   return vazio;
 }

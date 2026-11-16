@@ -673,6 +673,27 @@
       "when": 1794549591478,
       "tag": "0095_trafego_local_aparelho",
       "breakpoints": true
+    },
+    {
+      "idx": 96,
+      "version": "7",
+      "when": 1794600626133,
+      "tag": "0096_origens_contato",
+      "breakpoints": true
+    },
+    {
+      "idx": 97,
+      "version": "7",
+      "when": 1794612830887,
+      "tag": "0097_conversoes_envio",
+      "breakpoints": true
+    },
+    {
+      "idx": 98,
+      "version": "7",
+      "when": 1794621903180,
+      "tag": "0098_anuncios_loja",
+      "breakpoints": true
     }
   ]
 }

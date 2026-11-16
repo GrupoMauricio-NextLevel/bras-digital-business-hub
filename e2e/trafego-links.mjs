@@ -1,5 +1,5 @@
 /**
- * TR0 + TR1 (D290), TR2 (D291) e cidade/aparelho com notificações (D292): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
+ * TR0 + TR1 (D290), TR2 (D291), cidade/aparelho com notificações (D292) origem no Comercial (TR3, D294), Pixel/Google com consentimento (TR4, D295) e retorno às plataformas (TR5, D298): aviso de cookies na home, origem do anúncio guardada (fbclid e primeiro toque), link rastreado criado
  * no Master, clique contado e chegada com as etiquetas. Acessibilidade (axe) e 360 px sem rolagem lateral.
  * Uso: bash scripts/restart-demo.sh && E2E_BASE=http://localhost:3100 node e2e/trafego-links.mjs   (SHOTS=/pasta; muda dados)
  */
@@ -145,6 +145,121 @@ const shot = async (p, nome) => { if (SHOTS) await p.screenshot({ path: `${SHOTS
   await p.goto(B + "/master/trafego/origens", { waitUntil: "networkidle" });
   await noScroll(p, "origens 360");
   for (const [c] of visitantes) await c.close();
+  await m.close();
+}
+
+// 4) TR3: visita de anúncio → código da visita no WhatsApp → lista de espera → Comercial mostra a origem; Fechou com valor.
+{
+  const c = await b.newContext({ viewport: { width: 390, height: 844 }, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 320.0.0.0", extraHTTPHeaders: { "x-forwarded-for": "200.147.67.142" } });
+  const v = await c.newPage();
+  await v.goto(`${B}/lojas`, { waitUntil: "networkidle" });
+  await v.goto(`${B}/quero-minha-loja?utm_source=meta&utm_medium=pago&utm_campaign=2026-12-tr3&utm_content=video-tr3&fbclid=IwTR3`, { waitUntil: "networkidle" });
+  await v.waitForTimeout(1200);
+  const zap = v.locator('a[aria-label="Falar no WhatsApp"]');
+  if (await zap.count()) {
+    await v.evaluate(() => { const a = document.querySelector('a[aria-label="Falar no WhatsApp"]'); a?.addEventListener("click", (e) => e.preventDefault(), { once: true }); a?.click(); });
+    const href = decodeURIComponent(((await zap.getAttribute("href")) ?? "").replaceAll("+", " "));
+    if (/\(código [A-HJ-NP-Z2-9]{5}\)/.test(href)) ok("mensagem do WhatsApp leva o código da visita"); else fail(`WhatsApp sem código: ${href.slice(0, 160)}`);
+  } else ok("(sem botão de WhatsApp nesta demonstração: código não conferido)");
+  const email = `tr3-${Date.now()}@loja.teste`;
+  await v.getByLabel("Seu nome").fill("Cliente TR3");
+  await v.getByLabel("E-mail").fill(email);
+  await v.getByLabel("WhatsApp com DDD").fill("85999990000");
+  await v.getByRole("button", { name: "Enviar" }).click();
+  await v.waitForTimeout(2500);
+  await c.close();
+
+  const m = await b.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/comercial?canal=meta-pago", { waitUntil: "networkidle" });
+  const cartao = p.locator("li", { hasText: "Cliente TR3" }).first();
+  if (await cartao.count() && /2026-12-tr3/.test(await cartao.textContent()) && /Fortaleza\/CE/.test(await cartao.textContent())) ok("Comercial (filtro Anúncio Meta) mostra o lead com campanha e cidade"); else fail("lead não apareceu com a origem no Comercial");
+  await shot(p, "08-comercial-filtro-canal");
+  const v1 = await axe(p); if (v1.length) fail(`axe comercial: ${v1.join(" | ")}`); else ok("axe sem violações graves no Comercial");
+  await cartao.getByRole("link", { name: "Cliente TR3" }).click();
+  await p.getByRole("heading", { name: "De onde veio" }).waitFor({ timeout: 20000 });
+  const ficha = await p.locator("main").textContent();
+  if (/De onde veio/.test(ficha) && /video-tr3/.test(ficha) && /Clique de anúncio Meta/.test(ficha) && /iPhone · App do Instagram/.test(ficha)) ok("ficha: De onde veio com peça, clique do anúncio e aparelho"); else fail("ficha sem a origem completa");
+  await p.getByRole("button", { name: "Fechou negócio" }).click();
+  await p.getByLabel("Valor fechado").fill("1997,00");
+  await p.getByLabel("O que foi vendido").fill("Loja Pronta");
+  await p.getByRole("button", { name: "Confirmar fechamento" }).click();
+  await p.getByText(/Negócio fechado:/).first().waitFor({ timeout: 15000 }).then(() => ok("Fechou negócio com valor"), () => fail("Fechou negócio não gravou"));
+  await shot(p, "09-ficha-de-onde-veio");
+  const v2 = await axe(p); if (v2.length) fail(`axe ficha: ${v2.join(" | ")}`); else ok("axe sem violações graves na ficha");
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload({ waitUntil: "networkidle" });
+  await noScroll(p, "ficha 360");
+  await m.close();
+}
+
+// 5) TR4: números no Master; tags só carregam com "Aceitar todos"; Lead sai com o identificador do contato.
+{
+  const m = await b.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/trafego/conexoes", { waitUntil: "networkidle" });
+  await p.getByLabel("Google Ads: código da conta de conversão").fill("1234");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.getByText(/começa com AW-/).first().waitFor({ timeout: 10000 }).then(() => ok("número errado recusado com explicação"), () => fail("número errado não foi recusado"));
+  await p.getByLabel("Pixel da Meta (número do conjunto de dados)").fill("123456789012345");
+  await p.getByLabel("Google Ads: código da conta de conversão").fill("AW-1234567890");
+  await p.getByLabel('Google Ads: rótulo da conversão "Contato"').fill("AbC-dEfGhIj");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.getByText("Ligado").first().waitFor({ timeout: 10000 }).then(() => ok("Pixel e Google ligados no Master"), () => fail("tags não ficaram ligadas"));
+  await shot(p, "10-master-pixel-google");
+  const va = await axe(p); if (va.length) fail(`axe conexões: ${va.join(" | ")}`); else ok("axe sem violações graves em Pixel e Google");
+  await m.close();
+
+  for (const escolha of ["Só os necessários", "Aceitar todos"]) {
+    const c = await b.newContext({ viewport: { width: 390, height: 844 }, userAgent: UA });
+    await c.route(/connect\.facebook\.net|googletagmanager\.com/, (r) => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
+    const v = await c.newPage();
+    await v.goto(`${B}/lojas`, { waitUntil: "networkidle" });
+    await v.goto(`${B}/quero-minha-loja`, { waitUntil: "networkidle" });
+    await v.getByRole("region", { name: "Cookies e privacidade" }).getByRole("button", { name: escolha }).click();
+    await v.waitForTimeout(800);
+    const tem = await v.evaluate(() => ({ fb: !!document.getElementById("nl-fbq"), g: !!document.getElementById("nl-gtag") }));
+    if (escolha === "Só os necessários") { if (!tem.fb && !tem.g) ok("sem aceite: Pixel e Google não carregam"); else fail("tags carregaram sem aceite"); await c.close(); continue; }
+    if (tem.fb && tem.g) ok("com aceite: Pixel e Google carregam"); else fail(`tags não carregaram com aceite: ${JSON.stringify(tem)}`);
+    await v.getByLabel("Seu nome").fill("Cliente TR4");
+    await v.getByLabel("E-mail").fill(`tr4-${Date.now()}@loja.teste`);
+    await v.getByLabel("WhatsApp com DDD").fill("11999990000");
+    await v.getByRole("button", { name: "Enviar" }).click();
+    await v.waitForTimeout(2500);
+    const filas = await v.evaluate(() => ({ fb: JSON.stringify((window).fbq?.queue ?? []), g: JSON.stringify((window).dataLayer ?? []) }));
+    if (/"track","Lead",\{\},\{"eventID":"interessado:bld_/.test(filas.fb)) ok("Pixel recebeu o Lead com o identificador do contato"); else fail(`Lead não chegou ao Pixel: ${filas.fb.slice(0, 300)}`);
+    if (/"conversion".*"send_to":"AW-1234567890\/AbC-dEfGhIj".*"transaction_id":"interessado:bld_/.test(filas.g)) ok("Google Ads recebeu a conversão de contato"); else fail(`conversão não chegou ao Google: ${filas.g.slice(0, 300)}`);
+    await c.close();
+  }
+}
+
+// 6) TR5: a tela de retorno mostra a fila (contatos dos passos anteriores) e guarda o token sem mostrar.
+{
+  const m = await b.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce", extraHTTPHeaders: { "x-forwarded-host": "master.nextlevelgroup.com.br" } });
+  const p = await m.newPage();
+  await p.goto(B + "/login", { waitUntil: "networkidle" });
+  await p.getByRole("button", { name: /Equipe NextLevel/ }).first().click();
+  await p.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 90000 });
+  await p.goto(B + "/master/trafego/retorno", { waitUntil: "networkidle" });
+  if (/Deixou contato/.test(await p.locator("main").textContent())) ok("fila de retorno mostra os contatos deixados"); else fail("fila de retorno vazia");
+  await p.getByLabel(/Token de acesso da API de conversões/).fill("EAAteste-e2e-segredo");
+  await p.getByRole("button", { name: "Salvar" }).click();
+  await p.waitForTimeout(2500);
+  await p.reload({ waitUntil: "networkidle" });
+  const html = await p.content();
+  if (!/EAAteste-e2e-segredo/.test(html) && /guardado; deixe vazio/.test(html)) ok("token guardado e nunca mostrado de volta"); else fail("token apareceu na tela ou não foi guardado");
+  if (/Ligado/.test(await p.getByRole("region", { name: "Situação por plataforma" }).textContent())) ok("Meta ligada (Pixel + token)"); else fail("Meta não ficou ligada");
+  await shot(p, "11-master-retorno");
+  const v = await axe(p); if (v.length) fail(`axe retorno: ${v.join(" | ")}`); else ok("axe sem violações graves em Retorno às plataformas");
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload({ waitUntil: "networkidle" });
+  await noScroll(p, "retorno 360");
   await m.close();
 }
 await b.close();

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FormField } from "@/components/app/form-field";
 import { requestDiagnosticAction } from "@/app/actions/financeiro";
+import { conversaoAnuncio } from "@/components/portal/tags-anuncio";
 import { EVENTO_DIAGNOSTICO } from "@/components/portal/solucoes/selecao";
 
 /** Diagnóstico gratuito: formulário curto, roteamento por necessidade e atribuição de parceiro (pelo cookie do proxy). */
@@ -37,7 +38,7 @@ export function DiagnosticoForm({ needs, inicial = [], mensagemInicial = "" }: {
       e.preventDefault(); setBusy(true); setError(null);
       const r = await requestDiagnosticAction({ name: f.name, email: f.email, phone: f.phone, company: f.company || undefined, stage: f.stage as never, needs: picked as never, message: f.message || undefined, consent: f.consent as true });
       setBusy(false);
-      if (r.ok) setRoutes(r.data.routes); else setError(r.error);
+      if (r.ok) { conversaoAnuncio("Lead", r.data.eventoId); setRoutes(r.data.routes); } else setError(r.error);
     }}>
       <div className="grid gap-3 sm:grid-cols-2">
         <FormField label="Nome" htmlFor="dg-n"><Input id="dg-n" autoComplete="name" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></FormField>

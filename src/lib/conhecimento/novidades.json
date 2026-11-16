@@ -1,5 +1,33 @@
 [
  {
+  "numero": 299,
+  "frente": "E-commerce",
+  "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
+ },
+ {
+  "numero": 298,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
+  "data": "2026-11-14",
+  "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
+ },
+ {
+  "numero": 295,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
+  "data": "2026-11-14",
+  "resumo": "Onde configurar: Master → Tráfego e campanhas → Pixel e Google. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão \"Contato\") e, opcional, Google Analytics 4 (G-…)…"
+ },
+ {
+  "numero": 294,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
+  "data": "2026-11-13",
+  "resumo": "Origem de cada contato: quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova origens_contato, ligada à mesma chave do Comercial: canal, campanha, peça,…"
+ },
+ {
   "numero": 293,
   "frente": "E-commerce",
   "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
@@ -250,33 +278,5 @@
   "titulo": "AT1 do atacado: painel do lojista e travas por plano",
   "data": "2026-11-05",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
- },
- {
-  "numero": 257,
-  "frente": null,
-  "titulo": "AT0 do atacado: dados e motor único de preço",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT0."
- },
- {
-  "numero": 256,
-  "frente": null,
-  "titulo": "O padrão do chat vale para todo o sistema",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Esse racional de correção visual do chat precisa se estender para todo o sistema, e não somente em parceiros.\""
- },
- {
-  "numero": 255,
-  "frente": null,
-  "titulo": "Celular no padrão da referência: Maurício em tela cheia e menu flutuante",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono (com capturas da Hostinger): \"No mobile quero que o chat abra completo, seguindo as referências.\""
- },
- {
-  "numero": 254,
-  "frente": null,
-  "titulo": "Revisão visual: Maurício encaixado na moldura do painel (borda contínua) e alinhamentos",
-  "data": "2026-11-05",
-  "resumo": "Pedido do dono: \"Os prints revelam alguns erros no alinhamento e falhas no design.\""
  }
 ]

@@ -3555,6 +3555,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Cidades** também em "De qual cidade" (Agora) e "De quais cidades" (Origens, com visitas e contatos por cidade).
 - **Política de privacidade:** a medição do site agora descreve aparelho e cidade aproximada, e que o IP não é guardado.
 - **Banco:** colunas novas em `trafego_sessoes` (cidade, uf, pais, sistema, navegador, modelo, tela, idioma, rede; migração 0095).
+
 ## D293 — [E-commerce] Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow (2026-11-14)
 - **Pedido do dono:** começar o plano v3 de busca, IA e Academy (`docs/prompts/busca-ia-academy-funil-organico.md`). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos.
 - **Tabela central** (`src/lib/seo/paginas.ts`): título, descrição, canonical, prévia de link (Open Graph e cartão do X), prioridade e data de revisão de cada uma das 20 páginas públicas da Commerce. As páginas usam `metadadosDaPagina` (`src/lib/seo/metadados.ts`); nas outras marcas fica o que já havia.
@@ -3569,3 +3570,104 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **IndexNow:** chave pública em `public/<chave>.txt` e `node scripts/indexnow.mjs` depois de cada publicação que mude páginas públicas (avisa Bing, Yandex e outros; o Bing alimenta o Copilot).
 - **Fica com o dono:** verificar `nextlevelcommerce.com.br` no Google Search Console (propriedade de domínio, registro TXT na Hostinger) e no Bing Webmaster (importa do Google), enviar o sitemap e pedir a mudança de endereço a partir de `lojas.nextlevelgroup.com.br`.
 - **Teste:** `tests/seo-paginas.test.ts` (títulos e descrições únicos, no tamanho certo e sem texto vencido; toda página com linha na tabela; sitemap; robôs; chave do IndexNow; perguntas só com fatos válidos; entidade).
+
+## D294 — [E-commerce] Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp (2026-11-13)
+- **Origem de cada contato:** quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova `origens_contato`, ligada à mesma chave do Comercial: canal, campanha, peça, público, clique do anúncio (Meta, Google ou TikTok), primeiro canal pelo qual conheceu o site, cidade aproximada, aparelho e o código da visita. Vale a visita em andamento; se ela entrou "direto", vale o último toque com campanha dos últimos 30 dias (D90). A primeira origem fica (não é sobrescrita). A visita passa a contar como "deixou contato" em Agora no site.
+- **Comercial:** cada cartão mostra o selo do canal, a campanha e a cidade; filtro por canal no topo ("Origem não registrada" para quem chegou antes desta fase). A ficha do cliente ganha "De onde veio" (como chegou, campanha, peça, público, conheceu por, cidade, aparelho, código da visita) e a linha do tempo registra "Chegou por…".
+- **Fechou e Perdeu:** na ficha, "Fechou negócio" pede o valor (em reais, gravado em centavos) e o que foi vendido; a pessoa passa a "Pagante" no quadro (a menos que o sistema já diga "Em risco"). "Perdeu" pede o motivo de uma lista (Achou caro, Escolheu outra plataforma, Não respondeu mais, Ainda não é a hora, Ainda não tem produto ou empresa, Não era o público, Outro) e um detalhe opcional. Dá para desfazer os dois. É a base do retorno às plataformas (TR5).
+- **Código da visita no WhatsApp:** cada visita ganha um código de 5 letras e números (sem 0/O e 1/I/L). Ao clicar no WhatsApp do site, a mensagem pronta vai com "(código K7Q2X)". A equipe cola o código na ficha ("Código da visita") e o contato herda a origem daquela visita, corrigindo a captura automática. O código também aparece nas entradas de Agora no site. Só a equipe (dono, Comercial e Suporte) liga códigos.
+- **Banco:** migração 0096 (tabela `origens_contato`; colunas `motivo_perda`, `fechou_em`, `valor_fechado_cents` e `fechou_descricao` em `crm_acompanhamento`; `codigo` em `trafego_sessoes`).
+- **Acessibilidade:** as chamas de temperatura do Comercial ganharam papel de imagem (o axe apontava rótulo em elemento sem papel).
+- **Próxima fase:** TR4 (Pixel da Meta e tag do Google no site da NextLevel, só com consentimento).
+
+## D295 — [E-commerce] Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento (2026-11-14)
+- **Onde configurar:** Master → Tráfego e campanhas → **Pixel e Google**. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão "Contato") e, opcional, Google Analytics 4 (G-…). Cada campo diz onde achar o número; formato errado é recusado com explicação; mudança fica na trilha de auditoria. Guardado em `platform_settings` (`trafego.tags`), sem criptografia porque o número vai no código da página; tokens de API ficam para a TR5, criptografados.
+- **Carregamento:** nas páginas públicas das marcas (portal), **só depois que a pessoa aceita "Anúncios"** no aviso de cookies (D290). Sem aceite, nenhum script da Meta ou do Google é baixado. Se a pessoa tirar o aceite depois, a página manda a revogação para a Meta e para o Google e para de enviar eventos. As lojas dos lojistas seguem com as integrações delas (D187, D189).
+- **Eventos:** página vista (inclusive navegando dentro do site); **Contato** ao clicar no WhatsApp; **Lead** quando o contato é aceito (lista de espera, janela de saída, diagnóstico), com o identificador do contato (`interessado:<id>`) como `eventID` da Meta e `transaction_id` do Google. É o mesmo identificador que o servidor vai mandar na TR5, para não contar duas vezes. Cadastro da loja e pagante vão pelo servidor na TR5 (a página de cadastro fica fora das páginas públicas).
+- **Depende do dono:** colar os números no Master. Até lá, nada carrega.
+- **Próxima fase:** TR5 (devolver para a Meta e o Google, pelo servidor, quem virou contato, conta e pagante, com valor; públicos de clientes).
+# D296 — [E-commerce] Caixa de entrada no Master, e-mails por assunto e ligação com o Comercial (2026-11-13)
+- **Pedido do dono:** usar a caixa da Hostinger dentro do Master e deixar CRM, e-mail e comercial bem ligados, para produtividade.
+- **Caixa de entrada (`/master/caixa-de-entrada`, menu Escritório):**
+  - lê a caixa da Hostinger pela API do Correio Agêntico (token `HOSTINGER_MAIL_TOKEN`, colado pelo dono no Render, nunca em tela ou log);
+  - pastas, busca, leitura em texto (HTML só em quadro isolado, sem scripts), anexos, responder na mesma conversa, escrever, mover e marcar como não lida;
+  - só o dono abre (a caixa tem dados de todos os clientes); a equipe do Master não.
+- **Quem é o remetente:** cada e-mail mostra se é lojista, equipe de loja, parceiro ou interessado, com link para a ficha no Comercial (`/master/comercial/loja:…` ou `interessado:…`).
+- **Ligação com o Comercial:**
+  - remetente que ainda não está no sistema vira interessado com o botão "Salvar no CRM" (sem e-mail automático para ele);
+  - responder ou escrever para um interessado novo muda a situação dele para "contatado";
+  - a ficha do cliente no Comercial ganha "Ver e-mails", que abre a caixa já filtrada pelo e-mail dele.
+- **E-mails por assunto (`src/lib/contatos.ts`, fonte única):** os e-mails automáticos do sistema saem com "responder para" conforme o assunto: financeiro@ (contrato, fatura, assinatura, Pix), parceiros@ (comissão, indicação), comercial@ (interessados, propostas), suporte@ (senha, login, loja, pedidos), contato@ (o resto). Os e-mails das lojas para os clientes delas continuam com o endereço da loja.
+- **Nas telas:** o rodapé das páginas públicas da Commerce mostra os endereços por assunto; a Ajuda do lojista mostra suporte@ e financeiro@.
+- **Depois:** contador de não lidas no menu e atendimento automático a partir de suporte@ (webhook do Correio Agêntico).
+
+# D297 — [E-commerce] Caixa de entrada: número de não lidos no menu e respostas prontas (2026-11-13)
+- **Pedido do dono:** CRM, e-mail e comercial bem ligados para a produtividade; seguir com as sugestões 1 (contador) e 3 (respostas prontas).
+- **Não lidos no menu:** o item "Caixa de entrada" do Master mostra quantos e-mails da Entrada estão sem ler (até "99+"). Só o dono vê (a equipe do Master não abre a caixa). O número é guardado por 1 minuto e a consulta desiste em 1,5 s: o menu nunca espera a Hostinger. Ler, mover ou marcar como não lida atualiza o número.
+- **Respostas prontas:** ao responder, "Resposta pronta" preenche a mensagem (o dono ajusta antes de enviar): recebemos, planos e teste grátis, domínio próprio, comprovante de Pix e quero ser parceiro. Saudação com o primeiro nome do remetente. Sem preço (aponta para /planos, porque o valor vem da tabela de preços) e sem promessa de ganho.
+- **Depois:** respostas prontas editáveis pelo Master, se o dono quiser mudar os textos sem programação.
+
+## D298 — [E-commerce] Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda) (2026-11-14)
+- **O que volta para as plataformas:**
+
+  | Resultado no sistema | Meta (API de conversões) | Google Ads (conversão importada por clique) | Valor |
+  |---|---|---|---|
+  | Deixou contato (lista de espera, janela de saída, diagnóstico, código do WhatsApp) | Lead | ação "Contato" | sem |
+  | Criou a loja | CompleteRegistration | ação "Conta criada" | sem |
+  | Virou pagante (assinatura ativa, pagamento conferido) | Subscribe | ação "Pagante" | mensalidade |
+  | Negócio fechado à mão no Comercial | Purchase | ação "Pagante" | valor fechado |
+
+- **Fila** (`conversoes_envio`, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 minutos (`/api/cron/expire-reservations`) põe os pagantes novos na fila e envia. Prazos: 7 dias na Meta e 90 no Google; passou, fica "fora do prazo". Novas tentativas em 10 min, 1 h, 6 h e 1 dia (até 5); erro de dado (400 da Meta, recusa do Google) não insiste.
+- **Sem configuração, a fila espera** sem gastar tentativa: quando o dono ligar, o que estiver no prazo é enviado.
+- **Privacidade:** e-mail e telefone só vão como resumo SHA-256, montados na hora do envio e nunca gravados na fila. Quem escolheu "não" para anúncios no aviso de cookies fica "Recusou anúncios" e nada é enviado. O Google só recebe quem veio de clique de anúncio do Google (gclid, gbraid ou wbraid). A origem do contato passa a guardar o navegador, a escolha no aviso de cookies e os cookies da Meta (`_fbp`, `_fbc`).
+- **Evento de site × de sistema:** contato e conta vão como evento do site (com o navegador e o endereço); pagante e venda, como evento do sistema.
+- **Configuração** em Master → Tráfego e campanhas → **Retorno às plataformas**, **só o dono**: token da API de conversões da Meta e código de teste opcional; para o Google, conta, conta de administrador, token de desenvolvedor, acesso OAuth (ID, chave secreta e token de atualização) e os números das três ações de conversão. Segredos ficam criptografados, nunca voltam para a tela nem para a trilha de auditoria; deixar vazio mantém, "-" apaga. A tela mostra Ligado/Desligado, a contagem (entregue, na fila, falhou, recusou anúncios) e os últimos resultados com o nome da pessoa e o motivo de cada falha, com "Tentar de novo".
+- **Versões das APIs:** Meta Graph `v23.0` e Google Ads `v22`, trocáveis por `META_GRAPH_VERSION` e `GOOGLE_ADS_API_VERSION` sem mexer no código. A compra das lojas na Meta (D187) passou a usar a mesma versão (antes `v19.0`, já fora do prazo da Meta).
+- **Depende do dono:** gerar o token da Meta e colar no Master; conta de administrador e token de desenvolvedor do Google aprovados. Conferir que a rotina `/api/cron/expire-reservations` está agendada no Render (a cada 5 a 10 min).
+- **Fica para depois (TR5b):** públicos de clientes (pagantes para "semelhantes" e para excluir das campanhas de aquisição).
+
+## D299 — [E-commerce] Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha (2026-11-14)
+- **Pedido do dono:** dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andamento.
+- **Decisões do dono (14/11/2026):**
+  - diagnóstico grátis, depois proposta com valor, aceita no painel (reaproveita o pedido de orçamento do serviço "Gestão de Meta Ads" do catálogo);
+  - a campanha roda na **conta de anúncios do lojista**, com a verba no cartão dele (a NextLevel recebe acesso de parceiro e nunca toca na verba);
+  - a equipe lança os números da campanha nesta primeira entrega; a leitura automática pela API fica para a TR6.
+- **Lojista, painel → Anúncios na Meta** (menu "Crescer"; não confundir com "Campanhas", que é a faixa de aviso da loja):
+  - **Diagnóstico** em formato de conversa com a equipe, uma pergunta por vez (8 passos): objetivo, o que anunciar (produtos da loja com foto, até 10, ou a loja toda), público (gênero, idade, interesses), onde (Brasil, estados ou cidade e raio), verba por dia e duração (com o total do período e o aviso de que a verba vai direto para a Meta e de que resultado não é garantido), Instagram, conta de anúncios e materiais, oferta e diferencial, revisão.
+  - **Prévia do anúncio** ao lado, em formato de post do Instagram, montada na hora com o nome da loja, a foto do produto escolhido, o texto da oferta e o botão do objetivo; é ilustrativa.
+  - O rascunho salva sozinho; enviar leva à **sala da campanha**.
+- **Sala da campanha** (a mesma para o lojista e para a equipe):
+  - **Etapas:** Diagnóstico → Na mesa da equipe → Análise → Proposta → Preparação → Montagem → Revisão da Meta → No ar (mais Pausada, Encerrada e Cancelada). Cada etapa tem o que está acontecendo e com quem está (você, a equipe ou a Meta).
+  - **O que falta:** passos do lojista (criar a conta de anúncios, dar acesso de parceiro, forma de pagamento na Meta, materiais, ligar o Instagram), criados a partir das respostas; e passos da equipe. O lojista marca os dele; a equipe marca todos e inclui novos.
+  - **Proposta** com itens e total, e o botão "Aceitar proposta". Ao aceitar, a campanha vai para Preparação; o pagamento a equipe combina, como já faz no caixa.
+  - **Números:** investido na Meta, pessoas alcançadas, cliques e conversas, lançados pela equipe por período, com comentário. As **vendas na loja** com a etiqueta da campanha (`nl-meta-…`) são contadas sozinhas (pedidos pagos).
+  - **Conversa** entre lojista e equipe; mudanças de etapa, passos, proposta e números aparecem na mesma linha do tempo.
+  - O lojista pode cancelar antes de ir ao ar.
+- **Master → Mesa de anúncios:** quadro por etapa com loja, verba por dia, passos em aberto de cada lado e o selo "Lojista escreveu" quando falta resposta. No detalhe:
+  - a mesma sala;
+  - mover de etapa com recado opcional;
+  - assumir;
+  - criar a proposta, que segue para Propostas para preencher e enviar; "Proposta" só abre depois de enviada;
+  - lançar números e incluir passos;
+  - o link pronto para os anúncios (a loja com a etiqueta da campanha).
+- **E-mails ao lojista:** diagnóstico recebido, mudança de etapa (com o recado), mensagem da equipe e números novos.
+- **Quem pode:** só o dono da loja (funcionário não); na mesa, o dono do Master, o Comercial e o Conteúdo.
+- **Banco:** tabelas `anuncios_loja`, `anuncios_eventos` e `anuncios_resultados` (migração 0098).
+- **Depois:** ligação com a API de Marketing da Meta para os números virem sozinhos (TR6) e criação de campanha pela API quando fizer sentido.
+
+# D300 — [E-commerce] E-mail para suporte@ vira atendimento no Master (2026-11-14)
+- **Pedido do dono:** e-mail, atendimento e CRM ligados; quem escreve para suporte@ deve aparecer junto com o WhatsApp e o chat do site.
+- **Como funciona:** e-mail para `suporte@nextlevelcommerce.com.br` entra em Master → Atendimento como conversa com a etiqueta "E-mail" (uma conversa aberta por pessoa; respostas novas entram na mesma). A parte citada da resposta é tirada; o assunto aparece no começo.
+- **Responder:** a resposta da equipe no Atendimento sai por e-mail pela caixa da Hostinger, na mesma conversa do cliente. Se o envio falhar, nada fica registrado como respondido.
+- **Segurança:** o aviso da Hostinger (`/api/webhooks/hostinger-mail`) só é aceito com o segredo `HOSTINGER_MAIL_WEBHOOK_SECRET` (o dono cola no Render); o corpo do aviso é ignorado: o sistema lê a própria caixa e cada e-mail entra uma vez só.
+- **Reserva:** ao abrir o Atendimento, o sistema também busca os e-mails novos (no máximo 3 s de espera), para funcionar mesmo antes do aviso estar ligado.
+- **Depende do dono:** o token da caixa (`HOSTINGER_MAIL_TOKEN`, D296) e, para chegar na hora, criar o aviso na Hostinger com o endereço `https://nextlevelcommerce.com.br/api/webhooks/hostinger-mail` e colar o segredo dele no Render.
+
+# D301 — [E-commerce] Linha do tempo do cliente no Comercial com e-mails, contrato e faturas (2026-11-14)
+- **Pedido do dono:** CRM, e-mail e comercial ligados, para ver tudo de um cliente num lugar só.
+- **O que entrou na ficha (Master → Comercial → cliente):** além de conversas do site, Ajuda, formulário, atividades da loja, origem e notas, a linha do tempo agora mostra:
+  - os e-mails trocados por suporte@ (D300), com quem escreveu;
+  - o contrato (enviado, aceito) e cada parcela (avisou o Pix, confirmado, Pix não encontrado);
+  - as faturas do plano (criada, situação e pagamento), com o valor.
+- **Rótulos:** "Financeiro" para contrato, parcelas e faturas; o nome da pessoa com "(e-mail)" para os e-mails.
+- **Filtros:** Tudo, Conversas e e-mails, Financeiro e Loja, com a contagem de cada um (os pedidos da loja não escondem mais o resto).

@@ -29,7 +29,7 @@ describe("sessões", () => {
     const a = (await registrarSinal(ctx.db, sinal({ caminho: "/?x=1", busca: "?utm_source=instagram&utm_medium=bio&utm_campaign=2026-12-organico", referrer: "https://l.instagram.com/" }), T0))!;
     expect(a.nova).toBe(true);
     const b = (await registrarSinal(ctx.db, sinal({ sessaoId: a.sessaoId, caminho: "/planos", busca: "" }), mais(2)))!;
-    expect(b).toEqual({ sessaoId: a.sessaoId, nova: false });
+    expect(b).toEqual({ sessaoId: a.sessaoId, nova: false, codigo: a.codigo });
     // Recarregar a página com a mesma etiqueta não abre outra sessão.
     expect((await registrarSinal(ctx.db, sinal({ sessaoId: a.sessaoId, caminho: "/", busca: "?utm_source=instagram&utm_medium=bio&utm_campaign=2026-12-organico" }), mais(3)))!.nova).toBe(false);
     await registrarSinal(ctx.db, sinal({ sessaoId: a.sessaoId, tipo: "PING", caminho: "/temas" }), mais(4));

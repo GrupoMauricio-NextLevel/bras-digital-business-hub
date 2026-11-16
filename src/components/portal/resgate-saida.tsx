@@ -2,6 +2,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { conversaoAnuncio } from "@/components/portal/tags-anuncio";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ArrowRight, Check, X } from "lucide-react";
 import { capturarLeadSaidaAction } from "@/app/actions/leads";
@@ -67,7 +68,7 @@ function Cartao(p: Props & { pathname: string; fechar: () => void }) {
     setBusy(true);
     const r = await capturarLeadSaidaAction({ email, consent: aceito, pagina: p.pathname });
     setBusy(false);
-    if (r.ok) setOk(true); else setErro(r.error ?? "Não deu certo. Tente de novo.");
+    if (r.ok) { conversaoAnuncio("Lead", r.data.eventoId); setOk(true); } else setErro(r.error ?? "Não deu certo. Tente de novo.");
   };
   const selos = [p.trialDays ? `${p.trialDays} dias grátis` : null, p.taxaZero ? "Taxa zero nas vendas" : null, p.black].filter((x): x is string => !!x).slice(0, 2);
   const beneficios = [

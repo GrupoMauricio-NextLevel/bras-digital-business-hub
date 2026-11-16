@@ -4,6 +4,7 @@ import type { Database } from "@/db/client";
 import { orders, stores } from "@/db/schema";
 import { decryptSecret } from "@/lib/security/crypto";
 import { timeoutSignal } from "@/lib/http-timeout";
+import { META_GRAPH_VERSAO } from "@/lib/domain/trafego/retorno";
 
 /**
  * Compra para a API de conversões da Meta (W4, D187), só depois do pagamento conferido no Mercado Pago. O número do
@@ -22,7 +23,7 @@ export async function enviarCompraMeta(db: Database, orderId: string, fetchImpl:
       user_data: { em: [createHash("sha256").update(o.customerEmail.trim().toLowerCase()).digest("hex")] },
       custom_data: { currency: "BRL", value: o.totalCents / 100, order_id: String(o.number) },
     }] };
-    const r = await fetchImpl(`https://graph.facebook.com/v19.0/${st.metaPixelId}/events?access_token=${encodeURIComponent(token)}`, { method: "POST", signal: timeoutSignal(), headers: { "content-type": "application/json" }, body: JSON.stringify(corpo) });
+    const r = await fetchImpl(`https://graph.facebook.com/${META_GRAPH_VERSAO}/${st.metaPixelId}/events?access_token=${encodeURIComponent(token)}`, { method: "POST", signal: timeoutSignal(), headers: { "content-type": "application/json" }, body: JSON.stringify(corpo) });
     return r.ok ? "ENVIADO" : "FALHOU";
   } catch { return "FALHOU"; }
 }

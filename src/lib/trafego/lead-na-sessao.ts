@@ -1,12 +1,26 @@
 import { cookies, headers } from "next/headers";
 import type { Database } from "@/db/client";
-import { marcarLeadNaSessao } from "@/lib/domain/trafego/coletor";
+import { registrarOrigemDoContato, type Via } from "@/lib/domain/trafego/origem-contato";
+import { CONSENT_COOKIE, lerConsentimento } from "@/lib/trafego/consentimento";
 
-/** Depois que um formulário de contato é aceito: marca a sessão do visitante como lead (TR2, D291). Nunca lança. */
-export async function marcarLeadDaVisita(db: Database, pagina?: string): Promise<void> {
+const json = (v: string | undefined): Record<string, string> => {
+  if (!v) return {};
+  try { let x = v; for (let i = 0; i < 3 && x.startsWith("%"); i++) x = decodeURIComponent(x); const o = JSON.parse(x) as unknown; return o && typeof o === "object" ? o as Record<string, string> : {}; } catch { return {}; }
+};
+
+/**
+ * Depois que um contato é aceito (formulário, janela de saída, diagnóstico, cadastro da loja): guarda de onde a pessoa veio
+ * para o Comercial e marca a visita como lead (TR2/TR3, D291/D294). Lê só cookies próprios. Nunca lança.
+ */
+export async function registrarOrigemDaVisita(db: Database, d: { chave: string; brand: string; via: Via; pagina?: string }): Promise<void> {
   try {
-    const sid = (await cookies()).get("nl-sid")?.value;
-    const caminho = pagina ?? (await headers()).get("x-nl-path") ?? "/";
-    await marcarLeadNaSessao(db, sid, caminho);
+    const c = await cookies();
+    const pagina = d.pagina ?? (await headers()).get("x-nl-path") ?? "/";
+    const h = await headers();
+    const consent = lerConsentimento(c.get(CONSENT_COOKIE)?.value);
+    await registrarOrigemDoContato(db, d.chave, d.brand, d.via, {
+      ultimo: json(c.get("nl-attr")?.value), primeiro: json(c.get("nl-first")?.value), sessaoId: c.get("nl-sid")?.value ?? null,
+      ua: h.get("user-agent"), consentimento: consent ? (consent.anuncios ? "SIM" : "NAO") : "SEM_ESCOLHA", fbp: c.get("_fbp")?.value ?? null, fbc: c.get("_fbc")?.value ?? null,
+    }, pagina);
   } catch { /* medição nunca derruba o formulário */ }
 }

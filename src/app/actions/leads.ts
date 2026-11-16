@@ -9,7 +9,7 @@ import { getBrand } from "@/lib/brand-server";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { createBrandLead, updateBrandLead, type leadSchema } from "@/lib/domain/brand-leads";
 import { rateLimit } from "@/lib/rate-limit";
-import { marcarLeadDaVisita } from "@/lib/trafego/lead-na-sessao";
+import { registrarOrigemDaVisita } from "@/lib/trafego/lead-na-sessao";
 
 /** Pedido público "quero minha loja": a marca vem do endereço, nunca do formulário. */
 export async function submitLeadAction(input: Omit<z.input<typeof leadSchema>, "brand" | "affiliateRef">) {
@@ -20,9 +20,9 @@ export async function submitLeadAction(input: Omit<z.input<typeof leadSchema>, "
     const ref = (await cookies()).get("nl-ref")?.value;
     const db = await getDb();
     const r = await createBrandLead(db, { ...input, brand: brand.code, affiliateRef: ref });
-    await marcarLeadDaVisita(db);
+    await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "FORMULARIO" });
     revalidatePath("/master/crm");
-    return { created: r.created };
+    return { created: r.created, eventoId: `interessado:${r.id}` };
   });
 }
 
@@ -48,9 +48,9 @@ export async function capturarLeadSaidaAction(input: { email: string; consent: b
     const cadastro = `${brand.baseUrl.replace(/\/$/, "")}${brand.signupOpen ? "/cadastro" : "/quero-minha-loja"}`;
     const { capturarLeadSaida } = await import("@/lib/domain/brand-leads");
     const db = await getDb();
-    await capturarLeadSaida(db, { brand: brand.code, email: input.email, consent: input.consent as true, pagina: input.pagina, affiliateRef: ref }, cadastro);
-    await marcarLeadDaVisita(db, input.pagina);
+    const r = await capturarLeadSaida(db, { brand: brand.code, email: input.email, consent: input.consent as true, pagina: input.pagina, affiliateRef: ref }, cadastro);
+    await registrarOrigemDaVisita(db, { chave: `interessado:${r.id}`, brand: brand.code, via: "SAIDA", pagina: input.pagina });
     revalidatePath("/master/crm");
-    return undefined;
+    return { eventoId: `interessado:${r.id}` };
   });
 }

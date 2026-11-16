@@ -2,10 +2,14 @@
 # Os três grupos rodam em paralelo (o total é o do mais lento, os testes). Para o Render só publicar depois de tudo verde, use
 # "Auto-Deploy: After CI Checks Pass" no Render e marque "verificar" como obrigatória na regra da branch (ver docs/nextlevel-commerce/verificacao-automatica.md).
 name: verificar
+# Economia de minutos do GitHub (o plano grátis tem 2.000 por mês): roda só na branch de publicação e na main,
+# e não roda quando o commit mexe só em documentos.
 on:
   push:
-    branches: [main, staging, "claude/**", "codex/**", "visual/**"]
+    branches: [main, claude/wonderful-cannon-5o38v5]
+    paths-ignore: ["docs/**", "**/*.md", ".claude/**"]
   pull_request:
+    paths-ignore: ["docs/**", "**/*.md", ".claude/**"]
 concurrency:
   group: verificar-${{ github.ref }}
   cancel-in-progress: true

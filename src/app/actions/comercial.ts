@@ -4,11 +4,12 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { salvarAcompanhamento } from "@/lib/domain/comercial";
+import { salvarAcompanhamento, type Fechamento } from "@/lib/domain/comercial";
+import { vincularCodigoVisita } from "@/lib/domain/trafego/origem-contato";
 import { salvarConfigComercial } from "@/lib/domain/comercial-config";
 
 /** Comercial (D202): responsável, próxima ação, prazo e notas de cada pessoa do funil. */
-export async function salvarAcompanhamentoAction(chave: string, d: { proximaAcao?: string; prazo?: string | null; notas?: string; assumir?: boolean; perdido?: boolean }) {
+export async function salvarAcompanhamentoAction(chave: string, d: { proximaAcao?: string; prazo?: string | null; notas?: string; assumir?: boolean; perdido?: boolean; motivoPerda?: string | null; fechou?: Fechamento }) {
   return runAction(async () => {
     const s = await getSession();
     if (!s) throw new ForbiddenError("Sessão expirada.");
@@ -26,5 +27,16 @@ export async function salvarConfigComercialAction(entrada: unknown) {
     await salvarConfigComercial(await getDb(), s.actor, entrada);
     revalidatePath("/master", "layout");
     return undefined;
+  });
+}
+
+/** Código da visita que veio na mensagem do WhatsApp (TR3, D294): liga a pessoa à origem daquela visita. */
+export async function vincularCodigoVisitaAction(chave: string, codigo: string) {
+  return runAction(async () => {
+    const s = await getSession();
+    if (!s) throw new ForbiddenError("Sessão expirada.");
+    const r = await vincularCodigoVisita(await getDb(), s.actor, chave, codigo);
+    revalidatePath("/master/comercial", "layout");
+    return r;
   });
 }
