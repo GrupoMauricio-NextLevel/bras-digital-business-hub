@@ -1,7 +1,7 @@
 # NextLevel Business: gestão do negócio e captação de clientes, em autoatendimento
 
 > Pedido do dono (16/11/2026, D303 e D304). Autoridade: `docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md` > `docs/design/DECISIONS.md` > este documento.
-> **Situação:** direção aprovada; etapa começa agora (D304). **Piloto: academia** (D305); depois farmácia. Plano do piloto: `docs/prompts/business-piloto-academia.md`. A Megatron é cliente da Commerce e não entra no piloto.
+> **Situação:** direção aprovada; etapa começa agora (D304). **Piloto: academia** (D305); depois farmácia. Plano do piloto: `docs/prompts/business-academia-racional-inedito.md` (D306). A Megatron é cliente da Commerce e não entra no piloto.
 
 ## 1. As três linhas (não misturar)
 | Linha | O que é | Quem faz o trabalho |

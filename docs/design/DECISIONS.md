@@ -3706,3 +3706,9 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Arquitetura proposta:** a academia é um tenant do mesmo tipo da loja (herda login, equipe, isolamento, CRM, atendimento, origem e Mercado Pago próprio), com página de captação no lugar da vitrine; o que é só de academia fica num módulo da Business fora do motor de lojas (Constituição, seções 4 e 28), ligado por "segmento". Confirmar na P1 antes da primeira migração.
 - **Farmácia:** só desenho (recompra de uso contínuo, fidelidade, pedido por WhatsApp); antes de construir, levantar as regras da Anvisa e da LGPD para dado de saúde.
 - **Depende do dono:** escolher a academia piloto e as respostas da P0.
+
+# D306 — [Grupo] Business para academia: complemento do sistema que ela já tem, com Club, parceiros e captação (2026-11-16)
+- **Pedido do dono:** não concorrer com os sistemas que a academia já tem (catraca, pagamentos); a Business precisa se adequar a isso. Comunidade de usuários com benefícios (o Club) e o mesmo sistema de parceiros do Master para a academia captar clientes com parceiros. Racional amplo de algo inédito em `.md`.
+- **Corrige o D305:** a Business não cobra o aluno, não faz check-in de controle nem catraca e não substitui o sistema de gestão. Ela traz aluno novo e ajuda a segurar o aluno, por cima do sistema da academia (planilha, toque da recepção ou integração só de leitura).
+- **As cinco peças:** Club da academia (motor do Club, D113 a D122); programa de parceiros da academia (motor de parceiros, bônus e missões, D271 a D274), com comissão só calculada e paga pela academia por fora ou em benefício; rede de benefícios do comércio do bairro (balcão do Club); captação com origem (D290 a D298); liga e desafios entre academias, sem sorteio.
+- **Racional e piloto (A0 a A5):** `docs/prompts/business-academia-racional-inedito.md`.

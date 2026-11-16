@@ -1,6 +1,7 @@
 # NextLevel Business: piloto estruturado para academia (e o caminho para farmácia)
 
 > Pedido do dono (16/11/2026, D305): "Precisamos de um piloto bem estruturado para academia e, mais para frente, farmácia." A Megatron fica fora do piloto porque já é cliente da Commerce.
+> **Atualização (D306):** o escopo deste piloto foi substituído por `docs/prompts/business-academia-racional-inedito.md`: a Business não faz cobrança, check-in de controle nem catraca; foca em captação, parceiros e Club. Valem daqui a jornada de captação, a seção 8 (farmácia) e as perguntas da P0.
 > Base: `docs/prompts/nextlevel-business-gestao-captacao.md` (D303, D304). Regra de ouro: **funciona sozinho, sem ninguém da NextLevel** (D304).
 > Legenda: **[fato]** está no código; **[mercado]** a conferir na fonte; **[hipótese]** o piloto confirma ou derruba.
 
