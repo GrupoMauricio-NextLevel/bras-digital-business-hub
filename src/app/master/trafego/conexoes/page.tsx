@@ -7,6 +7,7 @@ import { AbasTrafego } from "../abas";
 import { FormTags } from "./form";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Pixel e Google · Tráfego" };
 
 /** Tráfego e campanhas → Pixel e Google (TR4, D295). */
 export default async function ConexoesPage() {

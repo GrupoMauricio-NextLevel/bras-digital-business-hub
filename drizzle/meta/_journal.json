@@ -694,6 +694,13 @@
       "when": 1794621903180,
       "tag": "0098_anuncios_loja",
       "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "7",
+      "when": 1794796016137,
+      "tag": "0099_ads_metricas",
+      "breakpoints": true
     }
   ]
 }

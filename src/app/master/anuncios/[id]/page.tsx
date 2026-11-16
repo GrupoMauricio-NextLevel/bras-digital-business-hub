@@ -9,6 +9,7 @@ import { ANUNCIO_STATUS } from "@/db/schema";
 import { Controles } from "./controles";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Campanha · Mesa de anúncios" };
 
 /** Um pedido de campanha na mesa de anúncios (D299): a mesma sala que o lojista vê, mais os controles da equipe. */
 export default async function AnuncioMesaPage({ params }: { params: Promise<{ id: string }> }) {
@@ -21,7 +22,7 @@ export default async function AnuncioMesaPage({ params }: { params: Promise<{ id
       <PageHeader backHref="/master/anuncios" eyebrow={`Mesa de anúncios · ${sala.loja?.name ?? ""}`} title={a.nome} description="O lojista vê esta mesma sala no painel dele. Mude a etapa, converse, mande a proposta e lance os números." />
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_24rem]">
         <SalaDaCampanha s={sala} lado="EQUIPE" />
-        <Controles id={a.id} status={a.status} etapas={etapas} temProposta={!!a.quoteId} propostaEnviada={!!sala.proposta} temResponsavel={!!a.responsavelId} />
+        <Controles id={a.id} status={a.status} etapas={etapas} temProposta={!!a.quoteId} propostaEnviada={!!sala.proposta} temResponsavel={!!a.responsavelId} metaConta={a.metaContaId} metaCampanhas={a.metaCampanhas} />
       </div>
     </>
   );

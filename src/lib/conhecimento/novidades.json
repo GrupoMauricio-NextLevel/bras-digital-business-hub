@@ -1,5 +1,12 @@
 [
  {
+  "numero": 302,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
+  "data": "2026-11-16",
+  "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
+ },
+ {
   "numero": 299,
   "frente": "E-commerce",
   "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
@@ -271,12 +278,5 @@
   "titulo": "AT2 do atacado: box novo, card, carrinho e checkout",
   "data": "2026-11-06",
   "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT2."
- },
- {
-  "numero": 258,
-  "frente": null,
-  "titulo": "AT1 do atacado: painel do lojista e travas por plano",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
  }
 ]

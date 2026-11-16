@@ -66,3 +66,16 @@ export async function reenviarConversaoAction(id: string) {
     return undefined;
   });
 }
+
+/** TR6 (D302): lê a Meta agora (sem esperar a rotina de 1 hora). */
+export async function atualizarLeituraMetaAction() {
+  return runAction(async () => {
+    const s = await ator();
+    const { requireMasterFn } = await import("@/lib/domain/access");
+    requireMasterFn(s, ["COMERCIAL"]);
+    const { sincronizarMeta } = await import("@/lib/domain/trafego/meta-leitura");
+    const r = await sincronizarMeta(await getDb(), fetch, new Date(), { forcar: true });
+    revalidatePath("/master/trafego/campanhas");
+    return r;
+  });
+}

@@ -3671,3 +3671,15 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - as faturas do plano (criada, situação e pagamento), com o valor.
 - **Rótulos:** "Financeiro" para contrato, parcelas e faturas; o nome da pessoa com "(e-mail)" para os e-mails.
 - **Filtros:** Tudo, Conversas e e-mails, Financeiro e Loja, com a contagem de cada um (os pedidos da loja não escondem mais o resto).
+
+## D302 — [E-commerce] Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista (2026-11-16)
+- **Leitura pela API de Marketing da Meta** (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela `ads_metricas_diarias` (migração 0099). A rotina de 5 a 10 minutos lê **no máximo uma vez por hora** os últimos 7 dias, porque a Meta ajusta os últimos dias; uma leitura que falhou tenta de novo na volta seguinte. "Atualizar agora" força a leitura.
+- **Duas origens:**
+  - **a conta de anúncios da NextLevel**: o número é informado em Retorno às plataformas;
+  - **as contas dos lojistas**: na Mesa de anúncios, a equipe informa o número da conta de anúncios do lojista (que deu acesso de parceiro), aperta "Buscar campanhas", marca as campanhas da sala e salva. Os números da sala passam a vir sozinhos: investido, vezes que o anúncio apareceu, cliques no link e conversas, com a hora da última leitura. Na primeira leitura a sala vem desde que foi ao ar, até 90 dias. Conta sem acesso dá a explicação "o lojista precisa dar acesso de parceiro". Os números lançados à mão continuam como notas da equipe.
+- **Master → Tráfego e campanhas → Campanhas** (7, 30 ou 90 dias): cada campanha da NextLevel com investido e cliques (da Meta) ao lado de visitas, contatos, lojas criadas, pagantes e receita (do nosso sistema), mais **custo por contato, custo por pagante e retorno** (receita ÷ investido). A campanha é ligada pelo nome: o link do anúncio leva `utm_campaign={{campaign.name}}`, e a comparação ignora acento, maiúsculas e espaços. Quando a Meta conta mais leads que nós, aparece "Meta diz N", e vale o nosso número. Receita = primeira mensalidade dos pagantes e negócios fechados no Comercial (D294/D298).
+- **Erros** (token inválido, conta sem acesso) ficam guardados em português, sem o token, e aparecem ao lado da hora da última leitura.
+- **Quem vê:** o painel Campanhas, o dono e o Comercial; ligar a sala à conta do lojista, o dono, o Comercial e o Conteúdo.
+- **Acessibilidade:** tabelas largas com rolagem lateral podem receber o foco do teclado; páginas novas do tráfego e dos anúncios com título próprio na aba.
+- **Depende do dono:** o token da Meta precisa da permissão de leitura de anúncios (`ads_read`), e a conta de anúncios da NextLevel precisa estar informada. Para cada lojista, o acesso de parceiro com permissão de anúncios.
+- **Próximas:** TR5b (públicos de clientes), pagamento da proposta de anúncios no painel, TR7 (Reels, depois da aprovação do aplicativo pela Meta).

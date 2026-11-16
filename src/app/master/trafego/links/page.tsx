@@ -13,6 +13,7 @@ import { CopiarLink, FormNovoLink, LigarLink } from "./links-client";
 import { AbasTrafego } from "../abas";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Links rastreados · Tráfego" };
 
 const PROXIMAS = [
   { t: "Origem dos leads", d: "Canal, campanha e peça de cada lead no Comercial, e o botão Fechou/Perdeu (fase TR3)." },

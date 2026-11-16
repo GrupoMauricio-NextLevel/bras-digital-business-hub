@@ -8,6 +8,7 @@ import { ROTULO_CANAL, ehCanalPago } from "@/lib/trafego/canal";
 import { AbasTrafego } from "../abas";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Origens · Tráfego" };
 
 const PERIODOS = [7, 30, 90] as const;
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 1000) / 10}%` : "—");
@@ -36,7 +37,7 @@ export default async function OrigensPage({ searchParams }: { searchParams: Prom
         <h2 id="canais-t" className="text-lg font-bold">Por canal</h2>
         <p className="mt-1 text-muted-foreground">{o.total.sessoes} {o.total.sessoes === 1 ? "visita" : "visitas"} ({variacao(o.total.sessoes, o.total.anteriores)} contra os {dias} dias anteriores) · {o.total.leads} {o.total.leads === 1 ? "contato" : "contatos"} deixados.</p>
         {o.linhas.length === 0 ? <p className="mt-4 rounded-xl bg-surface-muted px-4 py-6 text-center text-muted-foreground">Ainda não há visitas medidas neste período.</p> : (
-          <div className="mt-4 overflow-x-auto">
+          <div className="mt-4 overflow-x-auto" tabIndex={0} role="region" aria-label="Tabela de canais (role para os lados)">
             <table className="w-full min-w-[44rem] border-collapse">
               <caption className="sr-only">Visitas e resultados por canal nos últimos {dias} dias</caption>
               <thead className="border-b border-border text-muted-foreground"><tr><th scope="col" className={th}>Canal</th><th scope="col" className={th}>Visitas</th><th scope="col" className={th}>Antes</th><th scope="col" className={th}>Páginas por visita</th><th scope="col" className={th}>WhatsApp</th><th scope="col" className={th}>Cadastro</th><th scope="col" className={th}>Contatos</th><th scope="col" className={th}>% contato</th></tr></thead>

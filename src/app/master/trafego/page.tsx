@@ -6,6 +6,7 @@ import { AbasTrafego } from "./abas";
 import { AgoraAoVivo } from "./agora-client";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Agora no site · Tráfego" };
 
 /** Tráfego e campanhas → Agora no site (TR2, D291): quem está no site agora, de onde veio e o que fez. */
 export default async function TrafegoAgoraPage() {
