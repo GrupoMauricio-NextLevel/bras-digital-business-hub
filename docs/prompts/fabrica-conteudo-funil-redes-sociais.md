@@ -1,9 +1,9 @@
 # Fábrica de conteúdo e funil nas redes sociais (racional + prompt engenheiro mestre)
 
-> Estado: **PROPOSTA** (13/11/2026), para avaliação do dono. Frente: **[E-commerce]** (canal de entrada de lojistas da NextLevel Commerce); depois vira **produto para os clientes** (módulo "Estúdio de Conteúdo" dentro do painel do lojista).
+> Estado: **PROPOSTA** (13/11/2026; perfis atualizados em 16/11/2026 pela reorganização das contas do Instagram), para avaliação do dono. Frente: **[E-commerce]** (canal de entrada de lojistas da NextLevel Commerce); depois vira **produto para os clientes** (módulo "Estúdio de Conteúdo" dentro do painel do lojista).
 > Ordem normativa: Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`) > `docs/design/DECISIONS.md` > este documento.
 > Regras que não mudam: português claro, **sem promessa de ganho**, comparação com concorrente só com fonte e data, nada de depoimento inventado, segredo (token de rede social, ManyChat) só criptografado (`encryptSecret`), um tenant nunca lê dados de outro.
-> Documentos irmãos (não duplicar): `serie-youtube-apresentacoes-comerciais.md` (vídeos longos e cortes), `publico-personas-precos-ecossistema.md` (personas P1 a P6), `busca-e-ia-visibilidade-organica.md` (busca e IA), `parceiros-regra-unica.md` (link `/r/...` e 20%), `integracoes-aplicativos-fila.md` (I-19 WhatsApp oficial, Pixel), `base-de-conhecimento-master.md` (trilha "conteúdo").
+> Documentos irmãos (não duplicar): `serie-youtube-apresentacoes-comerciais.md` (vídeos longos e cortes), `publico-personas-precos-ecossistema.md` (personas P1 a P6), `busca-e-ia-visibilidade-organica.md` (busca e IA), `parceiros-regra-unica.md` (link `/r/...` e 20%), `integracoes-aplicativos-fila.md` (I-19 WhatsApp oficial, Pixel), `base-de-conhecimento-master.md` (trilha "conteúdo"), **`docs/marketing/instagram-contas-funis.md`** (reorganização das contas do Instagram, 16/11; manda nos @, nas bios e na ordem de troca; hoje está na branch `claude/upbeat-babbage-ianepy`).
 
 ---
 
@@ -11,7 +11,7 @@
 
 1. **A ideia é montar uma "linha de produção", não fazer vídeos soltos.** Uma grade fixa de **12 formatos** (seção 4) gravados em **um dia de estúdio por semana** com o celular, editados em lote com modelos prontos e programados para a semana seguinte. Cada vídeo nasce com um **código** que segue o vídeo até a venda.
 2. **Cinco vozes, sempre honestas** (seção 3): você (fundador), a empresa, o especialista/influenciador, o cliente **real** e o perfil sem rosto ("dark"). Falar "como se fosse um cliente" só vale como **encenação avisada** ("situação encenada") ou com cliente de verdade e autorização. Depoimento inventado é proibido pelo CONAR e pelo Código do Consumidor e derruba a confiança na marca.
-3. **Três tipos de perfil** (seção 5): perfil da marca (NextLevel Commerce), perfil pessoal do Mauricio (autoridade e bastidores) e **2 perfis sem rosto** de tema amplo para empreendedor brasileiro (ex.: "Vender Online Sem Enrolação" e "Brás por Dentro"), que crescem por conteúdo útil e levam para a marca.
+3. **Os perfis seguem a reorganização das contas** (seção 5): o **@mauriciors.jr vira o maior perfil** (o público de 6.646 da antiga @brasdigitalapp) e faz **colaboração (Collab) com todas as marcas**; @nextlevelcommerce é a conta que vende; @brasdigital fica com atacado e importadores; @megatronbrasil é o caso real; @nextlevelbusiness e @chinahub só reservados. Nada de conta sem rosto nova por enquanto: o papel "sem rosto" vai para os vídeos só de tela e mãos dentro das contas das marcas.
 4. **Funil em 4 andares** (seção 6): chamar atenção → gerar confiança → conversa no direct (ManyChat: "comenta LOJA que eu te mando") → loja criada / diagnóstico / migração. Marketing **indireto** (dica, polêmica, bastidor) e **direto** (oferta, demonstração, prazo) convivem numa proporção de 70/20/10.
 5. **Tudo rastreado no sistema** (seção 7): cada vídeo tem um link próprio (`/v/CODIGO`) com `utm` e, quando for o caso, o `ref` do parceiro; comentário-palavra-chave → direct → link com código → cadastro de loja → pagamento. O Master mostra **"qual vídeo trouxe qual lojista pagante"**.
 6. **No sistema, isso vira o "Estúdio de Conteúdo"** (seção 9): pauta, roteiro com IA, dia de gravação no celular (lista de tomadas, teleprompter, tela dividida), biblioteca de arquivos, agenda de postagens, publicação automática onde a rede permite (Instagram e YouTube primeiro; TikTok depende de aprovação do app), caixa de comentários e placar de resultado por vídeo.
@@ -45,7 +45,7 @@
 
 | Voz | Quem aparece | Para que serve | Cuidados |
 |---|---|---|---|
-| **Fundador** | Mauricio, no escritório ou no Brás | Autoridade, opinião forte, bastidor, história | Falar de experiência própria; números só com data e fonte |
+| **Fundador** | Mauricio, no escritório ou no Brás (perfil @mauriciors.jr, sempre em Collab com a marca do assunto) | Autoridade, opinião forte, bastidor, história | Falar de experiência própria; números só com data e fonte |
 | **Empresa** | Logo, telas do sistema, equipe, locução | Demonstração, novidade, oferta, tutorial | Texto da marca vem de `getBrand()` nas peças geradas pelo sistema |
 | **Especialista / influenciador** | Pessoa da equipe ou parceiro criador (trilha de parceiros) | Dica prática, "eu testei", comparação | Parceiro pago marca "publi" / "parceria paga" (regra do CONAR e das redes) |
 | **Cliente** | Lojista **real**, com autorização de imagem assinada | Prova social, "como era antes e como ficou" | Nunca inventar. Encenação só com aviso visível "situação encenada" e sem dizer que é cliente |
@@ -128,24 +128,38 @@ Black Friday, mês de migração, live "monto sua loja ao vivo", diagnóstico gr
 
 ---
 
-## 5. Perfis (com e sem rosto)
+## 5. Perfis (segue a reorganização das contas do Instagram)
 
-| Perfil | Rosto | Tema | Formatos principais | Papel no funil |
-|---|---|---|---|---|
-| **@nextlevelcommerce** (marca) | Equipe + telas | Loja virtual, novidades, clientes | F06, F08, F11, F12, carrossel | Fundo: decisão |
-| **Perfil pessoal do Mauricio** | Sim | Empreender, Brás, opinião, bastidor | F01, F02, F03, F07, F10 | Topo e meio: autoridade |
-| **Sem rosto 1: "Vender online sem enrolação"** (nome a definir) | Não | Dicas para quem vende no Instagram/WhatsApp, ferramentas, erros comuns | F01 (com print), F05, F06 (só tela), F09 | Topo amplo; leva para a marca |
-| **Sem rosto 2: "Brás por dentro" / atacado e revenda** (nome a definir) | Não | Comprar para revender, atacado, fornecedores, tendências de produto | F02, F05, F06, listas e rankings | Topo do público revendedor; leva para a marca e, depois, para a Brás |
-| **LinkedIn do Mauricio e da empresa** | Sim | Gestão, tecnologia, agência, white label | F10, carrossel, texto | Frente `nextlevelgroup.com.br` (D287) |
-| **Canal do YouTube** | Sim | Série comercial + plantão | Vídeo longo, Shorts, live | Meio e fundo |
+> Fonte dos @, bios, destaques, links e da ordem de troca: `docs/marketing/instagram-contas-funis.md` (atualização de 16/11/2026). Este documento não repete esses detalhes; aqui fica só o papel de cada conta **na fábrica** (formatos, vozes, ritmo e rastreio). Se os dois divergirem, vale o de contas.
 
-**Regras dos perfis sem rosto:**
-- Dizem na bio quem está por trás ("um projeto NextLevel") ou levam para a marca de forma clara. Perfil que esconde ser empresa vendendo para a empresa vira propaganda disfarçada, o que o CONAR proíbe.
-- Nada de seguidor comprado, nem rede de perfis falsos comentando uns nos outros (as redes derrubam a conta e o alcance).
-- Voz sintética e imagem gerada com IA são marcadas com a etiqueta da própria rede.
-- Cada perfil tem uma "bíblia" curta: público, tom, 5 temas, 3 proibições, palavra-chave própria (ex.: "VITRINE", "ATACADO").
+### 5.1 Mapa dos perfis
 
----
+| Conta (depois da troca) | Vem de | Empresa | Rosto | Papel no funil | Formatos principais (seção 4) |
+|---|---|---|---|---|---|
+| **@mauriciors.jr** (criador de conteúdo) | @brasdigitalapp (6.646) | Pessoa física | Sim | **Topo**: atenção e autoridade; entra em Collab com todas as marcas | F01, F02, F03, F04, F07, F10, live |
+| **@nextlevelcommerce** | @brasdigital.sp (1.348) | NextLevel Marketing | Equipe + telas | **Fundo**: decisão; "comenta LOJA" | F06, F08, F09, F11, F12, carrossel |
+| **@brasdigital** (atacado e importadores) | @mauriciors.jr (896) | NextLevel Marketing | Mãos, produto, Brás | **Topo do revendedor**; ponte semanal para o Commerce | F05, F06 (achado do dia), tour, ranking |
+| **@megatronbrasil** | Loja Megatron (55) | Mega Tron Comércio Eletrônico | Loja e produto | **Prova**: loja real vendendo no balcão e no site | F08, Collab de produto com o Mauricio |
+| **@nextlevelbusiness** | nova (0) | NextLevel Marketing | — | Só reservar; conteúdo quando o produto tiver piloto (D303) | — |
+| **@chinahub** | @chinahubplataforma (68) | NextLevel Marketing | — | Em pausa; só recebe Collab quando houver vídeo de importação | — |
+| LinkedIn e YouTube | — | — | Sim | LinkedIn: agência e sistemas (NextLevel Soluções, `nextlevelgroup.com.br`, D287/D304). YouTube: série comercial e plantão | F10, vídeo longo, Shorts |
+
+### 5.2 A regra do Collab (grava uma vez, publica em duas contas)
+- **Todo vídeo gravado pelo Mauricio sai em Collab** com a marca do assunto: loja virtual → @nextlevelcommerce; achado do Brás → @brasdigital; produto de eletrônico → @megatronbrasil; importação → @chinahub.
+- O código do vídeo (seção 7) é **um só** para as duas contas; o link da bio de cada conta leva `utm_campaign=<conta>` para separar de onde veio o clique.
+- Na pauta do sistema, cada peça tem **conta principal** e **conta em Collab** (seção 9).
+
+### 5.3 E o perfil sem rosto ("dark")?
+A reorganização já resolve o que eu propunha em contas novas:
+- O "Brás por dentro" passa a ser o **@brasdigital**, que já tem público.
+- O "Vender online sem enrolação" vira uma **série dentro da @nextlevelcommerce** (vídeos só de tela e mãos, F06 e F09), sem abrir conta nova.
+- Abrir um perfil sem rosto separado fica para **depois de 60 dias** de grade rodando, e só se o placar mostrar um tema que cresce sozinho. Mesmas regras de antes: deixar claro na bio que é um projeto NextLevel, sem seguidor comprado, voz e imagem de IA marcadas.
+
+### 5.4 Cuidados que vêm da troca
+- A troca de @ segue a ordem do documento de contas (o @ liberado pode ser pego por outra pessoa; o Instagram deixa voltar em até 14 dias).
+- Megatron é outra empresa (Mega Tron Comércio Eletrônico Ltda): o uso como caso público precisa estar combinado por escrito, como qualquer cliente.
+- Os posts de "fazer dinheiro" da China Hub são arquivados antes de qualquer Collab (regra "sem promessa de ganho").
+- O perfil pessoal fala da vida de criador e empresário; quando um vídeo é publicidade de uma marca do grupo, a ligação fica clara (Collab ou menção), porque o público não pode achar que é opinião sem interesse.
 
 ## 6. O funil (com automação de direct)
 
@@ -214,12 +228,14 @@ A ferramenta de direct manda o contato (nome, @, canal, palavra-chave, código d
 | Sexta | Revisão (lista 8.4), textos de cada rede, agendamento da semana seguinte | Conteúdo |
 | Todo dia | 2 janelas de 20 min para comentários e direct (a primeira hora depois de postar é a mais importante) | Atendimento |
 
-### 8.2 Ritmo de postagem sugerido (por perfil)
-- Marca: 1 Reel/TikTok por dia útil + Stories diários + 2 carrosséis por semana + 1 live.
-- Mauricio: 4 a 5 vídeos por semana + Stories de bastidor.
-- Cada perfil sem rosto: 1 a 2 vídeos por dia (formato de produção mais rápido).
-- YouTube: Shorts todo dia útil (os mesmos cortes) + 1 longo a cada 2 semanas.
-Começar com metade disso nas 4 primeiras semanas e subir conforme o ritmo da equipe aguentar.
+### 8.2 Ritmo de postagem (alinhado à reorganização das contas)
+**Primeiras 8 semanas (para uma pessoa só gravando):**
+- **3 vídeos por semana gravados pelo Mauricio**, cada um em Collab com duas contas: 1 de loja virtual (@nextlevelcommerce), 1 de achado do Brás (@brasdigital), 1 de bastidor ou opinião (Collab com a marca que fizer sentido; a Megatron entra aqui).
+- **2 posts por semana sem gravar** na @nextlevelcommerce (print do sistema, carrossel passo a passo, pergunta da semana).
+- **Stories todo dia** no @mauriciors.jr com figurinha de link para a oferta da semana.
+- Roteiro das duas primeiras semanas: seção 6 do documento de contas.
+
+**Depois de 8 semanas, se o placar mostrar resposta:** subir para 5 vídeos do Mauricio por semana, Shorts todo dia útil com os mesmos cortes, 1 live por semana e a segunda voz da equipe gravando os tutoriais (F06) da @nextlevelcommerce.
 
 ### 8.3 Kit de gravação no celular (barato)
 - Celular com câmera traseira boa (gravar em 4K ou 1080p 30 fps, 9:16).
@@ -390,7 +406,7 @@ ESCOPO POR FASE
   conteúdo" com código gerado (AAMMDD-FORMATO-PERFIL-N).
 - CF2: tabela de conteúdo por marca/tenant (estados IDEIA, ROTEIRO, GRAVAR, GRAVADO,
   EDICAO, REVISAO, AGENDADO, PUBLICADO; formato F01..F12 vindo de platform_settings;
-  voz; perfil; palavra-chave; avisos de encenação, IA e parceria; fontes), quadro de
+  voz; conta principal e conta em Collab (seção 5.2); palavra-chave; avisos de encenação, IA e parceria; fontes), quadro de
   pauta, editor de roteiro com a lista de revisão como travas para passar a AGENDADO.
 - CF3: endpoint de entrada do direct (ManyChat ou similar) assinado; cria/atualiza
   brand_leads com origem social, palavra-chave e código do vídeo; aparece no CRM.
@@ -423,9 +439,9 @@ TESTES E ENTREGA
 ## 15. Decisões que o dono precisa tomar
 
 1. Aprovar a grade de 12 formatos e a proporção 70/20/10 (ou ajustar).
-2. Nomes e temas dos 2 perfis sem rosto.
+2. Confirmar a troca de contas e responder as perguntas da seção 7 do documento de contas (oferta de entrada da bio, uso da Megatron como caso público, WhatsApp comercial). Perfil sem rosto separado fica para depois de 60 dias.
 3. Quem será a segunda voz da equipe (em até 60 dias).
 4. Ferramenta de direct: ManyChat (recomendada pela integração oficial com a Meta) ou outra com API oficial.
 5. Armazenamento de vídeo (R2 da Cloudflare é o mais barato para muitos downloads; S3 é a alternativa).
-6. Dia fixo de gravação (sugestão: quarta-feira).
+6. Dia fixo de gravação (sugestão: quarta-feira; o documento de contas pede "uma tarde por semana", que cabe no mesmo dia).
 7. Liberar a fase CF1 (pequena, prova o canal com números do próprio sistema).
