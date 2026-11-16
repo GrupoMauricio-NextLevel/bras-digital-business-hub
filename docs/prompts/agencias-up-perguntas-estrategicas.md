@@ -40,9 +40,7 @@
 
    **O gargalo provável é a edição.** O cockpit deve mostrar a fila de cada editor e o que vai atrasar.
 
-5. **A UP faz tráfego pago (Alam), e isso muda a parte dos limites.** A NextLevel também tem frente de tráfego e campanhas (D302, sala da campanha, leitura da Meta). Então:
-   - **a vitrine de adicionais da UP não oferece tráfego pago nem gestão de campanhas** aos clientes dela (regra "não competir", 1.4 do racional);
-   - por outro lado, o **Alam pode ser o maior usuário da NextLevel**: página de campanha para onde o anúncio leva, formulário de orçamento, origem de cada contato e leitura dos resultados da Meta, tudo provando o retorno do anúncio que ele faz. Isso é argumento de venda dos adicionais (página de campanha e site), e não concorrência.
+5. **A UP faz tráfego pago (Alam), e isso é ótimo para o sistema.** Posição do dono (16/11/2026): **a NextLevel oferece uma solução para a empresa da UP; não somos concorrentes.** Então o tráfego da UP é mais um departamento a ser atendido pelo cockpit, não um conflito. O Alam tende a ser um dos maiores usuários das ferramentas que já existem: página de campanha para onde o anúncio leva, formulário de orçamento, origem de cada contato e leitura dos resultados da Meta (D302). Com elas ele prova o retorno do anúncio que faz.
 
 6. **Social media publica:** então a UP não só entrega o arquivo. O calendário de postagem por cliente é parte do sistema (vista em calendário do M3), e talvez a aprovação do cliente aconteça **antes de postar**.
 
@@ -154,7 +152,7 @@ Perguntar **ao dono da UP** ("o que você precisa ver de cada um?") e depois **a
 - ⭐ Para onde o anúncio leva hoje: WhatsApp, Instagram, site, formulário? Como mede se virou cliente?
 - Como faz o relatório de resultados? Em que ferramenta?
 - *O dono da UP quer ver:* investimento x resultado por cliente, campanhas paradas, clientes sem anúncio que deveriam ter.
-- *Oportunidade NextLevel:* página de campanha + formulário + origem dos contatos + leitura da Meta, para provar o retorno (sem competir com o serviço de tráfego da UP).
+- *Ferramentas que o sistema dá ao Alam:* página de campanha, formulário, origem dos contatos e leitura da Meta, para provar o retorno de cada anúncio ao cliente.
 
 **Gravação (a confirmar)**
 - ⭐ Quem grava, quantas gravações por semana, onde (no cliente, em estúdio)?
@@ -195,7 +193,7 @@ Perguntar **ao dono da UP** ("o que você precisa ver de cada um?") e depois **a
 | 8.2 ⭐ | Querem que o portal apareça só com a marca UP? | Degrau 1 x white label |
 | 8.3 ⭐ | Toparia passar **todos** os clientes e cobranças pelo sistema durante o piloto? | Validade do piloto e do percentual |
 | 8.4 | Vocês teriam interesse em oferecer site, página de campanha e loja aos clientes, com comissão? Quais clientes primeiro? | Vitrine de adicionais |
-| 8.5 | Que serviços da NextLevel vocês **não** querem ver oferecidos aos seus clientes? | Lista "não competir" (inclui tráfego pago) |
+| 8.5 | Vocês querem revender as soluções da NextLevel com a marca UP, indicar com comissão, ou só usar como ferramenta interna? | Papel da vitrine de adicionais |
 | 8.6 | O que faria você dizer, em 90 dias, "não volto mais para o jeito antigo"? E o que faria você desistir? | Critério de sucesso do piloto |
 | 8.7 ○ | Conhecem outras agências que teriam o mesmo problema? | Próximas agências (produto para grandes agências) |
 
@@ -219,7 +217,7 @@ Perguntar **ao dono da UP** ("o que você precisa ver de cada um?") e depois **a
 | Caminho da demanda (4.1, 4.3, 4.4) | As etapas do quadro e se a distribuição é automática ou feita pelo dono |
 | Aprovação do cliente (4.5, 7.3) | Se o portal aprova roteiro, vídeo ou os dois, e quando |
 | Os 3 números e os alertas (6.1, 6.2, 6.3) | A primeira tela do cockpit e os avisos |
-| Tráfego pago (Bloco 5, Alam; 8.5) | A lista "não competir" e a oferta de página de campanha como ferramenta do Alam |
+| Tráfego pago (Bloco 5, Alam) | As telas do Alam no cockpit (investimento x resultado por cliente) e a página de campanha como ferramenta dele |
 | Responsável e compromisso (8.1, 8.3) | Se o piloto começa já ou espera |
 
 ---

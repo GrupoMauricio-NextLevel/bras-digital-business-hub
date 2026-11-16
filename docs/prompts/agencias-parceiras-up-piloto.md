@@ -109,6 +109,8 @@ Ou seja: **a UP vende o vídeo, a NextLevel prova que o vídeo funcionou.** Junt
 
 ## 1.4 Os limites (o que este projeto **não** é)
 
+> **Posição do dono (16/11/2026):** a NextLevel **oferece uma solução para a empresa da UP**; não somos concorrentes. O tráfego pago que a UP faz (Alam) não é conflito: é um departamento a mais que o sistema atende. O item 1 abaixo vale só para os serviços que a NextLevel vende aos clientes da UP, e a lista é combinada com a UP.
+
 1. **A NextLevel não vira concorrente da UP.** O catálogo de soluções que a NextLevel oferece aos clientes da UP **não inclui** captação de conteúdo, gravação ou edição de vídeo. Se algum serviço da NextLevel encostar nisso (por exemplo "Consultoria e auditoria de crescimento" ou imagens geradas para temas), ele fica **fora da vitrine da UP** ou aparece só com o aceite da UP. Isso vira regra no sistema (lista de serviços por agência), não só combinado verbal.
 2. **A NextLevel não aborda o cliente da UP por fora.** Nada de e-mail de venda, campanha ou ligação da equipe comercial NextLevel para um cliente que entrou pela UP sem a UP saber. O cliente fica marcado como "da agência UP" e a equipe comercial vê o aviso. (Avisos de sistema, como fatura, segurança e mudança de termos, continuam indo, porque são obrigação.)
 3. **O dado é do cliente.** O cliente da UP é dono dos dados do negócio dele (contatos, pedidos, páginas). A agência acessa **com autorização do cliente**, e o cliente pode retirar a autorização. Se a UP e o cliente se separarem, o cliente leva a conta NextLevel com ele; a UP perde o acesso e a comissão futura daquele cliente (regra a confirmar com o dono, pergunta 6.1).
