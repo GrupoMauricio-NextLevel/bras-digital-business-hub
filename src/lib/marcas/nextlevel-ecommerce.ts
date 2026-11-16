@@ -69,12 +69,12 @@ export function nomePlanoEc(nomeOuChave: string): string {
 export const nomeProdutoEc = (nome: string) => (/^Commerce (Start|Pro|Scale|Enterprise)$/.test(nome) ? nomePlanoEc(nome) : nome);
 
 /**
- * NextLevel Business (D295): nome da ÁREA do painel que gerencia o negócio, nunca uma marca, domínio ou cadastro à parte.
+ * NextLevel Business (D302): nome da ÁREA do painel que gerencia o negócio, nunca uma marca, domínio ou cadastro à parte.
  * A plataforma continua "NextLevel Commerce" (getBrand()). Trocar o nome = mudar só esta linha (e os testes de texto).
  */
 export const NOME_GERENCIADOR = { nome: "NextLevel Business", subtitulo: "Gerenciador do seu negócio" } as const;
 
-/** Os dois caminhos da entrada (D295). `para=site|loja` no cadastro e no formulário assistido. */
+/** Os dois caminhos da entrada (D302). `para=site|loja` no cadastro e no formulário assistido. */
 export const CAMINHOS = {
   site: { chave: "site", formato: "SITE", titulo: "Site para minha empresa", curto: "Site", descricao: "Site profissional, páginas para seus anúncios e todos os seus contatos num painel só." },
   loja: { chave: "loja", formato: "LOJA", titulo: "Loja virtual", curto: "Loja virtual", descricao: "Venda online com catálogo, carrinho, Pix e cartão, e gerencie tudo no mesmo painel." },

@@ -3,7 +3,7 @@ import { ArrowRight, Globe, Store } from "lucide-react";
 import { CAMINHOS, NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 
 /**
- * Os dois caminhos da entrada (NextLevel Business, NB1, D295/D297): site para a empresa ou loja virtual, com o mesmo
+ * Os dois caminhos da entrada (NextLevel Business, NB1, D302/D304): site para a empresa ou loja virtual, com o mesmo
  * painel e o gerenciador do negócio nos dois. Só aparece com a chave BUSINESS_V1 ligada.
  */
 export function DoisCaminhos({ signupOpen, className = "" }: { signupOpen: boolean; className?: string }) {

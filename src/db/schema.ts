@@ -85,7 +85,7 @@ export const stores = pgTable("stores", {
   /** Oferta contratada pelo lojista junto à NextLevel. */
   offer: text("offer", { enum: ["DROP_MANUAL", "STORE_SUBDOMAIN", "STORE_OWN"] }).notNull().default("STORE_SUBDOMAIN"),
   /**
-   * Caminho do negócio (NB1, D295/D297): LOJA = loja virtual (todas as contas antigas); SITE = site da empresa, sem
+   * Caminho do negócio (NB1, D302/D304): LOJA = loja virtual (todas as contas antigas); SITE = site da empresa, sem
    * catálogo, carrinho e checkout na vitrine até ligar a loja. Fonte única de leitura: `src/lib/business/modulos.ts`.
    */
   formato: text("formato", { enum: ["LOJA", "SITE"] }).notNull().default("LOJA"),
@@ -1204,7 +1204,7 @@ export const passwordResets = pgTable("password_resets", {
 export const iaConversas = pgTable("ia_conversas", {
   id: id(),
   brand: text("brand").notNull(),
-  canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA"] }).notNull().default("HOME"),
+  canal: text("canal", { enum: ["HOME", "PAINEL", "LOJA", "EMAIL"] }).notNull().default("HOME"),
   /** Ajuda do lojista (D201): a conversa pertence a esta loja (canal PAINEL). */
   storeId: text("store_id").references(() => stores.id),
   tokenHash: text("token_hash").notNull(),
@@ -1286,8 +1286,33 @@ export const origensContato = pgTable("origens_contato", {
   uf: text("uf"),
   pais: text("pais"),
   aparelho: text("aparelho"),
+  /** Navegador informado (para a API de conversões da Meta, que exige em evento do site) e o aviso de cookies na hora (TR5, D298). */
+  ua: text("ua"),
+  consentimento: text("consentimento", { enum: ["SIM", "NAO", "SEM_ESCOLHA"] }),
   capturadaEm: ts("capturada_em").notNull().defaultNow(),
 });
+
+/**
+ * Fila de retorno às plataformas (TR5, D298): cada linha é um resultado (contato, conta criada, pagante, venda fechada)
+ * a avisar à Meta ou ao Google. Uma vez por plataforma, evento e contato (dedupe). A rotina manda, tenta de novo e guarda
+ * o resultado em português; nunca guarda e-mail, telefone ou token.
+ */
+export const conversoesEnvio = pgTable("conversoes_envio", {
+  id: id(),
+  plataforma: text("plataforma", { enum: ["META", "GOOGLE"] }).notNull(),
+  evento: text("evento", { enum: ["LEAD", "CONTA", "PAGANTE", "VENDA"] }).notNull(),
+  chave: text("chave").notNull(),
+  eventoId: text("evento_id").notNull(),
+  valorCents: integer("valor_cents"),
+  ocorreuEm: ts("ocorreu_em").notNull(),
+  status: text("status", { enum: ["PENDENTE", "ENVIADO", "FALHOU", "IGNORADO", "BLOQUEADO"] }).notNull().default("PENDENTE"),
+  motivo: text("motivo"),
+  tentativas: integer("tentativas").notNull().default(0),
+  proximaTentativaEm: ts("proxima_tentativa_em"),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  criadoEm: createdAt(),
+  enviadoEm: ts("enviado_em"),
+}, (t) => [index("conversoes_envio_status_idx").on(t.status, t.proximaTentativaEm)]);
 
 /**
  * Links rastreados (TR1, D290): encurtador próprio `/l/<codigo>` para anúncio, bio, story, direct, WhatsApp, e-mail e
@@ -1385,6 +1410,60 @@ export const trafegoDiario = pgTable("trafego_diario", {
   cadastros: integer("cadastros").notNull().default(0),
   leads: integer("leads").notNull().default(0),
 }, (t) => [primaryKey({ columns: [t.dia, t.brand, t.canal, t.campanha, t.aparelho] })]);
+
+/**
+ * Anúncios da loja na Meta (D299): o lojista faz o diagnóstico no painel, a equipe da NextLevel analisa, manda a proposta,
+ * configura no Gerenciador de Anúncios (na conta de anúncios DO LOJISTA, verba no cartão dele) e acompanha. Manual por
+ * enquanto (a API vem depois), mas o lojista acompanha tudo numa "sala da campanha": etapas, pendências, conversa e números.
+ */
+export const ANUNCIO_STATUS = ["RASCUNHO", "ENVIADA", "ANALISE", "PROPOSTA", "PREPARACAO", "CONFIGURACAO", "REVISAO_META", "NO_AR", "PAUSADA", "ENCERRADA", "CANCELADA"] as const;
+export type AnuncioStatus = (typeof ANUNCIO_STATUS)[number];
+export const anunciosLoja = pgTable("anuncios_loja", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  status: text("status", { enum: ANUNCIO_STATUS }).notNull().default("RASCUNHO"),
+  nome: text("nome").notNull(),
+  /** Respostas do diagnóstico (objetivo, produtos, público, verba, materiais, oferta). */
+  diagnostico: jsonb("diagnostico").$type<Record<string, unknown>>().notNull().default({}),
+  /** Pendências do lojista e da equipe (acesso à conta, forma de pagamento na Meta, materiais, aceite da proposta). */
+  pendencias: jsonb("pendencias").$type<{ chave: string; rotulo: string; dica: string; quem: "LOJISTA" | "EQUIPE"; feitoEm: string | null }[]>().notNull().default([]),
+  /** Proposta (pedido de orçamento do serviço "Gestão de Meta Ads"). */
+  quoteId: text("quote_id"),
+  /** Etiqueta da campanha nos links do anúncio: as vendas da loja com ela aparecem sozinhas na sala. */
+  utmCampaign: text("utm_campaign").notNull(),
+  responsavelId: text("responsavel_id"),
+  responsavelNome: text("responsavel_nome"),
+  enviadaEm: ts("enviada_em"),
+  noArEm: ts("no_ar_em"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("anuncios_loja_store_idx").on(t.storeId), index("anuncios_loja_status_idx").on(t.status)]);
+
+/** Linha do tempo da sala da campanha: mudanças de etapa, mensagens entre lojista e equipe, pendências, resultados. */
+export const anunciosEventos = pgTable("anuncios_eventos", {
+  id: id(),
+  anuncioId: text("anuncio_id").notNull().references(() => anunciosLoja.id),
+  autor: text("autor", { enum: ["LOJISTA", "EQUIPE", "SISTEMA"] }).notNull(),
+  autorNome: text("autor_nome"),
+  tipo: text("tipo", { enum: ["ETAPA", "MENSAGEM", "PENDENCIA", "RESULTADO", "PROPOSTA"] }).notNull(),
+  texto: text("texto").notNull(),
+  criadoEm: createdAt(),
+}, (t) => [index("anuncios_eventos_anuncio_idx").on(t.anuncioId)]);
+
+/** Números de um período lançados pela equipe (do Gerenciador de Anúncios), em centavos e contagens. */
+export const anunciosResultados = pgTable("anuncios_resultados", {
+  id: id(),
+  anuncioId: text("anuncio_id").notNull().references(() => anunciosLoja.id),
+  de: text("de").notNull(),
+  ate: text("ate").notNull(),
+  gastoCents: integer("gasto_cents").notNull().default(0),
+  alcance: integer("alcance").notNull().default(0),
+  cliques: integer("cliques").notNull().default(0),
+  conversas: integer("conversas").notNull().default(0),
+  comentario: text("comentario"),
+  criadoPor: text("criado_por"),
+  criadoEm: createdAt(),
+}, (t) => [index("anuncios_resultados_anuncio_idx").on(t.anuncioId)]);
 
 export const brandLeads = pgTable("brand_leads", {
   id: id(),

@@ -39,7 +39,7 @@ export type AppShellProps = {
   tenantSub?: string;
   userName: string;
   storefrontHref?: string;
-  /** Texto do atalho da vitrine (NB1, D297): "Ver site" para quem está no caminho Site. Padrão: "Ver loja virtual". */
+  /** Texto do atalho da vitrine (NB1, D304): "Ver site" para quem está no caminho Site. Padrão: "Ver loja virtual". */
   storefrontLabel?: string;
   demoUsers?: DemoUser[];
   onSwitch?: (email: string) => Promise<void>;

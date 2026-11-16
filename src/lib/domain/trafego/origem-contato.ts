@@ -6,6 +6,7 @@ import { CLICK_IDS, canalDe, ROTULO_CANAL, type Canal } from "@/lib/trafego/cana
 import { type Actor, requireMasterFn } from "../access";
 import { DomainError } from "../errors";
 import { CODIGO_VISITA, SESSAO_MIN } from "./coletor";
+import { enfileirarConversao } from "./retorno";
 
 /**
  * Origem de cada contato (TR3, D294). Quando alguém deixa o contato ou cria a loja, o sistema guarda de onde veio: a
@@ -16,7 +17,11 @@ export type Via = "FORMULARIO" | "SAIDA" | "DIAGNOSTICO" | "CADASTRO" | "CODIGO_
 export const ROTULO_VIA: Record<Via, string> = {
   FORMULARIO: "Formulário", SAIDA: "Janela de saída", DIAGNOSTICO: "Diagnóstico", CADASTRO: "Cadastro da loja", CODIGO_WHATSAPP: "Código da visita no WhatsApp",
 };
-export type VisitaAtual = { ultimo: Record<string, string>; primeiro: Record<string, string>; sessaoId: string | null };
+export type VisitaAtual = {
+  ultimo: Record<string, string>; primeiro: Record<string, string>; sessaoId: string | null;
+  /** Navegador, escolha no aviso de cookies e os cookies da Meta (_fbp, _fbc), para o retorno às plataformas (TR5, D298). */
+  ua?: string | null; consentimento?: "SIM" | "NAO" | "SEM_ESCOLHA"; fbp?: string | null; fbc?: string | null;
+};
 
 const APARELHO: Record<string, string> = { MOBILE: "Celular", DESKTOP: "Computador", TABLET: "Tablet" };
 const resumoAparelho = (s: Pick<typeof trafegoSessoes.$inferSelect, "aparelho" | "sistema" | "modelo" | "navegador">) =>
@@ -54,12 +59,16 @@ export async function registrarOrigemDoContato(db: Database, chave: string, bran
     const ultimo = Object.keys(v.ultimo).length ? deCookie(v.ultimo) : null;
     const base: Snapshot = sessao && (sessao.canal !== "direto" || !ultimo) ? deSessao(sessao) : { ...(ultimo ?? { canal: "direto" }), ...(sessao ? { sessaoId: sessao.id, codigoVisita: sessao.codigo, cidade: sessao.cidade, uf: sessao.uf, pais: sessao.pais, aparelho: resumoAparelho(sessao) } : {}) };
     const primeiroCanal = v.primeiro.canal && v.primeiro.canal in ROTULO_CANAL ? v.primeiro.canal : null;
-    const r = await db.insert(origensContato).values({ chave, brand, via, ...base, primeiroCanal, primeiraPagina: v.primeiro.page ? v.primeiro.page.replace(/[^\w\-./~%]/g, "").slice(0, 80) || null : null, capturadaEm: agora.toISOString() })
+    const metaCookies = { ...(v.fbp && /^fb\.\d\.\d+\.\d+$/.test(v.fbp) ? { fbp: v.fbp } : {}), ...(v.fbc && /^fb\.\d\.\d+\.[\w.-]{1,200}$/.test(v.fbc) ? { fbc: v.fbc } : {}) };
+    base.clickIds = { ...(base.clickIds ?? {}), ...metaCookies };
+    const r = await db.insert(origensContato).values({ chave, brand, via, ...base, primeiroCanal, ua: v.ua?.slice(0, 400) ?? null, consentimento: v.consentimento ?? "SEM_ESCOLHA", primeiraPagina: v.primeiro.page ? v.primeiro.page.replace(/[^\w\-./~%]/g, "").slice(0, 80) || null : null, capturadaEm: agora.toISOString() })
       .onConflictDoNothing().returning({ chave: origensContato.chave });
     if (sessao) {
       await db.update(trafegoSessoes).set({ lead: true, ultimoSinalEm: agora.toISOString() }).where(eq(trafegoSessoes.id, sessao.id));
       await db.insert(trafegoEventos).values({ id: newId("tev"), sessaoId: sessao.id, tipo: "LEAD", caminho: pagina.slice(0, 120) || "/", criadoEm: agora.toISOString() });
     }
+    // TR5 (D298): o contato ou a conta entram na fila de retorno à Meta e ao Google (o mesmo número do navegador, D295).
+    if (r.length) await enfileirarConversao(db, { evento: via === "CADASTRO" ? "CONTA" : "LEAD", chave, ocorreuEm: agora });
     return r.length > 0;
   } catch (e) { console.error("[origem] contato", e); return false; }
 }
@@ -75,6 +84,7 @@ export async function vincularCodigoVisita(db: Database, actor: Actor, chave: st
   const valores = { brand: s.brand, via: "CODIGO_WHATSAPP" as const, ...deSessao(s), capturadaEm: agora.toISOString() };
   await db.insert(origensContato).values({ chave, ...valores }).onConflictDoUpdate({ target: origensContato.chave, set: valores });
   if (!s.lead) await db.update(trafegoSessoes).set({ lead: true }).where(eq(trafegoSessoes.id, s.id));
+  await enfileirarConversao(db, { evento: chave.startsWith("loja:") ? "CONTA" : "LEAD", chave, ocorreuEm: agora });
   return { canal: s.canal as Canal, campanha: s.utmCampaign };
 }
 

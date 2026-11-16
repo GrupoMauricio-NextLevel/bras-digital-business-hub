@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { caminhoDoInteressado } from "./brand-leads";
-import { activities, brandLeads, crmAcompanhamento, iaConversas, iaMensagens, organizations, stores, users } from "@/db/schema";
+import { activities, brandLeads, contratoParcelas, contratos, crmAcompanhamento, financeInvoices, iaConversas, iaMensagens, organizations, stores, users } from "@/db/schema";
 import { DomainError, NotFoundError } from "./errors";
 import { requireMasterFn, type Actor } from "./access";
 import { funilEcommerce, DEGRAUS } from "./funil-ecommerce";
@@ -9,8 +9,9 @@ import { situacoesComerciais, type SituacaoComercial } from "./situacao-comercia
 import { linkWhatsapp } from "./agora-ecommerce";
 import { getConfigComercial, mensageiro } from "./comercial-config";
 import { origensDe, ROTULO_VIA, type OrigemResumo } from "./trafego/origem-contato";
+import { enfileirarConversao } from "./trafego/retorno";
 
-/** Caminho escolhido na entrada (NB1, D297), mostrado no detalhe do cartão do Comercial. */
+/** Caminho escolhido na entrada (NB1, D304), mostrado no detalhe do cartão do Comercial. */
 const ROTULO_CAMINHO: Record<string, string> = { site: "Quer: site para a empresa", loja: "Quer: loja virtual", indeciso: "Ainda não sabe: site ou loja" };
 
 /**
@@ -135,7 +136,7 @@ export async function fichaCliente(db: Database, actor: Actor, chave: string, ag
   const todas = await funilComercial(db, actor, agora);
   const p = todas.find((x) => x.chave === chave);
   if (!p) throw new NotFoundError("Cliente não encontrado.");
-  type Evento = { em: string; tipo: "conversa" | "loja" | "nota" | "sistema"; texto: string; autor?: string };
+  type Evento = { em: string; tipo: "conversa" | "loja" | "nota" | "sistema" | "email" | "dinheiro"; texto: string; autor?: string };
   const linha: Evento[] = [];
   if (p.conversaId) {
     const ms = await db.select().from(iaMensagens).where(eq(iaMensagens.conversaId, p.conversaId)).orderBy(asc(iaMensagens.createdAt)).limit(200);
@@ -152,6 +153,29 @@ export async function fichaCliente(db: Database, actor: Actor, chave: string, ag
     const ajuda = await db.select({ id: iaConversas.id }).from(iaConversas).where(and(eq(iaConversas.storeId, p.storeId), eq(iaConversas.canal, "PAINEL"))).limit(5);
     for (const c of ajuda) for (const m of await db.select().from(iaMensagens).where(eq(iaMensagens.conversaId, c.id)).orderBy(asc(iaMensagens.createdAt)).limit(100))
       if (m.autor !== "SISTEMA") linha.push({ em: m.createdAt, tipo: "conversa", texto: m.texto, autor: m.autor === "CLIENTE" ? `${p.nome} (Ajuda)` : `${m.autorNome ?? "Equipe"} (equipe)` });
+  }
+  // D301: e-mails (suporte@), contrato com parcelas e faturas do plano na mesma linha do tempo.
+  if (p.email) {
+    const convs = await db.select({ id: iaConversas.id }).from(iaConversas).where(and(eq(iaConversas.canal, "EMAIL"), eq(iaConversas.email, p.email.toLowerCase()))).limit(5);
+    if (convs.length) for (const m of await db.select().from(iaMensagens).where(inArray(iaMensagens.conversaId, convs.map((c) => c.id))).orderBy(asc(iaMensagens.createdAt)).limit(200))
+      if (m.autor !== "SISTEMA") linha.push({ em: m.createdAt, tipo: "email", texto: m.texto, autor: m.autor === "CLIENTE" ? `${p.nome} (e-mail)` : `${m.autorNome ?? "Equipe"} (e-mail)` });
+  }
+  if (p.storeId) {
+    for (const c of await db.select({ id: contratos.id, numero: contratos.numero, titulo: contratos.titulo, enviadoEm: contratos.enviadoEm, aceitoEm: contratos.aceitoEm }).from(contratos).where(eq(contratos.storeId, p.storeId)).limit(10)) {
+      linha.push({ em: c.enviadoEm, tipo: "dinheiro", texto: `Contrato ${c.numero} enviado: ${c.titulo}` });
+      if (c.aceitoEm) linha.push({ em: c.aceitoEm, tipo: "dinheiro", texto: `Contrato ${c.numero} aceito no painel` });
+    }
+    for (const x of await db.select().from(contratoParcelas).where(eq(contratoParcelas.storeId, p.storeId)).limit(40)) {
+      const n = `Parcela ${x.ordem} (${brl(x.valorCents)})`;
+      if (x.avisadoEm) linha.push({ em: x.avisadoEm, tipo: "dinheiro", texto: `${n}: avisou que fez o Pix${x.avisoNota ? ` · “${x.avisoNota.slice(0, 120)}”` : ""}` });
+      if (x.confirmadoEm) linha.push({ em: x.confirmadoEm, tipo: "dinheiro", texto: `${n}: recebimento confirmado` });
+      if (x.naoEncontradoEm) linha.push({ em: x.naoEncontradoEm, tipo: "dinheiro", texto: `${n}: Pix não encontrado no banco` });
+    }
+    const ST: Record<string, string> = { OPEN: "em aberto", PAID: "paga", OVERDUE: "vencida", WAIVED: "dispensada", CANCELED: "cancelada" };
+    for (const f of await db.select({ desc: financeInvoices.description, valor: financeInvoices.amountCents, status: financeInvoices.status, criada: financeInvoices.createdAt, paga: financeInvoices.paidAt }).from(financeInvoices).where(eq(financeInvoices.storeId, p.storeId)).orderBy(desc(financeInvoices.createdAt)).limit(24)) {
+      linha.push({ em: f.criada, tipo: "dinheiro", texto: `Fatura: ${f.desc} · ${brl(f.valor)} (${ST[f.status] ?? f.status})` });
+      if (f.paga) linha.push({ em: f.paga, tipo: "dinheiro", texto: `Pagou: ${f.desc} · ${brl(f.valor)}` });
+    }
   }
   if (p.fonte) linha.push({ em: p.fonte.em, tipo: "sistema", texto: `Chegou por ${p.fonte.rotulo}${p.fonte.campanha ? ` (campanha ${p.fonte.campanha}${p.fonte.peca ? `, peça ${p.fonte.peca}` : ""})` : ""}${p.fonte.cidade ? ` · ${p.fonte.cidade}${p.fonte.uf ? `/${p.fonte.uf}` : ""}` : ""}${p.fonte.aparelho ? ` · ${p.fonte.aparelho}` : ""}` });
   if (p.fechou) linha.push({ em: p.fechou.em, tipo: "sistema", texto: `Negócio fechado: ${brl(p.fechou.valorCents)}${p.fechou.descricao ? ` · ${p.fechou.descricao}` : ""}` });
@@ -181,5 +205,7 @@ export async function salvarAcompanhamento(db: Database, actor: Actor, chave: st
     updatedAt: agoraIso(),
   };
   await db.insert(crmAcompanhamento).values({ chave, ...valores }).onConflictDoUpdate({ target: crmAcompanhamento.chave, set: valores });
+  // TR5 (D298): negócio fechado à mão volta para a Meta e o Google como venda, com o valor.
+  if (d.fechou) await enfileirarConversao(db, { evento: "VENDA", chave, valorCents: d.fechou.valorCents });
 }
 const agoraIso = () => new Date().toISOString();

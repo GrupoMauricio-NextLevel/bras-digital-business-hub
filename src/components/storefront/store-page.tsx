@@ -22,7 +22,7 @@ const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:
 export async function StorePage({ slug, page, productSlug, query }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string; produtos?: string } }) {
   const sf = await getStorefront(slug);
   if (!sf) notFound();
-  // NB1 (D297): negócio no caminho Site, sem o módulo Loja, não tem catálogo, produto nem carrinho na vitrine.
+  // NB1 (D304): negócio no caminho Site, sem o módulo Loja, não tem catálogo, produto nem carrinho na vitrine.
   if (page !== "home" && (await lojaFechadaNaVitrine(sf.store.id))) notFound();
   const db = await getDb();
   // Teste de tema ("ver com seus produtos"): só o dono vê, nada é gravado. L5 (D246): leituras independentes juntas.

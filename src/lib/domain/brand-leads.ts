@@ -17,7 +17,7 @@ export const leadSchema = z.object({
   segment: z.string().trim().max(60).optional(),
   message: z.string().trim().max(600).optional(),
   affiliateRef: z.string().trim().max(60).optional(),
-  /** Caminho escolhido na entrada (NB1, D297): site da empresa, loja virtual ou ainda não sabe. Vai para `needs` como "caminho:<valor>". */
+  /** Caminho escolhido na entrada (NB1, D304): site da empresa, loja virtual ou ainda não sabe. Vai para `needs` como "caminho:<valor>". */
   caminho: z.enum(["site", "loja", "indeciso"]).optional(),
 });
 

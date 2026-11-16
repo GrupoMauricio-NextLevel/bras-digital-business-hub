@@ -1,6 +1,6 @@
 # Portal do cliente: piloto da academia (NB10 do NextLevel Business)
 
-> **Status: AGUARDANDO O DONO.** A academia piloto está confirmada (D296). O dono vai detalhar o piloto em outra conversa. Aqui entram as respostas e, com elas, o prompt de engenharia da NB10.
+> **Status: AGUARDANDO O DONO.** A academia piloto está confirmada (D303). O dono vai detalhar o piloto em outra conversa. Aqui entram as respostas e, com elas, o prompt de engenharia da NB10.
 > **Plano-mãe:** `docs/prompts/nextlevel-business-coracao-do-negocio.md`. Leia a Parte 5.16 (bases que as fases NB1 a NB3 já deixam prontas) e o Anexo A (regras mínimas que este piloto não pode afrouxar).
 > **Como preencher:** responda as perguntas da Parte 2 em português simples. Pode responder só as que souber; as outras ficam com o padrão sugerido. Depois, uma sessão de trabalho transforma as respostas na Parte 4 (prompt de engenharia) e começa a NB10.
 

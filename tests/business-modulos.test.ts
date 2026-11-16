@@ -11,7 +11,7 @@ import { brandLeads } from "@/db/schema";
 
 const base = { marca: "NEXTLEVEL_COMMERCE", direitos: new Set<string>(), ligado: true };
 
-describe("módulos do negócio (NB1, D297)", () => {
+describe("módulos do negócio (NB1, D304)", () => {
   it("chave desligada: tudo como antes, até para quem foi criado como site", () => {
     const m = modulosDe({ ...base, formato: "SITE", ligado: false });
     expect(m.business).toBe(false);

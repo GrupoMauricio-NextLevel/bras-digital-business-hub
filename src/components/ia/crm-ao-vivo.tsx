@@ -68,7 +68,7 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
             {dados.lista.length ? dados.lista.map((x) => (
               <li key={x.id}>
                 <button type="button" onClick={() => setSel(x.id)} aria-current={sel === x.id ? "true" : undefined} className={`flex w-full flex-col gap-1 px-4 py-3 text-left ${sel === x.id ? "bg-[color-mix(in_srgb,var(--ds-primary)_8%,transparent)]" : "hover:bg-surface-muted"}`}>
-                  <span className="flex items-center gap-2">{x.canal === "PAINEL" ? <span className="rounded-full bg-amber-100 px-1.5 text-[10px] font-bold uppercase text-amber-900">Lojista</span> : null}<b className="truncate text-sm text-foreground">{x.nome ?? `Visitante ${codigo(x.id)}`}</b>{x.naoLidas > 0 && sel !== x.id ? <span className="rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">{x.naoLidas}</span> : null}<span className="ml-auto shrink-0 text-xs text-muted-foreground">{ha(x.ultimaEm)}</span></span>
+                  <span className="flex items-center gap-2">{x.canal === "PAINEL" ? <span className="rounded-full bg-amber-100 px-1.5 text-[10px] font-bold uppercase text-amber-900">Lojista</span> : null}{x.canal === "EMAIL" ? <span className="rounded-full bg-sky-100 px-1.5 text-[10px] font-bold uppercase text-sky-900">E-mail</span> : null}<b className="truncate text-sm text-foreground">{x.nome ?? `Visitante ${codigo(x.id)}`}</b>{x.naoLidas > 0 && sel !== x.id ? <span className="rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">{x.naoLidas}</span> : null}<span className="ml-auto shrink-0 text-xs text-muted-foreground">{ha(x.ultimaEm)}</span></span>
                   <span className="flex items-center gap-2"><span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS[x.status]!.cls}`}>{STATUS[x.status]!.rotulo}</span>{x.interesse ? <span className="truncate text-xs text-muted-foreground">{x.interesse}</span> : null}</span>
                   {x.ultimaMensagem ? <span className="truncate text-xs text-body">{x.ultimaMensagem}</span> : null}
                 </button>
@@ -112,7 +112,7 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Contato</p>
                 <dl className="mt-2 space-y-1.5">
-                  {([["Nome", c.nome], ["WhatsApp", c.whatsapp], ["E-mail", c.email], ["Faturamento", c.faturamento], ["Interesse", c.interesse], ["Página", c.pagina], ["Origem", Object.entries(c.origem ?? {}).map(([k, v]) => `${k}=${v}`).join(", ") || null], ["Desde", new Date(c.createdAt).toLocaleString("pt-BR")]] as const).map(([k, v]) => (
+                  {([["Nome", c.nome], ["WhatsApp", c.whatsapp], ["E-mail", c.email], ["Faturamento", c.faturamento], ["Interesse", c.interesse], ["Página", c.pagina], ...(c.origem?.assunto ? [["Assunto do e-mail", c.origem.assunto]] as const : []), ["Origem", Object.entries(c.origem ?? {}).filter(([k]) => !k.startsWith("email") && k !== "assunto").map(([k, v]) => `${k}=${v}`).join(", ") || null], ["Desde", new Date(c.createdAt).toLocaleString("pt-BR")]] as const).map(([k, v]) => (
                     <div key={k} className="flex gap-2"><dt className="w-24 shrink-0 text-muted-foreground">{k}</dt><dd className="min-w-0 break-words font-medium text-foreground">{v ?? <span className="font-normal text-muted-foreground">ainda não informou</span>}</dd></div>
                   ))}
                 </dl>

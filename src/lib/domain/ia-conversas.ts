@@ -7,6 +7,7 @@ import { newId } from "@/lib/ids";
 import { DomainError, NotFoundError } from "./errors";
 import { requireMasterFn, type Actor } from "./access";
 import { createBrandLead } from "./brand-leads";
+import { enviarRespostaPorEmail } from "./suporte-email";
 import type { BrandCode } from "@/lib/brand";
 import { FAIXAS_VENDA, responder, responderTexto, type FatosVenda, type RespostaVenda } from "@/lib/ia/vendedor-publico";
 
@@ -143,8 +144,10 @@ export async function responderComoEquipe(db: Database, actor: Actor, id: string
   equipe(actor);
   const t = texto.trim();
   if (!t) throw new DomainError("VAZIA", "Escreva a resposta.");
-  const c = (await db.select({ status: iaConversas.status }).from(iaConversas).where(eq(iaConversas.id, id)).limit(1))[0];
+  const c = (await db.select({ status: iaConversas.status, canal: iaConversas.canal, email: iaConversas.email, origem: iaConversas.origem }).from(iaConversas).where(eq(iaConversas.id, id)).limit(1))[0];
   if (!c) throw new NotFoundError("Conversa não encontrada.");
+  // D300: conversa vinda de suporte@ responde por e-mail (sai antes de gravar: se o envio falhar, nada fica registrado).
+  if (c.canal === "EMAIL") await enviarRespostaPorEmail(c, t);
   if (c.status !== "HUMANO") await assumirConversa(db, actor, id, nome);
   await gravar(db, id, "HUMANO", t, {}, nome.split(" ")[0]!);
   await db.update(iaConversas).set({ ultimaMensagem: `Equipe: ${t.slice(0, 150)}`, ultimaEm: agora(), mensagens: sql`${iaConversas.mensagens} + 1` }).where(eq(iaConversas.id, id));

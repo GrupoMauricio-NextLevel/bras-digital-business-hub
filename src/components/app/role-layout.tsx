@@ -7,7 +7,7 @@ import { isRecordingMode } from "@/lib/gravacao-server";
 import { type FeatureKey } from "@/lib/features";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { storeUrl } from "@/lib/store-url";
-import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, navDoMasterPorMarca, navDoNegocio, navForBrand, type Panel } from "@/lib/nav";
+import { BRAS_ADMIN_NAV, COMMERCE_ADMIN_NAV, COMMERCE_STORE_NAV, MASTER_ECOMMERCE_NAV, NAV, STAFF_NAV_PREFIXES, comNaoLidas, navDoMasterPorMarca, navDoNegocio, navForBrand, type Panel } from "@/lib/nav";
 import { modulosDoNegocio } from "@/lib/business/modulos";
 import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { getBrand, marcaDoMaster } from "@/lib/brand-server";
@@ -30,6 +30,7 @@ import { BotaoMauricio } from "@/components/ia/mauricio";
 import { AjudaLojista } from "@/components/ajuda/ajuda-lojista";
 import { AvisoSonoro } from "@/components/master/aviso-sonoro";
 import { supportContacts } from "@/lib/support";
+import { naoLidasDaEntrada } from "@/lib/integrations/hostinger-mail";
 import { AreaTheme } from "@/design-system/components/area-theme";
 import { PainelTech } from "@/components/app/painel-tech";
 import { FaixaBlack } from "@/components/black/faixa-black";
@@ -81,7 +82,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const marcaMaster = isMaster ? await marcaDoMaster() : null;
   // Master trancado só na Commerce (D203): o menu do escritório em 7 áreas, uma casca só (o console /commerce usa o mesmo menu).
   const escritorioEc = isMaster && marcaMaster === "NEXTLEVEL_COMMERCE" && marcasAtivasNoMaster().length === 1;
-  const items = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
+  const itemsBase = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
+  // D297: não lidos da caixa de e-mail no menu, só para o dono (a caixa é só dele).
+  const items = isMaster && !fn && !session.support ? comNaoLidas(itemsBase, await naoLidasDaEntrada()) : itemsBase;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da Commerce e para o dono no Master. Visível; o plano decide o que destrava.
@@ -119,7 +122,7 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   }
   if (commerceStore || (scope === "commerce-admin" && !escritorioEc)) {
     const staff = session.user.storeRole === "STAFF";
-    // NextLevel Business (NB1, D297): com a chave BUSINESS_V1, o menu vira os quatro grupos do gerenciador do negócio.
+    // NextLevel Business (NB1, D304): com a chave BUSINESS_V1, o menu vira os quatro grupos do gerenciador do negócio.
     const negocio = commerceStore ? await modulosDoNegocio(db, store!.id) : null;
     const menuLoja = negocio?.business ? navDoNegocio(negocio, NOME_GERENCIADOR.nome) : COMMERCE_STORE_NAV;
     const commerceItems = commerceStore

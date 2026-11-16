@@ -1,24 +1,45 @@
 [
  {
-  "numero": 297,
+  "numero": 304,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
   "data": "2026-11-14",
-  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D296)."
+  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D303)."
  },
  {
-  "numero": 296,
+  "numero": 303,
   "frente": "E-commerce",
   "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
  },
  {
-  "numero": 295,
+  "numero": 302,
   "frente": "E-commerce",
   "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
+ },
+ {
+  "numero": 299,
+  "frente": "E-commerce",
+  "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
+  "data": "2026-11-14",
+  "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
+ },
+ {
+  "numero": 298,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
+  "data": "2026-11-14",
+  "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
+ },
+ {
+  "numero": 295,
+  "frente": "E-commerce",
+  "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
+  "data": "2026-11-14",
+  "resumo": "Onde configurar: Master → Tráfego e campanhas → Pixel e Google. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão \"Contato\") e, opcional, Google Analytics 4 (G-…)…"
  },
  {
   "numero": 294,
@@ -257,26 +278,5 @@
   "titulo": "Comparação com concorrentes: tom agressivo, sempre com fato (regra fixa do dono) e página de parceiros com mais tecnologia",
   "data": "2026-11-06",
   "resumo": "Regra do dono, que vale para sempre: nas comparações, o tom é agressivo, nunca neutro: expor o ponto fraco de cada concorrente e amassar o argumento deles;"
- },
- {
-  "numero": 260,
-  "frente": null,
-  "titulo": "Parceiros: regra única 20% / 24% / 28%, sem Black e sem bônus",
-  "data": "2026-11-06",
-  "resumo": "Pedido do dono: simplificar o programa: uma regra só para todo mundo, sem Black nem benefício diferente, com base nos concorrentes e um pouco à frente deles. Não havia parceiro nem venda feitos, então a regra vale para todos."
- },
- {
-  "numero": 259,
-  "frente": null,
-  "titulo": "AT2 do atacado: box novo, card, carrinho e checkout",
-  "data": "2026-11-06",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT2."
- },
- {
-  "numero": 258,
-  "frente": null,
-  "titulo": "AT1 do atacado: painel do lojista e travas por plano",
-  "data": "2026-11-05",
-  "resumo": "Prompt: docs/prompts/atacado-nextlevel-ecommerce.md, fase AT1."
  }
 ]

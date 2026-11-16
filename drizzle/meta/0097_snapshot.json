@@ -1,5 +1,5 @@
 {
-  "id": "72dc6a3f-62b4-412a-8cb7-5408b945bdc9",
+  "id": "085bf3c2-ba3b-4af5-a5fc-2767301ef091",
   "prevId": "963895f5-4fdb-4ca2-88c7-e323f9d4ec53",
   "version": "7",
   "dialect": "postgresql",
@@ -6257,6 +6257,136 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.conversoes_envio": {
+      "name": "conversoes_envio",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "plataforma": {
+          "name": "plataforma",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evento": {
+          "name": "evento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chave": {
+          "name": "chave",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evento_id": {
+          "name": "evento_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor_cents": {
+          "name": "valor_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ocorreu_em": {
+          "name": "ocorreu_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDENTE'"
+        },
+        "motivo": {
+          "name": "motivo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tentativas": {
+          "name": "tentativas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "proxima_tentativa_em": {
+          "name": "proxima_tentativa_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dedupe_key": {
+          "name": "dedupe_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "enviado_em": {
+          "name": "enviado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "conversoes_envio_status_idx": {
+          "name": "conversoes_envio_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "proxima_tentativa_em",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "conversoes_envio_dedupe_key_unique": {
+          "name": "conversoes_envio_dedupe_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "dedupe_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.corporate_orders": {
       "name": "corporate_orders",
       "schema": "",
@@ -11563,6 +11693,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "ua": {
+          "name": "ua",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consentimento": {
+          "name": "consentimento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "capturada_em": {
           "name": "capturada_em",
           "type": "timestamp with time zone",
@@ -16615,20 +16757,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'STORE_SUBDOMAIN'"
-        },
-        "formato": {
-          "name": "formato",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'LOJA'"
-        },
-        "fuso": {
-          "name": "fuso",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'America/Sao_Paulo'"
         },
         "tagline": {
           "name": "tagline",

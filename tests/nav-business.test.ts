@@ -6,7 +6,7 @@ const B = NOME_GERENCIADOR.nome;
 const nav = (...ativos: string[]) => navDoNegocio({ ativos: new Set(ativos) }, B);
 const grupos = (itens: { group?: string }[]) => [...new Set(itens.map((i) => i.group))];
 
-describe("menu do lojista com o NextLevel Business (NB1, D297)", () => {
+describe("menu do lojista com o NextLevel Business (NB1, D304)", () => {
   it("loja: nenhum endereço do menu de hoje some", () => {
     const hrefs = new Set(nav("painel", "contatos", "loja").map((i) => i.href));
     for (const i of COMMERCE_STORE_NAV) expect(hrefs, `${i.label} (${i.href})`).toContain(i.href);

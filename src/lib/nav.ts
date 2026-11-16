@@ -136,6 +136,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Banners", href: "/merchant/banners", icon: "Image", group: "Loja virtual" },
       { label: "Templates", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
       { label: "Campanhas", href: "/merchant/campanhas", icon: "Image", group: "Loja virtual" },
+      { label: "Anúncios na Meta", href: "/merchant/anuncios", icon: "Megaphone", group: "Loja virtual" },
       { label: "Cupons", href: "/merchant/descontos", icon: "Sparkles", group: "Loja virtual" },
       { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Loja virtual" },
       { label: "Avise-me", href: "/merchant/avise-me", icon: "Users", group: "Loja virtual" },
@@ -239,6 +240,8 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Banners", href: "/merchant/banners", icon: "Image", group: "Escritório", badge: "Novo" },
   { label: "Cupons", href: "/merchant/descontos", icon: "Ticket", group: "Crescer" },
   { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: "Crescer" },
+  // D299: campanhas na Meta com a equipe NextLevel (diagnóstico, proposta, sala da campanha).
+  { label: "Anúncios na Meta", href: "/merchant/anuncios", icon: "Megaphone", group: "Crescer", badge: "Novo" },
   { label: "Avaliações", href: "/merchant/avaliacoes", icon: "Users", group: "Crescer" },
   { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Crescer" },
   { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: "Crescer" },
@@ -258,7 +261,7 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Registro de ações", href: "/merchant/auditoria", icon: "Clock", group: "Loja e ajustes" },
 ];
 /**
- * Menu do lojista com o NextLevel Business (NB1, D295/D297): quatro grupos e nenhum endereço novo ou perdido.
+ * Menu do lojista com o NextLevel Business (NB1, D302/D304): quatro grupos e nenhum endereço novo ou perdido.
  * - "NextLevel Business" (o gerenciador do negócio): o dia a dia, igual para todo caminho;
  * - "Site" e "Loja virtual": as funções de cada caminho, conforme os módulos do negócio;
  * - "Ajustes": empresa, equipe, assinatura e registros.
@@ -276,6 +279,7 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
     { label: "Pedidos e vendas", href: "/merchant/orders", icon: "ShoppingBag", group: B, bottom: true },
     { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: B },
     { label: "Campanhas", href: "/merchant/campanhas", icon: "Megaphone", group: B },
+    { label: "Anúncios na Meta", href: "/merchant/anuncios", icon: "Megaphone", group: B, badge: "Novo" },
     { label: "Análise", href: "/merchant/analytics", icon: "BarChart3", group: B },
     { label: "Pede pro Maurício", href: "/merchant/ia", icon: "Sparkles", group: B, badge: "Novo" },
   ];
@@ -324,6 +328,7 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Atendimento", href: "/master/ia", icon: "Inbox", group: "Escritório", bottom: true },
   { label: "Comercial", href: "/master/comercial", icon: "UsersRound", group: "Escritório", bottom: true },
   // CT1+CT2 (D276): contratos assinados no painel.
+  { label: "Caixa de entrada", href: "/master/caixa-de-entrada", icon: "Inbox", group: "Escritório" },
   { label: "Contratos", href: "/master/contratos", icon: "ReceiptText", group: "Escritório" },
   { label: "Lojistas", href: "/commerce/stores", icon: "Store", group: "Escritório" },
   { label: "Receita", href: "/master/receita", icon: "Wallet", group: "Escritório", exact: true },
@@ -336,6 +341,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   // TR1 (D290): links rastreados e, por fases, tráfego em tempo real, campanhas e Reels.
   { label: "Tráfego e campanhas", href: "/master/trafego", icon: "BarChart3", group: "Escritório" },
+  // D299: pedidos de campanha na Meta dos lojistas.
+  { label: "Mesa de anúncios", href: "/master/anuncios", icon: "Megaphone", group: "Escritório" },
   { label: "Black Friday", href: "/master/black", icon: "Sparkles", group: "Escritório" },
   { label: "Placar (súmula)", href: "/master/placar", icon: "LayoutGrid", group: "Escritório" },
   { label: "Sistema", href: "/master/settings", icon: "Settings", group: "Escritório" },
@@ -390,4 +397,10 @@ export function navDoMasterPorMarca(items: NavItem[], marca: BrandCode | null | 
 
 export function navForBrand(items: NavItem[], brand: Pick<Brand, "code" | "modules" | "partnersOpen">): NavItem[] {
   return items.filter((i) => (!i.needs || (i.needs === "dropship" ? brand.modules.includes("dropship") : brand.partnersOpen)) && (!i.onlyBrand || i.onlyBrand === brand.code || brand.code === "NEXTLEVEL"));
+}
+
+/** Número de não lidos no item "Caixa de entrada" do Master (D297); 0 ou null tira o número. */
+export function comNaoLidas(items: NavItem[], n: number | null): NavItem[] {
+  if (!n) return items;
+  return items.map((i) => (i.href === "/master/caixa-de-entrada" ? { ...i, badge: n > 99 ? "99+" : String(n) } : i));
 }

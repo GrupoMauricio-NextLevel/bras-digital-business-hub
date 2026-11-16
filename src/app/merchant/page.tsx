@@ -81,7 +81,7 @@ export default async function MerchantHome() {
     pendingCustomer: o.pendingCustomer, pendingCentral: o.pendingCentral, pendingLabel: o.pendingLabel, inProgress: o.inProgress, inTransit: o.inTransit,
     balanceCents: balance, stockBack, now: new Date(),
   })].map((item) => ({ ...item, icon: FILA_ICONE[item.key] ?? ShoppingCart }));
-  // NextLevel Business (NB1, D297): com a chave ligada, o topo diz "NextLevel Business · Visão geral do negócio"; num SITE,
+  // NextLevel Business (NB1, D304): com a chave ligada, o topo diz "NextLevel Business · Visão geral do negócio"; num SITE,
   // a fila mostra só o que é do negócio (clientes esperando, atendimento), sem as pendências de montar uma loja.
   const negocio = commerce ? await modulosDoNegocio(db, store.id) : null;
   const ehSite = !!negocio?.business && !temLoja(negocio);

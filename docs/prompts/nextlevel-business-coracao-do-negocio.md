@@ -1,18 +1,73 @@
 # NextLevel Commerce com o gerenciador NextLevel Business: racional técnico e prompt engenheiro mestre
 
-> **Status: EM ANDAMENTO.** Nome e organização decididos pelo dono (**D295**). **NB0 feita (D296, 13/11/2026):** inventário confirmado, linha de base registrada em `docs/relatorios/NB0-LINHA-DE-BASE-2026-11-13.md`, padrões da Parte 10 aceitos, **academia piloto confirmada** pelo dono (o portal sai da gaveta; o prompt detalhado do piloto chega em outra conversa e entra em `docs/prompts/portal-academia-piloto.md`). **NB1 feita (D297, 14/11/2026):** dois caminhos na home, no cadastro e no formulário assistido; `stores.formato` e `stores.fuso`; `src/lib/business/modulos.ts`; menu em quatro grupos; visão geral com o nome do gerenciador; vitrine do Site sem loja; tudo atrás de `BUSINESS_V1`. Ficaram para a NB2: criar conta no formato pelo Master e limpar carrinho e produtos da página inicial do Site; `/empresas` passou para a NB3. Próxima: **NB2**.
-> **Decisão do dono (13/11/2026, D295):** a plataforma **continua NextLevel Commerce**. Na entrada, a pessoa escolhe o caminho: **Site** ou **Loja virtual**. Dentro do painel ficam as funções de cada situação (área Site, área Loja virtual) e um **gerenciador do negócio chamado NextLevel Business**, que agrupa tudo o que é do negócio em si, seja qual for o caminho escolhido (dia a dia, contatos e orçamentos, clientes, vendas, caixa, financeiro, captação, resultados). "NextLevel Business" é o nome dessa área do painel, não uma marca, domínio ou cadastro à parte.
-> **O que o dono pediu (13/11/2026):** a NextLevel deixa de ser "só plataforma de loja virtual" e vira **o coração do negócio do cliente**. Quem entra escolhe entre dois caminhos (nomes finais na D295: **Site** e **Loja virtual**): **Site** (site institucional, página de campanha para a Meta em poucos cliques, captação paga e orgânica, contatos e orçamentos, painel do dia a dia, frente de caixa instalada no computador do negócio) e **Loja virtual** (o que já existe, com os planos atuais). "O que já temos na NextLevel Commerce é 80% do caminho; vale uma adaptação para elevar o nosso nível de segmento." Uma marca-mãe só (NextLevel, da NextLevel Marketing Ltda, D279), sem multiplicar marcas.
+> **Status: EM ANDAMENTO.** Nome e organização decididos pelo dono (**D302**). **NB0 feita (D303, 13/11/2026):** inventário confirmado, linha de base registrada em `docs/relatorios/NB0-LINHA-DE-BASE-2026-11-13.md`, padrões da Parte 10 aceitos, **academia piloto confirmada** pelo dono (o portal sai da gaveta; o prompt detalhado do piloto chega em outra conversa e entra em `docs/prompts/portal-academia-piloto.md`). **NB1 feita (D304, 14/11/2026):** dois caminhos na home, no cadastro e no formulário assistido; `stores.formato` e `stores.fuso`; `src/lib/business/modulos.ts`; menu em quatro grupos; visão geral com o nome do gerenciador; vitrine do Site sem loja; tudo atrás de `BUSINESS_V1`. Ficaram para a NB2: criar conta no formato pelo Master e limpar carrinho e produtos da página inicial do Site; `/empresas` passou para a NB3. Próxima: **NB2**.
+> **Decisão do dono (13/11/2026, D302):** a plataforma **continua NextLevel Commerce**. Na entrada, a pessoa escolhe o caminho: **Site** ou **Loja virtual**. Dentro do painel ficam as funções de cada situação (área Site, área Loja virtual) e um **gerenciador do negócio chamado NextLevel Business**, que agrupa tudo o que é do negócio em si, seja qual for o caminho escolhido (dia a dia, contatos e orçamentos, clientes, vendas, caixa, financeiro, captação, resultados). "NextLevel Business" é o nome dessa área do painel, não uma marca, domínio ou cadastro à parte.
+> **O que o dono pediu (13/11/2026):** a NextLevel deixa de ser "só plataforma de loja virtual" e vira **o coração do negócio do cliente**. Quem entra escolhe entre dois caminhos (nomes finais na D302: **Site** e **Loja virtual**): **Site** (site institucional, página de campanha para a Meta em poucos cliques, captação paga e orgânica, contatos e orçamentos, painel do dia a dia, frente de caixa instalada no computador do negócio) e **Loja virtual** (o que já existe, com os planos atuais). "O que já temos na NextLevel Commerce é 80% do caminho; vale uma adaptação para elevar o nosso nível de segmento." Uma marca-mãe só (NextLevel, da NextLevel Marketing Ltda, D279), sem multiplicar marcas.
 > **Origem:** documento "NextLevel Business — racional de produto e prompt mestre" (13/11/2026, enviado pelo dono), relido e ajustado ao código real e à visão acima. O que foi mantido, mudado ou retirado do original está na Parte 3.
 > **Como usar:** as Partes 1 a 10 são o contrato técnico (o que existe, o que construir, regras e aceite). A **Parte 11** é o prompt para colar numa sessão de trabalho; ele manda executar **uma fase por vez** (NB0 a NB10) com a skill `desenvolver-prompt`.
 > **Marcação:** **[fato]** = conferido no código em 13/11/2026 (caminho citado); **[decisão]** = padrão recomendado, vale se o dono não disser outra coisa (registrar em `DECISIONS.md`); **[hipótese]** = estimativa a medir; **[plataforma]** = regra de terceiros (Meta, Google, navegadores), conferir na documentação vigente no dia.
 
 ---
 
+## Parte 0. Memória da conversa de origem (não perder)
+
+> Esta parte guarda o racional da conversa em que o plano nasceu (13 a 16/11/2026), para qualquer sessão seguinte continuar sem refazer a conversa. **Leia antes de qualquer fase.**
+
+### 0.1 Linha do tempo das decisões do dono
+| Data | O que o dono disse | Onde ficou |
+|---|---|---|
+| 13/11 | Enviou o racional "NextLevel Business" (vidraçaria, academia, Meta). Pediu análise para incorporar sem dano, com marca forte num guarda-chuva só (como Meta → Meta Business), sem multiplicar marcas; NextLevel Marketing Ltda com quase 4 anos | Parte 3 (o que ficou, mudou ou saiu do racional original) |
+| 13/11 | "Somos o coração do negócio do cara." Duas opções de entrada; captação paga e orgânica; dashboard do dia a dia; frente de caixa instalada no computador; site institucional; página de campanha da Meta em poucos cliques; "80% do caminho já está andado". Pesquisa no INPI fora | Partes 1, 2 e 5 |
+| 13/11 | Pediu o prompt engenheiro mestre amplo e técnico em .md | Este arquivo |
+| 13/11 | **Nome:** continua "NextLevel Commerce"; na entrada, caminho Site ou Loja virtual; dentro do painel, o gerenciador do negócio "NextLevel Business", agrupando o que é do negócio em si | **D302**, Partes 5.10 e 5.14 |
+| 13/11 | "Pode seguir com a NB0." Já tem uma academia para o piloto do portal e vai detalhar em outra conversa | **D303**, `docs/prompts/portal-academia-piloto.md` |
+| 14/11 | "Prossiga" (NB1) | **D304**, `docs/relatorios/NB1-2026-11-14.md` |
+| 14/11 | **Pergunta em aberto:** "E se Business, sites e lojas virtuais forem 3 funções distintas, como produtos? Funções iniciais básicas e depois a contratação dessas três possibilidades?" | 0.2 abaixo (**aguarda a resposta do dono**) |
+| 16/11 | "O que fizemos nessa seção não pode se perder de forma alguma." Pediu a análise das outras conversas e uma forma de manter o racional | Esta Parte 0 e a junção descrita em 0.3 |
+
+### 0.2 Proposta em aberto: três produtos (resposta dada ao dono em 14/11; decisão pendente, será a D305)
+- **NextLevel Business (base):** painel do negócio (visão geral, clientes, atendimento, contatos e orçamentos, pedidos e vendas, financeiro, Maurício). Todo cliente começa aqui.
+- **Site (contratação):** site da empresa, páginas de serviço e de campanha, domínio, formulário de orçamento.
+- **Loja virtual (contratação):** catálogo, carrinho, Pix e cartão, temas, atacado.
+- **Adicionais sobre qualquer combinação:** Caixa, Captação, Resultados da Meta, Portal do cliente.
+- **Recomendação dada ao dono:**
+  - sim, vendido em **pacotes**: Business; Business + Site; Business + Loja (= plano Commerce de hoje); Business + Site + Loja;
+  - preços no Master;
+  - lojistas atuais mantidos como "Business + Loja" sem mudança;
+  - base com **teste grátis de poucos dias** (não grátis para sempre, por causa da meta de 10 pagantes).
+- **Encaixe técnico (fato):** uma assinatura principal por conta (`nl_subscriptions_store_unique`) e adicionais por `entitlements` (já usado pelo checkout corporativo). Logo: a assinatura principal é o Business; Site e Loja entram como adicionais `modulo:site` e `modulo:loja`, que a regra `modulosDe` (NB1) já entende.
+- **O que muda se aprovado:**
+  - `formato` vira só o primeiro passo sugerido, e Site e Loja passam a vir só da contratação;
+  - conta só com o Business ganha página pública simples (nome, contato, WhatsApp);
+  - o menu ganha "Ligar site" além de "Ligar loja virtual";
+  - a entrada vira "Comece pelo seu negócio" e, depois, "Quer um site? Quer uma loja?" (pode pular);
+  - a NB8 (planos e contratação no painel) sobe para logo depois da NB3;
+  - "NextLevel Business" passa a ser nome de produto vendido, e não só de área (ajusta a D302).
+- **Enquanto o dono não responder:** NB2 e NB3 seguem iguais, porque servem aos dois modelos.
+
+### 0.3 Encaixe com o trabalho das outras conversas (junção de 16/11/2026)
+As outras sessões publicaram na branch `claude/wonderful-cannon-5o38v5`, em paralelo, D295 a D301. As decisões desta conversa, que nasceram com os mesmos números, foram **renumeradas**: nome e organização = **D302**, NB0 = **D303**, NB1 = **D304**. A migração `formato`/`fuso` passou de 0097 para **0099**. Nada se perdeu dos dois lados.
+
+| Trabalho das outras conversas | Como entra no NextLevel Business |
+|---|---|
+| **D295 TR4** (Pixel e Google no site da NextLevel, só com consentimento) e **D298 TR5** (retorno à Meta e ao Google pelo servidor, fila `conversoes_envio`) | NB4 (página de campanha do negócio) reaproveita o padrão de consentimento, o `eventID` igual entre navegador e servidor e a fila de envio, aplicados por loja. Não criar outro motor |
+| **D299 Anúncios na Meta pelo painel do lojista** (diagnóstico, sala da campanha, Mesa de anúncios no Master, `anuncios_loja`) | Item "Anúncios na Meta" no grupo **NextLevel Business** do menu (feito na junção). NB4 liga a página de campanha à sala da campanha (o link pronto para os anúncios passa a poder apontar para uma página de campanha do Site). NB9 (resultados da Meta) = TR6 da D299: os números lançados à mão viram leitura automática |
+| **D296/D297/D300/D301** (caixa de entrada no Master, suporte@ vira atendimento, linha do tempo do cliente) | É do Master (NextLevel), não do negócio do cliente. Serve de modelo para a NB3: os contatos do negócio também ganham linha do tempo; o e-mail do negócio fica para depois |
+
+### 0.4 Como esta conversa protege o trabalho
+- Tudo está na branch `ccr-ecbeafd1-sh4iy2` (enviada ao GitHub) e já foi juntado com a branch de publicação (16/11), pronto para publicar sem conflito quando o dono autorizar.
+- Decisões em `docs/design/DECISIONS.md` (D302 a D304), citadas na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`) e em `CLAUDE.md` ("Organização (D302)").
+- Relatórios com prints: `docs/relatorios/NB0-LINHA-DE-BASE-2026-11-13.md` e `docs/relatorios/NB1-2026-11-14.md`.
+- **Regra para as próximas sessões:**
+  - antes de criar decisão ou migração, puxar a branch de publicação e usar o próximo número livre;
+  - outras conversas podem estar numerando ao mesmo tempo.
+
+---
+
 ## Parte 1. Resposta curta
 
 1. **Não é um sistema novo nem uma marca nova.** É o mesmo motor (mesmo repositório, banco, deploy e Master), com o "negócio" do cliente como centro. A entidade `stores` já é, na prática, o negócio: empresa, equipe, domínio próprio, marca, WhatsApp, Pixel, integrações, plano e cobrança [fato, `src/db/schema.ts` `stores`]. Não se cria tabela `companies`.
-2. **Dois caminhos na entrada, um painel só (D295).** A plataforma continua **NextLevel Commerce**. Na home e no cadastro a pessoa escolhe **Site** ou **Loja virtual**. Os dois criam o mesmo tipo de conta; o que muda é o **formato** inicial (site ou loja) e os **módulos** ligados. Ligar a loja depois, ou o site depois, não troca conta, domínio nem dados.
+2. **Dois caminhos na entrada, um painel só (D302).** A plataforma continua **NextLevel Commerce**. Na home e no cadastro a pessoa escolhe **Site** ou **Loja virtual**. Os dois criam o mesmo tipo de conta; o que muda é o **formato** inicial (site ou loja) e os **módulos** ligados. Ligar a loja depois, ou o site depois, não troca conta, domínio nem dados.
 2a. **Dentro do painel, três camadas:** a área **NextLevel Business** (o gerenciador do negócio, igual para todos: dia a dia, contatos e orçamentos, clientes, vendas, caixa, financeiro, captação, resultados), a área **Site** (páginas, serviços, aparência, domínio) e a área **Loja virtual** (produtos, vitrine, cupons, temas, pós-venda), mais **Ajustes**. Cada área aparece conforme o que o negócio usa (Parte 5.14).
 3. **Os módulos do negócio:** Site, Captação (páginas de campanha, origem dos contatos, Pixel), Contatos e orçamentos, Painel do dia, Caixa (frente de caixa), Loja virtual (o que existe) e, depois, Portal do cliente e Resultados da Meta. A liberação usa o que já existe: recursos por oferta (`src/lib/features.ts`) e direitos por negócio (`src/lib/domain/entitlements.ts`, `grantEntitlement`/`requireEntitlement`) [fato].
 4. **Os 80% prontos:** conta e equipe, domínio próprio, editor de temas com rascunho/prévia/histórico, seções, mídia, CRM do lojista, propostas com link público, Pixel e API de conversões por loja, regra única de canal, links rastreados, origem do contato, aviso de cookies, venda manual, caixa do Master (padrão de abertura e fechamento), login do cliente final por código, fila do dia, IA do painel, catálogo de planos no Master.
@@ -33,7 +88,7 @@
 | Venda no balcão = "Novo pedido" manual | Frente de caixa com abertura, fechamento, formas de pagamento e recibo, instalável no computador |
 | O lojista só vê o que é da loja | O dono vê o dia do negócio: contatos, orçamentos, caixa, vendas, visitas |
 
-### 2.2 Os dois caminhos (D295)
+### 2.2 Os dois caminhos (D302)
 - **Site:** "Site profissional para sua empresa, páginas para seus anúncios e todos os seus contatos num painel só. Com caixa para o balcão, se você precisar."
 - **Loja virtual:** os planos de hoje (Start, Pro, Scale; preços do catálogo do Master, nunca fixos no texto).
 - Nos dois casos, o painel traz o **NextLevel Business**, o gerenciador do negócio. Na página pública ele aparece como benefício comum ("em qualquer caminho, você gerencia o seu negócio no NextLevel Business"), não como produto separado.
@@ -261,7 +316,7 @@ Reaproveitar `faq`, `testimonials` (só depoimento real, regra D283), `steps`, `
 - Cabeçalho da visão geral da Commerce (`commerce-home.tsx`): "Visão geral da loja" passa a "NextLevel Business · Visão geral do negócio" (com `NOME_GERENCIADOR`); para formato `SITE`, os selos "Loja publicada" e "Falta 1 item para vender" viram "Site publicado" e "Contatos novos". A versão SuperDrop (`src/app/merchant/page.tsx`) não muda.
 - Master: indicador "negócios que responderam sozinhos" (contato com `primeiraRespostaEm` registrado por usuário da loja, sem atendimento NextLevel no período) e "tempo até publicar" (criação da conta → primeira página publicada).
 
-### 5.10 Nome e textos (decidido, D295)
+### 5.10 Nome e textos (decidido, D302)
 - **Plataforma:** "NextLevel Commerce" (sem mudança de marca, domínio, e-mails, termos ou contratos; D288 continua valendo).
 - **Caminhos:** "Site" e "Loja virtual".
 - **Área do painel:** "NextLevel Business", com o subtítulo "Gerenciador do seu negócio".
@@ -322,7 +377,7 @@ Reaproveitar `faq`, `testimonials` (só depoimento real, regra D283), `steps`, `
 Cada linha "Nunca" vira teste de servidor (ação e rota direta), não só de tela.
 
 
-### 5.14 Menu do painel: NextLevel Business, Site, Loja virtual e Ajustes (D295)
+### 5.14 Menu do painel: NextLevel Business, Site, Loja virtual e Ajustes (D302)
 Hoje o menu do lojista da Commerce (`COMMERCE_STORE_NAV` em `src/lib/nav.ts`, D207) tem três grupos: **Escritório**, **Crescer** e **Loja e ajustes** [fato]. Ele passa a ter quatro grupos. **Nenhum endereço muda**; só o agrupamento e alguns rótulos. Toda tela atual continua no menu.
 
 | Grupo | Quando aparece | Itens (endereço) | Origem |
@@ -355,7 +410,7 @@ Hoje o menu do lojista da Commerce (`COMMERCE_STORE_NAV` em `src/lib/nav.ts`, D2
 - **Master:** ao criar a conta para um contato (fluxo assistido), escolher o formato `SITE` ou `LOJA`, com o interesse do contato já marcado.
 - Endereço `/quero-meu-site` como atalho para `/quero-minha-loja?para=site` (para anúncios e links).
 
-### 5.16 Bases do portal que as fases NB1 a NB3 já respeitam (academia confirmada, D296)
+### 5.16 Bases do portal que as fases NB1 a NB3 já respeitam (academia confirmada, D303)
 Para o prompt da academia entrar sem retrabalho:
 - **Módulos:** `modulos.ts` nasce com a chave `portal`, desligada para todos. O menu reserva "Portal do cliente" no grupo NextLevel Business, visível só com o módulo.
 - **Rotas:** o slug `portal` entra na lista de reservados das páginas livres (5.2), junto com `conta` e `p`. O portal vai morar em `/store/[slug]/portal` (e `/portal` no domínio próprio). Nenhuma página livre pode ocupar esse endereço.
@@ -380,7 +435,7 @@ Cada fase segue a skill `desenvolver-prompt`:
 
 | Fase | Entrega | Banco | Aceite principal | Dono precisa |
 |---|---|---|---|---|
-| **NB0** | Confirmar o inventário da Parte 4 (só onde algo mudou), linha de base (tipos, lint, testes dos arquivos citados, e2e de cadastro, editor, checkout e painel do lojista), completar a **D295** com os padrões da Parte 10 que o dono não mudar, criar a etiqueta de frente das decisões (padrão: `[E-commerce]`) | — | Linha de base registrada; nenhum código de produto alterado | Responder a Parte 10 (ou aceitar os padrões) |
+| **NB0** | Confirmar o inventário da Parte 4 (só onde algo mudou), linha de base (tipos, lint, testes dos arquivos citados, e2e de cadastro, editor, checkout e painel do lojista), completar a **D302** com os padrões da Parte 10 que o dono não mudar, criar a etiqueta de frente das decisões (padrão: `[E-commerce]`) | — | Linha de base registrada; nenhum código de produto alterado | Responder a Parte 10 (ou aceitar os padrões) |
 | **NB1** | Dois caminhos (Site e Loja virtual) na home e no cadastro (`para=site\|loja`), menu em quatro grupos com o NextLevel Business (5.14), páginas `/empresas*` (atrás da chave `BUSINESS_V1`; sem ela, os caminhos não aparecem), `stores.formato`, `modulos.ts` com `requireModulo`, menu por módulo, vitrine `SITE` com 404 nas rotas de loja, boas-vindas por formato, visão geral com o nome do gerenciador, escolha de caminho também no formulário assistido `/quero-minha-loja` (5.15) | `stores.formato`, `stores.fuso` | Negócio `SITE` criado pelo cadastro abre o painel certo; loja atual idêntica (e2e de regressão) | Ligar `BUSINESS_V1` quando aprovar |
 | **NB2** | Páginas livres (`paginas_site`), editor generalizado, seções `services-grid`, `contact-info`, `before-after`, `servicos_negocio` com tela de cadastro, rotas `/p/` e domínio próprio, menu do site, modelo "Institucional de serviços" (Início, Sobre, Serviços, Contato) instalável com 1 clique | `paginas_site`, `servicos_negocio` | Criar, pré-visualizar, publicar e restaurar versão de uma página; slug reservado recusado; histórico preservado | — |
 | **NB3** | Seção `lead-form`, `registrarContato` (idempotente, antiabuso, origem), caixa de contatos e ficha, primeira resposta, orçamento por proposta com item avulso, WhatsApp com código e "registrar conversa", aviso por e-mail e na fila, CRM do lojista unificado | `contatos_negocio`, `cliques_whatsapp_negocio`; linha avulsa em propostas | Envio no celular cria contato na loja certa; repetição técnica não duplica; outro negócio não lê nem por URL nem por ação; proposta de produto continua igual | Textos do aviso de privacidade (padrão pronto) |
@@ -390,9 +445,9 @@ Cada fase segue a skill `desenvolver-prompt`:
 | **NB7** | Caixa: sessões, movimentos, venda `BALCAO`, linha avulsa, formas de pagamento, recibo 80 mm, `gtin` e leitor, papel de operador, modo foco com atalhos, manifesto do painel e botão de instalar, estado "sem conexão" | `caixas_negocio`, `movimentos_caixa`, `orders.channel += BALCAO`, `products.gtin` | Abrir, vender (dinheiro com troco, Pix, cartão), sangria, fechar com diferença; dois cliques em "finalizar" geram uma venda só; operador não vê financeiro; instalação conferida no Chrome e no Edge | Escolher se o Caixa é adicional ou incluso |
 | **NB8** | Itens de catálogo Business, adicional Caixa, cortesia para piloto, upgrade `SITE`↔Loja nos dois sentidos, vitrine na Loja NextLevel (`/merchant/services`), páginas `/empresas` com planos do catálogo | itens de catálogo (dados) | Upgrade preserva páginas, domínio, contatos e equipe; downgrade não apaga produtos | Preços no Master |
 | **NB9** | Resultados da Meta por negócio: é a **TR6 + TR9** de `trafego-campanhas-meta-google-reels.md` aplicada ao negócio (mesmo motor), com custo por contato só nos critérios da Parte 3 | conforme TR6 | Estados "conta desconectada", "sem acesso", "dados desatualizados"; leitura apenas | Aplicativo da Meta aprovado e empresa verificada |
-| **NB10** | Portal do cliente, piloto academia (Anexo A + `docs/prompts/portal-academia-piloto.md`) | conforme o prompt do piloto | Critérios do Anexo A e do prompt do piloto | **Academia confirmada (D296);** falta o dono detalhar o piloto em `portal-academia-piloto.md` |
+| **NB10** | Portal do cliente, piloto academia (Anexo A + `docs/prompts/portal-academia-piloto.md`) | conforme o prompt do piloto | Critérios do Anexo A e do prompt do piloto | **Academia confirmada (D303);** falta o dono detalhar o piloto em `portal-academia-piloto.md` |
 
-**Academia (D296):** com o prompt do piloto preenchido, a NB10 pode começar logo depois da NB3 (precisa do formato `SITE`, das páginas do site e da caixa de contatos), antes de NB4 a NB9, se o dono quiser.
+**Academia (D303):** com o prompt do piloto preenchido, a NB10 pode começar logo depois da NB3 (precisa do formato `SITE`, das páginas do site e da caixa de contatos), antes de NB4 a NB9, se o dono quiser.
 
 **Ordem e paralelismo:** NB1 → NB2 → NB3 é o caminho crítico (a vidraçaria já pode usar depois da NB3 com cortesia). NB4 e NB5 podem trocar de ordem. NB7 independe de NB4/NB5 e pode vir antes se aparecer cliente com balcão. **Pedido de aprovação do aplicativo da Meta começa já na NB0, fora do código** (é o que mais demora).
 
@@ -456,17 +511,17 @@ Cada fase segue a skill `desenvolver-prompt`:
 
 ---
 
-## Parte 10. Decisões do dono (registradas na D295 e na D296)
+## Parte 10. Decisões do dono (registradas na D302 e na D303)
 
 | # | Pergunta | Padrão recomendado |
 |---|---|---|
-| 1 | Nome do topo | **Decidido (D295):** plataforma NextLevel Commerce; caminhos Site e Loja virtual; "NextLevel Business" é o gerenciador do negócio dentro do painel (5.10 e 5.14) |
-| 2 | Primeiro piloto (vidraçaria ou outro serviço)? | **Aceito (D296):** negócio de demonstração "Vidraçaria Modelo" no ambiente de demonstração; piloto real por cortesia quando houver |
-| 3 | O Caixa é adicional ou incluso? | **Aceito (D296):** adicional, com preço no Master; cortesia no piloto |
-| 4 | Captação entra em todos os planos Commerce? | **Aceito (D296):** Pro e Scale; Start com página de campanha limitada a 1 |
-| 5 | Etiqueta das decisões | **Aceito (D296):** `[E-commerce]` (mesma plataforma) |
-| 6 | Portal do cliente | **Mudou (D296): o dono já tem a academia piloto.** A NB10 sai da gaveta: o prompt detalhado do piloto chega em outra conversa e entra em `docs/prompts/portal-academia-piloto.md` (estrutura já pronta). As fases NB1 a NB3 já respeitam as bases do portal (5.16) |
-| 7 | Pedir aprovação do aplicativo da Meta já | **Aceito (D296):** sim, em paralelo (fora do código; tarefa do dono, passo a passo na NB9) |
+| 1 | Nome do topo | **Decidido (D302):** plataforma NextLevel Commerce; caminhos Site e Loja virtual; "NextLevel Business" é o gerenciador do negócio dentro do painel (5.10 e 5.14) |
+| 2 | Primeiro piloto (vidraçaria ou outro serviço)? | **Aceito (D303):** negócio de demonstração "Vidraçaria Modelo" no ambiente de demonstração; piloto real por cortesia quando houver |
+| 3 | O Caixa é adicional ou incluso? | **Aceito (D303):** adicional, com preço no Master; cortesia no piloto |
+| 4 | Captação entra em todos os planos Commerce? | **Aceito (D303):** Pro e Scale; Start com página de campanha limitada a 1 |
+| 5 | Etiqueta das decisões | **Aceito (D303):** `[E-commerce]` (mesma plataforma) |
+| 6 | Portal do cliente | **Mudou (D303): o dono já tem a academia piloto.** A NB10 sai da gaveta: o prompt detalhado do piloto chega em outra conversa e entra em `docs/prompts/portal-academia-piloto.md` (estrutura já pronta). As fases NB1 a NB3 já respeitam as bases do portal (5.16) |
+| 7 | Pedir aprovação do aplicativo da Meta já | **Aceito (D303):** sim, em paralelo (fora do código; tarefa do dono, passo a passo na NB9) |
 
 ---
 
@@ -477,10 +532,10 @@ FUNÇÃO
 Você é engenheiro full-stack sênior do sistema NextLevel (Next.js 16 App Router, React 19, TypeScript estrito, Tailwind v4, Radix, Drizzle com PGlite/Neon, Zod, Vitest, Playwright via playwright-core, deploy Docker no Render). O dono, Mauricio, não é técnico: fale com ele em português claro, sem jargão. Código, nomes de arquivos e commits em português, como o projeto já faz.
 
 OBJETIVO
-Transformar a NextLevel Commerce no "coração do negócio" do cliente, sem criar sistema nem marca nova: a plataforma continua NextLevel Commerce (D295); na entrada, dois caminhos ("Site" e "Loja virtual"); dentro do painel, o gerenciador do negócio "NextLevel Business" agrupa tudo o que é do negócio em si (dia a dia, contatos e orçamentos, clientes, vendas, caixa, financeiro, captação, resultados), ao lado das áreas Site e Loja virtual e de Ajustes (Parte 5.14); módulos (Site, Captação, Contatos e orçamentos, Painel do dia, Caixa, Loja virtual; depois Resultados da Meta e Portal do cliente). Reaproveitar os 80% que já existem e construir só o que falta: páginas livres no editor, formulário e caixa de contatos, página de campanha em poucos cliques com link rastreado e Pixel, SEO local, painel do dia do negócio, frente de caixa instalável no computador, planos e upgrade. Nada pode quebrar o Commerce atual.
+Transformar a NextLevel Commerce no "coração do negócio" do cliente, sem criar sistema nem marca nova: a plataforma continua NextLevel Commerce (D302); na entrada, dois caminhos ("Site" e "Loja virtual"); dentro do painel, o gerenciador do negócio "NextLevel Business" agrupa tudo o que é do negócio em si (dia a dia, contatos e orçamentos, clientes, vendas, caixa, financeiro, captação, resultados), ao lado das áreas Site e Loja virtual e de Ajustes (Parte 5.14); módulos (Site, Captação, Contatos e orçamentos, Painel do dia, Caixa, Loja virtual; depois Resultados da Meta e Portal do cliente). Reaproveitar os 80% que já existem e construir só o que falta: páginas livres no editor, formulário e caixa de contatos, página de campanha em poucos cliques com link rastreado e Pixel, SEO local, painel do dia do negócio, frente de caixa instalável no computador, planos e upgrade. Nada pode quebrar o Commerce atual.
 
 LEITURA OBRIGATÓRIA (nesta ordem)
-AGENTS.md; CLAUDE.md; docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md (dados, permissões, temas, fronteiras); docs/prompts/nextlevel-business-coracao-do-negocio.md (este documento inteiro; as Partes 4, 5, 6, 7 e 8 são o contrato); docs/design/DECISIONS.md (D90 atribuição e /solucoes, D174 foco, D185 lojas sem cookie, D187 Pixel/CAPI e redirecionamentos da loja, D189 integrações por ID, D216 fase atual, D264 base de conhecimento, D279 empresa, D283 depoimentos reais, D287 frentes e domínios, D288 nome, D290 a D294 tráfego e busca, D295 nome e organização do painel); docs/prompts/trafego-campanhas-meta-google-reels.md (TR4 a TR9: não duplicar o motor); docs/infra/RENDER-USO.md; as skills desenvolver-prompt, painel-interno, qa-visual, nova-migracao, e2e-demo e publicar. Antes de mexer em rotas, manifesto, proxy ou cookies, leia o guia correspondente em node_modules/next/dist/docs/.
+AGENTS.md; CLAUDE.md; docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md (dados, permissões, temas, fronteiras); docs/prompts/nextlevel-business-coracao-do-negocio.md (este documento inteiro; as Partes 4, 5, 6, 7 e 8 são o contrato); docs/design/DECISIONS.md (D90 atribuição e /solucoes, D174 foco, D185 lojas sem cookie, D187 Pixel/CAPI e redirecionamentos da loja, D189 integrações por ID, D216 fase atual, D264 base de conhecimento, D279 empresa, D283 depoimentos reais, D287 frentes e domínios, D288 nome, D290 a D294 tráfego e busca, D302 nome e organização do painel); docs/prompts/trafego-campanhas-meta-google-reels.md (TR4 a TR9: não duplicar o motor); docs/infra/RENDER-USO.md; as skills desenvolver-prompt, painel-interno, qa-visual, nova-migracao, e2e-demo e publicar. Antes de mexer em rotas, manifesto, proxy ou cookies, leia o guia correspondente em node_modules/next/dist/docs/.
 
 CÓDIGO QUE JÁ EXISTE (estenda, não duplique; detalhes na Parte 4)
 - Negócio = stores (formato novo em stores.formato). Criação: src/lib/domain/provisioning.ts (createStore); cadastro: src/app/cadastro/*.
@@ -523,7 +578,7 @@ Os da Parte 8 deste documento, mais o aceite da linha da fase na Parte 6.
 
 ## Anexo A. Portal do cliente (NB10), especificação do racional original
 
-> **Academia confirmada (D296).** O detalhamento do dono entra em `docs/prompts/portal-academia-piloto.md`. Este anexo é o piso: o prompt do piloto pode acrescentar, mas não afrouxar as regras de lotação, isolamento e dados de saúde.
+> **Academia confirmada (D303).** O detalhamento do dono entra em `docs/prompts/portal-academia-piloto.md`. Este anexo é o piso: o prompt do piloto pode acrescentar, mas não afrouxar as regras de lotação, isolamento e dados de saúde.
 
 - **Escopo da primeira versão (academia):**
   - a equipe cria aulas com horário (fuso do negócio), capacidade e instrutor, e vê inscritos e ocupação;

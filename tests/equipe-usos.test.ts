@@ -63,7 +63,7 @@ describe("canal oficial de suporte (D181)", () => {
       expect(c.whatsappUrl).toContain("wa.me/5511940862144");
       expect(c.whatsappLabel).toBe("(11) 94086-2144");
     }
-    if (!process.env.NEXT_PUBLIC_SUPPORT_EMAIL) expect(c.email).toBe("sac@nextlevelgroup.com.br");
+    if (!process.env.NEXT_PUBLIC_SUPPORT_EMAIL) expect(c.email).toBe("contato@nextlevelcommerce.com.br");
     expect(c.whatsappUrl).toContain(encodeURIComponent("Olá! Teste."));
     expect(formatarTelefone("5511940862144")).toBe("(11) 94086-2144");
     expect(formatarTelefone("5521912345678")).toBe("(21) 91234-5678");
