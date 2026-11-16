@@ -3905,3 +3905,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - a loja liga sem fatura para quem entrou pelo site;
   - o lojista contrata o site pelo preço da tabela, e o site liga quando a fatura é paga;
   - a tabela antiga com a chave removida continua válida.
+
+## D312 — [E-commerce] Agências: a NextLevel não vende o código-fonte; o degrau maior é a Licença dedicada (2026-11-16)
+- **Contexto:** piloto com a agência UP (30 clientes, captação de conteúdo), que quer o sistema operacional da agência com cobrança automática (`docs/prompts/agencias-parceiras-up-piloto.md`, Parte 8). O dono tinha proposto três degraus: NextLevel Business (R$ 3.000 + 10%), white label (R$ 15.000 + 3%) e código próprio (R$ 30.000 + 0%).
+- **Decisão do dono (16/11/2026):** aceita a recomendação de **não vender o código**.
+  - O degrau "código próprio" vira **Licença dedicada**: implantação de R$ 30.000 + manutenção mensal fixa (sugestão R$ 3.900), 0% sobre o que a agência recebe;
+  - servidor e banco só da agência, com a marca dela; atualizações, segurança e suporte incluídos na manutenção;
+  - **o código continua da NextLevel**: a agência tem direito de uso, não a propriedade.
+- **Motivos:**
+  - o repositório é o motor de todo o grupo (regra anti-duplicação); vender o código entrega anos de trabalho e abre a porta para um concorrente;
+  - sem parte mensal, o degrau de R$ 30 mil se pagaria em poucos meses para a agência, e a receita da NextLevel iria a zero depois do primeiro ano.
+- **Cessão de código-fonte:** fora de oferta. Se um dia fizer sentido, só de uma parte separada do sistema, com não concorrência e sob orçamento, por decisão nova do dono.
+- **Ainda em aberto (decisão do dono, seção 8.9 do racional):**
+  - percentual do degrau 1 (5% com mínimo de R$ 990, recomendado, ou 10% com teto);
+  - mínimos mensais dos degraus 1 e 2;
+  - valor final da manutenção da licença;
+  - condições da Agência Fundadora.
+- **Valores** vão para a tabela de preços do Master quando o produto existir; nada de preço fixo no código.
+- **Código:** nada mudou ainda. O Painel da Agência começa na fase AG0, atrás da chave `AGENCIAS_V1`.

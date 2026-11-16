@@ -258,4 +258,4 @@ Perguntar **ao dono da UP** ("o que você precisa ver de cada um?") e depois **a
 1. Registrar as respostas em `docs/melhorias/up-respostas-descoberta.md`.
 2. Desenhar a primeira tela do cockpit e a fila de cada função, e mostrar ao dono (print real no navegador).
 3. Fechar com o dono o degrau de preço e o termo de Agência Fundadora (seções 8.5 e 8.6 do racional).
-4. Registrar a decisão D312 e começar a AG0.
+4. Registrar as decisões novas (a D312, código não se vende, já está registrada) e começar a AG0.

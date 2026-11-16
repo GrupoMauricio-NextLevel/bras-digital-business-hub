@@ -9,7 +9,9 @@
 >
 > **Perguntas para a UP e leitura da equipe (roteiro, edição, social media, tráfego pago):** `docs/prompts/agencias-up-perguntas-estrategicas.md`.
 >
-> **Estado deste documento:** proposta para o dono decidir. Nada aqui está aprovado nem no código. Quando aprovado, vira a decisão **D312** em `docs/design/DECISIONS.md` (frente `[E-commerce]`, porque traz lojistas e contas pagantes para a NextLevel Commerce) e é citado na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`).
+> **Decidido (D312, 16/11/2026):** a NextLevel **não vende o código-fonte**. O degrau maior para agências é a **Licença dedicada** (R$ 30.000 de implantação + manutenção mensal, 0% sobre o volume; o código continua da NextLevel). O resto da escada (percentual do degrau 1, mínimos, valor da manutenção) segue em aberto.
+>
+> **Estado deste documento:** proposta para o dono decidir, exceto o que a D312 já decidiu. Nada está no código. O restante, quando aprovado, vira decisão nova em `docs/design/DECISIONS.md` (frente `[E-commerce]`, porque traz lojistas e contas pagantes para a NextLevel Commerce) e é citado na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`).
 >
 > **Documentos que este plano respeita:** Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`), regra anti-duplicação (`CLAUDE.md`), NextLevel Business (`docs/prompts/nextlevel-business-coracao-do-negocio.md`, D304 a D311), Programa de Parceiros (D220; regra única de comissão D260; duas frentes, CPF e CNPJ, D263), público e personas (`docs/prompts/publico-personas-precos-ecossistema.md`, persona P12 "o parceiro").
 
@@ -338,7 +340,7 @@ Todos os valores em **centavos**, datas ISO, toda ação pelo domínio (`src/lib
 
 | Fase | Entrega | Critérios de aceite |
 |---|---|---|
-| **AG0** Diagnóstico e modelo | Confirmar o modelo de dados (3.2) contra o código real; decidir `AGENCY` vs `PARTNER`, `audit_log` vs `agencia_acessos`, `proposals` vs tabela nova; registrar D312 | Documento curto com as escolhas e o motivo; nenhuma linha de produção mudada |
+| **AG0** Diagnóstico e modelo | Confirmar o modelo de dados (3.2) contra o código real; decidir `AGENCY` vs `PARTNER`, `audit_log` vs `agencia_acessos`, `proposals` vs tabela nova; registrar a decisão do modelo de dados | Documento curto com as escolhas e o motivo; nenhuma linha de produção mudada |
 | **AG1** Agência e equipe | Organização `AGENCY`, papel `AGENCY`, cadastro da agência pelo Master (ligando ao `partners` AGENCY), convite de equipe com função, menu do Painel da Agência vazio | Agência A nunca vê nada da agência B (teste no servidor); equipe sem acesso a financeiro (teste); print do painel |
 | **AG2** Carteira de clientes | Cadastrar e importar clientes (planilha), ficha, pacote mensal, responsável; criar **conta só com o Business** para o cliente; convite com consentimento (2.4) | Sem aceite, a agência não abre a conta do cliente (teste); importação de 30 linhas sem duplicar; print da carteira |
 | **AG3** Produção do mês | Peças, plano do mês por cliente, quadro/lista/calendário, etapas renomeáveis, prazos e atrasos | Pessoa da equipe só vê peças dos clientes dela (teste); progresso do mês correto; print do quadro em 360 px sem rolagem lateral |
@@ -578,10 +580,10 @@ Princípio: **todo degrau tem uma parte que se repete todo mês**, e cada degrau
 |---|---|---|---|---|
 | **1** | **NextLevel Business para Agências** | R$ 3.000 (como o dono propôs) | **5%** do volume, com **mínimo de R$ 990** | Agência até ~R$ 100 mil/mês, validando |
 | **2** | **White label** | R$ 15.000 (como o dono propôs) | **3%** do volume (como o dono propôs), com **mínimo de R$ 1.990** | Agência que quer a própria marca e domínio, e oferecer o sistema aos clientes como produto dela |
-| **3** | **Licença dedicada** (no lugar de "código próprio") | R$ 30.000 (como o dono propôs) | **Manutenção fixa de R$ 3.900**, **0%** sobre o volume | Agência grande, acima de ~R$ 200 mil/mês |
+| **3** | **Licença dedicada** (no lugar de "código próprio"; **decidido, D312**) | R$ 30.000 (como o dono propôs) | **Manutenção fixa de R$ 3.900**, **0%** sobre o volume | Agência grande, acima de ~R$ 200 mil/mês |
 
 - **Licença dedicada** = servidor e banco só da agência, com a marca dela, sem percentual, **com atualizações, segurança e suporte incluídos na manutenção**. O código continua da NextLevel (a agência tem direito de uso, não a propriedade). É o que grandes empresas de software fazem com clientes grandes.
-- **Cessão do código-fonte** (a agência ser dona do código): **não recomendada**. Se um dia fizer sentido, só de uma parte separada do sistema, com cláusula de não concorrência e preço de outra ordem de grandeza, sob orçamento.
+- **Cessão do código-fonte** (a agência ser dona do código): **fora de oferta (decidido, D312)**. Se um dia fizer sentido, só de uma parte separada do sistema, com cláusula de não concorrência e preço de outra ordem de grandeza, sob orçamento.
 - **Subir de degrau:** o que a agência pagou de implantação no degrau anterior vira **desconto** na implantação do próximo, se a troca for em até 12 meses. Isso dá motivo para começar no degrau 1 em vez de esperar.
 - **Se o dono quiser manter os 10% no degrau 1:** colocar um **teto mensal** (por exemplo R$ 4.900) e incluir mais coisas no preço (implantação assistida, importação dos clientes, treinamento da equipe, régua de cobrança com WhatsApp). Sem teto, o problema 3 continua.
 - Todos os valores ficam na **tabela de preços do Master** (`platform_settings`), nunca fixos no código. As tarifas do meio de pagamento (Pix, cartão) são da conta da agência, à parte.
@@ -670,7 +672,7 @@ A cobrança sobe para o começo, porque é o que a UP pediu e o que sustenta a r
 ## 8.9 Perguntas novas
 
 **Para o dono:**
-1. Aceita trocar o degrau 3 de "código próprio" para **licença dedicada com manutenção mensal**? Se quiser mesmo vender o código, qual o valor mínimo e com que limites?
+1. ~~Aceita trocar o degrau 3 de "código próprio" para licença dedicada?~~ **Respondido: sim, o código não se vende (D312).** Falta só o valor final da manutenção mensal (sugestão R$ 3.900).
 2. Degrau 1: **5% com mínimo de R$ 990** (recomendado) ou **10% com teto mensal**? Qual teto?
 3. Coloca **mínimo mensal** nos degraus 1 e 2?
 4. A implantação do degrau anterior vira desconto no próximo?
