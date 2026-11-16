@@ -26,7 +26,7 @@ describe("modelos de site (NB2, D307)", () => {
       const tipos = Object.values(s.inicio.sections).map((x) => x.type);
       expect(tipos).toContain("services-grid");
       expect(tipos).toContain("contact-info");
-      expect(s.inicio.order.length).toBe(5);
+      expect(s.inicio.order.length).toBeGreaterThanOrEqual(5);
       for (const p of s.paginas) expect(p.modelo.order.length).toBeGreaterThan(0);
     }
     expect(modeloDoSite("academia", "Academia Forte").paginas.map((p) => p.slug)).toEqual(["sobre", "modalidades", "grade", "contato"]);
@@ -37,7 +37,7 @@ describe("modelos de site (NB2, D307)", () => {
       const m = modeloInicialDaPagina(tipo, "Minha página", "Vidraçaria Modelo");
       expect(m.order.length, tipo).toBeGreaterThan(0);
     }
-    expect(Object.values(modeloInicialDaPagina("CAMPANHA", "Box em 7 dias", "X").sections).map((x) => x.type)).toEqual(["hero", "services-grid", "rich-text", "contact-info"]);
+    expect(Object.values(modeloInicialDaPagina("CAMPANHA", "Box em 7 dias", "X").sections).map((x) => x.type)).toEqual(["hero", "services-grid", "rich-text", "lead-form", "contact-info"]);
   });
 });
 

@@ -4,6 +4,7 @@ import { ProductArt } from "@/components/app/product-art";
 import { formatBRL } from "@/lib/money";
 import { cn } from "@/lib/utils";
 import type { SectionProps } from "./types";
+import { FormularioOrcamento } from "@/components/storefront/formulario-orcamento";
 
 /**
  * Seções do site da empresa (NextLevel Business, NB2, D307): Serviços, Contato e Trabalhos realizados.
@@ -27,7 +28,9 @@ export function ServicesGrid({ id, settings, ctx }: SectionProps) {
       {str(settings.text) ? <p className="mt-2 max-w-2xl text-neutral-600">{str(settings.text)}</p> : null}
       <ul className={cn("mt-6 grid gap-4", COLS[str(settings.columns)] ?? COLS["3"])}>
         {lista.map((s) => {
-          const pedir = whatsappLink(ctx.store.whatsapp, `Olá! Vim pelo site e quero um orçamento de: ${s.nome}.`);
+          // WhatsApp da empresa; sem ele, o formulário da página Contato já com o serviço escolhido (NB3).
+          const contato = ctx.menuSite?.find((m) => m.href.endsWith("/contato"));
+          const pedir = whatsappLink(ctx.store.whatsapp, `Olá! Vim pelo site e quero um orçamento de: ${s.nome}.`) ?? (contato ? `${contato.href}?servico=${s.id}#orcamento` : null);
           return (
             <li key={s.id} className="flex flex-col overflow-hidden rounded-[var(--sf-radius,16px)] border border-neutral-200 bg-white">
               {s.imagemUrl ? <ProductArt images={[s.imagemUrl]} size="md" alt="" className="aspect-[4/3] w-full bg-neutral-100" /> : null}
@@ -35,7 +38,7 @@ export function ServicesGrid({ id, settings, ctx }: SectionProps) {
                 <h3 className="text-lg font-semibold">{s.nome}</h3>
                 {s.resumo ? <p className="mt-1 text-sm text-neutral-600">{s.resumo}</p> : null}
                 {settings.showPrice !== false && s.precoAPartirCents ? <p className="mt-3 text-sm">A partir de <b>{formatBRL(s.precoAPartirCents)}</b></p> : <p className="mt-3 text-sm text-neutral-600">Sob orçamento</p>}
-                {pedir ? <a href={pedir} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--sf-radius,10px)] px-4 text-sm font-semibold" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}><MessageCircle className="size-4" aria-hidden />{str(settings.ctaLabel) || "Pedir orçamento"}<span className="sr-only">: {s.nome}</span></a> : null}
+                {pedir ? <a href={pedir} target={pedir.startsWith("https://wa.me") ? "_blank" : undefined} rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--sf-radius,10px)] px-4 text-sm font-semibold" style={{ background: "var(--sf-primary)", color: "var(--sf-on-primary)" }}><MessageCircle className="size-4" aria-hidden />{str(settings.ctaLabel) || "Pedir orçamento"}<span className="sr-only">: {s.nome}</span></a> : null}
               </div>
             </li>
           );
@@ -92,4 +95,10 @@ export function WorkGallery({ id, settings, blocks, ctx }: SectionProps) {
       </ul>
     </section>
   );
+}
+
+/** Formulário de orçamento (NB3, D309): o pedido chega em Contatos e orçamentos, com a origem. */
+export function LeadForm({ id, settings, ctx }: SectionProps) {
+  return <FormularioOrcamento slug={ctx.slug} id={id} titulo={str(settings.heading) || "Peça seu orçamento"} texto={str(settings.text)} botao={str(settings.buttonLabel) || "Enviar pedido"}
+    servicos={(ctx.servicos ?? []).map((s) => ({ id: s.id, nome: s.nome }))} pedirServico={settings.askService !== false} pedirEmail={settings.askEmail !== false} editando={ctx.editing} />;
 }

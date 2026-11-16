@@ -388,6 +388,17 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     presets: [{ name: "Contato, endereço e horário" }],
   },
   {
+    type: "lead-form", name: "Formulário de orçamento", description: "Nome, WhatsApp, e-mail, serviço e mensagem. Cada pedido chega em Contatos e orçamentos, com a origem.", category: "Conteúdo", region: "content", pages: ["home"],
+    settings: [
+      { id: "heading", type: "text", label: "Título", default: "Peça seu orçamento", maxLength: 80 },
+      { id: "text", type: "textarea", label: "Texto de apoio (opcional)", default: "Conte o que você precisa. Respondemos o mais rápido possível.", maxLength: 240 },
+      { id: "buttonLabel", type: "text", label: "Texto do botão", default: "Enviar pedido", maxLength: 40 },
+      { id: "askService", type: "checkbox", label: "Perguntar qual serviço (lista de Site → Serviços)", default: true },
+      { id: "askEmail", type: "checkbox", label: "Pedir e-mail (opcional para quem preenche)", default: true },
+    ],
+    presets: [{ name: "Formulário de orçamento" }],
+  },
+  {
     type: "work-gallery", name: "Trabalhos realizados", description: "Fotos de trabalhos feitos, com legenda. Use fotos reais do seu negócio.", category: "Conteúdo", region: "content", pages: ["home"], maxBlocks: 12,
     settings: [{ id: "heading", type: "text", label: "Título", default: "Trabalhos realizados", maxLength: 80 }, { id: "columns", type: "select", label: "Colunas no computador", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }], default: "3" }],
     blocks: [{ type: "work", name: "Foto", limit: 12, settings: [{ id: "image", type: "image", label: "Foto" }, { id: "caption", type: "text", label: "Legenda", default: "", maxLength: 100 }] }],

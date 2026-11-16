@@ -274,7 +274,8 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
   const loja = m.ativos.has("loja");
   const itens: NavItem[] = [
     { label: "Agora", href: "/merchant", icon: "Bell", exact: true, group: B, bottom: true },
-    { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: B, bottom: true },
+    { label: "Contatos e orçamentos", href: "/merchant/contatos", icon: "Inbox", group: B, bottom: true },
+    { label: "Atendimento", href: "/merchant/atendimento", icon: "Inbox", group: B },
     { label: "Clientes", href: "/merchant/crm", icon: "UsersRound", group: B, bottom: true },
     { label: "Pedidos e vendas", href: "/merchant/orders", icon: "ShoppingBag", group: B, bottom: true },
     { label: "Financeiro", href: "/merchant/finance", icon: "Wallet", group: B },
@@ -316,7 +317,7 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
   return itens;
 }
 
-export const STAFF_NAV_PREFIXES = ["/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
+export const STAFF_NAV_PREFIXES = ["/merchant/contatos", "/merchant/orders", "/merchant/customers", "/merchant/after-sales", "/merchant/catalogo", "/merchant/atendimento", "/merchant/crm"];
 
 /** Console administrativo da Commerce (equipe NextLevel). Mesmo menu em seções do Master. */
 /**

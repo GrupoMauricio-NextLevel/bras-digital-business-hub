@@ -37,7 +37,7 @@ function partes(modelo: ModeloSite, nome: string): { inicio: [string, SectionSpe
       { slug: "sobre", titulo: "Sobre", tipo: "INSTITUCIONAL", secoes: [["sobre", { type: "store-about", settings: { heading: "Quem somos", body: `Conte a história da ${nome}, a equipe e o jeito de treinar de vocês.` } }]] },
       { slug: "modalidades", titulo: "Modalidades", tipo: "SERVICO", secoes: [["modalidades", { type: "services-grid", settings: { heading: "Modalidades" } }], contato("Ficou com dúvida?", "Chame no WhatsApp: a equipe responde.")] },
       { slug: "grade", titulo: "Grade de aulas", tipo: "LIVRE", secoes: [["grade", { type: "rich-text", settings: { heading: "Grade de aulas", body: "Escreva aqui os horários de cada modalidade.\n\nEm breve: reserva de vaga pelo portal do aluno." } }]] },
-      { slug: "contato", titulo: "Contato", tipo: "CONTATO", secoes: [contato("Fale com a gente", "Tire dúvidas, agende uma aula experimental ou venha conhecer o espaço.")] },
+      { slug: "contato", titulo: "Contato", tipo: "CONTATO", secoes: [["orcamento", { type: "lead-form", settings: { heading: "Agende uma aula experimental", buttonLabel: "Quero agendar", askService: true } }], contato("Fale com a gente", "Tire dúvidas ou venha conhecer o espaço.")] },
     ],
   };
   return {
@@ -46,12 +46,13 @@ function partes(modelo: ModeloSite, nome: string): { inicio: [string, SectionSpe
       ["servicos", { type: "services-grid", settings: { heading: "Nossos serviços" } }],
       ["trabalhos", { type: "work-gallery", settings: { heading: "Trabalhos realizados" }, blocks: [{ type: "work" }, { type: "work" }, { type: "work" }] }],
       ["porque", { type: "rich-text", settings: { heading: `Por que escolher a ${nome}`, body: "Conte em poucas linhas o que torna o seu serviço diferente: tempo de mercado, garantia, cuidado na instalação, região atendida." } }],
-      contato("Peça seu orçamento", "Conte o que você precisa. Respondemos pelo WhatsApp."),
+      ["orcamento", { type: "lead-form" }],
+      contato("Fale com a gente", "Prefere conversar? Chame no WhatsApp."),
     ],
     paginas: [
       { slug: "sobre", titulo: "Sobre", tipo: "INSTITUCIONAL", secoes: [["sobre", { type: "store-about", settings: { heading: "Quem somos", body: `Conte a história da ${nome}, há quanto tempo atende e como trabalha.` } }]] },
       { slug: "servicos", titulo: "Serviços", tipo: "SERVICO", secoes: [["servicos", { type: "services-grid", settings: { heading: "Nossos serviços" } }], contato("Não achou o que precisa?", "Fale com a gente: fazemos orçamento para outros serviços também.")] },
-      { slug: "contato", titulo: "Contato", tipo: "CONTATO", secoes: [contato("Fale com a gente", "Peça orçamento, tire dúvidas ou combine uma visita.")] },
+      { slug: "contato", titulo: "Contato", tipo: "CONTATO", secoes: [["orcamento", { type: "lead-form" }], contato("Fale com a gente", "Tire dúvidas ou combine uma visita.")] },
     ],
   };
 }
@@ -93,11 +94,12 @@ export function modeloInicialDaPagina(tipo: PaginaTipo, titulo: string, nome: st
   const contato: [string, SectionSpec] = ["contato", { type: "contact-info", settings: { heading: "Fale com a gente", text: "Chame no WhatsApp: a equipe responde." } }];
   if (tipo === "INSTITUCIONAL") return t([["sobre", { type: "store-about", settings: { heading: titulo, body: `Conte a história da ${nome}.` } }]]);
   if (tipo === "SERVICO") return t([["servicos", { type: "services-grid", settings: { heading: titulo } }], contato]);
-  if (tipo === "CONTATO") return t([["contato", { type: "contact-info", settings: { heading: titulo } }]]);
+  if (tipo === "CONTATO") return t([["orcamento", { type: "lead-form", settings: { heading: titulo } }], ["contato", { type: "contact-info", settings: { heading: "Outros contatos" } }]]);
   if (tipo === "CAMPANHA") return t([
     ["destaque", { type: "hero", settings: { title: titulo, subtitle: "Escreva aqui a oferta do anúncio em uma frase.", ctaLabel: "Pedir orçamento", ctaLink: "/contato", layout: "centered", showProduct: false, showWhatsapp: true } }],
     ["servicos", { type: "services-grid", settings: { heading: "O que fazemos" } }],
     ["texto", { type: "rich-text", settings: { heading: "Por que nós", body: "Explique o diferencial em poucas linhas, sem promessas que não dependem de você." } }],
+    ["orcamento", { type: "lead-form" }],
     contato,
   ]);
   return t([["texto", { type: "rich-text", settings: { heading: titulo, body: "Escreva aqui o conteúdo da página." } }], contato]);

@@ -64,7 +64,7 @@ export async function StorePage({ slug, page, productSlug, query, pagina }: { sl
   }
   const { lists, hero } = planProducts(template, products);
   // NextLevel Business (NB2, D307): serviços só quando a página usa a seção; menu do site para quem não tem loja.
-  const servicos = Object.values(template.sections).some((x) => x.type === "services-grid" && !x.hidden) ? await servicosPublicos(db, sf.store.id) : undefined;
+  const servicos = Object.values(template.sections).some((x) => (x.type === "services-grid" || x.type === "lead-form") && !x.hidden) ? await servicosPublicos(db, sf.store.id) : undefined;
   const menuSite = semLoja ? (await menuDoSite(db, sf.store.id)).map((m) => ({ label: m.label, href: `/store/${slug}/${m.slug}` })) : undefined;
   // Cupom de boas-vindas: a janela só aparece se o cupom configurado existe e vale agora (o código não vai para a página).
   const wc = page === "home" ? Object.values(template.sections).find((x) => x.type === "welcome-coupon" && !x.hidden) : undefined;

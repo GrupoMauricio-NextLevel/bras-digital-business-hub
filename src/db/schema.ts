@@ -815,6 +815,46 @@ export const servicosNegocio = pgTable("servicos_negocio", {
   updatedAt: updatedAt(),
 }, (t) => [uniqueIndex("servicos_negocio_slug_unique").on(t.storeId, t.slug), index("servicos_negocio_store_idx").on(t.storeId, t.ativo)]);
 
+/**
+ * Pedidos de contato e orçamento do negócio (NextLevel Business, NB3, D309): o formulário do site, a conversa do WhatsApp
+ * registrada pela equipe ou o contato lançado à mão. A origem fica aqui mesmo, a partir do que veio no envio (etiquetas da
+ * página, clique do anúncio, site de origem): o site do lojista não grava cookie de medição da NextLevel (D185).
+ * Repetição técnica do mesmo envio não duplica (`chave_envio`).
+ */
+export const CONTATO_SITUACOES = ["NOVO", "EM_ATENDIMENTO", "ORCAMENTO_ENVIADO", "GANHO", "PERDIDO"] as const;
+export type ContatoSituacao = (typeof CONTATO_SITUACOES)[number];
+export const contatosNegocio = pgTable("contatos_negocio", {
+  id: id(),
+  storeId: text("store_id").notNull().references(() => stores.id),
+  nome: text("nome").notNull(),
+  whatsapp: text("whatsapp"),
+  email: text("email"),
+  servicoId: text("servico_id"),
+  mensagem: text("mensagem"),
+  /** Página do site em que o formulário foi enviado (endereço, sem domínio). */
+  pagina: text("pagina"),
+  via: text("via", { enum: ["FORMULARIO", "WHATSAPP_CONFIRMADO", "MANUAL"] }).notNull().default("FORMULARIO"),
+  situacao: text("situacao", { enum: CONTATO_SITUACOES }).notNull().default("NOVO"),
+  responsavelId: text("responsavel_id"),
+  responsavelNome: text("responsavel_nome"),
+  /** Primeira vez que alguém do negócio tirou o contato de "novo" (base do tempo até a primeira resposta). */
+  primeiraRespostaEm: ts("primeira_resposta_em"),
+  valorCents: integer("valor_cents"),
+  motivoPerda: text("motivo_perda"),
+  notas: text("notas"),
+  canal: text("canal").notNull().default("direto"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmContent: text("utm_content"),
+  utmTerm: text("utm_term"),
+  clickIds: jsonb("click_ids").$type<Record<string, string>>().notNull().default({}),
+  origemSite: text("origem_site"),
+  chaveEnvio: text("chave_envio"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [uniqueIndex("contatos_negocio_envio_unique").on(t.storeId, t.chaveEnvio), index("contatos_negocio_situacao_idx").on(t.storeId, t.situacao, t.createdAt)]);
+
 // ---------------------------------------------------------------------------
 // Planos / Assinaturas
 // ---------------------------------------------------------------------------

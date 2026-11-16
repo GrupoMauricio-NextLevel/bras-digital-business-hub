@@ -29,7 +29,7 @@ describe("menu do lojista com o NextLevel Business (NB1, D306)", () => {
     const itens = nav("painel", "contatos", "site", "loja");
     expect(itens.filter((i) => i.href === "/theme-editor")).toHaveLength(1);
   });
-  it("barra do celular: Agora, Atendimento, Clientes, Pedidos e vendas", () => {
-    expect(nav("loja").filter((i) => i.bottom).map((i) => i.label)).toEqual(["Agora", "Atendimento", "Clientes", "Pedidos e vendas"]);
+  it("barra do celular: Agora, Contatos e orçamentos, Clientes, Pedidos e vendas", () => {
+    expect(nav("loja").filter((i) => i.bottom).map((i) => i.label)).toEqual(["Agora", "Contatos e orçamentos", "Clientes", "Pedidos e vendas"]);
   });
 });

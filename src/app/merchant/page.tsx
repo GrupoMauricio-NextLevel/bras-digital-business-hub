@@ -26,6 +26,7 @@ import { formatBRL } from "@/lib/money";
 import { getStoreReadiness } from "@/lib/domain/readiness";
 import { CommerceHome } from "@/components/commerce/commerce-home";
 import { modulosDoNegocio, temLoja } from "@/lib/business/modulos";
+import { resumoDosContatos } from "@/lib/business/contatos";
 import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
@@ -76,6 +77,11 @@ export default async function MerchantHome() {
   const stockBack = (await stockDemand(db, store.id)).filter((g) => g.available > 0).length;
   // Escritório do lojista (D207): clientes esperando resposta e carrinhos recentes entram no topo da fila.
   const extra = commerce ? await filaExtraDaLoja(db, store.id) : [];
+  // NextLevel Business (NB3, D309): pedidos do site ainda sem resposta vão para o topo da fila.
+  if (negocio?.business) {
+    const r = await resumoDosContatos(db, store.id);
+    if (r.novos) extra.unshift({ key: "contatos", title: `${r.novos} pedido(s) de orçamento sem resposta`, detail: "Quem responde primeiro tem mais chance de fechar.", count: r.novos, href: "/merchant/contatos?situacao=NOVO", action: "Responder", tone: "warning" } as (typeof extra)[number]);
+  }
   // D211: produtos que travam venda (sem estoque, sem preço, sem foto) entram na fila e abrem a lista do catálogo.
   const travando = commerce && o.independent ? produtosQuePrecisamDeVoce((await getSupplierProducts({ storeId: store.id })).items.map((r) => ({ id: r.product.id, name: r.product.name, images: r.product.images, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status, available: r.available }))).filter((p) => p.tom !== "info") : [];
   if (travando.length) extra.push({ key: "produtos", title: `${travando.length} produto(s) travando venda`, detail: travando.slice(0, 2).map((p) => `${p.nome}: ${p.motivo.toLowerCase()}`).join(" · "), count: travando.length, href: "/merchant/catalogo?ver=atencao", action: "Resolver", tone: travando.some((p) => p.tom === "danger") ? "danger" : "warning" });
