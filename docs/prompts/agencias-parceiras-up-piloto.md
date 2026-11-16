@@ -7,6 +7,8 @@
 >
 > **Versão 2 (16/11/2026):** a UP quer também **receber pagamentos e cobrar os clientes automaticamente**, e o piloto passa a ser **exclusivo para a UP como Agência Fundadora de um produto para grandes agências**. A **Parte 8** traz o sistema operacional completo, a cobrança automática e a análise da escada de preços (Business R$ 3 mil + 10%, white label R$ 15 mil + 3%, código próprio R$ 30 mil + 0%), e **prevalece** sobre as Partes 1 a 7 onde houver conflito.
 >
+> **Perguntas para a UP e leitura da equipe (roteiro, edição, social media, tráfego pago):** `docs/prompts/agencias-up-perguntas-estrategicas.md`.
+>
 > **Estado deste documento:** proposta para o dono decidir. Nada aqui está aprovado nem no código. Quando aprovado, vira a decisão **D312** em `docs/design/DECISIONS.md` (frente `[E-commerce]`, porque traz lojistas e contas pagantes para a NextLevel Commerce) e é citado na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`).
 >
 > **Documentos que este plano respeita:** Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`), regra anti-duplicação (`CLAUDE.md`), NextLevel Business (`docs/prompts/nextlevel-business-coracao-do-negocio.md`, D304 a D311), Programa de Parceiros (D220; regra única de comissão D260; duas frentes, CPF e CNPJ, D263), público e personas (`docs/prompts/publico-personas-precos-ecossistema.md`, persona P12 "o parceiro").
