@@ -1,5 +1,12 @@
 [
  {
+  "numero": 309,
+  "frente": "E-commerce",
+  "titulo": "NextLevel Business, fase NB3: formulário de orçamento no site e Contatos e orçamentos no painel",
+  "data": "2026-11-16",
+  "resumo": "Pedido do dono: seguir para a NB3 e andar rápido, com testes só no necessário (D308)."
+ },
+ {
   "numero": 308,
   "frente": "E-commerce",
   "titulo": "Três produtos sobre a mesma conta: NextLevel Business (base), Site e Loja virtual, vendidos em pacotes",
@@ -271,12 +278,5 @@
   "titulo": "BC1: tela \"Aprender\" no Master, com aulas ao vivo, trilhas por função, busca e Novidades",
   "data": "2026-11-06",
   "resumo": "Onde: Master → Aprender (/master/aprender), no menu logo depois de Agora, liberada para toda a equipe (master-equipe.ts)."
- },
- {
-  "numero": 265,
-  "frente": "Grupo",
-  "titulo": "Base de conhecimento: BC0 aprovada e trilhas por função",
-  "data": "2026-11-06",
-  "resumo": "O dono aprovou o inventário (docs/conhecimento/BC0-INVENTARIO.md) e a divisão: Comercial: trilhas 1 a 4;"
  }
 ]

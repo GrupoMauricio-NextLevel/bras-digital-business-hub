@@ -3834,3 +3834,33 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - o menu ganha "Ligar site";
   - a entrada vira "Comece pelo seu negócio" e, depois, "Quer um site? Quer uma loja?".
 - **Até a NB8:** nada muda no que está no ar (chave `BUSINESS_V1` desligada).
+
+## D309 — [E-commerce] NextLevel Business, fase NB3: formulário de orçamento no site e Contatos e orçamentos no painel (2026-11-16)
+- **Pedido do dono:** seguir para a NB3 e andar rápido, com testes só no necessário (D308).
+- **Banco (migração 0103, só acrescenta):** `contatos_negocio` guarda nome, WhatsApp, e-mail, serviço, mensagem, página, via (formulário, conversa no WhatsApp, lançado pela equipe), situação, responsável, primeira resposta, valor fechado, motivo da perda, anotações e a origem.
+- **Formulário de orçamento** (seção nova "Formulário de orçamento", em todos os temas):
+  - a empresa é achada pelo endereço no servidor;
+  - um clique duplo não cria dois pedidos (chave do envio);
+  - contra robôs: campo-isca e tempo mínimo de 3 s (o robô recebe "ok" e nada é gravado), mais 6 envios por 10 min por endereço de rede, contado só em memória;
+  - é preciso deixar WhatsApp ou e-mail.
+- **Origem sem cookie no site do lojista (D185):** o formulário envia as etiquetas da página (`utm_*`), o clique do anúncio (`fbclid`, `gclid`…) e o site de origem; a regra única de canais (`canalDe`) classifica, e sem informação fica "direto". Por isso a origem fica no próprio contato e não em `origens_contato`, que é da medição do site da NextLevel.
+- **Contatos e orçamentos** (grupo NextLevel Business e barra do celular, no lugar de Atendimento na barra):
+  - números do mês: novos sem resposta, em aberto, tempo do meio até a primeira resposta, fechados com valor; também de onde vieram;
+  - filtros por situação;
+  - ficha com "Responder no WhatsApp" (mensagem pronta), "Assumir o atendimento", "Em atendimento", "Orçamento enviado", "Fechou" (valor) e "Perdeu" (motivo de uma lista), anotações e "De onde veio";
+  - "Lançar contato" para conversa do WhatsApp, telefone ou balcão;
+  - a primeira saída de "Novo" marca a primeira resposta, uma vez só;
+  - dono e equipe da loja acessam; outra empresa nunca (testado no servidor).
+- **Avisos:** e-mail ao dono a cada pedido novo (só nome, serviço e canal; o resto fica no painel) e item no topo da fila do dia ("pedido(s) de orçamento sem resposta").
+- **Modelos:** a página Contato (Institucional e Academia), a página de campanha e o início institucional trazem o formulário. Sem WhatsApp da empresa, o botão "Pedir orçamento" dos serviços leva ao formulário da página Contato com o serviço já escolhido.
+- **Conferido no navegador** (relatório `docs/relatorios/NB3-2026-11-16.md`):
+  - visitante vindo de anúncio da Meta pede orçamento no celular e vê "Pedido recebido";
+  - a fila do dia avisa;
+  - a lista mostra "Anúncio Meta · campanha box-novembro";
+  - a ficha marca responsável e primeira resposta;
+  - axe sem violações graves.
+- **Teste:** `tests/business-contatos.test.ts`.
+- **Ficou para depois:**
+  - orçamento por proposta com item avulso (link de aceite) e código da visita no WhatsApp;
+  - evento `Lead` no Pixel do negócio (NB4);
+  - a página pública `/empresas`, que vai junto com a fase de planos e pacotes (NB8, D308).
