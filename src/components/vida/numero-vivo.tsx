@@ -1,7 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { FamiliaVida } from "@/components/vida/cores";
+
+/** Ícones 3D das famílias (imagens do dono, D329), em `public/paineis/v1/`. Sem arquivo, fica o ícone de traço. */
+const ICONE_3D: Partial<Record<FamiliaVida, string>> = {
+  dinheiro: "/paineis/v1/pv-icone-dinheiro.webp", pedidos: "/paineis/v1/pv-icone-pedidos.webp", clientes: "/paineis/v1/pv-icone-clientes.webp",
+  visitas: "/paineis/v1/pv-icone-visitas.webp", crescimento: "/paineis/v1/pv-icone-crescimento.webp", festa: "/paineis/v1/pv-icone-festa.webp",
+};
 
 /** Mini gráfico do cartão (SVG próprio, decorativo: o número e a variação já dizem tudo). */
 function Mini({ dados }: { dados: number[] }) {
@@ -28,7 +35,7 @@ export function NumeroVivo({ familia, icone: Icone, rotulo, valor, valorCompleto
   variacao?: number | null; base?: string; nota?: React.ReactNode; serie?: number[]; href?: string; i?: number;
 }) {
   const corpo = <>
-    <span className="flex items-center gap-2"><span className="vida-num__icone"><Icone className="size-4" aria-hidden /></span><span className="vida-num__rotulo truncate">{rotulo}</span></span>
+    <span className="flex items-center gap-2">{ICONE_3D[familia] ? <Image src={ICONE_3D[familia]!} alt="" width={44} height={44} className="vida-num__icone3d" /> : <span className="vida-num__icone"><Icone className="size-4" aria-hidden /></span>}<span className="vida-num__rotulo truncate">{rotulo}</span></span>
     <span className="vida-num__valor mt-1 min-w-0" title={valorCompleto}>{valor}{valorCompleto && valorCompleto !== valor ? <span className="sr-only"> ({valorCompleto})</span> : null}</span>
     <span className="flex min-h-8 items-end justify-between gap-2 text-xs text-muted-foreground"><span className="flex min-w-0 flex-wrap items-center gap-x-2"><Variacao valor={variacao} base={base} />{nota ? <span>{nota}</span> : null}</span><Mini dados={serie} /></span>
   </>;

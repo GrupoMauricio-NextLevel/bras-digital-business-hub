@@ -21,4 +21,7 @@ Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D328). Geradas
 ## Lote 2 (ícones 3D, recorte do fundo feito aqui)
 | Arquivo | Onde aparece | Situação |
 |---|---|---|
-| pv-icone-dinheiro | Cartão de vendas e financeiro (família dinheiro) | Guardada (256 px, fundo recortado) |
+| pv-icone-dinheiro, -pedidos, -clientes, -visitas, -crescimento | Cartões de número (`NumeroVivo`), pela família de cor | **No painel** (256 px, fundo recortado) |
+| pv-icone-festa | Família festa (conquistas, Black) | Guardada |
+| pv-icone-novo-produto, -aparencia, -financeiro | Ações rápidas | **Refazer** sem confete e sem cacos ao redor (no escuro parece sujeira) |
+| pv-icone-novo-pedido | Ações rápidas | Falta gerar |
