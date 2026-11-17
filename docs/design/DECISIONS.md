@@ -4173,3 +4173,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - nada disso funciona em modo suporte.
 - **Teste:** `tests/agencias-solucoes.test.ts` (permissão, CNPJ obrigatório, cadastro de sempre no caminho Site, perfis ligados, destinos fechados, troca de perfil) e `e2e/agencias-solucoes.mjs`.
 
+
+## D324 — [E-commerce] "NextLevel Business" fica reservado ao sistema avançado; o painel de todo cliente passa a se chamar "Meu negócio" (2026-11-17)
+- **Dono (17/11/2026):** "Soluções Digitais são os serviços da agência; Business é o sistema avançado; loja virtual é a plataforma de e-commerce; Sites é outra função conectada aos anúncios para captação de clientes." Com a chave `BUSINESS_V1` já ligada no Render, o nome "NextLevel Business" estava aparecendo para todos os lojistas como se fosse o painel de todo mundo; o dono aprovou o ajuste rápido de textos.
+- **Feito (só textos; as funções continuam iguais):**
+  - grupo do menu do lojista "NextLevel Business" passa a "Meu negócio";
+  - a visão geral mostra "Meu negócio · Visão geral";
+  - a página `/empresas` passa a "Site para a sua empresa captar clientes" (título no Google: "Site para empresas captarem clientes"), sem o nome Business;
+  - os pacotes da tela Plano do negócio ficam "Painel do negócio", "Site", "Loja virtual" e "Site + Loja virtual";
+  - "Disponível com o NextLevel Business" passa a "Ainda não está ligado na sua conta";
+  - home, cadastro e "Quero minha loja" falam de "mesmo painel".
+- **Constantes:** `NOME_GERENCIADOR` ("Meu negócio") para o painel de todos e `NOME_BUSINESS` ("NextLevel Business") reservado ao produto avançado (`src/lib/marcas/nextlevel-ecommerce.ts`).
+- **Não mexido:** o Painel da Agência (D323) continua dizendo "Conectar ao NextLevel Business", o que combina com o Business como produto que a agência ativa.
+- **Modelo em quatro partes, a fechar com o dono (perguntas em aberto):**
+  - **Soluções Digitais:** serviços da agência;
+  - **Loja virtual:** planos Start, Pro e Scale intactos;
+  - **Sites:** captação ligada aos anúncios (páginas, formulário, origem, página de campanha da NB4);
+  - **NextLevel Business:** sistema avançado contratado à parte.
+  - As perguntas: Business à parte ou só no Scale? O que entra nele? Sites vendido sozinho, com preço próprio?

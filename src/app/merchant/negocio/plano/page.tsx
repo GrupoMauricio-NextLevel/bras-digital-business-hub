@@ -18,7 +18,7 @@ export default async function PlanoDoNegocio() {
   const session = await requireStoreAdmin();
   const db = await getDb();
   const p = await planoDoNegocio(db, session.actor);
-  if (!p.business) return <><PageHeader title="Plano do negócio" /><EmptyState icon={Layers} title="Disponível com o NextLevel Business" description="Quando o gerenciador do negócio estiver ligado na sua conta, aqui você vê o seu pacote e liga site ou loja virtual." /></>;
+  if (!p.business) return <><PageHeader title="Plano do negócio" /><EmptyState icon={Layers} title="Ainda não está ligado na sua conta" description="Quando o gerenciador do negócio estiver ligado na sua conta, aqui você vê o seu pacote e liga site ou loja virtual." /></>;
   return (
     <>
       <PageHeader eyebrow={NOME_GERENCIADOR.nome} title="Plano do negócio" description="O seu plano (Start, Pro ou Scale) traz o painel do negócio e a loja virtual. Quem entrou pelo site liga a loja aqui, sem cobrança nova; quem entrou pela loja pode contratar o site." />
@@ -26,7 +26,7 @@ export default async function PlanoDoNegocio() {
         <p className="text-sm text-muted-foreground">Seu pacote hoje</p>
         <p className="text-2xl font-semibold tracking-tight">{PACOTE_ROTULO[p.pacote]}</p>
         <ul className="grid gap-2 text-sm sm:grid-cols-2">
-          <li className="flex items-center gap-2"><Check className="size-4 text-success" aria-hidden />{NOME_GERENCIADOR.nome}: visão geral, contatos e orçamentos, clientes, pedidos e vendas, financeiro</li>
+          <li className="flex items-center gap-2"><Check className="size-4 text-success" aria-hidden />Painel do negócio: visão geral, contatos e orçamentos, clientes, pedidos e vendas, financeiro</li>
           {p.temSite ? <li className="flex items-center gap-2"><Check className="size-4 text-success" aria-hidden />Site para a empresa{p.siteIncluido ? " (incluído no plano)" : p.adicionalSite?.endsAt ? ` (contratado até ${new Date(p.adicionalSite.endsAt).toLocaleDateString("pt-BR")})` : " (contratado)"}</li> : null}
           {p.temLoja ? <li className="flex items-center gap-2"><Check className="size-4 text-success" aria-hidden />Loja virtual (incluída no plano)</li> : null}
         </ul>

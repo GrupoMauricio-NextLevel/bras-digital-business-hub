@@ -7,7 +7,6 @@ import { supportContacts } from "@/lib/support";
 import { LeadForm } from "./lead-form";
 import { CabecalhoTech } from "@/components/portal/commerce/cabecalho-tech";
 import { businessLigado } from "@/lib/business/modulos";
-import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 
 
 export const dynamic = "force-dynamic";
@@ -32,7 +31,7 @@ export default async function QueroMinhaLoja({ searchParams }: { searchParams: P
   // NextLevel Business (NB1, D306): com a chave ligada, a entrada pergunta o caminho (site para a empresa ou loja virtual).
   const doisCaminhos = ec && businessLigado();
   const site = doisCaminhos && para === "site";
-  if (doisCaminhos) PASSOS.splice(2, 1, [site ? "Seu site no ar" : "Seu site ou sua loja no ar", `Você monta sozinho com o editor ou a equipe monta com você. Em qualquer caminho, você cuida do negócio no ${NOME_GERENCIADOR.nome}.`]);
+  if (doisCaminhos) PASSOS.splice(2, 1, [site ? "Seu site no ar" : "Seu site ou sua loja no ar", `Você monta sozinho com o editor ou a equipe monta com você. Em qualquer caminho, você cuida do negócio no mesmo painel.`]);
   return (
     <>
     {ec ? <CabecalhoTech rotulo={brand.name} titulo={site ? <>Quero um <em>site para minha empresa</em></> : doisCaminhos && para !== "loja" ? <>Quero meu <em>site ou loja virtual</em></> : <>Quero minha <em>loja virtual</em></>} texto={`Conte um pouco sobre o seu negócio. A equipe da ${brand.name} fala com você pelo WhatsApp para combinar a implantação.`}

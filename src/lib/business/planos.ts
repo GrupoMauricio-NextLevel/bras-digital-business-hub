@@ -4,7 +4,6 @@ import { recordAudit } from "@/lib/domain/audit";
 import { grantEntitlement } from "@/lib/domain/entitlements";
 import { DomainError, ForbiddenError } from "@/lib/domain/errors";
 import { addonViewsFor, buyAddon } from "@/lib/domain/nextlevel-billing";
-import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { chaveDoModulo, modulosDoNegocio, type ModulosDoNegocio } from "./modulos";
 
 /**
@@ -21,10 +20,10 @@ export function pacoteDe(m: Pick<ModulosDoNegocio, "ativos">): Pacote {
 }
 
 export const PACOTE_ROTULO: Record<Pacote, string> = {
-  BUSINESS: NOME_GERENCIADOR.nome,
-  BUSINESS_SITE: `${NOME_GERENCIADOR.nome} + Site`,
-  BUSINESS_LOJA: `${NOME_GERENCIADOR.nome} + Loja virtual`,
-  BUSINESS_SITE_LOJA: `${NOME_GERENCIADOR.nome} + Site + Loja virtual`,
+  BUSINESS: "Painel do negócio",
+  BUSINESS_SITE: "Site",
+  BUSINESS_LOJA: "Loja virtual",
+  BUSINESS_SITE_LOJA: "Site + Loja virtual",
 };
 
 /** O que o negócio tem: o pacote, o adicional Site (preço da tabela) e se a loja virtual pode ser ligada sem custo. */
