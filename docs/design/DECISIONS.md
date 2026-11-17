@@ -4076,3 +4076,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Regra do briefing:** o investimento em mídia que o cliente paga direto às plataformas não entra como receita nem como custo, e a tela avisa.
 - **Teste:** `tests/agencias-cobranca.test.ts` (despesas, recorrentes, resultado e margem, permissões).
 
+## D320 — [E-commerce] Portal do cliente da agência: acompanhar o mês, aprovar, pagar e pedir (2026-11-17)
+- **Pedido do dono:** "enquanto conecto o painel pode prosseguir" (próximo item da ordem da D316). Briefing da UPClips: o cliente acompanha o que foi produzido e publicado, aprova conteúdos, vê pagamentos e manda pedidos, sem WhatsApp perdido.
+- **Endereço:** `/portal/<agência>` (no endereço das agências, `painel.nextlevelcommerce.com.br`, quando ligado). Nome da agência no topo e "com tecnologia NextLevel" no rodapé.
+- **Entrada sem senha (reaproveita a D240):** o cliente digita o e-mail da ficha e recebe um código de 6 dígitos que vale 10 minutos. A sessão vale 30 dias e só nesta agência. E-mail desconhecido recebe a mesma resposta, sem revelar se existe. Com limite de tentativas.
+- **O que o cliente vê:** contratados, produzidos e publicados no mês, o que espera a aprovação dele, o que está em produção (sem nome de quem faz e sem prazo interno), publicações com link, programadas, cobranças com botão "Pagar" (link do Mercado Pago da própria agência, D318) e os pedidos com a resposta da agência.
+- **O que o cliente faz:**
+  - aprova um conteúdo, e ele segue para o social media agendar;
+  - pede ajuste dizendo o que mudar, e o conteúdo volta para a edição com o comentário visível à equipe;
+  - manda pedido, ideia ou dúvida.
+- **Aviso por e-mail:** quando um conteúdo chega à etapa de aprovação, o cliente recebe um e-mail com o link do portal (uma vez por versão).
+- **Lado da agência:**
+  - a ficha do cliente ganha o bloco "Portal do cliente", com o link para copiar e os pedidos para responder;
+  - a fila do dia mostra "Pedidos de clientes pelo portal";
+  - quem não cuida do cliente não vê os pedidos dele.
+- **Banco (migração 0110, só acrescenta):** `agencia_solicitacoes`.
+- **Teste:** `tests/agencias-portal.test.ts` (entrada por código, isolamento entre agências e clientes, aprovar, ajuste, pedidos e respostas, nada interno exposto) e `e2e/agencias-portal.mjs`.
+

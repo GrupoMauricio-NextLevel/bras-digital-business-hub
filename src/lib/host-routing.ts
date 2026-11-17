@@ -41,7 +41,7 @@ export function storeOwnerBase(hostBrand: BrandCode | null | undefined, storeBra
 export const agenciasUrl = (env: Record<string, string | undefined> = process.env) => { try { return env.AGENCIAS_URL ? new URL(env.AGENCIAS_URL.trim()).origin : null; } catch { return null; } };
 const agenciasHost = (env: Record<string, string | undefined>) => { const u = agenciasUrl(env); return u ? new URL(u).hostname.toLowerCase() : null; };
 /** O que abre no endereço das agências: login, troca e recuperação de senha e o Painel da Agência. */
-const AGENCIA_PATHS = ["/agencia", "/login", "/account", "/esqueci-senha", "/redefinir-senha"];
+const AGENCIA_PATHS = ["/agencia", "/portal", "/login", "/account", "/esqueci-senha", "/redefinir-senha"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string; permanente?: boolean } | { kind: "rewrite"; path: string };

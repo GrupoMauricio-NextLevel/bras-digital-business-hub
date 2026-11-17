@@ -5,8 +5,9 @@ import { minhaFila, producaoDoMes } from "@/lib/agencias/producao";
 import { mesRotulo } from "@/lib/agencias/fluxo";
 import { listarOportunidades, resumoDoFunil } from "@/lib/agencias/comercial";
 import { pendenciasDeCobranca } from "@/lib/agencias/cobranca";
+import { solicitacoesDaAgencia } from "@/lib/agencias/portal";
 import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
-import { Handshake } from "lucide-react";
+import { Handshake, MessageSquare } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { Kpi } from "@/components/commerce/commerce-home";
@@ -33,11 +34,13 @@ export default async function HojeNaAgencia() {
   const db = await getDb();
   const [k, prod, fila, oportunidades] = await Promise.all([cockpitDaAgencia(db, session.actor), producaoDoMes(db, session.actor), minhaFila(db, session.actor), listarOportunidades(db, session.actor).catch(() => [])]);
   const cob = await pendenciasDeCobranca(db, session.actor);
+  const pedidos = await solicitacoesDaAgencia(db, session.actor, { abertas: true });
   const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
   const t = prod.total;
   const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
   const pend = k.pendencias;
   const filaDia = [
+    ...(pedidos.length ? [{ key: "ped", icon: MessageSquare, title: "Pedidos de clientes pelo portal", detail: `${pedidos[0]!.clienteNome}: "${pedidos[0]!.texto.slice(0, 70)}${pedidos[0]!.texto.length > 70 ? "…" : ""}"`, count: pedidos.length, action: "Responder", href: `/agencia/clientes/${pedidos[0]!.clienteId}#portal`, danger: false }] : []),
     ...(cob.atrasadas ? [{ key: "cob", icon: CalendarClock, title: "Cobranças em atraso", detail: `${formatBRL(cob.atrasadoCents)} vencidos e não pagos.`, count: cob.atrasadas, action: "Cobrar", href: "/agencia/financeiro", danger: true }] : []),
     ...(cob.lembrar ? [{ key: "lem", icon: CalendarClock, title: "Lembrar clientes da cobrança hoje", detail: "A mensagem do WhatsApp já vem pronta no Financeiro.", count: cob.lembrar, action: "Ver", href: "/agencia/financeiro", danger: false }] : []),
     ...(funil.hoje + funil.atrasadas ? [{ key: "com", icon: Handshake, title: "Atividades comerciais para hoje", detail: `${funil.hoje} para hoje${funil.atrasadas ? ` e ${funil.atrasadas} atrasada${funil.atrasadas > 1 ? "s" : ""}` : ""} no funil comercial.`, count: funil.hoje + funil.atrasadas, action: "Ver", href: "/agencia/comercial", danger: funil.atrasadas > 0 }] : []),

@@ -47,7 +47,7 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
     await db.insert(agenciaMembros).values({ id: newId("agm"), agenciaId: ag, userId: u, funcao: "ADMIN", todosClientes: true });
   }
   if (await db.query.agencias.findFirst({ where: eq(agencias.slug, SLUG) })) return false;
-  const orgId = newId("org"); const agenciaId = newId("agc"); const passwordHash = hashPassword(DEMO_PASSWORD);
+  const orgId = newId("org"); const agenciaId = "agc_aurorademo"; /* fixo: o e2e do portal (D320) calcula o código */ const passwordHash = hashPassword(DEMO_PASSWORD);
   await db.insert(organizations).values({ id: orgId, name: "Agência Aurora (demonstração)", slug: SLUG, type: "AGENCY", brand: "NEXTLEVEL_COMMERCE" });
   await db.insert(agencias).values({ id: agenciaId, organizationId: orgId, nome: "Agência Aurora (demonstração)", slug: SLUG, fundadora: true });
   const ids = new Map<string, string>();
@@ -66,7 +66,7 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
   ]);
   for (const c of CLIENTES) {
     const id = newId("agcl");
-    await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
+    await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, email: c.nome === "Clínica Sorriso Leve" ? "contato@sorrisoleve.demo" : null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
     const equipe = [...new Set([...c.equipe, "rot", "ges", "fil", ...(c.resp ? [c.resp] : [])])];
     await db.insert(agenciaClienteEquipe).values(equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
     // Cobrança do mês fictícia (D318): metade paga, uma atrasada conforme o dia do vencimento.

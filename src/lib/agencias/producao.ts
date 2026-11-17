@@ -22,7 +22,7 @@ import {
 type Peca = typeof agenciaPecas.$inferSelect;
 type Cliente = typeof agenciaClientes.$inferSelect;
 
-async function equipeDoCliente(db: Database, clienteId: string) {
+export async function equipeDoCliente(db: Database, clienteId: string) {
   return db.select({ userId: agenciaClienteEquipe.userId, funcao: agenciaMembros.funcao, nome: users.name }).from(agenciaClienteEquipe)
     .innerJoin(agenciaMembros, eq(agenciaMembros.userId, agenciaClienteEquipe.userId)).innerJoin(users, eq(users.id, agenciaClienteEquipe.userId))
     .where(and(eq(agenciaClienteEquipe.clienteId, clienteId), isNull(users.disabledAt))).orderBy(asc(users.name));
@@ -180,6 +180,8 @@ export async function avancarPeca(db: Database, actor: Actor, pecaId: string, ho
   if (!r.length) throw new DomainError("MUDOU", "A peça mudou de etapa agora há pouco. Atualize a página.");
   const nome = responsavelId ? equipe.find((p) => p.userId === responsavelId)?.nome ?? (await db.query.users.findFirst({ where: eq(users.id, responsavelId), columns: { name: true } }))?.name : null;
   await evento(db, actor, peca, "ETAPA", `Etapa ${ETAPA_ROTULO[peca.etapa]} concluída → ${ETAPA_ROTULO[proxima]}${nome ? `, com ${nome}` : " (sem responsável: defina na equipe do cliente)"}.`, null, responsavelId);
+  // Portal do cliente (D320): conteúdo chegando para aprovação avisa o cliente por e-mail (uma vez por versão).
+  if (proxima === "APROVACAO") { const { avisarClienteParaAprovar } = await import("./portal"); await avisarClienteParaAprovar(db, peca.id).catch(() => null); }
   return { etapa: proxima, responsavelId };
 }
 

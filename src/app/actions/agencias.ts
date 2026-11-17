@@ -13,6 +13,7 @@ import { mesValido } from "@/lib/agencias/fluxo";
 import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
 import { copiarRecorrentes, excluirDespesa, lancarDespesa, marcarDespesaPaga, type despesaSchema } from "@/lib/agencias/despesas";
 import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
+import { responderSolicitacao } from "@/lib/agencias/portal";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
@@ -152,4 +153,9 @@ export async function excluirDespesaAction(id: string) {
 }
 export async function copiarRecorrentesAction(mes: string) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await copiarRecorrentes(db, actor, mes); refreshFin(); return r; });
+}
+
+// Portal do cliente (D320): a agência responde os pedidos que chegam pelo portal
+export async function responderSolicitacaoAction(id: string, input: { resposta?: string; situacao: "EM_ANDAMENTO" | "RESPONDIDA" }) {
+  return runAction(async () => { const { actor, db } = await ctx(); await responderSolicitacao(db, actor, z.string().regex(/^agso_[a-z0-9]+$/i).parse(id), input); revalidatePath("/agencia", "layout"); return undefined; });
 }

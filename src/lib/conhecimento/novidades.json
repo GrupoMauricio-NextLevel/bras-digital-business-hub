@@ -1,5 +1,12 @@
 [
  {
+  "numero": 320,
+  "frente": "E-commerce",
+  "titulo": "Portal do cliente da agência: acompanhar o mês, aprovar, pagar e pedir",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"enquanto conecto o painel pode prosseguir\" (próximo item da ordem da D316). Briefing da UPClips: o cliente acompanha o que foi produzido e publicado, aprova conteúdos, vê pagamentos e manda pedidos, sem WhatsApp perdido."
+ },
+ {
   "numero": 319,
   "frente": "E-commerce",
   "titulo": "Despesas da agência e margem por cliente no Financeiro",
@@ -271,12 +278,5 @@
   "titulo": "Contratos CT3: \"Já fiz o Pix\" no painel do cliente e conferência manual no Master",
   "data": "2026-11-10",
   "resumo": "Pedido do dono: o cliente só sinaliza que fez o Pix no CNPJ (Itaú) apertando um botão; o dono confere a conta do Itaú à mão."
- },
- {
-  "numero": 276,
-  "frente": "E-commerce",
-  "titulo": "Contratos com aceite no painel (CT1+CT2): o Master envia, o lojista aceita, a cópia assinada vai aos dois",
-  "data": "2026-11-10",
-  "resumo": "Pedido do dono: contrato da Loja Virtual Pronta Express aceito dentro do sistema, sem burocracia, com a cópia indo para o e-mail de ambos quando estiver tudo assinado. Plano: docs/prompts/contratos-assinatura-no-painel.md; modelo: docs/c…"
  }
 ]

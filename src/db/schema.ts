@@ -3603,3 +3603,20 @@ export const agenciaDespesas = pgTable("agencia_despesas", {
   createdAt: createdAt(),
 }, (t) => [index("agencia_despesas_agencia_idx").on(t.agenciaId, t.competencia), uniqueIndex("agencia_despesas_origem_uq").on(t.origemId, t.competencia), check("agencia_despesas_valor_ck", sql`${t.valorCents} > 0`)]);
 
+// ---------------------------------------------------------------------------
+// Portal do cliente da agência (D320): pedidos, ideias e dúvidas que o cliente manda pelo portal, com resposta da agência.
+// ---------------------------------------------------------------------------
+export const SOLICITACAO_TIPOS = ["PEDIDO", "IDEIA", "DUVIDA"] as const;
+export const agenciaSolicitacoes = pgTable("agencia_solicitacoes", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  tipo: text("tipo", { enum: SOLICITACAO_TIPOS }).notNull(),
+  texto: text("texto").notNull(),
+  autorEmail: text("autor_email").notNull(),
+  situacao: text("situacao", { enum: ["ABERTA", "EM_ANDAMENTO", "RESPONDIDA"] }).notNull().default("ABERTA"),
+  resposta: text("resposta"),
+  respondidaEm: ts("respondida_em"),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_solicitacoes_agencia_idx").on(t.agenciaId, t.situacao), index("agencia_solicitacoes_cliente_idx").on(t.clienteId, t.createdAt)]);
+
