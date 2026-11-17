@@ -1,5 +1,12 @@
 [
  {
+  "numero": 318,
+  "frente": "E-commerce",
+  "titulo": "Cobrança automática da agência: mensalidade pelo contrato, paga direto na conta Mercado Pago da agência",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"pode prosseguir\" (próximo item da ordem da D316: cobrança automática). Base: Parte 8 do racional da UPClips (o dinheiro do cliente vai direto para a agência; a NextLevel nunca guarda)."
+ },
+ {
   "numero": 317,
   "frente": "E-commerce",
   "titulo": "Painel da Agência traz as funções do Master: busca rápida, Aprender, Comercial com \"virar cliente\" e onboarding",
@@ -271,12 +278,5 @@
   "titulo": "BG4: relatório de retorno do bônus, com sugestão automática de ajuste",
   "data": "2026-11-08",
   "resumo": "Prompt: docs/prompts/bonus-gamificado-parceiros-executivos.md, fase BG4. Autorizado pelo dono (\"pode seguir nos próximos passos\")."
- },
- {
-  "numero": 274,
-  "frente": "E-commerce",
-  "titulo": "CX4 + BG3: painel do executivo no celular, registro de visitas, agenda, metas e feed da equipe",
-  "data": "2026-11-08",
-  "resumo": "Prompts: docs/prompts/caixa-balcao-executivos-de-venda.md (CX4) e docs/prompts/bonus-gamificado-parceiros-executivos.md (BG3). Autorizado pelo dono (\"pode seguir\")."
  }
 ]

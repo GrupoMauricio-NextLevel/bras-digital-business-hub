@@ -757,6 +757,13 @@
       "when": 1794910594371,
       "tag": "0107_agencia_comercial",
       "breakpoints": true
+    },
+    {
+      "idx": 108,
+      "version": "7",
+      "when": 1794912785075,
+      "tag": "0108_agencia_cobranca",
+      "breakpoints": true
     }
   ]
 }

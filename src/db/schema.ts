@@ -3375,6 +3375,10 @@ export const agencias = pgTable("agencias", {
   fundadora: boolean("fundadora").notNull().default(false),
   /** Prazo padrão de cada etapa da produção, em dias (D314). Vazio = padrão do sistema. */
   prazosEtapas: jsonb("prazos_etapas").$type<Record<string, number>>().notNull().default({}),
+  /** Mercado Pago da própria agência (D318): o cliente da agência paga direto nela. Token só criptografado. */
+  mpTokenEnc: text("mp_token_enc"),
+  mpConta: text("mp_conta"),
+  mpTeste: boolean("mp_teste").notNull().default(false),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
@@ -3542,4 +3546,35 @@ export const agenciaOportunidades = pgTable("agencia_oportunidades", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("agencia_oportunidades_agencia_idx").on(t.agenciaId, t.etapa), check("agencia_oportunidades_valor_ck", sql`${t.valorPropostoCents} is null or ${t.valorPropostoCents} >= 0`)]);
+
+// ---------------------------------------------------------------------------
+// Cobrança da agência (D318): uma cobrança por cliente por mês, gerada pelo contrato, paga direto na conta da agência.
+// ---------------------------------------------------------------------------
+export const FATURA_SITUACOES = ["ABERTA", "PAGA", "CANCELADA"] as const;
+export const agenciaFaturas = pgTable("agencia_faturas", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  /** AAAA-MM (mensalidade) */
+  competencia: text("competencia").notNull(),
+  descricao: text("descricao").notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  /** AAAA-MM-DD */
+  vencimento: text("vencimento").notNull(),
+  situacao: text("situacao", { enum: FATURA_SITUACOES }).notNull().default("ABERTA"),
+  /** Cobrança fora do pacote (gravação extra, diária): não ocupa a vaga da mensalidade do mês. */
+  avulsa: boolean("avulsa").notNull().default(false),
+  checkoutUrl: text("checkout_url"),
+  preferenciaId: text("preferencia_id"),
+  mpPaymentId: text("mp_payment_id"),
+  pagoEm: ts("pago_em"),
+  pagoComo: text("pago_como", { enum: ["SISTEMA", "MANUAL"] }),
+  observacao: text("observacao"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [
+  uniqueIndex("agencia_faturas_mensal_uq").on(t.clienteId, t.competencia).where(sql`${t.avulsa} = false`),
+  index("agencia_faturas_agencia_idx").on(t.agenciaId, t.situacao, t.vencimento),
+  check("agencia_faturas_valor_ck", sql`${t.valorCents} > 0`),
+]);
 

@@ -4040,3 +4040,25 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Endereço das agências (D315):** o código vai junto nesta publicação; `AGENCIAS_URL` só será ligada quando o registro `painel` existir no DNS (Hostinger), para o `/agencia` não levar a um endereço que ainda não abre.
 - **Testes:** `tests/agencias-comercial.test.ts` (funil, virar cliente, onboarding, Aprender, busca) e `e2e/agencias-comercial.mjs` (navegador, 360 px, axe).
 
+## D318 — [E-commerce] Cobrança automática da agência: mensalidade pelo contrato, paga direto na conta Mercado Pago da agência (2026-11-17)
+- **Pedido do dono:** "pode prosseguir" (próximo item da ordem da D316: cobrança automática). Base: Parte 8 do racional da UPClips (o dinheiro do cliente vai direto para a agência; a NextLevel nunca guarda).
+- **Banco (migração 0108, só acrescenta):**
+  - `agencia_faturas`: uma mensalidade por cliente por mês (índice único); as avulsas ficam à parte;
+  - cada cobrança guarda o link de pagamento e a baixa (pelo sistema ou manual, com observação);
+  - em `agencias`, a conta Mercado Pago da agência (token **só criptografado**, `encryptSecret`).
+- **Como funciona:**
+  - o administrador conecta o access token do Mercado Pago da agência; o token é conferido na hora e, se recusado, aparece uma mensagem clara;
+  - "Gerar cobranças do mês" cria a mensalidade de cada cliente ativo com valor e vencimento no contrato, e não duplica;
+  - "Gerar link" cria o pagamento por Pix ou cartão na conta da agência; o aviso do Mercado Pago chega em `/api/webhooks/mercadopago-agencia`;
+  - a **baixa só acontece conferida na API do Mercado Pago da agência**: valor menor não dá baixa, e a baixa acontece uma vez só. Há também o botão "Conferir pagamentos";
+  - "Paga por fora" (com como foi pago) e "Cancelar" (com motivo) ficam no histórico.
+- **Régua de cobrança assistida:**
+  - "Lembrar hoje" mostra quem lembrar (3 dias antes, no dia e 1, 5 e 10 dias depois);
+  - a mensagem de WhatsApp já vem pronta, com o link; a pessoa revisa e envia (o envio automático pela API oficial fica para depois).
+- **Telas:**
+  - **Financeiro**, só para administrador e financeiro, que somem do menu dos outros: previsto, recebido, em aberto, em atraso, clientes em atraso, a conta conectada e as cobranças;
+  - cobranças em atraso e lembretes entram na fila do dia;
+  - a ficha do cliente mostra as cobranças dele.
+- **Testes:** `tests/agencias-cobranca.test.ts` (Mercado Pago simulado: token recusado, link, baixa conferida, valor menor, idempotência, manual, cancelar, outra agência) e `e2e/agencias-cobranca.mjs` (`e2e/fake-mp.mjs`).
+- **Ficou para depois:** nota fiscal automática, boleto, WhatsApp automático, multa e juros, reajuste anual e a cobrança da NextLevel para a agência (preço ainda em aberto).
+

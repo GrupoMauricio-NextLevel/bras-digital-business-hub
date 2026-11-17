@@ -11,6 +11,7 @@ import type { AgenciaClienteSituacao, AgenciaFuncao } from "@/db/schema";
 import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, pedirAjuste, planejarMes, transferirPeca, type atualizacaoPecaSchema, type comentarioSchema, type novaPecaSchema } from "@/lib/agencias/producao";
 import { mesValido } from "@/lib/agencias/fluxo";
 import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
+import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
@@ -107,4 +108,32 @@ export async function virarClienteAction(id: string) {
 }
 export async function marcarOnboardingAction(clienteId: string, chave: string, feito: boolean) {
   return runAction(async () => { const { actor, db } = await ctx(); await marcarOnboarding(db, actor, idCliente.parse(clienteId), chave, feito); refreshComercial(); return undefined; });
+}
+
+// Cobrança da agência (D318)
+const idFatura = z.string().regex(/^agft_[a-z0-9]+$/i);
+const refreshFin = () => revalidatePath("/agencia", "layout");
+export async function conectarMercadoPagoAction(token: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await conectarMercadoPago(db, actor, token); refreshFin(); return r; });
+}
+export async function desconectarMercadoPagoAction() {
+  return runAction(async () => { const { actor, db } = await ctx(); await desconectarMercadoPago(db, actor); refreshFin(); return undefined; });
+}
+export async function gerarCobrancasDoMesAction(mes: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await gerarCobrancasDoMes(db, actor, mes); refreshFin(); return r; });
+}
+export async function criarCobrancaAvulsaAction(input: z.input<typeof avulsaSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await criarCobrancaAvulsa(db, actor, input); refreshFin(); return r; });
+}
+export async function gerarLinkDePagamentoAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await gerarLinkDePagamento(db, actor, idFatura.parse(id)); refreshFin(); return r; });
+}
+export async function conferirPagamentosAction() {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await conferirPagamentosAbertos(db, actor); refreshFin(); return r; });
+}
+export async function marcarPagaManualAction(id: string, observacao: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await marcarPagaManual(db, actor, idFatura.parse(id), observacao); refreshFin(); return undefined; });
+}
+export async function cancelarCobrancaAction(id: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await cancelarCobranca(db, actor, idFatura.parse(id), motivo); refreshFin(); return undefined; });
 }

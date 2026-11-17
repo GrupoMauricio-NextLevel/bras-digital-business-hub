@@ -13,6 +13,7 @@ import { mesRotulo } from "@/lib/agencias/fluxo";
 import { CartaoClienteMes } from "@/components/agencia/producao";
 import Link from "next/link";
 import { situacaoDoOnboarding } from "@/lib/agencias/comercial";
+import { cobrancasDoCliente } from "@/lib/agencias/cobranca";
 import { Onboarding } from "./onboarding-cliente";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const equipe = await listarEquipe(db, session.actor);
   const prod = await producaoDoMes(db, session.actor);
   const doMes = prod.clientes.find((x) => x.clienteId === c.id);
+  const cobrancas = c.verValores ? await cobrancasDoCliente(db, session.actor, c.id) : [];
   const onb = c.onboarding ? situacaoDoOnboarding(c.onboarding, { ...c, documento: c.documento, valorMensalCents: c.valorMensalCents, diaVencimento: c.diaVencimento }, (doMes?.contagem.planejadas ?? 0) > 0) : null;
   const ativos = equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome, funcao: FUNCAO_ROTULO[p.funcao] }));
   const nome = (u: string | null) => equipe.find((p) => p.userId === u)?.nome ?? "Sem responsável";
@@ -50,6 +52,13 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
           ) : c.observacoes ? <p className="text-sm">{c.observacoes}</p> : null}
         </section>
         <div className="space-y-4">
+          {c.verValores ? (
+            <section className={card} aria-labelledby="cob">
+              <h2 id="cob" className="mb-2 text-base font-semibold">Cobranças</h2>
+              {cobrancas.length ? <ul className="divide-y divide-border text-sm">{cobrancas.slice(-6).reverse().map((f) => <li key={f.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span className="min-w-0"><span className="block truncate">{f.descricao}</span><span className="text-xs text-muted-foreground">vence {f.vencimento.split("-").reverse().join("/")}</span></span><span className="text-right"><b className="block tabular-nums">{formatBRL(f.valorCents)}</b><span className={`text-xs font-semibold ${f.mostrada === "ATRASADA" ? "text-danger" : f.mostrada === "PAGA" ? "text-success" : "text-muted-foreground"}`}>{f.mostrada === "ATRASADA" ? "Atrasada" : f.mostrada === "PAGA" ? "Paga" : "Em aberto"}</span></span></li>)}</ul> : <p className="text-sm text-muted-foreground">Nenhuma cobrança ainda.</p>}
+              <Link href="/agencia/financeiro" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Abrir o Financeiro</Link>
+            </section>
+          ) : null}
           {onb ? (
             <section className={card} aria-labelledby="onb">
               <h2 id="onb" className="mb-1 flex items-baseline justify-between text-base font-semibold"><span>Onboarding</span><span className="text-sm tabular-nums text-muted-foreground">{onb.feitos} de {onb.total}</span></h2>

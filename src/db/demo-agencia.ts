@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { Database } from "./client";
-import { agenciaOportunidades, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
+import { agenciaFaturas, agenciaOportunidades, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
 import { escolherResponsavel, mesAnterior, prazoDaEtapa, situacaoInicial } from "@/lib/agencias/fluxo";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { newId } from "@/lib/ids";
@@ -69,6 +69,12 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
     await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
     const equipe = [...new Set([...c.equipe, "rot", "ges", "fil", ...(c.resp ? [c.resp] : [])])];
     await db.insert(agenciaClienteEquipe).values(equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
+    // Cobrança do mês fictícia (D318): metade paga, uma atrasada conforme o dia do vencimento.
+    if (c.situacao !== "PAUSADO") {
+      const mesAtual = new Date().toISOString().slice(0, 7); const venc = `${mesAtual}-${String(c.dia).padStart(2, "0")}`; const hojeD = new Date().toISOString().slice(0, 10);
+      const paga = venc < hojeD && CLIENTES.indexOf(c) % 3 !== 1;
+      await db.insert(agenciaFaturas).values({ id: newId("agft"), agenciaId, clienteId: id, competencia: mesAtual, descricao: `Mensalidade do mês · ${c.pacote}`, valorCents: c.valor * 100, vencimento: venc, situacao: paga ? "PAGA" : "ABERTA", pagoEm: paga ? new Date().toISOString() : null, pagoComo: paga ? "MANUAL" : null, observacao: paga ? "Pix (demonstração)" : null });
+    }
     if (c.situacao !== "PAUSADO") await pecasDemo(db, agenciaId, id, c, equipe.map((k) => ({ userId: ids.get(k)!, funcao: EQUIPE.find((p) => p.chave === k)!.funcao })), c.resp ? ids.get(c.resp)! : null);
   }
   return true;

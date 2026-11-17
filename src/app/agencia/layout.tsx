@@ -15,7 +15,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     return <RoleLayout session={session} banner={<div role="alert" className="border-b border-danger/40 bg-danger-soft px-4 py-2.5 text-sm text-danger">{r.erro}</div>}>{null}</RoleLayout>;
   }
   return (
-    <RoleLayout session={session} tenant={{ name: r.agencia.nome, sub: `${FUNCAO_ROTULO[r.membro.funcao]} · Painel da Agência` }} ocultar={pode.editarClientes(r.membro) ? [] : ["/agencia/comercial"]}>
+    <RoleLayout session={session} tenant={{ name: r.agencia.nome, sub: `${FUNCAO_ROTULO[r.membro.funcao]} · Painel da Agência` }} ocultar={[...(pode.editarClientes(r.membro) ? [] : ["/agencia/comercial"]), ...(pode.editarContrato(r.membro) ? [] : ["/agencia/financeiro"])]}>
       {children}
     </RoleLayout>
   );

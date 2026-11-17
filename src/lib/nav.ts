@@ -198,6 +198,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Produção", href: "/agencia/producao", icon: "LayoutGrid", group: "Agência", bottom: true },
       { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Agência" },
       { label: "Comercial", href: "/agencia/comercial", icon: "HandCoins", group: "Agência" },
+      { label: "Financeiro", href: "/agencia/financeiro", icon: "Wallet", group: "Gestão" },
       { label: "Equipe", href: "/agencia/equipe", icon: "Users", group: "Gestão", bottom: true },
       { label: "Aprender", href: "/agencia/aprender", icon: "GraduationCap", group: "Gestão" },
     ],
