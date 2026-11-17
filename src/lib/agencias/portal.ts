@@ -1,8 +1,8 @@
 import { timingSafeEqual } from "node:crypto";
-import { and, asc, desc, eq, ne, or, lt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, or, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
-import { SOLICITACAO_TIPOS, agenciaCiclos, agenciaClientes, agenciaFaturas, agenciaPecaComentarios, agenciaPecaEventos, agenciaPecas, agenciaSolicitacoes, agencias, type PecaEtapa } from "@/db/schema";
+import { SOLICITACAO_TIPOS, agenciaMensagens, agenciaCiclos, agenciaClientes, agenciaFaturas, agenciaPecaComentarios, agenciaPecaEventos, agenciaPecas, agenciaSolicitacoes, agencias, type PecaEtapa } from "@/db/schema";
 import type { Actor } from "@/lib/domain/access";
 import { assinarSessao, codigoDaJanela, lerSessao } from "@/lib/domain/conta-cliente";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/domain/errors";
@@ -86,6 +86,35 @@ export async function clienteDoPortal(db: Database, agenciaId: string, token: st
 /** O que o cliente vê no portal. Só dados dele; nada interno. */
 export async function portalDoCliente(db: Database, agenciaId: string, token: string | undefined, clienteId: string, hoje = hojeEmSaoPaulo()) {
   const { cliente } = await clienteDoPortal(db, agenciaId, token, clienteId);
+  return montarPortal(db, cliente, hoje);
+}
+
+// ---------------------------------------------------------------------------
+// Ver como cliente (D325, como o "Ver como cliente (suporte)" do Master): a equipe abre o portal do cliente só para ver
+// ---------------------------------------------------------------------------
+export const COOKIE_PREVIA = "nl-portal-previa";
+const escopoPrevia = (agenciaId: string) => `agprev:${agenciaId}`;
+/** Passe de 30 minutos para a equipe ver o portal de um cliente que ela pode ver. */
+export async function passeVerComoCliente(db: Database, actor: Actor, clienteId: string, agora = new Date()) {
+  const { agencia, membro } = await escopoDaAgencia(db, actor);
+  const c = await db.query.agenciaClientes.findFirst({ where: and(eq(agenciaClientes.id, clienteId), eq(agenciaClientes.agenciaId, agencia.id)) });
+  if (!c || !podeVerCliente(membro, c, (await equipeDoCliente(db, c.id)).map((p) => p.userId))) throw new NotFoundError("Cliente não encontrado.");
+  return { slug: agencia.slug, clienteId: c.id, token: assinarSessao({ s: escopoPrevia(agencia.id), e: c.id, x: agora.getTime() + 30 * 60_000 }) };
+}
+/** Cliente da prévia, se o passe vale para esta agência; senão null. */
+export function clienteDaPrevia(agenciaId: string, token: string | undefined, agora = new Date()) {
+  return lerSessao(token, escopoPrevia(agenciaId), agora);
+}
+/** Portal como o cliente vê (só leitura), para quem tem o passe. */
+export async function portalDaPrevia(db: Database, agenciaId: string, token: string | undefined, hoje = hojeEmSaoPaulo()) {
+  const id = clienteDaPrevia(agenciaId, token);
+  if (!id) return null;
+  const cliente = await db.query.agenciaClientes.findFirst({ where: and(eq(agenciaClientes.id, id), eq(agenciaClientes.agenciaId, agenciaId)) });
+  if (!cliente) return null;
+  return { cliente: { id: cliente.id, nome: cliente.nome, email: cliente.email }, portal: await montarPortal(db, cliente, hoje) };
+}
+
+async function montarPortal(db: Database, cliente: typeof agenciaClientes.$inferSelect, hoje: string) {
   const mes = mesDe(hoje);
   const pecas = await db.select({ id: agenciaPecas.id, titulo: agenciaPecas.titulo, tipo: agenciaPecas.tipo, etapa: agenciaPecas.etapa, prazo: agenciaPecas.prazo, extra: agenciaPecas.extra, linkVersao: agenciaPecas.linkVersao, linkPublicacao: agenciaPecas.linkPublicacao, publicarEm: agenciaPecas.publicarEm, publicadoEm: agenciaPecas.publicadoEm, versao: agenciaPecas.versao, mes: agenciaCiclos.mes, contratado: agenciaCiclos.contratado })
     .from(agenciaPecas).innerJoin(agenciaCiclos, eq(agenciaCiclos.id, agenciaPecas.cicloId))
@@ -98,6 +127,7 @@ export async function portalDoCliente(db: Database, agenciaId: string, token: st
       .where(and(eq(agenciaFaturas.clienteId, cliente.id), ne(agenciaFaturas.situacao, "CANCELADA"))).orderBy(desc(agenciaFaturas.vencimento)).limit(6),
     db.select().from(agenciaSolicitacoes).where(eq(agenciaSolicitacoes.clienteId, cliente.id)).orderBy(desc(agenciaSolicitacoes.createdAt)).limit(20),
   ]);
+  const msgs = solicitacoes.length ? await db.select().from(agenciaMensagens).where(inArray(agenciaMensagens.solicitacaoId, solicitacoes.map((x) => x.id))).orderBy(asc(agenciaMensagens.createdAt)) : [];
   return {
     cliente: { id: cliente.id, nome: cliente.nome, exigeAprovacao: cliente.exigeAprovacao }, mes, mesRotulo: mesRotulo(mes), contagem,
     paraAprovar: pecas.filter((p) => p.etapa === "APROVACAO").map((p) => ({ id: p.id, titulo: p.titulo, tipo: TIPO_ROTULO[p.tipo], versao: p.versao, link: p.linkVersao })),
@@ -105,7 +135,7 @@ export async function portalDoCliente(db: Database, agenciaId: string, token: st
     publicacoes: pecas.filter((p) => publicada(p.etapa)).map((p) => ({ id: p.id, titulo: p.titulo, link: p.linkPublicacao, em: p.publicadoEm })),
     programadas: pecas.filter((p) => p.etapa === "AGENDAMENTO" && p.publicarEm).map((p) => ({ id: p.id, titulo: p.titulo, em: p.publicarEm! })),
     cobrancas: cobrancas.map((f) => ({ ...f, mostrada: situacaoMostrada(f, hoje) })),
-    solicitacoes: solicitacoes.map((s) => ({ id: s.id, tipo: s.tipo, texto: s.texto, situacao: s.situacao, resposta: s.resposta, createdAt: s.createdAt })),
+    solicitacoes: solicitacoes.map((s) => ({ id: s.id, tipo: s.tipo, texto: s.texto, situacao: s.situacao, resposta: s.resposta, createdAt: s.createdAt, mensagens: msgs.filter((m) => m.solicitacaoId === s.id).map((m) => ({ id: m.id, autor: m.autor, texto: m.texto, createdAt: m.createdAt })) })),
   };
 }
 
@@ -188,3 +218,10 @@ export async function avisarClienteParaAprovar(db: Database, pecaId: string) {
 }
 
 
+
+/** O cliente responde na conversa de um pedido (D325). */
+export async function responderPeloCliente(db: Database, agenciaId: string, token: string | undefined, clienteId: string, solicitacaoId: string, texto: string) {
+  const { email, cliente } = await clienteDoPortal(db, agenciaId, token, clienteId);
+  const { mensagemDoCliente } = await import("./gestao");
+  await mensagemDoCliente(db, agenciaId, cliente.id, email, solicitacaoId, texto);
+}

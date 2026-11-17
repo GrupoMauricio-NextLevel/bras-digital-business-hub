@@ -799,6 +799,20 @@
       "when": 1794924974763,
       "tag": "0113_agencia_negocio",
       "breakpoints": true
+    },
+    {
+      "idx": 114,
+      "version": "7",
+      "when": 1794928728262,
+      "tag": "0114_agencia_gestao",
+      "breakpoints": true
+    },
+    {
+      "idx": 115,
+      "version": "7",
+      "when": 1794930219434,
+      "tag": "0115_agencia_modo_demo",
+      "breakpoints": true
     }
   ]
 }

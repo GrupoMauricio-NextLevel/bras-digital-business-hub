@@ -53,7 +53,7 @@ export async function criarAgencia(db: Database, actor: Actor, raw: z.input<type
 /** Só o Master: as agências com o tamanho da carteira e da equipe. */
 export async function listarAgencias(db: Database, actor: Actor) {
   requireMaster(actor);
-  const lista = await db.select().from(agencias).orderBy(desc(agencias.createdAt));
+  const lista = await db.select().from(agencias).where(isNull(agencias.demoDeId)).orderBy(desc(agencias.createdAt));
   const clientes = await db.select({ agenciaId: agenciaClientes.agenciaId, n: count() }).from(agenciaClientes).where(ne(agenciaClientes.situacao, "ENCERRADO")).groupBy(agenciaClientes.agenciaId);
   const equipe = await db.select({ agenciaId: agenciaMembros.agenciaId, n: count() }).from(agenciaMembros).innerJoin(users, eq(users.id, agenciaMembros.userId)).where(isNull(users.disabledAt)).groupBy(agenciaMembros.agenciaId);
   const nC = new Map(clientes.map((c) => [c.agenciaId, Number(c.n)])); const nE = new Map(equipe.map((e) => [e.agenciaId, Number(e.n)]));

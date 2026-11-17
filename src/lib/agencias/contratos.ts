@@ -103,6 +103,11 @@ export async function contratosDoClienteNaAgencia(db: Database, actor: Actor, cl
 /** Contratos que o cliente vê no portal: os que esperam o aceite (com o texto) e os aceitos. */
 export async function contratosDoPortal(db: Database, agenciaId: string, token: string | undefined, clienteId: string) {
   const { cliente } = await clienteDoPortal(db, agenciaId, token, clienteId);
+  return contratosVistosPeloCliente(db, agenciaId, cliente.id);
+}
+/** Os contratos como o cliente vê (portal e "Ver como cliente"). Quem chama já conferiu o acesso. */
+export async function contratosVistosPeloCliente(db: Database, agenciaId: string, clienteId: string) {
+  const cliente = { id: clienteId };
   const rows = await db.select().from(agenciaContratos).where(and(eq(agenciaContratos.clienteId, cliente.id), eq(agenciaContratos.agenciaId, agenciaId), ne(agenciaContratos.status, "CANCELADO"))).orderBy(desc(agenciaContratos.enviadoEm));
   return rows.map((c) => ({ id: c.id, numero: c.numero, titulo: c.titulo, status: c.status, hash: c.hash, enviadoEm: c.enviadoEm, aceitoEm: c.aceitoEm, aceitoNome: c.aceitoNome, secoes: c.status === "ENVIADO" ? c.conteudo.secoes : [] }));
 }

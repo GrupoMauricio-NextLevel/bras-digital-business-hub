@@ -3386,6 +3386,11 @@ export const agencias = pgTable("agencias", {
   /** Página de captação (D322): texto e serviços do formulário público de orçamento da agência. */
   /** Conta NextLevel Business da própria agência (D323), criada pela janela "Soluções NextLevel". */
   negocioStoreId: text("negocio_store_id").references(() => stores.id),
+  /** Modo demonstração (D326): agência-sandbox de outra agência real (nunca mistura dados) e a última "rodada" de movimento. */
+  demoDeId: text("demo_de_id"),
+  demoMovidoEm: ts("demo_movido_em"),
+  /** Metas do mês da agência (D325): entregas publicadas, clientes novos e receita, por competência AAAA-MM. */
+  metas: jsonb("metas").$type<Record<string, { entregas?: number; novosClientes?: number; receitaCents?: number }>>().notNull().default({}),
   captacao: jsonb("captacao").$type<{ ligada: boolean; titulo: string; texto: string; servicos: string[]; whatsapp: string | null }>(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
@@ -3399,6 +3404,8 @@ export const agenciaMembros = pgTable("agencia_membros", {
   funcao: text("funcao", { enum: AGENCIA_FUNCOES }).notNull(),
   /** Vê todos os clientes da carteira (sem isso, só os que tem como responsável ou na equipe do cliente). */
   todosClientes: boolean("todos_clientes").notNull().default(false),
+  /** Comissão de venda da pessoa (D325, executivos de venda), em % sobre o que os clientes que ela fechou pagam no mês. */
+  comissaoPct: integer("comissao_pct"),
   createdAt: createdAt(),
 }, (t) => [index("agencia_membros_agencia_idx").on(t.agenciaId)]);
 
@@ -3432,6 +3439,8 @@ export const agenciaClientes = pgTable("agencia_clientes", {
   onboarding: jsonb("onboarding").$type<Record<string, string | null>>(),
   motivoEncerramento: text("motivo_encerramento"),
   encerradoEm: ts("encerrado_em"),
+  /** Quem fechou a venda (D325): vem do responsável da negociação ao virar cliente. */
+  vendedorId: text("vendedor_id").references(() => users.id),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [index("agencia_clientes_agencia_idx").on(t.agenciaId, t.situacao), check("agencia_clientes_dia_ck", sql`${t.diaVencimento} is null or (${t.diaVencimento} between 1 and 28)`), check("agencia_clientes_valor_ck", sql`${t.valorMensalCents} is null or ${t.valorMensalCents} >= 0`)]);
@@ -3642,6 +3651,43 @@ export const agenciaSolicitacoes = pgTable("agencia_solicitacoes", {
  * Contrato entre a agência e o cliente dela (D321), com o mesmo motor dos contratos do Master (D276): texto congelado,
  * impressão digital, aceite pelo portal do cliente com prova (nome, data, endereço de rede, aparelho) e PDF.
  */
+/**
+ * Campanha de anúncio de um cliente da agência (D325, Tráfego e Mesa de anúncios): o mesmo desenho da sala da campanha
+ * do lojista (D299), com os números lançados pelo gestor de tráfego enquanto a leitura automática não liga.
+ */
+export const CAMPANHA_PLATAFORMAS = ["META", "GOOGLE", "TIKTOK", "OUTRA"] as const;
+export const CAMPANHA_SITUACOES = ["PLANEJADA", "NO_AR", "PAUSADA", "ENCERRADA"] as const;
+export const agenciaCampanhas = pgTable("agencia_campanhas", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  nome: text("nome").notNull(),
+  plataforma: text("plataforma", { enum: CAMPANHA_PLATAFORMAS }).notNull().default("META"),
+  objetivo: text("objetivo"),
+  situacao: text("situacao", { enum: CAMPANHA_SITUACOES }).notNull().default("PLANEJADA"),
+  verbaMensalCents: integer("verba_mensal_cents"),
+  investidoCents: integer("investido_cents").notNull().default(0),
+  resultados: integer("resultados").notNull().default(0),
+  rotuloResultado: text("rotulo_resultado").notNull().default("contatos"),
+  responsavelId: text("responsavel_id").references(() => users.id),
+  inicioEm: text("inicio_em"),
+  observacoes: text("observacoes"),
+  atualizadoNumerosEm: ts("atualizado_numeros_em"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("agencia_campanhas_agencia_idx").on(t.agenciaId, t.situacao), index("agencia_campanhas_cliente_idx").on(t.clienteId)]);
+
+/** Conversa do atendimento (D325): mensagens de um pedido do portal, do cliente e da agência, em ordem. */
+export const agenciaMensagens = pgTable("agencia_mensagens", {
+  id: id(),
+  solicitacaoId: text("solicitacao_id").notNull().references(() => agenciaSolicitacoes.id),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  autor: text("autor", { enum: ["CLIENTE", "AGENCIA"] }).notNull(),
+  autorNome: text("autor_nome").notNull(),
+  texto: text("texto").notNull(),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_mensagens_solicitacao_idx").on(t.solicitacaoId, t.createdAt)]);
+
 export const AGENCIA_CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO"] as const;
 export const agenciaContratos = pgTable("agencia_contratos", {
   id: id(),

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { Database } from "./client";
-import { agenciaFaturas, agenciaOportunidades, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
+import { agenciaCampanhas, agenciaMensagens, agenciaSolicitacoes, agenciaFaturas, agenciaOportunidades, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
 import { escolherResponsavel, mesAnterior, prazoDaEtapa, situacaoInicial } from "@/lib/agencias/fluxo";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { newId } from "@/lib/ids";
@@ -50,33 +50,7 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
   const orgId = newId("org"); const agenciaId = "agc_aurorademo"; /* fixo: o e2e do portal (D320) calcula o código */ const passwordHash = hashPassword(DEMO_PASSWORD);
   await db.insert(organizations).values({ id: orgId, name: "Agência Aurora (demonstração)", slug: SLUG, type: "AGENCY", brand: "NEXTLEVEL_COMMERCE" });
   await db.insert(agencias).values({ id: agenciaId, organizationId: orgId, nome: "Agência Aurora (demonstração)", slug: SLUG, fundadora: true, razaoSocial: "Aurora Comunicação Ltda (demonstração)", documento: "11.222.333/0001-81", cidadeForo: "São Paulo/SP", captacao: { ligada: true, titulo: "Seu negócio com vídeo todo mês", texto: "Roteiro, gravação, edição e publicação. Conte o que você precisa e a equipe responde.", servicos: ["Vídeos para Reels", "Social media", "Tráfego pago", "Fotos"], whatsapp: null } });
-  const ids = new Map<string, string>();
-  for (const p of EQUIPE) {
-    const id = newId("usr"); ids.set(p.chave, id);
-    await db.insert(users).values({ id, name: p.nome, email: p.email, role: "AGENCY", organizationId: orgId, passwordHash });
-    await db.insert(agenciaMembros).values({ id: newId("agm"), agenciaId, userId: id, funcao: p.funcao, todosClientes: !!p.todos });
-  }
-  // Funil comercial fictício (D317).
-  const dia = (n: number) => new Date(Date.now() + n * 86_400_000).toISOString().slice(0, 10);
-  await db.insert(agenciaOportunidades).values([
-    { id: newId("agop"), agenciaId, empresa: "Vidraçaria Brilho (demonstração)", segmento: "Vidraçaria", origem: "INDICACAO", servicos: "Mensal 12 vídeos", valorPropostoCents: 300_000, etapa: "PROPOSTA", responsavelId: ids.get("adm")!, proximaAtividade: "Ligar para fechar a proposta", proximaAtividadeEm: dia(0) },
-    { id: newId("agop"), agenciaId, empresa: "Clínica Vida Plena (demonstração)", segmento: "Saúde", origem: "INSTAGRAM", servicos: "8 vídeos + tráfego", valorPropostoCents: 420_000, etapa: "REUNIAO", responsavelId: ids.get("adm")!, proximaAtividade: "Reunião de apresentação", proximaAtividadeEm: dia(2) },
-    { id: newId("agop"), agenciaId, empresa: "Hamburgueria Brasa (demonstração)", segmento: "Restaurante", origem: "PROSPECCAO_ATIVA", servicos: "Social media", valorPropostoCents: 180_000, etapa: "CONTATO", responsavelId: ids.get("adm")!, proximaAtividade: "Mandar portfólio", proximaAtividadeEm: dia(-1) },
-    { id: newId("agop"), agenciaId, empresa: "Escola Saber (demonstração)", segmento: "Educação", origem: "SITE", etapa: "PROSPECCAO", responsavelId: ids.get("adm")! },
-  ]);
-  for (const c of CLIENTES) {
-    const id = newId("agcl");
-    await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, email: c.nome === "Clínica Sorriso Leve" ? "contato@sorrisoleve.demo" : null, documento: c.nome === "Clínica Sorriso Leve" ? "11.111.111/0001-11" : null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
-    const equipe = [...new Set([...c.equipe, "rot", "ges", "fil", ...(c.resp ? [c.resp] : [])])];
-    await db.insert(agenciaClienteEquipe).values(equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
-    // Cobrança do mês fictícia (D318): metade paga, uma atrasada conforme o dia do vencimento.
-    if (c.situacao !== "PAUSADO") {
-      const mesAtual = new Date().toISOString().slice(0, 7); const venc = `${mesAtual}-${String(c.dia).padStart(2, "0")}`; const hojeD = new Date().toISOString().slice(0, 10);
-      const paga = venc < hojeD && CLIENTES.indexOf(c) % 3 !== 1;
-      await db.insert(agenciaFaturas).values({ id: newId("agft"), agenciaId, clienteId: id, competencia: mesAtual, descricao: `Mensalidade do mês · ${c.pacote}`, valorCents: c.valor * 100, vencimento: venc, situacao: paga ? "PAGA" : "ABERTA", pagoEm: paga ? new Date().toISOString() : null, pagoComo: paga ? "MANUAL" : null, observacao: paga ? "Pix (demonstração)" : null });
-    }
-    if (c.situacao !== "PAUSADO") await pecasDemo(db, agenciaId, id, c, equipe.map((k) => ({ userId: ids.get(k)!, funcao: EQUIPE.find((p) => p.chave === k)!.funcao })), c.resp ? ids.get(c.resp)! : null);
-  }
+  await povoarAgenciaDemo(db, { agenciaId, orgId, passwordHash, emailDe: (p) => p.email });
   return true;
 }
 
@@ -111,3 +85,69 @@ async function pecasDemo(db: Database, agenciaId: string, clienteId: string, c: 
   }
 }
 
+/**
+ * Povoa uma agência com a equipe, a carteira, a produção, as cobranças e o comercial fictícios (D313), mais campanhas,
+ * conversas e metas (D326). Usado pela demonstração local e pelo Modo demonstração da agência real (sandbox separado).
+ */
+export async function povoarAgenciaDemo(db: Database, o: { agenciaId: string; orgId: string; passwordHash: string; emailDe: (p: { chave: string; email: string }) => string; admin?: { nome: string; email: string } }) {
+  const { agenciaId, orgId, passwordHash } = o;
+  const ids = new Map<string, string>();
+  for (const p of EQUIPE) {
+    const id = newId("usr"); ids.set(p.chave, id);
+    await db.insert(users).values({ id, name: p.chave === "adm" && o.admin ? o.admin.nome : p.nome, email: p.chave === "adm" && o.admin ? o.admin.email : o.emailDe(p), role: "AGENCY", organizationId: orgId, passwordHash });
+    await db.insert(agenciaMembros).values({ id: newId("agm"), agenciaId, userId: id, funcao: p.funcao, todosClientes: !!p.todos });
+  }
+  // Funil comercial fictício (D317).
+  const dia = (n: number) => new Date(Date.now() + n * 86_400_000).toISOString().slice(0, 10);
+  await db.insert(agenciaOportunidades).values([
+    { id: newId("agop"), agenciaId, empresa: "Vidraçaria Brilho (demonstração)", segmento: "Vidraçaria", origem: "INDICACAO", servicos: "Mensal 12 vídeos", valorPropostoCents: 300_000, etapa: "PROPOSTA", responsavelId: ids.get("adm")!, proximaAtividade: "Ligar para fechar a proposta", proximaAtividadeEm: dia(0) },
+    { id: newId("agop"), agenciaId, empresa: "Clínica Vida Plena (demonstração)", segmento: "Saúde", origem: "INSTAGRAM", servicos: "8 vídeos + tráfego", valorPropostoCents: 420_000, etapa: "REUNIAO", responsavelId: ids.get("adm")!, proximaAtividade: "Reunião de apresentação", proximaAtividadeEm: dia(2) },
+    { id: newId("agop"), agenciaId, empresa: "Hamburgueria Brasa (demonstração)", segmento: "Restaurante", origem: "PROSPECCAO_ATIVA", servicos: "Social media", valorPropostoCents: 180_000, etapa: "CONTATO", responsavelId: ids.get("adm")!, proximaAtividade: "Mandar portfólio", proximaAtividadeEm: dia(-1) },
+    { id: newId("agop"), agenciaId, empresa: "Escola Saber (demonstração)", segmento: "Educação", origem: "SITE", etapa: "PROSPECCAO", responsavelId: ids.get("adm")! },
+  ]);
+  for (const c of CLIENTES) {
+    const id = newId("agcl");
+    await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, email: c.nome === "Clínica Sorriso Leve" ? "contato@sorrisoleve.demo" : null, documento: c.nome === "Clínica Sorriso Leve" ? "11.111.111/0001-11" : null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
+    const equipe = [...new Set([...c.equipe, "rot", "ges", "fil", ...(c.resp ? [c.resp] : [])])];
+    await db.insert(agenciaClienteEquipe).values(equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
+    // Cobrança do mês fictícia (D318): metade paga, uma atrasada conforme o dia do vencimento.
+    if (c.situacao !== "PAUSADO") {
+      const mesAtual = new Date().toISOString().slice(0, 7); const venc = `${mesAtual}-${String(c.dia).padStart(2, "0")}`; const hojeD = new Date().toISOString().slice(0, 10);
+      const paga = venc < hojeD && CLIENTES.indexOf(c) % 3 !== 1;
+      await db.insert(agenciaFaturas).values({ id: newId("agft"), agenciaId, clienteId: id, competencia: mesAtual, descricao: `Mensalidade do mês · ${c.pacote}`, valorCents: c.valor * 100, vencimento: venc, situacao: paga ? "PAGA" : "ABERTA", pagoEm: paga ? new Date().toISOString() : null, pagoComo: paga ? "MANUAL" : null, observacao: paga ? "Pix (demonstração)" : null });
+    }
+    if (c.situacao !== "PAUSADO") await pecasDemo(db, agenciaId, id, c, equipe.map((k) => ({ userId: ids.get(k)!, funcao: EQUIPE.find((p) => p.chave === k)!.funcao })), c.resp ? ids.get(c.resp)! : null);
+  }
+  await extrasDemo(db, agenciaId, ids);
+  return ids;
+}
+
+/** Campanhas, conversas do portal e metas do mês (D326): o resto do painel também em uso. */
+async function extrasDemo(db: Database, agenciaId: string, ids: Map<string, string>) {
+  const clientes = await db.select({ id: agenciaClientes.id, nome: agenciaClientes.nome }).from(agenciaClientes).where(eq(agenciaClientes.agenciaId, agenciaId));
+  const de = (nome: string) => clientes.find((c) => c.nome === nome)?.id;
+  const agora = Date.now(); const atras = (h: number) => new Date(agora - h * 3_600_000).toISOString();
+  const campanhas = [
+    { cliente: "Imobiliária Casa Certa", nome: "Lançamento Jardim Sul", situacao: "NO_AR" as const, verba: 300_000, inv: 182_000, res: 64, rot: "contatos" },
+    { cliente: "Studio Bella Pele", nome: "Limpeza de pele novembro", situacao: "NO_AR" as const, verba: 120_000, inv: 54_000, res: 41, rot: "mensagens" },
+    { cliente: "Restaurante Fogo Alto", nome: "Almoço executivo", situacao: "PAUSADA" as const, verba: 80_000, inv: 40_000, res: 22, rot: "reservas" },
+    { cliente: "Clínica Sorriso Leve", nome: "Clareamento dental", situacao: "PLANEJADA" as const, verba: 150_000, inv: 0, res: 0, rot: "agendamentos" },
+  ];
+  for (const k of campanhas) {
+    const clienteId = de(k.cliente); if (!clienteId) continue;
+    await db.insert(agenciaCampanhas).values({ id: newId("agcp"), agenciaId, clienteId, nome: k.nome, plataforma: "META", objetivo: "Mensagens no WhatsApp", situacao: k.situacao, verbaMensalCents: k.verba, investidoCents: k.inv, resultados: k.res, rotuloResultado: k.rot, responsavelId: ids.get("tra") ?? null, atualizadoNumerosEm: k.inv ? atras(30) : null });
+  }
+  const conversas = [
+    { cliente: "Academia Movimento", tipo: "PEDIDO" as const, texto: "Dá para gravar a aula de spinning na sexta?", situacao: "ABERTA" as const, h: 2 },
+    { cliente: "Padaria Trigo de Ouro", tipo: "IDEIA" as const, texto: "Vídeo do pão de queijo saindo do forno às 7h", situacao: "EM_ANDAMENTO" as const, h: 20, resposta: "Ótima ideia! Encaixamos na gravação da semana que vem." },
+    { cliente: "Pet Shop Patas Felizes", tipo: "DUVIDA" as const, texto: "Quando sai o vídeo do banho e tosa?", situacao: "RESPONDIDA" as const, h: 50, resposta: "Sai na quinta, já está na edição." },
+  ];
+  for (const c of conversas) {
+    const clienteId = de(c.cliente); if (!clienteId) continue;
+    const sid = newId("agso");
+    await db.insert(agenciaSolicitacoes).values({ id: sid, agenciaId, clienteId, tipo: c.tipo, texto: c.texto, autorEmail: "cliente@demonstracao.invalid", situacao: c.situacao, resposta: c.resposta ?? null, respondidaEm: c.resposta ? atras(c.h - 1) : null, createdAt: atras(c.h) });
+    if (c.resposta) await db.insert(agenciaMensagens).values({ id: newId("agmg"), solicitacaoId: sid, agenciaId, autor: "AGENCIA", autorNome: "Rafael Prado", texto: c.resposta, createdAt: atras(c.h - 1) });
+  }
+  const mes = new Date().toISOString().slice(0, 7);
+  await db.update(agencias).set({ metas: { [mes]: { entregas: 60, novosClientes: 3, receitaCents: 2_500_000 } } }).where(eq(agencias.id, agenciaId));
+}

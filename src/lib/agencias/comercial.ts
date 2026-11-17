@@ -136,7 +136,7 @@ export async function virarCliente(db: Database, actor: Actor, id: string) {
   await db.transaction(async (tx) => {
     await tx.insert(agenciaClientes).values({
       id: clienteId, agenciaId: membro.agenciaId, nome: o.empresa, segmento: o.segmento, contatoNome: o.contatoNome, whatsapp: o.whatsapp, email: o.email, pacote: o.servicos,
-      valorMensalCents: pode.editarContrato(membro) ? o.valorPropostoCents : null, responsavelId: o.responsavelId, inicioEm: hojeEmSaoPaulo(),
+      valorMensalCents: pode.editarContrato(membro) ? o.valorPropostoCents : null, responsavelId: o.responsavelId, vendedorId: o.responsavelId ?? actor.userId, inicioEm: hojeEmSaoPaulo(),
       observacoes: o.observacoes, onboarding: { contrato: null },
     });
     await tx.update(agenciaOportunidades).set({ etapa: "FECHADO", clienteId, updatedAt: agora }).where(eq(agenciaOportunidades.id, o.id));

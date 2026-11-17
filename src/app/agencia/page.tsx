@@ -7,6 +7,8 @@ import { listarOportunidades, resumoDoFunil } from "@/lib/agencias/comercial";
 import { pendenciasDeCobranca } from "@/lib/agencias/cobranca";
 import { solicitacoesDaAgencia } from "@/lib/agencias/portal";
 import { contatosSemResposta } from "@/lib/agencias/captacao";
+import { ChaveModoDemo } from "@/components/agencia/modo-demo";
+import { escopoDaAgencia } from "@/lib/agencias/acesso";
 import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
 import { Handshake, MessageSquare } from "lucide-react";
 import { getDb } from "@/db/client";
@@ -35,6 +37,7 @@ export default async function HojeNaAgencia() {
   const db = await getDb();
   const [k, prod, fila, oportunidades] = await Promise.all([cockpitDaAgencia(db, session.actor), producaoDoMes(db, session.actor), minhaFila(db, session.actor), listarOportunidades(db, session.actor).catch(() => [])]);
   const cob = await pendenciasDeCobranca(db, session.actor);
+  const demo = !!(await escopoDaAgencia(db, session.actor)).agencia.demoDeId;
   const pedidos = await solicitacoesDaAgencia(db, session.actor, { abertas: true });
   const novosSite = await contatosSemResposta(db, session.actor);
   const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
@@ -43,7 +46,7 @@ export default async function HojeNaAgencia() {
   const pend = k.pendencias;
   const filaDia = [
     ...(novosSite.length ? [{ key: "site", icon: Handshake, title: "Novos contatos pela página de captação", detail: `${novosSite[0]!.empresa}${novosSite.length > 1 ? ` e mais ${novosSite.length - 1}` : ""} esperando resposta. Responder rápido aumenta a chance de fechar.`, count: novosSite.length, action: "Responder", href: novosSite.length === 1 ? `/agencia/comercial/${novosSite[0]!.id}` : "/agencia/comercial", danger: false }] : []),
-    ...(pedidos.length ? [{ key: "ped", icon: MessageSquare, title: "Pedidos de clientes pelo portal", detail: `${pedidos[0]!.clienteNome}: "${pedidos[0]!.texto.slice(0, 70)}${pedidos[0]!.texto.length > 70 ? "…" : ""}"`, count: pedidos.length, action: "Responder", href: `/agencia/clientes/${pedidos[0]!.clienteId}#portal`, danger: false }] : []),
+    ...(pedidos.length ? [{ key: "ped", icon: MessageSquare, title: "Pedidos de clientes pelo portal", detail: `${pedidos[0]!.clienteNome}: "${pedidos[0]!.texto.slice(0, 70)}${pedidos[0]!.texto.length > 70 ? "…" : ""}"`, count: pedidos.length, action: "Responder", href: pedidos.length === 1 ? `/agencia/atendimento/${pedidos[0]!.id}` : "/agencia/atendimento", danger: false }] : []),
     ...(cob.atrasadas ? [{ key: "cob", icon: CalendarClock, title: "Cobranças em atraso", detail: `${formatBRL(cob.atrasadoCents)} vencidos e não pagos.`, count: cob.atrasadas, action: "Cobrar", href: "/agencia/financeiro", danger: true }] : []),
     ...(cob.lembrar ? [{ key: "lem", icon: CalendarClock, title: "Lembrar clientes da cobrança hoje", detail: "A mensagem do WhatsApp já vem pronta no Financeiro.", count: cob.lembrar, action: "Ver", href: "/agencia/financeiro", danger: false }] : []),
     ...(funil.hoje + funil.atrasadas ? [{ key: "com", icon: Handshake, title: "Atividades comerciais para hoje", detail: `${funil.hoje} para hoje${funil.atrasadas ? ` e ${funil.atrasadas} atrasada${funil.atrasadas > 1 ? "s" : ""}` : ""} no funil comercial.`, count: funil.hoje + funil.atrasadas, action: "Ver", href: "/agencia/comercial", danger: funil.atrasadas > 0 }] : []),
@@ -65,7 +68,7 @@ export default async function HojeNaAgencia() {
     { titulo: "Planeje o mês", detalhe: "Em Produção, \"Planejar o mês\" cria as peças pelo pacote de cada cliente.", href: "/agencia/producao", feito: t.planejadas > 0 },
   ];
   const feitos = passos.filter((x) => x.feito).length;
-  const mostrarPassos = k.verCarteiraToda && feitos < passos.length;
+  const mostrarPassos = k.verCarteiraToda && feitos < passos.length && !demo;
   return (
     <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
       <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
@@ -74,6 +77,7 @@ export default async function HojeNaAgencia() {
           <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da agência</p>
           <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{saudacao()}, {session.user.name.split(" ")[0]}.</h1>
           <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{k.agencia.nome}</span> · {FUNCAO_ROTULO[k.funcao]}</p>
+          {k.funcao === "ADMIN" && !demo ? <div className="mt-4"><ChaveModoDemo ligado={false} /><p className="mt-1.5 text-xs text-muted-foreground">Veja o painel em pleno andamento, com uma equipe e clientes de demonstração. Desligue quando quiser.</p></div> : null}
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
             {k.agencia.fundadora ? <span className={chip}>Agência Fundadora</span> : null}
             <span className={chip}><span aria-hidden className="size-1.5 rounded-full bg-success" />{k.agencia.situacao === "PILOTO" ? "Piloto em andamento" : "Conta ativa"}</span>

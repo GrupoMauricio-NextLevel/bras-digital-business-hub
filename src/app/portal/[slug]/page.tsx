@@ -6,11 +6,11 @@ import { getDb } from "@/db/client";
 import { AreaTheme } from "@/design-system/components/area-theme";
 import { Kpi } from "@/components/commerce/commerce-home";
 import { NotFoundError } from "@/lib/domain/errors";
-import { COOKIE_PORTAL, agenciaDoPortal, clientesDaSessao, portalDoCliente } from "@/lib/agencias/portal";
+import { COOKIE_PORTAL, COOKIE_PREVIA, agenciaDoPortal, clientesDaSessao, portalDaPrevia, portalDoCliente } from "@/lib/agencias/portal";
 import { agenciasLigado } from "@/lib/agencias/acesso";
 import { formatBRL } from "@/lib/money";
-import { AceitarContrato, AprovarConteudo, EntrarPortal, NovaSolicitacao, SairPortal } from "./portal-cliente";
-import { contratosDoPortal } from "@/lib/agencias/contratos";
+import { AceitarContrato, AprovarConteudo, EntrarPortal, NovaSolicitacao, ResponderConversa, SairDaPrevia, SairPortal } from "./portal-cliente";
+import { contratosDoPortal, contratosVistosPeloCliente } from "@/lib/agencias/contratos";
 import { TextoDoContrato } from "@/components/agencia/texto-contrato";
 
 export const dynamic = "force-dynamic";
@@ -22,23 +22,29 @@ const TIPO = { PEDIDO: "Pedido", IDEIA: "Ideia", DUVIDA: "Dúvida" } as const;
 const SIT = { ABERTA: "Recebido", EM_ANDAMENTO: "Em andamento", RESPONDIDA: "Respondido" } as const;
 
 /** Portal do cliente da agência (D320): acompanhar o mês, aprovar conteúdos, pagar e falar com a agência. */
-export default async function Portal({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ cliente?: string }> }) {
+export default async function Portal({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ cliente?: string; previa?: string }> }) {
   if (!agenciasLigado()) notFound();
   const { slug } = await params; const sp = await searchParams;
   const db = await getDb();
   const a = await agenciaDoPortal(db, slug).catch((e) => { if (e instanceof NotFoundError) notFound(); throw e; });
-  const token = (await cookies()).get(`${COOKIE_PORTAL}-${a.slug}`)?.value;
-  const { email, clientes } = await clientesDaSessao(db, a.id, token);
+  const jar = await cookies();
+  const token = jar.get(`${COOKIE_PORTAL}-${a.slug}`)?.value;
+  // Ver como cliente (D325): a equipe abre o portal de um cliente só para ver, com passe de 30 minutos.
+  const previa = sp.previa ? await portalDaPrevia(db, a.id, jar.get(`${COOKIE_PREVIA}-${a.slug}`)?.value) : null;
+  const leitura = !!previa;
+  const sessao = previa ? { email: previa.cliente.email ?? "cliente sem e-mail", clientes: [{ id: previa.cliente.id, nome: previa.cliente.nome }] } : await clientesDaSessao(db, a.id, token);
+  const { email, clientes } = sessao;
   const casca = (conteudo: React.ReactNode) => (
     <>
       <AreaTheme theme="nextlevel" brand="NEXTLEVEL" />
       <main className="mx-auto min-h-screen max-w-[1100px] space-y-5 bg-background px-4 py-6 sm:py-10">
+        {leitura ? <div role="status" className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warning/40 bg-warning-soft px-4 py-3 text-sm"><span><b>Você está vendo o portal como o cliente vê.</b> Só leitura: aprovar, pedir e aceitar ficam com o cliente.</span><SairDaPrevia slug={a.slug} /></div> : null}
         <header className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-8">
           <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
           <div className="relative">
             <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Portal do cliente</p>
             <h1 className="mt-2 text-[clamp(1.6rem,4vw,2.4rem)] font-semibold leading-[1.05] tracking-[-.04em]">{a.nome}</h1>
-            {email ? <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">{email} <SairPortal slug={a.slug} /></p> : <p className="mt-2 text-sm text-muted-foreground">Acompanhe o seu mês, aprove os conteúdos e fale com a agência.</p>}
+            {email ? <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">{email} {leitura ? null : <SairPortal slug={a.slug} />}</p> : <p className="mt-2 text-sm text-muted-foreground">Acompanhe o seu mês, aprove os conteúdos e fale com a agência.</p>}
           </div>
         </header>
         {conteudo}
@@ -49,7 +55,7 @@ export default async function Portal({ params, searchParams }: { params: Promise
   if (!email) return casca(<section className={`${card} mx-auto max-w-md`}><h2 className="text-base font-semibold">Entrar</h2><p className="mt-1 text-sm text-muted-foreground">Use o e-mail que você passou para a agência. Mandamos um código de 6 dígitos, sem senha.</p><EntrarPortal slug={a.slug} /></section>);
   if (!clientes.length) return casca(<section className={card}><p className="text-sm">Não achamos nenhuma empresa ligada a <b>{email}</b>. Fale com a {a.nome}.</p></section>);
   const atual = clientes.find((c) => c.id === sp.cliente) ?? clientes[0]!;
-  const [p, contratos] = await Promise.all([portalDoCliente(db, a.id, token, atual.id), contratosDoPortal(db, a.id, token, atual.id)]);
+  const [p, contratos] = previa ? [previa.portal, await contratosVistosPeloCliente(db, a.id, atual.id)] : await Promise.all([portalDoCliente(db, a.id, token, atual.id), contratosDoPortal(db, a.id, token, atual.id)]);
   const pdf = (id: string) => `/portal/${a.slug}/contrato/${id}/pdf?cliente=${atual.id}`;
   const c = p.contagem;
   return casca(
@@ -68,14 +74,14 @@ export default async function Portal({ params, searchParams }: { params: Promise
           <p className="mb-3 text-sm text-muted-foreground">{k.titulo} · nº {k.numero}. Leia com calma. Se tiver dúvida, fale com a agência antes de aceitar.</p>
           <div className="max-h-[420px] overflow-y-auto rounded-xl border border-border p-4" tabIndex={0} aria-label="Texto do contrato"><TextoDoContrato secoes={k.secoes} /></div>
           <a href={pdf(k.id)} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Abrir em PDF</a>
-          <AceitarContrato slug={a.slug} clienteId={atual.id} contratoId={k.id} hash={k.hash} />
+          {leitura ? null : <AceitarContrato slug={a.slug} clienteId={atual.id} contratoId={k.id} hash={k.hash} />}
         </section>
       ))}
       {p.paraAprovar.length ? (
         <section className={card} aria-labelledby="pt-apr">
           <h2 id="pt-apr" className="mb-1 text-base font-semibold">Para você aprovar</h2>
           <p className="mb-3 text-sm text-muted-foreground">Assista, aprove ou peça um ajuste contando o que precisa mudar.</p>
-          <ul className="space-y-3">{p.paraAprovar.map((x) => <li key={x.id} className="rounded-xl border border-border p-4"><div className="flex flex-wrap items-center justify-between gap-2"><span><b className="block">{x.titulo}</b><span className="text-xs text-muted-foreground">{x.tipo} · versão {x.versao}</span></span>{x.link ? <a href={x.link} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-link underline underline-offset-4">Assistir<ExternalLink className="size-4" aria-hidden /></a> : null}</div><AprovarConteudo slug={a.slug} clienteId={atual.id} pecaId={x.id} /></li>)}</ul>
+          <ul className="space-y-3">{p.paraAprovar.map((x) => <li key={x.id} className="rounded-xl border border-border p-4"><div className="flex flex-wrap items-center justify-between gap-2"><span><b className="block">{x.titulo}</b><span className="text-xs text-muted-foreground">{x.tipo} · versão {x.versao}</span></span>{x.link ? <a href={x.link} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-link underline underline-offset-4">Assistir<ExternalLink className="size-4" aria-hidden /></a> : null}</div>{leitura ? null : <AprovarConteudo slug={a.slug} clienteId={atual.id} pecaId={x.id} />}</li>)}</ul>
         </section>
       ) : null}
       <div className="grid gap-5 lg:grid-cols-2">
@@ -96,8 +102,8 @@ export default async function Portal({ params, searchParams }: { params: Promise
         <section className={card} aria-labelledby="pt-sol">
           <h2 id="pt-sol" className="mb-1 text-base font-semibold">Falar com a agência</h2>
           <p className="mb-3 text-sm text-muted-foreground">Mande pedidos, ideias e dúvidas e acompanhe a resposta por aqui.</p>
-          <NovaSolicitacao slug={a.slug} clienteId={atual.id} />
-          {p.solicitacoes.length ? <ul className="mt-4 space-y-2 text-sm">{p.solicitacoes.map((s) => <li key={s.id} className="rounded-xl bg-surface-muted/60 p-3"><span className="text-xs text-muted-foreground">{TIPO[s.tipo]} · {dm(s.createdAt)} · <b>{SIT[s.situacao]}</b></span><p className="mt-1">{s.texto}</p>{s.resposta ? <p className="mt-1.5 border-l-2 border-[var(--ds-link)] pl-2 text-muted-foreground">{s.resposta}</p> : null}</li>)}</ul> : null}
+          {leitura ? null : <NovaSolicitacao slug={a.slug} clienteId={atual.id} />}
+          {p.solicitacoes.length ? <ul className="mt-4 space-y-2 text-sm">{p.solicitacoes.map((s) => <li key={s.id} className="rounded-xl bg-surface-muted/60 p-3"><span className="text-xs text-muted-foreground">{TIPO[s.tipo]} · {dm(s.createdAt)} · <b>{SIT[s.situacao]}</b></span><p className="mt-1">{s.texto}</p>{s.mensagens.length ? <ul className="mt-2 space-y-1.5">{s.mensagens.map((m) => <li key={m.id} className={`rounded-lg px-2.5 py-1.5 ${m.autor === "AGENCIA" ? "border-l-2 border-[var(--ds-link)] bg-surface" : "ml-4 bg-surface-muted"}`}><span className="block text-[11px] text-muted-foreground">{m.autor === "AGENCIA" ? a.nome : "Você"} · {dm(m.createdAt)}</span>{m.texto}</li>)}</ul> : s.resposta ? <p className="mt-1.5 border-l-2 border-[var(--ds-link)] pl-2 text-muted-foreground">{s.resposta}</p> : null}{leitura ? null : <ResponderConversa slug={a.slug} clienteId={atual.id} solicitacaoId={s.id} />}</li>)}</ul> : null}
         </section>
       </div>
     </>

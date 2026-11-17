@@ -1,5 +1,19 @@
 [
  {
+  "numero": 326,
+  "frente": "E-commerce",
+  "titulo": "Modo demonstração no Painel da Agência: uma chave para ver tudo em pleno andamento",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"um botão no início do painel pra ativar um modo Demo com vários funcionários, clientes e tudo em movimento... uma chave pra ligar e desligar o modo demo.\""
+ },
+ {
+  "numero": 325,
+  "frente": "E-commerce",
+  "titulo": "Gestão do Master no Painel da Agência: ver como cliente, placar e metas, tráfego, agente, crescimento, atendimento e executivos",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"sinto que ainda não trouxe os itens do master do nextlevel commerce para o projeto atual... quero que desenvolva os 7 de uma vez, não quero perder muito tempo em baterias longas de testes\"."
+ },
+ {
   "numero": 323,
   "frente": "E-commerce",
   "titulo": "Soluções NextLevel no Painel da Agência: a agência vira usuária do NextLevel Business com um clique",
@@ -264,19 +278,5 @@
   "titulo": "Página \"NextLevel Temas para Nuvemshop\"",
   "data": "2026-11-12",
   "resumo": "Pedido do dono: uma página com as lojas que a NextLevel criou, o racional de cada uma, botões em destaque para os sites reais, o resumo de como o trabalho ajuda cada negócio, os temas da NextLevel no fim e destaque para semijoias. O pont…"
- },
- {
-  "numero": 281,
-  "frente": "E-commerce",
-  "titulo": "Domínio novo nextlevelcommerce.com.br pronto para virar o endereço principal",
-  "data": "2026-11-11",
-  "resumo": "Pedido do dono: conectar logo o domínio novo."
- },
- {
-  "numero": 280,
-  "frente": "E-commerce",
-  "titulo": "Janela de resgate na saída: nas páginas públicas e, por escolha do lojista, na loja",
-  "data": "2026-11-10",
-  "resumo": "Pedido do dono: quando alguém vai sair das páginas públicas, uma janela para resgatar o visitante (referência: janela de saída com e-mail, caixa de concordância e botão verde). Os lojistas também precisam desse recurso."
  }
 ]

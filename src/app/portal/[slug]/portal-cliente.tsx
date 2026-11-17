@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { aceitarContratoPortalAction, ajusteNoPortalAction, aprovarNoPortalAction, entrarPortalAction, pedirCodigoPortalAction, sairPortalAction, solicitacaoNoPortalAction } from "@/app/actions/portal-agencia";
+import { aceitarContratoPortalAction, ajusteNoPortalAction, responderConversaPortalAction, sairDaPreviaAction, aprovarNoPortalAction, entrarPortalAction, pedirCodigoPortalAction, sairPortalAction, solicitacaoNoPortalAction } from "@/app/actions/portal-agencia";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -80,4 +80,23 @@ export function AceitarContrato({ slug, clienteId, contratoId, hash }: { slug: s
       <div><Button type="submit" loading={pending} disabled={!concordo || nome.trim().length < 3}>Aceitar contrato</Button></div>
     </form>
   );
+}
+
+/** Responder na conversa de um pedido (D325). */
+export function ResponderConversa({ slug, clienteId, solicitacaoId }: { slug: string; clienteId: string; solicitacaoId: string }) {
+  const router = useRouter();
+  const [aberto, setAberto] = React.useState(false); const [texto, setTexto] = React.useState("");
+  const [pending, start] = React.useTransition();
+  if (!aberto) return <button type="button" className="mt-1 min-h-11 text-sm font-semibold text-link underline underline-offset-4" onClick={() => setAberto(true)}>Responder</button>;
+  return (
+    <form className="mt-2 grid gap-2" aria-label="Responder à agência" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await responderConversaPortalAction(slug, clienteId, solicitacaoId, texto); if (r.ok) { setTexto(""); setAberto(false); router.refresh(); } else toast.error(r.error); }); }}>
+      <label className="text-sm font-medium">Sua mensagem<textarea value={texto} onChange={(e) => setTexto(e.target.value)} rows={2} maxLength={2000} className={`${campo} h-auto py-2`} /></label>
+      <div><Button type="submit" size="sm" loading={pending} disabled={texto.trim().length < 2}>Enviar</Button></div>
+    </form>
+  );
+}
+
+export function SairDaPrevia({ slug }: { slug: string }) {
+  const router = useRouter();
+  return <button type="button" className="min-h-11 text-sm font-semibold text-link underline underline-offset-4" onClick={async () => { await sairDaPreviaAction(slug); router.push("/agencia/clientes"); }}>Voltar ao painel</button>;
 }

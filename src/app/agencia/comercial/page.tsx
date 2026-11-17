@@ -46,7 +46,7 @@ export default async function Comercial() {
   const perdidas = lista.filter((o) => o.etapa === "PERDIDO");
   return (
     <div className="mx-auto max-w-[1400px] space-y-5">
-      <PageHeader eyebrow="Novos clientes" title="Comercial" description="Cada empresa em negociação, da prospecção ao contrato. Fechou: &quot;Virar cliente&quot; leva para a carteira com o onboarding." actions={<NovaOportunidade equipe={equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome }))} />} />
+      <PageHeader eyebrow="Novos clientes" title="Comercial" description="Cada empresa em negociação, da prospecção ao contrato. Fechou: &quot;Virar cliente&quot; leva para a carteira com o onboarding." actions={<span className="flex flex-wrap gap-2">{pode.verValores(membro) ? <Link href="/agencia/comercial/executivos" className="inline-flex min-h-11 items-center rounded-md border border-border px-3 text-sm font-semibold">Executivos de venda</Link> : null}<NovaOportunidade equipe={equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome }))} /></span>} />
       <section aria-label="Números do funil" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <Kpi i={1} icon={Handshake} label="Em negociação" value={String(r.abertas)} note={r.semProxima ? `${r.semProxima} sem próxima atividade` : "todas com próxima atividade"} />
         <Kpi i={2} icon={Wallet} label="Valor em negociação" value={formatBRL(r.valorEmNegociacaoCents)} note="por mês, somando as propostas" />

@@ -7,7 +7,7 @@ import { runAction } from "@/lib/action-result";
 import { DomainError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
 import { aceitarContratoNoPortal } from "@/lib/agencias/contratos";
-import { COOKIE_PORTAL, agenciaDoPortal, ajustePeloCliente, aprovarPeloCliente, entrarNoPortal, enviarSolicitacao, pedirCodigoDoPortal, type solicitacaoSchema } from "@/lib/agencias/portal";
+import { COOKIE_PORTAL, COOKIE_PREVIA, agenciaDoPortal, responderPeloCliente, ajustePeloCliente, aprovarPeloCliente, entrarNoPortal, enviarSolicitacao, pedirCodigoDoPortal, type solicitacaoSchema } from "@/lib/agencias/portal";
 
 /** Portal do cliente da agência (D320): código no e-mail, sessão por agência, ações só do próprio cliente. */
 async function limite(chave: string, n: number) {
@@ -47,3 +47,7 @@ export async function aceitarContratoPortalAction(slug: string, clienteId: strin
     revalidatePath(`/portal/${a.slug}`); return r;
   });
 }
+export async function responderConversaPortalAction(slug: string, clienteId: string, solicitacaoId: string, texto: string) {
+  return runAction(async () => { const { db, a, token } = await sessao(slug); await responderPeloCliente(db, a.id, token, id.parse(clienteId), id.parse(solicitacaoId), texto); revalidatePath(`/portal/${a.slug}`); return undefined; });
+}
+export async function sairDaPreviaAction(slug: string) { (await cookies()).delete(`${COOKIE_PREVIA}-${slug.replace(/[^a-z0-9-]/g, "")}`); }
