@@ -1,5 +1,12 @@
 [
  {
+  "numero": 327,
+  "frente": "E-commerce",
+  "titulo": "O carregamento da troca de página (logo girando) não fica mais preso na tela",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"às vezes está ficando travado aqui em diversas páginas e não é problema com internet\" (print da Caixa de entrada do Master embaçada, com o logo girando no centro)."
+ },
+ {
   "numero": 326,
   "frente": "E-commerce",
   "titulo": "Modo demonstração no Painel da Agência: uma chave para ver tudo em pleno andamento",
@@ -271,12 +278,5 @@
   "titulo": "Lembretes automáticos das parcelas do contrato e endereço padrão do domínio próprio",
   "data": "2026-11-12",
   "resumo": "Lembretes (lembretesDeParcelas, na rotina diária runDailyFinanceJobs): ao cliente, 2 dias antes e no dia do vencimento, com a chave Pix e o caminho para \"Já fiz o Pix\";"
- },
- {
-  "numero": 283,
-  "frente": "E-commerce",
-  "titulo": "Página \"Nossos clientes\": marcas que a NextLevel atende, 100% NextLevel",
-  "data": "2026-11-12",
-  "resumo": "Pedido do dono: uma página com os clientes reais e os melhores templates no fim, sem falar de nenhuma outra plataforma."
  }
 ]

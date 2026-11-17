@@ -4262,3 +4262,9 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0115, só acrescenta):** `agencias.demo_de_id` e `agencias.demo_movido_em` (trava de 1 minuto entre os movimentos).
 - **Teste:** `tests/agencias-demo.test.ts` (só administrador, sandbox separado com dados reais intactos, reaproveita o sandbox, troca de perfil, movimento com trava, nada se move fora do sandbox, desligar volta à real) e `e2e/agencias-modo-demo.mjs` (1440 e 360 px, axe).
 
+
+## D327 — [E-commerce] O carregamento da troca de página (logo girando) não fica mais preso na tela (2026-11-17)
+- **Pedido do dono:** "às vezes está ficando travado aqui em diversas páginas e não é problema com internet" (print da Caixa de entrada do Master embaçada, com o logo girando no centro).
+- **Causa:** o carregamento da D193 aparecia no clique de qualquer link interno, mas só sumia quando o **caminho** da página mudava. Links que mudam só os parâmetros do endereço (pastas da Caixa de entrada `?pasta=...`, filtros, abas, paginação) não mudam o caminho, e o logo ficava girando para sempre. O mesmo podia acontecer com link cancelado, redirecionamento para a mesma página e o botão "voltar".
+- **Correção (`src/components/transicao-de-pagina.tsx`):** a chegada passa a ser o endereço mudar (caminho **ou** parâmetros, sem contar a âncora `#`); limite de 8 segundos para sumir sozinho; voltar/avançar no navegador e página restaurada do cache também desfazem o carregamento. Vale para os painéis, as páginas públicas e a loja do lojista.
+- **Teste:** `tests/transicao-de-pagina.test.ts`.
