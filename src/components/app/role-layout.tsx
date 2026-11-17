@@ -50,7 +50,7 @@ export function panelFor(session: Session): Panel {
 /** Itens do menu do lojista e o recurso que os libera; sem o recurso aparecem com cadeado. */
 const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/theme-editor": "appearanceBasic", "/merchant/templates": "templatesStarter" };
 
-export async function RoleLayout({ session, children, banner, scope, tenant }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" / "bras-admin" = console administrativo da marca dentro do Master. */ scope?: "commerce-admin" | "bras-admin"; /** Nome e linha de baixo do canto do painel quando a sessão não tem loja nem fornecedor (Painel da Agência, D313). */ tenant?: { name: string; sub: string } }) {
+export async function RoleLayout({ session, children, banner, scope, tenant, ocultar }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" / "bras-admin" = console administrativo da marca dentro do Master. */ scope?: "commerce-admin" | "bras-admin"; /** Nome e linha de baixo do canto do painel quando a sessão não tem loja nem fornecedor (Painel da Agência, D313). */ tenant?: { name: string; sub: string }; /** Itens do menu que esta pessoa não usa (função da agência, D317). */ ocultar?: string[] }) {
   // Libera reservas de pedidos não pagos vencidos (rede de segurança além do cron).
   const db = await getDb();
   await expireStaleReservations(db);
@@ -87,7 +87,7 @@ export async function RoleLayout({ session, children, banner, scope, tenant }: {
   const itemsBase = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
   // D297: não lidos da caixa de e-mail no menu, só para o dono (a caixa é só dele).
   // Painel da Agência (D313): o item "Agências" do Master só existe com a chave AGENCIAS_V1.
-  const itemsComChave = agenciasLigado() ? itemsBase : itemsBase.filter((i) => i.href !== "/master/agencias");
+  const itemsComChave = (agenciasLigado() ? itemsBase : itemsBase.filter((i) => i.href !== "/master/agencias")).filter((i) => !ocultar?.includes(i.href));
   const items = isMaster && !fn && !session.support ? comNaoLidas(itemsComChave, await naoLidasDaEntrada()) : itemsComChave;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";

@@ -4,7 +4,7 @@ import { Check, CircleCheck, X } from "lucide-react";
 import { responderAulaAction } from "@/app/actions/aprender";
 
 /** Perguntas da aula (BC2, D267). A resposta certa não vem para o navegador: quem corrige é o servidor. */
-export function QuizAula({ aulaId, perguntas, concluida }: { aulaId: string; perguntas: { pergunta: string; opcoes: string[] }[]; concluida: boolean }) {
+export function QuizAula({ aulaId, perguntas, concluida, responder = responderAulaAction }: { aulaId: string; perguntas: { pergunta: string; opcoes: string[] }[]; concluida: boolean; /** Ação que corrige (Painel da Agência usa a dela, D317). */ responder?: typeof responderAulaAction }) {
   const [respostas, setRespostas] = useState<(number | undefined)[]>(() => perguntas.map(() => undefined));
   const [resultado, setResultado] = useState<{ acertos: number; total: number; certas: boolean[]; concluida: boolean } | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export function QuizAula({ aulaId, perguntas, concluida }: { aulaId: string; per
     if (!completas) return;
     setErro(null);
     start(async () => {
-      const r = await responderAulaAction({ aulaId, respostas: respostas as number[] });
+      const r = await responder({ aulaId, respostas: respostas as number[] });
       if (r.ok) setResultado(r.data); else setErro(r.error);
     });
   }

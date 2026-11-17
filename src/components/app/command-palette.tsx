@@ -2,14 +2,14 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { CornerDownLeft, Search, ShoppingCart, Store, Package, Factory, User, Compass, Zap } from "lucide-react";
+import { CornerDownLeft, Search, ShoppingCart, Store, Package, Factory, User, Compass, Zap, Clapperboard, Handshake } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NavItem, QuickAction } from "@/lib/nav";
 import type { SearchHit } from "@/lib/domain/search";
 import { ICONS } from "./icons";
 
 type Item = { key: string; group: string; label: string; hint?: string; href: string; icon: React.ReactNode };
-const KIND_ICON = { order: ShoppingCart, store: Store, product: Package, supplier: Factory, customer: User } as const;
+const KIND_ICON = { order: ShoppingCart, store: Store, product: Package, supplier: Factory, customer: User, peca: Clapperboard, oportunidade: Handshake } as const;
 
 /** Ctrl/Cmd+K: navegar, executar ações rápidas e buscar pedidos, lojas e produtos do seu escopo. */
 export function CommandPalette({ open, onOpenChange, items, quick, search, container }: { open: boolean; onOpenChange: (o: boolean) => void; items: NavItem[]; quick: QuickAction[]; search?: (q: string) => Promise<SearchHit[]>; /** Onde montar a janela (o painel Commerce usa o próprio escopo de tema). */ container?: HTMLElement | null }) {

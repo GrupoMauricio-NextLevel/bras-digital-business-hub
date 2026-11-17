@@ -3,7 +3,7 @@ import type { Database } from "@/db/client";
 import { networks, orders, products, storeCustomers, customers, stores, suppliers } from "@/db/schema";
 import type { Actor } from "./access";
 
-export type SearchHit = { id: string; kind: "order" | "store" | "product" | "supplier" | "customer"; title: string; subtitle: string; href: string };
+export type SearchHit = { id: string; kind: "order" | "store" | "product" | "supplier" | "customer" | "peca" | "oportunidade"; title: string; subtitle: string; href: string };
 
 const like = (q: string) => `%${q.replace(/[%_]/g, "")}%`;
 
@@ -40,6 +40,10 @@ export async function globalSearch(db: Database, actor: Actor, raw: string, limi
     hits.push(...o.map((r) => ({ id: r.id, kind: "order" as const, title: `Pedido #${r.number}`, subtitle: r.name, href: `${base}/orders/${r.id}` })));
     const c = await db.select({ id: storeCustomers.id, name: customers.name, email: customers.email }).from(storeCustomers).innerJoin(customers, eq(customers.id, storeCustomers.customerId)).where(and(eq(storeCustomers.storeId, actor.storeId), or(ilike(customers.name, like(q)), ilike(customers.email, like(q))))).limit(limit);
     hits.push(...c.map((r) => ({ id: r.id, kind: "customer" as const, title: r.name, subtitle: r.email, href: `${base}/customers` })));
+  } else if (actor.role === "AGENCY") {
+    // Painel da Agência (D317): clientes e peças que a pessoa pode ver; oportunidades do CRM para quem vê a carteira.
+    const { buscarNaAgencia } = await import("@/lib/agencias/producao");
+    hits.push(...(await buscarNaAgencia(db, actor, q, limit)));
   }
   return hits.slice(0, limit * 3);
 }

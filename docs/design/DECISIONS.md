@@ -4016,3 +4016,27 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   3. caixa, tráfego por cliente e Maurício IA.
 - **Testes:** `tests/agencias-producao.test.ts` (avisos e resumo).
 
+## D317 — [E-commerce] Painel da Agência traz as funções do Master: busca rápida, Aprender, Comercial com "virar cliente" e onboarding (2026-11-17)
+- **Pedido do dono:** "desenvolva os próximos pontos e publique tudo de uma vez"; excepcionalmente hoje sem o limite de 3 publicações.
+- **Busca rápida (Ctrl+K):** a mesma busca dos painéis passa a achar clientes, peças (de qualquer mês) e negociações, sempre só o que a pessoa pode ver.
+- **Aprender da agência:** o mesmo Aprender do Master (aula, perguntas corrigidas no servidor, progresso na mesma tabela, componente `AulaView` agora compartilhado), com 9 aulas sobre o Painel da Agência em 3 trilhas:
+  - Base (todos);
+  - Produção (roteiro, gravação, edição, social media, tráfego);
+  - Gestão (administrador, gestor, atendimento, financeiro).
+
+  O administrador vê "quem está pronto".
+- **Comercial (CRM)** (migração 0107, só acrescenta), com o funil do briefing da UPClips:
+  - etapas: prospecção, contato realizado, reunião agendada, proposta enviada, negociação, contrato fechado, ou perdido com motivo;
+  - campos: empresa, responsável, telefone, segmento, origem do lead, serviços de interesse, valor proposto, último contato, próxima atividade com data;
+  - números do funil: em negociação, valor, para hoje e atrasadas, fechadas no mês e conversão;
+  - as atividades de hoje e as atrasadas entram na fila do dia;
+  - é usado por administrador, gestor e atendimento; quem não usa não vê o item no menu.
+- **"Virar cliente":**
+  - cria o cliente na carteira com os dados da negociação e não cria duas vezes;
+  - o valor só entra se a pessoa mexe em contrato; senão fica para o financeiro;
+  - começa o **onboarding** com os 11 itens do briefing (contrato assinado, cadastro completo, plano configurado, briefing, identidade visual, acessos, pasta do Drive, equipe, primeira reunião, primeira gravação, planejamento);
+  - quatro itens marcam sozinhos pelos dados da ficha.
+- **Ainda fora (próximas rodadas, nesta ordem):** contratos com assinatura e cobrança automática (precisa da conta de pagamento da agência), caixa da agência, tráfego por cliente e Maurício IA respondendo sobre os dados da agência.
+- **Endereço das agências (D315):** o código vai junto nesta publicação; `AGENCIAS_URL` só será ligada quando o registro `painel` existir no DNS (Hostinger), para o `/agencia` não levar a um endereço que ainda não abre.
+- **Testes:** `tests/agencias-comercial.test.ts` (funil, virar cliente, onboarding, Aprender, busca) e `e2e/agencias-comercial.mjs` (navegador, 360 px, axe).
+

@@ -3,6 +3,9 @@ import { AlarmClock, ArrowRight, CalendarClock, CheckCircle2, Clapperboard, Cont
 import { CartaoClienteMes } from "@/components/agencia/producao";
 import { minhaFila, producaoDoMes } from "@/lib/agencias/producao";
 import { mesRotulo } from "@/lib/agencias/fluxo";
+import { listarOportunidades, resumoDoFunil } from "@/lib/agencias/comercial";
+import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
+import { Handshake } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { Kpi } from "@/components/commerce/commerce-home";
@@ -27,11 +30,13 @@ const chip = "inline-flex items-center gap-1.5 rounded-full border border-[var(-
 export default async function HojeNaAgencia() {
   const session = await requireRole("AGENCY");
   const db = await getDb();
-  const [k, prod, fila] = await Promise.all([cockpitDaAgencia(db, session.actor), producaoDoMes(db, session.actor), minhaFila(db, session.actor)]);
+  const [k, prod, fila, oportunidades] = await Promise.all([cockpitDaAgencia(db, session.actor), producaoDoMes(db, session.actor), minhaFila(db, session.actor), listarOportunidades(db, session.actor).catch(() => [])]);
+  const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
   const t = prod.total;
   const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
   const pend = k.pendencias;
   const filaDia = [
+    ...(funil.hoje + funil.atrasadas ? [{ key: "com", icon: Handshake, title: "Atividades comerciais para hoje", detail: `${funil.hoje} para hoje${funil.atrasadas ? ` e ${funil.atrasadas} atrasada${funil.atrasadas > 1 ? "s" : ""}` : ""} no funil comercial.`, count: funil.hoje + funil.atrasadas, action: "Ver", href: "/agencia/comercial", danger: funil.atrasadas > 0 }] : []),
     ...(t.atrasadas ? [{ key: "atr", icon: AlarmClock, title: "Peças atrasadas", detail: "Passaram do prazo da etapa. Veja com quem estão e redistribua se precisar.", count: t.atrasadas, action: "Ver", href: "/agencia/producao?atrasadas=1&ver=lista", danger: true }] : []),
     ...(t.aguardandoAprovacao ? [{ key: "apr", icon: Hourglass, title: "Aguardando aprovação do cliente", detail: "Conteúdos prontos esperando o cliente aprovar.", count: t.aguardandoAprovacao, action: "Ver", href: "/agencia/producao?etapa=APROVACAO&ver=lista", danger: false }] : []),
     ...(t.faltaPlanejar && k.verCarteiraToda ? [{ key: "plan", icon: Clapperboard, title: "Conteúdos contratados ainda não planejados", detail: `O pacote de ${mesRotulo(prod.mes)} pede mais peças do que as planejadas.`, count: t.faltaPlanejar, action: "Planejar", href: "/agencia/producao", danger: false }] : []),

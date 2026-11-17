@@ -3416,6 +3416,8 @@ export const agenciaClientes = pgTable("agencia_clientes", {
   observacoes: text("observacoes"),
   /** O cliente aprova cada peça antes de publicar (D314). Desligado, a peça vai da revisão interna direto ao agendamento. */
   exigeAprovacao: boolean("exige_aprovacao").notNull().default(true),
+  /** Onboarding (D317): item → data em que foi feito (null = pendente). Começa quando o cliente entra pelo funil comercial. */
+  onboarding: jsonb("onboarding").$type<Record<string, string | null>>(),
   motivoEncerramento: text("motivo_encerramento"),
   encerradoEm: ts("encerrado_em"),
   createdAt: createdAt(),
@@ -3508,4 +3510,36 @@ export const agenciaPecaComentarios = pgTable("agencia_peca_comentarios", {
   link: text("link"),
   createdAt: createdAt(),
 }, (t) => [index("agencia_peca_comentarios_peca_idx").on(t.pecaId, t.createdAt)]);
+
+// ---------------------------------------------------------------------------
+// Comercial da agência (D317): o funil do briefing, da prospecção ao contrato fechado; "virar cliente" leva à carteira.
+// ---------------------------------------------------------------------------
+export const OPORTUNIDADE_ETAPAS = ["PROSPECCAO", "CONTATO", "REUNIAO", "PROPOSTA", "NEGOCIACAO", "FECHADO", "PERDIDO"] as const;
+export type OportunidadeEtapa = (typeof OPORTUNIDADE_ETAPAS)[number];
+export const OPORTUNIDADE_ORIGENS = ["INDICACAO", "INSTAGRAM", "SITE", "ANUNCIO", "WHATSAPP", "EVENTO", "PROSPECCAO_ATIVA", "OUTRO"] as const;
+
+export const agenciaOportunidades = pgTable("agencia_oportunidades", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  empresa: text("empresa").notNull(),
+  contatoNome: text("contato_nome"),
+  whatsapp: text("whatsapp"),
+  email: text("email"),
+  segmento: text("segmento"),
+  origem: text("origem", { enum: OPORTUNIDADE_ORIGENS }).notNull().default("OUTRO"),
+  servicos: text("servicos"),
+  valorPropostoCents: integer("valor_proposto_cents"),
+  etapa: text("etapa", { enum: OPORTUNIDADE_ETAPAS }).notNull().default("PROSPECCAO"),
+  motivoPerda: text("motivo_perda"),
+  responsavelId: text("responsavel_id").references(() => users.id),
+  ultimoContatoEm: ts("ultimo_contato_em"),
+  proximaAtividade: text("proxima_atividade"),
+  /** AAAA-MM-DD */
+  proximaAtividadeEm: text("proxima_atividade_em"),
+  observacoes: text("observacoes"),
+  /** Cliente criado ao fechar ("virar cliente"). */
+  clienteId: text("cliente_id").references(() => agenciaClientes.id),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("agencia_oportunidades_agencia_idx").on(t.agenciaId, t.etapa), check("agencia_oportunidades_valor_ck", sql`${t.valorPropostoCents} is null or ${t.valorPropostoCents} >= 0`)]);
 

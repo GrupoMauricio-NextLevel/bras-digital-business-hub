@@ -12,6 +12,8 @@ import { producaoDoMes } from "@/lib/agencias/producao";
 import { mesRotulo } from "@/lib/agencias/fluxo";
 import { CartaoClienteMes } from "@/components/agencia/producao";
 import Link from "next/link";
+import { situacaoDoOnboarding } from "@/lib/agencias/comercial";
+import { Onboarding } from "./onboarding-cliente";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Ficha do cliente" };
@@ -25,6 +27,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const equipe = await listarEquipe(db, session.actor);
   const prod = await producaoDoMes(db, session.actor);
   const doMes = prod.clientes.find((x) => x.clienteId === c.id);
+  const onb = c.onboarding ? situacaoDoOnboarding(c.onboarding, { ...c, documento: c.documento, valorMensalCents: c.valorMensalCents, diaVencimento: c.diaVencimento }, (doMes?.contagem.planejadas ?? 0) > 0) : null;
   const ativos = equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome, funcao: FUNCAO_ROTULO[p.funcao] }));
   const nome = (u: string | null) => equipe.find((p) => p.userId === u)?.nome ?? "Sem responsável";
   const card = "ds-card p-5 sm:p-6";
@@ -47,6 +50,13 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
           ) : c.observacoes ? <p className="text-sm">{c.observacoes}</p> : null}
         </section>
         <div className="space-y-4">
+          {onb ? (
+            <section className={card} aria-labelledby="onb">
+              <h2 id="onb" className="mb-1 flex items-baseline justify-between text-base font-semibold"><span>Onboarding</span><span className="text-sm tabular-nums text-muted-foreground">{onb.feitos} de {onb.total}</span></h2>
+              <p className="mb-3 text-xs text-muted-foreground">Para nenhum cliente novo ficar sem acompanhamento. Os itens automáticos marcam sozinhos pelos dados da ficha.</p>
+              <Onboarding clienteId={c.id} itens={onb.itens} pode={c.podeEditar} />
+            </section>
+          ) : null}
           {doMes ? (
             <section aria-labelledby="mes">
               <h2 id="mes" className="mb-2 text-base font-semibold">Produção de {mesRotulo(prod.mes)}</h2>

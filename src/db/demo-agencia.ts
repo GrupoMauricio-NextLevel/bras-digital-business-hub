@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { Database } from "./client";
-import { agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
+import { agenciaOportunidades, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
 import { escolherResponsavel, mesAnterior, prazoDaEtapa, situacaoInicial } from "@/lib/agencias/fluxo";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { newId } from "@/lib/ids";
@@ -56,6 +56,14 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
     await db.insert(users).values({ id, name: p.nome, email: p.email, role: "AGENCY", organizationId: orgId, passwordHash });
     await db.insert(agenciaMembros).values({ id: newId("agm"), agenciaId, userId: id, funcao: p.funcao, todosClientes: !!p.todos });
   }
+  // Funil comercial fictício (D317).
+  const dia = (n: number) => new Date(Date.now() + n * 86_400_000).toISOString().slice(0, 10);
+  await db.insert(agenciaOportunidades).values([
+    { id: newId("agop"), agenciaId, empresa: "Vidraçaria Brilho (demonstração)", segmento: "Vidraçaria", origem: "INDICACAO", servicos: "Mensal 12 vídeos", valorPropostoCents: 300_000, etapa: "PROPOSTA", responsavelId: ids.get("adm")!, proximaAtividade: "Ligar para fechar a proposta", proximaAtividadeEm: dia(0) },
+    { id: newId("agop"), agenciaId, empresa: "Clínica Vida Plena (demonstração)", segmento: "Saúde", origem: "INSTAGRAM", servicos: "8 vídeos + tráfego", valorPropostoCents: 420_000, etapa: "REUNIAO", responsavelId: ids.get("adm")!, proximaAtividade: "Reunião de apresentação", proximaAtividadeEm: dia(2) },
+    { id: newId("agop"), agenciaId, empresa: "Hamburgueria Brasa (demonstração)", segmento: "Restaurante", origem: "PROSPECCAO_ATIVA", servicos: "Social media", valorPropostoCents: 180_000, etapa: "CONTATO", responsavelId: ids.get("adm")!, proximaAtividade: "Mandar portfólio", proximaAtividadeEm: dia(-1) },
+    { id: newId("agop"), agenciaId, empresa: "Escola Saber (demonstração)", segmento: "Educação", origem: "SITE", etapa: "PROSPECCAO", responsavelId: ids.get("adm")! },
+  ]);
   for (const c of CLIENTES) {
     const id = newId("agcl");
     await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });

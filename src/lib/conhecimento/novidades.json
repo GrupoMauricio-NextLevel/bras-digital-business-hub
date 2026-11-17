@@ -1,5 +1,12 @@
 [
  {
+  "numero": 317,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência traz as funções do Master: busca rápida, Aprender, Comercial com \"virar cliente\" e onboarding",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"desenvolva os próximos pontos e publique tudo de uma vez\"; excepcionalmente hoje sem o limite de 3 publicações."
+ },
+ {
   "numero": 316,
   "frente": "E-commerce",
   "titulo": "Painel da Agência: primeiros passos da conta nova, avisos no sino e Resumo da Semana",
@@ -271,12 +278,5 @@
   "titulo": "CX4 + BG3: painel do executivo no celular, registro de visitas, agenda, metas e feed da equipe",
   "data": "2026-11-08",
   "resumo": "Prompts: docs/prompts/caixa-balcao-executivos-de-venda.md (CX4) e docs/prompts/bonus-gamificado-parceiros-executivos.md (BG3). Autorizado pelo dono (\"pode seguir\")."
- },
- {
-  "numero": 273,
-  "frente": "E-commerce",
-  "titulo": "CX3: executivos de venda, venda na rua com recibo e prestação de contas no caixa",
-  "data": "2026-11-07",
-  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX3 (decisões aprovadas pelo dono em 07/11)."
  }
 ]

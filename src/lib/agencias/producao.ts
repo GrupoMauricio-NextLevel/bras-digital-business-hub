@@ -1,8 +1,8 @@
-import { and, asc, desc, eq, gte, inArray, isNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import {
-  PECA_ETAPAS, PECA_PRIORIDADES, PECA_TIPOS, agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaComentarios, agenciaPecaEventos, agenciaPecas, users,
+  PECA_ETAPAS, PECA_PRIORIDADES, PECA_TIPOS, agenciaCiclos, agenciaOportunidades, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaComentarios, agenciaPecaEventos, agenciaPecas, users,
   type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa, type PecaTipo,
 } from "@/db/schema";
 import type { Actor } from "@/lib/domain/access";
@@ -357,5 +357,23 @@ export async function resumoDaSemana(db: Database, actor: Actor, hoje = hojeEmSa
     aprovacoes: abertas.filter((p) => p.etapa === "APROVACAO"),
     departamentos,
   };
+}
+
+/** Busca rápida (Ctrl+K) da agência (D317): clientes e peças visíveis à pessoa, de qualquer mês. Sem valores. */
+export async function buscarNaAgencia(db: Database, actor: Actor, q: string, limite = 6) {
+  const { membro } = await escopoDaAgencia(db, actor);
+  const termo = `%${q.replace(/[%_]/g, "")}%`;
+  const clientes = await db.select().from(agenciaClientes).where(eq(agenciaClientes.agenciaId, membro.agenciaId));
+  const equipes = clientes.length ? await db.select().from(agenciaClienteEquipe).where(inArray(agenciaClienteEquipe.clienteId, clientes.map((c) => c.id))) : [];
+  const visiveis = new Map(clientes.filter((c) => podeVerCliente(membro, c, equipes.filter((e) => e.clienteId === c.id).map((e) => e.userId))).map((c) => [c.id, c]));
+  const achados = [...visiveis.values()].filter((c) => c.nome.toLowerCase().includes(q.toLowerCase())).slice(0, limite)
+    .map((c) => ({ id: c.id, kind: "customer" as const, title: c.nome, subtitle: `Cliente${c.segmento ? ` · ${c.segmento}` : ""}`, href: `/agencia/clientes/${c.id}` }));
+  const pecas = await db.select({ id: agenciaPecas.id, titulo: agenciaPecas.titulo, etapa: agenciaPecas.etapa, clienteId: agenciaPecas.clienteId, responsavelId: agenciaPecas.responsavelId }).from(agenciaPecas)
+    .where(and(eq(agenciaPecas.agenciaId, membro.agenciaId), ilike(agenciaPecas.titulo, termo))).orderBy(desc(agenciaPecas.updatedAt)).limit(40);
+  const pecasVisiveis = pecas.filter((p) => visiveis.has(p.clienteId) || p.responsavelId === membro.userId).slice(0, limite)
+    .map((p) => ({ id: p.id, kind: "peca" as const, title: p.titulo, subtitle: `${clientes.find((c) => c.id === p.clienteId)?.nome ?? ""} · ${ETAPA_ROTULO[p.etapa]}`, href: `/agencia/producao/${p.id}` }));
+  const oportunidades = pode.editarClientes(membro) ? (await db.select({ id: agenciaOportunidades.id, empresa: agenciaOportunidades.empresa, etapa: agenciaOportunidades.etapa }).from(agenciaOportunidades)
+    .where(and(eq(agenciaOportunidades.agenciaId, membro.agenciaId), ilike(agenciaOportunidades.empresa, termo))).limit(limite)).map((o) => ({ id: o.id, kind: "oportunidade" as const, title: o.empresa, subtitle: "Negociação (comercial)", href: `/agencia/comercial/${o.id}` })) : [];
+  return [...achados, ...pecasVisiveis, ...oportunidades];
 }
 

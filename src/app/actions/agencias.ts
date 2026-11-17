@@ -10,6 +10,8 @@ import { atualizarCliente, criarCliente, definirEquipeDoCliente, importarCliente
 import type { AgenciaClienteSituacao, AgenciaFuncao } from "@/db/schema";
 import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, pedirAjuste, planejarMes, transferirPeca, type atualizacaoPecaSchema, type comentarioSchema, type novaPecaSchema } from "@/lib/agencias/producao";
 import { mesValido } from "@/lib/agencias/fluxo";
+import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
+import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
 async function ctx() {
@@ -81,4 +83,28 @@ export async function transferirPecaAction(id: string, userId: string) {
 }
 export async function comentarPecaAction(id: string, input: z.input<typeof comentarioSchema>) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await comentarPeca(db, actor, idPeca.parse(id), input); refreshProducao(); return r; });
+}
+
+// Aprender da agência (D317)
+export async function responderAulaDaAgenciaAction(input: { aulaId: string; respostas: number[] }) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await responderAulaDaAgencia(db, actor, input); revalidatePath("/agencia/aprender"); return r; });
+}
+
+// Comercial da agência (D317)
+const idOportunidade = z.string().regex(/^agop_[a-z0-9]+$/i);
+const refreshComercial = () => revalidatePath("/agencia", "layout");
+export async function criarOportunidadeAction(input: z.input<typeof oportunidadeSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await criarOportunidade(db, actor, input); refreshComercial(); return r; });
+}
+export async function atualizarOportunidadeAction(id: string, input: Parameters<typeof atualizarOportunidade>[3]) {
+  return runAction(async () => { const { actor, db } = await ctx(); await atualizarOportunidade(db, actor, idOportunidade.parse(id), input); refreshComercial(); return undefined; });
+}
+export async function perderOportunidadeAction(id: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await perderOportunidade(db, actor, idOportunidade.parse(id), motivo); refreshComercial(); return undefined; });
+}
+export async function virarClienteAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await virarCliente(db, actor, idOportunidade.parse(id)); refreshComercial(); return r; });
+}
+export async function marcarOnboardingAction(clienteId: string, chave: string, feito: boolean) {
+  return runAction(async () => { const { actor, db } = await ctx(); await marcarOnboarding(db, actor, idCliente.parse(clienteId), chave, feito); refreshComercial(); return undefined; });
 }
