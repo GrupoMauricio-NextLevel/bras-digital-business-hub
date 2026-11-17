@@ -11,6 +11,7 @@ import type { AgenciaClienteSituacao, AgenciaFuncao } from "@/db/schema";
 import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, pedirAjuste, planejarMes, transferirPeca, type atualizacaoPecaSchema, type comentarioSchema, type novaPecaSchema } from "@/lib/agencias/producao";
 import { mesValido } from "@/lib/agencias/fluxo";
 import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
+import { copiarRecorrentes, excluirDespesa, lancarDespesa, marcarDespesaPaga, type despesaSchema } from "@/lib/agencias/despesas";
 import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
@@ -136,4 +137,19 @@ export async function marcarPagaManualAction(id: string, observacao: string) {
 }
 export async function cancelarCobrancaAction(id: string, motivo: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await cancelarCobranca(db, actor, idFatura.parse(id), motivo); refreshFin(); return undefined; });
+}
+
+// Despesas da agência (D319)
+const idDespesa = z.string().regex(/^agdp_[a-z0-9]+$/i);
+export async function lancarDespesaAction(input: z.input<typeof despesaSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await lancarDespesa(db, actor, input); refreshFin(); return r; });
+}
+export async function marcarDespesaPagaAction(id: string, pago: boolean) {
+  return runAction(async () => { const { actor, db } = await ctx(); await marcarDespesaPaga(db, actor, idDespesa.parse(id), pago); refreshFin(); return undefined; });
+}
+export async function excluirDespesaAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await excluirDespesa(db, actor, idDespesa.parse(id)); refreshFin(); return undefined; });
+}
+export async function copiarRecorrentesAction(mes: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await copiarRecorrentes(db, actor, mes); refreshFin(); return r; });
 }

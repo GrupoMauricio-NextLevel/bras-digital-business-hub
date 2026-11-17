@@ -9,6 +9,9 @@ import { financeiroDaAgencia } from "@/lib/agencias/cobranca";
 import { listarClientes } from "@/lib/agencias/clientes";
 import { mesRotulo, mesValido } from "@/lib/agencias/fluxo";
 import { formatBRL } from "@/lib/money";
+import { resultadoDoMes, CATEGORIA_ROTULO } from "@/lib/agencias/despesas";
+import { AcoesDaDespesa, CopiarRecorrentes, NovaDespesa } from "./despesas-cliente";
+import { TrendingUp } from "lucide-react";
 import { AcoesDaCobranca, ConferirPagamentos, ContaMercadoPago, GerarCobrancas, NovaAvulsa } from "./financeiro-cliente";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +30,7 @@ export default async function Financeiro({ searchParams }: { searchParams: Promi
   const sp = await searchParams;
   const [f, clientes] = await Promise.all([financeiroDaAgencia(db, session.actor, sp.mes && mesValido(sp.mes) ? sp.mes : undefined), listarClientes(db, session.actor, { situacao: "ATIVO" })]);
   const n = f.numeros;
+  const r = await resultadoDoMes(db, session.actor, f.mes);
   return (
     <div className="mx-auto max-w-[1240px] space-y-5">
       <PageHeader eyebrow="Cobrança" title={`Financeiro de ${mesRotulo(f.mes)}`} description="As mensalidades saem do contrato de cada cliente. O cliente paga por Pix ou cartão direto na conta Mercado Pago da agência; a baixa é conferida no Mercado Pago."
@@ -59,6 +63,28 @@ export default async function Financeiro({ searchParams }: { searchParams: Promi
             ))}
           </ul>
         ) : <div className="p-5"><EmptyState icon={HandCoins} title="Nenhuma cobrança neste mês" description="Use &quot;Gerar cobranças do mês&quot;: sai uma mensalidade para cada cliente ativo com valor e vencimento no contrato." /></div>}
+      </section>
+
+      <section aria-labelledby="fin-res" className="space-y-3">
+        <div className="flex flex-wrap items-end justify-between gap-2"><h2 id="fin-res" className="text-base font-semibold">Despesas e resultado do mês</h2><div className="flex flex-wrap items-start gap-2"><CopiarRecorrentes mes={f.mes} /><NovaDespesa mes={f.mes} clientes={clientes.map((c) => ({ id: c.id, nome: c.nome }))} /></div></div>
+        <p className="text-xs text-muted-foreground">O investimento em mídia que o cliente paga direto à Meta ou ao Google não entra aqui: não é receita nem custo da agência.</p>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+          <Kpi i={1} icon={HandCoins} label="Faturado no mês" value={formatBRL(r.faturadoCents)} note={`${formatBRL(r.recebidoCents)} recebidos`} />
+          <Kpi i={2} icon={Wallet} label="Despesas do mês" value={formatBRL(r.despesasCents)} note={`${formatBRL(r.despesasPagasCents)} pagas`} />
+          <Kpi i={3} icon={TrendingUp} label="Resultado estimado" value={formatBRL(r.resultadoCents)} note="faturado menos despesas" />
+          <Kpi i={4} icon={CheckCircle2} label="Margem" value={r.margemPct === null ? "—" : `${r.margemPct}%`} note={r.porCategoria.map((c) => `${CATEGORIA_ROTULO[c.categoria]} ${formatBRL(c.valorCents)}`).join(" · ") || "sem despesas lançadas"} />
+        </div>
+        <div className="grid gap-5 lg:grid-cols-2">
+          <section className="ds-card ds-card--flush" aria-labelledby="fin-desp">
+            <h3 id="fin-desp" className="px-5 pt-5 text-sm font-semibold">Despesas lançadas</h3>
+            {r.despesas.length ? <ul className="mt-2 divide-y divide-border">{r.despesas.map((d) => <li key={d.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-2.5 text-sm"><span className="min-w-0 flex-1 basis-48"><span className="block font-medium">{d.descricao}{d.recorrente ? <span className="ml-1.5 rounded-full bg-surface-muted px-2 py-0.5 text-[11px]">todo mês</span> : null}</span><span className="text-xs text-muted-foreground">{CATEGORIA_ROTULO[d.categoria]}{d.clienteNome ? ` · ${d.clienteNome}` : " · geral"}{d.favorecido ? ` · ${d.favorecido}` : ""}</span></span><b className="tabular-nums">{formatBRL(d.valorCents)}</b><AcoesDaDespesa id={d.id} pago={d.pago} /></li>)}</ul> : <p className="px-5 py-4 text-sm text-muted-foreground">Nenhuma despesa neste mês. Lance custos fixos, freelancers e ferramentas.</p>}
+          </section>
+          <section className="ds-card ds-card--flush" aria-labelledby="fin-marg">
+            <h3 id="fin-marg" className="px-5 pt-5 text-sm font-semibold">Margem por cliente</h3>
+            <p className="px-5 text-xs text-muted-foreground">O que o cliente paga no mês menos os custos lançados para ele (custos gerais não são divididos).</p>
+            {r.porCliente.length ? <ul className="mt-2 divide-y divide-border">{r.porCliente.map((c) => <li key={c.clienteId} className="flex flex-wrap items-center justify-between gap-2 px-5 py-2.5 text-sm"><span className="min-w-0 flex-1">{c.nome}<span className="block text-xs text-muted-foreground">{formatBRL(c.receitaCents)} − {formatBRL(c.custoCents)}</span></span><b className={`tabular-nums ${c.margemPct !== null && c.margemPct < 0 ? "text-danger" : c.margemPct !== null && c.margemPct < 30 ? "text-warning" : "text-success"}`}>{c.margemPct === null ? "—" : `${c.margemPct}%`}</b></li>)}</ul> : <p className="px-5 py-4 text-sm text-muted-foreground">Aparece quando houver cobranças ou custos do mês.</p>}
+          </section>
+        </div>
       </section>
     </div>
   );

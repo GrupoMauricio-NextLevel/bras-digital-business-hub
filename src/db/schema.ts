@@ -3578,3 +3578,28 @@ export const agenciaFaturas = pgTable("agencia_faturas", {
   check("agencia_faturas_valor_ck", sql`${t.valorCents} > 0`),
 ]);
 
+// ---------------------------------------------------------------------------
+// Despesas da agência (D319): custos fixos, variáveis, freelancers e ferramentas; ligados a um cliente quando são dele.
+// O investimento em mídia que o cliente paga direto às plataformas NÃO entra aqui (não é custo nem receita da agência).
+// ---------------------------------------------------------------------------
+export const DESPESA_CATEGORIAS = ["FIXO", "FREELANCER", "VARIAVEL", "FERRAMENTA", "IMPOSTO", "OUTRO"] as const;
+export const agenciaDespesas = pgTable("agencia_despesas", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  /** AAAA-MM */
+  competencia: text("competencia").notNull(),
+  descricao: text("descricao").notNull(),
+  categoria: text("categoria", { enum: DESPESA_CATEGORIAS }).notNull(),
+  valorCents: integer("valor_cents").notNull(),
+  /** Cliente a que o custo pertence (gravação de um cliente, freelancer de um job). Vazio = custo geral da agência. */
+  clienteId: text("cliente_id").references(() => agenciaClientes.id),
+  /** Quem recebe (freelancer, fornecedor). */
+  favorecido: text("favorecido"),
+  pago: boolean("pago").notNull().default(false),
+  pagoEm: ts("pago_em"),
+  /** Repete todo mês (aluguel, ferramentas): "copiar fixas do mês anterior" traz para o mês novo. */
+  recorrente: boolean("recorrente").notNull().default(false),
+  origemId: text("origem_id"),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_despesas_agencia_idx").on(t.agenciaId, t.competencia), uniqueIndex("agencia_despesas_origem_uq").on(t.origemId, t.competencia), check("agencia_despesas_valor_ck", sql`${t.valorCents} > 0`)]);
+

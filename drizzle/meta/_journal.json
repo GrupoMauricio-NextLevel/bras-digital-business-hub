@@ -764,6 +764,13 @@
       "when": 1794912785075,
       "tag": "0108_agencia_cobranca",
       "breakpoints": true
+    },
+    {
+      "idx": 109,
+      "version": "7",
+      "when": 1794914372236,
+      "tag": "0109_agencia_despesas",
+      "breakpoints": true
     }
   ]
 }

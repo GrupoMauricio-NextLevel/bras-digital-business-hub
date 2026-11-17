@@ -87,3 +87,27 @@ describe("cobrança da agência (D318)", () => {
     expect(fin.numeros.previstoCents).toBe(50_000);
   });
 });
+
+describe("despesas e margem por cliente (D319)", () => {
+  beforeEach(async () => { ctx = await freshDb(); });
+  it("lança, copia as recorrentes sem duplicar, calcula resultado e margem por cliente; editor não mexe", async () => {
+    const { lancarDespesa, copiarRecorrentes, resultadoDoMes, excluirDespesa, marcarDespesaPaga } = await import("@/lib/agencias/despesas");
+    const a = await criarAgencia(ctx.db, ctx.actors.master, { nome: "UPClips", responsavel: { nome: "Léo", email: "leo3@up.com.br", senha: "senha-provisoria" } });
+    const admin = await ator(a.userId);
+    const editor = await ator((await convidarMembro(ctx.db, admin, { nome: "Gu", email: "gu3@up.com.br", senha: "senha-provisoria", funcao: "EDICAO" })).userId);
+    const c1 = await criarCliente(ctx.db, admin, { nome: "CCV Vidros", valorMensalCents: 300_000, diaVencimento: 10 });
+    const c2 = await criarCliente(ctx.db, admin, { nome: "Padaria Sol", valorMensalCents: 100_000, diaVencimento: 10 });
+    await gerarCobrancasDoMes(ctx.db, admin, "2026-11");
+    await lancarDespesa(ctx.db, admin, { competencia: "2026-10", descricao: "Aluguel do estúdio", categoria: "FIXO", valorCents: 50_000, recorrente: true, pago: true });
+    expect(await copiarRecorrentes(ctx.db, admin, "2026-11")).toEqual({ copiadas: 1 });
+    expect(await copiarRecorrentes(ctx.db, admin, "2026-11")).toEqual({ copiadas: 0 });
+    const freela = await lancarDespesa(ctx.db, admin, { competencia: "2026-11", descricao: "Captação Felipe", categoria: "FREELANCER", valorCents: 40_000, clienteId: c1.id, favorecido: "Felipe" });
+    await lancarDespesa(ctx.db, admin, { competencia: "2026-11", descricao: "Diária extra", categoria: "FREELANCER", valorCents: 120_000, clienteId: c2.id });
+    await expect(lancarDespesa(ctx.db, editor, { competencia: "2026-11", descricao: "x", categoria: "OUTRO", valorCents: 1 })).rejects.toThrow(/financeiro/);
+    const r = await resultadoDoMes(ctx.db, admin, "2026-11");
+    expect(r).toMatchObject({ faturadoCents: 400_000, despesasCents: 210_000, resultadoCents: 190_000, margemPct: 48 });
+    expect(r.porCliente.map((x) => [x.nome, x.margemPct])).toEqual([["Padaria Sol", -20], ["CCV Vidros", 87]]);
+    await marcarDespesaPaga(ctx.db, admin, freela.id, true);
+    await expect(excluirDespesa(ctx.db, admin, freela.id)).rejects.toThrow(/já paga/);
+  });
+});

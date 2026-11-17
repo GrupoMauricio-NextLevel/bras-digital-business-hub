@@ -4062,3 +4062,17 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Testes:** `tests/agencias-cobranca.test.ts` (Mercado Pago simulado: token recusado, link, baixa conferida, valor menor, idempotência, manual, cancelar, outra agência) e `e2e/agencias-cobranca.mjs` (`e2e/fake-mp.mjs`).
 - **Ficou para depois:** nota fiscal automática, boleto, WhatsApp automático, multa e juros, reajuste anual e a cobrança da NextLevel para a agência (preço ainda em aberto).
 
+## D319 — [E-commerce] Despesas da agência e margem por cliente no Financeiro (2026-11-17)
+- **Pedido do dono:** "prosseguir" (próximo item da ordem da D316). Briefing da UPClips: custos fixos e variáveis, pagamentos de freelancers, custos por cliente, lucro e margem estimados.
+- **Banco (migração 0109, só acrescenta):** `agencia_despesas`, com competência (mês), tipo (custo fixo, freelancer, custo variável, ferramenta, imposto, outro), valor, cliente (quando o custo é de um cliente), quem recebe, paga ou não e "repete todo mês".
+- **Telas** (na própria tela Financeiro, só administrador e financeiro):
+  - lançar despesa;
+  - marcar como paga;
+  - apagar, só a que não foi paga, e fica no histórico;
+  - "Trazer fixas do mês anterior", que não duplica;
+  - faturado, despesas, resultado estimado, margem e despesas por tipo;
+  - **margem por cliente**: o que o cliente paga no mês menos os custos lançados para ele. Custos gerais não são divididos, e a tela diz isso.
+- **Por que não o Caixa do Master:** o Caixa (D269) é a gaveta diária da NextLevel, que abre e fecha o dia. A agência precisa de despesas do mês por cliente. Reaproveitamos a regra (lançamento com histórico, nada some sem registro) sem misturar as duas contas.
+- **Regra do briefing:** o investimento em mídia que o cliente paga direto às plataformas não entra como receita nem como custo, e a tela avisa.
+- **Teste:** `tests/agencias-cobranca.test.ts` (despesas, recorrentes, resultado e margem, permissões).
+

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 319,
+  "frente": "E-commerce",
+  "titulo": "Despesas da agência e margem por cliente no Financeiro",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"prosseguir\" (próximo item da ordem da D316). Briefing da UPClips: custos fixos e variáveis, pagamentos de freelancers, custos por cliente, lucro e margem estimados."
+ },
+ {
   "numero": 318,
   "frente": "E-commerce",
   "titulo": "Cobrança automática da agência: mensalidade pelo contrato, paga direto na conta Mercado Pago da agência",
@@ -271,12 +278,5 @@
   "titulo": "Contratos com aceite no painel (CT1+CT2): o Master envia, o lojista aceita, a cópia assinada vai aos dois",
   "data": "2026-11-10",
   "resumo": "Pedido do dono: contrato da Loja Virtual Pronta Express aceito dentro do sistema, sem burocracia, com a cópia indo para o e-mail de ambos quando estiver tudo assinado. Plano: docs/prompts/contratos-assinatura-no-painel.md; modelo: docs/c…"
- },
- {
-  "numero": 275,
-  "frente": "E-commerce",
-  "titulo": "BG4: relatório de retorno do bônus, com sugestão automática de ajuste",
-  "data": "2026-11-08",
-  "resumo": "Prompt: docs/prompts/bonus-gamificado-parceiros-executivos.md, fase BG4. Autorizado pelo dono (\"pode seguir nos próximos passos\")."
  }
 ]
