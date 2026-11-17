@@ -17,3 +17,8 @@ Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D328). Geradas
 | pv-tudo-em-dia | Fila do dia zerada ("Tudo em dia") (PV3) | 1:1 | Guardada |
 
 **Telas vazias:** refeitas em 17/11 com fundo pérola liso (sem transparência). No tema claro, usar com `mix-blend-mode: multiply` (o fundo some); no escuro, dentro de um quadro claro arredondado.
+
+## Lote 2 (ícones 3D, recorte do fundo feito aqui)
+| Arquivo | Onde aparece | Situação |
+|---|---|---|
+| pv-icone-dinheiro | Cartão de vendas e financeiro (família dinheiro) | Guardada (256 px, fundo recortado) |
