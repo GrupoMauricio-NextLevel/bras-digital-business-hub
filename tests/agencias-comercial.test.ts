@@ -92,7 +92,7 @@ describe("comercial, onboarding, Aprender e busca da agência (D317)", () => {
     const s = await agencia();
     const { clienteId } = await virarCliente(ctx.db, s.admin, (await criarOportunidade(ctx.db, s.admin, { empresa: "Academia Forte" })).id);
     await criarPeca(ctx.db, s.admin, { clienteId, titulo: "Treino de pernas" }, HOJE);
-    expect((await buscarNaAgencia(ctx.db, s.admin, "forte")).map((h) => h.kind)).toEqual(["customer"]);
+    expect((await buscarNaAgencia(ctx.db, s.admin, "forte")).map((h) => h.kind)).toEqual(["customer", "oportunidade"]);
     expect((await buscarNaAgencia(ctx.db, s.admin, "pernas")).map((h) => h.title)).toEqual(["Treino de pernas"]);
     expect(await buscarNaAgencia(ctx.db, s.editor, "forte")).toEqual([]);
   });
