@@ -19,7 +19,7 @@ import { getDb } from "@/db/client";
 import { expireStaleReservations } from "@/lib/domain/orders";
 import { recentNotices } from "@/lib/queries/notifications";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, GraduationCap, Sparkles } from "lucide-react";
 import { brandOfStore } from "@/lib/store-brand";
 import { SupportBar } from "@/components/support/support-bar";
 import { ecosystemBar, type EcoBrand } from "@/lib/domain/ecossistema/lancador";
@@ -187,14 +187,15 @@ export async function RoleLayout({ session, children, banner, scope, tenant, ocu
   const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
   // Parceiro da Commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
   const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: true } : undefined;
-  // Painel da Agência (D313): a mesma casca da NextLevel Commerce (faixa roxa, marca do cliente no menu), sem visual novo.
+  // Painel da Agência (D313): a mesma casca da NextLevel Commerce; "Aprender" e "Pergunte ao Maurício" moram em botões do topo (D327).
+  // Sem visual novo: faixa roxa e marca do cliente no menu.
   const capaAgencia = agenciaPainel ? { oferta: { texto: "Painel da Agência: carteira, contratos e equipe num lugar só", href: "/agencia/clientes" }, agente: false } : undefined;
   const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
     <>
     {parceiroEc || agenciaPainel ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
     {parceiroEc || isMaster || agenciaPainel ? <PainelTech black={black} /> : null}
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support && !agenciaPainel ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro ?? capaAgencia} marcaCliente={agenciaPainel && tenant ? { nome: tenant.name, logoUrl: null, sub: tenant.sub } : undefined} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support && !agenciaPainel ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro ?? capaAgencia} marcaCliente={agenciaPainel && tenant ? { nome: tenant.name, logoUrl: null, sub: tenant.sub } : undefined} extraTop={isMaster && !sup ? <AvisoSonoro /> : agenciaPainel ? <><Link href="/agencia/agente" className="ds-chip" aria-label="Pergunte ao Maurício: respostas com os números da agência"><Sparkles className="size-4" aria-hidden /><span className="ds-hide-compact">Maurício</span></Link><Link href="/agencia/aprender" className="ds-chip" aria-label="Aprender: aulas e novidades do Painel da Agência"><GraduationCap className="size-4" aria-hidden /><span className="ds-hide-compact">Aprender</span></Link></> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
     </>

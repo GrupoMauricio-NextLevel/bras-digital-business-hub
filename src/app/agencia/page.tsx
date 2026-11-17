@@ -77,7 +77,7 @@ export default async function HojeNaAgencia() {
           <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da agência</p>
           <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{saudacao()}, {session.user.name.split(" ")[0]}.</h1>
           <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{k.agencia.nome}</span> · {FUNCAO_ROTULO[k.funcao]}</p>
-          {k.funcao === "ADMIN" && !demo ? <div className="mt-4"><ChaveModoDemo ligado={false} /><p className="mt-1.5 text-xs text-muted-foreground">Veja o painel em pleno andamento, com uma equipe e clientes de demonstração. Desligue quando quiser.</p></div> : null}
+          {k.funcao === "ADMIN" && !demo ? <div className="mt-3"><ChaveModoDemo ligado={false} /></div> : null}
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
             {k.agencia.fundadora ? <span className={chip}>Agência Fundadora</span> : null}
             <span className={chip}><span aria-hidden className="size-1.5 rounded-full bg-success" />{k.agencia.situacao === "PILOTO" ? "Piloto em andamento" : "Conta ativa"}</span>

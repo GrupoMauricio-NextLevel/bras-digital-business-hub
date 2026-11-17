@@ -4262,3 +4262,19 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0115, só acrescenta):** `agencias.demo_de_id` e `agencias.demo_movido_em` (trava de 1 minuto entre os movimentos).
 - **Teste:** `tests/agencias-demo.test.ts` (só administrador, sandbox separado com dados reais intactos, reaproveita o sandbox, troca de perfil, movimento com trava, nada se move fora do sandbox, desligar volta à real) e `e2e/agencias-modo-demo.mjs` (1440 e 360 px, axe).
 
+## D327 — [E-commerce] Painel da Agência reorganizado em gavetas: cada uma responde uma pergunta do dia (2026-11-17)
+- **Pedido do dono:** "desenvolva agora essa atualização no painel business da agência, somente por enquanto", a partir da proposta `docs/prompts/reorganizacao-paineis-por-persona.md` (esqueleto único de gavetas para todos os painéis). Os outros painéis (Master, lojista, parceiro) ficam para depois.
+- **Menu novo, na ordem do dia (inclui os itens da D325):**
+  - **Hoje:** Agora (a fila do dia, que antes se chamava "Hoje"), Minha fila e Resumo da semana;
+  - **Conversas:** Atendimento;
+  - **Vendas:** Comercial e Placar e metas;
+  - **Clientes:** Clientes e Produção;
+  - **Dinheiro:** Financeiro e Crescimento;
+  - **Crescer:** Tráfego e anúncios;
+  - **Minha vitrine:** Soluções NextLevel;
+  - **Ajustes**, no rodapé e recolhido: Equipe e dados da agência. A gaveta abre sozinha quando a página atual está nela.
+- **Topo:** "Aprender" e "Pergunte ao Maurício" saíram do menu e viraram botões no topo, sempre à mão.
+- **Chave do Modo demonstração (D326) mais discreta** (pedido do dono: "ficou esquisito branco, faz algo menor sem chamar tanta atenção"): virou uma pílula pequena e transparente sobre o roxo do início, sem a frase embaixo (a explicação ficou no texto de dica do botão).
+- **Nada some:** os endereços são os mesmos. Quem não usa uma tela continua sem vê-la (D317, D325); gaveta vazia não aparece. No celular, os atalhos de baixo são Agora, Minha fila, Clientes e Produção.
+- **Peça reaproveitável:** o item de menu ganhou `rodape` (gaveta recolhida no fim do menu), pronta para os outros painéis quando o dono aprovar.
+- **Teste:** `tests/nav-agencia.test.ts` (ordem das gavetas, nenhum endereço perdido, Ajustes no rodapé, atalhos do celular) e `e2e/agencias.mjs`.

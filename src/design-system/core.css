@@ -33,6 +33,7 @@
 .ds-group { margin: 0 0 6px; }
 .ds-group-label { margin: 14px 10px 6px; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--ds-side-muted); }
 .ds-group ul, .ds-subnav { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.ds-group--rodape { margin-top: 14px; padding-top: 8px; border-top: 1px solid var(--ds-side-line); }
 
 .ds-item, .ds-navgroup {
   position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 42px; padding: 0 12px; border: 0; border-radius: var(--ds-r-control);
