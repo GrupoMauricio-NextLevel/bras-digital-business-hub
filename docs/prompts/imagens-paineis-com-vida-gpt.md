@@ -5,6 +5,8 @@
 > **Como usar:** abra um chat novo no GPT com geração de imagens (ou outra plataforma), cole **todo o bloco da seção 3** e diga "Comece pela PRIORIDADE 1". Salve cada imagem com o **nome exato**. Junte num ZIP por lote e me mande: eu converto, coloco na pasta, atualizo o manifesto e confiro nas telas.
 > **O que nunca vem do gerador:** fotos de produto (vêm da loja do cliente), fotos da equipe (usamos as fotos reais, `equipe-nextlevel-fotos-vida-marcas.md`) e o mapa do Brasil (é desenhado em código, com os dados).
 
+> **Situação (17/11/2026):** lote 1 recebido (Gemini): 12 imagens aprovadas e guardadas em `public/paineis/v1/` (ver o manifesto); refazer `pv-vazio-vendas`, `pv-vazio-pedidos` e `pv-tudo-em-dia` com transparência de verdade (ou fundo pérola liso #F6F7FB, sem quadriculado).
+
 ## 1. Quantas e em que ordem
 | Prioridade | Para quê | Quantas |
 |---|---|---|

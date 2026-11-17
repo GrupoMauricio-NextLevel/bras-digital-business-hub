@@ -132,7 +132,8 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   return <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
     {/* Abertura compacta (D328): saudação à esquerda, o número de hoje em destaque à direita. */}
     <section className="ds-hero ds-enter !py-5 px-5 sm:!py-6 sm:px-8">
-      <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
+      {/* Fundo da abertura (D328, imagem do lote A): fitas de luz que somam ao vidro roxo (mistura "screen"). */}
+      <span className="vida-abertura-img" aria-hidden><picture><source srcSet="/paineis/v1/pv-abertura-loja-escuro.avif" type="image/avif" /><img src="/paineis/v1/pv-abertura-loja-escuro.webp" alt="" width={1584} height={672} decoding="async" fetchPriority="high" /></picture></span>
       <div className="relative flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral` : "Visão geral da loja"}</p>
@@ -147,7 +148,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
             {negocio?.site ? <Link href="/theme-editor" className={buttonVariants({ size: "sm" })}>Editar o site</Link> : <Link href="/merchant/orders/new" className={buttonVariants({ size: "sm" })}><Plus />Novo pedido</Link>}
           </div>
         </div>
-        {negocio?.site ? null : <div className="min-w-0 text-left sm:text-right" aria-label="Vendas de hoje">
+        {negocio?.site ? null : <div className="vida-hoje min-w-0 text-left sm:text-right" aria-label="Vendas de hoje">
           <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.18em]"><span className="vida-aovivo" aria-hidden />Hoje</p>
           <p className="mt-1 text-[clamp(2rem,4.6vw,3.25rem)] font-bold leading-none tracking-[-.045em] tabular-nums" style={{ fontFamily: "var(--nl-font-display)" }}>{formatBRL(hoje.hojeCents)}</p>
           <p className="mt-1.5 text-xs">{o.today.orders === 1 ? "1 venda paga" : `${o.today.orders} vendas pagas`}{hoje.delta !== null ? <> · <Variacao valor={hoje.delta} base={`vs. ${hoje.rotuloBase}`} /></> : null}</p>
