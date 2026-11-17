@@ -4173,3 +4173,10 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - nada disso funciona em modo suporte.
 - **Teste:** `tests/agencias-solucoes.test.ts` (permissão, CNPJ obrigatório, cadastro de sempre no caminho Site, perfis ligados, destinos fechados, troca de perfil) e `e2e/agencias-solucoes.mjs`.
 
+
+## D324 — [E-commerce] Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render (2026-11-17)
+- **Pedido do dono:** "não estamos sendo encontrados nos mecanismos". Conferência de 17/11/2026: o site responde certo aos robôs (páginas 200, robots e sitemap completos, sem bloqueio), mas uma busca `site:nextlevelcommerce.com.br` não mostra nenhuma página. O domínio está no ar desde 13/11 e nunca foi enviado ao Google (sem Search Console), e não há links de outros sites apontando para ele. O endereço antigo `lojas.nextlevelgroup.com.br` também nunca apareceu indexado.
+- **Endereço principal:** `nextlevelcommerce.com.br` é o endereço das lojas virtuais (canonical, sitemap, robots e `llms.txt`); `nextlevelgroup.com.br` fica para as soluções da agência, como combinado na D287.
+- **Feito:** `src/lib/seo/verificacao.ts` lê `GOOGLE_SITE_VERIFICATION` e `BING_SITE_VERIFICATION` do Render (aceita a tag inteira ou só o código) e põe as marcas de verificação no cabeçalho das páginas da Commerce. Sem as variáveis, nada muda. O dono pode verificar por DNS (registro TXT na Hostinger, que cobre o domínio inteiro) ou por esse código (só o endereço principal).
+- **Depende do dono:** criar a propriedade no Search Console, mandar o código, enviar o sitemap (`https://nextlevelcommerce.com.br/sitemap.xml`) e pedir indexação das páginas principais; no Bing Webmaster, importar do Search Console.
+- **Teste:** `tests/seo-verificacao.test.ts`.

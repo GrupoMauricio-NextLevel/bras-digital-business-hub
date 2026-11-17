@@ -1,5 +1,12 @@
 [
  {
+  "numero": 324,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"não estamos sendo encontrados nos mecanismos\". Conferência de 17/11/2026: o site responde certo aos robôs (páginas 200, robots e sitemap completos, sem bloqueio), mas uma busca site:nextlevelcommerce.com.br não mostra ne…"
+ },
+ {
   "numero": 323,
   "frente": "E-commerce",
   "titulo": "Soluções NextLevel no Painel da Agência: a agência vira usuária do NextLevel Business com um clique",
@@ -271,12 +278,5 @@
   "titulo": "Domínio novo nextlevelcommerce.com.br pronto para virar o endereço principal",
   "data": "2026-11-11",
   "resumo": "Pedido do dono: conectar logo o domínio novo."
- },
- {
-  "numero": 280,
-  "frente": "E-commerce",
-  "titulo": "Janela de resgate na saída: nas páginas públicas e, por escolha do lojista, na loja",
-  "data": "2026-11-10",
-  "resumo": "Pedido do dono: quando alguém vai sair das páginas públicas, uma janela para resgatar o visitante (referência: janela de saída com e-mail, caixa de concordância e botão verde). Os lojistas também precisam desse recurso."
  }
 ]
