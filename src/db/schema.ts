@@ -3379,6 +3379,10 @@ export const agencias = pgTable("agencias", {
   mpTokenEnc: text("mp_token_enc"),
   mpConta: text("mp_conta"),
   mpTeste: boolean("mp_teste").notNull().default(false),
+  /** Dados jurídicos da agência para os contratos com os clientes dela (D321). */
+  razaoSocial: text("razao_social"),
+  documento: text("documento"),
+  cidadeForo: text("cidade_foro"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
@@ -3619,4 +3623,30 @@ export const agenciaSolicitacoes = pgTable("agencia_solicitacoes", {
   respondidaEm: ts("respondida_em"),
   createdAt: createdAt(),
 }, (t) => [index("agencia_solicitacoes_agencia_idx").on(t.agenciaId, t.situacao), index("agencia_solicitacoes_cliente_idx").on(t.clienteId, t.createdAt)]);
+
+/**
+ * Contrato entre a agência e o cliente dela (D321), com o mesmo motor dos contratos do Master (D276): texto congelado,
+ * impressão digital, aceite pelo portal do cliente com prova (nome, data, endereço de rede, aparelho) e PDF.
+ */
+export const AGENCIA_CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO"] as const;
+export const agenciaContratos = pgTable("agencia_contratos", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  numero: text("numero").notNull().unique(),
+  titulo: text("titulo").notNull(),
+  dados: jsonb("dados").$type<Record<string, unknown>>().notNull(),
+  conteudo: jsonb("conteudo").$type<{ secoes: { titulo: string; resumo?: string; paragrafos?: string[]; itens?: string[] }[] }>().notNull(),
+  hash: text("hash").notNull(),
+  status: text("status", { enum: AGENCIA_CONTRATO_STATUS }).notNull().default("ENVIADO"),
+  enviadoPor: text("enviado_por").notNull(),
+  enviadoEm: ts("enviado_em").notNull(),
+  aceitoEmail: text("aceito_email"),
+  aceitoNome: text("aceito_nome"),
+  aceitoEm: ts("aceito_em"),
+  aceitoIp: text("aceito_ip"),
+  aceitoAparelho: text("aceito_aparelho"),
+  canceladoEm: ts("cancelado_em"),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_contratos_cliente_idx").on(t.clienteId, t.status), index("agencia_contratos_agencia_idx").on(t.agenciaId)]);
 

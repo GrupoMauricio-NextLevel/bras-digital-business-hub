@@ -34,9 +34,19 @@ function quebrar(texto: string, f: PDFFont, tam: number, largura: number): strin
   return linhas;
 }
 
-export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> {
+/**
+ * Documento genérico de contrato (D321): o mesmo motor serve ao contrato da loja (D276) e ao contrato entre a agência e o
+ * cliente dela. Topo com a marca, resumo em linhas, um quadro de destaque opcional, as cláusulas e o registro do aceite.
+ */
+export type DocumentoPdf = {
+  titulo: string; autor: string; marca: [string, string]; cabecalho: [string, string]; rodape: string;
+  resumo: [string, string][]; destaque?: { rotulo: string; chaveRotulo: string; chave: string; lado: string[]; nota: string };
+  secoes: Secao[]; registro: string[]; hash: string;
+};
+
+export async function gerarPdfDocumento(c: DocumentoPdf): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
-  pdf.setTitle(limpo(`Contrato ${c.numero} · ${c.titulo}`)); pdf.setAuthor(limpo(c.dados.contratada.razao)); pdf.setLanguage("pt-BR");
+  pdf.setTitle(limpo(c.titulo)); pdf.setAuthor(limpo(c.autor)); pdf.setLanguage("pt-BR");
   const R = await pdf.embedFont(StandardFonts.Helvetica), B = await pdf.embedFont(StandardFonts.HelveticaBold);
   const L = A4.w - 2 * M;
   let page: PDFPage = pdf.addPage([A4.w, A4.h]);
@@ -47,34 +57,27 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
     const f = o.f ?? R, tam = o.tam ?? 9.5, x = o.x ?? M, larg = o.larg ?? L, entre = o.entre ?? tam * 1.45;
     for (const l of quebrar(t, f, tam, larg)) { espaco(entre); page.drawText(l, { x, y: y - tam, size: tam, font: f, color: o.cor ?? TINTA }); y -= entre; }
   };
-  const d = c.dados;
 
   // Topo
   page.drawRectangle({ x: 0, y: A4.h - 92, width: A4.w, height: 92, color: NAVY });
   page.drawRectangle({ x: 0, y: A4.h - 95, width: A4.w, height: 3, color: CIANO });
-  page.drawText("NextLevel", { x: M, y: A4.h - 50, size: 20, font: B, color: rgb(1, 1, 1) });
-  page.drawText("Commerce", { x: M, y: A4.h - 68, size: 12, font: B, color: CIANO });
-  const t1 = "Contrato de Prestação de Serviços";
-  page.drawText(limpo(t1), { x: A4.w - M - B.widthOfTextAtSize(limpo(t1), 15), y: A4.h - 50, size: 15, font: B, color: rgb(1, 1, 1) });
-  const t2 = limpo(`Loja Virtual Pronta Express · nº ${c.numero} · ${formatar.data(c.enviadoEm)}`);
+  const t1 = limpo(c.cabecalho[0]);
+  // O nome da marca encolhe até caber ao lado do título (nomes de agência podem ser longos).
+  const livre = A4.w - 2 * M - B.widthOfTextAtSize(t1, 15) - 16;
+  let marca = limpo(c.marca[0]), tamMarca = 20;
+  while (tamMarca > 10 && B.widthOfTextAtSize(marca, tamMarca) > livre) tamMarca -= 1;
+  while (marca.length > 4 && B.widthOfTextAtSize(marca, tamMarca) > livre) marca = `${marca.slice(0, -2).trimEnd()}…`;
+  page.drawText(marca, { x: M, y: A4.h - 50, size: tamMarca, font: B, color: rgb(1, 1, 1) });
+  if (c.marca[1]) page.drawText(limpo(c.marca[1]).slice(0, 48), { x: M, y: A4.h - 68, size: 12, font: B, color: CIANO });
+  page.drawText(t1, { x: A4.w - M - B.widthOfTextAtSize(t1, 15), y: A4.h - 50, size: 15, font: B, color: rgb(1, 1, 1) });
+  const t2 = limpo(c.cabecalho[1]);
   page.drawText(t2, { x: A4.w - M - R.widthOfTextAtSize(t2, 8.5), y: A4.h - 66, size: 8.5, font: R, color: rgb(0.73, 0.77, 0.87) });
   y = A4.h - 118;
 
   // Resumo
   texto("RESUMO DO CONTRATO", { f: B, tam: 7.5, cor: AZUL });
   y -= 2;
-  const linhas: [string, string][] = [
-    ["Contratada", `${d.contratada.razao} · CNPJ ${d.contratada.cnpj} · representada por ${d.contratada.representante}${d.contratada.cpfRepresentante ? ` · CPF ${d.contratada.cpfRepresentante}` : ""} · ${d.contratada.emailRepresentante}`],
-    ["Contratante", `${d.cliente.nome} · CPF/CNPJ ${d.cliente.documento} · ${d.cliente.email}`],
-    ["Loja", `${d.loja.nome} (/${d.loja.slug})`],
-    ["Serviço", "Loja Virtual Pronta Express, desenvolvida exclusivamente dentro da plataforma NextLevel Commerce"],
-    ["Produtos", `Cadastro inicial de ${d.produtos} produtos e treinamento para o CONTRATANTE cadastrar os demais`],
-    ["Valor", `De ${formatar.brl(d.valorCheioCents)} por ${formatar.brl(d.valorCents)} (valor promocional, pagamento único)`],
-    ["Pagamento", `Pix · ${formatar.brl(d.sinalCents)} de sinal em ${formatar.data(d.dataSinal)} · ${formatar.brl(d.restanteCents)} até ${formatar.data(d.dataRestante)}`],
-    ["Entrega", `Em até ${d.prazoDias} dias corridos depois do pagamento total e do recebimento de todo o material`],
-    ["Não incluído", d.cortesiaMeses > 0 ? `Domínio. Mensalidade da plataforma: ${d.cortesiaMeses} meses de cortesia; depois, por conta do CONTRATANTE` : "Mensalidade da plataforma e domínio, contratados à parte"],
-  ];
-  for (const [k, v] of linhas) {
+  for (const [k, v] of c.resumo) {
     const vl = quebrar(v, R, 9, L - 120);
     espaco(vl.length * 13 + 8);
     page.drawText(limpo(k), { x: M, y: y - 9, size: 9, font: B, color: CINZA });
@@ -84,18 +87,20 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
     y -= 4;
   }
 
-  // Pix em destaque
-  y -= 8;
-  const hPix = 92;
-  espaco(hPix + 10);
-  page.drawRectangle({ x: M, y: y - hPix, width: L, height: hPix, color: FUNDO_AZUL, borderColor: AZUL, borderWidth: 1.5 });
-  page.drawText("DADOS PARA PAGAMENTO · PIX", { x: M + 12, y: y - 18, size: 7.5, font: B, color: AZUL });
-  page.drawText("Chave Pix (CNPJ)", { x: M + 12, y: y - 32, size: 8.5, font: R, color: CINZA });
-  page.drawText(limpo(d.contratada.chavePix), { x: M + 12, y: y - 54, size: 20, font: B, color: NAVY });
-  const lado = [`Banco ${d.contratada.banco}`, `Favorecido: ${d.contratada.favorecido}`, `1ª parcela: ${formatar.brl(d.sinalCents)} em ${formatar.data(d.dataSinal)}`, `2ª parcela: ${formatar.brl(d.restanteCents)} até ${formatar.data(d.dataRestante)}`];
-  lado.forEach((l, i) => { const s = limpo(l); const f = i === 0 ? B : R; page.drawText(s, { x: M + L - 12 - f.widthOfTextAtSize(s, 9), y: y - 22 - i * 14, size: 9, font: f, color: TINTA }); });
-  page.drawText(limpo(`Confira o nome do favorecido antes de confirmar e envie o comprovante para ${d.contratada.emailRepresentante}.`), { x: M + 12, y: y - hPix + 12, size: 8, font: R, color: CINZA });
-  y -= hPix + 16;
+  // Quadro em destaque (ex.: Pix)
+  if (c.destaque) {
+    const d = c.destaque;
+    y -= 8;
+    const hPix = 92;
+    espaco(hPix + 10);
+    page.drawRectangle({ x: M, y: y - hPix, width: L, height: hPix, color: FUNDO_AZUL, borderColor: AZUL, borderWidth: 1.5 });
+    page.drawText(limpo(d.rotulo), { x: M + 12, y: y - 18, size: 7.5, font: B, color: AZUL });
+    page.drawText(limpo(d.chaveRotulo), { x: M + 12, y: y - 32, size: 8.5, font: R, color: CINZA });
+    page.drawText(limpo(d.chave), { x: M + 12, y: y - 54, size: 20, font: B, color: NAVY });
+    d.lado.forEach((l, i) => { const s = limpo(l); const f = i === 0 ? B : R; page.drawText(s, { x: M + L - 12 - f.widthOfTextAtSize(s, 9), y: y - 22 - i * 14, size: 9, font: f, color: TINTA }); });
+    page.drawText(limpo(d.nota), { x: M + 12, y: y - hPix + 12, size: 8, font: R, color: CINZA });
+    y -= hPix + 16;
+  }
 
   // Seções
   for (const s of c.secoes) {
@@ -126,9 +131,7 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
   page.drawLine({ start: { x: M, y }, end: { x: M + L, y }, thickness: 1, color: NAVY });
   y -= 8;
   texto("REGISTRO DE ASSINATURA E ACEITE", { f: B, tam: 8, cor: AZUL });
-  texto(`CONTRATADA: ${d.contratada.razao}, CNPJ ${d.contratada.cnpj}, representada por ${d.contratada.representante}. Assinado e enviado pelo painel Master em ${dataHora(c.enviadoEm)}.`, { tam: 9 });
-  if (c.aceitoEm) texto(`CONTRATANTE: ${c.aceitoNome ?? d.cliente.nome}, CPF/CNPJ ${d.cliente.documento}. Aceito no painel da loja, com login próprio, em ${dataHora(c.aceitoEm)}. Endereço de rede: ${c.aceitoIp ?? "não informado"}. Aparelho: ${c.aceitoAparelho ?? "não informado"}.`, { tam: 9 });
-  else texto("CONTRATANTE: aguardando o aceite no painel da loja.", { tam: 9 });
+  for (const r of c.registro) texto(r, { tam: 9 });
   texto(`Impressão digital do texto (SHA-256): ${c.hash}`, { tam: 7.5, cor: CINZA });
   texto("A impressão digital muda se qualquer letra do contrato for alterada; ela confirma que este é exatamente o texto aceito.", { tam: 7.5, cor: CINZA });
 
@@ -136,9 +139,43 @@ export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> 
   const paginas = pdf.getPages();
   paginas.forEach((p, i) => {
     p.drawLine({ start: { x: M, y: 34 }, end: { x: A4.w - M, y: 34 }, thickness: 0.6, color: LINHA });
-    p.drawText(limpo(`Contrato Loja Virtual Pronta Express · nº ${c.numero}`), { x: M, y: 22, size: 7.5, font: R, color: CINZA });
+    p.drawText(limpo(c.rodape), { x: M, y: 22, size: 7.5, font: R, color: CINZA });
     const pg = `Página ${i + 1} de ${paginas.length}`;
     p.drawText(pg, { x: A4.w - M - R.widthOfTextAtSize(pg, 7.5), y: 22, size: 7.5, font: R, color: CINZA });
   });
   return pdf.save();
 }
+
+/** Contrato da Loja Virtual Pronta Express (D276), agora sobre o motor genérico. */
+export async function gerarPdfContrato(c: ContratoParaPdf): Promise<Uint8Array> {
+  const d = c.dados;
+  return gerarPdfDocumento({
+    titulo: `Contrato ${c.numero} · ${c.titulo}`, autor: d.contratada.razao, marca: ["NextLevel", "Commerce"],
+    cabecalho: ["Contrato de Prestação de Serviços", `Loja Virtual Pronta Express · nº ${c.numero} · ${formatar.data(c.enviadoEm)}`],
+    rodape: `Contrato Loja Virtual Pronta Express · nº ${c.numero}`,
+    resumo: [
+      ["Contratada", `${d.contratada.razao} · CNPJ ${d.contratada.cnpj} · representada por ${d.contratada.representante}${d.contratada.cpfRepresentante ? ` · CPF ${d.contratada.cpfRepresentante}` : ""} · ${d.contratada.emailRepresentante}`],
+      ["Contratante", `${d.cliente.nome} · CPF/CNPJ ${d.cliente.documento} · ${d.cliente.email}`],
+      ["Loja", `${d.loja.nome} (/${d.loja.slug})`],
+      ["Serviço", "Loja Virtual Pronta Express, desenvolvida exclusivamente dentro da plataforma NextLevel Commerce"],
+      ["Produtos", `Cadastro inicial de ${d.produtos} produtos e treinamento para o CONTRATANTE cadastrar os demais`],
+      ["Valor", `De ${formatar.brl(d.valorCheioCents)} por ${formatar.brl(d.valorCents)} (valor promocional, pagamento único)`],
+      ["Pagamento", `Pix · ${formatar.brl(d.sinalCents)} de sinal em ${formatar.data(d.dataSinal)} · ${formatar.brl(d.restanteCents)} até ${formatar.data(d.dataRestante)}`],
+      ["Entrega", `Em até ${d.prazoDias} dias corridos depois do pagamento total e do recebimento de todo o material`],
+      ["Não incluído", d.cortesiaMeses > 0 ? `Domínio. Mensalidade da plataforma: ${d.cortesiaMeses} meses de cortesia; depois, por conta do CONTRATANTE` : "Mensalidade da plataforma e domínio, contratados à parte"],
+    ],
+    destaque: {
+      rotulo: "DADOS PARA PAGAMENTO · PIX", chaveRotulo: "Chave Pix (CNPJ)", chave: d.contratada.chavePix,
+      lado: [`Banco ${d.contratada.banco}`, `Favorecido: ${d.contratada.favorecido}`, `1ª parcela: ${formatar.brl(d.sinalCents)} em ${formatar.data(d.dataSinal)}`, `2ª parcela: ${formatar.brl(d.restanteCents)} até ${formatar.data(d.dataRestante)}`],
+      nota: `Confira o nome do favorecido antes de confirmar e envie o comprovante para ${d.contratada.emailRepresentante}.`,
+    },
+    secoes: c.secoes,
+    registro: [
+      `CONTRATADA: ${d.contratada.razao}, CNPJ ${d.contratada.cnpj}, representada por ${d.contratada.representante}. Assinado e enviado pelo painel Master em ${dataHora(c.enviadoEm)}.`,
+      c.aceitoEm ? `CONTRATANTE: ${c.aceitoNome ?? d.cliente.nome}, CPF/CNPJ ${d.cliente.documento}. Aceito no painel da loja, com login próprio, em ${dataHora(c.aceitoEm)}. Endereço de rede: ${c.aceitoIp ?? "não informado"}. Aparelho: ${c.aceitoAparelho ?? "não informado"}.` : "CONTRATANTE: aguardando o aceite no painel da loja.",
+    ],
+    hash: c.hash,
+  });
+}
+
+export { dataHora };

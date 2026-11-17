@@ -6,6 +6,7 @@ import { getDb } from "@/db/client";
 import { runAction } from "@/lib/action-result";
 import { DomainError } from "@/lib/domain/errors";
 import { rateLimit } from "@/lib/rate-limit";
+import { aceitarContratoNoPortal } from "@/lib/agencias/contratos";
 import { COOKIE_PORTAL, agenciaDoPortal, ajustePeloCliente, aprovarPeloCliente, entrarNoPortal, enviarSolicitacao, pedirCodigoDoPortal, type solicitacaoSchema } from "@/lib/agencias/portal";
 
 /** Portal do cliente da agência (D320): código no e-mail, sessão por agência, ações só do próprio cliente. */
@@ -38,4 +39,11 @@ export async function ajusteNoPortalAction(slug: string, clienteId: string, peca
 }
 export async function solicitacaoNoPortalAction(slug: string, clienteId: string, input: z.input<typeof solicitacaoSchema>) {
   return runAction(async () => { const { db, a, token } = await sessao(slug); const r = await enviarSolicitacao(db, a.id, token, id.parse(clienteId), input); revalidatePath(`/portal/${a.slug}`); return r; });
+}
+export async function aceitarContratoPortalAction(slug: string, clienteId: string, contratoId: string, input: { concordo: boolean; hashVisto: string; nome: string }) {
+  return runAction(async () => {
+    const { db, a, token } = await sessao(slug); const h = await headers();
+    const r = await aceitarContratoNoPortal(db, a.id, token, id.parse(clienteId), id.parse(contratoId), input as { concordo: true; hashVisto: string; nome: string }, { ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null, aparelho: h.get("user-agent") });
+    revalidatePath(`/portal/${a.slug}`); return r;
+  });
 }

@@ -19,6 +19,9 @@ import { solicitacoesDaAgencia, urlDoPortal } from "@/lib/agencias/portal";
 import { agencias } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { CopiarLinkPortal, ResponderSolicitacao } from "./portal-agencia";
+import { contratosDoClienteNaAgencia } from "@/lib/agencias/contratos";
+import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
+import { CancelarContrato, GerarContrato } from "./contrato-cliente";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Ficha do cliente" };
@@ -33,6 +36,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const prod = await producaoDoMes(db, session.actor);
   const doMes = prod.clientes.find((x) => x.clienteId === c.id);
   const cobrancas = c.verValores ? await cobrancasDoCliente(db, session.actor, c.id) : [];
+  const contratos = c.podeEditarContrato ? await contratosDoClienteNaAgencia(db, session.actor, c.id) : [];
   const pedidos = await solicitacoesDaAgencia(db, session.actor, { clienteId: c.id });
   const ag = await db.query.agencias.findFirst({ where: eq(agencias.id, c.agenciaId), columns: { slug: true } });
   const linkPortal = ag ? urlDoPortal(ag.slug) : null;
@@ -64,6 +68,14 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
               <h2 id="cob" className="mb-2 text-base font-semibold">Cobranças</h2>
               {cobrancas.length ? <ul className="divide-y divide-border text-sm">{cobrancas.slice(-6).reverse().map((f) => <li key={f.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span className="min-w-0"><span className="block truncate">{f.descricao}</span><span className="text-xs text-muted-foreground">vence {f.vencimento.split("-").reverse().join("/")}</span></span><span className="text-right"><b className="block tabular-nums">{formatBRL(f.valorCents)}</b><span className={`text-xs font-semibold ${f.mostrada === "ATRASADA" ? "text-danger" : f.mostrada === "PAGA" ? "text-success" : "text-muted-foreground"}`}>{f.mostrada === "ATRASADA" ? "Atrasada" : f.mostrada === "PAGA" ? "Paga" : "Em aberto"}</span></span></li>)}</ul> : <p className="text-sm text-muted-foreground">Nenhuma cobrança ainda.</p>}
               <Link href="/agencia/financeiro" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Abrir o Financeiro</Link>
+            </section>
+          ) : null}
+          {c.podeEditarContrato ? (
+            <section className={card} aria-labelledby="ctr">
+              <h2 id="ctr" className="mb-1 text-base font-semibold">Contrato</h2>
+              <p className="mb-3 text-sm text-muted-foreground">Gerado com os dados da ficha. O cliente lê e aceita no portal; o PDF assinado vai por e-mail para os dois lados.</p>
+              {contratos.length ? <ul className="mb-3 divide-y divide-border text-sm">{contratos.map((k) => <li key={k.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span><b className="block">{k.numero}</b><span className="text-xs text-muted-foreground">{k.status === "ACEITO" ? `Aceito por ${k.aceitoNome} em ${k.aceitoEm!.slice(0, 10).split("-").reverse().join("/")}` : `Enviado em ${k.enviadoEm.slice(0, 10).split("-").reverse().join("/")}, esperando o aceite`}</span></span><span className="flex items-center gap-1"><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${k.status === "ACEITO" ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>{k.status === "ACEITO" ? "Assinado" : "Aguardando"}</span><a href={`/agencia/contratos/${k.id}/pdf`} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-link underline underline-offset-4">PDF</a>{k.status === "ENVIADO" ? <CancelarContrato id={k.id} /> : null}</span></li>)}</ul> : null}
+              {contratos.some((k) => k.status === "ENVIADO") ? null : <GerarContrato clienteId={c.id} hoje={hojeEmSaoPaulo()} />}
             </section>
           ) : null}
           <section className={card} aria-labelledby="portal">

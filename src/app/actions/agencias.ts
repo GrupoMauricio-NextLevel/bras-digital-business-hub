@@ -14,6 +14,7 @@ import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
 import { copiarRecorrentes, excluirDespesa, lancarDespesa, marcarDespesaPaga, type despesaSchema } from "@/lib/agencias/despesas";
 import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
 import { responderSolicitacao } from "@/lib/agencias/portal";
+import { cancelarContratoDaAgencia, enviarContrato, previaDoContrato, salvarDadosJuridicos, type OpcoesContrato, type dadosJuridicosSchema } from "@/lib/agencias/contratos";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
@@ -158,4 +159,19 @@ export async function copiarRecorrentesAction(mes: string) {
 // Portal do cliente (D320): a agência responde os pedidos que chegam pelo portal
 export async function responderSolicitacaoAction(id: string, input: { resposta?: string; situacao: "EM_ANDAMENTO" | "RESPONDIDA" }) {
   return runAction(async () => { const { actor, db } = await ctx(); await responderSolicitacao(db, actor, z.string().regex(/^agso_[a-z0-9]+$/i).parse(id), input); revalidatePath("/agencia", "layout"); return undefined; });
+}
+
+// Contratos da agência (D321)
+const idContrato = z.string().regex(/^agct_[a-z0-9]+$/i);
+export async function salvarDadosJuridicosAction(input: z.input<typeof dadosJuridicosSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); await salvarDadosJuridicos(db, actor, input); revalidatePath("/agencia", "layout"); return undefined; });
+}
+export async function previaContratoAction(clienteId: string, opcoes: OpcoesContrato) {
+  return runAction(async () => { const { actor, db } = await ctx(); return previaDoContrato(db, actor, idCliente.parse(clienteId), opcoes); });
+}
+export async function enviarContratoAction(clienteId: string, opcoes: OpcoesContrato) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await enviarContrato(db, actor, idCliente.parse(clienteId), opcoes); revalidatePath("/agencia", "layout"); return r; });
+}
+export async function cancelarContratoAgenciaAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await cancelarContratoDaAgencia(db, actor, idContrato.parse(id)); revalidatePath("/agencia", "layout"); return undefined; });
 }

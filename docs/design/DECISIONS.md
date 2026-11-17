@@ -4093,3 +4093,43 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0110, só acrescenta):** `agencia_solicitacoes`.
 - **Teste:** `tests/agencias-portal.test.ts` (entrada por código, isolamento entre agências e clientes, aprovar, ajuste, pedidos e respostas, nada interno exposto) e `e2e/agencias-portal.mjs`.
 
+## D321 — [E-commerce] Contratos da agência com o cliente: modelo, aceite pelo portal e PDF assinado (2026-11-17)
+- **Pedido do dono:** "vamos adiantar alguma coisa" (próximo item da ordem da D316). Briefing da UPClips: contratos com assinatura e PDF, sem ferramenta paga à parte.
+- **Reaproveitamento (nada do zero):** o motor dos contratos do Master (D276):
+  - texto congelado;
+  - impressão digital (SHA-256) que prova o texto aceito;
+  - aceite com prova (nome, data, endereço de rede e aparelho);
+  - PDF;
+  - e-mail com a cópia assinada para os dois lados.
+- **Ajuste no motor:** o PDF virou um motor genérico (`gerarPdfDocumento`). O contrato da loja passou a usá-lo, com o mesmo resultado (testes de `tests/contratos.test.ts` iguais).
+- **Modelo de contrato da agência** (regra pura, `src/lib/agencias/contrato-modelo.ts`): linguagem simples, preenchida com os dados da ficha. Cobre:
+  - pacote e entregas do mês;
+  - aprovação pelo portal (rodadas de ajuste e prazo do cliente para responder);
+  - o que o cliente fornece;
+  - valor e vencimento, e pausa da produção se o pagamento atrasar (sempre com aviso);
+  - anúncios pagos fora do contrato;
+  - **sem garantia de resultado**;
+  - imagem e direitos de uso, e LGPD;
+  - vigência com renovação automática e aviso prévio;
+  - combinados adicionais (opcional) e foro.
+
+  A tela avisa que é um modelo de referência para a agência revisar com o advogado dela.
+- **Fluxo:**
+  - **Equipe → Dados da agência:** razão social, CNPJ ou CPF e foro.
+  - **Ficha do cliente → Contrato:**
+    - opções: início, vigência, aviso prévio, rodadas de ajuste, prazo de aprovação e combinados;
+    - prévia com o texto exato e a lista do que falta preencher;
+    - "Enviar ao cliente": o envio é a assinatura da agência, e o cliente recebe um e-mail com o link do portal.
+  - **No portal do cliente:**
+    - o cliente lê o contrato, digita o nome completo, marca "Li e concordo" e aceita;
+    - o PDF assinado vai por e-mail para o cliente e para o administrador e o financeiro;
+    - o item "Contrato assinado" do onboarding se marca sozinho;
+    - o PDF fica para baixar no portal e na ficha.
+- **Regras:**
+  - só administrador e financeiro geram, enviam, cancelam e baixam;
+  - um contrato esperando aceite por cliente de cada vez;
+  - contrato aceito não se cancela;
+  - aceite só uma vez e só do texto que o cliente viu.
+- **Banco (migração 0111, só acrescenta):** `agencia_contratos`; em `agencias`: `razao_social`, `documento`, `cidade_foro`.
+- **Teste:** `tests/agencias-contratos.test.ts` (modelo, pendências, permissões, aceite com impressão digital, onboarding, e-mails, PDF, cancelamento) e `e2e/agencias-contratos.mjs`.
+

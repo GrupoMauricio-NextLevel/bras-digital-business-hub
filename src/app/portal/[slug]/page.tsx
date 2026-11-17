@@ -9,7 +9,9 @@ import { NotFoundError } from "@/lib/domain/errors";
 import { COOKIE_PORTAL, agenciaDoPortal, clientesDaSessao, portalDoCliente } from "@/lib/agencias/portal";
 import { agenciasLigado } from "@/lib/agencias/acesso";
 import { formatBRL } from "@/lib/money";
-import { AprovarConteudo, EntrarPortal, NovaSolicitacao, SairPortal } from "./portal-cliente";
+import { AceitarContrato, AprovarConteudo, EntrarPortal, NovaSolicitacao, SairPortal } from "./portal-cliente";
+import { contratosDoPortal } from "@/lib/agencias/contratos";
+import { TextoDoContrato } from "@/components/agencia/texto-contrato";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Portal do cliente", robots: { index: false, follow: false } };
@@ -47,7 +49,8 @@ export default async function Portal({ params, searchParams }: { params: Promise
   if (!email) return casca(<section className={`${card} mx-auto max-w-md`}><h2 className="text-base font-semibold">Entrar</h2><p className="mt-1 text-sm text-muted-foreground">Use o e-mail que você passou para a agência. Mandamos um código de 6 dígitos, sem senha.</p><EntrarPortal slug={a.slug} /></section>);
   if (!clientes.length) return casca(<section className={card}><p className="text-sm">Não achamos nenhuma empresa ligada a <b>{email}</b>. Fale com a {a.nome}.</p></section>);
   const atual = clientes.find((c) => c.id === sp.cliente) ?? clientes[0]!;
-  const p = await portalDoCliente(db, a.id, token, atual.id);
+  const [p, contratos] = await Promise.all([portalDoCliente(db, a.id, token, atual.id), contratosDoPortal(db, a.id, token, atual.id)]);
+  const pdf = (id: string) => `/portal/${a.slug}/contrato/${id}/pdf?cliente=${atual.id}`;
   const c = p.contagem;
   return casca(
     <>
@@ -59,6 +62,15 @@ export default async function Portal({ params, searchParams }: { params: Promise
         <Kpi i={3} icon={Hourglass} label="Esperando você" value={String(p.paraAprovar.length)} note="para aprovar" />
         <Kpi i={4} icon={CalendarClock} label="Em produção" value={String(p.producao.length)} note={p.programadas.length ? `${p.programadas.length} publicação(ões) programada(s)` : "conteúdos em andamento"} />
       </section>
+      {contratos.filter((k) => k.status === "ENVIADO").map((k) => (
+        <section key={k.id} className={card} aria-labelledby={`ct-${k.id}`}>
+          <h2 id={`ct-${k.id}`} className="text-base font-semibold">Contrato para você aceitar</h2>
+          <p className="mb-3 text-sm text-muted-foreground">{k.titulo} · nº {k.numero}. Leia com calma. Se tiver dúvida, fale com a agência antes de aceitar.</p>
+          <div className="max-h-[420px] overflow-y-auto rounded-xl border border-border p-4" tabIndex={0} aria-label="Texto do contrato"><TextoDoContrato secoes={k.secoes} /></div>
+          <a href={pdf(k.id)} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Abrir em PDF</a>
+          <AceitarContrato slug={a.slug} clienteId={atual.id} contratoId={k.id} hash={k.hash} />
+        </section>
+      ))}
       {p.paraAprovar.length ? (
         <section className={card} aria-labelledby="pt-apr">
           <h2 id="pt-apr" className="mb-1 text-base font-semibold">Para você aprovar</h2>
@@ -78,6 +90,7 @@ export default async function Portal({ params, searchParams }: { params: Promise
         </section>
         <section className={card} aria-labelledby="pt-cob">
           <h2 id="pt-cob" className="mb-3 text-base font-semibold">Pagamentos</h2>
+          {contratos.filter((k) => k.status === "ACEITO").map((k) => <p key={k.id} className="mb-3 rounded-xl bg-surface-muted/60 px-3 py-2 text-sm">Contrato nº {k.numero} assinado em {dm(k.aceitoEm!)}. <a href={pdf(k.id)} target="_blank" rel="noreferrer" className="font-semibold text-link underline underline-offset-4">Baixar PDF</a></p>)}
           {p.cobrancas.length ? <ul className="divide-y divide-border text-sm">{p.cobrancas.map((f) => <li key={f.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span>{f.descricao}<span className="block text-xs text-muted-foreground">vence {dm(f.vencimento)}</span></span><span className="flex items-center gap-2"><b className="tabular-nums">{formatBRL(f.valorCents)}</b>{f.mostrada === "PAGA" ? <span className="text-xs font-semibold text-success">Pago</span> : f.checkoutUrl ? <a href={f.checkoutUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[var(--primary-foreground)]">Pagar</a> : <span className={`text-xs font-semibold ${f.mostrada === "ATRASADA" ? "text-danger" : "text-muted-foreground"}`}>{f.mostrada === "ATRASADA" ? "Em atraso" : "Em aberto"}</span>}</span></li>)}</ul> : <p className="text-sm text-muted-foreground">Nenhuma cobrança por aqui.</p>}
         </section>
         <section className={card} aria-labelledby="pt-sol">

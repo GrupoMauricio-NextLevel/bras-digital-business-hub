@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ajusteNoPortalAction, aprovarNoPortalAction, entrarPortalAction, pedirCodigoPortalAction, sairPortalAction, solicitacaoNoPortalAction } from "@/app/actions/portal-agencia";
+import { aceitarContratoPortalAction, ajusteNoPortalAction, aprovarNoPortalAction, entrarPortalAction, pedirCodigoPortalAction, sairPortalAction, solicitacaoNoPortalAction } from "@/app/actions/portal-agencia";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -64,6 +64,20 @@ export function NovaSolicitacao({ slug, clienteId }: { slug: string; clienteId: 
       <label className="text-sm font-medium">Tipo<select value={tipo} onChange={(e) => setTipo(e.target.value as typeof tipo)} className={campo}><option value="PEDIDO">Pedido</option><option value="IDEIA">Ideia</option><option value="DUVIDA">Dúvida</option></select></label>
       <label className="text-sm font-medium">Mensagem<textarea value={texto} onChange={(e) => setTexto(e.target.value)} rows={3} maxLength={2000} required className={`${campo} h-auto py-2`} /></label>
       <div><Button type="submit" loading={pending} disabled={texto.trim().length < 3}>Enviar</Button></div>
+    </form>
+  );
+}
+
+/** Aceite do contrato no portal (D321): digita o nome, marca "Li e concordo" e aceita o texto que está na tela. */
+export function AceitarContrato({ slug, clienteId, contratoId, hash }: { slug: string; clienteId: string; contratoId: string; hash: string }) {
+  const router = useRouter();
+  const [nome, setNome] = React.useState(""); const [concordo, setConcordo] = React.useState(false);
+  const [pending, start] = React.useTransition();
+  return (
+    <form className="mt-4 grid gap-3 border-t border-border pt-4" aria-label="Aceitar o contrato" onSubmit={(e) => { e.preventDefault(); start(async () => { const r = await aceitarContratoPortalAction(slug, clienteId, contratoId, { concordo, hashVisto: hash, nome }); if (r.ok) { toast.success("Contrato aceito! A cópia assinada foi para o seu e-mail."); router.refresh(); } else toast.error(r.error); }); }}>
+      <label className="text-sm font-medium">Seu nome completo<Input value={nome} onChange={(e) => setNome(e.target.value)} required autoComplete="name" className="mt-1" /></label>
+      <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" className="size-4" checked={concordo} onChange={(e) => setConcordo(e.target.checked)} />Li e concordo com o contrato acima</label>
+      <div><Button type="submit" loading={pending} disabled={!concordo || nome.trim().length < 3}>Aceitar contrato</Button></div>
     </form>
   );
 }

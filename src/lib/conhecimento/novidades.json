@@ -1,5 +1,12 @@
 [
  {
+  "numero": 321,
+  "frente": "E-commerce",
+  "titulo": "Contratos da agência com o cliente: modelo, aceite pelo portal e PDF assinado",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"vamos adiantar alguma coisa\" (próximo item da ordem da D316). Briefing da UPClips: contratos com assinatura e PDF, sem ferramenta paga à parte."
+ },
+ {
   "numero": 320,
   "frente": "E-commerce",
   "titulo": "Portal do cliente da agência: acompanhar o mês, aprovar, pagar e pedir",
@@ -271,12 +278,5 @@
   "titulo": "Cortesia dada durante o teste aparece como \"Cortesia\" e não vira cobrança no fim do teste",
   "data": "2026-11-10",
   "resumo": "Achado do dono: depois de estender 90 dias a Vestiário das Lendas (Caixa → Assinaturas → Estender), o Master continuou mostrando \"Em teste · 3 dias\" e o painel do cliente mostrava \"Teste grátis até 13/11\" junto com \"Pago até 11/02\". Pior…"
- },
- {
-  "numero": 277,
-  "frente": "E-commerce",
-  "titulo": "Contratos CT3: \"Já fiz o Pix\" no painel do cliente e conferência manual no Master",
-  "data": "2026-11-10",
-  "resumo": "Pedido do dono: o cliente só sinaliza que fez o Pix no CNPJ (Itaú) apertando um botão; o dono confere a conta do Itaú à mão."
  }
 ]

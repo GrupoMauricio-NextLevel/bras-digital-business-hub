@@ -76,7 +76,7 @@ export async function clientesDaSessao(db: Database, agenciaId: string, token: s
   return { email, clientes };
 }
 
-async function clienteDoPortal(db: Database, agenciaId: string, token: string | undefined, clienteId: string) {
+export async function clienteDoPortal(db: Database, agenciaId: string, token: string | undefined, clienteId: string) {
   const { email, clientes } = await clientesDaSessao(db, agenciaId, token);
   if (!email) throw new ForbiddenError("Entre de novo no portal.");
   if (!clientes.some((c) => c.id === clienteId)) throw new NotFoundError("Cliente não encontrado.");

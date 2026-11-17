@@ -5,6 +5,7 @@ import { escopoDaAgencia, FUNCAO_ROTULO, pode } from "@/lib/agencias/acesso";
 import { listarEquipe } from "@/lib/agencias/agencias";
 import { AGENCIA_FUNCOES } from "@/db/schema";
 import { AcoesDoMembro, ConvidarMembro } from "./equipe-cliente";
+import { DadosDaAgencia } from "./dados-agencia";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Equipe da agência" };
@@ -20,7 +21,7 @@ const O_QUE_VE: Record<string, string> = {
 export default async function EquipeDaAgencia() {
   const session = await requireRole("AGENCY");
   const db = await getDb();
-  const { membro } = await escopoDaAgencia(db, session.actor);
+  const { membro, agencia } = await escopoDaAgencia(db, session.actor);
   const equipe = await listarEquipe(db, session.actor);
   const admin = pode.gerirEquipe(membro);
   const funcoes = AGENCIA_FUNCOES.map((f) => ({ v: f, l: FUNCAO_ROTULO[f] }));
@@ -40,6 +41,13 @@ export default async function EquipeDaAgencia() {
           </li>
         ))}
       </ul>
+      {pode.editarContrato(membro) ? (
+        <section id="dados-agencia" className="ds-card mt-5 p-5 sm:p-6" aria-labelledby="dj">
+          <h2 id="dj" className="text-base font-semibold">Dados da agência</h2>
+          <p className="mb-3 text-sm text-muted-foreground">Saem nos contratos com os seus clientes. Só o administrador e o financeiro veem e mudam.</p>
+          <DadosDaAgencia inicial={{ razaoSocial: agencia.razaoSocial ?? "", documento: agencia.documento ?? "", cidadeForo: agencia.cidadeForo ?? "" }} />
+        </section>
+      ) : null}
     </>
   );
 }
