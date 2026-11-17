@@ -110,3 +110,73 @@ Comece pela PRIORIDADE 1, imagem 1.
 - Larguras: aberturas 2400 px; datas e "valor entregue" 1600 px; degraus e conquistas 1080 px; ilustrações 1024 px.
 - Peso: aberturas até 180 KB; cartões até 90 KB; ilustrações até 60 KB (WebP).
 - Pasta `public/paineis/v1/` e `public/paineis/v1/MANIFESTO.md` (arquivo, onde aparece, proporção, peso); conferir o contraste do texto sobre cada imagem por captura, nos dois temas.
+
+## 6. Reanálise depois da prioridade 1 (17/11/2026) e o lote 2, por partes
+
+### O que já temos
+- **15 imagens do lote 1** (`public/paineis/v1/`): abertura do lojista (no ar no painel), abertura do Master, degraus, Black Friday, Natal, liquidação de verão, conquistas (1ª venda e marco) e 3 telas vazias.
+- **Ilustrações v1** (`public/ilustracoes/v1/`): planas, azul-acinzentado; destoam do visual novo (vidro e luz).
+- **Fotos reais da equipe** e miniaturas dos temas.
+- **Ícones de traço fino** (lucide) em todo o sistema: limpos, mas é o que faz a tela parecer "sistema genérico".
+
+### O espaço que existe na tela (onde imagem pequena dá mais vida que imagem grande)
+| Lugar | Hoje | O que entra |
+|---|---|---|
+| Cartões de número (4 no início do lojista, 5 no Master) | ícone de traço num quadrado | ícone 3D de vidro da família de cor (48 px) |
+| Ações rápidas | ícone de traço | ícone 3D (40 px) |
+| Saúde da loja | anel e texto | escudo de vidro ao lado do anel |
+| Jornada da loja (próximo nível) | ilustração plana v1 | 5 fases em 3D, no mesmo estilo dos degraus |
+| Telas vazias restantes | ilustração v1 ou nada | 3D argila e vidro |
+| Acompanhar pedido (consumidor) | texto | 4 ícones neutros da linha do tempo (pago, separado, enviado, entregue), sem cor NextLevel |
+| Aberturas de parceiro, agência e só Site | vidro roxo | imagens do lote A |
+
+### Como vamos aplicar (o dinamismo)
+- **Ícones 3D nos cartões:** sobem 2 px e giram de leve ao passar o mouse; o número conta ao entrar. Parados com "menos movimento".
+- **Fundo das imagens:** o Gemini não faz transparente; pedimos fundo pérola liso **sem sombra no chão** e eu recorto o fundo, para servir no claro e no escuro.
+- **Peso:** ícones até 12 KB, ilustrações até 40 KB.
+
+### Frase de estilo (cole no começo de TODA imagem deste lote)
+```
+Ícone 3D suave no estilo argila fosca com detalhes de vidro translúcido, objeto único centralizado ocupando 70% do quadro, iluminação de estúdio suave vinda do alto à esquerda, cantos arredondados, aparência premium e amigável. Fundo totalmente liso cor pérola #F6F7FB, SEM sombra no chão, sem reflexo, sem texto, sem letras, sem números, sem logotipo. Formato quadrado 1:1.
+```
+
+### Parte 1 — ícones das famílias de cor e das ações rápidas (10, aplicação imediata)
+| Arquivo | Cole depois da frase de estilo |
+|---|---|
+| pv-icone-dinheiro.png | Carteira com duas moedas saindo, em azul elétrico (#4D9BFF) com brilho suave nas bordas de vidro. |
+| pv-icone-pedidos.png | Sacola de compras com uma caixa pequena ao lado, em ciano (#22D3EE). |
+| pv-icone-clientes.png | Dois bonecos estilizados lado a lado, sem rosto, em violeta (#A78BFA). |
+| pv-icone-visitas.png | Olho estilizado de vidro com ondas de sinal ao redor, em âmbar (#FBBF24). |
+| pv-icone-crescimento.png | Seta subindo em degraus com um pequeno broto no topo, em verde-vivo (#34E89E). |
+| pv-icone-festa.png | Estrela com pequenos confetes de vidro ao redor, em magenta (#F472B6). |
+| pv-icone-novo-produto.png | Caixa de produto com um sinal de mais flutuando acima, em azul elétrico. |
+| pv-icone-novo-pedido.png | Prancheta com uma sacola pequena e um sinal de mais, em ciano. |
+| pv-icone-aparencia.png | Pincel e paleta de cores com gotas nas seis cores (azul, ciano, violeta, âmbar, verde, magenta). |
+| pv-icone-financeiro.png | Cofrinho de vidro com moedas, em verde-vivo. |
+
+### Parte 2 — Jornada da loja e saúde (6)
+| Arquivo | Cole depois da frase de estilo |
+|---|---|
+| pv-fase-fundacao.png | Bloco de fundação com uma planta baixa e uma régua, em azul elétrico. |
+| pv-fase-lancamento.png | Vitrine de loja pequena com toldo, porta aberta e luz acesa, em ciano. |
+| pv-fase-aquisicao.png | Ímã atraindo pequenas sacolas de compra, em violeta. |
+| pv-fase-otimizacao.png | Engrenagem com um medidor de velocidade, em âmbar. |
+| pv-fase-escala.png | Três degraus de vidro com uma bandeira no topo, em verde-vivo. |
+| pv-saude-loja.png | Escudo de vidro com um sinal de visto, em verde-vivo, com brilho calmo. |
+
+### Parte 3 — telas vazias restantes e acompanhamento do pedido (9)
+| Arquivo | Cole depois da frase de estilo |
+|---|---|
+| pv-vazio-clientes.png | Porta de loja aberta com luz quente saindo e um tapete liso. |
+| pv-vazio-conversas.png | Dois balões de conversa vazios, um azul e um violeta, flutuando. |
+| pv-vazio-conquistas.png | Pedestal vazio com um brilho suave em cima. |
+| pv-vazio-contatos-site.png | Envelope de vidro chegando com um rastro de luz. |
+| pv-vazio-busca.png | Lupa de vidro sobre pontinhos de luz. |
+| pv-pedido-pago.png | Cartão de pagamento liso com um visto, tudo em branco e cinza claro (sem cor de marca). |
+| pv-pedido-separado.png | Caixa de papelão aberta com papel de seda, em tons neutros de kraft. |
+| pv-pedido-enviado.png | Caixa fechada com uma etiqueta lisa e uma seta de movimento, em tons neutros. |
+| pv-pedido-entregue.png | Caixa na frente de uma porta com um coração pequeno, em tons neutros. |
+
+### Parte 4 e Parte 5 (depois)
+- **Parte 4:** as aberturas que faltam do lote A (Master claro, parceiro, agência e só Site, escuro e claro) e "O que a NextLevel fez por você" (lote B). Usam o bloco da seção 3, não a frase de estilo.
+- **Parte 5:** as 9 datas comerciais que faltam (lote C) e as conquistas de recorde e de meta (lote D).
