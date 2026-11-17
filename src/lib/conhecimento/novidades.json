@@ -1,5 +1,12 @@
 [
  {
+  "numero": 323,
+  "frente": "E-commerce",
+  "titulo": "Soluções NextLevel no Painel da Agência: a agência vira usuária do NextLevel Business com um clique",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"no painel e no cockpit do dono da agência, ele pode ativar com um clique as nossas soluções, site, o que a gente tem... uma janela de conexão com a gente. Não quero que seja recriado coisas novas... ativar o que a gente…"
+ },
+ {
   "numero": 322,
   "frente": "E-commerce",
   "titulo": "Página de captação da agência: pedidos do site e das páginas de vendas entram no Comercial",
@@ -271,12 +278,5 @@
   "titulo": "Janela de resgate na saída: nas páginas públicas e, por escolha do lojista, na loja",
   "data": "2026-11-10",
   "resumo": "Pedido do dono: quando alguém vai sair das páginas públicas, uma janela para resgatar o visitante (referência: janela de saída com e-mail, caixa de concordância e botão verde). Os lojistas também precisam desse recurso."
- },
- {
-  "numero": 279,
-  "frente": "E-commerce",
-  "titulo": "Termos de uso da plataforma com aceite obrigatório antes de usar o painel",
-  "data": "2026-11-10",
-  "resumo": "Pedido do dono: um contrato padrão para todos os usuários novos, aceito logo no começo; sem passar por ele, o painel não abre. O contrato da Loja Pronta (D276) é outro assunto (serviço avulso)."
  }
 ]

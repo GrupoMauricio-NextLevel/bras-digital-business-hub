@@ -200,6 +200,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Comercial", href: "/agencia/comercial", icon: "HandCoins", group: "Agência" },
       { label: "Financeiro", href: "/agencia/financeiro", icon: "Wallet", group: "Gestão" },
       { label: "Equipe", href: "/agencia/equipe", icon: "Users", group: "Gestão", bottom: true },
+      { label: "Soluções NextLevel", href: "/agencia/solucoes", icon: "Sparkles", group: "Gestão" },
       { label: "Aprender", href: "/agencia/aprender", icon: "GraduationCap", group: "Gestão" },
     ],
     quick: [],

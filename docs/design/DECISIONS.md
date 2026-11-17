@@ -4151,3 +4151,25 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0112, só acrescenta):** em `agencias`, `captacao`; em `agencia_oportunidades`, canal, etiquetas, página, mensagem e chave do envio (único por agência).
 - **Teste:** `tests/agencias-captacao.test.ts` (origem pelo canal; página desligada; permissão; robô; duplicidade; aviso; fila do dia) e `e2e/agencias-captacao.mjs`.
 
+## D323 — [E-commerce] Soluções NextLevel no Painel da Agência: a agência vira usuária do NextLevel Business com um clique (2026-11-17)
+- **Pedido do dono:** "no painel e no cockpit do dono da agência, ele pode ativar com um clique as nossas soluções, site, o que a gente tem... uma janela de conexão com a gente. Não quero que seja recriado coisas novas... ativar o que a gente já tem, sendo o usuário do Next Level Business."
+- **Janela "Soluções NextLevel"** (menu Gestão, só o administrador da agência):
+  - **Conectar ao NextLevel Business:** a pessoa escolhe começar pelo Site ou pela Loja virtual, confirma o e-mail do perfil (sugestão: o mesmo endereço com "+negocio", porque cada perfil tem o próprio e-mail) e aceita.
+    - Usa o **mesmo cadastro do site público** (`signupMember`): independente, na marca Commerce, com o plano e o teste de sempre. O caminho Site já nasce com o modelo institucional publicado.
+    - Usa o nome e o CNPJ que a agência já preencheu (D321).
+  - **Liga os perfis pela conta do grupo (D141):** o aceite na tela substitui a senha do outro perfil, porque a conta acabou de ser criada pela própria pessoa. Fica registrado na auditoria (`AGENCIA_CONECTADA_BUSINESS`).
+  - **Abrir cada solução sem novo login:**
+    - "Editar o site" leva a Site → Páginas;
+    - "Abrir a loja" leva aos Produtos;
+    - "Ligar a loja virtual" e "Ativar o site" levam ao Plano do negócio (D308/D311);
+    - Contatos e orçamentos;
+    - os módulos extras (Captação, Caixa, Resultados da Meta, Portal do cliente), com a situação de cada um.
+
+    A troca usa `switchProfile`, e os destinos são uma lista fechada. Para voltar ao painel da agência: Suas marcas.
+- **Nada recriado:** cadastro, plano, teste, módulos, telas do site e da loja, contratação de adicionais e troca de perfil são os que já existem. Sem a chave `BUSINESS_V1`, a conexão abre como loja virtual, como no cadastro público.
+- **Regras:**
+  - uma conexão por agência (`agencias.negocio_store_id`, migração 0113);
+  - quem conectou abre direto; outro administrador liga o perfil em Suas marcas;
+  - nada disso funciona em modo suporte.
+- **Teste:** `tests/agencias-solucoes.test.ts` (permissão, CNPJ obrigatório, cadastro de sempre no caminho Site, perfis ligados, destinos fechados, troca de perfil) e `e2e/agencias-solucoes.mjs`.
+

@@ -792,6 +792,13 @@
       "when": 1794920403960,
       "tag": "0112_agencia_captacao",
       "breakpoints": true
+    },
+    {
+      "idx": 113,
+      "version": "7",
+      "when": 1794924974763,
+      "tag": "0113_agencia_negocio",
+      "breakpoints": true
     }
   ]
 }

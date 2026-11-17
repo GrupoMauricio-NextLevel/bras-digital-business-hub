@@ -3384,6 +3384,8 @@ export const agencias = pgTable("agencias", {
   documento: text("documento"),
   cidadeForo: text("cidade_foro"),
   /** Página de captação (D322): texto e serviços do formulário público de orçamento da agência. */
+  /** Conta NextLevel Business da própria agência (D323), criada pela janela "Soluções NextLevel". */
+  negocioStoreId: text("negocio_store_id").references(() => stores.id),
   captacao: jsonb("captacao").$type<{ ligada: boolean; titulo: string; texto: string; servicos: string[]; whatsapp: string | null }>(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
