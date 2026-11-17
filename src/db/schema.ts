@@ -3490,8 +3490,10 @@ export const agenciaPecaEventos = pgTable("agencia_peca_eventos", {
   link: text("link"),
   autorId: text("autor_id"),
   autorNome: text("autor_nome"),
+  /** Para quem a peça foi (passagem de etapa, ajuste, transferência): base dos avisos da pessoa (D316). */
+  destinoId: text("destino_id"),
   createdAt: createdAt(),
-}, (t) => [index("agencia_peca_eventos_peca_idx").on(t.pecaId, t.createdAt)]);
+}, (t) => [index("agencia_peca_eventos_peca_idx").on(t.pecaId, t.createdAt), index("agencia_peca_eventos_destino_idx").on(t.destinoId, t.createdAt)]);
 
 /** Comentários na peça; `interno` nunca aparece para o cliente. Menções avisam a pessoa citada. */
 export const agenciaPecaComentarios = pgTable("agencia_peca_comentarios", {

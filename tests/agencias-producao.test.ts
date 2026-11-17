@@ -6,7 +6,7 @@ import { actorFromUser, type Actor } from "@/lib/domain/access";
 import { convidarMembro, criarAgencia } from "@/lib/agencias/agencias";
 import { atualizarCliente, criarCliente, definirEquipeDoCliente } from "@/lib/agencias/clientes";
 import { atrasada, contagemDoCiclo, escolherResponsavel, mesAnterior, mesSeguinte, prazoDaEtapa, proximaEtapa } from "@/lib/agencias/fluxo";
-import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, fichaDaPeca, listarPecas, minhaFila, pedirAjuste, planejarMes, producaoDoMes, requisitoParaAvancar, transferirPeca } from "@/lib/agencias/producao";
+import { avisosDaPessoa, resumoDaSemana, atualizarPeca, avancarPeca, comentarPeca, criarPeca, fichaDaPeca, listarPecas, minhaFila, pedirAjuste, planejarMes, producaoDoMes, requisitoParaAvancar, transferirPeca } from "@/lib/agencias/producao";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 const antes = process.env.AGENCIAS_V1;
@@ -137,5 +137,29 @@ describe("produção da agência (Fase 1A, D314)", () => {
     const nov = await listarPecas(ctx.db, s.admin, { mes: "2026-11" }, HOJE);
     expect(nov.find((p) => p.id === id)).toMatchObject({ herdada: true, atrasada: true, mes: "2026-10" });
     expect((await listarPecas(ctx.db, s.admin, { mes: "2026-11", somenteAtrasadas: true }, HOJE)).map((p) => p.id)).toEqual([id]);
+  });
+
+  it("avisos no sino e resumo da semana (D316): chegou na fila, menção e entregas por pessoa", async () => {
+    const s = await cenario();
+    const hoje = new Date().toISOString().slice(0, 10);
+    const { id } = await criarPeca(ctx.db, s.admin, { clienteId: s.clienteId, titulo: "Reels da obra", tipo: "ARTE" }, hoje);
+    await avancarPeca(ctx.db, s.admin, id, hoje); await avancarPeca(ctx.db, s.admin, id, hoje); // arte: roteiro → edição
+    const avisos = await avisosDaPessoa(ctx.db, s.ed1);
+    expect(avisos[0]!.message).toMatch(/Reels da obra: Etapa Roteiro concluída → Edição/);
+    expect(await avisosDaPessoa(ctx.db, s.admin)).toEqual([]); // o que a própria pessoa fez não avisa
+    await comentarPeca(ctx.db, s.ed1, id, { texto: "Pode revisar?", mencoes: [s.gestor.userId] });
+    expect((await avisosDaPessoa(ctx.db, s.gestor))[0]!.message).toMatch(/citou você em "Reels da obra"/);
+    // O aviso continua com quem recebeu, mesmo depois de a peça seguir (o gestor recebeu na revisão e devolveu ao editor).
+    await atualizarPeca(ctx.db, s.ed1, id, { linkVersao: "https://drive.google.com/v1" });
+    await avancarPeca(ctx.db, s.ed1, id, hoje);
+    await pedirAjuste(ctx.db, s.gestor, id, "Trocar a música", hoje);
+    expect((await avisosDaPessoa(ctx.db, s.gestor)).some((a) => /Revisão interna/.test(a.message))).toBe(true);
+    expect((await avisosDaPessoa(ctx.db, s.ed1))[0]!.message).toMatch(/Ajuste pedido.*Trocar a música/);
+    const r = await resumoDaSemana(ctx.db, s.admin, hoje);
+    expect(r.etapasConcluidas).toBe(3);
+    expect(r.porPessoa).toEqual([{ nome: "Dona", etapas: 2 }, { nome: "Gu Editor", etapas: 1 }]);
+    expect(r.paraEditar.map((p) => p.id)).toEqual([id]);
+    expect(r.departamentos.find((d) => d.funcao === "EDICAO")).toMatchObject({ abertas: 1 });
+    expect(await resumoDaSemana(ctx.db, (await cenario()).admin, hoje)).toMatchObject({ etapasConcluidas: 0, paraEditar: [] });
   });
 });

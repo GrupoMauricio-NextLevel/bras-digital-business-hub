@@ -1,5 +1,12 @@
 [
  {
+  "numero": 316,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência: primeiros passos da conta nova, avisos no sino e Resumo da Semana",
+  "data": "2026-11-17",
+  "resumo": "Contexto: o dono criou a primeira agência no ar (\"NextLevel Marketing Ltda\", para testar como NextLevel Soluções) e viu o painel todo zerado. Perguntou também pelas funções do Master combinadas no plano da UPClips (docs/prompts/upclips-c…"
+ },
+ {
   "numero": 315,
   "frente": "E-commerce",
   "titulo": "Agências entram por painel.nextlevelcommerce.com.br",
@@ -271,12 +278,5 @@
   "titulo": "CX3: executivos de venda, venda na rua com recibo e prestação de contas no caixa",
   "data": "2026-11-07",
   "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX3 (decisões aprovadas pelo dono em 07/11)."
- },
- {
-  "numero": 272,
-  "frente": "E-commerce",
-  "titulo": "BG2: missões da semana, sequência, selos e ranking (engajamento sem dinheiro)",
-  "data": "2026-11-07",
-  "resumo": "Prompt: docs/prompts/bonus-gamificado-parceiros-executivos.md, fase BG2. O dono pediu as fases \"um de cada vez\" (07/11)."
  }
 ]

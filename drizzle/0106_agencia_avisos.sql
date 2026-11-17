@@ -1,0 +1,2 @@
+ALTER TABLE "agencia_peca_eventos" ADD COLUMN "destino_id" text;--> statement-breakpoint
+CREATE INDEX "agencia_peca_eventos_destino_idx" ON "agencia_peca_eventos" USING btree ("destino_id","created_at");

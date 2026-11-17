@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNull, lt, ne, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import {
@@ -11,7 +11,7 @@ import { newId } from "@/lib/ids";
 import { escopoDaAgencia, pode, podeVerCliente, type Membro } from "./acesso";
 import { hojeEmSaoPaulo } from "./clientes";
 import {
-  ETAPA_ROTULO, TIPO_PARA_INCLUSO, TIPO_ROTULO, atrasada, contagemDoCiclo, escolherResponsavel, mesDe, mesRotulo, podePedirAjuste, prazoDaEtapa, proximaEtapa,
+  FUNCAO_DA_ETAPA, ETAPA_ROTULO, TIPO_PARA_INCLUSO, TIPO_ROTULO, atrasada, contagemDoCiclo, escolherResponsavel, mesDe, mesRotulo, podePedirAjuste, prazoDaEtapa, proximaEtapa,
   publicada, situacaoInicial, situacaoRotulo, situacaoValida, type ContagemDoCiclo,
 } from "./fluxo";
 
@@ -65,9 +65,9 @@ async function pecaVisivel(db: Database, actor: Actor, pecaId: string) {
 
 const podeMexer = (m: Membro, p: Pick<Peca, "responsavelId">) => pode.gerirProducao(m) || p.responsavelId === m.userId;
 
-async function evento(db: Database, actor: Actor, peca: Pick<Peca, "id" | "agenciaId">, tipo: string, mensagem: string, link?: string | null) {
+async function evento(db: Database, actor: Actor, peca: Pick<Peca, "id" | "agenciaId">, tipo: string, mensagem: string, link?: string | null, destinoId?: string | null) {
   const u = await db.query.users.findFirst({ where: eq(users.id, actor.userId), columns: { name: true } });
-  await db.insert(agenciaPecaEventos).values({ id: newId("agpe"), pecaId: peca.id, agenciaId: peca.agenciaId, tipo, mensagem, link: link ?? null, autorId: actor.userId, autorNome: u?.name ?? null });
+  await db.insert(agenciaPecaEventos).values({ id: newId("agpe"), pecaId: peca.id, agenciaId: peca.agenciaId, tipo, mensagem, link: link ?? null, autorId: actor.userId, autorNome: u?.name ?? null, destinoId: destinoId ?? null });
 }
 
 const link = z.string().trim().url("Link inválido (comece com https://)").max(1000);
@@ -179,7 +179,7 @@ export async function avancarPeca(db: Database, actor: Actor, pecaId: string, ho
     .where(and(eq(agenciaPecas.id, peca.id), eq(agenciaPecas.etapa, peca.etapa))).returning({ id: agenciaPecas.id });
   if (!r.length) throw new DomainError("MUDOU", "A peça mudou de etapa agora há pouco. Atualize a página.");
   const nome = responsavelId ? equipe.find((p) => p.userId === responsavelId)?.nome ?? (await db.query.users.findFirst({ where: eq(users.id, responsavelId), columns: { name: true } }))?.name : null;
-  await evento(db, actor, peca, "ETAPA", `Etapa ${ETAPA_ROTULO[peca.etapa]} concluída → ${ETAPA_ROTULO[proxima]}${nome ? `, com ${nome}` : " (sem responsável: defina na equipe do cliente)"}.`);
+  await evento(db, actor, peca, "ETAPA", `Etapa ${ETAPA_ROTULO[peca.etapa]} concluída → ${ETAPA_ROTULO[proxima]}${nome ? `, com ${nome}` : " (sem responsável: defina na equipe do cliente)"}.`, null, responsavelId);
   return { etapa: proxima, responsavelId };
 }
 
@@ -191,7 +191,7 @@ export async function pedirAjuste(db: Database, actor: Actor, pecaId: string, mo
   const texto = z.string().trim().min(3, "Diga o que precisa mudar").max(2000).parse(motivo);
   const responsavelId = escolherResponsavel("EDICAO", equipe, cliente.responsavelId);
   await db.update(agenciaPecas).set({ etapa: "EDICAO", situacao: "AJUSTES", responsavelId, prazo: prazoDaEtapa("EDICAO", hoje, agencia.prazosEtapas), updatedAt: new Date().toISOString() }).where(eq(agenciaPecas.id, peca.id));
-  await evento(db, actor, peca, "AJUSTE", `Ajuste pedido na ${ETAPA_ROTULO[peca.etapa].toLowerCase()}: ${texto}`);
+  await evento(db, actor, peca, "AJUSTE", `Ajuste pedido na ${ETAPA_ROTULO[peca.etapa].toLowerCase()}: ${texto}`, null, responsavelId);
   const u = await db.query.users.findFirst({ where: eq(users.id, actor.userId), columns: { name: true } });
   await db.insert(agenciaPecaComentarios).values({ id: newId("agcm"), pecaId: peca.id, agenciaId: peca.agenciaId, autorId: actor.userId, autorNome: u?.name ?? "Equipe", texto: `Ajuste pedido: ${texto}`, interno: true });
 }
@@ -202,7 +202,7 @@ export async function transferirPeca(db: Database, actor: Actor, pecaId: string,
   if (!pode.gerirProducao(membro)) throw new ForbiddenError("Só o gestor transfere peças.");
   const alvo = await membroAtivo(db, membro.agenciaId, userId);
   await db.update(agenciaPecas).set({ responsavelId: alvo.id, updatedAt: new Date().toISOString() }).where(eq(agenciaPecas.id, peca.id));
-  await evento(db, actor, peca, "TRANSFERIDA", `Transferida para ${alvo.nome}.`);
+  await evento(db, actor, peca, "TRANSFERIDA", `Transferida para ${alvo.nome}.`, null, alvo.id);
 }
 
 export const comentarioSchema = z.object({ texto: z.string().trim().min(1, "Escreva o comentário").max(4000), link: link.optional().or(z.literal("")), mencoes: z.array(z.string()).max(10).default([]) });
@@ -306,3 +306,56 @@ export async function pessoasDaAgencia(db: Database, actor: Actor) {
 
 export { ETAPA_ROTULO, TIPO_ROTULO, publicada };
 export const ETAPAS_DO_QUADRO: PecaEtapa[] = [...PECA_ETAPAS];
+
+/**
+ * Avisos da pessoa da agência (D316), lidos do histórico das peças (sem tabela nova): o que chegou na fila dela, ajuste
+ * pedido, transferência e menção em comentário. Nunca mostra o que a própria pessoa fez.
+ */
+export async function avisosDaPessoa(db: Database, actor: Actor, limite = 8) {
+  if (actor.role !== "AGENCY") return [];
+  const eventos = await db.select({ id: agenciaPecaEventos.id, mensagem: agenciaPecaEventos.mensagem, createdAt: agenciaPecaEventos.createdAt, tipo: agenciaPecaEventos.tipo, titulo: agenciaPecas.titulo })
+    .from(agenciaPecaEventos).innerJoin(agenciaPecas, eq(agenciaPecas.id, agenciaPecaEventos.pecaId))
+    .where(and(eq(agenciaPecaEventos.destinoId, actor.userId), inArray(agenciaPecaEventos.tipo, ["ETAPA", "AJUSTE", "TRANSFERIDA"]), ne(agenciaPecaEventos.autorId, actor.userId)))
+    .orderBy(desc(agenciaPecaEventos.createdAt)).limit(limite);
+  const mencoes = await db.select({ id: agenciaPecaComentarios.id, autor: agenciaPecaComentarios.autorNome, texto: agenciaPecaComentarios.texto, createdAt: agenciaPecaComentarios.createdAt, titulo: agenciaPecas.titulo })
+    .from(agenciaPecaComentarios).innerJoin(agenciaPecas, eq(agenciaPecas.id, agenciaPecaComentarios.pecaId))
+    .where(sql`${agenciaPecaComentarios.mencoes} @> ${JSON.stringify([actor.userId])}::jsonb`)
+    .orderBy(desc(agenciaPecaComentarios.createdAt)).limit(limite);
+  return [
+    ...eventos.map((e) => ({ id: e.id, createdAt: e.createdAt, type: e.tipo === "AJUSTE" ? "warning" : "info", message: `${e.titulo}: ${e.mensagem}` })),
+    ...mencoes.map((m) => ({ id: m.id, createdAt: m.createdAt, type: "info", message: `${m.autor} citou você em "${m.titulo}": ${m.texto.slice(0, 120)}` })),
+  ].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limite);
+}
+
+const somaDias = (dia: string, n: number) => new Date(Date.parse(`${dia}T12:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
+
+/**
+ * Resumo da Semana (D316, briefing da UPClips): entregas dos últimos 7 dias, pendências acumuladas, o que vem nos
+ * próximos 7 dias e as prioridades de cada departamento. Só com as peças que a pessoa pode ver.
+ */
+export async function resumoDaSemana(db: Database, actor: Actor, hoje = hojeEmSaoPaulo()) {
+  const { membro } = await escopoDaAgencia(db, actor);
+  const pecas = await listarPecas(db, actor, {}, hoje);
+  const desde = somaDias(hoje, -7); const ate = somaDias(hoje, 7);
+  const visiveis = new Set(pecas.map((p) => p.id));
+  const eventos = (await db.select({ pecaId: agenciaPecaEventos.pecaId, autor: agenciaPecaEventos.autorNome, autorId: agenciaPecaEventos.autorId }).from(agenciaPecaEventos)
+    .where(and(eq(agenciaPecaEventos.agenciaId, membro.agenciaId), eq(agenciaPecaEventos.tipo, "ETAPA"), gte(agenciaPecaEventos.createdAt, `${desde}T03:00:00.000Z`)))).filter((e) => visiveis.has(e.pecaId));
+  const abertas = pecas.filter((p) => !publicada(p.etapa));
+  const porPessoa = [...eventos.reduce((m, e) => m.set(e.autor ?? "Equipe", (m.get(e.autor ?? "Equipe") ?? 0) + 1), new Map<string, number>())].map(([nome, etapas]) => ({ nome, etapas })).sort((a, b) => b.etapas - a.etapas);
+  const departamentos = [...new Set(Object.values(FUNCAO_DA_ETAPA))].map((funcao) => {
+    const daqui = abertas.filter((p) => FUNCAO_DA_ETAPA[p.etapa] === funcao && p.etapa !== "PUBLICADO");
+    return { funcao, abertas: daqui.length, atrasadas: daqui.filter((p) => p.atrasada).length };
+  }).filter((d) => d.abertas);
+  return {
+    desde, ate,
+    publicadas: pecas.filter((p) => p.publicadoEm && p.publicadoEm.slice(0, 10) >= desde),
+    etapasConcluidas: eventos.length, porPessoa,
+    atrasadas: abertas.filter((p) => p.atrasada),
+    gravacoes: abertas.filter((p) => p.etapa === "CAPTACAO" && (!p.prazo || p.prazo <= ate)),
+    paraEditar: abertas.filter((p) => p.etapa === "EDICAO"),
+    programadas: abertas.filter((p) => p.etapa === "AGENDAMENTO"),
+    aprovacoes: abertas.filter((p) => p.etapa === "APROVACAO"),
+    departamentos,
+  };
+}
+

@@ -8,6 +8,8 @@ export type Notice = { id: string; message: string; createdAt: string; type: str
 /** Atividades recentes visíveis ao ator, usadas na central de avisos. Sempre com escopo do tenant. */
 export async function recentNotices(actor: Actor, limit = 8): Promise<Notice[]> {
   const db = await getDb();
+  // Painel da Agência (D316): avisos vindos do histórico das peças da pessoa.
+  if (actor.role === "AGENCY") { const { avisosDaPessoa } = await import("@/lib/agencias/producao"); return avisosDaPessoa(db, actor, limit); }
   const scope =
     actor.role === "NEXTLEVEL_MASTER" ? eq(activities.scope, "PLATFORM")
     : actor.role === "STORE_OWNER" ? and(eq(activities.scope, "STORE"), eq(activities.storeId, actor.storeId ?? "__none__"))

@@ -3993,3 +3993,26 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   3. com o domínio verificado no Render, ligar `AGENCIAS_URL` (a variável dispara uma montagem; ligar só depois do domínio respondendo, senão o `/agencia` levaria a um endereço que ainda não abre).
 - **Teste:** `tests/host-routing.test.ts` (endereço das agências).
 
+## D316 — [E-commerce] Painel da Agência: primeiros passos da conta nova, avisos no sino e Resumo da Semana (2026-11-17)
+- **Contexto:** o dono criou a primeira agência no ar ("NextLevel Marketing Ltda", para testar como NextLevel Soluções) e viu o painel todo zerado. Perguntou também pelas funções do Master combinadas no plano da UPClips (`docs/prompts/upclips-centro-de-comando.md`): elas estavam nas fases 1C, 1D e 2, e só a 1A tinha sido feita.
+- **Conta nova:** enquanto a carteira estiver vazia, o "Hoje na agência" mostra os **primeiros passos** no lugar dos números zerados, no mesmo molde do "até a primeira venda" do lojista:
+  1. montar a equipe;
+  2. trazer a carteira;
+  3. definir quem cuida de cada cliente;
+  4. planejar o mês.
+
+  Cada passo marca feito sozinho.
+- **Avisos no sino** (antes da fase 1C, reaproveitando a central de avisos dos painéis):
+  - a pessoa da agência vê o que chegou na fila dela, ajuste pedido, transferência e menção em comentário;
+  - lidos do histórico das peças; o histórico ganhou "para quem a peça foi" (migração 0106, só acrescenta);
+  - nunca avisa o que a própria pessoa fez.
+- **Resumo da Semana** (item 20 do briefing, molde do resumo do dia):
+  - publicados e etapas concluídas nos últimos 7 dias, entregas por pessoa, prioridades de cada departamento;
+  - atrasadas, gravações previstas, vídeos para editar, publicações, aprovações pendentes e pagamentos próximos.
+- **Demonstração:** "Agência Nova (demonstração)", vazia, para ver os primeiros passos (`nova@agencia.demo`).
+- **Ordem das funções do Master que faltam** (combinada com o dono nesta rodada):
+  1. busca e Aprender (trilha da agência);
+  2. Comercial (CRM) com "virar cliente", contratos com assinatura e cobrança automática;
+  3. caixa, tráfego por cliente e Maurício IA.
+- **Testes:** `tests/agencias-producao.test.ts` (avisos e resumo).
+
