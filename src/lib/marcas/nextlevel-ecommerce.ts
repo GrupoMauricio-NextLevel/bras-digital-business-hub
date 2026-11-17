@@ -72,7 +72,13 @@ export const nomeProdutoEc = (nome: string) => (/^Commerce (Start|Pro|Scale|Ente
  * NextLevel Business (D304): nome da ÁREA do painel que gerencia o negócio, nunca uma marca, domínio ou cadastro à parte.
  * A plataforma continua "NextLevel Commerce" (getBrand()). Trocar o nome = mudar só esta linha (e os testes de texto).
  */
-export const NOME_GERENCIADOR = { nome: "NextLevel Business", subtitulo: "Gerenciador do seu negócio" } as const;
+export const NOME_GERENCIADOR = { nome: "Meu negócio", subtitulo: "O dia a dia do seu negócio" } as const;
+/**
+ * D324: "NextLevel Business" fica reservado para o sistema avançado de gestão, contratado à parte (decisão do dono em
+ * andamento). O painel de todo cliente se chama "Meu negócio". Soluções Digitais = serviços da agência; Loja virtual =
+ * planos Start/Pro/Scale intactos; Sites = captação de clientes ligada aos anúncios.
+ */
+export const NOME_BUSINESS = "NextLevel Business" as const;
 
 /** Os dois caminhos da entrada (D304). `para=site|loja` no cadastro e no formulário assistido. */
 export const CAMINHOS = {

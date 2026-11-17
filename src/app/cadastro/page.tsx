@@ -23,7 +23,6 @@ import { SignupForm } from "./signup-form";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { finFlag } from "@/lib/finance/flags";
 import { businessLigado } from "@/lib/business/modulos";
-import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -87,7 +86,7 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
             <span className="ck-seguro"><Lock className="size-3.5" aria-hidden />Checkout seguro</span>
           </div>
           <h1 className="ck-titulo mt-8">{site ? <>Seu site no ar <em>hoje</em>.</> : b.ativa ? <>Sua loja no ar com o <em>preço da Black</em>.</> : <>Sua loja no ar <em>hoje</em>.</>}</h1>
-          <p className="ck-intro mt-3">{site ? `Escolha o plano, crie a conta e entre direto no painel: site da empresa, contatos e o ${NOME_GERENCIADOR.nome} para cuidar do negócio.` : "Escolha o plano, crie a conta e entre direto no painel. Taxa zero da plataforma nas vendas com o Mercado Pago."}</p>
+          <p className="ck-intro mt-3">{site ? `Escolha o plano, crie a conta e entre direto no painel: site da empresa, pedidos de orçamento e o painel para cuidar do negócio.` : "Escolha o plano, crie a conta e entre direto no painel. Taxa zero da plataforma nas vendas com o Mercado Pago."}</p>
           <ol className="ck-etapas mt-5" aria-label="Etapas"><li aria-current="step">01 · Plano</li><li aria-current="step">02 · Seus dados</li><li>{site ? "03 · Site no painel" : "03 · Loja no painel"}</li></ol>
           <div className="mt-8"><CheckoutEc formato={site ? "SITE" : "LOJA"} plans={doCheckout} trialDays={pv.offer?.trialDays ?? 0} black={b.ativa ? { fim: b.fim, restanteMs: b.restanteMs } : null} initialPlan={initialPlan} initialCycle={sp.ciclo === "ANNUAL" ? "ANNUAL" : "MONTHLY"} initialRef={(sp.ref ?? "").slice(0, 40) || undefined} /></div>
           <p className="mt-6 text-center text-sm text-[#9fb3d9]">Já tem conta? <Link href="/login" className="font-semibold text-white underline underline-offset-4">Entrar na área de membros</Link></p>

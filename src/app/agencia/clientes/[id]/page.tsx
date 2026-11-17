@@ -19,6 +19,7 @@ import { solicitacoesDaAgencia, urlDoPortal } from "@/lib/agencias/portal";
 import { agencias } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { CopiarLinkPortal, ResponderSolicitacao } from "./portal-agencia";
+import { VerComoCliente } from "@/components/agencia/gestao-cliente";
 import { contratosDoClienteNaAgencia } from "@/lib/agencias/contratos";
 import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
 import { CancelarContrato, GerarContrato } from "./contrato-cliente";
@@ -82,6 +83,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
             <h2 id="portal" className="mb-1 text-base font-semibold">Portal do cliente</h2>
             <p className="mb-2 text-sm text-muted-foreground">{c.email ? <>O cliente entra com <b>{c.email}</b> e um código no e-mail: acompanha o mês, aprova conteúdos, paga e manda pedidos.</> : "Cadastre o e-mail do cliente na ficha para ele entrar no portal."}</p>
             {linkPortal && c.email ? <CopiarLinkPortal url={linkPortal} /> : null}
+            <div className="mt-2 flex flex-wrap gap-2"><VerComoCliente clienteId={c.id} /><Link href="/agencia/atendimento" className="inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Abrir o Atendimento</Link></div>
             {pedidos.length ? (
               <ul className="mt-3 space-y-3 text-sm">{pedidos.slice(0, 8).map((s) => <li key={s.id} className="rounded-xl bg-surface-muted/60 p-3"><span className="text-xs text-muted-foreground">{({ PEDIDO: "Pedido", IDEIA: "Ideia", DUVIDA: "Dúvida" } as const)[s.tipo]} · {s.createdAt.slice(0, 10).split("-").reverse().join("/")} · <b>{({ ABERTA: "Novo", EM_ANDAMENTO: "Em andamento", RESPONDIDA: "Respondido" } as const)[s.situacao]}</b></span><p className="mt-1">{s.texto}</p>{s.resposta ? <p className="mt-1.5 border-l-2 border-[var(--ds-link)] pl-2 text-muted-foreground">{s.resposta}</p> : null}{s.situacao !== "RESPONDIDA" ? <ResponderSolicitacao id={s.id} situacao={s.situacao} /> : null}</li>)}</ul>
             ) : <p className="mt-2 text-xs text-muted-foreground">Nenhum pedido do cliente ainda.</p>}

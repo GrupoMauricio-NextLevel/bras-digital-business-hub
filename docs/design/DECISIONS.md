@@ -4173,3 +4173,92 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - nada disso funciona em modo suporte.
 - **Teste:** `tests/agencias-solucoes.test.ts` (permissão, CNPJ obrigatório, cadastro de sempre no caminho Site, perfis ligados, destinos fechados, troca de perfil) e `e2e/agencias-solucoes.mjs`.
 
+
+## D324 — [E-commerce] "NextLevel Business" fica reservado ao sistema avançado; o painel de todo cliente passa a se chamar "Meu negócio" (2026-11-17)
+- **Dono (17/11/2026):** "Soluções Digitais são os serviços da agência; Business é o sistema avançado; loja virtual é a plataforma de e-commerce; Sites é outra função conectada aos anúncios para captação de clientes." Com a chave `BUSINESS_V1` já ligada no Render, o nome "NextLevel Business" estava aparecendo para todos os lojistas como se fosse o painel de todo mundo; o dono aprovou o ajuste rápido de textos.
+- **Feito (só textos; as funções continuam iguais):**
+  - grupo do menu do lojista "NextLevel Business" passa a "Meu negócio";
+  - a visão geral mostra "Meu negócio · Visão geral";
+  - a página `/empresas` passa a "Site para a sua empresa captar clientes" (título no Google: "Site para empresas captarem clientes"), sem o nome Business;
+  - os pacotes da tela Plano do negócio ficam "Painel do negócio", "Site", "Loja virtual" e "Site + Loja virtual";
+  - "Disponível com o NextLevel Business" passa a "Ainda não está ligado na sua conta";
+  - home, cadastro e "Quero minha loja" falam de "mesmo painel".
+- **Constantes:** `NOME_GERENCIADOR` ("Meu negócio") para o painel de todos e `NOME_BUSINESS` ("NextLevel Business") reservado ao produto avançado (`src/lib/marcas/nextlevel-ecommerce.ts`).
+- **Não mexido:** o Painel da Agência (D323) continua dizendo "Conectar ao NextLevel Business", o que combina com o Business como produto que a agência ativa.
+- **Modelo em quatro partes, a fechar com o dono (perguntas em aberto):**
+  - **Soluções Digitais:** serviços da agência;
+  - **Loja virtual:** planos Start, Pro e Scale intactos;
+  - **Sites:** captação ligada aos anúncios (páginas, formulário, origem, página de campanha da NB4);
+  - **NextLevel Business:** sistema avançado contratado à parte.
+  - As perguntas: Business à parte ou só no Scale? O que entra nele? Sites vendido sozinho, com preço próprio?
+
+## D325 — [E-commerce] Gestão do Master no Painel da Agência: ver como cliente, placar e metas, tráfego, agente, crescimento, atendimento e executivos (2026-11-17)
+- **Pedido do dono:** "sinto que ainda não trouxe os itens do master do nextlevel commerce para o projeto atual... quero que desenvolva os 7 de uma vez, não quero perder muito tempo em baterias longas de testes".
+- **Racional:** a parte operacional do Master já estava no painel (D313 a D323). Faltava a camada de gestão e crescimento.
+- **Testes:** nesta rodada, a pedido do dono, rodaram só os testes das agências e os arquivos mexidos. A bateria completa fica para outra rodada.
+- **O que entrou (cada item é o equivalente do Master, sobre os dados da agência):**
+  1. **Ver como o cliente** (= "Ver como cliente (suporte)")
+     - na ficha do cliente, abre o portal daquele cliente só para ver, com uma faixa avisando;
+     - o passe vale 30 minutos e é assinado;
+     - aprovar, pedir e aceitar ficam escondidos;
+     - só para quem pode ver o cliente.
+  2. **Placar e metas** (= "Bônus e metas" e "Placar")
+     - o administrador e o gestor definem as metas do mês: conteúdos publicados, clientes novos e receita (a receita, só quem vê valores);
+     - o realizado vem sozinho;
+     - o ranking da equipe conta as etapas concluídas na produção.
+  3. **Tráfego e anúncios** (= "Tráfego e campanhas" e "Mesa de anúncios", no desenho da sala da campanha D299)
+     - campanha por cliente, com plataforma, objetivo, verba e o que conta como resultado;
+     - quadro por situação (planejada, no ar, pausada, encerrada);
+     - números lançados pelo tráfego (investido e resultados) e custo por resultado;
+     - aviso quando os números passam de 7 dias;
+     - total por cliente;
+     - acesso: administrador, gestor e tráfego pago, respeitando a equipe do cliente;
+     - a leitura automática da Meta (D302) fica para quando a agência ligar a conta.
+  4. **Pergunte ao Maurício** (= "Agente")
+     - perguntas prontas (atrasos, quanto falta receber, prioridades de hoje, como está o mês) respondidas com os números reais, sem IA;
+     - pergunta livre usa a IA configurada no Master (D243), só com esses fatos;
+     - cada pessoa vê só o que a função permite.
+  5. **Crescimento** (= "Crescimento")
+     - últimos 6 meses: clientes ativos, novos, encerrados, receita recorrente, cancelamento e recebido;
+     - regra pura testada;
+     - só administrador e financeiro.
+  6. **Atendimento e Caixa de entrada** (= "Atendimento" e "Caixa de entrada")
+     - os pedidos do portal (D320) viraram conversas com mensagens dos dois lados;
+     - a agência responde, o cliente recebe um e-mail e responde no portal, e isso reabre a conversa;
+     - a fila do dia leva direto à conversa;
+     - a Caixa de entrada mostra os e-mails que o sistema mandou aos clientes da agência (aprovação, contrato, cobrança, respostas);
+     - receber e-mail de verdade exige conectar uma caixa de correio: fica para depois.
+  7. **Executivos de venda e Indique e ganhe** (= "Executivos de venda" e "Indique e ganhe")
+     - ao virar cliente, quem cuidava da negociação fica como vendedor (`agencia_clientes.vendedor_id`);
+     - o administrador define a comissão de cada pessoa (%) e a tela mostra a comissão do mês sobre o que os clientes do vendedor pagaram;
+     - em Soluções NextLevel, o administrador ativa o **Indique e ganhe** com um clique, pelo cadastro de parceiro de sempre (`registerPartner`, mesmos termos e comissões), e abre o painel de indicações sem novo login (conta do grupo, D141).
+- **Banco (migração 0114, só acrescenta):**
+  - tabelas `agencia_campanhas` e `agencia_mensagens`;
+  - colunas `agencias.metas`, `agencia_membros.comissao_pct` e `agencia_clientes.vendedor_id`.
+- **Menu:**
+  - Agência: Atendimento, Tráfego e anúncios;
+  - Gestão: Placar e metas, Crescimento, Pergunte ao Maurício;
+  - Comercial: botão "Executivos de venda".
+- **Teste:** `tests/agencias-gestao.test.ts` (crescimento e custo por resultado puros; metas, placar e permissões; vendedor e comissão; campanhas e mesa; conversa dos dois lados, e-mail e caixa de entrada; passe de ver como cliente; agente sem IA; indique e ganhe).
+
+## D326 — [E-commerce] Modo demonstração no Painel da Agência: uma chave para ver tudo em pleno andamento (2026-11-17)
+- **Pedido do dono:** "um botão no início do painel pra ativar um modo Demo com vários funcionários, clientes e tudo em movimento... uma chave pra ligar e desligar o modo demo."
+- **Chave "Modo demonstração"** no início do painel, só para o administrador.
+- **Ligar:**
+  - na primeira vez, cria uma **agência de demonstração separada** ("<agência> · demonstração"), povoada com:
+    - a mesma equipe, carteira, produção, cobranças e comercial da demonstração local (`povoarAgenciaDemo`, extraído de `seedDemoAgencia` sem mudar a demonstração);
+    - mais campanhas, conversas do portal e metas do mês;
+  - abre o painel dela sem novo login (conta do grupo, D141);
+  - um segundo administrador da mesma agência ganha o próprio perfil no sandbox.
+- **Desligar:** na faixa amarela "Modo demonstração", em todas as telas do sandbox, a chave volta para a agência real.
+- **Em movimento:** a cada visita ao sandbox, depois de 1 minuto:
+  - até 3 conteúdos avançam uma etapa, com o nome de quem fez;
+  - e, alternando, chega um pedido de cliente, chega um contato do site (anúncio da Meta) ou uma cobrança é paga.
+- **Separação total:**
+  - os dados reais nunca são tocados;
+  - o sandbox só tem endereços `@demonstracao.invalid` (nenhum e-mail sai);
+  - não aparece na lista de agências do Master (`agencias.demo_de_id`);
+  - os "Primeiros passos" ficam escondidos no sandbox.
+- **Banco (migração 0115, só acrescenta):** `agencias.demo_de_id` e `agencias.demo_movido_em` (trava de 1 minuto entre os movimentos).
+- **Teste:** `tests/agencias-demo.test.ts` (só administrador, sandbox separado com dados reais intactos, reaproveita o sandbox, troca de perfil, movimento com trava, nada se move fora do sandbox, desligar volta à real) e `e2e/agencias-modo-demo.mjs` (1440 e 360 px, axe).
+

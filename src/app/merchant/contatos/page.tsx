@@ -23,7 +23,7 @@ const quando = (iso: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit
 export default async function ContatosDoNegocio({ searchParams }: { searchParams: Promise<{ situacao?: string }> }) {
   const session = await requireRole("STORE_OWNER");
   const store = session.store!; const db = await getDb();
-  if (!(await modulosDoNegocio(db, store.id)).ativos.has("contatos")) return <><PageHeader title="Contatos e orçamentos" /><EmptyState icon={Inbox} title="Disponível com o NextLevel Business" description="Os pedidos de orçamento do site aparecem aqui quando o gerenciador do negócio estiver ligado na sua conta." /></>;
+  if (!(await modulosDoNegocio(db, store.id)).ativos.has("contatos")) return <><PageHeader title="Contatos e orçamentos" /><EmptyState icon={Inbox} title="Ainda não está ligado na sua conta" description="Os pedidos de orçamento do site aparecem aqui quando o gerenciador do negócio estiver ligado na sua conta." /></>;
   const { situacao } = await searchParams;
   const filtro = (FILTROS.find((f) => f.v === situacao)?.v ?? "ABERTOS");
   const [lista, resumo, servicos] = await Promise.all([listarContatos(db, session.actor, store.id, { situacao: filtro === "TODOS" ? undefined : filtro }), resumoDosContatos(db, store.id), listarServicos(db, store.id)]);

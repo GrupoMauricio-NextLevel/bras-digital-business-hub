@@ -47,7 +47,7 @@ describe("módulos do negócio (NB1, D306)", () => {
     expect(businessLigado({})).toBe(false);
   });
   it("nomes vêm das constantes da marca", () => {
-    expect(NOME_GERENCIADOR.nome).toBe("NextLevel Business");
+    expect(NOME_GERENCIADOR.nome).toBe("Meu negócio");
     expect(CAMINHOS.site.formato).toBe("SITE");
     expect(caminhoDe("site")).toBe("site");
     expect(caminhoDe("empresa")).toBeNull();
@@ -118,8 +118,8 @@ describe("tabela de preços com os módulos (NB8, D310)", () => {
 
 describe("pacotes do negócio (NB8, D308/D310)", () => {
   it("nome do pacote pelos módulos ligados", () => {
-    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "LOJA" }))]).toBe("NextLevel Business + Loja virtual");
-    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "SITE", direitos: new Set([chaveDoModulo("loja")]) }))]).toBe("NextLevel Business + Site + Loja virtual");
+    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "LOJA" }))]).toBe("Loja virtual");
+    expect(PACOTE_ROTULO[pacoteDe(modulosDe({ ...base, formato: "SITE", direitos: new Set([chaveDoModulo("loja")]) }))]).toBe("Site + Loja virtual");
   });
   it("planos de loja intactos: o site é o único adicional; a loja liga sem cobrança para quem entrou pelo site", async () => {
     const ctx = await freshDb();

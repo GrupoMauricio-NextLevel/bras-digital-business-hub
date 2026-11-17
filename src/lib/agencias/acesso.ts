@@ -33,6 +33,10 @@ export const pode = {
   gerirProducao: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR",
   /** Cria peças e planeja o mês. */
   planejar: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR" || m.funcao === "ROTEIRO" || m.funcao === "ATENDIMENTO",
+  /** Tráfego e Mesa de anúncios (D325). */
+  trafego: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR" || m.funcao === "TRAFEGO",
+  /** Metas da equipe (D325). */
+  definirMetas: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR",
 };
 
 /** Vê o cliente se vê a carteira toda, se é o responsável ou se está na equipe do cliente. */

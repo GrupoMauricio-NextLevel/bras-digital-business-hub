@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Globe, Store } from "lucide-react";
-import { CAMINHOS, NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
+import { CAMINHOS } from "@/lib/marcas/nextlevel-ecommerce";
 
 /**
  * Os dois caminhos da entrada (NextLevel Business, NB1, D306/D306): site para a empresa ou loja virtual, com o mesmo
@@ -17,7 +17,7 @@ export function DoisCaminhos({ signupOpen, className = "" }: { signupOpen: boole
       <div className="mx-auto max-w-6xl">
         <p className="text-xs font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Por onde começar</p>
         <h2 id="caminhos-t" className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">O que o seu negócio precisa agora?</h2>
-        <p className="mt-3 max-w-2xl text-body">Escolha o caminho. Nos dois, você cuida do dia a dia no <b>{NOME_GERENCIADOR.nome}</b>, o gerenciador do seu negócio: clientes, pedidos, atendimento e resultados num painel só. Dá para ligar o outro caminho depois, sem trocar de conta.</p>
+        <p className="mt-3 max-w-2xl text-body">Escolha o caminho. Nos dois, você cuida do dia a dia no mesmo painel: clientes, pedidos, atendimento e resultados num painel só. Dá para ligar o outro caminho depois, sem trocar de conta.</p>
         <ul className="mt-8 grid gap-4 md:grid-cols-2">
           {cartoes.map(({ c, Icone, itens }) => (
             <li key={c} className="ec-cartao flex flex-col !p-6">

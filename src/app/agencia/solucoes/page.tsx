@@ -7,6 +7,8 @@ import { EmptyState } from "@/components/app/empty-state";
 import { escopoDaAgencia } from "@/lib/agencias/acesso";
 import { solucoesDaAgencia } from "@/lib/agencias/solucoes";
 import { Abrir, Conectar } from "./solucoes-cliente";
+import { AbrirIndique, AtivarIndique } from "@/components/agencia/gestao-cliente";
+import { Gift } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Soluções NextLevel" };
@@ -24,6 +26,12 @@ export default async function Solucoes() {
   return (
     <div className="mx-auto max-w-[1100px] space-y-5">
       <PageHeader eyebrow="Conexão com a NextLevel" title="Soluções NextLevel" description="Site, loja virtual e o gerenciador do negócio para a própria agência, com um clique. É o NextLevel Business de sempre, ligado ao seu login." />
+      <section className={card} aria-labelledby="sl-ind">
+        <h2 id="sl-ind" className="mb-1 flex items-center gap-2 text-base font-semibold"><Gift className="size-5 text-[var(--ds-link)]" aria-hidden />Indique e ganhe</h2>
+        {s.indique.ativo ? (
+          <><p className="text-sm text-muted-foreground">A agência está no programa de parceiros da NextLevel. Código: <b className="text-foreground">{s.indique.codigo}</b>. Links, indicações e comissões ficam no painel de parceiro.</p>{s.indique.euLigado ? <div className="mt-3"><AbrirIndique /></div> : <p className="mt-2 text-sm">Ativado por outra pessoa da agência: ligue o perfil em <Link href="/account/marcas" className="font-semibold text-link underline underline-offset-4">Suas marcas</Link>.</p>}</>
+        ) : s.temDocumento ? <><p className="mb-3 text-sm text-muted-foreground">Indique a NextLevel para outras empresas e acompanhe as comissões, com as mesmas regras do programa de parceiros.</p><AtivarIndique emailSugerido={s.emailParceiro} /></> : <p className="text-sm">Preencha o CNPJ da agência em <Link href="/agencia/equipe#dados-agencia" className="font-semibold text-link underline underline-offset-4">Equipe, em Dados da agência</Link> para ativar.</p>}
+      </section>
       {!s.conectada ? (
         <section className={card} aria-labelledby="sl-con">
           <h2 id="sl-con" className="mb-1 text-base font-semibold">Conectar a agência ao NextLevel Business</h2>
