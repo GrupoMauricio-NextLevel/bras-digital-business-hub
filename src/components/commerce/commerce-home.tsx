@@ -27,7 +27,8 @@ function Delta({ value }: { value?: number }) {
   return <span className={`inline-flex items-center gap-1 text-xs font-medium ${up ? "text-success" : "text-danger"}`}><Icon className="size-3.5" aria-hidden />{up ? "+" : "−"}{Math.abs(value).toFixed(1).replace(".", ",")}%</span>;
 }
 
-function Kpi({ icon: Icon, label, value, note, i }: { icon: LucideIcon; label: string; value: string; note?: React.ReactNode; i: number }) {
+/** Cartão de número do painel Commerce; reaproveitado no Painel da Agência (D313). */
+export function Kpi({ icon: Icon, label, value, note, i }: { icon: LucideIcon; label: string; value: string; note?: React.ReactNode; i: number }) {
   return <div className="ds-card ds-kpi-card ds-lift ds-enter !p-3.5 sm:!p-5" style={stagger(i)}>
     <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[var(--ds-link)] sm:size-8 sm:rounded-xl"><Icon className="size-4" aria-hidden /></span><span className="truncate">{label}</span></div>
     <div className="mt-2.5 text-[1.3rem] font-semibold leading-none tracking-[-.03em] tabular-nums sm:mt-3 sm:text-[1.75rem]">{value}</div>

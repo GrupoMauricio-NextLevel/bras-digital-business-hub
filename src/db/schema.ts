@@ -26,7 +26,7 @@ export const organizations = pgTable("organizations", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   /** NEXTLEVEL | SUPPLIER | MERCHANT */
-  type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER"] }).notNull(),
+  type: text("type", { enum: ["NEXTLEVEL", "SUPPLIER", "MERCHANT", "PARTNER", "AGENCY"] }).notNull(),
   /** Marca por onde o cliente entrou (NextLevel Commerce, SuperDrop, Brás Digital). Organização e apresentação, não segurança. */
   brand: text("brand", { enum: ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "CREATORS_HUB", "CHINA_HUB", "NEXTLEVEL", "NEXTLEVEL_CARGAS"] }).notNull().default("SUPERDROP"),
   createdAt: createdAt(),
@@ -179,7 +179,7 @@ export const users = pgTable("users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER", "BRAS_IMPORTER", "CARRIER"] }).notNull(),
+  role: text("role", { enum: ["NEXTLEVEL_MASTER", "SUPPLIER_ADMIN", "SUPPLIER_DISPATCH", "STORE_OWNER", "AFFILIATE", "BRAS_MEMBER", "BRAS_IMPORTER", "CARRIER", "AGENCY"] }).notNull(),
   organizationId: text("organization_id").notNull().references(() => organizations.id),
   supplierId: text("supplier_id").references(() => suppliers.id),
   storeId: text("store_id").references(() => stores.id),
@@ -3349,3 +3349,77 @@ export const aceitesTermos = pgTable("aceites_termos", {
   aparelho: text("aparelho"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("aceites_termos_user_versao_uq").on(t.userId, t.versao), index("aceites_termos_store_idx").on(t.storeId)]);
+
+// ---------------------------------------------------------------------------
+// Painel da Agência (D313): a agência toca a operação dela dentro da NextLevel (carteira, contratos, equipe; depois
+// cobrança, produção e portal do cliente). Atrás da chave AGENCIAS_V1. Uma agência nunca lê dados de outra.
+// ---------------------------------------------------------------------------
+export const AGENCIA_SITUACOES = ["PILOTO", "ATIVA", "PAUSADA"] as const;
+/** Funções da equipe da agência: ADMIN vê e faz tudo; FINANCEIRO vê valores; as outras veem a operação dos clientes delas. */
+export const AGENCIA_FUNCOES = ["ADMIN", "ATENDIMENTO", "ROTEIRO", "GRAVACAO", "EDICAO", "SOCIAL_MEDIA", "TRAFEGO", "FINANCEIRO"] as const;
+export type AgenciaFuncao = (typeof AGENCIA_FUNCOES)[number];
+export const AGENCIA_CLIENTE_SITUACOES = ["ATIVO", "PAUSADO", "ENCERRADO"] as const;
+export type AgenciaClienteSituacao = (typeof AGENCIA_CLIENTE_SITUACOES)[number];
+/** O que entra no mês do cliente (o "combinado"): quantidades por tipo de entrega. */
+export type AgenciaIncluso = { videos?: number; fotos?: number; posts?: number; criativos?: number; gravacoes?: number };
+
+export const agencias = pgTable("agencias", {
+  id: id(),
+  organizationId: text("organization_id").notNull().references(() => organizations.id),
+  nome: text("nome").notNull(),
+  slug: text("slug").notNull().unique(),
+  /** Registro de parceiro (comissão dos adicionais, D260), quando a agência também indica. */
+  partnerId: text("partner_id").references(() => partners.id),
+  situacao: text("situacao", { enum: AGENCIA_SITUACOES }).notNull().default("PILOTO"),
+  /** Agência Fundadora (D313): a primeira de cada etapa, com condições próprias combinadas com o dono. */
+  fundadora: boolean("fundadora").notNull().default(false),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+/** Pessoa da agência (login próprio, papel AGENCY) e a função dela. Uma pessoa pertence a uma agência só. */
+export const agenciaMembros = pgTable("agencia_membros", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  userId: text("user_id").notNull().unique().references(() => users.id),
+  funcao: text("funcao", { enum: AGENCIA_FUNCOES }).notNull(),
+  /** Vê todos os clientes da carteira (sem isso, só os que tem como responsável ou na equipe do cliente). */
+  todosClientes: boolean("todos_clientes").notNull().default(false),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_membros_agencia_idx").on(t.agenciaId)]);
+
+/** Cliente da agência com o contrato do mês (valor, vencimento, o que está incluso) e quem cuida dele. */
+export const agenciaClientes = pgTable("agencia_clientes", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  nome: text("nome").notNull(),
+  segmento: text("segmento"),
+  contatoNome: text("contato_nome"),
+  whatsapp: text("whatsapp"),
+  email: text("email"),
+  /** CPF ou CNPJ do cliente, só dígitos (para a cobrança). */
+  documento: text("documento"),
+  situacao: text("situacao", { enum: AGENCIA_CLIENTE_SITUACOES }).notNull().default("ATIVO"),
+  /** Nome do pacote vendido (ex.: "Mensal 8 vídeos"). */
+  pacote: text("pacote"),
+  incluso: jsonb("incluso").$type<AgenciaIncluso>().notNull().default({}),
+  valorMensalCents: integer("valor_mensal_cents"),
+  /** Dia do mês do vencimento (1 a 28). */
+  diaVencimento: integer("dia_vencimento"),
+  /** Início do contrato (AAAA-MM-DD). */
+  inicioEm: text("inicio_em"),
+  responsavelId: text("responsavel_id").references(() => users.id),
+  /** Conta NextLevel Business do cliente, quando ligada com o aceite dele (fase seguinte). */
+  storeId: text("store_id").references(() => stores.id),
+  observacoes: text("observacoes"),
+  motivoEncerramento: text("motivo_encerramento"),
+  encerradoEm: ts("encerrado_em"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("agencia_clientes_agencia_idx").on(t.agenciaId, t.situacao), check("agencia_clientes_dia_ck", sql`${t.diaVencimento} is null or (${t.diaVencimento} between 1 and 28)`), check("agencia_clientes_valor_ck", sql`${t.valorMensalCents} is null or ${t.valorMensalCents} >= 0`)]);
+
+/** Equipe de cada cliente: quem da agência trabalha nele (roteiro, edição, social media, tráfego...). */
+export const agenciaClienteEquipe = pgTable("agencia_cliente_equipe", {
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  userId: text("user_id").notNull().references(() => users.id),
+}, (t) => [primaryKey({ columns: [t.clienteId, t.userId] }), index("agencia_cliente_equipe_user_idx").on(t.userId)]);

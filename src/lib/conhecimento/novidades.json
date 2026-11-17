@@ -1,5 +1,12 @@
 [
  {
+  "numero": 313,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência: plano aprovado e fases AG0 a AG2 (agência, equipe com funções e carteira de clientes com contrato)",
+  "data": "2026-11-17",
+  "resumo": "Decisão do dono (16/11/2026): \"estou de acordo com tudo; não precisa detalhar quanto vou cobrar neste momento; vamos ao desenvolvimento\". Aprovado o racional docs/prompts/agencias-parceiras-up-piloto.md com a Parte 8 (sistema operacional…"
+ },
+ {
   "numero": 312,
   "frente": "E-commerce",
   "titulo": "Agências: a NextLevel não vende o código-fonte; o degrau maior é a Licença dedicada",
@@ -271,12 +278,5 @@
   "titulo": "CX2: receber assinatura à mão, formas de pagamento da NextLevel e painel de assinaturas",
   "data": "2026-11-07",
   "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX2."
- },
- {
-  "numero": 269,
-  "frente": "E-commerce",
-  "titulo": "CX0 e CX1: caixa do Master com abas Hoje, Semana e Lançamentos",
-  "data": "2026-11-07",
-  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fases CX0 e CX1. Todas as decisões do prompt foram aprovadas pelo dono em 07/11 (\"tudo aprovado\")."
  }
 ]

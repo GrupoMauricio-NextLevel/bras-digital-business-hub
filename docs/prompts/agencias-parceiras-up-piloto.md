@@ -9,6 +9,8 @@
 >
 > **Perguntas para a UP e leitura da equipe (roteiro, edição, social media, tráfego pago):** `docs/prompts/agencias-up-perguntas-estrategicas.md`.
 >
+> **Em desenvolvimento (D313, 17/11/2026):** plano aprovado pelo dono. **Feitas AG0, AG1 e AG2** (agência, equipe com funções, carteira com contrato, importação por planilha e cockpit "Hoje na agência", com o visual do painel da Commerce). Próxima: **AGF1, cobrança automática**. Relatório: `docs/relatorios/AG1-AG2-2026-11-17.md`.
+>
 > **Decidido (D312, 16/11/2026):** a NextLevel **não vende o código-fonte**. O degrau maior para agências é a **Licença dedicada** (R$ 30.000 de implantação + manutenção mensal, 0% sobre o volume; o código continua da NextLevel). O resto da escada (percentual do degrau 1, mínimos, valor da manutenção) segue em aberto.
 >
 > **Estado deste documento:** proposta para o dono decidir, exceto o que a D312 já decidiu. Nada está no código. O restante, quando aprovado, vira decisão nova em `docs/design/DECISIONS.md` (frente `[E-commerce]`, porque traz lojistas e contas pagantes para a NextLevel Commerce) e é citado na base de conhecimento (`docs/conhecimento/BC0-INVENTARIO.md`).

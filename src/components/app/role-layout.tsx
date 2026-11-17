@@ -1,3 +1,4 @@
+import { agenciasLigado } from "@/lib/agencias/acesso";
 import { canJoinGroup } from "@/lib/domain/conta-grupo";
 import { AppShell } from "@/components/app/app-shell";
 import { listDemoUsers, loginAs, logout } from "@/app/actions/auth";
@@ -42,14 +43,14 @@ export function panelFor(session: Session): Panel {
   if (session.user.role === "NEXTLEVEL_MASTER") return "master";
   if (session.user.role === "SUPPLIER_ADMIN") return "supplier";
   if (session.user.role === "SUPPLIER_DISPATCH") return "dispatch";
-  if (session.user.role === "AFFILIATE") return "partner";
+  if (session.user.role === "AFFILIATE" || session.user.role === "AGENCY") return "partner";
   return session.store?.offer === "STORE_OWN" ? "pro" : "lite";
 }
 
 /** Itens do menu do lojista e o recurso que os libera; sem o recurso aparecem com cadeado. */
 const MERCHANT_GATES: Record<string, FeatureKey> = { "/merchant/analytics": "analytics", "/merchant/storefront": "storefront", "/theme-editor": "appearanceBasic", "/merchant/templates": "templatesStarter" };
 
-export async function RoleLayout({ session, children, banner, scope }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" / "bras-admin" = console administrativo da marca dentro do Master. */ scope?: "commerce-admin" | "bras-admin" }) {
+export async function RoleLayout({ session, children, banner, scope, tenant }: { session: Session; children: React.ReactNode; banner?: React.ReactNode; /** "commerce-admin" / "bras-admin" = console administrativo da marca dentro do Master. */ scope?: "commerce-admin" | "bras-admin"; /** Nome e linha de baixo do canto do painel quando a sessão não tem loja nem fornecedor (Painel da Agência, D313). */ tenant?: { name: string; sub: string } }) {
   // Libera reservas de pedidos não pagos vencidos (rede de segurança além do cron).
   const db = await getDb();
   await expireStaleReservations(db);
@@ -67,7 +68,8 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const store = session.store;
   // A marca do lojista pertence à organização da loja, não ao hostname técnico.
   // Isso impede uma loja Commerce de herdar identidade e navegação SuperDrop.
-  const brand = store ? await brandOfStore(db, store) : await getBrand();
+  // Painel da Agência (D313): a agência é cliente da NextLevel Commerce, não da marca do endereço técnico.
+  const brand = store ? await brandOfStore(db, store) : session.user.role === "AGENCY" ? brandByCode("NEXTLEVEL_COMMERCE") : await getBrand();
   // Perfil da loja (D172): uma resposta só para marca, modalidade e o que a loja pode usar.
   const perfil = store ? await perfilAtual(store.id) : null;
   const independent = !!store && store.kind === "SUPPLIER_OWN" && !!perfil?.independente;
@@ -84,7 +86,9 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const escritorioEc = isMaster && marcaMaster === "NEXTLEVEL_COMMERCE" && marcasAtivasNoMaster().length === 1;
   const itemsBase = escritorioEc ? byFn(MASTER_ECOMMERCE_NAV) : navForBrand(store ? visible.map((i) => (MERCHANT_GATES[i.href] && !perfil!.pode[MERCHANT_GATES[i.href]!] ? { ...i, locked: true } : i)) : navDoMasterPorMarca(byFn(nav.items), marcaMaster, marcasAtivasNoMaster().length === 1), brand);
   // D297: não lidos da caixa de e-mail no menu, só para o dono (a caixa é só dele).
-  const items = isMaster && !fn && !session.support ? comNaoLidas(itemsBase, await naoLidasDaEntrada()) : itemsBase;
+  // Painel da Agência (D313): o item "Agências" do Master só existe com a chave AGENCIAS_V1.
+  const itemsComChave = agenciasLigado() ? itemsBase : itemsBase.filter((i) => i.href !== "/master/agencias");
+  const items = isMaster && !fn && !session.support ? comNaoLidas(itemsComChave, await naoLidasDaEntrada()) : itemsComChave;
   const storefrontHref = store && perfil?.pode.storefront ? storeUrl(store.slug, store.offer, store.customDomain, store.domainStatus) : undefined;
   const commerceStore = session.user.role === "STORE_OWNER" && !!store && brand.code === "NEXTLEVEL_COMMERCE";
   // Maurício (IA0, D194): na loja independente da Commerce e para o dono no Master. Visível; o plano decide o que destrava.
@@ -174,20 +178,23 @@ export async function RoleLayout({ session, children, banner, scope }: { session
   const brasRole = session.user.role === "BRAS_MEMBER" || session.user.role === "BRAS_IMPORTER";
   // Master (D218): o canto diz o que é (Master do grupo) e quais negócios estão abertos, pronto para receber as marcas.
   const abertosMaster = isMaster ? negociosAbertos().map((n) => n.nome).join(" · ") : "";
-  const tenantName = isMaster ? "Master do grupo" : session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : brasRole ? brandByCode("BRAS_DIGITAL").name : "NextLevel");
-  const tenantSub = isMaster ? `Grupo NextLevel · ${abertosMaster || "negócios"}` : session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma";
+  const agenciaPainel = session.user.role === "AGENCY";
+  const tenantName = tenant?.name ?? (isMaster ? "Master do grupo" : session.store?.name ?? session.supplier?.name ?? (session.user.role === "AFFILIATE" ? session.user.name.replace(/ \(.*\)$/, "") : brasRole ? brandByCode("BRAS_DIGITAL").name : "NextLevel"));
+  const tenantSub = tenant?.sub ?? (isMaster ? `Grupo NextLevel · ${abertosMaster || "negócios"}` : session.store ? (independent ? "Minha loja" : session.store.kind === "SUPPLIER_OWN" ? "Loja própria do fornecedor" : "Loja parceira") : session.supplier ? "Fornecedor / Central" : session.user.role === "AFFILIATE" ? "Escritório do parceiro" : session.user.role === "BRAS_MEMBER" ? "Meu Brás" : session.user.role === "BRAS_IMPORTER" ? "Importadora parceira" : "Plataforma");
   // Capa do Master (D198): faixa roxa com "Indique e ganhe", a novidade do momento e o agente.
   const pode = (href: string) => !fn || masterPathAllowed(fn, href);
   // Seletor de negócios (D209): pílula na faixa do topo, no lugar do "NextLevel / …" do menu e da faixa "Vendo:".
   const negocios = isMaster && !sup ? <SeletorNegocios atual={marcaMaster} ativas={marcasAtivasNoMaster()} /> : undefined;
   // Parceiro da Commerce (D220): mesma casca nova do lojista e do Master (faixa roxa), sem o seletor antigo.
   const capaParceiro = parceiroEc ? { oferta: { texto: "Agências parceiras: 50% + 25% enquanto o cliente ficar", href: "/partner#ag-t" }, agente: true } : undefined;
+  // Painel da Agência (D313): a mesma casca da NextLevel Commerce (faixa roxa, marca do cliente no menu), sem visual novo.
+  const capaAgencia = agenciaPainel ? { oferta: { texto: "Painel da Agência: carteira, contratos e equipe num lugar só", href: "/agencia/clientes" }, agente: false } : undefined;
   const capa = isMaster ? { negocios, indiqueHref: pode("/master/partners") ? "/master/partners" : undefined, oferta: pode("/master/ia") ? { texto: "Atendimento ao vivo: visitantes do site e lojistas numa caixa só", href: "/master/ia" } : undefined, agente: !!botaoIa } : undefined;
   return (
     <>
-    {parceiroEc ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
-    {parceiroEc || isMaster ? <PainelTech black={black} /> : null}
-    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
+    {parceiroEc || agenciaPainel ? <AreaTheme theme="nextlevel" brand="NEXTLEVEL" /> : null}
+    {parceiroEc || isMaster || agenciaPainel ? <PainelTech black={black} /> : null}
+    <AppShell brand={{ code: brand.code, name: brand.name, logo: brand.logo, wordmark: brand.wordmark, accentColor: brand.accentColor }} panel={panelFor(session)} variant={session.user.role === "SUPPLIER_DISPATCH" ? "minimal" : "full"} items={items} quick={nav.quick} roleLabel={nav.label} tenantName={tenantName} tenantSub={tenantSub} userName={session.user.name} storefrontHref={storefrontHref} demoUsers={demoUsers} onSwitch={loginAs} onLogout={logout} passwordHref="/account/password" groupHref={canJoinGroup(session.user) && !session.support && !agenciaPainel ? "/account/marcas" : undefined} notices={notices} search={globalSearchAction} capa={capa ?? capaParceiro ?? capaAgencia} marcaCliente={agenciaPainel && tenant ? { nome: tenant.name, logoUrl: null, sub: tenant.sub } : undefined} extraTop={isMaster && !sup ? <AvisoSonoro /> : undefined} banner={<>{supportBar}{ecoBar}{isMaster && !sup ? <FaixaBlack lugar="master" /> : parceiroEc ? <FaixaBlack lugar="parceiro" /> : null}{banner}{botaoIa}</>}>
       {children}
     </AppShell>
     </>

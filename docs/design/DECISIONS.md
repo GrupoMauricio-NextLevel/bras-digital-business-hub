@@ -3923,3 +3923,29 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - condições da Agência Fundadora.
 - **Valores** vão para a tabela de preços do Master quando o produto existir; nada de preço fixo no código.
 - **Código:** nada mudou ainda. O Painel da Agência começa na fase AG0, atrás da chave `AGENCIAS_V1`.
+
+## D313 — [E-commerce] Painel da Agência: plano aprovado e fases AG0 a AG2 (agência, equipe com funções e carteira de clientes com contrato) (2026-11-17)
+- **Decisão do dono (16/11/2026):** "estou de acordo com tudo; não precisa detalhar quanto vou cobrar neste momento; vamos ao desenvolvimento". Aprovado o racional `docs/prompts/agencias-parceiras-up-piloto.md` com a Parte 8 (sistema operacional da agência, cobrança automática, UP como Agência Fundadora). Preço fica para depois (só a D312 está fechada).
+- **Pedido do dono durante a rodada:** "não quero começar do zero; quero aproveitar ao máximo o NextLevel Commerce, inclusive as cores". O painel usa a mesma casca do lojista da Commerce (faixa roxa no topo, marca do cliente no menu, cartão roxo de boas-vindas, fila do dia, cartões de números `Kpi` reaproveitados de `commerce-home.tsx`).
+- **AG0 (modelo, sem mudar nada no ar):**
+  - a agência é uma **organização própria** (`organizations.type = AGENCY`, marca NextLevel Commerce, entra pelo mesmo endereço dos lojistas), no molde da transportadora;
+  - login com **papel próprio** `AGENCY` e painel em `/agencia`;
+  - comissão dos adicionais continua no `partners` (ligação opcional `agencias.partner_id`);
+  - tudo atrás da chave **`AGENCIAS_V1`** (desligada: nem o painel nem a tela do Master existem).
+- **Banco (migração 0104, só acrescenta):** `agencias` (situação piloto/ativa/pausada, fundadora), `agencia_membros` (função e "vê todos os clientes"), `agencia_clientes` (contato, CPF/CNPJ, pacote, o que entra no mês, valor mensal, dia de vencimento de 1 a 28, responsável, situação e motivo de encerramento) e `agencia_cliente_equipe`.
+- **AG1, agência e equipe:**
+  - o Master cria a agência e o acesso do administrador (senha provisória, troca no primeiro login) em **Master → Agências**, e pode pausar o acesso;
+  - funções: Administrador, Atendimento, Roteiro, Gravação, Edição, Social media, Tráfego pago, Financeiro;
+  - **quem vê o quê:** administrador tudo; financeiro vê valores e muda o contrato; atendimento cadastra e organiza a carteira sem valores; as outras funções veem só os clientes em que trabalham, sem valores e sem documento;
+  - só o administrador monta a equipe; a agência nunca fica sem administrador; quem é desligado não entra mais e sai da equipe dos clientes.
+- **AG2, carteira:**
+  - cadastrar, editar, pausar, reativar e encerrar com motivo;
+  - equipe de cada cliente;
+  - **importação por planilha colada** (Excel, Google Planilhas ou CSV), com prévia antes de gravar, erro por linha, sem duplicar quem já está e responsável achado pelo nome ou e-mail.
+- **Cockpit "Hoje na agência":** fila do dia (vencimentos da semana, clientes sem responsável, contratos incompletos, sem contato), receita contratada, a vencer em 7 dias, ticket médio, carga de cada pessoa da equipe e "Seus clientes".
+- **Segurança:** uma agência nunca vê dados de outra (testado no servidor); cliente fora do alcance da pessoa dá "não encontrado".
+- **Demonstração:** "Agência Aurora (demonstração)", fictícia, só no banco de demonstração (`agencia@agencia.demo` e `editor@agencia.demo`).
+- **Testes:** `tests/agencias.test.ts` (12) e `e2e/agencias.mjs` (navegador, 360 px, axe).
+- **Próximas fases (ordem da Parte 8.7):** AGF1 cobrança automática com o meio de pagamento da própria agência, AGF2 régua e inadimplência, AG5 portal do cliente, AG3 e AG4 produção e agenda.
+- **Para ligar no ar:** `AGENCIAS_V1=true` no Render e criar a agência em Master → Agências.
+

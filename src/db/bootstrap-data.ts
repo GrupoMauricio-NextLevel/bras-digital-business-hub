@@ -9,6 +9,7 @@ import { seedCommerceRichDemo } from "./commerce-demo-rich";
 import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
 import { seedDemoCargas } from "./demo-cargas";
+import { seedDemoAgencia } from "./demo-agencia";
 import { seedDemoBras } from "./demo-bras";
 import { seedDemoFamily } from "./demo-familia";
 import { turnEverythingOnInDemo } from "./demo-ligar-tudo";
@@ -43,6 +44,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedCommerceRichDemo(db)) log.push("loja de teste completa da Commerce criada (completo@commerce.demo)");
     await seedDemoPartner(db);
     if (await seedDemoCargas(db)) log.push("transportadoras fictícias de demonstração (Ouro, Prata e Bronze) criadas");
+    if (await seedDemoAgencia(db)) log.push("agência fictícia de demonstração criada (agencia@agencia.demo)");
     if (await seedDemoBras(db, (m) => log.push(m))) log.push("ambiente de gravação: Brás, transportadora, ônibus, Club, Meu Contador e equipe do Master");
     for (const l of await ensureShowcaseStores(db)) log.push(l);
     const family = await seedDemoFamily(db);

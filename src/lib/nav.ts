@@ -65,6 +65,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação", soTodas: true },
       { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas", marcas: ["BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
+      { label: "Agências", href: "/master/agencias", icon: "Network", group: "Negócio" },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio", soTodas: true },
       { label: "Mapa do ecossistema", href: "/master/mapa", icon: "Network", group: "Negócio", soTodas: true },
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio", soTodas: true },
@@ -183,6 +184,17 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Produtos e caixas", href: "/importadora/produtos", icon: "Package", group: "Catálogo", bottom: true },
       { label: "Estoque", href: "/importadora/estoque", icon: "Boxes", group: "Catálogo" },
       { label: "Galpões, equipe e ficha", href: "/importadora/galpoes", icon: "Factory", group: "Conta" },
+    ],
+    quick: [],
+  },
+  // Painel da Agência (D313): a agência toca carteira, contratos e equipe; cada função vê só o que é dela (`agencias/acesso.ts`).
+  AGENCY: {
+    base: "/agencia",
+    label: "Painel da Agência",
+    items: [
+      { label: "Hoje", href: "/agencia", icon: "Home", exact: true, group: "Agência", bottom: true },
+      { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Agência", bottom: true },
+      { label: "Equipe", href: "/agencia/equipe", icon: "Users", group: "Gestão", bottom: true },
     ],
     quick: [],
   },
@@ -344,6 +356,8 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Bônus e metas", href: "/master/partners/bonus", icon: "Sparkles", group: "Escritório" },
   // CX3 (D273): executivos de venda (equipe de rua) e prestação de contas.
   { label: "Executivos de venda", href: "/master/partners/executivos", icon: "UsersRound", group: "Escritório" },
+  // Painel da Agência (D313): só aparece com a chave AGENCIAS_V1 (filtro no RoleLayout).
+  { label: "Agências", href: "/master/agencias", icon: "Network", group: "Escritório" },
   { label: "Crescimento", href: "/master/crescimento", icon: "Megaphone", group: "Escritório" },
   // TR1 (D290): links rastreados e, por fases, tráfego em tempo real, campanhas e Reels.
   { label: "Tráfego e campanhas", href: "/master/trafego", icon: "BarChart3", group: "Escritório" },
