@@ -101,7 +101,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
       {/* Conta nova (ainda sem venda): ilustração de boas-vindas à direita; no celular o texto ocupa a largura toda. */}
       {firstAccess ? <Ilustracao nome="ui-boas-vindas-loja" priority className="absolute right-6 top-1/2 hidden size-40 -translate-y-1/2 sm:block lg:right-12 lg:size-52" /> : null}
       <div className="relative max-w-[60%] max-sm:max-w-none">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral do negócio` : "Visão geral da loja"}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral` : "Visão geral da loja"}</p>
         <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>
         <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{store.name}</span></p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">

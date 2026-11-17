@@ -14,6 +14,13 @@
   "resumo": "Pedido do dono: \"sinto que ainda não trouxe os itens do master do nextlevel commerce para o projeto atual... quero que desenvolva os 7 de uma vez, não quero perder muito tempo em baterias longas de testes\"."
  },
  {
+  "numero": 324,
+  "frente": "E-commerce",
+  "titulo": "\"NextLevel Business\" fica reservado ao sistema avançado; o painel de todo cliente passa a se chamar \"Meu negócio\"",
+  "data": "2026-11-17",
+  "resumo": "Dono (17/11/2026): \"Soluções Digitais são os serviços da agência; Business é o sistema avançado; loja virtual é a plataforma de e-commerce; Sites é outra função conectada aos anúncios para captação de clientes.\" Com a chave BUSINESS_V1 j…"
+ },
+ {
   "numero": 323,
   "frente": "E-commerce",
   "titulo": "Soluções NextLevel no Painel da Agência: a agência vira usuária do NextLevel Business com um clique",
@@ -271,12 +278,5 @@
   "titulo": "Página \"Nossos clientes\": marcas que a NextLevel atende, 100% NextLevel",
   "data": "2026-11-12",
   "resumo": "Pedido do dono: uma página com os clientes reais e os melhores templates no fim, sem falar de nenhuma outra plataforma."
- },
- {
-  "numero": 282,
-  "frente": "E-commerce",
-  "titulo": "Página \"NextLevel Temas para Nuvemshop\"",
-  "data": "2026-11-12",
-  "resumo": "Pedido do dono: uma página com as lojas que a NextLevel criou, o racional de cada uma, botões em destaque para os sites reais, o resumo de como o trabalho ajuda cada negócio, os temas da NextLevel no fim e destaque para semijoias. O pont…"
  }
 ]
