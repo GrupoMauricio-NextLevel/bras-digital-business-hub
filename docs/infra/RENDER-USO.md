@@ -111,3 +111,4 @@
 5. Confirmar se a `DATABASE_URL` do `superdrop` tem `neon.tech` (só sim ou não).
 6. Criar a `RENDER_API_KEY` (Account Settings → API Keys) e colar no Environment do `superdrop`.
 7. Adicionar `nextlevelcommerce.com.br` e `www.nextlevelcommerce.com.br` em Custom Domains e mandar o print dos registros de DNS.
+- **(17/11/2026, D315)** Custom Domains do `superdrop`: adicionar `painel.nextlevelcommerce.com.br` (CNAME `painel` → `superdrop.onrender.com` no DNS). Depois do domínio verificado, ligar `AGENCIAS_URL=https://painel.nextlevelcommerce.com.br` (o Claude pode ligar pela API).

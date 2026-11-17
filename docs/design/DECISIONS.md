@@ -3978,3 +3978,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Testes:** `tests/agencias-producao.test.ts` (regras puras e fluxo completo) e `e2e/agencias-producao.mjs` (navegador, 360 px, axe).
 - **Próximo (Fase 1B e 1C):** gravações com filmmaker freelancer, calendário geral, abas da ficha, portal do cliente (entrada por código), avisos e Resumo da Semana.
 
+## D315 — [E-commerce] Agências entram por painel.nextlevelcommerce.com.br (2026-11-17)
+- **Pedido do dono:** "painel.nextlevelcommerce.com.br: quero que as agências entrem por aqui."
+- **Como funciona** (`src/lib/host-routing.ts`, variável `AGENCIAS_URL`):
+  - com `AGENCIAS_URL=https://painel.nextlevelcommerce.com.br`, esse endereço abre só o login, a troca e a recuperação de senha e o Painel da Agência (`/agencia`); o início vai para o login e qualquer outra página vai para o endereço público da Commerce;
+  - nos endereços das marcas (Commerce, Master), `/agencia` leva para o endereço das agências, com o mesmo caminho;
+  - lojistas, parceiros e equipe NextLevel não mudam de endereço;
+  - endereços técnicos (demonstração, `onrender.com`, `localhost`) não mudam;
+  - sem a variável, nada muda (as agências entram pelo endereço da Commerce).
+- **Master → Agências** mostra o endereço de entrada para passar às agências.
+- **Para ligar (o dono):**
+  1. no Render (serviço `superdrop`) → Settings → Custom Domains, adicionar `painel.nextlevelcommerce.com.br`;
+  2. no provedor de DNS do domínio, criar o registro CNAME `painel` → `superdrop.onrender.com`;
+  3. com o domínio verificado no Render, ligar `AGENCIAS_URL` (a variável dispara uma montagem; ligar só depois do domínio respondendo, senão o `/agencia` levaria a um endereço que ainda não abre).
+- **Teste:** `tests/host-routing.test.ts` (endereço das agências).
+

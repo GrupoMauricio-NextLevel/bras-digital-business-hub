@@ -199,3 +199,23 @@ describe("domínio principal da Commerce (D281)", () => {
     expect(routeHost({ host: "lojas.nextlevelgroup.com.br", pathname: "/planos" }, { ...novo, EC_DOMINIO_PRINCIPAL: undefined })).toEqual({ kind: "next" });
   });
 });
+
+describe("endereço das agências (D315)", () => {
+  const ag = { AGENCIAS_URL: "https://painel.nextlevelcommerce.com.br", BRAND_URL_NEXTLEVEL_COMMERCE: "https://nextlevelcommerce.com.br" };
+  it("sem AGENCIAS_URL nada muda", () => {
+    expect(go("lojas.nextlevelgroup.com.br", "/agencia", {})).toEqual({ kind: "next" });
+  });
+  it("no endereço das agências: início vai ao login; login, senha e painel abrem; o resto vai para a Commerce", () => {
+    expect(go("painel.nextlevelcommerce.com.br", "/", ag)).toEqual({ kind: "redirect", url: "/login" });
+    for (const p of ["/login", "/agencia", "/agencia/producao/agpc_x", "/account/password", "/esqueci-senha", "/redefinir-senha", "/api/x"]) expect(go("painel.nextlevelcommerce.com.br", p, ag)).toEqual({ kind: "next" });
+    expect(go("painel.nextlevelcommerce.com.br", "/planos", ag, "?a=1")).toEqual({ kind: "redirect", url: "https://nextlevelcommerce.com.br/planos?a=1" });
+    expect(go("painel.nextlevelcommerce.com.br", "/merchant", ag)).toEqual({ kind: "redirect", url: "https://nextlevelcommerce.com.br/merchant" });
+  });
+  it("nos endereços das marcas, /agencia vai para o endereço das agências; endereço técnico não muda", () => {
+    expect(go("lojas.nextlevelgroup.com.br", "/agencia/clientes", ag, "?situacao=ATIVO")).toEqual({ kind: "redirect", url: "https://painel.nextlevelcommerce.com.br/agencia/clientes?situacao=ATIVO" });
+    expect(go("master.nextlevelgroup.com.br", "/agencia", ag)).toEqual({ kind: "redirect", url: "https://painel.nextlevelcommerce.com.br/agencia" });
+    expect(go("superdrop.onrender.com", "/agencia", ag)).toEqual({ kind: "next" });
+    expect(go("lojas.nextlevelgroup.com.br", "/agencias", ag)).not.toEqual({ kind: "redirect", url: "https://painel.nextlevelcommerce.com.br/agencias" });
+  });
+});
+

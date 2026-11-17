@@ -37,6 +37,11 @@ export function storeOwnerBase(hostBrand: BrandCode | null | undefined, storeBra
   if (showcase || !hostBrand || hostBrand === storeBrand || !pair.includes(hostBrand) || !pair.includes(storeBrand)) return null;
   return brandByCode(storeBrand, env).baseUrl;
 }
+/** Endereço de entrada das agências (D315), ou null quando não configurado (as agências entram pelo endereço da Commerce). */
+export const agenciasUrl = (env: Record<string, string | undefined> = process.env) => { try { return env.AGENCIAS_URL ? new URL(env.AGENCIAS_URL.trim()).origin : null; } catch { return null; } };
+const agenciasHost = (env: Record<string, string | undefined>) => { const u = agenciasUrl(env); return u ? new URL(u).hostname.toLowerCase() : null; };
+/** O que abre no endereço das agências: login, troca e recuperação de senha e o Painel da Agência. */
+const AGENCIA_PATHS = ["/agencia", "/login", "/account", "/esqueci-senha", "/redefinir-senha"];
 export const isPanelPath = (p: string) => PANEL_PREFIXES.some((x) => p === x || p.startsWith(`${x}/`));
 
 export type HostRoute = { kind: "next" } | { kind: "redirect"; url: string; permanente?: boolean } | { kind: "rewrite"; path: string };
@@ -50,6 +55,17 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
   const brand = brandOfHostStrict(host, env);
   // Arquivos dos buscadores: cada endereço responde o dele (D149).
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return { kind: "next" };
+  // Endereço das agências (D315): com AGENCIAS_URL (ex.: https://painel.nextlevelcommerce.com.br), as agências entram só por lá.
+  // Lá ficam o login e o Painel da Agência; o resto vai para o endereço público da Commerce. Nos endereços das marcas,
+  // /agencia leva para lá. Endereços técnicos (demonstração, localhost) não mudam.
+  const agHost = agenciasHost(env);
+  if (agHost && host === agHost) {
+    if (pathname.startsWith("/api/") || pathname.startsWith("/_next/")) return { kind: "next" };
+    if (pathname === "/" || pathname === "") return { kind: "redirect", url: "/login" };
+    if (AGENCIA_PATHS.some((x) => under(pathname, x))) return { kind: "next" };
+    return { kind: "redirect", url: `${brandByCode("NEXTLEVEL_COMMERCE", env).baseUrl.replace(/\/$/, "")}${pathname}${search}` };
+  }
+  if (agHost && brand && under(pathname, "/agencia")) return { kind: "redirect", url: `${agenciasUrl(env)}${pathname}${search}` };
   // Brás Digital Club com um endereço principal só (D158): os outros endereços da marca (www, o antigo bras.nextlevelgroup.com.br)
   // levam ao endereço da marca no ar, mesmo caminho. Sem efeito enquanto o endereço no ar for o único que responde.
   // NextLevel Commerce com um endereço principal só (D281): com BRAND_URL_NEXTLEVEL_COMMERCE apontando para o domínio novo,

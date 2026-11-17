@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
 import { agenciasLigado } from "@/lib/agencias/acesso";
 import { listarAgencias } from "@/lib/agencias/agencias";
+import { agenciasUrl } from "@/lib/host-routing";
+import { brandByCode } from "@/lib/brand";
 import { NovaAgencia, SituacaoDaAgencia } from "./agencias-cliente";
 
 export const dynamic = "force-dynamic";
@@ -18,9 +20,10 @@ export default async function AgenciasMaster() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   if (!agenciasLigado()) return <><PageHeader title="Agências" /><EmptyState icon={Network} title="Painel da Agência desligado" description="Ligue a chave AGENCIAS_V1 no servidor para criar agências e abrir o painel delas." /></>;
   const lista = await listarAgencias(await getDb(), session.actor);
+  const entrada = `${(agenciasUrl() ?? brandByCode("NEXTLEVEL_COMMERCE").baseUrl).replace(/^https?:\/\//, "").replace(/\/$/, "")}/login`;
   return (
     <>
-      <PageHeader title="Agências" description="Agências que tocam a operação delas dentro da NextLevel: carteira de clientes, contratos e equipe. O administrador entra em /agencia com a senha provisória e troca no primeiro acesso." actions={<NovaAgencia />} />
+      <PageHeader title="Agências" description={<>Agências que tocam a operação delas dentro da NextLevel: carteira de clientes, contratos, equipe e produção. Endereço de entrada das agências: <b className="text-foreground">{entrada}</b> (senha provisória, trocada no primeiro acesso).</>} actions={<NovaAgencia />} />
       {lista.length ? (
         <ul className="ds-card ds-card--flush divide-y divide-border overflow-hidden" aria-label="Agências">
           {lista.map((a) => (
