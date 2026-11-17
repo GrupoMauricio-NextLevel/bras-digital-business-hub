@@ -3383,6 +3383,8 @@ export const agencias = pgTable("agencias", {
   razaoSocial: text("razao_social"),
   documento: text("documento"),
   cidadeForo: text("cidade_foro"),
+  /** Página de captação (D322): texto e serviços do formulário público de orçamento da agência. */
+  captacao: jsonb("captacao").$type<{ ligada: boolean; titulo: string; texto: string; servicos: string[]; whatsapp: string | null }>(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
@@ -3547,9 +3549,19 @@ export const agenciaOportunidades = pgTable("agencia_oportunidades", {
   observacoes: text("observacoes"),
   /** Cliente criado ao fechar ("virar cliente"). */
   clienteId: text("cliente_id").references(() => agenciaClientes.id),
+  /** Pedido que chegou pela página de captação (D322): canal (regra única de canal, D290), etiquetas e página. */
+  canal: text("canal"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  clickIds: jsonb("click_ids").$type<Record<string, string>>(),
+  origemSite: text("origem_site"),
+  pagina: text("pagina"),
+  mensagem: text("mensagem"),
+  chaveEnvio: text("chave_envio"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
-}, (t) => [index("agencia_oportunidades_agencia_idx").on(t.agenciaId, t.etapa), check("agencia_oportunidades_valor_ck", sql`${t.valorPropostoCents} is null or ${t.valorPropostoCents} >= 0`)]);
+}, (t) => [uniqueIndex("agencia_oportunidades_envio_unique").on(t.agenciaId, t.chaveEnvio), index("agencia_oportunidades_agencia_idx").on(t.agenciaId, t.etapa), check("agencia_oportunidades_valor_ck", sql`${t.valorPropostoCents} is null or ${t.valorPropostoCents} >= 0`)]);
 
 // ---------------------------------------------------------------------------
 // Cobrança da agência (D318): uma cobrança por cliente por mês, gerada pelo contrato, paga direto na conta da agência.

@@ -12,6 +12,9 @@ import { listarEquipe } from "@/lib/agencias/agencias";
 import { formatBRL } from "@/lib/money";
 import { OPORTUNIDADE_ETAPAS } from "@/db/schema";
 import { NovaOportunidade } from "./comercial-cliente";
+import { ConfigurarCaptacao } from "./captacao-cliente";
+import { CAPTACAO_PADRAO, urlDaCaptacao } from "@/lib/agencias/captacao";
+import { ROTULO_CANAL, type Canal } from "@/lib/trafego/canal";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Comercial" };
@@ -21,7 +24,8 @@ function Cartao({ o }: { o: OportunidadeNaLista }) {
   return (
     <Link href={`/agencia/comercial/${o.id}`} className={`ds-card ds-lift block !p-3.5 text-sm ${o.atrasada ? "border-danger/50" : ""}`}>
       <b className="block font-semibold leading-snug">{o.empresa}</b>
-      <span className="mt-0.5 block truncate text-xs text-muted-foreground">{[o.segmento, ORIGEM_ROTULO[o.origem]].filter(Boolean).join(" · ")}</span>
+      <span className="mt-0.5 block truncate text-xs text-muted-foreground">{[o.segmento, o.canal ? ROTULO_CANAL[o.canal as Canal] ?? ORIGEM_ROTULO[o.origem] : ORIGEM_ROTULO[o.origem]].filter(Boolean).join(" · ")}</span>
+      {o.canal && !o.ultimoContatoEm && o.etapa === "PROSPECCAO" ? <span className="mt-1.5 inline-block rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-[var(--ds-link)]">Novo pelo site</span> : null}
       {o.valorPropostoCents ? <span className="mt-1.5 block text-xs font-semibold tabular-nums">{formatBRL(o.valorPropostoCents)}/mês</span> : null}
       <span className={`mt-1.5 block text-xs ${o.atrasada ? "font-semibold text-danger" : o.hoje ? "font-semibold text-warning" : "text-muted-foreground"}`}>{o.proximaAtividade || o.proximaAtividadeEm ? `${o.proximaAtividade ?? "Próxima atividade"}${o.proximaAtividadeEm ? ` · ${o.atrasada ? "atrasada " : o.hoje ? "hoje " : ""}${ddmm(o.proximaAtividadeEm)}` : ""}` : "sem próxima atividade"}</span>
       <span className="mt-1 block truncate text-xs text-muted-foreground">{o.responsavelNome ? `com ${o.responsavelNome.split(" ")[0]}` : "sem responsável"}</span>
@@ -33,7 +37,7 @@ function Cartao({ o }: { o: OportunidadeNaLista }) {
 export default async function Comercial() {
   const session = await requireRole("AGENCY");
   const db = await getDb();
-  const { membro } = await escopoDaAgencia(db, session.actor);
+  const { membro, agencia } = await escopoDaAgencia(db, session.actor);
   if (!pode.editarClientes(membro)) return <><PageHeader title="Comercial" /><EmptyState icon={Handshake} title="O comercial é do administrador, do gestor e do atendimento" description="Fale com o administrador da agência se precisar acompanhar as negociações." /></>;
   const hoje = hojeEmSaoPaulo();
   const [lista, equipe] = await Promise.all([listarOportunidades(db, session.actor, hoje), listarEquipe(db, session.actor)]);
@@ -61,6 +65,11 @@ export default async function Comercial() {
           </div>
         </section>
       ) : <EmptyState icon={Handshake} title="Nenhuma negociação ainda" description="Cadastre a primeira oportunidade: a empresa, o que ela quer e a próxima atividade." />}
+      <details className="ds-card !p-4" open={!agencia.captacao?.ligada && !lista.length}>
+        <summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Página de captação {agencia.captacao?.ligada ? <span className="ml-1 rounded-full bg-success-soft px-2 py-0.5 text-xs text-success">no ar</span> : <span className="ml-1 rounded-full bg-surface-muted px-2 py-0.5 text-xs text-muted-foreground">desligada</span>}</summary>
+        <p className="mb-3 text-sm text-muted-foreground">Formulário de orçamento com o nome da agência. Cada pedido entra aqui como negociação nova, com a origem (anúncio, Instagram, busca, site) e aviso por e-mail.</p>
+        <ConfigurarCaptacao inicial={agencia.captacao ?? CAPTACAO_PADRAO} url={urlDaCaptacao(agencia.slug)} />
+      </details>
       {perdidas.length ? <details className="ds-card !p-4"><summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Perdidas ({perdidas.length})</summary><ul className="mt-2 divide-y divide-border text-sm">{perdidas.map((o) => <li key={o.id}><Link href={`/agencia/comercial/${o.id}`} className="flex min-h-11 items-center justify-between gap-2"><span>{o.empresa}</span><span className="text-xs text-muted-foreground">{o.motivoPerda}</span></Link></li>)}</ul></details> : null}
     </div>
   );

@@ -14,6 +14,7 @@ import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
 import { copiarRecorrentes, excluirDespesa, lancarDespesa, marcarDespesaPaga, type despesaSchema } from "@/lib/agencias/despesas";
 import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
 import { responderSolicitacao } from "@/lib/agencias/portal";
+import { salvarCaptacao, type captacaoSchema } from "@/lib/agencias/captacao";
 import { cancelarContratoDaAgencia, enviarContrato, previaDoContrato, salvarDadosJuridicos, type OpcoesContrato, type dadosJuridicosSchema } from "@/lib/agencias/contratos";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
@@ -174,4 +175,9 @@ export async function enviarContratoAction(clienteId: string, opcoes: OpcoesCont
 }
 export async function cancelarContratoAgenciaAction(id: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await cancelarContratoDaAgencia(db, actor, idContrato.parse(id)); revalidatePath("/agencia", "layout"); return undefined; });
+}
+
+// Página de captação (D322)
+export async function salvarCaptacaoAction(input: z.input<typeof captacaoSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); await salvarCaptacao(db, actor, input); revalidatePath("/agencia/comercial"); return undefined; });
 }

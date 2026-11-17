@@ -49,7 +49,7 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
   if (await db.query.agencias.findFirst({ where: eq(agencias.slug, SLUG) })) return false;
   const orgId = newId("org"); const agenciaId = "agc_aurorademo"; /* fixo: o e2e do portal (D320) calcula o código */ const passwordHash = hashPassword(DEMO_PASSWORD);
   await db.insert(organizations).values({ id: orgId, name: "Agência Aurora (demonstração)", slug: SLUG, type: "AGENCY", brand: "NEXTLEVEL_COMMERCE" });
-  await db.insert(agencias).values({ id: agenciaId, organizationId: orgId, nome: "Agência Aurora (demonstração)", slug: SLUG, fundadora: true, razaoSocial: "Aurora Comunicação Ltda (demonstração)", documento: "00.000.000/0001-00", cidadeForo: "São Paulo/SP" });
+  await db.insert(agencias).values({ id: agenciaId, organizationId: orgId, nome: "Agência Aurora (demonstração)", slug: SLUG, fundadora: true, razaoSocial: "Aurora Comunicação Ltda (demonstração)", documento: "00.000.000/0001-00", cidadeForo: "São Paulo/SP", captacao: { ligada: true, titulo: "Seu negócio com vídeo todo mês", texto: "Roteiro, gravação, edição e publicação. Conte o que você precisa e a equipe responde.", servicos: ["Vídeos para Reels", "Social media", "Tráfego pago", "Fotos"], whatsapp: null } });
   const ids = new Map<string, string>();
   for (const p of EQUIPE) {
     const id = newId("usr"); ids.set(p.chave, id);

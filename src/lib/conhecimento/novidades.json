@@ -1,5 +1,12 @@
 [
  {
+  "numero": 322,
+  "frente": "E-commerce",
+  "titulo": "Página de captação da agência: pedidos do site e das páginas de vendas entram no Comercial",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"pode avançar enquanto eu configuro aqui\" (próximo item da ordem da D316: site e LPs da UPClips). Inventário, item 11: entrada de contatos do site e das páginas de vendas com a origem."
+ },
+ {
   "numero": 321,
   "frente": "E-commerce",
   "titulo": "Contratos da agência com o cliente: modelo, aceite pelo portal e PDF assinado",
@@ -271,12 +278,5 @@
   "titulo": "Termos de uso da plataforma com aceite obrigatório antes de usar o painel",
   "data": "2026-11-10",
   "resumo": "Pedido do dono: um contrato padrão para todos os usuários novos, aceito logo no começo; sem passar por ele, o painel não abre. O contrato da Loja Pronta (D276) é outro assunto (serviço avulso)."
- },
- {
-  "numero": 278,
-  "frente": "E-commerce",
-  "titulo": "Cortesia dada durante o teste aparece como \"Cortesia\" e não vira cobrança no fim do teste",
-  "data": "2026-11-10",
-  "resumo": "Achado do dono: depois de estender 90 dias a Vestiário das Lendas (Caixa → Assinaturas → Estender), o Master continuou mostrando \"Em teste · 3 dias\" e o painel do cliente mostrava \"Teste grátis até 13/11\" junto com \"Pago até 11/02\". Pior…"
  }
 ]

@@ -4133,3 +4133,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0111, só acrescenta):** `agencia_contratos`; em `agencias`: `razao_social`, `documento`, `cidade_foro`.
 - **Teste:** `tests/agencias-contratos.test.ts` (modelo, pendências, permissões, aceite com impressão digital, onboarding, e-mails, PDF, cancelamento) e `e2e/agencias-contratos.mjs`.
 
+## D322 — [E-commerce] Página de captação da agência: pedidos do site e das páginas de vendas entram no Comercial (2026-11-17)
+- **Pedido do dono:** "pode avançar enquanto eu configuro aqui" (próximo item da ordem da D316: site e LPs da UPClips). Inventário, item 11: entrada de contatos do site e das páginas de vendas com a origem.
+- **Reaproveitamento (nada do zero):**
+  - o formulário de orçamento do NextLevel Business (NB3, D309), com campo-isca contra robô, tempo mínimo, chave do envio que não duplica e origem lida da própria página, sem cookie (D185);
+  - a regra única de canal (D290), que diz se o contato veio de anúncio da Meta ou do Google, Instagram, busca, WhatsApp ou direto;
+  - o Comercial da agência (D317).
+- **Página:** `/orcamento/<agência>`, com o nome da agência, título, texto e serviços que ela escolhe, e "com tecnologia NextLevel" no rodapé. Só abre se a agência ligar. O site e as páginas de vendas da agência só precisam apontar o botão "Fale conosco" para esse link. Com etiquetas de campanha (`utm_*`) e `lp=<página>`, o Comercial mostra de onde veio cada contato.
+  - Não embute em outro site, porque a proteção da plataforma contra páginas dentro de outras (`X-Frame-Options`) continua valendo.
+- **O pedido vira negociação** em Prospecção, com:
+  - a origem convertida do canal (anúncio, Instagram, WhatsApp, indicação ou site);
+  - a campanha, a página e a mensagem;
+  - o selo "Novo pelo site";
+  - um e-mail ao administrador, ao gestor e ao atendimento;
+  - o item "Novos contatos pela página de captação" na fila do dia, que sai quando alguém registra o contato ou muda a etapa.
+- **Configuração:** em Comercial → Página de captação (administrador, gestor e atendimento), com o link e o link com etiquetas para copiar.
+- **Banco (migração 0112, só acrescenta):** em `agencias`, `captacao`; em `agencia_oportunidades`, canal, etiquetas, página, mensagem e chave do envio (único por agência).
+- **Teste:** `tests/agencias-captacao.test.ts` (origem pelo canal; página desligada; permissão; robô; duplicidade; aviso; fila do dia) e `e2e/agencias-captacao.mjs`.
+

@@ -4,6 +4,7 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { NotFoundError } from "@/lib/domain/errors";
+import { ROTULO_CANAL, type Canal } from "@/lib/trafego/canal";
 import { ETAPA_COMERCIAL_ROTULO, MOTIVOS_PERDA_COMERCIAL, ORIGEM_ROTULO, fichaDaOportunidade } from "@/lib/agencias/comercial";
 import { listarEquipe } from "@/lib/agencias/agencias";
 import { OPORTUNIDADE_ETAPAS } from "@/db/schema";
@@ -27,6 +28,17 @@ export default async function Oportunidade({ params }: { params: Promise<{ id: s
       <PageHeader backHref="/agencia/comercial" eyebrow={`Comercial · ${ORIGEM_ROTULO[o.origem]}`} title={o.empresa} badge={<span className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-[var(--ds-link)]">{ETAPA_COMERCIAL_ROTULO[o.etapa]}</span>}
         description={[o.ultimoContatoEm ? `último contato ${quando(o.ultimoContatoEm)}` : "sem contato registrado", o.motivoPerda ? `perdida: ${o.motivoPerda}` : null].filter(Boolean).join(" · ")} />
       <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+        {o.canal ? (
+          <section className={`${card} lg:col-span-2`} aria-labelledby="op-site"><h2 id="op-site" className="mb-2 text-base font-semibold">Pedido pela página de captação</h2>
+            <dl className="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
+              <div><dt className="text-muted-foreground">Veio por</dt><dd className="font-medium">{ROTULO_CANAL[o.canal as Canal] ?? o.canal}{o.origemSite ? ` (${o.origemSite})` : ""}</dd></div>
+              {o.utmCampaign || o.utmSource ? <div><dt className="text-muted-foreground">Campanha</dt><dd className="font-medium">{[o.utmCampaign, o.utmSource, o.utmMedium].filter(Boolean).join(" · ")}</dd></div> : null}
+              {o.pagina ? <div><dt className="text-muted-foreground">Página</dt><dd className="font-medium break-all">{o.pagina}</dd></div> : null}
+              <div><dt className="text-muted-foreground">Chegou em</dt><dd className="font-medium">{quando(o.createdAt)}</dd></div>
+              {o.mensagem ? <div className="sm:col-span-2"><dt className="text-muted-foreground">Mensagem</dt><dd>{o.mensagem}</dd></div> : null}
+            </dl>
+          </section>
+        ) : null}
         <section className={card} aria-labelledby="op-dados"><h2 id="op-dados" className="mb-3 text-base font-semibold">Dados da negociação</h2>
           <EditarOportunidade id={o.id} equipe={equipe} d={{ empresa: o.empresa, contatoNome: o.contatoNome, whatsapp: o.whatsapp, email: o.email, segmento: o.segmento, origem: o.origem, servicos: o.servicos, valorPropostoCents: o.valorPropostoCents, responsavelId: o.responsavelId, proximaAtividade: o.proximaAtividade, proximaAtividadeEm: o.proximaAtividadeEm, observacoes: o.observacoes }} />
         </section>
