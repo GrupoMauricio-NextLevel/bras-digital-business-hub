@@ -8,6 +8,10 @@ import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
 import { NotFoundError } from "@/lib/domain/errors";
 import { formatBRL } from "@/lib/money";
 import { EditarCliente, EquipeDoCliente, SituacaoDoCliente } from "./ficha-cliente";
+import { producaoDoMes } from "@/lib/agencias/producao";
+import { mesRotulo } from "@/lib/agencias/fluxo";
+import { CartaoClienteMes } from "@/components/agencia/producao";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Ficha do cliente" };
@@ -19,6 +23,8 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const { id } = await params;
   const c = await fichaDoCliente(db, session.actor, id).catch((e) => { if (e instanceof NotFoundError) notFound(); throw e; });
   const equipe = await listarEquipe(db, session.actor);
+  const prod = await producaoDoMes(db, session.actor);
+  const doMes = prod.clientes.find((x) => x.clienteId === c.id);
   const ativos = equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome, funcao: FUNCAO_ROTULO[p.funcao] }));
   const nome = (u: string | null) => equipe.find((p) => p.userId === u)?.nome ?? "Sem responsável";
   const card = "ds-card p-5 sm:p-6";
@@ -37,10 +43,17 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
           </dl>
           {c.podeEditar || c.podeEditarContrato ? (
             <EditarCliente id={c.id} podeFicha={c.podeEditar} podeContrato={c.podeEditarContrato} equipe={ativos}
-              inicial={{ nome: c.nome, segmento: c.segmento, contatoNome: c.contatoNome, whatsapp: c.whatsapp, email: c.email, documento: c.documento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valorMensalCents, diaVencimento: c.diaVencimento, responsavelId: c.responsavelId, observacoes: c.observacoes }} />
+              inicial={{ exigeAprovacao: c.exigeAprovacao, nome: c.nome, segmento: c.segmento, contatoNome: c.contatoNome, whatsapp: c.whatsapp, email: c.email, documento: c.documento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valorMensalCents, diaVencimento: c.diaVencimento, responsavelId: c.responsavelId, observacoes: c.observacoes }} />
           ) : c.observacoes ? <p className="text-sm">{c.observacoes}</p> : null}
         </section>
         <div className="space-y-4">
+          {doMes ? (
+            <section aria-labelledby="mes">
+              <h2 id="mes" className="mb-2 text-base font-semibold">Produção de {mesRotulo(prod.mes)}</h2>
+              <CartaoClienteMes id={c.id} nome={c.nome} segmento={c.segmento} c={doMes.contagem} />
+              <Link href={`/agencia/producao?cliente=${c.id}&ver=lista`} className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Ver as peças do mês</Link>
+            </section>
+          ) : null}
           <section className={card} aria-labelledby="eq">
             <h2 id="eq" className="mb-1 font-semibold">Equipe do cliente</h2>
             <p className="mb-3 text-sm text-muted-foreground">Quem trabalha neste cliente vê a ficha dele no painel.</p>

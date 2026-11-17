@@ -60,6 +60,7 @@
 6. **Variável de ambiente também monta:** mudar variável no Render dispara uma montagem. Juntar as mudanças de variáveis numa vez só e, se possível, junto com a publicação de código.
 7. **Montagem que falhou também gasta.** Por isso a verificação local (tipos, estilo, testes do que mudou; build completo em mudança grande) vem antes do push, como já manda o `CLAUDE.md`.
 8. **O treino não monta sozinho.** O `nextlevel-demo` fica com auto-deploy desligado. Antes de uma sessão de testes ou de um guia (Daniel, Samuel), o dono ou o Claude dispara "Manual Deploy" uma vez.
+9. **O Render olha só o ÚLTIMO commit do push** (lição de 17/11/2026): se o código vai junto com commits de documento e o último commit tem `[skip render]`, nada é montado e o código não sobe. Na publicação, o último commit precisa ser de código (sem `[skip render]`). E mudar variável pelo painel ou pela API monta o commit que já está no ar: ligue a variável **depois** do push do código, ou junto, nunca antes.
 
 **Como saber se um commit é "só documento":** `git diff --name-only <base>..HEAD`. Se todos os arquivos começam com `docs/` ou terminam em `.md`, use `[skip render]`.
 

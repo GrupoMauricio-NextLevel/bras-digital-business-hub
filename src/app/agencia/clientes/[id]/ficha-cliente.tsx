@@ -9,7 +9,7 @@ import { MoneyInput } from "@/components/ui/money-input";
 import type { AgenciaIncluso } from "@/db/schema";
 import { campo, ITENS_INCLUSO } from "../clientes-cliente";
 
-type Inicial = { nome: string; segmento: string | null; contatoNome: string | null; whatsapp: string | null; email: string | null; documento: string | null; pacote: string | null; incluso: AgenciaIncluso; valorMensalCents: number | null; diaVencimento: number | null; responsavelId: string | null; observacoes: string | null };
+type Inicial = { exigeAprovacao: boolean; nome: string; segmento: string | null; contatoNome: string | null; whatsapp: string | null; email: string | null; documento: string | null; pacote: string | null; incluso: AgenciaIncluso; valorMensalCents: number | null; diaVencimento: number | null; responsavelId: string | null; observacoes: string | null };
 const num = (v: FormDataEntryValue | null) => { const n = Number(String(v ?? "").trim()); return Number.isFinite(n) && n > 0 ? Math.round(n) : undefined; };
 
 /** Edição da ficha. Quem só cuida do contrato vê só valor e vencimento; quem só cuida da ficha não vê o contrato. */
@@ -24,7 +24,7 @@ export function EditarCliente({ id, inicial, podeFicha, podeContrato, equipe }: 
       if (podeFicha) Object.assign(dados, {
         nome: String(f.get("nome")), segmento: String(f.get("segmento") ?? ""), contatoNome: String(f.get("contatoNome") ?? ""), whatsapp: String(f.get("whatsapp") ?? ""), email: String(f.get("email") ?? ""),
         documento: String(f.get("documento") ?? ""), pacote: String(f.get("pacote") ?? ""), observacoes: String(f.get("observacoes") ?? ""), responsavelId: String(f.get("responsavel") ?? "") || null,
-        incluso: Object.fromEntries(ITENS_INCLUSO.map(([k]) => [k, num(f.get(k))])),
+        incluso: Object.fromEntries(ITENS_INCLUSO.map(([k]) => [k, num(f.get(k))])), exigeAprovacao: f.get("exigeAprovacao") === "on",
       });
       if (podeContrato) Object.assign(dados, { valorMensalCents: valor || null, diaVencimento: num(f.get("dia")) ?? null });
       start(async () => { const r = await atualizarClienteAction(id, dados); if (r.ok) { toast.success("Cliente atualizado."); router.refresh(); } else toast.error(r.error); });
@@ -45,6 +45,7 @@ export function EditarCliente({ id, inicial, podeFicha, podeContrato, equipe }: 
             <legend className="px-1 text-sm font-semibold">O que entra no mês</legend>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{ITENS_INCLUSO.map(([k, l]) => <label key={k} className="text-sm">{l}<Input name={k} type="number" min={0} max={999} defaultValue={inicial.incluso[k] ?? ""} inputMode="numeric" className="mt-1" /></label>)}</div>
           </fieldset>
+          <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" name="exigeAprovacao" defaultChecked={inicial.exigeAprovacao} className="size-4" />O cliente aprova cada conteúdo antes de publicar</label>
         </>
       ) : null}
       {podeContrato ? (

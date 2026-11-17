@@ -6,6 +6,8 @@
 >
 > **Documentos relacionados:** `agencias-parceiras-up-piloto.md` (racional e Parte 8: cobrança automática, Agência Fundadora), `agencias-up-perguntas-estrategicas.md` (perguntas e leitura da equipe da UP), `nextlevel-business-coracao-do-negocio.md` (NB0 a NB10), `trafego-campanhas-meta-google-reels.md`, `contratos-assinatura-no-painel.md`, `busca-ia-academy-funil-organico.md`.
 >
+> **Andamento:** D313 (Painel da Agência) e D314 (produção da agência, Fase 1A da UPClips) no código.
+>
 > **Ao aprovar:** vira a decisão **D314** em `docs/design/DECISIONS.md`, com frente `[E-commerce]`, e é citada em `docs/conhecimento/BC0-INVENTARIO.md`.
 
 ---

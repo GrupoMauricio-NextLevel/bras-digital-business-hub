@@ -44,6 +44,8 @@ export const clienteSchema = z.object({
   inicioEm: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable().or(z.literal("")),
   responsavelId: z.string().optional().nullable(),
   observacoes: z.string().trim().max(2000).optional().nullable(),
+  /** O cliente aprova cada peça antes de publicar (D314). */
+  exigeAprovacao: z.boolean().optional(),
 });
 export type ClienteInput = z.input<typeof clienteSchema>;
 
@@ -110,7 +112,7 @@ export async function criarCliente(db: Database, actor: Actor, raw: ClienteInput
   await db.insert(agenciaClientes).values({
     id, agenciaId: membro.agenciaId, nome: d.nome, segmento: vazio(d.segmento), contatoNome: vazio(d.contatoNome), whatsapp: so(d.whatsapp) || null, email: vazio(d.email),
     documento, pacote: vazio(d.pacote), incluso: limparIncluso(d.incluso), valorMensalCents: contrato ? (d.valorMensalCents ?? null) : null, diaVencimento: contrato ? (d.diaVencimento ?? null) : null,
-    inicioEm: vazio(d.inicioEm), responsavelId: await responsavelValido(db, membro.agenciaId, d.responsavelId), observacoes: vazio(d.observacoes),
+    inicioEm: vazio(d.inicioEm), responsavelId: await responsavelValido(db, membro.agenciaId, d.responsavelId), observacoes: vazio(d.observacoes), exigeAprovacao: d.exigeAprovacao ?? true,
   });
   await recordAudit(db, actor, { action: "AGENCIA_CLIENTE_CRIADO", entityType: "agencia_cliente", entityId: id, after: { nome: d.nome } }, { force: true });
   return { id };
@@ -130,6 +132,7 @@ export async function atualizarCliente(db: Database, actor: Actor, id: string, r
   if (d.whatsapp !== undefined) patch.whatsapp = so(d.whatsapp) || null;
   if (d.documento !== undefined) { patch.documento = so(d.documento) || null; validarDocumento(patch.documento); }
   if (d.incluso !== undefined) patch.incluso = limparIncluso(d.incluso);
+  if (d.exigeAprovacao !== undefined) patch.exigeAprovacao = d.exigeAprovacao;
   if (d.valorMensalCents !== undefined) patch.valorMensalCents = d.valorMensalCents;
   if (d.diaVencimento !== undefined) patch.diaVencimento = d.diaVencimento;
   if (d.responsavelId !== undefined) patch.responsavelId = await responsavelValido(db, membro.agenciaId, d.responsavelId);

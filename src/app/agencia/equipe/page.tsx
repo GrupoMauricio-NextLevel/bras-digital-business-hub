@@ -11,6 +11,7 @@ export const metadata = { title: "Equipe da agência" };
 
 const O_QUE_VE: Record<string, string> = {
   ADMIN: "Tudo: carteira, valores, equipe e importação.",
+  GESTOR: "Operação de todos os clientes, sem valores; distribui, transfere e revisa a produção.",
   FINANCEIRO: "Carteira inteira com valores e vencimentos; muda o contrato.",
   ATENDIMENTO: "Carteira inteira, sem valores; cadastra e organiza os clientes.",
 };

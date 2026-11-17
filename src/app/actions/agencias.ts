@@ -8,6 +8,8 @@ import { ForbiddenError } from "@/lib/domain/errors";
 import { convidarMembro, criarAgencia, desligarMembro, mudarFuncao, mudarSituacaoDaAgencia, type novaAgenciaSchema, type novoMembroSchema } from "@/lib/agencias/agencias";
 import { atualizarCliente, criarCliente, definirEquipeDoCliente, importarClientes, mudarSituacaoDoCliente, type ClienteInput } from "@/lib/agencias/clientes";
 import type { AgenciaClienteSituacao, AgenciaFuncao } from "@/db/schema";
+import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, pedirAjuste, planejarMes, transferirPeca, type atualizacaoPecaSchema, type comentarioSchema, type novaPecaSchema } from "@/lib/agencias/producao";
+import { mesValido } from "@/lib/agencias/fluxo";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
 async function ctx() {
@@ -48,4 +50,35 @@ export async function definirEquipeDoClienteAction(id: string, userIds: string[]
 }
 export async function importarClientesAction(texto: string, confirmar: boolean) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await importarClientes(db, actor, texto, { confirmar }); if (confirmar) refresh(); return r; });
+}
+
+// Produção (D314, Fase 1A)
+const idPeca = z.string().regex(/^agpc_[a-z0-9]+$/i);
+const refreshProducao = () => { revalidatePath("/agencia", "layout"); };
+export async function criarPecaAction(input: z.input<typeof novaPecaSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await criarPeca(db, actor, input); refreshProducao(); return r; });
+}
+export async function planejarMesAction(clienteIds: string[], mes: string) {
+  return runAction(async () => {
+    const { actor, db } = await ctx();
+    if (!mesValido(mes)) throw new ForbiddenError("Mês inválido.");
+    let criadas = 0;
+    for (const id of z.array(idCliente).min(1).max(200).parse(clienteIds)) criadas += (await planejarMes(db, actor, id, mes)).criadas;
+    refreshProducao(); return { criadas };
+  });
+}
+export async function atualizarPecaAction(id: string, input: z.input<typeof atualizacaoPecaSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); await atualizarPeca(db, actor, idPeca.parse(id), input); refreshProducao(); return undefined; });
+}
+export async function avancarPecaAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await avancarPeca(db, actor, idPeca.parse(id)); refreshProducao(); return r; });
+}
+export async function pedirAjusteAction(id: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await pedirAjuste(db, actor, idPeca.parse(id), motivo); refreshProducao(); return undefined; });
+}
+export async function transferirPecaAction(id: string, userId: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await transferirPeca(db, actor, idPeca.parse(id), idUsuario.parse(userId)); refreshProducao(); return undefined; });
+}
+export async function comentarPecaAction(id: string, input: z.input<typeof comentarioSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await comentarPeca(db, actor, idPeca.parse(id), input); refreshProducao(); return r; });
 }

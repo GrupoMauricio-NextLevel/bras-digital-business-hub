@@ -15,7 +15,7 @@ export function exigirAgenciasLigado(env: Record<string, string | undefined> = p
 }
 
 export const FUNCAO_ROTULO: Record<AgenciaFuncao, string> = {
-  ADMIN: "Administrador", ATENDIMENTO: "Atendimento", ROTEIRO: "Roteiro", GRAVACAO: "Gravação", EDICAO: "Edição",
+  ADMIN: "Administrador", GESTOR: "Gestor", ATENDIMENTO: "Atendimento", ROTEIRO: "Roteiro", GRAVACAO: "Gravação", EDICAO: "Edição",
   SOCIAL_MEDIA: "Social media", TRAFEGO: "Tráfego pago", FINANCEIRO: "Financeiro",
 };
 
@@ -25,10 +25,14 @@ export type Membro = { agenciaId: string; userId: string; funcao: AgenciaFuncao;
 export const pode = {
   verValores: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "FINANCEIRO",
   gerirEquipe: (m: Membro) => m.funcao === "ADMIN",
-  editarClientes: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "ATENDIMENTO",
+  editarClientes: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR" || m.funcao === "ATENDIMENTO",
   editarContrato: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "FINANCEIRO",
   importar: (m: Membro) => m.funcao === "ADMIN",
-  verTodosClientes: (m: Membro) => m.todosClientes || m.funcao === "ADMIN" || m.funcao === "ATENDIMENTO" || m.funcao === "FINANCEIRO",
+  verTodosClientes: (m: Membro) => m.todosClientes || m.funcao === "ADMIN" || m.funcao === "GESTOR" || m.funcao === "ATENDIMENTO" || m.funcao === "FINANCEIRO",
+  /** Distribui, transfere, muda prazo e move qualquer peça (D314). */
+  gerirProducao: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR",
+  /** Cria peças e planeja o mês. */
+  planejar: (m: Membro) => m.funcao === "ADMIN" || m.funcao === "GESTOR" || m.funcao === "ROTEIRO" || m.funcao === "ATENDIMENTO",
 };
 
 /** Vê o cliente se vê a carteira toda, se é o responsável ou se está na equipe do cliente. */

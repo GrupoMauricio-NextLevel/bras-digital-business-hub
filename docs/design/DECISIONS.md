@@ -3949,3 +3949,32 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Próximas fases (ordem da Parte 8.7):** AGF1 cobrança automática com o meio de pagamento da própria agência, AGF2 régua e inadimplência, AG5 portal do cliente, AG3 e AG4 produção e agenda.
 - **Para ligar no ar:** `AGENCIAS_V1=true` no Render e criar a agência em Master → Agências.
 
+## D314 — [E-commerce] UPClips, Fase 1A: produção da agência (peça de conteúdo, fluxo com passagem automática e ciclo do mês) (2026-11-17)
+- **Pedido do dono:** "pode seguir e publicar", com o plano `docs/prompts/upclips-centro-de-comando.md`. Regra da fase: acoplar o briefing da UPClips ao que já existe e não construir nada do zero; o único núcleo novo é a peça de conteúdo, que nenhuma tela de loja tem.
+- **Banco (migração 0105, só acrescenta):**
+  - `agencia_ciclos`: o ciclo do mês por cliente; o contratado é copiado do contrato quando o ciclo abre e não muda depois;
+  - `agencia_pecas`: o registro único de cada conteúdo (tipo, etapa, situação, responsável, prazo, prioridade, extra, links de brutos, versão e publicação, legenda, data de publicação, versão);
+  - `agencia_peca_eventos`: o histórico, que não se apaga;
+  - `agencia_peca_comentarios`: comentários internos com menção;
+  - em `agencias`, os prazos de cada etapa; em `agencia_clientes`, se o cliente aprova cada conteúdo.
+- **Fluxo da UPClips:** planejamento → roteiro → captação → edição → revisão interna → aprovação do cliente → social media → publicado → métricas registradas, com situações dentro de cada etapa (roteiro: não iniciado, em desenvolvimento, em revisão, aprovado; edição: aguardando, editando, ajustes...).
+  - Arte e carrossel pulam a captação; cliente sem aprovação pula a aprovação.
+  - **Passagem automática:** ao concluir a etapa, a peça vai sozinha para a pessoa da função na equipe do cliente (revisão: gestor, senão administrador; sem ninguém, o responsável do cliente), com o prazo padrão da etapa.
+  - **Requisitos:** link dos brutos para sair da captação, link da versão para sair da edição, link da publicação para publicar.
+  - **Ajuste** (revisão interna ou aprovação) volta para a edição com o motivo; nova versão aumenta o número da versão.
+  - Dois cliques não pulam duas etapas.
+- **Função nova "Gestor":** vê a operação de todos os clientes, sem valores; transfere peças, muda prazo e prioridade e revisa.
+- **Ciclo do mês:**
+  - "Planejar o mês" cria as peças que faltam pelo pacote (vídeos, fotos, posts, criativos) e não duplica;
+  - produzido e publicado contados separados; extra à parte;
+  - peça não publicada de mês anterior aparece como "mês anterior" no mês novo, sem mexer no histórico do mês antigo.
+- **Telas** (visual da Commerce):
+  - **Produção:** quadro por etapa e lista, filtros por cliente, pessoa, etapa e atrasadas, números do mês e o cartão de entregas de cada cliente (contratados, publicados, em edição, aguardando aprovação e gravação, % publicado);
+  - **Peça:** etapas, o que fazer agora, conteúdo de cada departamento, arquivos por link, comentários internos e histórico;
+  - **Minha fila:** atrasadas primeiro;
+  - **Cockpit:** produção do mês, cartões dos clientes que mais precisam de atenção e atrasadas e aprovações na fila do dia;
+  - **Ficha do cliente:** produção do mês e a opção "o cliente aprova cada conteúdo".
+- **Nada de vídeo no banco:** só links (Google Drive ou onde a agência guarda).
+- **Testes:** `tests/agencias-producao.test.ts` (regras puras e fluxo completo) e `e2e/agencias-producao.mjs` (navegador, 360 px, axe).
+- **Próximo (Fase 1B e 1C):** gravações com filmmaker freelancer, calendário geral, abas da ficha, portal do cliente (entrada por código), avisos e Resumo da Semana.
+

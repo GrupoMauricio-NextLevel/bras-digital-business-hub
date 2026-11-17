@@ -193,7 +193,9 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     label: "Painel da Agência",
     items: [
       { label: "Hoje", href: "/agencia", icon: "Home", exact: true, group: "Agência", bottom: true },
-      { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Agência", bottom: true },
+      { label: "Minha fila", href: "/agencia/fila", icon: "Inbox", group: "Agência", bottom: true },
+      { label: "Produção", href: "/agencia/producao", icon: "LayoutGrid", group: "Agência", bottom: true },
+      { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Agência" },
       { label: "Equipe", href: "/agencia/equipe", icon: "Users", group: "Gestão", bottom: true },
     ],
     quick: [],

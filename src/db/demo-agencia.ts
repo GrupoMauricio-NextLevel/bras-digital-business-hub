@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Database } from "./client";
-import { agenciaClienteEquipe, agenciaClientes, agenciaMembros, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso } from "./schema";
+import { agenciaCiclos, agenciaClienteEquipe, agenciaClientes, agenciaMembros, agenciaPecaEventos, agenciaPecas, agencias, organizations, users, type AgenciaFuncao, type AgenciaIncluso, type PecaEtapa } from "./schema";
+import { escolherResponsavel, mesAnterior, prazoDaEtapa, situacaoInicial } from "@/lib/agencias/fluxo";
 import { DEMO_PASSWORD } from "./seed-constants";
 import { newId } from "@/lib/ids";
 import { hashPassword } from "@/lib/security/password";
@@ -13,6 +14,8 @@ import { hashPassword } from "@/lib/security/password";
 const SLUG = "agencia-aurora-demo";
 const EQUIPE: { chave: string; nome: string; email: string; funcao: AgenciaFuncao; todos?: boolean }[] = [
   { chave: "adm", nome: "Marina Alves", email: "agencia@agencia.demo", funcao: "ADMIN", todos: true },
+  { chave: "ges", nome: "Rafael Prado", email: "gestor@agencia.demo", funcao: "GESTOR", todos: true },
+  { chave: "fil", nome: "Felipe Duarte", email: "filmmaker@agencia.demo", funcao: "GRAVACAO" },
   { chave: "soc1", nome: "Beatriz Rocha", email: "social1@agencia.demo", funcao: "SOCIAL_MEDIA" },
   { chave: "soc2", nome: "Júlio Matos", email: "social2@agencia.demo", funcao: "SOCIAL_MEDIA" },
   { chave: "rot", nome: "Sônia Lima", email: "roteiro@agencia.demo", funcao: "ROTEIRO", todos: true },
@@ -48,7 +51,41 @@ export async function seedDemoAgencia(db: Database): Promise<boolean> {
   for (const c of CLIENTES) {
     const id = newId("agcl");
     await db.insert(agenciaClientes).values({ id, agenciaId, nome: c.nome, segmento: c.segmento, pacote: c.pacote, incluso: c.incluso, valorMensalCents: c.valor * 100, diaVencimento: c.dia, whatsapp: c.whatsapp ?? null, responsavelId: c.resp ? ids.get(c.resp)! : null, situacao: c.situacao ?? "ATIVO", inicioEm: "2026-08-01" });
-    if (c.equipe.length) await db.insert(agenciaClienteEquipe).values(c.equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
+    const equipe = [...new Set([...c.equipe, "rot", "ges", "fil", ...(c.resp ? [c.resp] : [])])];
+    await db.insert(agenciaClienteEquipe).values(equipe.map((k) => ({ clienteId: id, userId: ids.get(k)! })));
+    if (c.situacao !== "PAUSADO") await pecasDemo(db, agenciaId, id, c, equipe.map((k) => ({ userId: ids.get(k)!, funcao: EQUIPE.find((p) => p.chave === k)!.funcao })), c.resp ? ids.get(c.resp)! : null);
   }
   return true;
 }
+
+/** Peças fictícias do mês em todas as etapas (D314): algumas atrasadas e uma herdada do mês anterior. */
+const ETAPAS_DEMO: PecaEtapa[] = ["PUBLICADO", "PUBLICADO", "CONCLUIDO", "EDICAO", "AGENDAMENTO", "REVISAO", "APROVACAO", "CAPTACAO", "ROTEIRO", "EDICAO", "PLANEJAMENTO", "ROTEIRO"];
+async function pecasDemo(db: Database, agenciaId: string, clienteId: string, c: C, equipe: { userId: string; funcao: AgenciaFuncao }[], resp: string | null) {
+  const hoje = new Date().toISOString().slice(0, 10); const mes = hoje.slice(0, 7);
+  const dia = (n: number) => new Date(Date.now() + n * 86_400_000).toISOString().slice(0, 10);
+  const cicloId = newId("agci");
+  await db.insert(agenciaCiclos).values({ id: cicloId, agenciaId, clienteId, mes, contratado: c.incluso });
+  const n = c.incluso.videos ?? 0;
+  for (let i = 0; i < n; i++) {
+    const etapa = ETAPAS_DEMO[i % ETAPAS_DEMO.length]!;
+    const pecaId = newId("agpc");
+    const atrasada = etapa === "EDICAO" && i === 3;
+    await db.insert(agenciaPecas).values({
+      id: pecaId, agenciaId, clienteId, cicloId, tipo: "VIDEO", titulo: `${["Bastidores", "Depoimento", "Antes e depois", "Dica rápida", "Tour", "Pergunta do cliente"][i % 6]} ${i + 1}`,
+      etapa, situacao: etapa === "EDICAO" ? "EDITANDO" : situacaoInicial(etapa), responsavelId: etapa === "CONCLUIDO" ? null : escolherResponsavel(etapa, equipe, resp),
+      prazo: atrasada ? dia(-2) : prazoDaEtapa(etapa, hoje), roteiro: ["PLANEJAMENTO", "ROTEIRO"].includes(etapa) ? null : "Abertura com gancho, problema, solução, chamada para o WhatsApp.",
+      linkBrutos: ["PLANEJAMENTO", "ROTEIRO", "CAPTACAO"].includes(etapa) ? null : "https://drive.google.com/demonstracao-brutos", linkVersao: ["REVISAO", "APROVACAO", "AGENDAMENTO", "PUBLICADO", "CONCLUIDO"].includes(etapa) ? "https://drive.google.com/demonstracao-v1" : null,
+      versao: ["REVISAO", "APROVACAO", "AGENDAMENTO", "PUBLICADO", "CONCLUIDO"].includes(etapa) ? 1 : 0, linkPublicacao: ["PUBLICADO", "CONCLUIDO"].includes(etapa) ? "https://instagram.com/p/demonstracao" : null,
+      publicadoEm: ["PUBLICADO", "CONCLUIDO"].includes(etapa) ? new Date(Date.now() - (i + 1) * 86_400_000).toISOString() : null,
+    });
+    await db.insert(agenciaPecaEventos).values({ id: newId("agpe"), pecaId, agenciaId, tipo: "CRIADA", mensagem: "Planejada pelo pacote do mês (demonstração).", autorNome: "Demonstração" });
+  }
+  if (c.nome.startsWith("Clínica")) {
+    const anterior = newId("agci");
+    await db.insert(agenciaCiclos).values({ id: anterior, agenciaId, clienteId, mes: mesAnterior(mes), contratado: c.incluso });
+    const pecaId = newId("agpc");
+    await db.insert(agenciaPecas).values({ id: pecaId, agenciaId, clienteId, cicloId: anterior, tipo: "VIDEO", titulo: "Vídeo do mês passado", etapa: "EDICAO", situacao: "AJUSTES", responsavelId: escolherResponsavel("EDICAO", equipe, resp), prazo: dia(-5), linkBrutos: "https://drive.google.com/demonstracao-brutos" });
+    await db.insert(agenciaPecaEventos).values({ id: newId("agpe"), pecaId, agenciaId, tipo: "AJUSTE", mensagem: "Ajuste pedido pelo cliente: trocar a música (demonstração).", autorNome: "Demonstração" });
+  }
+}
+

@@ -10,6 +10,8 @@
 >
 > **Documentos ligados:** `up-nextlevel-sistema-da-agencia.md` (parceria, cinco frentes, Mesa do Maurício, páginas públicas), `agencias-parceiras-up-piloto.md` (Parte 8: cobrança automática), `agencias-up-perguntas-estrategicas.md`. Preços fora deste documento; só a D312 está decidida.
 >
+> **Em desenvolvimento:** Fase 1A feita (D314, 17/11/2026): peça de conteúdo, fluxo com passagem automática, ciclo do mês, Produção, Minha fila e a produção no cockpit. Próximas: 1B e 1C.
+>
 > **Ao aprovar:** decisão nova em `docs/design/DECISIONS.md` (frente `[E-commerce]`) e citação na base de conhecimento.
 
 ---

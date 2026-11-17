@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, CalendarClock, ContactRound, HandCoins, Receipt, UserRoundX, UsersRound, FileWarning, Plus } from "lucide-react";
+import { AlarmClock, ArrowRight, CalendarClock, CheckCircle2, Clapperboard, ContactRound, HandCoins, Hourglass, Inbox, Receipt, Scissors, UserRoundX, UsersRound, FileWarning, Plus } from "lucide-react";
+import { CartaoClienteMes } from "@/components/agencia/producao";
+import { minhaFila, producaoDoMes } from "@/lib/agencias/producao";
+import { mesRotulo } from "@/lib/agencias/fluxo";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { Kpi } from "@/components/commerce/commerce-home";
@@ -23,9 +26,15 @@ const chip = "inline-flex items-center gap-1.5 rounded-full border border-[var(-
  */
 export default async function HojeNaAgencia() {
   const session = await requireRole("AGENCY");
-  const k = await cockpitDaAgencia(await getDb(), session.actor);
+  const db = await getDb();
+  const [k, prod, fila] = await Promise.all([cockpitDaAgencia(db, session.actor), producaoDoMes(db, session.actor), minhaFila(db, session.actor)]);
+  const t = prod.total;
+  const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
   const pend = k.pendencias;
-  const fila = [
+  const filaDia = [
+    ...(t.atrasadas ? [{ key: "atr", icon: AlarmClock, title: "Peças atrasadas", detail: "Passaram do prazo da etapa. Veja com quem estão e redistribua se precisar.", count: t.atrasadas, action: "Ver", href: "/agencia/producao?atrasadas=1&ver=lista", danger: true }] : []),
+    ...(t.aguardandoAprovacao ? [{ key: "apr", icon: Hourglass, title: "Aguardando aprovação do cliente", detail: "Conteúdos prontos esperando o cliente aprovar.", count: t.aguardandoAprovacao, action: "Ver", href: "/agencia/producao?etapa=APROVACAO&ver=lista", danger: false }] : []),
+    ...(t.faltaPlanejar && k.verCarteiraToda ? [{ key: "plan", icon: Clapperboard, title: "Conteúdos contratados ainda não planejados", detail: `O pacote de ${mesRotulo(prod.mes)} pede mais peças do que as planejadas.`, count: t.faltaPlanejar, action: "Planejar", href: "/agencia/producao", danger: false }] : []),
     ...(k.verValores && k.vencimentos.length ? [{ key: "venc", icon: CalendarClock, title: "Vencimentos da semana", detail: `${k.vencimentos.slice(0, 3).map((v) => `${v.nome} (${ddmm(v.data)})`).join(", ")}${k.vencimentos.length > 3 ? "…" : ""}. A cobrança automática chega na próxima etapa do piloto.`, count: k.vencimentos.length, action: "Ver lista", href: "#vencimentos", danger: false }] : []),
     ...(pend.semResponsavel.length ? [{ key: "resp", icon: UserRoundX, title: "Clientes sem responsável", detail: "Sem alguém da equipe cuidando, o trabalho do mês fica sem dono.", count: pend.semResponsavel.length, action: "Definir", href: `/agencia/clientes/${pend.semResponsavel[0]!.id}`, danger: true }] : []),
     ...(pend.semContrato.length ? [{ key: "contr", icon: FileWarning, title: "Contratos sem valor ou vencimento", detail: "Complete para a agência saber o que entra e quando.", count: pend.semContrato.length, action: "Completar", href: `/agencia/clientes/${pend.semContrato[0]!.id}`, danger: false }] : []),
@@ -57,8 +66,8 @@ export default async function HojeNaAgencia() {
         <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="ag-fila">
           <h2 id="ag-fila" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
           <p className="mt-0.5 text-xs text-muted-foreground">O que precisa de você agora, do mais urgente ao menos urgente.</p>
-          {fila.length ? (
-            <ol className="mt-3 divide-y divide-border">{fila.map((item) => { const Icon = item.icon; return <li key={item.key}>
+          {filaDia.length ? (
+            <ol className="mt-3 divide-y divide-border">{filaDia.map((item) => { const Icon = item.icon; return <li key={item.key}>
               <Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3">
                 <span className={item.danger ? "flex size-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger" : "flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"}><Icon className="size-[18px]" aria-hidden /></span>
                 <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
@@ -69,6 +78,25 @@ export default async function HojeNaAgencia() {
           ) : <p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p>}
         </section>
       ) : null}
+
+      {k.verCarteiraToda ? (
+        <section aria-labelledby="ag-prod" className="space-y-3">
+          <div className="flex items-end justify-between"><h2 id="ag-prod" className="text-base font-semibold tracking-[-.01em]">Produção de {mesRotulo(prod.mes)}</h2><Link href="/agencia/producao" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver produção <ArrowRight className="size-4" aria-hidden /></Link></div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+            <Kpi i={1} icon={Clapperboard} label="Contratados no mês" value={String(t.contratado)} note={`${t.contratadoVideos} vídeos · ${t.planejadas} planejados`} />
+            <Kpi i={2} icon={CheckCircle2} label="Publicados" value={`${t.percentualPublicado}%`} note={`${t.publicadas} publicados · ${t.produzidas} produzidos`} />
+            <Kpi i={3} icon={Scissors} label="Em edição" value={String(t.emEdicao)} note={`${t.emCaptacao} aguardando gravação · ${t.emRoteiro} em roteiro`} />
+            <Kpi i={4} icon={AlarmClock} label="Atrasadas" value={String(t.atrasadas)} note={`${t.aguardandoAprovacao} aguardando aprovação`} />
+          </div>
+          {piores.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{piores.map((c) => <CartaoClienteMes key={c.clienteId} id={c.clienteId} nome={c.clienteNome} segmento={c.segmento} c={c.contagem} />)}</div> : null}
+        </section>
+      ) : (
+        <Link href="/agencia/fila" className="ds-card ds-lift flex items-center gap-4 !p-5">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"><Inbox className="size-[18px]" aria-hidden /></span>
+          <span className="min-w-0 flex-1"><b className="block">Minha fila</b><span className="text-sm text-muted-foreground">{fila.length ? `${fila.length} peça${fila.length > 1 ? "s" : ""} com você${fila.some((p) => p.atrasada) ? `, ${fila.filter((p) => p.atrasada).length} atrasada(s)` : ""}` : "Nada com você agora"}</span></span>
+          <ArrowRight className="size-4 text-subtle-foreground" aria-hidden />
+        </Link>
+      )}
 
       {k.verValores ? (
         <section aria-label="Números da agência">

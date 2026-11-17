@@ -1,5 +1,12 @@
 [
  {
+  "numero": 314,
+  "frente": "E-commerce",
+  "titulo": "UPClips, Fase 1A: produção da agência (peça de conteúdo, fluxo com passagem automática e ciclo do mês)",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"pode seguir e publicar\", com o plano docs/prompts/upclips-centro-de-comando.md. Regra da fase: acoplar o briefing da UPClips ao que já existe e não construir nada do zero; o único núcleo novo é a peça de conteúdo, que ne…"
+ },
+ {
   "numero": 313,
   "frente": "E-commerce",
   "titulo": "Painel da Agência: plano aprovado e fases AG0 a AG2 (agência, equipe com funções e carteira de clientes com contrato)",
@@ -271,12 +278,5 @@
   "titulo": "BG1: bônus gamificado para parceiros online e executivos de rua, com teto de margem",
   "data": "2026-11-07",
   "resumo": "Pedido do dono (07/11): bônus semanais e mensais que não prejudiquem a margem;"
- },
- {
-  "numero": 270,
-  "frente": "E-commerce",
-  "titulo": "CX2: receber assinatura à mão, formas de pagamento da NextLevel e painel de assinaturas",
-  "data": "2026-11-07",
-  "resumo": "Prompt: docs/prompts/caixa-balcao-executivos-de-venda.md, fase CX2."
  }
 ]

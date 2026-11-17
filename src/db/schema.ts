@@ -3356,7 +3356,7 @@ export const aceitesTermos = pgTable("aceites_termos", {
 // ---------------------------------------------------------------------------
 export const AGENCIA_SITUACOES = ["PILOTO", "ATIVA", "PAUSADA"] as const;
 /** Funções da equipe da agência: ADMIN vê e faz tudo; FINANCEIRO vê valores; as outras veem a operação dos clientes delas. */
-export const AGENCIA_FUNCOES = ["ADMIN", "ATENDIMENTO", "ROTEIRO", "GRAVACAO", "EDICAO", "SOCIAL_MEDIA", "TRAFEGO", "FINANCEIRO"] as const;
+export const AGENCIA_FUNCOES = ["ADMIN", "GESTOR", "ATENDIMENTO", "ROTEIRO", "GRAVACAO", "EDICAO", "SOCIAL_MEDIA", "TRAFEGO", "FINANCEIRO"] as const;
 export type AgenciaFuncao = (typeof AGENCIA_FUNCOES)[number];
 export const AGENCIA_CLIENTE_SITUACOES = ["ATIVO", "PAUSADO", "ENCERRADO"] as const;
 export type AgenciaClienteSituacao = (typeof AGENCIA_CLIENTE_SITUACOES)[number];
@@ -3373,6 +3373,8 @@ export const agencias = pgTable("agencias", {
   situacao: text("situacao", { enum: AGENCIA_SITUACOES }).notNull().default("PILOTO"),
   /** Agência Fundadora (D313): a primeira de cada etapa, com condições próprias combinadas com o dono. */
   fundadora: boolean("fundadora").notNull().default(false),
+  /** Prazo padrão de cada etapa da produção, em dias (D314). Vazio = padrão do sistema. */
+  prazosEtapas: jsonb("prazos_etapas").$type<Record<string, number>>().notNull().default({}),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
@@ -3412,6 +3414,8 @@ export const agenciaClientes = pgTable("agencia_clientes", {
   /** Conta NextLevel Business do cliente, quando ligada com o aceite dele (fase seguinte). */
   storeId: text("store_id").references(() => stores.id),
   observacoes: text("observacoes"),
+  /** O cliente aprova cada peça antes de publicar (D314). Desligado, a peça vai da revisão interna direto ao agendamento. */
+  exigeAprovacao: boolean("exige_aprovacao").notNull().default(true),
   motivoEncerramento: text("motivo_encerramento"),
   encerradoEm: ts("encerrado_em"),
   createdAt: createdAt(),
@@ -3423,3 +3427,83 @@ export const agenciaClienteEquipe = pgTable("agencia_cliente_equipe", {
   clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
   userId: text("user_id").notNull().references(() => users.id),
 }, (t) => [primaryKey({ columns: [t.clienteId, t.userId] }), index("agencia_cliente_equipe_user_idx").on(t.userId)]);
+
+// ---------------------------------------------------------------------------
+// Produção da agência (D314, Fase 1A): a peça de conteúdo atravessa os departamentos (planejamento → roteiro → captação →
+// edição → revisão → aprovação → agendamento → publicado → métricas) dentro do ciclo do mês de cada cliente.
+// ---------------------------------------------------------------------------
+export const PECA_ETAPAS = ["PLANEJAMENTO", "ROTEIRO", "CAPTACAO", "EDICAO", "REVISAO", "APROVACAO", "AGENDAMENTO", "PUBLICADO", "CONCLUIDO"] as const;
+export type PecaEtapa = (typeof PECA_ETAPAS)[number];
+export const PECA_TIPOS = ["VIDEO", "FOTO", "CARROSSEL", "ARTE", "CRIATIVO", "STORIES"] as const;
+export type PecaTipo = (typeof PECA_TIPOS)[number];
+export const PECA_PRIORIDADES = ["NORMAL", "ALTA", "URGENTE"] as const;
+
+/** Ciclo do mês de um cliente: o contratado é copiado do contrato quando o ciclo abre (mudança de contrato não reescreve o passado). */
+export const agenciaCiclos = pgTable("agencia_ciclos", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  /** AAAA-MM */
+  mes: text("mes").notNull(),
+  contratado: jsonb("contratado").$type<AgenciaIncluso>().notNull().default({}),
+  createdAt: createdAt(),
+}, (t) => [uniqueIndex("agencia_ciclos_cliente_mes_uq").on(t.clienteId, t.mes), index("agencia_ciclos_agencia_idx").on(t.agenciaId, t.mes)]);
+
+/** Peça de conteúdo: registro único de cada entrega, com etapa, responsável, prazo e links (nada de vídeo no banco). */
+export const agenciaPecas = pgTable("agencia_pecas", {
+  id: id(),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  clienteId: text("cliente_id").notNull().references(() => agenciaClientes.id),
+  cicloId: text("ciclo_id").notNull().references(() => agenciaCiclos.id),
+  tipo: text("tipo", { enum: PECA_TIPOS }).notNull().default("VIDEO"),
+  titulo: text("titulo").notNull(),
+  objetivo: text("objetivo"),
+  roteiro: text("roteiro"),
+  referencias: text("referencias"),
+  etapa: text("etapa", { enum: PECA_ETAPAS }).notNull().default("PLANEJAMENTO"),
+  /** Situação dentro da etapa (ex.: EM_DESENVOLVIMENTO no roteiro, EDITANDO na edição). */
+  situacao: text("situacao").notNull().default("NAO_INICIADO"),
+  responsavelId: text("responsavel_id").references(() => users.id),
+  /** Prazo da etapa atual (AAAA-MM-DD). */
+  prazo: text("prazo"),
+  prioridade: text("prioridade", { enum: PECA_PRIORIDADES }).notNull().default("NORMAL"),
+  /** Fora do pacote contratado: conta à parte. */
+  extra: boolean("extra").notNull().default(false),
+  linkBrutos: text("link_brutos"),
+  linkVersao: text("link_versao"),
+  linkPublicacao: text("link_publicacao"),
+  legenda: text("legenda"),
+  publicarEm: ts("publicar_em"),
+  versao: integer("versao").notNull().default(0),
+  publicadoEm: ts("publicado_em"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+}, (t) => [index("agencia_pecas_agencia_idx").on(t.agenciaId, t.etapa), index("agencia_pecas_ciclo_idx").on(t.cicloId), index("agencia_pecas_resp_idx").on(t.responsavelId, t.etapa)]);
+
+/** Histórico imutável da peça: mudança de etapa, situação, responsável, prazo, versões e ajustes pedidos. */
+export const agenciaPecaEventos = pgTable("agencia_peca_eventos", {
+  id: id(),
+  pecaId: text("peca_id").notNull().references(() => agenciaPecas.id),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  tipo: text("tipo").notNull(),
+  mensagem: text("mensagem").notNull(),
+  link: text("link"),
+  autorId: text("autor_id"),
+  autorNome: text("autor_nome"),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_peca_eventos_peca_idx").on(t.pecaId, t.createdAt)]);
+
+/** Comentários na peça; `interno` nunca aparece para o cliente. Menções avisam a pessoa citada. */
+export const agenciaPecaComentarios = pgTable("agencia_peca_comentarios", {
+  id: id(),
+  pecaId: text("peca_id").notNull().references(() => agenciaPecas.id),
+  agenciaId: text("agencia_id").notNull().references(() => agencias.id),
+  autorId: text("autor_id"),
+  autorNome: text("autor_nome").notNull(),
+  texto: text("texto").notNull(),
+  interno: boolean("interno").notNull().default(true),
+  mencoes: jsonb("mencoes").$type<string[]>().notNull().default([]),
+  link: text("link"),
+  createdAt: createdAt(),
+}, (t) => [index("agencia_peca_comentarios_peca_idx").on(t.pecaId, t.createdAt)]);
+
