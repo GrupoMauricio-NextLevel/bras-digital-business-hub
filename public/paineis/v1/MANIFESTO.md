@@ -12,4 +12,8 @@ Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D328). Geradas
 | pv-conquista-primeira-venda-916 / -11 | Cartão de conquista da 1ª venda e imagem para Stories/feed (PV4) | 9:16 e 1:1 | Guardada |
 | pv-conquista-marco-916 / -11 | Cartão de conquista de marcos (10ª, 100ª venda…) (PV4) | 9:16 e 1:1 | Guardada |
 
-**A refazer:** pv-vazio-vendas, pv-vazio-pedidos e pv-tudo-em-dia vieram com o quadriculado de "transparente" desenhado dentro da imagem (sem transparência de verdade).
+| pv-vazio-vendas | Gráfico sem venda e estados vazios de vendas (`EstadoVazioVivo`, PV3) | 1:1 | Guardada |
+| pv-vazio-pedidos | Lista de pedidos vazia (PV3) | 1:1 | Guardada |
+| pv-tudo-em-dia | Fila do dia zerada ("Tudo em dia") (PV3) | 1:1 | Guardada |
+
+**Telas vazias:** refeitas em 17/11 com fundo pérola liso (sem transparência). No tema claro, usar com `mix-blend-mode: multiply` (o fundo some); no escuro, dentro de um quadro claro arredondado.
