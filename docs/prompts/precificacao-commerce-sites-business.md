@@ -20,8 +20,10 @@
    - Um plano por nível (Start, Pro, Scale), com os preços de hoje.
    - Na contratação, a empresa escolhe o canal: **Site** (captação de clientes com os anúncios), **Loja virtual** (vender online) ou **os dois**. O segundo canal sai com **50% de desconto**.
    - Uma conta, um painel ("Meu negócio"), um endereço, um cadastro de clientes.
-2. **NextLevel Business é a linha avançada, no padrão Bitrix24.**
-   - Preço **por empresa, com usuários inclusos**, em três níveis mais Enterprise. Mensal ou anual, com o anual cerca de 30% mais barato.
+2. **NextLevel Business é a linha avançada, no padrão Bitrix24, com uma diferença.**
+   - Preço **por empresa**, em três níveis mais Enterprise. Mensal ou anual, com o anual cerca de 30% mais barato.
+   - A cobrança tem **duas medidas** (pedido do dono, 17/11): **pessoas da equipe** e **clientes com acesso ao portal do cliente**. Cada nível inclui uma quantidade de cada, e o excedente sai por um valor pequeno por cliente ativo no mês (seção 5.4).
+   - **Os clientes da empresa podem contratar a mesma ferramenta**, e a empresa ganha por isso (seção 5.5).
    - Vende sozinho para empresas que só querem o sistema de gestão.
    - Para quem já é cliente do Commerce, entra com desconto. O **Scale traz o Business Essencial incluso**.
 3. **Soluções Digitais** continuam como serviços da agência (implantação, migração, gestão de tráfego, criação), cobrados à parte e oferecidos dentro do painel no momento certo.
@@ -59,7 +61,7 @@
 1. **Preço por empresa com usuários inclusos**: simples de entender e de comparar.
 2. **Anual com economia em reais bem visível.**
 3. **Uma frase que promete "tudo num lugar só"**, no nosso caso com o dinheiro no fim: "do anúncio ao dinheiro, num lugar só".
-4. **Duas linhas por aba**: a nossa segunda aba é o Business com IA (seção 5.4).
+4. **Duas linhas por aba**: a nossa segunda aba é o Business com IA (seção 5.6).
 
 **Onde ganhar dele (o que ele não faz igual):**
 
@@ -139,12 +141,12 @@ Valores = os de hoje [fato]. **Nada muda na loja virtual.**
 ## 5. NextLevel Business: a linha avançada
 
 ### 5.1 Níveis e preço [proposta; o dono define os números]
-| Nível | Para quem | Usuários inclusos | Mensal | Anual (por mês, cerca de 30% menos) | Usuário extra |
-|---|---|---|---|---|---|
-| **Business Essencial** | Pequena empresa, 1 a 5 pessoas | 5 | **R$ 199** | R$ 139 | R$ 19/mês |
-| **Business Profissional** | Empresa com equipe comercial e de atendimento | 20 | **R$ 499** | R$ 349 | R$ 17/mês |
-| **Business Avançado** | Empresa em expansão, várias áreas | 50 | **R$ 999** | R$ 699 | R$ 15/mês |
-| **Business Enterprise** | Várias unidades, exigências próprias | 100 ou mais | sob proposta | sob proposta | sob proposta |
+| Nível | Para quem | Equipe inclusa | Clientes com acesso ao portal (ativos no mês) | Mensal | Anual (por mês, cerca de 30% menos) | Pessoa extra na equipe | Cliente ativo extra |
+|---|---|---|---|---|---|---|---|
+| **Business Essencial** | Pequena empresa, 1 a 5 pessoas | 5 | 50 | **R$ 199** | R$ 139 | R$ 19/mês | R$ 1,90 |
+| **Business Profissional** | Empresa com equipe comercial e de atendimento | 20 | 300 | **R$ 499** | R$ 349 | R$ 17/mês | R$ 1,50 |
+| **Business Avançado** | Empresa em expansão, várias áreas | 50 | 1.500 | **R$ 999** | R$ 699 | R$ 15/mês | R$ 0,99 |
+| **Business Enterprise** | Várias unidades, exigências próprias | 100 ou mais | sob proposta | sob proposta | sob proposta | sob proposta | sob proposta |
 
 **Por que esses números:**
 - **Abaixo do Bitrix24 por empresa.** Com 50 usuários, o Business Avançado (R$ 999/mês, R$ 699 no anual) fica perto do Standard dele (R$ 799/mês, R$ 559 no anual), mas já traz loja, site, caixa e resultados de anúncios ligados. Nos tamanhos pequenos, que são o nosso cliente, ficamos bem abaixo: o Bitrix24 nem mostra plano para 5 pessoas nas telas.
@@ -198,7 +200,45 @@ O resto entra pelas fases do plano mestre (`nextlevel-business-coracao-do-negoci
 - Para quem quer só o sistema de gestão: a empresa contrata o Business e ganha o painel completo, mais **uma página de captação** (para não depender de outro site). É a resposta ao construtor de sites do Bitrix24.
 - Quer site completo ou loja depois: liga o canal com o desconto de cliente (seção 5.1).
 
-### 5.4 A segunda aba: "Business + IA" (equivalente ao Vibe+) [proposta]
+### 5.4 Clientes com acesso ao portal: a segunda medida da cobrança [proposta]
+**Por que cobrar também por cliente (e não só por pessoa da equipe):**
+- No Business o valor está no **atendimento ao cliente da empresa**: o aluno reserva aula, o cliente da agência aprova o vídeo e paga, o cliente da vidraçaria acompanha a instalação.
+- Uma academia com 2 pessoas na equipe e 400 alunos no portal usa o sistema muito mais do que uma empresa com 2 pessoas e nenhum cliente com acesso. A cobrança tem de acompanhar isso.
+- Com essa medida, o preço cresce junto com o negócio do cliente, e não só com a equipe.
+
+**Regras:**
+1. **Cliente ativo** = quem **entrou no portal** pelo menos uma vez no mês. Cadastro parado não conta. É justo: a empresa paga pelo que é usado, e importar uma lista grande não pesa no preço.
+2. **Faixas inclusas por nível** (tabela 5.1): 50, 300 e 1.500 clientes ativos por mês. Acima disso, um valor pequeno por cliente ativo extra, que cai conforme o nível sobe (R$ 1,90, R$ 1,50, R$ 0,99).
+3. **Aviso antes de passar a faixa.** O painel mostra "você está com 42 de 50 clientes ativos este mês" e sugere o nível de cima quando ele sair mais barato que o excedente. Sem cobrança surpresa.
+4. **Teto opcional por mês** no excedente (por exemplo, o valor do nível de cima), para a conta nunca passar do que custaria subir de nível.
+5. O **Commerce** não cobra por cliente: comprador da loja e visitante do site não contam. A medida vale só para o **portal do cliente** do Business.
+
+**Exemplos:**
+| Empresa | Equipe | Clientes ativos no portal | Nível | Conta do mês |
+|---|---|---|---|---|
+| Academia pequena | 3 | 120 | Profissional (até 300) | **R$ 499** |
+| Academia grande | 8 | 700 | Profissional + 400 extras × R$ 1,50 = R$ 1.099; sobe para o Avançado | **R$ 999** (o painel sugere subir) |
+| Agência com 30 clientes empresas | 12 | 30 | Essencial não cabe (equipe); Profissional | **R$ 499** |
+| Vidraçaria que só usa o funil | 3 | 0 | Essencial | **R$ 199** |
+
+**Comparação:** o Bitrix24 nas telas cobra só por usuário da equipe. Cobrar pelo cliente atendido é diferente e combina com o que o sistema entrega: o atendimento ao cliente da empresa. Na página pública, a frase pode ser: "você paga pela sua equipe e pelos clientes que usam o portal, não por cadastro parado".
+
+### 5.5 O ecossistema: os clientes da empresa também podem contratar [proposta]
+**A ideia:** todo cliente com acesso ao portal é uma **empresa ou pessoa que já conhece a ferramenta por dentro**. Quando ele mesmo tem um negócio (o cliente da agência, o fornecedor da vidraçaria, o personal trainer da academia), ele pode contratar a mesma ferramenta para o negócio dele. A empresa que trouxe ganha por isso.
+
+**Como funciona:**
+1. **No portal do cliente**, um lugar discreto e configurável: "Gostou deste sistema? Use no seu negócio", com o nome da empresa que convidou. A empresa decide se mostra ou não.
+2. **Quem contrata por ali entra como indicação da empresa**, com a mesma regra do Programa de Parceiros (D260: percentual de toda mensalidade, saque mínimo, prazo do link). Opção: em vez de dinheiro, a empresa recebe **desconto na própria assinatura** (por exemplo, cada cliente que vira assinante dá 10% de desconto enquanto continuar pagando, até 100%). O dono escolhe uma das duas ou as duas.
+3. **O cliente que contrata ganha uma condição de boas-vindas** (por exemplo, o teste grátis estendido ou o 1º mês com desconto) e já entra ligado à empresa que o convidou: o portal dele e o painel novo conversam (ele continua cliente da empresa e passa a ser assinante da NextLevel).
+4. **Agências (D313 a D323):** é o mesmo caminho do Painel da Agência, onde cada cliente da agência tem portal. A agência vira a maior fonte de novas contas e recebe a comissão de agência que já existe.
+5. **Medição:** quantos clientes ativos no portal viraram assinantes, por empresa, no Master. É o número que prova o ecossistema.
+
+**Cuidados:**
+- O cliente final nunca recebe oferta sem a empresa permitir (a relação é da empresa).
+- Dados do cliente final não vão para a NextLevel sem consentimento (LGPD); o convite é o cliente que clica.
+- O cliente que vira assinante continua sendo cliente da empresa: nada muda no portal dele.
+
+### 5.6 A segunda aba: "Business + IA" (equivalente ao Vibe+) [proposta]
 - O Maurício faz mais coisas: resume o dia, sugere o próximo passo de cada contato, escreve respostas e páginas, aponta a campanha que está trazendo cliente caro.
 - O preço é um adicional por nível, com cota de uso maior: Essencial + R$ 99, Profissional + R$ 199, Avançado + R$ 399 por mês. O custo de IA precisa ser medido antes de fechar.
 
@@ -217,7 +257,7 @@ Não muda de lugar: são serviços do catálogo do Master (implantação, migra�
 |---|---|---|
 | Vidraçaria pequena (3 pessoas) | Commerce Start, canal Site | **R$ 149** |
 | Vidraçaria que quer o funil e a equipe | Commerce Pro Site + Business Essencial (−30%) | R$ 249 + R$ 139,30 = **R$ 388,30** |
-| Academia com reservas | Commerce Pro Site + Business Profissional (−30%) com portal (adicional) | R$ 249 + R$ 349,30 + portal |
+| Academia com reservas (3 na equipe, 120 alunos ativos no portal) | Commerce Pro Site + Business Profissional (−30%) | R$ 249 + R$ 349,30 = **R$ 598,30** (até 300 alunos ativos inclusos) |
 | Loja de moda que também quer captar | Commerce Pro, Loja + Site (+50%) | **R$ 373,50** |
 | Empresa grande (40 pessoas), só gestão | Business Avançado | **R$ 999** (anual: R$ 699/mês) |
 | Lojista que já está no Scale | Commerce Scale (Business Essencial incluso) | **R$ 499**, como hoje |
@@ -244,7 +284,7 @@ Não muda de lugar: são serviços do catálogo do Master (implantação, migra�
 |---|---|---|
 | P1 | Decisão **D327** com os números aprovados; tabela de preços do Master ganha: canal Site por nível, regra de 50% no segundo canal, níveis do Business, usuário extra, desconto de cliente e "Business + IA" | Só dados e regras; a loja de hoje não muda |
 | P2 | Contratação: na entrada e em Ajustes → Plano, a empresa escolhe Site, Loja ou os dois (com o desconto); a regra do D311 vira "direito adquirido" para as contas antigas | Mesma conta, mesma assinatura, segundo canal como adicional com 50% do nível |
-| P3 | Business como produto: níveis com usuários inclusos, usuário extra, Scale com Essencial incluso, desconto de cliente; o menu mostra "NextLevel Business" só para quem contrata (D324) | As funções já prontas passam a ser liberadas por nível |
+| P3 | Business como produto: níveis com equipe e clientes ativos no portal inclusos, pessoa extra e cliente ativo extra (com aviso antes de passar a faixa e teto), convite "use no seu negócio" no portal com indicação, Scale com Essencial incluso, desconto de cliente; o menu mostra "NextLevel Business" só para quem contrata (D324) | As funções já prontas passam a ser liberadas por nível |
 | P4 | Páginas públicas: `/planos` com as abas **Commerce** e **Business** (e "Business + IA"), economia do anual em reais, comparação por função, "em breve" no que falta | Padrão das telas do Bitrix24, com a nossa frase |
 | P5 | Nova rodada de funções do Business (o dono vai detalhar) | Fases do plano mestre |
 
@@ -256,4 +296,6 @@ Não muda de lugar: são serviços do catálogo do Master (implantação, migra�
 3. **Desconto do Business** para cliente do Commerce: 30% (sugestão) ou os mesmos 50%?
 4. **Business sozinho** (sem Site nem Loja) com uma página de captação: sim?
 5. **Segunda aba "Business + IA"** agora ou numa rodada futura?
+7. **Clientes no portal:** as faixas inclusas (50, 300, 1.500 clientes ativos por mês) e o valor por cliente ativo extra (R$ 1,90, R$ 1,50, R$ 0,99) estão no caminho? Vale o teto do excedente?
+8. **Ecossistema:** a empresa que traz um cliente assinante ganha **comissão** (regra de parceiros), **desconto na própria assinatura** ou **os dois**?
 6. **Contas antigas:** manter os direitos adquiridos como descrito na seção 8?
