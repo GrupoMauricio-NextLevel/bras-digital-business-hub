@@ -2,6 +2,7 @@
 @import "../design-system/tokens.css" layer(base);
 @import "../design-system/core.css" layer(components);
 @import "../design-system/movimento.css" layer(components);
+@import "../design-system/vida.css" layer(components);
 
 /* ===========================================================================
    Estilos globais da aplicação. Cor e forma NÃO vivem aqui: veja src/design-system

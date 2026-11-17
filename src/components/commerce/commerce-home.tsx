@@ -1,12 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Ilustracao } from "@/components/app/ilustracao";
 import type { LucideIcon } from "lucide-react";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, ExternalLink, Package, Palette, Plus, ShoppingBag, Users, Wallet } from "lucide-react";
+import { ArrowRight, Eye, ExternalLink, Package, Palette, Plus, ShoppingBag, Users, Wallet } from "lucide-react";
+import { NumeroVivo, Variacao } from "@/components/vida/numero-vivo";
+import { GraficoVendas } from "@/components/graficos/grafico-vendas";
+import { RoscaCanais } from "@/components/graficos/rosca-canais";
+import { comparaHoje, conversaoConfiavel, fatiasDeCanal, fraseDoPeriodo, miniSerie, serieDoPeriodo, type Periodo } from "@/lib/domain/painel-vivo";
 import { OrdersTable } from "@/components/shared/orders-table";
 import { StatusBadge } from "@/components/app/status-badge";
 import { buttonVariants } from "@/components/ui/button";
-import { formatBRL } from "@/lib/money";
+import { formatBRL, formatCompactBRL } from "@/lib/money";
 import { themeShot } from "@/lib/themes/gallery";
 import type { getMerchantOverview } from "@/lib/queries/merchant";
 import type { StoreReadiness } from "@/lib/domain/readiness";
@@ -20,12 +23,6 @@ const SETUP_KEYS = new Set(["readiness", "publish", "onboarding"]);
 
 const stagger = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
-function Delta({ value }: { value?: number }) {
-  if (value === undefined) return null;
-  const up = value >= 0;
-  const Icon = up ? ArrowUpRight : ArrowDownRight;
-  return <span className={`inline-flex items-center gap-1 text-xs font-medium ${up ? "text-success" : "text-danger"}`}><Icon className="size-3.5" aria-hidden />{up ? "+" : "−"}{Math.abs(value).toFixed(1).replace(".", ",")}%</span>;
-}
 
 /** Cartão de número do painel Commerce; reaproveitado no Painel da Agência (D313). */
 export function Kpi({ icon: Icon, label, value, note, i }: { icon: LucideIcon; label: string; value: string; note?: React.ReactNode; i: number }) {
@@ -45,7 +42,7 @@ function Ring({ done, total }: { done: number; total: number }) {
 }
 
 /** Início do painel Commerce: só dados reais (nada de número ou pendência inventada). */
-export function CommerceHome({ firstName, greeting, store, o, readiness, attention, pulso, negocio }: {
+export function CommerceHome({ firstName, greeting, store, o, readiness, attention, pulso, negocio, periodo = 30, visitas30 = null, rodape }: {
   firstName: string; greeting: string;
   store: { name: string; slug: string; status: string; publishedAt: Date | string | null };
   o: Overview; readiness: StoreReadiness | null; attention: Attention[];
@@ -53,6 +50,8 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   pulso?: React.ReactNode;
   /** NextLevel Business (NB1, D306): nome do gerenciador e se o negócio é site (sem vitrine de loja). Ausente = como antes. */
   negocio?: { nome: string; site: boolean };
+  /** Painéis com vida (D328): período do gráfico (7 ou 30 dias), visitas dos últimos 30 dias e o que vai ao pé da tela. */
+  periodo?: Periodo; visitas30?: number | null; rodape?: React.ReactNode;
 }) {
   const ticket = o.last30Count > 0 ? Math.round(o.sales / o.last30Count) : null;
   const published = !!store.publishedAt;
@@ -95,55 +94,71 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     <Link href="/merchant/orders/new" className={buttonVariants({ size: "lg" }) + " mt-5"}><Plus />Novo pedido</Link>
   </section>;
 
+  // Painéis com vida (D328): números do dia e do mês na primeira dobra, com cor por assunto e gráfico com a conclusão.
+  const hoje = comparaHoje(o.daily);
+  const serie = serieDoPeriodo(o.daily, o.prevDaily, periodo);
+  const conv = visitas30 === null ? null : conversaoConfiavel(o.last30Count, visitas30);
+  const mini = miniSerie(o.daily);
+  const fatias = fatiasDeCanal(o.byChannel);
+  const hrefPeriodo = (p: Periodo) => (p === 30 ? "/merchant" : `/merchant?periodo=${p}d`);
+
+  const numeros = <section aria-label="Resumo dos últimos 30 dias">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <NumeroVivo i={1} familia="dinheiro" icone={Wallet} rotulo="Vendas · 30 dias" valor={formatCompactBRL(o.sales)} valorCompleto={formatBRL(o.sales)} variacao={o.salesDelta === undefined ? null : o.salesDelta} serie={mini} href="/merchant/analytics" />
+      <NumeroVivo i={2} familia="pedidos" icone={ShoppingBag} rotulo="Pedidos · 30 dias" valor={String(o.last30Count)} variacao={o.countDelta === undefined ? null : o.countDelta} href="/merchant/orders" />
+      {conv !== null
+        ? <NumeroVivo i={3} familia="visitas" icone={Eye} rotulo="Visitas que viram venda" valor={`${conv.toFixed(1).replace(".", ",")}%`} nota={`${(visitas30 ?? 0).toLocaleString("pt-BR")} visitas`} href="/merchant/analytics" />
+        : <NumeroVivo i={3} familia="clientes" icone={Users} rotulo="Clientes" valor={o.customers.toLocaleString("pt-BR")} nota="na base da loja" href="/merchant/customers" />}
+      <NumeroVivo i={4} familia="crescimento" icone={Package} rotulo="Ticket médio" valor={ticket === null ? "—" : formatBRL(ticket)} nota={ticket === null ? "aparece após o 1º pedido" : "por pedido pago"} />
+    </div>
+    <p className="mt-2 px-1 text-xs text-muted-foreground">{noPrev ? "As variações aparecem quando houver 30 dias anteriores para comparar." : "Variação em relação aos 30 dias anteriores."}</p>
+  </section>;
+
+  const grafico = <GraficoVendas titulo={fraseDoPeriodo(serie, periodo)} atual={serie.atual} anterior={serie.anterior} total={serie.totalAtual} delta={serie.delta} melhor={serie.melhor} periodo={periodo} hrefPeriodo={hrefPeriodo} />;
+
+  const fila = operational.length || next ? <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(6)} aria-labelledby="cm-att">
+    <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
+    <p className="mt-0.5 text-xs text-muted-foreground">O que precisa de você agora, do mais urgente ao menos urgente.</p>
+    <ol className="mt-3 divide-y divide-border">{[...(next ? [next] : []), ...operational].slice(0, 6).map((item) => { const Icon = item.icon; return <li key={item.key}>
+      <Link href={item.href} className="group flex min-h-[60px] items-center gap-3 py-2.5">
+        <span className={item.tone === "danger" ? "flex size-9 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger" : "flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"}><Icon className="size-[18px]" aria-hidden /></span>
+        <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
+        <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-foreground">{item.count}</span>
+        <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
+      </Link></li>; })}</ol>
+    {operational.length + (next ? 1 : 0) > 6 ? <Link href="/merchant/orders" className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver tudo <ArrowRight className="size-4" aria-hidden /></Link> : null}
+  </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(6)}><h2 className="text-base font-semibold">Fila do dia</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>;
+
   return <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
-    <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
-            <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
-      {/* Conta nova (ainda sem venda): ilustração de boas-vindas à direita; no celular o texto ocupa a largura toda. */}
-      {firstAccess ? <Ilustracao nome="ui-boas-vindas-loja" priority className="absolute right-6 top-1/2 hidden size-40 -translate-y-1/2 sm:block lg:right-12 lg:size-52" /> : null}
-      <div className="relative max-w-[60%] max-sm:max-w-none">
-        <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral` : "Visão geral da loja"}</p>
-        <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>
-        <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{store.name}</span></p>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium">{store.status === "ACTIVE" ? "Conta ativa" : <StatusBadge value={store.status} dot />}</span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-1 font-medium"><span aria-hidden className={`size-1.5 rounded-full ${published ? "bg-success" : "bg-subtle-foreground"}`} />{negocio?.site ? (published ? "Site publicado" : "Site ainda não publicado") : published ? "Loja publicada" : "Loja ainda não publicada"}</span>
+    {/* Abertura compacta (D328): saudação à esquerda, o número de hoje em destaque à direita. */}
+    <section className="ds-hero ds-enter !py-5 px-5 sm:!py-6 sm:px-8">
+      <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
+      <div className="relative flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral` : "Visão geral da loja"}</p>
+          <h1 className="mt-1.5 text-[clamp(1.5rem,3.2vw,2.25rem)] font-semibold leading-[1.05] tracking-[-.04em]">{greeting}, {firstName}.</h1>
+          <p className="mt-1.5 flex flex-wrap items-center gap-2 text-xs"><span className="text-sm font-medium">{store.name}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-0.5 font-medium">{store.status === "ACTIVE" ? "Conta ativa" : <StatusBadge value={store.status} dot />}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--glass-line)] bg-[var(--glass-fn)] px-2.5 py-0.5 font-medium"><span aria-hidden className={`size-1.5 rounded-full ${published ? "bg-success" : "bg-subtle-foreground"}`} />{negocio?.site ? (published ? "Site publicado" : "Site ainda não publicado") : published ? "Loja publicada" : "Loja ainda não publicada"}</span>
+          </p>
+          {pulso}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary", size: "sm" })}><ExternalLink />{negocio?.site ? "Ver site" : "Ver loja"}</a>
+            {negocio?.site ? <Link href="/theme-editor" className={buttonVariants({ size: "sm" })}>Editar o site</Link> : <Link href="/merchant/orders/new" className={buttonVariants({ size: "sm" })}><Plus />Novo pedido</Link>}
+          </div>
         </div>
-        {pulso}
-        <div className="mt-5 flex flex-wrap gap-2">
-          <a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />{negocio?.site ? "Ver site" : "Ver loja"}</a>
-          {negocio?.site ? <Link href="/theme-editor" className={buttonVariants()}>Editar o site</Link> : <Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link>}
-        </div>
+        {negocio?.site ? null : <div className="min-w-0 text-left sm:text-right" aria-label="Vendas de hoje">
+          <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.18em]"><span className="vida-aovivo" aria-hidden />Hoje</p>
+          <p className="mt-1 text-[clamp(2rem,4.6vw,3.25rem)] font-bold leading-none tracking-[-.045em] tabular-nums" style={{ fontFamily: "var(--nl-font-display)" }}>{formatBRL(hoje.hojeCents)}</p>
+          <p className="mt-1.5 text-xs">{o.today.orders === 1 ? "1 venda paga" : `${o.today.orders} vendas pagas`}{hoje.delta !== null ? <> · <Variacao valor={hoje.delta} base={`vs. ${hoje.rotuloBase}`} /></> : null}</p>
+        </div>}
       </div>
     </section>
 
-    {/* Fila do dia logo abaixo da capa (D207): a primeira tela do lojista responde "o que faço agora?". */}
-    {!firstAccess || operational.length ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
-      {operational.length || next ? <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)} aria-labelledby="cm-att">
-        <h2 id="cm-att" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
-        <p className="mt-0.5 text-xs text-muted-foreground">O que precisa de você agora, do mais urgente ao menos urgente.</p>
-        <ol className="mt-3 divide-y divide-border">{[...(next ? [next] : []), ...operational].map((item) => { const Icon = item.icon; return <li key={item.key}>
-          <Link href={item.href} className="group flex min-h-[64px] items-center gap-4 py-3">
-            <span className={item.tone === "danger" ? "flex size-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger" : "flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[var(--ds-link)]"}><Icon className="size-[18px]" aria-hidden /></span>
-            <span className="min-w-0 flex-1"><span className="block text-sm font-medium">{item.title}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{item.detail}</span></span>
-            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold tabular-nums text-foreground">{item.count}</span>
-            <span className="hidden text-xs font-bold text-[var(--ds-link)] sm:block">{item.action}</span>
-            <ArrowRight className="size-4 text-subtle-foreground transition-transform group-hover:translate-x-1" aria-hidden />
-          </Link></li>; })}</ol>
-      </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(5)}><h2 className="text-base font-semibold">Fila do dia</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>}
-      {firstAccess ? null : status}
-    </div> : null}
-    {firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">{nextStep}{status}</div> : null}
+    {numeros}
 
-    <section aria-label="Resumo dos últimos 30 dias">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <Kpi i={1} icon={Wallet} label="Vendas · 30 dias" value={formatBRL(o.sales)} note={o.salesDelta === undefined ? undefined : <Delta value={o.salesDelta} />} />
-        <Kpi i={2} icon={ShoppingBag} label="Pedidos · 30 dias" value={String(o.last30Count)} note={o.countDelta === undefined ? undefined : <Delta value={o.countDelta} />} />
-        <Kpi i={3} icon={Users} label="Clientes" value={String(o.customers)} />
-        <Kpi i={4} icon={Package} label="Ticket médio" value={ticket === null ? "—" : formatBRL(ticket)} />
-      </div>
-      <p className="mt-2 px-1 text-xs text-muted-foreground">{noPrev ? "Variações aparecem quando houver 30 dias anteriores para comparar." : "Variação em relação aos 30 dias anteriores."}{ticket === null ? " O ticket médio aparece após o primeiro pedido." : ""}</p>
-    </section>
-
+    {firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">{nextStep}{status}</div>
+      : <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.45fr_1fr]">{grafico}{fila}</div>}
 
     {firstAccess && readiness ? (
       <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(4)} aria-labelledby="cm-first">
@@ -153,6 +168,9 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
         </ul>
       </section>
     ) : null}
+
+    {firstAccess ? <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.45fr_1fr]">{grafico}{fila}</div>
+      : <div className={`grid gap-5 sm:gap-6 ${fatias.length ? "lg:grid-cols-2" : ""}`}>{status}<RoscaCanais fatias={fatias} total={o.sales} /></div>}
 
     <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
       <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(6)} aria-labelledby="cm-orders">
@@ -172,5 +190,6 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
         </section>
       </div>
     </div>
+    {rodape}
   </div>;
 }

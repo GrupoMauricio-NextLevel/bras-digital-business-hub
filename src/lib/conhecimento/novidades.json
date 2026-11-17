@@ -1,5 +1,12 @@
 [
  {
+  "numero": 329,
+  "frente": "E-commerce",
+  "titulo": "Painéis com vida, rodada relâmpago: início do lojista com números em destaque, cores por assunto e gráfico de vendas",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"Pode seguir com as recomendações e faça a rodada relâmpago\" (antes da Black Friday). Com isso, as recomendações da seção A6 do prompt mestre (D328) passam a valer como padrão: canais só os reais, um convite de plano por…"
+ },
+ {
   "numero": 328,
   "frente": "E-commerce",
   "titulo": "Painéis com vida: direção visual de todos os painéis e prompt mestre PV0 a PV10",
@@ -271,12 +278,5 @@
   "titulo": "Código de segurança a cada entrada em todos os painéis",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: um código de segurança em cada acesso a todos os painéis internos. Modelo de referência: o código do aplicativo autenticador ou, para quem não tem, por e-mail."
- },
- {
-  "numero": 285,
-  "frente": "E-commerce",
-  "titulo": "E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta",
-  "data": "2026-11-12",
-  "resumo": "E-mail real no ar: domínio nextlevelcommerce.com.br verificado no Resend, região São Paulo, com DNS na Hostinger (DKIM, SPF via send/rsend e DMARC p=none);"
  }
 ]

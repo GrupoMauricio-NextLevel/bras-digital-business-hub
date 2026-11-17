@@ -37,6 +37,7 @@ import { PulsoLoja } from "@/components/app/pulso-loja";
 import { stockDemand } from "@/lib/domain/stock-alerts";
 import { perfilAtual } from "@/lib/perfil-loja-server";
 import { novidadesDa } from "@/lib/domain/novidades";
+import { resumoDeVisitas } from "@/lib/domain/visitas";
 
 const FILA_ICONE: Record<string, LucideIcon> = { publish: ExternalLink, funds: Wallet, labels: Printer, late: AlarmClock, stock: BellRing, conversas: MessageCircle, carrinhos: ShoppingBasket, produtos: Package };
 
@@ -45,7 +46,8 @@ function greeting() {
   return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
 }
 
-export default async function MerchantHome() {
+export default async function MerchantHome({ searchParams }: { searchParams: Promise<{ periodo?: string }> }) {
+  const periodo = (await searchParams).periodo === "7d" ? 7 : 30;
   const session = await requireStoreAdmin();
   const store = session.store!;
   const db = await getDb();
@@ -97,7 +99,10 @@ export default async function MerchantHome() {
   });
 
   const filaFinal = ehSite ? attention.filter((a) => extra.some((e) => e.key === a.key) && a.key !== "produtos") : attention;
-  if (commerce) return <>{faixaNovidade}{boasVindas}<CommerceHome negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} className="mt-4" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
+  // Painéis com vida (D328): uma faixa por vez no topo; a novidade vai para o pé da tela; visitas para a conversão.
+  const visitas30 = commerce ? (await resumoDeVisitas(db, store.id, 30)).total : null;
+  const rodapeNovidade = novidade ? <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null;
+  if (commerce) return <>{faixaContrato}{faixaPix}{boasVindas}<CommerceHome periodo={periodo} visitas30={visitas30} rodape={rodapeNovidade} negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} semVendas className="mt-3" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;
