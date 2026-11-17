@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or } from "drizzle-orm";
+import { and, desc, eq, ilike, ne, or } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { networks, orders, products, storeCustomers, customers, stores, suppliers } from "@/db/schema";
 import type { Actor } from "./access";
@@ -32,7 +32,7 @@ export async function globalSearch(db: Database, actor: Actor, raw: string, limi
     hits.push(...o.map((r) => ({ id: r.id, kind: "order" as const, title: `Pedido #${r.number}`, subtitle: `${r.store} · ${r.name}`, href: `${base}/orders/${r.id}` })));
     const s = await db.select({ id: stores.id, name: stores.name }).from(stores).innerJoin(networks, eq(networks.id, stores.networkId)).where(and(eq(networks.supplierId, actor.supplierId), ilike(stores.name, like(q)))).limit(limit);
     hits.push(...s.map((r) => ({ id: r.id, kind: "store" as const, title: r.name, subtitle: "Lojista da rede", href: `${base}/stores` })));
-    const p = await db.select({ id: products.id, name: products.name, sku: products.sku }).from(products).where(and(eq(products.supplierId, actor.supplierId), or(ilike(products.name, like(q)), ilike(products.sku, like(q))))).limit(limit);
+    const p = await db.select({ id: products.id, name: products.name, sku: products.sku }).from(products).where(and(eq(products.supplierId, actor.supplierId), ne(products.status, "DELETED"), or(ilike(products.name, like(q)), ilike(products.sku, like(q))))).limit(limit);
     hits.push(...p.map((r) => ({ id: r.id, kind: "product" as const, title: r.name, subtitle: `SKU ${r.sku}`, href: `${base}/products/${r.id}` })));
   } else if (actor.role === "STORE_OWNER" && actor.storeId) {
     const base = "/merchant";

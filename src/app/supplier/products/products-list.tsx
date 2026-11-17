@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { StatusBadge } from "@/components/app/status-badge";
 import { ProductArt } from "@/components/app/product-art";
 import { Badge } from "@/components/ui/badge";
-import { bulkProductStatusAction } from "@/app/actions/supplier";
+import { bulkProductStatusAction, excluirProdutosAction } from "@/app/actions/supplier";
 import type { IndexSpec, IndexView } from "@/lib/ds/index-list";
 import { formatBRL } from "@/lib/money";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,12 @@ export function ProductsList({ rows, categories, base = "/supplier/products", in
     const r = await bulkProductStatusAction(ids, status);
     if (r.ok) { toast.success(`${r.data.updated} ${r.data.updated === 1 ? "produto" : "produtos"} ${done}`); router.refresh(); } else toast.error(r.error);
   };
+  // Excluir (D328): sem venda apaga; com venda some de tudo e o pedido antigo continua legível.
+  const excluir = async (ids: string[]) => {
+    if (!window.confirm(`Excluir ${ids.length === 1 ? "este produto" : `${ids.length} produtos`}? ${ids.length === 1 ? "Ele sai" : "Eles saem"} do painel e da loja. Pedidos antigos continuam mostrando o item. Não dá para desfazer.`)) return;
+    const r = await excluirProdutosAction(ids);
+    if (r.ok) { const n = r.data.apagados + r.data.escondidos; toast.success(`${n} ${n === 1 ? "produto excluído" : "produtos excluídos"}`); router.refresh(); } else toast.error(r.error);
+  };
   const columns: IndexColumn<ProductRow>[] = [
     { key: "name", header: "Produto", sortKey: "name", primary: true, cell: (r) => <div className="flex items-center gap-3"><ProductArt images={r.images} size="sm" /><div className="min-w-0"><div className="truncate font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.sku} · {r.category}</div></div></div> },
     { key: "type", header: "Venda", hideBelow: "md", cell: (r) => <div className="flex gap-1">{r.sellsUnit ? <Badge tone="outline">Unitária</Badge> : null}{r.sellsPack ? <Badge tone="info">Grade</Badge> : null}</div> },
@@ -51,7 +57,7 @@ export function ProductsList({ rows, categories, base = "/supplier/products", in
         { key: "category", label: "Categoria", options: categories.map((c) => ({ value: c, label: c })) },
         { key: "stock", label: "Estoque", options: [{ value: "ok", label: "Normal" }, { value: "low", label: "Baixo" }, { value: "out", label: "Zerado" }] },
       ]}
-      bulkActions={[{ label: "Ativar", onRun: run("ACTIVE", "ativados") }, { label: "Passar para rascunho", onRun: run("DRAFT", "em rascunho") }, { label: "Arquivar", tone: "danger", onRun: run("ARCHIVED", "arquivados") }]}
+      bulkActions={[{ label: "Ativar", onRun: run("ACTIVE", "ativados") }, { label: "Passar para rascunho", onRun: run("DRAFT", "em rascunho") }, { label: "Arquivar", onRun: run("ARCHIVED", "arquivados") }, { label: "Excluir", tone: "danger", onRun: excluir }]}
       empty={<EmptyState icon={Package} illustration="ui-vazio-produtos" title="Nenhum produto" description={independent ? "Cadastre o primeiro produto da sua loja." : "Cadastre o primeiro produto para distribuir à rede."} />}
     />
   );

@@ -1,5 +1,5 @@
 import { activationCheck, type ActivationCheck } from "./size-grids";
-import { and, eq, inArray, or, exists } from "drizzle-orm";
+import { and, eq, inArray, ne, or, exists } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { DomainError, ForbiddenError, NotFoundError } from "./errors";
 import { productPackItems, productPacks, productStoreAccess, productVariants, products, storeProducts, stores } from "@/db/schema";
@@ -65,7 +65,7 @@ export async function listStoreCatalog(db: Database, storeId: string, opts: { on
 }
 
 export async function listSupplierCatalog(db: Database, owner: OwnerRef) {
-  const rows = await db.select().from(products).where(ownedBy(products, owner));
+  const rows = await db.select().from(products).where(and(ownedBy(products, owner), ne(products.status, "DELETED")));
   const ids = rows.map((r) => r.id);
   const variants = ids.length ? await db.select().from(productVariants).where(inArray(productVariants.productId, ids)) : [];
   const levels = await getLevels(db, variants.map((v) => v.id));

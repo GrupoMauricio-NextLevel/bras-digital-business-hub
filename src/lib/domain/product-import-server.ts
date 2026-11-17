@@ -154,7 +154,7 @@ export async function buildTemplateXlsx(): Promise<Buffer> {
   help.getColumn(1).width = 130;
   const grids = wb.addWorksheet("Tamanhos");
   grids.addRow(["Grade", "Tamanhos"]); grids.getRow(1).font = { bold: true };
-  for (const k of ["ADULT_MALE", "ADULT_FEMALE", "KIDS"] as const) grids.addRow([SIZE_GRIDS[k].label, SIZE_GRIDS[k].sizes.join(" | ")]);
+  for (const k of ["ADULT_MALE", "ADULT_FEMALE", "KIDS", "SHOES", "PANTS", "UNIQUE"] as const) grids.addRow([SIZE_GRIDS[k].label, SIZE_GRIDS[k].sizes.join(" | ")]);
   grids.getColumn(1).width = 26; grids.getColumn(2).width = 50;
   return Buffer.from(await wb.xlsx.writeBuffer());
 }

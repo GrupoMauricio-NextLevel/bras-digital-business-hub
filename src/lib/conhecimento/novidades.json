@@ -1,5 +1,12 @@
 [
  {
+  "numero": 328,
+  "frente": "E-commerce",
+  "titulo": "Cadastro de produto da loja: editar tudo, preço e status iguais na loja, grade de calçado e excluir",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono (print do celular agindo como cliente e relatos): \"não dá pra excluir uma foto no modo PC\", \"não dá pra editar a grade de tamanho de sapatos\", \"não dá pra excluir produtos, somente arquivar\", \"a edição está muito limitada\"…"
+ },
+ {
   "numero": 327,
   "frente": "E-commerce",
   "titulo": "Painel da Agência reorganizado em gavetas: cada uma responde uma pergunta do dia",
@@ -271,12 +278,5 @@
   "titulo": "E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta",
   "data": "2026-11-12",
   "resumo": "E-mail real no ar: domínio nextlevelcommerce.com.br verificado no Resend, região São Paulo, com DNS na Hostinger (DKIM, SPF via send/rsend e DMARC p=none);"
- },
- {
-  "numero": 284,
-  "frente": "E-commerce",
-  "titulo": "Lembretes automáticos das parcelas do contrato e endereço padrão do domínio próprio",
-  "data": "2026-11-12",
-  "resumo": "Lembretes (lembretesDeParcelas, na rotina diária runDailyFinanceJobs): ao cliente, 2 dias antes e no dia do vencimento, com a chave Pix e o caminho para \"Já fiz o Pix\";"
  }
 ]

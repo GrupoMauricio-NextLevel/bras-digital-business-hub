@@ -148,7 +148,7 @@ function Cores({ p }: { p: Produto }) {
   );
 }
 
-function Grades({ p, limites }: { p: Produto; limites: P["limites"] }) {
+export function Grades({ p, limites }: { p: Produto; limites: P["limites"] }) {
   const [editando, setEditando] = React.useState<string | null>(null);
   const { run } = useSalvar();
   if (!p.propria) return <p className="text-xs text-muted-foreground">As grades deste produto vêm do fornecedor.</p>;

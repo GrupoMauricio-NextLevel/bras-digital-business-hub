@@ -1,5 +1,11 @@
-import type { OwnerRef } from "@/lib/domain/independent";
+import { eq } from "drizzle-orm";
+import { ownedBy, toOwner, type OwnerRef } from "@/lib/domain/independent";
 import { notFound } from "next/navigation";
+import { getDb } from "@/db/client";
+import { categories, stores } from "@/db/schema";
+import { storeUrl } from "@/lib/store-url";
+import { painelDeAtacado } from "@/lib/domain/atacado";
+import { Grades } from "@/app/merchant/atacado/painel-atacado";
 import { PageHeader } from "@/components/app/page-header";
 import { StatusBadge } from "@/components/app/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,8 +15,8 @@ import { getSupplierProduct } from "@/lib/queries/supplier";
 import { formatBRL } from "@/lib/money";
 import { formatDateTime } from "@/lib/utils";
 import { SIZE_GRIDS } from "@/lib/domain/size-grids";
-import { StockActions, DistributionForm, ProductForm, ProductHeaderActions } from "./product-forms";
-import { ImagesEditor } from "./images-editor";
+import { DistributionForm } from "./product-forms";
+import { ProductEditor } from "./product-editor";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -27,37 +33,38 @@ export async function ProductBody({ supplierId, id, base = "/supplier/products",
   const data = await getSupplierProduct(supplierId, id);
   if (!data) notFound();
   const { product, variants, packs, movements } = data;
-  const onHand = variants.reduce((s, v) => s + v.onHand, 0);
-  const reserved = variants.reduce((s, v) => s + v.reserved, 0);
+  const db = await getDb();
+  const owner = toOwner(supplierId);
+  const categorias = (await db.select({ name: categories.name }).from(categories).where(ownedBy(categories, owner)).orderBy(categories.name)).map((c) => c.name);
+  // Loja independente: endereço real da loja (prévia do Google e "Ver na loja") e grades de atacado editáveis aqui mesmo.
+  const loja = owner.storeId ? await db.query.stores.findFirst({ where: eq(stores.id, owner.storeId) }) : null;
+  const baseLoja = loja ? storeUrl(loja.slug, loja.offer, loja.customDomain, loja.domainStatus) : null;
+  const hostDaLoja = baseLoja ? baseLoja.replace(/^https?:\/\//, "").replace(/^\//, "") : "loja-da-rede.com.br";
+  const atacado = owner.storeId ? await painelDeAtacado(db, owner.storeId) : null;
+  const atacadoDoProduto = atacado?.produtos.find((p) => p.productId === product.id) ?? null;
 
   return (
     <>
-      <PageHeader backHref={base} title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"} · ${SIZE_GRIDS[product.sizeGrid].label}`} actions={<ProductHeaderActions productId={product.id} status={product.status} base={base} />} />
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-          <Card>
-            <CardHeader><div><CardTitle>{independent ? "Estoque por tamanho" : "Estoque central por tamanho"}</CardTitle><CardDescription>{commerce ? "Disponível = físico − reservado. As vendas reservam e baixam o estoque da sua loja." : "Disponível = físico − reservado. Pedidos reservam; a expedição baixa."}</CardDescription></div><StockActions variants={variants.map((v) => ({ id: v.id, size: v.color ? `${v.color} · ${v.size}` : v.size }))} /></CardHeader>
-            <CardContent className="px-0 pb-0">
-              <Table>
-                <THead><TR className="hover:bg-transparent"><TH>Tamanho</TH><TH>SKU</TH><TH className="text-right">Físico</TH><TH className="text-right">Reservado</TH><TH className="text-right">Disponível</TH></TR></THead>
-                <TBody>
-                  {variants.map((v) => (
-                    <TR key={v.id}><TD className="font-medium">{v.color ? `${v.color} · ${v.size}` : v.size}</TD><TD className="text-muted-foreground">{v.sku}</TD><TD className="text-right tabular-nums">{v.onHand}</TD><TD className="text-right tabular-nums text-warning">{v.reserved}</TD><TD className="text-right font-medium tabular-nums">{v.available}</TD></TR>
-                  ))}
-                  <TR className="bg-surface-muted/50 font-medium hover:bg-surface-muted/50"><TD>Total</TD><TD /><TD className="text-right tabular-nums">{onHand}</TD><TD className="text-right tabular-nums">{reserved}</TD><TD className="text-right tabular-nums">{Math.max(0, onHand - reserved)}</TD></TR>
-                </TBody>
-              </Table>
-            </CardContent>
-          </Card>
-
+      <PageHeader backHref={base} title={product.name} badge={<StatusBadge value={product.status} dot />} description={`${product.sku} · ${data.category?.name ?? "Sem categoria"} · ${SIZE_GRIDS[product.sizeGrid].label}`} />
+      <ProductEditor
+        key={`${product.updatedAt}-${variants.map((v) => v.id).join()}`}
+        produto={{ id: product.id, name: product.name, description: product.description, category: data.category?.name ?? "", sku: product.sku, slug: product.slug, images: product.images, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status === "DELETED" ? "ARCHIVED" : product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack, seoTitle: product.seoTitle, seoDescription: product.seoDescription, sizeGrid: product.sizeGrid, weightG: product.weightG, lengthCm: product.lengthCm, widthCm: product.widthCm, heightCm: product.heightCm }}
+        variacoes={variants.map((v) => ({ id: v.id, size: v.size, color: v.color, sku: v.sku, barcode: v.barcode, onHand: v.onHand, reserved: v.reserved }))}
+        categorias={categorias} base={base} independent={independent} commerce={commerce}
+        enderecoProduto={baseLoja ? `${baseLoja}/product/${product.slug}` : null} hostDaLoja={hostDaLoja}
+      />
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+        <div className="min-w-0 space-y-6">
           <Tabs defaultValue="packs">
             <TabsList>
-              <TabsTrigger value="packs">Grades</TabsTrigger>
-              <TabsTrigger value="movements">Movimentações</TabsTrigger>
+              <TabsTrigger value="packs">Grades de atacado</TabsTrigger>
+              <TabsTrigger value="movements">Movimentações do estoque</TabsTrigger>
               {independent ? null : <TabsTrigger value="listings">Lojas que vendem</TabsTrigger>}
             </TabsList>
             <TabsContent value="packs">
-              {packs.length === 0 ? (
+              {atacado ? (
+                <Card><CardContent className="pt-5">{atacadoDoProduto ? <Grades p={atacadoDoProduto} limites={atacado.limites} /> : <p className="text-sm text-muted-foreground">Ative o produto para montar grades de atacado (ex.: grade com 12 peças).</p>}</CardContent></Card>
+              ) : packs.length === 0 ? (
                 <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">Este produto é vendido apenas por unidade.</CardContent></Card>
               ) : packs.map((p) => (
                 <Card key={p.id}>
@@ -102,12 +109,7 @@ export async function ProductBody({ supplierId, id, base = "/supplier/products",
           </Tabs>
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="pt-5"><div className="mb-4"><ImagesEditor productId={product.id} images={product.images} /></div>
-              <ProductForm product={{ id: product.id, name: product.name, description: product.description, costCents: product.costCents, suggestedPriceCents: product.suggestedPriceCents, minimumPriceCents: product.minimumPriceCents, status: product.status, sellsUnit: product.sellsUnit, sellsPack: product.sellsPack, slug: product.slug, seoTitle: product.seoTitle, seoDescription: product.seoDescription, weightG: product.weightG, lengthCm: product.lengthCm, widthCm: product.widthCm, heightCm: product.heightCm }} />
-            </CardContent>
-          </Card>
+        <div className="min-w-0 space-y-6">
           {independent ? null : <Card>
             <CardHeader><div><CardTitle>Distribuição</CardTitle><CardDescription>Quais lojas podem vender este produto.</CardDescription></div></CardHeader>
             <CardContent><DistributionForm productId={product.id} distribution={product.distribution} stores={data.networkStores} selected={data.accessStoreIds} /></CardContent>

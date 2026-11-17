@@ -278,3 +278,31 @@ export async function deleteCategoryAction(id: string) {
     return r;
   });
 }
+
+// ---------------------------------------------------------------------------
+// Edição completa e exclusão de produto (D328)
+// ---------------------------------------------------------------------------
+import { excluirProdutos, salvarProduto, type SalvarProdutoInput } from "@/lib/domain/produto-edicao";
+
+/** Salva o produto inteiro (fotos, informações, preços, variações e estoque) num clique só. */
+export async function salvarProdutoAction(input: SalvarProdutoInput) {
+  return runAction(async () => {
+    const { owner, session } = await supplierCtx();
+    const r = await salvarProduto(await getDb(), owner, input, session.user.id);
+    revalidatePanels();
+    if (session.store?.slug) revalidatePath(`/store/${session.store.slug}`, "layout");
+    return r;
+  });
+}
+
+/** Exclui produtos: sem venda, apaga; com venda, some de tudo e os pedidos antigos continuam legíveis. */
+export async function excluirProdutosAction(ids: string[]) {
+  return runAction(async () => {
+    const { owner, session } = await supplierCtx();
+    const lista = z.array(z.string().min(1)).min(1, "Escolha ao menos um produto.").max(200, "Limite de 200 produtos por vez.").parse(ids);
+    const r = await excluirProdutos(await getDb(), owner, lista);
+    revalidatePanels();
+    if (session.store?.slug) revalidatePath(`/store/${session.store.slug}`, "layout");
+    return r;
+  });
+}
