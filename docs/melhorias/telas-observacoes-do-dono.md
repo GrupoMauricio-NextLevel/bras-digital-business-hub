@@ -5,6 +5,7 @@ Memória permanente das avaliações de tela do dono (prints e comentários). Ca
 | # | Data | Tela / endereço | O que o dono viu | O que fazer | Situação |
 |---|---|---|---|---|---|
 | 1 | 2026-10-09 | Login da Cargas e demais logins | Foto de moda em login de sistema; "Quer uma loja?" na Cargas | Foto só da própria marca; convite por marca | Resolvido (D109, 6d0a78d) |
+| 2 | 2026-11-17 | Cadastro de produto da loja (`/merchant/catalogo/[id]`), PC e celular | Não exclui foto no PC; não edita grade de sapatos; só arquiva, não exclui produto; edição limitada | Auditoria e prompt em `docs/prompts/cadastro-produto-auditoria-e-melhorias.md` (fases P1 a P4) | Aberto |
 
 ## Como registrar
 - Print recebido: salvar em `docs/melhorias/prints/AAAA-MM-DD-<tela>.png` (sem dado pessoal real) e abrir uma linha na tabela.
