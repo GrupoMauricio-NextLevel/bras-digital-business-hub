@@ -41,6 +41,16 @@ export default async function HojeNaAgencia() {
     ...(pend.semContato.length ? [{ key: "cont", icon: ContactRound, title: "Clientes sem WhatsApp nem e-mail", detail: "Sem contato não dá para avisar de gravação, aprovação ou cobrança.", count: pend.semContato.length, action: "Completar", href: `/agencia/clientes/${pend.semContato[0]!.id}`, danger: false }] : []),
   ];
   const maxCarga = Math.max(1, ...k.carga.map((p) => p.clientes));
+  // Conta nova (D316): enquanto a carteira estiver vazia, o painel mostra os primeiros passos no lugar de números zerados.
+  const semCarteira = k.verCarteiraToda && k.ativos === 0 && k.pausados === 0;
+  const passos = [
+    { titulo: "Monte a equipe", detalhe: "Cada pessoa com login próprio e a função dela: gestor, roteiro, gravação, edição, social media, tráfego, financeiro.", href: "/agencia/equipe", feito: k.carga.length > 1 },
+    { titulo: "Traga a carteira de clientes", detalhe: "Cole a planilha ou cadastre um a um, com o pacote do mês, o valor e o vencimento.", href: "/agencia/clientes", feito: k.ativos > 0 },
+    { titulo: "Defina quem cuida de cada cliente", detalhe: "Na ficha do cliente, marque o responsável e a equipe: é ela que recebe cada etapa da produção.", href: pend.semResponsavel[0] ? `/agencia/clientes/${pend.semResponsavel[0].id}` : "/agencia/clientes", feito: k.ativos > 0 && pend.semResponsavel.length === 0 },
+    { titulo: "Planeje o mês", detalhe: "Em Produção, \"Planejar o mês\" cria as peças pelo pacote de cada cliente.", href: "/agencia/producao", feito: t.planejadas > 0 },
+  ];
+  const feitos = passos.filter((x) => x.feito).length;
+  const mostrarPassos = k.verCarteiraToda && feitos < passos.length;
   return (
     <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
       <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
@@ -62,6 +72,16 @@ export default async function HojeNaAgencia() {
         </div>
       </section>
 
+      {mostrarPassos ? (
+        <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="ag-passos">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-muted-foreground">Primeiros passos</p><h2 id="ag-passos" className="mt-1 text-base font-semibold tracking-[-.01em]">{feitos === 0 ? "Vamos montar a sua agência aqui dentro" : "Falta pouco para a agência rodar pelo painel"}</h2></div><span className="text-sm tabular-nums text-muted-foreground">{feitos} de {passos.length} feitos</span></div>
+          <ol className="grid gap-2 sm:grid-cols-2">
+            {passos.map((x, n) => <li key={x.titulo}><Link href={x.href} className="flex min-h-11 items-start gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm transition-colors hover:bg-surface-hover"><span aria-hidden className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${x.feito ? "bg-success-soft text-success" : "bg-accent-soft text-[var(--ds-link)]"}`}>{x.feito ? "✓" : n + 1}</span><span className="min-w-0"><span className="block font-medium">{x.titulo}{x.feito ? <span className="sr-only"> (feito)</span> : null}</span><span className="block text-xs text-muted-foreground">{x.detalhe}</span></span></Link></li>)}
+          </ol>
+        </section>
+      ) : null}
+
+      {semCarteira ? null : (<>
       {k.verCarteiraToda ? (
         <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="ag-fila">
           <h2 id="ag-fila" className="text-base font-semibold tracking-[-.01em]">Fila do dia</h2>
@@ -155,6 +175,7 @@ export default async function HojeNaAgencia() {
           </section>
         ) : null}
       </div>
+      </>)}
     </div>
   );
 }

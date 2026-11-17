@@ -38,6 +38,14 @@ const CLIENTES: C[] = [
 ];
 
 export async function seedDemoAgencia(db: Database): Promise<boolean> {
+  // Agência recém-criada, sem nada (D316): mostra os primeiros passos de uma conta nova. Login: nova@agencia.demo.
+  if (!(await db.query.agencias.findFirst({ where: eq(agencias.slug, "agencia-nova-demo") }))) {
+    const org = newId("org"); const ag = newId("agc"); const u = newId("usr");
+    await db.insert(organizations).values({ id: org, name: "Agência Nova (demonstração)", slug: "agencia-nova-demo", type: "AGENCY", brand: "NEXTLEVEL_COMMERCE" });
+    await db.insert(agencias).values({ id: ag, organizationId: org, nome: "Agência Nova (demonstração)", slug: "agencia-nova-demo" });
+    await db.insert(users).values({ id: u, name: "Nina Souza", email: "nova@agencia.demo", role: "AGENCY", organizationId: org, passwordHash: hashPassword(DEMO_PASSWORD) });
+    await db.insert(agenciaMembros).values({ id: newId("agm"), agenciaId: ag, userId: u, funcao: "ADMIN", todosClientes: true });
+  }
   if (await db.query.agencias.findFirst({ where: eq(agencias.slug, SLUG) })) return false;
   const orgId = newId("org"); const agenciaId = newId("agc"); const passwordHash = hashPassword(DEMO_PASSWORD);
   await db.insert(organizations).values({ id: orgId, name: "Agência Aurora (demonstração)", slug: SLUG, type: "AGENCY", brand: "NEXTLEVEL_COMMERCE" });
