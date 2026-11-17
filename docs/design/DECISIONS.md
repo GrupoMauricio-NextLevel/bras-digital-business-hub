@@ -4278,3 +4278,19 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Nada some:** os endereços são os mesmos. Quem não usa uma tela continua sem vê-la (D317, D325); gaveta vazia não aparece. No celular, os atalhos de baixo são Agora, Minha fila, Clientes e Produção.
 - **Peça reaproveitável:** o item de menu ganhou `rodape` (gaveta recolhida no fim do menu), pronta para os outros painéis quando o dono aprovar.
 - **Teste:** `tests/nav-agencia.test.ts` (ordem das gavetas, nenhum endereço perdido, Ajustes no rodapé, atalhos do celular) e `e2e/agencias.mjs`.
+
+## D328 — [E-commerce] Painéis com vida: direção visual de todos os painéis e prompt mestre PV0 a PV10 (2026-11-17)
+- **Pedido do dono (17/11/2026):** vida nos painéis (cores, gráficos, números em destaque, imagem de fundo em blocos certos, efeitos e movimento) em todos os níveis, do Master ao cliente final, para aumentar a percepção de valor.
+- **Referência:** print conceitual de um painel escuro (`docs/melhorias/prints/2026-11-17-referencia-painel-com-vida.jpg`). Ponto de partida capturado na demonstração local (`docs/design/capturas/paineis-com-vida/`): no computador, os 4 números do mês do lojista começam a cerca de 1.200 px do topo, abaixo de três faixas de aviso e da abertura; o início da Commerce não tem gráfico; no Master, "0 de 10 pagantes" é um cartão igual aos outros.
+- **Direção registrada ("vida com propósito"):**
+  - vida forte nas telas de visão geral (Agora/Hoje, "Meu negócio", Dinheiro, Crescer, conquistas, portal do cliente, acompanhamento do pedido); vida discreta em listas e fichas; calma total em formulários, pagamento, contratos e ajustes;
+  - a seção 3 da direção v4 (D42, "evite gradiente e número gigante") passa a valer para as telas de trabalho; nas telas de visão geral vale o kit novo, a partir do visual de tecnologia já aprovado (D224, D225);
+  - número sempre verdadeiro e do próprio cliente; nada de canal, recurso ou marca que o cliente não tem (não copiar da referência os canais SuperDrop, Brás, TikTok Shop, Mercado Livre, Shopee e China Hub, nem os "99,9% de disponibilidade");
+  - famílias de cor fixas por assunto (dinheiro, pedidos, clientes, visitas, crescimento, festa) em todos os painéis, separadas dos estados de sistema;
+  - um kit único de componentes e gráficos em SVG próprio, sem biblioteca pesada, consolidando os gráficos que já existem;
+  - movimento que estende a "Subida" (D193), desligado com "menos movimento";
+  - a área do consumidor usa as cores da loja, nunca a roupa da NextLevel.
+- **Plano:** prompt mestre `docs/prompts/paineis-com-vida-prompt-mestre.md` (fases PV0 a PV10; ordem recomendada: lojista na PV3, Master na PV5; rodada relâmpago opcional antes da Black Friday) e o pedido de 42 imagens em 5 lotes, com prioridade 1 de 15, em `docs/prompts/imagens-paineis-com-vida-gpt.md`.
+- **A responder pelo dono antes da PV1 (seção A6 do prompt):** tema padrão (recomendado: seguir o aparelho), canais futuros só em Aplicativos, um convite de plano por tela, som de venda desligado até o lojista ligar, selo "feito com NextLevel" no cartão de conquista, Jornada da loja com as 5 fases existentes e meta do mês, dados de exemplo só no gráfico, ordem das fases e imagens.
+- **Também atualizados:** skill `painel-interno` (aviso da D328 na direção), `docs/melhorias/telas-observacoes-do-dono.md` (item 2) e `docs/prompts/README.md`.
+- **Sem mudança no sistema nesta etapa:** só documentos; nada muda nas telas até uma fase ser pedida.

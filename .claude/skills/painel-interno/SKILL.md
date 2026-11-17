@@ -6,6 +6,8 @@ description: Projetar ou revisar telas dos painéis internos (lojista, fornecedo
 # Painel interno
 
 ## Direção ("mesa do atacadista", `docs/design/DIRECAO-VISUAL-V4.md`)
+> **Atualização D328 (17/11/2026):** o dono pediu painéis com vida (cor por assunto, gráficos com dados reais, números em destaque, imagem com função e movimento). O parágrafo abaixo continua valendo para as **telas de trabalho** (listas, fichas, formulários, pagamento, ajustes). Nas telas de visão geral (Agora/Hoje, "Meu negócio", Dinheiro, Crescer, portal, acompanhamento do pedido), siga `docs/prompts/paineis-com-vida-prompt-mestre.md`: números sempre reais, famílias de cor `--vida-*`, kit único de componentes e gráficos, movimento da "Subida".
+
 Ferramenta de trabalho, não vitrine de software. Papel quente e tinta em vez de cinza-azulado; **uma cor de sinal por marca** (`--brand-paper/ink/signal/on-signal/signal-text/support`, ver `src/lib/brand-palette.ts`); linhas finas em vez de sombra e caixa arredondada; números tabulares; títulos editoriais, nunca "Dashboard". Evite o visual genérico: gradiente roxo/azul, cartões idênticos com sombra, círculo com ícone padrão, número gigante com pílula verde.
 
 ## O que toda tela responde
