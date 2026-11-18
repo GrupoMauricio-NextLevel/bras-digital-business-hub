@@ -4477,12 +4477,27 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - textos de Sites e da Captação sem academia;
   - o cliente de demonstração virou "Clínica Movimento";
   - `portal-academia-piloto.md` arquivado. A opção "B" da D337 sai; a "A" (painel para qualquer empresa) é esta decisão.
-- **Banco:** `agencias.personalizacao` (jsonb, padrão vazio), migração `0118_personalizacao-painel` (era 0117 na branch; renumerada ao juntar com os contratos, D342).
+- **Banco:** `agencias.personalizacao` (jsonb, padrão vazio), migração `0117_personalizacao-painel`.
 - **Código:**
   - `src/lib/agencias/personalizacao.ts` (modelos, `vocabulario`, `compactar`, `rotuloSituacao`) e `personalizar.ts` (gravar, só admin);
   - regras em `fluxo.ts` (`etapaSeAplica` com etapas ligadas, `escolherResponsavel` com departamento da etapa, `etapaInicial`);
   - tela `src/app/agencia/personalizar/*`.
 - **Teste:** `tests/agencias-personalizacao.test.ts` (padrão = agência, travas, edição por cima do modelo, etapas puladas, gravação compacta, fluxo real de uma contabilidade, só o admin grava); `nav-agencia` atualizado; produção, portal, demonstração e agências continuam passando.
+
+## D341 — [E-commerce] Os avanços dos "painéis com vida" (D329 a D335) integrados ao ecossistema e à personalização (2026-11-18)
+- **Pedido do dono:** "pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços".
+- **Avaliação:**
+  - a conversa parou por limite de uso logo depois de enviar a D335;
+  - todo o trabalho dela (D329 a D335: ícones 3D, cartões `NumeroVivo`, abertura com `FundoAbertura` e `AnelMeta`, gráfico de colunas, esteira do mês e movimento ao vivo na agência e no Master) já estava na branch de publicação e na branch de trabalho;
+  - a branch dela não tem nenhum commit fora da publicação. **Nada se perdeu.**
+- **Integração:**
+  - **personalização por segmento (D340) dentro das peças do kit:**
+    - a esteira do mês da tela inicial usa os nomes das etapas da empresa e esconde o trecho desligado e vazio;
+    - "Onde está cada obrigação do mês" no lugar de "peça" fora da agência;
+    - os cartões de número da tela inicial deixam "Publicados", "vídeos" e "aguardando gravação" só para a agência;
+  - **telas novas no kit:** Contatos e orçamentos e Captação trocam o bloco de números antigo pelos cartões `NumeroVivo` com as famílias de cor (clientes, pedidos, visitas, dinheiro, crescimento) e os ícones 3D;
+  - a "Primeira resposta" sem dados mostra "—" em vez de estourar o cartão.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (esteira da agência igual à de sempre; contabilidade com os nomes dela e trecho desligado escondido); `agencias-painel-vivo` continua passando.
 
 ## D342 — [E-commerce] Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master (2026-11-18)
 - **Pedido do dono (18/11):** migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar Prime Outlet (Loja Virtual Pronta Express, R$ 1.600 à vista, pago), os dois com 40 produtos, 8 banners e o tema Aura de cortesia; "o setor de contratos da agência precisa estar 100%"; editar os dados de qualquer cliente quando quiser; contratos disparados por e-mail depois da assinatura. Racional e plano: `docs/prompts/agencia-nextlevel-contratos-site-catalogo.md` (aprovado). Nomes para o cliente: "Loja Virtual Pronta Express" e "Migração Nuvemshop → NextLevel".
@@ -4493,7 +4508,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Editar sempre:** a ficha ganhou "Editar dados" e "Novo contrato" no topo. Mudou a ficha, o contrato **enviado e ainda não aceito** é refeito com os dados novos; o **aceito** nunca muda.
 - **E-mail:** no aceite, o PDF assinado vai ao cliente e à agência (contratada, administradores e financeiro), em todos os modelos.
 - **Trazer do Master** (`src/lib/agencias/migrar-contrato-master.ts`): só contratos de serviço **aceitos**, só o administrador da agência interna. Copia texto, impressão digital e prova do aceite sem mudar nada (mesmo número e mesmo PDF), cria ou reaproveita o cliente ligado à loja, copia as parcelas (as pagas como "registrado no caixa do Master", fora da receita da agência, para não contar duas vezes), marca o original como "Transferido para o Painel da Agência" e tira dele os lembretes e o "Pix para conferir". O cliente recebe um aviso com a cópia. Repetir não duplica.
-- **Banco (migração 0117, só acrescenta):** `agencias.interna`; em `agencia_contratos`: modelo, versão, origem, contrato de origem (único), aditivo, aceito por, hash do aceite, e-mail da cópia, valor total, encerramento; em `agencia_faturas`: contrato, parcela (única por contrato), meio, registrado no Master; em `contratos`: transferido em/para.
+- **Banco (migração 0118, só acrescenta; era 0117 na branch, renumerada porque a 0117 da personalização já estava publicada):** `agencias.interna`; em `agencia_contratos`: modelo, versão, origem, contrato de origem (único), aditivo, aceito por, hash do aceite, e-mail da cópia, valor total, encerramento; em `agencia_faturas`: contrato, parcela (única por contrato), meio, registrado no Master; em `contratos`: transferido em/para.
 - **Fica para a AGC2:** baixa da agência interna lançando direto no caixa do Master e a caixa de e-mail (Hostinger) dentro da agência. A home da agência (AGS1) fica para a próxima rodada, a pedido do dono.
 - **Testes:** `tests/agencias-contratos-projeto.test.ts` (modelos, interna x externa, aceite com PDF por e-mail, edição refaz só o pendente, "Recebi por fora", aditivo, encerrar, isolamento, trazer do Master com texto e prova iguais, idempotente e fora da receita) e `e2e/agencias-contratos-projeto.mjs`. A pedido do dono, sem a bateria completa nesta rodada.
 
@@ -4509,7 +4524,7 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Decisão do dono (18/11/2026, "aceito tudo"):**
   - **um motor só:** o NextLevel Business é o painel de serviços personalizável (o Painel da Agência da D340, com "Agência de marketing" como um dos modelos). O Meu negócio de todo cliente fica com o funil simples (Contatos e orçamentos, quadro, Hoje e Maurício, D337), que funciona como o Business Essencial. Projeto, contrato, cobrança e portal **não** são construídos de novo em outro painel;
   - **contratos:** um gerador e uma prova de aceite (`src/lib/contratos`) para o Master e o Business;
-  - **juntadas e publicadas numa montagem só** as cinco branches prontas: contratos (renumerados para D342), Captação e personalização (D339, D340; migração renumerada para 0118), Next 16.4.1, correção das segundas dos executivos e verificação Google e Bing (renumerada para D343);
+  - **juntadas e publicadas numa montagem só** as cinco branches prontas: contratos (renumerados para D342), Captação e personalização (D339, D340, já publicadas por outra conversa com a migração 0117; os contratos ficaram com a 0118), Next 16.4.1, correção das segundas dos executivos e verificação Google e Bing (renumerada para D343);
   - **descartadas:** a branch da academia (`claude/upbeat-babbage-ianepy`, contradizia D324 e D340) e a do Club (`claude/eloquent-ramanujan-rfizdl`); a academia sai de cena (D340).
 - **Como trabalhar daqui em diante:**
   - `docs/ESTADO.md` (uma página: no ar, frentes, esperando o dono, branches fora do ar) e `docs/design/DECISOES-VIGENTES.md` (uma linha por regra em vigor) substituem a leitura do `DECISIONS.md` inteiro;

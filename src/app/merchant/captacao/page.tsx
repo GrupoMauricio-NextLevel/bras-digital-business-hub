@@ -1,11 +1,11 @@
 import Link from "next/link";
 import QRCode from "qrcode";
-import { Megaphone, Target } from "lucide-react";
+import { Megaphone, Target, Trophy } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireStoreAdmin } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
-import { OperationalPulse } from "@/components/app/operational-pulse";
+import { NumeroVivo } from "@/components/vida/numero-vivo";
 import { buttonVariants } from "@/components/ui/button";
 import { modulosDoNegocio } from "@/lib/business/modulos";
 import { CANAIS_LINK, campanhasDaLoja, linkDaCampanha, OBJETIVOS, type CanalLink } from "@/lib/business/campanhas";
@@ -41,11 +41,14 @@ export default async function Captacao({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageHeader eyebrow={`${NOME_GERENCIADOR.nome} · Site`} title="Captação" description="Página de campanha pronta em poucos cliques, com o link certo para cada anúncio. Cada pedido chega em Contatos e orçamentos, com a campanha de onde veio." actions={<NovaCampanha objetivos={Object.entries(OBJETIVOS).map(([k, o]) => ({ chave: k, rotulo: o.rotulo, descricao: o.descricao }))} abrir={nova === "1" || !lista.length} />} />
-      {lista.length ? <OperationalPulse className="mb-5" items={[
-        { label: "Campanhas no ar", value: lista.filter((c) => c.noAr).length, icon: Megaphone, tone: "info", hint: `${lista.length} no total` },
-        { label: "Contatos das campanhas", value: tot.contatos, icon: Target, tone: tot.contatos ? "success" : "neutral", hint: "desde o começo" },
-        { label: "Fechados", value: tot.fechados, icon: Target, tone: tot.fechados ? "success" : "neutral", hint: tot.valor ? formatBRL(tot.valor) : "marque em Contatos" },
-      ]} /> : null}
+      {lista.length ? (
+        // Painéis com vida (D341): números das campanhas no kit do D331.
+        <section aria-label="Resumo das campanhas" className="mb-5 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
+          <NumeroVivo i={1} familia="crescimento" icone={Megaphone} rotulo="Campanhas no ar" valor={String(lista.filter((c) => c.noAr).length)} nota={`${lista.length} no total`} />
+          <NumeroVivo i={2} familia="clientes" icone={Target} rotulo="Contatos das campanhas" valor={String(tot.contatos)} nota="desde o começo" href="/merchant/contatos?ver=quadro" />
+          <NumeroVivo i={3} familia="dinheiro" icone={Trophy} rotulo="Fechados" valor={String(tot.fechados)} nota={tot.valor ? formatBRL(tot.valor) : "marque em Contatos"} />
+        </section>
+      ) : null}
       {cartoes.length ? <ul className="space-y-4" aria-label="Páginas de campanha">{cartoes.map((c) => <li key={c.id}><CampanhaCartao c={c} /></li>)}</ul>
         : <EmptyState icon={Megaphone} title="Nenhuma página de campanha ainda" description="Crie a primeira: escolha o objetivo, escreva a oferta e a página fica pronta para o anúncio." />}
     </>

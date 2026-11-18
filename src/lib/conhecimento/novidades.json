@@ -1,24 +1,31 @@
 [
  {
-  "numero": 343,
+  "numero": 344,
   "frente": "E-commerce",
   "titulo": "Um motor só: NextLevel Business é o painel de serviços personalizável; planejamento unificado e conversas com começo e fim",
   "data": "2026-11-18",
   "resumo": "Contexto: em três dias, cerca de 12 conversas em paralelo criaram duas migrações 0117, duas D335 e duas D324, e o mesmo assunto (funil, contratos, cobrança, portal, projetos) estava sendo construído em três lugares: Master, Painel da Agê…"
  },
  {
-  "numero": 342,
+  "numero": 343,
   "frente": "E-commerce",
   "titulo": "Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render",
   "data": "2026-11-17",
   "resumo": "Pedido do dono: \"não estamos sendo encontrados nos mecanismos\". Conferência de 17/11/2026: o site responde certo aos robôs (páginas 200, robots e sitemap completos, sem bloqueio), mas uma busca site:nextlevelcommerce.com.br não mostra ne…"
  },
  {
-  "numero": 341,
+  "numero": 342,
   "frente": "E-commerce",
   "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
   "data": "2026-11-18",
   "resumo": "Pedido do dono (18/11): migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar…"
+ },
+ {
+  "numero": 341,
+  "frente": "E-commerce",
+  "titulo": "Os avanços dos \"painéis com vida\" (D329 a D335) integrados ao ecossistema e à personalização",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços\"."
  },
  {
   "numero": 340,
@@ -271,12 +278,5 @@
   "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
- },
- {
-  "numero": 304,
-  "frente": "E-commerce",
-  "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
  }
 ]

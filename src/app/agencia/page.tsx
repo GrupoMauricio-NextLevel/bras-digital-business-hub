@@ -52,7 +52,7 @@ export default async function HojeNaAgencia() {
   const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
   // Painel com vida (D334): receita dos últimos 6 meses (só quem vê valores), esteira da produção e movimento ao vivo.
   const [serie, movimento] = await Promise.all([k.verValores ? crescimentoDaAgencia(db, session.actor) : Promise.resolve(null), k.verCarteiraToda ? movimentoDaAgencia(db, session.actor, 6) : Promise.resolve([])]);
-  const esteira = esteiraDoMes(prod.total.porEtapa);
+  const esteira = esteiraDoMes(prod.total.porEtapa, voc);
   const agora = new Date();
   const t = prod.total;
   const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
@@ -164,11 +164,11 @@ export default async function HojeNaAgencia() {
       {k.verCarteiraToda ? (
         <section aria-labelledby="ag-prod" className="space-y-3">
           <div className="flex items-end justify-between"><h2 id="ag-prod" className="text-base font-semibold tracking-[-.01em]">{voc.nomes.producao} de {mesRotulo(prod.mes)}</h2><Link href="/agencia/producao" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver produção <ArrowRight className="size-4" aria-hidden /></Link></div>
-          <EsteiraProducao esteira={esteira} mes={prod.mes} />
+          <EsteiraProducao esteira={esteira} mes={prod.mes} entrega={voc.nomes.entrega} entregas={voc.nomes.entregas} />
           <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-            <NumeroVivo traco i={1} familia="pedidos" icone={Clapperboard} rotulo="Contratados no mês" valor={String(t.contratado)} href="/agencia/producao" nota={`${t.contratadoVideos} vídeos · ${t.planejadas} planejados`} />
-            <NumeroVivo traco i={2} familia="crescimento" icone={CheckCircle2} rotulo="Publicados" valor={`${t.percentualPublicado}%`} href="/agencia/producao" nota={`${t.publicadas} publicados · ${t.produzidas} produzidos`} />
-            <NumeroVivo traco i={3} familia="clientes" icone={Scissors} rotulo="Em edição" valor={String(t.emEdicao)} href="/agencia/producao" nota={`${t.emCaptacao} aguardando gravação · ${t.emRoteiro} em roteiro`} />
+            <NumeroVivo traco i={1} familia="pedidos" icone={Clapperboard} rotulo="Contratados no mês" valor={String(t.contratado)} href="/agencia/producao" nota={ag ? `${t.contratadoVideos} vídeos · ${t.planejadas} planejados` : `${t.planejadas} planejadas`} />
+            <NumeroVivo traco i={2} familia="crescimento" icone={CheckCircle2} rotulo={ag ? "Publicados" : voc.etapa.PUBLICADO} valor={`${t.percentualPublicado}%`} href="/agencia/producao" nota={ag ? `${t.publicadas} publicados · ${t.produzidas} produzidos` : `${t.publicadas} de ${t.contratado}`} />
+            <NumeroVivo traco i={3} familia="clientes" icone={Scissors} rotulo={ag ? "Em edição" : `Em ${voc.etapa.EDICAO.toLowerCase()}`} valor={String(t.emEdicao)} href="/agencia/producao" nota={ag ? `${t.emCaptacao} aguardando gravação · ${t.emRoteiro} em roteiro` : `${t.emCaptacao} em ${voc.etapa.CAPTACAO.toLowerCase()} · ${t.emRoteiro} em ${voc.etapa.ROTEIRO.toLowerCase()}`} />
             <NumeroVivo traco i={4} familia="festa" icone={AlarmClock} rotulo="Atrasadas" valor={String(t.atrasadas)} href="/agencia/producao?atrasadas=1&ver=lista" nota={`${t.aguardandoAprovacao} aguardando aprovação`} />
           </div>
           {piores.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{piores.map((c) => <CartaoClienteMes key={c.clienteId} id={c.clienteId} nome={c.clienteNome} segmento={c.segmento} c={c.contagem} nomes={voc.segmento === "AGENCIA" ? undefined : voc.etapa} />)}</div> : null}

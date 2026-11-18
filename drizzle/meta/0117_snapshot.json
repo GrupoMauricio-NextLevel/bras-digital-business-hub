@@ -1,5 +1,5 @@
 {
-  "id": "46c63e92-5616-4ba5-b708-933d6e2b478c",
+  "id": "e8d82152-7eb7-4c6b-8c76-ce4ceef457a8",
   "prevId": "b60f005d-08c6-4c36-bea1-54e8512e900d",
   "version": "7",
   "dialect": "postgresql",
@@ -1541,75 +1541,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "modelo": {
-          "name": "modelo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'MENSAL_MARKETING'"
-        },
-        "versao_modelo": {
-          "name": "versao_modelo",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 1
-        },
-        "origem": {
-          "name": "origem",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'AGENCIA'"
-        },
-        "origem_contrato_id": {
-          "name": "origem_contrato_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "aditivo_de_id": {
-          "name": "aditivo_de_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "aceito_por": {
-          "name": "aceito_por",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "aceito_hash": {
-          "name": "aceito_hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email_aceite_enviado_em": {
-          "name": "email_aceite_enviado_em",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "valor_total_cents": {
-          "name": "valor_total_cents",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "encerrado_em": {
-          "name": "encerrado_em",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "encerrado_motivo": {
-          "name": "encerrado_motivo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -1682,19 +1613,6 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
-        },
-        "agencia_contratos_origem_contrato_id_contratos_id_fk": {
-          "name": "agencia_contratos_origem_contrato_id_contratos_id_fk",
-          "tableFrom": "agencia_contratos",
-          "tableTo": "contratos",
-          "columnsFrom": [
-            "origem_contrato_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1704,13 +1622,6 @@
           "nullsNotDistinct": false,
           "columns": [
             "numero"
-          ]
-        },
-        "agencia_contratos_origem_contrato_id_unique": {
-          "name": "agencia_contratos_origem_contrato_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "origem_contrato_id"
           ]
         }
       },
@@ -1983,31 +1894,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "contrato_id": {
-          "name": "contrato_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "parcela": {
-          "name": "parcela",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pago_meio": {
-          "name": "pago_meio",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "registrado_no_master": {
-          "name": "registrado_no_master",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -2069,28 +1955,6 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "agencia_faturas_parcela_uq": {
-          "name": "agencia_faturas_parcela_uq",
-          "columns": [
-            {
-              "expression": "contrato_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "parcela",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "where": "\"agencia_faturas\".\"contrato_id\" is not null",
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -3427,13 +3291,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "interna": {
-          "name": "interna",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
         "metas": {
           "name": "metas",
           "type": "jsonb",
@@ -3446,6 +3303,13 @@
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
+        },
+        "personalizacao": {
+          "name": "personalizacao",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
         },
         "created_at": {
           "name": "created_at",
@@ -9648,18 +9512,6 @@
         "cancelado_em": {
           "name": "cancelado_em",
           "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "transferido_em": {
-          "name": "transferido_em",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "transferido_para": {
-          "name": "transferido_para",
-          "type": "text",
           "primaryKey": false,
           "notNull": false
         },

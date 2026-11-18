@@ -65,6 +65,17 @@ describe("personalização do painel (D340), regras puras", () => {
   });
 });
 
+describe("esteira do mês com os nomes da empresa (D341)", () => {
+  it("agência mantém os trechos de sempre; outro segmento usa os nomes e esconde trecho desligado e vazio", async () => {
+    const { esteiraDoMes } = await import("@/lib/agencias/painel-vivo");
+    expect(esteiraDoMes({ EDICAO: 2 }, vocabulario({})).trechos.map((t) => t.rotulo)).toEqual(["Planejar", "Roteiro", "Gravação", "Edição", "Aprovação", "Publicado"]);
+    const v = vocabulario({ segmento: "CONTABILIDADE", etapas: { PLANEJAMENTO: { ativa: false } } });
+    const e = esteiraDoMes({ CAPTACAO: 3, PUBLICADO: 1 }, v);
+    expect(e.trechos.map((t) => t.rotulo)).toEqual(["Conferência", "Apuração", "Lançamentos", "Conferência do cliente", "Entregue ao fisco"]);
+    expect(e.total).toBe(4);
+  });
+});
+
 describe("personalização no fluxo de verdade (D340)", () => {
   it("empresa de serviços: nasce na primeira etapa ligada, sem exigir links, pula etapas desligadas; só o admin personaliza", async () => {
     const ctx = await freshDb();
