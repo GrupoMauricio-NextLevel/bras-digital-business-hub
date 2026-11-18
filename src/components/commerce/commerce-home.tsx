@@ -62,11 +62,12 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   const reqTotal = readiness ? readiness.items.length : 0;
   const stepsDone = o.onboarding.steps.filter((s) => s.done).length;
   const noPrev = o.salesDelta === undefined && o.countDelta === undefined;
-  const QUICK: { href: string; label: string; icon: LucideIcon }[] = [
+  // Ícones 3D do dono (D329) nas ações rápidas; sem imagem, fica o ícone de traço.
+  const QUICK: { href: string; label: string; icon: LucideIcon; img?: string }[] = [
     { href: "/merchant/catalogo/new", label: "Novo produto", icon: Package },
-    { href: "/merchant/orders/new", label: "Novo pedido", icon: Plus },
-    { href: "/theme-editor", label: "Editar aparência", icon: Palette },
-    { href: "/merchant/finance", label: "Financeiro", icon: Wallet },
+    { href: "/merchant/orders/new", label: "Novo pedido", icon: Plus, img: "/paineis/v1/pv-icone-novo-pedido.webp" },
+    { href: "/theme-editor", label: "Editar aparência", icon: Palette, img: "/paineis/v1/pv-icone-aparencia.webp" },
+    { href: "/merchant/finance", label: "Financeiro", icon: Wallet, img: "/paineis/v1/pv-icone-financeiro.webp" },
   ];
 
   const status = <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(3)} aria-labelledby="cm-status">
@@ -183,7 +184,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
       <div className="space-y-5 sm:space-y-6">
         <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(7)} aria-labelledby="cm-quick">
           <h2 id="cm-quick" className="text-base font-semibold tracking-[-.01em]">Ações rápidas</h2>
-          <ul className="mt-3 grid grid-cols-2 gap-2.5">{QUICK.map((q) => { const Icon = q.icon; return <li key={q.href}><Link href={q.href} className="ds-lift flex min-h-[64px] flex-col items-start justify-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 text-sm font-medium"><Icon className="size-[18px] text-[var(--ds-link)]" aria-hidden />{q.label}</Link></li>; })}</ul>
+          <ul className="mt-3 grid grid-cols-2 gap-2.5">{QUICK.map((q) => { const Icon = q.icon; return <li key={q.href}><Link href={q.href} className="ds-lift vida-acao flex min-h-[64px] items-center gap-3 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-medium">{q.img ? <Image src={q.img} alt="" width={40} height={40} className="vida-acao__img size-10 shrink-0 object-contain" /> : <span className="flex size-10 shrink-0 items-center justify-center"><Icon className="size-[20px] text-[var(--ds-link)]" aria-hidden /></span>}{q.label}</Link></li>; })}</ul>
         </section>
         <section className="ds-card ds-warm ds-enter p-5 sm:p-6" style={stagger(8)} aria-labelledby="cm-themes">
           <div className="flex items-end justify-between"><h2 id="cm-themes" className="ds-warm-title text-base font-semibold tracking-[-.01em]">Aparência da loja</h2><Link href="/merchant/templates" className="ds-warm-title inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold">Ver temas <ArrowRight className="size-4" aria-hidden /></Link></div>

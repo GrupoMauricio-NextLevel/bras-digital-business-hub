@@ -23,5 +23,5 @@ Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D328). Geradas
 |---|---|---|
 | pv-icone-dinheiro, -pedidos, -clientes, -visitas, -crescimento | Cartões de número (`NumeroVivo`), pela família de cor | **No painel** (256 px, fundo recortado) |
 | pv-icone-festa | Família festa (conquistas, Black) | Guardada |
-| pv-icone-novo-produto, -aparencia, -financeiro | Ações rápidas | **Refazer** sem confete e sem cacos ao redor (no escuro parece sujeira) |
-| pv-icone-novo-pedido | Ações rápidas | Falta gerar |
+| pv-icone-novo-pedido, -aparencia, -financeiro | Ações rápidas do lojista | **No painel** |
+| pv-icone-novo-produto | Ações rápidas | **Refazer** com a caixa em azul (a branca some sobre o cartão branco) |

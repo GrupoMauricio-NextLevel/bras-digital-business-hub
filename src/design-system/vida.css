@@ -18,6 +18,8 @@ a.vida-num:focus-visible { outline: 3px solid var(--cor); outline-offset: 2px; }
 .vida-num__icone { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .7rem; color: var(--cor); background: color-mix(in srgb, var(--cor) 16%, transparent); flex-shrink: 0; }
 .vida-num__icone3d { width: 2.75rem; height: 2.75rem; flex-shrink: 0; object-fit: contain; filter: drop-shadow(0 6px 10px color-mix(in srgb, var(--cor) 30%, transparent)); transition: transform var(--ds-dur-micro) var(--ds-ease-out); }
 a.vida-num:hover .vida-num__icone3d { transform: translateY(-2px) rotate(-5deg) scale(1.06); }
+.vida-acao__img { transition: transform var(--ds-dur-micro) var(--ds-ease-out); }
+.vida-acao:hover .vida-acao__img { transform: translateY(-2px) rotate(-5deg) scale(1.06); }
 .vida-num__valor { font-family: var(--nl-font-display, inherit); font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: -.035em; line-height: 1.05; font-size: clamp(1.35rem, 2.3vw, 2.1rem); white-space: nowrap; }
 .vida-num__rotulo { font-size: .78rem; font-weight: 600; color: var(--ds-muted, inherit); }
 .vida-num__mini { color: var(--cor); }
@@ -51,5 +53,5 @@ a.vida-num:hover .vida-num__icone3d { transform: translateY(-2px) rotate(-5deg) 
   .vida-linha { animation: none; stroke-dashoffset: 0; }
   .vida-area, .vida-fatia { animation: none; opacity: 1; }
   .vida-aovivo::after { animation: none; }
-  a.vida-num:hover, a.vida-num:hover .vida-num__icone3d { transform: none; }
+  a.vida-num:hover, a.vida-num:hover .vida-num__icone3d, .vida-acao:hover .vida-acao__img { transform: none; }
 }
