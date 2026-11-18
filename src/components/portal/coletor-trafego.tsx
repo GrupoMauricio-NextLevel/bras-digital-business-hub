@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import { CONSENT_COOKIE, lerConsentimento, podeMedir } from "@/lib/trafego/consentimento";
@@ -77,7 +78,7 @@ export function ColetorTrafego() {
   }, [caminho]);
 
   React.useEffect(() => {
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible") enviar("PING"); }, 30_000);
+    const timer = window.setInterval(() => { if (podeConsultar({ semAtividadeMs: 5 * 60_000 })) enviar("PING"); }, 60_000);
     const clique = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest?.("a");
       if (!a?.href) return;

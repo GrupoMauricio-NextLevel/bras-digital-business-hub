@@ -1,11 +1,11 @@
-# Vigia o site no ar a cada 15 minutos. Se um endereço falhar duas vezes seguidas, a execução fica vermelha e o GitHub avisa por e-mail
+# Vigia o site no ar de hora em hora (no mesmo minuto das rotinas, para o banco acordar uma vez só; 2026-11-18). Se um endereço falhar duas vezes seguidas, a execução fica vermelha e o GitHub avisa por e-mail
 # (Configurações do GitHub → Notificações → Actions). Para mudar os endereços, crie a variável MONITOR_URLS no repositório
 # (endereços separados por espaço). Para silenciar numa manutenção: aba Actions → "Monitor do site" → Disable workflow.
 # O endereço antigo lojas.nextlevelgroup.com.br agora redireciona (301) para nextlevelcommerce.com.br (D287), por isso o monitor confere o endereço novo.
 name: Monitor do site
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "7 * * * *"
   workflow_dispatch:
 permissions:
   contents: read

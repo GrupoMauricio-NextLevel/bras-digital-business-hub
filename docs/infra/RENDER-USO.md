@@ -15,7 +15,7 @@
 | **nextlevel-demo** | `srv-db66moajnfac73ckp8o0` | "Mundo de Treino": dados de demonstração em memória, usado em guias e testes sem risco (`https://nextlevel-demo.onrender.com`) | `claude/wonderful-cannon-5o38v5` | Free (pode dormir) | **Desligar (manual)** |
 | **nextlevel-demo-db** | `dpg-db67u8rbc2fs73b58qq0-a` | Postgres grátis criado em 12/10; **vence em 11/11/2026**. O treino usa banco em memória, então tudo indica que não está em uso | — | Free | — |
 
-**Banco de produção:** o `superdrop` deve usar o Neon (`DATABASE_URL` com `neon.tech`). **Confirmar com o dono** (ele confere o começo do valor no painel, sem mandar o valor).
+**Banco de produção:** o `superdrop` deve usar o Neon (`DATABASE_URL` com `neon.tech`). **Neon (D338, 18/11/2026):** o grátis acabou em 17 dias por banco sempre acordado; conta nova (US East 2, Ohio, com pooling), grátis por uma semana e depois Launch (por uso). Toda tela "ao vivo" usa `podeConsultar()`; rotinas do GitHub de hora em hora. Nada de consulta automática nova sem essa regra. **Confirmar com o dono** (ele confere o começo do valor no painel, sem mandar o valor).
 
 **Variáveis de ambiente que o sistema usa no Render** (só nomes; valores nunca em documento, chat ou log):
 - banco e sessão: `DATABASE_URL`, `SESSION_SECRET`;

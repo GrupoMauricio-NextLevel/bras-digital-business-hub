@@ -4,7 +4,9 @@
 name: Rotinas do sistema
 on:
   schedule:
-    - cron: "*/10 * * * *"   # liberar reservas e conferir pagamentos
+    # De hora em hora (2026-11-18): cada chamada acorda o banco (Neon cobra por hora acordado). O pagamento confirma pelo
+    # aviso do Mercado Pago na hora; esta rotina é só a rede de segurança. Mesmo minuto do monitor: uma acordada por hora.
+    - cron: "7 * * * *"      # liberar reservas e conferir pagamentos
     - cron: "0 3 * * *"      # rotina financeira diária (03:00 UTC)
   workflow_dispatch:
 permissions:
