@@ -1,5 +1,5 @@
 /**
- * Contratos de projeto da agência (D341) no navegador: o Master marca a agência interna; a agência completa a ficha do
+ * Contratos de projeto da agência (D342) no navegador: o Master marca a agência interna; a agência completa a ficha do
  * cliente, faz o contrato "Migração Nuvemshop → NextLevel" com sinal pago e saldo a vencer (prévia e envio); o cliente
  * aceita no portal; a agência registra o saldo com "Recebi por fora" e a tela Contratos mostra 100% pago. 1440 e 360 px,
  * axe e prints. Reinicie a demonstração antes. Uso: E2E_BASE=http://localhost:3100 SHOTS=/pasta node e2e/agencias-contratos-projeto.mjs

@@ -18,7 +18,7 @@
 ## 2. Conflitos que quebram (resolver antes de publicar mais nada)
 
 1. **Duas migrações 0117.** `eager-shannon` (contratos) e `ccr-ecbeafd1` (personalização + captação) criam cada uma a sua `0117` e mexem nos mesmos arquivos (`schema.ts`, `actions/agencias.ts`, `agencia/layout.tsx`, `nav.ts`, ficha do cliente). Publicar uma e depois a outra quebra o deploy. Solução: juntar uma, gerar a outra de novo como `0118`, rodar os testes da agência e publicar as duas numa montagem só.
-2. **Número de decisão repetido.** D335 existe duas vezes (Master "Agora" no ar × contratos na branch); D324 também (no ar × verificação Google/Bing em `keen-hypatia`). Ao juntar: contratos vira D341, verificação Google/Bing vira D342.
+2. **Número de decisão repetido.** D335 existe duas vezes (Master "Agora" no ar × contratos na branch); D324 também (no ar × verificação Google/Bing em `keen-hypatia`). Ao juntar: contratos vira D342, verificação Google/Bing vira D343.
 3. **Branch da academia contradiz o que está no ar.** `claude/upbeat-babbage-ianepy` usa D302 a D307 (todas já ocupadas), diz "NextLevel Business = novo nome da agência" (contra D324) e cria a área `/academia` (contra D340). **Descartar.**
 
 ## 3. Duplicações de conceito (o retrabalho que está nascendo)
@@ -60,11 +60,11 @@ O mesmo assunto está sendo construído em três lugares:
 
 | Branch | O que é | Destino |
 |---|---|---|
-| `claude/eager-shannon-f76xmw` | contratos da agência a 100% | **juntar** (como D341) |
+| `claude/eager-shannon-f76xmw` | contratos da agência a 100% | **juntar** (como D342) |
 | `ccr-ecbeafd1-sh4iy2` | captação NB4 (D339) + agência para qualquer segmento (D340) | **juntar** (migração 0118) |
 | `fix/next-criticos` | Next 16.4.1, segurança | **juntar** |
 | `claude/relaxed-bell-3erg4n` | correção da segunda-feira | **juntar** |
-| `claude/keen-hypatia-fp0o6v` | verificação Google e Bing | **juntar** (como D342) |
+| `claude/keen-hypatia-fp0o6v` | verificação Google e Bing | **juntar** (como D343) |
 | `claude/vigilant-bell-neurpc` | mapa de preços (14/11) | rever com a D336, depois juntar o documento |
 | `claude/peaceful-fermi-m20pc2` | checklist único do dono | juntar o documento |
 | `claude/cool-hamilton-xfcd23` | plano comercial e departamentos | juntar o documento |

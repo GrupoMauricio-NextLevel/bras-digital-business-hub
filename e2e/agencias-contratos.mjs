@@ -32,7 +32,7 @@ async function agencia(w = 1440) {
 
 {
   const { ctx, p } = await agencia();
-  // D341: o contrato sai pela tela "Novo contrato" (mensalidade, projeto ou migração).
+  // D342: o contrato sai pela tela "Novo contrato" (mensalidade, projeto ou migração).
   await p.getByRole("link", { name: "Novo contrato" }).first().click(); await p.waitForURL(/\/agencia\/contratos\/novo/); await p.waitForLoadState("networkidle");
   await p.getByRole("radio", { name: /Mensalidade de marketing/ }).click();
   await p.getByRole("button", { name: "Ver prévia" }).click();

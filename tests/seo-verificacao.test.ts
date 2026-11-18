@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { codigoDeVerificacao, verificacaoBuscadores } from "@/lib/seo/verificacao";
 
-/** D342: verificação no Google Search Console e no Bing Webmaster pelo código colado no Render. */
+/** D343: verificação no Google Search Console e no Bing Webmaster pelo código colado no Render. */
 describe("verificação dos buscadores", () => {
   it("aceita a tag inteira ou só o código; recusa lixo", () => {
     expect(codigoDeVerificacao('<meta name="google-site-verification" content="AbC_123-xyz9876" />')).toBe("AbC_123-xyz9876");

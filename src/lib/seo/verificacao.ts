@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 /**
- * Verificação do site no Google Search Console e no Bing Webmaster Tools (D342, plano de busca v3, fase S0). O dono cola
+ * Verificação do site no Google Search Console e no Bing Webmaster Tools (D343, plano de busca v3, fase S0). O dono cola
  * no Render o código que a ferramenta mostra (a tag inteira ou só o código): `GOOGLE_SITE_VERIFICATION` e
  * `BING_SITE_VERIFICATION`. Vale só nas páginas públicas da NextLevel Commerce. Sem as variáveis, nada muda.
  */

@@ -1,7 +1,7 @@
 import { formatar, impressaoDigital, type Secao } from "./loja-pronta-express";
 
 /**
- * Contratos de PROJETO da agência (D341): serviço com entrega e valor fechado (sinal + restante ou à vista), no lugar
+ * Contratos de PROJETO da agência (D342): serviço com entrega e valor fechado (sinal + restante ou à vista), no lugar
  * da mensalidade. Dois produtos com o nome que o cliente vê (dono, 18/11/2026):
  *   - "Loja Virtual Pronta Express";
  *   - "Migração Nuvemshop → NextLevel" (origem configurável).

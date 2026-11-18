@@ -276,7 +276,7 @@ export async function lembretesDeParcelas(db: Database, now = new Date()) {
   const ativos = await db.select().from(contratos).where(and(ne(contratos.status, "CANCELADO"), isNull(contratos.transferidoEm)));
   for (const c of ativos) await garantirParcelas(db, c);
   const hoje = dataSP(now);
-  // Contrato levado ao Painel da Agência (D341): os lembretes passam a sair de lá.
+  // Contrato levado ao Painel da Agência (D342): os lembretes passam a sair de lá.
   const abertas = await db.select({ p: contratoParcelas, c: contratos }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), isNull(contratos.transferidoEm), lte(contratoParcelas.vencimento, somarDias(hoje, 2))));
   let enviados = 0;
   for (const { p, c } of abertas) {

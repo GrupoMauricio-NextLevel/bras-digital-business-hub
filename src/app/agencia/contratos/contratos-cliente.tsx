@@ -78,7 +78,7 @@ type Modelo = "LOJA_PRONTA_EXPRESS" | "MIGRACAO_PLATAFORMA" | "MENSAL_MARKETING"
 type Parc = { valor: string; vencimento: string; pago: boolean; pagoEm: string; meio: MeioPagamento };
 
 /**
- * Novo contrato (D341): cliente → serviço → condições (valor, como paga, o que já foi pago, o que está incluso e as
+ * Novo contrato (D342): cliente → serviço → condições (valor, como paga, o que já foi pago, o que está incluso e as
  * cortesias) → prévia com o texto exato e as pendências → enviar ao portal.
  */
 export function NovoContrato({ clientes, clienteInicial, hoje, temas, temaPadrao }: { clientes: ClienteOpcao[]; clienteInicial: string | null; hoje: string; temas: Tema[]; temaPadrao: string | null }) {

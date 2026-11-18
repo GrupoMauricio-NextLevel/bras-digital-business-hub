@@ -4,7 +4,7 @@
 
 Sistema da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92; dono: Mauricio), que responde por todas as marcas (D279). **Fale com o dono em português, sem jargão**; código, arquivos e commits em português, como o projeto já faz.
 
-## Comece e termine toda conversa assim (D343)
+## Comece e termine toda conversa assim (D344)
 1. **`/retomar`** — lê `docs/ESTADO.md` (o estado de hoje, uma página) e `docs/design/DECISOES-VIGENTES.md` (uma linha por regra em vigor). **Não leia o `DECISIONS.md` inteiro** (passa de 570 mil caracteres): use `grep` pelo número da decisão.
 2. **Uma conversa, uma frente.** No máximo duas conversas de código ao mesmo tempo, em frentes que não se tocam.
 3. **`/encerrar`** — junta o trabalho ao site (ou registra por que não), registra a decisão e atualiza o `ESTADO.md` e as `DECISOES-VIGENTES.md`.
@@ -16,7 +16,7 @@ Sistema da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92; dono: Mauricio
 ## Direção (resumo; detalhes em `DECISOES-VIGENTES.md`)
 - **Fase atual (D216):** só a NextLevel Commerce e o Master. SuperDrop, Brás, Cargas, Hub Creators e China Hub em pausa: não trave mudança por causa deles, mas não quebre o que existe.
 - **Meta (D174, D336):** 10 empresas pagantes em qualquer porta. Até lá, 60% Commerce, 25% SuperDrop e 15% o resto; título de decisão leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`); relatório do dia traz "Esforço do dia por frente". Na dúvida, vence o que aproxima o 10º pagante.
-- **Quatro portas, um painel (D324, D336, D343):** Loja virtual (Start, Pro e Scale intactos), Sites (captação), NextLevel Business (o painel de serviços personalizável, base do antigo Painel da Agência) e Soluções Digitais (serviços da agência). O painel de todo cliente se chama "Meu negócio".
+- **Quatro portas, um painel (D324, D336, D344):** Loja virtual (Start, Pro e Scale intactos), Sites (captação), NextLevel Business (o painel de serviços personalizável, base do antigo Painel da Agência) e Soluções Digitais (serviços da agência). O painel de todo cliente se chama "Meu negócio".
 - **Domínios (D287, D315):** `nextlevelcommerce.com.br` (plataforma), `nextlevelgroup.com.br` (grupo e agência; Master em `master.`), agências em `painel.nextlevelcommerce.com.br`.
 
 ## Regra anti-duplicação

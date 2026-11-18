@@ -146,7 +146,7 @@ export const baixaSchema = z.object({
   pagoEm: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data do pagamento").optional(),
   meio: z.enum(["PIX", "TRANSFERENCIA", "DINHEIRO", "CARTAO", "MERCADO_PAGO", "OUTRO"]).optional(),
 });
-/** "Recebi por fora": baixa manual, com a data e o meio do pagamento quando informados (parcelas de contrato, D341). */
+/** "Recebi por fora": baixa manual, com a data e o meio do pagamento quando informados (parcelas de contrato, D342). */
 export async function marcarPagaManual(db: Database, actor: Actor, faturaId: string, observacao: string, extra: z.input<typeof baixaSchema> = {}) {
   const { membro } = await escopo(db, actor);
   const f = await faturaDaAgencia(db, membro.agenciaId, faturaId);
@@ -185,7 +185,7 @@ export async function financeiroDaAgencia(db: Database, actor: Actor, mes?: stri
     ...r.f, cliente: r.cliente, whatsapp: r.whatsapp ? telefoneTexto(r.whatsapp) : null, whatsappDigitos: r.whatsapp, mostrada: situacaoMostrada(r.f, hoje), lembrete: r.f.situacao === "ABERTA" ? lembreteDoDia(r.f.vencimento, hoje) : null,
     mensagem: mensagemDeCobranca(r.f, { nome: r.cliente, contatoNome: r.contatoNome }, agencia.nome),
   }));
-  // Pago e lançado no caixa do Master (contrato trazido de lá, D341): aparece na lista, mas não soma de novo.
+  // Pago e lançado no caixa do Master (contrato trazido de lá, D342): aparece na lista, mas não soma de novo.
   const doMes = lista.filter((f) => f.competencia === m && f.situacao !== "CANCELADA" && !f.registradoNoMaster);
   const atrasadas = lista.filter((f) => f.mostrada === "ATRASADA");
   return {

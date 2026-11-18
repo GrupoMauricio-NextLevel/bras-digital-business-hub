@@ -16,5 +16,5 @@ export function TextoDoContrato({ secoes }: { secoes: Secao[] }) {
   );
 }
 
-/** Cores da situação do contrato (D341), na lista e no detalhe. */
+/** Cores da situação do contrato (D342), na lista e no detalhe. */
 export const TOM_SITUACAO = { success: "bg-success-soft text-success", warning: "bg-warning-soft text-warning", info: "bg-accent-soft text-[var(--ds-link)]", neutral: "bg-surface-muted text-muted-foreground" } as const;
