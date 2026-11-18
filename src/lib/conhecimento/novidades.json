@@ -1,5 +1,12 @@
 [
  {
+  "numero": 343,
+  "frente": "E-commerce",
+  "titulo": "Um motor só: NextLevel Business é o painel de serviços personalizável; planejamento unificado e conversas com começo e fim",
+  "data": "2026-11-18",
+  "resumo": "Contexto: em três dias, cerca de 12 conversas em paralelo criaram duas migrações 0117, duas D335 e duas D324, e o mesmo assunto (funil, contratos, cobrança, portal, projetos) estava sendo construído em três lugares: Master, Painel da Agê…"
+ },
+ {
   "numero": 342,
   "frente": "E-commerce",
   "titulo": "Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render",
@@ -271,12 +278,5 @@
   "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
- },
- {
-  "numero": 303,
-  "frente": "E-commerce",
-  "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
-  "data": "2026-11-16",
-  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
  }
 ]

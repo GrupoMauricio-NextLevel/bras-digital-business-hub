@@ -4503,3 +4503,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Feito:** `src/lib/seo/verificacao.ts` lê `GOOGLE_SITE_VERIFICATION` e `BING_SITE_VERIFICATION` do Render (aceita a tag inteira ou só o código) e põe as marcas de verificação no cabeçalho das páginas da Commerce. Sem as variáveis, nada muda. O dono pode verificar por DNS (registro TXT na Hostinger, que cobre o domínio inteiro) ou por esse código (só o endereço principal).
 - **Depende do dono:** criar a propriedade no Search Console, mandar o código, enviar o sitemap (`https://nextlevelcommerce.com.br/sitemap.xml`) e pedir indexação das páginas principais; no Bing Webmaster, importar do Search Console.
 - **Teste:** `tests/seo-verificacao.test.ts`.
+
+## D343 — [E-commerce] Um motor só: NextLevel Business é o painel de serviços personalizável; planejamento unificado e conversas com começo e fim (2026-11-18)
+- **Contexto:** em três dias, cerca de 12 conversas em paralelo criaram duas migrações 0117, duas D335 e duas D324, e o mesmo assunto (funil, contratos, cobrança, portal, projetos) estava sendo construído em três lugares: Master, Painel da Agência e Meu negócio. Levantamento completo: `docs/planejamento/UNIFICACAO-2026-11-18.md`.
+- **Decisão do dono (18/11/2026, "aceito tudo"):**
+  - **um motor só:** o NextLevel Business é o painel de serviços personalizável (o Painel da Agência da D340, com "Agência de marketing" como um dos modelos). O Meu negócio de todo cliente fica com o funil simples (Contatos e orçamentos, quadro, Hoje e Maurício, D337), que funciona como o Business Essencial. Projeto, contrato, cobrança e portal **não** são construídos de novo em outro painel;
+  - **contratos:** um gerador e uma prova de aceite (`src/lib/contratos`) para o Master e o Business;
+  - **juntadas e publicadas numa montagem só** as cinco branches prontas: contratos (renumerados para D341), Captação e personalização (D339, D340; migração renumerada para 0118), Next 16.4.1, correção das segundas dos executivos e verificação Google e Bing (renumerada para D342);
+  - **descartadas:** a branch da academia (`claude/upbeat-babbage-ianepy`, contradizia D324 e D340) e a do Club (`claude/eloquent-ramanujan-rfizdl`); a academia sai de cena (D340).
+- **Como trabalhar daqui em diante:**
+  - `docs/ESTADO.md` (uma página: no ar, frentes, esperando o dono, branches fora do ar) e `docs/design/DECISOES-VIGENTES.md` (uma linha por regra em vigor) substituem a leitura do `DECISIONS.md` inteiro;
+  - skills `/retomar` (começo de toda conversa) e `/encerrar` (fim: juntar, registrar, atualizar o ESTADO);
+  - uma conversa por frente, no máximo duas conversas de código ao mesmo tempo em frentes que não se tocam;
+  - número de decisão e de migração só se escolhe na hora de juntar à branch de publicação;
+  - `CLAUDE.md` enxuto: só regras em vigor; o histórico fica nos documentos.
+- **Pendente do dono:** as perguntas de preço antes de 01/12 (ESTADO, "Esperando o dono").
