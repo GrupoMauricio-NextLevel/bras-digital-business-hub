@@ -1,0 +1,1 @@
+ALTER TABLE "product_variants" ADD COLUMN "barcode" text DEFAULT '' NOT NULL;

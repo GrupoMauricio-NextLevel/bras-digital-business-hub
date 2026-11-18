@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { activities, categories, networks, productPackItems, productPacks, productStoreAccess, productVariants, products, stores, storeProducts } from "@/db/schema";
@@ -34,7 +34,7 @@ export const createProductSchema = z.object({
   widthCm: z.coerce.number().int().min(1).max(200).default(25),
   heightCm: z.coerce.number().int().min(1).max(200).default(3),
   /** Tamanhos com estoque inicial e, se houver grade, quantidade por tamanho. */
-  sizes: z.array(z.object({ size: z.string().min(1).max(6), initialStock: z.coerce.number().int().nonnegative().default(0), packQuantity: z.coerce.number().int().nonnegative().default(0) })).min(1, "Informe ao menos um tamanho"),
+  sizes: z.array(z.object({ size: z.string().min(1).max(12), color: z.string().trim().max(24).nullish(), initialStock: z.coerce.number().int().nonnegative().default(0), packQuantity: z.coerce.number().int().nonnegative().default(0) })).min(1, "Informe ao menos um tamanho"),
   pack: z.object({ name: z.string().min(2).default("Grade 12 peças"), costCents: money, suggestedPriceCents: money, minimumPriceCents: money }).optional(),
 });
 export type CreateProductInput = z.input<typeof createProductSchema>;
@@ -64,8 +64,8 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
   if (input.minimumPriceCents > input.suggestedPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser maior que o sugerido.");
   if (input.costCents > input.minimumPriceCents) throw new DomainError("PRICE_RULE", "Preço mínimo não pode ser menor que o custo.");
   if (!input.sellsUnit && !input.sellsPack) throw new DomainError("SALE_TYPE", "Escolha venda unitária, grade ou ambas.");
-  const sizes = input.sizes.map((s) => ({ ...s, size: s.size.trim().toUpperCase() }));
-  if (new Set(sizes.map((s) => s.size)).size !== sizes.length) throw new DomainError("SIZES", "Tamanhos repetidos.");
+  const sizes = input.sizes.map((s) => ({ ...s, size: s.size.trim().toUpperCase(), color: s.color?.trim() || null }));
+  if (new Set(sizes.map((s) => `${(s.color ?? "").toLowerCase()}|${s.size}`)).size !== sizes.length) throw new DomainError("SIZES", "Tamanhos repetidos.");
   if (input.sellsPack) {
     if (!input.pack) throw new DomainError("PACK", "Informe os preços da grade.");
     if (sizes.reduce((s, x) => s + x.packQuantity, 0) === 0) throw new DomainError("PACK", "Defina a quantidade por tamanho da grade.");
@@ -88,7 +88,8 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
       seoTitle: input.seoTitle, seoDescription: input.seoDescription,
       sizeGrid: input.sizeGrid, weightG: input.weightG, lengthCm: input.lengthCm, widthCm: input.widthCm, heightCm: input.heightCm,
     });
-    const variantRows = sizes.map((s, position) => ({ id: newId("var"), productId, size: s.size, sku: `${input.sku}-${s.size}`, position }));
+    const corSku = (c: string | null) => (c ? `-${c.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "").toUpperCase().slice(0, 8)}` : "");
+    const variantRows = sizes.map((s, position) => ({ id: newId("var"), productId, size: s.size, color: s.color, sku: `${input.sku}-${s.size}${corSku(s.color)}`, position }));
     await tx.insert(productVariants).values(variantRows);
     for (const [i, v] of variantRows.entries()) {
       const qty = sizes[i]!.initialStock;
@@ -116,7 +117,7 @@ export async function createProduct(db: Database, ownerRef: OwnerRef, raw: Creat
 /** Duplica um produto como rascunho: mesmos dados, variantes e grade, sem estoque, com SKU "-COPIA". */
 export async function duplicateProduct(db: Database, ownerRef: OwnerRef, productId: string): Promise<{ productId: string }> {
   const owner = toOwner(ownerRef);
-  const src = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, owner)) });
+  const src = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, owner), ne(products.status, "DELETED")) });
   if (!src) throw new DomainError("NOT_FOUND", "Produto não encontrado.");
   const variants = await db.select().from(productVariants).where(eq(productVariants.productId, src.id)).orderBy(productVariants.position);
   const packs = await db.select().from(productPacks).where(eq(productPacks.productId, src.id));
@@ -129,18 +130,22 @@ export async function duplicateProduct(db: Database, ownerRef: OwnerRef, product
     costCents: src.costCents, suggestedPriceCents: src.suggestedPriceCents, minimumPriceCents: src.minimumPriceCents,
     status: "DRAFT", distribution: "ALL_NETWORK", storeIds: [], sellsUnit: src.sellsUnit, sellsPack: src.sellsPack, seoTitle: src.seoTitle, seoDescription: src.seoDescription,
     sizeGrid: src.sizeGrid, weightG: src.weightG, lengthCm: src.lengthCm, widthCm: src.widthCm, heightCm: src.heightCm,
-    sizes: variants.map((v) => ({ size: v.size, initialStock: 0, packQuantity: packItems.find((i) => i.variantId === v.id)?.quantity ?? 0 })),
+    sizes: variants.map((v) => ({ size: v.size, color: v.color, initialStock: 0, packQuantity: packItems.find((i) => i.variantId === v.id)?.quantity ?? 0 })),
     pack: packs[0] ? { name: packs[0].name, costCents: packs[0].costCents, suggestedPriceCents: packs[0].suggestedPriceCents, minimumPriceCents: packs[0].minimumPriceCents } : undefined,
   });
   return created;
 }
 
-/** Muda o status de vários produtos do fornecedor de uma vez (edição em lote). */
+/** Muda o status de vários produtos do fornecedor de uma vez (edição em lote). Na loja independente, a vitrine acompanha (D328). */
 export async function setProductsStatus(db: Database, ownerRef: OwnerRef, ids: string[], status: "ACTIVE" | "DRAFT" | "ARCHIVED"): Promise<number> {
   if (ids.length === 0) return 0;
-  const rows = await db.select({ id: products.id }).from(products).where(and(ownedBy(products, ownerRef), inArray(products.id, ids)));
+  const rows = await db.select({ id: products.id }).from(products).where(and(ownedBy(products, ownerRef), inArray(products.id, ids), ne(products.status, "DELETED")));
   if (rows.length === 0) return 0;
   await db.update(products).set({ status, updatedAt: new Date().toISOString() }).where(and(ownedBy(products, ownerRef), inArray(products.id, rows.map((r) => r.id))));
+  if (toOwner(ownerRef).storeId) {
+    const { sincronizarLojaPropria } = await import("./produto-edicao");
+    for (const r of rows) await sincronizarLojaPropria(db, r.id);
+  }
   return rows.length;
 }
 

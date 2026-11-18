@@ -102,8 +102,10 @@ export function routeHost(input: { host: string | null | undefined; pathname: st
     return { kind: "redirect", url: `/solucoes${search}` };
   }
   // Master central (holding): painéis, login e as páginas do grupo (Soluções, termos e privacidade do grupo, D147/D148). O resto vai ao login.
+  // A vitrine das lojas (`/store/...`) também abre aqui: é a prévia do editor de temas quando a equipe age em nome de um
+  // cliente (modo suporte). Sem isso, a prévia caía no login e mostrava o painel dentro do editor.
   if (brand?.code === HOLDING_CODE) {
-    if (isPanelPath(pathname) || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/") || pathname.startsWith("/api/")) return { kind: "next" };
+    if (isPanelPath(pathname) || pathname.startsWith("/store/") || GROUP_PATHS.includes(pathname) || pathname.startsWith("/solucoes/") || pathname.startsWith("/loja-nextlevel/") || pathname.startsWith("/api/")) return { kind: "next" };
     return { kind: "redirect", url: "/login" };
   }
   // Painéis da equipe NextLevel só no Master (D149): nos endereços dos produtos vão para lá. MASTER_HOST_ONLY=false desliga.

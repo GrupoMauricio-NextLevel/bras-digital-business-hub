@@ -105,6 +105,8 @@ export async function upsertStoreProductAction(input: z.input<typeof listingSche
     const values = { active: data.active, priceCents: data.priceCents, packPriceCents: data.packPriceCents ?? null };
     if (existing) await db.update(storeProducts).set(values).where(and(eq(storeProducts.storeId, storeId), eq(storeProducts.productId, product.id)));
     else await db.insert(storeProducts).values({ storeId, productId: product.id, ...values });
+    // Produto da própria loja (D328): o preço do cadastro e o da vitrine são um só.
+    if (product.storeId === storeId && product.suggestedPriceCents !== data.priceCents) await db.update(products).set({ suggestedPriceCents: data.priceCents, updatedAt: new Date().toISOString() }).where(eq(products.id, product.id));
     await recordAudit(db, session.actor, { action: existing ? "LISTING_UPDATED" : "LISTING_CREATED", entityType: "store_product", entityId: product.id, storeId, before: existing ? { active: existing.active, priceCents: existing.priceCents, packPriceCents: existing.packPriceCents } : {}, after: values });
     revalidateStore(session.store?.slug);
     return undefined;

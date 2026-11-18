@@ -1,10 +1,31 @@
 [
  {
+  "numero": 330,
+  "frente": "E-commerce",
+  "titulo": "O carregamento da troca de página (logo girando) nunca mais fica preso na tela",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono (17 e 18/11): \"às vezes está ficando travado aqui em diversas páginas e não é problema com internet\"; \"continua travando, tanto em páginas públicas quanto em painéis internos; quero a resolução definitiva\" (prints da Caixa…"
+ },
+ {
+  "numero": 329,
+  "frente": "E-commerce",
+  "titulo": "Editor de temas no modo suporte e liberação de temas pagos pela equipe (cortesia ou pagamento por fora)",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono (print do editor agindo em nome da loja Vestiário das Lendas): \"o editor de aparência não permite editar, ele abre o painel\"; \"quero poder pelo Master instalar sem custo ou marcando no caixa o recebimento do pagamento manu…"
+ },
+ {
+  "numero": 328,
+  "frente": "E-commerce",
+  "titulo": "Cadastro de produto da loja: editar tudo, preço e status iguais na loja, grade de calçado e excluir",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono (print do celular agindo como cliente e relatos): \"não dá pra excluir uma foto no modo PC\", \"não dá pra editar a grade de tamanho de sapatos\", \"não dá pra excluir produtos, somente arquivar\", \"a edição está muito limitada\"…"
+ },
+ {
   "numero": 327,
   "frente": "E-commerce",
-  "titulo": "O carregamento da troca de página (logo girando) não fica mais preso na tela",
+  "titulo": "Painel da Agência reorganizado em gavetas: cada uma responde uma pergunta do dia",
   "data": "2026-11-17",
-  "resumo": "Pedido do dono: \"às vezes está ficando travado aqui em diversas páginas e não é problema com internet\" (print da Caixa de entrada do Master embaçada, com o logo girando no centro)."
+  "resumo": "Pedido do dono: \"desenvolva agora essa atualização no painel business da agência, somente por enquanto\", a partir da proposta docs/prompts/reorganizacao-paineis-por-persona.md (esqueleto único de gavetas para todos os painéis). Os outros…"
  },
  {
   "numero": 326,
@@ -257,26 +278,5 @@
   "titulo": "Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br",
   "data": "2026-11-13",
   "resumo": "Decisão do dono: por enquanto só duas frentes concretas."
- },
- {
-  "numero": 286,
-  "frente": "Grupo",
-  "titulo": "Código de segurança a cada entrada em todos os painéis",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: um código de segurança em cada acesso a todos os painéis internos. Modelo de referência: o código do aplicativo autenticador ou, para quem não tem, por e-mail."
- },
- {
-  "numero": 285,
-  "frente": "E-commerce",
-  "titulo": "E-mail ligado (Resend, nextlevelcommerce.com.br) e assinado pela marca aberta",
-  "data": "2026-11-12",
-  "resumo": "E-mail real no ar: domínio nextlevelcommerce.com.br verificado no Resend, região São Paulo, com DNS na Hostinger (DKIM, SPF via send/rsend e DMARC p=none);"
- },
- {
-  "numero": 284,
-  "frente": "E-commerce",
-  "titulo": "Lembretes automáticos das parcelas do contrato e endereço padrão do domínio próprio",
-  "data": "2026-11-12",
-  "resumo": "Lembretes (lembretesDeParcelas, na rotina diária runDailyFinanceJobs): ao cliente, 2 dias antes e no dia do vencimento, com a chave Pix e o caminho para \"Já fiz o Pix\";"
  }
 ]

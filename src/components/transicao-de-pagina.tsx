@@ -26,66 +26,97 @@ export function chaveDoEndereco(href: string): string {
 }
 
 /** Tempo máximo do carregamento na tela: se a navegação foi cancelada ou caiu no mesmo endereço, ele some sozinho. */
-export const LIMITE_CARGA_MS = 8000;
+export const LIMITE_CARGA_MS = 6000;
+/** Depois deste tempo, qualquer clique ou tecla da pessoa tira o carregamento (ela já seguiu em frente). */
+export const INTERACAO_LIBERA_MS = 700;
 
 /**
- * Linha de progresso no topo: aparece no clique de um link interno e completa quando a página nova chega. Dá a
- * resposta imediata ao clique, mesmo quando o servidor demora. A chegada é o endereço mudar (caminho OU parâmetros,
- * D327: antes só o caminho, e o logo ficava girando para sempre em pastas e filtros); há ainda um limite de tempo e
- * a volta pelo histórico, para nunca ficar preso.
+ * Decide se o clique num link abre o carregamento: só link interno que leva a OUTRO endereço (caminho ou parâmetros),
+ * na mesma aba, sem tecla de atalho e sem download. Âncora (#) na mesma página não carrega nada.
+ */
+export function cliqueAbreCarga(alvo: string, atual: string, op: { botao: number; atalho: boolean; novaAba: boolean; download: boolean }): boolean {
+  if (op.botao !== 0 || op.atalho || op.novaAba || op.download) return false;
+  let url: URL, aqui: URL;
+  try { aqui = new URL(atual); url = new URL(alvo, aqui); } catch { return false; }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+  return url.origin === aqui.origin && chaveDoEndereco(url.href) !== chaveDoEndereco(aqui.href);
+}
+
+type NavegacaoDoNavegador = EventTarget & { addEventListener: EventTarget["addEventListener"] };
+
+/**
+ * Linha de progresso no topo e logo da marca no centro: aparecem no clique de um link interno e somem quando a página
+ * nova chega. D330: o carregamento NUNCA pode ficar preso. Ele some no primeiro destes sinais, cada um independente:
+ * (1) o endereço muda (caminho ou parâmetros: pastas, filtros, abas); (2) o navegador avisa que a navegação terminou
+ * ou falhou (Navigation API); (3) voltar/avançar, página restaurada do cache ou aba escondida; (4) a pessoa clica ou
+ * digita de novo (ela já seguiu em frente); (5) limite de 6 segundos. Ele não bloqueia cliques (pointer-events: none).
  */
 export function BarraDeNavegacao({ logo = true }: { logo?: boolean }) {
-  const caminho = usePathname();
   const [estado, setEstado] = React.useState<"parada" | "indo" | "chegou">("parada");
   // Ícone da marca do endereço (o mesmo da aba do navegador), lido uma vez.
   const [icone, setIcone] = React.useState<string | null>(null);
   const inicio = React.useRef(0);
   const saida = React.useRef("");
-  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const limpar = React.useCallback(() => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
-  // Página nova chegou: fica no mínimo 0,42 s (pedido do dono, o efeito aparece mesmo na troca rápida) e some subindo.
-  const chegou = React.useCallback(() => {
-    limpar();
-    const falta = inicio.current ? Math.max(0, 420 - (performance.now() - inicio.current)) : 0;
-    inicio.current = 0;
-    timers.current.push(setTimeout(() => setEstado("chegou"), falta), setTimeout(() => setEstado("parada"), falta + 480));
-  }, [limpar]);
-
+  // Começo: clique num link interno para outro endereço.
   React.useEffect(() => {
     const clique = (e: MouseEvent) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (e.defaultPrevented) return;
       const a = (e.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
-      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
-      const url = new URL(a.href, location.href);
-      if (url.origin !== location.origin || chaveDoEndereco(url.href) === chaveDoEndereco(location.href)) return;
-      limpar();
+      if (!a) return;
+      const abre = cliqueAbreCarga(a.href, location.href, { botao: e.button, atalho: e.metaKey || e.ctrlKey || e.shiftKey || e.altKey, novaAba: !!a.target && a.target !== "_self", download: a.hasAttribute("download") });
+      if (!abre) return;
       inicio.current = performance.now();
       saida.current = chaveDoEndereco(location.href);
       setEstado("indo");
-      if (logo && !icone) setIcone((document.querySelector("link[rel~='icon'][type='image/png'], link[rel~='icon']") as HTMLLinkElement | null)?.href ?? null);
-      // Confere o endereço até a página nova chegar; desiste no limite (navegação cancelada ou redirecionada para cá).
-      const confere = setInterval(() => {
-        if (!inicio.current) return clearInterval(confere);
-        if (chaveDoEndereco(location.href) !== saida.current) { clearInterval(confere); chegou(); }
-        else if (performance.now() - inicio.current > LIMITE_CARGA_MS) { clearInterval(confere); chegou(); }
-      }, 120);
+      if (logo) setIcone((atual) => atual ?? (document.querySelector("link[rel~='icon'][type='image/png'], link[rel~='icon']") as HTMLLinkElement | null)?.href ?? null);
     };
-    // Voltar/avançar no navegador ou página restaurada do cache: nada de carregamento preso.
-    const desfaz = () => { if (inicio.current) chegou(); };
     document.addEventListener("click", clique, true);
-    window.addEventListener("popstate", desfaz);
-    window.addEventListener("pageshow", desfaz);
-    return () => { document.removeEventListener("click", clique, true); window.removeEventListener("popstate", desfaz); window.removeEventListener("pageshow", desfaz); };
-  }, [logo, icone, chegou, limpar]);
-  // Mudança de caminho percebida pelo React (chega antes da conferência do endereço).
-  const anterior = React.useRef(caminho);
+    return () => document.removeEventListener("click", clique, true);
+  }, [logo]);
+
+  // Fim: enquanto "indo", qualquer um dos sinais encerra. Tudo é desligado quando o estado muda (nada fica pendurado).
   React.useEffect(() => {
-    if (anterior.current === caminho) return;
-    anterior.current = caminho;
-    if (inicio.current) chegou();
-  }, [caminho, chegou]);
-  React.useEffect(() => limpar, [limpar]);
+    if (estado !== "indo") return;
+    let feito = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const encerra = () => {
+      if (feito) return;
+      feito = true;
+      // Pedido do dono: o efeito aparece mesmo na troca rápida, no mínimo 0,42 s, e some enquanto a página sobe.
+      const falta = Math.max(0, 420 - (performance.now() - inicio.current));
+      timers.push(setTimeout(() => setEstado("chegou"), falta));
+    };
+    const confere = setInterval(() => { if (chaveDoEndereco(location.href) !== saida.current) encerra(); }, 100);
+    timers.push(setTimeout(encerra, LIMITE_CARGA_MS));
+    const interacao = () => { if (performance.now() - inicio.current > INTERACAO_LIBERA_MS) encerra(); };
+    const escondida = () => { if (document.visibilityState === "hidden") encerra(); };
+    const nav = (globalThis as { navigation?: NavegacaoDoNavegador }).navigation;
+    window.addEventListener("popstate", encerra);
+    window.addEventListener("pageshow", encerra);
+    document.addEventListener("visibilitychange", escondida);
+    document.addEventListener("pointerdown", interacao, true);
+    document.addEventListener("keydown", interacao, true);
+    nav?.addEventListener("navigatesuccess", encerra);
+    nav?.addEventListener("navigateerror", encerra);
+    return () => {
+      clearInterval(confere);
+      timers.forEach(clearTimeout);
+      window.removeEventListener("popstate", encerra);
+      window.removeEventListener("pageshow", encerra);
+      document.removeEventListener("visibilitychange", escondida);
+      document.removeEventListener("pointerdown", interacao, true);
+      document.removeEventListener("keydown", interacao, true);
+      nav?.removeEventListener("navigatesuccess", encerra);
+      nav?.removeEventListener("navigateerror", encerra);
+    };
+  }, [estado]);
+  // Saída: depois da animação de chegada, volta a ficar parado.
+  React.useEffect(() => {
+    if (estado !== "chegou") return;
+    const t = setTimeout(() => setEstado("parada"), 480);
+    return () => clearTimeout(t);
+  }, [estado]);
   // Toda troca de página: o logo da marca aparece no centro com o arco girando e some quando a página nova sobe.
   return (
     <>

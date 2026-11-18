@@ -60,6 +60,11 @@ describe("Master central e produtos em breve", () => {
     expect(go("master.nextlevelgroup.com.br", "/planos", {})).toEqual({ kind: "redirect", url: "/login" });
     expect(go("master.nextlevelgroup.com.br", "/", {})).toEqual({ kind: "redirect", url: "/login" });
   });
+  it("a vitrine abre no Master: é a prévia do editor de temas quando a equipe age em nome do cliente", () => {
+    expect(go("master.nextlevelgroup.com.br", "/store/vestiario-das-lendas", {})).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/store/vestiario-das-lendas/catalog", {})).toEqual({ kind: "next" });
+    expect(go("master.nextlevelgroup.com.br", "/storefront", {})).toEqual({ kind: "redirect", url: "/login" });
+  });
   it("o /master dos produtos leva ao endereço central, mantendo o caminho (MASTER_HOST_ONLY=false desliga)", () => {
     const e = {};
     expect(go("superdrop.com.br", "/master/orders", e, "?a=1")).toEqual({ kind: "redirect", url: "https://master.nextlevelgroup.com.br/master/orders?a=1" });

@@ -58,17 +58,42 @@ export function SideNav({ items, mode = "sections", collapsed = false, onNavigat
   if (mode === "accordion") return <AccordionNav items={rest} pins={pins} current={current} collapsed={collapsed} leaf={leaf} />;
 
   // "sections": agrupa por seção mantendo a ordem em que cada grupo aparece pela primeira vez.
-  const order = [...new Set(rest.map((i) => i.group ?? ""))];
+  // Itens de rodapé (D324) saem das seções e vão para uma gaveta recolhida no fim do menu.
+  const corpo = rest.filter((i) => !i.rodape);
+  const rodape = rest.filter((i) => i.rodape);
+  const order = [...new Set(corpo.map((i) => i.group ?? ""))];
   return (
     <nav className="ds-nav-inner" aria-label="Menu principal">
       {pins}
       {order.map((g) => (
         <div className="ds-group" key={g || "_"}>
           {g ? <p className="ds-group-label">{g}</p> : null}
-          <ul>{rest.filter((i) => (i.group ?? "") === g).map((i) => <li key={i.href}>{leaf(i)}</li>)}</ul>
+          <ul>{corpo.filter((i) => (i.group ?? "") === g).map((i) => <li key={i.href}>{leaf(i)}</li>)}</ul>
         </div>
       ))}
+      {rodape.length ? <GavetaRodape items={rodape} current={current} collapsed={collapsed} leaf={leaf} /> : null}
     </nav>
+  );
+}
+
+/** Gaveta do rodapé (D324): título com seta, fechada por padrão e aberta sozinha quando a página atual está nela. */
+function GavetaRodape({ items, current, collapsed, leaf }: { items: NavItem[]; current: string; collapsed: boolean; leaf: (i: NavItem, sub?: boolean) => React.ReactNode }) {
+  const titulo = items[0]!.group ?? "Ajustes";
+  const temAtivo = items.some((i) => i.href === current);
+  const [aberto, setAberto] = React.useState<boolean | null>(null);
+  const expanded = aberto ?? temAtivo;
+  const Icon = ICONS[GROUP_ICONS[titulo] ?? "Settings"];
+  return (
+    <div className="ds-group ds-group--rodape">
+      <button type="button" className="ds-navgroup" data-has-active={temAtivo} aria-expanded={expanded} aria-controls="ds-sub-rodape" title={collapsed ? titulo : undefined} onClick={() => setAberto(!expanded)}>
+        <Icon className="size-[18px]" aria-hidden />
+        <span className="ds-item-label">{titulo}</span>
+        <ChevronDown className="ds-chev size-4" aria-hidden />
+      </button>
+      <div id="ds-sub-rodape" className="ds-sub" data-open={expanded} inert={!expanded}>
+        <div><ul className="ds-subnav">{items.map((i) => <li key={i.href}>{leaf(i, true)}</li>)}</ul></div>
+      </div>
+    </div>
   );
 }
 

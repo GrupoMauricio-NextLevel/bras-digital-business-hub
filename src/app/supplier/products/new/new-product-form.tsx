@@ -16,13 +16,13 @@ import { useUnsavedGuard } from "@/components/ds/contextual-save-bar";
 import { createProductAction } from "@/app/actions/supplier";
 import { compressImage } from "@/lib/client-image";
 import { formatBRL, parseBRLToCents } from "@/lib/money";
-import { SIZE_GRIDS, type SizeGridKey } from "@/lib/domain/size-grids";
+import { SIZE_GRIDS, SIZE_GRID_KEYS, type SizeGridKey } from "@/lib/domain/size-grids";
 
 type Row = { size: string; stock: string; pack: string };
 type Form = { grid: SizeGridKey; weightG: string; lengthCm: string; widthCm: string; heightCm: string; name: string; sku: string; description: string; category: string; cost: string; suggested: string; minimum: string; sellsUnit: boolean; sellsPack: boolean; packCost: string; packSuggested: string; packMinimum: string; status: "ACTIVE" | "DRAFT"; distribution: "ALL_NETWORK" | "SELECTED_STORES"; seoTitle: string; seoDescription: string };
 const PACK_DEFAULT: Record<string, string> = { P: "2", M: "4", G: "4", GG: "2", XX1: "1", "2XL": "1" };
 const rowsFor = (grid: SizeGridKey): Row[] => (grid === "CUSTOM" ? [{ size: "P", stock: "", pack: "2" }, { size: "M", stock: "", pack: "4" }, { size: "G", stock: "", pack: "4" }, { size: "GG", stock: "", pack: "2" }] : SIZE_GRIDS[grid].sizes.map((size) => ({ size, stock: "", pack: PACK_DEFAULT[size] ?? "2" })));
-const MAX_IMAGES = 6;
+const MAX_IMAGES = 8;
 const DRAFT_KEY = "nl-draft:new-product";
 
 const EMPTY: Form = { grid: "ADULT_MALE", weightG: "300", lengthCm: "30", widthCm: "25", heightCm: "3", name: "", sku: "", description: "", category: "", cost: "", suggested: "", minimum: "", sellsUnit: true, sellsPack: false, packCost: "", packSuggested: "", packMinimum: "", status: "ACTIVE", distribution: "ALL_NETWORK", seoTitle: "", seoDescription: "" };
@@ -31,7 +31,7 @@ type Draft = { f: Form; rows: Row[]; storeIds: string[]; savedAt: number };
 const readDraft = (): Draft | null => { try { const raw = localStorage.getItem(DRAFT_KEY); return raw ? (JSON.parse(raw) as Draft) : null; } catch { return null; } };
 const writeDraft = (d: Draft | null) => { try { if (d) localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); else localStorage.removeItem(DRAFT_KEY); } catch { /* armazenamento bloqueado */ } };
 
-export function NewProductForm({ stores, categories, minStock = 4, base = "/supplier/products", independent = false, commerce = false }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number; base?: string; independent?: boolean; commerce?: boolean }) {
+export function NewProductForm({ stores, categories, minStock = 4, base = "/supplier/products", independent = false, commerce = false, hostDaLoja = "loja-da-rede.com.br" }: { stores: { id: string; name: string }[]; categories: string[]; minStock?: number; base?: string; independent?: boolean; commerce?: boolean; hostDaLoja?: string }) {
   const router = useRouter();
   const [f, setF] = React.useState<Form>({ ...EMPTY, category: categories[0] ?? "" });
   const [rows, setRows] = React.useState<Row[]>(rowsFor("ADULT_MALE"));
@@ -100,7 +100,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
             <CardHeader><div><CardTitle>Fotos</CardTitle><CardDescription>Até {MAX_IMAGES}. Arraste para ordenar e solte arquivos aqui. A primeira é a capa.</CardDescription></div></CardHeader>
             <CardContent>
               <MediaGallery items={media} onChange={(m) => { setMedia(m); setDirty(true); }} max={MAX_IMAGES} processFile={compressImage} onError={(m) => toast.error(m)} />
-              {media.length === 0 ? <p className="mt-3 text-xs text-muted-foreground">Sem foto, a loja mostra uma ilustração de camisa.</p> : null}
+              {media.length === 0 ? <p className="mt-3 text-xs text-muted-foreground">Sem foto, a loja mostra uma ilustração no lugar.</p> : null}
             </CardContent>
           </Card>
 
@@ -109,7 +109,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
             <CardContent className="space-y-3">
               <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Grade de tamanhos">
                 <span className="text-xs text-muted-foreground">Grade:</span>
-                {(["ADULT_MALE", "ADULT_FEMALE", "KIDS", "CUSTOM"] as const).map((k) => <Button key={k} type="button" size="sm" variant={f.grid === k ? "primary" : "secondary"} aria-pressed={f.grid === k} onClick={() => { set({ grid: k }); setRows(rowsFor(k)); }}>{SIZE_GRIDS[k].label}</Button>)}
+                {SIZE_GRID_KEYS.map((k) => <Button key={k} type="button" size="sm" variant={f.grid === k ? "primary" : "secondary"} aria-pressed={f.grid === k} onClick={() => { set({ grid: k }); setRows(rowsFor(k)); }}>{SIZE_GRIDS[k].label}</Button>)}
               </div>
               <div className="flex flex-wrap items-end gap-2">
                 <FormField label="Mesmo estoque em todos os tamanhos" htmlFor="allstock"><Input id="allstock" type="number" min={0} className="w-40" placeholder="ex.: 10" onChange={(e) => { const v = e.target.value; setRows(rows.map((r) => ({ ...r, stock: v }))); setDirty(true); }} /></FormField>
@@ -121,7 +121,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={i}>
-                      <td className="py-1 pr-2"><Input aria-label="Tamanho" value={r.size} onChange={(e) => setRow(i, { size: e.target.value.toUpperCase() })} maxLength={6} className="w-24" /></td>
+                      <td className="py-1 pr-2"><Input aria-label="Tamanho" value={r.size} onChange={(e) => setRow(i, { size: e.target.value.toUpperCase() })} maxLength={12} className="w-24" /></td>
                       <td className="py-1 pr-2 text-xs text-muted-foreground">{f.sku && r.size ? `${f.sku}-${r.size}` : "—"}</td>
                       <td className="py-1 pr-2"><Input aria-label="Estoque" type="number" min={0} value={r.stock} onChange={(e) => setRow(i, { stock: e.target.value })} placeholder="0" className="w-28" /></td>
                       {f.sellsPack ? <td className="py-1 pr-2"><Input aria-label="Quantidade na grade" type="number" min={0} value={r.pack} onChange={(e) => setRow(i, { pack: e.target.value })} className="w-24" /></td> : null}
@@ -150,7 +150,7 @@ export function NewProductForm({ stores, categories, minStock = 4, base = "/supp
           <Card>
             <CardHeader><div><CardTitle>Aparência nos buscadores</CardTitle><CardDescription>Como o produto aparece no Google. Em branco, usamos o nome e o começo da descrição.</CardDescription></div></CardHeader>
             <CardContent className="space-y-3">
-              <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`${independent ? "sualoja.com.br" : "sualoja.superdrop.com.br"} › produto › ${slug || "nome-do-produto"}`} />
+              <SearchPreview title={f.seoTitle || f.name} description={f.seoDescription || f.description.replace(/[*_#>-]/g, "")} url={`${hostDaLoja} › product › ${slug || "nome-do-produto"}`} />
               <FormField label="Título da página" htmlFor="seot"><Input id="seot" maxLength={120} value={f.seoTitle} onChange={(e) => set({ seoTitle: e.target.value })} placeholder={f.name || "Nome do produto"} /></FormField>
               <FormField label="Descrição da página" htmlFor="seod"><Input id="seod" maxLength={320} value={f.seoDescription} onChange={(e) => set({ seoDescription: e.target.value })} /></FormField>
             </CardContent>

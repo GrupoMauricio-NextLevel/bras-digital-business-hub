@@ -235,7 +235,8 @@ export const products = pgTable("products", {
   costCents: integer("cost_cents").notNull(),
   suggestedPriceCents: integer("suggested_price_cents").notNull(),
   minimumPriceCents: integer("minimum_price_cents").notNull(),
-  status: text("status", { enum: ["ACTIVE", "DRAFT", "ARCHIVED"] }).notNull().default("ACTIVE"),
+  /** DELETED (D328): produto excluído que já teve venda; some de todas as telas e da loja, o pedido antigo guarda nome e preço. */
+  status: text("status", { enum: ["ACTIVE", "DRAFT", "ARCHIVED", "DELETED"] }).notNull().default("ACTIVE"),
   /** Preparado para catálogo compartilhado entre fornecedores */
   visibility: text("visibility", { enum: ["PRIVATE_NETWORK", "SHARED_NETWORK", "PUBLIC_NETWORK"] }).notNull().default("PRIVATE_NETWORK"),
   /** Quem pode vender: toda a rede ou lojas selecionadas (product_store_access) */
@@ -244,7 +245,7 @@ export const products = pgTable("products", {
   sellsPack: boolean("sells_pack").notNull().default(false),
   /** SEO da página do produto nas lojas (vazio = usa o nome e a descrição). */
   /** Grade de tamanhos do produto: define os tamanhos padrão e a tabela exibida na loja. */
-  sizeGrid: text("size_grid", { enum: ["ADULT_MALE", "ADULT_FEMALE", "KIDS", "CUSTOM"] }).notNull().default("CUSTOM"),
+  sizeGrid: text("size_grid", { enum: ["ADULT_MALE", "ADULT_FEMALE", "KIDS", "SHOES", "PANTS", "UNIQUE", "CUSTOM"] }).notNull().default("CUSTOM"),
   /** Peso e dimensões da embalagem para cotação de frete. */
   weightG: integer("weight_g").notNull().default(300),
   lengthCm: integer("length_cm").notNull().default(30),
@@ -263,6 +264,8 @@ export const productVariants = pgTable("product_variants", {
   /** Cor da variação (AT0, D257). Nula = "cor única" (todos os produtos antigos). */
   color: text("color"),
   sku: text("sku").notNull(),
+  /** Código de barras (EAN/GTIN) da variação, opcional (D328). */
+  barcode: text("barcode").notNull().default(""),
   position: integer("position").notNull().default(0),
 }, (t) => [index("variants_product_idx").on(t.productId)]);
 

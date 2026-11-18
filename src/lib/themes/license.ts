@@ -6,6 +6,7 @@ import { THEME_BY_KEY } from "./catalog";
 import { makeEditingContext, type EditingContext } from "./policy";
 import { buildPreset } from "./presets";
 import { PAGE_KINDS } from "./types";
+import { capabilitiesOf } from "./levels";
 
 /** Temas que a loja tem direito de instalar: os grátis e os pagos com licença ativa (comprada ou cortesia). */
 export async function ownedThemeKeys(db: Database, storeId: string, now = new Date()): Promise<Set<string>> {
@@ -38,7 +39,10 @@ export function themeBaseIds(themeKey: string): EditingContext["base"] {
 export async function editingContextFor(db: Database, store: Store): Promise<EditingContext> {
   const key = await activeThemeKey(db, store.id);
   const info = THEME_BY_KEY[key]!;
-  return makeEditingContext({ themeKey: key, themeName: info.name, family: info.family, level: info.level, grants: info.grants, offer: store.offer, base: themeBaseIds(key) });
+  // Edição completa (D329): liberada pela equipe (cortesia ou paga por fora), soma todas as funções do editor ao tema ativo.
+  const completo = (await db.select({ endsAt: entitlements.endsAt }).from(entitlements).where(and(eq(entitlements.storeId, store.id), eq(entitlements.key, "EDITOR_COMPLETO")))).some((r) => !r.endsAt || new Date(r.endsAt) > new Date());
+  const grants = completo ? [...(info.grants ?? []), ...capabilitiesOf(4)] : info.grants;
+  return makeEditingContext({ themeKey: key, themeName: completo ? `${info.name} com Edição completa` : info.name, family: info.family, level: completo ? 4 : info.level, grants, offer: store.offer, base: themeBaseIds(key) });
 }
 
 /** A loja tem loja virtual (pré-requisito operacional de qualquer tema). */

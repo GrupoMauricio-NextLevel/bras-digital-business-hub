@@ -22,6 +22,8 @@ export type NavItem = {
   group?: string;
   /** Recurso bloqueado na oferta atual: mostra cadeado e leva ao upgrade. */
   locked?: boolean;
+  /** Gaveta "Ajustes" no rodapé do menu, recolhida até a pessoa abrir (D324): o que se mexe pouco não disputa com o dia. */
+  rodape?: boolean;
   /** Aparece na barra de atalhos do celular (sem nenhum marcado, vale os 3 primeiros). */
   bottom?: boolean;
   /** Item que só existe em marcas com este módulo (dropshipping) ou com o programa de parceiros aberto. */
@@ -187,26 +189,26 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
     ],
     quick: [],
   },
-  // Painel da Agência (D313): a agência toca carteira, contratos e equipe; cada função vê só o que é dela (`agencias/acesso.ts`).
+  // Painel da Agência (D313, D325), reorganizado em gavetas (D327): cada gaveta responde uma pergunta do dia, na ordem do dia.
+  // "Aprender" e "Pergunte ao Maurício" saíram do menu e moram em botões do topo; "Equipe" fica no rodapé recolhido
+  // (Ajustes). Endereços iguais. Cada função vê só o que é dela (`agencias/acesso.ts` e `ocultar` no layout).
   AGENCY: {
     base: "/agencia",
     label: "Painel da Agência",
     items: [
-      { label: "Hoje", href: "/agencia", icon: "Home", exact: true, group: "Agência", bottom: true },
-      { label: "Resumo da semana", href: "/agencia/semana", icon: "BarChart3", group: "Agência" },
-      { label: "Minha fila", href: "/agencia/fila", icon: "Inbox", group: "Agência", bottom: true },
-      { label: "Produção", href: "/agencia/producao", icon: "LayoutGrid", group: "Agência", bottom: true },
-      { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Agência" },
-      { label: "Comercial", href: "/agencia/comercial", icon: "HandCoins", group: "Agência" },
-      { label: "Atendimento", href: "/agencia/atendimento", icon: "Inbox", group: "Agência" },
-      { label: "Tráfego e anúncios", href: "/agencia/trafego", icon: "Megaphone", group: "Agência" },
-      { label: "Financeiro", href: "/agencia/financeiro", icon: "Wallet", group: "Gestão" },
-      { label: "Placar e metas", href: "/agencia/placar", icon: "Ticket", group: "Gestão" },
-      { label: "Crescimento", href: "/agencia/crescimento", icon: "BarChart3", group: "Gestão" },
-      { label: "Equipe", href: "/agencia/equipe", icon: "Users", group: "Gestão", bottom: true },
-      { label: "Soluções NextLevel", href: "/agencia/solucoes", icon: "Sparkles", group: "Gestão" },
-      { label: "Aprender", href: "/agencia/aprender", icon: "GraduationCap", group: "Gestão" },
-      { label: "Pergunte ao Maurício", href: "/agencia/agente", icon: "Sparkles", group: "Gestão" },
+      { label: "Agora", href: "/agencia", icon: "Bell", exact: true, group: "Hoje", bottom: true },
+      { label: "Minha fila", href: "/agencia/fila", icon: "Inbox", group: "Hoje", bottom: true },
+      { label: "Resumo da semana", href: "/agencia/semana", icon: "BarChart3", group: "Hoje" },
+      { label: "Atendimento", href: "/agencia/atendimento", icon: "Inbox", group: "Conversas" },
+      { label: "Comercial", href: "/agencia/comercial", icon: "HandCoins", group: "Vendas" },
+      { label: "Placar e metas", href: "/agencia/placar", icon: "Ticket", group: "Vendas" },
+      { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Clientes", bottom: true },
+      { label: "Produção", href: "/agencia/producao", icon: "LayoutGrid", group: "Clientes", bottom: true },
+      { label: "Financeiro", href: "/agencia/financeiro", icon: "Wallet", group: "Dinheiro" },
+      { label: "Crescimento", href: "/agencia/crescimento", icon: "BarChart3", group: "Dinheiro" },
+      { label: "Tráfego e anúncios", href: "/agencia/trafego", icon: "Megaphone", group: "Crescer" },
+      { label: "Soluções NextLevel", href: "/agencia/solucoes", icon: "Sparkles", group: "Minha vitrine" },
+      { label: "Equipe e dados da agência", href: "/agencia/equipe", icon: "Users", group: "Ajustes", rodape: true },
     ],
     quick: [],
   },
@@ -246,7 +248,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
 };
 
 /** Ícone do grupo no modo "accordion". */
-export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Catálogo": "Package", Marketing: "Megaphone", "Loja virtual": "Store", "Gestão": "BarChart3", "Configurações": "Settings" };
+export const GROUP_ICONS: Record<string, NavIcon> = { Vendas: "ShoppingBag", "Catálogo": "Package", Marketing: "Megaphone", "Loja virtual": "Store", "Gestão": "BarChart3", "Configurações": "Settings", Ajustes: "Settings" };
 
 /** Painel do lojista Commerce (grupos que abrem). Só rotas que existem. Equipe (STAFF) é filtrada no servidor pelo `STAFF_NAV_PREFIXES`. */
 /**

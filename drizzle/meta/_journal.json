@@ -813,6 +813,13 @@
       "when": 1794930219434,
       "tag": "0115_agencia_modo_demo",
       "breakpoints": true
+    },
+    {
+      "idx": 116,
+      "version": "7",
+      "when": 1794955599945,
+      "tag": "0116_variacao-codigo-barras",
+      "breakpoints": true
     }
   ]
 }
