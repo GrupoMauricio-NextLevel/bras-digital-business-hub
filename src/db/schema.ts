@@ -3400,6 +3400,11 @@ export const agencias = pgTable("agencias", {
   /** Metas do mês da agência (D325): entregas publicadas, clientes novos e receita, por competência AAAA-MM. */
   metas: jsonb("metas").$type<Record<string, { entregas?: number; novosClientes?: number; receitaCents?: number }>>().notNull().default({}),
   captacao: jsonb("captacao").$type<{ ligada: boolean; titulo: string; texto: string; servicos: string[]; whatsapp: string | null }>(),
+  /**
+   * Personalização do painel (D340): segmento de partida e o que a empresa mudou (nomes, departamentos, etapas, tipos de
+   * entrega e gavetas). Vazio = agência, como sempre foi. Regras em `src/lib/agencias/personalizacao.ts`.
+   */
+  personalizacao: jsonb("personalizacao").$type<Record<string, unknown>>().notNull().default({}),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });

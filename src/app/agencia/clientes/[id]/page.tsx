@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { vocabularioDaAgencia } from "@/lib/agencias/personalizar";
 import { PageHeader } from "@/components/app/page-header";
 import { fichaDoCliente, inclusoTexto, telefoneTexto, MOTIVOS_ENCERRAMENTO, SITUACAO_CLIENTE_ROTULO } from "@/lib/agencias/clientes";
 import { listarEquipe } from "@/lib/agencias/agencias";
-import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
+
 import { NotFoundError } from "@/lib/domain/errors";
 import { formatBRL } from "@/lib/money";
 import { EditarCliente, EquipeDoCliente, SituacaoDoCliente } from "./ficha-cliente";
@@ -28,6 +29,8 @@ export const metadata = { title: "Ficha do cliente" };
 /** Ficha do cliente da agência (D313): contrato, o que entra no mês, responsável e equipe. */
 export default async function FichaDoCliente({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole("AGENCY");
+  // Personalização (D340): nomes de etapas, tipos e departamentos da empresa.
+  const { v: voc } = await vocabularioDaAgencia(await getDb(), session.actor);
   const db = await getDb();
   const { id } = await params;
   const c = await fichaDoCliente(db, session.actor, id).catch((e) => { if (e instanceof NotFoundError) notFound(); throw e; });
@@ -40,7 +43,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const ag = await db.query.agencias.findFirst({ where: eq(agencias.id, c.agenciaId), columns: { slug: true } });
   const linkPortal = ag ? urlDoPortal(ag.slug) : null;
   const onb = c.onboarding ? situacaoDoOnboarding(c.onboarding, { ...c, documento: c.documento, valorMensalCents: c.valorMensalCents, diaVencimento: c.diaVencimento }, (doMes?.contagem.planejadas ?? 0) > 0) : null;
-  const ativos = equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome, funcao: FUNCAO_ROTULO[p.funcao] }));
+  const ativos = equipe.filter((p) => !p.desligadoEm).map((p) => ({ id: p.userId, nome: p.nome, funcao: voc.funcao[p.funcao] }));
   const nome = (u: string | null) => equipe.find((p) => p.userId === u)?.nome ?? "Sem responsável";
   const card = "ds-card p-5 sm:p-6";
   return (
@@ -96,7 +99,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
           {doMes ? (
             <section aria-labelledby="mes">
               <h2 id="mes" className="mb-2 text-base font-semibold">Produção de {mesRotulo(prod.mes)}</h2>
-              <CartaoClienteMes id={c.id} nome={c.nome} segmento={c.segmento} c={doMes.contagem} />
+              <CartaoClienteMes id={c.id} nome={c.nome} segmento={c.segmento} c={doMes.contagem} nomes={voc.segmento === "AGENCIA" ? undefined : voc.etapa} />
               <Link href={`/agencia/producao?cliente=${c.id}&ver=lista`} className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link underline underline-offset-4">Ver as peças do mês</Link>
             </section>
           ) : null}

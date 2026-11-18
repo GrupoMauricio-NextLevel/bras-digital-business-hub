@@ -210,7 +210,9 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Crescimento", href: "/agencia/crescimento", icon: "BarChart3", group: "Dinheiro" },
       { label: "Tráfego e anúncios", href: "/agencia/trafego", icon: "Megaphone", group: "Crescer" },
       { label: "Soluções NextLevel", href: "/agencia/solucoes", icon: "Sparkles", group: "Minha vitrine" },
-      { label: "Equipe e dados da agência", href: "/agencia/equipe", icon: "Users", group: "Ajustes", rodape: true },
+      { label: "Equipe e dados da empresa", href: "/agencia/equipe", icon: "Users", group: "Ajustes", rodape: true },
+      // D340: o administrador adapta o painel ao segmento (agência ou outras empresas de serviço).
+      { label: "Personalizar o painel", href: "/agencia/personalizar", icon: "Settings", group: "Ajustes", rodape: true },
     ],
     quick: [],
   },
@@ -315,6 +317,8 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
   if (site) itens.push(
     { label: "Páginas", href: "/merchant/site/paginas", icon: "LayoutTemplate", group: "Site" },
     { label: "Serviços", href: "/merchant/site/servicos", icon: "Boxes", group: "Site" },
+    // NB4 (D339): página de campanha em poucos cliques, links por lugar e QR.
+    { label: "Captação", href: "/merchant/captacao", icon: "Megaphone", group: "Site", badge: "Novo" },
     ...(loja ? [] : [{ label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Site" } as NavItem]),
     { label: "Domínio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Site" },
   );

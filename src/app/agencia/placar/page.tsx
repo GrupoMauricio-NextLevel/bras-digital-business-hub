@@ -1,11 +1,12 @@
 import { Trophy } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { vocabularioDaAgencia } from "@/lib/agencias/personalizar";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
 import { placarDoMes } from "@/lib/agencias/gestao";
 import { mesRotulo } from "@/lib/agencias/fluxo";
-import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
+
 import { formatBRL } from "@/lib/money";
 import { Metas } from "@/components/agencia/gestao-cliente";
 
@@ -15,6 +16,8 @@ export const metadata = { title: "Placar e metas" };
 /** Placar e metas da agência (D325), como o Bônus e metas e o Placar do Master. */
 export default async function Placar() {
   const session = await requireRole("AGENCY");
+  // Personalização (D340): nomes de etapas, tipos e departamentos da empresa.
+  const { v: voc } = await vocabularioDaAgencia(await getDb(), session.actor);
   const p = await placarDoMes(await getDb(), session.actor);
   const fmt = (v: number, d?: boolean) => (d ? formatBRL(v) : String(v));
   return (
@@ -32,7 +35,7 @@ export default async function Placar() {
       </section>
       <section className="ds-card p-5 sm:p-6" aria-labelledby="pl-rank">
         <h2 id="pl-rank" className="mb-3 text-base font-semibold">Quem fez a produção andar no mês</h2>
-        {p.ranking.length ? <ol className="divide-y divide-border text-sm">{p.ranking.map((r, i) => <li key={r.userId} className="flex flex-wrap items-center justify-between gap-2 py-2"><span><b className="mr-2 tabular-nums">{i + 1}º</b>{r.nome} <span className="text-xs text-muted-foreground">· {FUNCAO_ROTULO[r.funcao]}</span></span><span className="text-xs tabular-nums text-muted-foreground"><b className="text-foreground">{r.etapas}</b> etapas concluídas{r.publicados ? ` · ${r.publicados} publicados` : ""}</span></li>)}</ol> : <EmptyState icon={Trophy} title="Ninguém concluiu etapa neste mês ainda" description="Cada etapa concluída na produção conta ponto aqui." />}
+        {p.ranking.length ? <ol className="divide-y divide-border text-sm">{p.ranking.map((r, i) => <li key={r.userId} className="flex flex-wrap items-center justify-between gap-2 py-2"><span><b className="mr-2 tabular-nums">{i + 1}º</b>{r.nome} <span className="text-xs text-muted-foreground">· {voc.funcao[r.funcao]}</span></span><span className="text-xs tabular-nums text-muted-foreground"><b className="text-foreground">{r.etapas}</b> etapas concluídas{r.publicados ? ` · ${r.publicados} publicados` : ""}</span></li>)}</ol> : <EmptyState icon={Trophy} title="Ninguém concluiu etapa neste mês ainda" description="Cada etapa concluída na produção conta ponto aqui." />}
       </section>
       {p.podeDefinir ? <section className="ds-card p-5 sm:p-6" aria-labelledby="pl-metas"><h2 id="pl-metas" className="mb-3 text-base font-semibold">Definir metas de {mesRotulo(p.mes)}</h2><Metas mes={p.mes} inicial={p.meta} verValores={p.verValores} /></section> : null}
     </div>

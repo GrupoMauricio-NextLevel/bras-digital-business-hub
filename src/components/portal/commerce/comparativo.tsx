@@ -130,7 +130,8 @@ export function FaixaTaxaZero({ black = null }: { black?: { fim: string; restant
       <div className="ec-painel mx-auto grid max-w-6xl gap-10 p-6 md:grid-cols-[1.05fr_1fr] md:items-center md:p-12">
         <div>
           <div className="flex flex-wrap items-center justify-between gap-3"><SeloMercadoPago escuro />{black ? <ContagemRegressiva fim={black.fim} restanteMs={black.restanteMs} tamanho="sm" rotulo="Black termina em" /> : null}</div>
-          <p className="mt-6 flex items-end gap-4" aria-label="0% de taxa da plataforma">
+          <p className="mt-6 flex items-end gap-4">
+            <span className="sr-only">0% de taxa da plataforma por venda</span>
             <span className="ec-zero" aria-hidden>0<small>%</small></span>
             <span className="ec-mono pb-3 leading-relaxed text-[#9fb3d9]" aria-hidden>taxa da<br />plataforma<br />por venda</span>
           </p>

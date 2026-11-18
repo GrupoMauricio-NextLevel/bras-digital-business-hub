@@ -13,7 +13,9 @@ import { newId } from "@/lib/ids";
 import { escopoDaAgencia, exigirAgenciasLigado, pode, podeVerCliente } from "./acesso";
 import { hojeEmSaoPaulo } from "./clientes";
 import { situacaoMostrada } from "./cobranca";
-import { TIPO_ROTULO, contagemDoCiclo, escolherResponsavel, etapaParaCliente, mesDe, mesRotulo, prazoDaEtapa, publicada, situacaoInicial } from "./fluxo";
+import { contagemDoCiclo, escolherResponsavel, etapaParaCliente, mesDe, mesRotulo, prazoDaEtapa, proximaEtapa, publicada, situacaoInicial } from "./fluxo";
+import { vocabulario } from "./personalizacao";
+import { PECA_ETAPAS } from "@/db/schema";
 import { equipeDoCliente } from "./producao";
 
 /**
@@ -116,6 +118,9 @@ export async function portalDaPrevia(db: Database, agenciaId: string, token: str
 
 async function montarPortal(db: Database, cliente: typeof agenciaClientes.$inferSelect, hoje: string) {
   const mes = mesDe(hoje);
+  // Personalização (D340): o cliente vê os nomes da empresa (tipo de entrega e situação de cada etapa).
+  const v = vocabulario((await db.query.agencias.findFirst({ where: eq(agencias.id, cliente.agenciaId), columns: { personalizacao: true } }))?.personalizacao);
+  const paraCliente = Object.fromEntries(PECA_ETAPAS.map((k) => [k, v.etapas[k].cliente])) as Record<PecaEtapa, string>;
   const pecas = await db.select({ id: agenciaPecas.id, titulo: agenciaPecas.titulo, tipo: agenciaPecas.tipo, etapa: agenciaPecas.etapa, prazo: agenciaPecas.prazo, extra: agenciaPecas.extra, linkVersao: agenciaPecas.linkVersao, linkPublicacao: agenciaPecas.linkPublicacao, publicarEm: agenciaPecas.publicarEm, publicadoEm: agenciaPecas.publicadoEm, versao: agenciaPecas.versao, mes: agenciaCiclos.mes, contratado: agenciaCiclos.contratado })
     .from(agenciaPecas).innerJoin(agenciaCiclos, eq(agenciaCiclos.id, agenciaPecas.cicloId))
     .where(and(eq(agenciaPecas.clienteId, cliente.id), or(eq(agenciaCiclos.mes, mes), and(lt(agenciaCiclos.mes, mes), ne(agenciaPecas.etapa, "PUBLICADO"), ne(agenciaPecas.etapa, "CONCLUIDO")))))
@@ -130,13 +135,17 @@ async function montarPortal(db: Database, cliente: typeof agenciaClientes.$infer
   const msgs = solicitacoes.length ? await db.select().from(agenciaMensagens).where(inArray(agenciaMensagens.solicitacaoId, solicitacoes.map((x) => x.id))).orderBy(asc(agenciaMensagens.createdAt)) : [];
   return {
     cliente: { id: cliente.id, nome: cliente.nome, exigeAprovacao: cliente.exigeAprovacao }, mes, mesRotulo: mesRotulo(mes), contagem,
-    paraAprovar: pecas.filter((p) => p.etapa === "APROVACAO").map((p) => ({ id: p.id, titulo: p.titulo, tipo: TIPO_ROTULO[p.tipo], versao: p.versao, link: p.linkVersao })),
-    producao: pecas.filter((p) => !publicada(p.etapa)).map((p) => ({ id: p.id, titulo: p.titulo, tipo: TIPO_ROTULO[p.tipo], situacao: etapaParaCliente(p.etapa), anterior: p.mes < mes })),
+    paraAprovar: pecas.filter((p) => p.etapa === "APROVACAO").map((p) => ({ id: p.id, titulo: p.titulo, tipo: v.tipo[p.tipo], versao: p.versao, link: p.linkVersao })),
+    producao: pecas.filter((p) => !publicada(p.etapa)).map((p) => ({ id: p.id, titulo: p.titulo, tipo: v.tipo[p.tipo], situacao: etapaParaCliente(p.etapa, paraCliente), anterior: p.mes < mes })),
     publicacoes: pecas.filter((p) => publicada(p.etapa)).map((p) => ({ id: p.id, titulo: p.titulo, link: p.linkPublicacao, em: p.publicadoEm })),
     programadas: pecas.filter((p) => p.etapa === "AGENDAMENTO" && p.publicarEm).map((p) => ({ id: p.id, titulo: p.titulo, em: p.publicarEm! })),
     cobrancas: cobrancas.map((f) => ({ ...f, mostrada: situacaoMostrada(f, hoje) })),
     solicitacoes: solicitacoes.map((s) => ({ id: s.id, tipo: s.tipo, texto: s.texto, situacao: s.situacao, resposta: s.resposta, createdAt: s.createdAt, mensagens: msgs.filter((m) => m.solicitacaoId === s.id).map((m) => ({ id: m.id, autor: m.autor, texto: m.texto, createdAt: m.createdAt })) })),
   };
+}
+
+async function vocabularioDoCliente(db: Database, agenciaId: string) {
+  return vocabulario((await db.query.agencias.findFirst({ where: eq(agencias.id, agenciaId), columns: { personalizacao: true } }))?.personalizacao);
 }
 
 async function pecaDoCliente(db: Database, clienteId: string, pecaId: string) {
@@ -147,9 +156,10 @@ async function pecaDoCliente(db: Database, clienteId: string, pecaId: string) {
 }
 
 async function mover(db: Database, peca: { id: string; agenciaId: string; etapa: PecaEtapa }, cliente: { id: string; responsavelId: string | null }, para: PecaEtapa, situacao: string, tipo: string, mensagem: string, email: string) {
-  const ag = await db.query.agencias.findFirst({ where: eq(agencias.id, peca.agenciaId), columns: { prazosEtapas: true } });
+  const ag = await db.query.agencias.findFirst({ where: eq(agencias.id, peca.agenciaId), columns: { prazosEtapas: true, personalizacao: true } });
+  const v = vocabulario(ag?.personalizacao);
   const equipe = await equipeDoCliente(db, cliente.id);
-  const responsavelId = escolherResponsavel(para, equipe, cliente.responsavelId);
+  const responsavelId = escolherResponsavel(para, equipe, cliente.responsavelId, Object.fromEntries(PECA_ETAPAS.map((k) => [k, v.etapas[k].funcao])));
   const r = await db.update(agenciaPecas).set({ etapa: para, situacao, responsavelId, prazo: prazoDaEtapa(para, hojeEmSaoPaulo(), ag?.prazosEtapas ?? {}), updatedAt: new Date().toISOString() })
     .where(and(eq(agenciaPecas.id, peca.id), eq(agenciaPecas.etapa, peca.etapa))).returning({ id: agenciaPecas.id });
   if (!r.length) throw new DomainError("MUDOU", "Este conteúdo acabou de mudar. Atualize a página.");
@@ -160,7 +170,10 @@ async function mover(db: Database, peca: { id: string; agenciaId: string; etapa:
 export async function aprovarPeloCliente(db: Database, agenciaId: string, token: string | undefined, clienteId: string, pecaId: string) {
   const { email, cliente } = await clienteDoPortal(db, agenciaId, token, clienteId);
   const p = await pecaDoCliente(db, cliente.id, pecaId);
-  await mover(db, p, cliente, "AGENDAMENTO", situacaoInicial("AGENDAMENTO"), "APROVADA", "Aprovado pelo cliente no portal → Social media.", email);
+  // Segue para a próxima etapa ligada da empresa (D340); na agência, o social media.
+  const v = await vocabularioDoCliente(db, p.agenciaId);
+  const para = proximaEtapa("APROVACAO", { tipo: p.tipo, exigeAprovacao: true, ativas: v.etapasAtivas, pulaExecucao: v.tipos[p.tipo].pulaExecucao }) ?? "PUBLICADO";
+  await mover(db, p, cliente, para, situacaoInicial(para), "APROVADA", `Aprovado pelo cliente no portal → ${v.etapa[para]}.`, email);
 }
 
 /** O cliente pede ajuste (comentário obrigatório): volta para o editor, com o pedido visível também ao cliente. */
@@ -168,7 +181,8 @@ export async function ajustePeloCliente(db: Database, agenciaId: string, token: 
   const { email, cliente } = await clienteDoPortal(db, agenciaId, token, clienteId);
   const p = await pecaDoCliente(db, cliente.id, pecaId);
   const texto = z.string().trim().min(3, "Conte o que precisa mudar").max(2000).parse(comentario);
-  await mover(db, p, cliente, "EDICAO", "AJUSTES", "AJUSTE", `Ajuste pedido pelo cliente: ${texto}`, email);
+  const volta = (await vocabularioDoCliente(db, p.agenciaId)).etapaDeAjuste;
+  await mover(db, p, cliente, volta, volta === "EDICAO" ? "AJUSTES" : situacaoInicial(volta), "AJUSTE", `Ajuste pedido pelo cliente: ${texto}`, email);
   await db.insert(agenciaPecaComentarios).values({ id: newId("agcm"), pecaId: p.id, agenciaId: p.agenciaId, autorNome: `Cliente (${email})`, texto: `Pedido do cliente: ${texto}`, interno: false });
 }
 

@@ -2,10 +2,11 @@ import Link from "next/link";
 import { AlarmClock, CheckCircle2, Hourglass, Workflow } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { vocabularioDaAgencia } from "@/lib/agencias/personalizar";
 import { PageHeader } from "@/components/app/page-header";
 import { Kpi } from "@/components/commerce/commerce-home";
 import { PrazoTexto } from "@/components/agencia/producao";
-import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
+
 import { cockpitDaAgencia } from "@/lib/agencias/clientes";
 import { resumoDaSemana, type PecaNaLista } from "@/lib/agencias/producao";
 import { formatBRL } from "@/lib/money";
@@ -31,6 +32,8 @@ function Lista({ titulo, itens, vazio }: { titulo: string; itens: PecaNaLista[];
 /** Resumo da Semana (D316): para a reunião interna, o que foi entregue, o que acumulou e o que vem pela frente. */
 export default async function ResumoDaSemana() {
   const session = await requireRole("AGENCY");
+  // Personalização (D340): nomes de etapas, tipos e departamentos da empresa.
+  const { v: voc } = await vocabularioDaAgencia(await getDb(), session.actor);
   const db = await getDb();
   const [r, k] = await Promise.all([resumoDaSemana(db, session.actor), cockpitDaAgencia(db, session.actor)]);
   return (
@@ -45,7 +48,7 @@ export default async function ResumoDaSemana() {
       <div className="grid gap-5 lg:grid-cols-2">
         <section className={card} aria-labelledby="sm-dep">
           <h2 id="sm-dep" className="mb-3 text-base font-semibold">Prioridades de cada departamento</h2>
-          {r.departamentos.length ? <ul className="space-y-2 text-sm">{r.departamentos.map((d) => <li key={d.funcao} className="flex items-baseline justify-between gap-2"><span className="font-medium">{FUNCAO_ROTULO[d.funcao]}</span><span className="tabular-nums text-muted-foreground">{d.abertas} na fila{d.atrasadas ? <b className="ml-1 text-danger">· {d.atrasadas} atrasada{d.atrasadas > 1 ? "s" : ""}</b> : null}</span></li>)}</ul> : <p className="text-sm text-muted-foreground">Nenhuma peça aberta.</p>}
+          {r.departamentos.length ? <ul className="space-y-2 text-sm">{r.departamentos.map((d) => <li key={d.funcao} className="flex items-baseline justify-between gap-2"><span className="font-medium">{voc.funcao[d.funcao]}</span><span className="tabular-nums text-muted-foreground">{d.abertas} na fila{d.atrasadas ? <b className="ml-1 text-danger">· {d.atrasadas} atrasada{d.atrasadas > 1 ? "s" : ""}</b> : null}</span></li>)}</ul> : <p className="text-sm text-muted-foreground">Nenhuma peça aberta.</p>}
         </section>
         <section className={card} aria-labelledby="sm-pes">
           <h2 id="sm-pes" className="mb-3 text-base font-semibold">Entregas por pessoa na semana</h2>

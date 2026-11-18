@@ -32,7 +32,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript estrito · Tailwind
 - **Questionar antes de seguir (pedido do dono, 17/11/2026):** decisões anteriores do dono podem estar erradas. Quando uma regra ou decisão parecer ruim para a empresa (preço, foco, produto, cobrança), **pergunte e traga a solução** (o problema, a alternativa e o que muda) antes de implementar; o dono muda a decisão se for para o bem da empresa. Não siga em silêncio uma regra que você acha prejudicial.
 - **A cada etapa entregue, mande ao dono pelo menos um print da principal implementação** (captura real no navegador, Playwright). É como ele confere visualmente.
 - Não crie PR sem o dono pedir. Trabalhe na branch designada e faça `git push -u origin <branch>`.
-- Registre decisões em `docs/design/DECISIONS.md` (próxima: D338). Mudanças de comportamento sem teste não entram.
+- Registre decisões em `docs/design/DECISIONS.md` (próxima: D341). Mudanças de comportamento sem teste não entram.
 - **Base de conhecimento sempre ao vivo (pedido do dono, 06/11/2026, D264):** toda atualização publicada alimenta a base de conhecimento da equipe (`docs/conhecimento/BC0-INVENTARIO.md`; depois, a tela "Aprender" do Master). Decisão nova a partir da D257 sem citação na base faz o teste `tests/base-conhecimento.test.ts` falhar; depois de registrar uma decisão, rode `node scripts/gerar-novidades.mjs` (Novidades da tela Aprender).
 
 ## Mapa rápido

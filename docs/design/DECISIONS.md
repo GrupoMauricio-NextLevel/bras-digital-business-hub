@@ -4427,6 +4427,63 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Fora desta mudança:** acompanhamento de pagamento na tela (Pix, fatura, tema), que dura só enquanto a pessoa espera pagar.
 - **Teste:** `tests/atividade-cliente.test.ts`.
 
+## D339 — [E-commerce] Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha (2026-11-18)
+- **Pedido do dono:** "enquanto eu não pago o Neon, vamos desenvolver o que for possível". Fase NB4 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md` (página de campanha da Meta "em poucos cliques"), sem a parte que exige configuração por loja.
+- **Assistente** (Site → **Captação**, `/merchant/captacao`), em três passos:
+  1. objetivo: pedir orçamento, agendar visita ou aula experimental, ou receber o contato da equipe;
+  2. título e frase da oferta;
+  3. até quatro motivos.
+  A página nasce pronta (topo com a oferta e botão que desce até o formulário, motivos, formulário de orçamento e contatos), fora do menu e fora da busca, e **é publicada sozinha**: outros rascunhos do site não são publicados junto (`publicarPaginas` com `somente`).
+- **Links prontos:** um por lugar (anúncio na Meta, anúncio no Google, bio e stories do Instagram, status do WhatsApp), com a origem e o nome da campanha no endereço, e o **QR** para cartaz, panfleto e balcão (para baixar).
+- **Números de cada campanha:** contatos, fechados e valor fechado, vindos de Contatos e orçamentos. Um contato conta para a campanha pela etiqueta no link ou pela página onde preencheu.
+- **Fica para depois** (configuração por loja): Pixel da Meta e retorno de conversões por loja, link curto `/l/` por loja e sugestão de texto pela IA.
+- **Acessibilidade da home (achados antigos, resolvidos):**
+  - parágrafo com `aria-label` na faixa de taxa zero virou texto para leitor de tela;
+  - rótulos verdes da Black Friday sobre fundo claro ganharam verde escuro (`black.css`);
+  - o último lugar de "Vivência de rua" e os números de índice ficaram com contraste suficiente.
+- **Código:** `src/lib/business/campanhas.ts`, `criarCampanhaAction`, `src/app/merchant/captacao/*`, item "Captação" no grupo Site do menu.
+- **Teste:** `tests/business-captacao.test.ts` (montagem por objetivo, links, contato da campanha, criação publicando só a campanha e números com fechamento); `nav-business` atualizado.
+
+## D340 — [E-commerce] Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena (2026-11-18)
+- **Pedido do dono:**
+  - "não vamos falar em academia mais";
+  - "os termos da agência precisam ser mais adaptados para que mais segmentos possam usar, e podemos aproveitar o painel da agência que estava sendo feito para a UP";
+  - "os departamentos precisam ter um alto nível de edição, porque o foco é 50% para agências e 50% genérico para diversos outros segmentos".
+- **Como ficou:** as chaves internas (9 departamentos, 9 etapas, 6 tipos de entrega) viram "vagas" com as mesmas regras de permissão e fluxo. A empresa decide o **nome**, se está **ligada** e, nas etapas, **quem recebe** e **o que o cliente vê** no portal.
+- **Modelos de partida (8):** Agência de marketing (o de sempre), Empresa de serviços, Consultoria, Contabilidade, Escritório de advocacia, Arquitetura/engenharia/obras, Tecnologia e software, Eventos e produção. Trocar de modelo carrega os nomes dele; o que a empresa edita por cima fica gravado (só a diferença é guardada).
+- **O que é editável** (tela **Ajustes → Personalizar o painel**, só o Administrador):
+  - nomes principais: painel, cliente e clientes, entrega e entregas, tela do trabalho;
+  - departamentos (nome e ligado; Administrador e Gestor sempre ligados);
+  - etapas (usa ou não, nome, quem recebe, o que o cliente vê; Publicado/Entregue sempre ligada);
+  - tipos de entrega (nome, ligado, "pula a execução");
+  - gavetas do menu (Tráfego, Comercial, Placar e metas, Soluções NextLevel);
+  - "exigir links para avançar" (ligado na agência, desligado nos outros modelos).
+- **Regras do fluxo:**
+  - entrega nasce na primeira etapa ligada;
+  - etapa desligada é pulada;
+  - departamento desligado passa a etapa ao Gestor;
+  - ajuste volta à Edição/Acabamento ou, se desligada, à última etapa ligada antes da revisão;
+  - aprovação do cliente segue para a próxima etapa ligada.
+  - Entregas que já estão numa etapa desligada continuam visíveis na coluna dela (nada se perde).
+- **Onde os nomes aparecem:**
+  - menu (nome do painel, "Produção", "Clientes", gavetas escondidas) e topo;
+  - Produção (título, colunas, cartões, números, "Nova …", tipos);
+  - ficha da entrega, Minha fila, tela inicial (textos sem "agência" fora do modelo de agência), Equipe, Clientes, Semana, Placar, Executivos, Aprender;
+  - portal do cliente (tipos e situação de cada etapa);
+  - situações dentro da etapa neutras fora da agência ("Em andamento" no lugar de "Editando").
+- **A UP não percebe mudança:** personalização vazia = agência como sempre foi (teste confere, inclusive o que o cliente vê no portal).
+- **Academia:**
+  - o modelo de site "Academia e estúdio" deixa de ser oferecido (fica no código só para sites que já nasceram com ele);
+  - textos de Sites e da Captação sem academia;
+  - o cliente de demonstração virou "Clínica Movimento";
+  - `portal-academia-piloto.md` arquivado. A opção "B" da D337 sai; a "A" (painel para qualquer empresa) é esta decisão.
+- **Banco:** `agencias.personalizacao` (jsonb, padrão vazio), migração `0118_personalizacao-painel` (era 0117 na branch; renumerada ao juntar com os contratos, D341).
+- **Código:**
+  - `src/lib/agencias/personalizacao.ts` (modelos, `vocabulario`, `compactar`, `rotuloSituacao`) e `personalizar.ts` (gravar, só admin);
+  - regras em `fluxo.ts` (`etapaSeAplica` com etapas ligadas, `escolherResponsavel` com departamento da etapa, `etapaInicial`);
+  - tela `src/app/agencia/personalizar/*`.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (padrão = agência, travas, edição por cima do modelo, etapas puladas, gravação compacta, fluxo real de uma contabilidade, só o admin grava); `nav-agencia` atualizado; produção, portal, demonstração e agências continuam passando.
+
 ## D341 — [E-commerce] Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master (2026-11-18)
 - **Pedido do dono (18/11):** migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar Prime Outlet (Loja Virtual Pronta Express, R$ 1.600 à vista, pago), os dois com 40 produtos, 8 banners e o tema Aura de cortesia; "o setor de contratos da agência precisa estar 100%"; editar os dados de qualquer cliente quando quiser; contratos disparados por e-mail depois da assinatura. Racional e plano: `docs/prompts/agencia-nextlevel-contratos-site-catalogo.md` (aprovado). Nomes para o cliente: "Loja Virtual Pronta Express" e "Migração Nuvemshop → NextLevel".
 - **Modelos:** além da mensalidade de marketing (D321), dois modelos de **projeto** (`src/lib/contratos/projeto.ts`, regra pura): Loja Virtual Pronta Express e Migração (origem: Nuvemshop, Shopify, Tray, Loja Integrada, WooCommerce, Wix, outra). O texto traz produtos, banners, cortesias (com valor de referência), o que **já foi pago** e o que falta, prazo, desistência (sinal retido só quando há sinal), dados, "resultados não garantidos", aceite e foro.

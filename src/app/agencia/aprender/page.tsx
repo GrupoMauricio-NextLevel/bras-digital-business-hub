@@ -2,9 +2,10 @@ import Link from "next/link";
 import { CircleCheck } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { vocabularioDaAgencia } from "@/lib/agencias/personalizar";
 import { PageHeader } from "@/components/app/page-header";
 import { AulaView, Barra } from "@/components/master/aula-view";
-import { escopoDaAgencia, FUNCAO_ROTULO, pode } from "@/lib/agencias/acesso";
+import { escopoDaAgencia, pode } from "@/lib/agencias/acesso";
 import { AULAS_AGENCIA, TRILHAS_AGENCIA, perguntasDaAulaAgencia, progressoDaAgencia, trilhasDaFuncao } from "@/lib/agencias/aprender";
 import { responderAulaDaAgenciaAction } from "@/app/actions/agencias";
 
@@ -14,6 +15,8 @@ export const metadata = { title: "Aprender" };
 /** Aprender da agência (D317): o mesmo Aprender do Master, com as trilhas do Painel da Agência por função. */
 export default async function AprenderAgencia({ searchParams }: { searchParams: Promise<{ trilha?: string; aula?: string; aba?: string }> }) {
   const session = await requireRole("AGENCY");
+  // Personalização (D340): nomes de etapas, tipos e departamentos da empresa.
+  const { v: voc } = await vocabularioDaAgencia(await getDb(), session.actor);
   const db = await getDb();
   const { membro } = await escopoDaAgencia(db, session.actor);
   const sp = await searchParams;
@@ -30,7 +33,7 @@ export default async function AprenderAgencia({ searchParams }: { searchParams: 
   const url = (p: Record<string, string | undefined>) => `/agencia/aprender?${new URLSearchParams(Object.entries(p).filter(([, v]) => v) as [string, string][])}`;
   return (
     <div className="mx-auto max-w-[1240px] space-y-5">
-      <PageHeader eyebrow="Treinamento da equipe" title="Aprender" description={`Como usar o Painel da Agência no dia a dia. Trilhas da sua função (${FUNCAO_ROTULO[membro.funcao]}), com perguntas rápidas para fixar.`} />
+      <PageHeader eyebrow="Treinamento da equipe" title="Aprender" description={`Como usar o Painel da Agência no dia a dia. Trilhas da sua função (${voc.funcao[membro.funcao]}), com perguntas rápidas para fixar.`} />
       <div className="flex flex-wrap items-center gap-3">
         {admin ? (
           <nav className="flex gap-1 rounded-full border border-border bg-surface p-1" aria-label="Seções">
@@ -42,7 +45,7 @@ export default async function AprenderAgencia({ searchParams }: { searchParams: 
       </div>
       {aba === "equipe" ? (
         <ul className="grid gap-3 md:grid-cols-2" aria-label="Progresso da equipe">
-          {progresso.map((p) => <li key={p.id} className="ds-card p-4"><div className="flex items-start justify-between gap-2"><span className="min-w-0"><b className="block truncate">{p.nome}</b><span className="text-xs text-muted-foreground">{FUNCAO_ROTULO[p.funcao]}</span></span><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${p.total && p.feitas === p.total ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>{p.total && p.feitas === p.total ? "Pronto" : `${p.feitas} de ${p.total}`}</span></div><Barra feitas={p.feitas} total={p.total} rotulo={`Progresso de ${p.nome}`} className="mt-3" /></li>)}
+          {progresso.map((p) => <li key={p.id} className="ds-card p-4"><div className="flex items-start justify-between gap-2"><span className="min-w-0"><b className="block truncate">{p.nome}</b><span className="text-xs text-muted-foreground">{voc.funcao[p.funcao]}</span></span><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${p.total && p.feitas === p.total ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>{p.total && p.feitas === p.total ? "Pronto" : `${p.feitas} de ${p.total}`}</span></div><Barra feitas={p.feitas} total={p.total} rotulo={`Progresso de ${p.nome}`} className="mt-3" /></li>)}
         </ul>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">

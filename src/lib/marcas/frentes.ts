@@ -51,10 +51,10 @@ export const FRENTES: Record<ChaveFrente, Frente> = {
       ["Serviços com pedido de orçamento", "Cada serviço com resumo, foto e “a partir de” ou “sob orçamento”."],
       ["Origem de cada contato", "Você vê se o pedido veio de anúncio da Meta, do Google, do Instagram ou direto."],
       ["Contatos e orçamentos", "Assuma, responda pelo WhatsApp e marque orçamento enviado, fechou ou perdeu."],
-      ["Modelos por tipo de negócio", "Empresa de serviços (vidraçaria, manutenção, instalação) e academia ou estúdio."],
+      ["Pronto para o seu tipo de serviço", "Vidraçaria, manutenção, instalação, consultoria, escritório e qualquer empresa que vende por orçamento."],
       ["Loja virtual quando quiser", "Ligue a loja na mesma conta, com desconto no segundo produto."],
     ],
-    passos: [["Escolha o modelo", "Serviços ou academia; as páginas nascem prontas."], ["Troque textos e fotos", "No painel, sem programador."], ["Ligue o anúncio", "Cada pedido chega com a origem, no painel."]],
+    passos: [["Comece pelo modelo", "Início, Sobre, Serviços e Contato nascem prontos."], ["Troque textos e fotos", "No painel, sem programador."], ["Ligue o anúncio", "Cada pedido chega com a origem, no painel."]],
     faq: [
       { q: "Preciso saber programar?", a: "Não. O site nasce com as páginas prontas; você troca textos, fotos e serviços no painel." },
       { q: "Como sei de onde veio o cliente?", a: "O formulário de orçamento guarda a origem: anúncio da Meta, do Google, Instagram ou acesso direto, com o nome da campanha quando houver." },

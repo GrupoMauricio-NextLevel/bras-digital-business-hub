@@ -18,9 +18,9 @@ describe("menu do Painel da Agência em gavetas (D327)", () => {
   it("Conversas é o Atendimento (pedidos e respostas do portal)", () => {
     expect(itens.filter((i) => i.group === "Conversas").map((i) => i.href)).toEqual(["/agencia/atendimento"]);
   });
-  it("Equipe fica na gaveta Ajustes, no rodapé recolhido", () => {
+  it("Equipe e Personalizar o painel (D340) ficam na gaveta Ajustes, no rodapé recolhido", () => {
     const rodape = itens.filter((i) => i.rodape);
-    expect(rodape.map((i) => [i.href, i.group])).toEqual([["/agencia/equipe", "Ajustes"]]);
+    expect(rodape.map((i) => [i.href, i.group])).toEqual([["/agencia/equipe", "Ajustes"], ["/agencia/personalizar", "Ajustes"]]);
   });
   it("a barra do celular tem até 4 atalhos e começa pelo Agora", () => {
     const bottom = itens.filter((i) => i.bottom);
