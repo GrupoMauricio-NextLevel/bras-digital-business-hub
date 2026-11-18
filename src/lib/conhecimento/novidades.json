@@ -1,5 +1,12 @@
 [
  {
+  "numero": 342,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"não estamos sendo encontrados nos mecanismos\". Conferência de 17/11/2026: o site responde certo aos robôs (páginas 200, robots e sitemap completos, sem bloqueio), mas uma busca site:nextlevelcommerce.com.br não mostra ne…"
+ },
+ {
   "numero": 341,
   "frente": "E-commerce",
   "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
@@ -271,12 +278,5 @@
   "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
- },
- {
-  "numero": 302,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
-  "data": "2026-11-16",
-  "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
  }
 ]
